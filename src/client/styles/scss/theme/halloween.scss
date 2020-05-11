@@ -28,10 +28,6 @@ $themecolor: #aa4a04;
 $themelight: #f0f8ff;
 $accentcolor: #ffd700;
 
-.grw-navbar {
-  border-bottom: $accentcolor 4px solid;
-}
-
 //== Light Mode
 //
 html[light] {
@@ -56,14 +52,14 @@ html[light] {
 
   // List Group colors
   $color-list: $color-global;
-  $bgcolor-list: $bgcolor-global;
+  $bgcolor-list: transparent;
   $color-list-active: $color-reversal;
   $bgcolor-list-active: $primary;
-  $color-list-hover: $color-reversal;
+  $color-list-hover: $themecolor;
 
   // Logo colors
-  $bgcolor-logo: $bgcolor-navbar;
-  $fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 10%), 15%);
+  $bgcolor-logo: darken($themecolor, 10%);
+  $fillcolor-logo-mark: lighten($accentcolor, 15%);
 
   // Icon colors
   $color-editor-icons: $color-global;
@@ -93,7 +89,7 @@ html[light] {
   }
 
   @import 'apply-colors';
-  @import 'apply-colors-light';
+  @import 'apply-colors-dark';
 }
 
 //== Dark Mode
