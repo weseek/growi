@@ -7,9 +7,9 @@ const PATTERN_DEFAULT = /^((.*)\/)?([^/]+)$/;
 
 export default class PagePath {
 
-  constructor(path, evalDatePath = false) {
+  constructor(path, evalDatePath = false, skipNormalize = false) {
 
-    const pagePath = pathUtils.normalizePath(path);
+    const pagePath = skipNormalize ? path : pathUtils.normalizePath(path);
 
     this.former = null;
     this.latter = pagePath;

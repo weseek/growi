@@ -1,22 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import PagePathModel from '../../models/PagePath';
+import PagePath from '../../models/PagePath';
 
 const PagePathLabel = (props) => {
 
-  const model = new PagePathModel(props.page.path, true);
+  const pagePath = new PagePath(props.page.path, true);
 
   let classNames = ['page-path'];
   classNames = classNames.concat(props.additionalClassNames);
 
   if (props.isLatterOnly) {
-    return <span className={classNames.join(' ')}>{model.latter}</span>;
+    return <span className={classNames.join(' ')}>{pagePath.latter}</span>;
   }
 
-  const textElem = (model.former == null && model.latter == null)
+  const textElem = (pagePath.former == null && pagePath.latter == null)
     ? <><strong>/</strong></>
-    : <>{model.former}/<strong>{model.latter}</strong></>;
+    : <>{pagePath.former}/<strong>{pagePath.latter}</strong></>;
 
   return <span className={classNames.join(' ')}>{textElem}</span>;
 };
