@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ReactCardFlip from 'react-card-flip';
 
 import { withTranslation } from 'react-i18next';
 
@@ -144,13 +145,13 @@ class LoginForm extends React.Component {
     } = this.props;
 
     return (
-      <div className="back">
+      <React.Fragment>
         {registrationMode === 'Restricted' && (
-          <p className="alert alert-warning">
-            {t('page_register.notice.restricted')}
-            <br />
-            {t('page_register.notice.restricted_defail')}
-          </p>
+        <p className="alert alert-warning">
+          {t('page_register.notice.restricted')}
+          <br />
+          {t('page_register.notice.restricted_defail')}
+        </p>
         )}
         <form role="form" action="/register" method="post" id="register-form">
           <div className="input-group" id="input-group-username">
@@ -184,18 +185,18 @@ class LoginForm extends React.Component {
           </div>
 
           {registrationWhiteList.length > 0 && (
-            <>
-              <p className="form-text">{t('page_register.form_help.email')}</p>
-              <ul>
-                {registrationWhiteList.map((elem) => {
+          <>
+            <p className="form-text">{t('page_register.form_help.email')}</p>
+            <ul>
+              {registrationWhiteList.map((elem) => {
                   return (
                     <li key={elem}>
                       <code>{elem}</code>
                     </li>
                   );
                 })}
-              </ul>
-            </>
+            </ul>
+          </>
           )}
 
           <div className="input-group">
@@ -229,7 +230,7 @@ class LoginForm extends React.Component {
             </a>
           </div>
         </div>
-      </div>
+      </React.Fragment>
     );
   }
 
@@ -243,27 +244,31 @@ class LoginForm extends React.Component {
     } = this.props;
 
     const isLocalOrLdapStrategiesEnabled = isLocalStrategySetup || isLdapStrategySetup;
-    const registerFormClass = this.state.isRegistering ? 'to-flip' : '';
     const isSomeExternalAuthEnabled = Object.values(objOfIsExternalAuthEnableds).some(elem => elem);
 
     return (
-      <div className={`login-dialog mx-auto flipper ${registerFormClass}`} id="login-dialog">
+      <div className="login-dialog mx-auto flipper" id="login-dialog">
         <div className="row mx-0">
           <div className="col-12">
-            <div className="front">
-              {isLocalOrLdapStrategiesEnabled && this.renderLocalOrLdapLoginForm()}
-              {isSomeExternalAuthEnabled && this.renderExternalAuthLoginForm()}
-              {isRegistrationEnabled && (
-                <div className="row">
-                  <div className="col-12 text-right py-2">
-                    <a href="#register" id="register" className="link-switch" onClick={this.switchForm}>
-                      <i className="ti-check-box"></i> {t('Sign up is here')}
-                    </a>
+            <ReactCardFlip isFlipped={this.state.isRegistering} flipDirection="horizontal">
+              <div>
+                {isLocalOrLdapStrategiesEnabled && this.renderLocalOrLdapLoginForm()}
+                {isSomeExternalAuthEnabled && this.renderExternalAuthLoginForm()}
+                {isRegistrationEnabled && (
+                  <div className="row">
+                    <div className="col-12 text-right py-2">
+                      <a href="#register" id="register" className="link-switch" onClick={this.switchForm}>
+                        <i className="ti-check-box"></i> {t('Sign up is here')}
+                      </a>
+                    </div>
                   </div>
-                </div>
               )}
-            </div>
-            {isRegistrationEnabled && this.renderRegisterForm()}
+              </div>
+              <div>
+                {isRegistrationEnabled && this.renderRegisterForm()}
+              </div>
+            </ReactCardFlip>
+
             <a href="https://growi.org" className="link-growi-org pl-3">
               <span className="growi">GROWI</span>.<span className="org">ORG</span>
             </a>
