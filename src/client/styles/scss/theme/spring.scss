@@ -61,7 +61,7 @@ html[dark] {
   // $color-header: #2b2b2b;
   $color-link: lighten($color-global, 20%);
   $color-link-hover: lighten($color-link, 20%);
-  $color-link-wiki: lighten($primary, 20%);
+  $color-link-wiki: $subthemecolor;
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
   $color-link-nabvar: $color-reversal;
   $color-inline-code: #c7254e;
