@@ -83,6 +83,8 @@ const GrowiSubNavigation = (props) => {
       </div>
 
       <div className="d-flex align-items-center">
+        { !isPageInTrash && (
+        ) }
 
         {/* Page Authors */}
         <ul className="authors text-nowrap d-none d-lg-block d-edit-none">
