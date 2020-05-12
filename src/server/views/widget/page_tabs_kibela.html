@@ -69,15 +69,13 @@
       >
         <i class="icon-options-vertical"></i>
       </a>
-      <ul class="dropdown-menu dropdown-menu-right">
-        <li class="dropdown-item">
-          <a href="#" data-target="#create-template" data-toggle="modal"><i class="icon-fw icon-magic-wand"></i> {{ t('template.option_label.create/edit') }}</a>
-        </li>
+      <div class="dropdown-menu dropdown-menu-right">
+        <a class="dropdown-item" href="#" data-target="#create-template" data-toggle="modal"><i class="icon-fw icon-magic-wand"></i> {{ t('template.option_label.create/edit') }}</a>
         {% if ('/' !== path) %}
-        <li class="dropdown-divider"></li>
-        <li class="dropdown-item"><a href="#" data-target="#unportalize" data-toggle="modal"><i class="fa fa-share"></i> {{ t('Unportalize') }}</a></li>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#" data-target="#unportalize" data-toggle="modal"><i class="fa fa-share"></i> {{ t('Unportalize') }}</a></li>
         {% endif %}
-      </ul>
+      </div>
     </li>
     {% else %}
     <li class="nav-item dropdown">
