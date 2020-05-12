@@ -83,9 +83,6 @@ const GrowiSubNavigation = (props) => {
       </div>
 
       <div className="d-flex align-items-center">
-        <div>
-          <BookmarkButton pageId={pageId} crowi={appContainer} />
-        </div>
 
         {/* Page Authors */}
         <ul className="authors text-nowrap d-none d-lg-block d-edit-none">
