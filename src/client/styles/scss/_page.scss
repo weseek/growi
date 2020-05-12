@@ -136,15 +136,6 @@
     z-index: 14;
     font-size: 12px;
     line-height: 1;
-    color: $linktext;
-    background-color: transparent;
-    border: 1px solid $linktext;
-    opacity: 1;
-
-    &:hover {
-      color: $white;
-      background-color: $linktext;
-    }
   }
 }
 
