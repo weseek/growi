@@ -20,5 +20,19 @@ module.exports = {
 
   async down(db, client) {
     // do not rollback
+    logger.info('Rollback migration');
+    mongoose.connect(config.mongoUri, config.mongodb.options);
+
+    const Config = getModelSafely('Config') || require('@server/models/config')();
+
+    const insertConfig = new Config({
+      ns: 'crowi',
+      key: 'customize:behavior',
+      value: JSON.stringify('growi'),
+    });
+
+    await insertConfig.save();
+
+    logger.info('Migration has been successfully rollbacked');
   },
 };
