@@ -35,6 +35,8 @@
 
 $themecolor: #ffb8c6;
 $themelight: #fff0f5;
+$subthemecolor: #67a856;
+$third-main-color: antiquewhite;
 $accentcolor: #e08dbc;
 
 .grw-navbar {
@@ -48,7 +50,7 @@ html[dark] {
   $primary: $themecolor;
 
   // Background colors
-  $bgcolor-global: $themelight;
+  $bgcolor-global: white;
   $bgcolor-navbar: $themecolor;
   $bgcolor-inline-code: #f9f2f4;
   $bgcolor-card: #f5f5f5;
@@ -59,7 +61,7 @@ html[dark] {
   // $color-header: #2b2b2b;
   $color-link: lighten($color-global, 20%);
   $color-link-hover: lighten($color-link, 20%);
-  $color-link-wiki: lighten($primary, 20%);
+  $color-link-wiki: $subthemecolor;
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
   $color-link-nabvar: $color-reversal;
   $color-inline-code: #c7254e;
@@ -101,7 +103,10 @@ html[dark] {
   @import 'apply-colors-light';
 
   .table {
-    background-color: $themelight;
+    background-color: $bgcolor-global;
+  }
+  .card-timeline > .card-header {
+    background-color: $third-main-color;
   }
 }
 
