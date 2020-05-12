@@ -83,9 +83,6 @@ const GrowiSubNavigation = (props) => {
       </div>
 
       <div className="d-flex align-items-center">
-        <div className="mr-2">
-          <LikeButton pageId={pageId} isLiked={pageContainer.state.isLiked} />
-        </div>
         <div>
           <BookmarkButton pageId={pageId} crowi={appContainer} />
         </div>
