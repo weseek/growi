@@ -459,27 +459,6 @@ $(() => {
     window.location.hash = '#';
   });
 
-  /*
-   * wrap short path with <strong></strong>
-   */
-  $('#view-list .page-list-ul-flat .page-list-link').each(function() {
-    const $link = $(this);
-    /* eslint-disable-next-line no-unused-vars */
-    const text = $link.text();
-    let path = decodeURIComponent($link.data('path'));
-    const shortPath = decodeURIComponent($link.data('short-path')); // convert to string
-
-    if (path == null || shortPath == null) {
-      // continue
-      return;
-    }
-
-    path = entities.encodeHTML(path);
-    const pattern = `${escapeStringRegexp(entities.encodeHTML(shortPath))}(/)?$`;
-
-    $link.html(path.replace(new RegExp(pattern), `<strong>${shortPath}$1</strong>`));
-  });
-
   if (pageId) {
     // for Crowi Template LangProcessor
     $('.template-create-button', $('#revision-body')).on('click', function() {
