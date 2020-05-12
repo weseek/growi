@@ -208,55 +208,11 @@
     z-index: 2;
   }
 
-  // flip animation
-  .login-dialog.flipper {
-    transition: min-height 0.2s;
-
-    &.to-flip {
-      min-height: 295px;
-
-      // has-error
-      &.has-error {
-        min-height: #{295px + 32px};
-      }
-    }
-
-    .front,
-    .back {
-      transition: 0.4s;
-      backface-visibility: hidden;
-      transform-style: preserve-3d;
-      // fix https://github.com/weseek/growi/issues/330
-      -webkit-backface-visibility: hidden;
-      -webkit-transform-style: preserve-3d;
-    }
-
-    .front {
-      z-index: 2;
-    }
-
-    .back {
-      position: absolute;
-      top: 0;
-      right: 15px;
-      left: 15px;
-    }
-
-    .back,
-    &.to-flip .front {
-      transform: rotateY(180deg);
-
-      // fix https://github.com/weseek/growi/issues/330
-      // 'backface-visibility: hidden' and 'z-index: -1' breaks layout in iOS
-      ::after {
-        z-index: 0;
-        opacity: 0.3;
-      }
-    }
-
-    &.to-flip .back {
-      transform: rotateY(0deg);
-    }
+  // To adjust the behavior, this problem is not solved.
+  // See https://github.com/AaronCCWong/react-card-flip/issues/56
+  .react-card-front,
+  .react-card-back {
+    height: 0% !important;
   }
 }
 
