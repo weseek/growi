@@ -2,8 +2,6 @@
 
 import { pathUtils } from 'growi-commons';
 
-const entities = require('entities');
-const escapeStringRegexp = require('escape-string-regexp');
 require('jquery.cookie');
 
 require('./thirdparty-js/waves');
