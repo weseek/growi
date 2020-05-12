@@ -104,6 +104,10 @@
     border: 1px solid $border;
     border-radius: $radius;
     box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05) !important;
+    a {
+      padding: 5px 10px;
+      line-height: 1.42857;
+    }
   }
 
   .dropdown-menu > li > a {
