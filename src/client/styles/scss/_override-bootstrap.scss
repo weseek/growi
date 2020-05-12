@@ -115,38 +115,6 @@
     background: $extralight;
   }
 
-  // btn-light (substitute for btn-default of bootstrap3)  (agile-admin style)
-  .btn-light,
-  .btn-light.disabled {
-    color: $bodytext;
-    $this-color: $btn-default-bgcolor;
-    background: $this-color;
-    border: 1px solid $this-color;
-
-    &:hover,
-    &:focus,
-    &.focus {
-      color: $bodytext;
-      background: $this-color;
-      border: 1px solid $this-color;
-      opacity: 0.8;
-    }
-
-    &:active &.active {
-      box-shadow: none;
-    }
-  }
-
-  .btn-light.btn-outline {
-    background-color: transparent;
-
-    &:hover,
-    &:focus,
-    &.focus {
-      background: $btn-default-bgcolor;
-    }
-  }
-
   //Modals
   .modal-content {
     box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.1);
