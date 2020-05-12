@@ -85,6 +85,9 @@ const GrowiSubNavigation = (props) => {
       <div className="d-flex align-items-center">
         { !isPageInTrash && (
           /* Header Button */
+          <div className="mr-2">
+            <LikeButton pageId={pageId} isLiked={pageContainer.state.isLiked} />
+          </div>
         ) }
         { !isPageInTrash && (
         ) }
