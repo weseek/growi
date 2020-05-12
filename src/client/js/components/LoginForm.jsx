@@ -250,8 +250,8 @@ class LoginForm extends React.Component {
       <div className="login-dialog mx-auto flipper" id="login-dialog">
         <div className="row mx-0">
           <div className="col-12">
-            <ReactCardFlip isFlipped={this.state.isRegistering} flipDirection="horizontal">
-              <div>
+            <ReactCardFlip isFlipped={this.state.isRegistering} flipDirection="horizontal" cardZIndex="3">
+              <div className="front">
                 {isLocalOrLdapStrategiesEnabled && this.renderLocalOrLdapLoginForm()}
                 {isSomeExternalAuthEnabled && this.renderExternalAuthLoginForm()}
                 {isRegistrationEnabled && (
@@ -264,7 +264,7 @@ class LoginForm extends React.Component {
                   </div>
               )}
               </div>
-              <div>
+              <div className="back">
                 {isRegistrationEnabled && this.renderRegisterForm()}
               </div>
             </ReactCardFlip>
