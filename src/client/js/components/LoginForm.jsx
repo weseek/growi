@@ -247,7 +247,7 @@ class LoginForm extends React.Component {
     const isSomeExternalAuthEnabled = Object.values(objOfIsExternalAuthEnableds).some(elem => elem);
 
     return (
-      <div className="login-dialog mx-auto flipper" id="login-dialog">
+      <div className="login-dialog mx-auto" id="login-dialog">
         <div className="row mx-0">
           <div className="col-12">
             <ReactCardFlip isFlipped={this.state.isRegistering} flipDirection="horizontal" cardZIndex="3">
