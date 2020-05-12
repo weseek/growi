@@ -127,6 +127,12 @@ $link-hover-color: $color-link-hover;
       background-color: $bgcolor-sidebar-context;
     }
   }
+  div[class$='-Outer'] {
+    div[class$='-Shadow'] {
+      background: unset;
+      border-right: 1px solid $border;
+    }
+  }
 }
 
 /*
