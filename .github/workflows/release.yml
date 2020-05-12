@@ -53,3 +53,4 @@ jobs:
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
         icon_emoji: 'tada'
         isReleaseMode: true
+        created_tag: v${{ env.RELEASE_VERSION }}
