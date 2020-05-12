@@ -133,6 +133,18 @@ body.on-edit {
     }
   }
 
+  /*********************
+   * Navigation styles
+   */
+  .nav:hover {
+    .btn-copy,
+    .btn-edit,
+    .btn-edit-tags {
+      // change button opacity
+      opacity: unset;
+    }
+  }
+
   &.builtin-editor {
     /*****************
     * Editor styles
