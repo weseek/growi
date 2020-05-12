@@ -84,6 +84,7 @@ const GrowiSubNavigation = (props) => {
 
       <div className="d-flex align-items-center">
         { !isPageInTrash && (
+          /* Header Button */
         ) }
         { !isPageInTrash && (
         ) }
