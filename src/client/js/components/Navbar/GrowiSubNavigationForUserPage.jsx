@@ -5,8 +5,9 @@ import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
-import RevisionPath from '../Page/RevisionPath';
 import PageContainer from '../../services/PageContainer';
+
+import RevisionPathControls from '../Page/RevisionPathControls';
 import BookmarkButton from '../BookmarkButton';
 import UserPicture from '../User/UserPicture';
 
@@ -33,7 +34,7 @@ const GrowiSubNavigationForUserPage = (props) => {
   return (
     <div className={`px-3 ${additionalClassNames.join(' ')}`}>
       <h4 className="grw-user-page-path">
-        <RevisionPath pageId={pageId} pagePath={pageContainer.state.path} />
+        <RevisionPathControls pageId={pageId} pagePath={pageContainer.state.path} />
       </h4>
 
       <div className="d-flex align-items-center justify-content-between">

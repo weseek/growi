@@ -12,7 +12,7 @@ import PagePathHierarchicalLink from '@commons/components/PagePathHierarchicalLi
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
-import RevisionPath from '../Page/RevisionPath';
+import RevisionPathControls from '../Page/RevisionPathControls';
 import PageContainer from '../../services/PageContainer';
 import TagLabels from '../Page/TagLabels';
 import LikeButton from '../LikeButton';
@@ -44,13 +44,15 @@ const GrowiSubNavigation = (props) => {
     return (
       <div className="px-3 py-3 grw-subnavbar">
         { renderFormerLink() }
-        <h1 className="m-0">
-          <RevisionPath
+        <span className="d-flex align-items-center flex-wrap">
+          <h1 className="m-0">
+          </h1>
+          <RevisionPathControls
             pageId={pageId}
             pagePath={pageContainer.state.path}
             isPageForbidden={isPageForbidden}
           />
-        </h1>
+        </span>
       </div>
     );
   }
@@ -73,9 +75,11 @@ const GrowiSubNavigation = (props) => {
       {/* Page Path */}
       <div>
         { renderFormerLink() }
-        <h1 className="m-0">
-          <RevisionPath pageId={pageId} pagePath={pageContainer.state.path} />
-        </h1>
+        <span className="d-flex align-items-center flex-wrap">
+          <h1 className="m-0">
+          </h1>
+          <RevisionPathControls pageId={pageId} pagePath={pageContainer.state.path} />
+        </span>
         { !isPageNotFound && !isPageForbidden && (
           <TagLabels />
         ) }

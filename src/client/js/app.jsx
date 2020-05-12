@@ -21,7 +21,7 @@ import PageTimeline from './components/PageTimeline';
 import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
 import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
-import RevisionPath from './components/Page/RevisionPath';
+import RevisionPathControls from './components/Page/RevisionPathControls';
 import TagLabels from './components/Page/TagLabels';
 import PagePathAutoComplete from './components/PagePathAutoComplete';
 import RecentCreated from './components/RecentCreated/RecentCreated';
@@ -101,7 +101,7 @@ if (pageContainer.state.path != null) {
   Object.assign(componentMappings, {
     // eslint-disable-next-line quote-props
     'page': <Page />,
-    'revision-path': <RevisionPath pageId={pageContainer.state.pageId} pagePath={pageContainer.state.path} />,
+    'revision-path-controls': <RevisionPathControls pageId={pageContainer.state.pageId} pagePath={pageContainer.state.path} />,
     'tag-label': <TagLabels />,
     'grw-subnav': <GrowiSubNavigation />,
     'grw-subnav-for-user-page': <GrowiSubNavigationForUserPage />,
