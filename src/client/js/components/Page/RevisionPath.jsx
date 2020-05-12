@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
+import { isTrashPage } from '@commons/util/path-utils';
 import DevidedPagePath from '@commons/models/devided-page-path';
 import LinkedPagePath from '@commons/models/linked-page-path';
 import PagePathHierarchicalLink from '@commons/components/PagePathHierarchicalLink';
@@ -17,18 +18,19 @@ const RevisionPath = (props) => {
   };
 
   const {
-    pageId, isPageInTrash, isPageForbidden,
+    pagePath, pageId, isPageForbidden,
   } = props;
 
-  const dPagePath = new DevidedPagePath(props.pagePath, false, true);
+  const dPagePath = new DevidedPagePath(pagePath, false, true);
   const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
+  const isInTrash = isTrashPage(pagePath);
 
   return (
     <>
       <span className="d-flex align-items-center flex-wrap">
         <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
         <CopyDropdown pagePath={props.pagePath} pageId={pageId} buttonStyle={buttonStyle} />
-        { !isPageInTrash && !isPageForbidden && (
+        { !isInTrash && !isPageForbidden && (
           <a href="#edit" className="d-block d-edit-none text-muted btn btn-secondary bg-transparent btn-edit border-0" style={buttonStyle}>
             <i className="icon-note" />
           </a>
@@ -44,12 +46,10 @@ RevisionPath.propTypes = {
   pagePath: PropTypes.string.isRequired,
   pageId: PropTypes.string,
   isPageForbidden: PropTypes.bool,
-  isPageInTrash: PropTypes.bool,
 };
 
 RevisionPath.defaultProps = {
   isPageForbidden: false,
-  isPageInTrash: false,
 };
 
 export default withTranslation()(RevisionPath);
