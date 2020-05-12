@@ -31,8 +31,12 @@
 }
 
 // fill button style
-.btn-fill {
+:root .btn.btn-fill {
   position: relative;
+  display: flex;
+  justify-content: space-between;
+  min-width: 130px;
+  padding: 0px;
   overflow: hidden;
   color: white;
   text-align: center;
@@ -43,6 +47,7 @@
   .btn-label {
     position: relative;
     z-index: 1;
+    padding: 9px 15px;
     color: white;
     text-decoration: none;
   }
@@ -50,7 +55,9 @@
   .btn-label-text {
     position: relative;
     z-index: 1;
+    margin: auto;
     color: white;
+    text-align: center;
     text-decoration: none;
   }
 

@@ -69,14 +69,14 @@ class LoginForm extends React.Component {
           <input type="password" className="form-control" placeholder="Password" name="loginForm[password]" />
         </div>
 
-        <div className="input-group justify-content-center d-flex mt-5">
+        <div className="input-group mt-5">
           <input type="hidden" name="_csrf" value={noLoginContainer.csrfToken} />
-          <button type="submit" id="login" className="btn btn-fill login px-0 py-2">
+          <button type="submit" id="login" className="btn btn-fill login mx-auto">
             <div className="eff"></div>
-            <span className="btn-label p-3">
+            <span className="btn-label">
               <i className="icon-login"></i>
             </span>
-            <span className="btn-label-text p-3">{t('Sign in')}</span>
+            <span className="btn-label-text">{t('Sign in')}</span>
           </button>
         </div>
       </form>
@@ -85,16 +85,26 @@ class LoginForm extends React.Component {
 
   renderExternalAuthInput(auth) {
     const { t } = this.props;
+    const authIconNames = {
+      google: 'google',
+      github: 'github',
+      facebook: 'facebook',
+      twitter: 'twitter',
+      oidc: 'openid',
+      saml: 'key',
+      basic: 'lock',
+    };
+
     return (
-      <div key={auth} className="input-group justify-content-center d-flex mt-5">
-        <button type="button" className="btn btn-fill px-0 py-2" id={auth} onClick={this.handleLoginWithExternalAuth}>
+      <div key={auth} className="col-6 mb-2">
+        <button type="button" className="btn btn-fill" id={auth} onClick={this.handleLoginWithExternalAuth}>
           <div className="eff"></div>
-          <span className="btn-label p-3">
-            <i className={`fa fa-${auth}`}></i>
+          <span className="btn-label">
+            <i className={`fa fa-${authIconNames[auth]}`}></i>
           </span>
-          <span className="btn-label-text p-3">{t('Sign in')}</span>
+          <span className="btn-label-text">{t('Sign in')}</span>
         </button>
-        <div className="small text-center">by {auth} Account</div>
+        <div className="small text-right">by {auth} Account</div>
       </div>
     );
   }
@@ -106,24 +116,22 @@ class LoginForm extends React.Component {
 
     return (
       <>
-        <div className="border-bottom"></div>
-        <div id="external-auth" className={`external-auth ${collapsibleClass}`}>
-          <div className="spacer"></div>
-          <div className="d-flex flex-row justify-content-between flex-wrap">
-            {Object.keys(objOfIsExternalAuthEnableds).map((auth) => {
-              if (!objOfIsExternalAuthEnableds[auth]) {
-                return;
-              }
-              return this.renderExternalAuthInput(auth);
-            })}
+        <div className="border-top border-bottom">
+          <div id="external-auth" className={`external-auth ${collapsibleClass}`}>
+            <div className="row mt-2">
+              {Object.keys(objOfIsExternalAuthEnableds).map((auth) => {
+                if (!objOfIsExternalAuthEnableds[auth]) {
+                  return;
+                }
+                return this.renderExternalAuthInput(auth);
+              })}
+            </div>
           </div>
-          <div className="spacer"></div>
         </div>
-        <div className="border-bottom"></div>
         <div className="text-center">
           <button
             type="button"
-            className="btn btn-secondary btn-xs mb-3"
+            className="btn btn-secondary btn-sm mb-3"
             data-toggle={isExternalAuthCollapsible ? 'collapse' : ''}
             data-target="#external-auth"
             aria-expanded="false"
@@ -139,6 +147,9 @@ class LoginForm extends React.Component {
   renderRegisterForm() {
     const {
       t,
+      username,
+      name,
+      email,
       noLoginContainer,
       registrationMode,
       registrationWhiteList,
@@ -160,7 +171,7 @@ class LoginForm extends React.Component {
                 <i className="icon-user"></i>
               </span>
             </div>
-            <input type="text" className="form-control" placeholder={t('User ID')} name="registerForm[username]" defaultValue={this.props.username} required />
+            <input type="text" className="form-control" placeholder={t('User ID')} name="registerForm[username]" defaultValue={username} required />
           </div>
           <p className="form-text text-danger">
             <span id="help-block-username"></span>
@@ -172,7 +183,7 @@ class LoginForm extends React.Component {
                 <i className="icon-tag"></i>
               </span>
             </div>
-            <input type="text" className="form-control" placeholder={t('Name')} name="registerForm[name]" defaultValue={this.props.name} required />
+            <input type="text" className="form-control" placeholder={t('Name')} name="registerForm[name]" defaultValue={name} required />
           </div>
 
           <div className="input-group">
@@ -181,7 +192,7 @@ class LoginForm extends React.Component {
                 <i className="icon-envelope"></i>
               </span>
             </div>
-            <input type="email" className="form-control" placeholder={t('Email')} name="registerForm[email]" defaultValue={this.props.email} required />
+            <input type="email" className="form-control" placeholder={t('Email')} name="registerForm[email]" defaultValue={email} required />
           </div>
 
           {registrationWhiteList.length > 0 && (
@@ -210,12 +221,12 @@ class LoginForm extends React.Component {
 
           <div className="input-group justify-content-center mt-5">
             <input type="hidden" name="_csrf" value={noLoginContainer.csrfToken} />
-            <button type="submit" className="btn btn-fill px-0 py-2" id="register">
+            <button type="submit" className="btn btn-fill" id="register">
               <div className="eff"></div>
-              <span className="btn-label p-3">
+              <span className="btn-label">
                 <i className="icon-user-follow"></i>
               </span>
-              <span className="btn-label-text p-3">{t('Sign up')}</span>
+              <span className="btn-label-text">{t('Sign up')}</span>
             </button>
           </div>
         </form>
@@ -268,12 +279,11 @@ class LoginForm extends React.Component {
                 {isRegistrationEnabled && this.renderRegisterForm()}
               </div>
             </ReactCardFlip>
-
-            <a href="https://growi.org" className="link-growi-org pl-3">
-              <span className="growi">GROWI</span>.<span className="org">ORG</span>
-            </a>
           </div>
         </div>
+        <a href="https://growi.org" className="link-growi-org pl-3">
+          <span className="growi">GROWI</span>.<span className="org">ORG</span>
+        </a>
       </div>
     );
   }
