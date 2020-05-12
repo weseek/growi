@@ -34,7 +34,7 @@ module.exports = (options) => {
       'styles/style-presentation':    './src/client/styles/scss/style-presentation.scss',
       // themes
       'styles/theme-default':         './src/client/styles/scss/theme/default.scss',
-      // 'styles/theme-nature':          './src/client/styles/scss/theme/nature.scss',
+      'styles/theme-nature':          './src/client/styles/scss/theme/nature.scss',
       'styles/theme-mono-blue':       './src/client/styles/scss/theme/mono-blue.scss',
       // 'styles/theme-future':          './src/client/styles/scss/theme/future.scss',
       // 'styles/theme-blue-night':      './src/client/styles/scss/theme/blue-night.scss',
