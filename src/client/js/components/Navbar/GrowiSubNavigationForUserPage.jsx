@@ -15,7 +15,7 @@ import BookmarkButton from '../BookmarkButton';
 import UserPicture from '../User/UserPicture';
 
 // eslint-disable-next-line react/prop-types
-const RevisionPath = ({ pageId, pagePath }) => {
+const PagePathNav = ({ pageId, pagePath }) => {
   const linkedPagePath = new LinkedPagePath(pagePath);
   const latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />;
 
@@ -54,7 +54,7 @@ const GrowiSubNavigationForUserPage = (props) => {
 
   return (
     <div className={`px-3 ${additionalClassNames.join(' ')}`}>
-      <RevisionPath pageId={pageId} pagePath={path} />
+      <PagePathNav pageId={pageId} pagePath={path} />
 
       <div className="d-flex align-items-center justify-content-between">
 

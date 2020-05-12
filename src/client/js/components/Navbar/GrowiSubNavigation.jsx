@@ -22,7 +22,7 @@ import PageCreator from './PageCreator';
 import RevisionAuthor from './RevisionAuthor';
 
 // eslint-disable-next-line react/prop-types
-const RevisionPath = ({ pageId, pagePath, isPageForbidden }) => {
+const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
 
   const dPagePath = new DevidedPagePath(pagePath, false, true);
 
@@ -71,7 +71,7 @@ const GrowiSubNavigation = (props) => {
   if (isPageNotFound || isPageForbidden) {
     return (
       <div className="px-3 py-3 grw-subnavbar">
-        <RevisionPath pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
+        <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
       </div>
     );
   }
@@ -93,7 +93,7 @@ const GrowiSubNavigation = (props) => {
 
       {/* Page Path */}
       <div>
-        <RevisionPath pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
+        <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
         { !isPageNotFound && !isPageForbidden && (
           <TagLabels />
         ) }
