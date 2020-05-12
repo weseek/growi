@@ -90,6 +90,9 @@ const GrowiSubNavigation = (props) => {
           </div>
         ) }
         { !isPageInTrash && (
+          <div>
+            <BookmarkButton pageId={pageId} crowi={appContainer} />
+          </div>
         ) }
 
         {/* Page Authors */}
