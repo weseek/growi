@@ -17,7 +17,6 @@
   // add background-image
   #page-wrapper,
   .page-editor-preview-container {
-    // background-image: url('/images/themes/spring/spring02.svg');
     background-attachment: fixed;
     background-position: center center;
     background-size: cover;
@@ -26,20 +25,14 @@
 
 .growi.login-page {
   #page-wrapper {
-    // background-image: url('/images/themes/spring/spring.svg');
     background-attachment: fixed;
     background-position: center center;
     background-size: cover;
   }
 }
 
-$themecolor: #460039;
+$themecolor: #118050;
 $themelight: #fefffd;
-$accentcolor: #e08dbc;
-
-.grw-navbar {
-  border-bottom: $accentcolor 4px solid;
-}
 
 //== Light Mode
 //
@@ -61,11 +54,6 @@ html[dark] {
   $fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 30%), 20%);
   $color-link-wiki: lighten($bgcolor-theme, 20%);
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
-
-  // @import 'apply-colors';
-  // @import 'apply-colors-light';
-  /////////////////////////////////////// ////////
-  // $primary: $themecolor;
 
   // Background colors
   $bgcolor-global: $themelight;
@@ -98,7 +86,7 @@ html[dark] {
   $color-editor-icons: $color-global;
 
   // Border colors
-  $border-color-theme: #ccc; // former: `$navbar-border: #ccc;`
+  $border-color-theme: #ccc;
 
   // Dropdown colors
   $bgcolor-dropdown-link-active: $growi-blue;
