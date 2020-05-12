@@ -15,9 +15,6 @@ class CopyDropdown extends React.Component {
   constructor(props) {
     super(props);
 
-    // retrieve xss library from window
-    this.xss = window.xss;
-
     this.state = {
       dropdownOpen: false,
       tooltipOpen: false,
@@ -49,15 +46,23 @@ class CopyDropdown extends React.Component {
     return;
   }
 
-  render() {
-    const { t } = this.props;
+  DropdownItemContents = ({ title, contents }) => (
+    <>
+      <div className="h6 mt-1 mb-2"><strong>{title}</strong></div>
+      <div className="card well mb-1 p-2">{contents}</div>
+    </>
+  );
 
-    const safePagePath = this.xss.process(this.props.pagePath);
+  render() {
+    const { t, pagePath } = this.props;
+
     const url = this.generatePageUrl();
+
+    const { DropdownItemContents } = this;
 
     return (
       <>
-        <Dropdown id="copyPagePathDropdown" isOpen={this.state.dropdownOpen} toggle={this.toggle}>
+        <Dropdown id="copyPagePathDropdown" className="grw-copy-dropdown" isOpen={this.state.dropdownOpen} toggle={this.toggle}>
 
           <DropdownToggle
             caret
@@ -68,49 +73,46 @@ class CopyDropdown extends React.Component {
           </DropdownToggle>
 
           <DropdownMenu>
-            <h5 className="ml-3 my-0 text-muted">{ t('copy_to_clipboard.Copy to clipboard') }</h5>
-            <DropdownItem divider></DropdownItem>
+            <DropdownItem header className="px-3">{ t('copy_to_clipboard.Copy to clipboard') }</DropdownItem>
+
+            <DropdownItem divider className="my-0"></DropdownItem>
 
             {/* Page path */}
             <CopyToClipboard text={this.props.pagePath} onCopy={this.showToolTip}>
-              <DropdownItem tag="a">
-                <div className="d-inline-flex flex-column">
-                  <h6 className="mt-1 mb-2"><strong>{ t('copy_to_clipboard.Page path') }</strong></h6>
-                  <span className="small">{safePagePath}</span>
-                </div>
+              <DropdownItem className="px-3">
+                <DropdownItemContents title={t('copy_to_clipboard.Page path')} contents={pagePath} />
               </DropdownItem>
             </CopyToClipboard>
+
+            <DropdownItem divider className="my-0"></DropdownItem>
+
             {/* Parmanent Link */}
             { this.props.pageId && (
               <CopyToClipboard text={url} onCopy={this.showToolTip}>
-                <DropdownItem tag="a">
-                  <div className="d-inline-flex flex-column">
-                    <h6 className="mt-1 mb-2"><strong>{ t('copy_to_clipboard.Parmanent link') }</strong></h6>
-                    <span className="small">{url}</span>
-                  </div>
+                <DropdownItem className="px-3">
+                  <DropdownItemContents title={t('copy_to_clipboard.Parmanent link')} contents={url} />
                 </DropdownItem>
               </CopyToClipboard>
             )}
+
+            <DropdownItem divider className="my-0"></DropdownItem>
+
             {/* Page path + Parmanent Link */}
             { this.props.pageId && (
               <CopyToClipboard text={`${this.props.pagePath}\n${url}`} onCopy={this.showToolTip}>
-                <DropdownItem tag="a">
-                  <div className="d-inline-flex flex-column">
-                    <h6 className="mt-1 mb-2"><strong>{ t('copy_to_clipboard.Page path and parmanent link') }</strong></h6>
-                    <span className="small mb-3">{safePagePath}</span>
-                    <span className="small">{url}</span>
-                  </div>
+                <DropdownItem className="px-3">
+                  <DropdownItemContents title={t('copy_to_clipboard.Page path and parmanent link')} contents={<>{pagePath}<br />{url}</>} />
                 </DropdownItem>
               </CopyToClipboard>
             )}
+
+            <DropdownItem divider className="my-0"></DropdownItem>
+
             {/* Markdown Link */}
             { this.props.pageId && (
               <CopyToClipboard text={`[${this.props.pagePath}](${url})`} onCopy={this.showToolTip}>
-                <DropdownItem tag="a">
-                  <div className="d-inline-flex flex-column">
-                    <h6 className="mt-1 mb-2"><strong>{ t('copy_to_clipboard.Markdown link') }</strong></h6>
-                    <span className="small">{`[${safePagePath}](${url})`}</span>
-                  </div>
+                <DropdownItem className="px-3">
+                  <DropdownItemContents title={t('copy_to_clipboard.Markdown link')} contents={`[${pagePath}](${url})`} />
                 </DropdownItem>
               </CopyToClipboard>
             )}
