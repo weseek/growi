@@ -40,7 +40,7 @@ const GrowiSubNavigation = (props) => {
   );
 
   // Display only the RevisionPath
-  if (isPageNotFound || isPageForbidden || isPageInTrash) {
+  if (isPageNotFound || isPageForbidden) {
     return (
       <div className="px-3 py-3 grw-subnavbar">
         { renderFormerLink() }
@@ -83,13 +83,17 @@ const GrowiSubNavigation = (props) => {
       </div>
 
       <div className="d-flex align-items-center">
-        {/* Header Button */}
-        <div className="mr-2">
-          <LikeButton pageId={pageId} isLiked={pageContainer.state.isLiked} />
-        </div>
-        <div>
-          <BookmarkButton pageId={pageId} crowi={appContainer} />
-        </div>
+        { !isPageInTrash && (
+          /* Header Button */
+          <div className="mr-2">
+            <LikeButton pageId={pageId} isLiked={pageContainer.state.isLiked} />
+          </div>
+        ) }
+        { !isPageInTrash && (
+          <div>
+            <BookmarkButton pageId={pageId} crowi={appContainer} />
+          </div>
+        ) }
 
         {/* Page Authors */}
         <ul className="authors text-nowrap d-none d-lg-block d-edit-none">
