@@ -5,10 +5,6 @@ import { withTranslation } from 'react-i18next';
 
 import { isTrashPage } from '@commons/util/path-utils';
 
-// import DevidedPagePath from '@commons/models/devided-page-path';
-// import LinkedPagePath from '@commons/models/linked-page-path';
-// import PagePathHierarchicalLink from '@commons/components/PagePathHierarchicalLink';
-
 import CopyDropdown from './CopyDropdown';
 
 const RevisionPathControls = (props) => {
@@ -24,12 +20,8 @@ const RevisionPathControls = (props) => {
 
   const isPageInTrash = isTrashPage(pagePath);
 
-  // const dPagePath = new DevidedPagePath(props.pagePath, false, true);
-  // const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
-
   return (
     <>
-      {/* <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} /> */}
       <CopyDropdown pagePath={pagePath} pageId={pageId} buttonStyle={buttonStyle} />
       { !isPageInTrash && !isPageForbidden && (
         <a href="#edit" className="d-edit-none text-muted btn btn-secondary bg-transparent btn-edit border-0" style={buttonStyle}>
