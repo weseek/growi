@@ -1,8 +1,67 @@
-// import colors
-@import '../../agile-admin/inverse/colors/island';
+@import '../variables';
+@import '../override-bootstrap-variables';
 
-// apply agile-admin theme
-@import '../../agile-admin/inverse/style';
+$themecolor: #0c2a44;
+$themelight: rgba(183, 226, 219, 1);
 
-// override
-@import 'override-agileadmin';
+html[light],
+html[dark] {
+  $primary: $themecolor;
+
+  // Background colors
+  $bgcolor-global: lighten($themelight, 10%);
+  $bgcolor-navbar: $themecolor;
+  $bgcolor-inline-code: #f9f2f4;
+  $bgcolor-card: #f5f5f5;
+
+  // Font colors
+  $color-global: $themecolor;
+  $color-reversal: #eeeeee;
+  // $color-header: #2b2b2b;
+  $color-link: lighten($color-global, 20%);
+  $color-link-hover: lighten($color-link, 20%);
+  $color-link-wiki: lighten($primary, 20%);
+  $color-link-wiki-hover: lighten($color-link-wiki, 20%);
+  $color-link-nabvar: $color-reversal;
+  $color-inline-code: #c7254e;
+
+  // List Group colors
+  $color-list: $color-global;
+  $bgcolor-list: $bgcolor-global;
+  $color-list-active: $color-reversal;
+  $bgcolor-list-active: $primary;
+  $color-list-hover: $color-reversal;
+
+  // Logo colors
+  $bgcolor-logo: $bgcolor-navbar;
+  $fillcolor-logo-mark: lighten(desaturate($bgcolor-inline-code, 10%), 15%);
+
+  // Icon colors
+  $color-editor-icons: $color-global;
+
+  // Border colors
+  $border-color-theme: #ccc;
+
+  // Dropdown colors
+  $bgcolor-dropdown-link-active: $growi-blue;
+  $color-dropdown-link-active: $color-reversal;
+  $color-dropdown-link-hover: $color-global;
+
+  // alert
+  $color-alert: $color-reversal;
+
+  // badge
+  $color-badge: $color-reversal;
+
+  // Sidebar
+  $bgcolor-sidebar: $bgcolor-navbar;
+  $color-sidebar-context: $color-reversal;
+  $bgcolor-sidebar-context: lighten($bgcolor-navbar, 10%);
+
+  @import 'apply-colors';
+  @import 'apply-colors-light';
+
+  .table {
+    background-color: $themelight;
+  }
+}
