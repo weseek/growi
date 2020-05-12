@@ -1,8 +1,92 @@
-// import colors
-@import '../../agile-admin/inverse/colors/mono-blue';
+@import '../variables';
+@import '../override-bootstrap-variables';
 
-// apply agile-admin theme
-@import '../../agile-admin/inverse/style';
+$themecolor: #00587a;
+$themelight: #f7fbfd;
+$accentcolor: #16617d;
+$subthemecolor: #186718;
 
-// override
-@import 'override-agileadmin';
+$primary: $themecolor;
+// $secondary: red;
+
+html[light],
+html[dark] {
+  // Background colors
+  $bgcolor-global: $themelight;
+  $bgcolor-navbar: $themecolor;
+  $bgcolor-inline-code: lighten($subthemecolor, 70%);
+  $bgcolor-card: darken($themelight, 5%);
+
+  // Font colors
+  $color-global: $themecolor;
+  $color-reversal: #eee;
+  $color-link: lighten($primary, 5%);
+  $color-link-hover: lighten($color-link, 12%);
+  $color-link-wiki: lighten($primary, 20%);
+  $color-link-wiki-hover: lighten($color-link-wiki, 20%);
+  $color-link-nabvar: $color-reversal;
+  $color-inline-code: $subthemecolor;
+  $color-search: #c0d6df;
+
+
+  // List Group colors
+  $color-list: $color-global;
+  $bgcolor-list: transparent;
+  $color-list-active: $color-reversal;
+  $bgcolor-list-active: $primary;
+  $color-list-hover: $color-reversal;
+
+  // Logo colors
+  $bgcolor-logo: $themecolor;
+  $fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 30%), 20%);
+
+  // Icon colors
+  $color-editor-icons: $color-global;
+
+  // Border colors
+  $border-color-theme: #ccc;
+
+  // Dropdown colors
+  $bgcolor-dropdown-link-active: $primary;
+  $color-dropdown-link-active: $color-reversal;
+
+  // alert
+  $color-alert: $color-reversal;
+
+  // badge
+  $color-badge: $color-reversal;
+
+  // Sidebar
+  $bgcolor-sidebar: $bgcolor-navbar;
+  $color-sidebar-context: $color-reversal;
+  $bgcolor-sidebar-context: lighten($bgcolor-sidebar, 10%);
+
+
+  @import 'apply-colors';
+  @import 'apply-colors-light';
+
+  // Navs {
+  .nav-tabs {
+    border-bottom: $border-color-theme 1px solid;
+    .nav-link {
+      &:hover {
+        border-color: lighten($border-color-theme, 10%);
+        border-bottom: none;
+      }
+      &.active {
+        background-color: transparent;
+      }
+    }
+  }
+
+  // Search Top
+  .search-top {
+    .input-group-prepend .dropdown-toggle {
+      color: $themecolor;
+      background-color: $color-search;
+      &:hover {
+        background-color: darken($color-search, 10%);
+      }
+    }
+  }
+}
