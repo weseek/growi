@@ -43,7 +43,7 @@ const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
   }
 
   return (
-    <>
+    <div className="grw-page-path-nav">
       {formerLink}
       <span className="d-flex align-items-center flex-wrap">
         <h1 className="m-0">{latterLink}</h1>
@@ -53,7 +53,7 @@ const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
           isPageForbidden={isPageForbidden}
         />
       </span>
-    </>
+    </div>
   );
 };
 

@@ -20,13 +20,15 @@ const PagePathNav = ({ pageId, pagePath }) => {
   const latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />;
 
   return (
-    <span className="d-flex align-items-center flex-wrap">
-      <h4 className="grw-user-page-path">{latterLink}</h4>
-      <RevisionPathControls
-        pageId={pageId}
-        pagePath={pagePath}
-      />
-    </span>
+    <div className="grw-page-path-nav">
+      <span className="d-flex align-items-center flex-wrap">
+        <h4 className="grw-user-page-path">{latterLink}</h4>
+        <RevisionPathControls
+          pageId={pageId}
+          pagePath={pagePath}
+        />
+      </span>
+    </div>
   );
 };
 
