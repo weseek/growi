@@ -21,6 +21,42 @@ import BookmarkButton from '../BookmarkButton';
 import PageCreator from './PageCreator';
 import RevisionAuthor from './RevisionAuthor';
 
+// eslint-disable-next-line react/prop-types
+const RevisionPath = ({ pageId, pagePath, isPageForbidden }) => {
+
+  const dPagePath = new DevidedPagePath(pagePath, false, true);
+
+  let formerLink;
+  let latterLink;
+
+  // when the path is root or first level
+  if (dPagePath.isRoot || dPagePath.isFormerRoot) {
+    const linkedPagePath = new LinkedPagePath(pagePath);
+    latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />;
+  }
+  // when the path is second level or deeper
+  else {
+    const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
+    const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
+    formerLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} />;
+    latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} />;
+  }
+
+  return (
+    <>
+      {formerLink}
+      <span className="d-flex align-items-center flex-wrap">
+        <h1 className="m-0">{latterLink}</h1>
+        <RevisionPathControls
+          pageId={pageId}
+          pagePath={pagePath}
+          isPageForbidden={isPageForbidden}
+        />
+      </span>
+    </>
+  );
+};
+
 const GrowiSubNavigation = (props) => {
   const isPageForbidden = document.querySelector('#grw-subnav').getAttribute('data-is-forbidden-page') === 'true';
   const { appContainer, pageContainer } = props;
@@ -31,28 +67,11 @@ const GrowiSubNavigation = (props) => {
   const isPageNotFound = pageId == null;
   const isPageInTrash = isTrashPage(path);
 
-  const dPagePath = new DevidedPagePath(path, false, true);
-  const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
-  const renderFormerLink = () => (
-    <>
-      { !dPagePath.isRoot && <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} /> }
-    </>
-  );
-
   // Display only the RevisionPath
   if (isPageNotFound || isPageForbidden) {
     return (
       <div className="px-3 py-3 grw-subnavbar">
-        { renderFormerLink() }
-        <span className="d-flex align-items-center flex-wrap">
-          <h1 className="m-0">
-          </h1>
-          <RevisionPathControls
-            pageId={pageId}
-            pagePath={pageContainer.state.path}
-            isPageForbidden={isPageForbidden}
-          />
-        </span>
+        <RevisionPath pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
       </div>
     );
   }
@@ -74,12 +93,7 @@ const GrowiSubNavigation = (props) => {
 
       {/* Page Path */}
       <div>
-        { renderFormerLink() }
-        <span className="d-flex align-items-center flex-wrap">
-          <h1 className="m-0">
-          </h1>
-          <RevisionPathControls pageId={pageId} pagePath={pageContainer.state.path} />
-        </span>
+        <RevisionPath pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
         { !isPageNotFound && !isPageForbidden && (
           <TagLabels />
         ) }

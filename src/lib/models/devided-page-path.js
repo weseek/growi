@@ -10,6 +10,7 @@ export default class DevidedPagePath {
   constructor(path, skipNormalize = false, evalDatePath = false) {
 
     this.isRoot = false;
+    this.isFormerRoot = false;
     this.former = null;
     this.latter = null;
 
@@ -35,6 +36,7 @@ export default class DevidedPagePath {
 
     const matchDefault = pagePath.match(PATTERN_DEFAULT);
     if (matchDefault != null) {
+      this.isFormerRoot = matchDefault[1] === '/';
       this.former = matchDefault[2];
       this.latter = matchDefault[3];
     }
