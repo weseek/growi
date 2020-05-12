@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
+import LinkedPagePath from '@commons/models/linked-page-path';
+import PagePathHierarchicalLink from '@commons/components/PagePathHierarchicalLink';
+
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
@@ -11,10 +14,28 @@ import RevisionPathControls from '../Page/RevisionPathControls';
 import BookmarkButton from '../BookmarkButton';
 import UserPicture from '../User/UserPicture';
 
+// eslint-disable-next-line react/prop-types
+const RevisionPath = ({ pageId, pagePath }) => {
+  const linkedPagePath = new LinkedPagePath(pagePath);
+  const latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />;
+
+  return (
+    <span className="d-flex align-items-center flex-wrap">
+      <h4 className="grw-user-page-path">{latterLink}</h4>
+      <RevisionPathControls
+        pageId={pageId}
+        pagePath={pagePath}
+      />
+    </span>
+  );
+};
+
 const GrowiSubNavigationForUserPage = (props) => {
   const pageUser = JSON.parse(document.querySelector('#grw-subnav-for-user-page').getAttribute('data-page-user'));
   const { appContainer, pageContainer } = props;
-  const { pageId, isHeaderSticky, isSubnavCompact } = pageContainer.state;
+  const {
+    pageId, path, isHeaderSticky, isSubnavCompact,
+  } = pageContainer.state;
 
   const additionalClassNames = ['grw-subnavbar', 'grw-subnavbar-user-page'];
   const layoutType = appContainer.getConfig().layoutType;
@@ -33,9 +54,7 @@ const GrowiSubNavigationForUserPage = (props) => {
 
   return (
     <div className={`px-3 ${additionalClassNames.join(' ')}`}>
-      <h4 className="grw-user-page-path">
-        <RevisionPathControls pageId={pageId} pagePath={pageContainer.state.path} />
-      </h4>
+      <RevisionPath pageId={pageId} pagePath={path} />
 
       <div className="d-flex align-items-center justify-content-between">
 
