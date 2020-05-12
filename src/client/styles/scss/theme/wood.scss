@@ -36,11 +36,6 @@ $themecolor: #aaa45f;
 $themelight: #f5f3ee;
 $accentcolor: #577254;
 
-.grw-navbar {
-  border-bottom: $accentcolor 4px solid;
-  background-image: url('/images/themes/wood/wood-navbar.jpg') !important;
-}
-
 //== Light Mode
 //
 html[light],
@@ -103,6 +98,12 @@ html[dark] {
 
   .table {
     background-color: $themelight;
+  }
+
+  .grw-navbar {
+    background-image: url('/images/themes/wood/wood-navbar.jpg');
+    border-bottom: $accentcolor 4px solid;
+
   }
 }
 
