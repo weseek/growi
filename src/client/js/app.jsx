@@ -101,7 +101,7 @@ if (pageContainer.state.path != null) {
   Object.assign(componentMappings, {
     // eslint-disable-next-line quote-props
     'page': <Page />,
-    'revision-path': <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageContainer.state.pageId} pagePath={pageContainer.state.path} />,
+    'revision-path': <RevisionPath pageId={pageContainer.state.pageId} pagePath={pageContainer.state.path} />,
     'tag-label': <TagLabels />,
     'grw-subnav': <GrowiSubNavigation />,
     'grw-subnav-for-user-page': <GrowiSubNavigationForUserPage />,
