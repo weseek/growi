@@ -1,8 +1,232 @@
-// import colors
-@import '../../agile-admin/inverse/colors/christmas';
+@import '../variables';
+@import '../override-bootstrap-variables';
 
-// apply agile-admin theme
-@import '../../agile-admin/inverse/style';
+// == Define Bootstrap theme colors
+//
 
-// override
-@import 'override-agileadmin';
+// colors for overriding bootstrap $theme-colors
+// $secondary: #;
+// $info: #;
+// $success: #;
+// $warning: #;
+// $danger: #;
+// $light: #;
+// $dark: #;
+$themecolor: #b3000c;
+$themelight: white;
+
+$bgcolor-theme: #b3000c;
+$themelight: white;
+$subthemecolor: #017e20;
+$bgcolor-navbar: $bgcolor-theme;
+$bgcolor-global: $themelight;
+$bgcolor-global: $themelight;
+$color-header: $subthemecolor;
+$color-global: black;
+$linktext: lighten(#0d5901, 5%);
+$linktext-hover: lighten($linktext, 12%);
+$sidebar-text: #ffffff;
+$primary: $bgcolor-theme;
+$fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 50%), 50%);
+$color-link-wiki: lighten($bgcolor-theme, 5%);
+$color-link-wiki-hover: lighten($color-link-wiki, 15%);
+$color-inline-code: darken($subthemecolor, 5%);
+$bgcolor-inline-code: lighten($subthemecolor, 70%);
+$border: $subthemecolor;
+$border-original: $border;
+
+$navbar-border: $bgcolor-theme;
+$active-nav-tabs-bgcolor: white;
+
+.growi:not(.login-page) {
+  // add background-image
+  #page-wrapper,
+  .page-editor-preview-container {
+    background-image: url('/images/themes/christmas/christmas.jpg');
+    background-attachment: fixed;
+    background-position: center center;
+    background-size: cover;
+  }
+}
+
+//== Light Mode
+//
+html[light],
+html[dark] {
+  $primary: $themecolor;
+
+  // Background colors
+  $bgcolor-global: $themelight;
+  $bgcolor-navbar: $themecolor;
+  $bgcolor-inline-code: #f9f2f4;
+  $bgcolor-card: #f5f5f5;
+
+  // Font colors
+  $color-global: $subthemecolor;
+  $color-reversal: #eeeeee;
+  // $color-header: #2b2b2b;
+  $color-link: lighten($color-global, 2%);
+  $color-link-hover: lighten($color-link, 20%);
+  $color-link-wiki: lighten($primary, 20%);
+  $color-link-wiki-hover: lighten($color-link-wiki, 20%);
+  $color-link-nabvar: $color-reversal;
+  $color-inline-code: #c7254e;
+
+  // List Group colors
+  $color-list: $color-global;
+  $bgcolor-list: $bgcolor-global;
+  $color-list-active: $color-reversal;
+  $bgcolor-list-active: $primary;
+  $color-list-hover: $color-reversal;
+
+  // Logo colors
+  $bgcolor-logo: $bgcolor-navbar;
+  $fillcolor-logo-mark: lighten(desaturate($bgcolor-inline-code, 10%), 15%);
+
+  // Icon colors
+  $color-editor-icons: $color-global;
+
+  // Border colors
+  $border-color-theme: #ccc; // former: `$navbar-border: #ccc;`
+
+  // Dropdown colors
+  $bgcolor-dropdown-link-active: $growi-blue;
+  $color-dropdown-link-active: $color-reversal;
+  $color-dropdown-link-hover: $color-global;
+
+  // alert
+  $color-alert: $color-reversal;
+
+  // badge
+  $color-badge: $color-reversal;
+
+  // Sidebar
+  $bgcolor-sidebar: $bgcolor-navbar;
+  $color-sidebar-context: $color-reversal;
+  $bgcolor-sidebar-context: lighten($bgcolor-navbar, 10%);
+
+  @import 'apply-colors';
+  @import 'apply-colors-light';
+
+  .grw-navbar {
+    background-image: url('/images/themes/christmas/christmas-navbar.jpg');
+    border-bottom: 4px solid $subthemecolor;
+  }
+
+  .grw-subnav {
+    background-color: #ffffff;
+  }
+
+  .nav-tabs {
+    border-bottom-color: $bgcolor-theme;
+  }
+
+  .nav-link {
+    border-color: $bgcolor-theme;
+  }
+
+  .nav-tabs .nav-link.active {
+    background: none;
+    border-color: $bgcolor-theme;
+  }
+
+  .search-top .dropdown-toggle {
+    color: black;
+    background-color: hsla(0,0%,100%,.8);
+  }
+}
+
+// change color of highlighted header in wiki (default: orange)
+.wiki {
+  .code-line.revision-head.highlighted {
+    color: $themelight;
+    background-color: lighten($bgcolor-theme, 20%);
+
+    .icon-note,
+    .icon-link {
+      color: $themelight;
+    }
+  }
+}
+
+.sidebar {
+  background: $bgcolor-theme;
+}
+
+.rbt-menu {
+  background: $themelight;
+}
+
+#wrapper > #page-wrapper,
+.page-editor-preview-container {
+  background-image: url('/images/themes/christmas/christmas.jpg');
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+/*
+ * Tabs
+ */
+body:not(.on-edit) .nav.nav-tabs {
+  > li.active > a {
+    background: linear-gradient(
+      rgba($active-nav-tabs-bgcolor, 0) 0%,
+      rgba($active-nav-tabs-bgcolor, 0) 90%,
+      $active-nav-tabs-bgcolor 100%
+    ); // overwrite only the bottom pixel
+  }
+}
+
+// login page
+.nologin {
+  .input-group {
+    .input-group-addon {
+      background-color: rgba(lighten(black, 10%), 0.6);
+    }
+    .form-control {
+      background-color: rgba(lighten(black, 10%), 0.6);
+    }
+  }
+
+  &.login-page {
+    .login-header,
+    .login-dialog {
+      background-color: rgba(#ccc, 0.5);
+    }
+    .link-switch {
+      color: #bd3425;
+    }
+  }
+}
+
+/*
+ * Modal
+ */
+.modal-dialog .modal-header.bg-primary {
+  background-image: url('/images/themes/christmas/christmas-navbar.jpg');
+  border-bottom: 2px solid $subthemecolor;
+}
+
+/*
+ * Panel
+ */
+.panel {
+  &.panel-white,
+  &.panel-default {
+    border-color: $border-original;
+    .panel-heading {
+      color: $dark;
+      background-color: $border-original;
+      border-bottom: 1px solid $border-original;
+    }
+  }
+}
+
+.panel.panel-primary {
+  border-color: #bd3425;
+  .panel-heading {
+    color: white;
+    background-color: $bgcolor-theme;
+    background-image: url('/images/themes/christmas/christmas-navbar.jpg');
+  }
+}
