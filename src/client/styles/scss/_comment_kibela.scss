@@ -69,6 +69,7 @@
     // コメントセクション
     .page-comment-main {
       @extend %comment-section;
+      margin-left: 4.5em !important;
       background: #e6e9ec;
       border-radius: 0.35em;
     }
