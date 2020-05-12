@@ -273,6 +273,8 @@
     z-index: 2;
   }
 
+  // To adjust the behavior, this problem is not solved.
+  // See https://github.com/AaronCCWong/react-card-flip/issues/56
   .react-card-front,
   .react-card-back {
     height: 0% !important;
