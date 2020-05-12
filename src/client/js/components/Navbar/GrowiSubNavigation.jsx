@@ -40,7 +40,7 @@ const GrowiSubNavigation = (props) => {
   );
 
   // Display only the RevisionPath
-  if (isPageNotFound || isPageForbidden || isPageInTrash) {
+  if (isPageNotFound || isPageForbidden) {
     return (
       <div className="px-3 py-3 grw-subnavbar">
         { renderFormerLink() }
