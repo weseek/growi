@@ -31,7 +31,7 @@ const GrowiSubNavigation = (props) => {
   const isPageNotFound = pageId == null;
   const isPageInTrash = isTrashPage(path);
 
-  const dPagePath = new DevidedPagePath(pageContainer.state.path, false, true);
+  const dPagePath = new DevidedPagePath(path, false, true);
   const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
   const renderFormerLink = () => (
     <>
@@ -49,7 +49,6 @@ const GrowiSubNavigation = (props) => {
             pageId={pageId}
             pagePath={pageContainer.state.path}
             isPageForbidden={isPageForbidden}
-            isPageInTrash={isPageInTrash}
           />
         </h1>
       </div>
