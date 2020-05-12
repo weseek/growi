@@ -24,6 +24,11 @@ body.on-edit {
     }
   }
 
+  // show
+  .d-edit-block {
+    display: block !important;
+  }
+
   // hide unnecessary elements
   header,
   footer,
@@ -63,11 +68,6 @@ body.on-edit {
     }
   }
 
-  // show revision path
-  .grw-revision-path-for-edit {
-    display: block !important;
-  }
-
   /*****************
    * Expand Editor
    *****************/
@@ -93,24 +93,21 @@ body.on-edit {
       padding: 0; //    for crowi layout
       pointer-events: initial; // enable pointer-events
     }
+  }
 
-    h1#revision-path {
-      @include variable-font-size(20px);
+  .grw-page-path-nav-for-edit {
+    .grw-page-path-link {
+      font-size: 20px;
       line-height: 1em;
-
-      // nowrap even if the path is too long
-      .d-flex {
-        flex-wrap: nowrap;
       }
-
-      .path-segment {
-        white-space: nowrap;
+    .separator {
+      margin-right: 0.1em;
+      margin-left: 0.1em;
       }
     }
 
-    .tag-labels.new-page {
-      display: block;
-    }
+  .tag-labels {
+    line-height: 1em;
   }
 
   .page-editor-footer {
