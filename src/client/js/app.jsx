@@ -8,6 +8,7 @@ import loggerFactory from '@alias/logger';
 import SearchPage from './components/SearchPage';
 import TagsList from './components/TagsList';
 import PageEditor from './components/PageEditor';
+import PagePathNavForEditor from './components/PageEditor/PagePathNavForEditor';
 // eslint-disable-next-line import/no-duplicates
 import OptionsSelector from './components/PageEditor/OptionsSelector';
 // eslint-disable-next-line import/no-duplicates
@@ -21,8 +22,6 @@ import PageTimeline from './components/PageTimeline';
 import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
 import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
-import RevisionPath from './components/Page/RevisionPath';
-import TagLabels from './components/Page/TagLabels';
 import PagePathAutoComplete from './components/PagePathAutoComplete';
 import RecentCreated from './components/RecentCreated/RecentCreated';
 import MyDraftList from './components/MyDraftList/MyDraftList';
@@ -71,6 +70,7 @@ Object.assign(componentMappings, {
   'create-page-name-input': <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} addTrailingSlash />,
 
   'page-editor': <PageEditor />,
+  'page-editor-path-nav': <PagePathNavForEditor />,
   'page-editor-options-selector': <OptionsSelector crowi={appContainer} />,
   'page-status-alert': <PageStatusAlert />,
   'save-page-controls': <SavePageControls />,
@@ -101,8 +101,6 @@ if (pageContainer.state.path != null) {
   Object.assign(componentMappings, {
     // eslint-disable-next-line quote-props
     'page': <Page />,
-    'revision-path': <RevisionPath pageId={pageContainer.state.pageId} pagePath={pageContainer.state.path} />,
-    'tag-label': <TagLabels />,
     'grw-subnav': <GrowiSubNavigation />,
     'grw-subnav-for-user-page': <GrowiSubNavigationForUserPage />,
   });
