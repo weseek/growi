@@ -36,7 +36,7 @@ class GrantSelector extends React.Component {
       },
       // { grant: 3, iconClass: '', label: 'Specified users only' },
       {
-        grant: 4, iconClass: 'icon-lock', styleClass: 'text-danger', label: 'Just me',
+        grant: 4, iconClass: 'icon-lock', styleClass: 'text-danger', label: 'Only me',
       },
       {
         grant: 5, iconClass: 'icon-options', styleClass: '', label: 'Only inside the group',

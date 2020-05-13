@@ -39,13 +39,13 @@ class NotificationSetting extends React.Component {
         <div className="notification-settings">
           <ul className="nav nav-tabs" role="tablist">
             <li className="active">
-              <a href="#slack-configuration" data-toggle="tab" role="tab"><i className="icon-settings"></i> Slack Configuration</a>
+              <a href="#slack-configuration" data-toggle="tab" role="tab"><i className="icon-settings"></i> Slack configuration</a>
             </li>
             <li>
-              <a href="#user-trigger-notification" data-toggle="tab" role="tab"><i className="icon-settings"></i> User Trigger Notification</a>
+              <a href="#user-trigger-notification" data-toggle="tab" role="tab"><i className="icon-settings"></i> User trigger notification</a>
             </li>
             <li>
-              <a href="#global-notification" data-toggle="tab" role="tab"><i className="icon-settings"></i> Global Notification</a>
+              <a href="#global-notification" data-toggle="tab" role="tab"><i className="icon-settings"></i> Global notification</a>
             </li>
           </ul>
           <div className="tab-content m-t-15">
