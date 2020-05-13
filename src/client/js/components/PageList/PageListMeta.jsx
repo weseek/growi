@@ -8,10 +8,10 @@ export default class PageListMeta extends React.Component {
   render() {
     const { page } = this.props;
 
-    // portal check
-    let portalLabel;
+    // top check
+    let topLabel;
     if (isTopPage(page.path)) {
-      portalLabel = <span className="badge badge-info">PORTAL</span>;
+      topLabel = <span className="badge badge-info">PORTAL</span>;
     }
 
     // template check
@@ -37,7 +37,7 @@ export default class PageListMeta extends React.Component {
 
     return (
       <span className="page-list-meta">
-        {portalLabel}
+        {topLabel}
         {templateLabel}
         {commentCount}
         {likerCount}
