@@ -2,8 +2,11 @@
 .staff-credit {
   // attached !important for updating from .modal-dialog class style
   width: 80vw !important;
-  height: 80vh !important;
   max-width: initial !important;
+  height: 80vh !important;
+
+  font-family: 'Press Start 2P', $font-family-for-staff-credit;
+  color: white;
   // see https://css-tricks.com/old-timey-terminal-styling/
   @mixin old-timey-terminal-styling() {
     text-shadow: 0 0 10px #c8c8c8;
@@ -11,16 +14,13 @@
     background-image: radial-gradient(rgba(50, 100, 100, 0.75), black 120%);
   }
 
-  font-family: 'Press Start 2P', $basefont1;
-  color: white;
-
   h1,
   h2,
   h3,
   h4,
   h5,
   h6 {
-    font-family: 'Press Start 2P', $basefont1;
+    font-family: 'Press Start 2P', $font-family-for-staff-credit;
     color: white;
   }
 
