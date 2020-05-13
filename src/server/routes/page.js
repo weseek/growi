@@ -418,15 +418,11 @@ module.exports = function(crowi, app) {
   };
 
   /**
-   * switch action by behaviorType
+   * Redirect to the page without trailing slash
    */
-  /* eslint-disable no-else-return */
   actions.showPageWithEndOfSlash = function(req, res, next) {
-    const path = getPathFromRequest(req); // end of slash should be omitted
-    // redirect and showPage action will be triggered
-    return res.redirect(path);
+    return res.redirect(pathUtils.removeTrailingSlash(req.path));
   };
-  /* eslint-enable no-else-return */
 
   /**
    * switch action
