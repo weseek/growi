@@ -1,6 +1,6 @@
 .nologin {
   $gray-800-for-login: darken(white, 30%);
-  $color-gradient: #3e4d6c !default;
+  $color-gradient: #3e4d6c;
 
   // background color
   background: linear-gradient(45deg, darken($color-gradient, 30%) 0%, hsla(340, 100%, 55%, 0) 70%),
