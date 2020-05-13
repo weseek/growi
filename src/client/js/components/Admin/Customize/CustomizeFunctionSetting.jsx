@@ -15,7 +15,7 @@ import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import CustomizeFunctionOption from './CustomizeFunctionOption';
 
-class CustomizeBehaviorSetting extends React.Component {
+class CustomizeFunctionSetting extends React.Component {
 
   constructor(props) {
     super(props);
@@ -173,14 +173,14 @@ class CustomizeBehaviorSetting extends React.Component {
 
 }
 
-const CustomizeBehaviorSettingWrapper = (props) => {
-  return createSubscribedElement(CustomizeBehaviorSetting, props, [AppContainer, AdminCustomizeContainer]);
+const CustomizeFunctionSettingWrapper = (props) => {
+  return createSubscribedElement(CustomizeFunctionSetting, props, [AppContainer, AdminCustomizeContainer]);
 };
 
-CustomizeBehaviorSetting.propTypes = {
+CustomizeFunctionSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
 };
 
-export default withTranslation()(CustomizeBehaviorSettingWrapper);
+export default withTranslation()(CustomizeFunctionSettingWrapper);

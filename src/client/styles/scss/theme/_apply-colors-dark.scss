@@ -1,18 +1,4 @@
 /*
- * Button
- */
-.btn-light {
-  &:hover,
-  &:focus,
-  &.active,
-  &.active:hover,
-  &.active:focus {
-    color: $light;
-    background-color: lighten($bgcolor-global, 5%);
-  }
-}
-
-/*
   * Form
   */
 input.form-control,

@@ -24,10 +24,6 @@
       }
     }
   }
-
-  .tag-labels.new-page {
-    display: none;
-  }
 }
 
 .main .content-main .revision-history {
@@ -35,7 +31,7 @@
     .revision-history-outer {
       // add border-top except of first element
       &:not(:first-of-type) {
-        border-top: 1px solid $border;
+        @extend .border-top;
       }
 
       .revision-history-main {
@@ -136,15 +132,6 @@
     z-index: 14;
     font-size: 12px;
     line-height: 1;
-    color: $linktext;
-    background-color: transparent;
-    border: 1px solid $linktext;
-    opacity: 1;
-
-    &:hover {
-      color: $white;
-      background-color: $linktext;
-    }
   }
 }
 
