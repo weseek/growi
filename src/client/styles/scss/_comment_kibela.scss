@@ -3,11 +3,6 @@
   %comment-section {
     position: relative;
     padding: 1em;
-    margin-left: 4.5em;
-
-    @include media-breakpoint-down(xs) {
-      margin-left: 3.5em;
-    }
 
     // speech balloon
     &:before {
@@ -69,7 +64,7 @@
     // コメントセクション
     .page-comment-main {
       @extend %comment-section;
-      margin-left: 4.5em !important;
+      margin-left: 4.5em;
       background: #e6e9ec;
       border-radius: 0.35em;
     }
@@ -124,6 +119,10 @@
     // seciton
     .comment-form-main {
       @extend %comment-section;
+      margin-left: 4.5em;
+      @include media-breakpoint-down(xs) {
+        margin-left: 3.5em;
+      }
       background: #e6e9ec;
       border-radius: 0.35em;
       .CodeMirror {
