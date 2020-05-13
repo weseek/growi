@@ -6,6 +6,7 @@ import Xss from '@commons/service/xss';
 import HeaderSearchBox from './components/HeaderSearchBox';
 import PersonalDropdown from './components/Navbar/PersonalDropdown';
 import StaffCredit from './components/StaffCredit/StaffCredit';
+import MirrorMode from './components/MirrorMode/MirrorMode';
 
 import AppContainer from './services/AppContainer';
 import WebsocketContainer from './services/WebsocketContainer';
@@ -39,8 +40,8 @@ const componentMappings = {
   'search-top': <HeaderSearchBox />,
   'search-sidebar': <HeaderSearchBox crowi={appContainer} />,
   'personal-dropdown': <PersonalDropdown />,
-
   'staff-credit': <StaffCredit />,
+  'mirror-mode': <MirrorMode />
 };
 
 export { appContainer, componentMappings };

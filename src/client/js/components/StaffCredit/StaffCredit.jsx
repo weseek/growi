@@ -30,6 +30,7 @@ export default class StaffCredit extends React.Component {
 
   check(event) {
     this.logger.debug(`'${event.key}' pressed`);
+    console.log(`'${event.key}' pressed`);
 
     // compare keydown and next konamiCommand
     if (this.konamiCommand[this.state.userCommand.length] === event.key) {

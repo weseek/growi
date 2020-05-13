@@ -60,7 +60,7 @@
 {% endblock %}
 
 {% block html_body %}
-<body
+<body id ="growi_main-container"
   class="main-container content-wrapper {% block html_base_css %}{% endblock %}
       {% if !getConfig('crowi', 'customize:layout') || 'crowi' === getConfig('crowi', 'customize:layout') %}crowi{% elseif !getConfig('crowi', 'customize:layout') || 'kibela' === getConfig('crowi', 'customize:layout') %}kibela{% else %}growi{% endif %}"
   data-is-admin="{{ user.admin }}"
@@ -184,6 +184,7 @@
 
 <!-- /#staff-credit -->
 <div id="staff-credit"></div>
+<div id="mirror-mode"></div>
 
 {% include '../modal/shortcuts.html' %}
 
