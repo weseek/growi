@@ -41,7 +41,7 @@ const componentMappings = {
   'search-sidebar': <HeaderSearchBox crowi={appContainer} />,
   'personal-dropdown': <PersonalDropdown />,
   'staff-credit': <StaffCredit />,
-  'mirror-mode': <MirrorMode />
+  'mirror-mode': <MirrorMode />,
 };
 
 export { appContainer, componentMappings };

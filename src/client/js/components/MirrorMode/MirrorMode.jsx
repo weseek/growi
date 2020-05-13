@@ -22,8 +22,7 @@ export default class MirrorMode extends React.Component {
       isShown: false,
       userCommand: [],
     };
-    this.konamiCommand = ['x','x','y','y'];
-    // this.deleteMirror = this.deleteMirror.bind(this);
+    this.konamiCommand = ['x', 'x', 'y', 'y'];
   }
 
   checkMirror(event) {
@@ -48,32 +47,22 @@ export default class MirrorMode extends React.Component {
     else {
       this.setState({ userCommand: [] });
     }
-    console.log(`${this.state.isShown}`)
+    console.log(`${this.state.isShown}`);
   }
 
-//   deleteMirror() {
-//     if (this.state.isShown) {
-//       this.setState({ isShown: false });
-//     }
-//   }
-
-
   renderMirrors() {
-    let changeId = document.getElementById('growi_main-container');
+    const changeId = document.getElementById('growi_main-container');
     if (this.state.isShown) {
-        changeId.classList.add('reverse');
-        // changeId.addEventListener('click',this.deleteMirror,false);
+      changeId.classList.add('reverse');
     }
-    else{
-        if(changeId.classList.contains('reverse')){
-            changeId.classList.remove('reverse');
-        };
-    };
+    else if (changeId.classList.contains('reverse')) {
+      changeId.classList.remove('reverse');
+    }
     return null;
   }
 
   render() {
-    const keyMap = { checkMirror: ['x', 'y', 'a', 'b', 'down', 'left']};
+    const keyMap = { checkMirror: ['x', 'y', 'a', 'b', 'down', 'left'] };
     const handlers = { checkMirror: (event) => { return this.checkMirror(event) } };
     return (
       <GlobalHotKeys keyMap={keyMap} handlers={handlers}>
