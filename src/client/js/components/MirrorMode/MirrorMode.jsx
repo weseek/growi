@@ -23,7 +23,7 @@ export default class MirrorMode extends React.Component {
       userCommand: [],
     };
     this.konamiCommand = ['x','x','y','y'];
-    // this.deleteMirror = this.deleteMirror.bind(this);
+    this.deleteMirror = this.deleteMirror.bind(this);
   }
 
   checkMirror(event) {
@@ -51,18 +51,18 @@ export default class MirrorMode extends React.Component {
     console.log(`${this.state.isShown}`)
   }
 
-//   deleteMirror() {
-//     if (this.state.isShown) {
-//       this.setState({ isShown: false });
-//     }
-//   }
+  deleteMirror() {
+    if (this.state.isShown) {
+      this.setState({ isShown: false });
+    }
+  }
 
 
   renderMirrors() {
     let changeId = document.getElementById('growi_main-container');
     if (this.state.isShown) {
         changeId.classList.add('reverse');
-        // changeId.addEventListener('click',this.deleteMirror,false);
+        changeId.addEventListener('click',this.deleteMirror,false);
     }
     else{
         if(changeId.classList.contains('reverse')){
