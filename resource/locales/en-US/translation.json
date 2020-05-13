@@ -200,6 +200,7 @@
   "copy_to_clipboard": {
     "Copy to clipboard": "Copy to clipboard",
     "Page path": "Page path",
+    "Page URL": "Page URL",
     "Parmanent link": "Parmanent link",
     "Page path and parmanent link": "Page path and parmanent link",
     "Markdown link": "Markdown link"

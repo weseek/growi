@@ -22,7 +22,10 @@ class CopyDropdown extends React.Component {
 
     this.toggle = this.toggle.bind(this);
     this.showToolTip = this.showToolTip.bind(this);
-    this.generatePageUrl = this.generatePageUrl.bind(this);
+    this.generatePagePathWithParams = this.generatePagePathWithParams.bind(this);
+    this.generatePagePathUrl = this.generatePagePathUrl.bind(this);
+    this.generatePermalink = this.generatePermalink.bind(this);
+    this.generateMarkdownLink = this.generateMarkdownLink.bind(this);
   }
 
   toggle() {
@@ -36,14 +39,44 @@ class CopyDropdown extends React.Component {
     }, 1000);
   }
 
-  generatePageUrl() {
-    return (this.props.pageId == null)
-      ? decodeURIComponent(window.location.pathname + window.location.search)
-      : `${window.location.origin}/${this.props.pageId}`;
+  generatePagePathWithParams() {
+    const { pagePath } = this.props;
+    const {
+      search, hash,
+    } = window.location;
+
+    return decodeURI(`${pagePath}${search}${hash}`);
+  }
+
+  generatePagePathUrl() {
+    const { origin } = window.location;
+    return `${origin}${this.generatePagePathWithParams()}`;
+  }
+
+  generatePermalink() {
+    const { pageId } = this.props;
+    const { location } = window;
+
+    if (pageId == null) {
+      return null;
+    }
+
+    const {
+      origin, search, hash,
+    } = location;
+    return decodeURI(`${origin}/${pageId}${search}${hash}`);
   }
 
   generateMarkdownLink() {
-    return;
+    const { pagePath } = this.props;
+    const {
+      search, hash,
+    } = window.location;
+
+    const label = `${pagePath}${search}${hash}`;
+    const permalink = this.generatePermalink();
+
+    return decodeURI(`[${label}](${permalink})`);
   }
 
   DropdownItemContents = ({ title, contents }) => (
@@ -54,9 +87,11 @@ class CopyDropdown extends React.Component {
   );
 
   render() {
-    const { t, pagePath } = this.props;
+    const { t, pageId } = this.props;
 
-    const url = this.generatePageUrl();
+    const pagePathWithParams = this.generatePagePathWithParams();
+    const pagePathUrl = this.generatePagePathUrl();
+    const permalink = this.generatePermalink();
 
     const { DropdownItemContents } = this;
 
@@ -78,19 +113,28 @@ class CopyDropdown extends React.Component {
             <DropdownItem divider className="my-0"></DropdownItem>
 
             {/* Page path */}
-            <CopyToClipboard text={this.props.pagePath} onCopy={this.showToolTip}>
+            <CopyToClipboard text={pagePathWithParams} onCopy={this.showToolTip}>
               <DropdownItem className="px-3">
-                <DropdownItemContents title={t('copy_to_clipboard.Page path')} contents={pagePath} />
+                <DropdownItemContents title={t('copy_to_clipboard.Page path')} contents={pagePathWithParams} />
+              </DropdownItem>
+            </CopyToClipboard>
+
+            <DropdownItem divider className="my-0"></DropdownItem>
+
+            {/* Page path URL */}
+            <CopyToClipboard text={pagePathUrl} onCopy={this.showToolTip}>
+              <DropdownItem className="px-3">
+                <DropdownItemContents title={t('copy_to_clipboard.Page URL')} contents={pagePathUrl} />
               </DropdownItem>
             </CopyToClipboard>
 
             <DropdownItem divider className="my-0"></DropdownItem>
 
             {/* Parmanent Link */}
-            { this.props.pageId && (
-              <CopyToClipboard text={url} onCopy={this.showToolTip}>
+            { pageId && (
+              <CopyToClipboard text={permalink} onCopy={this.showToolTip}>
                 <DropdownItem className="px-3">
-                  <DropdownItemContents title={t('copy_to_clipboard.Parmanent link')} contents={url} />
+                  <DropdownItemContents title={t('copy_to_clipboard.Parmanent link')} contents={permalink} />
                 </DropdownItem>
               </CopyToClipboard>
             )}
@@ -98,10 +142,10 @@ class CopyDropdown extends React.Component {
             <DropdownItem divider className="my-0"></DropdownItem>
 
             {/* Page path + Parmanent Link */}
-            { this.props.pageId && (
-              <CopyToClipboard text={`${this.props.pagePath}\n${url}`} onCopy={this.showToolTip}>
+            { pageId && (
+              <CopyToClipboard text={`${pagePathWithParams}\n${permalink}`} onCopy={this.showToolTip}>
                 <DropdownItem className="px-3">
-                  <DropdownItemContents title={t('copy_to_clipboard.Page path and parmanent link')} contents={<>{pagePath}<br />{url}</>} />
+                  <DropdownItemContents title={t('copy_to_clipboard.Page path and parmanent link')} contents={<>{pagePathWithParams}<br />{permalink}</>} />
                 </DropdownItem>
               </CopyToClipboard>
             )}
@@ -109,10 +153,10 @@ class CopyDropdown extends React.Component {
             <DropdownItem divider className="my-0"></DropdownItem>
 
             {/* Markdown Link */}
-            { this.props.pageId && (
-              <CopyToClipboard text={`[${this.props.pagePath}](${url})`} onCopy={this.showToolTip}>
-                <DropdownItem className="px-3">
-                  <DropdownItemContents title={t('copy_to_clipboard.Markdown link')} contents={`[${pagePath}](${url})`} />
+            { pageId && (
+              <CopyToClipboard text={this.generateMarkdownLink()} onCopy={this.showToolTip}>
+                <DropdownItem className="px-3 text-wrap">
+                  <DropdownItemContents title={t('copy_to_clipboard.Markdown link')} contents={this.generateMarkdownLink()} isContentsWrap />
                 </DropdownItem>
               </CopyToClipboard>
             )}
