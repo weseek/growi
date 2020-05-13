@@ -1,7 +1,2 @@
 <div id="grw-subnav" class="grw-subnav" data-is-forbidden-page="{{ forbidden }}"></div>
 
-{% if not page and ('/' === path or 'crowi' === getConfig('crowi', 'customize:behavior')) and not isUserPageList(path) and !isTrashPage()　%}
-  {% if '/' === path.slice(-1) %}
-    {% include '../../widget/create_portal.html' %}
-  {% endif %}
-{% endif %}

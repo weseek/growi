@@ -152,7 +152,6 @@ module.exports = (crowi) => {
     const customizeParams = {
       layoutType: await crowi.configManager.getConfig('crowi', 'customize:layout'),
       themeType: await crowi.configManager.getConfig('crowi', 'customize:theme'),
-      behaviorType: await crowi.configManager.getConfig('crowi', 'customize:behavior'),
       isEnabledTimeline: await crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
       isSavedStatesOfTabChanges: await crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
       isEnabledAttachTitleHeader: await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
