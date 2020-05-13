@@ -130,7 +130,7 @@ $link-hover-color: $color-link-hover;
   div[class$='-Outer'] {
     div[class$='-Shadow'] {
       background: unset;
-      border-right: 1px solid $border;
+      border-right: 1px solid $gray-300;
     }
   }
 }
