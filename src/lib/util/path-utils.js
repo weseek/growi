@@ -1,3 +1,14 @@
+/**
+ * Whether path is the top page
+ * @param {string} path
+ * @returns {boolean}
+ */
+const isTopPage = (path) => {
+  if (path === '/') {
+    return true;
+  }
+  return false;
+};
 
 /**
  * Whether path belongs to the trash page
@@ -40,6 +51,7 @@ const userPageRoot = (user) => {
 };
 
 module.exports = {
+  isTopPage,
   isTrashPage,
   isUserPage,
   userPageRoot,

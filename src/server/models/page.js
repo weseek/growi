@@ -292,7 +292,7 @@ module.exports = function(crowi) {
   }
 
   function isPortalPath(path) {
-    if (path.match(/.*\/$/)) {
+    if (path === '/') {
       return true;
     }
 

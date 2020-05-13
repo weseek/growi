@@ -1,24 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import templateChecker from '@commons/util/template-checker';
+import { isTopPage } from '@commons/util/path-utils';
 
 export default class PageListMeta extends React.Component {
 
-  isPortalPath(path) {
-    if (path.match(/.*\/$/)) {
-      return true;
-    }
-
-    return false;
-  }
-
   render() {
-    // TODO isPortal()
-    const page = this.props.page;
+    const { page } = this.props;
 
     // portal check
     let portalLabel;
-    if (this.isPortalPath(page.path)) {
+    if (isTopPage(page.path)) {
       portalLabel = <span className="badge badge-info">PORTAL</span>;
     }
 
