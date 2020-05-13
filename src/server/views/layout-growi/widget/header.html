@@ -19,7 +19,6 @@
         <li>
           <div class="d-flex align-items-center not-affix">
             <a class="m-r-5" href="{{ userPageRoot(page.creator) }}" data-toggle="tooltip" data-placement="bottom" title="{{ page.creator.name|default(author.name) }}">
-              <!-- [TODO][GW-1942] add method for updating imageUrlCached -->
               <img src="{{ page.creator.imageUrlCached|default(author.imageUrlCached) }}" class="picture img-circle">
             </a>
             <div>
@@ -29,7 +28,6 @@
           </div>
           <div class="d-flex align-items-center only-affix">
             <a class="m-r-5" href="{{ userPageRoot(page.creator) }}" data-toggle="tooltip" data-placement="bottom" title="{{ page.creator.name|default(author.name) }}">
-              <!-- [TODO][GW-1942] add method for updating imageUrlCached -->
               <img src="{{ page.creator.imageUrlCached|default(author.imageUrlCached) }}" class="picture picture-xs img-circle">
             </a>
             <div class="ml-auto">

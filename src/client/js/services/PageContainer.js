@@ -91,6 +91,7 @@ export default class PageContainer extends Container {
     }
 
     const seenUserListElem = document.getElementById('seen-user-list');
+    // [TODO][GW - 1942] add method for updating imageUrlCached and populate
     if (seenUserListElem != null) {
       const userIdsStr = seenUserListElem.dataset.userIds;
       this.state.seenUserIds = userIdsStr.split(',');

@@ -854,6 +854,7 @@ class PassportService {
         if (user == null) {
           throw new Error('user not found');
         }
+       // [TODO][GW - 1942] add method for updating imageUrlCached
         done(null, user);
       }
       catch (err) {
