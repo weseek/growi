@@ -46,7 +46,7 @@
   {# to place right side #}
   <div class="mr-auto"></div>
 
-  {% if not page.isPortal() %}
+  {% if not page.isTopPage() %}
   <li class="nav-item">
     <a href="?presentation=1" class="nav-link toggle-presentation">
       <i class="icon-film"></i><span class="d-none d-sm-inline"> {{ t('Presentation Mode') }}</span>
@@ -61,7 +61,7 @@
   </li>
 
   {% if !isTrashPage() %}
-    {% if page.isPortal() %}
+    {% if page.isTopPage() %}
     <li class="nav-item dropdown">
       <a
         {% if user %} role="button" class="nav-link dropdown-toggle dropdown-toggle-no-caret" data-toggle="dropdown" {% endif %}
