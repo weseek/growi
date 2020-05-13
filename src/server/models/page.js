@@ -517,7 +517,7 @@ module.exports = function(crowi) {
     grantLabels[GRANT_RESTRICTED] = 'Anyone with the link'; // リンクを知っている人のみ
     // grantLabels[GRANT_SPECIFIED]  = 'Specified users only'; // 特定ユーザーのみ
     grantLabels[GRANT_USER_GROUP] = 'Only inside the group'; // 特定グループのみ
-    grantLabels[GRANT_OWNER] = 'Just me'; // 自分のみ
+    grantLabels[GRANT_OWNER] = 'Only me'; // 自分のみ
 
     return grantLabels;
   };

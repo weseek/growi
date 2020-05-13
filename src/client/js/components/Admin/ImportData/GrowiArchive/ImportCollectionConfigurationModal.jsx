@@ -97,8 +97,8 @@ class ImportCollectionConfigurationModal extends React.Component {
             onChange={() => this.changeHandler({ makePublicForGrant4: !option.makePublicForGrant4 })}
           />
           <label htmlFor="cbOpt2">
-            {t(`${translationBase}.set_public_to_page.label`, { from: t('Just me') })}
-            <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.set_public_to_page.desc`, { from: t('Just me') }) }} />
+            {t(`${translationBase}.set_public_to_page.label`, { from: t('Only me') })}
+            <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.set_public_to_page.desc`, { from: t('Only me') }) }} />
           </label>
         </div>
         <div className="checkbox checkbox-warning">

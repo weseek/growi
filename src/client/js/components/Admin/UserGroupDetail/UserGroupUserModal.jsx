@@ -29,14 +29,14 @@ class UserGroupUserModal extends React.Component {
             <div className="col-xs-6">
               <div className="mb-5">
                 <CheckBoxForSerchUserOption
-                  option="Mail"
+                  option="mail"
                   checked={adminUserGroupDetailContainer.state.isAlsoMailSearched}
                   onChange={adminUserGroupDetailContainer.switchIsAlsoMailSearched}
                 />
               </div>
               <div className="mb-5">
                 <CheckBoxForSerchUserOption
-                  option="Name"
+                  option="name"
                   checked={adminUserGroupDetailContainer.state.isAlsoNameSearched}
                   onChange={adminUserGroupDetailContainer.switchIsAlsoNameSearched}
                 />

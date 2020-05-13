@@ -267,14 +267,14 @@ describe('Page', () => {
         expect(page.path).toEqual(expectedPage.path);
       });
 
-      test('should find page (just me)', async() => {
+      test('should find page (only me)', async() => {
         const expectedPage = await Page.findOne({ path: '/grant/owner' });
         const page = await Page.findByIdAndViewer(expectedPage.id, testUser0);
         expect(page).not.toBeNull();
         expect(page.path).toEqual(expectedPage.path);
       });
 
-      test('should not be found by grant (just me)', async() => {
+      test('should not be found by grant (only me)', async() => {
         const expectedPage = await Page.findOne({ path: '/grant/owner' });
         const page = await Page.findByIdAndViewer(expectedPage.id, testUser1);
         expect(page).toBeNull();
