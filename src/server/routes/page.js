@@ -334,8 +334,8 @@ module.exports = function(crowi, app) {
     return res.render('page_presentation', renderVars);
   }
 
-  async function showPageListForCrowiBehavior(req, res, next) {
-    const portalPath = pathUtils.addTrailingSlash(getPathFromRequest(req));
+  async function showTopPage(req, res, next) {
+    const portalPath = req.path;
     const revisionId = req.query.revision;
 
     const view = 'customlayout-selector/page_list';
@@ -414,7 +414,7 @@ module.exports = function(crowi, app) {
   };
 
   actions.showTopPage = function(req, res) {
-    return showPageListForCrowiBehavior(req, res);
+    return showTopPage(req, res);
   };
 
   /**
