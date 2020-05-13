@@ -1,10 +1,11 @@
 .nologin {
   $gray-800-for-login: darken(white, 30%);
+  $color-gradient: #3e4d6c !default;
 
   // background color
-  background: linear-gradient(45deg, darken($inverse, 30%) 0%, hsla(340, 100%, 55%, 0) 70%),
+  background: linear-gradient(45deg, darken($color-gradient, 30%) 0%, hsla(340, 100%, 55%, 0) 70%),
     linear-gradient(135deg, $growi-green 10%, hsla(225, 95%, 50%, 0) 70%), linear-gradient(225deg, $growi-blue 10%, hsla(140, 90%, 50%, 0) 80%),
-    linear-gradient(315deg, darken($inverse, 25%) 100%, hsla(35, 95%, 55%, 0) 70%);
+    linear-gradient(315deg, darken($color-gradient, 25%) 100%, hsla(35, 95%, 55%, 0) 70%);
 
   #page-wrapper {
     background: none;
