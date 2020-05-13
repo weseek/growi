@@ -1,16 +1,17 @@
 @import '../variables';
 @import '../override-bootstrap-variables';
 
-$themecolor: #0c2a44;
+$bgcolor-theme: #0c2a44;
 $themelight: rgba(183, 226, 219, 1);
-$bgcolor-theme: #97cbc3;
 $linkcolor: #3c6d72;
+$linktext: $linkcolor;
+$subthemecolor: rgba($linktext, 0.8);
+$bgcolor-theme: #97cbc3;
 $bgcolor-navbar: #0c2a44;
 $bgcolor-global: $themelight;
 $bgcolor-global: lighten($themelight, 10%);
 $color-header: #3c6d72;
 $color-global: #3c6d72;
-$linktext: $linkcolor;
 $linktext-hover: rgba($linktext, 0.8);
 $sidebar-text: $bgcolor-theme;
 $primary: $bgcolor-theme;
@@ -28,8 +29,6 @@ $bgcolor-inline-code: darken($themelight, 3%);
 
 html[light],
 html[dark] {
-  $primary: $themecolor;
-
   // Background colors
   $bgcolor-card: #f5f5f5;
 
@@ -79,6 +78,17 @@ html[dark] {
     .highlighted {
       background-color: lighten($bgcolor-theme, 20%);
     }
+  }
+
+  .nav-tabs, .nav-tabs .nav-link.active, .nav-link {
+    background: none;
+    border-color: $bgcolor-theme;
+    border-bottom-color: $bgcolor-theme;
+  }
+
+  .card, .card-header {
+    background: none;
+    border: none;
   }
 
   .panel {
