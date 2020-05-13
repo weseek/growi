@@ -14,7 +14,7 @@
     data-path="{{ page.path }}">{{ decodeURIComponent(page.path) }}
   </a>
   <span class="page-list-meta">
-    {% if page.isPortal() %}
+    {% if page.isTopPage() %}
       <span class="badge badge-info">PORTAL</span>
     {% endif  %}
 

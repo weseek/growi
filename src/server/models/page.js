@@ -14,6 +14,7 @@ const differenceInYears = require('date-fns/differenceInYears');
 
 const { pathUtils } = require('growi-commons');
 const templateChecker = require('@commons/util/template-checker');
+const { isTopPage } = require('@commons/util/path-utils');
 const escapeStringRegexp = require('escape-string-regexp');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
@@ -291,14 +292,6 @@ module.exports = function(crowi) {
     pageEvent.on('update', pageEvent.onUpdate);
   }
 
-  function isPortalPath(path) {
-    if (path === '/') {
-      return true;
-    }
-
-    return false;
-  }
-
   function validateCrowi() {
     if (crowi == null) {
       throw new Error('"crowi" is null. Init User model with "crowi" argument first.');
@@ -317,8 +310,8 @@ module.exports = function(crowi) {
     return false;
   };
 
-  pageSchema.methods.isPortal = function() {
-    return isPortalPath(this.path);
+  pageSchema.methods.isTopPage = function() {
+    return isTopPage(this.path);
   };
 
   pageSchema.methods.isTemplate = function() {
@@ -991,7 +984,7 @@ module.exports = function(crowi) {
 
     let grant = options.grant;
     // force public
-    if (isPortalPath(path)) {
+    if (isTopPage(path)) {
       grant = GRANT_PUBLIC;
     }
 

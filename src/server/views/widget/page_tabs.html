@@ -48,7 +48,7 @@
   <div class="mr-auto"></div>
 
   <!-- presentation -->
-  {% if not page.isPortal() %}
+  {% if not page.isTopPage() %}
     <li class="nav-item">
       <a href="?presentation=1" class="nav-link toggle-presentation">
         <i class="icon-film"></i><span class="d-none d-md-inline"> {{ t('Presentation Mode') }}</span>
@@ -65,7 +65,7 @@
 
   <!-- icon-options-vertical -->
   {% if !isTrashPage() %}
-    {% if page.isPortal() %}
+    {% if page.isTopPage() %}
     <li class="nav-item dropdown">
       <a
         {% if user %} role="button" class="nav-link dropdown-toggle dropdown-toggle-no-caret" href="#" data-toggle="dropdown" {% endif %}
