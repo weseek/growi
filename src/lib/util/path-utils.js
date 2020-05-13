@@ -4,10 +4,7 @@
  * @returns {boolean}
  */
 const isTopPage = (path) => {
-  if (path === '/') {
-    return true;
-  }
-  return false;
+  return path === '/';
 };
 
 /**
