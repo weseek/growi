@@ -23,7 +23,9 @@ class PersonalSettings extends React.Component {
                 <a href="#user-settings" data-toggle="tab" role="tab"><i className="icon-user"></i> { t('User Information') }</a>
               </li>
               <li>
-                <a href="#external-accounts" data-toggle="tab" role="tab"><i className="icon-share-alt"></i> { t('External Accounts') }</a>
+                <a href="#external-accounts" data-toggle="tab" role="tab"><i className="icon-share-alt"></i>
+                  { t('admin:user_management.external_accounts') }
+                </a>
               </li>
               <li>
                 <a href="#password-settings" data-toggle="tab" role="tab"><i className="icon-lock"></i> { t('Password Settings') }</a>

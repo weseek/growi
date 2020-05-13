@@ -45,7 +45,7 @@ class CustomizeBehaviorSetting extends React.Component {
               behaviorType="growi"
               isSelected={adminCustomizeContainer.state.currentBehavior === 'growi'}
               onSelected={() => adminCustomizeContainer.switchBehaviorType('growi')}
-              labelHtml={`GROWI Simplified Behavior <small class="text-success">${t('admin:customize_setting.recommended')}</small>`}
+              labelHtml={`GROWI Simplified behavior <small class="text-success">${t('admin:customize_setting.recommended')}</small>`}
             >
               <ul>
                 <li><span dangerouslySetInnerHTML={{ __html: t('admin:customize_setting.behavior_desc.growi_text1') }} /></li>
@@ -60,7 +60,7 @@ class CustomizeBehaviorSetting extends React.Component {
               behaviorType="crowi-plus"
               isSelected={adminCustomizeContainer.state.currentBehavior === 'crowi-plus'}
               onSelected={() => adminCustomizeContainer.switchBehaviorType('crowi-plus')}
-              labelHtml="Crowi Classic Behavior"
+              labelHtml="Crowi classic behavior"
             >
               <ul>
                 <li><span dangerouslySetInnerHTML={{ __html: t('admin:customize_setting.behavior_desc.crowi_text1') }} /></li>

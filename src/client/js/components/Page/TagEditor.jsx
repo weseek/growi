@@ -46,7 +46,7 @@ export default class TagEditor extends React.Component {
     return (
       <Modal show={this.state.isOpenModal} onHide={this.closeModalHandler} id="editTagModal">
         <Modal.Header closeButton className="bg-primary">
-          <Modal.Title className="text-white">Edit Tags</Modal.Title>
+          <Modal.Title className="text-white">Edit tags</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <TagsInput tags={this.state.tags} onTagsUpdated={this.onTagsUpdatedByTagsInput} />
