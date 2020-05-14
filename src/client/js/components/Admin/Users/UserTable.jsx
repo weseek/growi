@@ -23,10 +23,6 @@ class UserTable extends React.Component {
     this.getUserStatusLabel = this.getUserStatusLabel.bind(this);
   }
 
-  async componentDidUpdate() {
-    this.props.appContainer.updateImageUrlCached();
-  }
-
   /**
    * return status label element by `userStatus`
    * @param {string} userStatus
