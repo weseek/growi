@@ -15,24 +15,17 @@
 $themecolor: #b3000c;
 $themelight: white;
 
-$bgcolor-theme: $themecolor;
 $subthemecolor: #017e20;
-$bgcolor-navbar: $bgcolor-theme;
+$bgcolor-navbar: $themecolor;
 $bgcolor-global: $themelight;
-$color-header: $subthemecolor;
 $linktext: lighten(#0d5901, 5%);
 $linktext-hover: lighten($linktext, 12%);
 $sidebar-text: #ffffff;
-$primary: $bgcolor-theme;
-$fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 50%), 50%);
-$color-link-wiki: lighten($bgcolor-theme, 5%);
+$fillcolor-logo-mark: lighten(desaturate($themecolor, 50%), 50%);
+$color-link-wiki: lighten($themecolor, 5%);
 $color-link-wiki-hover: lighten($color-link-wiki, 15%);
 $color-inline-code: darken($subthemecolor, 5%);
 $bgcolor-inline-code: lighten($subthemecolor, 70%);
-$border: $subthemecolor;
-$border-original: $border;
-
-$navbar-border: $bgcolor-theme;
 $active-nav-tabs-bgcolor: white;
 
 .growi:not(.login-page) {
@@ -62,13 +55,13 @@ html[dark] {
 
   // List Group colors
   $color-list: $color-global;
-  $bgcolor-list: $bgcolor-global;
+  $bgcolor-list: $themelight;
   $color-list-active: $color-reversal;
-  $bgcolor-list-active: $primary;
+  $bgcolor-list-active: $themecolor;
   $color-list-hover: $color-reversal;
 
   // Logo colors
-  $bgcolor-logo: $bgcolor-navbar;
+  $bgcolor-logo: $themecolor;
 
   // Icon colors
   $color-editor-icons: $color-global;
@@ -88,9 +81,9 @@ html[dark] {
   $color-badge: $color-reversal;
 
   // Sidebar
-  $bgcolor-sidebar: $bgcolor-navbar;
+  $bgcolor-sidebar: $themecolor;
   $color-sidebar-context: $color-reversal;
-  $bgcolor-sidebar-context: lighten($bgcolor-navbar, 10%);
+  $bgcolor-sidebar-context: lighten($themecolor, 10%);
 
   @import 'apply-colors';
   @import 'apply-colors-light';
@@ -99,7 +92,7 @@ html[dark] {
   .wiki {
     .code-line.revision-head.highlighted {
       color: $themelight;
-      background-color: lighten($bgcolor-theme, 20%);
+      background-color: lighten($themecolor, 20%);
 
       .icon-note,
       .icon-link {
@@ -109,7 +102,7 @@ html[dark] {
   }
 
   .sidebar {
-    background: $bgcolor-theme;
+    background: $themecolor;
   }
 
   .rbt-menu {
@@ -172,11 +165,11 @@ html[dark] {
   .panel {
     &.panel-white,
     &.panel-default {
-      border-color: $border-original;
+      border-color: $subthemecolor;
       .panel-heading {
         color: $dark;
-        background-color: $border-original;
-        border-bottom: 1px solid $border-original;
+        background-color: $subthemecolor;
+        border-bottom: 1px solid $subthemecolor;
       }
     }
   }
@@ -185,7 +178,7 @@ html[dark] {
     border-color: #bd3425;
     .panel-heading {
       color: white;
-      background-color: $bgcolor-theme;
+      background-color: $themecolor;
       background-image: url('/images/themes/christmas/christmas-navbar.jpg');
     }
   }
@@ -200,16 +193,16 @@ html[dark] {
   }
 
   .nav-tabs {
-    border-bottom-color: $bgcolor-theme;
+    border-bottom-color: $themecolor;
   }
 
   .nav-link {
-    border-color: $bgcolor-theme;
+    border-color: $themecolor;
   }
 
   .nav-tabs .nav-link.active {
     background: none;
-    border-color: $bgcolor-theme;
+    border-color: $themecolor;
   }
 
   .search-top .dropdown-toggle {
