@@ -28,6 +28,7 @@
           </div>
         </form>
 
+        {% if !isTrashPage() %}
         <form id="create-page-under-tree" role="form">
           <div class="row form-group">
             <fieldset class="col-12 mb-4">
@@ -80,6 +81,7 @@
             </div>
           </fieldset>
         </div>
+        {% endif %}
 
         <script>
           $('#dd-template-type .dropdown-item').on('click', function() {
