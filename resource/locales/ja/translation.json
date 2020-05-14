@@ -391,6 +391,15 @@
     "someone_editing": "このページは、HackMD で編集されています。",
     "this_page_has_draft": "このページは、HackMD のドラフトがあります。"
   },
+  "search_result": {
+    "result_meta": "{{total}}件のページが見つかりました。検索ワード: \"{{keyword}}\"",
+    "deletion_mode_btn_lavel": "ページを指定して削除",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "check_all": "すべてチェック",
+    "deletion_modal_header": "以下のページを削除",
+    "delete_completely": "完全に削除する"
+  },
   "security_setting": {
     "Guest Users Access": "ゲストユーザーのアクセス",
     "Fixed by env var": "環境変数 <code>{{forcewikimode}}={{wikimode}}</code> により固定されています。",
