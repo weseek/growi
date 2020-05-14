@@ -63,15 +63,15 @@ html[dark] {
   $color-link-hover: lighten($color-link, 20%);
   $color-link-wiki: $subthemecolor;
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
-  $color-link-nabvar: $color-reversal;
+  $color-link-nabvar: $bgcolor-global;
   $color-inline-code: #c7254e;
 
-  // List Group colors
+  // List Group colors saidebar
   $color-list: $color-global;
   $bgcolor-list: $bgcolor-global;
-  $color-list-active: $color-reversal;
+  $color-list-active: $bgcolor-global;
   $bgcolor-list-active: $primary;
-  $color-list-hover: $color-reversal;
+  $color-list-hover: $themelight;
 
   // Logo colors
   $bgcolor-logo: $bgcolor-navbar;
