@@ -189,7 +189,7 @@ module.exports = function(crowi) {
 
   userSchema.methods.updateIsGravatarEnabled = async function(isGravatarEnabled) {
     this.isGravatarEnabled = isGravatarEnabled;
-    this.imageUrlCached = this.generateImageUrlCached();
+    this.imageUrlCached = await this.generateImageUrlCached();
     const userData = await this.save();
     return userData;
   };
@@ -225,7 +225,7 @@ module.exports = function(crowi) {
 
   userSchema.methods.updateImage = async function(attachment) {
     this.imageAttachment = attachment;
-    this.imageUrlCached = this.generateImageUrlCached();
+    this.imageUrlCached = await this.generateImageUrlCached();
     return this.save();
   };
 
@@ -241,7 +241,7 @@ module.exports = function(crowi) {
     }
 
     this.imageAttachment = undefined;
-    this.imageUrlCached = this.generateImageUrlCached();
+    this.imageUrlCached = await this.generateImageUrlCached();
     return this.save();
   };
 
