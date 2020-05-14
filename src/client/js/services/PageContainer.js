@@ -84,7 +84,7 @@ export default class PageContainer extends Container {
     this.state.markdown = markdown;
   }
 
-  initStateOthers() {
+  async initStateOthers() {
     const likeButtonElem = document.getElementById('like-button');
     if (likeButtonElem != null) {
       this.state.isLiked = likeButtonElem.dataset.liked === 'true';
@@ -94,7 +94,16 @@ export default class PageContainer extends Container {
     // [TODO][GW - 1942] add method for updating imageUrlCached and populate
     if (seenUserListElem != null) {
       const userIdsStr = seenUserListElem.dataset.userIds;
-      this.state.seenUserIds = userIdsStr.split(',');
+      const res = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr.split(',') });
+      const users = res.data.users;
+      const userIds = users.map((user) => {
+        if (user.imageUrlCached) {
+          return user.id;
+        }
+        return;
+      });
+      const usersUpdatedImageUrlCached = await this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds });
+      this.state.seenUserIds = usersUpdatedImageUrlCached;
     }
 
 

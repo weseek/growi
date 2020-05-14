@@ -127,7 +127,7 @@ module.exports = function(crowi, app) {
    */
   api.list = async function(req, res) {
     const userIds = req.query.user_ids || null; // TODO: handling
-
+    console.log('aaaa', userIds);
     let userFetcher;
     if (!userIds || userIds.split(',').length <= 0) {
       userFetcher = User.findAllUsers();
