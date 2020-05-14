@@ -51,6 +51,8 @@ export default class MirrorMode extends React.Component {
     console.log(`${this.state.isShown}`);
   }
 
+
+
   deleteMirror() {
     if (this.state.isShown) {
       this.setState({ isShown: false });
@@ -72,7 +74,7 @@ export default class MirrorMode extends React.Component {
 
   render() {
     const keyMap = { checkMirror: ['x', 'y', 'a', 'b', 'down', 'left'] };
-    const handlers = { checkMirror: (event) => { return this.checkMirror(event) } };
+    const handlers = { checkMirror: (event) => { return this.checkMirror(event)}};
     return (
       <GlobalHotKeys keyMap={keyMap} handlers={handlers}>
         {this.renderMirrors()}
