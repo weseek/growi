@@ -68,10 +68,10 @@ html[dark] {
 
   // List Group colors saidebar
   $color-list: $color-global;
-  $bgcolor-list: $bgcolor-global;
+  $bgcolor-list: $themelight; //navbarの背景
   $color-list-active: $bgcolor-global;
-  $bgcolor-list-active: $primary;
-  $color-list-hover: $themelight;
+  $bgcolor-list-active: $accentcolor;
+  $color-list-hover: lighten($accentcolor, 20%); //hover時
 
   // Logo colors
   $bgcolor-logo: $bgcolor-navbar;
