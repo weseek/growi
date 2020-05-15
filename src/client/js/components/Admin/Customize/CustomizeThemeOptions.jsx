@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
+
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 
@@ -10,7 +12,7 @@ import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 class CustomizeThemeOptions extends React.Component {
 
   render() {
-    const { adminCustomizeContainer } = this.props;
+    const { t, adminCustomizeContainer } = this.props;
     const { currentLayout, currentTheme } = adminCustomizeContainer.state;
 
     const lightNDarkTheme = [{
@@ -41,7 +43,7 @@ class CustomizeThemeOptions extends React.Component {
       <div id="themeOptions" className={`${currentLayout === 'kibela' && 'disabled'}`}>
         {/* Light and Dark Themes */}
         <div>
-          <h3>Light and dark modes</h3>
+          <h3>{t('admin:customize_setting.theme_desc.light_and_dark')}</h3>
           <div className="d-flex flex-wrap">
             {lightNDarkTheme.map((theme) => {
               return (
@@ -60,7 +62,7 @@ class CustomizeThemeOptions extends React.Component {
         </div>
         {/* Unique Theme */}
         <div>
-          <h3>Only one mode</h3>
+          <h3>{t('admin:customize_setting.theme_desc.unique')}</h3>
           <div className="d-flex flex-wrap">
             {uniqueTheme.map((theme) => {
               return (
@@ -88,8 +90,9 @@ const CustomizeThemeOptionsWrapper = (props) => {
 };
 
 CustomizeThemeOptions.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
 };
 
-export default CustomizeThemeOptionsWrapper;
+export default withTranslation()(CustomizeThemeOptionsWrapper);
