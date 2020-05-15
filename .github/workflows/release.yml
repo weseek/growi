@@ -43,9 +43,3 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Slack Notification
-      uses: weseek/ghaction-release-slack-notification@master
-      with:
-        channel: '#general'
-        url: ${{ secrets.SLACK_WEBHOOK_URL }}
-        created_tag: v${{ env.RELEASE_VERSION }}
