@@ -55,7 +55,6 @@
   "Share Link": "共有用リンク",
   "Markdown Link": "Markdown形式のリンク",
   "Create/Edit Template": "テンプレートページの作成/編集",
-  "Unportalize": "ポータル解除",
   "Go to this version": "このバージョンを見る",
   "View diff": "差分を表示",
   "No diff": "差分なし",
@@ -199,6 +198,7 @@
   "copy_to_clipboard": {
     "Copy to clipboard": "クリップボードにコピー",
     "Page path": "ページ名",
+    "Page URL": "ページURL",
     "Parmanent link": "パーマリンク",
     "Page path and parmanent link": "ページ名とパーマリンク",
     "Markdown link": "マークダウン形式のリンク"

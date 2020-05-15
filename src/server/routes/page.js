@@ -334,8 +334,8 @@ module.exports = function(crowi, app) {
     return res.render('page_presentation', renderVars);
   }
 
-  async function showPageListForCrowiBehavior(req, res, next) {
-    const portalPath = pathUtils.addTrailingSlash(getPathFromRequest(req));
+  async function showTopPage(req, res, next) {
+    const portalPath = req.path;
     const revisionId = req.query.revision;
 
     const view = 'customlayout-selector/page_list';
@@ -414,19 +414,15 @@ module.exports = function(crowi, app) {
   };
 
   actions.showTopPage = function(req, res) {
-    return showPageListForCrowiBehavior(req, res);
+    return showTopPage(req, res);
   };
 
   /**
-   * switch action by behaviorType
+   * Redirect to the page without trailing slash
    */
-  /* eslint-disable no-else-return */
   actions.showPageWithEndOfSlash = function(req, res, next) {
-    const path = getPathFromRequest(req); // end of slash should be omitted
-    // redirect and showPage action will be triggered
-    return res.redirect(path);
+    return res.redirect(pathUtils.removeTrailingSlash(req.path));
   };
-  /* eslint-enable no-else-return */
 
   /**
    * switch action
