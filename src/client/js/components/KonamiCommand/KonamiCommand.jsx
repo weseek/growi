@@ -36,6 +36,7 @@ export default class KonamiCommand extends React.Component {
         });
         console.log(this.KonamiCommandList)
 
+        // ここからまだ出来ていない
         // if the userCommand has corresponded with one of the Konami Command
         if ((this.KonamiCommandList.length == 1)&&(this.KonamiCommandList[0]==this.state.userCommand)) {
             const keys = Object.keys([this.KonamiCommand]);
