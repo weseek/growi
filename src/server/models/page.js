@@ -163,31 +163,19 @@ class PageQueryBuilder {
   /**
    * generate the query to find pages that start with `path`
    *
-   * (GROWI) If 'isRegExpEscapedFromPath' is true, `path` should have `/` at the end
-   *   -> returns '{path}/*' and '{path}' self.
-   * (Crowi) If 'isRegExpEscapedFromPath' is false and `path` has `/` at the end
-   *   -> returns '{path}*'
-   * (Crowi) If 'isRegExpEscapedFromPath' is false and `path` doesn't have `/` at the end
-   *   -> returns '{path}*'
-   *
-   * *option*
-   *   - isRegExpEscapedFromPath -- if true, the regex strings included in `path` is escaped (default: false)
+   * In normal case, returns '{path}/*' and '{path}' self.
+   * If top page, return without doing anything.
    */
   addConditionToListByStartWith(path) {
-    const pathCondition = [];
-
-    if (path === '/') {
+    // No request is set for the top page
+    if (isTopPage(path)) {
       return this;
     }
 
     /*
      * 1. add condition for finding the page completely match with `path` w/o last slash
      */
-    let pathSlashOmitted = path;
-    if (path.match(/\/$/)) {
-      pathSlashOmitted = path.substr(0, path.length - 1);
-      pathCondition.push({ path: pathSlashOmitted });
-    }
+    const pathSlashOmitted = path.substr(0, path.length - 1);
 
     /*
      * 2. add decendants
@@ -204,11 +192,9 @@ class PageQueryBuilder {
       queryReg = new RegExp(`^${escapeStringRegexp(pattern)}`);
     }
 
-    pathCondition.push({ path: queryReg });
-
     this.query = this.query
       .and({
-        $or: pathCondition,
+        $or: [{ path: pathSlashOmitted }, { path: queryReg }],
       });
 
     return this;
