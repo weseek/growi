@@ -190,7 +190,7 @@ class PageQueryBuilder {
      */
     const pattern = (isRegExpEscapedFromPath)
       ? escapeStringRegexp(path) // escape
-      : pathSlashOmitted; // escape
+      : pathSlashOmitted;
 
     let queryReg;
     try {
