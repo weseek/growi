@@ -155,8 +155,10 @@ class PageQueryBuilder {
     // eslint-disable-next-line no-param-reassign
     path = addSlashOfEnd(path);
 
-    this.addConditionToListByStartWith(path, option);
+    // add option to escape the regex strings
+    const combinedOption = Object.assign({ isRegExpEscapedFromPath: true }, option);
 
+    this.addConditionToListByStartWith(path, combinedOption);
     return this;
   }
 
