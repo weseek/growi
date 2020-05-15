@@ -42,4 +42,3 @@ jobs:
         changelog_file: CHANGES.md
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
