@@ -55,7 +55,7 @@ const GrowiSubNavigationForUserPage = (props) => {
   }
 
   return (
-    <div className={`px-3 ${additionalClassNames.join(' ')}`}>
+    <div className={`px-3 py-3 ${additionalClassNames.join(' ')}`}>
       <PagePathNav pageId={pageId} pagePath={path} />
 
       <div className="d-flex align-items-center justify-content-between">
