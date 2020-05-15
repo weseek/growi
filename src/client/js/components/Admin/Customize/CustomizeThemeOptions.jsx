@@ -13,12 +13,14 @@ class CustomizeThemeOptions extends React.Component {
     const { adminCustomizeContainer } = this.props;
     const { currentLayout, currentTheme } = adminCustomizeContainer.state;
 
-    const lightTheme = [{
+    const lightNDarkTheme = [{
       name: 'default', bg: '#ffffff', topbar: '#334455', theme: '#112744',
     }, {
-      name: 'nature', bg: '#f9fff3', topbar: '#118050', theme: '#460039',
-    }, {
       name: 'mono-blue', bg: '#F7FBFD', topbar: '#00587A', theme: '#00587A',
+    }];
+
+    const uniqueTheme = [{
+      name: 'nature', bg: '#f9fff3', topbar: '#118050', theme: '#460039',
     }, {
       name: 'wood', bg: '#fffefb', topbar: '#aaa45f', theme: '#dddebf',
     }, {
@@ -29,9 +31,7 @@ class CustomizeThemeOptions extends React.Component {
       name: 'antarctic', bg: '#ffffff', topbar: '#000080', theme: '#99cccc',
     }, {
       name: 'spring', bg: '#fff5ee', topbar: '#ff69b4', theme: '#ffb6c1',
-    }];
-
-    const darkTheme = [{
+    }, {
       name: 'future', bg: '#16282D', topbar: '#011414', theme: '#04B4AE',
     }, {
       name: 'halloween', bg: '#030003', topbar: '#cc5d1f', theme: '#e9af2b',
@@ -39,37 +39,43 @@ class CustomizeThemeOptions extends React.Component {
 
     return (
       <div id="themeOptions" className={`${currentLayout === 'kibela' && 'disabled'}`}>
-        {/* Light Themes  */}
-        <div className="d-flex flex-wrap">
-          {lightTheme.map((theme) => {
-            return (
-              <ThemeColorBox
-                key={theme.name}
-                isSelected={currentTheme === theme.name}
-                onSelected={() => adminCustomizeContainer.switchThemeType(theme.name)}
-                name={theme.name}
-                bg={theme.bg}
-                topbar={theme.topbar}
-                theme={theme.theme}
-              />
-            );
-          })}
+        {/* Light and Dark Themes */}
+        <div>
+          <h3>Light and dark modes</h3>
+          <div className="d-flex flex-wrap">
+            {lightNDarkTheme.map((theme) => {
+              return (
+                <ThemeColorBox
+                  key={theme.name}
+                  isSelected={currentTheme === theme.name}
+                  onSelected={() => adminCustomizeContainer.switchThemeType(theme.name)}
+                  name={theme.name}
+                  bg={theme.bg}
+                  topbar={theme.topbar}
+                  theme={theme.theme}
+                />
+              );
+            })}
+          </div>
         </div>
-        {/* Dark Themes  */}
-        <div className="d-flex mt-3">
-          {darkTheme.map((theme) => {
-            return (
-              <ThemeColorBox
-                key={theme.name}
-                isSelected={currentTheme === theme.name}
-                onSelected={() => adminCustomizeContainer.switchThemeType(theme.name)}
-                name={theme.name}
-                bg={theme.bg}
-                topbar={theme.topbar}
-                theme={theme.theme}
-              />
-            );
-          })}
+        {/* Unique Theme */}
+        <div>
+          <h3>Only one mode</h3>
+          <div className="d-flex flex-wrap">
+            {uniqueTheme.map((theme) => {
+              return (
+                <ThemeColorBox
+                  key={theme.name}
+                  isSelected={currentTheme === theme.name}
+                  onSelected={() => adminCustomizeContainer.switchThemeType(theme.name)}
+                  name={theme.name}
+                  bg={theme.bg}
+                  topbar={theme.topbar}
+                  theme={theme.theme}
+                />
+              );
+            })}
+          </div>
         </div>
       </div>
     );
