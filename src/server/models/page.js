@@ -155,10 +155,7 @@ class PageQueryBuilder {
     // eslint-disable-next-line no-param-reassign
     path = addSlashOfEnd(path);
 
-    // add option to escape the regex strings
-    const combinedOption = Object.assign({ isRegExpEscapedFromPath: true }, option);
-
-    this.addConditionToListByStartWith(path, combinedOption);
+    this.addConditionToListByStartWith(path);
 
     return this;
   }
@@ -176,9 +173,12 @@ class PageQueryBuilder {
    * *option*
    *   - isRegExpEscapedFromPath -- if true, the regex strings included in `path` is escaped (default: false)
    */
-  addConditionToListByStartWith(path, option) {
+  addConditionToListByStartWith(path) {
     const pathCondition = [];
-    const isRegExpEscapedFromPath = option.isRegExpEscapedFromPath || false;
+
+    if (path === '/') {
+      return this;
+    }
 
     /*
      * 1. add condition for finding the page completely match with `path` w/o last slash
@@ -192,9 +192,7 @@ class PageQueryBuilder {
     /*
      * 2. add decendants
      */
-    const pattern = (isRegExpEscapedFromPath)
-      ? escapeStringRegexp(path) // escape
-      : pathSlashOmitted;
+    const pattern = escapeStringRegexp(path); // escape
 
     let queryReg;
     try {
@@ -711,7 +709,7 @@ module.exports = function(crowi) {
    */
   pageSchema.statics.findListByStartWith = async function(path, user, option) {
     const builder = new PageQueryBuilder(this.find());
-    builder.addConditionToListByStartWith(path, option);
+    builder.addConditionToListByStartWith(path);
 
     return await findListFromBuilderAndViewer(builder, user, false, option);
   };
