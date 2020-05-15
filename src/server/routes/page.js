@@ -280,13 +280,14 @@ module.exports = function(crowi, app) {
     renderVars.slack = await getSlackChannels(page);
   }
 
-  async function addRenderVarsForDescendants(renderVars, path, requestUser, offset, limit) {
+  async function addRenderVarsForDescendants(renderVars, path, requestUser, offset, limit, isRegExpEscapedFromPath) {
     const SEENER_THRESHOLD = 10;
 
     const queryOptions = {
       offset,
       limit,
       includeTrashed: path.startsWith('/trash/'),
+      isRegExpEscapedFromPath,
     };
     const result = await Page.findListWithDescendants(path, requestUser, queryOptions);
     if (result.pages.length > limit) {

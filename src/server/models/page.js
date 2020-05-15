@@ -155,7 +155,7 @@ class PageQueryBuilder {
     // eslint-disable-next-line no-param-reassign
     path = addSlashOfEnd(path);
 
-    this.addConditionToListByStartWith(path);
+    this.addConditionToListByStartWith(path, option);
 
     return this;
   }
@@ -165,22 +165,32 @@ class PageQueryBuilder {
    *
    * In normal case, returns '{path}/*' and '{path}' self.
    * If top page, return without doing anything.
+   *
+   * *option*
+   *   - isRegExpEscapedFromPath -- if true, the regex strings included in `path` is escaped (default: false)
    */
-  addConditionToListByStartWith(path) {
+  addConditionToListByStartWith(path, option) {
     // No request is set for the top page
     if (isTopPage(path)) {
       return this;
     }
+    const pathCondition = [];
+    const isRegExpEscapedFromPath = option.isRegExpEscapedFromPath || false;
 
     /*
      * 1. add condition for finding the page completely match with `path` w/o last slash
      */
-    const pathSlashOmitted = path.substr(0, path.length - 1);
-
+    let pathSlashOmitted = path;
+    if (path.match(/\/$/)) {
+      pathSlashOmitted = path.substr(0, path.length - 1);
+      pathCondition.push({ path: pathSlashOmitted });
+    }
     /*
      * 2. add decendants
      */
-    const pattern = escapeStringRegexp(path); // escape
+    const pattern = (isRegExpEscapedFromPath)
+      ? escapeStringRegexp(path) // escape
+      : pathSlashOmitted; // escape
 
     let queryReg;
     try {
@@ -191,10 +201,11 @@ class PageQueryBuilder {
       // force to escape
       queryReg = new RegExp(`^${escapeStringRegexp(pattern)}`);
     }
+    pathCondition.push({ path: queryReg });
 
     this.query = this.query
       .and({
-        $or: [{ path: pathSlashOmitted }, { path: queryReg }],
+        $or: pathCondition,
       });
 
     return this;
@@ -695,7 +706,7 @@ module.exports = function(crowi) {
    */
   pageSchema.statics.findListByStartWith = async function(path, user, option) {
     const builder = new PageQueryBuilder(this.find());
-    builder.addConditionToListByStartWith(path);
+    builder.addConditionToListByStartWith(path, option);
 
     return await findListFromBuilderAndViewer(builder, user, false, option);
   };
