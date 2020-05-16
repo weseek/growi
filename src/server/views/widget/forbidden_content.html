@@ -33,7 +33,7 @@
     <div class="pt-2 active tab-pane page-list-container" id="revision-body">
       {% if pages.length == 0 %}
         <div class="mt-2">
-          There are no pages under <strong>{{ path }}</strong>.
+          There are no pages under <strong>{{ path | preventXss }}</strong>.
         </div>
       {% endif  %}
 

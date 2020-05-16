@@ -18,22 +18,31 @@
   {% include 'not_found_tabs.html' %}
 
   <div class="tab-content">
+
+
+    {# TODO: should be removed and transplanted to PageContainer.initStateMarkdown ------ from here ------ #}
+
     {% if getConfig('crowi', 'customize:isEnabledAttachTitleHeader') %}
     {% if template %}
-    <script type="text/template" id="raw-text-original"># {{ path|path2name }}&NewLine;{{ template }}</script>
+    <script type="text/template" id="raw-text-original"># {{ path | path2name | preventXss }}&NewLine;{{ template }}</script>
     {% else %}
-    <script type="text/template" id="raw-text-original"># {{ path|path2name }}</script>
+    <script type="text/template" id="raw-text-original"># {{ path | path2name | preventXss }}</script>
     {% endif %}
     {% else %}
     {% if template %}
     <script type="text/template" id="raw-text-original">{{ template }}</script>
     {% endif %}
     {% endif %}
+
+    {# TODO: should be removed and transplanted to PageContainer.initStateMarkdown ------ to here ------ #}
+
+
+
     {# list view #}
     <div class="pt-2 active tab-pane page-list-container" id="revision-body">
       {% if pages.length == 0 %}
         <div class="mt-2">
-          There are no pages under <strong>{{ path }}</strong>.
+          There are no pages under <strong>{{ path | preventXss }}</strong>.
         </div>
       {% endif  %}
 

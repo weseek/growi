@@ -19,7 +19,7 @@
           {% if isTrashPage() %}
           No deleted pages.
           {% else %}
-          There are no pages under <strong>{{ path }}</strong>.
+          There are no pages under <strong>{{ path | preventXss }}</strong>.
           {% endif %}
         </div>
       {% else %}

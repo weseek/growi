@@ -252,7 +252,6 @@ module.exports = function(crowi, app) {
 
   function addRendarVarsForPage(renderVars, page) {
     renderVars.page = page;
-    renderVars.path = page.path;
     renderVars.revision = page.revision;
     renderVars.author = page.revision.author;
     renderVars.pageIdOnHackmd = page.pageIdOnHackmd;

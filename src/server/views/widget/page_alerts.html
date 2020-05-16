@@ -42,7 +42,8 @@
       {% if user and not page.isDeleted() %}
       <form role="form" id="unlink-page-form" onsubmit="return false;">
         <input type="hidden" name="_csrf" value="{{ csrf() }}">
-        <input type="hidden" name="path" value="{{ path }}">
+        {# TODO: should be removed by GW-2283 #}
+        <input type="hidden" name="path" value="{{ page.path }}">
         <button type="submit" class="btn btn-outline-secondary btn-sm float-right">
           <i class="ti-unlink" aria-hidden="true"></i>
           Unlink
