@@ -1,4 +1,4 @@
-.page-list {
+body .page-list {
   .page-list-container {
     font-size: 15px;
     line-height: 1.6em;
@@ -6,14 +6,11 @@
 
   .page-list-ul {
     padding-left: 0;
+    margin: 0;
 
     > li {
+      margin: 0;
       list-style: none;
-
-      .picture {
-        width: 16px;
-        height: 16px;
-      }
 
       > a {
         padding: 0px;
@@ -22,22 +19,23 @@
         &:hover {
           color: inherit;
         }
+      }
+    }
 
-        span.page-path {
-          padding: 0 4px;
-        }
+    .picture {
+      width: 16px;
+      height: 16px;
+    }
 
-        > span.page-list-meta {
-          font-size: 0.9em;
+    .page-list-meta {
+      font-size: 0.9em;
 
-          > span {
-            margin-right: 0.3rem;
-          }
+      > span {
+        margin-right: 0.3rem;
+      }
 
-          i {
-            margin-right: 2px;
-          }
-        }
+      i {
+        margin-right: 2px;
       }
     }
 

@@ -20,7 +20,7 @@ export default class Page extends React.Component {
     return (
       <>
         <UserPicture user={page.lastUpdateUser} noLink={noLink} />
-        {pagePathElem}
+        <span className="ml-1">{pagePathElem}</span>
         <PageListMeta page={page} />
       </>
     );

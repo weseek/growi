@@ -7,7 +7,7 @@ const PagePathLabel = (props) => {
 
   const dPagePath = new DevidedPagePath(props.page.path, false, true);
 
-  let classNames = ['page-path'];
+  let classNames = [''];
   classNames = classNames.concat(props.additionalClassNames);
 
   if (props.isLatterOnly) {
