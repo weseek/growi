@@ -255,6 +255,7 @@ $(() => {
     if (name.match(/.+\/$/)) {
       name = name.substr(0, name.length - 1);
     }
+    // TODO: remove by GW-2278
     window.location.href = `${pathUtils.encodePagePath(name)}#edit`;
     return false;
   });

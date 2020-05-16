@@ -298,7 +298,7 @@ module.exports = function(crowi, app) {
       seener_threshold: SEENER_THRESHOLD,
     };
     renderVars.pager = generatePager(result.offset, result.limit, result.totalCount);
-    renderVars.pages = pathUtils.encodePagesPath(result.pages);
+    renderVars.pages = result.pages;
   }
 
   function replacePlaceholdersOfTemplate(template, req) {
@@ -374,7 +374,7 @@ module.exports = function(crowi, app) {
     }
     if (page.redirectTo) {
       debug(`Redirect to '${page.redirectTo}'`);
-      return res.redirect(encodeURI(`${page.redirectTo}?redirectFrom=${pathUtils.encodePagePath(path)}`));
+      return res.redirect(`${encodeURI(page.redirectTo)}?redirectFrom=${encodeURIComponent(path)}`);
     }
 
     logger.debug('Page is found when processing pageShowForGrowiBehavior', page._id, page.path);
@@ -541,7 +541,7 @@ module.exports = function(crowi, app) {
     }
 
     renderVars.pager = generatePager(result.offset, result.limit, result.totalCount);
-    renderVars.pages = pathUtils.encodePagesPath(result.pages);
+    renderVars.pages = result.pages;
     res.render(`layout-${layoutName}/page_list`, renderVars);
   };
 
@@ -554,7 +554,7 @@ module.exports = function(crowi, app) {
     const page = await Page.findByIdAndViewer(id, req.user);
 
     if (page != null) {
-      return res.redirect(pathUtils.encodePagePath(page.path));
+      return res.redirect(encodeURI(page.path));
     }
 
     return res.redirect('/');
@@ -650,7 +650,6 @@ module.exports = function(crowi, app) {
         result.pages.pop();
       }
 
-      result.pages = pathUtils.encodePagesPath(result.pages);
       return res.json(ApiResponse.success(result));
     }
     catch (err) {
@@ -1613,7 +1612,6 @@ module.exports = function(crowi, app) {
 
     try {
       const result = await Page.findListByCreator(page.creator, req.user, queryOptions);
-      result.pages = pathUtils.encodePagesPath(result.pages);
 
       return res.json(ApiResponse.success(result));
     }
