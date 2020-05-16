@@ -10,7 +10,6 @@ module.exports = function(crowi, app) {
   const methodOverride = require('method-override');
   const passport = require('passport');
   const expressSession = require('express-session');
-  const sanitizer = require('express-sanitizer');
   const flash = require('connect-flash');
   const swig = require('swig-templates');
   const webpackAssets = require('express-webpack-assets');
@@ -93,7 +92,6 @@ module.exports = function(crowi, app) {
   app.use(methodOverride());
   app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
   app.use(bodyParser.json({ limit: '50mb' }));
-  app.use(sanitizer());
   app.use(cookieParser());
 
   // configure express-session

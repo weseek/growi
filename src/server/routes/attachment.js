@@ -485,7 +485,7 @@ module.exports = function(crowi, app) {
    */
   api.add = async function(req, res) {
     let pageId = req.body.page_id || null;
-    const pagePath = decodeURIComponent(req.body.path) || null;
+    const pagePath = req.body.path || null;
     let pageCreated = false;
 
     // check params
