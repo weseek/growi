@@ -12,7 +12,7 @@ export default class Page extends React.Component {
       page, noLink,
     } = this.props;
 
-    let pagePathElem = <PagePathLabel page={page} />;
+    let pagePathElem = <PagePathLabel page={page} additionalClassNames={['mx-1']} />;
     if (!noLink) {
       pagePathElem = <a className="text-break" href={page.path}>{pagePathElem}</a>;
     }
@@ -20,7 +20,7 @@ export default class Page extends React.Component {
     return (
       <>
         <UserPicture user={page.lastUpdateUser} noLink={noLink} />
-        <span className="ml-1">{pagePathElem}</span>
+        {pagePathElem}
         <PageListMeta page={page} />
       </>
     );
