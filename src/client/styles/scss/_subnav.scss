@@ -77,6 +77,13 @@ header.grw-header {
     line-height: 1.1em;
   }
 
+  .grw-page-path-nav {
+    .separator {
+      margin-right: 0.2em;
+      margin-left: 0.2em;
+    }
+  }
+
   ul.authors {
     padding-left: 1.5em;
     margin: 0;

@@ -12,7 +12,7 @@ import PagePathHierarchicalLink from '@commons/components/PagePathHierarchicalLi
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
-import RevisionPath from '../Page/RevisionPath';
+import RevisionPathControls from '../Page/RevisionPathControls';
 import PageContainer from '../../services/PageContainer';
 import TagLabels from '../Page/TagLabels';
 import LikeButton from '../LikeButton';
@@ -20,6 +20,42 @@ import BookmarkButton from '../BookmarkButton';
 
 import PageCreator from './PageCreator';
 import RevisionAuthor from './RevisionAuthor';
+
+// eslint-disable-next-line react/prop-types
+const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
+
+  const dPagePath = new DevidedPagePath(pagePath, false, true);
+
+  let formerLink;
+  let latterLink;
+
+  // when the path is root or first level
+  if (dPagePath.isRoot || dPagePath.isFormerRoot) {
+    const linkedPagePath = new LinkedPagePath(pagePath);
+    latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />;
+  }
+  // when the path is second level or deeper
+  else {
+    const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
+    const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
+    formerLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} />;
+    latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} />;
+  }
+
+  return (
+    <div className="grw-page-path-nav">
+      {formerLink}
+      <span className="d-flex align-items-center flex-wrap">
+        <h1 className="m-0">{latterLink}</h1>
+        <RevisionPathControls
+          pageId={pageId}
+          pagePath={pagePath}
+          isPageForbidden={isPageForbidden}
+        />
+      </span>
+    </div>
+  );
+};
 
 const GrowiSubNavigation = (props) => {
   const isPageForbidden = document.querySelector('#grw-subnav').getAttribute('data-is-forbidden-page') === 'true';
@@ -31,27 +67,11 @@ const GrowiSubNavigation = (props) => {
   const isPageNotFound = pageId == null;
   const isPageInTrash = isTrashPage(path);
 
-  const dPagePath = new DevidedPagePath(pageContainer.state.path, false, true);
-  const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
-  const FormerLink = () => (
-    <div className="grw-page-path-text-muted-container">
-      <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} />
-    </div>
-  );
-
   // Display only the RevisionPath
-  if (isPageNotFound || isPageForbidden || isPageInTrash) {
+  if (isPageNotFound || isPageForbidden) {
     return (
       <div className="px-3 py-3 grw-subnavbar">
-        { !dPagePath.isRoot && <FormerLink /> }
-        <h1 className="m-0">
-          <RevisionPath
-            pageId={pageId}
-            pagePath={pageContainer.state.path}
-            isPageForbidden={isPageForbidden}
-            isPageInTrash={isPageInTrash}
-          />
-        </h1>
+        <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
       </div>
     );
   }
@@ -73,23 +93,24 @@ const GrowiSubNavigation = (props) => {
 
       {/* Page Path */}
       <div>
-        { !dPagePath.isRoot && <FormerLink /> }
-        <h1 className="m-0">
-          <RevisionPath pageId={pageId} pagePath={pageContainer.state.path} />
-        </h1>
+        <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
         { !isPageNotFound && !isPageForbidden && (
           <TagLabels />
         ) }
       </div>
 
       <div className="d-flex align-items-center">
-        {/* Header Button */}
-        <div className="mr-2">
-          <LikeButton pageId={pageId} isLiked={pageContainer.state.isLiked} />
-        </div>
-        <div>
-          <BookmarkButton pageId={pageId} crowi={appContainer} />
-        </div>
+        { !isPageInTrash && (
+          /* Header Button */
+          <div className="mr-2">
+            <LikeButton pageId={pageId} isLiked={pageContainer.state.isLiked} />
+          </div>
+        ) }
+        { !isPageInTrash && (
+          <div>
+            <BookmarkButton pageId={pageId} crowi={appContainer} />
+          </div>
+        ) }
 
         {/* Page Authors */}
         <ul className="authors text-nowrap d-none d-lg-block d-edit-none">

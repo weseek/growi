@@ -1,7 +1,0 @@
-{% if !getConfig('crowi', 'customize:layout') || 'crowi' === getConfig('crowi', 'customize:layout') %}
-  {% include '../layout-crowi/user_page.html' %}
-{% elseif !getConfig('crowi', 'customize:layout') || 'kibela' === getConfig('crowi', 'customize:layout')%}
-  {% include '../layout-kibela/user_page.html' %}
-{% else %}
-  {% include '../layout-growi/user_page.html' %}
-{% endif %}

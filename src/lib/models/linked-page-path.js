@@ -1,4 +1,5 @@
 import { pathUtils } from 'growi-commons';
+import { isTrashPage } from '@commons/util/path-utils';
 
 import DevidedPagePath from './devided-page-path';
 
@@ -11,6 +12,7 @@ export default class LinkedPagePath {
 
     const pagePath = new DevidedPagePath(path, skipNormalize);
 
+    this.path = path;
     this.pathName = pagePath.latter;
     this.isRoot = pagePath.isRoot;
     this.parent = pagePath.isRoot
@@ -25,6 +27,10 @@ export default class LinkedPagePath {
     }
 
     return pathUtils.normalizePath(`${this.parent.href}/${this.pathName}`);
+  }
+
+  get isInTrash() {
+    return isTrashPage(this.path);
   }
 
 }

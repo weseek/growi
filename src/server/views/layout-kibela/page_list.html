@@ -32,7 +32,7 @@
 
 </div>
 
-  <div class="row page-list bg-white round-corner grw-pt-10px mb-5 d-edit-none {% if page.isPortal() %}mt-5{% endif %}">
+  <div class="row page-list bg-white round-corner grw-pt-10px my-5 d-edit-none {% if page.isTopPage() %}mt-5{% endif %}">
     <div class="col">
       {% include '../widget/page_list_and_timeline_kibela.html' %}
     </div>
@@ -53,7 +53,5 @@
 </div>
 <div id="crowi-modals">
   {% include '../widget/page_modals.html' %}
-    {% include '../modal/what_is_portal.html' %}
-  {% include '../modal/unportalize.html' %}
 </div>
 {% endblock %}

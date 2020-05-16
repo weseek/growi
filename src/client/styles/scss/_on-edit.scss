@@ -24,6 +24,11 @@ body.on-edit {
     }
   }
 
+  // show
+  .d-edit-block {
+    display: block !important;
+  }
+
   // hide unnecessary elements
   header,
   footer,
@@ -34,12 +39,6 @@ body.on-edit {
   // hide unnecessary elements for growi layout
   .revision-toc-container {
     display: none !important;
-  }
-
-  // hide unnecessary elements for crowi layout
-  #toggle-crowi-sidebar,
-  .crowi-sidebar {
-    display: none;
   }
 
   // show only either Edit button or HackMD button
@@ -69,11 +68,6 @@ body.on-edit {
     }
   }
 
-  // show revision path
-  .grw-revision-path-for-edit {
-    display: block !important;
-  }
-
   /*****************
    * Expand Editor
    *****************/
@@ -99,24 +93,21 @@ body.on-edit {
       padding: 0; //    for crowi layout
       pointer-events: initial; // enable pointer-events
     }
+  }
 
-    h1#revision-path {
-      @include variable-font-size(20px);
+  .grw-page-path-nav-for-edit {
+    .grw-page-path-link {
+      font-size: 20px;
       line-height: 1em;
-
-      // nowrap even if the path is too long
-      .d-flex {
-        flex-wrap: nowrap;
-      }
-
-      .path-segment {
-        white-space: nowrap;
-      }
     }
-
-    .tag-labels.new-page {
-      display: block;
+    .separator {
+      margin-right: 0.1em;
+      margin-left: 0.1em;
     }
+  }
+
+  .tag-labels {
+    line-height: 1em;
   }
 
   .page-editor-footer {
@@ -139,6 +130,18 @@ body.on-edit {
 
     .btn-submit {
       width: 100px;
+    }
+  }
+
+  /*********************
+   * Navigation styles
+   */
+  .nav:hover {
+    .btn-copy,
+    .btn-edit,
+    .btn-edit-tags {
+      // change button opacity
+      opacity: unset;
     }
   }
 

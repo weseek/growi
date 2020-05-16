@@ -26,6 +26,7 @@ module.exports = function(api) {
         },
       },
     ],
+    '@babel/plugin-proposal-optional-chaining',
     [
       '@babel/plugin-proposal-class-properties', { loose: true },
     ],

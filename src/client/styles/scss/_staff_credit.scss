@@ -2,8 +2,9 @@
 .staff-credit {
   // attached !important for updating from .modal-dialog class style
   width: 80vw !important;
-  height: 80vh !important;
   max-width: initial !important;
+  height: 80vh !important;
+
   // see https://css-tricks.com/old-timey-terminal-styling/
   @mixin old-timey-terminal-styling() {
     text-shadow: 0 0 10px #c8c8c8;

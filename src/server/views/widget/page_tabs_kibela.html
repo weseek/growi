@@ -11,30 +11,33 @@
   </li>
 
   {% if !isTrashPage() %}
-  <li class="nav-item nav-tab-edit">
-    <a
-      {% if user %} href="#edit" data-toggle="tab" class="nav-link edit-button" {% endif %}
-      {% if not user %}
-        class="nav-link edit-button edit-button-disabled"
-        data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
-      {% endif %}
-    >
-      <i class="icon-note"></i> {{ t('Edit') }}
-    </a>
-  </li>
-  {% if isHackmdSetup() %}
-  <li class="nav-item nav-tab-hackmd">
-    <a
-      {% if user %} href="#hackmd" data-toggle="tab" class="nav-link edit-button" {% endif %}
-      {% if not user %}
-        class="nav-link edit-button edit-button-disabled"
-        data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
-      {% endif %}
-    >
-      <i class="fa fa-file-text-o"></i> {{ t('HackMD') }}
-    </a>
-  </li>
-  {% endif %}
+    <li class="nav-item nav-tab-edit">
+      <a
+        {% if user %} href="#edit" data-toggle="tab" class="nav-link edit-button" {% endif %}
+        {% if not user %}
+          class="nav-link edit-button edit-button-disabled"
+          data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
+        {% endif %}
+      >
+        <i class="icon-note"></i> {{ t('Edit') }}
+      </a>
+    </li>
+    {% if isHackmdSetup() %}
+    <li class="nav-item nav-tab-hackmd">
+      <a
+        {% if user %} href="#hackmd" data-toggle="tab" class="nav-link edit-button" {% endif %}
+        {% if not user %}
+          class="nav-link edit-button edit-button-disabled"
+          data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
+        {% endif %}
+      >
+        <i class="fa fa-file-text-o"></i> {{ t('HackMD') }}
+      </a>
+    </li>
+    {% endif %}
+
+    <div id="page-editor-path-nav" class="d-none d-edit-block ml-2"></div>
+
   {% endif %}
 
   {#
@@ -43,7 +46,7 @@
   {# to place right side #}
   <div class="mr-auto"></div>
 
-  {% if not page.isPortal() %}
+  {% if not page.isTopPage() %}
   <li class="nav-item">
     <a href="?presentation=1" class="nav-link toggle-presentation">
       <i class="icon-film"></i><span class="d-none d-sm-inline"> {{ t('Presentation Mode') }}</span>
@@ -58,7 +61,7 @@
   </li>
 
   {% if !isTrashPage() %}
-    {% if page.isPortal() %}
+    {% if page.isTopPage() %}
     <li class="nav-item dropdown">
       <a
         {% if user %} role="button" class="nav-link dropdown-toggle dropdown-toggle-no-caret" data-toggle="dropdown" {% endif %}
@@ -73,10 +76,6 @@
         <li class="dropdown-item">
           <a href="#" data-target="#create-template" data-toggle="modal"><i class="icon-fw icon-magic-wand"></i> {{ t('template.option_label.create/edit') }}</a>
         </li>
-        {% if ('/' !== path) %}
-        <li class="dropdown-divider"></li>
-        <li class="dropdown-item"><a href="#" data-target="#unportalize" data-toggle="modal"><i class="fa fa-share"></i> {{ t('Unportalize') }}</a></li>
-        {% endif %}
       </ul>
     </li>
     {% else %}

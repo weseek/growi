@@ -2,8 +2,6 @@
 
 import { pathUtils } from 'growi-commons';
 
-const entities = require('entities');
-const escapeStringRegexp = require('escape-string-regexp');
 require('jquery.cookie');
 
 require('./thirdparty-js/waves');
@@ -261,12 +259,12 @@ $(() => {
     return false;
   });
 
-  // rename/unportalize
-  $('#renamePage, #unportalize').on('shown.bs.modal', (e) => {
+  // rename
+  $('#renamePage').on('shown.bs.modal', (e) => {
     $('#renamePage #newPageName').focus();
-    $('#renamePage .msg, #unportalize .msg').hide();
+    $('#renamePage .msg').hide();
   });
-  $('#renamePageForm, #unportalize-form').submit(function(e) {
+  $('#renamePageForm').submit(function(e) {
     // create name-value map
     const nameValueMap = {};
     $(this).serializeArray().forEach((obj) => {
@@ -284,9 +282,9 @@ $(() => {
       // error
         if (!res.ok) {
           const linkPath = pathUtils.normalizePath(nameValueMap.new_path);
-          $('#renamePage .msg, #unportalize .msg').hide();
-          $(`#renamePage .msg-${res.code}, #unportalize .msg-${res.code}`).show();
-          $('#renamePage #linkToNewPage, #unportalize #linkToNewPage').html(`
+          $('#renamePage .msg').hide();
+          $(`#renamePage .msg-${res.code}`).show();
+          $('#renamePage #linkToNewPage').html(`
           <a href="${linkPath}">${linkPath} <i class="icon-login"></i></a>
         `);
         }
@@ -304,7 +302,7 @@ $(() => {
     $('#duplicatePage #duplicatePageName').focus();
     $('#duplicatePage .msg').hide();
   });
-  $('#duplicatePageForm, #unportalize-form').submit(function(e) {
+  $('#duplicatePageForm').submit(function(e) {
     // create name-value map
     const nameValueMap = {};
     $(this).serializeArray().forEach((obj) => {
@@ -457,27 +455,6 @@ $(() => {
     $('body').removeClass('on-edit');
     $('body').removeClass('builtin-editor');
     window.location.hash = '#';
-  });
-
-  /*
-   * wrap short path with <strong></strong>
-   */
-  $('#view-list .page-list-ul-flat .page-list-link').each(function() {
-    const $link = $(this);
-    /* eslint-disable-next-line no-unused-vars */
-    const text = $link.text();
-    let path = decodeURIComponent($link.data('path'));
-    const shortPath = decodeURIComponent($link.data('short-path')); // convert to string
-
-    if (path == null || shortPath == null) {
-      // continue
-      return;
-    }
-
-    path = entities.encodeHTML(path);
-    const pattern = `${escapeStringRegexp(entities.encodeHTML(shortPath))}(/)?$`;
-
-    $link.html(path.replace(new RegExp(pattern), `<strong>${shortPath}$1</strong>`));
   });
 
   if (pageId) {
