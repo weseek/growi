@@ -56,7 +56,7 @@
     {% if req.query.duplicated and not page.isDeleted() %}
     <div class="alert alert-success py-3 px-4">
       <span>
-        <strong>{{ t('Duplicated') }}: </strong> {{ t('page_page.notice.duplicated', req.sanitize(req.query.duplicated)) }}
+        <strong>{{ t('Duplicated') }}: </strong> {{ t('page_page.notice.duplicated', req.query.duplicated | preventXss) }}
       </span>
     </div>
     {% endif %}
