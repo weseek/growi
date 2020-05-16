@@ -18,7 +18,7 @@
           {% if isTrashPage() %}
           No deleted pages.
           {% else %}
-          There are no pages under <strong>{{ path }}</strong>.
+          There are no pages under <strong>{{ path | preventXss }}</strong>.
           {% endif %}
         </div>
       {% else %}
@@ -29,7 +29,7 @@
     {# timeline view #}
     {% if getConfig('crowi', 'customize:isEnabledTimeline') %}
       <div class="tab-pane mt-5" id="view-timeline">
-        <script type="text/template" id="page-timeline-data">{{ JSON.stringify(pagesDataForTimeline(pages)) }}</script>
+        <script type="text/template" id="page-timeline-data">{{ JSON.stringify(pagesDataForTimeline(pages)) | preventXss }}</script>
         {# render React Component PageTimeline #}
         <div id="page-timeline"></div>
       </div>

@@ -1,7 +1,6 @@
 module.exports = function(crowi, req, locals) {
   const debug = require('debug')('growi:lib:swigFunctions');
   const stringWidth = require('string-width');
-  const entities = require('entities');
 
   const { pathUtils } = require('growi-commons');
 
@@ -179,7 +178,7 @@ module.exports = function(crowi, req, locals) {
     return pages.map((page) => {
       return {
         id: page.id,
-        path: entities.encodeHTML(page.path),
+        path: page.path,
         revision: page.revision,
       };
     });
