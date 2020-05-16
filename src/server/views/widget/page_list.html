@@ -9,9 +9,9 @@
 
 <li>
   <img src="{{ page.lastUpdateUser|picture }}" class="picture rounded-circle">
-  <a href="{{ page.path }}"
+  <a href="{{ encodeURI(page.path) }}"
     class="text-break"
-    data-path="{{ page.path }}">{{ decodeURIComponent(page.path) }}
+    data-path="{{ encodeURI(page.path) }}">{{ page.path | preventXss }}
   </a>
   <span class="page-list-meta">
     {% if page.isTopPage() %}

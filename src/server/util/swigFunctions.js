@@ -179,7 +179,7 @@ module.exports = function(crowi, req, locals) {
     return pages.map((page) => {
       return {
         id: page.id,
-        path: entities.encodeHTML(page.path),
+        path: page.path,
         revision: page.revision,
       };
     });

@@ -8,7 +8,7 @@
 </div>
 
 <div id="content-main" class="content-main page-list"
-  data-path="{{ path | preventXss }}"
+  data-path="{{ encodeURI(path) }}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
   {% if templateTags %}
     data-template-tags="{{ templateTags }}"
