@@ -33,10 +33,10 @@
       <span>
         {% set fromPath = req.query.renamed or req.query.redirectFrom %}
         {% if redirectFrom or req.query.redirectFrom %}
-          <strong>{{ t('Redirected') }}:</strong> {{ t('page_page.notice.redirected', req.sanitize(fromPath)) }}
+          <strong>{{ t('Redirected') }}:</strong> {{ t('page_page.notice.redirected', fromPath | preventXss) }}
         {% endif %}
         {% if req.query.renamed %}
-          <strong>{{ t('Moved') }}:</strong> {{ t('page_page.notice.moved', req.sanitize(fromPath)) }}
+          <strong>{{ t('Moved') }}:</strong> {{ t('page_page.notice.moved', fromPath | preventXss) }}
         {% endif %}
       </span>
       {% if user and not page.isDeleted() %}
