@@ -39,24 +39,6 @@ class CustomizeTitle extends React.Component {
         <div className="row">
           <div className="col-12">
             <h2 className="admin-setting-header">{t('admin:customize_setting.custom_title')}</h2>
-            <p
-              className="well"
-              // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{ __html: t('admin:customize_setting.custom_title_detail') }}
-            />
-            {/* TODO i18n */}
-            <div className="help-block">
-              Default value: <code>&#123;&#123;page&#125;&#125; - &#123;&#123;sitename&#125;&#125;</code>
-              <br />
-              Default output: <pre><code className="xml">&lt;title&gt;/Sandbox - {'GROWI'}&lt;&#047;title&gt;</code></pre>
-            </div>
-            <div className="form-group">
-              <input
-                className="form-control"
-                defaultValue={currentCustomizeTitle}
-                onChange={(e) => { adminCustomizeContainer.changeCustomizeTitle(e.target.value) }}
-              />
-            </div>
           </div>
 
           <div className="col-12">
@@ -74,7 +56,7 @@ class CustomizeTitle extends React.Component {
           <div className="form-text text-muted col-12">
             Default Value: <code>&#123;&#123;page&#125;&#125; - &#123;&#123;sitename&#125;&#125;</code>
             <br />
-            Default Output: <pre><code className="xml">&lt;title&gt;/Sandbox - {'GROWI'}&lt;&#047;title&gt;</code></pre>
+            Default Output: <code className="xml">&lt;title&gt;/Somewhere/Page - {'GROWI'}&lt;&#047;title&gt;</code>
           </div>
           <div className="form-group col-12">
             <input
