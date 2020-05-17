@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as toastr from 'toastr';
 
+import { withTranslation } from 'react-i18next';
+
 import Page from '../PageList/Page';
 import SearchResultList from './SearchResultList';
 import DeletePageListModal from './DeletePageListModal';
@@ -171,6 +173,8 @@ class SearchResult extends React.Component {
   }
 
   render() {
+    const { t } = this.props;
+
     if (this.isError()) {
       return (
         <div className="content-main">
@@ -203,7 +207,7 @@ class SearchResult extends React.Component {
       deletionModeButtons = (
         <div className="btn-group">
           <button type="button" className="btn btn-rounded btn-default btn-xs" onClick={() => { return this.handleDeletionModeChange() }}>
-            <i className="icon-ban" /> Cancel
+            <i className="icon-ban" /> {t('search_result.cancel')}
           </button>
           <button
             type="button"
@@ -211,7 +215,7 @@ class SearchResult extends React.Component {
             onClick={() => { return this.showDeleteConfirmModal() }}
             disabled={this.state.selectedPages.size === 0}
           >
-            <i className="icon-trash" /> Delete
+            <i className="icon-trash" /> {t('search_result.delete')}
           </button>
         </div>
       );
@@ -223,7 +227,7 @@ class SearchResult extends React.Component {
               onClick={() => { return this.handleAllSelect() }}
               checked={this.isAllSelected()}
             />
-            &nbsp;Check All
+            {t('search_result.check_all')}
           </label>
         </div>
       );
@@ -232,7 +236,7 @@ class SearchResult extends React.Component {
       deletionModeButtons = (
         <div className="btn-group">
           <button type="button" className="btn btn-default btn-rounded btn-xs" onClick={() => { return this.handleDeletionModeChange() }}>
-            <i className="ti-check-box" /> DeletionMode
+            <i className="ti-check-box" /> {t('search_result.deletion_mode_btn_lavel')}
           </button>
         </div>
       );
@@ -283,21 +287,17 @@ class SearchResult extends React.Component {
                 {allSelectCheck}
               </div>
               <div className="search-result-meta">
-                <i className="icon-magnifier" /> Found {this.props.searchResultMeta.total} pages with &quot;{this.props.searchingKeyword}&quot;
+                <i className="icon-magnifier" />
+                {t('search_result.result_meta', { total: this.props.searchResultMeta.total, keyword: this.props.searchingKeyword })}
               </div>
               <div className="clearfix"></div>
               <div className="page-list">
-                <ul className="page-list-ul page-list-ul-flat nav">
-                  {listView}
-                </ul>
+                <ul className="page-list-ul page-list-ul-flat nav">{listView}</ul>
               </div>
             </nav>
           </div>
           <div className="col-md-8 search-result-content" id="search-result-content">
-            <SearchResultList
-              pages={this.props.pages}
-              searchingKeyword={this.props.searchingKeyword}
-            />
+            <SearchResultList pages={this.props.pages} searchingKeyword={this.props.searchingKeyword} />
           </div>
         </div>
         <DeletePageListModal
@@ -308,8 +308,7 @@ class SearchResult extends React.Component {
           confirmedToDelete={this.deleteSelectedPages}
           toggleDeleteCompletely={this.toggleDeleteCompletely}
         />
-
-      </div>// content-main
+      </div> // content-main
     );
   }
 
@@ -324,6 +323,7 @@ const SearchResultWrapper = (props) => {
 
 SearchResult.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  t: PropTypes.func.isRequired, // i18next
 
   pages: PropTypes.array.isRequired,
   searchingKeyword: PropTypes.string.isRequired,
@@ -335,4 +335,4 @@ SearchResult.defaultProps = {
   searchError: null,
 };
 
-export default SearchResultWrapper;
+export default withTranslation()(SearchResultWrapper);

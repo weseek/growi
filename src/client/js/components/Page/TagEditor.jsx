@@ -48,7 +48,7 @@ export default class TagEditor extends React.Component {
         <Modal.Header closeButton className="bg-primary">
           <Modal.Title className="text-white">Edit tags</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body style={{ overflowY: 'unset' }}>
           <TagsInput tags={this.state.tags} onTagsUpdated={this.onTagsUpdatedByTagsInput} />
         </Modal.Body>
         <Modal.Footer>
