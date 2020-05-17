@@ -107,12 +107,7 @@
       {% endif %}
 
       {% if user %}
-      <li class="nav-item d-none d-md-block">
-        <a class="nav-link create-page" href="#" data-target="#create-page" data-toggle="modal">
-          <i class="icon-pencil mr-2"></i>
-          <span>{{ t('New') }}</span>
-        </a>
-      </li>
+      <li id="create-page-button" class="nav-item d-none d-md-block"></li>
       <li class="nav-item d-none d-md-block">
         <a class="nav-link" href="https://docs.growi.org/" target="_blank">
           <i class="icon-question mr-2"></i><span class="mr-2">{{ t('Help') }}</span><span class="small"><i class="icon-share-alt"></i></span>
