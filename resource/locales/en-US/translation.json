@@ -55,7 +55,6 @@
   "Share Link": "Share Link",
   "Markdown Link": "Markdown Link",
   "Create/Edit Template": "Create/Edit Template Page",
-  "Unportalize": "Unportalize",
   "Go to this version": "View this version",
   "View diff": "View diff",
   "No diff": "No diff",
@@ -200,6 +199,7 @@
   "copy_to_clipboard": {
     "Copy to clipboard": "Copy to clipboard",
     "Page path": "Page path",
+    "Page URL": "Page URL",
     "Parmanent link": "Parmanent link",
     "Page path and parmanent link": "Page path and parmanent link",
     "Markdown link": "Markdown link"

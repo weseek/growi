@@ -33,16 +33,17 @@
       <span>
         {% set fromPath = req.query.renamed or req.query.redirectFrom %}
         {% if redirectFrom or req.query.redirectFrom %}
-          <strong>{{ t('Redirected') }}:</strong> {{ t('page_page.notice.redirected', req.sanitize(fromPath)) }}
+          <strong>{{ t('Redirected') }}:</strong> {{ t('page_page.notice.redirected', fromPath | preventXss) }}
         {% endif %}
         {% if req.query.renamed %}
-          <strong>{{ t('Moved') }}:</strong> {{ t('page_page.notice.moved', req.sanitize(fromPath)) }}
+          <strong>{{ t('Moved') }}:</strong> {{ t('page_page.notice.moved', fromPath | preventXss) }}
         {% endif %}
       </span>
       {% if user and not page.isDeleted() %}
       <form role="form" id="unlink-page-form" onsubmit="return false;">
         <input type="hidden" name="_csrf" value="{{ csrf() }}">
-        <input type="hidden" name="path" value="{{ path }}">
+        {# TODO: should be removed by GW-2283 #}
+        <input type="hidden" name="path" value="{{ page.path }}">
         <button type="submit" class="btn btn-outline-secondary btn-sm float-right">
           <i class="ti-unlink" aria-hidden="true"></i>
           Unlink
@@ -55,7 +56,7 @@
     {% if req.query.duplicated and not page.isDeleted() %}
     <div class="alert alert-success py-3 px-4">
       <span>
-        <strong>{{ t('Duplicated') }}: </strong> {{ t('page_page.notice.duplicated', req.sanitize(req.query.duplicated)) }}
+        <strong>{{ t('Duplicated') }}: </strong> {{ t('page_page.notice.duplicated', req.query.duplicated | preventXss) }}
       </span>
     </div>
     {% endif %}
@@ -69,7 +70,7 @@
     {% if page and not page.isLatestRevision() %}
     <div class="alert alert-warning">
       <strong>{{ t('Warning') }}: </strong> {{ t('page_page.notice.version') }}
-      <a href="{{ page.path }}"><i class="icon-fw icon-arrow-right-circle"></i>{{ t('Show latest') }}</a>
+      <a href="{{ encodeURI(page.path) }}"><i class="icon-fw icon-arrow-right-circle"></i>{{ t('Show latest') }}</a>
     </div>
     {% endif %}
 

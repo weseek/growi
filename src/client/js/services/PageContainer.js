@@ -31,6 +31,7 @@ export default class PageContainer extends Container {
     }
 
     const revisionId = mainContent.getAttribute('data-page-revision-id');
+    const path = decodeURI(mainContent.getAttribute('data-path'));
 
     this.state = {
       // local page data
@@ -39,7 +40,7 @@ export default class PageContainer extends Container {
       revisionId,
       revisionCreatedAt: +mainContent.getAttribute('data-page-revision-created'),
       revisionAuthor: JSON.parse(mainContent.getAttribute('data-page-revision-author')),
-      path: mainContent.getAttribute('data-path'),
+      path,
       tocHtml: '',
       isLiked: JSON.parse(mainContent.getAttribute('data-page-is-liked')),
       seenUserIds: [],

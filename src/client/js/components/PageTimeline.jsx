@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import * as entities from 'entities';
-
 import AppContainer from '../services/AppContainer';
 import { createSubscribedElement } from './UnstatedUtils';
 
@@ -77,14 +75,7 @@ class PageTimeline extends React.Component {
       return null;
     }
 
-    let pages = JSON.parse(pageIdsElm.text);
-    // decode path
-    pages = pages.map((page) => {
-      page.path = decodeURIComponent(entities.decodeHTML(page.path));
-      return page;
-    });
-
-    return pages;
+    return JSON.parse(pageIdsElm.text);
   }
 
   render() {
