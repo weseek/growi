@@ -7,7 +7,7 @@
 * Crowi Classic Behavior is removed
 * Crowi Classic Layout is removed
 * 'default-dark' theme is now merged as a dark mode variant of 'default' theme
-* 'blue-dark' theme is now merged as a dark mode variant of 'mono-blue' theme
+* 'blue-night' theme is now merged as a dark mode variant of 'mono-blue' theme
 
 ### Updates
 
