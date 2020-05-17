@@ -7,14 +7,14 @@ const PagePathLabel = (props) => {
 
   const dPagePath = new DevidedPagePath(props.page.path, false, true);
 
-  let classNames = ['page-path'];
+  let classNames = [''];
   classNames = classNames.concat(props.additionalClassNames);
 
   if (props.isLatterOnly) {
     return <span className={classNames.join(' ')}>{dPagePath.latter}</span>;
   }
 
-  const textElem = (dPagePath.former == null && dPagePath.latter == null)
+  const textElem = dPagePath.isRoot
     ? <><strong>/</strong></>
     : <>{dPagePath.former}/<strong>{dPagePath.latter}</strong></>;
 
@@ -24,7 +24,7 @@ const PagePathLabel = (props) => {
 PagePathLabel.propTypes = {
   page: PropTypes.object.isRequired,
   isLatterOnly: PropTypes.bool,
-  additionalClassNames: PropTypes.array,
+  additionalClassNames: PropTypes.arrayOf(PropTypes.string),
 };
 
 PagePathLabel.defaultProps = {

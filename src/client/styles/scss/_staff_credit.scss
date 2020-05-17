@@ -5,8 +5,6 @@
   max-width: initial !important;
   height: 80vh !important;
 
-  font-family: 'Press Start 2P', $font-family-for-staff-credit;
-  color: white;
   // see https://css-tricks.com/old-timey-terminal-styling/
   @mixin old-timey-terminal-styling() {
     text-shadow: 0 0 10px #c8c8c8;

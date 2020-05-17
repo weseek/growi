@@ -1,6 +1,6 @@
 {% if page %}
 <div id="content-main" class="content-main"
-  data-path="{{ path }}"
+  data-path="{{ encodeURI(page.path) }}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
   data-page-id="{% if page %}{{ page._id.toString() }}{% endif %}"
   data-page-revision-id="{% if revision %}{{ revision._id.toString() }}{% endif %}"
@@ -18,7 +18,7 @@
   >
 {% else %}
 <div id="content-main" class="content-main"
-  data-path="{{ path }}"
+  data-path="{{ encodeURI(page.path) }}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
   data-slack-channels="{{ slack|default('') }}"
   >

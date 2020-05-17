@@ -28,7 +28,7 @@
     <script src="{{ webpack_asset('js/legacy-presentation.js') }}" defer></script>
     <link rel="stylesheet" href="{{ webpack_asset('styles/style-presentation.css') }}">
 
-    <title>{{ path|path2name }} | {{ path }}</title>
+    <title>{{ page.path | path2name | preventXss }} | {{ page.path | preventXss }}</title>
 
     {{ cdnStyleTagsByGroup('basis') }}
     {{ cdnHighlightJsStyleTag(getConfig('crowi', 'customize:highlightJsStyle')) }}
