@@ -127,7 +127,7 @@ class ImportForm extends React.Component {
         isImported: true,
       });
 
-      toastSuccess(undefined, 'Import process has terminated.');
+      toastSuccess(undefined, 'Import process has completed.');
     });
 
     // websocket event

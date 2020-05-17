@@ -20,7 +20,7 @@
 
 ## v3.8.1-RC
 
-*
+* Fix: Unset overflow-y style for Edit Tags Modal
 
 ## v3.8.0
 

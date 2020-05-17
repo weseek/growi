@@ -67,7 +67,7 @@ class CustomizeScriptSetting extends React.Component {
                 </tr>
                 <tr>
                   <th className="text-right"><code>appContainer</code></th>
-                  <td>GROWI App <a href="https://github.com/jamiebuilds/unstated">Unstated Container</a></td>
+                  <td>GROWI App <a href="https://github.com/jamiebuilds/unstated">unstated container</a></td>
                 </tr>
                 <tr>
                   <th className="text-right"><code>growiRenderer</code></th>
