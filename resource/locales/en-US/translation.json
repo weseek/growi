@@ -393,6 +393,15 @@
     "someone_editing": "Someone editing this page on HackMD",
     "this_page_has_draft": "This page has a draft on HackMD"
   },
+  "search_result": {
+    "result_meta": "Found \"{{keyword}}\" in {{total}}.",
+    "deletion_mode_btn_lavel": "Select and delete page",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "check_all": "Check all",
+    "deletion_modal_header": "Delete page",
+    "delete_completely": "Delete completely"
+  },
   "security_setting": {
     "Security settings": "Security settings",
     "Guest Users Access": "Guest users access",
