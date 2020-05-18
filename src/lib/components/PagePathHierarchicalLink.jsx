@@ -39,32 +39,38 @@ const PagePathHierarchicalLink = (props) => {
   const isParentExists = linkedPagePath.parent != null;
   const isParentRoot = linkedPagePath.parent?.isRoot;
   const isSeparatorRequired = isParentExists && !isParentRoot;
-  const isParentInTrash = isInTrash || linkedPagePath.isInTrash;
 
   const href = encodeURI(urljoin(basePath || '/', linkedPagePath.href));
 
+  // eslint-disable-next-line react/prop-types
+  const RootElm = ({ children }) => {
+    return props.isInnerElem
+      ? <>{children}</>
+      : <span className="grw-page-path-hierarchical-link">{children}</span>;
+  };
+
   return (
-    <>
+    <RootElm>
       { isParentExists && (
-        <PagePathHierarchicalLink
-          linkedPagePath={linkedPagePath.parent}
-          basePath={basePath}
-          isInTrash={isParentInTrash}
-        />
+        <PagePathHierarchicalLink linkedPagePath={linkedPagePath.parent} basePath={basePath} isInnerElem />
       ) }
       { isSeparatorRequired && (
         <span className="separator">/</span>
       ) }
 
       <a className="page-segment" href={href}>{linkedPagePath.pathName}</a>
-    </>
+    </RootElm>
   );
 };
 
 PagePathHierarchicalLink.propTypes = {
   linkedPagePath: PropTypes.instanceOf(LinkedPagePath).isRequired,
   basePath: PropTypes.string,
-  isInTrash: PropTypes.bool,
+
+  // !!INTERNAL USE ONLY!!
+  isInnerElem: PropTypes.bool,
+
+  isInTrash: PropTypes.bool, // TODO: omit
 };
 
 export default PagePathHierarchicalLink;

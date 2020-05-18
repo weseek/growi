@@ -101,7 +101,7 @@ export default class UserPicture extends React.Component {
 
 UserPicture.propTypes = {
   user: PropTypes.object,
-  size: PropTypes.string,
+  size: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
   noLink: PropTypes.bool,
   noTooltip: PropTypes.bool,
 };
