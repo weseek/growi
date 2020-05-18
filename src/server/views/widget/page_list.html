@@ -9,13 +9,12 @@
 
 <li>
   <img src="{{ page.lastUpdateUser|picture }}" class="picture rounded-circle">
-  <a href="{{ page.path }}"
-    class="text-break"
-    data-path="{{ page.path }}">{{ decodeURIComponent(page.path) }}
+  <a href="{{ encodeURI(page.path) }}" class="text-break ml-1">
+    {{ page.path | preventXss }}
   </a>
   <span class="page-list-meta">
-    {% if page.isPortal() %}
-      <span class="badge badge-info">PORTAL</span>
+    {% if page.isTopPage() %}
+      <span class="badge badge-info">TOP</span>
     {% endif  %}
 
     {% if page.isTemplate() %}
@@ -53,10 +52,14 @@
 {% if pager %}
 <ul class="pagination">
   {% if pager.prev !== null %}
-    <li class="prev"><a href="{{ path }}?offset={{ pager.prev }}"><i class="fa fa-arrow-left"></i> Prev</a></li>
+    <li class="prev">
+      <a href="{{ encodeURI(path) }}?offset={{ pager.prev }}" class="btn btn-outline-secondary"><i class="icon-arrow-left"></i> Prev</a>
+    </li>
   {% endif %}
   {% if pager.next %}
-    <li class="next"><a href="{{ path }}?offset={{ pager.next }}">Next <i class="fa fa-arrow-right"></i></a></li>
+    <li class="next">
+      <a href="{{ encodeURI(path) }}?offset={{ pager.next }}" class="btn btn-outline-secondary">Next <i class="icon-arrow-right"></i></a>
+    </li>
   {% endif %}
 </ul>
 {% endif %}

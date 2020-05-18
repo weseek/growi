@@ -146,7 +146,7 @@ module.exports = function(crowi, app) {
   const ApiResponse = require('../util/apiResponse');
   const getToday = require('../util/getToday');
 
-  const { slackNotificationService } = crowi;
+  const { slackNotificationService, configManager } = crowi;
   const interceptorManager = crowi.getInterceptorManager();
   const globalNotificationService = crowi.getGlobalNotificationService();
 
@@ -252,7 +252,6 @@ module.exports = function(crowi, app) {
 
   function addRendarVarsForPage(renderVars, page) {
     renderVars.page = page;
-    renderVars.path = page.path;
     renderVars.revision = page.revision;
     renderVars.author = page.revision.author;
     renderVars.pageIdOnHackmd = page.pageIdOnHackmd;
@@ -298,7 +297,7 @@ module.exports = function(crowi, app) {
       seener_threshold: SEENER_THRESHOLD,
     };
     renderVars.pager = generatePager(result.offset, result.limit, result.totalCount);
-    renderVars.pages = pathUtils.encodePagesPath(result.pages);
+    renderVars.pages = result.pages;
   }
 
   function replacePlaceholdersOfTemplate(template, req) {
@@ -334,11 +333,12 @@ module.exports = function(crowi, app) {
     return res.render('page_presentation', renderVars);
   }
 
-  async function showPageListForCrowiBehavior(req, res, next) {
-    const portalPath = pathUtils.addTrailingSlash(getPathFromRequest(req));
+  async function showTopPage(req, res, next) {
+    const portalPath = req.path;
     const revisionId = req.query.revision;
+    const layoutName = configManager.getConfig('crowi', 'customize:layout');
 
-    const view = 'customlayout-selector/page_list';
+    const view = `layout-${layoutName}/page_list`;
     const renderVars = { path: portalPath };
 
     let portalPage = await Page.findByPathAndViewer(portalPath, req.user);
@@ -362,6 +362,7 @@ module.exports = function(crowi, app) {
   async function showPageForGrowiBehavior(req, res, next) {
     const path = getPathFromRequest(req);
     const revisionId = req.query.revision;
+    const layoutName = configManager.getConfig('crowi', 'customize:layout');
 
     let page = await Page.findByPathAndViewer(path, req.user);
 
@@ -372,7 +373,7 @@ module.exports = function(crowi, app) {
     }
     if (page.redirectTo) {
       debug(`Redirect to '${page.redirectTo}'`);
-      return res.redirect(encodeURI(`${page.redirectTo}?redirectFrom=${pathUtils.encodePagePath(path)}`));
+      return res.redirect(`${encodeURI(page.redirectTo)}?redirectFrom=${encodeURIComponent(path)}`);
     }
 
     logger.debug('Page is found when processing pageShowForGrowiBehavior', page._id, page.path);
@@ -381,7 +382,7 @@ module.exports = function(crowi, app) {
     const offset = parseInt(req.query.offset) || 0;
     const renderVars = {};
 
-    let view = 'customlayout-selector/page';
+    let view = `layout-${layoutName}/page`;
 
     page.initLatestRevisionField(revisionId);
 
@@ -395,7 +396,7 @@ module.exports = function(crowi, app) {
 
     if (isUserPage(page.path)) {
       // change template
-      view = 'customlayout-selector/user_page';
+      view = `layout-${layoutName}/user_page`;
       await addRenderVarsForUserPage(renderVars, page, req.user);
     }
 
@@ -414,19 +415,15 @@ module.exports = function(crowi, app) {
   };
 
   actions.showTopPage = function(req, res) {
-    return showPageListForCrowiBehavior(req, res);
+    return showTopPage(req, res);
   };
 
   /**
-   * switch action by behaviorType
+   * Redirect to the page without trailing slash
    */
-  /* eslint-disable no-else-return */
   actions.showPageWithEndOfSlash = function(req, res, next) {
-    const path = getPathFromRequest(req); // end of slash should be omitted
-    // redirect and showPage action will be triggered
-    return res.redirect(path);
+    return res.redirect(pathUtils.removeTrailingSlash(req.path));
   };
-  /* eslint-enable no-else-return */
 
   /**
    * switch action
@@ -476,18 +473,19 @@ module.exports = function(crowi, app) {
     const path = getPathFromRequest(req);
 
     const isCreatable = Page.isCreatableName(path);
+    const layoutName = configManager.getConfig('crowi', 'customize:layout');
 
     let view;
     const renderVars = { path };
 
     if (!isCreatable) {
-      view = 'customlayout-selector/not_creatable';
+      view = `layout-${layoutName}/not_creatable`;
     }
     else if (req.isForbidden) {
-      view = 'customlayout-selector/forbidden';
+      view = `layout-${layoutName}/forbidden`;
     }
     else {
-      view = 'customlayout-selector/not_found';
+      view = `layout-${layoutName}/not_found`;
 
       // retrieve templates
       if (req.user != null) {
@@ -518,6 +516,7 @@ module.exports = function(crowi, app) {
   actions.deletedPageListShow = async function(req, res) {
     // normalizePath makes '/trash/' -> '/trash'
     const path = pathUtils.normalizePath(`/trash${getPathFromRequest(req)}`);
+    const layoutName = configManager.getConfig('crowi', 'customize:layout');
 
     const limit = 50;
     const offset = parseInt(req.query.offset) || 0;
@@ -541,8 +540,8 @@ module.exports = function(crowi, app) {
     }
 
     renderVars.pager = generatePager(result.offset, result.limit, result.totalCount);
-    renderVars.pages = pathUtils.encodePagesPath(result.pages);
-    res.render('customlayout-selector/page_list', renderVars);
+    renderVars.pages = result.pages;
+    res.render(`layout-${layoutName}/page_list`, renderVars);
   };
 
   /**
@@ -554,7 +553,7 @@ module.exports = function(crowi, app) {
     const page = await Page.findByIdAndViewer(id, req.user);
 
     if (page != null) {
-      return res.redirect(pathUtils.encodePagePath(page.path));
+      return res.redirect(encodeURI(page.path));
     }
 
     return res.redirect('/');
@@ -650,7 +649,6 @@ module.exports = function(crowi, app) {
         result.pages.pop();
       }
 
-      result.pages = pathUtils.encodePagesPath(result.pages);
       return res.json(ApiResponse.success(result));
     }
     catch (err) {
@@ -1613,7 +1611,6 @@ module.exports = function(crowi, app) {
 
     try {
       const result = await Page.findListByCreator(page.creator, req.user, queryOptions);
-      result.pages = pathUtils.encodePagesPath(result.pages);
 
       return res.json(ApiResponse.success(result));
     }

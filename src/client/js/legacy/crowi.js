@@ -255,16 +255,17 @@ $(() => {
     if (name.match(/.+\/$/)) {
       name = name.substr(0, name.length - 1);
     }
+    // TODO: remove by GW-2278
     window.location.href = `${pathUtils.encodePagePath(name)}#edit`;
     return false;
   });
 
-  // rename/unportalize
-  $('#renamePage, #unportalize').on('shown.bs.modal', (e) => {
+  // rename
+  $('#renamePage').on('shown.bs.modal', (e) => {
     $('#renamePage #newPageName').focus();
-    $('#renamePage .msg, #unportalize .msg').hide();
+    $('#renamePage .msg').hide();
   });
-  $('#renamePageForm, #unportalize-form').submit(function(e) {
+  $('#renamePageForm').submit(function(e) {
     // create name-value map
     const nameValueMap = {};
     $(this).serializeArray().forEach((obj) => {
@@ -282,9 +283,9 @@ $(() => {
       // error
         if (!res.ok) {
           const linkPath = pathUtils.normalizePath(nameValueMap.new_path);
-          $('#renamePage .msg, #unportalize .msg').hide();
-          $(`#renamePage .msg-${res.code}, #unportalize .msg-${res.code}`).show();
-          $('#renamePage #linkToNewPage, #unportalize #linkToNewPage').html(`
+          $('#renamePage .msg').hide();
+          $(`#renamePage .msg-${res.code}`).show();
+          $('#renamePage #linkToNewPage').html(`
           <a href="${linkPath}">${linkPath} <i class="icon-login"></i></a>
         `);
         }
@@ -302,7 +303,7 @@ $(() => {
     $('#duplicatePage #duplicatePageName').focus();
     $('#duplicatePage .msg').hide();
   });
-  $('#duplicatePageForm, #unportalize-form').submit(function(e) {
+  $('#duplicatePageForm').submit(function(e) {
     // create name-value map
     const nameValueMap = {};
     $(this).serializeArray().forEach((obj) => {

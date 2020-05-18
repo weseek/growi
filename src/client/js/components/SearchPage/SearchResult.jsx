@@ -195,7 +195,7 @@ class SearchResult extends React.Component {
                 )
               }
               <div className="page-list-option">
-                <a href={page.path}><i className="icon-login" /></a>
+                <button type="button" className="btn btn-link p-0" href={page.path}><i className="icon-login" /></button>
               </div>
             </div>
           </a>

@@ -8,7 +8,7 @@
 </div>
 
 <div id="content-main" class="content-main page-list"
-  data-path="{{ path | preventXss }}"
+  data-path="{{ encodeURI(path) }}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
   >
 
@@ -33,7 +33,7 @@
     <div class="pt-2 active tab-pane page-list-container" id="revision-body">
       {% if pages.length == 0 %}
         <div class="mt-2">
-          There are no pages under <strong>{{ path }}</strong>.
+          There are no pages under <strong>{{ path | preventXss }}</strong>.
         </div>
       {% endif  %}
 
