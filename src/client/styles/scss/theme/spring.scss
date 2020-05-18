@@ -108,6 +108,10 @@ html[dark] {
   .card-timeline > .card-header {
     background-color: $third-main-color;
   }
+  h1,
+  h2 {
+    color: $subthemecolor;
+  }
 }
 
 //== Dark Mode
