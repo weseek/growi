@@ -31,7 +31,7 @@ export default class PageContainer extends Container {
     }
 
     const revisionId = mainContent.getAttribute('data-page-revision-id');
-    const path = decodeURI(mainContent.getAttribute('data-path'));
+    const path = mainContent.getAttribute('data-path');
 
     this.state = {
       // local page data
