@@ -31,7 +31,7 @@ class ErrorBoundary extends React.Component {
       const firstStack = errorInfo.componentStack.split(/\s*in\s/)[1];
 
       return (
-        <div className="card border-danger m-2">
+        <div className="card border-danger">
           <div className="card-header">Error occured in {firstStack}</div>
           <div className="card-body">
             <h5>{error && error.toString()}</h5>
