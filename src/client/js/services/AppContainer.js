@@ -34,6 +34,7 @@ export default class AppContainer extends Container {
       preferDarkModeByMediaQuery: false,
       preferDarkModeByUser: null,
       isDrawerOpened: false,
+      isPageCreateModalShown: false,
     };
 
     const body = document.querySelector('body');
@@ -91,6 +92,8 @@ export default class AppContainer extends Container {
       put: this.apiv3Put.bind(this),
       delete: this.apiv3Delete.bind(this),
     };
+
+    this.showPageCreateModal = this.showPageCreateModal.bind(this);
   }
 
   /**
@@ -456,6 +459,10 @@ export default class AppContainer extends Container {
     }
 
     return this.apiv3Request('delete', path, { params });
+  }
+
+  showPageCreateModal() {
+    this.setState({ isPageCreateModalShown: true });
   }
 
 }

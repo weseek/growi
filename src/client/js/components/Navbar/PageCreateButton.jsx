@@ -7,10 +7,10 @@ import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
 const PageCreateButton = (props) => {
-  const { t } = props;
+  const { t, appContainer } = props;
 
   return (
-    <a className="nav-link create-page" href="#" data-target="#create-page" data-toggle="modal">
+    <a className="nav-link create-page" onClick={appContainer.showPageCreateModal}>
       <i className="icon-pencil mr-2"></i>
       <span>{ t('New') }</span>
     </a>
