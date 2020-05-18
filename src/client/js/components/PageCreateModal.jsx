@@ -89,109 +89,122 @@ const PageCreateModal = (props) => {
     window.location.href = encodeURI(urljoin(parentPath, pageName, '#edit'));
   }
 
+  function renderCreateTodayForm() {
+    return (
+      <div className="row form-group">
+        <fieldset className="col-12 mb-4">
+          <h3 className="grw-modal-head pb-2">{ t("Create today's") }</h3>
+          <div className="d-flex">
+            <div className="create-page-input-row d-flex align-items-center">
+              <span>{userPageRootPath}/</span>
+              <input
+                type="text"
+                className="page-today-input1 form-control text-center"
+                value={todayInput1}
+                onChange={e => onChangeTodayInput1Handler(e.target.value)}
+              />
+              <span className="page-today-suffix">/{now}/</span>
+              <input
+                type="text"
+                className="page-today-input2 form-control"
+                id="page-today-input2"
+                placeholder={t('Input page name (optional)')}
+                value={todayInput2}
+                onChange={e => onChangeTodayInput2Handler(e.target.value)}
+              />
+            </div>
+            <div className="create-page-button-container">
+              <button type="button" className="btn btn-outline-primary rounded-pill" onClick={createTodayPage}>
+                <i className="icon-fw icon-doc"></i>{ t('Create') }
+              </button>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+    );
+  }
+
+  function renderInputPageForm() {
+    return (
+      <div className="row form-group">
+        <fieldset className="col-12 mb-4">
+          <h3 className="grw-modal-head pb-2">{ t('Create under') }</h3>
+          <div className="d-flex create-page-input-container">
+            <div className="create-page-input-row d-flex align-items-center">
+              {isReachable
+                // GW-2355 refactor typeahead
+                ? <PagePathAutoComplete crowi={appContainer} initializedPath={path} addTrailingSlash />
+                : (
+                  <input
+                    type="text"
+                    value={pageNameInput}
+                    className="page-name-input form-control"
+                    placeholder={t('Input page name')}
+                    onChange={e => onChangePageNameInputHandler(e.target.value)}
+                    required
+                  />
+                )}
+            </div>
+            <div className="create-page-button-container">
+              <button type="submit" className="btn btn-outline-primary rounded-pill" onClick={createInputPage}>
+                <i className="icon-fw icon-doc"></i>{ t('Create') }
+              </button>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+    );
+  }
+
+  function renderTemplatePageForm() {
+    return (
+      <div className="row form-group">
+        <fieldset className="col-12">
+          <h3 className="grw-modal-head pb-2">{ t('template.modal_label.Create template under')}<br />
+            <code>{path}</code>
+          </h3>
+          <div className="d-flex create-page-input-container">
+            <div className="create-page-input-row d-flex align-items-center">
+
+              <div id="dd-template-type" className="dropdown w-100">
+                <button id="template-type" type="button" className="btn btn-secondary btn dropdown-toggle" data-toggle="dropdown">
+                  {template == null && t('template.option_label.select') }
+                  {template === 'children' && t('template.children.label')}
+                  {template === 'decendants' && t('template.decendants.label')}
+                </button>
+                <div className="dropdown-menu" aria-labelledby="userMenu">
+                  <a className="dropdown-item" type="button" onClick={() => onChangeTemplateHandler('children')}>
+                    { t('template.children.label') } (_template)<br className="d-block d-md-none" />
+                    <small className="text-muted text-wrap">- { t('template.children.desc') }</small>
+                  </a>
+                  <a className="dropdown-item" type="button" onClick={() => onChangeTemplateHandler('decendants')}>
+                    { t('template.decendants.label') } (__template) <br className="d-block d-md-none" />
+                    <small className="text-muted">- { t('template.decendants.desc') }</small>
+                  </a>
+                </div>
+              </div>
+
+            </div>
+            <div className="create-page-button-container">
+              <button type="button" className={`btn btn-outline-primary rounded-pill ${template == null && 'disabled'}`} onClick={createTemplatePage}>
+                <i className="icon-fw icon-doc"></i>
+                <span>{ t('Edit') }</span>
+              </button>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+    );
+  }
   return (
     <Modal size="lg" isOpen={appContainer.state.isPageCreateModalShown} toggle={appContainer.closePageCreateModal}>
       <ModalHeader tag="h4" toggle={appContainer.closePageCreateModal} className="bg-primary text-light">
         { t('New Page') }
       </ModalHeader>
       <ModalBody>
-        <div className="row form-group">
-          <fieldset className="col-12 mb-4">
-            <h3 className="grw-modal-head pb-2">{ t("Create today's") }</h3>
-            <div className="d-flex">
-              <div className="create-page-input-row d-flex align-items-center">
-                <span>{userPageRootPath}/</span>
-                <input
-                  type="text"
-                  className="page-today-input1 form-control text-center"
-                  value={todayInput1}
-                  onChange={e => onChangeTodayInput1Handler(e.target.value)}
-                />
-                <span className="page-today-suffix">/{now}/</span>
-                <input
-                  type="text"
-                  className="page-today-input2 form-control"
-                  id="page-today-input2"
-                  placeholder={t('Input page name (optional)')}
-                  value={todayInput2}
-                  onChange={e => onChangeTodayInput2Handler(e.target.value)}
-                />
-              </div>
-              <div className="create-page-button-container">
-                <button type="button" className="btn btn-outline-primary rounded-pill" onClick={createTodayPage}>
-                  <i className="icon-fw icon-doc"></i>{ t('Create') }
-                </button>
-              </div>
-            </div>
-          </fieldset>
-        </div>
-
-        <div className="row form-group">
-          <fieldset className="col-12 mb-4">
-            <h3 className="grw-modal-head pb-2">{ t('Create under') }</h3>
-            <div className="d-flex create-page-input-container">
-              <div className="create-page-input-row d-flex align-items-center">
-                {isReachable
-                  // GW-2355 refactor typeahead
-                  ? <PagePathAutoComplete crowi={appContainer} initializedPath={path} addTrailingSlash />
-                  : (
-                    <input
-                      type="text"
-                      value={pageNameInput}
-                      className="page-name-input form-control"
-                      placeholder={t('Input page name')}
-                      onChange={e => onChangePageNameInputHandler(e.target.value)}
-                      required
-                    />
-                  )}
-              </div>
-              <div className="create-page-button-container">
-                <button type="submit" className="btn btn-outline-primary rounded-pill" onClick={createInputPage}>
-                  <i className="icon-fw icon-doc"></i>{ t('Create') }
-                </button>
-              </div>
-            </div>
-          </fieldset>
-        </div>
-
-        <div className="row form-group">
-          <fieldset className="col-12">
-            <h3 className="grw-modal-head pb-2">{ t('template.modal_label.Create template under')}<br />
-              <code>{path}</code>
-            </h3>
-            <div className="d-flex create-page-input-container">
-              <div className="create-page-input-row d-flex align-items-center">
-
-                <div id="dd-template-type" className="dropdown w-100">
-                  <button id="template-type" type="button" className="btn btn-secondary btn dropdown-toggle" data-toggle="dropdown">
-                    {template == null && t('template.option_label.select') }
-                    {template === 'children' && t('template.children.label')}
-                    {template === 'decendants' && t('template.decendants.label')}
-                  </button>
-                  <div className="dropdown-menu" aria-labelledby="userMenu">
-                    <a className="dropdown-item" type="button" onClick={() => onChangeTemplateHandler('children')}>
-                      { t('template.children.label') } (_template)<br className="d-block d-md-none" />
-                      <small className="text-muted text-wrap">- { t('template.children.desc') }</small>
-                    </a>
-                    <a className="dropdown-item" type="button" onClick={() => onChangeTemplateHandler('decendants')}>
-                      { t('template.decendants.label') } (__template) <br className="d-block d-md-none" />
-                      <small className="text-muted">- { t('template.decendants.desc') }</small>
-                    </a>
-                  </div>
-                </div>
-
-              </div>
-              <div className="create-page-button-container">
-                <button type="button" className={`btn btn-outline-primary rounded-pill ${template == null && 'disabled'}`} onClick={createTemplatePage}>
-                  <i className="icon-fw icon-doc"></i>
-                  <span>{ t('Edit') }</span>
-                </button>
-              </div>
-            </div>
-          </fieldset>
-        </div>
-
-
+        {renderCreateTodayForm}
+        {renderInputPageForm}
+        {renderTemplatePageForm}
       </ModalBody>
     </Modal>
 
