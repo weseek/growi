@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as toastr from 'toastr';
 
-import SearchResultPage from './SearchResultPage';
+import Page from '../PageList/Page';
 import SearchResultList from './SearchResultList';
 import DeletePageListModal from './DeletePageListModal';
 import AppContainer from '../../services/AppContainer';
@@ -177,7 +177,7 @@ class SearchResult extends React.Component {
       return (
         <li key={page._id} className="nav-item page-list-li w-100">
           <a className="nav-link page-list-link d-flex align-items-center" href={pageId}>
-            <SearchResultPage page={page} noLink />
+            <Page page={page} noLink />
             <div className="ml-auto d-flex">
               { this.state.deletionMode
                 && (
