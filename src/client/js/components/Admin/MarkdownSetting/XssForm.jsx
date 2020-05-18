@@ -55,9 +55,9 @@ class XssForm extends React.Component {
                 onChange={() => { adminMarkDownContainer.setState({ xssOption: 1 }) }}
               />
               <label className="custom-control-label w-100" htmlFor="xssOption1">
-                <p className="font-weight-bold">{t('admin:markdown_setting.xss_options.ignore_all_tags')}</p>
+                <p className="font-weight-bold">{t('admin:markdown_setting.xss_options.remove_all_tags')}</p>
                 <div className="mt-4">
-                  {t('admin:markdown_setting.xss_options.ignore_all_tags_desc')}
+                  {t('admin:markdown_setting.xss_options.remove_all_tags_desc')}
                 </div>
               </label>
             </div>

@@ -72,7 +72,7 @@ class AssociateModal extends React.Component {
     return (
       <Modal isOpen={this.props.isOpen} toggle={this.props.onClose} size="lg">
         <ModalHeader className="bg-info text-light" toggle={this.props.onClose}>
-          { t('Create External Account') }
+          { t('admin:user_management.create_external_account') }
         </ModalHeader>
         <ModalBody>
           <ul className="nav nav-tabs passport-settings mb-2" role="tablist">

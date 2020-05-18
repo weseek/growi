@@ -18,7 +18,7 @@
   >
 {% else %}
 <div id="content-main" class="content-main"
-  data-path="{{ encodeURI(page.path) }}"
+  data-path="{{ encodeURI(path) }}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
   data-slack-channels="{{ slack|default('') }}"
   >
