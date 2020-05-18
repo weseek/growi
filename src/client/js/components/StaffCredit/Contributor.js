@@ -111,7 +111,7 @@ const contributors = [
         ],
       },
       {
-        additionalClass: 'col-md-12 staff-credit-mt-10',
+        additionalClass: 'col-12 staff-credit-mt-10rem',
         members: [
           { name: 'AND YOU' },
         ],

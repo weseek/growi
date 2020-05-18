@@ -27,7 +27,7 @@ const service = new CdnResourcesService();
 
 service.downloadAndWriteAll(downloader)
   .then(() => {
-    logger.info('Download is terminated successfully');
+    logger.info('Download is completed successfully');
   })
   .catch((err) => {
     logger.error(err);
