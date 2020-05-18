@@ -337,7 +337,7 @@
   "template": {
     "modal_label": {
       "Create/Edit Template Page": "Create/Edit template page",
-      "Create template under": "Create template page under:<br /><code>%s</code>"
+      "Create template under": "Create template page under:"
     },
     "option_label": {
       "create/edit": "Create/Edit template page..",

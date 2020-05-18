@@ -35,6 +35,8 @@ export default class AppContainer extends Container {
       preferDarkModeByUser: null,
       isDrawerOpened: false,
 
+      isPageCreateModalShown: false,
+
       recentlyUpdatedPages: [],
     };
 
@@ -93,6 +95,9 @@ export default class AppContainer extends Container {
       put: this.apiv3Put.bind(this),
       delete: this.apiv3Delete.bind(this),
     };
+
+    this.openPageCreateModal = this.openPageCreateModal.bind(this);
+    this.closePageCreateModal = this.closePageCreateModal.bind(this);
   }
 
   /**
@@ -463,6 +468,14 @@ export default class AppContainer extends Container {
     }
 
     return this.apiv3Request('delete', path, { params });
+  }
+
+  openPageCreateModal() {
+    this.setState({ isPageCreateModalShown: true });
+  }
+
+  closePageCreateModal() {
+    this.setState({ isPageCreateModalShown: false });
   }
 
 }
