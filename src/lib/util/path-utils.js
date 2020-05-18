@@ -47,27 +47,9 @@ const userPageRoot = (user) => {
   return `/user/${user.username}`;
 };
 
-/**
- * return parent path
- * @param {string} path
- * @returns {boolean}
- */
-const getParentPath = (path) => {
-  if (isTopPage(path)) {
-    return path;
-  }
-
-  if (path.match(/.+\/$/)) {
-    return path;
-  }
-
-  return `${path}/`;
-};
-
 module.exports = {
   isTopPage,
   isTrashPage,
   isUserPage,
   userPageRoot,
-  getParentPath,
 };

@@ -8,7 +8,8 @@ import { withTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 import urljoin from 'url-join';
 
-import { userPageRoot, getParentPath } from '@commons/util/path-utils';
+import { userPageRoot } from '@commons/util/path-utils';
+import { pathUtils } from 'growi-commons';
 import { createSubscribedElement } from './UnstatedUtils';
 
 import AppContainer from '../services/AppContainer';
@@ -22,16 +23,14 @@ const PageCreateModal = (props) => {
   const isReachable = config.isSearchServiceReachable;
   const { path } = pageContainer.state;
   const userPageRootPath = userPageRoot(appContainer.currentUser);
-  const parentPath = getParentPath(path);
+  const parentPath = pathUtils.addTrailingSlash(path);
   const now = format(new Date(), 'yyyy/MM/dd');
 
   const [todayInput1, setTodayInput1] = useState(t('Memo'));
   const [todayInput2, setTodayInput2] = useState('');
   const [pageNameInput, setPageNameInput] = useState(parentPath);
   const [template, setTemplate] = useState(null);
-  const encodedPath = encodeURI(path);
-  console.log(path);
-  console.log(encodedPath);
+
   /**
    * change todayInput1
    * @param {string} value
