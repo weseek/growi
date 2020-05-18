@@ -34,7 +34,7 @@ const PageCreateModal = (props) => {
    * change todayInput1
    * @param {string} value
    */
-  function onChangeTodayInput1(value) {
+  function onChangeTodayInput1Handler(value) {
     setTodayInput1(value);
   }
 
@@ -42,7 +42,7 @@ const PageCreateModal = (props) => {
    * change todayInput2
    * @param {string} value
    */
-  function onChangeTodayInput2(value) {
+  function onChangeTodayInput2Handler(value) {
     setTodayInput2(value);
   }
 
@@ -50,7 +50,7 @@ const PageCreateModal = (props) => {
    * change pageNameInput
    * @param {string} value
    */
-  function onChangePageNameInput(value) {
+  function onChangePageNameInputHandler(value) {
     setPageNameInput(value);
   }
 
@@ -58,7 +58,7 @@ const PageCreateModal = (props) => {
    * change template
    * @param {string} value
    */
-  function onChangeTemplate(value) {
+  function onChangeTemplateHandler(value) {
     setTemplate(value);
   }
 
@@ -104,7 +104,7 @@ const PageCreateModal = (props) => {
                   type="text"
                   className="page-today-input1 form-control text-center"
                   value={todayInput1}
-                  onChange={e => onChangeTodayInput1(e.target.value)}
+                  onChange={e => onChangeTodayInput1Handler(e.target.value)}
                 />
                 <span className="page-today-suffix">/{now}/</span>
                 <input
@@ -113,7 +113,7 @@ const PageCreateModal = (props) => {
                   id="page-today-input2"
                   placeholder={t('Input page name (optional)')}
                   value={todayInput2}
-                  onChange={e => onChangeTodayInput2(e.target.value)}
+                  onChange={e => onChangeTodayInput2Handler(e.target.value)}
                 />
               </div>
               <div className="create-page-button-container">
@@ -139,7 +139,7 @@ const PageCreateModal = (props) => {
                       value={pageNameInput}
                       className="page-name-input form-control"
                       placeholder={t('Input page name')}
-                      onChange={e => onChangePageNameInput(e.target.value)}
+                      onChange={e => onChangePageNameInputHandler(e.target.value)}
                       required
                     />
                   )}
@@ -167,11 +167,11 @@ const PageCreateModal = (props) => {
                     {template === 'decendants' && t('template.decendants.label')}
                   </button>
                   <div className="dropdown-menu" aria-labelledby="userMenu">
-                    <a className="dropdown-item" type="button" onClick={() => onChangeTemplate('children')}>
+                    <a className="dropdown-item" type="button" onClick={() => onChangeTemplateHandler('children')}>
                       { t('template.children.label') } (_template)<br className="d-block d-md-none" />
                       <small className="text-muted text-wrap">- { t('template.children.desc') }</small>
                     </a>
-                    <a className="dropdown-item" type="button" onClick={() => onChangeTemplate('decendants')}>
+                    <a className="dropdown-item" type="button" onClick={() => onChangeTemplateHandler('decendants')}>
                       { t('template.decendants.label') } (__template) <br className="d-block d-md-none" />
                       <small className="text-muted">- { t('template.decendants.desc') }</small>
                     </a>
