@@ -153,7 +153,7 @@ const PageCreateModal = (props) => {
           </fieldset>
         </div>
 
-        <div id="template-form" className="row form-group">
+        <div className="row form-group">
           <fieldset className="col-12">
             {/* eslint-disable-next-line react/no-danger */}
             <h3 className="grw-modal-head pb-2" dangerouslySetInnerHTML={{ __html: t('template.modal_label.Create template under', { path }) }} />
