@@ -60,7 +60,7 @@ html[dark] {
   $color-reversal: #eeeeee;
   // $color-header: #2b2b2b;
   $color-link: lighten($color-global, 20%);
-  $color-link-hover: lighten($color-link, 20%);
+  $color-link-hover: $subthemecolor;
   $color-link-wiki: $subthemecolor;
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
   $color-link-nabvar: $bgcolor-global;
@@ -111,6 +111,15 @@ html[dark] {
   h1,
   h2 {
     color: $subthemecolor;
+  }
+
+  /* Tabs */
+  .nav.nav-tabs {
+    > .nav-item {
+      > .nav-link.active {
+        color: $subthemecolor;
+      }
+    }
   }
 }
 
