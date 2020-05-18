@@ -2,15 +2,14 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-import {
-  Modal, ModalHeader, ModalBody, ModalFooter,
-} from 'reactstrap';
+import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 
-import { userPageRoot } from '@commons/util/path-utils';
+import { userPageRoot, getParentPath } from '@commons/util/path-utils';
 import { createSubscribedElement } from './UnstatedUtils';
+
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 import PagePathAutoComplete from './PagePathAutoComplete';
@@ -20,10 +19,12 @@ const PageCreateModal = (props) => {
 
   const config = appContainer.getConfig();
   const isReachable = config.isSearchServiceReachable;
+  const { path } = pageContainer.state;
+  const parentPath = getParentPath(path);
 
   const [todayInput1, setTodayInput1] = useState(t('Memo'));
   const [todayInput2, setTodayInput2] = useState('');
-  const [pageNameInput, setPageNameInput] = useState('');
+  const [pageNameInput, setPageNameInput] = useState(parentPath);
 
   /**
    * change todayInput1
@@ -90,11 +91,11 @@ const PageCreateModal = (props) => {
             <div className="d-flex create-page-input-container">
               <div className="create-page-input-row d-flex align-items-center">
                 {isReachable
-                  ? <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} addTrailingSlash />
+                  ? <PagePathAutoComplete crowi={appContainer} initializedPath={path} addTrailingSlash />
                   : (
                     <input
                       type="text"
-                      value="{{ parentPath(path) }}"
+                      value={pageNameInput}
                       className="page-name-input form-control"
                       placeholder={t('Input page name')}
                       onChange={e => onChangePageNameInput(e.target.value)}
@@ -110,8 +111,6 @@ const PageCreateModal = (props) => {
         </div>
 
       </ModalBody>
-      <ModalFooter>
-      </ModalFooter>
     </Modal>
 
   );
