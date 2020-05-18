@@ -2,6 +2,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import {
+  Button, Modal, ModalHeader, ModalBody, ModalFooter,
+} from 'reactstrap';
+
 import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from './UnstatedUtils';
@@ -11,9 +15,16 @@ const PageCreateModal = (props) => {
   const { appContainer } = props;
 
   return (
-    <p className="text-center" href="#" data-target="#create-page" data-toggle="modal">
-      {appContainer.state.isPageCreateModalShown && 'true'}
-    </p>
+    <Modal isOpen={appContainer.state.isPageCreateModalShown} toggle={appContainer.closePageCreateModal}>
+      <ModalHeader tag="h4" toggle={appContainer.closePageCreateModal} className="bg-primary text-light">
+        <span className="text-white">Edit Tags</span>
+      </ModalHeader>
+      <ModalBody>
+        hoge
+      </ModalBody>
+      <ModalFooter>
+      </ModalFooter>
+    </Modal>
   );
 };
 

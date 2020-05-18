@@ -93,7 +93,8 @@ export default class AppContainer extends Container {
       delete: this.apiv3Delete.bind(this),
     };
 
-    this.showPageCreateModal = this.showPageCreateModal.bind(this);
+    this.openPageCreateModal = this.openPageCreateModal.bind(this);
+    this.closePageCreateModal = this.closePageCreateModal.bind(this);
   }
 
   /**
@@ -461,8 +462,12 @@ export default class AppContainer extends Container {
     return this.apiv3Request('delete', path, { params });
   }
 
-  showPageCreateModal() {
+  openPageCreateModal() {
     this.setState({ isPageCreateModalShown: true });
+  }
+
+  closePageCreateModal() {
+    this.setState({ isPageCreateModalShown: false });
   }
 
 }
