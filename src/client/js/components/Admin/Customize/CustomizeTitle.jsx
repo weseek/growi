@@ -56,7 +56,7 @@ class CustomizeTitle extends React.Component {
           <div className="form-text text-muted col-12">
             Default Value: <code>&#123;&#123;page&#125;&#125; - &#123;&#123;sitename&#125;&#125;</code>
             <br />
-            Default Output: <pre><code className="xml">&lt;title&gt;/Sandbox - {'GROWI'}&lt;&#047;title&gt;</code></pre>
+            Default Output: <code className="xml">&lt;title&gt;/Somewhere/Page - {'GROWI'}&lt;&#047;title&gt;</code>
           </div>
           <div className="form-group col-12">
             <input

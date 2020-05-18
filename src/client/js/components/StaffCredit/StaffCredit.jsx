@@ -8,8 +8,8 @@ import {
 
 import contributors from './Contributor';
 
-// Unit is px / milli sec
-const scrollSpeed = 0.3;
+// px / sec
+const scrollSpeed = 200;
 
 /**
  * Page staff credit component
@@ -47,7 +47,7 @@ export default class StaffCredit extends React.Component {
         });
         const target = $('.credit-curtain');
         const scrollTargetHeight = target.children().innerHeight();
-        const duration = scrollTargetHeight / scrollSpeed;
+        const duration = scrollTargetHeight / scrollSpeed * 1000;
         target.animate({ scrollTop: scrollTargetHeight }, duration, 'linear');
 
         target.slimScroll({
@@ -105,7 +105,7 @@ export default class StaffCredit extends React.Component {
         return (
           <React.Fragment key={`${contributor.sectionName}-fragment`}>
             <div className={`row ${contributor.additionalClass}`} key={`${contributor.sectionName}-row`}>
-              <h2 className="col-md-12 dev-team mt-5 staff-credit-mb-10" key={contributor.sectionName}>{contributor.sectionName}</h2>
+              <h2 className="col-md-12 dev-team staff-credit-mt-10rem staff-credit-mb-6rem" key={contributor.sectionName}>{contributor.sectionName}</h2>
               {memberGroups}
             </div>
             <div className="clearfix"></div>
@@ -113,8 +113,8 @@ export default class StaffCredit extends React.Component {
         );
       });
       return (
-        <div className="text-center staff-credit-pb-10" onClick={this.deleteCredit}>
-          <h1 className="staff-credit-mb-10">GROWI Contributors</h1>
+        <div className="text-center staff-credit-content" onClick={this.deleteCredit}>
+          <h1 className="staff-credit-mb-6rem">GROWI Contributors</h1>
           <div className="clearfix"></div>
           {credit}
         </div>

@@ -253,7 +253,7 @@ class ImportService {
           callback();
         },
         final(callback) {
-          logger.info(`Importing ${collectionName} has terminated.`);
+          logger.info(`Importing ${collectionName} has completed.`);
           callback();
         },
       });

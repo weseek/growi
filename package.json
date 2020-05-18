@@ -98,7 +98,6 @@
     "express": "^4.16.1",
     "express-bunyan-logger": "^1.3.3",
     "express-form": "~0.12.0",
-    "express-sanitizer": "^1.0.4",
     "express-session": "^1.16.1",
     "express-validator": "^6.1.1",
     "express-webpack-assets": "^0.1.0",

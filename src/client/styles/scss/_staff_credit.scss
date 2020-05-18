@@ -2,8 +2,13 @@
 .staff-credit {
   // attached !important for updating from .modal-dialog class style
   width: 80vw !important;
+  max-width: unset !important;
+
   height: 80vh !important;
-  max-width: initial !important;
+  max-height: unset !important;
+
+  margin: 10vh 10vw !important;
+
   // see https://css-tricks.com/old-timey-terminal-styling/
   @mixin old-timey-terminal-styling() {
     text-shadow: 0 0 10px #c8c8c8;
@@ -48,20 +53,15 @@
     font-size: 1.8em;
   }
 
-  .staff-credit-mt-10 {
-    margin-top: 6rem;
+  .staff-credit-mt-10rem {
+    margin-top: 10rem;
   }
 
-  .staff-credit-mb-10 {
+  .staff-credit-mb-6rem {
     margin-bottom: 6rem;
   }
 
-  .staff-credit-my-10 {
-    @extend .staff-credit-mt-10;
-    @extend .staff-credit-mb-10;
-  }
-
-  .staff-credit-pb-10 {
-    padding-bottom: 6rem;
+  .staff-credit-content {
+    padding-bottom: 40vh;
   }
 }
