@@ -1,32 +1,24 @@
 @import '../variables';
 @import '../override-bootstrap-variables';
 
-$themelight: rgba(183, 226, 219, 1);
-$linkcolor: #3c6d72;
-$subthemecolor: rgba($linkcolor, 0.8);
-$bgcolor-theme: #97cbc3;
-$bgcolor-navbar: #0c2a44;
-$bgcolor-global: lighten($themelight, 10%);
+$color-themelight: rgba(183, 226, 219, 1);
+$color-primary: #97cbc3;
+$color-navbar: #0c2a44;
 $color-global: #3c6d72;
-$linktext-hover: rgba($linkcolor, 0.8);
-$sidebar-text: $bgcolor-theme;
-$primary: $bgcolor-theme;
-$fillcolor-logo-mark: lighten($themelight, 10%);
-$color-link-wiki: $linkcolor;
-$color-link-wiki-hover: rgba($linkcolor, 0.8);
-$dark: darken($color-global, 5%);
-$border: #76b1a8;
-$navbar-border: #76b1a8;
-$active-navbar-border: darken($navbar-border, 13%);
-$active-nav-tabs-bgcolor: #dbf0ed;
-$btn-default-bgcolor: darken($bgcolor-theme, 10%);
+$color-link-global: $color-global;
 $color-inline-code: #8f5313;
-$bgcolor-inline-code: darken($themelight, 3%);
+$color-active-bgnav-tabs: #dbf0ed;
+$color-link-wiki: $color-global;
+$color-link-wiki-hover: rgba($color-global, 0.8);
+$dark: darken($color-global, 5%);
+$bgcolor-inline-code: darken($color-themelight, 3%);
 
 html[light],
 html[dark] {
   // Background colors
   $bgcolor-card: #f5f5f5;
+  $bgcolor-global: lighten($color-themelight, 10%);
+  $bgcolor-navbar: $color-navbar;
 
   // Font colors
   $color-reversal: #eeeeee;
@@ -36,13 +28,13 @@ html[dark] {
 
   // List Group colors
   $color-list: $color-global;
-  $bgcolor-list: $bgcolor-global;
+  $bgcolor-list: lighten($color-themelight, 10%);
   $color-list-active: $color-reversal;
-  $bgcolor-list-active: $primary;
+  $bgcolor-list-active: $color-primary;
   $color-list-hover: $color-reversal;
 
   // Logo colors
-  $bgcolor-logo: $bgcolor-navbar;
+  $bgcolor-logo: $color-navbar;
   $fillcolor-logo-mark: lighten(desaturate($bgcolor-inline-code, 10%), 15%);
 
   // Icon colors
@@ -63,23 +55,23 @@ html[dark] {
   $color-badge: $color-reversal;
 
   // Sidebar
-  $bgcolor-sidebar: $bgcolor-navbar;
+  $bgcolor-sidebar: $color-navbar;
   $color-sidebar-context: $color-reversal;
-  $bgcolor-sidebar-context: lighten($bgcolor-navbar, 10%);
+  $bgcolor-sidebar-context: lighten($color-navbar, 10%);
 
   @import 'apply-colors';
   @import 'apply-colors-light';
 
   .wiki {
     .highlighted {
-      background-color: lighten($bgcolor-theme, 20%);
+      background-color: lighten($color-primary, 20%);
     }
   }
 
   .nav-tabs, .nav-tabs .nav-link.active, .nav-link {
     background: none;
-    border-color: $bgcolor-theme;
-    border-bottom-color: $bgcolor-theme;
+    border-color: $color-primary;
+    border-bottom-color: $color-primary;
   }
 
   .card, .card-header {
@@ -91,19 +83,19 @@ html[dark] {
     &,
     &.panel-white,
     &.panel-default {
-      color: $bgcolor-theme;
-      background-color: lighten($bgcolor-theme, 30%);
+      color: $color-primary;
+      background-color: lighten($color-primary, 30%);
       border-color: white;
 
       .panel-heading {
-        color: $bgcolor-theme;
+        color: $color-primary;
         background-color: white;
       }
 
       ul {
         li {
           a {
-            color: darken($bgcolor-theme, 15%);
+            color: darken($color-primary, 15%);
           }
         }
       }
@@ -115,14 +107,14 @@ html[dark] {
     .page-list-ul {
       > li {
         > a strong {
-          color: $linkcolor;
+          color: $color-link-global;
         }
       }
     }
   }
 
   .rbt-menu {
-    background: lighten($themelight, 5%);
+    background: lighten($color-themelight, 5%);
   }
 
   #wrapper > #page-wrapper,
@@ -137,9 +129,9 @@ html[dark] {
   body:not(.on-edit) .nav.nav-tabs {
     > li.active > a {
       background: linear-gradient(
-        rgba($active-nav-tabs-bgcolor, 0) 0%,
-        rgba($active-nav-tabs-bgcolor, 0) 90%,
-        $active-nav-tabs-bgcolor 100%
+        rgba($color-active-bgnav-tabs, 0) 0%,
+        rgba($color-active-bgnav-tabs, 0) 90%,
+        $color-active-bgnav-tabs 100%
       ); // overwrite only the bottom pixel
     }
   }
@@ -153,7 +145,7 @@ html[dark] {
   .table > tfoot > tr > td,
   .table > thead > tr > th,
   .table-bordered {
-    border-top: 1px solid $border;
+    border-top: 1px solid $color-primary;
   }
 
   .table-bordered > thead > tr > th,
@@ -162,15 +154,15 @@ html[dark] {
   .table-bordered > thead > tr > td,
   .table-bordered > tbody > tr > td,
   .table-bordered > tfoot > tr > td {
-    border: 1px solid $border;
+    border: 1px solid $color-primary;
   }
 
   .table > thead > tr > th {
-    border-bottom: 1px solid $border;
+    border-bottom: 1px solid $color-primary;
   }
 
   .table-bordered {
-    border: 1px solid $border;
+    border: 1px solid $color-primary;
   }
 
   // login page
