@@ -80,6 +80,14 @@ const PageCreateModal = (props) => {
     window.location.href = urljoin(pageNameInput, '#edit');
   }
 
+  /**
+   * access template page
+   */
+  function createTemplatePage() {
+    const pageName = (template === 'children') ? '_template' : '__template';
+    window.location.href = urljoin(parentPath, pageName, '#edit');
+  }
+
   return (
     <Modal size="lg" isOpen={appContainer.state.isPageCreateModalShown} toggle={appContainer.closePageCreateModal}>
       <ModalHeader tag="h4" toggle={appContainer.closePageCreateModal} className="bg-primary text-light">
@@ -172,10 +180,10 @@ const PageCreateModal = (props) => {
 
               </div>
               <div className="create-page-button-container">
-                <a id="link-to-template" href="{{ page.path || path }}" className={`btn btn-outline-primary rounded-pill ${template == null && 'disabled'}`}>
+                <button type="button" className={`btn btn-outline-primary rounded-pill ${template == null && 'disabled'}`} onClick={createTemplatePage}>
                   <i className="icon-fw icon-doc"></i>
-                  <span id="create-template-button-link">{ t('Edit') }</span>
-                </a>
+                  <span>{ t('Edit') }</span>
+                </button>
               </div>
             </div>
           </fieldset>
