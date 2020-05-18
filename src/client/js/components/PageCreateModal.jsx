@@ -6,6 +6,7 @@ import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
 import { format } from 'date-fns';
+import urljoin from 'url-join';
 
 import { userPageRoot, getParentPath } from '@commons/util/path-utils';
 import { createSubscribedElement } from './UnstatedUtils';
@@ -20,7 +21,9 @@ const PageCreateModal = (props) => {
   const config = appContainer.getConfig();
   const isReachable = config.isSearchServiceReachable;
   const { path } = pageContainer.state;
+  const userPageRootPath = userPageRoot(appContainer.currentUser);
   const parentPath = getParentPath(path);
+  const now = format(new Date(), 'yyyy/MM/dd');
 
   const [todayInput1, setTodayInput1] = useState(t('Memo'));
   const [todayInput2, setTodayInput2] = useState('');
@@ -59,6 +62,17 @@ const PageCreateModal = (props) => {
     setTemplate(value);
   }
 
+  /**
+   * access today page
+   */
+  function createTodayPage() {
+    let tmpTodayInput1 = todayInput1;
+    if (tmpTodayInput1 === '') {
+      tmpTodayInput1 = t('Memo');
+    }
+    window.location.href = urljoin(userPageRootPath, tmpTodayInput1, now, todayInput2, '#edit');
+  }
+
   return (
     <Modal size="lg" isOpen={appContainer.state.isPageCreateModalShown} toggle={appContainer.closePageCreateModal}>
       <ModalHeader tag="h4" toggle={appContainer.closePageCreateModal} className="bg-primary text-light">
@@ -70,14 +84,14 @@ const PageCreateModal = (props) => {
             <h3 className="grw-modal-head pb-2">{ t("Create today's") }</h3>
             <div className="d-flex">
               <div className="create-page-input-row d-flex align-items-center">
-                <span>{ userPageRoot(appContainer.currentUser) }/</span>
+                <span>{userPageRootPath}/</span>
                 <input
                   type="text"
                   className="page-today-input1 form-control text-center"
                   value={todayInput1}
                   onChange={e => onChangeTodayInput1(e.target.value)}
                 />
-                <span className="page-today-suffix">/{format(new Date(), 'yyyy/MM/dd')}/</span>
+                <span className="page-today-suffix">/{now}/</span>
                 <input
                   type="text"
                   className="page-today-input2 form-control"
@@ -88,7 +102,9 @@ const PageCreateModal = (props) => {
                 />
               </div>
               <div className="create-page-button-container">
-                <button type="submit" className="btn btn-outline-primary rounded-pill"><i className="icon-fw icon-doc"></i>{ t('Create') }</button>
+                <button type="button" className="btn btn-outline-primary rounded-pill" onClick={createTodayPage}>
+                  <i className="icon-fw icon-doc"></i>{ t('Create') }
+                </button>
               </div>
             </div>
           </fieldset>
