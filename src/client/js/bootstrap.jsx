@@ -47,6 +47,7 @@ const componentMappings = {
   'personal-dropdown': <PersonalDropdown />,
 
   'create-page-button': <PageCreateButton />,
+  'create-page-button-icon': <PageCreateButton isIcon />,
   'page-create-modal': <PageCreateModal />,
 
   'grw-sidebar-wrapper': <Sidebar />,

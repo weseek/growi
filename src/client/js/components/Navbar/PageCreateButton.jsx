@@ -7,13 +7,21 @@ import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
 const PageCreateButton = (props) => {
-  const { t, appContainer } = props;
+  const { t, appContainer, isIcon } = props;
+
+  if (isIcon) {
+    return (
+      <a className="btn btn-lg btn-primary rounded-circle waves-effect waves-light" type="button" onClick={appContainer.openPageCreateModal}>
+        <i className="icon-pencil"></i>
+      </a>
+    );
+  }
 
   return (
-    <a className="nav-link create-page" type="button" onClick={appContainer.openPageCreateModal}>
+    <button className="nav-link create-page" type="button" onClick={appContainer.openPageCreateModal}>
       <i className="icon-pencil mr-2"></i>
       <span>{ t('New') }</span>
-    </a>
+    </button>
   );
 };
 
@@ -28,6 +36,8 @@ const PageCreateButtonWrapper = (props) => {
 PageCreateButton.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+
+  isIcon: PropTypes.bool,
 };
 
 export default withTranslation()(PageCreateButtonWrapper);
