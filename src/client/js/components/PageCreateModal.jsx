@@ -25,6 +25,7 @@ const PageCreateModal = (props) => {
   const [todayInput1, setTodayInput1] = useState(t('Memo'));
   const [todayInput2, setTodayInput2] = useState('');
   const [pageNameInput, setPageNameInput] = useState(parentPath);
+  const [template, setTemplate] = useState(null);
 
   /**
    * change todayInput1
@@ -48,6 +49,14 @@ const PageCreateModal = (props) => {
    */
   function onChangePageNameInput(value) {
     setPageNameInput(value);
+  }
+
+  /**
+   * change template
+   * @param {string} value
+   */
+  function onChangeTemplate(value) {
+    setTemplate(value);
   }
 
   return (
@@ -109,6 +118,43 @@ const PageCreateModal = (props) => {
             </div>
           </fieldset>
         </div>
+
+        <div id="template-form" className="row form-group">
+          <fieldset className="col-12">
+            {/* eslint-disable-next-line react/no-danger */}
+            <h3 className="grw-modal-head pb-2" dangerouslySetInnerHTML={{ __html: t('template.modal_label.Create template under', { path }) }} />
+            <div className="d-flex create-page-input-container">
+              <div className="create-page-input-row d-flex align-items-center">
+
+                <div id="dd-template-type" className="dropdown w-100">
+                  <button id="template-type" type="button" className="btn btn-secondary btn dropdown-toggle" data-toggle="dropdown">
+                    {template == null && t('template.option_label.select') }
+                    {template === 'children' && t('template.children.label')}
+                    {template === 'decendants' && t('template.decendants.label')}
+                  </button>
+                  <div className="dropdown-menu" aria-labelledby="userMenu">
+                    <a className="dropdown-item" type="button" onClick={() => onChangeTemplate('children')}>
+                      { t('template.children.label') } (_template)<br className="d-block d-md-none" />
+                      <small className="text-muted text-wrap">- { t('template.children.desc') }</small>
+                    </a>
+                    <a className="dropdown-item" type="button" onClick={() => onChangeTemplate('decendants')}>
+                      { t('template.decendants.label') } (__template) <br className="d-block d-md-none" />
+                      <small className="text-muted">- { t('template.decendants.desc') }</small>
+                    </a>
+                  </div>
+                </div>
+
+              </div>
+              <div className="create-page-button-container">
+                <a id="link-to-template" href="{{ page.path || path }}" className={`btn btn-outline-primary rounded-pill ${template == null && 'disabled'}`}>
+                  <i className="icon-fw icon-doc"></i>
+                  <span id="create-template-button-link">{ t('Edit') }</span>
+                </a>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
 
       </ModalBody>
     </Modal>
