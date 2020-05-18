@@ -10,8 +10,9 @@ $color-inline-code: #8f5313;
 $color-active-bgnav-tabs: #dbf0ed;
 $color-link-wiki: $color-global;
 $color-link-wiki-hover: rgba($color-global, 0.8);
-$dark: darken($color-global, 5%);
 $bgcolor-inline-code: darken($color-themelight, 3%);
+
+$dark: darken($color-global, 5%);
 
 html[light],
 html[dark] {
