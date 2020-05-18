@@ -34,6 +34,8 @@ export default class AppContainer extends Container {
       preferDarkModeByMediaQuery: false,
       preferDarkModeByUser: null,
       isDrawerOpened: false,
+
+      recentlyUpdatedPages: [],
     };
 
     const body = document.querySelector('body');
@@ -270,6 +272,11 @@ export default class AppContainer extends Container {
         }
       }
     });
+  }
+
+  async retrieveRecentlyUpdated() {
+    const { data } = await this.apiv3Get('/pages/recent');
+    this.setState({ recentlyUpdatedPages: data.pages });
   }
 
   fetchUsers() {
