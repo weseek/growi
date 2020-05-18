@@ -5,6 +5,7 @@ import { I18nextProvider } from 'react-i18next';
 
 import loggerFactory from '@alias/logger';
 
+import ErrorBoundary from './components/ErrorBoudary';
 import SearchPage from './components/SearchPage';
 import TagsList from './components/TagsList';
 import PageEditor from './components/PageEditor';
@@ -111,9 +112,11 @@ Object.keys(componentMappings).forEach((key) => {
   if (elem) {
     ReactDOM.render(
       <I18nextProvider i18n={i18n}>
-        <Provider inject={injectableContainers}>
-          {componentMappings[key]}
-        </Provider>
+        <ErrorBoundary>
+          <Provider inject={injectableContainers}>
+            {componentMappings[key]}
+          </Provider>
+        </ErrorBoundary>
       </I18nextProvider>,
       elem,
     );
@@ -124,7 +127,9 @@ Object.keys(componentMappings).forEach((key) => {
 $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', () => {
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <PageHistory pageId={pageContainer.state.pageId} crowi={appContainer} />
+      <ErrorBoundary>
+        <PageHistory pageId={pageContainer.state.pageId} crowi={appContainer} />
+      </ErrorBoundary>
     </I18nextProvider>, document.getElementById('revision-history'),
   );
 });
