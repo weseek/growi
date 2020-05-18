@@ -29,7 +29,9 @@ const PageCreateModal = (props) => {
   const [todayInput2, setTodayInput2] = useState('');
   const [pageNameInput, setPageNameInput] = useState(parentPath);
   const [template, setTemplate] = useState(null);
-
+  const encodedPath = encodeURI(path);
+  console.log(path);
+  console.log(encodedPath);
   /**
    * change todayInput1
    * @param {string} value
@@ -155,8 +157,9 @@ const PageCreateModal = (props) => {
 
         <div className="row form-group">
           <fieldset className="col-12">
-            {/* eslint-disable-next-line react/no-danger */}
-            <h3 className="grw-modal-head pb-2" dangerouslySetInnerHTML={{ __html: t('template.modal_label.Create template under', { path }) }} />
+            <h3 className="grw-modal-head pb-2">{ t('template.modal_label.Create template under')}<br />
+              <code>{path}</code>
+            </h3>
             <div className="d-flex create-page-input-container">
               <div className="create-page-input-row d-flex align-items-center">
 
