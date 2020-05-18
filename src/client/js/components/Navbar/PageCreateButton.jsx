@@ -11,17 +11,17 @@ const PageCreateButton = (props) => {
 
   if (isIcon) {
     return (
-      <a className="btn btn-lg btn-primary rounded-circle waves-effect waves-light" type="button" onClick={appContainer.openPageCreateModal}>
+      <button className="btn btn-lg btn-primary rounded-circle waves-effect waves-light" type="button" onClick={appContainer.openPageCreateModal}>
         <i className="icon-pencil"></i>
-      </a>
+      </button>
     );
   }
 
   return (
-    <button className="nav-link create-page" type="button" onClick={appContainer.openPageCreateModal}>
+    <a className="nav-link create-page" type="button" onClick={appContainer.openPageCreateModal}>
       <i className="icon-pencil mr-2"></i>
       <span>{ t('New') }</span>
-    </button>
+    </a>
   );
 };
 

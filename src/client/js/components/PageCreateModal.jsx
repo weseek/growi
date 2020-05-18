@@ -17,7 +17,7 @@ const PageCreateModal = (props) => {
   return (
     <Modal isOpen={appContainer.state.isPageCreateModalShown} toggle={appContainer.closePageCreateModal}>
       <ModalHeader tag="h4" toggle={appContainer.closePageCreateModal} className="bg-primary text-light">
-        <span className="text-white">{ t('New Page') }</span>
+        { t('New Page') }
       </ModalHeader>
       <ModalBody>
         hoge
