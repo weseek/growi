@@ -73,6 +73,13 @@ const PageCreateModal = (props) => {
     window.location.href = urljoin(userPageRootPath, tmpTodayInput1, now, todayInput2, '#edit');
   }
 
+  /**
+   * access input page
+   */
+  function createInputPage() {
+    window.location.href = urljoin(pageNameInput, '#edit');
+  }
+
   return (
     <Modal size="lg" isOpen={appContainer.state.isPageCreateModalShown} toggle={appContainer.closePageCreateModal}>
       <ModalHeader tag="h4" toggle={appContainer.closePageCreateModal} className="bg-primary text-light">
@@ -116,6 +123,7 @@ const PageCreateModal = (props) => {
             <div className="d-flex create-page-input-container">
               <div className="create-page-input-row d-flex align-items-center">
                 {isReachable
+                  // GW-2355 refactor typeahead
                   ? <PagePathAutoComplete crowi={appContainer} initializedPath={path} addTrailingSlash />
                   : (
                     <input
@@ -129,7 +137,9 @@ const PageCreateModal = (props) => {
                   )}
               </div>
               <div className="create-page-button-container">
-                <button type="submit" className="btn btn-outline-primary rounded-pill"><i className="icon-fw icon-doc"></i>{ t('Create') }</button>
+                <button type="submit" className="btn btn-outline-primary rounded-pill" onClick={createInputPage}>
+                  <i className="icon-fw icon-doc"></i>{ t('Create') }
+                </button>
               </div>
             </div>
           </fieldset>
