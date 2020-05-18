@@ -150,15 +150,12 @@ class PageQueryBuilder {
   /**
    * generate the query to find the page that is match with `path` and its descendants
    */
-  addConditionToListWithDescendants(path, option) {
+  addConditionToListWithDescendants(path) {
     // ignore other pages than descendants
     // eslint-disable-next-line no-param-reassign
     path = addSlashOfEnd(path);
 
-    // add option to escape the regex strings
-    const combinedOption = Object.assign({ isRegExpEscapedFromPath: true }, option);
-
-    this.addConditionToListByStartWith(path, combinedOption);
+    this.addConditionToListByStartWith(path);
     return this;
   }
 
@@ -168,16 +165,13 @@ class PageQueryBuilder {
    * In normal case, returns '{path}/*' and '{path}' self.
    * If top page, return without doing anything.
    *
-   * *option*
-   *   - isRegExpEscapedFromPath -- if true, the regex strings included in `path` is escaped (default: false)
    */
-  addConditionToListByStartWith(path, option) {
+  addConditionToListByStartWith(path) {
     // No request is set for the top page
     if (isTopPage(path)) {
       return this;
     }
     const pathCondition = [];
-    const isRegExpEscapedFromPath = option.isRegExpEscapedFromPath || false;
 
     /*
      * 1. add condition for finding the page completely match with `path` w/o last slash
@@ -190,9 +184,7 @@ class PageQueryBuilder {
     /*
      * 2. add decendants
      */
-    const pattern = (isRegExpEscapedFromPath)
-      ? escapeStringRegexp(path) // escape
-      : pathSlashOmitted;
+    const pattern = escapeStringRegexp(path); // escape
 
     let queryReg;
     try {
@@ -698,7 +690,7 @@ module.exports = function(crowi) {
    */
   pageSchema.statics.findListWithDescendants = async function(path, user, option) {
     const builder = new PageQueryBuilder(this.find());
-    builder.addConditionToListWithDescendants(path, option);
+    builder.addConditionToListWithDescendants(path);
 
     return await findListFromBuilderAndViewer(builder, user, false, option);
   };
@@ -708,7 +700,7 @@ module.exports = function(crowi) {
    */
   pageSchema.statics.findListByStartWith = async function(path, user, option) {
     const builder = new PageQueryBuilder(this.find());
-    builder.addConditionToListByStartWith(path, option);
+    builder.addConditionToListByStartWith(path);
 
     return await findListFromBuilderAndViewer(builder, user, false, option);
   };
