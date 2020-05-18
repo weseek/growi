@@ -195,7 +195,7 @@ class SearchResult extends React.Component {
                 )
               }
               <div className="page-list-option">
-                <button type="button" className="btn btn-link p-0" href={page.path}><i className="icon-login" /></button>
+                <button type="button" className="btn btn-link p-0" onClick={() => { window.location.href = page.path }}><i className="icon-login" /></button>
               </div>
             </div>
           </a>
@@ -281,7 +281,7 @@ class SearchResult extends React.Component {
     return (
       <div className="content-main">
         <div className="search-result row" id="search-result">
-          <div className="col-lg-4 d-none d-lg-block page-list search-result-list" id="search-result-list">
+          <div className="col-lg-4 d-none d-lg-block page-list search-result-list pr-0" id="search-result-list">
             <nav>
               <div className="d-flex align-items-start justify-content-between mt-1">
                 <div className="search-result-meta">
