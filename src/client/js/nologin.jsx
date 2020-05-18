@@ -37,7 +37,19 @@ if (loginFormElem) {
   const email = loginFormElem.dataset.email;
   const isRegistrationEnabled = loginFormElem.dataset.isRegistrationEnabled === 'true';
   const registrationMode = loginFormElem.dataset.registrationMode;
-  const registrationWhiteList = loginFormElem.dataset.registrationWhiteList.split(',');
+
+
+  const registrationWhiteListA = loginFormElem.dataset.registrationWhiteList;
+
+  let registrationWhiteList;
+  if (registrationWhiteListA.length > 0) {
+    registrationWhiteList = loginFormElem.dataset.registrationWhiteList.split(',');
+  }
+  else {
+    registrationWhiteList = [];
+  }
+
+
   const isLocalStrategySetup = loginFormElem.dataset.isLocalStrategySetup === 'true';
   const isLdapStrategySetup = loginFormElem.dataset.isLdapStrategySetup === 'true';
   const objOfIsExternalAuthEnableds = {
