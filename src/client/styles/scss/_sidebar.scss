@@ -1,13 +1,25 @@
 .grw-sidebar {
   .ak-navigation-resize-button {
-    @include hexagonize(24px, white);
-
+    // locate to the center of screen
     top: calc(50vh - 20px);
 
-    // unset hover color
+    /*
+     * styles
+     */
+    // unset originalhover color
     > div:hover {
       background-color: unset;
     }
+
+    @include hexagonize(24px, white);
+
+    // rotate 30deg
+    transform: translate(-50%) rotate(30deg);
+    span {
+      transform: rotate(-30deg);
+    }
+
+    // centering icon
     > span {
       margin-top: -5.5px;
     }
