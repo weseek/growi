@@ -145,7 +145,7 @@
 
   &:before {
     @if $border == 0 {
-      bottom: 100%;
+      bottom: 99%;
       border-bottom: ($size * 0.288) solid $color;
     } @else {
       top: -($size * 0.353);
@@ -156,7 +156,7 @@
 
   &:after {
     @if $border == 0 {
-      top: 100%;
+      top: 99%;
       width: 0;
       border-top: ($size * 0.288) solid $color;
     } @else {
