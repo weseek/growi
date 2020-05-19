@@ -165,6 +165,8 @@ class PageQueryBuilder {
    * In normal case, returns '{path}/*' and '{path}' self.
    * If top page, return without doing anything.
    *
+   * *option*
+   *   Left for backward compatibility
    */
   addConditionToListByStartWith(path, option) {
     // No request is set for the top page
