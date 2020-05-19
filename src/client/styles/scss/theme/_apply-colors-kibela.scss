@@ -90,22 +90,14 @@ body.kibela {
       }
 
       > .nav-link {
-        color: $color-global;
+        color: $color-link;
       }
 
       > .nav-link.active {
         background: transparent !important;
         border-bottom: solid 2.7px $thickborder;
       }
-
-      > .nav-link.active {
-        color: $color-link;
-      }
     }
-  }
-
-  .personalDropdownUserame {
-    color: $color-global;
   }
 
   /* wiki */
@@ -175,6 +167,11 @@ body.kibela {
       }
       &:focus {
         color: $color-link-nabvar;
+      }
+    }
+    #personal-dropdown {
+      a.nav-link {
+        color: $color-global;
       }
     }
   }
