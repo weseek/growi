@@ -99,14 +99,14 @@ const PageCreateModal = (props) => {
               <span>{userPageRootPath}/</span>
               <input
                 type="text"
-                className="page-today-input1 form-control text-center m-2"
+                className="page-today-input1 form-control text-center mx-2"
                 value={todayInput1}
                 onChange={e => onChangeTodayInput1Handler(e.target.value)}
               />
               <span className="page-today-suffix">/{now}/</span>
               <input
                 type="text"
-                className="page-today-input2 form-control m-2"
+                className="page-today-input2 form-control mx-2"
                 id="page-today-input2"
                 placeholder={t('Input page name (optional)')}
                 value={todayInput2}
