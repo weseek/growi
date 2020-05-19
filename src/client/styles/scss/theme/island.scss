@@ -1,8 +1,9 @@
 @import '../variables';
 @import '../override-bootstrap-variables';
 
+$themecolor: #97cbc3;
 $color-themelight: rgba(183, 226, 219, 1);
-$color-primary: #97cbc3;
+$color-primary: $themecolor;
 $color-navbar: #0c2a44;
 $color-global: #3c6d72;
 $color-link-global: $color-global;
@@ -63,19 +64,34 @@ html[dark] {
   @import 'apply-colors';
   @import 'apply-colors-light';
 
+  /*
+  * GROWI admin page #themeOptions
+  */
+  .admin-page {
+    #themeOptions {
+      .theme-option-container.active a {
+        background-color: darker($themecolor, 50%);
+        border-color: darker($themecolor, 50%);
+      }
+    }
+  }
+
   .wiki {
     .highlighted {
       background-color: lighten($color-primary, 20%);
     }
   }
 
-  .nav-tabs, .nav-tabs .nav-link.active, .nav-link {
+  .nav-tabs,
+  .nav-tabs .nav-link.active,
+  .nav-link {
     background: none;
     border-color: $color-primary;
     border-bottom-color: $color-primary;
   }
 
-  .card, .card-header {
+  .card,
+  .card-header {
     background: none;
     border: none;
   }
