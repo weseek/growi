@@ -150,12 +150,12 @@ class PageQueryBuilder {
   /**
    * generate the query to find the page that is match with `path` and its descendants
    */
-  addConditionToListWithDescendants(path) {
+  addConditionToListWithDescendants(path, option) {
     // ignore other pages than descendants
     // eslint-disable-next-line no-param-reassign
     path = addSlashOfEnd(path);
 
-    this.addConditionToListByStartWith(path);
+    this.addConditionToListByStartWith(path, option);
     return this;
   }
 
@@ -166,7 +166,7 @@ class PageQueryBuilder {
    * If top page, return without doing anything.
    *
    */
-  addConditionToListByStartWith(path) {
+  addConditionToListByStartWith(path, option) {
     // No request is set for the top page
     if (isTopPage(path)) {
       return this;
@@ -690,7 +690,7 @@ module.exports = function(crowi) {
    */
   pageSchema.statics.findListWithDescendants = async function(path, user, option) {
     const builder = new PageQueryBuilder(this.find());
-    builder.addConditionToListWithDescendants(path);
+    builder.addConditionToListWithDescendants(path, option);
 
     return await findListFromBuilderAndViewer(builder, user, false, option);
   };
@@ -700,7 +700,7 @@ module.exports = function(crowi) {
    */
   pageSchema.statics.findListByStartWith = async function(path, user, option) {
     const builder = new PageQueryBuilder(this.find());
-    builder.addConditionToListByStartWith(path);
+    builder.addConditionToListByStartWith(path, option);
 
     return await findListFromBuilderAndViewer(builder, user, false, option);
   };
