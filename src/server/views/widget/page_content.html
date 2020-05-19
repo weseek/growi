@@ -16,12 +16,15 @@
   data-page-created-at="{% if page %}{{ page.createdAt|datetz('Y/m/d H:i:s') }}{% endif %}"
   data-page-creator="{% if page %}{{ page.creator|json }}{% endif %}"
   data-page-updated-at="{% if page %}{{ page.updatedAt|datetz('Y/m/d H:i:s') }}{% endif %}"
+  data-children-pages="{{ pages|json }}"
   >
 {% else %}
 <div id="content-main" class="content-main"
   data-path="{{ encodeURI(path) }}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
   data-slack-channels="{{ slack|default('') }}"
+  data-page-is-deleted="{% if page.isDeleted() %}true{% else %}false{% endif %}"
+  data-children-pages="{{ pages|json }}"
   >
 {% endif %}
 

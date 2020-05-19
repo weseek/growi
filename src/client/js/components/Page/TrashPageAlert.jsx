@@ -14,10 +14,11 @@ import UserPicture from '../User/UserPicture';
 const TrashPageAlert = (props) => {
   const { t, appContainer, pageContainer } = props;
   const {
-    path, isDeleted, revisionAuthor, updatedAt,
+    path, isDeleted, revisionAuthor, updatedAt, childrenPages,
   } = pageContainer.state;
   console.log(pageContainer.state);
   const { currentUser } = appContainer;
+
   const isTopPagePath = isTopPage(path);
   const isUserPagePath = isUserPage(path);
   // const now = format(updatedAt, 'Y-m-d H:i:s');
@@ -28,11 +29,14 @@ const TrashPageAlert = (props) => {
       This page is in the trash <i className="icon-trash" aria-hidden="true"></i>.
         {isDeleted && <span><br /><UserPicture user={revisionAuthor} /> Deleted by {revisionAuthor.name} at {updatedAt}</span>}
       </div>
-      {/* {% if user and user.admin and req.path == '/trash' and pages.length > 0 %}
-    <div>
-      <button href="#" class="btn btn-danger rounded-pill btn-sm" data-target="#emptyTrash" data-toggle="modal"><i class="icon-trash" aria-hidden="true"></i>{{ t('modal_empty.empty_the_trash') }}</button>
-    </div>
-    {% endif %}
+      {currentUser.admin && path === '/trash' && childrenPages.length > 0 && (
+      <div>
+        <button href="#" type="button" className="btn btn-danger rounded-pill btn-sm" data-target="#emptyTrash" data-toggle="modal">
+          <i className="icon-trash" aria-hidden="true"></i>{ t('modal_empty.empty_the_trash') }
+        </button>
+      </div>
+      )}
+      {/*
     {% if page.isDeleted() and user %}
     <div>
       <button href="#" class="btn btn-outline-secondary rounded-pill btn-sm mr-2" data-target="#putBackPage" data-toggle="modal"><i class="icon-action-undo" aria-hidden="true"></i> {{ t('Put Back') }}</button>
