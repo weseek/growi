@@ -202,9 +202,9 @@ const PageCreateModal = (props) => {
         { t('New Page') }
       </ModalHeader>
       <ModalBody>
-        {renderCreateTodayForm}
-        {renderInputPageForm}
-        {renderTemplatePageForm}
+        {renderCreateTodayForm()}
+        {renderInputPageForm()}
+        {renderTemplatePageForm()}
       </ModalBody>
     </Modal>
 
