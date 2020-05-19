@@ -105,15 +105,16 @@ html[dark] {
   .table {
     background-color: $bgcolor-global;
   }
+
   .card-timeline > .card-header {
     background-color: $third-main-color;
   }
+
   h1,
   h2 {
     color: $subthemecolor;
   }
 
-  /* Tabs */
   .nav.nav-tabs {
     > .nav-item {
       > .nav-link.active {
