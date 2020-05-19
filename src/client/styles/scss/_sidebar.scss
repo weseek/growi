@@ -1,5 +1,6 @@
 .grw-sidebar {
   .ak-navigation-resize-button {
+    @extend .btn-hexagon;
     top: calc(50vh - 20px);
   }
 
