@@ -91,34 +91,41 @@ const PageCreateModal = (props) => {
 
   function renderCreateTodayForm() {
     return (
-      <div className="row form-group">
+      <div className="row">
         <fieldset className="col-12 mb-4">
           <h3 className="grw-modal-head pb-2">{ t("Create today's") }</h3>
-          <div className="d-sm-flex">
-            <div className="create-page-input-row d-flex align-items-center flex-fill">
-              <span>{userPageRootPath}/</span>
+
+          <div className="d-sm-flex flex align-items-center justify-items-between">
+
+            <div className="d-flex align-items-center flex-fill flex-wrap flex-lg-nowrap">
+              <div className="d-flex align-items-center">
+                <span>{userPageRootPath}/</span>
+                <input
+                  type="text"
+                  className="page-today-input1 form-control text-center mx-2"
+                  value={todayInput1}
+                  onChange={e => onChangeTodayInput1Handler(e.target.value)}
+                />
+                <span className="page-today-suffix">/{now}/</span>
+              </div>
               <input
                 type="text"
-                className="page-today-input1 form-control text-center mx-2"
-                value={todayInput1}
-                onChange={e => onChangeTodayInput1Handler(e.target.value)}
-              />
-              <span className="page-today-suffix">/{now}/</span>
-              <input
-                type="text"
-                className="page-today-input2 form-control mx-2"
+                className="page-today-input2 form-control mt-1 mt-lg-0 mx-lg-2 flex-fill"
                 id="page-today-input2"
                 placeholder={t('Input page name (optional)')}
                 value={todayInput2}
                 onChange={e => onChangeTodayInput2Handler(e.target.value)}
               />
             </div>
-            <div className="create-page-button-container float-right ml-3 mt-3 mt-sm-0">
-              <button type="button" className="btn btn-outline-primary rounded-pill" onClick={createTodayPage}>
+
+            <div className="d-flex justify-content-end mt-1 mt-sm-0">
+              <button type="button" className="btn btn-outline-primary rounded-pill text-nowrap ml-3" onClick={createTodayPage}>
                 <i className="icon-fw icon-doc"></i>{ t('Create') }
               </button>
             </div>
+
           </div>
+
         </fieldset>
       </div>
     );
@@ -138,7 +145,7 @@ const PageCreateModal = (props) => {
                   <input
                     type="text"
                     value={pageNameInput}
-                    className="page-name-input form-control"
+                    className="form-control flex-fill"
                     placeholder={t('Input page name')}
                     onChange={e => onChangePageNameInputHandler(e.target.value)}
                     required
@@ -197,7 +204,7 @@ const PageCreateModal = (props) => {
     );
   }
   return (
-    <Modal size="lg" isOpen={appContainer.state.isPageCreateModalShown} toggle={appContainer.closePageCreateModal}>
+    <Modal size="lg" isOpen={appContainer.state.isPageCreateModalShown} toggle={appContainer.closePageCreateModal} className="grw-create-page">
       <ModalHeader tag="h4" toggle={appContainer.closePageCreateModal} className="bg-primary text-light">
         { t('New Page') }
       </ModalHeader>
