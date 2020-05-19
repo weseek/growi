@@ -7,7 +7,7 @@ import {
   withNavigationUIController,
   LayoutManager,
   NavigationProvider,
-  ThemeProvider, modeGenerator,
+  ThemeProvider,
 } from '@atlaskit/navigation-next';
 
 import { createSubscribedElement } from './UnstatedUtils';
