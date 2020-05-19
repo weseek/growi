@@ -111,6 +111,9 @@ $input-focus-color: $color-global;
   .nav-item > .nav-link {
     color: $color-link-nabvar;
   }
+
+  border-image: linear-gradient(to right, #545fff 0%, #00a6e5 100%);
+  border-image-slice: 1;
 }
 
 .grw-sidebar {

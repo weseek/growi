@@ -18,8 +18,8 @@
 }
 
 @mixin expand-editor($editor-header-plus-footer, $navbar-height-adjustment: 0px) {
-  $grw-navbar-height: $grw-navbar-height + $navbar-height-adjustment;
-  $header-plus-footer: $grw-navbar-height + $editor-header-plus-footer + 2px; // add .main padding-top
+  $navbar-height: $grw-navbar-height + $grw-navbar-border-width + $navbar-height-adjustment;
+  $header-plus-footer: $navbar-height + $editor-header-plus-footer + 2px; // add .main padding-top
 
   $editor-margin: $header-plus-footer //
     + 25px //   add .btn-open-dropzone height
@@ -27,7 +27,7 @@
 
   .main {
     width: 100%;
-    height: calc(100vh - #{$grw-navbar-height});
+    height: calc(100vh - #{$navbar-height});
     padding-top: 2px;
     margin-top: 0px !important;
 

@@ -83,7 +83,6 @@ html[dark] {
 
   // Background colors
   $bgcolor-global: $basecolor;
-  $bgcolor-navbar: #151515;
   $bgcolor-inline-code: darken($basecolor, 5%);
   $bgcolor-card: darken($basecolor, 5%);
 
@@ -104,6 +103,11 @@ html[dark] {
   $color-list-active: $color-global;
   $bgcolor-list-active: $primary;
   $color-list-hover: $color-reversal;
+
+  // Navbar
+  $bgcolor-navbar: #2a2929;
+  $border-color-navbar-gradient-left: #545fff;
+  $border-color-navbar-gradient-right: #00a6e5;
 
   // Logo colors
   $bgcolor-logo: $bgcolor-navbar;
