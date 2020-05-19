@@ -11,16 +11,20 @@
       background-color: unset;
     }
 
-    @include hexagonize(24px, white);
+    $box-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+    @include hexagonize(24px, white, $box-shadow);
 
     // rotate 30deg
     transform: translate(-50%) rotate(30deg);
-    span {
+    > div,
+    > span svg {
       transform: rotate(-30deg);
     }
 
     // centering icon
-    > span {
+    > span svg {
+      position: relative;
+      z-index: 1;
       margin-top: -5.5px;
     }
   }

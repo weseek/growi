@@ -115,7 +115,7 @@
  * Makes a CSS hexagon! based off of http://csshexagon.com/
  * Demo: http://sassmeister.com/gist/98fcf3ce163a97d2ef7e
  */
-@mixin hexagonize($size, $color, $border: 0) {
+@mixin hexagonize($size, $color, $box-shadow: 0, $border: 0) {
   width: $size;
   height: ($size * 0.577);
   margin: ($size * 0.288) 0;
@@ -123,12 +123,16 @@
   border-right: $border;
   border-left: $border;
 
+  @if $box-shadow != 0 {
+    box-shadow: $box-shadow;
+  }
+
   &:before,
   &:after {
     position: absolute;
     content: '';
 
-    @if $border == 0 {
+    @if $border == 0 and $box-shadow == 0 {
       left: 0;
       width: 0;
       border-right: ($size/2) solid transparent;
@@ -141,28 +145,57 @@
       background-color: inherit;
       transform: scaleY(0.5774) rotate(-45deg);
     }
+
+    @if $box-shadow != 0 {
+      box-shadow: $box-shadow;
+    }
   }
 
   &:before {
-    @if $border == 0 {
+    @if $border == 0 and $box-shadow == 0 {
       bottom: 99%;
       border-bottom: ($size * 0.288) solid $color;
     } @else {
       top: -($size * 0.353);
+    }
+
+    @if $border != 0 {
       border-top: $border;
       border-right: $border;
     }
   }
 
   &:after {
-    @if $border == 0 {
+    @if $border == 0 and $box-shadow == 0 {
       top: 99%;
       width: 0;
       border-top: ($size * 0.288) solid $color;
     } @else {
       bottom: -($size * 0.353);
+    }
+
+    @if $border != 0 {
       border-bottom: $border;
       border-left: $border;
+    }
+  }
+
+  @if $box-shadow != 0 {
+    > span {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+
+      &:after {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: $size;
+        height: $size * 0.577;
+        content: '';
+        background-color: $color;
+      }
     }
   }
 }
@@ -178,6 +211,10 @@
   &:after {
     border-top-color: $bgcolor;
     transition: border-top-color 200ms linear;
+  }
+  > span:after {
+    background-color: $bgcolor;
+    transition: background-color 200ms linear;
   }
   svg path {
     fill: $color;
