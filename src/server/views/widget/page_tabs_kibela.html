@@ -61,48 +61,7 @@
   </li>
 
   {% if !isTrashPage() %}
-    {% if page.isTopPage() %}
-    <li class="nav-item dropdown">
-      <a
-        {% if user %} role="button" class="nav-link dropdown-toggle dropdown-toggle-no-caret" data-toggle="dropdown" {% endif %}
-        {% if not user %}
-          class="nav-link dropdown-toggle dropdown-toggle-disabled dropdown-toggle-no-caret"
-          data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
-        {% endif %}
-      >
-        <i class="icon-options-vertical"></i>
-      </a>
-      <ul class="dropdown-menu dropdown-menu-right">
-        <li class="dropdown-item">
-          <a href="#" data-target="#create-template" data-toggle="modal"><i class="icon-fw icon-magic-wand"></i> {{ t('template.option_label.create/edit') }}</a>
-        </li>
-      </ul>
-    </li>
-    {% else %}
-    <li class="nav-item dropdown">
-      <a
-        {% if user %} role="button" class="nav-link dropdown-toggle dropdown-toggle-no-caret" data-toggle="dropdown" {% endif %}
-        {% if not user %}
-          class="nav-link dropdown-toggle dropdown-toggle-disabled dropdown-toggle-no-caret"
-          data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
-        {% endif %}
-      >
-        <i class="icon-options-vertical"></i>
-      </a>
-      <ul class="dropdown-menu dropdown-menu-right">
-        <li class="dropdown-item"><a href="#" data-target="#renamePage" data-toggle="modal"><i class="icon-fw icon-action-redo"></i> {{ t('Move/Rename') }}</a></li>
-        <li class="dropdown-item"><a href="#" data-target="#duplicatePage" data-toggle="modal"><i class="icon-fw icon-docs"></i> {{ t('Duplicate') }}</a></li>
-        <li class="dropdown-divider"></li>
-        <li class="dropdown-item">
-          <a href="#" data-target="#create-template" data-toggle="modal"><i class="icon-fw icon-magic-wand"></i> {{ t('template.option_label.create/edit') }}</a>
-        </li>
-        {% if isDeletablePage() %}
-        <li class="dropdown-divider"></li>
-        <li class="dropdown-item"><a href="#" data-target="#deletePage" data-toggle="modal"><i class="icon-fw icon-fire text-danger"></i> {{ t('Delete') }}</a></li>
-        {% endif %}
-      </ul>
-    </li>
-    {% endif %}
+    <li id="page-management" class="nav-item dropdown"></li>
   {% endif %}
 
 </ul>
