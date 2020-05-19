@@ -57,10 +57,10 @@ html[dark] {
 
   // Font colors
   $color-global: black;
-  $color-reversal: #eeeeee;
+  $color-reversal: white;
   // $color-header: #2b2b2b;
   $color-link: lighten($color-global, 20%);
-  $color-link-hover: lighten($color-link, 20%);
+  $color-link-hover: $subthemecolor;
   $color-link-wiki: $subthemecolor;
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
   $color-link-nabvar: $bgcolor-global;
@@ -105,8 +105,22 @@ html[dark] {
   .table {
     background-color: $bgcolor-global;
   }
+
   .card-timeline > .card-header {
     background-color: $third-main-color;
+  }
+
+  h1,
+  h2 {
+    color: $subthemecolor;
+  }
+
+  .nav.nav-tabs {
+    > .nav-item {
+      > .nav-link.active {
+        color: $subthemecolor;
+      }
+    }
   }
 }
 
