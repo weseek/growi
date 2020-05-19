@@ -40,7 +40,14 @@ if (loginFormElem) {
   const email = loginFormElem.dataset.email;
   const isRegistrationEnabled = loginFormElem.dataset.isRegistrationEnabled === 'true';
   const registrationMode = loginFormElem.dataset.registrationMode;
-  const registrationWhiteList = loginFormElem.dataset.registrationWhiteList.split(',');
+
+
+  let registrationWhiteList = loginFormElem.dataset.registrationWhiteList;
+  registrationWhiteList = registrationWhiteList.length > 0
+    ? registrationWhiteList = loginFormElem.dataset.registrationWhiteList.split(',')
+    : registrationWhiteList = [];
+
+
   const isLocalStrategySetup = loginFormElem.dataset.isLocalStrategySetup === 'true';
   const isLdapStrategySetup = loginFormElem.dataset.isLdapStrategySetup === 'true';
   const objOfIsExternalAuthEnableds = {
