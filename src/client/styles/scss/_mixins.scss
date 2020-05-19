@@ -169,7 +169,7 @@
 
 @mixin override-hexagon-color($color, $bgcolor) {
   background-color: $bgcolor;
-  transition: background-color 200ms linear color 100ms linear, opacity 300ms cubic-bezier(0.2, 0, 0, 1), transform 300ms cubic-bezier(0.2, 0, 0, 1);
+  transition: background-color 200ms linear, color 100ms linear, opacity 300ms cubic-bezier(0.2, 0, 0, 1), transform 300ms cubic-bezier(0.2, 0, 0, 1);
 
   &:before {
     border-bottom-color: $bgcolor;
