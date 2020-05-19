@@ -82,8 +82,6 @@ $input-focus-color: $color-global;
 //
 
 .grw-logo {
-  background-color: darken($bgcolor-logo, 10%);
-
   // set transition for fill
   svg * {
     transition: fill 0.8s ease-out;
