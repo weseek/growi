@@ -1,30 +1,34 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import { withTranslation } from 'react-i18next';
+import { format } from 'date-fns';
 
 import { isTopPage, isUserPage } from '@commons/util/path-utils';
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
+import UserPicture from '../User/UserPicture';
 
 
 const TrashPageAlert = (props) => {
   const { t, appContainer, pageContainer } = props;
-  const { path } = pageContainer.state;
+  const {
+    path, isDeleted, revisionAuthor, updatedAt,
+  } = pageContainer.state;
+  console.log(pageContainer.state);
   const { currentUser } = appContainer;
   const isTopPagePath = isTopPage(path);
   const isUserPagePath = isUserPage(path);
+  // const now = format(updatedAt, 'Y-m-d H:i:s');
 
   return (
     <div className="alert alert-warning py-3 px-4 d-flex align-items-center justify-content-between">
-      hoge
-      {/* <div>
-      This page is in the trash <i class="icon-trash" aria-hidden="true"></i>.
-      {% if page.isDeleted() %}
-      <br>Deleted by <img src="{{ page.lastUpdateUser|picture }}" class="picture picture-sm rounded-circle"> {{ page.lastUpdateUser.name }} at {{ page.updatedAt|datetz('Y-m-d H:i:s') }}
-      {% endif %}
-    </div>
-    {% if user and user.admin and req.path == '/trash' and pages.length > 0 %}
+      <div>
+      This page is in the trash <i className="icon-trash" aria-hidden="true"></i>.
+        {isDeleted && <span><br /><UserPicture user={revisionAuthor} /> Deleted by {revisionAuthor.name} at {updatedAt}</span>}
+      </div>
+      {/* {% if user and user.admin and req.path == '/trash' and pages.length > 0 %}
     <div>
       <button href="#" class="btn btn-danger rounded-pill btn-sm" data-target="#emptyTrash" data-toggle="modal"><i class="icon-trash" aria-hidden="true"></i>{{ t('modal_empty.empty_the_trash') }}</button>
     </div>

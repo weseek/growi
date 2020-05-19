@@ -48,7 +48,7 @@ export default class PageContainer extends Container {
       createdAt: mainContent.getAttribute('data-page-created-at'),
       creator: JSON.parse(mainContent.getAttribute('data-page-creator')),
       updatedAt: mainContent.getAttribute('data-page-updated-at'),
-
+      isDeleted:  JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
       tags: [],
       templateTagData: mainContent.getAttribute('data-template-tags') || null,
 
