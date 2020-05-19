@@ -40,7 +40,7 @@ const RenameModal = (props) => {
     return (
       <div className="form-group">
         <label>{ t('modal_rename.label.Current page name') }</label><br />
-        <code>{pageNameInput}</code>
+        <code>{userPageRootPath}</code>
       </div>
     );
   }
@@ -70,7 +70,7 @@ const RenameModal = (props) => {
   }
 
   return (
-    <Modal size="sm" isOpen={appContainer.state.isRenameModalShown} toggle={appContainer.closeRenameModal}>
+    <Modal isOpen={appContainer.state.isRenameModalShown} toggle={appContainer.closeRenameModal}>
       <ModalHeader tag="h4" toggle={appContainer.closeRenameModal} className="bg-primary text-light">
         { t('modal_rename.label.Move/Rename page') }
       </ModalHeader>
