@@ -88,6 +88,18 @@ html[dark] {
   @import 'apply-colors';
   @import 'apply-colors-light';
 
+  /*
+  * GROWI admin page #themeOptions
+  */
+  .admin-page {
+    #themeOptions {
+      .theme-option-container.active a {
+        background-color: lighten($themecolor, 20%);
+        border-color: lighten($themecolor, 20%);
+      }
+    }
+  }
+
   // change color of highlighted header in wiki (default: orange)
   .wiki {
     .code-line.revision-head.highlighted {
@@ -207,6 +219,6 @@ html[dark] {
 
   .search-top .dropdown-toggle {
     color: black;
-    background-color: hsla(0,0%,100%,.8);
+    background-color: hsla(0, 0%, 100%, 0.8);
   }
 }
