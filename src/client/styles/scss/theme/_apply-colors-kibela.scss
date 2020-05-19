@@ -161,6 +161,11 @@ body.kibela {
         color: $color-link-nabvar;
       }
     }
+    #personal-dropdown {
+      a.nav-link {
+        color: $color-global;
+      }
+    }
   }
 
   /* h */
