@@ -331,6 +331,10 @@ mark.rbt-highlight-text {
       .theme-option-name {
         color: $color-global;
       }
+      a {
+        background-color: $color-theme-color-box;
+        border-color: $color-theme-color-box;
+      }
     }
   }
 }

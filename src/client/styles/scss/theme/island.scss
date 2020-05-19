@@ -49,6 +49,9 @@ html[dark] {
   $color-dropdown-link-active: $color-reversal;
   $color-dropdown-link-hover: $color-global;
 
+  // admin theme box
+  $color-theme-color-box: lighten($primary, 20%);
+
   // alert
   $color-alert: $color-reversal;
 
@@ -69,13 +72,16 @@ html[dark] {
     }
   }
 
-  .nav-tabs, .nav-tabs .nav-link.active, .nav-link {
+  .nav-tabs,
+  .nav-tabs .nav-link.active,
+  .nav-link {
     background: none;
     border-color: $color-primary;
     border-bottom-color: $color-primary;
   }
 
-  .card, .card-header {
+  .card,
+  .card-header {
     background: none;
     border: none;
   }

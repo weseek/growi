@@ -74,6 +74,9 @@ html[dark] {
   $color-dropdown-link-active: $color-reversal;
   $color-dropdown-link-hover: $color-global;
 
+  // admin theme box
+  $color-theme-color-box: lighten($themecolor, 20%);
+
   // alert
   $color-alert: $color-reversal;
 
@@ -207,6 +210,6 @@ html[dark] {
 
   .search-top .dropdown-toggle {
     color: black;
-    background-color: hsla(0,0%,100%,.8);
+    background-color: hsla(0, 0%, 100%, 0.8);
   }
 }
