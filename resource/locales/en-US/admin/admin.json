@@ -99,6 +99,10 @@
       "kibela_text2": "Show and post comments at the bottom of the page",
       "kibela_text3": "Affix Table-of-contents"
     },
+    "theme_desc": {
+      "light_and_dark": "Light and dark modes",
+      "unique": "Only one mode"
+    },
     "function": "Function",
     "function_desc": "You can choose Valid/Invalid of the function",
     "function_options": {

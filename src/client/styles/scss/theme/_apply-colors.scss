@@ -131,6 +131,12 @@ $input-focus-color: $color-global;
       background-color: $bgcolor-sidebar-context;
     }
   }
+  div[class$='-Outer'] {
+    div[class$='-Shadow'] {
+      background: unset;
+      border-right: 1px solid $gray-300;
+    }
+  }
 }
 
 /*
@@ -155,6 +161,7 @@ $input-focus-color: $color-global;
   .modal-header {
     border-bottom-color: $border-color-theme;
     .close {
+      color: $light;
       opacity: 0.5;
       &:hover {
         opacity: 0.9;
@@ -326,6 +333,10 @@ mark.rbt-highlight-text {
     .theme-option-container.active {
       .theme-option-name {
         color: $color-global;
+      }
+      a {
+        background-color: $color-theme-color-box;
+        border-color: $color-theme-color-box;
       }
     }
   }

@@ -56,6 +56,9 @@ html[light] {
   $color-dropdown-link-active: $color-reversal;
   $color-dropdown-link-hover: $color-reversal;
 
+  // admin theme box
+  $color-theme-color-box: lighten($primary, 20%);
+
   // alert
   $color-alert: $color-reversal;
 
@@ -116,6 +119,9 @@ html[dark] {
   $bgcolor-dropdown-link-active: $primary;
   $color-dropdown-link-active: $color-global;
   $color-dropdown-link-hover: $color-reversal;
+
+  // admin theme box
+  $color-theme-color-box: $primary;
 
   // alert
   $color-alert: $color-reversal;
