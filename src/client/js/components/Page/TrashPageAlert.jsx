@@ -18,20 +18,18 @@ const TrashPageAlert = (props) => {
 
   function renderEmptyButton() {
     return (
-      <div>
-        <button href="#" type="button" className="btn btn-danger rounded-pill btn-sm" data-target="#emptyTrash" data-toggle="modal">
-          <i className="icon-trash" aria-hidden="true"></i>{ t('modal_empty.empty_the_trash') }
-        </button>
-      </div>
+      <button href="#" type="button" className="btn btn-danger rounded-pill btn-sm ml-auto" data-target="#emptyTrash" data-toggle="modal">
+        <i className="icon-trash" aria-hidden="true"></i>{ t('modal_empty.empty_the_trash') }
+      </button>
     );
   }
 
-  function renderTrashManagementButton() {
+  function renderTrashPageManagementButtons() {
     return (
-      <div>
+      <>
         <button
           type="button"
-          className="btn btn-outline-secondary rounded-pill btn-sm mr-2"
+          className="btn btn-outline-secondary rounded-pill btn-sm ml-auto mr-2"
           data-target="#putBackPage"
           data-toggle="modal"
         >
@@ -46,18 +44,18 @@ const TrashPageAlert = (props) => {
         >
           <i className="icon-fire" aria-hidden="true"></i> { t('Delete Completely') }
         </button>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="alert alert-warning py-3 px-4 d-flex align-items-center justify-content-between">
+    <div className="alert alert-warning py-3 px-4 d-flex align-items-center">
       <div>
       This page is in the trash <i className="icon-trash" aria-hidden="true"></i>.
         {isDeleted && <span><br /><UserPicture user={revisionAuthor} /> Deleted by {revisionAuthor.name} at {updatedAt}</span>}
       </div>
       {(currentUser.admin && path === '/trash' && childrenPages.length > 0) && renderEmptyButton()}
-      {(isDeleted && currentUser != null) && renderTrashManagementButton()}
+      {(isDeleted && currentUser != null) && renderTrashPageManagementButtons()}
     </div>
   );
 };
