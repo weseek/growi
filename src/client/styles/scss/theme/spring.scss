@@ -108,6 +108,17 @@ html[dark] {
   .card-timeline > .card-header {
     background-color: $third-main-color;
   }
+
+  /*
+ * GROWI admin page #themeOptions
+ */
+  .admin-page {
+    #themeOptions {
+      .theme-option-container.active a {
+        border-color: $accentcolor;
+      }
+    }
+  }
 }
 
 //== Dark Mode
