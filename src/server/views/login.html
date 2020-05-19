@@ -32,8 +32,7 @@
         <div class="logo mb-3">{% include 'widget/logo.html' %}</div>
         <h1>{{ appService.getAppTitle() }}</h1>
 
-        <div class="row">
-          <div class="login-form-errors col-12">
+          <div class="login-form-errors px-3">
             {% if isLdapSetupFailed() %}
             <div class="alert alert-warning small">
               <strong><i class="icon-fw icon-info"></i>LDAP is enabled but the configuration has something wrong.</strong>
@@ -102,7 +101,6 @@
             </div>
             {% endif %}
           </div>
-        </div>
       </div>
 
       {% set registrationMode = getConfig('crowi', 'security:registrationMode') %}

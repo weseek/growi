@@ -6,6 +6,7 @@ import { I18nextProvider } from 'react-i18next';
 import i18nFactory from './util/i18n';
 
 import NoLoginContainer from './services/NoLoginContainer';
+import AppContainer from './services/AppContainer';
 
 import InstallerForm from './components/InstallerForm';
 import LoginForm from './components/LoginForm';
@@ -31,6 +32,8 @@ if (installerFormElem) {
 const loginFormElem = document.getElementById('login-form');
 if (loginFormElem) {
   const noLoginContainer = new NoLoginContainer();
+  const appContainer = new AppContainer();
+  appContainer.init();
 
   const username = loginFormElem.dataset.username;
   const name = loginFormElem.dataset.name;
@@ -52,7 +55,7 @@ if (loginFormElem) {
 
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <Provider inject={[noLoginContainer]}>
+      <Provider inject={[noLoginContainer, appContainer]}>
         <LoginForm
           username={username}
           name={name}
