@@ -39,15 +39,10 @@ if (loginFormElem) {
   const registrationMode = loginFormElem.dataset.registrationMode;
 
 
-  const registrationWhiteListA = loginFormElem.dataset.registrationWhiteList;
-
-  let registrationWhiteList;
-  if (registrationWhiteListA.length > 0) {
-    registrationWhiteList = loginFormElem.dataset.registrationWhiteList.split(',');
-  }
-  else {
-    registrationWhiteList = [];
-  }
+  let registrationWhiteList = loginFormElem.dataset.registrationWhiteList;
+  registrationWhiteList = registrationWhiteList.length > 0
+    ? registrationWhiteList = loginFormElem.dataset.registrationWhiteList.split(',')
+    : registrationWhiteList = [];
 
 
   const isLocalStrategySetup = loginFormElem.dataset.isLocalStrategySetup === 'true';
