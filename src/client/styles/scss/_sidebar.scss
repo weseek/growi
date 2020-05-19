@@ -1,7 +1,16 @@
 .grw-sidebar {
   .ak-navigation-resize-button {
-    @extend .btn-hexagon;
+    @include hexagonize(24px, white);
+
     top: calc(50vh - 20px);
+
+    // unset hover color
+    > div:hover {
+      background-color: unset;
+    }
+    > span {
+      margin-top: -5.5px;
+    }
   }
 
   // override @atlaskit/navigation-next styles

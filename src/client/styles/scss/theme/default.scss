@@ -53,6 +53,11 @@ html[light] {
   $bgcolor-sidebar: #122c55;
   $color-sidebar-context: $color-global;
   $bgcolor-sidebar-context: #f4f6fc;
+  // Sidebar resize button
+  $color-resize-button: $color-reversal;
+  $bgcolor-resize-button: #5587ec;
+  $color-resize-button-hover: $color-reversal;
+  $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
 
   // Icon colors
   $color-editor-icons: $color-global;
@@ -121,6 +126,11 @@ html[dark] {
   $bgcolor-sidebar: $bgcolor-navbar;
   $color-sidebar-context: $color-global;
   $bgcolor-sidebar-context: lighten($bgcolor-navbar, 5%);
+  // Sidebar resize button
+  $color-resize-button: $color-global;
+  $bgcolor-resize-button: #5587ec;
+  $color-resize-button-hover: $color-global;
+  $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
 
   // Icon colors
   $color-editor-icons: $color-global;
