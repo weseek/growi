@@ -334,16 +334,5 @@ describe('Page', () => {
       expect(pagePaths).toContainEqual('/page2');
     });
 
-    test('should process with regexp', async() => {
-      const result = await Page.findListByStartWith('/page\\d{1}/', testUser0, {});
-
-      // assert totalCount
-      expect(result.totalCount).toEqual(3);
-      // assert paths
-      const pagePaths = result.pages.map((page) => { return page.path });
-      expect(pagePaths).toContainEqual('/page1');
-      expect(pagePaths).toContainEqual('/page1/child1');
-      expect(pagePaths).toContainEqual('/page2');
-    });
   });
 });
