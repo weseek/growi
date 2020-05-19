@@ -19,7 +19,7 @@
   .page-editor-preview-container {
     background-image: url('/images/themes/spring/spring02.svg');
     background-attachment: fixed;
-    background-position: center center;
+    background-position: bottom;
     background-size: cover;
   }
 }
@@ -28,7 +28,7 @@
   #page-wrapper {
     background-image: url('/images/themes/spring/spring.svg');
     background-attachment: fixed;
-    background-position: center center;
+    background-position: bottom;
     background-size: cover;
   }
 }
@@ -57,21 +57,21 @@ html[dark] {
 
   // Font colors
   $color-global: black;
-  $color-reversal: #eeeeee;
+  $color-reversal: white;
   // $color-header: #2b2b2b;
   $color-link: lighten($color-global, 20%);
-  $color-link-hover: lighten($color-link, 20%);
+  $color-link-hover: $subthemecolor;
   $color-link-wiki: $subthemecolor;
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
-  $color-link-nabvar: $color-reversal;
+  $color-link-nabvar: $bgcolor-global;
   $color-inline-code: #c7254e;
 
   // List Group colors
   $color-list: $color-global;
-  $bgcolor-list: $bgcolor-global;
-  $color-list-active: $color-reversal;
-  $bgcolor-list-active: $primary;
-  $color-list-hover: $color-reversal;
+  $bgcolor-list: $themelight;
+  $color-list-active: $bgcolor-global;
+  $bgcolor-list-active: $accentcolor;
+  $color-list-hover: lighten($accentcolor, 20%);
 
   // Logo colors
   $bgcolor-logo: $bgcolor-navbar;
@@ -87,6 +87,9 @@ html[dark] {
   $bgcolor-dropdown-link-active: $growi-blue;
   $color-dropdown-link-active: $color-reversal;
   $color-dropdown-link-hover: $color-global;
+
+  // admin theme box
+  $color-theme-color-box: darken($primary, 20%);
 
   // alert
   $color-alert: $color-reversal;
@@ -105,8 +108,22 @@ html[dark] {
   .table {
     background-color: $bgcolor-global;
   }
+
   .card-timeline > .card-header {
     background-color: $third-main-color;
+  }
+
+  h1,
+  h2 {
+    color: $subthemecolor;
+  }
+
+  .nav.nav-tabs {
+    > .nav-item {
+      > .nav-link.active {
+        color: $subthemecolor;
+      }
+    }
   }
 }
 

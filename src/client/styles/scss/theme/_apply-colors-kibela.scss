@@ -125,14 +125,6 @@ body.kibela {
   /* Modal */
   .modal-content {
     background-color: $themelight;
-
-    .modal-header.bg-primary {
-      color: white;
-
-      .close {
-        color: white;
-      }
-    }
   }
 
   /* Inline Code */
@@ -167,6 +159,11 @@ body.kibela {
       }
       &:focus {
         color: $color-link-nabvar;
+      }
+    }
+    #personal-dropdown {
+      a.nav-link {
+        color: $color-global;
       }
     }
   }

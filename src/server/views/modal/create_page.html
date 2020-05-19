@@ -3,9 +3,9 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
 
-      <div class="modal-header bg-primary">
-        <div class="modal-title text-white">{{ t('New Page') }}</div>
-        <button type="button" class="close text-white" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <div class="modal-header bg-primary text-light">
+        <div class="modal-title">{{ t('New Page') }}</div>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
       </div>
 
       <div class="modal-body">
@@ -29,6 +29,7 @@
           </div>
         </form>
 
+        {% if !isTrashPage() %}
         <form id="create-page-under-tree" role="form">
           <div class="row form-group">
             <fieldset class="col-12 mb-4">
@@ -52,7 +53,7 @@
         {% set templateParentPath = parentPath(path | preventXss | escape) %}
         <div id="template-form" class="row form-group">
           <fieldset class="col-12">
-            <h3 class="grw-modal-head pb-2">{{ t('template.modal_label.Create template under', templateParentPath) }}</h3>
+            <h3 class="grw-modal-head pb-2">{{ t('template.modal_label.Create template under') }}<br><code>{{ templateParentPath }}</code></h3>
             <div class="d-flex create-page-input-container">
               <div class="create-page-input-row d-flex align-items-center">
 
@@ -81,6 +82,7 @@
             </div>
           </fieldset>
         </div>
+        {% endif %}
 
         <script>
           $('#dd-template-type .dropdown-item').on('click', function() {

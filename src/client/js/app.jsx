@@ -69,6 +69,8 @@ Object.assign(componentMappings, {
   // 'revision-history': <PageHistory pageId={pageId} />,
   'tags-page': <TagsList crowi={appContainer} />,
 
+  'create-page-name-input': <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} addTrailingSlash />,
+
   'page-editor': <PageEditor />,
   'page-editor-path-nav': <PagePathNavForEditor />,
   'page-editor-options-selector': <OptionsSelector crowi={appContainer} />,

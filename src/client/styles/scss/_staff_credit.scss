@@ -16,16 +16,13 @@
     background-image: radial-gradient(rgba(50, 100, 100, 0.75), black 120%);
   }
 
-  font-family: 'Press Start 2P', $basefont1;
-  color: white;
-
   h1,
   h2,
   h3,
   h4,
   h5,
   h6 {
-    font-family: 'Press Start 2P', $basefont1;
+    font-family: 'Press Start 2P', $font-family-for-staff-credit;
     color: white;
   }
 

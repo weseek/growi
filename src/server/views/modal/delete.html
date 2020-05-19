@@ -4,7 +4,7 @@
 
       <form role="form" id="delete-page-form" onsubmit="return false;">
 
-        <div class="modal-header {% if page.isDeleted() %}bg-danger{% else %}bg-primary{% endif %}">
+        <div class="modal-header text-light {% if page.isDeleted() %}bg-danger{% else %}bg-primary{% endif %}">
           <div class="modal-title">
             {% if page.isDeleted() %}
             <i class="icon-fw icon-fire"></i> {{ t('modal_delete.delete_completely') }}
