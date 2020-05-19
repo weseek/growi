@@ -4,9 +4,6 @@
   }
 
   // override @atlaskit/navigation-next styles
-  div[data-testid='GlobalNavigation'] {
-    width: $grw-sidebar-nav-width;
-  }
   div[class$='-NavigationContainer'] {
     // Adjust to be on top of the growi subnavigation
     z-index: $zindex-sticky + 5;

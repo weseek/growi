@@ -124,9 +124,6 @@ class Sidebar extends React.Component {
             theme={theme => ({
               ...theme,
               context: 'product',
-              mode: modeGenerator({
-                product: { text: '#ffffff', background: '#334455' },
-              }),
             })}
           >
             <LayoutManager
