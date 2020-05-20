@@ -31,6 +31,7 @@ module.exports = function(crowi, app) {
   const isInstalled = crowi.configManager.getConfig('crowi', 'app:installed');
 
   /* eslint-disable max-len, comma-spacing, no-multi-spaces */
+  
   app.get('/'                        , middlewares.applicationInstalled, loginRequired , page.showTopPage);
 
   // API v3
