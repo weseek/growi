@@ -182,8 +182,4 @@ module.exports = function(crowi, app) {
   app.get('/*/$'                   , loginRequired , page.showPageWithEndOfSlash, page.notFound);
   app.get('/*'                     , loginRequired , page.showPage, page.notFound);
 
-  app.use((err, req, res, next) => {
-    console.log('エラー発生');
-    res.status(500).send('Something Wrong').end();
-  });
 };
