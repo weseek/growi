@@ -90,7 +90,7 @@ module.exports = function(crowi, app) {
     }
     catch (err) {
       debug(err.message);
-      return loginFailureHandler(req, res, 'Sign in failure due to connect ldap failure.');
+      return next();
     }
 
     // check groups for LDAP
@@ -126,7 +126,7 @@ module.exports = function(crowi, app) {
 
     // login
     await req.logIn(user, (err) => {
-      if (err) { return next(err) }
+      if (err) { return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
@@ -288,7 +288,7 @@ module.exports = function(crowi, app) {
 
     // login
     req.logIn(user, (err) => {
-      if (err) { return next(err) }
+      if (err) { return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
@@ -330,7 +330,7 @@ module.exports = function(crowi, app) {
 
     // login
     req.logIn(user, (err) => {
-      if (err) { return next(err) }
+      if (err) { return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
@@ -372,7 +372,7 @@ module.exports = function(crowi, app) {
 
     // login
     req.logIn(user, (err) => {
-      if (err) { return next(err) }
+      if (err) { return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
@@ -420,7 +420,7 @@ module.exports = function(crowi, app) {
     // login
     const user = await externalAccount.getPopulatedUser();
     req.logIn(user, (err) => {
-      if (err) { return next(err) }
+      if (err) { return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
