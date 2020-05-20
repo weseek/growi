@@ -12,7 +12,7 @@ import UserPicture from '../User/UserPicture';
 const TrashPageAlert = (props) => {
   const { t, appContainer, pageContainer } = props;
   const {
-    path, isDeleted, revisionAuthor, updatedAt, childrenPages, isAbleToDeleteCompletely,
+    path, isDeleted, revisionAuthor, updatedAt, hasChildren, isAbleToDeleteCompletely,
   } = pageContainer.state;
   const { currentUser } = appContainer;
 
@@ -54,7 +54,7 @@ const TrashPageAlert = (props) => {
       This page is in the trash <i className="icon-trash" aria-hidden="true"></i>.
         {isDeleted && <span><br /><UserPicture user={revisionAuthor} /> Deleted by {revisionAuthor.name} at {updatedAt}</span>}
       </div>
-      {(currentUser.admin && path === '/trash' && childrenPages.length > 0) && renderEmptyButton()}
+      {(currentUser.admin && path === '/trash' && hasChildren) && renderEmptyButton()}
       {(isDeleted && currentUser != null) && renderTrashPageManagementButtons()}
     </div>
   );

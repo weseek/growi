@@ -50,7 +50,7 @@ export default class PageContainer extends Container {
       isDeleted:  JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
       isAbleToDeleteCompletely:  JSON.parse(mainContent.getAttribute('data-page-is-able-to-delete-completely')),
       tags: [],
-      childrenPages: JSON.parse(mainContent.getAttribute('data-children-pages')),
+      hasChildren: JSON.parse(mainContent.getAttribute('data-page-has-children')),
       templateTagData: mainContent.getAttribute('data-template-tags') || null,
 
       // latest(on remote) information
