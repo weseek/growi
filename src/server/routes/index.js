@@ -31,7 +31,6 @@ module.exports = function(crowi, app) {
   const isInstalled = crowi.configManager.getConfig('crowi', 'app:installed');
 
   /* eslint-disable max-len, comma-spacing, no-multi-spaces */
-
   app.get('/'                        , middlewares.applicationInstalled, loginRequired , page.showTopPage);
 
   // API v3
@@ -69,11 +68,11 @@ module.exports = function(crowi, app) {
   app.get('/passport/oidc'                        , loginPassport.loginWithOidc);
   app.get('/passport/saml'                        , loginPassport.loginWithSaml);
   app.get('/passport/basic'                       , loginPassport.loginWithBasic);
-  app.get('/passport/google/callback'             , loginPassport.loginPassportGoogleCallback);
-  app.get('/passport/github/callback'             , loginPassport.loginPassportGitHubCallback);
-  app.get('/passport/twitter/callback'            , loginPassport.loginPassportTwitterCallback);
-  app.get('/passport/oidc/callback'               , loginPassport.loginPassportOidcCallback);
-  app.post('/passport/saml/callback'              , loginPassport.loginPassportSamlCallback);
+  app.get('/passport/google/callback'             , loginPassport.loginPassportGoogleCallback   , loginPassport.loginFailure);
+  app.get('/passport/github/callback'             , loginPassport.loginPassportGitHubCallback   , loginPassport.loginFailure);
+  app.get('/passport/twitter/callback'            , loginPassport.loginPassportTwitterCallback  , loginPassport.loginFailure);
+  app.get('/passport/oidc/callback'               , loginPassport.loginPassportOidcCallback     , loginPassport.loginFailure);
+  app.post('/passport/saml/callback'              , loginPassport.loginPassportSamlCallback     , loginPassport.loginFailure);
 
   // markdown admin
   app.get('/admin/markdown'                   , loginRequiredStrictly , adminRequired , admin.markdown.index);
@@ -182,4 +181,9 @@ module.exports = function(crowi, app) {
 
   app.get('/*/$'                   , loginRequired , page.showPageWithEndOfSlash, page.notFound);
   app.get('/*'                     , loginRequired , page.showPage, page.notFound);
+
+  app.use((err, req, res, next) => {
+    console.log('エラー発生');
+    res.status(500).send('Something Wrong').end();
+  });
 };
