@@ -76,7 +76,6 @@ class SidebarNav extends React.Component {
         ]}
         secondaryItems={[
           this.generateSecondaryItemObj('admin', 'Admin', this.generateIconFactory('icon-settings'), '/admin'),
-          this.generateSecondaryItemObj('help', 'Help', this.generateIconFactory('icon-question'), 'https://docs.growi.org'),
         ]}
       />
     );
