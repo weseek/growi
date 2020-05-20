@@ -41,7 +41,7 @@ const PageManagement = (props) => {
   }
 
   return (
-    <li className="nav-item dropdown">
+    <>
       <a
         role="button"
         className={`nav-link dropdown-toggle dropdown-toggle-no-caret ${currentUser == null && 'dropdown-toggle-disabled'}`}
@@ -60,7 +60,7 @@ const PageManagement = (props) => {
         </a>
         {(!isTopPagePath && !isUserPagePath) && renderDropdownItemForDeletablePage()}
       </div>
-    </li>
+    </>
   );
 };
 
