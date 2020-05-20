@@ -143,7 +143,7 @@ class MyDraftList extends React.Component {
               <div className="align-self-center">
                 <button type="button" className="btn btn-sm btn-outline-danger" onClick={this.clearAllDrafts}>
                   <i className="icon-fw icon-fire"></i>
-                  {t('Delete All')}
+                  {t('delete_all')}
                 </button>
               </div>
             </div>

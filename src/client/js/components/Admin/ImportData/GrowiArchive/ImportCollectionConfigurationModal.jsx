@@ -105,10 +105,10 @@ class ImportCollectionConfigurationModal extends React.Component {
             onChange={() => this.changeHandler({ makePublicForGrant4: !option.makePublicForGrant4 })}
           />
           <label htmlFor="cbOpt2" className="custom-control-label">
-            {t(`${translationBase}.set_public_to_page.label`, { from: t('Just me') })}
+            {t(`${translationBase}.set_public_to_page.label`, { from: t('Only me') })}
             <p
               className="form-text text-muted mt-0"
-              dangerouslySetInnerHTML={{ __html: t(`${translationBase}.set_public_to_page.desc`, { from: t('Just me') }) }}
+              dangerouslySetInnerHTML={{ __html: t(`${translationBase}.set_public_to_page.desc`, { from: t('Only me') }) }}
             />
           </label>
         </div>

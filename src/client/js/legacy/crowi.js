@@ -219,6 +219,7 @@ $(() => {
   });
 
 
+  // TODO GW-2355 remove this after refactoring
   $('#create-page').on('shown.bs.modal', (e) => {
     // quick hack: replace from server side rendering "date" to client side "date"
     const today = new Date();

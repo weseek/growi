@@ -89,7 +89,7 @@ class UserTable extends React.Component {
 
     return (
       <Fragment>
-        <div className="table-responsive text-nowrap">
+        <div className="table-responsive text-nowrap h-100">
           <table className="table table-default table-bordered table-user-list">
             <thead>
               <tr>

@@ -107,6 +107,7 @@
       {% endif %}
 
       {% if user %}
+      <!-- TODO GW-79 enable after refactoring  <li id="create-page-button" class="nav-item d-none d-md-block"></li> -->
       <li class="nav-item d-none d-md-block">
         <a class="nav-link create-page px-4" href="#" data-target="#create-page" data-toggle="modal">
           <i class="icon-pencil mr-2"></i>
@@ -148,6 +149,7 @@
 
 <div class="grw-fixed-controls-container d-md-none d-edit-none animated fadeInUp faster">
   <div class="grw-fixed-controls-button-container rounded-circle">
+    <!-- TODO GW-79 enable after refactoring <div id='create-page-button-icon'></div> -->
     <button class="btn btn-lg btn-primary rounded-circle waves-effect waves-light" type="button" data-target="#create-page" data-toggle="modal">
       <i class="icon-pencil"></i>
     </button>
@@ -157,6 +159,7 @@
 <!-- /#staff-credit -->
 <div id="staff-credit"></div>
 
+<!-- TODO GW-79 enable after refactoring <div id="page-create-modal"></div> -->
 {% include '../modal/shortcuts.html' %}
 
 {% block body_end %}

@@ -184,18 +184,6 @@ ul.pagination {
 }
 
 /*
- * GROWI admin page #themeOptions
- */
-.admin-page {
-  #themeOptions {
-    .theme-option-container.active a {
-      background-color: darken(theme-color('primary'), 15%);
-      border-color: darken(theme-color('primary'), 15%);
-    }
-  }
-}
-
-/*
  * GROWI comment form
  */
 .comment-form {
