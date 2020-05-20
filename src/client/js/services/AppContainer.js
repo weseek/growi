@@ -39,7 +39,6 @@ export default class AppContainer extends Container {
     this.csrfToken = body.dataset.csrftoken;
     this.isPluginEnabled = body.dataset.pluginEnabled === 'true';
     this.isLoggedin = document.querySelector('.main-container.nologin') == null;
-    this.willUpdateImageUrlCacheUserIds = [];
     this.config = JSON.parse(document.getElementById('growi-context-hydrate').textContent || '{}');
 
     const currentUserElem = document.getElementById('growi-current-user');
@@ -157,14 +156,6 @@ export default class AppContainer extends Container {
     }
 
     this.containerInstances[className] = instance;
-  }
-
-  async updateImageUrlCached() {
-    if (this.willUpdateImageUrlCacheUserIds.length === 0) {
-      return;
-    }
-    const res = await this.apiv3Put('/users/update.imageUrlCache', { userIds: this.willUpdateImageUrlCacheUserIds });
-    this.willUpdateImageUrlCacheUserIds = [];
   }
 
   /**
