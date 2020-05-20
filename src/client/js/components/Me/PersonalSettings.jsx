@@ -23,7 +23,10 @@ class PersonalSettings extends React.Component {
                 <a className="nav-link active" href="#user-settings" data-toggle="tab" role="tab"><i className="icon-user"></i> { t('User Information') }</a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#external-accounts" data-toggle="tab" role="tab"><i className="icon-share-alt"></i> { t('External Accounts') }</a>
+                <a className="nav-link" href="#external-accounts" data-toggle="tab" role="tab">
+                  <i className="icon-share-alt"></i>
+                  { t('admin:user_management.external_accounts') }
+                </a>
               </li>
               <li className="nav-item">
                 <a className="nav-link" href="#password-settings" data-toggle="tab" role="tab"><i className="icon-lock"></i> { t('Password Settings') }</a>

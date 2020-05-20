@@ -1,12 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { withTranslation } from 'react-i18next';
+
 import {
   Button,
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-export default class DeletePageListModal extends React.Component {
+class DeletePageListModal extends React.Component {
 
   /*
    * the threshold for omitting body
@@ -17,6 +19,7 @@ export default class DeletePageListModal extends React.Component {
   }
 
   render() {
+    const { t } = this.props;
     if (this.props.pages == null || this.props.pages.length === 0) {
       return <div></div>;
     }
@@ -30,7 +33,7 @@ export default class DeletePageListModal extends React.Component {
     return (
       <Modal isOpen={this.props.isShown} toggle={this.props.cancel} className="page-list-delete-modal">
         <ModalHeader tag="h4" toggle={this.props.cancel} className="bg-danger text-light">
-          Deleting pages:
+          {t('search_result.deletion_modal_header')}
         </ModalHeader>
         <ModalBody>
           <ul>
@@ -53,11 +56,12 @@ export default class DeletePageListModal extends React.Component {
                   className="custom-control-label text-danger"
                   htmlFor="customCheck-delete-completely"
                 >
-                  Delete completely
+                  {t('search_result.delete_completely')}
                 </label>
               </div>
               <Button color={this.props.isDeleteCompletely ? 'danger' : 'light'} onClick={this.props.confirmedToDelete}>
-                <i className="icon-trash"></i>Delete
+                <i className="icon-trash"></i>
+                {t('search_result.delete')}
               </Button>
             </span>
           </div>
@@ -73,6 +77,8 @@ DeletePageListModal.defaultProps = {
 };
 
 DeletePageListModal.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+
   isShown: PropTypes.bool.isRequired,
   pages: PropTypes.array,
   errorMessage: PropTypes.string,
@@ -81,3 +87,5 @@ DeletePageListModal.propTypes = {
   confirmedToDelete: PropTypes.func.isRequired, //      for confirmed event handling
   toggleDeleteCompletely: PropTypes.func.isRequired, // for delete completely check event handling
 };
+
+export default withTranslation()(DeletePageListModal);

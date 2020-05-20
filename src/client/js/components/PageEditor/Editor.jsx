@@ -261,7 +261,7 @@ export default class Editor extends AbstractEditor {
     return (
       <Modal isOpen={this.state.isCheatsheetModalShown} toggle={hideCheatsheetModal} className="modal-gfm-cheatsheet">
         <ModalHeader tag="h4" toggle={hideCheatsheetModal} className="bg-primary text-light">
-          <i className="icon-fw icon-question" />Markdown Help
+          <i className="icon-fw icon-question" />Markdown help
         </ModalHeader>
         <ModalBody>
           <Cheatsheet />

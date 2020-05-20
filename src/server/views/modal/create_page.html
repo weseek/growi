@@ -1,3 +1,4 @@
+<!-- TODO GW-2362 remove after adjust layout -->
 <div class="modal create-page" id="create-page">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -52,7 +53,7 @@
         {% set templateParentPath = parentPath(path | preventXss | escape) %}
         <div id="template-form" class="row form-group">
           <fieldset class="col-12">
-            <h3 class="grw-modal-head pb-2">{{ t('template.modal_label.Create template under', templateParentPath) }}</h3>
+            <h3 class="grw-modal-head pb-2">{{ t('template.modal_label.Create template under') }}<br><code>{{ templateParentPath }}</code></h3>
             <div class="d-flex create-page-input-container">
               <div class="create-page-input-row d-flex align-items-center">
 

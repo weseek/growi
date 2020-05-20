@@ -2,12 +2,25 @@
 
 ## v4.0.0-RC
 
+### BREAKING CHANGES
+
+* Crowi Classic Behavior is removed
+* Crowi Classic Layout is removed
+* 'default-dark' theme is now merged as a dark mode variant of 'default' theme
+* 'blue-night' theme is now merged as a dark mode variant of 'mono-blue' theme
+
+### Updates
+
+* Feature: Switch Light/Dark Mode
+* Improvement: Migrate to Bootstrap 4
+* Improvement: Copy Page URL menu item to copy path dropdown
+* Improvement: Show contributors by Bootstrap Modal
 * Support: Upgrade libs
     * bootstrap
 
 ## v3.8.1-RC
 
-*
+* Fix: Unset overflow-y style for Edit Tags Modal
 
 ## v3.8.0
 

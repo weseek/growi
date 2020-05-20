@@ -66,6 +66,13 @@ jobs:
         additional-tags: 'latest'
         publish: true
 
+    - name: Slack Notification
+      uses: weseek/ghaction-release-slack-notification@master
+      with:
+        channel: '#general'
+        url: ${{ secrets.SLACK_WEBHOOK_URL }}
+        created_tag: v${{ env.SEMVER }}
+
     - name: Check whether workspace is clean
       run: |
         STATUS=`git status --porcelain`

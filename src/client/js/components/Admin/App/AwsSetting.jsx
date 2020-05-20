@@ -103,7 +103,7 @@ class AwsSetting extends React.Component {
 
         <div className="row form-group">
           <label className="text-left text-md-right col-md-3 col-form-label">
-            Access Key ID
+            Access key ID
           </label>
           <div className="col-md-6">
             <input
@@ -119,7 +119,7 @@ class AwsSetting extends React.Component {
 
         <div className="row form-group">
           <label className="text-left text-md-right col-md-3 col-form-label">
-            Secret Access Key
+            Secret access key
           </label>
           <div className="col-md-6">
             <input

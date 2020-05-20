@@ -34,6 +34,10 @@ export default class AppContainer extends Container {
       preferDarkModeByMediaQuery: false,
       preferDarkModeByUser: null,
       isDrawerOpened: false,
+
+      isPageCreateModalShown: false,
+
+      recentlyUpdatedPages: [],
     };
 
     const body = document.querySelector('body');
@@ -91,6 +95,9 @@ export default class AppContainer extends Container {
       put: this.apiv3Put.bind(this),
       delete: this.apiv3Delete.bind(this),
     };
+
+    this.openPageCreateModal = this.openPageCreateModal.bind(this);
+    this.closePageCreateModal = this.closePageCreateModal.bind(this);
   }
 
   /**
@@ -270,6 +277,11 @@ export default class AppContainer extends Container {
         }
       }
     });
+  }
+
+  async retrieveRecentlyUpdated() {
+    const { data } = await this.apiv3Get('/pages/recent');
+    this.setState({ recentlyUpdatedPages: data.pages });
   }
 
   fetchUsers() {
@@ -456,6 +468,14 @@ export default class AppContainer extends Container {
     }
 
     return this.apiv3Request('delete', path, { params });
+  }
+
+  openPageCreateModal() {
+    this.setState({ isPageCreateModalShown: true });
+  }
+
+  closePageCreateModal() {
+    this.setState({ isPageCreateModalShown: false });
   }
 
 }
