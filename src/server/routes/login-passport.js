@@ -89,7 +89,8 @@ module.exports = function(crowi, app) {
       ldapAccountInfo = await promisifiedPassportAuthentication(strategyName, req, res);
     }
     catch (err) {
-      return next(err);
+      debug(err.message);
+      return loginFailureHandler(req, res, 'Sign in failure due to connect ldap failure.');
     }
 
     // check groups for LDAP
