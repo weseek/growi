@@ -2,11 +2,11 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-import { Modal, ModalHeader, ModalBody } from 'reactstrap';
+import {
+  Modal, ModalHeader, ModalBody, ModalFooter,
+} from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
-import { format } from 'date-fns';
-import urljoin from 'url-join';
 
 import { userPageRoot } from '@commons/util/path-utils';
 import { pathUtils } from 'growi-commons';
@@ -35,7 +35,7 @@ const PageDuplicateModal = (props) => {
   }
 
   return (
-    <Modal size="lg" isOpen={pageContainer.state.isPageDuplicateModalShown} toggle={pageContainer.closePageDuplicateModal} className="grw-duplicate-page">
+    <Modal isOpen={pageContainer.state.isPageDuplicateModalShown} toggle={pageContainer.closePageDuplicateModal} className="grw-duplicate-page">
       <ModalHeader tag="h4" toggle={pageContainer.closePageDuplicateModal} className="bg-primary text-light">
         { t('modal_duplicate.label.Duplicate page') }
       </ModalHeader>
@@ -57,7 +57,7 @@ const PageDuplicateModal = (props) => {
                 <input
                   type="text"
                   value={pageNameInput}
-                  className="form-control flex-fill"
+                  className="form-control"
                   onChange={e => onChangePageNameInputHandler(e.target.value)}
                   required
                 />
@@ -65,6 +65,10 @@ const PageDuplicateModal = (props) => {
           </div>
         </div>
       </ModalBody>
+      <ModalFooter>
+        {/* TODO add error massage */}
+        <button type="button" className="btn btn-primary">Duplicate page</button>
+      </ModalFooter>
     </Modal>
 
   );
