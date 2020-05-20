@@ -8,8 +8,6 @@ import {
 
 import { withTranslation } from 'react-i18next';
 
-import { userPageRoot } from '@commons/util/path-utils';
-import { pathUtils } from 'growi-commons';
 import { createSubscribedElement } from './UnstatedUtils';
 
 import AppContainer from '../services/AppContainer';
@@ -33,6 +31,12 @@ const PageDuplicateModal = (props) => {
   function onChangePageNameInputHandler(value) {
     setPageNameInput(value);
   }
+
+  async function clickDuplicateButtonHandler() {
+    console.log('pushed');
+    pageContainer.closePageDuplicateModal();
+  }
+
 
   return (
     <Modal isOpen={pageContainer.state.isPageDuplicateModalShown} toggle={pageContainer.closePageDuplicateModal} className="grw-duplicate-page">
@@ -67,7 +71,7 @@ const PageDuplicateModal = (props) => {
       </ModalBody>
       <ModalFooter>
         {/* TODO add error massage */}
-        <button type="button" className="btn btn-primary">Duplicate page</button>
+        <button type="button" className="btn btn-primary" onClick={clickDuplicateButtonHandler}>Duplicate page</button>
       </ModalFooter>
     </Modal>
 
