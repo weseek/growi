@@ -94,16 +94,15 @@ export default class PageContainer extends Container {
     // [TODO][GW - 1942] add method for updating imageUrlCached and populate
     if (seenUserListElem != null) {
       const userIdsStr = seenUserListElem.dataset.userIds;
-      const res = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr.split(',') });
-      const users = res.data.users;
-      const userIds = users.map((user) => {
-        if (user.imageUrlCached) {
-          return user.id;
-        }
-        return;
-      });
-      const usersUpdatedImageUrlCached = await this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds });
-      this.state.seenUserIds = usersUpdatedImageUrlCached;
+      this.state.seenUserIds = userIdsStr.split(',');
+      const res = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr });
+      const users = res.users;
+      const noImageCacheUsers = users.filter((user) => { return !user.imageUrlCached });
+      if (noImageCacheUsers.length > 0) {
+        const noImageCacheUserIds = noImageCacheUsers.map((user) => { return user.id });
+        const usersUpdatedImageUrlCached = await this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
+        this.state.seenUserIds = usersUpdatedImageUrlCached;
+      }
     }
 
 

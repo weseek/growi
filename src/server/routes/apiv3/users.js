@@ -576,20 +576,21 @@ module.exports = (crowi) => {
     try {
       const userIds = req.body.userIds;
       const users = await User.find({ _id: { $in: userIds } });
-      const requests = users.map((user) => {
+      const requests = await Promise.all(users.map(async(user) => {
         return {
           updateOne: {
             filter: { _id: user._id },
-            update: { $set: { imageUrlCached: user.generateImageUrlCached() } },
+            update: { $set: { imageUrlCached: await user.generateImageUrlCached() } },
           },
         };
-      });
+      }));
 
       if (requests.length > 0) {
         await User.bulkWrite(requests);
       }
 
-      return res.apiv3({});
+      // GW-1942 TODO return updated users
+      return res.apiv3({ users });
     }
     catch (err) {
       logger.error('Error', err);
