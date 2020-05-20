@@ -126,7 +126,7 @@ module.exports = function(crowi, app) {
 
     // login
     await req.logIn(user, (err) => {
-      if (err) { return next() }
+      if (err) { debug(err.message); return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
@@ -217,7 +217,7 @@ module.exports = function(crowi, app) {
       }
       if (!user) { return next() }
       req.logIn(user, (err) => {
-        if (err) { return next() }
+        if (err) { debug(err.message); return next() }
 
         return loginSuccessHandler(req, res, user);
       });
@@ -288,7 +288,7 @@ module.exports = function(crowi, app) {
 
     // login
     req.logIn(user, (err) => {
-      if (err) { return next() }
+      if (err) { debug(err.message); return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
@@ -330,7 +330,7 @@ module.exports = function(crowi, app) {
 
     // login
     req.logIn(user, (err) => {
-      if (err) { return next() }
+      if (err) { debug(err.message); return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
@@ -372,7 +372,7 @@ module.exports = function(crowi, app) {
 
     // login
     req.logIn(user, (err) => {
-      if (err) { return next() }
+      if (err) { debug(err.message); return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
@@ -420,7 +420,7 @@ module.exports = function(crowi, app) {
     // login
     const user = await externalAccount.getPopulatedUser();
     req.logIn(user, (err) => {
-      if (err) { return next() }
+      if (err) { debug(err.message); return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
@@ -524,7 +524,7 @@ module.exports = function(crowi, app) {
 
     const user = await externalAccount.getPopulatedUser();
     await req.logIn(user, (err) => {
-      if (err) { return next() }
+      if (err) { debug(err.message); return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
