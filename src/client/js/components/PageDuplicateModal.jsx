@@ -22,22 +22,48 @@ const PageDuplicateModal = (props) => {
   const config = appContainer.getConfig();
   const isReachable = config.isSearchServiceReachable;
   const { path } = pageContainer.state;
-  const userPageRootPath = userPageRoot(appContainer.currentUser);
-  const parentPath = pathUtils.addTrailingSlash(path);
-  const now = format(new Date(), 'yyyy/MM/dd');
+  const { crowi } = appContainer.config;
 
-  const [todayInput1, setTodayInput1] = useState(t('Memo'));
-  const [todayInput2, setTodayInput2] = useState('');
-  const [pageNameInput, setPageNameInput] = useState(parentPath);
-  const [template, setTemplate] = useState(null);
+  const [pageNameInput, setPageNameInput] = useState(path);
+
+  /**
+   * change pageNameInput
+   * @param {string} value
+   */
+  function onChangePageNameInputHandler(value) {
+    setPageNameInput(value);
+  }
 
   return (
     <Modal size="lg" isOpen={pageContainer.state.isPageDuplicateModalShown} toggle={pageContainer.closePageDuplicateModal} className="grw-duplicate-page">
       <ModalHeader tag="h4" toggle={pageContainer.closePageDuplicateModal} className="bg-primary text-light">
-        { t('New Page') }
+        { t('modal_duplicate.label.Duplicate page') }
       </ModalHeader>
       <ModalBody>
-
+        <div className="form-group">
+          <label htmlFor="">{ t('modal_duplicate.label.Current page name') }</label><br />
+          <code>{ path }</code>
+        </div>
+        <div className="form-group">
+          <label htmlFor="duplicatePageName">{ t('modal_duplicate.label.New page name') }</label><br />
+          <div className="input-group">
+            <div className="input-group-prepend">
+              <span className="input-group-text">{crowi.url}</span>
+            </div>
+            {isReachable
+              // GW-2355 refactor typeahead
+              ? <PagePathAutoComplete crowi={appContainer} initializedPath={path} addTrailingSlash />
+              : (
+                <input
+                  type="text"
+                  value={pageNameInput}
+                  className="form-control flex-fill"
+                  onChange={e => onChangePageNameInputHandler(e.target.value)}
+                  required
+                />
+              )}
+          </div>
+        </div>
       </ModalBody>
     </Modal>
 
