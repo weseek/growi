@@ -164,7 +164,6 @@ export default class AppContainer extends Container {
       return;
     }
     const res = await this.apiv3Put('/users/update.imageUrlCache', { userIds: this.willUpdateImageUrlCacheUserIds });
-    console.log(res);
     this.willUpdateImageUrlCacheUserIds = [];
   }
 

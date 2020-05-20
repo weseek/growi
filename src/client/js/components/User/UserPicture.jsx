@@ -1,13 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { createSubscribedElement } from '../UnstatedUtils';
-import AppContainer from '../../services/AppContainer';
-
 const DEFAULT_IMAGE = '/images/icons/user.svg';
 
 // TODO UserComponent?
-class UserPicture extends React.Component {
+export default class UserPicture extends React.Component {
 
   getClassName() {
     const className = ['img-circle', 'picture'];
@@ -30,24 +27,19 @@ class UserPicture extends React.Component {
   }
 
   render() {
-    const { user, appContainer } = this.props;
+    const user = this.props.user;
 
     if (user == null) {
       return this.renderForNull();
     }
 
-    if (!user.imageUrlCached) {
-      appContainer.willUpdateImageUrlCacheUserIds.push(user._id);
-      return this.renderForNull();
-    }
-
-    const imgElem = (
+    const imgElem = user.imageUrlCached ? (
       <img
         src={user.imageUrlCached}
         alt={user.username}
         className={this.getClassName()}
       />
-    );
+    ) : this.renderForNull();
 
     return (
       (this.props.withoutLink)
@@ -62,15 +54,8 @@ UserPicture.propTypes = {
   user: PropTypes.object,
   size: PropTypes.string,
   withoutLink: PropTypes.bool,
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
 UserPicture.defaultProps = {
   size: null,
 };
-
-const UserPictureWrapper = (props) => {
-  return createSubscribedElement(UserPicture, props, [AppContainer]);
-};
-
-export default UserPictureWrapper;
