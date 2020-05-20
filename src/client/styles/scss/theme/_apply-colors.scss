@@ -12,6 +12,7 @@ $input-focus-color: $color-global;
 @import '~bootstrap/scss/functions';
 @import '~bootstrap/scss/variables';
 @import '~bootstrap/scss/mixins';
+@import '../mixins';
 @import 'mixins-for-tables';
 @import 'reboot-bootstrap-colors';
 @import 'reboot-bootstrap-theme-colors';
@@ -82,8 +83,6 @@ $input-focus-color: $color-global;
 //
 
 .grw-logo {
-  background-color: darken($bgcolor-logo, 10%);
-
   // set transition for fill
   svg * {
     transition: fill 0.8s ease-out;
@@ -111,9 +110,25 @@ $input-focus-color: $color-global;
   .nav-item > .nav-link {
     color: $color-link-nabvar;
   }
+
+  border-image: linear-gradient(to right, #545fff 0%, #00a6e5 100%);
+  border-image-slice: 1;
 }
 
 .grw-sidebar {
+  .ak-navigation-resize-button {
+    $color-resize-button: $color-global !default;
+    $bgcolor-resize-button: white !default;
+    $color-resize-button-hover: $color-reversal !default;
+    $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%) !default;
+
+    @include override-hexagon-color($color-resize-button, $bgcolor-resize-button);
+
+    &:hover {
+      @include override-hexagon-color($color-resize-button-hover, $bgcolor-resize-button-hover);
+    }
+  }
+
   .grw-global-item-container.active {
     button:after {
       // fukidashi color
