@@ -40,6 +40,13 @@ class SearchResult extends React.Component {
   }
 
   /**
+   * move the page
+   */
+  visitPageButtonHandler(e) {
+    window.location.href = e.currentTarget.value;
+  }
+
+  /**
    * toggle checkbox and add (or delete from) selected pages list
    *
    * @param {any} page
@@ -195,7 +202,7 @@ class SearchResult extends React.Component {
                 )
               }
               <div className="page-list-option">
-                <button type="button" className="btn btn-link p-0" onClick={() => { window.location.href = page.path }}><i className="icon-login" /></button>
+                <button type="button" className="btn btn-link p-0" value={page.path} onClick={this.visitPageButtonHandler}><i className="icon-login" /></button>
               </div>
             </div>
           </a>
