@@ -14,7 +14,7 @@ import AppContainer from '../services/AppContainer';
 
 const PageDeleteModal = (props) => {
   const {
-    t, isOpen, toggle, isDeleteCompletely,
+    t, isOpen, toggle, isDeleteCompletely, path,
   } = props;
 
   return (
@@ -24,7 +24,10 @@ const PageDeleteModal = (props) => {
         {!isDeleteCompletely && <span><i className="icon-fw icon-trash"></i>{ t('modal_delete.delete_page') }</span>}
       </ModalHeader>
       <ModalBody>
-        { t('modal_empty.notice')}
+        <div className="form-group">
+          <label htmlFor="">{ t('modal_delete.deleting_page') }:</label><br />
+          <code>{ path }</code>
+        </div>
       </ModalBody>
       <ModalFooter>
 

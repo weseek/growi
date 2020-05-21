@@ -100,7 +100,7 @@ const TrashPageAlert = (props) => {
         {(isDeleted && currentUser != null) && renderTrashPageManagementButtons()}
       </div>
       <EmptyTrashModal isOpen={isEmptyTrashModalShown} toggle={closeEmptyTrashModal} onClickSubmit={onClickEmptyBtn} />
-      <PageDeleteModal isOpen={isPageDeleteModalShown} toggle={closePageDeleteModal} onClickSubmit={onClickDeleteBtn} isDeleteCompletely />
+      <PageDeleteModal isOpen={isPageDeleteModalShown} toggle={closePageDeleteModal} onClickSubmit={onClickDeleteBtn} path={path} isDeleteCompletely />
     </>
   );
 };
