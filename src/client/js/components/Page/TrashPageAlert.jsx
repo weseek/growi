@@ -8,7 +8,9 @@ import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 import UserPicture from '../User/UserPicture';
+
 import EmptyTrashModal from '../EmptyTrashModal';
+import PageDeleteModal from '../PageDeleteModal';
 
 
 const TrashPageAlert = (props) => {
@@ -18,6 +20,7 @@ const TrashPageAlert = (props) => {
   } = pageContainer.state;
   const { currentUser } = appContainer;
   const [isEmptyTrashModalShown, setIsEmptyTrashModalShown] = useState(false);
+  const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);
 
   function openEmptyTrashModal() {
     setIsEmptyTrashModalShown(true);
@@ -27,7 +30,15 @@ const TrashPageAlert = (props) => {
     setIsEmptyTrashModalShown(false);
   }
 
-  async function onClickDeleteBtn() {
+  function openPageDeleteModal() {
+    setIsPageDeleteModalShown(true);
+  }
+
+  function closePageDeleteModal() {
+    setIsPageDeleteModalShown(false);
+  }
+
+  async function onClickEmptyBtn() {
     try {
       await appContainer.apiv3Delete('/pages/empty-trash');
       window.location.reload();
@@ -35,6 +46,10 @@ const TrashPageAlert = (props) => {
     catch (err) {
       toastError(err);
     }
+  }
+
+  async function onClickDeleteBtn() {
+    console.log('pushed');
   }
 
   function renderEmptyButton() {
@@ -66,8 +81,7 @@ const TrashPageAlert = (props) => {
           type="button"
           className="btn btn-danger rounded-pill btn-sm mr-2"
           disabled={!isAbleToDeleteCompletely}
-          data-target="#deletePage"
-          data-toggle="modal"
+          onClick={openPageDeleteModal}
         >
           <i className="icon-fire" aria-hidden="true"></i> { t('Delete Completely') }
         </button>
@@ -85,7 +99,8 @@ const TrashPageAlert = (props) => {
         {(currentUser.admin && path === '/trash' && hasChildren) && renderEmptyButton()}
         {(isDeleted && currentUser != null) && renderTrashPageManagementButtons()}
       </div>
-      <EmptyTrashModal isOpen={isEmptyTrashModalShown} toggle={closeEmptyTrashModal} onClickSubmit={onClickDeleteBtn} />
+      <EmptyTrashModal isOpen={isEmptyTrashModalShown} toggle={closeEmptyTrashModal} onClickSubmit={onClickEmptyBtn} />
+      <PageDeleteModal isOpen={isPageDeleteModalShown} toggle={closePageDeleteModal} onClickSubmit={onClickDeleteBtn} isDeleteCompletely />
     </>
   );
 };
