@@ -14,21 +14,20 @@ const PutBackPageModal = (props) => {
   const { t, appContainer } = props;
 
   return (
-    <Modal size="lg" isOpen={appContainer.state.isPageCreateModalShown} toggle={appContainer.closePageCreateModal} className="grw-create-page">
-      <ModalHeader tag="h4" toggle={appContainer.closePageCreateModal} className="bg-primary text-light">
-        { t('New Page') }
+    <Modal size="lg" isOpen toggle={appContainer.closePutBackPageModal} className="grw-create-page">
+      <ModalHeader tag="h4" toggle={appContainer.closePutBackPageModal} className="bg-primary text-light">
+        { t('Put Back') }
       </ModalHeader>
       <ModalBody>
         Hi threre!
       </ModalBody>
     </Modal>
-
   );
 
 };
 
 
-const ModalControlWrapper = (props) => {
+const PutbackPageModalWrapper = (props) => {
   return createSubscribedElement(PutBackPageModal, props, [AppContainer, PageContainer]);
 };
 
@@ -38,4 +37,4 @@ PutBackPageModal.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
-export default withTrasnlation()(ModalControlWrapper);
+export default withTrasnlation()(PutbackPageModalWrapper);

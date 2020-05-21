@@ -7,7 +7,7 @@ import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 import UserPicture from '../User/UserPicture';
-
+import PutbackPageModal from '../PageTrash/PutbackPageModal';
 
 const TrashPageAlert = (props) => {
   const { t, appContainer, pageContainer } = props;
@@ -30,7 +30,8 @@ const TrashPageAlert = (props) => {
         <button
           type="button"
           className="btn btn-outline-secondary rounded-pill btn-sm ml-auto mr-2"
-          data-target="#putBackPage"
+          /* onClick={PutbackPageModal} */
+          data-target="#Putback"
           data-toggle="modal"
         >
           <i className="icon-action-undo" aria-hidden="true"></i> { t('Put Back') }
