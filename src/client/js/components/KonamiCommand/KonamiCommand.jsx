@@ -29,7 +29,6 @@ export default class KonamiCommand extends React.Component {
             userCommand: this.state.userCommand.concat(event.key),
         })
 
-        // スコープについてあとで誰かに聞く！！！！
         const tempUserCommand = this.state.userCommand
         this.KonamiCommandList = this.KonamiCommandList.filter( function(value) {
             return value[0,tempUserCommand.length] == tempUserCommand
