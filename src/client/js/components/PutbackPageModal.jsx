@@ -23,17 +23,19 @@ const PutBackPageModal = (props) => {
         <i className="icon-action-undo mr-2" aria-hidden="true"></i> { t('Put Back Page') }
       </ModalHeader>
       <ModalBody>
-        <div className="form-group">
-          <label htmlFor="">Put back page:</label><br />
-          <code>{path}</code>
-        </div>
-        <div className="custom-control custom-checkbox custom-checkbox-warning">
-          <input className="custom-control-input" name="recursively" id="cbPutbackRecursively" value="1" type="checkbox" checked></input>
-          <label className="custom-control-label" htmlFor="cbPutbackRecursively">
-            { t('modal_putback.label.recursively') }
-            <p className="form-text text-muted mt-0">{ t('modal_putback.help.recursively', path) }</p>
-          </label>
-        </div>
+        <Form>
+          <FormGroup>
+            <Label for="">Put back page:</Label><br />
+            <code>{path}</code>
+          </FormGroup>
+          <div className="custom-control custom-checkbox custom-checkbox-warning">
+            <Input type="checkbox" className="custom-control-input" name="recursively" id="cbPutbackRecursively" value="1" checked />
+            <Label htmlfor="cbPutbackRecursively" className="custom-control-label">
+              { t('modal_putback.label.recursively') }
+            </Label>
+            <p className="form-text text-muted mt-0">{ t('modal_putback.help.recursively') }<code>{ path }</code>{ t('modal_putback.help.recursively2') }</p>
+          </div>
+        </Form>
       </ModalBody>
       <ModalFooter>
         <button type="button" className="btn btn-info" onClick={onClickSubmit}>
