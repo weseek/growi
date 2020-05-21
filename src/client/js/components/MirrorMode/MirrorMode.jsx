@@ -1,7 +1,5 @@
 import React from 'react';
-import { GlobalHotKeys } from 'react-hotkeys';
 
-import loggerFactory from '@alias/logger';
 
 /**
  * Page staff credit component
@@ -13,18 +11,10 @@ import loggerFactory from '@alias/logger';
 
 export default class MirrorMode extends React.Component {
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-
-      userCommand: [],
-    };
-  }
 
   renderMirrors() {
     const changeBody = document.body;
-      changeBody.classList.add('reverse');
+    changeBody.classList.add('reverse');
     return null;
   }
 
