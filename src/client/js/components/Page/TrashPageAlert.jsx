@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
+import { toastSuccess, toastError } from '../../util/apiNotification';
 
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
@@ -24,6 +25,17 @@ const TrashPageAlert = (props) => {
 
   function closeEmptyTrashModal() {
     setIsEmptyTrashModalShown(false);
+  }
+
+  async function onClickDeleteBtn() {
+    try {
+      await appContainer.apiv3Delete('/pages/empty-trash');
+      toastSuccess(t('toaster.empty_trash_success'));
+      closeEmptyTrashModal();
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   function renderEmptyButton() {
@@ -74,7 +86,7 @@ const TrashPageAlert = (props) => {
         {(currentUser.admin && path === '/trash' && hasChildren) && renderEmptyButton()}
         {(isDeleted && currentUser != null) && renderTrashPageManagementButtons()}
       </div>
-      <EmptyTrashModal isOpen={isEmptyTrashModalShown} toggle={closeEmptyTrashModal} />
+      <EmptyTrashModal isOpen={isEmptyTrashModalShown} toggle={closeEmptyTrashModal} onClickSubmit={onClickDeleteBtn} />
     </>
   );
 };

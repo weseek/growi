@@ -14,7 +14,7 @@ import AppContainer from '../services/AppContainer';
 
 const EmptyTrashModal = (props) => {
   const {
-    t, isOpen, toggle,
+    t, isOpen, toggle, onClickSubmit,
   } = props;
 
   return (
@@ -27,9 +27,8 @@ const EmptyTrashModal = (props) => {
       </ModalBody>
       <ModalFooter>
         {/* TODO add error message */}
-        <button type="submit" className="btn btn-danger">
-          <i className="icon-trash" aria-hidden="true"></i>
-            Empty
+        <button type="button" className="btn btn-danger" onClick={onClickSubmit}>
+          <i className="icon-trash mr-2" aria-hidden="true"></i>Empty
         </button>
       </ModalFooter>
     </Modal>
@@ -52,6 +51,7 @@ EmptyTrashModal.propTypes = {
 
   isOpen: PropTypes.bool.isRequired,
   toggle: PropTypes.func.isRequired,
+  onClickSubmit: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(EmptyTrashModalWrapper);
