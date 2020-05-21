@@ -31,7 +31,6 @@ const EmptyTrashModal = (props) => {
         </button>
       </ModalFooter>
     </Modal>
-
   );
 };
 
