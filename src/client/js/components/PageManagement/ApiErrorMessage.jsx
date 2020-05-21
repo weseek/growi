@@ -10,9 +10,9 @@ const ApiErrorMessage = (props) => {
     switch (errorMessage) {
       case 'Page exists':
         return (
-          <span className="text-danger msg msg-already_exists">
+          <span className="text-danger">
             <strong><i className="icon-fw icon-ban"></i>{ t('page_api_error.already_exists') }</strong>
-            <small id="linkToNewPage"><a href={linkPath}>{linkPath} <i className="icon-login"></i></a></small>
+            <small><a href={linkPath}>{linkPath} <i className="icon-login"></i></a></small>
           </span>
         );
       default:
