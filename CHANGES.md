@@ -6,12 +6,6 @@
 
 ## v3.8.1
 
-* Fix: Unset overflow-y style for Edit Tags Modal
-* Fix: Duplicate page source is overwrited
-    * Introduced by 3.7.6
-
-## v3.8.0
-
 ### BREAKING CHANGES
 
 - Now Elasticsearch requires the privilege `cluster:monitor/health` instead of `cluster:monitor/nodes/info`
@@ -21,16 +15,20 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/38x.html>
 ### Updates
 
 * Improvement: Change the health check method for Elasticsearch
-
-## v3.7.7
-
+* Fix: Unset overflow-y style for Edit Tags Modal
 * Fix: Duplicate page source is overwrited
     * Introduced by 3.7.6
 
-## v3.7.6
+## v3.8.0  (Missing number)
+
+## v3.7.7
 
 * Feature: Empty trash pages
 * Improvement: Behavior of Reconnect to Elasticsearch button
+* Fix: Duplicate page source is overwrited
+    * Introduced by 3.7.6
+
+## v3.7.6  (Missing number)
 
 ## v3.7.5
 
