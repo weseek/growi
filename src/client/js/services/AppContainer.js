@@ -428,6 +428,12 @@ export default class AppContainer extends Container {
     if (res.data.ok) {
       return res.data;
     }
+
+    // Return error code if code is exist
+    if (res.data.code) {
+      throw new Error(res.data.code);
+    }
+
     throw new Error(res.data.error);
   }
 

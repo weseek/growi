@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 const ApiErrorMessage = (props) => {
-  const { t, errorMessage, linkPath } = props;
+  const { t, errorCode, linkPath } = props;
 
   function renderMessage() {
-    switch (errorMessage) {
-      case 'Page exists':
+    switch (errorCode) {
+      case 'already_exists':
         return (
           <span className="text-danger">
             <strong><i className="icon-fw icon-ban"></i>{ t('page_api_error.already_exists') }</strong>
@@ -52,7 +52,7 @@ const ApiErrorMessage = (props) => {
 
 ApiErrorMessage.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
-  errorMessage: PropTypes.string,
+  errorCode: PropTypes.string,
   linkPath: PropTypes.string,
 };
 
