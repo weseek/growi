@@ -20,10 +20,12 @@ const PageDeleteModal = (props) => {
 
   const deleteIconAndKey = {
     completely: {
+      color: 'dander',
       icon: 'fire',
       translationKey: 'completely',
     },
     temporary: {
+      color: 'primary',
       icon: 'trash',
       translationKey: 'page',
     },
@@ -31,7 +33,7 @@ const PageDeleteModal = (props) => {
 
   return (
     <Modal isOpen={isOpen} toggle={toggle} className="grw-create-page">
-      <ModalHeader tag="h4" toggle={toggle} className="bg-danger text-light">
+      <ModalHeader tag="h4" toggle={toggle} className={`bg-${deleteIconAndKey[deleteMode].color} text-light`}>
         <i className={`icon-fw icon-${deleteIconAndKey[deleteMode].icon}`}></i>
         { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
       </ModalHeader>
@@ -42,7 +44,7 @@ const PageDeleteModal = (props) => {
         </div>
       </ModalBody>
       <ModalFooter>
-        <button type="button" className="m-l-10 btn btn-danger" onClick={onClickSubmit}>
+        <button type="button" className={`m-l-10 btn btn-${deleteIconAndKey[deleteMode].color}`} onClick={onClickSubmit}>
           <i className={`icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
           { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
         </button>
