@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { isTopPage, isUserPage } from '@commons/util/path-utils';
+import { isTopPage } from '@commons/util/path-utils';
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
@@ -11,10 +11,9 @@ import PageDeleteModal from '../PageDeleteModal';
 
 const PageManagement = (props) => {
   const { t, appContainer, pageContainer } = props;
-  const { path } = pageContainer.state;
+  const { path, isDeletable } = pageContainer.state;
   const { currentUser } = appContainer;
   const isTopPagePath = isTopPage(path);
-  const isUserPagePath = isUserPage(path);
 
   const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);
 
@@ -74,7 +73,7 @@ const PageManagement = (props) => {
           <a className="dropdown-item" href="#" data-target="#create-template" data-toggle="modal">
             <i className="icon-fw icon-magic-wand"></i> { t('template.option_label.create/edit') }
           </a>
-          {(!isTopPagePath && !isUserPagePath) && renderDropdownItemForDeletablePage()}
+          {(isDeletable) && renderDropdownItemForDeletablePage()}
         </div>
       </li>
       <PageDeleteModal isOpen={isPageDeleteModalShown} toggle={closePageDeleteModal} onClickSubmit={onClickDeleteBtn} path={path} />
