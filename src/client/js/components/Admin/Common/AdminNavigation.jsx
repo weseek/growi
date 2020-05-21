@@ -14,7 +14,7 @@ const AdminNavigation = (props) => {
   return (
     <ul className="nav nav-pills nav-stacked">
       <li className={`${pathname === '/admin' && 'active'}`}>
-        <a href="/admin"><i className="icon-fw icon-home"></i> { t('Management Wiki Home') }</a>
+        <a href="/admin"><i className="icon-fw icon-home"></i> { t('Wiki Management Home Page') }</a>
       </li>
       <li className={`${isActiveMenu('/app') && 'active'}`}>
         <a href="/admin/app"><i className="icon-fw icon-settings"></i> { t('App Settings') }</a>

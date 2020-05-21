@@ -68,7 +68,7 @@ class AssociateModal extends React.Component {
       <Modal show={this.props.isOpen} onHide={this.props.onClose}>
         <Modal.Header className="bg-info" closeButton>
           <Modal.Title className="text-white">
-            { t('Create External Account') }
+            { t('admin:user_management.create_external_account') }
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>

@@ -73,7 +73,7 @@ class ExternalAccountLinkedMe extends React.Component {
               <i className="icon-plus" aria-hidden="true" />
             Add
             </button>
-            { t('External Accounts') }
+            { t('admin:user_management.external_accounts') }
           </h2>
         </div>
 
@@ -82,7 +82,7 @@ class ExternalAccountLinkedMe extends React.Component {
             <table className="table table-bordered table-user-list">
               <thead>
                 <tr>
-                  <th width="120px">Authentication Provider</th>
+                  <th width="120px">{ t('admin:user_management.authentication_provider') }</th>
                   <th>
                     <code>accountId</code>
                   </th>

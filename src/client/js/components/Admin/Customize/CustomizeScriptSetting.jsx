@@ -57,11 +57,11 @@ class CustomizeScriptSetting extends React.Component {
             <dt><code>$</code></dt>
             <dd>jQuery instance</dd>
             <dt><code>appContainer</code></dt>
-            <dd>GROWI App <a href="https://github.com/jamiebuilds/unstated">Unstated Container</a></dd>
+            <dd>GROWI app <a href="https://github.com/jamiebuilds/unstated">unstated container</a></dd>
             <dt><code>growiRenderer</code></dt>
-            <dd>GROWI Renderer origin instance</dd>
+            <dd>GROWI renderer origin instance</dd>
             <dt><code>growiPlugin</code></dt>
-            <dd>GROWI Plugin Manager instance</dd>
+            <dd>GROWI plugin Manager instance</dd>
             <dt><code>Crowi</code></dt>
             <dd>Crowi legacy instance (jQuery based)</dd>
           </dl>

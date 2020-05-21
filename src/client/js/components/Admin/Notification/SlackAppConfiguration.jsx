@@ -118,7 +118,7 @@ class SlackAppConfiguration extends React.Component {
               </div>
 
               <div className="row mb-5">
-                <label className="col-xs-3 text-right">OAuth Access Token</label>
+                <label className="col-xs-3 text-right">OAuth access token</label>
                 <div className="col-xs-6">
                   <input
                     className="form-control"
