@@ -51,12 +51,12 @@ export default class MirrorMode extends React.Component {
   }
 
   renderMirrors() {
-    const changeId = document.getElementById('growi_main-container');
+    const changeBody = document.body;
     if (this.state.isShown) {
-      changeId.classList.add('reverse');
+      changeBody.classList.add('reverse');
     }
-    else if (changeId.classList.contains('reverse')) {
-      changeId.classList.remove('reverse');
+    else if (changeBody.classList.contains('reverse')) {
+      changeBody.classList.remove('reverse');
     }
     return null;
   }

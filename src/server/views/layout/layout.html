@@ -60,7 +60,7 @@
 {% endblock %}
 
 {% block html_body %}
-<body id ="growi_main-container"
+<body
   class="main-container content-wrapper {% block html_base_css %}{% endblock %}
       {% if !getConfig('crowi', 'customize:layout') || 'crowi' === getConfig('crowi', 'customize:layout') %}crowi{% elseif !getConfig('crowi', 'customize:layout') || 'kibela' === getConfig('crowi', 'customize:layout') %}kibela{% else %}growi{% endif %}"
   data-is-admin="{{ user.admin }}"
