@@ -14,7 +14,7 @@ import AppContainer from '../services/AppContainer';
 
 const PageDeleteModal = (props) => {
   const {
-    t, isOpen, toggle, isDeleteCompletely, path,
+    t, isOpen, toggle, onClickSubmit, isDeleteCompletely, path,
   } = props;
   const deleteMode = isDeleteCompletely ? 'completely' : 'temporary';
 
@@ -42,7 +42,10 @@ const PageDeleteModal = (props) => {
         </div>
       </ModalBody>
       <ModalFooter>
-
+        <button type="button" className="m-l-10 btn btn-danger" onClick={onClickSubmit}>
+          <i className={`icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
+          { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
+        </button>
       </ModalFooter>
     </Modal>
 
