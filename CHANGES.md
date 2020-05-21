@@ -1,5 +1,9 @@
 # CHANGES
 
+## v3.7.7
+
+* Fix: Duplicate page source is overwrited
+    * Introduced by 3.7.6
 
 ## v3.7.6
 
