@@ -23,7 +23,7 @@ const EmptyTrashModal = (props) => {
         { t('modal_empty.empty_the_trash')}
       </ModalHeader>
       <ModalBody>
-        完全削除したページは元に戻すことができません
+        { t('modal_empty.notice')}
       </ModalBody>
       <ModalFooter>
         {/* TODO add error message */}
