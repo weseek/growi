@@ -20,7 +20,7 @@ const PageDeleteModal = (props) => {
 
   const deleteIconAndKey = {
     completely: {
-      color: 'dander',
+      color: 'danger',
       icon: 'fire',
       translationKey: 'completely',
     },
