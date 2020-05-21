@@ -64,7 +64,15 @@ const PageDuplicateModal = (props) => {
             </div>
             {isReachable
               // GW-2355 refactor typeahead
-              ? <PagePathAutoComplete crowi={appContainer} initializedPath={path} addTrailingSlash />
+              ? (
+                <PagePathAutoComplete
+                  crowi={appContainer}
+                  initializedPath={path}
+                  addTrailingSlash
+                  onClickSubmit={clickDuplicateButtonHandler}
+                  onInputChange={onChangePageNameInputHandler}
+                />
+              )
               : (
                 <input
                   type="text"
