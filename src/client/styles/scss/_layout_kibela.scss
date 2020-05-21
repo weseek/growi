@@ -3,7 +3,7 @@ $navbar-height-adjustment: 10px;
 body.kibela {
   /* navbar for kibela */
   #page-wrapper {
-    margin-top: 60px;
+    margin-top: $grw-navbar-height + $grw-navbar-border-width;
   }
 
   /* Logo */

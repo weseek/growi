@@ -18,8 +18,8 @@
 }
 
 @mixin expand-editor($editor-header-plus-footer, $navbar-height-adjustment: 0px) {
-  $grw-navbar-height: $grw-navbar-height + $navbar-height-adjustment;
-  $header-plus-footer: $grw-navbar-height + $editor-header-plus-footer + 2px; // add .main padding-top
+  $navbar-height: $grw-navbar-height + $grw-navbar-border-width + $navbar-height-adjustment;
+  $header-plus-footer: $navbar-height + $editor-header-plus-footer + 2px; // add .main padding-top
 
   $editor-margin: $header-plus-footer //
     + 25px //   add .btn-open-dropzone height
@@ -27,7 +27,7 @@
 
   .main {
     width: 100%;
-    height: calc(100vh - #{$grw-navbar-height});
+    height: calc(100vh - #{$navbar-height});
     padding-top: 2px;
     margin-top: 0px !important;
 
@@ -106,5 +106,117 @@
       $margin: $margin + $modal-footer;
     }
     height: calc(100% - #{$margin});
+  }
+}
+
+/*
+ * see: https://gist.github.com/bjmiller121/902745cbb38d88178882
+ *
+ * Makes a CSS hexagon! based off of http://csshexagon.com/
+ * Demo: http://sassmeister.com/gist/98fcf3ce163a97d2ef7e
+ */
+@mixin hexagonize($size, $color, $box-shadow: 0, $border: 0) {
+  width: $size;
+  height: ($size * 0.577);
+  margin: ($size * 0.288) 0;
+  background-color: $color;
+  border-right: $border;
+  border-left: $border;
+
+  @if $box-shadow != 0 {
+    box-shadow: $box-shadow;
+  }
+
+  &:before,
+  &:after {
+    position: absolute;
+    content: '';
+
+    @if $border == 0 and $box-shadow == 0 {
+      left: 0;
+      width: 0;
+      border-right: ($size/2) solid transparent;
+      border-left: ($size/2) solid transparent;
+    } @else {
+      left: ($size * 0.129);
+      z-index: 1;
+      width: ($size * 0.707);
+      height: ($size * 0.707);
+      background-color: inherit;
+      transform: scaleY(0.6) rotate(-45deg);
+    }
+
+    @if $box-shadow != 0 {
+      box-shadow: $box-shadow;
+    }
+  }
+
+  &:before {
+    @if $border == 0 and $box-shadow == 0 {
+      bottom: 99%;
+      border-bottom: ($size * 0.288) solid $color;
+    } @else {
+      top: -($size * 0.353);
+    }
+
+    @if $border != 0 {
+      border-top: $border;
+      border-right: $border;
+    }
+  }
+
+  &:after {
+    @if $border == 0 and $box-shadow == 0 {
+      top: 99%;
+      width: 0;
+      border-top: ($size * 0.288) solid $color;
+    } @else {
+      bottom: -($size * 0.353);
+    }
+
+    @if $border != 0 {
+      border-bottom: $border;
+      border-left: $border;
+    }
+  }
+
+  @if $box-shadow != 0 {
+    > span {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+
+      &:after {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: $size;
+        height: $size * 0.577;
+        content: '';
+        background-color: $color;
+      }
+    }
+  }
+}
+
+@mixin override-hexagon-color($color, $bgcolor) {
+  background-color: $bgcolor;
+  transition: background-color 200ms linear, color 100ms linear, opacity 300ms cubic-bezier(0.2, 0, 0, 1), transform 300ms cubic-bezier(0.2, 0, 0, 1);
+
+  &:before {
+    border-bottom-color: $bgcolor;
+    transition: border-bottom-color 200ms linear;
+  }
+  &:after {
+    border-top-color: $bgcolor;
+    transition: border-top-color 200ms linear;
+  }
+  > span:after {
+    background-color: $bgcolor;
+    transition: background-color 200ms linear;
+  }
+  svg path {
+    fill: $color;
   }
 }

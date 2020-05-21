@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
+import { toastError } from '../../util/apiNotification';
 
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 import UserPicture from '../User/UserPicture';
-import PutbackPageModal from '../PageTrash/PutbackPageModal';
+import PutbackPageModal from '../PutbackPageModal';
+import EmptyTrashModal from '../EmptyTrashModal';
+
 
 const TrashPageAlert = (props) => {
   const { t, appContainer, pageContainer } = props;
@@ -15,10 +18,54 @@ const TrashPageAlert = (props) => {
     path, isDeleted, revisionAuthor, updatedAt, hasChildren, isAbleToDeleteCompletely,
   } = pageContainer.state;
   const { currentUser } = appContainer;
+  const [isEmptyTrashModalShown, setIsEmptyTrashModalShown] = useState(false);
+  const [isPutbackPageModalShown, setIsPutbackPageModalShown] = useState(false);
+
+  function openEmptyTrashModal() {
+    setIsEmptyTrashModalShown(true);
+  }
+
+  function closeEmptyTrashModal() {
+    setIsEmptyTrashModalShown(false);
+  }
+
+  function openPutbackPageModal() {
+    setIsPutbackPageModalShown(true);
+  }
+
+  function closePutbackPageModal() {
+    setIsPutbackPageModalShown(false);
+  }
+
+  async function onClickDeleteBtn() {
+    try {
+      await appContainer.apiv3Delete('/pages/empty-trash');
+      window.location.reload();
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
+
+  async function onClickPutbackBtn() {
+    try {
+      await /* appContainer.apiv3Delete('/pages/empty-trash'); */ console.log('Pushed');
+      window.location.reload();
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
 
   function renderEmptyButton() {
     return (
-      <button href="#" type="button" className="btn btn-danger rounded-pill btn-sm ml-auto" data-target="#emptyTrash" data-toggle="modal">
+      <button
+        href="#"
+        type="button"
+        className="btn btn-danger rounded-pill btn-sm ml-auto"
+        data-target="#emptyTrash"
+        onClick={openEmptyTrashModal}
+      >
         <i className="icon-trash" aria-hidden="true"></i>{ t('modal_empty.empty_the_trash') }
       </button>
     );
@@ -29,8 +76,8 @@ const TrashPageAlert = (props) => {
       <>
         <button
           type="button"
-          className="btn btn-outline-secondary rounded-pill btn-sm ml-auto mr-2"
-          /* onClick={PutbackPageModal} */
+          className="btn btn-info rounded-pill btn-sm ml-auto mr-2"
+          onClick={openPutbackPageModal}
           data-target="#Putback"
           data-toggle="modal"
         >
@@ -50,14 +97,18 @@ const TrashPageAlert = (props) => {
   }
 
   return (
-    <div className="alert alert-warning py-3 px-4 d-flex align-items-center">
-      <div>
-      This page is in the trash <i className="icon-trash" aria-hidden="true"></i>.
-        {isDeleted && <span><br /><UserPicture user={revisionAuthor} /> Deleted by {revisionAuthor.name} at {updatedAt}</span>}
+    <>
+      <div className="alert alert-warning py-3 px-4 d-flex align-items-center">
+        <div>
+          This page is in the trash <i className="icon-trash" aria-hidden="true"></i>.
+          {isDeleted && <span><br /><UserPicture user={revisionAuthor} /> Deleted by {revisionAuthor.name} at {updatedAt}</span>}
+        </div>
+        {(currentUser.admin && path === '/trash' && hasChildren) && renderEmptyButton()}
+        {(isDeleted && currentUser != null) && renderTrashPageManagementButtons()}
       </div>
-      {(currentUser.admin && path === '/trash' && hasChildren) && renderEmptyButton()}
-      {(isDeleted && currentUser != null) && renderTrashPageManagementButtons()}
-    </div>
+      <PutbackPageModal isOpen={isPutbackPageModalShown} toggle={closePutbackPageModal} onClickSubmit={onClickPutbackBtn} />
+      <EmptyTrashModal isOpen={isEmptyTrashModalShown} toggle={closeEmptyTrashModal} onClickSubmit={onClickDeleteBtn} />
+    </>
   );
 };
 
