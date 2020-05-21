@@ -1,5 +1,4 @@
 import React from 'react';
-import { GlobalHotKeys } from 'react-hotkeys';
 
 import loggerFactory from '@alias/logger';
 
@@ -22,7 +21,6 @@ export default class StaffCredit extends React.Component {
 
     this.state = {
       isShown: true,
-      userCommand: [],
     };
     this.deleteCredit = this.deleteCredit.bind(this);
   }
