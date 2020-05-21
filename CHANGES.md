@@ -1,8 +1,14 @@
 # CHANGES
 
-## v3.8.1-RC
+## v3.8.2-RC
+
+*
+
+## v3.8.1
 
 * Fix: Unset overflow-y style for Edit Tags Modal
+* Fix: Duplicate page source is overwrited
+    * Introduced by 3.7.6
 
 ## v3.8.0
 
@@ -15,6 +21,11 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/38x.html>
 ### Updates
 
 * Improvement: Change the health check method for Elasticsearch
+
+## v3.7.7
+
+* Fix: Duplicate page source is overwrited
+    * Introduced by 3.7.6
 
 ## v3.7.6
 
