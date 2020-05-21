@@ -26,7 +26,7 @@ const ApiErrorMessage = (props) => {
     </>
   );
 
-  // TODO Set according to error message
+  // TODO GW-79 Set according to error message
   // <div>
   //   <span className="text-danger msg msg-notfound_or_forbidden">
   //     <strong><i className="icon-fw icon-ban"></i>{ t('page_api_error.notfound_or_forbidden') }</strong>
