@@ -41,14 +41,9 @@ const componentMappings = {
   'search-top': <HeaderSearchBox />,
   'search-sidebar': <HeaderSearchBox crowi={appContainer} />,
   'personal-dropdown': <PersonalDropdown />,
-<<<<<<< HEAD
   'konami-command': <KonamiCommand />,
   // 'staff-credit': <StaffCredit />,
   // 'mirror-mode': <MirrorMode />,
-=======
-  'staff-credit': <StaffCredit />,
-  'mirror-mode': <MirrorMode />,
->>>>>>> imprv/gw_2305
 };
 
 export { appContainer, componentMappings };
