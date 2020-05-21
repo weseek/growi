@@ -333,8 +333,7 @@
     "activate_user_success": "Succeeded to activating {{username}}",
     "deactivate_user_success": "Succeeded to deactivate {{username}}",
     "remove_user_success": "Succeeded to removing {{username}} ",
-    "remove_external_user_success": "Succeeded to remove {{accountId}} ",
-    "empty_trash_success": "Succeeded to empty trash"
+    "remove_external_user_success": "Succeeded to remove {{accountId}} "
   },
   "template": {
     "modal_label": {

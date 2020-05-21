@@ -30,8 +30,7 @@ const TrashPageAlert = (props) => {
   async function onClickDeleteBtn() {
     try {
       await appContainer.apiv3Delete('/pages/empty-trash');
-      toastSuccess(t('toaster.empty_trash_success'));
-      closeEmptyTrashModal();
+      window.location.reload();
     }
     catch (err) {
       toastError(err);
