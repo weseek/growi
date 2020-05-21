@@ -301,7 +301,8 @@
       "recursively": "Put back recursively"
     },
     "help": {
-      "recursively": "Put back children of under <code>%s</code> recursively"
+      "recursively": "Put back children of under ",
+      "recursively2": "recursively"
     }
   },
   "modal_shortcuts": {
