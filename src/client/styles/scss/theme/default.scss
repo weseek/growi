@@ -19,7 +19,6 @@ html[light] {
 
   // Background colors
   $bgcolor-global: white;
-  $bgcolor-navbar: #334455;
   $bgcolor-inline-code: #f9f2f4;
   $bgcolor-card: #f5f5f5;
 
@@ -41,9 +40,24 @@ html[light] {
   $bgcolor-list-active: $primary;
   $color-list-hover: $color-reversal;
 
+  // Navbar
+  $bgcolor-navbar: #2a2929;
+  $border-color-navbar-gradient-left: #545fff;
+  $border-color-navbar-gradient-right: #00a6e5;
+
   // Logo colors
   $bgcolor-logo: $bgcolor-navbar;
   $fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 10%), 15%);
+
+  // Sidebar
+  $bgcolor-sidebar: #122c55;
+  $color-sidebar-context: $color-global;
+  $bgcolor-sidebar-context: #f4f6fc;
+  // Sidebar resize button
+  $color-resize-button: $color-reversal;
+  $bgcolor-resize-button: #5587ec;
+  $color-resize-button-hover: $color-reversal;
+  $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
 
   // Icon colors
   $color-editor-icons: $color-global;
@@ -65,11 +79,6 @@ html[light] {
   // badge
   $color-badge: $color-reversal;
 
-  // Sidebar
-  $bgcolor-sidebar: $bgcolor-navbar;
-  $color-sidebar-context: $color-global;
-  $bgcolor-sidebar-context: darken($bgcolor-global, 10%);
-
   @import 'apply-colors';
   @import 'apply-colors-light';
 }
@@ -83,7 +92,6 @@ html[dark] {
 
   // Background colors
   $bgcolor-global: $basecolor;
-  $bgcolor-navbar: #151515;
   $bgcolor-inline-code: darken($basecolor, 5%);
   $bgcolor-card: darken($basecolor, 5%);
 
@@ -105,9 +113,24 @@ html[dark] {
   $bgcolor-list-active: $primary;
   $color-list-hover: $color-reversal;
 
+  // Navbar
+  $bgcolor-navbar: #2a2929;
+  $border-color-navbar-gradient-left: #545fff;
+  $border-color-navbar-gradient-right: #00a6e5;
+
   // Logo colors
   $bgcolor-logo: $bgcolor-navbar;
   $fillcolor-logo-mark: #444;
+
+  // Sidebar
+  $bgcolor-sidebar: $bgcolor-navbar;
+  $color-sidebar-context: $color-global;
+  $bgcolor-sidebar-context: lighten($bgcolor-navbar, 5%);
+  // Sidebar resize button
+  $color-resize-button: $color-global;
+  $bgcolor-resize-button: #5587ec;
+  $color-resize-button-hover: $color-global;
+  $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
 
   // Icon colors
   $color-editor-icons: $color-global;
@@ -128,11 +151,6 @@ html[dark] {
 
   // badge
   $color-badge: $color-reversal;
-
-  // Sidebar
-  $bgcolor-sidebar: $bgcolor-navbar;
-  $color-sidebar-context: $color-global;
-  $bgcolor-sidebar-context: lighten($bgcolor-navbar, 5%);
 
   @import 'apply-colors';
   @import 'apply-colors-dark';
