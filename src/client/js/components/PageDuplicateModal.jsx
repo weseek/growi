@@ -13,6 +13,7 @@ import { createSubscribedElement } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 import PagePathAutoComplete from './PagePathAutoComplete';
+import ApiErrorMessage from './PageManagement/ApiErrorMessage';
 
 const PageDuplicateModal = (props) => {
   const { t, appContainer, pageContainer } = props;
@@ -23,6 +24,7 @@ const PageDuplicateModal = (props) => {
   const { crowi } = appContainer.config;
 
   const [pageNameInput, setPageNameInput] = useState(path);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   /**
    * change pageNameInput
@@ -34,14 +36,14 @@ const PageDuplicateModal = (props) => {
 
   async function clickDuplicateButtonHandler() {
     try {
+      setErrorMessage(null);
       const res = await appContainer.apiPost('/pages.duplicate', { page_id: pageId, new_path: pageNameInput });
-      const page = res.page;
+      const { page } = res;
       window.location.href = `${page.path}?duplicated=${path}`;
     }
     catch (err) {
-      console.log(err.message);
+      setErrorMessage(err.message);
     }
-
   }
 
 
@@ -77,7 +79,7 @@ const PageDuplicateModal = (props) => {
         </div>
       </ModalBody>
       <ModalFooter>
-        {/* TODO add error massage */}
+        <ApiErrorMessage errorMessage={errorMessage} />
         <button type="button" className="btn btn-primary" onClick={clickDuplicateButtonHandler}>Duplicate page</button>
       </ModalFooter>
     </Modal>
