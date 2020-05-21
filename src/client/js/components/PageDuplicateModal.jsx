@@ -6,6 +6,7 @@ import {
 } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
+import urljoin from 'url-join';
 
 import { createSubscribedElement } from './UnstatedUtils';
 
@@ -38,7 +39,7 @@ const PageDuplicateModal = (props) => {
       setErrorMessage(null);
       const res = await appContainer.apiPost('/pages.duplicate', { page_id: pageId, new_path: pageNameInput });
       const { page } = res;
-      window.location.href = `${page.path}?duplicated=${path}`;
+      window.location.href = encodeURI(urljoin(page.path, '?duplicated=', path));
     }
     catch (err) {
       setErrorMessage(err.message);
