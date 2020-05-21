@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
-import { toastSuccess, toastError } from '../../util/apiNotification';
+import { toastError } from '../../util/apiNotification';
 
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
