@@ -49,7 +49,7 @@ const TrashPageAlert = (props) => {
 
   async function onClickPutbackBtn() {
     try {
-      await /* appContainer.apiv3Delete('/pages/empty-trash'); */ console.log('Pushed');
+      await /* appContainer.apiv3Delete('/pages/empty-trash'); */
       window.location.reload();
     }
     catch (err) {
