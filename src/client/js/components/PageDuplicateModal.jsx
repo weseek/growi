@@ -79,7 +79,7 @@ const PageDuplicateModal = (props) => {
         </div>
       </ModalBody>
       <ModalFooter>
-        <ApiErrorMessage errorMessage={errorMessage} />
+        <ApiErrorMessage errorMessage={errorMessage} linkPath={path} />
         <button type="button" className="btn btn-primary" onClick={clickDuplicateButtonHandler}>Duplicate page</button>
       </ModalFooter>
     </Modal>

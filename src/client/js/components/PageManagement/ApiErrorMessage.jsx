@@ -4,15 +4,15 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 const ApiErrorMessage = (props) => {
-  const { t, errorMessage } = props;
+  const { t, errorMessage, linkPath } = props;
 
   function renderMessage() {
     switch (errorMessage) {
       case 'Page exists':
         return (
           <span className="text-danger msg msg-already_exists">
-            <strong><i className="icon-fw icon-ban"></i>{ t('page_api_error.already_exists') }</strong><br />
-            <small id="linkToNewPage"></small>
+            <strong><i className="icon-fw icon-ban"></i>{ t('page_api_error.already_exists') }</strong>
+            <small id="linkToNewPage"><a href={linkPath}>{linkPath} <i className="icon-login"></i></a></small>
           </span>
         );
       default:
@@ -21,9 +21,9 @@ const ApiErrorMessage = (props) => {
   }
 
   return (
-    <div>
+    <>
       {renderMessage()}
-    </div>
+    </>
   );
 
   // TODO Set according to error message
@@ -53,6 +53,7 @@ const ApiErrorMessage = (props) => {
 ApiErrorMessage.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   errorMessage: PropTypes.string,
+  linkPath: PropTypes.string,
 };
 
 export default withTranslation()(ApiErrorMessage);
