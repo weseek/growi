@@ -11,6 +11,14 @@ const PagePathAutoComplete = (props) => {
     addTrailingSlash, onClickSubmit, onInputChange, initializedPath,
   } = props;
 
+  function onChange(pages) {
+    const page = pages[0]; // should be single page selected
+
+    if (page != null) {
+      onInputChange(page.path);
+    }
+  }
+
   function getKeywordOnInit(path) {
     return addTrailingSlash
       ? pathUtils.addTrailingSlash(path)
@@ -21,6 +29,7 @@ const PagePathAutoComplete = (props) => {
     <SearchTypeahead
       crowi={props.crowi}
       onSubmit={onClickSubmit}
+      onChange={onChange}
       onInputChange={onInputChange}
       inputName="new_path"
       emptyLabelExceptError={null}
@@ -42,6 +51,7 @@ PagePathAutoComplete.propTypes = {
 
 PagePathAutoComplete.defaultProps = {
   initializedPath: '/',
+  addTrailingSlash: true,
 };
 
 export default PagePathAutoComplete;
