@@ -20,8 +20,8 @@ const PageDeleteModal = (props) => {
   return (
     <Modal isOpen={isOpen} toggle={toggle} className="grw-create-page">
       <ModalHeader tag="h4" toggle={toggle} className="bg-danger text-light">
-        <i className="icon-fw icon-fire"></i> { t('modal_delete.delete_completely') }
-        <i className="icon-fw icon-trash"></i> { t('modal_delete.delete_page') }
+        {isDeleteCompletely && <span><i className="icon-fw icon-fire"></i>{ t('modal_delete.delete_completely') }</span>}
+        {!isDeleteCompletely && <span><i className="icon-fw icon-trash"></i>{ t('modal_delete.delete_page') }</span>}
       </ModalHeader>
       <ModalBody>
         { t('modal_empty.notice')}
