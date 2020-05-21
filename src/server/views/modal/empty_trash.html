@@ -14,15 +14,15 @@
         <ul>
           {% for data in pages %}
             {% if pagePropertyName %}
-              {% set page = data[pagePropertyName] %}
+              {% set deletePage = data[pagePropertyName] %}
             {% else %}
-              {% set page = data %}
+              {% set deletePage = data %}
             {% endif %}
             <li>
-              <img src="{{ page.lastUpdateUser|picture }}" class="picture img-circle">
-              <a href="{{ page.path }}"
+              <img src="{{ deletePage.lastUpdateUser|picture }}" class="picture img-circle">
+              <a href="{{ deletePage.path }}"
                 class="page-list-link"
-                data-path="{{ page.path }}">{{ decodeURIComponent(page.path) }}
+                data-path="{{ deletePage.path }}">{{ decodeURIComponent(deletePage.path) }}
               </a>
             </li>
           {% endfor %}
