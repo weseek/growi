@@ -218,49 +218,6 @@ $(() => {
     $(this).select();
   });
 
-
-  // TODO GW-2355 remove this after refactoring
-  $('#create-page').on('shown.bs.modal', (e) => {
-    // quick hack: replace from server side rendering "date" to client side "date"
-    const today = new Date();
-    const month = (`0${today.getMonth() + 1}`).slice(-2);
-    const day = (`0${today.getDate()}`).slice(-2);
-    const dateString = `${today.getFullYear()}/${month}/${day}`;
-    $('#create-page-today .page-today-suffix').text(`/${dateString}/`);
-    $('#create-page-today .page-today-input2').data('prefix', `/${dateString}/`);
-
-    // focus
-    $('#create-page-today .page-today-input2').eq(0).focus();
-  });
-
-  $('#create-page-today').submit(function(e) {
-    let prefix1 = $('input.page-today-input1', this).data('prefix');
-    let prefix2 = $('input.page-today-input2', this).data('prefix');
-    const input1 = $('input.page-today-input1', this).val();
-    const input2 = $('input.page-today-input2', this).val();
-    if (input1 === '') {
-      prefix1 = 'メモ';
-    }
-    if (input2 === '') {
-      prefix2 = prefix2.slice(0, -1);
-    }
-    window.location.href = `${prefix1 + input1 + prefix2 + input2}#edit`;
-    return false;
-  });
-
-  $('#create-page-under-tree').submit(function(e) {
-    let name = $('input', this).val();
-    if (!name.match(/^\//)) {
-      name = `/${name}`;
-    }
-    if (name.match(/.+\/$/)) {
-      name = name.substr(0, name.length - 1);
-    }
-    // TODO: remove by GW-2278
-    window.location.href = `${pathUtils.encodePagePath(name)}#edit`;
-    return false;
-  });
-
   // rename
   $('#renamePage').on('shown.bs.modal', (e) => {
     $('#renamePage #newPageName').focus();

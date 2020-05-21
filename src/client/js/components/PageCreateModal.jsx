@@ -141,7 +141,6 @@ const PageCreateModal = (props) => {
 
             <div className="flex-fill">
               {isReachable
-                // GW-2355 refactor typeahead
                 ? <PagePathAutoComplete crowi={appContainer} initializedPath={path} addTrailingSlash />
                 : (
                   <input

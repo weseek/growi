@@ -63,7 +63,6 @@ const PageDuplicateModal = (props) => {
               <span className="input-group-text">{crowi.url}</span>
             </div>
             {isReachable
-              // GW-2355 refactor typeahead
               ? (
                 <PagePathAutoComplete
                   crowi={appContainer}
