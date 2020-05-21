@@ -42,6 +42,13 @@ const PageDeleteModal = (props) => {
           <label>{ t('modal_delete.deleting_page') }:</label><br />
           <code>{ path }</code>
         </div>
+        <div className="custom-control custom-checkbox custom-checkbox-warning">
+          <input className="custom-control-input" name="recursively" id="cbDeleteRecursively" value="1" type="checkbox" checked />
+          <label className="custom-control-label" htmlFor="cbDeleteRecursively">
+            { t('modal_delete.delete_recursively') }
+            <p className="form-text text-muted mt-0"><code>{path}</code> { t('modal_delete.recursively') }</p>
+          </label>
+        </div>
       </ModalBody>
       <ModalFooter>
         <button type="button" className={`m-l-10 btn btn-${deleteIconAndKey[deleteMode].color}`} onClick={onClickSubmit}>
