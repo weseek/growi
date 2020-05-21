@@ -19,7 +19,7 @@ const PageDuplicateModal = (props) => {
 
   const config = appContainer.getConfig();
   const isReachable = config.isSearchServiceReachable;
-  const { path } = pageContainer.state;
+  const { pageId, path } = pageContainer.state;
   const { crowi } = appContainer.config;
 
   const [pageNameInput, setPageNameInput] = useState(path);
@@ -33,8 +33,15 @@ const PageDuplicateModal = (props) => {
   }
 
   async function clickDuplicateButtonHandler() {
-    console.log('pushed');
-    pageContainer.closePageDuplicateModal();
+    try {
+      const res = await appContainer.apiPost('/pages.duplicate', { page_id: pageId, new_path: pageNameInput });
+      const page = res.page;
+      window.location.href = `${page.path}?duplicated=${path}`;
+    }
+    catch (err) {
+      console.log(err.message);
+    }
+
   }
 
 
