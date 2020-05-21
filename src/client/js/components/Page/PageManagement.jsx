@@ -56,26 +56,24 @@ const PageManagement = (props) => {
 
   return (
     <>
-      <li className="nav-item dropdown">
-        <a
-          role="button"
-          className={`nav-link dropdown-toggle dropdown-toggle-no-caret ${currentUser == null && 'dropdown-toggle-disabled'}`}
-          href="#"
-          data-toggle={`${currentUser == null ? 'tooltip' : 'dropdown'}`}
-          data-placement="top"
-          data-container="body"
-          title={t('Not available for guest')}
-        >
-          <i className="icon-options-vertical"></i>
+      <a
+        role="button"
+        className={`nav-link dropdown-toggle dropdown-toggle-no-caret ${currentUser == null && 'dropdown-toggle-disabled'}`}
+        href="#"
+        data-toggle={`${currentUser == null ? 'tooltip' : 'dropdown'}`}
+        data-placement="top"
+        data-container="body"
+        title={t('Not available for guest')}
+      >
+        <i className="icon-options-vertical"></i>
+      </a>
+      <div className="dropdown-menu dropdown-menu-right">
+        {!isTopPagePath && renderDropdownItemForNotTopPage()}
+        <a className="dropdown-item" href="#" data-target="#create-template" data-toggle="modal">
+          <i className="icon-fw icon-magic-wand"></i> { t('template.option_label.create/edit') }
         </a>
-        <div className="dropdown-menu dropdown-menu-right">
-          {!isTopPagePath && renderDropdownItemForNotTopPage()}
-          <a className="dropdown-item" href="#" data-target="#create-template" data-toggle="modal">
-            <i className="icon-fw icon-magic-wand"></i> { t('template.option_label.create/edit') }
-          </a>
-          {(isDeletable) && renderDropdownItemForDeletablePage()}
-        </div>
-      </li>
+        {(!isTopPagePath && isDeletable) && renderDropdownItemForDeletablePage()}
+      </div>
       <PageDeleteModal isOpen={isPageDeleteModalShown} toggle={closePageDeleteModal} onClickSubmit={onClickDeleteBtn} path={path} />
     </>
   );
