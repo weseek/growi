@@ -11,7 +11,7 @@ import PageDeleteModal from '../PageDeleteModal';
 
 const PageManagement = (props) => {
   const { t, appContainer, pageContainer } = props;
-  const { path, isDeletable } = pageContainer.state;
+  const { path, isDeletable, isAbleToDeleteCompletely } = pageContainer.state;
   const { currentUser } = appContainer;
   const isTopPagePath = isTopPage(path);
 
@@ -74,7 +74,13 @@ const PageManagement = (props) => {
         </a>
         {(!isTopPagePath && isDeletable) && renderDropdownItemForDeletablePage()}
       </div>
-      <PageDeleteModal isOpen={isPageDeleteModalShown} toggle={closePageDeleteModal} onClickSubmit={onClickDeleteBtn} path={path} />
+      <PageDeleteModal
+        isOpen={isPageDeleteModalShown}
+        toggle={closePageDeleteModal}
+        onClickSubmit={onClickDeleteBtn}
+        path={path}
+        isAbleToDeleteCompletely={isAbleToDeleteCompletely}
+      />
     </>
   );
 };

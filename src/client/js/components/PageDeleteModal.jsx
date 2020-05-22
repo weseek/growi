@@ -14,7 +14,7 @@ import AppContainer from '../services/AppContainer';
 
 const PageDeleteModal = (props) => {
   const {
-    t, isOpen, toggle, onClickSubmit, isDeleteCompletely, path,
+    t, isOpen, toggle, onClickSubmit, isDeleteCompletely, path, isAbleToDeleteCompletely,
   } = props;
   const deleteMode = isDeleteCompletely ? 'completely' : 'temporary';
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
@@ -32,8 +32,7 @@ const PageDeleteModal = (props) => {
     },
   };
 
-  function chengeIsDeleteRecursivelyHandler() {
-    console.log('push');
+  function changeIsDeleteRecursivelyHandler() {
     setIsDeleteRecursively(!isDeleteRecursively);
   }
 
@@ -51,15 +50,30 @@ const PageDeleteModal = (props) => {
         <div className="custom-control custom-checkbox custom-checkbox-warning">
           <input
             className="custom-control-input"
-            name="recursively"
-            id="cbDeleteRecursively"
+            id="deleteRecursively"
             type="checkbox"
             checked={isDeleteRecursively}
+            onChange={changeIsDeleteRecursivelyHandler}
           />
-          <label className="custom-control-label" htmlFor="cbDeleteRecursively">
+          <label className="custom-control-label" htmlFor="deleteRecursively">
             { t('modal_delete.delete_recursively') }
             <p className="form-text text-muted mt-0"><code>{path}</code> { t('modal_delete.recursively') }</p>
           </label>
+        </div>
+        <div className="custom-control custom-checkbox custom-checkbox-danger">
+          <input
+            className="custom-control-input"
+            name="completely"
+            id="deleteCompletely"
+            type="checkbox"
+            disabled={!isAbleToDeleteCompletely}
+          />
+          <label className="custom-control-label text-danger" htmlFor="deleteCompletely">
+            { t('modal_delete.delete_completely') }
+            <p className="form-text text-muted mt-0"> { t('modal_delete.completely') }</p>
+          </label>
+          {!isAbleToDeleteCompletely
+          && <p className="alert alert-warning p-2 my-0"><i className="icon-ban icon-fw"></i>{ t('modal_delete.delete_completely_restriction') }</p>}
         </div>
       </ModalBody>
       <ModalFooter>
@@ -92,6 +106,7 @@ PageDeleteModal.propTypes = {
 
   path: PropTypes.string.isRequired,
   isDeleteCompletely: PropTypes.bool,
+  isAbleToDeleteCompletely: PropTypes.bool,
 };
 
 PageDeleteModal.defaultProps = {
