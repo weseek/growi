@@ -89,6 +89,13 @@ export default class PageContainer extends Container {
       });
     });
 
+    const unlinkPageButton = document.getElementById('unlink-page-button');
+    if (unlinkPageButton != null) {
+      unlinkPageButton.addEventListener('click', () => {
+        alert('ボタンが押されました。');
+      });
+    }
+
     this.openPageDuplicateModal = this.openPageDuplicateModal.bind(this);
     this.closePageDuplicateModal = this.closePageDuplicateModal.bind(this);
   }
@@ -399,5 +406,26 @@ export default class PageContainer extends Container {
   closePageDuplicateModal() {
     this.setState({ isPageDuplicateModalShown: false });
   }
+
+
+  // $('#unlink-page-form').submit((e) => {
+  //   $.ajax({
+  //     type: 'POST',
+  //     url: '/_api/pages.unlink',
+  //     data: $('#unlink-page-form').serialize(),
+  //     dataType: 'json',
+  //   })
+  //     .done((res) => {
+  //       if (!res.ok) {
+  //         $('#delete-errors').html(`<i class="fa fa-times-circle"></i> ${res.error}`);
+  //         $('#delete-errors').addClass('alert-danger');
+  //       }
+  //       else {
+  //         window.location.href = `${res.path}?unlinked=true`;
+  //       }
+  //     });
+
+  //   return false;
+  // });
 
 }
