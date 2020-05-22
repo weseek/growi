@@ -75,7 +75,7 @@ const RenameModal = (props) => {
       <ModalBody>
         <div className="form-group">
           <label>{ t('modal_rename.label.Current page name') }</label><br />
-          <code>{pageContainer.state.path}</code>
+          <code>{path}</code>
         </div>
         <div className="form-group">
           <label htmlFor="newPageName">{ t('modal_rename.label.New page name') }</label><br />
@@ -86,6 +86,36 @@ const RenameModal = (props) => {
             <div id="rename-page-name-input" className="page-name-input flex-fill"></div>
             <input type="text" className="form-control" name="new_path" id="newPageName" value={path} />
           </div>
+        </div>
+        <div className="custom-control custom-checkbox custom-checkbox-warning">
+          <input
+            className="custom-control-input"
+            name="recursively"
+            id="cbRenameRecursively"
+            value="1"
+            type="checkbox"
+            checked
+          />
+          <label className="custom-control-label" htmlFor="cbRenameRecursively">
+            { t('modal_rename.label.Recursively') }
+            <p className="form-text text-muted mt-0">{ t('modal_rename.help.recursive', path) }</p>
+          </label>
+        </div>
+
+        <div className="custom-control custom-checkbox custom-checkbox-success">
+          <input className="custom-control-input" name="create_redirect" id="cbRenameRedirect" value="1" type="checkbox" />
+          <label className="custom-control-label" htmlFor="cbRenameRedirect">
+            { t('modal_rename.label.Redirect') }
+            <p className="form-text text-muted mt-0">{ t('modal_rename.help.redirect', path) }</p>
+          </label>
+        </div>
+
+        <div className="custom-control custom-checkbox custom-checkbox-primary">
+          <input className="custom-control-input" name="remain_metadata" id="cbRenameMetadata" value="1" type="checkbox" />
+          <label className="custom-control-label" htmlFor="cbRenameMetadata">
+            { t('modal_rename.label.Do not update metadata') }
+            <p className="form-text text-muted mt-0">{ t('modal_rename.help.metadata') }</p>
+          </label>
         </div>
       </ModalBody>
       <ModalFooter>
