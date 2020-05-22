@@ -14,10 +14,11 @@ import AppContainer from '../services/AppContainer';
 
 const PageDeleteModal = (props) => {
   const {
-    t, isOpen, toggle, onClickSubmit, isDeleteCompletely, path, isAbleToDeleteCompletely,
+    t, isOpen, toggle, onClickSubmit, isDeleteCompletelyModal, path, isAbleToDeleteCompletely,
   } = props;
-  const deleteMode = isDeleteCompletely ? 'completely' : 'temporary';
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
+  const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal);
+  const deleteMode = isDeleteCompletely ? 'completely' : 'temporary';
 
   const deleteIconAndKey = {
     completely: {
@@ -34,6 +35,11 @@ const PageDeleteModal = (props) => {
 
   function changeIsDeleteRecursivelyHandler() {
     setIsDeleteRecursively(!isDeleteRecursively);
+  }
+
+
+  function changeIsDeleteCompletelyHandler() {
+    setIsDeleteCompletely(!isDeleteCompletely);
   }
 
   return (
@@ -60,6 +66,8 @@ const PageDeleteModal = (props) => {
             <p className="form-text text-muted mt-0"><code>{path}</code> { t('modal_delete.recursively') }</p>
           </label>
         </div>
+        {!isDeleteCompletelyModal
+        && (
         <div className="custom-control custom-checkbox custom-checkbox-danger">
           <input
             className="custom-control-input"
@@ -67,6 +75,8 @@ const PageDeleteModal = (props) => {
             id="deleteCompletely"
             type="checkbox"
             disabled={!isAbleToDeleteCompletely}
+            checked={isDeleteCompletely}
+            onChange={changeIsDeleteCompletelyHandler}
           />
           <label className="custom-control-label text-danger" htmlFor="deleteCompletely">
             { t('modal_delete.delete_completely') }
@@ -75,6 +85,7 @@ const PageDeleteModal = (props) => {
           {!isAbleToDeleteCompletely
           && <p className="alert alert-warning p-2 my-0"><i className="icon-ban icon-fw"></i>{ t('modal_delete.delete_completely_restriction') }</p>}
         </div>
+        )}
       </ModalBody>
       <ModalFooter>
         <button type="button" className={`m-l-10 btn btn-${deleteIconAndKey[deleteMode].color}`} onClick={onClickSubmit}>
@@ -105,12 +116,12 @@ PageDeleteModal.propTypes = {
   onClickSubmit: PropTypes.func.isRequired,
 
   path: PropTypes.string.isRequired,
-  isDeleteCompletely: PropTypes.bool,
+  isDeleteCompletelyModal: PropTypes.bool,
   isAbleToDeleteCompletely: PropTypes.bool,
 };
 
 PageDeleteModal.defaultProps = {
-  isDeleteCompletely: false,
+  isDeleteCompletelyModal: false,
 };
 
 export default withTranslation()(PageDeleteModalWrapper);
