@@ -22,49 +22,41 @@ import PagePathAutoComplete from './PagePathAutoComplete';
 
 const RenameModal = (props) => {
   const { t, appContainer, pageContainer } = props;
-  const { path } = pageContainer.state;
-  console.log(path);
+  const { path, pageId, revisionId } = pageContainer.state;
   const config = appContainer.getConfig();
   const isReachable = config.isSearchServiceReachable;
 
   const userPageRootPath = userPageRoot(appContainer.currentUser);
   const parentPath = pathUtils.addTrailingSlash(path);
   const { crowi } = appContainer.config;
-  // const now = format(new Date(), 'yyyy/MM/dd');
 
-  const [todayInput1, setTodayInput1] = useState(t('Memo'));
-  const [todayInput2, setTodayInput2] = useState('');
+  const [destinationPathName, setDestinationPathName] = useState(path);
   const [pageNameInput, setPageNameInput] = useState(parentPath);
-  const [template, setTemplate] = useState(null);
 
-  // 現在のページ名
-  // function currentPageName() {
-  //   return (
-  //     <div className="form-group">
-  //       <label>{ t('modal_rename.label.Current page name') }</label><br />
-  //       <code>{page}</code>
-  //     </div>
-  //   );
-  // }
+  // const [pageNameInput, setPageNameInput] = useState(path);
+  const [errorCode, setErrorCode] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
-  // 移動先のページ名
-  function pageToMoveTo() {
-    return (
-      <div className="form-group">
-        <label htmlFor="newPageName">{ t('modal_rename.label.New page name') }</label><br />
-        <div className="input-group">
-          <div className="input-group-prepend">
-            <span className="input-group-text">{pageNameInput}</span>
-          </div>
-          <div id="rename-page-name-input" className="page-name-input flex-fill"></div>
-          <input type="text" className="form-control" name="new_path" id="newPageName" value={pageNameInput} />
-        </div>
-      </div>
-    );
-  };
+  function onChangeNewPathHandler(value) {
+    setDestinationPathName(value);
+  }
 
-  function checkListForMovePage() {
-
+  async function clickRenameButtonHandler() {
+    console.log('hoge');
+    try {
+      console.log('test');
+      setErrorCode(null);
+      setErrorMessage(null);
+      const res = await appContainer.apiPost('/pages.rename', { page_id: pageId, new_path: pageNameInput });
+      console.log(res);
+      const { page } = res;
+      window.location.href = encodeURI(`${page.path}?rename=${path}`);
+    }
+    catch (err) {
+      console.log('fuga');
+      setErrorCode(err.code);
+      setErrorMessage(err.message);
+    }
   }
 
   return (
@@ -83,8 +75,16 @@ const RenameModal = (props) => {
             <div className="input-group-prepend">
               <span className="input-group-text">{crowi.url}</span>
             </div>
-            <div id="rename-page-name-input" className="page-name-input flex-fill"></div>
-            <input type="text" className="form-control" name="new_path" id="newPageName" value={path} />
+            <div className="flex-fill">
+              <input
+                type="text"
+                className="form-control flex-fill"
+                name="new_path"
+                id="newPageName"
+                value={destinationPathName}
+                onChange={e => onChangeNewPathHandler(e.target.value)}
+              />
+            </div>
           </div>
         </div>
         <div className="custom-control custom-checkbox custom-checkbox-warning">
@@ -98,7 +98,7 @@ const RenameModal = (props) => {
           />
           <label className="custom-control-label" htmlFor="cbRenameRecursively">
             { t('modal_rename.label.Recursively') }
-            <p className="form-text text-muted mt-0">{ t('modal_rename.help.recursive', path) }</p>
+            <p className="form-text text-muted mt-0"><code>{path}</code>{ t('modal_rename.help.recursive') }</p>
           </label>
         </div>
 
@@ -106,7 +106,7 @@ const RenameModal = (props) => {
           <input className="custom-control-input" name="create_redirect" id="cbRenameRedirect" value="1" type="checkbox" />
           <label className="custom-control-label" htmlFor="cbRenameRedirect">
             { t('modal_rename.label.Redirect') }
-            <p className="form-text text-muted mt-0">{ t('modal_rename.help.redirect', path) }</p>
+            <p className="form-text text-muted mt-0"><code>{path}</code>{ t('modal_rename.help.redirect') }</p>
           </label>
         </div>
 
@@ -119,8 +119,16 @@ const RenameModal = (props) => {
         </div>
       </ModalBody>
       <ModalFooter>
+        <div className="d-flex justify-content-between">
+          <div>
+            <input type="hidden" name="_csrf" value="{{ csrf() }}" />
+            <input type="hidden" name="path" value={path} />
+            <input type="hidden" name="page_id" value={pageId} />
+            <input type="hidden" name="revision_id" value={revisionId} />
+          </div>
+        </div>
         <div className="d-flex justify-content-end">
-          <button type="submit" className="btn btn-primary">Rename</button>
+          <button type="submit" className="btn btn-primary" onClick={clickRenameButtonHandler}>Rename</button>
         </div>
       </ModalFooter>
     </Modal>

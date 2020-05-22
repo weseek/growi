@@ -268,9 +268,9 @@
       "Redirect": "Redirect"
     },
     "help": {
-      "redirect": "Redirect to new page if someone accesses <code>%s</code>",
+      "redirect": "Redirect to new page if someone accesses under this path",
       "metadata": "Remains last update user and updated date as is",
-      "recursive": "Move/Rename children of under <code>%s</code> recursively"
+      "recursive": "Move/Rename children of under this path recursively"
     }
   },
   "Put Back": "Put back",
