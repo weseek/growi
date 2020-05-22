@@ -19,25 +19,25 @@ const AdminNavigation = (props) => {
           href="/admin"
           className={`${pageTransitionClassName} ${pathname === '/admin' && 'active'}`}
         >
-          <i className="icon-fw icon-home"></i> {t('Management Wiki Home')}
+          <i className="icon-fw icon-home"></i> {t('Wiki_Management_Home_Page')}
         </a>
         <a
           href="/admin/app"
           className={`${pageTransitionClassName} ${isActiveMenu('/app') && 'active'}`}
         >
-          <i className="icon-fw icon-settings"></i> {t('App Settings')}
+          <i className="icon-fw icon-settings"></i> {t('App_Settings')}
         </a>
         <a
           href="/admin/security"
           className={`${pageTransitionClassName} ${isActiveMenu('/security') && 'active'}`}
         >
-          <i className="icon-fw icon-shield"></i> {t('security_settings')}
+          <i className="icon-fw icon-shield"></i> {t('Security_Settings')}
         </a>
         <a
           href="/admin/markdown"
           className={`${pageTransitionClassName} ${isActiveMenu('/markdown') && 'active'}`}
         >
-          <i className="icon-fw icon-note"></i> {t('Markdown Settings')}
+          <i className="icon-fw icon-note"></i> {t('Markdown_Settings')}
         </a>
         <a
           href="/admin/customize"
@@ -49,19 +49,19 @@ const AdminNavigation = (props) => {
           href="/admin/importer"
           className={`${pageTransitionClassName} ${isActiveMenu('/importer') && 'active'}`}
         >
-          <i className="icon-fw icon-cloud-upload"></i> {t('Import Data')}
+          <i className="icon-fw icon-cloud-upload"></i> {t('Import_Data')}
         </a>
         <a
           href="/admin/export"
           className={`${pageTransitionClassName} ${isActiveMenu('/export') && 'active'}`}
         >
-          <i className="icon-fw icon-cloud-download"></i> {t('Export Archive Data')}
+          <i className="icon-fw icon-cloud-download"></i> {t('Export_Archive_Data')}
         </a>
         <a
           href="/admin/notification"
           className={`${pageTransitionClassName} ${(isActiveMenu('/notification') || isActiveMenu('/global-notification')) && 'active'}`}
         >
-          <i className="icon-fw icon-bell"></i> {t('Notification Settings')}
+          <i className="icon-fw icon-bell"></i> {t('Notification_Settings')}
         </a>
         <a
           href="/admin/users"
@@ -73,13 +73,13 @@ const AdminNavigation = (props) => {
           href="/admin/user-groups"
           className={`${pageTransitionClassName} ${isActiveMenu('/user-group') && 'active'}`}
         >
-          <i className="icon-fw icon-people"></i> {t('UserGroup Management')}
+          <i className="icon-fw icon-people"></i> {t('UserGroup_Management')}
         </a>
         <a
           href="/admin/search"
           className={`${pageTransitionClassName} ${isActiveMenu('/search') && 'active'}`}
         >
-          <i className="icon-fw icon-magnifier"></i> {t('Full Text Search Management')}
+          <i className="icon-fw icon-magnifier"></i> {t('Full_Text_Search_Management')}
         </a>
       </>
     );
@@ -100,17 +100,17 @@ const AdminNavigation = (props) => {
           aria-expanded="false"
         >
           <span className="float-left"><i className="icon-fw icon-home"></i>
-            {pathname === '/admin' && t('Management Wiki Home')}
-            {pathname === '/admin/app' && t('App Settings')}
-            {pathname === '/admin/security' && t('security_settings')}
-            {pathname === '/admin/markdown' && t('Markdown Settings')}
+            {pathname === '/admin' && t('Wiki_Management_Home_Page')}
+            {pathname === '/admin/app' && t('App_Settings')}
+            {pathname === '/admin/security' && t('Security_Settings')}
+            {pathname === '/admin/markdown' && t('Markdown_Settings')}
             {pathname === '/admin/customize' && t('Customize')}
-            {pathname === '/admin/importer' && t('Import Data')}
-            {pathname === '/admin/export' && t('Export Archive Data')}
-            {pathname === ('/admin/notification' || '/admin/global-notification') && t('Notification Settings')}
+            {pathname === '/admin/importer' && t('Import_Data')}
+            {pathname === '/admin/export' && t('Export_Archive_Data')}
+            {pathname === ('/admin/notification' || '/admin/global-notification') && t('Notification_Settings')}
             {pathname === '/admin/users' && t('User_Management')}
-            {pathname === '/admin/user-groups' && t('UserGroup Management')}
-            {pathname === '/admin/search' && t('Full Text Search Management')}
+            {pathname === '/admin/user-groups' && t('UserGroup_Management')}
+            {pathname === '/admin/search' && t('Full_Text_Search_Management')}
           </span>
         </button>
         <div className="dropdown-menu" aria-labelledby="dropdown-admin-navigation">
