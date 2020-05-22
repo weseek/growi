@@ -8,16 +8,24 @@ import {
 import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from './UnstatedUtils';
+
+import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 
 import ApiErrorMessage from './PageManagement/ApiErrorMessage';
 
 const PutBackPageModal = (props) => {
   const {
-    t, isOpen, toggle, pageContainer,
+    t,
+    isOpen,
+    toggle,
+    appContainer,
+    pageContainer,
   } = props;
 
-  const { path } = pageContainer.state;
+  const {
+    pageId, path,
+  } = pageContainer.state;
 
   const [errorCode, setErrorCode] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -29,13 +37,12 @@ const PutBackPageModal = (props) => {
   }
 
   async function clickPutbackButtonHandler() {
-    setErrorCode(null);
-    setErrorMessage(null);
-
     try {
-      const res = await pageContainer.deletePage(isPutbackRecursively);
-      const { page } = res.page.path;
-      window.location.href = encodeURI(page);
+      setErrorCode(null);
+      setErrorMessage(null);
+      const res = await appContainer.apiPost('/pages.revertRemove', { page_id: pageId });
+      const { page } = res;
+      window.location.href = encodeURI(`${page.path}`);
     }
     catch (err) {
       setErrorCode(err.code);
@@ -82,7 +89,7 @@ const PutBackPageModal = (props) => {
  * Wrapper component for using unstated
  */
 const PutBackPageModalWrapper = (props) => {
-  return createSubscribedElement(PutBackPageModal, props, [PageContainer]);
+  return createSubscribedElement(PutBackPageModal, props, [AppContainer, PageContainer]);
 };
 
 PutBackPageModal.propTypes = {
@@ -92,6 +99,7 @@ PutBackPageModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   toggle: PropTypes.func.isRequired,
   onClickSubmit: PropTypes.func.isRequired,
+  appContainer: PropTypes.instanceOf(PageContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
