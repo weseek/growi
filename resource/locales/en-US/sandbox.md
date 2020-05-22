@@ -126,7 +126,7 @@ This is `Inline Code`.
 
 This is  `Inline Code`.
 
-## Pre arranged text
+## Pre-arranged text
 
 Code blocks should be preceded by four spaces or one tab.
 
