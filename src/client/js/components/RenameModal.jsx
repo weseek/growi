@@ -13,15 +13,19 @@ import { createSubscribedElement } from './UnstatedUtils';
 
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
-// import PagePathAutoComplete from './PagePathAutoComplete';
 import ApiErrorMessage from './PageManagement/ApiErrorMessage';
 
 const RenameModal = (props) => {
   const { t, appContainer, pageContainer } = props;
-  const { path, pageId, revisionId } = pageContainer.state;
+  const {
+    path,
+    pageId,
+    revisionId,
+    isRenameRedirect,
+    isRenameRecursively,
+    isRenameMetadata,
+  } = pageContainer.state;
   const { crowi } = appContainer.config;
-  // const config = appContainer.getConfig();
-  // const isReachable = config.isSearchServiceReachable;
 
   const [pageNameInput, setPageNameInput] = useState(path);
 
@@ -37,7 +41,6 @@ const RenameModal = (props) => {
       setErrorCode(null);
       setErrorMessage(null);
       const res = await appContainer.apiPost('/pages.rename', { page_id: pageId, revision_id: revisionId, new_path: pageNameInput });
-      console.log(res);
       const { page } = res;
       window.location.href = encodeURI(`${page.path}?rename=${path}`);
     }
@@ -81,7 +84,7 @@ const RenameModal = (props) => {
             id="cbRenameRecursively"
             value="1"
             type="checkbox"
-            checked
+            defaultChecked={isRenameRecursively}
           />
           <label className="custom-control-label" htmlFor="cbRenameRecursively">
             { t('modal_rename.label.Recursively') }
@@ -90,7 +93,14 @@ const RenameModal = (props) => {
         </div>
 
         <div className="custom-control custom-checkbox custom-checkbox-success">
-          <input className="custom-control-input" name="create_redirect" id="cbRenameRedirect" value="1" type="checkbox" />
+          <input
+            className="custom-control-input"
+            name="create_redirect"
+            id="cbRenameRedirect"
+            value="1"
+            type="checkbox"
+            defaultChecked={isRenameRedirect}
+          />
           <label className="custom-control-label" htmlFor="cbRenameRedirect">
             { t('modal_rename.label.Redirect') }
             <p className="form-text text-muted mt-0"><code>{path}</code>{ t('modal_rename.help.redirect') }</p>
@@ -98,7 +108,14 @@ const RenameModal = (props) => {
         </div>
 
         <div className="custom-control custom-checkbox custom-checkbox-primary">
-          <input className="custom-control-input" name="remain_metadata" id="cbRenameMetadata" value="1" type="checkbox" />
+          <input
+            className="custom-control-input"
+            name="remain_metadata"
+            id="cbRenameMetadata"
+            value="1"
+            type="checkbox"
+            defaultChecked={isRenameMetadata}
+          />
           <label className="custom-control-label" htmlFor="cbRenameMetadata">
             { t('modal_rename.label.Do not update metadata') }
             <p className="form-text text-muted mt-0">{ t('modal_rename.help.metadata') }</p>

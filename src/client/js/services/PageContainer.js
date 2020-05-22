@@ -62,6 +62,9 @@ export default class PageContainer extends Container {
       isHackmdDraftUpdatingInRealtime: false,
 
       isPageDuplicateModalShown: false,
+      isRenameRecursively: true,
+      isRenameRedirect: false,
+      isRenameMetadata: false,
 
       isHeaderSticky: false,
       isSubnavCompact: false,
