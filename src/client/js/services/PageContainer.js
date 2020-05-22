@@ -38,8 +38,8 @@ export default class PageContainer extends Container {
       path: mainContent.getAttribute('data-path'),
       tocHtml: '',
       isLiked: false,
-      seenUserIds: [],
-      likerUserIds: [],
+      seenUsers: [],
+      likerUsers: [],
 
       tags: [],
       templateTagData: mainContent.getAttribute('data-template-tags') || null,
@@ -94,14 +94,13 @@ export default class PageContainer extends Container {
     // [TODO][GW - 1942] add method for updating imageUrlCached and populate
     if (seenUserListElem != null) {
       const userIdsStr = seenUserListElem.dataset.userIds;
-      this.state.seenUserIds = userIdsStr.split(',');
-      const res = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr });
-      const users = res.users;
+      const { users } = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr });
+      this.setState({ seenUsers: users });
       const noImageCacheUsers = users.filter((user) => { return !user.imageUrlCached });
       if (noImageCacheUsers.length > 0) {
         const noImageCacheUserIds = noImageCacheUsers.map((user) => { return user.id });
-        const usersUpdatedImageUrlCached = await this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
-        this.state.seenUserIds = usersUpdatedImageUrlCached;
+        const res = await this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
+        this.setState({ seenUsers: res.data.updetedUsers });
       }
     }
 
@@ -109,7 +108,8 @@ export default class PageContainer extends Container {
     const likerListElem = document.getElementById('liker-list');
     if (likerListElem != null) {
       const userIdsStr = likerListElem.dataset.userIds;
-      this.state.likerUserIds = userIdsStr.split(',');
+      const { users } = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr });
+      this.setState({ likerUsers: users });
     }
   }
 

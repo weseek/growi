@@ -585,12 +585,14 @@ module.exports = (crowi) => {
         };
       }));
 
+      let updetedUsers = [];
       if (requests.length > 0) {
         await User.bulkWrite(requests);
+        updetedUsers = await User.find({ _id: { $in: userIds } }, User.USER_PUBLIC_FIELDS);
       }
 
       // GW-1942 TODO return updated users
-      return res.apiv3({ users });
+      return res.apiv3({ updetedUsers });
     }
     catch (err) {
       logger.error('Error', err);
