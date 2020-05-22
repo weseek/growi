@@ -2,46 +2,46 @@
 {% for data in pages %}
 
 {% if pagePropertyName %}
-  {% set page = data[pagePropertyName] %}
+  {% set listPage = data[pagePropertyName] %}
 {% else %}
-  {% set page = data %}
+  {% set listPage = data %}
 {% endif %}
 
 <li>
   <!-- [TODO][GW-1942] add method for updating imageUrlCached -->
-  <img src="{{ page.lastUpdateUser.imageUrlCached }}" class="picture img-circle">
-  <a href="{{ page.path }}"
+  <img src="{{ listPage.lastUpdateUser.imageUrlCached }}" class="picture img-circle">
+  <a href="{{ listPage.path }}"
     class="page-list-link"
-    data-path="{{ page.path }}">{{ decodeURIComponent(page.path) }}
+    data-path="{{ listPage.path }}">{{ decodeURIComponent(listPage.path) }}
   </a>
   <span class="page-list-meta">
-    {% if page.isPortal() %}
+    {% if listPage.isPortal() %}
       <span class="label label-info">PORTAL</span>
     {% endif  %}
 
-    {% if page.isTemplate() %}
+    {% if listPage.isTemplate() %}
       <span class="label label-info">TMPL</span>
     {% endif  %}
 
-    {% if page.commentCount > 0 %}
+    {% if listPage.commentCount > 0 %}
     <span>
-      <i class="icon-bubble"></i>{{ page.commentCount }}
+      <i class="icon-bubble"></i>{{ listPage.commentCount }}
     </span>
     {% endif  %}
 
-    {% if page.liker.length > 0 %}
-    <span class="page-list-liker" data-count="{{ page.liker.length }}">
-      <i class="icon-like"></i>{{ page.liker.length }}
+    {% if listPage.liker.length > 0 %}
+    <span class="page-list-liker" data-count="{{ listPage.liker.length }}">
+      <i class="icon-like"></i>{{ listPage.liker.length }}
     </span>
     {% endif  %}
 
-    {% if viewConfig.seener_threshold and page.seenUsers.length >= viewConfig.seener_threshold %}
-    <span class="page-list-seer" data-count="{{ page.seenUsers.length }}">
-      <i class="fa fa-paw"></i>{{ page.seenUsers.length }}
+    {% if viewConfig.seener_threshold and listPage.seenUsers.length >= viewConfig.seener_threshold %}
+    <span class="page-list-seer" data-count="{{ listPage.seenUsers.length }}">
+      <i class="fa fa-paw"></i>{{ listPage.seenUsers.length }}
     </span>
     {% endif  %}
 
-    {% if !page.isPublic() %}
+    {% if !listPage.isPublic() %}
     <span>
       <i class="icon icon-lock"></i>
     </span>
