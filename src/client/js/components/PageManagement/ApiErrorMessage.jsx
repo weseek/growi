@@ -4,27 +4,42 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 const ApiErrorMessage = (props) => {
-  const { t, errorMessage, linkPath } = props;
+  const {
+    t, errorCode, errorMessage, linkPath,
+  } = props;
 
-  function renderMessage() {
-    switch (errorMessage) {
-      case 'Page exists':
+  function renderMessageByErrorCode() {
+    switch (errorCode) {
+      case 'already_exists':
         return (
-          <span className="text-danger">
+          <>
             <strong><i className="icon-fw icon-ban"></i>{ t('page_api_error.already_exists') }</strong>
             <small><a href={linkPath}>{linkPath} <i className="icon-login"></i></a></small>
-          </span>
+          </>
         );
       default:
         return null;
     }
   }
 
-  return (
-    <>
-      {renderMessage()}
-    </>
-  );
+  if (errorCode != null) {
+    return (
+      <span className="text-danger">
+        {renderMessageByErrorCode()}
+      </span>
+    );
+  }
+
+  if (errorMessage != null) {
+    return (
+      <span className="text-danger">
+        {errorMessage}
+      </span>
+    );
+  }
+
+  // render null if no error has occurred
+  return null;
 
   // TODO GW-79 Set according to error message
   // <div>
@@ -51,9 +66,11 @@ const ApiErrorMessage = (props) => {
 };
 
 ApiErrorMessage.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
+  t:            PropTypes.func.isRequired, //  i18next
+
+  errorCode:    PropTypes.string,
   errorMessage: PropTypes.string,
-  linkPath: PropTypes.string,
+  linkPath:     PropTypes.string,
 };
 
 export default withTranslation()(ApiErrorMessage);

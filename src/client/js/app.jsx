@@ -23,6 +23,7 @@ import PageTimeline from './components/PageTimeline';
 import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
 import PageManagement from './components/Page/PageManagement';
 import PageDuplicateModal from './components/PageDuplicateModal';
+import TrashPageAlert from './components/Page/TrashPageAlert';
 import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
 import PagePathAutoComplete from './components/PagePathAutoComplete';
@@ -77,6 +78,8 @@ Object.assign(componentMappings, {
   'page-editor-options-selector': <OptionsSelector crowi={appContainer} />,
   'page-status-alert': <PageStatusAlert />,
   'save-page-controls': <SavePageControls />,
+
+  'trash-page-alert': <TrashPageAlert />,
 
   'page-timeline': <PageTimeline />,
 

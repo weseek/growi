@@ -283,7 +283,8 @@
     "completely": "ゴミ箱を経由せず、完全に削除します"
   },
   "modal_empty":{
-    "empty_the_trash": "ゴミ箱を空にする"
+    "empty_the_trash": "ゴミ箱を空にする",
+    "notice": "完全削除したページは元に戻すことができません"
   },
   "modal_duplicate": {
     "label": {
@@ -330,7 +331,7 @@
     "activate_user_success": "{{username}}を有効化しました",
     "deactivate_user_success": "{{username}}を無効化しました",
     "remove_user_success": "{{username}}を削除しました",
-    "remove_external_user_success": "{{accountId}}を削除しました "
+    "remove_external_user_success": "{{accountId}}を削除しました"
   },
   "template": {
     "modal_label": {

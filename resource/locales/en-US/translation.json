@@ -285,7 +285,8 @@
     "completely": "Delete completely instead of putting it into trash."
   },
   "modal_empty":{
-    "empty_the_trash": "Empty The Trash"
+    "empty_the_trash": "Empty The Trash",
+    "notice": "The pages deleted completely are unrecoverable."
   },
   "modal_duplicate": {
     "label": {

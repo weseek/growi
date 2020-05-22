@@ -32,7 +32,6 @@ export default class PageContainer extends Container {
 
     const revisionId = mainContent.getAttribute('data-page-revision-id');
     const path = decodeURI(mainContent.getAttribute('data-path'));
-
     this.state = {
       // local page data
       markdown: null, // will be initialized after initStateMarkdown()
@@ -48,8 +47,10 @@ export default class PageContainer extends Container {
       createdAt: mainContent.getAttribute('data-page-created-at'),
       creator: JSON.parse(mainContent.getAttribute('data-page-creator')),
       updatedAt: mainContent.getAttribute('data-page-updated-at'),
-
+      isDeleted:  JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
+      isAbleToDeleteCompletely:  JSON.parse(mainContent.getAttribute('data-page-is-able-to-delete-completely')),
       tags: [],
+      hasChildren: JSON.parse(mainContent.getAttribute('data-page-has-children')),
       templateTagData: mainContent.getAttribute('data-template-tags') || null,
 
       // latest(on remote) information
