@@ -40,7 +40,6 @@ const PageDeleteModal = (props) => {
     setIsDeleteRecursively(!isDeleteRecursively);
   }
 
-
   function changeIsDeleteCompletelyHandler() {
     setIsDeleteCompletely(!isDeleteCompletely);
   }
