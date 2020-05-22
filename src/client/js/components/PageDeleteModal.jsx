@@ -8,13 +8,20 @@ import {
 
 import { withTranslation } from 'react-i18next';
 
+import { createSubscribedElement } from './UnstatedUtils';
+import PageContainer from '../services/PageContainer';
+
+import ApiErrorMessage from './PageManagement/ApiErrorMessage';
+
 const PageDeleteModal = (props) => {
   const {
-    t, isOpen, toggle, onClickSubmit, isDeleteCompletelyModal, path, isAbleToDeleteCompletely,
+    t, pageContainer, isOpen, toggle, isDeleteCompletelyModal, path, isAbleToDeleteCompletely,
   } = props;
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal);
   const deleteMode = isDeleteCompletely ? 'completely' : 'temporary';
+  const [errorCode, setErrorCode] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const deleteIconAndKey = {
     completely: {
@@ -38,8 +45,17 @@ const PageDeleteModal = (props) => {
     setIsDeleteCompletely(!isDeleteCompletely);
   }
 
-  function deleteButtonHandler() {
-    onClickSubmit(isDeleteRecursively, isDeleteCompletely);
+  async function deleteButtonHandler() {
+    setErrorCode(null);
+    setErrorMessage(null);
+
+    try {
+      await pageContainer.deletePage(isDeleteRecursively, isDeleteCompletely);
+    }
+    catch (err) {
+      setErrorCode(err.code);
+      setErrorMessage(err.message);
+    }
   }
 
   function renderDeleteRecursivelyForm() {
@@ -97,6 +113,7 @@ const PageDeleteModal = (props) => {
         {!isDeleteCompletelyModal && renderDeleteCompletelyForm()}
       </ModalBody>
       <ModalFooter>
+        <ApiErrorMessage errorCode={errorCode} errorMessage={errorMessage} linkPath={path} />
         <button type="button" className={`m-l-10 btn btn-${deleteIconAndKey[deleteMode].color}`} onClick={deleteButtonHandler}>
           <i className={`icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
           { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
@@ -107,8 +124,16 @@ const PageDeleteModal = (props) => {
   );
 };
 
+/**
+ * Wrapper component for using unstated
+ */
+const PageDeleteModalWrapper = (props) => {
+  return createSubscribedElement(PageDeleteModal, props, [PageContainer]);
+};
+
 PageDeleteModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
   toggle: PropTypes.func.isRequired,
@@ -123,4 +148,4 @@ PageDeleteModal.defaultProps = {
   isDeleteCompletelyModal: false,
 };
 
-export default withTranslation()(PageDeleteModal);
+export default withTranslation()(PageDeleteModalWrapper);

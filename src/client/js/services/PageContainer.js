@@ -301,6 +301,24 @@ export default class PageContainer extends Container {
     return { page: res.page, tags: res.tags };
   }
 
+  async deletePage(recursively, completely) {
+    const websocketContainer = this.appContainer.getContainer('WebsocketContainer');
+
+    try {
+      await this.appContainer.apiPost('/pages.remove', {
+        recursively,
+        completely,
+        page_id: this.state.pageId,
+        revision_id: this.state.revisionId,
+        socketClientId: websocketContainer.getSocketClientId(),
+      });
+    }
+    catch (err) {
+      throw err;
+    }
+
+  }
+
   showSuccessToastr() {
     toastr.success(undefined, 'Saved successfully', {
       closeButton: true,

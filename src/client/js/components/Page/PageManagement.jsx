@@ -16,6 +16,8 @@ const PageManagement = (props) => {
   const isTopPagePath = isTopPage(path);
 
   const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);
+  const [errorCode, setErrorCode] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   function openPageDeleteModal() {
     setIsPageDeleteModalShown(true);
@@ -26,8 +28,15 @@ const PageManagement = (props) => {
   }
 
   async function onClickDeleteBtn(recursively, completely) {
-    console.log(completely);
-    console.log(recursively);
+    try {
+      setErrorCode(null);
+      setErrorMessage(null);
+      await pageContainer.deletePage(recursively, completely);
+    }
+    catch (err) {
+      setErrorCode(err.code);
+      setErrorMessage(err.message);
+    }
   }
 
   function renderDropdownItemForNotTopPage() {
