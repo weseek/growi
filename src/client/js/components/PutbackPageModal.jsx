@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -10,12 +10,38 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from './UnstatedUtils';
 import PageContainer from '../services/PageContainer';
 
+import ApiErrorMessage from './PageManagement/ApiErrorMessage';
+
 const PutBackPageModal = (props) => {
   const {
-    t, isOpen, toggle, onClickSubmit, pageContainer,
+    t, isOpen, toggle, pageContainer,
   } = props;
 
   const { path } = pageContainer.state;
+
+  const [errorCode, setErrorCode] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  const [isPutbackRecursively, setIsPutbackRecursively] = useState(true);
+
+  function changeIsPutbackRecursivelyHandler() {
+    setIsPutbackRecursively(!isPutbackRecursively);
+  }
+
+  async function clickPutbackButtonHandler() {
+    setErrorCode(null);
+    setErrorMessage(null);
+
+    try {
+      const res = await pageContainer.deletePage(isPutbackRecursively);
+      const { page } = res.page.path;
+      window.location.href = encodeURI(page);
+    }
+    catch (err) {
+      setErrorCode(err.code);
+      setErrorMessage(err.message);
+    }
+  }
 
   return (
     <Modal isOpen={isOpen} toggle={toggle} className="grw-create-page">
@@ -28,15 +54,22 @@ const PutBackPageModal = (props) => {
           <code>{path}</code>
         </div>
         <div className="custom-control custom-checkbox custom-checkbox-warning">
-          <input type="checkbox" className="custom-control-input" name="recursively" id="cbPutbackRecursively" value="1" checked />
-          <label htmlFor="cbPutbackRecursively" className="custom-control-label">
+          <input
+            className="custom-control-input"
+            id="cbPutBackRecursively"
+            type="checkbox"
+            checked={isPutbackRecursively}
+            onChange={changeIsPutbackRecursivelyHandler}
+          />
+          <label htmlFor="cbPutBackRecursively" className="custom-control-label">
             { t('modal_putback.label.recursively') }
           </label>
           <p className="form-text text-muted mt-0">{ t('modal_putback.help.recursively') }<code>{ path }</code>{ t('modal_putback.help.recursively2') }</p>
         </div>
       </ModalBody>
       <ModalFooter>
-        <button type="button" className="btn btn-info" onClick={onClickSubmit}>
+        <ApiErrorMessage errorCode={errorCode} errorMessage={errorMessage} linkPath={path} />
+        <button type="button" className="btn btn-info" onClick={clickPutbackButtonHandler}>
           <i className="icon-action-undo mr-2" aria-hidden="true"></i> { t('Put Back') }
         </button>
       </ModalFooter>
