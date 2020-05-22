@@ -6,7 +6,7 @@
 <div class="card">
   <div class="card-header">Tips</div>
   <div class="card-body"><ul>
-    <li>Ctrl(⌘)-/ to show quick help</li>
+    <li>Ctrl(⌘)+/ to show quick help</li>
     <li>You can write HTML with <a href="https://getbootstrap.com/docs/3.3/css/">Bootstrap 3</a>.</li>
   </ul></div>
 </div>
