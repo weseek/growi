@@ -50,7 +50,7 @@ class SecuritySetting extends React.Component {
     return (
       <React.Fragment>
         <h2 className="alert-anchor border-bottom">
-          {t('security_settings')}
+          {t('Security_Settings')}
         </h2>
         {this.state.retrieveError != null && (
         <div className="alert alert-danger">
