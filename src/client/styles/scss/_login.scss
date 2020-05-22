@@ -225,7 +225,7 @@
 .nologin.error {
   .main .row {
     @media (min-width: 510px) {
-      .col-sm-offset-4 {
+      .offset-sm-4 {
         margin-left: calc(50% - 240px);
       }
 
