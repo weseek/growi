@@ -1,61 +1,15 @@
-.modal.create-page {
-  .modal-body {
-    //TODO remove legend
-    legend {
-      margin-bottom: 10px;
-    }
+.grw-create-page {
+  .page-today-input1 {
+    width: 60px;
+  }
+  .page-today-input2 {
+  }
 
-    form,
-    #template-form {
-      // layout
-      .create-page-input-container {
-        .create-page-input-row {
-          flex: 1;
-        }
-        .create-page-button-container {
-          margin-left: 15px;
-          .btn {
-            min-width: 105px;
-          }
-        }
+  .grw-btn-create-page {
+    min-width: 90px;
+  }
 
-        // change layout by screen size
-        @include media-breakpoint-down(md) {
-          flex-direction: column;
-          .create-page-button-container {
-            margin-top: 10px;
-            text-align: right;
-          }
-        }
-      }
-
-      .page-today-prefix {
-      }
-      .page-today-input1 {
-        width: 60px;
-        padding-right: 2px;
-        padding-left: 2px;
-        margin-right: 5px;
-        margin-left: 5px;
-      }
-      .page-today-suffix {
-      }
-      .page-today-input2 {
-        flex: 1;
-        margin-left: 5px;
-      }
-
-      .page-name-input {
-        flex: 1;
-        input {
-          min-width: 300px; // Workaround to display placeholder.
-          //   cf https://github.com/ericgio/react-bootstrap-typeahead/issues/256
-        }
-      }
-
-      .create-page-under-tree-label code {
-        font-family: $font-family-monospace-not-strictly;
-      }
-    }
-  } // .modal-body
+  .create-page-under-tree-label code {
+    font-family: $font-family-monospace-not-strictly;
+  }
 }

@@ -314,7 +314,7 @@ class PageEditorByHackmd extends React.Component {
 
       content = (
         <div>
-          <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
+          <p className="text-muted text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
           <div className="text-center hackmd-start-button-container mb-3">
             <button
               className="btn btn-info btn-lg waves-effect waves-light"

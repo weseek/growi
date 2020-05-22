@@ -19,7 +19,7 @@
   .page-editor-preview-container {
     background-image: url('/images/themes/spring/spring02.svg');
     background-attachment: fixed;
-    background-position: center center;
+    background-position: bottom;
     background-size: cover;
   }
 }
@@ -28,7 +28,7 @@
   #page-wrapper {
     background-image: url('/images/themes/spring/spring.svg');
     background-attachment: fixed;
-    background-position: center center;
+    background-position: bottom;
     background-size: cover;
   }
 }
@@ -51,31 +51,40 @@ html[dark] {
 
   // Background colors
   $bgcolor-global: white;
-  $bgcolor-navbar: $themecolor;
   $bgcolor-inline-code: #f9f2f4;
   $bgcolor-card: #f5f5f5;
 
   // Font colors
   $color-global: black;
-  $color-reversal: #eeeeee;
+  $color-reversal: white;
   // $color-header: #2b2b2b;
   $color-link: lighten($color-global, 20%);
-  $color-link-hover: lighten($color-link, 20%);
+  $color-link-hover: $subthemecolor;
   $color-link-wiki: $subthemecolor;
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
-  $color-link-nabvar: $color-reversal;
+  $color-link-nabvar: $bgcolor-global;
   $color-inline-code: #c7254e;
 
   // List Group colors
   $color-list: $color-global;
-  $bgcolor-list: $bgcolor-global;
-  $color-list-active: $color-reversal;
-  $bgcolor-list-active: $primary;
-  $color-list-hover: $color-reversal;
+  $bgcolor-list: $themelight;
+  $color-list-active: $bgcolor-global;
+  $bgcolor-list-active: $accentcolor;
+  $color-list-hover: lighten($accentcolor, 20%);
+
+  // Navbar
+  $bgcolor-navbar: $themecolor;
+  $border-color-navbar-gradient-left: #545fff;
+  $border-color-navbar-gradient-right: #00a6e5;
 
   // Logo colors
   $bgcolor-logo: $bgcolor-navbar;
   $fillcolor-logo-mark: lighten(desaturate($bgcolor-inline-code, 10%), 15%);
+
+  // Sidebar
+  $bgcolor-sidebar: $bgcolor-navbar;
+  $color-sidebar-context: $color-reversal;
+  $bgcolor-sidebar-context: lighten($bgcolor-navbar, 10%);
 
   // Icon colors
   $color-editor-icons: $color-global;
@@ -88,16 +97,14 @@ html[dark] {
   $color-dropdown-link-active: $color-reversal;
   $color-dropdown-link-hover: $color-global;
 
+  // admin theme box
+  $color-theme-color-box: darken($primary, 20%);
+
   // alert
   $color-alert: $color-reversal;
 
   // badge
   $color-badge: $color-reversal;
-
-  // Sidebar
-  $bgcolor-sidebar: $bgcolor-navbar;
-  $color-sidebar-context: $color-reversal;
-  $bgcolor-sidebar-context: lighten($bgcolor-navbar, 10%);
 
   @import 'apply-colors';
   @import 'apply-colors-light';
@@ -105,8 +112,22 @@ html[dark] {
   .table {
     background-color: $bgcolor-global;
   }
+
   .card-timeline > .card-header {
     background-color: $third-main-color;
+  }
+
+  h1,
+  h2 {
+    color: $subthemecolor;
+  }
+
+  .nav.nav-tabs {
+    > .nav-item {
+      > .nav-link.active {
+        color: $subthemecolor;
+      }
+    }
   }
 }
 

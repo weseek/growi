@@ -12,7 +12,6 @@
 // $dark: #;
 
 .growi:not(.login-page) {
-
   // add background-image
   #page-wrapper,
   .page-editor-preview-container {
@@ -44,7 +43,6 @@ html[dark] {
 
   // Background colors
   $bgcolor-global: $themelight;
-  $bgcolor-navbar: $themecolor;
   $bgcolor-inline-code: darken($themecolor, 20%);
   $bgcolor-card: #f5f5f5;
 
@@ -66,10 +64,20 @@ html[dark] {
   $bgcolor-list-active: $primary;
   $color-list-hover: $color-reversal;
 
+  // Navbar
+  $bgcolor-navbar: $themecolor;
+  $border-color-navbar-gradient-left: #545fff;
+  $border-color-navbar-gradient-right: #00a6e5;
+
   // Logo colors
   $bgcolor-logo: darken($themecolor, 10%);
   $fillcolor-logo-mark: lighten(desaturate($themecolor, 50%), 50%); // Icon colors
   $color-editor-icons: $color-global;
+
+  // Sidebar
+  $bgcolor-sidebar: $bgcolor-navbar;
+  $color-sidebar-context: $color-reversal;
+  $bgcolor-sidebar-context: lighten($bgcolor-navbar, 10%);
 
   // Border colors
   $border-color-theme: #ccc; // former: `$navbar-border: #ccc;`
@@ -79,16 +87,14 @@ html[dark] {
   $color-dropdown-link-active: $color-reversal;
   $color-dropdown-link-hover: $color-global;
 
+  // admin theme box
+  $color-theme-color-box: lighten($primary, 20%);
+
   // alert
   $color-alert: $color-reversal;
 
   // badge
   $color-badge: $color-reversal;
-
-  // Sidebar
-  $bgcolor-sidebar: $bgcolor-navbar;
-  $color-sidebar-context: $color-reversal;
-  $bgcolor-sidebar-context: lighten($bgcolor-navbar, 10%);
 
   // portal
   $info: lighten($themecolor, 10%);
@@ -103,7 +109,6 @@ html[dark] {
   .grw-navbar {
     background-image: url('/images/themes/wood/wood-navbar.jpg');
     border-bottom: $accentcolor 4px solid;
-
   }
 }
 

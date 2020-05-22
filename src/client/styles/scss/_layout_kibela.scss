@@ -3,7 +3,7 @@ $navbar-height-adjustment: 10px;
 body.kibela {
   /* navbar for kibela */
   #page-wrapper {
-    margin-top: 60px;
+    margin-top: $grw-navbar-height + $grw-navbar-border-width;
   }
 
   /* Logo */
@@ -56,6 +56,9 @@ body.kibela {
     min-height: 8em;
     margin: auto;
     border-radius: 0.35em;
+    @include media-breakpoint-down(xs) {
+      top: 0px;
+    }
   }
 
   .grw-subnav {
@@ -72,6 +75,10 @@ body.kibela {
 
     @media screen and (max-width: 765px) {
       padding-top: 30px;
+    }
+
+    @include media-breakpoint-down(xs) {
+      padding-top: 0px;
     }
   }
 
@@ -111,11 +118,6 @@ body.kibela {
         border-radius: 3px;
       }
     }
-  }
-
-  /* button */
-  .btn {
-    // border-radius: $radius;
   }
 
   /* edit */

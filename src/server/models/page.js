@@ -155,30 +155,25 @@ class PageQueryBuilder {
     // eslint-disable-next-line no-param-reassign
     path = addSlashOfEnd(path);
 
-    // add option to escape the regex strings
-    const combinedOption = Object.assign({ isRegExpEscapedFromPath: true }, option);
-
-    this.addConditionToListByStartWith(path, combinedOption);
-
+    this.addConditionToListByStartWith(path, option);
     return this;
   }
 
   /**
    * generate the query to find pages that start with `path`
    *
-   * (GROWI) If 'isRegExpEscapedFromPath' is true, `path` should have `/` at the end
-   *   -> returns '{path}/*' and '{path}' self.
-   * (Crowi) If 'isRegExpEscapedFromPath' is false and `path` has `/` at the end
-   *   -> returns '{path}*'
-   * (Crowi) If 'isRegExpEscapedFromPath' is false and `path` doesn't have `/` at the end
-   *   -> returns '{path}*'
+   * In normal case, returns '{path}/*' and '{path}' self.
+   * If top page, return without doing anything.
    *
    * *option*
-   *   - isRegExpEscapedFromPath -- if true, the regex strings included in `path` is escaped (default: false)
+   *   Left for backward compatibility
    */
   addConditionToListByStartWith(path, option) {
+    // No request is set for the top page
+    if (isTopPage(path)) {
+      return this;
+    }
     const pathCondition = [];
-    const isRegExpEscapedFromPath = option.isRegExpEscapedFromPath || false;
 
     /*
      * 1. add condition for finding the page completely match with `path` w/o last slash
@@ -188,13 +183,10 @@ class PageQueryBuilder {
       pathSlashOmitted = path.substr(0, path.length - 1);
       pathCondition.push({ path: pathSlashOmitted });
     }
-
     /*
      * 2. add decendants
      */
-    const pattern = (isRegExpEscapedFromPath)
-      ? escapeStringRegexp(path) // escape
-      : pathSlashOmitted;
+    const pattern = escapeStringRegexp(path); // escape
 
     let queryReg;
     try {
@@ -205,7 +197,6 @@ class PageQueryBuilder {
       // force to escape
       queryReg = new RegExp(`^${escapeStringRegexp(pattern)}`);
     }
-
     pathCondition.push({ path: queryReg });
 
     this.query = this.query

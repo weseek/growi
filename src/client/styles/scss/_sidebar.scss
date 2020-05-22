@@ -1,21 +1,38 @@
 .grw-sidebar {
   .ak-navigation-resize-button {
+    // locate to the center of screen
     top: calc(50vh - 20px);
+
+    /*
+     * styles
+     */
+    // unset originalhover color
+    > div:hover {
+      background-color: unset;
+    }
+
+    $box-shadow: 0 1px 1px rgba(96, 96, 96, 0.75);
+    @include hexagonize(24px, white, $box-shadow);
+
+    // rotate 30deg
+    transform: translate(-50%) rotate(30deg);
+    > div,
+    > span svg {
+      transform: rotate(-30deg);
+    }
+
+    // centering icon
+    > span svg {
+      position: relative;
+      z-index: 1;
+      margin-top: -5.5px;
+    }
   }
 
   // override @atlaskit/navigation-next styles
-  div[data-testid='GlobalNavigation'] {
-    width: $grw-sidebar-nav-width;
-  }
   div[class$='-NavigationContainer'] {
     // Adjust to be on top of the growi subnavigation
     z-index: $zindex-sticky + 5;
-  }
-  div[class$='-Outer'] {
-    div[class$='-Shadow'] {
-      background: unset;
-      border-right: 1px solid $border;
-    }
   }
 
   .grw-global-item-container {

@@ -1,8 +1,6 @@
 @import '../variables';
 @import '../override-bootstrap-variables';
 
-
-
 html[light] {
   // Theme colors
   $themecolor: #00587a;
@@ -29,7 +27,6 @@ html[light] {
   $color-inline-code: $subthemecolor;
   $color-search: #c0d6df;
 
-
   // List Group colors
   $color-list: $color-global;
   $bgcolor-list: transparent;
@@ -51,6 +48,9 @@ html[light] {
   $bgcolor-dropdown-link-active: $primary;
   $color-dropdown-link-active: $color-reversal;
 
+  // admin theme box
+  $color-theme-color-box: lighten($primary, 20%);
+
   // alert
   $color-alert: $color-reversal;
 
@@ -61,7 +61,6 @@ html[light] {
   $bgcolor-sidebar: $bgcolor-navbar;
   $color-sidebar-context: $color-reversal;
   $bgcolor-sidebar-context: lighten($bgcolor-sidebar, 10%);
-
 
   @import 'apply-colors';
   @import 'apply-colors-light';
@@ -119,7 +118,6 @@ html[dark] {
   $color-inline-code: $subthemecolor;
   $color-search: #000102;
 
-
   // List Group colors
   $color-list: $color-global;
   $bgcolor-list: transparent;
@@ -142,6 +140,9 @@ html[dark] {
   $bgcolor-dropdown-link-active: $primary;
   $color-dropdown-link-active: $color-reversal;
 
+  // admin theme box
+  $color-theme-color-box: $primary;
+
   // alert
   $color-alert: $color-reversal;
 
@@ -152,7 +153,6 @@ html[dark] {
   $bgcolor-sidebar: $bgcolor-navbar;
   $color-sidebar-context: $color-reversal;
   $bgcolor-sidebar-context: lighten($bgcolor-sidebar, 10%);
-
 
   @import 'apply-colors';
   @import 'apply-colors-dark';

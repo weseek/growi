@@ -1,8 +1,187 @@
-// import colors
-@import '../../agile-admin/inverse/colors/island';
+@import '../variables';
+@import '../override-bootstrap-variables';
 
-// apply agile-admin theme
-@import '../../agile-admin/inverse/style';
+$color-themelight: rgba(183, 226, 219, 1);
+$color-primary: #97cbc3;
+$color-navbar: #0c2a44;
+$color-global: #3c6d72;
+$color-link-global: $color-global;
+$color-inline-code: #8f5313;
+$color-active-bgnav-tabs: #dbf0ed;
+$color-link-wiki: $color-global;
+$color-link-wiki-hover: rgba($color-global, 0.8);
+$bgcolor-inline-code: darken($color-themelight, 3%);
 
-// override
-@import 'override-agileadmin';
+$dark: darken($color-global, 5%);
+
+html[light],
+html[dark] {
+  // Background colors
+  $bgcolor-card: #f5f5f5;
+  $bgcolor-global: lighten($color-themelight, 10%);
+
+  // Font colors
+  $color-reversal: #eeeeee;
+  $color-link: lighten($color-global, 20%);
+  $color-link-hover: lighten($color-link, 20%);
+  $color-link-nabvar: $color-reversal;
+
+  // List Group colors
+  $color-list: $color-global;
+  $bgcolor-list: lighten($color-themelight, 10%);
+  $color-list-active: $color-reversal;
+  $bgcolor-list-active: $color-primary;
+  $color-list-hover: $color-reversal;
+
+  // Navbar
+  $bgcolor-navbar: #0c2a44;
+  $border-color-navbar-gradient-left: #545fff;
+  $border-color-navbar-gradient-right: #00a6e5;
+
+  // Logo colors
+  $bgcolor-logo: $color-navbar;
+  $fillcolor-logo-mark: lighten(desaturate($bgcolor-inline-code, 10%), 15%);
+
+  // Sidebar
+  $bgcolor-sidebar: $color-navbar;
+  $color-sidebar-context: $color-reversal;
+  $bgcolor-sidebar-context: lighten($color-navbar, 10%);
+
+  // Icon colors
+  $color-editor-icons: $color-global;
+
+  // Border colors
+  $border-color-theme: #ccc;
+
+  // Dropdown colors
+  $bgcolor-dropdown-link-active: $growi-blue;
+  $color-dropdown-link-active: $color-reversal;
+  $color-dropdown-link-hover: $color-global;
+
+  // admin theme box
+  $color-theme-color-box: lighten($primary, 20%);
+
+  // alert
+  $color-alert: $color-reversal;
+
+  // badge
+  $color-badge: $color-reversal;
+
+  @import 'apply-colors';
+  @import 'apply-colors-light';
+
+  .wiki {
+    .highlighted {
+      background-color: lighten($color-primary, 20%);
+    }
+  }
+
+  .nav-tabs,
+  .nav-tabs .nav-link.active,
+  .nav-link {
+    background: none;
+    border-color: $color-primary;
+    border-bottom-color: $color-primary;
+  }
+
+  .card,
+  .card-header {
+    background: none;
+    border: none;
+  }
+
+  .panel {
+    &,
+    &.panel-white,
+    &.panel-default {
+      color: $color-primary;
+      background-color: lighten($color-primary, 30%);
+      border-color: white;
+
+      .panel-heading {
+        color: $color-primary;
+        background-color: white;
+      }
+
+      ul {
+        li {
+          a {
+            color: darken($color-primary, 15%);
+          }
+        }
+      }
+    }
+  }
+
+  /* GROWI page list */
+  .page-list {
+    .page-list-ul {
+      > li {
+        > a strong {
+          color: $color-link-global;
+        }
+      }
+    }
+  }
+
+  .rbt-menu {
+    background: lighten($color-themelight, 5%);
+  }
+
+  #wrapper > #page-wrapper,
+  .page-editor-preview-container {
+    background-image: url('/images/themes/island/island.png');
+    background-attachment: fixed;
+  }
+
+  /*
+   * Tabs
+   */
+  body:not(.on-edit) .nav.nav-tabs {
+    > li.active > a {
+      background: linear-gradient(
+        rgba($color-active-bgnav-tabs, 0) 0%,
+        rgba($color-active-bgnav-tabs, 0) 90%,
+        $color-active-bgnav-tabs 100%
+      ); // overwrite only the bottom pixel
+    }
+  }
+
+  /* Table */
+  .table > thead > tr > th,
+  .table > tbody > tr > th,
+  .table > tfoot > tr > th,
+  .table > thead > tr > td,
+  .table > tbody > tr > td,
+  .table > tfoot > tr > td,
+  .table > thead > tr > th,
+  .table-bordered {
+    border-top: 1px solid $color-primary;
+  }
+
+  .table-bordered > thead > tr > th,
+  .table-bordered > tbody > tr > th,
+  .table-bordered > tfoot > tr > th,
+  .table-bordered > thead > tr > td,
+  .table-bordered > tbody > tr > td,
+  .table-bordered > tfoot > tr > td {
+    border: 1px solid $color-primary;
+  }
+
+  .table > thead > tr > th {
+    border-bottom: 1px solid $color-primary;
+  }
+
+  .table-bordered {
+    border: 1px solid $color-primary;
+  }
+
+  // login page
+  .nologin {
+    &.login-page {
+      > #wrapper > #page-wrapper {
+        background-image: unset;
+      }
+    }
+  }
+}

@@ -1,8 +1,108 @@
-// import colors
-@import '../../agile-admin/inverse/colors/future';
+@import '../variables';
+@import '../override-bootstrap-variables';
 
-// apply agile-admin theme
-@import '../../agile-admin/inverse/style';
+$themecolor: #16282d;
+$themelight: rgba(11, 79, 104, 0.616);
+$accentcolor: #66eddf;
 
-// override
-@import 'override-agileadmin';
+$primary: $themelight;
+$dark: darken($themecolor, 5%);
+
+html[light],
+html[dark] {
+  // Background colors
+  $bgcolor-global: $themecolor;
+  $bgcolor-inline-code: darken($themecolor, 5%);
+  $bgcolor-card: darken($themecolor, 5%);
+
+  // Font colors
+  $color-global: lighten($themecolor, 35%);
+  $color-reversal: #eeeeee;
+  $color-header: #d9a364;
+  $color-link: lighten($primary, 20%);
+  $color-link-hover: lighten($color-link, 20%);
+  $color-link-wiki: darken($themecolor, 5%);
+  $color-link-wiki-hover: darken($color-link-wiki, 5%);
+  $color-link-nabvar: $color-reversal;
+  $color-inline-code: #c7254e;
+  $color-search: #050a0b;
+
+  // List Group colors
+  $color-list: $color-global;
+  $bgcolor-list: transparent;
+  $color-list-active: $color-reversal;
+  $bgcolor-list-active: $primary;
+  $color-list-hover: $color-reversal;
+
+  // Navbar
+  $bgcolor-navbar: #011414;
+  $border-color-navbar-gradient-left: #545fff;
+  $border-color-navbar-gradient-right: #00a6e5;
+
+  // Logo colors
+  $bgcolor-logo: darken($themecolor, 10%);
+  $fillcolor-logo-mark: lighten($accentcolor, 15%);
+
+  // Sidebar
+  $bgcolor-sidebar: $bgcolor-navbar;
+  $color-sidebar-context: $color-reversal;
+  $bgcolor-sidebar-context: lighten($bgcolor-navbar, 10%);
+
+  // Icon colors
+  $color-editor-icons: $color-global;
+
+  // Border colors
+  $border-color-theme: #407483;
+
+  // Dropdown colors
+  $bgcolor-dropdown-link-active: $primary;
+  $color-dropdown-link-active: $color-reversal;
+  $color-dropdown-link-hover: $color-global;
+
+  // admin theme box
+  $color-theme-color-box: lighten($primary, 20%);
+
+  // alert
+  $color-alert: $color-reversal;
+
+  // badge
+  $color-badge: $color-reversal;
+
+  @import 'apply-colors';
+  @import 'apply-colors-dark';
+
+  // headers
+  @for $i from 1 through 6 {
+    h#{$i} {
+      color: $color-header;
+    }
+  }
+
+  // Navs {
+  .nav-tabs {
+    border-bottom: $border-color-theme 1px solid;
+    .nav-link {
+      &:hover {
+        border-color: darken($border-color-theme, 10%);
+        border-bottom: none;
+      }
+      &.active {
+        color: $color-link;
+        background-color: transparent;
+        border-color: $border-color-theme;
+      }
+    }
+  }
+
+  // Search Top
+  .search-top {
+    .input-group-prepend .dropdown-toggle {
+      color: #5193a5;
+      background-color: $color-search;
+      border-color: $color-search;
+      &:hover {
+        background-color: darken($color-search, 10%);
+      }
+    }
+  }
+}
