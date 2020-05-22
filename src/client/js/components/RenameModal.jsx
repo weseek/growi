@@ -18,7 +18,7 @@ import ApiErrorMessage from './PageManagement/ApiErrorMessage';
 
 const RenameModal = (props) => {
   const { t, appContainer, pageContainer } = props;
-  const { path, pageId } = pageContainer.state;
+  const { path, pageId, revisionId } = pageContainer.state;
   const { crowi } = appContainer.config;
   // const config = appContainer.getConfig();
   // const isReachable = config.isSearchServiceReachable;
@@ -36,7 +36,7 @@ const RenameModal = (props) => {
     try {
       setErrorCode(null);
       setErrorMessage(null);
-      const res = await appContainer.apiPost('/pages.rename', { page_id: pageId, new_path: pageNameInput });
+      const res = await appContainer.apiPost('/pages.rename', { page_id: pageId, revision_id: revisionId, new_path: pageNameInput });
       console.log(res);
       const { page } = res;
       window.location.href = encodeURI(`${page.path}?rename=${path}`);
