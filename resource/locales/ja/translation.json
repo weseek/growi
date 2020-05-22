@@ -336,7 +336,7 @@
   "template": {
     "modal_label": {
       "Create/Edit Template Page": "テンプレートページの作成/編集",
-      "Create template under": "以下のパスにテンプレートページを作成"
+      "Create template under": "配下にテンプレートページを作成"
     },
     "option_label": {
       "select": "テンプレートタイプを選択してください",
