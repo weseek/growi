@@ -28,7 +28,8 @@ import LikeButton from './components/LikeButton';
 import PagePathAutoComplete from './components/PagePathAutoComplete';
 import RecentCreated from './components/RecentCreated/RecentCreated';
 import MyDraftList from './components/MyDraftList/MyDraftList';
-import UserPictureList from './components/User/UserPictureList';
+import SeenUserPictureList from './components/User/SeenUserPictureList';
+import LikerPictureList from './components/User/LikerPictureList';
 import TableOfContents from './components/TableOfContents';
 
 import PersonalSettings from './components/Me/PersonalSettings';
@@ -89,8 +90,8 @@ if (pageContainer.state.pageId != null) {
     'page-comment-write': <CommentEditorLazyRenderer />,
     'revision-toc': <TableOfContents />,
     'like-button': <LikeButton pageId={pageContainer.state.pageId} isLiked={pageContainer.state.isLiked} />,
-    'seen-user-list': <UserPictureList users={pageContainer.state.seenUsers} />,
-    'liker-list': <UserPictureList users={pageContainer.state.likerUsers} />,
+    'seen-user-list': <SeenUserPictureList />,
+    'liker-list': <LikerPictureList />,
     'bookmark-button': <BookmarkButton pageId={pageContainer.state.pageId} crowi={appContainer} />,
     'bookmark-button-lg': <BookmarkButton pageId={pageContainer.state.pageId} crowi={appContainer} size="lg" />,
     'rename-page-name-input': <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,

@@ -8,19 +8,8 @@ import UserPicture from './UserPicture';
 
 export default class UserPictureList extends React.Component {
 
-  constructor(props) {
-    super(props);
-
-    const users = this.props.users;
-
-    this.state = {
-      users,
-    };
-
-  }
-
   render() {
-    const users = this.state.users.map((user) => {
+    const users = this.props.users.map((user) => {
       // create Tooltip
       const tooltip = <Tooltip id={`tooltip-${user._id}`}>@{user.username}<br />{user.name}</Tooltip>;
 
