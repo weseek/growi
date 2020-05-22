@@ -22,13 +22,15 @@ import PagePathAutoComplete from './PagePathAutoComplete';
 
 const RenameModal = (props) => {
   const { t, appContainer, pageContainer } = props;
-
+  const { path } = pageContainer.state;
+  console.log(path);
   const config = appContainer.getConfig();
   const isReachable = config.isSearchServiceReachable;
-  const { path } = pageContainer.state;
+
   const userPageRootPath = userPageRoot(appContainer.currentUser);
   const parentPath = pathUtils.addTrailingSlash(path);
-  const now = format(new Date(), 'yyyy/MM/dd');
+  const { crowi } = appContainer.config;
+  // const now = format(new Date(), 'yyyy/MM/dd');
 
   const [todayInput1, setTodayInput1] = useState(t('Memo'));
   const [todayInput2, setTodayInput2] = useState('');
@@ -36,14 +38,14 @@ const RenameModal = (props) => {
   const [template, setTemplate] = useState(null);
 
   // 現在のページ名
-  function currentPageName() {
-    return (
-      <div className="form-group">
-        <label>{ t('modal_rename.label.Current page name') }</label><br />
-        <code>{userPageRootPath}</code>
-      </div>
-    );
-  }
+  // function currentPageName() {
+  //   return (
+  //     <div className="form-group">
+  //       <label>{ t('modal_rename.label.Current page name') }</label><br />
+  //       <code>{page}</code>
+  //     </div>
+  //   );
+  // }
 
   // 移動先のページ名
   function pageToMoveTo() {
@@ -65,18 +67,26 @@ const RenameModal = (props) => {
 
   }
 
-  function footer() {
-
-  }
-
   return (
     <Modal isOpen={appContainer.state.isRenameModalShown} toggle={appContainer.closeRenameModal}>
       <ModalHeader tag="h4" toggle={appContainer.closeRenameModal} className="bg-primary text-light">
         { t('modal_rename.label.Move/Rename page') }
       </ModalHeader>
       <ModalBody>
-        {currentPageName}
-        {pageToMoveTo}
+        <div className="form-group">
+          <label>{ t('modal_rename.label.Current page name') }</label><br />
+          <code>{pageContainer.state.path}</code>
+        </div>
+        <div className="form-group">
+          <label htmlFor="newPageName">{ t('modal_rename.label.New page name') }</label><br />
+          <div className="input-group">
+            <div className="input-group-prepend">
+              <span className="input-group-text">{crowi.url}</span>
+            </div>
+            <div id="rename-page-name-input" className="page-name-input flex-fill"></div>
+            <input type="text" className="form-control" name="new_path" id="newPageName" value={path} />
+          </div>
+        </div>
       </ModalBody>
       <ModalFooter>
         <div className="d-flex justify-content-end">
