@@ -591,7 +591,6 @@ module.exports = (crowi) => {
         updatedUsers = await User.find({ _id: { $in: userIds } }, User.USER_PUBLIC_FIELDS);
       }
 
-      // GW-1942 TODO return updated users
       return res.apiv3({ updatedUsers });
     }
     catch (err) {
