@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -17,6 +17,7 @@ const PageDeleteModal = (props) => {
     t, isOpen, toggle, onClickSubmit, isDeleteCompletely, path,
   } = props;
   const deleteMode = isDeleteCompletely ? 'completely' : 'temporary';
+  const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
 
   const deleteIconAndKey = {
     completely: {
@@ -31,6 +32,11 @@ const PageDeleteModal = (props) => {
     },
   };
 
+  function chengeIsDeleteRecursivelyHandler() {
+    console.log('push');
+    setIsDeleteRecursively(!isDeleteRecursively);
+  }
+
   return (
     <Modal isOpen={isOpen} toggle={toggle} className="grw-create-page">
       <ModalHeader tag="h4" toggle={toggle} className={`bg-${deleteIconAndKey[deleteMode].color} text-light`}>
@@ -43,7 +49,13 @@ const PageDeleteModal = (props) => {
           <code>{ path }</code>
         </div>
         <div className="custom-control custom-checkbox custom-checkbox-warning">
-          <input className="custom-control-input" name="recursively" id="cbDeleteRecursively" value="1" type="checkbox" checked />
+          <input
+            className="custom-control-input"
+            name="recursively"
+            id="cbDeleteRecursively"
+            type="checkbox"
+            checked={isDeleteRecursively}
+          />
           <label className="custom-control-label" htmlFor="cbDeleteRecursively">
             { t('modal_delete.delete_recursively') }
             <p className="form-text text-muted mt-0"><code>{path}</code> { t('modal_delete.recursively') }</p>
