@@ -28,7 +28,7 @@ const deleteIconAndKey = {
 
 const PageDeleteModal = (props) => {
   const {
-    t, pageContainer, isOpen, toggle, isDeleteCompletelyModal, path, isAbleToDeleteCompletely,
+    t, pageContainer, isOpen, onClose, isDeleteCompletelyModal, path, isAbleToDeleteCompletely,
   } = props;
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal);
@@ -100,8 +100,8 @@ const PageDeleteModal = (props) => {
   }
 
   return (
-    <Modal isOpen={isOpen} toggle={toggle} className="grw-create-page">
-      <ModalHeader tag="h4" toggle={toggle} className={`bg-${deleteIconAndKey[deleteMode].color} text-light`}>
+    <Modal isOpen={isOpen} toggle={onClose} className="grw-create-page">
+      <ModalHeader tag="h4" toggle={onClose} className={`bg-${deleteIconAndKey[deleteMode].color} text-light`}>
         <i className={`icon-fw icon-${deleteIconAndKey[deleteMode].icon}`}></i>
         { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
       </ModalHeader>
@@ -137,7 +137,7 @@ PageDeleteModal.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
-  toggle: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
 
   path: PropTypes.string.isRequired,
   isDeleteCompletelyModal: PropTypes.bool,

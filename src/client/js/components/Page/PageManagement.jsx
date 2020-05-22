@@ -72,7 +72,7 @@ const PageManagement = (props) => {
       </div>
       <PageDeleteModal
         isOpen={isPageDeleteModalShown}
-        toggle={closePageDeleteModal}
+        onClose={closePageDeleteModal}
         path={path}
         isAbleToDeleteCompletely={isAbleToDeleteCompletely}
       />
