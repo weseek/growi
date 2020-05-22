@@ -95,7 +95,7 @@ const TrashPageAlert = (props) => {
         {(currentUser.admin && path === '/trash' && hasChildren) && renderEmptyButton()}
         {(isDeleted && currentUser != null) && renderTrashPageManagementButtons()}
       </div>
-      <EmptyTrashModal isOpen={isEmptyTrashModalShown} toggle={closeEmptyTrashModal} onClickSubmit={onClickEmptyBtn} />
+      <EmptyTrashModal isOpen={isEmptyTrashModalShown} onClose={closeEmptyTrashModal} onClickSubmit={onClickEmptyBtn} />
       <PageDeleteModal
         isOpen={isPageDeleteModalShown}
         onClose={closePageDeleteModal}

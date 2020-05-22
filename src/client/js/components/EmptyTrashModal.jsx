@@ -9,12 +9,12 @@ import { withTranslation } from 'react-i18next';
 
 const EmptyTrashModal = (props) => {
   const {
-    t, isOpen, toggle, onClickSubmit,
+    t, isOpen, onClose, onClickSubmit,
   } = props;
 
   return (
-    <Modal isOpen={isOpen} toggle={toggle} className="grw-create-page">
-      <ModalHeader tag="h4" toggle={toggle} className="bg-danger text-light">
+    <Modal isOpen={isOpen} toggle={onClose} className="grw-create-page">
+      <ModalHeader tag="h4" toggle={onClose} className="bg-danger text-light">
         { t('modal_empty.empty_the_trash')}
       </ModalHeader>
       <ModalBody>
@@ -35,7 +35,7 @@ EmptyTrashModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
 
   isOpen: PropTypes.bool.isRequired,
-  toggle: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
   onClickSubmit: PropTypes.func.isRequired,
 };
 
