@@ -5,12 +5,12 @@
     // speech balloon
     &:after {
       position: absolute;
-      top: 0.6em;
-      right: -1em;
+      top: #{$grw-sidebar-nav-width / 2 - 9px};
+      right: -0.1em;
       display: block;
       width: 0;
       content: '';
-      border: 0.8em solid transparent;
+      border: 9px solid transparent;
       border-left-width: 0;
     }
   }
@@ -67,27 +67,40 @@
       padding: 0;
     }
 
-  .grw-global-item-container {
-    i {
-      font-size: 1.5em;
-    }
+    .grw-global-item-container {
+      width: unset;
+      height: unset;
+      background-color: transparent;
+      border-radius: 0;
 
-    // icon opacity
-    &:not(.active) {
-      i {
-        opacity: 0.4;
+      button {
+        width: $grw-sidebar-nav-width;
+        height: $grw-sidebar-nav-width;
+
+        border-radius: 0;
       }
-      &:hover,
-      &:focus {
+
+      i {
+        font-size: 1.5em;
+      }
+
+      // icon opacity
+      &:not(.active) {
         i {
-          opacity: 0.7;
+          opacity: 0.4;
+        }
+        &:hover,
+        &:focus {
+          i {
+            opacity: 0.7;
+          }
         }
       }
-    }
 
-    &.active {
-      button {
-        @extend %fukidashi-for-active;
+      &.active {
+        button {
+          @extend %fukidashi-for-active;
+        }
       }
     }
   }

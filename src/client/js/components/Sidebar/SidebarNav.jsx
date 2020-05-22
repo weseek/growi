@@ -29,34 +29,32 @@ class SidebarNav extends React.Component {
     }
   }
 
-  generatePrimaryItemObj(id, label, icon) {
+  generatePrimaryItemObj(id, label, iconClassNames) {
     const isSelected = this.props.currentContentsId === id;
 
     return {
       id,
       component: ({ className }) => (
         <div className={`${className} grw-global-item-container ${isSelected ? 'active' : ''}`}>
-          <GlobalItem
-            icon={icon}
-            label={label}
-            isSelected={isSelected}
+          <button
+            type="button"
+            className="btn btn-primary"
             onClick={() => this.itemSelectedHandler(id)}
-          />
+          >
+            <i className={iconClassNames}></i>
+          </button>
         </div>
       ),
     };
   }
 
-  generateSecondaryItemObj(id, label, icon, href) {
+  generateSecondaryItemObj(id, label, iconClassNames, href) {
     return {
       id,
       component: ({ className }) => (
         <div className={`${className} grw-global-item-container d-block d-md-none`}>
-          <a href={href}>
-            <GlobalItem
-              icon={icon}
-              label={label}
-            />
+          <a href={href} className="btn btn-primary">
+            <i className={iconClassNames}></i>
           </a>
         </div>
       ),
@@ -71,12 +69,12 @@ class SidebarNav extends React.Component {
     return (
       <GlobalNav
         primaryItems={[
-          this.generatePrimaryItemObj('custom', 'Custom Sidebar', this.generateIconFactory('fa fa-code')),
-          this.generatePrimaryItemObj('history', 'History', this.generateIconFactory('icon-clock')),
+          this.generatePrimaryItemObj('custom', 'Custom Sidebar', 'fa fa-code'),
+          this.generatePrimaryItemObj('history', 'History', 'icon-clock'),
         ]}
         secondaryItems={[
-          this.generateSecondaryItemObj('admin', 'Admin', this.generateIconFactory('icon-settings'), '/admin'),
-          this.generateSecondaryItemObj('help', 'Help', this.generateIconFactory('icon-question'), 'https://docs.growi.org'),
+          this.generateSecondaryItemObj('admin', 'Admin', 'icon-settings', '/admin'),
+          this.generateSecondaryItemObj('help', 'Help', 'icon-question', 'https://docs.growi.org'),
         ]}
       />
     );
