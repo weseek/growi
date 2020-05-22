@@ -15,6 +15,30 @@ const CreateTemplateModal = (props) => {
   const { path } = pageContainer.state;
   const parentPath = pathUtils.addTrailingSlash(path);
 
+  /**
+   * @param {string} target Which hierarchy to create [children, decendants]
+   */
+  function renderTemplateCard(target, label) {
+    return (
+      <div className="card card-select-template">
+        <div className="card-header">{ t(`template.${target}.label`) }</div>
+        <div className="card-body">
+          <p className="text-center"><code>{label}</code></p>
+          <p className="form-text text-muted text-center"><small>{t(`template.${target}.desc`) }</small></p>
+        </div>
+        <div className="card-footer text-center">
+          <a
+            href={encodeURI(`${parentPath}${label}#edit`)}
+            className="btn btn-sm btn-primary"
+            id={`template-button-${target}`}
+          >
+            { t('Edit') }
+          </a>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <Modal isOpen className="grw-create-page">
       <ModalHeader tag="h4" className="bg-primary text-light">
@@ -28,40 +52,10 @@ const CreateTemplateModal = (props) => {
           </label>
           <div className="row">
             <div className="col-md-6">
-              <div className="card card-select-template">
-                <div className="card-header">{ t('template.children.label') }</div>
-                <div className="card-body">
-                  <p className="text-center"><code>_template</code></p>
-                  <p className="form-text text-muted text-center"><small>{t('template.children.desc') }</small></p>
-                </div>
-                <div className="card-footer text-center">
-                  <a
-                    href="{{templateParentPath}}_template#edit"
-                    className="btn btn-sm btn-primary"
-                    id="template-button-children"
-                  >
-                    { t('Edit') }
-                  </a>
-                </div>
-              </div>
+              {renderTemplateCard('children', '_template')}
             </div>
             <div className="col-md-6">
-              <div className="card card-select-template">
-                <div className="card-header">{ t('template.decendants.label') }</div>
-                <div className="card-body">
-                  <p className="text-center"><code>__template</code></p>
-                  <p className="form-text text-muted text-center"><small>{ t('template.decendants.desc') }</small></p>
-                </div>
-                <div className="card-footer text-center">
-                  <a
-                    href="{{templateParentPath}}__template#edit"
-                    className="btn btn-sm btn-primary"
-                    id="template-button-decendants"
-                  >
-                    { t('Edit') }
-                  </a>
-                </div>
-              </div>
+              {renderTemplateCard('decendants', '__template')}
             </div>
           </div>
         </div>
