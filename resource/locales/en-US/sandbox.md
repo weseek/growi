@@ -52,7 +52,7 @@ paragraph2
 
 ## Br break(new line)
 
-Add two `` spaces before break.
+Add two spaces before break.
 ***This behaviour can be modified in the options menu.***
 
 ```
@@ -75,8 +75,8 @@ Write `>` at the beginning. Write multiple `>` for nested quotes.
 >> nested quotes
 ```
 
-> qupte
-> qupte
+> quote
+> quote
 >> nested quotes
 
 ## Code
@@ -284,27 +284,27 @@ Indent one or more items to create a nested list.
 - List2
 - List3
 
-## Ol Numbered List
+## Ol Number List
 
 To create an ordered list, add line items with numbers followed by periods. 
 The numbers don’t have to be in numerical order, but the list should start with the number one.
 
 ```
-1. Numbered list 1
-    1. Numbered list 1-1
-    1. Numbered list 1-2
-1. Numbered list 2
-1. Numbered list 3
+1. Number list 1
+    1. Number list 1-1
+    1. Number list 1-2
+1. Number list 2
+1. Number list 3
 ```
 
-1. Numbered list 1
-    1. Numbered list 1-1
-    1. Numbered list 1-2
-1. Numbered list 2
-1. Numbered list 3
+1. Number list 1
+    1. Number list 1-1
+    1. Number list 1-2
+1. Number list 2
+1. Number list 3
 
 
-## Task list
+## Check list
 
 ```
 - [ ] Task 1
@@ -354,7 +354,7 @@ aligned    | aligned     | aligned
 | left       | right       | center       |
 | aligned    | aligned     | aligned      |
 
-## TSV (crowi-plus original notation)
+## TSV (crowi-plus notation)
 
 ```
 ::: tsv
@@ -368,7 +368,7 @@ Content Cell Content Cell
 Content Cell Content Cell
 :::
 
-## TSV with header (crowi-plus original notation)
+## TSV with header (crowi-plus notation)
 
 ```
 ::: tsv-h
