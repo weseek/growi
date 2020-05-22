@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
@@ -31,7 +30,7 @@ const PageDeleteModal = (props) => {
     t, pageContainer, isOpen, onClose, isDeleteCompletelyModal, path, isAbleToDeleteCompletely,
   } = props;
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
-  const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal);
+  const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
   const deleteMode = isDeleteCompletely ? 'completely' : 'temporary';
   const [errorCode, setErrorCode] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -41,6 +40,9 @@ const PageDeleteModal = (props) => {
   }
 
   function changeIsDeleteCompletelyHandler() {
+    if (!isAbleToDeleteCompletely) {
+      return;
+    }
     setIsDeleteCompletely(!isDeleteCompletely);
   }
 
