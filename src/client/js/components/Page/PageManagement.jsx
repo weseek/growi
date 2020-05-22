@@ -35,7 +35,7 @@ const PageManagement = (props) => {
         <a className="dropdown-item" href="#" data-target="#renamePage" data-toggle="modal">
           <i className="icon-fw icon-action-redo"></i> { t('Move/Rename') }
         </a>
-        <a className="dropdown-item" href="#" data-target="#duplicatePage" data-toggle="modal">
+        <a className="dropdown-item" type="button" onClick={pageContainer.openPageDuplicateModal}>
           <i className="icon-fw icon-docs"></i> { t('Duplicate') }
         </a>
         <div className="dropdown-divider"></div>

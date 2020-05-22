@@ -62,6 +62,8 @@ export default class PageContainer extends Container {
       hasDraftOnHackmd: !!mainContent.getAttribute('data-page-has-draft-on-hackmd'),
       isHackmdDraftUpdatingInRealtime: false,
 
+      isPageDuplicateModalShown: false,
+
       isHeaderSticky: false,
       isSubnavCompact: false,
     };
@@ -87,6 +89,9 @@ export default class PageContainer extends Container {
         isSubnavCompact: scrollThresForCompact < currentYOffset,
       });
     });
+
+    this.openPageDuplicateModal = this.openPageDuplicateModal.bind(this);
+    this.closePageDuplicateModal = this.closePageDuplicateModal.bind(this);
   }
 
   /**
@@ -386,6 +391,14 @@ export default class PageContainer extends Container {
       }
     });
 
+  }
+
+  openPageDuplicateModal() {
+    this.setState({ isPageDuplicateModalShown: true });
+  }
+
+  closePageDuplicateModal() {
+    this.setState({ isPageDuplicateModalShown: false });
   }
 
 }
