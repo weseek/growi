@@ -25,6 +25,7 @@ const PageDuplicateModal = (props) => {
 
   const [pageNameInput, setPageNameInput] = useState(path);
   const [errorCode, setErrorCode] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   /**
    * change pageNameInput
@@ -37,12 +38,14 @@ const PageDuplicateModal = (props) => {
   async function clickDuplicateButtonHandler() {
     try {
       setErrorCode(null);
+      setErrorMessage(null);
       const res = await appContainer.apiPost('/pages.duplicate', { page_id: pageId, new_path: pageNameInput });
       const { page } = res;
-      window.location.href = encodeURI(urljoin(page.path, '?duplicated=', path));
+      window.location.href = encodeURI(`${page.path}'?duplicated='${path}`);
     }
     catch (err) {
-      setErrorCode(err.message);
+      setErrorCode(err.code);
+      setErrorMessage(err.message);
     }
   }
 
@@ -63,7 +66,7 @@ const PageDuplicateModal = (props) => {
             <div className="input-group-prepend">
               <span className="input-group-text">{crowi.url}</span>
             </div>
-            {!isReachable
+            {isReachable
               // GW-2355 refactor typeahead
               ? <PagePathAutoComplete crowi={appContainer} initializedPath={path} addTrailingSlash />
               : (
@@ -79,7 +82,7 @@ const PageDuplicateModal = (props) => {
         </div>
       </ModalBody>
       <ModalFooter>
-        <ApiErrorMessage errorCode={errorCode} linkPath={path} />
+        <ApiErrorMessage errorCode={errorCode} errorMessage={errorMessage} linkPath={path} />
         <button type="button" className="btn btn-primary" onClick={clickDuplicateButtonHandler}>Duplicate page</button>
       </ModalFooter>
     </Modal>
