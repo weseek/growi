@@ -190,7 +190,7 @@ This is __bold__.
 
 ### Bold + Italic
 
-To bold and Italic text, add three asterisks or underscores before and after a word or phrase.
+To bold and italicize text, add three asterisks or underscores before and after a word or phrase.
 
 ```
 This is ***Italic & Bold***.
