@@ -67,7 +67,7 @@ piyo
 
 ## Blockquotes
 
-Write `>` at the beginning. Write multiple `>` for nested quotes.
+Add one `>` per level at the start of the line
 
 ```
 > quote
