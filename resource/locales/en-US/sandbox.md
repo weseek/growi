@@ -1,7 +1,7 @@
 <div class="panel panel-default">
   <div class="panel-body">
 
-# Table Of Contents
+# Table of Contents
 
 ```
 @[toc]
