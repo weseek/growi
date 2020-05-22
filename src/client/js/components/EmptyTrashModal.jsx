@@ -9,7 +9,7 @@ import { withTranslation } from 'react-i18next';
 
 const EmptyTrashModal = (props) => {
   const {
-    t, isOpen, onClose, onClickSubmit,
+    t, isOpen, onClose, onClickEmptyBtn,
   } = props;
 
   return (
@@ -22,7 +22,7 @@ const EmptyTrashModal = (props) => {
       </ModalBody>
       <ModalFooter>
         {/* TODO add error message */}
-        <button type="button" className="btn btn-danger" onClick={onClickSubmit}>
+        <button type="button" className="btn btn-danger" onClick={onClickEmptyBtn}>
           <i className="icon-trash mr-2" aria-hidden="true"></i>Empty
         </button>
       </ModalFooter>
@@ -36,7 +36,7 @@ EmptyTrashModal.propTypes = {
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  onClickSubmit: PropTypes.func.isRequired,
+  onClickEmptyBtn: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(EmptyTrashModal);
