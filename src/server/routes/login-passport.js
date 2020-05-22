@@ -89,7 +89,8 @@ module.exports = function(crowi, app) {
       ldapAccountInfo = await promisifiedPassportAuthentication(strategyName, req, res);
     }
     catch (err) {
-      return next(err);
+      debug(err.message);
+      return next();
     }
 
     // check groups for LDAP
@@ -125,7 +126,7 @@ module.exports = function(crowi, app) {
 
     // login
     await req.logIn(user, (err) => {
-      if (err) { return next(err) }
+      if (err) { debug(err.message); return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
@@ -216,7 +217,7 @@ module.exports = function(crowi, app) {
       }
       if (!user) { return next() }
       req.logIn(user, (err) => {
-        if (err) { return next() }
+        if (err) { debug(err.message); return next() }
 
         return loginSuccessHandler(req, res, user);
       });
@@ -287,7 +288,7 @@ module.exports = function(crowi, app) {
 
     // login
     req.logIn(user, (err) => {
-      if (err) { return next(err) }
+      if (err) { debug(err.message); return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
@@ -329,7 +330,7 @@ module.exports = function(crowi, app) {
 
     // login
     req.logIn(user, (err) => {
-      if (err) { return next(err) }
+      if (err) { debug(err.message); return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
@@ -371,7 +372,7 @@ module.exports = function(crowi, app) {
 
     // login
     req.logIn(user, (err) => {
-      if (err) { return next(err) }
+      if (err) { debug(err.message); return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
@@ -419,7 +420,7 @@ module.exports = function(crowi, app) {
     // login
     const user = await externalAccount.getPopulatedUser();
     req.logIn(user, (err) => {
-      if (err) { return next(err) }
+      if (err) { debug(err.message); return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
@@ -523,7 +524,7 @@ module.exports = function(crowi, app) {
 
     const user = await externalAccount.getPopulatedUser();
     await req.logIn(user, (err) => {
-      if (err) { return next() }
+      if (err) { debug(err.message); return next() }
       return loginSuccessHandler(req, res, user);
     });
   };

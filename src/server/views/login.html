@@ -18,7 +18,9 @@
 {% block sidebar %}
 {% endblock %}
 
-
+{% block html_additional_headers %}
+  <script src="{{ webpack_asset('js/nologin.js') }}" defer></script>
+{% endblock %}
 
 {% block layout_main %}
 
@@ -30,8 +32,7 @@
         <div class="logo mb-3">{% include 'widget/logo.html' %}</div>
         <h1>{{ appService.getAppTitle() }}</h1>
 
-        <div class="row">
-          <div class="login-form-errors col-12">
+          <div class="login-form-errors px-3">
             {% if isLdapSetupFailed() %}
             <div class="alert alert-warning small">
               <strong><i class="icon-fw icon-info"></i>LDAP is enabled but the configuration has something wrong.</strong>
@@ -100,288 +101,30 @@
             </div>
             {% endif %}
           </div>
-        </div>
       </div>
-    </div>
-  </div>
 
-  <div class="row mb-5">
-    <div class="col-md-12">
+      {% set registrationMode = getConfig('crowi', 'security:registrationMode') %}
+      {% set isRegistrationEnabled = passportService.isLocalStrategySetup && registrationMode != 'Closed' %}
 
-    {% set isLocalOrLdapStrategiesEnabled = passportService.isLocalStrategySetup || passportService.isLdapStrategySetup %}
-    {% set isExternalAuthCollapsible = isLocalOrLdapStrategiesEnabled %}
-    {% set isRegistrationEnabled = passportService.isLocalStrategySetup && getConfig('crowi', 'security:registrationMode') != 'Closed' %}
-
-      <div class="login-dialog mx-auto flipper {% if req.query.register or req.body.registerForm or isRegistering %}to-flip{% endif %}" id="login-dialog">
-
-        <div class="col-12">
-          <div class="front">
-
-            {% if isLocalOrLdapStrategiesEnabled %}
-            <form role="form" action="/login" method="post">
-
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text"><i class="icon-user"></i></span>
-                </div>
-                <input type="text" class="form-control" placeholder="Username or E-mail" name="loginForm[username]">
-                {% if passportService.isLdapStrategySetup %}
-                <div class="input-group-append">
-                  <small class="input-group-text text-success">
-                    <i class="icon-fw icon-check"></i> LDAP
-                  </small>
-                </div>
-                {% endif %}
-              </div>
-
-              <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text"><i class="icon-lock"></i></span>
-                </div>
-                <input type="password" class="form-control" placeholder="Password" name="loginForm[password]">
-              </div>
-
-              <div class="input-group justify-content-center d-flex mt-5">
-                <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                <button type="submit" class="btn btn-fill login px-0 py-2">
-                  <div class="eff"></div>
-                  <span class="btn-label p-3"><i class="icon-login"></i></span>
-                  <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
-                </button>
-              </div>
-
-            </form>
-            {% endif %}
-
-            {% if (
-              getConfig('crowi', 'security:passport-google:isEnabled') ||
-              getConfig('crowi', 'security:passport-github:isEnabled') ||
-              getConfig('crowi', 'security:passport-facebook:isEnabled') ||
-              getConfig('crowi', 'security:passport-twitter:isEnabled')||
-              getConfig('crowi', 'security:passport-oidc:isEnabled') ||
-              getConfig('crowi', 'security:passport-saml:isEnabled') ||
-              getConfig('crowi', 'security:passport-basic:isEnabled')
-            ) %}
-            <div class="border-bottom"></div>
-            <div id="external-auth" class="external-auth {% if isExternalAuthCollapsible %}collapse collapse-external-auth collapse-anchor{% endif %}">
-              <div class="spacer"></div>
-              <div class="d-flex flex-row justify-content-between flex-wrap">
-                {% if getConfig('crowi', 'security:passport-google:isEnabled') %}
-                <div class="input-group justify-content-center d-flex mt-5">
-                  <form role="form" action="/passport/google" class="d-inline-flex flex-column">
-                    <button type="submit" class="btn btn-fill px-0 py-2" id="google">
-                      <div class="eff"></div>
-                      <span class="btn-label p-3"><i class="fa fa-google"></i></span>
-                      <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
-                    </button>
-                    <div class="small text-center">by Google Account</div>
-                  </form>
-                </div>
-                {% endif %}
-                {% if getConfig('crowi', 'security:passport-github:isEnabled') %}
-                <div class="input-group justify-content-center d-flex mt-5">
-                  <form role="form" action="/passport/github" class="d-inline-flex flex-column">
-                    <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                    <button type="submit" class="btn btn-fill px-0 py-2" id="github">
-                      <div class="eff"></div>
-                      <span class="btn-label p-3"><i class="fa fa-github"></i></span>
-                      <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
-                    </button>
-                    <div class="small text-center">by GitHub Account</div>
-                  </form>
-                </div>
-                {% endif %}
-                {% if getConfig('crowi', 'security:passport-facebook:isEnabled') %}
-                <div class="input-group justify-content-center d-flex mt-5">
-                  <form role="form" action="/passport/facebook" class="d-inline-flex flex-column">
-                    <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                    <button type="submit" class="btn btn-fill px-0 py-2" id="facebook">
-                      <div class="eff"></div>
-                      <span class="btn-label p-3"><i class="fa fa-facebook"></i></span>
-                      <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
-                    </button>
-                    <div class="small text-center">by Facebook Account</div>
-                  </form>
-                </div>
-                {% endif %}
-                {% if getConfig('crowi', 'security:passport-twitter:isEnabled') %}
-                <div class="input-group justify-content-center d-flex mt-5">
-                  <form role="form" action="/passport/twitter" class="d-inline-flex flex-column">
-                    <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                    <button type="submit" class="btn btn-fill px-0 py-2" id="twitter">
-                      <div class="eff"></div>
-                      <span class="btn-label p-3"><i class="fa fa-twitter"></i></span>
-                      <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
-                    </button>
-                    <div class="small text-center">by Twitter Account</div>
-                  </form>
-                </div>
-                {% endif %}
-                {% if getConfig('crowi', 'security:passport-oidc:isEnabled') %}
-                <div class="input-group justify-content-center d-flex mt-5">
-                  <form role="form" action="/passport/oidc" class="d-inline-flex flex-column">
-                    <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                    <button type="submit" class="btn btn-fill px-0 py-2" id="oidc">
-                      <div class="eff"></div>
-                      <span class="btn-label p-3"><i class="fa fa-openid"></i></span>
-                      <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
-                    </button>
-                    <div class="small text-center">{{ getConfig('crowi', 'security:passport-oidc:providerName') || "OpenID Connect" }}</div>
-                  </form>
-                </div>
-                {% endif %}
-                {% if getConfig('crowi', 'security:passport-saml:isEnabled') %}
-                <div class="input-group justify-content-center d-flex mt-5">
-                  <form role="form" action="/passport/saml" class="d-inline-flex flex-column">
-                    <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                    <button type="submit" class="btn btn-fill px-0 py-2" id="saml">
-                      <div class="eff"></div>
-                      <span class="btn-label p-3"><i class="fa fa-key"></i></span>
-                      <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
-                    </button>
-                    <div class="small text-center">with SAML</div>
-                  </form>
-                </div>
-                {% endif %}
-                {% if getConfig('crowi', 'security:passport-basic:isEnabled') %}
-                <div class="input-group justify-content-center d-flex mt-5">
-                  <form role="form" action="/passport/basic" class="d-inline-flex flex-column">
-                    <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                    <button type="submit" class="btn btn-fill px-0 py-2" id="basic">
-                      <div class="eff"></div>
-                      <span class="btn-label p-3"><i class="fa fa-lock"></i></span>
-                      <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
-                    </button>
-                    <div class="small text-center">with Basic Auth</div>
-                  </form>
-                </div>
-              {% endif %}
-              </div>{# ./d-flex flex-row flex-wrap #}
-              <div class="spacer"></div>
-            </div>
-            <div class="border-bottom"></div>
-            <div class="text-center">
-              <button class="collapse-anchor btn btn-xs btn-collapse-external-auth mb-3"
-                  data-toggle="{% if isExternalAuthCollapsible %}collapse{% endif %}" data-target="#external-auth" aria-expanded="false" aria-controls="external-auth">
-                External Auth
-              </button>
-            </div>
-            {% else %}
-            <div class="border-bottom mb-3"></div>
-            {% endif %}
-
-            {% if isExternalAuthCollapsible %}
-            <script>
-              const isMobile = /iphone|ipad|android/.test(window.navigator.userAgent.toLowerCase());
-
-              if (!isMobile) {
-                $(".collapse-anchor").hover(
-                  function() {
-                    $('.collapse-external-auth').collapse('show');
-                  },
-                  function() {
-                    $('.collapse-external-auth').collapse('hide');
-                  }
-                );
-              }
-            </script>
-            {% endif %}
-
-            <div class="row">
-              <div class="col-12 text-right py-2">
-                {% if isRegistrationEnabled %}
-                <a href="#register" id="register" class="link-switch">
-                  <i class="ti-check-box"></i> {{ t('Sign up is here') }}
-                </a>
-                {% else %}
-                &nbsp;
-                {% endif %}
-              </div>
-            </div>
-
-          </div>
-
-          {% if isRegistrationEnabled %}
-          <div class="back">
-            {% if getConfig('crowi', 'security:registrationMode') == 'Restricted' %}
-            <p class="alert alert-warning">
-              {{ t('page_register.notice.restricted') }}<br>
-              {{ t('page_register.notice.restricted_defail') }}
-            </p>
-            {% endif %}
-
-            <form role="form" action="/register" method="post" id="register-form">
-              <div class="input-group" id="input-group-username">
-                <div class="input-group-prepend">
-                  <span class="input-group-text"><i class="icon-user"></i></span>
-                </div>
-                <input type="text" class="form-control" placeholder="{{ t('User ID') }}" name="registerForm[username]" value="{{ req.body.registerForm.username }}" required>
-              </div>
-              <p class="form-text text-danger">
-                <span id="help-block-username"></span>
-              </p>
-
-              <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text"><i class="icon-tag"></i></span>
-                </div>
-                <input type="text" class="form-control" placeholder="{{ t('Name') }}" name="registerForm[name]" value="{{ req.body.registerForm.name }}" required>
-              </div>
-
-              <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text"><i class="icon-envelope"></i></span>
-                </div>
-                <input type="email" class="form-control" placeholder="{{ t('Email') }}" name="registerForm[email]" value="{{ req.body.registerForm.email }}" required>
-              </div>
-              {% if getConfig('crowi', 'security:registrationWhiteList') && getConfig('crowi', 'security:registrationWhiteList').length %}
-              <p class="form-text">
-                {{ t('page_register.form_help.email') }}
-              </p>
-              <ul>
-                {% for em in getConfig('crowi', 'security:registrationWhiteList') %}
-                <li><code>{{ em }}</code></li>
-                {% endfor %}
-              </ul>
-              {% endif %}
-
-              <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text"><i class="icon-lock"></i></span>
-                </div>
-                <input type="password" class="form-control" placeholder="{{ t('Password') }}" name="registerForm[password]" required>
-              </div>
-
-              <div class="input-group justify-content-center mt-5">
-                <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                <button type="submit" class="btn btn-fill px-0 py-2" id="register">
-                  <div class="eff"></div>
-                  <span class="btn-label p-3"><i class="icon-user-follow"></i></span>
-                  <span class="btn-label-text p-3">{{ t('Sign up') }}</span>
-                </button>
-              </div>
-
-            </form>
-
-            <div class="border-bottom mb-3"></div>
-
-            <div class="row">
-              <div class="text-right col-12 py-1">
-                <a href="#login" id="login" class="link-switch">
-                  <i class="icon-fw icon-login"></i>{{ t('Sign in is here') }}
-                </a>
-              </div>
-            </div>
-          </div>
-
-          {% endif %} {# if isRegistrationEnabled id false #}
-        </div>
-
-        <a href="https://growi.org" class="link-growi-org pl-3">
-          <span class="growi">GROWI</span>.<span class="org">ORG
-        </a>
-
-      </div>
+      <div
+        id="login-form"
+        data-is-registering="{{ req.query.register or req.body.registerForm or isRegistering }}"
+        data-username ="{{ req.body.registerForm.username }}"
+        data-name ="{{ req.body.registerForm.name }}"
+        data-email ="{{ req.body.registerForm.email }}"
+        data-is-registration-enabled="{{ isRegistrationEnabled }}"
+        data-registration-mode = "{{ registrationMode }}"
+        data-registration-white-list = "{{ getConfig('crowi', 'security:registrationWhiteList') }}"
+        data-is-local-strategy-setup = "{{ passportService.isLocalStrategySetup }}"
+        data-is-ldap-strategy-setup = "{{ passportService.isLdapStrategySetup}}"
+        data-is-google-auth-enabled = "{{ getConfig('crowi', 'security:passport-google:isEnabled') }}"
+        data-is-github-auth-enabled = "{{ getConfig('crowi', 'security:passport-github:isEnabled') }}"
+        data-is-facebook-auth-enabled = "{{ getConfig('crowi', 'security:passport-facebook:isEnabled') }}"
+        data-is-twitter-auth-enabled = "{{ getConfig('crowi', 'security:passport-twitter:isEnabled') }}"
+        data-is-saml-auth-enabled = "{{ getConfig('crowi', 'security:passport-saml:isEnabled') }}"
+        data-is-oidc-auth-enabled = "{{ getConfig('crowi', 'security:passport-oidc:isEnabled') }}"
+        data-is-basic-auth-enabled = "{{ getConfig('crowi', 'security:passport-basic:isEnabled') }}"
+      ></div>
     </div>
   </div>
 </div>
@@ -391,16 +134,6 @@
 
 {% block body_end %}
 <script>
-  // login
-  $('#register').on('click', function() {
-    $('#login-dialog').addClass('to-flip');
-    return false;
-  });
-  $('#login').on('click', function() {
-    $('#login-dialog').removeClass('to-flip');
-    return false;
-  });
-
   $('#register-form input[name="registerForm[username]"]').change(function(e) {
     var username = $(this).val();
     $('#login-dialog').removeClass('has-error');
