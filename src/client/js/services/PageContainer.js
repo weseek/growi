@@ -308,18 +308,13 @@ export default class PageContainer extends Container {
     const completely = isCompletely ? true : null;
     const recursively = isRecursively ? true : null;
 
-    try {
-      return this.appContainer.apiPost('/pages.remove', {
-        recursively,
-        completely,
-        page_id: this.state.pageId,
-        revision_id: this.state.revisionId,
-        socketClientId: websocketContainer.getSocketClientId(),
-      });
-    }
-    catch (err) {
-      throw err;
-    }
+    return this.appContainer.apiPost('/pages.remove', {
+      recursively,
+      completely,
+      page_id: this.state.pageId,
+      revision_id: this.state.revisionId,
+      socketClientId: websocketContainer.getSocketClientId(),
+    });
 
   }
 
