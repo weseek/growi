@@ -69,7 +69,8 @@ const PageDuplicateModal = (props) => {
             <div className="input-group-prepend">
               <span className="input-group-text">{crowi.url}</span>
             </div>
-            {isReachable
+            <div className="flex-fill">
+              {isReachable
               ? (
                 <PagePathAutoComplete
                   crowi={appContainer}
@@ -88,6 +89,7 @@ const PageDuplicateModal = (props) => {
                   required
                 />
               )}
+            </div>
           </div>
         </div>
       </ModalBody>
