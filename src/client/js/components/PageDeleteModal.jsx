@@ -42,6 +42,46 @@ const PageDeleteModal = (props) => {
     setIsDeleteCompletely(!isDeleteCompletely);
   }
 
+  function renderDeleteRecursivelyForm() {
+    return (
+      <div className="custom-control custom-checkbox custom-checkbox-warning">
+        <input
+          className="custom-control-input"
+          id="deleteRecursively"
+          type="checkbox"
+          checked={isDeleteRecursively}
+          onChange={changeIsDeleteRecursivelyHandler}
+        />
+        <label className="custom-control-label" htmlFor="deleteRecursively">
+          { t('modal_delete.delete_recursively') }
+          <p className="form-text text-muted mt-0"><code>{path}</code> { t('modal_delete.recursively') }</p>
+        </label>
+      </div>
+    );
+  }
+
+  function renderDeleteCompletelyForm() {
+    return (
+      <div className="custom-control custom-checkbox custom-checkbox-danger">
+        <input
+          className="custom-control-input"
+          name="completely"
+          id="deleteCompletely"
+          type="checkbox"
+          disabled={!isAbleToDeleteCompletely}
+          checked={isDeleteCompletely}
+          onChange={changeIsDeleteCompletelyHandler}
+        />
+        <label className="custom-control-label text-danger" htmlFor="deleteCompletely">
+          { t('modal_delete.delete_completely') }
+          <p className="form-text text-muted mt-0"> { t('modal_delete.completely') }</p>
+        </label>
+        {!isAbleToDeleteCompletely
+    && <p className="alert alert-warning p-2 my-0"><i className="icon-ban icon-fw"></i>{ t('modal_delete.delete_completely_restriction') }</p>}
+      </div>
+    );
+  }
+
   return (
     <Modal isOpen={isOpen} toggle={toggle} className="grw-create-page">
       <ModalHeader tag="h4" toggle={toggle} className={`bg-${deleteIconAndKey[deleteMode].color} text-light`}>
@@ -53,39 +93,8 @@ const PageDeleteModal = (props) => {
           <label>{ t('modal_delete.deleting_page') }:</label><br />
           <code>{ path }</code>
         </div>
-        <div className="custom-control custom-checkbox custom-checkbox-warning">
-          <input
-            className="custom-control-input"
-            id="deleteRecursively"
-            type="checkbox"
-            checked={isDeleteRecursively}
-            onChange={changeIsDeleteRecursivelyHandler}
-          />
-          <label className="custom-control-label" htmlFor="deleteRecursively">
-            { t('modal_delete.delete_recursively') }
-            <p className="form-text text-muted mt-0"><code>{path}</code> { t('modal_delete.recursively') }</p>
-          </label>
-        </div>
-        {!isDeleteCompletelyModal
-        && (
-        <div className="custom-control custom-checkbox custom-checkbox-danger">
-          <input
-            className="custom-control-input"
-            name="completely"
-            id="deleteCompletely"
-            type="checkbox"
-            disabled={!isAbleToDeleteCompletely}
-            checked={isDeleteCompletely}
-            onChange={changeIsDeleteCompletelyHandler}
-          />
-          <label className="custom-control-label text-danger" htmlFor="deleteCompletely">
-            { t('modal_delete.delete_completely') }
-            <p className="form-text text-muted mt-0"> { t('modal_delete.completely') }</p>
-          </label>
-          {!isAbleToDeleteCompletely
-          && <p className="alert alert-warning p-2 my-0"><i className="icon-ban icon-fw"></i>{ t('modal_delete.delete_completely_restriction') }</p>}
-        </div>
-        )}
+        {renderDeleteRecursivelyForm()}
+        {!isDeleteCompletelyModal && renderDeleteCompletelyForm()}
       </ModalBody>
       <ModalFooter>
         <button type="button" className={`m-l-10 btn btn-${deleteIconAndKey[deleteMode].color}`} onClick={onClickSubmit}>
