@@ -202,7 +202,7 @@ This is ___Italic & Bold___.
 
 # :pencil: Images
 
-You can insert `<img>` tag using `![Alt description](URL)`.
+You can insert `<img>` tag using `![description](URL)`.
 
 ```markdown
 ![Minion](https://octodex.github.com/images/minion.png)
