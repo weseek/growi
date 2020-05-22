@@ -50,8 +50,9 @@ const PageDeleteModal = (props) => {
     setErrorMessage(null);
 
     try {
-      await pageContainer.deletePage(isDeleteRecursively, isDeleteCompletely);
-      window.location.href = encodeURI(path);
+      const response = await pageContainer.deletePage(isDeleteRecursively, isDeleteCompletely);
+      const trashPagePath = response.page.path;
+      window.location.href = encodeURI(trashPagePath);
     }
     catch (err) {
       setErrorCode(err.code);
@@ -138,7 +139,6 @@ PageDeleteModal.propTypes = {
 
   isOpen: PropTypes.bool.isRequired,
   toggle: PropTypes.func.isRequired,
-  onClickSubmit: PropTypes.func.isRequired,
 
   path: PropTypes.string.isRequired,
   isDeleteCompletelyModal: PropTypes.bool,

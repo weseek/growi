@@ -301,11 +301,15 @@ export default class PageContainer extends Container {
     return { page: res.page, tags: res.tags };
   }
 
-  async deletePage(recursively, completely) {
+  deletePage(isRecursively, isCompletely) {
     const websocketContainer = this.appContainer.getContainer('WebsocketContainer');
 
+    // control flag
+    const completely = isCompletely ? true : null;
+    const recursively = isRecursively ? true : null;
+
     try {
-      await this.appContainer.apiPost('/pages.remove', {
+      return this.appContainer.apiPost('/pages.remove', {
         recursively,
         completely,
         page_id: this.state.pageId,
