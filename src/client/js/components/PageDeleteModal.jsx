@@ -13,6 +13,19 @@ import PageContainer from '../services/PageContainer';
 
 import ApiErrorMessage from './PageManagement/ApiErrorMessage';
 
+const deleteIconAndKey = {
+  completely: {
+    color: 'danger',
+    icon: 'fire',
+    translationKey: 'completely',
+  },
+  temporary: {
+    color: 'primary',
+    icon: 'trash',
+    translationKey: 'page',
+  },
+};
+
 const PageDeleteModal = (props) => {
   const {
     t, pageContainer, isOpen, toggle, isDeleteCompletelyModal, path, isAbleToDeleteCompletely,
@@ -22,19 +35,6 @@ const PageDeleteModal = (props) => {
   const deleteMode = isDeleteCompletely ? 'completely' : 'temporary';
   const [errorCode, setErrorCode] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
-
-  const deleteIconAndKey = {
-    completely: {
-      color: 'danger',
-      icon: 'fire',
-      translationKey: 'completely',
-    },
-    temporary: {
-      color: 'primary',
-      icon: 'trash',
-      translationKey: 'page',
-    },
-  };
 
   function changeIsDeleteRecursivelyHandler() {
     setIsDeleteRecursively(!isDeleteRecursively);
