@@ -50,7 +50,7 @@ paragraph1
 
 paragraph2
 
-## Br break(new line)
+## Br new line
 
 Add two spaces before break.
 ***This behaviour can be modified in the options menu.***
