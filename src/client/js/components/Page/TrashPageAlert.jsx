@@ -8,7 +8,9 @@ import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 import UserPicture from '../User/UserPicture';
+
 import EmptyTrashModal from '../EmptyTrashModal';
+import PageDeleteModal from '../PageDeleteModal';
 
 
 const TrashPageAlert = (props) => {
@@ -18,16 +20,25 @@ const TrashPageAlert = (props) => {
   } = pageContainer.state;
   const { currentUser } = appContainer;
   const [isEmptyTrashModalShown, setIsEmptyTrashModalShown] = useState(false);
+  const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);
 
-  function openEmptyTrashModal() {
+  function openEmptyTrashModalHandler() {
     setIsEmptyTrashModalShown(true);
   }
 
-  function closeEmptyTrashModal() {
+  function closeEmptyTrashModalHandler() {
     setIsEmptyTrashModalShown(false);
   }
 
-  async function onClickDeleteBtn() {
+  function openPageDeleteModalHandler() {
+    setIsPageDeleteModalShown(true);
+  }
+
+  function opclosePageDeleteModalHandler() {
+    setIsPageDeleteModalShown(false);
+  }
+
+  async function emptyTrash() {
     try {
       await appContainer.apiv3Delete('/pages/empty-trash');
       window.location.reload();
@@ -37,6 +48,11 @@ const TrashPageAlert = (props) => {
     }
   }
 
+  function emptyButtonHandler() {
+    emptyTrash();
+  }
+
+
   function renderEmptyButton() {
     return (
       <button
@@ -44,7 +60,7 @@ const TrashPageAlert = (props) => {
         type="button"
         className="btn btn-danger rounded-pill btn-sm ml-auto"
         data-target="#emptyTrash"
-        onClick={openEmptyTrashModal}
+        onClick={openEmptyTrashModalHandler}
       >
         <i className="icon-trash" aria-hidden="true"></i>{ t('modal_empty.empty_the_trash') }
       </button>
@@ -66,8 +82,7 @@ const TrashPageAlert = (props) => {
           type="button"
           className="btn btn-danger rounded-pill btn-sm mr-2"
           disabled={!isAbleToDeleteCompletely}
-          data-target="#deletePage"
-          data-toggle="modal"
+          onClick={openPageDeleteModalHandler}
         >
           <i className="icon-fire" aria-hidden="true"></i> { t('Delete Completely') }
         </button>
@@ -85,7 +100,14 @@ const TrashPageAlert = (props) => {
         {(currentUser.admin && path === '/trash' && hasChildren) && renderEmptyButton()}
         {(isDeleted && currentUser != null) && renderTrashPageManagementButtons()}
       </div>
-      <EmptyTrashModal isOpen={isEmptyTrashModalShown} toggle={closeEmptyTrashModal} onClickSubmit={onClickDeleteBtn} />
+      <EmptyTrashModal isOpen={isEmptyTrashModalShown} onClose={closeEmptyTrashModalHandler} onClickEmptyBtn={emptyButtonHandler} />
+      <PageDeleteModal
+        isOpen={isPageDeleteModalShown}
+        onClose={opclosePageDeleteModalHandler}
+        path={path}
+        isDeleteCompletelyModal
+        isAbleToDeleteCompletely={isAbleToDeleteCompletely}
+      />
     </>
   );
 };

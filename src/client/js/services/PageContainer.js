@@ -49,6 +49,7 @@ export default class PageContainer extends Container {
       creator: JSON.parse(mainContent.getAttribute('data-page-creator')),
       updatedAt: mainContent.getAttribute('data-page-updated-at'),
       isDeleted:  JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
+      isDeletable:  JSON.parse(mainContent.getAttribute('data-page-is-deletable')),
       isAbleToDeleteCompletely:  JSON.parse(mainContent.getAttribute('data-page-is-able-to-delete-completely')),
       tags: [],
       hasChildren: JSON.parse(mainContent.getAttribute('data-page-has-children')),
@@ -315,6 +316,23 @@ export default class PageContainer extends Container {
       throw new Error(res.error);
     }
     return { page: res.page, tags: res.tags };
+  }
+
+  deletePage(isRecursively, isCompletely) {
+    const websocketContainer = this.appContainer.getContainer('WebsocketContainer');
+
+    // control flag
+    const completely = isCompletely ? true : null;
+    const recursively = isRecursively ? true : null;
+
+    return this.appContainer.apiPost('/pages.remove', {
+      recursively,
+      completely,
+      page_id: this.state.pageId,
+      revision_id: this.state.revisionId,
+      socketClientId: websocketContainer.getSocketClientId(),
+    });
+
   }
 
   showSuccessToastr() {
