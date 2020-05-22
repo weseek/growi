@@ -225,7 +225,7 @@ The size of the image can be set by using an HTML image tag
 
 ## Markdown standard
 
-You can convert to link using `[Display text](URL)`.
+You can create links using `[Display text](URL)`.
 
 ```
 [Google](https://www.google.co.jp/)
