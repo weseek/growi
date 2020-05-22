@@ -51,6 +51,7 @@ const PageDeleteModal = (props) => {
 
     try {
       await pageContainer.deletePage(isDeleteRecursively, isDeleteCompletely);
+      window.location.href = encodeURI(path);
     }
     catch (err) {
       setErrorCode(err.code);
