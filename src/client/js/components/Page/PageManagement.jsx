@@ -17,11 +17,11 @@ const PageManagement = (props) => {
 
   const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);
 
-  function openPageDeleteModal() {
+  function openPageDeleteModalHandler() {
     setIsPageDeleteModalShown(true);
   }
 
-  function closePageDeleteModal() {
+  function closePageDeleteModalHandler() {
     setIsPageDeleteModalShown(false);
   }
 
@@ -43,7 +43,7 @@ const PageManagement = (props) => {
     return (
       <>
         <div className="dropdown-divider"></div>
-        <a className="dropdown-item" type="button" onClick={openPageDeleteModal}>
+        <a className="dropdown-item" type="button" onClick={openPageDeleteModalHandler}>
           <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
         </a>
       </>
@@ -72,7 +72,7 @@ const PageManagement = (props) => {
       </div>
       <PageDeleteModal
         isOpen={isPageDeleteModalShown}
-        onClose={closePageDeleteModal}
+        onClose={closePageDeleteModalHandler}
         path={path}
         isAbleToDeleteCompletely={isAbleToDeleteCompletely}
       />

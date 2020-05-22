@@ -46,7 +46,7 @@ const PageDeleteModal = (props) => {
     setIsDeleteCompletely(!isDeleteCompletely);
   }
 
-  async function deleteButtonHandler() {
+  async function deletePage() {
     setErrorCode(null);
     setErrorMessage(null);
 
@@ -59,6 +59,10 @@ const PageDeleteModal = (props) => {
       setErrorCode(err.code);
       setErrorMessage(err.message);
     }
+  }
+
+  async function deleteButtonHandler() {
+    deletePage();
   }
 
   function renderDeleteRecursivelyForm() {
