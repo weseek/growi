@@ -42,6 +42,10 @@ const PageDeleteModal = (props) => {
     setIsDeleteCompletely(!isDeleteCompletely);
   }
 
+  function deleteButtonHandler() {
+    onClickSubmit(isDeleteRecursively, isDeleteCompletely);
+  }
+
   function renderDeleteRecursivelyForm() {
     return (
       <div className="custom-control custom-checkbox custom-checkbox-warning">
@@ -97,7 +101,7 @@ const PageDeleteModal = (props) => {
         {!isDeleteCompletelyModal && renderDeleteCompletelyForm()}
       </ModalBody>
       <ModalFooter>
-        <button type="button" className={`m-l-10 btn btn-${deleteIconAndKey[deleteMode].color}`} onClick={onClickSubmit}>
+        <button type="button" className={`m-l-10 btn btn-${deleteIconAndKey[deleteMode].color}`} onClick={deleteButtonHandler}>
           <i className={`icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
           { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
         </button>

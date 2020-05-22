@@ -25,8 +25,9 @@ const PageManagement = (props) => {
     setIsPageDeleteModalShown(false);
   }
 
-  async function onClickDeleteBtn() {
-    console.log('pushed');
+  async function onClickDeleteBtn(recursively, completely) {
+    console.log(completely);
+    console.log(recursively);
   }
 
   function renderDropdownItemForNotTopPage() {

@@ -48,8 +48,9 @@ const TrashPageAlert = (props) => {
     }
   }
 
-  async function onClickDeleteBtn() {
-    console.log('pushed');
+  async function onClickDeleteBtn(recursively, completely) {
+    console.log(completely);
+    console.log(recursively);
   }
 
   function renderEmptyButton() {
