@@ -5,7 +5,6 @@ import { withTranslation } from 'react-i18next';
 
 import {
   GlobalNav,
-  GlobalItem,
 } from '@atlaskit/navigation-next';
 
 import { createSubscribedElement } from '../UnstatedUtils';
