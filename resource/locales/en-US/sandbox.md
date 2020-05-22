@@ -264,7 +264,7 @@ Example of Bootstrap3 is[[here>./Bootstrap3]]
 ## Ul Bulleted list
 
 To create an unordered list, add dashes (-), asterisks (*), or plus signs (+) in front of line items. 
-Indent one or more items to create a nested list.
+Items can be nested using indentation.
 
 ```
 - List1
