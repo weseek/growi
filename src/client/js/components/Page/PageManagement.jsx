@@ -55,7 +55,7 @@ const PageManagement = (props) => {
       </a>
       <div className="dropdown-menu dropdown-menu-right">
         {!isTopPagePath && renderDropdownItemForNotTopPage()}
-        <a className="dropdown-item" href="#" data-target="#create-template" data-toggle="modal">
+        <a className="dropdown-item" onClick={pageContainer.openCreateTemplatePageModal}>
           <i className="icon-fw icon-magic-wand"></i> { t('template.option_label.create/edit') }
         </a>
         {(!isTopPagePath && !isUserPagePath) && renderDropdownItemForDeletablePage()}
