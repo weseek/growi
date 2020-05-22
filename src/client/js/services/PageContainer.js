@@ -91,23 +91,34 @@ export default class PageContainer extends Container {
     }
 
     const seenUserListElem = document.getElementById('seen-user-list');
-    // [TODO][GW - 1942] add method for updating imageUrlCached and populate
     if (seenUserListElem != null) {
+
       const userIdsStr = seenUserListElem.dataset.userIds;
+      if (userIdsStr === '') {
+        return;
+      }
+
       const { users } = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr });
       this.setState({ seenUsers: users });
+
       const noImageCacheUsers = users.filter((user) => { return !user.imageUrlCached });
-      if (noImageCacheUsers.length > 0) {
-        const noImageCacheUserIds = noImageCacheUsers.map((user) => { return user.id });
-        const res = await this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
-        this.setState({ seenUsers: res.data.updetedUsers });
+      if (noImageCacheUsers.length === 0) {
+        return;
       }
+
+      const noImageCacheUserIds = noImageCacheUsers.map((user) => { return user.id });
+      const res = await this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
+      const usersUpdated = users.filter((user) => { return user.imageUrlCached }).concat(res.data.updatedUsers);
+      this.setState({ seenUsers: usersUpdated });
     }
 
 
     const likerListElem = document.getElementById('liker-list');
     if (likerListElem != null) {
       const userIdsStr = likerListElem.dataset.userIds;
+      if (userIdsStr === '') {
+        return;
+      }
       const { users } = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr });
       this.setState({ likerUsers: users });
     }
