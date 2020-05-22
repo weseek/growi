@@ -9,24 +9,19 @@ import {
 } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
-import { format } from 'date-fns';
-import urljoin from 'url-join';
-
-import { userPageRoot } from '@commons/util/path-utils';
-import { pathUtils } from 'growi-commons';
 import { createSubscribedElement } from './UnstatedUtils';
 
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
-import PagePathAutoComplete from './PagePathAutoComplete';
+// import PagePathAutoComplete from './PagePathAutoComplete';
 import ApiErrorMessage from './PageManagement/ApiErrorMessage';
 
 const RenameModal = (props) => {
   const { t, appContainer, pageContainer } = props;
   const { path, pageId } = pageContainer.state;
   const { crowi } = appContainer.config;
-  const config = appContainer.getConfig();
-  const isReachable = config.isSearchServiceReachable;
+  // const config = appContainer.getConfig();
+  // const isReachable = config.isSearchServiceReachable;
 
   const [pageNameInput, setPageNameInput] = useState(path);
 
