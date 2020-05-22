@@ -379,25 +379,6 @@ $(() => {
 
     return false;
   });
-  $('#unlink-page-form').submit((e) => {
-    $.ajax({
-      type: 'POST',
-      url: '/_api/pages.unlink',
-      data: $('#unlink-page-form').serialize(),
-      dataType: 'json',
-    })
-      .done((res) => {
-        if (!res.ok) {
-          $('#delete-errors').html(`<i class="fa fa-times-circle"></i> ${res.error}`);
-          $('#delete-errors').addClass('alert-danger');
-        }
-        else {
-          window.location.href = `${res.path}?unlinked=true`;
-        }
-      });
-
-    return false;
-  });
 
   $('#create-portal-button').on('click', (e) => {
     $('a[data-toggle="tab"][href="#edit"]').tab('show');

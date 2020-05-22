@@ -4,6 +4,7 @@ import loggerFactory from '@alias/logger';
 
 import * as entities from 'entities';
 import * as toastr from 'toastr';
+import { toastError } from '../util/apiNotification';
 
 const logger = loggerFactory('growi:services:PageContainer');
 const scrollThresForSticky = 0;
@@ -88,6 +89,19 @@ export default class PageContainer extends Container {
         isSubnavCompact: scrollThresForCompact < currentYOffset,
       });
     });
+
+    const unlinkPageButton = document.getElementById('unlink-page-button');
+    if (unlinkPageButton != null) {
+      unlinkPageButton.addEventListener('click', async() => {
+        try {
+          const res = await this.appContainer.apiPost('/pages.unlink', { path });
+          window.location.href = encodeURI(`${res.path}?unlinked=true`);
+        }
+        catch (err) {
+          toastError(err);
+        }
+      });
+    }
 
     this.openPageDuplicateModal = this.openPageDuplicateModal.bind(this);
     this.closePageDuplicateModal = this.closePageDuplicateModal.bind(this);
