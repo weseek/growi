@@ -144,9 +144,9 @@ Code blocks should be preceded by four spaces or one tab.
         end
     end
 
-## Hr Horizontal Line
+## Horizontal Line
 
-Write three Underscores `_`, or asterisks`*`.
+Write three underscores `_`, or asterisks`*`.
 
 ```
 ***
