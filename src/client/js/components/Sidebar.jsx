@@ -136,7 +136,6 @@ class Sidebar extends React.Component {
               // experimental_fullWidthFlyout
               shouldHideGlobalNavShadow
               showContextualNavigation
-              topOffset={50}
             >
             </LayoutManager>
           </ThemeProvider>

@@ -1,4 +1,20 @@
 .grw-sidebar {
+  %fukidashi-for-active {
+    position: relative;
+
+    // speech balloon
+    &:after {
+      position: absolute;
+      top: 0.6em;
+      right: -1em;
+      display: block;
+      width: 0;
+      content: '';
+      border: 0.8em solid transparent;
+      border-left-width: 0;
+    }
+  }
+
   .ak-navigation-resize-button {
     // locate to the center of screen
     top: calc(50vh - 20px);
@@ -30,10 +46,26 @@
   }
 
   // override @atlaskit/navigation-next styles
+  $navbar-total-height: $grw-navbar-height + $grw-navbar-border-width;
+  div[class$='-LayoutContainer'] {
+    height: calc(100vh - $navbar-total-height);
+    margin-top: $navbar-total-height;
+  }
   div[class$='-NavigationContainer'] {
+    top: $navbar-total-height;
+
     // Adjust to be on top of the growi subnavigation
     z-index: $zindex-sticky + 5;
   }
+  div[data-testid='GlobalNavigation'] {
+    > div {
+      padding-top: 0;
+    }
+  }
+  div[class$='-PrimaryItemsList'] {
+    > div {
+      padding: 0;
+    }
 
   .grw-global-item-container {
     i {
