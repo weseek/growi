@@ -81,7 +81,7 @@ Add one `>` per level at the start of the line
 
 ## Code
 
-Wrap the code with three back quotes or tildes.
+Wrap code with three back quotes or tildes.
 
 ```
 print 'hoge'
