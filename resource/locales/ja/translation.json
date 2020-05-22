@@ -299,8 +299,7 @@
       "recursively": "全ての子ページも元に戻す"
     },
     "help": {
-      "recursively": "",
-      "recursively2": "配下のページも元に戻します"
+      "recursively": "配下のページも元に戻します"
     }
   },
   "modal_shortcuts": {

@@ -301,8 +301,7 @@
       "recursively": "Put back recursively"
     },
     "help": {
-      "recursively": "Put back children of under ",
-      "recursively2": "recursively"
+      "recursively": "Redirect to new page if someone accesses under this path"
     }
   },
   "modal_shortcuts": {

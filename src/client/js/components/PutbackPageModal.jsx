@@ -71,7 +71,7 @@ const PutBackPageModal = (props) => {
           <label htmlFor="cbPutBackRecursively" className="custom-control-label">
             { t('modal_putback.label.recursively') }
           </label>
-          <p className="form-text text-muted mt-0">{ t('modal_putback.help.recursively') }<code>{ path }</code>{ t('modal_putback.help.recursively2') }</p>
+          <p className="form-text text-muted mt-0"><code>{ path }</code>{ t('modal_putback.help.recursively') }</p>
         </div>
       </ModalBody>
       <ModalFooter>
