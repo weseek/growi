@@ -249,7 +249,7 @@ You can create links using `[Display text](URL)`.
 ](https://github.com/weseek/growi-plugin-pukiwiki-like-linker) )
 
 This is the most flexible linker.
-You can show relative link based on the page being described and display-text link at the same time.
+Both the page description and link address can be displayed on the page.
 
 ```
 [[./Bootstrap3]]
