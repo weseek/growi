@@ -8,10 +8,6 @@ import {
 
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from './UnstatedUtils';
-
-import AppContainer from '../services/AppContainer';
-
 const PageDeleteModal = (props) => {
   const {
     t, isOpen, toggle, onClickSubmit, isDeleteCompletelyModal, path, isAbleToDeleteCompletely,
@@ -111,18 +107,8 @@ const PageDeleteModal = (props) => {
   );
 };
 
-
-/**
- * Wrapper component for using unstated
- */
-const PageDeleteModalWrapper = (props) => {
-  return createSubscribedElement(PageDeleteModal, props, [AppContainer]);
-};
-
-
 PageDeleteModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
   toggle: PropTypes.func.isRequired,
@@ -137,4 +123,4 @@ PageDeleteModal.defaultProps = {
   isDeleteCompletelyModal: false,
 };
 
-export default withTranslation()(PageDeleteModalWrapper);
+export default withTranslation()(PageDeleteModal);
