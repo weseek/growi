@@ -18,7 +18,7 @@ const PutBackPageModal = (props) => {
   const {
     t,
     isOpen,
-    toggle,
+    onClose,
     appContainer,
     pageContainer,
   } = props;
@@ -51,8 +51,8 @@ const PutBackPageModal = (props) => {
   }
 
   return (
-    <Modal isOpen={isOpen} toggle={toggle} className="grw-create-page">
-      <ModalHeader tag="h4" toggle={toggle} className="bg-info text-light">
+    <Modal isOpen={isOpen} toggle={onClose} className="grw-create-page">
+      <ModalHeader tag="h4" toggle={onClose} className="bg-info text-light">
         <i className="icon-action-undo mr-2" aria-hidden="true"></i> { t('Put Back Page') }
       </ModalHeader>
       <ModalBody>
