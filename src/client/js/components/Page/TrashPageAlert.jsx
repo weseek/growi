@@ -48,11 +48,6 @@ const TrashPageAlert = (props) => {
     }
   }
 
-  async function onClickDeleteBtn(recursively, completely) {
-    console.log(completely);
-    console.log(recursively);
-  }
-
   function renderEmptyButton() {
     return (
       <button
@@ -104,7 +99,6 @@ const TrashPageAlert = (props) => {
       <PageDeleteModal
         isOpen={isPageDeleteModalShown}
         toggle={closePageDeleteModal}
-        onClickSubmit={onClickDeleteBtn}
         path={path}
         isDeleteCompletelyModal
         isAbleToDeleteCompletely={isAbleToDeleteCompletely}
