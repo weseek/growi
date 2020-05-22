@@ -19,32 +19,26 @@ import { createSubscribedElement } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 import PagePathAutoComplete from './PagePathAutoComplete';
+import ApiErrorMessage from './PageManagement/ApiErrorMessage';
 
 const RenameModal = (props) => {
   const { t, appContainer, pageContainer } = props;
-  const { path, pageId, revisionId } = pageContainer.state;
+  const { path, pageId } = pageContainer.state;
+  const { crowi } = appContainer.config;
   const config = appContainer.getConfig();
   const isReachable = config.isSearchServiceReachable;
 
-  const userPageRootPath = userPageRoot(appContainer.currentUser);
-  const parentPath = pathUtils.addTrailingSlash(path);
-  const { crowi } = appContainer.config;
+  const [pageNameInput, setPageNameInput] = useState(path);
 
-  const [destinationPathName, setDestinationPathName] = useState(path);
-  const [pageNameInput, setPageNameInput] = useState(parentPath);
-
-  // const [pageNameInput, setPageNameInput] = useState(path);
   const [errorCode, setErrorCode] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
 
   function onChangeNewPathHandler(value) {
-    setDestinationPathName(value);
+    setPageNameInput(value);
   }
 
   async function clickRenameButtonHandler() {
-    console.log('hoge');
     try {
-      console.log('test');
       setErrorCode(null);
       setErrorMessage(null);
       const res = await appContainer.apiPost('/pages.rename', { page_id: pageId, new_path: pageNameInput });
@@ -53,7 +47,6 @@ const RenameModal = (props) => {
       window.location.href = encodeURI(`${page.path}?rename=${path}`);
     }
     catch (err) {
-      console.log('fuga');
       setErrorCode(err.code);
       setErrorMessage(err.message);
     }
@@ -78,11 +71,10 @@ const RenameModal = (props) => {
             <div className="flex-fill">
               <input
                 type="text"
-                className="form-control flex-fill"
-                name="new_path"
-                id="newPageName"
-                value={destinationPathName}
+                value={pageNameInput}
+                className="form-control"
                 onChange={e => onChangeNewPathHandler(e.target.value)}
+                required
               />
             </div>
           </div>
@@ -120,12 +112,7 @@ const RenameModal = (props) => {
       </ModalBody>
       <ModalFooter>
         <div className="d-flex justify-content-between">
-          <div>
-            <input type="hidden" name="_csrf" value="{{ csrf() }}" />
-            <input type="hidden" name="path" value={path} />
-            <input type="hidden" name="page_id" value={pageId} />
-            <input type="hidden" name="revision_id" value={revisionId} />
-          </div>
+          <ApiErrorMessage errorCode={errorCode} errorMessage={errorMessage} linkPath={path} />
         </div>
         <div className="d-flex justify-content-end">
           <button type="submit" className="btn btn-primary" onClick={clickRenameButtonHandler}>Rename</button>
