@@ -5,6 +5,7 @@ import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
 import { pathUtils } from 'growi-commons';
+import urljoin from 'url-join';
 import { createSubscribedElement } from './UnstatedUtils';
 
 import PageContainer from '../services/PageContainer';
@@ -14,6 +15,10 @@ const CreateTemplateModal = (props) => {
 
   const { path, isCreateTemplatePageModalShown } = pageContainer.state;
   const parentPath = pathUtils.addTrailingSlash(path);
+
+  function generateUrl(label) {
+    return encodeURI(urljoin(parentPath, label, '#edit'));
+  }
 
   /**
    * @param {string} target Which hierarchy to create [children, decendants]
@@ -28,7 +33,7 @@ const CreateTemplateModal = (props) => {
         </div>
         <div className="card-footer text-center">
           <a
-            href={encodeURI(`${parentPath}${label}#edit`)}
+            href={generateUrl(label)}
             className="btn btn-sm btn-primary"
             id={`template-button-${target}`}
           >
