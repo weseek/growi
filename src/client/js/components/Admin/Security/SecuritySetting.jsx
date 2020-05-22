@@ -118,7 +118,7 @@ class SecuritySetting extends React.Component {
           <div className="col-md-3 text-md-right py-2">
             <strong>{t('security_setting.Guest Users Access')}</strong>
           </div>
-          <div className="col-md-6 ml-md-5">
+          <div className="col-md-9">
             <div className="dropdown">
               <button
                 className={`btn btn-outline-secondary dropdown-toggle text-right col-12
@@ -143,30 +143,26 @@ class SecuritySetting extends React.Component {
                 </a>
               </div>
             </div>
-          </div>
-        </div>
-        {adminGeneralSecurityContainer.isWikiModeForced && (
-        <div className="row mb-4">
-          <div className="col-xs-offset-3 col-xs-6 text-left">
-            <p className="alert alert-warning mt-2 text-left">
-              <i className="icon-exclamation icon-fw">
-              </i><b>FIXED</b><br />
-              <b
-                dangerouslySetInnerHTML={{
+            {adminGeneralSecurityContainer.isWikiModeForced && (
+              <p className="alert alert-warning mt-2 text-left">
+                <i className="icon-exclamation icon-fw">
+                </i><b>FIXED</b><br />
+                <b
+                  dangerouslySetInnerHTML={{
                     __html: t('security_setting.Fixed by env var',
-                    { forcewikimode: 'FORCE_WIKI_MODE', wikimode: adminGeneralSecurityContainer.state.wikiMode }),
-                    }}
-              />
-            </p>
+                      { forcewikimode: 'FORCE_WIKI_MODE', wikimode: adminGeneralSecurityContainer.state.wikiMode }),
+                  }}
+                />
+              </p>
+            )}
           </div>
         </div>
-          )}
 
         <div className="row mb-4">
           <div className="col-md-3 text-md-right mb-2">
             <strong>{t('security_setting.complete_deletion')}</strong>
           </div>
-          <div className="col-md-6 ml-md-5">
+          <div className="col-md-6">
             <div className="dropdown">
               <button
                 className="btn btn-outline-secondary dropdown-toggle text-right col-12 col-md-auto"
