@@ -40,18 +40,13 @@ const PageDuplicateModal = (props) => {
       setErrorMessage(null);
       const res = await appContainer.apiPost('/pages.duplicate', { page_id: pageId, new_path: pageNameInput });
       const { page } = res;
-      // window.location.href = encodeURI(`${page.path}?duplicated=${path}`);
+      window.location.href = encodeURI(`${page.path}?duplicated=${path}`);
     }
     catch (err) {
       setErrorCode(err.code);
       setErrorMessage(err.message);
     }
   }
-
-  function hoge(event) {
-    console.log(event);
-  }
-
 
   return (
     <Modal isOpen={pageContainer.state.isPageDuplicateModalShown} toggle={pageContainer.closePageDuplicateModal} className="grw-duplicate-page">
@@ -76,7 +71,7 @@ const PageDuplicateModal = (props) => {
                   crowi={appContainer}
                   initializedPath={path}
                   addTrailingSlash
-                  onClickSubmit={hoge}
+                  onClickSubmit={clickDuplicateButtonHandler}
                   onInputChange={onChangePageNameInputHandler}
                 />
               )
