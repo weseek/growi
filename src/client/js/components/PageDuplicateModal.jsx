@@ -6,7 +6,6 @@ import {
 } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
-import urljoin from 'url-join';
 
 import { createSubscribedElement } from './UnstatedUtils';
 
