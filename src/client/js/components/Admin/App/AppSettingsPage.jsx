@@ -39,7 +39,7 @@ class AppSettingsPage extends React.Component {
       <Fragment>
         <div className="row">
           <div className="col-lg-12">
-            <h2 className="admin-setting-header">{t('App Settings')}</h2>
+            <h2 className="admin-setting-header">{t('App_Settings')}</h2>
             <AppSetting />
           </div>
         </div>
