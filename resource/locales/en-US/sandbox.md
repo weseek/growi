@@ -166,7 +166,7 @@ ___
 
 ### Italic
 
-Enclose the description or words with one asterisk `*` or one underscore `_`.
+To italicize text, add One asterisk or underscores before and after a word or phrase.
 
 ```
 This is *Italic* .
