@@ -299,43 +299,6 @@ $(() => {
     return false;
   });
 
-  // duplicate
-  $('#duplicatePage').on('shown.bs.modal', (e) => {
-    $('#duplicatePage #duplicatePageName').focus();
-    $('#duplicatePage .msg').hide();
-  });
-  $('#duplicatePageForm').submit(function(e) {
-    // create name-value map
-    const nameValueMap = {};
-    $(this).serializeArray().forEach((obj) => {
-      nameValueMap[obj.name] = obj.value; // nameValueMap.new_path is duplicated page path
-    });
-    nameValueMap.socketClientId = websocketContainer.getSocketClientId();
-
-    $.ajax({
-      type: 'POST',
-      url: '/_api/pages.duplicate',
-      data: nameValueMap,
-      dataType: 'json',
-    }).done((res) => {
-      // error
-      if (!res.ok) {
-        const linkPath = pathUtils.normalizePath(nameValueMap.new_path);
-        $('#duplicatePage .msg').hide();
-        $(`#duplicatePage .msg-${res.code}`).show();
-        $('#duplicatePage #linkToNewPage').html(`
-          <a href="${linkPath}">${linkPath} <i class="icon-login"></i></a>
-        `);
-      }
-      else {
-        const page = res.page;
-        window.location.href = `${page.path}?duplicated=${pagePath}`;
-      }
-    });
-
-    return false;
-  });
-
   // empty trash
   $('#emptyTrash').on('shown.bs.modal', (e) => {
     $('#emptyTrash .msg').hide();
