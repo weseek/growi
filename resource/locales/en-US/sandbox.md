@@ -162,7 +162,7 @@ ___
 
 # :pencil: Typography
 
-## Bold
+## Strong Text
 
 ### Italic
 
