@@ -12,7 +12,7 @@ import PageContainer from '../services/PageContainer';
 const CreateTemplateModal = (props) => {
   const { t, pageContainer } = props;
 
-  const { path } = pageContainer.state;
+  const { path, isCreateTemplatePageModalShown } = pageContainer.state;
   const parentPath = pathUtils.addTrailingSlash(path);
 
   /**
@@ -40,8 +40,8 @@ const CreateTemplateModal = (props) => {
   }
 
   return (
-    <Modal isOpen className="grw-create-page">
-      <ModalHeader tag="h4" className="bg-primary text-light">
+    <Modal isOpen={isCreateTemplatePageModalShown} toggle={pageContainer.closeCreateTemplatePageModal} className="grw-create-page">
+      <ModalHeader tag="h4" toggle={pageContainer.closeCreateTemplatePageModal} className="bg-primary text-light">
         {t('template.modal_label.Create/Edit Template Page')}
       </ModalHeader>
       <ModalBody>
