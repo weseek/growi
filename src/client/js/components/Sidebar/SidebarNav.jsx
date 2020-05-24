@@ -75,8 +75,8 @@ class SidebarNav extends React.Component {
     ];
 
     const secondaryItems = [
-      this.generateSecondaryItemObj('help', 'Help', 'icon-question', 'https://docs.growi.org', true),
       this.generateSecondaryItemObj('draft', 'Draft', 'icon-docs', `/user/${currentUsername}#user-draft-list`),
+      this.generateSecondaryItemObj('help', 'Help', 'icon-question', 'https://docs.growi.org', true),
       this.generateSecondaryItemObj('trash', 'Trash', 'icon-trash', '/trash'),
     ];
     if (isAdmin) {
