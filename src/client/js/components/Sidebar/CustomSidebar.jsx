@@ -25,23 +25,27 @@ class CustomSidebar extends React.Component {
 
   render() {
     return (
-      <>
+      <div className="grw-sidebar-custom">
         <HeaderSection>
           { () => (
-            <div className="grw-sidebar-header-container">
-              {this.renderHeaderWordmark()}
+            <div className="grw-sidebar-header-container p-3 d-flex">
+              <h3>Custom Sidebar</h3>
+              <button type="button" className="btn btn-xs btn-outline-secondary ml-auto" onClick={this.reloadData}>
+                <i className="icon icon-reload"></i>
+              </button>
             </div>
           ) }
         </HeaderSection>
         <MenuSection>
           { () => (
-            <div className="grw-sidebar-content-container">
-              <span>(TBD) CustomSidebar Contents</span>
+            <div className="grw-sidebar-content-container p-3">
+              (TBD) Under implemented
             </div>
           ) }
         </MenuSection>
-      </>
+      </div>
     );
+
   }
 
 }

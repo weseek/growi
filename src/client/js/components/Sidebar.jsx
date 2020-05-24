@@ -28,7 +28,7 @@ class Sidebar extends React.Component {
   };
 
   state = {
-    currentContentsId: 'custom',
+    currentContentsId: 'history',
   };
 
   componentWillMount() {

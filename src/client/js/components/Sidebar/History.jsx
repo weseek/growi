@@ -90,7 +90,7 @@ class History extends React.Component {
           { () => (
             <div className="grw-sidebar-header-container p-3 d-flex">
               <h3>{t('History')}</h3>
-              <button type="button" className="btn xs btn-secondary ml-auto" onClick={this.reloadData}>
+              <button type="button" className="btn btn-xs btn-outline-secondary ml-auto" onClick={this.reloadData}>
                 <i className="icon icon-reload"></i>
               </button>
             </div>
