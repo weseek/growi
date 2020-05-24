@@ -62,6 +62,9 @@
       padding-top: 0;
     }
   }
+  div[class$='-Outer'] {
+    width: 0;
+  }
   div[class$='-PrimaryItemsList'] {
     > div {
       padding: 0;
