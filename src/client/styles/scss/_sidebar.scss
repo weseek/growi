@@ -59,13 +59,15 @@
   }
   div[data-testid='GlobalNavigation'] {
     > div {
+      height: calc(100vh - #{$navbar-total-height});
       padding-top: 0;
     }
   }
   div[class$='-Outer'] {
     width: 0;
   }
-  div[class$='-PrimaryItemsList'] {
+  div[class$='-PrimaryItemsList'],
+  div[class$='-SecondaryItemsList'] {
     > div {
       padding: 0;
     }
@@ -76,15 +78,20 @@
       background-color: transparent;
       border-radius: 0;
 
-      button {
+      .btn {
         width: $grw-sidebar-nav-width;
-        height: $grw-sidebar-nav-width;
-
         border-radius: 0;
       }
+    }
+  }
+  div[class$='-PrimaryItemsList'] {
+    .grw-global-item-container {
+      .btn-lg {
+        height: 55px;
 
-      i {
-        font-size: 1.5em;
+        i {
+          font-size: 1.5em;
+        }
       }
 
       // icon opacity
