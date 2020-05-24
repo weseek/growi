@@ -39,7 +39,7 @@ class CustomSidebar extends React.Component {
         <MenuSection>
           { () => (
             <div className="grw-sidebar-content-container p-3">
-              (TBD) Under implemented
+              (TBD) Under implementation
             </div>
           ) }
         </MenuSection>

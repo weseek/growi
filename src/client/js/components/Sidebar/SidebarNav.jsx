@@ -69,7 +69,7 @@ class SidebarNav extends React.Component {
       <GlobalNav
         primaryItems={[
           this.generatePrimaryItemObj('custom', 'Custom Sidebar', 'fa fa-code'),
-          this.generatePrimaryItemObj('history', 'History', 'icon-clock'),
+          this.generatePrimaryItemObj('recent', 'Recent Changes', 'icon-clock'),
         ]}
         secondaryItems={[
           this.generateSecondaryItemObj('admin', 'Admin', 'icon-settings', '/admin'),
