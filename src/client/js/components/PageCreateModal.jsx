@@ -85,6 +85,10 @@ const PageCreateModal = (props) => {
     setPageNameInput(value);
   }
 
+  function ppacSubmitHandler() {
+    createInputPage();
+  }
+
   /**
    * access template page
    */
@@ -150,7 +154,7 @@ const PageCreateModal = (props) => {
                     crowi={appContainer}
                     initializedPath={path}
                     addTrailingSlash
-                    onSubmit={ppacInputChangeHandler}
+                    onSubmit={ppacSubmitHandler}
                     onInputChange={ppacInputChangeHandler}
                   />
                 )
