@@ -34,6 +34,14 @@ const PageRenameModal = (props) => {
     SetIsRenameRecursively(!isRenameRecursively);
   }
 
+  function changeIsRenameRedirectHandler() {
+    SetIsRenameRedirect(!isRenameRedirect);
+  }
+
+  function changeIsRenameMetadataHandler() {
+    SetIsRenameMetadata(!isRenameMetadata);
+  }
+
   /**
    * change pageNameInput
    * @param {string} value
@@ -49,9 +57,9 @@ const PageRenameModal = (props) => {
 
       const response = await pageContainer.rename(
         pageNameInput,
+        isRenameRecursively,
         isRenameRedirect,
         isRenameMetadata,
-        isRenameRecursively,
       );
       const { page } = response;
       window.location.href = encodeURI(`${page.path}?rename=${path}`);
@@ -110,7 +118,8 @@ const PageRenameModal = (props) => {
             name="create_redirect"
             id="cbRenameRedirect"
             type="checkbox"
-            onChange={SetIsRenameRedirect}
+            checked={isRenameRedirect}
+            onChange={changeIsRenameRedirectHandler}
           />
           <label className="custom-control-label" htmlFor="cbRenameRedirect">
             { t('modal_rename.label.Redirect') }
@@ -124,7 +133,8 @@ const PageRenameModal = (props) => {
             name="remain_metadata"
             id="cbRenameMetadata"
             type="checkbox"
-            onChange={SetIsRenameMetadata}
+            checked={isRenameMetadata}
+            onChange={changeIsRenameMetadataHandler}
           />
           <label className="custom-control-label" htmlFor="cbRenameMetadata">
             { t('modal_rename.label.Do not update metadata') }

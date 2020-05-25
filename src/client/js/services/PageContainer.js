@@ -341,17 +341,19 @@ export default class PageContainer extends Container {
     });
   }
 
-  rename(pageNameInput, isRenameRedirect, isRenameMetadata, isRenameRecursively) {
+  rename(pageNameInput, isRenameRecursively, isRenameRedirect, isRenameMetadata) {
     const websocketContainer = this.appContainer.getContainer('WebsocketContainer');
-    const recursively = isRenameRecursively ? true : null;
+    const isRecursively = isRenameRecursively ? true : null;
+    const isRedirect = isRenameRedirect ? true : null;
+    const isRemain = isRenameMetadata ? true : null;
 
     return this.appContainer.apiPost('/pages.rename', {
-      recursively,
+      recursively: isRecursively,
       page_id: this.state.pageId,
       revision_id: this.state.revisionId,
       new_path: pageNameInput,
-      create_redirect: isRenameRedirect,
-      remain_metadata: isRenameMetadata,
+      create_redirect: isRedirect,
+      remain_metadata: isRemain,
       socketClientId: websocketContainer.getSocketClientId(),
     });
   }
