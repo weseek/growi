@@ -20,6 +20,7 @@ import BookmarkButton from '../BookmarkButton';
 
 import PageCreator from './PageCreator';
 import RevisionAuthor from './RevisionAuthor';
+import HeaderSearchBox from '../HeaderSearchBox';
 
 // eslint-disable-next-line react/prop-types
 const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
@@ -89,45 +90,50 @@ const GrowiSubNavigation = (props) => {
   }
 
   return (
-    <div className={`d-flex align-items-center justify-content-between px-3 py-1 ${additionalClassNames.join(' ')}`}>
-
-      {/* Page Path */}
-      <div>
-        <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
-        { !isPageNotFound && !isPageForbidden && (
-          <TagLabels />
-        ) }
+    <>
+      <div className="d-md-none grw-header-search">
+        <HeaderSearchBox />
       </div>
+      <div className={`d-flex align-items-center justify-content-between px-3 py-1 ${additionalClassNames.join(' ')}`}>
 
-      <div className="d-flex align-items-center">
-        { !isPageInTrash && (
-          /* Header Button */
-          <div className="mr-2">
-            <LikeButton pageId={pageId} isLiked={pageContainer.state.isLiked} />
-          </div>
-        ) }
-        { !isPageInTrash && (
-          <div>
-            <BookmarkButton pageId={pageId} crowi={appContainer} />
-          </div>
-        ) }
+        {/* Page Path */}
+        <div>
+          <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
+          { !isPageNotFound && !isPageForbidden && (
+            <TagLabels />
+          ) }
+        </div>
 
-        {/* Page Authors */}
-        <ul className="authors text-nowrap d-none d-lg-block d-edit-none">
-          { creator != null && (
-            <li>
-              <PageCreator creator={creator} createdAt={createdAt} isCompactMode={isSubnavCompact} />
-            </li>
+        <div className="d-flex align-items-center">
+          { !isPageInTrash && (
+            /* Header Button */
+            <div className="mr-2">
+              <LikeButton pageId={pageId} isLiked={pageContainer.state.isLiked} />
+            </div>
           ) }
-          { revisionAuthor != null && (
-            <li className="mt-1">
-              <RevisionAuthor revisionAuthor={revisionAuthor} updatedAt={updatedAt} isCompactMode={isSubnavCompact} />
-            </li>
+          { !isPageInTrash && (
+            <div>
+              <BookmarkButton pageId={pageId} crowi={appContainer} />
+            </div>
           ) }
-        </ul>
+
+          {/* Page Authors */}
+          <ul className="authors text-nowrap d-none d-lg-block d-edit-none">
+            { creator != null && (
+              <li>
+                <PageCreator creator={creator} createdAt={createdAt} isCompactMode={isSubnavCompact} />
+              </li>
+            ) }
+            { revisionAuthor != null && (
+              <li className="mt-1">
+                <RevisionAuthor revisionAuthor={revisionAuthor} updatedAt={updatedAt} isCompactMode={isSubnavCompact} />
+              </li>
+            ) }
+          </ul>
+        </div>
+
       </div>
-
-    </div>
+    </>
   );
 
 };

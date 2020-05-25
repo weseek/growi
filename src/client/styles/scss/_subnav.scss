@@ -60,6 +60,14 @@ header.grw-header {
     @include variable-font-size(28px);
     line-height: 1.1em;
   }
+  .grw-header-search {
+    .search-typeahead {
+      width: 100%;
+    }
+    .btn-group-submit-search {
+      // display: none;
+    }
+  }
 }
 
 .grw-subnavbar {
