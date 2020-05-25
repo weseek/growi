@@ -8,6 +8,10 @@ const ApiErrorMessage = (props) => {
     t, errorCode, errorMessage, linkPath,
   } = props;
 
+  function reload() {
+    window.location.reload();
+  }
+
   function renderMessageByErrorCode() {
     switch (errorCode) {
       case 'already_exists':
@@ -20,6 +24,27 @@ const ApiErrorMessage = (props) => {
       case 'notfound_or_forbidden':
         return (
           <strong><i className="icon-fw icon-ban"></i>{ t('page_api_error.notfound_or_forbidden') }</strong>
+        );
+      case 'user_not_admin':
+        return (
+          <strong><i className="icon-fw icon-ban"></i>{ t('page_api_error.user_not_admin') }</strong>
+        );
+      case 'outdated':
+        return (
+          <>
+            <strong><i className="icon-fw icon-bulb"></i> { t('page_api_error.outdated') }</strong>
+            <a className="btn-link" onClick={reload}>
+              <i className="fa fa-angle-double-right"></i> { t('Load latest') }
+            </a>
+          </>
+        );
+      case 'invalid_path':
+        return (
+          <strong><i className="icon-fw icon-ban"></i> Invalid path</strong>
+        );
+      case 'unknown':
+        return (
+          <strong><i className="icon-fw icon-ban"></i> Unknown error occured</strong>
         );
       default:
         return null;
@@ -45,25 +70,6 @@ const ApiErrorMessage = (props) => {
   // render null if no error has occurred
   return null;
 
-  // TODO GW-79 Set according to error message
-  // <div>
-  //   <span className="text-danger msg msg-user_not_admin">
-  //     <strong><i className="icon-fw icon-ban"></i>{ t('page_api_error.user_not_admin') }</strong>
-  //   </span>
-
-  //   <span className="text-warning msg msg-outdated">
-  //     <strong><i className="icon-fw icon-bulb"></i> { t('page_api_error.outdated') }</strong>
-  //     {/* <a href="javascript:location.reload();"> */}
-  //     <i className="fa fa-angle-double-right"></i> { t('Load latest') }
-  //     {/* </a> */}
-  //   </span>
-  //   <span className="text-danger msg msg-invalid_path">
-  //     <strong><i className="icon-fw icon-ban"></i> Invalid path</strong>
-  //   </span>
-  //   <span className="text-danger msg msg-unknown">
-  //     <strong><i className="icon-fw icon-ban"></i> Unknown error occured</strong>
-  //   </span>
-  // </div>
 };
 
 ApiErrorMessage.propTypes = {
