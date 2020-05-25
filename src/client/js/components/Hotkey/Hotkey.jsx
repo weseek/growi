@@ -2,8 +2,8 @@ import React from 'react';
 import { GlobalHotKeys } from 'react-hotkeys';
 
 import HotkeyRender from '../HotkeyRender/HotkeyRender';
-// import StaffCredit from '../StaffCredit/StaffCredit';
-// import MirrorMode from '../MirrorMode/MirrorMode';
+import StaffCredit from '../StaffCredit/StaffCredit';
+import MirrorMode from '../MirrorMode/MirrorMode';
 
 export default class Hotkey extends React.Component {
 
@@ -91,7 +91,8 @@ export default class Hotkey extends React.Component {
     const handlers = { check: (event) => { return this.check(event) } };
     return (
       <GlobalHotKeys keyMap={keyMap} handlers={handlers}>
-        <HotkeyRender commandExecute = {this.commandExecute} />
+        {this.renderCommand()}
+        {/* <HotkeyRender commandExecute = {this.commandExecute} /> */}
       </GlobalHotKeys>
     );
   }
