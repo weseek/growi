@@ -43,6 +43,7 @@ const componentMappings = {
   'grw-navbar-toggler': <NavbarToggler />,
 
   'search-top': <HeaderSearchBox />,
+  'search-top-mobile': <HeaderSearchBox />,
   'search-sidebar': <HeaderSearchBox crowi={appContainer} />,
   'personal-dropdown': <PersonalDropdown />,
 

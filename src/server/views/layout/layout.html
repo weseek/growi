@@ -74,60 +74,72 @@
 <div id="wrapper">
 
   {% block layout_head_nav %}
-  <nav class="navbar grw-navbar navbar-expand navbar-dark fixed-top mb-0 px-0">
-    <ul class="navbar-nav d-md-none mr-auto">
-      <li id="grw-navbar-toggler" class="nav-item"></li>
-    </ul>
+  <nav class="navbar grw-navbar navbar-expand navbar-dark fixed-top mb-0 px-0 flex-column">
+    <div class="container">
+      <ul class="navbar-nav d-md-none mr-auto">
+        <li id="grw-navbar-toggler" class="nav-item"></li>
+      </ul>
 
-    {# Brand Logo #}
-    <div class="navbar-brand mr-0">
-      <a class="grw-logo d-block" href="/">
-        {% include '../widget/logo.html' %}
-      </a>
+      {# Brand Logo #}
+      <div class="navbar-brand mr-0">
+        <a class="grw-logo d-block" href="/">
+          {% include '../widget/logo.html' %}
+        </a>
+      </div>
+
+      {# Search #}
+      <ul class="navbar-nav grw-navbar-search d-none d-md-block position-absolute">
+        <li>
+          {% if isSearchServiceConfigured() %}
+          <div class="search-top" role="search" id="search-top"></div>
+          {% endif %}
+        </li>
+      </ul>
+
+      {# Navbar Right #}
+      <ul class="navbar-nav ml-auto">
+        {% if user and user.admin %}
+        <li class="nav-item d-none d-md-block">
+          <a class="nav-link" href="/admin">
+            <i class="icon-settings mr-2"></i>
+            {{ t('Admin') }}
+          </a>
+        </li>
+        {% endif %}
+
+        {% if user %}
+        <!-- TODO GW-79 enable after refactoring  <li id="create-page-button" class="nav-item d-none d-md-block"></li> -->
+        <li class="nav-item d-none d-md-block">
+          <a class="nav-link create-page px-4" href="#" data-target="#create-page" data-toggle="modal">
+            <i class="icon-pencil mr-2"></i>
+            <span>{{ t('New') }}</span>
+          </a>
+        </li>
+        <li class="nav-item d-none d-md-block">
+          <a class="nav-link" href="https://docs.growi.org/" target="_blank">
+            <i class="icon-question mr-2"></i><span class="mr-2">{{ t('Help') }}</span><span class="small"><i class="icon-share-alt"></i></span>
+          </a>
+        </li>
+        <li id="personal-dropdown" class="nav-item dropdown dropdown-toggle"></li>
+        {% else %}
+        <li id="login-user" class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+        {% endif %}
+        {% if getConfig('crowi', 'app:confidential') %}
+        <li class="nav-item confidential text-light">{{ getConfig('crowi', 'app:confidential') }}</li>
+        {% endif %}
+      </ul>
     </div>
 
-    {# Search #}
-    <ul class="navbar-nav grw-navbar-search d-none d-md-block position-absolute">
-      <li>
-        {% if isSearchServiceConfigured() %}
-        <div class="search-top" role="search" id="search-top"></div>
-        {% endif %}
-      </li>
-    </ul>
-
-    {# Navbar Right #}
-    <ul class="navbar-nav ml-auto">
-      {% if user and user.admin %}
-      <li class="nav-item d-none d-md-block">
-        <a class="nav-link" href="/admin">
-          <i class="icon-settings mr-2"></i>
-          {{ t('Admin') }}
-        </a>
-      </li>
-      {% endif %}
-
-      {% if user %}
-      <!-- TODO GW-79 enable after refactoring  <li id="create-page-button" class="nav-item d-none d-md-block"></li> -->
-      <li class="nav-item d-none d-md-block">
-        <a class="nav-link create-page px-4" href="#" data-target="#create-page" data-toggle="modal">
-          <i class="icon-pencil mr-2"></i>
-          <span>{{ t('New') }}</span>
-        </a>
-      </li>
-      <li class="nav-item d-none d-md-block">
-        <a class="nav-link" href="https://docs.growi.org/" target="_blank">
-          <i class="icon-question mr-2"></i><span class="mr-2">{{ t('Help') }}</span><span class="small"><i class="icon-share-alt"></i></span>
-        </a>
-      </li>
-      <li id="personal-dropdown" class="nav-item dropdown dropdown-toggle"></li>
-      {% else %}
-      <li id="login-user" class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-      {% endif %}
-      {% if getConfig('crowi', 'app:confidential') %}
-      <li class="nav-item confidential text-light">{{ getConfig('crowi', 'app:confidential') }}</li>
-      {% endif %}
-    </ul>
-
+    <div class="container grw-search-bar fixed">
+      {# Search #}
+      <ul class="navbar-nav d-md-none position-absolute">
+        <li>
+          {% if isSearchServiceConfigured() %}
+          <div class="search-top" role="search" id="search-top-mobile"></div>
+          {% endif %}
+        </li>
+      </ul>
+    </div>
   </nav>
   {% include '../modal/create_page.html' %}
   {% endblock  %} {# layout_head_nav #}

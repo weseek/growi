@@ -90,50 +90,45 @@ const GrowiSubNavigation = (props) => {
   }
 
   return (
-    <>
-      <div className="d-md-none grw-header-search">
-        <HeaderSearchBox />
+    <div className={`d-flex align-items-center justify-content-between px-3 py-1 ${additionalClassNames.join(' ')}`}>
+
+      {/* Page Path */}
+      <div>
+        <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
+        { !isPageNotFound && !isPageForbidden && (
+          <TagLabels />
+        ) }
       </div>
-      <div className={`d-flex align-items-center justify-content-between px-3 py-1 ${additionalClassNames.join(' ')}`}>
 
-        {/* Page Path */}
-        <div>
-          <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
-          { !isPageNotFound && !isPageForbidden && (
-            <TagLabels />
+      <div className="d-flex align-items-center">
+        { !isPageInTrash && (
+          /* Header Button */
+          <div className="mr-2">
+            <LikeButton pageId={pageId} isLiked={pageContainer.state.isLiked} />
+          </div>
+        ) }
+        { !isPageInTrash && (
+          <div>
+            <BookmarkButton pageId={pageId} crowi={appContainer} />
+          </div>
+        ) }
+
+        {/* Page Authors */}
+        <ul className="authors text-nowrap d-none d-lg-block d-edit-none">
+          { creator != null && (
+            <li>
+              <PageCreator creator={creator} createdAt={createdAt} isCompactMode={isSubnavCompact} />
+            </li>
           ) }
-        </div>
-
-        <div className="d-flex align-items-center">
-          { !isPageInTrash && (
-            /* Header Button */
-            <div className="mr-2">
-              <LikeButton pageId={pageId} isLiked={pageContainer.state.isLiked} />
-            </div>
+          { revisionAuthor != null && (
+            <li className="mt-1">
+              <RevisionAuthor revisionAuthor={revisionAuthor} updatedAt={updatedAt} isCompactMode={isSubnavCompact} />
+            </li>
           ) }
-          { !isPageInTrash && (
-            <div>
-              <BookmarkButton pageId={pageId} crowi={appContainer} />
-            </div>
-          ) }
-
-          {/* Page Authors */}
-          <ul className="authors text-nowrap d-none d-lg-block d-edit-none">
-            { creator != null && (
-              <li>
-                <PageCreator creator={creator} createdAt={createdAt} isCompactMode={isSubnavCompact} />
-              </li>
-            ) }
-            { revisionAuthor != null && (
-              <li className="mt-1">
-                <RevisionAuthor revisionAuthor={revisionAuthor} updatedAt={updatedAt} isCompactMode={isSubnavCompact} />
-              </li>
-            ) }
-          </ul>
-        </div>
-
+        </ul>
       </div>
-    </>
+
+    </div>
   );
 
 };
