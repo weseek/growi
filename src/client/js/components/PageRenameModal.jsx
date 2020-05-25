@@ -2,45 +2,55 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
+  Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
+
 import { createSubscribedElement } from './UnstatedUtils';
 
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 import ApiErrorMessage from './PageManagement/ApiErrorMessage';
 
-const RenameModal = (props) => {
+const PageRenameModal = (props) => {
   const { t, appContainer, pageContainer } = props;
+
   const {
     path,
     pageId,
-    revisionId,
+    /* revisionId,
     isRenameRedirect,
-    isRenameRecursively,
     isRenameMetadata,
+    isRenameRecursively, */
   } = pageContainer.state;
-  const { crowi } = appContainer.config;
 
-  const [pageNameInput, setPageNameInput] = useState(path);
+  /* const { crowi } = appContainer.config; */
 
+  /* const [pageNameInput, setPageNameInput] = useState(path); */
   const [errorCode, setErrorCode] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
 
-  function onChangeNewPathHandler(value) {
+  /**
+   * change pageNameInput
+   * @param {string} value
+   */
+  /* function inputChangeHandler(value) {
     setPageNameInput(value);
-  }
+  } */
 
-  async function clickRenameButtonHandler() {
+  async function rename() {
     try {
       setErrorCode(null);
       setErrorMessage(null);
-      const res = await appContainer.apiPost('/pages.rename', { page_id: pageId, revision_id: revisionId, new_path: pageNameInput });
+      const res = await appContainer.apiPost('/pages.rename', {
+        page_id: pageId,
+        /* revision_id: revisionId, */
+        /* new_path: pageNameInput, */
+        /* create_redirect: isRenameRedirect,
+        remain_metadata: isRenameMetadata,
+        recursively: isRenameRecursively, */
+      });
       const { page } = res;
       window.location.href = encodeURI(`${page.path}?rename=${path}`);
     }
@@ -51,12 +61,13 @@ const RenameModal = (props) => {
   }
 
   return (
-    <Modal isOpen={pageContainer.state.isRenameModalShown} toggle={pageContainer.closeRenameModal}>
-      <ModalHeader tag="h4" toggle={appContainer.closeRenameModal} className="bg-primary text-light">
+    <Modal isOpen={pageContainer.state.isPageRenameModalShown} toggle={pageContainer.closePageRenameModal} className="grw-create-page">
+      <ModalHeader tag="h4" toggle={pageContainer.closePageRenameModal} className="bg-primary text-light">
         { t('modal_rename.label.Move/Rename page') }
       </ModalHeader>
       <ModalBody>
-        <div className="form-group">
+        Hi There!
+        {/* <div className="form-group">
           <label>{ t('modal_rename.label.Current page name') }</label><br />
           <code>{path}</code>
         </div>
@@ -71,7 +82,7 @@ const RenameModal = (props) => {
                 type="text"
                 value={pageNameInput}
                 className="form-control"
-                onChange={e => onChangeNewPathHandler(e.target.value)}
+                onChange={e => inputChangeHandler(e.target.value)}
                 required
               />
             </div>
@@ -120,15 +131,11 @@ const RenameModal = (props) => {
             { t('modal_rename.label.Do not update metadata') }
             <p className="form-text text-muted mt-0">{ t('modal_rename.help.metadata') }</p>
           </label>
-        </div>
+        </div> */}
       </ModalBody>
       <ModalFooter>
-        <div className="d-flex justify-content-between">
-          <ApiErrorMessage errorCode={errorCode} errorMessage={errorMessage} linkPath={path} />
-        </div>
-        <div className="d-flex justify-content-end">
-          <button type="submit" className="btn btn-primary" onClick={clickRenameButtonHandler}>Rename</button>
-        </div>
+        <ApiErrorMessage errorCode={errorCode} errorMessage={errorMessage} linkPath={path} />
+        <button type="button" className="btn btn-primary" onClick={rename}>Rename</button>
       </ModalFooter>
     </Modal>
   );
@@ -137,15 +144,15 @@ const RenameModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const ModalControlWrapper = (props) => {
-  return createSubscribedElement(RenameModal, props, [AppContainer, PageContainer]);
+const PageRenameModalWrapper = (props) => {
+  return createSubscribedElement(PageRenameModal, props, [AppContainer, PageContainer]);
 };
 
 
-RenameModal.propTypes = {
+PageRenameModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
-export default withTranslation()(ModalControlWrapper);
+export default withTranslation()(PageRenameModalWrapper);
