@@ -130,6 +130,8 @@
   "Deleted Pages": "Deleted Pages",
   "Sign out": "Logout",
   "Disassociate": "Disassociate",
+  "Recent Created": "Recent Created",
+  "Recent Changes": "Recent Changes",
   "form_validation": {
     "error_message": "Some values ​​are incorrect",
     "required": "%s is required",
@@ -281,7 +283,7 @@
     "delete_recursively": "Delete child pages recursively.",
     "delete_completely": "Delete completely",
     "delete_completely_restriction": "You don't have the authority to delete pages completely.",
-    "recursively": "Delete children of <code>%s</code> recursively.",
+    "recursively": "Delete pages under this path recursively.",
     "completely": "Delete completely instead of putting it into trash."
   },
   "modal_empty":{
@@ -338,7 +340,7 @@
   "template": {
     "modal_label": {
       "Create/Edit Template Page": "Create/Edit template page",
-      "Create template under": "Create template page under:"
+      "Create template under": "Create template page under this page"
     },
     "option_label": {
       "create/edit": "Create/Edit template page..",

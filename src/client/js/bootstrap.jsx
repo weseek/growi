@@ -13,6 +13,7 @@ import AppContainer from './services/AppContainer';
 import WebsocketContainer from './services/WebsocketContainer';
 import PageCreateButton from './components/Navbar/PageCreateButton';
 import PageCreateModal from './components/PageCreateModal';
+import CreateTemplateModal from './components/CreateTemplateModal';
 import RenameModal from './components/RenameModal';
 
 const logger = loggerFactory('growi:app');
@@ -50,6 +51,7 @@ const componentMappings = {
   'create-page-button': <PageCreateButton />,
   'create-page-button-icon': <PageCreateButton isIcon />,
   'page-create-modal': <PageCreateModal />,
+  'create-template-modal': <CreateTemplateModal />,
   'rename-modal': <RenameModal />,
 
   'grw-sidebar-wrapper': <Sidebar />,

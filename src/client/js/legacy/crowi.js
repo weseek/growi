@@ -323,37 +323,6 @@ $(() => {
 
     return false;
   });
-  // delete
-  $('#deletePage').on('shown.bs.modal', (e) => {
-    $('#deletePage .msg').hide();
-  });
-  $('#delete-page-form').submit((e) => {
-    // create name-value map
-    const nameValueMap = {};
-    $('#delete-page-form').serializeArray().forEach((obj) => {
-      nameValueMap[obj.name] = obj.value;
-    });
-    nameValueMap.socketClientId = websocketContainer.getSocketClientId();
-
-    $.ajax({
-      type: 'POST',
-      url: '/_api/pages.remove',
-      data: nameValueMap,
-      dataType: 'json',
-    }).done((res) => {
-      // error
-      if (!res.ok) {
-        $('#deletePage .msg').hide();
-        $(`#deletePage .msg-${res.code}`).show();
-      }
-      else {
-        const page = res.page;
-        window.location.href = page.path;
-      }
-    });
-
-    return false;
-  });
 
   // Put Back
   $('#putBackPage').on('shown.bs.modal', (e) => {
@@ -376,25 +345,6 @@ $(() => {
         window.location.href = page.path;
       }
     });
-
-    return false;
-  });
-  $('#unlink-page-form').submit((e) => {
-    $.ajax({
-      type: 'POST',
-      url: '/_api/pages.unlink',
-      data: $('#unlink-page-form').serialize(),
-      dataType: 'json',
-    })
-      .done((res) => {
-        if (!res.ok) {
-          $('#delete-errors').html(`<i class="fa fa-times-circle"></i> ${res.error}`);
-          $('#delete-errors').addClass('alert-danger');
-        }
-        else {
-          window.location.href = `${res.path}?unlinked=true`;
-        }
-      });
 
     return false;
   });

@@ -4,6 +4,7 @@ import loggerFactory from '@alias/logger';
 
 import * as entities from 'entities';
 import * as toastr from 'toastr';
+import { toastError } from '../util/apiNotification';
 
 const logger = loggerFactory('growi:services:PageContainer');
 const scrollThresForSticky = 0;
@@ -48,6 +49,7 @@ export default class PageContainer extends Container {
       creator: JSON.parse(mainContent.getAttribute('data-page-creator')),
       updatedAt: mainContent.getAttribute('data-page-updated-at'),
       isDeleted:  JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
+      isDeletable:  JSON.parse(mainContent.getAttribute('data-page-is-deletable')),
       isAbleToDeleteCompletely:  JSON.parse(mainContent.getAttribute('data-page-is-able-to-delete-completely')),
       tags: [],
       hasChildren: JSON.parse(mainContent.getAttribute('data-page-has-children')),
@@ -62,6 +64,7 @@ export default class PageContainer extends Container {
       isHackmdDraftUpdatingInRealtime: false,
 
       isPageDuplicateModalShown: false,
+      isCreateTemplatePageModalShown: false,
       isRenameRecursively: true,
       isRenameRedirect: false,
       isRenameMetadata: false,
@@ -92,8 +95,23 @@ export default class PageContainer extends Container {
       });
     });
 
+    const unlinkPageButton = document.getElementById('unlink-page-button');
+    if (unlinkPageButton != null) {
+      unlinkPageButton.addEventListener('click', async() => {
+        try {
+          const res = await this.appContainer.apiPost('/pages.unlink', { path });
+          window.location.href = encodeURI(`${res.path}?unlinked=true`);
+        }
+        catch (err) {
+          toastError(err);
+        }
+      });
+    }
+
     this.openPageDuplicateModal = this.openPageDuplicateModal.bind(this);
     this.closePageDuplicateModal = this.closePageDuplicateModal.bind(this);
+    this.openCreateTemplatePageModal = this.openCreateTemplatePageModal.bind(this);
+    this.closeCreateTemplatePageModal = this.closeCreateTemplatePageModal.bind(this);
   }
 
   /**
@@ -303,6 +321,23 @@ export default class PageContainer extends Container {
     return { page: res.page, tags: res.tags };
   }
 
+  deletePage(isRecursively, isCompletely) {
+    const websocketContainer = this.appContainer.getContainer('WebsocketContainer');
+
+    // control flag
+    const completely = isCompletely ? true : null;
+    const recursively = isRecursively ? true : null;
+
+    return this.appContainer.apiPost('/pages.remove', {
+      recursively,
+      completely,
+      page_id: this.state.pageId,
+      revision_id: this.state.revisionId,
+      socketClientId: websocketContainer.getSocketClientId(),
+    });
+
+  }
+
   showSuccessToastr() {
     toastr.success(undefined, 'Saved successfully', {
       closeButton: true,
@@ -401,6 +436,14 @@ export default class PageContainer extends Container {
 
   closePageDuplicateModal() {
     this.setState({ isPageDuplicateModalShown: false });
+  }
+
+  openCreateTemplatePageModal() {
+    this.setState({ isCreateTemplatePageModalShown: true });
+  }
+
+  closeCreateTemplatePageModal() {
+    this.setState({ isCreateTemplatePageModalShown: false });
   }
 
 }

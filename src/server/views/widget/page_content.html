@@ -12,6 +12,7 @@
   data-page-is-liked="{% if page.isLiked(user) %}true{% else %}false{% endif %}"
   data-page-is-seen="{% if page and page.isSeenUser(user) %}1{% else %}0{% endif %}"
   data-page-is-deleted="{% if page.isDeleted() %}true{% else %}false{% endif %}"
+  data-page-is-deletable="{% if isDeletablePage() %}true{% else %}false{% endif %}"
   data-page-is-able-to-delete-completely="{% if user.canDeleteCompletely(page.creator._id) %}true{% else %}false{% endif %}"
   data-slack-channels="{{ slack|default('') }}"
   data-page-created-at="{% if page %}{{ page.createdAt|datetz('Y/m/d H:i:s') }}{% endif %}"
