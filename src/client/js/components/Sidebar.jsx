@@ -14,7 +14,7 @@ import { createSubscribedElement } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 
 import SidebarNav from './Sidebar/SidebarNav';
-import History from './Sidebar/History';
+import RecentChanges from './Sidebar/RecentChanges';
 import CustomSidebar from './Sidebar/CustomSidebar';
 
 
@@ -28,7 +28,7 @@ class Sidebar extends React.Component {
   };
 
   state = {
-    currentContentsId: 'custom',
+    currentContentsId: 'recent',
   };
 
   componentWillMount() {
@@ -103,11 +103,11 @@ class Sidebar extends React.Component {
   );
 
   renderSidebarContents = () => {
-    let contents = <CustomSidebar></CustomSidebar>;
+    let contents = <CustomSidebar />;
 
     switch (this.state.currentContentsId) {
-      case 'history':
-        contents = <History></History>;
+      case 'recent':
+        contents = <RecentChanges />;
         break;
     }
 
@@ -136,7 +136,6 @@ class Sidebar extends React.Component {
               // experimental_fullWidthFlyout
               shouldHideGlobalNavShadow
               showContextualNavigation
-              topOffset={50}
             >
             </LayoutManager>
           </ThemeProvider>

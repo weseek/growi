@@ -81,6 +81,14 @@ const PageCreateModal = (props) => {
     window.location.href = encodeURI(urljoin(pageNameInput, '#edit'));
   }
 
+  function ppacInputChangeHandler(value) {
+    setPageNameInput(value);
+  }
+
+  function ppacSubmitHandler() {
+    createInputPage();
+  }
+
   /**
    * access template page
    */
@@ -141,8 +149,15 @@ const PageCreateModal = (props) => {
 
             <div className="flex-fill">
               {isReachable
-                // GW-2355 refactor typeahead
-                ? <PagePathAutoComplete crowi={appContainer} initializedPath={path} addTrailingSlash />
+                ? (
+                  <PagePathAutoComplete
+                    crowi={appContainer}
+                    initializedPath={path}
+                    addTrailingSlash
+                    onSubmit={ppacSubmitHandler}
+                    onInputChange={ppacInputChangeHandler}
+                  />
+                )
                 : (
                   <input
                     type="text"

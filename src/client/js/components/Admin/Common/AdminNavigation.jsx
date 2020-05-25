@@ -19,7 +19,7 @@ const AdminNavigation = (props) => {
           href="/admin"
           className={`${pageTransitionClassName} ${pathname === '/admin' && 'active'}`}
         >
-          <i className="icon-fw icon-home"></i> {t('Management Wiki Home')}
+          <i className="icon-fw icon-home"></i> {t('Wiki Management Home Page')}
         </a>
         <a
           href="/admin/app"
@@ -100,7 +100,7 @@ const AdminNavigation = (props) => {
           aria-expanded="false"
         >
           <span className="float-left"><i className="icon-fw icon-home"></i>
-            {pathname === '/admin' && t('Management Wiki Home')}
+            {pathname === '/admin' && t('Wiki Management Home Page')}
             {pathname === '/admin/app' && t('App Settings')}
             {pathname === '/admin/security' && t('security_settings')}
             {pathname === '/admin/markdown' && t('Markdown Settings')}

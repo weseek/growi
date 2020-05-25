@@ -102,7 +102,7 @@ class GoogleSecurityManagement extends React.Component {
                 <i
                   className="icon-exclamation"
                   // eslint-disable-next-line max-len
-                  dangerouslySetInnerHTML={{ __html: t('security_setting.alert_siteUrl_is_not_set', { link: `<a href="/admin/app">${t('App settings')}<i class="icon-login"></i></a>` }) }}
+                  dangerouslySetInnerHTML={{ __html: t('security_setting.alert_siteUrl_is_not_set', { link: `<a href="/admin/app">${t('App Settings')}<i class="icon-login"></i></a>` }) }}
                 />
               </div>
             )}
