@@ -19,25 +19,30 @@ const PageRenameModal = (props) => {
   const {
     path,
     pageId,
-    /* revisionId,
+    revisionId,
     isRenameRedirect,
     isRenameMetadata,
-    isRenameRecursively, */
   } = pageContainer.state;
 
-  /* const { crowi } = appContainer.config; */
+  const { crowi } = appContainer.config;
 
-  /* const [pageNameInput, setPageNameInput] = useState(path); */
+  const [pageNameInput, setPageNameInput] = useState(path);
   const [errorCode, setErrorCode] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
+
+  const [isRenameRecursively, SetIsRenameRecursively] = useState(true);
+
+  function changeIsRenameRecursivelyHandler() {
+    SetIsRenameRecursively(!isRenameRecursively);
+  }
 
   /**
    * change pageNameInput
    * @param {string} value
    */
-  /* function inputChangeHandler(value) {
+  function inputChangeHandler(value) {
     setPageNameInput(value);
-  } */
+  }
 
   async function rename() {
     try {
@@ -45,11 +50,11 @@ const PageRenameModal = (props) => {
       setErrorMessage(null);
       const res = await appContainer.apiPost('/pages.rename', {
         page_id: pageId,
-        /* revision_id: revisionId, */
-        /* new_path: pageNameInput, */
-        /* create_redirect: isRenameRedirect,
+        revision_id: revisionId,
+        new_path: pageNameInput,
+        create_redirect: isRenameRedirect,
         remain_metadata: isRenameMetadata,
-        recursively: isRenameRecursively, */
+        recursively: isRenameRecursively,
       });
       const { page } = res;
       window.location.href = encodeURI(`${page.path}?rename=${path}`);
@@ -66,8 +71,7 @@ const PageRenameModal = (props) => {
         { t('modal_rename.label.Move/Rename page') }
       </ModalHeader>
       <ModalBody>
-        Hi There!
-        {/* <div className="form-group">
+        <div className="form-group">
           <label>{ t('modal_rename.label.Current page name') }</label><br />
           <code>{path}</code>
         </div>
@@ -93,9 +97,9 @@ const PageRenameModal = (props) => {
             className="custom-control-input"
             name="recursively"
             id="cbRenameRecursively"
-            value="1"
             type="checkbox"
-            defaultChecked={isRenameRecursively}
+            checked={isRenameRecursively}
+            onChange={changeIsRenameRecursivelyHandler}
           />
           <label className="custom-control-label" htmlFor="cbRenameRecursively">
             { t('modal_rename.label.Recursively') }
@@ -131,7 +135,7 @@ const PageRenameModal = (props) => {
             { t('modal_rename.label.Do not update metadata') }
             <p className="form-text text-muted mt-0">{ t('modal_rename.help.metadata') }</p>
           </label>
-        </div> */}
+        </div>
       </ModalBody>
       <ModalFooter>
         <ApiErrorMessage errorCode={errorCode} errorMessage={errorMessage} linkPath={path} />
