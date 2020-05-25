@@ -19,12 +19,19 @@
   .grw-search-bar {
     height: $grw-navbar-height;
     .search-top {
+      .dropdown-toggle {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
       .rbt-input.form-control {
-        width: 100%;
+        width: 400%;
         // focus
         &.focus {
-          width: 100%;
+          width: 400%;
         }
+      }
+      .btn-group-submit-search {
+        display: none;
       }
     }
   }
