@@ -27,14 +27,22 @@ const PageDuplicateModal = (props) => {
   const [errorMessage, setErrorMessage] = useState(null);
 
   /**
-   * change pageNameInput
+   * change pageNameInput for PagePathAutoComplete
    * @param {string} value
    */
-  function onChangePageNameInputHandler(value) {
+  function ppacInputChangeHandler(value) {
     setPageNameInput(value);
   }
 
-  async function clickDuplicateButtonHandler() {
+  /**
+   * change pageNameInput
+   * @param {string} value
+   */
+  function inputChangeHandler(value) {
+    setPageNameInput(value);
+  }
+
+  async function duplicate() {
     try {
       setErrorCode(null);
       setErrorMessage(null);
@@ -48,6 +56,9 @@ const PageDuplicateModal = (props) => {
     }
   }
 
+  function ppacSubmitHandler() {
+    duplicate();
+  }
 
   return (
     <Modal isOpen={pageContainer.state.isPageDuplicateModalShown} toggle={pageContainer.closePageDuplicateModal} className="grw-duplicate-page">
@@ -65,24 +76,33 @@ const PageDuplicateModal = (props) => {
             <div className="input-group-prepend">
               <span className="input-group-text">{crowi.url}</span>
             </div>
-            {isReachable
-              // GW-2355 refactor typeahead
-              ? <PagePathAutoComplete crowi={appContainer} initializedPath={path} addTrailingSlash />
+            <div className="flex-fill">
+              {isReachable
+              ? (
+                <PagePathAutoComplete
+                  crowi={appContainer}
+                  initializedPath={path}
+                  addTrailingSlash
+                  onSubmit={ppacSubmitHandler}
+                  onInputChange={ppacInputChangeHandler}
+                />
+              )
               : (
                 <input
                   type="text"
                   value={pageNameInput}
                   className="form-control"
-                  onChange={e => onChangePageNameInputHandler(e.target.value)}
+                  onChange={e => inputChangeHandler(e.target.value)}
                   required
                 />
               )}
+            </div>
           </div>
         </div>
       </ModalBody>
       <ModalFooter>
         <ApiErrorMessage errorCode={errorCode} errorMessage={errorMessage} linkPath={path} />
-        <button type="button" className="btn btn-primary" onClick={clickDuplicateButtonHandler}>Duplicate page</button>
+        <button type="button" className="btn btn-primary" onClick={duplicate}>Duplicate page</button>
       </ModalFooter>
     </Modal>
 
