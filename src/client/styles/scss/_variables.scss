@@ -6,13 +6,14 @@ $font-family-for-staff-credit: Lato, -apple-system, BlinkMacSystemFont, 'Hiragin
 $font-family-monospace-not-strictly: Monaco, Menlo, Consolas, 'Courier New', MeiryoKe_Gothic, monospace;
 
 //== Layout
-$grw-navbar-height: 50px;
+$grw-navbar-height: 52px;
+$grw-navbar-border-width: 3.3333px;
 
-$grw-sidebar-nav-width: 64px;
+$grw-sidebar-nav-width: 64px; // !!DO NOT CHANGE!! 'margin-left' for '.css-teprsg' is hardcoded
 $grw-sidebar-content-min-width: 240px;
 
 $grw-logo-width: $grw-sidebar-nav-width;
-$grw-logomark-width: 40px;
+$grw-logomark-width: 36px;
 
 // fix tab width to 95 pixels
 // see also '_on-edit.scss'

@@ -1,7 +1,19 @@
 .grw-navbar {
+  border-bottom: $grw-navbar-border-width solid;
+
   .grw-navbar-toggler {
     padding: 0.5rem;
     font-size: 1.5em;
+  }
+
+  .grw-navbar-search {
+    left: $grw-logo-width + 19px;
+
+    @include media-breakpoint-up(lg) {
+      position: absolute;
+      left: 50%;
+      transform: translate(-50%, 0%);
+    }
   }
 
   .nav-link,

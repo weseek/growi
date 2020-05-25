@@ -9,12 +9,12 @@ $easeInOutCubic: cubic-bezier(0.65, 0, 0.35, 1);
  * layout for sticky
  */
 header.grw-header {
-  top: $grw-navbar-height;
+  top: $grw-navbar-height + $grw-navbar-border-width;
 
   // Adjust to be on top of the growi subnavigation
   z-index: $zindex-sticky;
 
-  height: 80px;
+  height: 110px;
   pointer-events: none; // disable pointer events for sticky
 
   .grw-subnav {

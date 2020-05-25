@@ -16,7 +16,6 @@ $themecolor: #b3000c;
 $themelight: white;
 
 $subthemecolor: #017e20;
-$bgcolor-navbar: $themecolor;
 $bgcolor-global: $themelight;
 $linktext: lighten(#0d5901, 5%);
 $linktext-hover: lighten($linktext, 12%);
@@ -60,8 +59,18 @@ html[dark] {
   $bgcolor-list-active: $themecolor;
   $color-list-hover: $color-reversal;
 
+  // Navbar
+  $bgcolor-navbar: $themecolor;
+  $border-color-navbar-gradient-left: #545fff;
+  $border-color-navbar-gradient-right: #00a6e5;
+
   // Logo colors
   $bgcolor-logo: $themecolor;
+
+  // Sidebar
+  $bgcolor-sidebar: $themecolor;
+  $color-sidebar-context: $color-reversal;
+  $bgcolor-sidebar-context: lighten($themecolor, 10%);
 
   // Icon colors
   $color-editor-icons: $color-global;
@@ -82,11 +91,6 @@ html[dark] {
 
   // badge
   $color-badge: $color-reversal;
-
-  // Sidebar
-  $bgcolor-sidebar: $themecolor;
-  $color-sidebar-context: $color-reversal;
-  $bgcolor-sidebar-context: lighten($themecolor, 10%);
 
   @import 'apply-colors';
   @import 'apply-colors-light';

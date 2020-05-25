@@ -1,24 +1,5 @@
 @import 'layout_variable';
 
-%fukidashi-for-active {
-  position: relative;
-
-  // speech balloon
-  &:after {
-    position: absolute;
-    top: 0.5em;
-    right: -1em;
-    display: block;
-    width: 0;
-    content: '';
-    border: 1em solid transparent;
-    border-left-width: 0;
-
-    // @include media-breakpoint-down(xs) {
-    // }
-  }
-}
-
 // FIXME: replace with mt-2 or mt-3
 .grw-mt-10px {
   margin-top: 10px !important;
@@ -35,14 +16,6 @@
     height: $grw-navbar-height;
     padding: ($grw-logo-width - $grw-logomark-width) / 2;
   }
-  /*
-  .logo-text {
-    svg {
-      width: 156px;
-      height: $grw-navbar-height;
-    }
-  }
-  */
 }
 
 .confidential {
@@ -51,7 +24,7 @@
 
 #page-wrapper {
   min-width: 0;
-  margin-top: $grw-navbar-height;
+  margin-top: $grw-navbar-height + $grw-navbar-border-width;
 }
 
 .grw-modal-head {
