@@ -85,13 +85,13 @@
 
 ## Default well
 
-<div class="well">Look, I'm in a well! </div>
+<div class="card card-body bg-light">Look, I'm in a well! </div>
 
 ## Optional classes
 
-<div class="well well-lg">Look, I'm in a well! </div>
+<div class="card card-body bg-light p-5">Look, I'm in a well! </div>
 
-<div class="well well-sm">Look, I'm in a well! </div>
+<div class="card card-body bg-light p-2">Look, I'm in a well! </div>
 
 # Typography
 
