@@ -63,7 +63,6 @@ export default class PageContainer extends Container {
       hasDraftOnHackmd: !!mainContent.getAttribute('data-page-has-draft-on-hackmd'),
       isHackmdDraftUpdatingInRealtime: false,
 
-      isPageDuplicateModalShown: false,
       isCreateTemplatePageModalShown: false,
 
       isHeaderSticky: false,
@@ -105,8 +104,6 @@ export default class PageContainer extends Container {
       });
     }
 
-    this.openPageDuplicateModal = this.openPageDuplicateModal.bind(this);
-    this.closePageDuplicateModal = this.closePageDuplicateModal.bind(this);
     this.openCreateTemplatePageModal = this.openCreateTemplatePageModal.bind(this);
     this.closeCreateTemplatePageModal = this.closeCreateTemplatePageModal.bind(this);
   }
@@ -453,14 +450,6 @@ export default class PageContainer extends Container {
       }
     });
 
-  }
-
-  openPageDuplicateModal() {
-    this.setState({ isPageDuplicateModalShown: true });
-  }
-
-  closePageDuplicateModal() {
-    this.setState({ isPageDuplicateModalShown: false });
   }
 
   openCreateTemplatePageModal() {

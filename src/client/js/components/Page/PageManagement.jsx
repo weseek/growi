@@ -8,6 +8,7 @@ import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 import PageDeleteModal from '../PageDeleteModal';
 import PageRenameModal from '../PageRenameModal';
+import PageDuplicateModal from '../PageDuplicateModal';
 
 
 const PageManagement = (props) => {
@@ -18,6 +19,7 @@ const PageManagement = (props) => {
   const isTopPagePath = isTopPage(path);
 
   const [isPageRenameModalShown, setIsPageRenameModalShown] = useState(false);
+  const [isPageDuplicateModalShown, setIsPageDuplicateModalShown] = useState(false);
   const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);
 
   function openPageRenameModalHandler() {
@@ -26,6 +28,14 @@ const PageManagement = (props) => {
 
   function closePageRenameModalHandler() {
     setIsPageRenameModalShown(false);
+  }
+
+  function openPageDuplicateModalHandler() {
+    setIsPageDuplicateModalShown(true);
+  }
+
+  function closePageDuplicateModalHandler() {
+    setIsPageDuplicateModalShown(false);
   }
 
   function openPageDeleteModalHandler() {
@@ -43,7 +53,7 @@ const PageManagement = (props) => {
         <a className="dropdown-item" type="button" onClick={openPageRenameModalHandler}>
           <i className="icon-fw icon-action-redo"></i> { t('Move/Rename') }
         </a>
-        <a className="dropdown-item" type="button" onClick={pageContainer.openPageDuplicateModal}>
+        <a className="dropdown-item" type="button" onClick={openPageDuplicateModalHandler}>
           <i className="icon-fw icon-docs"></i> { t('Duplicate') }
         </a>
         <div className="dropdown-divider"></div>
@@ -86,6 +96,10 @@ const PageManagement = (props) => {
         isOpen={isPageRenameModalShown}
         onClose={closePageRenameModalHandler}
         path={path}
+      />
+      <PageDuplicateModal
+        isOpen={isPageDuplicateModalShown}
+        onClose={closePageDuplicateModalHandler}
       />
       <PageDeleteModal
         isOpen={isPageDeleteModalShown}

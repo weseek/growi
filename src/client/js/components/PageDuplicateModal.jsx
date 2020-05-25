@@ -61,8 +61,8 @@ const PageDuplicateModal = (props) => {
   }
 
   return (
-    <Modal isOpen={pageContainer.state.isPageDuplicateModalShown} toggle={pageContainer.closePageDuplicateModal} className="grw-duplicate-page">
-      <ModalHeader tag="h4" toggle={pageContainer.closePageDuplicateModal} className="bg-primary text-light">
+    <Modal isOpen={props.isOpen} toggle={props.onClose} className="grw-duplicate-page">
+      <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-light">
         { t('modal_duplicate.label.Duplicate page') }
       </ModalHeader>
       <ModalBody>
@@ -122,6 +122,9 @@ PageDuplicateModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(PageDuplicateModallWrapper);
