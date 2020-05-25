@@ -14,15 +14,9 @@ import PageContainer from '../services/PageContainer';
 import ApiErrorMessage from './PageManagement/ApiErrorMessage';
 
 const PageRenameModal = (props) => {
-  const { t, appContainer, pageContainer } = props;
-
   const {
-    path,
-    pageId,
-    revisionId,
-    isRenameRedirect,
-    isRenameMetadata,
-  } = pageContainer.state;
+    t, appContainer, pageContainer, path,
+  } = props;
 
   const { crowi } = appContainer.config;
 
@@ -31,6 +25,8 @@ const PageRenameModal = (props) => {
   const [errorMessage, setErrorMessage] = useState(null);
 
   const [isRenameRecursively, SetIsRenameRecursively] = useState(true);
+  const [isRenameRedirect, SetIsRenameRedirect] = useState(false);
+  const [isRenameMetadata, SetIsRenameMetadata] = useState(false);
 
   function changeIsRenameRecursivelyHandler() {
     SetIsRenameRecursively(!isRenameRecursively);
@@ -48,15 +44,14 @@ const PageRenameModal = (props) => {
     try {
       setErrorCode(null);
       setErrorMessage(null);
-      const res = await appContainer.apiPost('/pages.rename', {
-        page_id: pageId,
-        revision_id: revisionId,
+
+      const response = await appContainer.apiPost('/pages.rename', {
         new_path: pageNameInput,
         create_redirect: isRenameRedirect,
         remain_metadata: isRenameMetadata,
         recursively: isRenameRecursively,
       });
-      const { page } = res;
+      const { page } = response;
       window.location.href = encodeURI(`${page.path}?rename=${path}`);
     }
     catch (err) {
@@ -112,9 +107,8 @@ const PageRenameModal = (props) => {
             className="custom-control-input"
             name="create_redirect"
             id="cbRenameRedirect"
-            value="1"
             type="checkbox"
-            defaultChecked={isRenameRedirect}
+            onChange={SetIsRenameRedirect}
           />
           <label className="custom-control-label" htmlFor="cbRenameRedirect">
             { t('modal_rename.label.Redirect') }
@@ -127,9 +121,8 @@ const PageRenameModal = (props) => {
             className="custom-control-input"
             name="remain_metadata"
             id="cbRenameMetadata"
-            value="1"
             type="checkbox"
-            defaultChecked={isRenameMetadata}
+            onChange={SetIsRenameMetadata}
           />
           <label className="custom-control-label" htmlFor="cbRenameMetadata">
             { t('modal_rename.label.Do not update metadata') }
@@ -157,6 +150,8 @@ PageRenameModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+
+  path: PropTypes.string.isRequired,
 };
 
 export default withTranslation()(PageRenameModalWrapper);
