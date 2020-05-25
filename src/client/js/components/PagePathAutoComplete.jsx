@@ -40,7 +40,7 @@ const PagePathAutoComplete = (props) => {
       crowi={props.crowi}
       onSubmit={submitHandler}
       onChange={inputChangeHandler}
-      onInputChange={onInputChange}
+      onInputChange={props.onInputChange}
       inputName="new_path"
       emptyLabelExceptError={null}
       placeholder="Input page path"
