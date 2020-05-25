@@ -102,10 +102,10 @@
   div[class$='-PrimaryItemsList'] {
     .grw-global-item-container {
       .btn-lg {
-        height: $sidebar-nav-button-height;
-
+        padding: 0.8rem 1rem;
+        line-height: 1em;
         i {
-          font-size: 1.5em;
+          font-size: 1.7em;
         }
       }
 

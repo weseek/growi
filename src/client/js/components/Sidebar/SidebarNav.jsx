@@ -28,7 +28,7 @@ class SidebarNav extends React.Component {
     }
   }
 
-  generatePrimaryItemObj(id, label, iconClassNames) {
+  generatePrimaryItemObj(id, label, iconName) {
     const isSelected = this.props.currentContentsId === id;
 
     return {
@@ -40,20 +40,20 @@ class SidebarNav extends React.Component {
             className={`btn btn-primary btn-lg ${isSelected ? 'active' : ''}`}
             onClick={() => this.itemSelectedHandler(id)}
           >
-            <i className={iconClassNames}></i>
+            <i className="material-icons">{iconName}</i>
           </button>
         </div>
       ),
     };
   }
 
-  generateSecondaryItemObj(id, label, iconClassNames, href, isBlank, isHiddenOnLargeDevice) {
+  generateSecondaryItemObj(id, label, iconName, href, isBlank, isHiddenOnLargeDevice) {
     return {
       id,
       component: ({ className }) => (
         <div className={`${className} grw-global-item-container ${isHiddenOnLargeDevice ? 'd-block d-md-none' : ''}`}>
-          <a href={href} className="btn btn-primary btn-lg" target={`${isBlank ? '_blank' : ''}`}>
-            <i className={iconClassNames}></i>
+          <a href={href} className="btn btn-primary" target={`${isBlank ? '_blank' : ''}`}>
+            <i className="material-icons">{iconName}</i>
           </a>
         </div>
       ),
@@ -68,20 +68,20 @@ class SidebarNav extends React.Component {
     const { isAdmin, currentUsername } = this.props.appContainer;
 
     const primaryItems = [
-      this.generatePrimaryItemObj('custom', 'Custom Sidebar', 'fa fa-code'),
-      this.generatePrimaryItemObj('recent', 'Recent Changes', 'icon-clock'),
+      this.generatePrimaryItemObj('custom', 'Custom Sidebar', 'code'),
+      this.generatePrimaryItemObj('recent', 'Recent Changes', 'update'),
       // this.generatePrimaryItemObj('tag', 'Tags', 'icon-tag'),
       // this.generatePrimaryItemObj('favorite', 'Favorite', 'icon-star'),
     ];
 
     const secondaryItems = [
-      this.generateSecondaryItemObj('draft', 'Draft', 'icon-docs', `/user/${currentUsername}#user-draft-list`),
-      this.generateSecondaryItemObj('help', 'Help', 'icon-question', 'https://docs.growi.org', true),
-      this.generateSecondaryItemObj('trash', 'Trash', 'icon-trash', '/trash'),
+      this.generateSecondaryItemObj('draft', 'Draft', 'file_copy', `/user/${currentUsername}#user-draft-list`),
+      this.generateSecondaryItemObj('help', 'Help', 'help', 'https://docs.growi.org', true),
+      this.generateSecondaryItemObj('trash', 'Trash', 'delete', '/trash'),
     ];
     if (isAdmin) {
       secondaryItems.unshift( // add to the beginning
-        this.generateSecondaryItemObj('admin', 'Admin', 'icon-settings', '/admin', false, true),
+        this.generateSecondaryItemObj('admin', 'Admin', 'settings', '/admin', false, true),
       );
     }
 
