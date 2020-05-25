@@ -22,7 +22,7 @@ import FormattedDistanceDate from '../FormattedDistanceDate';
 import UserPicture from '../User/UserPicture';
 
 const logger = loggerFactory('growi:History');
-class History extends React.Component {
+class RecentChanges extends React.Component {
 
   static propTypes = {
     t: PropTypes.func.isRequired, // i18next
@@ -89,8 +89,9 @@ class History extends React.Component {
         <HeaderSection>
           { () => (
             <div className="grw-sidebar-header-container p-3 d-flex">
-              <h3>{t('History')}</h3>
-              <button type="button" className="btn xs btn-secondary ml-auto" onClick={this.reloadData}>
+              <h3>{t('Recent Changes')}</h3>
+              {/* <h3>{t('Recent Created')}</h3> */} {/* TODO: impl switching */}
+              <button type="button" className="btn btn-xs btn-outline-secondary ml-auto" onClick={this.reloadData}>
                 <i className="icon icon-reload"></i>
               </button>
             </div>
@@ -114,8 +115,8 @@ class History extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const HistoryWrapper = (props) => {
-  return createSubscribedElement(History, props, [AppContainer]);
+const RecentChangesWrapper = (props) => {
+  return createSubscribedElement(RecentChanges, props, [AppContainer]);
 };
 
-export default withTranslation()(HistoryWrapper);
+export default withTranslation()(RecentChangesWrapper);

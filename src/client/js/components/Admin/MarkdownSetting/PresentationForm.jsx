@@ -42,7 +42,7 @@ class PresentationForm extends React.Component {
     return (
       <fieldset className="form-group col-12 my-2">
 
-        <label className="col-8 offset-4 control-label font-weight-bold text-left mt-3">
+        <label className="col-8 offset-4 col-form-label font-weight-bold text-left mt-3">
           {t('admin:markdown_setting.presentation_options.page_break_setting')}
         </label>
 
