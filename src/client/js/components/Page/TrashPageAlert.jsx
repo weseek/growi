@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
-import { toastError } from '../../util/apiNotification';
 
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
@@ -47,21 +46,6 @@ const TrashPageAlert = (props) => {
     setIsPageDeleteModalShown(false);
   }
 
-  async function emptyTrash() {
-    try {
-      await appContainer.apiv3Delete('/pages/empty-trash');
-      window.location.reload();
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }
-
-  function emptyButtonHandler() {
-    emptyTrash();
-  }
-
-
   function renderEmptyButton() {
     return (
       <button
@@ -102,7 +86,10 @@ const TrashPageAlert = (props) => {
   function renderModals() {
     return (
       <>
-        <EmptyTrashModal isOpen={isEmptyTrashModalShown} onClose={closeEmptyTrashModalHandler} onClickEmptyBtn={emptyButtonHandler} />
+        <EmptyTrashModal
+          isOpen={isEmptyTrashModalShown}
+          onClose={closeEmptyTrashModalHandler}
+        />
         <PutbackPageModal
           isOpen={isPutbackPageModalShown}
           onClose={closePutbackPageModalHandler}
