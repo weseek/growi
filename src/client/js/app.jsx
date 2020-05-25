@@ -71,8 +71,6 @@ Object.assign(componentMappings, {
   // 'revision-history': <PageHistory pageId={pageId} />,
   'tags-page': <TagsList crowi={appContainer} />,
 
-  'create-page-name-input': <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} addTrailingSlash />,
-
   'page-editor': <PageEditor />,
   'page-editor-path-nav': <PagePathNavForEditor />,
   'page-editor-options-selector': <OptionsSelector crowi={appContainer} />,
@@ -100,7 +98,6 @@ if (pageContainer.state.pageId != null) {
     'seen-user-list': <UserPictureList userIds={pageContainer.state.seenUserIds} />,
     'liker-list': <UserPictureList userIds={pageContainer.state.likerUserIds} />,
     'rename-page-name-input': <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
-    'duplicate-page-name-input': <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
 
     'user-created-list': <RecentCreated />,
     'user-draft-list': <MyDraftList />,
