@@ -99,6 +99,26 @@ const TrashPageAlert = (props) => {
     );
   }
 
+  function renderModals() {
+    return (
+      <>
+        <EmptyTrashModal isOpen={isEmptyTrashModalShown} onClose={closeEmptyTrashModalHandler} onClickEmptyBtn={emptyButtonHandler} />
+        <PutbackPageModal
+          isOpen={isPutbackPageModalShown}
+          onClose={closePutbackPageModalHandler}
+          path={path}
+        />
+        <PageDeleteModal
+          isOpen={isPageDeleteModalShown}
+          onClose={opclosePageDeleteModalHandler}
+          path={path}
+          isDeleteCompletelyModal
+          isAbleToDeleteCompletely={isAbleToDeleteCompletely}
+        />
+      </>
+    );
+  }
+
   return (
     <>
       <div className="alert alert-warning py-3 px-4 d-flex align-items-center">
@@ -109,19 +129,7 @@ const TrashPageAlert = (props) => {
         {(currentUser.admin && path === '/trash' && hasChildren) && renderEmptyButton()}
         {(isDeleted && currentUser != null) && renderTrashPageManagementButtons()}
       </div>
-      <EmptyTrashModal isOpen={isEmptyTrashModalShown} onClose={closeEmptyTrashModalHandler} onClickEmptyBtn={emptyButtonHandler} />
-      <PutbackPageModal
-        isOpen={isPutbackPageModalShown}
-        onClose={closePutbackPageModalHandler}
-        path={path}
-      />
-      <PageDeleteModal
-        isOpen={isPageDeleteModalShown}
-        onClose={opclosePageDeleteModalHandler}
-        path={path}
-        isDeleteCompletelyModal
-        isAbleToDeleteCompletely={isAbleToDeleteCompletely}
-      />
+      {renderModals()}
     </>
   );
 };
