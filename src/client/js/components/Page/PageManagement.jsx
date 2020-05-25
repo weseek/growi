@@ -9,6 +9,7 @@ import PageContainer from '../../services/PageContainer';
 import PageDeleteModal from '../PageDeleteModal';
 import PageRenameModal from '../PageRenameModal';
 import PageDuplicateModal from '../PageDuplicateModal';
+import CreateTemplateModal from '../CreateTemplateModal';
 
 
 const PageManagement = (props) => {
@@ -20,6 +21,7 @@ const PageManagement = (props) => {
 
   const [isPageRenameModalShown, setIsPageRenameModalShown] = useState(false);
   const [isPageDuplicateModalShown, setIsPageDuplicateModalShown] = useState(false);
+  const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
   const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);
 
   function openPageRenameModalHandler() {
@@ -36,6 +38,14 @@ const PageManagement = (props) => {
 
   function closePageDuplicateModalHandler() {
     setIsPageDuplicateModalShown(false);
+  }
+
+  function openPageTemplateModalHandler() {
+    setIsPageTempleteModalShown(true);
+  }
+
+  function closePageTemplateModalHandler() {
+    setIsPageTempleteModalShown(false);
   }
 
   function openPageDeleteModalHandler() {
@@ -72,6 +82,32 @@ const PageManagement = (props) => {
     );
   }
 
+  function renderModals() {
+    return (
+      <>
+        <PageRenameModal
+          isOpen={isPageRenameModalShown}
+          onClose={closePageRenameModalHandler}
+          path={path}
+        />
+        <PageDuplicateModal
+          isOpen={isPageDuplicateModalShown}
+          onClose={closePageDuplicateModalHandler}
+        />
+        <CreateTemplateModal
+          isOpen={isPageTemplateModalShown}
+          onClose={closePageTemplateModalHandler}
+        />
+        <PageDeleteModal
+          isOpen={isPageDeleteModalShown}
+          onClose={closePageDeleteModalHandler}
+          path={path}
+          isAbleToDeleteCompletely={isAbleToDeleteCompletely}
+        />
+      </>
+    );
+  }
+
   return (
     <>
       <a
@@ -87,26 +123,12 @@ const PageManagement = (props) => {
       </a>
       <div className="dropdown-menu dropdown-menu-right">
         {!isTopPagePath && renderDropdownItemForNotTopPage()}
-        <a className="dropdown-item" onClick={pageContainer.openCreateTemplatePageModal}>
+        <a className="dropdown-item" onClick={openPageTemplateModalHandler}>
           <i className="icon-fw icon-magic-wand"></i> { t('template.option_label.create/edit') }
         </a>
         {(!isTopPagePath && isDeletable) && renderDropdownItemForDeletablePage()}
       </div>
-      <PageRenameModal
-        isOpen={isPageRenameModalShown}
-        onClose={closePageRenameModalHandler}
-        path={path}
-      />
-      <PageDuplicateModal
-        isOpen={isPageDuplicateModalShown}
-        onClose={closePageDuplicateModalHandler}
-      />
-      <PageDeleteModal
-        isOpen={isPageDeleteModalShown}
-        onClose={closePageDeleteModalHandler}
-        path={path}
-        isAbleToDeleteCompletely={isAbleToDeleteCompletely}
-      />
+      {renderModals()}
     </>
   );
 };

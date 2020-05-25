@@ -63,8 +63,6 @@ export default class PageContainer extends Container {
       hasDraftOnHackmd: !!mainContent.getAttribute('data-page-has-draft-on-hackmd'),
       isHackmdDraftUpdatingInRealtime: false,
 
-      isCreateTemplatePageModalShown: false,
-
       isHeaderSticky: false,
       isSubnavCompact: false,
     };
@@ -104,8 +102,6 @@ export default class PageContainer extends Container {
       });
     }
 
-    this.openCreateTemplatePageModal = this.openCreateTemplatePageModal.bind(this);
-    this.closeCreateTemplatePageModal = this.closeCreateTemplatePageModal.bind(this);
   }
 
   /**
@@ -450,14 +446,6 @@ export default class PageContainer extends Container {
       }
     });
 
-  }
-
-  openCreateTemplatePageModal() {
-    this.setState({ isCreateTemplatePageModalShown: true });
-  }
-
-  closeCreateTemplatePageModal() {
-    this.setState({ isCreateTemplatePageModalShown: false });
   }
 
 }

@@ -13,7 +13,7 @@ import PageContainer from '../services/PageContainer';
 const CreateTemplateModal = (props) => {
   const { t, pageContainer } = props;
 
-  const { path, isCreateTemplatePageModalShown } = pageContainer.state;
+  const { path } = pageContainer.state;
   const parentPath = pathUtils.addTrailingSlash(path);
 
   function generateUrl(label) {
@@ -45,8 +45,8 @@ const CreateTemplateModal = (props) => {
   }
 
   return (
-    <Modal isOpen={isCreateTemplatePageModalShown} toggle={pageContainer.closeCreateTemplatePageModal} className="grw-create-page">
-      <ModalHeader tag="h4" toggle={pageContainer.closeCreateTemplatePageModal} className="bg-primary text-light">
+    <Modal isOpen={props.isOpen} toggle={props.onClose} className="grw-create-page">
+      <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-light">
         {t('template.modal_label.Create/Edit Template Page')}
       </ModalHeader>
       <ModalBody>
@@ -82,6 +82,9 @@ const CreateTemplateModalWrapper = (props) => {
 CreateTemplateModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(CreateTemplateModalWrapper);
