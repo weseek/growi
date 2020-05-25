@@ -17,6 +17,10 @@ const ApiErrorMessage = (props) => {
             <small><a href={linkPath}>{linkPath} <i className="icon-login"></i></a></small>
           </>
         );
+      case 'notfound_or_forbidden':
+        return (
+          <strong><i className="icon-fw icon-ban"></i>{ t('page_api_error.notfound_or_forbidden') }</strong>
+        );
       default:
         return null;
     }
@@ -43,9 +47,6 @@ const ApiErrorMessage = (props) => {
 
   // TODO GW-79 Set according to error message
   // <div>
-  //   <span className="text-danger msg msg-notfound_or_forbidden">
-  //     <strong><i className="icon-fw icon-ban"></i>{ t('page_api_error.notfound_or_forbidden') }</strong>
-  //   </span>
   //   <span className="text-danger msg msg-user_not_admin">
   //     <strong><i className="icon-fw icon-ban"></i>{ t('page_api_error.user_not_admin') }</strong>
   //   </span>

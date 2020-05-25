@@ -10,6 +10,7 @@ import PageContainer from '../../services/PageContainer';
 import UserPicture from '../User/UserPicture';
 import PutbackPageModal from '../PutbackPageModal';
 import EmptyTrashModal from '../EmptyTrashModal';
+import PageDeleteModal from '../PageDeleteModal';
 
 
 const TrashPageAlert = (props) => {
@@ -20,24 +21,33 @@ const TrashPageAlert = (props) => {
   const { currentUser } = appContainer;
   const [isEmptyTrashModalShown, setIsEmptyTrashModalShown] = useState(false);
   const [isPutbackPageModalShown, setIsPutbackPageModalShown] = useState(false);
+  const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);
 
-  function openEmptyTrashModal() {
+  function openEmptyTrashModalHandler() {
     setIsEmptyTrashModalShown(true);
   }
 
-  function closeEmptyTrashModal() {
+  function closeEmptyTrashModalHandler() {
     setIsEmptyTrashModalShown(false);
   }
 
-  function openPutbackPageModal() {
+  function openPutbackPageModalHandler() {
     setIsPutbackPageModalShown(true);
   }
 
-  function closePutbackPageModal() {
+  function closePutbackPageModalHandler() {
     setIsPutbackPageModalShown(false);
   }
 
-  async function onClickDeleteBtn() {
+  function openPageDeleteModalHandler() {
+    setIsPageDeleteModalShown(true);
+  }
+
+  function opclosePageDeleteModalHandler() {
+    setIsPageDeleteModalShown(false);
+  }
+
+  async function emptyTrash() {
     try {
       await appContainer.apiv3Delete('/pages/empty-trash');
       window.location.reload();
@@ -47,15 +57,20 @@ const TrashPageAlert = (props) => {
     }
   }
 
-  async function onClickPutbackBtn() {
+  async function putBackButtonHandler() {
     try {
-      await /* appContainer.apiv3Delete('/pages/empty-trash'); */
+      await appContainer.apiv3Delete('/pages/empty-trash');
       window.location.reload();
     }
     catch (err) {
       toastError(err);
     }
   }
+
+  function emptyButtonHandler() {
+    emptyTrash();
+  }
+
 
   function renderEmptyButton() {
     return (
@@ -64,7 +79,7 @@ const TrashPageAlert = (props) => {
         type="button"
         className="btn btn-danger rounded-pill btn-sm ml-auto"
         data-target="#emptyTrash"
-        onClick={openEmptyTrashModal}
+        onClick={openEmptyTrashModalHandler}
       >
         <i className="icon-trash" aria-hidden="true"></i>{ t('modal_empty.empty_the_trash') }
       </button>
@@ -77,7 +92,7 @@ const TrashPageAlert = (props) => {
         <button
           type="button"
           className="btn btn-info rounded-pill btn-sm ml-auto mr-2"
-          onClick={openPutbackPageModal}
+          onClick={openPutbackPageModalHandler}
           data-target="#Putback"
           data-toggle="modal"
         >
@@ -87,8 +102,7 @@ const TrashPageAlert = (props) => {
           type="button"
           className="btn btn-danger rounded-pill btn-sm mr-2"
           disabled={!isAbleToDeleteCompletely}
-          data-target="#deletePage"
-          data-toggle="modal"
+          onClick={openPageDeleteModalHandler}
         >
           <i className="icon-fire" aria-hidden="true"></i> { t('Delete Completely') }
         </button>
@@ -106,8 +120,15 @@ const TrashPageAlert = (props) => {
         {(currentUser.admin && path === '/trash' && hasChildren) && renderEmptyButton()}
         {(isDeleted && currentUser != null) && renderTrashPageManagementButtons()}
       </div>
-      <PutbackPageModal isOpen={isPutbackPageModalShown} toggle={closePutbackPageModal} onClickSubmit={onClickPutbackBtn} />
-      <EmptyTrashModal isOpen={isEmptyTrashModalShown} toggle={closeEmptyTrashModal} onClickSubmit={onClickDeleteBtn} />
+      <PutbackPageModal isOpen={isPutbackPageModalShown} onClose={closePutbackPageModalHandler} onClickSubmit={putBackButtonHandler} />
+      <EmptyTrashModal isOpen={isEmptyTrashModalShown} onClose={closeEmptyTrashModalHandler} onClickEmptyBtn={emptyButtonHandler} />
+      <PageDeleteModal
+        isOpen={isPageDeleteModalShown}
+        onClose={opclosePageDeleteModalHandler}
+        path={path}
+        isDeleteCompletelyModal
+        isAbleToDeleteCompletely={isAbleToDeleteCompletely}
+      />
     </>
   );
 };

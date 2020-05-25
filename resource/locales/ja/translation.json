@@ -279,7 +279,7 @@
     "delete_recursively": "全ての子ページも削除",
     "delete_completely": "完全削除",
     "delete_completely_restriction": "完全削除をするための権限がありません。",
-    "recursively": "<code>%s</code> 配下のページも削除します",
+    "recursively": "配下のページも削除します",
     "completely": "ゴミ箱を経由せず、完全に削除します"
   },
   "modal_empty":{
@@ -336,7 +336,7 @@
   "template": {
     "modal_label": {
       "Create/Edit Template Page": "テンプレートページの作成/編集",
-      "Create template under": "以下のパスにテンプレートページを作成"
+      "Create template under": "配下にテンプレートページを作成"
     },
     "option_label": {
       "select": "テンプレートタイプを選択してください",
