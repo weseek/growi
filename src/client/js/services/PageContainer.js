@@ -342,6 +342,19 @@ export default class PageContainer extends Container {
 
   }
 
+  revertRemove(isRecursively) {
+    const websocketContainer = this.appContainer.getContainer('WebsocketContainer');
+
+    // control flag
+    const recursively = isRecursively ? true : null;
+
+    return this.appContainer.apiPost('/pages.revertRemove', {
+      recursively,
+      page_id: this.state.pageId,
+      socketClientId: websocketContainer.getSocketClientId(),
+    });
+  }
+
   showSuccessToastr() {
     toastr.success(undefined, 'Saved successfully', {
       closeButton: true,

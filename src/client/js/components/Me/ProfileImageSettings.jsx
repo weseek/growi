@@ -144,7 +144,7 @@ class ProfileImageSettings extends React.Component {
               </div>
             </h4>
             <div className="row mb-3">
-              <label className="col-sm-4 col-12 control-label">
+              <label className="col-sm-4 col-12 col-form-label text-left">
                 { t('Current Image') }
               </label>
               <div className="col-sm-8 col-12">
@@ -153,7 +153,7 @@ class ProfileImageSettings extends React.Component {
               </div>
             </div>
             <div className="row">
-              <label className="col-sm-4 col-12 control-label">
+              <label className="col-sm-4 col-12 col-form-label text-left">
                 {t('Upload new image')}
               </label>
               <div className="col-sm-8 col-12">
