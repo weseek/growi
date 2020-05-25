@@ -1296,7 +1296,7 @@ module.exports = function(crowi, app) {
     const socketClientId = req.body.socketClientId || undefined;
 
     // get recursively flag
-    const isRecursively = (req.body.recursively !== undefined);
+    const isRecursively = (req.body.recursively != null);
 
     let page;
     try {
