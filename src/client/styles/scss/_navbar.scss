@@ -7,13 +7,9 @@
   }
 
   .grw-navbar-search {
-    left: $grw-logo-width + 19px;
-
-    @include media-breakpoint-up(lg) {
-      position: absolute;
-      left: 50%;
-      transform: translate(-50%, 0%);
-    }
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0%);
   }
 
   .nav-link,

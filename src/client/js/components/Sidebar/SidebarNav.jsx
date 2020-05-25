@@ -47,11 +47,11 @@ class SidebarNav extends React.Component {
     };
   }
 
-  generateSecondaryItemObj(id, label, iconName, href, isBlank, isHiddenOnLargeDevice) {
+  generateSecondaryItemObj(id, label, iconName, href, isBlank) {
     return {
       id,
       component: ({ className }) => (
-        <div className={`${className} grw-global-item-container ${isHiddenOnLargeDevice ? 'd-block d-md-none' : ''}`}>
+        <div className={`${className} grw-global-item-container`}>
           <a href={href} className="btn btn-primary" target={`${isBlank ? '_blank' : ''}`}>
             <i className="material-icons">{iconName}</i>
           </a>
@@ -81,7 +81,7 @@ class SidebarNav extends React.Component {
     ];
     if (isAdmin) {
       secondaryItems.unshift( // add to the beginning
-        this.generateSecondaryItemObj('admin', 'Admin', 'settings', '/admin', false, true),
+        this.generateSecondaryItemObj('admin', 'Admin', 'settings', '/admin'),
       );
     }
 
