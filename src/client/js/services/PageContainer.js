@@ -65,6 +65,8 @@ export default class PageContainer extends Container {
 
       isPageDuplicateModalShown: false,
       isCreateTemplatePageModalShown: false,
+      isRenameModalShown: false,
+
       isRenameRecursively: true,
       isRenameRedirect: false,
       isRenameMetadata: false,

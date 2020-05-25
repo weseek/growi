@@ -38,7 +38,6 @@ export default class AppContainer extends Container {
       isDrawerOpened: false,
 
       isPageCreateModalShown: false,
-      isRenameModalShown: false,
 
       recentlyUpdatedPages: [],
     };

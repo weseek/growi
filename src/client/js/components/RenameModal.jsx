@@ -88,7 +88,7 @@ const RenameModal = (props) => {
           />
           <label className="custom-control-label" htmlFor="cbRenameRecursively">
             { t('modal_rename.label.Recursively') }
-            <p className="form-text text-muted mt-0"><code>{path}</code>{ t('modal_rename.help.recursive') }</p>
+            <p className="form-text text-muted mt-0">{ t('modal_rename.help.recursive') }</p>
           </label>
         </div>
 
@@ -103,7 +103,7 @@ const RenameModal = (props) => {
           />
           <label className="custom-control-label" htmlFor="cbRenameRedirect">
             { t('modal_rename.label.Redirect') }
-            <p className="form-text text-muted mt-0"><code>{path}</code>{ t('modal_rename.help.redirect') }</p>
+            <p className="form-text text-muted mt-0">{ t('modal_rename.help.redirect') }</p>
           </label>
         </div>
 
