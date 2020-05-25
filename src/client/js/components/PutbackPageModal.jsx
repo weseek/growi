@@ -102,7 +102,6 @@ PutBackPageModal.propTypes = {
   page: PropTypes.object.isRequired,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  onClickSubmit: PropTypes.func.isRequired,
   appContainer: PropTypes.instanceOf(PageContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
