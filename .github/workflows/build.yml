@@ -71,7 +71,7 @@ jobs:
       with:
         channel: '#general'
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
-        created_tag: v${{ env.SEMVER }}
+        created_tag: ${{ env.SEMVER }}
 
     - name: Check whether workspace is clean
       run: |
