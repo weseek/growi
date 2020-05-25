@@ -16,11 +16,7 @@ import ApiErrorMessage from './PageManagement/ApiErrorMessage';
 
 const PutBackPageModal = (props) => {
   const {
-    t,
-    isOpen,
-    onClose,
-    appContainer,
-    pageContainer,
+    t, isOpen, onClose, appContainer, pageContainer,
   } = props;
 
   const {
