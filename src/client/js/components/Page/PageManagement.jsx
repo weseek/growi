@@ -7,6 +7,7 @@ import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 import PageDeleteModal from '../PageDeleteModal';
+import PageRenameModal from '../PageRenameModal';
 
 
 const PageManagement = (props) => {
@@ -16,7 +17,16 @@ const PageManagement = (props) => {
   const { currentUser } = appContainer;
   const isTopPagePath = isTopPage(path);
 
+  const [isPageRenameModalShown, setIsPageRenameModalShown] = useState(false);
   const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);
+
+  function openPageRenameModalHandler() {
+    setIsPageRenameModalShown(true);
+  }
+
+  function closePageRenameModalHandler() {
+    setIsPageRenameModalShown(false);
+  }
 
   function openPageDeleteModalHandler() {
     setIsPageDeleteModalShown(true);
@@ -26,10 +36,11 @@ const PageManagement = (props) => {
     setIsPageDeleteModalShown(false);
   }
 
+
   function renderDropdownItemForNotTopPage() {
     return (
       <>
-        <a className="dropdown-item" type="button" onClick={pageContainer.openPageRenameModal}>
+        <a className="dropdown-item" type="button" onClick={openPageRenameModalHandler}>
           <i className="icon-fw icon-action-redo"></i> { t('Move/Rename') }
         </a>
         <a className="dropdown-item" type="button" onClick={pageContainer.openPageDuplicateModal}>
@@ -71,6 +82,11 @@ const PageManagement = (props) => {
         </a>
         {(!isTopPagePath && isDeletable) && renderDropdownItemForDeletablePage()}
       </div>
+      <PageRenameModal
+        isOpen={isPageRenameModalShown}
+        onClose={closePageRenameModalHandler}
+        path={path}
+      />
       <PageDeleteModal
         isOpen={isPageDeleteModalShown}
         onClose={closePageDeleteModalHandler}

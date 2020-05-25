@@ -21,7 +21,6 @@ const EmptyTrashModal = (props) => {
         { t('modal_empty.notice')}
       </ModalBody>
       <ModalFooter>
-        {/* TODO add error message */}
         <button type="button" className="btn btn-danger" onClick={onClickEmptyBtn}>
           <i className="icon-trash mr-2" aria-hidden="true"></i>Empty
         </button>

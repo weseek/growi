@@ -23,7 +23,6 @@ import PageTimeline from './components/PageTimeline';
 import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
 import PageManagement from './components/Page/PageManagement';
 import PageDuplicateModal from './components/PageDuplicateModal';
-import PageRenameModal from './components/PageRenameModal';
 import TrashPageAlert from './components/Page/TrashPageAlert';
 import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
@@ -94,7 +93,6 @@ if (pageContainer.state.pageId != null) {
     'page-comment-write': <CommentEditorLazyRenderer />,
     'page-management': <PageManagement />,
     'page-duplicate-modal': <PageDuplicateModal />,
-    'page-rename-modal': <PageRenameModal />,
 
     'revision-toc': <TableOfContents />,
     'seen-user-list': <UserPictureList userIds={pageContainer.state.seenUserIds} />,

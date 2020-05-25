@@ -63,8 +63,8 @@ const PageRenameModal = (props) => {
   }
 
   return (
-    <Modal isOpen={pageContainer.state.isPageRenameModalShown} toggle={pageContainer.closePageRenameModal} className="grw-create-page">
-      <ModalHeader tag="h4" toggle={pageContainer.closePageRenameModal} className="bg-primary text-light">
+    <Modal isOpen={props.isOpen} toggle={props.onClose} className="grw-create-page">
+      <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-light">
         { t('modal_rename.label.Move/Rename page') }
       </ModalHeader>
       <ModalBody>
@@ -152,6 +152,9 @@ PageRenameModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
 
   path: PropTypes.string.isRequired,
 };
