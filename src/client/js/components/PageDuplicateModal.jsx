@@ -27,10 +27,18 @@ const PageDuplicateModal = (props) => {
   const [errorMessage, setErrorMessage] = useState(null);
 
   /**
-   * change pageNameInput
+   * change pageNameInput for PagePathAutoComplete
    * @param {string} value
    */
   function ppacInputChangeHandler(value) {
+    setPageNameInput(value);
+  }
+
+  /**
+   * change pageNameInput
+   * @param {string} value
+   */
+  function inputChangeHandler(value) {
     setPageNameInput(value);
   }
 
@@ -84,7 +92,7 @@ const PageDuplicateModal = (props) => {
                   type="text"
                   value={pageNameInput}
                   className="form-control"
-                  onChange={e => ppacInputChangeHandler(e.target.value)}
+                  onChange={e => inputChangeHandler(e.target.value)}
                   required
                 />
               )}
