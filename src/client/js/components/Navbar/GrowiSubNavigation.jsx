@@ -20,7 +20,6 @@ import BookmarkButton from '../BookmarkButton';
 
 import PageCreator from './PageCreator';
 import RevisionAuthor from './RevisionAuthor';
-import HeaderSearchBox from '../HeaderSearchBox';
 
 // eslint-disable-next-line react/prop-types
 const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
