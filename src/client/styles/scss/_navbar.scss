@@ -18,6 +18,15 @@
 
   .grw-search-bar {
     height: $grw-navbar-height;
+    .search-top {
+      .rbt-input.form-control {
+        width: 100%;
+        // focus
+        &.focus {
+          width: 100%;
+        }
+      }
+    }
   }
 
   .nav-link,
