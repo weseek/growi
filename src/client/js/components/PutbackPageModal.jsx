@@ -42,7 +42,7 @@ const PutBackPageModal = (props) => {
     }
   }
 
-  async function purbackPageButtonnHandler() {
+  async function putbackPageButtonHandler() {
     putbackPage();
   }
 
@@ -75,7 +75,7 @@ const PutBackPageModal = (props) => {
       </ModalBody>
       <ModalFooter>
         <ApiErrorMessage errorCode={errorCode} errorMessage={errorMessage} linkPath={path} />
-        <button type="button" className="btn btn-info" onClick={purbackPageButtonnHandler}>
+        <button type="button" className="btn btn-info" onClick={putbackPageButtonHandler}>
           <i className="icon-action-undo mr-2" aria-hidden="true"></i> { t('Put Back') }
         </button>
       </ModalFooter>
