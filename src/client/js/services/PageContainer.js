@@ -114,6 +114,8 @@ export default class PageContainer extends Container {
     this.closePageDuplicateModal = this.closePageDuplicateModal.bind(this);
     this.openCreateTemplatePageModal = this.openCreateTemplatePageModal.bind(this);
     this.closeCreateTemplatePageModal = this.closeCreateTemplatePageModal.bind(this);
+    this.openRenameModal = this.openRenameModal.bind(this);
+    this.closeRenameModal = this.closeRenameModal.bind(this);
   }
 
   /**
@@ -446,6 +448,14 @@ export default class PageContainer extends Container {
 
   closeCreateTemplatePageModal() {
     this.setState({ isCreateTemplatePageModalShown: false });
+  }
+
+  openRenameModal() {
+    this.setState({ isRenameModalShown: true });
+  }
+
+  closeRenameModal() {
+    this.setState({ isRenameModalShown: false });
   }
 
 }

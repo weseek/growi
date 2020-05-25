@@ -100,8 +100,6 @@ export default class AppContainer extends Container {
 
     this.openPageCreateModal = this.openPageCreateModal.bind(this);
     this.closePageCreateModal = this.closePageCreateModal.bind(this);
-    this.openRenameModal = this.openRenameModal.bind(this);
-    this.closeRenameModal = this.closeRenameModal.bind(this);
   }
 
   /**
@@ -487,14 +485,6 @@ export default class AppContainer extends Container {
 
   closePageCreateModal() {
     this.setState({ isPageCreateModalShown: false });
-  }
-
-  openRenameModal() {
-    this.setState({ isRenameModalShown: true });
-  }
-
-  closeRenameModal() {
-    this.setState({ isRenameModalShown: false });
   }
 
 }

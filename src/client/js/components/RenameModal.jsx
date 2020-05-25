@@ -51,7 +51,7 @@ const RenameModal = (props) => {
   }
 
   return (
-    <Modal isOpen={appContainer.state.isRenameModalShown} toggle={appContainer.closeRenameModal}>
+    <Modal isOpen={pageContainer.state.isRenameModalShown} toggle={pageContainer.closeRenameModal}>
       <ModalHeader tag="h4" toggle={appContainer.closeRenameModal} className="bg-primary text-light">
         { t('modal_rename.label.Move/Rename page') }
       </ModalHeader>

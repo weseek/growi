@@ -12,8 +12,15 @@ import RenameModal from '../RenameModal';
 
 const PageManagement = (props) => {
   const { t, appContainer, pageContainer } = props;
-  const { path, isDeletable, isAbleToDeleteCompletely } = pageContainer.state;
-  const { currentUser, openRenameModal, closeRenameModal } = appContainer;
+  const {
+    path,
+    isDeletable,
+    isAbleToDeleteCompletely,
+    openRenameModal,
+    closeRenameModal,
+  } = pageContainer.state;
+
+  const { currentUser } = appContainer;
   const isTopPagePath = isTopPage(path);
 
   const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);
@@ -29,7 +36,7 @@ const PageManagement = (props) => {
   function renderDropdownItemForNotTopPage() {
     return (
       <>
-        <a className="dropdown-item" href="#" onClick={appContainer.openRenameModal}>
+        <a className="dropdown-item" href="#" onClick={pageContainer.openRenameModal}>
           <i className="icon-fw icon-action-redo"></i> { t('Move/Rename') }
         </a>
         <RenameModal
