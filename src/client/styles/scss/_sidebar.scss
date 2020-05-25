@@ -125,6 +125,11 @@
       }
     }
   }
+  div[class$='-Outer'] {
+    div[class$='-Shadow'] {
+      background: linear-gradient(to left, rgba(0, 0, 0, 0.1) 0px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0) 100%);
+    }
+  }
 }
 
 // Drawer Mode

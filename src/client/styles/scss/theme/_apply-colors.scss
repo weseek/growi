@@ -165,12 +165,6 @@ $input-focus-color: $color-global;
       background-color: $bgcolor-sidebar-context;
     }
   }
-  div[class$='-Outer'] {
-    div[class$='-Shadow'] {
-      background: unset;
-      border-right: 1px solid $gray-300;
-    }
-  }
 
   // List
   @include override-list-group-item($color-list, $bgcolor-sidebar-list-group, $color-list-hover, $color-list-active, $bgcolor-list-active);
