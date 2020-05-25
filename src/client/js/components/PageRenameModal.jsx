@@ -15,8 +15,10 @@ import ApiErrorMessage from './PageManagement/ApiErrorMessage';
 
 const PageRenameModal = (props) => {
   const {
-    t, appContainer, pageContainer, path,
+    t, appContainer, pageContainer,
   } = props;
+
+  const { path } = pageContainer.state;
 
   const { crowi } = appContainer.config;
 
@@ -25,8 +27,8 @@ const PageRenameModal = (props) => {
   const [errorMessage, setErrorMessage] = useState(null);
 
   const [isRenameRecursively, SetIsRenameRecursively] = useState(true);
-  const [isRenameRedirect, SetIsRenameRedirect] = useState(false);
-  const [isRenameMetadata, SetIsRenameMetadata] = useState(false);
+  const [isRenameRedirect, SetIsRenameRedirect] = useState(true);
+  const [isRenameMetadata, SetIsRenameMetadata] = useState(true);
 
   function changeIsRenameRecursivelyHandler() {
     SetIsRenameRecursively(!isRenameRecursively);
@@ -45,12 +47,12 @@ const PageRenameModal = (props) => {
       setErrorCode(null);
       setErrorMessage(null);
 
-      const response = await appContainer.apiPost('/pages.rename', {
-        new_path: pageNameInput,
-        create_redirect: isRenameRedirect,
-        remain_metadata: isRenameMetadata,
-        recursively: isRenameRecursively,
-      });
+      const response = await pageContainer.rename(
+        pageNameInput,
+        isRenameRedirect,
+        isRenameMetadata,
+        isRenameRecursively,
+      );
       const { page } = response;
       window.location.href = encodeURI(`${page.path}?rename=${path}`);
     }
@@ -68,7 +70,7 @@ const PageRenameModal = (props) => {
       <ModalBody>
         <div className="form-group">
           <label>{ t('modal_rename.label.Current page name') }</label><br />
-          <code>{path}</code>
+          <code>{ path }</code>
         </div>
         <div className="form-group">
           <label htmlFor="newPageName">{ t('modal_rename.label.New page name') }</label><br />

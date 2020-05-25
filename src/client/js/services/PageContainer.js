@@ -351,6 +351,21 @@ export default class PageContainer extends Container {
     });
   }
 
+  rename(pageNameInput, isRenameRedirect, isRenameMetadata, isRenameRecursively) {
+    const websocketContainer = this.appContainer.getContainer('WebsocketContainer');
+    const recursively = isRenameRecursively ? true : null;
+
+    return this.appContainer.apiPost('/pages.rename', {
+      recursively,
+      page_id: this.state.pageId,
+      revision_id: this.state.revisionId,
+      new_path: pageNameInput,
+      create_redirect: isRenameRedirect,
+      remain_metadata: isRenameMetadata,
+      socketClientId: websocketContainer.getSocketClientId(),
+    });
+  }
+
   showSuccessToastr() {
     toastr.success(undefined, 'Saved successfully', {
       closeButton: true,
