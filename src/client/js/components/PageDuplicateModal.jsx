@@ -67,7 +67,7 @@ const PageDuplicateModal = (props) => {
       </ModalHeader>
       <ModalBody>
         <div className="form-group">
-          <label htmlFor="">{ t('modal_duplicate.label.Current page name') }</label><br />
+          <label>{ t('modal_duplicate.label.Current page name') }</label><br />
           <code>{ path }</code>
         </div>
         <div className="form-group">
