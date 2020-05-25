@@ -116,6 +116,15 @@
       }
     }
   }
+  div[class$='-ScrollableTransitionGroup'] {
+    // remove horizontal line
+    > div > div {
+      &:before,
+      &:after {
+        display: none;
+      }
+    }
+  }
 }
 
 // Drawer Mode
