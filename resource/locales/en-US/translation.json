@@ -130,6 +130,8 @@
   "Deleted Pages": "Deleted Pages",
   "Sign out": "Logout",
   "Disassociate": "Disassociate",
+  "Recent Created": "Recent Created",
+  "Recent Changes": "Recent Changes",
   "form_validation": {
     "error_message": "Some values ​​are incorrect",
     "required": "%s is required",

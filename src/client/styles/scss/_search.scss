@@ -110,6 +110,10 @@
     &.focus {
       width: 300px;
     }
+
+    @include media-breakpoint-up(xl) {
+      width: 300px;
+    }
   }
 }
 
