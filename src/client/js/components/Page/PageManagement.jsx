@@ -12,6 +12,7 @@ import PageDeleteModal from '../PageDeleteModal';
 const PageManagement = (props) => {
   const { t, appContainer, pageContainer } = props;
   const { path, isDeletable, isAbleToDeleteCompletely } = pageContainer.state;
+
   const { currentUser } = appContainer;
   const isTopPagePath = isTopPage(path);
 
@@ -28,7 +29,7 @@ const PageManagement = (props) => {
   function renderDropdownItemForNotTopPage() {
     return (
       <>
-        <a className="dropdown-item" href="#" data-target="#renamePage" data-toggle="modal">
+        <a className="dropdown-item" type="button" onClick={pageContainer.openPageRenameModal}>
           <i className="icon-fw icon-action-redo"></i> { t('Move/Rename') }
         </a>
         <a className="dropdown-item" type="button" onClick={pageContainer.openPageDuplicateModal}>

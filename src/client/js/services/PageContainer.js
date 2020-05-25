@@ -65,6 +65,7 @@ export default class PageContainer extends Container {
 
       isPageDuplicateModalShown: false,
       isCreateTemplatePageModalShown: false,
+      isPageRenameModalShown: false,
 
       isHeaderSticky: false,
       isSubnavCompact: false,
@@ -109,6 +110,8 @@ export default class PageContainer extends Container {
     this.closePageDuplicateModal = this.closePageDuplicateModal.bind(this);
     this.openCreateTemplatePageModal = this.openCreateTemplatePageModal.bind(this);
     this.closeCreateTemplatePageModal = this.closeCreateTemplatePageModal.bind(this);
+    this.openPageRenameModal = this.openPageRenameModal.bind(this);
+    this.closePageRenameModal = this.closePageRenameModal.bind(this);
   }
 
   /**
@@ -348,6 +351,21 @@ export default class PageContainer extends Container {
     });
   }
 
+  rename(pageNameInput, isRenameRedirect, isRenameMetadata, isRenameRecursively) {
+    const websocketContainer = this.appContainer.getContainer('WebsocketContainer');
+    const recursively = isRenameRecursively ? true : null;
+
+    return this.appContainer.apiPost('/pages.rename', {
+      recursively,
+      page_id: this.state.pageId,
+      revision_id: this.state.revisionId,
+      new_path: pageNameInput,
+      create_redirect: isRenameRedirect,
+      remain_metadata: isRenameMetadata,
+      socketClientId: websocketContainer.getSocketClientId(),
+    });
+  }
+
   showSuccessToastr() {
     toastr.success(undefined, 'Saved successfully', {
       closeButton: true,
@@ -454,6 +472,14 @@ export default class PageContainer extends Container {
 
   closeCreateTemplatePageModal() {
     this.setState({ isCreateTemplatePageModalShown: false });
+  }
+
+  openPageRenameModal() {
+    this.setState({ isPageRenameModalShown: true });
+  }
+
+  closePageRenameModal() {
+    this.setState({ isPageRenameModalShown: false });
   }
 
 }

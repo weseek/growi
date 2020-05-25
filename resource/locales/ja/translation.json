@@ -268,9 +268,9 @@
       "Redirect": "リダイレクトする"
     },
     "help": {
-      "redirect": "<code class='text-break'>%s</code> にアクセスされた際に自動的に新しいページにジャンプします",
+      "redirect": "にアクセスされた際に自動的に新しいページにジャンプします",
       "metadata": "最終更新ユーザー、最終更新日を更新せず維持します",
-      "recursive": "<code class='text-break'>%s</code> 配下のページも移動/名前変更します"
+      "recursive": "配下のページも移動/名前変更します"
     }
   },
   "Put Back": "元に戻す",
