@@ -379,7 +379,7 @@ class PageEditorByHackmd extends React.Component {
             <div className="bg-box p-5 text-center">
               <h2 className="text-warning"><i className="icon-fw icon-exclamation"></i> {t('hackmd.integration_failed')}</h2>
               <h4>{this.state.errorMessage}</h4>
-              <p className="card well well-sm text-danger">
+              <p className="card well text-danger">
                 {this.state.errorReason}
               </p>
               {/* eslint-disable-next-line react/no-danger */}
