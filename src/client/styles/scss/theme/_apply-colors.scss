@@ -5,6 +5,8 @@
 // determine optional variables
 $border-image-navbar: linear-gradient(to right, #ccc 0%, #ccc 100%) !default;
 $bgcolor-search-top-dropdown: $secondary !default;
+$bgcolor-sidebar-item-active: darken($bgcolor-sidebar, 10%) !default;
+$text-shadow-sidebar-item-active: 1px 1px 2px $primary !default;
 
 // override bootstrap variables
 $body-bg: $bgcolor-global;
@@ -139,10 +141,25 @@ $input-focus-color: $color-global;
     }
   }
 
+  .grw-global-item-container {
+    .btn {
+      @include button-variant(
+        $bgcolor-sidebar,
+        $bgcolor-sidebar,
+        darken($bgcolor-sidebar, 7.5%),
+        darken($bgcolor-sidebar, 10%),
+        $bgcolor-sidebar-item-active,
+        $bgcolor-sidebar-item-active
+      );
+    }
+  }
   .grw-global-item-container.active {
-    button:after {
+    .btn:after {
       // fukidashi color
-      border-right-color: darken($bgcolor-global, 4%);
+      border-right-color: $bgcolor-sidebar-context;
+    }
+    i {
+      text-shadow: $text-shadow-sidebar-item-active;
     }
   }
   div[data-testid='GlobalNavigation'] {

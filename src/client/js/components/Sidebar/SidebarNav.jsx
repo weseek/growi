@@ -37,7 +37,7 @@ class SidebarNav extends React.Component {
         <div className={`${className} grw-global-item-container ${isSelected ? 'active' : ''}`}>
           <button
             type="button"
-            className="btn btn-primary btn-lg"
+            className={`btn btn-primary btn-lg ${isSelected ? 'active' : ''}`}
             onClick={() => this.itemSelectedHandler(id)}
           >
             <i className={iconClassNames}></i>

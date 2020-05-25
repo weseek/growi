@@ -53,6 +53,8 @@ html[light] {
   $bgcolor-sidebar: #122c55;
   $color-sidebar-context: $color-global;
   $bgcolor-sidebar-context: #f4f6fc;
+  $bgcolor-sidebar-item-active: rgba(#000000, 0.3); // optional
+  $text-shadow-sidebar-item-active: 0px 0px 10px #0099ff; // optional
   // Sidebar resize button
   $color-resize-button: $color-reversal;
   $bgcolor-resize-button: #209fd8;
@@ -122,8 +124,10 @@ html[dark] {
 
   // Sidebar
   $bgcolor-sidebar: #122c55;
-  $color-sidebar-context: $color-global;
   $bgcolor-sidebar-context: #111d2f;
+  $color-sidebar-context: $color-global;
+  $bgcolor-sidebar-item-active: rgba(#969494, 0.3); // optional
+  $text-shadow-sidebar-item-active: 0px 0px 10px #0099ff; // optional
   // Sidebar resize button
   $color-resize-button: $color-global;
   $bgcolor-resize-button: $primary;
