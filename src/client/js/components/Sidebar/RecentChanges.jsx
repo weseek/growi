@@ -91,7 +91,7 @@ class RecentChanges extends React.Component {
             <div className="grw-sidebar-header-container p-3 d-flex">
               <h3>{t('Recent Changes')}</h3>
               {/* <h3>{t('Recent Created')}</h3> */} {/* TODO: impl switching */}
-              <button type="button" className="btn btn-xs btn-outline-secondary ml-auto" onClick={this.reloadData}>
+              <button type="button" className="btn btn-sm btn-outline-secondary ml-auto" onClick={this.reloadData}>
                 <i className="icon icon-reload"></i>
               </button>
             </div>
