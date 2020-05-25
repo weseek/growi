@@ -57,16 +57,6 @@ const TrashPageAlert = (props) => {
     }
   }
 
-  async function putBackButtonHandler() {
-    try {
-      await appContainer.apiv3Delete('/pages/empty-trash');
-      window.location.reload();
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }
-
   function emptyButtonHandler() {
     emptyTrash();
   }
@@ -120,8 +110,12 @@ const TrashPageAlert = (props) => {
         {(currentUser.admin && path === '/trash' && hasChildren) && renderEmptyButton()}
         {(isDeleted && currentUser != null) && renderTrashPageManagementButtons()}
       </div>
-      <PutbackPageModal isOpen={isPutbackPageModalShown} onClose={closePutbackPageModalHandler} onClickSubmit={putBackButtonHandler} />
       <EmptyTrashModal isOpen={isEmptyTrashModalShown} onClose={closeEmptyTrashModalHandler} onClickEmptyBtn={emptyButtonHandler} />
+      <PutbackPageModal
+        isOpen={isPutbackPageModalShown}
+        onClose={closePutbackPageModalHandler}
+        path={path}
+      />
       <PageDeleteModal
         isOpen={isPageDeleteModalShown}
         onClose={opclosePageDeleteModalHandler}
