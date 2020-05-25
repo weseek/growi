@@ -10,6 +10,8 @@ $color-list-active: $color-reversal !default;
 $bgcolor-list-active: $primary !default;
 $border-image-navbar: linear-gradient(to right, #ccc 0%, #ccc 100%) !default;
 $bgcolor-search-top-dropdown: $secondary !default;
+$bgcolor-sidebar-nav-item-active: darken($bgcolor-sidebar, 10%) !default;
+$text-shadow-sidebar-nav-item-active: 1px 1px 2px $primary !default;
 $bgcolor-sidebar-list-group: $bgcolor-list !default;
 
 // override bootstrap variables
@@ -138,8 +140,8 @@ $input-focus-color: $color-global;
         $bgcolor-sidebar,
         darken($bgcolor-sidebar, 7.5%),
         darken($bgcolor-sidebar, 10%),
-        $bgcolor-sidebar-item-active,
-        $bgcolor-sidebar-item-active
+        $bgcolor-sidebar-nav-item-active,
+        $bgcolor-sidebar-nav-item-active
       );
     }
   }
@@ -149,7 +151,7 @@ $input-focus-color: $color-global;
       border-right-color: $bgcolor-sidebar-context;
     }
     i {
-      text-shadow: $text-shadow-sidebar-item-active;
+      text-shadow: $text-shadow-sidebar-nav-item-active;
     }
   }
   div[data-testid='GlobalNavigation'] {
