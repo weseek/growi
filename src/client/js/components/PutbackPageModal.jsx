@@ -32,10 +32,11 @@ const PutBackPageModal = (props) => {
     setIsPutbackRecursively(!isPutbackRecursively);
   }
 
-  async function clickPutbackButtonHandler() {
+  async function putbackPage() {
+    setErrorCode(null);
+    setErrorMessage(null);
+
     try {
-      setErrorCode(null);
-      setErrorMessage(null);
       const res = await appContainer.apiPost('/pages.revertRemove', { page_id: pageId });
       const { page } = res;
       window.location.href = encodeURI(`${page.path}`);
