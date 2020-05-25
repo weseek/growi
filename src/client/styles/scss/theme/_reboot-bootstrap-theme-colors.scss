@@ -1,3 +1,5 @@
+$theme-colors: map-merge($theme-colors, $colors);
+
 @each $color, $value in $theme-colors {
   @include bg-variant('.bg-#{$color}', $value);
 }

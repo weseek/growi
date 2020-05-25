@@ -80,14 +80,14 @@
     </ul>
 
     {# Brand Logo #}
-    <div class="navbar-brand mr-md-auto">
+    <div class="navbar-brand mr-0">
       <a class="grw-logo d-block" href="/">
         {% include '../widget/logo.html' %}
       </a>
     </div>
 
-    {# Navbar Center #}
-    <ul class="navbar-nav d-none d-md-block">
+    {# Search #}
+    <ul class="navbar-nav grw-navbar-search d-none d-md-block position-absolute">
       <li>
         {% if isSearchServiceConfigured() %}
         <div class="search-top" role="search" id="search-top"></div>
