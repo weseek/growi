@@ -7,18 +7,11 @@ import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 import PageDeleteModal from '../PageDeleteModal';
-import RenameModal from '../RenameModal';
 
 
 const PageManagement = (props) => {
   const { t, appContainer, pageContainer } = props;
-  const {
-    path,
-    isDeletable,
-    isAbleToDeleteCompletely,
-    openRenameModal,
-    closeRenameModal,
-  } = pageContainer.state;
+  const { path, isDeletable, isAbleToDeleteCompletely } = pageContainer.state;
 
   const { currentUser } = appContainer;
   const isTopPagePath = isTopPage(path);
@@ -36,14 +29,9 @@ const PageManagement = (props) => {
   function renderDropdownItemForNotTopPage() {
     return (
       <>
-        <a className="dropdown-item" href="#" onClick={pageContainer.openRenameModal}>
+        <a className="dropdown-item" type="button" onClick={pageContainer.openPageRenameModal}>
           <i className="icon-fw icon-action-redo"></i> { t('Move/Rename') }
         </a>
-        <RenameModal
-          isOpen={openRenameModal}
-          onClose={closeRenameModal}
-          path={path}
-        />
         <a className="dropdown-item" type="button" onClick={pageContainer.openPageDuplicateModal}>
           <i className="icon-fw icon-docs"></i> { t('Duplicate') }
         </a>

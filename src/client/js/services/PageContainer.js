@@ -65,11 +65,7 @@ export default class PageContainer extends Container {
 
       isPageDuplicateModalShown: false,
       isCreateTemplatePageModalShown: false,
-      isRenameModalShown: false,
-
-      isRenameRecursively: true,
-      isRenameRedirect: false,
-      isRenameMetadata: false,
+      isPageRenameModalShown: false,
 
       isHeaderSticky: false,
       isSubnavCompact: false,
@@ -114,8 +110,8 @@ export default class PageContainer extends Container {
     this.closePageDuplicateModal = this.closePageDuplicateModal.bind(this);
     this.openCreateTemplatePageModal = this.openCreateTemplatePageModal.bind(this);
     this.closeCreateTemplatePageModal = this.closeCreateTemplatePageModal.bind(this);
-    this.openRenameModal = this.openRenameModal.bind(this);
-    this.closeRenameModal = this.closeRenameModal.bind(this);
+    this.openPageRenameModal = this.openPageRenameModal.bind(this);
+    this.closePageRenameModal = this.closePageRenameModal.bind(this);
   }
 
   /**
@@ -463,12 +459,12 @@ export default class PageContainer extends Container {
     this.setState({ isCreateTemplatePageModalShown: false });
   }
 
-  openRenameModal() {
-    this.setState({ isRenameModalShown: true });
+  openPageRenameModal() {
+    this.setState({ isPageRenameModalShown: true });
   }
 
-  closeRenameModal() {
-    this.setState({ isRenameModalShown: false });
+  closePageRenameModal() {
+    this.setState({ isPageRenameModalShown: false });
   }
 
 }
