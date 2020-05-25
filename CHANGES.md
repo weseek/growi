@@ -18,11 +18,11 @@
 * Support: Upgrade libs
     * bootstrap
 
-## v3.8.1-RC
+## v3.8.2-RC
 
-* Fix: Unset overflow-y style for Edit Tags Modal
+*
 
-## v3.8.0
+## v3.8.1
 
 ### BREAKING CHANGES
 
@@ -33,11 +33,20 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/38x.html>
 ### Updates
 
 * Improvement: Change the health check method for Elasticsearch
+* Fix: Unset overflow-y style for Edit Tags Modal
+* Fix: Duplicate page source is overwrited
+    * Introduced by 3.7.6
 
-## v3.7.6
+## v3.8.0  (Missing number)
+
+## v3.7.7
 
 * Feature: Empty trash pages
 * Improvement: Behavior of Reconnect to Elasticsearch button
+* Fix: Duplicate page source is overwrited
+    * Introduced by 3.7.6
+
+## v3.7.6  (Missing number)
 
 ## v3.7.5
 
