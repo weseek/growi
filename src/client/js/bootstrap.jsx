@@ -7,7 +7,7 @@ import HeaderSearchBox from './components/HeaderSearchBox';
 import PersonalDropdown from './components/Navbar/PersonalDropdown';
 // import StaffCredit from './components/StaffCredit/StaffCredit';
 // import MirrorMode from './components/MirrorMode/MirrorMode';
-import KonamiCommand from './components/KonamiCommand/KonamiCommand';
+import Hotkey from './components/Hotkey/Hotkey';
 
 import AppContainer from './services/AppContainer';
 import WebsocketContainer from './services/WebsocketContainer';
@@ -41,9 +41,7 @@ const componentMappings = {
   'search-top': <HeaderSearchBox />,
   'search-sidebar': <HeaderSearchBox crowi={appContainer} />,
   'personal-dropdown': <PersonalDropdown />,
-  'konami-command': <KonamiCommand />,
-  // 'staff-credit': <StaffCredit />,
-  // 'mirror-mode': <MirrorMode />,
+  'hotkey': <Hotkey />,
 };
 
 export { appContainer, componentMappings };
