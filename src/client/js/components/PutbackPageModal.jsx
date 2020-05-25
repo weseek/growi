@@ -52,8 +52,8 @@ const PutBackPageModal = (props) => {
         <i className="icon-action-undo mr-2" aria-hidden="true"></i> { t('modal_putback.label.Put Back Page') }
       </ModalHeader>
       <ModalBody>
-        <div>
-          <label htmlFor="">{t('modal_putback.label.Put Back Page')}:</label><br />
+        <div className="form-group">
+          <label>{t('modal_putback.label.Put Back Page')}:</label><br />
           <code>{path}</code>
         </div>
         <div className="custom-control custom-checkbox custom-checkbox-warning">
@@ -68,8 +68,7 @@ const PutBackPageModal = (props) => {
             { t('modal_putback.label.recursively') }
           </label>
           <p className="form-text text-muted mt-0">
-            <code>{ path }</code><br />
-            { t('modal_putback.help.recursively') }
+            <code>{ path }</code>{ t('modal_putback.help.recursively') }
           </p>
         </div>
       </ModalBody>
