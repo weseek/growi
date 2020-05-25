@@ -9,19 +9,14 @@ import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from './UnstatedUtils';
 
-import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 
 import ApiErrorMessage from './PageManagement/ApiErrorMessage';
 
 const PutBackPageModal = (props) => {
   const {
-    t, isOpen, onClose, appContainer, pageContainer,
+    t, isOpen, onClose, pageContainer, path,
   } = props;
-
-  const {
-    pageId, path,
-  } = pageContainer.state;
 
   const [errorCode, setErrorCode] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -37,9 +32,9 @@ const PutBackPageModal = (props) => {
     setErrorMessage(null);
 
     try {
-      const res = await appContainer.apiPost('/pages.revertRemove', { page_id: pageId });
-      const { page } = res;
-      window.location.href = encodeURI(`${page.path}`);
+      const response = await pageContainer.revertRemove(isPutbackRecursively);
+      const putbackPagePath = response.page.path;
+      window.location.href = encodeURI(putbackPagePath);
     }
     catch (err) {
       setErrorCode(err.code);
@@ -93,17 +88,17 @@ const PutBackPageModal = (props) => {
  * Wrapper component for using unstated
  */
 const PutBackPageModalWrapper = (props) => {
-  return createSubscribedElement(PutBackPageModal, props, [AppContainer, PageContainer]);
+  return createSubscribedElement(PutBackPageModal, props, [PageContainer]);
 };
 
 PutBackPageModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
-  page: PropTypes.object.isRequired,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  appContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+
+  path: PropTypes.string.isRequired,
 };
 
 
