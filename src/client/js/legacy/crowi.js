@@ -1,7 +1,4 @@
 /* eslint-disable react/jsx-filename-extension */
-
-import { pathUtils } from 'growi-commons';
-
 require('jquery.cookie');
 
 require('./thirdparty-js/waves');
@@ -182,7 +179,6 @@ Crowi.highlightSelectedSection = function(hash) {
 
 $(() => {
   const appContainer = window.appContainer;
-  const websocketContainer = appContainer.getContainer('WebsocketContainer');
   const config = appContainer.getConfig();
 
   const pageId = $('#content-main').data('page-id');
@@ -190,7 +186,6 @@ $(() => {
   // const revisionCreatedAt = $('#content-main').data('page-revision-created');
   // const currentUser = $('#content-main').data('current-user');
   const isSeen = $('#content-main').data('page-is-seen');
-  const pagePath = $('#content-main').data('path');
   const isSavedStatesOfTabChanges = config.isSavedStatesOfTabChanges;
 
   $('[data-toggle="popover"]').popover();
