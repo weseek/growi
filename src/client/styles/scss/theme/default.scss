@@ -34,11 +34,11 @@ html[light] {
   $color-inline-code: #c7254e;
 
   // List Group colors
-  $color-list: $color-global;
-  $bgcolor-list: $bgcolor-global;
-  $color-list-active: $color-reversal;
-  $bgcolor-list-active: $primary;
-  $color-list-hover: $color-reversal;
+  // $color-list: $color-global; // optional
+  // $bgcolor-list: $bgcolor-global; // optional
+  // $color-list-hover: $color-reversal; // optional
+  // $color-list-active: $color-reversal; // optional
+  // $bgcolor-list-active: $primary; // optional
 
   // Navbar
   $bgcolor-navbar: #2a2929;
@@ -60,6 +60,8 @@ html[light] {
   $bgcolor-resize-button: #209fd8;
   $color-resize-button-hover: $color-reversal;
   $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
+  // Sidebar list group
+  $bgcolor-sidebar-list-group: #fafbff; // optional
 
   // Icon colors
   $color-editor-icons: $color-global;
@@ -107,11 +109,11 @@ html[dark] {
   $color-inline-code: #c7254e;
 
   // List Group colors
-  $color-list: $color-global;
-  $bgcolor-list: $bgcolor-global;
-  $color-list-active: $color-global;
-  $bgcolor-list-active: $primary;
-  $color-list-hover: $color-reversal;
+  // $color-list: $color-global; // optional
+  // $bgcolor-list: $bgcolor-global; // optional
+  // $color-list-hover: $color-reversal; // optional
+  $color-list-active: white; // optional
+  // $bgcolor-list-active: $primary; // optional
 
   // Navbar
   $bgcolor-navbar: #2a2929;
@@ -133,6 +135,8 @@ html[dark] {
   $bgcolor-resize-button: $primary;
   $color-resize-button-hover: $color-global;
   $bgcolor-resize-button-hover: darken($bgcolor-resize-button, 5%);
+  // Sidebar list group
+  $bgcolor-sidebar-list-group: #1c2a3e; // optional
 
   // Icon colors
   $color-editor-icons: $color-global;
