@@ -30,11 +30,11 @@ const PageDuplicateModal = (props) => {
    * change pageNameInput
    * @param {string} value
    */
-  function onChangePageNameInputHandler(value) {
+  function ppacInputChangeHandler(value) {
     setPageNameInput(value);
   }
 
-  async function clickDuplicateButtonHandler() {
+  async function duplicate() {
     try {
       setErrorCode(null);
       setErrorMessage(null);
@@ -46,6 +46,10 @@ const PageDuplicateModal = (props) => {
       setErrorCode(err.code);
       setErrorMessage(err.message);
     }
+  }
+
+  function ppacSubmitHandler() {
+    duplicate();
   }
 
   return (
@@ -71,8 +75,8 @@ const PageDuplicateModal = (props) => {
                   crowi={appContainer}
                   initializedPath={path}
                   addTrailingSlash
-                  onClickSubmit={clickDuplicateButtonHandler}
-                  onInputChange={onChangePageNameInputHandler}
+                  onSubmit={ppacSubmitHandler}
+                  onInputChange={ppacInputChangeHandler}
                 />
               )
               : (
@@ -80,7 +84,7 @@ const PageDuplicateModal = (props) => {
                   type="text"
                   value={pageNameInput}
                   className="form-control"
-                  onChange={e => onChangePageNameInputHandler(e.target.value)}
+                  onChange={e => ppacInputChangeHandler(e.target.value)}
                   required
                 />
               )}
@@ -90,7 +94,7 @@ const PageDuplicateModal = (props) => {
       </ModalBody>
       <ModalFooter>
         <ApiErrorMessage errorCode={errorCode} errorMessage={errorMessage} linkPath={path} />
-        <button type="button" className="btn btn-primary" onClick={clickDuplicateButtonHandler}>Duplicate page</button>
+        <button type="button" className="btn btn-primary" onClick={duplicate}>Duplicate page</button>
       </ModalFooter>
     </Modal>
 
