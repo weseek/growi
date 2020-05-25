@@ -72,12 +72,15 @@ const PutBackPageModal = (props) => {
           <label htmlFor="cbPutBackRecursively" className="custom-control-label">
             { t('modal_putback.label.recursively') }
           </label>
-          <p className="form-text text-muted mt-0"><code>{ path }</code>{ t('modal_putback.help.recursively') }</p>
+          <p className="form-text text-muted mt-0">
+            <code>{ path }</code><br />
+            { t('modal_putback.help.recursively') }
+          </p>
         </div>
       </ModalBody>
       <ModalFooter>
         <ApiErrorMessage errorCode={errorCode} errorMessage={errorMessage} linkPath={path} />
-        <button type="button" className="btn btn-info" onClick={clickPutbackButtonHandler}>
+        <button type="button" className="btn btn-info" onClick={purbackPageButtonnHandler}>
           <i className="icon-action-undo mr-2" aria-hidden="true"></i> { t('Put Back') }
         </button>
       </ModalFooter>
