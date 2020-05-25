@@ -8,7 +8,7 @@ import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 import UserPicture from '../User/UserPicture';
-
+import PutbackPageModal from '../PutbackPageModal';
 import EmptyTrashModal from '../EmptyTrashModal';
 import PageDeleteModal from '../PageDeleteModal';
 
@@ -20,6 +20,7 @@ const TrashPageAlert = (props) => {
   } = pageContainer.state;
   const { currentUser } = appContainer;
   const [isEmptyTrashModalShown, setIsEmptyTrashModalShown] = useState(false);
+  const [isPutbackPageModalShown, setIsPutbackPageModalShown] = useState(false);
   const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);
 
   function openEmptyTrashModalHandler() {
@@ -28,6 +29,14 @@ const TrashPageAlert = (props) => {
 
   function closeEmptyTrashModalHandler() {
     setIsEmptyTrashModalShown(false);
+  }
+
+  function openPutbackPageModalHandler() {
+    setIsPutbackPageModalShown(true);
+  }
+
+  function closePutbackPageModalHandler() {
+    setIsPutbackPageModalShown(false);
   }
 
   function openPageDeleteModalHandler() {
@@ -72,8 +81,8 @@ const TrashPageAlert = (props) => {
       <>
         <button
           type="button"
-          className="btn btn-outline-secondary rounded-pill btn-sm ml-auto mr-2"
-          data-target="#putBackPage"
+          className="btn btn-info rounded-pill btn-sm ml-auto mr-2"
+          onClick={openPutbackPageModalHandler}
           data-toggle="modal"
         >
           <i className="icon-action-undo" aria-hidden="true"></i> { t('Put Back') }
@@ -101,6 +110,11 @@ const TrashPageAlert = (props) => {
         {(isDeleted && currentUser != null) && renderTrashPageManagementButtons()}
       </div>
       <EmptyTrashModal isOpen={isEmptyTrashModalShown} onClose={closeEmptyTrashModalHandler} onClickEmptyBtn={emptyButtonHandler} />
+      <PutbackPageModal
+        isOpen={isPutbackPageModalShown}
+        onClose={closePutbackPageModalHandler}
+        path={path}
+      />
       <PageDeleteModal
         isOpen={isPageDeleteModalShown}
         onClose={opclosePageDeleteModalHandler}

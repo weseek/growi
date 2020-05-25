@@ -303,7 +303,7 @@
       "recursively": "Put back recursively"
     },
     "help": {
-      "recursively": "Put back children of under <code>%s</code> recursively"
+      "recursively": "Put back page under this path recursively"
     }
   },
   "modal_shortcuts": {
