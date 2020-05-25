@@ -81,6 +81,10 @@ const PageCreateModal = (props) => {
     window.location.href = encodeURI(urljoin(pageNameInput, '#edit'));
   }
 
+  function ppacInputChangeHandler(value) {
+    setPageNameInput(value);
+  }
+
   /**
    * access template page
    */
@@ -141,7 +145,15 @@ const PageCreateModal = (props) => {
 
             <div className="flex-fill">
               {isReachable
-                ? <PagePathAutoComplete crowi={appContainer} initializedPath={path} addTrailingSlash />
+                ? (
+                  <PagePathAutoComplete
+                    crowi={appContainer}
+                    initializedPath={path}
+                    addTrailingSlash
+                    onSubmit={ppacInputChangeHandler}
+                    onInputChange={ppacInputChangeHandler}
+                  />
+                )
                 : (
                   <input
                     type="text"
