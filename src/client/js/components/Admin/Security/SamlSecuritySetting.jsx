@@ -213,7 +213,7 @@ class SamlSecurityManagement extends React.Component {
                   <th>{t('security_setting.form_item_name.cert')}</th>
                   <td>
                     <textarea
-                      className="form-control input-sm"
+                      className="form-control form-control-sm"
                       type="text"
                       rows="5"
                       name="samlCert"
@@ -243,7 +243,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                   </td>
                   <td>
                     <textarea
-                      className="form-control input-sm"
+                      className="form-control form-control-sm"
                       type="text"
                       rows="5"
                       readOnly
