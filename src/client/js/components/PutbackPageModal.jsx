@@ -47,14 +47,18 @@ const PutBackPageModal = (props) => {
     }
   }
 
+  async function purbackPageButtonnHandler() {
+    putbackPage();
+  }
+
   return (
     <Modal isOpen={isOpen} toggle={onClose} className="grw-create-page">
       <ModalHeader tag="h4" toggle={onClose} className="bg-info text-light">
-        <i className="icon-action-undo mr-2" aria-hidden="true"></i> { t('Put Back Page') }
+        <i className="icon-action-undo mr-2" aria-hidden="true"></i> { t('modal_putback.label.Put Back Page') }
       </ModalHeader>
       <ModalBody>
         <div>
-          <label htmlFor="">Put back page:</label><br />
+          <label htmlFor="">{t('modal_putback.label.Put Back Page')}:</label><br />
           <code>{path}</code>
         </div>
         <div className="custom-control custom-checkbox custom-checkbox-warning">
