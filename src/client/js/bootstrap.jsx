@@ -12,7 +12,6 @@ import StaffCredit from './components/StaffCredit/StaffCredit';
 import AppContainer from './services/AppContainer';
 import WebsocketContainer from './services/WebsocketContainer';
 import PageCreateButton from './components/Navbar/PageCreateButton';
-import PageCreateModal from './components/PageCreateModal';
 
 const logger = loggerFactory('growi:app');
 
@@ -48,7 +47,6 @@ const componentMappings = {
 
   'create-page-button': <PageCreateButton />,
   'create-page-button-icon': <PageCreateButton isIcon />,
-  'page-create-modal': <PageCreateModal />,
 
   'grw-sidebar-wrapper': <Sidebar />,
 
