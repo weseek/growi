@@ -18,6 +18,7 @@
 
 .search-typeahead {
   position: relative;
+  width: 100%;
 
   .search-clear {
     position: absolute;
@@ -101,18 +102,28 @@
 }
 
 // layout
-.search-top {
-  .rbt-input.form-control {
-    width: 200px;
-    transition: 0.3s ease-out;
+.grw-navbar-search {
+  .search-top {
+    .rbt-input.form-control {
+      width: 200px;
+      transition: 0.3s ease-out;
 
-    // focus
-    &.focus {
-      width: 300px;
+      // focus
+      &.focus {
+        width: 300px;
+      }
+
+      @include media-breakpoint-up(md) {
+        width: 300px;
+      }
     }
+  }
+}
 
-    @include media-breakpoint-up(md) {
-      width: 300px;
+.grw-search-top-modal {
+  .search-top {
+    .rbt-input.form-control {
+      width: 100%;
     }
   }
 }

@@ -3,7 +3,7 @@ import React from 'react';
 import loggerFactory from '@alias/logger';
 import Xss from '@commons/service/xss';
 
-import HeaderSearchBox from './components/HeaderSearchBox';
+import SearchTop from './components/Navbar/SearchTop';
 import NavbarToggler from './components/Navbar/NavbarToggler';
 import PersonalDropdown from './components/Navbar/PersonalDropdown';
 import Sidebar from './components/Sidebar';
@@ -42,8 +42,7 @@ appContainer.injectToWindow();
 const componentMappings = {
   'grw-navbar-toggler': <NavbarToggler />,
 
-  'search-top': <HeaderSearchBox />,
-  'search-sidebar': <HeaderSearchBox crowi={appContainer} />,
+  'grw-search-top': <SearchTop />,
   'personal-dropdown': <PersonalDropdown />,
 
   'create-page-button': <PageCreateButton />,
