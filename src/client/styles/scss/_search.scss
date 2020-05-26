@@ -102,8 +102,14 @@
 }
 
 // layout
-.grw-navbar-search {
-  .search-top {
+.search-top {
+  .grw-search-top-fixed {
+    // centering on navbar
+    top: $grw-navbar-height / 2;
+    left: 50vw;
+    z-index: $zindex-fixed + 1;
+    transform: translate(-50%, -50%);
+
     .rbt-input.form-control {
       width: 200px;
       transition: 0.3s ease-out;
@@ -116,14 +122,6 @@
       @include media-breakpoint-up(md) {
         width: 300px;
       }
-    }
-  }
-}
-
-.grw-search-top-modal {
-  .search-top {
-    .rbt-input.form-control {
-      width: 100%;
     }
   }
 }

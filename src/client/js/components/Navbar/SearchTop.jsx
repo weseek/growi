@@ -16,6 +16,7 @@ class SearchTop extends React.Component {
     this.state = {
       text: '',
       isScopeChildren: false,
+      isCollapsed: true,
     };
 
     this.onInputChange = this.onInputChange.bind(this);
@@ -24,10 +25,14 @@ class SearchTop extends React.Component {
     this.search = this.search.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
+    this.initBreakpointEvents();
   }
 
-  componentWillUnmount() {
+  initBreakpointEvents() {
+    this.props.appContainer.addBreakpointListener('md', (mql) => {
+      this.setState({ isCollapsed: !mql.matches });
+    }, true);
   }
 
   onInputChange(text) {
@@ -56,7 +61,23 @@ class SearchTop extends React.Component {
     window.location.href = url.href;
   }
 
-  render() {
+  Root = ({ children }) => {
+    const { isCollapsed } = this.state;
+
+    return isCollapsed
+      ? (
+        <div id="grw-search-top-collapse" className="collapse bg-dark p-3">
+          {children}
+        </div>
+      )
+      : (
+        <div className="grw-search-top-fixed position-fixed">
+          {children}
+        </div>
+      );
+  };
+
+  SearchTopForm = () => {
     const { t, appContainer } = this.props;
     const scopeLabel = this.state.isScopeChildren
       ? t('header_search_box.label.This tree')
@@ -91,6 +112,13 @@ class SearchTop extends React.Component {
           </div>
         </div>
       </div>
+    );
+  }
+
+  render() {
+    const { Root, SearchTopForm } = this;
+    return (
+      <Root><SearchTopForm /></Root>
     );
   }
 

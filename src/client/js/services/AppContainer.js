@@ -109,24 +109,8 @@ export default class AppContainer extends Container {
   }
 
   init() {
-    this.initBreakpointEvents();
     this.initColorScheme();
     this.initPlugins();
-  }
-
-  initBreakpointEvents() {
-    this.addBreakpointEvents('sm', (mql) => {
-      this.setState({ breakpoint: mql.matches ? 'sm' : 'xs' });
-    }, true);
-    this.addBreakpointEvents('md', (mql) => {
-      this.setState({ breakpoint: mql.matches ? 'md' : 'sm' });
-    }, true);
-    this.addBreakpointEvents('lg', (mql) => {
-      this.setState({ breakpoint: mql.matches ? 'lg' : 'md' });
-    }, true);
-    this.addBreakpointEvents('xl', (mql) => {
-      this.setState({ breakpoint: mql.matches ? 'xl' : 'lg' });
-    }, true);
   }
 
   async initColorScheme() {
