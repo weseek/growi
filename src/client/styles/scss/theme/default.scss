@@ -64,6 +64,9 @@ html[light] {
   // Sidebar list group
   $bgcolor-sidebar-list-group: #fafbff; // optional
 
+  // Subnavigation
+  // $bgcolor-subnabvar: #fafafa; // optional
+
   // Icon colors
   $color-editor-icons: $color-global;
 
@@ -139,6 +142,9 @@ html[dark] {
   $color-sidebar-context: $color-global;
   // Sidebar list group
   $bgcolor-sidebar-list-group: #1c2a3e; // optional
+
+  // Subnavigation
+  $bgcolor-subnabvar: lighten($bgcolor-global, 4%); // optional
 
   // Icon colors
   $color-editor-icons: $color-global;
