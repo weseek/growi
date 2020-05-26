@@ -62,7 +62,7 @@ const PageRenameModal = (props) => {
         isRenameMetadata,
       );
       const { page } = response;
-      window.location.href = encodeURI(`${page.path}?rename=${path}`);
+      window.location.href = encodeURI(`${page.path}?renamed=${path}`);
     }
     catch (err) {
       setErrorCode(err.code);
