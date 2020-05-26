@@ -47,10 +47,10 @@ html[dark] {
 
   // Font colors
   $color-global: $subthemecolor;
-  $color-reversal: #eeeeee;
+  $color-reversal: #eee;
   $color-link: lighten($color-global, 2%);
   $color-link-hover: lighten($color-link, 20%);
-  $color-link-nabvar: $color-reversal;
+  $color-link-nabvar: #A7A7A7;
 
   // List Group colors
   $color-list: $color-global;
@@ -61,16 +61,27 @@ html[dark] {
 
   // Navbar
   $bgcolor-navbar: $themecolor;
+  $bgcolor-search-top-dropdown: #D3C665;
   $border-color-navbar-gradient-left: #545fff;
   $border-color-navbar-gradient-right: #00a6e5;
+  $border-image-navbar: linear-gradient(to right, #6458BC 33%, #5CB4FF 66%, #85D800 100%);
 
   // Logo colors
   $bgcolor-logo: $themecolor;
 
   // Sidebar
-  $bgcolor-sidebar: $themecolor;
-  $color-sidebar-context: $color-reversal;
-  $bgcolor-sidebar-context: lighten($themecolor, 10%);
+  $bgcolor-sidebar: $color-inline-code;
+  $bgcolor-sidebar-nav-item-active: rgba(#000000, 0.37); // optional
+  // $text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
+  // Sidebar resize button
+  $color-resize-button: $color-reversal;
+  $bgcolor-resize-button: #D3C665;
+  $color-resize-button-hover: $color-reversal;
+  $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
+  $color-sidebar-context: $linktext;
+  $bgcolor-sidebar-context: #F4F6FC;
+  // Sidebar list group
+  $bgcolor-sidebar-list-group: #fafbff; // optional
 
   // Icon colors
   $color-editor-icons: $color-global;
@@ -190,6 +201,15 @@ html[dark] {
     }
   }
 
+  .search-top {
+    .btn-secondary.dropdown-toggle {
+      color: #FCFDFF;
+      &:active, &:hover, &:focus {
+        color: #FCFDFF;
+      }
+    }
+  }
+
   .grw-navbar {
     background-image: url('/images/themes/christmas/christmas-navbar.jpg');
     border-bottom: 4px solid $subthemecolor;
@@ -200,20 +220,33 @@ html[dark] {
   }
 
   .nav-tabs {
-    border-bottom-color: $themecolor;
+    border: none !important;
+    :not(.nav-tabs .nav-link.active) {
+      border-bottom: solid 1px #D7D7D7;
+    }
   }
 
   .nav-link {
-    border-color: $themecolor;
+    border-color: #D7D7D7;
   }
 
   .nav-tabs .nav-link.active {
     background: none;
-    border-color: $themecolor;
+    border-color: #D7D7D7;
+    border-bottom: none;
   }
 
   .search-top .dropdown-toggle {
     color: black;
     background-color: hsla(0, 0%, 100%, 0.8);
+  }
+
+  .grw-sidebar-history {
+    .grw-sidebar-header-container {
+      .btn-outline-secondary {
+        color: #FCFDFF;
+        background-color: #797979;
+      }
+    }
   }
 }
