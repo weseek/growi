@@ -1,12 +1,12 @@
 @import '../variables';
 @import '../override-bootstrap-variables';
 
+
+$primary: rgba(11, 79, 104, 0.616);
 $themecolor: #16282d;
-$themelight: rgba(11, 79, 104, 0.616);
 $accentcolor: #66eddf;
 
-$primary: $themelight;
-$dark: darken($themecolor, 5%);
+
 
 html[light],
 html[dark] {
@@ -16,16 +16,16 @@ html[dark] {
   $bgcolor-card: darken($themecolor, 5%);
 
   // Font colors
-  $color-global: lighten($themecolor, 35%);
-  $color-reversal: #eeeeee;
-  $color-header: #d9a364;
-  $color-link: lighten($primary, 20%);
+  $color-global: #979797;
+  $color-reversal: #00FFF5;
+  $color-header: #00FFF5;
+  $color-link: #00FFF5;
   $color-link-hover: lighten($color-link, 20%);
   $color-link-wiki: darken($themecolor, 5%);
   $color-link-wiki-hover: darken($color-link-wiki, 5%);
   $color-link-nabvar: $color-reversal;
-  $color-inline-code: #c7254e;
-  $color-search: #050a0b;
+  $color-inline-code: #C7254E;
+  $color-search: #00C2C4;
 
   // List Group colors
   $color-list: $color-global;
@@ -35,24 +35,26 @@ html[dark] {
   $color-list-hover: $color-reversal;
 
   // Navbar
-  $bgcolor-navbar: #011414;
+  $bgcolor-navbar: #01181A;
   $border-color-navbar-gradient-left: #545fff;
   $border-color-navbar-gradient-right: #00a6e5;
+  $border-image-navbar: linear-gradient(90deg, #6CFFF9 0%, #0034C1 45%, #6CFFF9 100%);
+
 
   // Logo colors
   $bgcolor-logo: darken($themecolor, 10%);
-  $fillcolor-logo-mark: lighten($accentcolor, 15%);
+  $fillcolor-logo-mark: #DEDEDE;
 
   // Sidebar
-  $bgcolor-sidebar: $bgcolor-navbar;
+  $bgcolor-sidebar: #052E2F;
   $color-sidebar-context: $color-reversal;
-  $bgcolor-sidebar-context: lighten($bgcolor-navbar, 10%);
+  $bgcolor-sidebar-context: $bgcolor-navbar;
 
   // Icon colors
   $color-editor-icons: $color-global;
 
   // Border colors
-  $border-color-theme: #407483;
+  $border-color-theme: #578CAD;
 
   // Dropdown colors
   $bgcolor-dropdown-link-active: $primary;
@@ -81,11 +83,13 @@ html[dark] {
   // Navs {
   .nav-tabs {
     border-bottom: $border-color-theme 1px solid;
+
     .nav-link {
       &:hover {
         border-color: darken($border-color-theme, 10%);
         border-bottom: none;
       }
+
       &.active {
         color: $color-link;
         background-color: transparent;
@@ -97,11 +101,29 @@ html[dark] {
   // Search Top
   .search-top {
     .input-group-prepend .dropdown-toggle {
-      color: #5193a5;
+      color: #050a0b;
       background-color: $color-search;
       border-color: $color-search;
+
       &:hover {
-        background-color: darken($color-search, 10%);
+        background-color: #050a0b;
+        color: $color-search;
+        ;
+      }
+    }
+  }
+
+  .wiki {
+    p {
+      color: #95ABBA;
+    }
+
+    pre {}
+
+    li {
+      a {
+        color: #00FFF5;
+        border-bottom: solid 1px #00FFF5;
       }
     }
   }
