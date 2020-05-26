@@ -38,44 +38,32 @@ class Sidebar extends React.Component {
   initBreakpointEvents() {
     const { appContainer, navigationUIController } = this.props;
 
-    document.addEventListener('DOMContentLoaded', () => {
-      // get the value of '--breakpoint-*'
-      // const breakpointSm = parseInt(window.getComputedStyle(document.documentElement).getPropertyValue('--breakpoint-sm'), 10);
-      const breakpointMd = parseInt(window.getComputedStyle(document.documentElement).getPropertyValue('--breakpoint-md'), 10);
+    const mdOrAvobeHandler = (mql) => {
+      // md or above
+      if (mql.matches) {
+        appContainer.setState({ isDrawerOpened: false });
+        navigationUIController.enableResize();
 
-      const smHandler = (mql) => {
-        if (mql.matches) {
-          // cache width
-          this.sidebarWidthCached = navigationUIController.state.productNavWidth;
-
-          appContainer.setState({ isDrawerOpened: false });
-          navigationUIController.disableResize();
-          navigationUIController.expand();
-
-          // fix width
-          navigationUIController.setState({ productNavWidth: sidebarDefaultWidth });
+        // restore width
+        if (this.sidebarWidthCached != null) {
+          navigationUIController.setState({ productNavWidth: this.sidebarWidthCached });
         }
-        else {
-          appContainer.setState({ isDrawerOpened: false });
-          navigationUIController.enableResize();
+      }
+      // sm or below
+      else {
+        // cache width
+        this.sidebarWidthCached = navigationUIController.state.productNavWidth;
 
-          // restore width
-          if (this.sidebarWidthCached != null) {
-            navigationUIController.setState({ productNavWidth: this.sidebarWidthCached });
-          }
-        }
-      };
+        appContainer.setState({ isDrawerOpened: false });
+        navigationUIController.disableResize();
+        navigationUIController.expand();
 
-      // const mediaQueryForXs = window.matchMedia(`(max-width: ${breakpointSm}px)`);
-      const mediaQueryForSm = window.matchMedia(`(max-width: ${breakpointMd}px)`);
+        // fix width
+        navigationUIController.setState({ productNavWidth: sidebarDefaultWidth });
+      }
+    };
 
-      // add event listener
-      // mediaQueryForXs.addListener(xsHandler);
-      mediaQueryForSm.addListener(smHandler);
-      // initialize
-      // xsHandler(mediaQueryForXs);
-      smHandler(mediaQueryForSm);
-    });
+    appContainer.addBreakpointEvents('md', mdOrAvobeHandler, true);
   }
 
   backdropClickedHandler = () => {
