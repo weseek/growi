@@ -131,6 +131,14 @@ module.exports = {
       },
     },
     {
+      name: 'material-icons',
+      url: 'https://cdn.jsdelivr.net/npm/material-icons@0.3.1/iconfont/material-icons.min.css',
+      groups: ['basis'],
+      args: {
+        integrity: '',
+      },
+    },
+    {
       name: 'emojione',
       url: 'https://cdn.jsdelivr.net/npm/emojione@3.1.2/extras/css/emojione.min.css',
       groups: ['basis'],

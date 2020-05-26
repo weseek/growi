@@ -144,7 +144,7 @@ class SecuritySetting extends React.Component {
               </div>
             </div>
             {adminGeneralSecurityContainer.isWikiModeForced && (
-              <p className="alert alert-warning mt-2 text-left">
+              <p className="alert alert-warning mt-2 text-left offset-3 col-6">
                 <i className="icon-exclamation icon-fw">
                 </i><b>FIXED</b><br />
                 <b
