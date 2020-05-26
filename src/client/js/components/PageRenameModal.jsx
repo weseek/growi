@@ -27,8 +27,8 @@ const PageRenameModal = (props) => {
   const [errorMessage, setErrorMessage] = useState(null);
 
   const [isRenameRecursively, SetIsRenameRecursively] = useState(true);
-  const [isRenameRedirect, SetIsRenameRedirect] = useState(true);
-  const [isRenameMetadata, SetIsRenameMetadata] = useState(true);
+  const [isRenameRedirect, SetIsRenameRedirect] = useState(false);
+  const [isRenameMetadata, SetIsRenameMetadata] = useState(false);
 
   function changeIsRenameRecursivelyHandler() {
     SetIsRenameRecursively(!isRenameRecursively);
