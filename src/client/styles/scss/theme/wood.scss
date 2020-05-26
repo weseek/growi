@@ -110,8 +110,8 @@ html[dark] {
 
   // hljs
   .hljs {
-    background-color: $bgcolor-inline-code;
     color: #433005;
+    background-color: $bgcolor-inline-code;
   }
 
   // Search Top
@@ -130,8 +130,8 @@ html[dark] {
   }
   
   .nav-tabs .nav-link.active {
-    background: transparent;
     color: $color-link !important;
+    background: transparent;
     &:hover {
       color: $color-link-hover !important;
     }
