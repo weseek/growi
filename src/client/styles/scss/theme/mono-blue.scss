@@ -137,12 +137,36 @@ html[dark] {
   $bgcolor-list: transparent;
   $color-list-active: $color-reversal;
   $bgcolor-list-active: $primary;
-  $color-list-hover: $color-reversal;
+  $color-list-hover: $accentcolor;
+
+  // Navbar
+  $bgcolor-navbar: #2a2929;
+  $bgcolor-search-top-dropdown: $primary;
+  $border-image-navbar: linear-gradient(to right, #36c9ff 0%, #36c9ff 33%, #7926ff 66%, #ff2eff 100%);
 
   // Logo colors
   $bgcolor-logo: #13191c;
   $fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 10%), 15%);
   // $fillcolor-logo-mark: #4e5a60;
+
+  // Sidebar
+  // $bgcolor-sidebar: $bgcolor-navbar;
+  // $color-sidebar-context: $color-reversal;
+  // $bgcolor-sidebar-context: lighten($bgcolor-sidebar, 10%);
+
+  $bgcolor-sidebar: $accentcolor;
+  $bgcolor-sidebar-nav-item-active: rgba(#969494, 0.3); // optional
+  $text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
+  // Sidebar resize button
+  $color-resize-button: $color-global;
+  $bgcolor-resize-button: $primary;
+  $color-resize-button-hover: $color-global;
+  $bgcolor-resize-button-hover: darken($bgcolor-resize-button, 5%);
+  // Sidebar contents
+  $bgcolor-sidebar-context: #111d2f;
+  $color-sidebar-context: $color-global;
+  // Sidebar list group
+  $bgcolor-sidebar-list-group: #1c2a3e; // optional
 
   // Icon colors
   $color-editor-icons: $color-global;
@@ -152,7 +176,8 @@ html[dark] {
 
   // Dropdown colors
   $bgcolor-dropdown-link-active: $primary;
-  $color-dropdown-link-active: $color-reversal;
+  $color-dropdown-link-active: $color-global;
+  $color-dropdown-link-hover: $color-reversal;
 
   // admin theme box
   $color-theme-color-box: $primary;
@@ -163,15 +188,10 @@ html[dark] {
   // badge
   $color-badge: $color-reversal;
 
-  // Sidebar
-  $bgcolor-sidebar: $bgcolor-navbar;
-  $color-sidebar-context: $color-reversal;
-  $bgcolor-sidebar-context: lighten($bgcolor-sidebar, 10%);
-
   @import 'apply-colors';
   @import 'apply-colors-dark';
 
-  // Navs {
+  // Navs
   .nav-tabs {
     border-bottom: $border-color-theme 1px solid;
     .nav-link {
