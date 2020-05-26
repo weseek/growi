@@ -51,7 +51,6 @@
   $navbar-total-height: $grw-navbar-height + $grw-navbar-border-width;
   div[class$='-LayoutContainer'] {
     height: calc(100vh - #{$navbar-total-height});
-    margin-top: $navbar-total-height;
   }
   div[class$='-NavigationContainer'] {
     top: $navbar-total-height;
