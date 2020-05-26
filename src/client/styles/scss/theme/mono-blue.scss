@@ -139,10 +139,6 @@ html[dark] {
   // $fillcolor-logo-mark: #4e5a60;
 
   // Sidebar
-  // $bgcolor-sidebar: $bgcolor-navbar;
-  // $color-sidebar-context: $color-reversal;
-  // $bgcolor-sidebar-context: lighten($bgcolor-sidebar, 10%);
-
   $bgcolor-sidebar: $accentcolor;
   $bgcolor-sidebar-nav-item-active: rgba(#969494, 0.3); // optional
   $text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
