@@ -43,7 +43,6 @@ const componentMappings = {
   'grw-navbar-toggler': <NavbarToggler />,
 
   'grw-search-top': <SearchTop />,
-  'grw-search-top-for-mobile': <SearchTop />,
   'personal-dropdown': <PersonalDropdown />,
 
   'create-page-button': <PageCreateButton />,
