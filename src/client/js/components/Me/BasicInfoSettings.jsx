@@ -68,17 +68,15 @@ class BasicInfoSettings extends React.Component {
               defaultValue={personalContainer.state.email}
               onChange={(e) => { personalContainer.changeEmail(e.target.value) }}
             />
-          </div>
-          {registrationWhiteList.length !== 0 && (
-            <div className="col-sm-offset-2 col-sm-10">
+            {registrationWhiteList.length !== 0 && (
               <div className="form-text text-muted">
                 {t('page_register.form_help.email')}
                 <ul>
                   {registrationWhiteList.map(data => <li key={data}><code>{data}</code></li>)}
                 </ul>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         <div className="form-group row">

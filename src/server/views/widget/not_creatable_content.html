@@ -12,9 +12,9 @@
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
   >
 
-  <ul class="nav nav-tabs hidden-print">
-    <li class="grw-nav-main-left-tab active">
-      <a href="#revision-body" data-toggle="tab">
+  <ul class="nav nav-tabs d-print-none" role="tablist">
+    <li class="nav-item grw-nav-main-left-tab active" role="presentation">
+      <a class="nav-link active" role="tab" href="#revision-body" data-toggle="tab">
         <i class="icon-notebook"></i> List
       </a>
     </li>
