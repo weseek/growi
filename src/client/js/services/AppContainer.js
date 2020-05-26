@@ -255,7 +255,7 @@ export default class AppContainer extends Container {
    * @param {function} handler event handler for media query
    * @param {boolean} invokeOnInit invoke handler after the initialization if true
    */
-  addBreakpointEvents(breakpoint, handler, invokeOnInit = false) {
+  addBreakpointListener(breakpoint, handler, invokeOnInit = false) {
     document.addEventListener('DOMContentLoaded', () => {
       // get the value of '--breakpoint-*'
       const breakpointPixel = parseInt(window.getComputedStyle(document.documentElement).getPropertyValue(`--breakpoint-${breakpoint}`), 10);

@@ -63,7 +63,7 @@ class Sidebar extends React.Component {
       }
     };
 
-    appContainer.addBreakpointEvents('md', mdOrAvobeHandler, true);
+    appContainer.addBreakpointListener('md', mdOrAvobeHandler, true);
   }
 
   backdropClickedHandler = () => {
