@@ -117,6 +117,7 @@
   }
   div[class$='-ScrollableTransitionGroup'] {
     // remove horizontal line
+    > div,
     > div > div {
       &:before,
       &:after {
