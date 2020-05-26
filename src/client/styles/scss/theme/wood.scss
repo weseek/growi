@@ -42,32 +42,28 @@ html[dark] {
   $primary: $themecolor;
 
   // Background colors
-  $bgcolor-global: $themelight;
-  $bgcolor-inline-code: darken($themecolor, 20%);
+  $bgcolor-global: #ffffff;
+  $bgcolor-inline-code: #eaeaea;
   $bgcolor-card: #f5f5f5;
+  $bgcolor-search: #b9b177;
 
   // Font colors
   $color-global: black;
   $color-reversal: #fffffc;
-  // $color-header: #2b2b2b;
-  $color-link: lighten($color-global, 20%);
+  $color-link: #9d7406;
   $color-link-hover: lighten($color-link, 20%);
   $color-link-wiki: lighten($themecolor, 5%);
   $color-link-wiki-hover: lighten($color-link-wiki, 15%);
-  $color-link-nabvar: $color-reversal;
-  $color-inline-code: lighten($accentcolor, 70%);
+  $color-link-nabvar: #a7a7a7;
+  $color-inline-code: #890000;
+  $color-search: white;
 
   // List Group colors
-  $color-list: $color-global;
-  $bgcolor-list: $bgcolor-global;
-  $color-list-active: $color-reversal;
-  $bgcolor-list-active: $primary;
-  $color-list-hover: $color-reversal;
+  $color-list-hover: #eee;
 
   // Navbar
-  $bgcolor-navbar: $themecolor;
-  $border-color-navbar-gradient-left: #545fff;
-  $border-color-navbar-gradient-right: #00a6e5;
+  $bgcolor-navbar: #2a2929;
+  $border-image-navbar: linear-gradient(to right, #5c78ef 0%, #16bc42 50%, #5c78ef 100%);
 
   // Logo colors
   $bgcolor-logo: darken($themecolor, 10%);
@@ -76,8 +72,14 @@ html[dark] {
 
   // Sidebar
   $bgcolor-sidebar: $bgcolor-navbar;
-  $color-sidebar-context: $color-reversal;
-  $bgcolor-sidebar-context: lighten($bgcolor-navbar, 10%);
+  // Sidebar contents
+  $color-sidebar-context: #9d7406;
+  $bgcolor-sidebar-context: #f0efe7;
+  // Sidebar list group
+  $bgcolor-sidebar-list-group: #f7f5f1;
+  // Sidebar resize button
+  $color-resize-button: white;
+  $bgcolor-resize-button: #b9b177;
 
   // Border colors
   $border-color-theme: #ccc; // former: `$navbar-border: #ccc;`
@@ -106,9 +108,45 @@ html[dark] {
     background-color: $themelight;
   }
 
-  .grw-navbar {
-    background-image: url('/images/themes/wood/wood-navbar.jpg');
-    border-bottom: $accentcolor 4px solid;
+  // hljs
+  .hljs {
+    background-color: $bgcolor-inline-code;
+    color: #433005;
+  }
+
+  // Search Top
+  .search-top {
+    .input-group-prepend .dropdown-toggle {
+      color: $color-search;
+      background-color: $bgcolor-search;
+      &:hover {
+        background-color: darken($bgcolor-search, 10%);
+      }
+    } 
+  }
+
+  .list-group .list-group-item {
+    background: transparent;
+  }
+  
+  .nav-tabs .nav-link.active {
+    background: transparent;
+    color: $color-link !important;
+    &:hover {
+      color: $color-link-hover !important;
+    }
+  }
+
+  // Sidebar
+  .grw-sidebar div[data-testid='GlobalNavigation']{
+    * {
+      background-image: url('/images/themes/wood/wood-navbar.jpg');
+    }
+
+    button,
+    .btn {
+      border: none;
+    }
   }
 }
 
