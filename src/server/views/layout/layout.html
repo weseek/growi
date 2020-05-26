@@ -87,13 +87,13 @@
     </div>
 
     {# Search #}
+    {% if isSearchServiceConfigured() %}
     <ul class="navbar-nav grw-navbar-search d-none d-md-block">
       <li>
-        {% if isSearchServiceConfigured() %}
-        <div class="search-top" role="search" id="search-top"></div>
-        {% endif %}
+        <div id="grw-search-top" class="search-top" role="search"></div>
       </li>
     </ul>
+    {% endif %}
 
     {# Navbar Right #}
     <ul class="navbar-nav ml-auto">
@@ -103,6 +103,11 @@
         <a class="nav-link create-page px-4" href="#" data-target="#create-page" data-toggle="modal">
           <i class="icon-pencil mr-2"></i>
           <span>{{ t('New') }}</span>
+        </a>
+      </li>
+      <li class="nav-item d-md-none">
+        <a type="button" class="nav-link px-4" data-target="#grw-search-top-collapse" data-toggle="collapse">
+          <i class="icon-magnifier mr-2"></i>
         </a>
       </li>
       <li id="personal-dropdown" class="nav-item dropdown dropdown-toggle"></li>
@@ -115,19 +120,24 @@
     </ul>
 
   </nav>
+
   {% include '../modal/create_page.html' %}
   {% endblock  %} {# layout_head_nav #}
 
   {% block head_warn_breaking_changes %}{% include '../widget/alert_breaking_changes.html' %}{% endblock %}
 
-  <div class="d-flex">
+  <div id="page-wrapper" class="page-wrapper d-flex">
     {# Sidebar #}
     <div id="grw-sidebar-wrapper"></div>
 
-    <div id="page-wrapper" class="flex-grow-1">
+    <div class="flex-grow-1">
       {% block head_warn_alert_siteurl_undefined %}{% include '../widget/alert_siteurl_undefined.html' %}{% endblock %}
-      {% block layout_main %}
-      {% endblock %} {# layout_main #}
+
+      <div id="grw-search-top-collapse" class="collapse d-md-none p-3">
+        <div id="grw-search-top-for-mobile" class="search-top" role="search"></div>
+      </div>
+
+      {% block layout_main %}{% endblock %}
     </div>
   </div>
 
