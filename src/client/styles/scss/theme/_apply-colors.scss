@@ -3,8 +3,16 @@
 //
 
 // determine optional variables
+$color-list: $color-global !default;
+$bgcolor-list: $bgcolor-global !default;
+$color-list-hover: $color-reversal !default;
+$color-list-active: $color-reversal !default;
+$bgcolor-list-active: $primary !default;
 $border-image-navbar: linear-gradient(to right, #ccc 0%, #ccc 100%) !default;
 $bgcolor-search-top-dropdown: $secondary !default;
+$bgcolor-sidebar-nav-item-active: darken($bgcolor-sidebar, 10%) !default;
+$text-shadow-sidebar-nav-item-active: 1px 1px 2px $primary !default;
+$bgcolor-sidebar-list-group: $bgcolor-list !default;
 
 // override bootstrap variables
 $body-bg: $bgcolor-global;
@@ -18,6 +26,7 @@ $input-focus-color: $color-global;
 @import '~bootstrap/scss/mixins';
 @import '../mixins';
 @import 'mixins-for-tables';
+@import 'mixins/list-group';
 @import 'reboot-bootstrap-colors';
 @import 'reboot-bootstrap-theme-colors';
 @import 'reboot-toastr-colors';
@@ -48,22 +57,7 @@ $input-focus-color: $color-global;
 }
 
 // List Group
-.list-group {
-  .list-group-item {
-    color: $color-list;
-    background-color: $bgcolor-list;
-
-    &.list-group-item-action {
-      &:hover {
-        background-color: $color-list-hover;
-      }
-      &.active {
-        color: $color-list-active;
-        background-color: $bgcolor-list-active;
-      }
-    }
-  }
-}
+@include override-list-group-item($color-list, $bgcolor-list, $color-list-hover, $color-list-active, $bgcolor-list-active);
 
 // Form
 .form-control {
@@ -139,10 +133,25 @@ $input-focus-color: $color-global;
     }
   }
 
+  .grw-global-item-container {
+    .btn {
+      @include button-variant(
+        $bgcolor-sidebar,
+        $bgcolor-sidebar,
+        darken($bgcolor-sidebar, 7.5%),
+        darken($bgcolor-sidebar, 10%),
+        $bgcolor-sidebar-nav-item-active,
+        $bgcolor-sidebar-nav-item-active
+      );
+    }
+  }
   .grw-global-item-container.active {
-    button:after {
+    .btn:after {
       // fukidashi color
-      border-right-color: darken($bgcolor-global, 4%);
+      border-right-color: $bgcolor-sidebar-context;
+    }
+    i {
+      text-shadow: $text-shadow-sidebar-nav-item-active;
     }
   }
   div[data-testid='GlobalNavigation'] {
@@ -156,12 +165,9 @@ $input-focus-color: $color-global;
       background-color: $bgcolor-sidebar-context;
     }
   }
-  div[class$='-Outer'] {
-    div[class$='-Shadow'] {
-      background: unset;
-      border-right: 1px solid $gray-300;
-    }
-  }
+
+  // List
+  @include override-list-group-item($color-list, $bgcolor-sidebar-list-group, $color-list-hover, $color-list-active, $bgcolor-list-active);
 }
 
 /*

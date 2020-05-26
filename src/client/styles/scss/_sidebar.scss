@@ -102,10 +102,10 @@
   div[class$='-PrimaryItemsList'] {
     .grw-global-item-container {
       .btn-lg {
-        height: $sidebar-nav-button-height;
-
+        padding: 0.8rem 1rem;
+        line-height: 1em;
         i {
-          font-size: 1.5em;
+          font-size: 1.7em;
         }
       }
 
@@ -114,6 +114,20 @@
           @extend %fukidashi-for-active;
         }
       }
+    }
+  }
+  div[class$='-ScrollableTransitionGroup'] {
+    // remove horizontal line
+    > div > div {
+      &:before,
+      &:after {
+        display: none;
+      }
+    }
+  }
+  div[class$='-Outer'] {
+    div[class$='-Shadow'] {
+      background: linear-gradient(to left, rgba(0, 0, 0, 0.1) 0px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0) 100%);
     }
   }
 }

@@ -87,7 +87,7 @@
     </div>
 
     {# Search #}
-    <ul class="navbar-nav grw-navbar-search d-none d-md-block position-absolute">
+    <ul class="navbar-nav grw-navbar-search d-none d-md-block">
       <li>
         {% if isSearchServiceConfigured() %}
         <div class="search-top" role="search" id="search-top"></div>
@@ -97,22 +97,8 @@
 
     {# Navbar Right #}
     <ul class="navbar-nav ml-auto">
-      {% if user and user.admin %}
-      <li class="nav-item d-none d-md-block">
-        <a class="nav-link" href="/admin">
-          <i class="icon-settings mr-2"></i>
-          {{ t('Admin') }}
-        </a>
-      </li>
-      {% endif %}
-
       {% if user %}
       <li id="create-page-button" class="nav-item d-none d-md-block"></li>
-      <li class="nav-item d-none d-md-block">
-        <a class="nav-link" href="https://docs.growi.org/" target="_blank">
-          <i class="icon-question mr-2"></i><span class="mr-2">{{ t('Help') }}</span><span class="small"><i class="icon-share-alt"></i></span>
-        </a>
-      </li>
       <li id="personal-dropdown" class="nav-item dropdown dropdown-toggle"></li>
       {% else %}
       <li id="login-user" class="nav-item"><a class="nav-link" href="/login">Login</a></li>
