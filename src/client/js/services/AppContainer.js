@@ -33,6 +33,7 @@ export default class AppContainer extends Container {
       editorMode: null,
       preferDarkModeByMediaQuery: false,
       preferDarkModeByUser: null,
+      breakpoint: 'xs',
       isDrawerOpened: false,
 
       isPageCreateModalShown: false,
@@ -108,7 +109,6 @@ export default class AppContainer extends Container {
   }
 
   init() {
-    // this.initBreakpointEvents();
     this.initColorScheme();
     this.initPlugins();
   }
@@ -231,6 +231,28 @@ export default class AppContainer extends Container {
    */
   getComponentInstance(id) {
     return this.componentInstances[id];
+  }
+
+  /**
+   *
+   * @param {string} breakpoint id of breakpoint
+   * @param {function} handler event handler for media query
+   * @param {boolean} invokeOnInit invoke handler after the initialization if true
+   */
+  addBreakpointListener(breakpoint, handler, invokeOnInit = false) {
+    document.addEventListener('DOMContentLoaded', () => {
+      // get the value of '--breakpoint-*'
+      const breakpointPixel = parseInt(window.getComputedStyle(document.documentElement).getPropertyValue(`--breakpoint-${breakpoint}`), 10);
+
+      const mediaQuery = window.matchMedia(`(min-width: ${breakpointPixel}px)`);
+
+      // add event listener
+      mediaQuery.addListener(handler);
+      // initialize
+      if (invokeOnInit) {
+        handler(mediaQuery);
+      }
+    });
   }
 
   getOriginRenderer() {

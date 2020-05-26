@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from './UnstatedUtils';
-import AppContainer from '../services/AppContainer';
+import { createSubscribedElement } from '../UnstatedUtils';
+import AppContainer from '../../services/AppContainer';
 
-import SearchForm from './SearchForm';
+import SearchForm from '../SearchForm';
 
 
-class HeaderSearchBox extends React.Component {
+class SearchTop extends React.Component {
 
   constructor(props) {
     super(props);
@@ -16,6 +16,7 @@ class HeaderSearchBox extends React.Component {
     this.state = {
       text: '',
       isScopeChildren: false,
+      isCollapsed: true,
     };
 
     this.onInputChange = this.onInputChange.bind(this);
@@ -24,10 +25,14 @@ class HeaderSearchBox extends React.Component {
     this.search = this.search.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
+    this.initBreakpointEvents();
   }
 
-  componentWillUnmount() {
+  initBreakpointEvents() {
+    this.props.appContainer.addBreakpointListener('md', (mql) => {
+      this.setState({ isCollapsed: !mql.matches });
+    }, true);
   }
 
   onInputChange(text) {
@@ -56,7 +61,23 @@ class HeaderSearchBox extends React.Component {
     window.location.href = url.href;
   }
 
-  render() {
+  Root = ({ children }) => {
+    const { isCollapsed } = this.state;
+
+    return isCollapsed
+      ? (
+        <div id="grw-search-top-collapse" className="collapse bg-dark p-3">
+          {children}
+        </div>
+      )
+      : (
+        <div className="grw-search-top-fixed position-fixed">
+          {children}
+        </div>
+      );
+  };
+
+  SearchTopForm = () => {
     const { t, appContainer } = this.props;
     const scopeLabel = this.state.isScopeChildren
       ? t('header_search_box.label.This tree')
@@ -94,19 +115,25 @@ class HeaderSearchBox extends React.Component {
     );
   }
 
+  render() {
+    const { Root, SearchTopForm } = this;
+    return (
+      <Root><SearchTopForm /></Root>
+    );
+  }
+
 }
 
-
-/**
- * Wrapper component for using unstated
- */
-const HeaderSearchBoxWrapper = (props) => {
-  return createSubscribedElement(HeaderSearchBox, props, [AppContainer]);
-};
-
-HeaderSearchBox.propTypes = {
+SearchTop.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
-export default withTranslation()(HeaderSearchBoxWrapper);
+/**
+ * Wrapper component for using unstated
+ */
+const SearchTopWrapper = (props) => {
+  return createSubscribedElement(SearchTop, props, [AppContainer]);
+};
+
+export default withTranslation()(SearchTopWrapper);
