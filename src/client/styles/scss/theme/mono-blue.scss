@@ -92,17 +92,6 @@ html[light] {
       }
     }
   }
-
-  // Search Top
-  .search-top {
-    .input-group-prepend .dropdown-toggle {
-      color: $themecolor;
-      background-color: $color-search;
-      &:hover {
-        background-color: darken($color-search, 10%);
-      }
-    }
-  }
 }
 
 html[dark] {
@@ -203,17 +192,6 @@ html[dark] {
         color: $color-link;
         background-color: transparent;
         border-color: $border-color-theme;
-      }
-    }
-  }
-
-  // Search Top
-  .search-top {
-    .input-group-prepend .dropdown-toggle {
-      background-color: $color-search;
-      border-color: $color-search;
-      &:hover {
-        background-color: darken($color-search, 10%);
       }
     }
   }
