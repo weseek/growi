@@ -115,14 +115,18 @@ export default class AppContainer extends Container {
   }
 
   initBreakpointEvents() {
-    // TODO: fix bug -- 2020.05.26
-    // ['xs', 'sm', 'md', 'lg', 'xl'].forEach((breakpoint) => {
-    //   this.addBreakpointEvents(breakpoint, (mql) => {
-    //     if (mql.matches) {
-    //       this.setState({ breakpoint });
-    //     }
-    //   }, true);
-    // });
+    this.addBreakpointEvents('sm', (mql) => {
+      this.setState({ breakpoint: mql.matches ? 'sm' : 'xs' });
+    }, true);
+    this.addBreakpointEvents('md', (mql) => {
+      this.setState({ breakpoint: mql.matches ? 'md' : 'sm' });
+    }, true);
+    this.addBreakpointEvents('lg', (mql) => {
+      this.setState({ breakpoint: mql.matches ? 'lg' : 'md' });
+    }, true);
+    this.addBreakpointEvents('xl', (mql) => {
+      this.setState({ breakpoint: mql.matches ? 'xl' : 'lg' });
+    }, true);
   }
 
   async initColorScheme() {

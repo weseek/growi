@@ -39,7 +39,7 @@ class Sidebar extends React.Component {
     const { appContainer, navigationUIController } = this.props;
 
     const mdOrAvobeHandler = (mql) => {
-      // md or above
+      // sm -> md
       if (mql.matches) {
         appContainer.setState({ isDrawerOpened: false });
         navigationUIController.enableResize();
@@ -49,7 +49,7 @@ class Sidebar extends React.Component {
           navigationUIController.setState({ productNavWidth: this.sidebarWidthCached });
         }
       }
-      // sm or below
+      // md -> sm
       else {
         // cache width
         this.sidebarWidthCached = navigationUIController.state.productNavWidth;
