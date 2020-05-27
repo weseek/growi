@@ -1,4 +1,4 @@
-<div class="row not-found-message-row m-b-20">
+<div class="row not-found-message-row mb-4 d-edit-none">
   <div class="col-md-12">
     <h2 class="text-muted">
       <i class="icon-info" aria-hidden="true"></i>
@@ -7,8 +7,8 @@
   </div>
 </div>
 
-<div id="content-main" class="content-main content-main-not-found page-list"
-  data-path="{{ path | preventXss }}"
+<div id="content-main" class="content-main page-list"
+  data-path="{{ encodeURI(path) }}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
   {% if templateTags %}
     data-template-tags="{{ templateTags }}"
@@ -18,22 +18,31 @@
   {% include 'not_found_tabs.html' %}
 
   <div class="tab-content">
+
+
+    {# TODO: should be removed and transplanted to PageContainer.initStateMarkdown ------ from here ------ #}
+
     {% if getConfig('crowi', 'customize:isEnabledAttachTitleHeader') %}
     {% if template %}
-    <script type="text/template" id="raw-text-original"># {{ path|path2name }}&NewLine;{{ template }}</script>
+    <script type="text/template" id="raw-text-original"># {{ path | path2name | preventXss }}&NewLine;{{ template }}</script>
     {% else %}
-    <script type="text/template" id="raw-text-original"># {{ path|path2name }}</script>
+    <script type="text/template" id="raw-text-original"># {{ path | path2name | preventXss }}</script>
     {% endif %}
     {% else %}
     {% if template %}
     <script type="text/template" id="raw-text-original">{{ template }}</script>
     {% endif %}
     {% endif %}
+
+    {# TODO: should be removed and transplanted to PageContainer.initStateMarkdown ------ to here ------ #}
+
+
+
     {# list view #}
-    <div class="p-t-10 active tab-pane page-list-container" id="revision-body">
+    <div class="pt-2 active tab-pane page-list-container" id="revision-body">
       {% if pages.length == 0 %}
-        <div class="m-t-10">
-          There are no pages under <strong>{{ path }}</strong>.
+        <div class="mt-2">
+          There are no pages under <strong>{{ path | preventXss }}</strong>.
         </div>
       {% endif  %}
 

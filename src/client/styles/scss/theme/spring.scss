@@ -1,8 +1,193 @@
-// import colors
-@import '../../agile-admin/inverse/colors/spring';
+@import '../variables';
+@import '../override-bootstrap-variables';
 
-// apply agile-admin theme
-@import '../../agile-admin/inverse/style';
+// == Define Bootstrap theme colors
+//
 
-// override
-@import 'override-agileadmin';
+// colors for overriding bootstrap $theme-colors
+// $secondary: #;
+// $info: #;
+// $success: #;
+// $warning: #;
+// $danger: #;
+// $light: #;
+// $dark: #;
+
+.growi:not(.login-page) {
+  // add background-image
+  #page-wrapper,
+  .page-editor-preview-container {
+    background-image: url('/images/themes/spring/spring02.svg');
+    background-attachment: fixed;
+    background-position: bottom;
+    background-size: cover;
+  }
+}
+
+.growi.login-page {
+  #page-wrapper {
+    background-image: url('/images/themes/spring/spring.svg');
+    background-attachment: fixed;
+    background-position: bottom;
+    background-size: cover;
+  }
+}
+
+$themecolor: #ffb8c6;
+$themelight: #fff0f5;
+$subthemecolor: #67a856;
+$third-main-color: antiquewhite;
+$accentcolor: #e08dbc;
+
+.grw-navbar {
+  border-bottom: $accentcolor 4px solid;
+}
+
+//== Light Mode
+//
+html[light],
+html[dark] {
+  $primary: $themecolor;
+
+  // Background colors
+  $bgcolor-global: white;
+  $bgcolor-inline-code: #f9f2f4;
+  $bgcolor-card: #f5f5f5;
+
+  // Font colors
+  $color-global: black;
+  $color-reversal: white;
+  // $color-header: #2b2b2b;
+  $color-link: lighten($color-global, 20%);
+  $color-link-hover: $subthemecolor;
+  $color-link-wiki: $subthemecolor;
+  $color-link-wiki-hover: lighten($color-link-wiki, 20%);
+  $color-link-nabvar: $bgcolor-global;
+  $color-inline-code: #c7254e;
+
+  // List Group colors
+  $color-list: $color-global;
+  $bgcolor-list: $themelight;
+  $color-list-active: $bgcolor-global;
+  $bgcolor-list-active: $accentcolor;
+  $color-list-hover: lighten($accentcolor, 20%);
+
+  // Navbar
+  $bgcolor-navbar: $themecolor;
+  $border-color-navbar-gradient-left: #545fff;
+  $border-color-navbar-gradient-right: #00a6e5;
+
+  // Logo colors
+  $bgcolor-logo: $bgcolor-navbar;
+  $fillcolor-logo-mark: lighten(desaturate($bgcolor-inline-code, 10%), 15%);
+
+  // Sidebar
+  $bgcolor-sidebar: $bgcolor-navbar;
+  $color-sidebar-context: $color-reversal;
+  $bgcolor-sidebar-context: lighten($bgcolor-navbar, 10%);
+
+  // Icon colors
+  $color-editor-icons: $color-global;
+
+  // Border colors
+  $border-color-theme: #ccc; // former: `$navbar-border: #ccc;`
+
+  // Dropdown colors
+  $bgcolor-dropdown-link-active: $growi-blue;
+  $color-dropdown-link-active: $color-reversal;
+  $color-dropdown-link-hover: $color-global;
+
+  // admin theme box
+  $color-theme-color-box: darken($primary, 20%);
+
+  // alert
+  $color-alert: $color-reversal;
+
+  // badge
+  $color-badge: $color-reversal;
+
+  @import 'apply-colors';
+  @import 'apply-colors-light';
+
+  .table {
+    background-color: $bgcolor-global;
+  }
+
+  .card-timeline > .card-header {
+    background-color: $third-main-color;
+  }
+
+  h1,
+  h2 {
+    color: $subthemecolor;
+  }
+
+  .nav.nav-tabs {
+    > .nav-item {
+      > .nav-link.active {
+        color: $subthemecolor;
+      }
+    }
+  }
+}
+
+//== Dark Mode
+//
+// html[dark] {
+//   $primary: #d65a31;
+
+//   $basecolor: #222831;
+
+//   // Background colors
+//   $bgcolor-global: $basecolor;
+//   $bgcolor-navbar: #151515;
+//   $bgcolor-inline-code: darken($basecolor, 5%);
+//   $bgcolor-card: darken($basecolor, 5%);
+
+//   // Font colors
+//   $color-global: #eeeeee;
+//   $color-reversal: #333333;
+//   // $color-header: desaturate($primary, 20%);
+//   $color-link: $primary;
+//   $color-link-hover: lighten($color-link, 10%);
+//   $color-link-wiki: lighten($basecolor, 50%);
+//   $color-link-wiki-hover: darken($color-link-wiki, 5%);
+//   $color-link-nabvar: $color-global;
+//   $color-inline-code: #c7254e;
+
+//   // List Group colors
+//   $color-list: $color-global;
+//   $bgcolor-list: $bgcolor-global;
+//   $color-list-active: $color-reversal;
+//   $bgcolor-list-active: $primary;
+//   $color-list-hover: $color-reversal;
+
+//   // Logo colors
+//   $bgcolor-logo: $bgcolor-navbar;
+//   $fillcolor-logo-mark: #444;
+
+//   // Icon colors
+//   $color-editor-icons: darken($accentcolor, 15%);
+
+//   // Border colors
+//   $border-color-theme: black; // former: `$navbar-border: #ccc;`
+
+//   // Dropdown colors
+//   $bgcolor-dropdown-link-active: $primary;
+//   $color-dropdown-link-active: $color-global;
+//   $color-dropdown-link-hover: $color-reversal;
+
+//   // alert
+//   $color-alert: $color-global;
+
+//   // badge
+//   $color-badge: $color-global;
+
+//   // Sidebar
+//   $bgcolor-sidebar: $bgcolor-navbar;
+//   $color-sidebar-context: $color-global;
+//   $bgcolor-sidebar-context: lighten($bgcolor-navbar, 5%);
+
+//   @import 'apply-colors';
+//   @import 'apply-colors-dark';
+// }

@@ -5,9 +5,11 @@ import { I18nextProvider } from 'react-i18next';
 
 import loggerFactory from '@alias/logger';
 
+import ErrorBoundary from './components/ErrorBoudary';
 import SearchPage from './components/SearchPage';
 import TagsList from './components/TagsList';
 import PageEditor from './components/PageEditor';
+import PagePathNavForEditor from './components/PageEditor/PagePathNavForEditor';
 // eslint-disable-next-line import/no-duplicates
 import OptionsSelector from './components/PageEditor/OptionsSelector';
 // eslint-disable-next-line import/no-duplicates
@@ -19,23 +21,24 @@ import PageHistory from './components/PageHistory';
 import PageComments from './components/PageComments';
 import PageTimeline from './components/PageTimeline';
 import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
+import PageManagement from './components/Page/PageManagement';
+import TrashPageAlert from './components/Page/TrashPageAlert';
 import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
-import RevisionPath from './components/Page/RevisionPath';
-import TagLabels from './components/Page/TagLabels';
-import BookmarkButton from './components/BookmarkButton';
-import LikeButton from './components/LikeButton';
 import PagePathAutoComplete from './components/PagePathAutoComplete';
 import RecentCreated from './components/RecentCreated/RecentCreated';
 import MyDraftList from './components/MyDraftList/MyDraftList';
 import UserPictureList from './components/User/UserPictureList';
 import TableOfContents from './components/TableOfContents';
+import PageCreateModal from './components/PageCreateModal';
 
 import PersonalSettings from './components/Me/PersonalSettings';
 import PageContainer from './services/PageContainer';
 import CommentContainer from './services/CommentContainer';
 import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
+import GrowiSubNavigation from './components/Navbar/GrowiSubNavigation';
+import GrowiSubNavigationForUserPage from './components/Navbar/GrowiSubNavigationForUserPage';
 import PersonalContainer from './services/PersonalContainer';
 
 import { appContainer, componentMappings } from './bootstrap';
@@ -68,12 +71,13 @@ Object.assign(componentMappings, {
   // 'revision-history': <PageHistory pageId={pageId} />,
   'tags-page': <TagsList crowi={appContainer} />,
 
-  'create-page-name-input': <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} addTrailingSlash />,
-
   'page-editor': <PageEditor />,
+  'page-editor-path-nav': <PagePathNavForEditor />,
   'page-editor-options-selector': <OptionsSelector crowi={appContainer} />,
   'page-status-alert': <PageStatusAlert />,
   'save-page-controls': <SavePageControls />,
+
+  'trash-page-alert': <TrashPageAlert />,
 
   'page-timeline': <PageTimeline />,
 
@@ -87,14 +91,13 @@ if (pageContainer.state.pageId != null) {
     'page-comments-list': <PageComments />,
     'page-attachment': <PageAttachment />,
     'page-comment-write': <CommentEditorLazyRenderer />,
+    'page-management': <PageManagement />,
+
     'revision-toc': <TableOfContents />,
-    'like-button': <LikeButton pageId={pageContainer.state.pageId} isLiked={pageContainer.state.isLiked} />,
     'seen-user-list': <UserPictureList userIds={pageContainer.state.seenUserIds} />,
     'liker-list': <UserPictureList userIds={pageContainer.state.likerUserIds} />,
-    'bookmark-button': <BookmarkButton pageId={pageContainer.state.pageId} crowi={appContainer} />,
-    'bookmark-button-lg': <BookmarkButton pageId={pageContainer.state.pageId} crowi={appContainer} size="lg" />,
     'rename-page-name-input': <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
-    'duplicate-page-name-input': <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
+    'page-create-modal': <PageCreateModal />,
 
     'user-created-list': <RecentCreated />,
     'user-draft-list': <MyDraftList />,
@@ -104,8 +107,8 @@ if (pageContainer.state.path != null) {
   Object.assign(componentMappings, {
     // eslint-disable-next-line quote-props
     'page': <Page />,
-    'revision-path': <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageContainer.state.pageId} pagePath={pageContainer.state.path} />,
-    'tag-label': <TagLabels />,
+    'grw-subnav': <GrowiSubNavigation />,
+    'grw-subnav-for-user-page': <GrowiSubNavigationForUserPage />,
   });
 }
 
@@ -114,9 +117,11 @@ Object.keys(componentMappings).forEach((key) => {
   if (elem) {
     ReactDOM.render(
       <I18nextProvider i18n={i18n}>
-        <Provider inject={injectableContainers}>
-          {componentMappings[key]}
-        </Provider>
+        <ErrorBoundary>
+          <Provider inject={injectableContainers}>
+            {componentMappings[key]}
+          </Provider>
+        </ErrorBoundary>
       </I18nextProvider>,
       elem,
     );
@@ -127,7 +132,12 @@ Object.keys(componentMappings).forEach((key) => {
 $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', () => {
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <PageHistory pageId={pageContainer.state.pageId} crowi={appContainer} />
+      <ErrorBoundary>
+        <PageHistory pageId={pageContainer.state.pageId} crowi={appContainer} />
+      </ErrorBoundary>
     </I18nextProvider>, document.getElementById('revision-history'),
   );
 });
+
+// initialize scrollpos-styler
+ScrollPosStyler.init();

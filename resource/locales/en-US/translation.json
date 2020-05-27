@@ -55,13 +55,12 @@
   "Share Link": "Share Link",
   "Markdown Link": "Markdown Link",
   "Create/Edit Template": "Create/Edit template page",
-  "Unportalize": "Unportalize",
   "Go to this version": "View this version",
   "View diff": "View diff",
   "No diff": "No diff",
   "Shrink versions that have no diffs": "Shrink versions that have no diffs",
   "User ID": "User ID",
-  "Home": "Home",
+  "User's Home": "User's Home",
   "User Settings": "User Settings",
   "User Information": "User information",
   "Basic Info": "Basic info",
@@ -111,6 +110,13 @@
   "Specified users only": "Specified users only",
   "Only me": "Only me",
   "Only inside the group": "Only inside the group",
+  "page_list_and_search_results": "Page list / Search results",
+  "scope_of_page_disclosure": "Scope of page disclosure",
+  "set_point": "Set point",
+  "always_displayed": "Always displayed",
+  "always_hidden": "Always hidden",
+  "displayed_or_hidden": "Displayed / Hidden",
+  "page_access_and_delete_rights": "Page access / Delete rights",
   "Reselect the group": "Reselect the group",
   "Shareable link": "Shareable link",
   "The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
@@ -124,6 +130,8 @@
   "Deleted Pages": "Deleted Pages",
   "Sign out": "Logout",
   "Disassociate": "Disassociate",
+  "Recent Created": "Recent Created",
+  "Recent Changes": "Recent Changes",
   "form_validation": {
     "error_message": "Some values ​​are incorrect",
     "required": "%s is required",
@@ -193,6 +201,7 @@
   "copy_to_clipboard": {
     "Copy to clipboard": "Copy to clipboard",
     "Page path": "Page path",
+    "Page URL": "Page URL",
     "Parmanent link": "Parmanent link",
     "Page path and parmanent link": "Page path and parmanent link",
     "Markdown link": "Markdown link"
@@ -261,9 +270,9 @@
       "Redirect": "Redirect"
     },
     "help": {
-      "redirect": "Redirect to new page if someone accesses <code>%s</code>",
+      "redirect": "Redirect to new page if someone accesses under this path",
       "metadata": "Remains last update user and updated date as is",
-      "recursive": "Move/Rename children of under <code>%s</code> recursively"
+      "recursive": "Move/Rename children of under this path recursively"
     }
   },
   "Put Back": "Put back",
@@ -274,11 +283,12 @@
     "delete_recursively": "Delete child pages recursively.",
     "delete_completely": "Delete completely",
     "delete_completely_restriction": "You don't have the authority to delete pages completely.",
-    "recursively": "Delete children of <code>%s</code> recursively.",
+    "recursively": "Delete pages under this path recursively.",
     "completely": "Delete completely instead of putting it into trash."
   },
   "modal_empty":{
-    "empty_the_trash": "Empty The Trash"
+    "empty_the_trash": "Empty The Trash",
+    "notice": "The pages deleted completely are unrecoverable."
   },
   "modal_duplicate": {
     "label": {
@@ -293,13 +303,13 @@
       "recursively": "Put back recursively"
     },
     "help": {
-      "recursively": "Put back children of under <code>%s</code> recursively"
+      "recursively": "Put back page under this path recursively"
     }
   },
   "modal_shortcuts": {
     "global": {
       "title": "Global shortcuts",
-      "Open/Close shortcut help": "Open/Close shortcut help",
+      "Open/Close shortcut help": "Open/Close<br>shortcut help",
       "Edit Page": "Edit Page",
       "Create Page": "Create Page",
       "Show Contributors": "Show Contributors",
@@ -330,7 +340,7 @@
   "template": {
     "modal_label": {
       "Create/Edit Template Page": "Create/Edit template page",
-      "Create template under": "Create template page under:<br /><code><small>%s</small></code>"
+      "Create template under": "Create template page under this page"
     },
     "option_label": {
       "create/edit": "Create/Edit template page..",
@@ -657,7 +667,7 @@
     "export_collections": "Export Collections",
     "check_all": "Check All",
     "uncheck_all": "Uncheck All",
-    "desc_password_seed": "DO NOT FORGET to set current <code>PASSWORD_SEED</code> to your new GROWI system when restoring user data, or users will NOT be able to login with their password.<br><br><strong>HINT:</strong><br>The current <code>PASSWORD_SEED</code> will be stored in <code>meta.json</code> in exported ZIP.",
+    "desc_password_seed": "<p>DO NOT FORGET to set current <code>PASSWORD_SEED</code> to your new GROWI system when restoring user data, or users will NOT be able to login with their password.</p><strong>HINT:</strong><p>The current <code>PASSWORD_SEED</code> will be stored in <code>meta.json</code> in exported ZIP.</p>",
     "create_new_archive_data": "Create New Archive Data",
     "export": "Export",
     "cancel": "Cancel",

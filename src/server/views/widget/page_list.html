@@ -8,19 +8,17 @@
 {% endif %}
 
 <li>
-  <!-- [TODO][GW-1942] add method for updating imageUrlCached -->
-  <img src="{{ listPage.lastUpdateUser.imageUrlCached }}" class="picture img-circle">
-  <a href="{{ listPage.path }}"
-    class="page-list-link"
-    data-path="{{ listPage.path }}">{{ decodeURIComponent(listPage.path) }}
+  <img src="{{ listPage.lastUpdateUser.imageUrlCached }}" class="picture rounded-circle">
+  <a href="{{ encodeURI(listPage.path) }}" class="text-break ml-1">
+    {{ listPage.path | preventXss }}
   </a>
   <span class="page-list-meta">
-    {% if listPage.isPortal() %}
-      <span class="label label-info">PORTAL</span>
+    {% if listPage.isTopPage() %}
+      <span class="badge badge-info">TOP</span>
     {% endif  %}
 
     {% if listPage.isTemplate() %}
-      <span class="label label-info">TMPL</span>
+      <span class="badge badge-info">TMPL</span>
     {% endif  %}
 
     {% if listPage.commentCount > 0 %}
@@ -54,10 +52,14 @@
 {% if pager %}
 <ul class="pagination">
   {% if pager.prev !== null %}
-    <li class="prev"><a href="{{ path }}?offset={{ pager.prev }}"><i class="fa fa-arrow-left"></i> Prev</a></li>
+    <li class="prev">
+      <a href="{{ encodeURI(path) }}?offset={{ pager.prev }}" class="btn btn-outline-secondary"><i class="icon-arrow-left"></i> Prev</a>
+    </li>
   {% endif %}
   {% if pager.next %}
-    <li class="next"><a href="{{ path }}?offset={{ pager.next }}">Next <i class="fa fa-arrow-right"></i></a></li>
+    <li class="next">
+      <a href="{{ encodeURI(path) }}?offset={{ pager.next }}" class="btn btn-outline-secondary">Next <i class="icon-arrow-right"></i></a>
+    </li>
   {% endif %}
 </ul>
 {% endif %}

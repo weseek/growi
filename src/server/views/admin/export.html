@@ -3,17 +3,13 @@
 {% block html_title %}{{ customizeService.generateCustomTitle(t('Export Archive Data')) }}{% endblock %}
 
 {% block content_header %}
-<div class="header-wrap">
-  <header id="page-header">
-    <h1 id="admin-title" class="title">{{ t('Export Archive Data') }}</h1>
-  </header>
-</div>
+<h1 class="title">{{ t('Export Archive Data') }}</h1>
 {% endblock %}
 
 {% block content_main %}
 <div class="content-main admin-export row">
   {% parent %}
-  <div id="admin-export-page" class="col-md-9"></div>
+  <div id="admin-export-page" class="col-lg-9"></div>
 </div>
 
 {% endblock content_main %}

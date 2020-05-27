@@ -15,14 +15,14 @@ class UserNotificationRow extends React.PureComponent {
     return (
       <React.Fragment>
         <tr className="admin-notif-row" key={notification._id}>
-          <td>
+          <td className="px-4">
             {notification.pathPattern}
           </td>
-          <td>
-            {notification.channel}
+          <td className="px-4">
+            <span data-toggle="tooltip" data-placement="top" title="Slack"><i className="fa fa-hashtag"></i> {notification.channel}</span>
           </td>
           <td>
-            <button type="submit" className="btn btn-default" onClick={() => { this.props.onClickDeleteBtn(notification._id) }}>{t('Delete')}</button>
+            <button type="submit" className="btn btn-outline-danger" onClick={() => { this.props.onClickDeleteBtn(notification._id) }}>{t('Delete')}</button>
           </td>
         </tr>
       </React.Fragment>

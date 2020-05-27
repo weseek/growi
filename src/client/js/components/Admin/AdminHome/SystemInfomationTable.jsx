@@ -15,7 +15,7 @@ class SystemInformationTable extends React.Component {
       <table className="table table-bordered">
         <tbody>
           <tr>
-            <th className="col-sm-4">GROWI</th>
+            <th>GROWI</th>
             <td>{ adminHomeContainer.state.growiVersion }</td>
           </tr>
           <tr>

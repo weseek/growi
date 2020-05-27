@@ -13,7 +13,7 @@ class ArchiveFilesTableMenu extends React.Component {
 
     return (
       <div className="btn-group admin-user-menu">
-        <button type="button" className="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
+        <button type="button" className="btn btn-sm btn-outline-secondary dropdown-toggle" data-toggle="dropdown">
           <i className="icon-settings"></i> <span className="caret"></span>
         </button>
         <ul className="dropdown-menu" role="menu">

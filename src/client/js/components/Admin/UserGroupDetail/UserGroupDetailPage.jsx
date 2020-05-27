@@ -16,17 +16,17 @@ class UserGroupDetailPage extends React.Component {
 
     return (
       <div>
-        <a href="/admin/user-groups" className="btn btn-default">
+        <a href="/admin/user-groups" className="btn btn-outline-secondary">
           <i className="icon-fw ti-arrow-left" aria-hidden="true"></i>
           {t('admin:user_group_management.back_to_list')}
         </a>
-        <div className="m-t-20 form-box">
+        <div className="mt-4 form-box">
           <UserGroupEditForm />
         </div>
-        <legend className="m-t-20">{t('admin:user_group_management.user_list')}</legend>
+        <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.user_list')}</h2>
         <UserGroupUserTable />
         <UserGroupUserModal />
-        <legend className="m-t-20">{t('Page')}</legend>
+        <h2 className="admin-setting-header mt-4">{t('Page')}</h2>
         <div className="page-list">
           <UserGroupPageList />
         </div>

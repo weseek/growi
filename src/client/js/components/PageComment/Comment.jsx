@@ -1,15 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { format, formatDistanceStrict } from 'date-fns';
+import { format } from 'date-fns';
 
-import Tooltip from 'react-bootstrap/es/Tooltip';
-import OverlayTrigger from 'react-bootstrap/es/OverlayTrigger';
+import { UncontrolledTooltip } from 'reactstrap';
 
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 
 import { createSubscribedElement } from '../UnstatedUtils';
+
+import FormattedDistanceDate from '../FormattedDistanceDate';
 import RevisionBody from '../Page/RevisionBody';
 import UserPicture from '../User/UserPicture';
 import Username from '../User/Username';
@@ -88,7 +89,7 @@ class Comment extends React.PureComponent {
   }
 
   getRootClassName(comment) {
-    let className = 'page-comment';
+    let className = 'page-comment flex-column';
 
     const { revisionId, revisionCreatedAt } = this.props.pageContainer.state;
     if (comment.revision === revisionId) {
@@ -109,8 +110,8 @@ class Comment extends React.PureComponent {
   }
 
   getRevisionLabelClassName() {
-    return `page-comment-revision label ${
-      this.isCurrentRevision() ? 'label-primary' : 'label-default'}`;
+    return `page-comment-revision badge ${
+      this.isCurrentRevision() ? 'badge-primary' : 'badge-secondary'}`;
   }
 
   editBtnClickedHandler() {
@@ -171,23 +172,14 @@ class Comment extends React.PureComponent {
     const isEdited = createdAt < updatedAt;
 
     const rootClassName = this.getRootClassName(comment);
-    const commentDate = formatDistanceStrict(createdAt, new Date());
     const commentBody = isMarkdown ? this.renderRevisionBody() : this.renderText(comment.comment);
     const revHref = `?revision=${comment.revision}`;
     const revFirst8Letters = comment.revision.substr(-8);
     const revisionLavelClassName = this.getRevisionLabelClassName();
 
-    const commentDateTooltip = (
-      <Tooltip id={`commentDateTooltip-${comment._id}`}>
-        {format(createdAt, 'yyyy/MM/dd HH:mm')}
-      </Tooltip>
-    );
-    const editedDateTooltip = isEdited
-      ? (
-        <Tooltip id={`editedDateTooltip-${comment._id}`}>
-          {format(updatedAt, 'yyyy/MM/dd HH:mm')}
-        </Tooltip>
-      )
+    const editedDateId = `editedDate-${comment._id}`;
+    const editedDateFormatted = isEdited
+      ? format(updatedAt, 'yyyy/MM/dd HH:mm')
       : null;
 
     return (
@@ -204,21 +196,24 @@ class Comment extends React.PureComponent {
           />
         ) : (
           <div id={commentId} className={rootClassName}>
-            <UserPicture user={creator} />
+            <div className="page-comment-writer">
+              <UserPicture user={creator} />
+            </div>
             <div className="page-comment-main">
               <div className="page-comment-creator">
                 <Username user={creator} />
               </div>
               <div className="page-comment-body">{commentBody}</div>
               <div className="page-comment-meta">
-                <OverlayTrigger overlay={commentDateTooltip} placement="bottom">
-                  <span><a href={`#${commentId}`}>{commentDate}</a></span>
-                </OverlayTrigger>
-                {isEdited && (
-                <OverlayTrigger overlay={editedDateTooltip} placement="bottom">
-                  <span>&nbsp;(edited)</span>
-                </OverlayTrigger>
-                  )}
+                <a href={`#${commentId}`}>
+                  <FormattedDistanceDate id={commentId} date={comment.createdAt} />
+                </a>
+                { isEdited && (
+                  <>
+                    <span id={editedDateId}>&nbsp;(edited)</span>
+                    <UncontrolledTooltip placement="bottom" fade={false} target={editedDateId}>{editedDateFormatted}</UncontrolledTooltip>
+                  </>
+                ) }
                 <span className="ml-2"><a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a></span>
               </div>
               {this.checkPermissionToControlComment()

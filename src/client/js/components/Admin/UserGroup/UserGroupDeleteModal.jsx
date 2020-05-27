@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-
-import Modal from 'react-bootstrap/es/Modal';
+import {
+  Modal, ModalHeader, ModalBody, ModalFooter,
+} from 'reactstrap';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
@@ -162,31 +163,29 @@ class UserGroupDeleteModal extends React.Component {
     const { t } = this.props;
 
     return (
-      <Modal show={this.props.isShow} onHide={this.onHide}>
-        <Modal.Header className="modal-header bg-danger" closeButton>
-          <Modal.Title>
-            <i className="icon icon-fire"></i> {t('admin:user_group_management.delete_modal.header')}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+      <Modal className="modal-md" isOpen={this.props.isShow} toggle={this.props.onHide}>
+        <ModalHeader tag="h4" toggle={this.props.onHide} className="bg-danger text-light">
+          <i className="icon icon-fire"></i> {t('admin:user_group_management.delete_modal.header')}
+        </ModalHeader>
+        <ModalBody>
           <div>
             <span className="font-weight-bold">{t('admin:user_group_management.group_name')}</span> : &quot;{this.props.deleteUserGroup.name}&quot;
           </div>
           <div className="text-danger mt-5">
             {t('admin:user_group_management.delete_modal.desc')}
           </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <form className="d-flex justify-content-between" onSubmit={this.handleSubmit}>
-            <div className="d-flex">
+        </ModalBody>
+        <ModalFooter>
+          <form className="d-flex justify-content-between w-100" onSubmit={this.handleSubmit}>
+            <div className="d-flex form-group mb-0">
               {this.renderPageActionSelector()}
               {this.renderGroupSelector()}
             </div>
-            <button type="submit" value="" className="btn btn-sm btn-danger" disabled={!this.validateForm()}>
+            <button type="submit" value="" className="btn btn-sm btn-danger text-nowrap" disabled={!this.validateForm()}>
               <i className="icon icon-fire"></i> {t('Delete')}
             </button>
           </form>
-        </Modal.Footer>
+        </ModalFooter>
       </Modal>
     );
   }
