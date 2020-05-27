@@ -1,12 +1,9 @@
 @import '../variables';
 @import '../override-bootstrap-variables';
 
-
 $primary: rgba(11, 79, 104, 0.616);
 $themecolor: #16282d;
 $accentcolor: #66eddf;
-
-
 
 html[light],
 html[dark] {
@@ -17,15 +14,15 @@ html[dark] {
 
   // Font colors
   $color-global: #979797;
-  $color-reversal: #00FFF5;
-  $color-header: #00FFF5;
-  $color-link: #00FFF5;
+  $color-reversal: #00fff5;
+  $color-header: #00fff5;
+  $color-link: #00fff5;
   $color-link-hover: lighten($color-link, 20%);
   $color-link-wiki: darken($themecolor, 5%);
   $color-link-wiki-hover: darken($color-link-wiki, 5%);
   $color-link-nabvar: $color-reversal;
-  $color-inline-code: #C7254E;
-  $color-search: #00C2C4;
+  $color-inline-code: #c7254e;
+  $color-search: #00c2c4;
 
   // List Group colors
   $color-list: $color-global;
@@ -35,18 +32,17 @@ html[dark] {
   $color-list-hover: $color-reversal;
 
   // Navbar
-  $bgcolor-navbar: #01181A;
+  $bgcolor-navbar: #01181a;
   $border-color-navbar-gradient-left: #545fff;
   $border-color-navbar-gradient-right: #00a6e5;
-  $border-image-navbar: linear-gradient(90deg, #6CFFF9 0%, #0034C1 45%, #6CFFF9 100%);
-
+  $border-image-navbar: linear-gradient(90deg, #6cfff9 0%, #0034c1 45%, #6cfff9 100%);
 
   // Logo colors
   $bgcolor-logo: darken($themecolor, 10%);
-  $fillcolor-logo-mark: #DEDEDE;
+  $fillcolor-logo-mark: #dedede;
 
   // Sidebar
-  $bgcolor-sidebar: #052E2F;
+  $bgcolor-sidebar: #052e2f;
   $color-sidebar-context: $color-reversal;
   $bgcolor-sidebar-context: $bgcolor-navbar;
 
@@ -54,7 +50,7 @@ html[dark] {
   $color-editor-icons: $color-global;
 
   // Border colors
-  $border-color-theme: #578CAD;
+  $border-color-theme: #578cad;
 
   // Dropdown colors
   $bgcolor-dropdown-link-active: $primary;
@@ -101,30 +97,42 @@ html[dark] {
   // Search Top
   .search-top {
     .input-group-prepend .dropdown-toggle {
-      color: #050a0b;
+      color: #0e2329;
       background-color: $color-search;
       border-color: $color-search;
 
       &:hover {
         background-color: #050a0b;
         color: $color-search;
-        ;
       }
+    }
+    input {
+      background-color: #eceded;
+    }
+    i {
+      color: #949494;
     }
   }
 
   .wiki {
     p {
-      color: #95ABBA;
+      color: #95abba;
     }
 
-    pre {}
+    pre {
+    }
+    a {
+      color: #95abba;
+    }
 
     li {
       a {
-        color: #00FFF5;
-        border-bottom: solid 1px #00FFF5;
+        color: #00fff5;
+        border-bottom: solid 1px #00fff5;
       }
     }
+  }
+  .grw-page-path-nav i {
+    color: #00fff5;
   }
 }
