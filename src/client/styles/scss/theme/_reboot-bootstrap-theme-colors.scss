@@ -5,6 +5,16 @@ $theme-colors: map-merge($theme-colors, $colors);
 }
 
 @each $color, $value in $theme-colors {
+  .border-#{$color} {
+    border-color: $value !important;
+  }
+}
+
+@each $color, $value in $theme-colors {
+  @include text-emphasis-variant('.text-#{$color}', $value, true);
+}
+
+@each $color, $value in $theme-colors {
   .btn-#{$color} {
     @include button-variant($value, $value);
   }
