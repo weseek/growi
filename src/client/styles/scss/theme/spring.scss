@@ -48,6 +48,7 @@ $accentcolor: #e08dbc;
 html[light],
 html[dark] {
   $primary: $themecolor;
+  $secondary: $accentcolor;
 
   // Background colors
   $bgcolor-global: white;
@@ -57,11 +58,10 @@ html[dark] {
   // Font colors
   $color-global: black;
   $color-reversal: white;
-  // $color-header: #2b2b2b;
-  $color-link: lighten($color-global, 20%);
-  $color-link-hover: $subthemecolor;
+  $color-link: $subthemecolor;
+  $color-link-hover: lighten($subthemecolor, 10%);
   $color-link-wiki: $subthemecolor;
-  $color-link-wiki-hover: lighten($color-link-wiki, 20%);
+  $color-link-wiki-hover: lighten($color-link-wiki, 10%);
   $color-link-nabvar: $bgcolor-global;
   $color-inline-code: #c7254e;
 
@@ -73,18 +73,26 @@ html[dark] {
   $color-list-hover: lighten($accentcolor, 20%);
 
   // Navbar
-  $bgcolor-navbar: $themecolor;
-  $border-color-navbar-gradient-left: #545fff;
-  $border-color-navbar-gradient-right: #00a6e5;
+  $bgcolor-navbar: #d3687c;
+  $bgcolor-search-top-dropdown: $themecolor;
+  $border-image-navbar: linear-gradient(to right, #cbe682 0%, #4ad6e8 50%, #ea42f0 100%);
 
   // Logo colors
   $bgcolor-logo: $bgcolor-navbar;
   $fillcolor-logo-mark: lighten(desaturate($bgcolor-inline-code, 10%), 15%);
 
   // Sidebar
-  $bgcolor-sidebar: $bgcolor-navbar;
-  $color-sidebar-context: $color-reversal;
-  $bgcolor-sidebar-context: lighten($bgcolor-navbar, 10%);
+  $bgcolor-sidebar: $themecolor;
+  // Sidebar resize button
+  $color-resize-button: $color-reversal;
+  $bgcolor-resize-button: $subthemecolor;
+  $color-resize-button-hover: $color-reversal;
+  $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
+  // Sidebar contents
+  $color-sidebar-context: $subthemecolor;
+  $bgcolor-sidebar-context: #f4f6fc;
+  // Sidebar list group
+  $bgcolor-sidebar-list-group: #fafbff; // optional
 
   // Icon colors
   $color-editor-icons: $color-global;
