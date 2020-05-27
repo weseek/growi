@@ -71,12 +71,12 @@ html[dark] {
   $bgcolor-logo: $themecolor;
 
   // Sidebar
-  $bgcolor-sidebar: $color-inline-code;
+  $bgcolor-sidebar: $subthemecolor;
   $bgcolor-sidebar-nav-item-active: rgba(#000000, 0.37); // optional
-  // $text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
+  $text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
   // Sidebar resize button
   $color-resize-button: $color-reversal;
-  $bgcolor-resize-button: #d3c665;
+  $bgcolor-resize-button: $primary;
   $color-resize-button-hover: $color-reversal;
   $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
   $color-sidebar-context: $linktext;
