@@ -12,16 +12,16 @@
 // $danger: #;
 // $light: #;
 // $dark: #;
+
 $themecolor: #b3000c;
 $themelight: white;
-
-$subthemecolor: #017e20;
+$subthemecolor: #30882c;
 $bgcolor-global: $themelight;
-$linktext: lighten(#0d5901, 5%);
-$linktext-hover: lighten($linktext, 12%);
+$linktext: $subthemecolor;
+$linktext-hover: lighten($subthemecolor, 15%);
 $sidebar-text: #ffffff;
 $fillcolor-logo-mark: lighten(desaturate($themecolor, 50%), 50%);
-$color-link-wiki: lighten($themecolor, 5%);
+$color-link-wiki: lighten($subthemecolor, 5%);
 $color-link-wiki-hover: lighten($color-link-wiki, 15%);
 $color-inline-code: darken($subthemecolor, 5%);
 $bgcolor-inline-code: lighten($subthemecolor, 70%);
