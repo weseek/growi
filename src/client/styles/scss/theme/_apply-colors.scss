@@ -13,6 +13,9 @@ $bgcolor-search-top-dropdown: $secondary !default;
 $bgcolor-sidebar-nav-item-active: darken($bgcolor-sidebar, 10%) !default;
 $text-shadow-sidebar-nav-item-active: 1px 1px 2px $primary !default;
 $bgcolor-sidebar-list-group: $bgcolor-list !default;
+$bgcolor-inline-code: #f0f0f0 !default;
+$color-inline-code: #c7254e !default;
+$bordercolor-inline-code: #ccc8c8 !default;
 
 // override bootstrap variables
 $body-bg: $bgcolor-global;
