@@ -19,12 +19,14 @@ html[dark] {
   // Background colors
   $bgcolor-card: #f5f5f5;
   $bgcolor-global: lighten($color-themelight, 10%);
+  $bgcolor-inline-code: #f0f0f0; //optional
 
   // Font colors
   $color-reversal: #eeeeee;
   $color-link: lighten($color-global, 20%);
   $color-link-hover: lighten($color-link, 20%);
   $color-link-nabvar: $color-reversal;
+  $color-inline-code: #c7254e; // optional
 
   // List Group colors
   $color-list: $color-global;
@@ -52,6 +54,7 @@ html[dark] {
 
   // Border colors
   $border-color-theme: #ccc;
+  $bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
   $bgcolor-dropdown-link-active: $growi-blue;
