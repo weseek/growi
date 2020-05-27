@@ -7,7 +7,8 @@ $subthemecolor: rgb(88, 130, 250);
 $lightthemecolor: rgba(181, 203, 247, 0.61);
 
 // Light Mode
-html[light] {
+html[light],
+html[dark] {
   // Background colors
   $bgcolor-navbar: white;
   $bgcolor-navbar-active: $bgcolor-theme;
@@ -69,85 +70,6 @@ html[light] {
   $bgcolor-sidebar: $bgcolor-theme;
   $color-sidebar-context: $color-reversal;
   $bgcolor-sidebar-context: lighten($bgcolor-theme, 10%);
-  // Sidebar resize button
-  $color-resize-button: $color-reversal;
-  $bgcolor-resize-button: #209fd8;
-  $color-resize-button-hover: $color-reversal;
-  $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
-  // Sidebar contents
-  $color-sidebar-context: $color-global;
-  $bgcolor-sidebar-context: #f4f6fc;
-  // Sidebar list group
-  $bgcolor-sidebar-list-group: #fafbff; // optional
-
-  @import 'apply-colors';
-  @import 'apply-colors-light';
-  @import 'apply-colors-kibela';
-}
-
-// Dark Mode ( same as Light Mode )
-html[dark] {
-  // Background colors
-  $bgcolor-navbar: white;
-  $bgcolor-navbar-active: $bgcolor-theme;
-  $bgcolor-global: $themelight;
-  $bgcolor-card: $lightthemecolor;
-  $bgcolor-inline-code: lighten($subthemecolor, 70%);
-  $color-header: $bgcolor-theme;
-  $color-global: #3c4a60;
-  $color-link: rgb(74, 109, 204);
-  $color-link-hover: lighten($color-link, 12%);
-  $sidebar-text: $bgcolor-theme;
-  $color-reversal: #eee;
-
-  $primary: $bgcolor-theme;
-  $info: lighten($bgcolor-theme, 20%);
-
-  // List Group colors
-  $color-list: $color-global;
-  $bgcolor-list: $bgcolor-global;
-  $color-list-active: $color-reversal;
-  $bgcolor-list-active: $primary;
-  $color-list-hover: $color-reversal;
-
-  // navbar
-  $bgcolor-search-top-dropdown: $primary;
-
-  // Logo colors
-  $bgcolor-logo: transparent;
-  $fillcolor-logo-mark: lighten($bgcolor-theme, 20%);
-
-  // Icon colors
-  $color-editor-icons: $color-global;
-
-  $color-link-wiki: lighten($bgcolor-theme, 20%);
-  $color-link-wiki-hover: lighten($color-link-wiki, 20%);
-  $color-link-nabvar: $color-global;
-  $color-link-nabvar-hover: $color-global;
-  $color-inline-code: $subthemecolor;
-
-  // border colors
-  $border-color-theme: $lightthemecolor;
-  $thickborder: #5584e1;
-
-  // dropdown colors
-  $bgcolor-dropdown-link-active: $growi-blue;
-  $color-dropdown-link-active: $color-reversal;
-  $color-dropdown-link-hover: $color-global;
-
-  // admin theme box
-  $color-theme-color-box: lighten($bgcolor-theme, 20%);
-
-  // alert
-  $color-alert: $color-reversal;
-
-  // badge
-  $color-badge: $color-reversal;
-
-  // Sidebar
-  $bgcolor-sidebar: $bgcolor-theme;
-  $color-sidebar-context: $color-reversal;
-  $bgcolor-sidebar-context: lighten($bgcolor-theme, 5%);
   // Sidebar resize button
   $color-resize-button: $color-reversal;
   $bgcolor-resize-button: #209fd8;
