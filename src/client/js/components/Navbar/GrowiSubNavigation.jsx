@@ -61,7 +61,7 @@ const GrowiSubNavigation = (props) => {
   const isPageForbidden = document.querySelector('#grw-subnav').getAttribute('data-is-forbidden-page') === 'true';
   const { appContainer, pageContainer } = props;
   const {
-    pageId, path, createdAt, creator, updatedAt, revisionAuthor, isHeaderSticky, isSubnavCompact,
+    pageId, path, createdAt, creator, updatedAt, revisionAuthor,
   } = pageContainer.state;
 
   const isPageNotFound = pageId == null;
@@ -77,16 +77,6 @@ const GrowiSubNavigation = (props) => {
   }
 
   const additionalClassNames = ['grw-subnavbar'];
-  const layoutType = appContainer.getConfig().layoutType;
-
-  if (layoutType === 'growi') {
-    if (isHeaderSticky) {
-      additionalClassNames.push('grw-subnavbar-sticky');
-    }
-    if (isSubnavCompact) {
-      additionalClassNames.push('grw-subnavbar-compact');
-    }
-  }
 
   return (
     <div className={`d-flex align-items-center justify-content-between px-3 py-1 ${additionalClassNames.join(' ')}`}>
@@ -116,12 +106,12 @@ const GrowiSubNavigation = (props) => {
         <ul className="authors text-nowrap d-none d-lg-block d-edit-none">
           { creator != null && (
             <li>
-              <PageCreator creator={creator} createdAt={createdAt} isCompactMode={isSubnavCompact} />
+              <PageCreator creator={creator} createdAt={createdAt} />
             </li>
           ) }
           { revisionAuthor != null && (
             <li className="mt-1">
-              <RevisionAuthor revisionAuthor={revisionAuthor} updatedAt={updatedAt} isCompactMode={isSubnavCompact} />
+              <RevisionAuthor revisionAuthor={revisionAuthor} updatedAt={updatedAt} />
             </li>
           ) }
         </ul>

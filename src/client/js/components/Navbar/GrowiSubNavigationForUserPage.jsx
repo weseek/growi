@@ -36,22 +36,14 @@ const GrowiSubNavigationForUserPage = (props) => {
   const pageUser = JSON.parse(document.querySelector('#grw-subnav-for-user-page').getAttribute('data-page-user'));
   const { appContainer, pageContainer } = props;
   const {
-    pageId, path, isHeaderSticky, isSubnavCompact,
+    pageId, path,
   } = pageContainer.state;
 
   const additionalClassNames = ['grw-subnavbar', 'grw-subnavbar-user-page'];
   const layoutType = appContainer.getConfig().layoutType;
 
   if (layoutType === 'growi') {
-    if (isHeaderSticky) {
-      additionalClassNames.push('grw-subnavbar-sticky');
-    }
-    if (isSubnavCompact) {
-      additionalClassNames.push('py-2 grw-subnavbar-compact');
-    }
-    else {
-      additionalClassNames.push('py-3');
-    }
+    additionalClassNames.push('py-3');
   }
 
   return (
