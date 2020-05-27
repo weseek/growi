@@ -31,24 +31,23 @@
   }
 }
 
-$themecolor: #aaa45f;
+$themecolor: #b9b177;
 $themelight: #f5f3ee;
-$accentcolor: #577254;
 
 //== Light Mode
 //
 html[light],
 html[dark] {
-  $primary: $themecolor;
+  $primary: #aaa45f;
 
   // Background colors
   $bgcolor-global: #ffffff;
   $bgcolor-inline-code: #eaeaea;
-  $bgcolor-card: #f5f5f5;
-  $bgcolor-search: #b9b177;
+  $bgcolor-card: #ece8de;
 
   // Font colors
-  $color-global: black;
+  // $color-global: black;
+  $color-global: #433005;
   $color-reversal: #fffffc;
   $color-link: #9d7406;
   $color-link-hover: lighten($color-link, 20%);
@@ -63,6 +62,7 @@ html[dark] {
 
   // Navbar
   $bgcolor-navbar: #2a2929;
+  $bgcolor-search-top-dropdown: $themecolor;
   $border-image-navbar: linear-gradient(to right, #5c78ef 0%, #16bc42 50%, #5c78ef 100%);
 
   // Logo colors
@@ -79,7 +79,7 @@ html[dark] {
   $bgcolor-sidebar-list-group: #f7f5f1;
   // Sidebar resize button
   $color-resize-button: white;
-  $bgcolor-resize-button: #b9b177;
+  $bgcolor-resize-button: $themecolor;
 
   // Border colors
   $border-color-theme: #ccc; // former: `$navbar-border: #ccc;`
@@ -104,36 +104,21 @@ html[dark] {
   @import 'apply-colors';
   @import 'apply-colors-light';
 
-  .table {
-    background-color: $themelight;
-  }
-
   // hljs
   .hljs {
     color: #433005;
     background-color: $bgcolor-inline-code;
   }
 
-  // Search Top
-  .search-top {
-    .input-group-prepend .dropdown-toggle {
-      color: $color-search;
-      background-color: $bgcolor-search;
-      &:hover {
-        background-color: darken($bgcolor-search, 10%);
-      }
-    } 
-  }
-
+  // List
   .list-group .list-group-item {
     background: transparent;
   }
-  
-  .nav-tabs .nav-link.active {
-    color: $color-link !important;
-    background: transparent;
-    &:hover {
-      color: $color-link-hover !important;
+
+  // Search Top
+  .search-top {
+    .btn-secondary.dropdown-toggle {
+      color: $color-search;
     }
   }
 
