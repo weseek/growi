@@ -49,8 +49,8 @@ html[dark] {
   // Font colors
   $color-global: #112744;
   $color-reversal: #eee;
-  $color-link: lighten($color-global, 2%);
-  $color-link-hover: lighten($color-link, 5%);
+  $color-link: $subthemecolor;
+  $color-link-hover: lighten($color-link, 10%);
   $color-link-nabvar: #a7a7a7;
 
   // List Group colors
