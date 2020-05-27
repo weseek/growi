@@ -58,11 +58,10 @@ html[dark] {
   // Font colors
   $color-global: black;
   $color-reversal: white;
-  // $color-header: #2b2b2b;
-  $color-link: lighten($color-global, 20%);
-  $color-link-hover: $subthemecolor;
+  $color-link: $subthemecolor;
+  $color-link-hover: lighten($subthemecolor, 10%);
   $color-link-wiki: $subthemecolor;
-  $color-link-wiki-hover: lighten($color-link-wiki, 20%);
+  $color-link-wiki-hover: lighten($color-link-wiki, 10%);
   $color-link-nabvar: $bgcolor-global;
   $color-inline-code: #c7254e;
 
