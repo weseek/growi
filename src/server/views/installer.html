@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>{{ customizeService.generateCustomTitle(t('installer.setup')) }}</title>
+  <title>{{ customizeService.generateCustomTitleForFixedPageName(t('installer.setup')) }}</title>
   <meta name="description" content="">
   <meta name="author" content="">
 
@@ -30,7 +30,7 @@
 
   {{ cdnStyleTagsByGroup('basis') }}
 
-  <script src="{{ webpack_asset('js/installer.js') }}" defer></script>
+  <script src="{{ webpack_asset('js/nologin.js') }}" defer></script>
 
 </head>
 {% endblock %}

@@ -18,7 +18,7 @@ const ExternalAccountRow = (props) => {
       <td className="text-center">
         <button
           type="button"
-          className="btn btn-outline-secondary btn-sm btn-danger"
+          className="btn btn-sm btn-danger"
           onClick={() => props.openDisassociateModal(account)}
         >
           <i className="ti-unlink"></i>

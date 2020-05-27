@@ -270,9 +270,9 @@
       "Redirect": "Redirect"
     },
     "help": {
-      "redirect": "Redirect to new page if someone accesses <code>%s</code>",
+      "redirect": "Redirect to new page if someone accesses under this path",
       "metadata": "Remains last update user and updated date as is",
-      "recursive": "Move/Rename children of under <code>%s</code> recursively"
+      "recursive": "Move/Rename children of under this path recursively"
     }
   },
   "Put Back": "Put back",
@@ -283,11 +283,12 @@
     "delete_recursively": "Delete child pages recursively.",
     "delete_completely": "Delete completely",
     "delete_completely_restriction": "You don't have the authority to delete pages completely.",
-    "recursively": "Delete children of <code>%s</code> recursively.",
+    "recursively": "Delete pages under this path recursively.",
     "completely": "Delete completely instead of putting it into trash."
   },
   "modal_empty":{
-    "empty_the_trash": "Empty The Trash"
+    "empty_the_trash": "Empty The Trash",
+    "notice": "The pages deleted completely are unrecoverable."
   },
   "modal_duplicate": {
     "label": {
@@ -302,7 +303,7 @@
       "recursively": "Put back recursively"
     },
     "help": {
-      "recursively": "Put back children of under <code>%s</code> recursively"
+      "recursively": "Put back page under this path recursively"
     }
   },
   "modal_shortcuts": {
@@ -339,7 +340,7 @@
   "template": {
     "modal_label": {
       "Create/Edit Template Page": "Create/Edit template page",
-      "Create template under": "Create template page under:"
+      "Create template under": "Create template page under this page"
     },
     "option_label": {
       "create/edit": "Create/Edit template page..",

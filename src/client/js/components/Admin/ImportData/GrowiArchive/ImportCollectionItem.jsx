@@ -131,7 +131,7 @@ export default class ImportCollectionItem extends React.Component {
             { modes.map((mode) => {
               return (
                 <li key={`buttonMode_${mode}`}>
-                  <a type="button" role="button" onClick={() => this.modeSelectedHandler(mode)}>
+                  <a type="button" className="dropdown-item" role="button" onClick={() => this.modeSelectedHandler(mode)}>
                     {this.renderModeLabel(mode, true)}
                   </a>
                 </li>

@@ -1,5 +1,5 @@
 {% if page %}
-<ul class="nav nav-tabs hidden-print" role="tablist">
+<ul class="nav nav-tabs d-print-none" role="tablist">
 
   {#
     Left Tabs
@@ -65,44 +65,7 @@
 
   <!-- icon-options-vertical -->
   {% if !isTrashPage() %}
-    {% if page.isTopPage() %}
-    <li class="nav-item dropdown">
-      <a
-        {% if user %} role="button" class="nav-link dropdown-toggle dropdown-toggle-no-caret" href="#" data-toggle="dropdown" {% endif %}
-        {% if not user %}
-          class="nav-link dropdown-toggle dropdown-toggle-disabled dropdown-toggle-no-caret"
-          data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
-        {% endif %}
-      >
-        <i class="icon-options-vertical"></i>
-      </a>
-      <div class="dropdown-menu dropdown-menu-right">
-        <a class="dropdown-item" href="#" data-target="#create-template" data-toggle="modal"><i class="icon-fw icon-magic-wand"></i> {{ t('template.option_label.create/edit') }}</a>
-      </div>
-    </li>
-    {% else %}
-    <li class="nav-item dropdown">
-      <a
-        {% if user %} role="button" class="nav-link dropdown-toggle dropdown-toggle-no-caret" href="#" data-toggle="dropdown" {% endif %}
-        {% if not user %}
-          class="nav-link dropdown-toggle dropdown-toggle-disabled dropdown-toggle-no-caret"
-          data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
-        {% endif %}
-      >
-        <i class="icon-options-vertical"></i>
-      </a>
-      <div class="dropdown-menu dropdown-menu-right">
-        <a class="dropdown-item" href="#" data-target="#renamePage" data-toggle="modal"><i class="icon-fw icon-action-redo"></i> {{ t('Move/Rename') }}</a>
-        <a class="dropdown-item" href="#" data-target="#duplicatePage" data-toggle="modal"><i class="icon-fw icon-docs"></i> {{ t('Duplicate') }}</a>
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="#" data-target="#create-template" data-toggle="modal"><i class="icon-fw icon-magic-wand"></i> {{ t('template.option_label.create/edit') }}</a>
-        {% if isDeletablePage() %}
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#" data-target="#deletePage" data-toggle="modal"><i class="icon-fw icon-fire text-danger"></i> {{ t('Delete') }}</a>
-        {% endif %}
-      </u>
-    </li>
-    {% endif %}
+    <li id="page-management" class="nav-item dropdown"></li>
   {% endif %}
 </ul>
 

@@ -21,6 +21,8 @@ import PageHistory from './components/PageHistory';
 import PageComments from './components/PageComments';
 import PageTimeline from './components/PageTimeline';
 import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
+import PageManagement from './components/Page/PageManagement';
+import TrashPageAlert from './components/Page/TrashPageAlert';
 import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
 import PagePathAutoComplete from './components/PagePathAutoComplete';
@@ -68,13 +70,13 @@ Object.assign(componentMappings, {
   // 'revision-history': <PageHistory pageId={pageId} />,
   'tags-page': <TagsList crowi={appContainer} />,
 
-  'create-page-name-input': <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} addTrailingSlash />,
-
   'page-editor': <PageEditor />,
   'page-editor-path-nav': <PagePathNavForEditor />,
   'page-editor-options-selector': <OptionsSelector crowi={appContainer} />,
   'page-status-alert': <PageStatusAlert />,
   'save-page-controls': <SavePageControls />,
+
+  'trash-page-alert': <TrashPageAlert />,
 
   'page-timeline': <PageTimeline />,
 
@@ -88,11 +90,12 @@ if (pageContainer.state.pageId != null) {
     'page-comments-list': <PageComments />,
     'page-attachment': <PageAttachment />,
     'page-comment-write': <CommentEditorLazyRenderer />,
+    'page-management': <PageManagement />,
+
     'revision-toc': <TableOfContents />,
     'seen-user-list': <UserPictureList userIds={pageContainer.state.seenUserIds} />,
     'liker-list': <UserPictureList userIds={pageContainer.state.likerUserIds} />,
     'rename-page-name-input': <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
-    'duplicate-page-name-input': <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
 
     'user-created-list': <RecentCreated />,
     'user-draft-list': <MyDraftList />,

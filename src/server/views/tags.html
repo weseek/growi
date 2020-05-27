@@ -1,11 +1,11 @@
 {% extends 'layout/layout.html' %}
 
-{% block html_title %}{{ customizeService.generateCustomTitle(t('Tags')) }}{% endblock %}
+{% block html_title %}{{ customizeService.generateCustomTitleForFixedPageName(t('Tags')) }}{% endblock %}
 
 {% block html_base_css %}tags-page{% endblock %}
 
 {% block layout_main %}
-<header class="py-0 position-sticky grw-header">
+<header class="py-0 grw-header">
   <h1 class="title">{{ t('Tags') }}</h1>
 </header>
 

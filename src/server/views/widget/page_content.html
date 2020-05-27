@@ -11,16 +11,22 @@
   data-page-has-draft-on-hackmd="{% if hasDraftOnHackmd %}{{ hasDraftOnHackmd.toString() }}{% endif %}"
   data-page-is-liked="{% if page.isLiked(user) %}true{% else %}false{% endif %}"
   data-page-is-seen="{% if page and page.isSeenUser(user) %}1{% else %}0{% endif %}"
+  data-page-is-deleted="{% if page.isDeleted() %}true{% else %}false{% endif %}"
+  data-page-is-deletable="{% if isDeletablePage() %}true{% else %}false{% endif %}"
+  data-page-is-able-to-delete-completely="{% if user.canDeleteCompletely(page.creator._id) %}true{% else %}false{% endif %}"
   data-slack-channels="{{ slack|default('') }}"
   data-page-created-at="{% if page %}{{ page.createdAt|datetz('Y/m/d H:i:s') }}{% endif %}"
   data-page-creator="{% if page %}{{ page.creator|json }}{% endif %}"
   data-page-updated-at="{% if page %}{{ page.updatedAt|datetz('Y/m/d H:i:s') }}{% endif %}"
+  data-page-has-children="{% if pages.length > 0 %}true{% else %}false{% endif %}"
   >
 {% else %}
 <div id="content-main" class="content-main"
   data-path="{{ encodeURI(path) }}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
   data-slack-channels="{{ slack|default('') }}"
+  data-page-is-deleted="{% if page.isDeleted() %}true{% else %}false{% endif %}"
+  data-page-has-children="{% if pages.length > 0 %}true{% else %}false{% endif %}"
   >
 {% endif %}
 
@@ -39,7 +45,7 @@
 
       {# formatted text #}
       <div class="tab-pane active" id="revision-body">
-        <div class="revision-toc hidden-print" id="revision-toc">
+        <div class="revision-toc d-print-none" id="revision-toc">
           <a data-toggle="collapse" data-parent="#revision-toc" href="#revision-toc-content" class="revision-toc-head">{{ t('Table of Contents') }}</a>
           <div id="revision-toc-content" class="revision-toc-content collapse in"></div>
         </div>

@@ -23,8 +23,6 @@ $sidebar-text: #ffffff;
 $fillcolor-logo-mark: lighten(desaturate($themecolor, 50%), 50%);
 $color-link-wiki: lighten($subthemecolor, 5%);
 $color-link-wiki-hover: lighten($color-link-wiki, 15%);
-$color-inline-code: darken($subthemecolor, 5%);
-$bgcolor-inline-code: lighten($subthemecolor, 70%);
 $active-nav-tabs-bgcolor: white;
 
 .growi:not(.login-page) {
@@ -45,6 +43,7 @@ html[dark] {
   $primary: #d3c665;
   // Background colors
   $bgcolor-card: #f5f5f5;
+  $bgcolor-inline-code: #f0f0f0; //optional
 
   // Font colors
   $color-global: #112744;
@@ -52,6 +51,7 @@ html[dark] {
   $color-link: $subthemecolor;
   $color-link-hover: lighten($color-link, 10%);
   $color-link-nabvar: $color-reversal;
+  $color-inline-code: #c7254e; // optional
 
   // List Group colors
   $color-list: $color-global;
@@ -89,6 +89,7 @@ html[dark] {
 
   // Border colors
   $border-color-theme: #ccc; // former: `$navbar-border: #ccc;`
+  $bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
   $bgcolor-dropdown-link-active: $primary;

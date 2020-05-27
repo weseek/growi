@@ -2,7 +2,7 @@
 
 {% block html_base_css %}invited nologin{% endblock %}
 
-{% block html_title %}{{ customizeService.generateCustomTitle('Registration') }}{% endblock %}
+{% block html_title %}{{ customizeService.generateCustomTitleForFixedPageName('Registration') }}{% endblock %}
 
 
 
@@ -91,10 +91,10 @@
 
         <div class="input-group justify-content-center d-flex mt-5">
           <input type="hidden" name="_csrf" value="{{ csrf() }}">
-          <button type="submit" class="btn btn-fill login px-0 py-2" id="register">
+          <button type="submit" class="btn btn-fill" id="register">
             <div class="eff"></div>
-            <span class="btn-label p-3"><i class="icon-user-follow"></i></span>
-            <span class="btn-label-text p-3">{{ t('Create') }}</span>
+            <span class="btn-label"><i class="icon-user-follow"></i></span>
+            <span class="btn-label-text">{{ t('Create') }}</span>
           </button>
         </div>
 

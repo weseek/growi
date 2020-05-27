@@ -29,7 +29,7 @@
     {% endif %}
 
     {% if redirectFrom or req.query.renamed or req.query.redirectFrom %}
-    <div class="alert alert-info d-edit-none py-3 px-4 d-flex align-items-center justify-content-between">
+    <div class="alert alert-pink d-edit-none py-3 px-4 d-flex align-items-center justify-content-between">
       <span>
         {% set fromPath = req.query.renamed or req.query.redirectFrom %}
         {% if redirectFrom or req.query.redirectFrom %}
@@ -40,15 +40,10 @@
         {% endif %}
       </span>
       {% if user and not page.isDeleted() %}
-      <form role="form" id="unlink-page-form" onsubmit="return false;">
-        <input type="hidden" name="_csrf" value="{{ csrf() }}">
-        {# TODO: should be removed by GW-2283 #}
-        <input type="hidden" name="path" value="{{ page.path }}">
-        <button type="submit" class="btn btn-outline-secondary btn-sm float-right">
+        <button type="button" id="unlink-page-button" class="btn btn-secondary btn-sm float-right">
           <i class="ti-unlink" aria-hidden="true"></i>
           Unlink
         </button>
-      </form>
       {% endif %}
     </div>
     {% endif %}
@@ -82,25 +77,7 @@
     {% endif %}
 
     {% if isTrashPage() %}
-    <div class="alert alert-warning py-3 px-4 d-flex align-items-center justify-content-between">
-      <div>
-        This page is in the trash <i class="icon-trash" aria-hidden="true"></i>.
-        {% if page.isDeleted() %}
-        <br>Deleted by <img src="{{ page.lastUpdateUser|picture }}" class="picture picture-sm rounded-circle"> {{ page.lastUpdateUser.name }} at {{ page.updatedAt|datetz('Y-m-d H:i:s') }}
-        {% endif %}
-      </div>
-      {% if user and user.admin and req.path == '/trash' and pages.length > 0 %}
-      <div>
-        <button href="#" class="btn btn-danger rounded-pill btn-sm" data-target="#emptyTrash" data-toggle="modal"><i class="icon-trash" aria-hidden="true"></i>{{ t('modal_empty.empty_the_trash') }}</button>
-      </div>
-      {% endif %}
-      {% if page.isDeleted() and user %}
-      <div>
-        <button href="#" class="btn btn-outline-secondary rounded-pill btn-sm mr-2" data-target="#putBackPage" data-toggle="modal"><i class="icon-action-undo" aria-hidden="true"></i> {{ t('Put Back') }}</button>
-        <button href="#" class="btn btn-danger rounded-pill btn-sm mr-2" {% if !user.canDeleteCompletely(page.creator._id) %} disabled="disabled" {% endif %} data-target="#deletePage" data-toggle="modal"><i class="icon-fire" aria-hidden="true"></i> {{ t('Delete Completely') }}</button>
-      </div>
-      {% endif %}
-    </div>
+      <div id="trash-page-alert"></div>
     {% endif %}
   </div>
 </div>

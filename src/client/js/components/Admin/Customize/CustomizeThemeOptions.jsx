@@ -15,29 +15,31 @@ class CustomizeThemeOptions extends React.Component {
     const { t, adminCustomizeContainer } = this.props;
     const { currentLayout, currentTheme } = adminCustomizeContainer.state;
 
+    /* eslint-disable no-multi-spaces */
     const lightNDarkTheme = [{
-      name: 'default', bg: '#ffffff', topbar: '#334455', theme: '#112744',
+      name: 'default',    bg: '#ffffff', topbar: '#2a2929', sidebar: '#122c55', theme: '#209fd8',
     }, {
-      name: 'mono-blue', bg: '#F7FBFD', topbar: '#00587A', theme: '#00587A',
+      name: 'mono-blue',  bg: '#F7FBFD', topbar: '#2a2929', sidebar: '#00587A', theme: '#00587A',
     }];
 
     const uniqueTheme = [{
-      name: 'nature', bg: '#f9fff3', topbar: '#118050', theme: '#460039',
+      name: 'nature',     bg: '#f9fff3', topbar: '#2a2929', sidebar: '#118050', theme: '#460039',
     }, {
-      name: 'wood', bg: '#fffefb', topbar: '#aaa45f', theme: '#dddebf',
+      name: 'wood',       bg: '#fffefb', topbar: '#2a2929', sidebar: '#aaa45f', theme: '#dddebf',
     }, {
-      name: 'island', bg: '#8ecac0', topbar: '#0c2a44', theme: '#cef2ef',
+      name: 'island',     bg: '#8ecac0', topbar: '#2a2929', sidebar: '#0c2a44', theme: '#cef2ef',
     }, {
-      name: 'christmas', bg: '#fffefb', topbar: '#b3000c', theme: '#017e20',
+      name: 'christmas',  bg: '#fffefb', topbar: '#2a2929', sidebar: '#b3000c', theme: '#017e20',
     }, {
-      name: 'antarctic', bg: '#ffffff', topbar: '#000080', theme: '#99cccc',
+      name: 'antarctic',  bg: '#ffffff', topbar: '#2a2929', sidebar: '#000080', theme: '#99cccc',
     }, {
-      name: 'spring', bg: '#fff5ee', topbar: '#ff69b4', theme: '#ffb6c1',
+      name: 'spring',     bg: '#fff5ee', topbar: '#2a2929', sidebar: '#ff69b4', theme: '#ffb6c1',
     }, {
-      name: 'future', bg: '#16282D', topbar: '#011414', theme: '#04B4AE',
+      name: 'future',     bg: '#16282D', topbar: '#2a2929', sidebar: '#011414', theme: '#04B4AE',
     }, {
-      name: 'halloween', bg: '#030003', topbar: '#cc5d1f', theme: '#e9af2b',
+      name: 'halloween',  bg: '#030003', topbar: '#2a2929', sidebar: '#cc5d1f', theme: '#e9af2b',
     }];
+    /* eslint-enable no-multi-spaces */
 
     return (
       <div id="themeOptions" className={`${currentLayout === 'kibela' && 'disabled'}`}>
@@ -51,17 +53,14 @@ class CustomizeThemeOptions extends React.Component {
                   key={theme.name}
                   isSelected={currentTheme === theme.name}
                   onSelected={() => adminCustomizeContainer.switchThemeType(theme.name)}
-                  name={theme.name}
-                  bg={theme.bg}
-                  topbar={theme.topbar}
-                  theme={theme.theme}
+                  {...theme}
                 />
               );
             })}
           </div>
         </div>
         {/* Unique Theme */}
-        <div>
+        <div className="mt-3">
           <h3>{t('admin:customize_setting.theme_desc.unique')}</h3>
           <div className="d-flex flex-wrap">
             {uniqueTheme.map((theme) => {
@@ -70,10 +69,7 @@ class CustomizeThemeOptions extends React.Component {
                   key={theme.name}
                   isSelected={currentTheme === theme.name}
                   onSelected={() => adminCustomizeContainer.switchThemeType(theme.name)}
-                  name={theme.name}
-                  bg={theme.bg}
-                  topbar={theme.topbar}
-                  theme={theme.theme}
+                  {...theme}
                 />
               );
             })}

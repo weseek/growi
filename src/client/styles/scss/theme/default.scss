@@ -19,7 +19,7 @@ html[light] {
 
   // Background colors
   $bgcolor-global: white;
-  $bgcolor-inline-code: #f9f2f4;
+  $bgcolor-inline-code: #f0f0f0; //optional
   $bgcolor-card: #f5f5f5;
 
   // Font colors
@@ -31,7 +31,7 @@ html[light] {
   $color-link-wiki: $color-link;
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
   $color-link-nabvar: #a7a7a7;
-  $color-inline-code: #c7254e;
+  $color-inline-code: #c7254e; // optional
 
   // List Group colors
   // $color-list: $color-global; // optional
@@ -64,11 +64,21 @@ html[light] {
   // Sidebar list group
   $bgcolor-sidebar-list-group: #fafbff; // optional
 
+  // Subnavigation
+  // $bgcolor-subnabvar: #fafafa; // optional
+
+  // Tabs
+  // $bordercolor-nav-tabs: #; // optional
+  // $color-nav-tabs-link-active: #; //optional
+  // $bordercolor-nav-tabs-hover: # # $bordercolor-nav-tabs; // optional
+  // $bordercolor-nav-tabs-active: # # $bgcolor-global; // optional
+
   // Icon colors
   $color-editor-icons: $color-global;
 
   // Border colors
-  $border-color-theme: #ccc; // former: `$navbar-border: #ccc;`
+  $border-color-theme: #ccc;
+  $bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
   $bgcolor-dropdown-link-active: $growi-blue;
@@ -95,7 +105,7 @@ html[dark] {
 
   // Background colors
   $bgcolor-global: #131418;
-  $bgcolor-inline-code: darken($bgcolor-global, 5%);
+  $bgcolor-inline-code: #1f1f22; //optional
   $bgcolor-card: darken($bgcolor-global, 5%);
 
   // Font colors
@@ -107,7 +117,7 @@ html[dark] {
   $color-link-wiki: $color-link;
   $color-link-wiki-hover: lighten($color-link-wiki, 10%);
   $color-link-nabvar: #a7a7a7;
-  $color-inline-code: #c7254e;
+  $color-inline-code: #c7254e; // optional
 
   // List Group colors
   // $color-list: $color-global; // optional
@@ -130,9 +140,9 @@ html[dark] {
   $bgcolor-sidebar-nav-item-active: rgba(#969494, 0.3); // optional
   $text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
   // Sidebar resize button
-  $color-resize-button: $color-global;
+  $color-resize-button: white;
   $bgcolor-resize-button: $primary;
-  $color-resize-button-hover: $color-global;
+  $color-resize-button-hover: white;
   $bgcolor-resize-button-hover: darken($bgcolor-resize-button, 5%);
   // Sidebar contents
   $bgcolor-sidebar-context: #111d2f;
@@ -140,11 +150,21 @@ html[dark] {
   // Sidebar list group
   $bgcolor-sidebar-list-group: #1c2a3e; // optional
 
+  // Subnavigation
+  $bgcolor-subnabvar: lighten($bgcolor-global, 4%); // optional
+
+  // Tabs
+  $bordercolor-nav-tabs: #444; // optional
+  // $color-nav-tabs-link-active: #; //optional
+  $bordercolor-nav-tabs-hover: #666 #666 $bordercolor-nav-tabs; // optional
+  // $bordercolor-nav-tabs-active: # # $bgcolor-global; // optional
+
   // Icon colors
   $color-editor-icons: $color-global;
 
   // Border colors
-  $border-color-theme: black; // former: `$navbar-border: #ccc;`
+  $border-color-theme: black;
+  $bordercolor-inline-code: #4d4d4d; // optional
 
   // Dropdown colors
   $bgcolor-dropdown-link-active: $primary;
