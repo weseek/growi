@@ -89,7 +89,7 @@ html[dark] {
   $color-resize-button-hover: $color-reversal;
   $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
   // Sidebar contents
-  $color-sidebar-context: $color-global;
+  $color-sidebar-context: $subthemecolor;
   $bgcolor-sidebar-context: #f4f6fc;
   // Sidebar list group
   $bgcolor-sidebar-list-group: #fafbff; // optional
