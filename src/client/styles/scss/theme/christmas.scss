@@ -47,11 +47,11 @@ html[dark] {
   $bgcolor-card: #f5f5f5;
 
   // Font colors
-  $color-global: $subthemecolor;
+  $color-global: #112744;
   $color-reversal: #eee;
   $color-link: lighten($color-global, 2%);
-  $color-link-hover: lighten($color-link, 20%);
-  $color-link-nabvar: #A7A7A7;
+  $color-link-hover: lighten($color-link, 5%);
+  $color-link-nabvar: #a7a7a7;
 
   // List Group colors
   $color-list: $color-global;
@@ -76,11 +76,11 @@ html[dark] {
   // $text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
   // Sidebar resize button
   $color-resize-button: $color-reversal;
-  $bgcolor-resize-button: #D3C665;
+  $bgcolor-resize-button: #d3c665;
   $color-resize-button-hover: $color-reversal;
   $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
   $color-sidebar-context: $linktext;
-  $bgcolor-sidebar-context: #F4F6FC;
+  $bgcolor-sidebar-context: #f4f6fc;
   // Sidebar list group
   $bgcolor-sidebar-list-group: #fafbff; // optional
 
