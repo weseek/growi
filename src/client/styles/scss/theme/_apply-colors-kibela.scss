@@ -124,7 +124,7 @@ body.kibela {
 
   /* Modal */
   .modal-title {
-    color: #ffffff;
+    color: #ffffff; // override header colors
   }
   .modal-content {
     background-color: $themelight;
