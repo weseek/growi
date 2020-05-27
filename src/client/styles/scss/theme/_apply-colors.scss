@@ -65,14 +65,13 @@ $input-focus-color: $color-global;
 }
 
 // Tabs
-.nav.nav-tabs {
-  > li > a {
-    color: $color-link;
+.nav.nav-tabs .nav-link.active {
+  color: $color-link !important;
+  background: transparent;
 
-    &:hover,
-    &:focus {
-      color: $color-link-hover;
-    }
+  &:hover,
+  &:focus {
+    color: $color-link-hover !important;
   }
 }
 
