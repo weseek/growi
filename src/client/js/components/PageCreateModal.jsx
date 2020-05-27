@@ -151,7 +151,7 @@ const PageCreateModal = (props) => {
                 ? (
                   <PagePathAutoComplete
                     crowi={appContainer}
-                    initializedPath={pathname}
+                    initializedPath={decodeURI(pathname)}
                     addTrailingSlash
                     onSubmit={ppacSubmitHandler}
                     onInputChange={ppacInputChangeHandler}
@@ -188,7 +188,7 @@ const PageCreateModal = (props) => {
         <fieldset className="col-12">
 
           <h3 className="grw-modal-head pb-2">{ t('template.modal_label.Create template under')}<br />
-            <code>{pathname}</code>
+            <code>{decodeURI(pathname)}</code>
           </h3>
 
           <div className="d-sm-flex align-items-center justify-items-between">
