@@ -29,12 +29,6 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *            type: string
  *          themeType:
  *            type: string
- *      CustomizeBehavior:
- *        description: CustomizeBehavior
- *        type: object
- *        properties:
- *          behaviorType:
- *            type: string
  *      CustomizeFunction:
  *        description: CustomizeFunction
  *        type: object
@@ -96,17 +90,14 @@ module.exports = (crowi) => {
   const validator = {
     themeAssetPath: [
       query('themeName').isString().isIn([
-        'default', 'nature', 'mono-blue', 'wood', 'island', 'christmas', 'antarctic', 'default-dark', 'future', 'blue-night', 'halloween', 'spring',
+        'default', 'nature', 'mono-blue', 'wood', 'island', 'christmas', 'antarctic', 'future', 'halloween', 'spring',
       ]),
     ],
     layoutTheme: [
-      body('layoutType').isString().isIn(['growi', 'kibela', 'crowi']),
+      body('layoutType').isString().isIn(['growi', 'kibela']),
       body('themeType').isString().isIn([
-        'default', 'nature', 'mono-blue', 'wood', 'island', 'christmas', 'antarctic', 'default-dark', 'future', 'blue-night', 'halloween', 'spring',
+        'default', 'nature', 'mono-blue', 'wood', 'island', 'christmas', 'antarctic', 'future', 'halloween', 'spring',
       ]),
-    ],
-    behavior: [
-      body('behaviorType').isString().isIn(['growi', 'crowi-plus']),
     ],
     function: [
       body('isEnabledTimeline').isBoolean(),
@@ -161,7 +152,6 @@ module.exports = (crowi) => {
     const customizeParams = {
       layoutType: await crowi.configManager.getConfig('crowi', 'customize:layout'),
       themeType: await crowi.configManager.getConfig('crowi', 'customize:theme'),
-      behaviorType: await crowi.configManager.getConfig('crowi', 'customize:behavior'),
       isEnabledTimeline: await crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
       isSavedStatesOfTabChanges: await crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
       isEnabledAttachTitleHeader: await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
@@ -258,48 +248,6 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating layout and theme';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-layoutTheme-failed'));
-    }
-  });
-
-  /**
-   * @swagger
-   *
-   *    /customize-setting/behavior:
-   *      put:
-   *        tags: [CustomizeSetting]
-   *        operationId: updateBehaviorCustomizeSetting
-   *        summary: /customize-setting/behavior
-   *        description: Update behavior
-   *        requestBody:
-   *          required: true
-   *          content:
-   *            application/json:
-   *              schema:
-   *                $ref: '#/components/schemas/CustomizeBehavior'
-   *        responses:
-   *          200:
-   *            description: Succeeded to update behavior
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  $ref: '#/components/schemas/CustomizeBehavior'
-   */
-  router.put('/behavior', loginRequiredStrictly, adminRequired, csrf, validator.behavior, ApiV3FormValidator, async(req, res) => {
-    const requestParams = {
-      'customize:behavior': req.body.behaviorType,
-    };
-
-    try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
-      const customizedParams = {
-        behaviorType: await crowi.configManager.getConfig('crowi', 'customize:behavior'),
-      };
-      return res.apiv3({ customizedParams });
-    }
-    catch (err) {
-      const msg = 'Error occurred in updating behavior';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-behavior-failed'));
     }
   });
 

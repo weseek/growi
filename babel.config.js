@@ -14,6 +14,22 @@ module.exports = function(api) {
   ];
   const plugins = [
     'lodash',
+    // transform
+    //  from `import { Button } from 'reactstrap';`
+    //  to   `import Row from 'reactstrap/Button';`
+    [
+      'transform-imports', {
+        reactstrap: {
+          // eslint-disable-next-line no-template-curly-in-string
+          transform: 'reactstrap/es/${member}',
+          preventFullImport: true,
+        },
+      },
+    ],
+    '@babel/plugin-proposal-optional-chaining',
+    [
+      '@babel/plugin-proposal-class-properties', { loose: true },
+    ],
   ];
 
   return {

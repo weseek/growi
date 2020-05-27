@@ -1,58 +1,51 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export default class BookmarkButton extends React.Component {
+import { toastError } from '../util/apiNotification';
+
+class BookmarkButton extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      bookmarked: false,
+      isBookmarked: false,
     };
 
     this.handleClick = this.handleClick.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    const { pageId, crowi } = this.props;
     // if guest user
     if (!this.isUserLoggedIn()) {
       // do nothing
       return;
     }
 
-    this.props.crowi.apiGet('/bookmarks.get', { page_id: this.props.pageId })
-      .then((res) => {
-        if (res.bookmark) {
-          this.markBookmarked();
-        }
-      });
-  }
-
-  handleClick(event) {
-    event.preventDefault();
-
-    const pageId = this.props.pageId;
-
-    if (!this.state.bookmarked) {
-      this.props.crowi.apiPost('/bookmarks.add', { page_id: pageId })
-        .then((res) => {
-          this.markBookmarked();
-        });
+    try {
+      const response = await crowi.apiv3.get('/bookmarks', { pageId });
+      if (response.data.bookmark != null) {
+        this.setState({ isBookmarked: true });
+      }
     }
-    else {
-      this.props.crowi.apiPost('/bookmarks.remove', { page_id: pageId })
-        .then((res) => {
-          this.markUnBookmarked();
-        });
+    catch (err) {
+      toastError(err);
     }
+
   }
 
-  markBookmarked() {
-    this.setState({ bookmarked: true });
-  }
+  async handleClick() {
+    const { crowi, pageId } = this.props;
+    const bool = !this.state.isBookmarked;
 
-  markUnBookmarked() {
-    this.setState({ bookmarked: false });
+    try {
+      await crowi.apiv3.put('/bookmarks', { pageId, bool });
+      this.setState({ isBookmarked: bool });
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   isUserLoggedIn() {
@@ -65,20 +58,15 @@ export default class BookmarkButton extends React.Component {
       return <div></div>;
     }
 
-    const btnSizeClassName = this.props.size ? `btn-${this.props.size}` : 'btn-md';
-    const addedClassNames = [
-      this.state.bookmarked ? 'active' : '',
-      btnSizeClassName,
-    ];
-    const addedClassName = addedClassNames.join(' ');
-
     return (
       <button
         type="button"
         href="#"
         title="Bookmark"
         onClick={this.handleClick}
-        className={`btn-bookmark btn btn-default btn-circle btn-outline ${addedClassName}`}
+        className={`btn rounded-circle btn-bookmark border-0 d-edit-none
+          ${`btn-${this.props.size}`}
+          ${this.state.isBookmarked ? 'btn-warning active' : 'btn-outline-warning'}`}
       >
         <i className="icon-star"></i>
       </button>
@@ -92,3 +80,9 @@ BookmarkButton.propTypes = {
   crowi: PropTypes.object.isRequired,
   size: PropTypes.string,
 };
+
+BookmarkButton.defaultProps = {
+  size: 'md',
+};
+
+export default BookmarkButton;

@@ -1,5 +1,4 @@
-// import react-bootstrap-typeahead
-@import '~react-bootstrap-typeahead/css/Typeahead';
+@import 'layout_variable';
 
 .search-listpage-icon {
   font-size: 16px;
@@ -19,6 +18,7 @@
 
 .search-typeahead {
   position: relative;
+  width: 100%;
 
   .search-clear {
     position: absolute;
@@ -54,20 +54,16 @@
   }
 }
 
-// top and sidebar input styles
-.search-top,
-.search-sidebar {
+// input styles
+.search-top {
   .search-clear {
     top: 3px;
     right: 26px;
   }
 
-  .btn-group-dropdown-scope .dropdown-toggle {
+  .dropdown-toggle {
     min-width: 95px;
-    height: 30px;
-    padding-top: 4px;
-    padding-right: 4px;
-    padding-bottom: 4px;
+    padding-left: 1.5rem;
     border-top-left-radius: 40px;
     border-bottom-left-radius: 40px;
   }
@@ -83,6 +79,7 @@
       margin-left: 8px;
     }
   }
+
   .form-group:not(.has-error) {
     .rbt-input.form-control {
       border: none;
@@ -94,79 +91,64 @@
     top: 0;
     right: 0;
 
-    .btn {
-      padding: 4px 10px;
-    }
-
     z-index: 3;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
   }
 }
 
 // layout
 .search-top {
-  margin-top: 10px;
-  margin-bottom: 10px;
+  .grw-search-top-fixed {
+    // centering on navbar
+    top: $grw-navbar-height / 2;
+    left: 50vw;
+    z-index: $zindex-fixed + 1;
+    transform: translate(-50%, -50%);
 
-  .rbt-input.form-control {
-    width: 200px;
-    transition: 0.3s ease-out;
+    .rbt-input.form-control {
+      width: 200px;
+      transition: 0.3s ease-out;
 
-    // focus
-    &.focus {
-      width: 300px;
+      // focus
+      &.focus {
+        width: 300px;
+      }
+
+      @include media-breakpoint-up(md) {
+        width: 300px;
+      }
     }
   }
 }
 
-.search-sidebar {
-  .search-form,
-  .form-group,
-  .rbt-input.form-control,
-  .input-group {
-    width: 100%;
-  }
-
-  .btn-group-submit-search {
-    right: 30px;
-  }
-}
-
-@mixin search-typeahead-rbtmenu-mt($margin-top) {
-  .search-typeahead .rbt-menu {
-    margin-top: $margin-top; // DIRTY HACK
-    //                            note: 'transform: translate3d(0px, XXpx, 0px)' calculation has failed
-    //                                  since upgrade react-bootstrap-typeahead to v3.3.2 -- 2019.02.05 Yuki Takei
-  }
-}
-
-#search-top,
-#renamePage,
-#duplicatePage,
-.search-page-input {
-  @include search-typeahead-rbtmenu-mt(36px);
-}
-
 .search-result {
   .search-result-list {
-    nav {
-      padding-right: 0;
+    position: sticky;
+    top: 64px;
+    height: 100vh;
+    overflow-y: scroll;
 
-      &.affix {
-        top: 64px;
-        width: 33%;
-        height: 100%;
-        padding-right: 5px;
-        padding-bottom: 50px;
-        overflow-y: scroll;
-      }
-
-      .nav {
-        > li {
+    .nav.nav-pills {
+      > li {
+        > a {
           padding: 2px 8px;
+          border-radius: 0;
 
+          &:hover {
+            color: inherit;
+            text-decoration: none;
+          }
           &.active {
             padding-right: 5px;
             border-right: solid 3px transparent;
+          }
+          > * {
+            margin-right: 3px;
           }
         }
       }
@@ -213,15 +195,26 @@
 
 .search-page-input {
   position: sticky;
-  top: 0;
-  z-index: 1;
+  top: 65px;
+  // placed at front-most
+  z-index: 15;
 
-  // for sticky layout
-  padding-top: 15px;
   margin-bottom: 15px;
 
   .input-group-btn .btn {
     height: 34px;
     padding: 0px 10px;
+  }
+}
+
+// support for your search
+.grw-search-table {
+  caption {
+    display: table-header-group;
+  }
+
+  code {
+    padding: 0.25em;
+    background: $grw-alice-blue;
   }
 }

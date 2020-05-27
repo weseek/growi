@@ -378,7 +378,7 @@ class ImportForm extends React.Component {
           const isConfigButtonAvailable = Object.keys(IMPORT_OPTION_CLASS_MAPPING).includes(collectionName);
 
           return (
-            <div className="col-xs-6 my-1" key={collectionName}>
+            <div className="col-md-6 my-1" key={collectionName}>
               <ImportCollectionItem
                 isImporting={isImporting}
                 isImported={collectionProgress ? isImported : false}
@@ -446,17 +446,18 @@ class ImportForm extends React.Component {
       <>
         <form className="form-inline">
           <div className="form-group">
-            <button type="button" className="btn btn-sm btn-default mr-2" onClick={this.checkAll}>
+            <button type="button" className="btn btn-sm btn-outline-secondary mr-2" onClick={this.checkAll}>
               <i className="fa fa-check-square-o"></i> {t('admin:export_management.check_all')}
             </button>
           </div>
           <div className="form-group">
-            <button type="button" className="btn btn-sm btn-default mr-2" onClick={this.uncheckAll}>
+            <button type="button" className="btn btn-sm btn-outline-secondary mr-2" onClick={this.uncheckAll}>
               <i className="fa fa-square-o"></i> {t('admin:export_management.uncheck_all')}
             </button>
           </div>
         </form>
-        <div className="well well-sm small my-4">
+
+        <div className="card well small my-4">
           <ul>
             <li>{t('admin:importer_management.growi_settings.description_of_import_mode.about')}</li>
             <ul>
@@ -473,7 +474,7 @@ class ImportForm extends React.Component {
         {this.renderOthers()}
 
         <div className="mt-4 text-center">
-          <button type="button" className="btn btn-default mx-1" onClick={this.props.onDiscard}>
+          <button type="button" className="btn btn-outline-secondary mx-1" onClick={this.props.onDiscard}>
             {t('admin:importer_management.growi_settings.discard')}
           </button>
           <button type="button" className="btn btn-primary mx-1" onClick={this.import} disabled={!canImport || isImporting}>

@@ -4,8 +4,12 @@ import loggerFactory from '@alias/logger';
 
 import * as entities from 'entities';
 import * as toastr from 'toastr';
+import { toastError } from '../util/apiNotification';
 
 const logger = loggerFactory('growi:services:PageContainer');
+const scrollThresForSticky = 0;
+const scrollThresForCompact = 30;
+const scrollThresForThrottling = 100;
 
 /**
  * Service container related to Page
@@ -28,20 +32,27 @@ export default class PageContainer extends Container {
     }
 
     const revisionId = mainContent.getAttribute('data-page-revision-id');
-
+    const path = decodeURI(mainContent.getAttribute('data-path'));
     this.state = {
       // local page data
       markdown: null, // will be initialized after initStateMarkdown()
       pageId: mainContent.getAttribute('data-page-id'),
       revisionId,
       revisionCreatedAt: +mainContent.getAttribute('data-page-revision-created'),
-      path: mainContent.getAttribute('data-path'),
+      revisionAuthor: JSON.parse(mainContent.getAttribute('data-page-revision-author')),
+      path,
       tocHtml: '',
-      isLiked: false,
+      isLiked: JSON.parse(mainContent.getAttribute('data-page-is-liked')),
       seenUsers: [],
       likerUsers: [],
-
+      createdAt: mainContent.getAttribute('data-page-created-at'),
+      creator: JSON.parse(mainContent.getAttribute('data-page-creator')),
+      updatedAt: mainContent.getAttribute('data-page-updated-at'),
+      isDeleted:  JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
+      isDeletable:  JSON.parse(mainContent.getAttribute('data-page-is-deletable')),
+      isAbleToDeleteCompletely:  JSON.parse(mainContent.getAttribute('data-page-is-able-to-delete-completely')),
       tags: [],
+      hasChildren: JSON.parse(mainContent.getAttribute('data-page-has-children')),
       templateTagData: mainContent.getAttribute('data-template-tags') || null,
 
       // latest(on remote) information
@@ -51,6 +62,9 @@ export default class PageContainer extends Container {
       pageIdOnHackmd: mainContent.getAttribute('data-page-id-on-hackmd') || null,
       hasDraftOnHackmd: !!mainContent.getAttribute('data-page-has-draft-on-hackmd'),
       isHackmdDraftUpdatingInRealtime: false,
+
+      isHeaderSticky: false,
+      isSubnavCompact: false,
     };
 
     this.initStateMarkdown();
@@ -60,6 +74,34 @@ export default class PageContainer extends Container {
     this.save = this.save.bind(this);
     this.addWebSocketEventHandlers = this.addWebSocketEventHandlers.bind(this);
     this.addWebSocketEventHandlers();
+
+    window.addEventListener('scroll', () => {
+      const currentYOffset = window.pageYOffset;
+
+      // original throttling
+      if (this.state.isSubnavCompact && scrollThresForThrottling < currentYOffset) {
+        return;
+      }
+
+      this.setState({
+        isHeaderSticky: scrollThresForSticky < currentYOffset,
+        isSubnavCompact: scrollThresForCompact < currentYOffset,
+      });
+    });
+
+    const unlinkPageButton = document.getElementById('unlink-page-button');
+    if (unlinkPageButton != null) {
+      unlinkPageButton.addEventListener('click', async() => {
+        try {
+          const res = await this.appContainer.apiPost('/pages.unlink', { path });
+          window.location.href = encodeURI(`${res.path}?unlinked=true`);
+        }
+        catch (err) {
+          toastError(err);
+        }
+      });
+    }
+
   }
 
   /**
@@ -85,10 +127,6 @@ export default class PageContainer extends Container {
   }
 
   async initStateOthers() {
-    const likeButtonElem = document.getElementById('like-button');
-    if (likeButtonElem != null) {
-      this.state.isLiked = likeButtonElem.dataset.liked === 'true';
-    }
 
     const seenUserListElem = document.getElementById('seen-user-list');
     if (seenUserListElem != null) {
@@ -297,6 +335,53 @@ export default class PageContainer extends Container {
       throw new Error(res.error);
     }
     return { page: res.page, tags: res.tags };
+  }
+
+  deletePage(isRecursively, isCompletely) {
+    const websocketContainer = this.appContainer.getContainer('WebsocketContainer');
+
+    // control flag
+    const completely = isCompletely ? true : null;
+    const recursively = isRecursively ? true : null;
+
+    return this.appContainer.apiPost('/pages.remove', {
+      recursively,
+      completely,
+      page_id: this.state.pageId,
+      revision_id: this.state.revisionId,
+      socketClientId: websocketContainer.getSocketClientId(),
+    });
+
+  }
+
+  revertRemove(isRecursively) {
+    const websocketContainer = this.appContainer.getContainer('WebsocketContainer');
+
+    // control flag
+    const recursively = isRecursively ? true : null;
+
+    return this.appContainer.apiPost('/pages.revertRemove', {
+      recursively,
+      page_id: this.state.pageId,
+      socketClientId: websocketContainer.getSocketClientId(),
+    });
+  }
+
+  rename(pageNameInput, isRenameRecursively, isRenameRedirect, isRenameMetadata) {
+    const websocketContainer = this.appContainer.getContainer('WebsocketContainer');
+    const isRecursively = isRenameRecursively ? true : null;
+    const isRedirect = isRenameRedirect ? true : null;
+    const isRemain = isRenameMetadata ? true : null;
+
+    return this.appContainer.apiPost('/pages.rename', {
+      recursively: isRecursively,
+      page_id: this.state.pageId,
+      revision_id: this.state.revisionId,
+      new_path: pageNameInput,
+      create_redirect: isRedirect,
+      remain_metadata: isRemain,
+      socketClientId: websocketContainer.getSocketClientId(),
+    });
   }
 
   showSuccessToastr() {

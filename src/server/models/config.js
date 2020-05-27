@@ -22,7 +22,6 @@ module.exports = function(crowi) {
     // overwrite
     config['app:installed'] = true;
     config['app:fileUpload'] = true;
-    config['customize:behavior'] = 'growi';
     config['customize:layout'] = 'growi';
     config['customize:isSavedStatesOfTabChanges'] = false;
 
@@ -108,8 +107,7 @@ module.exports = function(crowi) {
       'customize:highlightJsStyle' : 'github',
       'customize:highlightJsStyleBorder' : false,
       'customize:theme' : 'default',
-      'customize:behavior' : 'crowi',
-      'customize:layout' : 'crowi',
+      'customize:layout' : 'growi',
       'customize:isEnabledTimeline' : true,
       'customize:isSavedStatesOfTabChanges' : true,
       'customize:isEnabledAttachTitleHeader' : false,
@@ -190,7 +188,6 @@ module.exports = function(crowi) {
         file: crowi.fileUploadService.getFileUploadEnabled(),
       },
       registrationWhiteList: crowi.configManager.getConfig('crowi', 'security:registrationWhiteList'),
-      behaviorType: crowi.configManager.getConfig('crowi', 'customize:behavior'),
       layoutType: crowi.configManager.getConfig('crowi', 'customize:layout'),
       themeType: crowi.configManager.getConfig('crowi', 'customize:theme'),
       isEnabledLinebreaks: crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),

@@ -1,5 +1,5 @@
-<div class="panel panel-default">
-  <div class="panel-body">
+<div class="card">
+  <div class="card-body">
 
 # 目次
 
@@ -37,7 +37,7 @@
 
 ## Block 段落
 
-空白行を挟むことで段落となります。aaaa
+空白行を挟むことで段落となります。
 
 ```
 段落1

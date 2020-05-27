@@ -39,20 +39,21 @@ class PluginSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <p className="well">{t('admin:app_setting.enable_plugin_loading')}</p>
+        <p className="card well">{t('admin:app_setting.enable_plugin_loading')}</p>
 
-        <div className="row mb-5">
-          <div className="col-xs-offset-3 col-xs-6 text-left">
-            <div className="checkbox checkbox-success">
+        <div className="row form-group mb-5">
+          <div className="offset-3 col-6 text-left">
+            <div className="custom-control custom-checkbox custom-checkbox-success">
               <input
                 id="isEnabledPlugins"
+                className="custom-control-input"
                 type="checkbox"
                 checked={adminAppContainer.state.isEnabledPlugins}
                 onChange={(e) => {
                   adminAppContainer.changeIsEnabledPlugins(e.target.checked);
                 }}
               />
-              <label htmlFor="isEnabledPlugins">{t('admin:app_setting.load_plugins')}</label>
+              <label className="custom-control-label" htmlFor="isEnabledPlugins">{t('admin:app_setting.load_plugins')}</label>
             </div>
           </div>
         </div>

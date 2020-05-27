@@ -7,17 +7,17 @@
 {% endblock %}
 
 {% block layout_main %}
+
+{% block content_header_wrapper %}
+<header class="py-0 grw-header">
+  {% block content_header %}
+  {% endblock %}
+</header>
+{% endblock %}
+
 <div class="container-fluid">
-
-  <div class="row bg-title hidden-print">
-    <div class="col-xs-12 header-container">
-      {% block content_header %}
-      {% endblock %}
-    </div>
-  </div><!-- /.bg-title -->
-
   <div class="row">
-    <div id="main" class="main m-t-15 col-md-12 {% if page %}{{ css.grant(page) }}{% endif %} {% block main_css_class %}{% endblock %}">
+    <div id="main" class="main col-md-12 {% if page %}{{ css.grant(page) }}{% endif %} {% block main_css_class %}{% endblock %}">
       {% block content_main_before %}
       {% endblock %}
 
@@ -26,10 +26,8 @@
 
       {% block content_main_after %}
       {% endblock %}
-    </div>
-
-  </div>
-
+    </div><!-- /.main -->
+  </div><!-- /.row -->
 </div><!-- /.container-fluid -->
 
 <footer class="footer">
