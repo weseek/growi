@@ -19,6 +19,7 @@
       display: flex;
       align-items: center;
       height: 100vh;
+      margin-top: 0px;
 
       .main {
         width: 100vw;
@@ -106,139 +107,57 @@
     }
   }
 
-  .external-auth {
-    form {
-      flex: 1;
-
-      @media (min-width: 350px) {
-        flex: 0.49;
-      }
-    }
-
-    .spacer {
-      height: 10px;
-    }
-  }
-
   .collapse-external-auth {
     overflow: hidden;
-
-    &:not(.show) {
-      height: 0;
-      padding: 0 !important;
-    }
   }
 
-  // button style
-  .btn-fill.login {
-    .btn-label {
-      background-color: rgba($danger, 0.4);
-    }
-    .eff {
-      background-color: rgba(#7e4153, 0.5);
-    }
-  }
+  $btn-fill-colors: (
+    'login': (
+      rgba($danger, 0.4),
+      rgba(#7e4153, 0.5),
+    ),
+    'register': (
+      rgba($success, 0.4),
+      rgba(#3f7263, 0.5),
+    ),
+    'google': (
+      rgba(#24292e, 0.4),
+      #555,
+    ),
+    'github': (
+      rgba(lighten(black, 20%), 0.4),
+      #555,
+    ),
+    'facebook': (
+      rgba(#29487d, 0.4),
+      #555,
+    ),
+    'twitter': (
+      rgba(#1da1f2, 0.4),
+      #555,
+    ),
+    'oidc': (
+      rgba(#24292e, 0.4),
+      #555,
+    ),
+    'saml': (
+      rgba(#55a79a, 0.4),
+      #555,
+    ),
+    'basic': (
+      rgba(#24292e, 0.4),
+      #555,
+    ),
+  );
 
-  // google
-  .btn-fill#google {
-    .btn-label {
-      background-color: rgba(#24292e, 0.4);
-    }
-
-    .eff {
-      background-color: #555;
-    }
-  }
-
-  // github
-  .btn-fill#github {
-    .btn-label {
-      background-color: rgba(lighten(black, 20%), 0.4);
-    }
-
-    .eff {
-      background-color: #555;
-    }
-  }
-
-  // facebook
-  .btn-fill#facebook {
-    .btn-label {
-      background-color: rgba(#29487d, 0.4);
-    }
-
-    .eff {
-      background-color: #555;
-    }
-  }
-
-  // twitter
-  .btn-fill#twitter {
-    .btn-label {
-      background-color: rgba(#1da1f2, 0.4);
-    }
-
-    .eff {
-      background-color: #555;
-    }
-  }
-
-  // oidc
-  .btn-fill#oidc {
-    .btn-label {
-      background-color: rgba(#24292e, 0.4);
-    }
-
-    .eff {
-      background-color: #555;
-    }
-  }
-
-  // saml
-  .btn-fill#saml {
-    .btn-label {
-      background-color: rgba(#55a79a, 0.4);
-    }
-
-    .eff {
-      background-color: #555;
-    }
-  }
-
-  // basic
-  .btn-fill#basic {
-    .btn-label {
-      background-color: rgba(#24292e, 0.4);
-    }
-
-    .eff {
-      background-color: #555;
-    }
-  }
-  // register
-  .btn-fill#register {
-    .btn-label {
-      background-color: rgba($success, 0.4);
-    }
-
-    .eff {
-      background-color: rgba(#3f7263, 0.5);
-    }
-  }
-
-  // external-auth
-  .btn-collapse-external-auth {
-    color: white;
-    background-color: rgba(lighten(black, 20%), 0.4);
-    border: none;
-
-    .btn-label {
-      padding: 9px 15px;
-      margin: -8px 20px -8px -20px;
-    }
-
-    &:focus {
-      border: none;
+  @each $label, $colors in $btn-fill-colors {
+    .btn-fill##{$label} {
+      .btn-label {
+        background-color: nth($colors, 1);
+      }
+      .eff {
+        background-color: nth($colors, 2);
+      }
     }
   }
 
@@ -283,16 +202,9 @@
 
 .login-page {
   // layout
-  .main .row {
-    @media (min-width: 350px) {
-      .col-sm-offset-4 {
-        margin-left: calc(50% - 160px);
-      }
-
-      .col-sm-4 {
-        width: 320px;
-      }
-    }
+  .main .row .login-header,
+  .login-dialog {
+    width: 320px;
   }
 
   .link-growi-org {
@@ -301,55 +213,11 @@
     z-index: 2;
   }
 
-  // flip animation
-  .login-dialog.flipper {
-    transition: min-height 0.2s;
-
-    &.to-flip {
-      min-height: 295px;
-
-      // has-error
-      &.has-error {
-        min-height: #{295px + 32px};
-      }
-    }
-
-    .front,
-    .back {
-      transition: 0.4s;
-      backface-visibility: hidden;
-      transform-style: preserve-3d;
-      // fix https://github.com/weseek/growi/issues/330
-      -webkit-backface-visibility: hidden;
-      -webkit-transform-style: preserve-3d;
-    }
-
-    .front {
-      z-index: 2;
-    }
-
-    .back {
-      position: absolute;
-      top: 0;
-      right: 15px;
-      left: 15px;
-    }
-
-    .back,
-    &.to-flip .front {
-      transform: rotateY(180deg);
-
-      // fix https://github.com/weseek/growi/issues/330
-      // 'backface-visibility: hidden' and 'z-index: -1' breaks layout in iOS
-      ::after {
-        z-index: 0;
-        opacity: 0.3;
-      }
-    }
-
-    &.to-flip .back {
-      transform: rotateY(0deg);
-    }
+  // To adjust the behavior, this problem is not solved.
+  // See https://github.com/AaronCCWong/react-card-flip/issues/56
+  .react-card-front,
+  .react-card-back {
+    height: 0% !important;
   }
 }
 
@@ -357,7 +225,7 @@
 .nologin.error {
   .main .row {
     @media (min-width: 510px) {
-      .col-sm-offset-4 {
+      .offset-sm-4 {
         margin-left: calc(50% - 240px);
       }
 

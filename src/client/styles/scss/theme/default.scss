@@ -64,6 +64,9 @@ html[light] {
   // Sidebar list group
   $bgcolor-sidebar-list-group: #fafbff; // optional
 
+  // Subnavigation
+  // $bgcolor-subnabvar: #fafafa; // optional
+
   // Icon colors
   $color-editor-icons: $color-global;
 
@@ -130,15 +133,18 @@ html[dark] {
   $bgcolor-sidebar-nav-item-active: rgba(#969494, 0.3); // optional
   $text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
   // Sidebar resize button
-  $color-resize-button: $color-global;
+  $color-resize-button: white;
   $bgcolor-resize-button: $primary;
-  $color-resize-button-hover: $color-global;
+  $color-resize-button-hover: white;
   $bgcolor-resize-button-hover: darken($bgcolor-resize-button, 5%);
   // Sidebar contents
   $bgcolor-sidebar-context: #111d2f;
   $color-sidebar-context: $color-global;
   // Sidebar list group
   $bgcolor-sidebar-list-group: #1c2a3e; // optional
+
+  // Subnavigation
+  $bgcolor-subnabvar: lighten($bgcolor-global, 4%); // optional
 
   // Icon colors
   $color-editor-icons: $color-global;

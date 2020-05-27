@@ -12,7 +12,6 @@ html[light] {
 
   // Background colors
   $bgcolor-global: $themelight;
-  $bgcolor-navbar: $themecolor;
   $bgcolor-inline-code: lighten($subthemecolor, 70%);
   $bgcolor-card: darken($themelight, 5%);
 
@@ -32,11 +31,31 @@ html[light] {
   $bgcolor-list: transparent;
   $color-list-active: $color-reversal;
   $bgcolor-list-active: $primary;
-  $color-list-hover: $color-reversal;
+  $color-list-hover: $color-search;
+
+  // Navbar
+  $bgcolor-navbar: #2a2929;
+  $bgcolor-search-top-dropdown: $themecolor;
+  $border-image-navbar: linear-gradient(to right, #54bafd 0%, #3d98a3 50%, #708b0b 100%);
 
   // Logo colors
   $bgcolor-logo: $themecolor;
-  $fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 30%), 20%);
+  $fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 10%), 15%);
+
+  // Sidebar
+  $bgcolor-sidebar: $themecolor;
+  // $bgcolor-sidebar-nav-item-active: rgba(#, 0.37); // optional
+  $text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
+  // Sidebar resize button
+  $color-resize-button: $color-reversal;
+  $bgcolor-resize-button: #209fd8;
+  $color-resize-button-hover: $color-reversal;
+  $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
+  // Sidebar contents
+  $color-sidebar-context: $color-global;
+  $bgcolor-sidebar-context: #f1fcff;
+  // Sidebar list group
+  // $bgcolor-sidebar-list-group: #; // optional
 
   // Icon colors
   $color-editor-icons: $color-global;
@@ -57,11 +76,6 @@ html[light] {
   // badge
   $color-badge: $color-reversal;
 
-  // Sidebar
-  $bgcolor-sidebar: $bgcolor-navbar;
-  $color-sidebar-context: $color-reversal;
-  $bgcolor-sidebar-context: lighten($bgcolor-sidebar, 10%);
-
   @import 'apply-colors';
   @import 'apply-colors-light';
 
@@ -78,27 +92,16 @@ html[light] {
       }
     }
   }
-
-  // Search Top
-  .search-top {
-    .input-group-prepend .dropdown-toggle {
-      color: $themecolor;
-      background-color: $color-search;
-      &:hover {
-        background-color: darken($color-search, 10%);
-      }
-    }
-  }
 }
 
 html[dark] {
   // Theme colors
-  $themecolor: #0090c8;
+  $themecolor: #00587a;
   $themedark: #061f2f;
   $accentcolor: #16617d;
   $subthemecolor: #c1f1f0;
 
-  $primary: $themecolor;
+  $primary: #0090c8;
   $dark: #031018;
 
   // Background colors
@@ -123,12 +126,32 @@ html[dark] {
   $bgcolor-list: transparent;
   $color-list-active: $color-reversal;
   $bgcolor-list-active: $primary;
-  $color-list-hover: $color-reversal;
+  $color-list-hover: $accentcolor;
+
+  // Navbar
+  $bgcolor-navbar: #2a2929;
+  $bgcolor-search-top-dropdown: $themecolor;
+  $border-image-navbar: linear-gradient(to right, #54bafd 0%, #3d98a3 50%, #708b0b 100%);
 
   // Logo colors
   $bgcolor-logo: #13191c;
   $fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 10%), 15%);
   // $fillcolor-logo-mark: #4e5a60;
+
+  // Sidebar
+  $bgcolor-sidebar: $accentcolor;
+  // $bgcolor-sidebar-nav-item-active: rgba(#, 0.3); // optional
+  $text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
+  // Sidebar resize button
+  $color-resize-button: $color-global;
+  $bgcolor-resize-button: $themecolor;
+  $color-resize-button-hover: $color-global;
+  $bgcolor-resize-button-hover: darken($bgcolor-resize-button, 5%);
+  // Sidebar contents
+  $bgcolor-sidebar-context: darken($bgcolor-sidebar, 13%);
+  $color-sidebar-context: $color-global;
+  // Sidebar list group
+  // $bgcolor-sidebar-list-group: #; // optional
 
   // Icon colors
   $color-editor-icons: $color-global;
@@ -138,7 +161,8 @@ html[dark] {
 
   // Dropdown colors
   $bgcolor-dropdown-link-active: $primary;
-  $color-dropdown-link-active: $color-reversal;
+  $color-dropdown-link-active: $color-global;
+  $color-dropdown-link-hover: $color-reversal;
 
   // admin theme box
   $color-theme-color-box: $primary;
@@ -149,15 +173,10 @@ html[dark] {
   // badge
   $color-badge: $color-reversal;
 
-  // Sidebar
-  $bgcolor-sidebar: $bgcolor-navbar;
-  $color-sidebar-context: $color-reversal;
-  $bgcolor-sidebar-context: lighten($bgcolor-sidebar, 10%);
-
   @import 'apply-colors';
   @import 'apply-colors-dark';
 
-  // Navs {
+  // Navs
   .nav-tabs {
     border-bottom: $border-color-theme 1px solid;
     .nav-link {
@@ -169,17 +188,6 @@ html[dark] {
         color: $color-link;
         background-color: transparent;
         border-color: $border-color-theme;
-      }
-    }
-  }
-
-  // Search Top
-  .search-top {
-    .input-group-prepend .dropdown-toggle {
-      background-color: $color-search;
-      border-color: $color-search;
-      &:hover {
-        background-color: darken($color-search, 10%);
       }
     }
   }
