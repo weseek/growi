@@ -13,17 +13,16 @@ import { pathUtils } from 'growi-commons';
 import { createSubscribedElement } from './UnstatedUtils';
 
 import AppContainer from '../services/AppContainer';
-import PageContainer from '../services/PageContainer';
 import PagePathAutoComplete from './PagePathAutoComplete';
 
 const PageCreateModal = (props) => {
-  const { t, appContainer, pageContainer } = props;
+  const { t, appContainer } = props;
 
   const config = appContainer.getConfig();
   const isReachable = config.isSearchServiceReachable;
-  const { path } = pageContainer.state;
+  const { pathname } = window.location;
   const userPageRootPath = userPageRoot(appContainer.currentUser);
-  const parentPath = pathUtils.addTrailingSlash(path);
+  const parentPath = pathUtils.addTrailingSlash(pathname);
   const now = format(new Date(), 'yyyy/MM/dd');
 
   const [todayInput1, setTodayInput1] = useState(t('Memo'));
@@ -152,7 +151,7 @@ const PageCreateModal = (props) => {
                 ? (
                   <PagePathAutoComplete
                     crowi={appContainer}
-                    initializedPath={path}
+                    initializedPath={pathname}
                     addTrailingSlash
                     onSubmit={ppacSubmitHandler}
                     onInputChange={ppacInputChangeHandler}
@@ -189,7 +188,7 @@ const PageCreateModal = (props) => {
         <fieldset className="col-12">
 
           <h3 className="grw-modal-head pb-2">{ t('template.modal_label.Create template under')}<br />
-            <code>{path}</code>
+            <code>{pathname}</code>
           </h3>
 
           <div className="d-sm-flex align-items-center justify-items-between">
@@ -248,14 +247,13 @@ const PageCreateModal = (props) => {
  * Wrapper component for using unstated
  */
 const ModalControlWrapper = (props) => {
-  return createSubscribedElement(PageCreateModal, props, [AppContainer, PageContainer]);
+  return createSubscribedElement(PageCreateModal, props, [AppContainer]);
 };
 
 
 PageCreateModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
 export default withTranslation()(ModalControlWrapper);
