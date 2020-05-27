@@ -67,11 +67,17 @@ html[light] {
   // Subnavigation
   // $bgcolor-subnabvar: #fafafa; // optional
 
+  // Tabs
+  // $bordercolor-nav-tabs: #; // optional
+  // $color-nav-tabs-link-active: #; //optional
+  // $bordercolor-nav-tabs-hover: # # $bordercolor-nav-tabs; // optional
+  // $bordercolor-nav-tabs-active: # # $bgcolor-global; // optional
+
   // Icon colors
   $color-editor-icons: $color-global;
 
   // Border colors
-  $border-color-theme: #ccc; // former: `$navbar-border: #ccc;@`
+  $border-color-theme: #ccc;
   $bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
@@ -147,11 +153,17 @@ html[dark] {
   // Subnavigation
   $bgcolor-subnabvar: lighten($bgcolor-global, 4%); // optional
 
+  // Tabs
+  $bordercolor-nav-tabs: #444; // optional
+  // $color-nav-tabs-link-active: #; //optional
+  $bordercolor-nav-tabs-hover: #666 #666 $bordercolor-nav-tabs; // optional
+  // $bordercolor-nav-tabs-active: # # $bgcolor-global; // optional
+
   // Icon colors
   $color-editor-icons: $color-global;
 
   // Border colors
-  $border-color-theme: black; // former: `$navbar-border: #ccc;`
+  $border-color-theme: black;
   $bordercolor-inline-code: #4d4d4d; // optional
 
   // Dropdown colors

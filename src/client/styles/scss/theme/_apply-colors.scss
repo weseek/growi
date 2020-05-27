@@ -16,6 +16,10 @@ $bgcolor-sidebar-list-group: $bgcolor-list !default;
 $bgcolor-inline-code: #f0f0f0 !default;
 $color-inline-code: #c7254e !default;
 $bordercolor-inline-code: #ccc8c8 !default;
+$bordercolor-nav-tabs: #dee2e6 !default;
+$bordercolor-nav-tabs-hover: #e9ecef #e9ecef $bordercolor-nav-tabs !default;
+$color-nav-tabs-link-active: #495057 !default;
+$bordercolor-nav-tabs-active: $bordercolor-nav-tabs $bordercolor-nav-tabs $bgcolor-global !default;
 
 // override bootstrap variables
 $body-bg: $bgcolor-global;
@@ -23,6 +27,11 @@ $body-color: $color-global;
 $link-color: $color-link;
 $link-hover-color: $color-link-hover;
 $input-focus-color: $color-global;
+$nav-tabs-border-color: $bordercolor-nav-tabs;
+$nav-tabs-link-hover-border-color: $bordercolor-nav-tabs-hover;
+$nav-tabs-link-active-color: $color-nav-tabs-link-active;
+$nav-tabs-link-active-bg: $bgcolor-global;
+$nav-tabs-link-active-border-color: $bordercolor-nav-tabs-active;
 
 @import '~bootstrap/scss/functions';
 @import '~bootstrap/scss/variables';
@@ -33,6 +42,7 @@ $input-focus-color: $color-global;
 @import 'reboot-bootstrap-colors';
 @import 'reboot-bootstrap-theme-colors';
 @import 'reboot-toastr-colors';
+@import 'reboot-bootstrap-nav';
 
 :not(pre) {
   > code {
