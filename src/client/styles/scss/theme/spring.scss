@@ -75,8 +75,7 @@ html[dark] {
   // Navbar
   $bgcolor-navbar: #d3687c;
   $bgcolor-search-top-dropdown: #c0d6df;
-  // $border-image-navbar: linear-gradient(to right, #36c9ff 0%, #36c9ff 33%, #7926ff 66%, #ff2eff 100%);
-  $border-image-navbar: $accentcolor;
+  $border-image-navbar: linear-gradient(to right, #cbe682 0%, #4ad6e8 50%, #ea42f0 100%);
 
   // Logo colors
   $bgcolor-logo: $bgcolor-navbar;
