@@ -66,6 +66,16 @@ html[light] {
   $bgcolor-sidebar: $bgcolor-theme;
   $color-sidebar-context: $color-reversal;
   $bgcolor-sidebar-context: lighten($bgcolor-theme, 10%);
+  // Sidebar resize button
+  $color-resize-button: $color-reversal;
+  $bgcolor-resize-button: #209fd8;
+  $color-resize-button-hover: $color-reversal;
+  $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
+  // Sidebar contents
+  $color-sidebar-context: $color-global;
+  $bgcolor-sidebar-context: #f4f6fc;
+  // Sidebar list group
+  $bgcolor-sidebar-list-group: #fafbff; // optional
 
   @import 'apply-colors';
   @import 'apply-colors-light';
@@ -132,6 +142,16 @@ html[dark] {
   $bgcolor-sidebar: $bgcolor-theme;
   $color-sidebar-context: $color-reversal;
   $bgcolor-sidebar-context: lighten($bgcolor-theme, 5%);
+  // Sidebar resize button
+  $color-resize-button: $color-reversal;
+  $bgcolor-resize-button: #209fd8;
+  $color-resize-button-hover: $color-reversal;
+  $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
+  // Sidebar contents
+  $color-sidebar-context: $color-global;
+  $bgcolor-sidebar-context: #f4f6fc;
+  // Sidebar list group
+  $bgcolor-sidebar-list-group: #fafbff; // optional
 
   @import 'apply-colors';
   @import 'apply-colors-light';
