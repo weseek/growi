@@ -42,7 +42,7 @@ $active-nav-tabs-bgcolor: white;
 //
 html[light],
 html[dark] {
-  $primary: #122c55;
+  $primary: #d3c665;
   // Background colors
   $bgcolor-card: #f5f5f5;
 
@@ -62,10 +62,10 @@ html[dark] {
 
   // Navbar
   $bgcolor-navbar: $themecolor;
-  $bgcolor-search-top-dropdown: #D3C665;
+  $bgcolor-search-top-dropdown: $primary;
   $border-color-navbar-gradient-left: #545fff;
   $border-color-navbar-gradient-right: #00a6e5;
-  $border-image-navbar: linear-gradient(to right, #6458BC 33%, #5CB4FF 66%, #85D800 100%);
+  $border-image-navbar: linear-gradient(to right, #6458bc 33%, #5cb4ff 66%, #85d800 100%);
 
   // Logo colors
   $bgcolor-logo: $themecolor;
