@@ -1,7 +1,7 @@
 <div class="panel panel-default">
   <div class="panel-body">
 
-# 目次
+# Table of Contents
 
 ```
 @[toc]
@@ -14,9 +14,9 @@
 
 # :pencil: Block Elements
 
-## Headers 見出し
+## Headers
 
-先頭に`#`をレベルの数だけ記述します。
+Add one `#` per level at the start of the line
 
 ```
 # Header 1
@@ -35,28 +35,29 @@
 
 ###### Header 6
 
-## Block 段落
+## Block paragraph
 
-空白行を挟むことで段落となります。aaaa
+Pararaphs are created by inserting a newline character
+A paragraph can be created by pressing Enter at the end of the previous paragraph.
 
 ```
-段落1
-(空行)
-段落2
+paragraph1
+(Blank line)
+paragraph2
 ```
 
-段落1
+paragraph1
 
-段落2
+paragraph2
 
-## Br 改行
+## Br new line
 
-改行の前に半角スペース``を2つ記述します。
-***この挙動は、オプションで変更可能です***
+Add two spaces before break.
+***This behaviour can be modified in the options menu.***
 
 ```
 hoge
-fuga(スペース2つ)
+fuga(two spaces)
 piyo
 ```
 
@@ -64,31 +65,31 @@ hoge
 fuga
 piyo
 
-## Blockquotes 引用
+## Blockquotes
 
-先頭に`>`を記述します。ネストは`>`を多重に記述します。
+Add one `>` per level at the start of the line
 
 ```
-> 引用
-> 引用
->> 多重引用
+> quote
+> quote
+>> nested quotes
 ```
 
-> 引用
-> 引用
->> 多重引用
+> quote
+> quote
+>> nested quotes
 
-## Code コード
+## Code
 
-`` `バッククオート` `` 3つ、あるいはチルダ`~`３つで囲みます。
+Wrap code with three back quotes or tildes.
 
 ```
 print 'hoge'
 ```
 
-### シンタックスハイライトとファイル名
+### Syntax highlight and file name
 
-- [highlight.js Demo](https://highlightjs.org/static/demo/) の common カテゴリ内の言語に対応しています
+- corresponding [highlight.js Demo](https://highlightjs.org/static/demo/) of common category
 
 
 ~~~
@@ -115,19 +116,19 @@ function MersenneTwister(seed) {
 }
 ```
 
-### インラインコード
+### Inline code
 
-`` `バッククオート` `` で単語を囲むとインラインコードになります。
+Words wrapped by `` `back quotes` `` will be formatted as inline code.
 
 ```
-これは `インラインコード`です。
+This is `Inline Code`.
 ```
 
-これは `インラインコード`です。
+This is  `Inline Code`.
 
-## pre 整形済みテキスト
+## Pre-arranged text
 
-半角スペース4個もしくはタブで、コードブロックをpre表示できます
+Code blocks should be preceded by four spaces or one tab.
 
 ```
     class Hoge
@@ -143,9 +144,9 @@ function MersenneTwister(seed) {
         end
     end
 
-## Hr 水平線
+## Horizontal Line
 
-アンダースコア`_` 、アスタリスク`*`を3つ以上連続して記述します。
+Write three underscores `_`, or asterisks`*`.
 
 ```
 ***
@@ -161,47 +162,47 @@ ___
 
 # :pencil: Typography
 
-## 強調
+## Strong Text
 
-### em
+### Italic
 
-アスタリスク`*`もしくはアンダースコア`_`1個で文字列を囲みます。
-
-```
-これは *イタリック* です
-これは _イタリック_ です
-```
-
-これは *イタリック* です
-これは _イタリック_ です
-
-### strong
-
-アスタリスク`*`もしくはアンダースコア`_`2個で文字列を囲みます。
+To italicize text, add One asterisk or underscores before and after a word or phrase.
 
 ```
-これは **ボールド** です
-これは __ボールド__ です
+This is *Italic* .
+This is _Italic_ .
 ```
 
-これは **ボールド** です
-これは __ボールド__ です
+This is *Italic* .
+This is _Italic_ .
 
-### em + strong
+### Bold
 
-アスタリスク`*`もしくはアンダースコア`_`3個で文字列を囲みます。
+To bold text, add two asterisks or underscores before and after a word or phrase.
 
 ```
-これは ***イタリック＆ボールド*** です
-これは ___イタリック＆ボールド___ です
+This is **bold**.
+This is __bold__.
 ```
 
-これは ***イタリック＆ボールド*** です
-これは ___イタリック＆ボールド___ です
+This is **bold**.
+This is __bold__.
+
+### Bold + Italic
+
+To bold and italicize text, add three asterisks or underscores before and after a word or phrase.
+
+```
+This is ***Italic & Bold***.
+This is ___Italic & Bold___.
+```
+
+This is ***Italic & Bold***.
+This is ___Italic & Bold___.
 
 # :pencil: Images
 
-`![Alt文字列](URL)` で`<img>`タグを挿入できます。
+You can insert `<img>` tag using `![description](URL)`.
 
 ```markdown
 ![Minion](https://octodex.github.com/images/minion.png)
@@ -211,7 +212,7 @@ ___
 ![Minion](https://octodex.github.com/images/minion.png)
 ![Stormtroopocat](https://octodex.github.com/images/stormtroopocat.jpg "The Stormtroopocat")
 
-画像の大きさなどの指定をする場合はimgタグを使用します。
+The size of the image can be set by using an HTML image tag
 
 ```html
 <img src="https://octodex.github.com/images/dojocat.jpg" width="200px">
@@ -222,9 +223,9 @@ ___
 
 # :pencil: Link
 
-## Markdown 標準
+## Markdown standard
 
-`[表示テキスト](URL)`でリンクに変換されます。
+You can create links using `[Display text](URL)`.
 
 ```
 [Google](https://www.google.co.jp/)
@@ -232,7 +233,7 @@ ___
 
 [Google](https://www.google.co.jp/)
 
-## Crowi 互換
+## Crowi compatibility
 
 ```
 [/Sandbox]
@@ -247,80 +248,80 @@ ___
 (available by [weseek/growi-plugin-pukiwiki-like-linker
 ](https://github.com/weseek/growi-plugin-pukiwiki-like-linker) )
 
-最も柔軟な Linker です。
-記述中のページを基点とした相対リンクと、表示テキストに対するリンクを同時に実現できます。
+This is the most flexible linker.
+Both the page description and link address can be displayed on the page.
 
 ```
 [[./Bootstrap3]]
-Bootstrap3のExampleは[[こちら>./Bootstrap3]]
+Example of Bootstrap3 is[[here>./Bootstrap3]]
 ```
 
 [[../user]]
-Bootstrap3のExampleは[[こちら>./Bootstrap3]]
+Example of Bootstrap3 is[[here>./Bootstrap3]]
 
 # :pencil: Lists
 
-## Ul 箇条書きリスト
+## Ul Bulleted list
 
-ハイフン`-`、プラス`+`、アスタリスク`*`のいずれかを先頭に記述します。
-ネストはタブで表現します。
-
-```
-- リスト1
-    - リスト1_1
-        - リスト1_1_1
-        - リスト1_1_2
-    - リスト1_2
-- リスト2
-- リスト3
-```
-
-- リスト1
-    - リスト1_1
-        - リスト1_1_1
-        - リスト1_1_2
-    - リスト1_2
-- リスト2
-- リスト3
-
-## Ol 番号付きリスト
-
-`番号.`を先頭に記述します。ネストはタブで表現します。
-番号は自動的に採番されるため、すべての行を1.と記述するのがお勧めです。
+To create an unordered list, add dashes (-), asterisks (*), or plus signs (+) in front of line items. 
+Items can be nested using indentation.
 
 ```
-1. 番号付きリスト1
-    1. 番号付きリスト1-1
-    1. 番号付きリスト1-2
-1. 番号付きリスト2
-1. 番号付きリスト3
+- List1
+    - List1_1
+        - List1_1_1
+        - List1_1_2
+    - List1_2
+- List2
+- List3
 ```
 
-1. 番号付きリスト1
-    1. 番号付きリスト1-1
-    1. 番号付きリスト1-2
-1. 番号付きリスト2
-1. 番号付きリスト3
+- List1
+    - List1_1
+        - List1_1_1
+        - List1_1_2
+    - List1_2
+- List2
+- List3
 
+## Ol Numbered List
 
-## タスクリスト
+To create an ordered list, add line items with numbers followed by periods. 
+The numbers don’t have to be in numerical order, but the list should start with the number one.
 
 ```
-- [ ] タスク 1
-    - [x] タスク 1.1
-    - [ ] タスク 1.2
-- [x] タスク2
+1. Number list 1
+    1. Number list 1-1
+    1. Number list 1-2
+1. Number list 2
+1. Number list 3
 ```
 
-- [ ] タスク 1
-    - [x] タスク 1.1
-    - [ ] タスク 1.2
-- [x] タスク2
+1. Number list 1
+    1. Number list 1-1
+    1. Number list 1-2
+1. Number list 2
+1. Number list 3
+
+
+## Check list
+
+```
+- [ ] Task 1
+    - [x] Task 1.1
+    - [ ] Task 1.2
+- [x] Task2
+```
+
+- [ ] Task 1
+    - [x] Task 1.1
+    - [ ] Task 1.2
+- [x] Task2
 
 
 # :pencil: Table
 
-## Markdown 標準
+## Markdown Standard
 
 ```markdown
 | Left align | Right align | Center align |
@@ -353,7 +354,7 @@ aligned    | aligned     | aligned
 | left       | right       | center       |
 | aligned    | aligned     | aligned      |
 
-## TSV (crowi-plus 独自記法)
+## TSV (crowi-plus notation)
 
 ```
 ::: tsv
@@ -367,7 +368,7 @@ Content Cell Content Cell
 Content Cell Content Cell
 :::
 
-## TSV ヘッダ付き (crowi-plus 独自記法)
+## TSV with header (crowi-plus notation)
 
 ```
 ::: tsv-h
@@ -383,7 +384,7 @@ Content Cell Content Cell
 Content Cell Content Cell
 :::
 
-## CSV (crowi-plus 独自記法)
+## CSV (crowi-plus original notation)
 
 ```
 ::: csv
@@ -397,7 +398,7 @@ Content Cell,Content Cell
 Content Cell,Content Cell
 :::
 
-## CSV ヘッダ付き (crowi-plus 独自記法)
+## CSV with header (crowi-plus original notation)
 
 ```
 ::: csv-h
@@ -416,15 +417,15 @@ Content Cell,Content Cell
 
 # :pencil: Footnote
 
-脚注への参照[^1]を書くことができます。また、インラインの脚注^[インラインで記述できる脚注です]を入れる事も出来ます。
+You can write a reference [^1] to a footnote. You can also add an inline footnote^[Inline_footnote].
 
-長い脚注は[^longnote]のように書くことができます。
+Long footnotes can be written as [^longnote].
 
-[^1]: 1つめの脚注への参照です。
+[^1]: A_reference_to_the_first_footnote.
 
-[^longnote]: 脚注を複数ブロックで書く例です。
+[^longnote]: An_example_of_writing_a_footnote_in_multiple_blocks.
 
-    後続の段落はインデントされて、前の脚注に属します。
+    Subsequent paragraphs are indented and belong to the previous footnote.
 
 
 # :pencil: Emoji
