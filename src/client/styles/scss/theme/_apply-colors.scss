@@ -42,7 +42,7 @@ $input-focus-color: $color-global;
   }
 }
 
-pre {
+pre:not(.hljs) {
   background-color: $bgcolor-inline-code;
   border-color: $bordercolor-inline-code;
 }
