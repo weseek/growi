@@ -52,7 +52,7 @@ $nav-tabs-link-active-border-color: $bordercolor-nav-tabs-active;
   }
 }
 
-pre:not(.hljs) {
+pre:not(.hljs):not(.CodeMirror-line) {
   background-color: $bgcolor-inline-code;
   border-color: $bordercolor-inline-code;
 }
