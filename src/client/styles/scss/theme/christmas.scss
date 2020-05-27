@@ -202,41 +202,17 @@ html[dark] {
     }
   }
 
-  .search-top {
-    .btn-secondary.dropdown-toggle {
-      color: #FCFDFF;
-      &:active, &:hover, &:focus {
-        color: #FCFDFF;
-      }
-    }
-  }
-
   .grw-navbar {
     background-image: url('/images/themes/christmas/christmas-navbar.jpg');
     border-bottom: 4px solid $subthemecolor;
   }
 
-
   .nav-link {
-    border-color: #D7D7D7;
+    border-color: #d7d7d7;
   }
 
   .nav-tabs .nav-link.active {
     background: none;
-    border-color: #D7D7D7;
-  }
-
-  .search-top .dropdown-toggle {
-    color: black;
-    background-color: hsla(0, 0%, 100%, 0.8);
-  }
-
-  .grw-sidebar-history {
-    .grw-sidebar-header-container {
-      .btn-outline-secondary {
-        color: #FCFDFF;
-        background-color: #797979;
-      }
-    }
+    border-color: #d7d7d7;
   }
 }
