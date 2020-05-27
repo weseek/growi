@@ -23,7 +23,6 @@ $sidebar-text: #ffffff;
 $fillcolor-logo-mark: lighten(desaturate($themecolor, 50%), 50%);
 $color-link-wiki: lighten($subthemecolor, 5%);
 $color-link-wiki-hover: lighten($color-link-wiki, 15%);
-$active-nav-tabs-bgcolor: white;
 
 .growi:not(.login-page) {
   // add background-image
@@ -134,19 +133,6 @@ html[dark] {
     background-image: url('/images/themes/christmas/christmas.jpg');
     background-attachment: fixed;
     background-size: cover;
-  }
-
-  /*
-  * Tabs
-  */
-  body:not(.on-edit) .nav.nav-tabs {
-    > li.active > a {
-      background: linear-gradient(
-        rgba($active-nav-tabs-bgcolor, 0) 0%,
-        rgba($active-nav-tabs-bgcolor, 0) 90%,
-        $active-nav-tabs-bgcolor 100%
-      ); // overwrite only the bottom pixel
-    }
   }
 
   // login page
