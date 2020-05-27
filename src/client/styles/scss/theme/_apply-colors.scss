@@ -182,6 +182,8 @@ $input-focus-color: $color-global;
 :not(.hljs) > code:not(.hljs) {
   color: $color-inline-code;
   background-color: $bgcolor-inline-code;
+  border: solid 1px $bordercolor-inline-code;
+  border-radius: 0.35em;
 }
 
 /*
