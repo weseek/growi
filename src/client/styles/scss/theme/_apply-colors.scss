@@ -37,12 +37,13 @@ $nav-tabs-link-active-border-color: $bordercolor-nav-tabs-active;
 @import '~bootstrap/scss/variables';
 @import '~bootstrap/scss/mixins';
 @import '../mixins';
-@import 'mixins-for-tables';
 @import 'mixins/list-group';
+@import 'mixins/tables'; // comment out and use _reboot-bootstrap-tables instead -- 2020.05.28 Yuki Takei
 @import 'reboot-bootstrap-colors';
 @import 'reboot-bootstrap-theme-colors';
-@import 'reboot-toastr-colors';
+@import 'reboot-bootstrap-tables';
 @import 'reboot-bootstrap-nav';
+@import 'reboot-toastr-colors';
 
 :not(pre) {
   > code {

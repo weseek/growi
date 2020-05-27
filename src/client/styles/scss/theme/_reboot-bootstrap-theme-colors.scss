@@ -75,7 +75,3 @@ $theme-colors: map-merge($theme-colors, $colors);
     background: $color;
   }
 }
-
-@each $color, $value in $table-variants {
-  @include table-variant($color, $value);
-}
