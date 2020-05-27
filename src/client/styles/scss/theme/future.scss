@@ -3,7 +3,7 @@
 
 $primary: rgba(11, 79, 104, 0.616);
 $themecolor: #16282d;
-$accentcolor: #66eddf;
+$accentcolor: #00fff5;
 
 html[light],
 html[dark] {
@@ -14,15 +14,15 @@ html[dark] {
 
   // Font colors
   $color-global: #95ABBA;
-  $color-reversal: #00fff5;
-  $color-header: #00fff5;
-  $color-link: #00fff5;
+  $color-reversal: $accentcolor;
+  $color-header: $accentcolor;
+  $color-link: $accentcolor;
   $color-link-hover: lighten($color-link, 20%);
   $color-link-wiki: darken($themecolor, 5%);
   $color-link-wiki-hover: darken($color-link-wiki, 5%);
   $color-link-nabvar: $color-reversal;
   $color-inline-code: #c7254e; // optional
-  $color-search: #050a0b;
+  $color-search: #00c2c4;
 
   // List Group colors
   $color-list: $color-global;
@@ -98,8 +98,8 @@ html[dark] {
   // Search Top
   .search-top {
     .input-group-prepend .dropdown-toggle {
-      color: #0e2329;
-      background-color: $color-search;
+      color: #0E2329;
+      background-color: #00C2C4;
       border-color: $color-search;
 
       &:hover {
@@ -118,18 +118,15 @@ html[dark] {
   }
 
   .wiki {
-
-    pre {}
-
     li {
       a {
-        color: #00fff5;
-        border-bottom: solid 1px #00fff5;
+        color: $accentcolor;
+        border-bottom: solid 1px $accentcolor;
       }
     }
   }
 
   .grw-page-path-nav i {
-    color: #00fff5;
+    color: $accentcolor;
   }
 }
