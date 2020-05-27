@@ -107,9 +107,15 @@ export default class PageContainer extends Container {
       }
 
       const noImageCacheUserIds = noImageCacheUsers.map((user) => { return user.id });
-      const res = await this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
-      const usersUpdated = users.filter((user) => { return user.imageUrlCached }).concat(res.data.updatedUsers);
-      this.setState({ seenUsers: usersUpdated });
+      try {
+        const res = await this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
+        const usersUpdated = users.filter((user) => { return user.imageUrlCached }).concat(res.data.updatedUsers);
+        this.setState({ seenUsers: usersUpdated });
+      }
+      catch (err) {
+        logger.error(err);
+        throw new Error(err);
+      }
     }
 
 
