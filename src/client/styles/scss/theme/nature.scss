@@ -31,20 +31,20 @@
   }
 }
 
-$themecolor: #118050;
-$themelight: #fefffd;
+$themecolor: #12b105;
 
 //== Light Mode
 //
 html[light],
 html[dark] {
   $primary: #460039;
+  $light: #f0f0f0;
   
   // Background colors
   $bgcolor-global: #fdfdfd;
   $bgcolor-inline-code: #eaeaea;
-  $bgcolor-card: #1d0e0e;
-  $bgcolor-search: #12b105;
+  $bgcolor-card: #f1ffe4;
+  $bgcolor-subnabvar: #fafafa;
   
   // Font colors
   $color-global: #460039;
@@ -59,6 +59,7 @@ html[dark] {
   
   // Navbar
   $bgcolor-navbar: #234136;
+  $bgcolor-search-top-dropdown: $themecolor;
   $border-image-navbar: linear-gradient(to right, #5c78ef 0%, #16bc42 50%, #5c78ef 100%);
   
   // Logo colors
@@ -72,7 +73,7 @@ html[dark] {
   $bgcolor-sidebar-context: #fdffeb;
   // Sidebar resize button
   $color-resize-button: white;
-  $bgcolor-resize-button: #12b105;
+  $bgcolor-resize-button: $themecolor;
 
   // Icon colors
   $color-editor-icons: $color-global;
@@ -97,10 +98,6 @@ html[dark] {
   @import 'apply-colors';
   @import 'apply-colors-light';
 
-  .table {
-    background-color: $themelight;
-  }
-
   // hljs
   .hljs {
     background-color: $bgcolor-inline-code;
@@ -108,13 +105,9 @@ html[dark] {
 
   // Search Top
   .search-top {
-    .input-group-prepend .dropdown-toggle {
+    .btn-secondary.dropdown-toggle {
       color: $color-search;
-      background-color: $bgcolor-search;
-      &:hover {
-        background-color: darken($bgcolor-search, 10%);
-      }
-    } 
+    }
   }
 
   // Navs
