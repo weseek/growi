@@ -44,7 +44,7 @@ class LoginForm extends React.Component {
 
     return (
       <form role="form" action="/login" method="post">
-        <div className="input-group mb-3">
+        <div className="input-group">
           <div className="input-group-prepend">
             <span className="input-group-text">
               <i className="icon-user"></i>
@@ -60,7 +60,7 @@ class LoginForm extends React.Component {
           )}
         </div>
 
-        <div className="input-group mb-3">
+        <div className="input-group">
           <div className="input-group-prepend">
             <span className="input-group-text">
               <i className="icon-lock"></i>
@@ -69,7 +69,7 @@ class LoginForm extends React.Component {
           <input type="password" className="form-control rounded-0" placeholder="Password" name="loginForm[password]" />
         </div>
 
-        <div className="input-group mt-5">
+        <div className="input-group my-4">
           <input type="hidden" name="_csrf" value={noLoginContainer.csrfToken} />
           <button type="submit" id="login" className="btn btn-fill rounded-0 login mx-auto">
             <div className="eff"></div>
@@ -96,7 +96,7 @@ class LoginForm extends React.Component {
     };
 
     return (
-      <div key={auth} className="col-6 mb-2">
+      <div key={auth} className="col-6 my-2">
         <button type="button" className="btn btn-fill rounded-0" id={auth} onClick={this.handleLoginWithExternalAuth}>
           <div className="eff"></div>
           <span className="btn-label">
@@ -219,7 +219,7 @@ class LoginForm extends React.Component {
             <input type="password" className="form-control rounded-0" placeholder={t('Password')} name="registerForm[password]" required />
           </div>
 
-          <div className="input-group justify-content-center mt-5">
+          <div className="input-group justify-content-center my-4">
             <input type="hidden" name="_csrf" value={noLoginContainer.csrfToken} />
             <button type="submit" className="btn btn-fill rounded-0" id="register">
               <div className="eff"></div>
@@ -231,10 +231,10 @@ class LoginForm extends React.Component {
           </div>
         </form>
 
-        <div className="border-bottom mb-3"></div>
+        <div className="border-bottom"></div>
 
         <div className="row">
-          <div className="text-right col-12 py-1">
+          <div className="text-right col-12 mt-2 py-2">
             <a href="#login" id="login" className="link-switch" onClick={this.switchForm}>
               <i className="icon-fw icon-login"></i>
               {t('Sign in is here')}
