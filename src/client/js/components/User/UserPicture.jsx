@@ -63,11 +63,12 @@ export default class UserPicture extends React.Component {
       RootElm = this.withTooltip(RootElm);
     }
 
+    const userPictureSrc = user.imageUrlCached || DEFAULT_IMAGE;
 
     return (
       <RootElm>
         <img
-          src={this.getUserPicture(user)}
+          src={userPictureSrc}
           alt={user.username}
           className={this.getClassName()}
         />
