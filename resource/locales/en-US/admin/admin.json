@@ -97,22 +97,11 @@
       "kibela_title": "Easy viewing structure",
       "kibela_text1": "Center aligned contents",
       "kibela_text2": "Show and post comments at the bottom of the page",
-      "kibela_text3": "Affix Table-of-contents",
-      "crowi_title": "Separated functions",
-      "crowi_text1": "Collapsible Sidebar",
-      "crowi_text2": "Show and post comments in Sidebar",
-      "crowi_text3": "Collapsible table-of-contents"
+      "kibela_text3": "Affix Table-of-contents"
     },
-    "behavior": "Behavior",
-    "behavior_desc": {
-      "growi_text1": "Both of <code>/page</code> and <code>/page/</code> shows the same page.",
-      "growi_text2": "<code>/nonexistent_page</code> shows editing form",
-      "growi_text3": "All pages show the list of child pages <b>if using GROWI Enhanced Layout</b>",
-      "crowi_text1": "<code>/page</code> shows the page",
-      "crowi_text2": "<code>/page/</code> shows the list of child pages",
-      "crowi_text3": "If portal is applied to <code>/page/</code> , the portal and the list of child pages are shown",
-      "crowi_text4": "<code>/nonexistent_page</code> shows editing form<",
-      "crowi_text5": "<code>/nonexistent_page/</code> the list of child pages"
+    "theme_desc": {
+      "light_and_dark": "Light and dark modes",
+      "unique": "Only one mode"
     },
     "function": "Function",
     "function_desc": "You can choose Valid/Invalid of the function",

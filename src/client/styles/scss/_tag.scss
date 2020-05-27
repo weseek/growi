@@ -1,4 +1,10 @@
-.tag-viewer {
+.tags-page {
+  .list-tag-count {
+    background: rgba(0, 0, 0, 0.08);
+  }
+}
+
+.tag-labels {
   .manage-tags {
     font-size: 10px;
     cursor: pointer;
@@ -8,7 +14,7 @@
     margin-left: 5px;
   }
 
-  .btn-edit-tags,
+  .btn.btn-edit-tags,
   .tag-icon {
     font-size: 10px;
   }
@@ -19,13 +25,7 @@
   }
 }
 
-#tags-page {
-  .list-tag-count {
-    background: rgba(0, 0, 0, 0.08);
-  }
-}
-
-#editTagModal {
+#edit-tag-modal {
   .form-control {
     height: auto;
   }

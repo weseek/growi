@@ -1,13 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { userPageRoot } from '@commons/util/path-utils';
+
 const DEFAULT_IMAGE = '/images/icons/user.svg';
 
 // TODO UserComponent?
 export default class UserPicture extends React.Component {
 
   getClassName() {
-    const className = ['img-circle', 'picture'];
+    const className = ['rounded-circle', 'picture'];
     // size
     if (this.props.size) {
       className.push(`picture-${this.props.size}`);
@@ -26,6 +28,26 @@ export default class UserPicture extends React.Component {
     );
   }
 
+  RootElmWithoutLink = (props) => {
+    return <span {...props}>{props.children}</span>;
+  }
+
+  RootElmWithLink = (props) => {
+    const { user } = this.props;
+    const href = userPageRoot(user);
+
+    return <a href={href} {...props}>{props.children}</a>;
+  }
+
+  withTooltip = (RootElm) => {
+    const { user } = this.props;
+    const title = `@${user.username}<br />${user.name}`;
+
+    return props => (
+      <RootElm data-toggle="tooltip" data-placement="bottom" data-html="true" title={title}>{props.children}</RootElm>
+    );
+  }
+
   render() {
     const user = this.props.user;
 
@@ -33,18 +55,24 @@ export default class UserPicture extends React.Component {
       return this.renderForNull();
     }
 
-    const imgElem = user.imageUrlCached ? (
-      <img
-        src={user.imageUrlCached}
-        alt={user.username}
-        className={this.getClassName()}
-      />
-    ) : this.renderForNull();
+    const { noLink, noTooltip } = this.props;
+
+    // determine RootElm
+    let RootElm = noLink ? this.RootElmWithoutLink : this.RootElmWithLink;
+    if (!noTooltip) {
+      RootElm = this.withTooltip(RootElm);
+    }
+
+    const userPictureSrc = user.imageUrlCached || DEFAULT_IMAGE;
 
     return (
-      (this.props.withoutLink)
-        ? <span>{imgElem}</span>
-        : <a href={`/user/${user.username}`}>{imgElem}</a>
+      <RootElm>
+        <img
+          src={userPictureSrc}
+          alt={user.username}
+          className={this.getClassName()}
+        />
+      </RootElm>
     );
   }
 
@@ -52,10 +80,13 @@ export default class UserPicture extends React.Component {
 
 UserPicture.propTypes = {
   user: PropTypes.object,
-  size: PropTypes.string,
-  withoutLink: PropTypes.bool,
+  size: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
+  noLink: PropTypes.bool,
+  noTooltip: PropTypes.bool,
 };
 
 UserPicture.defaultProps = {
   size: null,
+  noLink: false,
+  noTooltip: false,
 };

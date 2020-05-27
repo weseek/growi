@@ -258,11 +258,11 @@ class PageEditorByHackmd extends React.Component {
           <p className="text-center"><strong>{t('hackmd.unsaved_draft')}</strong></p>
 
           { isHackmdDocumentOutdated && (
-            <div className="panel panel-warning">
-              <div className="panel-heading"><i className="icon-fw icon-info"></i> {t('hackmd.draft_outdated')}</div>
-              <div className="panel-body text-center">
+            <div className="card border-warning">
+              <div className="card-header bg-warning"><i className="icon-fw icon-info"></i> {t('hackmd.draft_outdated')}</div>
+              <div className="card-body text-center">
                 {t('hackmd.based_on_revision')}&nbsp;
-                <a href={`?revision=${revisionIdHackmdSynced}`}><span className="label label-default">{revisionIdHackmdSynced.substr(-8)}</span></a>
+                <a href={`?revision=${revisionIdHackmdSynced}`}><span className="badge badge-secondary">{revisionIdHackmdSynced.substr(-8)}</span></a>
 
                 <div className="text-center mt-3">
                   <button
@@ -294,7 +294,7 @@ class PageEditorByHackmd extends React.Component {
 
           <div className="text-center hackmd-discard-button-container mb-3">
             <button
-              className="btn btn-default btn-lg waves-effect waves-light"
+              className="btn btn-outline-secondary btn-lg waves-effect waves-light"
               type="button"
               onClick={() => { return this.discardChanges() }}
             >
@@ -314,7 +314,7 @@ class PageEditorByHackmd extends React.Component {
 
       content = (
         <div>
-          <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
+          <p className="text-muted text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
           <div className="text-center hackmd-start-button-container mb-3">
             <button
               className="btn btn-info btn-lg waves-effect waves-light"
@@ -376,10 +376,10 @@ class PageEditorByHackmd extends React.Component {
 
         { this.state.hasError && (
           <div className="hackmd-error position-absolute d-flex flex-column justify-content-center align-items-center">
-            <div className="white-box text-center">
+            <div className="bg-box p-5 text-center">
               <h2 className="text-warning"><i className="icon-fw icon-exclamation"></i> {t('hackmd.integration_failed')}</h2>
               <h4>{this.state.errorMessage}</h4>
-              <p className="well well-sm text-danger">
+              <p className="card well text-danger">
                 {this.state.errorReason}
               </p>
               {/* eslint-disable-next-line react/no-danger */}

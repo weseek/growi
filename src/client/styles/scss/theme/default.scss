@@ -1,8 +1,171 @@
-// import colors
-@import '../../agile-admin/inverse/colors/default';
+@import '../variables';
+@import '../override-bootstrap-variables';
+// == Define Bootstrap theme colors
+//
 
-// apply agile-admin theme
-@import '../../agile-admin/inverse/style';
+// colors for overriding bootstrap $theme-colors
+// $secondary: #;
+// $info: #;
+// $success: #;
+// $warning: #;
+// $danger: #;
+// $light: #;
+// $dark: #;
 
-// override
-@import 'override-agileadmin';
+//== Light Mode
+//
+html[light] {
+  $primary: #122c55;
+
+  // Background colors
+  $bgcolor-global: white;
+  $bgcolor-inline-code: #f9f2f4;
+  $bgcolor-card: #f5f5f5;
+
+  // Font colors
+  $color-global: #112744;
+  $color-reversal: #eeeeee;
+  // $color-header: #2b2b2b;
+  $color-link: #1938ba;
+  $color-link-hover: lighten($color-link, 20%);
+  $color-link-wiki: $color-link;
+  $color-link-wiki-hover: lighten($color-link-wiki, 20%);
+  $color-link-nabvar: #a7a7a7;
+  $color-inline-code: #c7254e;
+
+  // List Group colors
+  // $color-list: $color-global; // optional
+  // $bgcolor-list: $bgcolor-global; // optional
+  // $color-list-hover: $color-reversal; // optional
+  // $color-list-active: $color-reversal; // optional
+  // $bgcolor-list-active: $primary; // optional
+
+  // Navbar
+  $bgcolor-navbar: #2a2929;
+  $bgcolor-search-top-dropdown: #209fd8;
+  $border-image-navbar: linear-gradient(to right, #36c9ff 0%, #36c9ff 33%, #7926ff 66%, #ff2eff 100%);
+
+  // Logo colors
+  $bgcolor-logo: $bgcolor-navbar;
+  $fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 10%), 15%);
+
+  // Sidebar
+  $bgcolor-sidebar: #122c55;
+  $bgcolor-sidebar-nav-item-active: rgba(#000000, 0.37); // optional
+  $text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
+  // Sidebar resize button
+  $color-resize-button: $color-reversal;
+  $bgcolor-resize-button: #209fd8;
+  $color-resize-button-hover: $color-reversal;
+  $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
+  // Sidebar contents
+  $color-sidebar-context: $color-global;
+  $bgcolor-sidebar-context: #f4f6fc;
+  // Sidebar list group
+  $bgcolor-sidebar-list-group: #fafbff; // optional
+
+  // Subnavigation
+  // $bgcolor-subnabvar: #fafafa; // optional
+
+  // Icon colors
+  $color-editor-icons: $color-global;
+
+  // Border colors
+  $border-color-theme: #ccc; // former: `$navbar-border: #ccc;`
+
+  // Dropdown colors
+  $bgcolor-dropdown-link-active: $growi-blue;
+  $color-dropdown-link-active: $color-reversal;
+  $color-dropdown-link-hover: $color-reversal;
+
+  // admin theme box
+  $color-theme-color-box: lighten($primary, 20%);
+
+  // alert
+  $color-alert: $color-reversal;
+
+  // badge
+  $color-badge: $color-reversal;
+
+  @import 'apply-colors';
+  @import 'apply-colors-light';
+}
+
+//== Dark Mode
+//
+html[dark] {
+  $primary: #db00c2;
+
+  // Background colors
+  $bgcolor-global: #131418;
+  $bgcolor-inline-code: darken($bgcolor-global, 5%);
+  $bgcolor-card: darken($bgcolor-global, 5%);
+
+  // Font colors
+  $color-global: #a8a8a8;
+  $color-reversal: #333333;
+  // $color-header: desaturate($primary, 20%);
+  $color-link: #7b9ad5;
+  $color-link-hover: lighten($color-link, 10%);
+  $color-link-wiki: $color-link;
+  $color-link-wiki-hover: lighten($color-link-wiki, 10%);
+  $color-link-nabvar: #a7a7a7;
+  $color-inline-code: #c7254e;
+
+  // List Group colors
+  // $color-list: $color-global; // optional
+  // $bgcolor-list: $bgcolor-global; // optional
+  // $color-list-hover: $color-reversal; // optional
+  $color-list-active: white; // optional
+  // $bgcolor-list-active: $primary; // optional
+
+  // Navbar
+  $bgcolor-navbar: #2a2929;
+  $bgcolor-search-top-dropdown: $primary;
+  $border-image-navbar: linear-gradient(to right, #44bfe3 0%, #b04aff 50%, #ff1794 100%);
+
+  // Logo colors
+  $bgcolor-logo: $bgcolor-navbar;
+  $fillcolor-logo-mark: #444;
+
+  // Sidebar
+  $bgcolor-sidebar: #122c55;
+  $bgcolor-sidebar-nav-item-active: rgba(#969494, 0.3); // optional
+  $text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
+  // Sidebar resize button
+  $color-resize-button: white;
+  $bgcolor-resize-button: $primary;
+  $color-resize-button-hover: white;
+  $bgcolor-resize-button-hover: darken($bgcolor-resize-button, 5%);
+  // Sidebar contents
+  $bgcolor-sidebar-context: #111d2f;
+  $color-sidebar-context: $color-global;
+  // Sidebar list group
+  $bgcolor-sidebar-list-group: #1c2a3e; // optional
+
+  // Subnavigation
+  $bgcolor-subnabvar: lighten($bgcolor-global, 4%); // optional
+
+  // Icon colors
+  $color-editor-icons: $color-global;
+
+  // Border colors
+  $border-color-theme: black; // former: `$navbar-border: #ccc;`
+
+  // Dropdown colors
+  $bgcolor-dropdown-link-active: $primary;
+  $color-dropdown-link-active: $color-global;
+  $color-dropdown-link-hover: $color-reversal;
+
+  // admin theme box
+  $color-theme-color-box: $primary;
+
+  // alert
+  $color-alert: $color-reversal;
+
+  // badge
+  $color-badge: $color-reversal;
+
+  @import 'apply-colors';
+  @import 'apply-colors-dark';
+}

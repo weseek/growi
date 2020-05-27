@@ -55,8 +55,8 @@ class UserGroupPageList extends React.Component {
 
     return (
       <Fragment>
-        <ul className="page-list-ul page-list-ul-flat">
-          {this.state.currentPages.map((page) => { return <Page key={page._id} page={page} /> })}
+        <ul className="page-list-ul page-list-ul-flat mb-3">
+          {this.state.currentPages.map(page => <li key={page._id}><Page page={page} /></li>)}
         </ul>
         {adminUserGroupDetailContainer.state.relatedPages.length === 0 ? <p>{t('admin:user_group_management.no_pages')}</p> : null}
         <PaginationWrapper

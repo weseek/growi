@@ -1,4 +1,4 @@
-.page-list {
+body .page-list {
   .page-list-container {
     font-size: 15px;
     line-height: 1.6em;
@@ -12,27 +12,30 @@
       margin: 0;
       list-style: none;
 
-      .picture {
-        width: 16px;
-        height: 16px;
-      }
-
       > a {
-        display: inline;
-        padding: 0 4px;
+        padding: 0px;
         color: inherit;
+
+        &:hover {
+          color: inherit;
+        }
+      }
+    }
+
+    .picture {
+      width: 16px;
+      height: 16px;
+    }
+
+    .page-list-meta {
+      font-size: 0.9em;
+
+      > span {
+        margin-right: 0.3rem;
       }
 
-      > span.page-list-meta {
-        font-size: 0.9em;
-
-        > span {
-          margin-right: 0.3rem;
-        }
-
-        i {
-          margin-right: 2px;
-        }
+      i {
+        margin-right: 2px;
       }
     }
 
@@ -63,9 +66,9 @@
   color: #ab7c7c;
 }
 
-.panel-timeline {
+.card-timeline {
   border: 1px solid #ccc;
-  > .panel-heading {
+  > .card-header {
     background-color: #ccc;
   }
 }

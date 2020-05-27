@@ -1,62 +1,80 @@
+<!-- TODO GW-2362 remove after adjust layout -->
 <div class="modal create-page" id="create-page">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
 
-      <div class="modal-header bg-primary">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <div class="modal-header bg-primary text-light">
         <div class="modal-title">{{ t('New Page') }}</div>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
       </div>
 
       <div class="modal-body">
 
-        <form class="row form-horizontal" id="create-page-today" role="form">
-          <fieldset class="col-xs-12">
-            <legend>{{ t("Create today's") }}</legend>
-            <div class="d-flex create-page-input-container">
-              <div class="create-page-input-row d-flex align-items-center">
-                <span class="page-today-prefix">{{ userPageRoot(user) }}/</span>
-                <input type="text" data-prefix="{{ userPageRoot(user) }}/" class="page-today-input1 form-control text-center" value="{{ t('Memo') }}" id="" name="">
-                <span class="page-today-suffix">/{{ now|datetz('Y/m/d') }}/</span>
-                <input type="text" data-prefix="/{{ now|datetz('Y/m/d') }}/" class="page-today-input2 form-control" id="page-today-input2" name="" placeholder="{{ t('Input page name (optional)') }}">
+        <form  id="create-page-today" role="form">
+          <div class="row form-group">
+            <fieldset class="col-12 mb-4">
+              <h3 class="grw-modal-head pb-2">{{ t("Create today's") }}</h3>
+              <div class="d-flex create-page-input-container">
+                <div class="create-page-input-row d-flex align-items-center">
+                  <span class="page-today-prefix">{{ userPageRoot(user) }}/</span>
+                  <input type="text" data-prefix="{{ userPageRoot(user) }}/" class="page-today-input1 form-control text-center" value="{{ t('Memo') }}" id="" name="">
+                  <span class="page-today-suffix">/{{ now|datetz('Y/m/d') }}/</span>
+                  <input type="text" data-prefix="/{{ now|datetz('Y/m/d') }}/" class="page-today-input2 form-control" id="page-today-input2" name="" placeholder="{{ t('Input page name (optional)') }}">
+                </div>
+                <div class="create-page-button-container">
+                  <button type="submit" class="btn btn-outline-primary rounded-pill"><i class="icon-fw icon-doc"></i>{{ t('Create') }}</button>
+                </div>
               </div>
-              <div class="create-page-button-container">
-                <button type="submit" class="fcbtn btn btn-outline btn-rounded btn-primary btn-1b"><i class="icon-fw icon-doc"></i>{{ t('Create') }}</button>
-              </div>
-            </div>
-          </fieldset>
+            </fieldset>
+          </div>
         </form>
 
-        <form class="row form-horizontal m-t-15" id="create-page-under-tree" role="form">
-          <fieldset class="col-xs-12">
-            <legend>{{ t('Create under') }}</legend>
-            <div class="d-flex create-page-input-container">
-              <div class="create-page-input-row d-flex align-items-center">
-                {% if isSearchServiceConfigured() %}
-                <div id="create-page-name-input" class="page-name-input"></div>
-                {% else %}
-                <input type="text" value="{{ parentPath(path) }}" class="page-name-input form-control " placeholder="{{ t('Input page name') }}" required />
-                {% endif %}
+        {% if !isTrashPage() %}
+        <form id="create-page-under-tree" role="form">
+          <div class="row form-group">
+            <fieldset class="col-12 mb-4">
+              <h3 class="grw-modal-head pb-2">{{ t('Create under') }}</h3>
+              <div class="d-flex create-page-input-container">
+                <div class="create-page-input-row d-flex align-items-center">
+                  {% if isSearchServiceConfigured() %}
+                  <div id="create-page-name-input" class="page-name-input"></div>
+                  {% else %}
+                  <input type="text" value="{{ parentPath(path) }}" class="page-name-input form-control " placeholder="{{ t('Input page name') }}" required />
+                  {% endif %}
+                </div>
+                <div class="create-page-button-container">
+                  <button type="submit" class="btn btn-outline-primary rounded-pill"><i class="icon-fw icon-doc"></i>{{ t('Create') }}</button>
+                </div>
               </div>
-              <div class="create-page-button-container">
-                <button type="submit" class="fcbtn btn btn-outline btn-rounded btn-primary btn-1b"><i class="icon-fw icon-doc"></i>{{ t('Create') }}</button>
-              </div>
-            </div>
-          </fieldset>
+            </fieldset>
+          </div>
         </form>
 
         {% set templateParentPath = parentPath(path | preventXss | escape) %}
-        <div id="template-form" class="row form-horizontal m-t-15">
-          <fieldset class="col-xs-12">
-            <legend>{{ t('template.modal_label.Create template under', templateParentPath) }}</legend>
+        <div id="template-form" class="row form-group">
+          <fieldset class="col-12">
+            <h3 class="grw-modal-head pb-2">{{ t('template.modal_label.Create template under') }}<br><code>{{ templateParentPath }}</code></h3>
             <div class="d-flex create-page-input-container">
               <div class="create-page-input-row d-flex align-items-center">
-                <select id="template-type" class="form-control selectpicker" title="{{ t('template.option_label.select') }}">
-                  <option value="children" data-subtext="- {{ t('template.children.desc') }}">{{ t('template.children.label') }}(_template)</option>
-                  <option value="decentants" data-subtext="- {{ t('template.decendants.desc') }}">{{ t('template.decendants.label') }}(__template)</option>
-                </select>
+
+                <div id="dd-template-type" class="dropdown w-100">
+                  <a type="button" class="btn btn-secondary btn-block dropdown-toggle d-flex align-items-center justify-content-between"
+                      id="template-type" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{ t('template.option_label.select') }}
+                  </a>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <button class="dropdown-item" type="button" data-template-type="children">
+                      {{ t('template.children.label') }} (_template)<br class="d-block d-md-none" /><small class="text-muted text-wrap">- {{ t('template.children.desc') }}</small>
+                    </button>
+                    <button class="dropdown-item" type="button" data-template-type="decentants">
+                      {{ t('template.decendants.label') }} (__template) <br class="d-block d-md-none" /><small class="text-muted">- {{ t('template.decendants.desc') }}</small>
+                    </button>
+                  </div>
+                </div>
+
               </div>
               <div class="create-page-button-container">
-                <a id="link-to-template" href="{{ page.path || path }}" class="fcbtn btn btn-outline btn-rounded btn-primary btn-1b disabled">
+                <a id="link-to-template" href="{{ page.path || path }}" class="btn btn-outline-primary rounded-pill disabled">
                   <i class="icon-fw icon-doc"></i>
                   <span id="create-template-button-link">{{ t('Edit') }}</span>
                 </a>
@@ -64,18 +82,25 @@
             </div>
           </fieldset>
         </div>
+        {% endif %}
 
         <script>
-          $('#template-type').on('change', function() {
-            // enable button
-            $('#link-to-template').removeClass('disabled');
+          $('#dd-template-type .dropdown-item').on('click', function() {
+            const value = $(this).data('template-type');
+
+            // modify label
+            const label = (value === 'children')
+              ? '{{ t("template.children.label") }} (__template)'
+              : '{{ t("template.decendants.label") }} (__template)';
+            $('#dd-template-type .dropdown-toggle').text(label);
 
             // modify href
-            const value = $(this).val();
             const pageName = (value === 'children') ? '_template' : '__template';
             const parentPath = '{{templateParentPath}}';
             const link = parentPath + pageName + '#edit-form';
             $('#link-to-template').attr('href', link);
+            // enable button
+            $('#link-to-template').removeClass('disabled');
           });
         </script>
 

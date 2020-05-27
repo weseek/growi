@@ -3,7 +3,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import Modal from 'react-bootstrap/es/Modal';
+import {
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from 'reactstrap';
 import { toastSuccess, toastError } from '../../util/apiNotification';
 import { createSubscribedElement } from '../UnstatedUtils';
 
@@ -65,35 +70,59 @@ class AssociateModal extends React.Component {
     const { t } = this.props;
 
     return (
-      <Modal show={this.props.isOpen} onHide={this.props.onClose}>
-        <Modal.Header className="bg-info" closeButton>
-          <Modal.Title className="text-white">
-            { t('admin:user_management.create_external_account') }
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+      <Modal isOpen={this.props.isOpen} toggle={this.props.onClose} size="lg">
+        <ModalHeader className="bg-info text-light" toggle={this.props.onClose}>
+          { t('admin:user_management.create_external_account') }
+        </ModalHeader>
+        <ModalBody>
           <ul className="nav nav-tabs passport-settings mb-2" role="tablist">
-            <li className="active">
-              <a href="#passport-ldap" data-toggle="tab" role="tab"><i className="fa fa-sitemap"></i> LDAP</a>
+            <li className="nav-item active">
+              <a href="#passport-ldap" className="nav-link active" data-toggle="tab" role="tab">
+                <i className="fa fa-sitemap"></i> LDAP
+              </a>
             </li>
-            <li className="tbd disabled"><a><i className="fa fa-github"></i> (TBD) GitHub</a></li>
-            <li className="tbd disabled"><a><i className="fa fa-google"></i> (TBD) Google OAuth</a></li>
-            <li className="tbd disabled"><a><i className="fa fa-facebook"></i> (TBD) Facebook</a></li>
-            <li className="tbd disabled"><a><i className="fa fa-twitter"></i> (TBD) Twitter</a></li>
+            <li className="nav-item">
+              <a href="#github-tbd" className="nav-link" data-toggle="tab" role="tab">
+                <i className="fa fa-github"></i> (TBD) GitHub
+              </a>
+            </li>
+            <li className="nav-item">
+              <a href="#google-tbd" className="nav-link" data-toggle="tab" role="tab">
+                <i className="fa fa-google"></i> (TBD) Google OAuth
+              </a>
+            </li>
+            <li className="nav-item">
+              <a href="#facebook-tbd" className="nav-link" data-toggle="tab" role="tab">
+                <i className="fa fa-facebook"></i> (TBD) Facebook
+              </a>
+            </li>
+            <li className="nav-item">
+              <a href="#twitter-tbd" className="nav-link" data-toggle="tab" role="tab">
+                <i className="fa fa-twitter"></i> (TBD) Twitter
+              </a>
+            </li>
           </ul>
-          <LdapAuthTest
-            username={this.state.username}
-            password={this.state.password}
-            onChangeUsername={this.onChangeUsername}
-            onChangePassword={this.onChangePassword}
-          />
-        </Modal.Body>
-        <Modal.Footer>
+          <div className="tab-content">
+            <div id="passport-ldap" className="tab-pane active">
+              <LdapAuthTest
+                username={this.state.username}
+                password={this.state.password}
+                onChangeUsername={this.onChangeUsername}
+                onChangePassword={this.onChangePassword}
+              />
+            </div>
+            <div id="github-tbd" className="tab-pane" role="tabpanel">TBD</div>
+            <div id="google-tbd" className="tab-pane" role="tabpanel">TBD</div>
+            <div id="facebook-tbd" className="tab-pane" role="tabpanel">TBD</div>
+            <div id="twitter-tbd" className="tab-pane" role="tabpanel">TBD</div>
+          </div>
+        </ModalBody>
+        <ModalFooter className="border-top-0">
           <button type="button" className="btn btn-info mt-3" onClick={this.onClickAddBtn}>
             <i className="fa fa-plus-circle" aria-hidden="true"></i>
             {t('add')}
           </button>
-        </Modal.Footer>
+        </ModalFooter>
       </Modal>
     );
   }

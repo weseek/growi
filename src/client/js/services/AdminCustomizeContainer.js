@@ -22,7 +22,6 @@ export default class AdminCustomizeContainer extends Container {
       retrieveError: null,
       currentTheme: '',
       currentLayout: '',
-      currentBehavior: '',
       isEnabledTimeline: false,
       isSavedStatesOfTabChanges: false,
       isEnabledAttachTitleHeader: false,
@@ -71,7 +70,6 @@ export default class AdminCustomizeContainer extends Container {
       this.setState({
         currentTheme: customizeParams.themeType,
         currentLayout: customizeParams.layoutType,
-        currentBehavior: customizeParams.behaviorType,
         isEnabledTimeline: customizeParams.isEnabledTimeline,
         isSavedStatesOfTabChanges: customizeParams.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: customizeParams.isEnabledAttachTitleHeader,
@@ -117,13 +115,6 @@ export default class AdminCustomizeContainer extends Container {
     if (process.env.NODE_ENV !== 'development') {
       this.previewTheme(themeName);
     }
-  }
-
-  /**
-   * Switch behaviorType
-   */
-  switchBehaviorType(behaviorName) {
-    this.setState({ currentBehavior: behaviorName });
   }
 
   /**
@@ -258,26 +249,6 @@ export default class AdminCustomizeContainer extends Container {
       this.setState({
         layoutType: customizedParams.layoutType,
         themeType: customizedParams.themeType,
-      });
-    }
-    catch (err) {
-      logger.error(err);
-      throw new Error('Failed to update data');
-    }
-  }
-
-  /**
-   * Update behavior
-   * @memberOf AdminCustomizeContainer
-   */
-  async updateCustomizeBehavior() {
-    try {
-      const response = await this.appContainer.apiv3.put('/customize-setting/behavior', {
-        behaviorType: this.state.currentBehavior,
-      });
-      const { customizedParams } = response.data;
-      this.setState({
-        behaviorType: customizedParams.behaviorType,
       });
     }
     catch (err) {

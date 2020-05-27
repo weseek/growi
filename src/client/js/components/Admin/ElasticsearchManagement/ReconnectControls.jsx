@@ -13,7 +13,7 @@ class ReconnectControls extends React.PureComponent {
       <>
         <button
           type="submit"
-          className={`btn btn-outline ${isEnabled ? 'btn-success' : 'btn-default'}`}
+          className={`btn ${isEnabled ? 'btn-outline-success' : 'btn-outline-secondary'}`}
           onClick={() => { this.props.onReconnectingRequested() }}
           disabled={!isEnabled}
         >
@@ -21,7 +21,7 @@ class ReconnectControls extends React.PureComponent {
           { t('full_text_search_management.reconnect_button') }
         </button>
 
-        <p className="help-block">
+        <p className="form-text text-muted">
           { t('full_text_search_management.reconnect_description') }<br />
         </p>
       </>

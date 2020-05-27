@@ -1,0 +1,180 @@
+// determine optional variables
+$bgcolor-subnabvar: lighten($bgcolor-global, 3%) !default;
+
+/*
+  * Form
+  */
+input.form-control,
+textarea.form-control {
+  color: lighten($color-global, 30%);
+  background-color: darken($bgcolor-global, 5%);
+  &:focus {
+    background-color: $bgcolor-global;
+  }
+  // FIXME: accent color
+  // border: 1px solid darken($border, 30%);
+}
+
+.form-control[disabled],
+.form-control[readonly] {
+  color: lighten($color-global, 10%);
+  background-color: lighten($bgcolor-global, 5%);
+}
+
+.input-group .input-group-addon {
+  color: theme-color('dark');
+  background-color: rgba($bgcolor-navbar, 0.4);
+  // FIXME: accent color
+  // border: 1px solid darken($border, 30%);
+  border-right: none;
+}
+
+/*
+ * Dropdown
+ */
+.dropdown-menu {
+  background-color: $bgcolor-global;
+  > li > a {
+    color: $color-global;
+  }
+}
+
+/*
+ * Panel
+ */
+.panel {
+  &,
+  &.panel-white,
+  &.panel-default {
+    .panel-heading,
+    .panel-body {
+      color: theme-color('light');
+    }
+  }
+}
+
+/*
+ * Table
+ */
+.table {
+  @extend .table-dark;
+}
+
+/*
+ * Card
+ */
+.card:not([class*='bg-']) {
+  @extend .bg-dark;
+}
+
+/*
+ * Pagination
+ */
+ul.pagination {
+  li.page-item {
+    button.page-link {
+      @extend .btn-dark;
+    }
+    &.active {
+      button {
+        @extend .active;
+      }
+    }
+  }
+}
+
+.table > thead > tr > th,
+.table > tbody > tr > th,
+.table > tfoot > tr > th,
+.table > thead > tr > td,
+.table > tbody > tr > td,
+.table > tfoot > tr > td,
+.table > thead > tr > th,
+.table-bordered {
+  // FIXME: use $table-dark-*
+  // border-top: 1px solid $border;
+}
+
+.table-bordered > thead > tr > th,
+.table-bordered > tbody > tr > th,
+.table-bordered > tfoot > tr > th,
+.table-bordered > thead > tr > td,
+.table-bordered > tbody > tr > td,
+.table-bordered > tfoot > tr > td {
+  // FIXME: use $table-dark-*
+  // border: 1px solid $border;
+}
+
+.table > thead > tr > th {
+  // FIXME: use $table-dark-*
+  // border-bottom: 1px solid $border;
+}
+
+.table-bordered {
+  // FIXME: use $table-dark-*
+  // border: 1px solid $border;
+}
+
+/*
+ * GROWI page list
+ */
+.page-list {
+  .page-list-ul {
+    > li {
+      > a strong {
+        color: lighten($color-global, 25%);
+      }
+      > span.page-list-meta {
+        color: $color-global;
+      }
+    }
+  }
+}
+
+/*
+ * GROWI subnavigation
+ */
+.grw-subnavbar {
+  background-color: $bgcolor-subnabvar;
+}
+
+/*
+ * GROWI search page
+ */
+.search-page {
+  .input-group-btn {
+    .btn-light {
+      // FIXME:
+      // border: 1px solid darken($border, 30%); // fit to input.form-control
+    }
+  }
+}
+
+/*
+ * GROWI on-edit
+ */
+.page-editor-footer {
+  #slack-mark-black {
+    display: none;
+  }
+}
+
+.wiki {
+  h1 {
+    // FIXME:
+    // border-color: lighten($border, 10%);
+  }
+  h2 {
+    // FIXME:
+    // border-color: $border;
+  }
+}
+
+/*
+ * GROWI comment form
+ */
+.comment-form {
+  #slack-mark-black {
+    display: none;
+  }
+}

@@ -3,7 +3,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import Modal from 'react-bootstrap/es/Modal';
+import {
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from 'reactstrap';
 import { toastSuccess, toastError } from '../../util/apiNotification';
 import { createSubscribedElement } from '../UnstatedUtils';
 
@@ -43,25 +48,23 @@ class DisassociateModal extends React.Component {
     const { providerType, accountId } = accountForDisassociate;
 
     return (
-      <Modal show={this.props.isOpen} onHide={this.props.onClose}>
-        <Modal.Header className="bg-info" closeButton>
-          <Modal.Title className="text-white">
-            {t('personal_settings.disassociate_external_account')}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+      <Modal isOpen={this.props.isOpen} toggle={this.props.onClose}>
+        <ModalHeader className="bg-info text-light" toggle={this.props.onClose}>
+          {t('personal_settings.disassociate_external_account')}
+        </ModalHeader>
+        <ModalBody>
           {/* eslint-disable-next-line react/no-danger */}
           <p dangerouslySetInnerHTML={{ __html: t('personal_settings.disassociate_external_account_desc', { providerType, accountId }) }} />
-        </Modal.Body>
-        <Modal.Footer>
-          <button type="button" className="btn btn-sm btn-default" onClick={this.props.onClose}>
+        </ModalBody>
+        <ModalFooter>
+          <button type="button" className="btn btn-sm btn-outline-secondary" onClick={this.props.onClose}>
             { t('Cancel') }
           </button>
           <button type="button" className="btn btn-sm btn-danger" onClick={this.onClickDisassociateBtn}>
             <i className="ti-unlink"></i>
             { t('Disassociate') }
           </button>
-        </Modal.Footer>
+        </ModalFooter>
       </Modal>
     );
   }
