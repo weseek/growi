@@ -48,6 +48,7 @@ $accentcolor: #e08dbc;
 html[light],
 html[dark] {
   $primary: $themecolor;
+  $secondary: $themelight;
 
   // Background colors
   $bgcolor-global: white;
