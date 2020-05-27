@@ -31,6 +31,9 @@ html[light] {
   $bgcolor-list-active: $primary;
   $color-list-hover: $color-reversal;
 
+  // navbar
+  $bgcolor-search-top-dropdown: $primary;
+
   // Logo colors
   $bgcolor-logo: transparent;
   $fillcolor-logo-mark: lighten($bgcolor-theme, 20%);
@@ -106,6 +109,9 @@ html[dark] {
   $color-list-active: $color-reversal;
   $bgcolor-list-active: $primary;
   $color-list-hover: $color-reversal;
+
+  // navbar
+  $bgcolor-search-top-dropdown: $primary;
 
   // Logo colors
   $bgcolor-logo: transparent;
