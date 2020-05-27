@@ -34,6 +34,23 @@ $input-focus-color: $color-global;
 @import 'reboot-bootstrap-theme-colors';
 @import 'reboot-toastr-colors';
 
+:not(pre) {
+  > code {
+    color: $color-inline-code;
+    background-color: $bgcolor-inline-code;
+    border-color: $bordercolor-inline-code;
+  }
+}
+
+pre {
+  background-color: $bgcolor-inline-code;
+  border-color: $bordercolor-inline-code;
+}
+
+//
+//== Apply to Bootstrap Elements
+//
+
 // Link buttons
 .btn-link {
   color: $link-color;
@@ -177,17 +194,6 @@ $input-focus-color: $color-global;
  */
 .editor-container .navbar-editor svg {
   fill: $color-editor-icons;
-}
-
-/*
- * style of inline-code
- */
-:not(pre) {
-  > code {
-    color: $color-inline-code;
-    background-color: $bgcolor-inline-code;
-    border-color: $bordercolor-inline-code;
-  }
 }
 
 /*

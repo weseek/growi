@@ -3,6 +3,7 @@
  */
 :not(pre) {
   > code {
+    padding: 2px 4px;
     font-family: $font-family-monospace-not-strictly;
     border: 1px solid;
     border-radius: 2px;
