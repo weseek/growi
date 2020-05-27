@@ -8,6 +8,8 @@ import InterceptorManager from '@commons/service/interceptor-manager';
 import emojiStrategy from '../util/emojione/emoji_strategy_shrinked.json';
 import GrowiRenderer from '../util/GrowiRenderer';
 
+import Apiv1ErrorHandler from '../util/apiv1ErrorHandler';
+
 import {
   DetachCodeBlockInterceptor,
   RestoreCodeBlockInterceptor,
@@ -450,6 +452,13 @@ export default class AppContainer extends Container {
     if (res.data.ok) {
       return res.data;
     }
+
+    // Return error code if code is exist
+    if (res.data.code != null) {
+      const error = new Apiv1ErrorHandler(res.data.error, res.data.code);
+      throw error;
+    }
+
     throw new Error(res.data.error);
   }
 
