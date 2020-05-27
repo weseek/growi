@@ -33,13 +33,20 @@ export default class UserPicture extends React.Component {
       return this.renderForNull();
     }
 
-    const imgElem = user.imageUrlCached ? (
-      <img
-        src={user.imageUrlCached}
-        alt={user.username}
-        className={this.getClassName()}
-      />
-    ) : this.renderForNull();
+    let imgElem;
+
+    if (user.imageUrlCached != null) {
+      imgElem = (
+        <img
+          src={user.imageUrlCached}
+          alt={user.username}
+          className={this.getClassName()}
+        />
+      );
+    }
+    else {
+      imgElem = this.renderForNull();
+    }
 
     return (
       (this.props.withoutLink)
