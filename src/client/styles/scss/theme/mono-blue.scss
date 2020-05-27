@@ -12,7 +12,7 @@ html[light] {
 
   // Background colors
   $bgcolor-global: $themelight;
-  $bgcolor-inline-code: lighten($subthemecolor, 70%);
+  $bgcolor-inline-code: #f0f0f0; //optional
   $bgcolor-card: darken($themelight, 5%);
 
   // Font colors
@@ -23,7 +23,7 @@ html[light] {
   $color-link-wiki: lighten($primary, 20%);
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
   $color-link-nabvar: $color-reversal;
-  $color-inline-code: $subthemecolor;
+  $color-inline-code: #c7254e; // optional
   $color-search: #c0d6df;
 
   // List Group colors
@@ -62,6 +62,7 @@ html[light] {
 
   // Border colors
   $border-color-theme: #ccc;
+  $bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
   $bgcolor-dropdown-link-active: $primary;
@@ -107,7 +108,7 @@ html[dark] {
   // Background colors
   $bgcolor-global: $themedark;
   $bgcolor-navbar: #27343b;
-  $bgcolor-inline-code: #0a121b;
+  $bgcolor-inline-code: #1f1f22; //optional
   $bgcolor-card: darken($themedark, 5%);
 
   // Font colors
@@ -119,6 +120,7 @@ html[dark] {
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
   $color-link-nabvar: $color-reversal;
   $color-inline-code: $subthemecolor;
+  $color-inline-code: #c7254e; // optional
   $color-search: #000102;
 
   // List Group colors
@@ -158,6 +160,7 @@ html[dark] {
 
   // Border colors
   $border-color-theme: #146aa0;
+  $bordercolor-inline-code: #4d4d4d; // optional
 
   // Dropdown colors
   $bgcolor-dropdown-link-active: $primary;

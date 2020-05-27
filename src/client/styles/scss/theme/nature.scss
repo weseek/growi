@@ -39,13 +39,13 @@ html[light],
 html[dark] {
   $primary: #460039;
   $light: #f0f0f0;
-  
+
   // Background colors
   $bgcolor-global: #fdfdfd;
-  $bgcolor-inline-code: #eaeaea;
+  $bgcolor-inline-code: #f0f0f0; //optional
   $bgcolor-card: #f1ffe4;
   $bgcolor-subnabvar: #fafafa;
-  
+
   // Font colors
   $color-global: #460039;
   $color-reversal: #eeeeee;
@@ -54,14 +54,14 @@ html[dark] {
   $color-link-wiki: lighten($primary, 20%);
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
   $color-link-nabvar: #a7a7a7;
-  $color-inline-code: #890000;
+  $color-inline-code: #c7254e; // optional
   $color-search: white;
-  
+
   // Navbar
   $bgcolor-navbar: #234136;
   $bgcolor-search-top-dropdown: $themecolor;
   $border-image-navbar: linear-gradient(to right, #5c78ef 0%, #16bc42 50%, #5c78ef 100%);
-  
+
   // Logo colors
   $bgcolor-logo: $bgcolor-navbar;
   $fillcolor-logo-mark: lighten(desaturate($bgcolor-inline-code, 10%), 15%);
@@ -80,6 +80,7 @@ html[dark] {
 
   // Border colors
   $border-color-theme: #ccc;
+  $bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
   $bgcolor-dropdown-link-active: $growi-blue;
