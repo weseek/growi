@@ -164,6 +164,7 @@ class UserManagement extends React.Component {
               <i className="icon-magnifier mr-1"></i>
               <span className="search-typeahead">
                 <input
+                  className="w-100"
                   type="text"
                   ref={(searchUserElement) => { this.searchUserElement = searchUserElement }}
                   onChange={this.handleChangeSearchText}
