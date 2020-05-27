@@ -12,7 +12,7 @@ html[light],
 html[dark] {
   // Background colors
   $bgcolor-global: $themecolor;
-  $bgcolor-inline-code: darken($themecolor, 5%);
+  $bgcolor-inline-code: #1f1f22;
   $bgcolor-card: darken($themecolor, 5%);
 
   // Font colors
@@ -53,6 +53,7 @@ html[dark] {
 
   // Border colors
   $border-color-theme: #407483;
+  $bordercolor-inline-code: #4d4d4d;
 
   // Dropdown colors
   $bgcolor-dropdown-link-active: $primary;
