@@ -1,103 +1,49 @@
-import React from 'react';
-import { GlobalHotKeys } from 'react-hotkeys';
 
-import HotkeyRender from '../HotkeyRender/HotkeyRender';
-import StaffCredit from '../StaffCredit/StaffCredit';
-import MirrorMode from '../MirrorMode/MirrorMode';
-
-export default class Hotkey extends React.Component {
-
-  constructor(props) {
-    super(props);
-    this.commandExecute = false;
-    this.hotkeyCommand = {
-      StaffCredit: ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'],
-      MirrorMode: ['x', 'x', 'b', 'b', 'a', 'y', 'a', 'y', 'ArrowDown', 'ArrowLeft'],
-    };
-    this.processingCommandIds = Object.keys(this.hotkeyCommand)
-    this.state = {
-      userCommand: [],
-    }
-    this.check = this.check.bind(this);
-    this.init = this.init.bind(this);
-    this.keymapSet = this.keymapSet.bind(this);
+// filters the corresponding hotkeys that the user has pressed so far
+// executes if there were keymap that fully matches what the user pressed
+function processingCommand(userCommand, hotkeyList) {
+  let userCommandVariable = userCommand;
+  const commandExecuteList = hotkeyList.filter((value) => {
+    return value.slice(0, userCommandVariable.length).toString() === userCommandVariable.toString();
+  });
+  if ((commandExecuteList.length === 1) && (commandExecuteList[0].toString() === userCommandVariable.toString())) {
+    userCommandVariable = [];
   }
-
-  // this function generates keymap depending on what keys were selected in this.hotkeyCommand
-  keymapSet() {
-    let keymap = [];
-    const keys = Object.keys(this.hotkeyCommand);
-    for(const i of keys) {
-      keymap.push(this.hotkeyCommand[i])
-    }
-    keymap = keymap.filter((value,index,self) => {
-      return self.indexOf(value) === index;
-    });
-    return keymap.flat();
-  }
-
-  // function to initialize the state and attributes
-  init() {
-    this.setState({
-      userCommand: [],
-    });
-    this.processingCommandIds = Object.keys(this.hotkeyCommand)
-  }
-
-
-
-  check(event) {
-    // console.log(`'${event.key}' pressed`);
-    // compare keydown and next hotkeyCommand
-    // first concat the event.key into userCommand list
-    this.setState({
-      userCommand: this.state.userCommand.concat(event.key),
-    });
-
-    // filters the corresponding hotkeys that the user has pressed so far
-    const tempUserCommand = this.state.userCommand;
-    this.processingCommandIds = this.processingCommandIds.filter((value) => {
-      return this.hotkeyCommand[value].slice(0, tempUserCommand.length).toString() === tempUserCommand.toString();
-    });
-
-    // executes if there were keymap that matches what the user pressed
-    if ((this.processingCommandIds.length === 1) && (this.hotkeyCommand[this.processingCommandIds[0]].toString() === this.state.userCommand.toString())) {
-      this.commandExecute = this.processingCommandIds[0]
-      this.init()
-    }
-    return null;
-  }
-
-  renderCommand() {
-    let result = null;
-    if (this.commandExecute === 'StaffCredit') {
-      this.commandExecute = false;
-      result = (
-        <StaffCredit />
-      );
-    }
-    else if (this.commandExecute === 'MirrorMode') {
-      this.commandExecute = false;
-      result = (
-        <MirrorMode />
-      );
-    }
-    return result;
-  }
-
-
-  render() {
-    const keyMap = { check: this.keymapSet() };
-    const handlers = { check: (event) => { return this.check(event) } };
-    return (
-      <GlobalHotKeys keyMap={keyMap} handlers={handlers}>
-        {this.renderCommand()}
-        {/* <HotkeyRender commandExecute = {this.commandExecute} /> */}
-      </GlobalHotKeys>
-    );
-  }
-
+  return [commandExecuteList, userCommandVariable];
 }
 
-Hotkey.propTypes = {
-};
+
+export function Hotkey(userCommand, hotkeyCommand) {
+  const hotkeyCommandList = [];
+  let commandExecuteList = [];
+  let commandExecute = '';
+  let userCommandVariable = userCommand;
+
+  // making a list of hotkeyCommands values
+  for (const key of Object.keys(hotkeyCommand)) {
+    hotkeyCommandList.push(hotkeyCommand[key]);
+  }
+
+  // executing proccesingCommand function
+  [commandExecuteList, userCommandVariable] = processingCommand(userCommandVariable, hotkeyCommandList);
+
+
+  // if there was a fully matched hotkey
+  if ((commandExecuteList.toString() !== [].toString()) && (userCommandVariable.toString() === [].toString())) {
+    const keys = Object.keys(hotkeyCommand);
+    for (let i = 0; i < keys.length; i++) {
+      if (commandExecuteList[0].toString() === hotkeyCommand[keys[i]].toString()) {
+        commandExecute = keys[i];
+      }
+    }// if the users key partly matches the hotkey
+  }
+  else if (commandExecuteList.toString() !== [].toString()) {
+    commandExecute = commandExecuteList;
+  }// if the users key doesn't match the hotkey at all.
+  else {
+    userCommandVariable = [];
+  }
+  return [commandExecute, userCommandVariable];
+}
+
+export default Hotkey;
