@@ -99,7 +99,7 @@ class UserManagement extends React.Component {
           type="checkbox"
           id={`c_${status}`}
           checked={this.props.adminUsersContainer.isSelected(status)}
-          onClick={() => { this.handleClick(status) }}
+          onChange={() => { this.handleClick(status) }}
         />
         <label className="custom-control-label" htmlFor={`c_${status}`}>
           <span className={`badge badge-pill badge-${statusColor} d-inline-block vt mt-1`}>
