@@ -20,9 +20,10 @@ $light: lighten($secondary, 10%);
 // $dark: #;
 
 .growi:not(.login-page) {
-  #wrapper > .navbar {
+  #wrapper>.navbar {
     background-image: url(/images/themes/halloween/halloween-navbar.jpg);
   }
+
   // add background-image
   #page-wrapper,
   .page-editor-preview-container {
@@ -43,33 +44,40 @@ html[dark] {
   $color-global: #e9af2b;
   $color-reversal: #eeeeee;
   // $color-header: #2b2b2b;
-  $color-link: lighten($primary, 20%);
+  $color-link: #AA97CB;
   $color-link-hover: lighten($color-link, 20%);
-  $color-link-wiki: lighten($primary, 20%);
+  $color-link-wiki: #AA97CB;
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
-  $color-link-nabvar: $color-reversal;
-  $color-inline-code: #c7254e; // optional
+  $color-link-nabvar: #A7A7A7;
+  $color-inline-code: #C7254E; // optional
 
   // List Group colors
-  $color-list: $color-global;
+  $color-list: #979797;
   $bgcolor-list: transparent;
   $color-list-active: $color-reversal;
   $bgcolor-list-active: $primary;
   $color-list-hover: $themecolor;
 
+  // Search Top
+  $color-search: #814B02;
+
   // Navbar
-  $bgcolor-navbar: #223344;
-  $border-color-navbar-gradient-left: #545fff;
-  $border-color-navbar-gradient-right: #00a6e5;
+  $bgcolor-navbar: #ECEDED;
+  $bgcolor-search-top-dropdown: #814B02;
+  $border-image-navbar: linear-gradient(90deg, #E3B7FF 0%, #134774 100%);
 
   // Logo colors
   $bgcolor-logo: darken($themecolor, 10%);
-  $fillcolor-logo-mark: lighten($accentcolor, 15%);
+  $fillcolor-logo-mark: #DEDEDE;
 
   // Sidebar
-  $bgcolor-sidebar: $bgcolor-navbar;
-  $color-sidebar-context: $color-reversal;
-  $bgcolor-sidebar-context: lighten($bgcolor-navbar, 10%);
+  $bgcolor-sidebar: #162B33;
+  $color-sidebar-context: #AA97CB;
+  $bgcolor-sidebar-context: #1D2126;
+  $text-shadow-sidebar-nav-item-active: 0px 0px 1px red; // optional
+
+  // Sidebar list group
+  $bgcolor-sidebar-list-group: #2C2926; // optional
 
   // Icon colors
   $color-editor-icons: $color-global;
@@ -95,11 +103,23 @@ html[dark] {
   @import 'apply-colors';
   @import 'apply-colors-dark';
 
+  .search-top {
+    input {
+      background-color: #ECEDED;
+    }
+
+    i {
+      color: #949494;
+    }
+  }
+
   // Table
   .table {
     color: $color-global;
   }
+
   .table-bordered {
+
     th,
     td {
       border: 1px solid $themecolor;
@@ -108,16 +128,51 @@ html[dark] {
 
   // Nav
   .nav-tabs {
-    border-bottom: $bordercolor 1px solid;
-    .nav-link {
-      &:hover {
-        border: $bordercolor 1px solid;
-      }
-      &.active {
-        color: lighten($themecolor, 5%);
-        background-color: transparent;
-        border: $bordercolor 1px solid;
+    .nav-item {
+      a {
+        color: #AA97CB !important;
+
+        &:hover {
+          border: #767656 1px solid;
+
+        }
       }
     }
+  }
+
+
+  .nav.nav-tabs .nav-link.active {
+    color: lighten(#AA97CB, 5%) !important;
+    background-color: transparent;
+    border: #767656 1px solid;
+  }
+
+
+
+  pre {
+    color: #EDBA4A;
+    background: #000000;
+  }
+
+  .authors {
+    color: #302E2E;
+  }
+
+  .ak-navigation-resize-button {
+    color: #EFFCFA;
+
+    &after {
+      border-top-color: #814B02;
+    }
+
+    &before {
+      border-bottom-color: #814B02;
+    }
+
+    svg {}
+  }
+
+  .navigation-resize-button>span:after {
+    background: #814B02;
   }
 }
