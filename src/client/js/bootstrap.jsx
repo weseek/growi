@@ -5,7 +5,7 @@ import Xss from '@commons/service/xss';
 
 import HeaderSearchBox from './components/HeaderSearchBox';
 import PersonalDropdown from './components/Navbar/PersonalDropdown';
-import StaffCredit from './components/StaffCredit/StaffCredit';
+// import StaffCredit from './components/StaffCredit/StaffCredit';
 
 import AppContainer from './services/AppContainer';
 import WebsocketContainer from './services/WebsocketContainer';
@@ -40,7 +40,7 @@ const componentMappings = {
   'search-sidebar': <HeaderSearchBox crowi={appContainer} />,
   'personal-dropdown': <PersonalDropdown />,
 
-  'staff-credit': <StaffCredit />,
+//   'staff-credit': <StaffCredit />,
 };
 
 export { appContainer, componentMappings };
