@@ -856,6 +856,7 @@ class PassportService {
         }
         if (!user.imageUrlCached) {
           await user.updateImageUrlCached();
+          await user.save();
         }
         done(null, user);
       }
