@@ -1,4 +1,3 @@
-@import 'layout_variable';
 @import 'layout';
 
 .growi {
@@ -10,7 +9,7 @@
     // adjusting position with negative margin
     height: $grw-nav-main-tab-height;
     line-height: 1.25;
-    border-bottom: 1px solid $grw-line-gray;
+    border-bottom: 1px solid transparent;
 
     .liker-user-count,
     .seen-user-count {

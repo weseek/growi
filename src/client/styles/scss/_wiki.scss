@@ -1,5 +1,3 @@
-@import 'layout_variable';
-
 div.body {
   padding: 10px;
 }
@@ -36,7 +34,7 @@ div.body {
     margin-top: 2em;
     font-size: 1.8em;
     line-height: 1.1em;
-    border-bottom: solid 1px $grw-line-light-gray;
+    border-bottom: solid 1px transparent;
   }
   h2 {
     padding-bottom: 0.5em;
