@@ -103,7 +103,7 @@ class GlobalNotificationList extends React.Component {
                   </li>
                 )}
                   {notification.triggerEvents.includes('pageMove') && (
-                  <li className="list-inline-item badge badge-pill badge-warning" data-toggle="tooltip" data-placement="top" title="Page Move">
+                  <li className="list-inline-item badge badge-pill badge-pink" data-toggle="tooltip" data-placement="top" title="Page Move">
                     <i className="icon-action-redo"></i> MOVE
                   </li>
                 )}
@@ -118,7 +118,7 @@ class GlobalNotificationList extends React.Component {
                   </li>
                 )}
                   {notification.triggerEvents.includes('comment') && (
-                  <li className="list-inline-item badge badge-pill badge-light" data-toggle="tooltip" data-placement="top" title="New Comment">
+                  <li className="list-inline-item badge badge-pill badge-secondary" data-toggle="tooltip" data-placement="top" title="New Comment">
                     <i className="icon-fw icon-bubble"></i> POST
                   </li>
                 )}
