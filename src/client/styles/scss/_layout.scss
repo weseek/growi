@@ -47,7 +47,7 @@
   text-align: center;
   border: solid 1px #ccc;
   border-right: none;
-  border-radius: 5px 0 0 5px;
+  // border-radius: 5px 0 0 5px;
   transition: 0.3s ease;
 
   &:hover {
@@ -114,7 +114,7 @@
       margin-bottom: 20px;
       font-size: 0.9em;
       border: solid 1px #aaa;
-      border-radius: 5px;
+      // border-radius: 5px;
 
       .revision-toc-head {
         display: inline-block;

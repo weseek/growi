@@ -26,33 +26,25 @@ $line-height-base: 1.42857;
 
 //== Components
 //
-//## Define common padding and border radius sizes and more. Values based on 14px text and 1.428 line-height (~20px to start).
-$border-radius-base: 0;
-$border-radius-large: 0;
-$border-radius-small: 0;
-
-
-//== Buttons
-//
-//## For each of Bootstrap's buttons, define text, background and border color.
-
-$btn-border-radius: 0;
-$btn-border-radius-lg: 0;
-$btn-border-radius-sm: 0;
-
+$border-radius:               .15rem;
+$border-radius-sm:            .1rem;
+$border-radius-lg:            .25rem;
+$border-radius-xl:            .35rem;
 
 
 //== Forms
 //
-$input-border-radius: 0;
-$input-border-radius-lg: 0;
-$input-border-radius-sm: 0;
+// TODO: remove or set value for GW-2531
+// $input-border-radius: 0;
+// $input-border-radius-lg: 0;
+// $input-border-radius-sm: 0;
 
 //== Navs
 
 $nav-link-padding-y: 0.75rem;
 $nav-link-padding-x: 1rem;
-$nav-tabs-border-radius: 0;
+// TODO: remove or set value for GW-2531
+// $nav-tabs-border-radius: 0;
 
 //== Navbar
 $navbar-padding-y: 0;
@@ -60,25 +52,30 @@ $navbar-brand-padding-y: 0;
 $navbar-nav-link-padding-x: 1rem;
 
 //== Dropdowns
-$dropdown-border-radius: 0;
+// TODO: remove or set value for GW-2531
+// $dropdown-border-radius: 0;
 
 //== card
-$card-border-radius: 0;
+// TODO: remove or set value for GW-2531
+// $card-border-radius: 0;
 $card-spacer-y: 7px;
 $card-spacer-x: 15px;
 
 //== Modals
 $modal-content-border-width: 0;
-$modal-content-border-radius: 0;
+// TODO: remove or set value for GW-2531
+// $modal-content-border-radius: 0;
 $modal-header-padding-y: 0.75rem;
 $modal-header-padding-x: 1rem;
 
 //== Alerts
-$alert-border-radius: 0;
+// TODO: remove or set value for GW-2531
+// $alert-border-radius: 0;
 
 //== Progress bar
 $progress-height: 4px;
-$progress-border-radius: 0;
+// TODO: remove or set value for GW-2531
+// $progress-border-radius: 0;
 $progress-bg: #f0f0f0;
 $progress-box-shadow: none;
 
@@ -86,6 +83,7 @@ $progress-box-shadow: none;
 $pre-color: dummyinvalildcolor; // disable pre color specification with invalid value
 
 //== Custom Checkbox
-$custom-checkbox-indicator-border-radius: 0px;
+// TODO: remove or set value for GW-2531
+// $custom-checkbox-indicator-border-radius: 0px;
 $custom-control-indicator-focus-box-shadow: none;
 $custom-control-indicator-size: 1.2rem;
