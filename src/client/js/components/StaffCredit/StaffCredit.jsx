@@ -1,5 +1,4 @@
 import React from 'react';
-import { GlobalHotKeys } from 'react-hotkeys';
 
 import loggerFactory from '@alias/logger';
 
@@ -21,36 +20,9 @@ export default class StaffCredit extends React.Component {
     this.logger = loggerFactory('growi:StaffCredit');
 
     this.state = {
-      isShown: false,
-      userCommand: [],
+      isShown: true,
     };
-    this.konamiCommand = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
     this.deleteCredit = this.deleteCredit.bind(this);
-  }
-
-  check(event) {
-    this.logger.debug(`'${event.key}' pressed`);
-    console.log(`'${event.key}' pressed`);
-
-    // compare keydown and next konamiCommand
-    if (this.konamiCommand[this.state.userCommand.length] === event.key) {
-      const nextValue = this.state.userCommand.concat(event.key);
-      if (nextValue.length === this.konamiCommand.length) {
-        this.setState({
-          isShown: true,
-          userCommand: [],
-        });
-      }
-      else {
-        // add UserCommand
-        this.setState({ userCommand: nextValue });
-
-        this.logger.debug('userCommand', this.state.userCommand);
-      }
-    }
-    else {
-      this.setState({ userCommand: [] });
-    }
   }
 
   deleteCredit() {
@@ -110,12 +82,10 @@ export default class StaffCredit extends React.Component {
   }
 
   render() {
-    const keyMap = { check: ['up', 'down', 'right', 'left', 'b', 'a'] };
-    const handlers = { check: (event) => { return this.check(event) } };
     return (
-      <GlobalHotKeys keyMap={keyMap} handlers={handlers}>
-        {this.renderContributors()}
-      </GlobalHotKeys>
+      <React.Fragment>
+        { this.renderContributors() }
+      </React.Fragment>
     );
   }
 
