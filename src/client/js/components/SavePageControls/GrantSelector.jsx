@@ -30,17 +30,17 @@ class GrantSelector extends React.Component {
 
     this.availableGrants = [
       {
-        grant: 1, iconClass: 'icon-people', styleClass: '', label: 'Public',
+        grant: 1, iconClass: 'icon-people', btnStyleClass: 'outline-info', label: 'Public',
       },
       {
-        grant: 2, iconClass: 'icon-link', styleClass: 'text-info', label: 'Anyone with the link',
+        grant: 2, iconClass: 'icon-link', btnStyleClass: 'outline-teal', label: 'Anyone with the link',
       },
       // { grant: 3, iconClass: '', label: 'Specified users only' },
       {
-        grant: 4, iconClass: 'icon-lock', styleClass: 'text-danger', label: 'Only me',
+        grant: 4, iconClass: 'icon-lock', btnStyleClass: 'outline-danger', label: 'Only me',
       },
       {
-        grant: 5, iconClass: 'icon-options', styleClass: '', label: 'Only inside the group', reselectLabel: 'Reselect the group',
+        grant: 5, iconClass: 'icon-options', btnStyleClass: 'outline-purple', label: 'Only inside the group', reselectLabel: 'Reselect the group',
       },
     ];
 
@@ -136,6 +136,7 @@ class GrantSelector extends React.Component {
     const { t } = this.props;
     const { grant: currentGrant, grantGroup } = this.state;
 
+    let dropdownToggleBtnColor = null;
     let dropdownToggleLabelElm = null;
 
     const dropdownMenuElems = this.availableGrants.map((opt) => {
@@ -143,10 +144,15 @@ class GrantSelector extends React.Component {
         ? opt.reselectLabel // when grantGroup is selected
         : opt.label;
 
-      const labelElm = <span><i className={`icon icon-fw ${opt.iconClass} ${opt.styleClass}`}></i> <span className={opt.styleClass}>{t(label)}</span></span>;
+      const labelElm = (
+        <span>
+          <i className={`icon icon-fw ${opt.iconClass}`}></i> {t(label)}
+        </span>
+      );
 
-      // set dropdownToggleLabelElm
+      // set dropdownToggleBtnColor, dropdownToggleLabelElm
       if (opt.grant === 1 || opt.grant === currentGrant) {
+        dropdownToggleBtnColor = opt.btnStyleClass;
         dropdownToggleLabelElm = labelElm;
       }
 
@@ -155,7 +161,7 @@ class GrantSelector extends React.Component {
 
     // add specified group option
     if (grantGroup != null) {
-      const labelElm = <span><i className="icon icon-fw icon-organization text-success"></i> <span className="text-success">{this.getGroupName()}</span></span>;
+      const labelElm = <span><i className="icon icon-fw icon-organization"></i> {this.getGroupName()}</span>;
 
       // set dropdownToggleLabelElm
       dropdownToggleLabelElm = labelElm;
@@ -166,7 +172,7 @@ class GrantSelector extends React.Component {
     return (
       <div className="form-group grw-grant-selector mb-0">
         <UncontrolledDropdown direction="up" size="sm">
-          <DropdownToggle color="light" caret className="d-flex justify-content-between align-items-center" disabled={this.props.disabled}>
+          <DropdownToggle color={dropdownToggleBtnColor} caret className="d-flex justify-content-between align-items-center" disabled={this.props.disabled}>
             {dropdownToggleLabelElm}
           </DropdownToggle>
           <DropdownMenu>
@@ -217,7 +223,7 @@ class GrantSelector extends React.Component {
         isOpen={this.state.isSelectGroupModalShown}
         toggle={this.hideSelectGroupModal}
       >
-        <ModalHeader tag="h4" toggle={this.hideSelectGroupModal} className="bg-info text-light">
+        <ModalHeader tag="h4" toggle={this.hideSelectGroupModal} className="bg-purple text-light">
           Select a Group
         </ModalHeader>
         <ModalBody>
