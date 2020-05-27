@@ -12,7 +12,7 @@ html[light],
 html[dark] {
   // Background colors
   $bgcolor-global: $themecolor;
-  $bgcolor-inline-code: #1f1f22;
+  $bgcolor-inline-code: #1f1f22; //optional
   $bgcolor-card: darken($themecolor, 5%);
 
   // Font colors
@@ -24,7 +24,7 @@ html[dark] {
   $color-link-wiki: darken($themecolor, 5%);
   $color-link-wiki-hover: darken($color-link-wiki, 5%);
   $color-link-nabvar: $color-reversal;
-  $color-inline-code: #c7254e;
+  $color-inline-code: #c7254e; // optional
   $color-search: #050a0b;
 
   // List Group colors
@@ -53,7 +53,7 @@ html[dark] {
 
   // Border colors
   $border-color-theme: #407483;
-  $bordercolor-inline-code: #4d4d4d;
+  $bordercolor-inline-code: #4d4d4d; // optional
 
   // Dropdown colors
   $bgcolor-dropdown-link-active: $primary;

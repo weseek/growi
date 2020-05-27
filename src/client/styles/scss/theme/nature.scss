@@ -42,7 +42,7 @@ html[dark] {
 
   // Background colors
   $bgcolor-global: #fdfdfd;
-  $bgcolor-inline-code: #f0f0f0;
+  $bgcolor-inline-code: #f0f0f0; //optional
   $bgcolor-card: #f1ffe4;
   $bgcolor-subnabvar: #fafafa;
 
@@ -54,7 +54,7 @@ html[dark] {
   $color-link-wiki: lighten($primary, 20%);
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
   $color-link-nabvar: #a7a7a7;
-  $color-inline-code: #c7254e;
+  $color-inline-code: #c7254e; // optional
   $color-search: white;
 
   // Navbar
@@ -80,7 +80,7 @@ html[dark] {
 
   // Border colors
   $border-color-theme: #ccc;
-  $bordercolor-inline-code: #ccc8c8;
+  $bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
   $bgcolor-dropdown-link-active: $growi-blue;

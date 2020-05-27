@@ -19,7 +19,7 @@ html[light] {
 
   // Background colors
   $bgcolor-global: white;
-  $bgcolor-inline-code: #f0f0f0;
+  $bgcolor-inline-code: #f0f0f0; //optional
   $bgcolor-card: #f5f5f5;
 
   // Font colors
@@ -31,7 +31,7 @@ html[light] {
   $color-link-wiki: $color-link;
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
   $color-link-nabvar: #a7a7a7;
-  $color-inline-code: #c7254e;
+  $color-inline-code: #c7254e; // optional
 
   // List Group colors
   // $color-list: $color-global; // optional
@@ -72,7 +72,7 @@ html[light] {
 
   // Border colors
   $border-color-theme: #ccc; // former: `$navbar-border: #ccc;@`
-  $bordercolor-inline-code: #ccc8c8;
+  $bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
   $bgcolor-dropdown-link-active: $growi-blue;
@@ -99,7 +99,7 @@ html[dark] {
 
   // Background colors
   $bgcolor-global: #131418;
-  $bgcolor-inline-code: #1f1f22;
+  $bgcolor-inline-code: #1f1f22; //optional
   $bgcolor-card: darken($bgcolor-global, 5%);
 
   // Font colors
@@ -111,7 +111,7 @@ html[dark] {
   $color-link-wiki: $color-link;
   $color-link-wiki-hover: lighten($color-link-wiki, 10%);
   $color-link-nabvar: #a7a7a7;
-  $color-inline-code: #c7254e;
+  $color-inline-code: #c7254e; // optional
 
   // List Group colors
   // $color-list: $color-global; // optional
@@ -152,7 +152,7 @@ html[dark] {
 
   // Border colors
   $border-color-theme: black; // former: `$navbar-border: #ccc;`
-  $bordercolor-inline-code: #4d4d4d;
+  $bordercolor-inline-code: #4d4d4d; // optional
 
   // Dropdown colors
   $bgcolor-dropdown-link-active: $primary;
