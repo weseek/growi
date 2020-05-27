@@ -51,7 +51,7 @@ html[dark] {
   $color-reversal: #eee;
   $color-link: $subthemecolor;
   $color-link-hover: lighten($color-link, 10%);
-  $color-link-nabvar: #a7a7a7;
+  $color-link-nabvar: $color-reversal;
 
   // List Group colors
   $color-list: $color-global;
