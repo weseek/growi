@@ -62,17 +62,26 @@ export default class CommentContainer extends Container {
   /**
    * Load data of comments and store them in state
    */
-  retrieveComments() {
-    // [TODO][GW - 1942] add method for updating imageUrlCached
+  async retrieveComments() {
+    // [TODO][GW - 2418] add method for updating imageUrlCached
     const { pageId } = this.getPageContainer().state;
 
     // get data (desc order array)
-    return this.appContainer.apiGet('/comments.get', { page_id: pageId })
-      .then((res) => {
-        if (res.ok) {
-          this.setState({ comments: res.comments });
-        }
+    const res = await this.appContainer.apiGet('/comments.get', { page_id: pageId });
+    if (res.ok) {
+      const comments = res.comments;
+      this.setState({ comments });
+
+      const noImageCacheUserIds = comments.map((comment) => {
+        if (comment.creator.imageUrlCached) return !comment.creator._id;
+        return null;
       });
+      if (noImageCacheUserIds.any() === false) {
+        return;
+      }
+
+      await this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
+    }
   }
 
   /**
