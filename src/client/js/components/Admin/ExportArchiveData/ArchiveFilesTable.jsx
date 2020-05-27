@@ -14,7 +14,7 @@ class ArchiveFilesTable extends React.Component {
     const { t } = this.props;
 
     return (
-      <div className="table-responsive text-nowrap">
+      <div className="table-responsive">
         <table className="table table-bordered">
           <thead>
             <tr>

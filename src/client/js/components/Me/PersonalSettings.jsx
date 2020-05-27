@@ -15,7 +15,6 @@ class PersonalSettings extends React.Component {
 
     return (
       <Fragment>
-        {/* TODO GW-226 adapt BS4 */}
         <div className="m-t-10">
           <div className="personal-settings">
             <ul className="nav nav-tabs" role="tablist">
@@ -24,7 +23,7 @@ class PersonalSettings extends React.Component {
               </li>
               <li className="nav-item">
                 <a className="nav-link" href="#external-accounts" data-toggle="tab" role="tab">
-                  <i className="icon-share-alt"></i>
+                  <i className="icon-share-alt mr-1"></i>
                   { t('admin:user_management.external_accounts') }
                 </a>
               </li>

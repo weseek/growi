@@ -9,11 +9,11 @@ html[light],
 html[dark] {
   // Background colors
   $bgcolor-global: $themecolor;
-  $bgcolor-inline-code: darken($themecolor, 5%);
+  $bgcolor-inline-code: #1f1f22; //optional
   $bgcolor-card: darken($themecolor, 5%);
 
   // Font colors
-  $color-global: #979797;
+  $color-global: #95ABBA;
   $color-reversal: #00fff5;
   $color-header: #00fff5;
   $color-link: #00fff5;
@@ -21,8 +21,8 @@ html[dark] {
   $color-link-wiki: darken($themecolor, 5%);
   $color-link-wiki-hover: darken($color-link-wiki, 5%);
   $color-link-nabvar: $color-reversal;
-  $color-inline-code: #c7254e;
-  $color-search: #00c2c4;
+  $color-inline-code: #c7254e; // optional
+  $color-search: #050a0b;
 
   // List Group colors
   $color-list: $color-global;
@@ -50,7 +50,8 @@ html[dark] {
   $color-editor-icons: $color-global;
 
   // Border colors
-  $border-color-theme: #578cad;
+  $border-color-theme: #407483;
+  $bordercolor-inline-code: #4d4d4d; // optional
 
   // Dropdown colors
   $bgcolor-dropdown-link-active: $primary;
@@ -106,24 +107,19 @@ html[dark] {
         color: $color-search;
       }
     }
+
     input {
       background-color: #eceded;
     }
+
     i {
       color: #949494;
     }
   }
 
   .wiki {
-    p {
-      color: #95abba;
-    }
 
-    pre {
-    }
-    a {
-      color: #95abba;
-    }
+    pre {}
 
     li {
       a {
@@ -132,6 +128,7 @@ html[dark] {
       }
     }
   }
+
   .grw-page-path-nav i {
     color: #00fff5;
   }

@@ -1,3 +1,6 @@
+// determine optional variables
+$bgcolor-subnabvar: lighten($bgcolor-global, 3%) !default;
+
 /*
   * Form
   */
@@ -131,24 +134,8 @@ ul.pagination {
 /*
  * GROWI subnavigation
  */
-.admin-page,
-.user-settings-page,
-.tags-page {
-  .grw-header {
-    background-color: rgba(darken($bgcolor-global, 90%), 0.9);
-  }
-}
-
 .grw-subnavbar {
-  background-color: rgba(darken($bgcolor-global, 90%), 1);
-
-  &.grw-subnavbar-sticky {
-    background-color: rgba(darken($bgcolor-global, 90%), 0.9);
-    box-shadow: 0 3px 2px -2px darken($bgcolor-global, 5%);
-  }
-}
-
-.grw-subnavbar-sticky {
+  background-color: $bgcolor-subnabvar;
 }
 
 /*

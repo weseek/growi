@@ -150,10 +150,10 @@ class InstallerForm extends React.Component {
             <input type="hidden" name="_csrf" value={this.props.csrf} />
 
             <div className="input-group mt-4 mb-3 d-flex justify-content-center">
-              <button type="submit" className="btn-fill btn btn-register px-0 py-2" id="register">
+              <button type="submit" className="btn-fill btn btn-register" id="register">
                 <div className="eff"></div>
-                <span className="btn-label p-3"><i className="icon-user-follow" /></span>
-                <span className="btn-label-text p-3">{ this.props.t('Create') }</span>
+                <span className="btn-label"><i className="icon-user-follow" /></span>
+                <span className="btn-label-text">{ this.props.t('Create') }</span>
               </button>
             </div>
 
