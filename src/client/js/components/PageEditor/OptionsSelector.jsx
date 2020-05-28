@@ -162,7 +162,7 @@ class OptionsSelector extends React.Component {
           toggle={this.onToggleConfigurationDropdown}
         >
 
-          <DropdownToggle color="light" caret>
+          <DropdownToggle color="outline-secondary" caret>
             <i className="icon-settings"></i>
           </DropdownToggle>
 

@@ -40,20 +40,6 @@ textarea.form-control {
 }
 
 /*
- * Panel
- */
-.panel {
-  &,
-  &.panel-white,
-  &.panel-default {
-    .panel-heading,
-    .panel-body {
-      color: theme-color('light');
-    }
-  }
-}
-
-/*
  * Table
  */
 .table {
@@ -139,18 +125,6 @@ ul.pagination {
 }
 
 /*
- * GROWI search page
- */
-.search-page {
-  .input-group-btn {
-    .btn-light {
-      // FIXME:
-      // border: 1px solid darken($border, 30%); // fit to input.form-control
-    }
-  }
-}
-
-/*
  * GROWI on-edit
  */
 .page-editor-footer {
@@ -161,12 +135,10 @@ ul.pagination {
 
 .wiki {
   h1 {
-    // FIXME:
-    // border-color: lighten($border, 10%);
+    border-color: lighten($border-color-theme, 10%);
   }
   h2 {
-    // FIXME:
-    // border-color: $border;
+    border-color: $border-color-theme;
   }
 }
 
