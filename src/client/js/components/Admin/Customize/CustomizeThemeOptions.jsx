@@ -23,7 +23,7 @@ class CustomizeThemeOptions extends React.Component {
     }];
 
     const uniqueTheme = [{
-      name: 'nature',     bg: '#f9fff3', topbar: '#2a2929', sidebar: '#118050', theme: '#460039',
+      name: 'nature',     bg: '#f9fff3', topbar: '#234136', sidebar: '#118050', theme: '#460039',
     }, {
       name: 'wood',       bg: '#fffefb', topbar: '#2a2929', sidebar: '#aaa45f', theme: '#dddebf',
     }, {
