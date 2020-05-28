@@ -160,10 +160,11 @@ class UserManagement extends React.Component {
         <div className="border-top border-bottom">
 
           <div className="row d-flex justify-content-start align-items-center my-2">
-            <div className="col-md-4 d-flex align-items-center my-2">
+            <div className="col-md-3 d-flex align-items-center my-2">
               <i className="icon-magnifier mr-1"></i>
               <span className="search-typeahead">
                 <input
+                  className="w-100"
                   type="text"
                   ref={(searchUserElement) => { this.searchUserElement = searchUserElement }}
                   onChange={this.handleChangeSearchText}
@@ -172,7 +173,7 @@ class UserManagement extends React.Component {
               </span>
             </div>
 
-            <div className="col-md-6 my-2">
+            <div className="offset-md-1 col-md-6 my-2">
               <div className="form-inline">
                 {this.renderCheckbox('all', 'All', 'secondary')}
                 {this.renderCheckbox('registered', 'Approval Pending', 'info')}
