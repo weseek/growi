@@ -123,6 +123,9 @@ html[dark] {
 
   #search-typeahead-asynctypeahead {
     background-color: $bgcolor-global;
+    .table {
+      background-color: transparent;
+    }
   }
 }
 
