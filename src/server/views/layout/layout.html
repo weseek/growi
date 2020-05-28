@@ -132,11 +132,13 @@
 
 </div><!-- /#wrapper -->
 
-<div class="grw-fixed-controls-container d-md-none d-edit-none animated fadeInUp faster">
-  <div class="grw-fixed-controls-button-container rounded-circle">
-    <div id='create-page-button-icon'></div>
+{% if user %}
+  <div class="grw-fixed-controls-container d-md-none d-edit-none animated fadeInUp faster">
+    <div class="grw-fixed-controls-button-container rounded-circle">
+      <div id='create-page-button-icon'></div>
+    </div>
   </div>
-</div>
+{% endif %}
 
 <!-- /#staff-credit -->
 <div id="staff-credit"></div>
