@@ -27,7 +27,7 @@ class CustomizeThemeOptions extends React.Component {
     }, {
       name: 'wood',       bg: '#fffefb', topbar: '#2a2929', sidebar: '#aaa45f', theme: '#dddebf',
     }, {
-      name: 'island',     bg: '#8ecac0', topbar: '#2a2929', sidebar: '#0c2a44', theme: '#cef2ef',
+      name: 'island',     bg: 'rgba(183, 226, 219, 1)', topbar: '#2a2929', sidebar: '#0c2a44', theme: '#cef2ef',
     }, {
       name: 'christmas',  bg: '#fffefb', topbar: '#2a2929', sidebar: '#b3000c', theme: '#017e20',
     }, {
