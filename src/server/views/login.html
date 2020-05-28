@@ -91,7 +91,7 @@
             </div>
             {% endif %}
           </div>
-          <div id="register-form-errors">
+          <div id="register-form-errors" class="px-3">
             {% set message = req.flash('registerWarningMessage') %}
             {% if message.length %}
             <div class="alert alert-danger">
