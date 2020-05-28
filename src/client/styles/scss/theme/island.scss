@@ -2,10 +2,7 @@
 @import '../override-bootstrap-variables';
 
 $color-themelight: rgba(183, 226, 219, 1);
-$color-navbar: #0d3955;
 $color-global: #3c6d72;
-$color-link-global: $color-global;
-$dark: darken($color-global, 5%);
 
 html[light],
 html[dark] {
@@ -39,7 +36,7 @@ html[dark] {
   $border-image-navbar: linear-gradient(to right, #5ce4ef 0%, #5953eb 100%);
 
   // Logo colors
-  $bgcolor-logo: $color-navbar;
+  $bgcolor-logo: #0d3955;
   $fillcolor-logo-mark: lighten(desaturate($bgcolor-inline-code, 10%), 15%);
 
   // Sidebar
@@ -102,7 +99,7 @@ html[dark] {
     .page-list-ul {
       > li {
         > a strong {
-          color: $color-link-global;
+          color: $color-global;
         }
       }
     }
