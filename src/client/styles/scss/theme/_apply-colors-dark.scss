@@ -124,6 +124,14 @@ ul.pagination {
   background-color: $bgcolor-subnabvar;
 }
 
+// Search drop down
+#search-typeahead-asynctypeahead {
+  background-color: $bgcolor-global;
+  .table {
+    background-color: $bgcolor-global;
+  }
+}
+
 /*
  * GROWI on-edit
  */
