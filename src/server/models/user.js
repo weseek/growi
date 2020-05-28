@@ -258,7 +258,7 @@ module.exports = function(crowi) {
     if (this.image != null) {
       return this.image;
     }
-    if (this.imageAttachment != null && this.imageAttachment.id != null) {
+    if (this.imageAttachment != null && this.imageAttachment._id != null) {
       const Attachment = crowi.model('Attachment');
       const imageAttachment = await Attachment.findById(this.imageAttachment);
       return imageAttachment.filePathProxied;
