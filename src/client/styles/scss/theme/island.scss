@@ -94,17 +94,6 @@ html[dark] {
     border: none;
   }
 
-  /* GROWI page list */
-  .page-list {
-    .page-list-ul {
-      > li {
-        > a strong {
-          color: $color-global;
-        }
-      }
-    }
-  }
-
   .rbt-menu {
     background: lighten($color-themelight, 5%);
   }
