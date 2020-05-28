@@ -2,7 +2,8 @@ pre.hljs {
   position: relative;
 
   // override Highlight Js Style Border
-  border-radius: 3px;
+  border: 1px solid $gray-500;
+  border-radius: $border-radius;
   &.hljs-no-border {
     border: none;
   }

@@ -141,14 +141,14 @@ class MyDraftList extends React.Component {
             <div className="d-flex justify-content-between">
               <h4>Total: {totalCount} drafts</h4>
               <div className="align-self-center">
-                <button type="button" className="btn btn-sm btn-default" onClick={this.clearAllDrafts}>
-                  <i className="icon-fw icon-fire text-danger"></i>
+                <button type="button" className="btn btn-sm btn-outline-danger" onClick={this.clearAllDrafts}>
+                  <i className="icon-fw icon-fire"></i>
                   {t('delete_all')}
                 </button>
               </div>
             </div>
 
-            <div className="tab-pane m-t-30 accordion" id="draft-list">
+            <div className="tab-pane mt-5 accordion" id="draft-list">
               {draftList}
             </div>
             <PaginationWrapper

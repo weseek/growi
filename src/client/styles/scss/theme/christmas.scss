@@ -1,8 +1,192 @@
-// import colors
-@import '../../agile-admin/inverse/colors/christmas';
+@import '../variables';
+@import '../override-bootstrap-variables';
 
-// apply agile-admin theme
-@import '../../agile-admin/inverse/style';
+// == Define Bootstrap theme colors
+//
 
-// override
-@import 'override-agileadmin';
+// colors for overriding bootstrap $theme-colors
+// $secondary: #;
+// $info: #;
+// $success: #;
+// $warning: #;
+// $danger: #;
+// $light: #;
+// $dark: #;
+
+$themecolor: #b3000c;
+$themelight: white;
+$subthemecolor: #30882c;
+$bgcolor-global: $themelight;
+$linktext: $subthemecolor;
+$linktext-hover: lighten($subthemecolor, 15%);
+$sidebar-text: #ffffff;
+$fillcolor-logo-mark: lighten(desaturate($themecolor, 50%), 50%);
+$color-link-wiki: lighten($subthemecolor, 5%);
+$color-link-wiki-hover: lighten($color-link-wiki, 15%);
+
+.growi:not(.login-page) {
+  // add background-image
+  #page-wrapper,
+  .page-editor-preview-container {
+    background-image: url('/images/themes/christmas/christmas.jpg');
+    background-attachment: fixed;
+    background-position: center center;
+    background-size: cover;
+  }
+}
+
+//== Light Mode
+//
+html[light],
+html[dark] {
+  $primary: #d3c665;
+  // Background colors
+  $bgcolor-card: #f5f5f5;
+  $bgcolor-inline-code: #f0f0f0; //optional
+
+  // Font colors
+  $color-global: #112744;
+  $color-reversal: #eee;
+  $color-link: $subthemecolor;
+  $color-link-hover: lighten($color-link, 10%);
+  $color-link-nabvar: $color-reversal;
+  $color-inline-code: #c7254e; // optional
+
+  // Table colors
+  $border-color-table: #aaa; // optional
+
+  // List Group colors
+  $color-list: $color-global;
+  $bgcolor-list: $themelight;
+  $color-list-active: $color-reversal;
+  $bgcolor-list-active: $themecolor;
+  $color-list-hover: $color-reversal;
+
+  // Navbar
+  $bgcolor-navbar: $themecolor;
+  $bgcolor-search-top-dropdown: $primary;
+  $border-color-navbar-gradient-left: #545fff;
+  $border-color-navbar-gradient-right: #00a6e5;
+  $border-image-navbar: linear-gradient(to right, #6458bc 33%, #5cb4ff 66%, #85d800 100%);
+
+  // Logo colors
+  $bgcolor-logo: $themecolor;
+
+  // Sidebar
+  $bgcolor-sidebar: $subthemecolor;
+  $bgcolor-sidebar-nav-item-active: rgba(#000000, 0.37); // optional
+  $text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
+  // Sidebar resize button
+  $color-resize-button: $color-reversal;
+  $bgcolor-resize-button: $primary;
+  $color-resize-button-hover: $color-reversal;
+  $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
+  $color-sidebar-context: $linktext;
+  $bgcolor-sidebar-context: #f4f6fc;
+  // Sidebar list group
+  $bgcolor-sidebar-list-group: #fafbff; // optional
+
+  // Icon colors
+  $color-editor-icons: $color-global;
+
+  // Border colors
+  $border-color-theme: #ccc; // former: `$navbar-border: #ccc;`
+  $bordercolor-inline-code: #ccc8c8; // optional
+
+  // Dropdown colors
+  $bgcolor-dropdown-link-active: $primary;
+  $color-dropdown-link-active: $color-global;
+  $color-dropdown-link-hover: $color-reversal;
+
+  // admin theme box
+  $color-theme-color-box: lighten($themecolor, 20%);
+
+  @import 'apply-colors';
+  @import 'apply-colors-light';
+
+  // change color of highlighted header in wiki (default: orange)
+  .wiki {
+    .code-line.revision-head.highlighted {
+      color: $themelight;
+      background-color: lighten($themecolor, 20%);
+
+      .icon-note,
+      .icon-link {
+        color: $themelight;
+      }
+    }
+  }
+
+  .sidebar {
+    background: $themecolor;
+  }
+
+  .rbt-menu {
+    background: $themelight;
+  }
+
+  #wrapper > #page-wrapper,
+  .page-editor-preview-container {
+    background-image: url('/images/themes/christmas/christmas.jpg');
+    background-attachment: fixed;
+    background-size: cover;
+  }
+
+  // login page
+  .nologin {
+    .input-group {
+      .input-group-addon {
+        background-color: rgba(lighten(black, 10%), 0.6);
+      }
+      .form-control {
+        background-color: rgba(lighten(black, 10%), 0.6);
+      }
+    }
+
+    &.login-page {
+      .login-header,
+      .login-dialog {
+        background-color: rgba(#ccc, 0.5);
+      }
+      .link-switch {
+        color: #bd3425;
+      }
+    }
+  }
+
+  /*
+  * Modal
+  */
+  .modal-dialog .modal-header.bg-primary {
+    background-image: url('/images/themes/christmas/christmas-navbar.jpg');
+    border-bottom: 2px solid $subthemecolor;
+  }
+
+  /*
+  * Panel
+  */
+  .panel {
+    &.panel-white,
+    &.panel-default {
+      border-color: $subthemecolor;
+      .panel-heading {
+        color: $dark;
+        background-color: $subthemecolor;
+        border-bottom: 1px solid $subthemecolor;
+      }
+    }
+  }
+
+  .panel.panel-primary {
+    border-color: #bd3425;
+    .panel-heading {
+      color: white;
+      background-color: $themecolor;
+      background-image: url('/images/themes/christmas/christmas-navbar.jpg');
+    }
+  }
+
+  .grw-navbar {
+    background-image: url('/images/themes/christmas/christmas-navbar.jpg');
+  }
+}

@@ -1,19 +1,15 @@
 {% extends '../layout/admin.html' %}
 
-{% block html_title %}{{ customizeService.generateCustomTitle(t('Wiki Management Home Page')) }}{% endblock %}
+{% block html_title %}{{ customizeService.generateCustomTitleForFixedPageName(t('Wiki Management Home Page')) }}{% endblock %}
 
 {% block content_header %}
-<div class="header-wrap">
-  <header id="page-header">
-    <h1 id="admin-title" class="title"> {{ t('Wiki Management Home Page') }}</h1>
-  </header>
-</div>
+<h1 class="title"> {{ t('Wiki Management Home Page') }}</h1>
 {% endblock %}
 
 {% block content_main %}
 <div class="content-main row">
   {% parent %}
-  <div class="col-md-9" id="admin-home"></div>
+  <div class="col-lg-9" id="admin-home"></div>
 </div>
 {% endblock content_main %}
 

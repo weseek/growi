@@ -1,4 +1,5 @@
 import React from 'react';
+import { Card, CardBody } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -37,25 +38,25 @@ class MarkdownSetting extends React.Component {
     return (
       <React.Fragment>
         {/* Line Break Setting */}
-        <div className="row mb-5">
-          <h2 className="border-bottom">{t('admin:markdown_setting.lineBreak_header')}</h2>
-          <p className="well">{t('admin:markdown_setting.lineBreak_desc')}</p>
-          <LineBreakForm />
-        </div>
+        <h2 className="admin-setting-header">{t('admin:markdown_setting.lineBreak_header')}</h2>
+        <Card className="card well my-3">
+          <CardBody className="px-0 py-2">{ t('admin:markdown_setting.lineBreak_desc') }</CardBody>
+        </Card>
+        <LineBreakForm />
 
         {/* Presentation Setting */}
-        <div className="row mb-5">
-          <h2 className="border-bottom">{t('admin:markdown_setting.presentation_header')}</h2>
-          <p className="well">{t('admin:markdown_setting.presentation_desc')}</p>
-          <PresentationForm />
-        </div>
+        <h2 className="admin-setting-header">{ t('admin:markdown_setting.presentation_header') }</h2>
+        <Card className="card well my-3">
+          <CardBody className="px-0 py-2">{ t('admin:markdown_setting.presentation_desc') }</CardBody>
+        </Card>
+        <PresentationForm />
 
         {/* XSS Setting */}
-        <div className="row mb-5">
-          <h2 className="border-bottom">{t('admin:markdown_setting.xss_header')}</h2>
-          <p className="well">{t('admin:markdown_setting.xss_desc')}</p>
-          <XssForm />
-        </div>
+        <h2 className="admin-setting-header">{ t('admin:markdown_setting.xss_header') }</h2>
+        <Card className="card well my-3">
+          <CardBody className="px-0 py-2">{ t('admin:markdown_setting.xss_desc') }</CardBody>
+        </Card>
+        <XssForm />
       </React.Fragment>
     );
   }

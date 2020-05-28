@@ -70,7 +70,7 @@ class UserGroupCreateForm extends React.Component {
         <p>
           {this.props.isAclEnabled
             ? (
-              <button type="button" data-toggle="collapse" className="btn btn-default" href="#createGroupForm">
+              <button type="button" data-toggle="collapse" className="btn btn-outline-secondary" href="#createGroupForm">
                 {t('admin:user_group_management.create_group')}
               </button>
             )

@@ -7,14 +7,15 @@ class CustomizeFunctionOption extends React.PureComponent {
   render() {
     return (
       <React.Fragment>
-        <div className="checkbox checkbox-success">
+        <div className="custom-control custom-checkbox custom-checkbox-success">
           <input
+            className="custom-control-input"
             type="checkbox"
             id={this.props.optionId}
             checked={this.props.isChecked}
             onChange={this.props.onChecked}
           />
-          <label htmlFor={this.props.optionId}>
+          <label className="custom-control-label" htmlFor={this.props.optionId}>
             <strong>{this.props.label}</strong>
           </label>
         </div>

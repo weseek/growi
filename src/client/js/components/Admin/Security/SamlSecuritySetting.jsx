@@ -89,44 +89,42 @@ class SamlSecurityManagement extends React.Component {
           />
         )}
 
-        <div className="row mb-5">
-          <div className="col-xs-3 my-3 text-right">
-            <strong>{t('security_setting.SAML.name')}</strong>
-          </div>
-          <div className="col-xs-6 text-left">
-            <div className="checkbox checkbox-success">
+        <div className="row form-group mb-5">
+          <div className="col-6 offset-3">
+            <div className="custom-control custom-switch custom-checkbox-success">
               <input
                 id="isSamlEnabled"
+                className="custom-control-input"
                 type="checkbox"
                 checked={adminGeneralSecurityContainer.state.isSamlEnabled}
                 onChange={() => { adminGeneralSecurityContainer.switchIsSamlEnabled() }}
                 disabled={adminSamlSecurityContainer.state.useOnlyEnvVars}
               />
-              <label htmlFor="isSamlEnabled">
+              <label className="custom-control-label" htmlFor="isSamlEnabled">
                 {t('security_setting.SAML.enable_saml')}
               </label>
             </div>
             {(!adminGeneralSecurityContainer.state.setupStrategies.includes('ldap') && isSamlEnabled)
-              && <div className="label label-warning">{t('security_setting.setup_is_not_yet_complete')}</div>}
+              && <div className="badge badge-warning">{t('security_setting.setup_is_not_yet_complete')}</div>}
           </div>
         </div>
 
-        <div className="row mb-5">
-          <label className="col-xs-3 text-right">{t('security_setting.callback_URL')}</label>
-          <div className="col-xs-6">
+        <div className="row form-group mb-5">
+          <label className="text-left text-md-right col-md-3 col-form-label">{t('security_setting.callback_URL')}</label>
+          <div className="col-md-6">
             <input
               className="form-control"
               type="text"
               defaultValue={adminSamlSecurityContainer.state.callbackUrl}
               readOnly
             />
-            <p className="help-block small">{t('security_setting.desc_of_callback_URL', { AuthName: 'SAML Identity' })}</p>
+            <p className="form-text text-muted small">{t('security_setting.desc_of_callback_URL', { AuthName: 'SAML Identity' })}</p>
             {!adminGeneralSecurityContainer.state.appSiteUrl && (
               <div className="alert alert-danger">
                 <i
                   className="icon-exclamation"
                   // eslint-disable-next-line max-len
-                  dangerouslySetInnerHTML={{ __html: t('security_setting.alert_siteUrl_is_not_set', { link: `<a href="/admin/app">${t('App settings')}<i class="icon-login"></i></a>` }) }}
+                  dangerouslySetInnerHTML={{ __html: t('security_setting.alert_siteUrl_is_not_set', { link: `<a href="/admin/app">${t('App Settings')}<i class="icon-login"></i></a>` }) }}
                 />
               </div>
             )}
@@ -182,7 +180,7 @@ class SamlSecurityManagement extends React.Component {
                       value={this.state.envEntryPoint || ''}
                       readOnly
                     />
-                    <p className="help-block">
+                    <p className="form-text text-muted">
                       <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ENTRY_POINT' }) }} />
                     </p>
                   </td>
@@ -206,7 +204,7 @@ class SamlSecurityManagement extends React.Component {
                       value={this.state.envIssuer || ''}
                       readOnly
                     />
-                    <p className="help-block">
+                    <p className="form-text text-muted">
                       <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ISSUER' }) }} />
                     </p>
                   </td>
@@ -215,7 +213,7 @@ class SamlSecurityManagement extends React.Component {
                   <th>{t('security_setting.form_item_name.cert')}</th>
                   <td>
                     <textarea
-                      className="form-control input-sm"
+                      className="form-control form-control-sm"
                       type="text"
                       rows="5"
                       name="samlCert"
@@ -223,7 +221,7 @@ class SamlSecurityManagement extends React.Component {
                       defaultValue={adminSamlSecurityContainer.state.samlCert}
                       onChange={e => adminSamlSecurityContainer.changeSamlCert(e.target.value)}
                     />
-                    <p className="help-block">
+                    <p>
                       <small>
                         {t('security_setting.SAML.cert_detail')}
                       </small>
@@ -231,7 +229,7 @@ class SamlSecurityManagement extends React.Component {
                     <div>
                       <small>
                         e.g.
-                        <pre>{`-----BEGIN CERTIFICATE-----
+                        <pre className="well card">{`-----BEGIN CERTIFICATE-----
 MIICBzCCAXACCQD4US7+0A/b/zANBgkqhkiG9w0BAQsFADBIMQswCQYDVQQGEwJK
 UDEOMAwGA1UECAwFVG9reW8xFTATBgNVBAoMDFdFU0VFSywgSW5jLjESMBAGA1UE
 ...
@@ -245,13 +243,13 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                   </td>
                   <td>
                     <textarea
-                      className="form-control input-sm"
+                      className="form-control form-control-sm"
                       type="text"
                       rows="5"
                       readOnly
                       value={this.state.envCert || ''}
                     />
-                    <p className="help-block">
+                    <p className="form-text text-muted">
                       <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_CERT' }) }} />
                     </p>
                   </td>
@@ -283,7 +281,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       defaultValue={adminSamlSecurityContainer.state.samlAttrMapId}
                       onChange={e => adminSamlSecurityContainer.changeSamlAttrMapId(e.target.value)}
                     />
-                    <p className="help-block">
+                    <p className="form-text text-muted">
                       <small>
                         {t('security_setting.SAML.id_detail')}
                       </small>
@@ -296,7 +294,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       value={this.state.envAttrMapId || ''}
                       readOnly
                     />
-                    <p className="help-block">
+                    <p className="form-text text-muted">
                       <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_ID' }) }} />
                     </p>
                   </td>
@@ -311,7 +309,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       defaultValue={adminSamlSecurityContainer.state.samlAttrMapUsername}
                       onChange={e => adminSamlSecurityContainer.changeSamlAttrMapUserName(e.target.value)}
                     />
-                    <p className="help-block">
+                    <p className="form-text text-muted">
                       <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.username_detail') }} />
                     </p>
                   </td>
@@ -322,7 +320,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       value={this.state.envAttrMapUsername || ''}
                       readOnly
                     />
-                    <p className="help-block">
+                    <p className="form-text text-muted">
                       <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_USERNAME' }) }} />
                     </p>
                   </td>
@@ -337,7 +335,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       defaultValue={adminSamlSecurityContainer.state.samlAttrMapMail}
                       onChange={e => adminSamlSecurityContainer.changeSamlAttrMapMail(e.target.value)}
                     />
-                    <p className="help-block">
+                    <p className="form-text text-muted">
                       <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.mapping_detail', { target: 'Email' }) }} />
                     </p>
                   </td>
@@ -348,7 +346,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       value={this.state.envAttrMapMail || ''}
                       readOnly
                     />
-                    <p className="help-block">
+                    <p className="form-text text-muted">
                       <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_MAIL' }) }} />
                     </p>
                   </td>
@@ -363,7 +361,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       defaultValue={adminSamlSecurityContainer.state.samlAttrMapFirstName}
                       onChange={e => adminSamlSecurityContainer.changeSamlAttrMapFirstName(e.target.value)}
                     />
-                    <p className="help-block">
+                    <p className="form-text text-muted">
                       {/* eslint-disable-next-line max-len */}
                       <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.mapping_detail', { target: t('security_setting.form_item_name.attrMapFirstName') }) }} />
                     </p>
@@ -375,7 +373,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       value={this.state.envAttrMapFirstName || ''}
                       readOnly
                     />
-                    <p className="help-block">
+                    <p className="form-text text-muted">
                       <small>
                         <span dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_FIRST_NAME' }) }} />
                         <br />
@@ -394,7 +392,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       defaultValue={adminSamlSecurityContainer.state.samlAttrMapLastName}
                       onChange={e => adminSamlSecurityContainer.changeSamlAttrMapLastName(e.target.value)}
                     />
-                    <p className="help-block">
+                    <p className="form-text text-muted">
                       {/* eslint-disable-next-line max-len */}
                       <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.mapping_detail', { target: t('security_setting.form_item_name.attrMapLastName') }) }} />
                     </p>
@@ -406,7 +404,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       value={this.state.envAttrMapLastName || ''}
                       readOnly
                     />
-                    <p className="help-block">
+                    <p className="form-text text-muted">
                       <small>
                         <span dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_LAST_NAME' }) }} />
                         <br />
@@ -422,41 +420,45 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
               Attribute Mapping Options
             </h3>
 
-            <div className="row mb-5">
-              <div className="col-xs-offset-3 col-xs-6 text-left">
-                <div className="checkbox checkbox-success">
+            <div className="row form-group mb-5">
+              <div className="offset-md-3 col-md-6 text-left">
+                <div className="custom-control custom-checkbox custom-checkbox-success">
                   <input
                     id="bindByUserName-SAML"
+                    className="custom-control-input"
                     type="checkbox"
                     checked={adminSamlSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser || false}
                     onChange={() => { adminSamlSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
                   />
                   <label
+                    className="custom-control-label"
                     htmlFor="bindByUserName-SAML"
                     dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical') }}
                   />
                 </div>
-                <p className="help-block">
+                <p className="form-text text-muted">
                   <small dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical_warn') }} />
                 </p>
               </div>
             </div>
 
-            <div className="row mb-5">
-              <div className="col-xs-offset-3 col-xs-6 text-left">
-                <div className="checkbox checkbox-success">
+            <div className="row form-group mb-5">
+              <div className="offset-md-3 col-md-6 text-left">
+                <div className="custom-control custom-checkbox custom-checkbox-success">
                   <input
                     id="bindByEmail-SAML"
+                    className="custom-control-input"
                     type="checkbox"
                     checked={adminSamlSecurityContainer.state.isSameEmailTreatedAsIdenticalUser || false}
                     onChange={() => { adminSamlSecurityContainer.switchIsSameEmailTreatedAsIdenticalUser() }}
                   />
                   <label
+                    className="custom-control-label"
                     htmlFor="bindByEmail-SAML"
                     dangerouslySetInnerHTML={{ __html: t('security_setting.Treat email matching as identical') }}
                   />
                 </div>
-                <p className="help-block">
+                <p className="form-text text-muted">
                   <small dangerouslySetInnerHTML={{ __html: t('security_setting.Treat email matching as identical_warn') }} />
                 </p>
               </div>
@@ -466,7 +468,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
               Attribute-based Login Control
             </h3>
 
-            <p className="help-block">
+            <p className="form-text text-muted">
               <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_detail') }} />
             </p>
 
@@ -492,7 +494,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       onChange={(e) => { adminSamlSecurityContainer.changeSamlABLCRule(e.target.value) }}
                       readOnly={useOnlyEnvVars}
                     />
-                    <p className="help-block">
+                    <p className="form-text text-muted">
                       <small>
                         <span dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_detail') }} />
                         <span dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_example') }} />
@@ -506,7 +508,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       value={this.state.envABLCRule || ''}
                       readOnly
                     />
-                    <p className="help-block">
+                    <p className="form-text text-muted">
                       <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ABLC_RULE' }) }} />
                     </p>
                   </td>
@@ -515,7 +517,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
             </table>
 
             <div className="row my-3">
-              <div className="col-xs-offset-3 col-xs-5">
+              <div className="offset-3 col-5">
                 <button
                   type="button"
                   className="btn btn-primary"

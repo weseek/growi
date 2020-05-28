@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import * as entities from 'entities';
-
 import AppContainer from '../services/AppContainer';
 import { createSubscribedElement } from './UnstatedUtils';
 
@@ -77,14 +75,7 @@ class PageTimeline extends React.Component {
       return null;
     }
 
-    let pages = JSON.parse(pageIdsElm.text);
-    // decode path
-    pages = pages.map((page) => {
-      page.path = decodeURIComponent(entities.decodeHTML(page.path));
-      return page;
-    });
-
-    return pages;
+    return JSON.parse(pageIdsElm.text);
   }
 
   render() {
@@ -101,9 +92,9 @@ class PageTimeline extends React.Component {
     return pages.map((page) => {
       return (
         <div className="timeline-body" key={`key-${page.id}`}>
-          <div className="panel panel-timeline">
-            <div className="panel-heading"><a href={page.path}>{page.path}</a></div>
-            <div className="panel-body">
+          <div className="card card-timeline">
+            <div className="card-header"><a href={page.path}>{page.path}</a></div>
+            <div className="card-body">
               <RevisionLoader
                 lazy
                 growiRenderer={this.growiRenderer}

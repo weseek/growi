@@ -38,10 +38,10 @@ class MailSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <p className="well">{t('admin:app_setting.smtp_used')} {t('admin:app_setting.smtp_but_aws')}<br />{t('admin:app_setting.neihter_of')}</p>
-        <div className="row mb-5">
-          <label className="col-xs-3 control-label">{t('admin:app_setting.from_e-mail_address')}</label>
-          <div className="col-xs-6">
+        <p className="card well">{t('admin:app_setting.smtp_used')} {t('admin:app_setting.smtp_but_aws')}<br />{t('admin:app_setting.neihter_of')}</p>
+        <div className="row form-group mb-5">
+          <label className="col-md-3 col-form-label text-left">{t('admin:app_setting.from_e-mail_address')}</label>
+          <div className="col-md-6">
             <input
               className="form-control"
               type="text"
@@ -52,9 +52,9 @@ class MailSetting extends React.Component {
           </div>
         </div>
 
-        <div className="row mb-5">
-          <label className="col-xs-3 control-label">{t('admin:app_setting.smtp_settings')}</label>
-          <div className="col-xs-4">
+        <div className="row form-group mb-5">
+          <label className="col-md-3 col-form-label text-left">{t('admin:app_setting.smtp_settings')}</label>
+          <div className="col-md-4">
             <label>{t('admin:app_setting.host')}</label>
             <input
               className="form-control"
@@ -63,7 +63,7 @@ class MailSetting extends React.Component {
               onChange={(e) => { adminAppContainer.changeSmtpHost(e.target.value) }}
             />
           </div>
-          <div className="col-xs-2">
+          <div className="col-md-2">
             <label>{t('admin:app_setting.port')}</label>
             <input
               className="form-control"
@@ -73,8 +73,8 @@ class MailSetting extends React.Component {
           </div>
         </div>
 
-        <div className="row mb-5">
-          <div className="col-xs-3 col-xs-offset-3">
+        <div className="row form-group mb-5">
+          <div className="col-md-3 offset-md-3">
             <label>{t('admin:app_setting.user')}</label>
             <input
               className="form-control"
@@ -83,7 +83,7 @@ class MailSetting extends React.Component {
               onChange={(e) => { adminAppContainer.changeSmtpUser(e.target.value) }}
             />
           </div>
-          <div className="col-xs-3">
+          <div className="col-md-3">
             <label>{t('Password')}</label>
             <input
               className="form-control"

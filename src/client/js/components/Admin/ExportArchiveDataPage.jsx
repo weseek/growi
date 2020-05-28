@@ -213,7 +213,7 @@ class ExportArchiveDataPage extends React.Component {
       <Fragment>
         <h2>{t('Export Archive Data')}</h2>
 
-        <button type="button" className="btn btn-default" disabled={isExporting} onClick={this.openExportModal}>
+        <button type="button" className="btn btn-outline-secondary" disabled={isExporting} onClick={this.openExportModal}>
           {t('admin:export_management.create_new_archive_data')}
         </button>
 
