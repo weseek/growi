@@ -252,12 +252,12 @@ This is the most flexible linker.
 Both the page description and link address can be displayed on the page.
 
 ```
-[[./Bootstrap3]]
-Example of Bootstrap3 is[[here>./Bootstrap3]]
+[[./Bootstrap4]]
+Example of Bootstrap4 is[[here>./Bootstrap4]]
 ```
 
 [[../user]]
-Example of Bootstrap3 is[[here>./Bootstrap3]]
+Example of Bootstrap4 is[[here>./Bootstrap4]]
 
 # :pencil: Lists
 
@@ -449,8 +449,8 @@ See [emojione](https://www.emojione.com/)
 
 # :heavy_plus_sign: More..
 
-- Try to attach Bootstrap3 Tags?
-    - :arrow_right: [/Sandbox/Bootstrap3]
+- Try to attach Bootstrap4 Tags?
+    - :arrow_right: [/Sandbox/Bootstrap4]
 - Try to draw Diagrams?
     - :arrow_right: [/Sandbox/Diagrams]
 - Try to write Math Formulas?

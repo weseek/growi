@@ -12,18 +12,17 @@
 // $danger: #;
 // $light: #;
 // $dark: #;
+
 $themecolor: #b3000c;
 $themelight: white;
-
-$subthemecolor: #017e20;
+$subthemecolor: #30882c;
 $bgcolor-global: $themelight;
-$linktext: lighten(#0d5901, 5%);
-$linktext-hover: lighten($linktext, 12%);
+$linktext: $subthemecolor;
+$linktext-hover: lighten($subthemecolor, 15%);
 $sidebar-text: #ffffff;
 $fillcolor-logo-mark: lighten(desaturate($themecolor, 50%), 50%);
-$color-link-wiki: lighten($themecolor, 5%);
+$color-link-wiki: lighten($subthemecolor, 5%);
 $color-link-wiki-hover: lighten($color-link-wiki, 15%);
-$active-nav-tabs-bgcolor: white;
 
 .growi:not(.login-page) {
   // add background-image
@@ -40,15 +39,16 @@ $active-nav-tabs-bgcolor: white;
 //
 html[light],
 html[dark] {
+  $primary: #d3c665;
   // Background colors
   $bgcolor-card: #f5f5f5;
   $bgcolor-inline-code: #f0f0f0; //optional
 
   // Font colors
-  $color-global: $subthemecolor;
-  $color-reversal: #eeeeee;
-  $color-link: lighten($color-global, 2%);
-  $color-link-hover: lighten($color-link, 20%);
+  $color-global: #112744;
+  $color-reversal: #eee;
+  $color-link: $subthemecolor;
+  $color-link-hover: lighten($color-link, 10%);
   $color-link-nabvar: $color-reversal;
   $color-inline-code: #c7254e; // optional
 
@@ -61,16 +61,27 @@ html[dark] {
 
   // Navbar
   $bgcolor-navbar: $themecolor;
+  $bgcolor-search-top-dropdown: $primary;
   $border-color-navbar-gradient-left: #545fff;
   $border-color-navbar-gradient-right: #00a6e5;
+  $border-image-navbar: linear-gradient(to right, #6458bc 33%, #5cb4ff 66%, #85d800 100%);
 
   // Logo colors
   $bgcolor-logo: $themecolor;
 
   // Sidebar
-  $bgcolor-sidebar: $themecolor;
-  $color-sidebar-context: $color-reversal;
-  $bgcolor-sidebar-context: lighten($themecolor, 10%);
+  $bgcolor-sidebar: $subthemecolor;
+  $bgcolor-sidebar-nav-item-active: rgba(#000000, 0.37); // optional
+  $text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
+  // Sidebar resize button
+  $color-resize-button: $color-reversal;
+  $bgcolor-resize-button: $primary;
+  $color-resize-button-hover: $color-reversal;
+  $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
+  $color-sidebar-context: $linktext;
+  $bgcolor-sidebar-context: #f4f6fc;
+  // Sidebar list group
+  $bgcolor-sidebar-list-group: #fafbff; // optional
 
   // Icon colors
   $color-editor-icons: $color-global;
@@ -80,9 +91,9 @@ html[dark] {
   $bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
-  $bgcolor-dropdown-link-active: $growi-blue;
-  $color-dropdown-link-active: $color-reversal;
-  $color-dropdown-link-hover: $color-global;
+  $bgcolor-dropdown-link-active: $primary;
+  $color-dropdown-link-active: $color-global;
+  $color-dropdown-link-hover: $color-reversal;
 
   // admin theme box
   $color-theme-color-box: lighten($themecolor, 20%);
@@ -122,19 +133,6 @@ html[dark] {
     background-image: url('/images/themes/christmas/christmas.jpg');
     background-attachment: fixed;
     background-size: cover;
-  }
-
-  /*
-  * Tabs
-  */
-  body:not(.on-edit) .nav.nav-tabs {
-    > li.active > a {
-      background: linear-gradient(
-        rgba($active-nav-tabs-bgcolor, 0) 0%,
-        rgba($active-nav-tabs-bgcolor, 0) 90%,
-        $active-nav-tabs-bgcolor 100%
-      ); // overwrite only the bottom pixel
-    }
   }
 
   // login page
@@ -193,28 +191,5 @@ html[dark] {
 
   .grw-navbar {
     background-image: url('/images/themes/christmas/christmas-navbar.jpg');
-    border-bottom: 4px solid $subthemecolor;
-  }
-
-  .grw-subnav {
-    background-color: #ffffff;
-  }
-
-  .nav-tabs {
-    border-bottom-color: $themecolor;
-  }
-
-  .nav-link {
-    border-color: $themecolor;
-  }
-
-  .nav-tabs .nav-link.active {
-    background: none;
-    border-color: $themecolor;
-  }
-
-  .search-top .dropdown-toggle {
-    color: black;
-    background-color: hsla(0, 0%, 100%, 0.8);
   }
 }
