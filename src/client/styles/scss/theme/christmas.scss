@@ -52,6 +52,9 @@ html[dark] {
   $color-link-nabvar: $color-reversal;
   $color-inline-code: #c7254e; // optional
 
+  // Table colors
+  $border-color-table: #aaa; // optional
+
   // List Group colors
   $color-list: $color-global;
   $bgcolor-list: $themelight;
