@@ -38,9 +38,9 @@ class AppSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <div className="row mb-5">
-          <label className="col-xs-3 control-label">{t('admin:app_setting.site_name')}</label>
-          <div className="col-xs-6">
+        <div className="form-group row">
+          <label className="text-left text-md-right col-md-3 col-form-label">{t('admin:app_setting.site_name')}</label>
+          <div className="col-md-6">
             <input
               className="form-control"
               type="text"
@@ -48,13 +48,13 @@ class AppSetting extends React.Component {
               onChange={(e) => { adminAppContainer.changeTitle(e.target.value) }}
               placeholder="GROWI"
             />
-            <p className="help-block">{t('admin:app_setting.sitename_change')}</p>
+            <p className="form-text text-muted">{t('admin:app_setting.sitename_change')}</p>
           </div>
         </div>
 
-        <div className="row mb-5">
-          <label className="col-xs-3 control-label">{t('admin:app_setting.confidential_name')}</label>
-          <div className="col-xs-6">
+        <div className="row form-group mb-5">
+          <label className="text-left text-md-right col-md-3 col-form-label">{t('admin:app_setting.confidential_name')}</label>
+          <div className="col-md-6">
             <input
               className="form-control"
               type="text"
@@ -62,55 +62,56 @@ class AppSetting extends React.Component {
               onChange={(e) => { adminAppContainer.changeConfidential(e.target.value) }}
               placeholder={t('admin:app_setting.confidential_example')}
             />
-            <p className="help-block">{t('admin:app_setting.header_content')}</p>
+            <p className="form-text text-muted">{t('admin:app_setting.header_content')}</p>
           </div>
         </div>
 
-        <div className="row mb-5">
-          <label className="col-xs-3 control-label">{t('admin:app_setting.default_language')}</label>
-          <div className="col-xs-6">
-            <div className="radio radio-primary radio-inline">
+        <div className="row form-group mb-5">
+          <label className="text-left text-md-right col-md-3 col-form-label">{t('admin:app_setting.default_language')}</label>
+          <div className="col-md-6">
+            <div className="custom-control custom-radio custom-control-inline">
               <input
                 type="radio"
                 id="radioLangEn"
+                className="custom-control-input"
                 name="globalLang"
                 value="en-US"
                 checked={adminAppContainer.state.globalLang === 'en-US'}
                 onChange={(e) => { adminAppContainer.changeGlobalLang(e.target.value) }}
               />
-              <label htmlFor="radioLangEn">{t('English')}</label>
+              <label className="custom-control-label" htmlFor="radioLangEn">{t('English')}</label>
             </div>
-            <div className="radio radio-primary radio-inline">
+            <div className="custom-control custom-radio custom-control-inline">
               <input
                 type="radio"
                 id="radioLangJa"
+                className="custom-control-input"
                 name="globalLang"
                 value="ja"
                 checked={adminAppContainer.state.globalLang === 'ja'}
                 onChange={(e) => { adminAppContainer.changeGlobalLang(e.target.value) }}
               />
-              <label htmlFor="radioLangJa">{t('Japanese')}</label>
+              <label className="custom-control-label" htmlFor="radioLangJa">{t('Japanese')}</label>
             </div>
           </div>
         </div>
 
-        <div className="row mb-5">
-          <label className="col-xs-3 control-label">{t('admin:app_setting.file_uploading')}</label>
-          <div className="col-xs-6">
-            <div className="checkbox checkbox-info">
+        <div className="row form-group mb-5">
+          <label className="text-left text-md-right col-md-3 col-form-label">{t('admin:app_setting.file_uploading')}</label>
+          <div className="col-md-6">
+            <div className="custom-control custom-checkbox custom-checkbox-info">
               <input
                 type="checkbox"
                 id="cbFileUpload"
+                className="custom-control-input"
                 name="fileUpload"
                 checked={adminAppContainer.state.fileUpload}
                 onChange={(e) => { adminAppContainer.changeFileUpload(e.target.checked) }}
               />
-              <label htmlFor="cbFileUpload">{t('admin:app_setting.enable_files_except_image')}</label>
+              <label className="custom-control-label" htmlFor="cbFileUpload">{t('admin:app_setting.enable_files_except_image')}</label>
             </div>
 
-            <p className="help-block">
-              {t('admin:app_setting.enable_files_except_image')}
-              <br />
+            <p className="form-text text-muted">
               {t('admin:app_setting.attach_enable')}
             </p>
           </div>

@@ -1,0 +1,139 @@
+// determine optional variables
+$bgcolor-subnabvar: lighten($bgcolor-global, 3%) !default;
+$color-table: white !default;
+$bgcolor-table: #343a40 !default;
+$border-color-table: lighten($bgcolor-table, 7.5%) !default;
+$color-table-hover: rgba(white, 0.075) !default;
+$bgcolor-table-hover: lighten($bgcolor-table, 7.5%) !default;
+
+// override bootstrap variables
+$table-dark-color: $color-table;
+$table-dark-bg: $bgcolor-table;
+$table-dark-border-color: $border-color-table;
+$table-dark-hover-color: $color-table-hover;
+$table-dark-hover-bg: $bgcolor-table-hover;
+
+@import 'reboot-bootstrap-tables';
+
+/*
+  * Form
+  */
+input.form-control,
+textarea.form-control {
+  color: lighten($color-global, 30%);
+  background-color: darken($bgcolor-global, 5%);
+  &:focus {
+    background-color: $bgcolor-global;
+  }
+  // FIXME: accent color
+  // border: 1px solid darken($border, 30%);
+}
+
+.form-control[disabled],
+.form-control[readonly] {
+  color: lighten($color-global, 10%);
+  background-color: lighten($bgcolor-global, 5%);
+}
+
+.input-group .input-group-addon {
+  color: theme-color('dark');
+  background-color: rgba($bgcolor-navbar, 0.4);
+  // FIXME: accent color
+  // border: 1px solid darken($border, 30%);
+  border-right: none;
+}
+
+/*
+ * Dropdown
+ */
+.dropdown-menu {
+  background-color: $bgcolor-global;
+  > li > a {
+    color: $color-global;
+  }
+}
+
+/*
+ * Table
+ */
+.table {
+  @extend .table-dark;
+}
+
+/*
+ * Card
+ */
+.card:not([class*='bg-']) {
+  @extend .bg-dark;
+}
+
+/*
+ * Pagination
+ */
+ul.pagination {
+  li.page-item {
+    button.page-link {
+      @extend .btn-dark;
+    }
+    &.active {
+      button {
+        @extend .active;
+      }
+    }
+  }
+}
+
+/*
+ * GROWI page list
+ */
+.page-list {
+  .page-list-ul {
+    > li {
+      > span.page-list-meta {
+        color: darken($color-global, 10%);
+      }
+    }
+  }
+}
+
+/*
+ * GROWI subnavigation
+ */
+.grw-subnavbar {
+  background-color: $bgcolor-subnabvar;
+}
+
+// Search drop down
+#search-typeahead-asynctypeahead {
+  background-color: $bgcolor-global;
+  .table {
+    background-color: transparent;
+  }
+}
+
+/*
+ * GROWI on-edit
+ */
+.page-editor-footer {
+  #slack-mark-black {
+    display: none;
+  }
+}
+
+.wiki {
+  h1 {
+    border-color: lighten($border-color-theme, 10%);
+  }
+  h2 {
+    border-color: $border-color-theme;
+  }
+}
+
+/*
+ * GROWI comment form
+ */
+.comment-form {
+  #slack-mark-black {
+    display: none;
+  }
+}

@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-
-import Modal from 'react-bootstrap/es/Modal';
+import {
+  Modal, ModalHeader, ModalBody, ModalFooter,
+} from 'reactstrap';
 
 import { toastError } from '../../../util/apiNotification';
 import { createSubscribedElement } from '../../UnstatedUtils';
@@ -81,18 +82,16 @@ class PasswordResetModal extends React.Component {
     const { t } = this.props;
 
     return (
-      <Modal show={this.props.isOpen} onHide={this.props.onClose}>
-        <Modal.Header className="modal-header" closeButton>
-          <Modal.Title>
-            {t('admin:user_management.reset_password')}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+      <Modal isOpen={this.props.isOpen} toggle={this.props.onClose}>
+        <ModalHeader tag="h4" toggle={this.props.onClose} className="bg-warning text-light">
+          {t('admin:user_management.reset_password') }
+        </ModalHeader>
+        <ModalBody>
           {this.state.isPasswordResetDone ? this.renderModalBodyBeforeReset() : this.returnModalBodyAfterReset()}
-        </Modal.Body>
-        <Modal.Footer>
+        </ModalBody>
+        <ModalFooter>
           {this.state.isPasswordResetDone && this.returnModalFooter()}
-        </Modal.Footer>
+        </ModalFooter>
       </Modal>
     );
   }

@@ -13,11 +13,51 @@ const router = express.Router();
  *    name: Pages
  */
 module.exports = (crowi) => {
-  const loginRequired = require('../../middleware/login-required')(crowi);
+  const loginRequired = require('../../middleware/login-required')(crowi, true);
   const adminRequired = require('../../middleware/admin-required')(crowi);
   const csrf = require('../../middleware/csrf')(crowi);
 
   const Page = crowi.model('Page');
+
+  /**
+   * @swagger
+   *
+   *    /pages/recent:
+   *      get:
+   *        tags: [Pages]
+   *        description: Get recently updated pages
+   *        responses:
+   *          200:
+   *            description: Return pages recently updated
+   *
+   */
+  router.get('/recent', loginRequired, async(req, res) => {
+    const limit = 20;
+    const offset = parseInt(req.query.offset) || 0;
+
+    const queryOptions = {
+      offset,
+      limit,
+      includeTrashed: false,
+      isRegExpEscapedFromPath: true,
+      sort: 'updatedAt',
+      desc: -1,
+    };
+
+    try {
+      const result = await Page.findListWithDescendants('/', req.user, queryOptions);
+      if (result.pages.length > limit) {
+        result.pages.pop();
+      }
+
+      return res.apiv3(result);
+    }
+    catch (err) {
+      res.code = 'unknown';
+      logger.error('Failed to get recent pages', err);
+      return res.apiv3Err(err, 500);
+    }
+  });
 
   /**
   * @swagger

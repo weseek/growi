@@ -10,10 +10,10 @@ GROWI Official docker image
 Supported tags and respective Dockerfile links
 ------------------------------------------------
 
-* [`3.8.0`, `3.8`, `3`, `latest` (Dockerfile)](https://github.com/weseek/growi/blob/v3.8.0/docker/Dockerfile)
-* [`3.8.0-nocdn`, `3.8-nocdn`, `3-nocdn`, `latest-nocdn` (Dockerfile)](https://github.com/weseek/growi/blob/v3.8.0/docker/Dockerfile)
-* [`3.7.6`, `3.7` (Dockerfile)](https://github.com/weseek/growi/blob/v3.7.6/docker/Dockerfile)
-* [`3.7.6-nocdn`, `3.7-nocdn` (Dockerfile)](https://github.com/weseek/growi/blob/v3.7.6/docker/Dockerfile)
+* [`4.0.0`, `4.0`, `4`, `latest` (Dockerfile)](https://github.com/weseek/growi/blob/v4.0.0/docker/Dockerfile)
+* [`4.0.0-nocdn`, `4.0-nocdn`, `4-nocdn`, `latest-nocdn` (Dockerfile)](https://github.com/weseek/growi/blob/v4.0.0/docker/Dockerfile)
+* [`3.8.0`, `3.8`, `3` (Dockerfile)](https://github.com/weseek/growi/blob/v3.8.0/docker/Dockerfile)
+* [`3.8.0-nocdn`, `3.8-nocdn`, `3-nocdn` (Dockerfile)](https://github.com/weseek/growi/blob/v3.8.0/docker/Dockerfile)
 
 
 What is GROWI?

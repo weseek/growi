@@ -1,0 +1,175 @@
+.grw-sidebar {
+  $sidebar-nav-button-height: 55px;
+
+  %fukidashi-for-active {
+    position: relative;
+
+    // speech balloon
+    &:after {
+      position: absolute;
+      right: -0.1em;
+      display: block;
+      width: 0;
+      content: '';
+      border: 9px solid transparent;
+      border-left-width: 0;
+      transform: translateY(-#{$sidebar-nav-button-height / 2});
+    }
+  }
+
+  .ak-navigation-resize-button {
+    // locate to the center of screen
+    top: calc(50vh - 20px);
+
+    /*
+     * styles
+     */
+    // unset originalhover color
+    > div:hover {
+      background-color: unset;
+    }
+
+    $box-shadow: 0 1px 1px rgba(96, 96, 96, 0.75);
+    @include hexagonize(24px, white, $box-shadow);
+
+    // rotate 30deg
+    transform: translate(-50%) rotate(30deg);
+    > div,
+    > span svg {
+      transform: rotate(-30deg);
+    }
+
+    // centering icon
+    > span svg {
+      position: relative;
+      z-index: 1;
+      margin-top: -5.5px;
+    }
+  }
+
+  // override @atlaskit/navigation-next styles
+  $navbar-total-height: $grw-navbar-height + $grw-navbar-border-width;
+  div[class$='-LayoutContainer'] {
+    height: calc(100vh - #{$navbar-total-height});
+  }
+  div[class$='-NavigationContainer'] {
+    top: $navbar-total-height;
+
+    // Adjust to be on top of the growi subnavigation
+    z-index: $zindex-sticky + 5;
+  }
+  div[data-testid='GlobalNavigation'] {
+    > div {
+      height: calc(100vh - #{$navbar-total-height});
+      padding-top: 0;
+    }
+  }
+  div[class$='-Outer'] {
+    width: 0;
+  }
+  div[class$='-PrimaryItemsList'],
+  div[class$='-SecondaryItemsList'] {
+    > div {
+      padding: 0;
+    }
+
+    .grw-global-item-container {
+      width: unset;
+      height: unset;
+      background-color: transparent;
+      border-radius: 0;
+
+      .btn {
+        width: $grw-sidebar-nav-width;
+        border-radius: 0;
+      }
+
+      // icon opacity
+      &:not(.active) {
+        i {
+          opacity: 0.4;
+        }
+        &:hover,
+        &:focus {
+          i {
+            opacity: 0.7;
+          }
+        }
+      }
+    }
+  }
+  div[class$='-PrimaryItemsList'] {
+    .grw-global-item-container {
+      .btn-lg {
+        padding: 0.8rem 1rem;
+        line-height: 1em;
+        i {
+          font-size: 1.7em;
+        }
+      }
+
+      &.active {
+        button {
+          @extend %fukidashi-for-active;
+        }
+      }
+    }
+  }
+  div[class$='-ScrollableTransitionGroup'] {
+    // remove horizontal line
+    > div,
+    > div > div {
+      &:before,
+      &:after {
+        display: none;
+      }
+    }
+  }
+  div[class$='-Outer'] {
+    div[class$='-Shadow'] {
+      background: linear-gradient(to left, rgba(0, 0, 0, 0.1) 0px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0) 100%);
+    }
+  }
+}
+
+// Drawer Mode
+@include media-breakpoint-down(sm) {
+  .grw-sidebar {
+    position: fixed;
+    z-index: $zindex-fixed - 2;
+
+    // override @atlaskit/navigation-next styles
+    div[class$='-Outer'],
+    div[class$='-teprsg'] {
+      display: none;
+    }
+
+    &:not(.open) {
+      div[class$='-NavigationContainer'] {
+        left: -#{$grw-sidebar-nav-width + $grw-sidebar-content-min-width};
+      }
+    }
+    &.open {
+      div[class$='-NavigationContainer'] {
+        left: 0;
+      }
+    }
+
+    div[class$='-NavigationContainer'] {
+      transition: left 300ms cubic-bezier(0.25, 1, 0.5, 1);
+    }
+  }
+
+  .grw-sidebar-backdrop.modal-backdrop {
+    z-index: $zindex-fixed - 4;
+  }
+}
+
+.grw-sidebar-header-container {
+  h3 {
+    margin-bottom: 0;
+  }
+}
+
+.grw-sidebar-content-container {
+}

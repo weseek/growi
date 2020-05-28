@@ -1,10 +1,26 @@
 # CHANGES
 
-## v3.8.1-RC
+## v4.0.0-RC
 
-* Fix: Unset overflow-y style for Edit Tags Modal
+### BREAKING CHANGES
 
-## v3.8.0
+* Crowi Classic Behavior is removed
+* Crowi Classic Layout is removed
+* 'default-dark' theme is now merged as a dark mode variant of 'default' theme
+* 'blue-night' theme is now merged as a dark mode variant of 'mono-blue' theme
+
+### Updates
+
+* Feature: Sidebar
+* Feature: Recent changes on Sidebar
+* Feature: Switch Light/Dark Mode
+* Improvement: Migrate to Bootstrap 4
+* Improvement: Copy Page URL menu item to copy path dropdown
+* Improvement: Show contributors by Bootstrap Modal
+* Support: Upgrade libs
+    * bootstrap
+
+## v3.8.1
 
 ### BREAKING CHANGES
 
@@ -15,11 +31,20 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/38x.html>
 ### Updates
 
 * Improvement: Change the health check method for Elasticsearch
+* Fix: Unset overflow-y style for Edit Tags Modal
+* Fix: Duplicate page source is overwrited
+    * Introduced by 3.7.6
 
-## v3.7.6
+## v3.8.0  (Missing number)
+
+## v3.7.7
 
 * Feature: Empty trash pages
 * Improvement: Behavior of Reconnect to Elasticsearch button
+* Fix: Duplicate page source is overwrited
+    * Introduced by 3.7.6
+
+## v3.7.6  (Missing number)
 
 ## v3.7.5
 

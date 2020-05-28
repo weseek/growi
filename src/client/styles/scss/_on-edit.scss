@@ -10,59 +10,49 @@ body:not(.on-edit) {
 
 body.on-edit {
   // calculate margin
-  $header-plus-footer: 42px //  .nav height
-    + 1px //                    .page-editor-footer border-top
-    + 40px !default; //         .page-editor-footer min-height
+  $editor-header-plus-footer: 42px // .nav-tabs height
+    + 1px //                          .page-editor-footer border-top
+    + 40px !default; //               .page-editor-footer min-height
 
-  @include expand-editor($header-plus-footer);
+  @include expand-editor($editor-header-plus-footer);
 
   // for growi layout
   .main {
-    > .row {
-      margin: 0;
-
-      > .col-lg-10,
-      > .col-md-9 {
-        width: 100%;
-        padding: 0;
-      }
+    .col.grw-page-content-container {
+      padding: 0;
     }
   }
 
+  // show
+  .d-edit-block {
+    display: block !important;
+  }
+
   // hide unnecessary elements
-  .navbar.navbar-static-top,
-  .row.row-alerts,
-  .row.page-list,
-  .row.page-comments-row,
-  .row.page-attachments-row,
-  .row.not-found-message-row,
-  .users-info,
-  .user-page-content-container,
-  .portal-form-button,
-  .alert-info.alert-moved,
-  .alert-info.alert-unlinked,
-  .btn-like,
-  .btn-bookmark,
-  .btn-edit,
-  .authors,
-  footer {
+  header,
+  footer,
+  .d-edit-none {
     display: none !important;
   }
 
   // hide unnecessary elements for growi layout
   .revision-toc-container {
-    display: none;
-  }
-
-  // hide unnecessary elements for crowi layout
-  #toggle-sidebar,
-  .crowi-sidebar {
-    display: none;
+    display: none !important;
   }
 
   // show only either Edit button or HackMD button
   &.hackmd .nav-tab-edit {
     display: none;
+  }
+
+  &.hackmd .grw-nav-item-edit {
+    display: none;
+  }
+
+  &.hackmd {
+    #page-editor-options-selector {
+      display: none !important;
+    }
   }
 
   &:not(.hackmd) .nav-tab-hackmd {
@@ -84,9 +74,9 @@ body.on-edit {
     padding-bottom: 0;
   }
 
-  .row.bg-title {
-    $left-margin: $nav-main-left-tab-width * 2 + 25px; // width of .nav-main-left-tab x 2 + some margin
-    $right-margin: 128px + 94px + 46px; //                width of all of nav-main-right-tab
+  .row.grw-subnav {
+    $left-margin: $grw-nav-main-left-tab-width * 2 + 25px; // width of .grw-nav-main-left-tab x 2 + some margin
+    $right-margin: 128px + 94px + 46px; //                    width of all of grw-nav-main-right-tab
 
     position: absolute;
     left: $left-margin;
@@ -97,34 +87,26 @@ body.on-edit {
 
     background: none;
 
-    > .header-container {
+    > .grw-subnav-container {
       width: 100%; //   for crowi layout
       padding: 0; //    for crowi layout
       pointer-events: initial; // enable pointer-events
     }
+  }
 
-    h1#revision-path {
-      @include variable-font-size(20px);
+  .grw-page-path-nav-for-edit {
+    .grw-page-path-link {
+      font-size: 20px;
       line-height: 1em;
-
-      // nowrap even if the path is too long
-      .d-flex {
-        flex-wrap: nowrap;
-      }
-
-      .path-segment {
-        white-space: nowrap;
-      }
     }
-
-    .tag-viewer.new-page {
-      display: block;
+    .separator {
+      margin-right: 0.1em;
+      margin-left: 0.1em;
     }
+  }
 
-    // hide if screen size is less than tablet
-    @media (max-width: $screen-sm) {
-      display: none;
-    }
+  .tag-labels {
+    line-height: 1em;
   }
 
   .page-editor-footer {
@@ -134,9 +116,14 @@ body.on-edit {
     margin: 0;
     border-top: solid 1px transparent;
 
-    .grant-selector {
-      .btn-group {
-        min-width: 150px;
+    .grw-grant-selector {
+      .dropdown-toggle {
+        min-width: 100px;
+
+        // caret
+        &::after {
+          margin-left: 1em;
+        }
       }
     }
 
@@ -145,16 +132,23 @@ body.on-edit {
     }
   }
 
-  #page-status-alert .myadmin-alert {
-    position: absolute;
-    right: 3px;
-    bottom: 42px;
-    left: 3px;
-    box-shadow: 2px 2px 5px #666;
-    opacity: 0.8;
+  // deal with word wrap problem
+  // see: https://qiita.com/mpyw/items/dfc63c1fed5dfc5eda26
+  .page-editor-editor-container,
+  .page-editor-preview-container {
+    min-width: 0;
+    overflow-wrap: break-word;
+  }
 
-    &:hover {
-      opacity: 1;
+  /*********************
+   * Navigation styles
+   */
+  .nav:hover {
+    .btn-copy,
+    .btn-edit,
+    .btn-edit-tags {
+      // change button opacity
+      opacity: unset;
     }
   }
 
@@ -174,10 +168,6 @@ body.on-edit {
         .CodeMirror-selection-highlight-scrollbar {
           background-color: darkcyan;
         }
-      }
-
-      .navbar-editor {
-        border-bottom: 1px solid transparent;
       }
 
       // add icon on cursor
@@ -209,16 +199,12 @@ body.on-edit {
     .page-editor-preview-body {
       padding-top: 18px;
       padding-right: 15px;
+      padding-left: 15px;
       overflow-y: scroll;
     }
 
     #page-editor-options-selector {
-      label {
-        margin-right: 0.5em;
-      }
-
-      // configuration dropdown
-      .configuration-dropdown {
+      .grw-editor-configuration-dropdown {
         .icon-container {
           display: inline-block;
           width: 20px;
@@ -228,17 +214,7 @@ body.on-edit {
           display: flex;
           align-items: center;
           justify-content: space-between;
-
-          .menuitem-label {
-            flex: 1;
-            margin-right: 10px;
-          }
         }
-      }
-
-      // less than smartphone size
-      @media (max-width: $screen-xs-max) {
-        display: none;
       }
     }
 
@@ -269,12 +245,11 @@ body.on-edit {
 
     .hackmd-error {
       top: 0;
-      background-color: rgba($gray-dark, 0.8);
+      background-color: rgba($gray-800, 0.8);
     }
 
     .hackmd-status-label {
       font-size: 3em;
-      color: $muted;
     }
 
     .hackmd-resume-button-container,
@@ -290,17 +265,6 @@ body.on-edit {
       vertical-align: unset;
     }
   }
-}
-
-/*
- * for creating portal
- */
-.nav-tabs-create-portal {
-  display: none;
-}
-
-.on-edit .nav-tabs-create-portal {
-  display: block;
 }
 
 // overwrite .CodeMirror pre

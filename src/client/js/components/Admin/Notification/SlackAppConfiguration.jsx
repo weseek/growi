@@ -39,25 +39,24 @@ class SlackAppConfiguration extends React.Component {
 
     return (
       <React.Fragment>
-        <div className="row mb-5">
-          <div className="col-xs-6 text-left">
-            <div className="my-0 btn-group">
-              <div className="dropdown">
-                <button className="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <span className="pull-left">Slack {adminNotificationContainer.state.selectSlackOption} </span>
-                  <span className="bs-caret pull-right">
-                    <span className="caret" />
-                  </span>
-                </button>
-                {/* TODO adjust dropdown after BS4 */}
-                <ul className="dropdown-menu" role="menu">
-                  <li type="button" onClick={() => adminNotificationContainer.switchSlackOption('Incoming Webhooks')}>
-                    <a role="menuitem">Slack Incoming Webhooks</a>
-                  </li>
-                  <li type="button" onClick={() => adminNotificationContainer.switchSlackOption('App')}>
-                    <a role="menuitem">Slack App</a>
-                  </li>
-                </ul>
+        <div className="row my-3">
+          <div className="col-6 text-left">
+            <div className="dropdown">
+              <button
+                className="btn btn-secondary dropdown-toggle"
+                type="button"
+                id="dropdownMenuButton"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="true"
+              >
+                {`Slack ${adminNotificationContainer.state.selectSlackOption}`}
+              </button>
+              <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a className="dropdown-item" type="button" onClick={() => adminNotificationContainer.switchSlackOption('Incoming Webhooks')}>
+                  Slack Incoming Webhooks
+                </a>
+                <a className="dropdown-item" type="button" onClick={() => adminNotificationContainer.switchSlackOption('App')}>Slack App</a>
               </div>
             </div>
           </div>
@@ -66,9 +65,9 @@ class SlackAppConfiguration extends React.Component {
           <React.Fragment>
             <h2 className="border-bottom mb-5">{t('notification_setting.slack_incoming_configuration')}</h2>
 
-            <div className="row mb-5">
-              <label className="col-xs-3 text-right">Webhook URL</label>
-              <div className="col-xs-6">
+            <div className="row mb-3">
+              <label className="col-md-3 text-left text-md-right">Webhook URL</label>
+              <div className="col-md-6">
                 <input
                   className="form-control"
                   type="text"
@@ -78,20 +77,21 @@ class SlackAppConfiguration extends React.Component {
               </div>
             </div>
 
-            <div className="row mb-5">
-              <div className="col-xs-offset-3 col-xs-6 text-left">
-                <div className="checkbox checkbox-success">
+            <div className="row mb-3">
+              <div className="offset-md-3 col-md-6 text-left">
+                <div className="custom-control custom-checkbox custom-checkbox-success">
                   <input
-                    id="cbPrioritizeIWH"
                     type="checkbox"
+                    className="custom-control-input"
+                    id="cbPrioritizeIWH"
                     checked={adminNotificationContainer.state.isIncomingWebhookPrioritized || false}
                     onChange={() => { adminNotificationContainer.switchIsIncomingWebhookPrioritized() }}
                   />
-                  <label htmlFor="cbPrioritizeIWH">
+                  <label className="custom-control-label" htmlFor="cbPrioritizeIWH">
                     {t('notification_setting.prioritize_webhook')}
                   </label>
                 </div>
-                <p className="help-block">
+                <p className="form-text text-muted">
                   {t('notification_setting.prioritize_webhook_desc')}
                 </p>
               </div>
@@ -102,24 +102,24 @@ class SlackAppConfiguration extends React.Component {
             <React.Fragment>
               <h2 className="border-bottom mb-5">{t('notification_setting.slack_app_configuration')}</h2>
 
-              <div className="well">
-                <i className="icon-fw icon-exclamation text-danger"></i><span className="text-danger">NOT RECOMMENDED</span>
-                <br /><br />
+              <div className="well card">
+                <span className="text-danger"><i className="icon-fw icon-exclamation"></i>NOT RECOMMENDED</span>
+                <br />
                 {/* eslint-disable-next-line react/no-danger */}
                 <span dangerouslySetInnerHTML={{ __html: t('notification_setting.slack_app_configuration_desc') }} />
-                <br /><br />
+                <br />
                 <a
                   href="#slack-incoming-webhooks"
                   data-toggle="tab"
                   onClick={() => adminNotificationContainer.switchSlackOption('Incoming Webhooks')}
                 >
                   {t('notification_setting.use_instead')}
-                </a>{' '}
+                </a>
               </div>
 
               <div className="row mb-5">
-                <label className="col-xs-3 text-right">OAuth access token</label>
-                <div className="col-xs-6">
+                <label className="col-md-3 text-left text-md-right">OAuth access token</label>
+                <div className="col-md-6">
                   <input
                     className="form-control"
                     type="text"

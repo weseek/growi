@@ -2,7 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import Modal from 'react-bootstrap/es/Modal';
+import {
+  Modal,
+  ModalHeader,
+  ModalBody,
+} from 'reactstrap';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 
@@ -42,20 +46,18 @@ class LdapAuthTestModal extends React.Component {
   render() {
 
     return (
-      <Modal show={this.props.isOpen} onHide={this.props.onClose}>
-        <Modal.Header className="bg-info modal-header" closeButton>
-          <Modal.Title className="text-white">
-            Test LDAP Account
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+      <Modal isOpen={this.props.isOpen} toggle={this.props.onClose}>
+        <ModalHeader tag="h4" toggle={this.props.onClose} className="bg-info text-light">
+          Test LDAP Account
+        </ModalHeader>
+        <ModalBody>
           <LdapAuthTest
             username={this.state.username}
             password={this.state.password}
             onChangeUsername={this.onChangeUsername}
             onChangePassword={this.onChangePassword}
           />
-        </Modal.Body>
+        </ModalBody>
       </Modal>
     );
   }

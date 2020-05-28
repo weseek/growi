@@ -1,5 +1,5 @@
-<div class="row not-found-message-row m-b-20">
-  <div class="col-md-12">
+<div class="row not-found-message-row mb-4">
+  <div class="col-lg-12">
     <h2 class="text-muted">
       <i class="icon-ban" aria-hidden="true"></i>
       Forbidden
@@ -7,22 +7,22 @@
   </div>
 </div>
 
-<div id="content-main" class="content-main content-main-not-found page-list"
-  data-path="{{ path | preventXss }}"
+<div id="content-main" class="content-main page-list"
+  data-path="{{ encodeURI(path) }}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
   >
 
-  <div class="row row-alerts">
-    <div class="col-xs-12">
-        <p class="alert alert-inverse alert-grant">
+  <div class="row row-alerts d-edit-none">
+    <div class="col-sm-12">
+        <p class="alert alert-primary py-3 px-4">
           <i class="icon-fw icon-lock" aria-hidden="true"></i> Browsing of this page is restricted
         </p>
     </div>
   </div>
 
-  <ul class="nav nav-tabs hidden-print">
-    <li class="nav-main-left-tab active">
-      <a href="#revision-body" data-toggle="tab">
+  <ul class="nav nav-tabs d-print-none" role="tablist">
+    <li class="nav-item grw-nav-main-left-tab">
+      <a class="nav-link active" role="tab" href="#revision-body" data-toggle="tab">
         <i class="icon-notebook"></i> List
       </a>
     </li>
@@ -30,10 +30,10 @@
 
   <div class="tab-content">
     {# list view #}
-    <div class="p-t-10 active tab-pane page-list-container" id="revision-body">
+    <div class="pt-2 active tab-pane page-list-container" id="revision-body">
       {% if pages.length == 0 %}
-        <div class="m-t-10">
-          There are no pages under <strong>{{ path }}</strong>.
+        <div class="mt-2">
+          There are no pages under <strong>{{ path | preventXss }}</strong>.
         </div>
       {% endif  %}
 

@@ -88,9 +88,9 @@ class LdapAuthTest extends React.Component {
       <React.Fragment>
         {this.state.successMessage != null && <div className="alert alert-success">{this.state.successMessage}</div>}
         {this.state.errorMessage != null && <div className="alert alert-warning">{this.state.errorMessage}</div>}
-        <div className="row p-3">
-          <label htmlFor="username" className="col-xs-3 text-right">{t('username')}</label>
-          <div className="col-xs-6">
+        <div className="form-group row">
+          <label htmlFor="username" className="col-3 col-form-label">{t('username')}</label>
+          <div className="col-6">
             <input
               className="form-control"
               name="username"
@@ -99,9 +99,9 @@ class LdapAuthTest extends React.Component {
             />
           </div>
         </div>
-        <div className="row p-3">
-          <label htmlFor="password" className="col-xs-3 text-right">{t('Password')}</label>
-          <div className="col-xs-6">
+        <div className="form-group row">
+          <label htmlFor="password" className="col-3 col-form-label">{t('Password')}</label>
+          <div className="col-6">
             <input
               className="form-control"
               type="password"
@@ -111,13 +111,15 @@ class LdapAuthTest extends React.Component {
             />
           </div>
         </div>
-        <div>
-          <h5>Logs</h5>
-          <textarea id="taLogs" className="col-xs-12" rows="4" value={this.state.logs} readOnly />
+
+        <div className="form-group">
+          <label><h5>Logs</h5></label>
+          <textarea id="taLogs" className="col" rows="4" value={this.state.logs} readOnly />
         </div>
 
-        <button type="button" className="btn btn-default mt-3 col-xs-offset-5 col-xs-2" onClick={this.testLdapCredentials}>Test</button>
-
+        <div>
+          <button type="button" className="btn btn-outline-secondary offset-5 col-2" onClick={this.testLdapCredentials}>Test</button>
+        </div>
       </React.Fragment>
 
     );

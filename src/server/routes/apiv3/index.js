@@ -18,9 +18,7 @@ module.exports = (crowi) => {
   router.use('/markdown-setting', require('./markdown-setting')(crowi));
   router.use('/app-settings', require('./app-settings')(crowi));
   router.use('/customize-setting', require('./customize-setting')(crowi));
-
   router.use('/notification-setting', require('./notification-setting')(crowi));
-
   router.use('/users', require('./users')(crowi));
   router.use('/user-groups', require('./user-group')(crowi));
   router.use('/export', require('./export')(crowi));
@@ -39,7 +37,10 @@ module.exports = (crowi) => {
 
   router.use('/search', require('./search')(crowi));
 
+  router.use('/page', require('./page')(crowi));
   router.use('/pages', require('./pages')(crowi));
+
+  router.use('/bookmarks', require('./bookmarks')(crowi));
 
   return router;
 };

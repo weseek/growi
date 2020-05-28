@@ -1,121 +1,69 @@
 {% if page %}
-<ul class="nav nav-tabs customtab hidden-print">
+<ul class="nav nav-tabs d-print-none">
 
   {#
     Left Tabs
   #}
-  <li class="nav-main-left-tab active">
-    <a href="#revision-body" data-toggle="tab">
+  <li class="nav-item active">
+    <a class="nav-link active" href="#revision-body" data-toggle="tab">
       <i class="icon-control-play"></i> View
     </a>
   </li>
 
   {% if !isTrashPage() %}
-  <li class="nav-main-left-tab nav-tab-edit">
-    <a
-      {% if user %} href="#edit" data-toggle="tab" class="edit-button" {% endif %}
-      {% if not user %}
-        class="edit-button edit-button-disabled"
-        data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
-      {% endif %}
-    >
-      <i class="icon-note"></i> {{ t('Edit') }}
-    </a>
-  </li>
-  {% if isHackmdSetup() %}
-  <li class="nav-main-left-tab nav-tab-hackmd">
-    <a
-      {% if user %} href="#hackmd" data-toggle="tab" class="edit-button" {% endif %}
-      {% if not user %}
-        class="edit-button edit-button-disabled"
-        data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
-      {% endif %}
-    >
-      <i class="fa fa-file-text-o"></i> {{ t('HackMD') }}
-    </a>
-  </li>
-  {% endif %}
+    <li class="nav-item nav-tab-edit">
+      <a
+        {% if user %} href="#edit" data-toggle="tab" class="nav-link edit-button" {% endif %}
+        {% if not user %}
+          class="nav-link edit-button edit-button-disabled"
+          data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
+        {% endif %}
+      >
+        <i class="icon-note"></i> {{ t('Edit') }}
+      </a>
+    </li>
+    {% if isHackmdSetup() %}
+    <li class="nav-item nav-tab-hackmd">
+      <a
+        {% if user %} href="#hackmd" data-toggle="tab" class="nav-link edit-button" {% endif %}
+        {% if not user %}
+          class="nav-link edit-button edit-button-disabled"
+          data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
+        {% endif %}
+      >
+        <i class="fa fa-file-text-o"></i> {{ t('HackMD') }}
+      </a>
+    </li>
+    {% endif %}
+
+    <div id="page-editor-path-nav" class="d-none d-edit-block ml-2"></div>
+
   {% endif %}
 
   {#
     Right Tabs
   #}
-  {% if !isTrashPage() %}
-    {% if page.isPortal() %}
-    <li class="nav-main-right-tab dropdown pull-right">
-      <a
-        {% if user %} role="button" class="dropdown-toggle" data-toggle="dropdown" {% endif %}
-        {% if not user %}
-          class="dropdown-toggle dropdown-toggle-disabled"
-          data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
-        {% endif %}
-      >
-        <i class="icon-options-vertical"></i>
-      </a>
-      <ul class="dropdown-menu">
-        <li><a href="#" data-target="#create-template" data-toggle="modal"><i class="icon-fw icon-magic-wand"></i> {{ t('template.option_label.create/edit') }}</a></li>
-        {% if ('/' !== path) %}
-        <li class="divider"></li>
-        <li><a href="#" data-target="#unportalize" data-toggle="modal"><i class="fa fa-share"></i> {{ t('Unportalize') }}</a></li>
-        {% endif %}
-      </ul>
-    </li>
-    {% else %}
-    <li class="nav-main-right-tab dropdown pull-right">
-      <a
-        {% if user %} role="button" class="dropdown-toggle" data-toggle="dropdown" {% endif %}
-        {% if not user %}
-          class="dropdown-toggle dropdown-toggle-disabled"
-          data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
-        {% endif %}
-      >
-        <i class="icon-options-vertical"></i>
-      </a>
-      <ul class="dropdown-menu">
-        <li><a href="#" data-target="#renamePage" data-toggle="modal"><i class="icon-fw icon-action-redo"></i> {{ t('Move/Rename') }}</a></li>
-        <li><a href="#" data-target="#duplicatePage" data-toggle="modal"><i class="icon-fw icon-docs"></i> {{ t('Duplicate') }}</a></li>
-        <li class="divider"></li>
-        <li><a href="#" data-target="#create-template" data-toggle="modal"><i class="icon-fw icon-magic-wand"></i> {{ t('template.option_label.create/edit') }}</a></li>
-        {% if isDeletablePage() %}
-        <li class="divider"></li>
-        <li><a href="#" data-target="#deletePage" data-toggle="modal"><i class="icon-fw icon-fire text-danger"></i> {{ t('Delete') }}</a></li>
-        {% endif %}
-      </ul>
-    </li>
-    {% endif %}
-  {% endif %}
+  {# to place right side #}
+  <div class="mr-auto"></div>
 
-  <li class="nav-main-right-tab pull-right">
-    <a href="#revision-history" data-toggle="tab">
-      <i class="icon-layers"></i><span class="hidden-xs"> {{ t('History') }}</span>
+  {% if not page.isTopPage() %}
+  <li class="nav-item">
+    <a href="?presentation=1" class="nav-link toggle-presentation">
+      <i class="icon-film"></i><span class="d-none d-sm-inline"> {{ t('Presentation Mode') }}</span>
     </a>
   </li>
-  {% if not page.isPortal() %}
-    <li class="nav-main-right-tab pull-right">
-      <a href="?presentation=1" class="toggle-presentation">
-        <i class="icon-film"></i><span class="hidden-xs"> {{ t('Presentation Mode') }}</span>
-      </a>
-    </li>
+  {% endif %}
+
+  <li class="nav-item">
+    <a href="#revision-history" class="nav-link" data-toggle="tab">
+      <i class="icon-layers"></i><span class="d-none d-sm-inline"> {{ t('History') }}</span>
+    </a>
+  </li>
+
+  {% if !isTrashPage() %}
+    <li id="page-management" class="nav-item dropdown"></li>
   {% endif %}
 
 </ul>
-
-{% else %} {# for creating portal #}
-
-<ul class="nav nav-tabs customtab nav-tabs-create-portal hidden-print">
-
-  <li class="nav-main-left-tab">
-    <a id="portal-form-close" href="#" data-toggle="tab">
-      <i class="icon-action-undo"></i> {{ t('Cancel') }}
-    </a>
-  </li>
-
-  <li class="nav-main-left-tab active">
-    <a>
-      <i class="icon-note"></i> {{ t('Create') }}
-    </a>
-  </li>
 
 {% endif %}
-
-</ul>

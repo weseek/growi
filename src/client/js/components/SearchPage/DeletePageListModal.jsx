@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import Button from 'react-bootstrap/es/Button';
-import Modal from 'react-bootstrap/es/Modal';
-import Checkbox from 'react-bootstrap/es/Checkbox';
+import {
+  Button,
+  Modal, ModalHeader, ModalBody, ModalFooter,
+} from 'reactstrap';
 
 class DeletePageListModal extends React.Component {
 
@@ -30,34 +31,50 @@ class DeletePageListModal extends React.Component {
     });
 
     return (
-      <Modal show={this.props.isShown} onHide={this.props.cancel} className="page-list-delete-modal">
-        <Modal.Header closeButton>
-          <Modal.Title>{t('search_result.deletion_modal_header')}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <ul>{listView}</ul>
-        </Modal.Body>
-        <Modal.Footer>
+      <Modal isOpen={this.props.isShown} toggle={this.props.cancel} className="page-list-delete-modal">
+        <ModalHeader tag="h4" toggle={this.props.cancel} className="bg-danger text-light">
+          {t('search_result.deletion_modal_header')}
+        </ModalHeader>
+        <ModalBody>
+          <ul>
+            {listView}
+          </ul>
+        </ModalBody>
+        <ModalFooter>
           <div className="d-flex justify-content-between">
             <span className="text-danger">{this.props.errorMessage}</span>
             <span className="d-flex align-items-center">
-              <Checkbox className="text-danger" onClick={this.props.toggleDeleteCompletely} inline>
-                {t('search_result.delete_completely')}
-              </Checkbox>
-              <span className="m-l-10">
-                <Button onClick={this.props.confirmedToDelete}>
-                  <i className="icon-trash"></i>
-                  {t('search_result.delete')}
-                </Button>
-              </span>
+              <div className="custom-control custom-checkbox custom-checkbox-danger mr-2">
+                <input
+                  type="checkbox"
+                  className="custom-control-input"
+                  id="customCheck-delete-completely"
+                  checked={this.props.isDeleteCompletely}
+                  onChange={this.props.toggleDeleteCompletely}
+                />
+                <label
+                  className="custom-control-label text-danger"
+                  htmlFor="customCheck-delete-completely"
+                >
+                  {t('search_result.delete_completely')}
+                </label>
+              </div>
+              <Button color={this.props.isDeleteCompletely ? 'danger' : 'light'} onClick={this.props.confirmedToDelete}>
+                <i className="icon-trash"></i>
+                {t('search_result.delete')}
+              </Button>
             </span>
           </div>
-        </Modal.Footer>
+        </ModalFooter>
       </Modal>
     );
   }
 
 }
+
+DeletePageListModal.defaultProps = {
+  isDeleteCompletely: false, // for when undefined is passed
+};
 
 DeletePageListModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
@@ -66,6 +83,7 @@ DeletePageListModal.propTypes = {
   pages: PropTypes.array,
   errorMessage: PropTypes.string,
   cancel: PropTypes.func.isRequired, //                 for cancel evnet handling
+  isDeleteCompletely: PropTypes.bool,
   confirmedToDelete: PropTypes.func.isRequired, //      for confirmed event handling
   toggleDeleteCompletely: PropTypes.func.isRequired, // for delete completely check event handling
 };
