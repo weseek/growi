@@ -71,12 +71,6 @@ html[light] {
   // admin theme box
   $color-theme-color-box: lighten($primary, 20%);
 
-  // alert
-  $color-alert: $color-reversal;
-
-  // badge
-  $color-badge: $color-reversal;
-
   @import 'apply-colors';
   @import 'apply-colors-light';
 
@@ -169,12 +163,6 @@ html[dark] {
 
   // admin theme box
   $color-theme-color-box: $primary;
-
-  // alert
-  $color-alert: $color-reversal;
-
-  // badge
-  $color-badge: $color-reversal;
 
   @import 'apply-colors';
   @import 'apply-colors-dark';
