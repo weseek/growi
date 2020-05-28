@@ -11,6 +11,13 @@
     background: none;
   }
 
+  .alert-url-not-set {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+  }
+
   // layout
   #wrapper {
     height: 100vh;
