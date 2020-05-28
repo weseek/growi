@@ -15,7 +15,7 @@
       <a
         {% if user %} href="#edit" data-toggle="tab" class="nav-link edit-button" {% endif %}
         {% if not user %}
-          class="edit-button edit-button-disabled"
+          class="nav-link edit-button edit-button-disabled"
           data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
         {% endif %}
       >
@@ -28,7 +28,7 @@
       <a
         {% if user %} href="#hackmd" data-toggle="tab" class="nav-link edit-button" {% endif %}
         {% if not user %}
-          class="edit-button edit-button-disabled"
+          class="nav-link edit-button edit-button-disabled"
           data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
         {% endif %}
       >
