@@ -9,7 +9,7 @@
   <li class="nav-item grw-nav-main-left-tab">
     <a
       {% if user %} href="#edit" role="tab" data-toggle="tab" class="nav-link edit-button" {% endif %}
-      {% if not user %} class="edit-button edit-button-disabled" data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}" {% endif %}
+      {% if not user %} class="nav-link edit-button edit-button-disabled" data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}" {% endif %}
     >
       <i class="icon-note"></i> {{ t('Create') }}
     </a>
