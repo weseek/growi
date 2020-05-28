@@ -186,7 +186,11 @@ class SecuritySetting extends React.Component {
                 <a className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('adminOnly') }}>
                   {t('security_setting.admin_only')}
                 </a>
-                <a className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('adminAndAuthor') }}>
+                <a
+                  className="dropdown-item"
+                  type="button"
+                  onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('adminAndAuthor') }}
+                >
                   {t('security_setting.admin_and_author')}
                 </a>
               </div>
