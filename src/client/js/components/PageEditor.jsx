@@ -288,7 +288,7 @@ class PageEditor extends React.Component {
     const emojiStrategy = this.props.appContainer.getEmojiStrategy();
 
     return (
-      <div className="d-flex">
+      <div className="d-flex flex-wrap">
         <div className="page-editor-editor-container" style={{ flex: 1 }}>
           <Editor
             ref={(c) => { this.editor = c }}
