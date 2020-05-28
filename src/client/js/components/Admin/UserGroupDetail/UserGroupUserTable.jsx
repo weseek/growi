@@ -75,6 +75,7 @@ class UserGroupUserTable extends React.Component {
                     <div className="dropdown-menu" role="menu" aria-labelledby={`admin-group-menu-button-${relatedUser._id}`}>
                       <a
                         className="dropdown-item"
+                        type="button"
                         onClick={() => {
                           return this.removeUser(relatedUser.username);
                         }}
