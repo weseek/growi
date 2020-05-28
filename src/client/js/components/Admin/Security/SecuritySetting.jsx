@@ -135,10 +135,10 @@ class SecuritySetting extends React.Component {
                 </span>
               </button>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a className="dropdown-item" onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('Deny') }}>
+                <a className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('Deny') }}>
                   {t('security_setting.guest_mode.deny')}
                 </a>
-                <a className="dropdown-item" onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('Readonly') }}>
+                <a className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('Readonly') }}>
                   {t('security_setting.guest_mode.readonly')}
                 </a>
               </div>
@@ -180,13 +180,13 @@ class SecuritySetting extends React.Component {
                 </span>
               </button>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a className="dropdown-item" onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('anyOne') }}>
+                <a className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('anyOne') }}>
                   {t('security_setting.anyone')}
                 </a>
-                <a className="dropdown-item" onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('adminOnly') }}>
+                <a className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('adminOnly') }}>
                   {t('security_setting.admin_only')}
                 </a>
-                <a className="dropdown-item" onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('adminAndAuthor') }}>
+                <a className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('adminAndAuthor') }}>
                   {t('security_setting.admin_and_author')}
                 </a>
               </div>
