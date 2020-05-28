@@ -75,6 +75,7 @@
 
     .btn {
       width: $grw-sidebar-nav-width;
+      line-height: 1em;
       border-radius: 0;
 
       // icon opacity
@@ -93,14 +94,22 @@
 
     .grw-sidebar-nav-primary-container {
       .btn {
-        padding: 0.8rem 1rem;
-        line-height: 1em;
+        padding: 1em;
         i {
-          font-size: 1.7em;
+          font-size: 2.3em;
         }
 
         &.active {
           @extend %fukidashi-for-active;
+        }
+      }
+    }
+
+    .grw-sidebar-nav-secondary-container {
+      .btn {
+        padding: 0.9em;
+        i {
+          font-size: 1.5em;
         }
       }
     }
