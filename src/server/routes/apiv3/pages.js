@@ -13,7 +13,7 @@ const router = express.Router();
  *    name: Pages
  */
 module.exports = (crowi) => {
-  const loginRequired = require('../../middleware/login-required')(crowi);
+  const loginRequired = require('../../middleware/login-required')(crowi, true);
   const adminRequired = require('../../middleware/admin-required')(crowi);
   const csrf = require('../../middleware/csrf')(crowi);
 
@@ -31,7 +31,7 @@ module.exports = (crowi) => {
    *            description: Return pages recently updated
    *
    */
-  router.get('/recent', async(req, res) => {
+  router.get('/recent', loginRequired, async(req, res) => {
     const limit = 20;
     const offset = parseInt(req.query.offset) || 0;
 
