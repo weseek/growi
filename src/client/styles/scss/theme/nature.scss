@@ -87,6 +87,9 @@ html[dark] {
   $color-dropdown-link-active: $color-reversal;
   $color-dropdown-link-hover: $color-global;
 
+  // Table colors
+  $border-color-table: #aaa; // optional
+
   // admin theme box
   $color-theme-color-box: lighten($primary, 20%);
 
