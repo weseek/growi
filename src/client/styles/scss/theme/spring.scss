@@ -118,6 +118,11 @@ html[dark] {
   @import 'apply-colors';
   @import 'apply-colors-light';
 
+  a#login.link-switch,
+  a#register.link-switch {
+    color: $color-global;
+  }
+
   .table {
     background-color: $bgcolor-global;
   }
