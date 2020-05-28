@@ -120,6 +120,10 @@ html[dark] {
   .table {
     background-color: $themelight;
   }
+
+  #search-typeahead-asynctypeahead {
+    background-color: $bgcolor-global;
+  }
 }
 
 //== Dark Mode
