@@ -2,7 +2,9 @@
 
 ## v4.0.1-RC
 
-*
+* Support: Upgrade libs
+    * @atlaskit/drawer
+    * @atlaskit/navigation-next
 
 ## v4.0.0
 
