@@ -1,5 +1,19 @@
 // determine optional variables
 $bgcolor-subnabvar: darken($bgcolor-global, 3%) !default;
+$color-table: $color-global !default;
+$bgcolor-table: null !default;
+$border-color-table: #dee2e6 !default;
+$color-table-hover: $color-table !default;
+$bgcolor-table-hover: rgba(black, 0.075) !default;
+
+// override bootstrap variables
+$table-color: $color-table;
+$table-bg: $bgcolor-table;
+$table-border-color: $border-color-table;
+$table-hover-color: $color-table-hover;
+$table-hover-bg: $bgcolor-table-hover;
+
+@import 'reboot-bootstrap-tables';
 
 /*
  * Form
