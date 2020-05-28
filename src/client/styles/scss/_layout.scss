@@ -34,26 +34,6 @@
   margin-top: 1rem;
 }
 
-.layout-control {
-  position: fixed;
-  right: 25%;
-  bottom: 25px;
-  z-index: 1;
-  display: block;
-  padding: 5px 8px;
-  font-size: 0.8em;
-  text-align: center;
-  border: solid 1px #ccc;
-  border-right: none;
-  // border-radius: 5px 0 0 5px;
-  transition: 0.3s ease;
-
-  &:hover {
-    text-decoration: none;
-    cursor: pointer;
-  }
-}
-
 .revision-toc {
   // to get on the Attachment row
   z-index: 1;
@@ -112,7 +92,6 @@
       margin-bottom: 20px;
       font-size: 0.9em;
       border: solid 1px #aaa;
-      // border-radius: 5px;
 
       .revision-toc-head {
         display: inline-block;
