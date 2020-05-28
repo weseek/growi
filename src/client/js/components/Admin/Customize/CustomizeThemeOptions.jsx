@@ -25,7 +25,7 @@ class CustomizeThemeOptions extends React.Component {
     const uniqueTheme = [{
       name: 'nature',     bg: '#f9fff3', topbar: '#234136', sidebar: '#118050', theme: '#460039',
     }, {
-      name: 'wood',       bg: '#fffefb', topbar: '#2a2929', sidebar: '#aaa45f', theme: '#dddebf',
+      name: 'wood',       bg: '#fffefb', topbar: '#2a2929', sidebar: '#aaa45f', theme: '#aaa45f',
     }, {
       name: 'island',     bg: 'rgba(183, 226, 219, 1)', topbar: '#2a2929', sidebar: '#0c2a44', theme: '#cef2ef',
     }, {
@@ -33,7 +33,7 @@ class CustomizeThemeOptions extends React.Component {
     }, {
       name: 'antarctic',  bg: '#ffffff', topbar: '#2a2929', sidebar: '#000080', theme: '#fa9913',
     }, {
-      name: 'spring',     bg: '#fff5ee', topbar: '#d3687c', sidebar: '#ff69b4', theme: '#ffb6c1',
+      name: 'spring',     bg: '#ffffff', topbar: '#d3687c', sidebar: '#ffb8c6', theme: '#67a856',
     }, {
       name: 'future',     bg: '#16282d', topbar: '#2a2929', sidebar: '#00b5b7', theme: '#00b5b7',
     }, {
