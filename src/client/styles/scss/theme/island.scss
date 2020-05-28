@@ -16,9 +16,13 @@ html[dark] {
   $bgcolor-inline-code: #f0f0f0; //optional
 
   // Font colors
+  $color-global: #112744;
   $color-reversal: #eeeeee;
-  $color-link: lighten($color-global, 20%);
+  // $color-header: #2b2b2b;
+  $color-link: #3c6d72;
   $color-link-hover: lighten($color-link, 20%);
+  $color-link-wiki: $color-link;
+  $color-link-wiki-hover: lighten($color-link-wiki, 20%);
   $color-link-nabvar: $color-reversal;
   $color-inline-code: #c7254e; // optional
 
