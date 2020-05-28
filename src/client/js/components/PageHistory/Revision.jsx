@@ -75,7 +75,7 @@ export default class Revision extends React.Component {
               <span className="d-inline-block" style={{ minWidth: '90px' }}>
                 {!this.props.hasDiff && <span className="text-muted">{t('No diff')}</span>}
                 {this.props.hasDiff && (
-                  // use dummy href attr (by preventDefault()), because don't apply style by a:not([href])
+                  // use dummy href attr (with preventDefault()), because don't apply style by a:not([href])
                   <a className="diff-view" href="" onClick={this._onDiffOpenClicked}>
                     <i className={iconClass}></i> {t('View diff')}
                   </a>
