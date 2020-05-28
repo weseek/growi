@@ -7,7 +7,6 @@ $color-navbar: #0c2a44;
 $color-global: #3c6d72;
 $color-link-global: $color-global;
 $color-inline-code: #8f5313;
-$color-active-bgnav-tabs: #dbf0ed;
 $color-link-wiki: $color-global;
 $color-link-wiki-hover: rgba($color-global, 0.8);
 $bgcolor-inline-code: darken($color-themelight, 3%);
@@ -135,19 +134,6 @@ html[dark] {
   .page-editor-preview-container {
     background-image: url('/images/themes/island/island.png');
     background-attachment: fixed;
-  }
-
-  /*
-   * Tabs
-   */
-  body:not(.on-edit) .nav.nav-tabs {
-    > li.active > a {
-      background: linear-gradient(
-        rgba($color-active-bgnav-tabs, 0) 0%,
-        rgba($color-active-bgnav-tabs, 0) 90%,
-        $color-active-bgnav-tabs 100%
-      ); // overwrite only the bottom pixel
-    }
   }
 
   /* Table */
