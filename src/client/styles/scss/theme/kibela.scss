@@ -61,12 +61,6 @@ html[dark] {
   // admin theme box
   $color-theme-color-box: lighten($bgcolor-theme, 20%);
 
-  // alert
-  $color-alert: $color-reversal;
-
-  // badge
-  $color-badge: $color-reversal;
-
   // Sidebar
   $bgcolor-sidebar: $bgcolor-theme;
   $color-sidebar-context: $color-reversal;

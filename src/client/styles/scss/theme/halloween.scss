@@ -103,12 +103,6 @@ html[dark] {
   // admin theme box
   $color-theme-color-box: lighten($primary, 20%);
 
-  // alert
-  $color-alert: $color-reversal;
-
-  // badge
-  $color-badge: $color-reversal;
-
   @import 'apply-colors';
   @import 'apply-colors-dark';
 
@@ -121,5 +115,4 @@ html[dark] {
     color: #edba4a;
     background: #000000;
   }
-
 }
