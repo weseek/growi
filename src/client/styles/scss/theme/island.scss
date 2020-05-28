@@ -2,15 +2,9 @@
 @import '../override-bootstrap-variables';
 
 $color-themelight: rgba(183, 226, 219, 1);
-// $primary: #97cbc3;
 $color-navbar: #0c2a44;
 $color-global: #3c6d72;
 $color-link-global: $color-global;
-$color-inline-code: #8f5313;
-$color-link-wiki: $color-global;
-$color-link-wiki-hover: rgba($color-global, 0.8);
-$bgcolor-inline-code: darken($color-themelight, 3%);
-
 $dark: darken($color-global, 5%);
 
 html[light],
