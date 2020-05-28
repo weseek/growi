@@ -13,26 +13,6 @@
 // $light: #;
 // $dark: #;
 
-.growi:not(.login-page) {
-  // add background-image
-  #page-wrapper,
-  .page-editor-preview-container {
-    background-image: url('/images/themes/spring/spring02.svg');
-    background-attachment: fixed;
-    background-position: bottom;
-    background-size: cover;
-  }
-}
-
-.growi.login-page {
-  #page-wrapper {
-    background-image: url('/images/themes/spring/spring.svg');
-    background-attachment: fixed;
-    background-position: bottom;
-    background-size: cover;
-  }
-}
-
 $themecolor: #ffb8c6;
 $themelight: #fff0f5;
 $subthemecolor: #67a856;
@@ -117,6 +97,32 @@ html[dark] {
 
   @import 'apply-colors';
   @import 'apply-colors-light';
+
+  .growi:not(.login-page) {
+    // add background-image
+    #page-wrapper,
+    .page-editor-preview-container {
+      background-image: url('/images/themes/spring/spring02.svg');
+      background-attachment: fixed;
+      background-position: bottom;
+      background-size: cover;
+    }
+  }
+
+  .growi.login-page {
+    #page-wrapper {
+      background-color: $themelight;
+      background-image: url('/images/themes/spring/spring.svg');
+      background-attachment: fixed;
+      background-position: bottom;
+      background-size: cover;
+    }
+  }
+
+  a#login.link-switch,
+  a#register.link-switch {
+    color: $color-global;
+  }
 
   .table {
     background-color: $bgcolor-global;

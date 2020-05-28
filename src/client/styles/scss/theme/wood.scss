@@ -134,6 +134,18 @@ html[dark] {
       border: none;
     }
   }
+
+  // login and register
+
+  .login-header,
+  .login-dialog {
+    background-color: rgba(black, 0.1);
+  }
+
+  a#login.link-switch,
+  a#register.link-switch {
+    color: rgba(black, 0.5);
+  }
 }
 
 //== Dark Mode

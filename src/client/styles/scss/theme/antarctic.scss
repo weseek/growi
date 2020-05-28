@@ -127,6 +127,11 @@ html[dark] {
       background-color: transparent;
     }
   }
+
+  a#login.link-switch,
+  a#register.link-switch {
+    color: rgba(black, 0.5);
+  }
 }
 
 //== Dark Mode
