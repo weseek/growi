@@ -83,7 +83,7 @@
 
             {% if req.form.errors.length > 0 %}
             <div class="alert alert-danger">
-              <ul>
+              <ul class="mb-0">
               {% for error in req.form.errors %}
                 <li>{{ error }}</li>
               {% endfor %}
