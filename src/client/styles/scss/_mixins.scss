@@ -1,5 +1,3 @@
-@import 'layout_variable';
-
 @mixin variable-font-size($basesize) {
   font-size: $basesize * 0.6;
 

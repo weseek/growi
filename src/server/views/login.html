@@ -83,7 +83,7 @@
 
             {% if req.form.errors.length > 0 %}
             <div class="alert alert-danger">
-              <ul>
+              <ul class="mb-0">
               {% for error in req.form.errors %}
                 <li>{{ error }}</li>
               {% endfor %}
@@ -91,7 +91,7 @@
             </div>
             {% endif %}
           </div>
-          <div id="register-form-errors">
+          <div id="register-form-errors" class="px-3">
             {% set message = req.flash('registerWarningMessage') %}
             {% if message.length %}
             <div class="alert alert-danger">

@@ -111,7 +111,7 @@ class ManageGlobalNotification extends React.Component {
 
 
         <div className="row">
-          <div className="m-t-20 form-box col-md-12">
+          <div className="form-box col-md-12">
             <h2 className="border-bottom mb-5">{t('notification_setting.notification_detail')}</h2>
           </div>
 

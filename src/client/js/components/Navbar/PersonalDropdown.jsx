@@ -70,11 +70,6 @@ const PersonalDropdown = (props) => {
 
         <div className="dropdown-divider"></div>
 
-        <a className="dropdown-item" href={`/user/${user.username}#user-draft-list`}><i className="icon-fw icon-docs"></i>{ t('List Drafts') }</a>
-        <a className="dropdown-item" href="/trash"><i className="icon-fw icon-trash"></i>{ t('Deleted Pages') }</a>
-
-        <div className="dropdown-divider"></div>
-
         <h6 className="dropdown-header">Color Scheme</h6>
         <form className="px-4">
           <div className="form-row align-items-center">
