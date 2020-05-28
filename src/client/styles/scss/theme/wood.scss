@@ -60,6 +60,13 @@ html[dark] {
   // List Group colors
   $color-list-hover: #eee;
 
+  // Table colors
+  // $color-table: #; // optional
+  // $bgcolor-table: #; // optional
+  $border-color-table: $primary; // optional
+  // $color-table-hover: #; // optional
+  // $bgcolor-table-hover: #; // optional
+
   // Navbar
   $bgcolor-navbar: #2a2929;
   $bgcolor-search-top-dropdown: $themecolor;
