@@ -1,6 +1,7 @@
 @import '../variables';
 @import '../override-bootstrap-variables';
 
+$color-primary: #97cbc3;
 $color-themelight: rgba(183, 226, 219, 1);
 $color-global: #3c6d72;
 
@@ -32,7 +33,7 @@ html[dark] {
 
   // Navbar
   $bgcolor-navbar: #302e2e;
-  $bgcolor-search-top-dropdown: $primary;
+  $bgcolor-search-top-dropdown: $color-primary;
   $border-image-navbar: linear-gradient(to right, #5ce4ef 0%, #5953eb 100%);
 
   // Logo colors
@@ -124,7 +125,7 @@ html[dark] {
   .table > tfoot > tr > td,
   .table > thead > tr > th,
   .table-bordered {
-    border-top: 1px solid $primary;
+    border-top: 1px solid $color-primary;
   }
 
   .table-bordered > thead > tr > th,
@@ -133,15 +134,15 @@ html[dark] {
   .table-bordered > thead > tr > td,
   .table-bordered > tbody > tr > td,
   .table-bordered > tfoot > tr > td {
-    border: 1px solid $primary;
+    border: 1px solid $color-primary;
   }
 
   .table > thead > tr > th {
-    border-bottom: 1px solid $primary;
+    border-bottom: 1px solid $color-primary;
   }
 
   .table-bordered {
-    border: 1px solid $primary;
+    border: 1px solid $color-primary;
   }
 
   // login page
