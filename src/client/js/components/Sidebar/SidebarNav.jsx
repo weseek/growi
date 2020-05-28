@@ -66,6 +66,7 @@ class SidebarNav extends React.Component {
 
   render() {
     const { isAdmin, currentUsername } = this.props.appContainer;
+    const isLoggedIn = currentUsername != null;
 
     const primaryItems = [
       this.generatePrimaryItemObj('custom', 'Custom Sidebar', 'code'),
@@ -74,21 +75,20 @@ class SidebarNav extends React.Component {
       // this.generatePrimaryItemObj('favorite', 'Favorite', 'icon-star'),
     ];
 
-    const secondaryItems = [
+    let secondaryItems = [
+      isAdmin && (
+        this.generateSecondaryItemObj('admin', 'Admin', 'settings', '/admin')
+      ),
+      isLoggedIn && (
+        this.generateSecondaryItemObj('draft', 'Draft', 'file_copy', `/user/${currentUsername}#user-draft-list`)
+      ),
       this.generateSecondaryItemObj('help', 'Help', 'help', 'https://docs.growi.org', true),
+      isLoggedIn && (
+        this.generateSecondaryItemObj('trash', 'Trash', 'delete', '/trash')
+      ),
     ];
-
-    if (currentUsername != null) {
-      secondaryItems.unshift( // add to the beginning
-        this.generateSecondaryItemObj('draft', 'Draft', 'file_copy', `/user/${currentUsername}#user-draft-list`),
-        this.generateSecondaryItemObj('trash', 'Trash', 'delete', '/trash'),
-      );
-    }
-    if (isAdmin) {
-      secondaryItems.unshift( // add to the beginning
-        this.generateSecondaryItemObj('admin', 'Admin', 'settings', '/admin'),
-      );
-    }
+    // remove 'false' items
+    secondaryItems = secondaryItems.filter(item => item !== false);
 
     return (
       <GlobalNav

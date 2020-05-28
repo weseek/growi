@@ -40,6 +40,14 @@ html[light] {
   // $color-list-active: $color-reversal; // optional
   // $bgcolor-list-active: $primary; // optional
 
+  // Table colors
+  // $bgcolor-subnabvar: #; // optional
+  // $color-table: #; // optional
+  // $bgcolor-table: #; // optional
+  // $border-color-table: #; // optional
+  // $color-table-hover: #; // optional
+  // $bgcolor-table-hover: #; // optional
+
   // Navbar
   $bgcolor-navbar: #2a2929;
   $bgcolor-search-top-dropdown: #209fd8;
@@ -68,7 +76,6 @@ html[light] {
   // $bgcolor-subnabvar: #fafafa; // optional
 
   // Tabs
-  // $bordercolor-nav-tabs: #; // optional
   // $color-nav-tabs-link-active: #; //optional
   // $bordercolor-nav-tabs-hover: # # $bordercolor-nav-tabs; // optional
   // $bordercolor-nav-tabs-active: # # $bgcolor-global; // optional
@@ -125,6 +132,13 @@ html[dark] {
   // $color-list-hover: $color-reversal; // optional
   $color-list-active: white; // optional
   // $bgcolor-list-active: $primary; // optional
+
+  // Table colors
+  // $color-table: #; // optional
+  // $bgcolor-table: #; // optional
+  // $border-color-table: #; // optional
+  // $color-table-hover: #; // optional
+  // $bgcolor-table-hover: #; // optional
 
   // Navbar
   $bgcolor-navbar: #2a2929;
