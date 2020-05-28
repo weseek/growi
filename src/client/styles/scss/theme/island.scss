@@ -26,7 +26,7 @@ html[dark] {
   // List Group colors
   $color-list: $color-global;
   $bgcolor-list: lighten($color-themelight, 10%);
-  $color-list-active: $color-reversal;
+  $color-list-active: $color-global;
   $bgcolor-list-active: $primary;
   $color-list-hover: $color-reversal;
 
