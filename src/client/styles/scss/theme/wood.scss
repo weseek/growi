@@ -63,7 +63,7 @@ html[dark] {
   // Navbar
   $bgcolor-navbar: #2a2929;
   $bgcolor-search-top-dropdown: $themecolor;
-  $border-image-navbar: linear-gradient(to right, #5c78ef 0%, #16bc42 50%, #5c78ef 100%);
+  $border-image-navbar: linear-gradient(to right, $themecolor 0%, darken($themecolor, 20%) 100%);
 
   // Logo colors
   $bgcolor-logo: darken($themecolor, 10%);
