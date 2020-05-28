@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { withTranslation } from 'react-i18next';
-
 import {
   withNavigationUIController,
   LayoutManager,
@@ -32,7 +30,24 @@ class Sidebar extends React.Component {
   };
 
   componentWillMount() {
+    this.hackUIController();
     this.initBreakpointEvents();
+  }
+
+  /**
+   * hack and override UIController.storeState
+   *
+   * Since UIController is an unstated container, setState() in storeState method should be awaited before writing to cache.
+   */
+  hackUIController() {
+    const { navigationUIController } = this.props;
+
+    // see: @atlaskit/navigation-next/dist/esm/ui-controller/UIController.js
+    const orgStoreState = navigationUIController.storeState;
+    navigationUIController.storeState = async(state) => {
+      await navigationUIController.setState(state);
+      orgStoreState(state);
+    };
   }
 
   initBreakpointEvents() {
@@ -139,13 +154,12 @@ class Sidebar extends React.Component {
 }
 
 const SidebarWithNavigationUI = withNavigationUIController(Sidebar);
-const SidebarWithNavigationUIAndTranslation = withTranslation()(SidebarWithNavigationUI);
 
 /**
  * Wrapper component for using unstated
  */
 const SidebarWrapper = (props) => {
-  return createSubscribedElement(SidebarWithNavigationUIAndTranslation, props, [AppContainer]);
+  return createSubscribedElement(SidebarWithNavigationUI, props, [AppContainer]);
 };
 
 export default () => (
