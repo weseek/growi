@@ -157,7 +157,7 @@ export default class PageContainer extends Container {
   }
 
   async updateImageUrlCached(users) {
-    const noImageCacheUsers = users.filter((user) => { return !user.imageUrlCached });
+    const noImageCacheUsers = users.filter((user) => { return user.imageUrlCached == null });
     if (noImageCacheUsers.length === 0) {
       return;
     }
