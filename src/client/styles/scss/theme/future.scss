@@ -52,6 +52,12 @@ html[dark] {
   // Sidebar list group
   $bgcolor-sidebar-list-group: #162126; // optional
 
+  // Sidebar resize button
+  $color-resize-button: #0E2329;
+  $bgcolor-resize-button: #00C2C4;
+  $color-resize-button-hover: #0E2329;
+  $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
+
   // Icon colors
   $color-editor-icons: $color-global;
 
