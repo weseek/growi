@@ -31,7 +31,7 @@ module.exports = (crowi) => {
    *            description: Return pages recently updated
    *
    */
-  router.get('/recent', loginRequired, async(req, res) => {
+  router.get('/recent', async(req, res) => {
     const limit = 20;
     const offset = parseInt(req.query.offset) || 0;
 
