@@ -1,6 +1,10 @@
 # CHANGES
 
-## v4.0.0-RC
+## v4.0.1-RC
+
+*
+
+## v4.0.0
 
 ### BREAKING CHANGES
 
@@ -8,6 +12,8 @@
 * Crowi Classic Layout is removed
 * 'default-dark' theme is now merged as a dark mode variant of 'default' theme
 * 'blue-night' theme is now merged as a dark mode variant of 'mono-blue' theme
+
+Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/40x.html>
 
 ### Updates
 
