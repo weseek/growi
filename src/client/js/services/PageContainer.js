@@ -130,7 +130,6 @@ export default class PageContainer extends Container {
 
     const seenUserListElem = document.getElementById('seen-user-list');
     if (seenUserListElem != null) {
-
       const userIdsStr = seenUserListElem.dataset.userIds;
       if (userIdsStr === '') {
         return;
@@ -146,13 +145,11 @@ export default class PageContainer extends Container {
 
       const noImageCacheUserIds = noImageCacheUsers.map((user) => { return user.id });
       try {
-        const res = await this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
-        const usersUpdated = users.filter((user) => { return user.imageUrlCached }).concat(res.data.updatedUsers);
-        this.setState({ seenUsers: usersUpdated });
+        await this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
       }
       catch (err) {
+        // Error alert doesn't apear, because user don't need to notice this error.
         logger.error(err);
-        throw new Error(err);
       }
     }
 
@@ -163,8 +160,23 @@ export default class PageContainer extends Container {
       if (userIdsStr === '') {
         return;
       }
+
       const { users } = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr });
       this.setState({ likerUsers: users });
+
+      const noImageCacheUsers = users.filter((user) => { return !user.imageUrlCached });
+      if (noImageCacheUsers.length === 0) {
+        return;
+      }
+
+      const noImageCacheUserIds = noImageCacheUsers.map((user) => { return user.id });
+      try {
+        await this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
+      }
+      catch (err) {
+        // Error alert doesn't apear, because user don't need to notice this error.
+        logger.error(err);
+      }
     }
   }
 
