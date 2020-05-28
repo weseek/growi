@@ -1,11 +1,11 @@
-import { pathUtils } from 'growi-commons';
+const { pathUtils } = require('growi-commons');
 
 // https://regex101.com/r/BahpKX/2
 const PATTERN_INCLUDE_DATE = /^(.+\/[^/]+)\/(\d{4}|\d{4}\/\d{2}|\d{4}\/\d{2}\/\d{2})$/;
 // https://regex101.com/r/WVpPpY/1
 const PATTERN_DEFAULT = /^((.*)\/)?([^/]+)$/;
 
-export default class DevidedPagePath {
+class DevidedPagePath {
 
   constructor(path, skipNormalize = false, evalDatePath = false) {
 
@@ -43,3 +43,5 @@ export default class DevidedPagePath {
   }
 
 }
+
+module.exports = DevidedPagePath;
