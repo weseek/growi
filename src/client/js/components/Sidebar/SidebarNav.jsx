@@ -75,10 +75,15 @@ class SidebarNav extends React.Component {
     ];
 
     const secondaryItems = [
-      this.generateSecondaryItemObj('draft', 'Draft', 'file_copy', `/user/${currentUsername}#user-draft-list`),
       this.generateSecondaryItemObj('help', 'Help', 'help', 'https://docs.growi.org', true),
-      this.generateSecondaryItemObj('trash', 'Trash', 'delete', '/trash'),
     ];
+
+    if (currentUsername != null) {
+      secondaryItems.unshift( // add to the beginning
+        this.generateSecondaryItemObj('draft', 'Draft', 'file_copy', `/user/${currentUsername}#user-draft-list`),
+        this.generateSecondaryItemObj('trash', 'Trash', 'delete', '/trash'),
+      );
+    }
     if (isAdmin) {
       secondaryItems.unshift( // add to the beginning
         this.generateSecondaryItemObj('admin', 'Admin', 'settings', '/admin'),
