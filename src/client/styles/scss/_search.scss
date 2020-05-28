@@ -1,5 +1,3 @@
-@import 'layout_variable';
-
 .search-listpage-icon {
   font-size: 16px;
   color: #999;
@@ -137,7 +135,8 @@
       > li {
         > a {
           padding: 2px 8px;
-          border-radius: 0;
+          // TODO: remove or set value for GW-2531
+          // border-radius: 0;
 
           &:hover {
             color: inherit;
@@ -187,7 +186,7 @@
         padding: 16px;
         font-size: 13px;
         border: solid 1px #ccc;
-        border-radius: 3px;
+        // border-radius: 3px;
       }
     }
   }
@@ -211,10 +210,5 @@
 .grw-search-table {
   caption {
     display: table-header-group;
-  }
-
-  code {
-    padding: 0.25em;
-    background: $grw-alice-blue;
   }
 }
