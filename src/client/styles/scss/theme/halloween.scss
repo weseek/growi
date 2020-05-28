@@ -112,27 +112,9 @@ html[dark] {
   @import 'apply-colors';
   @import 'apply-colors-dark';
 
-  .search-top {
-    input {
-      background-color: #eceded;
-    }
-
-    i {
-      color: #949494;
-    }
-  }
-
   // Table
   .table {
     color: $color-global;
-  }
-
-  .table-bordered {
-    //微妙
-    th,
-    td {
-      border: 1px solid $themecolor;
-    }
   }
 
   pre {
@@ -140,7 +122,4 @@ html[dark] {
     background: #000000;
   }
 
-  .authors {
-    color: #302e2e;
-  }
 }
