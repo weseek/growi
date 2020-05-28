@@ -30,6 +30,13 @@ html[dark] {
   $bgcolor-list-active: $primary;
   $color-list-hover: $color-reversal;
 
+  // Table colors
+  // $color-table: #; // optional
+  // $bgcolor-table: #; // optional
+  $border-color-table: $primary; // optional
+  // $color-table-hover: #; // optional
+  // $bgcolor-table-hover: #; // optional
+
   // Navbar
   $bgcolor-navbar: #302e2e;
   $bgcolor-search-top-dropdown: $color-primary;
@@ -71,7 +78,7 @@ html[dark] {
   $color-dropdown-link-hover: $color-global;
 
   // admin theme box
-  $color-theme-color-box: lighten($primary, 20%);
+  $color-theme-color-box: darken($primary, 15%);
 
   @import 'apply-colors';
   @import 'apply-colors-light';
