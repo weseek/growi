@@ -59,11 +59,11 @@ html[dark] {
   $color-list-hover: $themecolor;
 
   // Search Top
-  $color-search: #814B02;
+  $color-search: $primary;
 
   // Navbar
   $bgcolor-navbar: #ECEDED;
-  $bgcolor-search-top-dropdown: #814B02;
+  $bgcolor-search-top-dropdown: $primary;
   $border-image-navbar: linear-gradient(90deg, #E3B7FF 0%, #134774 100%);
 
   // Logo colors
@@ -82,6 +82,12 @@ html[dark] {
 
   // Sidebar list group
   $bgcolor-sidebar-list-group: #2C2926; // optional
+
+  // Sidebar resize button
+  $color-resize-button: #EFFCFA;
+  $bgcolor-resize-button: $primary;
+  $color-resize-button-hover: #EFFCFA;
+  $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
 
   // Icon colors
   $color-editor-icons: $color-global;
