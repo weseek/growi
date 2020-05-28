@@ -135,8 +135,7 @@
       > li {
         > a {
           padding: 2px 8px;
-          // TODO: remove or set value for GW-2531
-          // border-radius: 0;
+          border-radius: 0;
 
           &:hover {
             color: inherit;
@@ -186,7 +185,6 @@
         padding: 16px;
         font-size: 13px;
         border: solid 1px #ccc;
-        // border-radius: 3px;
       }
     }
   }
