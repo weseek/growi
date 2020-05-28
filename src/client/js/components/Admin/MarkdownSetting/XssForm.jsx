@@ -75,7 +75,7 @@ class XssForm extends React.Component {
               />
               <label className="custom-control-label w-100" htmlFor="xssOption2">
                 <p className="font-weight-bold">{t('admin:markdown_setting.xss_options.recommended_setting')}</p>
-                <div className="m-t-15">
+                <div className="mt-4">
                   <div className="d-flex justify-content-between">
                     {t('admin:markdown_setting.xss_options.tag_names')}
                   </div>
@@ -88,7 +88,7 @@ class XssForm extends React.Component {
                     defaultValue={tags}
                   />
                 </div>
-                <div className="m-t-15">
+                <div className="mt-4">
                   <div className="d-flex justify-content-between">
                     {t('admin:markdown_setting.xss_options.tag_attributes')}
                   </div>
