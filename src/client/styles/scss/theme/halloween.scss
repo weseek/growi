@@ -20,7 +20,7 @@ $light: lighten($secondary, 10%);
 // $dark: #;
 
 .growi:not(.login-page) {
-  #wrapper>.navbar {
+  #wrapper > .navbar {
     background-image: url(/images/themes/halloween/halloween-navbar.jpg);
   }
 
@@ -44,12 +44,12 @@ html[dark] {
   $color-global: #e9af2b;
   $color-reversal: #eeeeee;
   // $color-header: #2b2b2b;
-  $color-link: #AA97CB;
+  $color-link: #aa97cb;
   $color-link-hover: lighten($color-link, 20%);
-  $color-link-wiki: #AA97CB;
+  $color-link-wiki: #aa97cb;
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
-  $color-link-nabvar: #A7A7A7;
-  $color-inline-code: #C7254E; // optional
+  $color-link-nabvar: #a7a7a7;
+  $color-inline-code: #c7254e; // optional
 
   // List Group colors
   $color-list: #979797;
@@ -62,31 +62,30 @@ html[dark] {
   $color-search: $primary;
 
   // Navbar
-  $bgcolor-navbar: #ECEDED;
+  $bgcolor-navbar: #eceded;
   $bgcolor-search-top-dropdown: $primary;
-  $border-image-navbar: linear-gradient(90deg, #E3B7FF 0%, #134774 100%);
+  $border-image-navbar: linear-gradient(90deg, #e3b7ff 0%, #134774 100%);
 
   // Logo colors
   $bgcolor-logo: darken($themecolor, 10%);
-  $fillcolor-logo-mark: #DEDEDE;
-
+  $fillcolor-logo-mark: #dedede;
 
   // Sidebar
-  $bgcolor-sidebar: #162B33;
+  $bgcolor-sidebar: #162b33;
   $bgcolor-sidebar-nav-item-active: rgba(#969494, 0.3); // optional
   $text-shadow-sidebar-nav-item-active: 0px 0px 10px #969494; // optional
 
   // Sidebar contents
-  $color-sidebar-context: #AA97CB;
-  $bgcolor-sidebar-context: #1D2126;
+  $color-sidebar-context: #aa97cb;
+  $bgcolor-sidebar-context: #1d2126;
 
   // Sidebar list group
-  $bgcolor-sidebar-list-group: #2C2926; // optional
+  $bgcolor-sidebar-list-group: #2c2926; // optional
 
   // Sidebar resize button
-  $color-resize-button: #EFFCFA;
+  $color-resize-button: #effcfa;
   $bgcolor-resize-button: $primary;
-  $color-resize-button-hover: #EFFCFA;
+  $color-resize-button-hover: #effcfa;
   $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
 
   // Icon colors
@@ -115,7 +114,7 @@ html[dark] {
 
   .search-top {
     input {
-      background-color: #ECEDED;
+      background-color: #eceded;
     }
 
     i {
@@ -129,7 +128,7 @@ html[dark] {
   }
 
   .table-bordered {
-
+    //微妙
     th,
     td {
       border: 1px solid $themecolor;
@@ -137,13 +136,11 @@ html[dark] {
   }
 
   pre {
-    color: #EDBA4A;
+    color: #edba4a;
     background: #000000;
   }
 
   .authors {
-    color: #302E2E;
+    color: #302e2e;
   }
-
-
 }
