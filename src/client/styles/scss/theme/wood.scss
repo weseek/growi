@@ -71,12 +71,12 @@ html[dark] {
   $color-editor-icons: $color-global;
 
   // Sidebar
-  $bgcolor-sidebar: $bgcolor-navbar;
+  $bgcolor-sidebar: transparent;
   // Sidebar contents
   $color-sidebar-context: #9d7406;
-  $bgcolor-sidebar-context: #f0efe7;
+  $bgcolor-sidebar-context: transparent;
   // Sidebar list group
-  $bgcolor-sidebar-list-group: #f7f5f1;
+  $bgcolor-sidebar-list-group: rgba(#f7f5f1, 0.5);
   // Sidebar resize button
   $color-resize-button: white;
   $bgcolor-resize-button: $themecolor;
@@ -102,33 +102,29 @@ html[dark] {
   @import 'apply-colors';
   @import 'apply-colors-light';
 
-  // hljs
-  .hljs {
-    color: #433005;
-    background-color: $bgcolor-inline-code;
-  }
-
-  // List
-  .list-group .list-group-item {
-    background: transparent;
-  }
-
-  // Search Top
-  .search-top {
-    .btn-secondary.dropdown-toggle {
-      color: $color-search;
-    }
+  /*
+   * Modal
+   */
+  .modal-dialog .modal-header.bg-primary {
+    background-image: url('/images/themes/wood/wood-navbar.jpg');
   }
 
   // Sidebar
-  .grw-sidebar div[data-testid='GlobalNavigation'] {
-    * {
+  .grw-sidebar {
+    div[data-testid='GlobalNavigation'] {
       background-image: url('/images/themes/wood/wood-navbar.jpg');
-    }
 
-    button,
-    .btn {
-      border: none;
+      button,
+      .btn {
+        border: none;
+      }
+    }
+    div[data-testid='ContextualNavigation'] {
+      > div {
+        background-color: rgba(white, 0.6);
+        background-image: url('/images/themes/wood/wood-navbar.jpg');
+        background-blend-mode: lighten;
+      }
     }
   }
 
