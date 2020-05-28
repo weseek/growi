@@ -92,35 +92,6 @@ html[dark] {
     background-attachment: fixed;
   }
 
-  /* Table */
-  .table > thead > tr > th,
-  .table > tbody > tr > th,
-  .table > tfoot > tr > th,
-  .table > thead > tr > td,
-  .table > tbody > tr > td,
-  .table > tfoot > tr > td,
-  .table > thead > tr > th,
-  .table-bordered {
-    border-top: 1px solid $color-primary;
-  }
-
-  .table-bordered > thead > tr > th,
-  .table-bordered > tbody > tr > th,
-  .table-bordered > tfoot > tr > th,
-  .table-bordered > thead > tr > td,
-  .table-bordered > tbody > tr > td,
-  .table-bordered > tfoot > tr > td {
-    border: 1px solid $color-primary;
-  }
-
-  .table > thead > tr > th {
-    border-bottom: 1px solid $color-primary;
-  }
-
-  .table-bordered {
-    border: 1px solid $color-primary;
-  }
-
   // login page
   .nologin {
     &.login-page {
