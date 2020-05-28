@@ -6,10 +6,16 @@ export default class Hotkeys extends React.Component {
   constructor(props) {
     super(props);
     this.onDetected = this.onDetected.bind(this);
+    this.state = {
+      sampleCommand: true,
+    };
+    this.onDetected = this.onDetected.bind(this);
   }
 
   onDetected() {
-    console.log('this button was clicked from Hotkeys component!!');
+    this.setState({
+      sampleCommand: !this.state.sampleCommand,
+    });
   }
 
   render() {
