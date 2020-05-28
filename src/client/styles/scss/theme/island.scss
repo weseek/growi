@@ -6,7 +6,8 @@ $color-themelight: rgba(183, 226, 219, 1);
 
 html[light],
 html[dark] {
-  $primary: #70e0d1;
+  // $primary: #70e0d1;
+  $primary: $color-primary;
   // Background colors
   $bgcolor-card: #f5f5f5;
   $bgcolor-global: lighten($color-themelight, 10%);
