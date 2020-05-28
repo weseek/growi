@@ -3,10 +3,6 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import {
-  GlobalNav,
-} from '@atlaskit/navigation-next';
-
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
@@ -28,36 +24,28 @@ class SidebarNav extends React.Component {
     }
   }
 
-  generatePrimaryItemObj(id, label, iconName) {
+  PrimaryItem = ({ id, label, iconName }) => {
     const isSelected = this.props.currentContentsId === id;
 
-    return {
-      id,
-      component: ({ className }) => (
-        <div className={`${className} grw-global-item-container ${isSelected ? 'active' : ''}`}>
-          <button
-            type="button"
-            className={`btn btn-primary btn-lg ${isSelected ? 'active' : ''}`}
-            onClick={() => this.itemSelectedHandler(id)}
-          >
-            <i className="material-icons">{iconName}</i>
-          </button>
-        </div>
-      ),
-    };
+    return (
+      <button
+        type="button"
+        className={`d-block btn btn-primary btn-lg ${isSelected ? 'active' : ''}`}
+        onClick={() => this.itemSelectedHandler(id)}
+      >
+        <i className="material-icons">{iconName}</i>
+      </button>
+    );
   }
 
-  generateSecondaryItemObj(id, label, iconName, href, isBlank) {
-    return {
-      id,
-      component: ({ className }) => (
-        <div className={`${className} grw-global-item-container`}>
-          <a href={href} className="btn btn-primary" target={`${isBlank ? '_blank' : ''}`}>
-            <i className="material-icons">{iconName}</i>
-          </a>
-        </div>
-      ),
-    };
+  SecondaryItem({
+    label, iconName, href, isBlank,
+  }) {
+    return (
+      <a href={href} className="d-block btn btn-primary" target={`${isBlank ? '_blank' : ''}`}>
+        <i className="material-icons">{iconName}</i>
+      </a>
+    );
   }
 
   generateIconFactory(classNames) {
@@ -68,33 +56,23 @@ class SidebarNav extends React.Component {
     const { isAdmin, currentUsername } = this.props.appContainer;
     const isLoggedIn = currentUsername != null;
 
-    const primaryItems = [
-      this.generatePrimaryItemObj('custom', 'Custom Sidebar', 'code'),
-      this.generatePrimaryItemObj('recent', 'Recent Changes', 'update'),
-      // this.generatePrimaryItemObj('tag', 'Tags', 'icon-tag'),
-      // this.generatePrimaryItemObj('favorite', 'Favorite', 'icon-star'),
-    ];
-
-    let secondaryItems = [
-      isAdmin && (
-        this.generateSecondaryItemObj('admin', 'Admin', 'settings', '/admin')
-      ),
-      isLoggedIn && (
-        this.generateSecondaryItemObj('draft', 'Draft', 'file_copy', `/user/${currentUsername}#user-draft-list`)
-      ),
-      this.generateSecondaryItemObj('help', 'Help', 'help', 'https://docs.growi.org', true),
-      isLoggedIn && (
-        this.generateSecondaryItemObj('trash', 'Trash', 'delete', '/trash')
-      ),
-    ];
-    // remove 'false' items
-    secondaryItems = secondaryItems.filter(item => item !== false);
+    const { PrimaryItem, SecondaryItem } = this;
 
     return (
-      <GlobalNav
-        primaryItems={primaryItems}
-        secondaryItems={secondaryItems}
-      />
+      <div className="grw-sidebar-nav d-flex flex-column justify-content-between">
+        <div className="grw-sidebar-nav-primary-container">
+          <PrimaryItem id="custom" label="Custom Sidebar" iconName="code" />
+          <PrimaryItem id="recent" label="Recent Changes" iconName="update" />
+          {/* <PrimaryItem id="tag" label="Tags" iconName="icon-tag" /> */}
+          {/* <PrimaryItem id="favorite" label="Favorite" iconName="icon-star" /> */}
+        </div>
+        <div className="grw-sidebar-nav-secondary-container">
+          {isAdmin && <SecondaryItem label="Admin" iconName="settings" href="/admin" />}
+          {isLoggedIn && <SecondaryItem label="Draft" iconName="file_copy" href={`/user/${currentUsername}#user-draft-list`} />}
+          <SecondaryItem label="Help" iconName="help" href="https://docs.growi.org" isBlank />
+          {isLoggedIn && <SecondaryItem label="Trash" iconName="delete" href="/trash" />}
+        </div>
+      </div>
     );
   }
 

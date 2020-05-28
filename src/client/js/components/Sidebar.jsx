@@ -99,7 +99,7 @@ class Sidebar extends React.Component {
         break;
     }
 
-    return contents;
+    return <div className="grw-sidebar-content-container">{contents}</div>;
   }
 
   render() {
