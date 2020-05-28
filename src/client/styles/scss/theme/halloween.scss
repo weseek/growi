@@ -70,11 +70,15 @@ html[dark] {
   $bgcolor-logo: darken($themecolor, 10%);
   $fillcolor-logo-mark: #DEDEDE;
 
+
   // Sidebar
   $bgcolor-sidebar: #162B33;
+  $bgcolor-sidebar-nav-item-active: rgba(#969494, 0.3); // optional
+  $text-shadow-sidebar-nav-item-active: 0px 0px 10px #969494; // optional
+
+  // Sidebar contents
   $color-sidebar-context: #AA97CB;
   $bgcolor-sidebar-context: #1D2126;
-  $text-shadow-sidebar-nav-item-active: 0px 0px 1px red; // optional
 
   // Sidebar list group
   $bgcolor-sidebar-list-group: #2C2926; // optional
@@ -126,29 +130,6 @@ html[dark] {
     }
   }
 
-  // Nav
-  .nav-tabs {
-    .nav-item {
-      a {
-        color: #AA97CB !important;
-
-        &:hover {
-          border: #767656 1px solid;
-
-        }
-      }
-    }
-  }
-
-
-  .nav.nav-tabs .nav-link.active {
-    color: lighten(#AA97CB, 5%) !important;
-    background-color: transparent;
-    border: #767656 1px solid;
-  }
-
-
-
   pre {
     color: #EDBA4A;
     background: #000000;
@@ -158,21 +139,5 @@ html[dark] {
     color: #302E2E;
   }
 
-  .ak-navigation-resize-button {
-    color: #EFFCFA;
 
-    &after {
-      border-top-color: #814B02;
-    }
-
-    &before {
-      border-bottom-color: #814B02;
-    }
-
-    svg {}
-  }
-
-  .navigation-resize-button>span:after {
-    background: #814B02;
-  }
 }
