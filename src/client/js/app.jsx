@@ -31,7 +31,6 @@ import MyDraftList from './components/MyDraftList/MyDraftList';
 import SeenUserPictureList from './components/User/SeenUserPictureList';
 import LikerPictureList from './components/User/LikerPictureList';
 import TableOfContents from './components/TableOfContents';
-import PageCreateModal from './components/PageCreateModal';
 
 import PersonalSettings from './components/Me/PersonalSettings';
 import PageContainer from './services/PageContainer';
@@ -98,7 +97,6 @@ if (pageContainer.state.pageId != null) {
     'seen-user-list': <SeenUserPictureList />,
     'liker-list': <LikerPictureList />,
     'rename-page-name-input': <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
-    'page-create-modal': <PageCreateModal />,
 
     'user-created-list': <RecentCreated />,
     'user-draft-list': <MyDraftList />,

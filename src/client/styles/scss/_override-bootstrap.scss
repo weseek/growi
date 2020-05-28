@@ -39,11 +39,6 @@
     line-height: 14px;
   }
 
-  code {
-    padding: 2px 4px;
-    font-size: 90%;
-  }
-
   // Navs
   .nav-tabs {
     .nav-item {
@@ -65,24 +60,20 @@
   // card (substitute panel of bootstrap3)
   .card {
     margin-bottom: 20px;
-    border-radius: $card-border-radius;
   }
 
   .card-header {
     font-weight: 700;
     text-transform: none;
-    border-radius: $card-border-radius;
   }
 
   .card-header:first-child {
-    border-radius: $card-border-radius;
   }
 
   // Well (substitute Well of bootstrap3)
   .card.well {
     min-height: 20px;
     padding: $card-spacer-y $card-spacer-x;
-    border-radius: 3px;
   }
 
   // Dropdowns

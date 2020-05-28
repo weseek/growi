@@ -1,12 +1,12 @@
-import { pathUtils } from 'growi-commons';
-import { isTrashPage } from '@commons/util/path-utils';
+const { pathUtils } = require('growi-commons');
+const { isTrashPage } = require('@commons/util/path-utils');
 
-import DevidedPagePath from './devided-page-path';
+const DevidedPagePath = require('./devided-page-path');
 
 /**
  * Linked Array Structured PagePath Model
  */
-export default class LinkedPagePath {
+class LinkedPagePath {
 
   constructor(path, skipNormalize = false) {
 
@@ -34,3 +34,5 @@ export default class LinkedPagePath {
   }
 
 }
+
+module.exports = LinkedPagePath;

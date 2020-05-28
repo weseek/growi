@@ -23,6 +23,7 @@ $light: lighten($secondary, 10%);
   #wrapper > .navbar {
     background-image: url(/images/themes/halloween/halloween-navbar.jpg);
   }
+
   // add background-image
   #page-wrapper,
   .page-editor-preview-container {
@@ -36,46 +37,63 @@ html[light],
 html[dark] {
   // Background colors
   $bgcolor-global: #050000;
-  $bgcolor-inline-code: #f9f2f4;
+  $bgcolor-inline-code: #1f1f22; //optional
   $bgcolor-card: #f5f5f5;
 
   // Font colors
   $color-global: #e9af2b;
   $color-reversal: #eeeeee;
   // $color-header: #2b2b2b;
-  $color-link: lighten($primary, 20%);
+  $color-link: #aa97cb;
   $color-link-hover: lighten($color-link, 20%);
-  $color-link-wiki: lighten($primary, 20%);
+  $color-link-wiki: #aa97cb;
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
-  $color-link-nabvar: $color-reversal;
-  $color-inline-code: #c7254e;
+  $color-link-nabvar: #a7a7a7;
+  $color-inline-code: #c7254e; // optional
 
   // List Group colors
-  $color-list: $color-global;
+  $color-list: #979797;
   $bgcolor-list: transparent;
   $color-list-active: $color-reversal;
   $bgcolor-list-active: $primary;
   $color-list-hover: $themecolor;
 
+  // Search Top
+  $color-search: $primary;
+
   // Navbar
-  $bgcolor-navbar: #223344;
-  $border-color-navbar-gradient-left: #545fff;
-  $border-color-navbar-gradient-right: #00a6e5;
+  $bgcolor-navbar: #eceded;
+  $bgcolor-search-top-dropdown: $primary;
+  $border-image-navbar: linear-gradient(90deg, #e3b7ff 0%, #134774 100%);
 
   // Logo colors
   $bgcolor-logo: darken($themecolor, 10%);
-  $fillcolor-logo-mark: lighten($accentcolor, 15%);
+  $fillcolor-logo-mark: #dedede;
 
   // Sidebar
-  $bgcolor-sidebar: $bgcolor-navbar;
-  $color-sidebar-context: $color-reversal;
-  $bgcolor-sidebar-context: lighten($bgcolor-navbar, 10%);
+  $bgcolor-sidebar: #162b33;
+  $bgcolor-sidebar-nav-item-active: rgba(#969494, 0.3); // optional
+  $text-shadow-sidebar-nav-item-active: 0px 0px 10px #969494; // optional
+
+  // Sidebar contents
+  $color-sidebar-context: #aa97cb;
+  $bgcolor-sidebar-context: #1d2126;
+
+  // Sidebar list group
+  $bgcolor-sidebar-list-group: #2c2926; // optional
+
+  // Sidebar resize button
+  $color-resize-button: #effcfa;
+  $bgcolor-resize-button: $primary;
+  $color-resize-button-hover: #effcfa;
+  $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
 
   // Icon colors
   $color-editor-icons: $color-global;
 
   // Border colors
   $border-color-theme: #ccc; // former: `$navbar-border: #ccc;`
+  $bordercolor-inline-code: #4d4d4d; // optional
 
   // Dropdown colors
   $bgcolor-dropdown-link-active: $primary;
@@ -98,25 +116,10 @@ html[dark] {
   .table {
     color: $color-global;
   }
-  .table-bordered {
-    th,
-    td {
-      border: 1px solid $themecolor;
-    }
+
+  pre {
+    color: #edba4a;
+    background: #000000;
   }
 
-  // Nav
-  .nav-tabs {
-    border-bottom: $bordercolor 1px solid;
-    .nav-link {
-      &:hover {
-        border: $bordercolor 1px solid;
-      }
-      &.active {
-        color: lighten($themecolor, 5%);
-        background-color: transparent;
-        border: $bordercolor 1px solid;
-      }
-    }
-  }
 }

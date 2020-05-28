@@ -111,7 +111,7 @@ class ManageGlobalNotification extends React.Component {
 
 
         <div className="row">
-          <div className="m-t-20 form-box col-md-12">
+          <div className="form-box col-md-12">
             <h2 className="border-bottom mb-5">{t('notification_setting.notification_detail')}</h2>
           </div>
 
@@ -242,12 +242,12 @@ class ManageGlobalNotification extends React.Component {
               </div>
               <div className="my-1">
                 <TriggerEventCheckBox
-                  checkbox="warning"
+                  checkbox="pink"
                   event="pageMove"
                   checked={this.state.triggerEvents.has('pageMove')}
                   onChange={() => this.onChangeTriggerEvents('pageMove')}
                 >
-                  <span className="badge badge-pill badge-warning">
+                  <span className="badge badge-pill badge-pink">
                     <i className="icon-action-redo mr-1" />MOVE
                   </span>
                 </TriggerEventCheckBox>

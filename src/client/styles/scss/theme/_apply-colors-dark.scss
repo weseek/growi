@@ -1,5 +1,19 @@
 // determine optional variables
 $bgcolor-subnabvar: lighten($bgcolor-global, 3%) !default;
+$color-table: white !default;
+$bgcolor-table: #343a40 !default;
+$border-color-table: lighten($bgcolor-table, 7.5%) !default;
+$color-table-hover: rgba(white, 0.075) !default;
+$bgcolor-table-hover: lighten($bgcolor-table, 7.5%) !default;
+
+// override bootstrap variables
+$table-dark-color: $color-table;
+$table-dark-bg: $bgcolor-table;
+$table-dark-border-color: $border-color-table;
+$table-dark-hover-color: $color-table-hover;
+$table-dark-hover-bg: $bgcolor-table-hover;
+
+@import 'reboot-bootstrap-tables';
 
 /*
   * Form
@@ -40,20 +54,6 @@ textarea.form-control {
 }
 
 /*
- * Panel
- */
-.panel {
-  &,
-  &.panel-white,
-  &.panel-default {
-    .panel-heading,
-    .panel-body {
-      color: theme-color('light');
-    }
-  }
-}
-
-/*
  * Table
  */
 .table {
@@ -83,38 +83,6 @@ ul.pagination {
   }
 }
 
-.table > thead > tr > th,
-.table > tbody > tr > th,
-.table > tfoot > tr > th,
-.table > thead > tr > td,
-.table > tbody > tr > td,
-.table > tfoot > tr > td,
-.table > thead > tr > th,
-.table-bordered {
-  // FIXME: use $table-dark-*
-  // border-top: 1px solid $border;
-}
-
-.table-bordered > thead > tr > th,
-.table-bordered > tbody > tr > th,
-.table-bordered > tfoot > tr > th,
-.table-bordered > thead > tr > td,
-.table-bordered > tbody > tr > td,
-.table-bordered > tfoot > tr > td {
-  // FIXME: use $table-dark-*
-  // border: 1px solid $border;
-}
-
-.table > thead > tr > th {
-  // FIXME: use $table-dark-*
-  // border-bottom: 1px solid $border;
-}
-
-.table-bordered {
-  // FIXME: use $table-dark-*
-  // border: 1px solid $border;
-}
-
 /*
  * GROWI page list
  */
@@ -138,15 +106,11 @@ ul.pagination {
   background-color: $bgcolor-subnabvar;
 }
 
-/*
- * GROWI search page
- */
-.search-page {
-  .input-group-btn {
-    .btn-light {
-      // FIXME:
-      // border: 1px solid darken($border, 30%); // fit to input.form-control
-    }
+// Search drop down
+#search-typeahead-asynctypeahead {
+  background-color: $bgcolor-global;
+  .table {
+    background-color: transparent;
   }
 }
 
@@ -161,12 +125,10 @@ ul.pagination {
 
 .wiki {
   h1 {
-    // FIXME:
-    // border-color: lighten($border, 10%);
+    border-color: lighten($border-color-theme, 10%);
   }
   h2 {
-    // FIXME:
-    // border-color: $border;
+    border-color: $border-color-theme;
   }
 }
 

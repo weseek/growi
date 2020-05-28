@@ -1,5 +1,3 @@
-@import 'layout_variable';
-
 // FIXME: replace with mt-2 or mt-3
 .grw-mt-10px {
   margin-top: 10px !important;
@@ -29,31 +27,11 @@
 
 .grw-modal-head {
   font-size: 1em;
-  border-bottom: 1px solid $grw-line-gray;
+  border-bottom: 1px solid $gray-500;
 }
 
 .main {
   margin-top: 1rem;
-}
-
-.layout-control {
-  position: fixed;
-  right: 25%;
-  bottom: 25px;
-  z-index: 1;
-  display: block;
-  padding: 5px 8px;
-  font-size: 0.8em;
-  text-align: center;
-  border: solid 1px #ccc;
-  border-right: none;
-  border-radius: 5px 0 0 5px;
-  transition: 0.3s ease;
-
-  &:hover {
-    text-decoration: none;
-    cursor: pointer;
-  }
 }
 
 .revision-toc {
@@ -114,7 +92,6 @@
       margin-bottom: 20px;
       font-size: 0.9em;
       border: solid 1px #aaa;
-      border-radius: 5px;
 
       .revision-toc-head {
         display: inline-block;

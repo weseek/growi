@@ -19,7 +19,7 @@ html[light] {
 
   // Background colors
   $bgcolor-global: white;
-  $bgcolor-inline-code: #f9f2f4;
+  $bgcolor-inline-code: #f0f0f0; //optional
   $bgcolor-card: #f5f5f5;
 
   // Font colors
@@ -31,7 +31,7 @@ html[light] {
   $color-link-wiki: $color-link;
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
   $color-link-nabvar: #a7a7a7;
-  $color-inline-code: #c7254e;
+  $color-inline-code: #c7254e; // optional
 
   // List Group colors
   // $color-list: $color-global; // optional
@@ -39,6 +39,14 @@ html[light] {
   // $color-list-hover: $color-reversal; // optional
   // $color-list-active: $color-reversal; // optional
   // $bgcolor-list-active: $primary; // optional
+
+  // Table colors
+  // $bgcolor-subnabvar: #; // optional
+  // $color-table: #; // optional
+  // $bgcolor-table: #; // optional
+  // $border-color-table: #; // optional
+  // $color-table-hover: #; // optional
+  // $bgcolor-table-hover: #; // optional
 
   // Navbar
   $bgcolor-navbar: #2a2929;
@@ -67,11 +75,17 @@ html[light] {
   // Subnavigation
   // $bgcolor-subnabvar: #fafafa; // optional
 
+  // Tabs
+  // $color-nav-tabs-link-active: #; //optional
+  // $bordercolor-nav-tabs-hover: # # $bordercolor-nav-tabs; // optional
+  // $bordercolor-nav-tabs-active: # # $bgcolor-global; // optional
+
   // Icon colors
   $color-editor-icons: $color-global;
 
   // Border colors
-  $border-color-theme: #ccc; // former: `$navbar-border: #ccc;`
+  $border-color-theme: #ccc;
+  $bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
   $bgcolor-dropdown-link-active: $growi-blue;
@@ -98,7 +112,7 @@ html[dark] {
 
   // Background colors
   $bgcolor-global: #131418;
-  $bgcolor-inline-code: darken($bgcolor-global, 5%);
+  $bgcolor-inline-code: #1f1f22; //optional
   $bgcolor-card: darken($bgcolor-global, 5%);
 
   // Font colors
@@ -110,7 +124,7 @@ html[dark] {
   $color-link-wiki: $color-link;
   $color-link-wiki-hover: lighten($color-link-wiki, 10%);
   $color-link-nabvar: #a7a7a7;
-  $color-inline-code: #c7254e;
+  $color-inline-code: #c7254e; // optional
 
   // List Group colors
   // $color-list: $color-global; // optional
@@ -118,6 +132,13 @@ html[dark] {
   // $color-list-hover: $color-reversal; // optional
   $color-list-active: white; // optional
   // $bgcolor-list-active: $primary; // optional
+
+  // Table colors
+  // $color-table: #; // optional
+  // $bgcolor-table: #; // optional
+  // $border-color-table: #; // optional
+  // $color-table-hover: #; // optional
+  // $bgcolor-table-hover: #; // optional
 
   // Navbar
   $bgcolor-navbar: #2a2929;
@@ -146,11 +167,18 @@ html[dark] {
   // Subnavigation
   $bgcolor-subnabvar: lighten($bgcolor-global, 4%); // optional
 
+  // Tabs
+  $bordercolor-nav-tabs: #444; // optional
+  // $color-nav-tabs-link-active: #; //optional
+  $bordercolor-nav-tabs-hover: #666 #666 $bordercolor-nav-tabs; // optional
+  // $bordercolor-nav-tabs-active: # # $bgcolor-global; // optional
+
   // Icon colors
   $color-editor-icons: $color-global;
 
   // Border colors
-  $border-color-theme: black; // former: `$navbar-border: #ccc;`
+  $border-color-theme: #444;
+  $bordercolor-inline-code: #666; // optional
 
   // Dropdown colors
   $bgcolor-dropdown-link-active: $primary;

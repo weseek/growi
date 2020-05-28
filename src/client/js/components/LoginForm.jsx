@@ -44,13 +44,13 @@ class LoginForm extends React.Component {
 
     return (
       <form role="form" action="/login" method="post">
-        <div className="input-group mb-3">
+        <div className="input-group">
           <div className="input-group-prepend">
             <span className="input-group-text">
               <i className="icon-user"></i>
             </span>
           </div>
-          <input type="text" className="form-control" placeholder="Username or E-mail" name="loginForm[username]" />
+          <input type="text" className="form-control rounded-0" placeholder="Username or E-mail" name="loginForm[username]" />
           {isLdapStrategySetup && (
             <div className="input-group-append">
               <small className="input-group-text text-success">
@@ -60,18 +60,18 @@ class LoginForm extends React.Component {
           )}
         </div>
 
-        <div className="input-group mb-3">
+        <div className="input-group">
           <div className="input-group-prepend">
             <span className="input-group-text">
               <i className="icon-lock"></i>
             </span>
           </div>
-          <input type="password" className="form-control" placeholder="Password" name="loginForm[password]" />
+          <input type="password" className="form-control rounded-0" placeholder="Password" name="loginForm[password]" />
         </div>
 
-        <div className="input-group mt-5">
+        <div className="input-group my-4">
           <input type="hidden" name="_csrf" value={noLoginContainer.csrfToken} />
-          <button type="submit" id="login" className="btn btn-fill login mx-auto">
+          <button type="submit" id="login" className="btn btn-fill rounded-0 login mx-auto">
             <div className="eff"></div>
             <span className="btn-label">
               <i className="icon-login"></i>
@@ -96,8 +96,8 @@ class LoginForm extends React.Component {
     };
 
     return (
-      <div key={auth} className="col-6 mb-2">
-        <button type="button" className="btn btn-fill" id={auth} onClick={this.handleLoginWithExternalAuth}>
+      <div key={auth} className="col-6 my-2">
+        <button type="button" className="btn btn-fill rounded-0" id={auth} onClick={this.handleLoginWithExternalAuth}>
           <div className="eff"></div>
           <span className="btn-label">
             <i className={`fa fa-${authIconNames[auth]}`}></i>
@@ -131,7 +131,7 @@ class LoginForm extends React.Component {
         <div className="text-center">
           <button
             type="button"
-            className="btn btn-secondary btn-sm mb-3"
+            className="btn btn-secondary btn-sm rounded-0 mb-3"
             data-toggle={isExternalAuthCollapsible ? 'collapse' : ''}
             data-target="#external-auth"
             aria-expanded="false"
@@ -171,7 +171,7 @@ class LoginForm extends React.Component {
                 <i className="icon-user"></i>
               </span>
             </div>
-            <input type="text" className="form-control" placeholder={t('User ID')} name="registerForm[username]" defaultValue={username} required />
+            <input type="text" className="form-control rounded-0" placeholder={t('User ID')} name="registerForm[username]" defaultValue={username} required />
           </div>
           <p className="form-text text-danger">
             <span id="help-block-username"></span>
@@ -183,7 +183,7 @@ class LoginForm extends React.Component {
                 <i className="icon-tag"></i>
               </span>
             </div>
-            <input type="text" className="form-control" placeholder={t('Name')} name="registerForm[name]" defaultValue={name} required />
+            <input type="text" className="form-control rounded-0" placeholder={t('Name')} name="registerForm[name]" defaultValue={name} required />
           </div>
 
           <div className="input-group">
@@ -192,7 +192,7 @@ class LoginForm extends React.Component {
                 <i className="icon-envelope"></i>
               </span>
             </div>
-            <input type="email" className="form-control" placeholder={t('Email')} name="registerForm[email]" defaultValue={email} required />
+            <input type="email" className="form-control rounded-0" placeholder={t('Email')} name="registerForm[email]" defaultValue={email} required />
           </div>
 
           {registrationWhiteList.length > 0 && (
@@ -216,12 +216,12 @@ class LoginForm extends React.Component {
                 <i className="icon-lock"></i>
               </span>
             </div>
-            <input type="password" className="form-control" placeholder={t('Password')} name="registerForm[password]" required />
+            <input type="password" className="form-control rounded-0" placeholder={t('Password')} name="registerForm[password]" required />
           </div>
 
-          <div className="input-group justify-content-center mt-5">
+          <div className="input-group justify-content-center my-4">
             <input type="hidden" name="_csrf" value={noLoginContainer.csrfToken} />
-            <button type="submit" className="btn btn-fill" id="register">
+            <button type="submit" className="btn btn-fill rounded-0" id="register">
               <div className="eff"></div>
               <span className="btn-label">
                 <i className="icon-user-follow"></i>
@@ -231,10 +231,10 @@ class LoginForm extends React.Component {
           </div>
         </form>
 
-        <div className="border-bottom mb-3"></div>
+        <div className="border-bottom"></div>
 
         <div className="row">
-          <div className="text-right col-12 py-1">
+          <div className="text-right col-12 mt-2 py-2">
             <a href="#login" id="login" className="link-switch" onClick={this.switchForm}>
               <i className="icon-fw icon-login"></i>
               {t('Sign in is here')}

@@ -55,13 +55,9 @@ const CreateTemplateModal = (props) => {
             <code>{parentPath}</code><br />
             { t('template.modal_label.Create template under') }
           </label>
-          <div className="row">
-            <div className="col-md-6">
-              {renderTemplateCard('children', '_template')}
-            </div>
-            <div className="col-md-6">
-              {renderTemplateCard('decendants', '__template')}
-            </div>
+          <div className="card-deck">
+            {renderTemplateCard('children', '_template')}
+            {renderTemplateCard('decendants', '__template')}
           </div>
         </div>
       </ModalBody>
