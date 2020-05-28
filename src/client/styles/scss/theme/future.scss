@@ -79,7 +79,7 @@ html[dark] {
   // headers
   @for $i from 1 through 6 {
     h#{$i} {
-      color: $color-header;
+      color: white;
     }
   }
 
