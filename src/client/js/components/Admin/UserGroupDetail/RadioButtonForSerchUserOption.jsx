@@ -8,15 +8,15 @@ class RadioButtonForSerchUserOption extends React.Component {
   render() {
     const { t, searchType } = this.props;
     return (
-      <div className="radio" key={`${searchType}Match`}>
+      <div className="custom-control custom-radio custom-control-inline" key={`${searchType}Match`}>
         <input
           type="radio"
           id={`${searchType}Match`}
-          className="form-check-radio"
+          className="custom-control-input"
           checked={this.props.checked}
           onChange={this.props.onChange}
         />
-        <label className="form-check-label ml-3" htmlFor={`${searchType}Match`}>
+        <label className="text-capitalize custom-control-label ml-3" htmlFor={`${searchType}Match`}>
           {t(`admin:user_group_management.add_modal.${searchType}_match`)}
         </label>
       </div>

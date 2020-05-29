@@ -1,0 +1,158 @@
+.grw-sidebar {
+  $sidebar-nav-button-height: 55px;
+
+  %fukidashi-for-active {
+    position: relative;
+
+    // speech balloon
+    &:after {
+      position: absolute;
+      right: -0.1em;
+      display: block;
+      width: 0;
+      content: '';
+      border: 9px solid transparent;
+      border-right-color: white;
+      border-left-width: 0;
+      transform: translateY(-#{$sidebar-nav-button-height / 2});
+    }
+  }
+
+  .ak-navigation-resize-button {
+    // locate to the center of screen
+    top: calc(50vh - 20px);
+
+    /*
+     * styles
+     */
+    // unset originalhover color
+    > div:hover {
+      background-color: unset;
+    }
+
+    $box-shadow: 0 1px 1px rgba(96, 96, 96, 0.75);
+    @include hexagonize(24px, white, $box-shadow);
+
+    // rotate 30deg
+    transform: translate(-50%) rotate(30deg);
+    > div,
+    > span svg {
+      transform: rotate(-30deg);
+    }
+
+    // centering icon
+    > span svg {
+      position: relative;
+      z-index: 1;
+      margin-top: -5.5px;
+    }
+  }
+
+  // override @atlaskit/navigation-next styles
+  $navbar-total-height: $grw-navbar-height + $grw-navbar-border-width;
+  div[data-layout-container='true'] {
+    height: calc(100vh - #{$navbar-total-height});
+  }
+  div[data-testid='Navigation'] {
+    top: $navbar-total-height;
+
+    // Adjust to be on top of the growi subnavigation
+    z-index: $zindex-sticky + 5;
+
+    // css-xxx-Outer
+    > div:nth-of-type(2) {
+      width: 0;
+
+      // css-xxx-Shadow
+      > div:first-child {
+        background: linear-gradient(to left, rgba(0, 0, 0, 0.1) 0px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0) 100%);
+      }
+    }
+  }
+
+  .grw-sidebar-nav {
+    height: calc(100vh - #{$navbar-total-height});
+
+    .btn {
+      width: $grw-sidebar-nav-width;
+      line-height: 1em;
+      border-radius: 0;
+
+      // icon opacity
+      &:not(.active) {
+        i {
+          opacity: 0.4;
+        }
+        &:hover,
+        &:focus {
+          i {
+            opacity: 0.7;
+          }
+        }
+      }
+    }
+
+    .grw-sidebar-nav-primary-container {
+      .btn {
+        padding: 1em;
+        i {
+          font-size: 2.3em;
+        }
+
+        &.active {
+          @extend %fukidashi-for-active;
+        }
+      }
+    }
+
+    .grw-sidebar-nav-secondary-container {
+      .btn {
+        padding: 0.9em;
+        i {
+          font-size: 1.5em;
+        }
+      }
+    }
+  }
+}
+
+// Drawer Mode
+@include media-breakpoint-down(sm) {
+  .grw-sidebar {
+    position: fixed;
+    z-index: $zindex-fixed - 2;
+
+    // override @atlaskit/navigation-next styles
+    div[data-layout-container='true'] {
+      // css-teprsg
+      > div:nth-of-type(2) {
+        display: none;
+      }
+    }
+    div[data-testid='Navigation'] {
+      // css-xxx-Outer
+      > div:nth-of-type(2) {
+        display: none;
+      }
+    }
+
+    &:not(.open) {
+      div[data-testid='Navigation'] {
+        left: -#{$grw-sidebar-nav-width + $grw-sidebar-content-min-width};
+      }
+    }
+    &.open {
+      div[data-testid='Navigation'] {
+        left: 0;
+      }
+    }
+
+    div[data-testid='Navigation'] {
+      transition: left 300ms cubic-bezier(0.25, 1, 0.5, 1);
+    }
+  }
+
+  .grw-sidebar-backdrop.modal-backdrop {
+    z-index: $zindex-fixed - 4;
+  }
+}

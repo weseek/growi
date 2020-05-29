@@ -1,8 +1,90 @@
-// import colors
-@import '../../agile-admin/inverse/colors/future';
+@import '../variables';
+@import '../override-bootstrap-variables';
 
-// apply agile-admin theme
-@import '../../agile-admin/inverse/style';
+$primary: #00b5b7;
+$themecolor: #16282d;
+$accentcolor: #00fff5;
 
-// override
-@import 'override-agileadmin';
+html[light],
+html[dark] {
+  // Background colors
+  $bgcolor-global: $themecolor;
+  $bgcolor-inline-code: #1f1f22; //optional
+  $bgcolor-card: darken($themecolor, 5%);
+
+  // Font colors
+  $color-global: #95abba;
+  $color-reversal: $accentcolor;
+  $color-header: #95abba;
+  $color-link: $accentcolor;
+  $color-link-hover: lighten($color-link, 20%);
+  $color-link-wiki: $accentcolor;
+  $color-link-wiki-hover: darken($color-link-wiki, 5%);
+  $color-link-nabvar: #a7a7a7;
+  $color-inline-code: #c7254e; // optional
+  $color-search: $primary;
+
+  // List Group colors
+  $color-list: $color-global;
+  $bgcolor-list: transparent;
+  $color-list-active: $color-reversal;
+  $bgcolor-list-active: $primary;
+  $color-list-hover: $color-reversal;
+
+  // Navbar
+  $bgcolor-navbar: #01181a;
+  $bgcolor-search-top-dropdown: #00c2c4;
+  $border-image-navbar: linear-gradient(90deg, #6cfff9 0%, #0034c1 45%, #6cfff9 100%);
+
+  // Logo colors
+  $bgcolor-logo: darken($themecolor, 10%);
+  $fillcolor-logo-mark: #dedede;
+
+  // Sidebar
+  $bgcolor-sidebar: #052e2f;
+  $bgcolor-sidebar-nav-item-active: rgba(#969494, 0.3); // optional
+  $text-shadow-sidebar-nav-item-active: 0px 0px 10px #969494; // optional
+
+  // Sidebar contents
+  $color-sidebar-context: #00c2c4;
+  $bgcolor-sidebar-context: #020b0b;
+
+  // Sidebar list group
+  $bgcolor-sidebar-list-group: #162126; // optional
+
+  // Sidebar resize button
+  $color-resize-button: #0e2329;
+  $bgcolor-resize-button: #00c2c4;
+  $color-resize-button-hover: #0e2329;
+  $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
+
+  // Icon colors
+  $color-editor-icons: $color-global;
+
+  // Border colors
+  $border-color-theme: #407483;
+  $bordercolor-inline-code: #4d4d4d; // optional
+
+  // Dropdown colors
+  $bgcolor-dropdown-link-active: $primary;
+  $color-dropdown-link-active: $color-reversal;
+  $color-dropdown-link-hover: $color-global;
+
+  // admin theme box
+  $color-theme-color-box: lighten($primary, 20%);
+
+  @import 'apply-colors';
+  @import 'apply-colors-dark';
+
+  // headers
+  @for $i from 1 through 6 {
+    h#{$i} {
+      color: white;
+    }
+  }
+
+  pre {
+    color: #95abba;
+    background-color: #1f1f22;
+  }
+}

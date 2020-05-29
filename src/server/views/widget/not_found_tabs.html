@@ -1,18 +1,20 @@
-<ul class="nav nav-tabs hidden-print">
-  <li class="nav-main-left-tab active">
-    <a href="#revision-body" data-toggle="tab">
+<ul class="nav nav-tabs d-print-none" role="tablist">
+  <li class="nav-item grw-nav-main-left-tab">
+    <a class="nav-link active" role="tab" href="#revision-body" data-toggle="tab">
       <i class="icon-notebook"></i> List
     </a>
   </li>
 
   {% if !isTrashPage() and !page.isDeleted() %}
-  <li class="nav-main-left-tab">
+  <li class="nav-item grw-nav-main-left-tab">
     <a
-      {% if user %} href="#edit" data-toggle="tab" class="edit-button" {% endif %}
-      {% if not user %} class="edit-button edit-button-disabled" data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}" {% endif %}
+      {% if user %} href="#edit" role="tab" data-toggle="tab" class="nav-link edit-button" {% endif %}
+      {% if not user %} class="nav-link edit-button edit-button-disabled" data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}" {% endif %}
     >
       <i class="icon-note"></i> {{ t('Create') }}
     </a>
   </li>
+
+  <div id="page-editor-path-nav" class="d-none d-edit-block ml-2"></div>
   {% endif %}
 </ul>

@@ -3,8 +3,12 @@ import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 import canvasToBlob from 'async-canvas-to-blob';
 
-import Modal from 'react-bootstrap/es/Modal';
-import Button from 'react-bootstrap/es/Button';
+import {
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from 'reactstrap';
 import { withTranslation } from 'react-i18next';
 import ReactCrop from 'react-image-crop';
 import AppContainer from '../../services/AppContainer';
@@ -82,34 +86,24 @@ class ImageCropModal extends React.Component {
 
   render() {
     return (
-      <Modal show={this.props.show} onHide={this.props.onModalClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Image Crop</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="my-4">
-          <ReactCrop
-            circularCrop
-            src={this.props.src}
-            crop={this.state.crop}
-            onImageLoaded={this.onImageLoaded}
-            onChange={this.onCropChange}
-          />
-        </Modal.Body>
-        <Modal.Footer>
-          <div className="d-flex justify-content-between">
-            <Button bsStyle="danger" onClick={this.reset}>
+      <Modal isOpen={this.props.show} toggle={this.props.onModalClose}>
+        <ModalHeader tag="h4" toggle={this.props.onModalClose} className="bg-info text-light">
+          Image Crop
+        </ModalHeader>
+        <ModalBody className="my-4">
+          <ReactCrop circularCrop src={this.props.src} crop={this.state.crop} onImageLoaded={this.onImageLoaded} onChange={this.onCropChange} />
+        </ModalBody>
+        <ModalFooter>
+          <button type="button" className="btn btn-outline-danger rounded-pill mr-auto" onClick={this.reset}>
               Reset
-            </Button>
-            <div className="d-flex">
-              <Button bsStyle="default" onClick={this.props.onModalClose}>
-                Cancel
-              </Button>
-              <Button bsStyle="primary" onClick={this.crop}>
-                Crop
-              </Button>
-            </div>
-          </div>
-        </Modal.Footer>
+          </button>
+          <button type="button" className="btn btn-outline-secondary rounded-pill mr-2" onClick={this.props.onModalClose}>
+                  Cancel
+          </button>
+          <button type="button" className="btn btn-outline-primary rounded-pill" onClick={this.crop}>
+                  Crop
+          </button>
+        </ModalFooter>
       </Modal>
     );
   }

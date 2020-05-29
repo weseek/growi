@@ -1,13 +1,9 @@
 {% extends '../layout/admin.html' %}
 
-{% block html_title %}{{ customizeService.generateCustomTitle(t('UserGroup Management') + '/' + userGroup.name) | preventXss }}{% endblock %}
+{% block html_title %}{{ customizeService.generateCustomTitleForFixedPageName(t('UserGroup Management') + '/' + userGroup.name) | preventXss }}{% endblock %}
 
 {% block content_header %}
-<div class="header-wrap">
-  <header id="page-header">
-    <h1 id="admin-title" class="title">{{ t('UserGroup Management') + '/' + userGroup.name | preventXss }}</h1>
-  </header>
-</div>
+<h1 class="title">{{ t('UserGroup Management') + '/' + userGroup.name | preventXss }}</h1>
 {% endblock %}
 
 {% block content_main %}
@@ -15,7 +11,7 @@
   {% parent %}
   <div
     id="admin-user-group-detail"
-    class="col-md-9"
+    class="col-lg-9"
     data-user-group="{{ userGroup|json }}"
   >
   </div>

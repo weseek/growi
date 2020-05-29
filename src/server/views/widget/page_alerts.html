@@ -1,8 +1,8 @@
-<div class="row row-alerts">
-  <div class="col-xs-12">
+<div class="row row-alerts d-edit-none">
+  <div class="col-sm-12">
     {% if page && page.grant && page.grant > 1 %}
 
-      <p class="alert alert-inverse alert-grant">
+      <p class="alert alert-primary py-3 px-4">
       {% if page.grant == 2 %}
         <i class="icon-fw icon-link"></i><strong>{{ consts.pageGrants[page.grant] }}</strong> ({{ t('Browsing of this page is restricted') }})
       {% elseif page.grant == 4 %}
@@ -29,39 +29,35 @@
     {% endif %}
 
     {% if redirectFrom or req.query.renamed or req.query.redirectFrom %}
-    <div class="alert alert-info alert-moved d-flex align-items-center justify-content-between">
+    <div class="alert alert-pink d-edit-none py-3 px-4 d-flex align-items-center justify-content-between">
       <span>
         {% set fromPath = req.query.renamed or req.query.redirectFrom %}
         {% if redirectFrom or req.query.redirectFrom %}
-          <strong>{{ t('Redirected') }}:</strong> {{ t('page_page.notice.redirected', req.sanitize(fromPath)) }}
+          <strong>{{ t('Redirected') }}:</strong> {{ t('page_page.notice.redirected', fromPath | preventXss) }}
         {% endif %}
         {% if req.query.renamed %}
-          <strong>{{ t('Moved') }}:</strong> {{ t('page_page.notice.moved', req.sanitize(fromPath)) }}
+          <strong>{{ t('Moved') }}:</strong> {{ t('page_page.notice.moved', fromPath | preventXss) }}
         {% endif %}
       </span>
       {% if user and not page.isDeleted() %}
-      <form role="form" id="unlink-page-form" onsubmit="return false;">
-        <input type="hidden" name="_csrf" value="{{ csrf() }}">
-        <input type="hidden" name="path" value="{{ path }}">
-        <button type="submit" class="btn btn-default btn-sm pull-right">
+        <button type="button" id="unlink-page-button" class="btn btn-secondary btn-sm float-right">
           <i class="ti-unlink" aria-hidden="true"></i>
           Unlink
         </button>
-      </form>
       {% endif %}
     </div>
     {% endif %}
 
     {% if req.query.duplicated and not page.isDeleted() %}
-    <div class="alert alert-success alert-moved">
+    <div class="alert alert-success py-3 px-4">
       <span>
-        <strong>{{ t('Duplicated') }}: </strong> {{ t('page_page.notice.duplicated', req.sanitize(req.query.duplicated)) }}
+        <strong>{{ t('Duplicated') }}: </strong> {{ t('page_page.notice.duplicated', req.query.duplicated | preventXss) }}
       </span>
     </div>
     {% endif %}
 
     {% if req.query.unlinked %}
-    <div class="alert alert-info alert-unlinked">
+    <div class="alert alert-info d-edit-none py-3 px-4">
       <strong>{{ t('Unlinked') }}: </strong> {{ t('page_page.notice.unlinked') }}
     </div>
     {% endif %}
@@ -69,41 +65,19 @@
     {% if page and not page.isLatestRevision() %}
     <div class="alert alert-warning">
       <strong>{{ t('Warning') }}: </strong> {{ t('page_page.notice.version') }}
-      <a href="{{ page.path }}"><i class="icon-fw icon-arrow-right-circle"></i>{{ t('Show latest') }}</a>
+      <a href="{{ encodeURI(page.path) }}"><i class="icon-fw icon-arrow-right-circle"></i>{{ t('Show latest') }}</a>
     </div>
     {% endif %}
 
     {% set dmessage = req.flash('dangerMessage') %}
     {% if dmessage.length %}
-    <div class="alert alert-danger m-b-15">
+    <div class="alert alert-danger mb-4">
       {{ dmessage }}
     </div>
     {% endif %}
 
     {% if isTrashPage() %}
-    <div class="alert alert-warning alert-trash d-flex align-items-center justify-content-between">
-      <div>
-        This page is in the trash <i class="icon-trash" aria-hidden="true"></i>.
-        {% if page.isDeleted() %}
-        <br>Deleted by <img src="{{ page.lastUpdateUser|picture }}" class="picture picture-sm img-circle"> {{ page.lastUpdateUser.name }} at {{ page.updatedAt|datetz('Y-m-d H:i:s') }}
-        {% endif %}
-      </div>
-      <ul class="list-inline">
-        {% if user and user.admin and req.path == '/trash' and pages.length > 0 %}
-        <li>
-          <button href="#" class="btn btn-danger btn-rounded btn-sm" data-target="#emptyTrash" data-toggle="modal"><i class="icon-trash" aria-hidden="true"></i>{{ t('modal_empty.empty_the_trash') }}</button>
-        </li>
-        {% endif %}
-        {% if page.isDeleted() and user %}
-        <li>
-          <button href="#" class="btn btn-default btn-rounded btn-sm" data-target="#putBackPage" data-toggle="modal"><i class="icon-action-undo" aria-hidden="true"></i> {{ t('Put Back') }}</button>
-        </li>
-        <li>
-            <button href="#" class="btn btn-danger btn-rounded btn-sm" {% if !user.canDeleteCompletely(page.creator._id) %} disabled="disabled" {% endif %} data-target="#deletePage" data-toggle="modal"><i class="icon-fire" aria-hidden="true"></i> {{ t('Delete Completely') }}</button>
-        </li>
-        {% endif %}
-      </ul>{# /.pull-right #}
-    </div>
+      <div id="trash-page-alert"></div>
     {% endif %}
   </div>
 </div>

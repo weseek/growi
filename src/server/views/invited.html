@@ -2,7 +2,7 @@
 
 {% block html_base_css %}invited nologin{% endblock %}
 
-{% block html_title %}{{ customizeService.generateCustomTitle('Registration') }}{% endblock %}
+{% block html_title %}{{ customizeService.generateCustomTitleForFixedPageName('Registration') }}{% endblock %}
 
 
 
@@ -17,6 +17,8 @@
  {% endblock %}
  {% block sidebar %}
  {% endblock %}
+ {% block head_warn_alert_siteurl_undefined %}
+ {% endblock %}
 
 
 
@@ -26,7 +28,7 @@
 
   <div class="row">
 
-    <div class="login-header col-sm-offset-4 col-sm-4">
+    <div class="login-header offset-4 col-sm-4">
       <div class="logo">{% include 'widget/logo.html' %}</div>
       <h1>GROWI</h1>
 
@@ -50,7 +52,7 @@
       </div>
     </div>
 
-    <div class="login-dialog p-t-10 p-b-10 col-sm-offset-4 col-sm-4" id="login-dialog">
+    <div class="login-dialog grw-pt-10px p-b-10 offset-4 col-sm-4" id="login-dialog">
       <p class="alert alert-success">
         <strong>アカウントの作成</strong><br>
         <small>招待を受け取ったメールアドレスでアカウントを作成します</small>
@@ -59,38 +61,46 @@
       <form role="form" action="/login/activateInvited" method="post" id="invited-form">
 
         <div class="input-group">
-          <span class="input-group-addon"><i class="icon-envelope"></i></span>
+          <div class="input-group-prepend">
+            <span class="input-group-text"><i class="icon-envelope"></i></span>
+          </div>
           <input type="text" class="form-control" disabled value="{{ user.email }}">
         </div>
-
         <div class="input-group" id="input-group-username">
-          <span class="input-group-addon"><i class="icon-user"></i></span>
+          <div class="input-group-prepend">
+            <span class="input-group-text"><i class="icon-user"></i></span>
+          </div>
           <input type="text" class="form-control" placeholder="{{ t('User ID') }}" name="invitedForm[username]" value="{{ req.body.invitedForm.username }}" required>
         </div>
-        <p class="help-block">
+        <p class="form-text text-muted">
           <span id="help-block-username"></span>
         </p>
 
         <div class="input-group">
-          <span class="input-group-addon"><i class="icon-tag"></i></span>
+          <div class="input-group-prepend">
+            <span class="input-group-text"><i class="icon-tag"></i></span>
+          </div>
           <input type="text" class="form-control" placeholder="{{ t('Name') }}" name="invitedForm[name]" value="{{ req.body.invitedForm.name }}" required>
         </div>
 
 
         <div class="input-group">
-          <span class="input-group-addon"><i class="icon-lock"></i></span>
+          <div class="input-group-prepend">
+            <span class="input-group-text"><i class="icon-lock"></i></span>
+          </div>
           <input type="password" class="form-control" placeholder="{{ t('Password') }}" name="invitedForm[password]" required>
         </div>
 
-        <input type="hidden" name="_csrf" value="{{ csrf() }}">
-        <div class="input-group m-t-30 m-b-20 d-flex justify-content-center">
-          <button type="submit" class="fcbtn btn btn-success btn-1b btn-register">
+        <div class="input-group justify-content-center d-flex mt-5">
+          <input type="hidden" name="_csrf" value="{{ csrf() }}">
+          <button type="submit" class="btn btn-fill" id="register">
+            <div class="eff"></div>
             <span class="btn-label"><i class="icon-user-follow"></i></span>
-            {{ t('Create') }}
+            <span class="btn-label-text">{{ t('Create') }}</span>
           </button>
         </div>
 
-        <div class="input-group m-t-30 d-flex justify-content-center">
+        <div class="input-group mt-5 d-flex justify-content-center">
           <a href="https://growi.org" class="link-growi-org">
             <span class="growi">GROWI</span>.<span class="org">ORG
           </a>

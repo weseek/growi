@@ -1,0 +1,19 @@
+.grw-copy-dropdown {
+  .dropdown-menu {
+    .dropdown-header {
+      margin-bottom: 0.5em;
+      font-size: 1.1em;
+    }
+
+    // unset active styles
+    .dropdown-item:active {
+      color: unset;
+      background-color: unset;
+    }
+
+    .well {
+      font-size: 0.6em;
+      word-break: break-all;
+    }
+  }
+}

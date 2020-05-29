@@ -80,12 +80,12 @@ class ExternalAccountTable extends React.Component {
                   <td>
                     {ea.user.password
                       ? (
-                        <span className="label label-info">
+                        <span className="badge badge-info">
                           {t('admin:user_management.set')}
                         </span>
                       )
                       : (
-                        <span className="label label-warning">
+                        <span className="badge badge-warning">
                           {t('admin:user_management.unset')}
                         </span>
                       )
@@ -94,16 +94,14 @@ class ExternalAccountTable extends React.Component {
                   <td>{dateFnsFormat(new Date(ea.createdAt), 'yyyy-MM-dd')}</td>
                   <td>
                     <div className="btn-group admin-user-menu">
-                      <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                      <button type="button" className="btn btn-outline-secondary btn-sm dropdown-toggle" data-toggle="dropdown">
                         <i className="icon-settings"></i> <span className="caret"></span>
                       </button>
                       <ul className="dropdown-menu" role="menu">
                         <li className="dropdown-header">{t('admin:user_management.user_table.edit_menu')}</li>
-                        <li>
-                          <a role="button" onClick={() => { return this.removeExtenalAccount(ea._id) }}>
-                            <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
-                          </a>
-                        </li>
+                        <a className="dropdown-item" type="button" role="button" onClick={() => { return this.removeExtenalAccount(ea._id) }}>
+                          <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
+                        </a>
                       </ul>
                     </div>
                   </td>
