@@ -2,6 +2,8 @@
 
 ## v4.0.1-RC
 
+* Fix: Storing the state of sidebar
+* Fix: Change the display of the scroll bar when modal is shown
 * Fix: Refactor '/pages.exist' API
 * Support: Upgrade libs
     * @atlaskit/drawer
