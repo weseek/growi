@@ -123,7 +123,7 @@ const PageCreateModal = (props) => {
                 </form>
                 <span className="page-today-suffix">/{now}/</span>
               </div>
-              <form className="mt-1 mt-lg-0 mx-lg-2 flex-fill" onSubmit={e => transitBySubmitEvent(e, createTodayPage)}>
+              <form className="mt-1 mt-lg-0 ml-lg-2 w-100" onSubmit={e => transitBySubmitEvent(e, createTodayPage)}>
                 <input
                   type="text"
                   className="page-today-input2 form-control w-100"
