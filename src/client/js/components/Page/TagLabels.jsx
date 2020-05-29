@@ -108,15 +108,15 @@ class TagLabels extends React.Component {
     });
 
     return (
-      <div className={`tag-viewer ${pageId ? 'existed-page' : 'new-page'}`}>
+      <div className="tag-labels">
         {tags.length === 0 && (
-          <a className="btn btn-link btn-edit-tags no-tags p-0" onClick={this.showEditor}>
+          <a className="btn btn-link btn-edit-tags no-tags p-0 text-muted" onClick={this.showEditor}>
             { t('Add tags for this page') } <i className="manage-tags ml-2 icon-plus"></i>
           </a>
         )}
         {tagElements}
         {tags.length > 0 && (
-          <a className="btn btn-link btn-edit-tags p-0" onClick={this.showEditor}>
+          <a className="btn btn-link btn-edit-tags p-0 text-muted" onClick={this.showEditor}>
             <i className="manage-tags ml-2 icon-plus"></i> { t('Edit tags for this page') }
           </a>
         )}

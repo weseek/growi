@@ -65,10 +65,11 @@ class RecentCreated extends React.Component {
    *
    */
   generatePageList(pages) {
-    return pages.map((page) => {
-      return <Page page={page} key={`recent-created:list-view:${page._id}`} />;
-    });
-
+    return pages.map(page => (
+      <li key={`recent-created:list-view:${page._id}`}>
+        <Page page={page} />
+      </li>
+    ));
   }
 
   render() {
@@ -76,7 +77,7 @@ class RecentCreated extends React.Component {
 
     return (
       <div className="page-list-container-create">
-        <ul className="page-list-ul page-list-ul-flat">
+        <ul className="page-list-ul page-list-ul-flat mb-3">
           {pageList}
         </ul>
         <PaginationWrapper

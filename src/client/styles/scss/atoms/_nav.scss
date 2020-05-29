@@ -1,0 +1,9 @@
+.nav-tabs .grw-main-nav-item-left {
+  width: $grw-nav-main-left-tab-width;
+  text-align: center;
+
+  .nav-link {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}

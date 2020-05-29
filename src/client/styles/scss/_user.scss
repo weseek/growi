@@ -1,38 +1,43 @@
-.main-container {
-  .user-page-header {
-    #revision-path {
-      margin-bottom: 0;
+$easeInOutCubic: cubic-bezier(0.65, 0, 0.35, 1);
+
+%transitionForCompactMode {
+  // set transition-duration (normal -> compact)
+  transition: all 300ms $easeInOutCubic;
+}
+
+/*
+ * Styles
+ */
+.grw-subnavbar-user-page {
+  #revision-path {
+    margin-bottom: 0;
+  }
+
+  .users-meta {
+    margin-left: 30px;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 2.5em;
+    color: #666;
+  }
+
+  .picture {
+    width: 72px;
+    height: 72px;
+  }
+
+  ul.user-page-meta {
+    padding-left: 0;
+    color: #999;
+
+    li {
+      list-style: none;
     }
 
-    .users-meta {
-      margin-left: 30px;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: 2.5em;
-      color: #666;
-    }
-
-    .picture {
-      width: 64px;
-      height: 64px;
-    }
-
-    .user-page-meta {
-      color: #999;
-
-      ul {
-        padding-left: 0;
-
-        li {
-          list-style: none;
-        }
-      }
-
-      .user-page-username {
-        font-weight: bold;
-      }
+    .user-page-username {
+      font-weight: bold;
 
       .user-page-email {
       }
@@ -41,54 +46,28 @@
       }
     }
 
-    .btn-like,
-    .btn-bookmark {
-      &.btn-lg {
-        padding: 8px;
-        font-size: 1.5em;
-      }
+    .user-page-email {
+    }
+
+    .user-page-introduction {
     }
   }
 
-  // affix
-  .user-page-header.affix {
-    .users-meta {
-      margin-left: 15px;
-    }
-
-    h1 {
+  .btn.btn-bookmark {
+    &.btn-lg {
+      width: 50px;
+      height: 50px;
       font-size: 1.5em;
-      line-height: 30px;
-    }
-
-    .picture {
-      width: 48px;
-      height: 48px;
     }
   }
+}
 
-  .user-page-content {
-    #user-draft-list {
-      #draft-list {
-        .panel-title {
-          width: 100%;
-
-          .label-draft {
-            padding: 1px 5px;
-            margin: 0 0 0 4px;
-            font-weight: normal;
-          }
-        }
-
-        a {
-          .icon-copy,
-          .draft-delete,
-          .icon-edit {
-            margin: 0 0 0 4px;
-            cursor: pointer;
-          }
-        }
-      }
+.draft-list-item {
+  .icon-container {
+    .icon-copy,
+    .draft-delete,
+    .icon-edit {
+      cursor: pointer;
     }
   }
 }

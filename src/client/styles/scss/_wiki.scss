@@ -9,7 +9,11 @@ div.body {
 
 .wiki {
   font-size: 15px;
-  line-height: 1.8em;
+
+  // override line-height except hljs and child of it.
+  :not(pre*) {
+    line-height: 1.8em;
+  }
 
   h1,
   h2,
@@ -26,7 +30,7 @@ div.body {
   }
 
   h1 {
-    padding-bottom: 0.3em;
+    padding: 0.5em 0;
     margin-top: 2em;
     font-size: 1.8em;
     line-height: 1.1em;
@@ -60,7 +64,7 @@ div.body {
     padding: 0 20px;
     margin: 0 0 30px 0;
     font-size: 0.9em;
-    color: lighten($gray-dark, 35%);
+    color: lighten($gray-800, 35%);
   }
 
   img {
@@ -121,11 +125,6 @@ div.body {
     }
   }
 
-  // only inline code blocks
-  p code {
-    font-family: $font-family-monospace-not-strictly;
-  }
-
   .page-template-builder {
     position: relative;
 
@@ -137,7 +136,7 @@ div.body {
   }
 
   .highlighted {
-    background-color: $brand-warning;
+    background-color: $warning;
   }
 
   .revision-head {
@@ -227,9 +226,8 @@ div.body {
   }
 }
 
-// tablet and iphone size
-@media (max-width: $screen-sm-max) {
-  .main-container .main .wiki {
+@include media-breakpoint-down(sm) {
+  .main .wiki {
     img {
       max-width: 100%;
     }

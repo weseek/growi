@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { GlobalHotKeys } from 'react-hotkeys';
 
 export default class HotkeysDetector extends React.Component {
@@ -23,3 +24,7 @@ export default class HotkeysDetector extends React.Component {
   }
 
 }
+
+HotkeysDetector.propTypes = {
+  onDetected: PropTypes.func,
+};

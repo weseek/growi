@@ -21,7 +21,7 @@ export default class Hotkeys extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <HotkeysDetector onDetected={this.onDetected} />
+        <HotkeysDetector onDetected={() => this.onDetected()} />
       </React.Fragment>
     );
   }

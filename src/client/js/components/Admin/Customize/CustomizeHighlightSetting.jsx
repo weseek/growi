@@ -2,6 +2,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import {
+  Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
+} from 'reactstrap';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
@@ -16,7 +19,16 @@ class CustomizeHighlightSetting extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      isDropdownOpen: false,
+    };
+
+    this.onToggleDropdown = this.onToggleDropdown.bind(this);
     this.onClickSubmit = this.onClickSubmit.bind(this);
+  }
+
+  onToggleDropdown() {
+    this.setState({ isDropdownOpen: !this.state.isDropdownOpen });
   }
 
   async onClickSubmit() {
@@ -64,62 +76,69 @@ class CustomizeHighlightSetting extends React.Component {
       const isBorderEnable = option[1].border;
 
       menuItem.push(
-        <li key={styleId} role="presentation" type="button" onClick={() => adminCustomizeContainer.switchHighlightJsStyle(styleId, styleName, isBorderEnable)}>
-          <a role="button">{styleName}</a>
-        </li>,
+        <DropdownItem
+          key={styleId}
+          role="presentation"
+          onClick={() => adminCustomizeContainer.switchHighlightJsStyle(styleId, styleName, isBorderEnable)}
+        >
+          <a role="menuitem">{styleName}</a>
+        </DropdownItem>,
       );
     });
 
     return (
       <React.Fragment>
-        <h2 className="admin-setting-header">{t('admin:customize_setting.code_highlight')}</h2>
+        <div className="row">
+          <div className="col-12">
+            <h2 className="admin-setting-header">{t('admin:customize_setting.code_highlight')}</h2>
 
-        <div className="form-group row">
-          <div className="col-xs-offset-3 col-xs-6 text-left">
-            <div className="my-0 btn-group">
-              <label>{t('admin:customize_setting.theme')}</label>
-              <div className="dropdown">
-                <button className="btn btn-default dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <span className="pull-left">{adminCustomizeContainer.state.currentHighlightJsStyleName}</span>
-                  <span className="bs-caret pull-right">
-                    <span className="caret" />
-                  </span>
-                </button>
-                {/* TODO adjust dropdown after BS4 */}
-                <ul className="dropdown-menu" role="menu">
-                  {menuItem}
-                </ul>
+            <div className="form-group row">
+              <div className="offset-md-3 col-md-6 text-left">
+                <div className="my-0">
+                  <label>{t('admin:customize_setting.theme')}</label>
+                </div>
+                <Dropdown isOpen={this.state.isDropdownOpen} toggle={this.onToggleDropdown}>
+                  <DropdownToggle className="text-right col-6" caret>
+                    <span className="float-left">{adminCustomizeContainer.state.currentHighlightJsStyleName}</span>
+                  </DropdownToggle>
+                  <DropdownMenu className="dropdown-menu" role="menu">
+                    {menuItem}
+                  </DropdownMenu>
+                </Dropdown>
+                <p className="form-text text-warning">
+                  {/* eslint-disable-next-line react/no-danger */}
+                  <span dangerouslySetInnerHTML={{ __html: t('admin:customize_setting.nocdn_desc') }} />
+                </p>
               </div>
-              {/* eslint-disable-next-line react/no-danger */}
-              <p className="help-block text-warning"><span dangerouslySetInnerHTML={{ __html: t('admin:customize_setting.nocdn_desc') }} /></p>
             </div>
-          </div>
-        </div>
 
-        <div className="form-group row">
-          <div className="col-xs-offset-3 col-xs-6 text-left">
-            <div className="checkbox checkbox-success">
-              <input
-                type="checkbox"
-                id="highlightBorder"
-                checked={adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled}
-                onChange={() => { adminCustomizeContainer.switchHighlightJsStyleBorder() }}
-              />
-              <label htmlFor="highlightBorder">
-                <strong>Border</strong>
-              </label>
+            <div className="form-group row">
+              <div className="offset-md-3 col-md-6 text-left">
+                <div className="custom-control custom-switch custom-checkbox-success">
+                  <input
+                    type="checkbox"
+                    className="custom-control-input"
+                    id="highlightBorder"
+                    checked={adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled}
+                    onChange={() => { adminCustomizeContainer.switchHighlightJsStyleBorder() }}
+                  />
+                  <label className="custom-control-label" htmlFor="highlightBorder">
+                    <strong>Border</strong>
+                  </label>
+                </div>
+              </div>
             </div>
+
+            <div className="form-text text-muted">
+              <label>Examples:</label>
+              <div className="wiki">
+                {this.renderHljsDemo()}
+              </div>
+            </div>
+
+            <AdminUpdateButtonRow onClick={this.onClickSubmit} disabled={adminCustomizeContainer.state.retrieveError != null} />
           </div>
         </div>
-
-        <div className="help-block">
-          <label>Examples:</label>
-          <div className="wiki">
-            {this.renderHljsDemo()}
-          </div>
-        </div>
-
-        <AdminUpdateButtonRow onClick={this.onClickSubmit} disabled={adminCustomizeContainer.state.retrieveError != null} />
       </React.Fragment>
     );
   }

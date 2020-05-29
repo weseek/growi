@@ -1,8 +1,110 @@
-// import colors
-@import '../../agile-admin/inverse/colors/island';
+@import '../variables';
+@import '../override-bootstrap-variables';
 
-// apply agile-admin theme
-@import '../../agile-admin/inverse/style';
+$color-primary: #97cbc3;
+$color-themelight: rgba(183, 226, 219, 1);
 
-// override
-@import 'override-agileadmin';
+html[light],
+html[dark] {
+  $primary: $color-primary;
+  // Background colors
+  $bgcolor-card: #f5f5f5;
+  $bgcolor-global: lighten($color-themelight, 10%);
+  $bgcolor-inline-code: #f0f0f0; //optional
+
+  // Font colors
+  $color-global: #112744;
+  $color-reversal: #eeeeee;
+  // $color-header: #2b2b2b;
+  $color-link: #3c6d72;
+  $color-link-hover: lighten($color-link, 20%);
+  $color-link-wiki: $color-link;
+  $color-link-wiki-hover: lighten($color-link-wiki, 20%);
+  $color-link-nabvar: $color-reversal;
+  $color-inline-code: #c7254e; // optional
+
+  // List Group colors
+  $color-list: $color-global;
+  $bgcolor-list: lighten($color-themelight, 10%);
+  $color-list-active: $color-global;
+  $bgcolor-list-active: $primary;
+  $color-list-hover: $color-reversal;
+
+  // Table colors
+  // $color-table: #; // optional
+  // $bgcolor-table: #; // optional
+  $border-color-table: $primary; // optional
+  // $color-table-hover: #; // optional
+  // $bgcolor-table-hover: #; // optional
+
+  // Navbar
+  $bgcolor-navbar: #302e2e;
+  $bgcolor-search-top-dropdown: $color-primary;
+  $border-image-navbar: linear-gradient(to right, #5ce4ef 0%, #5953eb 100%);
+
+  // Logo colors
+  $bgcolor-logo: #0d3955;
+  $fillcolor-logo-mark: lighten(desaturate($bgcolor-inline-code, 10%), 15%);
+
+  // Sidebar
+  $bgcolor-sidebar: #0d3955;
+  $bgcolor-sidebar-nav-item-active: rgba(#000000, 0.37);
+  // $bgcolor-sidebar-nav-item-active: rgba(#969494, 0.3); // optional
+  $text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
+  // Sidebar resize button
+  $color-resize-button: white;
+  $bgcolor-resize-button: $primary;
+  $color-resize-button-hover: white;
+  $bgcolor-resize-button-hover: darken($bgcolor-resize-button, 5%);
+  // Sidebar contents
+  $bgcolor-sidebar-context: #e2f3f1;
+  $color-sidebar-context: $color-link;
+  // Sidebar list group
+  $bgcolor-sidebar-list-group: #eff8f7; // optional
+
+  // Tabs
+  $bordercolor-nav-tabs: #ccc; // optional
+
+  // Icon colors
+  $color-editor-icons: $color-global;
+
+  // Border colors
+  $border-color-theme: #ccc;
+  $bordercolor-inline-code: #ccc8c8; // optional
+
+  // Dropdown colors
+  $bgcolor-dropdown-link-active: $growi-blue;
+  $color-dropdown-link-active: $color-reversal;
+  $color-dropdown-link-hover: $color-global;
+
+  // admin theme box
+  $color-theme-color-box: darken($primary, 15%);
+
+  @import 'apply-colors';
+  @import 'apply-colors-light';
+
+  .wiki {
+    .highlighted {
+      background-color: lighten($primary, 20%);
+    }
+  }
+
+  .rbt-menu {
+    background: lighten($color-themelight, 5%);
+  }
+
+  #wrapper > #page-wrapper,
+  .page-editor-preview-container {
+    background-image: url('/images/themes/island/island.png');
+    background-attachment: fixed;
+  }
+
+  // login page
+  .nologin {
+    &.login-page {
+      > #wrapper > #page-wrapper {
+        background-image: unset;
+      }
+    }
+  }
+}

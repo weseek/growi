@@ -2,7 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import i18next from 'i18next';
 
-import Modal from 'react-bootstrap/es/Modal';
+import {
+  Modal,
+  ModalBody,
+} from 'reactstrap';
 
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
@@ -131,8 +134,8 @@ class DrawioModal extends React.PureComponent {
 
   render() {
     return (
-      <Modal show={this.state.show} onHide={this.cancel} dialogClassName="drawio-modal" bsSize="large" keyboard={false}>
-        <Modal.Body className="p-0">
+      <Modal isOpen={this.state.show} toggle={this.cancel} className="drawio-modal" size="xl" keyboard={false}>
+        <ModalBody className="p-0">
           {/* Loading spinner */}
           <div className="w-100 h-100 position-absolute d-flex">
             <div className="mx-auto my-auto">
@@ -149,7 +152,7 @@ class DrawioModal extends React.PureComponent {
               </iframe>
             ) }
           </div>
-        </Modal.Body>
+        </ModalBody>
       </Modal>
     );
   }
