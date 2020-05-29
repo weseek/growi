@@ -25,6 +25,13 @@
   margin-top: $grw-navbar-height + $grw-navbar-border-width;
 }
 
+.modal-open:not(.on-edit) {
+  overflow-y: scroll !important;
+  position: fixed;
+  width: 100%;
+  padding-right: 0 !important;
+}
+
 .grw-modal-head {
   font-size: 1em;
   border-bottom: 1px solid $gray-500;
