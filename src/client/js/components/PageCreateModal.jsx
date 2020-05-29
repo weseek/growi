@@ -187,8 +187,9 @@ const PageCreateModal = (props) => {
       <div className="row">
         <fieldset className="col-12">
 
-          <h3 className="grw-modal-head pb-2">{ t('template.modal_label.Create template under')}<br />
-            <code>{pathname}</code>
+          <h3 className="grw-modal-head pb-2">
+            { t('template.modal_label.Create template under')}<br />
+            <code className="h6">{pathname}</code>
           </h3>
 
           <div className="d-sm-flex align-items-center justify-items-between">
