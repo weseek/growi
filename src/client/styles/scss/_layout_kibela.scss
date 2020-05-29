@@ -1,6 +1,10 @@
 $navbar-height-adjustment: 10px;
 
 body.kibela {
+  .grw-pt-10px {
+    padding-top: 10px !important;
+  }
+
   /* navbar for kibela */
   #page-wrapper {
     margin-top: $grw-navbar-height + $grw-navbar-border-width;
