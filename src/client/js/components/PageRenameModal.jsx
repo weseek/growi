@@ -61,8 +61,15 @@ const PageRenameModal = (props) => {
         isRenameRedirect,
         isRenameMetadata,
       );
+
       const { page } = response;
-      window.location.href = encodeURI(`${page.path}?renamed=${path}`);
+      const url = new URL(page.path, 'https://dummy');
+      url.searchParams.append('renamedFrom', path);
+      if (isRenameRedirect) {
+        url.searchParams.append('withRedirect', true);
+      }
+
+      window.location.href = `${url.pathname}${url.search}`;
     }
     catch (err) {
       setErrorCode(err.code);
