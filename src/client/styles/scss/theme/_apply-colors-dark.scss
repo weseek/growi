@@ -19,6 +19,7 @@ $table-dark-hover-bg: $bgcolor-table-hover;
   * Form
   */
 input.form-control,
+select.form-control,
 textarea.form-control {
   color: lighten($color-global, 30%);
   background-color: darken($bgcolor-global, 5%);
