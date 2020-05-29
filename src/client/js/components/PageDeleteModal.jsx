@@ -110,7 +110,7 @@ const PageDeleteModal = (props) => {
   }
 
   return (
-    <Modal isOpen={isOpen} toggle={onClose} className="grw-create-page">
+    <Modal size="lg" isOpen={isOpen} toggle={onClose} className="grw-create-page">
       <ModalHeader tag="h4" toggle={onClose} className={`bg-${deleteIconAndKey[deleteMode].color} text-light`}>
         <i className={`icon-fw icon-${deleteIconAndKey[deleteMode].icon}`}></i>
         { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
