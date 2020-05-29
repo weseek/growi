@@ -20,7 +20,7 @@ const PageCreateModal = (props) => {
 
   const config = appContainer.getConfig();
   const isReachable = config.isSearchServiceReachable;
-  const { pathname } = window.location;
+  const pathname = decodeURI(window.location.pathname);
   const userPageRootPath = userPageRoot(appContainer.currentUser);
   const parentPath = pathUtils.addTrailingSlash(pathname);
   const now = format(new Date(), 'yyyy/MM/dd');
@@ -93,7 +93,7 @@ const PageCreateModal = (props) => {
    */
   function createTemplatePage() {
     const pageName = (template === 'children') ? '_template' : '__template';
-    window.location.href = encodeURI(urljoin(parentPath, pageName, '#edit'));
+    window.location.href = encodeURI(urljoin(pathname, pageName, '#edit'));
   }
 
   function renderCreateTodayForm() {
@@ -151,7 +151,7 @@ const PageCreateModal = (props) => {
                 ? (
                   <PagePathAutoComplete
                     crowi={appContainer}
-                    initializedPath={decodeURI(pathname)}
+                    initializedPath={pathname}
                     addTrailingSlash
                     onSubmit={ppacSubmitHandler}
                     onInputChange={ppacInputChangeHandler}
@@ -188,7 +188,7 @@ const PageCreateModal = (props) => {
         <fieldset className="col-12">
 
           <h3 className="grw-modal-head pb-2">{ t('template.modal_label.Create template under')}<br />
-            <code>{decodeURI(pathname)}</code>
+            <code>{pathname}</code>
           </h3>
 
           <div className="d-sm-flex align-items-center justify-items-between">
