@@ -3,12 +3,9 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import FormGroup from 'react-bootstrap/es/FormGroup';
-import FormControl from 'react-bootstrap/es/FormControl';
-import ControlLabel from 'react-bootstrap/es/ControlLabel';
-
-import Dropdown from 'react-bootstrap/es/Dropdown';
-import MenuItem from 'react-bootstrap/es/MenuItem';
+import {
+  Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
+} from 'reactstrap';
 
 import { createSubscribedElement } from '../UnstatedUtils';
 import EditorContainer from '../../services/EditorContainer';
@@ -54,21 +51,9 @@ class OptionsSelector extends React.Component {
     this.onToggleConfigurationDropdown = this.onToggleConfigurationDropdown.bind(this);
   }
 
-  componentDidMount() {
-    this.init();
-  }
-
-  init() {
+  onChangeTheme(newValue) {
     const { editorContainer } = this.props;
 
-    this.themeSelectorInputEl.value = editorContainer.state.editorOptions.theme;
-    this.keymapModeSelectorInputEl.value = editorContainer.state.editorOptions.keymapMode;
-  }
-
-  onChangeTheme() {
-    const { editorContainer } = this.props;
-
-    const newValue = this.themeSelectorInputEl.value;
     const newOpts = Object.assign(editorContainer.state.editorOptions, { theme: newValue });
     editorContainer.setState({ editorOptions: newOpts });
 
@@ -76,10 +61,9 @@ class OptionsSelector extends React.Component {
     editorContainer.saveOptsToLocalStorage();
   }
 
-  onChangeKeymapMode() {
+  onChangeKeymapMode(newValue) {
     const { editorContainer } = this.props;
 
-    const newValue = this.keymapModeSelectorInputEl.value;
     const newOpts = Object.assign(editorContainer.state.editorOptions, { keymapMode: newValue });
     editorContainer.setState({ editorOptions: newOpts });
 
@@ -104,9 +88,6 @@ class OptionsSelector extends React.Component {
   onClickRenderMathJaxInRealtime(event) {
     const { editorContainer } = this.props;
 
-    // keep dropdown opened
-    this._cddForceOpen = true;
-
     const newValue = !editorContainer.state.previewOptions.renderMathJaxInRealtime;
     const newOpts = Object.assign(editorContainer.state.previewOptions, { renderMathJaxInRealtime: newValue });
     editorContainer.setState({ previewOptions: newOpts });
@@ -115,106 +96,85 @@ class OptionsSelector extends React.Component {
     editorContainer.saveOptsToLocalStorage();
   }
 
-  /*
-   * see: https://github.com/react-bootstrap/react-bootstrap/issues/1490#issuecomment-207445759
-   */
   onToggleConfigurationDropdown(newValue) {
-    if (this._cddForceOpen) {
-      this.setState({ isCddMenuOpened: true });
-      this._cddForceOpen = false;
-    }
-    else {
-      this.setState({ isCddMenuOpened: newValue });
-    }
+    this.setState({ isCddMenuOpened: !this.state.isCddMenuOpened });
   }
 
   renderThemeSelector() {
-    const optionElems = this.availableThemes.map((theme) => {
-      return <option key={theme} value={theme}>{theme}</option>;
+    const { editorContainer } = this.props;
+
+    const selectedTheme = editorContainer.state.editorOptions.theme;
+    const menuItems = this.availableThemes.map((theme) => {
+      return <button key={theme} className="dropdown-item" type="button" onClick={() => this.onChangeTheme(theme)}>{theme}</button>;
     });
 
-    const bsClassName = 'form-control-dummy'; // set form-control* to shrink width
-
     return (
-      <FormGroup controlId="formControlsSelect" className="my-0">
-        <ControlLabel>Theme:</ControlLabel>
-        <FormControl
-          componentClass="select"
-          placeholder="select"
-          bsClass={bsClassName}
-          className="btn-group-sm selectpicker"
-          onChange={this.onChangeTheme}
-          // eslint-disable-next-line no-return-assign
-          inputRef={(el) => { return this.themeSelectorInputEl = el }}
-        >
-
-          {optionElems}
-
-        </FormControl>
-      </FormGroup>
+      <div className="my-0 form-group">
+        <label className="mr-2">Theme:</label>
+        <div className="btn-group btn-group-sm dropup">
+          <button className="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {selectedTheme}
+          </button>
+          <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            {menuItems}
+          </div>
+        </div>
+      </div>
     );
   }
 
   renderKeymapModeSelector() {
-    const optionElems = [];
-    // eslint-disable-next-line guard-for-in, no-restricted-syntax
-    for (const mode in this.keymapModes) {
-      const label = this.keymapModes[mode];
-      const dataContent = (mode === 'default')
-        ? label
-        : `<img src='/images/icons/${mode}.png' width='16px' class='m-r-5'></img> ${label}`;
-      optionElems.push(
-        <option key={mode} value={mode} data-content={dataContent}>{label}</option>,
-      );
-    }
+    const { editorContainer } = this.props;
 
-    const bsClassName = 'form-control-dummy'; // set form-control* to shrink width
+    const selectedKeymapMode = editorContainer.state.editorOptions.keymapMode;
+    const menuItems = Object.keys(this.keymapModes).map((mode) => {
+      const label = this.keymapModes[mode];
+      const icon = (mode !== 'default')
+        ? <img src={`/images/icons/${mode}.png`} width="16px" className="mr-2"></img>
+        : null;
+      return <button key={mode} className="dropdown-item" type="button" onClick={() => this.onChangeKeymapMode(mode)}>{icon}{label}</button>;
+    });
 
     return (
-      <FormGroup controlId="formControlsSelect" className="my-0">
-        <ControlLabel>Keymap:</ControlLabel>
-        <FormControl
-          componentClass="select"
-          placeholder="select"
-          bsClass={bsClassName}
-          className="btn-group-sm selectpicker"
-          onChange={this.onChangeKeymapMode}
-          // eslint-disable-next-line no-return-assign
-          inputRef={(el) => { return this.keymapModeSelectorInputEl = el }}
-        >
-
-          {optionElems}
-
-        </FormControl>
-      </FormGroup>
+      <div className="my-0 form-group">
+        <label className="mr-2">Keymap:</label>
+        <div className="btn-group btn-group-sm dropup">
+          <button className="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {selectedKeymapMode}
+          </button>
+          <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            {menuItems}
+          </div>
+        </div>
+      </div>
     );
   }
 
   renderConfigurationDropdown() {
     return (
-      <FormGroup controlId="formControlsSelect" className="my-0">
+      <div className="my-0 form-group">
 
         <Dropdown
-          dropup
-          id="configurationDropdown"
-          className="configuration-dropdown"
-          open={this.state.isCddMenuOpened}
-          onToggle={this.onToggleConfigurationDropdown}
+          direction="up"
+          size="sm"
+          className="grw-editor-configuration-dropdown"
+          isOpen={this.state.isCddMenuOpened}
+          toggle={this.onToggleConfigurationDropdown}
         >
 
-          <Dropdown.Toggle bsSize="sm">
+          <DropdownToggle color="outline-secondary" caret>
             <i className="icon-settings"></i>
-          </Dropdown.Toggle>
+          </DropdownToggle>
 
-          <Dropdown.Menu>
+          <DropdownMenu>
             {this.renderActiveLineMenuItem()}
             {this.renderRealtimeMathJaxMenuItem()}
-            {/* <MenuItem divider /> */}
-          </Dropdown.Menu>
+            {/* <DropdownItem divider /> */}
+          </DropdownMenu>
 
         </Dropdown>
 
-      </FormGroup>
+      </div>
     );
   }
 
@@ -229,11 +189,11 @@ class OptionsSelector extends React.Component {
     const iconClassName = iconClasses.join(' ');
 
     return (
-      <MenuItem onClick={this.onClickStyleActiveLine}>
+      <DropdownItem toggle={false} onClick={this.onClickStyleActiveLine}>
         <span className="icon-container"></span>
-        <span className="menuitem-label">{ t('page_edit.Show active line') }</span>
+        <span className="menuitem-label mr-2">{ t('page_edit.Show active line') }</span>
         <span className="icon-container"><i className={iconClassName}></i></span>
-      </MenuItem>
+      </DropdownItem>
     );
   }
 
@@ -254,20 +214,20 @@ class OptionsSelector extends React.Component {
     const iconClassName = iconClasses.join(' ');
 
     return (
-      <MenuItem onClick={this.onClickRenderMathJaxInRealtime}>
+      <DropdownItem toggle={false} onClick={this.onClickRenderMathJaxInRealtime}>
         <span className="icon-container"><img src="/images/icons/fx.svg" width="14px" alt="fx"></img></span>
         <span className="menuitem-label">MathJax Rendering</span>
         <i className={iconClassName}></i>
-      </MenuItem>
+      </DropdownItem>
     );
   }
 
   render() {
     return (
       <div className="d-flex flex-row">
-        <span className="m-l-5">{this.renderThemeSelector()}</span>
-        <span className="m-l-5">{this.renderKeymapModeSelector()}</span>
-        <span className="m-l-5">{this.renderConfigurationDropdown()}</span>
+        <span className="ml-2">{this.renderThemeSelector()}</span>
+        <span className="ml-2">{this.renderKeymapModeSelector()}</span>
+        <span className="ml-2">{this.renderConfigurationDropdown()}</span>
       </div>
     );
   }

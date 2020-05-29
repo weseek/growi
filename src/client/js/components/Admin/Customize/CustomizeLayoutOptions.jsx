@@ -14,8 +14,8 @@ class CustomizeLayoutOptions extends React.Component {
     const { t, adminCustomizeContainer } = this.props;
 
     return (
-      <div className="row">
-        <div className="col-sm-4">
+      <div className="row row-cols-1 row-cols-md-2">
+        <div className="col text-center">
           <CustomizeLayoutOption
             layoutType="crowi-plus"
             isSelected={adminCustomizeContainer.state.currentLayout === 'growi'}
@@ -23,15 +23,17 @@ class CustomizeLayoutOptions extends React.Component {
             labelHtml={`GROWI enhanced layout <small class="text-success">${t('admin:customize_setting.recommended')}</small>`}
           >
             <h4>{t('admin:customize_setting.layout_desc.growi_title')}</h4>
-            <ul>
-              <li>{t('admin:customize_setting.layout_desc.growi_text1')}</li>
-              <li>{t('admin:customize_setting.layout_desc.growi_text2')}</li>
-              <li>{t('admin:customize_setting.layout_desc.growi_text3')}</li>
-            </ul>
+            <div className="text-justify d-inline-block">
+              <ul>
+                <li>{t('admin:customize_setting.layout_desc.growi_text1')}</li>
+                <li>{t('admin:customize_setting.layout_desc.growi_text2')}</li>
+                <li>{t('admin:customize_setting.layout_desc.growi_text3')}</li>
+              </ul>
+            </div>
           </CustomizeLayoutOption>
         </div>
 
-        <div className="col-sm-4">
+        <div className="col text-center">
           <CustomizeLayoutOption
             layoutType="kibela"
             isSelected={adminCustomizeContainer.state.currentLayout === 'kibela'}
@@ -39,27 +41,13 @@ class CustomizeLayoutOptions extends React.Component {
             labelHtml="Kibela like layout"
           >
             <h4>{t('admin:customize_setting.layout_desc.kibela_title')}</h4>
-            <ul>
-              <li>{t('admin:customize_setting.layout_desc.kibela_text1')}</li>
-              <li>{t('admin:customize_setting.layout_desc.kibela_text2')}</li>
-              <li>{t('admin:customize_setting.layout_desc.kibela_text3')}</li>
-            </ul>
-          </CustomizeLayoutOption>
-        </div>
-
-        <div className="col-sm-4">
-          <CustomizeLayoutOption
-            layoutType="classic"
-            isSelected={adminCustomizeContainer.state.currentLayout === 'crowi'}
-            onSelected={() => adminCustomizeContainer.switchLayoutType('crowi')}
-            labelHtml="Crowi Classic Layout"
-          >
-            <h4>{t('admin:customize_setting.layout_desc.crowi_title')}</h4>
-            <ul>
-              <li>{t('admin:customize_setting.layout_desc.crowi_text1')}</li>
-              <li>{t('admin:customize_setting.layout_desc.crowi_text2')}</li>
-              <li>{t('admin:customize_setting.layout_desc.crowi_text3')}</li>
-            </ul>
+            <div className="text-justify d-inline-block">
+              <ul>
+                <li>{t('admin:customize_setting.layout_desc.kibela_text1')}</li>
+                <li>{t('admin:customize_setting.layout_desc.kibela_text2')}</li>
+                <li>{t('admin:customize_setting.layout_desc.kibela_text3')}</li>
+              </ul>
+            </div>
           </CustomizeLayoutOption>
         </div>
       </div>

@@ -3,37 +3,26 @@ import PropTypes from 'prop-types';
 
 import UserPicture from '../User/UserPicture';
 import PageListMeta from './PageListMeta';
-import PagePath from './PagePath';
+import PagePathLabel from './PagePathLabel';
 
 export default class Page extends React.Component {
 
   render() {
-    const page = this.props.page;
-    let link = this.props.linkTo;
-    if (link === '') {
-      link = page.path;
+    const {
+      page, noLink,
+    } = this.props;
+
+    let pagePathElem = <PagePathLabel page={page} additionalClassNames={['mx-1']} />;
+    if (!noLink) {
+      pagePathElem = <a className="text-break" href={page.path}>{pagePathElem}</a>;
     }
 
-    const styleFlex = {
-      flex: 1,
-    };
-
-    const hasChildren = this.props.children != null;
-
     return (
-      <li className="page-list-li d-flex align-items-center">
-        <UserPicture user={page.lastUpdateUser} />
-        <a className="page-list-link" href={link}>
-          <PagePath page={page} excludePathString={this.props.excludePathString} />
-        </a>
+      <>
+        <UserPicture user={page.lastUpdateUser} noLink={noLink} />
+        {pagePathElem}
         <PageListMeta page={page} />
-        { hasChildren && (
-          <React.Fragment>
-            <a style={styleFlex} href={link}>&nbsp;</a>
-            {this.props.children}
-          </React.Fragment>
-        ) }
-      </li>
+      </>
     );
   }
 
@@ -41,12 +30,9 @@ export default class Page extends React.Component {
 
 Page.propTypes = {
   page: PropTypes.object.isRequired,
-  linkTo: PropTypes.string,
-  excludePathString: PropTypes.string,
-  children: PropTypes.array,
+  noLink: PropTypes.bool,
 };
 
 Page.defaultProps = {
-  linkTo: '',
-  excludePathString: '',
+  noLink: false,
 };

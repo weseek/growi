@@ -1,11 +1,15 @@
-.growi.main-container {
+@import 'layout';
+
+.growi {
   .content-main {
     padding: 0;
   }
 
   .liker-and-seenusers {
-    height: 42px; // .nav height
-    border-bottom: 1px solid $border;
+    // adjusting position with negative margin
+    height: $grw-nav-main-tab-height;
+    line-height: 1.25;
+    border-bottom: 1px solid transparent;
 
     .liker-user-count,
     .seen-user-count {
@@ -14,11 +18,10 @@
   }
 
   .revision-toc {
-    &.affix {
-      top: calc(46px + 5px);
-      min-width: calc(#{100 / 12 * 2%} - #{$grid-gutter-width}); // width of 2column - padding
-      margin-top: 5px;
-    }
+    position: sticky;
+    top: calc(46px + 5px);
+    min-width: 100%;
+    margin-top: 5px;
 
     .revision-toc-content {
       padding: 0;

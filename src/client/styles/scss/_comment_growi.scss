@@ -1,13 +1,7 @@
-.growi.main-container {
+.growi {
   %comment-section {
     position: relative;
     padding: 1em;
-    margin-left: 4.5em;
-
-    // screen-xs
-    @media (max-width: $screen-xs) {
-      margin-left: 3.5em;
-    }
 
     // speech balloon
     &:before {
@@ -20,8 +14,7 @@
       border: 1em solid transparent;
       border-left-width: 0;
 
-      // screen-xs
-      @media (max-width: $screen-xs) {
+      @include media-breakpoint-down(xs) {
         top: 1em;
       }
     }
@@ -32,8 +25,8 @@
     width: 3em;
     height: 3em;
     margin-top: 0.8em;
-    // screen-xs
-    @media (max-width: $screen-xs) {
+
+    @include media-breakpoint-down(xs) {
       width: 2em;
       height: 2em;
     }
@@ -50,8 +43,16 @@
     }
   }
 
+  .page-comment-writer {
+    @include media-breakpoint-down(xs) {
+      height: 3.5em;
+    }
+  }
+
   .page-comment {
     position: relative;
+    padding-top: 70px;
+    margin-top: -70px;
 
     // ユーザー名
     .page-comment-creator {
@@ -68,6 +69,14 @@
     // コメントセクション
     .page-comment-main {
       @extend %comment-section;
+      @include media-breakpoint-up(sm) {
+        margin-left: 4.5em;
+      }
+      @include media-breakpoint-down(xs) {
+        &:before {
+          content: none;
+        }
+      }
     }
 
     // コメント本文
@@ -86,11 +95,6 @@
   // remove margin after hidden replies
   .page-comments-hidden-replies + .page-comment-reply {
     margin-top: 0;
-  }
-  .page-comment-reply,
-  .page-comment-reply-form {
-    margin-right: 15px;
-    margin-left: 6em;
   }
   // reply button
   .btn.btn-comment-reply {
@@ -120,6 +124,10 @@
     // seciton
     .comment-form-main {
       @extend %comment-section;
+      margin-left: 4.5em;
+      @include media-breakpoint-down(xs) {
+        margin-left: 3.5em;
+      }
     }
 
     // textarea
