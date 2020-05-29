@@ -11,7 +11,7 @@ $success: #00bb83 !default;
 $warning: #ffa32b !default;
 $danger: #ff0a54 !default;
 $light: #e4e7ea !default;
-$dark: #3e4d6c !default;
+$dark: #343a40 !default;
 
 //== Typography
 //
@@ -26,33 +26,21 @@ $line-height-base: 1.42857;
 
 //== Components
 //
-//## Define common padding and border radius sizes and more. Values based on 14px text and 1.428 line-height (~20px to start).
-$border-radius-base: 0;
-$border-radius-large: 0;
-$border-radius-small: 0;
-
-
-//== Buttons
-//
-//## For each of Bootstrap's buttons, define text, background and border color.
-
-$btn-border-radius: 0;
-$btn-border-radius-lg: 0;
-$btn-border-radius-sm: 0;
-
+$border-radius:               .15rem;
+$border-radius-sm:            .1rem;
+$border-radius-lg:            .25rem;
+$border-radius-xl:            .35rem;
 
 
 //== Forms
 //
-$input-border-radius: 0;
-$input-border-radius-lg: 0;
-$input-border-radius-sm: 0;
+$input-border-radius: $border-radius-sm;
+$input-border-radius-sm: $border-radius-sm;
+$input-border-radius-lg: $border-radius;
 
 //== Navs
-
 $nav-link-padding-y: 0.75rem;
 $nav-link-padding-x: 1rem;
-$nav-tabs-border-radius: 0;
 
 //== Navbar
 $navbar-padding-y: 0;
@@ -60,27 +48,29 @@ $navbar-brand-padding-y: 0;
 $navbar-nav-link-padding-x: 1rem;
 
 //== Dropdowns
-$dropdown-border-radius: 0;
+$dropdown-border-radius: $border-radius-sm;
 
 //== card
-$card-border-radius: 0;
 $card-spacer-y: 7px;
 $card-spacer-x: 15px;
 
 //== Modals
 $modal-content-border-width: 0;
-$modal-content-border-radius: 0;
 $modal-header-padding-y: 0.75rem;
 $modal-header-padding-x: 1rem;
 
 //== Alerts
-$alert-border-radius: 0;
+$alert-bg-level: -2;
+$alert-border-level: 0;
 
 //== Progress bar
 $progress-height: 4px;
-$progress-border-radius: 0;
+$progress-border-radius: $border-radius-sm;
 $progress-bg: #f0f0f0;
 $progress-box-shadow: none;
+
+//== Code
+$pre-color: dummyinvalildcolor; // disable pre color specification with invalid value
 
 //== Custom Checkbox
 $custom-checkbox-indicator-border-radius: 0px;

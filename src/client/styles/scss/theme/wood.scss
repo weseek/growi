@@ -42,7 +42,7 @@ html[dark] {
 
   // Background colors
   $bgcolor-global: #ffffff;
-  $bgcolor-inline-code: #eaeaea;
+  $bgcolor-inline-code: #f0f0f0; //optional
   $bgcolor-card: #ece8de;
 
   // Font colors
@@ -54,16 +54,23 @@ html[dark] {
   $color-link-wiki: lighten($themecolor, 5%);
   $color-link-wiki-hover: lighten($color-link-wiki, 15%);
   $color-link-nabvar: #a7a7a7;
-  $color-inline-code: #890000;
+  $color-inline-code: #c7254e; // optional
   $color-search: white;
 
   // List Group colors
   $color-list-hover: #eee;
 
+  // Table colors
+  // $color-table: #; // optional
+  // $bgcolor-table: #; // optional
+  $border-color-table: #aaa; // optional
+  // $color-table-hover: #; // optional
+  // $bgcolor-table-hover: #; // optional
+
   // Navbar
   $bgcolor-navbar: #2a2929;
   $bgcolor-search-top-dropdown: $themecolor;
-  $border-image-navbar: linear-gradient(to right, #5c78ef 0%, #16bc42 50%, #5c78ef 100%);
+  $border-image-navbar: linear-gradient(to right, $themecolor 0%, darken($themecolor, 20%) 100%);
 
   // Logo colors
   $bgcolor-logo: darken($themecolor, 10%);
@@ -71,18 +78,19 @@ html[dark] {
   $color-editor-icons: $color-global;
 
   // Sidebar
-  $bgcolor-sidebar: $bgcolor-navbar;
+  $bgcolor-sidebar: transparent;
   // Sidebar contents
   $color-sidebar-context: #9d7406;
-  $bgcolor-sidebar-context: #f0efe7;
+  $bgcolor-sidebar-context: transparent;
   // Sidebar list group
-  $bgcolor-sidebar-list-group: #f7f5f1;
+  $bgcolor-sidebar-list-group: rgba(#f7f5f1, 0.5);
   // Sidebar resize button
   $color-resize-button: white;
   $bgcolor-resize-button: $themecolor;
 
   // Border colors
   $border-color-theme: #ccc; // former: `$navbar-border: #ccc;`
+  $bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
   $bgcolor-dropdown-link-active: $growi-blue;
@@ -95,103 +103,47 @@ html[dark] {
   // alert
   $color-alert: $color-reversal;
 
-  // badge
-  $color-badge: $color-reversal;
-
   // portal
   $info: lighten($themecolor, 10%);
 
   @import 'apply-colors';
   @import 'apply-colors-light';
 
-  // hljs
-  .hljs {
-    color: #433005;
-    background-color: $bgcolor-inline-code;
-  }
-
-  // List
-  .list-group .list-group-item {
-    background: transparent;
-  }
-
-  // Search Top
-  .search-top {
-    .btn-secondary.dropdown-toggle {
-      color: $color-search;
-    }
+  /*
+   * Modal
+   */
+  .modal-dialog .modal-header.bg-primary {
+    background-image: url('/images/themes/wood/wood-navbar.jpg');
   }
 
   // Sidebar
-  .grw-sidebar div[data-testid='GlobalNavigation']{
-    * {
+  .grw-sidebar {
+    div[data-testid='GlobalNavigation'] {
       background-image: url('/images/themes/wood/wood-navbar.jpg');
-    }
 
-    button,
-    .btn {
-      border: none;
+      button,
+      .btn {
+        border: none;
+      }
+    }
+    div[data-testid='ContextualNavigation'] {
+      > div {
+        background-color: rgba(white, 0.6);
+        background-image: url('/images/themes/wood/wood-navbar.jpg');
+        background-blend-mode: lighten;
+      }
     }
   }
+
+  // login and register
+
+  .login-header,
+  .login-dialog {
+    background-color: rgba(black, 0.1);
+  }
+
+  a#login.link-switch,
+  a#register.link-switch {
+    color: rgba(black, 0.5);
+  }
 }
-
-//== Dark Mode
-//
-// html[dark] {
-//   $primary: #d65a31;
-
-//   $basecolor: #222831;
-
-//   // Background colors
-//   $bgcolor-global: $basecolor;
-//   $bgcolor-navbar: #151515;
-//   $bgcolor-inline-code: darken($basecolor, 5%);
-//   $bgcolor-card: darken($basecolor, 5%);
-
-//   // Font colors
-//   $color-global: #eeeeee;
-//   $color-reversal: #333333;
-//   // $color-header: desaturate($primary, 20%);
-//   $color-link: $primary;
-//   $color-link-hover: lighten($color-link, 10%);
-//   $color-link-wiki: lighten($basecolor, 50%);
-//   $color-link-wiki-hover: darken($color-link-wiki, 5%);
-//   $color-link-nabvar: $color-global;
-//   $color-inline-code: #c7254e;
-
-//   // List Group colors
-//   $color-list: $color-global;
-//   $bgcolor-list: $bgcolor-global;
-//   $color-list-active: $color-reversal;
-//   $bgcolor-list-active: $primary;
-//   $color-list-hover: $color-reversal;
-
-//   // Logo colors
-//   $bgcolor-logo: $bgcolor-navbar;
-//   $fillcolor-logo-mark: #444;
-
-//   // Icon colors
-//   $color-editor-icons: darken($accentcolor, 15%);
-
-//   // Border colors
-//   $border-color-theme: black; // former: `$navbar-border: #ccc;`
-
-//   // Dropdown colors
-//   $bgcolor-dropdown-link-active: $primary;
-//   $color-dropdown-link-active: $color-global;
-//   $color-dropdown-link-hover: $color-reversal;
-
-//   // alert
-//   $color-alert: $color-global;
-
-//   // badge
-//   $color-badge: $color-global;
-
-//   // Sidebar
-//   $bgcolor-sidebar: $bgcolor-navbar;
-//   $color-sidebar-context: $color-global;
-//   $bgcolor-sidebar-context: lighten($bgcolor-navbar, 5%);
-
-//   @import 'apply-colors';
-//   @import 'apply-colors-dark';
-// }

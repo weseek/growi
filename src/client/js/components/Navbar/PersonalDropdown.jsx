@@ -65,13 +65,8 @@ const PersonalDropdown = (props) => {
       {/* Menu */}
       <div className="dropdown-menu dropdown-menu-right">
 
-        <a className="dropdown-item" href={`/user/${user.username}`}><i className="icon-fw icon-user"></i>{ t('User\'s Home') }</a>
-        <a className="dropdown-item" href="/me"><i className="icon-fw icon-wrench"></i>{ t('User Settings') }</a>
-
-        <div className="dropdown-divider"></div>
-
-        <a className="dropdown-item" href={`/user/${user.username}#user-draft-list`}><i className="icon-fw icon-docs"></i>{ t('List Drafts') }</a>
-        <a className="dropdown-item" href="/trash"><i className="icon-fw icon-trash"></i>{ t('Deleted Pages') }</a>
+        <a className="dropdown-item" type="button" href={`/user/${user.username}`}><i className="icon-fw icon-user"></i>{ t('User\'s Home') }</a>
+        <a className="dropdown-item" type="button" href="/me"><i className="icon-fw icon-wrench"></i>{ t('User Settings') }</a>
 
         <div className="dropdown-divider"></div>
 

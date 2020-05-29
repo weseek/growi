@@ -585,13 +585,11 @@ module.exports = (crowi) => {
         };
       }));
 
-      let updatedUsers = [];
       if (requests.length > 0) {
         await User.bulkWrite(requests);
-        updatedUsers = await User.find({ _id: { $in: userIds } }, User.USER_PUBLIC_FIELDS);
       }
 
-      return res.apiv3({ updatedUsers });
+      return res.apiv3({});
     }
     catch (err) {
       logger.error('Error', err);

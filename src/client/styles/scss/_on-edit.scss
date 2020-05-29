@@ -1,5 +1,4 @@
 @import 'editor-overlay';
-@import 'layout_variable';
 
 body:not(.on-edit) {
   // hide .page-editor-footer
@@ -133,6 +132,14 @@ body.on-edit {
     }
   }
 
+  // deal with word wrap problem
+  // see: https://qiita.com/mpyw/items/dfc63c1fed5dfc5eda26
+  .page-editor-editor-container,
+  .page-editor-preview-container {
+    min-width: 0;
+    overflow-wrap: break-word;
+  }
+
   /*********************
    * Navigation styles
    */
@@ -207,11 +214,6 @@ body.on-edit {
           display: flex;
           align-items: center;
           justify-content: space-between;
-
-          .menuitem-label {
-            flex: 1;
-            margin-right: 10px;
-          }
         }
       }
     }

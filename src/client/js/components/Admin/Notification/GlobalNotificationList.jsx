@@ -103,7 +103,7 @@ class GlobalNotificationList extends React.Component {
                   </li>
                 )}
                   {notification.triggerEvents.includes('pageMove') && (
-                  <li className="list-inline-item badge badge-pill badge-warning" data-toggle="tooltip" data-placement="top" title="Page Move">
+                  <li className="list-inline-item badge badge-pill badge-pink" data-toggle="tooltip" data-placement="top" title="Page Move">
                     <i className="icon-action-redo"></i> MOVE
                   </li>
                 )}
@@ -118,7 +118,7 @@ class GlobalNotificationList extends React.Component {
                   </li>
                 )}
                   {notification.triggerEvents.includes('comment') && (
-                  <li className="list-inline-item badge badge-pill badge-light" data-toggle="tooltip" data-placement="top" title="New Comment">
+                  <li className="list-inline-item badge badge-pill badge-secondary" data-toggle="tooltip" data-placement="top" title="New Comment">
                     <i className="icon-fw icon-bubble"></i> POST
                   </li>
                 )}
@@ -143,10 +143,10 @@ class GlobalNotificationList extends React.Component {
                     <i className="icon-settings"></i> <span className="caret"></span>
                   </button>
                   <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                    <a className="dropdown-item" href={urljoin('/admin/global-notification/', notification._id)}>
+                    <a className="dropdown-item" type="button" href={urljoin('/admin/global-notification/', notification._id)}>
                       <i className="icon-fw icon-note"></i> {t('Edit')}
                     </a>
-                    <a className="dropdown-item" onClick={() => this.openConfirmationModal(notification)}>
+                    <a className="dropdown-item" type="button" onClick={() => this.openConfirmationModal(notification)}>
                       <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
                     </a>
                   </div>

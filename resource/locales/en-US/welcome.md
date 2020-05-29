@@ -3,15 +3,13 @@
 [![GitHub Releases](https://img.shields.io/github/release/weseek/growi.svg)](https://github.com/weseek/growi/releases/latest)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
-<div class="card">
-  <div class="card-header">Tips</div>
+<div class="card border-primary">
+  <div class="card-header bg-primary text-light">Tips</div>
   <div class="card-body"><ul>
-    <li>Ctrl(⌘)-/ to show quick help</li>
-    <li>You can write HTML with <a href="https://getbootstrap.com/docs/3.3/css/">Bootstrap 3</a>.</li>
+    <li>Ctrl(⌘) + "/" to show quick help</li>
+    <li>You can write HTML with <a href="https://getbootstrap.com/docs/4.5/components/">Bootstrap 4</a>.</li>
   </ul></div>
 </div>
-
-<div class="clearfix"></div>
 
 Contents
 =========

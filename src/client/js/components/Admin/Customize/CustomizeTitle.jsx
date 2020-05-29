@@ -44,19 +44,29 @@ class CustomizeTitle extends React.Component {
           <div className="col-12">
             <Card className="card well">
               <CardBody className="px-0 py-2">
-                <span
-                  // eslint-disable-next-line react/no-danger
-                  dangerouslySetInnerHTML={{ __html: t('admin:customize_setting.custom_title_detail') }}
-                />
+                {/* eslint-disable react/no-danger */}
+                <p dangerouslySetInnerHTML={{ __html: t('admin:customize_setting.custom_title_detail') }} />
+                <ul>
+                  <li>
+                    <span dangerouslySetInnerHTML={{ __html: t('admin:customize_setting.custom_title_detail_placeholder1') }} />
+                  </li>
+                  <li>
+                    <span dangerouslySetInnerHTML={{ __html: t('admin:customize_setting.custom_title_detail_placeholder2') }} />
+                  </li>
+                  <li>
+                    <span dangerouslySetInnerHTML={{ __html: t('admin:customize_setting.custom_title_detail_placeholder3') }} />
+                  </li>
+                </ul>
+                {/* eslint-enable react/no-danger */}
               </CardBody>
             </Card>
           </div>
 
           {/* TODO i18n */}
           <div className="form-text text-muted col-12">
-            Default Value: <code>&#123;&#123;page&#125;&#125; - &#123;&#123;sitename&#125;&#125;</code>
+            Default Value: <code>&#123;&#123;pagename&#125;&#125; - &#123;&#123;sitename&#125;&#125;</code>
             <br />
-            Default Output: <code className="xml">&lt;title&gt;/Somewhere/Page - {'GROWI'}&lt;&#047;title&gt;</code>
+            Default Output Example: <code className="xml">&lt;title&gt;Page name - My GROWI&lt;&#047;title&gt;</code>
           </div>
           <div className="form-group col-12">
             <input

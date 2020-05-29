@@ -251,12 +251,12 @@ ___
 記述中のページを基点とした相対リンクと、表示テキストに対するリンクを同時に実現できます。
 
 ```
-[[./Bootstrap3]]
-Bootstrap3のExampleは[[こちら>./Bootstrap3]]
+[[./Bootstrap4]]
+Bootstrap4のExampleは[[こちら>./Bootstrap4]]
 ```
 
 [[../user]]
-Bootstrap3のExampleは[[こちら>./Bootstrap3]]
+Bootstrap4のExampleは[[こちら>./Bootstrap4]]
 
 # :pencil: Lists
 
@@ -449,8 +449,8 @@ See [emojione](https://www.emojione.com/)
 
 # :heavy_plus_sign: 更に…
 
-- Bootstrap3 のタグを使う
-    - :arrow_right: [/Sandbox/Bootstrap3]
+- Bootstrap4 のタグを使う
+    - :arrow_right: [/Sandbox/Bootstrap4]
 - 図表を書く
     - :arrow_right: [/Sandbox/Diagrams]
 - 数式を書く

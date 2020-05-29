@@ -255,10 +255,10 @@ module.exports = function(crowi) {
       const hash = md5(email.trim().toLowerCase());
       return `https://gravatar.com/avatar/${hash}`;
     }
-    if (this.image) {
+    if (this.image != null) {
       return this.image;
     }
-    if (this.imageAttachment) {
+    if (this.imageAttachment != null && this.imageAttachment._id != null) {
       const Attachment = crowi.model('Attachment');
       const imageAttachment = await Attachment.findById(this.imageAttachment);
       return imageAttachment.filePathProxied;

@@ -162,7 +162,7 @@ class OptionsSelector extends React.Component {
           toggle={this.onToggleConfigurationDropdown}
         >
 
-          <DropdownToggle color="light" caret>
+          <DropdownToggle color="outline-secondary" caret>
             <i className="icon-settings"></i>
           </DropdownToggle>
 
@@ -191,7 +191,7 @@ class OptionsSelector extends React.Component {
     return (
       <DropdownItem toggle={false} onClick={this.onClickStyleActiveLine}>
         <span className="icon-container"></span>
-        <span className="menuitem-label">{ t('page_edit.Show active line') }</span>
+        <span className="menuitem-label mr-2">{ t('page_edit.Show active line') }</span>
         <span className="icon-container"><i className={iconClassName}></i></span>
       </DropdownItem>
     );

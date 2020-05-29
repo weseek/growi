@@ -118,13 +118,13 @@ class LocalSecuritySetting extends React.Component {
                     {registrationMode === 'Closed' && t('security_setting.registration_mode.closed')}
                   </button>
                   <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a className="dropdown-item" onClick={() => { adminLocalSecurityContainer.changeRegistrationMode('Open') }}>
+                    <a className="dropdown-item" type="button" onClick={() => { adminLocalSecurityContainer.changeRegistrationMode('Open') }}>
                       {t('security_setting.registration_mode.open')}
                     </a>
-                    <a className="dropdown-item" onClick={() => { adminLocalSecurityContainer.changeRegistrationMode('Restricted') }}>
+                    <a className="dropdown-item" type="button" onClick={() => { adminLocalSecurityContainer.changeRegistrationMode('Restricted') }}>
                       {t('security_setting.registration_mode.restricted')}
                     </a>
-                    <a className="dropdown-item" onClick={() => { adminLocalSecurityContainer.changeRegistrationMode('Closed') }}>
+                    <a className="dropdown-item" type="button" onClick={() => { adminLocalSecurityContainer.changeRegistrationMode('Closed') }}>
                       {t('security_setting.registration_mode.closed')}
                     </a>
                   </div>
