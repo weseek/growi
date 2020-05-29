@@ -2,6 +2,7 @@
 
 ## v4.0.1-RC
 
+* Fix: Refactor '/pages.exist' API
 * Support: Upgrade libs
     * @atlaskit/drawer
     * @atlaskit/navigation-next
