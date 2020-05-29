@@ -59,6 +59,10 @@ $theme-colors: map-merge($theme-colors, $colors);
       theme-color-level($color, $alert-border-level),
       theme-color-level($color, $alert-color-level)
     );
+
+    a {
+      color: theme-color-level($color, $alert-color-level - 2) !important;
+    }
   }
 }
 
