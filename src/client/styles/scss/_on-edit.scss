@@ -9,6 +9,8 @@ body:not(.on-edit) {
 }
 
 body.on-edit {
+  overflow-y: hidden !important;
+
   // calculate margin
   $editor-header-plus-footer: 42px // .nav-tabs height
     + 1px //                          .page-editor-footer border-top
