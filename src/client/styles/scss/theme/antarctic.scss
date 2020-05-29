@@ -108,12 +108,6 @@ html[dark] {
   // admin theme box
   $color-theme-color-box: lighten($themecolor, 20%);
 
-  // alert
-  $color-alert: $color-reversal;
-
-  // badge
-  $color-badge: $color-reversal;
-
   @import 'apply-colors';
   @import 'apply-colors-light';
 
@@ -126,6 +120,11 @@ html[dark] {
     .table {
       background-color: transparent;
     }
+  }
+
+  a#login.link-switch,
+  a#register.link-switch {
+    color: rgba(black, 0.5);
   }
 }
 
@@ -174,12 +173,6 @@ html[dark] {
 //   $bgcolor-dropdown-link-active: $primary;
 //   $color-dropdown-link-active: $color-global;
 //   $color-dropdown-link-hover: $color-reversal;
-
-//   // alert
-//   $color-alert: $color-global;
-
-//   // badge
-//   $color-badge: $color-global;
 
 //   // Sidebar
 //   $bgcolor-sidebar: $bgcolor-navbar;

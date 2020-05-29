@@ -52,26 +52,18 @@ $theme-colors: map-merge($theme-colors, $colors);
   }
 }
 
-@each $theme-color, $color in $theme-colors {
-  .alert.alert-#{$theme-color} {
-    color: $color-alert;
-    background: $color;
-    border: none;
-
-    a:not(.btn) {
-      color: $bgcolor-global;
-
-      &:hover,
-      &:focus {
-        color: lighten($color, 30%);
-      }
-    }
+@each $color, $value in $theme-colors {
+  .alert-#{$color} {
+    @include alert-variant(
+      theme-color-level($color, $alert-bg-level),
+      theme-color-level($color, $alert-border-level),
+      theme-color-level($color, $alert-color-level)
+    );
   }
 }
 
-@each $theme-color, $color in $theme-colors {
-  .badge.badge-#{$theme-color} {
-    color: $color-badge;
-    background: $color;
+@each $color, $value in $theme-colors {
+  .badge-#{$color} {
+    @include badge-variant($value);
   }
 }
