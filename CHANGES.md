@@ -5,6 +5,8 @@
 * Fix: Storing the state of sidebar
 * Fix: Change the display of the scroll bar when modal is shown
 * Fix: Link color in alerts
+* Fix: Submit with enter key on Create/Rename modals
+* Fix: Show/hide Unlink redirection button conditions
 * Fix: Refactor '/pages.exist' API
 * Support: Upgrade libs
     * @atlaskit/drawer
