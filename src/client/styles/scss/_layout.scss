@@ -1,3 +1,7 @@
+body {
+  overflow-y: scroll !important;
+}
+
 .grw-logo {
   svg {
     width: $grw-logo-width;
@@ -16,7 +20,6 @@
 }
 
 .modal-open:not(.on-edit) {
-  overflow-y: scroll !important;
   position: fixed;
   width: 100%;
   padding-right: 0 !important;
