@@ -31,7 +31,7 @@ class GiveAdminButton extends React.Component {
     const { t } = this.props;
 
     return (
-      <a className="dropdown-item" href="#" onClick={() => { this.onClickGiveAdminBtn() }}>
+      <a className="dropdown-item" type="button" onClick={() => { this.onClickGiveAdminBtn() }}>
         <i className="icon-fw icon-user-following"></i> {t('admin:user_management.user_table.give_admin_access')}
       </a>
     );

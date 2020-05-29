@@ -124,13 +124,4 @@
     margin-bottom: 18px;
     overflow: hidden;
   }
-
-  // badge
-  .badge {
-    letter-spacing: 0.05em;
-    &.badge-warning {
-      // badge-warning text is white color in bootstrap3
-      color: white;
-    }
-  }
 }

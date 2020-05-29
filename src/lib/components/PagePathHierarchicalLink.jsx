@@ -52,7 +52,7 @@ const PagePathHierarchicalLink = (props) => {
   return (
     <RootElm>
       { isParentExists && (
-        <PagePathHierarchicalLink linkedPagePath={linkedPagePath.parent} basePath={basePath} isInnerElem />
+        <PagePathHierarchicalLink linkedPagePath={linkedPagePath.parent} basePath={basePath} isInTrash={isInTrash || linkedPagePath.isInTrash} isInnerElem />
       ) }
       { isSeparatorRequired && (
         <span className="separator">/</span>
@@ -66,11 +66,10 @@ const PagePathHierarchicalLink = (props) => {
 PagePathHierarchicalLink.propTypes = {
   linkedPagePath: PropTypes.instanceOf(LinkedPagePath).isRequired,
   basePath: PropTypes.string,
+  isInTrash: PropTypes.bool,
 
   // !!INTERNAL USE ONLY!!
   isInnerElem: PropTypes.bool,
-
-  isInTrash: PropTypes.bool, // TODO: omit
 };
 
 export default PagePathHierarchicalLink;

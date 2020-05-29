@@ -87,10 +87,10 @@ class UserGroupTable extends React.Component {
                             <i className="icon-settings"></i>
                           </button>
                           <div className="dropdown-menu" role="menu" aria-labelledby={`admin-group-menu-button-${group._id}`}>
-                            <a className="dropdown-item" href={`/admin/user-group-detail/${group._id}`}>
+                            <a className="dropdown-item" type="button" href={`/admin/user-group-detail/${group._id}`}>
                               <i className="icon-fw icon-note"></i> {t('Edit')}
                             </a>
-                            <a className="dropdown-item" role="button" onClick={this.onDelete} data-user-group-id={group._id}>
+                            <a className="dropdown-item" type="button" role="button" onClick={this.onDelete} data-user-group-id={group._id}>
                               <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
                             </a>
                           </div>

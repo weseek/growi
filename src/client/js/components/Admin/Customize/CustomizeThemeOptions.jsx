@@ -23,21 +23,21 @@ class CustomizeThemeOptions extends React.Component {
     }];
 
     const uniqueTheme = [{
-      name: 'nature',     bg: '#f9fff3', topbar: '#2a2929', sidebar: '#118050', theme: '#460039',
+      name: 'nature',     bg: '#f9fff3', topbar: '#234136', sidebar: '#118050', theme: '#460039',
     }, {
-      name: 'wood',       bg: '#fffefb', topbar: '#2a2929', sidebar: '#aaa45f', theme: '#dddebf',
+      name: 'wood',       bg: '#fffefb', topbar: '#2a2929', sidebar: '#aaa45f', theme: '#aaa45f',
     }, {
-      name: 'island',     bg: '#8ecac0', topbar: '#2a2929', sidebar: '#0c2a44', theme: '#cef2ef',
+      name: 'island',     bg: '#cef2ef', topbar: '#2a2929', sidebar: '#0c2a44', theme: 'rgba(183, 226, 219, 1)',
     }, {
-      name: 'christmas',  bg: '#fffefb', topbar: '#2a2929', sidebar: '#b3000c', theme: '#017e20',
+      name: 'christmas',  bg: '#fffefb', topbar: '#b3000c', sidebar: '#30882c', theme: '#d3c665',
     }, {
-      name: 'antarctic',  bg: '#ffffff', topbar: '#2a2929', sidebar: '#000080', theme: '#99cccc',
+      name: 'antarctic',  bg: '#ffffff', topbar: '#2a2929', sidebar: '#000080', theme: '#fa9913',
     }, {
-      name: 'spring',     bg: '#fff5ee', topbar: '#2a2929', sidebar: '#ff69b4', theme: '#ffb6c1',
+      name: 'spring',     bg: '#ffffff', topbar: '#d3687c', sidebar: '#ffb8c6', theme: '#67a856',
     }, {
-      name: 'future',     bg: '#16282D', topbar: '#2a2929', sidebar: '#011414', theme: '#04B4AE',
+      name: 'future',     bg: '#16282d', topbar: '#2a2929', sidebar: '#00b5b7', theme: '#00b5b7',
     }, {
-      name: 'halloween',  bg: '#030003', topbar: '#2a2929', sidebar: '#cc5d1f', theme: '#e9af2b',
+      name: 'halloween',  bg: '#030003', topbar: '#aa4a04', sidebar: '#162b33', theme: '#e9af2b',
     }];
     /* eslint-enable no-multi-spaces */
 

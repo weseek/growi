@@ -11,16 +11,14 @@
 
 ### Updates
 
+* Feature: Sidebar
+* Feature: Recent changes on Sidebar
 * Feature: Switch Light/Dark Mode
 * Improvement: Migrate to Bootstrap 4
 * Improvement: Copy Page URL menu item to copy path dropdown
 * Improvement: Show contributors by Bootstrap Modal
 * Support: Upgrade libs
     * bootstrap
-
-## v3.8.2-RC
-
-*
 
 ## v3.8.1
 

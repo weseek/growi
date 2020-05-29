@@ -89,11 +89,8 @@ ul.pagination {
 .page-list {
   .page-list-ul {
     > li {
-      > a strong {
-        color: lighten($color-global, 25%);
-      }
       > span.page-list-meta {
-        color: $color-global;
+        color: darken($color-global, 10%);
       }
     }
   }
