@@ -6,7 +6,7 @@ on:
       - release/**
 
 jobs:
-  release:
+  github-release:
 
     runs-on: ubuntu-latest
 
@@ -42,3 +42,82 @@ jobs:
         changelog_file: CHANGES.md
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+  build-image:
+    needs: github-release
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        flavor: [default, nocdn]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Checkout released tag
+      run: git checkout refs/tags/v${{ env.RELEASE_VERSION }}
+
+    - name: Determine suffix
+      run: |
+        [[ ${{ matrix.flavor }} = "nocdn" ]] && suffix="-nocdn" || suffix=""
+        echo ::set-env name=SUFFIX::$suffix
+
+    - name: Cache/Restore yarn cache
+      uses: actions/cache@v1
+      with:
+        path: /usr/local/share/.cache/yarn
+        key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-${{ matrix.node-version }}-
+
+    - name: Set up Docker Buildx
+      uses: crazy-max/ghaction-docker-buildx@v1.0.4
+
+    - name: Login to docker.io registry
+      run: |
+        echo ${{ secrets. DOCKER_REGISTRY_PASSWORD }} | docker login --username wsmoogle --password-stdin
+
+    - name: Build Docker Image
+      run: |
+        CACHE_REF=weseek/growi-cache:3${{ env.SUFFIX }}
+        docker buildx build \
+          --tag growi${{ env.SUFFIX }} \
+          --build-arg flavor=${{ matrix.flavor }} \
+          --platform linux/amd64 \
+          --load \
+          --cache-from=type=registry,ref=$CACHE_REF \
+          --cache-to=type=registry,ref=$CACHE_REF,mode=max \
+          --file ./docker/Dockerfile .
+
+    - name: Docker Tags by SemVer
+      uses: weseek/ghaction-docker-tags-by-semver@v1.0.5
+      with:
+        source: growi${{ env.SUFFIX }}
+        target: weseek/growi
+        semver: ${{ env.RELEASE_VERSION }}
+        suffix: ${{ env.SUFFIX }}
+        additional-tags: 'latest'
+        publish: true
+
+    - name: Slack Notification
+      uses: weseek/ghaction-release-slack-notification@master
+      with:
+        channel: '#general'
+        url: ${{ secrets.SLACK_WEBHOOK_URL }}
+        created_tag: 'v${{ env.RELEASE_VERSION }}${{ env.SUFFIX }}'
+
+    - name: Update Docker Hub Description
+      uses: peter-evans/dockerhub-description@v2.1.0
+      env:
+        DOCKERHUB_USERNAME: wsmoogle
+        DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+        DOCKERHUB_REPOSITORY: weseek/growi
+        README_FILEPATH: ./docker/README.md
+
+    - name: Check whether workspace is clean
+      run: |
+        STATUS=`git status --porcelain`
+        if [ -z "$STATUS" ]; then exit 0; else exit 1; fi
+
