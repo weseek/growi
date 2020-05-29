@@ -30,6 +30,12 @@ const PageCreateModal = (props) => {
   const [pageNameInput, setPageNameInput] = useState(parentPath);
   const [template, setTemplate] = useState(null);
 
+  function transitBySubmitEvent(e, transitHandler) {
+    // prevent page transition by submit
+    e.preventDefault();
+    transitHandler();
+  }
+
   /**
    * change todayInput1
    * @param {string} value
@@ -91,7 +97,7 @@ const PageCreateModal = (props) => {
   /**
    * access template page
    */
-  function createTemplatePage() {
+  function createTemplatePage(e) {
     const pageName = (template === 'children') ? '_template' : '__template';
     window.location.href = encodeURI(urljoin(pathname, pageName, '#edit'));
   }
@@ -107,22 +113,26 @@ const PageCreateModal = (props) => {
             <div className="d-flex align-items-center flex-fill flex-wrap flex-lg-nowrap">
               <div className="d-flex align-items-center">
                 <span>{userPageRootPath}/</span>
-                <input
-                  type="text"
-                  className="page-today-input1 form-control text-center mx-2"
-                  value={todayInput1}
-                  onChange={e => onChangeTodayInput1Handler(e.target.value)}
-                />
+                <form onSubmit={e => transitBySubmitEvent(e, createTodayPage)}>
+                  <input
+                    type="text"
+                    className="page-today-input1 form-control text-center mx-2"
+                    value={todayInput1}
+                    onChange={e => onChangeTodayInput1Handler(e.target.value)}
+                  />
+                </form>
                 <span className="page-today-suffix">/{now}/</span>
               </div>
-              <input
-                type="text"
-                className="page-today-input2 form-control mt-1 mt-lg-0 mx-lg-2 flex-fill"
-                id="page-today-input2"
-                placeholder={t('Input page name (optional)')}
-                value={todayInput2}
-                onChange={e => onChangeTodayInput2Handler(e.target.value)}
-              />
+              <form className="mt-1 mt-lg-0 mx-lg-2 flex-fill" onSubmit={e => transitBySubmitEvent(e, createTodayPage)}>
+                <input
+                  type="text"
+                  className="page-today-input2 form-control w-100"
+                  id="page-today-input2"
+                  placeholder={t('Input page name (optional)')}
+                  value={todayInput2}
+                  onChange={e => onChangeTodayInput2Handler(e.target.value)}
+                />
+              </form>
             </div>
 
             <div className="d-flex justify-content-end mt-1 mt-sm-0">
@@ -158,14 +168,16 @@ const PageCreateModal = (props) => {
                   />
                 )
                 : (
-                  <input
-                    type="text"
-                    value={pageNameInput}
-                    className="form-control flex-fill"
-                    placeholder={t('Input page name')}
-                    onChange={e => onChangePageNameInputHandler(e.target.value)}
-                    required
-                  />
+                  <form onSubmit={e => transitBySubmitEvent(e, createInputPage)}>
+                    <input
+                      type="text"
+                      value={pageNameInput}
+                      className="form-control flex-fill"
+                      placeholder={t('Input page name')}
+                      onChange={e => onChangePageNameInputHandler(e.target.value)}
+                      required
+                    />
+                  </form>
                 )}
             </div>
 
