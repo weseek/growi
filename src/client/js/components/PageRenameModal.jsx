@@ -93,7 +93,7 @@ const PageRenameModal = (props) => {
             <div className="input-group-prepend">
               <span className="input-group-text">{crowi.url}</span>
             </div>
-            <div className="flex-fill">
+            <form className="flex-fill" onSubmit={(e) => { e.preventDefault(); rename() }}>
               <input
                 type="text"
                 value={pageNameInput}
@@ -101,7 +101,7 @@ const PageRenameModal = (props) => {
                 onChange={e => inputChangeHandler(e.target.value)}
                 required
               />
-            </div>
+            </form>
           </div>
         </div>
         <div className="custom-control custom-checkbox custom-checkbox-warning">
