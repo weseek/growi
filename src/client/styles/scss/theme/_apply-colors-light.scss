@@ -69,6 +69,13 @@ $table-hover-bg: $bgcolor-table-hover;
   }
 }
 
+/*
+ * GROWI HandsontableModal
+ */
+.grw-hot-modal-navbar {
+  background-color: $light;
+}
+
 .wiki {
   h1 {
     border-color: darken($border-color-theme, 10%);

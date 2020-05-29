@@ -120,6 +120,13 @@ ul.pagination {
   }
 }
 
+/*
+ * GROWI HandsontableModal
+ */
+.grw-hot-modal-navbar {
+  background-color: $dark;
+}
+
 .wiki {
   h1 {
     border-color: lighten($border-color-theme, 10%);
