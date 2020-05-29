@@ -61,6 +61,16 @@ pre:not(.hljs):not(.CodeMirror-line) {
 //== Apply to Bootstrap Elements
 //
 
+// Alert link
+@each $color, $value in $theme-colors {
+  .alert-#{$color} {
+    .alert-link,
+    .alert-link:hover {
+      color: theme-color-level($color, $alert-color-level - 2);
+    }
+  }
+}
+
 // Link buttons
 .btn-link {
   color: $link-color;
