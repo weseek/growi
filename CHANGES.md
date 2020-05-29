@@ -2,6 +2,7 @@
 
 ## v4.0.1-RC
 
+* Improvement: Accessibility for Handsontable under dark mode
 * Fix: Storing the state of sidebar
 * Fix: Change the display of the scroll bar when modal is shown
 * Fix: Link color in alerts
