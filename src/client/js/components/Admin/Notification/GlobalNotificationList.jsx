@@ -95,32 +95,32 @@ class GlobalNotificationList extends React.Component {
               <td>
                 <ul className="list-inline mb-0">
                   {notification.triggerEvents.includes('pageCreate') && (
-                  <li className="list-inline-item badge badge-pill badge-success" data-toggle="tooltip" data-placement="top" title="Page Create">
+                  <li className="list-inline-item badge badge-pill badge-success">
                     <i className="icon-doc"></i> CREATE
                   </li>
                 )}
                   {notification.triggerEvents.includes('pageEdit') && (
-                  <li className="list-inline-item badge badge-pill badge-warning" data-toggle="tooltip" data-placement="top" title="Page Edit">
+                  <li className="list-inline-item badge badge-pill badge-warning">
                     <i className="icon-pencil"></i> EDIT
                   </li>
                 )}
                   {notification.triggerEvents.includes('pageMove') && (
-                  <li className="list-inline-item badge badge-pill badge-pink" data-toggle="tooltip" data-placement="top" title="Page Move">
+                  <li className="list-inline-item badge badge-pill badge-pink">
                     <i className="icon-action-redo"></i> MOVE
                   </li>
                 )}
                   {notification.triggerEvents.includes('pageDelete') && (
-                  <li className="list-inline-item badge badge-pill badge-danger" data-toggle="tooltip" data-placement="top" title="Page Delte">
+                  <li className="list-inline-item badge badge-pill badge-danger">
                     <i className="icon-fire"></i> DELETE
                   </li>
                 )}
                   {notification.triggerEvents.includes('pageLike') && (
-                  <li className="list-inline-item badge badge-pill badge-info" data-toggle="tooltip" data-placement="top" title="Page Like">
+                  <li className="list-inline-item badge badge-pill badge-info">
                     <i className="icon-like"></i> LIKE
                   </li>
                 )}
                   {notification.triggerEvents.includes('comment') && (
-                  <li className="list-inline-item badge badge-pill badge-secondary" data-toggle="tooltip" data-placement="top" title="New Comment">
+                  <li className="list-inline-item badge badge-pill badge-secondary">
                     <i className="icon-fw icon-bubble"></i> POST
                   </li>
                 )}
