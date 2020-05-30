@@ -1,4 +1,4 @@
-name: GitHub Release
+name: Release
 
 on:
   push:
@@ -10,6 +10,9 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    outputs:
+      RELEASE_VERSION: ${{ steps.step-bump-version.RELEASE_VERSION }}
+
     steps:
     - uses: actions/checkout@v2
 
@@ -20,11 +23,13 @@ jobs:
         git remote set-url origin "https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY"
 
     - name: Bump version
+      id: step-bump-version
       run: |
         npm --no-git-tag-version version patch
         export RELEASE_VERSION=`npm run version --silent`
         sh ./bin/github-actions/update-readme.sh
         echo ::set-env name=RELEASE_VERSION::$RELEASE_VERSION
+        echo ::set-output name=RELEASE_VERSION::$RELEASE_VERSION
 
     - name: Checkout, Commit, Tag and Push
       run: |
@@ -57,7 +62,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Checkout released tag
-      run: git checkout refs/tags/v${{ env.RELEASE_VERSION }}
+      run: git checkout refs/tags/v${{ needs.github-release.outputs.RELEASE_VERSION }}
 
     - name: Determine suffix
       run: |
@@ -96,7 +101,7 @@ jobs:
       with:
         source: growi${{ env.SUFFIX }}
         target: weseek/growi
-        semver: ${{ env.RELEASE_VERSION }}
+        semver: ${{ needs.github-release.outputs.RELEASE_VERSION }}
         suffix: ${{ env.SUFFIX }}
         additional-tags: 'latest'
         publish: true
@@ -106,7 +111,7 @@ jobs:
       with:
         channel: '#general'
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
-        created_tag: 'v${{ env.RELEASE_VERSION }}${{ env.SUFFIX }}'
+        created_tag: 'v${{ needs.github-release.outputs.RELEASE_VERSION }}${{ env.SUFFIX }}'
 
     - name: Update Docker Hub Description
       uses: peter-evans/dockerhub-description@v2.1.0
