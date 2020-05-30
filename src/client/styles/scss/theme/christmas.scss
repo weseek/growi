@@ -56,11 +56,11 @@ html[dark] {
   $border-color-table: #aaa; // optional
 
   // List Group colors
-  $color-list: $color-global;
-  $bgcolor-list: $themelight;
-  $color-list-active: $color-reversal;
+  // $color-list: $color-global;
+  $bgcolor-list: transparent;
+  // $color-list-hover: $color-reversal;
+  $color-list-active: white;
   $bgcolor-list-active: $themecolor;
-  $color-list-hover: $color-reversal;
 
   // Navbar
   $bgcolor-navbar: $themecolor;

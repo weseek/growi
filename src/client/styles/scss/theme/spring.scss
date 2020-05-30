@@ -46,11 +46,12 @@ html[dark] {
   $color-inline-code: #c7254e; // optional
 
   // List Group colors
-  $color-list: $color-global;
+  // $color-list: $color-global;
   $bgcolor-list: $themelight;
+  $color-list-hover: lighten($accentcolor, 20%);
+  $bgcolor-list-hover: darken($bgcolor-list, 2%);
   $color-list-active: $bgcolor-global;
   $bgcolor-list-active: $accentcolor;
-  $color-list-hover: lighten($accentcolor, 20%);
 
   // Navbar
   $bgcolor-navbar: #d3687c;

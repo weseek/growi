@@ -3,16 +3,10 @@
 //
 
 // determine optional variables
-$color-list: $color-global !default;
-$bgcolor-list: $bgcolor-global !default;
-$color-list-hover: $color-reversal !default;
-$color-list-active: $color-reversal !default;
-$bgcolor-list-active: $primary !default;
 $border-image-navbar: linear-gradient(to right, #ccc 0%, #ccc 100%) !default;
 $bgcolor-search-top-dropdown: $secondary !default;
 $bgcolor-sidebar-nav-item-active: darken($bgcolor-sidebar, 10%) !default;
 $text-shadow-sidebar-nav-item-active: 1px 1px 2px $primary !default;
-$bgcolor-sidebar-list-group: $bgcolor-list !default;
 $bgcolor-inline-code: #f0f0f0 !default;
 $color-inline-code: #c7254e !default;
 $bordercolor-inline-code: #ccc8c8 !default;
@@ -95,9 +89,6 @@ pre:not(.hljs):not(.CodeMirror-line) {
     background-color: $bgcolor-dropdown-link-active;
   }
 }
-
-// List Group
-@include override-list-group-item($color-list, $bgcolor-list, $color-list-hover, $color-list-active, $bgcolor-list-active);
 
 // Form
 .form-control {
@@ -214,9 +205,6 @@ pre:not(.hljs):not(.CodeMirror-line) {
       }
     }
   }
-
-  // List
-  @include override-list-group-item($color-list, $bgcolor-sidebar-list-group, $color-list-hover, $color-list-active, $bgcolor-list-active);
 }
 
 /*
