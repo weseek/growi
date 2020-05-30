@@ -7,6 +7,7 @@
 * Fix: Storing the state of sidebar
 * Fix: Comments order should be asc
 * Fix: Show/Hide replies button doesn't work
+* Fix: Tooltip doesn't work
 * Fix: Change the display of the scroll bar when modal is shown
 * Fix: Submit with enter key on Create/Rename modals
 * Fix: Show/Hide Unlink redirection button conditions
