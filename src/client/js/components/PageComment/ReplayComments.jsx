@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Button, Collapse } from 'reactstrap';
+import { Collapse } from 'reactstrap';
 
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
@@ -79,13 +79,13 @@ class ReplayComments extends React.PureComponent {
               <div>{hiddenElements}</div>
             </Collapse>
             <div className="text-center">
-              <Button
-                bsStyle="link"
-                className="page-comments-list-toggle-older"
+              <button
+                type="button"
+                className="page-comments-list-toggle-older btn btn-link"
                 onClick={this.toggleIsOlderRepliesShown}
               >
                 {toggleButtonIcon} {toggleButtonLabel}
-              </Button>
+              </button>
             </div>
           </div>
         )}
