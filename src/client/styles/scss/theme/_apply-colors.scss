@@ -63,9 +63,9 @@ pre:not(.hljs):not(.CodeMirror-line) {
 
 // Alert link
 @each $color, $value in $theme-colors {
-  .alert-#{$color} {
-    .alert-link,
-    .alert-link:hover {
+  .alert.alert-#{$color} {
+    a,
+    a:hover {
       color: theme-color-level($color, $alert-color-level - 2);
     }
   }
