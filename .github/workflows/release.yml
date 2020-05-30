@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      RELEASE_VERSION: ${{ steps.step-bump-version.RELEASE_VERSION }}
+      RELEASE_VERSION: ${{ steps.bump-version.outputs.RELEASE_VERSION }}
 
     steps:
     - uses: actions/checkout@v2
@@ -23,7 +23,7 @@ jobs:
         git remote set-url origin "https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY"
 
     - name: Bump version
-      id: step-bump-version
+      id: bump-version
       run: |
         npm --no-git-tag-version version patch
         export RELEASE_VERSION=`npm run version --silent`
