@@ -62,7 +62,9 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Checkout released tag
-      run: git checkout refs/tags/v${{ needs.github-release.outputs.RELEASE_VERSION }}
+      run: |
+        git fetch --tags
+        git checkout refs/tags/v${{ needs.github-release.outputs.RELEASE_VERSION }}
 
     - name: Determine suffix
       run: |
