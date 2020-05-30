@@ -241,13 +241,15 @@ class CommentEditor extends React.Component {
 
   renderBeforeReady() {
     return (
-      <button
-        type="button"
-        className="btn btn-lg btn-link center-block"
-        onClick={() => this.setState({ isReadyToUse: true })}
-      >
-        <i className="icon-bubble"></i> Add Comment
-      </button>
+      <div className="text-center">
+        <button
+          type="button"
+          className="btn btn-lg btn-link"
+          onClick={() => this.setState({ isReadyToUse: true })}
+        >
+          <i className="icon-bubble"></i> Add Comment
+        </button>
+      </div>
     );
   }
 

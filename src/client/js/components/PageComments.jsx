@@ -191,7 +191,8 @@ class PageComments extends React.Component {
   render() {
     const topLevelComments = [];
     const allReplies = [];
-    const comments = this.props.commentContainer.state.comments;
+    const comments = this.props.commentContainer.state.comments
+      .slice().reverse(); // create shallow copy and reverse
 
     comments.forEach((comment) => {
       if (comment.replyTo === undefined) {

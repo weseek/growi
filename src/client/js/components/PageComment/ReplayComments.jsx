@@ -19,10 +19,10 @@ class ReplayComments extends React.PureComponent {
       isOlderRepliesShown: false,
     };
 
-    this.toggleIsOlderRepliesShown = this.toggleIsOlderRepliesShown.bind(this);
+    this.toggleOlderReplies = this.toggleOlderReplies.bind(this);
   }
 
-  toggleIsOlderRepliesShown() {
+  toggleOlderReplies() {
     this.setState({ isOlderRepliesShown: !this.state.isOlderRepliesShown });
   }
 
@@ -75,14 +75,14 @@ class ReplayComments extends React.PureComponent {
       <React.Fragment>
         {areThereHiddenReplies && (
           <div className="page-comments-hidden-replies">
-            <Collapse in={this.state.isOlderRepliesShown}>
+            <Collapse isOpen={this.state.isOlderRepliesShown}>
               <div>{hiddenElements}</div>
             </Collapse>
             <div className="text-center">
               <button
                 type="button"
-                className="page-comments-list-toggle-older btn btn-link"
-                onClick={this.toggleIsOlderRepliesShown}
+                className="btn btn-link"
+                onClick={this.toggleOlderReplies}
               >
                 {toggleButtonIcon} {toggleButtonLabel}
               </button>
