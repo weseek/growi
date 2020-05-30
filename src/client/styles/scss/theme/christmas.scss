@@ -67,7 +67,7 @@ html[dark] {
   $bgcolor-search-top-dropdown: $primary;
   $border-color-navbar-gradient-left: #545fff;
   $border-color-navbar-gradient-right: #00a6e5;
-  $border-image-navbar: linear-gradient(to right, #6458bc 33%, #5cb4ff 66%, #85d800 100%);
+  $border-image-navbar: linear-gradient(to right, $primary 0%, $subthemecolor 100%);
 
   // Logo colors
   $bgcolor-logo: $themecolor;
@@ -75,7 +75,7 @@ html[dark] {
   // Sidebar
   $bgcolor-sidebar: $subthemecolor;
   $bgcolor-sidebar-nav-item-active: rgba(#000000, 0.37); // optional
-  $text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
+  $text-shadow-sidebar-nav-item-active: 0px 0px 10px $primary; // optional
   // Sidebar resize button
   $color-resize-button: $color-reversal;
   $bgcolor-resize-button: $primary;
@@ -163,26 +163,15 @@ html[dark] {
   }
 
   /*
-  * Panel
+  * Card
   */
-  .panel {
-    &.panel-white,
-    &.panel-default {
-      border-color: $subthemecolor;
-      .panel-heading {
-        color: $dark;
-        background-color: $subthemecolor;
-        border-bottom: 1px solid $subthemecolor;
-      }
+  .card {
+    &.border-primary {
+      border-color: $themecolor !important;
     }
-  }
-
-  .panel.panel-primary {
-    border-color: #bd3425;
-    .panel-heading {
+    .card-header.bg-primary {
       color: white;
-      background-color: $themecolor;
-      background-image: url('/images/themes/christmas/christmas-navbar.jpg');
+      background-image: url('/images/themes/christmas/christmas-navbar.jpg') !important;
     }
   }
 
