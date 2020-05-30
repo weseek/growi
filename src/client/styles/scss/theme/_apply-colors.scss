@@ -61,6 +61,16 @@ pre:not(.hljs):not(.CodeMirror-line) {
 //== Apply to Bootstrap Elements
 //
 
+// Alert link
+@each $color, $value in $theme-colors {
+  .alert-#{$color} {
+    .alert-link,
+    .alert-link:hover {
+      color: theme-color-level($color, $alert-color-level - 2);
+    }
+  }
+}
+
 // Link buttons
 .btn-link {
   color: $link-color;
@@ -103,6 +113,13 @@ pre:not(.hljs):not(.CodeMirror-line) {
   &:focus {
     color: $color-link-hover !important;
   }
+}
+
+//
+//== Apply to Handsontable
+//
+.handsontable {
+  color: initial;
 }
 
 //
@@ -149,6 +166,7 @@ pre:not(.hljs):not(.CodeMirror-line) {
 }
 
 .grw-sidebar {
+  // override @atlaskit/navigation-next styles
   .ak-navigation-resize-button {
     $color-resize-button: $color-global !default;
     $bgcolor-resize-button: white !default;
@@ -161,8 +179,19 @@ pre:not(.hljs):not(.CodeMirror-line) {
       @include override-hexagon-color($color-resize-button-hover, $bgcolor-resize-button-hover);
     }
   }
+  div[data-testid='GlobalNavigation'] {
+    > div {
+      background-color: $bgcolor-sidebar;
+    }
+  }
+  div[data-testid='ContextualNavigation'] {
+    > div {
+      color: $color-sidebar-context;
+      background-color: $bgcolor-sidebar-context;
+    }
+  }
 
-  .grw-global-item-container {
+  .grw-sidebar-nav {
     .btn {
       @include button-variant(
         $bgcolor-sidebar,
@@ -174,24 +203,15 @@ pre:not(.hljs):not(.CodeMirror-line) {
       );
     }
   }
-  .grw-global-item-container.active {
-    .btn:after {
-      // fukidashi color
-      border-right-color: $bgcolor-sidebar-context;
-    }
-    i {
-      text-shadow: $text-shadow-sidebar-nav-item-active;
-    }
-  }
-  div[data-testid='GlobalNavigation'] {
-    > div {
-      background-color: $bgcolor-sidebar;
-    }
-  }
-  div[data-testid='ContextualNavigation'] {
-    > div {
-      color: $color-sidebar-context;
-      background-color: $bgcolor-sidebar-context;
+  .grw-sidebar-nav-primary-container {
+    .btn.active {
+      i {
+        text-shadow: $text-shadow-sidebar-nav-item-active;
+      }
+      // fukidashi
+      &:after {
+        border-right-color: $bgcolor-sidebar-context;
+      }
     }
   }
 

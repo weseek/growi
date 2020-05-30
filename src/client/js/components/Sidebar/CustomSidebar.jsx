@@ -3,11 +3,6 @@ import React from 'react';
 
 import { withTranslation } from 'react-i18next';
 
-import {
-  HeaderSection,
-  MenuSection,
-} from '@atlaskit/navigation-next';
-
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
@@ -25,25 +20,17 @@ class CustomSidebar extends React.Component {
 
   render() {
     return (
-      <div className="grw-sidebar-custom">
-        <HeaderSection>
-          { () => (
-            <div className="grw-sidebar-header-container p-3 d-flex">
-              <h3>Custom Sidebar</h3>
-              <button type="button" className="btn btn-xs btn-outline-secondary ml-auto" onClick={this.reloadData}>
-                <i className="icon icon-reload"></i>
-              </button>
-            </div>
-          ) }
-        </HeaderSection>
-        <MenuSection>
-          { () => (
-            <div className="grw-sidebar-content-container p-3">
-              (TBD) Under implementation
-            </div>
-          ) }
-        </MenuSection>
-      </div>
+      <>
+        <div className="grw-sidebar-content-header p-3 d-flex">
+          <h3 className="mb-0">Custom Sidebar</h3>
+          <button type="button" className="btn btn-sm btn-outline-secondary ml-auto" onClick={this.reloadData}>
+            <i className="icon icon-reload"></i>
+          </button>
+        </div>
+        <div className="grw-sidebar-content-header p-3">
+          (TBD) Under implementation
+        </div>
+      </>
     );
 
   }

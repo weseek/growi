@@ -12,6 +12,7 @@
       width: 0;
       content: '';
       border: 9px solid transparent;
+      border-right-color: white;
       border-left-width: 0;
       transform: translateY(-#{$sidebar-nav-button-height / 2});
     }
@@ -49,40 +50,33 @@
 
   // override @atlaskit/navigation-next styles
   $navbar-total-height: $grw-navbar-height + $grw-navbar-border-width;
-  div[class$='-LayoutContainer'] {
+  div[data-layout-container='true'] {
     height: calc(100vh - #{$navbar-total-height});
   }
-  div[class$='-NavigationContainer'] {
+  div[data-testid='Navigation'] {
     top: $navbar-total-height;
 
     // Adjust to be on top of the growi subnavigation
     z-index: $zindex-sticky + 5;
-  }
-  div[data-testid='GlobalNavigation'] {
-    > div {
-      height: calc(100vh - #{$navbar-total-height});
-      padding-top: 0;
-    }
-  }
-  div[class$='-Outer'] {
-    width: 0;
-  }
-  div[class$='-PrimaryItemsList'],
-  div[class$='-SecondaryItemsList'] {
-    > div {
-      padding: 0;
-    }
 
-    .grw-global-item-container {
-      width: unset;
-      height: unset;
-      background-color: transparent;
-      border-radius: 0;
+    // css-xxx-Outer
+    > div:nth-of-type(2) {
+      width: 0;
 
-      .btn {
-        width: $grw-sidebar-nav-width;
-        border-radius: 0;
+      // css-xxx-Shadow
+      > div:first-child {
+        background: linear-gradient(to left, rgba(0, 0, 0, 0.1) 0px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0) 100%);
       }
+    }
+  }
+
+  .grw-sidebar-nav {
+    height: calc(100vh - #{$navbar-total-height});
+
+    .btn {
+      width: $grw-sidebar-nav-width;
+      line-height: 1em;
+      border-radius: 0;
 
       // icon opacity
       &:not(.active) {
@@ -97,37 +91,27 @@
         }
       }
     }
-  }
-  div[class$='-PrimaryItemsList'] {
-    .grw-global-item-container {
-      .btn-lg {
-        padding: 0.8rem 1rem;
-        line-height: 1em;
-        i {
-          font-size: 1.7em;
-        }
-      }
 
-      &.active {
-        button {
+    .grw-sidebar-nav-primary-container {
+      .btn {
+        padding: 1em;
+        i {
+          font-size: 2.3em;
+        }
+
+        &.active {
           @extend %fukidashi-for-active;
         }
       }
     }
-  }
-  div[class$='-ScrollableTransitionGroup'] {
-    // remove horizontal line
-    > div,
-    > div > div {
-      &:before,
-      &:after {
-        display: none;
+
+    .grw-sidebar-nav-secondary-container {
+      .btn {
+        padding: 0.9em;
+        i {
+          font-size: 1.5em;
+        }
       }
-    }
-  }
-  div[class$='-Outer'] {
-    div[class$='-Shadow'] {
-      background: linear-gradient(to left, rgba(0, 0, 0, 0.1) 0px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0) 100%);
     }
   }
 }
@@ -139,23 +123,31 @@
     z-index: $zindex-fixed - 2;
 
     // override @atlaskit/navigation-next styles
-    div[class$='-Outer'],
-    div[class$='-teprsg'] {
-      display: none;
+    div[data-layout-container='true'] {
+      // css-teprsg
+      > div:nth-of-type(2) {
+        display: none;
+      }
+    }
+    div[data-testid='Navigation'] {
+      // css-xxx-Outer
+      > div:nth-of-type(2) {
+        display: none;
+      }
     }
 
     &:not(.open) {
-      div[class$='-NavigationContainer'] {
+      div[data-testid='Navigation'] {
         left: -#{$grw-sidebar-nav-width + $grw-sidebar-content-min-width};
       }
     }
     &.open {
-      div[class$='-NavigationContainer'] {
+      div[data-testid='Navigation'] {
         left: 0;
       }
     }
 
-    div[class$='-NavigationContainer'] {
+    div[data-testid='Navigation'] {
       transition: left 300ms cubic-bezier(0.25, 1, 0.5, 1);
     }
   }
@@ -163,13 +155,4 @@
   .grw-sidebar-backdrop.modal-backdrop {
     z-index: $zindex-fixed - 4;
   }
-}
-
-.grw-sidebar-header-container {
-  h3 {
-    margin-bottom: 0;
-  }
-}
-
-.grw-sidebar-content-container {
 }

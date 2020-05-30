@@ -19,6 +19,7 @@ $table-dark-hover-bg: $bgcolor-table-hover;
   * Form
   */
 input.form-control,
+select.form-control,
 textarea.form-control {
   color: lighten($color-global, 30%);
   background-color: darken($bgcolor-global, 5%);
@@ -118,6 +119,13 @@ ul.pagination {
   #slack-mark-black {
     display: none;
   }
+}
+
+/*
+ * GROWI HandsontableModal
+ */
+.grw-hot-modal-navbar {
+  background-color: $dark;
 }
 
 .wiki {

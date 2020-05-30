@@ -42,7 +42,6 @@ html[dark] {
 
   // Background colors
   $bgcolor-global: #ffffff;
-  $bgcolor-inline-code: #f0f0f0; //optional
   $bgcolor-card: #ece8de;
 
   // Font colors
@@ -50,12 +49,16 @@ html[dark] {
   $color-global: #433005;
   $color-reversal: #fffffc;
   $color-link: #9d7406;
-  $color-link-hover: lighten($color-link, 20%);
-  $color-link-wiki: lighten($themecolor, 5%);
-  $color-link-wiki-hover: lighten($color-link-wiki, 15%);
+  $color-link-hover: lighten($color-link, 10%);
+  $color-link-wiki: $color-link;
+  $color-link-wiki-hover: lighten($color-link-wiki, 10%);
   $color-link-nabvar: #a7a7a7;
-  $color-inline-code: #c7254e; // optional
   $color-search: white;
+
+  // Inline code
+  $bgcolor-inline-code: $themelight; //optional
+  // $color-inline-code: # !default;
+  $bordercolor-inline-code: $themecolor; //optional
 
   // List Group colors
   $color-list-hover: #eee;

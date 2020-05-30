@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "4.0.0-RC",
+  "version": "4.0.1-RC",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -154,8 +154,8 @@
       "handsontable: v7.0.0 or above is no loger MIT lisence."
     ],
     "@alienfast/i18next-loader": "^1.0.16",
-    "@atlaskit/drawer": "^5.3.5",
-    "@atlaskit/navigation-next": "^8.0.2",
+    "@atlaskit/drawer": "^5.3.7",
+    "@atlaskit/navigation-next": "^8.0.5",
     "@babel/core": "^7.4.5",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/plugin-proposal-optional-chaining": "^7.9.0",

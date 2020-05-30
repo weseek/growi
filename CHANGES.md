@@ -1,6 +1,22 @@
 # CHANGES
 
-## v4.0.0-RC
+## v4.0.1-RC
+
+* Improvement: Accessibility for Handsontable under dark mode
+* Improvement: Refactor '/pages.exist' API
+* Fix: Storing the state of sidebar
+* Fix: Comments order should be asc
+* Fix: Show/Hide replies button doesn't work
+* Fix: Tooltip doesn't work
+* Fix: Change the display of the scroll bar when modal is shown
+* Fix: Submit with enter key on Create/Rename modals
+* Fix: Show/Hide Unlink redirection button conditions
+* Fix: Link color in alerts
+* Support: Upgrade libs
+    * @atlaskit/drawer
+    * @atlaskit/navigation-next
+
+## v4.0.0
 
 ### BREAKING CHANGES
 
@@ -8,6 +24,8 @@
 * Crowi Classic Layout is removed
 * 'default-dark' theme is now merged as a dark mode variant of 'default' theme
 * 'blue-night' theme is now merged as a dark mode variant of 'mono-blue' theme
+
+Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/40x.html>
 
 ### Updates
 
