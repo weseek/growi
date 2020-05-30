@@ -3,12 +3,14 @@
 ## v4.0.1-RC
 
 * Improvement: Accessibility for Handsontable under dark mode
+* Improvement: Refactor '/pages.exist' API
 * Fix: Storing the state of sidebar
+* Fix: Comments order should be asc
+* Fix: Show/Hide replies button doesn't work
 * Fix: Change the display of the scroll bar when modal is shown
-* Fix: Link color in alerts
 * Fix: Submit with enter key on Create/Rename modals
-* Fix: Show/hide Unlink redirection button conditions
-* Fix: Refactor '/pages.exist' API
+* Fix: Show/Hide Unlink redirection button conditions
+* Fix: Link color in alerts
 * Support: Upgrade libs
     * @atlaskit/drawer
     * @atlaskit/navigation-next
