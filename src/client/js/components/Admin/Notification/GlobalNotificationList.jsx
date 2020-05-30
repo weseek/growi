@@ -9,7 +9,9 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
+
 import NotificationDeleteModal from './NotificationDeleteModal';
+import NotificationTypeIcon from './NotificationTypeIcon';
 
 const logger = loggerFactory('growi:GolobalNotificationList');
 
@@ -125,10 +127,9 @@ class GlobalNotificationList extends React.Component {
                 </ul>
               </td>
               <td>
-                {notification.__t === 'mail'
-                  && <span data-toggle="tooltip" data-placement="top" title="Email"><i className="ti-email"></i> {notification.toEmail}</span>}
-                {notification.__t === 'slack'
-                  && <span data-toggle="tooltip" data-placement="top" title="Slack"><i className="fa fa-hashtag"></i> {notification.slackChannels}</span>}
+                <NotificationTypeIcon notification={notification} />
+                { notification.__t === 'mail' && notification.toEmail }
+                { notification.__t === 'slack' && notification.slackChannels }
               </td>
               <td className="td-abs-center">
                 <div className="dropdown">
