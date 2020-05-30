@@ -93,7 +93,7 @@ class GlobalNotificationList extends React.Component {
                 {notification.triggerPath}
               </td>
               <td>
-                <ul className="list-inline">
+                <ul className="list-inline mb-0">
                   {notification.triggerEvents.includes('pageCreate') && (
                   <li className="list-inline-item badge badge-pill badge-success" data-toggle="tooltip" data-placement="top" title="Page Create">
                     <i className="icon-doc"></i> CREATE
