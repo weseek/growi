@@ -144,9 +144,9 @@ class GlobalNotificationList extends React.Component {
                     <i className="icon-settings"></i> <span className="caret"></span>
                   </button>
                   <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                    <button className="dropdown-item" type="button" href={urljoin('/admin/global-notification/', notification._id)}>
+                    <a className="dropdown-item" href={urljoin('/admin/global-notification/', notification._id)}>
                       <i className="icon-fw icon-note"></i> {t('Edit')}
-                    </button>
+                    </a>
                     <button className="dropdown-item" type="button" onClick={() => this.openConfirmationModal(notification)}>
                       <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
                     </button>
