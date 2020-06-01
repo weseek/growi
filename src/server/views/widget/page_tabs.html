@@ -6,7 +6,7 @@
   #}
   <li class="nav-item grw-main-nav-item-left">
     <a class="nav-link active" href="#revision-body" role="tab" data-toggle="tab">
-      <i class="icon-control-play"></i> View
+      <i class="icon-control-play"></i> <span class="d-none d-sm-block">View</span>
     </a>
   </li>
 
@@ -19,7 +19,7 @@
           data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
         {% endif %}
       >
-        <i class="icon-note"></i> {{ t('Edit') }}
+        <i class="icon-note"></i> <span class="d-none d-sm-block">{{ t('Edit') }}</span>
       </a>
     </li>
 
@@ -32,7 +32,7 @@
           data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
         {% endif %}
       >
-        <i class="fa fa-file-text-o"></i> {{ t('HackMD') }}
+        <i class="fa fa-file-text-o"></i> <span class="d-none d-sm-block">{{ t('HackMD') }}</span>
       </a>
     </li>
     {% endif %}
@@ -45,7 +45,7 @@
   #}
 
   {# to place right side #}
-  <div class="mr-auto"></div>
+  <div class="mr-auto d-none d-sm-block"></div>
 
   <!-- presentation -->
   {% if not page.isTopPage() %}
