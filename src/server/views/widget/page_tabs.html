@@ -67,6 +67,15 @@
   {% if !isTrashPage() %}
     <li id="page-management" class="nav-item dropdown"></li>
   {% endif %}
+  
+  <!-- Outside-share-link -->
+  {% if !isTrashPage() %}
+    <li class="nav-item">
+      <a href="#" class="nav-link" role="tab" data-toggle="tab">
+        <i class="fa fa-share-alt"></i>
+      </a>
+    </li>
+  {% endif %}
 </ul>
 
 {% endif %}
