@@ -197,10 +197,10 @@ pre:not(.hljs):not(.CodeMirror-line) {
     .btn {
       @include button-variant($bgcolor-sidebar,
       $bgcolor-sidebar,
-        darken($bgcolor-sidebar, 7.5%),
-        darken($bgcolor-sidebar, 10%),
-        $bgcolor-sidebar-nav-item-active,
-        $bgcolor-sidebar-nav-item-active);
+      darken($bgcolor-sidebar, 7.5%),
+      darken($bgcolor-sidebar, 10%),
+      $bgcolor-sidebar-nav-item-active,
+      $bgcolor-sidebar-nav-item-active);
     }
   }
 
