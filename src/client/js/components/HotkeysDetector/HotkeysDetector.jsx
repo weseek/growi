@@ -7,7 +7,7 @@ export default class HotkeysDetector extends React.Component {
   constructor(props) {
     super(props);
     this.hotkeyCommand = {
-      testCommand: ['x', 'x', 'y'],
+      staffCredit: ['x', 'x', 'y'],
     };
     this.state = {
       userCommand: [],

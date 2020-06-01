@@ -1,6 +1,6 @@
 import React from 'react';
 import HotkeysDetector from '../HotkeysDetector/HotkeysDetector';
-
+import StaffCredit from '../StaffCredit/StaffCredit';
 export default class Hotkeys extends React.Component {
 
   constructor(props) {
@@ -20,8 +20,8 @@ export default class Hotkeys extends React.Component {
   render() {
     let view = [];
     console.log(this.state.sampleCommand);
-    if (this.state.sampleCommand === "testCommand") {
-      view.push(<div>box</div>)
+    if (this.state.sampleCommand === "staffCredit") {
+      view.push(<StaffCredit />);
     }
     return (
       <React.Fragment>
