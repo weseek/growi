@@ -1,7 +1,6 @@
 import React from 'react';
-
+import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
-
 import contributors from './Contributor';
 
 /**
@@ -65,7 +64,6 @@ export default class StaffCredit extends React.Component {
         </div>
       </div>
     );
-    return null;
   }
 
   render() {
@@ -79,4 +77,5 @@ export default class StaffCredit extends React.Component {
 }
 
 StaffCredit.propTypes = {
+  deleteCredit: PropTypes.func.isRequired,
 };

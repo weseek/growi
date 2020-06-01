@@ -16,7 +16,7 @@ export default class Hotkeys extends React.Component {
   deleteCredit() {
     this.setState({
       sampleCommand: '',
-    })
+    });
   }
 
   onDetected(commandDetermined) {
