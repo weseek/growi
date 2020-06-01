@@ -213,14 +213,14 @@ const PageCreateModal = (props) => {
                 {template === 'decendants' && t('template.decendants.label')}
               </button>
               <div className="dropdown-menu" aria-labelledby="userMenu">
-                <a className="dropdown-item" type="button" onClick={() => onChangeTemplateHandler('children')}>
+                <button className="dropdown-item" type="button" onClick={() => onChangeTemplateHandler('children')}>
                   { t('template.children.label') } (_template)<br className="d-block d-md-none" />
                   <small className="text-muted text-wrap">- { t('template.children.desc') }</small>
-                </a>
-                <a className="dropdown-item" type="button" onClick={() => onChangeTemplateHandler('decendants')}>
+                </button>
+                <button className="dropdown-item" type="button" onClick={() => onChangeTemplateHandler('decendants')}>
                   { t('template.decendants.label') } (__template) <br className="d-block d-md-none" />
                   <small className="text-muted">- { t('template.decendants.desc') }</small>
-                </a>
+                </button>
               </div>
             </div>
 
