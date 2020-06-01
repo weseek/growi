@@ -15,19 +15,9 @@ import contributors from './Contributor';
 export default class StaffCredit extends React.Component {
 
   constructor(props) {
-    
+
     super(props);
     this.logger = loggerFactory('growi:StaffCredit');
-    this.state = {
-      isShown: true,
-    };
-    this.deleteCredit = this.deleteCredit.bind(this);
-  }
-
-  deleteCredit() {
-    if (this.state.isShown) {
-      this.setState({ isShown: false });
-    }
   }
 
   renderMembers(memberGroup, keyPrefix) {
@@ -51,32 +41,30 @@ export default class StaffCredit extends React.Component {
   }
 
   renderContributors() {
-    if (this.state.isShown) {
-      const credit = contributors.map((contributor) => {
-        // construct members elements
-        const memberGroups = contributor.memberGroups.map((memberGroup, idx) => {
-          return this.renderMembers(memberGroup, `${contributor.sectionName}-group${idx}`);
-        });
-        return (
-          <React.Fragment key={`${contributor.sectionName}-fragment`}>
-            <div className={`row staff-credit-my-10 ${contributor.additionalClass}`} key={`${contributor.sectionName}-row`}>
-              <h2 className="col-md-12 dev-team mt-5 staff-credit-mb-10" key={contributor.sectionName}>{contributor.sectionName}</h2>
-              {memberGroups}
-            </div>
-            <div className="clearfix"></div>
-          </React.Fragment>
-        );
+    const credit = contributors.map((contributor) => {
+      // construct members elements
+      const memberGroups = contributor.memberGroups.map((memberGroup, idx) => {
+        return this.renderMembers(memberGroup, `${contributor.sectionName}-group${idx}`);
       });
       return (
-        <div className="text-center credit-curtain" onClick={this.deleteCredit}>
-          <div className="credit-body">
-            <h1 className="staff-credit-mb-10">GROWI Contributors</h1>
-            <div className="clearfix"></div>
-            {credit}
+        <React.Fragment key={`${contributor.sectionName}-fragment`}>
+          <div className={`row staff-credit-my-10 ${contributor.additionalClass}`} key={`${contributor.sectionName}-row`}>
+            <h2 className="col-md-12 dev-team mt-5 staff-credit-mb-10" key={contributor.sectionName}>{contributor.sectionName}</h2>
+            {memberGroups}
           </div>
-        </div>
+          <div className="clearfix"></div>
+        </React.Fragment>
       );
-    }
+    });
+    return (
+      <div className="text-center credit-curtain" onClick={this.props.deleteCredit}>
+        <div className="credit-body">
+          <h1 className="staff-credit-mb-10">GROWI Contributors</h1>
+          <div className="clearfix"></div>
+          {credit}
+        </div>
+      </div>
+    );
     return null;
   }
 
