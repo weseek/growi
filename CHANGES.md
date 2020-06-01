@@ -2,6 +2,7 @@
 
 ## v4.0.3-RC
 
+* Fix: Editor doesn't work on mobile
 * Fix: navbar is broken on Safari
 
 ## v4.0.2
