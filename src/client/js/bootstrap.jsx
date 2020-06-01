@@ -7,6 +7,7 @@ import SearchTop from './components/Navbar/SearchTop';
 import NavbarToggler from './components/Navbar/NavbarToggler';
 import PersonalDropdown from './components/Navbar/PersonalDropdown';
 // import StaffCredit from './components/StaffCredit/StaffCredit';
+import Hotkeys from './components/Hotkeys/Hotkeys';
 import Sidebar from './components/Sidebar';
 
 import AppContainer from './services/AppContainer';
@@ -44,6 +45,7 @@ const componentMappings = {
 
   'grw-search-top': <SearchTop />,
   'personal-dropdown': <PersonalDropdown />,
+  hotkeys: <Hotkeys />,
 
   //   'staff-credit': <StaffCredit />,
   'create-page-button': <PageCreateButton />,
