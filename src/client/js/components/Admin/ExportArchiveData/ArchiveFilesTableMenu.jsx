@@ -18,12 +18,12 @@ class ArchiveFilesTableMenu extends React.Component {
         </button>
         <ul className="dropdown-menu" role="menu">
           <li className="dropdown-header">{t('admin:export_management.export_menu')}</li>
-          <a type="button" className="dropdown-item" href={`/admin/export/${this.props.fileName}`}>
+          <button type="button" className="dropdown-item" href={`/admin/export/${this.props.fileName}`}>
             <i className="icon-cloud-download" /> {t('admin:export_management.download')}
-          </a>
-          <a type="button" className="dropdown-item" role="button" onClick={() => this.props.onZipFileStatRemove(this.props.fileName)}>
+          </button>
+          <button type="button" className="dropdown-item" role="button" onClick={() => this.props.onZipFileStatRemove(this.props.fileName)}>
             <span className="text-danger"><i className="icon-trash" /> {t('admin:export_management.delete')}</span>
-          </a>
+          </button>
         </ul>
       </div>
     );
