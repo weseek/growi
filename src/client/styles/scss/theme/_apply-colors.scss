@@ -56,8 +56,10 @@ pre:not(.hljs):not(.CodeMirror-line) {
 //
 
 // Alert link
-@each $color, $value in $theme-colors {
+@each $color,
+  $value in $theme-colors {
   .alert.alert-#{$color} {
+
     a,
     a:hover {
       color: theme-color-level($color, $alert-color-level - 2);
@@ -83,6 +85,7 @@ pre:not(.hljs):not(.CodeMirror-line) {
 
 .dropdown-item {
   color: $color-global;
+
   &.active,
   &:active {
     color: $color-dropdown-link-active;
@@ -118,6 +121,7 @@ pre:not(.hljs):not(.CodeMirror-line) {
 //
 
 .grw-logo {
+
   // set transition for fill
   svg * {
     transition: fill 0.8s ease-out;
@@ -142,10 +146,14 @@ pre:not(.hljs):not(.CodeMirror-line) {
 
 .grw-navbar {
   background: $bgcolor-navbar;
+
   .nav-item > .nav-link {
     color: $color-link-nabvar;
   }
 
+  border-top: 0px;
+  border-right: 0px;
+  border-left: 0px;
   border-image: $border-image-navbar;
   border-image-slice: 1;
 }
@@ -157,6 +165,7 @@ pre:not(.hljs):not(.CodeMirror-line) {
 }
 
 .grw-sidebar {
+
   // override @atlaskit/navigation-next styles
   .ak-navigation-resize-button {
     $color-resize-button: $color-global !default;
@@ -170,11 +179,13 @@ pre:not(.hljs):not(.CodeMirror-line) {
       @include override-hexagon-color($color-resize-button-hover, $bgcolor-resize-button-hover);
     }
   }
+
   div[data-testid='GlobalNavigation'] {
     > div {
       background-color: $bgcolor-sidebar;
     }
   }
+
   div[data-testid='ContextualNavigation'] {
     > div {
       color: $color-sidebar-context;
@@ -184,21 +195,21 @@ pre:not(.hljs):not(.CodeMirror-line) {
 
   .grw-sidebar-nav {
     .btn {
-      @include button-variant(
-        $bgcolor-sidebar,
-        $bgcolor-sidebar,
+      @include button-variant($bgcolor-sidebar,
+      $bgcolor-sidebar,
         darken($bgcolor-sidebar, 7.5%),
         darken($bgcolor-sidebar, 10%),
         $bgcolor-sidebar-nav-item-active,
-        $bgcolor-sidebar-nav-item-active
-      );
+        $bgcolor-sidebar-nav-item-active);
     }
   }
+
   .grw-sidebar-nav-primary-container {
     .btn.active {
       i {
         text-shadow: $text-shadow-sidebar-nav-item-active;
       }
+
       // fukidashi
       &:after {
         border-right-color: $bgcolor-sidebar-context;
@@ -220,9 +231,11 @@ pre:not(.hljs):not(.CodeMirror-line) {
 .modal {
   .modal-header {
     border-bottom-color: $border-color-theme;
+
     .close {
       color: $light;
       opacity: 0.5;
+
       &:hover {
         opacity: 0.9;
       }
@@ -364,6 +377,7 @@ body.on-edit {
           &.hover {
             background-color: darken($bgcolor-global, 4%);
           }
+
           &.active {
             background-color: darken($bgcolor-global, 8%);
             border-color: theme-color('primary');
@@ -399,6 +413,7 @@ mark.rbt-highlight-text {
       .theme-option-name {
         color: $color-global;
       }
+
       a {
         background-color: $color-theme-color-box;
         border-color: $color-theme-color-box;
