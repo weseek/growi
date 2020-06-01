@@ -7,10 +7,10 @@ export default class HotkeysDetector extends React.Component {
   render() {
     return (
       <GlobalHotKeys>
-        <button type="button" onClick={this.onDetected}>
+        <button type="button" onClick={this.props.onDetected}>
           Click!
         </button>
-        <button type="button" onClick={this.onDetected}>
+        <button type="button" onClick={this.props.onDetected}>
           Click!
         </button>
       </GlobalHotKeys>
