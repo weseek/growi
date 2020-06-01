@@ -7,25 +7,26 @@ export default class Hotkeys extends React.Component {
     super(props);
     this.onDetected = this.onDetected.bind(this);
     this.state = {
-      sampleCommand: true,
+      sampleCommand: "",
     };
     this.onDetected = this.onDetected.bind(this);
   }
 
-  onDetected() {
+  onDetected(commandDetermined) {
     this.setState({
-      sampleCommand: !this.state.sampleCommand,
+      sampleCommand: commandDetermined,
     });
   }
 
   render() {
-    let view = null;
-    if (this.state.sampleCommand) {
-      view = <div>box</div>
+    let view = [];
+    console.log(this.state.sampleCommand);
+    if (this.state.sampleCommand === "testCommand") {
+      view.push(<div>box</div>)
     }
     return (
       <React.Fragment>
-        <HotkeysDetector onDetected={() => this.onDetected()} />
+        <HotkeysDetector onDetected={this.onDetected} />
         {view}
       </React.Fragment>
     );

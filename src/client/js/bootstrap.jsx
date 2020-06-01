@@ -45,7 +45,7 @@ const componentMappings = {
 
   'grw-search-top': <SearchTop />,
   'personal-dropdown': <PersonalDropdown />,
-  hotkeys: <Hotkeys />,
+  'hotkeys': <Hotkeys />,
 
   //   'staff-credit': <StaffCredit />,
   'create-page-button': <PageCreateButton />,
