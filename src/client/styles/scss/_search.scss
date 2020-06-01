@@ -67,9 +67,12 @@
   }
 
   .search-typeahead {
+    // corner radius
     border-top-right-radius: 40px;
     border-bottom-right-radius: 40px;
     .rbt-input-main {
+      padding-right: 58px;
+      // corner radius
       border-top-right-radius: 40px;
       border-bottom-right-radius: 40px;
     }
@@ -125,6 +128,19 @@
 
       @include media-breakpoint-up(md) {
         width: 300px;
+      }
+      @include media-breakpoint-up(lg) {
+        // focus
+        &.focus {
+          width: 400px;
+        }
+      }
+      @include media-breakpoint-up(xl) {
+        width: 350px;
+        // focus
+        &.focus {
+          width: 450px;
+        }
       }
     }
     .search-typeahead {
