@@ -66,13 +66,19 @@
     border-bottom-left-radius: 40px;
   }
 
+  .search-typeahead {
+    border-top-right-radius: 40px;
+    border-bottom-right-radius: 40px;
+    .rbt-input-main {
+      border-top-right-radius: 40px;
+      border-bottom-right-radius: 40px;
+    }
+  }
+
   // using react-bootstrap-typeahead
   // see: https://github.com/ericgio/react-bootstrap-typeahead
   .rbt-input.form-control {
     height: 30px;
-    border-top-right-radius: 40px;
-    border-bottom-right-radius: 40px;
-
     .rbt-input-wrapper {
       margin-left: 8px;
     }

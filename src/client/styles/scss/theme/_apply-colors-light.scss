@@ -39,21 +39,6 @@ $table-hover-bg: $bgcolor-table-hover;
 }
 
 /*
- * GROWI search-top
- */
-.search-top {
-  .btn-group-dropdown-scope .dropdown-toggle {
-    background-color: rgba($bgcolor-global, 0.8);
-  }
-  .rbt-input.form-control {
-    background-color: rgba($bgcolor-global, 0.9);
-  }
-  .search-typeahead {
-    background-color: rgba($bgcolor-global, 0.9);
-  }
-}
-
-/*
  * GROWI subnavigation
  */
 .grw-subnavbar {
