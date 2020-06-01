@@ -4,12 +4,6 @@ import { GlobalHotKeys } from 'react-hotkeys';
 
 export default class HotkeysDetector extends React.Component {
 
-  constructor(props) {
-    super(props);
-    this.onDetected = this.props.onDetected;
-  }
-
-
   render() {
     return (
       <GlobalHotKeys>
@@ -26,5 +20,5 @@ export default class HotkeysDetector extends React.Component {
 }
 
 HotkeysDetector.propTypes = {
-  onDetected: PropTypes.func,
+  onDetected: PropTypes.func.isRequired,
 };
