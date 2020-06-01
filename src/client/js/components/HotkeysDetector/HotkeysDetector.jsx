@@ -7,7 +7,7 @@ export default class HotkeysDetector extends React.Component {
   constructor(props) {
     super(props);
     this.hotkeyCommand = {
-      staffCredit: ['x', 'x', 'y'],
+      staffCredit: ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'],
     };
     this.state = {
       userCommand: [],
@@ -45,7 +45,7 @@ export default class HotkeysDetector extends React.Component {
     }
 
   render() {
-    const keyMap = { check: ['x', 'y'] };
+    const keyMap = { check: ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'b', 'a'] };
     const handlers = { check: (event) => { return this.check(event) } };
     return (
       <GlobalHotKeys keyMap={keyMap} handlers={handlers} >
