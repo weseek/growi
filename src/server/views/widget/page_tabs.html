@@ -5,34 +5,34 @@
     Left Tabs
   #}
   <li class="nav-item grw-main-nav-item-left">
-    <a class="nav-link active" href="#revision-body" role="tab" data-toggle="tab">
-      <i class="icon-control-play"></i> <span class="d-none d-sm-block">View</span>
+    <a class="nav-link active d-flex d-flex align-items-center justify-content-center" href="#revision-body" role="tab" data-toggle="tab">
+      <i class="icon-control-play"></i> <span class="d-none d-sm-block ml-1">View</span>
     </a>
   </li>
 
   {% if !isTrashPage() %}
     <li class="nav-item grw-main-nav-item-left grw-nav-item-edit">
       <a
-        {% if user %} href="#edit" data-toggle="tab" class="nav-link edit-button" {% endif %}
+        {% if user %} href="#edit" data-toggle="tab" class="nav-link edit-button d-flex align-items-center justify-content-center" {% endif %}
         {% if not user %}
-          class="nav-link edit-button edit-button-disabled"
+          class="nav-link edit-button edit-button-disabled d-flex align-items-center justify-content-center"
           data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
         {% endif %}
       >
-        <i class="icon-note"></i> <span class="d-none d-sm-block">{{ t('Edit') }}</span>
+        <i class="icon-note"></i> <span class="d-none d-sm-block ml-1">{{ t('Edit') }}</span>
       </a>
     </li>
 
     {% if isHackmdSetup() %}
     <li class="nav-item grw-main-nav-item-left grw-nav-tab-hackmd">
       <a
-        {% if user %} href="#hackmd" data-toggle="tab" class="nav-link edit-button" {% endif %}
+        {% if user %} href="#hackmd" data-toggle="tab" class="nav-link edit-button d-flex align-items-center justify-content-center" {% endif %}
         {% if not user %}
-          class="nav-link edit-button edit-button-disabled"
+          class="nav-link edit-button edit-button-disabled d-flex align-items-center justify-content-center"
           data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
         {% endif %}
       >
-        <i class="fa fa-file-text-o"></i> <span class="d-none d-sm-block">{{ t('HackMD') }}</span>
+        <i class="fa fa-file-text-o"></i> <span class="d-none d-sm-block ml-1">{{ t('HackMD') }}</span>
       </a>
     </li>
     {% endif %}
@@ -50,16 +50,16 @@
   <!-- presentation -->
   {% if not page.isTopPage() %}
     <li class="nav-item">
-      <a href="?presentation=1" class="nav-link toggle-presentation">
-        <i class="icon-film"></i><span class="d-none d-md-inline"> {{ t('Presentation Mode') }}</span>
+      <a href="?presentation=1" class="nav-link toggle-presentation d-flex align-items-center justify-content-center">
+        <i class="icon-film"></i><span class="d-none d-md-inline ml-1"> {{ t('Presentation Mode') }}</span>
       </a>
     </li>
   {% endif %}
 
   <!-- revision-history -->
   <li class="nav-item">
-    <a class="nav-link" href="#revision-history" role="tab" data-toggle="tab">
-      <i class="icon-layers"></i><span class="d-none d-md-inline"> {{ t('History') }}</span>
+    <a class="nav-link d-flex align-items-center justify-content-center" href="#revision-history" role="tab" data-toggle="tab">
+      <i class="icon-layers"></i><span class="d-none d-md-inline ml-1"> {{ t('History') }}</span>
     </a>
   </li>
 
