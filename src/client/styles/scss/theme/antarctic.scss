@@ -64,11 +64,12 @@ html[dark] {
   $color-inline-code: #c7254e; // optional
 
   // List Group colors
-  $color-list: $color-global;
-  $bgcolor-list: $bgcolor-global;
-  $color-list-active: $color-reversal;
-  $bgcolor-list-active: $primary;
-  $color-list-hover: $color-reversal;
+  // $color-list: $color-global;
+  // $bgcolor-list: $bgcolor-global;
+  // $color-list-hover: $color-reversal;
+  // $bgcolor-list-hover: ;
+  // $color-list-active: $color-reversal;
+  // $bgcolor-list-active: $primary;
 
   // Navbar
   $bgcolor-navbar: #35393f;

@@ -1,6 +1,11 @@
 # CHANGES
 
-## v4.0.1-RC
+## v4.0.2-RC
+
+* Fix: Internal Server Error occurred when the guest user access to the pages that has likes
+* Fix: Some buttons are broken in Safari
+
+## v4.0.1
 
 * Improvement: Accessibility for Handsontable under dark mode
 * Improvement: Refactor '/pages.exist' API

@@ -71,7 +71,7 @@ export default class UserPicture extends React.Component {
     return props => (
       <>
         <RootElm id={id}>{props.children}</RootElm>
-        <UncontrolledTooltip placement="bottom" target={id}>
+        <UncontrolledTooltip placement="bottom" target={id} delay={0} fade={false}>
           @{user.username}<br />
           {user.name}
         </UncontrolledTooltip>

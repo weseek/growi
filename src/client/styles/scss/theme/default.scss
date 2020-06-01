@@ -36,7 +36,8 @@ html[light] {
   // List Group colors
   // $color-list: $color-global; // optional
   // $bgcolor-list: $bgcolor-global; // optional
-  // $color-list-hover: $color-reversal; // optional
+  // $color-list-hover: $color-global; // optional
+  // $bgcolor-list-hover: darken($bgcolor-global, 3%); // optional
   // $color-list-active: $color-reversal; // optional
   // $bgcolor-list-active: $primary; // optional
 
@@ -123,7 +124,8 @@ html[dark] {
   // List Group colors
   // $color-list: $color-global; // optional
   // $bgcolor-list: $bgcolor-global; // optional
-  // $color-list-hover: $color-reversal; // optional
+  // $color-list-hover: $color-global; // optional
+  // $bgcolor-list-hover: lighten($bgcolor-global, 3%); // optional
   $color-list-active: white; // optional
   // $bgcolor-list-active: $primary; // optional
 
