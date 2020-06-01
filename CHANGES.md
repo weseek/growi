@@ -1,9 +1,13 @@
 # CHANGES
 
-## v4.0.2-RC
+## v4.0.3-RC
+
+* Fix: navbar is broken on Safari
+
+## v4.0.2
 
 * Fix: Internal Server Error occurred when the guest user access to the pages that has likes
-* Fix: Some buttons are broken in Safari
+* Fix: Some buttons are broken on Safari
 
 ## v4.0.1
 
