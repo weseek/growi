@@ -6,7 +6,7 @@
   #}
   <li class="nav-item grw-main-nav-item-left">
     <a class="nav-link active" href="#revision-body" role="tab" data-toggle="tab">
-      <i class="icon-control-play"></i> View
+      <i class="icon-control-play"></i> <span class="d-none d-sm-inline ml-1">View</span>
     </a>
   </li>
 
@@ -19,7 +19,7 @@
           data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
         {% endif %}
       >
-        <i class="icon-note"></i> {{ t('Edit') }}
+        <i class="icon-note"></i> <span class="d-none d-sm-inline ml-1">{{ t('Edit') }}</span>
       </a>
     </li>
 
@@ -32,7 +32,7 @@
           data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
         {% endif %}
       >
-        <i class="fa fa-file-text-o"></i> {{ t('HackMD') }}
+        <i class="fa fa-file-text-o"></i> <span class="d-none d-sm-inline ml-1">{{ t('HackMD') }}</span>
       </a>
     </li>
     {% endif %}
@@ -45,13 +45,13 @@
   #}
 
   {# to place right side #}
-  <div class="mr-auto"></div>
+  <div class="mr-auto d-none d-sm-block"></div>
 
   <!-- presentation -->
   {% if not page.isTopPage() %}
     <li class="nav-item">
       <a href="?presentation=1" class="nav-link toggle-presentation">
-        <i class="icon-film"></i><span class="d-none d-md-inline"> {{ t('Presentation Mode') }}</span>
+        <i class="icon-film"></i><span class="d-none d-md-inline ml-1"> {{ t('Presentation Mode') }}</span>
       </a>
     </li>
   {% endif %}
@@ -59,7 +59,7 @@
   <!-- revision-history -->
   <li class="nav-item">
     <a class="nav-link" href="#revision-history" role="tab" data-toggle="tab">
-      <i class="icon-layers"></i><span class="d-none d-md-inline"> {{ t('History') }}</span>
+      <i class="icon-layers"></i><span class="d-none d-md-inline ml-1"> {{ t('History') }}</span>
     </a>
   </li>
 
