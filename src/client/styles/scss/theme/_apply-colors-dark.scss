@@ -1,10 +1,17 @@
 // determine optional variables
+$color-list: $color-global !default;
+$bgcolor-list: $bgcolor-global !default;
+$color-list-hover: $color-global !default;
+$bgcolor-list-hover: lighten($bgcolor-global, 3%) !default;
+$color-list-active: $color-reversal !default;
+$bgcolor-list-active: $primary !default;
 $bgcolor-subnabvar: lighten($bgcolor-global, 3%) !default;
 $color-table: white !default;
 $bgcolor-table: #343a40 !default;
 $border-color-table: lighten($bgcolor-table, 7.5%) !default;
 $color-table-hover: rgba(white, 0.075) !default;
 $bgcolor-table-hover: lighten($bgcolor-table, 7.5%) !default;
+$bgcolor-sidebar-list-group: $bgcolor-list !default;
 
 // override bootstrap variables
 $table-dark-color: $color-table;
@@ -15,10 +22,14 @@ $table-dark-hover-bg: $bgcolor-table-hover;
 
 @import 'reboot-bootstrap-tables';
 
+// List Group
+@include override-list-group-item($color-list, $bgcolor-list, $color-list-hover, $bgcolor-list-hover, $color-list-active, $bgcolor-list-active);
+
 /*
   * Form
   */
 input.form-control,
+select.form-control,
 textarea.form-control {
   color: lighten($color-global, 30%);
   background-color: darken($bgcolor-global, 5%);
@@ -112,12 +123,27 @@ ul.pagination {
 }
 
 /*
+ * GROWI Sidebar
+ */
+.grw-sidebar {
+  // List
+  @include override-list-group-item($color-list, $bgcolor-sidebar-list-group, $color-list-hover, $bgcolor-list-hover, $color-list-active, $bgcolor-list-active);
+}
+
+/*
  * GROWI on-edit
  */
 .page-editor-footer {
   #slack-mark-black {
     display: none;
   }
+}
+
+/*
+ * GROWI HandsontableModal
+ */
+.grw-hot-modal-navbar {
+  background-color: $dark;
 }
 
 .wiki {

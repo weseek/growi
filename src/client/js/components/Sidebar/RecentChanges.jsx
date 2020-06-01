@@ -57,14 +57,14 @@ class RecentChanges extends React.Component {
     );
 
     return (
-      <li className="list-group-item">
+      <li className="list-group-item p-2">
         <div className="d-flex w-100">
           <UserPicture user={page.lastUpdatedUser} size="md" />
           <div className="flex-grow-1 ml-2">
             { !dPagePath.isRoot && <FormerLink /> }
-            <h4 className="mb-1">
+            <h5 className="mb-1">
               <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
-            </h4>
+            </h5>
             <div className="text-right small">
               <FormattedDistanceDate id={page.id} date={page.updatedAt} />
             </div>

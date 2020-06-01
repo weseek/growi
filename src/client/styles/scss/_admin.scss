@@ -47,10 +47,14 @@
   }
 
   .admin-notification {
-    .td-abs-center {
-      width: 1px; // to keep the cell small
-      text-align: center;
-      vertical-align: middle;
+    table .admin-notif-list {
+      td {
+        vertical-align: middle;
+      }
+      .td-abs-center {
+        width: 1px; // to keep the cell small
+        text-align: center;
+      }
     }
   }
 

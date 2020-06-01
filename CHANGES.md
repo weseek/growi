@@ -1,7 +1,21 @@
 # CHANGES
 
-## v4.0.1-RC
+## v4.0.2-RC
 
+* Fix: Internal Server Error occurred when the guest user access to the pages that has likes
+
+## v4.0.1
+
+* Improvement: Accessibility for Handsontable under dark mode
+* Improvement: Refactor '/pages.exist' API
+* Fix: Storing the state of sidebar
+* Fix: Comments order should be asc
+* Fix: Show/Hide replies button doesn't work
+* Fix: Tooltip doesn't work
+* Fix: Change the display of the scroll bar when modal is shown
+* Fix: Submit with enter key on Create/Rename modals
+* Fix: Show/Hide Unlink redirection button conditions
+* Fix: Link color in alerts
 * Support: Upgrade libs
     * @atlaskit/drawer
     * @atlaskit/navigation-next
