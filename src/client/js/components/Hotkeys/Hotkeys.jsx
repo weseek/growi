@@ -11,10 +11,11 @@ export default class Hotkeys extends React.Component {
     this.onDetected = this.onDetected.bind(this);
   }
 
-  onDetected() {
+  onDetected(button) {
     this.setState({
       sampleCommand: !this.state.sampleCommand,
     });
+    console.log(button);
   }
 
   render() {
@@ -24,7 +25,7 @@ export default class Hotkeys extends React.Component {
     }
     return (
       <React.Fragment>
-        <HotkeysDetector onDetected={() => this.onDetected()} />
+        <HotkeysDetector onDetected={(button) => this.onDetected(button)} />
         {view}
       </React.Fragment>
     );
