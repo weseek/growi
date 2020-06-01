@@ -5,7 +5,6 @@ export default class Hotkeys extends React.Component {
 
   constructor(props) {
     super(props);
-    this.onDetected = this.onDetected.bind(this);
     this.state = {
       sampleCommand: "",
     };

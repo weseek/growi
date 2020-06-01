@@ -26,5 +26,4 @@
     "source.fixAll.eslint": true,
     "source.fixAll.markdownlint": true
   },
-  "editor.tabSize": 2
 }
