@@ -45,8 +45,9 @@ $table-hover-bg: $bgcolor-table-hover;
   .btn-group-dropdown-scope .dropdown-toggle {
     background-color: rgba($bgcolor-global, 0.8);
   }
-  .rbt-input.form-control {
+  .search-typeahead {
     background-color: rgba($bgcolor-global, 0.9);
+    border-radius: 0 50% 50% 0;
   }
 }
 
