@@ -12,13 +12,12 @@ import { createSubscribedElement } from './UnstatedUtils';
 
 const OutsideShareLinkModal = (props) => {
 
-  const { t } = props;
+  /* const { t } = props; */
 
 
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} className="grw-create-page">
       <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-light">Hi there!
-        { t('New Page') }
       </ModalHeader>
       <ModalBody>
         <h1>Hi there</h1>
