@@ -26,8 +26,10 @@ body.on-edit {
   }
 
   // show
-  .d-edit-block {
-    display: block !important;
+  .d-edit-sm-block {
+    @include media-breakpoint-up(sm) {
+      display: block !important;
+    }
   }
 
   // hide unnecessary elements
