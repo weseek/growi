@@ -26,7 +26,7 @@ body.on-edit {
   }
 
   // show
-  .d-edit-block {
+  .d-edit-sm-block {
     @include media-breakpoint-up(sm) {
       display: block !important;
     }
