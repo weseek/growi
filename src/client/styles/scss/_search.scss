@@ -209,4 +209,26 @@
   caption {
     display: table-header-group;
   }
+
+  th {
+    text-align: right;
+  }
+
+  @media (max-width: 576px) {
+    white-space: normal !important;
+    
+    th,
+    td {
+      display: block;
+    }
+    
+    th {
+      text-align: left;
+    }
+    
+    td {
+      border-top: none !important;
+      padding-top: 0 !important;
+    }
+  }
 }
