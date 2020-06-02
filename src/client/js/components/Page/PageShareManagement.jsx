@@ -11,20 +11,20 @@ import PageContainer from '../../services/PageContainer';
 
 const PageShareManagement = (props) => {
   const { t, appContainer, pageContainer } = props;
-  const { path } = pageContainer.state;
+  /* const { path } = pageContainer.state; */
 
   const { currentUser } = appContainer;
-/*   const isTopPagePath = isTopPage(path); */
+  /*   const isTopPagePath = isTopPage(path); */
 
-/*   const [isOutsideShareLinkModalShown, setIsOutsideShareLinkModalShown] = useState(false);
+  /*   const [isOutsideShareLinkModalShown, setIsOutsideShareLinkModalShown] = useState(false);
 
   function openOutsideShareLinkModalHandler() {
     setIsOutsideShareLinkModalShown(true);
   }
 
   function closeOutsideShareLinkModalHandler() {
-    setIsOutsideShareLinkModalShown(false); */
-  }
+    setIsOutsideShareLinkModalShown(false);
+  } */
 
   function renderModals() {
     return (
@@ -51,7 +51,7 @@ const PageShareManagement = (props) => {
         <i className="fa fa-share-alt"></i>
       </a>
       <div className="dropdown-menu dropdown-menu-right">
-        <button className="dropdown-item" type="button" onClick={openOutsideShareLinkModalHandler}>
+        <button className="dropdown-item" type="button" onClick={/* openOutsideShareLinkModalHandler */}>
           <i className="icon-fw icon-magic-wand"></i> { t('template.option_label.create/edit') }
         </button>
       </div>
