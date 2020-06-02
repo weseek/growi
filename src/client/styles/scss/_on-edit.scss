@@ -27,7 +27,9 @@ body.on-edit {
 
   // show
   .d-edit-block {
-    display: block !important;
+    @include media-breakpoint-up(sm) {
+      display: block !important;
+    }
   }
 
   // hide unnecessary elements
