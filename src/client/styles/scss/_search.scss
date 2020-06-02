@@ -209,26 +209,33 @@
   caption {
     display: table-header-group;
   }
+}
 
-  th {
-    text-align: right;
-  }
-
-  @media (max-width: 576px) {
-    white-space: normal !important;
-    
-    th,
-    td {
-      display: block;
-    }
-    
+@include media-breakpoint-down(sm) {
+  .grw-search-table {
     th {
-      text-align: left;
+      text-align: right;
     }
-    
+  
     td {
-      border-top: none !important;
-      padding-top: 0 !important;
+      overflow-wrap: anywhere;
+      white-space: normal !important;
+    }
+  
+    @include media-breakpoint-down(xs) {
+      th,
+      td {
+        display: block;
+      }
+      
+      th {
+        text-align: left;
+      }
+      
+      td {
+        border-top: none !important;
+        padding-top: 0 !important;
+      }
     }
   }
 }
