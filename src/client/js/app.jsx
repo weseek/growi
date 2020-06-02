@@ -22,6 +22,7 @@ import PageComments from './components/PageComments';
 import PageTimeline from './components/PageTimeline';
 import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
 import PageManagement from './components/Page/PageManagement';
+import PageShareManagement from './components/Page/PageShareManagement';
 import TrashPageAlert from './components/Page/TrashPageAlert';
 import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
@@ -91,6 +92,7 @@ if (pageContainer.state.pageId != null) {
     'page-attachment': <PageAttachment />,
     'page-comment-write': <CommentEditorLazyRenderer />,
     'page-management': <PageManagement />,
+    'page-share-management': <PageShareManagement />,
 
     'revision-toc': <TableOfContents />,
     'seen-user-list': <UserPictureList userIds={pageContainer.state.seenUserIds} />,
