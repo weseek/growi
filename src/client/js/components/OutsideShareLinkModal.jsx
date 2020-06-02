@@ -9,6 +9,8 @@ import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from './UnstatedUtils';
 
+import AppContainer from '../services/AppContainer';
+import PageContainer from '../services/PageContainer';
 
 const OutsideShareLinkModal = (props) => {
 
@@ -32,12 +34,14 @@ const OutsideShareLinkModal = (props) => {
  * Wrapper component for using unstated
  */
 const ModalControlWrapper = (props) => {
-  return createSubscribedElement(OutsideShareLinkModal, props);
+  return createSubscribedElement(OutsideShareLinkModal, props, [AppContainer, PageContainer]);
 };
 
 
 OutsideShareLinkModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
