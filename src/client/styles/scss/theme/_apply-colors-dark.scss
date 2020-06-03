@@ -148,6 +148,14 @@ ul.pagination {
     }
   }
 
+  .grw-external-auth-form {
+    border-color: gray !important;
+  }
+
+  .btn-external-auth-tab {
+    @extend .btn-dark;
+  }
+
   // footer link text
   .link-growi-org {
     color: rgba(white, 0.4);
