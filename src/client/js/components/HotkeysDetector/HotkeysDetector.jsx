@@ -12,7 +12,6 @@ export default class HotkeysDetector extends React.Component {
     this.state = {
       userCommand: [],
     };
-    this.onDetected = this.props.onDetected;
     this.processingCommands = [];
     this.check = this.check.bind(this);
   }
