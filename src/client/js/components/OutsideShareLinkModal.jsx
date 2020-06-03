@@ -16,11 +16,41 @@ const OutsideShareLinkModal = (props) => {
 
   /* const { t } = props; */
   const { pageContainer } = props;
+  const shareLinks = [
+    { link: '/hoge/', expiration: '6days', description: 'foobar' },
+    { link: '/fuga/', expiration: '7days', description: 'aa' },
+    { link: '/piyo/', expiration: '8days', description: 'aaa' },
+    { link: '/foo/', expiration: '9days', description: 'bb' },
+    { link: '/bar/', expiration: '1month', description: 'test' },
+  ];
 
-  const deleteLinkHandler = () => {
+  function deleteLinkHandler(slink) {
     console.log('発行済みのリンクを破棄するapiを叩いた');
+    console.log(slink);
+    console.log(shareLinks);
+    // const index = shareLinks.indexOf(slink);
+    // shareLinks.splice(index, 1);
     pageContainer.showDeleteLinkToastr();
-  };
+  }
+
+  function ShareLinkList() {
+    return (
+      <>
+        {shareLinks.map((slink, index) => (
+          <tr>
+            <td>{slink.link}</td>
+            <td>{slink.expiration}</td>
+            <td>{slink.description}</td>
+            <td>
+              <button className="btn btn-outline-warning" type="button" onClick={() => deleteLinkHandler(slink)}>
+                <i className="icon-trash"></i>Delete
+              </button>
+            </td>
+          </tr>
+        ))}
+      </>
+    );
+  }
 
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} className="grw-create-page">
@@ -45,16 +75,7 @@ const OutsideShareLinkModal = (props) => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>test/link</td>
-                    <td>6 Days</td>
-                    <td>foobar</td>
-                    <td>
-                      <button className="btn btn-outline-warning" type="button" onClick={deleteLinkHandler}>
-                        <i className="icon-trash"></i>Delete
-                      </button>
-                    </td>
-                  </tr>
+                  <ShareLinkList />
                 </tbody>
               </table>
             </div>
