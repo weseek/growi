@@ -12,7 +12,7 @@ export default class Hotkeys extends React.Component {
     this.onDetected = this.onDetected.bind(this);
     this.deleteCredit = this.deleteCredit.bind(this);
     this.instances = [
-      <StaffCredit deleteCredit={this.deleteCredit} />
+      <StaffCredit deleteCredit={this.deleteCredit} />,
     ];
   }
 
@@ -22,7 +22,7 @@ export default class Hotkeys extends React.Component {
     });
   }
 
-  // activates when one of the hotkey strokes gets determined from HotkeysDetector 
+  // activates when one of the hotkey strokes gets determined from HotkeysDetector
   onDetected(strokeDetermined) {
     this.setState({
       stroke: strokeDetermined,
@@ -31,11 +31,12 @@ export default class Hotkeys extends React.Component {
 
   render() {
     console.log(this.state.stroke);
-    const view = this.instances.filter(value => {
-      if(value.type.prototype.getHotkeyStroke().toString() === this.state.stroke.toString()){
+    const view = this.instances.filter((value) => {
+      if (value.type.prototype.getHotkeyStroke().toString() === this.state.stroke.toString()) {
         return value;
       }
-    })
+      return null;
+    });
     return (
       <React.Fragment>
         <HotkeysDetector onDetected={stroke => this.onDetected(stroke)} />

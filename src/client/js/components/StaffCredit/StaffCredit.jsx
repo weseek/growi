@@ -18,9 +18,10 @@ export default class StaffCredit extends React.Component {
     super(props);
     this.logger = loggerFactory('growi:StaffCredit');
   }
-  //when this is called it returns the hotkey stroke
+
+  // when this is called it returns the hotkey stroke
   getHotkeyStroke() {
-    return ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a']
+    return ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
   }
 
   renderMembers(memberGroup, keyPrefix) {
