@@ -48,7 +48,13 @@ export default class HotkeysDetector extends React.Component {
     const keyMap = { check: ['x', 'y'] };
     const handlers = { check: (event) => { return this.check(event) } };
     return (
-      <GlobalHotKeys keyMap={keyMap} handlers={handlers} >
+      <GlobalHotKeys>
+        <button type="button" onClick={() => { this.props.onDetected('button1') }}>
+          Click!
+        </button>
+        <button type="button" onClick={() => { this.props.onDetected('button2') }}>
+          Click!
+        </button>
       </GlobalHotKeys>
     );
   }
