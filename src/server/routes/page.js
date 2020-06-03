@@ -445,7 +445,7 @@ module.exports = function(crowi, app) {
 
     const layoutName = configManager.getConfig('crowi', 'customize:layout');
     // TODO Consider the layout for share
-    const view = `layout-${layoutName}/page`;
+    const view = `layout-${layoutName}/shared_page`;
 
     const shareLink = await ShareLink.find({ _id: linkId }).populate('Page');
     const page = shareLink.relatedPage;
