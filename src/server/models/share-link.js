@@ -33,7 +33,8 @@ schema.plugin(uniqueValidator);
 class ShareLink {
 
   static async getRelatedPageByLinkId(id) {
-    const page = await this.find({ _id: id }).populate('relatedPage');
+    const shareLink = await this.find({ _id: id }).populate('relatedPage');
+    const { page } = shareLink;
     return page;
   }
 
