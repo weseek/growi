@@ -446,8 +446,8 @@ module.exports = function(crowi, app) {
     const layoutName = configManager.getConfig('crowi', 'customize:layout');
     let view = `layout-${layoutName}/page`;
 
-    // TODO find page by link
-    const page = await ShareLink.find({ _id: link }).populate('Page');
+    const shareLink = await ShareLink.find({ _id: link }).populate('Page');
+    const page = shareLink.relatedPage;
 
     if (page == null) {
       // page is not found
