@@ -16,16 +16,91 @@ const OutsideShareLinkModal = (props) => {
 
   /* const { t } = props; */
 
-
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} className="grw-create-page">
-      <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-light">Hi there!
+      <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-light">Title
       </ModalHeader>
       <ModalBody>
-        <h1>Hi there</h1>
+        <div className="container">
+          <div className="row align-items-center mb-3">
+            <h4 className="col-10">Shared Link List</h4>
+            <button className="col btn btn-danger">Delete all links</button>
+          </div>
+
+          <div className="">
+            <div className="table-responsive">
+              <table className="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Link</th>
+                    <th>Expiration</th>
+                    <th>Description</th>
+                    <th>Order</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>test/link</td>
+                    <td>6 Days</td>
+                    <td>foobar</td>
+                    <td>
+                      <button className="btn btn-warning" type="button">
+                        <i className="icon-trash"></i>Delete
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <button className="btn btn-outline-secondary d-block mx-auto px-5 mb-3">+</button>
+
+            <div className="share-link-form border">
+              <h4 className="ml-3">Expiration Date</h4>
+              <form>
+                <div className="form-group">
+                  <div className="custom-control custom-radio offset-4 mb-2">
+                    <input id="customRadio1" name="customRadio" type="radio" class="custom-control-input"></input>
+                    <label className="custom-control-label" for="customRadio1">Unlimited</label>
+                  </div>
+
+                  <div className="custom-control custom-radio offset-4 mb-2">
+                    <input id="customRadio2" name="customRadio" type="radio" class="custom-control-input"></input>
+                    <label className="custom-control-label" for="customRadio2">
+                      <div className="row align-items-center m-0">
+                        <input className="form-control col-2" type="number" min="1" max="7" value="7"></input>
+                        <span className="col-auto">Days</span>
+                      </div>
+                    </label>
+                  </div>
+
+                  <div className="custom-control custom-radio offset-4 mb-2">
+                    <input id="customRadio3" name="customRadio" type="radio" class="custom-control-input"></input>
+                    <label className="custom-control-label" for="customRadio3">
+                      Custom
+                      <div class="date-picker">Date Picker</div>
+                    </label>
+                  </div>
+
+                  <hr/>
+
+                  <div className="form-group row">
+                    <label for="inputDesc" className="col-md-4 col-form-label">Description</label>
+                    <div className="col-md-4">
+                      <input type="text" className="form-control" id="inputDesc" placeholder="Enter description"></input>
+                    </div>
+                  </div>
+
+                  <div className="form-group row">
+                    <div className="offset-8 col">
+                      <button type="button" className="btn btn-primary">Issue</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
       </ModalBody>
-      <ModalFooter>
-      </ModalFooter>
     </Modal>
   );
 };
