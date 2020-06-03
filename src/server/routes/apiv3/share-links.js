@@ -1,12 +1,16 @@
 // TODO remove this setting after implemented all
 /* eslint-disable no-unused-vars */
-// const loggerFactory = require('@alias/logger');
+const loggerFactory = require('@alias/logger');
 
-// const logger = loggerFactory('growi:routes:apiv3:share-links');
+const logger = loggerFactory('growi:routes:apiv3:share-links');
 
 const express = require('express');
 
 const router = express.Router();
+
+const { body } = require('express-validator/check');
+
+const ErrorV3 = require('../../models/vo/error-apiv3');
 
 /**
  * @swagger
@@ -16,6 +20,9 @@ const router = express.Router();
 
 module.exports = (crowi) => {
   const loginRequired = require('../../middleware/login-required')(crowi);
+  const csrf = require('../../middleware/csrf')(crowi);
+
+  const ShareLink = crowi.model('ShareLink');
 
   // TDOO write swagger
   router.get('/', loginRequired, async(req, res) => {
@@ -37,9 +44,20 @@ module.exports = (crowi) => {
   });
 
   // TDOO write swagger
-  router.delete('/:id', loginRequired, async(req, res) => {
+  router.delete('/:id', loginRequired, csrf, async(req, res) => {
+    const { id } = req.query;
     const { pageId } = req.body;
-    // TODO GW-2610 Remove specific share link
+
+    try {
+      const deletedShareLink = await ShareLink.findOneAndRemove({ _id: id, relatedPage: pageId });
+      return res.apiv3(deletedShareLink);
+    }
+    catch (err) {
+      const msg = 'Error occurred in delete share link';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'delete-shareLink-failed'));
+    }
+
   });
 
 
