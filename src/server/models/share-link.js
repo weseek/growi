@@ -34,8 +34,8 @@ class ShareLink {
 
   static async getRelatedPageByLinkId(id) {
     const shareLink = await this.find({ _id: id }).populate('relatedPage');
-    const { page } = shareLink;
-    return page;
+    const { relatedPage } = shareLink;
+    return relatedPage;
   }
 
 }
