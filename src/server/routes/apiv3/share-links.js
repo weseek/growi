@@ -57,25 +57,15 @@ module.exports = (crowi) => {
   *            description: id of share link
   *            schema:
   *              type: string
-  *        requestBody:
-  *          required: true
-  *          content:
-  *            application/json:
-  *              schema:
-  *                properties:
-  *                  pageId:
-  *                    type: string
-  *                    description:  page id witch related to the link
   *        responses:
   *          200:
   *            description: Succeeded to delete one share link
   */
   router.delete('/:id', loginRequired, csrf, async(req, res) => {
     const { id } = req.params;
-    const { pageId } = req.body;
 
     try {
-      const deletedShareLink = await ShareLink.findOneAndRemove({ _id: id, relatedPage: pageId });
+      const deletedShareLink = await ShareLink.findOneAndRemove({ _id: id });
       return res.apiv3(deletedShareLink);
     }
     catch (err) {
