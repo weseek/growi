@@ -45,7 +45,7 @@ class CopyDropdown extends React.Component {
       search, hash,
     } = window.location;
 
-    return `${pagePath}${search}${hash}`;
+    return decodeURI(`${pagePath}${search}${hash}`);
   }
 
   generatePagePathUrl() {
@@ -64,7 +64,7 @@ class CopyDropdown extends React.Component {
     const {
       origin, search, hash,
     } = location;
-    return `${origin}/${pageId}${search}${hash}`;
+    return decodeURI(`${origin}/${pageId}${search}${hash}`);
   }
 
   generateMarkdownLink() {
@@ -73,7 +73,7 @@ class CopyDropdown extends React.Component {
       search, hash,
     } = window.location;
 
-    const label = `${pagePath}${search}${hash}`;
+    const label = decodeURI(`${pagePath}${search}${hash}`);
     const permalink = this.generatePermalink();
 
     return `[${label}](${permalink})`;
