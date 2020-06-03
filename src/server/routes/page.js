@@ -441,12 +441,12 @@ module.exports = function(crowi, app) {
   };
 
   actions.showSharePage = async function(req, res, next) {
-    const { link } = req.params;
+    const { linkId } = req.params;
 
     const layoutName = configManager.getConfig('crowi', 'customize:layout');
     let view = `layout-${layoutName}/page`;
 
-    const shareLink = await ShareLink.find({ _id: link }).populate('Page');
+    const shareLink = await ShareLink.find({ _id: linkId }).populate('Page');
     const page = shareLink.relatedPage;
 
     if (page == null) {
