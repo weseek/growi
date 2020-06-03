@@ -43,7 +43,30 @@ module.exports = (crowi) => {
     // TODO GW-2694 Delete all share links
   });
 
-  // TDOO write swagger
+  /**
+  * @swagger
+  *
+  *    /notification-setting/global-notification/{id}:
+  *      delete:
+  *        tags: [ShareLinks]
+  *        description: delete one share link related one page
+  *        parameters:
+  *          - name: id
+  *            in: query
+  *            required: true
+  *            description: id of share link
+  *            schema:
+  *              type: string
+  *          - name: pageId
+  *            in: body
+  *            required: true
+  *            description: page id witch related to the link
+  *            schema:
+  *              type: string
+  *        responses:
+  *          200:
+  *            description: Succeeded to delete one share link
+  */
   router.delete('/:id', loginRequired, csrf, async(req, res) => {
     const { id } = req.query;
     const { pageId } = req.body;
