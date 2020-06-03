@@ -7,33 +7,38 @@ export default class Hotkeys extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      sampleCommand: '',
+      stroke: '',
     };
     this.onDetected = this.onDetected.bind(this);
     this.deleteCredit = this.deleteCredit.bind(this);
+    this.instances = [
+      <StaffCredit deleteCredit={this.deleteCredit} />
+    ];
   }
 
   deleteCredit() {
     this.setState({
-      sampleCommand: '',
+      stroke: '',
     });
   }
 
-  onDetected(commandDetermined) {
+  // activates when one of the hotkey strokes gets determined from HotkeysDetector 
+  onDetected(strokeDetermined) {
     this.setState({
-      sampleCommand: commandDetermined,
+      stroke: strokeDetermined,
     });
   }
 
   render() {
-    const view = [];
-    console.log(this.state.sampleCommand);
-    if (this.state.sampleCommand === 'staffCredit') {
-      view.push(<StaffCredit deleteCredit={this.deleteCredit} />);
-    }
+    console.log(this.state.stroke);
+    const view = this.instances.filter(value => {
+      if(value.type.prototype.getHotkeyStroke().toString() === this.state.stroke.toString()){
+        return value;
+      }
+    })
     return (
       <React.Fragment>
-        <HotkeysDetector onDetected={button => this.onDetected(button)} />
+        <HotkeysDetector onDetected={stroke => this.onDetected(stroke)} />
         {view}
       </React.Fragment>
     );

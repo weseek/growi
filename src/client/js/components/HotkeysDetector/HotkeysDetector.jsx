@@ -6,9 +6,9 @@ export default class HotkeysDetector extends React.Component {
 
   constructor(props) {
     super(props);
-    this.hotkeyCommand = {
-      staffCredit: ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'],
-    };
+    this.hotkeyList = [
+      ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'],
+    ];
     this.state = {
       userCommand: [],
     };
@@ -24,12 +24,12 @@ export default class HotkeysDetector extends React.Component {
 
     // filters the corresponding hotkeys(keys) that the user has pressed so far
     const tempUserCommand = this.state.userCommand;
-    this.processingCommands = Object.keys(this.hotkeyCommand).filter((value) => {
-      return this.hotkeyCommand[value].slice(0, tempUserCommand.length).toString() === tempUserCommand.toString();
+    this.processingCommands = this.hotkeyList.filter((value) => {
+      return value.slice(0, tempUserCommand.length).toString() === tempUserCommand.toString();
     });
 
     // executes if there were keymap that matches what the user pressed fully.
-    if ((this.processingCommands.length === 1) && (this.hotkeyCommand[this.processingCommands[0]].toString() === this.state.userCommand.toString())) {
+    if ((this.processingCommands.length === 1) && (this.hotkeyList.find(ary => ary.toString() === this.state.userCommand.toString()))) {
       this.props.onDetected(this.processingCommands[0]);
       this.setState({
         userCommand: [],
