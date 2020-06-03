@@ -46,7 +46,7 @@ module.exports = (crowi) => {
   /**
   * @swagger
   *
-  *    /notification-setting/global-notification/{id}:
+  *    /share-links/{id}:
   *      delete:
   *        tags: [ShareLinks]
   *        description: delete one share link related one page
