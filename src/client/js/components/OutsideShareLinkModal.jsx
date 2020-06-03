@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Modal, ModalHeader, ModalBody, ModalFooter,
+  Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
@@ -24,7 +24,7 @@ const OutsideShareLinkModal = (props) => {
         <div className="container">
           <div className="row align-items-center mb-3">
             <h4 className="col-10">Shared Link List</h4>
-            <button className="col btn btn-danger">Delete all links</button>
+            <button className="col btn btn-danger" type="button">Delete all links</button>
           </div>
 
           <div className="">
@@ -52,20 +52,20 @@ const OutsideShareLinkModal = (props) => {
                 </tbody>
               </table>
             </div>
-            <button className="btn btn-outline-secondary d-block mx-auto px-5 mb-3">+</button>
+            <button className="btn btn-outline-secondary d-block mx-auto px-5 mb-3" type="button">+</button>
 
             <div className="share-link-form border">
               <h4 className="ml-3">Expiration Date</h4>
               <form>
                 <div className="form-group">
                   <div className="custom-control custom-radio offset-4 mb-2">
-                    <input id="customRadio1" name="customRadio" type="radio" class="custom-control-input"></input>
-                    <label className="custom-control-label" for="customRadio1">Unlimited</label>
+                    <input id="customRadio1" name="customRadio" type="radio" className="custom-control-input"></input>
+                    <label className="custom-control-label" htmlFor="customRadio1">Unlimited</label>
                   </div>
 
                   <div className="custom-control custom-radio offset-4 mb-2">
-                    <input id="customRadio2" name="customRadio" type="radio" class="custom-control-input"></input>
-                    <label className="custom-control-label" for="customRadio2">
+                    <input id="customRadio2" name="customRadio" type="radio" className="custom-control-input"></input>
+                    <label className="custom-control-label" htmlFor="customRadio2">
                       <div className="row align-items-center m-0">
                         <input className="form-control col-2" type="number" min="1" max="7" value="7"></input>
                         <span className="col-auto">Days</span>
@@ -74,17 +74,17 @@ const OutsideShareLinkModal = (props) => {
                   </div>
 
                   <div className="custom-control custom-radio offset-4 mb-2">
-                    <input id="customRadio3" name="customRadio" type="radio" class="custom-control-input"></input>
-                    <label className="custom-control-label" for="customRadio3">
+                    <input id="customRadio3" name="customRadio" type="radio" className="custom-control-input"></input>
+                    <label className="custom-control-label" htmlFor="customRadio3">
                       Custom
-                      <div class="date-picker">Date Picker</div>
+                      <div className="date-picker">Date Picker</div>
                     </label>
                   </div>
 
-                  <hr/>
+                  <hr />
 
                   <div className="form-group row">
-                    <label for="inputDesc" className="col-md-4 col-form-label">Description</label>
+                    <label htmlFor="inputDesc" className="col-md-4 col-form-label">Description</label>
                     <div className="col-md-4">
                       <input type="text" className="form-control" id="inputDesc" placeholder="Enter description"></input>
                     </div>
