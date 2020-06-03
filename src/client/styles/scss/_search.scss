@@ -32,6 +32,9 @@
   .rbt-menu {
     max-height: none !important;
     margin-top: 3px;
+    @include media-breakpoint-down(xs) {
+      width: 100%;
+    }
 
     li a span {
       .page-path {
@@ -258,8 +261,8 @@
       }
       
       td {
-        border-top: none !important;
         padding-top: 0 !important;
+        border-top: none !important;
       }
     }
   }
