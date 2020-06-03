@@ -113,7 +113,7 @@
   .grw-search-top-fixed {
     // centering on navbar
     top: $grw-navbar-height / 2;
-    left: 50vw;
+    left: 33vw;
     z-index: $zindex-fixed + 1;
     transform: translate(-50%, -50%);
 
@@ -127,7 +127,7 @@
       }
 
       @include media-breakpoint-up(md) {
-        width: 300px;
+        width: 250px;
       }
       @include media-breakpoint-up(lg) {
         // focus
@@ -258,8 +258,8 @@
       }
       
       td {
-        border-top: none !important;
         padding-top: 0 !important;
+        border-top: none !important;
       }
     }
   }
