@@ -444,7 +444,8 @@ module.exports = function(crowi, app) {
     const { linkId } = req.params;
 
     const layoutName = configManager.getConfig('crowi', 'customize:layout');
-    let view = `layout-${layoutName}/page`;
+    // TODO Consider the layout for share
+    const view = `layout-${layoutName}/page`;
 
     const shareLink = await ShareLink.find({ _id: linkId }).populate('Page');
     const page = shareLink.relatedPage;
@@ -458,12 +459,6 @@ module.exports = function(crowi, app) {
 
     addRendarVarsForPage(renderVars, page);
     addRendarVarsForScope(renderVars, page);
-
-    if (isUserPage(page.path)) {
-      // change template
-      view = `layout-${layoutName}/user_page`;
-      await addRenderVarsForUserPage(renderVars, page, req.user);
-    }
 
     await interceptorManager.process('beforeRenderPage', req, res, renderVars);
     return res.render(view, renderVars);
