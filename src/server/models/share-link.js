@@ -23,8 +23,6 @@ const schema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now, required: true },
 });
 
-// define unique compound index
-schema.index({ relatedPage: 1, relatedTag: 1 }, { unique: true });
 schema.plugin(uniqueValidator);
 
 /**
