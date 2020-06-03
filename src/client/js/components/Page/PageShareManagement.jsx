@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Tooltip } from 'reactstrap';
+import { UncontrolledTooltip } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from '../UnstatedUtils';
@@ -14,10 +14,7 @@ const PageShareManagement = (props) => {
 
   const { currentUser } = appContainer;
 
-  const [tooltipOpen, setTooltipOpen] = useState(false);
   const [isOutsideShareLinkModalShown, setIsOutsideShareLinkModalShown] = useState(false);
-
-  const toggle = () => setTooltipOpen(!tooltipOpen);
 
   function openOutsideShareLinkModalHandler() {
     setIsOutsideShareLinkModalShown(true);
@@ -38,23 +35,44 @@ const PageShareManagement = (props) => {
     );
   }
 
+  function renderCurrentUser() {
+    return (
+      <>
+        <button
+          type="button"
+          className="nav-link bg-transparent dropdown-toggle dropdown-toggle-no-caret"
+          data-toggle="dropdown"
+        >
+          <i className="fa fa-share-alt"></i>
+        </button>
+      </>
+    );
+  }
+
+  function renderGuestUser() {
+    return (
+      <>
+        <button
+          type="button"
+          className="nav-link bg-transparent"
+          id="auth-guest-tltips"
+        >
+          <i className="fa fa-share-alt"></i>
+        </button>
+        <UncontrolledTooltip placement="top" target="auth-guest-tltips">
+          {t('Not available for guest')}
+        </UncontrolledTooltip>
+      </>
+    );
+  }
+
+
   return (
     <>
-      <a
-        type="button"
-        className={`nav-link dropdown-toggle dropdown-toggle-no-caret ${currentUser == null && 'dropdown-toggle-disabled'}`}
-        data-toggle={`${currentUser == null ? 'tooltip' : 'dropdown'}`}
-        id="auth-guest-tltips"
-        href="#"
-      >
-        <i className="fa fa-share-alt"></i>
-      </a>
-      <Tooltip placement="top" isOpen={tooltipOpen} target="auth-guest-tltips" toggle={toggle}>
-        {t('Not available for guest')}
-      </Tooltip>
+      {currentUser == null ? renderGuestUser() : renderCurrentUser()}
       <div className="dropdown-menu dropdown-menu-right">
         <button className="dropdown-item" type="button" onClick={openOutsideShareLinkModalHandler}>
-          <i className="icon-fw icon-magic-wand"></i> { t('template.option_label.create/edit') }
+          <i className="fa fa-link"></i> {t('Shere this page link to public')}
         </button>
       </div>
       {renderModals()}
