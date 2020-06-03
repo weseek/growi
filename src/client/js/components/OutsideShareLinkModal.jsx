@@ -18,6 +18,7 @@ const OutsideShareLinkModal = (props) => {
   const { pageContainer } = props;
 
   const deleteLinkHandler = () => {
+    console.log('発行済みのリンクを破棄するapiを叩いた');
     pageContainer.showDeleteLinkToastr();
   };
 
@@ -49,7 +50,7 @@ const OutsideShareLinkModal = (props) => {
                     <td>6 Days</td>
                     <td>foobar</td>
                     <td>
-                      <button className="btn btn-warning" type="button" onClick={deleteLinkHandler}>
+                      <button className="btn btn-outline-warning" type="button" onClick={deleteLinkHandler}>
                         <i className="icon-trash"></i>Delete
                       </button>
                     </td>
