@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import * as toastr from 'toastr';
 
 import {
   Modal, ModalHeader, ModalBody,
@@ -15,34 +16,45 @@ import PageContainer from '../services/PageContainer';
 const OutsideShareLinkModal = (props) => {
 
   /* const { t } = props; */
-  const { pageContainer } = props;
+  const dummyDate = new Date().toString();
   const shareLinks = [
-    { link: '/hoge/', expiration: '6days', description: 'foobar' },
-    { link: '/fuga/', expiration: '7days', description: 'aa' },
-    { link: '/piyo/', expiration: '8days', description: 'aaa' },
-    { link: '/foo/', expiration: '9days', description: 'bb' },
-    { link: '/bar/', expiration: '1month', description: 'test' },
+    {
+      _id: '507f1f77bcf86cd799439011', link: '/507f1f77bcf86cd799439011', expiration: dummyDate, description: 'foobar',
+    },
+    {
+      _id: '52fcebd19a5c4ea066dbfa12', link: '/52fcebd19a5c4ea066dbfa12', expiration: dummyDate, description: 'test',
+    },
+    {
+      _id: '54759eb3c090d83494e2d804', link: '/54759eb3c090d83494e2d804', expiration: dummyDate, description: 'hoge',
+    },
+    {
+      _id: '5349b4ddd2781d08c09890f3', link: '/5349b4ddd2781d08c09890f3', expiration: dummyDate, description: 'fuga',
+    },
+    {
+      _id: '5349b4ddd2781d08c09890f4', link: '/5349b4ddd2781d08c09890f4', expiration: dummyDate, description: 'piyo',
+    },
   ];
 
   function deleteLinkHandler(slink) {
-    console.log('発行済みのリンクを破棄するapiを叩いた');
-    console.log(slink);
-    console.log(shareLinks);
-    // const index = shareLinks.indexOf(slink);
-    // shareLinks.splice(index, 1);
-    pageContainer.showDeleteLinkToastr();
+    try {
+      // call api
+      toastr.success(`${slink._id} deleted successfully`);
+    }
+    catch (err) {
+      toastr.error(err);
+    }
   }
 
   function ShareLinkList() {
     return (
       <>
-        {shareLinks.map((slink, index) => (
+        {shareLinks.map(shareLink => (
           <tr>
-            <td>{slink.link}</td>
-            <td>{slink.expiration}</td>
-            <td>{slink.description}</td>
+            <td>{shareLink.link}</td>
+            <td>{shareLink.expiration}</td>
+            <td>{shareLink.description}</td>
             <td>
-              <button className="btn btn-outline-warning" type="button" onClick={() => deleteLinkHandler(slink)}>
+              <button className="btn btn-outline-warning" type="button" onClick={() => deleteLinkHandler(shareLink)}>
                 <i className="icon-trash"></i>Delete
               </button>
             </td>

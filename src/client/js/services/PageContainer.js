@@ -381,18 +381,6 @@ export default class PageContainer extends Container {
     });
   }
 
-  showDeleteLinkToastr() {
-    toastr.success(undefined, 'Deleted successfully', {
-      closeButton: true,
-      progressBar: true,
-      newestOnTop: false,
-      showDuration: '100',
-      hideDuration: '100',
-      timeOut: '1200',
-      extendedTimeOut: '150',
-    });
-  }
-
   addWebSocketEventHandlers() {
     const pageContainer = this;
     const websocketContainer = this.appContainer.getContainer('WebsocketContainer');
