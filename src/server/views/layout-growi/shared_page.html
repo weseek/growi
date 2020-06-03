@@ -2,7 +2,7 @@
 
 
 {% block content_header %}
-  <h2 class="p-3">{{ encodeURI(page.path) }}</h2>
+  <h1 class="p-3">{{ encodeURI(page.path) }}</h1>
 {% endblock %}
 
 
@@ -10,11 +10,14 @@
 {% endblock %}
 {% block search %}
 {% endblock %}
+{% block head_warn_alert_siteurl_undefined %}
+{% endblock %}
 
 {% block content_main %}
   <div class="row">
     <div class="col grw-page-content-container">
 
+      {% include '../widget/page_content.html' %}
       {# force remove #revision-toc from #content_main of parent #}
       <script>
         $('#revision-toc').remove();
@@ -35,4 +38,7 @@
 
 
 {% block body_end %}
+  <div id="presentation-layer" class="fullscreen-layer">
+    <div id="presentation-container"></div>
+  </div>
 {% endblock %}
