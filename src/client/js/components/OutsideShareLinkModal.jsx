@@ -35,13 +35,13 @@ const OutsideShareLinkModal = (props) => {
     },
   ];
 
-  function deleteLinkHandler(slink) {
+  function deleteLinkHandler(shareLink) {
     try {
       // call api
-      toastr.success(`${slink._id} deleted successfully`);
+      toastr.success(`${shareLink._id} is deleted successfully`);
     }
     catch (err) {
-      toastr.error(err);
+      toastr.error(new Error(`${shareLink._id} is deleted failed`));
     }
   }
 
