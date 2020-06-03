@@ -440,23 +440,18 @@ module.exports = function(crowi, app) {
   };
 
   actions.showSharePage = async function(req, res, next) {
-    const { path } = req.params;
+    // const { link } = req.params;
 
     const layoutName = configManager.getConfig('crowi', 'customize:layout');
     let view = `layout-${layoutName}/page`;
 
-    // TODO
+    // TODO find page by link
     const page = {};
 
-    const limit = 50;
-    const offset = parseInt(req.query.offset) || 0;
     const renderVars = {};
 
     addRendarVarsForPage(renderVars, page);
     addRendarVarsForScope(renderVars, page);
-
-    await addRenderVarsForSlack(renderVars, page);
-    await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
 
     if (isUserPage(page.path)) {
       // change template
