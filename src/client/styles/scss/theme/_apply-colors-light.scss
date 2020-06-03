@@ -81,6 +81,24 @@ $table-hover-bg: $bgcolor-table-hover;
       }
     }
   }
+
+  // footer link text
+  .link-growi-org {
+    color: rgba(black, 0.4);
+
+    &:hover,
+    &.focus {
+      color: black;
+
+      .growi {
+        color: darken($growi-green, 20%);
+      }
+
+      .org {
+        color: darken($growi-blue, 15%);
+      }
+    }
+  }
 }
 
 /*

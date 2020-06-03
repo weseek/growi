@@ -134,25 +134,11 @@
   .link-growi-org {
     font-size: smaller;
     font-weight: bold;
-    color: rgba(black, 0.4);
 
     &,
     .growi,
     .org {
       transition: color 0.8s;
-    }
-
-    &:hover,
-    &.focus {
-      color: black;
-
-      .growi {
-        color: darken($growi-green, 20%);
-      }
-
-      .org {
-        color: darken($growi-blue, 15%);
-      }
     }
   }
 
@@ -179,7 +165,7 @@
   .link-growi-org {
     position: absolute;
     bottom: 9px;
-    z-index: 2;
+    z-index: 3;
   }
 
   // To adjust the behavior, this problem is not solved.

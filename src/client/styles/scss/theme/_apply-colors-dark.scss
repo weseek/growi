@@ -138,6 +138,33 @@ ul.pagination {
       }
     }
   }
+
+  .btn-fill {
+    .btn-label {
+      color: #ccc;
+    }
+    .btn-label-text {
+      color: #aaa;
+    }
+  }
+
+  // footer link text
+  .link-growi-org {
+    color: rgba(white, 0.4);
+
+    &:hover,
+    &.focus {
+      color: rgba(white, 0.7);
+
+      .growi {
+        color: darken($growi-green, 5%);
+      }
+
+      .org {
+        color: darken($growi-blue, 5%);
+      }
+    }
+  }
 }
 
 /*
