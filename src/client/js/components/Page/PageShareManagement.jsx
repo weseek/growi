@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { Tooltip } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from '../UnstatedUtils';
@@ -13,7 +14,10 @@ const PageShareManagement = (props) => {
 
   const { currentUser } = appContainer;
 
+  const [tooltipOpen, setTooltipOpen] = useState(false);
   const [isOutsideShareLinkModalShown, setIsOutsideShareLinkModalShown] = useState(false);
+
+  const toggle = () => setTooltipOpen(!tooltipOpen);
 
   function openOutsideShareLinkModalHandler() {
     setIsOutsideShareLinkModalShown(true);
@@ -36,16 +40,18 @@ const PageShareManagement = (props) => {
 
   return (
     <>
-      <button
+      <a
         type="button"
         className={`nav-link dropdown-toggle dropdown-toggle-no-caret ${currentUser == null && 'dropdown-toggle-disabled'}`}
         data-toggle={`${currentUser == null ? 'tooltip' : 'dropdown'}`}
-        data-placement="top"
-        data-container="body"
-        title={t('Not available for guest')}
+        id="auth-guest-tltips"
+        href="#"
       >
         <i className="fa fa-share-alt"></i>
-      </button>
+      </a>
+      <Tooltip placement="top" isOpen={tooltipOpen} target="auth-guest-tltips" toggle={toggle}>
+        {t('Not available for guest')}
+      </Tooltip>
       <div className="dropdown-menu dropdown-menu-right">
         <button className="dropdown-item" type="button" onClick={openOutsideShareLinkModalHandler}>
           <i className="icon-fw icon-magic-wand"></i> { t('template.option_label.create/edit') }
