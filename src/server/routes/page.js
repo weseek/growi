@@ -142,6 +142,7 @@ module.exports = function(crowi, app) {
   const PageTagRelation = crowi.model('PageTagRelation');
   const UpdatePost = crowi.model('UpdatePost');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
+  const ShareLink = crowi.model('ShareLink');
 
   const ApiResponse = require('../util/apiResponse');
   const getToday = require('../util/getToday');
@@ -440,13 +441,13 @@ module.exports = function(crowi, app) {
   };
 
   actions.showSharePage = async function(req, res, next) {
-    // const { link } = req.params;
+    const { link } = req.params;
 
     const layoutName = configManager.getConfig('crowi', 'customize:layout');
     let view = `layout-${layoutName}/page`;
 
     // TODO find page by link
-    const page = {};
+    const page = await ShareLink.find({ _id: link }).populate('Page');
 
     if (page == null) {
       // page is not found
