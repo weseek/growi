@@ -52,23 +52,26 @@ module.exports = (crowi) => {
   *        description: delete one share link related one page
   *        parameters:
   *          - name: id
-  *            in: query
+  *            in: path
   *            required: true
   *            description: id of share link
   *            schema:
   *              type: string
-  *          - name: pageId
-  *            in: body
-  *            required: true
-  *            description: page id witch related to the link
-  *            schema:
-  *              type: string
+  *        requestBody:
+  *          required: true
+  *          content:
+  *            application/json:
+  *              schema:
+  *                properties:
+  *                  pageId:
+  *                    type: string
+  *                    description:  page id witch related to the link
   *        responses:
   *          200:
   *            description: Succeeded to delete one share link
   */
   router.delete('/:id', loginRequired, csrf, async(req, res) => {
-    const { id } = req.query;
+    const { id } = req.params;
     const { pageId } = req.body;
 
     try {
