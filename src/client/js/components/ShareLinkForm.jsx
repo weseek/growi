@@ -54,11 +54,11 @@ const ShareLinkForm = (props) => {
         </div>
       </form>
     </div>
-  )
-}
+  );
+};
 
 const ShareLinkFormWrapper = (props) => {
   return createSubscribedElement(ShareLinkForm, props, [AppContainer, PageContainer]);
-}
+};
 
 export default withTranslation()(ShareLinkFormWrapper);

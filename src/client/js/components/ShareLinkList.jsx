@@ -25,7 +25,7 @@ const ShareLinkList = (props) => {
         </thead>
         <tbody>
           {
-            getShareLinkList().map(shareLink => {
+            getShareLinkList().map((shareLink) => {
               return (
                 <>
                   <td>{ shareLink }</td>
@@ -33,17 +33,17 @@ const ShareLinkList = (props) => {
                   <td>{ shareLink }</td>
                   <td>{ shareLink }</td>
                 </>
-              )
+              );
             })
           }
         </tbody>
       </table>
     </div>
-  )
-}
+  );
+};
 
 const ShareLinkListWrapper = (props) => {
   return createSubscribedElement(ShareLinkList, props, [AppContainer]);
-}
+};
 
 export default withTranslation()(ShareLinkListWrapper);
