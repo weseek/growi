@@ -23,24 +23,7 @@ const schema = new mongoose.Schema({
 
 schema.plugin(uniqueValidator);
 
-/**
- * shareLink Class
- *
- * @class ShareLink
- */
-class ShareLink {
-
-  static async getRelatedPageByLinkId(id) {
-    const shareLink = await this.find({ _id: id }).populate('relatedPage');
-    const { relatedPage } = shareLink;
-    return relatedPage;
-  }
-
-}
-
 module.exports = function(crowi) {
-  ShareLink.crowi = crowi;
-  schema.loadClass(ShareLink);
   const model = mongoose.model('ShareLink', schema);
   return model;
 };
