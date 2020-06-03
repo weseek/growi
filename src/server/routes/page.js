@@ -448,6 +448,11 @@ module.exports = function(crowi, app) {
     // TODO find page by link
     const page = {};
 
+    if (page == null) {
+      // page is not found
+      return next();
+    }
+
     const renderVars = {};
 
     addRendarVarsForPage(renderVars, page);

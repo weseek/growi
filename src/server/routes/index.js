@@ -180,7 +180,7 @@ module.exports = function(crowi, app) {
   app.post('/_api/hackmd.discard'        , accessTokenParser , loginRequiredStrictly , csrf, hackmd.validateForApi, hackmd.discard);
   app.post('/_api/hackmd.saveOnHackmd'   , accessTokenParser , loginRequiredStrictly , csrf, hackmd.validateForApi, hackmd.saveOnHackmd);
 
-  app.get('/share/:link', page.showSharePage);
+  app.get('/share/:link', page.showSharePage, page.notFound);
 
   app.get('/*/$'                   , loginRequired , page.showPageWithEndOfSlash, page.notFound);
   app.get('/*'                     , loginRequired , page.showPage, page.notFound);
