@@ -15,6 +15,11 @@ import PageContainer from '../services/PageContainer';
 const OutsideShareLinkModal = (props) => {
 
   /* const { t } = props; */
+  const { pageContainer } = props;
+
+  const deleteLinkHandler = () => {
+    pageContainer.showDeleteLinkToastr();
+  };
 
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} className="grw-create-page">
@@ -44,7 +49,7 @@ const OutsideShareLinkModal = (props) => {
                     <td>6 Days</td>
                     <td>foobar</td>
                     <td>
-                      <button className="btn btn-warning" type="button">
+                      <button className="btn btn-warning" type="button" onClick={deleteLinkHandler}>
                         <i className="icon-trash"></i>Delete
                       </button>
                     </td>
