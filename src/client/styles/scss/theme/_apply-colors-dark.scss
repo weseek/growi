@@ -95,6 +95,52 @@ ul.pagination {
 }
 
 /*
+ * GROWI Login form
+ */
+.nologin {
+  // background color
+  $color-gradient: #3c465c;
+  background: linear-gradient(45deg, darken($color-gradient, 30%) 0%, hsla(340, 100%, 55%, 0) 70%),
+    linear-gradient(135deg, darken($growi-green, 30%) 10%, hsla(225, 95%, 50%, 0) 70%),
+    linear-gradient(225deg, darken($growi-blue, 20%) 10%, hsla(140, 90%, 50%, 0) 80%),
+    linear-gradient(315deg, darken($color-gradient, 25%) 100%, hsla(35, 95%, 55%, 0) 70%);
+
+  .login-header {
+    background-color: rgba(black, 0.5);
+
+    .logo {
+      background-color: rgba(white, 0);
+      fill: rgba(white, 0.5);
+    }
+
+    h1 {
+      color: rgba(white, 0.5);
+    }
+  }
+
+  .login-dialog {
+    background-color: rgba(black, 0.5);
+  }
+
+  .input-group {
+    .input-group-text {
+      color: darken(white, 30%);
+      background-color: rgba(#444, 0.7);
+    }
+
+    .form-control {
+      color: white;
+      background-color: rgba(#505050, 0.7);
+      box-shadow: unset;
+
+      &::placeholder {
+        color: darken(white, 30%);
+      }
+    }
+  }
+}
+
+/*
  * GROWI page list
  */
 .page-list {
