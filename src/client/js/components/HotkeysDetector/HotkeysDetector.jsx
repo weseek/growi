@@ -57,4 +57,5 @@ export default class HotkeysDetector extends React.Component {
 
 HotkeysDetector.propTypes = {
   onDetected: PropTypes.func.isRequired,
+  keymap: PropTypes.array.isRequired,
 };
