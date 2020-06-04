@@ -14,6 +14,8 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const validator = {};
 
+const today = new Date();
+
 /**
  * @swagger
  *  tags:
