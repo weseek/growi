@@ -78,14 +78,14 @@ const PersonalDropdown = (props) => {
           </div>
 
           <div className="btn-group btn-block mt-2" role="group">
-            <a className="btn btn-sm btn-outline-secondary" href={`/user/${user.username}`}><i className="icon-fw icon-home"></i>{ t('Home') }</a>
-            <a className="btn btn-sm btn-outline-secondary" href="/me"><i className="icon-fw icon-wrench"></i>{ t('Settings') }</a>
+            <a className="btn btn-sm btn-outline-secondary" href={`/user/${user.username}`}><i className="icon-fw icon-home"></i>{ t('personal_dropdown.home') }</a>
+            <a className="btn btn-sm btn-outline-secondary" href="/me"><i className="icon-fw icon-wrench"></i>{ t('personal_dropdown.settings') }</a>
           </div>
         </div>
 
         <div className="dropdown-divider"></div>
 
-        <h6 className="dropdown-header">Sidebar Mode</h6>
+        <h6 className="dropdown-header">{t('personal_dropdown.sidebar_mode')}</h6>
         <form className="px-4">
           <div className="form-row justify-content-center">
             <div className="form-group col-auto mb-0 d-flex align-items-center">
@@ -104,7 +104,7 @@ const PersonalDropdown = (props) => {
             </div>
           </div>
         </form>
-        <h6 className="dropdown-header">Sidebar Mode on Editor</h6>
+        <h6 className="dropdown-header">{t('personal_dropdown.sidebar_mode_editor')}</h6>
         <form className="px-4">
           <div className="form-row justify-content-center">
             <div className="form-group col-auto mb-0 d-flex align-items-center">
@@ -126,7 +126,7 @@ const PersonalDropdown = (props) => {
 
         <div className="dropdown-divider"></div>
 
-        <h6 className="dropdown-header">Color Mode</h6>
+        <h6 className="dropdown-header">{t('personal_dropdown.color_mode')}</h6>
         <form className="px-4">
           <div className="form-row">
             <div className="form-group col-auto">
@@ -138,7 +138,7 @@ const PersonalDropdown = (props) => {
                   checked={!isUserPreferenceExists}
                   onChange={e => followOsCheckboxModifiedHandler(e.target.checked)}
                 />
-                <label className="custom-control-label text-nowrap" htmlFor="cbFollowOs">Use OS Setting</label>
+                <label className="custom-control-label text-nowrap" htmlFor="cbFollowOs">{t('personal_dropdown.use_os_settings')}</label>
               </div>
             </div>
           </div>
