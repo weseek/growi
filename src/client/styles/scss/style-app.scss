@@ -63,8 +63,7 @@
 /*
  * for Guest User Mode
  */
-.dropdown-toggle.dropdown-toggle-disabled,
-#auth-guest-tltips {
+.dropdown-toggle.dropdown-toggle-disabled {
   cursor: not-allowed;
 }
 
@@ -103,7 +102,6 @@
 }
 
 // transplant from FontAwesome
-.fa-link,
 .icon-fw {
   display: inline-block;
   width: 1.4em;
