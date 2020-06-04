@@ -8,13 +8,15 @@ import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 
 class ShareLinkSetting extends React.Component {
+
   render() {
-      return (
-          <div>
-              Here is ShareLinkSetting.
-          </div>
-      )
+    return (
+      <div>
+        Here is ShareLinkSetting.
+      </div>
+    );
   }
+
 }
 
 ShareLinkSetting.propTypes = {
