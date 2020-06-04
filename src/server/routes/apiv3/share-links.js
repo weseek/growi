@@ -34,6 +34,17 @@ module.exports = (crowi) => {
     // TODO GW-2616 get all share links associated with the page
   });
 
+  validator.shareLinkStatus = [
+    // validate page id is not empty.
+    body('pageId').not().isEmpty(),
+
+    // validate expireation date is not empty, is not before today and is date.
+    body('expiration').not().isEmpty().isBefore(today.toString),
+
+    // validate the length of description is max 100.
+    body('description').isLength({ min: 0, max: 100 }),
+  ];
+
   /**
    * @swagger
    *
