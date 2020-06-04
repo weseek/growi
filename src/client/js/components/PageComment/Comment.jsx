@@ -35,17 +35,13 @@ class Comment extends React.PureComponent {
       isReEdit: false,
     };
 
-    this.growiRenderer = this.props.appContainer.getRenderer('comment');
-
     this.isCurrentUserIsAuthor = this.isCurrentUserEqualsToAuthor.bind(this);
     this.isCurrentRevision = this.isCurrentRevision.bind(this);
     this.getRootClassName = this.getRootClassName.bind(this);
     this.getRevisionLabelClassName = this.getRevisionLabelClassName.bind(this);
-    this.editBtnClickedHandler = this.editBtnClickedHandler.bind(this);
     this.deleteBtnClickedHandler = this.deleteBtnClickedHandler.bind(this);
     this.renderText = this.renderText.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
-    this.commentButtonClickedHandler = this.commentButtonClickedHandler.bind(this);
   }
 
 
@@ -114,14 +110,6 @@ class Comment extends React.PureComponent {
       this.isCurrentRevision() ? 'badge-primary' : 'badge-secondary'}`;
   }
 
-  editBtnClickedHandler() {
-    this.setState({ isReEdit: !this.state.isReEdit });
-  }
-
-  commentButtonClickedHandler() {
-    this.editBtnClickedHandler();
-  }
-
   deleteBtnClickedHandler() {
     this.props.deleteBtnClicked(this.props.comment);
   }
@@ -187,12 +175,13 @@ class Comment extends React.PureComponent {
 
         {this.state.isReEdit ? (
           <CommentEditor
-            growiRenderer={this.growiRenderer}
+            growiRenderer={this.props.growiRenderer}
             currentCommentId={commentId}
             commentBody={comment.comment}
             replyTo={undefined}
-            commentButtonClickedHandler={this.commentButtonClickedHandler}
             commentCreator={creator.username}
+            onCancelButtonClicked={() => this.setState({ isReEdit: false })}
+            onCommentButtonClicked={() => this.setState({ isReEdit: false })}
           />
         ) : (
           <div id={commentId} className={rootClassName}>
@@ -216,8 +205,12 @@ class Comment extends React.PureComponent {
                 ) }
                 <span className="ml-2"><a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a></span>
               </div>
-              {this.checkPermissionToControlComment()
-                  && <CommentControl onClickDeleteBtn={this.deleteBtnClickedHandler} onClickEditBtn={this.editBtnClickedHandler} />}
+              { this.checkPermissionToControlComment() && (
+                <CommentControl
+                  onClickDeleteBtn={this.deleteBtnClickedHandler}
+                  onClickEditBtn={() => this.setState({ isReEdit: true })}
+                />
+              ) }
             </div>
           </div>
           )

@@ -45,8 +45,12 @@ class MyDraftList extends React.Component {
   async getDraftsFromLocalStorage() {
     const draftsAsObj = this.props.editorContainer.drafts;
 
+    if (draftsAsObj == null) {
+      return;
+    }
+
     const res = await this.props.appContainer.apiGet('/pages.exist', {
-      pages: draftsAsObj,
+      pagePaths: JSON.stringify(Object.keys(draftsAsObj)),
     });
 
     // {'/a': '#a', '/b': '#b'} => [{path: '/a', markdown: '#a'}, {path: '/b', markdown: '#b'}]

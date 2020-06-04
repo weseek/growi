@@ -54,9 +54,10 @@ html[dark] {
   // List Group colors
   $color-list: #979797;
   $bgcolor-list: transparent;
-  $color-list-active: $color-reversal;
-  $bgcolor-list-active: $primary;
   $color-list-hover: $themecolor;
+  // $bgcolor-list-hover: ;
+  // $color-list-active: $color-reversal;
+  // $bgcolor-list-active: $primary;
 
   // Search Top
   $color-search: $primary;

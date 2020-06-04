@@ -986,11 +986,11 @@ module.exports = function(crowi, app) {
    *        description: Get page existence
    *        parameters:
    *          - in: query
-   *            name: pages
+   *            name: pagePaths
    *            schema:
    *              type: string
-   *              description: Page paths specified by hash key in JSON format
-   *              example: '{"/": "unused value", "/user/unknown": "unused value"}'
+   *              description: Page path list in JSON Array format
+   *              example: '["/", "/user/unknown"]'
    *        responses:
    *          200:
    *            description: Succeeded to get page existence.
@@ -1017,17 +1017,17 @@ module.exports = function(crowi, app) {
    * @apiParam {String} pages (stringified JSON)
    */
   api.exist = async function(req, res) {
-    const pagesAsObj = JSON.parse(req.query.pages || '{}');
-    const pagePaths = Object.keys(pagesAsObj);
+    const pagePaths = JSON.parse(req.query.pagePaths || '[]');
 
+    const pages = {};
     await Promise.all(pagePaths.map(async(path) => {
       // check page existence
       const isExist = await Page.count({ path }) > 0;
-      pagesAsObj[path] = isExist;
+      pages[path] = isExist;
       return;
     }));
 
-    const result = { pages: pagesAsObj };
+    const result = { pages };
 
     return res.json(ApiResponse.success(result));
   };

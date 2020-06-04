@@ -437,7 +437,7 @@ export default class HandsontableModal extends React.PureComponent {
           Edit Table
         </ModalHeader>
         <ModalBody className="p-0 d-flex flex-column">
-          <div className="px-4 py-3 border-bottom bg-light">
+          <div className="grw-hot-modal-navbar px-4 py-3 border-bottom">
             <button
               type="button"
               className="mr-4 data-import-button btn btn-secondary"

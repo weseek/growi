@@ -9,7 +9,9 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
+
 import NotificationDeleteModal from './NotificationDeleteModal';
+import NotificationTypeIcon from './NotificationTypeIcon';
 
 const logger = loggerFactory('growi:GolobalNotificationList');
 
@@ -91,44 +93,43 @@ class GlobalNotificationList extends React.Component {
                 {notification.triggerPath}
               </td>
               <td>
-                <ul className="list-inline">
+                <ul className="list-inline mb-0">
                   {notification.triggerEvents.includes('pageCreate') && (
-                  <li className="list-inline-item badge badge-pill badge-success" data-toggle="tooltip" data-placement="top" title="Page Create">
+                  <li className="list-inline-item badge badge-pill badge-success">
                     <i className="icon-doc"></i> CREATE
                   </li>
                 )}
                   {notification.triggerEvents.includes('pageEdit') && (
-                  <li className="list-inline-item badge badge-pill badge-warning" data-toggle="tooltip" data-placement="top" title="Page Edit">
+                  <li className="list-inline-item badge badge-pill badge-warning">
                     <i className="icon-pencil"></i> EDIT
                   </li>
                 )}
                   {notification.triggerEvents.includes('pageMove') && (
-                  <li className="list-inline-item badge badge-pill badge-pink" data-toggle="tooltip" data-placement="top" title="Page Move">
+                  <li className="list-inline-item badge badge-pill badge-pink">
                     <i className="icon-action-redo"></i> MOVE
                   </li>
                 )}
                   {notification.triggerEvents.includes('pageDelete') && (
-                  <li className="list-inline-item badge badge-pill badge-danger" data-toggle="tooltip" data-placement="top" title="Page Delte">
+                  <li className="list-inline-item badge badge-pill badge-danger">
                     <i className="icon-fire"></i> DELETE
                   </li>
                 )}
                   {notification.triggerEvents.includes('pageLike') && (
-                  <li className="list-inline-item badge badge-pill badge-info" data-toggle="tooltip" data-placement="top" title="Page Like">
+                  <li className="list-inline-item badge badge-pill badge-info">
                     <i className="icon-like"></i> LIKE
                   </li>
                 )}
                   {notification.triggerEvents.includes('comment') && (
-                  <li className="list-inline-item badge badge-pill badge-secondary" data-toggle="tooltip" data-placement="top" title="New Comment">
+                  <li className="list-inline-item badge badge-pill badge-secondary">
                     <i className="icon-fw icon-bubble"></i> POST
                   </li>
                 )}
                 </ul>
               </td>
               <td>
-                {notification.__t === 'mail'
-                  && <span data-toggle="tooltip" data-placement="top" title="Email"><i className="ti-email"></i> {notification.toEmail}</span>}
-                {notification.__t === 'slack'
-                  && <span data-toggle="tooltip" data-placement="top" title="Slack"><i className="fa fa-hashtag"></i> {notification.slackChannels}</span>}
+                <NotificationTypeIcon notification={notification} />
+                { notification.__t === 'mail' && notification.toEmail }
+                { notification.__t === 'slack' && notification.slackChannels }
               </td>
               <td className="td-abs-center">
                 <div className="dropdown">
@@ -143,12 +144,12 @@ class GlobalNotificationList extends React.Component {
                     <i className="icon-settings"></i> <span className="caret"></span>
                   </button>
                   <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                    <a className="dropdown-item" type="button" href={urljoin('/admin/global-notification/', notification._id)}>
+                    <a className="dropdown-item" href={urljoin('/admin/global-notification/', notification._id)}>
                       <i className="icon-fw icon-note"></i> {t('Edit')}
                     </a>
-                    <a className="dropdown-item" type="button" onClick={() => this.openConfirmationModal(notification)}>
+                    <button className="dropdown-item" type="button" onClick={() => this.openConfirmationModal(notification)}>
                       <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
-                    </a>
+                    </button>
                   </div>
                 </div>
               </td>

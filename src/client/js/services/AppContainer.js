@@ -116,9 +116,9 @@ export default class AppContainer extends Container {
   }
 
   async initColorScheme() {
-    const switchStateByMediaQuery = (mql) => {
+    const switchStateByMediaQuery = async(mql) => {
       const preferDarkMode = mql.matches;
-      this.setState({ preferDarkModeByMediaQuery: preferDarkMode });
+      await this.setState({ preferDarkModeByMediaQuery: preferDarkMode });
 
       this.applyColorScheme();
     };
@@ -127,13 +127,13 @@ export default class AppContainer extends Container {
     // add event listener
     mqlForDarkMode.addListener(switchStateByMediaQuery);
 
-    // restore settings from localStorage
+    // initialize1: restore settings from localStorage
     const { localStorage } = window;
     if (localStorage.preferDarkModeByUser != null) {
       await this.setState({ preferDarkModeByUser: localStorage.preferDarkModeByUser === 'true' });
     }
 
-    // initialize
+    // initialize2: check media query
     switchStateByMediaQuery(mqlForDarkMode);
   }
 
@@ -410,6 +410,7 @@ export default class AppContainer extends Container {
    */
   applyColorScheme() {
     const { preferDarkModeByMediaQuery, preferDarkModeByUser } = this.state;
+
     let isDarkMode = preferDarkModeByMediaQuery;
     if (preferDarkModeByUser != null) {
       isDarkMode = preferDarkModeByUser;
