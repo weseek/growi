@@ -30,6 +30,15 @@ module.exports = (crowi) => {
     // TODO GW-2616 get all share links associated with the page
   });
 
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /share-links/:
+   *      post:
+   *        tags: [ShareLinks]
+   *        description: Create new share link
+   */
 
   router.post('/', loginRequired, async(req, res) => {
     const { pageId, expiration, description } = req.body;
