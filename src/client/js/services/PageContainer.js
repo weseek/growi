@@ -43,8 +43,8 @@ export default class PageContainer extends Container {
       path,
       tocHtml: '',
       isLiked: JSON.parse(mainContent.getAttribute('data-page-is-liked')),
-      seenUserIds: [],
-      likerUserIds: [],
+      seenUsers: [],
+      likerUsers: [],
       createdAt: mainContent.getAttribute('data-page-created-at'),
       creator: JSON.parse(mainContent.getAttribute('data-page-creator')),
       updatedAt: mainContent.getAttribute('data-page-updated-at'),
@@ -126,19 +126,49 @@ export default class PageContainer extends Container {
     this.state.markdown = markdown;
   }
 
-  initStateOthers() {
+  async initStateOthers() {
 
     const seenUserListElem = document.getElementById('seen-user-list');
     if (seenUserListElem != null) {
       const userIdsStr = seenUserListElem.dataset.userIds;
-      this.state.seenUserIds = userIdsStr.split(',');
+      if (userIdsStr === '') {
+        return;
+      }
+
+      const { users } = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr });
+      this.setState({ seenUsers: users });
+
+      await this.updateImageUrlCached(users);
     }
 
 
     const likerListElem = document.getElementById('liker-list');
     if (likerListElem != null) {
       const userIdsStr = likerListElem.dataset.userIds;
-      this.state.likerUserIds = userIdsStr.split(',');
+      if (userIdsStr === '') {
+        return;
+      }
+
+      const { users } = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr });
+      this.setState({ likerUsers: users });
+
+      await this.updateImageUrlCached(users);
+    }
+  }
+
+  async updateImageUrlCached(users) {
+    const noImageCacheUsers = users.filter((user) => { return user.imageUrlCached == null });
+    if (noImageCacheUsers.length === 0) {
+      return;
+    }
+
+    const noImageCacheUserIds = noImageCacheUsers.map((user) => { return user.id });
+    try {
+      await this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
+    }
+    catch (err) {
+      // Error alert doesn't apear, because user don't need to notice this error.
+      logger.error(err);
     }
   }
 

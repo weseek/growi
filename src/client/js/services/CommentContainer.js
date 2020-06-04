@@ -63,6 +63,7 @@ export default class CommentContainer extends Container {
    * Load data of comments and store them in state
    */
   retrieveComments() {
+    // [TODO][GW - 1942] add method for updating imageUrlCached
     const { pageId } = this.getPageContainer().state;
 
     // get data (desc order array)

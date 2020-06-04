@@ -189,7 +189,7 @@ module.exports = function(crowi) {
 
   userSchema.methods.updateIsGravatarEnabled = async function(isGravatarEnabled) {
     this.isGravatarEnabled = isGravatarEnabled;
-    this.imageUrlCached = this.generateImageUrlCached();
+    await this.updateImageUrlCached();
     const userData = await this.save();
     return userData;
   };
@@ -225,7 +225,7 @@ module.exports = function(crowi) {
 
   userSchema.methods.updateImage = async function(attachment) {
     this.imageAttachment = attachment;
-    this.imageUrlCached = this.generateImageUrlCached();
+    await this.updateImageUrlCached();
     return this.save();
   };
 
@@ -241,21 +241,27 @@ module.exports = function(crowi) {
     }
 
     this.imageAttachment = undefined;
-    this.imageUrlCached = this.generateImageUrlCached();
+    this.updateImageUrlCached();
     return this.save();
   };
 
-  userSchema.methods.generateImageUrlCached = function() {
+  userSchema.methods.updateImageUrlCached = async function() {
+    this.imageUrlCached = await this.generateImageUrlCached();
+  };
+
+  userSchema.methods.generateImageUrlCached = async function() {
     if (this.isGravatarEnabled) {
       const email = this.email || '';
       const hash = md5(email.trim().toLowerCase());
       return `https://gravatar.com/avatar/${hash}`;
     }
-    if (this.image) {
+    if (this.image != null) {
       return this.image;
     }
-    if (this.imageAttachment) {
-      return this.imageAttachment.filePathProxied;
+    if (this.imageAttachment != null && this.imageAttachment._id != null) {
+      const Attachment = crowi.model('Attachment');
+      const imageAttachment = await Attachment.findById(this.imageAttachment);
+      return imageAttachment.filePathProxied;
     }
     return '/images/icons/user.svg';
   };

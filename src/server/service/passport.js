@@ -854,6 +854,10 @@ class PassportService {
         if (user == null) {
           throw new Error('user not found');
         }
+        if (user.imageUrlCached == null) {
+          await user.updateImageUrlCached();
+          await user.save();
+        }
         done(null, user);
       }
       catch (err) {

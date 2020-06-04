@@ -28,7 +28,8 @@ import PageStatusAlert from './components/PageStatusAlert';
 import PagePathAutoComplete from './components/PagePathAutoComplete';
 import RecentCreated from './components/RecentCreated/RecentCreated';
 import MyDraftList from './components/MyDraftList/MyDraftList';
-import UserPictureList from './components/User/UserPictureList';
+import SeenUserPictureList from './components/User/SeenUserPictureList';
+import LikerPictureList from './components/User/LikerPictureList';
 import TableOfContents from './components/TableOfContents';
 
 import PersonalSettings from './components/Me/PersonalSettings';
@@ -93,8 +94,8 @@ if (pageContainer.state.pageId != null) {
     'page-management': <PageManagement />,
 
     'revision-toc': <TableOfContents />,
-    'seen-user-list': <UserPictureList userIds={pageContainer.state.seenUserIds} />,
-    'liker-list': <UserPictureList userIds={pageContainer.state.likerUserIds} />,
+    'seen-user-list': <SeenUserPictureList />,
+    'liker-list': <LikerPictureList />,
     'rename-page-name-input': <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
 
     'user-created-list': <RecentCreated />,
