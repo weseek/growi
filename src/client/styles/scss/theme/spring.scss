@@ -104,7 +104,8 @@ html[dark] {
     }
   }
 
-  .growi.login-page {
+  // login and register
+  .nologin {
     #page-wrapper {
       background-color: $themelight;
       background-image: url('/images/themes/spring/spring.svg');
@@ -112,11 +113,19 @@ html[dark] {
       background-position: bottom;
       background-size: cover;
     }
-  }
 
-  a#login.link-switch,
-  a#register.link-switch {
-    color: $color-global;
+    .login-header,
+    .login-dialog {
+      background-color: rgba(black, 0.1);
+    }
+
+    .link-switch {
+      color: $color-global;
+    }
+
+    .grw-external-auth-form {
+      border-color: $accentcolor !important;
+    }
   }
 
   .table {

@@ -2,20 +2,28 @@
   <ul class="nav nav-tabs user-page-content-menu mb-4" role="tablist">
     <li class="nav-item">
       <a class="nav-link active" href="#user-bookmark-list" role="tab" data-toggle="tab">
-        <i class="icon-star"></i> Bookmarks
+        <i class="icon-star"></i>
+        <span class="d-none d-sm-inline">Bookmarks</span>
       </a>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="#user-created-list" role="tab" data-toggle="tab">
-        <i class="icon-clock"></i> Recently Created
+        <i class="icon-clock"></i>
+        <span class="d-none d-sm-inline">Recently Created</span>
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#user-draft-list" role="tab" data-toggle="tab"><i class="icon-docs"></i> My Drafts</a>
+      <a class="nav-link" href="#user-draft-list" role="tab" data-toggle="tab">
+        <i class="icon-docs"></i>
+        <span class="d-none d-sm-inline">My Drafts</span>
+      </a>
     </li>
     {% if user._id.toString() == pageUser._id.toString() %}
     <li class="nav-item">
-      <a class="nav-link" href="/me" role="tab"><i class="icon-wrench"></i> Settings</a>
+      <a class="nav-link" href="/me" role="tab">
+        <i class="icon-wrench"></i>
+        <span class="d-none d-sm-inline">Settings</span>
+      </a>
     </li>
     {% endif %}
   </ul>

@@ -130,4 +130,9 @@
     margin-bottom: 18px;
     overflow: hidden;
   }
+
+  .text-break {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
 }

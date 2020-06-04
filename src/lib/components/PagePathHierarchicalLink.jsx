@@ -46,7 +46,7 @@ const PagePathHierarchicalLink = (props) => {
   const RootElm = ({ children }) => {
     return props.isInnerElem
       ? <>{children}</>
-      : <span className="grw-page-path-hierarchical-link">{children}</span>;
+      : <span className="grw-page-path-hierarchical-link text-break">{children}</span>;
   };
 
   return (

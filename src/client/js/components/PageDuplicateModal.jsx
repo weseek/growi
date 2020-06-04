@@ -82,7 +82,6 @@ const PageDuplicateModal = (props) => {
                 <PagePathAutoComplete
                   crowi={appContainer}
                   initializedPath={path}
-                  addTrailingSlash
                   onSubmit={ppacSubmitHandler}
                   onInputChange={ppacInputChangeHandler}
                 />
