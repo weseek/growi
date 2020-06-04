@@ -32,8 +32,6 @@ module.exports = (crowi) => {
 
 
   router.post('/', loginRequired, async(req, res) => {
-    const { pageId } = req.body;
-    // TODO GW-2609 publish the share link
   });
 
   // TDOO write swagger
