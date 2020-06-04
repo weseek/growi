@@ -32,6 +32,7 @@ module.exports = (crowi) => {
 
 
   router.post('/', loginRequired, async(req, res) => {
+    const { pageId, expiration, description } = req.body;
   });
 
   // TDOO write swagger
