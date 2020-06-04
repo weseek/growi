@@ -2,6 +2,7 @@
 
 ## v4.0.3-RC
 
+* Feature: Copy page path dropdown with Append params switch
 * Improvement: Truncate overflowed user browsing history
 * Improvement: Tabs appearance on mobile
 * Improvement: Search help appearance on mobile

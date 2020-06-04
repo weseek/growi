@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import {
-  Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
+  UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem,
   Tooltip,
 } from 'reactstrap';
 
@@ -18,6 +18,7 @@ class CopyDropdown extends React.Component {
     this.state = {
       dropdownOpen: false,
       tooltipOpen: false,
+      isParamsAppended: true,
     };
 
     this.toggle = this.toggle.bind(this);
@@ -39,13 +40,22 @@ class CopyDropdown extends React.Component {
     }, 1000);
   }
 
-  generatePagePathWithParams() {
-    const { pagePath } = this.props;
+  get uriParams() {
+    const { isParamsAppended } = this.state;
+
+    if (!isParamsAppended) {
+      return '';
+    }
+
     const {
       search, hash,
     } = window.location;
+    return `${search}${hash}`;
+  }
 
-    return decodeURI(`${pagePath}${search}${hash}`);
+  generatePagePathWithParams() {
+    const { pagePath } = this.props;
+    return decodeURI(`${pagePath}${this.uriParams}`);
   }
 
   generatePagePathUrl() {
@@ -55,25 +65,18 @@ class CopyDropdown extends React.Component {
 
   generatePermalink() {
     const { pageId } = this.props;
-    const { location } = window;
 
     if (pageId == null) {
       return null;
     }
 
-    const {
-      origin, search, hash,
-    } = location;
-    return decodeURI(`${origin}/${pageId}${search}${hash}`);
+    return decodeURI(`${origin}/${pageId}${this.uriParams}`);
   }
 
   generateMarkdownLink() {
     const { pagePath } = this.props;
-    const {
-      search, hash,
-    } = window.location;
 
-    const label = decodeURI(`${pagePath}${search}${hash}`);
+    const label = decodeURI(`${pagePath}${this.uriParams}`);
     const permalink = this.generatePermalink();
 
     return `[${label}](${permalink})`;
@@ -88,6 +91,7 @@ class CopyDropdown extends React.Component {
 
   render() {
     const { t, pageId } = this.props;
+    const { isParamsAppended } = this.state;
 
     const pagePathWithParams = this.generatePagePathWithParams();
     const pagePathUrl = this.generatePagePathUrl();
@@ -97,7 +101,7 @@ class CopyDropdown extends React.Component {
 
     return (
       <>
-        <Dropdown id="copyPagePathDropdown" className="grw-copy-dropdown" isOpen={this.state.dropdownOpen} toggle={this.toggle}>
+        <UncontrolledDropdown id="copyPagePathDropdown" className="grw-copy-dropdown">
 
           <DropdownToggle
             caret
@@ -108,7 +112,22 @@ class CopyDropdown extends React.Component {
           </DropdownToggle>
 
           <DropdownMenu>
-            <DropdownItem header className="px-3">{ t('copy_to_clipboard.Copy to clipboard') }</DropdownItem>
+
+            <div className="d-flex align-items-center justify-content-between">
+              <DropdownItem header className="px-3">
+                { t('copy_to_clipboard.Copy to clipboard') }
+              </DropdownItem>
+              <div className="px-3 custom-control custom-switch custom-switch-sm">
+                <input
+                  type="checkbox"
+                  id="customSwitchForParams"
+                  className="custom-control-input"
+                  checked={isParamsAppended}
+                  onChange={e => this.setState({ isParamsAppended: !isParamsAppended })}
+                />
+                <label className="custom-control-label small" htmlFor="customSwitchForParams">Append params</label>
+              </div>
+            </div>
 
             <DropdownItem divider className="my-0"></DropdownItem>
 
@@ -162,7 +181,7 @@ class CopyDropdown extends React.Component {
             )}
           </DropdownMenu>
 
-        </Dropdown>
+        </UncontrolledDropdown>
 
         <Tooltip placement="bottom" isOpen={this.state.tooltipOpen} target="copyPagePathDropdown" fade={false}>
           copied!
