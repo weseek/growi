@@ -1,7 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
+import {
+  Modal, ModalBody,
+} from 'reactstrap';
 import contributors from './Contributor';
+
+
+
 
 /**
  * Page staff credit component
@@ -11,12 +17,27 @@ import contributors from './Contributor';
  * @extends {React.Component}
  */
 
+
 export default class StaffCredit extends React.Component {
 
   constructor(props) {
 
     super(props);
     this.logger = loggerFactory('growi:StaffCredit');
+    // px / sec
+    const scrollSpeed = 200;
+    const target = $('.credit-curtain');
+    const scrollTargetHeight = target.children().innerHeight();
+    const duration = scrollTargetHeight / scrollSpeed * 1000;
+    target.animate({ scrollTop: scrollTargetHeight }, duration, 'linear');
+
+    target.slimScroll({
+      height: target.innerHeight(),
+      // Able to scroll after automatic schooling is complete so set "bottom" to allow scrolling from the bottom.
+      start: 'bottom',
+      color: '#FFFFFF',
+    });
+
   }
 
   // when this is called it returns the hotkey stroke
@@ -52,8 +73,8 @@ export default class StaffCredit extends React.Component {
       });
       return (
         <React.Fragment key={`${contributor.sectionName}-fragment`}>
-          <div className={`row staff-credit-my-10 ${contributor.additionalClass}`} key={`${contributor.sectionName}-row`}>
-            <h2 className="col-md-12 dev-team mt-5 staff-credit-mb-10" key={contributor.sectionName}>{contributor.sectionName}</h2>
+          <div className={`row ${contributor.additionalClass}`} key={`${contributor.sectionName}-row`}>
+            <h2 className="col-md-12 dev-team staff-credit-mt-10rem staff-credit-mb-6rem" key={contributor.sectionName}>{contributor.sectionName}</h2>
             {memberGroups}
           </div>
           <div className="clearfix"></div>
@@ -61,21 +82,21 @@ export default class StaffCredit extends React.Component {
       );
     });
     return (
-      <div className="text-center credit-curtain" onClick={this.props.deleteCredit}>
-        <div className="credit-body">
-          <h1 className="staff-credit-mb-10">GROWI Contributors</h1>
-          <div className="clearfix"></div>
-          {credit}
-        </div>
+      <div className="text-center staff-credit-content" onClick={this.props.deleteCredit}>
+        <h1 className="staff-credit-mb-6rem">GROWI Contributors</h1>
+        <div className="clearfix"></div>
+        {credit}
       </div>
     );
   }
 
   render() {
     return (
-      <React.Fragment>
-        { this.renderContributors() }
-      </React.Fragment>
+      <Modal isOpen={true} toggle={this.props.deleteCredit} scrollable className="staff-credit">
+        <ModalBody className="credit-curtain">
+          {this.renderContributors()}
+        </ModalBody>
+      </Modal>
     );
   }
 
