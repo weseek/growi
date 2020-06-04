@@ -55,7 +55,7 @@ module.exports = (crowi) => {
    *        description: Create new share link
    */
 
-  router.post('/', loginRequired, async(req, res) => {
+  router.post('/', /* loginRequired, validator.shareLinkStatus, */ async(req, res) => {
     const { pageId, expiration, description } = req.body;
 
     try {
