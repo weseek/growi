@@ -451,7 +451,7 @@ module.exports = function(crowi, app) {
 
     if (page == null) {
       // page is not found
-      // TODO create not found page
+      // TODO GW-2735 create not found page
       // return res.render(`layout-${layoutName}/not_found_shared_page`);
     }
 
