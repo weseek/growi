@@ -31,11 +31,13 @@ export default class AppContainer extends Container {
   constructor() {
     super();
 
+    const { localStorage } = window;
+
     this.state = {
       editorMode: null,
       preferDarkModeByMediaQuery: false,
-      preferDarkModeByUser: null,
-      preferDrowerModeByUser: null,
+      preferDarkModeByUser: localStorage.preferDarkModeByUser === 'true',
+      preferDrowerModeByUser: localStorage.preferDrowerModeByUser === 'true',
       isDrawerOpened: false,
 
       isPageCreateModalShown: false,
@@ -111,17 +113,8 @@ export default class AppContainer extends Container {
   }
 
   init() {
-    this.initSidebarMode();
     this.initColorScheme();
     this.initPlugins();
-  }
-
-  async initSidebarMode() {
-    // initialize: restore settings from localStorage
-    const { localStorage } = window;
-    if (localStorage.preferDrowerModeByUser != null) {
-      await this.setState({ preferDrowerModeByUser: localStorage.preferDrowerModeByUser === 'true' });
-    }
   }
 
   async initColorScheme() {
@@ -136,13 +129,7 @@ export default class AppContainer extends Container {
     // add event listener
     mqlForDarkMode.addListener(switchStateByMediaQuery);
 
-    // initialize1: restore settings from localStorage
-    const { localStorage } = window;
-    if (localStorage.preferDarkModeByUser != null) {
-      await this.setState({ preferDarkModeByUser: localStorage.preferDarkModeByUser === 'true' });
-    }
-
-    // initialize2: check media query
+    // initialize: check media query
     switchStateByMediaQuery(mqlForDarkMode);
   }
 
