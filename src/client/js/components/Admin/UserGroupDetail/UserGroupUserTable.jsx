@@ -73,14 +73,15 @@ class UserGroupUserTable extends React.Component {
                       <i className="icon-settings"></i>
                     </button>
                     <div className="dropdown-menu" role="menu" aria-labelledby={`admin-group-menu-button-${relatedUser._id}`}>
-                      <a
+                      <button
                         className="dropdown-item"
+                        type="button"
                         onClick={() => {
                           return this.removeUser(relatedUser.username);
                         }}
                       >
                         <i className="icon-fw icon-user-unfollow"></i> {t('admin:user_group_management.remove_from_group')}
-                      </a>
+                      </button>
                     </div>
                   </div>
                 </td>

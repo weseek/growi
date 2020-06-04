@@ -31,9 +31,9 @@ class StatusActivateButton extends React.Component {
     const { t } = this.props;
 
     return (
-      <a className="dropdown-item" onClick={() => { this.onClickAcceptBtn() }}>
+      <button className="dropdown-item" type="button" onClick={() => { this.onClickAcceptBtn() }}>
         <i className="icon-fw icon-user-following"></i> {t('admin:user_management.user_table.accept')}
-      </a>
+      </button>
     );
   }
 

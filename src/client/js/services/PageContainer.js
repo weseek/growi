@@ -138,19 +138,7 @@ export default class PageContainer extends Container {
       const { users } = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr });
       this.setState({ seenUsers: users });
 
-      const noImageCacheUsers = users.filter((user) => { return !user.imageUrlCached });
-      if (noImageCacheUsers.length === 0) {
-        return;
-      }
-
-      const noImageCacheUserIds = noImageCacheUsers.map((user) => { return user.id });
-      try {
-        await this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
-      }
-      catch (err) {
-        // Error alert doesn't apear, because user don't need to notice this error.
-        logger.error(err);
-      }
+      await this.updateImageUrlCached(users);
     }
 
 
@@ -164,19 +152,23 @@ export default class PageContainer extends Container {
       const { users } = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr });
       this.setState({ likerUsers: users });
 
-      const noImageCacheUsers = users.filter((user) => { return !user.imageUrlCached });
-      if (noImageCacheUsers.length === 0) {
-        return;
-      }
+      await this.updateImageUrlCached(users);
+    }
+  }
 
-      const noImageCacheUserIds = noImageCacheUsers.map((user) => { return user.id });
-      try {
-        await this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
-      }
-      catch (err) {
-        // Error alert doesn't apear, because user don't need to notice this error.
-        logger.error(err);
-      }
+  async updateImageUrlCached(users) {
+    const noImageCacheUsers = users.filter((user) => { return user.imageUrlCached == null });
+    if (noImageCacheUsers.length === 0) {
+      return;
+    }
+
+    const noImageCacheUserIds = noImageCacheUsers.map((user) => { return user.id });
+    try {
+      await this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
+    }
+    catch (err) {
+      // Error alert doesn't apear, because user don't need to notice this error.
+      logger.error(err);
     }
   }
 

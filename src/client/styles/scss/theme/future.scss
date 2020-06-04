@@ -14,7 +14,7 @@ html[dark] {
 
   // Font colors
   $color-global: #95abba;
-  $color-reversal: $accentcolor;
+  $color-reversal: #222;
   $color-header: #95abba;
   $color-link: $accentcolor;
   $color-link-hover: lighten($color-link, 20%);
@@ -25,11 +25,18 @@ html[dark] {
   $color-search: $primary;
 
   // List Group colors
-  $color-list: $color-global;
+  // $color-list: $color-global;
   $bgcolor-list: transparent;
-  $color-list-active: $color-reversal;
-  $bgcolor-list-active: $primary;
-  $color-list-hover: $color-reversal;
+  // $color-list-hover: $color-reversal;
+  $color-list-active: white;
+  // $bgcolor-list-active: $primary;
+
+  // Table colors
+  // $color-table: #; // optional
+  $bgcolor-table: darken($themecolor, 3%); // optional
+  // $border-color-table: #; // optional
+  // $color-table-hover: #; // optional
+  // $bgcolor-table-hover: #; // optional
 
   // Navbar
   $bgcolor-navbar: #01181a;
@@ -53,10 +60,16 @@ html[dark] {
   $bgcolor-sidebar-list-group: #162126; // optional
 
   // Sidebar resize button
-  $color-resize-button: #0E2329;
-  $bgcolor-resize-button: #00C2C4;
-  $color-resize-button-hover: #0E2329;
+  $color-resize-button: #0e2329;
+  $bgcolor-resize-button: #00c2c4;
+  $color-resize-button-hover: #0e2329;
   $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
+
+  // Tabs
+  $bordercolor-nav-tabs: #4c9eb4; // optional
+  // $color-nav-tabs-link-active: #; //optional
+  $bordercolor-nav-tabs-hover: #295561 #295561 $bordercolor-nav-tabs; // optional
+  // $bordercolor-nav-tabs-active: # # $bgcolor-global; // optional
 
   // Icon colors
   $color-editor-icons: $color-global;
@@ -73,19 +86,13 @@ html[dark] {
   // admin theme box
   $color-theme-color-box: lighten($primary, 20%);
 
-  // alert
-  $color-alert: $color-reversal;
-
-  // badge
-  $color-badge: $color-reversal;
-
   @import 'apply-colors';
   @import 'apply-colors-dark';
 
   // headers
   @for $i from 1 through 6 {
     h#{$i} {
-      color: $color-header;
+      color: white;
     }
   }
 

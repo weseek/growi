@@ -89,6 +89,12 @@
   }
 
   //Modals
+  .modal-open {
+    position: fixed;
+    width: 100%;
+    padding-right: 0 !important;
+  }
+
   .modal-content {
     box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.1);
   }
@@ -125,12 +131,8 @@
     overflow: hidden;
   }
 
-  // badge
-  .badge {
-    letter-spacing: 0.05em;
-    &.badge-warning {
-      // badge-warning text is white color in bootstrap3
-      color: white;
-    }
+  .text-break {
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 }

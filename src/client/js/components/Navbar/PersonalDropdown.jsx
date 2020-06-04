@@ -107,7 +107,7 @@ const PersonalDropdown = (props) => {
 
         <div className="dropdown-divider"></div>
 
-        <a className="dropdown-item" type="button" onClick={logoutHandler}><i className="icon-fw icon-power"></i>{ t('Sign out') }</a>
+        <a className="dropdown-item" onClick={logoutHandler}><i className="icon-fw icon-power"></i>{ t('Sign out') }</a>
       </div>
 
     </>

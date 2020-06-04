@@ -50,7 +50,9 @@ class PageComments extends React.Component {
     this.showDeleteConfirmModal = this.showDeleteConfirmModal.bind(this);
     this.closeDeleteConfirmModal = this.closeDeleteConfirmModal.bind(this);
     this.replyButtonClickedHandler = this.replyButtonClickedHandler.bind(this);
-    this.commentButtonClickedHandler = this.commentButtonClickedHandler.bind(this);
+    this.editorCancelHandler = this.editorCancelHandler.bind(this);
+    this.editorCommentHandler = this.editorCommentHandler.bind(this);
+    this.resetEditor = this.resetEditor.bind(this);
   }
 
   componentWillMount() {
@@ -99,7 +101,15 @@ class PageComments extends React.Component {
     this.setState({ showEditorIds: ids });
   }
 
-  commentButtonClickedHandler(commentId) {
+  editorCancelHandler(commentId) {
+    this.resetEditor(commentId);
+  }
+
+  editorCommentHandler(commentId) {
+    this.resetEditor(commentId);
+  }
+
+  resetEditor(commentId) {
     this.setState((prevState) => {
       prevState.showEditorIds.delete(commentId);
       return {
@@ -169,7 +179,8 @@ class PageComments extends React.Component {
             <CommentEditor
               growiRenderer={this.growiRenderer}
               replyTo={commentId}
-              commentButtonClickedHandler={this.commentButtonClickedHandler}
+              onCancelButtonClicked={this.editorCancelHandler}
+              onCommentButtonClicked={this.editorCommentHandler}
             />
           </div>
         )}
@@ -180,7 +191,8 @@ class PageComments extends React.Component {
   render() {
     const topLevelComments = [];
     const allReplies = [];
-    const comments = this.props.commentContainer.state.comments;
+    const comments = this.props.commentContainer.state.comments
+      .slice().reverse(); // create shallow copy and reverse
 
     comments.forEach((comment) => {
       if (comment.replyTo === undefined) {

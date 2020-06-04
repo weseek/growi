@@ -9,6 +9,8 @@ body:not(.on-edit) {
 }
 
 body.on-edit {
+  overflow-y: hidden !important;
+
   // calculate margin
   $editor-header-plus-footer: 42px // .nav-tabs height
     + 1px //                          .page-editor-footer border-top
@@ -24,8 +26,10 @@ body.on-edit {
   }
 
   // show
-  .d-edit-block {
-    display: block !important;
+  .d-edit-sm-block {
+    @include media-breakpoint-up(sm) {
+      display: block !important;
+    }
   }
 
   // hide unnecessary elements
@@ -206,11 +210,6 @@ body.on-edit {
           display: flex;
           align-items: center;
           justify-content: space-between;
-
-          .menuitem-label {
-            flex: 1;
-            margin-right: 10px;
-          }
         }
       }
     }

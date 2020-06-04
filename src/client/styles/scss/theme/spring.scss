@@ -13,26 +13,6 @@
 // $light: #;
 // $dark: #;
 
-.growi:not(.login-page) {
-  // add background-image
-  #page-wrapper,
-  .page-editor-preview-container {
-    background-image: url('/images/themes/spring/spring02.svg');
-    background-attachment: fixed;
-    background-position: bottom;
-    background-size: cover;
-  }
-}
-
-.growi.login-page {
-  #page-wrapper {
-    background-image: url('/images/themes/spring/spring.svg');
-    background-attachment: fixed;
-    background-position: bottom;
-    background-size: cover;
-  }
-}
-
 $themecolor: #ffb8c6;
 $themelight: #fff0f5;
 $subthemecolor: #67a856;
@@ -66,11 +46,12 @@ html[dark] {
   $color-inline-code: #c7254e; // optional
 
   // List Group colors
-  $color-list: $color-global;
+  // $color-list: $color-global;
   $bgcolor-list: $themelight;
+  $color-list-hover: lighten($accentcolor, 20%);
+  $bgcolor-list-hover: darken($bgcolor-list, 2%);
   $color-list-active: $bgcolor-global;
   $bgcolor-list-active: $accentcolor;
-  $color-list-hover: lighten($accentcolor, 20%);
 
   // Navbar
   $bgcolor-navbar: #d3687c;
@@ -109,14 +90,43 @@ html[dark] {
   // admin theme box
   $color-theme-color-box: darken($primary, 20%);
 
-  // alert
-  $color-alert: $color-reversal;
-
-  // badge
-  $color-badge: $color-reversal;
-
   @import 'apply-colors';
   @import 'apply-colors-light';
+
+  .growi:not(.login-page) {
+    // add background-image
+    #page-wrapper,
+    .page-editor-preview-container {
+      background-image: url('/images/themes/spring/spring02.svg');
+      background-attachment: fixed;
+      background-position: bottom;
+      background-size: cover;
+    }
+  }
+
+  // login and register
+  .nologin {
+    #page-wrapper {
+      background-color: $themelight;
+      background-image: url('/images/themes/spring/spring.svg');
+      background-attachment: fixed;
+      background-position: bottom;
+      background-size: cover;
+    }
+
+    .login-header,
+    .login-dialog {
+      background-color: rgba(black, 0.1);
+    }
+
+    .link-switch {
+      color: $color-global;
+    }
+
+    .grw-external-auth-form {
+      border-color: $accentcolor !important;
+    }
+  }
 
   .table {
     background-color: $bgcolor-global;
@@ -139,64 +149,3 @@ html[dark] {
     }
   }
 }
-
-//== Dark Mode
-//
-// html[dark] {
-//   $primary: #d65a31;
-
-//   $basecolor: #222831;
-
-//   // Background colors
-//   $bgcolor-global: $basecolor;
-//   $bgcolor-navbar: #151515;
-//   $bgcolor-inline-code: darken($basecolor, 5%);
-//   $bgcolor-card: darken($basecolor, 5%);
-
-//   // Font colors
-//   $color-global: #eeeeee;
-//   $color-reversal: #333333;
-//   // $color-header: desaturate($primary, 20%);
-//   $color-link: $primary;
-//   $color-link-hover: lighten($color-link, 10%);
-//   $color-link-wiki: lighten($basecolor, 50%);
-//   $color-link-wiki-hover: darken($color-link-wiki, 5%);
-//   $color-link-nabvar: $color-global;
-//   $color-inline-code: #c7254e;
-
-//   // List Group colors
-//   $color-list: $color-global;
-//   $bgcolor-list: $bgcolor-global;
-//   $color-list-active: $color-reversal;
-//   $bgcolor-list-active: $primary;
-//   $color-list-hover: $color-reversal;
-
-//   // Logo colors
-//   $bgcolor-logo: $bgcolor-navbar;
-//   $fillcolor-logo-mark: #444;
-
-//   // Icon colors
-//   $color-editor-icons: darken($accentcolor, 15%);
-
-//   // Border colors
-//   $border-color-theme: black; // former: `$navbar-border: #ccc;`
-
-//   // Dropdown colors
-//   $bgcolor-dropdown-link-active: $primary;
-//   $color-dropdown-link-active: $color-global;
-//   $color-dropdown-link-hover: $color-reversal;
-
-//   // alert
-//   $color-alert: $color-global;
-
-//   // badge
-//   $color-badge: $color-global;
-
-//   // Sidebar
-//   $bgcolor-sidebar: $bgcolor-navbar;
-//   $color-sidebar-context: $color-global;
-//   $bgcolor-sidebar-context: lighten($bgcolor-navbar, 5%);
-
-//   @import 'apply-colors';
-//   @import 'apply-colors-dark';
-// }

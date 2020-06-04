@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 
 import { userPageRoot } from '@commons/util/path-utils';
 
+import { UncontrolledTooltip } from 'reactstrap';
+
 const DEFAULT_IMAGE = '/images/icons/user.svg';
 
 // TODO UserComponent?
@@ -41,10 +43,16 @@ export default class UserPicture extends React.Component {
 
   withTooltip = (RootElm) => {
     const { user } = this.props;
-    const title = `@${user.username}<br />${user.name}`;
+    const id = `user-picture-${Math.random().toString(32).substring(2)}`;
 
     return props => (
-      <RootElm data-toggle="tooltip" data-placement="bottom" data-html="true" title={title}>{props.children}</RootElm>
+      <>
+        <RootElm id={id}>{props.children}</RootElm>
+        <UncontrolledTooltip placement="bottom" target={id} delay={0} fade={false}>
+          @{user.username}<br />
+          {user.name}
+        </UncontrolledTooltip>
+      </>
     );
   }
 

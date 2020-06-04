@@ -288,8 +288,8 @@ class PageEditor extends React.Component {
     const emojiStrategy = this.props.appContainer.getEmojiStrategy();
 
     return (
-      <div className="d-flex">
-        <div className="page-editor-editor-container" style={{ flex: 1 }}>
+      <div className="d-flex flex-wrap">
+        <div className="page-editor-editor-container flex-grow-1 flex-basis-0 mw-0">
           <Editor
             ref={(c) => { this.editor = c }}
             value={this.state.markdown}
@@ -305,7 +305,7 @@ class PageEditor extends React.Component {
             onSave={this.onSaveWithShortcut}
           />
         </div>
-        <div className="d-none d-xl-block page-editor-preview-container" style={{ flex: 1 }}>
+        <div className="d-none d-xl-block page-editor-preview-container flex-grow-1 flex-basis-0 mw-0">
           <Preview
             markdown={this.state.markdown}
             // eslint-disable-next-line no-return-assign

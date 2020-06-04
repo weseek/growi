@@ -46,7 +46,7 @@ const EmptyTrashModal = (props) => {
       <ModalFooter>
         <ApiErrorMessage errorCode={errorCode} errorMessage={errorMessage} />
         <button type="button" className="btn btn-danger" onClick={emptyButtonHandler}>
-          <i className="icon-trash mr-2" aria-hidden="true"></i>Empty
+          <i className="icon-trash mr-2" aria-hidden="true"></i> Empty
         </button>
       </ModalFooter>
     </Modal>
@@ -67,7 +67,6 @@ EmptyTrashModal.propTypes = {
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  onClickEmptyBtn: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(EmptyTrashModalWrapper);

@@ -27,11 +27,12 @@ html[light] {
   $color-search: #c0d6df;
 
   // List Group colors
-  $color-list: $color-global;
+  // $color-list: $color-global;
   $bgcolor-list: transparent;
-  $color-list-active: $color-reversal;
-  $bgcolor-list-active: $primary;
   $color-list-hover: $color-search;
+  $bgcolor-list-hover: darken($bgcolor-global, 3%);
+  // $color-list-active: $color-reversal;
+  // $bgcolor-list-active: $primary;
 
   // Navbar
   $bgcolor-navbar: #2a2929;
@@ -70,12 +71,6 @@ html[light] {
 
   // admin theme box
   $color-theme-color-box: lighten($primary, 20%);
-
-  // alert
-  $color-alert: $color-reversal;
-
-  // badge
-  $color-badge: $color-reversal;
 
   @import 'apply-colors';
   @import 'apply-colors-light';
@@ -124,11 +119,12 @@ html[dark] {
   $color-search: #000102;
 
   // List Group colors
-  $color-list: $color-global;
+  // $color-list: $color-global;
   $bgcolor-list: transparent;
-  $color-list-active: $color-reversal;
-  $bgcolor-list-active: $primary;
   $color-list-hover: $accentcolor;
+  // $bgcolor-list-hover: lighten($bgcolor-global, 3%);
+  // $color-list-active: $color-reversal;
+  // $bgcolor-list-active: $primary;
 
   // Navbar
   $bgcolor-navbar: #2a2929;
@@ -169,12 +165,6 @@ html[dark] {
 
   // admin theme box
   $color-theme-color-box: $primary;
-
-  // alert
-  $color-alert: $color-reversal;
-
-  // badge
-  $color-badge: $color-reversal;
 
   @import 'apply-colors';
   @import 'apply-colors-dark';

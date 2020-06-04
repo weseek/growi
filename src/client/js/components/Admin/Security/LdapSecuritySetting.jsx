@@ -140,12 +140,12 @@ class LdapSecuritySetting extends React.Component {
                         : <span className="pull-left">{t('security_setting.ldap.bind_manager')}</span>}
                   </button>
                   <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a className="dropdown-item" onClick={() => { adminLdapSecurityContainer.changeLdapBindMode(true) }}>
+                    <button className="dropdown-item" type="button" onClick={() => { adminLdapSecurityContainer.changeLdapBindMode(true) }}>
                       {t('security_setting.ldap.bind_user')}
-                    </a>
-                    <a className="dropdown-item" onClick={() => { adminLdapSecurityContainer.changeLdapBindMode(false) }}>
+                    </button>
+                    <button className="dropdown-item" type="button" onClick={() => { adminLdapSecurityContainer.changeLdapBindMode(false) }}>
                       {t('security_setting.ldap.bind_manager')}
-                    </a>
+                    </button>
                   </div>
                 </div>
               </div>
