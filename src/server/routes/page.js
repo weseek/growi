@@ -451,7 +451,8 @@ module.exports = function(crowi, app) {
 
     if (page == null) {
       // page is not found
-      return next();
+      // TODO create not found page
+      // return res.render(`layout-${layoutName}/not_found_shared_page`);
     }
 
     const renderVars = {};
