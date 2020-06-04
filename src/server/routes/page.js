@@ -440,19 +440,19 @@ module.exports = function(crowi, app) {
     return showPageForGrowiBehavior(req, res, next);
   };
 
-  actions.showSharePage = async function(req, res, next) {
+  actions.showSharedPage = async function(req, res, next) {
     const { linkId } = req.params;
 
     const layoutName = configManager.getConfig('crowi', 'customize:layout');
-    // TODO Consider the layout for share
-    const view = `layout-${layoutName}/page`;
+    const view = `layout-${layoutName}/shared_page`;
 
     const shareLink = await ShareLink.find({ _id: linkId }).populate('Page');
     const page = shareLink.relatedPage;
 
     if (page == null) {
       // page is not found
-      return next();
+      // TODO GW-2735 create not found page
+      // return res.render(`layout-${layoutName}/not_found_shared_page`);
     }
 
     const renderVars = {};
