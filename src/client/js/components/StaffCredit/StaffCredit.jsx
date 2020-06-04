@@ -30,7 +30,6 @@ export default class StaffCredit extends React.Component {
     const scrollTargetHeight = target.children().innerHeight();
     const duration = scrollTargetHeight / scrollSpeed * 1000;
     target.animate({ scrollTop: scrollTargetHeight }, duration, 'linear');
-
     target.slimScroll({
       height: target.innerHeight(),
       // Able to scroll after automatic schooling is complete so set "bottom" to allow scrolling from the bottom.
@@ -82,7 +81,7 @@ export default class StaffCredit extends React.Component {
       );
     });
     return (
-      <div className="text-center staff-credit-content" onClick={this.props.deleteCredit}>
+      <div className="text-center staff-credit-content" onClick={this.props.toDelete}>
         <h1 className="staff-credit-mb-6rem">GROWI Contributors</h1>
         <div className="clearfix"></div>
         {credit}
@@ -92,7 +91,7 @@ export default class StaffCredit extends React.Component {
 
   render() {
     return (
-      <Modal isOpen={true} toggle={this.props.deleteCredit} scrollable className="staff-credit">
+      <Modal isOpen={true} toggle={this.props.toDelete} scrollable className="staff-credit">
         <ModalBody className="credit-curtain">
           {this.renderContributors()}
         </ModalBody>
@@ -103,5 +102,5 @@ export default class StaffCredit extends React.Component {
 }
 
 StaffCredit.propTypes = {
-  deleteCredit: PropTypes.func.isRequired,
+  toDelete: PropTypes.func.isRequired,
 };

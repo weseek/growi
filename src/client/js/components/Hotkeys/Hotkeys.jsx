@@ -10,13 +10,13 @@ export default class Hotkeys extends React.Component {
       stroke: '',
     };
     this.onDetected = this.onDetected.bind(this);
-    this.deleteCredit = this.deleteCredit.bind(this);
+    this.toDelete = this.toDelete.bind(this);
     this.instances = [
-      <StaffCredit deleteCredit={this.deleteCredit} />,
+      <StaffCredit toDelete={this.toDelete} />,
     ];
   }
 
-  deleteCredit() {
+  toDelete() {
     this.setState({
       stroke: '',
     });
