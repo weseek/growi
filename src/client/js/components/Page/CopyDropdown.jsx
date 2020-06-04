@@ -40,13 +40,22 @@ class CopyDropdown extends React.Component {
     }, 1000);
   }
 
-  generatePagePathWithParams() {
-    const { pagePath } = this.props;
+  get uriParams() {
+    const { isParamsAppended } = this.state;
+
+    if (!isParamsAppended) {
+      return '';
+    }
+
     const {
       search, hash,
     } = window.location;
+    return `${search}${hash}`;
+  }
 
-    return decodeURI(`${pagePath}${search}${hash}`);
+  generatePagePathWithParams() {
+    const { pagePath } = this.props;
+    return decodeURI(`${pagePath}${this.uriParams}`);
   }
 
   generatePagePathUrl() {
@@ -56,25 +65,18 @@ class CopyDropdown extends React.Component {
 
   generatePermalink() {
     const { pageId } = this.props;
-    const { location } = window;
 
     if (pageId == null) {
       return null;
     }
 
-    const {
-      origin, search, hash,
-    } = location;
-    return decodeURI(`${origin}/${pageId}${search}${hash}`);
+    return decodeURI(`${origin}/${pageId}${this.uriParams}`);
   }
 
   generateMarkdownLink() {
     const { pagePath } = this.props;
-    const {
-      search, hash,
-    } = window.location;
 
-    const label = decodeURI(`${pagePath}${search}${hash}`);
+    const label = decodeURI(`${pagePath}${this.uriParams}`);
     const permalink = this.generatePermalink();
 
     return `[${label}](${permalink})`;
