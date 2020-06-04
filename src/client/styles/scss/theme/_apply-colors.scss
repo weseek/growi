@@ -148,6 +148,10 @@ pre:not(.hljs):not(.CodeMirror-line) {
 
   border-image: $border-image-navbar;
   border-image-slice: 1;
+
+  .grw-app-title {
+    color: $fillcolor-logo-mark;
+  }
 }
 
 .search-top {

@@ -4,6 +4,10 @@
   border-bottom: $grw-navbar-border-width solid;
   border-left: 0;
 
+  .grw-app-title {
+    @include variable-font-size(24px);
+  }
+
   .grw-navbar-toggler {
     padding: 0.5rem;
     font-size: 1.5em;
