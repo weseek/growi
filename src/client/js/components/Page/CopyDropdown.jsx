@@ -123,7 +123,7 @@ class CopyDropdown extends React.Component {
                   checked={isParamsAppended}
                   onChange={e => this.setState({ isParamsAppended: !isParamsAppended })}
                 />
-                <label className="custom-control-label" htmlFor="customSwitchForParams">Append params</label>
+                <label className="custom-control-label small" htmlFor="customSwitchForParams">Append params</label>
               </div>
             </div>
 

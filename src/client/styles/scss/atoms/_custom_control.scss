@@ -19,7 +19,7 @@ label.custom-control-label {
     }
 
     &::after {
-      top: add(($font-size-base * $line-height-base - $custom-control-indicator-size) * 0.9 / 2, $custom-control-indicator-border-width * 2);
+      top: add(($font-size-base * $line-height-base - $custom-control-indicator-size) / 2, $custom-control-indicator-border-width * 2);
       left: add(-($custom-switch-width-sm + $custom-control-gutter-sm), $custom-control-indicator-border-width * 2);
       width: $custom-switch-indicator-size-sm;
       height: $custom-switch-indicator-size-sm;
