@@ -12,6 +12,8 @@ const { body } = require('express-validator/check');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
+const validator = {};
+
 /**
  * @swagger
  *  tags:
