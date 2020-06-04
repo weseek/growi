@@ -65,8 +65,23 @@ const PersonalDropdown = (props) => {
       {/* Menu */}
       <div className="dropdown-menu dropdown-menu-right">
 
-        <a className="dropdown-item" href={`/user/${user.username}`}><i className="icon-fw icon-user"></i>{ t('User\'s Home') }</a>
-        <a className="dropdown-item" href="/me"><i className="icon-fw icon-wrench"></i>{ t('User Settings') }</a>
+        <div className="px-4 pt-3 pb-2 text-center">
+          <UserPicture user={user} size="lg" noLink noTooltip />
+
+          <h5 className="mt-2">
+            {user.name}
+          </h5>
+
+          <div className="my-2">
+            <i className="icon-user icon-fw"></i>{user.username}<br />
+            <i className="icon-envelope icon-fw"></i><span className="grw-email-sm">{user.email}</span>
+          </div>
+
+          <div className="btn-group btn-block mt-2" role="group">
+            <a className="btn btn-sm btn-outline-secondary" href={`/user/${user.username}`}><i className="icon-fw icon-home"></i>{ t('Home') }</a>
+            <a className="btn btn-sm btn-outline-secondary" href="/me"><i className="icon-fw icon-wrench"></i>{ t('Settings') }</a>
+          </div>
+        </div>
 
         <div className="dropdown-divider"></div>
 

@@ -27,11 +27,6 @@
     padding: 0 1rem;
   }
 
-  #personal-dropdown::after {
-    // hide caret
-    content: none;
-  }
-
   .nav-link {
     &:hover {
       background: rgba(0, 0, 0, 0.1);
@@ -43,5 +38,11 @@
   }
   .nav-item.confidential {
     background: rgba(0, 0, 0, 0.2);
+  }
+
+  .grw-personal-dropdown {
+    .grw-email-sm {
+      font-size: 0.75em;
+    }
   }
 }
