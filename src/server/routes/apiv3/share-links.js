@@ -33,6 +33,16 @@ module.exports = (crowi) => {
 
   router.post('/', loginRequired, async(req, res) => {
     const { pageId, expiration, description } = req.body;
+
+    try {
+      const postedShareLink = await ShareLink.create(pageId, expiration, description);
+      return res.apiv3(postedShareLink);
+    }
+    catch (err) {
+      const msg = 'Error occured in post share link';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'post-shareLink-failed'));
+    }
   });
 
   // TDOO write swagger
