@@ -45,7 +45,7 @@ export default class HotkeysDetector extends React.Component {
   }
 
   render() {
-    const keyMap = { check: ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'b', 'a'] };
+    const keyMap = { check: this.props.keymap };
     const handlers = { check: (event) => { return this.check(event) } };
     return (
       <GlobalHotKeys keyMap={keyMap} handlers={handlers}>

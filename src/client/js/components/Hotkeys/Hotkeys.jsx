@@ -11,10 +11,24 @@ export default class Hotkeys extends React.Component {
     };
     this.onDetected = this.onDetected.bind(this);
     this.toDelete = this.toDelete.bind(this);
+    this.keymapSet = this.keymapSet.bind(this);
     this.instances = [
       <StaffCredit toDelete={this.toDelete} />,
     ];
+    this.keymap = this.keymapSet();
   }
+
+  // this function generates keymap depending on what keys were selected in this.hotkeyCommand
+  keymapSet() {
+    let keymap = [];
+    for (const instance of this.instances) {
+      keymap.push(instance.type.prototype.getHotkeyStroke());
+    }
+    keymap = keymap.flat();
+    keymap = new Set(keymap);
+    return Array.from(keymap);
+  }
+
 
   toDelete() {
     this.setState({
@@ -39,7 +53,7 @@ export default class Hotkeys extends React.Component {
     });
     return (
       <React.Fragment>
-        <HotkeysDetector onDetected={stroke => this.onDetected(stroke)} />
+        <HotkeysDetector onDetected={stroke => this.onDetected(stroke)} keymap={this.keymap} />
         {view}
       </React.Fragment>
     );
