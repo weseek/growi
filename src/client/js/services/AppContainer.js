@@ -35,7 +35,7 @@ export default class AppContainer extends Container {
       editorMode: null,
       preferDarkModeByMediaQuery: false,
       preferDarkModeByUser: null,
-      breakpoint: 'xs',
+      preferDrowerModeByUser: null,
       isDrawerOpened: false,
 
       isPageCreateModalShown: false,
@@ -111,8 +111,17 @@ export default class AppContainer extends Container {
   }
 
   init() {
+    this.initSidebarMode();
     this.initColorScheme();
     this.initPlugins();
+  }
+
+  async initSidebarMode() {
+    // initialize: restore settings from localStorage
+    const { localStorage } = window;
+    if (localStorage.preferDrowerModeByUser != null) {
+      await this.setState({ preferDrowerModeByUser: localStorage.preferDrowerModeByUser === 'true' });
+    }
   }
 
   async initColorScheme() {
@@ -384,6 +393,18 @@ export default class AppContainer extends Container {
         break;
     }
     targetComponent.launchDrawioModal(beginLineNumber, endLineNumber);
+  }
+
+  /**
+   * Set Sidebar mode preference by user
+   * @param {boolean} preferDockMode
+   */
+  async setDrawerModePreference(preferDrawerMode) {
+    this.setState({ preferDrowerModeByUser: preferDrawerMode });
+
+    // store settings to localStorage
+    const { localStorage } = window;
+    localStorage.preferDrowerModeByUser = preferDrawerMode;
   }
 
   /**

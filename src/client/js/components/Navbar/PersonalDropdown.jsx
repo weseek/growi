@@ -25,6 +25,10 @@ const PersonalDropdown = (props) => {
     window.location.href = '/logout';
   };
 
+  const preferDrawerModeSwitchModifiedHandler = (bool) => {
+    appContainer.setDrawerModePreference(bool);
+  };
+
   const followOsCheckboxModifiedHandler = (bool) => {
     // reset user preference
     if (bool) {
@@ -44,7 +48,7 @@ const PersonalDropdown = (props) => {
   /*
    * render
    */
-  const { preferDarkModeByMediaQuery, preferDarkModeByUser } = appContainer.state;
+  const { preferDarkModeByMediaQuery, preferDarkModeByUser, preferDrawerModeByUser } = appContainer.state;
   const isUserPreferenceExists = preferDarkModeByUser != null;
   const isDarkMode = () => {
     if (isUserPreferenceExists) {
@@ -95,8 +99,8 @@ const PersonalDropdown = (props) => {
                   id="swSidebarMode"
                   className="custom-control-input"
                   type="checkbox"
-                  // checked={}
-                  // onChange={}
+                  checked={preferDrawerModeByUser}
+                  onChange={e => preferDrawerModeSwitchModifiedHandler(!e.target.checked)}
                 />
                 <label className="custom-control-label" htmlFor="swSidebarMode"></label>
               </div>

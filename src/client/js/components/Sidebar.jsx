@@ -26,6 +26,7 @@ class Sidebar extends React.Component {
   };
 
   state = {
+    isDrawerMode: this.props.appContainer.state.preferDrowerModeByUser,
     currentContentsId: 'recent',
   };
 
@@ -56,12 +57,11 @@ class Sidebar extends React.Component {
     const mdOrAvobeHandler = (mql) => {
       // sm -> md
       if (mql.matches) {
-        appContainer.setState({ isDrawerOpened: false });
-        navigationUIController.enableResize();
-
-        // restore width
-        if (this.sidebarWidthCached != null) {
-          navigationUIController.setState({ productNavWidth: this.sidebarWidthCached });
+        if (appContainer.state.preferDrowerModeByUser) {
+          this.toggleDrawerMode(true);
+        }
+        else {
+          this.toggleDrawerMode(false);
         }
       }
       // md -> sm
@@ -69,16 +69,37 @@ class Sidebar extends React.Component {
         // cache width
         this.sidebarWidthCached = navigationUIController.state.productNavWidth;
 
-        appContainer.setState({ isDrawerOpened: false });
-        navigationUIController.disableResize();
-        navigationUIController.expand();
-
-        // fix width
-        navigationUIController.setState({ productNavWidth: sidebarDefaultWidth });
+        this.toggleDrawerMode(true);
       }
     };
 
     appContainer.addBreakpointListener('md', mdOrAvobeHandler, true);
+  }
+
+  toggleDrawerMode(bool) {
+    const { appContainer, navigationUIController } = this.props;
+
+    this.setState({ isDrawerMode: bool });
+
+    // Drawer
+    if (bool) {
+      appContainer.setState({ isDrawerOpened: false });
+      navigationUIController.disableResize();
+      navigationUIController.expand();
+
+      // fix width
+      navigationUIController.setState({ productNavWidth: sidebarDefaultWidth });
+    }
+    // Dock
+    else {
+      appContainer.setState({ isDrawerOpened: false });
+      navigationUIController.enableResize();
+
+      // restore width
+      if (this.sidebarWidthCached != null) {
+        navigationUIController.setState({ productNavWidth: this.sidebarWidthCached });
+      }
+    }
   }
 
   backdropClickedHandler = () => {
@@ -118,11 +139,12 @@ class Sidebar extends React.Component {
   }
 
   render() {
+    const { isDrawerMode } = this.state;
     const { isDrawerOpened } = this.props.appContainer.state;
 
     return (
       <>
-        <div className={`grw-sidebar ${isDrawerOpened ? 'open' : ''}`}>
+        <div className={`grw-sidebar ${isDrawerMode ? 'grw-sidebar-drawer' : ''} ${isDrawerOpened ? 'open' : ''}`}>
           <ThemeProvider
             theme={theme => ({
               ...theme,
