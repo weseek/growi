@@ -440,11 +440,10 @@ module.exports = function(crowi, app) {
     return showPageForGrowiBehavior(req, res, next);
   };
 
-  actions.showSharePage = async function(req, res, next) {
+  actions.showSharedPage = async function(req, res, next) {
     const { linkId } = req.params;
 
     const layoutName = configManager.getConfig('crowi', 'customize:layout');
-    // TODO Consider the layout for share
     const view = `layout-${layoutName}/shared_page`;
 
     const shareLink = await ShareLink.find({ _id: linkId }).populate('Page');
