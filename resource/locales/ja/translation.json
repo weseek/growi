@@ -667,5 +667,10 @@
     "export_menu": "エクスポートメニュー",
     "download": "ダウンロード",
     "delete": "削除"
+  },
+  "login": {
+    "Sign in error": "ログインエラー",
+    "Registration successful": "登録完了",
+    "Setup": "セットアップ"
   }
 }

@@ -1,5 +1,8 @@
 .grw-navbar {
+  border-top: 0;
+  border-right: 0;
   border-bottom: $grw-navbar-border-width solid;
+  border-left: 0;
 
   .grw-navbar-toggler {
     padding: 0.5rem;

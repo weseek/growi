@@ -61,8 +61,15 @@ const PageRenameModal = (props) => {
         isRenameRedirect,
         isRenameMetadata,
       );
+
       const { page } = response;
-      window.location.href = encodeURI(`${page.path}?renamed=${path}`);
+      const url = new URL(page.path, 'https://dummy');
+      url.searchParams.append('renamedFrom', path);
+      if (isRenameRedirect) {
+        url.searchParams.append('withRedirect', true);
+      }
+
+      window.location.href = `${url.pathname}${url.search}`;
     }
     catch (err) {
       setErrorCode(err.code);
@@ -71,7 +78,7 @@ const PageRenameModal = (props) => {
   }
 
   return (
-    <Modal isOpen={props.isOpen} toggle={props.onClose} className="grw-create-page">
+    <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} className="grw-create-page">
       <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-light">
         { t('modal_rename.label.Move/Rename page') }
       </ModalHeader>
@@ -86,7 +93,7 @@ const PageRenameModal = (props) => {
             <div className="input-group-prepend">
               <span className="input-group-text">{crowi.url}</span>
             </div>
-            <div className="flex-fill">
+            <form className="flex-fill" onSubmit={(e) => { e.preventDefault(); rename() }}>
               <input
                 type="text"
                 value={pageNameInput}
@@ -94,7 +101,7 @@ const PageRenameModal = (props) => {
                 onChange={e => inputChangeHandler(e.target.value)}
                 required
               />
-            </div>
+            </form>
           </div>
         </div>
         <div className="custom-control custom-checkbox custom-checkbox-warning">

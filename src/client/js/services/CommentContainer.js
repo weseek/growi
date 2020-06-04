@@ -63,7 +63,6 @@ export default class CommentContainer extends Container {
    * Load data of comments and store them in state
    */
   async retrieveComments() {
-    // [TODO][GW - 2418] add method for updating imageUrlCached
     const { pageId } = this.getPageContainer().state;
 
     // get data (desc order array)
@@ -72,15 +71,23 @@ export default class CommentContainer extends Container {
       const comments = res.comments;
       this.setState({ comments });
 
-      const noImageCacheUserIds = comments.map((comment) => {
-        if (comment.creator.imageUrlCached) return !comment.creator._id;
-        return null;
+      const noImageCacheUserIds = comments.filter((comment) => {
+        return comment.creator.imageUrlCached == null;
+      }).map((comment) => {
+        return comment.creator._id;
       });
-      if (noImageCacheUserIds.any() === false) {
+
+      if (noImageCacheUserIds.length === 0) {
         return;
       }
 
-      await this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
+      try {
+        await this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
+      }
+      catch (err) {
+        // Error alert doesn't apear, because user don't need to notice this error.
+        logger.error(err);
+      }
     }
   }
 

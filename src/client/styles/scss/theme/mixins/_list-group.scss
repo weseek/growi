@@ -1,4 +1,4 @@
-@mixin override-list-group-item($color, $bgcolor, $color-hover: $color, $color-active: $color, $bgcolor-active: $bgcolor) {
+@mixin override-list-group-item($color, $bgcolor, $color-hover: $color, $bgcolor-hover: $bgcolor, $color-active: $color, $bgcolor-active: $bgcolor) {
   .list-group {
     .list-group-item {
       color: $color;
@@ -6,7 +6,7 @@
 
       &.list-group-item-action {
         &:hover {
-          background-color: $color-hover;
+          background-color: $bgcolor-hover;
         }
         &.active {
           color: $color-active;

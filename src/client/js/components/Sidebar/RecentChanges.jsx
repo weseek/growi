@@ -3,11 +3,6 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import {
-  HeaderSection,
-  MenuSection,
-} from '@atlaskit/navigation-next';
-
 import loggerFactory from '@alias/logger';
 
 import DevidedPagePath from '@commons/models/devided-page-path';
@@ -62,14 +57,14 @@ class RecentChanges extends React.Component {
     );
 
     return (
-      <li className="list-group-item">
+      <li className="list-group-item p-2">
         <div className="d-flex w-100">
           <UserPicture user={page.lastUpdatedUser} size="md" />
           <div className="flex-grow-1 ml-2">
             { !dPagePath.isRoot && <FormerLink /> }
-            <h4 className="mb-1">
+            <h5 className="mb-1">
               <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
-            </h4>
+            </h5>
             <div className="text-right small">
               <FormattedDistanceDate id={page.id} date={page.updatedAt} />
             </div>
@@ -85,28 +80,20 @@ class RecentChanges extends React.Component {
     const { recentlyUpdatedPages } = this.props.appContainer.state;
 
     return (
-      <div className="grw-sidebar-history">
-        <HeaderSection>
-          { () => (
-            <div className="grw-sidebar-header-container p-3 d-flex">
-              <h3>{t('Recent Changes')}</h3>
-              {/* <h3>{t('Recent Created')}</h3> */} {/* TODO: impl switching */}
-              <button type="button" className="btn btn-sm btn-outline-secondary ml-auto" onClick={this.reloadData}>
-                <i className="icon icon-reload"></i>
-              </button>
-            </div>
-          ) }
-        </HeaderSection>
-        <MenuSection>
-          { () => (
-            <div className="grw-sidebar-content-container p-3">
-              <ul className="list-group list-group-flush">
-                { recentlyUpdatedPages.map(page => <PageItem key={page.id} page={page} />) }
-              </ul>
-            </div>
-          ) }
-        </MenuSection>
-      </div>
+      <>
+        <div className="grw-sidebar-content-header p-3 d-flex">
+          <h3 className="mb-0">{t('Recent Changes')}</h3>
+          {/* <h3 className="mb-0">{t('Recent Created')}</h3> */} {/* TODO: impl switching */}
+          <button type="button" className="btn btn-sm btn-outline-secondary ml-auto" onClick={this.reloadData}>
+            <i className="icon icon-reload"></i>
+          </button>
+        </div>
+        <div className="grw-sidebar-content-body p-3">
+          <ul className="list-group list-group-flush">
+            { recentlyUpdatedPages.map(page => <PageItem key={page.id} page={page} />) }
+          </ul>
+        </div>
+      </>
     );
   }
 

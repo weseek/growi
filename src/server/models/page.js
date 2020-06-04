@@ -335,9 +335,13 @@ module.exports = function(crowi) {
     return true;
   };
 
-  pageSchema.methods.isLiked = function(userData) {
+  pageSchema.methods.isLiked = function(user) {
+    if (user == null || user._id == null) {
+      return false;
+    }
+
     return this.liker.some((likedUserId) => {
-      return likedUserId.toString() === userData._id.toString();
+      return likedUserId.toString() === user._id.toString();
     });
   };
 
