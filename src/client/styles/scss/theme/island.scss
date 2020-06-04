@@ -24,11 +24,12 @@ html[dark] {
   $color-inline-code: #c7254e; // optional
 
   // List Group colors
-  $color-list: $color-global;
-  $bgcolor-list: lighten($color-themelight, 10%);
+  // $color-list: $color-global;
+  // $bgcolor-list: lighten($color-themelight, 10%);
+  // $color-list-hover: ;
+  // $bgcolor-list-hover: ;
   $color-list-active: $color-global;
-  $bgcolor-list-active: $primary;
-  $color-list-hover: $color-reversal;
+  // $bgcolor-list-active: $primary;
 
   // Table colors
   // $color-table: #; // optional
