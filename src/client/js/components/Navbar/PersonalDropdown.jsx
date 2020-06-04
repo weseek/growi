@@ -85,9 +85,50 @@ const PersonalDropdown = (props) => {
 
         <div className="dropdown-divider"></div>
 
-        <h6 className="dropdown-header">Color Scheme</h6>
+        <h6 className="dropdown-header">Sidebar Mode</h6>
         <form className="px-4">
-          <div className="form-row align-items-center">
+          <div className="form-row justify-content-center">
+            <div className="form-group col-auto mb-0 d-flex align-items-center">
+              <i className="icon-drawer"></i>
+              <div className="custom-control custom-switch custom-checkbox-secondary ml-2">
+                <input
+                  id="swSidebarMode"
+                  className="custom-control-input"
+                  type="checkbox"
+                  // checked={}
+                  // onChange={}
+                />
+                <label className="custom-control-label" htmlFor="swSidebarMode"></label>
+              </div>
+              <i className="ti-layout-sidebar-left"></i>
+            </div>
+          </div>
+        </form>
+        <h6 className="dropdown-header">Sidebar Mode on Editor</h6>
+        <form className="px-4">
+          <div className="form-row justify-content-center">
+            <div className="form-group col-auto mb-0 d-flex align-items-center">
+              <i className="icon-drawer"></i>
+              <div className="custom-control custom-switch custom-checkbox-secondary ml-2">
+                <input
+                  id="swSidebarModeOnEditor"
+                  className="custom-control-input"
+                  type="checkbox"
+                  // checked={}
+                  // onChange={}
+                />
+                <label className="custom-control-label" htmlFor="swSidebarModeOnEditor"></label>
+              </div>
+              <i className="ti-layout-sidebar-left"></i>
+            </div>
+          </div>
+        </form>
+
+        <div className="dropdown-divider"></div>
+
+        <h6 className="dropdown-header">Color Mode</h6>
+        <form className="px-4">
+          <div className="form-row">
             <div className="form-group col-auto">
               <div className="custom-control custom-checkbox">
                 <input
@@ -101,8 +142,8 @@ const PersonalDropdown = (props) => {
               </div>
             </div>
           </div>
-          <div className="form-row align-items-center">
-            <div className="form-group col-auto mb-0 d-flex">
+          <div className="form-row justify-content-center">
+            <div className="form-group col-auto mb-0 d-flex align-items-center">
               <span className={isUserPreferenceExists ? '' : 'text-muted'}>Light</span>
               <div className="custom-control custom-switch custom-checkbox-secondary ml-2">
                 <input
