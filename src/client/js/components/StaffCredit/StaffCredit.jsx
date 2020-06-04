@@ -6,9 +6,6 @@ import {
 } from 'reactstrap';
 import contributors from './Contributor';
 
-
-
-
 /**
  * Page staff credit component
  *
@@ -91,7 +88,7 @@ export default class StaffCredit extends React.Component {
 
   render() {
     return (
-      <Modal isOpen={true} toggle={this.props.toDelete} scrollable className="staff-credit">
+      <Modal isOpen toggle={this.props.toDelete} scrollable className="staff-credit">
         <ModalBody className="credit-curtain">
           {this.renderContributors()}
         </ModalBody>
