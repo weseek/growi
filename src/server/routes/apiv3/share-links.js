@@ -57,9 +57,10 @@ module.exports = (crowi) => {
 
   router.post('/', /* loginRequired, validator.shareLinkStatus, */ async(req, res) => {
     const { pageId, expiration, description } = req.body;
+    const ShareLink = crowi.model('ShareLink');
 
     try {
-      const postedShareLink = await ShareLink.create(pageId, expiration, description);
+      const postedShareLink = await ShareLink.create({ relatedPage: pageId, expiration_date: expiration, desc: description });
       return res.apiv3(postedShareLink);
     }
     catch (err) {
