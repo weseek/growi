@@ -8,7 +8,7 @@ const express = require('express');
 
 const router = express.Router();
 
-const { body } = require('express-validator/check');
+const { body, query } = require('express-validator/check');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
