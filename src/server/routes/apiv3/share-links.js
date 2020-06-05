@@ -57,7 +57,7 @@ module.exports = (crowi) => {
    *        parameters:
    *          - name: pageId
    *            in: body
-   *            required:true
+   *            required: true
    *            description: page id of share link
    *            schema:
    *              type: string
