@@ -382,6 +382,11 @@ export default class AppContainer extends Container {
     return users;
   }
 
+  setEditorMode(editorMode) {
+    this.setState({ editorMode });
+    this.updateDrawerMode({ ...this.state, editorMode }); // generate newest state object
+  }
+
   toggleDrawer() {
     const { isDrawerOpened } = this.state;
     this.setState({ isDrawerOpened: !isDrawerOpened });
@@ -433,6 +438,16 @@ export default class AppContainer extends Container {
     localStorage.preferDrawerModeOnEditByUser = bool;
   }
 
+  /**
+   * Update drawer related state by specified 'newState' object
+   * @param {object} newState A newest state object
+   *
+   * Specify 'newState' like following code:
+   *
+   *   { ...this.state, overwriteParam: overwriteValue }
+   *
+   * because updating state of unstated container will be delayed unless you use await
+   */
   updateDrawerMode(newState) {
     const {
       editorMode, isDeviceSmallerThanMd, preferDrawerModeByUser, preferDrawerModeOnEditByUser,
