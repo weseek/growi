@@ -23,10 +23,11 @@ class Sidebar extends React.Component {
   static propTypes = {
     appContainer: PropTypes.instanceOf(AppContainer).isRequired,
     navigationUIController: PropTypes.any.isRequired,
+    isDrawerModeOnInit: PropTypes.bool,
   };
 
   state = {
-    isDrawerMode: this.props.appContainer.state.preferDrowerModeByUser,
+    isDrawerMode: this.props.isDrawerModeOnInit,
     currentContentsId: 'recent',
   };
 
@@ -184,6 +185,23 @@ const SidebarWrapper = (props) => {
   return createSubscribedElement(SidebarWithNavigationUI, props, [AppContainer]);
 };
 
-export default () => (
-  <NavigationProvider><SidebarWrapper /></NavigationProvider>
+export default (props) => {
+  // eslint-disable-next-line react/prop-types
+  const { isDrawerModeOnInit } = props;
+
+  const initUICForDrawerMode = isDrawerModeOnInit
+    // generate initialUIController for Drawer mode
+    ? {
+      isCollapsed: false,
+      isResizeDisabled: true,
+      productNavWidth: sidebarDefaultWidth,
+    }
+    // set undefined (should be initialized by cache)
+    : undefined;
+
+  return (
+    <NavigationProvider initialUIController={initUICForDrawerMode}>
+      <SidebarWrapper isDrawerModeOnInit={isDrawerModeOnInit} />
+    </NavigationProvider>
 );
+};
