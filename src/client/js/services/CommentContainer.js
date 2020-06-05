@@ -34,6 +34,7 @@ export default class CommentContainer extends Container {
     };
 
     this.retrieveComments = this.retrieveComments.bind(this);
+    this.checkAndUpdateImageOfCommentAuthers = this.checkAndUpdateImageOfCommentAuthers.bind(this);
   }
 
   /**
@@ -71,23 +72,27 @@ export default class CommentContainer extends Container {
       const comments = res.comments;
       this.setState({ comments });
 
-      const noImageCacheUserIds = comments.filter((comment) => {
-        return comment.creator.imageUrlCached == null;
-      }).map((comment) => {
-        return comment.creator._id;
-      });
+      this.checkAndUpdateImageOfCommentAuthers(comments);
+    }
+  }
 
-      if (noImageCacheUserIds.length === 0) {
-        return;
-      }
+  checkAndUpdateImageOfCommentAuthers(comments) {
+    const noImageCacheUserIds = comments.filter((comment) => {
+      return comment.creator.imageUrlCached == null;
+    }).map((comment) => {
+      return comment.creator._id;
+    });
 
-      try {
-        await this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
-      }
-      catch (err) {
-        // Error alert doesn't apear, because user don't need to notice this error.
-        logger.error(err);
-      }
+    if (noImageCacheUserIds.length === 0) {
+      return;
+    }
+
+    try {
+      this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
+    }
+    catch (err) {
+      // Error alert doesn't apear, because user don't need to notice this error.
+      logger.error(err);
     }
   }
 
