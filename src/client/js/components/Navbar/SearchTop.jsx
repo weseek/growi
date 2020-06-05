@@ -51,7 +51,7 @@ class SearchTop extends React.Component {
   }
 
   Root = ({ children }) => {
-    const { isDeviceSmallThanMd: isCollapsed } = this.props.appContainer.state;
+    const { isDeviceSmallerThanMd: isCollapsed } = this.props.appContainer.state;
 
     return isCollapsed
       ? (

@@ -35,7 +35,7 @@ export default class AppContainer extends Container {
 
     this.state = {
       editorMode: null,
-      isDeviceSmallThanMd: null,
+      isDeviceSmallerThanMd: null,
       preferDarkModeByMediaQuery: false,
       preferDarkModeByUser: localStorage.preferDarkModeByUser === 'true',
       preferDrawerModeByUser: localStorage.preferDrawerModeByUser === 'true',
@@ -122,19 +122,19 @@ export default class AppContainer extends Container {
 
   initDeviceSize() {
     const mdOrAvobeHandler = async(mql) => {
-      let isDeviceSmallThanMd;
+      let isDeviceSmallerThanMd;
 
       // sm -> md
       if (mql.matches) {
-        isDeviceSmallThanMd = false;
+        isDeviceSmallerThanMd = false;
       }
       // md -> sm
       else {
-        isDeviceSmallThanMd = true;
+        isDeviceSmallerThanMd = true;
       }
 
-      this.setState({ isDeviceSmallThanMd });
-      this.updateDrawerMode(isDeviceSmallThanMd, this.state.preferDrawerModeByUser);
+      this.setState({ isDeviceSmallerThanMd });
+      this.updateDrawerMode(isDeviceSmallerThanMd, this.state.preferDrawerModeByUser);
     };
 
     this.addBreakpointListener('md', mdOrAvobeHandler, true);
@@ -411,15 +411,15 @@ export default class AppContainer extends Container {
    */
   async setDrawerModePreference(preferDrawerMode) {
     this.setState({ preferDrawerModeByUser: preferDrawerMode });
-    this.updateDrawerMode(this.state.isDeviceSmallThanMd, preferDrawerMode);
+    this.updateDrawerMode(this.state.isDeviceSmallerThanMd, preferDrawerMode);
 
     // store settings to localStorage
     const { localStorage } = window;
     localStorage.preferDrawerModeByUser = preferDrawerMode;
   }
 
-  updateDrawerMode(isDeviceSmallThanMd, preferDrawerModeByUser) {
-    const isDrawerMode = isDeviceSmallThanMd || preferDrawerModeByUser;
+  updateDrawerMode(isDeviceSmallerThanMd, preferDrawerModeByUser) {
+    const isDrawerMode = isDeviceSmallerThanMd || preferDrawerModeByUser;
     this.setState({ isDrawerMode });
   }
 
