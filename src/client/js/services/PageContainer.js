@@ -72,6 +72,7 @@ export default class PageContainer extends Container {
 
     this.setTocHtml = this.setTocHtml.bind(this);
     this.save = this.save.bind(this);
+    this.checkAndUpdateImageUrlCached = this.checkAndUpdateImageUrlCached.bind(this);
     this.addWebSocketEventHandlers = this.addWebSocketEventHandlers.bind(this);
     this.addWebSocketEventHandlers();
 
@@ -138,7 +139,7 @@ export default class PageContainer extends Container {
       const { users } = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr });
       this.setState({ seenUsers: users });
 
-      await this.updateImageUrlCached(users);
+      this.checkAndUpdateImageUrlCached(users);
     }
 
 
@@ -152,11 +153,11 @@ export default class PageContainer extends Container {
       const { users } = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr });
       this.setState({ likerUsers: users });
 
-      await this.updateImageUrlCached(users);
+      this.checkAndUpdateImageUrlCached(users);
     }
   }
 
-  async updateImageUrlCached(users) {
+  checkAndUpdateImageUrlCached(users) {
     const noImageCacheUsers = users.filter((user) => { return user.imageUrlCached == null });
     if (noImageCacheUsers.length === 0) {
       return;
@@ -164,7 +165,7 @@ export default class PageContainer extends Container {
 
     const noImageCacheUserIds = noImageCacheUsers.map((user) => { return user.id });
     try {
-      await this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
+      this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
     }
     catch (err) {
       // Error alert doesn't apear, because user don't need to notice this error.
