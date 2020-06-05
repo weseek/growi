@@ -47,7 +47,7 @@ module.exports = (crowi) => {
   router.get('/', /* loginRequired, csrf, */ ApiV3FormValidator, async(req, res) => {
     const { pageId } = req.query;
     try {
-      const paginateResult = await Page.paginate(
+      const paginateResult = await ShareLink.paginate(
         {
           _id: { $in: pageId },
         },
