@@ -81,6 +81,7 @@ export default class AppContainer extends Container {
     this.componentInstances = {};
     this.rendererInstances = {};
 
+    this.removeOldUserCache = this.removeOldUserCache.bind(this);
     this.apiGet = this.apiGet.bind(this);
     this.apiPost = this.apiPost.bind(this);
     this.apiDelete = this.apiDelete.bind(this);
@@ -94,7 +95,6 @@ export default class AppContainer extends Container {
       delete: this.apiv3Delete.bind(this),
     };
 
-    this.removeOldUserCache = this.removeOldUserCache.bind(this);
     this.openPageCreateModal = this.openPageCreateModal.bind(this);
     this.closePageCreateModal = this.closePageCreateModal.bind(this);
   }
