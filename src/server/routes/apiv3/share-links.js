@@ -30,7 +30,6 @@ module.exports = (crowi) => {
   // TDOO write swagger
   router.get('/', loginRequired, async(req, res) => {
     const { pageId } = req.query;
-    // TODO GW-2616 get all share links associated with the page
   });
 
 
