@@ -8,7 +8,7 @@ const express = require('express');
 const passport = require('passport');
 
 const router = express.Router();
-import resources from '@alias/locales';
+const resources = '@alias/locales';
 
 const { body } = require('express-validator/check');
 const ErrorV3 = require('../../models/vo/error-apiv3');
