@@ -103,7 +103,7 @@ const PersonalDropdown = (props) => {
                   id="swSidebarMode"
                   className="custom-control-input"
                   type="checkbox"
-                  checked={preferDrawerModeByUser}
+                  checked={!preferDrawerModeByUser}
                   onChange={e => preferDrawerModeSwitchModifiedHandler(!e.target.checked)}
                 />
                 <label className="custom-control-label" htmlFor="swSidebarMode"></label>
