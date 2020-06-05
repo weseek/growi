@@ -32,8 +32,10 @@
   .rbt-menu {
     max-height: none !important;
     margin-top: 3px;
-    @include media-breakpoint-down(xs) {
-      width: 100%;
+    @include media-breakpoint-down(sm) {
+      right: 0;
+      left: auto !important;
+      width: 90vw;
     }
 
     li a span {
