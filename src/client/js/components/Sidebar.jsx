@@ -35,14 +35,7 @@ class Sidebar extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { appContainer } = this.props;
-
-    let isDrawerMode = appContainer.state.isDrawerMode;
-    if (isDrawerMode == null) {
-      isDrawerMode = this.props.isDrawerModeOnInit;
-    }
-
-    this.toggleDrawerMode(isDrawerMode);
+    this.toggleDrawerMode(this.isDrawerMode);
   }
 
   /**
@@ -59,6 +52,17 @@ class Sidebar extends React.Component {
       await navigationUIController.setState(state);
       orgStoreState(state);
     };
+  }
+
+  /**
+   * return whether drawer mode or not
+   */
+  get isDrawerMode() {
+    let isDrawerMode = this.props.appContainer.state.isDrawerMode;
+    if (isDrawerMode == null) {
+      isDrawerMode = this.props.isDrawerModeOnInit;
+    }
+    return isDrawerMode;
   }
 
   toggleDrawerMode(bool) {
@@ -159,11 +163,11 @@ class Sidebar extends React.Component {
   }
 
   render() {
-    const { isDrawerMode, isDrawerOpened } = this.props.appContainer.state;
+    const { isDrawerOpened } = this.props.appContainer.state;
 
     return (
       <>
-        <div className={`grw-sidebar ${isDrawerMode ? 'grw-sidebar-drawer' : ''} ${isDrawerOpened ? 'open' : ''}`}>
+        <div className={`grw-sidebar ${this.isDrawerMode ? 'grw-sidebar-drawer' : ''} ${isDrawerOpened ? 'open' : ''}`}>
           <ThemeProvider
             theme={theme => ({
               ...theme,
