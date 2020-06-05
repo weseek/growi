@@ -61,7 +61,7 @@ class Sidebar extends React.Component {
     };
   }
 
-  async toggleDrawerMode(bool) {
+  toggleDrawerMode(bool) {
     const { navigationUIController } = this.props;
 
     const isStateModified = navigationUIController.state.isResizeDisabled !== bool;
@@ -69,12 +69,9 @@ class Sidebar extends React.Component {
       return;
     }
 
-    // store transition and remove
-    this.storeContextualNavigationTransition();
-
-    // switch to Drawer
+    // Drawer <-- Dock
     if (bool) {
-      // cache
+      // cache state
       this.sidebarCollapsedCached = navigationUIController.state.isCollapsed;
       this.sidebarWidthCached = navigationUIController.state.productNavWidth;
 
@@ -88,10 +85,11 @@ class Sidebar extends React.Component {
       // fix width
       navigationUIController.setState({ productNavWidth: sidebarDefaultWidth });
     }
-    // switch to Dock
+    // Drawer --> Dock
     else {
       // clear transition temporary when restore collapsed sidebar
       if (this.sidebarCollapsedCached) {
+        this.clearNavigationTransitionTemporary(this.navigationElem);
         this.clearNavigationTransitionTemporary(this.ctxNavigationElem);
       }
 
