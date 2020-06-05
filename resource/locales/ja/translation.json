@@ -47,6 +47,7 @@
   "History": "更新履歴",
   "Presentation Mode": "プレゼンテーション",
   "Not available for guest": "ゲストユーザーは利用できません",
+  "Shere this page link to public": "外部に共有するリンクを発行する",
   "username": "ユーザー名",
   "Created": "作成日",
   "Last updated": "最終更新",
@@ -667,5 +668,10 @@
     "export_menu": "エクスポートメニュー",
     "download": "ダウンロード",
     "delete": "削除"
+  },
+  "login": {
+    "Sign in error": "ログインエラー",
+    "Registration successful": "登録完了",
+    "Setup": "セットアップ"
   }
 }

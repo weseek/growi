@@ -3,6 +3,8 @@ import React from 'react';
 
 import InterceptorManager from '@commons/service/interceptor-manager';
 
+import { Input } from 'reactstrap';
+
 import AbstractEditor from './AbstractEditor';
 
 import pasteHelper from './PasteHelper';
@@ -20,6 +22,8 @@ export default class TextAreaEditor extends AbstractEditor {
       value: this.props.value,
       isGfmMode: this.props.isGfmMode,
     };
+
+    this.textarea = React.createRef();
 
     this.init();
 
@@ -249,10 +253,10 @@ export default class TextAreaEditor extends AbstractEditor {
   render() {
     return (
       <React.Fragment>
-        <input
-          componentClass="textarea"
-          className="textarea-editor"
-          inputRef={(ref) => { this.textarea = ref }}
+        <Input
+          type="textarea"
+          className="textarea-editor shadow-none"
+          innerRef={(c) => { this.textarea = c }}
           defaultValue={this.state.value}
           onChange={(e) => {
           if (this.props.onChange != null) {

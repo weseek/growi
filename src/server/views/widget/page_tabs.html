@@ -6,7 +6,7 @@
   #}
   <li class="nav-item grw-main-nav-item-left">
     <a class="nav-link active" href="#revision-body" role="tab" data-toggle="tab">
-      <i class="icon-control-play"></i> View
+      <i class="icon-control-play icon-fw"></i><span class="d-none d-sm-inline">View</span>
     </a>
   </li>
 
@@ -19,7 +19,7 @@
           data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
         {% endif %}
       >
-        <i class="icon-note"></i> {{ t('Edit') }}
+        <i class="icon-note icon-fw"></i><span class="d-none d-sm-inline">{{ t('Edit') }}</span>
       </a>
     </li>
 
@@ -32,12 +32,12 @@
           data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
         {% endif %}
       >
-        <i class="fa fa-file-text-o"></i> {{ t('HackMD') }}
+        <i class="fa fa-fw fa-file-text-o"></i><span class="d-none d-sm-inline">{{ t('HackMD') }}</span>
       </a>
     </li>
     {% endif %}
 
-    <div id="page-editor-path-nav" class="d-none d-edit-block ml-2"></div>
+    <div id="page-editor-path-nav" class="d-none d-edit-sm-block ml-2"></div>
   {% endif %}
 
   {#
@@ -51,7 +51,7 @@
   {% if not page.isTopPage() %}
     <li class="nav-item">
       <a href="?presentation=1" class="nav-link toggle-presentation">
-        <i class="icon-film"></i><span class="d-none d-md-inline"> {{ t('Presentation Mode') }}</span>
+        <i class="icon-film icon-fw"></i><span class="d-none d-md-inline">{{ t('Presentation Mode') }}</span>
       </a>
     </li>
   {% endif %}
@@ -59,7 +59,7 @@
   <!-- revision-history -->
   <li class="nav-item">
     <a class="nav-link" href="#revision-history" role="tab" data-toggle="tab">
-      <i class="icon-layers"></i><span class="d-none d-md-inline"> {{ t('History') }}</span>
+      <i class="icon-layers icon-fw"></i><span class="d-none d-md-inline">{{ t('History') }}</span>
     </a>
   </li>
 

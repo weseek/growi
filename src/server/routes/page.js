@@ -142,6 +142,7 @@ module.exports = function(crowi, app) {
   const PageTagRelation = crowi.model('PageTagRelation');
   const UpdatePost = crowi.model('UpdatePost');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
+  const ShareLink = crowi.model('ShareLink');
 
   const ApiResponse = require('../util/apiResponse');
   const getToday = require('../util/getToday');
@@ -437,6 +438,30 @@ module.exports = function(crowi, app) {
     }
     // delegate to showPageForGrowiBehavior
     return showPageForGrowiBehavior(req, res, next);
+  };
+
+  actions.showSharedPage = async function(req, res, next) {
+    const { linkId } = req.params;
+
+    const layoutName = configManager.getConfig('crowi', 'customize:layout');
+    const view = `layout-${layoutName}/shared_page`;
+
+    const shareLink = await ShareLink.find({ _id: linkId }).populate('Page');
+    const page = shareLink.relatedPage;
+
+    if (page == null) {
+      // page is not found
+      // TODO GW-2735 create not found page
+      // return res.render(`layout-${layoutName}/not_found_shared_page`);
+    }
+
+    const renderVars = {};
+
+    addRendarVarsForPage(renderVars, page);
+    addRendarVarsForScope(renderVars, page);
+
+    await interceptorManager.process('beforeRenderPage', req, res, renderVars);
+    return res.render(view, renderVars);
   };
 
   /**
