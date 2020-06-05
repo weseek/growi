@@ -39,9 +39,9 @@ class Sidebar extends React.Component {
   get isDrawerMode() {
     const { appContainer } = this.props;
     const { isDeviceSizeSmall } = this.state;
-    const { preferDrowerModeByUser } = appContainer.state;
+    const { preferDrawerModeByUser } = appContainer.state;
 
-    return isDeviceSizeSmall || preferDrowerModeByUser;
+    return isDeviceSizeSmall || preferDrawerModeByUser;
   }
 
   /**
@@ -188,7 +188,7 @@ const SidebarWithNavigationUIController = withNavigationUIController(Sidebar);
  */
 
 const SidebarWithNavigation = (props) => {
-  const { preferDrowerModeByUser: isDrawerModeOnInit } = props.appContainer.state;
+  const { preferDrawerModeByUser: isDrawerModeOnInit } = props.appContainer.state;
 
   const initUICForDrawerMode = isDrawerModeOnInit
     // generate initialUIController for Drawer mode

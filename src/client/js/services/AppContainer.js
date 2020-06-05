@@ -37,7 +37,7 @@ export default class AppContainer extends Container {
       editorMode: null,
       preferDarkModeByMediaQuery: false,
       preferDarkModeByUser: localStorage.preferDarkModeByUser === 'true',
-      preferDrowerModeByUser: localStorage.preferDrowerModeByUser === 'true',
+      preferDrawerModeByUser: localStorage.preferDrawerModeByUser === 'true',
       isDrawerOpened: false,
 
       isPageCreateModalShown: false,
@@ -387,11 +387,11 @@ export default class AppContainer extends Container {
    * @param {boolean} preferDockMode
    */
   async setDrawerModePreference(preferDrawerMode) {
-    this.setState({ preferDrowerModeByUser: preferDrawerMode });
+    this.setState({ preferDrawerModeByUser: preferDrawerMode });
 
     // store settings to localStorage
     const { localStorage } = window;
-    localStorage.preferDrowerModeByUser = preferDrawerMode;
+    localStorage.preferDrawerModeByUser = preferDrawerMode;
   }
 
   /**
