@@ -5,9 +5,8 @@ const logger = loggerFactory('growi:routes:apiv3:app-settings');
 const debug = require('debug')('growi:routes:admin');
 
 const express = require('express');
-
 const router = express.Router();
-
+import resources from '@alias/locales';
 const { body } = require('express-validator/check');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -108,7 +107,7 @@ module.exports = (crowi) => {
     appSetting: [
       body('title').trim(),
       body('confidential'),
-      body('globalLang').isIn(['en-US', 'ja']),
+      body('globalLang').isIn(Object.keys(resources)),
       body('fileUpload').isBoolean(),
     ],
     siteUrlSetting: [
