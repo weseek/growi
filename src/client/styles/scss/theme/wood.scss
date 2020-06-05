@@ -144,14 +144,20 @@ html[dark] {
   }
 
   // login and register
+  .nologin {
+    background: white;
 
-  .login-header,
-  .login-dialog {
-    background-color: rgba(black, 0.1);
-  }
+    .login-header,
+    .login-dialog {
+      background-color: rgba(black, 0.1);
+    }
 
-  a#login.link-switch,
-  a#register.link-switch {
-    color: rgba(black, 0.5);
+    .link-switch {
+      color: rgba(black, 0.5);
+    }
+
+    .grw-external-auth-form {
+      border-color: #aaa !important;
+    }
   }
 }

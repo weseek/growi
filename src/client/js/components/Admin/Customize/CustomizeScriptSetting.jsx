@@ -59,7 +59,7 @@ class CustomizeScriptSetting extends React.Component {
               Placeholders:<br />
               (Available after <code>load</code> event)
             </div>
-            <table className="table table-borderless table-sm form-text text-muted offset-1">
+            <table className="table table-borderless table-sm form-text text-muted offset-1 col-11">
               <tbody>
                 <tr>
                   <th className="text-right"><code>$</code></th>

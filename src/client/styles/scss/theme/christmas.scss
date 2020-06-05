@@ -135,22 +135,26 @@ html[dark] {
   // login page
   .nologin {
     .input-group {
-      .input-group-addon {
-        background-color: rgba(lighten(black, 10%), 0.6);
+      .input-group-text {
+        color: #444;
+        background-color: rgba(darken(white, 20%), 0.6);
       }
       .form-control {
-        background-color: rgba(lighten(black, 10%), 0.6);
+        color: #444;
+        background-color: rgba(white, 0.6);
       }
     }
 
-    &.login-page {
-      .login-header,
-      .login-dialog {
-        background-color: rgba(#ccc, 0.5);
-      }
-      .link-switch {
-        color: #bd3425;
-      }
+    .login-header,
+    .login-dialog {
+      background-color: rgba(#ccc, 0.5);
+    }
+    .link-switch {
+      color: #bd3425;
+    }
+
+    .grw-external-auth-form {
+      border-color: #aaa !important;
     }
   }
 

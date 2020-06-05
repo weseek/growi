@@ -75,15 +75,17 @@
 
   {% block layout_head_nav %}
   <nav class="navbar grw-navbar navbar-expand navbar-dark fixed-top mb-0 px-0">
-    <ul class="navbar-nav d-md-none mr-auto">
-      <li id="grw-navbar-toggler" class="nav-item"></li>
-    </ul>
-
     {# Brand Logo #}
     <div class="navbar-brand mr-0">
       <a class="grw-logo d-block" href="/">
         {% include '../widget/logo.html' %}
       </a>
+    </div>
+    <ul class="navbar-nav d-md-none">
+      <li id="grw-navbar-toggler" class="nav-item"></li>
+    </ul>
+    <div class="grw-app-title d-none d-md-block">
+      {{ appService.getAppTitle() | preventXss }}
     </div>
 
     {# Navbar Right #}
@@ -97,7 +99,7 @@
             </a>
           </li>
         {% endif %}
-        <li id="personal-dropdown" class="nav-item dropdown dropdown-toggle"></li>
+        <li id="personal-dropdown" class="grw-personal-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret"></li>
       {% else %}
         <li id="login-user" class="nav-item"><a class="nav-link" href="/login">Login</a></li>
       {% endif %}
@@ -121,10 +123,11 @@
     <div class="flex-fill mw-0">
       {% block head_warn_alert_siteurl_undefined %}{% include '../widget/alert_siteurl_undefined.html' %}{% endblock %}
 
-      {# Search #}
-      {% if isSearchServiceConfigured() %}
-        <div id="grw-search-top" class="search-top" role="search"></div>
-      {% endif %}
+      {% block search %}
+        {% if isSearchServiceConfigured() %}
+          <div id="grw-search-top" class="search-top" role="search"></div>
+        {% endif %}
+      {% endblock %}
 
       {% block layout_main %}{% endblock %}
     </div>

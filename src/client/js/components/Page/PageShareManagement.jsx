@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { UncontrolledTooltip } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from '../UnstatedUtils';
@@ -34,21 +35,44 @@ const PageShareManagement = (props) => {
     );
   }
 
+  function renderCurrentUser() {
+    return (
+      <>
+        <button
+          type="button"
+          className="nav-link bg-transparent dropdown-toggle dropdown-toggle-no-caret"
+          data-toggle="dropdown"
+        >
+          <i className="icon-share"></i>
+        </button>
+      </>
+    );
+  }
+
+  function renderGuestUser() {
+    return (
+      <>
+        <button
+          type="button"
+          className="nav-link bg-transparent"
+          id="auth-guest-tltips"
+        >
+          <i className="icon-share"></i>
+        </button>
+        <UncontrolledTooltip placement="top" target="auth-guest-tltips">
+          {t('Not available for guest')}
+        </UncontrolledTooltip>
+      </>
+    );
+  }
+
+
   return (
     <>
-      <button
-        type="button"
-        className={`nav-link dropdown-toggle dropdown-toggle-no-caret ${currentUser == null && 'dropdown-toggle-disabled'}`}
-        data-toggle={`${currentUser == null ? 'tooltip' : 'dropdown'}`}
-        data-placement="top"
-        data-container="body"
-        title={t('Not available for guest')}
-      >
-        <i className="fa fa-share-alt"></i>
-      </button>
+      {currentUser == null ? renderGuestUser() : renderCurrentUser()}
       <div className="dropdown-menu dropdown-menu-right">
         <button className="dropdown-item" type="button" onClick={openOutsideShareLinkModalHandler}>
-          <i className="icon-fw icon-magic-wand"></i> { t('template.option_label.create/edit') }
+          <i className="icon-link"></i> {t('Shere this page link to public')}
         </button>
       </div>
       {renderModals()}
