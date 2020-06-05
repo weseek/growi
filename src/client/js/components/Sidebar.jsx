@@ -27,21 +27,18 @@ class Sidebar extends React.Component {
   };
 
   state = {
-    isDeviceSizeSmall: true,
     currentContentsId: 'recent',
   };
 
   componentWillMount() {
     this.hackUIController();
-    this.initBreakpointEvents();
   }
 
-  get isDrawerMode() {
+  componentDidUpdate(prevProps, prevState) {
     const { appContainer } = this.props;
-    const { isDeviceSizeSmall } = this.state;
-    const { preferDrawerModeByUser } = appContainer.state;
 
-    return isDeviceSizeSmall || preferDrawerModeByUser;
+    const isDrawerMode = appContainer.state.isDrawerMode || this.props.isDrawerModeOnInit;
+    this.toggleDrawerMode(isDrawerMode);
   }
 
   /**
@@ -60,36 +57,22 @@ class Sidebar extends React.Component {
     };
   }
 
-  initBreakpointEvents() {
-    const { appContainer, navigationUIController } = this.props;
+  toggleDrawerMode(bool) {
+    const { navigationUIController } = this.props;
 
-    const mdOrAvobeHandler = (mql) => {
-      // sm -> md
-      if (mql.matches) {
-        this.setState({ isDeviceSizeSmall: false });
-      }
-      // md -> sm
-      else {
-        // cache width
-        this.sidebarWidthCached = navigationUIController.state.productNavWidth;
-
-        this.setState({ isDeviceSizeSmall: true });
-      }
-
-      this.updateDrawerMode();
-    };
-
-    appContainer.addBreakpointListener('md', mdOrAvobeHandler, true);
-  }
-
-  updateDrawerMode() {
-    const { appContainer, navigationUIController } = this.props;
+    const isStateModified = navigationUIController.state.isResizeDisabled !== bool;
+    if (!isStateModified) {
+      return;
+    }
 
     // close Drawer anyway
-    appContainer.setState({ isDrawerOpened: false });
+    // appContainer.setState({ isDrawerOpened: false });
 
     // switch to Drawer
-    if (this.isDrawerMode) {
+    if (bool) {
+      // cache width
+      this.sidebarWidthCached = navigationUIController.state.productNavWidth;
+
       navigationUIController.disableResize();
       navigationUIController.expand();
 
@@ -144,8 +127,7 @@ class Sidebar extends React.Component {
   }
 
   render() {
-    const { isDrawerMode } = this;
-    const { isDrawerOpened } = this.props.appContainer.state;
+    const { isDrawerMode, isDrawerOpened } = this.props.appContainer.state;
 
     return (
       <>

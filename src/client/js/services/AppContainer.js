@@ -35,9 +35,11 @@ export default class AppContainer extends Container {
 
     this.state = {
       editorMode: null,
+      isDeviceSmallThanMd: null,
       preferDarkModeByMediaQuery: false,
       preferDarkModeByUser: localStorage.preferDarkModeByUser === 'true',
       preferDrawerModeByUser: localStorage.preferDrawerModeByUser === 'true',
+      isDrawerMode: null,
       isDrawerOpened: false,
 
       isPageCreateModalShown: false,
@@ -113,8 +115,29 @@ export default class AppContainer extends Container {
   }
 
   init() {
+    this.initDeviceSize();
     this.initColorScheme();
     this.initPlugins();
+  }
+
+  initDeviceSize() {
+    const mdOrAvobeHandler = async(mql) => {
+      let isDeviceSmallThanMd;
+
+      // sm -> md
+      if (mql.matches) {
+        isDeviceSmallThanMd = false;
+      }
+      // md -> sm
+      else {
+        isDeviceSmallThanMd = true;
+      }
+
+      this.setState({ isDeviceSmallThanMd });
+      this.updateDrawerMode(isDeviceSmallThanMd, this.state.preferDrawerModeByUser);
+    };
+
+    this.addBreakpointListener('md', mdOrAvobeHandler, true);
   }
 
   async initColorScheme() {
@@ -388,10 +411,16 @@ export default class AppContainer extends Container {
    */
   async setDrawerModePreference(preferDrawerMode) {
     this.setState({ preferDrawerModeByUser: preferDrawerMode });
+    this.updateDrawerMode(this.state.isDeviceSmallThanMd, preferDrawerMode);
 
     // store settings to localStorage
     const { localStorage } = window;
     localStorage.preferDrawerModeByUser = preferDrawerMode;
+  }
+
+  updateDrawerMode(isDeviceSmallThanMd, preferDrawerModeByUser) {
+    const isDrawerMode = isDeviceSmallThanMd || preferDrawerModeByUser;
+    this.setState({ isDrawerMode });
   }
 
   /**
