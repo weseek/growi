@@ -3,6 +3,7 @@
 
 {% block content_header %}
   <h1 class="p-3">{{ encodeURI(page.path) }}</h1>
+
 {% endblock %}
 
 
@@ -15,6 +16,11 @@
 
 {% block content_main %}
   <div class="row" id="is-shared-page">
+    <div class="col-sm-12">
+      <p class="alert alert-pink py-3 px-4">
+        <i class="icon-fw icon-link"></i><strong>{{ expiration|date('Y-m-d H:i:s') }}</strong>
+      </p>
+    </div>
     <div class="col grw-page-content-container">
 
       {% include '../widget/page_content.html' %}
