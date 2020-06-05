@@ -49,7 +49,7 @@ module.exports = (crowi) => {
     try {
       const paginateResult = await ShareLink.paginate(
         {
-          _id: { $in: pageId },
+          relatedPage: { $in: pageId },
         },
       );
       return res.apiv3({ paginateResult });
