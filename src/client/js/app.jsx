@@ -25,7 +25,6 @@ import PageManagement from './components/Page/PageManagement';
 import TrashPageAlert from './components/Page/TrashPageAlert';
 import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
-import PagePathAutoComplete from './components/PagePathAutoComplete';
 import RecentCreated from './components/RecentCreated/RecentCreated';
 import MyDraftList from './components/MyDraftList/MyDraftList';
 import SeenUserPictureList from './components/User/SeenUserPictureList';
@@ -96,7 +95,6 @@ if (pageContainer.state.pageId != null) {
     'revision-toc': <TableOfContents />,
     'seen-user-list': <SeenUserPictureList />,
     'liker-list': <LikerPictureList />,
-    'rename-page-name-input': <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
 
     'user-created-list': <RecentCreated />,
     'user-draft-list': <MyDraftList />,
