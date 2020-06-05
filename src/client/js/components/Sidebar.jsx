@@ -65,9 +65,6 @@ class Sidebar extends React.Component {
       return;
     }
 
-    // close Drawer anyway
-    // appContainer.setState({ isDrawerOpened: false });
-
     // switch to Drawer
     if (bool) {
       // cache width

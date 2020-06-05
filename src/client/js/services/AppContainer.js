@@ -442,7 +442,9 @@ export default class AppContainer extends Container {
     const preferDrawerMode = editorMode != null ? preferDrawerModeOnEditByUser : preferDrawerModeByUser;
 
     const isDrawerMode = isDeviceSmallerThanMd || preferDrawerMode;
-    this.setState({ isDrawerMode });
+    const isDrawerOpened = false; // close Drawer anyway
+
+    this.setState({ isDrawerMode, isDrawerOpened });
   }
 
   /**
