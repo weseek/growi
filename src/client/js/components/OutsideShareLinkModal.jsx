@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import * as toastr from 'toastr';
 
 import {
-  Modal, ModalHeader, ModalBody,
+  Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
@@ -141,6 +141,8 @@ const OutsideShareLinkModal = (props) => {
           </div>
         </div>
       </ModalBody>
+      <ModalFooter>
+      </ModalFooter>
     </Modal>
   );
 };
