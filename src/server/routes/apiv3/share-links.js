@@ -22,7 +22,10 @@ module.exports = (crowi) => {
   const loginRequired = require('../../middleware/login-required')(crowi);
   const csrf = require('../../middleware/csrf')(crowi);
 
-  const ShareLink = crowi.model('ShareLink');
+  const {
+    ShareLink,
+    Page,
+  } = crowi.models;
 
   // TDOO write swagger
   router.get('/', loginRequired, async(req, res) => {
