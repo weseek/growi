@@ -50,7 +50,7 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /share-links/:
+   *    /share-link/:
    *      post:
    *        tags: [ShareLink]
    *        description: Create new share link
