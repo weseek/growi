@@ -65,7 +65,7 @@ module.exports = (crowi) => {
    *            in: query
    *            description: expiration date of share link
    *            schema:
-   *              type: date
+   *              type: string
    *          - name: description
    *            in: query
    *            description: description of share link
