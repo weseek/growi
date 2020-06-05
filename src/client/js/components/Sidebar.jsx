@@ -20,14 +20,28 @@ const sidebarDefaultWidth = 240;
 
 class Sidebar extends React.Component {
 
+  static propTypes = {
+    appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+    navigationUIController: PropTypes.any.isRequired,
+    isDrawerModeOnInit: PropTypes.bool,
+  };
+
   state = {
-    isDrawerMode: this.props.isDrawerModeOnInit,
+    isDeviceSizeSmall: true,
     currentContentsId: 'recent',
   };
 
   componentWillMount() {
     this.hackUIController();
     this.initBreakpointEvents();
+  }
+
+  get isDrawerMode() {
+    const { appContainer } = this.props;
+    const { isDeviceSizeSmall } = this.state;
+    const { preferDrowerModeByUser } = appContainer.state;
+
+    return isDeviceSizeSmall || preferDrowerModeByUser;
   }
 
   /**
@@ -52,42 +66,38 @@ class Sidebar extends React.Component {
     const mdOrAvobeHandler = (mql) => {
       // sm -> md
       if (mql.matches) {
-        if (appContainer.state.preferDrowerModeByUser) {
-          this.toggleDrawerMode(true);
-        }
-        else {
-          this.toggleDrawerMode(false);
-        }
+        this.setState({ isDeviceSizeSmall: false });
       }
       // md -> sm
       else {
         // cache width
         this.sidebarWidthCached = navigationUIController.state.productNavWidth;
 
-        this.toggleDrawerMode(true);
+        this.setState({ isDeviceSizeSmall: true });
       }
+
+      this.updateDrawerMode();
     };
 
     appContainer.addBreakpointListener('md', mdOrAvobeHandler, true);
   }
 
-  toggleDrawerMode(bool) {
+  updateDrawerMode() {
     const { appContainer, navigationUIController } = this.props;
 
-    this.setState({ isDrawerMode: bool });
+    // close Drawer anyway
+    appContainer.setState({ isDrawerOpened: false });
 
-    // Drawer
-    if (bool) {
-      appContainer.setState({ isDrawerOpened: false });
+    // switch to Drawer
+    if (this.isDrawerMode) {
       navigationUIController.disableResize();
       navigationUIController.expand();
 
       // fix width
       navigationUIController.setState({ productNavWidth: sidebarDefaultWidth });
     }
-    // Dock
+    // switch to Dock
     else {
-      appContainer.setState({ isDrawerOpened: false });
       navigationUIController.enableResize();
 
       // restore width
@@ -134,7 +144,7 @@ class Sidebar extends React.Component {
   }
 
   render() {
-    const { isDrawerMode } = this.state;
+    const { isDrawerMode } = this;
     const { isDrawerOpened } = this.props.appContainer.state;
 
     return (
@@ -170,16 +180,14 @@ class Sidebar extends React.Component {
 
 }
 
-Sidebar.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  navigationUIController: PropTypes.any.isRequired,
-  isDrawerModeOnInit: PropTypes.bool,
-};
+
+const SidebarWithNavigationUIController = withNavigationUIController(Sidebar);
 
 /**
- * Wrapper component for using unstated and NavigationProvider
+ * Wrapper component for using unstated
  */
-const SidebarWithNavigation = withNavigationUIController((props) => {
+
+const SidebarWithNavigation = (props) => {
   const { preferDrowerModeByUser: isDrawerModeOnInit } = props.appContainer.state;
 
   const initUICForDrawerMode = isDrawerModeOnInit
@@ -194,10 +202,10 @@ const SidebarWithNavigation = withNavigationUIController((props) => {
 
   return (
     <NavigationProvider initialUIController={initUICForDrawerMode}>
-      <Sidebar {...props} isDrawerModeOnInit />
+      <SidebarWithNavigationUIController {...props} isDrawerModeOnInit={isDrawerModeOnInit} />
     </NavigationProvider>
-);
-});
+  );
+};
 
 SidebarWithNavigation.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
