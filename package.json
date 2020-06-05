@@ -137,7 +137,6 @@
     "passport-local": "^1.0.0",
     "passport-saml": "^1.0.0",
     "passport-twitter": "^1.0.4",
-    "request": "^2.88.2",
     "react-card-flip": "^1.0.10",
     "react-image-crop": "^8.3.0",
     "rimraf": "^3.0.0",

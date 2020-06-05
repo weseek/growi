@@ -248,4 +248,32 @@ export default class PersonalContainer extends Container {
     }
   }
 
+  /**
+   * Associate Mikan account
+   */
+  async associateMikanAccount(account) {
+    try {
+      await this.appContainer.apiv3.put('/personal-setting/associate-mikan', account);
+    }
+    catch (err) {
+      this.setState({ retrieveError: err });
+      logger.error(err);
+      throw new Error('Failed to associate mikan account');
+    }
+  }
+
+  /**
+   * Disassociate Mikan account
+   */
+  async disassociateMikanAccount(account) {
+    try {
+      await this.appContainer.apiv3.put('/personal-setting/disassociate-mikan', account);
+    }
+    catch (err) {
+      this.setState({ retrieveError: err });
+      logger.error(err);
+      throw new Error('Failed to disassociate mikan account');
+    }
+  }
+
 }

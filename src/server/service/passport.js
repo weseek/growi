@@ -2,7 +2,7 @@ const debug = require('debug')('growi:service:PassportService');
 const urljoin = require('url-join');
 const luceneQueryParser = require('lucene-query-parser');
 const passport = require('passport');
-const request = require('request');
+const axios = require('axios');
 const LocalStrategy = require('passport-local').Strategy;
 const CookieStrategy = require('passport-cookie');
 const LdapStrategy = require('passport-ldapauth');
@@ -269,33 +269,47 @@ class PassportService {
       { cookieName },
       (token, done) => {
         process.nextTick(() => {
-          request.post({
-            uri: `${apiUrl.replace(/\/$/g, '')}/auth/verify/`,
-            headers: { 'Content-type': 'application/json' },
-            json: { token },
-          }, (err, res, body) => {
-            if (err && err.statusCode !== 400) {
-              // server error
-              return done(err);
-            }
-            if (res.statusCode === 200) {
+          axios.post(
+            `${apiUrl.replace(/\/$/g, '')}/auth/verify/`,
+            {
+              token,
+            },
+            {
+              headers: { 'Content-type': 'application/json' },
+            },
+          ).then((res) => {
+            if (res.status === 200) {
               // valid token!
-              request.get({
-                uri: `${apiUrl.replace(/\/$/g, '')}/account/`,
-                headers: {
-                  'Content-type': 'application/json',
-                  Authorization: `Bearer ${token}`,
+              axios.get(
+                `${apiUrl.replace(/\/$/g, '')}/account/`,
+                {
+                  headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                  },
                 },
-              }, (err, res, body) => {
+              ).then((res) => {
                 // fetch account info
-                if (err || res.statusCode !== 200) { return done(err) }
-                return done(null, JSON.parse(body));
+                if (res.status === 200) {
+                  return done(null, res.data);
+                }
+                return done(null, false, { message: 'Couldn\'t fetch account info.' });
+
+              }).catch((err) => {
+                return done(err);
               });
             }
             else {
               // faild...
               return done(null, false, { message: 'Incorrect credentials.' });
             }
+          }).catch((err) => {
+            if (err.response.status !== 400) {
+              // server error
+              return done(err);
+            }
+            // faild...
+            return done(null, false, { message: 'Incorrect credentials.' });
           });
         });
       },

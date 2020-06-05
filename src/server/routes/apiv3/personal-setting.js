@@ -100,6 +100,14 @@ module.exports = (crowi) => {
       body('providerType').isString().not().isEmpty(),
       body('accountId').isString().not().isEmpty(),
     ],
+    associateMikan: [
+      body('username').isString().not().isEmpty(),
+      body('password').isString().not().isEmpty(),
+    ],
+    disassociateMikan: [
+      body('providerType').isString().not().isEmpty(),
+      body('accountId').isString().not().isEmpty(),
+    ],
   };
 
   /**
@@ -408,6 +416,100 @@ module.exports = (crowi) => {
     catch (err) {
       logger.error(err);
       return res.apiv3Err('disassociate-ldap-account-failed');
+    }
+
+  });
+
+  /**
+   * @swagger
+   *
+   *    /personal-setting/associate-mikan:
+   *      put:
+   *        tags: [PersonalSetting]
+   *        operationId: associateMikanAccount
+   *        summary: /personal-setting/associate-mikan
+   *        description: associate Mikan account
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/AssociateUser'
+   *        responses:
+   *          200:
+   *            description: succeded to associate Mikan account
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    associateUser:
+   *                      type: object
+   *                      description: Mikan account associate to me
+   */
+  router.put('/associate-mikan', accessTokenParser, loginRequiredStrictly, csrf, validator.associateMikan, ApiV3FormValidator, async(req, res) => {
+    const { passportService } = crowi;
+    const { user, body } = req;
+    const { username } = body;
+
+    if (!passportService.isMikanStrategySetup) {
+      logger.error('MikanStrategy has not been set up');
+      return res.apiv3Err('associate-mikan-account-failed', 405);
+    }
+
+    try {
+      await passport.authenticate('mikanauth');
+      const associateUser = await ExternalAccount.associate('mikan', username, user);
+      return res.apiv3({ associateUser });
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('associate-mikan-account-failed');
+    }
+
+  });
+
+  /**
+   * @swagger
+   *
+   *    /personal-setting/disassociate-mikan:
+   *      put:
+   *        tags: [PersonalSetting]
+   *        operationId: disassociateMikanAccount
+   *        summary: /personal-setting/disassociate-mikan
+   *        description: disassociate Mikan account
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/DisassociateUser'
+   *        responses:
+   *          200:
+   *            description: succeded to disassociate Mikan account
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    disassociateUser:
+   *                      type: object
+   *                      description: Mikan account disassociate to me
+   */
+  router.put('/disassociate-mikan', accessTokenParser, loginRequiredStrictly, csrf, validator.disassociateMikan, ApiV3FormValidator, async(req, res) => {
+    const { user, body } = req;
+    const { providerType, accountId } = body;
+
+    try {
+      const count = await ExternalAccount.count({ user });
+      // make sure password set or this user has two or more ExternalAccounts
+      if (user.password == null && count <= 1) {
+        return res.apiv3Err('disassociate-mikan-account-failed');
+      }
+      const disassociateUser = await ExternalAccount.findOneAndRemove({ providerType, accountId, user });
+      return res.apiv3({ disassociateUser });
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('disassociate-mikan-account-failed');
     }
 
   });

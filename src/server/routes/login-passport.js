@@ -75,6 +75,7 @@ module.exports = function(crowi, app) {
       debug('MikanStrategy has not been set up');
       return next();
     }
+
     passport.authenticate('cookie', async(err, mikanAccountInfo, info) => {
       debug('--- authenticate with MikanStrategy ---');
       debug('mikanAccountInfo', mikanAccountInfo);
@@ -135,40 +136,40 @@ module.exports = function(crowi, app) {
   const testMikanCredentials = (req, res) => {
     if (!passportService.isMikanStrategySetup) {
       debug('MikanStrategy has not been set up');
-      return res.json({
+      return res.json(ApiResponse.success({
         status: 'warning',
         message: 'MikanStrategy has not been set up',
-      });
+      }));
     }
     passport.authenticate('cookie', (err, user, info) => {
       debug('mikanAccountInfo', user);
       if (err) {
         debug('Mikan Server Error: ', err);
-        return res.json({
+        return res.json(ApiResponse.success({
           status: 'warning',
           message: 'Mikan Server Error occured.',
-        });
+        }));
       }
       if (info && info.message) {
-        return res.json({
+        return res.json(ApiResponse.success({
           status: 'warning',
           message: info.message,
-        });
+        }));
       }
       if (user && user.username === req.body.loginForm.username) {
-        return res.json({
+        return res.json(ApiResponse.success({
           status: 'success',
           message: 'Successfully authenticated.',
-        });
+        }));
       }
       if (user) {
         return res.json({ status: 'danger', message: 'Authentication failed.' });
       }
       debug('No user information');
-      return res.json({
+      return res.json(ApiResponse.success({
         status: 'warning',
         message: 'No user information.',
-      });
+      }));
     })(req, res, () => { });
   };
 

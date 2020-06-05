@@ -109,6 +109,16 @@ module.exports = function(crowi, req, locals) {
     );
   };
 
+  /**
+   * return true if enabled but strategy has some problem
+   */
+  locals.isMikanSetupFailed = function() {
+    return (
+      configManager.getConfig('crowi', 'security:passport-mikan:isEnabled')
+      && !passportService.isMikanStrategySetup
+    );
+  };
+
   locals.getSamlMissingMandatoryConfigKeys = function() {
     return crowi.passportService.getSamlMissingMandatoryConfigKeys();
   };

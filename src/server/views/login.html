@@ -42,6 +42,13 @@
               (Please set the environment variables <code>DEBUG=crowi:service:PassportService</code> to get the logs)
             </div>
             {% endif %}
+            {% if isMikanSetupFailed() %}
+            <div class="alert alert-warning small">
+              <strong><i class="icon-fw icon-info"></i>Mikan is enabled but the configuration has something wrong.</strong>
+              <br>
+              (Please set the environment variables <code>DEBUG=crowi:service:PassportService</code> to get the logs)
+            </div>
+            {% endif %}
 
             {#
             # The case that there already exists a user whose username matches ID of the newly created LDAP user
