@@ -16,6 +16,7 @@
 {% block content_main %}
   <div class="row" id="is-shared-page">
     <div class="col-12 col-xl-9 col-lg-8 bg-white round-corner">
+      {% include '../widget/share-link-notice.html' %}
 
       {% include '../widget/page_content.html' %}
       {# force remove #revision-toc from #content_main of parent #}

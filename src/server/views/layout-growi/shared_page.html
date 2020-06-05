@@ -16,12 +16,8 @@
 
 {% block content_main %}
   <div class="row" id="is-shared-page">
-    <div class="col-sm-12">
-      <p class="alert alert-pink py-3 px-4">
-        <i class="icon-fw icon-link"></i>{{ t('page_page.notice.expiration', expiration|date('Y-m-d H:i:s')) }}
-      </p>
-    </div>
     <div class="col grw-page-content-container">
+      {% include '../widget/share-link-notice.html' %}
 
       {% include '../widget/page_content.html' %}
       {# force remove #revision-toc from #content_main of parent #}
