@@ -35,8 +35,8 @@ module.exports = (crowi) => {
   });
 
   validator.shareLinkStatus = [
-    // validate page id is not empty.
-    body('pageId').not().isEmpty(),
+    // validate the page id is null
+    body('pageId').not().isEmpty().withMessage('Page Id is null'),
 
     // validate expireation date is not empty, is not before today and is date.
     body('expiration').not().isEmpty().isBefore(today.toString),
