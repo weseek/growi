@@ -72,10 +72,10 @@ export default class AppContainer extends Container {
     const userlang = body.dataset.userlang;
     this.i18n = i18nFactory(userlang);
 
-    this.users = [];
-    this.userByName = {};
-    this.userById = {};
-    this.recoverData();
+    if (this.isLoggedin) {
+      // remove old user cache
+      this.removeOldUserCache();
+    }
 
     this.containerInstances = {};
     this.componentInstances = {};
@@ -94,6 +94,7 @@ export default class AppContainer extends Container {
       delete: this.apiv3Delete.bind(this),
     };
 
+    this.removeOldUserCache = this.removeOldUserCache.bind(this);
     this.openPageCreateModal = this.openPageCreateModal.bind(this);
     this.closePageCreateModal = this.closePageCreateModal.bind(this);
   }
@@ -278,23 +279,11 @@ export default class AppContainer extends Container {
     return emojiStrategy;
   }
 
-  recoverData() {
-    const keys = [
-      'userByName',
-      'userById',
-      'users',
-    ];
+  removeOldUserCache() {
+    const keys = ['userByName', 'userById', 'users', 'lastFetched'];
 
     keys.forEach((key) => {
-      const keyContent = window.localStorage[key];
-      if (keyContent) {
-        try {
-          this[key] = JSON.parse(keyContent);
-        }
-        catch (e) {
-          window.localStorage.removeItem(key);
-        }
-      }
+      window.localStorage.removeItem(key);
     });
   }
 
