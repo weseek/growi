@@ -52,8 +52,18 @@ module.exports = (crowi) => {
    *  paths:
    *    /share-links/:
    *      post:
-   *        tags: [ShareLinks]
+   *        tags: [ShareLink]
    *        description: Create new share link
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            required:true
+   *            description: id of share link
+   *            schema:
+   *            type: string
+   *        responses:
+   *          200:
+   *            description: Succeeded to create one share link
    */
 
   router.post('/', loginRequired, csrf, validator.shareLinkStatus, ApiV3FormValidator, async(req, res) => {
