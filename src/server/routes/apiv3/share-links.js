@@ -26,7 +26,24 @@ module.exports = (crowi) => {
 
   const { ApiV3FormValidator } = crowi.middlewares;
 
-  // TDOO write swagger
+  /**
+  * @swagger
+  *
+  *    /share-links/:
+  *      get:
+  *        tags: [ShareLinks]
+  *        description: get share link list
+  *        parameters:
+  *          - name: pageId
+  *            in: path
+  *            required: true
+  *            description: id of share link
+  *            schema:
+  *              type: string
+  *        responses:
+  *          200:
+  *            description: Succeeded to delete one share link
+  */
   router.get('/', /* loginRequired, csrf, */ ApiV3FormValidator, async(req, res) => {
     const { pageId } = req.query;
     try {
