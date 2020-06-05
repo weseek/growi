@@ -27,8 +27,8 @@ import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
 import RecentCreated from './components/RecentCreated/RecentCreated';
 import MyDraftList from './components/MyDraftList/MyDraftList';
-import SeenUserPictureList from './components/User/SeenUserPictureList';
-import LikerPictureList from './components/User/LikerPictureList';
+import SeenUserList from './components/User/SeenUserList';
+import LikerList from './components/User/LikerList';
 import TableOfContents from './components/TableOfContents';
 
 import PersonalSettings from './components/Me/PersonalSettings';
@@ -93,8 +93,8 @@ if (pageContainer.state.pageId != null) {
     'page-management': <PageManagement />,
 
     'revision-toc': <TableOfContents />,
-    'seen-user-list': <SeenUserPictureList />,
-    'liker-list': <LikerPictureList />,
+    'seen-user-list': <SeenUserList />,
+    'liker-list': <LikerList />,
 
     'user-created-list': <RecentCreated />,
     'user-draft-list': <MyDraftList />,

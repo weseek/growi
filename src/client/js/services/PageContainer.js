@@ -45,6 +45,8 @@ export default class PageContainer extends Container {
       isLiked: JSON.parse(mainContent.getAttribute('data-page-is-liked')),
       seenUsers: [],
       likerUsers: [],
+      sumOfSeenUsers: 0,
+      sumOfLikers: 0,
       createdAt: mainContent.getAttribute('data-page-created-at'),
       creator: JSON.parse(mainContent.getAttribute('data-page-creator')),
       updatedAt: mainContent.getAttribute('data-page-updated-at'),
@@ -130,13 +132,13 @@ export default class PageContainer extends Container {
 
     const seenUserListElem = document.getElementById('seen-user-list');
     if (seenUserListElem != null) {
-      const userIdsStr = seenUserListElem.dataset.userIds;
+      const { userIdsStr, sumOfSeenUers } = seenUserListElem.dataset;
       if (userIdsStr === '') {
         return;
       }
 
       const { users } = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr });
-      this.setState({ seenUsers: users });
+      this.setState({ seenUsers: users, sumOfSeenUers: 11 });
 
       await this.updateImageUrlCached(users);
     }
@@ -144,13 +146,14 @@ export default class PageContainer extends Container {
 
     const likerListElem = document.getElementById('liker-list');
     if (likerListElem != null) {
-      const userIdsStr = likerListElem.dataset.userIds;
+      const { userIdsStr, sumOfLikers } = likerListElem.dataset;
+
       if (userIdsStr === '') {
         return;
       }
 
       const { users } = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr });
-      this.setState({ likerUsers: users });
+      this.setState({ likerUsers: users, sumOfLikers: 11 });
 
       await this.updateImageUrlCached(users);
     }
