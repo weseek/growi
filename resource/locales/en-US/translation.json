@@ -245,7 +245,8 @@
       "unlinked": "Redirect pages to this page have been deleted.",
       "restricted": "Access to this page is restricted",
       "stale": "More than {{count}} year has passed since last update.",
-      "stale_plural": "More than {{count}} years has passed since last update."
+      "stale_plural": "More than {{count}} years has passed since last update.",
+      "expiration": "Share link will expire <strong>%s</strong>."
     }
   },
   "page_edit": {

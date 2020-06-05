@@ -243,7 +243,8 @@
       "duplicated": "このページは <code>%s</code> から複製されました。",
       "unlinked": "このページへのリダイレクトは削除されました。",
       "restricted": "このページの閲覧は制限されています",
-      "stale": "このページは最終更新日から{{count}}年以上が経過しています。"
+      "stale": "このページは最終更新日から{{count}}年以上が経過しています。",
+      "expiration": "シェアリンクの有効期限は <strong>%s</strong> です。"
     }
   },
   "page_edit": {
