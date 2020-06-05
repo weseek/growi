@@ -37,7 +37,11 @@ class Sidebar extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     const { appContainer } = this.props;
 
-    const isDrawerMode = appContainer.state.isDrawerMode || this.props.isDrawerModeOnInit;
+    let isDrawerMode = appContainer.state.isDrawerMode;
+    if (isDrawerMode == null) {
+      isDrawerMode = this.props.isDrawerModeOnInit;
+    }
+
     this.toggleDrawerMode(isDrawerMode);
   }
 
