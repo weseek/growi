@@ -39,7 +39,7 @@ module.exports = (crowi) => {
     body('pageId').not().isEmpty().withMessage('Page Id is null'),
 
     // validate expireation date is not empty, is not before today and is date.
-    body('expiration').not().isEmpty().isBefore(today.toString),
+    body('expiration').isAfter(today.toString()).withMessage('Your Selected date is past'),
 
     // validate the length of description is max 100.
     body('description').isLength({ min: 0, max: 100 }),
