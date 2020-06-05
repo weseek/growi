@@ -39,6 +39,8 @@ export default class AppContainer extends Container {
       preferDarkModeByMediaQuery: false,
       preferDarkModeByUser: localStorage.preferDarkModeByUser === 'true',
       preferDrawerModeByUser: localStorage.preferDrawerModeByUser === 'true',
+      preferDrawerModeOnEditByUser: // default: true
+        localStorage.preferDrawerModeOnEditByUser == null || localStorage.preferDrawerModeOnEditByUser === 'true',
       isDrawerMode: null,
       isDrawerOpened: false,
 
@@ -134,7 +136,7 @@ export default class AppContainer extends Container {
       }
 
       this.setState({ isDeviceSmallerThanMd });
-      this.updateDrawerMode(isDeviceSmallerThanMd, this.state.preferDrawerModeByUser);
+      this.updateDrawerMode({ ...this.state, isDeviceSmallerThanMd }); // generate newest state object
     };
 
     this.addBreakpointListener('md', mdOrAvobeHandler, true);
@@ -409,17 +411,37 @@ export default class AppContainer extends Container {
    * Set Sidebar mode preference by user
    * @param {boolean} preferDockMode
    */
-  async setDrawerModePreference(preferDrawerMode) {
-    this.setState({ preferDrawerModeByUser: preferDrawerMode });
-    this.updateDrawerMode(this.state.isDeviceSmallerThanMd, preferDrawerMode);
+  async setDrawerModePreference(bool) {
+    this.setState({ preferDrawerModeByUser: bool });
+    this.updateDrawerMode({ ...this.state, preferDrawerModeByUser: bool }); // generate newest state object
 
     // store settings to localStorage
     const { localStorage } = window;
-    localStorage.preferDrawerModeByUser = preferDrawerMode;
+    localStorage.preferDrawerModeByUser = bool;
   }
 
-  updateDrawerMode(isDeviceSmallerThanMd, preferDrawerModeByUser) {
-    const isDrawerMode = isDeviceSmallerThanMd || preferDrawerModeByUser;
+  /**
+   * Set Sidebar mode preference by user
+   * @param {boolean} preferDockMode
+   */
+  async setDrawerModePreferenceOnEdit(bool) {
+    this.setState({ preferDrawerModeOnEditByUser: bool });
+    this.updateDrawerMode({ ...this.state, preferDrawerModeOnEditByUser: bool }); // generate newest state object
+
+    // store settings to localStorage
+    const { localStorage } = window;
+    localStorage.preferDrawerModeOnEditByUser = bool;
+  }
+
+  updateDrawerMode(newState) {
+    const {
+      editorMode, isDeviceSmallerThanMd, preferDrawerModeByUser, preferDrawerModeOnEditByUser,
+    } = newState;
+
+    // get preference on view or edit
+    const preferDrawerMode = editorMode != null ? preferDrawerModeOnEditByUser : preferDrawerModeByUser;
+
+    const isDrawerMode = isDeviceSmallerThanMd || preferDrawerMode;
     this.setState({ isDrawerMode });
   }
 
