@@ -22,10 +22,7 @@ module.exports = (crowi) => {
   const loginRequired = require('../../middleware/login-required')(crowi);
   const csrf = require('../../middleware/csrf')(crowi);
 
-  const {
-    ShareLink,
-    Page,
-  } = crowi.models;
+  const { ShareLink } = crowi.models;
 
   const { ApiV3FormValidator } = crowi.middlewares;
 
