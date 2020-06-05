@@ -16,6 +16,7 @@ import PageContainer from '../services/PageContainer';
 const OutsideShareLinkModal = (props) => {
 
   /* const { t } = props; */
+  // dummy data
   const dummyDate = new Date().toString();
   const shareLinks = [
     {
