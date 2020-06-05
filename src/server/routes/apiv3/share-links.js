@@ -30,6 +30,23 @@ module.exports = (crowi) => {
   // TDOO write swagger
   router.get('/', loginRequired, async(req, res) => {
     const { pageId } = req.query;
+    try {
+      const paginateResult = await Page.paginate(
+        {
+          _id: { $in: pageId },
+        },
+        {
+          sort: 1,
+          limit: 50,
+        },
+      );
+      return res.apiv3({ paginateResult });
+    }
+    catch (err) {
+      const msg = 'Error occurred in delete share link';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'get-shareLink-failed'));
+    }
   });
 
 
