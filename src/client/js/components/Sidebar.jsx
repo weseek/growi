@@ -61,7 +61,7 @@ class Sidebar extends React.Component {
     };
   }
 
-  toggleDrawerMode(bool) {
+  async toggleDrawerMode(bool) {
     const { navigationUIController } = this.props;
 
     const isStateModified = navigationUIController.state.isResizeDisabled !== bool;
@@ -69,19 +69,32 @@ class Sidebar extends React.Component {
       return;
     }
 
+    // store transition and remove
+    this.storeContextualNavigationTransition();
+
     // switch to Drawer
     if (bool) {
-      // cache width
+      // cache
+      this.sidebarCollapsedCached = navigationUIController.state.isCollapsed;
       this.sidebarWidthCached = navigationUIController.state.productNavWidth;
 
+      // clear transition temporary
+      if (this.sidebarCollapsedCached) {
+        this.clearNavigationTransitionTemporary(this.navigationElem);
+      }
+
       navigationUIController.disableResize();
-      navigationUIController.expand();
 
       // fix width
       navigationUIController.setState({ productNavWidth: sidebarDefaultWidth });
     }
     // switch to Dock
     else {
+      // clear transition temporary when restore collapsed sidebar
+      if (this.sidebarCollapsedCached) {
+        this.clearNavigationTransitionTemporary(this.ctxNavigationElem);
+      }
+
       navigationUIController.enableResize();
 
       // restore width
@@ -89,6 +102,26 @@ class Sidebar extends React.Component {
         navigationUIController.setState({ productNavWidth: this.sidebarWidthCached });
       }
     }
+  }
+
+  get navigationElem() {
+    return document.querySelector('div[data-testid="Navigation"]');
+  }
+
+  get ctxNavigationElem() {
+    return document.querySelector('div[data-testid="ContextualNavigation"]');
+  }
+
+  clearNavigationTransitionTemporary(elem) {
+    const transitionCache = elem.style.transition;
+
+    // clear
+    elem.style.transition = undefined;
+
+    // restore after 300ms
+    setTimeout(() => {
+      elem.style.transition = transitionCache;
+    }, 300);
   }
 
   backdropClickedHandler = () => {
