@@ -60,17 +60,17 @@ module.exports = (crowi) => {
    *            required:true
    *            description: page id of share link
    *            schema:
-   *            type: string
+   *              type: string
    *          - name: expiration
    *            in: body
-   *            description: expiration of share link
+   *            description: expiration date of share link
    *            schema:
-   *            type: date
+   *              type: date
    *          - name: description
    *            in: body
    *            description: description of share link
    *            schema:
-   *            type: string
+   *              type: string
    *        responses:
    *          200:
    *            description: Succeeded to create one share link
