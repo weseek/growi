@@ -25,7 +25,7 @@ const today = new Date();
 module.exports = (crowi) => {
   const loginRequired = require('../../middleware/login-required')(crowi);
   const csrf = require('../../middleware/csrf')(crowi);
-
+  const { ApiV3FormValidator } = crowi.middlewares;
   const ShareLink = crowi.model('ShareLink');
 
   // TDOO write swagger
