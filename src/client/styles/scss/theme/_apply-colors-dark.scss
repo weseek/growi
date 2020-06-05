@@ -1,0 +1,246 @@
+// determine optional variables
+$color-list: $color-global !default;
+$bgcolor-list: $bgcolor-global !default;
+$color-list-hover: $color-global !default;
+$bgcolor-list-hover: lighten($bgcolor-global, 3%) !default;
+$color-list-active: $color-reversal !default;
+$bgcolor-list-active: $primary !default;
+$bgcolor-subnabvar: lighten($bgcolor-global, 3%) !default;
+$color-table: white !default;
+$bgcolor-table: #343a40 !default;
+$border-color-table: lighten($bgcolor-table, 7.5%) !default;
+$color-table-hover: rgba(white, 0.075) !default;
+$bgcolor-table-hover: lighten($bgcolor-table, 7.5%) !default;
+$bgcolor-sidebar-list-group: $bgcolor-list !default;
+
+// override bootstrap variables
+$table-dark-color: $color-table;
+$table-dark-bg: $bgcolor-table;
+$table-dark-border-color: $border-color-table;
+$table-dark-hover-color: $color-table-hover;
+$table-dark-hover-bg: $bgcolor-table-hover;
+
+@import 'reboot-bootstrap-tables';
+
+// List Group
+@include override-list-group-item($color-list, $bgcolor-list, $color-list-hover, $bgcolor-list-hover, $color-list-active, $bgcolor-list-active);
+
+/*
+  * Form
+  */
+input.form-control,
+select.form-control,
+textarea.form-control {
+  color: lighten($color-global, 30%);
+  background-color: darken($bgcolor-global, 5%);
+  &:focus {
+    background-color: $bgcolor-global;
+  }
+  // FIXME: accent color
+  // border: 1px solid darken($border, 30%);
+}
+
+.form-control[disabled],
+.form-control[readonly] {
+  color: lighten($color-global, 10%);
+  background-color: lighten($bgcolor-global, 5%);
+}
+
+.input-group .input-group-addon {
+  color: theme-color('dark');
+  background-color: rgba($bgcolor-navbar, 0.4);
+  // FIXME: accent color
+  // border: 1px solid darken($border, 30%);
+  border-right: none;
+}
+
+/*
+ * Dropdown
+ */
+.dropdown-menu {
+  background-color: $bgcolor-global;
+  > li > a {
+    color: $color-global;
+  }
+}
+
+/*
+ * Table
+ */
+.table {
+  @extend .table-dark;
+}
+
+/*
+ * Card
+ */
+.card:not([class*='bg-']) {
+  @extend .bg-dark;
+}
+
+/*
+ * Pagination
+ */
+ul.pagination {
+  li.page-item {
+    button.page-link {
+      @extend .btn-dark;
+    }
+    &.active {
+      button {
+        @extend .active;
+      }
+    }
+  }
+}
+
+/*
+ * GROWI Login form
+ */
+.nologin {
+  // background color
+  $color-gradient: #3c465c;
+  background: linear-gradient(45deg, darken($color-gradient, 30%) 0%, hsla(340, 100%, 55%, 0) 70%),
+    linear-gradient(135deg, darken($growi-green, 30%) 10%, hsla(225, 95%, 50%, 0) 70%),
+    linear-gradient(225deg, darken($growi-blue, 20%) 10%, hsla(140, 90%, 50%, 0) 80%),
+    linear-gradient(315deg, darken($color-gradient, 25%) 100%, hsla(35, 95%, 55%, 0) 70%);
+
+  .login-header {
+    background-color: rgba(black, 0.5);
+
+    .logo {
+      background-color: rgba(white, 0);
+      fill: rgba(white, 0.5);
+    }
+
+    h1 {
+      color: rgba(white, 0.5);
+    }
+  }
+
+  .login-dialog {
+    background-color: rgba(black, 0.5);
+  }
+
+  .input-group {
+    .input-group-text {
+      color: darken(white, 30%);
+      background-color: rgba(#444, 0.7);
+    }
+
+    .form-control {
+      color: white;
+      background-color: rgba(#505050, 0.7);
+      box-shadow: unset;
+
+      &::placeholder {
+        color: darken(white, 30%);
+      }
+    }
+  }
+
+  .btn-fill {
+    .btn-label {
+      color: #ccc;
+    }
+    .btn-label-text {
+      color: #aaa;
+    }
+  }
+
+  .grw-external-auth-form {
+    border-color: gray !important;
+  }
+
+  .btn-external-auth-tab {
+    @extend .btn-dark;
+  }
+
+  // footer link text
+  .link-growi-org {
+    color: rgba(white, 0.4);
+
+    &:hover,
+    &.focus {
+      color: rgba(white, 0.7);
+
+      .growi {
+        color: darken($growi-green, 5%);
+      }
+
+      .org {
+        color: darken($growi-blue, 5%);
+      }
+    }
+  }
+}
+
+/*
+ * GROWI page list
+ */
+.page-list {
+  .page-list-ul {
+    > li {
+      > span.page-list-meta {
+        color: darken($color-global, 10%);
+      }
+    }
+  }
+}
+
+/*
+ * GROWI subnavigation
+ */
+.grw-subnavbar {
+  background-color: $bgcolor-subnabvar;
+}
+
+// Search drop down
+#search-typeahead-asynctypeahead {
+  background-color: $bgcolor-global;
+  .table {
+    background-color: transparent;
+  }
+}
+
+/*
+ * GROWI Sidebar
+ */
+.grw-sidebar {
+  // List
+  @include override-list-group-item($color-list, $bgcolor-sidebar-list-group, $color-list-hover, $bgcolor-list-hover, $color-list-active, $bgcolor-list-active);
+}
+
+/*
+ * GROWI on-edit
+ */
+.page-editor-footer {
+  #slack-mark-black {
+    display: none;
+  }
+}
+
+/*
+ * GROWI HandsontableModal
+ */
+.grw-hot-modal-navbar {
+  background-color: $dark;
+}
+
+.wiki {
+  h1 {
+    border-color: lighten($border-color-theme, 10%);
+  }
+  h2 {
+    border-color: $border-color-theme;
+  }
+}
+
+/*
+ * GROWI comment form
+ */
+.comment-form {
+  #slack-mark-black {
+    display: none;
+  }
+}

@@ -127,7 +127,7 @@ class ImportForm extends React.Component {
         isImported: true,
       });
 
-      toastSuccess(undefined, 'Import process has terminated.');
+      toastSuccess(undefined, 'Import process has completed.');
     });
 
     // websocket event
@@ -333,7 +333,7 @@ class ImportForm extends React.Component {
     );
   }
 
-  renderGroups(groupList, groupName, errors, { wellContent } = {}) {
+  renderGroups(groupList, groupName, errors) {
     const collectionNames = groupList.filter((collectionName) => {
       return this.allCollectionNames.includes(collectionName);
     });
@@ -345,13 +345,6 @@ class ImportForm extends React.Component {
     return (
       <div className="mt-4">
         <legend>{groupName} Collections</legend>
-        {wellContent != null && (
-          <div className="well well-sm small">
-            <ul>
-              <li>{wellContent}</li>
-            </ul>
-          </div>
-        )}
         {this.renderImportItems(collectionNames)}
         {this.renderWarnForGroups(errors, `warnFor${groupName}`)}
       </div>
@@ -385,7 +378,7 @@ class ImportForm extends React.Component {
           const isConfigButtonAvailable = Object.keys(IMPORT_OPTION_CLASS_MAPPING).includes(collectionName);
 
           return (
-            <div className="col-xs-6 my-1" key={collectionName}>
+            <div className="col-md-6 my-1" key={collectionName}>
               <ImportCollectionItem
                 isImporting={isImporting}
                 isImported={collectionProgress ? isImported : false}
@@ -453,24 +446,35 @@ class ImportForm extends React.Component {
       <>
         <form className="form-inline">
           <div className="form-group">
-            <button type="button" className="btn btn-sm btn-default mr-2" onClick={this.checkAll}>
+            <button type="button" className="btn btn-sm btn-outline-secondary mr-2" onClick={this.checkAll}>
               <i className="fa fa-check-square-o"></i> {t('admin:export_management.check_all')}
             </button>
           </div>
           <div className="form-group">
-            <button type="button" className="btn btn-sm btn-default mr-2" onClick={this.uncheckAll}>
+            <button type="button" className="btn btn-sm btn-outline-secondary mr-2" onClick={this.uncheckAll}>
               <i className="fa fa-square-o"></i> {t('admin:export_management.uncheck_all')}
             </button>
           </div>
         </form>
 
-        {this.renderGroups(GROUPS_PAGE, 'Page', warnForPageGroups, { wellContent: t('admin:importer_management.growi_settings.overwrite_documents') })}
+        <div className="card well small my-4">
+          <ul>
+            <li>{t('admin:importer_management.growi_settings.description_of_import_mode.about')}</li>
+            <ul>
+              <li>{t('admin:importer_management.growi_settings.description_of_import_mode.insert')}</li>
+              <li>{t('admin:importer_management.growi_settings.description_of_import_mode.upsert')}</li>
+              <li>{t('admin:importer_management.growi_settings.description_of_import_mode.flash_and_insert')}</li>
+            </ul>
+          </ul>
+        </div>
+
+        {this.renderGroups(GROUPS_PAGE, 'Page', warnForPageGroups)}
         {this.renderGroups(GROUPS_USER, 'User', warnForUserGroups)}
         {this.renderGroups(GROUPS_CONFIG, 'Config', warnForConfigGroups)}
         {this.renderOthers()}
 
         <div className="mt-4 text-center">
-          <button type="button" className="btn btn-default mx-1" onClick={this.props.onDiscard}>
+          <button type="button" className="btn btn-outline-secondary mx-1" onClick={this.props.onDiscard}>
             {t('admin:importer_management.growi_settings.discard')}
           </button>
           <button type="button" className="btn btn-primary mx-1" onClick={this.import} disabled={!canImport || isImporting}>

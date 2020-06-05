@@ -1,0 +1,48 @@
+.grw-navbar {
+  border-top: 0;
+  border-right: 0;
+  border-bottom: $grw-navbar-border-width solid;
+  border-left: 0;
+
+  .grw-app-title {
+    @include variable-font-size(24px);
+  }
+
+  .grw-navbar-toggler {
+    padding: 0.5rem;
+    font-size: 1.5em;
+  }
+
+  .grw-navbar-search {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0%);
+  }
+
+  .nav-link,
+  .nav-item.confidential {
+    display: flex;
+    align-items: center;
+    min-height: $grw-navbar-height;
+    padding: 0 1rem;
+  }
+
+  .nav-link {
+    &:hover {
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    &:focus {
+      background: rgba(0, 0, 0, 0);
+    }
+  }
+  .nav-item.confidential {
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  .grw-personal-dropdown {
+    .grw-email-sm {
+      font-size: 0.75em;
+    }
+  }
+}

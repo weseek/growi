@@ -8,6 +8,8 @@ import InterceptorManager from '@commons/service/interceptor-manager';
 import emojiStrategy from '../util/emojione/emoji_strategy_shrinked.json';
 import GrowiRenderer from '../util/GrowiRenderer';
 
+import Apiv1ErrorHandler from '../util/apiv1ErrorHandler';
+
 import {
   DetachCodeBlockInterceptor,
   RestoreCodeBlockInterceptor,
@@ -31,6 +33,14 @@ export default class AppContainer extends Container {
 
     this.state = {
       editorMode: null,
+      preferDarkModeByMediaQuery: false,
+      preferDarkModeByUser: null,
+      breakpoint: 'xs',
+      isDrawerOpened: false,
+
+      isPageCreateModalShown: false,
+
+      recentlyUpdatedPages: [],
     };
 
     const body = document.querySelector('body');
@@ -38,7 +48,7 @@ export default class AppContainer extends Container {
     this.isAdmin = body.dataset.isAdmin === 'true';
     this.csrfToken = body.dataset.csrftoken;
     this.isPluginEnabled = body.dataset.pluginEnabled === 'true';
-    this.isLoggedin = document.querySelector('.main-container.nologin') == null;
+    this.isLoggedin = document.querySelector('body.nologin') == null;
 
     this.config = JSON.parse(document.getElementById('growi-context-hydrate').textContent || '{}');
 
@@ -88,6 +98,9 @@ export default class AppContainer extends Container {
       put: this.apiv3Put.bind(this),
       delete: this.apiv3Delete.bind(this),
     };
+
+    this.openPageCreateModal = this.openPageCreateModal.bind(this);
+    this.closePageCreateModal = this.closePageCreateModal.bind(this);
   }
 
   /**
@@ -95,6 +108,33 @@ export default class AppContainer extends Container {
    */
   static getClassName() {
     return 'AppContainer';
+  }
+
+  init() {
+    this.initColorScheme();
+    this.initPlugins();
+  }
+
+  async initColorScheme() {
+    const switchStateByMediaQuery = async(mql) => {
+      const preferDarkMode = mql.matches;
+      await this.setState({ preferDarkModeByMediaQuery: preferDarkMode });
+
+      this.applyColorScheme();
+    };
+
+    const mqlForDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+    // add event listener
+    mqlForDarkMode.addListener(switchStateByMediaQuery);
+
+    // initialize1: restore settings from localStorage
+    const { localStorage } = window;
+    if (localStorage.preferDarkModeByUser != null) {
+      await this.setState({ preferDarkModeByUser: localStorage.preferDarkModeByUser === 'true' });
+    }
+
+    // initialize2: check media query
+    switchStateByMediaQuery(mqlForDarkMode);
   }
 
   initPlugins() {
@@ -195,6 +235,28 @@ export default class AppContainer extends Container {
     return this.componentInstances[id];
   }
 
+  /**
+   *
+   * @param {string} breakpoint id of breakpoint
+   * @param {function} handler event handler for media query
+   * @param {boolean} invokeOnInit invoke handler after the initialization if true
+   */
+  addBreakpointListener(breakpoint, handler, invokeOnInit = false) {
+    document.addEventListener('DOMContentLoaded', () => {
+      // get the value of '--breakpoint-*'
+      const breakpointPixel = parseInt(window.getComputedStyle(document.documentElement).getPropertyValue(`--breakpoint-${breakpoint}`), 10);
+
+      const mediaQuery = window.matchMedia(`(min-width: ${breakpointPixel}px)`);
+
+      // add event listener
+      mediaQuery.addListener(handler);
+      // initialize
+      if (invokeOnInit) {
+        handler(mediaQuery);
+      }
+    });
+  }
+
   getOriginRenderer() {
     return this.originRenderer;
   }
@@ -239,6 +301,11 @@ export default class AppContainer extends Container {
         }
       }
     });
+  }
+
+  async retrieveRecentlyUpdated() {
+    const { data } = await this.apiv3Get('/pages/recent');
+    this.setState({ recentlyUpdatedPages: data.pages });
   }
 
   fetchUsers() {
@@ -294,6 +361,11 @@ export default class AppContainer extends Container {
     return users;
   }
 
+  toggleDrawer() {
+    const { isDrawerOpened } = this.state;
+    this.setState({ isDrawerOpened: !isDrawerOpened });
+  }
+
   launchHandsontableModal(componentKind, beginLineNumber, endLineNumber) {
     let targetComponent;
     switch (componentKind) {
@@ -312,6 +384,48 @@ export default class AppContainer extends Container {
         break;
     }
     targetComponent.launchDrawioModal(beginLineNumber, endLineNumber);
+  }
+
+  /**
+   * Set color scheme preference by user
+   * @param {boolean} isDarkMode
+   */
+  async setColorSchemePreference(isDarkMode) {
+    await this.setState({ preferDarkModeByUser: isDarkMode });
+
+    // store settings to localStorage
+    const { localStorage } = window;
+    if (isDarkMode == null) {
+      delete localStorage.removeItem('preferDarkModeByUser');
+    }
+    else {
+      localStorage.preferDarkModeByUser = isDarkMode;
+    }
+
+    this.applyColorScheme();
+  }
+
+  /**
+   * Apply color scheme as 'dark' attribute of <html></html>
+   */
+  applyColorScheme() {
+    const { preferDarkModeByMediaQuery, preferDarkModeByUser } = this.state;
+
+    let isDarkMode = preferDarkModeByMediaQuery;
+    if (preferDarkModeByUser != null) {
+      isDarkMode = preferDarkModeByUser;
+    }
+
+    // switch to dark mode
+    if (isDarkMode) {
+      document.documentElement.removeAttribute('light');
+      document.documentElement.setAttribute('dark', 'true');
+    }
+    // switch to light mode
+    else {
+      document.documentElement.setAttribute('light', 'true');
+      document.documentElement.removeAttribute('dark');
+    }
   }
 
   async apiGet(path, params) {
@@ -339,6 +453,13 @@ export default class AppContainer extends Container {
     if (res.data.ok) {
       return res.data;
     }
+
+    // Return error code if code is exist
+    if (res.data.code != null) {
+      const error = new Apiv1ErrorHandler(res.data.error, res.data.code);
+      throw error;
+    }
+
     throw new Error(res.data.error);
   }
 
@@ -379,6 +500,14 @@ export default class AppContainer extends Container {
     }
 
     return this.apiv3Request('delete', path, { params });
+  }
+
+  openPageCreateModal() {
+    this.setState({ isPageCreateModalShown: true });
+  }
+
+  closePageCreateModal() {
+    this.setState({ isPageCreateModalShown: false });
   }
 
 }

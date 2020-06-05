@@ -5,6 +5,8 @@ import { I18nextProvider } from 'react-i18next';
 
 import loggerFactory from '@alias/logger';
 
+import ErrorBoundary from './components/ErrorBoudary';
+
 import AdminHome from './components/Admin/AdminHome/AdminHome';
 import UserGroupDetailPage from './components/Admin/UserGroupDetail/UserGroupDetailPage';
 import NotificationSetting from './components/Admin/Notification/NotificationSetting';
@@ -100,9 +102,11 @@ Object.keys(componentMappings).forEach((key) => {
   if (elem) {
     ReactDOM.render(
       <I18nextProvider i18n={i18n}>
-        <Provider inject={injectableContainers}>
-          {componentMappings[key]}
-        </Provider>
+        <ErrorBoundary>
+          <Provider inject={injectableContainers}>
+            {componentMappings[key]}
+          </Provider>
+        </ErrorBoundary>
       </I18nextProvider>,
       elem,
     );
@@ -126,11 +130,13 @@ if (adminSecuritySettingElem != null) {
     adminOidcSecurityContainer, adminBasicSecurityContainer, adminGoogleSecurityContainer, adminGitHubSecurityContainer, adminTwitterSecurityContainer,
   ];
   ReactDOM.render(
-    <Provider inject={[...injectableContainers, ...adminSecurityContainers]}>
-      <I18nextProvider i18n={i18n}>
-        <SecurityManagement />
-      </I18nextProvider>
-    </Provider>,
+    <I18nextProvider i18n={i18n}>
+      <ErrorBoundary>
+        <Provider inject={[...injectableContainers, ...adminSecurityContainers]}>
+          <SecurityManagement />
+        </Provider>
+      </ErrorBoundary>
+    </I18nextProvider>,
     adminSecuritySettingElem,
   );
 }

@@ -5,65 +5,62 @@ import { pathUtils } from 'growi-commons';
 
 import SearchTypeahead from './SearchTypeahead';
 
-export default class PagePathAutoComplete extends React.Component {
+const PagePathAutoComplete = (props) => {
 
-  constructor(props) {
+  const {
+    addTrailingSlash, onSubmit, onInputChange, initializedPath,
+  } = props;
 
-    super(props);
+  function inputChangeHandler(pages) {
+    if (onInputChange == null) {
+      return;
+    }
+    const page = pages[0]; // should be single page selected
 
-    this.state = {
-    };
-
-    this.crowi = this.props.crowi;
-
-    this.onSubmit = this.onSubmit.bind(this);
-    this.getKeywordOnInit = this.getKeywordOnInit.bind(this);
+    if (page != null) {
+      onInputChange(page.path);
+    }
   }
 
-  componentDidMount() {
+  function submitHandler() {
+    if (onSubmit == null) {
+      return;
+    }
+    onSubmit();
   }
 
-  componentWillUnmount() {
-  }
-
-  onSubmit(query) {
-    // get the closest form element
-    const elem = this.rootDom;
-    const form = elem.closest('form');
-    // submit with jQuery
-    $(form).submit();
-  }
-
-  getKeywordOnInit(path) {
-    return this.props.addTrailingSlash
+  function getKeywordOnInit(path) {
+    return addTrailingSlash
       ? pathUtils.addTrailingSlash(path)
       : pathUtils.removeTrailingSlash(path);
   }
 
-  render() {
-    return (
-      <div ref={(c) => { this.rootDom = c }}>
-        <SearchTypeahead
-          ref={this.searchTypeaheadDom}
-          crowi={this.crowi}
-          onSubmit={this.onSubmit}
-          inputName="new_path"
-          emptyLabelExceptError={null}
-          placeholder="Input page path"
-          keywordOnInit={this.getKeywordOnInit(this.props.initializedPath)}
-        />
-      </div>
-    );
-  }
+  return (
+    <SearchTypeahead
+      crowi={props.crowi}
+      onSubmit={submitHandler}
+      onChange={inputChangeHandler}
+      onInputChange={props.onInputChange}
+      inputName="new_path"
+      emptyLabelExceptError={null}
+      placeholder="Input page path"
+      keywordOnInit={getKeywordOnInit(initializedPath)}
+    />
+  );
 
-}
+};
 
 PagePathAutoComplete.propTypes = {
   crowi:            PropTypes.object.isRequired,
   initializedPath:  PropTypes.string,
   addTrailingSlash: PropTypes.bool,
+
+  onSubmit:         PropTypes.func,
+  onInputChange:    PropTypes.func,
 };
 
 PagePathAutoComplete.defaultProps = {
   initializedPath: '/',
 };
+
+export default PagePathAutoComplete;

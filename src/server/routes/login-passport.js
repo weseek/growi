@@ -199,7 +199,8 @@ module.exports = function(crowi, app) {
       ldapAccountInfo = await promisifiedPassportAuthentication(strategyName, req, res);
     }
     catch (err) {
-      return next(err);
+      debug(err.message);
+      return next();
     }
 
     // check groups for LDAP
@@ -235,7 +236,7 @@ module.exports = function(crowi, app) {
 
     // login
     await req.logIn(user, (err) => {
-      if (err) { return next(err) }
+      if (err) { debug(err.message); return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
@@ -326,7 +327,7 @@ module.exports = function(crowi, app) {
       }
       if (!user) { return next() }
       req.logIn(user, (err) => {
-        if (err) { return next() }
+        if (err) { debug(err.message); return next() }
 
         return loginSuccessHandler(req, res, user);
       });
@@ -346,6 +347,8 @@ module.exports = function(crowi, app) {
   };
 
   const loginPassportGoogleCallback = async(req, res, next) => {
+    const globalLang = crowi.configManager.getConfig('crowi', 'app:globalLang');
+
     const providerId = 'google';
     const strategyName = 'google';
 
@@ -357,10 +360,24 @@ module.exports = function(crowi, app) {
       return loginFailureHandler(req, res);
     }
 
+    let name;
+
+    switch (globalLang) {
+      case 'en-US':
+        name = `${response.name.givenName} ${response.name.familyName}`;
+        break;
+      case 'ja':
+        name = `${response.name.familyName} ${response.name.givenName}`;
+        break;
+      default:
+        name = `${response.name.givenName} ${response.name.familyName}`;
+        break;
+    }
+
     const userInfo = {
       id: response.id,
       username: response.displayName,
-      name: `${response.name.givenName} ${response.name.familyName}`,
+      name,
     };
 
     // Emails are not empty if it exists
@@ -381,7 +398,7 @@ module.exports = function(crowi, app) {
 
     // login
     req.logIn(user, (err) => {
-      if (err) { return next(err) }
+      if (err) { debug(err.message); return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
@@ -423,7 +440,7 @@ module.exports = function(crowi, app) {
 
     // login
     req.logIn(user, (err) => {
-      if (err) { return next(err) }
+      if (err) { debug(err.message); return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
@@ -465,7 +482,7 @@ module.exports = function(crowi, app) {
 
     // login
     req.logIn(user, (err) => {
-      if (err) { return next(err) }
+      if (err) { debug(err.message); return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
@@ -513,7 +530,7 @@ module.exports = function(crowi, app) {
     // login
     const user = await externalAccount.getPopulatedUser();
     req.logIn(user, (err) => {
-      if (err) { return next(err) }
+      if (err) { debug(err.message); return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
@@ -617,7 +634,7 @@ module.exports = function(crowi, app) {
 
     const user = await externalAccount.getPopulatedUser();
     await req.logIn(user, (err) => {
-      if (err) { return next() }
+      if (err) { debug(err.message); return next() }
       return loginSuccessHandler(req, res, user);
     });
   };

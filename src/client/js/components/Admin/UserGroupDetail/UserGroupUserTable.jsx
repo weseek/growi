@@ -54,7 +54,7 @@ class UserGroupUserTable extends React.Component {
             return (
               <tr key={sRelation._id}>
                 <td>
-                  <UserPicture user={relatedUser} className="picture img-circle" />
+                  <UserPicture user={relatedUser} className="picture rounded-circle" />
                 </td>
                 <td>
                   <strong>{relatedUser.username}</strong>
@@ -64,16 +64,25 @@ class UserGroupUserTable extends React.Component {
                 <td>{relatedUser.lastLoginAt ? dateFnsFormat(new Date(relatedUser.lastLoginAt), 'yyyy-MM-dd HH:mm:ss') : ''}</td>
                 <td>
                   <div className="btn-group admin-user-menu">
-                    <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                      <i className="icon-settings"></i> <span className="caret"></span>
+                    <button
+                      type="button"
+                      id={`admin-group-menu-button-${relatedUser._id}`}
+                      className="btn btn-outline-secondary btn-sm dropdown-toggle"
+                      data-toggle="dropdown"
+                    >
+                      <i className="icon-settings"></i>
                     </button>
-                    <ul className="dropdown-menu" role="menu">
-                      <li>
-                        <a onClick={() => { return this.removeUser(relatedUser.username) }}>
-                          <i className="icon-fw icon-user-unfollow"></i> {t('admin:user_group_management.remove_from_group')}
-                        </a>
-                      </li>
-                    </ul>
+                    <div className="dropdown-menu" role="menu" aria-labelledby={`admin-group-menu-button-${relatedUser._id}`}>
+                      <button
+                        className="dropdown-item"
+                        type="button"
+                        onClick={() => {
+                          return this.removeUser(relatedUser.username);
+                        }}
+                      >
+                        <i className="icon-fw icon-user-unfollow"></i> {t('admin:user_group_management.remove_from_group')}
+                      </button>
+                    </div>
                   </div>
                 </td>
               </tr>
@@ -83,7 +92,7 @@ class UserGroupUserTable extends React.Component {
           <tr>
             <td></td>
             <td className="text-center">
-              <button className="btn btn-default" type="button" onClick={adminUserGroupDetailContainer.openUserGroupUserModal}>
+              <button className="btn btn-outline-secondary" type="button" onClick={adminUserGroupDetailContainer.openUserGroupUserModal}>
                 <i className="ti-plus"></i>
               </button>
             </td>

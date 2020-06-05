@@ -2,6 +2,7 @@
 /* eslint-disable no-return-await */
 
 /* eslint-disable no-use-before-define */
+const logger = require('@alias/logger')('growi:models:page');
 
 const debug = require('debug')('growi:models:page');
 const nodePath = require('path');
@@ -13,6 +14,7 @@ const differenceInYears = require('date-fns/differenceInYears');
 
 const { pathUtils } = require('growi-commons');
 const templateChecker = require('@commons/util/template-checker');
+const { isTopPage } = require('@commons/util/path-utils');
 const escapeStringRegexp = require('escape-string-regexp');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
@@ -153,30 +155,25 @@ class PageQueryBuilder {
     // eslint-disable-next-line no-param-reassign
     path = addSlashOfEnd(path);
 
-    // add option to escape the regex strings
-    const combinedOption = Object.assign({ isRegExpEscapedFromPath: true }, option);
-
-    this.addConditionToListByStartWith(path, combinedOption);
-
+    this.addConditionToListByStartWith(path, option);
     return this;
   }
 
   /**
    * generate the query to find pages that start with `path`
    *
-   * (GROWI) If 'isRegExpEscapedFromPath' is true, `path` should have `/` at the end
-   *   -> returns '{path}/*' and '{path}' self.
-   * (Crowi) If 'isRegExpEscapedFromPath' is false and `path` has `/` at the end
-   *   -> returns '{path}*'
-   * (Crowi) If 'isRegExpEscapedFromPath' is false and `path` doesn't have `/` at the end
-   *   -> returns '{path}*'
+   * In normal case, returns '{path}/*' and '{path}' self.
+   * If top page, return without doing anything.
    *
    * *option*
-   *   - isRegExpEscapedFromPath -- if true, the regex strings included in `path` is escaped (default: false)
+   *   Left for backward compatibility
    */
   addConditionToListByStartWith(path, option) {
+    // No request is set for the top page
+    if (isTopPage(path)) {
+      return this;
+    }
     const pathCondition = [];
-    const isRegExpEscapedFromPath = option.isRegExpEscapedFromPath || false;
 
     /*
      * 1. add condition for finding the page completely match with `path` w/o last slash
@@ -186,13 +183,10 @@ class PageQueryBuilder {
       pathSlashOmitted = path.substr(0, path.length - 1);
       pathCondition.push({ path: pathSlashOmitted });
     }
-
     /*
      * 2. add decendants
      */
-    const pattern = (isRegExpEscapedFromPath)
-      ? escapeStringRegexp(path) // escape
-      : pathSlashOmitted;
+    const pattern = escapeStringRegexp(path); // escape
 
     let queryReg;
     try {
@@ -203,7 +197,6 @@ class PageQueryBuilder {
       // force to escape
       queryReg = new RegExp(`^${escapeStringRegexp(pattern)}`);
     }
-
     pathCondition.push({ path: queryReg });
 
     this.query = this.query
@@ -290,14 +283,6 @@ module.exports = function(crowi) {
     pageEvent.on('update', pageEvent.onUpdate);
   }
 
-  function isPortalPath(path) {
-    if (path.match(/.*\/$/)) {
-      return true;
-    }
-
-    return false;
-  }
-
   function validateCrowi() {
     if (crowi == null) {
       throw new Error('"crowi" is null. Init User model with "crowi" argument first.');
@@ -316,8 +301,8 @@ module.exports = function(crowi) {
     return false;
   };
 
-  pageSchema.methods.isPortal = function() {
-    return isPortalPath(this.path);
+  pageSchema.methods.isTopPage = function() {
+    return isTopPage(this.path);
   };
 
   pageSchema.methods.isTemplate = function() {
@@ -351,9 +336,13 @@ module.exports = function(crowi) {
     return true;
   };
 
-  pageSchema.methods.isLiked = function(userData) {
+  pageSchema.methods.isLiked = function(user) {
+    if (user == null || user._id == null) {
+      return false;
+    }
+
     return this.liker.some((likedUserId) => {
-      return likedUserId.toString() === userData._id.toString();
+      return likedUserId.toString() === user._id.toString();
     });
   };
 
@@ -367,12 +356,12 @@ module.exports = function(crowi) {
           if (err) {
             return reject(err);
           }
-          debug('liker updated!', added);
+          logger.debug('liker updated!', added);
           return resolve(data);
         });
       }
       else {
-        this.logger.warn('liker not updated');
+        logger.debug('liker not updated');
         return reject(self);
       }
     }));
@@ -393,7 +382,7 @@ module.exports = function(crowi) {
         });
       }
       else {
-        debug('liker not updated');
+        logger.debug('liker not updated');
         return reject(self);
       }
     }));
@@ -518,7 +507,7 @@ module.exports = function(crowi) {
     grantLabels[GRANT_RESTRICTED] = 'Anyone with the link'; // リンクを知っている人のみ
     // grantLabels[GRANT_SPECIFIED]  = 'Specified users only'; // 特定ユーザーのみ
     grantLabels[GRANT_USER_GROUP] = 'Only inside the group'; // 特定グループのみ
-    grantLabels[GRANT_OWNER] = 'Just me'; // 自分のみ
+    grantLabels[GRANT_OWNER] = 'Only me'; // 自分のみ
 
     return grantLabels;
   };
@@ -990,7 +979,7 @@ module.exports = function(crowi) {
 
     let grant = options.grant;
     // force public
-    if (isPortalPath(path)) {
+    if (isTopPage(path)) {
       grant = GRANT_PUBLIC;
     }
 

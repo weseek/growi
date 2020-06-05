@@ -40,6 +40,7 @@ export default class AdminGeneralSecurityContainer extends Container {
     const response = await this.appContainer.apiv3.get('/security-setting/');
     const { generalSetting, generalAuth } = response.data.securityParams;
     this.setState({
+      currentRestrictGuestMode: generalSetting.restrictGuestMode,
       currentPageCompleteDeletionAuthority: generalSetting.pageCompleteDeletionAuthority,
       isShowRestrictedByOwner: !generalSetting.hideRestrictedByOwner,
       isShowRestrictedByGroup: !generalSetting.hideRestrictedByGroup,

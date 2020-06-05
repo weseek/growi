@@ -8,15 +8,15 @@ class CheckBoxForSerchUserOption extends React.Component {
   render() {
     const { t, option } = this.props;
     return (
-      <div className="checkbox checkbox-info" key={`isAlso${option}Searched`}>
+      <div className="custom-control custom-checkbox custom-checkbox-info" key={`isAlso${option}Searched`}>
         <input
           type="checkbox"
           id={`isAlso${option}Searched`}
-          className="form-check-input"
+          className="custom-control-input"
           checked={this.props.checked}
           onChange={this.props.onChange}
         />
-        <label className="text-capitalize form-check-label ml-3" htmlFor={`isAlso${option}Searched`}>
+        <label className="text-capitalize custom-control-label ml-3" htmlFor={`isAlso${option}Searched`}>
           {t('admin:user_group_management.add_modal.enable_option', { option })}
         </label>
       </div>

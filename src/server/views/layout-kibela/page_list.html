@@ -12,38 +12,35 @@
 <div class="row page-content">
 
 
-  <div class="col-xs-12 bg-white round-corner">
+  <div class="col-12 col-xl-9 col-lg-8 bg-white round-corner">
 
     {% include '../widget/page_content.html' %}
 
   </div>
 
-
   {# force remove #revision-toc from #content_main of parent #}
-      <script>
-        $('#revision-toc').remove();
-      </script>
+  <script>
+    $('#revision-toc').remove();
+  </script>
 
-    </div> {# /.col- #}
+  {# relocate #revision-toc #}
+  <div class="col-xl-3 col-lg-4 d-none d-lg-block revision-toc-container">
+    <div id="revision-toc" class="revision-toc sps sps--abv" data-sps-offset="80">
+      <div id="revision-toc-content" class="revision-toc-content"></div>
+    </div>
+  </div>
 
-    {# relocate #revision-toc #}
-    <div class="col-lg-2 col-md-3 revision-toc-container hidden-sm hidden-xs">
-      <div id="revision-toc" class="revision-toc affix" data-spy="" data-offset-top="80">
-        <div id="revision-toc-content" class="revision-toc-content"></div>
-      </div>
-    </div> {# /.col- #}
+</div>
 
-
-
-  <div class="row page-list bg-white round-corner p-t-10 m-20 m-b-30 {% if page.isPortal() %}m-t-30{% endif %}">
-    <div class="col-xs-12">
+  <div class="row page-list bg-white round-corner grw-pt-10px my-5 d-edit-none {% if page.isTopPage() %}mt-5{% endif %}">
+    <div class="col">
       {% include '../widget/page_list_and_timeline_kibela.html' %}
     </div>
   </div>
 {% endblock %}
 
 
-{% block content_footer %}
+{% block content_main_after %}
   {% if page %}
     {% include '../widget/page_attachments.html' %}
   {% endif%}
@@ -53,10 +50,5 @@
 {% block body_end %}
 <div id="presentation-layer" class="fullscreen-layer">
   <div id="presentation-container"></div>
-</div>
-<div id="crowi-modals">
-  {% include '../widget/page_modals.html' %}
-    {% include '../modal/what_is_portal.html' %}
-  {% include '../modal/unportalize.html' %}
 </div>
 {% endblock %}

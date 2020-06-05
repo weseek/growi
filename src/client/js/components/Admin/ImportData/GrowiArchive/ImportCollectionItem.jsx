@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 // eslint-disable-next-line no-unused-vars
 import { withTranslation } from 'react-i18next';
 
-import ProgressBar from 'react-bootstrap/es/ProgressBar';
+import { Progress } from 'reactstrap';
 
 import GrowiArchiveImportOption from '@commons/models/admin/growi-archive-import-option';
 
@@ -74,7 +74,7 @@ export default class ImportCollectionItem extends React.Component {
   renderModeLabel(mode, isColorized = false) {
     const attrMap = MODE_ATTR_MAP[mode];
     const className = isColorized ? `text-${attrMap.color}` : '';
-    return <span className={className}><i className={attrMap.icon}></i> {attrMap.label}</span>;
+    return <span className={`text-nowrap ${className}`}><i className={attrMap.icon}></i> {attrMap.label}</span>;
   }
 
   renderCheckbox() {
@@ -83,18 +83,18 @@ export default class ImportCollectionItem extends React.Component {
     } = this.props;
 
     return (
-      <div className="checkbox checkbox-info my-0">
+      <div className="custom-control custom-checkbox custom-checkbox-info my-0">
         <input
           type="checkbox"
           id={collectionName}
           name={collectionName}
-          className="form-check-input"
+          className="custom-control-input"
           value={collectionName}
           checked={isSelected}
           disabled={isImporting}
           onChange={this.changeHandler}
         />
-        <label className="text-capitalize form-check-label" htmlFor={collectionName}>
+        <label className="text-capitalize custom-control-label" htmlFor={collectionName}>
           {collectionName}
         </label>
       </div>
@@ -116,7 +116,7 @@ export default class ImportCollectionItem extends React.Component {
         Mode:&nbsp;
         <div className="dropdown d-inline-block">
           <button
-            className={`btn ${btnColor} btn-xs dropdown-toggle`}
+            className={`btn ${btnColor} btn-sm dropdown-toggle`}
             type="button"
             id="ddmMode"
             disabled={isImporting}
@@ -131,9 +131,9 @@ export default class ImportCollectionItem extends React.Component {
             { modes.map((mode) => {
               return (
                 <li key={`buttonMode_${mode}`}>
-                  <a type="button" role="button" onClick={() => this.modeSelectedHandler(mode)}>
+                  <button type="button" className="dropdown-item" role="button" onClick={() => this.modeSelectedHandler(mode)}>
                     {this.renderModeLabel(mode, true)}
-                  </a>
+                  </button>
                 </li>
               );
             }) }
@@ -149,7 +149,7 @@ export default class ImportCollectionItem extends React.Component {
     return (
       <button
         type="button"
-        className="btn btn-default btn-xs ml-2"
+        className="btn btn-outline-secondary btn-sm p-1 ml-2"
         disabled={isImporting || !isConfigButtonAvailable}
         onClick={isConfigButtonAvailable ? this.configButtonClickedHandler : null}
       >
@@ -166,11 +166,11 @@ export default class ImportCollectionItem extends React.Component {
     const total = insertedCount + modifiedCount + errorsCount;
 
     return (
-      <ProgressBar className="mb-0">
-        <ProgressBar max={total} striped={isImporting} active={isImporting} now={insertedCount} bsStyle="info" />
-        <ProgressBar max={total} striped={isImporting} active={isImporting} now={modifiedCount} bsStyle="success" />
-        <ProgressBar max={total} striped={isImporting} active={isImporting} now={errorsCount} bsStyle="danger" />
-      </ProgressBar>
+      <Progress multi className="mb-0">
+        <Progress bar max={total} color="info" striped={isImporting} animated={isImporting} value={insertedCount} />
+        <Progress bar max={total} color="success" striped={isImporting} animated={isImporting} value={modifiedCount} />
+        <Progress bar max={total} color="danger" striped={isImporting} animated={isImporting} value={errorsCount} />
+      </Progress>
     );
   }
 
@@ -201,9 +201,9 @@ export default class ImportCollectionItem extends React.Component {
     } = this.props;
 
     return (
-      <div className="panel panel-default">
-        <div className="panel-heading">
-          <div className="d-flex justify-content-between align-items-center">
+      <div className="card border-light">
+        <div className="card-header bg-light">
+          <div className="d-flex justify-content-between align-items-center flex-wrap">
             {/* left */}
             {this.renderCheckbox()}
             {/* right */}
@@ -213,14 +213,12 @@ export default class ImportCollectionItem extends React.Component {
             </span>
           </div>
         </div>
-        { isSelected && (
+        {isSelected && (
           <>
             {this.renderProgressBar()}
-            <div className="panel-body">
-              {this.renderBody()}
-            </div>
+            <div className="card-body">{this.renderBody()}</div>
           </>
-        ) }
+        )}
       </div>
     );
   }

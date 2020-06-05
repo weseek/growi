@@ -183,7 +183,10 @@ export default class AdminUsersContainer extends Container {
    * @memberOf AdminUsersContainer
    */
   async hidePasswordResetModal() {
-    await this.setState({ isPasswordResetModalShown: false });
+    await this.setState({
+      isPasswordResetModalShown: false,
+      userForPasswordResetModal: null,
+    });
   }
 
   /**

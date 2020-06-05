@@ -35,7 +35,19 @@ export default class RevisionBody extends React.PureComponent {
 
   renderMathJax() {
     const MathJax = window.MathJax;
-    MathJax.Hub.Queue(['Typeset', MathJax.Hub, this.element]);
+    // Workaround MathJax Rendering (Errors still occur, but MathJax can be rendered)
+    //
+    // Reason:
+    //   Addition of draw.io Integration causes initialization conflict between MathJax of draw.io and MathJax of GROWI.
+    //   So, before MathJax is initialized, execute renderMathJaxWithDebounce again.
+    //   Avoiding initialization of MathJax of draw.io solves the problem.
+    //   refs: https://github.com/jgraph/drawio/pull/831
+    if (MathJax != null && MathJax.Hub != null) {
+      MathJax.Hub.Queue(['Typeset', MathJax.Hub, this.element]);
+    }
+    else {
+      this.renderMathJaxWithDebounce();
+    }
   }
 
   generateInnerHtml(html) {

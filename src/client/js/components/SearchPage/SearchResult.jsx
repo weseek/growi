@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as toastr from 'toastr';
 
+import { withTranslation } from 'react-i18next';
+
 import Page from '../PageList/Page';
 import SearchResultList from './SearchResultList';
 import DeletePageListModal from './DeletePageListModal';
@@ -37,6 +39,13 @@ class SearchResult extends React.Component {
       return true;
     }
     return false;
+  }
+
+  /**
+   * move the page
+   */
+  visitPageButtonHandler(e) {
+    window.location.href = e.currentTarget.value;
   }
 
   /**
@@ -170,7 +179,43 @@ class SearchResult extends React.Component {
     });
   }
 
+  renderListView(pages) {
+    return pages.map((page) => {
+      // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
+      const pageId = `#id_${page._id}`;
+      return (
+        <li key={page._id} className="nav-item page-list-li w-100">
+          <a className="nav-link page-list-link d-flex align-items-center" href={pageId}>
+            <Page page={page} noLink />
+            <div className="ml-auto d-flex">
+              { this.state.deletionMode
+                && (
+                  <div className="custom-control custom-checkbox custom-checkbox-danger">
+                    <input
+                      type="checkbox"
+                      id={`page-delete-check-${page._id}`}
+                      className="custom-control-input search-result-list-delete-checkbox"
+                      value={pageId}
+                      checked={this.state.selectedPages.has(page)}
+                      onChange={() => { return this.toggleCheckbox(page) }}
+                    />
+                    <label className="custom-control-label" htmlFor={`page-delete-check-${page._id}`}></label>
+                  </div>
+                )
+              }
+              <div className="page-list-option">
+                <button type="button" className="btn btn-link p-0" value={page.path} onClick={this.visitPageButtonHandler}><i className="icon-login" /></button>
+              </div>
+            </div>
+          </a>
+        </li>
+      );
+    });
+  }
+
   render() {
+    const { t } = this.props;
+
     if (this.isError()) {
       return (
         <div className="content-main">
@@ -202,72 +247,43 @@ class SearchResult extends React.Component {
     if (this.state.deletionMode) {
       deletionModeButtons = (
         <div className="btn-group">
-          <button type="button" className="btn btn-rounded btn-default btn-xs" onClick={() => { return this.handleDeletionModeChange() }}>
-            <i className="icon-ban" /> Cancel
+          <button type="button" className="btn btn-outline-secondary btn-sm rounded-pill-weak" onClick={() => { return this.handleDeletionModeChange() }}>
+            <i className="icon-ban" /> {t('search_result.cancel')}
           </button>
           <button
             type="button"
-            className="btn btn-rounded btn-danger btn-xs"
+            className="btn btn-danger btn-sm rounded-pill-weak"
             onClick={() => { return this.showDeleteConfirmModal() }}
             disabled={this.state.selectedPages.size === 0}
           >
-            <i className="icon-trash" /> Delete
+            <i className="icon-trash" /> {t('search_result.delete')}
           </button>
         </div>
       );
       allSelectCheck = (
-        <div>
-          <label>
-            <input
-              type="checkbox"
-              onClick={() => { return this.handleAllSelect() }}
-              checked={this.isAllSelected()}
-            />
-            &nbsp;Check All
-          </label>
+        <div className="custom-control custom-checkbox custom-checkbox-danger">
+          <input
+            id="all-select-check"
+            className="custom-control-input"
+            type="checkbox"
+            onChange={() => { return this.handleAllSelect() }}
+            checked={this.isAllSelected()}
+          />
+          <label className="custom-control-label" htmlFor="all-select-check">&nbsp;{t('search_result.check_all')}</label>
         </div>
       );
     }
     else {
       deletionModeButtons = (
         <div className="btn-group">
-          <button type="button" className="btn btn-default btn-rounded btn-xs" onClick={() => { return this.handleDeletionModeChange() }}>
-            <i className="ti-check-box" /> DeletionMode
+          <button type="button" className="btn btn-outline-secondary rounded-pill btn-sm" onClick={() => { return this.handleDeletionModeChange() }}>
+            <i className="ti-check-box" /> {t('search_result.deletion_mode_btn_lavel')}
           </button>
         </div>
       );
     }
 
-    const listView = this.props.pages.map((page) => {
-      const pageId = `#${page._id}`;
-      return (
-        <Page
-          page={page}
-          linkTo={pageId}
-          key={page._id}
-        >
-          { this.state.deletionMode
-            && (
-              <input
-                type="checkbox"
-                className="search-result-list-delete-checkbox"
-                value={pageId}
-                checked={this.state.selectedPages.has(page)}
-                onClick={() => { return this.toggleCheckbox(page) }}
-              />
-            )
-            }
-          <div className="page-list-option">
-            <a href={page.path}><i className="icon-login" /></a>
-          </div>
-        </Page>
-      );
-    });
-
-    // TODO あとでなんとかする
-    setTimeout(() => {
-      $('#search-result-list > nav').affix({ offset: { top: 50 } });
-    }, 1200);
+    const listView = this.renderListView(this.props.pages);
 
     /*
     UI あとで考える
@@ -276,28 +292,25 @@ class SearchResult extends React.Component {
     return (
       <div className="content-main">
         <div className="search-result row" id="search-result">
-          <div className="col-md-4 hidden-xs hidden-sm page-list search-result-list" id="search-result-list">
-            <nav data-spy="affix" data-offset-top="50">
-              <div className="pull-right">
-                {deletionModeButtons}
-                {allSelectCheck}
+          <div className="col-lg-4 d-none d-lg-block page-list search-result-list pr-0" id="search-result-list">
+            <nav>
+              <div className="d-flex align-items-start justify-content-between mt-1">
+                <div className="search-result-meta">
+                  <i className="icon-magnifier" /> Found {this.props.searchResultMeta.total} pages with &quot;{this.props.searchingKeyword}&quot;
+                </div>
+                <div className="text-nowrap">
+                  {deletionModeButtons}
+                  {allSelectCheck}
+                </div>
               </div>
-              <div className="search-result-meta">
-                <i className="icon-magnifier" /> Found {this.props.searchResultMeta.total} pages with &quot;{this.props.searchingKeyword}&quot;
-              </div>
-              <div className="clearfix"></div>
+
               <div className="page-list">
-                <ul className="page-list-ul page-list-ul-flat nav">
-                  {listView}
-                </ul>
+                <ul className="page-list-ul page-list-ul-flat nav nav-pills">{listView}</ul>
               </div>
             </nav>
           </div>
-          <div className="col-md-8 search-result-content" id="search-result-content">
-            <SearchResultList
-              pages={this.props.pages}
-              searchingKeyword={this.props.searchingKeyword}
-            />
+          <div className="col-lg-8 search-result-content" id="search-result-content">
+            <SearchResultList pages={this.props.pages} searchingKeyword={this.props.searchingKeyword} />
           </div>
         </div>
         <DeletePageListModal
@@ -306,10 +319,10 @@ class SearchResult extends React.Component {
           errorMessage={this.state.errorMessageForDeleting}
           cancel={this.closeDeleteConfirmModal}
           confirmedToDelete={this.deleteSelectedPages}
+          isDeleteCompletely={this.state.isDeleteCompletely}
           toggleDeleteCompletely={this.toggleDeleteCompletely}
         />
-
-      </div>// content-main
+      </div> // content-main
     );
   }
 
@@ -324,6 +337,7 @@ const SearchResultWrapper = (props) => {
 
 SearchResult.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  t: PropTypes.func.isRequired, // i18next
 
   pages: PropTypes.array.isRequired,
   searchingKeyword: PropTypes.string.isRequired,
@@ -335,4 +349,4 @@ SearchResult.defaultProps = {
   searchError: null,
 };
 
-export default SearchResultWrapper;
+export default withTranslation()(SearchResultWrapper);

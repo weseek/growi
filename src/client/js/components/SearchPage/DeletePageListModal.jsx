@@ -1,11 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Button from 'react-bootstrap/es/Button';
-import Modal from 'react-bootstrap/es/Modal';
-import Checkbox from 'react-bootstrap/es/Checkbox';
+import { withTranslation } from 'react-i18next';
 
-export default class DeletePageListModal extends React.Component {
+import {
+  Button,
+  Modal, ModalHeader, ModalBody, ModalFooter,
+} from 'reactstrap';
+
+class DeletePageListModal extends React.Component {
 
   /*
    * the threshold for omitting body
@@ -16,6 +19,7 @@ export default class DeletePageListModal extends React.Component {
   }
 
   render() {
+    const { t } = this.props;
     if (this.props.pages == null || this.props.pages.length === 0) {
       return <div></div>;
     }
@@ -27,37 +31,61 @@ export default class DeletePageListModal extends React.Component {
     });
 
     return (
-      <Modal show={this.props.isShown} onHide={this.props.cancel} className="page-list-delete-modal">
-        <Modal.Header closeButton>
-          <Modal.Title>Deleting pages:</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+      <Modal isOpen={this.props.isShown} toggle={this.props.cancel} className="page-list-delete-modal">
+        <ModalHeader tag="h4" toggle={this.props.cancel} className="bg-danger text-light">
+          {t('search_result.deletion_modal_header')}
+        </ModalHeader>
+        <ModalBody>
           <ul>
             {listView}
           </ul>
-        </Modal.Body>
-        <Modal.Footer>
+        </ModalBody>
+        <ModalFooter>
           <div className="d-flex justify-content-between">
             <span className="text-danger">{this.props.errorMessage}</span>
             <span className="d-flex align-items-center">
-              <Checkbox className="text-danger" onClick={this.props.toggleDeleteCompletely} inline>Delete completely</Checkbox>
-              <span className="m-l-10">
-                <Button onClick={this.props.confirmedToDelete}><i className="icon-trash"></i>Delete</Button>
-              </span>
+              <div className="custom-control custom-checkbox custom-checkbox-danger mr-2">
+                <input
+                  type="checkbox"
+                  className="custom-control-input"
+                  id="customCheck-delete-completely"
+                  checked={this.props.isDeleteCompletely}
+                  onChange={this.props.toggleDeleteCompletely}
+                />
+                <label
+                  className="custom-control-label text-danger"
+                  htmlFor="customCheck-delete-completely"
+                >
+                  {t('search_result.delete_completely')}
+                </label>
+              </div>
+              <Button color={this.props.isDeleteCompletely ? 'danger' : 'light'} onClick={this.props.confirmedToDelete}>
+                <i className="icon-trash"></i>
+                {t('search_result.delete')}
+              </Button>
             </span>
           </div>
-        </Modal.Footer>
+        </ModalFooter>
       </Modal>
     );
   }
 
 }
 
+DeletePageListModal.defaultProps = {
+  isDeleteCompletely: false, // for when undefined is passed
+};
+
 DeletePageListModal.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+
   isShown: PropTypes.bool.isRequired,
   pages: PropTypes.array,
   errorMessage: PropTypes.string,
   cancel: PropTypes.func.isRequired, //                 for cancel evnet handling
+  isDeleteCompletely: PropTypes.bool,
   confirmedToDelete: PropTypes.func.isRequired, //      for confirmed event handling
   toggleDeleteCompletely: PropTypes.func.isRequired, // for delete completely check event handling
 };
+
+export default withTranslation()(DeletePageListModal);

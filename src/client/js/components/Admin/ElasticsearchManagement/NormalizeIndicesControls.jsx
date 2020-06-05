@@ -15,14 +15,14 @@ class NormalizeIndicesControls extends React.PureComponent {
       <>
         <button
           type="submit"
-          className={`btn btn-outline ${isEnabled ? 'btn-info' : 'btn-default'}`}
+          className={`btn ${isEnabled ? 'btn-outline-info' : 'btn-outline-secondary'}`}
           onClick={() => { this.props.onNormalizingRequested() }}
           disabled={!isEnabled}
         >
           { t('full_text_search_management.normalize_button') }
         </button>
 
-        <p className="help-block">
+        <p className="form-text text-muted">
           { t('full_text_search_management.normalize_description') }<br />
         </p>
       </>

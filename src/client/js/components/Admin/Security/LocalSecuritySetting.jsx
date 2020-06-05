@@ -75,24 +75,22 @@ class LocalSecuritySetting extends React.Component {
         )}
 
         <div className="row mb-5">
-          <div className="col-xs-3 my-3 text-right">
-            <strong>{t('security_setting.Local.name')}</strong>
-          </div>
-          <div className="col-xs-6 text-left">
-            <div className="checkbox checkbox-success">
+          <div className="col-6 offset-3">
+            <div className="custom-control custom-switch custom-checkbox-success">
               <input
-                id="isLocalEnabled"
                 type="checkbox"
-                checked={adminGeneralSecurityContainer.state.isLocalEnabled}
-                onChange={() => { adminGeneralSecurityContainer.switchIsLocalEnabled() }}
+                className="custom-control-input"
+                id="isLocalEnabled"
+                checked={isLocalEnabled}
+                onChange={() => adminGeneralSecurityContainer.switchIsLocalEnabled()}
                 disabled={adminLocalSecurityContainer.state.useOnlyEnvVars}
               />
-              <label htmlFor="isLocalEnabled">
+              <label className="custom-control-label" htmlFor="isLocalEnabled">
                 {t('security_setting.Local.enable_local')}
               </label>
             </div>
             {(!adminGeneralSecurityContainer.state.setupStrategies.includes('local') && isLocalEnabled)
-            && <div className="label label-warning">{t('security_setting.setup_is_not_yet_complete')}</div>}
+              && <div className="badge badge-warning">{t('security_setting.setup_is_not_yet_complete')}</div>}
           </div>
         </div>
 
@@ -101,74 +99,63 @@ class LocalSecuritySetting extends React.Component {
 
             <h3 className="border-bottom">{t('security_setting.configuration')}</h3>
 
-            <div className="row mb-5">
-              <strong className="col-xs-3 text-right">{t('Register limitation')}</strong>
-              <div className="col-xs-9 text-left">
-                <div className="my-0 btn-group">
-                  <div className="dropdown">
-                    <button className="btn btn-default dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      {registrationMode === 'Open' && <span className="pull-left">{t('security_setting.registration_mode.open')}</span>}
-                      {registrationMode === 'Restricted' && <span className="pull-left">{t('security_setting.registration_mode.restricted')}</span>}
-                      {registrationMode === 'Closed' && <span className="pull-left">{t('security_setting.registration_mode.closed')}</span>}
-                      <span className="bs-caret pull-right">
-                        <span className="caret" />
-                      </span>
+            <div className="row">
+              <div className="col-12 col-md-3 text-left text-md-right py-2">
+                <strong>{t('Register limitation')}</strong>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="dropdown">
+                  <button
+                    className="btn btn-outline-secondary dropdown-toggle"
+                    type="button"
+                    id="dropdownMenuButton"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="true"
+                  >
+                    {registrationMode === 'Open' && t('security_setting.registration_mode.open')}
+                    {registrationMode === 'Restricted' && t('security_setting.registration_mode.restricted')}
+                    {registrationMode === 'Closed' && t('security_setting.registration_mode.closed')}
+                  </button>
+                  <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <button className="dropdown-item" type="button" onClick={() => { adminLocalSecurityContainer.changeRegistrationMode('Open') }}>
+                      {t('security_setting.registration_mode.open')}
                     </button>
-                    {/* TODO adjust dropdown after BS4 */}
-                    <ul className="dropdown-menu" role="menu">
-                      <li
-                        key="Open"
-                        role="presentation"
-                        type="button"
-                        onClick={() => { adminLocalSecurityContainer.changeRegistrationMode('Open') }}
-                      >
-                        <a role="menuitem">{t('security_setting.registration_mode.open')}</a>
-                      </li>
-                      <li
-                        key="Restricted"
-                        role="presentation"
-                        type="button"
-                        onClick={() => { adminLocalSecurityContainer.changeRegistrationMode('Restricted') }}
-                      >
-                        <a role="menuitem">{t('security_setting.registration_mode.restricted')}</a>
-                      </li>
-                      <li
-                        key="Closed"
-                        role="presentation"
-                        type="button"
-                        onClick={() => { adminLocalSecurityContainer.changeRegistrationMode('Closed') }}
-                      >
-                        <a role="menuitem">{t('security_setting.registration_mode.closed')}</a>
-                      </li>
-                    </ul>
+                    <button className="dropdown-item" type="button" onClick={() => { adminLocalSecurityContainer.changeRegistrationMode('Restricted') }}>
+                      {t('security_setting.registration_mode.restricted')}
+                    </button>
+                    <button className="dropdown-item" type="button" onClick={() => { adminLocalSecurityContainer.changeRegistrationMode('Closed') }}>
+                      {t('security_setting.registration_mode.closed')}
+                    </button>
                   </div>
-                  <p className="help-block">
-                    {t('security_setting.Register limitation desc')}
-                  </p>
                 </div>
+
+                <p className="form-text text-muted small">
+                  {t('security_setting.Register limitation desc')}
+                </p>
               </div>
             </div>
-            <div className="row mb-5">
-              <strong className="col-xs-3 text-right" dangerouslySetInnerHTML={{ __html: t('The whitelist of registration permission E-mail address') }} />
-              <div className="col-xs-6">
-                <div>
-                  <textarea
-                    className="form-control"
-                    type="textarea"
-                    name="registrationWhiteList"
-                    defaultValue={adminLocalSecurityContainer.state.registrationWhiteList.join('\n')}
-                    onChange={e => adminLocalSecurityContainer.changeRegistrationWhiteList(e.target.value)}
-                  />
-                  <p className="help-block small">{t('security_setting.restrict_emails')}<br />{t('security_setting.for_instance')}
-                    <code>@growi.org</code>{t('security_setting.only_those')}<br />
-                    {t('security_setting.insert_single')}
-                  </p>
-                </div>
+            <div className="row">
+              <div className="col-12 col-md-3 text-left text-md-right">
+                <strong dangerouslySetInnerHTML={{ __html: t('The whitelist of registration permission E-mail address') }} />
+              </div>
+              <div className="col-12 col-md-6">
+                <textarea
+                  className="form-control"
+                  type="textarea"
+                  name="registrationWhiteList"
+                  defaultValue={adminLocalSecurityContainer.state.registrationWhiteList.join('\n')}
+                  onChange={e => adminLocalSecurityContainer.changeRegistrationWhiteList(e.target.value)}
+                />
+                <p className="form-text text-muted small">{t('security_setting.restrict_emails')}<br />{t('security_setting.for_example')}
+                  <code>@growi.org</code>{t('security_setting.in_this_case')}<br />
+                  {t('security_setting.insert_single')}
+                </p>
               </div>
             </div>
 
             <div className="row my-3">
-              <div className="col-xs-offset-3 col-xs-5">
+              <div className="offset-3 col-6">
                 <button
                   type="button"
                   className="btn btn-primary"

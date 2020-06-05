@@ -1,2 +1,21 @@
-// override bootstrap
+//== GROWI Official Color
+$growi-green: #74bc46;
+$growi-blue: #175fa5;
+
+$font-family-for-staff-credit: Lato, -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif !default;
 $font-family-monospace-not-strictly: Monaco, Menlo, Consolas, 'Courier New', MeiryoKe_Gothic, monospace;
+
+//== Layout
+$grw-navbar-height: 52px;
+$grw-navbar-border-width: 3.3333px;
+
+$grw-sidebar-nav-width: 64px; // !!DO NOT CHANGE!! 'margin-left' for '.css-teprsg' is hardcoded
+$grw-sidebar-content-min-width: 240px;
+
+$grw-logo-width: $grw-sidebar-nav-width;
+$grw-logomark-width: 36px;
+
+// fix tab width to 95 pixels
+// see also '_on-edit.scss'
+$grw-nav-main-left-tab-width: 95px;
+$grw-nav-main-tab-height: 42px;

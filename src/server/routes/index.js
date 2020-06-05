@@ -23,7 +23,6 @@ module.exports = function(crowi, app) {
   const user = require('./user')(crowi, app);
   const attachment = require('./attachment')(crowi, app);
   const comment = require('./comment')(crowi, app);
-  const bookmark = require('./bookmark')(crowi, app);
   const tag = require('./tag')(crowi, app);
   const revision = require('./revision')(crowi, app);
   const search = require('./search')(crowi, app);
@@ -66,17 +65,17 @@ module.exports = function(crowi, app) {
   app.get('/admin/security'                     , loginRequiredStrictly , adminRequired , admin.security.index);
 
   // OAuth
-  app.get('/passport/google'                      , loginPassport.loginWithGoogle);
-  app.get('/passport/github'                      , loginPassport.loginWithGitHub);
-  app.get('/passport/twitter'                     , loginPassport.loginWithTwitter);
-  app.get('/passport/oidc'                        , loginPassport.loginWithOidc);
-  app.get('/passport/saml'                        , loginPassport.loginWithSaml);
-  app.get('/passport/basic'                       , loginPassport.loginWithBasic);
-  app.get('/passport/google/callback'             , loginPassport.loginPassportGoogleCallback);
-  app.get('/passport/github/callback'             , loginPassport.loginPassportGitHubCallback);
-  app.get('/passport/twitter/callback'            , loginPassport.loginPassportTwitterCallback);
-  app.get('/passport/oidc/callback'               , loginPassport.loginPassportOidcCallback);
-  app.post('/passport/saml/callback'              , loginPassport.loginPassportSamlCallback);
+  app.get('/passport/google'                      , loginPassport.loginWithGoogle, loginPassport.loginFailure);
+  app.get('/passport/github'                      , loginPassport.loginWithGitHub, loginPassport.loginFailure);
+  app.get('/passport/twitter'                     , loginPassport.loginWithTwitter, loginPassport.loginFailure);
+  app.get('/passport/oidc'                        , loginPassport.loginWithOidc, loginPassport.loginFailure);
+  app.get('/passport/saml'                        , loginPassport.loginWithSaml, loginPassport.loginFailure);
+  app.get('/passport/basic'                       , loginPassport.loginWithBasic, loginPassport.loginFailure);
+  app.get('/passport/google/callback'             , loginPassport.loginPassportGoogleCallback   , loginPassport.loginFailure);
+  app.get('/passport/github/callback'             , loginPassport.loginPassportGitHubCallback   , loginPassport.loginFailure);
+  app.get('/passport/twitter/callback'            , loginPassport.loginPassportTwitterCallback  , loginPassport.loginFailure);
+  app.get('/passport/oidc/callback'               , loginPassport.loginPassportOidcCallback     , loginPassport.loginFailure);
+  app.post('/passport/saml/callback'              , loginPassport.loginPassportSamlCallback     , loginPassport.loginFailure);
 
   // markdown admin
   app.get('/admin/markdown'                   , loginRequiredStrictly , adminRequired , admin.markdown.index);
@@ -121,18 +120,8 @@ module.exports = function(crowi, app) {
   app.get('/admin/export/:fileName'             , loginRequiredStrictly , adminRequired ,admin.export.download);
 
   app.get('/me'                       , loginRequiredStrictly , me.index);
-  app.get('/me/password'              , loginRequiredStrictly , me.password);
-  app.get('/me/apiToken'              , loginRequiredStrictly , me.apiToken);
-  app.post('/me'                      , loginRequiredStrictly , csrf , form.me.user , me.index);
   // external-accounts
   app.get('/me/external-accounts'                         , loginRequiredStrictly , me.externalAccounts.list);
-  app.post('/me/external-accounts/disassociate'           , loginRequiredStrictly , me.externalAccounts.disassociate);
-  app.post('/me/external-accounts/associateMikan'         , loginRequiredStrictly , form.login , me.externalAccounts.associateMikan);
-  app.post('/me/external-accounts/associateLdap'          , loginRequiredStrictly , form.login , me.externalAccounts.associateLdap);
-
-  app.post('/me/password'             , form.me.password          , loginRequiredStrictly , me.password);
-  app.post('/me/imagetype'            , form.me.imagetype         , loginRequiredStrictly , me.imagetype);
-  app.post('/me/apiToken'             , form.me.apiToken          , loginRequiredStrictly , me.apiToken);
 
   app.get('/:id([0-9a-z]{24})'       , loginRequired , page.redirector);
   app.get('/_r/:id([0-9a-z]{24})'    , loginRequired , page.redirector); // alias
@@ -172,11 +161,6 @@ module.exports = function(crowi, app) {
   app.post('/_api/comments.add'       , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, comment.api.add);
   app.post('/_api/comments.update'    , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, comment.api.update);
   app.post('/_api/comments.remove'    , accessTokenParser , loginRequiredStrictly , csrf, comment.api.remove);
-  app.get('/_api/bookmarks.get'       , accessTokenParser , loginRequired , bookmark.api.get);
-  app.post('/_api/bookmarks.add'      , accessTokenParser , loginRequiredStrictly , csrf, bookmark.api.add);
-  app.post('/_api/bookmarks.remove'   , accessTokenParser , loginRequiredStrictly , csrf, bookmark.api.remove);
-  app.post('/_api/likes.add'          , accessTokenParser , loginRequiredStrictly , csrf, page.api.like);
-  app.post('/_api/likes.remove'       , accessTokenParser , loginRequiredStrictly , csrf, page.api.unlike);
   app.get('/_api/attachments.list'    , accessTokenParser , loginRequired , attachment.api.list);
   app.post('/_api/attachments.add'                  , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, attachment.api.add);
   app.post('/_api/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, attachment.api.uploadProfileImage);
@@ -200,4 +184,5 @@ module.exports = function(crowi, app) {
 
   app.get('/*/$'                   , loginRequired , page.showPageWithEndOfSlash, page.notFound);
   app.get('/*'                     , loginRequired , page.showPage, page.notFound);
+
 };

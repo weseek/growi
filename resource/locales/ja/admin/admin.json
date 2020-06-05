@@ -7,7 +7,10 @@
     "list_of_installed_plugins": "インストールされているプラグイン一覧",
     "package_name": "パッケージ名",
     "specified_version": "指定バージョン",
-    "installed_version": "インストールされているバージョン"
+    "installed_version": "インストールされているバージョン",
+    "list_of_env_vars":"サーバー側で設定されている環境変数一覧",
+    "env_var_priority":"セキュリティに関する環境変数を除き、データベースの値が優先的に取得されます。",
+    "about_security":"セキュリティに関する環境変数は <a href='/admin/security'>セキュリティ設定画面</a> からご確認ください。"
   },
   "app_setting": {
     "site_name": "サイト名",
@@ -73,8 +76,8 @@
     "xss_desc": "マークダウンテキスト内の HTML タグの扱いを設定し、悪意のあるプログラムからの攻撃を防ぎます",
     "xss_options": {
       "enable_xss_prevention": "XSSを抑制する",
-      "ignore_all_tags": "すべてのタグを抑制する",
-      "ignore_all_tags_desc": "すべてのHTMLタグと属性を使用不可にします",
+      "remove_all_tags": "すべてのタグを抑制する",
+      "remove_all_tags_desc": "すべてのHTMLタグと属性を使用不可にします",
       "recommended_setting": "おすすめ設定",
       "custom_whitelist": "カスタムホワイトリスト",
       "tag_names": "タグ名",
@@ -94,22 +97,11 @@
       "kibela_title": "閲覧重視の構造",
       "kibela_text1": "コンテンツが中心に表示されます。",
       "kibela_text2": "コメントはページの下部に表示されます。",
-      "kibela_text3": "ページ情報は下部に表示されます。",
-      "crowi_title": "ビュー・コントロールの分離",
-      "crowi_text1": "サイドバーを開くと情報が表示されます。",
-      "crowi_text2": "コメントはサイドバーに表示されます。",
-      "crowi_text3": "ページ情報はサイドバーに表示されます。"
+      "kibela_text3": "ページ情報は下部に表示されます。"
     },
-    "behavior": "動作",
-    "behavior_desc": {
-      "growi_text1": "<code>/page</code>と<code>/page/</code>どちらのパスも同じページを表示します。",
-      "growi_text2": "<code>/nonexistent_page</code> では編集フォームを表示します",
-      "growi_text3": "<b>GROWI Enhanced Layout</b>では全てのページが配下のページリストを表示します",
-      "crowi_text1": "<code>/page</code> ではページを表示します。",
-      "crowi_text2": "<code>/page/</code> では配下のページを表示します。",
-      "crowi_text3": "<code>/page/</code>がポータルに適応している場合、ポータルページと配下のページリストを表示します。",
-      "crowi_text4": "<code>/nonexistent_page</code> では編集フォームを表示します",
-      "crowi_text5": "<code>/nonexistent_page</code> では配下のページリストを表示します。"
+    "theme_desc" : {
+      "light_and_dark": "Light/Dark モード選択あり",
+      "unique": "モード選択なし"
     },
     "function": "機能",
     "function_desc": "機能の有効/無効を選択できます。",
@@ -133,7 +125,10 @@
     "code_highlight": "コードハイライト",
     "nocdn_desc": "この機能は、環境変数 <code>NO_CDN=true</code> の時は無効化されます。<br>GitHub スタイルが適用されています。",
     "custom_title": "カスタム Title",
-    "custom_title_detail": "<code>&lt;title&gt;</code>タグのコンテンツをカスタマイズできます。<br><code>&#123;&#123;sitename&#125;&#125;</code>がサイト名、<code>&#123;&#123;page&#125;&#125;</code>がページ名またはページパスに置換されます。",
+    "custom_title_detail": "<code>&lt;title&gt;</code>タグのコンテンツをカスタマイズできます。以下のプレースホルダーは自動的に置換されます:",
+    "custom_title_detail_placeholder1": "<code>&#123;&#123;sitename&#125;&#125;</code> - この Wiki のサイト名",
+    "custom_title_detail_placeholder2": "<code>&#123;&#123;pagename&#125;&#125;</code> - 現在表示中のページ名",
+    "custom_title_detail_placeholder3": "<code>&#123;&#123;pagepath&#125;&#125;</code> - 現在表示中のページパス",
     "custom_header": "カスタム HTML Header",
     "custom_header_detail": "システム全体に適用される HTML を記述できます。<code>&lt;header&gt;</code> タグ内の他の <code>&lt;script&gt;</code> タグ読み込み前に展開されます。<br>変更の反映はページの更新が必要です。",
     "custom_css": "カスタム CSS",
@@ -166,7 +161,12 @@
     "import_from": "{{from}} からインポート",
     "import_growi_archive": "GROWI アーカイブをインポート",
     "growi_settings": {
-      "overwrite_documents": "インポートされたドキュメントは既存のドキュメントを上書きします",
+      "description_of_import_mode": {
+        "about": "既存のデータと同名であるデータをインポートする際の挙動は以下の3つのモードから選べます。",
+        "insert": "Insert: 当該データのインポートをスキップします。",
+        "upsert": "Upsert: 既存のデータをインポートデータで上書き更新します。",
+        "flash_and_insert": "Flash and Insert: 既存のデータを完全に削除した後、インポートを行います。"
+      },
       "growi_archive_file": "GROWI アーカイブファイル",
       "uploaded_data": "アップロードされたデータ",
       "extracted_file": "展開されたファイル",
@@ -252,6 +252,8 @@
       "new_password": "新しいパスワード"
     },
     "external_account": "外部アカウントの管理",
+    "external_accounts": "外部アカウント",
+    "create_external_account":"外部アカウントの作成",
     "external_account_list": "外部アカウント一覧",
     "invite": "招待する",
     "invited": "ユーザーを招待しました",

@@ -5,19 +5,21 @@
   user-page
 {% endblock %}
 
-{% block content_header %}
-  {% if pageUser %}
-    {% include '../widget/user_page_header.html' %}
-  {% else %}
-    {% parent %}
-  {% endif %}
+{% block content_header_wrapper %}
+  <header class="py-0 grw-header grw-header-user-page">
+    {% if pageUser %}
+      <div id="grw-subnav-for-user-page" class="grw-subnav" data-page-user="{{ pageUser|json }}"></div>
+    {% else %}
+      {% parent %}
+    {% endif %}
+  </header>
 {% endblock %}
 
 
 {% block content_main %}
   <div class="row">
 
-    <div class="col-lg-10 col-md-9">
+    <div class="col grw-page-content-container">
 
       {#
         # ensure to insert 'user_page_content' widget to here
@@ -25,7 +27,7 @@
         #   Because this block has content like 'Bookmarks' or 'Recent Created' whose height changes dynamically,
         #   setting of 'revision-toc' (affix) is hindered.
         #}
-      <div class="m-b-30 user-page-content-container hidden-print">
+      <div class="mb-5 user-page-content-container d-edit-none d-print-none">
         {% include '../widget/user_page_content.html' %}
       </div>
 
@@ -43,7 +45,7 @@
     </div> {# /.col- #}
 
     {# relocate #revision-toc #}
-    <div class="col-lg-2 col-md-3 revision-toc-container hidden-sm hidden-xs">
+    <div class="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
       <div class="liker-and-seenusers d-flex align-items-end justify-content-end">
         {% if page.seenUsers.length > 10 %}<span class="text-muted">..</span>{% endif %}
         <span id="seen-user-list" class="mr-3" data-user-ids="{{ page.seenUsers|slice(-10)|default([])|join(',') }}"></span>
@@ -51,24 +53,26 @@
           <i class="icon-fw fa fa-paw"></i><span class="seen-user-count">{{ page.seenUsers.length|default(0) }}</span>
         </span>
       </div>
-      <div id="revision-toc" class="revision-toc mt-3" data-spy="affix" data-offset-top="116">
+      <div id="revision-toc" class="revision-toc mt-3 sps sps--abv" data-sps-offset="116">
         <div id="revision-toc-content" class="revision-toc-content"></div>
       </div>
     </div> {# /.col- #}
 
   </div>
 
-  {% if 'growi' === getConfig('crowi', 'customize:behavior') || 'crowi-plus' === getConfig('crowi', 'customize:behavior') %}
-  <div class="row page-list hidden-print m-t-30">
+  <div class="row page-list d-edit-none d-print-none mt-5">
     <div class="col-md-10">
       {% include '../widget/page_list_and_timeline.html' %}
     </div>
   </div>
-  {% endif %}
 
 {% endblock %}
 
 
 {% block content_main_after %}
   {% include 'widget/comments.html' %}
+
+  {% if page %}
+    {% include '../widget/page_attachments.html' %}
+  {% endif %}
 {% endblock %}

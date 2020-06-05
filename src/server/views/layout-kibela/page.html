@@ -13,7 +13,7 @@
 {% block content_main %}
 <div class="row">
 
-  <div class="col-xs-12 bg-white round-corner">
+  <div class="col-12 col-xl-9 col-lg-8 bg-white round-corner">
 
     {% include '../widget/page_content.html' %}
     {# force remove #revision-toc from #content_main of parent #}
@@ -21,22 +21,22 @@
       $('#revision-toc').remove();
     </script>
 
-  </div> {# /.col- #} {# relocate #revision-toc #}
-  <div class="col-lg-2 col-md-3 revision-toc-container hidden-sm hidden-xs">
-    <div id="revision-toc" class="revision-toc affix" data-spy="" data-offset-top="80">
+  </div>
+
+  {# relocate #revision-toc #}
+  <div class="col-xl-3 col-lg-4 d-none d-lg-block revision-toc-container">
+    <div id="revision-toc" class="revision-toc sps sps--abv" data-sps-offset="80">
       <div id="revision-toc-content" class="revision-toc-content"></div>
     </div>
   </div> {# /.col- #}
 
 </div>
 
-  {% if 'growi' === getConfig('crowi', 'customize:behavior') || 'crowi-plus' === getConfig('crowi', 'customize:behavior') %}
-  <div class="row page-list p-t-10 m-t-30 m-b-30 round-corner">
+  <div class="row page-list grw-pt-10px my-5 round-corner d-edit-none">
     <div class="col-md-10">
       {% include '../widget/page_list_and_timeline.html' %}
     </div>
   </div>
-  {% endif %}
 {% endblock %}
 
 
@@ -52,9 +52,5 @@
 {% block body_end %}
   <div id="presentation-layer" class="fullscreen-layer">
     <div id="presentation-container"></div>
-  </div>
-
-  <div id="crowi-modals">
-    {% include '../widget/page_modals.html' %}
   </div>
 {% endblock %}

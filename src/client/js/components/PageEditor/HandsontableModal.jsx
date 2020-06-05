@@ -1,12 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Modal from 'react-bootstrap/es/Modal';
-import Button from 'react-bootstrap/es/Button';
-import ButtonGroup from 'react-bootstrap/es/ButtonGroup';
-import Collapse from 'react-bootstrap/es/Collapse';
+
+import {
+  Collapse,
+  Modal, ModalHeader, ModalBody, ModalFooter,
+} from 'reactstrap';
+
 import Handsontable from 'handsontable';
 import { HotTable } from '@handsontable/react';
 import { debounce } from 'throttle-debounce';
+
 
 import MarkdownTableDataImportForm from './MarkdownTableDataImportForm';
 import MarkdownTable from '../../models/MarkdownTable';
@@ -397,8 +400,16 @@ export default class HandsontableModal extends React.PureComponent {
   renderExpandOrContractButton() {
     const iconClassName = this.state.isWindowExpanded ? 'icon-size-actual' : 'icon-size-fullscreen';
     return (
-      <button type="button" className="close mr-3" onClick={this.state.isWindowExpanded ? this.contractWindow : this.expandWindow}>
+      <button type="button" className="close" onClick={this.state.isWindowExpanded ? this.contractWindow : this.expandWindow}>
         <i className={iconClassName} style={{ fontSize: '0.8em' }} aria-hidden="true"></i>
+      </button>
+    );
+  }
+
+  renderCloseButton() {
+    return (
+      <button type="button" className="close" onClick={this.cancel} aria-label="Close">
+        <span aria-hidden="true">&times;</span>
       </button>
     );
   }
@@ -411,24 +422,39 @@ export default class HandsontableModal extends React.PureComponent {
 
     const dialogClassName = dialogClassNames.join(' ');
 
+    // eslint-disable-next-line no-unused-vars
+    const buttons = (
+      <span>
+        {/* change order because of `float: right` by '.close' class */}
+        {this.renderCloseButton()}
+        {this.renderExpandOrContractButton()}
+      </span>
+    );
+
     return (
-      <Modal show={this.state.show} onHide={this.cancel} bsSize="large" dialogClassName={dialogClassName} keyboard={false}>
-        <Modal.Header closeButton>
-          { this.renderExpandOrContractButton() }
-          <Modal.Title>Edit Table</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="p-0 d-flex flex-column">
-          <div className="px-4 py-3 modal-navbar">
-            <Button className="m-r-20 data-import-button" onClick={this.toggleDataImportArea}>
-              Data Import<i className={this.state.isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down'}></i>
-            </Button>
-            <ButtonGroup>
-              <Button onClick={() => { this.alignButtonHandler('l') }}><i className="ti-align-left"></i></Button>
-              <Button onClick={() => { this.alignButtonHandler('c') }}><i className="ti-align-center"></i></Button>
-              <Button onClick={() => { this.alignButtonHandler('r') }}><i className="ti-align-right"></i></Button>
-            </ButtonGroup>
-            <Collapse in={this.state.isDataImportAreaExpanded}>
-              <div> {/* This div is necessary for smoothing animations. (https://react-bootstrap.github.io/utilities/transitions/#transitions-collapse) */}
+      <Modal isOpen={this.state.show} toggle={this.cancel} size="lg" className={dialogClassName}>
+        <ModalHeader tag="h4" toggle={this.cancel} close={buttons} className="bg-primary text-light">
+          Edit Table
+        </ModalHeader>
+        <ModalBody className="p-0 d-flex flex-column">
+          <div className="grw-hot-modal-navbar px-4 py-3 border-bottom">
+            <button
+              type="button"
+              className="mr-4 data-import-button btn btn-secondary"
+              data-toggle="collapse"
+              data-target="#collapseDataImport"
+              aria-expanded={this.state.isDataImportAreaExpanded}
+              onClick={this.toggleDataImportArea}
+            >
+              <span className="mr-3">Data Import</span><i className={this.state.isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down'}></i>
+            </button>
+            <div role="group" className="btn-group">
+              <button type="button" className="btn btn-secondary" onClick={() => { this.alignButtonHandler('l') }}><i className="ti-align-left"></i></button>
+              <button type="button" className="btn btn-secondary" onClick={() => { this.alignButtonHandler('c') }}><i className="ti-align-center"></i></button>
+              <button type="button" className="btn btn-secondary" onClick={() => { this.alignButtonHandler('r') }}><i className="ti-align-right"></i></button>
+            </div>
+            <Collapse isOpen={this.state.isDataImportAreaExpanded}>
+              <div className="mt-4">
                 <MarkdownTableDataImportForm onCancel={this.toggleDataImportArea} onImport={this.importData} />
               </div>
             </Collapse>
@@ -447,16 +473,14 @@ export default class HandsontableModal extends React.PureComponent {
               afterColumnMove={this.afterColumnMoveHandler}
             />
           </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <div className="d-flex justify-content-between">
-            <Button bsStyle="danger" onClick={this.reset}>Reset</Button>
-            <div className="d-flex">
-              <Button bsStyle="default" onClick={this.cancel}>Cancel</Button>
-              <Button bsStyle="primary" onClick={this.save}>Done</Button>
-            </div>
+        </ModalBody>
+        <ModalFooter className="grw-modal-footer">
+          <button type="button" className="btn btn-danger" onClick={this.reset}>Reset</button>
+          <div className="ml-auto">
+            <button type="button" className="mr-2 btn btn-secondary" onClick={this.cancel}>Cancel</button>
+            <button type="button" className="btn btn-primary" onClick={this.save}>Done</button>
           </div>
-        </Modal.Footer>
+        </ModalFooter>
       </Modal>
     );
   }

@@ -33,11 +33,12 @@ class UserMenu extends React.Component {
 
     return (
       <Fragment>
+        <li className="dropdown-divider"></li>
         <li className="dropdown-header">{t('admin:user_management.user_table.edit_menu')}</li>
         <li>
-          <a role="button" onClick={this.onPasswordResetClicked}>
-            <i className="icon-fw icon-key"></i>{t('admin:user_management.user_table.reset_password')}
-          </a>
+          <button className="dropdown-item" type="button" onClick={this.onPasswordResetClicked}>
+            <i className="icon-fw icon-key"></i>{ t('admin:user_management.reset_password') }
+          </button>
         </li>
       </Fragment>
     );
@@ -48,7 +49,7 @@ class UserMenu extends React.Component {
 
     return (
       <Fragment>
-        <li className="divider"></li>
+        <li className="dropdown-divider"></li>
         <li className="dropdown-header">{t('status')}</li>
         <li>
           {(user.status === 1 || user.status === 3) && <StatusActivateButton user={user} />}
@@ -64,7 +65,7 @@ class UserMenu extends React.Component {
 
     return (
       <Fragment>
-        <li className="divider pl-0"></li>
+        <li className="dropdown-divider pl-0"></li>
         <li className="dropdown-header">{t('admin:user_management.user_table.administrator_menu')}</li>
         <li>
           {user.admin === true && <RemoveAdminButton user={user} />}
@@ -79,15 +80,15 @@ class UserMenu extends React.Component {
 
     return (
       <Fragment>
-        <div className="btn-group admin-user-menu">
-          <button type="button" className="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
-            <i className="icon-settings"></i> <span className="caret"></span>
+        <div className="btn-group admin-user-menu" role="group">
+          <button id="userMenu" type="button" className="btn btn-outline-secondary btn-sm dropdown-toggle" data-toggle="dropdown">
+            <i className="icon-settings"></i>
           </button>
-          <ul className="dropdown-menu" role="menu">
+          <div className="dropdown-menu" aria-labelledby="userMenu">
             {this.renderEditMenu()}
             {user.status !== 4 && this.renderStatusMenu()}
             {user.status === 2 && this.renderAdminMenu()}
-          </ul>
+          </div>
         </div>
       </Fragment>
     );

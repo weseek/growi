@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>{% block html_title %}{{ customizeService.generateCustomTitle(path) }}{% endblock %}</title>
+  <title>{% block html_title %}{{ customizeService.generateCustomTitle(page || path) }}{% endblock %}</title>
   <meta name="description" content="">
   <meta name="author" content="">
 
@@ -61,7 +61,7 @@
 
 {% block html_body %}
 <body
-  class="main-container content-wrapper {% block html_base_css %}{% endblock %}
+  class="{% block html_base_css %}{% endblock %}
       {% if !getConfig('crowi', 'customize:layout') || 'crowi' === getConfig('crowi', 'customize:layout') %}crowi{% elseif !getConfig('crowi', 'customize:layout') || 'kibela' === getConfig('crowi', 'customize:layout') %}kibela{% else %}growi{% endif %}"
   data-is-admin="{{ user.admin }}"
   data-plugin-enabled="{{ getConfig('crowi', 'plugin:isEnabledPlugins') }}"
@@ -72,119 +72,80 @@
  >
 
 <div id="wrapper">
-  <!-- Navigation -->
-  {% block layout_head_nav %}
-  <nav class="navbar navbar-default navbar-static-top mb-0">
-    <div class="navbar-header">
-      <a class="navbar-toggle hidden-sm hidden-md hidden-lg " href="javascript:void(0)" data-toggle="collapse" data-target=".navbar-collapse">
-        <i class="ti-menu"></i>
-      </a>
-      <div class="top-left-part">
-        <a class="logo" href="/">
-          <b>
-            <div class="logo-mark">{% include '../widget/logo.html' %}</div>
-          </b>
-          <span class="hidden-xs" style="color: black">
-            {% set appTitle = appService.getAppTitle() %}
-            {% set appTitleFontSize = getAppTitleFontSize(appTitle) %}
-            <span class="logo-text">
-              <svg xmlns="http://www.w3.org/2000/svg">
-                <text x="0" y="{{22+appTitleFontSize/2}}" font-size="{{appTitleFontSize}}">
-                  {% block title %}{{ appTitle }}{% endblock %}
-                </text>
-              </svg>
-            </span>
-          </span>
-        </a>
-      </div>
 
-      <ul class="nav navbar-top-links navbar-left hidden-xs">
-        <li>
-          <a class="open-close hidden-xs waves-effect waves-light">
-            <i class="ti-menu"></i>
-          </a>
-        </li>
-        {#  disabled temporary -- 2019.05.13 Yuki Takei
-        <li>
-          <li class="nav-item-admin">
-            <a href="/tags">
-              <i class="tag-icon icon-tag"></i><span>{{ t('Tags') }}</span>
+  {% block layout_head_nav %}
+  <nav class="navbar grw-navbar navbar-expand navbar-dark fixed-top mb-0 px-0">
+    {# Brand Logo #}
+    <div class="navbar-brand mr-0">
+      <a class="grw-logo d-block" href="/">
+        {% include '../widget/logo.html' %}
+      </a>
+    </div>
+    <ul class="navbar-nav d-md-none">
+      <li id="grw-navbar-toggler" class="nav-item"></li>
+    </ul>
+    <div class="grw-app-title d-none d-md-block">
+      {{ appService.getAppTitle() | preventXss }}
+    </div>
+
+    {# Navbar Right #}
+    <ul class="navbar-nav ml-auto">
+      {% if user %}
+        <li id="create-page-button" class="nav-item d-none d-md-block"></li>
+        {% if isSearchServiceConfigured() %}
+          <li class="nav-item d-md-none">
+            <a type="button" class="nav-link px-4" data-target="#grw-search-top-collapse" data-toggle="collapse">
+              <i class="icon-magnifier mr-2"></i>
             </a>
           </li>
-        </li>
-        #}
-        <li>
-          {% if isSearchServiceConfigured() %}
-          <div class="navbar-form navbar-left search-top" role="search" id="search-top"></div>
-          {% endif %}
-        </li>
-      </ul>
+        {% endif %}
+        <li id="personal-dropdown" class="grw-personal-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret"></li>
+      {% else %}
+        <li id="login-user" class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+      {% endif %}
 
-      <ul class="nav navbar-top-links navbar-right pull-right">
-        {% if user and user.admin %}
-        <li class="nav-item-admin">
-          <a href="/admin">
-            <i class="icon-settings"></i><span>{{ t('Admin') }}</span>
-          </a>
-        </li>
-        {% endif %}
+      {% if getConfig('crowi', 'app:confidential') %}
+      <li class="nav-item confidential text-light">{{ getConfig('crowi', 'app:confidential') }}</li>
+      {% endif %}
+    </ul>
 
-        {% if user %}
-        <li class="nav-item-create-page">
-          <a href="#" data-target="#create-page" data-toggle="modal" class="create-page">
-            <i class="icon-pencil"></i><span>{{ t('New') }}</span>
-          </a>
-        </li>
-        <li class="nav-item-help">
-          <a href="https://docs.growi.org/" target="_blank">
-            <i class="icon-question"></i><span>{{ t('Help') }}</span><span class="text-muted small"><i class="icon-share-alt"></i></span>
-          </a>
-        </li>
-        <li id="personal-dropdown" class="dropdown"></li>
-        {% else %}
-        <li id="login-user"><a href="/login">Login</a></li>
-        {% endif %}
-        {% if getConfig('crowi', 'app:confidential') %}
-        <li class="confidential"><a href="#">{{ getConfig('crowi', 'app:confidential') }}</a></li>
-        {% endif %}
-      </ul>
-    </div><!-- /.navbar-header -->
   </nav>
+
   {% include '../modal/create_page.html' %}
   {% endblock  %} {# layout_head_nav #}
 
-  {% block head_warn_alert_siteurl_undefined %}{% include '../widget/alert_siteurl_undefined.html' %}{% endblock %}
   {% block head_warn_breaking_changes %}{% include '../widget/alert_breaking_changes.html' %}{% endblock %}
 
-  {% block sidebar %}
-  <!-- Left navbar-header -->
-  <div class="navbar-default sidebar hidden-print" role="navigation">
-    <div class="sidebar-nav navbar-collapse slimscrollsidebar">
-      <ul class="nav" id="side-menu">
-        <li class="sidebar-search hidden-sm hidden-md hidden-lg">
-          {% if isSearchServiceConfigured() %}
-          <div class="search-sidebar" role="search" id="search-sidebar"></div>
-          {% endif %}
-        </li>
+  <div id="page-wrapper" class="page-wrapper d-flex">
+    {# Sidebar #}
+    <div id="grw-sidebar-wrapper"></div>
 
-        <li class="tbd"><a href="#">(TBD) Create /Sidebar</a></li>
-      </ul>
+    <div class="flex-fill mw-0">
+      {% block head_warn_alert_siteurl_undefined %}{% include '../widget/alert_siteurl_undefined.html' %}{% endblock %}
+
+      {# Search #}
+      {% if isSearchServiceConfigured() %}
+        <div id="grw-search-top" class="search-top" role="search"></div>
+      {% endif %}
+
+      {% block layout_main %}{% endblock %}
     </div>
   </div>
-  <!-- Left navbar-header end -->
-  {% endblock %}
-
-  <!-- Page Content -->
-  <div id="page-wrapper">
-    {% block layout_main %}
-    {% endblock %} {# layout_main #}
-  </div><!-- /#page-wrapper -->
 
 </div><!-- /#wrapper -->
+
+{% if user %}
+  <div class="grw-fixed-controls-container d-md-none d-edit-none animated fadeInUp faster">
+    <div class="grw-fixed-controls-button-container rounded-circle">
+      <div id='create-page-button-icon'></div>
+    </div>
+  </div>
+{% endif %}
 
 <!-- /#staff-credit -->
 <div id="staff-credit"></div>
 
+<div id="page-create-modal"></div>
 {% include '../modal/shortcuts.html' %}
 
 {% block body_end %}
