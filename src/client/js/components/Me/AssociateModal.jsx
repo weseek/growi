@@ -16,6 +16,7 @@ import AppContainer from '../../services/AppContainer';
 import PersonalContainer from '../../services/PersonalContainer';
 
 import LdapAuthTest from '../Admin/Security/LdapAuthTest';
+import MikanAuthTest from '../Admin/Security/MikanAuthTest';
 
 class AssociateModal extends React.Component {
 
@@ -72,10 +73,15 @@ class AssociateModal extends React.Component {
     return (
       <Modal isOpen={this.props.isOpen} toggle={this.props.onClose} size="lg">
         <ModalHeader className="bg-info text-light" toggle={this.props.onClose}>
-          { t('admin:user_management.create_external_account') }
+          {t('admin:user_management.create_external_account')}
         </ModalHeader>
         <ModalBody>
           <ul className="nav nav-tabs passport-settings mb-2" role="tablist">
+            <li className="nav-item">
+              <a href="#passport-mikan" className="nav-link active" data-toggle="tab" role="tab">
+                <i className="fa fa-paper-plane"></i> LDAP
+              </a>
+            </li>
             <li className="nav-item active">
               <a href="#passport-ldap" className="nav-link active" data-toggle="tab" role="tab">
                 <i className="fa fa-sitemap"></i> LDAP
@@ -105,6 +111,14 @@ class AssociateModal extends React.Component {
           <div className="tab-content">
             <div id="passport-ldap" className="tab-pane active">
               <LdapAuthTest
+                username={this.state.username}
+                password={this.state.password}
+                onChangeUsername={this.onChangeUsername}
+                onChangePassword={this.onChangePassword}
+              />
+            </div>
+            <div id="passport-mikan" className="tab-pane active">
+              <MikanAuthTest
                 username={this.state.username}
                 password={this.state.password}
                 onChangeUsername={this.onChangeUsername}
