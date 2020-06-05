@@ -49,7 +49,7 @@ const componentMappings = {
   'create-page-button-icon': <PageCreateButton isIcon />,
   'page-create-modal': <PageCreateModal />,
 
-  'grw-sidebar-wrapper': <Sidebar isDrawerModeOnInit={appContainer.state.preferDrowerModeByUser} />,
+  'grw-sidebar-wrapper': <Sidebar />,
 
   'staff-credit': <StaffCredit />,
 };

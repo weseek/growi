@@ -8,7 +8,7 @@ import {
   ThemeProvider,
 } from '@atlaskit/navigation-next';
 
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 
 import SidebarNav from './Sidebar/SidebarNav';
@@ -19,12 +19,6 @@ import CustomSidebar from './Sidebar/CustomSidebar';
 const sidebarDefaultWidth = 240;
 
 class Sidebar extends React.Component {
-
-  static propTypes = {
-    appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-    navigationUIController: PropTypes.any.isRequired,
-    isDrawerModeOnInit: PropTypes.bool,
-  };
 
   state = {
     isDrawerMode: this.props.isDrawerModeOnInit,
@@ -176,18 +170,17 @@ class Sidebar extends React.Component {
 
 }
 
-const SidebarWithNavigationUI = withNavigationUIController(Sidebar);
-
-/**
- * Wrapper component for using unstated
- */
-const SidebarWrapper = (props) => {
-  return createSubscribedElement(SidebarWithNavigationUI, props, [AppContainer]);
+Sidebar.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  navigationUIController: PropTypes.any.isRequired,
+  isDrawerModeOnInit: PropTypes.bool,
 };
 
-export default (props) => {
-  // eslint-disable-next-line react/prop-types
-  const { isDrawerModeOnInit } = props;
+/**
+ * Wrapper component for using unstated and NavigationProvider
+ */
+const SidebarWithNavigation = withNavigationUIController((props) => {
+  const { preferDrowerModeByUser: isDrawerModeOnInit } = props.appContainer.state;
 
   const initUICForDrawerMode = isDrawerModeOnInit
     // generate initialUIController for Drawer mode
@@ -201,7 +194,13 @@ export default (props) => {
 
   return (
     <NavigationProvider initialUIController={initUICForDrawerMode}>
-      <SidebarWrapper isDrawerModeOnInit={isDrawerModeOnInit} />
+      <Sidebar {...props} isDrawerModeOnInit />
     </NavigationProvider>
 );
+});
+
+SidebarWithNavigation.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
+
+export default withUnstatedContainers(SidebarWithNavigation, [AppContainer]);
