@@ -446,8 +446,8 @@ module.exports = function(crowi, app) {
     const layoutName = configManager.getConfig('crowi', 'customize:layout');
     const view = `layout-${layoutName}/shared_page`;
 
-    const shareLink = await ShareLink.find({ _id: linkId }).populate('Page');
-    const page = shareLink.relatedPage;
+    const shareLink = await ShareLink.findOne({ _id: linkId }).populate('relatedPage');
+    let page = shareLink.relatedPage;
 
     if (page == null) {
       // page is not found
@@ -457,6 +457,8 @@ module.exports = function(crowi, app) {
 
     const renderVars = {};
 
+    // populate
+    page = await page.populateDataToShowRevision();
     addRendarVarsForPage(renderVars, page);
     addRendarVarsForScope(renderVars, page);
 
