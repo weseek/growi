@@ -119,7 +119,7 @@
 }
 
 // Drawer Mode
-.grw-sidebar.grw-sidebar-drawer {
+@mixin drawer() {
   position: fixed;
   z-index: $zindex-fixed - 2;
 
@@ -146,6 +146,16 @@
     div[data-testid='Navigation'] {
       left: 0;
     }
+  }
+}
+
+.grw-sidebar {
+  &.grw-sidebar-drawer {
+    @include drawer();
+  }
+
+  @include media-breakpoint-down(sm) {
+    @include drawer();
   }
 }
 

@@ -93,7 +93,6 @@ class Sidebar extends React.Component {
     else {
       // clear transition temporary when restore collapsed sidebar
       if (this.sidebarCollapsedCached) {
-        this.clearNavigationTransitionTemporary(this.navigationElem);
         this.clearNavigationTransitionTemporary(this.ctxNavigationElem);
       }
 
