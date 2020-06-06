@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
@@ -34,8 +34,6 @@ FacebookSecurityManagement.propTypes = {
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
 };
 
-const TwitterSecurityManagementWrapper = (props) => {
-  return createSubscribedElement(FacebookSecurityManagement, props, [AppContainer, AdminGeneralSecurityContainer]);
-};
+const TwitterSecurityManagementWrapper = withUnstatedContainers(FacebookSecurityManagement, [AppContainer, AdminGeneralSecurityContainer]);
 
 export default withTranslation()(TwitterSecurityManagementWrapper);

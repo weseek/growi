@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 
@@ -95,9 +95,7 @@ class RecentCreated extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const RecentCreatedWrapper = (props) => {
-  return createSubscribedElement(RecentCreated, props, [AppContainer, PageContainer]);
-};
+const RecentCreatedWrapper = withUnstatedContainers(RecentCreated, [AppContainer, PageContainer]);
 
 RecentCreated.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,

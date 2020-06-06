@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
@@ -105,9 +105,7 @@ class UserGroupCreateForm extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const UserGroupCreateFormWrapper = (props) => {
-  return createSubscribedElement(UserGroupCreateForm, props, [AppContainer]);
-};
+const UserGroupCreateFormWrapper = withUnstatedContainers(UserGroupCreateForm, [AppContainer]);
 
 UserGroupCreateForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next

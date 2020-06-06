@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
 const NavbarToggler = (props) => {
@@ -31,9 +31,7 @@ const NavbarToggler = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const NavbarTogglerWrapper = (props) => {
-  return createSubscribedElement(NavbarToggler, props, [AppContainer]);
-};
+const NavbarTogglerWrapper = withUnstatedContainers(NavbarToggler, [AppContainer]);
 
 
 NavbarToggler.propTypes = {

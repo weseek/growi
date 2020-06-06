@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
@@ -211,8 +211,6 @@ GitHubSecurityManagement.propTypes = {
   adminGitHubSecurityContainer: PropTypes.instanceOf(AdminGitHubSecurityContainer).isRequired,
 };
 
-const GitHubSecurityManagementWrapper = (props) => {
-  return createSubscribedElement(GitHubSecurityManagement, props, [AppContainer, AdminGeneralSecurityContainer, AdminGitHubSecurityContainer]);
-};
+const GitHubSecurityManagementWrapper = withUnstatedContainers(GitHubSecurityManagement, [AppContainer, AdminGeneralSecurityContainer, AdminGitHubSecurityContainer]);
 
 export default withTranslation()(GitHubSecurityManagementWrapper);

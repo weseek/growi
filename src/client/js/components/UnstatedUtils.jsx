@@ -30,37 +30,6 @@ function generateAutoNamedProps(instances) {
 }
 
 /**
- * create React component instance that is injected specified containers
- *
- * @param {object} componentClass wrapped React.Component class
- * @param {*} props
- * @param {*} containerClasses unstated container classes to subscribe
- * @returns returns such like a following element:
- *  e.g.
- *  <Subscribe to={containerClasses}>  // containerClasses = [AppContainer, PageContainer]
- *    { (appContainer, pageContainer) => (
- *      <Component appContainer={appContainer} pageContainer={pageContainer} {...this.props} />
- *    )}
- *  </Subscribe>
- */
-export function createSubscribedElement(componentClass, props, containerClasses) {
-  return (
-    // wrap with <Subscribe></Subscribe>
-    <Subscribe to={containerClasses}>
-      { (...containers) => {
-        const propsForContainers = generateAutoNamedProps(containers);
-
-        return React.createElement(
-          componentClass,
-          Object.assign(propsForContainers, props),
-        );
-      }}
-    </Subscribe>
-  );
-
-}
-
-/**
  * Return a React component that is injected unstated containers
  *
  * @param {object} Component A React.Component or functional component
@@ -74,13 +43,13 @@ export function createSubscribedElement(componentClass, props, containerClasses)
  *  </Subscribe>
  */
 export function withUnstatedContainers(Component, containerClasses) {
-  return props => (
+  return React.forwardRef((props, ref) => (
     // wrap with <Subscribe></Subscribe>
     <Subscribe to={containerClasses}>
       { (...containers) => {
         const propsForContainers = generateAutoNamedProps(containers);
-        return <Component {...props} {...propsForContainers} />;
+        return <Component {...props} {...propsForContainers} ref={ref} />;
       }}
     </Subscribe>
-  );
+  ));
 }
