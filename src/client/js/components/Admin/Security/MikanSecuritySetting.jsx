@@ -77,7 +77,7 @@ class MikanSecuritySetting extends React.Component {
           <div className="col-6 offset-3">
             <div className="custom-control custom-switch custom-checkbox-success">
               <input
-                id="isLdapEnabled"
+                id="isMikanEnabled"
                 className="custom-control-input"
                 type="checkbox"
                 checked={isMikanEnabled}
