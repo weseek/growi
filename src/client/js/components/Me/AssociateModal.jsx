@@ -52,7 +52,9 @@ class AssociateModal extends React.Component {
     const { username, password } = this.state;
 
     try {
-      await personalContainer.associateLdapAccount({ username, password });
+      // TODO: auto switch
+      // await personalContainer.associateLdapAccount({ username, password });
+      await personalContainer.associateMikanAccount({ username, password });
       this.props.onClose();
       toastSuccess(t('security_setting.updated_general_security_setting'));
     }
@@ -77,13 +79,13 @@ class AssociateModal extends React.Component {
         </ModalHeader>
         <ModalBody>
           <ul className="nav nav-tabs passport-settings mb-2" role="tablist">
-            <li className="nav-item">
+            <li className="nav-item active">
               <a href="#passport-mikan" className="nav-link active" data-toggle="tab" role="tab">
-                <i className="fa fa-paper-plane"></i> LDAP
+                <i className="fa fa-paper-plane"></i> Mikan
               </a>
             </li>
-            <li className="nav-item active">
-              <a href="#passport-ldap" className="nav-link active" data-toggle="tab" role="tab">
+            <li className="nav-item">
+              <a href="#passport-ldap" className="nav-link" data-toggle="tab" role="tab">
                 <i className="fa fa-sitemap"></i> LDAP
               </a>
             </li>
@@ -109,16 +111,16 @@ class AssociateModal extends React.Component {
             </li>
           </ul>
           <div className="tab-content">
-            <div id="passport-ldap" className="tab-pane active">
-              <LdapAuthTest
+            <div id="passport-mikan" className="tab-pane active">
+              <MikanAuthTest
                 username={this.state.username}
                 password={this.state.password}
                 onChangeUsername={this.onChangeUsername}
                 onChangePassword={this.onChangePassword}
               />
             </div>
-            <div id="passport-mikan" className="tab-pane active">
-              <MikanAuthTest
+            <div id="passport-ldap" className="tab-pane">
+              <LdapAuthTest
                 username={this.state.username}
                 password={this.state.password}
                 onChangeUsername={this.onChangeUsername}
