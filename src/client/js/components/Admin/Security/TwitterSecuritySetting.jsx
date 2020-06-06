@@ -6,7 +6,6 @@ import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 import AdminTwitterSecurityContainer from '../../../services/AdminTwitterSecurityContainer';
 
@@ -214,11 +213,13 @@ class TwitterSecurityManagement extends React.Component {
 
 TwitterSecurityManagement.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
   adminTwitterSecurityContainer: PropTypes.instanceOf(AdminTwitterSecurityContainer).isRequired,
 };
 
-const TwitterSecurityManagementWrapper = withUnstatedContainers(TwitterSecurityManagement, [AppContainer, AdminGeneralSecurityContainer, AdminTwitterSecurityContainer]);
+const TwitterSecurityManagementWrapper = withUnstatedContainers(
+  TwitterSecurityManagement,
+  [AdminGeneralSecurityContainer, AdminTwitterSecurityContainer],
+);
 
 export default withTranslation()(TwitterSecurityManagementWrapper);

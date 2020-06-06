@@ -218,6 +218,9 @@ GoogleSecurityManagement.propTypes = {
   adminGoogleSecurityContainer: PropTypes.instanceOf(AdminGoogleSecurityContainer).isRequired,
 };
 
-const GoogleSecurityManagementWrapper = withUnstatedContainers(GoogleSecurityManagement, [AppContainer, AdminGeneralSecurityContainer, AdminGoogleSecurityContainer]);
+const GoogleSecurityManagementWrapper = withUnstatedContainers(
+  GoogleSecurityManagement,
+  [AppContainer, AdminGeneralSecurityContainer, AdminGoogleSecurityContainer],
+);
 
 export default withTranslation()(GoogleSecurityManagementWrapper);
