@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
+import { UncontrolledTooltip } from 'reactstrap';
+
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
@@ -63,6 +65,21 @@ const PersonalDropdown = (props) => {
     return preferDarkModeByMediaQuery;
   };
 
+  /* eslint-disable react/prop-types */
+  const DrawerIcon = props => (
+    <>
+      <i id={props.id} className="icon-drawer px-2"></i>
+      <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Drawer</UncontrolledTooltip>
+    </>
+  );
+  const DockIcon = props => (
+    <>
+      <i id={props.id} className="ti-layout-sidebar-left px-2"></i>
+      <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Dock</UncontrolledTooltip>
+    </>
+  );
+  /* eslint-enable react/prop-types */
+
   return (
     <>
       {/* Button */}
@@ -103,7 +120,7 @@ const PersonalDropdown = (props) => {
         <form className="px-4">
           <div className="form-row justify-content-center">
             <div className="form-group col-auto mb-0 d-flex align-items-center">
-              <i className="icon-drawer"></i>
+              <DrawerIcon id="icon-prefer-drawer" />
               <div className="custom-control custom-switch custom-checkbox-secondary ml-2">
                 <input
                   id="swSidebarMode"
@@ -114,7 +131,7 @@ const PersonalDropdown = (props) => {
                 />
                 <label className="custom-control-label" htmlFor="swSidebarMode"></label>
               </div>
-              <i className="ti-layout-sidebar-left"></i>
+              <DockIcon id="icon-prefer-dock" />
             </div>
           </div>
         </form>
@@ -122,7 +139,7 @@ const PersonalDropdown = (props) => {
         <form className="px-4">
           <div className="form-row justify-content-center">
             <div className="form-group col-auto mb-0 d-flex align-items-center">
-              <i className="icon-drawer"></i>
+              <DrawerIcon id="icon-prefer-drawer-on-edit" />
               <div className="custom-control custom-switch custom-checkbox-secondary ml-2">
                 <input
                   id="swSidebarModeOnEditor"
@@ -133,7 +150,7 @@ const PersonalDropdown = (props) => {
                 />
                 <label className="custom-control-label" htmlFor="swSidebarModeOnEditor"></label>
               </div>
-              <i className="ti-layout-sidebar-left"></i>
+              <DockIcon id="icon-prefer-dock-on-edit" />
             </div>
           </div>
         </form>
