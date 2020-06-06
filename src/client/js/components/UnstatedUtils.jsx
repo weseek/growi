@@ -59,3 +59,28 @@ export function createSubscribedElement(componentClass, props, containerClasses)
   );
 
 }
+
+/**
+ * Return a React component that is injected unstated containers
+ *
+ * @param {object} Component A React.Component or functional component
+ * @param {array} containerClasses unstated container classes to subscribe
+ * @returns returns such like a following element:
+ *  e.g.
+ *  <Subscribe to={containerClasses}>  // containerClasses = [AppContainer, PageContainer]
+ *    { (appContainer, pageContainer) => (
+ *      <Component appContainer={appContainer} pageContainer={pageContainer} {...this.props} />
+ *    )}
+ *  </Subscribe>
+ */
+export function withUnstatedContainers(Component, containerClasses) {
+  return props => (
+    // wrap with <Subscribe></Subscribe>
+    <Subscribe to={containerClasses}>
+      { (...containers) => {
+        const propsForContainers = generateAutoNamedProps(containers);
+        return <Component {...props} {...propsForContainers} />;
+      }}
+    </Subscribe>
+  );
+}

@@ -16,23 +16,12 @@ class SearchTop extends React.Component {
     this.state = {
       text: '',
       isScopeChildren: false,
-      isCollapsed: true,
     };
 
     this.onInputChange = this.onInputChange.bind(this);
     this.onClickAllPages = this.onClickAllPages.bind(this);
     this.onClickChildren = this.onClickChildren.bind(this);
     this.search = this.search.bind(this);
-  }
-
-  componentWillMount() {
-    this.initBreakpointEvents();
-  }
-
-  initBreakpointEvents() {
-    this.props.appContainer.addBreakpointListener('md', (mql) => {
-      this.setState({ isCollapsed: !mql.matches });
-    }, true);
   }
 
   onInputChange(text) {
@@ -62,7 +51,7 @@ class SearchTop extends React.Component {
   }
 
   Root = ({ children }) => {
-    const { isCollapsed } = this.state;
+    const { isDeviceSmallerThanMd: isCollapsed } = this.props.appContainer.state;
 
     return isCollapsed
       ? (
