@@ -304,12 +304,12 @@ class PassportService {
               return done(null, false, { message: 'Incorrect credentials.' });
             }
           }).catch((err) => {
-            if (err.response.status !== 400) {
-              // server error
-              return done(err);
+            if (err.response && err.response.status === 400) {
+              // faild...
+              return done(null, false, { message: err.message });
             }
-            // faild...
-            return done(null, false, { message: 'Incorrect credentials.' });
+            // server error
+            return done(err);
           });
         });
       },
