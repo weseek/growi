@@ -9,7 +9,7 @@ import {
   UncontrolledTooltip,
 } from 'reactstrap';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
 import RevisionBody from '../Page/RevisionBody';
@@ -195,9 +195,7 @@ class Draft extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const DraftWrapper = (props) => {
-  return createSubscribedElement(Draft, props, [AppContainer]);
-};
+const DraftWrapper = withUnstatedContainers(Draft, [AppContainer]);
 
 
 Draft.propTypes = {

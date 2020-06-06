@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import * as toastr from 'toastr';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 import EditorContainer from '../../services/EditorContainer';
@@ -137,9 +137,7 @@ class TagLabels extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const TagLabelsWrapper = (props) => {
-  return createSubscribedElement(TagLabels, props, [AppContainer, PageContainer, EditorContainer]);
-};
+const TagLabelsWrapper = withUnstatedContainers(TagLabels, [AppContainer, PageContainer, EditorContainer]);
 
 
 TagLabels.propTypes = {

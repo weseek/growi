@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 import GrowiRenderer from '../../util/GrowiRenderer';
@@ -115,9 +115,7 @@ class RevisionRenderer extends React.PureComponent {
 /**
  * Wrapper component for using unstated
  */
-const RevisionRendererWrapper = (props) => {
-  return createSubscribedElement(RevisionRenderer, props, [AppContainer, PageContainer]);
-};
+const RevisionRendererWrapper = withUnstatedContainers(RevisionRenderer, [AppContainer, PageContainer]);
 
 RevisionRenderer.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,

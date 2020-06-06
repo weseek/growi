@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
 /**
@@ -92,9 +92,7 @@ class TagsInput extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const TagsInputWrapper = (props) => {
-  return createSubscribedElement(TagsInput, props, [AppContainer]);
-};
+const TagsInputWrapper = withUnstatedContainers(TagsInput, [AppContainer]);
 
 TagsInput.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,

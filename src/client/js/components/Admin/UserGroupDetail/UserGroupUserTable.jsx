@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
 
 import UserPicture from '../../User/UserPicture';
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import AdminUserGroupDetailContainer from '../../../services/AdminUserGroupDetailContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
@@ -118,8 +118,6 @@ UserGroupUserTable.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const UserGroupUserTableWrapper = (props) => {
-  return createSubscribedElement(UserGroupUserTable, props, [AppContainer, AdminUserGroupDetailContainer]);
-};
+const UserGroupUserTableWrapper = withUnstatedContainers(UserGroupUserTable, [AppContainer, AdminUserGroupDetailContainer]);
 
 export default withTranslation()(UserGroupUserTableWrapper);

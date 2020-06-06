@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 import LinkedPagePath from '@commons/models/linked-page-path';
 import PagePathHierarchicalLink from '@commons/components/PagePathHierarchicalLink';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 
@@ -80,9 +80,7 @@ const GrowiSubNavigationForUserPage = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const GrowiSubNavigationForUserPageWrapper = (props) => {
-  return createSubscribedElement(GrowiSubNavigationForUserPage, props, [AppContainer, PageContainer]);
-};
+const GrowiSubNavigationForUserPageWrapper = withUnstatedContainers(GrowiSubNavigationForUserPage, [AppContainer, PageContainer]);
 
 
 GrowiSubNavigationForUserPage.propTypes = {

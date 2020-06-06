@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
@@ -139,8 +139,6 @@ LdapAuthTest.propTypes = {
   onChangePassword: PropTypes.func.isRequired,
 };
 
-const LdapAuthTestWrapper = (props) => {
-  return createSubscribedElement(LdapAuthTest, props, [AppContainer, AdminLdapSecurityContainer]);
-};
+const LdapAuthTestWrapper = withUnstatedContainers(LdapAuthTest, [AppContainer, AdminLdapSecurityContainer]);
 
 export default withTranslation()(LdapAuthTestWrapper);

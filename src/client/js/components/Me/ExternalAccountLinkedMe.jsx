@@ -3,7 +3,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import { toastError } from '../../util/apiNotification';
 
 import AppContainer from '../../services/AppContainer';
@@ -119,9 +119,7 @@ class ExternalAccountLinkedMe extends React.Component {
 
 }
 
-const ExternalAccountLinkedMeWrapper = (props) => {
-  return createSubscribedElement(ExternalAccountLinkedMe, props, [AppContainer, PersonalContainer]);
-};
+const ExternalAccountLinkedMeWrapper = withUnstatedContainers(ExternalAccountLinkedMe, [AppContainer, PersonalContainer]);
 
 ExternalAccountLinkedMe.propTypes = {
   t: PropTypes.func.isRequired, // i18next

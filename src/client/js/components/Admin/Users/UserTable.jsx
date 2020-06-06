@@ -6,7 +6,7 @@ import dateFnsFormat from 'date-fns/format';
 import UserPicture from '../../User/UserPicture';
 import UserMenu from './UserMenu';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import AdminUsersContainer from '../../../services/AdminUsersContainer';
 import SortIcons from './SortIcons';
@@ -221,8 +221,6 @@ UserTable.propTypes = {
 
 };
 
-const UserTableWrapper = (props) => {
-  return createSubscribedElement(UserTable, props, [AppContainer, AdminUsersContainer]);
-};
+const UserTableWrapper = withUnstatedContainers(UserTable, [AppContainer, AdminUsersContainer]);
 
 export default withTranslation()(UserTableWrapper);
