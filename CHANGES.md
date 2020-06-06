@@ -1,6 +1,11 @@
 # CHANGES
 
-## v4.0.3-RC
+## v4.0.4-RC
+
+* Feature: Drawer/Dock mode selector
+* Support: Refactor unstated utils
+
+## v4.0.3
 
 * Feature: Copy page path dropdown with Append params switch
 * Improvement: Truncate overflowed user browsing history
