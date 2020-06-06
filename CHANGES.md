@@ -3,6 +3,7 @@
 ## v4.0.4-RC
 
 * Feature: Drawer/Dock mode selector
+* Improvement: Admin pages navigation
 * Support: Refactor unstated utils
 
 ## v4.0.3
