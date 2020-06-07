@@ -105,7 +105,7 @@
       {% endif %}
 
       {% if getConfig('crowi', 'app:confidential') %}
-        {% if getConfig('crowi', 'app:confidential').length > 5 %}
+        {% if getConfig('crowi', 'app:confidential').length > 4 %}
           <li class="nav-item confidential text-light">
             <i class="text-light icon-info" data-toggle="tooltip" title="{{ getConfig('crowi', 'app:confidential') }}"></i>
           </li>
