@@ -81,7 +81,7 @@ module.exports = (crowi) => {
     const ShareLink = crowi.model('ShareLink');
 
     try {
-      const postedShareLink = await ShareLink.create({ relatedPage: pageId, expiration_date: expiration, desc: description });
+      const postedShareLink = await ShareLink.create({ relatedPage: pageId, expiredAt: expiration, desc: description });
       return res.apiv3(postedShareLink);
     }
     catch (err) {
