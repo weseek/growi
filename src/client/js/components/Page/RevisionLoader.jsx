@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { Waypoint } from 'react-waypoint';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import GrowiRenderer from '../../util/GrowiRenderer';
 import AppContainer from '../../services/AppContainer';
 
@@ -114,9 +114,7 @@ class RevisionLoader extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const RevisionLoaderWrapper = (props) => {
-  return createSubscribedElement(RevisionLoader, props, [AppContainer]);
-};
+const RevisionLoaderWrapper = withUnstatedContainers(RevisionLoader, [AppContainer]);
 
 RevisionLoader.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,

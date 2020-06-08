@@ -30,11 +30,10 @@ function generateAutoNamedProps(instances) {
 }
 
 /**
- * create React component instance that is injected specified containers
+ * Return a React component that is injected unstated containers
  *
- * @param {object} componentClass wrapped React.Component class
- * @param {*} props
- * @param {*} containerClasses unstated container classes to subscribe
+ * @param {object} Component A React.Component or functional component
+ * @param {array} containerClasses unstated container classes to subscribe
  * @returns returns such like a following element:
  *  e.g.
  *  <Subscribe to={containerClasses}>  // containerClasses = [AppContainer, PageContainer]
@@ -43,19 +42,14 @@ function generateAutoNamedProps(instances) {
  *    )}
  *  </Subscribe>
  */
-export function createSubscribedElement(componentClass, props, containerClasses) {
-  return (
+export function withUnstatedContainers(Component, containerClasses) {
+  return React.forwardRef((props, ref) => (
     // wrap with <Subscribe></Subscribe>
     <Subscribe to={containerClasses}>
       { (...containers) => {
         const propsForContainers = generateAutoNamedProps(containers);
-
-        return React.createElement(
-          componentClass,
-          Object.assign(propsForContainers, props),
-        );
+        return <Component {...props} {...propsForContainers} ref={ref} />;
       }}
     </Subscribe>
-  );
-
+  ));
 }

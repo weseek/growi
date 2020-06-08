@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
@@ -453,8 +453,6 @@ LdapSecuritySetting.propTypes = {
   adminLdapSecurityContainer: PropTypes.instanceOf(AdminLdapSecurityContainer).isRequired,
 };
 
-const LdapSecuritySettingWrapper = (props) => {
-  return createSubscribedElement(LdapSecuritySetting, props, [AppContainer, AdminGeneralSecurityContainer, AdminLdapSecurityContainer]);
-};
+const LdapSecuritySettingWrapper = withUnstatedContainers(LdapSecuritySetting, [AppContainer, AdminGeneralSecurityContainer, AdminLdapSecurityContainer]);
 
 export default withTranslation()(LdapSecuritySettingWrapper);

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import SearchForm from '../SearchForm';
 
@@ -55,9 +55,7 @@ class SearchPageForm extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const SearchPageFormWrapper = (props) => {
-  return createSubscribedElement(SearchPageForm, props, [AppContainer]);
-};
+const SearchPageFormWrapper = withUnstatedContainers(SearchPageForm, [AppContainer]);
 
 SearchPageForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next

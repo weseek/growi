@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import AppContainer from '../services/AppContainer';
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 import RevisionLoader from './Page/RevisionLoader';
 
@@ -120,8 +120,6 @@ PageTimeline.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const PageTimelineWrapper = (props) => {
-  return createSubscribedElement(PageTimeline, props, [AppContainer]);
-};
+const PageTimelineWrapper = withUnstatedContainers(PageTimeline, [AppContainer]);
 
 export default withTranslation()(PageTimelineWrapper);

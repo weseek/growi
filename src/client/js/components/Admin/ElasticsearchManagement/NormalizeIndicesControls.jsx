@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 class NormalizeIndicesControls extends React.PureComponent {
 
@@ -34,9 +34,7 @@ class NormalizeIndicesControls extends React.PureComponent {
 /**
  * Wrapper component for using unstated
  */
-const NormalizeIndicesControlsWrapper = (props) => {
-  return createSubscribedElement(NormalizeIndicesControls, props, []);
-};
+const NormalizeIndicesControlsWrapper = withUnstatedContainers(NormalizeIndicesControls, []);
 
 NormalizeIndicesControls.propTypes = {
   t: PropTypes.func.isRequired, // i18next

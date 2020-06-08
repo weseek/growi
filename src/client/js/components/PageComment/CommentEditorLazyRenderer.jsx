@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
 import CommentEditor from './CommentEditor';
@@ -22,9 +22,7 @@ const CommentEditorLazyRenderer = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const CommentEditorLazyRendererWrapper = (props) => {
-  return createSubscribedElement(CommentEditorLazyRenderer, props, [AppContainer]);
-};
+const CommentEditorLazyRendererWrapper = withUnstatedContainers(CommentEditorLazyRenderer, [AppContainer]);
 
 CommentEditorLazyRenderer.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,

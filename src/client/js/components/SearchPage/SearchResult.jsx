@@ -8,7 +8,7 @@ import Page from '../PageList/Page';
 import SearchResultList from './SearchResultList';
 import DeletePageListModal from './DeletePageListModal';
 import AppContainer from '../../services/AppContainer';
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 class SearchResult extends React.Component {
 
@@ -331,9 +331,7 @@ class SearchResult extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const SearchResultWrapper = (props) => {
-  return createSubscribedElement(SearchResult, props, [AppContainer]);
-};
+const SearchResultWrapper = withUnstatedContainers(SearchResult, [AppContainer]);
 
 SearchResult.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,

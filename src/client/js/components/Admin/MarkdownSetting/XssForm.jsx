@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import { tags, attrs } from '../../../../../lib/service/xss/recommended-whitelist';
 
@@ -162,9 +162,7 @@ class XssForm extends React.Component {
 
 }
 
-const XssFormWrapper = (props) => {
-  return createSubscribedElement(XssForm, props, [AppContainer, AdminMarkDownContainer]);
-};
+const XssFormWrapper = withUnstatedContainers(XssForm, [AppContainer, AdminMarkDownContainer]);
 
 XssForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
