@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import loggerFactory from '@alias/logger';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
@@ -170,9 +170,7 @@ class SlackAppConfiguration extends React.Component {
 
 }
 
-const SlackAppConfigurationWrapper = (props) => {
-  return createSubscribedElement(SlackAppConfiguration, props, [AppContainer, AdminNotificationContainer]);
-};
+const SlackAppConfigurationWrapper = withUnstatedContainers(SlackAppConfiguration, [AppContainer, AdminNotificationContainer]);
 
 SlackAppConfiguration.propTypes = {
   t: PropTypes.func.isRequired, // i18next

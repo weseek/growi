@@ -7,7 +7,7 @@ import {
 
 import loggerFactory from '@alias/logger';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
@@ -104,9 +104,7 @@ class NotificationSetting extends React.Component {
 
 }
 
-const NotificationSettingWrapper = (props) => {
-  return createSubscribedElement(NotificationSetting, props, [AppContainer, AdminNotificationContainer]);
-};
+const NotificationSettingWrapper = withUnstatedContainers(NotificationSetting, [AppContainer, AdminNotificationContainer]);
 
 NotificationSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next

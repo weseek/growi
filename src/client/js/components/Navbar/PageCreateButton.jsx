@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
 const PageCreateButton = (props) => {
@@ -28,9 +28,7 @@ const PageCreateButton = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageCreateButtonWrapper = (props) => {
-  return createSubscribedElement(PageCreateButton, props, [AppContainer]);
-};
+const PageCreateButtonWrapper = withUnstatedContainers(PageCreateButton, [AppContainer]);
 
 
 PageCreateButton.propTypes = {

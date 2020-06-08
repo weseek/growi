@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import PaginationWrapper from '../PaginationWrapper';
 
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import { toastError } from '../../util/apiNotification';
 
 import AppContainer from '../../services/AppContainer';
@@ -223,8 +223,6 @@ UserManagement.propTypes = {
   adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
 };
 
-const UserManagementWrapper = (props) => {
-  return createSubscribedElement(UserManagement, props, [AppContainer, AdminUsersContainer]);
-};
+const UserManagementWrapper = withUnstatedContainers(UserManagement, [AppContainer, AdminUsersContainer]);
 
 export default withTranslation()(UserManagementWrapper);

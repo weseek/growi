@@ -14,7 +14,7 @@ import {
 
 import AppContainer from '../../services/AppContainer';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 /**
  * Page grant select component
@@ -247,9 +247,7 @@ class GrantSelector extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const GrantSelectorWrapper = (props) => {
-  return createSubscribedElement(GrantSelector, props, [AppContainer]);
-};
+const GrantSelectorWrapper = withUnstatedContainers(GrantSelector, [AppContainer]);
 
 GrantSelector.propTypes = {
   t: PropTypes.func.isRequired, // i18next

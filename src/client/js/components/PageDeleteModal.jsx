@@ -7,7 +7,7 @@ import {
 
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 import PageContainer from '../services/PageContainer';
 
 import ApiErrorMessage from './PageManagement/ApiErrorMessage';
@@ -138,9 +138,7 @@ const PageDeleteModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageDeleteModalWrapper = (props) => {
-  return createSubscribedElement(PageDeleteModal, props, [PageContainer]);
-};
+const PageDeleteModalWrapper = withUnstatedContainers(PageDeleteModal, [PageContainer]);
 
 PageDeleteModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next

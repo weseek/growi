@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 import md5 from 'md5';
 
 import { toastSuccess, toastError } from '../../util/apiNotification';
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 import AppContainer from '../../services/AppContainer';
 import PersonalContainer from '../../services/PersonalContainer';
@@ -185,9 +185,7 @@ class ProfileImageSettings extends React.Component {
 }
 
 
-const ProfileImageSettingsWrapper = (props) => {
-  return createSubscribedElement(ProfileImageSettings, props, [AppContainer, PersonalContainer]);
-};
+const ProfileImageSettingsWrapper = withUnstatedContainers(ProfileImageSettings, [AppContainer, PersonalContainer]);
 
 ProfileImageSettings.propTypes = {
   t: PropTypes.func.isRequired, // i18next

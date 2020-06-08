@@ -7,7 +7,7 @@ import {
   ModalBody,
 } from 'reactstrap';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import EditorContainer from '../../services/EditorContainer';
 
@@ -159,13 +159,6 @@ class DrawioModal extends React.PureComponent {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const DrawioModalWrapper = React.forwardRef((props, ref) => {
-  return createSubscribedElement(DrawioModal, Object.assign({ ref }, props), [AppContainer, EditorContainer]);
-});
-
 DrawioModal.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
@@ -173,4 +166,5 @@ DrawioModal.propTypes = {
   onSave: PropTypes.func,
 };
 
-export default DrawioModalWrapper;
+
+export default withUnstatedContainers(DrawioModal, [AppContainer, EditorContainer]);
