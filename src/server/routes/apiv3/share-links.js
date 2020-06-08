@@ -45,11 +45,11 @@ module.exports = (crowi) => {
   *            description: Succeeded to delete one share link
   */
   router.get('/', /* loginRequired, csrf, */ ApiV3FormValidator, async(req, res) => {
-    const { pageId } = req.query;
+    const { relatedPage } = req.query;
     try {
       const paginateResult = await ShareLink.paginate(
         {
-          relatedPage: { $in: pageId },
+          relatedPage: { $in: relatedPage },
         },
       );
       return res.apiv3({ paginateResult });
@@ -64,13 +64,13 @@ module.exports = (crowi) => {
 
   // TDOO write swagger
   router.post('/', loginRequired, async(req, res) => {
-    const { pageId } = req.body;
+    const { relatedPage } = req.body;
     // TODO GW-2609 publish the share link
   });
 
   // TDOO write swagger
   router.delete('/all', loginRequired, async(req, res) => {
-    const { pageId } = req.body;
+    const { relatedPage } = req.body;
     // TODO GW-2694 Delete all share links
   });
 
