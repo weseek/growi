@@ -228,8 +228,10 @@ Crowi.prototype.setupSessionConfig = function() {
 
     // use Redis for session store
     if (redisUrl) {
+      const redis = require('redis');
+      const redisClient = redis.createClient({ url: redisUrl });
       const RedisStore = require('connect-redis')(session);
-      sessionConfig.store = new RedisStore({ url: redisUrl });
+      sessionConfig.store = new RedisStore({ client: redisClient });
     }
     // use MongoDB for session store
     else {
