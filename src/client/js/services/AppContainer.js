@@ -280,6 +280,10 @@ export default class AppContainer extends Container {
   }
 
   removeOldUserCache() {
+    if (window.localStorage.userByName == null) {
+      return;
+    }
+
     const keys = ['userByName', 'userById', 'users', 'lastFetched'];
 
     keys.forEach((key) => {
