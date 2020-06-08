@@ -14,7 +14,7 @@ import CommentContainer from '../../services/CommentContainer';
 import EditorContainer from '../../services/EditorContainer';
 import GrowiRenderer from '../../util/GrowiRenderer';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import UserPicture from '../User/UserPicture';
 import Editor from '../PageEditor/Editor';
 import SlackNotification from '../SlackNotification';
@@ -412,8 +412,6 @@ CommentEditor.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const CommentEditorWrapper = (props) => {
-  return createSubscribedElement(CommentEditor, props, [AppContainer, PageContainer, EditorContainer, CommentContainer]);
-};
+const CommentEditorWrapper = withUnstatedContainers(CommentEditor, [AppContainer, PageContainer, EditorContainer, CommentContainer]);
 
 export default CommentEditorWrapper;

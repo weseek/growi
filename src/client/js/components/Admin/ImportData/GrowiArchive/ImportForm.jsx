@@ -6,7 +6,7 @@ import GrowiArchiveImportOption from '@commons/models/admin/growi-archive-import
 import ImportOptionForPages from '@commons/models/admin/import-option-for-pages';
 import ImportOptionForRevisions from '@commons/models/admin/import-option-for-revisions';
 
-import { createSubscribedElement } from '../../../UnstatedUtils';
+import { withUnstatedContainers } from '../../../UnstatedUtils';
 import AppContainer from '../../../../services/AppContainer';
 import WebsocketContainer from '../../../../services/WebsocketContainer';
 import { toastSuccess, toastError } from '../../../../util/apiNotification';
@@ -504,8 +504,6 @@ ImportForm.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const ImportFormWrapper = (props) => {
-  return createSubscribedElement(ImportForm, props, [AppContainer, WebsocketContainer]);
-};
+const ImportFormWrapper = withUnstatedContainers(ImportForm, [AppContainer, WebsocketContainer]);
 
 export default withTranslation()(ImportFormWrapper);

@@ -6,7 +6,7 @@ import {
 } from 'reactstrap';
 import * as toastr from 'toastr';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 // import { toastSuccess, toastError } from '../../../util/apiNotification';
 
@@ -242,8 +242,6 @@ SelectCollectionsModal.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const SelectCollectionsModalWrapper = (props) => {
-  return createSubscribedElement(SelectCollectionsModal, props, [AppContainer]);
-};
+const SelectCollectionsModalWrapper = withUnstatedContainers(SelectCollectionsModal, [AppContainer]);
 
 export default withTranslation()(SelectCollectionsModalWrapper);

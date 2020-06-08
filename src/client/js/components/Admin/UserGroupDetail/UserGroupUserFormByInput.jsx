@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import { debounce } from 'throttle-debounce';
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import AdminUserGroupDetailContainer from '../../../services/AdminUserGroupDetailContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
@@ -162,8 +162,6 @@ UserGroupUserFormByInput.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const UserGroupUserFormByInputWrapper = (props) => {
-  return createSubscribedElement(UserGroupUserFormByInput, props, [AppContainer, AdminUserGroupDetailContainer]);
-};
+const UserGroupUserFormByInputWrapper = withUnstatedContainers(UserGroupUserFormByInput, [AppContainer, AdminUserGroupDetailContainer]);
 
 export default withTranslation()(UserGroupUserFormByInputWrapper);
