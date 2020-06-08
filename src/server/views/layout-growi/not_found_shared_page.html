@@ -1,20 +1,13 @@
-{% extends 'base/layout.html' %}
-
+{% extends './shared_page.html' %}
 
 {% block content_header %}
 {% endblock %}
-{% block content_main_before %}
-{% endblock %}
-{% block search %}
-{% endblock %}
 
-{% block content_main %}
-  <div class="row not-found-message-row mb-4 d-edit-none">
-    <div class="col-md-12">
-      <h2 class="text-muted">
-        <i class="icon-info" aria-hidden="true"></i>
-        Page is not found
-      </h2>
-    </div>
+{% block content_page %}
+  <div class="col-md-12">
+    <h2 class="text-muted">
+      <i class="icon-info" aria-hidden="true"></i>
+      Page is not found
+    </h2>
   </div>
 {% endblock %}

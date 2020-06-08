@@ -15,6 +15,7 @@
 
 {% block content_main %}
   <div class="row" id="is-shared-page">
+    {% block content_page %}
     <div class="col grw-page-content-container">
 
       {% include '../widget/page_content.html' %}
@@ -31,6 +32,7 @@
         <div id="revision-toc-content" class="revision-toc-content"></div>
       </div>
     </div>
+    {% endblock %}
 
   </div>
 
