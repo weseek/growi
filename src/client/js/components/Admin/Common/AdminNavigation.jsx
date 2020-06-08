@@ -29,9 +29,9 @@ const AdminNavigation = (props) => {
   };
 
   const MenuLink = ({
-                      // eslint-disable-next-line react/prop-types
-                      menu, isRoot, isListGroupItems, isActive,
-                    }) => {
+    // eslint-disable-next-line react/prop-types
+    menu, isRoot, isListGroupItems, isActive,
+  }) => {
     const pageTransitionClassName = isListGroupItems
       ? 'list-group-item list-group-item-action border-0 round-corner'
       : 'dropdown-item px-3 py-2';
