@@ -18,6 +18,7 @@ import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
 import MarkdownTableInterceptor from './MarkdownTableInterceptor';
 import mtu from './MarkdownTableUtil';
 import mdu from './MarkdownDrawioUtil';
+import LinkEditModal from './LinkEditModal';
 import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
 import DrawioModal from './DrawioModal';
@@ -71,6 +72,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       additionalClassSet: new Set(),
     };
 
+    this.linkEditModal = React.createRef();
     this.handsontableModal = React.createRef();
     this.drawioModal = React.createRef();
 
@@ -98,6 +100,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.renderCheatsheetModalButton = this.renderCheatsheetModalButton.bind(this);
 
     this.makeHeaderHandler = this.makeHeaderHandler.bind(this);
+    this.showLinkEditHandler = this.showLinkEditHandler.bind(this);
     this.showHandsonTableHandler = this.showHandsonTableHandler.bind(this);
     this.showDrawioHandler = this.showDrawioHandler.bind(this);
   }
@@ -649,6 +652,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
     cm.focus();
   }
 
+  showLinkEditHandler() {
+    this.linkEditModal.current.show();
+  }
+
   showHandsonTableHandler() {
     this.handsontableModal.current.show(mtu.getMarkdownTable(this.getCodeMirror()));
   }
@@ -745,7 +752,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         color={null}
         size="sm"
         title="Link"
-        onClick={this.createReplaceSelectionHandler('[', ']()')}
+        onClick={this.showLinkEditHandler}
       >
         <EditorIcon icon="Link" />
       </Button>,
@@ -849,6 +856,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
         { this.renderCheatsheetOverlay() }
 
+        <LinkEditModal
+          ref={this.linkEditModal}
+        />
         <HandsontableModal
           ref={this.handsontableModal}
           onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }}

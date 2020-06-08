@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -15,7 +14,6 @@ export default class LinkEditModal extends React.PureComponent {
     };
 
     this.cancel = this.cancel.bind(this);
-    this.save = this.save.bind(this);
   }
 
   show() {
@@ -51,7 +49,3 @@ export default class LinkEditModal extends React.PureComponent {
   }
 
 }
-
-LinkEditModal.propTypes = {
-  onSave: PropTypes.func,
-};
