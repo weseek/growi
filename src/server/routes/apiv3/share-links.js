@@ -119,7 +119,7 @@ module.exports = (crowi) => {
   });
 
   // TDOO write swagger
-  router.delete('/', /* loginRequired, csrf, */ async(req, res) => {
+  router.delete('/', loginRequired, csrf, async(req, res) => {
     const { relatedPage } = req.body;
     const ShareLink = crowi.model('ShareLink');
 
