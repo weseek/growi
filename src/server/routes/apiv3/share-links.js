@@ -92,9 +92,19 @@ module.exports = (crowi) => {
   });
 
   // TDOO write swagger
-  router.delete('/all', loginRequired, async(req, res) => {
-    const { pageId } = req.body;
-    // TODO GW-2694 Delete all share links
+  router.delete('/', /* loginRequired, csrf, */ async(req, res) => {
+    const { relatedPage } = req.body;
+    const ShareLink = crowi.model('ShareLink');
+
+    try {
+      const deletedShareLink = await ShareLink.remove({ relatedPage });
+      return res.apiv3(deletedShareLink);
+    }
+    catch (err) {
+      const msg = 'Error occured in delete share link';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'delete-shareLink-failed'));
+    }
   });
 
   /**
