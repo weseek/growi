@@ -6,10 +6,10 @@ import { withTranslation } from 'react-i18next';
 const ShareLinkAlert = (props) => {
   const { t } = props;
   const shareContent = document.getElementById('is-shared-page');
-  const expiration = new Date(shareContent.getAttribute('data-share-link-expiration'));
-  const createdAt = new Date(shareContent.getAttribute('data-share-link-created-at'));
-  const wholeTime = expiration.getTime() - createdAt.getTime();
-  const remainingTime = expiration.getTime() - new Date().getTime();
+  const expiredAt = shareContent.getAttribute('data-share-link-expired-at');
+  const createdAt = shareContent.getAttribute('data-share-link-created-at');
+  const wholeTime = new Date(expiredAt).getTime() - new Date(createdAt).getTime();
+  const remainingTime = new Date(expiredAt).getTime() - new Date().getTime();
   const percentage = remainingTime / wholeTime * 100;
 
   function specifyColor() {
@@ -27,7 +27,7 @@ const ShareLinkAlert = (props) => {
     <p className={`alert alert-${specifyColor()} py-3 px-4`}>
       <i className="icon-fw icon-link"></i>
       {/* eslint-disable-next-line react/no-danger */}
-      <span dangerouslySetInnerHTML={{ __html: t('page_page.notice.expiration', { expiration }) }} />
+      <span dangerouslySetInnerHTML={{ __html: t('page_page.notice.expiration', { expiredAt }) }} />
     </p>
   );
 };
