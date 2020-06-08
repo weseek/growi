@@ -15,7 +15,7 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
 /**
  * @swagger
  *  tags:
- *    name: ShareLinks
+ *    name: ShareLink
  */
 
 module.exports = (crowi) => {
@@ -34,7 +34,7 @@ module.exports = (crowi) => {
   *        tags: [ShareLinks]
   *        description: get share link list
   *        parameters:
-  *          - name: pageId
+  *          - name: relatedPage
   *            in: path
   *            required: true
   *            description: id of share link
@@ -42,7 +42,7 @@ module.exports = (crowi) => {
   *              type: string
   *        responses:
   *          200:
-  *            description: Succeeded to delete one share link
+  *            description: Succeeded to get share links
   */
   router.get('/', /* loginRequired, csrf, */ ApiV3FormValidator, async(req, res) => {
     const { relatedPage } = req.query;
