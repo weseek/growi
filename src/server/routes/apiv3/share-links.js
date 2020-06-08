@@ -118,7 +118,24 @@ module.exports = (crowi) => {
     }
   });
 
-  // TDOO write swagger
+  /**
+  * @swagger
+  *
+  *    /share-links/:
+  *      delete:
+  *        tags: [ShareLinks]
+  *        description: delete all share links related one page
+  *        parameters:
+  *          - name: relatedPage
+  *            in: query
+  *            required: true
+  *            description: related page id of share linksk
+  *            schema:
+  *              type: string
+  *        responses:
+  *          200:
+  *            description: Succeeded to delete o all share links related one page
+  */
   router.delete('/', loginRequired, csrf, async(req, res) => {
     const { relatedPage } = req.body;
     const ShareLink = crowi.model('ShareLink');
