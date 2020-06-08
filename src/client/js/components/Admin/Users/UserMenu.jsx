@@ -8,7 +8,7 @@ import RemoveUserButton from './UserRemoveButton';
 import RemoveAdminButton from './RemoveAdminButton';
 import GiveAdminButton from './GiveAdminButton';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import AdminUsersContainer from '../../../services/AdminUsersContainer';
 
@@ -96,9 +96,7 @@ class UserMenu extends React.Component {
 
 }
 
-const UserMenuWrapper = (props) => {
-  return createSubscribedElement(UserMenu, props, [AppContainer, AdminUsersContainer]);
-};
+const UserMenuWrapper = withUnstatedContainers(UserMenu, [AppContainer, AdminUsersContainer]);
 
 UserMenu.propTypes = {
   t: PropTypes.func.isRequired, // i18next

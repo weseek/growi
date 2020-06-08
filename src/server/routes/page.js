@@ -789,6 +789,7 @@ module.exports = function(crowi, app) {
    *                required:
    *                  - body
    *                  - page_id
+   *                  - revision_id
    *        responses:
    *          200:
    *            description: Succeeded to update page.
@@ -832,8 +833,8 @@ module.exports = function(crowi, app) {
     const socketClientId = req.body.socketClientId || undefined;
     const pageTags = req.body.pageTags || undefined;
 
-    if (pageId === null || pageBody === null) {
-      return res.json(ApiResponse.error('page_id and body are required.'));
+    if (pageId === null || pageBody === null || revisionId === null) {
+      return res.json(ApiResponse.error('page_id, body and revision_id are required.'));
     }
 
     // check page existence

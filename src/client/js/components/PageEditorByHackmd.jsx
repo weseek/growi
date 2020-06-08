@@ -8,7 +8,7 @@ import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 import EditorContainer from '../services/EditorContainer';
 
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 import HackmdEditor from './PageEditorByHackmd/HackmdEditor';
 
 const logger = loggerFactory('growi:PageEditorByHackmd');
@@ -397,9 +397,7 @@ class PageEditorByHackmd extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const PageEditorByHackmdWrapper = (props) => {
-  return createSubscribedElement(PageEditorByHackmd, props, [AppContainer, PageContainer, EditorContainer]);
-};
+const PageEditorByHackmdWrapper = withUnstatedContainers(PageEditorByHackmd, [AppContainer, PageContainer, EditorContainer]);
 
 PageEditorByHackmd.propTypes = {
   t: PropTypes.func.isRequired, // i18next

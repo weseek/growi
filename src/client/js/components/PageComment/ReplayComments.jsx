@@ -8,7 +8,7 @@ import PageContainer from '../../services/PageContainer';
 
 import Comment from './Comment';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 class ReplayComments extends React.PureComponent {
 
@@ -100,9 +100,7 @@ class ReplayComments extends React.PureComponent {
 /**
  * Wrapper component for using unstated
  */
-const ReplayCommentsWrapper = (props) => {
-  return createSubscribedElement(ReplayComments, props, [AppContainer, PageContainer]);
-};
+const ReplayCommentsWrapper = withUnstatedContainers(ReplayComments, [AppContainer, PageContainer]);
 
 ReplayComments.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,

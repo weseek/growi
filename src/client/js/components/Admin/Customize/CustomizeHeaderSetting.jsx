@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { Card, CardBody } from 'reactstrap';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
@@ -78,9 +78,7 @@ class CustomizeHeaderSetting extends React.Component {
 
 }
 
-const CustomizeHeaderSettingWrapper = (props) => {
-  return createSubscribedElement(CustomizeHeaderSetting, props, [AppContainer, AdminCustomizeContainer]);
-};
+const CustomizeHeaderSettingWrapper = withUnstatedContainers(CustomizeHeaderSetting, [AppContainer, AdminCustomizeContainer]);
 
 CustomizeHeaderSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next

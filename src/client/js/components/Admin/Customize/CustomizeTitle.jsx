@@ -7,7 +7,7 @@ import { Card, CardBody } from 'reactstrap';
 import AppContainer from '../../../services/AppContainer';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 class CustomizeTitle extends React.Component {
@@ -85,9 +85,7 @@ class CustomizeTitle extends React.Component {
 
 }
 
-const CustomizeTitleWrapper = (props) => {
-  return createSubscribedElement(CustomizeTitle, props, [AppContainer, AdminCustomizeContainer]);
-};
+const CustomizeTitleWrapper = withUnstatedContainers(CustomizeTitle, [AppContainer, AdminCustomizeContainer]);
 
 CustomizeTitle.propTypes = {
   t: PropTypes.func.isRequired, // i18next

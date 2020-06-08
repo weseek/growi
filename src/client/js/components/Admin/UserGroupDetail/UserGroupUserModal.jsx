@@ -6,7 +6,7 @@ import {
 } from 'reactstrap';
 
 import UserGroupUserFormByInput from './UserGroupUserFormByInput';
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import AdminUserGroupDetailContainer from '../../../services/AdminUserGroupDetailContainer';
 import RadioButtonForSerchUserOption from './RadioButtonForSerchUserOption';
@@ -84,8 +84,6 @@ UserGroupUserModal.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const UserGroupUserModalWrapper = (props) => {
-  return createSubscribedElement(UserGroupUserModal, props, [AppContainer, AdminUserGroupDetailContainer]);
-};
+const UserGroupUserModalWrapper = withUnstatedContainers(UserGroupUserModal, [AppContainer, AdminUserGroupDetailContainer]);
 
 export default withTranslation()(UserGroupUserModalWrapper);
