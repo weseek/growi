@@ -7,6 +7,7 @@ import SearchTop from './components/Navbar/SearchTop';
 import NavbarToggler from './components/Navbar/NavbarToggler';
 import PersonalDropdown from './components/Navbar/PersonalDropdown';
 import Sidebar from './components/Sidebar';
+import ShareLinkAlert from './components/Page/ShareLinkAlert';
 import StaffCredit from './components/StaffCredit/StaffCredit';
 
 import AppContainer from './services/AppContainer';
@@ -50,6 +51,8 @@ const componentMappings = {
   'page-create-modal': <PageCreateModal />,
 
   'grw-sidebar-wrapper': <Sidebar />,
+
+  'share-link-alert': <ShareLinkAlert />,
 
   'staff-credit': <StaffCredit />,
 };
