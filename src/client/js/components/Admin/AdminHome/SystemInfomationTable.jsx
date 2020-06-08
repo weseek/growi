@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import AdminHomeContainer from '../../../services/AdminHomeContainer';
 
@@ -46,8 +46,6 @@ SystemInformationTable.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const SystemInformationTableWrapper = (props) => {
-  return createSubscribedElement(SystemInformationTable, props, [AppContainer, AdminHomeContainer]);
-};
+const SystemInformationTableWrapper = withUnstatedContainers(SystemInformationTable, [AppContainer, AdminHomeContainer]);
 
 export default withTranslation()(SystemInformationTableWrapper);

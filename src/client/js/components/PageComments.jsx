@@ -11,7 +11,7 @@ import AppContainer from '../services/AppContainer';
 import CommentContainer from '../services/CommentContainer';
 import PageContainer from '../services/PageContainer';
 
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 import CommentEditor from './PageComment/CommentEditor';
 import Comment from './PageComment/Comment';
@@ -230,9 +230,7 @@ class PageComments extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const PageCommentsWrapper = (props) => {
-  return createSubscribedElement(PageComments, props, [AppContainer, PageContainer, CommentContainer]);
-};
+const PageCommentsWrapper = withUnstatedContainers(PageComments, [AppContainer, PageContainer, CommentContainer]);
 
 PageComments.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,

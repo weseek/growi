@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
@@ -218,8 +218,9 @@ GoogleSecurityManagement.propTypes = {
   adminGoogleSecurityContainer: PropTypes.instanceOf(AdminGoogleSecurityContainer).isRequired,
 };
 
-const GoogleSecurityManagementWrapper = (props) => {
-  return createSubscribedElement(GoogleSecurityManagement, props, [AppContainer, AdminGeneralSecurityContainer, AdminGoogleSecurityContainer]);
-};
+const GoogleSecurityManagementWrapper = withUnstatedContainers(
+  GoogleSecurityManagement,
+  [AppContainer, AdminGeneralSecurityContainer, AdminGoogleSecurityContainer],
+);
 
 export default withTranslation()(GoogleSecurityManagementWrapper);

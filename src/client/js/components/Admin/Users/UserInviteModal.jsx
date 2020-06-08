@@ -11,7 +11,7 @@ import {
 
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import AdminUsersContainer from '../../../services/AdminUsersContainer';
 
@@ -218,9 +218,7 @@ class UserInviteModal extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const UserInviteModalWrapper = (props) => {
-  return createSubscribedElement(UserInviteModal, props, [AppContainer, AdminUsersContainer]);
-};
+const UserInviteModalWrapper = withUnstatedContainers(UserInviteModal, [AppContainer, AdminUsersContainer]);
 
 
 UserInviteModal.propTypes = {

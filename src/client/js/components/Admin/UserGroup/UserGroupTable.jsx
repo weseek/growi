@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 
 class UserGroupTable extends React.Component {
@@ -115,9 +115,7 @@ class UserGroupTable extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const UserGroupTableWrapper = (props) => {
-  return createSubscribedElement(UserGroupTable, props, [AppContainer]);
-};
+const UserGroupTableWrapper = withUnstatedContainers(UserGroupTable, [AppContainer]);
 
 
 UserGroupTable.propTypes = {

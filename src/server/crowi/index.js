@@ -209,7 +209,6 @@ Crowi.prototype.setupSessionConfig = function() {
   const sessionAge = (1000 * 3600 * 24 * 30);
   const redisUrl = this.env.REDISTOGO_URL || this.env.REDIS_URI || this.env.REDIS_URL || null;
 
-  const mongoUrl = getMongoUri();
   let sessionConfig;
 
   return new Promise(((resolve, reject) => {
@@ -229,13 +228,15 @@ Crowi.prototype.setupSessionConfig = function() {
 
     // use Redis for session store
     if (redisUrl) {
+      const redis = require('redis');
+      const redisClient = redis.createClient({ url: redisUrl });
       const RedisStore = require('connect-redis')(session);
-      sessionConfig.store = new RedisStore({ url: redisUrl });
+      sessionConfig.store = new RedisStore({ client: redisClient });
     }
     // use MongoDB for session store
     else {
       const MongoStore = require('connect-mongo')(session);
-      sessionConfig.store = new MongoStore({ url: mongoUrl });
+      sessionConfig.store = new MongoStore({ mongooseConnection: mongoose.connection });
     }
 
     self.sessionConfig = sessionConfig;
