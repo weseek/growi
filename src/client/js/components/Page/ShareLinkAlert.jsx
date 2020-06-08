@@ -10,17 +10,23 @@ const ShareLinkAlert = (props) => {
   const createdAt = shareContent.getAttribute('data-share-link-created-at');
   const wholeTime = new Date(expiredAt).getTime() - new Date(createdAt).getTime();
   const remainingTime = new Date(expiredAt).getTime() - new Date().getTime();
-  const percentage = remainingTime / wholeTime * 100;
+  const ratio = remainingTime / wholeTime;
 
   function specifyColor() {
-    if (percentage >= 75) {
-      return 'success';
-    } if (percentage >= 50) {
-      return 'info';
-    } if (percentage >= 25) {
-      return 'warning';
+    let color;
+    if (ratio >= 0.75) {
+      color = 'success';
     }
-    return 'danger';
+    else if (ratio < 0.75 && ratio >= 0.5) {
+      color = 'info';
+    }
+    else if (ratio < 0.5 && ratio >= 0.25) {
+      color = 'warning';
+    }
+    else {
+      color = 'danger';
+    }
+    return color;
   }
 
   return (
