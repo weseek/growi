@@ -14,8 +14,9 @@
 {% endblock %}
 
 {% block content_main %}
-  <div class="row" id="is-shared-page">
+  <div class="row" id="is-shared-page" data-share-link-expired-at="{{ sharelink.expiredAt|datetz('Y/m/d H:i:s')}}"  data-share-link-created-at="{{ sharelink.createdAt|datetz('Y/m/d H:i:s')}}">
     <div class="col-12 col-xl-9 col-lg-8 bg-white round-corner">
+      <div id="share-link-alert"></div>
 
       {% include '../widget/page_content.html' %}
       {# force remove #revision-toc from #content_main of parent #}
