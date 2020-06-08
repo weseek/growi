@@ -76,7 +76,7 @@ export default class CommentContainer extends Container {
     }
   }
 
-  checkAndUpdateImageOfCommentAuthers(comments) {
+  async checkAndUpdateImageOfCommentAuthers(comments) {
     const noImageCacheUserIds = comments.filter((comment) => {
       return comment.creator.imageUrlCached == null;
     }).map((comment) => {
@@ -88,7 +88,7 @@ export default class CommentContainer extends Container {
     }
 
     try {
-      this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
+      await this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
     }
     catch (err) {
       // Error alert doesn't apear, because user don't need to notice this error.
