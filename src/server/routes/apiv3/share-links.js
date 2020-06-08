@@ -39,7 +39,7 @@ module.exports = (crowi) => {
    *        description: get share links
    *        parameters:
    *          - name: relatedPage
-   *            in: path
+   *            in: query
    *            required: true
    *            description: page id of share link
    *            schema:
@@ -82,7 +82,7 @@ module.exports = (crowi) => {
    *        tags: [ShareLink]
    *        description: Create new share link
    *        parameters:
-   *          - name: pageId
+   *          - name: relatedPage
    *            in: query
    *            required: true
    *            description: page id of share link
