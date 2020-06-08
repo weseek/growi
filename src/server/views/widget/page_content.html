@@ -19,6 +19,7 @@
   data-page-creator="{% if page %}{{ page.creator|json }}{% endif %}"
   data-page-updated-at="{% if page %}{{ page.updatedAt|datetz('Y/m/d H:i:s') }}{% endif %}"
   data-page-has-children="{% if pages.length > 0 %}true{% else %}false{% endif %}"
+  data-share-links-length="{% if page %}{{ sharelinks.length }}{% endif %}"
   >
 {% else %}
 <div id="content-main" class="content-main"
