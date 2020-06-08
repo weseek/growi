@@ -4,7 +4,14 @@
 
 * Feature: Drawer/Dock mode selector
 * Improvement: Admin pages navigation
+* Improvement: Ensure not to avoid session management even when accessing to healthcheck
 * Support: Refactor unstated utils
+* Support: Upgrade libs
+    * connect-mongo
+    * connect-redis
+    * mongoose
+    * mongoose-gridfs
+    * mongoose-paginate-v2
 
 ## v4.0.3
 
