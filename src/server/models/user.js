@@ -23,6 +23,7 @@ module.exports = function(crowi) {
   const LANG_EN_US = 'en-US';
   const LANG_EN_GB = 'en-GB';
   const LANG_JA = 'ja';
+  const LANG_CN = 'zh-CN';
 
   const PAGE_ITEMS = 50;
 
@@ -149,7 +150,7 @@ module.exports = function(crowi) {
     lang.LANG_EN_US = LANG_EN_US;
     lang.LANG_EN_GB = LANG_EN_GB;
     lang.LANG_JA = LANG_JA;
-
+    lang.LANG_CN = LANG_CN;
     return lang;
   }
 
@@ -777,6 +778,7 @@ module.exports = function(crowi) {
   userSchema.statics.LANG_EN_US = LANG_EN_US;
   userSchema.statics.LANG_EN_GB = LANG_EN_US;
   userSchema.statics.LANG_JA = LANG_JA;
+  userSchema.statics.LANG_CN = LANG_CN;
 
   return mongoose.model('User', userSchema);
 };

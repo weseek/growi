@@ -11,13 +11,13 @@ class InstallerForm extends React.Component {
 
     this.state = {
       isValidUserName: true,
-      checkedBtn: 'en-US',
+      checkedBtn: 'zh-CN',
     };
     this.checkUserName = this.checkUserName.bind(this);
   }
 
   componentWillMount() {
-    this.changeLanguage('en-US');
+    this.changeLanguage('zh-CN');
   }
 
   checkUserName(event) {
@@ -62,6 +62,21 @@ class InstallerForm extends React.Component {
                 <input
                   type="radio"
                   className="custom-control-input"
+                  id="register-form-check-cn"
+                  name="registerForm[app:globalLang]"
+                  value="zh-CN"
+                  checked={checkedBtn === 'zh-CN'}
+                  inline
+                  onChange={(e) => { if (e.target.checked) { this.changeLanguage('zh-CN') } }}
+                />
+                <label className="custom-control-label" htmlFor="register-form-check-cn">
+                  简体中文
+                </label>
+              </div>
+              <div className="custom-control custom-radio custom-control-inline">
+                <input
+                  type="radio"
+                  className="custom-control-input"
                   id="register-form-check-en"
                   name="registerForm[app:globalLang]"
                   value="en-US"
@@ -88,6 +103,7 @@ class InstallerForm extends React.Component {
                   日本語
                 </label>
               </div>
+
             </div>
 
             <div className={`input-group mb-3${hasErrorClass}`}>

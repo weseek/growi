@@ -132,6 +132,17 @@ class BasicInfoSettings extends React.Component {
               />
               <label className="custom-control-label" htmlFor="radioLangJa">{t('Japanese')}</label>
             </div>
+            <div className="custom-control custom-radio custom-control-inline">
+              <input
+                type="radio"
+                id="radioLangZh"
+                className="custom-control-input"
+                name="userForm[lang]"
+                checked={personalContainer.state.lang === 'zh-CN'}
+                onChange={() => { personalContainer.changeLang('zh-CN') }}
+              />
+              <label className="custom-control-label" htmlFor="radioLangZh">{t('Chinese')}</label>
+            </div>
           </div>
         </div>
 

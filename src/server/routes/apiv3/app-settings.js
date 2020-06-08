@@ -5,8 +5,9 @@ const logger = loggerFactory('growi:routes:apiv3:app-settings');
 const debug = require('debug')('growi:routes:admin');
 
 const express = require('express');
+
 const router = express.Router();
-const resources = '@alias/locales';
+
 const { body } = require('express-validator/check');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -102,12 +103,11 @@ module.exports = (crowi) => {
   const csrf = require('../../middleware/csrf')(crowi);
 
   const { ApiV3FormValidator } = crowi.middlewares;
-
   const validator = {
     appSetting: [
       body('title').trim(),
       body('confidential'),
-      body('globalLang').isIn(Object.keys(resources)),
+      body('globalLang').isIn(['en-US','ja','zh-CN']),
       body('fileUpload').isBoolean(),
     ],
     siteUrlSetting: [
@@ -152,7 +152,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: app settings params
    */
-  router.get('/', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+  router.get('/', accessTokenParser, loginRequired, adminRequired, async (req, res) => {
     const appSettingsParams = {
       title: crowi.configManager.getConfig('crowi', 'app:title'),
       confidential: crowi.configManager.getConfig('crowi', 'app:confidential'),
@@ -200,7 +200,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/AppSettingParams'
    */
-  router.put('/app-setting', loginRequiredStrictly, adminRequired, csrf, validator.appSetting, ApiV3FormValidator, async(req, res) => {
+  router.put('/app-setting', loginRequiredStrictly, adminRequired, csrf, validator.appSetting, ApiV3FormValidator, async (req, res) => {
     const requestAppSettingParams = {
       'app:title': req.body.title,
       'app:confidential': req.body.confidential,
@@ -217,8 +217,7 @@ module.exports = (crowi) => {
         fileUpload: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
       };
       return res.apiv3({ appSettingParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating app setting';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-appSetting-failed'));
@@ -249,7 +248,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/SiteUrlSettingParams'
    */
-  router.put('/site-url-setting', loginRequiredStrictly, adminRequired, csrf, validator.siteUrlSetting, ApiV3FormValidator, async(req, res) => {
+  router.put('/site-url-setting', loginRequiredStrictly, adminRequired, csrf, validator.siteUrlSetting, ApiV3FormValidator, async (req, res) => {
 
     const requestSiteUrlSettingParams = {
       'app:siteUrl': req.body.siteUrl,
@@ -261,8 +260,7 @@ module.exports = (crowi) => {
         siteUrl: crowi.configManager.getConfig('crowi', 'app:siteUrl'),
       };
       return res.apiv3({ siteUrlSettingParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating site url setting';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-siteUrlSetting-failed'));
@@ -278,8 +276,7 @@ module.exports = (crowi) => {
       smtpClient.sendMail(options, (err, res) => {
         if (err) {
           reject(err);
-        }
-        else {
+        } else {
           resolve(res);
         }
       });
@@ -341,12 +338,11 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/MailSettingParams'
    */
-  router.put('/mail-setting', loginRequiredStrictly, adminRequired, csrf, validator.mailSetting, ApiV3FormValidator, async(req, res) => {
+  router.put('/mail-setting', loginRequiredStrictly, adminRequired, csrf, validator.mailSetting, ApiV3FormValidator, async (req, res) => {
     // テストメール送信によるバリデート
     try {
       await validateMailSetting(req);
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'SMTPを利用したテストメール送信に失敗しました。設定をみなおしてください。';
       logger.error('Error', err);
       debug('Error validate mail setting: ', err);
@@ -372,8 +368,7 @@ module.exports = (crowi) => {
         smtpPassword: crowi.configManager.getConfig('crowi', 'mail:smtpPassword'),
       };
       return res.apiv3({ mailSettingParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating mail setting';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-mailSetting-failed'));
@@ -403,7 +398,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/AwsSettingParams'
    */
-  router.put('/aws-setting', loginRequiredStrictly, adminRequired, csrf, validator.awsSetting, ApiV3FormValidator, async(req, res) => {
+  router.put('/aws-setting', loginRequiredStrictly, adminRequired, csrf, validator.awsSetting, ApiV3FormValidator, async (req, res) => {
     const requestAwsSettingParams = {
       'aws:region': req.body.region,
       'aws:customEndpoint': req.body.customEndpoint,
@@ -422,8 +417,7 @@ module.exports = (crowi) => {
         secretAccessKey: crowi.configManager.getConfig('crowi', 'aws:secretAccessKey'),
       };
       return res.apiv3({ awsSettingParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating aws setting';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-awsSetting-failed'));
@@ -454,7 +448,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/PluginSettingParams'
    */
-  router.put('/plugin-setting', loginRequiredStrictly, adminRequired, csrf, validator.pluginSetting, ApiV3FormValidator, async(req, res) => {
+  router.put('/plugin-setting', loginRequiredStrictly, adminRequired, csrf, validator.pluginSetting, ApiV3FormValidator, async (req, res) => {
     const requestPluginSettingParams = {
       'plugin:isEnabledPlugins': req.body.isEnabledPlugins,
     };
@@ -465,8 +459,7 @@ module.exports = (crowi) => {
         isEnabledPlugins: crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins'),
       };
       return res.apiv3({ pluginSettingParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating plugin setting';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-pluginSetting-failed'));

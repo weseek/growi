@@ -199,7 +199,7 @@ class UserManagement extends React.Component {
                   className="icon-refresh mr-1"
                 >
                 </span>
-                Reset
+                {t("Reset")}
               </button>
             </div>
           </div>

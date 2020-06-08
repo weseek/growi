@@ -111,7 +111,7 @@ jobs:
       run: |
         yarn test
       env:
-        MONGO_URI: mongodb://localhost:27017/growi_test
+        MONGO_URI: mongodb://192.168.2.120:27017/growi
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
@@ -262,7 +262,7 @@ jobs:
       run: |
         yarn server:prod:ci
       env:
-        MONGO_URI: mongodb://localhost:27017/growi
+        MONGO_URI: mongodb://192.168.2.120:27017/growi
 
     - name: Upload report as artifact
       uses: actions/upload-artifact@v1

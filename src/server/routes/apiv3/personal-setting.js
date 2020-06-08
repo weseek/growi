@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+
 const loggerFactory = require('@alias/logger');
 
 const logger = loggerFactory('growi:routes:apiv3:personal-setting');
@@ -8,7 +9,7 @@ const express = require('express');
 const passport = require('passport');
 
 const router = express.Router();
-const resources = '@alias/locales';
+
 
 const { body } = require('express-validator/check');
 const ErrorV3 = require('../../models/vo/error-apiv3');
@@ -69,15 +70,13 @@ module.exports = (crowi) => {
   const csrf = require('../../middleware/csrf')(crowi);
 
   const { User, ExternalAccount } = crowi.models;
-
-
   const { ApiV3FormValidator } = crowi.middlewares;
 
   const validator = {
     personal: [
       body('name').isString().not().isEmpty(),
       body('email').isEmail(),
-      body('lang').isString().isIn(Object.keys(resources)),
+      body('lang').isString().isIn(['en-US', 'ja', 'zh-CN']),
       body('isEmailPublished').isBoolean(),
     ],
     imageType: [

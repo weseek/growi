@@ -1,278 +1,283 @@
 {
-  "Help": "Help",
-  "Edit": "Edit",
-  "Delete": "Delete",
-  "delete_all": "Delete all",
-  "Duplicate": "Duplicate",
-  "Copy": "Copy",
-  "Click to copy": "Click to copy",
-  "Move/Rename": "Move/Rename",
-  "Moved": "Moved",
-  "Redirected": "Redirected",
+  "Help": "帮助",
+  "Edit": "编辑",
+  "Delete": "删除",
+  "delete_all": "删除所有",
+  "Duplicate": "复制",
+  "Copy": "复制",
+  "Login": "登录",
+  "Click to copy": "点击复制",
+  "Move/Rename": "移动/重命名",
+  "Moved": "移动",
+  "Redirected": "重定向",
   "Unlinked": "Unlinked",
   "Like!": "Like!",
   "Seen by": "Seen by",
-  "Cancel": "Cancel",
-  "Create": "Create",
-  "Admin": "Admin",
-  "administrator": "Admin",
-  "Tag": "Tag",
+  "Cancel": "取消",
+  "Create": "创建",
+  "Admin": "管理",
+  "administrator": "管理员",
+  "Tag": "标签",
   "Tags": "Tags",
-  "New": "New",
-  "Shortcuts": "Shortcuts",
+  "New": "新建",
+  "Shortcuts": "快捷方式",
   "eg": "e.g.",
-  "add": "Add",
-  "Undo": "Undo",
-  "Article": "Article",
-  "Page": "Page",
-  "Page Path": "Page path",
-  "Category": "Category",
-  "User": "User",
-  "status": "Status",
-  "account_id": "Account Id",
-  "Update": "Update",
-  "Update Page": "Update Page",
-  "Warning": "Warning",
-  "Sign in": "Sign in",
-  "Sign up is here": "Sign up",
-  "Sign in is here": "Sign in",
-  "Sign up": "Sign up",
+  "add": "添加",
+  "Undo": "撤销",
+  "Article": "主题",
+  "Page": "页面",
+  "Page Path": "页面路径",
+  "Category": "分类",
+  "User": "用户",
+  "status": "状态",
+  "account_id": "用户Id",
+  "Update": "更新",
+  "Update Page": "更新本页",
+  "Warning": "警告",
+  "Sign in": "登录",
+  "Sign up is here": "注册",
+  "Sign in is here": "登录",
+  "Sign up": "注册",
   "Sign up with Google Account": "Sign up with Google Account",
   "Sign in with Google Account": "Sign in with Google Account",
   "Sign up with this Google Account": "Sign up with this Google Account",
-  "Example": "Example",
+  "Example": "例如",
   "Taro Yamada": "John Doe",
-  "List View": "List",
-  "Timeline View": "Timeline",
-  "History": "History",
-  "Presentation Mode": "Presentation",
+  "List View": "列表",
+  "Timeline View": "时间线",
+  "History": "历史",
+  "Presentation Mode": "演示文稿",
   "Not available for guest": "Not available for guest",
-  "username": "Username",
-  "Created": "Created",
-  "Last updated": "Updated",
-  "Last_Login": "Last login",
-  "Share": "Share",
-  "Share Link": "Share Link",
-  "Markdown Link": "Markdown Link",
-  "Create/Edit Template": "Create/Edit template page",
-  "Go to this version": "View this version",
-  "View diff": "View diff",
-  "No diff": "No diff",
-  "Shrink versions that have no diffs": "Shrink versions that have no diffs",
-  "User ID": "User ID",
-  "Home": "Home",
-  "Settings": "Settings",
-  "User Information": "User information",
-  "Basic Info": "Basic info",
-  "Name": "Name",
-  "Email": "Email",
-  "Language": "Language",
-  "English": "English",
-  "Japanese": "Japanese",
-  "Set Profile Image": "Set profile image",
-  "Upload Image": "Upload image",
-  "Current Image": "Current image",
-  "Delete Image": "Delete Image",
-  "Delete this image?": "Delete this image?",
-  "Updated": "Updated",
-  "Upload new image": "Upload new image",
+  "username": "用户名",
+  "Created": "创建",
+  "Last updated": "上次更新",
+  "Last_Login": "上次登录",
+  "Share": "分享",
+  "Share Link": "分享链接",
+  "Markdown Link": "Markdown链接",
+  "Create/Edit Template": "创建/编辑 模板页面",
+  "Unportalize": "未启动",
+  "Go to this version": "查看此版本",
+  "View diff": "查看差异",
+  "No diff": "无差异",
+  "Shrink versions that have no diffs": "收缩没有差异的版本",
+  "User ID": "用户ID",
+  "Home": "首页",
+  "User Settings": "用户设置",
+  "User Information": "用户信息",
+  "Basic Info": "基础信息",
+  "Name": "姓名",
+  "Email": "邮箱",
+  "Language": "语言",
+  "English": "英语",
+  "Japanese": "日语",
+  "Chinese": "简体中文",
+  "Set Profile Image": "头像",
+  "Upload Image": "上传图片",
+  "Current Image": "当前图片",
+  "Delete Image": "删除图片",
+  "Delete this image?": "删除图片?",
+  "Updated": "更新",
+  "Upload new image": "上传新图像",
   "Connected": "Connected",
-  "Show": "Show",
-  "Hide": "Hide",
-  "Disclose E-mail": "Disclose E-mail",
-  "page exists": "this page already exists",
+  "Show": "显示",
+  "Hide": "隐藏",
+  "Reset": "重置",
+  "Disclose E-mail": "显示邮箱",
+  "page exists": "页面已存在",
   "Error occurred": "Error occurred",
   "Create today's": "Create today's ...",
   "Memo": "memo",
   "Input page name": "Input page name",
   "Input page name (optional)": "Input page name (optional)",
-  "New Page": "New page",
+  "New Page": "新页面",
   "Create under": "Create page under below:",
   "Table of Contents": "Table of Contents",
-  "Wiki Management Home Page": "Wiki Management Home Page",
-  "App Settings": "App Settings",
-  "Site URL settings": "Site URL settings",
-  "Markdown Settings": "Markdown Settings",
-  "Customize": "Customize",
-  "Notification Settings": "Notification Settings",
-  "User_Management": "User Management",
-  "external_account_management": "External Account Management",
-  "UserGroup Management": "UserGroup Management",
-  "Full Text Search Management": "Full Text Search Management",
-  "Import Data": "Import Data",
-  "Export Archive Data": "Export Archive Data",
-  "Basic Settings": "Basic Settings",
-  "Basic authentication": "Basic authentication",
-  "Register limitation": "Register limitation",
-  "The contents entered here will be shown in the header etc": "The contents entered here will be shown in the header etc",
-  "Public": "Public",
-  "Anyone with the link": "Anyone with the link",
-  "Specified users only": "Specified users only",
-  "Only me": "Only me",
-  "Only inside the group": "Only inside the group",
-  "page_list_and_search_results": "Page list / Search results",
-  "scope_of_page_disclosure": "Scope of page disclosure",
-  "set_point": "Set point",
-  "always_displayed": "Always displayed",
-  "always_hidden": "Always hidden",
-  "displayed_or_hidden": "Displayed / Hidden",
-  "page_access_and_delete_rights": "Page access / Delete rights",
-  "Reselect the group": "Reselect the group",
-  "Shareable link": "Shareable link",
-  "The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
-  "Add tags for this page": "Add tags for this page",
-  "Edit tags for this page": "Edit tags for this page",
-  "You have no tag, You can set tags on pages": "You have no tag, You can set tags on pages",
-  "Show latest": "Show latest",
-  "Load latest": "Load latest",
+  "Wiki Management Home Page": "Wiki管理首页",
+  "App Settings": "系统设置",
+  "Site URL settings": "主页URL设置",
+  "Markdown Settings": "Markdown设置",
+  "Customize": "页面定制",
+  "Notification Settings": "通知设置",
+  "User_Management": "用户管理",
+  "external_account_management": "外部账户管理",
+  "UserGroup Management": "用户组管理",
+  "Full Text Search Management": "全文搜索管理",
+  "Import Data": "导入数据",
+  "Export Archive Data": "导出主题数据",
+  "Basic Settings": "基础设置",
+  "Basic authentication": "基本身份验证",
+  "Register limitation": "注册限制",
+  "The contents entered here will be shown in the header etc": "此处输入的内容将显示在标题等中",
+  "Public": "公共",
+  "Anyone with the link": "任何人",
+  "Specified users only": "仅指定用户",
+  "Only me": "只有我",
+  "Only inside the group": "仅组内",
+  "page_list_and_search_results": "页面列表/搜索结果",
+  "scope_of_page_disclosure": "页面公开范围",
+  "set_point": "设定值",
+  "always_displayed": "始终显示",
+  "always_hidden": "总是隐藏",
+  "displayed_or_hidden": "显示/隐藏",
+  "page_access_and_delete_rights": "页面访问/删除权限",
+  "Reselect the group": "重新选择组",
+  "Shareable link": "可分享链接",
+  "The whitelist of registration permission E-mail address": "注册许可电子邮件地址的白名单",
+  "Add tags for this page": "添加标签",
+  "Edit tags for this page": "编辑标签",
+  "You have no tag, You can set tags on pages": "你没有标签，可以在页面上设置标签",
+  "Show latest": "显示最新",
+  "Load latest": "家在最新",
   "edited this page": "edited this page.",
-  "List Drafts": "Drafts",
-  "Deleted Pages": "Deleted Pages",
-  "Sign out": "Logout",
-  "Disassociate": "Disassociate",
-  "Recent Created": "Recent Created",
-  "Recent Changes": "Recent Changes",
+  "List Drafts": "草稿",
+  "Deleted Pages": "已删除页",
+  "Sign out": "退出",
+  "Disassociate": "解除关联",
+  "Recent Created": "最新创建",
+  "Recent Changes": "最新修改",
   "form_validation": {
-    "error_message": "Some values ​​are incorrect",
-    "required": "%s is required",
-    "invalid_syntax": "The syntax of %s is invalid."
+    "error_message": "有些值不正确",
+    "required": "%s 是必需的",
+    "invalid_syntax": "%s的语法无效。"
   },
   "installer": {
-    "setup": "Setup",
-    "create_initial_account": "Create an initial account",
-    "initial_account_will_be_administrator_automatically": "The initial account will be administrator automatically.",
-    "unavaliable_user_id": "This 'User ID' is unavailable."
+    "setup": "安装",
+    "create_initial_account": "创建初始用户",
+    "initial_account_will_be_administrator_automatically": "初始帐户将自动成为管理员。",
+    "unavaliable_user_id": "用户ID不可用"
   },
   "breaking_changes": {
-    "v346_using_basic_auth": "Basic Authentication currently in use will <strong>no longer be available</strong> in the near future. Remove settings from %s"
+    "v346_using_basic_auth": "当前使用的基本身份验证在不久的将来将不再可用。从%s中删除设置"
   },
   "page_register": {
     "notice": {
-      "restricted": "Admin approval required.",
-      "restricted_defail": "Once the admin approves your sign up, you'll be able to access this wiki."
+      "restricted": "需要管理员批准。",
+      "restricted_defail": "一旦管理员批准您的注册，您就可以访问此wiki。"
     },
     "form_help": {
-      "email": "You must have email address which listed below to sign up to this wiki.",
-      "password": "Your password must be at least 6 characters long.",
-      "user_id": "The URL of pages you create will contain your User ID. Your User ID can consist of letters, numbers, and some symbols."
+      "email": "您必须有下面列出的电子邮件地址才能注册此wiki。",
+      "password": "密码长度必须至少为6个字符。",
+      "user_id": "您创建的网页的URL将包含您的用户ID。您的用户ID可以由字母、数字和一些符号组成。"
     }
   },
+  "Settings": "设置",
   "page_me": {
     "form_help": {
-      "profile_image1": "Image upload settings not completed.",
-      "profile_image2": "Set up AWS or enable local uploads."
+      "profile_image1": "图像上传设置未完成。",
+      "profile_image2": "设置AWS或启用本地上传。"
     }
   },
   "page_me_apitoken": {
     "notice": {
-      "apitoken_issued": "API token is not issued.",
-      "update_token1": "You can update to generate a new API token.",
-      "update_token2": "You will need to update the API token in any existing processes."
+      "apitoken_issued": "API token 未发布。",
+      "update_token1": "您可以更新以生成新的API令牌。",
+      "update_token2": "您需要更新任何现有进程中的API令牌。"
     },
     "form_help": {}
   },
-  "Password": "Password",
-  "Password Settings": "Password settings",
-    "personal_settings": {
-    "disassociate_external_account": "Disassociate External Account",
-    "disassociate_external_account_desc": "Are you sure to disassociate the <strong>{{providerType}}</strong> account <strong>{{accountId}}</strong>?",
-    "set_new_password": "Set new Password",
-    "update_password": "Update password",
-      "current_password": "Current password",
-      "new_password": "New password",
-      "new_password_confirm": "Re-enter new password",
-      "password_is_not_set": "Password is not set"
-    },
-  "Security Settings": "Security settings",
-  "API Settings": "API settings",
-  "API Token Settings": "API token settings",
-  "Current API Token": "Current API token",
-  "Update API Token": "Update API token",
+  "Password": "密码",
+  "Password Settings": "密码设置",
+  "personal_settings": {
+    "disassociate_external_account": "解除与外部帐户的关联",
+    "disassociate_external_account_desc": "是否确实要解除与<strong>{{providerType}}</strong>帐户<strong>{{providerType}}</strong> 的关联？",
+    "set_new_password": "设置新密码",
+    "update_password": "更新密码",
+    "current_password": "当前密码",
+    "new_password": "新密码",
+    "new_password_confirm": "重复新密码",
+    "password_is_not_set": "密码未设置"
+  },
+  "Security Settings": "安全设置",
+  "API Settings": "API设置",
+  "API Token Settings": "API token 设置",
+  "Current API Token": "当前 API token",
+  "Update API Token": "更新 API token",
   "header_search_box": {
     "label": {
-      "All pages": "All pages",
-      "This tree": "This tree"
+      "All pages": "所有页面",
+      "This tree": "当前分支"
     },
     "item_label": {
-      "All pages": "All pages",
-      "This tree": "Only children of this tree"
+      "All pages": "所有页面",
+      "This tree": "当前分支以下内容"
     }
   },
   "copy_to_clipboard": {
-    "Copy to clipboard": "Copy to clipboard",
-    "Page path": "Page path",
-    "Page URL": "Page URL",
-    "Parmanent link": "Parmanent link",
-    "Page path and parmanent link": "Page path and parmanent link",
-    "Markdown link": "Markdown link"
+    "Copy to clipboard": "复制到剪贴板",
+    "Page path": "页面路径",
+    "Page URL": "页面Url",
+    "Parmanent link": "参数化链接",
+    "Page path and parmanent link": "页面路径及参数化链接",
+    "Markdown link": "Markdown链接"
   },
   "search_help": {
-    "title": "Searching Help",
+    "title": "搜索帮助",
     "and": {
-      "syntax help": "divide with space",
-      "desc": "Search pages that include both {{word1}}, {{word2}} in the title or body"
+      "syntax help": "用空格分隔",
+      "desc": "在标题或正文中同时包含{{word1}、{{word2}的搜索页"
     },
     "exclude": {
-      "desc": "Exclude pages that include {{word}} in the title or body"
+      "desc": "排除标题或正文中包含{{word}的页"
     },
     "phrase": {
-      "syntax help": "surround with double quotes",
-      "desc": "Search pages that include the phrase \"{{phrase}}\""
+      "syntax help": "用双引号括起来",
+      "desc": "包含短语“{{phrase}”的搜索页"
     },
     "prefix": {
-      "desc": "Search only the pages that the title start with {{path}}"
+      "desc": "只搜索标题以{{path}开头的页"
     },
     "exclude_prefix": {
-      "desc": "Exclude the pages that the title start with {{path}}"
+      "desc": "排除标题以{{path}开头的页"
     },
     "tag": {
-      "desc": "Search for pages with {{tag}} tag"
+      "desc": "搜索带有{{tag}标记的页面"
     },
     "exclude_tag": {
-      "desc": "Exclude pages with {{tag}} tag"
+      "desc": "排除带有{{tag}标记的页"
     }
   },
   "search": {
-    "search page bodies": "Hit [Enter] key to full-text search"
+    "search page bodies": "按[回车]键进行全文搜索"
   },
   "page_page": {
     "notice": {
-      "version": "This is not the current version.",
-      "moved": "This page was moved from <code>%s</code>",
-      "redirected": "You are redirected from <code>%s</code>",
-      "duplicated": "This page was duplicated from <code>%s</code>",
-      "unlinked": "Redirect pages to this page have been deleted.",
-      "restricted": "Access to this page is restricted",
-      "stale": "More than {{count}} year has passed since last update.",
-      "stale_plural": "More than {{count}} years has passed since last update."
+      "version": "这不是当前版本。",
+      "moved": "此页已从<code>%s</code>",
+      "redirected": "您将从<code>%s</code>",
+      "duplicated": "此页来自<code>%s</code>",
+      "unlinked": "将网页重定向到此网页已被删除。",
+      "restricted": "访问此页受到限制",
+      "stale": "自上次更新以来，已超过{{count}年。",
+      "stale_plural": "自上次更新以来已过去{{count}年以上。"
     }
   },
   "page_edit": {
-    "Show active line": "Show active line",
-    "overwrite_scopes": "{{operation}} and Overwrite scopes of all descendants",
+    "Show active line": "显示活动行",
+    "overwrite_scopes": "{{operation}和覆盖所有子体的作用域",
     "notice": {
-      "conflict": "Couldn't save the changes you made because someone else was editing this page. Please re-edit the affected section after reloading the page."
+      "conflict": "无法保存您所做的更改，因为其他人正在编辑此页。请在重新加载页面后重新编辑受影响的部分。"
     }
   },
   "page_api_error": {
-    "notfound_or_forbidden": "Original page is not found or forbidden.",
-    "already_exists": "New page is already exists.",
-    "outdated": "Page is updated someone and now outdated.",
-    "user_not_admin": "Only admin user can delete completely"
+    "notfound_or_forbidden": "未找到或禁止原始页。",
+    "already_exists": "新建页面已存在",
+    "outdated": "页面已被某人更新，现在已过时。",
+    "user_not_admin": "仅管理员用户可以完全删除"
   },
   "modal_rename": {
     "label": {
-      "Move/Rename page": "Move/Rename page",
-      "New page name": "New page name",
-      "Current page name": "Current page name",
-      "Recursively": "Recursively",
-      "Do not update metadata": "Do not update metadata",
-      "Redirect": "Redirect"
+      "Move/Rename page": "页面 移动/重命名",
+      "New page name": "新建页面名称",
+      "Current page name": "当前页面名称",
+      "Recursively": "递归地",
+      "Do not update metadata": "不更新元数据",
+      "Redirect": "重定向"
     },
     "help": {
-      "redirect": "Redirect to new page if someone accesses under this path",
+      "redirect": "Redirect to new page if someone accesses <code>%s</code>",
       "metadata": "Remains last update user and updated date as is",
-      "recursive": "Move/Rename children of under this path recursively"
+      "recursive": "Move/Rename children of under <code>%s</code> recursively"
     }
   },
   "Put Back": "Put back",
@@ -283,12 +288,11 @@
     "delete_recursively": "Delete child pages recursively.",
     "delete_completely": "Delete completely",
     "delete_completely_restriction": "You don't have the authority to delete pages completely.",
-    "recursively": "Delete pages under this path recursively.",
+    "recursively": "Delete children of <code>%s</code> recursively.",
     "completely": "Delete completely instead of putting it into trash."
   },
-  "modal_empty":{
-    "empty_the_trash": "Empty The Trash",
-    "notice": "The pages deleted completely are unrecoverable."
+  "modal_empty": {
+    "empty_the_trash": "Empty The Trash"
   },
   "modal_duplicate": {
     "label": {
@@ -303,29 +307,29 @@
       "recursively": "Put back recursively"
     },
     "help": {
-      "recursively": "Put back page under this path recursively"
+      "recursively": "Put back children of under <code>%s</code> recursively"
     }
   },
   "modal_shortcuts": {
     "global": {
-      "title": "Global shortcuts",
-      "Open/Close shortcut help": "Open/Close<br>shortcut help",
-      "Edit Page": "Edit Page",
-      "Create Page": "Create Page",
-      "Show Contributors": "Show Contributors",
+      "title": "全局快捷方式",
+      "Open/Close shortcut help": "打开/关闭快捷方式帮助",
+      "Edit Page": "编辑页面",
+      "Create Page": "创建页面",
+      "Show Contributors": "显示参与者",
       "Konami Code": "Konami Code",
       "konami_code_url": "https://en.wikipedia.org/wiki/Konami_Code"
     },
     "editor": {
-      "title": "Editor shortcuts",
-      "Indent": "Indent",
-      "Outdent": "Outdent",
-      "Save Page": "Save Page",
-      "Delete Line": "Delete Line"
+      "title": "编辑器快捷方式",
+      "Indent": "缩进",
+      "Outdent": "回退缩进",
+      "Save Page": "保存页面",
+      "Delete Line": "删除行"
     },
     "commentform": {
-      "title": "Comment Form shortcuts",
-      "Post": "Post"
+      "title": "注释窗体快捷方式",
+      "Post": "提交"
     }
   },
   "toaster": {
@@ -339,20 +343,20 @@
   },
   "template": {
     "modal_label": {
-      "Create/Edit Template Page": "Create/Edit template page",
-      "Create template under": "Create template page under this page"
+      "Create/Edit Template Page": "创建/编辑模板页",
+      "Create template under": "在下面创建模板页：<br/><code><small>%s</small></code>"
     },
     "option_label": {
-      "create/edit": "Create/Edit template page..",
-      "select": "Select template page type"
+      "create/edit": "创建/编辑模板页。",
+      "select": "选择模板页面类型"
     },
     "children": {
-      "label": "Template for children",
-      "desc": "Applies only to the same level pages which the template exists"
+      "label": "子模板",
+      "desc": "仅应用于模板存在的同一级别页"
     },
     "decendants": {
-      "label": "Template for descendants",
-      "desc": "Applies to all decendant pages"
+      "label": "子代模板",
+      "desc": "适用于所有分散页"
     }
   },
   "sandbox": {
@@ -403,40 +407,31 @@
     "someone_editing": "Someone editing this page on HackMD",
     "this_page_has_draft": "This page has a draft on HackMD"
   },
-  "search_result": {
-    "result_meta": "Found \"{{keyword}}\" in {{total}}.",
-    "deletion_mode_btn_lavel": "Select and delete page",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "check_all": "Check all",
-    "deletion_modal_header": "Delete page",
-    "delete_completely": "Delete completely"
-  },
   "security_setting": {
     "Security settings": "Security settings",
     "Guest Users Access": "Guest users access",
-    "Fixed by env var": "This is fixed by the env var <code>%s=%s</code>.",
-    "Register limitation": "Register limitation",
-    "Register limitation desc": "Restriction of new users' registration",
-    "The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
-    "users_without_account": "Users without account is not accessible",
-    "example": "Example",
-    "restrict_emails": "You can restrict email registration to your wiki by writing an email domain (beginning with @). ",
-    "for_example": " For example, if you would like to restrict registration to users within the growi.org domain, you can write ",
-    "in_this_case": "; in this case, only users within the growi.org domain would be able to register, and all other users would be rejected.",
-    "insert_single": "Please insert single e-mail address per line.",
-    "page_listing_1": "Page listing/searching<br>restricted by 'Only me'",
-    "page_listing_1_desc": "Show pages that are restricted by 'Only me' option when listing/searching",
-    "page_listing_2": "Page listing/searching<br>restricted by User group",
-    "page_listing_2_desc": "Show pages that are restricted by User group when listing/searching",
-    "complete_deletion": "Restrict complete deletion of pages",
-    "complete_deletion_explain": "Restricts users who can completely delete pages.",
-    "admin_only": "Admin only",
-    "admin_and_author": "Admin and author",
-    "anyone": "Anyone",
-    "Authentication mechanism settings": "Authentication Mechanism Settings",
-    "setup_is_not_yet_complete": "Setup is not yet complete",
-    "alert_siteUrl_is_not_set": "'Site URL' is NOT set. Set it from the {{link}}",
+    "Fixed by env var": "这是由env var<code>%s=%s</code>修复的。",
+    "Register limitation": "注册限制",
+    "Register limitation desc": "限制新用户注册",
+    "The whitelist of registration permission E-mail address": "注册许可电子邮件地址的白名单",
+    "users_without_account": "无法访问没有帐户的用户",
+    "example": "例子",
+    "restrict_emails": "您可以通过编写电子邮件域（以@开头）将电子邮件注册限制为wiki。",
+    "for_example": " 例如，如果要将注册限制为growi.org网站域，你可以写",
+    "in_this_case": "；在这种情况下，只有growi.org网站域将能够注册，所有其他用户将被拒绝。",
+    "insert_single": "请每行插入一个电子邮件地址。",
+    "page_listing_1": "页面列表/搜索<br>受“仅限我”限制",
+    "page_listing_1_desc": "列出/搜索时显示受“仅限我”选项限制的页面",
+    "page_listing_2": "页面列表/搜索<br>受用户组限制",
+    "page_listing_2_desc": "显示列出/搜索时受用户组限制的页面",
+    "complete_deletion": "限制完全删除页面",
+    "complete_deletion_explain": "限制可以完全删除页面的用户。",
+    "admin_only": "仅管理员",
+    "admin_and_author": "管理员|作者",
+    "anyone": "任何人",
+    "Authentication mechanism settings": "身份验证机制设置",
+    "setup_is_not_yet_complete": "安装尚未完成",
+    "alert_siteUrl_is_not_set": "主页URL未设置，通过 {{link}} 设置",
     "xss_prevent_setting": "Prevent XSS(Cross Site Scripting)",
     "xss_prevent_setting_link": "Go to Markdown Settings",
     "callback_URL": "Callback URL",
@@ -596,7 +591,7 @@
     "prioritize_webhook_desc": "Check this option and GROWI use Incoming Webhooks even if Slack App settings are enabled.",
     "slack_app_configuration": "Slack app configuration",
     "slack_app_configuration_desc": "This is the way that compatible with Crowi,<br /> but not recommended in GROWI because it is <strong>too complex</strong>.",
-    "use_instead":"Please use Slack Incoming Webhooks Configuration instead.",
+    "use_instead": "Please use Slack Incoming Webhooks Configuration instead.",
     "how_to": {
       "header": "How to configure Incoming Webhooks?",
       "workspace": "(At Workspace) Add a hook",
@@ -611,10 +606,10 @@
     "channel": "Channel",
     "pattern_desc": "Path name of wiki. Pattern expression with <code>*</code> can be used.",
     "channel_desc": "Slack channel name. Without <code>#</code>.",
-    "valid_page": "Enable/disable Notification",
-    "link_notification_help": "<strong>The page that is able to be viewed only by those who know the link 'Anyone with the link'</strong> is not notified always.",
-    "just_me_notification_help": "<strong>The page that is restricted by 'Only Me'</strong> is notify when the page edited.",
-    "group_notification_help": "<strong>The page that is restricted by 'User Group'</strong> is notify when the page edited.",
+    "valid_page": "启用/禁用通知",
+    "link_notification_help": "<strong>只有那些知道“链接的任何人”链接的人才能查看的页面并不总是得到通知。</strong> ",
+    "just_me_notification_help": "<strong>被“仅限我”限制的页在编辑时被通知。</strong>",
+    "group_notification_help": "<strong>被“用户组”限制的页面在编辑时被通知。</strong>",
     "notification_list": "List of notification settings",
     "add_notification": "Add new",
     "trigger_path": "Trigger path",
@@ -667,7 +662,7 @@
     "export_collections": "Export Collections",
     "check_all": "Check All",
     "uncheck_all": "Uncheck All",
-    "desc_password_seed": "<p>DO NOT FORGET to set current <code>PASSWORD_SEED</code> to your new GROWI system when restoring user data, or users will NOT be able to login with their password.</p><strong>HINT:</strong><p>The current <code>PASSWORD_SEED</code> will be stored in <code>meta.json</code> in exported ZIP.</p>",
+    "desc_password_seed": "DO NOT FORGET to set current <code>PASSWORD_SEED</code> to your new GROWI system when restoring user data, or users will NOT be able to login with their password.<br><br><strong>HINT:</strong><br>The current <code>PASSWORD_SEED</code> will be stored in <code>meta.json</code> in exported ZIP.",
     "create_new_archive_data": "Create New Archive Data",
     "export": "Export",
     "cancel": "Cancel",
@@ -678,10 +673,5 @@
     "export_menu": "Export Menu",
     "download": "Download",
     "delete": "Delete"
-  },
-  "login": {
-    "Sign in error": "Login error",
-    "Registration successful": "Registration successful",
-    "Setup": "Setup"
   }
 }

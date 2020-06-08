@@ -182,7 +182,7 @@
     "new_password_confirm": "(確認用)",
     "password_is_not_set": "パスワードが設定されていません"
   },
-  "security_settings": "セキュリティ設定",
+  "Security Settings": "セキュリティ設定",
   "API Settings": "API設定",
   "API Token Settings": "API Token設定",
   "Current API Token": "現在のAPI Token",

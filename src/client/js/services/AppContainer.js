@@ -498,7 +498,6 @@ export default class AppContainer extends Container {
     if (!params._csrf) {
       params._csrf = this.csrfToken;
     }
-
     return this.apiv3Request('delete', path, { params });
   }
 

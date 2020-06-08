@@ -15,7 +15,8 @@ export default (userlang) => {
     cacheUserlanguage(lng, options) {
     },
   });
-
+  console.log('resources::', resources);
+  console.log(Object.keys(resources));
   i18n
     .use(langDetector)
     .use(initReactI18next) // if not using I18nextProvider
@@ -24,7 +25,7 @@ export default (userlang) => {
       resources,
       load: 'currentOnly',
 
-      fallbackLng: 'en-US',
+      fallbackLng: 'zh-CN',
       detection: {
         order: ['userSettingDetector', 'querystring', 'localStorage'],
       },

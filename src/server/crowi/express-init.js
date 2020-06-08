@@ -1,5 +1,3 @@
-
-
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:crowi:express-init');
   const path = require('path');
@@ -35,10 +33,14 @@ module.exports = function(crowi, app) {
     .use(i18nSprintf)
     .init({
       // debug: true,
-      fallbackLng: [User.LANG_EN_US],
-      whitelist: Object.keys(User.getLanguageLabels()).map((k) => { return User[k] }),
+      // ns: ['translation', 'admin'],
+      fallbackLng: [User.LANG_CN],
+      whitelist: Object.keys(User.getLanguageLabels()).map((k) => {
+        return User[k];
+      }),
       backend: {
         loadPath: `${crowi.localeDir}{{lng}}/translation.json`,
+        // addPath: `${crowi.localeDir}/{{lng}}/{{ns}}/{{ns}}.json`,
       },
       detection: {
         order: ['userSettingDetector', 'header', 'navigator'],
@@ -46,7 +48,7 @@ module.exports = function(crowi, app) {
       overloadTranslationOptionHandler: i18nSprintf.overloadTranslationOptionHandler,
 
       // change nsSeparator from ':' to '::' because ':' is used in config keys and these are used in i18n keys
-      nsSeparator: '::',
+      // nsSeparator: '::',
     });
 
   app.use(helmet());
@@ -69,7 +71,7 @@ module.exports = function(crowi, app) {
     res.locals.consts = {
       pageGrants: Page.getGrantLabels(),
       userStatus: User.getUserStatusLabels(),
-      language:   User.getLanguageLabels(),
+      language: User.getLanguageLabels(),
       restrictGuestMode: crowi.aclService.getRestrictGuestModeLabels(),
       registrationMode: crowi.aclService.getRegistrationModeLabels(),
     };

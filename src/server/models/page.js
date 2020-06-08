@@ -643,7 +643,7 @@ module.exports = function(crowi) {
     const baseQuery = this.findOne({ path });
 
     let relatedUserGroups = userGroups;
-    if (user != null && relatedUserGroups == null) {
+    if (user != null && userGroups == null) {
       validateCrowi();
       const UserGroupRelation = crowi.model('UserGroupRelation');
       relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);

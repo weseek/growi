@@ -64,6 +64,7 @@ function setValueToCodemirrorOnInit(newValue) {
 function postParentToNotifyBodyChanges(body) {
   window.growi.notifyBodyChanges(body);
 }
+
 // generate debounced function
 const debouncedPostParentToNotifyBodyChanges = debounce(800, postParentToNotifyBodyChanges);
 
@@ -98,7 +99,8 @@ function addEventListenersToCodemirror() {
   // == save event
   // Reset save commands and Cmd-S/Ctrl-S shortcuts that initialized by HackMD
   codemirror.commands.save = function(cm) {
-    postParentToSaveWithShortcut(cm.doc.getValue());
+    console.log(cm);
+    // postParentToSaveWithShortcut(cm.doc.getValue());
   };
   delete editor.options.extraKeys['Cmd-S'];
   delete editor.options.extraKeys['Ctrl-S'];

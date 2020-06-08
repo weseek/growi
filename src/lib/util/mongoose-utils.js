@@ -7,8 +7,9 @@ const getMongoUri = () => {
     || env.MONGODB_URI // MONGOLAB changes their env name
     || env.MONGOHQ_URL
     || env.MONGO_URI
-    || ((env.NODE_ENV === 'test') ? 'mongodb://localhost/growi_test' : 'mongodb://localhost/growi');
+    || ((env.NODE_ENV === 'test') ? 'mongodb://192.168.2.120/growi_test' : 'mongodb://192.168.2.120/growi');
 };
+console.log('mongo Uri:', getMongoUri());
 
 const getModelSafely = (modelName) => {
   if (mongoose.modelNames().includes(modelName)) {

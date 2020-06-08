@@ -31,7 +31,7 @@ const AdminNavigation = (props) => {
           href="/admin/security"
           className={`${pageTransitionClassName} ${isActiveMenu('/security') && 'active'}`}
         >
-          <i className="icon-fw icon-shield"></i> {t('security_settings')}
+          <i className="icon-fw icon-shield"></i> {t('Security Settings')}
         </a>
         <a
           href="/admin/markdown"
@@ -102,7 +102,7 @@ const AdminNavigation = (props) => {
           <span className="float-left"><i className="icon-fw icon-home"></i>
             {pathname === '/admin' && t('Wiki Management Home Page')}
             {pathname === '/admin/app' && t('App Settings')}
-            {pathname === '/admin/security' && t('security_settings')}
+            {pathname === '/admin/security' && t('Security Settings')}
             {pathname === '/admin/markdown' && t('Markdown Settings')}
             {pathname === '/admin/customize' && t('Customize')}
             {pathname === '/admin/importer' && t('Import Data')}

@@ -27,6 +27,7 @@ class LoginForm extends React.Component {
     if (hash === '#register') {
       this.state.isRegistering = true;
     }
+    console.log('hash::', hash);
   }
 
   switchForm() {
@@ -50,7 +51,8 @@ class LoginForm extends React.Component {
               <i className="icon-user"></i>
             </span>
           </div>
-          <input type="text" className="form-control rounded-0" placeholder="Username or E-mail" name="loginForm[username]" />
+          <input type="text" className="form-control rounded-0" placeholder="Username or E-mail"
+                 name="loginForm[username]"/>
           {isLdapStrategySetup && (
             <div className="input-group-append">
               <small className="input-group-text text-success">
@@ -66,11 +68,11 @@ class LoginForm extends React.Component {
               <i className="icon-lock"></i>
             </span>
           </div>
-          <input type="password" className="form-control rounded-0" placeholder="Password" name="loginForm[password]" />
+          <input type="password" className="form-control rounded-0" placeholder="Password" name="loginForm[password]"/>
         </div>
 
         <div className="input-group my-4">
-          <input type="hidden" name="_csrf" value={noLoginContainer.csrfToken} />
+          <input type="hidden" name="_csrf" value={noLoginContainer.csrfToken}/>
           <button type="submit" id="login" className="btn btn-fill rounded-0 login mx-auto">
             <div className="eff"></div>
             <span className="btn-label">
@@ -158,11 +160,11 @@ class LoginForm extends React.Component {
     return (
       <React.Fragment>
         {registrationMode === 'Restricted' && (
-        <p className="alert alert-warning">
-          {t('page_register.notice.restricted')}
-          <br />
-          {t('page_register.notice.restricted_defail')}
-        </p>
+          <p className="alert alert-warning">
+            {t('page_register.notice.restricted')}
+            <br/>
+            {t('page_register.notice.restricted_defail')}
+          </p>
         )}
         <form role="form" action="/register" method="post" id="register-form">
           <div className="input-group" id="input-group-username">
@@ -171,7 +173,8 @@ class LoginForm extends React.Component {
                 <i className="icon-user"></i>
               </span>
             </div>
-            <input type="text" className="form-control rounded-0" placeholder={t('User ID')} name="registerForm[username]" defaultValue={username} required />
+            <input type="text" className="form-control rounded-0" placeholder={t('User ID')}
+                   name="registerForm[username]" defaultValue={username} required/>
           </div>
           <p className="form-text text-danger">
             <span id="help-block-username"></span>
@@ -183,7 +186,8 @@ class LoginForm extends React.Component {
                 <i className="icon-tag"></i>
               </span>
             </div>
-            <input type="text" className="form-control rounded-0" placeholder={t('Name')} name="registerForm[name]" defaultValue={name} required />
+            <input type="text" className="form-control rounded-0" placeholder={t('Name')} name="registerForm[name]"
+                   defaultValue={name} required/>
           </div>
 
           <div className="input-group">
@@ -192,22 +196,23 @@ class LoginForm extends React.Component {
                 <i className="icon-envelope"></i>
               </span>
             </div>
-            <input type="email" className="form-control rounded-0" placeholder={t('Email')} name="registerForm[email]" defaultValue={email} required />
+            <input type="email" className="form-control rounded-0" placeholder={t('Email')} name="registerForm[email]"
+                   defaultValue={email} required/>
           </div>
 
           {registrationWhiteList.length > 0 && (
-          <>
-            <p className="form-text">{t('page_register.form_help.email')}</p>
-            <ul>
-              {registrationWhiteList.map((elem) => {
+            <>
+              <p className="form-text">{t('page_register.form_help.email')}</p>
+              <ul>
+                {registrationWhiteList.map((elem) => {
                   return (
                     <li key={elem}>
                       <code>{elem}</code>
                     </li>
                   );
                 })}
-            </ul>
-          </>
+              </ul>
+            </>
           )}
 
           <div className="input-group">
@@ -216,11 +221,12 @@ class LoginForm extends React.Component {
                 <i className="icon-lock"></i>
               </span>
             </div>
-            <input type="password" className="form-control rounded-0" placeholder={t('Password')} name="registerForm[password]" required />
+            <input type="password" className="form-control rounded-0" placeholder={t('Password')}
+                   name="registerForm[password]" required/>
           </div>
 
           <div className="input-group justify-content-center my-4">
-            <input type="hidden" name="_csrf" value={noLoginContainer.csrfToken} />
+            <input type="hidden" name="_csrf" value={noLoginContainer.csrfToken}/>
             <button type="submit" className="btn btn-fill rounded-0" id="register">
               <div className="eff"></div>
               <span className="btn-label">
@@ -273,7 +279,7 @@ class LoginForm extends React.Component {
                       </a>
                     </div>
                   </div>
-              )}
+                )}
               </div>
               <div className="back">
                 {isRegistrationEnabled && this.renderRegisterForm()}
