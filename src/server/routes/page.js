@@ -454,6 +454,12 @@ module.exports = function(crowi, app) {
       return res.render(`layout-${layoutName}/not_found_shared_page`);
     }
 
+    // check if share link is expired
+    if (shareLink.createdAt.getTime() < new Date().getTime()) {
+      // page is not found
+      return res.render(`layout-${layoutName}/expired_shared_page`);
+    }
+
     const renderVars = {};
 
     renderVars.sharelink = shareLink;
