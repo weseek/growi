@@ -124,14 +124,17 @@ module.exports = (crowi) => {
   *    /share-links/:
   *      delete:
   *        tags: [ShareLinks]
+  *        summary: /share-links/
   *        description: delete all share links related one page
-  *        parameters:
-  *          - name: relatedPage
-  *            requestBody: query
-  *            required: true
-  *            description: related page id of share linksk
-  *            schema:
-  *              type: string
+  *        requestBody:
+  *           required: true
+  *           content:
+  *             application/json:
+  *               schema:
+  *                 properties:
+  *                   relatedPage:
+  *                     type: string
+  *                     description: delete all share links that related one page
   *        responses:
   *          200:
   *            description: Succeeded to delete o all share links related one page
