@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 import EditorContainer from '../services/EditorContainer';
@@ -140,18 +140,10 @@ class Page extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const PageWrapper = (props) => {
-  return createSubscribedElement(Page, props, [AppContainer, PageContainer, EditorContainer]);
-};
-
-
 Page.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 };
 
-export default PageWrapper;
+export default withUnstatedContainers(Page, [AppContainer, PageContainer, EditorContainer]);

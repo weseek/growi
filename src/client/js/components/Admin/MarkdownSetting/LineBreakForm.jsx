@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 
@@ -106,9 +106,7 @@ class LineBreakForm extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const LineBreakFormWrapper = (props) => {
-  return createSubscribedElement(LineBreakForm, props, [AppContainer, AdminMarkDownContainer]);
-};
+const LineBreakFormWrapper = withUnstatedContainers(LineBreakForm, [AppContainer, AdminMarkDownContainer]);
 
 LineBreakForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next

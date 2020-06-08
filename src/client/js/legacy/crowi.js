@@ -250,10 +250,10 @@ $(() => {
 
   // tab changing handling
   $('a[href="#revision-body"]').on('show.bs.tab', () => {
-    appContainer.setState({ editorMode: null });
+    appContainer.setEditorMode(null);
   });
   $('a[href="#edit"]').on('show.bs.tab', () => {
-    appContainer.setState({ editorMode: 'builtin' });
+    appContainer.setEditorMode('builtin');
     $('body').addClass('on-edit');
     $('body').addClass('builtin-editor');
   });
@@ -262,7 +262,7 @@ $(() => {
     $('body').removeClass('builtin-editor');
   });
   $('a[href="#hackmd"]').on('show.bs.tab', () => {
-    appContainer.setState({ editorMode: 'hackmd' });
+    appContainer.setEditorMode('hackmd');
     $('body').addClass('on-edit');
     $('body').addClass('hackmd');
   });

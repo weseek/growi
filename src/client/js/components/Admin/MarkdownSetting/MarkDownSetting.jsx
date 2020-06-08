@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 
 import loggerFactory from '@alias/logger';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
@@ -63,9 +63,7 @@ class MarkdownSetting extends React.Component {
 
 }
 
-const MarkdownSettingWrapper = (props) => {
-  return createSubscribedElement(MarkdownSetting, props, [AppContainer, AdminMarkDownContainer]);
-};
+const MarkdownSettingWrapper = withUnstatedContainers(MarkdownSetting, [AppContainer, AdminMarkDownContainer]);
 
 MarkdownSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next

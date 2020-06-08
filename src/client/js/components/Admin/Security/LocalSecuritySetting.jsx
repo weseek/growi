@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
@@ -183,8 +183,6 @@ LocalSecuritySetting.propTypes = {
   adminLocalSecurityContainer: PropTypes.instanceOf(AdminLocalSecurityContainer).isRequired,
 };
 
-const LocalSecuritySettingWrapper = (props) => {
-  return createSubscribedElement(LocalSecuritySetting, props, [AppContainer, AdminGeneralSecurityContainer, AdminLocalSecurityContainer]);
-};
+const LocalSecuritySettingWrapper = withUnstatedContainers(LocalSecuritySetting, [AppContainer, AdminGeneralSecurityContainer, AdminLocalSecurityContainer]);
 
 export default withTranslation()(LocalSecuritySettingWrapper);

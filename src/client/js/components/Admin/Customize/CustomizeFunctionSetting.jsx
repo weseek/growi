@@ -6,7 +6,7 @@ import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
@@ -173,9 +173,7 @@ class CustomizeFunctionSetting extends React.Component {
 
 }
 
-const CustomizeFunctionSettingWrapper = (props) => {
-  return createSubscribedElement(CustomizeFunctionSetting, props, [AppContainer, AdminCustomizeContainer]);
-};
+const CustomizeFunctionSettingWrapper = withUnstatedContainers(CustomizeFunctionSetting, [AppContainer, AdminCustomizeContainer]);
 
 CustomizeFunctionSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next

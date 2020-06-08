@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import AdminExternalAccountsContainer from '../../../services/AdminExternalAccountsContainer';
 
@@ -122,9 +122,7 @@ ExternalAccountTable.propTypes = {
   adminExternalAccountsContainer: PropTypes.instanceOf(AdminExternalAccountsContainer).isRequired,
 };
 
-const ExternalAccountTableWrapper = (props) => {
-  return createSubscribedElement(ExternalAccountTable, props, [AppContainer, AdminExternalAccountsContainer]);
-};
+const ExternalAccountTableWrapper = withUnstatedContainers(ExternalAccountTable, [AppContainer, AdminExternalAccountsContainer]);
 
 
 export default withTranslation()(ExternalAccountTableWrapper);
