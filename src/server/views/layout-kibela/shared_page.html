@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block content_main %}
-  <div class="row" id="is-shared-page" data-expiration="{{ expiration|datetz('Y/m/d H:i:s')}}">
+  <div class="row" id="is-shared-page" data-expiration="{{ sharelink.expiration|datetz('Y/m/d H:i:s')}}" data-create-at="{{ }}">
     <div class="col-12 col-xl-9 col-lg-8 bg-white round-corner">
       <div id="share-link-alert"></div>
 

@@ -457,7 +457,8 @@ module.exports = function(crowi, app) {
 
     const renderVars = {};
 
-    renderVars.expiration = shareLink.expiration;
+    renderVars.sharelink = shareLink;
+
     // populate
     page = await page.populateDataToShowRevision();
     addRendarVarsForPage(renderVars, page);
