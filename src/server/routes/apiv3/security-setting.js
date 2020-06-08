@@ -547,8 +547,26 @@ module.exports = (crowi) => {
     }
   });
 
-  // write swagger
-  router.get('/all-share-links/', loginRequiredStrictly, adminRequired, csrf, ApiV3FormValidator, async(req, res) => {
+
+  /**
+   * @swagger
+   *
+   *    /_api/v3/security-setting/all-share-links:
+   *      get:
+   *        tags: [ShareLinkSettings, apiv3]
+   *        description: Get All ShareLinks at Share Link Setting
+   *        responses:
+   *          200:
+   *            description: all share links
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    securityParams:
+   *                      type: object
+   *                      description: suceed to get all share links
+   */
+  router.get('/all-share-links/', /* loginRequiredStrictly, adminRequired, csrf, ApiV3FormValidator, */ async(req, res) => {
     const ShareLink = crowi.model('ShareLink');
     try {
       const shareLinksResult = await ShareLink.find({});
