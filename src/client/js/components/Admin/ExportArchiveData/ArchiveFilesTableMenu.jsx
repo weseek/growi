@@ -18,7 +18,7 @@ class ArchiveFilesTableMenu extends React.Component {
         </button>
         <ul className="dropdown-menu" role="menu">
           <li className="dropdown-header">{t('admin:export_management.export_menu')}</li>
-          <button type="button" className="dropdown-item" href={`/admin/export/${this.props.fileName}`}>
+          <button type="button" className="dropdown-item" onClick={() => { window.location.href = `/admin/export/${this.props.fileName}` }}>
             <i className="icon-cloud-download" /> {t('admin:export_management.download')}
           </button>
           <button type="button" className="dropdown-item" role="button" onClick={() => this.props.onZipFileStatRemove(this.props.fileName)}>
