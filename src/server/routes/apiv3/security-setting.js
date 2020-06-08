@@ -290,6 +290,7 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
   const adminRequired = require('../../middleware/admin-required')(crowi);
   const csrf = require('../../middleware/csrf')(crowi);
+  const ShareLink = crowi.model('ShareLink');
 
   const { ApiV3FormValidator } = crowi.middlewares;
 
@@ -544,6 +545,19 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating security setting';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-secuirty-setting failed'));
+    }
+  });
+
+  // write swagger
+  router.get('/all-share-links', loginRequiredStrictly, adminRequired, csrf, async(res) => {
+    try {
+      const shareLinksResult = await ShareLink.find();
+      return res.apiv3({ shareLinksResult });
+    }
+    catch (err) {
+      const msg = 'Error occured in get share link';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'get-all-share-links-failed'));
     }
   });
 
