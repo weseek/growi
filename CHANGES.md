@@ -1,6 +1,15 @@
 # CHANGES
 
-## v3.8.1-RC
+## v3.8.2
+
+* Improvement: Ensure not to avoid session management even when accessing to healthcheck
+* Support: Upgrade libs
+    * connect-mongo
+    * mongoose
+    * mongoose-gridfs
+    * mongoose-paginate-v2
+
+## v3.8.1
 
 * Fix: Unset overflow-y style for Edit Tags Modal
 
