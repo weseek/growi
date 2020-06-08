@@ -454,8 +454,13 @@ module.exports = function(crowi, app) {
 
     if (page == null) {
       // page is not found
-      // TODO GW-2735 create not found page
-      // return res.render(`layout-${layoutName}/not_found_shared_page`);
+      return res.render(`layout-${layoutName}/not_found_shared_page`);
+    }
+
+    // check if share link is expired
+    if (shareLink.expiredAt.getTime() < new Date().getTime()) {
+      // page is not found
+      return res.render(`layout-${layoutName}/expired_shared_page`);
     }
 
     const renderVars = {};
