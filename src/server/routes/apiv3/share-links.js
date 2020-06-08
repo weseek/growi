@@ -19,7 +19,7 @@ const today = new Date();
 /**
  * @swagger
  *  tags:
- *    name: ShareLinks
+ *    name: ShareLink
  */
 
 module.exports = (crowi) => {
@@ -28,10 +28,37 @@ module.exports = (crowi) => {
   const { ApiV3FormValidator } = crowi.middlewares;
   const ShareLink = crowi.model('ShareLink');
 
-  // TDOO write swagger
-  router.get('/', loginRequired, async(req, res) => {
-    const { pageId } = req.query;
-    // TODO GW-2616 get all share links associated with the page
+
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /share-links/:
+   *      post:
+   *        tags: [ShareLink]
+   *        description: get share links
+   *        parameters:
+   *          - name: relatedPage
+   *            in: query
+   *            required: true
+   *            description: page id of share link
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: Succeeded to get share links
+   */
+  router.get('/', loginRequired, csrf, ApiV3FormValidator, async(req, res) => {
+    const { relatedPage } = req.query;
+    try {
+      const paginateResult = await ShareLink.find({ relatedPage: { $in: relatedPage } });
+      return res.apiv3({ paginateResult });
+    }
+    catch (err) {
+      const msg = 'Error occurred in get share link';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'get-shareLink-failed'));
+    }
   });
 
   validator.shareLinkStatus = [
@@ -50,12 +77,12 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /share-link/:
+   *    /share-links/:
    *      post:
    *        tags: [ShareLink]
    *        description: Create new share link
    *        parameters:
-   *          - name: pageId
+   *          - name: relatedPage
    *            in: query
    *            required: true
    *            description: page id of share link
