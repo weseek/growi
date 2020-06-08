@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
@@ -72,10 +72,9 @@ class MikanAuthTest extends React.Component {
         const prettified = JSON.stringify(response.mikanAccountInfo, undefined, 4);
         this.addLogs(`Retrieved Mikan Account : ${prettified}`);
       }
-
     }
-    // Catch server communication error
     catch (err) {
+      // Catch server communication error
       toastError(err);
       logger.error(err);
     }
@@ -89,44 +88,54 @@ class MikanAuthTest extends React.Component {
         {this.state.successMessage != null && <div className="alert alert-success">{this.state.successMessage}</div>}
         {this.state.errorMessage != null && <div className="alert alert-warning">{this.state.errorMessage}</div>}
         <div className="form-group row">
-          <label htmlFor="username" className="col-3 col-form-label">{t('username')}</label>
+          <label htmlFor="username" className="col-3 col-form-label">
+            {t('username')}
+          </label>
           <div className="col-6">
             <input
               className="form-control"
               name="username"
               value={this.props.username}
-              onChange={(e) => { this.props.onChangeUsername(e.target.value) }}
+              onChange={(e) => {
+                this.props.onChangeUsername(e.target.value);
+              }}
             />
           </div>
         </div>
         <div className="form-group row">
-          <label htmlFor="password" className="col-3 col-form-label">{t('Password')}</label>
+          <label htmlFor="password" className="col-3 col-form-label">
+            {t('Password')}
+          </label>
           <div className="col-6">
             <input
               className="form-control"
               type="password"
               name="password"
               value={this.props.password}
-              onChange={(e) => { this.props.onChangePassword(e.target.value) }}
+              onChange={(e) => {
+                this.props.onChangePassword(e.target.value);
+              }}
             />
           </div>
         </div>
 
         <div className="form-group">
-          <label><h5>Logs</h5></label>
+          <label>
+            <h5>Logs</h5>
+          </label>
           <textarea id="taLogs" className="col" rows="4" value={this.state.logs} readOnly />
         </div>
 
         <div>
-          <button type="button" className="btn btn-outline-secondary offset-5 col-2" onClick={this.testMikanCredentials}>Test</button>
+          <button type="button" className="btn btn-outline-secondary offset-5 col-2" onClick={this.testMikanCredentials}>
+            Test
+          </button>
         </div>
       </React.Fragment>
-
     );
   }
 
 }
-
 
 MikanAuthTest.propTypes = {
   t: PropTypes.func.isRequired, // i18next
@@ -139,8 +148,6 @@ MikanAuthTest.propTypes = {
   onChangePassword: PropTypes.func.isRequired,
 };
 
-const MikanAuthTestWrapper = (props) => {
-  return createSubscribedElement(MikanAuthTest, props, [AppContainer, AdminMikanSecurityContainer]);
-};
+const MikanAuthTestWrapper = withUnstatedContainers(MikanAuthTest, [AppContainer, AdminMikanSecurityContainer]);
 
 export default withTranslation()(MikanAuthTestWrapper);

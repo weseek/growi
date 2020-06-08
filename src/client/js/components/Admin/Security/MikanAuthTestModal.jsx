@@ -2,13 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import {
-  Modal,
-  ModalHeader,
-  ModalBody,
-} from 'reactstrap';
+import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminMikanSecurityContainer from '../../../services/AdminMikanSecurityContainer';
@@ -36,8 +32,8 @@ class MikanAuthTestModal extends React.Component {
   }
 
   /**
- * Change password
- */
+   * Change password
+   */
   onChangePassword(password) {
     this.setState({ password });
   }
@@ -62,7 +58,6 @@ class MikanAuthTestModal extends React.Component {
 
 }
 
-
 MikanAuthTestModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
@@ -72,8 +67,6 @@ MikanAuthTestModal.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-const MikanAuthTestModalWrapper = (props) => {
-  return createSubscribedElement(MikanAuthTestModal, props, [AppContainer, AdminMikanSecurityContainer]);
-};
+const MikanAuthTestModalWrapper = withUnstatedContainers(MikanAuthTestModal, [AppContainer, AdminMikanSecurityContainer]);
 
 export default withTranslation()(MikanAuthTestModalWrapper);

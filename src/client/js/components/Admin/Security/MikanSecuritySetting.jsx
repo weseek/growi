@@ -2,14 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 import AdminMikanSecurityContainer from '../../../services/AdminMikanSecurityContainer';
 import MikanAuthTestModal from './MikanAuthTestModal';
-
 
 class MikanSecuritySetting extends React.Component {
 
@@ -68,10 +67,7 @@ class MikanSecuritySetting extends React.Component {
     }
     return (
       <React.Fragment>
-
-        <h2 className="alert-anchor border-bottom">
-          Mikan
-        </h2>
+        <h2 className="alert-anchor border-bottom">Mikan</h2>
 
         <div className="form-group row">
           <div className="col-6 offset-3">
@@ -81,20 +77,22 @@ class MikanSecuritySetting extends React.Component {
                 className="custom-control-input"
                 type="checkbox"
                 checked={isMikanEnabled}
-                onChange={() => { adminGeneralSecurityContainer.switchIsMikanEnabled() }}
+                onChange={() => {
+                  adminGeneralSecurityContainer.switchIsMikanEnabled();
+                }}
               />
               <label className="custom-control-label" htmlFor="isMikanEnabled">
                 {t('security_setting.mikan.enable_mikan')}
               </label>
             </div>
-            {(!adminGeneralSecurityContainer.state.setupStrategies.includes('mikan') && isMikanEnabled)
-              && <div className="badge badge-warning">{t('security_setting.setup_is_not_yet_complete')}</div>}
+            {!adminGeneralSecurityContainer.state.setupStrategies.includes('mikan') && isMikanEnabled && (
+              <div className="badge badge-warning">{t('security_setting.setup_is_not_yet_complete')}</div>
+            )}
           </div>
         </div>
 
         {isMikanEnabled && (
           <React.Fragment>
-
             <h3 className="border-bottom">{t('security_setting.configuration')}</h3>
 
             <div className="form-group row">
@@ -175,21 +173,15 @@ class MikanSecuritySetting extends React.Component {
                 >
                   {t('Update')}
                 </button>
-                <button
-                  type="button"
-                  className="btn btn-outline-secondary ml-2"
-                  onClick={this.openMikanAuthTestModal}
-                >{t('security_setting.mikan.test_config')}
+                <button type="button" className="btn btn-outline-secondary ml-2" onClick={this.openMikanAuthTestModal}>
+                  {t('security_setting.mikan.test_config')}
                 </button>
               </div>
             </div>
-
           </React.Fragment>
         )}
 
-
         <MikanAuthTestModal isOpen={this.state.isMikanAuthTestModalShown} onClose={this.closeMikanAuthTestModal} />
-
       </React.Fragment>
     );
   }
@@ -203,8 +195,6 @@ MikanSecuritySetting.propTypes = {
   adminMikanSecurityContainer: PropTypes.instanceOf(AdminMikanSecurityContainer).isRequired,
 };
 
-const MikanSecuritySettingWrapper = (props) => {
-  return createSubscribedElement(MikanSecuritySetting, props, [AppContainer, AdminGeneralSecurityContainer, AdminMikanSecurityContainer]);
-};
+const MikanSecuritySettingWrapper = withUnstatedContainers(MikanSecuritySetting, [AppContainer, AdminGeneralSecurityContainer, AdminMikanSecurityContainer]);
 
 export default withTranslation()(MikanSecuritySettingWrapper);
