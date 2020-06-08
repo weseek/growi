@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import UserPictureList from './UserPictureList';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 import PageContainer from '../../services/PageContainer';
 
@@ -32,8 +32,6 @@ SeenUserList.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const SeenUserPictureListWrapper = (props) => {
-  return createSubscribedElement(SeenUserList, props, [PageContainer]);
-};
+const SeenUserPictureListWrapper = withUnstatedContainers(SeenUserList, [PageContainer]);
 
 export default (SeenUserPictureListWrapper);

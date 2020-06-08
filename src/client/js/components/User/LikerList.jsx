@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import UserPictureList from './UserPictureList';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 import PageContainer from '../../services/PageContainer';
 
@@ -32,8 +32,6 @@ LikerList.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const LikerPictureListWrapper = (props) => {
-  return createSubscribedElement(LikerList, props, [PageContainer]);
-};
+const LikerPictureListWrapper = withUnstatedContainers(LikerList, [PageContainer]);
 
 export default (LikerPictureListWrapper);
