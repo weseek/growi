@@ -22,7 +22,8 @@ module.exports = (crowi) => {
   const loginRequired = require('../../middleware/login-required')(crowi);
   const csrf = require('../../middleware/csrf')(crowi);
 
-  const { ShareLink } = crowi.models;
+  /* const { ShareLink } = crowi.model; */
+  const ShareLink = crowi.model('ShareLink');
 
   const { ApiV3FormValidator } = crowi.middlewares;
 
@@ -31,7 +32,7 @@ module.exports = (crowi) => {
   *
   *    /share-links/:
   *      get:
-  *        tags: [ShareLinks]
+  *        tags: [ShareLink]
   *        description: get share link list
   *        parameters:
   *          - name: relatedPage
@@ -47,11 +48,7 @@ module.exports = (crowi) => {
   router.get('/', /* loginRequired, csrf, */ ApiV3FormValidator, async(req, res) => {
     const { relatedPage } = req.query;
     try {
-      const paginateResult = await ShareLink.paginate(
-        {
-          relatedPage: { $in: relatedPage },
-        },
-      );
+      const paginateResult = await ShareLink.find({ relatedPage: { $in: relatedPage } });
       return res.apiv3({ paginateResult });
     }
     catch (err) {
