@@ -157,7 +157,7 @@ export default class PageContainer extends Container {
     }
   }
 
-  checkAndUpdateImageUrlCached(users) {
+  async checkAndUpdateImageUrlCached(users) {
     const noImageCacheUsers = users.filter((user) => { return user.imageUrlCached == null });
     if (noImageCacheUsers.length === 0) {
       return;
@@ -165,7 +165,7 @@ export default class PageContainer extends Container {
 
     const noImageCacheUserIds = noImageCacheUsers.map((user) => { return user.id });
     try {
-      this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
+      await this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
     }
     catch (err) {
       // Error alert doesn't apear, because user don't need to notice this error.
