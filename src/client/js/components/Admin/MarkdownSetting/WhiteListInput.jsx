@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { tags, attrs } from '../../../../../lib/service/xss/recommended-whitelist';
 
 import AppContainer from '../../../services/AppContainer';
@@ -75,9 +75,7 @@ class WhiteListInput extends React.Component {
 
 }
 
-const WhiteListWrapper = (props) => {
-  return createSubscribedElement(WhiteListInput, props, [AppContainer, AdminMarkDownContainer]);
-};
+const WhiteListWrapper = withUnstatedContainers(WhiteListInput, [AppContainer, AdminMarkDownContainer]);
 
 WhiteListInput.propTypes = {
   t: PropTypes.func.isRequired, // i18next
