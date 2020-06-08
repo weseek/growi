@@ -77,13 +77,13 @@
   }
 
   // Dropdowns
-  .dropdown {
-    .dropdown-toggle.btn.disabled {
+  .dropdown-toggle {
+    &.btn.disabled {
       cursor: not-allowed;
     }
 
     // hide caret
-    .dropdown-toggle.dropdown-toggle-no-caret::after {
+    &.dropdown-toggle-no-caret::after {
       content: none;
     }
   }

@@ -2,7 +2,14 @@
 
 ## v4.0.3-RC
 
+* Feature: Copy page path dropdown with Append params switch
+* Improvement: Truncate overflowed user browsing history
+* Improvement: Tabs appearance on mobile
+* Improvement: Search help appearance on mobile
+* Improvement: Accessibility of login page
+* Fix: Editor was broken by long lines
 * Fix: Editor doesn't work on mobile
+* Fix: Word break in Recent Updated contents
 * Fix: navbar is broken on Safari
 
 ## v4.0.2
