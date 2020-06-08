@@ -9,6 +9,7 @@ import EditorContainer from '../services/EditorContainer';
 
 import MarkdownTable from '../models/MarkdownTable';
 
+import LinkEditModal from './PageEditor/LinkEditModal';
 import RevisionRenderer from './Page/RevisionRenderer';
 import HandsontableModal from './PageEditor/HandsontableModal';
 import DrawioModal from './PageEditor/DrawioModal';
@@ -29,6 +30,7 @@ class Page extends React.Component {
 
     this.growiRenderer = this.props.appContainer.getRenderer('page');
 
+    this.linkEditModal = React.createRef();
     this.handsontableModal = React.createRef();
     this.drawioModal = React.createRef();
 
@@ -132,6 +134,7 @@ class Page extends React.Component {
     return (
       <div className={isMobile ? 'page-mobile' : ''}>
         <RevisionRenderer growiRenderer={this.growiRenderer} markdown={markdown} />
+        <LinkEditModal ref={this.LinkEditModal} />
         <HandsontableModal ref={this.handsontableModal} onSave={this.saveHandlerForHandsontableModal} />
         <DrawioModal ref={this.drawioModal} onSave={this.saveHandlerForDrawioModal} />
       </div>
