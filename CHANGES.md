@@ -1,6 +1,10 @@
 # CHANGES
 
-## v4.0.4-RC
+## v4.0.5
+
+* 
+
+## v4.0.4
 
 * Feature: Drawer/Dock mode selector
 * Improvement: Admin pages navigation
