@@ -78,18 +78,3 @@ jobs:
         STATUS=`git status --porcelain`
         if [ -z "$STATUS" ]; then exit 0; else exit 1; fi
 
-  publish-desc:
-
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Update Docker Hub Description
-      uses: peter-evans/dockerhub-description@v2.1.0
-      env:
-        DOCKERHUB_USERNAME: wsmoogle
-        DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-        DOCKERHUB_REPOSITORY: weseek/growi
-        README_FILEPATH: ./docker/README.md
