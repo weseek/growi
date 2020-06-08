@@ -16,7 +16,7 @@ const schema = new mongoose.Schema({
     required: true,
     index: true,
   },
-  expiration: { type: Date },
+  expiredAt: { type: Date },
   description: { type: String },
   createdAt: { type: Date, default: Date.now, required: true },
 });

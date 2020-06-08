@@ -8,9 +8,13 @@ const express = require('express');
 
 const router = express.Router();
 
-const { body } = require('express-validator/check');
+const { body, query } = require('express-validator/check');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
+
+const validator = {};
+
+const today = new Date();
 
 /**
  * @swagger
@@ -21,10 +25,8 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
 module.exports = (crowi) => {
   const loginRequired = require('../../middleware/login-required')(crowi);
   const csrf = require('../../middleware/csrf')(crowi);
-
-  const ShareLink = crowi.model('ShareLink');
-
   const { ApiV3FormValidator } = crowi.middlewares;
+  const ShareLink = crowi.model('ShareLink');
 
   /**
   * @swagger
@@ -57,11 +59,61 @@ module.exports = (crowi) => {
     }
   });
 
+  validator.shareLinkStatus = [
+    // validate the page id is null
+    body('relatedPage').not().isEmpty().withMessage('Page Id is null'),
 
-  // TDOO write swagger
-  router.post('/', loginRequired, async(req, res) => {
-    const { relatedPage } = req.body;
-    // TODO GW-2609 publish the share link
+    // validate expireation date is not empty, is not before today and is date.
+    body('expiredAt').isAfter(today.toString()).withMessage('Your Selected date is past'),
+
+    // validate the length of description is max 100.
+    body('description').isLength({ min: 0, max: 100 }).withMessage('Max length is 100'),
+
+  ];
+
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /share-link/:
+   *      post:
+   *        tags: [ShareLink]
+   *        description: Create new share link
+   *        parameters:
+   *          - name: pageId
+   *            in: query
+   *            required: true
+   *            description: page id of share link
+   *            schema:
+   *              type: string
+   *          - name: expiredAt
+   *            in: query
+   *            description: expiration date of share link
+   *            schema:
+   *              type: string
+   *          - name: description
+   *            in: query
+   *            description: description of share link
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: Succeeded to create one share link
+   */
+
+  router.post('/', loginRequired, csrf, validator.shareLinkStatus, ApiV3FormValidator, async(req, res) => {
+    const { relatedPage, expiredAt, description } = req.body;
+    const ShareLink = crowi.model('ShareLink');
+
+    try {
+      const postedShareLink = await ShareLink.create({ relatedPage, expiredAt, description });
+      return res.apiv3(postedShareLink);
+    }
+    catch (err) {
+      const msg = 'Error occured in post share link';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'post-shareLink-failed'));
+    }
   });
 
   // TDOO write swagger
