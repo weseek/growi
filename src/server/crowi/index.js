@@ -235,7 +235,7 @@ Crowi.prototype.setupSessionConfig = function() {
     // use MongoDB for session store
     else {
       const MongoStore = require('connect-mongo')(session);
-      sessionConfig.store = new MongoStore({ url: mongoUrl });
+      sessionConfig.store = new MongoStore({ mongooseConnection: mongoose.connection });
     }
 
     self.sessionConfig = sessionConfig;
