@@ -36,10 +36,10 @@ module.exports = (crowi) => {
 
   validator.shareLinkStatus = [
     // validate the page id is null
-    body('pageId').not().isEmpty().withMessage('Page Id is null'),
+    body('relatedPage').not().isEmpty().withMessage('Page Id is null'),
 
     // validate expireation date is not empty, is not before today and is date.
-    body('expiration').isAfter(today.toString()).withMessage('Your Selected date is past'),
+    body('expiredAt').isAfter(today.toString()).withMessage('Your Selected date is past'),
 
     // validate the length of description is max 100.
     body('description').isLength({ min: 0, max: 100 }).withMessage('Max length is 100'),
@@ -76,12 +76,12 @@ module.exports = (crowi) => {
    *            description: Succeeded to create one share link
    */
 
-  router.post('/', loginRequired, csrf, validator.shareLinkStatus, ApiV3FormValidator, async(req, res) => {
-    const { pageId, expiration, description } = req.body;
+  router.post('/', /* loginRequired, csrf, */ validator.shareLinkStatus, ApiV3FormValidator, async(req, res) => {
+    const { relatedPage, expiredAt, description } = req.body;
     const ShareLink = crowi.model('ShareLink');
 
     try {
-      const postedShareLink = await ShareLink.create({ relatedPage: pageId, expiredAt: expiration, desc: description });
+      const postedShareLink = await ShareLink.create({ relatedPage, expiredAt, description });
       return res.apiv3(postedShareLink);
     }
     catch (err) {
