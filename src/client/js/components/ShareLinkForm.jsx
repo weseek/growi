@@ -14,23 +14,14 @@ class ShareLinkForm extends React.Component {
     super(props);
     this.state = {
       expirationType: 'unlimited',
+      numberOfDays: 7,
       description: '',
     };
 
-    this.handleInputChange = this.handleInputChange.bind(this);
     this.handleChangeExpirationType = this.handleChangeExpirationType.bind(this);
+    this.handleChangeNumberOfDays = this.handleChangeNumberOfDays.bind(this);
     this.handleChangeDescription = this.handleChangeDescription.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  handleInputChange(event) {
-    const target = event.target;
-    const value = target.name === 'isGoing' ? target.checked : target.value;
-    const name = target.name;
-
-    this.setState({
-      [name]: value,
-    });
   }
 
   /**
@@ -39,6 +30,14 @@ class ShareLinkForm extends React.Component {
    */
   handleChangeExpirationType(expirationType) {
     this.setState({ expirationType });
+  }
+
+  /**
+   * change numberOfDays
+   * @param {number} numberOfDays
+   */
+  handleChangeNumberOfDays(numberOfDays) {
+    this.setState({ numberOfDays });
   }
 
   /**
@@ -88,11 +87,10 @@ class ShareLinkForm extends React.Component {
               <input
                 type="number"
                 min="1"
-                max="7"
                 className="form-control col-4"
-                name="numberOfGuests"
-                value={this.state.numberOfGuests}
-                onChange={this.handleInputChange}
+                name="numberOfDays"
+                value={this.state.numberOfDays}
+                onChange={e => this.handleChangeNumberOfDays(e.target.value)}
               />
               <span className="col-auto">Days</span>
             </div>
