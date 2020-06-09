@@ -159,6 +159,22 @@
   }
 }
 
+// supress transition
+.grw-sidebar {
+  &.grw-sidebar-supress-transitions-to-drawer {
+    div[data-testid='Navigation'] {
+      transition: none !important;
+    }
+  }
+
+  &.grw-sidebar-supress-transitions-to-dock {
+    div[data-testid='Content'],
+    div[data-testid='ContextualNavigation'] {
+      transition: none !important;
+    }
+  }
+}
+
 .grw-sidebar-backdrop.modal-backdrop {
   z-index: $zindex-fixed - 4;
 }

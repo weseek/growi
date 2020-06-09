@@ -81,7 +81,7 @@ class Sidebar extends React.Component {
 
       // clear transition temporary
       if (this.sidebarCollapsedCached) {
-        this.clearNavigationTransitionTemporary(this.navigationElem);
+        this.addCssClassTemporary('grw-sidebar-supress-transitions-to-drawer');
       }
 
       navigationUIController.disableResize();
@@ -91,10 +91,9 @@ class Sidebar extends React.Component {
     }
     // Drawer --> Dock
     else {
-      // clear transition temporary when restore collapsed sidebar
+      // clear transition temporary
       if (this.sidebarCollapsedCached) {
-        this.clearNavigationTransitionTemporary(this.ctxNavigationElem);
-        this.clearNavigationTransitionTemporary(this.contentElem);
+        this.addCssClassTemporary('grw-sidebar-supress-transitions-to-dock');
       }
 
       navigationUIController.enableResize();
@@ -106,27 +105,17 @@ class Sidebar extends React.Component {
     }
   }
 
-  get navigationElem() {
-    return document.querySelector('div[data-testid="Navigation"]');
+  get sidebarElem() {
+    return document.querySelector('.grw-sidebar');
   }
 
-  get ctxNavigationElem() {
-    return document.querySelector('div[data-testid="ContextualNavigation"]');
-  }
-
-  get contentElem() {
-    return document.querySelector('div[data-testid="Content"]');
-  }
-
-  clearNavigationTransitionTemporary(elem) {
-    const transitionCache = elem.style.transition;
-
+  addCssClassTemporary(className) {
     // clear
-    elem.style.transition = undefined;
+    this.sidebarElem.classList.add(className);
 
     // restore after 300ms
     setTimeout(() => {
-      elem.style.transition = transitionCache;
+      this.sidebarElem.classList.remove(className);
     }, 300);
   }
 
