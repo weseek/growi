@@ -547,6 +547,26 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   *    /_api/v3/security-setting/all-share-links:
+   *      delete:
+   *        tags: [ShareLinkSettings, apiv3]
+   *        description: Delete All ShareLinks at Share Link Setting
+   *        requestBody:
+   *           required: true
+   *           content:
+   *             application/json:
+   *                schema:
+   *                  properties:
+   *                    securityParams:
+   *                      type: object
+   *                      description: succeed to delete all share links
+   *        responses:
+   *          200:
+   *            description: all share links
+   */
 
   router.delete('/all-share-links/', loginRequiredStrictly, adminRequired, csrf, ApiV3FormValidator, async(req, res) => {
     const ShareLink = crowi.model('ShareLink');
