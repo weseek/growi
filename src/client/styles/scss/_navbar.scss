@@ -21,6 +21,7 @@
 
   .nav-link,
   .nav-item.confidential {
+    @include variable-font-size(14px);
     display: flex;
     align-items: center;
     max-width: 200px; //追加
