@@ -63,7 +63,7 @@ export default class LinkEditModal extends React.PureComponent {
                     type="text"
                     placeholder="/foo/bar/31536000"
                     aria-describedby="button-addon"
-                  ></input>
+                  />
                   <div className="input-group-append">
                     <button type="button" id="button-addon" className="btn btn-secondary">Preview</button>
                   </div>
@@ -104,8 +104,8 @@ export default class LinkEditModal extends React.PureComponent {
                             className="custom-control-input"
                             id="relativePath"
                             type="checkbox"
-                            checked={ this.state.isUseRelativePath }
-                          ></input>
+                            checked={this.state.isUseRelativePath}
+                          />
                           <label
                             className="custom-control-label"
                             htmlFor="relativePath"
@@ -118,7 +118,7 @@ export default class LinkEditModal extends React.PureComponent {
                       </div>
                     </form>
                   </div>
-                  
+
                   <div id="Crowi" className="tab-pane" role="tabpanel">
                     <form className="form-group">
                       <div className="form-group">
@@ -133,7 +133,7 @@ export default class LinkEditModal extends React.PureComponent {
                       </div>
                     </form>
                   </div>
-                  
+
                   <div id="MD" className="tab-pane" role="tabpanel">
                     <form className="form-group">
                       <div className="form-group">
@@ -149,8 +149,8 @@ export default class LinkEditModal extends React.PureComponent {
                             className="custom-control-input"
                             id="relativePath"
                             type="checkbox"
-                            checked={ this.state.isUseRelativePath }
-                          ></input>
+                            checked={this.state.isUseRelativePath}
+                          />
                           <label
                             className="custom-control-label"
                             htmlFor="relativePath"
