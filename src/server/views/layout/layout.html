@@ -105,7 +105,12 @@
       {% endif %}
 
       {% if getConfig('crowi', 'app:confidential') %}
-        <li class="nav-item confidential text-light">{{ getConfig('crowi', 'app:confidential') }}</li>
+        <li class="nav-item confidential text-light">
+          <i class="icon-info d-md-none" data-toggle="tooltip" title="{{ getConfig('crowi', 'app:confidential') }}"></i>
+          <span class="d-none d-md-inline">
+            {{ getConfig('crowi', 'app:confidential') }}
+          </span>
+        </li>
       {% endif %}
     </ul>
 
