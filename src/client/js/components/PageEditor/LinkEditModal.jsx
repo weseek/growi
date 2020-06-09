@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {
-  Modal, ModalHeader, ModalBody, ModalFooter,
+  Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
 
 export default class LinkEditModal extends React.PureComponent {
