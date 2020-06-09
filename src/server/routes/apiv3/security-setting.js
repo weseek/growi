@@ -547,6 +547,20 @@ module.exports = (crowi) => {
     }
   });
 
+
+  router.delete('/all-share-links/', loginRequiredStrictly, adminRequired, csrf, ApiV3FormValidator, async(req, res) => {
+    const ShareLink = crowi.model('ShareLink');
+    try {
+      const shareLinksResult = await ShareLink.remove({});
+      return res.apiv3({ shareLinksResult });
+    }
+    catch (err) {
+      const msg = 'Error occured in delete all share links';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'failed-to-delete-all-share-links'));
+    }
+  });
+
   /**
    * @swagger
    *
