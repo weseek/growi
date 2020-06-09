@@ -8,7 +8,7 @@ import UserPicture from './User/UserPicture';
 import PageListMeta from './PageList/PageListMeta';
 import PagePathLabel from './PageList/PagePathLabel';
 import AppContainer from '../services/AppContainer';
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 class SearchTypeahead extends React.Component {
 
@@ -213,9 +213,7 @@ class SearchTypeahead extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const SearchTypeaheadWrapper = (props) => {
-  return createSubscribedElement(SearchTypeahead, props, [AppContainer]);
-};
+const SearchTypeaheadWrapper = withUnstatedContainers(SearchTypeahead, [AppContainer]);
 
 /**
  * Properties

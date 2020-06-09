@@ -4,7 +4,7 @@ import ReactCardFlip from 'react-card-flip';
 
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 import NoLoginContainer from '../services/NoLoginContainer';
 
 class LoginForm extends React.Component {
@@ -293,9 +293,7 @@ class LoginForm extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const LoginFormWrapper = (props) => {
-  return createSubscribedElement(LoginForm, props, [NoLoginContainer]);
-};
+const LoginFormWrapper = withUnstatedContainers(LoginForm, [NoLoginContainer]);
 
 LoginForm.propTypes = {
   // i18next

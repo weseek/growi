@@ -6,7 +6,7 @@ import {
 } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 import AppContainer from '../services/AppContainer';
 import ApiErrorMessage from './PageManagement/ApiErrorMessage';
@@ -56,9 +56,7 @@ const EmptyTrashModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const EmptyTrashModalWrapper = (props) => {
-  return createSubscribedElement(EmptyTrashModal, props, [AppContainer]);
-};
+const EmptyTrashModalWrapper = withUnstatedContainers(EmptyTrashModal, [AppContainer]);
 
 
 EmptyTrashModal.propTypes = {
