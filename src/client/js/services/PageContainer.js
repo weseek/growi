@@ -133,13 +133,15 @@ export default class PageContainer extends Container {
 
     const seenUserListElem = document.getElementById('seen-user-list');
     if (seenUserListElem != null) {
-      const { userIdsStr, sumOfSeenUers } = seenUserListElem.dataset;
+      const { userIdsStr, sumOfSeenUsers } = seenUserListElem.dataset;
+      this.setState({ sumOfSeenUsers });
+
       if (userIdsStr === '') {
         return;
       }
 
       const { users } = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr });
-      this.setState({ seenUsers: users, sumOfSeenUers: 11 });
+      this.setState({ seenUsers: users });
 
       this.checkAndUpdateImageUrlCached(users);
     }
@@ -148,13 +150,14 @@ export default class PageContainer extends Container {
     const likerListElem = document.getElementById('liker-list');
     if (likerListElem != null) {
       const { userIdsStr, sumOfLikers } = likerListElem.dataset;
+      this.setState({ sumOfLikers });
 
       if (userIdsStr === '') {
         return;
       }
 
       const { users } = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr });
-      this.setState({ likerUsers: users, sumOfLikers: 11 });
+      this.setState({ likerUsers: users });
 
       this.checkAndUpdateImageUrlCached(users);
     }
