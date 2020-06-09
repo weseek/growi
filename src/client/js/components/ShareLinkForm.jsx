@@ -21,7 +21,7 @@ class ShareLinkForm extends React.Component {
     this.handleChangeExpirationType = this.handleChangeExpirationType.bind(this);
     this.handleChangeNumberOfDays = this.handleChangeNumberOfDays.bind(this);
     this.handleChangeDescription = this.handleChangeDescription.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleIssueShareLink = this.handleIssueShareLink.bind(this);
   }
 
   /**
@@ -48,8 +48,9 @@ class ShareLinkForm extends React.Component {
     this.setState({ description });
   }
 
-  handleSubmit(event) {
-    event.preventDefault();
+  handleIssueShareLink() {
+    // use these options
+    console.log(this.state);
     console.log('発行する!');
   }
 
@@ -90,7 +91,7 @@ class ShareLinkForm extends React.Component {
                 className="form-control col-4"
                 name="numberOfDays"
                 value={this.state.numberOfDays}
-                onChange={e => this.handleChangeNumberOfDays(e.target.value)}
+                onChange={e => this.handleChangeNumberOfDays(Number(e.target.value))}
               />
               <span className="col-auto">Days</span>
             </div>
@@ -117,31 +118,33 @@ class ShareLinkForm extends React.Component {
 
   }
 
+  renderDescriptionForm() {
+    return (
+      <div className="form-group row">
+        <label htmlFor="inputDesc" className="col-md-4 col-form-label">Description</label>
+        <div className="col-md-4">
+          <input
+            type="text"
+            className="form-control"
+            id="inputDesc"
+            placeholder="Enter description"
+            value={this.state.description}
+            onChange={e => this.handleChangeDescription(e.target.value)}
+          />
+        </div>
+      </div>
+    );
+  }
+
   render() {
     return (
       <div className="share-link-form border p-3">
         <h4>Expiration Date</h4>
-
         {this.renderExpirationTypeOptions()}
-
         <hr />
-
-        <div className="form-group row">
-          <label htmlFor="inputDesc" className="col-md-4 col-form-label">Description</label>
-          <div className="col-md-4">
-            <input
-              type="text"
-              className="form-control"
-              id="inputDesc"
-              placeholder="Enter description"
-              value={this.state.description}
-              onChange={e => this.handleChangeDescription(e.target.value)}
-            />
-          </div>
-        </div>
-
+        {this.renderDescriptionForm()}
         <div className="text-right">
-          <button type="button" className="btn btn-primary">
+          <button type="button" className="btn btn-primary" onClick={this.handleIssueShareLink}>
             Issue
           </button>
         </div>
