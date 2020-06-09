@@ -14,11 +14,12 @@ class ShareLinkForm extends React.Component {
     super(props);
     this.state = {
       expirationType: 'unlimited',
-      text: ' ',
+      description: '',
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleChangeExpirationType = this.handleChangeExpirationType.bind(this);
+    this.handleChangeDescription = this.handleChangeDescription.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -34,10 +35,18 @@ class ShareLinkForm extends React.Component {
 
   /**
    * change expirationType
-   * @param {string} expirationType type of expiration
+   * @param {string} expirationType
    */
   handleChangeExpirationType(expirationType) {
     this.setState({ expirationType });
+  }
+
+  /**
+   * change description
+   * @param {string} description
+   */
+  handleChangeDescription(description) {
+    this.setState({ description });
   }
 
   handleSubmit(event) {
@@ -112,8 +121,8 @@ class ShareLinkForm extends React.Component {
 
   render() {
     return (
-      <div className="share-link-form border">
-        <h4 className="m-3">Expiration Date</h4>
+      <div className="share-link-form border p-3">
+        <h4>Expiration Date</h4>
 
         {this.renderExpirationTypeOptions()}
 
@@ -127,18 +136,16 @@ class ShareLinkForm extends React.Component {
               className="form-control"
               id="inputDesc"
               placeholder="Enter description"
-              value={this.state.text}
-              onChange={this.handleChange}
+              value={this.state.description}
+              onChange={e => this.handleChangeDescription(e.target.value)}
             />
           </div>
         </div>
 
-        <div className="form-group row">
-          <div className="offset-8 col">
-            <button type="button" className="btn btn-primary">
-                  Issue
-            </button>
-          </div>
+        <div className="text-right">
+          <button type="button" className="btn btn-primary">
+            Issue
+          </button>
         </div>
       </div>
     );
