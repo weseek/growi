@@ -94,6 +94,7 @@ class Sidebar extends React.Component {
       // clear transition temporary when restore collapsed sidebar
       if (this.sidebarCollapsedCached) {
         this.clearNavigationTransitionTemporary(this.ctxNavigationElem);
+        this.clearNavigationTransitionTemporary(this.contentElem);
       }
 
       navigationUIController.enableResize();
@@ -111,6 +112,10 @@ class Sidebar extends React.Component {
 
   get ctxNavigationElem() {
     return document.querySelector('div[data-testid="ContextualNavigation"]');
+  }
+
+  get contentElem() {
+    return document.querySelector('div[data-testid="Content"]');
   }
 
   clearNavigationTransitionTemporary(elem) {
