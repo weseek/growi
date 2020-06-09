@@ -395,8 +395,8 @@ module.exports = function(crowi, app) {
     await addRenderVarsForSlack(renderVars, page);
     await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
 
-    const sharelinks = await ShareLink.find({ relatedPage: page._id });
-    renderVars.sharelinks = sharelinks;
+    const sharelinksNumber = await ShareLink.countDocuments({ relatedPage: page._id });
+    renderVars.sharelinksNumber = sharelinksNumber;
 
     if (isUserPage(page.path)) {
       // change template
