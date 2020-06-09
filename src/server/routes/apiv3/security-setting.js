@@ -568,8 +568,17 @@ module.exports = (crowi) => {
    */
   router.get('/all-share-links/', /* loginRequiredStrictly, adminRequired, csrf, ApiV3FormValidator, */ async(req, res) => {
     const ShareLink = crowi.model('ShareLink');
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const linkQuery = {};
     try {
-      const shareLinksResult = await ShareLink.find({});
+      const shareLinksResult = await ShareLink.paginate(
+        linkQuery,
+        {
+          page,
+          limit,
+        },
+      );
       return res.apiv3({ shareLinksResult });
     }
     catch (err) {
