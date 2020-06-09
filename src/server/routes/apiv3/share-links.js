@@ -51,8 +51,8 @@ module.exports = (crowi) => {
   router.get('/', loginRequired, csrf, ApiV3FormValidator, async(req, res) => {
     const { relatedPage } = req.query;
     try {
-      const paginateResult = await ShareLink.find({ relatedPage: { $in: relatedPage } });
-      return res.apiv3({ paginateResult });
+      const shareLinksResult = await ShareLink.find({ relatedPage: { $in: relatedPage } });
+      return res.apiv3({ shareLinksResult });
     }
     catch (err) {
       const msg = 'Error occurred in get share link';
@@ -118,10 +118,40 @@ module.exports = (crowi) => {
     }
   });
 
-  // TDOO write swagger
-  router.delete('/all', loginRequired, async(req, res) => {
+  /**
+  * @swagger
+  *
+  *    /share-links/:
+  *      delete:
+  *        tags: [ShareLinks]
+  *        summary: /share-links/
+  *        description: delete all share links related one page
+  *        requestBody:
+  *           required: true
+  *           content:
+  *             application/json:
+  *               schema:
+  *                 properties:
+  *                   relatedPage:
+  *                     type: string
+  *                     description: delete all share links that related one page
+  *        responses:
+  *          200:
+  *            description: Succeeded to delete o all share links related one page
+  */
+  router.delete('/', loginRequired, csrf, async(req, res) => {
     const { relatedPage } = req.body;
-    // TODO GW-2694 Delete all share links
+    const ShareLink = crowi.model('ShareLink');
+
+    try {
+      const deletedShareLink = await ShareLink.remove({ relatedPage });
+      return res.apiv3(deletedShareLink);
+    }
+    catch (err) {
+      const msg = 'Error occured in delete share link';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'delete-shareLink-failed'));
+    }
   });
 
   /**

@@ -395,6 +395,9 @@ module.exports = function(crowi, app) {
     await addRenderVarsForSlack(renderVars, page);
     await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
 
+    const sharelinksNumber = await ShareLink.countDocuments({ relatedPage: page._id });
+    renderVars.sharelinksNumber = sharelinksNumber;
+
     if (isUserPage(page.path)) {
       // change template
       view = `layout-${layoutName}/user_page`;
@@ -446,17 +449,26 @@ module.exports = function(crowi, app) {
     const layoutName = configManager.getConfig('crowi', 'customize:layout');
     const view = `layout-${layoutName}/shared_page`;
 
-    const shareLink = await ShareLink.find({ _id: linkId }).populate('Page');
-    const page = shareLink.relatedPage;
+    const shareLink = await ShareLink.findOne({ _id: linkId }).populate('relatedPage');
+    let page = shareLink.relatedPage;
 
     if (page == null) {
       // page is not found
-      // TODO GW-2735 create not found page
-      // return res.render(`layout-${layoutName}/not_found_shared_page`);
+      return res.render(`layout-${layoutName}/not_found_shared_page`);
+    }
+
+    // check if share link is expired
+    if (shareLink.expiredAt.getTime() < new Date().getTime()) {
+      // page is not found
+      return res.render(`layout-${layoutName}/expired_shared_page`);
     }
 
     const renderVars = {};
 
+    renderVars.sharelink = shareLink;
+
+    // populate
+    page = await page.populateDataToShowRevision();
     addRendarVarsForPage(renderVars, page);
     addRendarVarsForScope(renderVars, page);
 
