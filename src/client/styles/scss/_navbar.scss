@@ -25,7 +25,7 @@
     @include variable-font-size(14px);
     display: flex;
     align-items: center;
-    max-width: 200px; //追加
+    max-width: 120px; //追加
     min-height: $grw-navbar-height;
     padding: 0 1rem;
   }
@@ -41,6 +41,7 @@
   }
   .nav-item.confidential {
     max-height: 52px;
+    overflow: hidden;
     background: rgba(0, 0, 0, 0.2);
   }
 
