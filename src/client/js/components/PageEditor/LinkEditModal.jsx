@@ -51,8 +51,8 @@ export default class LinkEditModal extends React.PureComponent {
           Edit Table
         </ModalHeader>
 
-        <ModalBody className="p-0 container">
-          <div className="row mx-0">
+        <ModalBody className="container">
+          <div className="row">
             <div className="col">
               <div className="form-gorup my-3">
                 <label htmlFor="linkInput">Link</label>
