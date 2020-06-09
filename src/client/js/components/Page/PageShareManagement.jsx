@@ -38,13 +38,14 @@ const PageShareManagement = (props) => {
   function renderCurrentUser() {
     return (
       <>
-        <button
-          type="button"
+        <a
+          role="button"
           className="nav-link bg-transparent dropdown-toggle dropdown-toggle-no-caret"
+          href="#"
           data-toggle="dropdown"
         >
           <i className="icon-share"></i>
-        </button>
+        </a>
       </>
     );
   }
@@ -52,13 +53,14 @@ const PageShareManagement = (props) => {
   function renderGuestUser() {
     return (
       <>
-        <button
-          type="button"
-          className="nav-link bg-transparent"
+        <a
+          role="button"
+          className="nav-link bg-transparent dropdown-toggle dropdown-toggle-no-caret dropdown-toggle-disabled"
+          href="#"
           id="auth-guest-tltips"
         >
           <i className="icon-share"></i>
-        </button>
+        </a>
         <UncontrolledTooltip placement="top" target="auth-guest-tltips">
           {t('Not available for guest')}
         </UncontrolledTooltip>
@@ -72,7 +74,7 @@ const PageShareManagement = (props) => {
       {currentUser == null ? renderGuestUser() : renderCurrentUser()}
       <div className="dropdown-menu dropdown-menu-right">
         <button className="dropdown-item" type="button" onClick={openOutsideShareLinkModalHandler}>
-          <i className="icon-link"></i> {t('Shere this page link to public')}
+          <i className="icon-fw icon-link"></i> {t('Shere this page link to public')}
         </button>
       </div>
       {renderModals()}
