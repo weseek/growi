@@ -17,23 +17,36 @@ class ShareLinkForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: ' '
+      isGoing: true,
+      numberOfGuests: '',
+      value: ' ',
     };
 
+    this.handleInputChange = this.handleInputChange.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  handleInputChange(event) {
+    const target = event.target;
+    const value = target.name === 'isGoing' ? target.checked : target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]: value
+    });
+
+  }
+
   handleChange(event) {
     this.setState({ value: event.target.value });
-    console.log( event.target.value) ;
+    console.log(event.target.value);
   }
 
   handleSubmit(event) {
     event.preventDefault();
-    console.log( '発行する!' );
+    console.log('発行する!');
   }
-
 
   render() {
     return (
@@ -42,22 +55,54 @@ class ShareLinkForm extends React.Component {
         <form onSubmit={this.handleSubmit}>
           <div className="form-group">
             <div className="custom-control custom-radio offset-4 mb-2">
-              <input id="customRadio1" name="customRadio" type="radio" className="custom-control-input"></input>
+              <input
+                type="radio"
+                className="custom-control-input"
+                id="customRadio1"
+                name="isGoing"
+                value="customRadio1"
+                checked={this.state.isGoing}
+                onChange={this.handleInputChange}
+              />
               <label className="custom-control-label" htmlFor="customRadio1">Unlimited</label>
             </div>
 
             <div className="custom-control custom-radio offset-4 mb-2">
-              <input id="customRadio2" name="customRadio" type="radio" className="custom-control-input"></input>
+              <input
+                type="radio"
+                className="custom-control-input"
+                id="customRadio2"
+                value="customRadio2"
+                onChange={this.handleInputChange}
+                name="isGoing"
+              />
               <label className="custom-control-label" htmlFor="customRadio2">
+
                 <div className="row align-items-center m-0">
-                  <input className="form-control col-2" type="number" min="1" max="7" value="7"></input>
+                  <input
+                    type="number"
+                    min="1"
+                    max="7"
+                    className="form-control col-5"
+                    name="numberOfGuests"
+                    value={this.state.numberOfGuests}
+                    onChange={this.handleInputChange}
+                  />
                   <span className="col-auto">Days</span>
                 </div>
               </label>
             </div>
 
             <div className="custom-control custom-radio offset-4 mb-2">
-              <input id="customRadio3" name="customRadio" type="radio" className="custom-control-input"></input>
+              <input
+                type="radio"
+                className="custom-control-input"
+                id="customRadio3"
+                name="isGoing"
+                value="customRadio3"
+                checked={this.state.isGoing}
+                onChange={this.handleInputChange}
+              />
               <label className="custom-control-label" htmlFor="customRadio3">
                 Custom
               <div className="date-picker">Date Picker</div>
@@ -81,6 +126,7 @@ class ShareLinkForm extends React.Component {
           </div>
         </form>
       </div>
+
     );
   };
 }
