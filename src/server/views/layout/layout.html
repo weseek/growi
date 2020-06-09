@@ -104,14 +104,8 @@
         <li id="login-user" class="nav-item"><a class="nav-link" href="/login">Login</a></li>
       {% endif %}
 
-      {% if getConfig('crowi', 'app:confidential').length > 4 %}
-        <li class="nav-item confidential text-light">
-          <i class="text-light icon-info" data-toggle="tooltip" title="{{ getConfig('crowi', 'app:confidential') }}"></i>
-        </li>
-      {% else %}
-        <li class="nav-item confidential text-light">
-          {{ getConfig('crowi', 'app:confidential') }}
-        </li>
+      {% if getConfig('crowi', 'app:confidential') %}
+        <li class="nav-item confidential text-light">{{ getConfig('crowi', 'app:confidential') }}</li>
       {% endif %}
     </ul>
 
