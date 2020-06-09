@@ -18,8 +18,8 @@ class ShareLinkForm extends React.Component {
     super(props);
     this.state = {
       isGoing: true,
-      numberOfGuests: '',
-      value: ' ',
+      numberOfGuests: 1,
+      text: ' ',
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -35,11 +35,15 @@ class ShareLinkForm extends React.Component {
     this.setState({
       [name]: value
     });
-
+    console.log(event.target.value);
+    console.log(event.target.checked);
+    console.log(  event.target.name );
+    console.log(  event.target.type );
+    console.log(  event.target.id );
   }
 
   handleChange(event) {
-    this.setState({ value: event.target.value });
+    this.setState({ text: event.target.value });
     console.log(event.target.value);
   }
 
@@ -73,6 +77,7 @@ class ShareLinkForm extends React.Component {
                 className="custom-control-input"
                 id="customRadio2"
                 value="customRadio2"
+                checked={this.state.isGoing}
                 onChange={this.handleInputChange}
                 name="isGoing"
               />
@@ -83,7 +88,7 @@ class ShareLinkForm extends React.Component {
                     type="number"
                     min="1"
                     max="7"
-                    className="form-control col-5"
+                    className="form-control col-4"
                     name="numberOfGuests"
                     value={this.state.numberOfGuests}
                     onChange={this.handleInputChange}
@@ -114,7 +119,7 @@ class ShareLinkForm extends React.Component {
             <div className="form-group row">
               <label htmlFor="inputDesc" className="col-md-4 col-form-label">Description</label>
               <div className="col-md-4">
-                <input type="text" className="form-control" id="inputDesc" placeholder="Enter description" value={this.state.value} onChange={this.handleChange}></input>
+                <input type="text" className="form-control" id="inputDesc" placeholder="Enter description" value={this.state.text} onChange={this.handleChange}></input>
               </div>
             </div>
 
