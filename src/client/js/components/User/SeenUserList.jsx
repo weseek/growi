@@ -12,8 +12,7 @@ class SeenUserList extends React.Component {
   render() {
     const { pageContainer } = this.props;
     return (
-      // <div className="text-truncate text-muted text-right" style="direction: rtl;">
-      <div className="text-truncate text-muted text-right">
+      <div className="user-list-content text-truncate text-muted text-right">
         <span className="text-danger">
           <span className="seen-user-count">{pageContainer.state.sumOfSeenUsers}</span>
           <i className="fa fa-fw fa-paw"></i>
