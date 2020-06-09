@@ -4,12 +4,8 @@ import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from './UnstatedUtils';
 
-
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
-
-import loggerFactory from '@alias/logger';
-const logger = loggerFactory('growi:app');
 
 class ShareLinkForm extends React.Component {
 
@@ -33,13 +29,8 @@ class ShareLinkForm extends React.Component {
     const name = target.name;
 
     this.setState({
-      [name]: value
+      [name]: value,
     });
-    console.log(event.target.value);
-    console.log(event.target.checked);
-    console.log(  event.target.name );
-    console.log(  event.target.type );
-    console.log(  event.target.id );
   }
 
   handleChange(event) {
@@ -110,7 +101,7 @@ class ShareLinkForm extends React.Component {
               />
               <label className="custom-control-label" htmlFor="customRadio3">
                 Custom
-              <div className="date-picker">Date Picker</div>
+                <div className="date-picker">Date Picker</div>
               </label>
             </div>
 
@@ -119,13 +110,22 @@ class ShareLinkForm extends React.Component {
             <div className="form-group row">
               <label htmlFor="inputDesc" className="col-md-4 col-form-label">Description</label>
               <div className="col-md-4">
-                <input type="text" className="form-control" id="inputDesc" placeholder="Enter description" value={this.state.text} onChange={this.handleChange}></input>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="inputDesc"
+                  placeholder="Enter description"
+                  value={this.state.text}
+                  onChange={this.handleChange}
+                />
               </div>
             </div>
 
             <div className="form-group row">
               <div className="offset-8 col">
-                <button type="button" className="btn btn-primary" type="submit" value="Submit" >Issue</button>
+                <button type="button" className="btn btn-primary">
+                  Issue
+                </button>
               </div>
             </div>
           </div>
@@ -133,7 +133,8 @@ class ShareLinkForm extends React.Component {
       </div>
 
     );
-  };
+  }
+
 }
 
 const ShareLinkFormWrapper = (props) => {
