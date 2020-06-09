@@ -10,7 +10,6 @@ import PageContainer from '../services/PageContainer';
 
 class ShareLinkForm extends React.Component {
 
-
   constructor(props) {
     super(props);
     this.state = {
@@ -132,7 +131,6 @@ class ShareLinkForm extends React.Component {
         </div>
       </div>
     );
-
   }
 
   renderDescriptionForm() {
