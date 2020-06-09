@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { withTranslation } from 'react-i18next';
+import dateFnsFormat from 'date-fns/format';
 
 import { createSubscribedElement } from './UnstatedUtils';
 
@@ -16,7 +17,7 @@ class ShareLinkForm extends React.Component {
       expirationType: 'unlimited',
       numberOfDays: 7,
       description: '',
-      customExpiration: new Date(),
+      customExpiration: dateFnsFormat(new Date(), 'yyyy-MM-ddThh:mm:s'),
     };
 
     this.handleChangeExpirationType = this.handleChangeExpirationType.bind(this);
@@ -121,12 +122,11 @@ class ShareLinkForm extends React.Component {
             Custom
           </label>
           <input
-            type="date"
+            type="datetime-local"
             className="ml-3"
             name="customExpiration"
             value={this.state.customExpiration}
             onFocus={() => { this.handleChangeExpirationType('custom') }}
-            min={new Date()}
             onChange={e => this.handleChangeCustomExpiration(e.target.value)}
           />
         </div>
