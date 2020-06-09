@@ -23,6 +23,7 @@
   .nav-item.confidential {
     display: flex;
     align-items: center;
+    max-width: 200px; //追加
     min-height: $grw-navbar-height;
     padding: 0 1rem;
   }
