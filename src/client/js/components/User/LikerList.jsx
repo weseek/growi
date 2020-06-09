@@ -32,6 +32,6 @@ LikerList.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const LikerPictureListWrapper = withUnstatedContainers(LikerList, [PageContainer]);
+const LikerListWrapper = withUnstatedContainers(LikerList, [PageContainer]);
 
-export default (LikerPictureListWrapper);
+export default (LikerListWrapper);

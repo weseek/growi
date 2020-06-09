@@ -32,6 +32,6 @@ SeenUserList.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const SeenUserPictureListWrapper = withUnstatedContainers(SeenUserList, [PageContainer]);
+const SeenUserListWrapper = withUnstatedContainers(SeenUserList, [PageContainer]);
 
-export default (SeenUserPictureListWrapper);
+export default (SeenUserListWrapper);
