@@ -1,5 +1,5 @@
 .grw-navbar {
-  max-height: 60px;
+  max-height: 52px; //test
   border-top: 0;
   border-right: 0;
   border-bottom: $grw-navbar-border-width solid;
@@ -40,6 +40,7 @@
     }
   }
   .nav-item.confidential {
+    max-height: 52px;　//追加
     background: rgba(0, 0, 0, 0.2);
   }
 
