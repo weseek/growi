@@ -12,12 +12,14 @@ class LikerList extends React.Component {
   render() {
     const { pageContainer } = this.props;
     return (
-      <div className="user-list-content text-truncate text-muted text-right mr-1">
+      <div className="user-list-content text-truncate text-muted text-right">
         <span className="text-info">
           <span className="liker-user-count">{pageContainer.state.sumOfLikers}</span>
           <i className="icon-fw icon-like"></i>
         </span>
-        <UserPictureList users={pageContainer.state.likerUsers} />
+        <span className="mr-1">
+          <UserPictureList users={pageContainer.state.likerUsers} />
+        </span>
       </div>
     );
   }
