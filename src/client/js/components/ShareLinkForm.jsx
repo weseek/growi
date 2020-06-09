@@ -99,6 +99,7 @@ class ShareLinkForm extends React.Component {
                 className="col-4"
                 name="expirationType"
                 value={this.state.numberOfDays}
+                onFocus={() => { this.handleChangeExpirationType('numberOfDays') }}
                 onChange={e => this.handleChangeNumberOfDays(Number(e.target.value))}
               />
               <span className="col-auto">Days</span>
@@ -124,6 +125,7 @@ class ShareLinkForm extends React.Component {
             className="ml-3"
             name="customExpiration"
             value={this.state.customExpiration}
+            onFocus={() => { this.handleChangeExpirationType('custom') }}
             min={new Date()}
             onChange={e => this.handleChangeCustomExpiration(e.target.value)}
           />
