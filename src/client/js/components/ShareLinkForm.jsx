@@ -16,6 +16,7 @@ class ShareLinkForm extends React.Component {
       expirationType: 'unlimited',
       numberOfDays: 7,
       description: '',
+      customExpiration: new Date(),
     };
 
     this.handleChangeExpirationType = this.handleChangeExpirationType.bind(this);
@@ -46,6 +47,14 @@ class ShareLinkForm extends React.Component {
    */
   handleChangeDescription(description) {
     this.setState({ description });
+  }
+
+  /**
+   * change customExpiration
+   * @param {date} customExpiration
+   */
+  handleChangeCustomExpiration(customExpiration) {
+    this.setState({ customExpiration });
   }
 
   handleIssueShareLink() {
@@ -83,13 +92,12 @@ class ShareLinkForm extends React.Component {
             name="expirationType"
           />
           <label className="custom-control-label" htmlFor="customRadio2">
-
             <div className="row align-items-center m-0">
               <input
                 type="number"
                 min="1"
-                className="form-control col-4"
-                name="numberOfDays"
+                className="col-4"
+                name="expirationType"
                 value={this.state.numberOfDays}
                 onChange={e => this.handleChangeNumberOfDays(Number(e.target.value))}
               />
@@ -110,8 +118,15 @@ class ShareLinkForm extends React.Component {
           />
           <label className="custom-control-label" htmlFor="customRadio3">
             Custom
-            <div className="date-picker">Date Picker</div>
           </label>
+          <input
+            type="date"
+            className="ml-3"
+            name="customExpiration"
+            value={this.state.customExpiration}
+            min={new Date()}
+            onChange={e => this.handleChangeCustomExpiration(e.target.value)}
+          />
         </div>
       </div>
     );
