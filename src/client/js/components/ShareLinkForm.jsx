@@ -14,40 +14,46 @@ const ShareLinkForm = (props) => {
       <h4 className="ml-3">Expiration Date</h4>
       <form>
         <div className="form-group">
-          <div className="custom-control custom-radio offset-4 mb-2">
-            <input id="customRadio1" name="customRadio" type="radio" className="custom-control-input"></input>
-            <label className="custom-control-label" htmlFor="customRadio1">Unlimited</label>
+          <div className="row">
+            <div className="custom-control custom-radio offset-3 col-4 mb-2">
+              <input id="customRadio1" name="customRadio" type="radio" className="custom-control-input"></input>
+              <label className="custom-control-label" htmlFor="customRadio1">Unlimited</label>
+            </div>
           </div>
 
-          <div className="custom-control custom-radio offset-4 mb-2">
-            <input id="customRadio2" name="customRadio" type="radio" className="custom-control-input"></input>
-            <label className="custom-control-label" htmlFor="customRadio2">
-              <div className="row align-items-center m-0">
-                <input className="form-control col-2" type="number" min="1" max="7" value="7"></input>
-                <span className="col-auto">Days</span>
-              </div>
-            </label>
+          <div className="row">
+            <div className="custom-control custom-radio offset-3 col-4 mb-2">
+              <input id="customRadio2" name="customRadio" type="radio" className="custom-control-input"></input>
+              <label className="custom-control-label" htmlFor="customRadio2">
+                <div className="row align-items-center m-0">
+                  <input className="form-control col-2" type="number" min="1" max="7" value="7"></input>
+                  <span className="col-auto">Days</span>
+                </div>
+              </label>
+            </div>
           </div>
 
-          <div className="custom-control custom-radio offset-4 mb-2">
-            <input id="customRadio3" name="customRadio" type="radio" className="custom-control-input"></input>
-            <label className="custom-control-label" htmlFor="customRadio3">
-              Custom
-              <div className="date-picker">Date Picker</div>
-            </label>
+          <div className="row">
+            <div className="custom-control custom-radio offset-3 col-4 mb-2">
+              <input id="customRadio3" name="customRadio" type="radio" className="custom-control-input"></input>
+              <label className="custom-control-label" htmlFor="customRadio3">
+                Custom
+                <div className="date-picker">Date Picker</div>
+              </label>
+            </div>
           </div>
 
           <hr />
 
           <div className="form-group row">
-            <label htmlFor="inputDesc" className="col-md-4 col-form-label">Description</label>
-            <div className="col-md-4">
+            <label htmlFor="inputDesc" className="offset-3 col-form-label">Description</label>
+            <div className="col-5">
               <input type="text" className="form-control" id="inputDesc" placeholder="Enter description"></input>
             </div>
           </div>
 
-          <div className="form-group row">
-            <div className="offset-8 col">
+          <div className="form-group row mx-0">
+            <div className="offset-10 col">
               <button type="button" className="btn btn-primary">Issue</button>
             </div>
           </div>

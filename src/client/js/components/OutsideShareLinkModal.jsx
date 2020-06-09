@@ -25,7 +25,7 @@ const OutsideShareLinkModal = (props) => {
       </ModalHeader>
       <ModalBody>
         <div className="container">
-          <div className="row align-items-center mb-3">
+          <div className="row align-items-center mb-3 mr-0">
             <h4 className="col-10">Shared Link List</h4>
             <button className="col btn btn-danger" type="button">Delete all links</button>
           </div>
