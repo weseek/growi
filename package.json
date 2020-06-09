@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "4.0.4-RC",
+  "version": "4.0.5-RC",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -67,7 +67,6 @@
   "dependencies": {
     "//": [
       "check-node-version: see https://github.com/parshap/check-node-version/issues/35",
-      "mongoose: somehow GlobalNotificationSetting CRUD does not work with mongoose v5.6.0",
       "openid-client: Node.js 12 or higher is required for openid-client@3 and above."
     ],
     "@google-cloud/storage": "^3.3.0",
@@ -83,8 +82,8 @@
     "bunyan-format": "^0.2.1",
     "check-node-version": "^4.0.2",
     "connect-flash": "~0.1.1",
-    "connect-mongo": "^3.0.0",
-    "connect-redis": "^3.3.0",
+    "connect-mongo": "^3.2.0",
+    "connect-redis": "^4.0.4",
     "cookie-parser": "^1.4.3",
     "cross-env": "^7.0.0",
     "csrf": "^3.1.0",
@@ -115,9 +114,9 @@
     "migrate-mongo": "^7.0.1",
     "mkdirp": "^1.0.3",
     "module-alias": "^2.0.6",
-    "mongoose": "5.4.4",
-    "mongoose-gridfs": "^1.2.2",
-    "mongoose-paginate-v2": "^1.3.2",
+    "mongoose": "5.9.18",
+    "mongoose-gridfs": "^1.2.42",
+    "mongoose-paginate-v2": "^1.3.9",
     "mongoose-unique-validator": "^2.0.3",
     "multer": "~1.4.0",
     "multer-autoreap": "^1.0.3",
@@ -136,6 +135,7 @@
     "passport-twitter": "^1.0.4",
     "react-card-flip": "^1.0.10",
     "react-image-crop": "^8.3.0",
+    "redis": "^3.0.2",
     "rimraf": "^3.0.0",
     "slack-node": "^0.1.8",
     "socket.io": "^2.0.3",
