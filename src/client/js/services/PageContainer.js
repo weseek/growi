@@ -74,6 +74,7 @@ export default class PageContainer extends Container {
 
     this.setTocHtml = this.setTocHtml.bind(this);
     this.save = this.save.bind(this);
+    this.checkAndUpdateImageUrlCached = this.checkAndUpdateImageUrlCached.bind(this);
     this.addWebSocketEventHandlers = this.addWebSocketEventHandlers.bind(this);
     this.addWebSocketEventHandlers();
 
@@ -140,7 +141,7 @@ export default class PageContainer extends Container {
       const { users } = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr });
       this.setState({ seenUsers: users, sumOfSeenUers: 11 });
 
-      await this.updateImageUrlCached(users);
+      this.checkAndUpdateImageUrlCached(users);
     }
 
 
@@ -155,11 +156,11 @@ export default class PageContainer extends Container {
       const { users } = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr });
       this.setState({ likerUsers: users, sumOfLikers: 11 });
 
-      await this.updateImageUrlCached(users);
+      this.checkAndUpdateImageUrlCached(users);
     }
   }
 
-  async updateImageUrlCached(users) {
+  async checkAndUpdateImageUrlCached(users) {
     const noImageCacheUsers = users.filter((user) => { return user.imageUrlCached == null });
     if (noImageCacheUsers.length === 0) {
       return;
