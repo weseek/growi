@@ -40,6 +40,9 @@
   }
   .nav-item.confidential {
     max-width: 120px; //追加
+    @include media-breakpoint-only(md) {
+      max-width: 100px;
+    }
     max-height: 52px;
     overflow: hidden;
     background: rgba(0, 0, 0, 0.2);
