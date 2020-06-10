@@ -1,5 +1,5 @@
 .grw-navbar {
-  max-height: 52px;
+  max-height: $grw-navbar-height + $grw-navbar-border-width;
   border-top: 0;
   border-right: 0;
   border-bottom: $grw-navbar-border-width solid;
@@ -22,7 +22,6 @@
 
   .nav-link,
   .nav-item.confidential {
-    @include variable-font-size(14px);
     display: flex;
     align-items: center;
     min-height: $grw-navbar-height;
@@ -39,11 +38,16 @@
     }
   }
   .nav-item.confidential {
-    max-width: 120px;
+    :not(i) {
+      @include variable-font-size(14px);
+    }
+
     @include media-breakpoint-only(md) {
       max-width: 100px;
     }
-    max-height: 52px;
+
+    max-width: 120px;
+    max-height: $grw-navbar-height;
     overflow: hidden;
     background: rgba(0, 0, 0, 0.2);
   }
