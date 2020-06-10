@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Collapse, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import {
+  Collapse, Modal, ModalHeader, ModalBody, ModalFooter,
+} from 'reactstrap';
 
 import Handsontable from 'handsontable';
 import { HotTable } from '@handsontable/react';
@@ -19,6 +21,7 @@ const MARKDOWNTABLE_TO_HANDSONTABLE_ALIGNMENT_SYMBOL_MAPPING = {
 };
 
 export default class HandsontableModal extends React.PureComponent {
+
   constructor(props) {
     super(props);
 
@@ -285,13 +288,14 @@ export default class HandsontableModal extends React.PureComponent {
     let insertPosition = 0;
     if (target <= columns[0]) {
       insertPosition = target;
-    } else if (columns[columns.length - 1] < target) {
+    }
+    else if (columns[columns.length - 1] < target) {
       insertPosition = target - columns.length;
     }
     align.splice(...[insertPosition, 0].concat(removed));
 
     this.setState(
-      prevState => {
+      (prevState) => {
         // change only align info, so share table data to avoid redundant copy
         const newMarkdownTable = new MarkdownTable(prevState.markdownTable.table, { align });
         return { markdownTable: newMarkdownTable };
@@ -307,7 +311,7 @@ export default class HandsontableModal extends React.PureComponent {
    */
   align(direction, startCol, endCol) {
     this.setState(
-      prevState => {
+      (prevState) => {
         // change only align info, so share table data to avoid redundant copy
         const newMarkdownTable = new MarkdownTable(prevState.markdownTable.table, { align: [].concat(prevState.markdownTable.options.align) });
         for (let i = startCol; i <= endCol; i++) {
@@ -350,7 +354,8 @@ export default class HandsontableModal extends React.PureComponent {
     if (selectedRange[0].from.col < selectedRange[0].to.col) {
       startCol = selectedRange[0].from.col;
       endCol = selectedRange[0].to.col;
-    } else {
+    }
+    else {
       startCol = selectedRange[0].to.col;
       endCol = selectedRange[0].from.col;
     }
@@ -486,13 +491,13 @@ export default class HandsontableModal extends React.PureComponent {
             </Collapse>
           </div>
           <div
-            ref={c => {
+            ref={(c) => {
               this.hotTableContainer = c;
             }}
             className="m-4 hot-table-container"
           >
             <HotTable
-              ref={c => {
+              ref={(c) => {
                 this.hotTable = c;
               }}
               data={this.state.markdownTable.table}
@@ -549,6 +554,7 @@ export default class HandsontableModal extends React.PureComponent {
       outsideClickDeselects: false,
     };
   }
+
 }
 
 HandsontableModal.propTypes = {
