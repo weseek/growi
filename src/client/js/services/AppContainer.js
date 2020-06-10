@@ -114,7 +114,7 @@ export default class AppContainer extends Container {
       }
 
       if (event.key === 'c') {
-        console.log(event);
+        this.setState({ isPageCreateModalShown: true });
       }
     });
   }
