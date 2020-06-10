@@ -47,8 +47,8 @@ export default class LinkEditModal extends React.PureComponent {
     console.log(this.state.inputValue);
   }
 
-  handleInputChange() {
-    console.log('値が変わる');
+  handleInputChange(linkValue) {
+    console.log(linkValue);
   }
 
   render() {
@@ -71,7 +71,7 @@ export default class LinkEditModal extends React.PureComponent {
                     placeholder="/foo/bar/31536000"
                     aria-describedby="button-addon"
                     value={this.state.inputValue}
-                    onChange={this.handleInputChange}
+                    onChange={e => this.handleInputChange(e.target.value)}
                   />
                   <div className="input-group-append">
                     <button type="button" id="button-addon" className="btn btn-secondary" onClick={this.showLog}>
