@@ -554,13 +554,6 @@ module.exports = (crowi) => {
    *      delete:
    *        tags: [ShareLinkSettings, apiv3]
    *        description: Delete All ShareLinks at Share Link Setting
-   *        requestBody:
-   *           required: true
-   *           content:
-   *             application/json:
-   *                schema:
-   *                  properties:
-   *                    type: string
    *        responses:
    *          200:
    *            description: succeed to delete all share links
