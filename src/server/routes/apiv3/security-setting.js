@@ -561,10 +561,9 @@ module.exports = (crowi) => {
    *                schema:
    *                  properties:
    *                    type: object
-   *                    description: succeed to delete all share links
    *        responses:
    *          200:
-   *            description: all share links
+   *            description: succeed to delete all share links
    */
 
   router.delete('/all-share-links/', loginRequiredStrictly, adminRequired, csrf, ApiV3FormValidator, async(req, res) => {
