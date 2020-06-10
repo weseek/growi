@@ -48,7 +48,7 @@ export default class LinkEditModal extends React.PureComponent {
   }
 
   handleInputChange(linkValue) {
-    console.log(linkValue);
+    this.setState({ inputValue: linkValue });
   }
 
   render() {
