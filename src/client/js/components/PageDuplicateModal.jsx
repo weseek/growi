@@ -7,7 +7,7 @@ import {
 
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
@@ -82,7 +82,6 @@ const PageDuplicateModal = (props) => {
                 <PagePathAutoComplete
                   crowi={appContainer}
                   initializedPath={path}
-                  addTrailingSlash
                   onSubmit={ppacSubmitHandler}
                   onInputChange={ppacInputChangeHandler}
                 />
@@ -113,9 +112,7 @@ const PageDuplicateModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageDuplicateModallWrapper = (props) => {
-  return createSubscribedElement(PageDuplicateModal, props, [AppContainer, PageContainer]);
-};
+const PageDuplicateModallWrapper = withUnstatedContainers(PageDuplicateModal, [AppContainer, PageContainer]);
 
 
 PageDuplicateModal.propTypes = {

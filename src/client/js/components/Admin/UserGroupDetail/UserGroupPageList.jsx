@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import Page from '../../PageList/Page';
 import PaginationWrapper from '../../PaginationWrapper';
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import AdminUserGroupDetailContainer from '../../../services/AdminUserGroupDetailContainer';
 import { toastError } from '../../../util/apiNotification';
@@ -80,8 +80,6 @@ UserGroupPageList.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const UserGroupPageListWrapper = (props) => {
-  return createSubscribedElement(UserGroupPageList, props, [AppContainer, AdminUserGroupDetailContainer]);
-};
+const UserGroupPageListWrapper = withUnstatedContainers(UserGroupPageList, [AppContainer, AdminUserGroupDetailContainer]);
 
 export default withTranslation()(UserGroupPageListWrapper);

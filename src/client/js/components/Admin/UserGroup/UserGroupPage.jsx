@@ -6,7 +6,7 @@ import UserGroupTable from './UserGroupTable';
 import UserGroupCreateForm from './UserGroupCreateForm';
 import UserGroupDeleteModal from './UserGroupDeleteModal';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
@@ -175,9 +175,7 @@ class UserGroupPage extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const UserGroupPageWrapper = (props) => {
-  return createSubscribedElement(UserGroupPage, props, [AppContainer]);
-};
+const UserGroupPageWrapper = withUnstatedContainers(UserGroupPage, [AppContainer]);
 
 UserGroupPage.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,

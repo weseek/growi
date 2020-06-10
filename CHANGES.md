@@ -1,8 +1,32 @@
 # CHANGES
 
-## v4.0.3-RC
+## v4.0.5
 
+* 
+
+## v4.0.4
+
+* Feature: Drawer/Dock mode selector
+* Improvement: Admin pages navigation
+* Improvement: Ensure not to avoid session management even when accessing to healthcheck
+* Support: Refactor unstated utils
+* Support: Upgrade libs
+    * connect-mongo
+    * connect-redis
+    * mongoose
+    * mongoose-gridfs
+    * mongoose-paginate-v2
+
+## v4.0.3
+
+* Feature: Copy page path dropdown with Append params switch
+* Improvement: Truncate overflowed user browsing history
+* Improvement: Tabs appearance on mobile
+* Improvement: Search help appearance on mobile
+* Improvement: Accessibility of login page
+* Fix: Editor was broken by long lines
 * Fix: Editor doesn't work on mobile
+* Fix: Word break in Recent Updated contents
 * Fix: navbar is broken on Safari
 
 ## v4.0.2

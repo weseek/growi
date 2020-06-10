@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
 import UserPicture from './UserPicture';
@@ -37,9 +37,7 @@ class UserPictureList extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const UserPictureListWrapper = (props) => {
-  return createSubscribedElement(UserPictureList, props, [AppContainer]);
-};
+const UserPictureListWrapper = withUnstatedContainers(UserPictureList, [AppContainer]);
 
 UserPictureList.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,

@@ -60,8 +60,6 @@
   "No diff": "No diff",
   "Shrink versions that have no diffs": "Shrink versions that have no diffs",
   "User ID": "User ID",
-  "User's Home": "User's Home",
-  "User Settings": "User Settings",
   "User Information": "User information",
   "Basic Info": "Basic info",
   "Name": "Name",
@@ -132,6 +130,14 @@
   "Disassociate": "Disassociate",
   "Recent Created": "Recent Created",
   "Recent Changes": "Recent Changes",
+  "personal_dropdown": {
+    "home": "Home",
+    "settings": "Settings",
+    "color_mode": "Color mode",
+    "sidebar_mode": "Sidebar mode",
+    "sidebar_mode_editor": "Sidebar mode on Editor",
+    "use_os_settings": "Use OS settings"
+  },
   "form_validation": {
     "error_message": "Some values ​​are incorrect",
     "required": "%s is required",

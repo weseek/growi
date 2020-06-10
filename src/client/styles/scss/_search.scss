@@ -32,6 +32,12 @@
   .rbt-menu {
     max-height: none !important;
     margin-top: 3px;
+    @extend .dropdown-menu-right;
+    @extend .dropdown-menu-md-left;
+    @include media-breakpoint-down(sm) {
+      left: auto !important;
+      width: 90vw;
+    }
 
     li a span {
       .page-path {
@@ -241,25 +247,25 @@
     th {
       text-align: right;
     }
-  
+
     td {
       overflow-wrap: anywhere;
       white-space: normal !important;
     }
-  
+
     @include media-breakpoint-down(xs) {
       th,
       td {
         display: block;
       }
-      
+
       th {
         text-align: left;
       }
-      
+
       td {
-        border-top: none !important;
         padding-top: 0 !important;
+        border-top: none !important;
       }
     }
   }

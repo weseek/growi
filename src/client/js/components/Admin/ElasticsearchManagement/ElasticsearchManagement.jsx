@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import WebsocketContainer from '../../../services/WebsocketContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
@@ -224,9 +224,7 @@ class ElasticsearchManagement extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const ElasticsearchManagementWrapper = (props) => {
-  return createSubscribedElement(ElasticsearchManagement, props, [AppContainer, WebsocketContainer]);
-};
+const ElasticsearchManagementWrapper = withUnstatedContainers(ElasticsearchManagement, [AppContainer, WebsocketContainer]);
 
 ElasticsearchManagement.propTypes = {
   t: PropTypes.func.isRequired, // i18next

@@ -9,7 +9,7 @@ import DevidedPagePath from '@commons/models/devided-page-path';
 import LinkedPagePath from '@commons/models/linked-page-path';
 import PagePathHierarchicalLink from '@commons/components/PagePathHierarchicalLink';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import { toastError } from '../../util/apiNotification';
 
@@ -102,8 +102,6 @@ class RecentChanges extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const RecentChangesWrapper = (props) => {
-  return createSubscribedElement(RecentChanges, props, [AppContainer]);
-};
+const RecentChangesWrapper = withUnstatedContainers(RecentChanges, [AppContainer]);
 
 export default withTranslation()(RecentChangesWrapper);

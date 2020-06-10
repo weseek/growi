@@ -12,7 +12,7 @@ import {
 
 import GrowiArchiveImportOption from '@commons/models/admin/growi-archive-import-option';
 
-import { createSubscribedElement } from '../../../UnstatedUtils';
+import { withUnstatedContainers } from '../../../UnstatedUtils';
 import AppContainer from '../../../../services/AppContainer';
 // import { toastSuccess, toastError } from '../../../util/apiNotification';
 
@@ -236,8 +236,6 @@ ImportCollectionConfigurationModal.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const ImportCollectionConfigurationModalWrapper = (props) => {
-  return createSubscribedElement(ImportCollectionConfigurationModal, props, [AppContainer]);
-};
+const ImportCollectionConfigurationModalWrapper = withUnstatedContainers(ImportCollectionConfigurationModal, [AppContainer]);
 
 export default withTranslation()(ImportCollectionConfigurationModalWrapper);

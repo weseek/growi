@@ -10,7 +10,7 @@ import urljoin from 'url-join';
 
 import { userPageRoot } from '@commons/util/path-utils';
 import { pathUtils } from 'growi-commons';
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 import AppContainer from '../services/AppContainer';
 import PagePathAutoComplete from './PagePathAutoComplete';
@@ -259,9 +259,7 @@ const PageCreateModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const ModalControlWrapper = (props) => {
-  return createSubscribedElement(PageCreateModal, props, [AppContainer]);
-};
+const ModalControlWrapper = withUnstatedContainers(PageCreateModal, [AppContainer]);
 
 
 PageCreateModal.propTypes = {

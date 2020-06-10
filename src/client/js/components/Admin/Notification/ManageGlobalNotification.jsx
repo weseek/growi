@@ -10,7 +10,7 @@ import { toastError } from '../../../util/apiNotification';
 import TriggerEventCheckBox from './TriggerEventCheckBox';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import AppContainer from '../../../services/AppContainer';
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 const logger = loggerFactory('growi:manageGlobalNotification');
 
@@ -303,9 +303,7 @@ class ManageGlobalNotification extends React.Component {
 
 }
 
-const ManageGlobalNotificationWrapper = (props) => {
-  return createSubscribedElement(ManageGlobalNotification, props, [AppContainer]);
-};
+const ManageGlobalNotificationWrapper = withUnstatedContainers(ManageGlobalNotification, [AppContainer]);
 
 ManageGlobalNotification.propTypes = {
   t: PropTypes.func.isRequired, // i18next
