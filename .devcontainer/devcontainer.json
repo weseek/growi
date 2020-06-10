@@ -15,6 +15,7 @@
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
 		"dbaeumer.vscode-eslint",
+		"eamodio.gitlens",
 		"msjsdiag.debugger-for-chrome",
 		"firefox-devtools.vscode-firefox-debug",
 		"editorconfig.editorconfig",
