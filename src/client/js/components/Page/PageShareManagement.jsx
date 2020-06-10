@@ -39,6 +39,7 @@ const PageShareManagement = (props) => {
     return (
       <>
         <button
+          type="button"
           className="btn-link nav-link bg-transparent dropdown-toggle dropdown-toggle-no-caret"
           data-toggle="dropdown"
         >
@@ -52,6 +53,7 @@ const PageShareManagement = (props) => {
     return (
       <>
         <button
+          type="button"
           className="btn nav-link bg-transparent dropdown-toggle dropdown-toggle-no-caret disabled"
           id="auth-guest-tltips"
         >

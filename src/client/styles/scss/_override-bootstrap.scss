@@ -79,8 +79,8 @@
   // Dropdowns
   .dropdown-toggle {
     &.btn.disabled {
-      cursor: not-allowed;
       pointer-events: auto;
+      cursor: not-allowed;
       opacity: unset;
     }
 
