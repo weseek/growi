@@ -560,9 +560,8 @@ module.exports = (crowi) => {
    *             application/json:
    *                schema:
    *                  properties:
-   *                    securityParams:
-   *                      type: object
-   *                      description: succeed to delete all share links
+   *                    type: object
+   *                    description: succeed to delete all share links
    *        responses:
    *          200:
    *            description: all share links
