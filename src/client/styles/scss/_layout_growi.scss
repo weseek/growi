@@ -11,9 +11,13 @@
     line-height: 1.25;
     border-bottom: 1px solid transparent;
 
-    .liker-user-count,
-    .seen-user-count {
-      font-weight: bold;
+    .user-list-content {
+      direction: rtl;
+
+      .liker-user-count,
+      .seen-user-count {
+        font-weight: bold;
+      }
     }
   }
 

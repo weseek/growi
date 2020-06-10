@@ -587,7 +587,6 @@ module.exports = (crowi) => {
         populate: {
           path: 'lastUpdateUser',
           select: User.USER_PUBLIC_FIELDS,
-          populate: User.IMAGE_POPULATION,
         },
       });
 
