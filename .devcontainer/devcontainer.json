@@ -5,7 +5,7 @@
 	"name": "GROWI-Dev",
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "node",
-	"workspaceFolder": "/workspace",
+	"workspaceFolder": "/workspace/growi",
 
 	// Set *default* container specific settings.json values on container create.
 	"settings": {
