@@ -3,16 +3,10 @@
 //
 
 // determine optional variables
-$color-list: $color-global !default;
-$bgcolor-list: $bgcolor-global !default;
-$color-list-hover: $color-reversal !default;
-$color-list-active: $color-reversal !default;
-$bgcolor-list-active: $primary !default;
 $border-image-navbar: linear-gradient(to right, #ccc 0%, #ccc 100%) !default;
 $bgcolor-search-top-dropdown: $secondary !default;
 $bgcolor-sidebar-nav-item-active: darken($bgcolor-sidebar, 10%) !default;
 $text-shadow-sidebar-nav-item-active: 1px 1px 2px $primary !default;
-$bgcolor-sidebar-list-group: $bgcolor-list !default;
 $bgcolor-inline-code: #f0f0f0 !default;
 $color-inline-code: #c7254e !default;
 $bordercolor-inline-code: #ccc8c8 !default;
@@ -61,6 +55,16 @@ pre:not(.hljs):not(.CodeMirror-line) {
 //== Apply to Bootstrap Elements
 //
 
+// Alert link
+@each $color, $value in $theme-colors {
+  .alert.alert-#{$color} {
+    a,
+    a:hover {
+      color: theme-color-level($color, $alert-color-level - 2);
+    }
+  }
+}
+
 // Link buttons
 .btn-link {
   color: $link-color;
@@ -86,9 +90,6 @@ pre:not(.hljs):not(.CodeMirror-line) {
   }
 }
 
-// List Group
-@include override-list-group-item($color-list, $bgcolor-list, $color-list-hover, $color-list-active, $bgcolor-list-active);
-
 // Form
 .form-control {
   @include form-control-focus();
@@ -103,6 +104,13 @@ pre:not(.hljs):not(.CodeMirror-line) {
   &:focus {
     color: $color-link-hover !important;
   }
+}
+
+//
+//== Apply to Handsontable
+//
+.handsontable {
+  color: initial;
 }
 
 //
@@ -140,11 +148,20 @@ pre:not(.hljs):not(.CodeMirror-line) {
 
   border-image: $border-image-navbar;
   border-image-slice: 1;
+
+  .grw-app-title {
+    color: $fillcolor-logo-mark;
+  }
 }
 
 .search-top {
   .btn-secondary.dropdown-toggle {
     @include button-variant($bgcolor-search-top-dropdown, $bgcolor-search-top-dropdown);
+  }
+
+  // for https://youtrack.weseek.co.jp/issue/GW-2603
+  .search-typeahead {
+    background-color: rgba($bgcolor-global, 0.9);
   }
 }
 
@@ -197,9 +214,6 @@ pre:not(.hljs):not(.CodeMirror-line) {
       }
     }
   }
-
-  // List
-  @include override-list-group-item($color-list, $bgcolor-sidebar-list-group, $color-list-hover, $color-list-active, $bgcolor-list-active);
 }
 
 /*
@@ -241,6 +255,7 @@ pre:not(.hljs):not(.CodeMirror-line) {
  * cards
  */
 .card.well {
+  color: $color-global;
   background-color: $bgcolor-card;
   border-color: $light;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);

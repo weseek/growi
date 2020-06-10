@@ -9,7 +9,7 @@
   data-page-revision-id-hackmd-synced="{% if revisionHackmdSynced %}{{ revisionHackmdSynced.toString() }}{% endif %}"
   data-page-id-on-hackmd="{% if pageIdOnHackmd %}{{ pageIdOnHackmd.toString() }}{% endif %}"
   data-page-has-draft-on-hackmd="{% if hasDraftOnHackmd %}{{ hasDraftOnHackmd.toString() }}{% endif %}"
-  data-page-is-liked="{% if page.isLiked(user) %}true{% else %}false{% endif %}"
+  data-page-is-liked="{% if user %}{{ page.isLiked(user) }}{% else %}false{% endif %}"
   data-page-is-seen="{% if page and page.isSeenUser(user) %}1{% else %}0{% endif %}"
   data-page-is-deleted="{% if page.isDeleted() %}true{% else %}false{% endif %}"
   data-page-is-deletable="{% if isDeletablePage() %}true{% else %}false{% endif %}"

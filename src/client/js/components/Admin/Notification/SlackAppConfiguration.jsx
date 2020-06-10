@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import loggerFactory from '@alias/logger';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
@@ -53,10 +53,10 @@ class SlackAppConfiguration extends React.Component {
                 {`Slack ${adminNotificationContainer.state.selectSlackOption}`}
               </button>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a className="dropdown-item" type="button" onClick={() => adminNotificationContainer.switchSlackOption('Incoming Webhooks')}>
+                <button className="dropdown-item" type="button" onClick={() => adminNotificationContainer.switchSlackOption('Incoming Webhooks')}>
                   Slack Incoming Webhooks
-                </a>
-                <a className="dropdown-item" type="button" onClick={() => adminNotificationContainer.switchSlackOption('App')}>Slack App</a>
+                </button>
+                <button className="dropdown-item" type="button" onClick={() => adminNotificationContainer.switchSlackOption('App')}>Slack App</button>
               </div>
             </div>
           </div>
@@ -170,9 +170,7 @@ class SlackAppConfiguration extends React.Component {
 
 }
 
-const SlackAppConfigurationWrapper = (props) => {
-  return createSubscribedElement(SlackAppConfiguration, props, [AppContainer, AdminNotificationContainer]);
-};
+const SlackAppConfigurationWrapper = withUnstatedContainers(SlackAppConfiguration, [AppContainer, AdminNotificationContainer]);
 
 SlackAppConfiguration.propTypes = {
   t: PropTypes.func.isRequired, // i18next

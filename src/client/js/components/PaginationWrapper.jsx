@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 
 import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 
 class PaginationWrapper extends React.Component {
@@ -167,9 +167,7 @@ class PaginationWrapper extends React.Component {
 
 }
 
-const PaginationWrappered = (props) => {
-  return createSubscribedElement(PaginationWrapper, props, [AppContainer]);
-};
+const PaginationWrappered = withUnstatedContainers(PaginationWrapper, [AppContainer]);
 
 PaginationWrapper.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,

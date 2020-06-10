@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
@@ -143,9 +143,7 @@ class AwsSetting extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const AwsSettingWrapper = (props) => {
-  return createSubscribedElement(AwsSetting, props, [AppContainer, AdminAppContainer]);
-};
+const AwsSettingWrapper = withUnstatedContainers(AwsSetting, [AppContainer, AdminAppContainer]);
 
 AwsSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next

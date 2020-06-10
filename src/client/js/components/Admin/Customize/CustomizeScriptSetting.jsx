@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { Card, CardBody } from 'reactstrap';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
@@ -59,7 +59,7 @@ class CustomizeScriptSetting extends React.Component {
               Placeholders:<br />
               (Available after <code>load</code> event)
             </div>
-            <table className="table table-borderless table-sm form-text text-muted offset-1">
+            <table className="table table-borderless table-sm form-text text-muted offset-1 col-11">
               <tbody>
                 <tr>
                   <th className="text-right"><code>$</code></th>
@@ -109,9 +109,7 @@ class CustomizeScriptSetting extends React.Component {
 
 }
 
-const CustomizeScriptSettingWrapper = (props) => {
-  return createSubscribedElement(CustomizeScriptSetting, props, [AppContainer, AdminCustomizeContainer]);
-};
+const CustomizeScriptSettingWrapper = withUnstatedContainers(CustomizeScriptSetting, [AppContainer, AdminCustomizeContainer]);
 
 CustomizeScriptSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next

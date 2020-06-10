@@ -12,7 +12,7 @@ import {
 import { withTranslation } from 'react-i18next';
 import ReactCrop from 'react-image-crop';
 import AppContainer from '../../services/AppContainer';
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import 'react-image-crop/dist/ReactCrop.css';
 import { toastError } from '../../util/apiNotification';
 
@@ -113,9 +113,7 @@ class ImageCropModal extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const ProfileImageFormWrapper = (props) => {
-  return createSubscribedElement(ImageCropModal, props, [AppContainer]);
-};
+const ProfileImageFormWrapper = withUnstatedContainers(ImageCropModal, [AppContainer]);
 ImageCropModal.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   show: PropTypes.bool.isRequired,

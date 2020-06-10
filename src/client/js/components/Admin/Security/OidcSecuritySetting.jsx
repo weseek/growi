@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
@@ -347,8 +347,6 @@ OidcSecurityManagement.propTypes = {
   adminOidcSecurityContainer: PropTypes.instanceOf(AdminOidcSecurityContainer).isRequired,
 };
 
-const OidcSecurityManagementWrapper = (props) => {
-  return createSubscribedElement(OidcSecurityManagement, props, [AppContainer, AdminGeneralSecurityContainer, AdminOidcSecurityContainer]);
-};
+const OidcSecurityManagementWrapper = withUnstatedContainers(OidcSecurityManagement, [AppContainer, AdminGeneralSecurityContainer, AdminOidcSecurityContainer]);
 
 export default withTranslation()(OidcSecurityManagementWrapper);

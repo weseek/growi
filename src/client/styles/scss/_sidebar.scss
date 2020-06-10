@@ -59,6 +59,8 @@
     // Adjust to be on top of the growi subnavigation
     z-index: $zindex-sticky + 5;
 
+    transition: left 300ms cubic-bezier(0.25, 1, 0.5, 1);
+
     // css-xxx-Outer
     > div:nth-of-type(2) {
       width: 0;
@@ -117,42 +119,62 @@
 }
 
 // Drawer Mode
-@include media-breakpoint-down(sm) {
-  .grw-sidebar {
-    position: fixed;
-    z-index: $zindex-fixed - 2;
+@mixin drawer() {
+  position: fixed;
+  z-index: $zindex-fixed - 2;
 
-    // override @atlaskit/navigation-next styles
-    div[data-layout-container='true'] {
-      // css-teprsg
-      > div:nth-of-type(2) {
-        display: none;
-      }
+  // override @atlaskit/navigation-next styles
+  div[data-layout-container='true'] {
+    // css-teprsg
+    > div:nth-of-type(2) {
+      display: none;
     }
-    div[data-testid='Navigation'] {
-      // css-xxx-Outer
-      > div:nth-of-type(2) {
-        display: none;
-      }
-    }
-
-    &:not(.open) {
-      div[data-testid='Navigation'] {
-        left: -#{$grw-sidebar-nav-width + $grw-sidebar-content-min-width};
-      }
-    }
-    &.open {
-      div[data-testid='Navigation'] {
-        left: 0;
-      }
-    }
-
-    div[data-testid='Navigation'] {
-      transition: left 300ms cubic-bezier(0.25, 1, 0.5, 1);
+  }
+  div[data-testid='Navigation'] {
+    // css-xxx-Outer
+    > div:nth-of-type(2) {
+      display: none;
     }
   }
 
-  .grw-sidebar-backdrop.modal-backdrop {
-    z-index: $zindex-fixed - 4;
+  &:not(.open) {
+    div[data-testid='Navigation'] {
+      left: -#{$grw-sidebar-nav-width + $grw-sidebar-content-min-width};
+    }
   }
+  &.open {
+    div[data-testid='Navigation'] {
+      left: 0;
+    }
+  }
+}
+
+.grw-sidebar {
+  &.grw-sidebar-drawer {
+    @include drawer();
+  }
+
+  @include media-breakpoint-down(sm) {
+    @include drawer();
+  }
+}
+
+// supress transition
+.grw-sidebar {
+  &.grw-sidebar-supress-transitions-to-drawer {
+    div[data-testid='Navigation'] {
+      transition: none !important;
+    }
+  }
+
+  &.grw-sidebar-supress-transitions-to-dock {
+    div[data-testid='Content'],
+    div[data-testid='ContextualNavigation'] {
+      transition: none !important;
+    }
+  }
+}
+
+.grw-sidebar-backdrop.modal-backdrop {
+  z-index: $zindex-fixed - 4;
 }

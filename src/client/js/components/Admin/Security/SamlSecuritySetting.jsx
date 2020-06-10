@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
@@ -546,8 +546,6 @@ SamlSecurityManagement.propTypes = {
   adminSamlSecurityContainer: PropTypes.instanceOf(AdminSamlSecurityContainer).isRequired,
 };
 
-const SamlSecurityManagementWrapper = (props) => {
-  return createSubscribedElement(SamlSecurityManagement, props, [AppContainer, AdminGeneralSecurityContainer, AdminSamlSecurityContainer]);
-};
+const SamlSecurityManagementWrapper = withUnstatedContainers(SamlSecurityManagement, [AppContainer, AdminGeneralSecurityContainer, AdminSamlSecurityContainer]);
 
 export default withTranslation()(SamlSecurityManagementWrapper);

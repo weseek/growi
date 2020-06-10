@@ -3,10 +3,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 import AdminGitHubSecurityContainer from '../../../services/AdminGitHubSecurityContainer';
 
@@ -206,13 +205,13 @@ class GitHubSecurityManagement extends React.Component {
 
 GitHubSecurityManagement.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
   adminGitHubSecurityContainer: PropTypes.instanceOf(AdminGitHubSecurityContainer).isRequired,
 };
 
-const GitHubSecurityManagementWrapper = (props) => {
-  return createSubscribedElement(GitHubSecurityManagement, props, [AppContainer, AdminGeneralSecurityContainer, AdminGitHubSecurityContainer]);
-};
+const GitHubSecurityManagementWrapper = withUnstatedContainers(
+  GitHubSecurityManagement,
+  [AdminGeneralSecurityContainer, AdminGitHubSecurityContainer],
+);
 
 export default withTranslation()(GitHubSecurityManagementWrapper);

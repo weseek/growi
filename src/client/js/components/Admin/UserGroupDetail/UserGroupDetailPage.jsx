@@ -6,7 +6,7 @@ import UserGroupEditForm from './UserGroupEditForm';
 import UserGroupUserTable from './UserGroupUserTable';
 import UserGroupUserModal from './UserGroupUserModal';
 import UserGroupPageList from './UserGroupPageList';
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 
 class UserGroupDetailPage extends React.Component {
@@ -44,8 +44,6 @@ UserGroupDetailPage.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const UserGroupDetailPageWrapper = (props) => {
-  return createSubscribedElement(UserGroupDetailPage, props, [AppContainer]);
-};
+const UserGroupDetailPageWrapper = withUnstatedContainers(UserGroupDetailPage, [AppContainer]);
 
 export default withTranslation()(UserGroupDetailPageWrapper);

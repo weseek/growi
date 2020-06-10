@@ -28,21 +28,22 @@
       {% endif %}
     {% endif %}
 
-    {% if redirectFrom or req.query.renamed or req.query.redirectFrom %}
+    {% if redirectFrom or req.query.renamedFrom or req.query.redirectFrom %}
     <div class="alert alert-pink d-edit-none py-3 px-4 d-flex align-items-center justify-content-between">
       <span>
-        {% set fromPath = req.query.renamed or req.query.redirectFrom %}
+        {% set fromPath = req.query.renamedFrom or req.query.redirectFrom %}
         {% if redirectFrom or req.query.redirectFrom %}
           <strong>{{ t('Redirected') }}:</strong> {{ t('page_page.notice.redirected', fromPath | preventXss) }}
         {% endif %}
-        {% if req.query.renamed %}
+        {% if req.query.renamedFrom %}
           <strong>{{ t('Moved') }}:</strong> {{ t('page_page.notice.moved', fromPath | preventXss) }}
         {% endif %}
       </span>
-      {% if user and not page.isDeleted() %}
-        <button type="button" id="unlink-page-button" class="btn btn-secondary btn-sm float-right">
+      {% set hasRedirectLink = redirectFrom or req.query.redirectFrom or req.query.withRedirect %}
+      {% if user and not page.isDeleted() and hasRedirectLink %}
+        <button type="button" id="unlink-page-button" class="btn btn-outline-dark btn-sm float-right">
           <i class="ti-unlink" aria-hidden="true"></i>
-          Unlink
+          Unlink redirection
         </button>
       {% endif %}
     </div>

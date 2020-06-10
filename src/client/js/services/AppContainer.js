@@ -31,11 +31,17 @@ export default class AppContainer extends Container {
   constructor() {
     super();
 
+    const { localStorage } = window;
+
     this.state = {
       editorMode: null,
+      isDeviceSmallerThanMd: null,
       preferDarkModeByMediaQuery: false,
-      preferDarkModeByUser: null,
-      breakpoint: 'xs',
+      preferDarkModeByUser: localStorage.preferDarkModeByUser === 'true',
+      preferDrawerModeByUser: localStorage.preferDrawerModeByUser === 'true',
+      preferDrawerModeOnEditByUser: // default: true
+        localStorage.preferDrawerModeOnEditByUser == null || localStorage.preferDrawerModeOnEditByUser === 'true',
+      isDrawerMode: null,
       isDrawerOpened: false,
 
       isPageCreateModalShown: false,
@@ -111,14 +117,35 @@ export default class AppContainer extends Container {
   }
 
   init() {
+    this.initDeviceSize();
     this.initColorScheme();
     this.initPlugins();
   }
 
+  initDeviceSize() {
+    const mdOrAvobeHandler = async(mql) => {
+      let isDeviceSmallerThanMd;
+
+      // sm -> md
+      if (mql.matches) {
+        isDeviceSmallerThanMd = false;
+      }
+      // md -> sm
+      else {
+        isDeviceSmallerThanMd = true;
+      }
+
+      this.setState({ isDeviceSmallerThanMd });
+      this.updateDrawerMode({ ...this.state, isDeviceSmallerThanMd }); // generate newest state object
+    };
+
+    this.addBreakpointListener('md', mdOrAvobeHandler, true);
+  }
+
   async initColorScheme() {
-    const switchStateByMediaQuery = (mql) => {
+    const switchStateByMediaQuery = async(mql) => {
       const preferDarkMode = mql.matches;
-      this.setState({ preferDarkModeByMediaQuery: preferDarkMode });
+      await this.setState({ preferDarkModeByMediaQuery: preferDarkMode });
 
       this.applyColorScheme();
     };
@@ -127,13 +154,7 @@ export default class AppContainer extends Container {
     // add event listener
     mqlForDarkMode.addListener(switchStateByMediaQuery);
 
-    // restore settings from localStorage
-    const { localStorage } = window;
-    if (localStorage.preferDarkModeByUser != null) {
-      await this.setState({ preferDarkModeByUser: localStorage.preferDarkModeByUser === 'true' });
-    }
-
-    // initialize
+    // initialize: check media query
     switchStateByMediaQuery(mqlForDarkMode);
   }
 
@@ -361,6 +382,11 @@ export default class AppContainer extends Container {
     return users;
   }
 
+  setEditorMode(editorMode) {
+    this.setState({ editorMode });
+    this.updateDrawerMode({ ...this.state, editorMode }); // generate newest state object
+  }
+
   toggleDrawer() {
     const { isDrawerOpened } = this.state;
     this.setState({ isDrawerOpened: !isDrawerOpened });
@@ -387,6 +413,56 @@ export default class AppContainer extends Container {
   }
 
   /**
+   * Set Sidebar mode preference by user
+   * @param {boolean} preferDockMode
+   */
+  async setDrawerModePreference(bool) {
+    this.setState({ preferDrawerModeByUser: bool });
+    this.updateDrawerMode({ ...this.state, preferDrawerModeByUser: bool }); // generate newest state object
+
+    // store settings to localStorage
+    const { localStorage } = window;
+    localStorage.preferDrawerModeByUser = bool;
+  }
+
+  /**
+   * Set Sidebar mode preference by user
+   * @param {boolean} preferDockMode
+   */
+  async setDrawerModePreferenceOnEdit(bool) {
+    this.setState({ preferDrawerModeOnEditByUser: bool });
+    this.updateDrawerMode({ ...this.state, preferDrawerModeOnEditByUser: bool }); // generate newest state object
+
+    // store settings to localStorage
+    const { localStorage } = window;
+    localStorage.preferDrawerModeOnEditByUser = bool;
+  }
+
+  /**
+   * Update drawer related state by specified 'newState' object
+   * @param {object} newState A newest state object
+   *
+   * Specify 'newState' like following code:
+   *
+   *   { ...this.state, overwriteParam: overwriteValue }
+   *
+   * because updating state of unstated container will be delayed unless you use await
+   */
+  updateDrawerMode(newState) {
+    const {
+      editorMode, isDeviceSmallerThanMd, preferDrawerModeByUser, preferDrawerModeOnEditByUser,
+    } = newState;
+
+    // get preference on view or edit
+    const preferDrawerMode = editorMode != null ? preferDrawerModeOnEditByUser : preferDrawerModeByUser;
+
+    const isDrawerMode = isDeviceSmallerThanMd || preferDrawerMode;
+    const isDrawerOpened = false; // close Drawer anyway
+
+    this.setState({ isDrawerMode, isDrawerOpened });
+  }
+
+  /**
    * Set color scheme preference by user
    * @param {boolean} isDarkMode
    */
@@ -410,6 +486,7 @@ export default class AppContainer extends Container {
    */
   applyColorScheme() {
     const { preferDarkModeByMediaQuery, preferDarkModeByUser } = this.state;
+
     let isDarkMode = preferDarkModeByMediaQuery;
     if (preferDarkModeByUser != null) {
       isDarkMode = preferDarkModeByUser;

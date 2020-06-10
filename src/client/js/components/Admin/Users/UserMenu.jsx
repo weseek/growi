@@ -8,7 +8,7 @@ import RemoveUserButton from './UserRemoveButton';
 import RemoveAdminButton from './RemoveAdminButton';
 import GiveAdminButton from './GiveAdminButton';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import AdminUsersContainer from '../../../services/AdminUsersContainer';
 
@@ -36,9 +36,9 @@ class UserMenu extends React.Component {
         <li className="dropdown-divider"></li>
         <li className="dropdown-header">{t('admin:user_management.user_table.edit_menu')}</li>
         <li>
-          <a className="dropdown-item" type="button" onClick={this.onPasswordResetClicked}>
+          <button className="dropdown-item" type="button" onClick={this.onPasswordResetClicked}>
             <i className="icon-fw icon-key"></i>{ t('admin:user_management.reset_password') }
-          </a>
+          </button>
         </li>
       </Fragment>
     );
@@ -96,9 +96,7 @@ class UserMenu extends React.Component {
 
 }
 
-const UserMenuWrapper = (props) => {
-  return createSubscribedElement(UserMenu, props, [AppContainer, AdminUsersContainer]);
-};
+const UserMenuWrapper = withUnstatedContainers(UserMenu, [AppContainer, AdminUsersContainer]);
 
 UserMenu.propTypes = {
   t: PropTypes.func.isRequired, // i18next

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
@@ -68,9 +68,7 @@ class CustomizeLayoutSetting extends React.Component {
 
 }
 
-const CustomizeLayoutSettingWrapper = (props) => {
-  return createSubscribedElement(CustomizeLayoutSetting, props, [AppContainer, AdminCustomizeContainer]);
-};
+const CustomizeLayoutSettingWrapper = withUnstatedContainers(CustomizeLayoutSetting, [AppContainer, AdminCustomizeContainer]);
 
 CustomizeLayoutSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next

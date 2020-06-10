@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 /**
  *
@@ -120,9 +120,7 @@ class PageStatusAlert extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const PageStatusAlertWrapper = (props) => {
-  return createSubscribedElement(PageStatusAlert, props, [AppContainer, PageContainer]);
-};
+const PageStatusAlertWrapper = withUnstatedContainers(PageStatusAlert, [AppContainer, PageContainer]);
 
 PageStatusAlert.propTypes = {
   t: PropTypes.func.isRequired, // i18next

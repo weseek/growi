@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 // import { toastSuccess, toastError } from '../../../util/apiNotification';
 
@@ -18,12 +18,12 @@ class ArchiveFilesTableMenu extends React.Component {
         </button>
         <ul className="dropdown-menu" role="menu">
           <li className="dropdown-header">{t('admin:export_management.export_menu')}</li>
-          <a type="button" className="dropdown-item" href={`/admin/export/${this.props.fileName}`}>
+          <button type="button" className="dropdown-item" onClick={() => { window.location.href = `/admin/export/${this.props.fileName}` }}>
             <i className="icon-cloud-download" /> {t('admin:export_management.download')}
-          </a>
-          <a type="button" className="dropdown-item" role="button" onClick={() => this.props.onZipFileStatRemove(this.props.fileName)}>
+          </button>
+          <button type="button" className="dropdown-item" role="button" onClick={() => this.props.onZipFileStatRemove(this.props.fileName)}>
             <span className="text-danger"><i className="icon-trash" /> {t('admin:export_management.delete')}</span>
-          </a>
+          </button>
         </ul>
       </div>
     );
@@ -41,8 +41,6 @@ ArchiveFilesTableMenu.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const ArchiveFilesTableMenuWrapper = (props) => {
-  return createSubscribedElement(ArchiveFilesTableMenu, props, [AppContainer]);
-};
+const ArchiveFilesTableMenuWrapper = withUnstatedContainers(ArchiveFilesTableMenu, [AppContainer]);
 
 export default withTranslation()(ArchiveFilesTableMenuWrapper);

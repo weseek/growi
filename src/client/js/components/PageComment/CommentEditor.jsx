@@ -14,7 +14,7 @@ import CommentContainer from '../../services/CommentContainer';
 import EditorContainer from '../../services/EditorContainer';
 import GrowiRenderer from '../../util/GrowiRenderer';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import UserPicture from '../User/UserPicture';
 import Editor from '../PageEditor/Editor';
 import SlackNotification from '../SlackNotification';
@@ -38,6 +38,7 @@ class CommentEditor extends React.Component {
     const isUploadableFile = config.upload.file;
 
     this.state = {
+      isReadyToUse: !this.props.isForNewComment,
       comment: this.props.commentBody || '',
       isMarkdown: true,
       html: '',
@@ -51,14 +52,16 @@ class CommentEditor extends React.Component {
     this.updateState = this.updateState.bind(this);
     this.updateStateCheckbox = this.updateStateCheckbox.bind(this);
 
-    this.postHandler = this.postHandler.bind(this);
+    this.cancelButtonClickedHandler = this.cancelButtonClickedHandler.bind(this);
+    this.commentButtonClickedHandler = this.commentButtonClickedHandler.bind(this);
+    this.ctrlEnterHandler = this.ctrlEnterHandler.bind(this);
+    this.postComment = this.postComment.bind(this);
     this.uploadHandler = this.uploadHandler.bind(this);
 
     this.renderHtml = this.renderHtml.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
     this.onSlackEnabledFlagChange = this.onSlackEnabledFlagChange.bind(this);
     this.onSlackChannelsChange = this.onSlackChannelsChange.bind(this);
-    this.toggleEditor = this.toggleEditor.bind(this);
   }
 
   updateState(value) {
@@ -85,11 +88,6 @@ class CommentEditor extends React.Component {
     this.props.commentContainer.setState({ slackChannels });
   }
 
-  toggleEditor() {
-    const targetId = this.props.replyTo || this.props.currentCommentId;
-    this.props.commentButtonClickedHandler(targetId);
-  }
-
   initializeEditor() {
     this.setState({
       comment: '',
@@ -100,36 +98,65 @@ class CommentEditor extends React.Component {
     });
     // reset value
     this.editor.setValue('');
-    this.toggleEditor();
+  }
+
+  cancelButtonClickedHandler() {
+    const { isForNewComment, onCancelButtonClicked } = this.props;
+
+    // change state to not ready
+    // when this editor is for the new comment mode
+    if (isForNewComment) {
+      this.setState({ isReadyToUse: false });
+    }
+
+    if (onCancelButtonClicked != null) {
+      const { replyTo, currentCommentId } = this.props;
+      onCancelButtonClicked(replyTo || currentCommentId);
+    }
+  }
+
+  commentButtonClickedHandler() {
+    this.postComment();
+  }
+
+  ctrlEnterHandler(event) {
+    if (event != null) {
+      event.preventDefault();
+    }
+
+    this.postComment();
   }
 
   /**
    * Post comment with CommentContainer and update state
    */
-  async postHandler(event) {
-    if (event != null) {
-      event.preventDefault();
-    }
-
+  async postComment() {
+    const {
+      commentContainer, replyTo, currentCommentId, commentCreator, onCommentButtonClicked,
+    } = this.props;
     try {
-      if (this.props.currentCommentId != null) {
-        await this.props.commentContainer.putComment(
+      if (currentCommentId != null) {
+        await commentContainer.putComment(
           this.state.comment,
           this.state.isMarkdown,
-          this.props.currentCommentId,
-          this.props.commentCreator,
+          currentCommentId,
+          commentCreator,
         );
       }
       else {
         await this.props.commentContainer.postComment(
           this.state.comment,
           this.state.isMarkdown,
-          this.props.replyTo,
-          this.props.commentContainer.state.isSlackEnabled,
-          this.props.commentContainer.state.slackChannels,
+          replyTo,
+          commentContainer.state.isSlackEnabled,
+          commentContainer.state.slackChannels,
         );
       }
       this.initializeEditor();
+
+      if (onCommentButtonClicked != null) {
+        onCommentButtonClicked(replyTo || currentCommentId);
+      }
     }
     catch (err) {
       const errorMessage = err.message || 'An unknown error occured when posting comment';
@@ -212,7 +239,21 @@ class CommentEditor extends React.Component {
     return { __html: html };
   }
 
-  render() {
+  renderBeforeReady() {
+    return (
+      <div className="text-center">
+        <button
+          type="button"
+          className="btn btn-lg btn-link"
+          onClick={() => this.setState({ isReadyToUse: true })}
+        >
+          <i className="icon-bubble"></i> Add Comment
+        </button>
+      </div>
+    );
+  }
+
+  renderReady() {
     const { appContainer, commentContainer } = this.props;
     const { activeTab } = this.state;
 
@@ -221,7 +262,7 @@ class CommentEditor extends React.Component {
 
     const errorMessage = <span className="text-danger text-right mr-2">{this.state.errorMessage}</span>;
     const cancelButton = (
-      <Button outline color="danger" size="xs" className="btn btn-outline-danger rounded-pill" onClick={this.toggleEditor}>
+      <Button outline color="danger" size="xs" className="btn btn-outline-danger rounded-pill" onClick={this.cancelButtonClickedHandler}>
         Cancel
       </Button>
     );
@@ -230,105 +271,120 @@ class CommentEditor extends React.Component {
         outline
         color="primary"
         className="btn btn-outline-primary rounded-pill"
-        onClick={this.postHandler}
+        onClick={this.commentButtonClickedHandler}
       >
         Comment
       </Button>
     );
 
     return (
+      <>
+        <div className="comment-write">
+          <Nav tabs>
+            <NavItem>
+              <NavLink type="button" className={activeTab === 1 ? 'active' : ''} onClick={() => this.handleSelect(1)}>
+                    Write
+              </NavLink>
+            </NavItem>
+            { this.state.isMarkdown && (
+            <NavItem>
+              <NavLink type="button" className={activeTab === 2 ? 'active' : ''} onClick={() => this.handleSelect(2)}>
+                      Preview
+              </NavLink>
+            </NavItem>
+                ) }
+          </Nav>
+          <TabContent activeTab={activeTab}>
+            <TabPane tabId={1}>
+              <Editor
+                ref={(c) => { this.editor = c }}
+                value={this.state.comment}
+                isGfmMode={this.state.isMarkdown}
+                lineNumbers={false}
+                isMobile={appContainer.isMobile}
+                isUploadable={this.state.isUploadable}
+                isUploadableFile={this.state.isUploadableFile}
+                emojiStrategy={emojiStrategy}
+                onChange={this.updateState}
+                onUpload={this.uploadHandler}
+                onCtrlEnter={this.ctrlEnterHandler}
+              />
+            </TabPane>
+            <TabPane tabId={2}>
+              <div className="comment-form-preview">
+                {commentPreview}
+              </div>
+            </TabPane>
+          </TabContent>
+        </div>
+
+        <div className="comment-submit">
+          <div className="d-flex">
+            <label className="mr-2">
+              {activeTab === 1 && (
+              <span className="custom-control custom-checkbox">
+                <input
+                  type="checkbox"
+                  className="custom-control-input"
+                  id="comment-form-is-markdown"
+                  name="isMarkdown"
+                  checked={this.state.isMarkdown}
+                  value="1"
+                  onChange={this.updateStateCheckbox}
+                />
+                <label
+                  className="ml-2 custom-control-label"
+                  htmlFor="comment-form-is-markdown"
+                >
+                  Markdown
+                </label>
+              </span>
+                  ) }
+            </label>
+            <span className="flex-grow-1" />
+            <span className="d-none d-sm-inline">{ this.state.errorMessage && errorMessage }</span>
+            { this.state.hasSlackConfig
+              && (
+              <div className="form-inline align-self-center mr-md-2">
+                <SlackNotification
+                  isSlackEnabled={commentContainer.state.isSlackEnabled}
+                  slackChannels={commentContainer.state.slackChannels}
+                  onEnabledFlagChange={this.onSlackEnabledFlagChange}
+                  onChannelChange={this.onSlackChannelsChange}
+                />
+              </div>
+              )
+            }
+            <div className="d-none d-sm-block">
+              <span className="mr-2">{cancelButton}</span><span>{submitButton}</span>
+            </div>
+          </div>
+          <div className="d-block d-sm-none mt-2">
+            <div className="d-flex justify-content-end">
+              { this.state.errorMessage && errorMessage }
+              <span className="mr-2">{cancelButton}</span><span>{submitButton}</span>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  render() {
+    const { appContainer } = this.props;
+    const { isReadyToUse } = this.state;
+
+    return (
       <div className="form page-comment-form">
         <div className="comment-form">
           <div className="comment-form-user">
-            <UserPicture user={appContainer.currentUser} />
+            <UserPicture user={appContainer.currentUser} noLink noTooltip />
           </div>
           <div className="comment-form-main">
-            <div className="comment-write">
-              <Nav tabs>
-                <NavItem>
-                  <NavLink type="button" className={activeTab === 1 ? 'active' : ''} onClick={() => this.handleSelect(1)}>
-                    Write
-                  </NavLink>
-                </NavItem>
-                { this.state.isMarkdown && (
-                  <NavItem>
-                    <NavLink type="button" className={activeTab === 2 ? 'active' : ''} onClick={() => this.handleSelect(2)}>
-                      Preview
-                    </NavLink>
-                  </NavItem>
-                ) }
-              </Nav>
-              <TabContent activeTab={activeTab}>
-                <TabPane tabId={1}>
-                  <Editor
-                    ref={(c) => { this.editor = c }}
-                    value={this.state.comment}
-                    isGfmMode={this.state.isMarkdown}
-                    lineNumbers={false}
-                    isMobile={appContainer.isMobile}
-                    isUploadable={this.state.isUploadable}
-                    isUploadableFile={this.state.isUploadableFile}
-                    emojiStrategy={emojiStrategy}
-                    onChange={this.updateState}
-                    onUpload={this.uploadHandler}
-                    onCtrlEnter={this.postHandler}
-                  />
-                </TabPane>
-                <TabPane tabId={2}>
-                  <div className="comment-form-preview">
-                    {commentPreview}
-                  </div>
-                </TabPane>
-              </TabContent>
-            </div>
-            <div className="comment-submit">
-              <div className="d-flex">
-                <label className="mr-2">
-                  {activeTab === 1 && (
-                    <span className="custom-control custom-checkbox">
-                      <input
-                        type="checkbox"
-                        className="custom-control-input"
-                        id="comment-form-is-markdown"
-                        name="isMarkdown"
-                        checked={this.state.isMarkdown}
-                        value="1"
-                        onChange={this.updateStateCheckbox}
-                      />
-                      <label
-                        className="ml-2 custom-control-label"
-                        htmlFor="comment-form-is-markdown"
-                      >
-                        Markdown
-                      </label>
-                    </span>
-                  ) }
-                </label>
-                <span className="flex-grow-1" />
-                <span className="d-none d-sm-inline">{ this.state.errorMessage && errorMessage }</span>
-                { this.state.hasSlackConfig
-                  && (
-                  <div className="form-inline align-self-center mr-md-2">
-                    <SlackNotification
-                      isSlackEnabled={commentContainer.state.isSlackEnabled}
-                      slackChannels={commentContainer.state.slackChannels}
-                      onEnabledFlagChange={this.onSlackEnabledFlagChange}
-                      onChannelChange={this.onSlackChannelsChange}
-                    />
-                  </div>
-                  )
-                }
-                <div className="d-none d-sm-block">
-                  <span className="mr-2">{cancelButton}</span><span>{submitButton}</span>
-                </div>
-              </div>
-              <div className="d-block d-sm-none mt-2">
-                <div className="d-flex justify-content-end">
-                  { this.state.errorMessage && errorMessage }
-                  <span className="mr-2">{cancelButton}</span><span>{submitButton}</span>
-                </div>
-              </div>
-            </div>
+            { !isReadyToUse
+              ? this.renderBeforeReady()
+              : this.renderReady()
+            }
           </div>
         </div>
       </div>
@@ -337,13 +393,6 @@ class CommentEditor extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const CommentEditorWrapper = (props) => {
-  return createSubscribedElement(CommentEditor, props, [AppContainer, PageContainer, EditorContainer, CommentContainer]);
-};
-
 CommentEditor.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
@@ -351,11 +400,18 @@ CommentEditor.propTypes = {
   commentContainer: PropTypes.instanceOf(CommentContainer).isRequired,
 
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
+  isForNewComment: PropTypes.bool,
   replyTo: PropTypes.string,
   currentCommentId: PropTypes.string,
   commentBody: PropTypes.string,
   commentCreator: PropTypes.string,
-  commentButtonClickedHandler: PropTypes.func.isRequired,
+  onCancelButtonClicked: PropTypes.func,
+  onCommentButtonClicked: PropTypes.func,
 };
+
+/**
+ * Wrapper component for using unstated
+ */
+const CommentEditorWrapper = withUnstatedContainers(CommentEditor, [AppContainer, PageContainer, EditorContainer, CommentContainer]);
 
 export default CommentEditorWrapper;

@@ -32,6 +32,12 @@
   .rbt-menu {
     max-height: none !important;
     margin-top: 3px;
+    @extend .dropdown-menu-right;
+    @extend .dropdown-menu-md-left;
+    @include media-breakpoint-down(sm) {
+      left: auto !important;
+      width: 90vw;
+    }
 
     li a span {
       .page-path {
@@ -66,13 +72,22 @@
     border-bottom-left-radius: 40px;
   }
 
+  .search-typeahead {
+    // corner radius
+    border-top-right-radius: 40px;
+    border-bottom-right-radius: 40px;
+    .rbt-input-main {
+      padding-right: 58px;
+      // corner radius
+      border-top-right-radius: 40px;
+      border-bottom-right-radius: 40px;
+    }
+  }
+
   // using react-bootstrap-typeahead
   // see: https://github.com/ericgio/react-bootstrap-typeahead
   .rbt-input.form-control {
     height: 30px;
-    border-top-right-radius: 40px;
-    border-bottom-right-radius: 40px;
-
     .rbt-input-wrapper {
       margin-left: 8px;
     }
@@ -120,6 +135,22 @@
       @include media-breakpoint-up(md) {
         width: 300px;
       }
+      @include media-breakpoint-up(lg) {
+        // focus
+        &.focus {
+          width: 400px;
+        }
+      }
+      @include media-breakpoint-up(xl) {
+        width: 350px;
+        // focus
+        &.focus {
+          width: 450px;
+        }
+      }
+    }
+    .search-typeahead {
+      border-radius: 0 25px 25px 0;
     }
   }
 }
@@ -208,5 +239,34 @@
 .grw-search-table {
   caption {
     display: table-header-group;
+  }
+}
+
+@include media-breakpoint-down(sm) {
+  .grw-search-table {
+    th {
+      text-align: right;
+    }
+
+    td {
+      overflow-wrap: anywhere;
+      white-space: normal !important;
+    }
+
+    @include media-breakpoint-down(xs) {
+      th,
+      td {
+        display: block;
+      }
+
+      th {
+        text-align: left;
+      }
+
+      td {
+        padding-top: 0 !important;
+        border-top: none !important;
+      }
+    }
   }
 }

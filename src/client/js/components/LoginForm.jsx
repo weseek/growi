@@ -4,7 +4,7 @@ import ReactCardFlip from 'react-card-flip';
 
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 import NoLoginContainer from '../services/NoLoginContainer';
 
 class LoginForm extends React.Component {
@@ -116,7 +116,7 @@ class LoginForm extends React.Component {
 
     return (
       <>
-        <div className="border-top border-bottom">
+        <div className="grw-external-auth-form border-top border-bottom">
           <div id="external-auth" className={`external-auth ${collapsibleClass}`}>
             <div className="row mt-2">
               {Object.keys(objOfIsExternalAuthEnableds).map((auth) => {
@@ -131,7 +131,7 @@ class LoginForm extends React.Component {
         <div className="text-center">
           <button
             type="button"
-            className="btn btn-secondary btn-sm rounded-0 mb-3"
+            className="btn btn-secondary btn-external-auth-tab btn-sm rounded-0 mb-3"
             data-toggle={isExternalAuthCollapsible ? 'collapse' : ''}
             data-target="#external-auth"
             aria-expanded="false"
@@ -293,9 +293,7 @@ class LoginForm extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const LoginFormWrapper = (props) => {
-  return createSubscribedElement(LoginForm, props, [NoLoginContainer]);
-};
+const LoginFormWrapper = withUnstatedContainers(LoginForm, [NoLoginContainer]);
 
 LoginForm.propTypes = {
   // i18next

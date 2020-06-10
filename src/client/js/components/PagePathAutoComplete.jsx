@@ -61,7 +61,6 @@ PagePathAutoComplete.propTypes = {
 
 PagePathAutoComplete.defaultProps = {
   initializedPath: '/',
-  addTrailingSlash: true,
 };
 
 export default PagePathAutoComplete;
