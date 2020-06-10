@@ -1,4 +1,5 @@
 .grw-navbar {
+  max-height: 52px;
   border-top: 0;
   border-right: 0;
   border-bottom: $grw-navbar-border-width solid;
@@ -21,6 +22,7 @@
 
   .nav-link,
   .nav-item.confidential {
+    @include variable-font-size(14px);
     display: flex;
     align-items: center;
     min-height: $grw-navbar-height;
@@ -37,6 +39,12 @@
     }
   }
   .nav-item.confidential {
+    max-width: 120px;
+    @include media-breakpoint-only(md) {
+      max-width: 100px;
+    }
+    max-height: 52px;
+    overflow: hidden;
     background: rgba(0, 0, 0, 0.2);
   }
 
