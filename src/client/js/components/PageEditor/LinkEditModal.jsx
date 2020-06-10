@@ -1,21 +1,20 @@
 import React from 'react';
 
-import {
-  Modal, ModalHeader, ModalBody,
-} from 'reactstrap';
+import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 export default class LinkEditModal extends React.PureComponent {
-
   constructor(props) {
     super(props);
 
     this.state = {
       show: false,
       isUseRelativePath: false,
+      inputValue: 'test',
     };
 
     this.cancel = this.cancel.bind(this);
     this.toggleIsUseRelativePath = this.toggleIsUseRelativePath.bind(this);
+    this.showLog = this.showLog.bind(this);
   }
 
   show() {
@@ -44,11 +43,15 @@ export default class LinkEditModal extends React.PureComponent {
     // TODO GW-2659
   }
 
+  showLog() {
+    console.log(this.state.inputValue);
+  }
+
   render() {
     return (
       <Modal isOpen={this.state.show} toggle={this.cancel} size="lg">
         <ModalHeader tag="h4" toggle={this.cancel} className="bg-primary text-light">
-          Edit Table
+          Edit Links
         </ModalHeader>
 
         <ModalBody className="container">
@@ -63,28 +66,37 @@ export default class LinkEditModal extends React.PureComponent {
                     type="text"
                     placeholder="/foo/bar/31536000"
                     aria-describedby="button-addon"
+                    value={this.state.inputValue}
                   />
                   <div className="input-group-append">
-                    <button type="button" id="button-addon" className="btn btn-secondary">Preview</button>
+                    <button type="button" id="button-addon" className="btn btn-secondary" onClick={this.showLog}>
+                      Preview
+                    </button>
                   </div>
                 </div>
               </div>
 
               <div className="d-block d-lg-none">
-                { this.renderPreview }
+                {this.renderPreview}
                 render preview
               </div>
 
               <div className="linkedit-tabs">
                 <ul className="nav nav-tabs" role="tabist">
                   <li className="nav-item">
-                    <a className="nav-link active" href="#Pukiwiki" role="tab" data-toggle="tab">Pukiwiki</a>
+                    <a className="nav-link active" href="#Pukiwiki" role="tab" data-toggle="tab">
+                      Pukiwiki
+                    </a>
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link" href="#Crowi" role="tab" data-toggle="tab">Crowi</a>
+                    <a className="nav-link" href="#Crowi" role="tab" data-toggle="tab">
+                      Crowi
+                    </a>
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link" href="#MD" role="tab" data-toggle="tab">MD</a>
+                    <a className="nav-link" href="#MD" role="tab" data-toggle="tab">
+                      MD
+                    </a>
                   </li>
                 </ul>
 
@@ -100,21 +112,14 @@ export default class LinkEditModal extends React.PureComponent {
                       </div>
                       <div className="form-inline">
                         <div className="custom-control custom-checkbox custom-checkbox-info">
-                          <input
-                            className="custom-control-input"
-                            id="relativePath"
-                            type="checkbox"
-                            checked={this.state.isUseRelativePath}
-                          />
-                          <label
-                            className="custom-control-label"
-                            htmlFor="relativePath"
-                            onClick={this.toggleIsUseRelativePath}
-                          >
+                          <input className="custom-control-input" id="relativePath" type="checkbox" checked={this.state.isUseRelativePath} />
+                          <label className="custom-control-label" htmlFor="relativePath" onClick={this.toggleIsUseRelativePath}>
                             Use relative path
                           </label>
                         </div>
-                        <button type="button" className="btn btn-primary ml-auto">Done</button>
+                        <button type="button" className="btn btn-primary ml-auto">
+                          Done
+                        </button>
                       </div>
                     </form>
                   </div>
@@ -129,7 +134,9 @@ export default class LinkEditModal extends React.PureComponent {
                         <span>URI</span>
                       </div>
                       <div className="d-flex">
-                        <button type="button" className="btn btn-primary ml-auto">Done</button>
+                        <button type="button" className="btn btn-primary ml-auto">
+                          Done
+                        </button>
                       </div>
                     </form>
                   </div>
@@ -145,21 +152,14 @@ export default class LinkEditModal extends React.PureComponent {
                       </div>
                       <div className="form-inline">
                         <div className="custom-control custom-checkbox custom-checkbox-info">
-                          <input
-                            className="custom-control-input"
-                            id="relativePath"
-                            type="checkbox"
-                            checked={this.state.isUseRelativePath}
-                          />
-                          <label
-                            className="custom-control-label"
-                            htmlFor="relativePath"
-                            onClick={this.toggleIsUseRelativePath}
-                          >
+                          <input className="custom-control-input" id="relativePath" type="checkbox" checked={this.state.isUseRelativePath} />
+                          <label className="custom-control-label" htmlFor="relativePath" onClick={this.toggleIsUseRelativePath}>
                             Use relative path
                           </label>
                         </div>
-                        <button type="button" className="btn btn-primary ml-auto">Done</button>
+                        <button type="button" className="btn btn-primary ml-auto">
+                          Done
+                        </button>
                       </div>
                     </form>
                   </div>
@@ -168,14 +168,12 @@ export default class LinkEditModal extends React.PureComponent {
             </div>
 
             <div className="col d-none d-lg-block">
-              { this.renderPreview }
+              {this.renderPreview}
               render preview
             </div>
           </div>
         </ModalBody>
-
       </Modal>
     );
   }
-
 }
