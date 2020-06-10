@@ -47,7 +47,7 @@ export default class Hotkeys extends React.Component {
 
   render() {
     console.log(this.state.stroke);
-    const view = this.instances.filter((value) => {
+    let view = this.instances.filter((value) => {
       for (let i = 0; i < this.state.stroke.length; i++) {
         if (this.state.stroke[i].toString() === value.type.prototype.getHotkeyStroke().toString()) {
           return value;
@@ -55,6 +55,13 @@ export default class Hotkeys extends React.Component {
       }
       return null;
     });
+    if (view.length > 1) {
+      view = view.filter((value) => {
+        if (value.props.multiple) {
+          return value;
+        }
+      });
+    }
     return (
       <React.Fragment>
         <HotkeysDetector onDetected={stroke => this.onDetected(stroke)} keymap={this.keymap} hotkeyList={this.hotkeyList} />

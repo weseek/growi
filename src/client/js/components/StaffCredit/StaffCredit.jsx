@@ -5,9 +5,6 @@ import {
 } from 'reactstrap';
 import contributors from './Contributor';
 
-// px / sec
-const scrollSpeed = 200;
-
 /**
  * Page staff credit component
  *
@@ -90,11 +87,14 @@ export default class StaffCredit extends React.Component {
     return null;
   }
 
-  render() {
-    const target = $('.credit-curtain');
+  componentDidMount() {
+    // px / sec
+    const scrollSpeed = 200;
+    const target = $(".credit-curtain");
     const scrollTargetHeight = target.children().innerHeight();
-    const duration = scrollTargetHeight / scrollSpeed * 1000;
+    const duration = scrollTargetHeight / scrollSpeed * 10
     target.animate({ scrollTop: scrollTargetHeight }, duration, 'linear');
+    console.log(target);
 
     target.slimScroll({
       height: target.innerHeight(),
@@ -102,6 +102,9 @@ export default class StaffCredit extends React.Component {
       start: 'bottom',
       color: '#FFFFFF',
     });
+  }
+
+  render() {
     return (
       <Modal isOpen={this.state.isShown} toggle={this.deleteCredit} scrollable className="staff-credit">
         <ModalBody className="credit-curtain">
