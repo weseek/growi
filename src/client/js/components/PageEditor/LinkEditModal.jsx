@@ -3,6 +3,7 @@ import React from 'react';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 export default class LinkEditModal extends React.PureComponent {
+
   constructor(props) {
     super(props);
 
@@ -181,4 +182,5 @@ export default class LinkEditModal extends React.PureComponent {
       </Modal>
     );
   }
+
 }
