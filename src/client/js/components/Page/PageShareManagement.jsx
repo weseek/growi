@@ -24,6 +24,25 @@ const PageShareManagement = (props) => {
     setIsOutsideShareLinkModalShown(false);
   }
 
+  function exportPageHundler(type) {
+    const exportPageFile = getExportPageFile(type);
+    exportPage(exportPageFile);
+  }
+  
+  async function getExportPageFile(type) {
+    const pageId = pageContainer.state.pageId;
+    try {
+      const res = await appContainer.apiv3Get('/pages/export', {'page_id': pageId,'type': type});
+      return res;
+    } catch(err) {
+      return null;
+    }
+  }
+
+  function exportPage(exportPageFile) {
+    // export
+  }
+
   function renderModals() {
     return (
       <>

@@ -84,5 +84,20 @@ module.exports = (crowi) => {
     }
   });
 
+  /** 
+  * @swagger
+  * 
+  *    /pages/export:
+  *      get:
+  *      tags: [Pages]
+  *      description: Get currently page file as md or pdf
+  *      responses:
+  *        200:
+  *          description: Return currently page file
+  */
+  router.get('/export', async(req, res) => {
+    return res.apiv3({});
+  });
+
   return router;
 };
