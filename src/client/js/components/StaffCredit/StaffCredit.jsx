@@ -90,7 +90,8 @@ export default class StaffCredit extends React.Component {
     return null;
   }
 
-  render() {
+  componentDidMount() {
+
     const target = $('.credit-curtain');
     const scrollTargetHeight = target.children().innerHeight();
     const duration = scrollTargetHeight / scrollSpeed * 1000;
@@ -102,6 +103,10 @@ export default class StaffCredit extends React.Component {
       start: 'bottom',
       color: '#FFFFFF',
     });
+
+  }
+
+  render() {
     return (
       <Modal isOpen={this.state.isShown} toggle={this.deleteCredit} scrollable className="staff-credit">
         <ModalBody className="credit-curtain">
