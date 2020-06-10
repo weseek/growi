@@ -92,12 +92,26 @@ class CopyDropdown extends React.Component {
   render() {
     const { t, pageId } = this.props;
     const { isParamsAppended } = this.state;
+    const { shareLink, isShareLinkMode } = this.props;
 
     const pagePathWithParams = this.generatePagePathWithParams();
     const pagePathUrl = this.generatePagePathUrl();
     const permalink = this.generatePermalink();
 
     const { DropdownItemContents } = this;
+
+    if (isShareLinkMode) {
+      return (
+        <>
+          <CopyToClipboard text={shareLink.link} onCopy={this.showToolTip} id={`copyShareLink${shareLink._id}`}>
+            <button type="button" className="btn btn-outline-success float-right">Copy Link</button>
+          </CopyToClipboard>
+          <Tooltip placement="bottom" isOpen={this.state.tooltipOpen} target={`copyShareLink${shareLink._id}`} fade={false}>
+            copied!
+          </Tooltip>
+        </>
+      );
+    }
 
     return (
       <>
@@ -198,6 +212,8 @@ CopyDropdown.propTypes = {
   pagePath: PropTypes.string.isRequired,
   pageId: PropTypes.string,
   buttonStyle: PropTypes.object,
+  shareLink: PropTypes.object,
+  isShareLinkMode: PropTypes.bool,
 };
 
 export default withTranslation()(CopyDropdown);
