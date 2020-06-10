@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 import {
   Modal, ModalBody,
@@ -27,10 +26,15 @@ export default class StaffCredit extends React.Component {
     this.state = {
       isShown: true,
     };
+    this.multipleAllowance = true;
     this.deleteCredit = this.deleteCredit.bind(this);
 
   }
 
+  // when this is called it returns the hotkey stroke
+  getHotkeyStroke() {
+    return ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+  }
 
   deleteCredit() {
     if (this.state.isShown) {
@@ -108,7 +112,3 @@ export default class StaffCredit extends React.Component {
   }
 
 }
-
-StaffCredit.propTypes = {
-  toDelete: PropTypes.func.isRequired,
-};
