@@ -38,14 +38,12 @@ const PageShareManagement = (props) => {
   function renderCurrentUser() {
     return (
       <>
-        <a
-          role="button"
-          className="nav-link bg-transparent dropdown-toggle dropdown-toggle-no-caret"
-          href="#"
+        <button
+          className="btn-link nav-link bg-transparent dropdown-toggle dropdown-toggle-no-caret"
           data-toggle="dropdown"
         >
           <i className="icon-share"></i>
-        </a>
+        </button>
       </>
     );
   }
@@ -53,14 +51,12 @@ const PageShareManagement = (props) => {
   function renderGuestUser() {
     return (
       <>
-        <a
-          role="button"
-          className="nav-link bg-transparent dropdown-toggle dropdown-toggle-no-caret dropdown-toggle-disabled"
-          href="#"
+        <button
+          className="btn nav-link bg-transparent dropdown-toggle dropdown-toggle-no-caret disabled"
           id="auth-guest-tltips"
         >
           <i className="icon-share"></i>
-        </a>
+        </button>
         <UncontrolledTooltip placement="top" target="auth-guest-tltips">
           {t('Not available for guest')}
         </UncontrolledTooltip>

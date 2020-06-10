@@ -80,6 +80,8 @@
   .dropdown-toggle {
     &.btn.disabled {
       cursor: not-allowed;
+      pointer-events: auto;
+      opacity: unset;
     }
 
     // hide caret
