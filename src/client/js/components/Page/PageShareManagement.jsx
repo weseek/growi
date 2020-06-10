@@ -75,6 +75,12 @@ const PageShareManagement = (props) => {
           <i className="icon-fw icon-link"></i>{t('Shere this page link to public')}
           <span className="ml-2 badge badge-info badge-pill">{pageContainer.state.shareLinksNumber}</span>
         </button>
+        <button type="button" className="dropdown-item" onClick={() => {exportPageHundler('markdown')}}>
+          <span>Export page as Markdown</span>
+        </button>
+        <button type="button" className="dropdown-item" onClick={() => {exportPageHundler('pdf')}}>
+          <span>Export page as PDF</span>
+        </button>
       </div>
       {renderModals()}
     </>
