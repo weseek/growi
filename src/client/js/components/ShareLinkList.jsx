@@ -2,7 +2,9 @@ import React from 'react';
 import * as toastr from 'toastr';
 
 import { withTranslation } from 'react-i18next';
+
 import { createSubscribedElement } from './UnstatedUtils';
+
 import AppContainer from '../services/AppContainer';
 import CopyDropdown from './Page/CopyDropdown';
 
