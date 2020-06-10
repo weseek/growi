@@ -665,7 +665,7 @@
     "uncheck_all": "全部取消选中",
     "desc_password_seed": "还原用户数据时，不要忘记将当前的<code>密码种子设置到新的GROWI系统，否则用户将无法使用其密码登录。<br><br><strong>提示：</strong><br>当前的<code>密码种子将存储在<code>meta.json格式</code>在导出的zip压缩包中。",
     "create_new_archive_data": "创建新的存档数据",
-    "export": "出口",
+    "export": "导出",
     "cancel": "取消",
     "file": "文件",
     "growi_version": "Growi 版本号",
