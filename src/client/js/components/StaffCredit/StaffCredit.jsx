@@ -26,7 +26,7 @@ export default class StaffCredit extends React.Component {
     this.logger = loggerFactory('growi:StaffCredit');
     this.state = {
       isShown: true,
-    }
+    };
     this.deleteCredit = this.deleteCredit.bind(this);
 
   }
