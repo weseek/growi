@@ -1,5 +1,5 @@
 .grw-navbar {
-  max-height: 52px; //test
+  max-height: 52px;
   border-top: 0;
   border-right: 0;
   border-bottom: $grw-navbar-border-width solid;
@@ -39,7 +39,7 @@
     }
   }
   .nav-item.confidential {
-    max-width: 120px; //追加
+    max-width: 120px;
     @include media-breakpoint-only(md) {
       max-width: 100px;
     }
