@@ -51,8 +51,8 @@ module.exports = (crowi) => {
   router.get('/', loginRequired, csrf, ApiV3FormValidator, async(req, res) => {
     const { relatedPage } = req.query;
     try {
-      const paginateResult = await ShareLink.find({ relatedPage: { $in: relatedPage } });
-      return res.apiv3({ paginateResult });
+      const shareLinksResult = await ShareLink.find({ relatedPage: { $in: relatedPage } });
+      return res.apiv3({ shareLinksResult });
     }
     catch (err) {
       const msg = 'Error occurred in get share link';
