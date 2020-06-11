@@ -18,9 +18,9 @@ const PageCreateButton = (props) => {
   }
 
   return (
-    <button className="nav-link create-page border-0 bg-transparent" type="button" onClick={appContainer.openPageCreateModal}>
+    <button className="px-md-2 nav-link create-page border-0 bg-transparent" type="button" onClick={appContainer.openPageCreateModal}>
       <i className="icon-pencil mr-2"></i>
-      <span>{ t('New') }</span>
+      <span className="d-none d-lg-block">{ t('New') }</span>
     </button>
   );
 };
