@@ -23,6 +23,7 @@ class LinkEditModal extends React.PureComponent {
 
     this.cancel = this.cancel.bind(this);
     this.toggleIsUseRelativePath = this.toggleIsUseRelativePath.bind(this);
+    this.handleChangeLinkInput = this.handleChangeLinkInput.bind(this);
     this.handleChangeLabelInput = this.handleChangeLabelInput.bind(this);
     this.handleSelecteLinkerType = this.handleSelecteLinkerType.bind(this);
     this.showLog = this.showLog.bind(this);
