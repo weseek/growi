@@ -12,26 +12,28 @@ class ShareLinkSetting extends React.Component {
   render() {
     return (
       <div className="container">
-        <div className="form-inline mb-3">
+        <div className="mb-3">
           <h2 className="alert-anchor border-bottom">Shared Link List</h2>
         </div>
-        <div>
-            <button className="ml-auto btn btn-danger" type="button">Delete all links</button>
+          <button className="pull-right btn btn-danger" type="button">Delete all links</button>
+
+          <div className="table-responsive">
+            <table className="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Link</th>
+                  <th>PagePath</th>
+                  <th>Expiration</th>
+                  <th>Description</th>
+                  <th>Order</th>
+                </tr>
+              </thead>
+              <tbody>
+                {/* ShareLinkListを参考に */}
+              </tbody>
+            </table>
           </div>
 
-        <div>
-        <tr>
-            <td>link</td>
-            <td>pagePath</td>
-            <td>expiration</td>
-            <td>description</td>
-            <td>
-              <button className="btn btn-outline-warning" type="button">
-                <i className="icon-trash"></i>Delete
-              </button>
-            </td>
-          </tr>
-        </div>
       </div>
     );
   }
