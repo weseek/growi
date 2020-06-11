@@ -16,7 +16,7 @@ class LinkEditModal extends React.PureComponent {
     this.state = {
       show: false,
       isUseRelativePath: false,
-      inputValue: '',
+      linkInputValue: '',
       labelInputValue: '',
       linkerType: 'pukiwikiLink',
     };
@@ -58,11 +58,11 @@ class LinkEditModal extends React.PureComponent {
   }
 
   showLog() {
-    console.log(this.state.inputValue);
+    console.log(this.state.linkInputValue);
   }
 
   handleChangeLinkInput(linkValue) {
-    this.setState({ inputValue: linkValue });
+    this.setState({ linkInputValue: linkValue });
   }
 
   handleChangeLabelInput(labelValue) {
@@ -96,7 +96,7 @@ class LinkEditModal extends React.PureComponent {
                     type="text"
                     placeholder="URL or page path"
                     aria-describedby="button-addon"
-                    value={this.state.inputValue}
+                    value={this.state.linkInputValue}
                     onChange={e => this.handleChangeLinkInput(e.target.value)}
                   />
                   <div className="input-group-append">
@@ -158,7 +158,7 @@ class LinkEditModal extends React.PureComponent {
                         disabled={this.state.linkerType === 'growiLink'}
                       />
                       <PublishLink
-                        link={this.state.inputValue}
+                        link={this.state.linkInputValue}
                         label={this.state.labelInputValue}
                         type={this.state.linkerType}
                         isUseRelativePath={this.state.isUseRelativePath}
