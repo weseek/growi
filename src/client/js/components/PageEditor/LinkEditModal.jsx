@@ -10,7 +10,8 @@ export default class LinkEditModal extends React.PureComponent {
     this.state = {
       show: false,
       isUseRelativePath: false,
-      inputValue: 'test',
+      inputValue: '~.cloud.~',
+      labelInputValue: 'ここがリンク',
     };
 
     this.cancel = this.cancel.bind(this);
@@ -51,6 +52,11 @@ export default class LinkEditModal extends React.PureComponent {
   handleInputChange(linkValue) {
     this.setState({ inputValue: linkValue });
   }
+
+  labelInputChange(labelValue) {
+    this.setState({ labelInputValue: labelValue });
+  }
+
 
   render() {
     return (
@@ -111,10 +117,17 @@ export default class LinkEditModal extends React.PureComponent {
                     <form className="form-group">
                       <div className="form-group">
                         <label htmlFor="pukiwikiLink">Label</label>
-                        <input type="text" className="form-control" id="pukiwikiLink"></input>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="pukiwikiLink"
+                          value={this.state.labelInputValue}
+                          onChange={e => this.labelInputChange(e.target.value)}
+                        >
+                        </input>
                       </div>
+                      <span className="p-2">[[{this.state.labelInputValue} &gt; {this.state.inputValue}]]</span>
                       <div>
-                        <span>URI</span>
                       </div>
                       <div className="form-inline">
                         <div className="custom-control custom-checkbox custom-checkbox-info">
