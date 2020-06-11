@@ -16,7 +16,8 @@ class ShareLinkForm extends React.Component {
       expirationType: 'unlimited',
       numberOfDays: 7,
       description: '',
-      customExpiration: dateFnsFormat(new Date(), 'yyyy-MM-ddThh:mm:s'),
+      customExpirationDate: dateFnsFormat(new Date(), 'yyyy-MM-dd'),
+      customExpirationTime: dateFnsFormat(new Date(), 'hh:mm:s'),
     };
 
     this.handleChangeExpirationType = this.handleChangeExpirationType.bind(this);
@@ -50,11 +51,19 @@ class ShareLinkForm extends React.Component {
   }
 
   /**
-   * change customExpiration
-   * @param {date} customExpiration
+   * change customExpirationDate
+   * @param {date} customExpirationDate
    */
-  handleChangeCustomExpiration(customExpiration) {
-    this.setState({ customExpiration });
+  handleChangeCustomExpirationDate(customExpirationDate) {
+    this.setState({ customExpirationDate });
+  }
+
+  /**
+   * change customExpirationTime
+   * @param {date} customExpirationTime
+   */
+  handleChangeCustomExpirationTime(customExpirationTime) {
+    this.setState({ customExpirationTime });
   }
 
   handleIssueShareLink() {
@@ -121,12 +130,20 @@ class ShareLinkForm extends React.Component {
             Custom
           </label>
           <input
-            type="datetime-local"
+            type="date"
+            className="ml-3"
+            name="customExpirationDate"
+            value={this.state.customExpirationDate}
+            onFocus={() => { this.handleChangeExpirationType('custom') }}
+            onChange={e => this.handleChangeCustomExpirationDate(e.target.value)}
+          />
+          <input
+            type="time"
             className="ml-3"
             name="customExpiration"
-            value={this.state.customExpiration}
+            value={this.state.customExpirationTime}
             onFocus={() => { this.handleChangeExpirationType('custom') }}
-            onChange={e => this.handleChangeCustomExpiration(e.target.value)}
+            onChange={e => this.handleChangeCustomExpirationTime(e.target.value)}
           />
         </div>
       </div>
