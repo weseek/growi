@@ -12,7 +12,7 @@ export default class Hotkeys extends React.Component {
     this.onDetected = this.onDetected.bind(this);
     this.keymapSet = this.keymapSet.bind(this);
     this.instances = [
-      <StaffCredit />,
+      StaffCredit,
     ];
     this.keymap = this.keymapSet();
     this.hotkeyList = this.hotkeyList();
@@ -32,8 +32,8 @@ export default class Hotkeys extends React.Component {
   // this function generates list of all the hotkeys commands
   hotkeyList() {
     const hotkeyList = [];
-    for (const instance of this.instances) {
-      hotkeyList.push(instance.type.prototype.getHotkeyStroke());
+    for (const supportClass of this.supportClasses) {
+      hotkeyList.push(supportClass.getHotkeyStroke());
     }
     return hotkeyList;
   }
