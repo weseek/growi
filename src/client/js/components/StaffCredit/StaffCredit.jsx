@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 import {
   Modal, ModalBody,
@@ -30,7 +29,6 @@ export default class StaffCredit extends React.Component {
     this.deleteCredit = this.deleteCredit.bind(this);
 
   }
-
 
   deleteCredit() {
     if (this.state.isShown) {
@@ -86,7 +84,7 @@ export default class StaffCredit extends React.Component {
     return null;
   }
 
-  render() {
+  componentDidMount() {
     const target = $('.credit-curtain');
     const scrollTargetHeight = target.children().innerHeight();
     const duration = scrollTargetHeight / scrollSpeed * 1000;
@@ -98,6 +96,10 @@ export default class StaffCredit extends React.Component {
       start: 'bottom',
       color: '#FFFFFF',
     });
+
+  }
+
+  render() {
     return (
       <Modal isOpen={this.state.isShown} toggle={this.deleteCredit} scrollable className="staff-credit">
         <ModalBody className="credit-curtain">
@@ -108,7 +110,3 @@ export default class StaffCredit extends React.Component {
   }
 
 }
-
-StaffCredit.propTypes = {
-  toDelete: PropTypes.func.isRequired,
-};

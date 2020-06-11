@@ -7,25 +7,27 @@ export default class Hotkeys extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      stroke: '',
+      stroke: [],
     };
-    this.onDetected = this.onDetected.bind(this);
-    this.toDelete = this.toDelete.bind(this);
-    this.instances = [
-      <StaffCredit toDelete={this.toDelete} />,
+    this.supportClasses = [
+      <StaffCredit />,
     ];
+    this.onDetected = this.onDetected.bind(this);
   }
 
-  toDelete() {
-    this.setState({
-      stroke: '',
-    });
+  // this function generates list of all the hotkeys commands
+  hotkeyList() {
+    const hotkeyList = [];
+    for (const supportClass of this.supportClasses) {
+      hotkeyList.push(supportClass.getHotkeyStroke());
+    }
+    return hotkeyList;
   }
 
   // activates when one of the hotkey strokes gets determined from HotkeysDetector
   onDetected(strokeDetermined) {
     this.setState({
-      stroke: strokeDetermined,
+      stroke: this.state.stroke.concat([strokeDetermined]),
     });
   }
 
@@ -34,7 +36,7 @@ export default class Hotkeys extends React.Component {
     const view = [];
     return (
       <React.Fragment>
-        <HotkeysDetector onDetected={stroke => this.onDetected(stroke)} />
+        <HotkeysDetector onDetected={stroke => this.onDetected(stroke)} hotkeyList={this.hotkeyList} />
         {view}
       </React.Fragment>
     );
