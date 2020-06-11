@@ -104,17 +104,38 @@ export default class LinkEditModal extends React.PureComponent {
               <div className="link-edit-tabs">
                 <ul className="nav nav-tabs" role="tabist">
                   <li className="nav-item">
-                    <a className="nav-link active" name="pukiwikiLink" onClick={this.handleSelecteLinkerType} href="#Pukiwiki" role="tab" data-toggle="tab">
+                    <a
+                      className="nav-link active"
+                      name="pukiwikiLink"
+                      onClick={e => this.handleSelecteLinkerType(e.target.name)}
+                      href="#Pukiwiki"
+                      role="tab"
+                      data-toggle="tab"
+                    >
                       Pukiwiki
                     </a>
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link" name="growiLink" onClick={this.handleSelecteLinkerType} href="#Growi" role="tab" data-toggle="tab">
+                    <a
+                      className="nav-link"
+                      name="growiLink"
+                      onClick={e => this.handleSelecteLinkerType(e.target.name)}
+                      href="#Growi"
+                      role="tab"
+                      data-toggle="tab"
+                    >
                       Growi Original
                     </a>
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link" name="mdLink" onClick={this.handleSelecteLinkerType} href="#MD" role="tab" data-toggle="tab">
+                    <a
+                      className="nav-link"
+                      name="mdLink"
+                      onClick={e => this.handleSelecteLinkerType(e.target.name)}
+                      href="#MD"
+                      role="tab"
+                      data-toggle="tab"
+                    >
                       Markdown
                     </a>
                   </li>
@@ -132,9 +153,8 @@ export default class LinkEditModal extends React.PureComponent {
                         onChange={e => this.handleChangeLabelInput(e.target.value)}
                         disabled={this.state.linkerType === 'growiLink'}
                       />
+                      <PublishLink link={this.state.inputValue} label={this.state.labelInputValue} type={this.state.linkerType} />
                     </div>
-                    <PublishLink link={this.state.inputValue} label={this.state.labelInputValue} type={this.state.linkerType} />
-                    <div></div>
                     <div className="form-inline">
                       <div className="custom-control custom-checkbox custom-checkbox-info">
                         <input

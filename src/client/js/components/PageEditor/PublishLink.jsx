@@ -22,7 +22,7 @@ export default class PublishLink extends React.PureComponent {
     if (type === 'growiLink') {
       linker = `[${link}]`;
     }
-    if (type === 'MDLink') {
+    if (type === 'mdLink') {
       linker = `[${label}](${link})`;
     }
 
@@ -42,6 +42,6 @@ export default class PublishLink extends React.PureComponent {
 PublishLink.propTypes = {
   link: PropTypes.string.isRequired,
   label: PropTypes.string,
-  type: PropTypes.oneOf(['pukiwikiLink', 'growiLink', 'MDLink']).isRequired,
+  type: PropTypes.oneOf(['pukiwikiLink', 'growiLink', 'mdLink']).isRequired,
   isUseRelativePath: PropTypes.bool,
 };
