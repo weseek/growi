@@ -1,9 +1,12 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
 
 import { createSubscribedElement } from './UnstatedUtils';
+
+import { toastSuccess, toastError } from '../util/apiNotification';
 
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
@@ -66,10 +69,19 @@ class ShareLinkForm extends React.Component {
     this.setState({ customExpirationTime });
   }
 
-  handleIssueShareLink() {
-    // use these options
-    console.log(this.state);
-    console.log('発行する!');
+  async handleIssueShareLink() {
+    const { t } = this.props;
+    try {
+      // use these options
+      console.log(this.state);
+      console.log('発行する!');
+      // const username = await this.props.adminUsersContainer.giveUserAdmin(this.props.user._id);
+      toastSuccess(t('toaster.issue_share_link'));
+    }
+    catch (err) {
+      toastError(err);
+    }
+
   }
 
   renderExpirationTypeOptions() {
@@ -189,5 +201,14 @@ class ShareLinkForm extends React.Component {
 const ShareLinkFormWrapper = (props) => {
   return createSubscribedElement(ShareLinkForm, props, [AppContainer, PageContainer]);
 };
+
+ShareLinkForm.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+
+  user: PropTypes.object.isRequired,
+};
+
 
 export default withTranslation()(ShareLinkFormWrapper);
