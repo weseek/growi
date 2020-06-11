@@ -15,7 +15,7 @@ class ShareLinkForm extends React.Component {
     this.state = {
       expirationType: 'unlimited',
       numberOfDays: 7,
-      description: 'test',
+      description: '',
       customExpirationDate: dateFnsFormat(new Date(), 'yyyy-MM-dd'),
       customExpirationTime: dateFnsFormat(new Date(), 'hh:mm:s'),
     };
