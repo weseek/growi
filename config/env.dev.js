@@ -4,6 +4,7 @@ module.exports = {
   // MONGO_GRIDFS_TOTAL_LIMIT: 10485760,   // 10MB
   // MATHJAX: 1,
   // NO_CDN: true,
+  // REDIS_URI: 'http://localhost:6379',
   ELASTICSEARCH_URI: 'http://localhost:9200/growi',
   HACKMD_URI: 'http://localhost:3010',
   // DRAWIO_URI: 'http://localhost:8080/?offline=1&https=0',
