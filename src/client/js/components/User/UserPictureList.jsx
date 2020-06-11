@@ -1,31 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '../../services/AppContainer';
-
 import UserPicture from './UserPicture';
 
-class UserPictureList extends React.Component {
-
-  constructor(props) {
-    super(props);
-
-    const userIds = this.props.userIds;
-
-    const users = this.props.users.concat(
-      // FIXME: user data cache
-      this.props.appContainer.findUserByIds(userIds),
-    );
-
-    this.state = {
-      users,
-    };
-
-  }
+export default class UserPictureList extends React.Component {
 
   render() {
-    return this.state.users.map(user => (
+    return this.props.users.map(user => (
       <span key={user._id}>
         <UserPicture user={user} size="xs" />
       </span>
@@ -34,21 +15,10 @@ class UserPictureList extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const UserPictureListWrapper = withUnstatedContainers(UserPictureList, [AppContainer]);
-
 UserPictureList.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-
-  userIds: PropTypes.arrayOf(PropTypes.string),
   users: PropTypes.arrayOf(PropTypes.object),
 };
 
 UserPictureList.defaultProps = {
-  userIds: [],
   users: [],
 };
-
-export default UserPictureListWrapper;
