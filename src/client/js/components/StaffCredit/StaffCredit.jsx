@@ -33,6 +33,10 @@ export default class StaffCredit extends React.Component {
     return ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
   }
 
+  static getComponent() {
+    return <StaffCredit />;
+  }
+
   deleteCredit() {
     if (this.state.isShown) {
       this.setState({ isShown: false });
