@@ -9,20 +9,20 @@ export default class Hotkeys extends React.Component {
     this.state = {
       stroke: [],
     };
-    this.onDetected = this.onDetected.bind(this);
-    this.keymapSet = this.keymapSet.bind(this);
-    this.instances = [
+    this.supportClasses = [
       StaffCredit,
     ];
     this.keymap = this.keymapSet();
     this.hotkeyList = this.hotkeyList();
+    this.onDetected = this.onDetected.bind(this);
+    this.keymapSet = this.keymapSet.bind(this);
   }
 
   // this function generates keymap depending on what keys were selected in this.hotkeyCommand
   keymapSet() {
     let keymap = [];
-    for (const instance of this.instances) {
-      keymap.push(instance.type.prototype.getHotkeyStroke());
+    for (const supportClass of this.supportClasses) {
+      keymap.push(supportClass.getHotkeyStroke());
     }
     keymap = keymap.flat();
     keymap = new Set(keymap);
@@ -47,14 +47,7 @@ export default class Hotkeys extends React.Component {
 
   render() {
     console.log(this.state.stroke);
-    const view = this.instances.filter((value) => {
-      for (let i = 0; i < this.state.stroke.length; i++) {
-        if (this.state.stroke[i].toString() === value.type.prototype.getHotkeyStroke().toString()) {
-          return value;
-        }
-      }
-      return null;
-    });
+    const view = [];
     return (
       <React.Fragment>
         <HotkeysDetector onDetected={stroke => this.onDetected(stroke)} keymap={this.keymap} hotkeyList={this.hotkeyList} />
