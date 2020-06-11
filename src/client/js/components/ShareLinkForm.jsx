@@ -3,7 +3,7 @@ import React from 'react';
 import { withTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
 
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
@@ -186,8 +186,7 @@ class ShareLinkForm extends React.Component {
 
 }
 
-const ShareLinkFormWrapper = (props) => {
-  return createSubscribedElement(ShareLinkForm, props, [AppContainer, PageContainer]);
-};
+const ShareLinkFormWrapper = withUnstatedContainers(ShareLinkForm, [AppContainer, PageContainer]);
+
 
 export default withTranslation()(ShareLinkFormWrapper);
