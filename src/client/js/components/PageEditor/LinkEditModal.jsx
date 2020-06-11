@@ -12,10 +12,8 @@ export default class LinkEditModal extends React.PureComponent {
     this.state = {
       show: false,
       isUseRelativePath: false,
-      inputValue: '~.cloud.~',
-      labelInputValue: 'ここがリンク',
-      link: '/hoge/fuga/1234', // [TODO] GW-2793 の変更を適用する
-      label: '',
+      inputValue: '',
+      labelInputValue: '',
       linkerType: 'pukiwikiLink',
     };
 
@@ -23,7 +21,6 @@ export default class LinkEditModal extends React.PureComponent {
     this.toggleIsUseRelativePath = this.toggleIsUseRelativePath.bind(this);
     this.handleChangeLabelInput = this.handleChangeLabelInput.bind(this);
     this.handleSelecteLinkerType = this.handleSelecteLinkerType.bind(this);
-    this.generateLinker = this.generateLinker.bind(this);
     this.showLog = this.showLog.bind(this);
   }
 
@@ -39,36 +36,6 @@ export default class LinkEditModal extends React.PureComponent {
     this.setState({
       show: false,
     });
-  }
-
-  handleChangeLabelInput(e) {
-    const label = e.target.value;
-    // const linkerType = e.target.id;
-    // const linker = this.generateLinker(label, linkerType);
-    // this.setState({ label, linker });
-    this.setState({ label });
-  }
-
-  generateLinker() {
-    let linker;
-    const label = this.state.label;
-    const type = this.state.linkerType;
-    if (type === 'pukiwikiLink') {
-      linker = `[[${label}]]`;
-    }
-    if (type === 'growiLink') {
-      linker = `growi ${label}`;
-    }
-    if (type === 'MDLink') {
-      linker = `md like ${label}`;
-    }
-
-    return linker;
-  }
-
-
-  handleSelecteLinkerType(e) {
-    this.setState({ linkerType: e.currentTarget.name });
   }
 
   toggleIsUseRelativePath() {
@@ -87,14 +54,17 @@ export default class LinkEditModal extends React.PureComponent {
     console.log(this.state.inputValue);
   }
 
-  handleInputChange(linkValue) {
+  handleChangeLinkInput(linkValue) {
     this.setState({ inputValue: linkValue });
   }
 
-  labelInputChange(labelValue) {
+  handleChangeLabelInput(labelValue) {
     this.setState({ labelInputValue: labelValue });
   }
 
+  handleSelecteLinkerType(linkerType) {
+    this.setState({ linkerType });
+  }
 
   render() {
     return (
@@ -116,7 +86,7 @@ export default class LinkEditModal extends React.PureComponent {
                     placeholder="/foo/bar/31536000"
                     aria-describedby="button-addon"
                     value={this.state.inputValue}
-                    onChange={e => this.handleInputChange(e.target.value)}
+                    onChange={e => this.handleChangeLinkInput(e.target.value)}
                   />
                   <div className="input-group-append">
                     <button type="button" id="button-addon" className="btn btn-secondary" onClick={this.showLog}>
@@ -134,7 +104,7 @@ export default class LinkEditModal extends React.PureComponent {
               <div className="link-edit-tabs">
                 <ul className="nav nav-tabs" role="tabist">
                   <li className="nav-item">
-                    <a className="nav-link active" href="#Pukiwiki" role="tab" data-toggle="tab">
+                    <a className="nav-link active" name="pukiwikiLink" onClick={this.handleSelecteLinkerType} href="#Pukiwiki" role="tab" data-toggle="tab">
                       Pukiwiki
                     </a>
                   </li>
@@ -144,84 +114,45 @@ export default class LinkEditModal extends React.PureComponent {
                     </a>
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link" name="MDLink" onClick={this.handleSelecteLinkerType} href="#MD" role="tab" data-toggle="tab">
+                    <a className="nav-link" name="mdLink" onClick={this.handleSelecteLinkerType} href="#MD" role="tab" data-toggle="tab">
                       Markdown
                     </a>
                   </li>
                 </ul>
 
                 <div className="tab-content pt-3">
-                  <div id="Pukiwiki" className="tab-pane active" role="tabpanel">
-                    <form className="form-group">
-                      <div className="form-group">
-                        <label htmlFor="pukiwikiLink">Label</label>
+                  <form className="form-group">
+                    <div className="form-group">
+                      <label htmlFor="label">Label</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="label"
+                        value={this.state.labelInputValue}
+                        onChange={e => this.handleChangeLabelInput(e.target.value)}
+                        disabled={this.state.linkerType === 'growiLink'}
+                      />
+                    </div>
+                    <PublishLink link={this.state.inputValue} label={this.state.labelInputValue} type={this.state.linkerType} />
+                    <div></div>
+                    <div className="form-inline">
+                      <div className="custom-control custom-checkbox custom-checkbox-info">
                         <input
-                          type="text"
-                          className="form-control"
-                          id="pukiwikiLink"
-                          value={this.state.labelInputValue}
-                          onChange={e => this.labelInputChange(e.target.value)}
+                          className="custom-control-input"
+                          id="relativePath"
+                          type="checkbox"
+                          checked={this.state.isUseRelativePath}
+                          disabled={this.state.linkerType === 'growiLink'}
                         />
                         <label className="custom-control-label" htmlFor="relativePath" onClick={this.toggleIsUseRelativePath}>
                           Use relative path
                         </label>
                       </div>
-                      <span className="p-2">[[{this.state.labelInputValue} &gt; {this.state.inputValue}]]</span>
-                      <div>
-                      </div>
-                      <div className="form-inline">
-                        <div className="custom-control custom-checkbox custom-checkbox-info">
-                          <input className="custom-control-input" id="relativePath" type="checkbox" checked={this.state.isUseRelativePath} />
-                          <label className="custom-control-label" htmlFor="relativePath" onClick={this.toggleIsUseRelativePath}>
-                            Use relative path
-                          </label>
-                        </div>
-                        <button type="button" className="btn btn-primary ml-auto">
-                          Done
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-
-                  <div id="Crowi" className="tab-pane" role="tabpanel">
-                    <form className="form-group">
-                      <div className="form-group">
-                        <label htmlFor="crowiLink">Label</label>
-                        <input type="text" className="form-control" id="crowiLink"></input>
-                      </div>
-                      <div>
-                        <span>URI</span>
-                      </div>
-                      <div className="d-flex">
-                        <button type="button" className="btn btn-primary ml-auto">
-                          Done
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-
-                  <div id="MD" className="tab-pane" role="tabpanel">
-                    <form className="form-group">
-                      <div className="form-group">
-                        <label htmlFor="MDLink">Label</label>
-                        <input type="text" className="form-control" id="MDLink"></input>
-                      </div>
-                      <div>
-                        <span>URI</span>
-                      </div>
-                      <div className="form-inline">
-                        <div className="custom-control custom-checkbox custom-checkbox-info">
-                          <input className="custom-control-input" id="relativePath" type="checkbox" checked={this.state.isUseRelativePath} />
-                          <label className="custom-control-label" htmlFor="relativePath" onClick={this.toggleIsUseRelativePath}>
-                            Use relative path
-                          </label>
-                        </div>
-                        <button type="button" className="btn btn-primary ml-auto">
-                          Done
-                        </button>
-                      </div>
-                    </form>
-                  </div>
+                      <button type="button" className="btn btn-primary ml-auto">
+                        Done
+                      </button>
+                    </div>
+                  </form>
                 </div>
               </div>
             </div>
