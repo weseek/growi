@@ -26,8 +26,14 @@ export default class StaffCredit extends React.Component {
     this.state = {
       isShown: true,
     };
+    this.multipleAllowance = true;
     this.deleteCredit = this.deleteCredit.bind(this);
 
+  }
+
+  // when this is called it returns the hotkey stroke
+  static getHotkeyStroke() {
+    return ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
   }
 
   deleteCredit() {

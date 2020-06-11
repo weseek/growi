@@ -6,9 +6,7 @@ export default class HotkeysDetector extends React.Component {
 
   constructor(props) {
     super(props);
-    this.hotkeyList = [
-      ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'],
-    ];
+    this.hotkeyList = this.props.hotkeyList;
     this.state = {
       userCommand: [],
     };
@@ -45,7 +43,7 @@ export default class HotkeysDetector extends React.Component {
   }
 
   render() {
-    const keyMap = { check: ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'b', 'a'] };
+    const keyMap = { check: this.props.keymap };
     const handlers = { check: (event) => { return this.check(event) } };
     return (
       <GlobalHotKeys keyMap={keyMap} handlers={handlers}>
@@ -57,4 +55,6 @@ export default class HotkeysDetector extends React.Component {
 
 HotkeysDetector.propTypes = {
   onDetected: PropTypes.func.isRequired,
+  keymap: PropTypes.array.isRequired,
+  hotkeyList: PropTypes.array.isRequired,
 };
