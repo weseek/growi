@@ -78,20 +78,16 @@ export default class AppContainer extends Container {
     const userlang = body.dataset.userlang;
     this.i18n = i18nFactory(userlang);
 
-    this.users = [];
-    this.userByName = {};
-    this.userById = {};
-    this.recoverData();
-
     if (this.isLoggedin) {
-      this.fetchUsers();
+      // remove old user cache
+      this.removeOldUserCache();
     }
 
     this.containerInstances = {};
     this.componentInstances = {};
     this.rendererInstances = {};
 
-    this.fetchUsers = this.fetchUsers.bind(this);
+    this.removeOldUserCache = this.removeOldUserCache.bind(this);
     this.apiGet = this.apiGet.bind(this);
     this.apiPost = this.apiPost.bind(this);
     this.apiDelete = this.apiDelete.bind(this);
@@ -304,82 +300,21 @@ export default class AppContainer extends Container {
     return emojiStrategy;
   }
 
-  recoverData() {
-    const keys = [
-      'userByName',
-      'userById',
-      'users',
-    ];
+  removeOldUserCache() {
+    if (window.localStorage.userByName == null) {
+      return;
+    }
+
+    const keys = ['userByName', 'userById', 'users', 'lastFetched'];
 
     keys.forEach((key) => {
-      const keyContent = window.localStorage[key];
-      if (keyContent) {
-        try {
-          this[key] = JSON.parse(keyContent);
-        }
-        catch (e) {
-          window.localStorage.removeItem(key);
-        }
-      }
+      window.localStorage.removeItem(key);
     });
   }
 
   async retrieveRecentlyUpdated() {
     const { data } = await this.apiv3Get('/pages/recent');
     this.setState({ recentlyUpdatedPages: data.pages });
-  }
-
-  fetchUsers() {
-    const interval = 1000 * 60 * 15; // 15min
-    const currentTime = new Date();
-    if (window.localStorage.lastFetched && interval > currentTime - new Date(window.localStorage.lastFetched)) {
-      return;
-    }
-
-    this.apiGet('/users.list', {})
-      .then((data) => {
-        this.users = data.users;
-        window.localStorage.users = JSON.stringify(data.users);
-
-        const userByName = {};
-        const userById = {};
-        for (let i = 0; i < data.users.length; i++) {
-          const user = data.users[i];
-          userByName[user.username] = user;
-          userById[user._id] = user;
-        }
-        this.userByName = userByName;
-        window.localStorage.userByName = JSON.stringify(userByName);
-
-        this.userById = userById;
-        window.localStorage.userById = JSON.stringify(userById);
-
-        window.localStorage.lastFetched = new Date();
-      })
-      .catch((err) => {
-        window.localStorage.removeItem('lastFetched');
-      // ignore errors
-      });
-  }
-
-  findUserById(userId) {
-    if (this.userById && this.userById[userId]) {
-      return this.userById[userId];
-    }
-
-    return null;
-  }
-
-  findUserByIds(userIds) {
-    const users = [];
-    for (const userId of userIds) {
-      const user = this.findUserById(userId);
-      if (user) {
-        users.push(user);
-      }
-    }
-
-    return users;
   }
 
   setEditorMode(editorMode) {

@@ -92,7 +92,6 @@ class UserGroupRelation {
       .populate({
         path: 'relatedUser',
         select: User.USER_PUBLIC_FIELDS,
-        populate: User.IMAGE_POPULATION,
       })
       .exec();
   }
