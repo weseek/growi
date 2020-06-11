@@ -123,8 +123,7 @@ export default class LinkEditModal extends React.PureComponent {
                           id="pukiwikiLink"
                           value={this.state.labelInputValue}
                           onChange={e => this.labelInputChange(e.target.value)}
-                        >
-                        </input>
+                        />
                       </div>
                       <span className="p-2">[[{this.state.labelInputValue} &gt; {this.state.inputValue}]]</span>
                       <div>
