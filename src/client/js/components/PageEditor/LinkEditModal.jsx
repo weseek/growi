@@ -1,10 +1,14 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 import PublishLink from './PublishLink';
+import PageContainer from '../../services/PageContainer';
 
-export default class LinkEditModal extends React.PureComponent {
+import { withUnstatedContainers } from '../UnstatedUtils';
+
+class LinkEditModal extends React.PureComponent {
 
   constructor(props) {
     super(props);
@@ -39,6 +43,9 @@ export default class LinkEditModal extends React.PureComponent {
   }
 
   toggleIsUseRelativePath() {
+    if (this.state.linkerType === 'growiLink') {
+      return;
+    }
     this.setState({ isUseRelativePath: !this.state.isUseRelativePath });
   }
 
@@ -63,10 +70,14 @@ export default class LinkEditModal extends React.PureComponent {
   }
 
   handleSelecteLinkerType(linkerType) {
+    if (this.state.isUseRelativePath && linkerType === 'growiLink') {
+      this.toggleIsUseRelativePath();
+    }
     this.setState({ linkerType });
   }
 
   render() {
+    const { pageContainer } = this.props;
     return (
       <Modal isOpen={this.state.show} toggle={this.cancel} size="lg">
         <ModalHeader tag="h4" toggle={this.cancel} className="bg-primary text-light">
@@ -83,7 +94,7 @@ export default class LinkEditModal extends React.PureComponent {
                     className="form-control"
                     id="linkInput"
                     type="text"
-                    placeholder="/foo/bar/31536000"
+                    placeholder="URL or page path"
                     aria-describedby="button-addon"
                     value={this.state.inputValue}
                     onChange={e => this.handleChangeLinkInput(e.target.value)}
@@ -128,14 +139,7 @@ export default class LinkEditModal extends React.PureComponent {
                     </a>
                   </li>
                   <li className="nav-item">
-                    <a
-                      className="nav-link"
-                      name="mdLink"
-                      onClick={e => this.handleSelecteLinkerType(e.target.name)}
-                      href="#MD"
-                      role="tab"
-                      data-toggle="tab"
-                    >
+                    <a className="nav-link" name="mdLink" onClick={e => this.handleSelecteLinkerType(e.target.name)} href="#MD" role="tab" data-toggle="tab">
                       Markdown
                     </a>
                   </li>
@@ -153,7 +157,13 @@ export default class LinkEditModal extends React.PureComponent {
                         onChange={e => this.handleChangeLabelInput(e.target.value)}
                         disabled={this.state.linkerType === 'growiLink'}
                       />
-                      <PublishLink link={this.state.inputValue} label={this.state.labelInputValue} type={this.state.linkerType} />
+                      <PublishLink
+                        link={this.state.inputValue}
+                        label={this.state.labelInputValue}
+                        type={this.state.linkerType}
+                        isUseRelativePath={this.state.isUseRelativePath}
+                        currentPagePath={pageContainer.state.path}
+                      />
                     </div>
                     <div className="form-inline">
                       <div className="custom-control custom-checkbox custom-checkbox-info">
@@ -188,3 +198,14 @@ export default class LinkEditModal extends React.PureComponent {
   }
 
 }
+
+LinkEditModal.propTypes = {
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const LinkEditModalWrapper = withUnstatedContainers(LinkEditModal, [PageContainer]);
+
+export default LinkEditModalWrapper;

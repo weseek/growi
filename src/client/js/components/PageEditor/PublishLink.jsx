@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import path from 'path';
+
 export default class PublishLink extends React.PureComponent {
 
   constructor(props) {
@@ -14,16 +16,29 @@ export default class PublishLink extends React.PureComponent {
   }
 
   generateLink() {
-    const { link, label, type } = this.props;
+    const {
+      link,
+      label,
+      type,
+      isUseRelativePath,
+      currentPagePath,
+    } = this.props;
+
     let linker;
+    let reshapedLink = link;
+
+    if (isUseRelativePath && link.match(/^\//)) {
+      reshapedLink = path.relative(currentPagePath, link);
+    }
+
     if (type === 'pukiwikiLink') {
-      linker = `[[${label}>${link}]]`;
+      linker = `[[${label}>${reshapedLink}]]`;
     }
     if (type === 'growiLink') {
-      linker = `[${link}]`;
+      linker = `[${reshapedLink}]`;
     }
     if (type === 'mdLink') {
-      linker = `[${label}](${link})`;
+      linker = `[${label}](${reshapedLink})`;
     }
 
     this.setState({ linker });
@@ -44,4 +59,5 @@ PublishLink.propTypes = {
   label: PropTypes.string,
   type: PropTypes.oneOf(['pukiwikiLink', 'growiLink', 'mdLink']).isRequired,
   isUseRelativePath: PropTypes.bool,
+  currentPagePath: PropTypes.string,
 };
