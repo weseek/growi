@@ -7,7 +7,7 @@ import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import EditorContainer from '../../services/EditorContainer';
 
 
@@ -237,9 +237,7 @@ class OptionsSelector extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const OptionsSelectorWrapper = (props) => {
-  return createSubscribedElement(OptionsSelector, props, [EditorContainer]);
-};
+const OptionsSelectorWrapper = withUnstatedContainers(OptionsSelector, [EditorContainer]);
 
 OptionsSelector.propTypes = {
   t: PropTypes.func.isRequired, // i18next

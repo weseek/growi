@@ -11,7 +11,7 @@ import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 
 import { isUserPage } from '../../../lib/util/path-utils';
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 const logger = loggerFactory('growi:TableOfContents');
 
@@ -139,9 +139,7 @@ class TableOfContents extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const TableOfContentsWrapper = (props) => {
-  return createSubscribedElement(TableOfContents, props, [AppContainer, PageContainer]);
-};
+const TableOfContentsWrapper = withUnstatedContainers(TableOfContents, [AppContainer, PageContainer]);
 
 TableOfContents.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,

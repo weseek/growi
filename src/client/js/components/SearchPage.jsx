@@ -4,7 +4,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 
 import { toastError } from '../util/apiNotification';
@@ -113,9 +113,7 @@ class SearchPage extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const SearchPageWrapper = (props) => {
-  return createSubscribedElement(SearchPage, props, [AppContainer]);
-};
+const SearchPageWrapper = withUnstatedContainers(SearchPage, [AppContainer]);
 
 SearchPage.propTypes = {
   t: PropTypes.func.isRequired, // i18next

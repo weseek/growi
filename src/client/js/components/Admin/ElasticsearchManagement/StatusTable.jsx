@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 class StatusTable extends React.PureComponent {
 
@@ -163,9 +163,7 @@ class StatusTable extends React.PureComponent {
 /**
  * Wrapper component for using unstated
  */
-const StatusTableWrapper = (props) => {
-  return createSubscribedElement(StatusTable, props, []);
-};
+const StatusTableWrapper = withUnstatedContainers(StatusTable, []);
 
 StatusTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next

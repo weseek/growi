@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
 import SearchForm from '../SearchForm';
@@ -16,23 +16,12 @@ class SearchTop extends React.Component {
     this.state = {
       text: '',
       isScopeChildren: false,
-      isCollapsed: true,
     };
 
     this.onInputChange = this.onInputChange.bind(this);
     this.onClickAllPages = this.onClickAllPages.bind(this);
     this.onClickChildren = this.onClickChildren.bind(this);
     this.search = this.search.bind(this);
-  }
-
-  componentWillMount() {
-    this.initBreakpointEvents();
-  }
-
-  initBreakpointEvents() {
-    this.props.appContainer.addBreakpointListener('md', (mql) => {
-      this.setState({ isCollapsed: !mql.matches });
-    }, true);
   }
 
   onInputChange(text) {
@@ -62,7 +51,7 @@ class SearchTop extends React.Component {
   }
 
   Root = ({ children }) => {
-    const { isCollapsed } = this.state;
+    const { isDeviceSmallerThanMd: isCollapsed } = this.props.appContainer.state;
 
     return isCollapsed
       ? (
@@ -132,8 +121,6 @@ SearchTop.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const SearchTopWrapper = (props) => {
-  return createSubscribedElement(SearchTop, props, [AppContainer]);
-};
+const SearchTopWrapper = withUnstatedContainers(SearchTop, [AppContainer]);
 
 export default withTranslation()(SearchTopWrapper);

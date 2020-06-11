@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import RevisionLoader from '../Page/RevisionLoader';
 import AppContainer from '../../services/AppContainer';
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 class SearchResultList extends React.Component {
 
@@ -49,9 +49,7 @@ class SearchResultList extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const SearchResultListWrapper = (props) => {
-  return createSubscribedElement(SearchResultList, props, [AppContainer]);
-};
+const SearchResultListWrapper = withUnstatedContainers(SearchResultList, [AppContainer]);
 
 SearchResultList.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
