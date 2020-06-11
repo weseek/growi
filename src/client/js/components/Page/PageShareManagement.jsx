@@ -26,12 +26,10 @@ const PageShareManagement = (props) => {
 
   function renderModals() {
     return (
-      <>
-        <OutsideShareLinkModal
-          isOpen={isOutsideShareLinkModalShown}
-          onClose={closeOutsideShareLinkModalHandler}
-        />
-      </>
+      <OutsideShareLinkModal
+        isOpen={isOutsideShareLinkModalShown}
+        onClose={closeOutsideShareLinkModalHandler}
+      />
     );
   }
 
