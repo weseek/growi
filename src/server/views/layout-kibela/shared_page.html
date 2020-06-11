@@ -14,23 +14,26 @@
 {% endblock %}
 
 {% block content_main %}
-  <div class="row" id="is-shared-page">
-    <div class="col-12 col-xl-9 col-lg-8 bg-white round-corner">
+  <div class="row" id="is-shared-page" data-share-link-expired-at="{{ sharelink.expiredAt|datetz('Y/m/d H:i:s')}}" data-share-link-created-at="{{ sharelink.createdAt|datetz('Y/m/d H:i:s')}}">
+    {% block content_page %}
+      <div class="col-12 col-xl-9 col-lg-8 bg-white round-corner">
+        <div id="share-link-alert"></div>
 
-      {% include '../widget/page_content.html' %}
-      {# force remove #revision-toc from #content_main of parent #}
-      <script>
-        $('#revision-toc').remove();
-      </script>
+        {% include '../widget/page_content.html' %}
+        {# force remove #revision-toc from #content_main of parent #}
+        <script>
+          $('#revision-toc').remove();
+        </script>
 
-    </div>
-
-    {# relocate #revision-toc #}
-    <div class="col-xl-3 col-lg-4 d-none d-lg-block revision-toc-container">
-      <div id="revision-toc" class="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
-        <div id="revision-toc-content" class="revision-toc-content"></div>
       </div>
-    </div>
+
+      {# relocate #revision-toc #}
+      <div class="col-xl-3 col-lg-4 d-none d-lg-block revision-toc-container">
+        <div id="revision-toc" class="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
+          <div id="revision-toc-content" class="revision-toc-content"></div>
+        </div>
+      </div>
+    {% endblock %}
 
   </div>
 {% endblock %}

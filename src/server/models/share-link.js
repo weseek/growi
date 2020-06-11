@@ -3,6 +3,7 @@
 
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
@@ -20,7 +21,7 @@ const schema = new mongoose.Schema({
   description: { type: String },
   createdAt: { type: Date, default: Date.now, required: true },
 });
-
+schema.plugin(mongoosePaginate);
 schema.plugin(uniqueValidator);
 
 module.exports = function(crowi) {
