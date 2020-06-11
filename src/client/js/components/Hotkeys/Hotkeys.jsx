@@ -45,12 +45,15 @@ export default class Hotkeys extends React.Component {
     console.log(this.state.stroke);
     let view = this.supportClasses.filter((value) => {
       for (let i = 0; i < this.state.stroke.length; i++) {
-        return this.state.stroke[i].toString() === value.getHotkeyStroke().toString()
+        if (this.state.stroke[i].toString() === value.getHotkeyStroke().toString()) {
+          return value;
+        }
       }
+      return null;
     });
     view = view.map((value) => {
       return value.getComponent();
-    })
+    });
     return (
       <React.Fragment>
         <HotkeysDetector onDetected={stroke => this.onDetected(stroke)} keymap={this.keymap} hotkeyList={this.hotkeyList} />

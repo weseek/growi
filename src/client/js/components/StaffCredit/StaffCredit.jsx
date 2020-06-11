@@ -94,9 +94,9 @@ export default class StaffCredit extends React.Component {
   componentDidMount() {
     // px / sec
     const scrollSpeed = 200;
-    const target = $(".credit-curtain");
+    const target = $('.credit-curtain');
     const scrollTargetHeight = target.children().innerHeight();
-    const duration = scrollTargetHeight / scrollSpeed * 10
+    const duration = scrollTargetHeight / scrollSpeed * 10;
     target.animate({ scrollTop: scrollTargetHeight }, duration, 'linear');
     console.log(target);
 
