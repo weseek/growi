@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 
 
 import { toastSuccess, toastError } from '../../util/apiNotification';
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 import AppContainer from '../../services/AppContainer';
 import PersonalContainer from '../../services/PersonalContainer';
@@ -134,9 +134,7 @@ class PasswordSettings extends React.Component {
 }
 
 
-const PasswordSettingsWrapper = (props) => {
-  return createSubscribedElement(PasswordSettings, props, [AppContainer, PersonalContainer]);
-};
+const PasswordSettingsWrapper = withUnstatedContainers(PasswordSettings, [AppContainer, PersonalContainer]);
 
 PasswordSettings.propTypes = {
   t: PropTypes.func.isRequired, // i18next

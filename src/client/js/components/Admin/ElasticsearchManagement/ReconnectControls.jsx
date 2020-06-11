@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 class ReconnectControls extends React.PureComponent {
 
@@ -33,9 +33,7 @@ class ReconnectControls extends React.PureComponent {
 /**
  * Wrapper component for using unstated
  */
-const ReconnectControlsWrapper = (props) => {
-  return createSubscribedElement(ReconnectControls, props, []);
-};
+const ReconnectControlsWrapper = withUnstatedContainers(ReconnectControls, []);
 
 ReconnectControls.propTypes = {
   t: PropTypes.func.isRequired, // i18next

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { toastError } from '../util/apiNotification';
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 
 class LikeButton extends React.Component {
@@ -56,9 +56,7 @@ class LikeButton extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const LikeButtonWrapper = (props) => {
-  return createSubscribedElement(LikeButton, props, [AppContainer]);
-};
+const LikeButtonWrapper = withUnstatedContainers(LikeButton, [AppContainer]);
 
 LikeButton.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,

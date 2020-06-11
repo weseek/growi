@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { Subscribe } from 'unstated';
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 import RevisionBody from '../Page/RevisionBody';
 
@@ -106,9 +106,7 @@ class Preview extends React.PureComponent {
 /**
  * Wrapper component for using unstated
  */
-const PreviewWrapper = (props) => {
-  return createSubscribedElement(Preview, props, [AppContainer]);
-};
+const PreviewWrapper = withUnstatedContainers(Preview, [AppContainer]);
 
 Preview.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,

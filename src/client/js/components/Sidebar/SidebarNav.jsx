@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
 
@@ -85,8 +85,6 @@ SidebarNav.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const SidebarNavWrapper = (props) => {
-  return createSubscribedElement(SidebarNav, props, [AppContainer]);
-};
+const SidebarNavWrapper = withUnstatedContainers(SidebarNav, [AppContainer]);
 
 export default withTranslation()(SidebarNavWrapper);

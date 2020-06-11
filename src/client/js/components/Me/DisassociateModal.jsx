@@ -10,7 +10,7 @@ import {
   ModalFooter,
 } from 'reactstrap';
 import { toastSuccess, toastError } from '../../util/apiNotification';
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 import AppContainer from '../../services/AppContainer';
 import PersonalContainer from '../../services/PersonalContainer';
@@ -71,9 +71,7 @@ class DisassociateModal extends React.Component {
 
 }
 
-const DisassociateModalWrapper = (props) => {
-  return createSubscribedElement(DisassociateModal, props, [AppContainer, PersonalContainer]);
-};
+const DisassociateModalWrapper = withUnstatedContainers(DisassociateModal, [AppContainer, PersonalContainer]);
 
 DisassociateModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next

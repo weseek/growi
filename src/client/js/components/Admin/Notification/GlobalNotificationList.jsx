@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 import urljoin from 'url-join';
 import loggerFactory from '@alias/logger';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
@@ -171,9 +171,7 @@ class GlobalNotificationList extends React.Component {
 
 }
 
-const GlobalNotificationListWrapper = (props) => {
-  return createSubscribedElement(GlobalNotificationList, props, [AppContainer, AdminNotificationContainer]);
-};
+const GlobalNotificationListWrapper = withUnstatedContainers(GlobalNotificationList, [AppContainer, AdminNotificationContainer]);
 
 GlobalNotificationList.propTypes = {
   t: PropTypes.func.isRequired, // i18next
