@@ -1,5 +1,4 @@
 import React from 'react';
-import md5 from 'md5';
 import PropTypes from 'prop-types';
 
 import { userPageRoot } from '@commons/util/path-utils';
@@ -10,28 +9,6 @@ const DEFAULT_IMAGE = '/images/icons/user.svg';
 
 // TODO UserComponent?
 export default class UserPicture extends React.Component {
-
-  getUserPicture(user) {
-    // gravatar
-    if (user.isGravatarEnabled === true) {
-      return this.generateGravatarSrc(user);
-    }
-    // uploaded image
-    if (user.image != null) {
-      return user.image;
-    }
-    if (user.imageAttachment != null) {
-      return user.imageAttachment.filePathProxied;
-    }
-
-    return DEFAULT_IMAGE;
-  }
-
-  generateGravatarSrc(user) {
-    const email = user.email || '';
-    const hash = md5(email.trim().toLowerCase());
-    return `https://gravatar.com/avatar/${hash}`;
-  }
 
   getClassName() {
     const className = ['rounded-circle', 'picture'];
@@ -94,10 +71,12 @@ export default class UserPicture extends React.Component {
       RootElm = this.withTooltip(RootElm);
     }
 
+    const userPictureSrc = user.imageUrlCached || DEFAULT_IMAGE;
+
     return (
       <RootElm>
         <img
-          src={this.getUserPicture(user)}
+          src={userPictureSrc}
           alt={user.username}
           className={this.getClassName()}
         />
