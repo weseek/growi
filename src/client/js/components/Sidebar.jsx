@@ -8,7 +8,7 @@ import {
   ThemeProvider,
 } from '@atlaskit/navigation-next';
 
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 
 import SidebarNav from './Sidebar/SidebarNav';
@@ -23,6 +23,7 @@ class Sidebar extends React.Component {
   static propTypes = {
     appContainer: PropTypes.instanceOf(AppContainer).isRequired,
     navigationUIController: PropTypes.any.isRequired,
+    isDrawerModeOnInit: PropTypes.bool,
   };
 
   state = {
@@ -31,7 +32,10 @@ class Sidebar extends React.Component {
 
   componentWillMount() {
     this.hackUIController();
-    this.initBreakpointEvents();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    this.toggleDrawerMode(this.isDrawerMode);
   }
 
   /**
@@ -50,35 +54,69 @@ class Sidebar extends React.Component {
     };
   }
 
-  initBreakpointEvents() {
-    const { appContainer, navigationUIController } = this.props;
+  /**
+   * return whether drawer mode or not
+   */
+  get isDrawerMode() {
+    let isDrawerMode = this.props.appContainer.state.isDrawerMode;
+    if (isDrawerMode == null) {
+      isDrawerMode = this.props.isDrawerModeOnInit;
+    }
+    return isDrawerMode;
+  }
 
-    const mdOrAvobeHandler = (mql) => {
-      // sm -> md
-      if (mql.matches) {
-        appContainer.setState({ isDrawerOpened: false });
-        navigationUIController.enableResize();
+  toggleDrawerMode(bool) {
+    const { navigationUIController } = this.props;
 
-        // restore width
-        if (this.sidebarWidthCached != null) {
-          navigationUIController.setState({ productNavWidth: this.sidebarWidthCached });
-        }
+    const isStateModified = navigationUIController.state.isResizeDisabled !== bool;
+    if (!isStateModified) {
+      return;
+    }
+
+    // Drawer <-- Dock
+    if (bool) {
+      // cache state
+      this.sidebarCollapsedCached = navigationUIController.state.isCollapsed;
+      this.sidebarWidthCached = navigationUIController.state.productNavWidth;
+
+      // clear transition temporary
+      if (this.sidebarCollapsedCached) {
+        this.addCssClassTemporary('grw-sidebar-supress-transitions-to-drawer');
       }
-      // md -> sm
-      else {
-        // cache width
-        this.sidebarWidthCached = navigationUIController.state.productNavWidth;
 
-        appContainer.setState({ isDrawerOpened: false });
-        navigationUIController.disableResize();
-        navigationUIController.expand();
+      navigationUIController.disableResize();
 
-        // fix width
-        navigationUIController.setState({ productNavWidth: sidebarDefaultWidth });
+      // fix width
+      navigationUIController.setState({ productNavWidth: sidebarDefaultWidth });
+    }
+    // Drawer --> Dock
+    else {
+      // clear transition temporary
+      if (this.sidebarCollapsedCached) {
+        this.addCssClassTemporary('grw-sidebar-supress-transitions-to-dock');
       }
-    };
 
-    appContainer.addBreakpointListener('md', mdOrAvobeHandler, true);
+      navigationUIController.enableResize();
+
+      // restore width
+      if (this.sidebarWidthCached != null) {
+        navigationUIController.setState({ productNavWidth: this.sidebarWidthCached });
+      }
+    }
+  }
+
+  get sidebarElem() {
+    return document.querySelector('.grw-sidebar');
+  }
+
+  addCssClassTemporary(className) {
+    // clear
+    this.sidebarElem.classList.add(className);
+
+    // restore after 300ms
+    setTimeout(() => {
+      this.sidebarElem.classList.remove(className);
+    }, 300);
   }
 
   backdropClickedHandler = () => {
@@ -122,7 +160,7 @@ class Sidebar extends React.Component {
 
     return (
       <>
-        <div className={`grw-sidebar ${isDrawerOpened ? 'open' : ''}`}>
+        <div className={`grw-sidebar ${this.isDrawerMode ? 'grw-sidebar-drawer' : ''} ${isDrawerOpened ? 'open' : ''}`}>
           <ThemeProvider
             theme={theme => ({
               ...theme,
@@ -153,15 +191,35 @@ class Sidebar extends React.Component {
 
 }
 
-const SidebarWithNavigationUI = withNavigationUIController(Sidebar);
+
+const SidebarWithNavigationUIController = withNavigationUIController(Sidebar);
 
 /**
  * Wrapper component for using unstated
  */
-const SidebarWrapper = (props) => {
-  return createSubscribedElement(SidebarWithNavigationUI, props, [AppContainer]);
+
+const SidebarWithNavigation = (props) => {
+  const { preferDrawerModeByUser: isDrawerModeOnInit } = props.appContainer.state;
+
+  const initUICForDrawerMode = isDrawerModeOnInit
+    // generate initialUIController for Drawer mode
+    ? {
+      isCollapsed: false,
+      isResizeDisabled: true,
+      productNavWidth: sidebarDefaultWidth,
+    }
+    // set undefined (should be initialized by cache)
+    : undefined;
+
+  return (
+    <NavigationProvider initialUIController={initUICForDrawerMode}>
+      <SidebarWithNavigationUIController {...props} isDrawerModeOnInit={isDrawerModeOnInit} />
+    </NavigationProvider>
+  );
 };
 
-export default () => (
-  <NavigationProvider><SidebarWrapper /></NavigationProvider>
-);
+SidebarWithNavigation.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+};
+
+export default withUnstatedContainers(SidebarWithNavigation, [AppContainer]);

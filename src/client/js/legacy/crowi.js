@@ -95,16 +95,6 @@ Crowi.handleKeyEHandler = (event) => {
   event.preventDefault();
 };
 
-Crowi.handleKeyCHandler = (event) => {
-  // ignore when dom that has 'modal in' classes exists
-  if (document.getElementsByClassName('modal in').length > 0) {
-    return;
-  }
-  // show modal to create a page
-  $('#create-page').modal();
-  event.preventDefault();
-};
-
 Crowi.handleKeyCtrlSlashHandler = (event) => {
   // show modal to create a page
   $('#shortcuts-modal').modal('toggle');
@@ -250,10 +240,10 @@ $(() => {
 
   // tab changing handling
   $('a[href="#revision-body"]').on('show.bs.tab', () => {
-    appContainer.setState({ editorMode: null });
+    appContainer.setEditorMode(null);
   });
   $('a[href="#edit"]').on('show.bs.tab', () => {
-    appContainer.setState({ editorMode: 'builtin' });
+    appContainer.setEditorMode('builtin');
     $('body').addClass('on-edit');
     $('body').addClass('builtin-editor');
   });
@@ -262,7 +252,7 @@ $(() => {
     $('body').removeClass('builtin-editor');
   });
   $('a[href="#hackmd"]').on('show.bs.tab', () => {
-    appContainer.setState({ editorMode: 'hackmd' });
+    appContainer.setEditorMode('hackmd');
     $('body').addClass('on-edit');
     $('body').addClass('hackmd');
   });
@@ -428,11 +418,6 @@ window.addEventListener('keydown', (event) => {
     case 'e':
       if (!event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey) {
         Crowi.handleKeyEHandler(event);
-      }
-      break;
-    case 'c':
-      if (!event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey) {
-        Crowi.handleKeyCHandler(event);
       }
       break;
     case '/':

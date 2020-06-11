@@ -6,7 +6,7 @@ import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
 import { pathUtils } from 'growi-commons';
 import urljoin from 'url-join';
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 import PageContainer from '../services/PageContainer';
 
@@ -70,9 +70,7 @@ const CreateTemplateModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const CreateTemplateModalWrapper = (props) => {
-  return createSubscribedElement(CreateTemplateModal, props, [PageContainer]);
-};
+const CreateTemplateModalWrapper = withUnstatedContainers(CreateTemplateModal, [PageContainer]);
 
 
 CreateTemplateModal.propTypes = {

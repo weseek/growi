@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 
 import ArchiveFilesTableMenu from './ArchiveFilesTableMenu';
@@ -61,8 +61,6 @@ ArchiveFilesTable.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const ArchiveFilesTableWrapper = (props) => {
-  return createSubscribedElement(ArchiveFilesTable, props, [AppContainer]);
-};
+const ArchiveFilesTableWrapper = withUnstatedContainers(ArchiveFilesTable, [AppContainer]);
 
 export default withTranslation()(ArchiveFilesTableWrapper);

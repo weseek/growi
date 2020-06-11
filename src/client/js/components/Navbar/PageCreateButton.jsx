@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
 const PageCreateButton = (props) => {
@@ -18,9 +18,9 @@ const PageCreateButton = (props) => {
   }
 
   return (
-    <button className="nav-link create-page border-0 bg-transparent" type="button" onClick={appContainer.openPageCreateModal}>
+    <button className="px-md-2 nav-link create-page border-0 bg-transparent" type="button" onClick={appContainer.openPageCreateModal}>
       <i className="icon-pencil mr-2"></i>
-      <span>{ t('New') }</span>
+      <span className="d-none d-lg-block">{ t('New') }</span>
     </button>
   );
 };
@@ -28,9 +28,7 @@ const PageCreateButton = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageCreateButtonWrapper = (props) => {
-  return createSubscribedElement(PageCreateButton, props, [AppContainer]);
-};
+const PageCreateButtonWrapper = withUnstatedContainers(PageCreateButton, [AppContainer]);
 
 
 PageCreateButton.propTypes = {

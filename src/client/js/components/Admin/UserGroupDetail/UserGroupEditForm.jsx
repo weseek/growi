@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import AdminUserGroupDetailContainer from '../../../services/AdminUserGroupDetailContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
@@ -106,8 +106,6 @@ UserGroupEditForm.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const UserGroupEditFormWrapper = (props) => {
-  return createSubscribedElement(UserGroupEditForm, props, [AppContainer, AdminUserGroupDetailContainer]);
-};
+const UserGroupEditFormWrapper = withUnstatedContainers(UserGroupEditForm, [AppContainer, AdminUserGroupDetailContainer]);
 
 export default withTranslation()(UserGroupEditFormWrapper);

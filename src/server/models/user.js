@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const path = require('path');
 const uniqueValidator = require('mongoose-unique-validator');
+const md5 = require('md5');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 const crypto = require('crypto');
@@ -16,7 +17,9 @@ module.exports = function(crowi) {
   const STATUS_SUSPENDED = 3;
   const STATUS_DELETED = 4;
   const STATUS_INVITED = 5;
-  const USER_PUBLIC_FIELDS = '_id image isEmailPublished isGravatarEnabled googleId name username email introduction status lang createdAt lastLoginAt admin';
+  const USER_PUBLIC_FIELDS = '_id image isEmailPublished isGravatarEnabled googleId name username email introduction'
+  + 'status lang createdAt lastLoginAt admin imageUrlCached';
+  /* eslint-disable no-unused-vars */
   const IMAGE_POPULATION = { path: 'imageAttachment', select: 'filePathProxied' };
 
   const LANG_EN = 'en';
@@ -38,6 +41,7 @@ module.exports = function(crowi) {
     userId: String,
     image: String,
     imageAttachment: { type: ObjectId, ref: 'Attachment' },
+    imageUrlCached: String,
     isGravatarEnabled: { type: Boolean, default: false },
     isEmailPublished: { type: Boolean, default: true },
     googleId: String,
@@ -153,11 +157,6 @@ module.exports = function(crowi) {
     return lang;
   }
 
-  userSchema.methods.populateImage = async function() {
-    // eslint-disable-next-line no-return-await
-    return await this.populate(IMAGE_POPULATION);
-  };
-
   userSchema.methods.isPasswordSet = function() {
     if (this.password) {
       return true;
@@ -190,6 +189,7 @@ module.exports = function(crowi) {
 
   userSchema.methods.updateIsGravatarEnabled = async function(isGravatarEnabled) {
     this.isGravatarEnabled = isGravatarEnabled;
+    await this.updateImageUrlCached();
     const userData = await this.save();
     return userData;
   };
@@ -225,6 +225,7 @@ module.exports = function(crowi) {
 
   userSchema.methods.updateImage = async function(attachment) {
     this.imageAttachment = attachment;
+    await this.updateImageUrlCached();
     return this.save();
   };
 
@@ -240,7 +241,29 @@ module.exports = function(crowi) {
     }
 
     this.imageAttachment = undefined;
+    this.updateImageUrlCached();
     return this.save();
+  };
+
+  userSchema.methods.updateImageUrlCached = async function() {
+    this.imageUrlCached = await this.generateImageUrlCached();
+  };
+
+  userSchema.methods.generateImageUrlCached = async function() {
+    if (this.isGravatarEnabled) {
+      const email = this.email || '';
+      const hash = md5(email.trim().toLowerCase());
+      return `https://gravatar.com/avatar/${hash}`;
+    }
+    if (this.image != null) {
+      return this.image;
+    }
+    if (this.imageAttachment != null && this.imageAttachment._id != null) {
+      const Attachment = crowi.model('Attachment');
+      const imageAttachment = await Attachment.findById(this.imageAttachment);
+      return imageAttachment.filePathProxied;
+    }
+    return '/images/icons/user.svg';
   };
 
   userSchema.methods.updateGoogleId = function(googleId, callback) {
