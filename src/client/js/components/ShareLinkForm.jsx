@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
 
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 import { toastSuccess, toastError } from '../util/apiNotification';
 
@@ -198,9 +198,8 @@ class ShareLinkForm extends React.Component {
 
 }
 
-const ShareLinkFormWrapper = (props) => {
-  return createSubscribedElement(ShareLinkForm, props, [AppContainer, PageContainer]);
-};
+const ShareLinkFormWrapper = withUnstatedContainers(ShareLinkForm, [AppContainer, PageContainer]);
+
 
 ShareLinkForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
