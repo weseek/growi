@@ -15,6 +15,7 @@ import PageContainer from '../../services/PageContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 class LinkEditModal extends React.PureComponent {
+
   constructor(props) {
     super(props);
 
@@ -252,6 +253,7 @@ class LinkEditModal extends React.PureComponent {
       </Modal>
     );
   }
+
 }
 
 LinkEditModal.propTypes = {
