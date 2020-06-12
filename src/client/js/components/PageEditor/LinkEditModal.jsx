@@ -26,13 +26,13 @@ export default class LinkEditModal extends React.PureComponent {
     this.show = this.show.bind(this);
     this.hide = this.hide.bind(this);
     this.cancel = this.cancel.bind(this);
-    this.toggleIsUseRelativePath = this.toggleIsUseRelativePath.bind(this);
     this.handleChangeLinkInput = this.handleChangeLinkInput.bind(this);
     this.handleChangeLabelInput = this.handleChangeLabelInput.bind(this);
     this.handleSelecteLinkerType = this.handleSelecteLinkerType.bind(this);
+    this.toggleIsUseRelativePath = this.toggleIsUseRelativePath.bind(this);
+    this.toggleIsUsePamanentLink = this.toggleIsUsePamanentLink.bind(this);
     this.showLog = this.showLog.bind(this);
     this.save = this.save.bind(this);
-    this.toggleIsUsePamanentLink = this.toggleIsUsePamanentLink.bind(this);
   }
 
   show(defaultLabelInputValue = '') {
@@ -54,6 +54,10 @@ export default class LinkEditModal extends React.PureComponent {
       return;
     }
     this.setState({ isUseRelativePath: !this.state.isUseRelativePath });
+  }
+
+  toggleIsUsePamanentLink() {
+    this.setState({ isUsePermanentLink: !this.state.isUsePermanentLink });
   }
 
   renderPreview() {
@@ -89,11 +93,6 @@ export default class LinkEditModal extends React.PureComponent {
     }
 
     this.hide();
-  }
-
-  toggleIsUsePamanentLink() {
-    // GW-2834
-    this.setState({ isUsePermanentLink: !this.state.isUsePermanentLink });
   }
 
   render() {
