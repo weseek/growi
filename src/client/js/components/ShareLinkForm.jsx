@@ -88,7 +88,10 @@ class ShareLinkForm extends React.Component {
 
     if (expirationType === 'custom') {
       const { customExpirationDate, customExpirationTime } = this.state;
-      expiredAt = new Date(...customExpirationDate.split('-'), ...customExpirationTime.split(':'));
+      const date = customExpirationDate.split('-');
+      // adjust month number
+      date[1] -= 1;
+      expiredAt = new Date(...date, ...customExpirationTime.split(':'));
     }
 
     return expiredAt;
