@@ -36,7 +36,6 @@ class LinkEditModal extends React.PureComponent {
     this.handleSelecteLinkerType = this.handleSelecteLinkerType.bind(this);
     this.showLog = this.showLog.bind(this);
     this.save = this.save.bind(this);
-    this.generateLink = this.generateLink.bind(this);
     this.toggleIsUsePamanentLink = this.toggleIsUsePamanentLink.bind(this);
   }
 
@@ -140,7 +139,7 @@ class LinkEditModal extends React.PureComponent {
                       checked={this.state.isUsePamanentLink}
                     />
                     <label className="custom-control-label" htmlFor="permanentLink" onClick={this.toggleIsUsePamanentLink}>
-                      convert into permanent link
+                      Use permanent link
                     </label>
                   </div>
                 </div>
