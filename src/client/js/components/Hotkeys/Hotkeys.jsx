@@ -27,7 +27,7 @@ export default class Hotkeys extends React.Component {
     return Array.from(keymap);
   }
 
-  // this function generates list of all the hotkeys commands
+  // this function generates list of all the hotkeys command
   hotkeyList() {
     const hotkeyList = this.supportClasses.map((value) => {
       return value.getHotkeyStroke();
