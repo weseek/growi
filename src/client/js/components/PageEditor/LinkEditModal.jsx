@@ -40,9 +40,8 @@ class LinkEditModal extends React.PureComponent {
     this.toggleIsUsePamanentLink = this.toggleIsUsePamanentLink.bind(this);
   }
 
-  show(editor) {
-    const selection = editor.getDoc().getSelection();
-    this.setState({ show: true, labelInputValue: selection });
+  show(defaultLabelInputValue = '') {
+    this.setState({ show: true, labelInputValue: defaultLabelInputValue });
   }
 
   cancel() {
