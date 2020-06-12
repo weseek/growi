@@ -69,6 +69,9 @@ class ShareLinkForm extends React.Component {
     this.setState({ customExpirationTime });
   }
 
+  /**
+   * Generate expiredAt by expirationType
+   */
   generateExpired() {
     const { expirationType } = this.state;
     let expiredAt;
@@ -76,10 +79,16 @@ class ShareLinkForm extends React.Component {
     if (expirationType === 'unlimited') {
       expiredAt = null;
     }
+
     if (expirationType === 'numberOfDays') {
       const date = new Date();
       date.setDate(date.getDate() + this.state.numberOfDays);
       expiredAt = date;
+    }
+
+    if (expirationType === 'custom') {
+      const { customExpirationDate, customExpirationTime } = this.state;
+      expiredAt = new Date(...customExpirationDate.split('-'), ...customExpirationTime.split(':'));
     }
 
     return expiredAt;
@@ -91,10 +100,9 @@ class ShareLinkForm extends React.Component {
     const { description } = this.state;
 
     const expiredAt = this.generateExpired();
-    console.log(expiredAt);
+
     try {
-      console.log(this.state);
-      // await this.props.appContainer.apiv3.post('/share-links/', { relatedPage: pageId, description });
+      await this.props.appContainer.apiv3.post('/share-links/', { relatedPage: pageId, expiredAt, description });
       toastSuccess(t('toaster.issue_share_link'));
     }
     catch (err) {
