@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Modal, ModalHeader, ModalBody } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
-import PublishLink from './PublishLink';
+import generateLink from './generateLink';
 import PageContainer from '../../services/PageContainer';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -86,6 +86,7 @@ class LinkEditModal extends React.PureComponent {
   save() {
     if (this.props.onSave != null) {
       this.props.onSave(this.state.output);
+    }
 
     this.hide();
   }
@@ -100,7 +101,7 @@ class LinkEditModal extends React.PureComponent {
 
         <ModalBody className="container">
           <div className="row">
-            <div className="col">
+            <div className="col-6">
               <div className="form-gorup my-3">
                 <label htmlFor="linkInput">Link</label>
                 <div className="input-group">
@@ -171,13 +172,6 @@ class LinkEditModal extends React.PureComponent {
                         onChange={e => this.handleChangeLabelInput(e.target.value)}
                         disabled={this.state.linkerType === 'growiLink'}
                       />
-                      <PublishLink
-                        link={this.state.linkInputValue}
-                        label={this.state.labelInputValue}
-                        type={this.state.linkerType}
-                        isUseRelativePath={this.state.isUseRelativePath}
-                        currentPagePath={pageContainer.state.path}
-                      />
                     </div>
                     <div className="form-inline">
                       <div className="custom-control custom-checkbox custom-checkbox-info">
@@ -192,21 +186,37 @@ class LinkEditModal extends React.PureComponent {
                           Use relative path
                         </label>
                       </div>
-                      <button type="button" className="btn btn-primary ml-auto">
-                        Done
-                      </button>
                     </div>
                   </form>
                 </div>
               </div>
             </div>
 
-            <div className="col d-none d-lg-block">
+            <div className="col-6 d-none d-lg-block">
               {this.renderPreview}
               render preview
             </div>
+            <div className="row">
+              <div className="col-12">
+                <generateLink
+                  link={this.state.linkInputValue}
+                  label={this.state.labelInputValue}
+                  type={this.state.linkerType}
+                  isUseRelativePath={this.state.isUseRelativePath}
+                  currentPagePath={pageContainer.state.path}
+                />
+              </div>
+            </div>
           </div>
         </ModalBody>
+        <ModalFooter>
+          <button type="button" className="btn btn-sm btn-outline-secondary" onClick={this.hide}>
+            Cancel
+          </button>
+          <button type="submit" className="btn btn-sm btn-primary" onClick={this.save}>
+            Done
+          </button>
+        </ModalFooter>
       </Modal>
     );
   }

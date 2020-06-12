@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import path from 'path';
 
-export default class PublishLink extends React.PureComponent {
+export default class generateLink extends React.PureComponent {
 
   constructor(props) {
     super(props);
@@ -54,7 +54,7 @@ export default class PublishLink extends React.PureComponent {
 
 }
 
-PublishLink.propTypes = {
+generateLink.propTypes = {
   link: PropTypes.string.isRequired,
   label: PropTypes.string,
   type: PropTypes.oneOf(['pukiwikiLink', 'growiLink', 'mdLink']).isRequired,
