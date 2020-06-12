@@ -72,10 +72,11 @@ class ShareLinkForm extends React.Component {
   async handleIssueShareLink() {
     const { t, pageContainer } = this.props;
     const { pageId } = pageContainer.state;
+    const { description } = this.state;
 
     try {
       console.log(this.state);
-      await this.props.appContainer.apiv3.post('/share-links/', { relatedPage: pageId });
+      await this.props.appContainer.apiv3.post('/share-links/', { relatedPage: pageId, description });
       toastSuccess(t('toaster.issue_share_link'));
     }
     catch (err) {
