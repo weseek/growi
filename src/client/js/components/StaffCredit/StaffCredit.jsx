@@ -92,7 +92,7 @@ export default class StaffCredit extends React.Component {
   }
 
   componentDidMount() {
-    setTimeout(()=> {
+    setTimeout(() => {
       // px / sec
       const scrollSpeed = 200;
       const target = $('.credit-curtain');
