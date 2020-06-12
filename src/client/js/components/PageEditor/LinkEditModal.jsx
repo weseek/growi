@@ -12,11 +12,12 @@ export default class LinkEditModal extends React.PureComponent {
       isUseRelativePath: false,
       inputValue: '~.cloud.~',
       labelInputValue: 'ここがリンク',
+      markdown: '',
     };
 
     this.cancel = this.cancel.bind(this);
     this.toggleIsUseRelativePath = this.toggleIsUseRelativePath.bind(this);
-    this.showLog = this.showLog.bind(this);
+    this.setMarkdown = this.setMarkdown.bind(this);
   }
 
   show() {
@@ -45,8 +46,17 @@ export default class LinkEditModal extends React.PureComponent {
     // TODO GW-2659
   }
 
-  showLog() {
-    console.log(this.state.inputValue);
+  async setMarkdown() {
+    let markdown = '';
+    try {
+      await appContainer.apiGet('/pages.get', { path: this.state.inputValue }).then((res) => {
+        markdown = res.page.revision.body;
+      });
+    } catch (err) {
+      markdown = err.message;
+      toastError(err);
+    }
+    this.setState({ markdown });
   }
 
   handleInputChange(linkValue) {
