@@ -559,7 +559,7 @@ module.exports = (crowi) => {
    *            description: succeed to delete all share links
    */
 
-  router.delete('/all-share-links/', loginRequiredStrictly, adminRequired, csrf, ApiV3FormValidator, async(req, res) => {
+  router.delete('/all-share-links/', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const ShareLink = crowi.model('ShareLink');
     try {
       await ShareLink.remove({});
