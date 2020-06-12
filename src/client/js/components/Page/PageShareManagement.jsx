@@ -99,10 +99,10 @@ const PageShareManagement = (props) => {
           <span className="ml-2 badge badge-info badge-pill">{pageContainer.state.shareLinksNumber}</span>
         </button>
         <button type="button" className="dropdown-item" onClick={() => { exportPageHundler('markdown') }}>
-          <span>Export page as Markdown</span>
+          <span>{t('export_bulk.export_page_markdown')}</span>
         </button>
         <button type="button" className="dropdown-item" onClick={() => { exportPageHundler('pdf') }}>
-          <span>Export page as PDF</span>
+          <span>{t('export_bulk.export_page_pdf')}</span>
         </button>
       </div>
       {renderModals()}
