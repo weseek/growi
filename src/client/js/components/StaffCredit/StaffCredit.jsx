@@ -98,7 +98,7 @@ export default class StaffCredit extends React.Component {
     const scrollTargetHeight = target.children().innerHeight();
     const duration = scrollTargetHeight / scrollSpeed * 1000;
     target.animate({ scrollTop: scrollTargetHeight }, duration, 'linear');
-    console.log(target);
+    console.log(target.innerHeight());
 
     target.slimScroll({
       height: target.innerHeight(),
