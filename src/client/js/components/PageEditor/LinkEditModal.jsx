@@ -140,10 +140,7 @@ export default class LinkEditModal extends React.PureComponent {
                           onChange={e => this.labelInputChange(e.target.value)}
                         />
                       </div>
-                      <span className="p-2">
-                        [[{this.state.labelInputValue} &gt; {this.state.linkInputValue}]]
-                      </span>
-                      <div></div>
+                      <span className="p-2">[[{this.state.labelInputValue} &gt; {this.state.linkInputValue}]]</span>
                       <div className="form-inline">
                         <div className="custom-control custom-checkbox custom-checkbox-info">
                           <input className="custom-control-input" id="pukiwikiRelativePath" type="checkbox" checked={this.state.isUseRelativePath} />
