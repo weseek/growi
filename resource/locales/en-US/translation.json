@@ -685,5 +685,8 @@
     "Sign in error": "Login error",
     "Registration successful": "Registration successful",
     "Setup": "Setup"
+  },
+  "export_bulk": {
+    "failed_to_export": "Failed to export"
   }
 }

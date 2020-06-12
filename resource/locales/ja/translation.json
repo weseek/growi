@@ -674,5 +674,8 @@
     "Sign in error": "ログインエラー",
     "Registration successful": "登録完了",
     "Setup": "セットアップ"
+  },
+  "export_bulk": {
+    "failed_to_export": "ファイルのエクスポートに失敗しました"
   }
 }

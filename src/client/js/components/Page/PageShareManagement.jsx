@@ -30,11 +30,11 @@ const PageShareManagement = (props) => {
   async function getExportPageFile(type) {
     const pageId = pageContainer.state.pageId;
     try {
-      const res = await appContainer.apiv3Get('/pages/export', { pageId, type });
+      const res = await appContainer.apiv3Get('/pages/export', { pageId, type }); 
       return res;
     }
     catch (err) {
-      toastError(Error('Failed to export'));
+      toastError(Error(t('export_bulk.failed_to_export')));
     }
   }
 
