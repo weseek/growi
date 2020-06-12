@@ -134,7 +134,7 @@ class Page extends React.Component {
     return (
       <div className={isMobile ? 'page-mobile' : ''}>
         <RevisionRenderer growiRenderer={this.growiRenderer} markdown={markdown} />
-        <LinkEditModal ref={this.LinkEditModal} />
+        <LinkEditModal ref={this.LinkEditModal} appContainer={this.props.appContainer}/>
         <HandsontableModal ref={this.handsontableModal} onSave={this.saveHandlerForHandsontableModal} />
         <DrawioModal ref={this.drawioModal} onSave={this.saveHandlerForDrawioModal} />
       </div>
