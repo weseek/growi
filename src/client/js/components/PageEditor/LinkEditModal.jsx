@@ -2,6 +2,9 @@ import React from 'react';
 
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
+import Preview from '../PageEditor/Preview';
+import { toastError } from '../../util/apiNotification';
+
 export default class LinkEditModal extends React.PureComponent {
 
   constructor(props) {
@@ -39,7 +42,14 @@ export default class LinkEditModal extends React.PureComponent {
   }
 
   renderPreview() {
-    // TODO GW-2658
+    return (
+      <div className="page-editor-preview-container flex-grow-1 flex-basis-0 mw-0">
+        <Preview
+          markdown={this.state.markdown}
+          inputRef={(el) => { return this.previewElement = el }}
+        />
+      </div>
+    )
   }
 
   insertLinkIntoEditor() {
@@ -91,7 +101,12 @@ export default class LinkEditModal extends React.PureComponent {
                     onChange={e => this.handleInputChange(e.target.value)}
                   />
                   <div className="input-group-append">
-                    <button type="button" id="button-addon" className="btn btn-secondary" onClick={this.showLog}>
+                    <button 
+                      type="button"
+                      id="button-addon"
+                      className="btn btn-secondary"
+                      onClick={this.setMarkdown}
+                    >
                       Preview
                     </button>
                   </div>
@@ -99,8 +114,7 @@ export default class LinkEditModal extends React.PureComponent {
               </div>
 
               <div className="d-block d-lg-none">
-                {this.renderPreview}
-                render preview
+                {this.renderPreview()}
               </div>
 
               <div className="linkedit-tabs">
@@ -196,8 +210,7 @@ export default class LinkEditModal extends React.PureComponent {
             </div>
 
             <div className="col d-none d-lg-block">
-              {this.renderPreview}
-              render preview
+              {this.renderPreview()}
             </div>
           </div>
         </ModalBody>
