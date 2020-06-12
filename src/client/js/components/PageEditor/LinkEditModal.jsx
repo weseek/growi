@@ -19,18 +19,23 @@ class LinkEditModal extends React.PureComponent {
       linkInputValue: '',
       labelInputValue: '',
       linkerType: 'pukiwikiLink',
+      output: '[label](link)',
     };
 
+    this.show = this.show.bind(this);
+    this.hide = this.hide.bind(this);
     this.cancel = this.cancel.bind(this);
     this.toggleIsUseRelativePath = this.toggleIsUseRelativePath.bind(this);
     this.handleChangeLinkInput = this.handleChangeLinkInput.bind(this);
     this.handleChangeLabelInput = this.handleChangeLabelInput.bind(this);
     this.handleSelecteLinkerType = this.handleSelecteLinkerType.bind(this);
     this.showLog = this.showLog.bind(this);
+    this.save = this.save.bind(this);
   }
 
-  show() {
-    this.setState({ show: true });
+  show(editor) {
+    const selection = editor.getDoc().getSelection();
+    this.setState({ show: true, labelInputValue: selection });
   }
 
   cancel() {
@@ -75,6 +80,14 @@ class LinkEditModal extends React.PureComponent {
       this.toggleIsUseRelativePath();
     }
     this.setState({ linkerType });
+  }
+
+
+  save() {
+    if (this.props.onSave != null) {
+      this.props.onSave(this.state.output);
+
+    this.hide();
   }
 
   render() {
@@ -202,6 +215,7 @@ class LinkEditModal extends React.PureComponent {
 
 LinkEditModal.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  onSave: PropTypes.func,
 };
 
 /**
