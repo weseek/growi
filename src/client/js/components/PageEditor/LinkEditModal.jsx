@@ -8,11 +8,7 @@ import {
   ModalFooter,
 } from 'reactstrap';
 
-import PageContainer from '../../services/PageContainer';
-
-import { withUnstatedContainers } from '../UnstatedUtils';
-
-class LinkEditModal extends React.PureComponent {
+export default class LinkEditModal extends React.PureComponent {
 
   constructor(props) {
     super(props);
@@ -226,13 +222,5 @@ class LinkEditModal extends React.PureComponent {
 }
 
 LinkEditModal.propTypes = {
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   onSave: PropTypes.func,
 };
-
-/**
- * Wrapper component for using unstated
- */
-const LinkEditModalWrapper = withUnstatedContainers(LinkEditModal, [PageContainer]);
-
-export default LinkEditModalWrapper;
