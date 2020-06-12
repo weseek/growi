@@ -8,6 +8,8 @@ import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 import OutsideShareLinkModal from '../OutsideShareLinkModal';
 
+import { toastError } from '../../util/apiNotification';
+
 
 const PageShareManagement = (props) => {
   const { t, appContainer, pageContainer } = props;
@@ -32,7 +34,7 @@ const PageShareManagement = (props) => {
       return res;
     }
     catch (err) {
-      return null;
+      toastError(Error('Failed to export'));
     }
   }
 
