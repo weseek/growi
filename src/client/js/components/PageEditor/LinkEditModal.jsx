@@ -26,9 +26,8 @@ export default class LinkEditModal extends React.PureComponent {
     this.save = this.save.bind(this);
   }
 
-  show(editor) {
-    const selection = editor.getDoc().getSelection();
-    this.setState({ show: true, labelInputValue: selection });
+  show(defaultLabelInputValue = '') {
+    this.setState({ show: true, labelInputValue: defaultLabelInputValue });
   }
 
   cancel() {
