@@ -653,7 +653,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   showLinkEditHandler() {
-    this.linkEditModal.current.show();
+    this.linkEditModal.current.show(this.getCodeMirror());
   }
 
   showHandsonTableHandler() {
@@ -858,6 +858,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
         <LinkEditModal
           ref={this.linkEditModal}
+          onSave={(link) => { return this.getCodeMirror().getDoc().replaceSelection(link) }}
         />
         <HandsontableModal
           ref={this.handsontableModal}
