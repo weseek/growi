@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
@@ -10,17 +11,23 @@ export default class LinkEditModal extends React.PureComponent {
     this.state = {
       show: false,
       isUseRelativePath: false,
-      inputValue: '~.cloud.~',
-      labelInputValue: 'ここがリンク',
+      linkInputValue: '',
+      labelInputValue: '',
+      output: '[label](link)',
     };
 
+    this.show = this.show.bind(this);
+    this.hide = this.hide.bind(this);
     this.cancel = this.cancel.bind(this);
+    this.handleChangeLinkInput = this.handleChangeLinkInput.bind(this);
+    this.handleChangeLabelInput = this.handleChangeLabelInput.bind(this);
     this.toggleIsUseRelativePath = this.toggleIsUseRelativePath.bind(this);
     this.showLog = this.showLog.bind(this);
+    this.save = this.save.bind(this);
   }
 
-  show() {
-    this.setState({ show: true });
+  show(defaultLabelInputValue = '') {
+    this.setState({ show: true, labelInputValue: defaultLabelInputValue });
   }
 
   cancel() {
@@ -46,17 +53,24 @@ export default class LinkEditModal extends React.PureComponent {
   }
 
   showLog() {
-    console.log(this.state.inputValue);
+    console.log(this.state.linkInputValue);
   }
 
-  handleInputChange(linkValue) {
-    this.setState({ inputValue: linkValue });
+  handleChangeLinkInput(linkValue) {
+    this.setState({ linkInputValue: linkValue });
   }
 
-  labelInputChange(labelValue) {
+  handleChangeLabelInput(labelValue) {
     this.setState({ labelInputValue: labelValue });
   }
 
+  save() {
+    if (this.props.onSave != null) {
+      this.props.onSave(this.state.output);
+    }
+
+    this.hide();
+  }
 
   render() {
     return (
@@ -77,7 +91,7 @@ export default class LinkEditModal extends React.PureComponent {
                     type="text"
                     placeholder="/foo/bar/31536000"
                     aria-describedby="button-addon"
-                    value={this.state.inputValue}
+                    value={this.state.linkInputValue}
                     onChange={e => this.handleInputChange(e.target.value)}
                   />
                   <div className="input-group-append">
@@ -125,17 +139,15 @@ export default class LinkEditModal extends React.PureComponent {
                           onChange={e => this.labelInputChange(e.target.value)}
                         />
                       </div>
-                      <span className="p-2">[[{this.state.labelInputValue} &gt; {this.state.inputValue}]]</span>
-                      <div>
-                      </div>
+                      <span className="p-2">[[{this.state.labelInputValue} &gt; {this.state.linkInputValue}]]</span>
                       <div className="form-inline">
                         <div className="custom-control custom-checkbox custom-checkbox-info">
-                          <input className="custom-control-input" id="relativePath" type="checkbox" checked={this.state.isUseRelativePath} />
-                          <label className="custom-control-label" htmlFor="relativePath" onClick={this.toggleIsUseRelativePath}>
+                          <input className="custom-control-input" id="pukiwikiRelativePath" type="checkbox" checked={this.state.isUseRelativePath} />
+                          <label className="custom-control-label" htmlFor="pukiwikiRelativePath" onClick={this.toggleIsUseRelativePath}>
                             Use relative path
                           </label>
                         </div>
-                        <button type="button" className="btn btn-primary ml-auto">
+                        <button type="button" className="btn btn-primary ml-auto" onClick={this.save}>
                           Done
                         </button>
                       </div>
@@ -152,7 +164,7 @@ export default class LinkEditModal extends React.PureComponent {
                         <span>URI</span>
                       </div>
                       <div className="d-flex">
-                        <button type="button" className="btn btn-primary ml-auto">
+                        <button type="button" className="btn btn-primary ml-auto" onClick={this.save}>
                           Done
                         </button>
                       </div>
@@ -170,12 +182,12 @@ export default class LinkEditModal extends React.PureComponent {
                       </div>
                       <div className="form-inline">
                         <div className="custom-control custom-checkbox custom-checkbox-info">
-                          <input className="custom-control-input" id="relativePath" type="checkbox" checked={this.state.isUseRelativePath} />
-                          <label className="custom-control-label" htmlFor="relativePath" onClick={this.toggleIsUseRelativePath}>
+                          <input className="custom-control-input" id="mdRelativePath" type="checkbox" checked={this.state.isUseRelativePath} />
+                          <label className="custom-control-label" htmlFor="mdRelativePath" onClick={this.toggleIsUseRelativePath}>
                             Use relative path
                           </label>
                         </div>
-                        <button type="button" className="btn btn-primary ml-auto">
+                        <button type="button" className="btn btn-primary ml-auto" onClick={this.save}>
                           Done
                         </button>
                       </div>
@@ -196,3 +208,7 @@ export default class LinkEditModal extends React.PureComponent {
   }
 
 }
+
+LinkEditModal.propTypes = {
+  onSave: PropTypes.func,
+};
