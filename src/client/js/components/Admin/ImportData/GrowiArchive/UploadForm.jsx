@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../../UnstatedUtils';
+import { withUnstatedContainers } from '../../../UnstatedUtils';
 import AppContainer from '../../../../services/AppContainer';
 // import { toastSuccess, toastError } from '../../../util/apiNotification';
 
@@ -88,8 +88,6 @@ UploadForm.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const UploadFormWrapper = (props) => {
-  return createSubscribedElement(UploadForm, props, [AppContainer]);
-};
+const UploadFormWrapper = withUnstatedContainers(UploadForm, [AppContainer]);
 
 export default withTranslation()(UploadFormWrapper);

@@ -6,7 +6,7 @@ import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
@@ -145,9 +145,7 @@ class CustomizeHighlightSetting extends React.Component {
 
 }
 
-const CustomizeHighlightSettingWrapper = (props) => {
-  return createSubscribedElement(CustomizeHighlightSetting, props, [AppContainer, AdminCustomizeContainer]);
-};
+const CustomizeHighlightSettingWrapper = withUnstatedContainers(CustomizeHighlightSetting, [AppContainer, AdminCustomizeContainer]);
 
 CustomizeHighlightSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next

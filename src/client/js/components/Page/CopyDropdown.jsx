@@ -100,105 +100,98 @@ class CopyDropdown extends React.Component {
     const permalink = this.generatePermalink();
 
     const { DropdownItemContents } = this;
-
-    if (isShareLinkMode) {
-      return (
-        <>
-          <CopyToClipboard text={shareLink.link} onCopy={this.showToolTip} id={`copyShareLink${shareLink._id}`}>
-            <button type="button" className="btn btn-outline-success float-right">Copy Link</button>
-          </CopyToClipboard>
-          <Tooltip placement="bottom" isOpen={this.state.tooltipOpen} target={`copyShareLink${shareLink._id}`} fade={false}>
-            copied!
-          </Tooltip>
-        </>
-      );
-    }
+    const copyTarget = isShareLinkMode ? `copyShareLink${shareLink._id}` : 'copyPagePathDropdown';
 
     return (
       <>
-        <UncontrolledDropdown id="copyPagePathDropdown" className="grw-copy-dropdown">
+        { isShareLinkMode ? (
+          <CopyToClipboard text={shareLink.link} onCopy={this.showToolTip} id={copyTarget}>
+            <button type="button" className="btn btn-outline-success float-right">Copy Link</button>
+          </CopyToClipboard>
+        ) : (
+          <UncontrolledDropdown id={copyTarget} className="grw-copy-dropdown">
+            <DropdownToggle
+              caret
+              className="d-block text-muted bg-transparent btn-copy border-0"
+              style={this.props.buttonStyle}
+            >
+              <i className="ti-clipboard"></i>
+            </DropdownToggle>
 
-          <DropdownToggle
-            caret
-            className="d-block text-muted bg-transparent btn-copy border-0"
-            style={this.props.buttonStyle}
-          >
-            <i className="ti-clipboard"></i>
-          </DropdownToggle>
+            <DropdownMenu>
 
-          <DropdownMenu>
-
-            <div className="d-flex align-items-center justify-content-between">
-              <DropdownItem header className="px-3">
-                { t('copy_to_clipboard.Copy to clipboard') }
-              </DropdownItem>
-              <div className="px-3 custom-control custom-switch custom-switch-sm">
-                <input
-                  type="checkbox"
-                  id="customSwitchForParams"
-                  className="custom-control-input"
-                  checked={isParamsAppended}
-                  onChange={e => this.setState({ isParamsAppended: !isParamsAppended })}
-                />
-                <label className="custom-control-label small" htmlFor="customSwitchForParams">Append params</label>
+              <div className="d-flex align-items-center justify-content-between">
+                <DropdownItem header className="px-3">
+                  { t('copy_to_clipboard.Copy to clipboard') }
+                </DropdownItem>
+                <div className="px-3 custom-control custom-switch custom-switch-sm">
+                  <input
+                    type="checkbox"
+                    id="customSwitchForParams"
+                    className="custom-control-input"
+                    checked={isParamsAppended}
+                    onChange={e => this.setState({ isParamsAppended: !isParamsAppended })}
+                  />
+                  <label className="custom-control-label small" htmlFor="customSwitchForParams">Append params</label>
+                </div>
               </div>
-            </div>
 
-            <DropdownItem divider className="my-0"></DropdownItem>
+              <DropdownItem divider className="my-0"></DropdownItem>
 
-            {/* Page path */}
-            <CopyToClipboard text={pagePathWithParams} onCopy={this.showToolTip}>
-              <DropdownItem className="px-3">
-                <DropdownItemContents title={t('copy_to_clipboard.Page path')} contents={pagePathWithParams} />
-              </DropdownItem>
-            </CopyToClipboard>
-
-            <DropdownItem divider className="my-0"></DropdownItem>
-
-            {/* Page path URL */}
-            <CopyToClipboard text={pagePathUrl} onCopy={this.showToolTip}>
-              <DropdownItem className="px-3">
-                <DropdownItemContents title={t('copy_to_clipboard.Page URL')} contents={pagePathUrl} />
-              </DropdownItem>
-            </CopyToClipboard>
-
-            <DropdownItem divider className="my-0"></DropdownItem>
-
-            {/* Parmanent Link */}
-            { pageId && (
-              <CopyToClipboard text={permalink} onCopy={this.showToolTip}>
+              {/* Page path */}
+              <CopyToClipboard text={pagePathWithParams} onCopy={this.showToolTip}>
                 <DropdownItem className="px-3">
-                  <DropdownItemContents title={t('copy_to_clipboard.Parmanent link')} contents={permalink} />
+                  <DropdownItemContents title={t('copy_to_clipboard.Page path')} contents={pagePathWithParams} />
                 </DropdownItem>
               </CopyToClipboard>
-            )}
 
-            <DropdownItem divider className="my-0"></DropdownItem>
+              <DropdownItem divider className="my-0"></DropdownItem>
 
-            {/* Page path + Parmanent Link */}
-            { pageId && (
-              <CopyToClipboard text={`${pagePathWithParams}\n${permalink}`} onCopy={this.showToolTip}>
+              {/* Page path URL */}
+              <CopyToClipboard text={pagePathUrl} onCopy={this.showToolTip}>
                 <DropdownItem className="px-3">
-                  <DropdownItemContents title={t('copy_to_clipboard.Page path and parmanent link')} contents={<>{pagePathWithParams}<br />{permalink}</>} />
+                  <DropdownItemContents title={t('copy_to_clipboard.Page URL')} contents={pagePathUrl} />
                 </DropdownItem>
               </CopyToClipboard>
-            )}
 
-            <DropdownItem divider className="my-0"></DropdownItem>
+              <DropdownItem divider className="my-0"></DropdownItem>
 
-            {/* Markdown Link */}
-            { pageId && (
-              <CopyToClipboard text={this.generateMarkdownLink()} onCopy={this.showToolTip}>
-                <DropdownItem className="px-3 text-wrap">
-                  <DropdownItemContents title={t('copy_to_clipboard.Markdown link')} contents={this.generateMarkdownLink()} isContentsWrap />
-                </DropdownItem>
-              </CopyToClipboard>
-            )}
-          </DropdownMenu>
+              {/* Parmanent Link */}
+              { pageId && (
+                <CopyToClipboard text={permalink} onCopy={this.showToolTip}>
+                  <DropdownItem className="px-3">
+                    <DropdownItemContents title={t('copy_to_clipboard.Parmanent link')} contents={permalink} />
+                  </DropdownItem>
+                </CopyToClipboard>
+              )}
 
-        </UncontrolledDropdown>
+              <DropdownItem divider className="my-0"></DropdownItem>
 
-        <Tooltip placement="bottom" isOpen={this.state.tooltipOpen} target="copyPagePathDropdown" fade={false}>
+              {/* Page path + Parmanent Link */}
+              { pageId && (
+                <CopyToClipboard text={`${pagePathWithParams}\n${permalink}`} onCopy={this.showToolTip}>
+                  <DropdownItem className="px-3">
+                    <DropdownItemContents title={t('copy_to_clipboard.Page path and parmanent link')} contents={<>{pagePathWithParams}<br />{permalink}</>} />
+                  </DropdownItem>
+                </CopyToClipboard>
+              )}
+
+              <DropdownItem divider className="my-0"></DropdownItem>
+
+              {/* Markdown Link */}
+              { pageId && (
+                <CopyToClipboard text={this.generateMarkdownLink()} onCopy={this.showToolTip}>
+                  <DropdownItem className="px-3 text-wrap">
+                    <DropdownItemContents title={t('copy_to_clipboard.Markdown link')} contents={this.generateMarkdownLink()} isContentsWrap />
+                  </DropdownItem>
+                </CopyToClipboard>
+              )}
+            </DropdownMenu>
+
+          </UncontrolledDropdown>
+        )}
+
+        <Tooltip placement="bottom" isOpen={this.state.tooltipOpen} target={copyTarget} fade={false}>
           copied!
         </Tooltip>
       </>

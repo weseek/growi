@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -7,7 +7,7 @@ import {
 
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
@@ -16,8 +16,11 @@ import ShareLinkList from './ShareLinkList';
 import ShareLinkForm from './ShareLinkForm';
 
 const OutsideShareLinkModal = (props) => {
+  const [isOpenShareLinkForm, setIsOpenShareLinkForm] = useState(false);
 
-  /* const { t } = props; */
+  function toggleShareLinkFormHandler() {
+    setIsOpenShareLinkForm(!isOpenShareLinkForm);
+  }
 
   return (
     <Modal size="xl" isOpen={props.isOpen} toggle={props.onClose} className="grw-create-page">
@@ -25,15 +28,21 @@ const OutsideShareLinkModal = (props) => {
       </ModalHeader>
       <ModalBody>
         <div className="container">
-          <div className="row align-items-center mb-3">
-            <h4 className="col-10">Shared Link List</h4>
-            <button className="col btn btn-danger" type="button">Delete all links</button>
+          <div className="form-inline mb-3">
+            <h4>Shared Link List</h4>
+            <button className="ml-auto btn btn-danger" type="button">Delete all links</button>
           </div>
 
           <div>
             <ShareLinkList />
-            <button className="btn btn-outline-secondary d-block mx-auto px-5 mb-3" type="button">+</button>
-            <ShareLinkForm />
+            <button
+              className="btn btn-outline-secondary d-block mx-auto px-5 mb-3"
+              type="button"
+              onClick={toggleShareLinkFormHandler}
+            >
+              {isOpenShareLinkForm ? 'Close' : 'New'}
+            </button>
+            {isOpenShareLinkForm && <ShareLinkForm />}
           </div>
         </div>
       </ModalBody>
@@ -44,10 +53,7 @@ const OutsideShareLinkModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const ModalControlWrapper = (props) => {
-  return createSubscribedElement(OutsideShareLinkModal, props, [AppContainer, PageContainer]);
-};
-
+const ModalControlWrapper = withUnstatedContainers(OutsideShareLinkModal, [AppContainer, PageContainer]);
 
 OutsideShareLinkModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next

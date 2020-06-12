@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import AdminUsersContainer from '../../../services/AdminUsersContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
@@ -42,9 +42,7 @@ class StatusActivateButton extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const StatusActivateFormWrapper = (props) => {
-  return createSubscribedElement(StatusActivateButton, props, [AppContainer, AdminUsersContainer]);
-};
+const StatusActivateFormWrapper = withUnstatedContainers(StatusActivateButton, [AppContainer, AdminUsersContainer]);
 
 StatusActivateButton.propTypes = {
   t: PropTypes.func.isRequired, // i18next

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
@@ -127,9 +127,7 @@ class PresentationForm extends React.Component {
 
 }
 
-const PresentationFormWrapper = (props) => {
-  return createSubscribedElement(PresentationForm, props, [AppContainer, AdminMarkDownContainer]);
-};
+const PresentationFormWrapper = withUnstatedContainers(PresentationForm, [AppContainer, AdminMarkDownContainer]);
 
 PresentationForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next

@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { UncontrolledTooltip } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+
+import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 import OutsideShareLinkModal from '../OutsideShareLinkModal';
@@ -26,12 +27,10 @@ const PageShareManagement = (props) => {
 
   function renderModals() {
     return (
-      <>
-        <OutsideShareLinkModal
-          isOpen={isOutsideShareLinkModalShown}
-          onClose={closeOutsideShareLinkModalHandler}
-        />
-      </>
+      <OutsideShareLinkModal
+        isOpen={isOutsideShareLinkModalShown}
+        onClose={closeOutsideShareLinkModalHandler}
+      />
     );
   }
 
@@ -40,7 +39,7 @@ const PageShareManagement = (props) => {
       <>
         <button
           type="button"
-          className="nav-link bg-transparent dropdown-toggle dropdown-toggle-no-caret"
+          className="btn-link nav-link bg-transparent dropdown-toggle dropdown-toggle-no-caret"
           data-toggle="dropdown"
         >
           <i className="icon-share"></i>
@@ -54,7 +53,7 @@ const PageShareManagement = (props) => {
       <>
         <button
           type="button"
-          className="nav-link bg-transparent"
+          className="btn nav-link bg-transparent dropdown-toggle dropdown-toggle-no-caret disabled"
           id="auth-guest-tltips"
         >
           <i className="icon-share"></i>
@@ -72,7 +71,7 @@ const PageShareManagement = (props) => {
       {currentUser == null ? renderGuestUser() : renderCurrentUser()}
       <div className="dropdown-menu dropdown-menu-right">
         <button className="dropdown-item" type="button" onClick={openOutsideShareLinkModalHandler}>
-          <i className="icon-link"></i>{t('Shere this page link to public')}
+          <i className="icon-fw icon-link"></i>{t('Shere this page link to public')}
           <span className="ml-2 badge badge-info badge-pill">{pageContainer.state.shareLinksNumber}</span>
         </button>
       </div>
@@ -85,9 +84,7 @@ const PageShareManagement = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageShareManagementWrapper = (props) => {
-  return createSubscribedElement(PageShareManagement, props, [AppContainer, PageContainer]);
-};
+const PageShareManagementWrapper = withUnstatedContainers(PageShareManagement, [AppContainer, PageContainer]);
 
 
 PageShareManagement.propTypes = {

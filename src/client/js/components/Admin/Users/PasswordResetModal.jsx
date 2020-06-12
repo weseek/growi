@@ -6,7 +6,7 @@ import {
 } from 'reactstrap';
 
 import { toastError } from '../../../util/apiNotification';
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 
 class PasswordResetModal extends React.Component {
@@ -101,9 +101,7 @@ class PasswordResetModal extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const PasswordResetModalWrapper = (props) => {
-  return createSubscribedElement(PasswordResetModal, props, [AppContainer]);
-};
+const PasswordResetModalWrapper = withUnstatedContainers(PasswordResetModal, [AppContainer]);
 
 PasswordResetModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next

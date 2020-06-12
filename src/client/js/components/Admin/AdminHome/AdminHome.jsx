@@ -5,7 +5,7 @@ import loggerFactory from '@alias/logger';
 
 import { toastError } from '../../../util/apiNotification';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import AdminHomeContainer from '../../../services/AdminHomeContainer';
 import SystemInfomationTable from './SystemInfomationTable';
@@ -69,9 +69,7 @@ class AdminHome extends React.Component {
 
 }
 
-const AdminHomeWrapper = (props) => {
-  return createSubscribedElement(AdminHome, props, [AppContainer, AdminHomeContainer]);
-};
+const AdminHomeWrapper = withUnstatedContainers(AdminHome, [AppContainer, AdminHomeContainer]);
 
 AdminHome.propTypes = {
   t: PropTypes.func.isRequired, // i18next

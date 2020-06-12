@@ -3,7 +3,7 @@ import * as toastr from 'toastr';
 
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 import AppContainer from '../services/AppContainer';
 import CopyDropdown from './Page/CopyDropdown';
@@ -81,8 +81,6 @@ const ShareLinkList = (props) => {
   );
 };
 
-const ShareLinkListWrapper = (props) => {
-  return createSubscribedElement(ShareLinkList, props, [AppContainer]);
-};
+const ShareLinkListWrapper = withUnstatedContainers(ShareLinkList, [AppContainer]);
 
 export default withTranslation()(ShareLinkListWrapper);

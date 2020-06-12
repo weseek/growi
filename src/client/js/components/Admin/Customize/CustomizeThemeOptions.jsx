@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
 import ThemeColorBox from './ThemeColorBox';
@@ -81,9 +81,7 @@ class CustomizeThemeOptions extends React.Component {
 
 }
 
-const CustomizeThemeOptionsWrapper = (props) => {
-  return createSubscribedElement(CustomizeThemeOptions, props, [AppContainer, AdminCustomizeContainer]);
-};
+const CustomizeThemeOptionsWrapper = withUnstatedContainers(CustomizeThemeOptions, [AppContainer, AdminCustomizeContainer]);
 
 CustomizeThemeOptions.propTypes = {
   t: PropTypes.func.isRequired, // i18next

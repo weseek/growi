@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
 import ElasticsearchManagement from './ElasticsearchManagement/ElasticsearchManagement';
@@ -23,9 +23,7 @@ class FullTextSearchManagement extends React.Component {
 
 }
 
-const FullTextSearchManagementWrapper = (props) => {
-  return createSubscribedElement(FullTextSearchManagement, props, [AppContainer]);
-};
+const FullTextSearchManagementWrapper = withUnstatedContainers(FullTextSearchManagement, [AppContainer]);
 
 FullTextSearchManagement.propTypes = {
   t: PropTypes.func.isRequired, // i18next

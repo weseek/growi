@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 import AppContainer from '../../../services/AppContainer';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
 
 import CustomizeLayoutSetting from './CustomizeLayoutSetting';
@@ -75,9 +75,7 @@ class Customize extends React.Component {
 
 }
 
-const CustomizeWrapper = (props) => {
-  return createSubscribedElement(Customize, props, [AppContainer, AdminCustomizeContainer]);
-};
+const CustomizeWrapper = withUnstatedContainers(Customize, [AppContainer, AdminCustomizeContainer]);
 
 Customize.propTypes = {
   t: PropTypes.func.isRequired, // i18next
