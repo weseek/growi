@@ -69,14 +69,32 @@ class ShareLinkForm extends React.Component {
     this.setState({ customExpirationTime });
   }
 
+  generateExpired() {
+    const { expirationType } = this.state;
+    let expiredAt;
+
+    if (expirationType === 'unlimited') {
+      expiredAt = null;
+    }
+    if (expirationType === 'numberOfDays') {
+      const date = new Date();
+      date.setDate(date.getDate() + this.state.numberOfDays);
+      expiredAt = date;
+    }
+
+    return expiredAt;
+  }
+
   async handleIssueShareLink() {
     const { t, pageContainer } = this.props;
     const { pageId } = pageContainer.state;
     const { description } = this.state;
 
+    const expiredAt = this.generateExpired();
+    console.log(expiredAt);
     try {
       console.log(this.state);
-      await this.props.appContainer.apiv3.post('/share-links/', { relatedPage: pageId, description });
+      // await this.props.appContainer.apiv3.post('/share-links/', { relatedPage: pageId, description });
       toastSuccess(t('toaster.issue_share_link'));
     }
     catch (err) {
