@@ -92,27 +92,27 @@ export default class StaffCredit extends React.Component {
   }
 
   componentDidMount() {
-    // px / sec
-    const scrollSpeed = 200;
-    const target = $('.credit-curtain');
-    const scrollTargetHeight = target.children().innerHeight();
-    const duration = scrollTargetHeight / scrollSpeed * 1000;
-    target.animate({ scrollTop: scrollTargetHeight }, duration, 'linear');
-    console.log(target.innerHeight());
-
-    target.slimScroll({
-      height: target.innerHeight(),
-      // Able to scroll after automatic schooling is complete so set "bottom" to allow scrolling from the bottom.
-      start: 'bottom',
-      color: '#FFFFFF',
-    });
+    setTimeout(function(){
+      // px / sec
+      const scrollSpeed = 200;
+      const target = $('.credit-curtain');
+      const scrollTargetHeight = target.children().innerHeight();
+      const duration = scrollTargetHeight / scrollSpeed * 1000;
+      target.animate({ scrollTop: scrollTargetHeight }, duration, 'linear');
+      target.slimScroll({
+        height: target.innerHeight(),
+        // Able to scroll after automatic schooling is complete so set "bottom" to allow scrolling from the bottom.
+        start: 'bottom',
+        color: '#FFFFFF',
+      });
+    },10);
   }
 
   render() {
     return (
       <Modal isOpen={this.state.isShown} toggle={this.deleteCredit} scrollable className="staff-credit">
-        <ModalBody className="credit-curtain">
-          {this.renderContributors()}
+        <ModalBody className="credit-curtain" >
+            {this.renderContributors()}
         </ModalBody>
       </Modal>
     );
