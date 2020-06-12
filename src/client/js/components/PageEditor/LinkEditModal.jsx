@@ -1,11 +1,15 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
-import Preview from '../PageEditor/Preview';
+import Preview from './Preview';
 import { toastError } from '../../util/apiNotification';
 
-export default class LinkEditModal extends React.PureComponent {
+import AppContainer from '../../services/AppContainer';
+import { withUnstatedContainers } from '../UnstatedUtils';
+
+class LinkEditModal extends React.PureComponent {
 
   constructor(props) {
     super(props);
@@ -46,10 +50,11 @@ export default class LinkEditModal extends React.PureComponent {
       <div className="page-editor-preview-container flex-grow-1 flex-basis-0 mw-0">
         <Preview
           markdown={this.state.markdown}
+          // eslint-disable-next-line no-return-assign
           inputRef={(el) => { return this.previewElement = el }}
         />
       </div>
-    )
+    );
   }
 
   insertLinkIntoEditor() {
@@ -59,10 +64,11 @@ export default class LinkEditModal extends React.PureComponent {
   async setMarkdown() {
     let markdown = '';
     try {
-      await appContainer.apiGet('/pages.get', { path: this.state.inputValue }).then((res) => {
+      await this.props.appContainer.apiGet('/pages.get', { path: this.state.inputValue }).then((res) => {
         markdown = res.page.revision.body;
       });
-    } catch (err) {
+    }
+    catch (err) {
       markdown = err.message;
       toastError(err);
     }
@@ -101,7 +107,7 @@ export default class LinkEditModal extends React.PureComponent {
                     onChange={e => this.handleInputChange(e.target.value)}
                   />
                   <div className="input-group-append">
-                    <button 
+                    <button
                       type="button"
                       id="button-addon"
                       className="btn btn-secondary"
@@ -219,3 +225,10 @@ export default class LinkEditModal extends React.PureComponent {
   }
 
 }
+
+const LinkEditModalWrapper = withUnstatedContainers(LinkEditModal, [AppContainer]);
+
+LinkEditModal.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+};
+export default LinkEditModalWrapper;
