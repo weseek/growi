@@ -92,7 +92,7 @@ export default class StaffCredit extends React.Component {
   }
 
   componentDidMount() {
-    setTimeout(function(){
+    setTimeout(()=> {
       // px / sec
       const scrollSpeed = 200;
       const target = $('.credit-curtain');
@@ -105,14 +105,14 @@ export default class StaffCredit extends React.Component {
         start: 'bottom',
         color: '#FFFFFF',
       });
-    },10);
+    }, 10);
   }
 
   render() {
     return (
       <Modal isOpen={this.state.isShown} toggle={this.deleteCredit} scrollable className="staff-credit">
-        <ModalBody className="credit-curtain" >
-            {this.renderContributors()}
+        <ModalBody className="credit-curtain">
+          {this.renderContributors()}
         </ModalBody>
       </Modal>
     );
