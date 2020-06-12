@@ -24,7 +24,6 @@ const schema = new mongoose.Schema({
 schema.plugin(mongoosePaginate);
 schema.plugin(uniqueValidator);
 
-
 module.exports = function(crowi) {
 
   schema.methods.isExpired = function() {
