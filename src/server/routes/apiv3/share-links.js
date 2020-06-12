@@ -68,7 +68,6 @@ module.exports = (crowi) => {
     body('expiredAt').if(value => value != null).isAfter(today.toString()).withMessage('Your Selected date is past'),
     // validate the length of description is max 100.
     body('description').isLength({ min: 0, max: 100 }).withMessage('Max length is 100'),
-
   ];
 
   /**
