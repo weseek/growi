@@ -1,25 +1,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import path from 'path';
 
-import generateLink from './generateLink';
+import {
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from 'reactstrap';
+
 import PageContainer from '../../services/PageContainer';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 class LinkEditModal extends React.PureComponent {
-
   constructor(props) {
     super(props);
 
     this.state = {
       show: false,
       isUseRelativePath: false,
+      isUsePermanentLink: false,
       linkInputValue: '',
       labelInputValue: '',
-      linkerType: 'pukiwikiLink',
-      output: '[label](link)',
+      linkerType: 'mdLink',
     };
 
     this.show = this.show.bind(this);
@@ -31,6 +36,8 @@ class LinkEditModal extends React.PureComponent {
     this.handleSelecteLinkerType = this.handleSelecteLinkerType.bind(this);
     this.showLog = this.showLog.bind(this);
     this.save = this.save.bind(this);
+    this.generateLink = this.generateLink.bind(this);
+    this.toggleIsUsePamanentLink = this.toggleIsUsePamanentLink.bind(this);
   }
 
   show(editor) {
@@ -82,17 +89,48 @@ class LinkEditModal extends React.PureComponent {
     this.setState({ linkerType });
   }
 
-
   save() {
+    const output = this.generateLink();
+
     if (this.props.onSave != null) {
-      this.props.onSave(this.state.output);
+      this.props.onSave(output);
     }
 
     this.hide();
   }
 
-  render() {
+  generateLink() {
     const { pageContainer } = this.props;
+    const {
+      linkInputValue,
+      labelInputValue,
+      linkerType,
+      isUseRelativePath,
+    } = this.state;
+
+    let reshapedLink = linkInputValue;
+
+    if (isUseRelativePath && linkInputValue.match(/^\//)) {
+      reshapedLink = path.relative(pageContainer.state.path, linkInputValue);
+    }
+
+    if (linkerType === 'pukiwikiLink') {
+      return `[[${labelInputValue}>${reshapedLink}]]`;
+    }
+    if (linkerType === 'growiLink') {
+      return `[${reshapedLink}]`;
+    }
+    if (linkerType === 'mdLink') {
+      return `[${labelInputValue}](${reshapedLink})`;
+    }
+  }
+
+  toggleIsUsePamanentLink() {
+    // GW-2834
+    this.setState({ isUsePermanentLink: !this.state.isUsePermanentLink });
+  }
+
+  render() {
     return (
       <Modal isOpen={this.state.show} toggle={this.cancel} size="lg">
         <ModalHeader tag="h4" toggle={this.cancel} className="bg-primary text-light">
@@ -101,67 +139,78 @@ class LinkEditModal extends React.PureComponent {
 
         <ModalBody className="container">
           <div className="row">
-            <div className="col-6">
-              <div className="form-gorup my-3">
-                <label htmlFor="linkInput">Link</label>
-                <div className="input-group">
-                  <input
-                    className="form-control"
-                    id="linkInput"
-                    type="text"
-                    placeholder="URL or page path"
-                    aria-describedby="button-addon"
-                    value={this.state.linkInputValue}
-                    onChange={e => this.handleChangeLinkInput(e.target.value)}
-                  />
-                  <div className="input-group-append">
-                    <button type="button" id="button-addon" className="btn btn-secondary" onClick={this.showLog}>
-                      Preview
-                    </button>
+            <div className="col-12 col-lg-6">
+              <form className="form-group">
+                <div className="form-gorup my-3">
+                  <label htmlFor="linkInput">Link</label>
+                  <div className="input-group">
+                    <input
+                      className="form-control"
+                      id="linkInput"
+                      type="text"
+                      placeholder="URL or page path"
+                      aria-describedby="button-addon"
+                      value={this.state.linkInputValue}
+                      onChange={e => this.handleChangeLinkInput(e.target.value)}
+                    />
+                    <div className="input-group-append">
+                      <button type="button" id="button-addon" className="btn btn-secondary" onClick={this.showLog}>
+                        Preview
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
+                <div className="form-inline">
+                  <div className="custom-control custom-checkbox custom-checkbox-info">
+                    <input
+                      className="custom-control-input"
+                      id="relativePath"
+                      type="checkbox"
+                      checked={this.state.isUseRelativePath}
+                      disabled={this.state.linkerType === 'growiLink'}
+                    />
+                    <label className="custom-control-label" htmlFor="permanentLink" onClick={this.toggleIsUsePamanentLink}>
+                      convert into permanent link
+                    </label>
+                  </div>
+                </div>
+              </form>
 
               <div className="d-block d-lg-none">
                 {this.renderPreview}
                 render preview
               </div>
 
-              <div className="link-edit-tabs">
-                <ul className="nav nav-tabs" role="tabist">
-                  <li className="nav-item">
-                    <a
-                      className="nav-link active"
-                      name="pukiwikiLink"
-                      onClick={e => this.handleSelecteLinkerType(e.target.name)}
-                      href="#Pukiwiki"
-                      role="tab"
-                      data-toggle="tab"
-                    >
-                      Pukiwiki
-                    </a>
-                  </li>
-                  <li className="nav-item">
-                    <a
-                      className="nav-link"
-                      name="growiLink"
-                      onClick={e => this.handleSelecteLinkerType(e.target.name)}
-                      href="#Growi"
-                      role="tab"
-                      data-toggle="tab"
-                    >
-                      Growi Original
-                    </a>
-                  </li>
-                  <li className="nav-item">
-                    <a className="nav-link" name="mdLink" onClick={e => this.handleSelecteLinkerType(e.target.name)} href="#MD" role="tab" data-toggle="tab">
-                      Markdown
-                    </a>
-                  </li>
-                </ul>
-
-                <div className="tab-content pt-3">
+              <div className="card">
+                <div className="card-body">
                   <form className="form-group">
+                    <div className="form-group btn-group w-100" role="group" aria-label="type">
+                      <button
+                        type="button"
+                        name="mdLink"
+                        className={`btn btn-outline-secondary w-100 ${this.state.linkerType === 'mdLink' && 'active'}`}
+                        onClick={e => this.handleSelecteLinkerType(e.target.name)}
+                      >
+                        Markdown
+                      </button>
+                      <button
+                        type="button"
+                        name="growiLink"
+                        className={`btn btn-outline-secondary w-100 ${this.state.linkerType === 'growiLink' && 'active'}`}
+                        onClick={e => this.handleSelecteLinkerType(e.target.name)}
+                      >
+                        Growi Original
+                      </button>
+                      <button
+                        type="button"
+                        name="pukiwikiLink"
+                        className={`btn btn-outline-secondary w-100 ${this.state.linkerType === 'pukiwikiLink' && 'active'}`}
+                        onClick={e => this.handleSelecteLinkerType(e.target.name)}
+                      >
+                        Pukiwiki
+                      </button>
+                    </div>
+
                     <div className="form-group">
                       <label htmlFor="label">Label</label>
                       <input
@@ -191,22 +240,6 @@ class LinkEditModal extends React.PureComponent {
                 </div>
               </div>
             </div>
-
-            <div className="col-6 d-none d-lg-block">
-              {this.renderPreview}
-              render preview
-            </div>
-            <div className="row">
-              <div className="col-12">
-                <generateLink
-                  link={this.state.linkInputValue}
-                  label={this.state.labelInputValue}
-                  type={this.state.linkerType}
-                  isUseRelativePath={this.state.isUseRelativePath}
-                  currentPagePath={pageContainer.state.path}
-                />
-              </div>
-            </div>
           </div>
         </ModalBody>
         <ModalFooter>
@@ -220,7 +253,6 @@ class LinkEditModal extends React.PureComponent {
       </Modal>
     );
   }
-
 }
 
 LinkEditModal.propTypes = {
