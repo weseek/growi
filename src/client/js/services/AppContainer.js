@@ -103,6 +103,20 @@ export default class AppContainer extends Container {
 
     this.openPageCreateModal = this.openPageCreateModal.bind(this);
     this.closePageCreateModal = this.closePageCreateModal.bind(this);
+
+    window.addEventListener('keydown', (event) => {
+      const target = event.target;
+
+      // ignore when target dom is input
+      const inputPattern = /^input|textinput|textarea$/i;
+      if (inputPattern.test(target.tagName) || target.isContentEditable) {
+        return;
+      }
+
+      if (event.key === 'c') {
+        this.setState({ isPageCreateModalShown: true });
+      }
+    });
   }
 
   /**
