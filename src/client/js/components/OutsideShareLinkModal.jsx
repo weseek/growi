@@ -23,7 +23,7 @@ const OutsideShareLinkModal = (props) => {
   }
 
   return (
-    <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose}>
+    <Modal size="lg" isOpen toggle={props.onClose}>
       <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-light">Title
       </ModalHeader>
       <ModalBody>
@@ -42,7 +42,7 @@ const OutsideShareLinkModal = (props) => {
             >
               {isOpenShareLinkForm ? 'Close' : 'New'}
             </button>
-            {isOpenShareLinkForm && <ShareLinkForm />}
+            {isOpenShareLinkForm && <ShareLinkForm onCloseForm={toggleShareLinkFormHandler} />}
           </div>
         </div>
       </ModalBody>
