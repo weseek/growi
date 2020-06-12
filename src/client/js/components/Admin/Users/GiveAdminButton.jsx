@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AdminUsersContainer from '../../../services/AdminUsersContainer';
@@ -31,9 +31,9 @@ class GiveAdminButton extends React.Component {
     const { t } = this.props;
 
     return (
-      <a className="dropdown-item" type="button" onClick={() => { this.onClickGiveAdminBtn() }}>
+      <button className="dropdown-item" type="button" onClick={() => { this.onClickGiveAdminBtn() }}>
         <i className="icon-fw icon-user-following"></i> {t('admin:user_management.user_table.give_admin_access')}
-      </a>
+      </button>
     );
   }
 
@@ -42,9 +42,7 @@ class GiveAdminButton extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const GiveAdminButtonWrapper = (props) => {
-  return createSubscribedElement(GiveAdminButton, props, [AppContainer, AdminUsersContainer]);
-};
+const GiveAdminButtonWrapper = withUnstatedContainers(GiveAdminButton, [AppContainer, AdminUsersContainer]);
 
 GiveAdminButton.propTypes = {
   t: PropTypes.func.isRequired, // i18next

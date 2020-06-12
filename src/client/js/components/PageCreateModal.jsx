@@ -10,7 +10,7 @@ import urljoin from 'url-join';
 
 import { userPageRoot } from '@commons/util/path-utils';
 import { pathUtils } from 'growi-commons';
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 import AppContainer from '../services/AppContainer';
 import PagePathAutoComplete from './PagePathAutoComplete';
@@ -20,7 +20,7 @@ const PageCreateModal = (props) => {
 
   const config = appContainer.getConfig();
   const isReachable = config.isSearchServiceReachable;
-  const { pathname } = window.location;
+  const pathname = decodeURI(window.location.pathname);
   const userPageRootPath = userPageRoot(appContainer.currentUser);
   const parentPath = pathUtils.addTrailingSlash(pathname);
   const now = format(new Date(), 'yyyy/MM/dd');
@@ -29,6 +29,12 @@ const PageCreateModal = (props) => {
   const [todayInput2, setTodayInput2] = useState('');
   const [pageNameInput, setPageNameInput] = useState(parentPath);
   const [template, setTemplate] = useState(null);
+
+  function transitBySubmitEvent(e, transitHandler) {
+    // prevent page transition by submit
+    e.preventDefault();
+    transitHandler();
+  }
 
   /**
    * change todayInput1
@@ -91,9 +97,9 @@ const PageCreateModal = (props) => {
   /**
    * access template page
    */
-  function createTemplatePage() {
+  function createTemplatePage(e) {
     const pageName = (template === 'children') ? '_template' : '__template';
-    window.location.href = encodeURI(urljoin(parentPath, pageName, '#edit'));
+    window.location.href = encodeURI(urljoin(pathname, pageName, '#edit'));
   }
 
   function renderCreateTodayForm() {
@@ -107,22 +113,26 @@ const PageCreateModal = (props) => {
             <div className="d-flex align-items-center flex-fill flex-wrap flex-lg-nowrap">
               <div className="d-flex align-items-center">
                 <span>{userPageRootPath}/</span>
-                <input
-                  type="text"
-                  className="page-today-input1 form-control text-center mx-2"
-                  value={todayInput1}
-                  onChange={e => onChangeTodayInput1Handler(e.target.value)}
-                />
+                <form onSubmit={e => transitBySubmitEvent(e, createTodayPage)}>
+                  <input
+                    type="text"
+                    className="page-today-input1 form-control text-center mx-2"
+                    value={todayInput1}
+                    onChange={e => onChangeTodayInput1Handler(e.target.value)}
+                  />
+                </form>
                 <span className="page-today-suffix">/{now}/</span>
               </div>
-              <input
-                type="text"
-                className="page-today-input2 form-control mt-1 mt-lg-0 mx-lg-2 flex-fill"
-                id="page-today-input2"
-                placeholder={t('Input page name (optional)')}
-                value={todayInput2}
-                onChange={e => onChangeTodayInput2Handler(e.target.value)}
-              />
+              <form className="mt-1 mt-lg-0 ml-lg-2 w-100" onSubmit={e => transitBySubmitEvent(e, createTodayPage)}>
+                <input
+                  type="text"
+                  className="page-today-input2 form-control w-100"
+                  id="page-today-input2"
+                  placeholder={t('Input page name (optional)')}
+                  value={todayInput2}
+                  onChange={e => onChangeTodayInput2Handler(e.target.value)}
+                />
+              </form>
             </div>
 
             <div className="d-flex justify-content-end mt-1 mt-sm-0">
@@ -151,21 +161,23 @@ const PageCreateModal = (props) => {
                 ? (
                   <PagePathAutoComplete
                     crowi={appContainer}
-                    initializedPath={decodeURI(pathname)}
+                    initializedPath={pathname}
                     addTrailingSlash
                     onSubmit={ppacSubmitHandler}
                     onInputChange={ppacInputChangeHandler}
                   />
                 )
                 : (
-                  <input
-                    type="text"
-                    value={pageNameInput}
-                    className="form-control flex-fill"
-                    placeholder={t('Input page name')}
-                    onChange={e => onChangePageNameInputHandler(e.target.value)}
-                    required
-                  />
+                  <form onSubmit={e => transitBySubmitEvent(e, createInputPage)}>
+                    <input
+                      type="text"
+                      value={pageNameInput}
+                      className="form-control flex-fill"
+                      placeholder={t('Input page name')}
+                      onChange={e => onChangePageNameInputHandler(e.target.value)}
+                      required
+                    />
+                  </form>
                 )}
             </div>
 
@@ -187,8 +199,9 @@ const PageCreateModal = (props) => {
       <div className="row">
         <fieldset className="col-12">
 
-          <h3 className="grw-modal-head pb-2">{ t('template.modal_label.Create template under')}<br />
-            <code>{decodeURI(pathname)}</code>
+          <h3 className="grw-modal-head pb-2">
+            { t('template.modal_label.Create template under')}<br />
+            <code className="h6">{pathname}</code>
           </h3>
 
           <div className="d-sm-flex align-items-center justify-items-between">
@@ -200,14 +213,14 @@ const PageCreateModal = (props) => {
                 {template === 'decendants' && t('template.decendants.label')}
               </button>
               <div className="dropdown-menu" aria-labelledby="userMenu">
-                <a className="dropdown-item" type="button" onClick={() => onChangeTemplateHandler('children')}>
+                <button className="dropdown-item" type="button" onClick={() => onChangeTemplateHandler('children')}>
                   { t('template.children.label') } (_template)<br className="d-block d-md-none" />
                   <small className="text-muted text-wrap">- { t('template.children.desc') }</small>
-                </a>
-                <a className="dropdown-item" type="button" onClick={() => onChangeTemplateHandler('decendants')}>
+                </button>
+                <button className="dropdown-item" type="button" onClick={() => onChangeTemplateHandler('decendants')}>
                   { t('template.decendants.label') } (__template) <br className="d-block d-md-none" />
                   <small className="text-muted">- { t('template.decendants.desc') }</small>
-                </a>
+                </button>
               </div>
             </div>
 
@@ -246,9 +259,7 @@ const PageCreateModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const ModalControlWrapper = (props) => {
-  return createSubscribedElement(PageCreateModal, props, [AppContainer]);
-};
+const ModalControlWrapper = withUnstatedContainers(PageCreateModal, [AppContainer]);
 
 
 PageCreateModal.propTypes = {

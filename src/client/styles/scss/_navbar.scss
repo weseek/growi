@@ -1,5 +1,13 @@
 .grw-navbar {
+  max-height: $grw-navbar-height + $grw-navbar-border-width;
+  border-top: 0;
+  border-right: 0;
   border-bottom: $grw-navbar-border-width solid;
+  border-left: 0;
+
+  .grw-app-title {
+    @include variable-font-size(24px);
+  }
 
   .grw-navbar-toggler {
     padding: 0.5rem;
@@ -20,11 +28,6 @@
     padding: 0 1rem;
   }
 
-  #personal-dropdown::after {
-    // hide caret
-    content: none;
-  }
-
   .nav-link {
     &:hover {
       background: rgba(0, 0, 0, 0.1);
@@ -35,6 +38,23 @@
     }
   }
   .nav-item.confidential {
+    :not(i) {
+      @include variable-font-size(14px);
+    }
+
+    @include media-breakpoint-only(md) {
+      max-width: 100px;
+    }
+
+    max-width: 120px;
+    max-height: $grw-navbar-height;
+    overflow: hidden;
     background: rgba(0, 0, 0, 0.2);
+  }
+
+  .grw-personal-dropdown {
+    .grw-email-sm {
+      font-size: 0.75em;
+    }
   }
 }

@@ -7,7 +7,7 @@ import {
 
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 import PageContainer from '../services/PageContainer';
 
 import ApiErrorMessage from './PageManagement/ApiErrorMessage';
@@ -110,7 +110,7 @@ const PageDeleteModal = (props) => {
   }
 
   return (
-    <Modal isOpen={isOpen} toggle={onClose} className="grw-create-page">
+    <Modal size="lg" isOpen={isOpen} toggle={onClose} className="grw-create-page">
       <ModalHeader tag="h4" toggle={onClose} className={`bg-${deleteIconAndKey[deleteMode].color} text-light`}>
         <i className={`icon-fw icon-${deleteIconAndKey[deleteMode].icon}`}></i>
         { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
@@ -138,9 +138,7 @@ const PageDeleteModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageDeleteModalWrapper = (props) => {
-  return createSubscribedElement(PageDeleteModal, props, [PageContainer]);
-};
+const PageDeleteModalWrapper = withUnstatedContainers(PageDeleteModal, [PageContainer]);
 
 PageDeleteModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next

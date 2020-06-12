@@ -1,5 +1,7 @@
 .grw-copy-dropdown {
   .dropdown-menu {
+    min-width: 310px;
+
     .dropdown-header {
       margin-bottom: 0.5em;
       font-size: 1.1em;
@@ -12,7 +14,7 @@
     }
 
     .well {
-      font-size: 0.6em;
+      font-size: 0.7em;
       word-break: break-all;
     }
   }

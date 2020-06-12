@@ -7,7 +7,7 @@ import {
 
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 import PageContainer from '../services/PageContainer';
 
@@ -86,9 +86,7 @@ const PutBackPageModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PutBackPageModalWrapper = (props) => {
-  return createSubscribedElement(PutBackPageModal, props, [PageContainer]);
-};
+const PutBackPageModalWrapper = withUnstatedContainers(PutBackPageModal, [PageContainer]);
 
 PutBackPageModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next

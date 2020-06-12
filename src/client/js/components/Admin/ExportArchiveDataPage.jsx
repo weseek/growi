@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 import * as toastr from 'toastr';
 
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 // import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../services/AppContainer';
@@ -254,8 +254,6 @@ ExportArchiveDataPage.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const ExportArchiveDataPageWrapper = (props) => {
-  return createSubscribedElement(ExportArchiveDataPage, props, [AppContainer, WebsocketContainer]);
-};
+const ExportArchiveDataPageWrapper = withUnstatedContainers(ExportArchiveDataPage, [AppContainer, WebsocketContainer]);
 
 export default withTranslation()(ExportArchiveDataPageWrapper);

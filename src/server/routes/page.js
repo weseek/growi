@@ -260,8 +260,7 @@ module.exports = function(crowi, app) {
   }
 
   async function addRenderVarsForUserPage(renderVars, page, requestUser) {
-    const userData = await User.findUserByUsername(User.getUsernameByPath(page.path))
-      .populate(User.IMAGE_POPULATION);
+    const userData = await User.findUserByUsername(User.getUsernameByPath(page.path));
 
     if (userData != null) {
       renderVars.pageUser = userData;
@@ -790,6 +789,7 @@ module.exports = function(crowi, app) {
    *                required:
    *                  - body
    *                  - page_id
+   *                  - revision_id
    *        responses:
    *          200:
    *            description: Succeeded to update page.
@@ -833,8 +833,8 @@ module.exports = function(crowi, app) {
     const socketClientId = req.body.socketClientId || undefined;
     const pageTags = req.body.pageTags || undefined;
 
-    if (pageId === null || pageBody === null) {
-      return res.json(ApiResponse.error('page_id and body are required.'));
+    if (pageId === null || pageBody === null || revisionId === null) {
+      return res.json(ApiResponse.error('page_id, body and revision_id are required.'));
     }
 
     // check page existence
@@ -987,11 +987,11 @@ module.exports = function(crowi, app) {
    *        description: Get page existence
    *        parameters:
    *          - in: query
-   *            name: pages
+   *            name: pagePaths
    *            schema:
    *              type: string
-   *              description: Page paths specified by hash key in JSON format
-   *              example: '{"/": "unused value", "/user/unknown": "unused value"}'
+   *              description: Page path list in JSON Array format
+   *              example: '["/", "/user/unknown"]'
    *        responses:
    *          200:
    *            description: Succeeded to get page existence.
@@ -1018,17 +1018,17 @@ module.exports = function(crowi, app) {
    * @apiParam {String} pages (stringified JSON)
    */
   api.exist = async function(req, res) {
-    const pagesAsObj = JSON.parse(req.query.pages || '{}');
-    const pagePaths = Object.keys(pagesAsObj);
+    const pagePaths = JSON.parse(req.query.pagePaths || '[]');
 
+    const pages = {};
     await Promise.all(pagePaths.map(async(path) => {
       // check page existence
       const isExist = await Page.count({ path }) > 0;
-      pagesAsObj[path] = isExist;
+      pages[path] = isExist;
       return;
     }));
 
-    const result = { pages: pagesAsObj };
+    const result = { pages };
 
     return res.json(ApiResponse.success(result));
   };

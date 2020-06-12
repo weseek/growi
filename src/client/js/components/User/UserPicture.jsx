@@ -1,35 +1,14 @@
 import React from 'react';
-import md5 from 'md5';
 import PropTypes from 'prop-types';
 
 import { userPageRoot } from '@commons/util/path-utils';
+
+import { UncontrolledTooltip } from 'reactstrap';
 
 const DEFAULT_IMAGE = '/images/icons/user.svg';
 
 // TODO UserComponent?
 export default class UserPicture extends React.Component {
-
-  getUserPicture(user) {
-    // gravatar
-    if (user.isGravatarEnabled === true) {
-      return this.generateGravatarSrc(user);
-    }
-    // uploaded image
-    if (user.image != null) {
-      return user.image;
-    }
-    if (user.imageAttachment != null) {
-      return user.imageAttachment.filePathProxied;
-    }
-
-    return DEFAULT_IMAGE;
-  }
-
-  generateGravatarSrc(user) {
-    const email = user.email || '';
-    const hash = md5(email.trim().toLowerCase());
-    return `https://gravatar.com/avatar/${hash}`;
-  }
 
   getClassName() {
     const className = ['rounded-circle', 'picture'];
@@ -64,10 +43,16 @@ export default class UserPicture extends React.Component {
 
   withTooltip = (RootElm) => {
     const { user } = this.props;
-    const title = `@${user.username}<br />${user.name}`;
+    const id = `user-picture-${Math.random().toString(32).substring(2)}`;
 
     return props => (
-      <RootElm data-toggle="tooltip" data-placement="bottom" data-html="true" title={title}>{props.children}</RootElm>
+      <>
+        <RootElm id={id}>{props.children}</RootElm>
+        <UncontrolledTooltip placement="bottom" target={id} delay={0} fade={false}>
+          @{user.username}<br />
+          {user.name}
+        </UncontrolledTooltip>
+      </>
     );
   }
 
@@ -86,10 +71,12 @@ export default class UserPicture extends React.Component {
       RootElm = this.withTooltip(RootElm);
     }
 
+    const userPictureSrc = user.imageUrlCached || DEFAULT_IMAGE;
+
     return (
       <RootElm>
         <img
-          src={this.getUserPicture(user)}
+          src={userPictureSrc}
           alt={user.username}
           className={this.getClassName()}
         />

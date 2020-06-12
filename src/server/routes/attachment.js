@@ -354,7 +354,7 @@ module.exports = function(crowi, app) {
 
     let attachments = await Attachment.find({ page: id })
       .sort({ updatedAt: 1 })
-      .populate({ path: 'creator', select: User.USER_PUBLIC_FIELDS, populate: User.IMAGE_POPULATION });
+      .populate({ path: 'creator', select: User.USER_PUBLIC_FIELDS });
 
     attachments = attachments.map((attachment) => {
       return attachment.toObject({ virtuals: true });

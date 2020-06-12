@@ -1,3 +1,34 @@
 label.custom-control-label {
   font-weight: normal;
 }
+
+.custom-switch.custom-switch-sm {
+  $custom-control-indicator-size-sm: $custom-control-indicator-size * 0.8;
+  $custom-switch-width-sm: $custom-control-indicator-size-sm * 1.75;
+  $custom-control-gutter-sm: $custom-control-gutter * 0.8;
+  $custom-control-indicator-size-sm: $custom-control-indicator-size * 0.8;
+  $custom-switch-indicator-size-sm: subtract($custom-control-indicator-size-sm, $custom-control-indicator-border-width * 4);
+
+  padding-left: $custom-switch-width-sm + $custom-control-gutter-sm;
+
+  .custom-control-label {
+    &::before {
+      left: -($custom-switch-width-sm + $custom-control-gutter-sm);
+      width: $custom-switch-width-sm;
+      height: $custom-control-indicator-size-sm;
+    }
+
+    &::after {
+      top: add(($font-size-base * $line-height-base - $custom-control-indicator-size) / 2, $custom-control-indicator-border-width * 2);
+      left: add(-($custom-switch-width-sm + $custom-control-gutter-sm), $custom-control-indicator-border-width * 2);
+      width: $custom-switch-indicator-size-sm;
+      height: $custom-switch-indicator-size-sm;
+    }
+  }
+
+  .custom-control-input:checked ~ .custom-control-label {
+    &::after {
+      transform: translateX($custom-switch-width-sm - $custom-control-indicator-size-sm);
+    }
+  }
+}

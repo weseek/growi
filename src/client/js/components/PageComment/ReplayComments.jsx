@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Button, Collapse } from 'reactstrap';
+import { Collapse } from 'reactstrap';
 
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 
 import Comment from './Comment';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 class ReplayComments extends React.PureComponent {
 
@@ -19,10 +19,10 @@ class ReplayComments extends React.PureComponent {
       isOlderRepliesShown: false,
     };
 
-    this.toggleIsOlderRepliesShown = this.toggleIsOlderRepliesShown.bind(this);
+    this.toggleOlderReplies = this.toggleOlderReplies.bind(this);
   }
 
-  toggleIsOlderRepliesShown() {
+  toggleOlderReplies() {
     this.setState({ isOlderRepliesShown: !this.state.isOlderRepliesShown });
   }
 
@@ -75,17 +75,17 @@ class ReplayComments extends React.PureComponent {
       <React.Fragment>
         {areThereHiddenReplies && (
           <div className="page-comments-hidden-replies">
-            <Collapse in={this.state.isOlderRepliesShown}>
+            <Collapse isOpen={this.state.isOlderRepliesShown}>
               <div>{hiddenElements}</div>
             </Collapse>
             <div className="text-center">
-              <Button
-                bsStyle="link"
-                className="page-comments-list-toggle-older"
-                onClick={this.toggleIsOlderRepliesShown}
+              <button
+                type="button"
+                className="btn btn-link"
+                onClick={this.toggleOlderReplies}
               >
                 {toggleButtonIcon} {toggleButtonLabel}
-              </Button>
+              </button>
             </div>
           </div>
         )}
@@ -100,9 +100,7 @@ class ReplayComments extends React.PureComponent {
 /**
  * Wrapper component for using unstated
  */
-const ReplayCommentsWrapper = (props) => {
-  return createSubscribedElement(ReplayComments, props, [AppContainer, PageContainer]);
-};
+const ReplayCommentsWrapper = withUnstatedContainers(ReplayComments, [AppContainer, PageContainer]);
 
 ReplayComments.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,

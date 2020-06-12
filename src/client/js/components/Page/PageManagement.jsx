@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { isTopPage } from '@commons/util/path-utils';
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 import PageDeleteModal from '../PageDeleteModal';
@@ -60,12 +60,12 @@ const PageManagement = (props) => {
   function renderDropdownItemForNotTopPage() {
     return (
       <>
-        <a className="dropdown-item" type="button" onClick={openPageRenameModalHandler}>
+        <button className="dropdown-item" type="button" onClick={openPageRenameModalHandler}>
           <i className="icon-fw icon-action-redo"></i> { t('Move/Rename') }
-        </a>
-        <a className="dropdown-item" type="button" onClick={openPageDuplicateModalHandler}>
+        </button>
+        <button className="dropdown-item" type="button" onClick={openPageDuplicateModalHandler}>
           <i className="icon-fw icon-docs"></i> { t('Duplicate') }
-        </a>
+        </button>
         <div className="dropdown-divider"></div>
       </>
     );
@@ -75,9 +75,9 @@ const PageManagement = (props) => {
     return (
       <>
         <div className="dropdown-divider"></div>
-        <a className="dropdown-item" type="button" onClick={openPageDeleteModalHandler}>
+        <button className="dropdown-item" type="button" onClick={openPageDeleteModalHandler}>
           <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
-        </a>
+        </button>
       </>
     );
   }
@@ -123,9 +123,9 @@ const PageManagement = (props) => {
       </a>
       <div className="dropdown-menu dropdown-menu-right">
         {!isTopPagePath && renderDropdownItemForNotTopPage()}
-        <a className="dropdown-item" type="button" onClick={openPageTemplateModalHandler}>
+        <button className="dropdown-item" type="button" onClick={openPageTemplateModalHandler}>
           <i className="icon-fw icon-magic-wand"></i> { t('template.option_label.create/edit') }
-        </a>
+        </button>
         {(!isTopPagePath && isDeletable) && renderDropdownItemForDeletablePage()}
       </div>
       {renderModals()}
@@ -136,9 +136,7 @@ const PageManagement = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageManagementWrapper = (props) => {
-  return createSubscribedElement(PageManagement, props, [AppContainer, PageContainer]);
-};
+const PageManagementWrapper = withUnstatedContainers(PageManagement, [AppContainer, PageContainer]);
 
 
 PageManagement.propTypes = {

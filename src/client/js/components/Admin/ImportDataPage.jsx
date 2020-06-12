@@ -3,7 +3,7 @@ import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import { toastSuccess, toastError } from '../../util/apiNotification';
 
 import AppContainer from '../../services/AppContainer';
@@ -339,9 +339,7 @@ ImportDataPage.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const ImportDataPageWrapper = (props) => {
-  return createSubscribedElement(ImportDataPage, props, [AppContainer]);
-};
+const ImportDataPageWrapper = withUnstatedContainers(ImportDataPage, [AppContainer]);
 
 
 export default withTranslation()(ImportDataPageWrapper);

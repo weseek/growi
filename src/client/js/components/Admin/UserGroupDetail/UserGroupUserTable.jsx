@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
 
 import UserPicture from '../../User/UserPicture';
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import AdminUserGroupDetailContainer from '../../../services/AdminUserGroupDetailContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
@@ -73,7 +73,7 @@ class UserGroupUserTable extends React.Component {
                       <i className="icon-settings"></i>
                     </button>
                     <div className="dropdown-menu" role="menu" aria-labelledby={`admin-group-menu-button-${relatedUser._id}`}>
-                      <a
+                      <button
                         className="dropdown-item"
                         type="button"
                         onClick={() => {
@@ -81,7 +81,7 @@ class UserGroupUserTable extends React.Component {
                         }}
                       >
                         <i className="icon-fw icon-user-unfollow"></i> {t('admin:user_group_management.remove_from_group')}
-                      </a>
+                      </button>
                     </div>
                   </div>
                 </td>
@@ -118,8 +118,6 @@ UserGroupUserTable.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const UserGroupUserTableWrapper = (props) => {
-  return createSubscribedElement(UserGroupUserTable, props, [AppContainer, AdminUserGroupDetailContainer]);
-};
+const UserGroupUserTableWrapper = withUnstatedContainers(UserGroupUserTable, [AppContainer, AdminUserGroupDetailContainer]);
 
 export default withTranslation()(UserGroupUserTableWrapper);

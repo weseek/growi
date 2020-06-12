@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import AdminExternalAccountsContainer from '../../../services/AdminExternalAccountsContainer';
 
@@ -99,9 +99,9 @@ class ExternalAccountTable extends React.Component {
                       </button>
                       <ul className="dropdown-menu" role="menu">
                         <li className="dropdown-header">{t('admin:user_management.user_table.edit_menu')}</li>
-                        <a className="dropdown-item" type="button" role="button" onClick={() => { return this.removeExtenalAccount(ea._id) }}>
+                        <button className="dropdown-item" type="button" role="button" onClick={() => { return this.removeExtenalAccount(ea._id) }}>
                           <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
-                        </a>
+                        </button>
                       </ul>
                     </div>
                   </td>
@@ -122,9 +122,7 @@ ExternalAccountTable.propTypes = {
   adminExternalAccountsContainer: PropTypes.instanceOf(AdminExternalAccountsContainer).isRequired,
 };
 
-const ExternalAccountTableWrapper = (props) => {
-  return createSubscribedElement(ExternalAccountTable, props, [AppContainer, AdminExternalAccountsContainer]);
-};
+const ExternalAccountTableWrapper = withUnstatedContainers(ExternalAccountTable, [AppContainer, AdminExternalAccountsContainer]);
 
 
 export default withTranslation()(ExternalAccountTableWrapper);

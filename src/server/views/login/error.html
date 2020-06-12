@@ -2,7 +2,7 @@
 
 {% block html_base_css %}error nologin{% endblock %}
 
-{% block html_title %}{{ customizeService.generateCustomTitleForFixedPageName('セットアップ') }}{% endblock %}
+{% block html_title %}{{ customizeService.generateCustomTitleForFixedPageName(t('login.Setup')) }}{% endblock %}
 
 
 
@@ -33,11 +33,11 @@
       <div class="mb-4 login-form-errors text-center">
         {% if reason === 'registered'%}
         <div class="alert alert-success">
-          <h2>登録完了</h2>
+          <h2>{{ t('login.Registration successful') }}</h2>
         </div>
         {% else %}
         <div class="alert alert-warning">
-            <h2>ログインエラー</h2>
+            <h2>{{ t('login.Sign in error') }}</h2>
         </div>
         {% endif %}
       </div>

@@ -3,7 +3,7 @@ import React from 'react';
 
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
 class CustomSidebar extends React.Component {
@@ -40,8 +40,6 @@ class CustomSidebar extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const CustomSidebarWrapper = (props) => {
-  return createSubscribedElement(CustomSidebar, props, [AppContainer]);
-};
+const CustomSidebarWrapper = withUnstatedContainers(CustomSidebar, [AppContainer]);
 
 export default withTranslation()(CustomSidebarWrapper);

@@ -9,7 +9,7 @@ import DevidedPagePath from '@commons/models/devided-page-path';
 import LinkedPagePath from '@commons/models/linked-page-path';
 import PagePathHierarchicalLink from '@commons/components/PagePathHierarchicalLink';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import { toastError } from '../../util/apiNotification';
 
@@ -57,14 +57,14 @@ class RecentChanges extends React.Component {
     );
 
     return (
-      <li className="list-group-item">
+      <li className="list-group-item p-2">
         <div className="d-flex w-100">
           <UserPicture user={page.lastUpdatedUser} size="md" />
           <div className="flex-grow-1 ml-2">
             { !dPagePath.isRoot && <FormerLink /> }
-            <h4 className="mb-1">
+            <h5 className="mb-1">
               <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
-            </h4>
+            </h5>
             <div className="text-right small">
               <FormattedDistanceDate id={page.id} date={page.updatedAt} />
             </div>
@@ -102,8 +102,6 @@ class RecentChanges extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const RecentChangesWrapper = (props) => {
-  return createSubscribedElement(RecentChanges, props, [AppContainer]);
-};
+const RecentChangesWrapper = withUnstatedContainers(RecentChanges, [AppContainer]);
 
 export default withTranslation()(RecentChangesWrapper);

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 
 class UserGroupTable extends React.Component {
@@ -87,12 +87,12 @@ class UserGroupTable extends React.Component {
                             <i className="icon-settings"></i>
                           </button>
                           <div className="dropdown-menu" role="menu" aria-labelledby={`admin-group-menu-button-${group._id}`}>
-                            <a className="dropdown-item" type="button" href={`/admin/user-group-detail/${group._id}`}>
+                            <a className="dropdown-item" href={`/admin/user-group-detail/${group._id}`}>
                               <i className="icon-fw icon-note"></i> {t('Edit')}
                             </a>
-                            <a className="dropdown-item" type="button" role="button" onClick={this.onDelete} data-user-group-id={group._id}>
+                            <button className="dropdown-item" type="button" role="button" onClick={this.onDelete} data-user-group-id={group._id}>
                               <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
-                            </a>
+                            </button>
                           </div>
                         </div>
                       </td>
@@ -115,9 +115,7 @@ class UserGroupTable extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const UserGroupTableWrapper = (props) => {
-  return createSubscribedElement(UserGroupTable, props, [AppContainer]);
-};
+const UserGroupTableWrapper = withUnstatedContainers(UserGroupTable, [AppContainer]);
 
 
 UserGroupTable.propTypes = {

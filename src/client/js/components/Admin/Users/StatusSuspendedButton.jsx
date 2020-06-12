@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AdminUsersContainer from '../../../services/AdminUsersContainer';
@@ -31,9 +31,9 @@ class StatusSuspendedButton extends React.Component {
     const { t } = this.props;
 
     return (
-      <a className="dropdown-item" type="button" onClick={() => { this.onClickDeactiveBtn() }}>
+      <button className="dropdown-item" type="button" onClick={() => { this.onClickDeactiveBtn() }}>
         <i className="icon-fw icon-ban"></i> {t('admin:user_management.user_table.deactivate_account')}
-      </a>
+      </button>
     );
   }
 
@@ -65,9 +65,7 @@ class StatusSuspendedButton extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const StatusSuspendedFormWrapper = (props) => {
-  return createSubscribedElement(StatusSuspendedButton, props, [AppContainer, AdminUsersContainer]);
-};
+const StatusSuspendedFormWrapper = withUnstatedContainers(StatusSuspendedButton, [AppContainer, AdminUsersContainer]);
 
 StatusSuspendedButton.propTypes = {
   t: PropTypes.func.isRequired, // i18next

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 import EditorContainer from '../../services/EditorContainer';
@@ -45,8 +45,12 @@ class MyDraftList extends React.Component {
   async getDraftsFromLocalStorage() {
     const draftsAsObj = this.props.editorContainer.drafts;
 
+    if (draftsAsObj == null) {
+      return;
+    }
+
     const res = await this.props.appContainer.apiGet('/pages.exist', {
-      pages: draftsAsObj,
+      pagePaths: JSON.stringify(Object.keys(draftsAsObj)),
     });
 
     // {'/a': '#a', '/b': '#b'} => [{path: '/a', markdown: '#a'}, {path: '/b', markdown: '#b'}]
@@ -169,9 +173,7 @@ class MyDraftList extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const MyDraftListWrapper = (props) => {
-  return createSubscribedElement(MyDraftList, props, [AppContainer, PageContainer, EditorContainer]);
-};
+const MyDraftListWrapper = withUnstatedContainers(MyDraftList, [AppContainer, PageContainer, EditorContainer]);
 
 
 MyDraftList.propTypes = {

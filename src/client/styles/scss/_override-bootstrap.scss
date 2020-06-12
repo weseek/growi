@@ -77,18 +77,24 @@
   }
 
   // Dropdowns
-  .dropdown {
-    .dropdown-toggle.btn.disabled {
+  .dropdown-toggle {
+    &.btn.disabled {
       cursor: not-allowed;
     }
 
     // hide caret
-    .dropdown-toggle.dropdown-toggle-no-caret::after {
+    &.dropdown-toggle-no-caret::after {
       content: none;
     }
   }
 
   //Modals
+  .modal-open {
+    position: fixed;
+    width: 100%;
+    padding-right: 0 !important;
+  }
+
   .modal-content {
     box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.1);
   }
@@ -123,5 +129,10 @@
   .progress {
     margin-bottom: 18px;
     overflow: hidden;
+  }
+
+  .text-break {
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 }

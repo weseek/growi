@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
@@ -140,12 +140,12 @@ class LdapSecuritySetting extends React.Component {
                         : <span className="pull-left">{t('security_setting.ldap.bind_manager')}</span>}
                   </button>
                   <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a className="dropdown-item" type="button" onClick={() => { adminLdapSecurityContainer.changeLdapBindMode(true) }}>
+                    <button className="dropdown-item" type="button" onClick={() => { adminLdapSecurityContainer.changeLdapBindMode(true) }}>
                       {t('security_setting.ldap.bind_user')}
-                    </a>
-                    <a className="dropdown-item" type="button" onClick={() => { adminLdapSecurityContainer.changeLdapBindMode(false) }}>
+                    </button>
+                    <button className="dropdown-item" type="button" onClick={() => { adminLdapSecurityContainer.changeLdapBindMode(false) }}>
                       {t('security_setting.ldap.bind_manager')}
-                    </a>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -453,8 +453,6 @@ LdapSecuritySetting.propTypes = {
   adminLdapSecurityContainer: PropTypes.instanceOf(AdminLdapSecurityContainer).isRequired,
 };
 
-const LdapSecuritySettingWrapper = (props) => {
-  return createSubscribedElement(LdapSecuritySetting, props, [AppContainer, AdminGeneralSecurityContainer, AdminLdapSecurityContainer]);
-};
+const LdapSecuritySettingWrapper = withUnstatedContainers(LdapSecuritySetting, [AppContainer, AdminGeneralSecurityContainer, AdminLdapSecurityContainer]);
 
 export default withTranslation()(LdapSecuritySettingWrapper);

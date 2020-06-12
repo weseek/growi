@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
@@ -135,12 +135,12 @@ class SecuritySetting extends React.Component {
                 </span>
               </button>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('Deny') }}>
+                <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('Deny') }}>
                   {t('security_setting.guest_mode.deny')}
-                </a>
-                <a className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('Readonly') }}>
+                </button>
+                <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('Readonly') }}>
                   {t('security_setting.guest_mode.readonly')}
-                </a>
+                </button>
               </div>
             </div>
             {adminGeneralSecurityContainer.isWikiModeForced && (
@@ -180,19 +180,23 @@ class SecuritySetting extends React.Component {
                 </span>
               </button>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('anyOne') }}>
+                <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('anyOne') }}>
                   {t('security_setting.anyone')}
-                </a>
-                <a className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('adminOnly') }}>
+                </button>
+                <button
+                  className="dropdown-item"
+                  type="button"
+                  onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('adminOnly') }}
+                >
                   {t('security_setting.admin_only')}
-                </a>
-                <a
+                </button>
+                <button
                   className="dropdown-item"
                   type="button"
                   onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('adminAndAuthor') }}
                 >
                   {t('security_setting.admin_and_author')}
-                </a>
+                </button>
               </div>
               <p className="form-text text-muted small">
                 {t('security_setting.complete_deletion_explain')}
@@ -220,8 +224,6 @@ SecuritySetting.propTypes = {
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
 };
 
-const SecuritySettingWrapper = (props) => {
-  return createSubscribedElement(SecuritySetting, props, [AppContainer, AdminGeneralSecurityContainer]);
-};
+const SecuritySettingWrapper = withUnstatedContainers(SecuritySetting, [AppContainer, AdminGeneralSecurityContainer]);
 
 export default withTranslation()(SecuritySettingWrapper);
