@@ -106,6 +106,7 @@ class ShareLinkForm extends React.Component {
 
     try {
       await this.props.appContainer.apiv3.post('/share-links/', { relatedPage: pageId, expiredAt, description });
+      this.props.onCloseForm();
       toastSuccess(t('toaster.issue_share_link'));
     }
     catch (err) {
@@ -237,6 +238,7 @@ ShareLinkForm.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   user: PropTypes.object.isRequired,
+  onCloseForm: PropTypes.func.isRequired,
 };
 
 
