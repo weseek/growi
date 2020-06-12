@@ -164,10 +164,9 @@ class LinkEditModal extends React.PureComponent {
                   <div className="custom-control custom-checkbox custom-checkbox-info">
                     <input
                       className="custom-control-input"
-                      id="relativePath"
+                      id="permanentLink"
                       type="checkbox"
-                      checked={this.state.isUseRelativePath}
-                      disabled={this.state.linkerType === 'growiLink'}
+                      checked={this.state.isUsePamanentLink}
                     />
                     <label className="custom-control-label" htmlFor="permanentLink" onClick={this.toggleIsUsePamanentLink}>
                       convert into permanent link
