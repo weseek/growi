@@ -13,7 +13,7 @@ class TagCacheManager {
    */
 
   /**
-   *
+   * Constructor
    * @param {string} cacheNs Used as LocalStorageManager namespace
    * @param {generateCacheKey} generateCacheKey
    */
@@ -33,9 +33,9 @@ class TagCacheManager {
   }
 
   /**
-   *
+   * Retrieve state cache object from local storage
    * @param {TagContext} tagContext
-   * @returns
+   * @returns {object} a cache object that correspont to the specified `tagContext`
    */
   getStateCache(tagContext) {
     const localStorageManager = LocalStorageManager.getInstance();
