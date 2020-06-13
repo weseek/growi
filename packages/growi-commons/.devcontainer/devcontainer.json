@@ -18,8 +18,6 @@
 		"eamodio.gitlens",
 		"editorconfig.editorconfig",
 		"esbenp.prettier-vscode",
-		"shinnn.stylelint",
-		"hex-ci.stylelint-plus",
 	],
 
 	// Uncomment the next line if you want start specific services in your Docker Compose config.
