@@ -1,38 +1,4 @@
 /**
- * Encode specified `path`
- *  with [encodeURIComponent]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent}.
- *
- * @param {string} path
- * @returns {string}
- * @memberof pathUtils
- */
-function encodePagePath(path) {
-  const paths = path.split('/');
-  paths.forEach((item, index) => {
-    paths[index] = encodeURIComponent(item);
-  });
-  return paths.join('/');
-}
-
-/**
- * Encode specified `pages` with
- *  [encodeURIComponent]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent}.
- *
- * @param {Page[]} pages
- * @returns {string}
- * @memberof pathUtils
- */
-function encodePagesPath(pages) {
-  pages.forEach((page) => {
-    if (!page.path) {
-      return;
-    }
-    page.path = encodePagePath(page.path);
-  });
-  return pages;
-}
-
-/**
  * @private
  *
  *
@@ -135,8 +101,6 @@ function normalizePath(path) {
  * @namespace pathUtils
  */
 module.exports = {
-  encodePagePath,
-  encodePagesPath,
   hasHeadingSlash,
   hasTrailingSlash,
   addHeadingSlash,
