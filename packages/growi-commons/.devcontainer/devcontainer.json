@@ -2,7 +2,7 @@
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.117.1/containers/javascript-node-12-mongo
 // If you want to run as a non-root user in the container, see .devcontainer/docker-compose.yml.
 {
-	"name": "GROWI-Dev",
+	"name": "GROWI-Commons-Dev",
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "node",
 	"workspaceFolder": "/workspace/growi-commons",
