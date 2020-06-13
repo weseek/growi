@@ -261,7 +261,7 @@
     "debug": "src/lib/service/logger/alias-for-debug"
   },
   "engines": {
-    "node": ">=10.17.0 <13",
+    "node": "^12 || ^14",
     "npm": ">=6.11.3 <7",
     "yarn": ">=1.19.1 <2"
   }
