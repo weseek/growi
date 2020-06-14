@@ -1,7 +1,6 @@
 import React from 'react';
 
 import loggerFactory from '@alias/logger';
-import Xss from '@commons/service/xss';
 
 import SearchTop from './components/Navbar/SearchTop';
 import NavbarToggler from './components/Navbar/NavbarToggler';
