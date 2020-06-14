@@ -25,7 +25,7 @@
     "url": "https://github.com/weseek/growi-plugin-attachment-refs/issues"
   },
   "dependencies": {
-    "growi-commons": "^4.0.8"
+    "growi-commons": "^5.0.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.2",
@@ -45,7 +45,7 @@
     "react-motion": "^0.5.2"
   },
   "engines": {
-    "node": ">=8.11.1 <13",
+    "node": ">=8.11.1 <15",
     "npm": ">=5.6.0 <7",
     "yarn": ">=1.5.1 <2"
   }
