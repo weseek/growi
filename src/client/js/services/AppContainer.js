@@ -39,7 +39,7 @@ export default class AppContainer extends Container {
     const { localStorage } = window;
 
     this.state = {
-      editorMode: null,
+      // minimalized states for app
       isDeviceSmallerThanMd: null,
       preferDarkModeByMediaQuery: false,
       preferDarkModeByUser: localStorage.preferDarkModeByUser === 'true',
@@ -49,36 +49,21 @@ export default class AppContainer extends Container {
       isDrawerMode: null,
       isDrawerOpened: false,
 
+      // stetes for contents
+      editorMode: null,
       isPageCreateModalShown: false,
-
       recentlyUpdatedPages: [],
     };
 
     const body = document.querySelector('body');
 
-    this.isAdmin = body.dataset.isAdmin === 'true';
     this.csrfToken = body.dataset.csrftoken;
-    this.isPluginEnabled = body.dataset.pluginEnabled === 'true';
     this.isLoggedin = document.querySelector('body.nologin') == null;
 
     this.config = JSON.parse(document.getElementById('growi-context-hydrate').textContent || '{}');
 
-    const currentUserElem = document.getElementById('growi-current-user');
-    if (currentUserElem != null) {
-      this.currentUser = JSON.parse(currentUserElem.textContent);
-    }
-
     const userAgent = window.navigator.userAgent.toLowerCase();
     this.isMobile = /iphone|ipad|android/.test(userAgent);
-
-    this.isDocSaved = true;
-
-    this.originRenderer = new GrowiRenderer(this);
-
-    this.interceptorManager = new InterceptorManager();
-    this.interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(this), 10); // process as soon as possible
-    this.interceptorManager.addInterceptor(new DrawioInterceptor(this), 20);
-    this.interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(this), 900); // process as late as possible
 
     const userlang = body.dataset.userlang;
     this.i18n = i18nFactory(userlang);
@@ -108,6 +93,45 @@ export default class AppContainer extends Container {
 
     this.openPageCreateModal = this.openPageCreateModal.bind(this);
     this.closePageCreateModal = this.closePageCreateModal.bind(this);
+  }
+
+  /**
+   * Workaround for the mangling in production build to break constructor.name
+   */
+  static getClassName() {
+    return 'AppContainer';
+  }
+
+  initApp() {
+    this.initDeviceSize();
+    this.initMediaQueryForColorScheme();
+
+    this.injectToWindow();
+  }
+
+  initContents() {
+    const body = document.querySelector('body');
+
+    const currentUserElem = document.getElementById('growi-current-user');
+    if (currentUserElem != null) {
+      this.currentUser = JSON.parse(currentUserElem.textContent);
+    }
+
+    this.isAdmin = body.dataset.isAdmin === 'true';
+
+    this.isDocSaved = true;
+
+    this.originRenderer = new GrowiRenderer(this);
+
+    this.interceptorManager = new InterceptorManager();
+    this.interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(this), 10); // process as soon as possible
+    this.interceptorManager.addInterceptor(new DrawioInterceptor(this), 20);
+    this.interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(this), 900); // process as late as possible
+
+    const isPluginEnabled = body.dataset.pluginEnabled === 'true';
+    if (isPluginEnabled) {
+      this.initPlugins();
+    }
 
     window.addEventListener('keydown', (event) => {
       const target = event.target;
@@ -122,19 +146,8 @@ export default class AppContainer extends Container {
         this.setState({ isPageCreateModalShown: true });
       }
     });
-  }
 
-  /**
-   * Workaround for the mangling in production build to break constructor.name
-   */
-  static getClassName() {
-    return 'AppContainer';
-  }
-
-  init() {
-    this.initDeviceSize();
-    this.initMediaQueryForColorScheme();
-    this.initPlugins();
+    this.injectToWindow();
   }
 
   initDeviceSize() {
@@ -170,10 +183,8 @@ export default class AppContainer extends Container {
   }
 
   initPlugins() {
-    if (this.isPluginEnabled) {
-      const growiPlugin = window.growiPlugin;
-      growiPlugin.installAll(this, this.originRenderer);
-    }
+    const growiPlugin = window.growiPlugin;
+    growiPlugin.installAll(this, this.originRenderer);
   }
 
   injectToWindow() {

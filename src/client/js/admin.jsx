@@ -45,6 +45,8 @@ import { appContainer, componentMappings } from './base';
 
 const logger = loggerFactory('growi:admin');
 
+appContainer.initContents();
+
 const { i18n } = appContainer;
 const websocketContainer = appContainer.getContainer('WebsocketContainer');
 

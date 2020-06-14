@@ -20,8 +20,7 @@ const appContainer = new AppContainer();
 // eslint-disable-next-line no-unused-vars
 const websocketContainer = new WebsocketContainer(appContainer);
 
-appContainer.init();
-appContainer.injectToWindow();
+appContainer.initApp();
 
 logger.info('AppContainer has been initialized');
 
