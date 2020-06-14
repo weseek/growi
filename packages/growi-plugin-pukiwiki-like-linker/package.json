@@ -1,6 +1,6 @@
 {
   "name": "growi-plugin-pukiwiki-like-linker",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "GROWI plugin to add PukiwikiLikeLinker",
   "keywords": [
     "growi",
@@ -39,7 +39,7 @@
     "prettier-stylelint": "^0.4.2"
   },
   "engines": {
-    "node": ">=8.11.1 <11",
+    "node": ">=8.11.1 <13",
     "npm": ">=5.6.0 <7",
     "yarn": ">=1.5.1 <2"
   }
