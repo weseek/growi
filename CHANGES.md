@@ -2,7 +2,7 @@
 
 ## v4.0.6-RC
 
-*
+* Fix: Avatar images in Recent Changes are not shown
 
 ## v4.0.5
 
