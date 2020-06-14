@@ -2,7 +2,8 @@
 
 ## v4.0.6-RC
 
-*
+* Fix: Avatar images in Recent Changes are not shown
+* Fix: Full screen modal of Handsontable and Draoio don't work
 
 ## v4.0.5
 
