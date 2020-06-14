@@ -433,6 +433,14 @@ export default class AppContainer extends Container {
     applyColorScheme();
   }
 
+  openPageCreateModal() {
+    this.setState({ isPageCreateModalShown: true });
+  }
+
+  closePageCreateModal() {
+    this.setState({ isPageCreateModalShown: false });
+  }
+
   async apiGet(path, params) {
     return this.apiRequest('get', path, { params });
   }
@@ -505,14 +513,6 @@ export default class AppContainer extends Container {
     }
 
     return this.apiv3Request('delete', path, { params });
-  }
-
-  openPageCreateModal() {
-    this.setState({ isPageCreateModalShown: true });
-  }
-
-  closePageCreateModal() {
-    this.setState({ isPageCreateModalShown: false });
   }
 
 }
