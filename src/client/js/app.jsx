@@ -32,6 +32,7 @@ import LikerList from './components/User/LikerList';
 import TableOfContents from './components/TableOfContents';
 
 import PersonalSettings from './components/Me/PersonalSettings';
+import NavigationContainer from './services/NavigationContainer';
 import PageContainer from './services/PageContainer';
 import CommentContainer from './services/CommentContainer';
 import EditorContainer from './services/EditorContainer';
@@ -50,13 +51,14 @@ const { i18n } = appContainer;
 const websocketContainer = appContainer.getContainer('WebsocketContainer');
 
 // create unstated container instance
+const navigationContainer = new NavigationContainer(appContainer);
 const pageContainer = new PageContainer(appContainer);
 const commentContainer = new CommentContainer(appContainer);
 const editorContainer = new EditorContainer(appContainer, defaultEditorOptions, defaultPreviewOptions);
 const tagContainer = new TagContainer(appContainer);
 const personalContainer = new PersonalContainer(appContainer);
 const injectableContainers = [
-  appContainer, websocketContainer, pageContainer, commentContainer, editorContainer, tagContainer, personalContainer,
+  appContainer, websocketContainer, navigationContainer, pageContainer, commentContainer, editorContainer, tagContainer, personalContainer,
 ];
 
 logger.info('unstated containers have been initialized');

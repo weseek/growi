@@ -36,22 +36,8 @@ export default class AppContainer extends Container {
   constructor() {
     super();
 
-    const { localStorage } = window;
-
     this.state = {
-      // minimalized states for app
-      isDeviceSmallerThanMd: null,
-      preferDarkModeByMediaQuery: false,
-      preferDarkModeByUser: localStorage.preferDarkModeByUser === 'true',
-      preferDrawerModeByUser: localStorage.preferDrawerModeByUser === 'true',
-      preferDrawerModeOnEditByUser: // default: true
-        localStorage.preferDrawerModeOnEditByUser == null || localStorage.preferDrawerModeOnEditByUser === 'true',
-      isDrawerMode: null,
-      isDrawerOpened: false,
-
       // stetes for contents
-      editorMode: null,
-      isPageCreateModalShown: false,
       recentlyUpdatedPages: [],
     };
 
@@ -68,16 +54,10 @@ export default class AppContainer extends Container {
     const userlang = body.dataset.userlang;
     this.i18n = i18nFactory(userlang);
 
-    if (this.isLoggedin) {
-      // remove old user cache
-      this.removeOldUserCache();
-    }
-
     this.containerInstances = {};
     this.componentInstances = {};
     this.rendererInstances = {};
 
-    this.removeOldUserCache = this.removeOldUserCache.bind(this);
     this.apiGet = this.apiGet.bind(this);
     this.apiPost = this.apiPost.bind(this);
     this.apiDelete = this.apiDelete.bind(this);
@@ -90,9 +70,6 @@ export default class AppContainer extends Container {
       put: this.apiv3Put.bind(this),
       delete: this.apiv3Delete.bind(this),
     };
-
-    this.openPageCreateModal = this.openPageCreateModal.bind(this);
-    this.closePageCreateModal = this.closePageCreateModal.bind(this);
   }
 
   /**
@@ -103,7 +80,6 @@ export default class AppContainer extends Container {
   }
 
   initApp() {
-    this.initDeviceSize();
     this.initMediaQueryForColorScheme();
 
     this.injectToWindow();
@@ -128,46 +104,17 @@ export default class AppContainer extends Container {
     this.interceptorManager.addInterceptor(new DrawioInterceptor(this), 20);
     this.interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(this), 900); // process as late as possible
 
+    if (this.isLoggedin) {
+      // remove old user cache
+      this.removeOldUserCache();
+    }
+
     const isPluginEnabled = body.dataset.pluginEnabled === 'true';
     if (isPluginEnabled) {
       this.initPlugins();
     }
 
-    window.addEventListener('keydown', (event) => {
-      const target = event.target;
-
-      // ignore when target dom is input
-      const inputPattern = /^input|textinput|textarea$/i;
-      if (inputPattern.test(target.tagName) || target.isContentEditable) {
-        return;
-      }
-
-      if (event.key === 'c') {
-        this.setState({ isPageCreateModalShown: true });
-      }
-    });
-
     this.injectToWindow();
-  }
-
-  initDeviceSize() {
-    const mdOrAvobeHandler = async(mql) => {
-      let isDeviceSmallerThanMd;
-
-      // sm -> md
-      if (mql.matches) {
-        isDeviceSmallerThanMd = false;
-      }
-      // md -> sm
-      else {
-        isDeviceSmallerThanMd = true;
-      }
-
-      this.setState({ isDeviceSmallerThanMd });
-      this.updateDrawerMode({ ...this.state, isDeviceSmallerThanMd }); // generate newest state object
-    };
-
-    this.addBreakpointListener('md', mdOrAvobeHandler, true);
   }
 
   async initMediaQueryForColorScheme() {
@@ -343,16 +290,6 @@ export default class AppContainer extends Container {
     this.setState({ recentlyUpdatedPages: data.pages });
   }
 
-  setEditorMode(editorMode) {
-    this.setState({ editorMode });
-    this.updateDrawerMode({ ...this.state, editorMode }); // generate newest state object
-  }
-
-  toggleDrawer() {
-    const { isDrawerOpened } = this.state;
-    this.setState({ isDrawerOpened: !isDrawerOpened });
-  }
-
   launchHandsontableModal(componentKind, beginLineNumber, endLineNumber) {
     let targetComponent;
     switch (componentKind) {
@@ -374,56 +311,6 @@ export default class AppContainer extends Container {
   }
 
   /**
-   * Set Sidebar mode preference by user
-   * @param {boolean} preferDockMode
-   */
-  async setDrawerModePreference(bool) {
-    this.setState({ preferDrawerModeByUser: bool });
-    this.updateDrawerMode({ ...this.state, preferDrawerModeByUser: bool }); // generate newest state object
-
-    // store settings to localStorage
-    const { localStorage } = window;
-    localStorage.preferDrawerModeByUser = bool;
-  }
-
-  /**
-   * Set Sidebar mode preference by user
-   * @param {boolean} preferDockMode
-   */
-  async setDrawerModePreferenceOnEdit(bool) {
-    this.setState({ preferDrawerModeOnEditByUser: bool });
-    this.updateDrawerMode({ ...this.state, preferDrawerModeOnEditByUser: bool }); // generate newest state object
-
-    // store settings to localStorage
-    const { localStorage } = window;
-    localStorage.preferDrawerModeOnEditByUser = bool;
-  }
-
-  /**
-   * Update drawer related state by specified 'newState' object
-   * @param {object} newState A newest state object
-   *
-   * Specify 'newState' like following code:
-   *
-   *   { ...this.state, overwriteParam: overwriteValue }
-   *
-   * because updating state of unstated container will be delayed unless you use await
-   */
-  updateDrawerMode(newState) {
-    const {
-      editorMode, isDeviceSmallerThanMd, preferDrawerModeByUser, preferDrawerModeOnEditByUser,
-    } = newState;
-
-    // get preference on view or edit
-    const preferDrawerMode = editorMode != null ? preferDrawerModeOnEditByUser : preferDrawerModeByUser;
-
-    const isDrawerMode = isDeviceSmallerThanMd || preferDrawerMode;
-    const isDrawerOpened = false; // close Drawer anyway
-
-    this.setState({ isDrawerMode, isDrawerOpened });
-  }
-
-  /**
    * Set color scheme preference by user
    * @param {boolean} isDarkMode
    */
@@ -431,14 +318,6 @@ export default class AppContainer extends Container {
     this.setState({ preferDarkModeByUser: isDarkMode });
     savePreferenceByUser(isDarkMode);
     applyColorScheme();
-  }
-
-  openPageCreateModal() {
-    this.setState({ isPageCreateModalShown: true });
-  }
-
-  closePageCreateModal() {
-    this.setState({ isPageCreateModalShown: false });
   }
 
   async apiGet(path, params) {
