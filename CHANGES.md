@@ -1,5 +1,9 @@
 # CHANGES
 
+## v4.0.6-RC
+
+*
+
 ## v4.0.5
 
 * Improvement: Return pre-defined session id when healthcheck
