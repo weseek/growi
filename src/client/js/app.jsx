@@ -40,9 +40,9 @@ import GrowiSubNavigation from './components/Navbar/GrowiSubNavigation';
 import GrowiSubNavigationForUserPage from './components/Navbar/GrowiSubNavigationForUserPage';
 import PersonalContainer from './services/PersonalContainer';
 
-import { appContainer, componentMappings } from './bootstrap';
+import { appContainer, componentMappings } from './base';
 
-const logger = loggerFactory('growi:app');
+const logger = loggerFactory('growi:cli:app');
 
 const { i18n } = appContainer;
 const websocketContainer = appContainer.getContainer('WebsocketContainer');

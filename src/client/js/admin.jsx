@@ -41,7 +41,7 @@ import AdminGitHubSecurityContainer from './services/AdminGitHubSecurityContaine
 import AdminTwitterSecurityContainer from './services/AdminTwitterSecurityContainer';
 import AdminNotificationContainer from './services/AdminNotificationContainer';
 
-import { appContainer, componentMappings } from './bootstrap';
+import { appContainer, componentMappings } from './base';
 
 const logger = loggerFactory('growi:admin');
 
