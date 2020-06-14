@@ -203,45 +203,50 @@ Crowi.prototype.setupDatabase = function() {
   return mongoose.connect(mongoUri, { useNewUrlParser: true });
 };
 
-Crowi.prototype.setupSessionConfig = function() {
-  const self = this;
+Crowi.prototype.setupSessionConfig = async function() {
   const session = require('express-session');
   const sessionAge = (1000 * 3600 * 24 * 30);
   const redisUrl = this.env.REDISTOGO_URL || this.env.REDIS_URI || this.env.REDIS_URL || null;
+  const uid = require('uid-safe').sync;
 
-  let sessionConfig;
+  // generate pre-defined uid for healthcheck
+  const healthcheckUid = uid(24);
 
-  return new Promise(((resolve, reject) => {
-    sessionConfig = {
-      rolling: true,
-      secret: self.env.SECRET_TOKEN || 'this is default session secret',
-      resave: false,
-      saveUninitialized: true,
-      cookie: {
-        maxAge: sessionAge,
-      },
-    };
+  const sessionConfig = {
+    rolling: true,
+    secret: this.env.SECRET_TOKEN || 'this is default session secret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      maxAge: sessionAge,
+    },
+    genid(req) {
+      // return pre-defined uid when healthcheck
+      if (req.path === '/_api/v3/healthcheck') {
+        return healthcheckUid;
+      }
+      return uid(24);
+    },
+  };
 
-    if (self.env.SESSION_NAME) {
-      sessionConfig.name = self.env.SESSION_NAME;
-    }
+  if (this.env.SESSION_NAME) {
+    sessionConfig.name = this.env.SESSION_NAME;
+  }
 
-    // use Redis for session store
-    if (redisUrl) {
-      const redis = require('redis');
-      const redisClient = redis.createClient({ url: redisUrl });
-      const RedisStore = require('connect-redis')(session);
-      sessionConfig.store = new RedisStore({ client: redisClient });
-    }
-    // use MongoDB for session store
-    else {
-      const MongoStore = require('connect-mongo')(session);
-      sessionConfig.store = new MongoStore({ mongooseConnection: mongoose.connection });
-    }
+  // use Redis for session store
+  if (redisUrl) {
+    const redis = require('redis');
+    const redisClient = redis.createClient({ url: redisUrl });
+    const RedisStore = require('connect-redis')(session);
+    sessionConfig.store = new RedisStore({ client: redisClient });
+  }
+  // use MongoDB for session store
+  else {
+    const MongoStore = require('connect-mongo')(session);
+    sessionConfig.store = new MongoStore({ mongooseConnection: mongoose.connection });
+  }
 
-    self.sessionConfig = sessionConfig;
-    resolve();
-  }));
+  this.sessionConfig = sessionConfig;
 };
 
 Crowi.prototype.setupConfigManager = async function() {

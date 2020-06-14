@@ -31,7 +31,7 @@ jobs:
 
     - name: Build Docker Image
       run: |
-        CACHE_REF=weseek/growi-cache:3
+        CACHE_REF=weseek/growi-cache:4
         docker buildx build \
           --tag growi \
           --platform linux/amd64 \
