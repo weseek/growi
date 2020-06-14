@@ -8,6 +8,11 @@ import InterceptorManager from '@commons/service/interceptor-manager';
 import emojiStrategy from '../util/emojione/emoji_strategy_shrinked.json';
 import GrowiRenderer from '../util/GrowiRenderer';
 
+import {
+  mediaQueryListForDarkMode,
+  applyColorScheme,
+  savePreferenceByUser,
+} from '../util/color-scheme';
 import Apiv1ErrorHandler from '../util/apiv1ErrorHandler';
 
 import {
@@ -128,7 +133,7 @@ export default class AppContainer extends Container {
 
   init() {
     this.initDeviceSize();
-    this.initColorScheme();
+    this.initMediaQueryForColorScheme();
     this.initPlugins();
   }
 
@@ -152,20 +157,16 @@ export default class AppContainer extends Container {
     this.addBreakpointListener('md', mdOrAvobeHandler, true);
   }
 
-  async initColorScheme() {
+  async initMediaQueryForColorScheme() {
     const switchStateByMediaQuery = async(mql) => {
       const preferDarkMode = mql.matches;
-      await this.setState({ preferDarkModeByMediaQuery: preferDarkMode });
+      this.setState({ preferDarkModeByMediaQuery: preferDarkMode });
 
-      this.applyColorScheme();
+      applyColorScheme();
     };
 
-    const mqlForDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
     // add event listener
-    mqlForDarkMode.addListener(switchStateByMediaQuery);
-
-    // initialize: check media query
-    switchStateByMediaQuery(mqlForDarkMode);
+    mediaQueryListForDarkMode.addListener(switchStateByMediaQuery);
   }
 
   initPlugins() {
@@ -416,41 +417,9 @@ export default class AppContainer extends Container {
    * @param {boolean} isDarkMode
    */
   async setColorSchemePreference(isDarkMode) {
-    await this.setState({ preferDarkModeByUser: isDarkMode });
-
-    // store settings to localStorage
-    const { localStorage } = window;
-    if (isDarkMode == null) {
-      delete localStorage.removeItem('preferDarkModeByUser');
-    }
-    else {
-      localStorage.preferDarkModeByUser = isDarkMode;
-    }
-
-    this.applyColorScheme();
-  }
-
-  /**
-   * Apply color scheme as 'dark' attribute of <html></html>
-   */
-  applyColorScheme() {
-    const { preferDarkModeByMediaQuery, preferDarkModeByUser } = this.state;
-
-    let isDarkMode = preferDarkModeByMediaQuery;
-    if (preferDarkModeByUser != null) {
-      isDarkMode = preferDarkModeByUser;
-    }
-
-    // switch to dark mode
-    if (isDarkMode) {
-      document.documentElement.removeAttribute('light');
-      document.documentElement.setAttribute('dark', 'true');
-    }
-    // switch to light mode
-    else {
-      document.documentElement.setAttribute('light', 'true');
-      document.documentElement.removeAttribute('dark');
-    }
+    this.setState({ preferDarkModeByUser: isDarkMode });
+    savePreferenceByUser(isDarkMode);
+    applyColorScheme();
   }
 
   async apiGet(path, params) {

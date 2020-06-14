@@ -20,6 +20,7 @@ module.exports = (options) => {
   return {
     mode: options.mode,
     entry: Object.assign({
+      'js/boot':                      './src/client/js/boot',
       'js/app':                       './src/client/js/app',
       'js/admin':                     './src/client/js/admin',
       'js/nologin':                   './src/client/js/nologin',
