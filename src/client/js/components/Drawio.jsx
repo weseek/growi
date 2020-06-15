@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
+import NotAvailableForGuest from './NotAvailableForGuest';
+
 class Drawio extends React.Component {
 
   constructor(props) {
@@ -51,13 +53,13 @@ class Drawio extends React.Component {
   render() {
     return (
       <div className="editable-with-drawio position-relative">
-        { !this.isPreview
-          && (
-          <button type="button" className="drawio-iframe-trigger position-absolute btn btn-outline-secondary" onClick={this.onEdit}>
-            <i className="icon-note mr-1"></i>{this.props.t('Edit')}
-          </button>
-          )
-        }
+        { !this.isPreview && (
+          <NotAvailableForGuest>
+            <button type="button" className="drawio-iframe-trigger position-absolute btn btn-outline-secondary" onClick={this.onEdit}>
+              <i className="icon-note mr-1"></i>{this.props.t('Edit')}
+            </button>
+          </NotAvailableForGuest>
+        ) }
         <div
           className="drawio"
           style={this.style}
