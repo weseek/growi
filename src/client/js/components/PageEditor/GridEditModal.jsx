@@ -12,6 +12,10 @@ export default class GridEditModal extends React.PureComponent {
     this.state = {
       show: false,
     };
+
+    this.show = this.show.bind(this);
+    this.hide = this.hide.bind(this);
+    this.cancel = this.cancel.bind(this);
   }
 
   show() {

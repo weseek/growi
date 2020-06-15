@@ -72,7 +72,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       additionalClassSet: new Set(),
     };
 
-    this.GridEditModal = React.createRef();
+    this.gridEditModal = React.createRef();
     this.handsontableModal = React.createRef();
     this.drawioModal = React.createRef();
 
@@ -100,6 +100,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.renderCheatsheetModalButton = this.renderCheatsheetModalButton.bind(this);
 
     this.makeHeaderHandler = this.makeHeaderHandler.bind(this);
+    this.showGridEditorHandler = this.showGridEditorHandler.bind(this);
     this.showHandsonTableHandler = this.showHandsonTableHandler.bind(this);
     this.showDrawioHandler = this.showDrawioHandler.bind(this);
   }
@@ -652,7 +653,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   showGridEditorHandler() {
-    this.GridEditModal.current.show();
+    this.gridEditModal.current.show();
   }
 
   showHandsonTableHandler() {
@@ -765,6 +766,15 @@ export default class CodeMirrorEditor extends AbstractEditor {
         <EditorIcon icon="Image" />
       </Button>,
       <Button
+        key="nav-item-grid"
+        color={null}
+        size="sm"
+        title="Grid"
+        onClick={this.showGridEditorHandler}
+      >
+        <EditorIcon icon="Grid" />
+      </Button>,
+      <Button
         key="nav-item-table"
         color={null}
         size="sm"
@@ -855,6 +865,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
         { this.renderCheatsheetOverlay() }
 
+        <GridEditModal
+          ref={this.gridEditModal}
+        />
         <HandsontableModal
           ref={this.handsontableModal}
           onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }}
