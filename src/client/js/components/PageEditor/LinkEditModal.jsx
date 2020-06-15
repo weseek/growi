@@ -148,7 +148,7 @@ export default class LinkEditModal extends React.PureComponent {
               <div className="card">
                 <div className="card-body">
                   <form className="form-group">
-                    <div className="form-group btn-group w-100" role="group" aria-label="type">
+                    <div className="form-group btn-group d-flex" role="group" aria-label="type">
                       <button
                         type="button"
                         name="mdLink"
