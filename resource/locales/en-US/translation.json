@@ -343,7 +343,8 @@
     "activate_user_success": "Succeeded to activating {{username}}",
     "deactivate_user_success": "Succeeded to deactivate {{username}}",
     "remove_user_success": "Succeeded to removing {{username}} ",
-    "remove_external_user_success": "Succeeded to remove {{accountId}} "
+    "remove_external_user_success": "Succeeded to remove {{accountId}} ",
+    "issue_share_link": "Succeeded to issue new share link"
   },
   "template": {
     "modal_label": {
