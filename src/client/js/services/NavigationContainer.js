@@ -52,7 +52,10 @@ export default class NavigationContainer extends Container {
       }
 
       if (event.key === 'c') {
-        this.setState({ isPageCreateModalShown: true });
+        // don't fire when not needed
+        if (!event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey) {
+          this.setState({ isPageCreateModalShown: true });
+        }
       }
     });
   }
