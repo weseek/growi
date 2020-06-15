@@ -44,7 +44,6 @@ export default class AppContainer extends Container {
     const body = document.querySelector('body');
 
     this.csrfToken = body.dataset.csrftoken;
-    this.isLoggedin = document.querySelector('body.nologin') == null;
 
     this.config = JSON.parse(document.getElementById('growi-context-hydrate').textContent || '{}');
 
@@ -104,7 +103,7 @@ export default class AppContainer extends Container {
     this.interceptorManager.addInterceptor(new DrawioInterceptor(this), 20);
     this.interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(this), 900); // process as late as possible
 
-    if (this.isLoggedin) {
+    if (this.currentUser != null) {
       // remove old user cache
       this.removeOldUserCache();
     }

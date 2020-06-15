@@ -74,11 +74,7 @@ Object.assign(componentMappings, {
   // 'revision-history': <PageHistory pageId={pageId} />,
   'tags-page': <TagsList crowi={appContainer} />,
 
-  'page-editor': <PageEditor />,
-  'page-editor-path-nav': <PagePathNavForEditor />,
-  'page-editor-options-selector': <OptionsSelector crowi={appContainer} />,
   'page-status-alert': <PageStatusAlert />,
-  'save-page-controls': <SavePageControls />,
 
   'trash-page-alert': <TrashPageAlert />,
 
@@ -90,10 +86,8 @@ Object.assign(componentMappings, {
 // additional definitions if data exists
 if (pageContainer.state.pageId != null) {
   Object.assign(componentMappings, {
-    'page-editor-with-hackmd': <PageEditorByHackmd />,
     'page-comments-list': <PageComments />,
     'page-attachment': <PageAttachment />,
-    'page-comment-write': <CommentEditorLazyRenderer />,
     'page-management': <PageManagement />,
 
     'revision-toc': <TableOfContents />,
@@ -111,6 +105,21 @@ if (pageContainer.state.path != null) {
     'grw-subnav': <GrowiSubNavigation />,
     'grw-subnav-for-user-page': <GrowiSubNavigationForUserPage />,
   });
+}
+// additional definitions if user is logged in
+if (appContainer.currentUser != null) {
+  Object.assign(componentMappings, {
+    'page-editor': <PageEditor />,
+    'page-editor-path-nav': <PagePathNavForEditor />,
+    'page-editor-options-selector': <OptionsSelector crowi={appContainer} />,
+    'save-page-controls': <SavePageControls />,
+  });
+  if (pageContainer.state.pageId != null) {
+    Object.assign(componentMappings, {
+      'page-editor-with-hackmd': <PageEditorByHackmd />,
+      'page-comment-write': <CommentEditorLazyRenderer />,
+    });
+  }
 }
 
 Object.keys(componentMappings).forEach((key) => {
