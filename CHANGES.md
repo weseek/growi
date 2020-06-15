@@ -1,8 +1,28 @@
 # CHANGES
 
-## v4.0.5
+## v4.0.7-RC
 
 * 
+
+## v4.0.6
+
+* Fix: Avatar images in Recent Changes are not shown
+* Fix: Full screen modal of Handsontable and Draw.io don't work
+* Fix: Shortcut for creating page respond with modifier key wrongly
+    * Introduced by v4.0.5
+
+## v4.0.5
+
+* Improvement: Return pre-defined session id when healthcheck
+* Improvement: Refactor caching for profile image
+* Improvement: Layout for global search help on mobile
+* Improvement: Layout for confidential notation
+* Fix: Shortcut for creating page doesn't work
+* Support: Dev in container
+* Support: Upgrade libs
+    * ldapjs
+    * node-sass
+
 
 ## v4.0.4
 
