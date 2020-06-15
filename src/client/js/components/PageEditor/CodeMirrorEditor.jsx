@@ -18,6 +18,7 @@ import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
 import MarkdownTableInterceptor from './MarkdownTableInterceptor';
 import mtu from './MarkdownTableUtil';
 import mdu from './MarkdownDrawioUtil';
+import GridEditModal from './GridEditModal';
 import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
 import DrawioModal from './DrawioModal';
@@ -71,6 +72,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       additionalClassSet: new Set(),
     };
 
+    this.GridEditModal = React.createRef();
     this.handsontableModal = React.createRef();
     this.drawioModal = React.createRef();
 
@@ -647,6 +649,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
     }
     cm.getDoc().replaceRange(prefix, { line: lineNum, ch: 0 }, { line: lineNum, ch: 0 });
     cm.focus();
+  }
+
+  showGridEditorHandler() {
+    this.GridEditModal.current.show();
   }
 
   showHandsonTableHandler() {
