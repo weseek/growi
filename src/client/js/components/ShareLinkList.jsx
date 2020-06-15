@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import * as toastr from 'toastr';
 
 import { withTranslation } from 'react-i18next';
@@ -8,14 +9,16 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 
 const ShareLinkList = (props) => {
+  const { appContainer } = props;
 
-  function deleteLinkHandler(shareLink) {
+  async function deleteLinkHandler(shareLinkId) {
     try {
-      // call api
-      toastr.success(`Successfully deleted ${shareLink._id}`);
+      const res = await appContainer.apiv3Delete(`/share-links/${shareLinkId}`);
+      const { deletedShareLink } = res.data;
+      toastr.success(`Successfully deleted ${deletedShareLink._id}`);
     }
     catch (err) {
-      toastr.error(new Error(`Failed to delete ${shareLink._id}`));
+      toastr.error(new Error(`Failed to delete ${shareLinkId}`));
     }
   }
 
@@ -48,7 +51,7 @@ const ShareLinkList = (props) => {
             <td>{shareLink.expiration}</td>
             <td>{shareLink.description}</td>
             <td>
-              <button className="btn btn-outline-warning" type="button" onClick={() => deleteLinkHandler(shareLink)}>
+              <button className="btn btn-outline-warning" type="button" onClick={() => deleteLinkHandler(shareLink._id)}>
                 <i className="icon-trash"></i>Delete
               </button>
             </td>
@@ -78,5 +81,9 @@ const ShareLinkList = (props) => {
 };
 
 const ShareLinkListWrapper = withUnstatedContainers(ShareLinkList, [AppContainer]);
+
+ShareLinkList.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+};
 
 export default withTranslation()(ShareLinkListWrapper);
