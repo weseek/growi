@@ -1,24 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import * as toastr from 'toastr';
+
 
 import { withTranslation } from 'react-i18next';
+import { toastSuccess, toastError } from '../util/apiNotification';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import AppContainer from '../services/AppContainer';
 
 const ShareLinkList = (props) => {
-  const { appContainer } = props;
+  const { t, appContainer } = props;
 
   async function deleteLinkHandler(shareLinkId) {
     try {
       const res = await appContainer.apiv3Delete(`/share-links/${shareLinkId}`);
       const { deletedShareLink } = res.data;
-      toastr.success(`Successfully deleted ${deletedShareLink._id}`);
+      toastSuccess(t('remove_share_link_success', { shareLinkId: deletedShareLink._id }));
     }
     catch (err) {
-      toastr.error(new Error(`Failed to delete ${shareLinkId}`));
+      toastError(err);
     }
   }
 
@@ -83,6 +84,7 @@ const ShareLinkList = (props) => {
 const ShareLinkListWrapper = withUnstatedContainers(ShareLinkList, [AppContainer]);
 
 ShareLinkList.propTypes = {
+  t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
