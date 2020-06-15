@@ -19,6 +19,7 @@ services:
 
     volumes:
       - ..:/workspace/growi:cached
+      - /workspace/growi/node_modules
       - ../../growi-docker-compose:/workspace/growi-docker-compose:cached
       - ../../node_modules:/workspace/node_modules:cached
 
