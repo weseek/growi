@@ -87,6 +87,7 @@ Object.assign(componentMappings, {
 if (pageContainer.state.pageId != null) {
   Object.assign(componentMappings, {
     'page-comments-list': <PageComments />,
+    'page-comment-write': <CommentEditorLazyRenderer />,
     'page-attachment': <PageAttachment />,
     'page-management': <PageManagement />,
 
@@ -117,7 +118,6 @@ if (appContainer.currentUser != null) {
   if (pageContainer.state.pageId != null) {
     Object.assign(componentMappings, {
       'page-editor-with-hackmd': <PageEditorByHackmd />,
-      'page-comment-write': <CommentEditorLazyRenderer />,
     });
   }
 }
