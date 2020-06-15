@@ -42,7 +42,7 @@ const OutsideShareLinkModal = (props) => {
             >
               {isOpenShareLinkForm ? 'Close' : 'New'}
             </button>
-            {isOpenShareLinkForm && <ShareLinkForm />}
+            {isOpenShareLinkForm && <ShareLinkForm onCloseForm={toggleShareLinkFormHandler} />}
           </div>
         </div>
       </ModalBody>

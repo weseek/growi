@@ -345,7 +345,8 @@
     "deactivate_user_success": "{{username}}を無効化しました",
     "remove_user_success": "{{username}}を削除しました",
     "remove_external_user_success": "{{accountId}}を削除しました",
-    "remove_share_link_success": "{{shareLinkId}}を削除しました"
+    "remove_share_link_success": "{{shareLinkId}}を削除しました",
+    "issue_share_link": "共有リンクを作成しました"
   },
   "template": {
     "modal_label": {
