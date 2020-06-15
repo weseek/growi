@@ -5,6 +5,7 @@ module.exports = {
   // MATHJAX: 1,
   // NO_CDN: true,
   // REDIS_URI: 'http://localhost:6379',
+  MONGO_URI: 'mongodb://localhost:27017/growi',
   ELASTICSEARCH_URI: 'http://localhost:9200/growi',
   HACKMD_URI: 'http://localhost:3010',
   // DRAWIO_URI: 'http://localhost:8080/?offline=1&https=0',
