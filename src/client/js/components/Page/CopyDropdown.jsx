@@ -73,6 +73,11 @@ class CopyDropdown extends React.Component {
     return decodeURI(`${origin}/${pageId}${this.uriParams}`);
   }
 
+  generateShareLink() {
+    const { shareLink } = this.props;
+    return `http://localhost:3000/share/${shareLink._id}`;
+  }
+
   generateMarkdownLink() {
     const { pagePath } = this.props;
 
@@ -80,6 +85,10 @@ class CopyDropdown extends React.Component {
     const permalink = this.generatePermalink();
 
     return `[${label}](${permalink})`;
+  }
+
+  generateMarkdownShareLink() {
+    return `[share link path](${this.generateShareLink()})`;
   }
 
   DropdownItemContents = ({ title, contents }) => (
@@ -144,19 +153,22 @@ class CopyDropdown extends React.Component {
                     <DropdownItemContents title={t('copy_to_clipboard.Page path')} contents={pagePathWithParams} />
                   </DropdownItem>
                 </CopyToClipboard>
-
                 <DropdownItem divider className="my-0"></DropdownItem>
+              </>
+            )}
 
-                {/* Page path URL */}
+            {/* Page path URL */}
+            { pageId && (
+              <>
                 <CopyToClipboard text={pagePathUrl} onCopy={this.showToolTip}>
                   <DropdownItem className="px-3">
                     <DropdownItemContents title={t('copy_to_clipboard.Page URL')} contents={pagePathUrl} />
                   </DropdownItem>
                 </CopyToClipboard>
-
                 <DropdownItem divider className="my-0"></DropdownItem>
               </>
             )}
+
 
             {/* Parmanent Link */}
             { pageId && (
@@ -191,9 +203,18 @@ class CopyDropdown extends React.Component {
 
             {/* Share Link Copy */}
             { isShareLinkMode && (
-              <CopyToClipboard text={shareLink._id} onCopy={this.showToolTip}>
+              <CopyToClipboard text={this.generateShareLink()} onCopy={this.showToolTip}>
                 <DropdownItem className="px-3 text-wrap">
-                  {shareLink._id}
+                  <DropdownItemContents title="share link" contents={this.generateShareLink()} isContentsWrap />
+                </DropdownItem>
+              </CopyToClipboard>
+            )}
+
+            {/* Markdown Link */}
+            { isShareLinkMode && (
+              <CopyToClipboard text={this.generateMarkdownShareLink()} onCopy={this.showToolTip}>
+                <DropdownItem className="px-3 text-wrap">
+                  <DropdownItemContents title="Markdown share link" contents={this.generateMarkdownShareLink()} isContentsWrap />
                 </DropdownItem>
               </CopyToClipboard>
             )}

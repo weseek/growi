@@ -45,8 +45,8 @@ const ShareLinkList = (props) => {
       <>
         {shareLinks.map(shareLink => (
           <tr>
-            <td>
-              {shareLink.link}
+            <td className="d-flex justify-content-between align-items-center">
+              <div>{shareLink.link}</div>
               <CopyDropdown isShareLinkMode="true" shareLink={shareLink} />
             </td>
             <td>{shareLink.expiration}</td>
