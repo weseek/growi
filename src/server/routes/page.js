@@ -450,7 +450,7 @@ module.exports = function(crowi, app) {
 
     const shareLink = await ShareLink.findOne({ _id: linkId }).populate('relatedPage');
 
-    if (shareLink.relatedPage == null || shareLink == null) {
+    if (shareLink == null || shareLink.relatedPage == null) {
       // page or sharelink are not found
       return res.render(`layout-${layoutName}/not_found_shared_page`);
     }
