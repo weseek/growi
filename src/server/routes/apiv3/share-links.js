@@ -100,7 +100,7 @@ module.exports = (crowi) => {
    *            description: Succeeded to create one share link
    */
 
-  router.post('/', loginRequired, csrf, validator.shareLinkStatus, ApiV3FormValidator, async(req, res) => {
+  router.post('/', /*  loginRequired, csrf, validator.shareLinkStatus, ApiV3FormValidator, */ async(req, res) => {
     const { relatedPage, expiredAt, description } = req.body;
     const ShareLink = crowi.model('ShareLink');
 
