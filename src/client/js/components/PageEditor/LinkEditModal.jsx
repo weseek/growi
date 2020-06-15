@@ -92,8 +92,8 @@ export default class LinkEditModal extends React.PureComponent {
                 <div className="input-group">
                   <PagePathAutoComplete
                     value={this.state.linkInputValue}
-                    onInputChange={e => this.inputChangeHandler(e.target.value)}
-                    onSubmit={e => this.submitHandler(e.target.value)}
+                    onInputChange={this.inputChangeHandler}
+                    onSubmit={this.submitHandler}
                   />
 
                   <div className="input-group-append">
