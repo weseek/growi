@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
+import parse from 'date-fns/parse';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
@@ -77,7 +78,7 @@ class ShareLinkForm extends React.Component {
     let expiredAt;
 
     if (expirationType === 'unlimited') {
-      expiredAt = null;
+      return null;
     }
 
     if (expirationType === 'numberOfDays') {
@@ -88,10 +89,7 @@ class ShareLinkForm extends React.Component {
 
     if (expirationType === 'custom') {
       const { customExpirationDate, customExpirationTime } = this.state;
-      const date = customExpirationDate.split('-');
-      // adjust month number
-      date[1] -= 1;
-      expiredAt = new Date(...date, ...customExpirationTime.split(':'));
+      expiredAt = parse(`${customExpirationDate}T${customExpirationTime}`, "yyyy-MM-dd'T'HH:mm:ss", new Date());
     }
 
     return expiredAt;
@@ -102,16 +100,25 @@ class ShareLinkForm extends React.Component {
     const { pageId } = pageContainer.state;
     const { description } = this.state;
 
-    const expiredAt = this.generateExpired();
+    let expiredAt;
 
     try {
-      await this.props.appContainer.apiv3.post('/share-links/', { relatedPage: pageId, expiredAt, description });
-      this.props.onCloseForm();
-      toastSuccess(t('toaster.issue_share_link'));
+      expiredAt = this.generateExpired();
     }
     catch (err) {
-      toastError(err);
+      return toastError(err);
     }
+
+    return console.log(expiredAt);
+
+    // try {
+    //   // await this.props.appContainer.apiv3.post('/share-links/', { relatedPage: pageId, expiredAt, description });
+    //   this.props.onCloseForm();
+    //   toastSuccess(t('toaster.issue_share_link'));
+    // }
+    // catch (err) {
+    //   toastError(err);
+    // }
 
   }
 
