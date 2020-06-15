@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
@@ -36,9 +36,7 @@ class UserNotificationRow extends React.PureComponent {
 }
 
 
-const UserNotificationRowWrapper = (props) => {
-  return createSubscribedElement(UserNotificationRow, props, [AppContainer, AdminNotificationContainer]);
-};
+const UserNotificationRowWrapper = withUnstatedContainers(UserNotificationRow, [AppContainer, AdminNotificationContainer]);
 
 UserNotificationRow.propTypes = {
   t: PropTypes.func.isRequired, // i18next

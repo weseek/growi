@@ -8,7 +8,7 @@ import { UncontrolledTooltip } from 'reactstrap';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 import FormattedDistanceDate from '../FormattedDistanceDate';
 import RevisionBody from '../Page/RevisionBody';
@@ -225,9 +225,7 @@ class Comment extends React.PureComponent {
 /**
  * Wrapper component for using unstated
  */
-const CommentWrapper = (props) => {
-  return createSubscribedElement(Comment, props, [AppContainer, PageContainer]);
-};
+const CommentWrapper = withUnstatedContainers(Comment, [AppContainer, PageContainer]);
 
 Comment.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,

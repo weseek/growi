@@ -8,7 +8,7 @@ import {
   ModalBody,
 } from 'reactstrap';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminLdapSecurityContainer from '../../../services/AdminLdapSecurityContainer';
@@ -74,8 +74,6 @@ LdapAuthTestModal.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-const LdapAuthTestModalWrapper = (props) => {
-  return createSubscribedElement(LdapAuthTestModal, props, [AppContainer, AdminLdapSecurityContainer]);
-};
+const LdapAuthTestModalWrapper = withUnstatedContainers(LdapAuthTestModal, [AppContainer, AdminLdapSecurityContainer]);
 
 export default withTranslation()(LdapAuthTestModalWrapper);

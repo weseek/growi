@@ -5,7 +5,7 @@ import {
   TabContent, TabPane, Nav, NavItem, NavLink,
 } from 'reactstrap';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
 import LdapSecuritySetting from './LdapSecuritySetting';
@@ -190,8 +190,6 @@ SecurityManagement.propTypes = {
   csrf: PropTypes.string,
 };
 
-const SecurityManagementWrapper = (props) => {
-  return createSubscribedElement(SecurityManagement, props, [AppContainer]);
-};
+const SecurityManagementWrapper = withUnstatedContainers(SecurityManagement, [AppContainer]);
 
 export default withTranslation()(SecurityManagementWrapper);

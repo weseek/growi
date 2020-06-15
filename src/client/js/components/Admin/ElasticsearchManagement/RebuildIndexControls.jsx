@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import WebsocketContainer from '../../../services/WebsocketContainer';
 
@@ -97,9 +97,7 @@ class RebuildIndexControls extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const RebuildIndexControlsWrapper = (props) => {
-  return createSubscribedElement(RebuildIndexControls, props, [AppContainer, WebsocketContainer]);
-};
+const RebuildIndexControlsWrapper = withUnstatedContainers(RebuildIndexControls, [AppContainer, WebsocketContainer]);
 
 RebuildIndexControls.propTypes = {
   t: PropTypes.func.isRequired, // i18next

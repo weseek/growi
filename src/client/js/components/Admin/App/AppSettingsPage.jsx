@@ -3,7 +3,7 @@ import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
@@ -86,9 +86,7 @@ AppSettingsPage.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const AppSettingsPageWrapper = (props) => {
-  return createSubscribedElement(AppSettingsPage, props, [AppContainer, AdminAppContainer]);
-};
+const AppSettingsPageWrapper = withUnstatedContainers(AppSettingsPage, [AppContainer, AdminAppContainer]);
 
 
 export default withTranslation()(AppSettingsPageWrapper);

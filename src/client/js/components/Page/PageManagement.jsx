@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { isTopPage } from '@commons/util/path-utils';
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 import PageDeleteModal from '../PageDeleteModal';
@@ -136,9 +136,7 @@ const PageManagement = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageManagementWrapper = (props) => {
-  return createSubscribedElement(PageManagement, props, [AppContainer, PageContainer]);
-};
+const PageManagementWrapper = withUnstatedContainers(PageManagement, [AppContainer, PageContainer]);
 
 
 PageManagement.propTypes = {

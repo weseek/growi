@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import loggerFactory from '@alias/logger';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
@@ -145,9 +145,7 @@ class UserTriggerNotification extends React.Component {
 }
 
 
-const UserTriggerNotificationWrapper = (props) => {
-  return createSubscribedElement(UserTriggerNotification, props, [AppContainer, AdminNotificationContainer]);
-};
+const UserTriggerNotificationWrapper = withUnstatedContainers(UserTriggerNotification, [AppContainer, AdminNotificationContainer]);
 
 UserTriggerNotification.propTypes = {
   t: PropTypes.func.isRequired, // i18next

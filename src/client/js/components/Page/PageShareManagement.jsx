@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { UncontrolledTooltip } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+
+import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 import OutsideShareLinkModal from '../OutsideShareLinkModal';
@@ -83,9 +84,7 @@ const PageShareManagement = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageShareManagementWrapper = (props) => {
-  return createSubscribedElement(PageShareManagement, props, [AppContainer, PageContainer]);
-};
+const PageShareManagementWrapper = withUnstatedContainers(PageShareManagement, [AppContainer, PageContainer]);
 
 
 PageShareManagement.propTypes = {

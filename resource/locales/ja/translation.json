@@ -61,8 +61,6 @@
   "No diff": "差分なし",
   "Shrink versions that have no diffs": "差分のないバージョンをコンパクトに表示する",
   "User ID": "ユーザーID",
-  "Home": "ホーム",
-  "Settings": "設定",
   "User Information": "ユーザー情報",
   "Basic Info": "ユーザーの基本情報",
   "Name": "名前",
@@ -130,8 +128,19 @@
   "Deleted Pages": "削除済みページ",
   "Sign out": "ログアウト",
   "Disassociate": "連携解除",
+  "Color mode": "カラーモード",
+  "Sidebar mode": "サイドバーモード",
+  "Sidebar mode on Editor": "サイドバーモード(編集時)",
   "Recent Created": "最新の作成",
   "Recent Changes": "最新の変更",
+  "personal_dropdown": {
+    "home": "ホーム",
+    "settings": "設定",
+    "color_mode": "カラーモード",
+    "sidebar_mode": "サイドバーモード",
+    "sidebar_mode_editor": "サイドバーモード(編集時)",
+    "use_os_settings": "OS設定を利用する"
+  },
   "form_validation": {
     "error_message": "いくつかの値が設定されていません",
     "required": "%sに値を入力してください",
@@ -335,7 +344,9 @@
     "activate_user_success": "{{username}}を有効化しました",
     "deactivate_user_success": "{{username}}を無効化しました",
     "remove_user_success": "{{username}}を削除しました",
-    "remove_external_user_success": "{{accountId}}を削除しました"
+    "remove_external_user_success": "{{accountId}}を削除しました",
+    "remove_share_link_success": "{{shareLinkId}}を削除しました",
+    "issue_share_link": "共有リンクを作成しました"
   },
   "template": {
     "modal_label": {

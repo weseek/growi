@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { toastSuccess, toastError } from '../../util/apiNotification';
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 import AppContainer from '../../services/AppContainer';
 import PersonalContainer from '../../services/PersonalContainer';
@@ -94,9 +94,7 @@ class ApiSettings extends React.Component {
 
 }
 
-const ApiSettingsWrapper = (props) => {
-  return createSubscribedElement(ApiSettings, props, [AppContainer, PersonalContainer]);
-};
+const ApiSettingsWrapper = withUnstatedContainers(ApiSettings, [AppContainer, PersonalContainer]);
 
 ApiSettings.propTypes = {
   t: PropTypes.func.isRequired, // i18next

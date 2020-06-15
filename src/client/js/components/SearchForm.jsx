@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 
 import SearchTypeahead from './SearchTypeahead';
@@ -132,9 +132,7 @@ class SearchForm extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const SearchFormWrapper = (props) => {
-  return createSubscribedElement(SearchForm, props, [AppContainer]);
-};
+const SearchFormWrapper = withUnstatedContainers(SearchForm, [AppContainer]);
 
 SearchForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
