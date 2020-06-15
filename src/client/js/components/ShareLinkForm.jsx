@@ -95,6 +95,15 @@ class ShareLinkForm extends React.Component {
     return expiredAt;
   }
 
+  closeForm() {
+    const { onCloseForm } = this.props;
+
+    if (onCloseForm == null) {
+      return;
+    }
+    onCloseForm();
+  }
+
   async handleIssueShareLink() {
     const { t, pageContainer } = this.props;
     const { pageId } = pageContainer.state;
@@ -109,16 +118,14 @@ class ShareLinkForm extends React.Component {
       return toastError(err);
     }
 
-    return console.log(expiredAt);
-
-    // try {
-    //   // await this.props.appContainer.apiv3.post('/share-links/', { relatedPage: pageId, expiredAt, description });
-    //   this.props.onCloseForm();
-    //   toastSuccess(t('toaster.issue_share_link'));
-    // }
-    // catch (err) {
-    //   toastError(err);
-    // }
+    try {
+      await this.props.appContainer.apiv3.post('/share-links/', { relatedPage: pageId, expiredAt, description });
+      this.closeForm();
+      toastSuccess(t('toaster.issue_share_link'));
+    }
+    catch (err) {
+      toastError(err);
+    }
 
   }
 
@@ -244,7 +251,7 @@ ShareLinkForm.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   user: PropTypes.object.isRequired,
-  onCloseForm: PropTypes.func.isRequired,
+  onCloseForm: PropTypes.func,
 };
 
 export default withTranslation()(ShareLinkFormWrapper);
