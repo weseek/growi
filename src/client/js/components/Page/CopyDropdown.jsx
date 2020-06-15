@@ -101,13 +101,14 @@ class CopyDropdown extends React.Component {
 
     const { DropdownItemContents } = this;
     const copyTarget = isShareLinkMode ? `copyShareLink${shareLink._id}` : 'copyPagePathDropdown';
+    const styleName = isShareLinkMode ? 'btn btn-success' : 'd-block text-muted bg-transparent btn-copy border-0';
 
     return (
       <>
         <UncontrolledDropdown id={copyTarget} className="grw-copy-dropdown">
           <DropdownToggle
             caret
-            className="d-block text-muted bg-transparent btn-copy border-0"
+            className={styleName}
             style={this.props.buttonStyle}
           >
             { isShareLinkMode ? (
@@ -136,22 +137,26 @@ class CopyDropdown extends React.Component {
             <DropdownItem divider className="my-0"></DropdownItem>
 
             {/* Page path */}
-            <CopyToClipboard text={pagePathWithParams} onCopy={this.showToolTip}>
-              <DropdownItem className="px-3">
-                <DropdownItemContents title={t('copy_to_clipboard.Page path')} contents={pagePathWithParams} />
-              </DropdownItem>
-            </CopyToClipboard>
+            { pageId && (
+              <>
+                <CopyToClipboard text={pagePathWithParams} onCopy={this.showToolTip}>
+                  <DropdownItem className="px-3">
+                    <DropdownItemContents title={t('copy_to_clipboard.Page path')} contents={pagePathWithParams} />
+                  </DropdownItem>
+                </CopyToClipboard>
 
-            <DropdownItem divider className="my-0"></DropdownItem>
+                <DropdownItem divider className="my-0"></DropdownItem>
 
-            {/* Page path URL */}
-            <CopyToClipboard text={pagePathUrl} onCopy={this.showToolTip}>
-              <DropdownItem className="px-3">
-                <DropdownItemContents title={t('copy_to_clipboard.Page URL')} contents={pagePathUrl} />
-              </DropdownItem>
-            </CopyToClipboard>
+                {/* Page path URL */}
+                <CopyToClipboard text={pagePathUrl} onCopy={this.showToolTip}>
+                  <DropdownItem className="px-3">
+                    <DropdownItemContents title={t('copy_to_clipboard.Page URL')} contents={pagePathUrl} />
+                  </DropdownItem>
+                </CopyToClipboard>
 
-            <DropdownItem divider className="my-0"></DropdownItem>
+                <DropdownItem divider className="my-0"></DropdownItem>
+              </>
+            )}
 
             {/* Parmanent Link */}
             { pageId && (
@@ -180,6 +185,15 @@ class CopyDropdown extends React.Component {
               <CopyToClipboard text={this.generateMarkdownLink()} onCopy={this.showToolTip}>
                 <DropdownItem className="px-3 text-wrap">
                   <DropdownItemContents title={t('copy_to_clipboard.Markdown link')} contents={this.generateMarkdownLink()} isContentsWrap />
+                </DropdownItem>
+              </CopyToClipboard>
+            )}
+
+            {/* Share Link Copy */}
+            { isShareLinkMode && (
+              <CopyToClipboard text={shareLink._id} onCopy={this.showToolTip}>
+                <DropdownItem className="px-3 text-wrap">
+                  {shareLink._id}
                 </DropdownItem>
               </CopyToClipboard>
             )}
