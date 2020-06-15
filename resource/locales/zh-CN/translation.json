@@ -173,8 +173,7 @@
       "apitoken_issued": "API token 未发布。",
       "update_token1": "您可以更新以生成新的API令牌。",
       "update_token2": "您需要更新任何现有进程中的API令牌。"
-    },
-    "form_help": {}
+    }
   },
   "Password": "密码",
   "Password Settings": "密码设置",
@@ -292,7 +291,8 @@
     "completely": "Delete completely instead of putting it into trash."
   },
   "modal_empty": {
-    "empty_the_trash": "Empty The Trash"
+    "empty_the_trash": "Empty The Trash",
+    "notice": "完全删除的页面是不可恢复的。"
   },
   "modal_duplicate": {
     "label": {
@@ -674,5 +674,27 @@
     "export_menu": "导出菜单",
     "download": "下载",
     "delete": "删除"
+  },
+  "personal_dropdown": {
+    "home": "家",
+    "settings": "设置",
+    "color_mode": "颜色模式",
+    "sidebar_mode": "边栏模式",
+    "sidebar_mode_editor": "编辑器上的边栏模式",
+    "use_os_settings": "使用操作系统设置"
+  },
+  "search_result": {
+    "result_meta": "在{{total}中找到了{{keyword}。",
+    "deletion_mode_btn_lavel": "选择并删除页面",
+    "cancel": "取消",
+    "delete": "删除",
+    "check_all": "全部检查",
+    "deletion_modal_header": "删除页",
+    "delete_completely": "完全删除"
+  },
+  "login": {
+    "Sign in error": "登录错误",
+    "Registration successful": "注册成功",
+    "Setup": "安装程序"
   }
 }
