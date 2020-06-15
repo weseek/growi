@@ -2,9 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
-import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 
 class ShareLinkSetting extends React.Component {
@@ -40,12 +39,10 @@ class ShareLinkSetting extends React.Component {
 
 }
 
+const ShareLinkSettingWrapper = withUnstatedContainers(ShareLinkSetting, [AdminGeneralSecurityContainer]);
+
 ShareLinkSetting.propTypes = {
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
-};
-
-const ShareLinkSettingWrapper = (props) => {
-  return createSubscribedElement(ShareLinkSetting, props, [AppContainer, AdminGeneralSecurityContainer]);
 };
 
 export default withTranslation()(ShareLinkSettingWrapper);
