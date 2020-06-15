@@ -1,9 +1,15 @@
 # CHANGES
 
-## v4.0.6-RC
+## v4.0.7-RC
+
+* 
+
+## v4.0.6
 
 * Fix: Avatar images in Recent Changes are not shown
-* Fix: Full screen modal of Handsontable and Draoio don't work
+* Fix: Full screen modal of Handsontable and Draw.io don't work
+* Fix: Shortcut for creating page respond with modifier key wrongly
+    * Introduced by v4.0.5
 
 ## v4.0.5
 
