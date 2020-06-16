@@ -43,7 +43,7 @@ class ShareLinkList extends React.Component {
 
   async deleteLinkHandler(shareLinkId) {
     try {
-      const res = await this.appContainer.apiv3Delete(`/share-links/${shareLinkId}`);
+      const res = await this.props.appContainer.apiv3Delete(`/share-links/${shareLinkId}`);
       const { deletedShareLink } = res.data;
       toastSuccess('remove_share_link_success', { shareLinkId: deletedShareLink._id });
     }
