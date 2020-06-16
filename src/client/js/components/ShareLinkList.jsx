@@ -30,10 +30,15 @@ class ShareLinkList extends React.Component {
 
   async handlePageChange() {
     const relatedPage = this.props.pageContainer.state.pageId;
-    const res = await this.props.appContainer.apiv3Get('/share-links', { relatedPage });
-    await this.setState({
-      allShareLinks: res.data.shareLinksResult,
-    });
+    try {
+      const res = await this.props.appContainer.apiv3Get('/share-links', { relatedPage });
+      this.setState({
+        allShareLinks: res.data.shareLinksResult,
+      });
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   async deleteLinkHandler(shareLinkId) {
