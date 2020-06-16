@@ -81,7 +81,7 @@ export default class LinkEditModal extends React.PureComponent {
     return (
       <Modal isOpen={this.state.show} toggle={this.cancel} size="lg">
         <ModalHeader tag="h4" toggle={this.cancel} className="bg-primary text-light">
-            Edit Links
+          Edit Links
         </ModalHeader>
 
         <ModalBody className="container">
@@ -98,7 +98,7 @@ export default class LinkEditModal extends React.PureComponent {
 
                   <div className="input-group-append">
                     <button type="button" id="button-addon" className="btn btn-secondary" onClick={this.showLog}>
-                        Preview
+                      Preview
                     </button>
                   </div>
                 </div>
@@ -113,17 +113,17 @@ export default class LinkEditModal extends React.PureComponent {
                 <ul className="nav nav-tabs" role="tabist">
                   <li className="nav-item">
                     <a className="nav-link active" href="#Pukiwiki" role="tab" data-toggle="tab">
-                        Pukiwiki
+                      Pukiwiki
                     </a>
                   </li>
                   <li className="nav-item">
                     <a className="nav-link" href="#Crowi" role="tab" data-toggle="tab">
-                        Crowi
+                      Crowi
                     </a>
                   </li>
                   <li className="nav-item">
                     <a className="nav-link" href="#MD" role="tab" data-toggle="tab">
-                        MD
+                      MD
                     </a>
                   </li>
                 </ul>
@@ -146,11 +146,11 @@ export default class LinkEditModal extends React.PureComponent {
                         <div className="custom-control custom-checkbox custom-checkbox-info">
                           <input className="custom-control-input" id="pukiwikiRelativePath" type="checkbox" checked={this.state.isUseRelativePath} />
                           <label className="custom-control-label" htmlFor="pukiwikiRelativePath" onClick={this.toggleIsUseRelativePath}>
-                              Use relative path
+                            Use relative path
                           </label>
                         </div>
                         <button type="button" className="btn btn-primary ml-auto" onClick={this.save}>
-                            Done
+                          Done
                         </button>
                       </div>
                     </form>
@@ -167,7 +167,7 @@ export default class LinkEditModal extends React.PureComponent {
                       </div>
                       <div className="d-flex">
                         <button type="button" className="btn btn-primary ml-auto" onClick={this.save}>
-                            Done
+                          Done
                         </button>
                       </div>
                     </form>
@@ -186,11 +186,11 @@ export default class LinkEditModal extends React.PureComponent {
                         <div className="custom-control custom-checkbox custom-checkbox-info">
                           <input className="custom-control-input" id="mdRelativePath" type="checkbox" checked={this.state.isUseRelativePath} />
                           <label className="custom-control-label" htmlFor="mdRelativePath" onClick={this.toggleIsUseRelativePath}>
-                              Use relative path
+                            Use relative path
                           </label>
                         </div>
                         <button type="button" className="btn btn-primary ml-auto" onClick={this.save}>
-                            Done
+                          Done
                         </button>
                       </div>
                     </form>
