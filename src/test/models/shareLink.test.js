@@ -20,13 +20,15 @@ describe('ShareLink', () => {
     done();
   });
 
-  describe('.shareLinkCount', () => {
-    describe('has two links', () => {
-      test('not found', async() => {
-        let shareLink = null;
-        shareLink = await ShareLink.countDocuments({ _id: '5ed11fcc60ec00c9072f74a6' });
-        expect(shareLink).toEqual(0);
-      });
+  describe('accessShareLink', () => {
+    const res = {
+      found: jest.fn().mockReturnValue('layout-growi/shared_page'),
+      expired: jest.fn().mockReturnValue('layout-growi/not_found_shared_page'),
+      notfound: jest.fn().mockReturnValue('layout-growi/expired_shared_page'),
+    };
+
+    test('share link is not found', () => {
+      expect(res.notfound).toHaveBeenCalledWith('/login');
     });
   });
 
