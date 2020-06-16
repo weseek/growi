@@ -27,8 +27,8 @@
 
   <script src="{{ webpack_asset('js/boot.js') }}"></script>
 
-  <script src="{{ webpack_asset('js/vendors.js') }}"></script>
-  <script src="{{ webpack_asset('js/commons.js') }}"></script>
+  <script src="{{ webpack_asset('js/vendors.js') }}" defer></script>
+  <script src="{{ webpack_asset('js/commons.js') }}" defer></script>
   {% if getConfig('crowi', 'plugin:isEnabledPlugins') %}
   <script src="{{ webpack_asset('js/plugin.js') }}" defer></script>
   {% endif %}
