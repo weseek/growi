@@ -123,21 +123,19 @@ module.exports = (crowi) => {
   *        tags: [ShareLinks]
   *        summary: /share-links/
   *        description: delete all share links related one page
-  *        requestBody:
-  *           required: true
-  *           content:
-  *             application/json:
-  *               schema:
-  *                 properties:
-  *                   relatedPage:
-  *                     type: string
-  *                     description: delete all share links that related one page
+  *        parameters:
+  *          - name: relatedPage
+  *            in: query
+  *            required: true
+  *            description: page id of share link
+  *            schema:
+  *              type: string
   *        responses:
   *          200:
   *            description: Succeeded to delete o all share links related one page
   */
   router.delete('/', loginRequired, csrf, async(req, res) => {
-    const { relatedPage } = req.body;
+    const { relatedPage } = req.query;
     const ShareLink = crowi.model('ShareLink');
 
     try {

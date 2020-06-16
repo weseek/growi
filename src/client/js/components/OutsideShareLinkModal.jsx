@@ -34,9 +34,12 @@ class OutsideShareLinkModal extends React.Component {
     this.setState({ isOpenShareLinkForm: !this.state.isOpenShareLinkForm });
   }
 
-  deleteAllLinksButtonHandler() {
-    const { t } = this.props;
+  async deleteAllLinksButtonHandler() {
+    const { t, appContainer, pageContainer } = this.props;
+    const { pageId } = pageContainer.state;
+
     try {
+      await appContainer.apiv3.delete('/share-links/', { relatedPage: pageId });
       toastSuccess(t('toaster.remove_share_link'));
     }
     catch (err) {
