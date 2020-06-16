@@ -2,13 +2,11 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { UncontrolledTooltip } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
-
-
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 import OutsideShareLinkModal from '../OutsideShareLinkModal';
-// import ArchiveCreateModal from '../ArchiveCreateModal';
+import ArchiveCreateModal from '../ArchiveCreateModal';
 
 const PageShareManagement = (props) => {
   const { t, appContainer, pageContainer } = props;
@@ -16,6 +14,8 @@ const PageShareManagement = (props) => {
   const { currentUser } = appContainer;
 
   const [isOutsideShareLinkModalShown, setIsOutsideShareLinkModalShown] = useState(false);
+
+  const [isArchiveCreateModalShown, setIsArchiveCreateModalShown] = useState(false);
 
   function openOutsideShareLinkModalHandler() {
     setIsOutsideShareLinkModalShown(true);
@@ -25,11 +25,31 @@ const PageShareManagement = (props) => {
     setIsOutsideShareLinkModalShown(false);
   }
 
+  function openArchiveModalHandler() {
+    console.log('ログ出るで！');
+    setIsArchiveCreateModalShown(true);
+  }
+
+  function closeArchiveCreateModalHandler() {
+    console.log('ログ閉じるで！');
+    setIsArchiveCreateModalShown(false);
+  }
+
+
   function renderModals() {
     return (
       <OutsideShareLinkModal
         isOpen={isOutsideShareLinkModalShown}
         onClose={closeOutsideShareLinkModalHandler}
+      />
+    );
+  }
+
+  function renderArchiveModals() {
+    return (
+      <ArchiveCreateModal
+        isOpen={isArchiveCreateModalShown}
+        onClose={closeArchiveCreateModalHandler}
       />
     );
   }
@@ -65,13 +85,6 @@ const PageShareManagement = (props) => {
     );
   }
 
-  function openArchiveModalHandler() {
-    return (
-      console.log('ログ出るで！')
-    );
-  }
-
-
   return (
     <>
       {currentUser == null ? renderGuestUser() : renderCurrentUser()}
@@ -86,6 +99,7 @@ const PageShareManagement = (props) => {
 
       </div>
       {renderModals()}
+      {renderArchiveModals()}
     </>
   );
 
