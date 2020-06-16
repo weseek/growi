@@ -20,14 +20,20 @@ class OutsideShareLinkModal extends React.Component {
   constructor() {
     super();
     this.state = {
+      shareLinks: [],
       isOpenShareLinkForm: false,
     };
 
     this.toggleShareLinkFormHandler = this.toggleShareLinkFormHandler.bind(this);
+    this.deleteAllLinksButtonHandler = this.deleteAllLinksButtonHandler.bind(this);
   }
 
   toggleShareLinkFormHandler() {
     this.setState({ isOpenShareLinkForm: !this.state.isOpenShareLinkForm });
+  }
+
+  deleteAllLinksButtonHandler() {
+    console.log('hoge');
   }
 
   render() {
@@ -39,11 +45,11 @@ class OutsideShareLinkModal extends React.Component {
           <div className="container">
             <div className="form-inline mb-3">
               <h4>Shared Link List</h4>
-              <button className="ml-auto btn btn-danger" type="button">Delete all links</button>
+              <button className="ml-auto btn btn-danger" type="button" onClick={this.deleteAllLinksButtonHandler}>Delete all links</button>
             </div>
 
             <div>
-              <ShareLinkList />
+              <ShareLinkList shareLinks={this.state.shareLinks} />
               <button
                 className="btn btn-outline-secondary d-block mx-auto px-5 mb-3"
                 type="button"

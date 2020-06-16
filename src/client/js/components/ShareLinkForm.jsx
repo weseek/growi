@@ -250,7 +250,6 @@ ShareLinkForm.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
-  user: PropTypes.object.isRequired,
   onCloseForm: PropTypes.func,
 };
 
