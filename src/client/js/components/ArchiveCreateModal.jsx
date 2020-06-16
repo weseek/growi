@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 export default class ArchiveCreateModal extends React.PureComponet {
@@ -60,8 +60,9 @@ export default class ArchiveCreateModal extends React.PureComponet {
       </Modal>
     );
   }
-  ArchiveCreateModal.propTypes = {
-    isOpen: Proptypes.bool.isRequired,
-    onClose: PropTypes.cunc.isRequired,
-  };
+  // ArchiveCreateModal.propTypes = {
+  //   isOpen: Proptypes.bool.isRequired,
+  //   onClose: PropTypes.cunc.isRequired,
+  // };
+
 }

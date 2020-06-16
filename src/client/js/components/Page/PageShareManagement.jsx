@@ -8,7 +8,7 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 import OutsideShareLinkModal from '../OutsideShareLinkModal';
-import ArchiveCreateModal from '../ArchiveCreateModal';
+// import ArchiveCreateModal from '../ArchiveCreateModal';
 
 const PageShareManagement = (props) => {
   const { t, appContainer, pageContainer } = props;
@@ -65,6 +65,12 @@ const PageShareManagement = (props) => {
     );
   }
 
+  function openArchiveModalHandler() {
+    return (
+      consol.log('ログ出るで！')
+    );
+  }
+
 
   return (
     <>
@@ -74,6 +80,10 @@ const PageShareManagement = (props) => {
           <i className="icon-fw icon-link"></i>{t('Shere this page link to public')}
           <span className="ml-2 badge badge-info badge-pill">{pageContainer.state.shareLinksNumber}</span>
         </button>
+
+        <button className="dropdown-item" type="button" onClick={openArchiveModalHandler}>アーカイブデータを作成する
+        </button>
+
       </div>
       {renderModals()}
     </>
