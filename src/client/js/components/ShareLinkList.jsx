@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
@@ -13,20 +13,35 @@ import PageContainer from '../services/PageContainer';
 class ShareLinkList extends React.Component {
 
   constructor(props) {
-    super();
+    super(props);
 
     this.state = {
+      activePage: 1,
       allShareLinks: [],
 
     };
 
-    // this.retriveShareLinks = this.retriveShareLinks.bind(this);
+    this.handlePageChange = this.handlePageChange.bind(this);
   }
 
-  async getDerivedStateFormProps() {
-    const { res } = await this.appContainer.apiv3.get('/share-links/' /* { relatedPage: this.pageContainer.state.pageId } */);
-    // this.setState({ allShareLinks: { link: 'hoge', expiration: 'fuga', description: 'piyo' } });
-    this.setState({ allShareLinks: res });
+  // getDerivedStateFormProps() {
+  // const { res } = await this.appContainer.apiv3.get('/share-links/' /* { relatedPage: this.pageContainer.state.pageId } */);
+  // this.setState({ allShareLinks: { link: 'hoge', expiration: 'fuga', description: 'piyo' } });
+  // this.setState({ allShareLinks: res });
+  // return console.log('Hi there');
+  // }
+
+  async componentDidMount() {
+    await this.handlePageChange(this.state.activePage);
+  }
+
+  async handlePageChange() {
+    const relatedPage = this.props.pageContainer.state.pageId;
+    const res = await this.props.appContainer.apiv3Get('/share-links', { relatedPage });
+    await this.setState({
+      allShareLinks: res,
+    });
+    console.log(this.state.allShareLinks);
   }
 
   async deleteLinkHandler(shareLinkId) {
@@ -43,7 +58,7 @@ class ShareLinkList extends React.Component {
   render() {
 
     return (
-      <Fragment className="table-responsive">
+      <div className="table-responsive">
         <table className="table table-bordered">
           <thead>
             <tr>
@@ -54,7 +69,7 @@ class ShareLinkList extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {this.state.allShareLinks.map((shareLink) => {
+            {/* {this.state.allShareLinks.map((shareLink) => {
               return (
                 <tr>
                   <td>{shareLink.link}</td>
@@ -68,10 +83,10 @@ class ShareLinkList extends React.Component {
                 </tr>
 
               );
-            })}
+            })} */}
           </tbody>
         </table>
-      </Fragment>
+      </div>
     );
   }
 
