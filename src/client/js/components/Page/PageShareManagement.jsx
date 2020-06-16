@@ -67,7 +67,7 @@ const PageShareManagement = (props) => {
 
   function openArchiveModalHandler() {
     return (
-      consol.log('ログ出るで！')
+      console.log('ログ出るで！')
     );
   }
 
