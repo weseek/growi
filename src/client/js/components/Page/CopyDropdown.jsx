@@ -54,7 +54,10 @@ class CopyDropdown extends React.Component {
   }
 
   generatePagePathWithParams() {
-    const { pagePath } = this.props;
+    const { pagePath, isShareLinkMode } = this.props;
+    if (isShareLinkMode) {
+      return decodeURI(`/${pagePath}`);
+    }
     return decodeURI(`${pagePath}${this.uriParams}`);
   }
 
