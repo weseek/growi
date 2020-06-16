@@ -74,14 +74,19 @@ class CopyDropdown extends React.Component {
   }
 
   generateShareLink() {
-    const { shareLink } = this.props;
-    return `http://localhost:3000/share/${shareLink._id}`;
+    const { pagePath } = this.props;
+    return `http://localhost:3000${pagePath}`;
   }
 
   generateMarkdownLink() {
     const { pagePath } = this.props;
+    const isShareLinkMode = pagePath.indexOf('/share/') !== -1;
 
     const label = decodeURI(`${pagePath}${this.uriParams}`);
+    if (isShareLinkMode) {
+      const permalink = this.generateShareLink();
+      return `[${label}](${permalink})`;
+    }
     const permalink = this.generatePermalink();
 
     return `[${label}](${permalink})`;
@@ -99,9 +104,7 @@ class CopyDropdown extends React.Component {
   );
 
   render() {
-    const {
-      t, pageId, shareLink, isShareLinkMode,
-    } = this.props;
+    const { t, pageId, pagePath } = this.props;
     const { isParamsAppended } = this.state;
 
     const pagePathWithParams = this.generatePagePathWithParams();
@@ -109,7 +112,8 @@ class CopyDropdown extends React.Component {
     const permalink = this.generatePermalink();
 
     const { DropdownItemContents } = this;
-    const copyTarget = isShareLinkMode ? `copyShareLink${shareLink._id}` : 'copyPagePathDropdown';
+    const isShareLinkMode = pagePath.indexOf('/share/') !== -1;
+    const copyTarget = isShareLinkMode ? `copyShareLink${pagePath.replace('/share/', '')}` : 'copyPagePathDropdown';
     const styleName = isShareLinkMode ? 'btn btn-success' : 'd-block text-muted bg-transparent btn-copy border-0';
 
     return (
@@ -158,16 +162,12 @@ class CopyDropdown extends React.Component {
             )}
 
             {/* Page path URL */}
-            { pageId && (
-              <>
-                <CopyToClipboard text={pagePathUrl} onCopy={this.showToolTip}>
-                  <DropdownItem className="px-3">
-                    <DropdownItemContents title={t('copy_to_clipboard.Page URL')} contents={pagePathUrl} />
-                  </DropdownItem>
-                </CopyToClipboard>
-                <DropdownItem divider className="my-0"></DropdownItem>
-              </>
-            )}
+            <CopyToClipboard text={pagePathUrl} onCopy={this.showToolTip}>
+              <DropdownItem className="px-3">
+                <DropdownItemContents title={t('copy_to_clipboard.Page URL')} contents={pagePathUrl} />
+              </DropdownItem>
+            </CopyToClipboard>
+            <DropdownItem divider className="my-0"></DropdownItem>
 
 
             {/* Parmanent Link */}
@@ -193,28 +193,10 @@ class CopyDropdown extends React.Component {
             <DropdownItem divider className="my-0"></DropdownItem>
 
             {/* Markdown Link */}
-            { pageId && (
+            { (pageId || pagePath) && (
               <CopyToClipboard text={this.generateMarkdownLink()} onCopy={this.showToolTip}>
                 <DropdownItem className="px-3 text-wrap">
                   <DropdownItemContents title={t('copy_to_clipboard.Markdown link')} contents={this.generateMarkdownLink()} isContentsWrap />
-                </DropdownItem>
-              </CopyToClipboard>
-            )}
-
-            {/* Share Link Copy */}
-            { isShareLinkMode && (
-              <CopyToClipboard text={this.generateShareLink()} onCopy={this.showToolTip}>
-                <DropdownItem className="px-3 text-wrap">
-                  <DropdownItemContents title="share link" contents={this.generateShareLink()} isContentsWrap />
-                </DropdownItem>
-              </CopyToClipboard>
-            )}
-
-            {/* Markdown Link */}
-            { isShareLinkMode && (
-              <CopyToClipboard text={this.generateMarkdownShareLink()} onCopy={this.showToolTip}>
-                <DropdownItem className="px-3 text-wrap">
-                  <DropdownItemContents title="Markdown share link" contents={this.generateMarkdownShareLink()} isContentsWrap />
                 </DropdownItem>
               </CopyToClipboard>
             )}
@@ -237,8 +219,6 @@ CopyDropdown.propTypes = {
   pagePath: PropTypes.string.isRequired,
   pageId: PropTypes.string,
   buttonStyle: PropTypes.object,
-  shareLink: PropTypes.object,
-  isShareLinkMode: PropTypes.bool,
 };
 
 export default withTranslation()(CopyDropdown);

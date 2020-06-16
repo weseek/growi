@@ -23,7 +23,7 @@ const OutsideShareLinkModal = (props) => {
   }
 
   return (
-    <Modal size="xl" isOpen={props.isOpen} toggle={props.onClose} className="grw-create-page">
+    <Modal size="xl" isOpen={props.isOpen} toggle={props.onClose}>
       <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-light">Title
       </ModalHeader>
       <ModalBody>
