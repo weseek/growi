@@ -591,6 +591,32 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
+   *    /_api/v3/security-setting/all-share-links:
+   *      delete:
+   *        tags: [ShareLinkSettings, apiv3]
+   *        description: Delete All ShareLinks at Share Link Setting
+   *        responses:
+   *          200:
+   *            description: succeed to delete all share links
+   */
+
+  router.delete('/all-share-links/', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    const ShareLink = crowi.model('ShareLink');
+    try {
+      const removedAct = await ShareLink.remove({});
+      const removeTotal = await removedAct.n;
+      return res.apiv3({ removeTotal });
+    }
+    catch (err) {
+      const msg = 'Error occured in delete all share links';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'failed-to-delete-all-share-links'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
    *    /_api/v3/security-setting/local-setting:
    *      put:
    *        tags: [LocalSetting, apiv3]
