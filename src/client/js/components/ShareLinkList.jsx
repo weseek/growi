@@ -16,19 +16,18 @@ class ShareLinkList extends React.Component {
     super(props);
 
     this.state = {
-      activePage: 1,
       allShareLinks: [],
 
     };
 
-    this.handlePageChange = this.handlePageChange.bind(this);
+    this.getShareLinkList = this.getShareLinkList.bind(this);
   }
 
   async componentDidMount() {
-    await this.handlePageChange(this.state.activePage);
+    await this.getShareLinkList();
   }
 
-  async handlePageChange() {
+  async getShareLinkList() {
     const relatedPage = this.props.pageContainer.state.pageId;
     try {
       const res = await this.props.appContainer.apiv3Get('/share-links', { relatedPage });
@@ -42,10 +41,12 @@ class ShareLinkList extends React.Component {
   }
 
   async deleteLinkHandler(shareLinkId) {
+    const { t } = this.props;
     try {
       const res = await this.props.appContainer.apiv3Delete(`/share-links/${shareLinkId}`);
       const { deletedShareLink } = res.data;
-      toastSuccess('remove_share_link_success', { shareLinkId: deletedShareLink._id });
+      toastSuccess(t('toaster.remove_share_link_success', { shareLinkId: deletedShareLink._id }));
+      await this.getShareLinkList();
     }
     catch (err) {
       toastError(err);
@@ -59,7 +60,7 @@ class ShareLinkList extends React.Component {
           <thead>
             <tr>
               <th>Link</th>
-              <th>Expiration</th>
+              <th>Expired At</th>
               <th>Description</th>
               <th>Order</th>
             </tr>
@@ -69,7 +70,7 @@ class ShareLinkList extends React.Component {
               return (
                 <tr key={shareLink._id} id={shareLink._id}>
                   <td>{shareLink._id}</td>
-                  <td>{shareLink.expiredAt}</td>
+                  <td>{shareLink.expiredAt || 'Unlimited'}</td>
                   <td>{shareLink.description}</td>
                   <td>
                     <button className="btn btn-outline-warning" type="button" onClick={() => this.deleteLinkHandler(shareLink._id)}>
