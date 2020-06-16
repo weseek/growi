@@ -28,6 +28,7 @@ class OutsideShareLinkModal extends React.Component {
 
     this.toggleShareLinkFormHandler = this.toggleShareLinkFormHandler.bind(this);
     this.deleteAllLinksButtonHandler = this.deleteAllLinksButtonHandler.bind(this);
+    this.deleteLinkById = this.deleteLinkById.bind(this);
   }
 
   toggleShareLinkFormHandler() {
@@ -45,6 +46,23 @@ class OutsideShareLinkModal extends React.Component {
     catch (err) {
       toastError(err);
     }
+
+    // TODO GW-2764 retrieve share links
+  }
+
+  async deleteLinkById(shareLinkId) {
+    const { t, appContainer } = this.props;
+
+    try {
+      const res = await appContainer.apiv3Delete(`/share-links/${shareLinkId}`);
+      const { deletedShareLink } = res.data;
+      toastSuccess(t('remove_share_link_success', { shareLinkId: deletedShareLink._id }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+
+    // TODO GW-2764 retrieve share links
   }
 
   render() {
@@ -68,7 +86,7 @@ class OutsideShareLinkModal extends React.Component {
               >
                 {this.state.isOpenShareLinkForm ? 'Close' : 'New'}
               </button>
-              {this.state.isOpenShareLinkForm && <ShareLinkForm onCloseForm={this.toggleShareLinkFormHandler} />}
+              {this.state.isOpenShareLinkForm && <ShareLinkForm onCloseForm={this.toggleShareLinkFormHandler} onClickDeleteButton={this.deleteLinkById} />}
             </div>
           </div>
         </ModalBody>
