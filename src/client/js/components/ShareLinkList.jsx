@@ -24,13 +24,6 @@ class ShareLinkList extends React.Component {
     this.handlePageChange = this.handlePageChange.bind(this);
   }
 
-  // getDerivedStateFormProps() {
-  // const { res } = await this.appContainer.apiv3.get('/share-links/' /* { relatedPage: this.pageContainer.state.pageId } */);
-  // this.setState({ allShareLinks: { link: 'hoge', expiration: 'fuga', description: 'piyo' } });
-  // this.setState({ allShareLinks: res });
-  // return console.log('Hi there');
-  // }
-
   async componentDidMount() {
     await this.handlePageChange(this.state.activePage);
   }
@@ -41,7 +34,6 @@ class ShareLinkList extends React.Component {
     await this.setState({
       allShareLinks: res.data.shareLinksResult,
     });
-    console.log(this.state.allShareLinks);
   }
 
   async deleteLinkHandler(shareLinkId) {
@@ -54,24 +46,6 @@ class ShareLinkList extends React.Component {
       toastError(err);
     }
   }
-
-  /* getLinks() {
-    this.state.allShareLinks.map((shareLinksResult) => {
-      return (
-        <tr>
-          <td>{shareLinksResult._id}</td>
-          <td>{shareLinksResult.expiredAt}</td>
-          <td>{shareLinksResult.description}</td>
-          <td>
-            <button className="btn btn-outline-warning" type="button" onClick={() => this.deleteLinkHandler(shareLinksResult._id)}>
-              <i className="icon-trash"></i>Delete
-            </button>
-          </td>
-        </tr>
-
-      );
-    });
-  } */
 
   render() {
     return (
@@ -88,7 +62,7 @@ class ShareLinkList extends React.Component {
           <tbody>
             { this.state.allShareLinks.map((shareLink) => {
               return (
-                <tr>
+                <tr key={shareLink._id} id={shareLink._id}>
                   <td>{shareLink._id}</td>
                   <td>{shareLink.expiredAt}</td>
                   <td>{shareLink.description}</td>
