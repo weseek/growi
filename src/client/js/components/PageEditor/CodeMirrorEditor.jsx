@@ -18,6 +18,7 @@ import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
 import MarkdownTableInterceptor from './MarkdownTableInterceptor';
 import mtu from './MarkdownTableUtil';
 import mdu from './MarkdownDrawioUtil';
+import GridEditModal from './GridEditModal';
 import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
 import DrawioModal from './DrawioModal';
@@ -71,6 +72,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       additionalClassSet: new Set(),
     };
 
+    this.gridEditModal = React.createRef();
     this.handsontableModal = React.createRef();
     this.drawioModal = React.createRef();
 
@@ -98,6 +100,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.renderCheatsheetModalButton = this.renderCheatsheetModalButton.bind(this);
 
     this.makeHeaderHandler = this.makeHeaderHandler.bind(this);
+    this.showGridEditorHandler = this.showGridEditorHandler.bind(this);
     this.showHandsonTableHandler = this.showHandsonTableHandler.bind(this);
     this.showDrawioHandler = this.showDrawioHandler.bind(this);
   }
@@ -649,6 +652,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
     cm.focus();
   }
 
+  showGridEditorHandler() {
+    this.gridEditModal.current.show();
+  }
+
   showHandsonTableHandler() {
     this.handsontableModal.current.show(mtu.getMarkdownTable(this.getCodeMirror()));
   }
@@ -759,6 +766,15 @@ export default class CodeMirrorEditor extends AbstractEditor {
         <EditorIcon icon="Image" />
       </Button>,
       <Button
+        key="nav-item-grid"
+        color={null}
+        size="sm"
+        title="Grid"
+        onClick={this.showGridEditorHandler}
+      >
+        <EditorIcon icon="Grid" />
+      </Button>,
+      <Button
         key="nav-item-table"
         color={null}
         size="sm"
@@ -849,6 +865,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
         { this.renderCheatsheetOverlay() }
 
+        <GridEditModal
+          ref={this.gridEditModal}
+        />
         <HandsontableModal
           ref={this.handsontableModal}
           onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }}
