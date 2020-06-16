@@ -15,6 +15,8 @@ import PageContainer from '../services/PageContainer';
 import ShareLinkList from './ShareLinkList';
 import ShareLinkForm from './ShareLinkForm';
 
+import { toastSuccess, toastError } from '../util/apiNotification';
+
 class OutsideShareLinkModal extends React.Component {
 
   constructor() {
@@ -33,7 +35,13 @@ class OutsideShareLinkModal extends React.Component {
   }
 
   deleteAllLinksButtonHandler() {
-    console.log('hoge');
+    const { t } = this.props;
+    try {
+      toastSuccess(t('toaster.remove_share_link'));
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   render() {
