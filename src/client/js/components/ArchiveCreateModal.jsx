@@ -60,5 +60,8 @@ export default class ArchiveCreateModal extends React.PureComponet {
       </Modal>
     );
   }
-
+  ArchiveCreateModal.propTypes = {
+    isOpen: Proptypes.bool.isRequired,
+    onClose: PropTypes.cunc.isRequired,
+  };
 }
