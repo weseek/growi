@@ -166,7 +166,10 @@ module.exports = (options) => {
           },
           commons: {
             test: /(src|resource)[\\/].*\.(js|jsx|json)$/,
-            chunks: 'initial',
+            chunks: (chunk) => {
+              // ignore patterns
+              return chunk.name != null && !chunk.name.match(/boot/);
+            },
             name: 'js/commons',
             minChunks: 2,
             minSize: 1,
@@ -176,7 +179,7 @@ module.exports = (options) => {
             test: /node_modules[\\/].*\.(js|jsx|json)$/,
             chunks: (chunk) => {
               // ignore patterns
-              return chunk.name != null && !chunk.name.match(/legacy-presentation|ie11-polyfill|hackmd-/);
+              return chunk.name != null && !chunk.name.match(/boot|legacy-presentation|ie11-polyfill|hackmd-/);
             },
             name: 'js/vendors',
             minSize: 1,

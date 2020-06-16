@@ -25,11 +25,12 @@
 
   {% include '../widget/headers/scripts-for-dev.html' %}
 
+  <script src="{{ webpack_asset('js/boot.js') }}"></script>
+
   <script src="{{ webpack_asset('js/vendors.js') }}"></script>
   <script src="{{ webpack_asset('js/commons.js') }}"></script>
-  <script src="{{ webpack_asset('js/boot.js') }}"></script>
   {% if getConfig('crowi', 'plugin:isEnabledPlugins') %}
-  <script src="{{ webpack_asset('js/plugin.js') }}"></script>
+  <script src="{{ webpack_asset('js/plugin.js') }}" defer></script>
   {% endif %}
   {% block html_head_loading_legacy %}
     <script src="{{ webpack_asset('js/legacy.js') }}" defer></script>

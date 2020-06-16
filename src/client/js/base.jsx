@@ -1,6 +1,7 @@
 import React from 'react';
 
 import loggerFactory from '@alias/logger';
+import Xss from '@commons/service/xss';
 
 import SearchTop from './components/Navbar/SearchTop';
 import NavbarToggler from './components/Navbar/NavbarToggler';
@@ -14,6 +15,14 @@ import PageCreateButton from './components/Navbar/PageCreateButton';
 import PageCreateModal from './components/PageCreateModal';
 
 const logger = loggerFactory('growi:cli:app');
+
+if (!window) {
+  window = {};
+}
+
+// setup xss library
+const xss = new Xss();
+window.xss = xss;
 
 // create unstated container instance
 const appContainer = new AppContainer();
