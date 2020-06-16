@@ -39,7 +39,7 @@ class ShareLinkList extends React.Component {
     const relatedPage = this.props.pageContainer.state.pageId;
     const res = await this.props.appContainer.apiv3Get('/share-links', { relatedPage });
     await this.setState({
-      allShareLinks: res,
+      allShareLinks: res.data.shareLinksResult,
     });
     console.log(this.state.allShareLinks);
   }
@@ -55,8 +55,25 @@ class ShareLinkList extends React.Component {
     }
   }
 
-  render() {
+  /* getLinks() {
+    this.state.allShareLinks.map((shareLinksResult) => {
+      return (
+        <tr>
+          <td>{shareLinksResult._id}</td>
+          <td>{shareLinksResult.expiredAt}</td>
+          <td>{shareLinksResult.description}</td>
+          <td>
+            <button className="btn btn-outline-warning" type="button" onClick={() => this.deleteLinkHandler(shareLinksResult._id)}>
+              <i className="icon-trash"></i>Delete
+            </button>
+          </td>
+        </tr>
 
+      );
+    });
+  } */
+
+  render() {
     return (
       <div className="table-responsive">
         <table className="table table-bordered">
@@ -69,11 +86,11 @@ class ShareLinkList extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {/* {this.state.allShareLinks.map((shareLink) => {
+            { this.state.allShareLinks.map((shareLink) => {
               return (
                 <tr>
-                  <td>{shareLink.link}</td>
-                  <td>{shareLink.expiration}</td>
+                  <td>{shareLink._id}</td>
+                  <td>{shareLink.expiredAt}</td>
                   <td>{shareLink.description}</td>
                   <td>
                     <button className="btn btn-outline-warning" type="button" onClick={() => this.deleteLinkHandler(shareLink._id)}>
@@ -81,9 +98,8 @@ class ShareLinkList extends React.Component {
                     </button>
                   </td>
                 </tr>
-
               );
-            })} */}
+            })}
           </tbody>
         </table>
       </div>
