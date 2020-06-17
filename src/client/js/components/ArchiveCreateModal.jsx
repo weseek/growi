@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 const ArchiveCreateModal = (props) => {
-  // const [isArchiveCreateModalShown, setIsOpenShareLinkForm] = useState(false);
+  // const [isArchiveCreateModalShown, setIsArchiveCreateModalShown] = useState(false);
+  // const [isDownloadComment, isDownloadFile,isDownloadSubordinatedPages] = props;
 
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose}>
@@ -11,6 +12,10 @@ const ArchiveCreateModal = (props) => {
         アーカイブを作成する
       </ModalHeader>
       <ModalBody>
+        <input type="checkbox" />
+        <input type="checkbox" />
+        <input type="checkbox" />
+
         試作
       </ModalBody>
     </Modal>

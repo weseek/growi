@@ -94,7 +94,8 @@ const PageShareManagement = (props) => {
           <span className="ml-2 badge badge-info badge-pill">{pageContainer.state.shareLinksNumber}</span>
         </button>
 
-        <button className="dropdown-item" type="button" onClick={openArchiveModalHandler}>アーカイブデータを作成する
+        <button className="dropdown-item" type="button" onClick={openArchiveModalHandler}>
+          <i className="icon-fw">アーカイブデータを作成する</i>
         </button>
 
       </div>
