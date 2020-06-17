@@ -949,9 +949,13 @@ class PassportService {
     });
     passport.deserializeUser(async(id, done) => {
       try {
-        const user = await User.findById(id).populate(User.IMAGE_POPULATION);
+        const user = await User.findById(id);
         if (user == null) {
           throw new Error('user not found');
+        }
+        if (user.imageUrlCached == null) {
+          await user.updateImageUrlCached();
+          await user.save();
         }
         done(null, user);
       }

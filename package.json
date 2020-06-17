@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "4.0.5-RC",
+  "version": "4.0.7-RC",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -214,7 +214,7 @@
     "mini-css-extract-plugin": "^0.9.0",
     "morgan": "^1.9.0",
     "node-dev": "^4.0.0",
-    "node-sass": "^4.12.0",
+    "node-sass": "^4.14.1",
     "normalize-path": "^3.0.0",
     "null-loader": "^3.0.0",
     "on-headers": "^1.0.1",

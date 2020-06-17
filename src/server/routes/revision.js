@@ -170,7 +170,7 @@ module.exports = function(crowi, app) {
       Page.findByIdAndViewer(pageId, req.user)
         .then((pageData) => {
           debug('Page found', pageData._id, pageData.path);
-          return Revision.findRevisionIdList(pageData.path);
+          return Revision.findRevisionList(pageData.path);
         })
         .then((revisions) => {
           return res.json(ApiResponse.success({ revisions }));

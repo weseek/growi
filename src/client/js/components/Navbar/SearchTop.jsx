@@ -4,6 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
+import NavigationContainer from '../../services/NavigationContainer';
 
 import SearchForm from '../SearchForm';
 
@@ -51,7 +52,7 @@ class SearchTop extends React.Component {
   }
 
   Root = ({ children }) => {
-    const { isDeviceSmallerThanMd: isCollapsed } = this.props.appContainer.state;
+    const { isDeviceSmallerThanMd: isCollapsed } = this.props.navigationContainer.state;
 
     return isCollapsed
       ? (
@@ -116,11 +117,12 @@ class SearchTop extends React.Component {
 SearchTop.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 
 /**
  * Wrapper component for using unstated
  */
-const SearchTopWrapper = withUnstatedContainers(SearchTop, [AppContainer]);
+const SearchTopWrapper = withUnstatedContainers(SearchTop, [AppContainer, NavigationContainer]);
 
 export default withTranslation()(SearchTopWrapper);

@@ -10,6 +10,7 @@ import {
 
 import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
+import NavigationContainer from '../services/NavigationContainer';
 
 import SidebarNav from './Sidebar/SidebarNav';
 import RecentChanges from './Sidebar/RecentChanges';
@@ -22,6 +23,7 @@ class Sidebar extends React.Component {
 
   static propTypes = {
     appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+    navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
     navigationUIController: PropTypes.any.isRequired,
     isDrawerModeOnInit: PropTypes.bool,
   };
@@ -58,7 +60,7 @@ class Sidebar extends React.Component {
    * return whether drawer mode or not
    */
   get isDrawerMode() {
-    let isDrawerMode = this.props.appContainer.state.isDrawerMode;
+    let isDrawerMode = this.props.navigationContainer.state.isDrawerMode;
     if (isDrawerMode == null) {
       isDrawerMode = this.props.isDrawerModeOnInit;
     }
@@ -81,7 +83,7 @@ class Sidebar extends React.Component {
 
       // clear transition temporary
       if (this.sidebarCollapsedCached) {
-        this.clearNavigationTransitionTemporary(this.navigationElem);
+        this.addCssClassTemporary('grw-sidebar-supress-transitions-to-drawer');
       }
 
       navigationUIController.disableResize();
@@ -91,9 +93,9 @@ class Sidebar extends React.Component {
     }
     // Drawer --> Dock
     else {
-      // clear transition temporary when restore collapsed sidebar
+      // clear transition temporary
       if (this.sidebarCollapsedCached) {
-        this.clearNavigationTransitionTemporary(this.ctxNavigationElem);
+        this.addCssClassTemporary('grw-sidebar-supress-transitions-to-dock');
       }
 
       navigationUIController.enableResize();
@@ -105,29 +107,23 @@ class Sidebar extends React.Component {
     }
   }
 
-  get navigationElem() {
-    return document.querySelector('div[data-testid="Navigation"]');
+  get sidebarElem() {
+    return document.querySelector('.grw-sidebar');
   }
 
-  get ctxNavigationElem() {
-    return document.querySelector('div[data-testid="ContextualNavigation"]');
-  }
-
-  clearNavigationTransitionTemporary(elem) {
-    const transitionCache = elem.style.transition;
-
+  addCssClassTemporary(className) {
     // clear
-    elem.style.transition = undefined;
+    this.sidebarElem.classList.add(className);
 
     // restore after 300ms
     setTimeout(() => {
-      elem.style.transition = transitionCache;
+      this.sidebarElem.classList.remove(className);
     }, 300);
   }
 
   backdropClickedHandler = () => {
-    const { appContainer } = this.props;
-    appContainer.setState({ isDrawerOpened: false });
+    const { navigationContainer } = this.props;
+    navigationContainer.setState({ isDrawerOpened: false });
   }
 
   itemSelectedHandler = (contentsId) => {
@@ -162,7 +158,7 @@ class Sidebar extends React.Component {
   }
 
   render() {
-    const { isDrawerOpened } = this.props.appContainer.state;
+    const { isDrawerOpened } = this.props.navigationContainer.state;
 
     return (
       <>
@@ -205,7 +201,7 @@ const SidebarWithNavigationUIController = withNavigationUIController(Sidebar);
  */
 
 const SidebarWithNavigation = (props) => {
-  const { preferDrawerModeByUser: isDrawerModeOnInit } = props.appContainer.state;
+  const { preferDrawerModeByUser: isDrawerModeOnInit } = props.navigationContainer.state;
 
   const initUICForDrawerMode = isDrawerModeOnInit
     // generate initialUIController for Drawer mode
@@ -226,6 +222,7 @@ const SidebarWithNavigation = (props) => {
 
 SidebarWithNavigation.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 
-export default withUnstatedContainers(SidebarWithNavigation, [AppContainer]);
+export default withUnstatedContainers(SidebarWithNavigation, [AppContainer, NavigationContainer]);

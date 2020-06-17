@@ -7,12 +7,13 @@ import { UncontrolledTooltip } from 'reactstrap';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
+import NavigationContainer from '../../services/NavigationContainer';
 
 import UserPicture from '../User/UserPicture';
 
 const PersonalDropdown = (props) => {
 
-  const { t, appContainer } = props;
+  const { t, appContainer, navigationContainer } = props;
   const user = appContainer.currentUser || {};
 
   const logoutHandler = () => {
@@ -28,11 +29,11 @@ const PersonalDropdown = (props) => {
   };
 
   const preferDrawerModeSwitchModifiedHandler = (bool) => {
-    appContainer.setDrawerModePreference(bool);
+    navigationContainer.setDrawerModePreference(bool);
   };
 
   const preferDrawerModeOnEditSwitchModifiedHandler = (bool) => {
-    appContainer.setDrawerModePreferenceOnEdit(bool);
+    navigationContainer.setDrawerModePreferenceOnEdit(bool);
   };
 
   const followOsCheckboxModifiedHandler = (bool) => {
@@ -56,7 +57,7 @@ const PersonalDropdown = (props) => {
    */
   const {
     preferDarkModeByMediaQuery, preferDarkModeByUser, preferDrawerModeByUser, preferDrawerModeOnEditByUser,
-  } = appContainer.state;
+  } = navigationContainer.state;
   const isUserPreferenceExists = preferDarkModeByUser != null;
   const isDarkMode = () => {
     if (isUserPreferenceExists) {
@@ -85,8 +86,8 @@ const PersonalDropdown = (props) => {
       {/* Button */}
       {/* remove .dropdown-toggle for hide caret */}
       {/* See https://stackoverflow.com/a/44577512/13183572 */}
-      <a className="nav-link waves-effect waves-light" data-toggle="dropdown">
-        <UserPicture user={user} noLink noTooltip /><span className="d-none d-sm-inline-block">&nbsp;{user.name}</span>
+      <a className="px-md-2 nav-link waves-effect waves-light" data-toggle="dropdown">
+        <UserPicture user={user} noLink noTooltip /><span className="d-none d-lg-inline-block">&nbsp;{user.name}</span>
       </a>
 
       {/* Menu */}
@@ -205,12 +206,13 @@ const PersonalDropdown = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PersonalDropdownWrapper = withUnstatedContainers(PersonalDropdown, [AppContainer]);
+const PersonalDropdownWrapper = withUnstatedContainers(PersonalDropdown, [AppContainer, NavigationContainer]);
 
 
 PersonalDropdown.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 
 export default withTranslation()(PersonalDropdownWrapper);
