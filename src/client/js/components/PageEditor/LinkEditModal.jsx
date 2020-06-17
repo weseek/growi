@@ -225,7 +225,6 @@ class LinkEditModal extends React.PureComponent {
                 </div>
               </div>
             </div>
-
             <div className="col-12 col-lg-6">
               <div className="d-block d-lg-none">
                 {this.renderPreview}
