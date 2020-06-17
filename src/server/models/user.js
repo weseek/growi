@@ -59,7 +59,7 @@ module.exports = function(crowi) {
     lang: {
       type: String,
       // eslint-disable-next-line no-eval
-      enum: Object.keys(getLanguageLabels()).map((k) => { return eval(k) }),
+      enum: crowi.locales,
       default: LANG_EN_US,
     },
     status: {
