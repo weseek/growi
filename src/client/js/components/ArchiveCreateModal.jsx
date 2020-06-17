@@ -6,16 +6,27 @@ const ArchiveCreateModal = (props) => {
 
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose}>
-      <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-Light">
+      <ModalHeader tag="h4" toggle={props.onClose} className="bg-secondary text-Light">
         アーカイブを作成する
       </ModalHeader>
       <ModalBody>
-        <input type="checkbox" />
-        <label>コメントもダウンロードする</label>
-        <input type="checkbox" />
-        <label>ファイルもダウンロードする</label>
-        <input type="checkbox" />
-        <label>配下ページもダウンロードする</label>
+        <div className="form-group">
+          <div className="custom-control" custom-checkbox>
+            <input type="checkbox" />コメントもダウンロードする
+          </div>
+        </div>
+        <div className="form-group">
+          <div className="custom-control" custom-checkbox>
+            <input type="checkbox" />ファイルもダウンロードする
+          </div>
+        </div>
+        <div className="form-group">
+          <div className="custom-control" custom-checkbox>
+            <input type="checkbox" />配下ページもダウンロードする
+          </div>
+        </div>
+        <button type="button">アーカイブを作成する</button>
+
       </ModalBody>
     </Modal>
   );
