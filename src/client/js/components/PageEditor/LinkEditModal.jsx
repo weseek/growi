@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
+import PagePathAutoComplete from '../PagePathAutoComplete';
+
+
 export default class LinkEditModal extends React.PureComponent {
 
   constructor(props) {
@@ -19,8 +22,8 @@ export default class LinkEditModal extends React.PureComponent {
     this.show = this.show.bind(this);
     this.hide = this.hide.bind(this);
     this.cancel = this.cancel.bind(this);
-    this.handleChangeLinkInput = this.handleChangeLinkInput.bind(this);
-    this.handleChangeLabelInput = this.handleChangeLabelInput.bind(this);
+    this.inputChangeHandler = this.inputChangeHandler.bind(this);
+    this.submitHandler = this.submitHandler.bind(this);
     this.toggleIsUseRelativePath = this.toggleIsUseRelativePath.bind(this);
     this.showLog = this.showLog.bind(this);
     this.save = this.save.bind(this);
@@ -56,13 +59,6 @@ export default class LinkEditModal extends React.PureComponent {
     console.log(this.state.linkInputValue);
   }
 
-  handleChangeLinkInput(linkValue) {
-    this.setState({ linkInputValue: linkValue });
-  }
-
-  handleChangeLabelInput(labelValue) {
-    this.setState({ labelInputValue: labelValue });
-  }
 
   save() {
     if (this.props.onSave != null) {
@@ -70,6 +66,15 @@ export default class LinkEditModal extends React.PureComponent {
     }
 
     this.hide();
+  }
+
+  inputChangeHandler(inputChangeValue) {
+    this.setState({ linkInputValue: inputChangeValue });
+
+  }
+
+  submitHandler(submitValue) {
+    this.setState({ linkInputValue: submitValue });
   }
 
   render() {
@@ -85,15 +90,12 @@ export default class LinkEditModal extends React.PureComponent {
               <div className="form-gorup my-3">
                 <label htmlFor="linkInput">Link</label>
                 <div className="input-group">
-                  <input
-                    className="form-control"
-                    id="linkInput"
-                    type="text"
-                    placeholder="/foo/bar/31536000"
-                    aria-describedby="button-addon"
+                  <PagePathAutoComplete
                     value={this.state.linkInputValue}
-                    onChange={e => this.handleInputChange(e.target.value)}
+                    onInputChange={this.inputChangeHandler}
+                    onSubmit={this.submitHandler}
                   />
+
                   <div className="input-group-append">
                     <button type="button" id="button-addon" className="btn btn-secondary" onClick={this.showLog}>
                       Preview
