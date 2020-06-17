@@ -26,12 +26,10 @@ const PageShareManagement = (props) => {
   }
 
   function openArchiveModalHandler() {
-    console.log('ログ出るで！');
     setIsArchiveCreateModalShown(true);
   }
 
   function closeArchiveCreateModalHandler() {
-    console.log('ログ閉じるで！');
     setIsArchiveCreateModalShown(false);
   }
 
