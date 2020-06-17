@@ -46,11 +46,10 @@ class LinkEditModal extends React.PureComponent {
 
   renderPreview() {
     return (
-      <div className="page-editor-preview-container flex-grow-1 flex-basis-0 mw-0">
+      <div className="linkedit-preview">
         <Preview
           markdown={this.state.markdown}
-          // eslint-disable-next-line no-return-assign
-          inputRef={(el) => { return this.previewElement = el }}
+          inputRef={() => {}}
         />
       </div>
     );
@@ -90,7 +89,7 @@ class LinkEditModal extends React.PureComponent {
         </ModalHeader>
 
         <ModalBody className="container">
-          <div className="row">
+          <div className="row h-100">
             <div className="col">
               <div className="form-gorup my-3">
                 <label htmlFor="linkInput">Link</label>
@@ -117,7 +116,7 @@ class LinkEditModal extends React.PureComponent {
                 </div>
               </div>
 
-              <div className="d-block d-lg-none">
+              <div className="d-block d-lg-none mb-3">
                 {this.renderPreview()}
               </div>
 
