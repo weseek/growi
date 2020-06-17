@@ -16,6 +16,7 @@ import pasteHelper from './PasteHelper';
 import EmojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
 import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
 import MarkdownTableInterceptor from './MarkdownTableInterceptor';
+import mlu from './MarkdownLinkUtil';
 import mtu from './MarkdownTableUtil';
 import mdu from './MarkdownDrawioUtil';
 import LinkEditModal from './LinkEditModal';
@@ -653,7 +654,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   showLinkEditHandler() {
-    this.linkEditModal.current.show(this.getCodeMirror());
+    this.linkEditModal.current.show(mlu.getSelectedTextInEditor(this.getCodeMirror()));
   }
 
   showHandsonTableHandler() {
@@ -858,7 +859,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
         <LinkEditModal
           ref={this.linkEditModal}
-          onSave={(link) => { return this.getCodeMirror().getDoc().replaceSelection(link) }}
+          onSave={(link) => { return mlu.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), link) }}
         />
         <HandsontableModal
           ref={this.handsontableModal}

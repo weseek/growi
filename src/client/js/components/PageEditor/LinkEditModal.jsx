@@ -12,6 +12,8 @@ import {
 
 import PageContainer from '../../services/PageContainer';
 
+import PagePathAutoComplete from '../PagePathAutoComplete';
+
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 class LinkEditModal extends React.PureComponent {
@@ -31,19 +33,19 @@ class LinkEditModal extends React.PureComponent {
     this.show = this.show.bind(this);
     this.hide = this.hide.bind(this);
     this.cancel = this.cancel.bind(this);
+    this.inputChangeHandler = this.inputChangeHandler.bind(this);
+    this.submitHandler = this.submitHandler.bind(this);
     this.toggleIsUseRelativePath = this.toggleIsUseRelativePath.bind(this);
-    this.handleChangeLinkInput = this.handleChangeLinkInput.bind(this);
     this.handleChangeLabelInput = this.handleChangeLabelInput.bind(this);
     this.handleSelecteLinkerType = this.handleSelecteLinkerType.bind(this);
+    this.toggleIsUsePamanentLink = this.toggleIsUsePamanentLink.bind(this);
     this.showLog = this.showLog.bind(this);
     this.save = this.save.bind(this);
     this.generateLink = this.generateLink.bind(this);
-    this.toggleIsUsePamanentLink = this.toggleIsUsePamanentLink.bind(this);
   }
 
-  show(editor) {
-    const selection = editor.getDoc().getSelection();
-    this.setState({ show: true, labelInputValue: selection });
+  show(defaultLabelInputValue = '') {
+    this.setState({ show: true, labelInputValue: defaultLabelInputValue });
   }
 
   cancel() {
@@ -63,6 +65,10 @@ class LinkEditModal extends React.PureComponent {
     this.setState({ isUseRelativePath: !this.state.isUseRelativePath });
   }
 
+  toggleIsUsePamanentLink() {
+    this.setState({ isUsePermanentLink: !this.state.isUsePermanentLink });
+  }
+
   renderPreview() {
     // TODO GW-2658
   }
@@ -75,12 +81,8 @@ class LinkEditModal extends React.PureComponent {
     console.log(this.state.linkInputValue);
   }
 
-  handleChangeLinkInput(linkValue) {
-    this.setState({ linkInputValue: linkValue });
-  }
-
-  handleChangeLabelInput(labelValue) {
-    this.setState({ labelInputValue: labelValue });
+  handleChangeLabelInput(label) {
+    this.setState({ labelInputValue: label });
   }
 
   handleSelecteLinkerType(linkerType) {
@@ -99,6 +101,16 @@ class LinkEditModal extends React.PureComponent {
 
     this.hide();
   }
+
+  inputChangeHandler(inputChangeValue) {
+    this.setState({ linkInputValue: inputChangeValue });
+
+  }
+
+  submitHandler(submitValue) {
+    this.setState({ linkInputValue: submitValue });
+  }
+
 
   generateLink() {
     const { pageContainer } = this.props;
@@ -126,11 +138,6 @@ class LinkEditModal extends React.PureComponent {
     }
   }
 
-  toggleIsUsePamanentLink() {
-    // GW-2834
-    this.setState({ isUsePermanentLink: !this.state.isUsePermanentLink });
-  }
-
   render() {
     return (
       <Modal isOpen={this.state.show} toggle={this.cancel} size="lg">
@@ -141,25 +148,13 @@ class LinkEditModal extends React.PureComponent {
         <ModalBody className="container">
           <div className="row">
             <div className="col-12 col-lg-6">
-              <form className="form-group">
-                <div className="form-gorup my-3">
-                  <label htmlFor="linkInput">Link</label>
-                  <div className="input-group">
-                    <input
-                      className="form-control"
-                      id="linkInput"
-                      type="text"
-                      placeholder="URL or page path"
-                      aria-describedby="button-addon"
-                      value={this.state.linkInputValue}
-                      onChange={e => this.handleChangeLinkInput(e.target.value)}
-                    />
-                    <div className="input-group-append">
-                      <button type="button" id="button-addon" className="btn btn-secondary" onClick={this.showLog}>
-                        Preview
-                      </button>
-                    </div>
-                  </div>
+              <div className="form-gorup my-3">
+                <label htmlFor="linkInput">Link</label>
+                <div className="input-group">
+                  <PagePathAutoComplete
+                    onInputChange={this.inputChangeHandler}
+                    onSubmit={this.submitHandler}
+                  />
                 </div>
                 <div className="form-inline">
                   <div className="custom-control custom-checkbox custom-checkbox-info">
@@ -170,21 +165,16 @@ class LinkEditModal extends React.PureComponent {
                       checked={this.state.isUsePamanentLink}
                     />
                     <label className="custom-control-label" htmlFor="permanentLink" onClick={this.toggleIsUsePamanentLink}>
-                      convert into permanent link
+                      Use permanent link
                     </label>
                   </div>
                 </div>
-              </form>
-
-              <div className="d-block d-lg-none">
-                {this.renderPreview}
-                render preview
               </div>
 
               <div className="card">
                 <div className="card-body">
                   <form className="form-group">
-                    <div className="form-group btn-group w-100" role="group" aria-label="type">
+                    <div className="form-group btn-group d-flex" role="group" aria-label="type">
                       <button
                         type="button"
                         name="mdLink"
@@ -238,6 +228,17 @@ class LinkEditModal extends React.PureComponent {
                     </div>
                   </form>
                 </div>
+              </div>
+            </div>
+
+            <div className="col d-none d-lg-block">
+              {this.renderPreview}
+              render preview
+            </div>
+            <div className="col-12 col-lg-6">
+              <div className="d-block d-lg-none">
+                {this.renderPreview}
+                render preview
               </div>
             </div>
           </div>

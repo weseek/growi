@@ -14,7 +14,7 @@ import WebsocketContainer from './services/WebsocketContainer';
 import PageCreateButton from './components/Navbar/PageCreateButton';
 import PageCreateModal from './components/PageCreateModal';
 
-const logger = loggerFactory('growi:app');
+const logger = loggerFactory('growi:cli:app');
 
 if (!window) {
   window = {};
@@ -29,10 +29,9 @@ const appContainer = new AppContainer();
 // eslint-disable-next-line no-unused-vars
 const websocketContainer = new WebsocketContainer(appContainer);
 
-logger.info('unstated containers have been initialized');
+appContainer.initApp();
 
-appContainer.init();
-appContainer.injectToWindow();
+logger.info('AppContainer has been initialized');
 
 /**
  * define components
