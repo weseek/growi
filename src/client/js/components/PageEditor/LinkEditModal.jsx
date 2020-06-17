@@ -114,13 +114,15 @@ export default class LinkEditModal extends React.PureComponent {
         <ModalBody className="container">
           <div className="row">
             <div className="col-12 col-lg-6">
-              <div className="form-gorup my-3">
-                <label htmlFor="linkInput">Link</label>
-                <div className="input-group">
-                  <PagePathAutoComplete
-                    onInputChange={this.inputChangeHandler}
-                    onSubmit={this.submitHandler}
-                  />
+              <form className="form-group">
+                <div className="form-gorup my-3">
+                  <label htmlFor="linkInput">Link</label>
+                  <div className="input-group">
+                    <PagePathAutoComplete
+                      onInputChange={this.inputChangeHandler}
+                      onSubmit={this.submitHandler}
+                    />
+                  </div>
                 </div>
                 <div className="form-inline">
                   <div className="custom-control custom-checkbox custom-checkbox-info">
@@ -135,7 +137,7 @@ export default class LinkEditModal extends React.PureComponent {
                     </label>
                   </div>
                 </div>
-              </div>
+              </form>
 
               <div className="card">
                 <div className="card-body">
