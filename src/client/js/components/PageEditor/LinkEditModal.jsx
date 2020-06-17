@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import path from 'path';
+
 import {
   Modal,
   ModalHeader,
@@ -8,10 +10,13 @@ import {
   ModalFooter,
 } from 'reactstrap';
 
+import PageContainer from '../../services/PageContainer';
+
 import PagePathAutoComplete from '../PagePathAutoComplete';
 
+import { withUnstatedContainers } from '../UnstatedUtils';
 
-export default class LinkEditModal extends React.PureComponent {
+class LinkEditModal extends React.PureComponent {
 
   constructor(props) {
     super(props);
@@ -23,7 +28,6 @@ export default class LinkEditModal extends React.PureComponent {
       linkInputValue: '',
       labelInputValue: '',
       linkerType: 'mdLink',
-      output: '[label](link)',
     };
 
     this.show = this.show.bind(this);
@@ -35,8 +39,8 @@ export default class LinkEditModal extends React.PureComponent {
     this.handleSelecteLinkerType = this.handleSelecteLinkerType.bind(this);
     this.toggleIsUseRelativePath = this.toggleIsUseRelativePath.bind(this);
     this.toggleIsUsePamanentLink = this.toggleIsUsePamanentLink.bind(this);
-    this.showLog = this.showLog.bind(this);
     this.save = this.save.bind(this);
+    this.generateLink = this.generateLink.bind(this);
   }
 
   show(defaultLabelInputValue = '') {
@@ -72,10 +76,6 @@ export default class LinkEditModal extends React.PureComponent {
     // TODO GW-2659
   }
 
-  showLog() {
-    console.log(this.state.linkInputValue);
-  }
-
   handleChangeLabelInput(label) {
     this.setState({ labelInputValue: label });
   }
@@ -88,8 +88,10 @@ export default class LinkEditModal extends React.PureComponent {
   }
 
   save() {
+    const output = this.generateLink();
+
     if (this.props.onSave != null) {
-      this.props.onSave(this.state.output);
+      this.props.onSave(output);
     }
 
     this.hide();
@@ -102,6 +104,33 @@ export default class LinkEditModal extends React.PureComponent {
 
   submitHandler(submitValue) {
     this.setState({ linkInputValue: submitValue });
+  }
+
+
+  generateLink() {
+    const { pageContainer } = this.props;
+    const {
+      linkInputValue,
+      labelInputValue,
+      linkerType,
+      isUseRelativePath,
+    } = this.state;
+
+    let reshapedLink = linkInputValue;
+
+    if (isUseRelativePath && linkInputValue.match(/^\//)) {
+      reshapedLink = path.relative(pageContainer.state.path, linkInputValue);
+    }
+
+    if (linkerType === 'pukiwikiLink') {
+      return `[[${labelInputValue}>${reshapedLink}]]`;
+    }
+    if (linkerType === 'growiLink') {
+      return `[${reshapedLink}]`;
+    }
+    if (linkerType === 'mdLink') {
+      return `[${labelInputValue}](${reshapedLink})`;
+    }
   }
 
   render() {
@@ -221,5 +250,13 @@ export default class LinkEditModal extends React.PureComponent {
 }
 
 LinkEditModal.propTypes = {
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   onSave: PropTypes.func,
 };
+
+/**
+ * Wrapper component for using unstated
+ */
+const LinkEditModalWrapper = withUnstatedContainers(LinkEditModal, [PageContainer]);
+
+export default LinkEditModalWrapper;
