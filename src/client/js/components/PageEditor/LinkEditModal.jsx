@@ -144,7 +144,7 @@ export default class LinkEditModal extends React.PureComponent {
                       <button
                         type="button"
                         name="mdLink"
-                        className={`btn btn-outline-secondary flex-grow-1 ${this.state.linkerType === 'mdLink' && 'active'}`}
+                        className={`btn btn-outline-secondary w-100 ${this.state.linkerType === 'mdLink' && 'active'}`}
                         onClick={e => this.handleSelecteLinkerType(e.target.name)}
                       >
                         Markdown
@@ -152,7 +152,7 @@ export default class LinkEditModal extends React.PureComponent {
                       <button
                         type="button"
                         name="growiLink"
-                        className={`btn btn-outline-secondary flex-grow-1 py-0 ${this.state.linkerType === 'growiLink' && 'active'}`}
+                        className={`btn btn-outline-secondary w-100 ${this.state.linkerType === 'growiLink' && 'active'}`}
                         onClick={e => this.handleSelecteLinkerType(e.target.name)}
                       >
                         Growi Original
@@ -160,7 +160,7 @@ export default class LinkEditModal extends React.PureComponent {
                       <button
                         type="button"
                         name="pukiwikiLink"
-                        className={`btn btn-outline-secondary flex-grow-1 ${this.state.linkerType === 'pukiwikiLink' && 'active'}`}
+                        className={`btn btn-outline-secondary w-100 ${this.state.linkerType === 'pukiwikiLink' && 'active'}`}
                         onClick={e => this.handleSelecteLinkerType(e.target.name)}
                       >
                         Pukiwiki
