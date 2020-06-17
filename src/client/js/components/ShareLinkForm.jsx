@@ -119,7 +119,7 @@ class ShareLinkForm extends React.Component {
     }
 
     try {
-      await appContainer.apiv3Delete('/share-links/', { relatedPage: pageId, expiredAt, description });
+      await appContainer.apiv3Post('/share-links/', { relatedPage: pageId, expiredAt, description });
       this.closeForm();
       toastSuccess(t('toaster.issue_share_link'));
     }

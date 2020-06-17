@@ -346,7 +346,7 @@
     "remove_external_user_success": "Succeeded to remove {{accountId}}",
     "remove_share_link_success": "Succeeded to remove {{shareLinkId}}",
     "issue_share_link": "Succeeded to issue new share link",
-    "remove_share_link": "Succeeded to remove share links"
+    "remove_share_link": "Succeeded to remove {{count}} share links"
   },
   "template": {
     "modal_label": {

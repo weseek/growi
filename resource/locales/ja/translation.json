@@ -347,7 +347,7 @@
     "remove_external_user_success": "{{accountId}}を削除しました",
     "remove_share_link_success": "{{shareLinkId}}を削除しました",
     "issue_share_link": "共有リンクを作成しました",
-    "remove_share_link": "共有リンクを削除しました"
+    "remove_share_link": "共有リンクを{{count}}件削除しました"
   },
   "template": {
     "modal_label": {

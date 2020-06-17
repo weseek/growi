@@ -40,8 +40,9 @@ class OutsideShareLinkModal extends React.Component {
     const { pageId } = pageContainer.state;
 
     try {
-      await appContainer.apiv3.delete('/share-links/', { relatedPage: pageId });
-      toastSuccess(t('toaster.remove_share_link'));
+      const res = await appContainer.apiv3.delete('/share-links/', { relatedPage: pageId });
+      const count = res.data.n;
+      toastSuccess(t('toaster.remove_share_link', { count }));
     }
     catch (err) {
       toastError(err);
