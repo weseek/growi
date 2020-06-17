@@ -7,7 +7,6 @@ module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:login');
   const logger = require('@alias/logger')('growi:routes:login');
   const path = require('path');
-  const async = require('async');
   const mailer = crowi.getMailer();
   const User = crowi.model('User');
   const { configManager, appService, aclService } = crowi;
