@@ -3,6 +3,7 @@
 ## v4.0.7-RC
 
 * Fix: Styles are not applyed on installer
+* Fix: Remove last-resort `next()`
 
 ## v4.0.6
 
