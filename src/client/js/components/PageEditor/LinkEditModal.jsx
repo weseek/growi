@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 import Preview from './Preview';
-import { toastError } from '../../util/apiNotification';
 
 import AppContainer from '../../services/AppContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -69,8 +68,7 @@ class LinkEditModal extends React.PureComponent {
       });
     }
     catch (err) {
-      markdown = err.message;
-      toastError(err);
+      markdown = `<div class="alert alert-warning" role="alert"><strong>${err.message}</strong></div>`;
     }
     this.setState({ markdown });
   }
