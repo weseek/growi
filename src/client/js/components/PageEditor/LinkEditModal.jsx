@@ -1,7 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Modal, ModalHeader, ModalBody } from 'reactstrap';
+import {
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from 'reactstrap';
 
 import PagePathAutoComplete from '../PagePathAutoComplete';
 
@@ -14,8 +19,10 @@ export default class LinkEditModal extends React.PureComponent {
     this.state = {
       show: false,
       isUseRelativePath: false,
+      isUsePermanentLink: false,
       linkInputValue: '',
       labelInputValue: '',
+      linkerType: 'mdLink',
       output: '[label](link)',
     };
 
@@ -24,7 +31,10 @@ export default class LinkEditModal extends React.PureComponent {
     this.cancel = this.cancel.bind(this);
     this.inputChangeHandler = this.inputChangeHandler.bind(this);
     this.submitHandler = this.submitHandler.bind(this);
+    this.handleChangeLabelInput = this.handleChangeLabelInput.bind(this);
+    this.handleSelecteLinkerType = this.handleSelecteLinkerType.bind(this);
     this.toggleIsUseRelativePath = this.toggleIsUseRelativePath.bind(this);
+    this.toggleIsUsePamanentLink = this.toggleIsUsePamanentLink.bind(this);
     this.showLog = this.showLog.bind(this);
     this.save = this.save.bind(this);
   }
@@ -44,7 +54,14 @@ export default class LinkEditModal extends React.PureComponent {
   }
 
   toggleIsUseRelativePath() {
+    if (this.state.linkerType === 'growiLink') {
+      return;
+    }
     this.setState({ isUseRelativePath: !this.state.isUseRelativePath });
+  }
+
+  toggleIsUsePamanentLink() {
+    this.setState({ isUsePermanentLink: !this.state.isUsePermanentLink });
   }
 
   renderPreview() {
@@ -59,6 +76,16 @@ export default class LinkEditModal extends React.PureComponent {
     console.log(this.state.linkInputValue);
   }
 
+  handleChangeLabelInput(label) {
+    this.setState({ labelInputValue: label });
+  }
+
+  handleSelecteLinkerType(linkerType) {
+    if (this.state.isUseRelativePath && linkerType === 'growiLink') {
+      this.toggleIsUseRelativePath();
+    }
+    this.setState({ linkerType });
+  }
 
   save() {
     if (this.props.onSave != null) {
@@ -86,125 +113,105 @@ export default class LinkEditModal extends React.PureComponent {
 
         <ModalBody className="container">
           <div className="row">
-            <div className="col">
+            <div className="col-12 col-lg-6">
               <div className="form-gorup my-3">
                 <label htmlFor="linkInput">Link</label>
                 <div className="input-group">
                   <PagePathAutoComplete
-                    value={this.state.linkInputValue}
                     onInputChange={this.inputChangeHandler}
                     onSubmit={this.submitHandler}
                   />
-
-                  <div className="input-group-append">
-                    <button type="button" id="button-addon" className="btn btn-secondary" onClick={this.showLog}>
-                      Preview
-                    </button>
+                </div>
+                <div className="form-inline">
+                  <div className="custom-control custom-checkbox custom-checkbox-info">
+                    <input
+                      className="custom-control-input"
+                      id="permanentLink"
+                      type="checkbox"
+                      checked={this.state.isUsePamanentLink}
+                    />
+                    <label className="custom-control-label" htmlFor="permanentLink" onClick={this.toggleIsUsePamanentLink}>
+                      Use permanent link
+                    </label>
                   </div>
                 </div>
               </div>
 
+              <div className="card">
+                <div className="card-body">
+                  <form className="form-group">
+                    <div className="form-group btn-group d-flex" role="group" aria-label="type">
+                      <button
+                        type="button"
+                        name="mdLink"
+                        className={`btn btn-outline-secondary w-100 ${this.state.linkerType === 'mdLink' && 'active'}`}
+                        onClick={e => this.handleSelecteLinkerType(e.target.name)}
+                      >
+                        Markdown
+                      </button>
+                      <button
+                        type="button"
+                        name="growiLink"
+                        className={`btn btn-outline-secondary w-100 ${this.state.linkerType === 'growiLink' && 'active'}`}
+                        onClick={e => this.handleSelecteLinkerType(e.target.name)}
+                      >
+                        Growi Original
+                      </button>
+                      <button
+                        type="button"
+                        name="pukiwikiLink"
+                        className={`btn btn-outline-secondary w-100 ${this.state.linkerType === 'pukiwikiLink' && 'active'}`}
+                        onClick={e => this.handleSelecteLinkerType(e.target.name)}
+                      >
+                        Pukiwiki
+                      </button>
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="label">Label</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="label"
+                        value={this.state.labelInputValue}
+                        onChange={e => this.handleChangeLabelInput(e.target.value)}
+                        disabled={this.state.linkerType === 'growiLink'}
+                      />
+                    </div>
+                    <div className="form-inline">
+                      <div className="custom-control custom-checkbox custom-checkbox-info">
+                        <input
+                          className="custom-control-input"
+                          id="relativePath"
+                          type="checkbox"
+                          checked={this.state.isUseRelativePath}
+                          disabled={this.state.linkerType === 'growiLink'}
+                        />
+                        <label className="custom-control-label" htmlFor="relativePath" onClick={this.toggleIsUseRelativePath}>
+                          Use relative path
+                        </label>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div className="col-12 col-lg-6">
               <div className="d-block d-lg-none">
                 {this.renderPreview}
                 render preview
               </div>
-
-              <div className="linkedit-tabs">
-                <ul className="nav nav-tabs" role="tabist">
-                  <li className="nav-item">
-                    <a className="nav-link active" href="#Pukiwiki" role="tab" data-toggle="tab">
-                      Pukiwiki
-                    </a>
-                  </li>
-                  <li className="nav-item">
-                    <a className="nav-link" href="#Crowi" role="tab" data-toggle="tab">
-                      Crowi
-                    </a>
-                  </li>
-                  <li className="nav-item">
-                    <a className="nav-link" href="#MD" role="tab" data-toggle="tab">
-                      MD
-                    </a>
-                  </li>
-                </ul>
-
-                <div className="tab-content pt-3">
-                  <div id="Pukiwiki" className="tab-pane active" role="tabpanel">
-                    <form className="form-group">
-                      <div className="form-group">
-                        <label htmlFor="pukiwikiLink">Label</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="pukiwikiLink"
-                          value={this.state.labelInputValue}
-                          onChange={e => this.labelInputChange(e.target.value)}
-                        />
-                      </div>
-                      <span className="p-2">[[{this.state.labelInputValue} &gt; {this.state.linkInputValue}]]</span>
-                      <div className="form-inline">
-                        <div className="custom-control custom-checkbox custom-checkbox-info">
-                          <input className="custom-control-input" id="pukiwikiRelativePath" type="checkbox" checked={this.state.isUseRelativePath} />
-                          <label className="custom-control-label" htmlFor="pukiwikiRelativePath" onClick={this.toggleIsUseRelativePath}>
-                            Use relative path
-                          </label>
-                        </div>
-                        <button type="button" className="btn btn-primary ml-auto" onClick={this.save}>
-                          Done
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-
-                  <div id="Crowi" className="tab-pane" role="tabpanel">
-                    <form className="form-group">
-                      <div className="form-group">
-                        <label htmlFor="crowiLink">Label</label>
-                        <input type="text" className="form-control" id="crowiLink"></input>
-                      </div>
-                      <div>
-                        <span>URI</span>
-                      </div>
-                      <div className="d-flex">
-                        <button type="button" className="btn btn-primary ml-auto" onClick={this.save}>
-                          Done
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-
-                  <div id="MD" className="tab-pane" role="tabpanel">
-                    <form className="form-group">
-                      <div className="form-group">
-                        <label htmlFor="MDLink">Label</label>
-                        <input type="text" className="form-control" id="MDLink"></input>
-                      </div>
-                      <div>
-                        <span>URI</span>
-                      </div>
-                      <div className="form-inline">
-                        <div className="custom-control custom-checkbox custom-checkbox-info">
-                          <input className="custom-control-input" id="mdRelativePath" type="checkbox" checked={this.state.isUseRelativePath} />
-                          <label className="custom-control-label" htmlFor="mdRelativePath" onClick={this.toggleIsUseRelativePath}>
-                            Use relative path
-                          </label>
-                        </div>
-                        <button type="button" className="btn btn-primary ml-auto" onClick={this.save}>
-                          Done
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="col d-none d-lg-block">
-              {this.renderPreview}
-              render preview
             </div>
           </div>
         </ModalBody>
+        <ModalFooter>
+          <button type="button" className="btn btn-sm btn-outline-secondary" onClick={this.hide}>
+            Cancel
+          </button>
+          <button type="submit" className="btn btn-sm btn-primary" onClick={this.save}>
+            Done
+          </button>
+        </ModalFooter>
       </Modal>
     );
   }
