@@ -8,6 +8,9 @@ import {
   ModalFooter,
 } from 'reactstrap';
 
+import PagePathAutoComplete from '../PagePathAutoComplete';
+
+
 export default class LinkEditModal extends React.PureComponent {
 
   constructor(props) {
@@ -26,7 +29,8 @@ export default class LinkEditModal extends React.PureComponent {
     this.show = this.show.bind(this);
     this.hide = this.hide.bind(this);
     this.cancel = this.cancel.bind(this);
-    this.handleChangeLinkInput = this.handleChangeLinkInput.bind(this);
+    this.inputChangeHandler = this.inputChangeHandler.bind(this);
+    this.submitHandler = this.submitHandler.bind(this);
     this.handleChangeLabelInput = this.handleChangeLabelInput.bind(this);
     this.handleSelecteLinkerType = this.handleSelecteLinkerType.bind(this);
     this.toggleIsUseRelativePath = this.toggleIsUseRelativePath.bind(this);
@@ -72,12 +76,8 @@ export default class LinkEditModal extends React.PureComponent {
     console.log(this.state.linkInputValue);
   }
 
-  handleChangeLinkInput(linkValue) {
-    this.setState({ linkInputValue: linkValue });
-  }
-
-  handleChangeLabelInput(labelValue) {
-    this.setState({ labelInputValue: labelValue });
+  handleChangeLabelInput(label) {
+    this.setState({ labelInputValue: label });
   }
 
   handleSelecteLinkerType(linkerType) {
@@ -95,6 +95,15 @@ export default class LinkEditModal extends React.PureComponent {
     this.hide();
   }
 
+  inputChangeHandler(inputChangeValue) {
+    this.setState({ linkInputValue: inputChangeValue });
+
+  }
+
+  submitHandler(submitValue) {
+    this.setState({ linkInputValue: submitValue });
+  }
+
   render() {
     return (
       <Modal isOpen={this.state.show} toggle={this.cancel} size="lg">
@@ -104,26 +113,14 @@ export default class LinkEditModal extends React.PureComponent {
 
         <ModalBody className="container">
           <div className="row">
-            <div className="col-12 col-lg-6">
-              <form className="form-group">
-                <div className="form-gorup my-3">
-                  <label htmlFor="linkInput">Link</label>
-                  <div className="input-group">
-                    <input
-                      className="form-control"
-                      id="linkInput"
-                      type="text"
-                      placeholder="URL or page path"
-                      aria-describedby="button-addon"
-                      value={this.state.linkInputValue}
-                      onChange={e => this.handleChangeLinkInput(e.target.value)}
-                    />
-                    <div className="input-group-append">
-                      <button type="button" id="button-addon" className="btn btn-secondary" onClick={this.showLog}>
-                        Preview
-                      </button>
-                    </div>
-                  </div>
+            <div className="col">
+              <div className="form-gorup my-3">
+                <label htmlFor="linkInput">Link</label>
+                <div className="input-group">
+                  <PagePathAutoComplete
+                    onInputChange={this.inputChangeHandler}
+                    onSubmit={this.submitHandler}
+                  />
                 </div>
                 <div className="form-inline">
                   <div className="custom-control custom-checkbox custom-checkbox-info">
@@ -138,7 +135,7 @@ export default class LinkEditModal extends React.PureComponent {
                     </label>
                   </div>
                 </div>
-              </form>
+              </div>
 
               <div className="d-block d-lg-none">
                 {this.renderPreview}
