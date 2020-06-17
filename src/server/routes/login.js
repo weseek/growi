@@ -132,33 +132,8 @@ module.exports = function(crowi, app) {
           }
 
           if (configManager.getConfig('crowi', 'security:registrationMode') !== aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
-            // send mails to all admin users (derived from crowi) -- 2020.06.18 Yuki Takei
-            const admins = await User.findAdmins();
-
-            const appTitle = appService.getAppTitle();
-            async.each(
-              admins,
-              (adminUser, next) => {
-                mailer.send({
-                  to: adminUser.email,
-                  subject: `[${appTitle}:admin] A New User Created and Waiting for Activation`,
-                  template: path.join(crowi.localeDir, 'en-US/admin/userWaitingActivation.txt'),
-                  vars: {
-                    createdUser: userData,
-                    adminUser,
-                    url: appService.getSiteUrl(),
-                    appTitle,
-                  },
-                },
-                (err, s) => {
-                  logger.info('completed to send email: ', err, s);
-                  next();
-                });
-              },
-              (err) => {
-                logger.info('Sending invitation email completed.', err);
-              },
-            );
+            // send mail asynchronous
+            sendEmailToAllAdmins(userData);
           }
 
           // add a flash message to inform the user that processing was successful -- 2017.09.23 Yuki Takei
@@ -176,6 +151,32 @@ module.exports = function(crowi, app) {
       return res.render('login', { isRegistering });
     }
   };
+
+  async function sendEmailToAllAdmins(userData) {
+    // send mails to all admin users (derived from crowi) -- 2020.06.18 Yuki Takei
+    const admins = await User.findAdmins();
+
+    const appTitle = appService.getAppTitle();
+
+    const promises = admins.map((admin) => {
+      return mailer.send({
+        to: admin.email,
+        subject: `[${appTitle}:admin] A New User Created and Waiting for Activation`,
+        template: path.join(crowi.localeDir, 'en-US/admin/userWaitingActivation.txt'),
+        vars: {
+          createdUser: userData,
+          admin,
+          url: appService.getSiteUrl(),
+          appTitle,
+        },
+      });
+    })
+
+    const results = await Promise.allSettled(promises);
+    results
+      .filter(result => result.status === 'rejected')
+      .forEach(result => logger.error(result.reason));
+  }
 
   actions.invited = async function(req, res) {
     if (!req.user) {
