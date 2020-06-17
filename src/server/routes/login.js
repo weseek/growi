@@ -120,7 +120,7 @@ module.exports = function(crowi, app) {
           return res.redirect('/register');
         }
 
-        User.createUserByEmailAndPassword(name, username, email, password, undefined, (err, userData) => {
+        User.createUserByEmailAndPassword(name, username, email, password, undefined, async(err, userData) => {
           if (err) {
             if (err.name === 'UserUpperLimitException') {
               req.flash('registerWarningMessage', 'Can not register more than the maximum number of users.');
@@ -131,38 +131,35 @@ module.exports = function(crowi, app) {
             return res.redirect('/register');
           }
 
+          if (configManager.getConfig('crowi', 'security:registrationMode') !== aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
+            // send mails to all admin users (derived from crowi) -- 2020.06.18 Yuki Takei
+            const admins = await User.findAdmins();
 
-          // 作成後、承認が必要なモードなら、管理者に通知する
-          const appTitle = appService.getAppTitle();
-          if (configManager.getConfig('crowi', 'security:registrationMode') === aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
-            // TODO send mail
-            User.findAdmins((err, admins) => {
-              async.each(
-                admins,
-                (adminUser, next) => {
-                  mailer.send({
-                    to: adminUser.email,
-                    subject: `[${appTitle}:admin] A New User Created and Waiting for Activation`,
-                    template: path.join(crowi.localeDir, 'en-US/admin/userWaitingActivation.txt'),
-                    vars: {
-                      createdUser: userData,
-                      adminUser,
-                      url: appService.getSiteUrl(),
-                      appTitle,
-                    },
+            const appTitle = appService.getAppTitle();
+            async.each(
+              admins,
+              (adminUser, next) => {
+                mailer.send({
+                  to: adminUser.email,
+                  subject: `[${appTitle}:admin] A New User Created and Waiting for Activation`,
+                  template: path.join(crowi.localeDir, 'en-US/admin/userWaitingActivation.txt'),
+                  vars: {
+                    createdUser: userData,
+                    adminUser,
+                    url: appService.getSiteUrl(),
+                    appTitle,
                   },
-                  (err, s) => {
-                    debug('completed to send email: ', err, s);
-                    next();
-                  });
                 },
-                (err) => {
-                  debug('Sending invitation email completed.', err);
-                },
-              );
-            });
+                (err, s) => {
+                  logger.info('completed to send email: ', err, s);
+                  next();
+                });
+              },
+              (err) => {
+                logger.info('Sending invitation email completed.', err);
+              },
+            );
           }
-
 
           // add a flash message to inform the user that processing was successful -- 2017.09.23 Yuki Takei
           // cz. loginSuccess method doesn't work on it's own when using passport
