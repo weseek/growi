@@ -35,11 +35,10 @@ class LinkEditModal extends React.PureComponent {
     this.cancel = this.cancel.bind(this);
     this.inputChangeHandler = this.inputChangeHandler.bind(this);
     this.submitHandler = this.submitHandler.bind(this);
-    this.toggleIsUseRelativePath = this.toggleIsUseRelativePath.bind(this);
     this.handleChangeLabelInput = this.handleChangeLabelInput.bind(this);
     this.handleSelecteLinkerType = this.handleSelecteLinkerType.bind(this);
+    this.toggleIsUseRelativePath = this.toggleIsUseRelativePath.bind(this);
     this.toggleIsUsePamanentLink = this.toggleIsUsePamanentLink.bind(this);
-    this.showLog = this.showLog.bind(this);
     this.save = this.save.bind(this);
     this.generateLink = this.generateLink.bind(this);
   }
@@ -75,10 +74,6 @@ class LinkEditModal extends React.PureComponent {
 
   insertLinkIntoEditor() {
     // TODO GW-2659
-  }
-
-  showLog() {
-    console.log(this.state.linkInputValue);
   }
 
   handleChangeLabelInput(label) {
@@ -231,10 +226,6 @@ class LinkEditModal extends React.PureComponent {
               </div>
             </div>
 
-            <div className="col d-none d-lg-block">
-              {this.renderPreview}
-              render preview
-            </div>
             <div className="col-12 col-lg-6">
               <div className="d-block d-lg-none">
                 {this.renderPreview}
