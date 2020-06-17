@@ -113,7 +113,7 @@ export default class LinkEditModal extends React.PureComponent {
 
         <ModalBody className="container">
           <div className="row">
-            <div className="col">
+            <div className="col-12 col-lg-6">
               <div className="form-gorup my-3">
                 <label htmlFor="linkInput">Link</label>
                 <div className="input-group">
@@ -137,11 +137,6 @@ export default class LinkEditModal extends React.PureComponent {
                 </div>
               </div>
 
-              <div className="d-block d-lg-none">
-                {this.renderPreview}
-                render preview
-              </div>
-
               <div className="card">
                 <div className="card-body">
                   <form className="form-group">
@@ -149,7 +144,7 @@ export default class LinkEditModal extends React.PureComponent {
                       <button
                         type="button"
                         name="mdLink"
-                        className={`btn btn-outline-secondary w-100 ${this.state.linkerType === 'mdLink' && 'active'}`}
+                        className={`btn btn-outline-secondary flex-grow-1 ${this.state.linkerType === 'mdLink' && 'active'}`}
                         onClick={e => this.handleSelecteLinkerType(e.target.name)}
                       >
                         Markdown
@@ -157,7 +152,7 @@ export default class LinkEditModal extends React.PureComponent {
                       <button
                         type="button"
                         name="growiLink"
-                        className={`btn btn-outline-secondary w-100 ${this.state.linkerType === 'growiLink' && 'active'}`}
+                        className={`btn btn-outline-secondary flex-grow-1 py-0 ${this.state.linkerType === 'growiLink' && 'active'}`}
                         onClick={e => this.handleSelecteLinkerType(e.target.name)}
                       >
                         Growi Original
@@ -165,7 +160,7 @@ export default class LinkEditModal extends React.PureComponent {
                       <button
                         type="button"
                         name="pukiwikiLink"
-                        className={`btn btn-outline-secondary w-100 ${this.state.linkerType === 'pukiwikiLink' && 'active'}`}
+                        className={`btn btn-outline-secondary flex-grow-1 ${this.state.linkerType === 'pukiwikiLink' && 'active'}`}
                         onClick={e => this.handleSelecteLinkerType(e.target.name)}
                       >
                         Pukiwiki
@@ -199,6 +194,12 @@ export default class LinkEditModal extends React.PureComponent {
                     </div>
                   </form>
                 </div>
+              </div>
+            </div>
+            <div className="col-12 col-lg-6">
+              <div className="d-block d-lg-none">
+                {this.renderPreview}
+                render preview
               </div>
             </div>
           </div>
