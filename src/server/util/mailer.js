@@ -94,7 +94,7 @@ module.exports = function(crowi) {
   }
 
   async function send(config) {
-    if (!mailer) {
+    if (mailer == null) {
       throw new Error('Mailer is not completed to set up. Please set up SMTP or AWS setting.');
     }
 
