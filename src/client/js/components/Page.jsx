@@ -139,7 +139,7 @@ class Page extends React.Component {
 
         { isLoggedIn && (
           <>
-			<LinkEditModal ref={this.LinkEditModal} />
+            <LinkEditModal ref={this.LinkEditModal} />
             <HandsontableModal ref={this.handsontableModal} onSave={this.saveHandlerForHandsontableModal} />
             <DrawioModal ref={this.drawioModal} onSave={this.saveHandlerForDrawioModal} />
           </>
