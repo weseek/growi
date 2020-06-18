@@ -46,7 +46,7 @@ export default class Hotkeys extends React.Component {
       return value.getComponent();
     });
     this.setState({
-      view: this.state.view.concat(viewDetermined[0]),
+      view: this.state.view.concat(viewDetermined).flat(),
     });
   }
 
