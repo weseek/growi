@@ -2,7 +2,9 @@
 
 ## v4.0.7-RC
 
+* Inprovement: Apply styles faster on booting client
 * Fix: Styles are not applyed on installer
+* Fix: Remove last-resort `next()`
 
 ## v4.0.6
 

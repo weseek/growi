@@ -425,12 +425,8 @@ module.exports = function(crowi) {
       .sort(sort);
   };
 
-  userSchema.statics.findAdmins = function(callback) {
-    this.find({ admin: true })
-      .exec((err, admins) => {
-        debug('Admins: ', admins);
-        callback(err, admins);
-      });
+  userSchema.statics.findAdmins = async function() {
+    return this.find({ admin: true });
   };
 
   userSchema.statics.findUsersByPartOfEmail = function(emailPart, options) {

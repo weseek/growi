@@ -7,7 +7,6 @@ module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:login');
   const logger = require('@alias/logger')('growi:routes:login');
   const path = require('path');
-  const async = require('async');
   const mailer = crowi.getMailer();
   const User = crowi.model('User');
   const { configManager, appService, aclService } = crowi;
@@ -120,7 +119,7 @@ module.exports = function(crowi, app) {
           return res.redirect('/register');
         }
 
-        User.createUserByEmailAndPassword(name, username, email, password, undefined, (err, userData) => {
+        User.createUserByEmailAndPassword(name, username, email, password, undefined, async(err, userData) => {
           if (err) {
             if (err.name === 'UserUpperLimitException') {
               req.flash('registerWarningMessage', 'Can not register more than the maximum number of users.');
@@ -131,38 +130,10 @@ module.exports = function(crowi, app) {
             return res.redirect('/register');
           }
 
-
-          // 作成後、承認が必要なモードなら、管理者に通知する
-          const appTitle = appService.getAppTitle();
-          if (configManager.getConfig('crowi', 'security:registrationMode') === aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
-            // TODO send mail
-            User.findAdmins((err, admins) => {
-              async.each(
-                admins,
-                (adminUser, next) => {
-                  mailer.send({
-                    to: adminUser.email,
-                    subject: `[${appTitle}:admin] A New User Created and Waiting for Activation`,
-                    template: path.join(crowi.localeDir, 'en-US/admin/userWaitingActivation.txt'),
-                    vars: {
-                      createdUser: userData,
-                      adminUser,
-                      url: appService.getSiteUrl(),
-                      appTitle,
-                    },
-                  },
-                  (err, s) => {
-                    debug('completed to send email: ', err, s);
-                    next();
-                  });
-                },
-                (err) => {
-                  debug('Sending invitation email completed.', err);
-                },
-              );
-            });
+          if (configManager.getConfig('crowi', 'security:registrationMode') !== aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
+            // send mail asynchronous
+            sendEmailToAllAdmins(userData);
           }
-
 
           // add a flash message to inform the user that processing was successful -- 2017.09.23 Yuki Takei
           // cz. loginSuccess method doesn't work on it's own when using passport
@@ -179,6 +150,32 @@ module.exports = function(crowi, app) {
       return res.render('login', { isRegistering });
     }
   };
+
+  async function sendEmailToAllAdmins(userData) {
+    // send mails to all admin users (derived from crowi) -- 2020.06.18 Yuki Takei
+    const admins = await User.findAdmins();
+
+    const appTitle = appService.getAppTitle();
+
+    const promises = admins.map((admin) => {
+      return mailer.send({
+        to: admin.email,
+        subject: `[${appTitle}:admin] A New User Created and Waiting for Activation`,
+        template: path.join(crowi.localeDir, 'en-US/admin/userWaitingActivation.txt'),
+        vars: {
+          createdUser: userData,
+          admin,
+          url: appService.getSiteUrl(),
+          appTitle,
+        },
+      });
+    })
+
+    const results = await Promise.allSettled(promises);
+    results
+      .filter(result => result.status === 'rejected')
+      .forEach(result => logger.error(result.reason));
+  }
 
   actions.invited = async function(req, res) {
     if (!req.user) {
