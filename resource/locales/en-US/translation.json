@@ -700,6 +700,15 @@
     "database_error": "Database Server Error occured",
     "sign_in_failure": "Sign in failure.",
     "aws_sttings_required": "AWS settings required to use this function. Please ask the administrator.",
-    "application_already_installed": "Application already installed."
+    "application_already_installed": "Application already installed.",
+    "email_address_could_not_be_used": "This email address could not be used. (Make sure the allowed email address)",
+    "user_id_is_not_available.":"This User ID is not available.",
+    "email_address_is_already_registered":"This email address is already registered.",
+    "can_not_register_maximum_number_of_users":"Can not register more than the maximum number of users.",
+    "failed_to_register":"Failed to register.",
+    "successfully_created":"The user {{username}} is successfully created.",
+    "can_not_activate_maximum_number_of_users":"Can not activate more than the maximum number of users.",
+    "failed_to_activate":"Failed to activate.",
+    "unable_to_use_this_user":"Unable to use this user."
   }
 }
