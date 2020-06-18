@@ -93,7 +93,7 @@ const PageShareManagement = (props) => {
         </button>
 
         <button className="dropdown-item" type="button" onClick={openArchiveModalHandler}>
-          <i className="icon-fw">アーカイブデータを作成する</i>
+          <i className="icon-fw">{t('Create Archive Page')}</i>
         </button>
 
       </div>

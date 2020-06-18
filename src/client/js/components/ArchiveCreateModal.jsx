@@ -10,20 +10,20 @@ const ArchiveCreateModal = (props) => {
 
   const { t } = props;
 
-  const [isCommentDownload, SetIsCommentDownload] = useState(false);
-  const [isFileDownload, SetIsFileDownload] = useState(false);
-  const [isSubordinatedPageDownload, SetIsSubordinatedPageDownload] = useState(false);
+  const [isCommentDownload, setIsCommentDownload] = useState(false);
+  const [isFileDownload, setIsFileDownload] = useState(false);
+  const [isSubordinatedPageDownload, setIsSubordinatedPageDownload] = useState(false);
 
 
   function changeIsCommentDownloadHandler() {
-    SetIsCommentDownload(true);
+    setIsCommentDownload(true);
   }
   function changeIsFileDownloadHandler() {
-    SetIsFileDownload(true);
+    setIsFileDownload(true);
   }
 
   function changeIsSubordinatedPageDownloadHandler() {
-    SetIsSubordinatedPageDownload(true);
+    setIsSubordinatedPageDownload(true);
   }
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose}>
@@ -95,7 +95,7 @@ const ArchiveCreateModal = (props) => {
 ArchiveCreateModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
+  onClose: PropTypes.func,
 };
 
 export default withTranslation()(ArchiveCreateModal);
