@@ -199,7 +199,7 @@ module.exports = function(crowi, app) {
   // app.post('/admin/notification/slackSetting/disconnect' , admin.notification.disconnectFromSlack);
   actions.notification.disconnectFromSlack = async function(req, res) {
     await configManager.updateConfigsInTheSameNamespace('notification', { 'slack:token': '' });
-    req.flash('successMessage', ['Successfully Disconnected!']);
+    req.flash('successMessage', [req.t('successfully_disconnected')]);
 
     return res.redirect('/admin/notification');
   };

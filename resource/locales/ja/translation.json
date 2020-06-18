@@ -683,8 +683,9 @@
     "Setup": "セットアップ"
   },
   "message": {
-    "successfully_connected":"Successfully Connected!",
-    "fail_to_save_access_token":"Failed to save access_token. Please try again.",
-    "fail_to_fetch_access_token":"Failed to fetch access_token. Please do connect again."
+    "successfully_connected": "接続に成功しました!",
+    "fail_to_save_access_token": "アクセストークンの保存に失敗しました、再度お試しください。",
+    "fail_to_fetch_access_token": "アクセストークンの取得に失敗しました、再度お試しください。",
+    "successfully_disconnected": "切断に成功しました!"
   }
 }
