@@ -159,7 +159,7 @@ class LinkEditModal extends React.PureComponent {
                       className="custom-control-input"
                       id="permanentLink"
                       type="checkbox"
-                      checked={this.state.isUsePamanentLink}
+                      checked={this.state.isUsePermanentLink}
                     />
                     <label className="custom-control-label" htmlFor="permanentLink" onClick={this.toggleIsUsePamanentLink}>
                       Use permanent link
