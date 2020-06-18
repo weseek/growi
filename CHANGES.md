@@ -6,6 +6,7 @@
 * Improvement: Apply styles faster on booting client
 * Fix: Styles are not applyed on installer
 * Fix: Remove last-resort `next()`
+* Fix: Enable/disable Notification settings couldn't change when either of the params is undefined
 
 ## v4.0.6
 
