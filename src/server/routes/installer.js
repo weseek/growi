@@ -79,7 +79,7 @@ module.exports = function(crowi, app) {
       await adminUser.asyncMakeAdmin();
     }
     catch (err) {
-      req.form.errors.push(`管理ユーザーの作成に失敗しました。${err.message}`);
+      req.form.errors.push(req.t('message.failed_to_create_admin_user', { errMessage: err.message }));
       return res.render('installer');
     }
     // create initial pages
