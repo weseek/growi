@@ -694,6 +694,7 @@
     "successfully_connected": "Successfully Connected!",
     "fail_to_save_access_token": "Failed to save access_token. Please try again.",
     "fail_to_fetch_access_token": "Failed to fetch access_token. Please do connect again.",
-    "successfully_disconnected": "Successfully Disconnected!"
+    "successfully_disconnected": "Successfully Disconnected!",
+    "strategy_has_not_been_set_up": "{{strategy}} has not been set up"
   }
 }

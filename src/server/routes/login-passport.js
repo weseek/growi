@@ -142,7 +142,7 @@ module.exports = function(crowi, app) {
       debug('LdapStrategy has not been set up');
       return res.json(ApiResponse.success({
         status: 'warning',
-        message: 'LdapStrategy has not been set up',
+        message: req.t('strategy_has_not_been_set_up', { strategy: 'LdapStrategy' }),
       }));
     }
 
@@ -196,7 +196,7 @@ module.exports = function(crowi, app) {
   const loginWithLocal = (req, res, next) => {
     if (!passportService.isLocalStrategySetup) {
       debug('LocalStrategy has not been set up');
-      req.flash('warningMessage', 'LocalStrategy has not been set up');
+      req.flash('warningMessage', req.t('strategy_has_not_been_set_up', { strategy: 'LocalStrategy' }));
       return next();
     }
 
@@ -227,7 +227,7 @@ module.exports = function(crowi, app) {
   const loginWithGoogle = function(req, res, next) {
     if (!passportService.isGoogleStrategySetup) {
       debug('GoogleStrategy has not been set up');
-      req.flash('warningMessage', 'GoogleStrategy has not been set up');
+      req.flash('warningMessage', req.t('strategy_has_not_been_set_up', { strategy: 'GoogleStrategy' }));
       return next();
     }
 
@@ -296,7 +296,7 @@ module.exports = function(crowi, app) {
   const loginWithGitHub = function(req, res, next) {
     if (!passportService.isGitHubStrategySetup) {
       debug('GitHubStrategy has not been set up');
-      req.flash('warningMessage', 'GitHubStrategy has not been set up');
+      req.flash('warningMessage', req.t('strategy_has_not_been_set_up', { strategy: 'GitHubStrategy' }));
       return next();
     }
 
@@ -338,7 +338,7 @@ module.exports = function(crowi, app) {
   const loginWithTwitter = function(req, res, next) {
     if (!passportService.isTwitterStrategySetup) {
       debug('TwitterStrategy has not been set up');
-      req.flash('warningMessage', 'TwitterStrategy has not been set up');
+      req.flash('warningMessage', req.t('strategy_has_not_been_set_up', { strategy: 'TwitterStrategy' }));
       return next();
     }
 
@@ -380,7 +380,7 @@ module.exports = function(crowi, app) {
   const loginWithOidc = function(req, res, next) {
     if (!passportService.isOidcStrategySetup) {
       debug('OidcStrategy has not been set up');
-      req.flash('warningMessage', 'OidcStrategy has not been set up');
+      req.flash('warningMessage', req.t('strategy_has_not_been_set_up', { strategy: 'OidcStrategy' }));
       return next();
     }
 
@@ -428,7 +428,7 @@ module.exports = function(crowi, app) {
   const loginWithSaml = function(req, res, next) {
     if (!passportService.isSamlStrategySetup) {
       debug('SamlStrategy has not been set up');
-      req.flash('warningMessage', 'SamlStrategy has not been set up');
+      req.flash('warningMessage', req.t('strategy_has_not_been_set_up', { strategy: 'SamlStrategy' }));
       return next();
     }
 
@@ -496,7 +496,7 @@ module.exports = function(crowi, app) {
   const loginWithBasic = async(req, res, next) => {
     if (!passportService.isBasicStrategySetup) {
       debug('BasicStrategy has not been set up');
-      req.flash('warningMessage', 'Basic has not been set up');
+      req.flash('warningMessage', req.t('strategy_has_not_been_set_up', { strategy: 'Basic' }));
       return next();
     }
 

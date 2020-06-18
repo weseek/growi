@@ -686,6 +686,7 @@
     "successfully_connected": "接続に成功しました!",
     "fail_to_save_access_token": "アクセストークンの保存に失敗しました、再度お試しください。",
     "fail_to_fetch_access_token": "アクセストークンの取得に失敗しました、再度お試しください。",
-    "successfully_disconnected": "切断に成功しました!"
+    "successfully_disconnected": "切断に成功しました!",
+    "strategy_has_not_been_set_up": "{{strategy}} はセットアップされていません"
   }
 }
