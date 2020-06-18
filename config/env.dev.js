@@ -7,7 +7,8 @@ module.exports = {
   MONGO_URI: 'mongodb://mongo:27017/growi',
   // REDIS_URI: 'http://redis:6379',
   ELASTICSEARCH_URI: 'http://elasticsearch:9200/growi',
-  HACKMD_URI: 'http://hackmd:3010',
+  HACKMD_URI: 'http://localhost:3010',
+  HACKMD_URI_FOR_SERVER: 'http://hackmd:3000',
   // DRAWIO_URI: 'http://localhost:8080/?offline=1&https=0',
   PLUGIN_NAMES_TOBE_LOADED: [
     // 'growi-plugin-lsx',

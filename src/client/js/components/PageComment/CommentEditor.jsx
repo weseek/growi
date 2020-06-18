@@ -20,6 +20,7 @@ import Editor from '../PageEditor/Editor';
 import SlackNotification from '../SlackNotification';
 
 import CommentPreview from './CommentPreview';
+import NotAvailableForGuest from '../NotAvailableForGuest';
 
 /**
  *
@@ -242,13 +243,15 @@ class CommentEditor extends React.Component {
   renderBeforeReady() {
     return (
       <div className="text-center">
-        <button
-          type="button"
-          className="btn btn-lg btn-link"
-          onClick={() => this.setState({ isReadyToUse: true })}
-        >
-          <i className="icon-bubble"></i> Add Comment
-        </button>
+        <NotAvailableForGuest>
+          <button
+            type="button"
+            className="btn btn-lg btn-link"
+            onClick={() => this.setState({ isReadyToUse: true })}
+          >
+            <i className="icon-bubble"></i> Add Comment
+          </button>
+        </NotAvailableForGuest>
       </div>
     );
   }
