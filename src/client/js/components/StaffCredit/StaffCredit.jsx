@@ -5,9 +5,6 @@ import {
 } from 'reactstrap';
 import contributors from './Contributor';
 
-// px / sec
-const scrollSpeed = 200;
-
 /**
  * Page staff credit component
  *
@@ -34,6 +31,10 @@ export default class StaffCredit extends React.Component {
   // when this is called it returns the hotkey stroke
   static getHotkeyStroke() {
     return ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+  }
+
+  static getComponent() {
+    return <StaffCredit />;
   }
 
   deleteCredit() {
@@ -91,10 +92,13 @@ export default class StaffCredit extends React.Component {
   }
 
   componentDidMount() {
+    // px / sec
+    const scrollSpeed = 200;
     const target = $('.credit-curtain');
     const scrollTargetHeight = target.children().innerHeight();
-    const duration = scrollTargetHeight / scrollSpeed * 1000;
+    const duration = scrollTargetHeight / scrollSpeed * 10;
     target.animate({ scrollTop: scrollTargetHeight }, duration, 'linear');
+    console.log(target);
 
     target.slimScroll({
       height: target.innerHeight(),
@@ -102,7 +106,6 @@ export default class StaffCredit extends React.Component {
       start: 'bottom',
       color: '#FFFFFF',
     });
-
   }
 
   render() {

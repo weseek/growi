@@ -7,7 +7,7 @@ export default class Hotkeys extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      stroke: [],
+      view: [],
     };
     this.supportClasses = [
       StaffCredit,
@@ -26,7 +26,7 @@ export default class Hotkeys extends React.Component {
     return Array.from(keymap);
   }
 
-  // this function generates list of all the hotkeys commands
+  // this function generates list of all the hotkeys command
   hotkeyList() {
     const hotkeyList = this.supportClasses.map((value) => {
       return value.getHotkeyStroke();
@@ -36,26 +36,23 @@ export default class Hotkeys extends React.Component {
 
   // activates when one of the hotkey strokes gets determined from HotkeysDetector
   onDetected(strokeDetermined) {
+    let viewDetermined = this.supportClasses.filter((value) => {
+      return strokeDetermined.toString() === value.getHotkeyStroke().toString();
+    });
+    viewDetermined = viewDetermined.map((value) => {
+      return value.getComponent();
+    });
     this.setState({
-      stroke: this.state.stroke.concat([strokeDetermined]),
+      view: this.state.view.concat(viewDetermined).flat(),
     });
   }
 
   render() {
-    console.log(this.state.stroke);
-    const view = this.supportClasses.filter((value) => {
-      for (let i = 0; i < this.state.stroke.length; i++) {
-        if (this.state.stroke[i].toString() === value.getHotkeyStroke().toString()) {
-          return value;
-        }
-      }
-      return null;
-    });
-    console.log(view);
+    console.log(this.state.view);
     return (
       <React.Fragment>
         <HotkeysDetector onDetected={stroke => this.onDetected(stroke)} keymap={this.keymap} hotkeyList={this.hotkeyList} />
-        {view}
+        {this.state.view}
       </React.Fragment>
     );
   }
