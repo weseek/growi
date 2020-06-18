@@ -17,8 +17,8 @@ const logger = loggerFactory('growi:TableOfContents');
 
 // get these value with
 //   document.querySelector('.revision-toc').getBoundingClientRect().top
-const DEFAULT_REVISION_TOC_TOP_FOR_GROWI_LAYOUT = 190;
-const DEFAULT_REVISION_TOC_TOP_FOR_GROWI_LAYOUT_USER_PAGE = 230;
+const DEFAULT_REVISION_TOC_TOP_FOR_GROWI_LAYOUT = 204;
+const DEFAULT_REVISION_TOC_TOP_FOR_GROWI_LAYOUT_USER_PAGE = 264;
 const DEFAULT_REVISION_TOC_TOP_FOR_KIBELA_LAYOUT = 105;
 
 /**
