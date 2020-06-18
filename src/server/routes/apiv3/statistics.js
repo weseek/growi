@@ -8,8 +8,6 @@ const router = express.Router();
 
 const helmet = require('helmet');
 
-const util = require('util');
-
 const USER_STATUS_MASTER = {
   1: 'registered',
   2: 'active',
@@ -54,8 +52,7 @@ module.exports = (crowi) => {
     const inactiveUserTotal = userCountResults.invited + userCountResults.deleted + userCountResults.suspended + userCountResults.registered;
 
     // Get admin users
-    const findAdmins = util.promisify(User.findAdmins).bind(User);
-    const adminUsers = await findAdmins();
+    const adminUsers = await User.findAdmins();
 
     return {
       total: activeUserCount + inactiveUserTotal,
