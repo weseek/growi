@@ -11,12 +11,6 @@ describe('ShareLink', () => {
     ShareLink = crowi.model('ShareLink');
     Page = require('@server/routes/page')(crowi);
 
-    await ShareLink.insertMany([
-      { relatedPage: '5ed11fcc60ec00c9072f74a7', expiredAt: '2020-05-29T14:44:28.064Z' },
-      { relatedPage: '5ed11fcc60ec00c9072f74a7', expiredAt: '2020-05-29T14:44:28.064Z' },
-      { relatedPage: '5ed11fcc60ec00c9072f74a9', expiredAt: '2020-05-29T14:44:28.064Z' },
-    ]);
-
     done();
   });
 
