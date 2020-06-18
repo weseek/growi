@@ -689,5 +689,10 @@
     "Sign in error": "Login error",
     "Registration successful": "Registration successful",
     "Setup": "Setup"
+  },
+  "message": {
+    "successfully_connected":"Successfully Connected!",
+    "fail_to_save_access_token":"Failed to save access_token. Please try again.",
+    "fail_to_fetch_access_token":"Failed to fetch access_token. Please do connect again."
   }
 }

@@ -168,6 +168,7 @@ module.exports = function(crowi, app) {
   // app.get('/admin/notification/slackAuth'     , admin.notification.slackauth);
   actions.notification.slackAuth = function(req, res) {
     const code = req.query.code;
+    const { t } = req;
 
     if (!code || !slackNotificationService.hasSlackConfig()) {
       return res.redirect('/admin/notification');
@@ -180,17 +181,17 @@ module.exports = function(crowi, app) {
 
         try {
           await configManager.updateConfigsInTheSameNamespace('notification', { 'slack:token': data.access_token });
-          req.flash('successMessage', ['Successfully Connected!']);
+          req.flash('successMessage', [t('message.successfully_connected')]);
         }
         catch (err) {
-          req.flash('errorMessage', ['Failed to save access_token. Please try again.']);
+          req.flash('errorMessage', [t('message.fail_to_save_access_token')]);
         }
 
         return res.redirect('/admin/notification');
       })
       .catch((err) => {
         debug('oauth response ERROR', err);
-        req.flash('errorMessage', ['Failed to fetch access_token. Please do connect again.']);
+        req.flash('errorMessage', [t('message.fail_to_fetch_access_token')]);
         return res.redirect('/admin/notification');
       });
   };
