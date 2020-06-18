@@ -18,14 +18,20 @@ const ArchiveCreateModal = (props) => {
         アーカイブを作成する
       </ModalHeader>
       <ModalBody>
-        <input
-          className="custom-control-input"
-          name="file_download"
-          id="downloadFile"
-          type="checkbox"
-          checked={isFileDownload}
-          onChange={changeIsFileDownloadHandler}
-        />試作
+        <div className="custom-control custom-checkbox-success">
+          <input
+            className="custom-control-input"
+            name="file_download"
+            id="downloadFile"
+            type="checkbox"
+            checked={isFileDownload}
+            onChange={changeIsFileDownloadHandler}
+          />
+          <label className="custom-control-label" htmlFor="isGitHubEnabled">
+          試作
+          </label>
+        </div>
+
       </ModalBody>
       <ModalFooter>
         <button type="button">Done</button>
