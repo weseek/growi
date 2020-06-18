@@ -232,23 +232,6 @@ module.exports = function(crowi, app) {
     return res.render('admin/users');
   };
 
-  // これやったときの relation の挙動未確認
-  actions.user.removeCompletely = function(req, res) {
-    // ユーザーの物理削除
-    const id = req.params.id;
-
-    User.removeCompletelyById(id, (err, removed) => {
-      if (err) {
-        debug('Error while removing user.', err, id);
-        req.flash('errorMessage', '完全な削除に失敗しました。');
-      }
-      else {
-        req.flash('successMessage', '削除しました');
-      }
-      return res.redirect('/admin/users');
-    });
-  };
-
   // app.post('/_api/admin/users.resetPassword' , admin.api.usersResetPassword);
   actions.user.resetPassword = async function(req, res) {
     const id = req.body.user_id;

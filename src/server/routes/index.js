@@ -93,7 +93,6 @@ module.exports = function(crowi, app) {
   app.get('/admin/global-notification/:id'   , loginRequiredStrictly , adminRequired , admin.globalNotification.detail);
 
   app.get('/admin/users'                , loginRequiredStrictly , adminRequired , admin.user.index);
-  app.post('/admin/user/:id/removeCompletely' , loginRequiredStrictly , adminRequired , csrf, admin.user.removeCompletely);
   // new route patterns from here:
   app.post('/_api/admin/users.resetPassword'  , loginRequiredStrictly , adminRequired , csrf, admin.user.resetPassword);
 
