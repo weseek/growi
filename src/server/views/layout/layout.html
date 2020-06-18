@@ -25,6 +25,8 @@
 
   {% include '../widget/headers/scripts-for-dev.html' %}
 
+  <script src="{{ webpack_asset('js/boot.js') }}"></script>
+
   <script src="{{ webpack_asset('js/vendors.js') }}" defer></script>
   <script src="{{ webpack_asset('js/commons.js') }}" defer></script>
   {% if getConfig('crowi', 'plugin:isEnabledPlugins') %}
