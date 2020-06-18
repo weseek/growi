@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
 
 const ArchiveCreateModal = (props) => {
+
+  const { t } = props;
 
   const [isCommentDownload, SetIsCommentDownload] = useState(false);
   const [isFileDownload, SetIsFileDownload] = useState(false);
@@ -25,34 +28,22 @@ const ArchiveCreateModal = (props) => {
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose}>
       <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-white">
-        アーカイブを作成する
+        {t('Create Archive Page')}
       </ModalHeader>
       <ModalBody>
-
         <div className="form-group">
           <div className="custom-control custom-radio custom-control-inline ">
-            <label>ファイル形式: </label>
+            <label>{t('File type')}: </label>
           </div>
           <div className="custom-control custom-radio custom-control-inline ">
-            <input
-              type="radio"
-              className="custom-control-input"
-            />
-            <label className="custom-control-label">
-              MarkDown(.md)
-            </label>
+            <input type="radio" className="custom-control-input" />
+            <label className="custom-control-label">MarkDown(.md)</label>
           </div>
           <div className="custom-control custom-radio custom-control-inline">
-            <input
-              type="radio"
-              className="custom-control-input"
-            />
-            <label className="custom-control-label">
-              PDF(.pdf)
-            </label>
+            <input type="radio" className="custom-control-input" />
+            <label className="custom-control-label">PDF(.pdf)</label>
           </div>
         </div>
-
 
         <div className="custom-control custom-checkbox-success">
           <input
@@ -64,7 +55,7 @@ const ArchiveCreateModal = (props) => {
             onChange={changeIsCommentDownloadHandler}
           />
           <label className="custom-control-label" htmlFor="isGitHubEnabled">
-          コメントも含める
+            {t('Include Comment')}
           </label>
         </div>
         <div className="custom-control custom-checkbox-success">
@@ -77,7 +68,7 @@ const ArchiveCreateModal = (props) => {
             onChange={changeIsFileDownloadHandler}
           />
           <label className="custom-control-label" htmlFor="isGitHubEnabled">
-            添付ファイルも含める
+            {t('Include Attachment File')}
           </label>
         </div>
         <div className="custom-control custom-checkbox-success">
@@ -90,7 +81,7 @@ const ArchiveCreateModal = (props) => {
             onChange={changeIsSubordinatedPageDownloadHandler}
           />
           <label className="custom-control-label" htmlFor="isGitHubEnabled">
-            配下ページも含める
+            {('Include Subordinated Page')}
           </label>
         </div>
       </ModalBody>
@@ -98,13 +89,13 @@ const ArchiveCreateModal = (props) => {
         <button type="button">Done</button>
       </ModalFooter>
     </Modal>
-
   );
 };
 
 ArchiveCreateModal.propTypes = {
+  t: PropTypes.func.isRequired, //  i18next
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
 };
 
-export default ArchiveCreateModal;
+export default withTranslation()(ArchiveCreateModal);
