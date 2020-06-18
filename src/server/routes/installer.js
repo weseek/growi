@@ -92,12 +92,12 @@ module.exports = function(crowi, app) {
     // login with passport
     req.logIn(adminUser, (err) => {
       if (err) {
-        req.flash('successMessage', 'GROWI のインストールが完了しました！<br>管理者アカウントでログインしてください。');
+        req.flash('successMessage', t('message.complete_to_install1'));
         req.session.redirectTo = '/admin/app';
         return res.redirect('/login');
       }
 
-      req.flash('successMessage', 'GROWI のインストールが完了しました！はじめに、このページで各種設定を確認してください。');
+      req.flash('successMessage', t('message.complete_to_install2'));
       return res.redirect('/admin/app');
     });
   };
