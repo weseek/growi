@@ -40,3 +40,4 @@ package-lock.json
 # IDE, dev #
 .idea
 *.orig
+*.code-workspace
