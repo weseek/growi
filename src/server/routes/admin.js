@@ -4,7 +4,6 @@ module.exports = function(crowi, app) {
   const logger = require('@alias/logger')('growi:routes:admin');
 
   const models = crowi.models;
-  const User = models.User;
   const ExternalAccount = models.ExternalAccount;
   const UserGroup = models.UserGroup;
   const UserGroupRelation = models.UserGroupRelation;
@@ -230,25 +229,6 @@ module.exports = function(crowi, app) {
   actions.user = {};
   actions.user.index = async function(req, res) {
     return res.render('admin/users');
-  };
-
-  // app.post('/_api/admin/users.resetPassword' , admin.api.usersResetPassword);
-  actions.user.resetPassword = async function(req, res) {
-    const id = req.body.user_id;
-    const User = crowi.model('User');
-
-    try {
-      const newPassword = await User.resetPasswordByRandomString(id);
-
-      const user = await User.findById(id);
-
-      const result = { user: user.toObject(), newPassword };
-      return res.json(ApiResponse.success(result));
-    }
-    catch (err) {
-      debug('Error on reseting password', err);
-      return res.json(ApiResponse.error(err));
-    }
   };
 
   actions.externalAccount = {};
