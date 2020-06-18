@@ -174,7 +174,7 @@ class PageComments extends React.Component {
             </Button>
           </div>
         )}
-        { showEditor && isLoggedIn && (
+        { showEditor && (
           <div className="page-comment-reply-form ml-4 ml-sm-5 mr-3">
             <CommentEditor
               growiRenderer={this.growiRenderer}
