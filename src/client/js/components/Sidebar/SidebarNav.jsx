@@ -59,7 +59,7 @@ class SidebarNav extends React.Component {
     const { PrimaryItem, SecondaryItem } = this;
 
     return (
-      <div className="grw-sidebar-nav d-flex flex-column justify-content-between pb-4">
+      <div className="grw-sidebar-nav">
         <div className="grw-sidebar-nav-primary-container">
           <PrimaryItem id="custom" label="Custom Sidebar" iconName="code" />
           <PrimaryItem id="recent" label="Recent Changes" iconName="update" />
