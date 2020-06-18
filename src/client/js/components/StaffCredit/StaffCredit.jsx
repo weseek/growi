@@ -92,20 +92,20 @@ export default class StaffCredit extends React.Component {
   }
 
   componentDidMount() {
-    // px / sec
-    const scrollSpeed = 200;
-    const target = $('.credit-curtain');
-    const scrollTargetHeight = target.children().innerHeight();
-    const duration = scrollTargetHeight / scrollSpeed * 10;
-    target.animate({ scrollTop: scrollTargetHeight }, duration, 'linear');
-    console.log(target);
-
-    target.slimScroll({
-      height: target.innerHeight(),
-      // Able to scroll after automatic schooling is complete so set "bottom" to allow scrolling from the bottom.
-      start: 'bottom',
-      color: '#FFFFFF',
-    });
+    setTimeout(() => {
+      // px / sec
+      const scrollSpeed = 200;
+      const target = $('.credit-curtain');
+      const scrollTargetHeight = target.children().innerHeight();
+      const duration = scrollTargetHeight / scrollSpeed * 1000;
+      target.animate({ scrollTop: scrollTargetHeight }, duration, 'linear');
+      target.slimScroll({
+        height: target.innerHeight(),
+        // Able to scroll after automatic schooling is complete so set "bottom" to allow scrolling from the bottom.
+        start: 'bottom',
+        color: '#FFFFFF',
+      });
+    }, 10);
   }
 
   render() {
