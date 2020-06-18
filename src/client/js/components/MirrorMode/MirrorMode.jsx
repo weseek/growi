@@ -20,16 +20,15 @@ export default class MirrorMode extends React.Component {
     return <MirrorMode />;
   }
 
-  renderMirrors() {
+  componentDidMount() {
     const changeBody = document.body;
-    changeBody.classList.add('reverse');
+    changeBody.classList.add('mirror');
     return null;
   }
 
   render() {
     return (
       <React.Fragment>
-        {this.renderMirrors()}
       </React.Fragment>
     );
   }
