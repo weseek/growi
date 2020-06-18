@@ -95,7 +95,6 @@ module.exports = function(crowi, app) {
   app.get('/admin/users'                , loginRequiredStrictly , adminRequired , admin.user.index);
 
   app.get('/admin/users/external-accounts'               , loginRequiredStrictly , adminRequired , admin.externalAccount.index);
-  app.post('/admin/users/external-accounts/:id/remove'   , loginRequiredStrictly , adminRequired , admin.externalAccount.remove);
 
   // user-groups admin
   app.get('/admin/user-groups'             , loginRequiredStrictly, adminRequired, admin.userGroup.index);

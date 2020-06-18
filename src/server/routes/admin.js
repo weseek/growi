@@ -4,7 +4,6 @@ module.exports = function(crowi, app) {
   const logger = require('@alias/logger')('growi:routes:admin');
 
   const models = crowi.models;
-  const ExternalAccount = models.ExternalAccount;
   const UserGroup = models.UserGroup;
   const UserGroupRelation = models.UserGroupRelation;
   const GlobalNotificationSetting = models.GlobalNotificationSetting;
@@ -236,25 +235,6 @@ module.exports = function(crowi, app) {
     return res.render('admin/external-accounts');
   };
 
-  actions.externalAccount.remove = async function(req, res) {
-    const id = req.params.id;
-
-    let account = null;
-
-    try {
-      account = await ExternalAccount.findByIdAndRemove(id);
-      if (account == null) {
-        throw new Error('削除に失敗しました。');
-      }
-    }
-    catch (err) {
-      req.flash('errorMessage', err.message);
-      return res.redirect('/admin/users/external-accounts');
-    }
-
-    req.flash('successMessage', `外部アカウント '${account.providerType}/${account.accountId}' を削除しました`);
-    return res.redirect('/admin/users/external-accounts');
-  };
 
   actions.userGroup = {};
   actions.userGroup.index = function(req, res) {
