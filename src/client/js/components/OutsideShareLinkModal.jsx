@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -15,40 +15,87 @@ import PageContainer from '../services/PageContainer';
 import ShareLinkList from './ShareLinkList';
 import ShareLinkForm from './ShareLinkForm';
 
-const OutsideShareLinkModal = (props) => {
-  const [isOpenShareLinkForm, setIsOpenShareLinkForm] = useState(false);
+import { toastSuccess, toastError } from '../util/apiNotification';
 
-  function toggleShareLinkFormHandler() {
-    setIsOpenShareLinkForm(!isOpenShareLinkForm);
+class OutsideShareLinkModal extends React.Component {
+
+  constructor() {
+    super();
+    this.state = {
+      shareLinks: [],
+      isOpenShareLinkForm: false,
+    };
+
+    this.toggleShareLinkFormHandler = this.toggleShareLinkFormHandler.bind(this);
+    this.deleteAllLinksButtonHandler = this.deleteAllLinksButtonHandler.bind(this);
+    this.deleteLinkById = this.deleteLinkById.bind(this);
   }
 
-  return (
-    <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose}>
-      <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-light">Title
-      </ModalHeader>
-      <ModalBody>
-        <div className="container">
-          <div className="form-inline mb-3">
-            <h4>Shared Link List</h4>
-            <button className="ml-auto btn btn-danger" type="button">Delete all links</button>
-          </div>
+  toggleShareLinkFormHandler() {
+    this.setState({ isOpenShareLinkForm: !this.state.isOpenShareLinkForm });
+  }
 
-          <div>
-            <ShareLinkList />
-            <button
-              className="btn btn-outline-secondary d-block mx-auto px-5 mb-3"
-              type="button"
-              onClick={toggleShareLinkFormHandler}
-            >
-              {isOpenShareLinkForm ? 'Close' : 'New'}
-            </button>
-            {isOpenShareLinkForm && <ShareLinkForm />}
+  async deleteAllLinksButtonHandler() {
+    const { t, appContainer, pageContainer } = this.props;
+    const { pageId } = pageContainer.state;
+
+    try {
+      const res = await appContainer.apiv3.delete('/share-links/', { relatedPage: pageId });
+      const count = res.data.n;
+      toastSuccess(t('toaster.remove_share_link', { count }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+
+    // TODO GW-2764 retrieve share links
+  }
+
+  async deleteLinkById(shareLinkId) {
+    const { t, appContainer } = this.props;
+
+    try {
+      const res = await appContainer.apiv3Delete(`/share-links/${shareLinkId}`);
+      const { deletedShareLink } = res.data;
+      toastSuccess(t('remove_share_link_success', { shareLinkId: deletedShareLink._id }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+
+    // TODO GW-2764 retrieve share links
+  }
+
+  render() {
+    return (
+      <Modal size="lg" isOpen={this.props.isOpen} toggle={this.props.onClose}>
+        <ModalHeader tag="h4" toggle={this.props.onClose} className="bg-primary text-light">Title
+        </ModalHeader>
+        <ModalBody>
+          <div className="container">
+            <div className="form-inline mb-3">
+              <h4>Shared Link List</h4>
+              <button className="ml-auto btn btn-danger" type="button" onClick={this.deleteAllLinksButtonHandler}>Delete all links</button>
+            </div>
+
+            <div>
+              <ShareLinkList shareLinks={this.state.shareLinks} />
+              <button
+                className="btn btn-outline-secondary d-block mx-auto px-5 mb-3"
+                type="button"
+                onClick={this.toggleShareLinkFormHandler}
+              >
+                {this.state.isOpenShareLinkForm ? 'Close' : 'New'}
+              </button>
+              {this.state.isOpenShareLinkForm && <ShareLinkForm onCloseForm={this.toggleShareLinkFormHandler} onClickDeleteButton={this.deleteLinkById} />}
+            </div>
           </div>
-        </div>
-      </ModalBody>
-    </Modal>
-  );
-};
+        </ModalBody>
+      </Modal>
+    );
+  }
+
+}
 
 /**
  * Wrapper component for using unstated

@@ -64,13 +64,10 @@ module.exports = (crowi) => {
   validator.shareLinkStatus = [
     // validate the page id is null
     body('relatedPage').not().isEmpty().withMessage('Page Id is null'),
-
     // validate expireation date is not empty, is not before today and is date.
-    body('expiredAt').isAfter(today.toString()).withMessage('Your Selected date is past'),
-
+    body('expiredAt').if(value => value != null).isAfter(today.toString()).withMessage('Your Selected date is past'),
     // validate the length of description is max 100.
     body('description').isLength({ min: 0, max: 100 }).withMessage('Max length is 100'),
-
   ];
 
   /**
@@ -126,21 +123,19 @@ module.exports = (crowi) => {
   *        tags: [ShareLinks]
   *        summary: /share-links/
   *        description: delete all share links related one page
-  *        requestBody:
-  *           required: true
-  *           content:
-  *             application/json:
-  *               schema:
-  *                 properties:
-  *                   relatedPage:
-  *                     type: string
-  *                     description: delete all share links that related one page
+  *        parameters:
+  *          - name: relatedPage
+  *            in: query
+  *            required: true
+  *            description: page id of share link
+  *            schema:
+  *              type: string
   *        responses:
   *          200:
   *            description: Succeeded to delete o all share links related one page
   */
   router.delete('/', loginRequired, csrf, async(req, res) => {
-    const { relatedPage } = req.body;
+    const { relatedPage } = req.query;
     const ShareLink = crowi.model('ShareLink');
 
     try {
@@ -177,7 +172,7 @@ module.exports = (crowi) => {
 
     try {
       const deletedShareLink = await ShareLink.findOneAndRemove({ _id: id });
-      return res.apiv3(deletedShareLink);
+      return res.apiv3({ deletedShareLink });
     }
     catch (err) {
       const msg = 'Error occurred in delete share link';

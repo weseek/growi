@@ -1,9 +1,13 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
+import parse from 'date-fns/parse';
 
 import { withUnstatedContainers } from './UnstatedUtils';
+
+import { toastSuccess, toastError } from '../util/apiNotification';
 
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
@@ -66,10 +70,63 @@ class ShareLinkForm extends React.Component {
     this.setState({ customExpirationTime });
   }
 
-  handleIssueShareLink() {
-    // use these options
-    console.log(this.state);
-    console.log('発行する!');
+  /**
+   * Generate expiredAt by expirationType
+   */
+  generateExpired() {
+    const { expirationType } = this.state;
+    let expiredAt;
+
+    if (expirationType === 'unlimited') {
+      return null;
+    }
+
+    if (expirationType === 'numberOfDays') {
+      const date = new Date();
+      date.setDate(date.getDate() + this.state.numberOfDays);
+      expiredAt = date;
+    }
+
+    if (expirationType === 'custom') {
+      const { customExpirationDate, customExpirationTime } = this.state;
+      expiredAt = parse(`${customExpirationDate}T${customExpirationTime}`, "yyyy-MM-dd'T'HH:mm:ss", new Date());
+    }
+
+    return expiredAt;
+  }
+
+  closeForm() {
+    const { onCloseForm } = this.props;
+
+    if (onCloseForm == null) {
+      return;
+    }
+    onCloseForm();
+  }
+
+  async handleIssueShareLink() {
+    const { t, appContainer, pageContainer } = this.props;
+    const { pageId } = pageContainer.state;
+    const { description } = this.state;
+
+    let expiredAt;
+
+    try {
+      expiredAt = this.generateExpired();
+    }
+    catch (err) {
+      return toastError(err);
+    }
+
+    try {
+      await appContainer.apiv3Post('/share-links/', { relatedPage: pageId, expiredAt, description });
+      this.closeForm();
+      toastSuccess(t('toaster.issue_share_link'));
+    }
+    catch (err) {
+      toastError(err);
+    }
+
   }
 
   renderExpirationTypeOptions() {
@@ -188,5 +245,12 @@ class ShareLinkForm extends React.Component {
 
 const ShareLinkFormWrapper = withUnstatedContainers(ShareLinkForm, [AppContainer, PageContainer]);
 
+ShareLinkForm.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+
+  onCloseForm: PropTypes.func,
+};
 
 export default withTranslation()(ShareLinkFormWrapper);
