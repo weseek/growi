@@ -36,7 +36,7 @@ describe('ShareLink', () => {
 
     test('share link is not found', () => {
 
-      jest.spyOn(ShareLink, 'findOne').mockReturnValue({ expiredAt: '2020-05-29T14:44:28.064Z' });
+      jest.spyOn(ShareLink, 'findOne').mockImplementation(() => { return { populate: () => { return { expiredAt: '2020-05-29T14:44:28.064Z' } } } });
 
       Page.showSharedPage(req, res);
 
