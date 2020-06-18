@@ -37,10 +37,7 @@ export default class Hotkeys extends React.Component {
   // activates when one of the hotkey strokes gets determined from HotkeysDetector
   onDetected(strokeDetermined) {
     let viewDetermined = this.supportClasses.filter((value) => {
-      if (strokeDetermined.toString() === value.getHotkeyStroke().toString()) {
-        return true;
-      }
-      return false;
+      return strokeDetermined.toString() === value.getHotkeyStroke().toString();
     });
     viewDetermined = viewDetermined.map((value) => {
       return value.getComponent();
