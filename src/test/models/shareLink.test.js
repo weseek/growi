@@ -32,15 +32,15 @@ describe('ShareLink', () => {
       found: jest.fn().mockReturnValue('layout-growi/shared_page'),
       expired: jest.fn().mockReturnValue('layout-growi/not_found_shared_page'),
       notFound: jest.fn().mockReturnValue('layout-growi/expired_shared_page'),
+      render: (page) => { return page },
     };
 
-    test('share link is not found', () => {
+    test('share link is not found', async() => {
 
       jest.spyOn(ShareLink, 'findOne').mockImplementation(() => { return { populate: () => { return { expiredAt: '2020-05-29T14:44:28.064Z' } } } });
+      const response = await Page.showSharedPage(req, res);
 
-      Page.showSharedPage(req, res);
-
-      expect(res.notFound).toHaveBeenCalledWith('/not_found_shared_page');
+      expect(response).toEqual('layout-growi/not_found_shared_page');
     });
   });
 
