@@ -1,34 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Modal, ModalHeader, ModalBody } from 'reactstrap';
+import {
+  Modal, ModalHeader, ModalBody, ModalFooter,
+} from 'reactstrap';
+
 
 const ArchiveCreateModal = (props) => {
 
+  const [isFileDownload, SetIsFileDownload] = useState(false);
+
+  function changeIsFileDownloadHandler() {
+    SetIsFileDownload(true);
+  }
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose}>
-      <ModalHeader tag="h4" toggle={props.onClose} className="bg-secondary text-Light">
+      <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-white">
         アーカイブを作成する
       </ModalHeader>
       <ModalBody>
-        <div className="form-group">
-          <div className="custom-control" custom-checkbox>
-            <input type="checkbox" />コメントもダウンロードする
-          </div>
-        </div>
-        <div className="form-group">
-          <div className="custom-control" custom-checkbox>
-            <input type="checkbox" />ファイルもダウンロードする
-          </div>
-        </div>
-        <div className="form-group">
-          <div className="custom-control" custom-checkbox>
-            <input type="checkbox" />配下ページもダウンロードする
-          </div>
-        </div>
-        <button type="button">アーカイブを作成する</button>
-
+        <input
+          className="custom-control-input"
+          name="file_download"
+          id="downloadFile"
+          type="checkbox"
+          checked={isFileDownload}
+          onChange={changeIsFileDownloadHandler}
+        />試作
       </ModalBody>
+      <ModalFooter>
+        <button type="button">Done</button>
+      </ModalFooter>
     </Modal>
+
   );
 };
 
