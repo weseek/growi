@@ -698,6 +698,8 @@
     "strategy_has_not_been_set_up": "{{strategy}} has not been set up",
     "maximum_number_of_users": "Can not register more than the maximum number of users.",
     "database_error": "Database Server Error occured",
-    "sign_in_failure": "Sign in failure."
+    "sign_in_failure": "Sign in failure.",
+    "aws_sttings_required": "AWS settings required to use this function. Please ask the administrator.",
+    "application_already_installed": "Application already installed."
   }
 }
