@@ -154,11 +154,6 @@ class LinkEditModal extends React.PureComponent {
                       onSubmit={this.submitHandler}
                     />
                   </div>
-                  <div className="input-group-append">
-                    <button type="button" id="button-addon" className="btn btn-secondary" onClick={this.showLog}>
-                      Preview
-                    </button>
-                  </div>
                 </div>
                 <div className="form-inline">
                   <div className="custom-control custom-checkbox custom-checkbox-info">
