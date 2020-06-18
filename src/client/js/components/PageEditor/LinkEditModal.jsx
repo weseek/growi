@@ -11,7 +11,9 @@ import {
 } from 'reactstrap';
 
 import PageContainer from '../../services/PageContainer';
+import AppContainer from '../../services/AppContainer';
 
+import Preview from './Preview';
 import PagePathAutoComplete from '../PagePathAutoComplete';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -28,6 +30,7 @@ class LinkEditModal extends React.PureComponent {
       linkInputValue: '',
       labelInputValue: '',
       linkerType: 'mdLink',
+      markdown: '',
     };
 
     this.show = this.show.bind(this);
@@ -41,6 +44,8 @@ class LinkEditModal extends React.PureComponent {
     this.toggleIsUsePamanentLink = this.toggleIsUsePamanentLink.bind(this);
     this.save = this.save.bind(this);
     this.generateLink = this.generateLink.bind(this);
+    this.setMarkdown = this.setMarkdown.bind(this);
+    this.renderPreview = this.renderPreview.bind(this);
   }
 
   show(defaultLabelInputValue = '') {
@@ -69,11 +74,27 @@ class LinkEditModal extends React.PureComponent {
   }
 
   renderPreview() {
-    // TODO GW-2658
+    return (
+      <div className="linkedit-preview">
+        <Preview
+          markdown={this.state.markdown}
+          inputRef={() => {}}
+        />
+      </div>
+    );
   }
 
-  insertLinkIntoEditor() {
-    // TODO GW-2659
+  async setMarkdown() {
+    let markdown = '';
+    try {
+      await this.props.appContainer.apiGet('/pages.get', { path: this.state.linkInputValue }).then((res) => {
+        markdown = res.page.revision.body;
+      });
+    }
+    catch (err) {
+      markdown = `<div class="alert alert-warning" role="alert"><strong>${err.message}</strong></div>`;
+    }
+    this.setState({ markdown });
   }
 
   handleChangeLabelInput(label) {
@@ -102,8 +123,8 @@ class LinkEditModal extends React.PureComponent {
 
   }
 
-  submitHandler(submitValue) {
-    this.setState({ linkInputValue: submitValue });
+  submitHandler() {
+    this.setMarkdown();
   }
 
 
@@ -141,17 +162,15 @@ class LinkEditModal extends React.PureComponent {
         </ModalHeader>
 
         <ModalBody className="container">
-          <div className="row">
+          <div className="row h-100">
             <div className="col-12 col-lg-6">
-              <form className="form-group">
-                <div className="form-gorup my-3">
-                  <label htmlFor="linkInput">Link</label>
-                  <div className="input-group">
-                    <PagePathAutoComplete
-                      onInputChange={this.inputChangeHandler}
-                      onSubmit={this.submitHandler}
-                    />
-                  </div>
+              <div className="form-gorup my-3">
+                <label htmlFor="linkInput">Link</label>
+                <div className="input-group">
+                  <PagePathAutoComplete
+                    onInputChange={this.inputChangeHandler}
+                    onSubmit={this.submitHandler}
+                  />
                 </div>
                 <div className="form-inline">
                   <div className="custom-control custom-checkbox custom-checkbox-info">
@@ -166,7 +185,7 @@ class LinkEditModal extends React.PureComponent {
                     </label>
                   </div>
                 </div>
-              </form>
+              </div>
 
               <div className="card">
                 <div className="card-body">
@@ -250,6 +269,7 @@ class LinkEditModal extends React.PureComponent {
 }
 
 LinkEditModal.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   onSave: PropTypes.func,
 };
@@ -257,6 +277,6 @@ LinkEditModal.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const LinkEditModalWrapper = withUnstatedContainers(LinkEditModal, [PageContainer]);
+const LinkEditModalWrapper = withUnstatedContainers(LinkEditModal, [AppContainer, PageContainer]);
 
 export default LinkEditModalWrapper;

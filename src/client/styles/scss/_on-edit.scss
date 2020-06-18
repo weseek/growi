@@ -225,6 +225,21 @@ body.on-edit {
         min-width: 150px;
       }
     }
+
+    .modal-body {
+      height: 85vh;
+    }
+
+    .linkedit-preview {
+      .page-editor-preview-body {
+        height: 45vh;
+      }
+      @include media-breakpoint-up(lg) {
+        .page-editor-preview-body {
+          height: 80vh;
+        }
+      }
+    }
   }
 
   // .builtin-editor .tab-pane#edit
