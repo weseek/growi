@@ -25,7 +25,7 @@ const PersonalDropdown = (props) => {
   const { t, appContainer, navigationContainer } = props;
   const user = appContainer.currentUser || {};
 
-  const [useOsSettings, setOsSettings] = useState(isUserPreferenceExists());
+  const [useOsSettings, setOsSettings] = useState(!isUserPreferenceExists());
   const [isDarkMode, setIsDarkMode] = useState(isDarkModeByUtil());
 
   const logoutHandler = () => {
