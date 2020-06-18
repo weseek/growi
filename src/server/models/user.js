@@ -552,30 +552,6 @@ module.exports = function(crowi) {
     });
   };
 
-  userSchema.statics.removeCompletelyById = function(id, callback) {
-    const User = this;
-    User.findById(id, (err, userData) => {
-      if (!userData) {
-        return callback(err, null);
-      }
-
-      debug('Removing user:', userData);
-      // 物理削除可能なのは、承認待ちユーザー、招待中ユーザーのみ
-      // 利用を一度開始したユーザーは論理削除のみ可能
-      if (userData.status !== STATUS_REGISTERED && userData.status !== STATUS_INVITED) {
-        return callback(new Error('Cannot remove completely the user whoes status is not INVITED'), null);
-      }
-
-      userData.remove((err) => {
-        if (err) {
-          return callback(err, null);
-        }
-
-        return callback(null, 1);
-      });
-    });
-  };
-
   userSchema.statics.resetPasswordByRandomString = async function(id) {
     const user = await this.findById(id);
 
