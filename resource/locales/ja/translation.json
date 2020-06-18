@@ -688,6 +688,8 @@
     "fail_to_fetch_access_token": "アクセストークンの取得に失敗しました、再度お試しください。",
     "successfully_disconnected": "切断に成功しました!",
     "strategy_has_not_been_set_up": "{{strategy}} はセットアップされていません。",
-    "maximum_number_of_users": "ユーザー数が上限を超えたためアクティベートできません。"
+    "maximum_number_of_users": "ユーザー数が上限を超えたためアクティベートできません。",
+    "database_error":"データベースサーバーに問題があります。",
+    "sign_in_failure": "ログインに失敗しました。"
   }
 }

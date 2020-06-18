@@ -34,7 +34,7 @@ module.exports = function(crowi, app) {
    * @param {*} res
    */
   const loginFailureHandler = (req, res, message) => {
-    req.flash('errorMessage', message || 'Sign in failure.');
+    req.flash('errorMessage', message || req.t('message.sign_in_failure'));
     return res.redirect('/login');
   };
 
@@ -44,7 +44,7 @@ module.exports = function(crowi, app) {
    * @param {*} res
    */
   const loginFailure = (req, res) => {
-    return loginFailureHandler(req, res, 'Sign in failure.');
+    return loginFailureHandler(req, res, req.t('message.sign_in_failure'));
   };
 
   /**
@@ -212,7 +212,7 @@ module.exports = function(crowi, app) {
 
       if (err) { // DB Error
         logger.error('Database Server Error: ', err);
-        req.flash('warningMessage', 'Database Server Error occured.');
+        req.flash('warningMessage', req.t('message.database_error'));
         return next(); // pass and the flash message is displayed when all of authentications are failed.
       }
       if (!user) { return next() }
