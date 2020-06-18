@@ -7,6 +7,7 @@
 * Fix: Styles are not applyed on installer
 * Fix: Remove last-resort `next()`
 * Fix: Enable/disable Notification settings couldn't change when either of the params is undefined
+* Fix: Text overflow
 
 ## v4.0.6
 
