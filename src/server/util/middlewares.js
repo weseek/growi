@@ -25,11 +25,6 @@ module.exports = (crowi) => {
     };
   };
 
-  middlewares.loginCheckerForPassport = function(req, res, next) {
-    res.locals.user = req.user;
-    next();
-  };
-
   middlewares.swigFunctions = function() {
     return function(req, res, next) {
       require('../util/swigFunctions')(crowi, req, res.locals);
