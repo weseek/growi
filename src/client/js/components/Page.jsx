@@ -128,15 +128,22 @@ class Page extends React.Component {
   }
 
   render() {
-    const isMobile = this.props.appContainer.isMobile;
-    const { markdown } = this.props.pageContainer.state;
+    const { appContainer, pageContainer } = this.props;
+    const isMobile = appContainer.isMobile;
+    const isLoggedIn = appContainer.currentUser != null;
+    const { markdown } = pageContainer.state;
 
     return (
       <div className={isMobile ? 'page-mobile' : ''}>
         <RevisionRenderer growiRenderer={this.growiRenderer} markdown={markdown} />
-        <GridEditModal ref={this.gridEditModal} />
-        <HandsontableModal ref={this.handsontableModal} onSave={this.saveHandlerForHandsontableModal} />
-        <DrawioModal ref={this.drawioModal} onSave={this.saveHandlerForDrawioModal} />
+
+        { isLoggedIn && (
+          <>
+            <GridEditModal ref={this.gridEditModal} />
+            <HandsontableModal ref={this.handsontableModal} onSave={this.saveHandlerForHandsontableModal} />
+            <DrawioModal ref={this.drawioModal} onSave={this.saveHandlerForDrawioModal} />
+          </>
+        )}
       </div>
     );
   }

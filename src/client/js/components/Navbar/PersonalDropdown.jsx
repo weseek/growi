@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
@@ -7,13 +7,26 @@ import { UncontrolledTooltip } from 'reactstrap';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
+import NavigationContainer from '../../services/NavigationContainer';
+
+import {
+  isUserPreferenceExists,
+  isDarkMode as isDarkModeByUtil,
+  applyColorScheme,
+  removeUserPreference,
+  updateUserPreference,
+  updateUserPreferenceWithOsSettings,
+} from '../../util/color-scheme';
 
 import UserPicture from '../User/UserPicture';
 
 const PersonalDropdown = (props) => {
 
-  const { t, appContainer } = props;
+  const { t, appContainer, navigationContainer } = props;
   const user = appContainer.currentUser || {};
+
+  const [useOsSettings, setOsSettings] = useState(!isUserPreferenceExists());
+  const [isDarkMode, setIsDarkMode] = useState(isDarkModeByUtil());
 
   const logoutHandler = () => {
     const { interceptorManager } = appContainer;
@@ -28,26 +41,33 @@ const PersonalDropdown = (props) => {
   };
 
   const preferDrawerModeSwitchModifiedHandler = (bool) => {
-    appContainer.setDrawerModePreference(bool);
+    navigationContainer.setDrawerModePreference(bool);
   };
 
   const preferDrawerModeOnEditSwitchModifiedHandler = (bool) => {
-    appContainer.setDrawerModePreferenceOnEdit(bool);
+    navigationContainer.setDrawerModePreferenceOnEdit(bool);
   };
 
   const followOsCheckboxModifiedHandler = (bool) => {
-    // reset user preference
     if (bool) {
-      appContainer.setColorSchemePreference(null);
+      removeUserPreference();
     }
-    // set preferDarkModeByMediaQuery as users preference
     else {
-      appContainer.setColorSchemePreference(appContainer.state.preferDarkModeByMediaQuery);
+      updateUserPreferenceWithOsSettings();
     }
+    applyColorScheme();
+
+    // update states
+    setOsSettings(bool);
+    setIsDarkMode(isDarkModeByUtil());
   };
 
   const userPreferenceSwitchModifiedHandler = (bool) => {
-    appContainer.setColorSchemePreference(bool);
+    updateUserPreference(bool);
+    applyColorScheme();
+
+    // update state
+    setIsDarkMode(isDarkModeByUtil());
   };
 
 
@@ -55,15 +75,8 @@ const PersonalDropdown = (props) => {
    * render
    */
   const {
-    preferDarkModeByMediaQuery, preferDarkModeByUser, preferDrawerModeByUser, preferDrawerModeOnEditByUser,
-  } = appContainer.state;
-  const isUserPreferenceExists = preferDarkModeByUser != null;
-  const isDarkMode = () => {
-    if (isUserPreferenceExists) {
-      return preferDarkModeByUser;
-    }
-    return preferDarkModeByMediaQuery;
-  };
+    preferDrawerModeByUser, preferDrawerModeOnEditByUser,
+  } = navigationContainer.state;
 
   /* eslint-disable react/prop-types */
   const DrawerIcon = props => (
@@ -166,7 +179,7 @@ const PersonalDropdown = (props) => {
                   id="cbFollowOs"
                   className="custom-control-input"
                   type="checkbox"
-                  checked={!isUserPreferenceExists}
+                  checked={useOsSettings}
                   onChange={e => followOsCheckboxModifiedHandler(e.target.checked)}
                 />
                 <label className="custom-control-label text-nowrap" htmlFor="cbFollowOs">{t('personal_dropdown.use_os_settings')}</label>
@@ -175,19 +188,19 @@ const PersonalDropdown = (props) => {
           </div>
           <div className="form-row justify-content-center">
             <div className="form-group col-auto mb-0 d-flex align-items-center">
-              <span className={isUserPreferenceExists ? '' : 'text-muted'}>Light</span>
+              <span className={useOsSettings ? '' : 'text-muted'}>Light</span>
               <div className="custom-control custom-switch custom-checkbox-secondary ml-2">
                 <input
                   id="swUserPreference"
                   className="custom-control-input"
                   type="checkbox"
-                  checked={isDarkMode()}
-                  disabled={!isUserPreferenceExists}
+                  checked={isDarkMode}
+                  disabled={useOsSettings}
                   onChange={e => userPreferenceSwitchModifiedHandler(e.target.checked)}
                 />
                 <label className="custom-control-label" htmlFor="swUserPreference"></label>
               </div>
-              <span className={isUserPreferenceExists ? '' : 'text-muted'}>Dark</span>
+              <span className={useOsSettings ? '' : 'text-muted'}>Dark</span>
             </div>
           </div>
         </form>
@@ -205,12 +218,13 @@ const PersonalDropdown = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PersonalDropdownWrapper = withUnstatedContainers(PersonalDropdown, [AppContainer]);
+const PersonalDropdownWrapper = withUnstatedContainers(PersonalDropdown, [AppContainer, NavigationContainer]);
 
 
 PersonalDropdown.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 
 export default withTranslation()(PersonalDropdownWrapper);

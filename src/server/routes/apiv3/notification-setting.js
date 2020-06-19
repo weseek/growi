@@ -34,8 +34,8 @@ const validator = {
     }),
   ],
   notifyForPageGrant: [
-    body('isNotificationForOwnerPageEnabled').isBoolean(),
-    body('isNotificationForGroupPageEnabled').isBoolean(),
+    body('isNotificationForOwnerPageEnabled').if(value => value != null).isBoolean(),
+    body('isNotificationForGroupPageEnabled').if(value => value != null).isBoolean(),
   ],
 };
 
