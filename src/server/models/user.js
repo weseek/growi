@@ -24,8 +24,8 @@ module.exports = function(crowi) {
 
   const LANG_EN = 'en';
   const LANG_EN_US = 'en_US';
-  const LANG_EN_GB = 'en-GB';
-  const LANG_JA = 'ja';
+  const LANG_EN_GB = 'en_GB';
+  const LANG_JA = 'ja_JP';
 
   const PAGE_ITEMS = 50;
 
