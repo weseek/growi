@@ -30,6 +30,11 @@ const PageShareManagement = (props) => {
   }
 
   function closeArchiveCreateModalHandler() {
+
+    if (setIsArchiveCreateModalShown(null)) {
+      return null;
+    }
+
     setIsArchiveCreateModalShown(false);
   }
 

@@ -16,15 +16,17 @@ const ArchiveCreateModal = (props) => {
 
 
   function changeIsCommentDownloadHandler() {
-    setIsCommentDownload(true);
+    setIsCommentDownload(!isCommentDownload);
   }
   function changeIsFileDownloadHandler() {
-    setIsFileDownload(true);
+    setIsFileDownload(!isFileDownload);
   }
 
   function changeIsSubordinatedPageDownloadHandler() {
-    setIsSubordinatedPageDownload(true);
+    setIsSubordinatedPageDownload(!isSubordinatedPageDownload);
   }
+
+
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose}>
       <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-white">
@@ -45,43 +47,39 @@ const ArchiveCreateModal = (props) => {
           </div>
         </div>
 
-        <div className="custom-control custom-checkbox-success">
+        <div className="custom-control custom-checkbox custom-checkbox-warning">
           <input
             className="custom-control-input"
-            name="file_download"
-            id="downloadFile"
+            name="comment"
+            id="commentFile"
             type="checkbox"
             checked={isCommentDownload}
             onChange={changeIsCommentDownloadHandler}
           />
-          <label className="custom-control-label" htmlFor="isGitHubEnabled">
+          <label className="custom-control-label" htmlFor="commentFile">
             {t('Include Comment')}
           </label>
         </div>
-        <div className="custom-control custom-checkbox-success">
+        <div className="custom-control custom-checkbox custom-checkbox-warning">
           <input
             className="custom-control-input"
-            name="file_download"
             id="downloadFile"
             type="checkbox"
             checked={isFileDownload}
             onChange={changeIsFileDownloadHandler}
           />
-          <label className="custom-control-label" htmlFor="isGitHubEnabled">
-            {t('Include Attachment File')}
-          </label>
+          <label className="custom-control-label" htmlFor="downloadFile">{t('Include Attachment File')}</label>
         </div>
-        <div className="custom-control custom-checkbox-success">
+        <div className="custom-control custom-checkbox custom-checkbox-warning">
           <input
             className="custom-control-input"
-            name="file_download"
-            id="downloadFile"
+            id="subordinatedFile"
             type="checkbox"
             checked={isSubordinatedPageDownload}
             onChange={changeIsSubordinatedPageDownloadHandler}
           />
-          <label className="custom-control-label" htmlFor="isGitHubEnabled">
-            {('Include Subordinated Page')}
+          <label className="custom-control-label" htmlFor="subordinatedFile">
+            {'Include Subordinated Page'}
           </label>
         </div>
       </ModalBody>
