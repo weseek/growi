@@ -9,7 +9,7 @@ const md5 = require('md5');
 const entities = require('entities');
 
 module.exports = (crowi) => {
-  const { configManager, appService } = crowi;
+  const { configManager } = crowi;
 
   const middlewares = {};
 
@@ -156,28 +156,6 @@ module.exports = (crowi) => {
 
       next();
     };
-  };
-
-  // this is for Installer
-  middlewares.applicationNotInstalled = async function(req, res, next) {
-    const isInstalled = await appService.isDBInitialized();
-
-    if (isInstalled) {
-      req.flash('errorMessage', req.t('message.application_already_installed'));
-      return res.redirect('admin'); // admin以外はadminRequiredで'/'にリダイレクトされる
-    }
-
-    return next();
-  };
-
-  middlewares.applicationInstalled = async function(req, res, next) {
-    const isInstalled = await appService.isDBInitialized();
-
-    if (!isInstalled) {
-      return res.redirect('/installer');
-    }
-
-    return next();
   };
 
   middlewares.awsEnabled = function() {
