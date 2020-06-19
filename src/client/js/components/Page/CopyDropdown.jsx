@@ -54,9 +54,9 @@ class CopyDropdown extends React.Component {
   }
 
   generatePagePathWithParams() {
-    const { pagePath, isShareLinkMode } = this.props;
+    const { pagePath, pageId, isShareLinkMode } = this.props;
     if (isShareLinkMode) {
-      return decodeURI(`/${pagePath}`);
+      return decodeURI(`/share/${pageId}`);
     }
     return decodeURI(`${pagePath}${this.uriParams}`);
   }
@@ -67,10 +67,10 @@ class CopyDropdown extends React.Component {
   }
 
   generatePermalink() {
-    const { pageId, pagePath, isShareLinkMode } = this.props;
+    const { pageId, isShareLinkMode } = this.props;
 
     if (isShareLinkMode) {
-      return decodeURI(`${origin}/share/${pagePath}`);
+      return decodeURI(`${origin}/share/${pageId}`);
     }
     if (pageId == null) {
       return null;
@@ -80,9 +80,9 @@ class CopyDropdown extends React.Component {
   }
 
   generateMarkdownLink() {
-    const { pagePath } = this.props;
+    const { pageId, pagePath, isShareLinkMode } = this.props;
 
-    const label = decodeURI(`${pagePath}${this.uriParams}`);
+    const label = isShareLinkMode ? decodeURI(pageId) : decodeURI(`${pagePath}${this.uriParams}`);
     const permalink = this.generatePermalink();
 
     return `[${label}](${permalink})`;
@@ -97,7 +97,7 @@ class CopyDropdown extends React.Component {
 
   render() {
     const {
-      t, pageId, pagePath, isShareLinkMode,
+      t, pageId, isShareLinkMode,
     } = this.props;
     const { isParamsAppended } = this.state;
 
@@ -106,7 +106,7 @@ class CopyDropdown extends React.Component {
     const permalink = this.generatePermalink();
 
     const { DropdownItemContents } = this;
-    const copyTarget = isShareLinkMode ? `copyShareLink${pagePath}` : 'copyPagePathDropdown';
+    const copyTarget = isShareLinkMode ? `copyShareLink${pageId}` : 'copyPagePathDropdown';
 
     return (
       <>
@@ -142,7 +142,7 @@ class CopyDropdown extends React.Component {
             <DropdownItem divider className="my-0"></DropdownItem>
 
             {/* Page path */}
-            { pageId && (
+            { !isShareLinkMode && (
               <>
                 <CopyToClipboard text={pagePathWithParams} onCopy={this.showToolTip}>
                   <DropdownItem className="px-3">
@@ -163,7 +163,7 @@ class CopyDropdown extends React.Component {
 
 
             {/* Parmanent Link */}
-            { pageId && (
+            { (pageId && !isShareLinkMode) && (
               <CopyToClipboard text={permalink} onCopy={this.showToolTip}>
                 <DropdownItem className="px-3">
                   <DropdownItemContents title={t('copy_to_clipboard.Parmanent link')} contents={permalink} />
@@ -174,7 +174,7 @@ class CopyDropdown extends React.Component {
             <DropdownItem divider className="my-0"></DropdownItem>
 
             {/* Page path + Parmanent Link */}
-            { pageId && (
+            { (pageId && !isShareLinkMode) && (
               <CopyToClipboard text={`${pagePathWithParams}\n${permalink}`} onCopy={this.showToolTip}>
                 <DropdownItem className="px-3">
                   <DropdownItemContents title={t('copy_to_clipboard.Page path and parmanent link')} contents={<>{pagePathWithParams}<br />{permalink}</>} />
@@ -185,7 +185,7 @@ class CopyDropdown extends React.Component {
             <DropdownItem divider className="my-0"></DropdownItem>
 
             {/* Markdown Link */}
-            { (pageId || pagePath) && (
+            { pageId && (
               <CopyToClipboard text={this.generateMarkdownLink()} onCopy={this.showToolTip}>
                 <DropdownItem className="px-3 text-wrap">
                   <DropdownItemContents title={t('copy_to_clipboard.Markdown link')} contents={this.generateMarkdownLink()} isContentsWrap />
