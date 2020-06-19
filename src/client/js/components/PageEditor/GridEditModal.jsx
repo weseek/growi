@@ -38,6 +38,21 @@ export default class GridEditModal extends React.PureComponent {
           Edit Grid
         </ModalHeader>
         <ModalBody>
+          <div className="container">
+            <div className="row">
+              <div className="col-1">test</div>
+              <div className="col-1">test</div>
+              <div className="col-1">test</div>
+              <div className="col-1">test</div>
+              <div className="col-1">test</div>
+              <div className="col-1">test</div>
+              <div className="col-1">test</div>
+              <div className="col-1">test</div>
+              <div className="col-1">test</div>
+              <div className="col-1">test</div>
+              <div className="col-1">test</div>
+            </div>
+          </div>
         </ModalBody>
         <ModalFooter className="grw-modal-footer">
           <div className="ml-auto">
