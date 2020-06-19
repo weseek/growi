@@ -23,9 +23,8 @@ export default class StaffCredit extends React.Component {
     this.state = {
       isShown: true,
     };
-    this.multipleAllowance = true;
+    this.supportClassesIndex = this.props.supportClassesIndex;
     this.deleteCredit = this.deleteCredit.bind(this);
-
   }
 
   // when this is called it returns the hotkey stroke
@@ -33,14 +32,17 @@ export default class StaffCredit extends React.Component {
     return ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
   }
 
-  static getComponent() {
-    return <StaffCredit />;
+  static getComponent(supportClassesIndex, deleteRender) {
+    return <StaffCredit supportClassesIndex={supportClassesIndex} deleteRender={deleteRender}/>;
   }
 
   deleteCredit() {
     if (this.state.isShown) {
       this.setState({ isShown: false });
     }
+    setTimeout(() => {
+      this.props.deleteRender(this);
+    },200)
   }
 
   renderMembers(memberGroup, keyPrefix) {

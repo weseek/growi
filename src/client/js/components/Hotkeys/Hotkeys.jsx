@@ -15,9 +15,18 @@ export default class Hotkeys extends React.Component {
       MirrorMode,
     ];
     this.keymap = this.keymapSet();
+    this.deleteRender = this.deleteRender.bind(this);
     this.hotkeyList = this.hotkeyList();
     this.onDetected = this.onDetected.bind(this);
     this.keymapSet = this.keymapSet.bind(this);
+  }
+
+  deleteRender(instance) {
+    const viewCopy = this.state.view.slice();
+    viewCopy.splice(instance.supportClassesIndex,1);
+    this.setState({
+      view:viewCopy,
+    })
   }
 
   // this function generates keymap depending on what keys were selected in this.hotkeyCommand
@@ -41,8 +50,9 @@ export default class Hotkeys extends React.Component {
     let viewDetermined = this.supportClasses.filter((value) => {
       return strokeDetermined.toString() === value.getHotkeyStroke().toString();
     });
+    const that = this;
     viewDetermined = viewDetermined.map((value) => {
-      return value.getComponent();
+      return value.getComponent((that.state.view.length),this.deleteRender);
     });
     this.setState({
       view: this.state.view.concat(viewDetermined).flat(),
