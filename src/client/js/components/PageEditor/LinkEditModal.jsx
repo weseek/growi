@@ -33,6 +33,8 @@ class LinkEditModal extends React.PureComponent {
       markdown: '',
     };
 
+    this.isApplyPukiwikiLikeLinkerPlugin = window.growiRenderer.preProcessors.some(process => process.constructor.name === 'PukiwikiLikeLinker');
+
     this.show = this.show.bind(this);
     this.hide = this.hide.bind(this);
     this.cancel = this.cancel.bind(this);
@@ -207,14 +209,16 @@ class LinkEditModal extends React.PureComponent {
                       >
                         Growi Original
                       </button>
-                      <button
-                        type="button"
-                        name="pukiwikiLink"
-                        className={`btn btn-outline-secondary w-100 ${this.state.linkerType === 'pukiwikiLink' && 'active'}`}
-                        onClick={e => this.handleSelecteLinkerType(e.target.name)}
-                      >
-                        Pukiwiki
-                      </button>
+                      {this.isApplyPukiwikiLikeLinkerPlugin && (
+                        <button
+                          type="button"
+                          name="pukiwikiLink"
+                          className={`btn btn-outline-secondary w-100 ${this.state.linkerType === 'pukiwikiLink' && 'active'}`}
+                          onClick={e => this.handleSelecteLinkerType(e.target.name)}
+                        >
+                          Pukiwiki
+                        </button>
+                      )}
                     </div>
 
                     <div className="form-group">
