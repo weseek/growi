@@ -7,7 +7,6 @@ module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:login');
   const logger = require('@alias/logger')('growi:routes:login');
   const path = require('path');
-  const async = require('async');
   const mailer = crowi.getMailer();
   const User = crowi.model('User');
   const { configManager, appService, aclService } = crowi;
@@ -112,16 +111,16 @@ module.exports = function(crowi, app) {
         let isError = false;
         if (!User.isEmailValid(email)) {
           isError = true;
-          req.flash('registerWarningMessage', 'This email address could not be used. (Make sure the allowed email address)');
+          req.flash('registerWarningMessage', req.t('message.email_address_could_not_be_used'));
         }
         if (!isRegisterable) {
           if (!errOn.username) {
             isError = true;
-            req.flash('registerWarningMessage', 'This User ID is not available.');
+            req.flash('registerWarningMessage', req.t('message.user_id_is_not_available'));
           }
           if (!errOn.email) {
             isError = true;
-            req.flash('registerWarningMessage', 'This email address is already registered.');
+            req.flash('registerWarningMessage', req.t('message.email_address_is_already_registered'));
           }
         }
         if (isError) {
@@ -129,54 +128,26 @@ module.exports = function(crowi, app) {
           return res.redirect('/register');
         }
 
-        User.createUserByEmailAndPassword(name, username, email, password, undefined, (err, userData) => {
+        User.createUserByEmailAndPassword(name, username, email, password, undefined, async(err, userData) => {
           if (err) {
             if (err.name === 'UserUpperLimitException') {
-              req.flash('registerWarningMessage', 'Can not register more than the maximum number of users.');
+              req.flash('registerWarningMessage', req.t('message.can_not_register_maximum_number_of_users'));
             }
             else {
-              req.flash('registerWarningMessage', 'Failed to register.');
+              req.flash('registerWarningMessage', req.t('message.failed_to_register'));
             }
             return res.redirect('/register');
           }
 
-
-          // 作成後、承認が必要なモードなら、管理者に通知する
-          const appTitle = appService.getAppTitle();
-          if (configManager.getConfig('crowi', 'security:registrationMode') === aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
-            // TODO send mail
-            User.findAdmins((err, admins) => {
-              async.each(
-                admins,
-                (adminUser, next) => {
-                  mailer.send({
-                    to: adminUser.email,
-                    subject: `[${appTitle}:admin] A New User Created and Waiting for Activation`,
-                    template: path.join(crowi.localeDir, 'en-US/admin/userWaitingActivation.txt'),
-                    vars: {
-                      createdUser: userData,
-                      adminUser,
-                      url: appService.getSiteUrl(),
-                      appTitle,
-                    },
-                  },
-                  (err, s) => {
-                    debug('completed to send email: ', err, s);
-                    next();
-                  });
-                },
-                (err) => {
-                  debug('Sending invitation email completed.', err);
-                },
-              );
-            });
+          if (configManager.getConfig('crowi', 'security:registrationMode') !== aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
+            // send mail asynchronous
+            sendEmailToAllAdmins(userData);
           }
-
 
           // add a flash message to inform the user that processing was successful -- 2017.09.23 Yuki Takei
           // cz. loginSuccess method doesn't work on it's own when using passport
           //      because `req.login()` prepared by passport is not called.
-          req.flash('successMessage', `The user '${userData.username}' is successfully created.`);
+          req.flash('successMessage', req.t('message.successfully_created',{ username: userData.username }));
 
           return loginSuccess(req, res, userData);
         });
@@ -188,6 +159,32 @@ module.exports = function(crowi, app) {
       return res.render('login', { isRegistering });
     }
   };
+
+  async function sendEmailToAllAdmins(userData) {
+    // send mails to all admin users (derived from crowi) -- 2020.06.18 Yuki Takei
+    const admins = await User.findAdmins();
+
+    const appTitle = appService.getAppTitle();
+
+    const promises = admins.map((admin) => {
+      return mailer.send({
+        to: admin.email,
+        subject: `[${appTitle}:admin] A New User Created and Waiting for Activation`,
+        template: path.join(crowi.localeDir, 'en-US/admin/userWaitingActivation.txt'),
+        vars: {
+          createdUser: userData,
+          admin,
+          url: appService.getSiteUrl(),
+          appTitle,
+        },
+      });
+    })
+
+    const results = await Promise.allSettled(promises);
+    results
+      .filter(result => result.status === 'rejected')
+      .forEach(result => logger.error(result.reason));
+  }
 
   actions.invited = async function(req, res) {
     if (!req.user) {
@@ -204,7 +201,7 @@ module.exports = function(crowi, app) {
       // check user upper limit
       const isUserCountExceedsUpperLimit = await User.isUserCountExceedsUpperLimit();
       if (isUserCountExceedsUpperLimit) {
-        req.flash('warningMessage', 'ユーザーが上限に達したためアクティベートできません。');
+        req.flash('warningMessage', req.t('message.can_not_activate_maximum_number_of_users'));
         return res.redirect('/invited');
       }
 
@@ -215,12 +212,12 @@ module.exports = function(crowi, app) {
           return res.redirect('/');
         }
         catch (err) {
-          req.flash('warningMessage', 'アクティベートに失敗しました。');
+          req.flash('warningMessage', req.t('message.failed_to_activate'));
           return res.render('invited');
         }
       }
       else {
-        req.flash('warningMessage', '利用できないユーザーIDです。');
+        req.flash('warningMessage', req.t('message.unable_to_use_this_user'));
         debug('username', username);
         return res.render('invited');
       }

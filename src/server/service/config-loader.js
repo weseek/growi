@@ -143,6 +143,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
+  ELASTICSEARCH_REQUEST_TIMEOUT: {
+    ns:      'crowi',
+    key:     'app:elasticsearchRequestTimeout',
+    type:    TYPES.NUMBER,
+    default: 8000, // msec
+  },
   SEARCHBOX_SSL_URL: {
     ns:      'crowi',
     key:     'app:searchboxSslUrl',

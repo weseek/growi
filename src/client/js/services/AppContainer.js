@@ -11,18 +11,8 @@ import GrowiRenderer from '../util/GrowiRenderer';
 import {
   mediaQueryListForDarkMode,
   applyColorScheme,
-  savePreferenceByUser,
 } from '../util/color-scheme';
 import Apiv1ErrorHandler from '../util/apiv1ErrorHandler';
-
-import {
-  DetachCodeBlockInterceptor,
-  RestoreCodeBlockInterceptor,
-} from '../util/interceptor/detach-code-blocks';
-
-import {
-  DrawioInterceptor,
-} from '../util/interceptor/drawio-interceptor';
 
 import i18nFactory from '../util/i18n';
 import apiv3ErrorHandler from '../util/apiv3ErrorHandler';
@@ -37,6 +27,8 @@ export default class AppContainer extends Container {
     super();
 
     this.state = {
+      preferDarkModeByMediaQuery: false,
+
       // stetes for contents
       recentlyUpdatedPages: [],
     };
@@ -99,9 +91,6 @@ export default class AppContainer extends Container {
     this.originRenderer = new GrowiRenderer(this);
 
     this.interceptorManager = new InterceptorManager();
-    this.interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(this), 10); // process as soon as possible
-    this.interceptorManager.addInterceptor(new DrawioInterceptor(this), 20);
-    this.interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(this), 900); // process as late as possible
 
     if (this.currentUser != null) {
       // remove old user cache
@@ -307,16 +296,6 @@ export default class AppContainer extends Container {
         break;
     }
     targetComponent.launchDrawioModal(beginLineNumber, endLineNumber);
-  }
-
-  /**
-   * Set color scheme preference by user
-   * @param {boolean} isDarkMode
-   */
-  async setColorSchemePreference(isDarkMode) {
-    this.setState({ preferDarkModeByUser: isDarkMode });
-    savePreferenceByUser(isDarkMode);
-    applyColorScheme();
   }
 
   async apiGet(path, params) {
