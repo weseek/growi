@@ -58,7 +58,6 @@ module.exports = function(crowi) {
     apiToken: { type: String, index: true },
     lang: {
       type: String,
-      // eslint-disable-next-line no-eval
       enum: crowi.locales,
       default: LANG_EN_US,
     },
