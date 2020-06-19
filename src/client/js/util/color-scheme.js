@@ -1,14 +1,27 @@
 const mediaQueryListForDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
 
+function isUserPreferenceExists() {
+  return localStorage.preferDarkModeByUser != null;
+}
+
+function isPreferedDarkModeByUser() {
+  return localStorage.preferDarkModeByUser === 'true';
+}
+
+function isDarkMode() {
+  if (isUserPreferenceExists()) {
+    return isPreferedDarkModeByUser();
+  }
+  return mediaQueryListForDarkMode.matches;
+}
+
 /**
  * Apply color scheme as 'dark' attribute of <html></html>
  */
 function applyColorScheme() {
-  const { preferDarkModeByUser } = localStorage;
-
   let isDarkMode = mediaQueryListForDarkMode.matches;
-  if (preferDarkModeByUser != null) {
-    isDarkMode = preferDarkModeByUser === 'true';
+  if (isUserPreferenceExists()) {
+    isDarkMode = isPreferedDarkModeByUser();
   }
 
   // switch to dark mode
@@ -24,22 +37,37 @@ function applyColorScheme() {
 }
 
 /**
- * Set color scheme preference by user
- * @param {boolean} isDarkMode
+ * Remove color scheme preference
  */
-function savePreferenceByUser(isDarkMode) {
-  // store settings to localStorage
-  const { localStorage } = window;
-  if (isDarkMode == null) {
+function removeUserPreference() {
+  if (isUserPreferenceExists()) {
     delete localStorage.removeItem('preferDarkModeByUser');
   }
-  else {
-    localStorage.preferDarkModeByUser = isDarkMode;
-  }
+}
+
+/**
+ * Set color scheme preference
+ * @param {boolean} isDarkMode
+ */
+function updateUserPreference(isDarkMode) {
+  // store settings to localStorage
+  localStorage.preferDarkModeByUser = isDarkMode;
+}
+
+/**
+ * Set color scheme preference with OS settings
+ */
+function updateUserPreferenceWithOsSettings() {
+  localStorage.preferDarkModeByUser = mediaQueryListForDarkMode.matches;
 }
 
 export {
   mediaQueryListForDarkMode,
+  isUserPreferenceExists,
+  isPreferedDarkModeByUser,
+  isDarkMode,
   applyColorScheme,
-  savePreferenceByUser,
+  removeUserPreference,
+  updateUserPreference,
+  updateUserPreferenceWithOsSettings,
 };
