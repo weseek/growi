@@ -227,12 +227,17 @@ body.on-edit {
     }
 
     .modal-body {
-      height: 85vh;
+      height: 84vh;
     }
 
     .linkedit-preview {
       .page-editor-preview-body {
-        height: 45vh;
+        height: 28vh;
+      }
+      @include media-breakpoint-up(md) {
+        .page-editor-preview-body {
+          height: 38vh;
+        }
       }
       @include media-breakpoint-up(lg) {
         .page-editor-preview-body {

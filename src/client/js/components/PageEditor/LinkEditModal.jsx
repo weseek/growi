@@ -2,19 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import path from 'path';
-
 import {
   Modal,
   ModalHeader,
   ModalBody,
   ModalFooter,
 } from 'reactstrap';
-
-import PageContainer from '../../services/PageContainer';
-import AppContainer from '../../services/AppContainer';
-
 import Preview from './Preview';
 import PagePathAutoComplete from '../PagePathAutoComplete';
+
+import AppContainer from '../../services/AppContainer';
+import PageContainer from '../../services/PageContainer';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
@@ -27,7 +25,7 @@ class LinkEditModal extends React.PureComponent {
       show: false,
       isUseRelativePath: false,
       isUsePermanentLink: false,
-      linkInputValue: '',
+      linkInputValue: '/',
       labelInputValue: '',
       linkerType: 'mdLink',
       markdown: '',
@@ -40,7 +38,7 @@ class LinkEditModal extends React.PureComponent {
     this.show = this.show.bind(this);
     this.hide = this.hide.bind(this);
     this.cancel = this.cancel.bind(this);
-    this.inputChangeHandler = this.inputChangeHandler.bind(this);
+    this.handleChangeLinkInput = this.handleChangeLinkInput.bind(this);
     this.handleChangeLabelInput = this.handleChangeLabelInput.bind(this);
     this.handleSelecteLinkerType = this.handleSelecteLinkerType.bind(this);
     this.toggleIsUseRelativePath = this.toggleIsUseRelativePath.bind(this);
@@ -49,6 +47,14 @@ class LinkEditModal extends React.PureComponent {
     this.generateLink = this.generateLink.bind(this);
     this.getPageWithLinkInputValue = this.getPageWithLinkInputValue.bind(this);
     this.renderPreview = this.renderPreview.bind(this);
+  }
+
+  componentDidUpdate(prevState) {
+    const { linkInputValue: prevLinkInputValue } = prevState;
+    const { linkInputValue } = this.state;
+    if (linkInputValue !== prevLinkInputValue) {
+      this.getPageWithLinkInputValue(linkInputValue);
+    }
   }
 
   show(defaultLabelInputValue = '') {
@@ -69,18 +75,18 @@ class LinkEditModal extends React.PureComponent {
     if (this.state.linkerType === 'growiLink') {
       return;
     }
-    this.setState({ isUseRelativePath: !this.state.isUseRelativePath });
+
+    // User can't use both relativePath and permalink at the same time
+    this.setState({ isUseRelativePath: !this.state.isUseRelativePath, isUsePermanentLink: false });
   }
 
   toggleIsUsePamanentLink() {
     if (!this.state.isEnablePermanentLink) {
       return;
     }
-    if (!this.state.isUsePermanentLink) {
-      this.setState({ linkInputValue: this.state.permalink });
-    }
 
-    this.setState({ isUsePermanentLink: !this.state.isUsePermanentLink });
+    // User can't use both relativePath and permalink at the same time
+    this.setState({ isUsePermanentLink: !this.state.isUsePermanentLink, isUseRelativePath: false });
   }
 
   renderPreview() {
@@ -94,20 +100,8 @@ class LinkEditModal extends React.PureComponent {
     );
   }
 
-  async getPageWithLinkInputValue() {
-    let markdown = '';
-    let permalink = '';
-    let isEnablePermanentLink = false;
-    try {
-      const res = await this.props.appContainer.apiGet('/pages.get', { path: this.state.linkInputValue });
-      markdown = res.page.revision.body;
-      permalink = `${window.location.origin}/${res.page.id}`;
-      isEnablePermanentLink = true;
-    }
-    catch (err) {
-      markdown = `<div class="alert alert-warning" role="alert"><strong>${err.message}</strong></div>`;
-    }
-    this.setState({ markdown, permalink, isEnablePermanentLink });
+  handleChangeLinkInput(inputChangeValue) {
+    this.setState({ linkInputValue: inputChangeValue, isEnablePermanentLink: false, isUsePermanentLink: false });
   }
 
   handleChangeLabelInput(label) {
@@ -131,9 +125,22 @@ class LinkEditModal extends React.PureComponent {
     this.hide();
   }
 
-  inputChangeHandler(inputChangeValue) {
-    this.setState({ linkInputValue: inputChangeValue, isEnablePermanentLink: false, isUsePermanentLink: false });
+  async getPageWithLinkInputValue(path) {
+    let markdown = '';
+    let permalink = '';
+    let isEnablePermanentLink = false;
+    try {
+      const res = await this.props.appContainer.apiGet('/pages.get', { path });
+      markdown = res.page.revision.body;
+      permalink = `${window.location.origin}/${res.page.id}`;
+      isEnablePermanentLink = true;
+    }
+    catch (err) {
+      markdown = `<div class="alert alert-warning" role="alert"><strong>${err.message}</strong></div>`;
+    }
+    this.setState({ markdown, permalink, isEnablePermanentLink });
   }
+
 
   generateLink() {
     const { pageContainer } = this.props;
@@ -142,12 +149,16 @@ class LinkEditModal extends React.PureComponent {
       labelInputValue,
       linkerType,
       isUseRelativePath,
+      isUsePermanentLink,
     } = this.state;
 
     let reshapedLink = linkInputValue;
 
     if (isUseRelativePath && linkInputValue.match(/^\//)) {
       reshapedLink = path.relative(pageContainer.state.path, linkInputValue);
+    }
+    if (isUsePermanentLink) {
+      reshapedLink = this.state.permalink;
     }
 
     if (linkerType === 'pukiwikiLink') {
@@ -169,17 +180,19 @@ class LinkEditModal extends React.PureComponent {
         </ModalHeader>
 
         <ModalBody className="container">
-          <div className="row h-100">
+          <div className="row">
             <div className="col-12 col-lg-6">
-              <div className="form-gorup my-3">
-                <label htmlFor="linkInput">Link</label>
-                <div className="input-group">
-                  <PagePathAutoComplete
-                    onInputChange={this.inputChangeHandler}
-                    onSubmit={this.getPageWithLinkInputValue}
-                  />
+              <form className="form-group">
+                <div className="form-gorup my-3">
+                  <label htmlFor="linkInput">Link</label>
+                  <div className="input-group">
+                    <PagePathAutoComplete
+                      onInputChange={this.handleChangeLinkInput}
+                      onSubmit={this.getPageWithLinkInputValue}
+                    />
+                  </div>
                 </div>
-              </div>
+              </form>
 
               <div className="card">
                 <div className="card-body">
@@ -257,14 +270,8 @@ class LinkEditModal extends React.PureComponent {
               </div>
             </div>
             <div className="col-12 col-lg-6">
-              <div className="d-block">
-                <div className="linkedit-preview">
-                  <Preview
-                    markdown={this.state.markdown}
-                    inputRef={() => {}}
-                  />
-                </div>
-                render preview
+              <div className="d-block mb-3">
+                {this.renderPreview()}
               </div>
             </div>
           </div>
