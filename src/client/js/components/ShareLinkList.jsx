@@ -11,10 +11,10 @@ import AppContainer from '../services/AppContainer';
 const ShareLinkList = (props) => {
 
   function deleteLinkHandler(shareLinkId) {
-    if (props.onDeleteShareLink == null) {
+    if (props.onClickDeleteButton == null) {
       return;
     }
-    props.onDeleteShareLink(shareLinkId);
+    props.onClickDeleteButton(shareLinkId);
   }
 
   function renderShareLinks() {
@@ -62,7 +62,7 @@ ShareLinkList.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   shareLinks: PropTypes.array.isRequired,
-  onDeleteShareLink: PropTypes.func,
+  onClickDeleteButton: PropTypes.func,
 };
 
 export default withTranslation()(ShareLinkListWrapper);

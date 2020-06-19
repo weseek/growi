@@ -100,7 +100,7 @@ class OutsideShareLinkModal extends React.Component {
             <div>
               <ShareLinkList
                 shareLinks={this.state.shareLinks}
-                onDeleteShareLink={this.deleteLinkById}
+                onClickDeleteButton={this.deleteLinkById}
               />
               <button
                 className="btn btn-outline-secondary d-block mx-auto px-5 mb-3"
