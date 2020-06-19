@@ -8,6 +8,8 @@ div.body {
 }
 
 .wiki {
+  @extend .text-break;
+
   font-size: 15px;
 
   // override line-height except hljs and child of it.
