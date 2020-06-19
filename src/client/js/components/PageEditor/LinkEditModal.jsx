@@ -25,7 +25,7 @@ class LinkEditModal extends React.PureComponent {
       show: false,
       isUseRelativePath: false,
       isUsePermanentLink: false,
-      linkInputValue: '',
+      linkInputValue: '/',
       labelInputValue: '',
       linkerType: 'mdLink',
       markdown: '',
@@ -45,6 +45,14 @@ class LinkEditModal extends React.PureComponent {
     this.toggleIsUsePamanentLink = this.toggleIsUsePamanentLink.bind(this);
     this.save = this.save.bind(this);
     this.generateLink = this.generateLink.bind(this);
+  }
+
+  componentDidUpdate(prevState) {
+    const { linkInputValue: prevLinkInputValue } = prevState;
+    const { linkInputValue } = this.state;
+    if (linkInputValue !== prevLinkInputValue) {
+      this.setMarkdown(linkInputValue);
+    }
   }
 
   show(defaultLabelInputValue = '') {
@@ -87,10 +95,10 @@ class LinkEditModal extends React.PureComponent {
     // TODO GW-2659
   }
 
-  async setMarkdown() {
+  async setMarkdown(path) {
     let markdown = '';
     try {
-      await this.props.appContainer.apiGet('/pages.get', { path: this.state.labelInputValue }).then((res) => {
+      await this.props.appContainer.apiGet('/pages.get', { path }).then((res) => {
         markdown = res.page.revision.body;
       });
     }
@@ -123,13 +131,11 @@ class LinkEditModal extends React.PureComponent {
 
   inputChangeHandler(inputChangeValue) {
     this.setState({ linkInputValue: inputChangeValue });
-
   }
 
   submitHandler(submitValue) {
     this.setState({ linkInputValue: submitValue });
   }
-
 
   generateLink() {
     const { pageContainer } = this.props;
@@ -166,7 +172,7 @@ class LinkEditModal extends React.PureComponent {
 
         <ModalBody className="container">
           <div className="row">
-            <div className="col-12 col-lg-6">
+            <div className="col">
               <form className="form-group">
                 <div className="form-gorup my-3">
                   <label htmlFor="linkInput">Link</label>
@@ -191,6 +197,10 @@ class LinkEditModal extends React.PureComponent {
                   </div>
                 </div>
               </form>
+
+              <div className="d-block d-lg-none mb-3">
+                {this.renderPreview()}
+              </div>
 
               <div className="card">
                 <div className="card-body">
