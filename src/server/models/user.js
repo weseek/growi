@@ -11,6 +11,8 @@ const md5 = require('md5');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 const crypto = require('crypto');
 
+const { listLocaleIds, listLocaleAliases } = require('@commons/util/locale-utils');
+
 module.exports = function(crowi) {
   const STATUS_REGISTERED = 1;
   const STATUS_ACTIVE = 2;
@@ -21,11 +23,6 @@ module.exports = function(crowi) {
   + 'status lang createdAt lastLoginAt admin imageUrlCached';
   /* eslint-disable no-unused-vars */
   const IMAGE_POPULATION = { path: 'imageAttachment', select: 'filePathProxied' };
-
-  const LANG_EN = 'en';
-  const LANG_EN_US = 'en_US';
-  const LANG_EN_GB = 'en_GB';
-  const LANG_JA = 'ja_JP';
 
   const PAGE_ITEMS = 50;
 
@@ -58,8 +55,8 @@ module.exports = function(crowi) {
     apiToken: { type: String, index: true },
     lang: {
       type: String,
-      enum: crowi.locales,
-      default: LANG_EN_US,
+      enum: listLocaleIds().concat(listLocaleAliases()),
+      default: 'en_US',
     },
     status: {
       type: Number, required: true, default: STATUS_ACTIVE, index: true,
@@ -144,16 +141,6 @@ module.exports = function(crowi) {
     hasher.update((new Date()).getTime() + user._id);
 
     return hasher.digest('base64');
-  }
-
-  function getLanguageLabels() {
-    const lang = {};
-    lang.LANG_EN = LANG_EN;
-    lang.LANG_EN_US = LANG_EN_US;
-    lang.LANG_EN_GB = LANG_EN_GB;
-    lang.LANG_JA = LANG_JA;
-
-    return lang;
   }
 
   userSchema.methods.isPasswordSet = function() {
@@ -354,7 +341,6 @@ module.exports = function(crowi) {
     });
   };
 
-  userSchema.statics.getLanguageLabels = getLanguageLabels;
   userSchema.statics.getUserStatusLabels = function() {
     const userStatus = {};
     userStatus[STATUS_REGISTERED] = 'Approval Pending';
@@ -766,11 +752,6 @@ module.exports = function(crowi) {
   userSchema.statics.USER_PUBLIC_FIELDS = USER_PUBLIC_FIELDS;
   userSchema.statics.IMAGE_POPULATION = IMAGE_POPULATION;
   userSchema.statics.PAGE_ITEMS = PAGE_ITEMS;
-
-  userSchema.statics.LANG_EN = LANG_EN;
-  userSchema.statics.LANG_EN_US = LANG_EN_US;
-  userSchema.statics.LANG_EN_GB = LANG_EN_US;
-  userSchema.statics.LANG_JA = LANG_JA;
 
   return mongoose.model('User', userSchema);
 };

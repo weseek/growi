@@ -7,6 +7,8 @@ const express = require('express');
 
 const passport = require('passport');
 
+const { listLocaleIds } = require('@commons/util/locale-utils');
+
 const router = express.Router();
 
 const { body } = require('express-validator/check');
@@ -76,7 +78,7 @@ module.exports = (crowi) => {
     personal: [
       body('name').isString().not().isEmpty(),
       body('email').isEmail(),
-      body('lang').isString().isIn(crowi.locales),
+      body('lang').isString().isIn(listLocaleIds()),
       body('isEmailPublished').isBoolean(),
     ],
     imageType: [

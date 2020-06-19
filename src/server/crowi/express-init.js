@@ -18,6 +18,8 @@ module.exports = function(crowi, app) {
   const i18nSprintf = require('i18next-sprintf-postprocessor');
   const i18nMiddleware = require('i18next-express-middleware');
 
+  const { listLocaleIds } = require('@commons/util/locale-utils');
+
   const registerSafeRedirect = require('../middleware/safe-redirect')();
 
   const avoidSessionRoutes = require('../routes/avoid-session-routes');
@@ -25,7 +27,6 @@ module.exports = function(crowi, app) {
 
   const env = crowi.node_env;
 
-  const User = crowi.model('User');
   const lngDetector = new i18nMiddleware.LanguageDetector();
   lngDetector.addDetector(i18nUserSettingDetector);
 
@@ -35,8 +36,8 @@ module.exports = function(crowi, app) {
     .use(i18nSprintf)
     .init({
       // debug: true,
-      fallbackLng: [User.LANG_EN_US],
-      whitelist: Object.keys(User.getLanguageLabels()).map((k) => { return User[k] }),
+      fallbackLng: ['en_US'],
+      whitelist: listLocaleIds(),
       backend: {
         loadPath: `${crowi.localeDir}{{lng}}/translation.json`,
       },
@@ -69,7 +70,7 @@ module.exports = function(crowi, app) {
     res.locals.consts = {
       pageGrants: Page.getGrantLabels(),
       userStatus: User.getUserStatusLabels(),
-      language:   User.getLanguageLabels(),
+      language:   listLocaleIds(),
       restrictGuestMode: crowi.aclService.getRestrictGuestModeLabels(),
       registrationMode: crowi.aclService.getRegistrationModeLabels(),
     };
