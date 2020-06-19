@@ -85,8 +85,7 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
   const adminRequired = require('../../middleware/admin-required')(crowi);
   const csrf = require('../../middleware/csrf')(crowi);
-
-  const { ApiV3FormValidator } = crowi.middlewares;
+  const apiV3FormValidator = require('../../middleware/apiv3-form-validator')(crowi);
 
   /**
    * @swagger
@@ -146,7 +145,7 @@ module.exports = (crowi) => {
    *                schema:
   *                   $ref: '#/components/schemas/LineBreakParams'
    */
-  router.put('/lineBreak', loginRequiredStrictly, adminRequired, csrf, validator.lineBreak, ApiV3FormValidator, async(req, res) => {
+  router.put('/lineBreak', loginRequiredStrictly, adminRequired, csrf, validator.lineBreak, apiV3FormValidator, async(req, res) => {
 
     const requestLineBreakParams = {
       'markdown:isEnabledLinebreaks': req.body.isEnabledLinebreaks,
@@ -192,7 +191,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/PresentationParams'
    */
-  router.put('/presentation', loginRequiredStrictly, adminRequired, csrf, validator.presentationSetting, ApiV3FormValidator, async(req, res) => {
+  router.put('/presentation', loginRequiredStrictly, adminRequired, csrf, validator.presentationSetting, apiV3FormValidator, async(req, res) => {
     if (req.body.pageBreakSeparator === 3 && req.body.pageBreakCustomSeparator === '') {
       return res.apiv3Err(new ErrorV3('customRegularExpression is required'));
     }
@@ -241,7 +240,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/XssParams'
    */
-  router.put('/xss', loginRequiredStrictly, adminRequired, csrf, validator.xssSetting, ApiV3FormValidator, async(req, res) => {
+  router.put('/xss', loginRequiredStrictly, adminRequired, csrf, validator.xssSetting, apiV3FormValidator, async(req, res) => {
     if (req.body.isEnabledXss && req.body.xssOption == null) {
       return res.apiv3Err(new ErrorV3('xss option is required'));
     }

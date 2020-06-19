@@ -101,8 +101,7 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
   const adminRequired = require('../../middleware/admin-required')(crowi);
   const csrf = require('../../middleware/csrf')(crowi);
-
-  const { ApiV3FormValidator } = crowi.middlewares;
+  const apiV3FormValidator = require('../../middleware/apiv3-form-validator')(crowi);
 
   const validator = {
     appSetting: [
@@ -201,7 +200,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/AppSettingParams'
    */
-  router.put('/app-setting', loginRequiredStrictly, adminRequired, csrf, validator.appSetting, ApiV3FormValidator, async(req, res) => {
+  router.put('/app-setting', loginRequiredStrictly, adminRequired, csrf, validator.appSetting, apiV3FormValidator, async(req, res) => {
     const requestAppSettingParams = {
       'app:title': req.body.title,
       'app:confidential': req.body.confidential,
@@ -250,7 +249,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/SiteUrlSettingParams'
    */
-  router.put('/site-url-setting', loginRequiredStrictly, adminRequired, csrf, validator.siteUrlSetting, ApiV3FormValidator, async(req, res) => {
+  router.put('/site-url-setting', loginRequiredStrictly, adminRequired, csrf, validator.siteUrlSetting, apiV3FormValidator, async(req, res) => {
 
     const requestSiteUrlSettingParams = {
       'app:siteUrl': req.body.siteUrl,
@@ -342,7 +341,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/MailSettingParams'
    */
-  router.put('/mail-setting', loginRequiredStrictly, adminRequired, csrf, validator.mailSetting, ApiV3FormValidator, async(req, res) => {
+  router.put('/mail-setting', loginRequiredStrictly, adminRequired, csrf, validator.mailSetting, apiV3FormValidator, async(req, res) => {
     // テストメール送信によるバリデート
     try {
       await validateMailSetting(req);
@@ -404,7 +403,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/AwsSettingParams'
    */
-  router.put('/aws-setting', loginRequiredStrictly, adminRequired, csrf, validator.awsSetting, ApiV3FormValidator, async(req, res) => {
+  router.put('/aws-setting', loginRequiredStrictly, adminRequired, csrf, validator.awsSetting, apiV3FormValidator, async(req, res) => {
     const requestAwsSettingParams = {
       'aws:region': req.body.region,
       'aws:customEndpoint': req.body.customEndpoint,
@@ -455,7 +454,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/PluginSettingParams'
    */
-  router.put('/plugin-setting', loginRequiredStrictly, adminRequired, csrf, validator.pluginSetting, ApiV3FormValidator, async(req, res) => {
+  router.put('/plugin-setting', loginRequiredStrictly, adminRequired, csrf, validator.pluginSetting, apiV3FormValidator, async(req, res) => {
     const requestPluginSettingParams = {
       'plugin:isEnabledPlugins': req.body.isEnabledPlugins,
     };

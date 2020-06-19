@@ -56,9 +56,9 @@ module.exports = (crowi) => {
   const accessTokenParser = require('../../middleware/access-token-parser')(crowi);
   const loginRequired = require('../../middleware/login-required')(crowi);
   const csrf = require('../../middleware/csrf')(crowi);
+  const apiV3FormValidator = require('../../middleware/apiv3-form-validator')(crowi);
 
   const { Page, Bookmark } = crowi.models;
-  const { ApiV3FormValidator } = crowi.middlewares;
 
   const validator = {
     bookmarks: [
@@ -126,7 +126,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Bookmark'
    */
-  router.put('/', accessTokenParser, loginRequired, csrf, validator.bookmarks, ApiV3FormValidator, async(req, res) => {
+  router.put('/', accessTokenParser, loginRequired, csrf, validator.bookmarks, apiV3FormValidator, async(req, res) => {
     const { pageId, bool } = req.body;
 
     let bookmark;
