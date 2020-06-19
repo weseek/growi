@@ -79,7 +79,7 @@ module.exports = function(crowi, app) {
       await adminUser.asyncMakeAdmin();
     }
     catch (err) {
-      req.form.errors.push(`管理ユーザーの作成に失敗しました。${err.message}`);
+      req.form.errors.push(req.t('message.failed_to_create_admin_user', { errMessage: err.message }));
       return res.render('installer');
     }
     // create initial pages
@@ -92,12 +92,12 @@ module.exports = function(crowi, app) {
     // login with passport
     req.logIn(adminUser, (err) => {
       if (err) {
-        req.flash('successMessage', 'GROWI のインストールが完了しました！<br>管理者アカウントでログインしてください。');
+        req.flash('successMessage', req.t('message.complete_to_install1'));
         req.session.redirectTo = '/admin/app';
         return res.redirect('/login');
       }
 
-      req.flash('successMessage', 'GROWI のインストールが完了しました！はじめに、このページで各種設定を確認してください。');
+      req.flash('successMessage', req.t('message.complete_to_install2'));
       return res.redirect('/admin/app');
     });
   };

@@ -59,7 +59,7 @@ class ElasticsearchDelegator {
     this.client = new elasticsearch.Client({
       host,
       httpAuth,
-      requestTimeout: 5000,
+      requestTimeout: this.configManager.getConfig('crowi', 'app:elasticsearchRequestTimeout'),
       // log: 'debug',
     });
     this.indexName = indexName;
