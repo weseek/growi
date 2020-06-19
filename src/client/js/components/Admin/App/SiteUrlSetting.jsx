@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
@@ -94,9 +94,7 @@ class SiteUrlSetting extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const SiteUrlSettingWrapper = (props) => {
-  return createSubscribedElement(SiteUrlSetting, props, [AppContainer, AdminAppContainer]);
-};
+const SiteUrlSettingWrapper = withUnstatedContainers(SiteUrlSetting, [AppContainer, AdminAppContainer]);
 
 SiteUrlSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next

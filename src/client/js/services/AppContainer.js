@@ -8,6 +8,10 @@ import InterceptorManager from '@commons/service/interceptor-manager';
 import emojiStrategy from '../util/emojione/emoji_strategy_shrinked.json';
 import GrowiRenderer from '../util/GrowiRenderer';
 
+import {
+  mediaQueryListForDarkMode,
+  applyColorScheme,
+} from '../util/color-scheme';
 import Apiv1ErrorHandler from '../util/apiv1ErrorHandler';
 
 import {
@@ -32,30 +36,17 @@ export default class AppContainer extends Container {
     super();
 
     this.state = {
-      editorMode: null,
       preferDarkModeByMediaQuery: false,
-      preferDarkModeByUser: null,
-      breakpoint: 'xs',
-      isDrawerOpened: false,
 
-      isPageCreateModalShown: false,
-
+      // stetes for contents
       recentlyUpdatedPages: [],
     };
 
     const body = document.querySelector('body');
 
-    this.isAdmin = body.dataset.isAdmin === 'true';
     this.csrfToken = body.dataset.csrftoken;
-    this.isPluginEnabled = body.dataset.pluginEnabled === 'true';
-    this.isLoggedin = document.querySelector('body.nologin') == null;
 
     this.config = JSON.parse(document.getElementById('growi-context-hydrate').textContent || '{}');
-
-    const currentUserElem = document.getElementById('growi-current-user');
-    if (currentUserElem != null) {
-      this.currentUser = JSON.parse(currentUserElem.textContent);
-    }
 
     const isSharedPageElem = document.getElementById('is-shared-page');
     this.isSharedUser = (isSharedPageElem != null);
@@ -63,32 +54,13 @@ export default class AppContainer extends Container {
     const userAgent = window.navigator.userAgent.toLowerCase();
     this.isMobile = /iphone|ipad|android/.test(userAgent);
 
-    this.isDocSaved = true;
-
-    this.originRenderer = new GrowiRenderer(this);
-
-    this.interceptorManager = new InterceptorManager();
-    this.interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(this), 10); // process as soon as possible
-    this.interceptorManager.addInterceptor(new DrawioInterceptor(this), 20);
-    this.interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(this), 900); // process as late as possible
-
     const userlang = body.dataset.userlang;
     this.i18n = i18nFactory(userlang);
-
-    this.users = [];
-    this.userByName = {};
-    this.userById = {};
-    this.recoverData();
-
-    if (this.isLoggedin) {
-      this.fetchUsers();
-    }
 
     this.containerInstances = {};
     this.componentInstances = {};
     this.rendererInstances = {};
 
-    this.fetchUsers = this.fetchUsers.bind(this);
     this.apiGet = this.apiGet.bind(this);
     this.apiPost = this.apiPost.bind(this);
     this.apiDelete = this.apiDelete.bind(this);
@@ -101,9 +73,6 @@ export default class AppContainer extends Container {
       put: this.apiv3Put.bind(this),
       delete: this.apiv3Delete.bind(this),
     };
-
-    this.openPageCreateModal = this.openPageCreateModal.bind(this);
-    this.closePageCreateModal = this.closePageCreateModal.bind(this);
   }
 
   /**
@@ -113,38 +82,59 @@ export default class AppContainer extends Container {
     return 'AppContainer';
   }
 
-  init() {
-    this.initColorScheme();
-    this.initPlugins();
+  initApp() {
+    this.initMediaQueryForColorScheme();
+
+    this.injectToWindow();
   }
 
-  async initColorScheme() {
-    const switchStateByMediaQuery = async(mql) => {
-      const preferDarkMode = mql.matches;
-      await this.setState({ preferDarkModeByMediaQuery: preferDarkMode });
+  initContents() {
+    const body = document.querySelector('body');
 
-      this.applyColorScheme();
-    };
-
-    const mqlForDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
-    // add event listener
-    mqlForDarkMode.addListener(switchStateByMediaQuery);
-
-    // initialize1: restore settings from localStorage
-    const { localStorage } = window;
-    if (localStorage.preferDarkModeByUser != null) {
-      await this.setState({ preferDarkModeByUser: localStorage.preferDarkModeByUser === 'true' });
+    const currentUserElem = document.getElementById('growi-current-user');
+    if (currentUserElem != null) {
+      this.currentUser = JSON.parse(currentUserElem.textContent);
     }
 
-    // initialize2: check media query
-    switchStateByMediaQuery(mqlForDarkMode);
+    this.isAdmin = body.dataset.isAdmin === 'true';
+
+    this.isDocSaved = true;
+
+    this.originRenderer = new GrowiRenderer(this);
+
+    this.interceptorManager = new InterceptorManager();
+    this.interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(this), 10); // process as soon as possible
+    this.interceptorManager.addInterceptor(new DrawioInterceptor(this), 20);
+    this.interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(this), 900); // process as late as possible
+
+    if (this.currentUser != null) {
+      // remove old user cache
+      this.removeOldUserCache();
+    }
+
+    const isPluginEnabled = body.dataset.pluginEnabled === 'true';
+    if (isPluginEnabled) {
+      this.initPlugins();
+    }
+
+    this.injectToWindow();
+  }
+
+  async initMediaQueryForColorScheme() {
+    const switchStateByMediaQuery = async(mql) => {
+      const preferDarkMode = mql.matches;
+      this.setState({ preferDarkModeByMediaQuery: preferDarkMode });
+
+      applyColorScheme();
+    };
+
+    // add event listener
+    mediaQueryListForDarkMode.addListener(switchStateByMediaQuery);
   }
 
   initPlugins() {
-    if (this.isPluginEnabled) {
-      const growiPlugin = window.growiPlugin;
-      growiPlugin.installAll(this, this.originRenderer);
-    }
+    const growiPlugin = window.growiPlugin;
+    growiPlugin.installAll(this, this.originRenderer);
   }
 
   injectToWindow() {
@@ -286,87 +276,21 @@ export default class AppContainer extends Container {
     return emojiStrategy;
   }
 
-  recoverData() {
-    const keys = [
-      'userByName',
-      'userById',
-      'users',
-    ];
+  removeOldUserCache() {
+    if (window.localStorage.userByName == null) {
+      return;
+    }
+
+    const keys = ['userByName', 'userById', 'users', 'lastFetched'];
 
     keys.forEach((key) => {
-      const keyContent = window.localStorage[key];
-      if (keyContent) {
-        try {
-          this[key] = JSON.parse(keyContent);
-        }
-        catch (e) {
-          window.localStorage.removeItem(key);
-        }
-      }
+      window.localStorage.removeItem(key);
     });
   }
 
   async retrieveRecentlyUpdated() {
     const { data } = await this.apiv3Get('/pages/recent');
     this.setState({ recentlyUpdatedPages: data.pages });
-  }
-
-  fetchUsers() {
-    const interval = 1000 * 60 * 15; // 15min
-    const currentTime = new Date();
-    if (window.localStorage.lastFetched && interval > currentTime - new Date(window.localStorage.lastFetched)) {
-      return;
-    }
-
-    this.apiGet('/users.list', {})
-      .then((data) => {
-        this.users = data.users;
-        window.localStorage.users = JSON.stringify(data.users);
-
-        const userByName = {};
-        const userById = {};
-        for (let i = 0; i < data.users.length; i++) {
-          const user = data.users[i];
-          userByName[user.username] = user;
-          userById[user._id] = user;
-        }
-        this.userByName = userByName;
-        window.localStorage.userByName = JSON.stringify(userByName);
-
-        this.userById = userById;
-        window.localStorage.userById = JSON.stringify(userById);
-
-        window.localStorage.lastFetched = new Date();
-      })
-      .catch((err) => {
-        window.localStorage.removeItem('lastFetched');
-      // ignore errors
-      });
-  }
-
-  findUserById(userId) {
-    if (this.userById && this.userById[userId]) {
-      return this.userById[userId];
-    }
-
-    return null;
-  }
-
-  findUserByIds(userIds) {
-    const users = [];
-    for (const userId of userIds) {
-      const user = this.findUserById(userId);
-      if (user) {
-        users.push(user);
-      }
-    }
-
-    return users;
-  }
-
-  toggleDrawer() {
-    const { isDrawerOpened } = this.state;
-    this.setState({ isDrawerOpened: !isDrawerOpened });
   }
 
   launchHandsontableModal(componentKind, beginLineNumber, endLineNumber) {
@@ -387,48 +311,6 @@ export default class AppContainer extends Container {
         break;
     }
     targetComponent.launchDrawioModal(beginLineNumber, endLineNumber);
-  }
-
-  /**
-   * Set color scheme preference by user
-   * @param {boolean} isDarkMode
-   */
-  async setColorSchemePreference(isDarkMode) {
-    await this.setState({ preferDarkModeByUser: isDarkMode });
-
-    // store settings to localStorage
-    const { localStorage } = window;
-    if (isDarkMode == null) {
-      delete localStorage.removeItem('preferDarkModeByUser');
-    }
-    else {
-      localStorage.preferDarkModeByUser = isDarkMode;
-    }
-
-    this.applyColorScheme();
-  }
-
-  /**
-   * Apply color scheme as 'dark' attribute of <html></html>
-   */
-  applyColorScheme() {
-    const { preferDarkModeByMediaQuery, preferDarkModeByUser } = this.state;
-
-    let isDarkMode = preferDarkModeByMediaQuery;
-    if (preferDarkModeByUser != null) {
-      isDarkMode = preferDarkModeByUser;
-    }
-
-    // switch to dark mode
-    if (isDarkMode) {
-      document.documentElement.removeAttribute('light');
-      document.documentElement.setAttribute('dark', 'true');
-    }
-    // switch to light mode
-    else {
-      document.documentElement.setAttribute('light', 'true');
-      document.documentElement.removeAttribute('dark');
-    }
   }
 
   async apiGet(path, params) {
@@ -503,14 +385,6 @@ export default class AppContainer extends Container {
     }
 
     return this.apiv3Request('delete', path, { params });
-  }
-
-  openPageCreateModal() {
-    this.setState({ isPageCreateModalShown: true });
-  }
-
-  closePageCreateModal() {
-    this.setState({ isPageCreateModalShown: false });
   }
 
 }

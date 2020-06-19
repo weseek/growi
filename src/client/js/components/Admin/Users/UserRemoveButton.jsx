@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import AdminUsersContainer from '../../../services/AdminUsersContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
@@ -43,9 +43,7 @@ class UserRemoveButton extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const UserRemoveButtonWrapper = (props) => {
-  return createSubscribedElement(UserRemoveButton, props, [AppContainer, AdminUsersContainer]);
-};
+const UserRemoveButtonWrapper = withUnstatedContainers(UserRemoveButton, [AppContainer, AdminUsersContainer]);
 
 UserRemoveButton.propTypes = {
   t: PropTypes.func.isRequired, // i18next

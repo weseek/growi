@@ -5,7 +5,7 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 
 /**
@@ -195,9 +195,7 @@ class UserGroupDeleteModal extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const UserGroupDeleteModalWrapper = (props) => {
-  return createSubscribedElement(UserGroupDeleteModal, props, [AppContainer]);
-};
+const UserGroupDeleteModalWrapper = withUnstatedContainers(UserGroupDeleteModal, [AppContainer]);
 
 UserGroupDeleteModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next

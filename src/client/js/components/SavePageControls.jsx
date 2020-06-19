@@ -14,7 +14,7 @@ import PageContainer from '../services/PageContainer';
 import AppContainer from '../services/AppContainer';
 import EditorContainer from '../services/EditorContainer';
 
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 import SlackNotification from './SlackNotification';
 import GrantSelector from './SavePageControls/GrantSelector';
 
@@ -130,9 +130,7 @@ class SavePageControls extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const SavePageControlsWrapper = (props) => {
-  return createSubscribedElement(SavePageControls, props, [AppContainer, PageContainer, EditorContainer]);
-};
+const SavePageControlsWrapper = withUnstatedContainers(SavePageControls, [AppContainer, PageContainer, EditorContainer]);
 
 SavePageControls.propTypes = {
   t: PropTypes.func.isRequired, // i18next

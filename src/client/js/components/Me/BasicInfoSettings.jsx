@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { toastSuccess, toastError } from '../../util/apiNotification';
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 import AppContainer from '../../services/AppContainer';
 import PersonalContainer from '../../services/PersonalContainer';
@@ -149,9 +149,7 @@ class BasicInfoSettings extends React.Component {
 
 }
 
-const BasicInfoSettingsWrapper = (props) => {
-  return createSubscribedElement(BasicInfoSettings, props, [AppContainer, PersonalContainer]);
-};
+const BasicInfoSettingsWrapper = withUnstatedContainers(BasicInfoSettings, [AppContainer, PersonalContainer]);
 
 BasicInfoSettings.propTypes = {
   t: PropTypes.func.isRequired, // i18next

@@ -95,16 +95,6 @@ Crowi.handleKeyEHandler = (event) => {
   event.preventDefault();
 };
 
-Crowi.handleKeyCHandler = (event) => {
-  // ignore when dom that has 'modal in' classes exists
-  if (document.getElementsByClassName('modal in').length > 0) {
-    return;
-  }
-  // show modal to create a page
-  $('#create-page').modal();
-  event.preventDefault();
-};
-
 Crowi.handleKeyCtrlSlashHandler = (event) => {
   // show modal to create a page
   $('#shortcuts-modal').modal('toggle');
@@ -250,10 +240,12 @@ $(() => {
 
   // tab changing handling
   $('a[href="#revision-body"]').on('show.bs.tab', () => {
-    appContainer.setState({ editorMode: null });
+    const navigationContainer = appContainer.getContainer('NavigationContainer');
+    navigationContainer.setEditorMode(null);
   });
   $('a[href="#edit"]').on('show.bs.tab', () => {
-    appContainer.setState({ editorMode: 'builtin' });
+    const navigationContainer = appContainer.getContainer('NavigationContainer');
+    navigationContainer.setEditorMode('builtin');
     $('body').addClass('on-edit');
     $('body').addClass('builtin-editor');
   });
@@ -262,7 +254,8 @@ $(() => {
     $('body').removeClass('builtin-editor');
   });
   $('a[href="#hackmd"]').on('show.bs.tab', () => {
-    appContainer.setState({ editorMode: 'hackmd' });
+    const navigationContainer = appContainer.getContainer('NavigationContainer');
+    navigationContainer.setEditorMode('hackmd');
     $('body').addClass('on-edit');
     $('body').addClass('hackmd');
   });
@@ -327,8 +320,10 @@ window.addEventListener('load', (e) => {
 
   // hash on page
   if (window.location.hash) {
+    const navigationContainer = appContainer.getContainer('NavigationContainer');
+
     if ((window.location.hash === '#edit' || window.location.hash === '#edit-form') && $('.tab-pane#edit').length > 0) {
-      appContainer.setState({ editorMode: 'builtin' });
+      navigationContainer.setEditorMode('builtin');
 
       $('a[data-toggle="tab"][href="#edit"]').tab('show');
       $('body').addClass('on-edit');
@@ -338,7 +333,7 @@ window.addEventListener('load', (e) => {
       Crowi.setCaretLineAndFocusToEditor();
     }
     else if (window.location.hash === '#hackmd' && $('.tab-pane#hackmd').length > 0) {
-      appContainer.setState({ editorMode: 'hackmd' });
+      navigationContainer.setEditorMode('hackmd');
 
       $('a[data-toggle="tab"][href="#hackmd"]').tab('show');
       $('body').addClass('on-edit');
@@ -428,11 +423,6 @@ window.addEventListener('keydown', (event) => {
     case 'e':
       if (!event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey) {
         Crowi.handleKeyEHandler(event);
-      }
-      break;
-    case 'c':
-      if (!event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey) {
-        Crowi.handleKeyCHandler(event);
       }
       break;
     case '/':

@@ -1,6 +1,48 @@
 # CHANGES
 
-## v4.0.3-RC
+## v4.0.7-RC
+
+* Feature: Set request timeout for Elasticsearch with env var `ELASTICSEARCH_REQUEST_TIMEOUT`
+* Improvement: Apply styles faster on booting client
+* Fix: Styles are not applyed on installer
+* Fix: Remove last-resort `next()`
+* Fix: Enable/disable Notification settings couldn't change when either of the params is undefined
+* Fix: Text overflow
+
+## v4.0.6
+
+* Fix: Avatar images in Recent Changes are not shown
+* Fix: Full screen modal of Handsontable and Draw.io don't work
+* Fix: Shortcut for creating page respond with modifier key wrongly
+    * Introduced by v4.0.5
+
+## v4.0.5
+
+* Improvement: Return pre-defined session id when healthcheck
+* Improvement: Refactor caching for profile image
+* Improvement: Layout for global search help on mobile
+* Improvement: Layout for confidential notation
+* Fix: Shortcut for creating page doesn't work
+* Support: Dev in container
+* Support: Upgrade libs
+    * ldapjs
+    * node-sass
+
+
+## v4.0.4
+
+* Feature: Drawer/Dock mode selector
+* Improvement: Admin pages navigation
+* Improvement: Ensure not to avoid session management even when accessing to healthcheck
+* Support: Refactor unstated utils
+* Support: Upgrade libs
+    * connect-mongo
+    * connect-redis
+    * mongoose
+    * mongoose-gridfs
+    * mongoose-paginate-v2
+
+## v4.0.3
 
 * Feature: Copy page path dropdown with Append params switch
 * Improvement: Truncate overflowed user browsing history

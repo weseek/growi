@@ -4,8 +4,9 @@ import { withTranslation } from 'react-i18next';
 
 import * as toastr from 'toastr';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
+import NavigationContainer from '../../services/NavigationContainer';
 import PageContainer from '../../services/PageContainer';
 import EditorContainer from '../../services/EditorContainer';
 
@@ -30,7 +31,7 @@ class TagLabels extends React.Component {
    *   2. editorContainer.state.tags if editorMode is not null
    */
   getEditTargetData() {
-    const { editorMode } = this.props.appContainer.state;
+    const { editorMode } = this.props.navigationContainer.state;
     return (editorMode == null)
       ? this.props.pageContainer.state.tags
       : this.props.editorContainer.state.tags;
@@ -41,8 +42,8 @@ class TagLabels extends React.Component {
   }
 
   async tagsUpdatedHandler(tags) {
-    const { appContainer, editorContainer } = this.props;
-    const { editorMode } = appContainer.state;
+    const { appContainer, navigationContainer, editorContainer } = this.props;
+    const { editorMode } = navigationContainer.state;
 
     // post api request and update tags
     if (editorMode == null) {
@@ -137,14 +138,13 @@ class TagLabels extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const TagLabelsWrapper = (props) => {
-  return createSubscribedElement(TagLabels, props, [AppContainer, PageContainer, EditorContainer]);
-};
+const TagLabelsWrapper = withUnstatedContainers(TagLabels, [AppContainer, NavigationContainer, PageContainer, EditorContainer]);
 
 
 TagLabels.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 };

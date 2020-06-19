@@ -7,7 +7,7 @@ import {
 
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
@@ -160,9 +160,7 @@ const PageRenameModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageRenameModalWrapper = (props) => {
-  return createSubscribedElement(PageRenameModal, props, [AppContainer, PageContainer]);
-};
+const PageRenameModalWrapper = withUnstatedContainers(PageRenameModal, [AppContainer, PageContainer]);
 
 
 PageRenameModal.propTypes = {

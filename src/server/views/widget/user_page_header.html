@@ -1,0 +1,36 @@
+<div class="header-wrap">
+  <header id="page-header" class="user-page-header">
+
+    <h4 id="revision-path"></h4>
+
+    <div class="users-info d-flex align-items-center">
+      <img src="{{ pageUser.imageUrlCached }}" class="picture img-circle">
+      <div class="users-meta" style="flex: 1;">
+        <div class="d-flex align-items-center">
+          <h1>
+            {{ pageUser.name }}
+          </h1>
+        </div>
+        <div class="user-page-meta">
+          <ul>
+            <li class="user-page-username"><i class="icon-user"></i> {{ pageUser.username }}</li>
+            <li class="user-page-email">
+              <i class="icon-envelope"></i>
+              {% if pageUser.isEmailPublished %}
+                {{ pageUser.email }}
+              {% else %}
+                *****
+              {% endif %}
+            </li>
+            {% if pageUser.introduction %}
+            <li class="user-page-introduction"><p>{{ pageUser.introduction|nl2br }}</p></li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+      <div class="d-flex">
+        {% include 'header-buttons-lg.html' %}
+      </div>
+    </div>
+  </header>
+</div>

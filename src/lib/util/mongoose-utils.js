@@ -7,7 +7,7 @@ const getMongoUri = () => {
     || env.MONGODB_URI // MONGOLAB changes their env name
     || env.MONGOHQ_URL
     || env.MONGO_URI
-    || ((env.NODE_ENV === 'test') ? 'mongodb://localhost/growi_test' : 'mongodb://localhost/growi');
+    || ((env.NODE_ENV === 'test') ? 'mongodb://mongo/growi_test' : 'mongodb://mongo/growi');
 };
 
 const getModelSafely = (modelName) => {

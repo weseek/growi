@@ -43,8 +43,10 @@ export default class PageContainer extends Container {
       path,
       tocHtml: '',
       isLiked: JSON.parse(mainContent.getAttribute('data-page-is-liked')),
-      seenUserIds: [],
-      likerUserIds: [],
+      seenUsers: [],
+      likerUsers: [],
+      sumOfSeenUsers: 0,
+      sumOfLikers: 0,
       createdAt: mainContent.getAttribute('data-page-created-at'),
       creator: JSON.parse(mainContent.getAttribute('data-page-creator')),
       updatedAt: mainContent.getAttribute('data-page-updated-at'),
@@ -73,6 +75,7 @@ export default class PageContainer extends Container {
 
     this.setTocHtml = this.setTocHtml.bind(this);
     this.save = this.save.bind(this);
+    this.checkAndUpdateImageUrlCached = this.checkAndUpdateImageUrlCached.bind(this);
     this.addWebSocketEventHandlers = this.addWebSocketEventHandlers.bind(this);
     this.addWebSocketEventHandlers();
 
@@ -127,20 +130,58 @@ export default class PageContainer extends Container {
     this.state.markdown = markdown;
   }
 
-  initStateOthers() {
+  async initStateOthers() {
 
     const seenUserListElem = document.getElementById('seen-user-list');
     if (seenUserListElem != null) {
-      const userIdsStr = seenUserListElem.dataset.userIds;
-      this.state.seenUserIds = userIdsStr.split(',');
+      const { userIdsStr, sumOfSeenUsers } = seenUserListElem.dataset;
+      this.setState({ sumOfSeenUsers });
+
+      if (userIdsStr === '') {
+        return;
+      }
+
+      const { users } = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr });
+      this.setState({ seenUsers: users });
+
+      this.checkAndUpdateImageUrlCached(users);
     }
 
 
     const likerListElem = document.getElementById('liker-list');
     if (likerListElem != null) {
-      const userIdsStr = likerListElem.dataset.userIds;
-      this.state.likerUserIds = userIdsStr.split(',');
+      const { userIdsStr, sumOfLikers } = likerListElem.dataset;
+      this.setState({ sumOfLikers });
+
+      if (userIdsStr === '') {
+        return;
+      }
+
+      const { users } = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr });
+      this.setState({ likerUsers: users });
+
+      this.checkAndUpdateImageUrlCached(users);
     }
+  }
+
+  async checkAndUpdateImageUrlCached(users) {
+    const noImageCacheUsers = users.filter((user) => { return user.imageUrlCached == null });
+    if (noImageCacheUsers.length === 0) {
+      return;
+    }
+
+    const noImageCacheUserIds = noImageCacheUsers.map((user) => { return user.id });
+    try {
+      await this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
+    }
+    catch (err) {
+      // Error alert doesn't apear, because user don't need to notice this error.
+      logger.error(err);
+    }
+  }
+
+  get navigationContainer() {
+    return this.appContainer.getContainer('NavigationContainer');
   }
 
   setLatestRemotePageData(page, user) {
@@ -163,7 +204,7 @@ export default class PageContainer extends Container {
    * @param {Array[Tag]} tags Array of Tag
    */
   updateStateAfterSave(page, tags) {
-    const { editorMode } = this.appContainer.state;
+    const { editorMode } = this.navigationContainer.state;
 
     // update state of PageContainer
     const newState = {
@@ -207,7 +248,7 @@ export default class PageContainer extends Container {
    * @return {object} { page: Page, tags: Tag[] }
    */
   async save(markdown, optionsToSave = {}) {
-    const { editorMode } = this.appContainer.state;
+    const { editorMode } = this.navigationContainer.state;
 
     const { pageId, path } = this.state;
     let { revisionId } = this.state;
@@ -238,7 +279,7 @@ export default class PageContainer extends Container {
       throw new Error(msg);
     }
 
-    const { editorMode } = this.appContainer.state;
+    const { editorMode } = this.navigationContainer.state;
     if (editorMode == null) {
       logger.warn('\'saveAndReload\' requires the \'errorMode\' param');
       return;

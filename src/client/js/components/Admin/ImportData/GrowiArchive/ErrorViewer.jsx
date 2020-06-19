@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
-import { createSubscribedElement } from '../../../UnstatedUtils';
+import { withUnstatedContainers } from '../../../UnstatedUtils';
 
 
 class ErrorViewer extends React.Component {
@@ -45,8 +45,6 @@ ErrorViewer.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const ErrorViewerWrapper = (props) => {
-  return createSubscribedElement(ErrorViewer, props, []);
-};
+const ErrorViewerWrapper = withUnstatedContainers(ErrorViewer, []);
 
 export default withTranslation()(ErrorViewerWrapper);
