@@ -35,8 +35,19 @@ class OutsideShareLinkModal extends React.Component {
     this.retrieveShareLinks();
   }
 
-  retrieveShareLinks() {
-    console.log('hoge');
+  async retrieveShareLinks() {
+    const { appContainer, pageContainer } = this.props;
+    const { pageId } = pageContainer.state;
+
+    try {
+      const res = await appContainer.apiv3.get('/share-links/', { relatedPage: pageId });
+      const { shareLinksResult } = res.data;
+      this.setState({ shareLinks: shareLinksResult });
+    }
+    catch (err) {
+      toastError(err);
+    }
+
   }
 
   toggleShareLinkFormHandler() {
@@ -56,7 +67,7 @@ class OutsideShareLinkModal extends React.Component {
       toastError(err);
     }
 
-    // TODO GW-2764 retrieve share links
+    this.retrieveShareLinks();
   }
 
   async deleteLinkById(shareLinkId) {
@@ -65,13 +76,13 @@ class OutsideShareLinkModal extends React.Component {
     try {
       const res = await appContainer.apiv3Delete(`/share-links/${shareLinkId}`);
       const { deletedShareLink } = res.data;
-      toastSuccess(t('remove_share_link_success', { shareLinkId: deletedShareLink._id }));
+      toastSuccess(t('toaster.remove_share_link_success', { shareLinkId: deletedShareLink._id }));
     }
     catch (err) {
       toastError(err);
     }
 
-    // TODO GW-2764 retrieve share links
+    this.retrieveShareLinks();
   }
 
   render() {
@@ -87,7 +98,10 @@ class OutsideShareLinkModal extends React.Component {
             </div>
 
             <div>
-              <ShareLinkList shareLinks={this.state.shareLinks} />
+              <ShareLinkList
+                shareLinks={this.state.shareLinks}
+                onDeleteShareLink={this.deleteLinkById}
+              />
               <button
                 className="btn btn-outline-secondary d-block mx-auto px-5 mb-3"
                 type="button"

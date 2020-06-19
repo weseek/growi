@@ -11,19 +11,19 @@ import AppContainer from '../services/AppContainer';
 const ShareLinkList = (props) => {
 
   function deleteLinkHandler(shareLinkId) {
-    if (props.onClickDeleteButton == null) {
+    if (props.onDeleteShareLink == null) {
       return;
     }
-    props.onClickDeleteButton(shareLinkId);
+    props.onDeleteShareLink(shareLinkId);
   }
 
   function renderShareLinks() {
     return (
       <>
         {props.shareLinks.map(shareLink => (
-          <tr>
-            <td>{shareLink.link}</td>
-            <td>{shareLink.expiration}</td>
+          <tr key={shareLink._id}>
+            <td>{shareLink._id}</td>
+            <td>{shareLink.expiredAt}</td>
             <td>{shareLink.description}</td>
             <td>
               <button className="btn btn-outline-warning" type="button" onClick={() => deleteLinkHandler(shareLink._id)}>
@@ -62,7 +62,7 @@ ShareLinkList.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   shareLinks: PropTypes.array.isRequired,
-  onClickDeleteButton: PropTypes.func,
+  onDeleteShareLink: PropTypes.func,
 };
 
 export default withTranslation()(ShareLinkListWrapper);

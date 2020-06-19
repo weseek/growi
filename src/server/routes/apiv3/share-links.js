@@ -8,7 +8,7 @@ const express = require('express');
 
 const router = express.Router();
 
-const { body, query } = require('express-validator/check');
+const { body } = require('express-validator/check');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -48,7 +48,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to get share links
    */
-  router.get('/', loginRequired, csrf, ApiV3FormValidator, async(req, res) => {
+  router.get('/', loginRequired, ApiV3FormValidator, async(req, res) => {
     const { relatedPage } = req.query;
     try {
       const shareLinksResult = await ShareLink.find({ relatedPage: { $in: relatedPage } });
