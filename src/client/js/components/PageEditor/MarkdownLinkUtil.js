@@ -3,6 +3,14 @@
  */
 class MarkdownLinkUtil {
 
+  getMarkdownLink(editor) {
+    const isInLink = true;
+    if (isInLink) {
+      return; // with param
+    }
+    return editor.getDoc().getSelection();
+  }
+
   getSelectedTextInEditor(editor) {
     return editor.getDoc().getSelection();
   }
