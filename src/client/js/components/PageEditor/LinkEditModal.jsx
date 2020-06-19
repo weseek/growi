@@ -31,6 +31,8 @@ class LinkEditModal extends React.PureComponent {
       labelInputValue: '',
       linkerType: 'mdLink',
       markdown: '',
+      permalink: '',
+      isEnablePermanentLink: false,
     };
 
     this.isApplyPukiwikiLikeLinkerPlugin = window.growiRenderer.preProcessors.some(process => process.constructor.name === 'PukiwikiLikeLinker');
@@ -39,14 +41,13 @@ class LinkEditModal extends React.PureComponent {
     this.hide = this.hide.bind(this);
     this.cancel = this.cancel.bind(this);
     this.inputChangeHandler = this.inputChangeHandler.bind(this);
-    this.submitHandler = this.submitHandler.bind(this);
     this.handleChangeLabelInput = this.handleChangeLabelInput.bind(this);
     this.handleSelecteLinkerType = this.handleSelecteLinkerType.bind(this);
     this.toggleIsUseRelativePath = this.toggleIsUseRelativePath.bind(this);
     this.toggleIsUsePamanentLink = this.toggleIsUsePamanentLink.bind(this);
     this.save = this.save.bind(this);
     this.generateLink = this.generateLink.bind(this);
-    this.setMarkdown = this.setMarkdown.bind(this);
+    this.getPageWithLinkInputValue = this.getPageWithLinkInputValue.bind(this);
     this.renderPreview = this.renderPreview.bind(this);
   }
 
@@ -72,6 +73,13 @@ class LinkEditModal extends React.PureComponent {
   }
 
   toggleIsUsePamanentLink() {
+    if (!this.state.isEnablePermanentLink) {
+      return;
+    }
+    if (!this.state.isUsePermanentLink) {
+      this.setState({ linkInputValue: this.state.permalink });
+    }
+
     this.setState({ isUsePermanentLink: !this.state.isUsePermanentLink });
   }
 
@@ -86,17 +94,20 @@ class LinkEditModal extends React.PureComponent {
     );
   }
 
-  async setMarkdown() {
+  async getPageWithLinkInputValue() {
     let markdown = '';
+    let permalink = '';
+    let isEnablePermanentLink = false;
     try {
-      await this.props.appContainer.apiGet('/pages.get', { path: this.state.linkInputValue }).then((res) => {
-        markdown = res.page.revision.body;
-      });
+      const res = await this.props.appContainer.apiGet('/pages.get', { path: this.state.linkInputValue });
+      markdown = res.page.revision.body;
+      permalink = `${window.location.origin}/${res.page.id}`;
+      isEnablePermanentLink = true;
     }
     catch (err) {
       markdown = `<div class="alert alert-warning" role="alert"><strong>${err.message}</strong></div>`;
     }
-    this.setState({ markdown });
+    this.setState({ markdown, permalink, isEnablePermanentLink });
   }
 
   handleChangeLabelInput(label) {
@@ -121,14 +132,8 @@ class LinkEditModal extends React.PureComponent {
   }
 
   inputChangeHandler(inputChangeValue) {
-    this.setState({ linkInputValue: inputChangeValue });
-
+    this.setState({ linkInputValue: inputChangeValue, isEnablePermanentLink: false, isUsePermanentLink: false });
   }
-
-  submitHandler() {
-    this.setMarkdown();
-  }
-
 
   generateLink() {
     const { pageContainer } = this.props;
@@ -171,21 +176,8 @@ class LinkEditModal extends React.PureComponent {
                 <div className="input-group">
                   <PagePathAutoComplete
                     onInputChange={this.inputChangeHandler}
-                    onSubmit={this.submitHandler}
+                    onSubmit={this.getPageWithLinkInputValue}
                   />
-                </div>
-                <div className="form-inline">
-                  <div className="custom-control custom-checkbox custom-checkbox-info">
-                    <input
-                      className="custom-control-input"
-                      id="permanentLink"
-                      type="checkbox"
-                      checked={this.state.isUsePermanentLink}
-                    />
-                    <label className="custom-control-label" htmlFor="permanentLink" onClick={this.toggleIsUsePamanentLink}>
-                      Use permanent link
-                    </label>
-                  </div>
                 </div>
               </div>
 
@@ -246,13 +238,32 @@ class LinkEditModal extends React.PureComponent {
                         </label>
                       </div>
                     </div>
+                    <div className="form-inline">
+                      <div className="custom-control custom-checkbox custom-checkbox-info">
+                        <input
+                          className="custom-control-input"
+                          id="permanentLink"
+                          type="checkbox"
+                          checked={this.state.isUsePermanentLink}
+                          disabled={!this.state.isEnablePermanentLink}
+                        />
+                        <label className="custom-control-label" htmlFor="permanentLink" onClick={this.toggleIsUsePamanentLink}>
+                          Use permanent link
+                        </label>
+                      </div>
+                    </div>
                   </form>
                 </div>
               </div>
             </div>
             <div className="col-12 col-lg-6">
-              <div className="d-block d-lg-none">
-                {this.renderPreview}
+              <div className="d-block">
+                <div className="linkedit-preview">
+                  <Preview
+                    markdown={this.state.markdown}
+                    inputRef={() => {}}
+                  />
+                </div>
                 render preview
               </div>
             </div>
