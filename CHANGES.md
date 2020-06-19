@@ -1,9 +1,20 @@
 # CHANGES
 
-## v4.0.6-RC
+## v4.0.7-RC
+
+* Feature: Set request timeout for Elasticsearch with env var `ELASTICSEARCH_REQUEST_TIMEOUT`
+* Improvement: Apply styles faster on booting client
+* Fix: Styles are not applyed on installer
+* Fix: Remove last-resort `next()`
+* Fix: Enable/disable Notification settings couldn't change when either of the params is undefined
+* Fix: Text overflow
+
+## v4.0.6
 
 * Fix: Avatar images in Recent Changes are not shown
-* Fix: Full screen modal of Handsontable and Draoio don't work
+* Fix: Full screen modal of Handsontable and Draw.io don't work
+* Fix: Shortcut for creating page respond with modifier key wrongly
+    * Introduced by v4.0.5
 
 ## v4.0.5
 
