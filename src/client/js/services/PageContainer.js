@@ -180,6 +180,10 @@ export default class PageContainer extends Container {
     }
   }
 
+  get navigationContainer() {
+    return this.appContainer.getContainer('NavigationContainer');
+  }
+
   setLatestRemotePageData(page, user) {
     this.setState({
       remoteRevisionId: page.revision._id,
@@ -200,7 +204,7 @@ export default class PageContainer extends Container {
    * @param {Array[Tag]} tags Array of Tag
    */
   updateStateAfterSave(page, tags) {
-    const { editorMode } = this.appContainer.state;
+    const { editorMode } = this.navigationContainer.state;
 
     // update state of PageContainer
     const newState = {
@@ -244,7 +248,7 @@ export default class PageContainer extends Container {
    * @return {object} { page: Page, tags: Tag[] }
    */
   async save(markdown, optionsToSave = {}) {
-    const { editorMode } = this.appContainer.state;
+    const { editorMode } = this.navigationContainer.state;
 
     const { pageId, path } = this.state;
     let { revisionId } = this.state;
@@ -275,7 +279,7 @@ export default class PageContainer extends Container {
       throw new Error(msg);
     }
 
-    const { editorMode } = this.appContainer.state;
+    const { editorMode } = this.navigationContainer.state;
     if (editorMode == null) {
       logger.warn('\'saveAndReload\' requires the \'errorMode\' param');
       return;

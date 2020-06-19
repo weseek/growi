@@ -8,6 +8,10 @@ import InterceptorManager from '@commons/service/interceptor-manager';
 import emojiStrategy from '../util/emojione/emoji_strategy_shrinked.json';
 import GrowiRenderer from '../util/GrowiRenderer';
 
+import {
+  mediaQueryListForDarkMode,
+  applyColorScheme,
+} from '../util/color-scheme';
 import Apiv1ErrorHandler from '../util/apiv1ErrorHandler';
 
 import {
@@ -31,37 +35,18 @@ export default class AppContainer extends Container {
   constructor() {
     super();
 
-    const { localStorage } = window;
-
     this.state = {
-      editorMode: null,
-      isDeviceSmallerThanMd: null,
       preferDarkModeByMediaQuery: false,
-      preferDarkModeByUser: localStorage.preferDarkModeByUser === 'true',
-      preferDrawerModeByUser: localStorage.preferDrawerModeByUser === 'true',
-      preferDrawerModeOnEditByUser: // default: true
-        localStorage.preferDrawerModeOnEditByUser == null || localStorage.preferDrawerModeOnEditByUser === 'true',
-      isDrawerMode: null,
-      isDrawerOpened: false,
 
-      isPageCreateModalShown: false,
-
+      // stetes for contents
       recentlyUpdatedPages: [],
     };
 
     const body = document.querySelector('body');
 
-    this.isAdmin = body.dataset.isAdmin === 'true';
     this.csrfToken = body.dataset.csrftoken;
-    this.isPluginEnabled = body.dataset.pluginEnabled === 'true';
-    this.isLoggedin = document.querySelector('body.nologin') == null;
 
     this.config = JSON.parse(document.getElementById('growi-context-hydrate').textContent || '{}');
-
-    const currentUserElem = document.getElementById('growi-current-user');
-    if (currentUserElem != null) {
-      this.currentUser = JSON.parse(currentUserElem.textContent);
-    }
 
     const isSharedPageElem = document.getElementById('is-shared-page');
     this.isSharedUser = (isSharedPageElem != null);
@@ -69,28 +54,13 @@ export default class AppContainer extends Container {
     const userAgent = window.navigator.userAgent.toLowerCase();
     this.isMobile = /iphone|ipad|android/.test(userAgent);
 
-    this.isDocSaved = true;
-
-    this.originRenderer = new GrowiRenderer(this);
-
-    this.interceptorManager = new InterceptorManager();
-    this.interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(this), 10); // process as soon as possible
-    this.interceptorManager.addInterceptor(new DrawioInterceptor(this), 20);
-    this.interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(this), 900); // process as late as possible
-
     const userlang = body.dataset.userlang;
     this.i18n = i18nFactory(userlang);
-
-    if (this.isLoggedin) {
-      // remove old user cache
-      this.removeOldUserCache();
-    }
 
     this.containerInstances = {};
     this.componentInstances = {};
     this.rendererInstances = {};
 
-    this.removeOldUserCache = this.removeOldUserCache.bind(this);
     this.apiGet = this.apiGet.bind(this);
     this.apiPost = this.apiPost.bind(this);
     this.apiDelete = this.apiDelete.bind(this);
@@ -103,26 +73,6 @@ export default class AppContainer extends Container {
       put: this.apiv3Put.bind(this),
       delete: this.apiv3Delete.bind(this),
     };
-
-    this.openPageCreateModal = this.openPageCreateModal.bind(this);
-    this.closePageCreateModal = this.closePageCreateModal.bind(this);
-
-    window.addEventListener('keydown', (event) => {
-      const target = event.target;
-
-      // ignore when target dom is input
-      const inputPattern = /^input|textinput|textarea$/i;
-      if (inputPattern.test(target.tagName) || target.isContentEditable) {
-        return;
-      }
-
-      if (event.key === 'c') {
-        // don't fire when not needed
-        if (!event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey) {
-          this.setState({ isPageCreateModalShown: true });
-        }
-      }
-    });
   }
 
   /**
@@ -132,53 +82,59 @@ export default class AppContainer extends Container {
     return 'AppContainer';
   }
 
-  init() {
-    this.initDeviceSize();
-    this.initColorScheme();
-    this.initPlugins();
+  initApp() {
+    this.initMediaQueryForColorScheme();
+
+    this.injectToWindow();
   }
 
-  initDeviceSize() {
-    const mdOrAvobeHandler = async(mql) => {
-      let isDeviceSmallerThanMd;
+  initContents() {
+    const body = document.querySelector('body');
 
-      // sm -> md
-      if (mql.matches) {
-        isDeviceSmallerThanMd = false;
-      }
-      // md -> sm
-      else {
-        isDeviceSmallerThanMd = true;
-      }
+    const currentUserElem = document.getElementById('growi-current-user');
+    if (currentUserElem != null) {
+      this.currentUser = JSON.parse(currentUserElem.textContent);
+    }
 
-      this.setState({ isDeviceSmallerThanMd });
-      this.updateDrawerMode({ ...this.state, isDeviceSmallerThanMd }); // generate newest state object
-    };
+    this.isAdmin = body.dataset.isAdmin === 'true';
 
-    this.addBreakpointListener('md', mdOrAvobeHandler, true);
+    this.isDocSaved = true;
+
+    this.originRenderer = new GrowiRenderer(this);
+
+    this.interceptorManager = new InterceptorManager();
+    this.interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(this), 10); // process as soon as possible
+    this.interceptorManager.addInterceptor(new DrawioInterceptor(this), 20);
+    this.interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(this), 900); // process as late as possible
+
+    if (this.currentUser != null) {
+      // remove old user cache
+      this.removeOldUserCache();
+    }
+
+    const isPluginEnabled = body.dataset.pluginEnabled === 'true';
+    if (isPluginEnabled) {
+      this.initPlugins();
+    }
+
+    this.injectToWindow();
   }
 
-  async initColorScheme() {
+  async initMediaQueryForColorScheme() {
     const switchStateByMediaQuery = async(mql) => {
       const preferDarkMode = mql.matches;
-      await this.setState({ preferDarkModeByMediaQuery: preferDarkMode });
+      this.setState({ preferDarkModeByMediaQuery: preferDarkMode });
 
-      this.applyColorScheme();
+      applyColorScheme();
     };
 
-    const mqlForDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
     // add event listener
-    mqlForDarkMode.addListener(switchStateByMediaQuery);
-
-    // initialize: check media query
-    switchStateByMediaQuery(mqlForDarkMode);
+    mediaQueryListForDarkMode.addListener(switchStateByMediaQuery);
   }
 
   initPlugins() {
-    if (this.isPluginEnabled) {
-      const growiPlugin = window.growiPlugin;
-      growiPlugin.installAll(this, this.originRenderer);
-    }
+    const growiPlugin = window.growiPlugin;
+    growiPlugin.installAll(this, this.originRenderer);
   }
 
   injectToWindow() {
@@ -337,16 +293,6 @@ export default class AppContainer extends Container {
     this.setState({ recentlyUpdatedPages: data.pages });
   }
 
-  setEditorMode(editorMode) {
-    this.setState({ editorMode });
-    this.updateDrawerMode({ ...this.state, editorMode }); // generate newest state object
-  }
-
-  toggleDrawer() {
-    const { isDrawerOpened } = this.state;
-    this.setState({ isDrawerOpened: !isDrawerOpened });
-  }
-
   launchHandsontableModal(componentKind, beginLineNumber, endLineNumber) {
     let targetComponent;
     switch (componentKind) {
@@ -365,98 +311,6 @@ export default class AppContainer extends Container {
         break;
     }
     targetComponent.launchDrawioModal(beginLineNumber, endLineNumber);
-  }
-
-  /**
-   * Set Sidebar mode preference by user
-   * @param {boolean} preferDockMode
-   */
-  async setDrawerModePreference(bool) {
-    this.setState({ preferDrawerModeByUser: bool });
-    this.updateDrawerMode({ ...this.state, preferDrawerModeByUser: bool }); // generate newest state object
-
-    // store settings to localStorage
-    const { localStorage } = window;
-    localStorage.preferDrawerModeByUser = bool;
-  }
-
-  /**
-   * Set Sidebar mode preference by user
-   * @param {boolean} preferDockMode
-   */
-  async setDrawerModePreferenceOnEdit(bool) {
-    this.setState({ preferDrawerModeOnEditByUser: bool });
-    this.updateDrawerMode({ ...this.state, preferDrawerModeOnEditByUser: bool }); // generate newest state object
-
-    // store settings to localStorage
-    const { localStorage } = window;
-    localStorage.preferDrawerModeOnEditByUser = bool;
-  }
-
-  /**
-   * Update drawer related state by specified 'newState' object
-   * @param {object} newState A newest state object
-   *
-   * Specify 'newState' like following code:
-   *
-   *   { ...this.state, overwriteParam: overwriteValue }
-   *
-   * because updating state of unstated container will be delayed unless you use await
-   */
-  updateDrawerMode(newState) {
-    const {
-      editorMode, isDeviceSmallerThanMd, preferDrawerModeByUser, preferDrawerModeOnEditByUser,
-    } = newState;
-
-    // get preference on view or edit
-    const preferDrawerMode = editorMode != null ? preferDrawerModeOnEditByUser : preferDrawerModeByUser;
-
-    const isDrawerMode = isDeviceSmallerThanMd || preferDrawerMode;
-    const isDrawerOpened = false; // close Drawer anyway
-
-    this.setState({ isDrawerMode, isDrawerOpened });
-  }
-
-  /**
-   * Set color scheme preference by user
-   * @param {boolean} isDarkMode
-   */
-  async setColorSchemePreference(isDarkMode) {
-    await this.setState({ preferDarkModeByUser: isDarkMode });
-
-    // store settings to localStorage
-    const { localStorage } = window;
-    if (isDarkMode == null) {
-      delete localStorage.removeItem('preferDarkModeByUser');
-    }
-    else {
-      localStorage.preferDarkModeByUser = isDarkMode;
-    }
-
-    this.applyColorScheme();
-  }
-
-  /**
-   * Apply color scheme as 'dark' attribute of <html></html>
-   */
-  applyColorScheme() {
-    const { preferDarkModeByMediaQuery, preferDarkModeByUser } = this.state;
-
-    let isDarkMode = preferDarkModeByMediaQuery;
-    if (preferDarkModeByUser != null) {
-      isDarkMode = preferDarkModeByUser;
-    }
-
-    // switch to dark mode
-    if (isDarkMode) {
-      document.documentElement.removeAttribute('light');
-      document.documentElement.setAttribute('dark', 'true');
-    }
-    // switch to light mode
-    else {
-      document.documentElement.setAttribute('light', 'true');
-      document.documentElement.removeAttribute('dark');
-    }
   }
 
   async apiGet(path, params) {
@@ -531,14 +385,6 @@ export default class AppContainer extends Container {
     }
 
     return this.apiv3Request('delete', path, { params });
-  }
-
-  openPageCreateModal() {
-    this.setState({ isPageCreateModalShown: true });
-  }
-
-  closePageCreateModal() {
-    this.setState({ isPageCreateModalShown: false });
   }
 
 }
