@@ -23,10 +23,10 @@ export default class Hotkeys extends React.Component {
 
   deleteRender(instance) {
     const viewCopy = this.state.view.slice();
-    viewCopy.splice(instance.supportClassesIndex,1);
+    viewCopy.splice(instance.supportClassesIndex, 1);
     this.setState({
-      view:viewCopy,
-    })
+      view: viewCopy,
+    });
   }
 
   // this function generates keymap depending on what keys were selected in this.hotkeyCommand
@@ -52,7 +52,7 @@ export default class Hotkeys extends React.Component {
     });
     const that = this;
     viewDetermined = viewDetermined.map((value) => {
-      return value.getComponent((that.state.view.length),this.deleteRender);
+      return value.getComponent((that.state.view.length), this.deleteRender);
     });
     this.setState({
       view: this.state.view.concat(viewDetermined).flat(),
@@ -60,7 +60,6 @@ export default class Hotkeys extends React.Component {
   }
 
   render() {
-    console.log(this.state.view);
     return (
       <React.Fragment>
         <HotkeysDetector onDetected={stroke => this.onDetected(stroke)} keymap={this.keymap} hotkeyList={this.hotkeyList} />

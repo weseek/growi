@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 import {
   Modal, ModalBody,
@@ -33,7 +34,7 @@ export default class StaffCredit extends React.Component {
   }
 
   static getComponent(supportClassesIndex, deleteRender) {
-    return <StaffCredit supportClassesIndex={supportClassesIndex} deleteRender={deleteRender}/>;
+    return <StaffCredit supportClassesIndex={supportClassesIndex} deleteRender={deleteRender} />;
   }
 
   deleteCredit() {
@@ -42,7 +43,7 @@ export default class StaffCredit extends React.Component {
     }
     setTimeout(() => {
       this.props.deleteRender(this);
-    },200)
+    }, 200);
   }
 
   renderMembers(memberGroup, keyPrefix) {
@@ -121,3 +122,7 @@ export default class StaffCredit extends React.Component {
   }
 
 }
+StaffCredit.propTypes = {
+  supportClassesIndex: PropTypes.func.isRequired,
+  deleteRender: PropTypes.number.isRequired,
+};
