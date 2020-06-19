@@ -50,8 +50,15 @@ describe('ShareLink', () => {
     test('share link is found, but it is expired', async() => {
 
       jest.spyOn(ShareLink, 'findOne').mockImplementation(() => {
-        return { populate: () => { return { _id: '5ed11fcc60ec00c9072f7490', relatedPage: {}, expiredAt: '2020-06-17T10:09:29.088Z' } } };
+        return {
+          populate: () => {
+            return {
+              _id: '5ed11fcc60ec00c9072f7490', relatedPage: {}, expiredAt: '2020-06-17T10:09:29.088Z', isExpired: () => { return true },
+            };
+          },
+        };
       });
+
       const response = await Page.showSharedPage(req, res);
 
       expect(response).toEqual('layout-growi/expired_shared_page');
@@ -60,7 +67,13 @@ describe('ShareLink', () => {
     test('share link is found, and it has the page you can see', async() => {
 
       jest.spyOn(ShareLink, 'findOne').mockImplementation(() => {
-        return { populate: () => { return { _id: '5ed11fcc60ec00c9072f7490', relatedPage: {}, expiredAt: '2100-06-17T10:09:29.088Z' } } };
+        return {
+          populate: () => {
+            return {
+              _id: '5ed11fcc60ec00c9072f7490', relatedPage: {}, expiredAt: '2100-06-17T10:09:29.088Z', isExpired: () => { return false },
+            };
+          },
+        };
       });
       const response = await Page.showSharedPage(req, res);
 
