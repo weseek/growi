@@ -26,10 +26,19 @@ const ArchiveCreateModal = (props) => {
     setIsSubordinatedPageDownload(!isSubordinatedPageDownload);
   }
 
+  function closeModalHandler() {
+    if (props.onClose == null) {
+      return;
+    }
+
+    props.onClose();
+
+  }
+
 
   return (
-    <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose}>
-      <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-white">
+    <Modal size="lg" isOpen={props.isOpen} toggle={closeModalHandler}>
+      <ModalHeader tag="h4" toggle={closeModalHandler} className="bg-primary text-white">
         {t('Create Archive Page')}
       </ModalHeader>
       <ModalBody>
@@ -79,7 +88,7 @@ const ArchiveCreateModal = (props) => {
             onChange={changeIsSubordinatedPageDownloadHandler}
           />
           <label className="custom-control-label" htmlFor="subordinatedFile">
-            {'Include Subordinated Page'}
+            {t('Include Subordinated Page')}
           </label>
         </div>
       </ModalBody>

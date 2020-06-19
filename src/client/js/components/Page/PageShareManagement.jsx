@@ -30,33 +30,26 @@ const PageShareManagement = (props) => {
   }
 
   function closeArchiveCreateModalHandler() {
-
     setIsArchiveCreateModalShown(false);
-
-    if (setIsArchiveCreateModalShown == null) {
-      return null;
-    }
-
   }
 
 
   function renderModals() {
     return (
-      <OutsideShareLinkModal
-        isOpen={isOutsideShareLinkModalShown}
-        onClose={closeOutsideShareLinkModalHandler}
-      />
+      <>
+        <OutsideShareLinkModal
+          isOpen={isOutsideShareLinkModalShown}
+          onClose={closeOutsideShareLinkModalHandler}
+        />
+
+        <ArchiveCreateModal
+          isOpen={isArchiveCreateModalShown}
+          onClose={closeArchiveCreateModalHandler}
+        />
+      </>
     );
   }
 
-  function renderArchiveModals() {
-    return (
-      <ArchiveCreateModal
-        isOpen={isArchiveCreateModalShown}
-        onClose={closeArchiveCreateModalHandler}
-      />
-    );
-  }
 
   function renderCurrentUser() {
     return (
@@ -104,7 +97,6 @@ const PageShareManagement = (props) => {
 
       </div>
       {renderModals()}
-      {renderArchiveModals()}
     </>
   );
 
