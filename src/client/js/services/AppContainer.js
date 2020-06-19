@@ -44,7 +44,7 @@ export default class AppContainer extends Container {
 
     const userlang = body.dataset.userlang;
     this.i18n = i18nFactory(userlang);
-
+    this.locales = this.i18n.options.resources;
     this.containerInstances = {};
     this.componentInstances = {};
     this.rendererInstances = {};
