@@ -1,6 +1,10 @@
 # CHANGES
 
-## v4.0.7-RC
+## v4.0.8-RC
+
+* 
+
+## v4.0.7
 
 * Feature: Set request timeout for Elasticsearch with env var `ELASTICSEARCH_REQUEST_TIMEOUT`
 * Improvement: Apply styles faster on booting client
