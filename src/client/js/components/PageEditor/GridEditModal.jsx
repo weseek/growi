@@ -33,7 +33,7 @@ export default class GridEditModal extends React.PureComponent {
   render() {
 
     return (
-      <Modal isOpen={this.state.show} toggle={this.cancel}>
+      <Modal isOpen={this.state.show} toggle={this.cancel} size="lg">
         <ModalHeader tag="h4" toggle={this.cancel} className="bg-primary text-light">
           Edit Grid
         </ModalHeader>
