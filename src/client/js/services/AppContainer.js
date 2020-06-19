@@ -11,7 +11,6 @@ import GrowiRenderer from '../util/GrowiRenderer';
 import {
   mediaQueryListForDarkMode,
   applyColorScheme,
-  savePreferenceByUser,
 } from '../util/color-scheme';
 import Apiv1ErrorHandler from '../util/apiv1ErrorHandler';
 
@@ -37,6 +36,8 @@ export default class AppContainer extends Container {
     super();
 
     this.state = {
+      preferDarkModeByMediaQuery: false,
+
       // stetes for contents
       recentlyUpdatedPages: [],
     };
@@ -310,16 +311,6 @@ export default class AppContainer extends Container {
         break;
     }
     targetComponent.launchDrawioModal(beginLineNumber, endLineNumber);
-  }
-
-  /**
-   * Set color scheme preference by user
-   * @param {boolean} isDarkMode
-   */
-  async setColorSchemePreference(isDarkMode) {
-    this.setState({ preferDarkModeByUser: isDarkMode });
-    savePreferenceByUser(isDarkMode);
-    applyColorScheme();
   }
 
   async apiGet(path, params) {
