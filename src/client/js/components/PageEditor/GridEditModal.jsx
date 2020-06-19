@@ -40,17 +40,17 @@ export default class GridEditModal extends React.PureComponent {
         <ModalBody>
           <div className="container">
             <div className="row">
-              <div className="col-1">test</div>
-              <div className="col-1">test</div>
-              <div className="col-1">test</div>
-              <div className="col-1">test</div>
-              <div className="col-1">test</div>
-              <div className="col-1">test</div>
-              <div className="col-1">test</div>
-              <div className="col-1">test</div>
-              <div className="col-1">test</div>
-              <div className="col-1">test</div>
-              <div className="col-1">test</div>
+              <div className="col-1 bg-light mx-1">test</div>
+              <div className="col-1 bg-light mx-1">test</div>
+              <div className="col-1 bg-light mx-1">test</div>
+              <div className="col-1 bg-light mx-1">test</div>
+              <div className="col-1 bg-light mx-1">test</div>
+              <div className="col-1 bg-light mx-1">test</div>
+              <div className="col-1 bg-light mx-1">test</div>
+              <div className="col-1 bg-light mx-1">test</div>
+              <div className="col-1 bg-light mx-1">test</div>
+              <div className="col-1 bg-light mx-1">test</div>
+              <div className="col-1 bg-light mx-1">test</div>
             </div>
           </div>
         </ModalBody>
