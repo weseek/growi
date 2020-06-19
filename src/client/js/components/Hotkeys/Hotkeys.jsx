@@ -21,7 +21,7 @@ export default class Hotkeys extends React.Component {
     this.keymapSet = this.keymapSet.bind(this);
   }
 
-  // delete the instance in state.view 
+  // delete the instance in state.view
   deleteRender(instance) {
     const viewCopy = this.state.view.slice();
     viewCopy.splice(instance.supportClassesIndex, 1);

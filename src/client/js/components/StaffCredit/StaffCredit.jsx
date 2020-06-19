@@ -5,7 +5,6 @@ import {
   Modal, ModalBody,
 } from 'reactstrap';
 import contributors from './Contributor';
-import Hotkeys from '../Hotkeys/Hotkeys';
 
 /**
  * Page staff credit component
