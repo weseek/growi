@@ -5,6 +5,7 @@ import {
   Modal, ModalBody,
 } from 'reactstrap';
 import contributors from './Contributor';
+import Hotkeys from '../Hotkeys/Hotkeys';
 
 /**
  * Page staff credit component
@@ -37,6 +38,7 @@ export default class StaffCredit extends React.Component {
     return <StaffCredit supportClassesIndex={supportClassesIndex} deleteRender={deleteRender} />;
   }
 
+  // to delete the staffCredit and to inform that to Hotkeys.jsx
   deleteCredit() {
     if (this.state.isShown) {
       this.setState({ isShown: false });
