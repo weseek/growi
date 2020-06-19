@@ -2,7 +2,7 @@ import React from 'react';
 
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 
 import AppContainer from '../services/AppContainer';
@@ -60,8 +60,9 @@ const ShareLinkForm = (props) => {
   );
 };
 
-const ShareLinkFormWrapper = (props) => {
-  return createSubscribedElement(ShareLinkForm, props, [AppContainer, PageContainer]);
-};
+/**
+ * Wrapper component for using unstated
+ */
+const ShareLinkFormWrapper = withUnstatedContainers(ShareLinkForm, [AppContainer, PageContainer]);
 
 export default withTranslation()(ShareLinkFormWrapper);
