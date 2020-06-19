@@ -24,7 +24,7 @@ export default (userlang) => {
       resources,
       load: 'currentOnly',
 
-      fallbackLng: 'en-US',
+      fallbackLng: 'en_US',
       detection: {
         order: ['userSettingDetector', 'querystring', 'localStorage'],
       },

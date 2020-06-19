@@ -11,13 +11,13 @@ class InstallerForm extends React.Component {
 
     this.state = {
       isValidUserName: true,
-      checkedBtn: 'en-US',
+      checkedBtn: 'en_US',
     };
     this.checkUserName = this.checkUserName.bind(this);
   }
 
   componentWillMount() {
-    this.changeLanguage('en-US');
+    this.changeLanguage('en_US');
   }
 
   checkUserName(event) {

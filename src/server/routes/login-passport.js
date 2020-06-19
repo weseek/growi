@@ -253,7 +253,7 @@ module.exports = function(crowi, app) {
     let name;
 
     switch (globalLang) {
-      case 'en-US':
+      case 'en_US':
         name = `${response.name.givenName} ${response.name.familyName}`;
         break;
       case 'ja':

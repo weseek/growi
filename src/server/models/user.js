@@ -23,7 +23,7 @@ module.exports = function(crowi) {
   const IMAGE_POPULATION = { path: 'imageAttachment', select: 'filePathProxied' };
 
   const LANG_EN = 'en';
-  const LANG_EN_US = 'en-US';
+  const LANG_EN_US = 'en_US';
   const LANG_EN_GB = 'en-GB';
   const LANG_JA = 'ja';
 
@@ -632,7 +632,7 @@ module.exports = function(crowi) {
         return mailer.send({
           to: user.email,
           subject: `Invitation to ${appTitle}`,
-          template: path.join(crowi.localeDir, 'en-US/admin/userInvitation.txt'),
+          template: path.join(crowi.localeDir, 'en_US/admin/userInvitation.txt'),
           vars: {
             email: user.email,
             password: user.password,
