@@ -44,7 +44,7 @@ class InstallerForm extends React.Component {
       : <span><i className="icon-fw icon-ban" />{ this.props.t('installer.unavaliable_user_id') }</span>;
 
     const checkedBtn = this.state.checkedBtn;
-    const {i18n}=this.props;
+    const { i18n } = this.props;
     const locales = i18n.options.resources;
     const languages = Object.keys(locales);
 
@@ -62,19 +62,19 @@ class InstallerForm extends React.Component {
           <form role="form" action="/installer" method="post" id="register-form" className="col-md-12">
             <div className="form-group text-center">
               {
-                languages.map(lan=>(
+                languages.map(lan => (
                   <div key={lan} className="custom-control custom-radio custom-control-inline">
                     <input
                       type="radio"
                       className="custom-control-input"
-                      id={'register-form-check-'+lan}
+                      id={`register-form-check-${lan}`}
                       name="registerForm[app:globalLang]"
                       value={lan}
                       checked={checkedBtn === lan}
                       onChange={(e) => { if (e.target.checked) { this.changeLanguage(lan) } }}
                     />
-                    <label className="custom-control-label" htmlFor={'register-form-check-'+lan}>
-                      {locales[lan]["_conf"]["name"]}
+                    <label className="custom-control-label" htmlFor={`register-form-check-${lan}`}>
+                      {locales[lan]._conf.name}
                     </label>
                   </div>
                 ))

@@ -26,7 +26,8 @@ class AppSetting extends React.Component {
     try {
       await adminAppContainer.updateAppSettingHandler();
       toastSuccess(t('toaster.update_successed', { target: t('App Settings') }));
-    } catch (err) {
+    }
+    catch (err) {
       toastError(err);
       logger.error(err);
     }
@@ -56,7 +57,10 @@ class AppSetting extends React.Component {
 
         <div className="row form-group mb-5">
           <label
-            className="text-left text-md-right col-md-3 col-form-label">{t('admin:app_setting.confidential_name')}</label>
+            className="text-left text-md-right col-md-3 col-form-label"
+          >
+            {t('admin:app_setting.confidential_name')}
+          </label>
           <div className="col-md-6">
             <input
               className="form-control"
@@ -73,14 +77,17 @@ class AppSetting extends React.Component {
 
         <div className="row form-group mb-5">
           <label
-            className="text-left text-md-right col-md-3 col-form-label">{t('admin:app_setting.default_language')}</label>
+            className="text-left text-md-right col-md-3 col-form-label"
+          >
+            {t('admin:app_setting.default_language')}
+          </label>
           <div className="col-md-6">
             {
-              languages.map((lan)=>(
+              languages.map(lan => (
                 <div key={lan} className="custom-control custom-radio custom-control-inline">
                   <input
                     type="radio"
-                    id={'radioLang' + lan}
+                    id={`radioLang${lan}`}
                     className="custom-control-input"
                     name="globalLang"
                     value={lan}
@@ -89,7 +96,7 @@ class AppSetting extends React.Component {
                       adminAppContainer.changeGlobalLang(e.target.value);
                     }}
                   />
-                  <label className="custom-control-label" htmlFor={'radioLang' + lan}>{locales[lan]["_conf"]["name"]}</label>
+                  <label className="custom-control-label" htmlFor={`radioLang${lan}`}>{locales[lan]._conf.name}</label>
                 </div>
               ))
             }
@@ -98,7 +105,10 @@ class AppSetting extends React.Component {
 
         <div className="row form-group mb-5">
           <label
-            className="text-left text-md-right col-md-3 col-form-label">{t('admin:app_setting.file_uploading')}</label>
+            className="text-left text-md-right col-md-3 col-form-label"
+          >
+            {t('admin:app_setting.file_uploading')}
+          </label>
           <div className="col-md-6">
             <div className="custom-control custom-checkbox custom-checkbox-info">
               <input
@@ -111,8 +121,12 @@ class AppSetting extends React.Component {
                   adminAppContainer.changeFileUpload(e.target.checked);
                 }}
               />
-              <label className="custom-control-label"
-                     htmlFor="cbFileUpload">{t('admin:app_setting.enable_files_except_image')}</label>
+              <label
+                className="custom-control-label"
+                htmlFor="cbFileUpload"
+              >
+                {t('admin:app_setting.enable_files_except_image')}
+              </label>
             </div>
 
             <p className="form-text text-muted">
@@ -121,7 +135,7 @@ class AppSetting extends React.Component {
           </div>
         </div>
 
-        <AdminUpdateButtonRow onClick={this.submitHandler} disabled={adminAppContainer.state.retrieveError != null}/>
+        <AdminUpdateButtonRow onClick={this.submitHandler} disabled={adminAppContainer.state.retrieveError != null} />
       </React.Fragment>
     );
   }
