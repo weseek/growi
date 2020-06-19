@@ -109,7 +109,7 @@ class OutsideShareLinkModal extends React.Component {
               >
                 {this.state.isOpenShareLinkForm ? 'Close' : 'New'}
               </button>
-              {this.state.isOpenShareLinkForm && <ShareLinkForm onCloseForm={this.toggleShareLinkFormHandler} retrieveShareLinks={this.retrieveShareLinks} />}
+              {this.state.isOpenShareLinkForm && <ShareLinkForm onCloseForm={this.toggleShareLinkFormHandler} />}
             </div>
           </div>
         </ModalBody>

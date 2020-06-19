@@ -104,13 +104,6 @@ class ShareLinkForm extends React.Component {
     onCloseForm();
   }
 
-  retrieveShareLinks() {
-    if (this.props.retrieveShareLinks == null) {
-      return;
-    }
-    this.props.retrieveShareLinks();
-  }
-
   async handleIssueShareLink() {
     const { t, appContainer, pageContainer } = this.props;
     const { pageId } = pageContainer.state;
@@ -128,7 +121,6 @@ class ShareLinkForm extends React.Component {
     try {
       await appContainer.apiv3Post('/share-links/', { relatedPage: pageId, expiredAt, description });
       this.closeForm();
-      this.retrieveShareLinks();
       toastSuccess(t('toaster.issue_share_link'));
     }
     catch (err) {
@@ -259,7 +251,6 @@ ShareLinkForm.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   onCloseForm: PropTypes.func,
-  retrieveShareLinks: PropTypes.func,
 };
 
 export default withTranslation()(ShareLinkFormWrapper);
