@@ -5,11 +5,11 @@ autoReap.options.reapOnError = true; // continue reaping the file even if an err
 
 module.exports = function(crowi, app) {
   const middlewares = require('../util/middlewares')(crowi, app);
-  const accessTokenParser = require('../middleware/access-token-parser')(crowi);
-  const loginRequiredStrictly = require('../middleware/login-required')(crowi);
-  const loginRequired = require('../middleware/login-required')(crowi, true);
-  const adminRequired = require('../middleware/admin-required')(crowi);
-  const csrf = require('../middleware/csrf')(crowi);
+  const accessTokenParser = require('../middlewares/access-token-parser')(crowi);
+  const loginRequiredStrictly = require('../middlewares/login-required')(crowi);
+  const loginRequired = require('../middlewares/login-required')(crowi, true);
+  const adminRequired = require('../middlewares/admin-required')(crowi);
+  const csrf = require('../middlewares/csrf')(crowi);
 
   const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
   const form = require('../form');

@@ -1,5 +1,5 @@
 // don't add any more middlewares to this file.
-// all new middlewares should be an independent file under /server/routes/middlewares
+// all new middlewares should be an independent file under /server/middlewares
 // eslint-disable-next-line no-unused-vars
 const logger = require('@alias/logger')('growi:lib:middlewares');
 
