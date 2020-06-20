@@ -5,8 +5,12 @@ const pathUtils = require('@src/util/path-utils');
 
 describe('page-utils', () => {
   describe('.normalizePath', () => {
-    test('should rurn root path with empty string', () => {
+    test('should return root path with empty string', () => {
       expect(pathUtils.normalizePath('')).toBe('/');
+    });
+
+    test('should return the root page as is', () => {
+      expect(pathUtils.normalizePath('/')).toBe('/');
     });
 
     test('should add heading slash', () => {

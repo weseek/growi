@@ -90,6 +90,10 @@ function removeTrailingSlash(path) {
  * @memberof pathUtils
  */
 function normalizePath(path) {
+  if (path === '' || path === '/') {
+    return '/';
+  }
+
   const match = matchSlashes(path);
   if (match == null) {
     return '/';
