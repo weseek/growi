@@ -2,15 +2,15 @@ import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 
-import resources from '@alias/locales';
+import resources from '@root/resource/locales';
 
-export default (userlang) => {
+export default (userLocaleId) => {
   // setup LanguageDetector
   const langDetector = new LanguageDetector();
   langDetector.addDetector({
     name: 'userSettingDetector',
     lookup(options) {
-      return userlang;
+      return userLocaleId;
     },
     cacheUserlanguage(lng, options) {
     },
