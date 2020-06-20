@@ -10,7 +10,7 @@ module.exports = {
       return null;
     }
 
-    // convert alias to id for backward compatibility -- 2020.06.21 Yuki Takei
+    // convert locale alias to corrent locale id for backward compatibility -- 2020.06.21 Yuki Takei
     const { userLang } = req.user;
     const convertedLocaleId = aliasToIdMap[userLang];
 
