@@ -21,6 +21,7 @@
   // sticky
   position: sticky;
   top: $grw-navbar-border-width;
+  z-index: $zindex-sticky;
 
   .ak-navigation-resize-button {
     // locate to the center of screen
