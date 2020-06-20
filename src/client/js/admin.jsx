@@ -5,6 +5,8 @@ import { I18nextProvider } from 'react-i18next';
 
 import loggerFactory from '@alias/logger';
 
+import ErrorBoundary from './components/ErrorBoudary';
+
 import AdminHome from './components/Admin/AdminHome/AdminHome';
 import UserGroupDetailPage from './components/Admin/UserGroupDetail/UserGroupDetailPage';
 import NotificationSetting from './components/Admin/Notification/NotificationSetting';
@@ -20,6 +22,8 @@ import ImportDataPage from './components/Admin/ImportDataPage';
 import ExportArchiveDataPage from './components/Admin/ExportArchiveDataPage';
 import FullTextSearchManagement from './components/Admin/FullTextSearchManagement';
 import AdminNavigation from './components/Admin/Common/AdminNavigation';
+
+import NavigationContainer from './services/NavigationContainer';
 
 import AdminHomeContainer from './services/AdminHomeContainer';
 import AdminCustomizeContainer from './services/AdminCustomizeContainer';
@@ -40,14 +44,17 @@ import AdminGitHubSecurityContainer from './services/AdminGitHubSecurityContaine
 import AdminTwitterSecurityContainer from './services/AdminTwitterSecurityContainer';
 import AdminNotificationContainer from './services/AdminNotificationContainer';
 
-import { appContainer, componentMappings } from './bootstrap';
+import { appContainer, componentMappings } from './base';
 
 const logger = loggerFactory('growi:admin');
+
+appContainer.initContents();
 
 const { i18n } = appContainer;
 const websocketContainer = appContainer.getContainer('WebsocketContainer');
 
 // create unstated container instance
+const navigationContainer = new NavigationContainer(appContainer);
 const adminAppContainer = new AdminAppContainer(appContainer);
 const adminHomeContainer = new AdminHomeContainer(appContainer);
 const adminCustomizeContainer = new AdminCustomizeContainer(appContainer);
@@ -59,6 +66,7 @@ const adminUserGroupDetailContainer = new AdminUserGroupDetailContainer(appConta
 const injectableContainers = [
   appContainer,
   websocketContainer,
+  navigationContainer,
   adminAppContainer,
   adminHomeContainer,
   adminCustomizeContainer,
@@ -100,9 +108,11 @@ Object.keys(componentMappings).forEach((key) => {
   if (elem) {
     ReactDOM.render(
       <I18nextProvider i18n={i18n}>
-        <Provider inject={injectableContainers}>
-          {componentMappings[key]}
-        </Provider>
+        <ErrorBoundary>
+          <Provider inject={injectableContainers}>
+            {componentMappings[key]}
+          </Provider>
+        </ErrorBoundary>
       </I18nextProvider>,
       elem,
     );
@@ -126,11 +136,13 @@ if (adminSecuritySettingElem != null) {
     adminOidcSecurityContainer, adminBasicSecurityContainer, adminGoogleSecurityContainer, adminGitHubSecurityContainer, adminTwitterSecurityContainer,
   ];
   ReactDOM.render(
-    <Provider inject={[...injectableContainers, ...adminSecurityContainers]}>
-      <I18nextProvider i18n={i18n}>
-        <SecurityManagement />
-      </I18nextProvider>
-    </Provider>,
+    <I18nextProvider i18n={i18n}>
+      <ErrorBoundary>
+        <Provider inject={[...injectableContainers, ...adminSecurityContainers]}>
+          <SecurityManagement />
+        </Provider>
+      </ErrorBoundary>
+    </I18nextProvider>,
     adminSecuritySettingElem,
   );
 }

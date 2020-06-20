@@ -7,7 +7,8 @@ class SearchService {
     this.crowi = crowi;
     this.configManager = crowi.configManager;
 
-    this.isErrorOccured = null;
+    this.isErrorOccuredOnHealthcheck = null;
+    this.isErrorOccuredOnSearching = null;
 
     try {
       this.delegator = this.initDelegator();
@@ -27,7 +28,7 @@ class SearchService {
   }
 
   get isReachable() {
-    return this.isConfigured && !this.isErrorOccured;
+    return this.isConfigured && !this.isErrorOccuredOnHealthcheck && !this.isErrorOccuredOnSearching;
   }
 
   get isSearchboxEnabled() {
@@ -72,7 +73,8 @@ class SearchService {
 
   async initClient() {
     // reset error flag
-    this.isErrorOccured = false;
+    this.isErrorOccuredOnHealthcheck = false;
+    this.isErrorOccuredOnSearching = false;
 
     return this.delegator.initClient();
   }
@@ -82,8 +84,23 @@ class SearchService {
       return await this.delegator.getInfo();
     }
     catch (err) {
-      // switch error flag, `isReachable` to be `false`
-      this.isErrorOccured = true;
+      logger.error(err);
+      throw err;
+    }
+  }
+
+  async getInfoForHealth() {
+    try {
+      const result = await this.delegator.getInfoForHealth();
+
+      this.isErrorOccuredOnHealthcheck = false;
+      return result;
+    }
+    catch (err) {
+      logger.error(err);
+
+      // switch error flag, `isErrorOccuredOnHealthcheck` to be `false`
+      this.isErrorOccuredOnHealthcheck = true;
       throw err;
     }
   }
@@ -105,8 +122,10 @@ class SearchService {
       return await this.delegator.searchKeyword(keyword, user, userGroups, searchOpts);
     }
     catch (err) {
+      logger.error(err);
+
       // switch error flag, `isReachable` to be `false`
-      this.isErrorOccured = true;
+      this.isErrorOccuredOnSearching = true;
       throw err;
     }
   }

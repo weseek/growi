@@ -2,6 +2,7 @@
 /* eslint-disable no-return-await */
 
 /* eslint-disable no-use-before-define */
+const logger = require('@alias/logger')('growi:models:page');
 
 const debug = require('debug')('growi:models:page');
 const nodePath = require('path');
@@ -13,6 +14,7 @@ const differenceInYears = require('date-fns/differenceInYears');
 
 const { pathUtils } = require('growi-commons');
 const templateChecker = require('@commons/util/template-checker');
+const { isTopPage } = require('@commons/util/path-utils');
 const escapeStringRegexp = require('escape-string-regexp');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
@@ -108,14 +110,14 @@ const addSlashOfEnd = (path) => {
  * @param {string} userPublicFields string to set to select
  */
 /* eslint-disable object-curly-newline, object-property-newline */
-const populateDataToShowRevision = (page, userPublicFields, imagePopulation) => {
+const populateDataToShowRevision = (page, userPublicFields) => {
   return page
     .populate([
-      { path: 'lastUpdateUser', model: 'User', select: userPublicFields, populate: imagePopulation },
-      { path: 'creator', model: 'User', select: userPublicFields, populate: imagePopulation },
+      { path: 'lastUpdateUser', model: 'User', select: userPublicFields },
+      { path: 'creator', model: 'User', select: userPublicFields },
       { path: 'grantedGroup', model: 'UserGroup' },
       { path: 'revision', model: 'Revision', populate: {
-        path: 'author', model: 'User', select: userPublicFields, populate: imagePopulation,
+        path: 'author', model: 'User', select: userPublicFields,
       } },
     ]);
 };
@@ -153,30 +155,25 @@ class PageQueryBuilder {
     // eslint-disable-next-line no-param-reassign
     path = addSlashOfEnd(path);
 
-    // add option to escape the regex strings
-    const combinedOption = Object.assign({ isRegExpEscapedFromPath: true }, option);
-
-    this.addConditionToListByStartWith(path, combinedOption);
-
+    this.addConditionToListByStartWith(path, option);
     return this;
   }
 
   /**
    * generate the query to find pages that start with `path`
    *
-   * (GROWI) If 'isRegExpEscapedFromPath' is true, `path` should have `/` at the end
-   *   -> returns '{path}/*' and '{path}' self.
-   * (Crowi) If 'isRegExpEscapedFromPath' is false and `path` has `/` at the end
-   *   -> returns '{path}*'
-   * (Crowi) If 'isRegExpEscapedFromPath' is false and `path` doesn't have `/` at the end
-   *   -> returns '{path}*'
+   * In normal case, returns '{path}/*' and '{path}' self.
+   * If top page, return without doing anything.
    *
    * *option*
-   *   - isRegExpEscapedFromPath -- if true, the regex strings included in `path` is escaped (default: false)
+   *   Left for backward compatibility
    */
   addConditionToListByStartWith(path, option) {
+    // No request is set for the top page
+    if (isTopPage(path)) {
+      return this;
+    }
     const pathCondition = [];
-    const isRegExpEscapedFromPath = option.isRegExpEscapedFromPath || false;
 
     /*
      * 1. add condition for finding the page completely match with `path` w/o last slash
@@ -186,13 +183,10 @@ class PageQueryBuilder {
       pathSlashOmitted = path.substr(0, path.length - 1);
       pathCondition.push({ path: pathSlashOmitted });
     }
-
     /*
      * 2. add decendants
      */
-    const pattern = (isRegExpEscapedFromPath)
-      ? escapeStringRegexp(path) // escape
-      : pathSlashOmitted;
+    const pattern = escapeStringRegexp(path); // escape
 
     let queryReg;
     try {
@@ -203,7 +197,6 @@ class PageQueryBuilder {
       // force to escape
       queryReg = new RegExp(`^${escapeStringRegexp(pattern)}`);
     }
-
     pathCondition.push({ path: queryReg });
 
     this.query = this.query
@@ -263,18 +256,17 @@ class PageQueryBuilder {
     return this;
   }
 
-  populateDataToList(userPublicFields, imagePopulation) {
+  populateDataToList(userPublicFields) {
     this.query = this.query
       .populate({
         path: 'lastUpdateUser',
         select: userPublicFields,
-        populate: imagePopulation,
       });
     return this;
   }
 
-  populateDataToShowRevision(userPublicFields, imagePopulation) {
-    this.query = populateDataToShowRevision(this.query, userPublicFields, imagePopulation);
+  populateDataToShowRevision(userPublicFields) {
+    this.query = populateDataToShowRevision(this.query, userPublicFields);
     return this;
   }
 
@@ -288,14 +280,6 @@ module.exports = function(crowi) {
     pageEvent = crowi.event('page');
     pageEvent.on('create', pageEvent.onCreate);
     pageEvent.on('update', pageEvent.onUpdate);
-  }
-
-  function isPortalPath(path) {
-    if (path.match(/.*\/$/)) {
-      return true;
-    }
-
-    return false;
   }
 
   function validateCrowi() {
@@ -316,8 +300,8 @@ module.exports = function(crowi) {
     return false;
   };
 
-  pageSchema.methods.isPortal = function() {
-    return isPortalPath(this.path);
+  pageSchema.methods.isTopPage = function() {
+    return isTopPage(this.path);
   };
 
   pageSchema.methods.isTemplate = function() {
@@ -351,9 +335,13 @@ module.exports = function(crowi) {
     return true;
   };
 
-  pageSchema.methods.isLiked = function(userData) {
+  pageSchema.methods.isLiked = function(user) {
+    if (user == null || user._id == null) {
+      return false;
+    }
+
     return this.liker.some((likedUserId) => {
-      return likedUserId.toString() === userData._id.toString();
+      return likedUserId.toString() === user._id.toString();
     });
   };
 
@@ -367,12 +355,12 @@ module.exports = function(crowi) {
           if (err) {
             return reject(err);
           }
-          debug('liker updated!', added);
+          logger.debug('liker updated!', added);
           return resolve(data);
         });
       }
       else {
-        this.logger.warn('liker not updated');
+        logger.debug('liker not updated');
         return reject(self);
       }
     }));
@@ -393,7 +381,7 @@ module.exports = function(crowi) {
         });
       }
       else {
-        debug('liker not updated');
+        logger.debug('liker not updated');
         return reject(self);
       }
     }));
@@ -461,7 +449,7 @@ module.exports = function(crowi) {
     validateCrowi();
 
     const User = crowi.model('User');
-    return populateDataToShowRevision(this, User.USER_PUBLIC_FIELDS, User.IMAGE_POPULATION)
+    return populateDataToShowRevision(this, User.USER_PUBLIC_FIELDS)
       .execPopulate();
   };
 
@@ -518,7 +506,7 @@ module.exports = function(crowi) {
     grantLabels[GRANT_RESTRICTED] = 'Anyone with the link'; // リンクを知っている人のみ
     // grantLabels[GRANT_SPECIFIED]  = 'Specified users only'; // 特定ユーザーのみ
     grantLabels[GRANT_USER_GROUP] = 'Only inside the group'; // 特定グループのみ
-    grantLabels[GRANT_OWNER] = 'Just me'; // 自分のみ
+    grantLabels[GRANT_OWNER] = 'Only me'; // 自分のみ
 
     return grantLabels;
   };
@@ -754,7 +742,7 @@ module.exports = function(crowi) {
     const totalCount = await builder.query.exec('count');
 
     // find
-    builder.populateDataToList(User.USER_PUBLIC_FIELDS, User.IMAGE_POPULATION);
+    builder.populateDataToList(User.USER_PUBLIC_FIELDS);
     const pages = await builder.query.exec('find');
 
     const result = {
@@ -797,7 +785,7 @@ module.exports = function(crowi) {
 
     // find
     builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
-    builder.populateDataToList(User.USER_PUBLIC_FIELDS, User.IMAGE_POPULATION);
+    builder.populateDataToList(User.USER_PUBLIC_FIELDS);
     const pages = await builder.query.exec('find');
 
     const result = {
@@ -990,7 +978,7 @@ module.exports = function(crowi) {
 
     let grant = options.grant;
     // force public
-    if (isPortalPath(path)) {
+    if (isTopPage(path)) {
       grant = GRANT_PUBLIC;
     }
 

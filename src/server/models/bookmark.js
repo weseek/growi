@@ -45,10 +45,12 @@ module.exports = function(crowi) {
     const Bookmark = this;
     const User = crowi.model('User');
 
-    return Bookmark.populate(bookmarks, [
-      { path: 'page' },
-      { path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS },
-    ]);
+    return Bookmark.populate(bookmarks, {
+      path: 'page',
+      populate: {
+        path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS,
+      },
+    });
   };
 
   // bookmark チェック用

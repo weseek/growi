@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import Page from '../../PageList/Page';
 import PaginationWrapper from '../../PaginationWrapper';
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import AdminUserGroupDetailContainer from '../../../services/AdminUserGroupDetailContainer';
 import { toastError } from '../../../util/apiNotification';
@@ -55,8 +55,8 @@ class UserGroupPageList extends React.Component {
 
     return (
       <Fragment>
-        <ul className="page-list-ul page-list-ul-flat">
-          {this.state.currentPages.map((page) => { return <Page key={page._id} page={page} /> })}
+        <ul className="page-list-ul page-list-ul-flat mb-3">
+          {this.state.currentPages.map(page => <li key={page._id}><Page page={page} /></li>)}
         </ul>
         {adminUserGroupDetailContainer.state.relatedPages.length === 0 ? <p>{t('admin:user_group_management.no_pages')}</p> : null}
         <PaginationWrapper
@@ -80,8 +80,6 @@ UserGroupPageList.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const UserGroupPageListWrapper = (props) => {
-  return createSubscribedElement(UserGroupPageList, props, [AppContainer, AdminUserGroupDetailContainer]);
-};
+const UserGroupPageListWrapper = withUnstatedContainers(UserGroupPageList, [AppContainer, AdminUserGroupDetailContainer]);
 
 export default withTranslation()(UserGroupPageListWrapper);

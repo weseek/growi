@@ -354,7 +354,7 @@ module.exports = function(crowi, app) {
 
     let attachments = await Attachment.find({ page: id })
       .sort({ updatedAt: 1 })
-      .populate({ path: 'creator', select: User.USER_PUBLIC_FIELDS, populate: User.IMAGE_POPULATION });
+      .populate({ path: 'creator', select: User.USER_PUBLIC_FIELDS });
 
     attachments = attachments.map((attachment) => {
       return attachment.toObject({ virtuals: true });
@@ -485,7 +485,7 @@ module.exports = function(crowi, app) {
    */
   api.add = async function(req, res) {
     let pageId = req.body.page_id || null;
-    const pagePath = decodeURIComponent(req.body.path) || null;
+    const pagePath = req.body.path || null;
     let pageCreated = false;
 
     // check params

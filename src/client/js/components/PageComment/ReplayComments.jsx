@@ -1,15 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Button from 'react-bootstrap/es/Button';
-import Collapse from 'react-bootstrap/es/Collapse';
+import { Collapse } from 'reactstrap';
 
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 
 import Comment from './Comment';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 class ReplayComments extends React.PureComponent {
 
@@ -20,16 +19,16 @@ class ReplayComments extends React.PureComponent {
       isOlderRepliesShown: false,
     };
 
-    this.toggleIsOlderRepliesShown = this.toggleIsOlderRepliesShown.bind(this);
+    this.toggleOlderReplies = this.toggleOlderReplies.bind(this);
   }
 
-  toggleIsOlderRepliesShown() {
+  toggleOlderReplies() {
     this.setState({ isOlderRepliesShown: !this.state.isOlderRepliesShown });
   }
 
   renderReply(reply) {
     return (
-      <div key={reply._id} className="page-comment-reply">
+      <div key={reply._id} className="page-comment-reply ml-4 ml-sm-5 mr-3">
         <Comment
           comment={reply}
           deleteBtnClicked={this.props.deleteBtnClicked}
@@ -41,15 +40,8 @@ class ReplayComments extends React.PureComponent {
 
   render() {
 
-    const layoutType = this.props.appContainer.getConfig().layoutType;
-    const isBaloonStyle = layoutType.match(/crowi-plus|growi|kibela/);
-
     const isAllReplyShown = this.props.appContainer.getConfig().isAllReplyShown || false;
-
-    let replyList = this.props.replyList;
-    if (!isBaloonStyle) {
-      replyList = replyList.slice().reverse();
-    }
+    const replyList = this.props.replyList;
 
     if (isAllReplyShown) {
       return (
@@ -83,17 +75,17 @@ class ReplayComments extends React.PureComponent {
       <React.Fragment>
         {areThereHiddenReplies && (
           <div className="page-comments-hidden-replies">
-            <Collapse in={this.state.isOlderRepliesShown}>
+            <Collapse isOpen={this.state.isOlderRepliesShown}>
               <div>{hiddenElements}</div>
             </Collapse>
             <div className="text-center">
-              <Button
-                bsStyle="link"
-                className="page-comments-list-toggle-older"
-                onClick={this.toggleIsOlderRepliesShown}
+              <button
+                type="button"
+                className="btn btn-link"
+                onClick={this.toggleOlderReplies}
               >
                 {toggleButtonIcon} {toggleButtonLabel}
-              </Button>
+              </button>
             </div>
           </div>
         )}
@@ -108,9 +100,7 @@ class ReplayComments extends React.PureComponent {
 /**
  * Wrapper component for using unstated
  */
-const ReplayCommentsWrapper = (props) => {
-  return createSubscribedElement(ReplayComments, props, [AppContainer, PageContainer]);
-};
+const ReplayCommentsWrapper = withUnstatedContainers(ReplayComments, [AppContainer, PageContainer]);
 
 ReplayComments.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,

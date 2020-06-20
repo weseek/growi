@@ -3,7 +3,7 @@ import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import { toastSuccess, toastError } from '../../util/apiNotification';
 
 import AppContainer from '../../services/AppContainer';
@@ -138,12 +138,12 @@ class ImportDataPage extends React.Component {
         <GrowiArchiveSection />
 
         <form
-          className="form-horizontal mt-5"
+          className="mt-5"
           id="importerSettingFormEsa"
           role="form"
         >
           <fieldset>
-            <legend>{t('admin:importer_management.import_from', { from: 'esa.io' })}</legend>
+            <h2 className="admin-setting-header">{t('admin:importer_management.import_from', { from: 'esa.io' })}</h2>
             <table className="table table-bordered table-mapping">
               <thead>
                 <tr>
@@ -171,37 +171,37 @@ class ImportDataPage extends React.Component {
               </tbody>
             </table>
 
-            <div className="well well-sm mb-0 small">
+            <div className="card well mb-0 small">
               <ul>
                 <li>{t('admin:importer_management.page_skip')}</li>
               </ul>
             </div>
 
-            <div className="form-group">
+            <div className="form-group row">
               <input type="password" name="dummypass" style={{ display: 'none', top: '-100px', left: '-100px' }} />
             </div>
 
-            <div className="form-group">
-              <label htmlFor="settingForm[importer:esa:team_name]" className="col-xs-3 control-label">
-                {t('admin:importer_management.esa_settings.team_name')}
+            <div className="form-group row">
+              <label htmlFor="settingForm[importer:esa:team_name]" className="text-left text-md-right col-md-3 col-form-label">
+                { t('admin:importer_management.esa_settings.team_name') }
               </label>
-              <div className="col-xs-6">
+              <div className="col-md-6">
                 <input className="form-control" type="text" name="esaTeamName" value={esaTeamName} onChange={this.handleInputValue} />
               </div>
 
             </div>
 
-            <div className="form-group">
-              <label htmlFor="settingForm[importer:esa:access_token]" className="col-xs-3 control-label">
-                {t('admin:importer_management.esa_settings.access_token')}
+            <div className="form-group row">
+              <label htmlFor="settingForm[importer:esa:access_token]" className="text-left text-md-right col-md-3 col-form-label">
+                { t('admin:importer_management.esa_settings.access_token') }
               </label>
-              <div className="col-xs-6">
+              <div className="col-md-6">
                 <input className="form-control" type="password" name="esaAccessToken" value={esaAccessToken} onChange={this.handleInputValue} />
               </div>
             </div>
 
-            <div className="form-group">
-              <div className="col-xs-offset-3 col-xs-6">
+            <div className="form-group row">
+              <div className="offset-md-3 col-md-6">
                 <input
                   id="testConnectionToEsa"
                   type="button"
@@ -211,12 +211,12 @@ class ImportDataPage extends React.Component {
                   value={t('admin:importer_management.import')}
                 />
                 <input type="button" className="btn btn-secondary" onClick={this.esaHandleSubmitUpdate} value={t('Update')} />
-                <span className="col-xs-offset-1">
+                <span className="offset-0 offset-sm-1">
                   <input
-                    name="Esa"
-                    type="button"
                     id="importFromEsa"
-                    className="btn btn-default btn-esa"
+                    type="button"
+                    name="Esa"
+                    className="btn btn-secondary btn-esa"
                     onClick={this.esaHandleSubmitTest}
                     value={t('admin:importer_management.esa_settings.test_connection')}
                   />
@@ -228,12 +228,12 @@ class ImportDataPage extends React.Component {
         </form>
 
         <form
-          className="form-horizontal mt-5"
+          className="mt-5"
           id="importerSettingFormQiita"
           role="form"
         >
           <fieldset>
-            <legend>{t('admin:importer_management.import_from', { from: 'Qiita:Team' })}</legend>
+            <h2 className="admin-setting-header">{t('admin:importer_management.import_from', { from: 'Qiita:Team' })}</h2>
             <table className="table table-bordered table-mapping">
               <thead>
                 <tr>
@@ -265,36 +265,36 @@ class ImportDataPage extends React.Component {
                 </tr>
               </tbody>
             </table>
-            <div className="well well-sm mb-0 small">
+            <div className="card well mb-0 small">
               <ul>
                 <li>{t('admin:importer_management.page_skip')}</li>
               </ul>
             </div>
 
-            <div className="form-group">
+            <div className="form-group row">
               <input type="password" name="dummypass" style={{ display: 'none', top: '-100px', left: '-100px' }} />
             </div>
-            <div className="form-group">
-              <label htmlFor="settingForm[importer:qiita:team_name]" className="col-xs-3 control-label">
-                {t('admin:importer_management.qiita_settings.team_name')}
+            <div className="form-group row">
+              <label htmlFor="settingForm[importer:qiita:team_name]" className="text-left text-md-right col-md-3 col-form-label">
+                { t('admin:importer_management.qiita_settings.team_name') }
               </label>
-              <div className="col-xs-6">
+              <div className="col-md-6">
                 <input className="form-control" type="text" name="qiitaTeamName" value={qiitaTeamName} onChange={this.handleInputValue} />
               </div>
             </div>
 
-            <div className="form-group">
-              <label htmlFor="settingForm[importer:qiita:access_token]" className="col-xs-3 control-label">
-                {t('admin:importer_management.qiita_settings.access_token')}
+            <div className="form-group row">
+              <label htmlFor="settingForm[importer:qiita:access_token]" className="text-left text-md-right col-md-3 col-form-label">
+                { t('admin:importer_management.qiita_settings.access_token') }
               </label>
-              <div className="col-xs-6">
+              <div className="col-md-6">
                 <input className="form-control" type="password" name="qiitaAccessToken" value={qiitaAccessToken} onChange={this.handleInputValue} />
               </div>
             </div>
 
 
-            <div className="form-group">
-              <div className="col-xs-offset-3 col-xs-6">
+            <div className="form-group row">
+              <div className="offset-md-3 col-md-6">
                 <input
                   id="testConnectionToQiita"
                   type="button"
@@ -304,12 +304,12 @@ class ImportDataPage extends React.Component {
                   value={t('admin:importer_management.import')}
                 />
                 <input type="button" className="btn btn-secondary" onClick={this.qiitaHandleSubmitUpdate} value={t('Update')} />
-                <span className="col-xs-offset-1">
+                <span className="offset-0 offset-sm-1">
                   <input
                     name="Qiita"
                     type="button"
                     id="importFromQiita"
-                    className="btn btn-default btn-qiita"
+                    className="btn btn-secondary btn-qiita"
                     onClick={this.qiitaHandleSubmitTest}
                     value={t('admin:importer_management.qiita_settings.test_connection')}
                   />
@@ -339,9 +339,7 @@ ImportDataPage.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const ImportDataPageWrapper = (props) => {
-  return createSubscribedElement(ImportDataPage, props, [AppContainer]);
-};
+const ImportDataPageWrapper = withUnstatedContainers(ImportDataPage, [AppContainer]);
 
 
 export default withTranslation()(ImportDataPageWrapper);

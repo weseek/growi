@@ -20,9 +20,10 @@ module.exports = (options) => {
   return {
     mode: options.mode,
     entry: Object.assign({
+      'js/boot':                      './src/client/js/boot',
       'js/app':                       './src/client/js/app',
       'js/admin':                     './src/client/js/admin',
-      'js/installer':                 './src/client/js/installer',
+      'js/nologin':                   './src/client/js/nologin',
       'js/legacy':                    './src/client/js/legacy/crowi',
       'js/legacy-presentation':       './src/client/js/legacy/crowi-presentation',
       'js/plugin':                    './src/client/js/plugin',
@@ -34,18 +35,16 @@ module.exports = (options) => {
       'styles/style-presentation':    './src/client/styles/scss/style-presentation.scss',
       // themes
       'styles/theme-default':         './src/client/styles/scss/theme/default.scss',
-      'styles/theme-default-dark':    './src/client/styles/scss/theme/default-dark.scss',
       'styles/theme-nature':          './src/client/styles/scss/theme/nature.scss',
       'styles/theme-mono-blue':       './src/client/styles/scss/theme/mono-blue.scss',
       'styles/theme-future':          './src/client/styles/scss/theme/future.scss',
-      'styles/theme-blue-night':      './src/client/styles/scss/theme/blue-night.scss',
       'styles/theme-kibela':          './src/client/styles/scss/theme/kibela.scss',
       'styles/theme-halloween':       './src/client/styles/scss/theme/halloween.scss',
-      'styles/theme-wood':          './src/client/styles/scss/theme/wood.scss',
       'styles/theme-christmas':          './src/client/styles/scss/theme/christmas.scss',
+      'styles/theme-wood':          './src/client/styles/scss/theme/wood.scss',
       'styles/theme-island':      './src/client/styles/scss/theme/island.scss',
-      'styles/theme-spring':      './src/client/styles/scss/theme/spring.scss',
       'styles/theme-antarctic':      './src/client/styles/scss/theme/antarctic.scss',
+      'styles/theme-spring':         './src/client/styles/scss/theme/spring.scss',
       // styles for external services
       'styles/style-hackmd':          './src/client/styles/hackmd/style.scss',
     }, options.entry || {}), // Merge with env dependent settings
@@ -167,7 +166,10 @@ module.exports = (options) => {
           },
           commons: {
             test: /(src|resource)[\\/].*\.(js|jsx|json)$/,
-            chunks: 'initial',
+            chunks: (chunk) => {
+              // ignore patterns
+              return chunk.name != null && !chunk.name.match(/boot/);
+            },
             name: 'js/commons',
             minChunks: 2,
             minSize: 1,
@@ -177,7 +179,7 @@ module.exports = (options) => {
             test: /node_modules[\\/].*\.(js|jsx|json)$/,
             chunks: (chunk) => {
               // ignore patterns
-              return chunk.name != null && !chunk.name.match(/legacy-presentation|ie11-polyfill|hackmd-/);
+              return chunk.name != null && !chunk.name.match(/boot|legacy-presentation|ie11-polyfill|hackmd-/);
             },
             name: 'js/vendors',
             minSize: 1,

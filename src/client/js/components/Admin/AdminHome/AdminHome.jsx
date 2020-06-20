@@ -5,11 +5,12 @@ import loggerFactory from '@alias/logger';
 
 import { toastError } from '../../../util/apiNotification';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import AdminHomeContainer from '../../../services/AdminHomeContainer';
 import SystemInfomationTable from './SystemInfomationTable';
 import InstalledPluginTable from './InstalledPluginTable';
+import EnvVarsTable from './EnvVarsTable';
 
 const logger = loggerFactory('growi:admin');
 
@@ -29,7 +30,7 @@ class AdminHome extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
+    const { t, adminHomeContainer } = this.props;
 
     return (
       <Fragment>
@@ -40,16 +41,26 @@ class AdminHome extends React.Component {
         </p>
 
         <div className="row mb-5">
-          <div className="col-md-12">
+          <div className="col-lg-12">
             <h2 className="admin-setting-header">{t('admin:admin_top.system_information')}</h2>
             <SystemInfomationTable />
           </div>
         </div>
 
         <div className="row mb-5">
-          <div className="col-md-12">
+          <div className="col-lg-12">
             <h2 className="admin-setting-header">{t('admin:admin_top.list_of_installed_plugins')}</h2>
             <InstalledPluginTable />
+          </div>
+        </div>
+
+        <div className="row mb-5">
+          <div className="col-md-12">
+            <h2 className="admin-setting-header">{t('admin:admin_top.list_of_env_vars')}</h2>
+            <p>{t('admin:admin_top.env_var_priority')}</p>
+            {/* eslint-disable-next-line react/no-danger */}
+            <p dangerouslySetInnerHTML={{ __html: t('admin:admin_top.about_security') }} />
+            {adminHomeContainer.state.envVars && <EnvVarsTable envVars={adminHomeContainer.state.envVars} />}
           </div>
         </div>
       </Fragment>
@@ -58,9 +69,7 @@ class AdminHome extends React.Component {
 
 }
 
-const AdminHomeWrapper = (props) => {
-  return createSubscribedElement(AdminHome, props, [AppContainer, AdminHomeContainer]);
-};
+const AdminHomeWrapper = withUnstatedContainers(AdminHome, [AppContainer, AdminHomeContainer]);
 
 AdminHome.propTypes = {
   t: PropTypes.func.isRequired, // i18next

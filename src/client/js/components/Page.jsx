@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 import EditorContainer from '../services/EditorContainer';
@@ -126,27 +126,26 @@ class Page extends React.Component {
   }
 
   render() {
-    const isMobile = this.props.appContainer.isMobile;
-    const { markdown } = this.props.pageContainer.state;
+    const { appContainer, pageContainer } = this.props;
+    const isMobile = appContainer.isMobile;
+    const isLoggedIn = appContainer.currentUser != null;
+    const { markdown } = pageContainer.state;
 
     return (
       <div className={isMobile ? 'page-mobile' : ''}>
         <RevisionRenderer growiRenderer={this.growiRenderer} markdown={markdown} />
-        <HandsontableModal ref={this.handsontableModal} onSave={this.saveHandlerForHandsontableModal} />
-        <DrawioModal ref={this.drawioModal} onSave={this.saveHandlerForDrawioModal} />
+
+        { isLoggedIn && (
+          <>
+            <HandsontableModal ref={this.handsontableModal} onSave={this.saveHandlerForHandsontableModal} />
+            <DrawioModal ref={this.drawioModal} onSave={this.saveHandlerForDrawioModal} />
+          </>
+        )}
       </div>
     );
   }
 
 }
-
-/**
- * Wrapper component for using unstated
- */
-const PageWrapper = (props) => {
-  return createSubscribedElement(Page, props, [AppContainer, PageContainer, EditorContainer]);
-};
-
 
 Page.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
@@ -154,4 +153,4 @@ Page.propTypes = {
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 };
 
-export default PageWrapper;
+export default withUnstatedContainers(Page, [AppContainer, PageContainer, EditorContainer]);

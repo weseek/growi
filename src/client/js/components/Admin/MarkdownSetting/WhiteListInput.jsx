@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { tags, attrs } from '../../../../../lib/service/xss/recommended-whitelist';
 
 import AppContainer from '../../../services/AppContainer';
@@ -35,10 +35,10 @@ class WhiteListInput extends React.Component {
 
     return (
       <>
-        <div className="m-t-15">
+        <div className="mt-4">
           <div className="d-flex justify-content-between">
             {t('admin:markdown_setting.xss_options.tag_names')}
-            <p id="btn-import-tags" className="btn btn-xs btn-primary" onClick={this.onClickRecommendTagButton}>
+            <p id="btn-import-tags" className="btn btn-sm btn-primary mb-0" onClick={this.onClickRecommendTagButton}>
               {t('admin:markdown_setting.xss_options.import_recommended', { target: 'Tags' })}
             </p>
           </div>
@@ -52,10 +52,10 @@ class WhiteListInput extends React.Component {
             onChange={(e) => { adminMarkDownContainer.setState({ tagWhiteList: e.target.value }) }}
           />
         </div>
-        <div className="m-t-15">
+        <div className="mt-4">
           <div className="d-flex justify-content-between">
             {t('admin:markdown_setting.xss_options.tag_attributes')}
-            <p id="btn-import-tags" className="btn btn-xs btn-primary" onClick={this.onClickRecommendAttrButton}>
+            <p id="btn-import-tags" className="btn btn-sm btn-primary mb-0" onClick={this.onClickRecommendAttrButton}>
               {t('admin:markdown_setting.xss_options.import_recommended', { target: 'Attrs' })}
             </p>
           </div>
@@ -75,9 +75,7 @@ class WhiteListInput extends React.Component {
 
 }
 
-const WhiteListWrapper = (props) => {
-  return createSubscribedElement(WhiteListInput, props, [AppContainer, AdminMarkDownContainer]);
-};
+const WhiteListWrapper = withUnstatedContainers(WhiteListInput, [AppContainer, AdminMarkDownContainer]);
 
 WhiteListInput.propTypes = {
   t: PropTypes.func.isRequired, // i18next

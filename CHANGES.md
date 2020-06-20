@@ -1,8 +1,164 @@
 # CHANGES
 
-## v3.7.2-RC
+## v4.0.8-RC
 
 * 
+
+## v4.0.7
+
+* Feature: Set request timeout for Elasticsearch with env var `ELASTICSEARCH_REQUEST_TIMEOUT`
+* Improvement: Apply styles faster on booting client
+* Fix: Styles are not applyed on installer
+* Fix: Remove last-resort `next()`
+* Fix: Enable/disable Notification settings couldn't change when either of the params is undefined
+* Fix: Text overflow
+
+## v4.0.6
+
+* Fix: Avatar images in Recent Changes are not shown
+* Fix: Full screen modal of Handsontable and Draw.io don't work
+* Fix: Shortcut for creating page respond with modifier key wrongly
+    * Introduced by v4.0.5
+
+## v4.0.5
+
+* Improvement: Return pre-defined session id when healthcheck
+* Improvement: Refactor caching for profile image
+* Improvement: Layout for global search help on mobile
+* Improvement: Layout for confidential notation
+* Fix: Shortcut for creating page doesn't work
+* Support: Dev in container
+* Support: Upgrade libs
+    * ldapjs
+    * node-sass
+
+
+## v4.0.4
+
+* Feature: Drawer/Dock mode selector
+* Improvement: Admin pages navigation
+* Improvement: Ensure not to avoid session management even when accessing to healthcheck
+* Support: Refactor unstated utils
+* Support: Upgrade libs
+    * connect-mongo
+    * connect-redis
+    * mongoose
+    * mongoose-gridfs
+    * mongoose-paginate-v2
+
+## v4.0.3
+
+* Feature: Copy page path dropdown with Append params switch
+* Improvement: Truncate overflowed user browsing history
+* Improvement: Tabs appearance on mobile
+* Improvement: Search help appearance on mobile
+* Improvement: Accessibility of login page
+* Fix: Editor was broken by long lines
+* Fix: Editor doesn't work on mobile
+* Fix: Word break in Recent Updated contents
+* Fix: navbar is broken on Safari
+
+## v4.0.2
+
+* Fix: Internal Server Error occurred when the guest user access to the pages that has likes
+* Fix: Some buttons are broken on Safari
+
+## v4.0.1
+
+* Improvement: Accessibility for Handsontable under dark mode
+* Improvement: Refactor '/pages.exist' API
+* Fix: Storing the state of sidebar
+* Fix: Comments order should be asc
+* Fix: Show/Hide replies button doesn't work
+* Fix: Tooltip doesn't work
+* Fix: Change the display of the scroll bar when modal is shown
+* Fix: Submit with enter key on Create/Rename modals
+* Fix: Show/Hide Unlink redirection button conditions
+* Fix: Link color in alerts
+* Support: Upgrade libs
+    * @atlaskit/drawer
+    * @atlaskit/navigation-next
+
+## v4.0.0
+
+### BREAKING CHANGES
+
+* Crowi Classic Behavior is removed
+* Crowi Classic Layout is removed
+* 'default-dark' theme is now merged as a dark mode variant of 'default' theme
+* 'blue-night' theme is now merged as a dark mode variant of 'mono-blue' theme
+
+Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/40x.html>
+
+### Updates
+
+* Feature: Sidebar
+* Feature: Recent changes on Sidebar
+* Feature: Switch Light/Dark Mode
+* Improvement: Migrate to Bootstrap 4
+* Improvement: Copy Page URL menu item to copy path dropdown
+* Improvement: Show contributors by Bootstrap Modal
+* Support: Upgrade libs
+    * bootstrap
+
+## v3.8.1
+
+### BREAKING CHANGES
+
+- Now Elasticsearch requires the privilege `cluster:monitor/health` instead of `cluster:monitor/nodes/info`
+
+Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/38x.html>
+
+### Updates
+
+* Improvement: Change the health check method for Elasticsearch
+* Fix: Unset overflow-y style for Edit Tags Modal
+* Fix: Duplicate page source is overwrited
+    * Introduced by 3.7.6
+
+## v3.8.0  (Missing number)
+
+## v3.7.7
+
+* Feature: Empty trash pages
+* Improvement: Behavior of Reconnect to Elasticsearch button
+* Fix: Duplicate page source is overwrited
+    * Introduced by 3.7.6
+
+## v3.7.6  (Missing number)
+
+## v3.7.5
+
+* Fix: Draw.io diagrams rendered twice
+* Fix: Behavior of password reset modal is strange
+* Fix: Import GROWI Archive doesn't restore some data correctly
+* Fix: Attachments list on root page and users top pages
+* Fix: Trash page is no longer editable
+* Fix: Rendering Timeline on /trash
+
+## v3.7.4
+
+* Fix: Broken by displaying user image
+
+## v3.7.3
+
+* Feature: Profile Image Cropping
+* Improvement: Reactify users pages
+* Improvement: Detect language and adjust the order of first and last names when creating accounts in OAuth
+* Fix: Installation is broken when selecting Japanese
+    * Introduced by 3.7.0
+* Fix: Mathjax Rendering is unstable (workaround)
+    * Introduced by 3.7.0
+* Fix: Notification Setting couldn't update without slack token
+    * Introduced by 3.6.6
+* Support: Add GROWI Contributers
+
+## v3.7.2
+
+* Feature: User Management Filtering/Sort
+* Feature: Show env vars on Admin pages
+* Fix: Attachment row z-index
+* I18n: HackMD integration alert
 
 ## v3.7.1
 
@@ -15,6 +171,14 @@
 * I18n: HackMD integration
 
 ## v3.7.0
+
+### BREAKING CHANGES
+
+None.
+
+Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/37x.html>
+
+### Updates
 
 * Feature: [Draw.io](https://www.draw.io/) Integration
 * Feature: SAML Attribute-based Login Control

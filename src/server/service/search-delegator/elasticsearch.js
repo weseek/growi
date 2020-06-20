@@ -59,7 +59,7 @@ class ElasticsearchDelegator {
     this.client = new elasticsearch.Client({
       host,
       httpAuth,
-      requestTimeout: 5000,
+      requestTimeout: this.configManager.getConfig('crowi', 'app:elasticsearchRequestTimeout'),
       // log: 'debug',
     });
     this.indexName = indexName;
@@ -97,6 +97,13 @@ class ElasticsearchDelegator {
     return this.normalizeIndices();
   }
 
+  /**
+   * return Nodes Info
+   * `cluster:monitor/nodes/info` privilege is required on ES
+   * @return {object} `{ esVersion, esNodeInfos }`
+   *
+   * @see https://www.elastic.co/guide/en/elasticsearch/reference/6.6/cluster-nodes-info.html
+   */
   async getInfo() {
     const info = await this.client.nodes.info();
     if (!info._nodes || !info.nodes) {
@@ -124,6 +131,18 @@ class ElasticsearchDelegator {
     }
 
     return { esVersion, esNodeInfos };
+  }
+
+  /**
+   * return Cluster Health
+   * `cluster:monitor/health` privilege is required on ES
+   * @return {object} `{ esClusterHealth }`
+   *
+   * @see https://www.elastic.co/guide/en/elasticsearch/reference/6.6/cluster-health.html
+   */
+  async getInfoForHealth() {
+    const esClusterHealth = await this.client.cluster.health();
+    return { esClusterHealth };
   }
 
   /**
@@ -449,7 +468,7 @@ class ElasticsearchDelegator {
         callback();
       },
       final(callback) {
-        logger.info(`Adding pages has terminated: (totalCount=${totalCount}, skipped=${skipped})`);
+        logger.info(`Adding pages has completed: (totalCount=${totalCount}, skipped=${skipped})`);
 
         if (isEmittingProgressEvent) {
           searchEvent.emit('finishAddPage', totalCount, count, skipped);

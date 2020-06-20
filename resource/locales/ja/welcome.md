@@ -3,15 +3,13 @@
 [![GitHub Releases](https://img.shields.io/github/release/weseek/growi.svg)](https://github.com/weseek/growi/releases/latest)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
-<div class="panel panel-primary">
-  <div class="panel-heading">Tips</div>
-  <div class="panel-body"><ul>
-    <li>Ctrl(⌘)-/ でショートカットヘルプを表示します</li>
-      <li>HTML/CSS の記述時は、<a href="https://getbootstrap.com/docs/3.3/css/">Bootstrap 3</a> を利用できます</li>
+<div class="card border-primary">
+  <div class="card-header bg-primary text-light">Tips</div>
+  <div class="card-body"><ul>
+    <li>Ctrl(⌘) + "/" でショートカットヘルプを表示します</li>
+    <li>HTML/CSS の記述には、<a href="https://getbootstrap.com/docs/4.5/components/">Bootstrap 4</a> を利用できます</li>
   </ul></div>
 </div>
-
-<div class="clearfix"></div>
 
 Contents
 =========

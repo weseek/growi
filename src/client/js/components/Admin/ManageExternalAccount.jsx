@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import PaginationWrapper from '../PaginationWrapper';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import AdminExternalAccountsContainer from '../../services/AdminExternalAccountsContainer';
 import ExternalAccountTable from './Users/ExternalAccountTable';
@@ -48,7 +48,7 @@ class ManageExternalAccount extends React.Component {
     return (
       <Fragment>
         <p>
-          <a className="btn btn-default" href="/admin/users">
+          <a className="btn btn-outline-secondary" href="/admin/users">
             <i className="icon-fw ti-arrow-left" aria-hidden="true"></i>
             {t('admin:user_management.back_to_user_management')}
           </a>
@@ -72,9 +72,7 @@ ManageExternalAccount.propTypes = {
   adminExternalAccountsContainer: PropTypes.instanceOf(AdminExternalAccountsContainer).isRequired,
 };
 
-const ManageExternalAccountWrapper = (props) => {
-  return createSubscribedElement(ManageExternalAccount, props, [AppContainer, AdminExternalAccountsContainer]);
-};
+const ManageExternalAccountWrapper = withUnstatedContainers(ManageExternalAccount, [AppContainer, AdminExternalAccountsContainer]);
 
 
 export default withTranslation()(ManageExternalAccountWrapper);

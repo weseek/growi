@@ -1,5 +1,5 @@
 {% extends '../layout/admin.html' %}
-{% block html_title %}{{ customizeService.generateCustomTitle(t('Customize')) }}{% endblock %}
+{% block html_title %}{{ customizeService.generateCustomTitleForFixedPageName(t('Customize')) }}{% endblock %}
 
 {% block html_additional_headers %}
 {% parent %}
@@ -13,17 +13,16 @@
 {% endblock %}
 
 {% block content_header %}
-<div class="header-wrap">
-  <header id="page-header">
-    <h1 id="admin-title" class="title">{{ t('Customize') }}</h1>
-  </header>
-</div>
+<h1 class="title">{{ t('Customize') }}</h1>
 {% endblock %}
 
 {% block content_main %}
 <div class="content-main admin-customize row">
   {% parent %}
-  <div class="col-md-9" id="admin-customize"></div>
+  <div id="grw-hljs-container-for-demo">
+    {{ cdnHighlightJsStyleTag(getConfig('crowi', 'customize:highlightJsStyle')) }}
+  </div>
+  <div class="col-lg-9" id="admin-customize"></div>
 </div>
 {% endblock content_main %}
 

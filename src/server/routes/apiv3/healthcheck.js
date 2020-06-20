@@ -119,7 +119,7 @@ module.exports = (crowi) => {
     const { searchService } = crowi;
     if (searchService.isConfigured) {
       try {
-        info.searchInfo = await searchService.getInfo();
+        info.searchInfo = await searchService.getInfoForHealth();
       }
       catch (err) {
         errors.push(new ErrorV3(`The Search Service is not connectable - ${err.message}`, 'healthcheck-search-unhealthy', err.stack));

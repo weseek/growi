@@ -1,0 +1,59 @@
+name: Release Docker Images for RC
+
+on:
+  push:
+    branches:
+      - rc/**
+
+jobs:
+
+  build-rc:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Cache/Restore yarn cache
+      uses: actions/cache@v1
+      with:
+        path: /usr/local/share/.cache/yarn
+        key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-${{ matrix.node-version }}-
+
+    - name: Set up Docker Buildx
+      uses: crazy-max/ghaction-docker-buildx@v1.0.4
+
+    - name: Login to docker.io registry
+      run: |
+        echo ${{ secrets. DOCKER_REGISTRY_PASSWORD }} | docker login --username wsmoogle --password-stdin
+
+    - name: Build Docker Image
+      run: |
+        CACHE_REF=weseek/growi-cache:4
+        docker buildx build \
+          --tag growi \
+          --platform linux/amd64 \
+          --load \
+          --cache-from=type=registry,ref=$CACHE_REF \
+          --cache-to=type=registry,ref=$CACHE_REF,mode=max \
+          --file ./docker/Dockerfile .
+
+    - name: Get SemVer
+      run: |
+        semver=`npm run version --silent`
+        echo ::set-env name=SEMVER::$semver
+
+    - name: Docker Tags by SemVer
+      uses: weseek/ghaction-docker-tags-by-semver@v1.0.3
+      with:
+        source: growi
+        target: weseek/growi
+        semver: ${{ env.SEMVER }}
+        publish: true
+
+    - name: Check whether workspace is clean
+      run: |
+        STATUS=`git status --porcelain`
+        if [ -z "$STATUS" ]; then exit 0; else exit 1; fi

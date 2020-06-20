@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import loggerFactory from '@alias/logger';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
@@ -40,27 +40,27 @@ class GlobalNotification extends React.Component {
     return (
       <React.Fragment>
 
-        <h2 className="border-bottom">{t('notification_setting.valid_page')}</h2>
+        <h2 className="border-bottom my-4">{t('notification_setting.valid_page')}</h2>
 
-        <p className="well">
+        <p className="card well">
           {/* eslint-disable-next-line react/no-danger */}
           <span dangerouslySetInnerHTML={{ __html: t('notification_setting.link_notification_help') }} />
         </p>
 
 
         <div className="row mb-4">
-          <div className="col-md-8 col-md-offset-2">
-            <div className="checkbox checkbox-success">
+          <div className="col-md-8 offset-md-2">
+            <div className="custom-control custom-checkbox custom-checkbox-success">
               <input
                 id="isNotificationForOwnerPageEnabled"
+                className="custom-control-input"
                 type="checkbox"
                 checked={adminNotificationContainer.state.isNotificationForOwnerPageEnabled || false}
                 onChange={() => { adminNotificationContainer.switchIsNotificationForOwnerPageEnabled() }}
               />
-              <label htmlFor="isNotificationForOwnerPageEnabled">
+              <label className="custom-control-label" htmlFor="isNotificationForOwnerPageEnabled">
                 {/* eslint-disable-next-line react/no-danger */}
                 <span dangerouslySetInnerHTML={{ __html: t('notification_setting.just_me_notification_help') }} />
-
               </label>
             </div>
           </div>
@@ -68,15 +68,16 @@ class GlobalNotification extends React.Component {
 
 
         <div className="row mb-4">
-          <div className="col-md-8 col-md-offset-2">
-            <div className="checkbox checkbox-success">
+          <div className="col-md-8 offset-md-2">
+            <div className="custom-control custom-checkbox custom-checkbox-success">
               <input
                 id="isNotificationForGroupPageEnabled"
+                className="custom-control-input"
                 type="checkbox"
                 checked={adminNotificationContainer.state.isNotificationForGroupPageEnabled || false}
                 onChange={() => { adminNotificationContainer.switchIsNotificationForGroupPageEnabled() }}
               />
-              <label htmlFor="isNotificationForGroupPageEnabled">
+              <label className="custom-control-label" htmlFor="isNotificationForGroupPageEnabled">
                 {/* eslint-disable-next-line react/no-danger */}
                 <span dangerouslySetInnerHTML={{ __html: t('notification_setting.group_notification_help') }} />
               </label>
@@ -85,7 +86,7 @@ class GlobalNotification extends React.Component {
         </div>
 
         <div className="row my-3">
-          <div className="col-xs-offset-4 col-xs-5">
+          <div className="col-sm-5 offset-sm-4">
             <button
               type="button"
               className="btn btn-primary"
@@ -98,7 +99,7 @@ class GlobalNotification extends React.Component {
 
         <h2 className="border-bottom mb-5">{t('notification_setting.notification_list')}
           <a href="/admin/global-notification/new">
-            <p className="btn btn-default pull-right">{t('notification_setting.add_notification')}</p>
+            <p className="btn btn-outline-secondary pull-right">{t('notification_setting.add_notification')}</p>
           </a>
         </h2>
 
@@ -126,9 +127,7 @@ class GlobalNotification extends React.Component {
 
 }
 
-const GlobalNotificationWrapper = (props) => {
-  return createSubscribedElement(GlobalNotification, props, [AppContainer, AdminNotificationContainer]);
-};
+const GlobalNotificationWrapper = withUnstatedContainers(GlobalNotification, [AppContainer, AdminNotificationContainer]);
 
 GlobalNotification.propTypes = {
   t: PropTypes.func.isRequired, // i18next

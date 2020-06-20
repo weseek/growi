@@ -16,7 +16,8 @@ export default class Revision extends React.Component {
   componentDidMount() {
   }
 
-  _onDiffOpenClicked() {
+  _onDiffOpenClicked(e) {
+    e.preventDefault();
     this.props.onDiffOpenClicked(this.props.revision);
   }
 
@@ -35,7 +36,7 @@ export default class Revision extends React.Component {
         <div className="picture-container">
           {pic}
         </div>
-        <div className="m-l-10">
+        <div className="ml-3">
           <div className="revision-history-meta">
             <span className="text-muted small">
               <UserDate dateTime={revision.createdAt} /> ({ t('No diff') })
@@ -56,13 +57,13 @@ export default class Revision extends React.Component {
       pic = <UserPicture user={author} size="lg" />;
     }
 
-    const iconClass = this.props.revisionDiffOpened ? 'caret caret-opened' : 'caret';
+    const iconClass = this.props.revisionDiffOpened ? 'fa fa-caret-down caret caret-opened' : 'fa fa-caret-down caret';
     return (
       <div className="revision-history-main d-flex mt-3">
-        <div className="m-t-5">
+        <div className="mt-2">
           {pic}
         </div>
-        <div className="m-l-10">
+        <div className="ml-2">
           <div className="revision-history-author">
             <strong><Username user={author}></Username></strong>
           </div>
@@ -77,13 +78,14 @@ export default class Revision extends React.Component {
                 }
                 { this.props.hasDiff
                   && (
-                  <a className="diff-view" onClick={this._onDiffOpenClicked}>
-                    <i className={iconClass}></i> { t('View diff') }
+                  // use dummy href attr (with preventDefault()), because don't apply style by a:not([href])
+                  <a className="diff-view" href="" onClick={this._onDiffOpenClicked}>
+                    <i className={iconClass}></i> {t('View diff')}
                   </a>
                   )
                 }
               </span>
-              <a href={`?revision=${revision._id}`} className="m-l-10">
+              <a href={`?revision=${revision._id}`} className="ml-2">
                 <i className="icon-login"></i> { t('Go to this version') }
               </a>
             </p>

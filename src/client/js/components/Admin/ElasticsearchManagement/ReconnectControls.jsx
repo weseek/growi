@@ -2,27 +2,26 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 class ReconnectControls extends React.PureComponent {
 
   render() {
-    const { t, isConfigured, isConnected } = this.props;
-
-    const isEnabled = (isConfigured == null || isConfigured === true) && isConnected === false;
+    const { t, isEnabled, isProcessing } = this.props;
 
     return (
       <>
         <button
           type="submit"
-          className={`btn btn-outline ${isEnabled ? 'btn-success' : 'btn-default'}`}
+          className={`btn ${isEnabled ? 'btn-outline-success' : 'btn-outline-secondary'}`}
           onClick={() => { this.props.onReconnectingRequested() }}
           disabled={!isEnabled}
         >
+          { isProcessing && <i className="fa fa-spinner fa-pulse mr-2"></i> }
           { t('full_text_search_management.reconnect_button') }
         </button>
 
-        <p className="help-block">
+        <p className="form-text text-muted">
           { t('full_text_search_management.reconnect_description') }<br />
         </p>
       </>
@@ -34,15 +33,13 @@ class ReconnectControls extends React.PureComponent {
 /**
  * Wrapper component for using unstated
  */
-const ReconnectControlsWrapper = (props) => {
-  return createSubscribedElement(ReconnectControls, props, []);
-};
+const ReconnectControlsWrapper = withUnstatedContainers(ReconnectControls, []);
 
 ReconnectControls.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
-  isConfigured: PropTypes.bool,
-  isConnected: PropTypes.bool,
+  isEnabled: PropTypes.bool,
+  isProcessing: PropTypes.bool,
   onReconnectingRequested: PropTypes.func.isRequired,
 };
 

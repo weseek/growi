@@ -1,22 +1,19 @@
+$navbar-height-adjustment: 10px;
+
 body.kibela {
-  .icon-link,
-  .CodeMirror-hint-active,
-  .nav-main-left-tab,
-  .tav-pane,
-  .active {
-    color: #5882fa;
+  .grw-pt-10px {
+    padding-top: 10px !important;
   }
 
-  .bg-white {
-    background: #fefffe !important;
+  /* navbar for kibela */
+  #page-wrapper {
+    margin-top: $grw-navbar-height + $grw-navbar-border-width;
   }
 
+  /* Logo */
   .logo {
-    background: transparent;
-
     .logo-mark {
       height: 50px;
-      background-color: white;
       box-shadow: none;
 
       svg {
@@ -26,10 +23,6 @@ body.kibela {
   }
 
   /* header */
-  .background-t {
-    background-color: transparent;
-  }
-
   .authors {
     padding-top: 10px;
 
@@ -38,28 +31,12 @@ body.kibela {
     }
   }
 
-  .search-input-group,
-  .search-typeahead {
-    .btn {
-      background-color: transparent;
-    }
-  }
-
   .panel-heading {
     border-radius: 0 !important;
   }
 
-  .btn-open-dropzone {
-    background: rgb(243, 245, 247);
-  }
-
   /* page list */
-  .page-list {
-    background: white;
-  }
-
   .page-attachments-row {
-    background-color: #e5ecf1 !important;
     border: 0px;
   }
 
@@ -69,44 +46,52 @@ body.kibela {
 
   .round-corner-top {
     z-index: absolute;
-    border-top: solid 0.4em #5584e1;
     border-radius: 0.35em;
   }
 
   .kibela-block {
-    position: absolute;
-    top: 0px;
+    position: relative;
+    top: 10px;
     right: 100px;
     bottom: 0px;
     left: 0px;
     z-index: absolute;
-    height: 11em;
+    max-width: 1024px;
+    min-height: 8em;
     margin: auto;
-    border-top: solid 0.4em #5584e1;
     border-radius: 0.35em;
+    @include media-breakpoint-down(xs) {
+      top: 0px;
+    }
   }
 
-  .bg-title {
+  .grw-subnav {
     position: relative;
-    background: transparent;
     border: none;
 
     svg {
       display: none;
     }
 
+    &.grw-subnav-user-page {
+      min-height: 128px;
+    }
+
     @media screen and (max-width: 765px) {
       padding-top: 30px;
+    }
+
+    @include media-breakpoint-down(xs) {
+      padding-top: 0px;
     }
   }
 
   .revision-toc {
-    &.affix {
-      top: calc(60px + 5px);
-      right: 10rem;
-      min-width: calc(#{100 / 12 * 2%} - #{$grid-gutter-width}); // width of 2column - padding
-      margin-top: 40px;
-    }
+    position: sticky;
+    top: calc(60px + 5px);
+    right: 10rem;
+    min-width: 100%;
+    margin-top: 40px;
 
     .revision-toc-content {
       padding: 0;
@@ -120,56 +105,27 @@ body.kibela {
     }
   }
 
-  /* search page */
-  .search-result-list,
-  .page-list-li {
-    background: #f4f5f6;
+  /* admin navigation */
+  .admin-navigation {
+    .list-group-item + .list-group-item.active {
+      margin-top: 2px;
+    }
   }
 
   /* Tabs */
   .nav.nav-tabs {
-    border-bottom-color: #f4f5f6;
+    > .nav-item {
+      cursor: pointer;
 
-    > li > a {
-      &,
-      &:hover,
-      &:focus {
-        background: transparent;
-        border-top: none;
-        border-right: none;
-        border-left: none;
+      > .nav-link {
+        border: none;
+        border-radius: 3px;
       }
     }
-
-    > li.active > a {
-      background: transparent !important;
-      border-top: none;
-      border-right: none;
-      border-bottom: solid 2.7px #5584e1;
-      border-left: none;
-    }
-
-    .wiki {
-      h1 {
-        border-bottom: solid 2px #5584e1 !important;
-      }
-
-      h2 {
-        border-color: solid 1px #5584e1;
-      }
-    }
-  }
-
-  /* user page */
-  .header-wrap {
-    padding: 0px;
-    margin-left: 2em;
   }
 
   /* edit */
   .CodeMirror {
-    border: solid 1.2px #d8d8d8;
-    border-top: solid 0.3em #5584e1 !important;
     border-radius: 0.35em;
   }
 
@@ -180,15 +136,13 @@ body.kibela {
       + 1px //                    .page-editor-footer border-top
       + 60px; //                  .page-editor-footer min-height
 
-    @include expand-editor($header-plus-footer);
+    @include expand-editor($header-plus-footer, $navbar-height-adjustment);
 
-    .main {
-      > .row.page-content {
-        > .col-xs-12 {
-          width: 100%;
-          padding: 0;
-        }
-      }
+    .kibela-block {
+      top: 0px;
+      max-width: unset;
+      padding-top: 0px;
+      border: 0px;
     }
 
     .tab-content {
@@ -210,7 +164,6 @@ body.kibela {
     .page-editor-preview-container {
       padding-right: 0px !important;
       padding-left: 2em;
-      background: white !important;
     }
 
     .page-editor-footer {
@@ -218,11 +171,5 @@ body.kibela {
       padding: 13px;
       margin: 0;
     }
-  }
-}
-
-.on-edit {
-  .kibela-block {
-    border: 0px;
   }
 }

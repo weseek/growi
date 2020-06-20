@@ -1,13 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import FormGroup from 'react-bootstrap/es/FormGroup';
-import Button from 'react-bootstrap/es/Button';
-import InputGroup from 'react-bootstrap/es/InputGroup';
-
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
-
 import SearchForm from '../SearchForm';
 
 // Search.SearchForm
@@ -37,21 +32,21 @@ class SearchPageForm extends React.Component {
 
   render() {
     return (
-      <FormGroup>
-        <InputGroup>
+      <div className="input-group mb-3 d-flex">
+        <div className="flex-fill">
           <SearchForm
             t={this.props.t}
             onSubmit={this.search}
             keyword={this.state.searchedKeyword}
             onInputChange={this.onInputChange}
           />
-          <InputGroup.Button className="">
-            <Button onClick={this.search}>
-              <i className="icon-magnifier"></i>
-            </Button>
-          </InputGroup.Button>
-        </InputGroup>
-      </FormGroup>
+        </div>
+        <div className="input-group-append">
+          <button className="btn btn-secondary" type="button" id="button-addon2" onClick={this.search}>
+            <i className="icon-magnifier"></i>
+          </button>
+        </div>
+      </div>
     );
   }
 
@@ -60,9 +55,7 @@ class SearchPageForm extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const SearchPageFormWrapper = (props) => {
-  return createSubscribedElement(SearchPageForm, props, [AppContainer]);
-};
+const SearchPageFormWrapper = withUnstatedContainers(SearchPageForm, [AppContainer]);
 
 SearchPageForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next

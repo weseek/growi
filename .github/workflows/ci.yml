@@ -53,12 +53,13 @@ jobs:
         yarn lint
 
     - name: Slack Notification
-      uses: homoluctus/slatify@master
+      uses: weseek/ghaction-slack-notification@master
       if: failure()
       with:
         type: ${{ job.status }}
         job_name: '*test (${{ matrix.node-version }})*'
         channel: '#ci'
+        isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
@@ -113,12 +114,13 @@ jobs:
         MONGO_URI: mongodb://localhost:27017/growi_test
 
     - name: Slack Notification
-      uses: homoluctus/slatify@master
+      uses: weseek/ghaction-slack-notification@master
       if: failure()
       with:
         type: ${{ job.status }}
         job_name: '*test (${{ matrix.node-version }})*'
         channel: '#ci'
+        isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
@@ -183,12 +185,13 @@ jobs:
         yarn build:dev
 
     - name: Slack Notification
-      uses: homoluctus/slatify@master
+      uses: weseek/ghaction-slack-notification@master
       if: failure()
       with:
         type: ${{ job.status }}
         job_name: '*build-dev (${{ matrix.node-version }})*'
         channel: '#ci'
+        isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
@@ -268,10 +271,11 @@ jobs:
         path: report
 
     - name: Slack Notification
-      uses: homoluctus/slatify@master
+      uses: weseek/ghaction-slack-notification@master
       if: failure()
       with:
         type: ${{ job.status }}
         job_name: '*build-prod (${{ matrix.node-version }})*'
         channel: '#ci'
+        isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}

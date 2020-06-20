@@ -4,12 +4,14 @@ import { withTranslation } from 'react-i18next';
 import urljoin from 'url-join';
 import loggerFactory from '@alias/logger';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
+
 import NotificationDeleteModal from './NotificationDeleteModal';
+import NotificationTypeIcon from './NotificationTypeIcon';
 
 const logger = loggerFactory('growi:GolobalNotificationList');
 
@@ -76,71 +78,79 @@ class GlobalNotificationList extends React.Component {
           return (
             <tr key={notification._id}>
               <td className="align-middle td-abs-center">
-                <input
-                  id="isNotificationEnabled"
-                  type="checkbox"
-                  defaultChecked={notification.isEnabled}
-                  onClick={e => this.toggleIsEnabled(notification)}
-                />
+                <div className="custom-control custom-switch custom-checkbox-success">
+                  <input
+                    type="checkbox"
+                    className="custom-control-input"
+                    id={notification._id}
+                    defaultChecked={notification.isEnabled}
+                    onClick={() => this.toggleIsEnabled(notification)}
+                  />
+                  <label className="custom-control-label" htmlFor={notification._id} />
+                </div>
               </td>
               <td>
                 {notification.triggerPath}
               </td>
               <td>
-                {notification.triggerEvents.includes('pageCreate') && (
-                  <span className="label label-success" data-toggle="tooltip" data-placement="top" title="Page Create">
+                <ul className="list-inline mb-0">
+                  {notification.triggerEvents.includes('pageCreate') && (
+                  <li className="list-inline-item badge badge-pill badge-success">
                     <i className="icon-doc"></i> CREATE
-                  </span>
+                  </li>
                 )}
-                {notification.triggerEvents.includes('pageEdit') && (
-                  <span className="label label-warning" data-toggle="tooltip" data-placement="top" title="Page Edit">
+                  {notification.triggerEvents.includes('pageEdit') && (
+                  <li className="list-inline-item badge badge-pill badge-warning">
                     <i className="icon-pencil"></i> EDIT
-                  </span>
+                  </li>
                 )}
-                {notification.triggerEvents.includes('pageMove') && (
-                  <span className="label label-warning" data-toggle="tooltip" data-placement="top" title="Page Move">
+                  {notification.triggerEvents.includes('pageMove') && (
+                  <li className="list-inline-item badge badge-pill badge-pink">
                     <i className="icon-action-redo"></i> MOVE
-                  </span>
+                  </li>
                 )}
-                {notification.triggerEvents.includes('pageDelete') && (
-                  <span className="label label-danger" data-toggle="tooltip" data-placement="top" title="Page Delte">
+                  {notification.triggerEvents.includes('pageDelete') && (
+                  <li className="list-inline-item badge badge-pill badge-danger">
                     <i className="icon-fire"></i> DELETE
-                  </span>
+                  </li>
                 )}
-                {notification.triggerEvents.includes('pageLike') && (
-                  <span className="label label-info" data-toggle="tooltip" data-placement="top" title="Page Like">
+                  {notification.triggerEvents.includes('pageLike') && (
+                  <li className="list-inline-item badge badge-pill badge-info">
                     <i className="icon-like"></i> LIKE
-                  </span>
+                  </li>
                 )}
-                {notification.triggerEvents.includes('comment') && (
-                  <span className="label label-default" data-toggle="tooltip" data-placement="top" title="New Comment">
+                  {notification.triggerEvents.includes('comment') && (
+                  <li className="list-inline-item badge badge-pill badge-secondary">
                     <i className="icon-fw icon-bubble"></i> POST
-                  </span>
+                  </li>
                 )}
+                </ul>
               </td>
               <td>
-                {notification.__t === 'mail'
-                  && <span data-toggle="tooltip" data-placement="top" title="Email"><i className="ti-email"></i> {notification.toEmail}</span>}
-                {notification.__t === 'slack'
-                  && <span data-toggle="tooltip" data-placement="top" title="Slack"><i className="fa fa-slack"></i> {notification.slackChannels}</span>}
+                <NotificationTypeIcon notification={notification} />
+                { notification.__t === 'mail' && notification.toEmail }
+                { notification.__t === 'slack' && notification.slackChannels }
               </td>
               <td className="td-abs-center">
-                <div className="btn-group admin-group-menu">
-                  <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                <div className="dropdown">
+                  <button
+                    className="btn btn-outline-secondary dropdown-toggle"
+                    type="button"
+                    id="dropdownMenuButton"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
                     <i className="icon-settings"></i> <span className="caret"></span>
                   </button>
-                  <ul className="dropdown-menu" role="menu">
-                    <li>
-                      <a href={urljoin('/admin/global-notification/', notification._id)}>
-                        <i className="icon-fw icon-note"></i> {t('Edit')}
-                      </a>
-                    </li>
-                    <li onClick={() => this.openConfirmationModal(notification)}>
-                      <a>
-                        <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
-                      </a>
-                    </li>
-                  </ul>
+                  <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                    <a className="dropdown-item" href={urljoin('/admin/global-notification/', notification._id)}>
+                      <i className="icon-fw icon-note"></i> {t('Edit')}
+                    </a>
+                    <button className="dropdown-item" type="button" onClick={() => this.openConfirmationModal(notification)}>
+                      <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
+                    </button>
+                  </div>
                 </div>
               </td>
             </tr>
@@ -161,9 +171,7 @@ class GlobalNotificationList extends React.Component {
 
 }
 
-const GlobalNotificationListWrapper = (props) => {
-  return createSubscribedElement(GlobalNotificationList, props, [AppContainer, AdminNotificationContainer]);
-};
+const GlobalNotificationListWrapper = withUnstatedContainers(GlobalNotificationList, [AppContainer, AdminNotificationContainer]);
 
 GlobalNotificationList.propTypes = {
   t: PropTypes.func.isRequired, // i18next

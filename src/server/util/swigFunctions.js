@@ -1,7 +1,6 @@
 module.exports = function(crowi, req, locals) {
   const debug = require('debug')('growi:lib:swigFunctions');
   const stringWidth = require('string-width');
-  const entities = require('entities');
 
   const { pathUtils } = require('growi-commons');
 
@@ -110,6 +109,16 @@ module.exports = function(crowi, req, locals) {
     );
   };
 
+  /**
+   * return true if enabled but strategy has some problem
+   */
+  locals.isMikanSetupFailed = function() {
+    return (
+      configManager.getConfig('crowi', 'security:passport-mikan:isEnabled')
+      && !passportService.isMikanStrategySetup
+    );
+  };
+
   locals.getSamlMissingMandatoryConfigKeys = function() {
     return crowi.passportService.getSamlMissingMandatoryConfigKeys();
   };
@@ -179,7 +188,7 @@ module.exports = function(crowi, req, locals) {
     return pages.map((page) => {
       return {
         id: page.id,
-        path: entities.encodeHTML(page.path),
+        path: page.path,
         revision: page.revision,
       };
     });

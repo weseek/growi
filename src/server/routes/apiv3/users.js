@@ -73,6 +73,7 @@ module.exports = (crowi) => {
     User,
     Page,
     ExternalAccount,
+    UserGroupRelation,
   } = crowi.models;
 
   const { ApiV3FormValidator } = crowi.middlewares;
@@ -455,6 +456,7 @@ module.exports = (crowi) => {
 
     try {
       const userData = await User.findById(id);
+      await UserGroupRelation.remove({ relatedUser: userData });
       await userData.statusDelete();
       await ExternalAccount.remove({ user: userData });
       await Page.removeByPath(`/user/${userData.username}`);
@@ -542,5 +544,58 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(msg + err.message, 'extenral-account-delete-failed'));
     }
   });
+
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /users/update.imageUrlCache:
+   *      put:
+   *        tags: [Users]
+   *        operationId: update.imageUrlCache
+   *        summary: /users/update.imageUrlCache
+   *        description: update imageUrlCache
+   *        parameters:
+   *          - name:  userIds
+   *            in: query
+   *            description: user id list
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: success creating imageUrlCached
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userData:
+   *                      type: object
+   *                      description: users updated with imageUrlCached
+   */
+  router.put('/update.imageUrlCache', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    try {
+      const userIds = req.body.userIds;
+      const users = await User.find({ _id: { $in: userIds } });
+      const requests = await Promise.all(users.map(async(user) => {
+        return {
+          updateOne: {
+            filter: { _id: user._id },
+            update: { $set: { imageUrlCached: await user.generateImageUrlCached() } },
+          },
+        };
+      }));
+
+      if (requests.length > 0) {
+        await User.bulkWrite(requests);
+      }
+
+      return res.apiv3({});
+    }
+    catch (err) {
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(err));
+    }
+  });
+
   return router;
 };

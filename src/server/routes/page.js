@@ -146,15 +146,11 @@ module.exports = function(crowi, app) {
   const ApiResponse = require('../util/apiResponse');
   const getToday = require('../util/getToday');
 
-  const { configManager, slackNotificationService } = crowi;
+  const { slackNotificationService, configManager } = crowi;
   const interceptorManager = crowi.getInterceptorManager();
   const globalNotificationService = crowi.getGlobalNotificationService();
 
   const actions = {};
-
-  const PORTAL_STATUS_NOT_EXISTS = 0;
-  const PORTAL_STATUS_EXISTS = 1;
-  const PORTAL_STATUS_FORBIDDEN = 2;
 
   // register page events
 
@@ -256,7 +252,6 @@ module.exports = function(crowi, app) {
 
   function addRendarVarsForPage(renderVars, page) {
     renderVars.page = page;
-    renderVars.path = page.path;
     renderVars.revision = page.revision;
     renderVars.author = page.revision.author;
     renderVars.pageIdOnHackmd = page.pageIdOnHackmd;
@@ -265,8 +260,7 @@ module.exports = function(crowi, app) {
   }
 
   async function addRenderVarsForUserPage(renderVars, page, requestUser) {
-    const userData = await User.findUserByUsername(User.getUsernameByPath(page.path))
-      .populate(User.IMAGE_POPULATION);
+    const userData = await User.findUserByUsername(User.getUsernameByPath(page.path));
 
     if (userData != null) {
       renderVars.pageUser = userData;
@@ -302,7 +296,7 @@ module.exports = function(crowi, app) {
       seener_threshold: SEENER_THRESHOLD,
     };
     renderVars.pager = generatePager(result.offset, result.limit, result.totalCount);
-    renderVars.pages = pathUtils.encodePagesPath(result.pages);
+    renderVars.pages = result.pages;
   }
 
   function replacePlaceholdersOfTemplate(template, req) {
@@ -338,31 +332,22 @@ module.exports = function(crowi, app) {
     return res.render('page_presentation', renderVars);
   }
 
-  async function showPageListForCrowiBehavior(req, res, next) {
-    const portalPath = pathUtils.addTrailingSlash(getPathFromRequest(req));
+  async function showTopPage(req, res, next) {
+    const portalPath = req.path;
     const revisionId = req.query.revision;
+    const layoutName = configManager.getConfig('crowi', 'customize:layout');
 
-    // check whether this page has portal page
-    const portalPageStatus = await getPortalPageState(portalPath, req.user);
-
-    let view = 'customlayout-selector/page_list';
+    const view = `layout-${layoutName}/page_list`;
     const renderVars = { path: portalPath };
 
-    if (portalPageStatus === PORTAL_STATUS_FORBIDDEN) {
-      // inject to req
-      req.isForbidden = true;
-      view = 'customlayout-selector/forbidden';
-    }
-    else if (portalPageStatus === PORTAL_STATUS_EXISTS) {
-      let portalPage = await Page.findByPathAndViewer(portalPath, req.user);
-      portalPage.initLatestRevisionField(revisionId);
+    let portalPage = await Page.findByPathAndViewer(portalPath, req.user);
+    portalPage.initLatestRevisionField(revisionId);
 
-      // populate
-      portalPage = await portalPage.populateDataToShowRevision();
+    // populate
+    portalPage = await portalPage.populateDataToShowRevision();
 
-      addRendarVarsForPage(renderVars, portalPage);
-      await addRenderVarsForSlack(renderVars, portalPage);
-    }
+    addRendarVarsForPage(renderVars, portalPage);
+    await addRenderVarsForSlack(renderVars, portalPage);
 
     const limit = 50;
     const offset = parseInt(req.query.offset) || 0;
@@ -376,6 +361,7 @@ module.exports = function(crowi, app) {
   async function showPageForGrowiBehavior(req, res, next) {
     const path = getPathFromRequest(req);
     const revisionId = req.query.revision;
+    const layoutName = configManager.getConfig('crowi', 'customize:layout');
 
     let page = await Page.findByPathAndViewer(path, req.user);
 
@@ -386,7 +372,7 @@ module.exports = function(crowi, app) {
     }
     if (page.redirectTo) {
       debug(`Redirect to '${page.redirectTo}'`);
-      return res.redirect(encodeURI(`${page.redirectTo}?redirectFrom=${pathUtils.encodePagePath(path)}`));
+      return res.redirect(`${encodeURI(page.redirectTo)}?redirectFrom=${encodeURIComponent(path)}`);
     }
 
     logger.debug('Page is found when processing pageShowForGrowiBehavior', page._id, page.path);
@@ -395,7 +381,7 @@ module.exports = function(crowi, app) {
     const offset = parseInt(req.query.offset) || 0;
     const renderVars = {};
 
-    let view = 'customlayout-selector/page';
+    let view = `layout-${layoutName}/page`;
 
     page.initLatestRevisionField(revisionId);
 
@@ -409,7 +395,7 @@ module.exports = function(crowi, app) {
 
     if (isUserPage(page.path)) {
       // change template
-      view = 'customlayout-selector/user_page';
+      view = `layout-${layoutName}/user_page`;
       await addRenderVarsForUserPage(renderVars, page, req.user);
     }
 
@@ -427,46 +413,16 @@ module.exports = function(crowi, app) {
     return channels;
   };
 
-  /**
-   *
-   * @param {string} path
-   * @param {User} user
-   * @returns {number} PORTAL_STATUS_NOT_EXISTS(0) or PORTAL_STATUS_EXISTS(1) or PORTAL_STATUS_FORBIDDEN(2)
-   */
-  async function getPortalPageState(path, user) {
-    const portalPath = Page.addSlashOfEnd(path);
-    const page = await Page.findByPathAndViewer(portalPath, user);
-
-    if (page == null) {
-      // check the page is forbidden or just does not exist.
-      const isForbidden = await Page.count({ path: portalPath }) > 0;
-      return isForbidden ? PORTAL_STATUS_FORBIDDEN : PORTAL_STATUS_NOT_EXISTS;
-    }
-    return PORTAL_STATUS_EXISTS;
-  }
-
-
   actions.showTopPage = function(req, res) {
-    return showPageListForCrowiBehavior(req, res);
+    return showTopPage(req, res);
   };
 
   /**
-   * switch action by behaviorType
+   * Redirect to the page without trailing slash
    */
-  /* eslint-disable no-else-return */
   actions.showPageWithEndOfSlash = function(req, res, next) {
-    const behaviorType = configManager.getConfig('crowi', 'customize:behavior');
-
-    if (behaviorType === 'crowi') {
-      return showPageListForCrowiBehavior(req, res, next);
-    }
-    else {
-      const path = getPathFromRequest(req); // end of slash should be omitted
-      // redirect and showPage action will be triggered
-      return res.redirect(path);
-    }
+    return res.redirect(pathUtils.removeTrailingSlash(req.path));
   };
-  /* eslint-enable no-else-return */
 
   /**
    * switch action
@@ -478,20 +434,6 @@ module.exports = function(crowi, app) {
     if (req.query.presentation) {
       return showPageForPresentation(req, res, next);
     }
-
-    const behaviorType = configManager.getConfig('crowi', 'customize:behavior');
-
-    // check whether this page has portal page
-    if (behaviorType === 'crowi') {
-      const portalPagePath = pathUtils.addTrailingSlash(getPathFromRequest(req));
-      const hasPortalPage = await Page.count({ path: portalPagePath }) > 0;
-
-      if (hasPortalPage) {
-        logger.debug('The portal page is found', portalPagePath);
-        return res.redirect(encodeURI(`${portalPagePath}?redirectFrom=${pathUtils.encodePagePath(req.path)}`));
-      }
-    }
-
     // delegate to showPageForGrowiBehavior
     return showPageForGrowiBehavior(req, res, next);
   };
@@ -501,16 +443,8 @@ module.exports = function(crowi, app) {
    */
   /* eslint-disable no-else-return */
   actions.trashPageListShowWrapper = function(req, res) {
-    const behaviorType = configManager.getConfig('crowi', 'customize:behavior');
-
-    if (behaviorType === 'crowi') {
-      // Crowi behavior for '/trash/*'
-      return actions.deletedPageListShow(req, res);
-    }
-    else {
-      // redirect to '/trash'
-      return res.redirect('/trash');
-    }
+    // redirect to '/trash'
+    return res.redirect('/trash');
   };
   /* eslint-enable no-else-return */
 
@@ -519,16 +453,8 @@ module.exports = function(crowi, app) {
    */
   /* eslint-disable no-else-return */
   actions.trashPageShowWrapper = function(req, res) {
-    const behaviorType = configManager.getConfig('crowi', 'customize:behavior');
-
-    if (behaviorType === 'crowi') {
-      // redirect to '/trash/'
-      return res.redirect('/trash/');
-    }
-    else {
-      // Crowi behavior for '/trash/*'
-      return actions.deletedPageListShow(req, res);
-    }
+    // Crowi behavior for '/trash/*'
+    return actions.deletedPageListShow(req, res);
   };
   /* eslint-enable no-else-return */
 
@@ -537,16 +463,8 @@ module.exports = function(crowi, app) {
    */
   /* eslint-disable no-else-return */
   actions.deletedPageListShowWrapper = function(req, res) {
-    const behaviorType = configManager.getConfig('crowi', 'customize:behavior');
-
-    if (behaviorType === 'crowi') {
-      // Crowi behavior for '/trash/*'
-      return actions.deletedPageListShow(req, res);
-    }
-    else {
-      const path = `/trash${getPathFromRequest(req)}`;
-      return res.redirect(path);
-    }
+    const path = `/trash${getPathFromRequest(req)}`;
+    return res.redirect(path);
   };
   /* eslint-enable no-else-return */
 
@@ -554,18 +472,19 @@ module.exports = function(crowi, app) {
     const path = getPathFromRequest(req);
 
     const isCreatable = Page.isCreatableName(path);
+    const layoutName = configManager.getConfig('crowi', 'customize:layout');
 
     let view;
     const renderVars = { path };
 
     if (!isCreatable) {
-      view = 'customlayout-selector/not_creatable';
+      view = `layout-${layoutName}/not_creatable`;
     }
     else if (req.isForbidden) {
-      view = 'customlayout-selector/forbidden';
+      view = `layout-${layoutName}/forbidden`;
     }
     else {
-      view = 'customlayout-selector/not_found';
+      view = `layout-${layoutName}/not_found`;
 
       // retrieve templates
       if (req.user != null) {
@@ -596,6 +515,7 @@ module.exports = function(crowi, app) {
   actions.deletedPageListShow = async function(req, res) {
     // normalizePath makes '/trash/' -> '/trash'
     const path = pathUtils.normalizePath(`/trash${getPathFromRequest(req)}`);
+    const layoutName = configManager.getConfig('crowi', 'customize:layout');
 
     const limit = 50;
     const offset = parseInt(req.query.offset) || 0;
@@ -619,8 +539,8 @@ module.exports = function(crowi, app) {
     }
 
     renderVars.pager = generatePager(result.offset, result.limit, result.totalCount);
-    renderVars.pages = pathUtils.encodePagesPath(result.pages);
-    res.render('customlayout-selector/page_list', renderVars);
+    renderVars.pages = result.pages;
+    res.render(`layout-${layoutName}/page_list`, renderVars);
   };
 
   /**
@@ -632,7 +552,7 @@ module.exports = function(crowi, app) {
     const page = await Page.findByIdAndViewer(id, req.user);
 
     if (page != null) {
-      return res.redirect(pathUtils.encodePagePath(page.path));
+      return res.redirect(encodeURI(page.path));
     }
 
     return res.redirect('/');
@@ -728,7 +648,6 @@ module.exports = function(crowi, app) {
         result.pages.pop();
       }
 
-      result.pages = pathUtils.encodePagesPath(result.pages);
       return res.json(ApiResponse.success(result));
     }
     catch (err) {
@@ -870,6 +789,7 @@ module.exports = function(crowi, app) {
    *                required:
    *                  - body
    *                  - page_id
+   *                  - revision_id
    *        responses:
    *          200:
    *            description: Succeeded to update page.
@@ -913,8 +833,8 @@ module.exports = function(crowi, app) {
     const socketClientId = req.body.socketClientId || undefined;
     const pageTags = req.body.pageTags || undefined;
 
-    if (pageId === null || pageBody === null) {
-      return res.json(ApiResponse.error('page_id and body are required.'));
+    if (pageId === null || pageBody === null || revisionId === null) {
+      return res.json(ApiResponse.error('page_id, body and revision_id are required.'));
     }
 
     // check page existence
@@ -1067,11 +987,11 @@ module.exports = function(crowi, app) {
    *        description: Get page existence
    *        parameters:
    *          - in: query
-   *            name: pages
+   *            name: pagePaths
    *            schema:
    *              type: string
-   *              description: Page paths specified by hash key in JSON format
-   *              example: '{"/": "unused value", "/user/unknown": "unused value"}'
+   *              description: Page path list in JSON Array format
+   *              example: '["/", "/user/unknown"]'
    *        responses:
    *          200:
    *            description: Succeeded to get page existence.
@@ -1098,17 +1018,17 @@ module.exports = function(crowi, app) {
    * @apiParam {String} pages (stringified JSON)
    */
   api.exist = async function(req, res) {
-    const pagesAsObj = JSON.parse(req.query.pages || '{}');
-    const pagePaths = Object.keys(pagesAsObj);
+    const pagePaths = JSON.parse(req.query.pagePaths || '[]');
 
+    const pages = {};
     await Promise.all(pagePaths.map(async(path) => {
       // check page existence
       const isExist = await Page.count({ path }) > 0;
-      pagesAsObj[path] = isExist;
+      pages[path] = isExist;
       return;
     }));
 
-    const result = { pages: pagesAsObj };
+    const result = { pages };
 
     return res.json(ApiResponse.success(result));
   };
@@ -1227,150 +1147,6 @@ module.exports = function(crowi, app) {
     const result = {};
     result.seenUser = page.seenUsers;
 
-    return res.json(ApiResponse.success(result));
-  };
-
-  /**
-   * @swagger
-   *
-   *    /likes.add:
-   *      post:
-   *        tags: [Likes, CrowiCompatibles]
-   *        operationId: addLike
-   *        summary: /likes.add
-   *        description: Like page
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  page_id:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
-   *                required:
-   *                  - page_id
-   *        responses:
-   *          200:
-   *            description: Succeeded to be page liked.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    page:
-   *                      $ref: '#/components/schemas/Page'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  /**
-   * @api {post} /likes.add Like page
-   * @apiName LikePage
-   * @apiGroup Page
-   *
-   * @apiParam {String} page_id Page Id.
-   */
-  api.like = async function(req, res) {
-    const pageId = req.body.page_id;
-    if (!pageId) {
-      return res.json(ApiResponse.error('page_id required'));
-    }
-    if (!req.user) {
-      return res.json(ApiResponse.error('user required'));
-    }
-
-    let page;
-    try {
-      page = await Page.findByIdAndViewer(pageId, req.user);
-      if (page == null) {
-        throw new Error(`Page '${pageId}' is not found or forbidden`);
-      }
-      page = await page.like(req.user);
-    }
-    catch (err) {
-      debug('Seen user update error', err);
-      return res.json(ApiResponse.error(err));
-    }
-
-    const result = { page };
-    result.seenUser = page.seenUsers;
-    res.json(ApiResponse.success(result));
-
-    try {
-      // global notification
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_LIKE, page, req.user);
-    }
-    catch (err) {
-      logger.error('Like notification failed', err);
-    }
-  };
-
-  /**
-   * @swagger
-   *
-   *    /likes.remove:
-   *      post:
-   *        tags: [Likes, CrowiCompatibles]
-   *        operationId: removeLike
-   *        summary: /likes.remove
-   *        description: Unlike page
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  page_id:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
-   *                required:
-   *                  - page_id
-   *        responses:
-   *          200:
-   *            description: Succeeded to not be page liked.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    page:
-   *                      $ref: '#/components/schemas/Page'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  /**
-   * @api {post} /likes.remove Unlike page
-   * @apiName UnlikePage
-   * @apiGroup Page
-   *
-   * @apiParam {String} page_id Page Id.
-   */
-  api.unlike = async function(req, res) {
-    const pageId = req.body.page_id;
-    if (!pageId) {
-      return res.json(ApiResponse.error('page_id required'));
-    }
-    if (req.user == null) {
-      return res.json(ApiResponse.error('user required'));
-    }
-
-    let page;
-    try {
-      page = await Page.findByIdAndViewer(pageId, req.user);
-      if (page == null) {
-        throw new Error(`Page '${pageId}' is not found or forbidden`);
-      }
-      page = await page.unlike(req.user);
-    }
-    catch (err) {
-      debug('Seen user update error', err);
-      return res.json(ApiResponse.error(err));
-    }
-
-    const result = { page };
-    result.seenUser = page.seenUsers;
     return res.json(ApiResponse.success(result));
   };
 
@@ -1520,7 +1296,7 @@ module.exports = function(crowi, app) {
     const socketClientId = req.body.socketClientId || undefined;
 
     // get recursively flag
-    const isRecursively = (req.body.recursively !== undefined);
+    const isRecursively = (req.body.recursively != null);
 
     let page;
     try {
@@ -1835,7 +1611,6 @@ module.exports = function(crowi, app) {
 
     try {
       const result = await Page.findListByCreator(page.creator, req.user, queryOptions);
-      result.pages = pathUtils.encodePagesPath(result.pages);
 
       return res.json(ApiResponse.success(result));
     }

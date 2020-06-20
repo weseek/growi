@@ -34,7 +34,7 @@ module.exports = function(crowi, app) {
    * @param {*} res
    */
   const loginFailureHandler = (req, res, message) => {
-    req.flash('errorMessage', message || 'Sign in failure.');
+    req.flash('errorMessage', message || req.t('message.sign_in_failure'));
     return res.redirect('/login');
   };
 
@@ -44,7 +44,7 @@ module.exports = function(crowi, app) {
    * @param {*} res
    */
   const loginFailure = (req, res) => {
-    return loginFailureHandler(req, res, 'Sign in failure.');
+    return loginFailureHandler(req, res, req.t('message.sign_in_failure'));
   };
 
   /**
@@ -75,6 +75,7 @@ module.exports = function(crowi, app) {
       debug('MikanStrategy has not been set up');
       return next();
     }
+
     passport.authenticate('cookie', async(err, mikanAccountInfo, info) => {
       debug('--- authenticate with MikanStrategy ---');
       debug('mikanAccountInfo', mikanAccountInfo);
@@ -135,40 +136,40 @@ module.exports = function(crowi, app) {
   const testMikanCredentials = (req, res) => {
     if (!passportService.isMikanStrategySetup) {
       debug('MikanStrategy has not been set up');
-      return res.json({
+      return res.json(ApiResponse.success({
         status: 'warning',
         message: 'MikanStrategy has not been set up',
-      });
+      }));
     }
     passport.authenticate('cookie', (err, user, info) => {
       debug('mikanAccountInfo', user);
       if (err) {
         debug('Mikan Server Error: ', err);
-        return res.json({
+        return res.json(ApiResponse.success({
           status: 'warning',
           message: 'Mikan Server Error occured.',
-        });
+        }));
       }
       if (info && info.message) {
-        return res.json({
+        return res.json(ApiResponse.success({
           status: 'warning',
           message: info.message,
-        });
+        }));
       }
       if (user && user.username === req.body.loginForm.username) {
-        return res.json({
+        return res.json(ApiResponse.success({
           status: 'success',
           message: 'Successfully authenticated.',
-        });
+        }));
       }
       if (user) {
         return res.json({ status: 'danger', message: 'Authentication failed.' });
       }
       debug('No user information');
-      return res.json({
+      return res.json(ApiResponse.success({
         status: 'warning',
         message: 'No user information.',
-      });
+      }));
     })(req, res, () => { });
   };
 
@@ -199,7 +200,8 @@ module.exports = function(crowi, app) {
       ldapAccountInfo = await promisifiedPassportAuthentication(strategyName, req, res);
     }
     catch (err) {
-      return next(err);
+      debug(err.message);
+      return next();
     }
 
     // check groups for LDAP
@@ -235,7 +237,7 @@ module.exports = function(crowi, app) {
 
     // login
     await req.logIn(user, (err) => {
-      if (err) { return next(err) }
+      if (err) { debug(err.message); return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
@@ -251,7 +253,7 @@ module.exports = function(crowi, app) {
       debug('LdapStrategy has not been set up');
       return res.json(ApiResponse.success({
         status: 'warning',
-        message: 'LdapStrategy has not been set up',
+        message: req.t('message.strategy_has_not_been_set_up', { strategy: 'LdapStrategy' }),
       }));
     }
 
@@ -305,7 +307,7 @@ module.exports = function(crowi, app) {
   const loginWithLocal = (req, res, next) => {
     if (!passportService.isLocalStrategySetup) {
       debug('LocalStrategy has not been set up');
-      req.flash('warningMessage', 'LocalStrategy has not been set up');
+      req.flash('warningMessage', req.t('message.strategy_has_not_been_set_up', { strategy: 'LocalStrategy' }));
       return next();
     }
 
@@ -321,12 +323,12 @@ module.exports = function(crowi, app) {
 
       if (err) { // DB Error
         logger.error('Database Server Error: ', err);
-        req.flash('warningMessage', 'Database Server Error occured.');
+        req.flash('warningMessage', req.t('message.database_error'));
         return next(); // pass and the flash message is displayed when all of authentications are failed.
       }
       if (!user) { return next() }
       req.logIn(user, (err) => {
-        if (err) { return next() }
+        if (err) { debug(err.message); return next() }
 
         return loginSuccessHandler(req, res, user);
       });
@@ -336,7 +338,7 @@ module.exports = function(crowi, app) {
   const loginWithGoogle = function(req, res, next) {
     if (!passportService.isGoogleStrategySetup) {
       debug('GoogleStrategy has not been set up');
-      req.flash('warningMessage', 'GoogleStrategy has not been set up');
+      req.flash('warningMessage', req.t('message.strategy_has_not_been_set_up', { strategy: 'GoogleStrategy' }));
       return next();
     }
 
@@ -346,6 +348,8 @@ module.exports = function(crowi, app) {
   };
 
   const loginPassportGoogleCallback = async(req, res, next) => {
+    const globalLang = crowi.configManager.getConfig('crowi', 'app:globalLang');
+
     const providerId = 'google';
     const strategyName = 'google';
 
@@ -357,10 +361,24 @@ module.exports = function(crowi, app) {
       return loginFailureHandler(req, res);
     }
 
+    let name;
+
+    switch (globalLang) {
+      case 'en-US':
+        name = `${response.name.givenName} ${response.name.familyName}`;
+        break;
+      case 'ja':
+        name = `${response.name.familyName} ${response.name.givenName}`;
+        break;
+      default:
+        name = `${response.name.givenName} ${response.name.familyName}`;
+        break;
+    }
+
     const userInfo = {
       id: response.id,
       username: response.displayName,
-      name: `${response.name.givenName} ${response.name.familyName}`,
+      name,
     };
 
     // Emails are not empty if it exists
@@ -381,7 +399,7 @@ module.exports = function(crowi, app) {
 
     // login
     req.logIn(user, (err) => {
-      if (err) { return next(err) }
+      if (err) { debug(err.message); return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
@@ -389,7 +407,7 @@ module.exports = function(crowi, app) {
   const loginWithGitHub = function(req, res, next) {
     if (!passportService.isGitHubStrategySetup) {
       debug('GitHubStrategy has not been set up');
-      req.flash('warningMessage', 'GitHubStrategy has not been set up');
+      req.flash('warningMessage', req.t('message.strategy_has_not_been_set_up', { strategy: 'GitHubStrategy' }));
       return next();
     }
 
@@ -423,7 +441,7 @@ module.exports = function(crowi, app) {
 
     // login
     req.logIn(user, (err) => {
-      if (err) { return next(err) }
+      if (err) { debug(err.message); return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
@@ -431,7 +449,7 @@ module.exports = function(crowi, app) {
   const loginWithTwitter = function(req, res, next) {
     if (!passportService.isTwitterStrategySetup) {
       debug('TwitterStrategy has not been set up');
-      req.flash('warningMessage', 'TwitterStrategy has not been set up');
+      req.flash('warningMessage', req.t('message.strategy_has_not_been_set_up', { strategy: 'TwitterStrategy' }));
       return next();
     }
 
@@ -465,7 +483,7 @@ module.exports = function(crowi, app) {
 
     // login
     req.logIn(user, (err) => {
-      if (err) { return next(err) }
+      if (err) { debug(err.message); return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
@@ -473,7 +491,7 @@ module.exports = function(crowi, app) {
   const loginWithOidc = function(req, res, next) {
     if (!passportService.isOidcStrategySetup) {
       debug('OidcStrategy has not been set up');
-      req.flash('warningMessage', 'OidcStrategy has not been set up');
+      req.flash('warningMessage', req.t('message.strategy_has_not_been_set_up', { strategy: 'OidcStrategy' }));
       return next();
     }
 
@@ -513,7 +531,7 @@ module.exports = function(crowi, app) {
     // login
     const user = await externalAccount.getPopulatedUser();
     req.logIn(user, (err) => {
-      if (err) { return next(err) }
+      if (err) { debug(err.message); return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
@@ -521,7 +539,7 @@ module.exports = function(crowi, app) {
   const loginWithSaml = function(req, res, next) {
     if (!passportService.isSamlStrategySetup) {
       debug('SamlStrategy has not been set up');
-      req.flash('warningMessage', 'SamlStrategy has not been set up');
+      req.flash('warningMessage', req.t('message.strategy_has_not_been_set_up', { strategy: 'SamlStrategy' }));
       return next();
     }
 
@@ -589,7 +607,7 @@ module.exports = function(crowi, app) {
   const loginWithBasic = async(req, res, next) => {
     if (!passportService.isBasicStrategySetup) {
       debug('BasicStrategy has not been set up');
-      req.flash('warningMessage', 'Basic has not been set up');
+      req.flash('warningMessage', req.t('message.strategy_has_not_been_set_up', { strategy: 'Basic' }));
       return next();
     }
 
@@ -617,7 +635,7 @@ module.exports = function(crowi, app) {
 
     const user = await externalAccount.getPopulatedUser();
     await req.logIn(user, (err) => {
-      if (err) { return next() }
+      if (err) { debug(err.message); return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
@@ -680,7 +698,7 @@ module.exports = function(crowi, app) {
         return;
       }
       else if (err.name === 'UserUpperLimitException') {
-        req.flash('warningMessage', 'Can not register more than the maximum number of users.');
+        req.flash('warningMessage', req.t('message.maximum_number_of_users'));
         return;
       }
       /* eslint-enable no-else-return */

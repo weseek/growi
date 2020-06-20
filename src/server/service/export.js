@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const { Transform } = require('stream');
 const streamToPromise = require('stream-to-promise');
 const archiver = require('archiver');
+const ConfigLoader = require('../service/config-loader');
 
 const toArrayIfNot = require('../../lib/util/toArrayIfNot');
 
@@ -76,12 +77,14 @@ class ExportService {
   async createMetaJson() {
     const metaJson = path.join(this.baseDir, this.growiBridgeService.getMetaFileName());
     const writeStream = fs.createWriteStream(metaJson, { encoding: this.growiBridgeService.getEncoding() });
+    const passwordSeed = this.crowi.env.PASSWORD_SEED || null;
 
     const metaData = {
       version: this.crowi.version,
       url: this.appService.getSiteUrl(),
-      passwordSeed: this.crowi.env.PASSWORD_SEED,
+      passwordSeed,
       exportedAt: new Date(),
+      envVars: ConfigLoader.getEnvVarsForDisplay(),
     };
 
     writeStream.write(JSON.stringify(metaData));

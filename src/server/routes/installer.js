@@ -21,8 +21,13 @@ module.exports = function(crowi, app) {
   }
 
   async function createPage(filePath, pagePath, owner, lang) {
-    const markdown = fs.readFileSync(filePath);
-    return Page.create(pagePath, markdown, owner, {});
+    try {
+      const markdown = fs.readFileSync(filePath);
+      return Page.create(pagePath, markdown, owner, {});
+    }
+    catch (err) {
+      logger.error(`Failed to create ${pagePath}`, err);
+    }
   }
 
   async function createInitialPages(owner, lang) {
@@ -33,7 +38,7 @@ module.exports = function(crowi, app) {
 
     // create /Sandbox/*
     promises.push(createPage(path.join(crowi.localeDir, lang, 'sandbox.md'), '/Sandbox', owner, lang));
-    promises.push(createPage(path.join(crowi.localeDir, 'en-US', 'sandbox-bootstrap3.md'), '/Sandbox/Bootstrap3', owner, lang));
+    promises.push(createPage(path.join(crowi.localeDir, lang, 'sandbox-bootstrap4.md'), '/Sandbox/Bootstrap4', owner, lang));
     promises.push(createPage(path.join(crowi.localeDir, lang, 'sandbox-diagrams.md'), '/Sandbox/Diagrams', owner, lang));
     promises.push(createPage(path.join(crowi.localeDir, lang, 'sandbox-math.md'), '/Sandbox/Math', owner, lang));
 
@@ -74,7 +79,7 @@ module.exports = function(crowi, app) {
       await adminUser.asyncMakeAdmin();
     }
     catch (err) {
-      req.form.errors.push(`管理ユーザーの作成に失敗しました。${err.message}`);
+      req.form.errors.push(req.t('message.failed_to_create_admin_user', { errMessage: err.message }));
       return res.render('installer');
     }
     // create initial pages
@@ -86,9 +91,13 @@ module.exports = function(crowi, app) {
 
     // login with passport
     req.logIn(adminUser, (err) => {
-      if (err) { return next() }
+      if (err) {
+        req.flash('successMessage', req.t('message.complete_to_install1'));
+        req.session.redirectTo = '/admin/app';
+        return res.redirect('/login');
+      }
 
-      req.flash('successMessage', 'GROWI のインストールが完了しました！はじめに、このページで各種設定を確認してください。');
+      req.flash('successMessage', req.t('message.complete_to_install2'));
       return res.redirect('/admin/app');
     });
   };

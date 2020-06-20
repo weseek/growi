@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AdminUsersContainer from '../../../services/AdminUsersContainer';
@@ -32,9 +32,9 @@ class RemoveAdminButton extends React.Component {
     const { t } = this.props;
 
     return (
-      <a role="button" className="px-4" onClick={() => { this.onClickRemoveAdminBtn() }}>
+      <button className="dropdown-item" type="button" onClick={() => { this.onClickRemoveAdminBtn() }}>
         <i className="icon-fw icon-user-unfollow"></i> {t('admin:user_management.user_table.remove_admin_access')}
-      </a>
+      </button>
     );
   }
 
@@ -66,9 +66,7 @@ class RemoveAdminButton extends React.Component {
 /**
 * Wrapper component for using unstated
 */
-const RemoveAdminButtonWrapper = (props) => {
-  return createSubscribedElement(RemoveAdminButton, props, [AppContainer, AdminUsersContainer]);
-};
+const RemoveAdminButtonWrapper = withUnstatedContainers(RemoveAdminButton, [AppContainer, AdminUsersContainer]);
 
 RemoveAdminButton.propTypes = {
   t: PropTypes.func.isRequired, // i18next

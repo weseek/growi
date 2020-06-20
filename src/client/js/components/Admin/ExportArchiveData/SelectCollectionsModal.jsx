@@ -1,10 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import Modal from 'react-bootstrap/es/Modal';
+import {
+  Modal, ModalHeader, ModalBody, ModalFooter,
+} from 'reactstrap';
 import * as toastr from 'toastr';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 // import { toastSuccess, toastError } from '../../../util/apiNotification';
 
@@ -120,7 +122,7 @@ class SelectCollectionsModal extends React.Component {
     const html = this.props.t('admin:export_management.desc_password_seed');
 
     // eslint-disable-next-line react/no-danger
-    return <div className="well well-sm" dangerouslySetInnerHTML={{ __html: html }}></div>;
+    return <div className="card well" dangerouslySetInnerHTML={{ __html: html }}></div>;
   }
 
   renderGroups(groupList, color) {
@@ -140,28 +142,30 @@ class SelectCollectionsModal extends React.Component {
   }
 
   renderCheckboxes(collectionNames, color) {
-    const checkboxColor = color ? `checkbox-${color}` : 'checkbox-info';
+    const checkboxColor = color ? `custom-checkbox-${color}` : 'custom-checkbox-info';
 
     return (
-      <div className={`row checkbox ${checkboxColor}`}>
-        {collectionNames.map((collectionName) => {
-          return (
-            <div className="col-xs-6 my-1" key={collectionName}>
-              <input
-                type="checkbox"
-                id={collectionName}
-                name={collectionName}
-                className="form-check-input"
-                value={collectionName}
-                checked={this.state.selectedCollections.has(collectionName)}
-                onChange={this.toggleCheckbox}
-              />
-              <label className="text-capitalize form-check-label ml-3" htmlFor={collectionName}>
-                {collectionName}
-              </label>
-            </div>
-          );
-        })}
+      <div className={`custom-control custom-checkbox ${checkboxColor}`}>
+        <div className="row">
+          {collectionNames.map((collectionName) => {
+            return (
+              <div className="col-sm-6 my-1" key={collectionName}>
+                <input
+                  type="checkbox"
+                  className="custom-control-input"
+                  id={collectionName}
+                  name={collectionName}
+                  value={collectionName}
+                  checked={this.state.selectedCollections.has(collectionName)}
+                  onChange={this.toggleCheckbox}
+                />
+                <label className="text-capitalize custom-control-label ml-3" htmlFor={collectionName}>
+                  {collectionName}
+                </label>
+              </div>
+            );
+          })}
+        </div>
       </div>
     );
   }
@@ -170,54 +174,54 @@ class SelectCollectionsModal extends React.Component {
     const { t } = this.props;
 
     return (
-      <Modal show={this.props.isOpen} onHide={this.props.onClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>{t('admin:export_management.export_collections')}</Modal.Title>
-        </Modal.Header>
+      <Modal isOpen={this.props.isOpen} toggle={this.props.onClose}>
+        <ModalHeader tag="h4" toggle={this.props.onClose} className="bg-info text-light">
+          {t('admin:export_management.export_collections')}
+        </ModalHeader>
 
         <form onSubmit={this.export}>
-          <Modal.Body>
+          <ModalBody>
             <div className="row">
               <div className="col-sm-12">
-                <button type="button" className="btn btn-sm btn-default mr-2" onClick={this.checkAll}>
+                <button type="button" className="btn btn-sm btn-outline-secondary mr-2" onClick={this.checkAll}>
                   <i className="fa fa-check-square-o"></i> {t('admin:export_management.check_all')}
                 </button>
-                <button type="button" className="btn btn-sm btn-default mr-2" onClick={this.uncheckAll}>
+                <button type="button" className="btn btn-sm btn-outline-secondary mr-2" onClick={this.uncheckAll}>
                   <i className="fa fa-square-o"></i> {t('admin:export_management.uncheck_all')}
                 </button>
               </div>
             </div>
             <div className="row mt-4">
-              <div className="col-xs-12">
-                <legend>Page Collections</legend>
+              <div className="col-sm-12">
+                <h3 className="admin-setting-header">MongoDB Page Collections</h3>
                 {this.renderGroups(GROUPS_PAGE)}
               </div>
             </div>
             <div className="row mt-4">
-              <div className="col-xs-12">
-                <legend>User Collections</legend>
+              <div className="col-sm-12">
+                <h3 className="admin-setting-header">MongoDB User Collections</h3>
                 {this.renderGroups(GROUPS_USER, 'danger')}
                 {this.renderWarnForUser()}
               </div>
             </div>
             <div className="row mt-4">
-              <div className="col-xs-12">
-                <legend>Config Collections</legend>
+              <div className="col-sm-12">
+                <h3 className="admin-setting-header">MongoDB Config Collections</h3>
                 {this.renderGroups(GROUPS_CONFIG)}
               </div>
             </div>
             <div className="row mt-4">
-              <div className="col-xs-12">
-                <legend>Other Collections</legend>
+              <div className="col-sm-12">
+                <h3 className="admin-setting-header">MongoDB Other Collections</h3>
                 {this.renderOthers()}
               </div>
             </div>
-          </Modal.Body>
+          </ModalBody>
 
-          <Modal.Footer>
-            <button type="button" className="btn btn-sm btn-default" onClick={this.props.onClose}>{t('admin:export_management.cancel')}</button>
-            <button type="submit" className="btn btn-sm btn-primary" disabled={!this.validateForm()}>{t('admin:export_management.export')}</button>
-          </Modal.Footer>
+          <ModalFooter>
+            <button type="button" className="btn btn-sm btn-outline-secondary" onClick={this.props.onClose}>{t('export_management.cancel')}</button>
+            <button type="submit" className="btn btn-sm btn-primary" disabled={!this.validateForm()}>{t('export_management.export')}</button>
+          </ModalFooter>
         </form>
       </Modal>
     );
@@ -238,8 +242,6 @@ SelectCollectionsModal.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const SelectCollectionsModalWrapper = (props) => {
-  return createSubscribedElement(SelectCollectionsModal, props, [AppContainer]);
-};
+const SelectCollectionsModalWrapper = withUnstatedContainers(SelectCollectionsModal, [AppContainer]);
 
 export default withTranslation()(SelectCollectionsModalWrapper);

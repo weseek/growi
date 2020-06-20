@@ -4,12 +4,14 @@ import { withTranslation } from 'react-i18next';
 
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-import Button from 'react-bootstrap/es/Button';
-import Modal from 'react-bootstrap/es/Modal';
+// import Button from 'react-bootstrap/es/Button';
+import {
+  Modal, ModalHeader, ModalBody, ModalFooter,
+} from 'reactstrap';
 
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import AdminUsersContainer from '../../../services/AdminUsersContainer';
 
@@ -76,24 +78,29 @@ class UserInviteModal extends React.Component {
 
     return (
       <>
-        <div className="checkbox checkbox-success text-left" onChange={this.handleCheckBox} style={{ flex: 1 }}>
-          <input type="checkbox" id="sendEmail" className="form-check-input" name="sendEmail" defaultChecked={this.state.sendEmail} />
-          <label htmlFor="sendEmail">
+        <div className="col text-left custom-control custom-checkbox custom-checkbox-info text-left" onChange={this.handleCheckBox}>
+          <input type="checkbox" id="sendEmail" className="custom-control-input" name="sendEmail" defaultChecked={this.state.sendEmail} />
+          <label className="custom-control-label" htmlFor="sendEmail">
             {t('admin:user_management.invite_modal.invite_thru_email')}
           </label>
         </div>
         <div>
-          <Button bsStyle="danger" className="fcbtn btn btn-xs btn-danger btn-outline btn-rounded" onClick={this.onToggleModal}>
+          <button
+            type="button"
+            className="btn btn-outline-secondary mr-2"
+            onClick={this.onToggleModal}
+          >
             Cancel
-          </Button>
-          <Button
-            bsStyle="primary"
-            className="fcbtn btn btn-primary btn-outline btn-rounded btn-1b"
+          </button>
+
+          <button
+            type="button"
+            className="btn btn-primary"
             onClick={this.handleSubmit}
             disabled={!this.validEmail()}
           >
-            Done
-          </Button>
+            Invite
+          </button>
         </div>
       </>
     );
@@ -107,13 +114,13 @@ class UserInviteModal extends React.Component {
         <label className="mr-3 text-left text-danger" style={{ flex: 1 }}>
           {t('admin:user_management.invite_modal.send_temporary_password')}
         </label>
-        <Button
-          bsStyle="primary"
-          className="fcbtn btn btn-primary btn-outline btn-rounded"
+        <button
+          type="button"
+          className="btn btn-outline-secondary"
           onClick={this.onToggleModal}
         >
           Close
-        </Button>
+        </button>
       </>
     );
   }
@@ -124,9 +131,13 @@ class UserInviteModal extends React.Component {
         {userList.map((user) => {
           const copyText = `Email:${user.email} Password:${user.password} `;
           return (
-            <CopyToClipboard key={user.email} text={copyText} onCopy={this.showToaster}>
-              <li key={user.email} className="btn">Email: <strong className="mr-3">{user.email}</strong> Password: <strong>{user.password}</strong></li>
-            </CopyToClipboard>
+            <div className="my-1">
+              <CopyToClipboard key={user.email} text={copyText} onCopy={this.showToaster}>
+                <li key={user.email} className="btn btn-outline-secondary">
+                Email: <strong className="mr-3">{user.email}</strong> Password: <strong>{user.password}</strong>
+                </li>
+              </CopyToClipboard>
+            </div>
           );
         })}
       </ul>
@@ -184,21 +195,20 @@ class UserInviteModal extends React.Component {
     const { t, adminUsersContainer } = this.props;
     const { invitedEmailList } = this.state;
 
+
     return (
-      <Modal show={adminUsersContainer.state.isUserInviteModalShown} onHide={this.onToggleModal}>
-        <Modal.Header className="modal-header" closeButton>
-          <Modal.Title>
-            {t('admin:user_management.invite_users')}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+      <Modal isOpen={adminUsersContainer.state.isUserInviteModalShown}>
+        <ModalHeader tag="h4" toggle={this.onToggleModal} className="bg-info text-light">
+          {t('admin:user_management.invite_users') }
+        </ModalHeader>
+        <ModalBody>
           {invitedEmailList == null ? this.renderModalBody()
-            : this.renderCreatedModalBody()}
-        </Modal.Body>
-        <Modal.Footer className="d-flex">
+           : this.renderCreatedModalBody()}
+        </ModalBody>
+        <ModalFooter className="d-flex">
           {invitedEmailList == null ? this.renderModalFooter()
-            : this.renderCreatedModalFooter()}
-        </Modal.Footer>
+           : this.renderCreatedModalFooter()}
+        </ModalFooter>
       </Modal>
     );
   }
@@ -208,9 +218,7 @@ class UserInviteModal extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const UserInviteModalWrapper = (props) => {
-  return createSubscribedElement(UserInviteModal, props, [AppContainer, AdminUsersContainer]);
-};
+const UserInviteModalWrapper = withUnstatedContainers(UserInviteModal, [AppContainer, AdminUsersContainer]);
 
 
 UserInviteModal.propTypes = {

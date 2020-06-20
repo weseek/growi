@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Button from 'react-bootstrap/es/Button';
+import {
+  Button,
+} from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
 
@@ -9,7 +11,7 @@ import AppContainer from '../services/AppContainer';
 import CommentContainer from '../services/CommentContainer';
 import PageContainer from '../services/PageContainer';
 
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 import CommentEditor from './PageComment/CommentEditor';
 import Comment from './PageComment/Comment';
@@ -48,7 +50,9 @@ class PageComments extends React.Component {
     this.showDeleteConfirmModal = this.showDeleteConfirmModal.bind(this);
     this.closeDeleteConfirmModal = this.closeDeleteConfirmModal.bind(this);
     this.replyButtonClickedHandler = this.replyButtonClickedHandler.bind(this);
-    this.commentButtonClickedHandler = this.commentButtonClickedHandler.bind(this);
+    this.editorCancelHandler = this.editorCancelHandler.bind(this);
+    this.editorCommentHandler = this.editorCommentHandler.bind(this);
+    this.resetEditor = this.resetEditor.bind(this);
   }
 
   componentWillMount() {
@@ -97,7 +101,15 @@ class PageComments extends React.Component {
     this.setState({ showEditorIds: ids });
   }
 
-  commentButtonClickedHandler(commentId) {
+  editorCancelHandler(commentId) {
+    this.resetEditor(commentId);
+  }
+
+  editorCommentHandler(commentId) {
+    this.resetEditor(commentId);
+  }
+
+  resetEditor(commentId) {
     this.setState((prevState) => {
       prevState.showEditorIds.delete(commentId);
       return {
@@ -152,20 +164,23 @@ class PageComments extends React.Component {
         { !showEditor && isLoggedIn && (
           <div className="text-right">
             <Button
-              bsStyle="default"
-              className="btn btn-outline btn-default btn-sm btn-comment-reply"
+              outline
+              color="secondary"
+              size="sm"
+              className="btn-comment-reply"
               onClick={() => { return this.replyButtonClickedHandler(commentId) }}
             >
               <i className="icon-fw icon-action-redo"></i> Reply
             </Button>
           </div>
         )}
-        { showEditor && isLoggedIn && (
-          <div className="page-comment-reply-form">
+        { showEditor && (
+          <div className="page-comment-reply-form ml-4 ml-sm-5 mr-3">
             <CommentEditor
               growiRenderer={this.growiRenderer}
               replyTo={commentId}
-              commentButtonClickedHandler={this.commentButtonClickedHandler}
+              onCancelButtonClicked={this.editorCancelHandler}
+              onCommentButtonClicked={this.editorCommentHandler}
             />
           </div>
         )}
@@ -176,15 +191,8 @@ class PageComments extends React.Component {
   render() {
     const topLevelComments = [];
     const allReplies = [];
-
-    const layoutType = this.props.appContainer.getConfig().layoutType;
-    const isBaloonStyle = layoutType.match(/crowi-plus|growi|kibela/);
-
-    let comments = this.props.commentContainer.state.comments;
-    if (isBaloonStyle) {
-      // replace with asc order array
-      comments = comments.slice().reverse(); // non-destructive reverse
-    }
+    const comments = this.props.commentContainer.state.comments
+      .slice().reverse(); // create shallow copy and reverse
 
     comments.forEach((comment) => {
       if (comment.replyTo === undefined) {
@@ -222,9 +230,7 @@ class PageComments extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const PageCommentsWrapper = (props) => {
-  return createSubscribedElement(PageComments, props, [AppContainer, PageContainer, CommentContainer]);
-};
+const PageCommentsWrapper = withUnstatedContainers(PageComments, [AppContainer, PageContainer, CommentContainer]);
 
 PageComments.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,

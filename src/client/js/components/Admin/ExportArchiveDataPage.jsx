@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 import * as toastr from 'toastr';
 
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 // import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../services/AppContainer';
@@ -213,7 +213,7 @@ class ExportArchiveDataPage extends React.Component {
       <Fragment>
         <h2>{t('Export Archive Data')}</h2>
 
-        <button type="button" className="btn btn-default" disabled={isExporting} onClick={this.openExportModal}>
+        <button type="button" className="btn btn-outline-secondary" disabled={isExporting} onClick={this.openExportModal}>
           {t('admin:export_management.create_new_archive_data')}
         </button>
 
@@ -254,8 +254,6 @@ ExportArchiveDataPage.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const ExportArchiveDataPageWrapper = (props) => {
-  return createSubscribedElement(ExportArchiveDataPage, props, [AppContainer, WebsocketContainer]);
-};
+const ExportArchiveDataPageWrapper = withUnstatedContainers(ExportArchiveDataPage, [AppContainer, WebsocketContainer]);
 
 export default withTranslation()(ExportArchiveDataPageWrapper);

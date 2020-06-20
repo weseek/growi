@@ -1,10 +1,4 @@
 .nologin {
-  $gray-dark-for-login: darken(white, 30%);
-
-  // background color
-  background: linear-gradient(45deg, darken($inverse, 30%) 0%, hsla(340, 100%, 55%, 0) 70%),
-    linear-gradient(135deg, $growi-green 10%, hsla(225, 95%, 50%, 0) 70%), linear-gradient(225deg, $growi-blue 10%, hsla(140, 90%, 50%, 0) 80%),
-    linear-gradient(315deg, darken($inverse, 25%) 100%, hsla(35, 95%, 55%, 0) 70%);
   #page-wrapper {
     background: none;
   }
@@ -17,6 +11,7 @@
       display: flex;
       align-items: center;
       height: 100vh;
+      margin-top: 0px;
 
       .main {
         width: 100vw;
@@ -47,271 +42,158 @@
             }
           }
         }
-      } // .main
-    } // #page-wrapper
-  } // #wrapper
+      }
+
+      // .main
+    }
+
+    // #page-wrapper
+  }
+
+  // #wrapper
 
   // styles
   .login-header {
-    background-color: rgba(white, 0.5);
-    .logo {
-      .group1,
-      .group2 {
-        fill: rgba(black, 0.5);
-      }
-    }
     h1 {
       font-size: 22px;
       line-height: 1em;
-      color: rgba(black, 0.5);
     }
-  }
-  .login-dialog {
-    background-color: rgba(white, 0.5);
   }
 
   .input-group {
     margin-bottom: 10px;
 
-    .input-group-addon {
-      color: $gray-dark-for-login;
+    .input-group-text {
       text-align: center;
-      background-color: rgba(black, 0.4);
       border: none;
       border-radius: 0;
     }
-    .form-control {
-      color: white;
-      background-color: rgba(lighten(black, 10%), 0.4);
-      &::placeholder {
-        color: $gray-dark-for-login;
-      }
-    }
   }
+
   .input-group:not(.has-error) {
     .form-control {
       border: transparent;
     }
   }
 
-  .external-auth {
-    form {
-      flex: 1;
-      @media (min-width: 350px) {
-        flex: 0.49;
-      }
-    }
-    .spacer {
-      height: 10px;
-    }
-  }
-
   .collapse-external-auth {
     overflow: hidden;
-    &:not(.in) {
-      height: 0;
-      padding: 0 !important;
-    }
   }
 
-  // button style
-  .btn-login.fcbtn,
-  .btn-register.fcbtn,
-  .btn-login-oauth.fcbtn,
-  .btn-collapse-external-auth {
-    color: white;
-    background-color: rgba(lighten(black, 20%), 0.4);
-    border: none;
+  $btn-fill-colors: (
+    'login': (
+      rgba($danger, 0.4),
+      rgba(#7e4153, 0.7),
+    ),
+    'register': (
+      rgba($success, 0.4),
+      rgba(#3f7263, 0.7),
+    ),
+    'google': (
+      rgba(#24292e, 0.4),
+      #444,
+    ),
+    'github': (
+      rgba(lighten(black, 20%), 0.4),
+      #444,
+    ),
+    'facebook': (
+      rgba(#29487d, 0.4),
+      #444,
+    ),
+    'twitter': (
+      rgba(#1da1f2, 0.4),
+      #444,
+    ),
+    'oidc': (
+      rgba(#24292e, 0.4),
+      #444,
+    ),
+    'saml': (
+      rgba(#55a79a, 0.4),
+      #444,
+    ),
+    'basic': (
+      rgba(#24292e, 0.4),
+      #444,
+    ),
+  );
 
-    .btn-label {
-      padding: 9px 15px;
-      margin: -8px 20px -8px -20px;
+  @each $label, $colors in $btn-fill-colors {
+    .btn-fill##{$label} {
+      .btn-label {
+        background-color: nth($colors, 1);
+      }
+      .eff {
+        background-color: nth($colors, 2);
+      }
     }
-    &:focus {
-      border: none;
-    }
-  }
-  .btn-login-oauth {
-    flex: 1;
-    .btn-label-text {
-      flex: 1;
-    }
-  }
-  .btn-login.fcbtn {
-    .btn-label {
-      background-color: rgba($brand-danger, 0.4);
-    }
-    &:after {
-      background-color: #7e4153;
-    }
-  }
-  .btn-login-oauth.fcbtn#google {
-    .btn-label {
-      background: rgba(#f13d25, 0.4);
-    }
-    &:after {
-      background-color: #555;
-    }
-  }
-  .btn-login-oauth.fcbtn#github {
-    .btn-label {
-      background-color: rgba(#24292e, 0.4);
-    }
-    &:after {
-      background-color: #555;
-    }
-  }
-  .btn-login-oauth.fcbtn#facebook {
-    .btn-label {
-      background-color: rgba(#29487d, 0.4);
-    }
-    &:after {
-      background-color: #555;
-    }
-  }
-  .btn-login-oauth.fcbtn#twitter {
-    .btn-label {
-      background-color: rgba(#1da1f2, 0.4);
-    }
-    &:after {
-      background-color: #555;
-    }
-  }
-  .btn-login-oauth.fcbtn#saml {
-    .btn-label {
-      background-color: rgba(#55a79a, 0.4);
-    }
-    &:after {
-      background-color: #555;
-    }
-  }
-  .btn-register.fcbtn {
-    .btn-label {
-      background-color: rgba($brand-success, 0.4);
-    }
-    .btn-label-text {
-      display: inline-block;
-      min-width: 45px;
-    }
-    &:after {
-      background-color: #3f7263;
-    }
-  }
-
-  hr {
-    margin: 10px 0;
-    border-color: #ccc;
   }
 
   // footer link text
   .link-growi-org {
     font-size: smaller;
     font-weight: bold;
-    color: rgba(black, 0.4);
 
     &,
     .growi,
     .org {
       transition: color 0.8s;
     }
-
-    &:hover,
-    &.focus {
-      color: black;
-      .growi {
-        color: darken($growi-green, 20%);
-      }
-      .org {
-        color: darken($growi-blue, 15%);
-      }
-    }
   }
+
   .link-switch {
-    color: $gray-lighter;
+    color: $gray-200;
+
     &:hover {
       color: white;
     }
+  }
+
+  .grw-fixed-controls-container {
+    display: none;
   }
 }
 
 .login-page {
   // layout
-  .main .row {
-    @media (min-width: 350px) {
-      .col-sm-offset-4 {
-        margin-left: calc(50% - 160px);
-      }
-      .col-sm-4 {
-        width: 320px;
-      }
-    }
+  .main .row .login-header,
+  .login-dialog {
+    width: 320px;
   }
+
   .link-growi-org {
     position: absolute;
     bottom: 9px;
-    z-index: 2;
+    z-index: 3;
   }
 
-  // flip animation
-  .login-dialog.flipper {
-    transition: min-height 0.2s;
-
-    &.to-flip {
-      min-height: 295px;
-      // has-error
-      &.has-error {
-        min-height: #{295px + 32px};
-      }
-    }
-
-    .front,
-    .back {
-      transition: 0.4s;
-      backface-visibility: hidden;
-      transform-style: preserve-3d;
-      // fix https://github.com/weseek/growi/issues/330
-      -webkit-backface-visibility: hidden;
-      -webkit-transform-style: preserve-3d;
-    }
-    .front {
-      z-index: 2;
-    }
-    .back {
-      position: absolute;
-      top: 0;
-      right: 15px;
-      left: 15px;
-    }
-    .back,
-    &.to-flip .front {
-      transform: rotateY(180deg);
-
-      // fix https://github.com/weseek/growi/issues/330
-      // 'backface-visibility: hidden' and 'z-index: -1' breaks layout in iOS
-      .fcbtn:after {
-        z-index: 0;
-        opacity: 0.3;
-      }
-    }
-    &.to-flip .back {
-      transform: rotateY(0deg);
-    }
+  // To adjust the behavior, this problem is not solved.
+  // See https://github.com/AaronCCWong/react-card-flip/issues/56
+  .react-card-front,
+  .react-card-back {
+    height: 0% !important;
   }
 }
 
-.installer,
 .invited,
 .nologin.error {
   .main .row {
     @media (min-width: 510px) {
-      .col-sm-offset-4 {
+      .offset-sm-4 {
         margin-left: calc(50% - 240px);
       }
+
       .col-sm-4 {
         width: 480px;
       }
     }
   }
+}
+
+.login-header,
+.login-dialog {
+  max-width: 480px;
 }
 
 .nologin.error {

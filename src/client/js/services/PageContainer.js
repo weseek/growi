@@ -4,8 +4,21 @@ import loggerFactory from '@alias/logger';
 
 import * as entities from 'entities';
 import * as toastr from 'toastr';
+import { toastError } from '../util/apiNotification';
+
+import {
+  DetachCodeBlockInterceptor,
+  RestoreCodeBlockInterceptor,
+} from '../util/interceptor/detach-code-blocks';
+
+import {
+  DrawioInterceptor,
+} from '../util/interceptor/drawio-interceptor';
 
 const logger = loggerFactory('growi:services:PageContainer');
+const scrollThresForSticky = 0;
+const scrollThresForCompact = 30;
+const scrollThresForThrottling = 100;
 
 /**
  * Service container related to Page
@@ -28,20 +41,29 @@ export default class PageContainer extends Container {
     }
 
     const revisionId = mainContent.getAttribute('data-page-revision-id');
-
+    const path = decodeURI(mainContent.getAttribute('data-path'));
     this.state = {
       // local page data
       markdown: null, // will be initialized after initStateMarkdown()
       pageId: mainContent.getAttribute('data-page-id'),
       revisionId,
       revisionCreatedAt: +mainContent.getAttribute('data-page-revision-created'),
-      path: mainContent.getAttribute('data-path'),
+      revisionAuthor: JSON.parse(mainContent.getAttribute('data-page-revision-author')),
+      path,
       tocHtml: '',
-      isLiked: false,
-      seenUserIds: [],
-      likerUserIds: [],
-
+      isLiked: JSON.parse(mainContent.getAttribute('data-page-is-liked')),
+      seenUsers: [],
+      likerUsers: [],
+      sumOfSeenUsers: 0,
+      sumOfLikers: 0,
+      createdAt: mainContent.getAttribute('data-page-created-at'),
+      creator: JSON.parse(mainContent.getAttribute('data-page-creator')),
+      updatedAt: mainContent.getAttribute('data-page-updated-at'),
+      isDeleted:  JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
+      isDeletable:  JSON.parse(mainContent.getAttribute('data-page-is-deletable')),
+      isAbleToDeleteCompletely:  JSON.parse(mainContent.getAttribute('data-page-is-able-to-delete-completely')),
       tags: [],
+      hasChildren: JSON.parse(mainContent.getAttribute('data-page-has-children')),
       templateTagData: mainContent.getAttribute('data-template-tags') || null,
 
       // latest(on remote) information
@@ -51,15 +73,52 @@ export default class PageContainer extends Container {
       pageIdOnHackmd: mainContent.getAttribute('data-page-id-on-hackmd') || null,
       hasDraftOnHackmd: !!mainContent.getAttribute('data-page-has-draft-on-hackmd'),
       isHackmdDraftUpdatingInRealtime: false,
+
+      isHeaderSticky: false,
+      isSubnavCompact: false,
     };
+
+    const { interceptorManager } = this.appContainer;
+    interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(appContainer), 10); // process as soon as possible
+    interceptorManager.addInterceptor(new DrawioInterceptor(appContainer), 20);
+    interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(appContainer), 900); // process as late as possible
 
     this.initStateMarkdown();
     this.initStateOthers();
 
     this.setTocHtml = this.setTocHtml.bind(this);
     this.save = this.save.bind(this);
+    this.checkAndUpdateImageUrlCached = this.checkAndUpdateImageUrlCached.bind(this);
     this.addWebSocketEventHandlers = this.addWebSocketEventHandlers.bind(this);
     this.addWebSocketEventHandlers();
+
+    window.addEventListener('scroll', () => {
+      const currentYOffset = window.pageYOffset;
+
+      // original throttling
+      if (this.state.isSubnavCompact && scrollThresForThrottling < currentYOffset) {
+        return;
+      }
+
+      this.setState({
+        isHeaderSticky: scrollThresForSticky < currentYOffset,
+        isSubnavCompact: scrollThresForCompact < currentYOffset,
+      });
+    });
+
+    const unlinkPageButton = document.getElementById('unlink-page-button');
+    if (unlinkPageButton != null) {
+      unlinkPageButton.addEventListener('click', async() => {
+        try {
+          const res = await this.appContainer.apiPost('/pages.unlink', { path });
+          window.location.href = encodeURI(`${res.path}?unlinked=true`);
+        }
+        catch (err) {
+          toastError(err);
+        }
+      });
+    }
+
   }
 
   /**
@@ -84,24 +143,58 @@ export default class PageContainer extends Container {
     this.state.markdown = markdown;
   }
 
-  initStateOthers() {
-    const likeButtonElem = document.getElementById('like-button');
-    if (likeButtonElem != null) {
-      this.state.isLiked = likeButtonElem.dataset.liked === 'true';
-    }
+  async initStateOthers() {
 
     const seenUserListElem = document.getElementById('seen-user-list');
     if (seenUserListElem != null) {
-      const userIdsStr = seenUserListElem.dataset.userIds;
-      this.state.seenUserIds = userIdsStr.split(',');
+      const { userIdsStr, sumOfSeenUsers } = seenUserListElem.dataset;
+      this.setState({ sumOfSeenUsers });
+
+      if (userIdsStr === '') {
+        return;
+      }
+
+      const { users } = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr });
+      this.setState({ seenUsers: users });
+
+      this.checkAndUpdateImageUrlCached(users);
     }
 
 
     const likerListElem = document.getElementById('liker-list');
     if (likerListElem != null) {
-      const userIdsStr = likerListElem.dataset.userIds;
-      this.state.likerUserIds = userIdsStr.split(',');
+      const { userIdsStr, sumOfLikers } = likerListElem.dataset;
+      this.setState({ sumOfLikers });
+
+      if (userIdsStr === '') {
+        return;
+      }
+
+      const { users } = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr });
+      this.setState({ likerUsers: users });
+
+      this.checkAndUpdateImageUrlCached(users);
     }
+  }
+
+  async checkAndUpdateImageUrlCached(users) {
+    const noImageCacheUsers = users.filter((user) => { return user.imageUrlCached == null });
+    if (noImageCacheUsers.length === 0) {
+      return;
+    }
+
+    const noImageCacheUserIds = noImageCacheUsers.map((user) => { return user.id });
+    try {
+      await this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
+    }
+    catch (err) {
+      // Error alert doesn't apear, because user don't need to notice this error.
+      logger.error(err);
+    }
+  }
+
+  get navigationContainer() {
+    return this.appContainer.getContainer('NavigationContainer');
   }
 
   setLatestRemotePageData(page, user) {
@@ -124,7 +217,7 @@ export default class PageContainer extends Container {
    * @param {Array[Tag]} tags Array of Tag
    */
   updateStateAfterSave(page, tags) {
-    const { editorMode } = this.appContainer.state;
+    const { editorMode } = this.navigationContainer.state;
 
     // update state of PageContainer
     const newState = {
@@ -168,7 +261,7 @@ export default class PageContainer extends Container {
    * @return {object} { page: Page, tags: Tag[] }
    */
   async save(markdown, optionsToSave = {}) {
-    const { editorMode } = this.appContainer.state;
+    const { editorMode } = this.navigationContainer.state;
 
     const { pageId, path } = this.state;
     let { revisionId } = this.state;
@@ -199,7 +292,7 @@ export default class PageContainer extends Container {
       throw new Error(msg);
     }
 
-    const { editorMode } = this.appContainer.state;
+    const { editorMode } = this.navigationContainer.state;
     if (editorMode == null) {
       logger.warn('\'saveAndReload\' requires the \'errorMode\' param');
       return;
@@ -271,6 +364,53 @@ export default class PageContainer extends Container {
       throw new Error(res.error);
     }
     return { page: res.page, tags: res.tags };
+  }
+
+  deletePage(isRecursively, isCompletely) {
+    const websocketContainer = this.appContainer.getContainer('WebsocketContainer');
+
+    // control flag
+    const completely = isCompletely ? true : null;
+    const recursively = isRecursively ? true : null;
+
+    return this.appContainer.apiPost('/pages.remove', {
+      recursively,
+      completely,
+      page_id: this.state.pageId,
+      revision_id: this.state.revisionId,
+      socketClientId: websocketContainer.getSocketClientId(),
+    });
+
+  }
+
+  revertRemove(isRecursively) {
+    const websocketContainer = this.appContainer.getContainer('WebsocketContainer');
+
+    // control flag
+    const recursively = isRecursively ? true : null;
+
+    return this.appContainer.apiPost('/pages.revertRemove', {
+      recursively,
+      page_id: this.state.pageId,
+      socketClientId: websocketContainer.getSocketClientId(),
+    });
+  }
+
+  rename(pageNameInput, isRenameRecursively, isRenameRedirect, isRenameMetadata) {
+    const websocketContainer = this.appContainer.getContainer('WebsocketContainer');
+    const isRecursively = isRenameRecursively ? true : null;
+    const isRedirect = isRenameRedirect ? true : null;
+    const isRemain = isRenameMetadata ? true : null;
+
+    return this.appContainer.apiPost('/pages.rename', {
+      recursively: isRecursively,
+      page_id: this.state.pageId,
+      revision_id: this.state.revisionId,
+      new_path: pageNameInput,
+      create_redirect: isRedirect,
+      remain_metadata: isRemain,
+      socketClientId: websocketContainer.getSocketClientId(),
+    });
   }
 
   showSuccessToastr() {

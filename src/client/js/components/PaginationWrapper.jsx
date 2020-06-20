@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import Pagination from 'react-bootstrap/lib/Pagination';
-import { createSubscribedElement } from './UnstatedUtils';
+import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
+
+import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 
 class PaginationWrapper extends React.Component {
@@ -71,20 +72,23 @@ class PaginationWrapper extends React.Component {
     const paginationItems = [];
     if (activePage !== 1) {
       paginationItems.push(
-        <Pagination.First key="first" onClick={() => { return this.props.changePage(1) }} />,
-      );
-      paginationItems.push(
-        <Pagination.Prev key="prev" onClick={() => { return this.props.changePage(activePage - 1) }} />,
+        <PaginationItem key="painationItemFirst">
+          <PaginationLink first onClick={() => { return this.props.changePage(1) }} />
+        </PaginationItem>,
+        <PaginationItem key="painationItemPrevious">
+          <PaginationLink previous onClick={() => { return this.props.changePage(activePage - 1) }} />
+        </PaginationItem>,
       );
     }
     else {
       paginationItems.push(
-        <Pagination.First key="first" disabled />,
+        <PaginationItem key="painationItemFirst" disabled>
+          <PaginationLink first />
+        </PaginationItem>,
+        <PaginationItem key="painationItemPrevious" disabled>
+          <PaginationLink previous />
+        </PaginationItem>,
       );
-      paginationItems.push(
-        <Pagination.Prev key="prev" disabled />,
-      );
-
     }
     return paginationItems;
   }
@@ -98,7 +102,11 @@ class PaginationWrapper extends React.Component {
     const paginationItems = [];
     for (let number = paginationStart; number <= maxViewPageNum; number++) {
       paginationItems.push(
-        <Pagination.Item key={number} active={number === activePage} onClick={() => { return this.props.changePage(number) }}>{number}</Pagination.Item>,
+        <PaginationItem key={`paginationItem-${number}`} active={number === activePage}>
+          <PaginationLink onClick={() => { return this.props.changePage(number) }}>
+            {number}
+          </PaginationLink>
+        </PaginationItem>,
       );
     }
     return paginationItems;
@@ -113,20 +121,23 @@ class PaginationWrapper extends React.Component {
     const paginationItems = [];
     if (totalPage !== activePage) {
       paginationItems.push(
-        <Pagination.Next key="next" onClick={() => { return this.props.changePage(activePage + 1) }} />,
-      );
-      paginationItems.push(
-        <Pagination.Last key="last" onClick={() => { return this.props.changePage(totalPage) }} />,
+        <PaginationItem key="painationItemNext">
+          <PaginationLink next onClick={() => { return this.props.changePage(activePage + 1) }} />
+        </PaginationItem>,
+        <PaginationItem key="painationItemLast">
+          <PaginationLink last onClick={() => { return this.props.changePage(totalPage) }} />
+        </PaginationItem>,
       );
     }
     else {
       paginationItems.push(
-        <Pagination.Next key="next" disabled />,
+        <PaginationItem key="painationItemNext" disabled>
+          <PaginationLink next />
+        </PaginationItem>,
+        <PaginationItem key="painationItemLast" disabled>
+          <PaginationLink last />
+        </PaginationItem>,
       );
-      paginationItems.push(
-        <Pagination.Last key="last" disabled />,
-      );
-
     }
     return paginationItems;
 
@@ -148,9 +159,7 @@ class PaginationWrapper extends React.Component {
 
     return (
       <React.Fragment>
-        <div>
-          <Pagination bsSize="small">{paginationItems}</Pagination>
-        </div>
+        <Pagination size="sm">{paginationItems}</Pagination>
       </React.Fragment>
     );
   }
@@ -158,9 +167,7 @@ class PaginationWrapper extends React.Component {
 
 }
 
-const PaginationWrappered = (props) => {
-  return createSubscribedElement(PaginationWrapper, props, [AppContainer]);
-};
+const PaginationWrappered = withUnstatedContainers(PaginationWrapper, [AppContainer]);
 
 PaginationWrapper.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,

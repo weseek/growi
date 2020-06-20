@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Button from 'react-bootstrap/es/Button';
-import Modal from 'react-bootstrap/es/Modal';
+
+import {
+  Button, Modal, ModalHeader, ModalBody, ModalFooter,
+} from 'reactstrap';
 
 import AppContainer from '../../services/AppContainer';
 
@@ -44,18 +46,18 @@ export default class TagEditor extends React.Component {
 
   render() {
     return (
-      <Modal show={this.state.isOpenModal} onHide={this.closeModalHandler} id="editTagModal">
-        <Modal.Header closeButton className="bg-primary">
-          <Modal.Title className="text-white">Edit Tags</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+      <Modal isOpen={this.state.isOpenModal} toggle={this.closeModalHandler} id="edit-tag-modal">
+        <ModalHeader tag="h4" toggle={this.closeModalHandler} className="bg-primary text-light">
+          Edit Tags
+        </ModalHeader>
+        <ModalBody>
           <TagsInput tags={this.state.tags} onTagsUpdated={this.onTagsUpdatedByTagsInput} />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary" onClick={this.handleSubmit}>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="primary" onClick={this.handleSubmit}>
             Done
           </Button>
-        </Modal.Footer>
+        </ModalFooter>
       </Modal>
     );
   }

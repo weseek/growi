@@ -163,7 +163,7 @@ module.exports = (crowi) => {
     const isInstalled = await appService.isDBInitialized();
 
     if (isInstalled) {
-      req.flash('errorMessage', 'Application already installed.');
+      req.flash('errorMessage', req.t('message.application_already_installed'));
       return res.redirect('admin'); // admin以外はadminRequiredで'/'にリダイレクトされる
     }
 
@@ -186,7 +186,7 @@ module.exports = (crowi) => {
           && configManager.getConfig('crowi', 'aws:bucket') !== ''
           && configManager.getConfig('crowi', 'aws:accessKeyId') !== ''
           && configManager.getConfig('crowi', 'aws:secretAccessKey') !== '') {
-        req.flash('globalError', 'AWS settings required to use this function. Please ask the administrator.');
+        req.flash('globalError', req.t('message.aws_sttings_required'));
         return res.redirect('/');
       }
 

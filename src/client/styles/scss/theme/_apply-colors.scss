@@ -1,0 +1,424 @@
+//
+//== Apply to Bootstrap
+//
+
+// determine optional variables
+$border-image-navbar: linear-gradient(to right, #ccc 0%, #ccc 100%) !default;
+$bgcolor-search-top-dropdown: $secondary !default;
+$bgcolor-sidebar-nav-item-active: darken($bgcolor-sidebar, 10%) !default;
+$text-shadow-sidebar-nav-item-active: 1px 1px 2px $primary !default;
+$bgcolor-inline-code: #f0f0f0 !default;
+$color-inline-code: #c7254e !default;
+$bordercolor-inline-code: #ccc8c8 !default;
+$bordercolor-nav-tabs: #dee2e6 !default;
+$bordercolor-nav-tabs-hover: #e9ecef #e9ecef $bordercolor-nav-tabs !default;
+$color-nav-tabs-link-active: #495057 !default;
+$bordercolor-nav-tabs-active: $bordercolor-nav-tabs $bordercolor-nav-tabs $bgcolor-global !default;
+
+// override bootstrap variables
+$body-bg: $bgcolor-global;
+$body-color: $color-global;
+$link-color: $color-link;
+$link-hover-color: $color-link-hover;
+$input-focus-color: $color-global;
+$nav-tabs-border-color: $bordercolor-nav-tabs;
+$nav-tabs-link-hover-border-color: $bordercolor-nav-tabs-hover;
+$nav-tabs-link-active-color: $color-nav-tabs-link-active;
+$nav-tabs-link-active-bg: $bgcolor-global;
+$nav-tabs-link-active-border-color: $bordercolor-nav-tabs-active;
+
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import '~bootstrap/scss/mixins';
+@import '../mixins';
+@import 'mixins/list-group';
+@import 'mixins/tables'; // comment out and use _reboot-bootstrap-tables instead -- 2020.05.28 Yuki Takei
+@import 'reboot-bootstrap-colors';
+@import 'reboot-bootstrap-theme-colors';
+@import 'reboot-bootstrap-nav';
+@import 'reboot-toastr-colors';
+
+:not(pre) {
+  > code {
+    color: $color-inline-code;
+    background-color: $bgcolor-inline-code;
+    border-color: $bordercolor-inline-code;
+  }
+}
+
+pre:not(.hljs):not(.CodeMirror-line) {
+  background-color: $bgcolor-inline-code;
+  border-color: $bordercolor-inline-code;
+}
+
+//
+//== Apply to Bootstrap Elements
+//
+
+// Alert link
+@each $color, $value in $theme-colors {
+  .alert.alert-#{$color} {
+    a,
+    a:hover {
+      color: theme-color-level($color, $alert-color-level - 2);
+    }
+  }
+}
+
+// Link buttons
+.btn-link {
+  color: $link-color;
+
+  @include hover {
+    color: $link-hover-color;
+  }
+}
+
+// Dropdown
+.dropdown-menu {
+  form {
+    color: $color-global;
+  }
+}
+
+.dropdown-item {
+  color: $color-global;
+  &.active,
+  &:active {
+    color: $color-dropdown-link-active;
+    background-color: $bgcolor-dropdown-link-active;
+  }
+}
+
+// Form
+.form-control {
+  @include form-control-focus();
+}
+
+// Tabs
+.nav.nav-tabs .nav-link.active {
+  color: $color-link !important;
+  background: transparent;
+
+  &:hover,
+  &:focus {
+    color: $color-link-hover !important;
+  }
+}
+
+//
+//== Apply to Handsontable
+//
+.handsontable {
+  color: initial;
+}
+
+//
+//== Apply to GROWI Elements
+//
+
+.grw-logo {
+  // set transition for fill
+  svg * {
+    transition: fill 0.8s ease-out;
+  }
+
+  svg {
+    fill: $fillcolor-logo-mark;
+  }
+
+  &:hover {
+    svg {
+      .group1 {
+        fill: $growi-green;
+      }
+
+      .group2 {
+        fill: $growi-blue;
+      }
+    }
+  }
+}
+
+.grw-navbar {
+  background: $bgcolor-navbar;
+  .nav-item > .nav-link {
+    color: $color-link-nabvar;
+  }
+
+  border-image: $border-image-navbar;
+  border-image-slice: 1;
+
+  .grw-app-title {
+    color: $fillcolor-logo-mark;
+  }
+}
+
+.search-top {
+  .btn-secondary.dropdown-toggle {
+    @include button-variant($bgcolor-search-top-dropdown, $bgcolor-search-top-dropdown);
+  }
+
+  // for https://youtrack.weseek.co.jp/issue/GW-2603
+  .search-typeahead {
+    background-color: rgba($bgcolor-global, 0.9);
+  }
+}
+
+.grw-sidebar {
+  // override @atlaskit/navigation-next styles
+  .ak-navigation-resize-button {
+    $color-resize-button: $color-global !default;
+    $bgcolor-resize-button: white !default;
+    $color-resize-button-hover: $color-reversal !default;
+    $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%) !default;
+
+    @include override-hexagon-color($color-resize-button, $bgcolor-resize-button);
+
+    &:hover {
+      @include override-hexagon-color($color-resize-button-hover, $bgcolor-resize-button-hover);
+    }
+  }
+  div[data-testid='GlobalNavigation'] {
+    > div {
+      background-color: $bgcolor-sidebar;
+    }
+  }
+  div[data-testid='ContextualNavigation'] {
+    > div {
+      color: $color-sidebar-context;
+      background-color: $bgcolor-sidebar-context;
+    }
+  }
+
+  .grw-sidebar-nav {
+    .btn {
+      @include button-variant(
+        $bgcolor-sidebar,
+        $bgcolor-sidebar,
+        darken($bgcolor-sidebar, 7.5%),
+        darken($bgcolor-sidebar, 10%),
+        $bgcolor-sidebar-nav-item-active,
+        $bgcolor-sidebar-nav-item-active
+      );
+    }
+  }
+  .grw-sidebar-nav-primary-container {
+    .btn.active {
+      i {
+        text-shadow: $text-shadow-sidebar-nav-item-active;
+      }
+      // fukidashi
+      &:after {
+        border-right-color: $bgcolor-sidebar-context;
+      }
+    }
+  }
+}
+
+/*
+ * Icon
+ */
+.editor-container .navbar-editor svg {
+  fill: $color-editor-icons;
+}
+
+/*
+ * Modal
+ */
+.modal {
+  .modal-header {
+    border-bottom-color: $border-color-theme;
+    .close {
+      color: $light;
+      opacity: 0.5;
+      &:hover {
+        opacity: 0.9;
+      }
+    }
+  }
+
+  .modal-content {
+    background-color: $bgcolor-global;
+  }
+
+  .modal-footer {
+    border-top-color: $border-color-theme;
+  }
+}
+
+.liker-and-seenusers {
+  border-bottom-color: $bordercolor-nav-tabs;
+}
+
+/*
+ * cards
+ */
+.card.well {
+  color: $color-global;
+  background-color: $bgcolor-card;
+  border-color: $light;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+/*
+ * Form Slider
+ */
+.admin-page {
+  span.slider {
+    background-color: #ccc;
+
+    &:before {
+      background-color: white;
+    }
+  }
+
+  input:checked + .slider {
+    background-color: #007bff;
+  }
+
+  input:focus + .slider {
+    box-shadow: 0 0 1px #007bff;
+  }
+}
+
+/*
+ * GROWI wiki
+ */
+.wiki {
+  a {
+    color: $color-link-wiki;
+
+    &:hover {
+      color: $color-link-wiki-hover;
+    }
+  }
+
+  // table with handsontable modal button
+  .editable-with-handsontable {
+    button {
+      color: $color-link-wiki;
+    }
+
+    button:hover {
+      color: $color-link-wiki-hover;
+    }
+  }
+}
+
+/*
+ * GROWI on-edit
+ */
+body.on-edit {
+  .main {
+    background-color: darken($bgcolor-global, 2%);
+
+    .page-editor-editor-container {
+      border-right-color: $border-color-theme;
+
+      .navbar-editor {
+        background-color: $bgcolor-global; // same color with active tab
+        border-bottom-color: $border-color-theme;
+      }
+    }
+
+    .page-editor-preview-container {
+      background-color: $bgcolor-global;
+    }
+
+    .page-editor-footer {
+      border-top-color: $border-color-theme;
+    }
+  }
+}
+
+/*
+ * GROWI comment form
+ */
+.growi .main {
+  .page-comments-row {
+    border-top-color: $border-color-theme;
+  }
+
+  .page-comment .page-comment-main,
+  .page-comment-form .comment-form-main {
+    background-color: darken($bgcolor-global, 4%);
+
+    &:before {
+      border-right-color: darken($bgcolor-global, 4%);
+    }
+
+    .nav.nav-tabs {
+      > li > a.active {
+        background: transparent;
+        border-bottom: solid 1px darken($bgcolor-global, 4%);
+        border-bottom-color: darken($bgcolor-global, 4%);
+      }
+    }
+  }
+}
+
+/*
+ * GROWI search result
+ */
+.search-result {
+  .search-result-list {
+    .page-list {
+      .page-list-ul {
+        > li.nav-item > a.nav-link {
+          color: inherit;
+        }
+
+        a {
+          &.hover {
+            background-color: darken($bgcolor-global, 4%);
+          }
+          &.active {
+            background-color: darken($bgcolor-global, 8%);
+            border-color: theme-color('primary');
+          }
+        }
+      }
+    }
+  }
+}
+
+/*
+ * react bootstrap typeahead
+ */
+mark.rbt-highlight-text {
+  // Temporarily the highlight color is black
+  color: black;
+}
+
+/*
+ * GROWI page attachments
+ */
+.page-attachments-row {
+  background-color: darken($bgcolor-global, 2%);
+  border-top-color: $border-color-theme;
+}
+
+/*
+ * GROWI admin page #themeOptions
+ */
+.admin-page {
+  #themeOptions {
+    .theme-option-container.active {
+      .theme-option-name {
+        color: $color-global;
+      }
+      a {
+        background-color: $color-theme-color-box;
+        border-color: $color-theme-color-box;
+      }
+    }
+  }
+}
+
+/*
+ * HackMd
+ */
+.bg-box {
+  background-color: $bgcolor-global;
+}

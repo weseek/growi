@@ -8,7 +8,7 @@ import { envUtils } from 'growi-commons';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
@@ -288,8 +288,8 @@ class PageEditor extends React.Component {
     const emojiStrategy = this.props.appContainer.getEmojiStrategy();
 
     return (
-      <div className="row">
-        <div className="col-md-6 col-sm-12 page-editor-editor-container">
+      <div className="d-flex flex-wrap">
+        <div className="page-editor-editor-container flex-grow-1 flex-basis-0 mw-0">
           <Editor
             ref={(c) => { this.editor = c }}
             value={this.state.markdown}
@@ -305,7 +305,7 @@ class PageEditor extends React.Component {
             onSave={this.onSaveWithShortcut}
           />
         </div>
-        <div className="col-md-6 hidden-sm hidden-xs page-editor-preview-container">
+        <div className="d-none d-xl-block page-editor-preview-container flex-grow-1 flex-basis-0 mw-0">
           <Preview
             markdown={this.state.markdown}
             // eslint-disable-next-line no-return-assign
@@ -324,9 +324,7 @@ class PageEditor extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const PageEditorWrapper = (props) => {
-  return createSubscribedElement(PageEditor, props, [AppContainer, PageContainer, EditorContainer]);
-};
+const PageEditorWrapper = withUnstatedContainers(PageEditor, [AppContainer, PageContainer, EditorContainer]);
 
 PageEditor.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,

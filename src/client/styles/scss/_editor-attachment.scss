@@ -100,7 +100,7 @@
     /* end of.dropzone */
   }
 
-  .btn-open-dropzone {
+  .btn.btn-open-dropzone {
     z-index: 2;
     padding-top: 3px;
     padding-bottom: 3px;
@@ -108,7 +108,6 @@
     border: none;
     border-top: 1px dotted #ccc;
     border-bottom: none;
-    border-radius: 0;
 
     &:active {
       box-shadow: none;
@@ -117,22 +116,6 @@
     &:hover,
     &:focus {
       border-bottom: none;
-    }
-  }
-}
-
-#page-editor {
-  @media (max-width: $screen-xs) {
-    .desc-long {
-      display: none;
-    }
-  }
-}
-
-.comment-form {
-  @media (max-width: $screen-sm) {
-    .desc-long {
-      display: none;
     }
   }
 }

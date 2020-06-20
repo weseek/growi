@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
@@ -38,7 +38,7 @@ class AwsSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <p className="well">
+        <p className="card well">
           {t('admin:app_setting.aws_access')}
           <br />
           {t('admin:app_setting.no_smtp_setting')}
@@ -50,11 +50,11 @@ class AwsSetting extends React.Component {
           </span>
         </p>
 
-        <div className="row mb-5">
-          <label className="col-xs-3 control-label">
+        <div className="row form-group">
+          <label className="text-left text-md-right col-md-3 col-form-label">
             {t('admin:app_setting.region')}
           </label>
-          <div className="col-xs-6">
+          <div className="col-md-6">
             <input
               className="form-control"
               placeholder={`${t('eg')} ap-northeast-1`}
@@ -66,11 +66,11 @@ class AwsSetting extends React.Component {
           </div>
         </div>
 
-        <div className="row mb-5">
-          <label className="col-xs-3 control-label">
+        <div className="row form-group">
+          <label className="text-left text-md-right col-md-3 col-form-label">
             {t('admin:app_setting.custom_endpoint')}
           </label>
-          <div className="col-xs-6">
+          <div className="col-md-6">
             <input
               className="form-control"
               type="text"
@@ -80,15 +80,15 @@ class AwsSetting extends React.Component {
                 adminAppContainer.changeCustomEndpoint(e.target.value);
               }}
             />
-            <p className="help-block">{t('admin:app_setting.custom_endpoint_change')}</p>
+            <p className="form-text text-muted">{t('admin:app_setting.custom_endpoint_change')}</p>
           </div>
         </div>
 
-        <div className="row mb-5">
-          <label className="col-xs-3 control-label">
+        <div className="row form-group">
+          <label className="text-left text-md-right col-md-3 col-form-label">
             {t('admin:app_setting.bucket_name')}
           </label>
-          <div className="col-xs-6">
+          <div className="col-md-6">
             <input
               className="form-control"
               type="text"
@@ -101,11 +101,11 @@ class AwsSetting extends React.Component {
           </div>
         </div>
 
-        <div className="row mb-5">
-          <label className="col-xs-3 control-label">
-            Access Key ID
+        <div className="row form-group">
+          <label className="text-left text-md-right col-md-3 col-form-label">
+            Access key ID
           </label>
-          <div className="col-xs-6">
+          <div className="col-md-6">
             <input
               className="form-control"
               type="text"
@@ -117,11 +117,11 @@ class AwsSetting extends React.Component {
           </div>
         </div>
 
-        <div className="row mb-5">
-          <label className="col-xs-3 control-label">
-            Secret Access Key
+        <div className="row form-group">
+          <label className="text-left text-md-right col-md-3 col-form-label">
+            Secret access key
           </label>
-          <div className="col-xs-6">
+          <div className="col-md-6">
             <input
               className="form-control"
               type="text"
@@ -143,9 +143,7 @@ class AwsSetting extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const AwsSettingWrapper = (props) => {
-  return createSubscribedElement(AwsSetting, props, [AppContainer, AdminAppContainer]);
-};
+const AwsSettingWrapper = withUnstatedContainers(AwsSetting, [AppContainer, AdminAppContainer]);
 
 AwsSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next

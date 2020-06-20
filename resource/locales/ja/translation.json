@@ -2,7 +2,7 @@
   "Help": "ヘルプ",
   "Edit": "編集",
   "Delete": "削除",
-  "Delete All": "全て削除",
+  "delete_all": "全て削除",
   "Duplicate": "複製",
   "Copy": "コピー",
   "Click to copy": "クリックでコピー",
@@ -55,14 +55,11 @@
   "Share Link": "共有用リンク",
   "Markdown Link": "Markdown形式のリンク",
   "Create/Edit Template": "テンプレートページの作成/編集",
-  "Unportalize": "ポータル解除",
   "Go to this version": "このバージョンを見る",
   "View diff": "差分を表示",
   "No diff": "差分なし",
   "Shrink versions that have no diffs": "差分のないバージョンをコンパクトに表示する",
   "User ID": "ユーザーID",
-  "Home": "ホーム",
-  "User Settings": "ユーザー設定",
   "User Information": "ユーザー情報",
   "Basic Info": "ユーザーの基本情報",
   "Name": "名前",
@@ -90,7 +87,7 @@
   "New Page": "新規ページ",
   "Create under": "ページを以下に作成",
   "Table of Contents": "目次",
-  "Management Wiki Home": "Wiki管理トップ",
+  "Wiki Management Home Page": "Wiki管理トップ",
   "App Settings": "アプリ設定",
   "Site URL settings": "サイトURL設定",
   "Markdown Settings": "マークダウン設定",
@@ -108,8 +105,15 @@
   "Public": "公開",
   "Anyone with the link": "リンクを知っている人のみ",
   "Specified users": "特定ユーザーのみ",
-  "Just me": "自分のみ",
+  "Only me": "自分のみ",
   "Only inside the group": "特定グループのみ",
+  "page_list_and_search_results": "ページリスト・検索結果",
+  "scope_of_page_disclosure": "ページの公開範囲",
+  "set_point": "設定値",
+  "always_displayed": "表示 (固定)",
+  "always_hidden": "非表示 (固定)",
+  "displayed_or_hidden": "表示 / 非表示",
+  "page_access_and_delete_rights": "ページの閲覧・削除権限",
   "Reselect the group": "グループの再選択",
   "Shareable link": "このページの共有用URL",
   "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
@@ -122,6 +126,20 @@
   "List Drafts": "下書き一覧",
   "Deleted Pages": "削除済みページ",
   "Sign out": "ログアウト",
+  "Disassociate": "連携解除",
+  "Color mode": "カラーモード",
+  "Sidebar mode": "サイドバーモード",
+  "Sidebar mode on Editor": "サイドバーモード(編集時)",
+  "Recent Created": "最新の作成",
+  "Recent Changes": "最新の変更",
+  "personal_dropdown": {
+    "home": "ホーム",
+    "settings": "設定",
+    "color_mode": "カラーモード",
+    "sidebar_mode": "サイドバーモード",
+    "sidebar_mode_editor": "サイドバーモード(編集時)",
+    "use_os_settings": "OS設定を利用する"
+  },
   "form_validation": {
     "error_message": "いくつかの値が設定されていません",
     "required": "%sに値を入力してください",
@@ -163,12 +181,16 @@
   },
   "Password": "パスワード",
   "Password Settings": "パスワード設定",
-  "Set new Password": "パスワードを新規に設定",
-  "Update Password": "パスワードを更新",
-  "Current password": "現在のパスワード",
-  "New password": "新しいパスワード",
-  "Re-enter new password": "(確認用)",
-  "Password is not set": "パスワードが設定されていません",
+  "personal_settings":{
+    "disassociate_external_account": "External Account の連携解除",
+    "disassociate_external_account_desc": "<strong>{{providerType}}</strong> プロバイダーの <strong>{{accountId}}</strong> アカウントを連携解除します",
+    "set_new_password": "パスワードを新規に設定",
+    "update_password": "パスワードを更新",
+    "current_password": "現在のパスワード",
+    "new_password": "新しいパスワード",
+    "new_password_confirm": "(確認用)",
+    "password_is_not_set": "パスワードが設定されていません"
+  },
   "security_settings": "セキュリティ設定",
   "API Settings": "API設定",
   "API Token Settings": "API Token設定",
@@ -176,15 +198,18 @@
   "Update API Token": "API Tokenを更新",
   "header_search_box": {
     "label": {
+      "All pages": "全てのページ",
       "This tree": "この階層"
     },
     "item_label": {
+      "All pages": "全てのページ",
       "This tree": "この階層下の子ページのみ"
     }
   },
   "copy_to_clipboard": {
     "Copy to clipboard": "クリップボードにコピー",
     "Page path": "ページ名",
+    "Page URL": "ページURL",
     "Parmanent link": "パーマリンク",
     "Page path and parmanent link": "ページ名とパーマリンク",
     "Markdown link": "マークダウン形式のリンク"
@@ -252,9 +277,9 @@
       "Redirect": "リダイレクトする"
     },
     "help": {
-      "redirect": "<code>%s</code> にアクセスされた際に自動的に新しいページにジャンプします",
+      "redirect": "アクセスされた際に自動的に新しいページにジャンプします",
       "metadata": "最終更新ユーザー、最終更新日を更新せず維持します",
-      "recursive": "<code>%s</code> 配下のページも移動/名前変更します"
+      "recursive": "配下のページも移動/名前変更します"
     }
   },
   "Put Back": "元に戻す",
@@ -265,8 +290,12 @@
     "delete_recursively": "全ての子ページも削除",
     "delete_completely": "完全削除",
     "delete_completely_restriction": "完全削除をするための権限がありません。",
-    "recursively": "<code>%s</code> 配下のページも削除します",
+    "recursively": "配下のページも削除します",
     "completely": "ゴミ箱を経由せず、完全に削除します"
+  },
+  "modal_empty":{
+    "empty_the_trash": "ゴミ箱を空にする",
+    "notice": "完全削除したページは元に戻すことができません"
   },
   "modal_duplicate": {
     "label": {
@@ -281,21 +310,21 @@
       "recursively": "全ての子ページも元に戻す"
     },
     "help": {
-      "recursively": "<code>%s</code> 配下のページも元に戻します"
+      "recursively": "配下のページも元に戻します"
     }
   },
   "modal_shortcuts": {
     "global": {
       "title": "グローバルショートカット",
-      "Open/Close shortcut help": "ショートカットヘルプの表示/非表示",
+      "Open/Close shortcut help": "ショートカットヘルプ<br>の表示/非表示",
       "Edit Page": "ページ編集",
       "Create Page": "ページ作成",
-      "Show Contributors": "コントリビューターを表示",
+      "Show Contributors": "コントリビューター<br>を表示",
       "Konami Code": "コナミコマンド",
       "konami_code_url": "https://ja.wikipedia.org/wiki/コナミコマンド"
     },
     "editor": {
-      "titile": "エディターショートカット",
+      "title": "エディターショートカット",
       "Indent": "インデント",
       "Outdent": "左インデント",
       "Save Page": "保存",
@@ -313,12 +342,12 @@
     "activate_user_success": "{{username}}を有効化しました",
     "deactivate_user_success": "{{username}}を無効化しました",
     "remove_user_success": "{{username}}を削除しました",
-    "remove_external_user_success": "{{accountId}}を削除しました "
+    "remove_external_user_success": "{{accountId}}を削除しました"
   },
   "template": {
     "modal_label": {
       "Create/Edit Template Page": "テンプレートページの作成/編集",
-      "Create template under": "<code><small>%s</small></code><br />にテンプレートページを作成"
+      "Create template under": "配下にテンプレートページを作成"
     },
     "option_label": {
       "select": "テンプレートタイプを選択してください",
@@ -376,7 +405,19 @@
     "discard_changes": "HackMD の変更を破棄する",
     "integration_failed": "HackMD の統合に失敗しました",
     "fail_to_connect": "GROWI クライアントが HackMD の GROWI agent に接続できませんでした。",
-    "check_configuration": "<a href='https://docs.growi.org/guide/admin-cookbook/integrate-with-hackmd.html'>こちらのマニュアル</a>から設定を確認してください"
+    "check_configuration": "<a href='https://docs.growi.org/ja/admin-guide/admin-cookbook/integrate-with-hackmd.html'>こちらのマニュアル</a>から設定を確認してください",
+    "not_initialized": "HackMD コンポーネントは初期化されていません",
+    "someone_editing": "このページは、HackMD で編集されています。",
+    "this_page_has_draft": "このページは、HackMD のドラフトがあります。"
+  },
+  "search_result": {
+    "result_meta": "{{total}}件のページが見つかりました。検索ワード: \"{{keyword}}\"",
+    "deletion_mode_btn_lavel": "ページを指定して削除",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "check_all": "すべてチェック",
+    "deletion_modal_header": "以下のページを削除",
+    "delete_completely": "完全に削除する"
   },
   "security_setting": {
     "Guest Users Access": "ゲストユーザーのアクセス",
@@ -387,8 +428,8 @@
     "users_without_account": "アカウントを持たないユーザーはアクセス不可",
     "example": "例",
     "restrict_emails": "登録可能なメールアドレスを制限することができます。",
-    "for_instance": "例えば、",
-    "only_those": "と記載することで、そのドメインのメールアドレスを持っている人のみ登録可能になります。",
+    "for_example": "例えば、",
+    "in_this_case": "と記載することで、そのドメインのメールアドレスを持っている人のみ登録可能になります。",
     "insert_single": "1行に1メールアドレス入力してください。",
     "page_listing_1": "ページのリスト表示と検索<br>'自分のみ'に閲覧制限しているページ",
     "page_listing_1_desc": "ページのリスト表示や検索結果において、'自分のみ'に閲覧制限をしているページをアクセス権のないユーザーにも表示します。",
@@ -610,6 +651,7 @@
     "connection_status_label_unconfigured": "設定されていません",
     "connection_status_label_connected": "接続されています",
     "connection_status_label_disconnected": "切断されています",
+    "connection_status_label_erroroccured": "SearchService でエラーが発生しています",
     "indices_status": "インデックスの状態",
     "indices_status_label_normalized": "正規化されています",
     "indices_status_label_unnormalized": "リビルド中 または 破損しています",
@@ -631,7 +673,7 @@
     "export_collections": "コレクションのエクスポート",
     "check_all": "全てにチェックを付ける",
     "uncheck_all": "全てからチェックを外す",
-    "desc_password_seed": "ユーザーデータをバックアップ/リストアする場合、現在の <code>PASSWORD_SEED</code> を新しい GROWI システムにセットすることを忘れないでください。さもなくば、ユーザーがパスワードでログインできなくなります。<br><br><strong>ヒント:</strong><br>現在の <code>PASSWORD_SEED</code> は、エクスポートされる ZIP 中の <code>meta.json</code> に保存されます。",
+    "desc_password_seed": "<p>ユーザーデータをバックアップ/リストアする場合、現在の <code>PASSWORD_SEED</code> を新しい GROWI システムにセットすることを忘れないでください。さもなくば、ユーザーがパスワードでログインできなくなります。</p><strong>ヒント:</strong><p>現在の <code>PASSWORD_SEED</code> は、エクスポートされる ZIP 中の <code>meta.json</code> に保存されます。</p>",
     "create_new_archive_data": "アーカイブデータの新規作成",
     "export": "エクスポート",
     "cancel": "キャンセル",
@@ -642,5 +684,34 @@
     "export_menu": "エクスポートメニュー",
     "download": "ダウンロード",
     "delete": "削除"
+  },
+  "login": {
+    "Sign in error": "ログインエラー",
+    "Registration successful": "登録完了",
+    "Setup": "セットアップ"
+  },
+  "message": {
+    "successfully_connected": "接続に成功しました!",
+    "fail_to_save_access_token": "アクセストークンの保存に失敗しました、再度お試しください。",
+    "fail_to_fetch_access_token": "アクセストークンの取得に失敗しました、再度お試しください。",
+    "successfully_disconnected": "切断に成功しました!",
+    "strategy_has_not_been_set_up": "{{strategy}} はセットアップされていません。",
+    "maximum_number_of_users": "ユーザー数が上限を超えたためアクティベートできません。",
+    "database_error":"データベースサーバーに問題があります。",
+    "sign_in_failure": "ログインに失敗しました。",
+    "aws_sttings_required": "この機能にはAWS設定が必要です。管理者に訪ねて下さい。",
+    "application_already_installed": "アプリケーションのインストールが完了しました。",
+    "email_address_could_not_be_used":"このメールアドレスは使用できません。(許可されたメールアドレスを確認してください。)",
+    "user_id_is_not_available":"このユーザーIDは使用できません。",
+    "email_address_is_already_registered":"このメールアドレスは既に登録されています。",
+    "can_not_register_maximum_number_of_users":"ユーザー数が上限を超えたため登録できません。",
+    "failed_to_register":"登録に失敗しました。",
+    "successfully_created":"{{username}} が作成されました。",
+    "can_not_activate_maximum_number_of_users":"ユーザーが上限に達したためアクティベートできません。",
+    "failed_to_activate":"アクティベートに失敗しました。",
+    "unable_to_use_this_user":"利用できないユーザーIDです。",
+    "complete_to_install1":"GROWI のインストールが完了しました！管理者アカウントでログインしてください。",
+    "complete_to_install2":"GROWI のインストールが完了しました！はじめに、このページで各種設定を確認してください。",
+    "failed_to_create_admin_user":"管理ユーザーの作成に失敗しました。{{errMessage}}"
   }
 }

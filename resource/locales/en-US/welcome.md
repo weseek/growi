@@ -3,15 +3,13 @@
 [![GitHub Releases](https://img.shields.io/github/release/weseek/growi.svg)](https://github.com/weseek/growi/releases/latest)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
-<div class="panel panel-primary">
-  <div class="panel-heading">Tips</div>
-  <div class="panel-body"><ul>
-    <li>Ctrl(⌘)-/ to show quick help</li>
-    <li>You can write HTML with <a href="https://getbootstrap.com/docs/3.3/css/">Bootstrap 3</a>.</li>
+<div class="card border-primary">
+  <div class="card-header bg-primary text-light">Tips</div>
+  <div class="card-body"><ul>
+    <li>Ctrl(⌘) + "/" to show quick help</li>
+    <li>You can write HTML with <a href="https://getbootstrap.com/docs/4.5/components/">Bootstrap 4</a>.</li>
   </ul></div>
 </div>
-
-<div class="clearfix"></div>
 
 Contents
 =========
@@ -25,5 +23,5 @@ Slack
 
 <a href="https://growi-slackin.weseek.co.jp/"><img src="https://growi-slackin.weseek.co.jp/badge.svg"></a>
 
-Please join Slack by all means to make GROWI better.
+Let's join our Slack channel for all to help make GROWI better.
 In addition to discussing development, we also accept questions at the time of introduction.

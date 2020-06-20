@@ -2,7 +2,7 @@
   "Help": "Help",
   "Edit": "Edit",
   "Delete": "Delete",
-  "Delete All": "Delete All",
+  "delete_all": "Delete all",
   "Duplicate": "Duplicate",
   "Copy": "Copy",
   "Click to copy": "Click to copy",
@@ -25,7 +25,7 @@
   "Undo": "Undo",
   "Article": "Article",
   "Page": "Page",
-  "Page Path": "Page Path",
+  "Page Path": "Page path",
   "Category": "Category",
   "User": "User",
   "status": "Status",
@@ -50,29 +50,26 @@
   "username": "Username",
   "Created": "Created",
   "Last updated": "Updated",
-  "Last_Login": "Last Login",
+  "Last_Login": "Last login",
   "Share": "Share",
   "Share Link": "Share Link",
   "Markdown Link": "Markdown Link",
-  "Create/Edit Template": "Create/Edit Template Page",
-  "Unportalize": "Unportalize",
+  "Create/Edit Template": "Create/Edit template page",
   "Go to this version": "View this version",
   "View diff": "View diff",
   "No diff": "No diff",
   "Shrink versions that have no diffs": "Shrink versions that have no diffs",
   "User ID": "User ID",
-  "Home": "Home",
-  "User Settings": "User Settings",
-  "User Information": "User Information",
-  "Basic Info": "Basic Info",
+  "User Information": "User information",
+  "Basic Info": "Basic info",
   "Name": "Name",
   "Email": "Email",
   "Language": "Language",
   "English": "English",
   "Japanese": "Japanese",
-  "Set Profile Image": "Set Profile Image",
-  "Upload Image": "Upload Image",
-  "Current Image": "Current Image",
+  "Set Profile Image": "Set profile image",
+  "Upload Image": "Upload image",
+  "Current Image": "Current image",
   "Delete Image": "Delete Image",
   "Delete this image?": "Delete this image?",
   "Updated": "Updated",
@@ -87,10 +84,10 @@
   "Memo": "memo",
   "Input page name": "Input page name",
   "Input page name (optional)": "Input page name (optional)",
-  "New Page": "New Page",
+  "New Page": "New page",
   "Create under": "Create page under below:",
   "Table of Contents": "Table of Contents",
-  "Management Wiki Home": "Management Wiki Home",
+  "Wiki Management Home Page": "Wiki Management Home Page",
   "App Settings": "App Settings",
   "Site URL settings": "Site URL settings",
   "Markdown Settings": "Markdown Settings",
@@ -109,8 +106,15 @@
   "Public": "Public",
   "Anyone with the link": "Anyone with the link",
   "Specified users only": "Specified users only",
-  "Just me": "Just me",
+  "Only me": "Only me",
   "Only inside the group": "Only inside the group",
+  "page_list_and_search_results": "Page list / Search results",
+  "scope_of_page_disclosure": "Scope of page disclosure",
+  "set_point": "Set point",
+  "always_displayed": "Always displayed",
+  "always_hidden": "Always hidden",
+  "displayed_or_hidden": "Displayed / Hidden",
+  "page_access_and_delete_rights": "Page access / Delete rights",
   "Reselect the group": "Reselect the group",
   "Shareable link": "Shareable link",
   "The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
@@ -123,6 +127,17 @@
   "List Drafts": "Drafts",
   "Deleted Pages": "Deleted Pages",
   "Sign out": "Logout",
+  "Disassociate": "Disassociate",
+  "Recent Created": "Recent Created",
+  "Recent Changes": "Recent Changes",
+  "personal_dropdown": {
+    "home": "Home",
+    "settings": "Settings",
+    "color_mode": "Color mode",
+    "sidebar_mode": "Sidebar mode",
+    "sidebar_mode_editor": "Sidebar mode on Editor",
+    "use_os_settings": "Use OS settings"
+  },
   "form_validation": {
     "error_message": "Some values ​​are incorrect",
     "required": "%s is required",
@@ -156,36 +171,43 @@
   },
   "page_me_apitoken": {
     "notice": {
-      "apitoken_issued": "API Token is not issued.",
-      "update_token1": "You can update to generate a new API Token.",
-      "update_token2": "You will need to update the API Token in any existing processes."
+      "apitoken_issued": "API token is not issued.",
+      "update_token1": "You can update to generate a new API token.",
+      "update_token2": "You will need to update the API token in any existing processes."
     },
     "form_help": {}
   },
   "Password": "Password",
-  "Password Settings": "Password Settings",
-  "Set new Password": "Set new Password",
-  "Update Password": "Update Password",
-  "Current password": "Current password",
-  "New password": "New password",
-  "Re-enter new password": "Re-enter new password",
-  "Password is not set": "Password is not set",
-  "security_settings": "Security Settings",
-  "API Settings": "API Settings",
-  "API Token Settings": "API Token Settings",
-  "Current API Token": "Current API Token",
-  "Update API Token": "Update API Token",
+  "Password Settings": "Password settings",
+    "personal_settings": {
+    "disassociate_external_account": "Disassociate External Account",
+    "disassociate_external_account_desc": "Are you sure to disassociate the <strong>{{providerType}}</strong> account <strong>{{accountId}}</strong>?",
+    "set_new_password": "Set new Password",
+    "update_password": "Update password",
+      "current_password": "Current password",
+      "new_password": "New password",
+      "new_password_confirm": "Re-enter new password",
+      "password_is_not_set": "Password is not set"
+    },
+  "security_settings": "Security settings",
+  "API Settings": "API settings",
+  "API Token Settings": "API token settings",
+  "Current API Token": "Current API token",
+  "Update API Token": "Update API token",
   "header_search_box": {
     "label": {
+      "All pages": "All pages",
       "This tree": "This tree"
     },
     "item_label": {
+      "All pages": "All pages",
       "This tree": "Only children of this tree"
     }
   },
   "copy_to_clipboard": {
     "Copy to clipboard": "Copy to clipboard",
     "Page path": "Page path",
+    "Page URL": "Page URL",
     "Parmanent link": "Parmanent link",
     "Page path and parmanent link": "Page path and parmanent link",
     "Markdown link": "Markdown link"
@@ -254,21 +276,25 @@
       "Redirect": "Redirect"
     },
     "help": {
-      "redirect": "Redirect to new page if someone accesses <code>%s</code>",
+      "redirect": "Redirect to new page if someone accesses under this path",
       "metadata": "Remains last update user and updated date as is",
-      "recursive": "Move/Rename children of under <code>%s</code> recursively"
+      "recursive": "Move/Rename children of under this path recursively"
     }
   },
-  "Put Back": "Put Back",
-  "Delete Completely": "Delete Completely",
+  "Put Back": "Put back",
+  "Delete Completely": "Delete completely",
   "modal_delete": {
-    "delete_page": "Delete Page",
-    "deleting_page": "Deleting Page",
+    "delete_page": "Delete page",
+    "deleting_page": "Deleting page",
     "delete_recursively": "Delete child pages recursively.",
-    "delete_completely": "Delete Completely",
+    "delete_completely": "Delete completely",
     "delete_completely_restriction": "You don't have the authority to delete pages completely.",
-    "recursively": "Delete children of under <code>%s</code> recursively.",
+    "recursively": "Delete pages under this path recursively.",
     "completely": "Delete completely instead of putting it into trash."
+  },
+  "modal_empty":{
+    "empty_the_trash": "Empty The Trash",
+    "notice": "The pages deleted completely are unrecoverable."
   },
   "modal_duplicate": {
     "label": {
@@ -279,17 +305,17 @@
   },
   "modal_putback": {
     "label": {
-      "Put Back Page": "Put Back Page",
-      "recursively": "Put Back recursively"
+      "Put Back Page": "Put back page",
+      "recursively": "Put back recursively"
     },
     "help": {
-      "recursively": "Put Back children of under <code>%s</code> recursively"
+      "recursively": "Put back page under this path recursively"
     }
   },
   "modal_shortcuts": {
     "global": {
       "title": "Global shortcuts",
-      "Open/Close shortcut help": "Open/Close shortcut help",
+      "Open/Close shortcut help": "Open/Close<br>shortcut help",
       "Edit Page": "Edit Page",
       "Create Page": "Create Page",
       "Show Contributors": "Show Contributors",
@@ -319,11 +345,11 @@
   },
   "template": {
     "modal_label": {
-      "Create/Edit Template Page": "Create/Edit Template Page",
-      "Create template under": "Create template page under:<br /><code><small>%s</small></code>"
+      "Create/Edit Template Page": "Create/Edit template page",
+      "Create template under": "Create template page under this page"
     },
     "option_label": {
-      "create/edit": "Create/Edit Template page..",
+      "create/edit": "Create/Edit template page..",
       "select": "Select template page type"
     },
     "children": {
@@ -378,35 +404,47 @@
     "discard_changes": "Discard changes of HackMD",
     "integration_failed": "HackMD Integration failed",
     "fail_to_connect": "GROWI client failed to connect to GROWI agent for HackMD.",
-    "check_configuration": "Check your configuration following <a href='https://docs.growi.org/guide/admin-cookbook/integrate-with-hackmd.html'>the manual</a>."
+    "check_configuration": "Check your configuration following <a href='https://docs.growi.org/guide/admin-cookbook/integrate-with-hackmd.html'>the manual</a>.",
+    "not_initialized": "HackmdEditor component has not initialized",
+    "someone_editing": "Someone editing this page on HackMD",
+    "this_page_has_draft": "This page has a draft on HackMD"
+  },
+  "search_result": {
+    "result_meta": "Found \"{{keyword}}\" in {{total}}.",
+    "deletion_mode_btn_lavel": "Select and delete page",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "check_all": "Check all",
+    "deletion_modal_header": "Delete page",
+    "delete_completely": "Delete completely"
   },
   "security_setting": {
     "Security settings": "Security settings",
-    "Guest Users Access": "Guest Users Access",
+    "Guest Users Access": "Guest users access",
     "Fixed by env var": "This is fixed by the env var <code>%s=%s</code>.",
     "Register limitation": "Register limitation",
-    "Register limitation desc": "Restricts ways to register new user.",
+    "Register limitation desc": "Restriction of new users' registration",
     "The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
     "users_without_account": "Users without account is not accessible",
     "example": "Example",
-    "restrict_emails": "You can restrict registerable e-mail address.",
-    "for_instance": " For instance, if you use growi within a company, you can write ",
-    "only_those": " Only those whose e-mail address including the company address can register.",
+    "restrict_emails": "You can restrict email registration to your wiki by writing an email domain (beginning with @). ",
+    "for_example": " For example, if you would like to restrict registration to users within the growi.org domain, you can write ",
+    "in_this_case": "; in this case, only users within the growi.org domain would be able to register, and all other users would be rejected.",
     "insert_single": "Please insert single e-mail address per line.",
-    "page_listing_1": "Page listing/searching<br>restricted by 'Just Me'",
-    "page_listing_1_desc": "Show pages that are restricted by 'Just Me' option when listing/searching",
-    "page_listing_2": "Page listing/searching<br>restricted by User Group",
-    "page_listing_2_desc": "Show pages that are restricted by User Group when listing/searching",
-    "complete_deletion": "Restrict Complete Deletion of Pages",
+    "page_listing_1": "Page listing/searching<br>restricted by 'Only me'",
+    "page_listing_1_desc": "Show pages that are restricted by 'Only me' option when listing/searching",
+    "page_listing_2": "Page listing/searching<br>restricted by User group",
+    "page_listing_2_desc": "Show pages that are restricted by User group when listing/searching",
+    "complete_deletion": "Restrict complete deletion of pages",
     "complete_deletion_explain": "Restricts users who can completely delete pages.",
-    "admin_only": "Admin Only",
-    "admin_and_author": "Admin and Author",
+    "admin_only": "Admin only",
+    "admin_and_author": "Admin and author",
     "anyone": "Anyone",
     "Authentication mechanism settings": "Authentication Mechanism Settings",
     "setup_is_not_yet_complete": "Setup is not yet complete",
     "alert_siteUrl_is_not_set": "'Site URL' is NOT set. Set it from the {{link}}",
     "xss_prevent_setting": "Prevent XSS(Cross Site Scripting)",
-    "xss_prevent_setting_link": "Go to Markdown settings",
+    "xss_prevent_setting_link": "Go to Markdown Settings",
     "callback_URL": "Callback URL",
     "providerName": "Provider Name",
     "issuerHost": "Issuer Host",
@@ -417,7 +455,7 @@
     "updated_general_security_setting": "Succeeded to update security setting",
     "setup_not_completed_yet": "Setup not completed yet",
     "guest_mode": {
-      "deny": "Deny (Registered Users Only)",
+      "deny": "Deny (Registered users only)",
       "readonly": "Accept (Guests can read only)"
     },
     "registration_mode": {
@@ -437,7 +475,7 @@
     "Local": {
       "name": "ID/Password",
       "note for the only env option": "The LOCAL authentication is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}/code> .",
-      "enable_local": "enable ID/Password"
+      "enable_local": "Enable ID/Password"
     },
     "mikan": {
       "enable_mikan": "enable Mikan",
@@ -448,7 +486,7 @@
       "updated_mikan": "Succeeded to update Mikan setting"
     },
     "ldap": {
-      "enable_ldap": "enable LDAP",
+      "enable_ldap": "Enable LDAP",
       "server_url_detail": "The LDAP URL of the directory service in the format <code>ldap://host:port/DN</code> or <code>ldaps://host:port/DN</code>.",
       "bind_mode": "Binding Mode",
       "bind_manager": "Manager Bind",
@@ -482,7 +520,7 @@
     },
     "SAML": {
       "name": "SAML",
-      "enable_saml": "enable SAML",
+      "enable_saml": "Enable SAML",
       "id_detail": "Specification of the name of attribute which can identify the user in SAML Identity Provider",
       "username_detail": "Specification of mappings for <code>username</code> when creating new users",
       "mapping_detail": "Specification of mappings for {{target}} when creating new users",
@@ -495,18 +533,18 @@
       "updated_saml": "Succeeded to update SAML setting"
     },
     "Basic": {
-      "enable_basic": "enable Basic",
+      "enable_basic": "Enable Basic",
       "name": "Basic Authentication",
       "desc_1": "Login with <code>username</code> in Authorization header.",
       "desc_2": "User will be automatically generated if not exist.",
       "updated_basic": "Succeeded to update Basic setting"
     },
     "OAuth": {
-      "enable_oidc": "enable OIDC",
+      "enable_oidc": "Enable OIDC",
       "register": "Register for %s",
       "change_redirect_url": "Enter <code>%s</code> <br>(where <code>%s</code> is your host name) for \"Authorized redirect URIs\".",
       "Google": {
-        "enable_google": "enable Google OAuth",
+        "enable_google": "Enable Google OAuth",
         "name": "Google OAuth",
         "register_1": "Access {{link}}",
         "register_2": "Create Project if no projects exist",
@@ -519,7 +557,7 @@
         "name": "Facebook OAuth"
       },
       "Twitter": {
-        "enable_twitter": "enable Twitter OAuth",
+        "enable_twitter": "Enable Twitter OAuth",
         "name": "Twitter OAuth",
         "register_1": "Access {{link}}",
         "register_2": "Sign in Twitter",
@@ -529,7 +567,7 @@
         "updated_twitter": "Succeeded to update Twitter OAuth setting"
       },
       "GitHub": {
-        "enable_github": "enable GitHub OAuth",
+        "enable_github": "Enable GitHub OAuth",
         "name": "GitHub OAuth",
         "register_1": "Access {{link}}",
         "register_2": "Register your OAuth App with \"Authorization callback URL\" as <code>{{url}}</code>",
@@ -567,36 +605,36 @@
     }
   },
   "notification_setting": {
-    "slack_incoming_configuration": "Slack Incoming Webhooks Configuration",
-    "prioritize_webhook": "Prioritize Incoming Webhook than Slack App",
+    "slack_incoming_configuration": "Slack Incoming Webhooks configuration",
+    "prioritize_webhook": "Prioritize incoming webhook than Slack App",
     "prioritize_webhook_desc": "Check this option and GROWI use Incoming Webhooks even if Slack App settings are enabled.",
-    "slack_app_configuration": "Slack App Configuration",
+    "slack_app_configuration": "Slack app configuration",
     "slack_app_configuration_desc": "This is the way that compatible with Crowi,<br /> but not recommended in GROWI because it is <strong>too complex</strong>.",
     "use_instead": "Please use Slack Incoming Webhooks Configuration instead.",
     "how_to": {
       "header": "How to configure Incoming Webhooks?",
       "workspace": "(At Workspace) Add a hook",
-      "workspace_desc1": "Go to <a href='https: //slack.com/services/new/incoming-webhook'>Incoming Webhooks Configuration page</a>.",
+      "workspace_desc1": "Go to <a href='https: //slack.com/services/new/incoming-webhook'>Incoming Webhooks configuration page</a>.",
       "workspace_desc2": "Choose the default channel to post.",
       "workspace_desc3": "Add.",
       "at_growi": "(At GROWI admin page) Set Webhook URL",
       "at_growi_desc": "Input &rdquo;Webhook URL&rdquo; and submit on this page."
     },
-    "user_trigger_notification_header": "Default Notification Settings for Patterns",
+    "user_trigger_notification_header": "Default notification settings for patterns",
     "pattern": "Pattern",
     "channel": "Channel",
     "pattern_desc": "Path name of wiki. Pattern expression with <code>*</code> can be used.",
     "channel_desc": "Slack channel name. Without <code>#</code>.",
-    "valid_page": "Enable/Disable Notification",
+    "valid_page": "Enable/disable Notification",
     "link_notification_help": "<strong>The page that is able to be viewed only by those who know the link 'Anyone with the link'</strong> is not notified always.",
-    "just_me_notification_help": "<strong>The page that is restricted by 'only me'</strong> is notify when the page edited.",
+    "just_me_notification_help": "<strong>The page that is restricted by 'Only Me'</strong> is notify when the page edited.",
     "group_notification_help": "<strong>The page that is restricted by 'User Group'</strong> is notify when the page edited.",
-    "notification_list": "List of Notification Settings",
-    "add_notification": "Add New",
-    "trigger_path": "Trigger Path",
+    "notification_list": "List of notification settings",
+    "add_notification": "Add new",
+    "trigger_path": "Trigger path",
     "trigger_path_help": "(expression with <code>*</code> is supported)",
-    "trigger_events": "Trigger Events",
-    "notify_to": "Notify To",
+    "trigger_events": "Trigger events",
+    "notify_to": "Notify to",
     "back_to_list": "Go back to list",
     "notification_detail": "Notification Setting Details",
     "event_pageCreate": "When new page is \"CREATED\"",
@@ -616,23 +654,24 @@
     "toggle_notification": "Updated setting of {{path}}"
   },
   "full_text_search_management": {
-    "elasticsearch_management": "Elasticsearch Management",
-    "connection_status": "Connection Status",
+    "elasticsearch_management": "Elasticsearch management",
+    "connection_status": "Connection status",
     "connection_status_label_unconfigured": "UNCONFIGURED",
     "connection_status_label_connected": "CONNECTED",
     "connection_status_label_disconnected": "DISCONNECTED",
+    "connection_status_label_erroroccured": "ERROR OCCURED ON SEARCH SERVICE",
     "indices_status": "Indices Status",
     "indices_status_label_normalized": "NORMALIZED",
     "indices_status_label_unnormalized": "REBUILDING or BROKEN",
-    "indices_summary": "Indices Summary",
+    "indices_summary": "Indices summary",
     "reconnect": "Reconnect",
-    "reconnect_button": "Try to Reconnect",
+    "reconnect_button": "Try to reconnect",
     "reconnect_description": "Click the button to try to reconnect to Elasticsearch.",
     "normalize": "Normalize",
-    "normalize_button": "Normalize Indices",
+    "normalize_button": "Normalize indices",
     "normalize_description": "Click the button to repair broken indices.",
     "rebuild": "Rebuild",
-    "rebuild_button": "Rebuild Index",
+    "rebuild_button": "Rebuild index",
     "rebuild_description_1": "Click the button to rebuild index and add all page datas.",
     "rebuild_description_2": "This may take a while."
   },
@@ -642,7 +681,7 @@
     "export_collections": "Export Collections",
     "check_all": "Check All",
     "uncheck_all": "Uncheck All",
-    "desc_password_seed": "DO NOT FORGET to set current <code>PASSWORD_SEED</code> to your new GROWI system when restoring user data, or users will NOT be able to login with their password.<br><br><strong>HINT:</strong><br>The current <code>PASSWORD_SEED</code> will be stored in <code>meta.json</code> in exported ZIP.",
+    "desc_password_seed": "<p>DO NOT FORGET to set current <code>PASSWORD_SEED</code> to your new GROWI system when restoring user data, or users will NOT be able to login with their password.</p><strong>HINT:</strong><p>The current <code>PASSWORD_SEED</code> will be stored in <code>meta.json</code> in exported ZIP.</p>",
     "create_new_archive_data": "Create New Archive Data",
     "export": "Export",
     "cancel": "Cancel",
@@ -653,5 +692,34 @@
     "export_menu": "Export Menu",
     "download": "Download",
     "delete": "Delete"
+  },
+  "login": {
+    "Sign in error": "Login error",
+    "Registration successful": "Registration successful",
+    "Setup": "Setup"
+  },
+  "message": {
+    "successfully_connected": "Successfully Connected!",
+    "fail_to_save_access_token": "Failed to save access_token. Please try again.",
+    "fail_to_fetch_access_token": "Failed to fetch access_token. Please do connect again.",
+    "successfully_disconnected": "Successfully Disconnected!",
+    "strategy_has_not_been_set_up": "{{strategy}} has not been set up",
+    "maximum_number_of_users": "Can not register more than the maximum number of users.",
+    "database_error": "Database Server Error occured",
+    "sign_in_failure": "Sign in failure.",
+    "aws_sttings_required": "AWS settings required to use this function. Please ask the administrator.",
+    "application_already_installed": "Application already installed.",
+    "email_address_could_not_be_used": "This email address could not be used. (Make sure the allowed email address)",
+    "user_id_is_not_available.":"This User ID is not available.",
+    "email_address_is_already_registered":"This email address is already registered.",
+    "can_not_register_maximum_number_of_users":"Can not register more than the maximum number of users.",
+    "failed_to_register":"Failed to register.",
+    "successfully_created":"The user {{username}} is successfully created.",
+    "can_not_activate_maximum_number_of_users":"Can not activate more than the maximum number of users.",
+    "failed_to_activate":"Failed to activate.",
+    "unable_to_use_this_user":"Unable to use this user.",
+    "complete_to_install1":"Complete to Install GROWI ! Please login as admin account.",
+    "complete_to_install2":"Complete to Install GROWI ! Please check each settings on this page first.",
+    "failed_to_create_admin_user":"Failed to create admin user. {{errMessage}}"
   }
 }

@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import loggerFactory from '@alias/logger';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
@@ -82,7 +82,7 @@ class UserTriggerNotification extends React.Component {
 
     return (
       <React.Fragment>
-        <h2 className="border-bottom mb-5">{t('notification_setting.user_trigger_notification_header')}</h2>
+        <h2 className="border-bottom my-4">{t('notification_setting.user_trigger_notification_header')}</h2>
 
         <table className="table table-bordered">
           <thead>
@@ -103,22 +103,30 @@ class UserTriggerNotification extends React.Component {
                   placeholder="e.g. /projects/xxx/MTG/*"
                   onChange={(e) => { this.changePathPattern(e.target.value) }}
                 />
-                {/* eslint-disable-next-line react/no-danger */}
-                <p className="help-block" dangerouslySetInnerHTML={{ __html: t('notification_setting.pattern_desc') }} />
+                <p className="p-2 mb-0">
+                  {/* eslint-disable-next-line react/no-danger */}
+                  <span dangerouslySetInnerHTML={{ __html: t('notification_setting.pattern_desc') }} />
+                </p>
               </td>
 
               <td>
-                <input
-                  className="form-control form-inline"
-                  type="text"
-                  name="channel"
-                  value={this.state.channel}
-                  placeholder="e.g. project-xxx"
-                  onChange={(e) => { this.changeChannel(e.target.value) }}
-                />
-                {/* eslint-disable-next-line react/no-danger */}
-                <p className="help-block" dangerouslySetInnerHTML={{ __html: t('notification_setting.channel_desc') }} />
-
+                <div className="input-group notify-to-option" id="slack-input">
+                  <div className="input-group-prepend">
+                    <span className="input-group-text"><i className="fa fa-hashtag" /></span>
+                  </div>
+                  <input
+                    className="form-control form-inline"
+                    type="text"
+                    name="channel"
+                    value={this.state.channel}
+                    placeholder="e.g. project-xxx"
+                    onChange={(e) => { this.changeChannel(e.target.value) }}
+                  />
+                </div>
+                <p className="p-2 mb-0">
+                  {/* eslint-disable-next-line react/no-danger */}
+                  <span dangerouslySetInnerHTML={{ __html: t('notification_setting.channel_desc') }} />
+                </p>
               </td>
               <td>
                 <button type="button" className="btn btn-primary" disabled={!this.validateForm()} onClick={this.onClickSubmit}>{t('add')}</button>
@@ -137,9 +145,7 @@ class UserTriggerNotification extends React.Component {
 }
 
 
-const UserTriggerNotificationWrapper = (props) => {
-  return createSubscribedElement(UserTriggerNotification, props, [AppContainer, AdminNotificationContainer]);
-};
+const UserTriggerNotificationWrapper = withUnstatedContainers(UserTriggerNotification, [AppContainer, AdminNotificationContainer]);
 
 UserTriggerNotification.propTypes = {
   t: PropTypes.func.isRequired, // i18next

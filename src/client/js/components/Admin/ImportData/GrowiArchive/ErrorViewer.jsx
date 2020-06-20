@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import Modal from 'react-bootstrap/es/Modal';
+import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
-import { createSubscribedElement } from '../../../UnstatedUtils';
+import { withUnstatedContainers } from '../../../UnstatedUtils';
 
 
 class ErrorViewer extends React.Component {
@@ -20,13 +20,13 @@ class ErrorViewer extends React.Component {
     }
 
     return (
-      <Modal show={this.props.isOpen} onHide={this.props.onClose}>
-        <Modal.Header closeButton className="bg-danger">
-          <Modal.Title className="text-white">Errors</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+      <Modal isOpen={this.props.isOpen} toggle={this.props.onClose}>
+        <ModalHeader tag="h4" toggle={this.props.onClose} className="bg-danger text-light">
+          Errors
+        </ModalHeader>
+        <ModalBody>
           <textarea className="form-control" rows="8" readOnly wrap="off" defaultValue={value}></textarea>
-        </Modal.Body>
+        </ModalBody>
       </Modal>
     );
   }
@@ -45,8 +45,6 @@ ErrorViewer.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const ErrorViewerWrapper = (props) => {
-  return createSubscribedElement(ErrorViewer, props, []);
-};
+const ErrorViewerWrapper = withUnstatedContainers(ErrorViewer, []);
 
 export default withTranslation()(ErrorViewerWrapper);

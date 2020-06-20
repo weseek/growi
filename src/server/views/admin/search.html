@@ -1,25 +1,18 @@
 {% extends '../layout/admin.html' %}
 
-{% block html_title %}{{ customizeService.generateCustomTitle(t('Full Text Search management')) }}{% endblock %}
+{% block html_title %}{{ customizeService.generateCustomTitleForFixedPageName(t('Full Text Search Management')) }}{% endblock %}
 
 {% block content_header %}
-<div class="header-wrap">
-  <header id="page-header">
-    <h1 id="admin-title" class="title">{{ t('Full Text Search management') }}</h1>
-  </header>
-</div>
+<h1 class="title">{{ t('Full Text Search Management') }}</h1>
 {% endblock %}
 
 {% block content_main %}
 <div class="content-main row">
   {% parent %}
     <div
-      class="col-md-9"
+      class="col-lg-9"
       id ="admin-full-text-search-management"
     >
-      <!-- Reactify Paginator start -->
-      <!-- {% include '../widget/pager.html' with {path: "/admin/search", pager: pager} %} -->
-      <!-- Reactify Paginator end -->
     </div>
 </div>
 

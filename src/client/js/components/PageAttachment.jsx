@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import PageAttachmentList from './PageAttachment/PageAttachmentList';
 import DeleteAttachmentModal from './PageAttachment/DeleteAttachmentModal';
-import { createSubscribedElement } from './UnstatedUtils';
+import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 
@@ -108,9 +108,9 @@ class PageAttachment extends React.Component {
 
       deleteAttachmentModal = (
         <DeleteAttachmentModal
-          show={showModal}
+          isOpen={showModal}
           animation={false}
-          onHide={deleteModalClose}
+          toggle={deleteModalClose}
 
           attachmentToDelete={attachmentToDelete}
           inUse={deleteInUse}
@@ -141,9 +141,7 @@ class PageAttachment extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const PageAttachmentWrapper = (props) => {
-  return createSubscribedElement(PageAttachment, props, [AppContainer, PageContainer]);
-};
+const PageAttachmentWrapper = withUnstatedContainers(PageAttachment, [AppContainer, PageContainer]);
 
 
 PageAttachment.propTypes = {
