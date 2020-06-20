@@ -22,15 +22,40 @@ function listLocaleIds() {
 /**
  * List locales aliases
  */
-function listLocaleAliases() {
+function listLocaleMetadatas() {
   return listLocaleIds()
-    .map(localeId => require(`@root/resource/locales/${localeId}/_conf.json`))
-    .filter(meta => meta.aliases != null)
+    .map(localeId => require(`../../../resource/locales/${localeId}/_conf.json`));
+}
+
+/**
+ * List locales aliases
+ */
+function listLocaleAliases() {
+  return listLocaleMetadatas()
     .map(meta => meta.aliases)
     .flat();
 }
 
+/**
+ * List locales aliases
+ */
+function getLocaleAliasToIdMap() {
+  const aliasToIdMap = {};
+
+  const metadatas = listLocaleMetadatas();
+
+  metadatas.forEach((meta) => {
+    meta.aliases.forEach((alias) => {
+      aliasToIdMap[alias] = meta.id;
+    });
+  });
+
+  return aliasToIdMap;
+}
+
 module.exports = {
   listLocaleIds,
+  listLocaleMetadatas,
   listLocaleAliases,
+  getLocaleAliasToIdMap,
 };
