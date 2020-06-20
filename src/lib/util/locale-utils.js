@@ -28,35 +28,7 @@ function listLocaleIds() {
     .map(meta => meta.id);
 }
 
-/**
- * List locales aliases
- */
-function listLocaleAliases() {
-  return listLocaleMetadatas()
-    .map(meta => meta.aliases)
-    .flat();
-}
-
-/**
- * List locales aliases
- */
-function getLocaleAliasToIdMap() {
-  const aliasToIdMap = {};
-
-  const metadatas = listLocaleMetadatas();
-
-  metadatas.forEach((meta) => {
-    meta.aliases.forEach((alias) => {
-      aliasToIdMap[alias] = meta.id;
-    });
-  });
-
-  return aliasToIdMap;
-}
-
 module.exports = {
   listLocaleMetadatas,
   listLocaleIds,
-  listLocaleAliases,
-  getLocaleAliasToIdMap,
 };
