@@ -96,7 +96,7 @@ class AppSetting extends React.Component {
                       adminAppContainer.changeGlobalLang(e.target.value);
                     }}
                   />
-                  <label className="custom-control-label" htmlFor={`radioLang${lan}`}>{locales[lan]._conf.name}</label>
+                  <label className="custom-control-label" htmlFor={`radioLang${lan}`}>{locales[lan].meta.name}</label>
                 </div>
               ))
             }

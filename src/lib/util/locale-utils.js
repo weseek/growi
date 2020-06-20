@@ -17,7 +17,7 @@ function listLocaleDirents() {
 function listLocaleMetadatas() {
   return listLocaleDirents()
     .map(dir => dir.name)
-    .map(localeDirName => require(`../../../resource/locales/${localeDirName}/_conf.json`));
+    .map(localeDirName => require(`../../../resource/locales/${localeDirName}/meta.json`));
 }
 
 /**

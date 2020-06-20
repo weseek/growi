@@ -74,7 +74,7 @@ class InstallerForm extends React.Component {
                       onChange={(e) => { if (e.target.checked) { this.changeLanguage(lan) } }}
                     />
                     <label className="custom-control-label" htmlFor={`register-form-check-${lan}`}>
-                      {locales[lan]._conf.name}
+                      {locales[lan].meta.name}
                     </label>
                   </div>
                 ))

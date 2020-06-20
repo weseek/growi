@@ -123,7 +123,7 @@ class BasicInfoSettings extends React.Component {
                     checked={personalContainer.state.lang === lan}
                     onChange={() => { personalContainer.changeLang(lan) }}
                   />
-                  <label className="custom-control-label" htmlFor={`radioLang${lan}`}>{locales[lan]._conf.name}</label>
+                  <label className="custom-control-label" htmlFor={`radioLang${lan}`}>{locales[lan].meta.name}</label>
                 </div>
               ))
             }
