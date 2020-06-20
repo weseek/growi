@@ -113,17 +113,17 @@ class BasicInfoSettings extends React.Component {
           <label className="text-left text-md-right col-md-3 col-form-label">{t('Language')}</label>
           <div className="col-md-6">
             {
-              languages.map(lan=>(
+              languages.map(lan => (
                 <div key={lan} className="custom-control custom-radio custom-control-inline">
                   <input
                     type="radio"
-                    id={'radioLang'+lan}
+                    id={`radioLang${lan}`}
                     className="custom-control-input"
                     name="userForm[lang]"
                     checked={personalContainer.state.lang === lan}
                     onChange={() => { personalContainer.changeLang(lan) }}
                   />
-                  <label className="custom-control-label" htmlFor={'radioLang'+lan}>{locales[lan]["_conf"]['name']}</label>
+                  <label className="custom-control-label" htmlFor={`radioLang${lan}`}>{locales[lan]._conf.name}</label>
                 </div>
               ))
             }
