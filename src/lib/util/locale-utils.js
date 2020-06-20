@@ -12,19 +12,20 @@ function listLocaleDirents() {
 }
 
 /**
- * List locales IDs (=subdir names)
- */
-function listLocaleIds() {
-  return listLocaleDirents()
-    .map(dir => dir.name);
-}
-
-/**
  * List locales aliases
  */
 function listLocaleMetadatas() {
-  return listLocaleIds()
-    .map(localeId => require(`../../../resource/locales/${localeId}/_conf.json`));
+  return listLocaleDirents()
+    .map(dir => dir.name)
+    .map(localeDirName => require(`../../../resource/locales/${localeDirName}/_conf.json`));
+}
+
+/**
+ * List locales IDs (=subdir names)
+ */
+function listLocaleIds() {
+  return listLocaleMetadatas()
+    .map(meta => meta.id);
 }
 
 /**
@@ -54,8 +55,8 @@ function getLocaleAliasToIdMap() {
 }
 
 module.exports = {
-  listLocaleIds,
   listLocaleMetadatas,
+  listLocaleIds,
   listLocaleAliases,
   getLocaleAliasToIdMap,
 };
