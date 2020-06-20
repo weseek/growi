@@ -1,5 +1,5 @@
 // don't add any more middlewares to this file.
-// all new middlewares should be an independent file under /server/routes/middlewares
+// all new middlewares should be an independent file under /server/middlewares
 // eslint-disable-next-line no-unused-vars
 const logger = require('@alias/logger')('growi:lib:middlewares');
 
@@ -9,7 +9,7 @@ const md5 = require('md5');
 const entities = require('entities');
 
 module.exports = (crowi) => {
-  const { configManager, appService } = crowi;
+  const { configManager } = crowi;
 
   const middlewares = {};
 
@@ -23,11 +23,6 @@ module.exports = (crowi) => {
 
       next();
     };
-  };
-
-  middlewares.loginCheckerForPassport = function(req, res, next) {
-    res.locals.user = req.user;
-    next();
   };
 
   middlewares.swigFunctions = function() {
@@ -156,28 +151,6 @@ module.exports = (crowi) => {
 
       next();
     };
-  };
-
-  // this is for Installer
-  middlewares.applicationNotInstalled = async function(req, res, next) {
-    const isInstalled = await appService.isDBInitialized();
-
-    if (isInstalled) {
-      req.flash('errorMessage', req.t('message.application_already_installed'));
-      return res.redirect('admin'); // admin以外はadminRequiredで'/'にリダイレクトされる
-    }
-
-    return next();
-  };
-
-  middlewares.applicationInstalled = async function(req, res, next) {
-    const isInstalled = await appService.isDBInitialized();
-
-    if (!isInstalled) {
-      return res.redirect('/installer');
-    }
-
-    return next();
   };
 
   middlewares.awsEnabled = function() {

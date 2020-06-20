@@ -18,9 +18,9 @@ module.exports = function(crowi, app) {
   const i18nSprintf = require('i18next-sprintf-postprocessor');
   const i18nMiddleware = require('i18next-express-middleware');
 
+  const registerSafeRedirect = require('../middlewares/safe-redirect')();
+  const injectCurrentuserToLocalvars = require('../middlewares/inject-currentuser-to-localvars')();
   const { listLocaleIds } = require('@commons/util/locale-utils');
-
-  const registerSafeRedirect = require('../middleware/safe-redirect')();
 
   const avoidSessionRoutes = require('../routes/avoid-session-routes');
   const i18nUserSettingDetector = require('../util/i18nUserSettingDetector');
@@ -116,15 +116,12 @@ module.exports = function(crowi, app) {
   app.use(flash());
 
   app.use(registerSafeRedirect);
+  app.use(injectCurrentuserToLocalvars);
 
   const middlewares = require('../util/middlewares')(crowi, app);
-
   app.use(middlewares.swigFilters(swig));
   app.use(middlewares.swigFunctions());
-
   app.use(middlewares.csrfKeyGenerator());
-
-  app.use(middlewares.loginCheckerForPassport);
 
   app.use(i18nMiddleware.handle(i18next));
 };
