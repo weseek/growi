@@ -6,7 +6,7 @@ const pkg = require('@root/package.json');
 const InterceptorManager = require('@commons/service/interceptor-manager');
 const CdnResourcesService = require('@commons/service/cdn-resources-service');
 const Xss = require('@commons/service/xss');
-const { getMongoUri } = require('@commons/util/mongoose-utils');
+const { getMongoUri, mongoOptions } = require('@commons/util/mongoose-utils');
 
 const path = require('path');
 
@@ -200,7 +200,7 @@ Crowi.prototype.setupDatabase = function() {
   // mongoUri = mongodb://user:password@host/dbname
   const mongoUri = getMongoUri();
 
-  return mongoose.connect(mongoUri, { useNewUrlParser: true });
+  return mongoose.connect(mongoUri, mongoOptions);
 };
 
 Crowi.prototype.setupSessionConfig = async function() {
