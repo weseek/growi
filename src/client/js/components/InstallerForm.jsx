@@ -73,7 +73,7 @@ class InstallerForm extends React.Component {
                       onChange={(e) => { if (e.target.checked) { this.changeLanguage(meta.id) } }}
                     />
                     <label className="custom-control-label" htmlFor={`register-form-check-${meta.id}`}>
-                      {meta.name}
+                      {meta.displayName}
                     </label>
                   </div>
                 ))
