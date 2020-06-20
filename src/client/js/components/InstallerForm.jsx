@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import i18next from 'i18next';
 import { withTranslation } from 'react-i18next';
 
+import { localeMetadatas } from '../util/i18n';
+
 class InstallerForm extends React.Component {
 
   constructor(props) {
@@ -11,13 +13,13 @@ class InstallerForm extends React.Component {
 
     this.state = {
       isValidUserName: true,
-      checkedBtn: 'en-US',
+      checkedBtn: 'en_US',
     };
     this.checkUserName = this.checkUserName.bind(this);
   }
 
   componentWillMount() {
-    this.changeLanguage('en-US');
+    this.changeLanguage('en_US');
   }
 
   checkUserName(event) {
@@ -44,9 +46,6 @@ class InstallerForm extends React.Component {
       : <span><i className="icon-fw icon-ban" />{ this.props.t('installer.unavaliable_user_id') }</span>;
 
     const checkedBtn = this.state.checkedBtn;
-    const { i18n } = this.props;
-    const locales = i18n.options.resources;
-    const languages = Object.keys(locales);
 
     return (
       <div className={`login-dialog p-3 mx-auto${hasErrorClass}`}>
@@ -62,19 +61,19 @@ class InstallerForm extends React.Component {
           <form role="form" action="/installer" method="post" id="register-form" className="col-md-12">
             <div className="form-group text-center">
               {
-                languages.map(lan => (
-                  <div key={lan} className="custom-control custom-radio custom-control-inline">
+                localeMetadatas.map(meta => (
+                  <div key={meta.id} className="custom-control custom-radio custom-control-inline">
                     <input
                       type="radio"
                       className="custom-control-input"
-                      id={`register-form-check-${lan}`}
+                      id={`register-form-check-${meta.id}`}
                       name="registerForm[app:globalLang]"
-                      value={lan}
-                      checked={checkedBtn === lan}
-                      onChange={(e) => { if (e.target.checked) { this.changeLanguage(lan) } }}
+                      value={meta.id}
+                      checked={checkedBtn === meta.id}
+                      onChange={(e) => { if (e.target.checked) { this.changeLanguage(meta.id) } }}
                     />
-                    <label className="custom-control-label" htmlFor={`register-form-check-${lan}`}>
-                      {locales[lan]._conf.name}
+                    <label className="custom-control-label" htmlFor={`register-form-check-${meta.id}`}>
+                      {meta.displayName}
                     </label>
                   </div>
                 ))

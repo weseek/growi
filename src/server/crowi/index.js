@@ -6,9 +6,8 @@ const pkg = require('@root/package.json');
 const InterceptorManager = require('@commons/service/interceptor-manager');
 const CdnResourcesService = require('@commons/service/cdn-resources-service');
 const Xss = require('@commons/service/xss');
-const { getMongoUri } = require('@commons/util/mongoose-utils');
+const { getMongoUri, mongoOptions } = require('@commons/util/mongoose-utils');
 
-const fs = require('fs');
 const path = require('path');
 
 const sep = path.sep;
@@ -33,10 +32,6 @@ function Crowi(rootdir) {
   this.viewsDir = path.join(this.libDir, 'views') + sep;
   this.resourceDir = path.join(this.rootDir, 'resource') + sep;
   this.localeDir = path.join(this.resourceDir, 'locales') + sep;
-  this.locales = fs.readdirSync(this.localeDir)
-    .filter((filename) => {
-      return fs.statSync(path.join(this.localeDir, filename)).isDirectory();
-    });
   this.tmpDir = path.join(this.rootDir, 'tmp') + sep;
   this.cacheDir = path.join(this.tmpDir, 'cache');
 
@@ -202,7 +197,7 @@ Crowi.prototype.setupDatabase = function() {
   // mongoUri = mongodb://user:password@host/dbname
   const mongoUri = getMongoUri();
 
-  return mongoose.connect(mongoUri, { useNewUrlParser: true });
+  return mongoose.connect(mongoUri, mongoOptions);
 };
 
 Crowi.prototype.setupSessionConfig = async function() {

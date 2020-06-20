@@ -6,6 +6,8 @@ const debug = require('debug')('growi:routes:admin');
 
 const express = require('express');
 
+const { listLocaleIds } = require('@commons/util/locale-utils');
+
 const router = express.Router();
 
 const { body } = require('express-validator/check');
@@ -107,7 +109,7 @@ module.exports = (crowi) => {
     appSetting: [
       body('title').trim(),
       body('confidential'),
-      body('globalLang').isIn(crowi.locales),
+      body('globalLang').isIn(listLocaleIds()),
       body('fileUpload').isBoolean(),
     ],
     siteUrlSetting: [
