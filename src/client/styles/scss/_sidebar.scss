@@ -24,6 +24,8 @@
   z-index: $zindex-sticky;
 
   .ak-navigation-resize-button {
+    position: fixed;
+
     // locate to the center of screen
     top: calc(50vh - 20px);
 
@@ -77,6 +79,7 @@
     // css-xxx-Outer
     > div:nth-of-type(2) {
       width: 0;
+      transform: unset; // unset for 'position: fixed' of .ak-navigation-resize-button
 
       // css-xxx-Shadow
       > div:first-child {
