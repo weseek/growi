@@ -24,6 +24,8 @@ export default class NavigationContainer extends Container {
       isDrawerMode: null,
       isDrawerOpened: false,
 
+      sidebarContentsId: 'recent',
+
       isPageCreateModalShown: false,
     };
 

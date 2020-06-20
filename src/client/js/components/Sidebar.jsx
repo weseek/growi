@@ -13,9 +13,7 @@ import AppContainer from '../services/AppContainer';
 import NavigationContainer from '../services/NavigationContainer';
 
 import SidebarNav from './Sidebar/SidebarNav';
-import RecentChanges from './Sidebar/RecentChanges';
-import CustomSidebar from './Sidebar/CustomSidebar';
-
+import SidebarContents from './Sidebar/SidebarContents';
 
 const sidebarDefaultWidth = 240;
 
@@ -26,10 +24,6 @@ class Sidebar extends React.Component {
     navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
     navigationUIController: PropTypes.any.isRequired,
     isDrawerModeOnInit: PropTypes.bool,
-  };
-
-  state = {
-    currentContentsId: 'recent',
   };
 
   componentWillMount() {
@@ -127,35 +121,26 @@ class Sidebar extends React.Component {
   }
 
   itemSelectedHandler = (contentsId) => {
-    const { navigationUIController } = this.props;
-    const { currentContentsId } = this.state;
+    const { navigationContainer, navigationUIController } = this.props;
+    const { sidebarContentsId } = navigationContainer.state;
 
     // already selected
-    if (currentContentsId === contentsId) {
+    if (sidebarContentsId === contentsId) {
       navigationUIController.toggleCollapse();
     }
     // switch and expand
     else {
-      this.setState({ currentContentsId: contentsId });
       navigationUIController.expand();
     }
   }
 
   renderGlobalNavigation = () => (
-    <SidebarNav currentContentsId={this.state.currentContentsId} onItemSelected={this.itemSelectedHandler} />
+    <SidebarNav onItemSelected={this.itemSelectedHandler} />
   );
 
-  renderSidebarContents = () => {
-    let contents = <CustomSidebar />;
-
-    switch (this.state.currentContentsId) {
-      case 'recent':
-        contents = <RecentChanges />;
-        break;
-    }
-
-    return <div className="grw-sidebar-content-container">{contents}</div>;
-  }
+  renderSidebarContents = () => (
+    <SidebarContents />
+  );
 
   render() {
     const { isDrawerOpened } = this.props.navigationContainer.state;
