@@ -163,7 +163,7 @@
 
 {% if user != null %}
   <script type="application/json" id="growi-current-user">
-  {{ user|json|safe|preventXss }}
+  {{ user|convertOldLangPropertyToLocaleId|json|safe|preventXss }}
   </script>
 {% endif %}
 
