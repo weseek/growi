@@ -8,10 +8,6 @@ const pathUtils = require('growi-commons').pathUtils;
 const md5 = require('md5');
 const entities = require('entities');
 
-const { getLocaleAliasToIdMap } = require('@commons/util/locale-utils');
-
-const aliasToIdMap = getLocaleAliasToIdMap();
-
 module.exports = (crowi) => {
   const { configManager, appService } = crowi;
 
@@ -156,15 +152,6 @@ module.exports = (crowi) => {
 
       swig.setFilter('slice', (list, start, end) => {
         return list.slice(start, end);
-      });
-
-      /**
-       * convert locale alias to corrent locale id for backward compatibility -- 2020.06.21 Yuki Takei
-       */
-      swig.setFilter('convertOldLangPropertyToLocaleId', (user) => {
-        const { lang: userLang } = user;
-        user.lang = aliasToIdMap[userLang] || userLang;
-        return user;
       });
 
       next();
