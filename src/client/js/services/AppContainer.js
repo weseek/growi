@@ -42,9 +42,15 @@ export default class AppContainer extends Container {
     const userAgent = window.navigator.userAgent.toLowerCase();
     this.isMobile = /iphone|ipad|android/.test(userAgent);
 
-    const userlang = body.dataset.userlang;
-    this.i18n = i18nFactory(userlang);
+    const currentUserElem = document.getElementById('growi-current-user');
+    if (currentUserElem != null) {
+      this.currentUser = JSON.parse(currentUserElem.textContent);
+    }
+
+    const userLocaleId = this.currentUser.lang;
+    this.i18n = i18nFactory(userLocaleId);
     this.locales = this.i18n.options.resources;
+
     this.containerInstances = {};
     this.componentInstances = {};
     this.rendererInstances = {};
@@ -78,11 +84,6 @@ export default class AppContainer extends Container {
 
   initContents() {
     const body = document.querySelector('body');
-
-    const currentUserElem = document.getElementById('growi-current-user');
-    if (currentUserElem != null) {
-      this.currentUser = JSON.parse(currentUserElem.textContent);
-    }
 
     this.isAdmin = body.dataset.isAdmin === 'true';
 
