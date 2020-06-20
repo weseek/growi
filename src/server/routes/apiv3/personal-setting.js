@@ -76,7 +76,7 @@ module.exports = (crowi) => {
     personal: [
       body('name').isString().not().isEmpty(),
       body('email').isEmail(),
-      body('lang').isString().isIn(['en-US', 'ja']),
+      body('lang').isString().isIn(crowi.locales),
       body('isEmailPublished').isBoolean(),
     ],
     imageType: [

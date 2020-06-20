@@ -30,7 +30,8 @@ module.exports = {
   /*
    * configure level for client
    */
-  'growi:app': 'debug',
+  'growi:cli:bootstrap': 'debug',
+  'growi:cli:app': 'debug',
   'growi:services:*': 'debug',
   // 'growi:StaffCredit': 'debug',
   // 'growi:TableOfContents': 'debug',

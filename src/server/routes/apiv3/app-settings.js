@@ -108,7 +108,7 @@ module.exports = (crowi) => {
     appSetting: [
       body('title').trim(),
       body('confidential'),
-      body('globalLang').isIn(['en-US', 'ja']),
+      body('globalLang').isIn(crowi.locales),
       body('fileUpload').isBoolean(),
     ],
     siteUrlSetting: [

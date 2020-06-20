@@ -10,13 +10,15 @@ import urljoin from 'url-join';
 
 import { userPageRoot } from '@commons/util/path-utils';
 import { pathUtils } from 'growi-commons';
-import { withUnstatedContainers } from './UnstatedUtils';
 
 import AppContainer from '../services/AppContainer';
+import NavigationContainer from '../services/NavigationContainer';
+import { withUnstatedContainers } from './UnstatedUtils';
+
 import PagePathAutoComplete from './PagePathAutoComplete';
 
 const PageCreateModal = (props) => {
-  const { t, appContainer } = props;
+  const { t, appContainer, navigationContainer } = props;
 
   const config = appContainer.getConfig();
   const isReachable = config.isSearchServiceReachable;
@@ -240,9 +242,10 @@ const PageCreateModal = (props) => {
       </div>
     );
   }
+
   return (
-    <Modal size="lg" isOpen={appContainer.state.isPageCreateModalShown} toggle={appContainer.closePageCreateModal} className="grw-create-page">
-      <ModalHeader tag="h4" toggle={appContainer.closePageCreateModal} className="bg-primary text-light">
+    <Modal size="lg" isOpen={navigationContainer.state.isPageCreateModalShown} toggle={navigationContainer.closePageCreateModal} className="grw-create-page">
+      <ModalHeader tag="h4" toggle={navigationContainer.closePageCreateModal} className="bg-primary text-light">
         { t('New Page') }
       </ModalHeader>
       <ModalBody>
@@ -259,12 +262,13 @@ const PageCreateModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const ModalControlWrapper = withUnstatedContainers(PageCreateModal, [AppContainer]);
+const ModalControlWrapper = withUnstatedContainers(PageCreateModal, [AppContainer, NavigationContainer]);
 
 
 PageCreateModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 
 export default withTranslation()(ModalControlWrapper);

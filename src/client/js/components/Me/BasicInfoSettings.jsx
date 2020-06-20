@@ -39,8 +39,10 @@ class BasicInfoSettings extends React.Component {
   }
 
   render() {
-    const { t, personalContainer } = this.props;
+    const { t, personalContainer, appContainer } = this.props;
     const { registrationWhiteList } = personalContainer.state;
+    const locales = appContainer.locales;
+    const languages = Object.keys(locales);
 
     return (
       <Fragment>
@@ -110,28 +112,21 @@ class BasicInfoSettings extends React.Component {
         <div className="form-group row">
           <label className="text-left text-md-right col-md-3 col-form-label">{t('Language')}</label>
           <div className="col-md-6">
-            <div className="custom-control custom-radio custom-control-inline">
-              <input
-                type="radio"
-                id="radioLangEn"
-                className="custom-control-input"
-                name="userForm[lang]"
-                checked={personalContainer.state.lang === 'en-US'}
-                onChange={() => { personalContainer.changeLang('en-US') }}
-              />
-              <label className="custom-control-label" htmlFor="radioLangEn">{t('English')}</label>
-            </div>
-            <div className="custom-control custom-radio custom-control-inline">
-              <input
-                type="radio"
-                id="radioLangJa"
-                className="custom-control-input"
-                name="userForm[lang]"
-                checked={personalContainer.state.lang === 'ja'}
-                onChange={() => { personalContainer.changeLang('ja') }}
-              />
-              <label className="custom-control-label" htmlFor="radioLangJa">{t('Japanese')}</label>
-            </div>
+            {
+              languages.map(lan => (
+                <div key={lan} className="custom-control custom-radio custom-control-inline">
+                  <input
+                    type="radio"
+                    id={`radioLang${lan}`}
+                    className="custom-control-input"
+                    name="userForm[lang]"
+                    checked={personalContainer.state.lang === lan}
+                    onChange={() => { personalContainer.changeLang(lan) }}
+                  />
+                  <label className="custom-control-label" htmlFor={`radioLang${lan}`}>{locales[lan]._conf.name}</label>
+                </div>
+              ))
+            }
           </div>
         </div>
 

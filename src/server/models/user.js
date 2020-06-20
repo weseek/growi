@@ -58,8 +58,7 @@ module.exports = function(crowi) {
     apiToken: { type: String, index: true },
     lang: {
       type: String,
-      // eslint-disable-next-line no-eval
-      enum: Object.keys(getLanguageLabels()).map((k) => { return eval(k) }),
+      enum: crowi.locales,
       default: LANG_EN_US,
     },
     status: {
@@ -425,12 +424,8 @@ module.exports = function(crowi) {
       .sort(sort);
   };
 
-  userSchema.statics.findAdmins = function(callback) {
-    this.find({ admin: true })
-      .exec((err, admins) => {
-        debug('Admins: ', admins);
-        callback(err, admins);
-      });
+  userSchema.statics.findAdmins = async function() {
+    return this.find({ admin: true });
   };
 
   userSchema.statics.findUsersByPartOfEmail = function(emailPart, options) {
@@ -552,30 +547,6 @@ module.exports = function(crowi) {
         }
 
         return callback(true, {});
-      });
-    });
-  };
-
-  userSchema.statics.removeCompletelyById = function(id, callback) {
-    const User = this;
-    User.findById(id, (err, userData) => {
-      if (!userData) {
-        return callback(err, null);
-      }
-
-      debug('Removing user:', userData);
-      // 物理削除可能なのは、承認待ちユーザー、招待中ユーザーのみ
-      // 利用を一度開始したユーザーは論理削除のみ可能
-      if (userData.status !== STATUS_REGISTERED && userData.status !== STATUS_INVITED) {
-        return callback(new Error('Cannot remove completely the user whoes status is not INVITED'), null);
-      }
-
-      userData.remove((err) => {
-        if (err) {
-          return callback(err, null);
-        }
-
-        return callback(null, 1);
       });
     });
   };

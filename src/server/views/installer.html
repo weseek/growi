@@ -19,6 +19,8 @@
 
   {% include './widget/headers/scripts-for-dev.html' %}
 
+  <script src="{{ webpack_asset('js/boot.js') }}"></script>
+
   <script src="{{ webpack_asset('js/vendors.js') }}" defer></script>
   <script src="{{ webpack_asset('js/commons.js') }}" defer></script>
 
@@ -54,10 +56,10 @@
             <div class="logo">{% include 'widget/logo.html' %}</div>
             <h1 class="my-3">GROWI</h1>
 
-            <div class="login-form-errors">
+            <div class="login-form-errors px-3">
               {% if req.form.errors.length > 0 %}
               <div class="alert alert-danger">
-                <ul>
+                <ul class="mb-0">
                 {% for error in req.form.errors %}
                   <li>{{ error }}</li>
                 {% endfor %}

@@ -93,25 +93,19 @@ module.exports = function(crowi) {
     return mc;
   }
 
-  function send(config, callback = () => {}) {
-    if (mailer) {
-      const templateVars = config.vars || {};
-      return swig.renderFile(
-        config.template,
-        templateVars,
-        (err, output) => {
-          if (err) {
-            throw err;
-          }
-
-          config.text = output;
-          return mailer.sendMail(setupMailConfig(config), callback);
-        },
-      );
+  async function send(config) {
+    if (mailer == null) {
+      throw new Error('Mailer is not completed to set up. Please set up SMTP or AWS setting.');
     }
 
-    logger.debug('Mailer is not completed to set up. Please set up SMTP or AWS setting.');
-    return callback(new Error('Mailer is not completed to set up. Please set up SMTP or AWS setting.'), null);
+    const templateVars = config.vars || {};
+    const output = await swig.renderFile(
+      config.template,
+      templateVars,
+    );
+
+    config.text = output;
+    return mailer.sendMail(setupMailConfig(config));
   }
 
 

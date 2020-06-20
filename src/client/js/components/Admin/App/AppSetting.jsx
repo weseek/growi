@@ -34,8 +34,9 @@ class AppSetting extends React.Component {
   }
 
   render() {
-    const { t, adminAppContainer } = this.props;
-
+    const { t, adminAppContainer, appContainer } = this.props;
+    const locales = appContainer.locales;
+    const languages = Object.keys(locales);
     return (
       <React.Fragment>
         <div className="form-group row">
@@ -45,7 +46,9 @@ class AppSetting extends React.Component {
               className="form-control"
               type="text"
               defaultValue={adminAppContainer.state.title || ''}
-              onChange={(e) => { adminAppContainer.changeTitle(e.target.value) }}
+              onChange={(e) => {
+                adminAppContainer.changeTitle(e.target.value);
+              }}
               placeholder="GROWI"
             />
             <p className="form-text text-muted">{t('admin:app_setting.sitename_change')}</p>
@@ -53,13 +56,19 @@ class AppSetting extends React.Component {
         </div>
 
         <div className="row form-group mb-5">
-          <label className="text-left text-md-right col-md-3 col-form-label">{t('admin:app_setting.confidential_name')}</label>
+          <label
+            className="text-left text-md-right col-md-3 col-form-label"
+          >
+            {t('admin:app_setting.confidential_name')}
+          </label>
           <div className="col-md-6">
             <input
               className="form-control"
               type="text"
               defaultValue={adminAppContainer.state.confidential || ''}
-              onChange={(e) => { adminAppContainer.changeConfidential(e.target.value) }}
+              onChange={(e) => {
+                adminAppContainer.changeConfidential(e.target.value);
+              }}
               placeholder={t('admin:app_setting.confidential_example')}
             />
             <p className="form-text text-muted">{t('admin:app_setting.header_content')}</p>
@@ -67,37 +76,39 @@ class AppSetting extends React.Component {
         </div>
 
         <div className="row form-group mb-5">
-          <label className="text-left text-md-right col-md-3 col-form-label">{t('admin:app_setting.default_language')}</label>
+          <label
+            className="text-left text-md-right col-md-3 col-form-label"
+          >
+            {t('admin:app_setting.default_language')}
+          </label>
           <div className="col-md-6">
-            <div className="custom-control custom-radio custom-control-inline">
-              <input
-                type="radio"
-                id="radioLangEn"
-                className="custom-control-input"
-                name="globalLang"
-                value="en-US"
-                checked={adminAppContainer.state.globalLang === 'en-US'}
-                onChange={(e) => { adminAppContainer.changeGlobalLang(e.target.value) }}
-              />
-              <label className="custom-control-label" htmlFor="radioLangEn">{t('English')}</label>
-            </div>
-            <div className="custom-control custom-radio custom-control-inline">
-              <input
-                type="radio"
-                id="radioLangJa"
-                className="custom-control-input"
-                name="globalLang"
-                value="ja"
-                checked={adminAppContainer.state.globalLang === 'ja'}
-                onChange={(e) => { adminAppContainer.changeGlobalLang(e.target.value) }}
-              />
-              <label className="custom-control-label" htmlFor="radioLangJa">{t('Japanese')}</label>
-            </div>
+            {
+              languages.map(lan => (
+                <div key={lan} className="custom-control custom-radio custom-control-inline">
+                  <input
+                    type="radio"
+                    id={`radioLang${lan}`}
+                    className="custom-control-input"
+                    name="globalLang"
+                    value={lan}
+                    checked={adminAppContainer.state.globalLang === lan}
+                    onChange={(e) => {
+                      adminAppContainer.changeGlobalLang(e.target.value);
+                    }}
+                  />
+                  <label className="custom-control-label" htmlFor={`radioLang${lan}`}>{locales[lan]._conf.name}</label>
+                </div>
+              ))
+            }
           </div>
         </div>
 
         <div className="row form-group mb-5">
-          <label className="text-left text-md-right col-md-3 col-form-label">{t('admin:app_setting.file_uploading')}</label>
+          <label
+            className="text-left text-md-right col-md-3 col-form-label"
+          >
+            {t('admin:app_setting.file_uploading')}
+          </label>
           <div className="col-md-6">
             <div className="custom-control custom-checkbox custom-checkbox-info">
               <input
@@ -106,9 +117,16 @@ class AppSetting extends React.Component {
                 className="custom-control-input"
                 name="fileUpload"
                 checked={adminAppContainer.state.fileUpload}
-                onChange={(e) => { adminAppContainer.changeFileUpload(e.target.checked) }}
+                onChange={(e) => {
+                  adminAppContainer.changeFileUpload(e.target.checked);
+                }}
               />
-              <label className="custom-control-label" htmlFor="cbFileUpload">{t('admin:app_setting.enable_files_except_image')}</label>
+              <label
+                className="custom-control-label"
+                htmlFor="cbFileUpload"
+              >
+                {t('admin:app_setting.enable_files_except_image')}
+              </label>
             </div>
 
             <p className="form-text text-muted">
