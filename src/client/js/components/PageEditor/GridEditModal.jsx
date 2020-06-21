@@ -42,23 +42,27 @@ export default class GridEditModal extends React.PureComponent {
             <div className="row">
               <div className="col-2">
                 <div className="device-titile-bar">Phone</div>
+                <div className="device-container"></div>
                 <div className="device-titile-bar">Tablet</div>
+                <div className="device-container"></div>
                 <div className="device-titile-bar">Desktop</div>
+                <div className="device-container"></div>
                 <div className="device-titile-bar">Large Desktop</div>
+                <div className="device-container"></div>
               </div>
               <div className="row col-10 flex-nowrap overflow-auto">
-                <div className="bg-light mx-1 grid-edit-columns">1</div>
-                <div className="bg-light mx-1 grid-edit-columns">2</div>
-                <div className="bg-light mx-1 grid-edit-columns">3</div>
-                <div className="bg-light mx-1 grid-edit-columns">4</div>
-                <div className="bg-light mx-1 grid-edit-columns">5</div>
-                <div className="bg-light mx-1 grid-edit-columns">6</div>
-                <div className="bg-light mx-1 grid-edit-columns">7</div>
-                <div className="bg-light mx-1 grid-edit-columns">8</div>
-                <div className="bg-light mx-1 grid-edit-columns">9</div>
-                <div className="bg-light mx-1 grid-edit-columns">10</div>
-                <div className="bg-light mx-1 grid-edit-columns">11</div>
-                <div className="bg-light mx-1 grid-edit-columns">12</div>
+                <div className="bg-light mx-1 grid-edit-col">1</div>
+                <div className="bg-light mx-1 grid-edit-col">2</div>
+                <div className="bg-light mx-1 grid-edit-col">3</div>
+                <div className="bg-light mx-1 grid-edit-col">4</div>
+                <div className="bg-light mx-1 grid-edit-col">5</div>
+                <div className="bg-light mx-1 grid-edit-col">6</div>
+                <div className="bg-light mx-1 grid-edit-col">7</div>
+                <div className="bg-light mx-1 grid-edit-col">8</div>
+                <div className="bg-light mx-1 grid-edit-col">9</div>
+                <div className="bg-light mx-1 grid-edit-col">10</div>
+                <div className="bg-light mx-1 grid-edit-col">11</div>
+                <div className="bg-light mx-1 grid-edit-col">12</div>
               </div>
             </div>
           </div>
