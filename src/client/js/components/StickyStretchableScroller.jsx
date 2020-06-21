@@ -82,6 +82,8 @@ const StickyStretchableScroller = (props) => {
     logger.debug(`[${scrollTargetSelector}] contentsHeight`, contentsHeight);
 
     $(scrollTargetSelector).slimScroll({
+      color: '#666',
+      railColor: '#999',
       railVisible: true,
       position: 'right',
       height: viewHeight,
