@@ -41,8 +41,8 @@ const router = express.Router();
  */
 
 module.exports = (crowi) => {
-  const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
-  const adminRequired = require('../../middleware/admin-required')(crowi);
+  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
+  const adminRequired = require('../../middlewares/admin-required')(crowi);
 
   /**
    * @swagger

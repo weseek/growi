@@ -24,7 +24,7 @@ export default class PersonalContainer extends Container {
       email: '',
       registrationWhiteList: this.appContainer.getConfig().registrationWhiteList,
       isEmailPublished: false,
-      lang: 'en-US',
+      lang: 'en_US',
       isGravatarEnabled: false,
       isUploadedPicture: false,
       uploadedPictureSrc: this.getUploadedPictureSrc(this.appContainer.currentUser),
