@@ -41,10 +41,10 @@ export default class GridEditModal extends React.PureComponent {
           <div className="container">
             <div className="row">
               <div className="col-2">
-                <div style={{ height: 100 }}>Phone</div>
-                <div style={{ height: 100 }}>Tablet</div>
-                <div style={{ height: 100 }}>Desktop</div>
-                <div style={{ height: 100 }}>Large Desktop</div>
+                <div className="device-titile-bar">Phone</div>
+                <div className="device-titile-bar">Tablet</div>
+                <div className="device-titile-bar">Desktop</div>
+                <div className="device-titile-bar">Large Desktop</div>
               </div>
               <div className="row col-10 flex-nowrap overflow-auto">
                 <div className="bg-light mx-1 grid-edit-columns">1</div>
