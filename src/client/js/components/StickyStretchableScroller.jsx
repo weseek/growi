@@ -96,6 +96,11 @@ const StickyStretchableScroller = (props) => {
   const resetScrollbarDebounced = debounce(100, resetScrollbar);
 
 
+  const stickyChangeHandler = useCallback((event) => {
+    logger.debug('StickyEvents.CHANGE detected');
+    resetScrollbar();
+  });
+
   // setup effect by sticky event
   useEffect(() => {
     if (stickyElemSelector == null) {
@@ -107,10 +112,12 @@ const StickyStretchableScroller = (props) => {
     const stickyEvents = new StickyEvents({ stickySelector: stickyElemSelector });
     const { stickySelector } = stickyEvents;
     const elem = document.querySelector(stickySelector);
-    elem.addEventListener(StickyEvents.CHANGE, (event) => {
-      logger.debug('StickyEvents.CHANGE detected');
-      resetScrollbar();
-    });
+    elem.addEventListener(StickyEvents.CHANGE, stickyChangeHandler);
+
+    // return clean up handler
+    return () => {
+      elem.removeEventListener(StickyEvents.CHANGE, stickyChangeHandler);
+    };
   }, []);
 
   // setup effect by resizing event
