@@ -1722,10 +1722,10 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.2:
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.1.15.tgz#ffb703e1066e8a0eeaa4c8b80ba9253eeefbfb00"
   integrity sha512-6uHUhOPEBgQ24HM+r6b/QwWfZq+yiFcipKFrOFiBEnWdy5sdzYoi+pJeQaPI5qOLRFqWmAXUPQNsielzdLoecA==
 
-growi-commons@^5.0.2:
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/growi-commons/-/growi-commons-5.0.2.tgz#bac05e356787c1855920c81e57e73991f4c5fa3d"
-  integrity sha512-SUCgf4ZhA+qfNhianeoJXrHzIuu2cmcR2jkOyIpGO/dgddffIj5lTYwfmjUEO7DWLfY76es5smXLTOvoACeyGQ==
+growi-commons@^5.0.3:
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/growi-commons/-/growi-commons-5.0.3.tgz#8ec745dcb2d3d003e3acd7d6fbec85cf0967354b"
+  integrity sha512-lV2jmqxWPiuzuVaetSY1uq7viwgRCNwLMnU78GaYix4jfXNcYzdrfedTlU3ZRiVIjLggSFb87EhYqtM/4RfjmA==
 
 has-ansi@^2.0.0:
   version "2.0.0"
