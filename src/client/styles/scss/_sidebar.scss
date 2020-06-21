@@ -87,9 +87,6 @@
       }
     }
   }
-  div[data-testid='ContextualNavigation'] {
-    height: calc(100vh - #{$grw-navbar-height});
-  }
 
   .grw-sidebar-nav {
     height: 100vh;

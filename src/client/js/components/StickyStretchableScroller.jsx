@@ -11,16 +11,56 @@ import { withUnstatedContainers } from './UnstatedUtils';
 const logger = loggerFactory('growi:cli:StickyStretchableScroller');
 
 
+/**
+ * USAGE:
+ *
+  const calcViewHeight = useCallback(() => {
+    const containerElem = document.querySelector('#sticky-elem');
+    const containerTop = containerElem.getBoundingClientRect().top;
+
+    // stretch to the bottom of window
+    return window.innerHeight - containerTop;
+  });
+
+  return (
+    <StickyStretchableScroller
+      contentsElemSelector="#long-contents-elem"
+      stickyElemSelector="#sticky-elem"
+      calcViewHeightFunc={calcViewHeight}
+    >
+      <div id="scroll-elem">
+        ...
+      </div>
+    </StickyStretchableScroller>
+  );
+
+  or
+
+  return (
+    <StickyStretchableScroller
+      scrollTargetId="scroll-elem"
+      contentsElemSelector="#long-contents-elem"
+      stickyElemSelector="#sticky-elem"
+      calcViewHeightFunc={calcViewHeight}
+    />
+  );
+ */
 const StickyStretchableScroller = (props) => {
 
+  let { scrollTargetSelector } = props;
   const {
     navigationContainer,
     children, contentsElemSelector, stickyElemSelector,
     calcViewHeightFunc, calcContentsHeightFunc,
   } = props;
 
-  const id = children.props.id;
+  if (scrollTargetSelector == null && children == null) {
+    throw new Error('Either of scrollTargetSelector or children is required');
+  }
 
+  if (scrollTargetSelector == null) {
+    scrollTargetSelector = `#${children.props.id}`;
+  }
 
   /**
    * Reset scrollbar
@@ -38,16 +78,16 @@ const StickyStretchableScroller = (props) => {
       ? calcContentsHeightFunc(contentsElem)
       : contentsElem.getBoundingClientRect().height;
 
-    logger.debug('viewHeight', viewHeight);
-    logger.debug('contentsHeight', contentsHeight);
+    logger.debug(`[${scrollTargetSelector}] viewHeight`, viewHeight);
+    logger.debug(`[${scrollTargetSelector}] contentsHeight`, contentsHeight);
 
-    $(`#${id}`).slimScroll({
+    $(scrollTargetSelector).slimScroll({
       railVisible: true,
       position: 'right',
       height: viewHeight,
     });
     if (contentsHeight < viewHeight) {
-      $(`#${id}`).slimScroll({ destroy: true });
+      $(scrollTargetSelector).slimScroll({ destroy: true });
     }
   }, [contentsElemSelector, calcViewHeightFunc, calcContentsHeightFunc]);
 
@@ -106,9 +146,10 @@ const StickyStretchableScroller = (props) => {
 
 StickyStretchableScroller.propTypes = {
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
-  children: PropTypes.node.isRequired,
   contentsElemSelector: PropTypes.string.isRequired,
 
+  children: PropTypes.node,
+  scrollTargetSelector: PropTypes.string,
   stickyElemSelector: PropTypes.string,
 
   calcViewHeightFunc: PropTypes.func,

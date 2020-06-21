@@ -22,7 +22,11 @@ const SidebarContents = (props) => {
       Contents = CustomSidebar;
   }
 
-  return <div className="grw-sidebar-content-container"><Contents /></div>;
+  return (
+    <div id="grw-sidebar-content-container" className="grw-sidebar-content-container">
+      <Contents />
+    </div>
+  );
 
 };
 

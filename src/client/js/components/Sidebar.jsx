@@ -14,6 +14,7 @@ import NavigationContainer from '../services/NavigationContainer';
 
 import SidebarNav from './Sidebar/SidebarNav';
 import SidebarContents from './Sidebar/SidebarContents';
+import StickyStretchableScroller from './StickyStretchableScroller';
 
 const sidebarDefaultWidth = 240;
 
@@ -134,13 +135,30 @@ class Sidebar extends React.Component {
     }
   }
 
+  calcViewHeight() {
+    const containerElem = document.querySelector('#grw-sidebar-content-container');
+    return window.innerHeight - containerElem.getBoundingClientRect().top;
+  }
+
   renderGlobalNavigation = () => (
     <SidebarNav onItemSelected={this.itemSelectedHandler} />
   );
 
-  renderSidebarContents = () => (
-    <SidebarContents />
-  );
+  renderSidebarContents = () => {
+    const scrollTargetSelector = 'div[data-testid="ContextualNavigation"] div[role="group"]';
+
+    return (
+      <>
+        <StickyStretchableScroller
+          scrollTargetSelector={scrollTargetSelector}
+          contentsElemSelector="#grw-sidebar-content-container"
+          stickyElemSelector=".grw-sidebar"
+          calcViewHeightFunc={this.calcViewHeight}
+        />
+        <SidebarContents />
+      </>
+    );
+  };
 
   render() {
     const { isDrawerOpened } = this.props.navigationContainer.state;
