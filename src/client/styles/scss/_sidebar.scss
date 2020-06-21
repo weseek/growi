@@ -76,8 +76,13 @@
 
     transition: left 300ms cubic-bezier(0.25, 1, 0.5, 1);
 
+    // css-xxx-ContainerNavigationMask
+    > div:nth-of-type(1) {
+    }
     // css-xxx-Outer
     > div:nth-of-type(2) {
+      z-index: 100; // greater than the value of slimScrollBar
+
       width: 0;
       transform: unset; // unset for 'position: fixed' of .ak-navigation-resize-button
 
