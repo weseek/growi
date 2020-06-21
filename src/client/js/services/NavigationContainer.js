@@ -4,6 +4,9 @@ import { Container } from 'unstated';
  * Service container related to options for Application
  * @extends {Container} unstated Container
  */
+
+const scrollThresForThrottling = 100;
+
 export default class NavigationContainer extends Container {
 
   constructor(appContainer) {
@@ -26,6 +29,8 @@ export default class NavigationContainer extends Container {
 
       sidebarContentsId: 'recent',
 
+      isScrollTop: true,
+
       isPageCreateModalShown: false,
     };
 
@@ -34,6 +39,7 @@ export default class NavigationContainer extends Container {
 
     this.initHotkeys();
     this.initDeviceSize();
+    this.initScrollEvent();
   }
 
   /**
@@ -80,6 +86,21 @@ export default class NavigationContainer extends Container {
     };
 
     this.appContainer.addBreakpointListener('md', mdOrAvobeHandler, true);
+  }
+
+  initScrollEvent() {
+    window.addEventListener('scroll', () => {
+      const currentYOffset = window.pageYOffset;
+
+      // original throttling
+      if (scrollThresForThrottling < currentYOffset) {
+        return;
+      }
+
+      this.setState({
+        isScrollTop: currentYOffset === 0,
+      });
+    });
   }
 
   setEditorMode(editorMode) {
