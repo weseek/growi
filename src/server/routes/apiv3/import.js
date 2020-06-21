@@ -61,10 +61,10 @@ const generateOverwriteParams = (collectionName, req, options) => {
 
 module.exports = (crowi) => {
   const { growiBridgeService, importService } = crowi;
-  const accessTokenParser = require('../../middleware/access-token-parser')(crowi);
-  const loginRequired = require('../../middleware/login-required')(crowi);
-  const adminRequired = require('../../middleware/admin-required')(crowi);
-  const csrf = require('../../middleware/csrf')(crowi);
+  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
+  const loginRequired = require('../../middlewares/login-required')(crowi);
+  const adminRequired = require('../../middlewares/admin-required')(crowi);
+  const csrf = require('../../middlewares/csrf')(crowi);
 
   this.adminEvent = crowi.event('admin');
 

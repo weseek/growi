@@ -3,6 +3,10 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
+import AppContainer from '../services/AppContainer';
+
+import { withUnstatedContainers } from './UnstatedUtils';
+
 import NotAvailableForGuest from './NotAvailableForGuest';
 
 class Drawio extends React.Component {
@@ -83,4 +87,4 @@ Drawio.propTypes = {
   rangeLineNumberOfMarkdown: PropTypes.object.isRequired,
 };
 
-export default withTranslation()(Drawio);
+export default withTranslation()(withUnstatedContainers(Drawio, [AppContainer]));
