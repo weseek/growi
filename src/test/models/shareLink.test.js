@@ -5,23 +5,12 @@ describe('ShareLink', () => {
   let crowi;
   let ShareLink;
   let Page;
-  let relatedPage = {};
 
   beforeAll(async(done) => {
     crowi = await getInstance();
     ShareLink = crowi.model('ShareLink');
     Page = require('@server/routes/page')(crowi);
 
-    relatedPage = {
-      path: '/somePath',
-      grant: Page.GRANT_PUBLIC,
-      populateDataToShowRevision: () => {
-        return {
-          revision: {},
-          creator: {},
-        };
-      },
-    };
 
     done();
   });
@@ -40,6 +29,16 @@ describe('ShareLink', () => {
 
     const shareLink = {
       relatedPage: 'relatedPageId',
+    };
+
+    const relatedPage = {
+      path: '/somePath',
+      populateDataToShowRevision: () => {
+        return {
+          revision: {},
+          creator: {},
+        };
+      },
     };
 
     test('share link is not found', async() => {
