@@ -45,14 +45,24 @@ const StickyStretchableScroller = (props) => {
       $(`#${id}`).slimScroll({ destroy: true });
     }
   };
-
   const resetScrollbarDebounced = debounce(100, resetScrollbar);
 
-  // didMount
-  useEffect(() => {
-  });
 
-  // didMount, didUpdate
+  // setup resize event
+  useEffect(() => {
+    const resizeHandler = (event) => {
+      resetScrollbarDebounced();
+    };
+
+    window.addEventListener('resize', resizeHandler);
+
+    // return clean up handler
+    return () => {
+      window.removeEventListener('resize', resizeHandler);
+    };
+  }, []);
+
+  // setup update scrollbar effect
   useEffect(() => {
     resetScrollbarDebounced();
   });
