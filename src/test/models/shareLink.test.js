@@ -28,7 +28,6 @@ describe('ShareLink', () => {
     };
 
     const shareLink = {
-      relatedPage: 'relatedPageId',
       populate: null,
     };
 
