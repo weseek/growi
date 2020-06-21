@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
 import { withTranslation } from 'react-i18next';
 
-import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 
 import { withUnstatedContainers } from './UnstatedUtils';
@@ -16,53 +15,47 @@ const logger = loggerFactory('growi:TableOfContents');
 /**
  * @author Yuki Takei <yuki@weseek.co.jp>
  *
- * @export
- * @class TableOfContents
- * @extends {React.Component}
  */
-class TableOfContents extends React.Component {
+const TableOfContents = (props) => {
 
-  getContainerTop() {
+  const { pageContainer } = props;
+
+  const calcViewHeight = useCallback(() => {
     // calculate absolute top of '#revision-toc' element
     const containerElem = document.querySelector('#revision-toc');
-    return containerElem.getBoundingClientRect().top;
-  }
+    const containerTop = containerElem.getBoundingClientRect().top;
 
-  calcViewHeight() {
-    // window height - revisionTocTop - .system-version height
-    return window.innerHeight - this.getContainerTop() - 20;
-  }
+    // window height - revisionToc top - .system-version height
+    return window.innerHeight - containerTop - 20;
+  });
 
-  render() {
-    const { tocHtml } = this.props.pageContainer.state;
+  const { tocHtml } = pageContainer.state;
 
-    return (
-      <StickyStretchableScroller
-        contentsElemSelector=".revision-toc .markdownIt-TOC"
-        stickyElemSelector="#revision-toc"
-        calcViewHeightFunc={() => this.calcViewHeight()}
-      >
-        <div
-          id="revision-toc-content"
-          className="revision-toc-content"
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{
-            __html: tocHtml,
-          }}
-        />
-      </StickyStretchableScroller>
-    );
-  }
+  return (
+    <StickyStretchableScroller
+      contentsElemSelector=".revision-toc .markdownIt-TOC"
+      stickyElemSelector="#revision-toc"
+      calcViewHeightFunc={calcViewHeight}
+    >
+      <div
+        id="revision-toc-content"
+        className="revision-toc-content"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{
+          __html: tocHtml,
+        }}
+      />
+    </StickyStretchableScroller>
+  );
 
-}
+};
 
 /**
  * Wrapper component for using unstated
  */
-const TableOfContentsWrapper = withUnstatedContainers(TableOfContents, [AppContainer, PageContainer]);
+const TableOfContentsWrapper = withUnstatedContainers(TableOfContents, [PageContainer]);
 
 TableOfContents.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
