@@ -7,11 +7,13 @@ import { withTranslation } from 'react-i18next';
 import { debounce } from 'throttle-debounce';
 import StickyEvents from 'sticky-events';
 
+import { isUserPage } from '@commons/util/path-utils';
+
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 
-import { isUserPage } from '../../../lib/util/path-utils';
 import { withUnstatedContainers } from './UnstatedUtils';
+import StickyStretchableScroller from './StickyStretchableScroller';
 
 const logger = loggerFactory('growi:TableOfContents');
 
@@ -33,57 +35,48 @@ class TableOfContents extends React.Component {
   constructor(props) {
     super(props);
 
-    this.init = this.init.bind(this);
-    this.resetScrollbarDebounced = debounce(100, this.resetScrollbar);
+    // this.init = this.init.bind(this);
+    // this.resetScrollbarDebounced = debounce(100, this.resetScrollbar);
 
-    const { layoutType } = this.props.appContainer.config;
-    const { path } = this.props.pageContainer.state;
+    // const { layoutType } = this.props.appContainer.config;
+    // const { path } = this.props.pageContainer.state;
 
-    this.defaultRevisionTocTop = DEFAULT_REVISION_TOC_TOP_FOR_GROWI_LAYOUT;
+    // this.defaultRevisionTocTop = DEFAULT_REVISION_TOC_TOP_FOR_GROWI_LAYOUT;
 
-    if (isUserPage(path)) {
-      this.defaultRevisionTocTop = DEFAULT_REVISION_TOC_TOP_FOR_GROWI_LAYOUT_USER_PAGE;
-    }
+    // if (isUserPage(path)) {
+    //   this.defaultRevisionTocTop = DEFAULT_REVISION_TOC_TOP_FOR_GROWI_LAYOUT_USER_PAGE;
+    // }
 
-    if (layoutType === 'kibela') {
-      this.defaultRevisionTocTop = DEFAULT_REVISION_TOC_TOP_FOR_KIBELA_LAYOUT;
-    }
+    // if (layoutType === 'kibela') {
+    //   this.defaultRevisionTocTop = DEFAULT_REVISION_TOC_TOP_FOR_KIBELA_LAYOUT;
+    // }
   }
 
-  componentDidMount() {
-    this.init();
-    this.resetScrollbar();
-  }
+  // init() {
+  //   /*
+  //    * set event listener
+  //    */
+  //   // resize
+  //   window.addEventListener('resize', (event) => {
+  //     this.resetScrollbarDebounced(this.defaultRevisionTocTop);
+  //   });
 
-  componentDidUpdate() {
-    this.resetScrollbar();
-  }
-
-  init() {
-    /*
-     * set event listener
-     */
-    // resize
-    window.addEventListener('resize', (event) => {
-      this.resetScrollbarDebounced(this.defaultRevisionTocTop);
-    });
-
-    // sticky
-    // See: https://github.com/ryanwalters/sticky-events
-    const stickyEvents = new StickyEvents({
-      stickySelector: '#revision-toc',
-    });
-    const { stickySelector } = stickyEvents;
-    const elem = document.querySelector(stickySelector);
-    elem.addEventListener(StickyEvents.STUCK, (event) => {
-      logger.debug('StickyEvents.STUCK detected');
-      this.resetScrollbar();
-    });
-    elem.addEventListener(StickyEvents.UNSTUCK, (event) => {
-      logger.debug('StickyEvents.UNSTUCK detected');
-      this.resetScrollbar(this.defaultRevisionTocTop);
-    });
-  }
+  //   // sticky
+  //   // See: https://github.com/ryanwalters/sticky-events
+  //   const stickyEvents = new StickyEvents({
+  //     stickySelector: '#revision-toc',
+  //   });
+  //   const { stickySelector } = stickyEvents;
+  //   const elem = document.querySelector(stickySelector);
+  //   elem.addEventListener(StickyEvents.STUCK, (event) => {
+  //     logger.debug('StickyEvents.STUCK detected');
+  //     this.resetScrollbar();
+  //   });
+  //   elem.addEventListener(StickyEvents.UNSTUCK, (event) => {
+  //     logger.debug('StickyEvents.UNSTUCK detected');
+  //     this.resetScrollbar(this.defaultRevisionTocTop);
+  //   });
+  // }
 
   getCurrentRevisionTocTop() {
     // calculate absolute top of '#revision-toc' element
@@ -91,46 +84,29 @@ class TableOfContents extends React.Component {
     return revisionTocElem.getBoundingClientRect().top;
   }
 
-  resetScrollbar(defaultRevisionTocTop) {
-    const tocContentElem = document.querySelector('.revision-toc .markdownIt-TOC');
-
-    if (tocContentElem == null) {
-      return;
-    }
-
-    const revisionTocTop = defaultRevisionTocTop || this.getCurrentRevisionTocTop();
+  calcViewHeight() {
     // window height - revisionTocTop - .system-version height
-    const viewHeight = window.innerHeight - revisionTocTop - 20;
-
-    const tocContentHeight = tocContentElem.getBoundingClientRect().height + 15; // add margin
-
-    logger.debug('viewHeight', viewHeight);
-    logger.debug('tocContentHeight', tocContentHeight);
-
-    if (viewHeight < tocContentHeight) {
-      $('#revision-toc-content').slimScroll({
-        railVisible: true,
-        position: 'right',
-        height: viewHeight,
-      });
-    }
-    else {
-      $('#revision-toc-content').slimScroll({ destroy: true });
-    }
+    return window.innerHeight - this.getCurrentRevisionTocTop() - 20;
   }
 
   render() {
     const { tocHtml } = this.props.pageContainer.state;
 
     return (
-      <div
-        id="revision-toc-content"
-        className="revision-toc-content"
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{
-          __html: tocHtml,
-        }}
-      />
+      <StickyStretchableScroller
+        contentsElemSelector=".revision-toc .markdownIt-TOC"
+        calcViewHeightFunc={() => this.calcViewHeight()}
+        calcContentsHeightFunc={contentsElem => contentsElem.getBoundingClientRect().height + 15} // add margin
+      >
+        <div
+          id="revision-toc-content"
+          className="revision-toc-content"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{
+            __html: tocHtml,
+          }}
+        />
+      </StickyStretchableScroller>
     );
   }
 
