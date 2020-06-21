@@ -47,18 +47,19 @@ export default class GridEditModal extends React.PureComponent {
                 <div style={{ height: 100 }}>Large Desktop</div>
               </div>
               <div className="row col-10 flex-nowrap overflow-auto">
-                <div className="col-1 bg-light mx-1">1</div>
-                <div className="col-1 bg-light mx-1">2</div>
-                <div className="col-1 bg-light mx-1">3</div>
-                <div className="col-1 bg-light mx-1">4</div>
-                <div className="col-1 bg-light mx-1">5</div>
-                <div className="col-1 bg-light mx-1">6</div>
-                <div className="col-1 bg-light mx-1">7</div>
-                <div className="col-1 bg-light mx-1">8</div>
-                <div className="col-1 bg-light mx-1">9</div>
-                <div className="col-1 bg-light mx-1">10</div>
-                <div className="col-1 bg-light mx-1">11</div>
-                <div className="col-1 bg-light mx-1">12</div>
+                <div className="bg-light mx-1 grid-edit-columns">1</div>
+                <div className="bg-light mx-1 grid-edit-columns">2</div>
+                <div className="bg-light mx-1 grid-edit-columns">3</div>
+                <div className="bg-light mx-1 grid-edit-columns">4</div>
+                <div className="bg-light mx-1 grid-edit-columns">5</div>
+                <div className="bg-light mx-1 grid-edit-columns">6</div>
+                <div className="bg-light mx-1 grid-edit-columns">7</div>
+                <div className="bg-light mx-1 grid-edit-columns">8</div>
+                <div className="bg-light mx-1 grid-edit-columns">9</div>
+                <div className="bg-light mx-1 grid-edit-columns">10</div>
+                <div className="bg-light mx-1 grid-edit-columns">11</div>
+                <div className="bg-light mx-1 grid-edit-columns">12</div>
+              </div>
             </div>
           </div>
         </ModalBody>
