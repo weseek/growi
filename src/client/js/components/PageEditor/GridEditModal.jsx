@@ -40,17 +40,20 @@ export default class GridEditModal extends React.PureComponent {
         <ModalBody>
           <div className="container">
             <div className="row">
-              <div className="col-1 bg-light mx-1">test</div>
-              <div className="col-1 bg-light mx-1">test</div>
-              <div className="col-1 bg-light mx-1">test</div>
-              <div className="col-1 bg-light mx-1">test</div>
-              <div className="col-1 bg-light mx-1">test</div>
-              <div className="col-1 bg-light mx-1">test</div>
-              <div className="col-1 bg-light mx-1">test</div>
-              <div className="col-1 bg-light mx-1">test</div>
-              <div className="col-1 bg-light mx-1">test</div>
-              <div className="col-1 bg-light mx-1">test</div>
-              <div className="col-1 bg-light mx-1">test</div>
+              <div className="col-2">1</div>
+              <div className="row col-10 flex-nowrap overflow-auto">
+                <div className="col-1 bg-light mx-1">1</div>
+                <div className="col-1 bg-light mx-1">2</div>
+                <div className="col-1 bg-light mx-1">3</div>
+                <div className="col-1 bg-light mx-1">4</div>
+                <div className="col-1 bg-light mx-1">5</div>
+                <div className="col-1 bg-light mx-1">6</div>
+                <div className="col-1 bg-light mx-1">7</div>
+                <div className="col-1 bg-light mx-1">8</div>
+                <div className="col-1 bg-light mx-1">9</div>
+                <div className="col-1 bg-light mx-1">10</div>
+                <div className="col-1 bg-light mx-1">11</div>
+                <div className="col-1 bg-light mx-1">12</div>
             </div>
           </div>
         </ModalBody>
