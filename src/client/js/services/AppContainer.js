@@ -47,7 +47,10 @@ export default class AppContainer extends Container {
       this.currentUser = JSON.parse(currentUserElem.textContent);
     }
 
-    const userLocaleId = this.currentUser.lang;
+    let userLocaleId;
+    if (this.currentUser != null) {
+      userLocaleId = this.currentUser.lang;
+    }
     this.i18n = i18nFactory(userLocaleId);
 
     this.containerInstances = {};
