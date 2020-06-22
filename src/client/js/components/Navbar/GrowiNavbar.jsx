@@ -5,10 +5,14 @@ import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import NavigationContainer from '../../services/NavigationContainer';
+import AppContainer from '../../services/AppContainer';
 
 class GrowiNavbar extends React.Component {
 
   render() {
+    const { appContainer } = this.props;
+    const appTitle = appContainer.config.crowi.title;
+
     return (
       <nav className="navbar grw-navbar navbar-expand navbar-dark sticky-top mb-0 px-0">
 
@@ -26,13 +30,13 @@ class GrowiNavbar extends React.Component {
           </a>
         </div>
 
+        <ul className="navbar-nav d-md-none">
+          <li id="grw-navbar-toggler" className="nav-item"></li>
+        </ul>
+        <div className="grw-app-title d-none d-md-block">
+          {appTitle}
+        </div>
         {/*
-    <ul class="navbar-nav d-md-none">
-      <li id="grw-navbar-toggler" class="nav-item"></li>
-    </ul>
-    <div class="grw-app-title d-none d-md-block">
-      {{ appService.getAppTitle() | preventXss }}
-    </div>
 
     {# Navbar Right #}
     <ul class="navbar-nav ml-auto">
@@ -69,11 +73,13 @@ class GrowiNavbar extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const GrowiNavbarWrapper = withUnstatedContainers(GrowiNavbar, [NavigationContainer]);
+const GrowiNavbarWrapper = withUnstatedContainers(GrowiNavbar, [AppContainer, NavigationContainer]);
 
 
 GrowiNavbar.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
+
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 
