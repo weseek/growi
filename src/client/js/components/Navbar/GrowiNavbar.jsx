@@ -9,6 +9,21 @@ import AppContainer from '../../services/AppContainer';
 
 class GrowiNavbar extends React.Component {
 
+
+  renderConfidential() {
+    const { appContainer } = this.props;
+    const { crowi } = appContainer.config;
+
+    return (
+      <li className="nav-item confidential text-light">
+        <i className="icon-info d-md-none" data-toggle="tooltip" title={crowi.confidential} />
+        <span className="d-none d-md-inline">
+          {crowi.confidential}
+        </span>
+      </li>
+    );
+  }
+
   render() {
     const { appContainer } = this.props;
     const { crowi } = appContainer.config;
@@ -36,11 +51,11 @@ class GrowiNavbar extends React.Component {
         <div className="grw-app-title d-none d-md-block">
           {crowi.title}
         </div>
-        {/*
 
-    {# Navbar Right #}
-    <ul class="navbar-nav ml-auto">
-      {% if user %}
+
+        {/* Navbar Right  */}
+        <ul className="navbar-nav ml-auto">
+          {/* {% if user %}
         <li id="create-page-button" class="nav-item d-none d-md-block"></li>
         {% if isSearchServiceConfigured() %}
           <li class="nav-item d-md-none">
@@ -52,17 +67,11 @@ class GrowiNavbar extends React.Component {
         <li id="personal-dropdown" class="grw-personal-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret"></li>
       {% else %}
         <li id="login-user" class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-      {% endif %}
+      {% endif %} */}
 
-    </ul> */}
+        </ul>
 
-
-        <li className="nav-item confidential text-light">
-          <i className="icon-info d-md-none" data-toggle="tooltip" title={crowi.confidential} />
-          <span className="d-none d-md-inline">
-            {crowi.confidential}
-          </span>
-        </li>
+        {crowi.confidential != null && this.renderConfidential()}
       </nav>
     );
   }
