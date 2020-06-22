@@ -23,9 +23,9 @@ const today = new Date();
  */
 
 module.exports = (crowi) => {
-  const loginRequired = require('../../middleware/login-required')(crowi);
-  const csrf = require('../../middleware/csrf')(crowi);
-  const { ApiV3FormValidator } = crowi.middlewares;
+  const loginRequired = require('../../middlewares/login-required')(crowi);
+  const csrf = require('../../middlewares/csrf')(crowi);
+  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
   const ShareLink = crowi.model('ShareLink');
 
 
@@ -100,7 +100,7 @@ module.exports = (crowi) => {
    *            description: Succeeded to create one share link
    */
 
-  router.post('/', loginRequired, csrf, validator.shareLinkStatus, ApiV3FormValidator, async(req, res) => {
+  router.post('/', loginRequired, csrf, validator.shareLinkStatus, apiV3FormValidator, async(req, res) => {
     const { relatedPage, expiredAt, description } = req.body;
     const ShareLink = crowi.model('ShareLink');
 

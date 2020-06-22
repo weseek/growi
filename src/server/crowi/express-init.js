@@ -18,14 +18,15 @@ module.exports = function(crowi, app) {
   const i18nSprintf = require('i18next-sprintf-postprocessor');
   const i18nMiddleware = require('i18next-express-middleware');
 
-  const registerSafeRedirect = require('../middleware/safe-redirect')();
+  const registerSafeRedirect = require('../middlewares/safe-redirect')();
+  const injectCurrentuserToLocalvars = require('../middlewares/inject-currentuser-to-localvars')();
+  const { listLocaleIds } = require('@commons/util/locale-utils');
 
   const avoidSessionRoutes = require('../routes/avoid-session-routes');
   const i18nUserSettingDetector = require('../util/i18nUserSettingDetector');
 
   const env = crowi.node_env;
 
-  const User = crowi.model('User');
   const lngDetector = new i18nMiddleware.LanguageDetector();
   lngDetector.addDetector(i18nUserSettingDetector);
 
@@ -35,8 +36,8 @@ module.exports = function(crowi, app) {
     .use(i18nSprintf)
     .init({
       // debug: true,
-      fallbackLng: [User.LANG_EN_US],
-      whitelist: Object.keys(User.getLanguageLabels()).map((k) => { return User[k] }),
+      fallbackLng: ['en_US'],
+      whitelist: listLocaleIds(),
       backend: {
         loadPath: `${crowi.localeDir}{{lng}}/translation.json`,
       },
@@ -69,7 +70,7 @@ module.exports = function(crowi, app) {
     res.locals.consts = {
       pageGrants: Page.getGrantLabels(),
       userStatus: User.getUserStatusLabels(),
-      language:   User.getLanguageLabels(),
+      language:   listLocaleIds(),
       restrictGuestMode: crowi.aclService.getRestrictGuestModeLabels(),
       registrationMode: crowi.aclService.getRegistrationModeLabels(),
     };
@@ -115,15 +116,12 @@ module.exports = function(crowi, app) {
   app.use(flash());
 
   app.use(registerSafeRedirect);
+  app.use(injectCurrentuserToLocalvars);
 
   const middlewares = require('../util/middlewares')(crowi, app);
-
   app.use(middlewares.swigFilters(swig));
   app.use(middlewares.swigFunctions());
-
   app.use(middlewares.csrfKeyGenerator());
-
-  app.use(middlewares.loginCheckerForPassport);
 
   app.use(i18nMiddleware.handle(i18next));
 };

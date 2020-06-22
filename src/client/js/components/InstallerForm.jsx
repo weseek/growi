@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import i18next from 'i18next';
 import { withTranslation } from 'react-i18next';
 
+import { localeMetadatas } from '../util/i18n';
+
 class InstallerForm extends React.Component {
 
   constructor(props) {
@@ -11,13 +13,13 @@ class InstallerForm extends React.Component {
 
     this.state = {
       isValidUserName: true,
-      checkedBtn: 'en-US',
+      checkedBtn: 'en_US',
     };
     this.checkUserName = this.checkUserName.bind(this);
   }
 
   componentWillMount() {
-    this.changeLanguage('en-US');
+    this.changeLanguage('en_US');
   }
 
   checkUserName(event) {
@@ -58,36 +60,24 @@ class InstallerForm extends React.Component {
         <div className="row">
           <form role="form" action="/installer" method="post" id="register-form" className="col-md-12">
             <div className="form-group text-center">
-              <div className="custom-control custom-radio custom-control-inline">
-                <input
-                  type="radio"
-                  className="custom-control-input"
-                  id="register-form-check-en"
-                  name="registerForm[app:globalLang]"
-                  value="en-US"
-                  checked={checkedBtn === 'en-US'}
-                  inline
-                  onChange={(e) => { if (e.target.checked) { this.changeLanguage('en-US') } }}
-                />
-                <label className="custom-control-label" htmlFor="register-form-check-en">
-                  English
-                </label>
-              </div>
-              <div className="custom-control custom-radio custom-control-inline">
-                <input
-                  type="radio"
-                  className="custom-control-input"
-                  id="register-form-check-jp"
-                  name="registerForm[app:globalLang]"
-                  value="ja"
-                  checked={checkedBtn === 'ja'}
-                  inline
-                  onChange={(e) => { if (e.target.checked) { this.changeLanguage('ja') } }}
-                />
-                <label className="custom-control-label" htmlFor="register-form-check-jp">
-                  日本語
-                </label>
-              </div>
+              {
+                localeMetadatas.map(meta => (
+                  <div key={meta.id} className="custom-control custom-radio custom-control-inline">
+                    <input
+                      type="radio"
+                      className="custom-control-input"
+                      id={`register-form-check-${meta.id}`}
+                      name="registerForm[app:globalLang]"
+                      value={meta.id}
+                      checked={checkedBtn === meta.id}
+                      onChange={(e) => { if (e.target.checked) { this.changeLanguage(meta.id) } }}
+                    />
+                    <label className="custom-control-label" htmlFor={`register-form-check-${meta.id}`}>
+                      {meta.displayName}
+                    </label>
+                  </div>
+                ))
+              }
             </div>
 
             <div className={`input-group mb-3${hasErrorClass}`}>
