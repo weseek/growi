@@ -4,7 +4,8 @@
 class MarkdownLinkUtil {
 
   constructor() {
-    this.linePartOfTableRE = /^([^\r\n|]*)\|(([^\r\n|]*\|)+)$/;
+    // TODO Regular expression for link
+    this.linePartOfLink = /^([^\r\n|]*)\|(([^\r\n|]*\|)+)$/;
     this.isInTable = this.isInTable.bind(this);
   }
 
