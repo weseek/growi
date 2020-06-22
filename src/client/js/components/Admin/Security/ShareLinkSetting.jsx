@@ -13,7 +13,8 @@ class ShareLinkSetting extends React.Component {
   constructor() {
     super();
     this.state = {
-      shareLinks: [],
+      // shareLinks: [],
+      // TODO:GW-2958で実装
     };
     this.deleteAllLinksButtonHandler = this.deleteAllLinksButtonHandler.bind(this);
     this.deleteLinkById = this.deleteLinkById.bind(this);
