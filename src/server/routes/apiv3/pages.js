@@ -13,9 +13,9 @@ const router = express.Router();
  *    name: Pages
  */
 module.exports = (crowi) => {
-  const loginRequired = require('../../middleware/login-required')(crowi, true);
-  const adminRequired = require('../../middleware/admin-required')(crowi);
-  const csrf = require('../../middleware/csrf')(crowi);
+  const loginRequired = require('../../middlewares/login-required')(crowi, true);
+  const adminRequired = require('../../middlewares/admin-required')(crowi);
+  const csrf = require('../../middlewares/csrf')(crowi);
 
   const Page = crowi.model('Page');
 

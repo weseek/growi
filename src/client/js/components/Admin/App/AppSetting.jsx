@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
 
+import { localeMetadatas } from '../../../util/i18n';
+
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
@@ -34,9 +35,8 @@ class AppSetting extends React.Component {
   }
 
   render() {
-    const { t, adminAppContainer, appContainer } = this.props;
-    const locales = appContainer.locales;
-    const languages = Object.keys(locales);
+    const { t, adminAppContainer } = this.props;
+
     return (
       <React.Fragment>
         <div className="form-group row">
@@ -83,20 +83,20 @@ class AppSetting extends React.Component {
           </label>
           <div className="col-md-6">
             {
-              languages.map(lan => (
-                <div key={lan} className="custom-control custom-radio custom-control-inline">
+              localeMetadatas.map(meta => (
+                <div key={meta.id} className="custom-control custom-radio custom-control-inline">
                   <input
                     type="radio"
-                    id={`radioLang${lan}`}
+                    id={`radioLang${meta.id}`}
                     className="custom-control-input"
                     name="globalLang"
-                    value={lan}
-                    checked={adminAppContainer.state.globalLang === lan}
+                    value={meta.id}
+                    checked={adminAppContainer.state.globalLang === meta.id}
                     onChange={(e) => {
                       adminAppContainer.changeGlobalLang(e.target.value);
                     }}
                   />
-                  <label className="custom-control-label" htmlFor={`radioLang${lan}`}>{locales[lan]._conf.name}</label>
+                  <label className="custom-control-label" htmlFor={`radioLang${meta.id}`}>{meta.displayName}</label>
                 </div>
               ))
             }
@@ -145,11 +145,10 @@ class AppSetting extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const AppSettingWrapper = withUnstatedContainers(AppSetting, [AppContainer, AdminAppContainer]);
+const AppSettingWrapper = withUnstatedContainers(AppSetting, [AdminAppContainer]);
 
 AppSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 
