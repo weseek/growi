@@ -11,6 +11,7 @@ import OutsideShareLinkModal from '../OutsideShareLinkModal';
 
 import { toastError } from '../../util/apiNotification';
 
+import ArchiveCreateModal from '../ArchiveCreateModal';
 
 const PageShareManagement = (props) => {
   const { t, appContainer, pageContainer } = props;
