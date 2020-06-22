@@ -13,21 +13,24 @@ import PersonalDropdown from './PersonalDropdown';
 class GrowiNavbar extends React.Component {
 
   renderNavbarRight() {
+    const { appContainer } = this.props;
+    const isReachable = appContainer.config.isSearchServiceReachable;
+
     return (
       <>
         <li className="nav-item d-none d-md-block">
           <PageCreateButton />
         </li>
 
-        {/* //   {% if isSearchServiceConfigured() %}
-    //     <li class="nav-item d-md-none">
-    //       <a type="button" class="nav-link px-4" data-target="#grw-search-top-collapse" data-toggle="collapse">
-    //         <i class="icon-magnifier mr-2"></i>
-    //       </a>
-    //     </li>
-    //   {% endif %}
-    // {% else %}
-*/}
+        {isReachable
+         && (
+         <li className="nav-item d-md-none">
+           <a type="button" className="nav-link px-4" data-target="#grw-search-top-collapse" data-toggle="collapse">
+             <i className="icon-magnifier mr-2"></i>
+           </a>
+         </li>
+         )}
+
         <li className="grw-personal-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret">
           <PersonalDropdown />
         </li>
@@ -53,6 +56,8 @@ class GrowiNavbar extends React.Component {
     const { appContainer } = this.props;
     const { crowi } = appContainer.config;
     const { currentUser } = appContainer;
+
+    console.log(appContainer.config);
 
     return (
       <nav className="navbar grw-navbar navbar-expand navbar-dark sticky-top mb-0 px-0">
