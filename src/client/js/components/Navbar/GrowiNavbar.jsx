@@ -57,8 +57,6 @@ class GrowiNavbar extends React.Component {
     const { crowi } = appContainer.config;
     const { currentUser } = appContainer;
 
-    console.log(appContainer.config);
-
     return (
       <nav className="navbar grw-navbar navbar-expand navbar-dark sticky-top mb-0 px-0">
 
