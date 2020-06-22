@@ -11,6 +11,7 @@ import OutsideShareLinkModal from '../OutsideShareLinkModal';
 
 import { toastError } from '../../util/apiNotification';
 
+import ArchiveCreateModal from '../ArchiveCreateModal';
 
 const PageShareManagement = (props) => {
   const { t, appContainer, pageContainer } = props;
@@ -18,6 +19,8 @@ const PageShareManagement = (props) => {
   const { currentUser } = appContainer;
 
   const [isOutsideShareLinkModalShown, setIsOutsideShareLinkModalShown] = useState(false);
+
+  const [isArchiveCreateModalShown, setIsArchiveCreateModalShown] = useState(false);
 
   function openOutsideShareLinkModalHandler() {
     setIsOutsideShareLinkModalShown(true);
@@ -47,6 +50,14 @@ const PageShareManagement = (props) => {
     const exportPageFile = getExportPageFile(type);
     exportPage(exportPageFile);
   }
+  function openArchiveModalHandler() {
+    setIsArchiveCreateModalShown(true);
+  }
+
+  function closeArchiveCreateModalHandler() {
+    setIsArchiveCreateModalShown(false);
+  }
+
 
   function renderModals() {
     return (
@@ -55,9 +66,15 @@ const PageShareManagement = (props) => {
           isOpen={isOutsideShareLinkModalShown}
           onClose={closeOutsideShareLinkModalHandler}
         />
+
+        <ArchiveCreateModal
+          isOpen={isArchiveCreateModalShown}
+          onClose={closeArchiveCreateModalHandler}
+        />
       </>
     );
   }
+
 
   function renderCurrentUser() {
     return (
@@ -90,7 +107,6 @@ const PageShareManagement = (props) => {
     );
   }
 
-
   return (
     <>
       {currentUser == null ? renderGuestUser() : renderCurrentUser()}
@@ -105,6 +121,11 @@ const PageShareManagement = (props) => {
         <button type="button" className="dropdown-item" onClick={() => { exportPageHundler('pdf') }}>
           <span>{t('export_bulk.export_page_pdf')}</span>
         </button>
+
+        <button className="dropdown-item" type="button" onClick={openArchiveModalHandler}>
+          <i className="icon-fw">{t('Create Archive Page')}</i>
+        </button>
+
       </div>
       {renderModals()}
     </>
