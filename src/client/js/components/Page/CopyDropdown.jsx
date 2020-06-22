@@ -157,7 +157,6 @@ class CopyDropdown extends React.Component {
             </CopyToClipboard>
             <DropdownItem divider className="my-0"></DropdownItem>
 
-
             {/* Parmanent Link */}
             { (pageId && !isShareLinkMode) && (
               <CopyToClipboard text={permalink} onCopy={this.showToolTip}>
