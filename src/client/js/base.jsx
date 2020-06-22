@@ -6,7 +6,6 @@ import Xss from '@commons/service/xss';
 import SearchTop from './components/Navbar/SearchTop';
 import GrowiNavbar from './components/Navbar/GrowiNavbar';
 import NavbarToggler from './components/Navbar/NavbarToggler';
-import PersonalDropdown from './components/Navbar/PersonalDropdown';
 import Sidebar from './components/Sidebar';
 import StaffCredit from './components/StaffCredit/StaffCredit';
 
