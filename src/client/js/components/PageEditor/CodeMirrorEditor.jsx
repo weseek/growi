@@ -674,6 +674,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.handsontableModal.current.show(mtu.getMarkdownTable(this.getCodeMirror()));
   }
 
+  showHandsonLinkHandler() {
+    this.handsontableModal.current.show(mlu.getMarkdownLink(this.getCodeMirror()));
+  }
+
   showDrawioHandler() {
     this.drawioModal.current.show(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()));
   }

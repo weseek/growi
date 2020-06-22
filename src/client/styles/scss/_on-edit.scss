@@ -183,6 +183,22 @@ body.on-edit {
         }
       }
 
+      .markdown-link-activated .CodeMirror-cursor {
+        &:after {
+          position: relative;
+          top: -1.1em;
+          left: 0.3em;
+          display: block;
+          width: 1em;
+          height: 1em;
+          content: ' ';
+
+          background-image: url(/images/icons/editor/link.svg);
+          background-repeat: no-repeat;
+          background-size: 1em;
+        }
+      }
+
       .textarea-editor {
         font-family: monospace;
         border: none;
