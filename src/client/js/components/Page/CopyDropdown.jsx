@@ -55,9 +55,6 @@ class CopyDropdown extends React.Component {
 
   generatePagePathWithParams() {
     const { pagePath, pageId, isShareLinkMode } = this.props;
-    if (pageId == null) {
-      return null;
-    }
     if (isShareLinkMode) {
       return decodeURI(`/share/${pageId}`);
     }
@@ -83,7 +80,9 @@ class CopyDropdown extends React.Component {
   }
 
   generateMarkdownLink() {
-    const label = this.generatePagePathWithParams();
+    const { pagePath } = this.props;
+
+    const label = pagePath != null ? decodeURI(`${pagePath}${this.uriParams}`) : decodeURI(this.generatePagePathWithParams());
     const permalink = this.generatePermalink();
 
     return `[${label}](${permalink})`;
@@ -143,16 +142,12 @@ class CopyDropdown extends React.Component {
             <DropdownItem divider className="my-0"></DropdownItem>
 
             {/* Page path */}
-            { !isShareLinkMode && (
-              <>
-                <CopyToClipboard text={pagePathWithParams} onCopy={this.showToolTip}>
-                  <DropdownItem className="px-3">
-                    <DropdownItemContents title={t('copy_to_clipboard.Page path')} contents={pagePathWithParams} />
-                  </DropdownItem>
-                </CopyToClipboard>
-                <DropdownItem divider className="my-0"></DropdownItem>
-              </>
-            )}
+            <CopyToClipboard text={pagePathWithParams} onCopy={this.showToolTip}>
+              <DropdownItem className="px-3">
+                <DropdownItemContents title={t('copy_to_clipboard.Page path')} contents={pagePathWithParams} />
+              </DropdownItem>
+            </CopyToClipboard>
+            <DropdownItem divider className="my-0"></DropdownItem>
 
             {/* Page path URL */}
             <CopyToClipboard text={pagePathUrl} onCopy={this.showToolTip}>
