@@ -7,8 +7,25 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import NavigationContainer from '../../services/NavigationContainer';
 import AppContainer from '../../services/AppContainer';
 
+import PageCreateButton from './PageCreateButton';
+
 class GrowiNavbar extends React.Component {
 
+  renderNavbarRight() {
+    return (
+      <PageCreateButton />
+    //   {% if isSearchServiceConfigured() %}
+    //     <li class="nav-item d-md-none">
+    //       <a type="button" class="nav-link px-4" data-target="#grw-search-top-collapse" data-toggle="collapse">
+    //         <i class="icon-magnifier mr-2"></i>
+    //       </a>
+    //     </li>
+    //   {% endif %}
+    //   <li id="personal-dropdown" class="grw-personal-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret"></li>
+    // {% else %}
+    //   <li id="login-user" class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+    );
+  }
 
   renderConfidential() {
     const { appContainer } = this.props;
@@ -27,6 +44,7 @@ class GrowiNavbar extends React.Component {
   render() {
     const { appContainer } = this.props;
     const { crowi } = appContainer.config;
+    const { currentUser } = appContainer;
 
     return (
       <nav className="navbar grw-navbar navbar-expand navbar-dark sticky-top mb-0 px-0">
@@ -55,20 +73,7 @@ class GrowiNavbar extends React.Component {
 
         {/* Navbar Right  */}
         <ul className="navbar-nav ml-auto">
-          {/* {% if user %}
-        <li id="create-page-button" class="nav-item d-none d-md-block"></li>
-        {% if isSearchServiceConfigured() %}
-          <li class="nav-item d-md-none">
-            <a type="button" class="nav-link px-4" data-target="#grw-search-top-collapse" data-toggle="collapse">
-              <i class="icon-magnifier mr-2"></i>
-            </a>
-          </li>
-        {% endif %}
-        <li id="personal-dropdown" class="grw-personal-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret"></li>
-      {% else %}
-        <li id="login-user" class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-      {% endif %} */}
-
+          {currentUser != null && this.renderNavbarRight()}
         </ul>
 
         {crowi.confidential != null && this.renderConfidential()}
