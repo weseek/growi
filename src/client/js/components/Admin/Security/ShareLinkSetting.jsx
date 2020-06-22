@@ -8,8 +8,6 @@ import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurit
 
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-import ShareLinkList from '../../ShareLinkList';
-
 class ShareLinkSetting extends React.Component {
 
   constructor() {
@@ -28,12 +26,14 @@ class ShareLinkSetting extends React.Component {
     try {
       await adminGeneralSecurityContainer.deleteLinkById();
       toastSuccess(t('security_setting.updated_general_security_setting'));
+      // TODO:GW-2827,GW-2826で実装する
     }
     catch (err) {
       toastError(err);
     }
 
-    this.retrieveShareLinks();
+    // this.retrieveShareLinks();
+    // TODO:後で作る
   }
 
   async deleteAllLinksButtonHandler() {
@@ -41,12 +41,14 @@ class ShareLinkSetting extends React.Component {
     try {
       await adminGeneralSecurityContainer.deleteAllLinksButtonHandler();
       toastSuccess(t('security_setting.updated_general_security_setting'));
+      // TODO:GW-2827,GW-2960で実装する
     }
     catch (err) {
       toastError(err);
     }
 
-    this.retrieveShareLinks();
+    // this.retrieveShareLinks();
+    // TODO:後で作る
   }
 
   render() {
@@ -69,10 +71,11 @@ class ShareLinkSetting extends React.Component {
               </tr>
             </thead>
             <tbody>
-              <ShareLinkList
+              {/* <ShareLinkList
                 shareLinks={this.state.shareLinks}
                 onClickDeleteButton={this.deleteLinkById}
-              />
+              /> */}
+              {/* TODO:GW-2827で実装 */}
             </tbody>
           </table>
         </div>
