@@ -1,83 +1,108 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Modal, ModalHeader, ModalBody } from 'reactstrap';
+import { withTranslation } from 'react-i18next';
+import {
+  Modal, ModalHeader, ModalBody, ModalFooter,
+} from 'reactstrap';
+
 
 const ArchiveCreateModal = (props) => {
-  // const [isArchiveCreateModalShown, setIsOpenShareLinkForm] = useState(false);
+
+  const { t } = props;
+
+  const [isCommentDownload, setIsCommentDownload] = useState(false);
+  const [isFileDownload, setIsFileDownload] = useState(false);
+  const [isSubordinatedPageDownload, setIsSubordinatedPageDownload] = useState(false);
+
+
+  function changeIsCommentDownloadHandler() {
+    setIsCommentDownload(!isCommentDownload);
+  }
+  function changeIsFileDownloadHandler() {
+    setIsFileDownload(!isFileDownload);
+  }
+
+  function changeIsSubordinatedPageDownloadHandler() {
+    setIsSubordinatedPageDownload(!isSubordinatedPageDownload);
+  }
+
+  function closeModalHandler() {
+    if (props.onClose == null) {
+      return;
+    }
+
+    props.onClose();
+
+  }
+
 
   return (
-    <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose}>
-      <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-Light">
-        アーカイブを作成する
+    <Modal size="lg" isOpen={props.isOpen} toggle={closeModalHandler}>
+      <ModalHeader tag="h4" toggle={closeModalHandler} className="bg-primary text-white">
+        {t('Create Archive Page')}
       </ModalHeader>
       <ModalBody>
-        試作
+        <div className="form-group">
+          <div className="custom-control custom-radio custom-control-inline ">
+            <label>{t('File type')}: </label>
+          </div>
+          <div className="custom-control custom-radio custom-control-inline ">
+            <input type="radio" className="custom-control-input" />
+            <label className="custom-control-label">MarkDown(.md)</label>
+          </div>
+          <div className="custom-control custom-radio custom-control-inline">
+            <input type="radio" className="custom-control-input" />
+            <label className="custom-control-label">PDF(.pdf)</label>
+          </div>
+        </div>
+
+        <div className="custom-control custom-checkbox custom-checkbox-warning">
+          <input
+            className="custom-control-input"
+            name="comment"
+            id="commentFile"
+            type="checkbox"
+            checked={isCommentDownload}
+            onChange={changeIsCommentDownloadHandler}
+          />
+          <label className="custom-control-label" htmlFor="commentFile">
+            {t('Include Comment')}
+          </label>
+        </div>
+        <div className="custom-control custom-checkbox custom-checkbox-warning">
+          <input
+            className="custom-control-input"
+            id="downloadFile"
+            type="checkbox"
+            checked={isFileDownload}
+            onChange={changeIsFileDownloadHandler}
+          />
+          <label className="custom-control-label" htmlFor="downloadFile">{t('Include Attachment File')}</label>
+        </div>
+        <div className="custom-control custom-checkbox custom-checkbox-warning">
+          <input
+            className="custom-control-input"
+            id="subordinatedFile"
+            type="checkbox"
+            checked={isSubordinatedPageDownload}
+            onChange={changeIsSubordinatedPageDownloadHandler}
+          />
+          <label className="custom-control-label" htmlFor="subordinatedFile">
+            {t('Include Subordinated Page')}
+          </label>
+        </div>
       </ModalBody>
+      <ModalFooter>
+        <button type="button">Done</button>
+      </ModalFooter>
     </Modal>
   );
 };
 
-// export default class ArchiveCreateModal extends React.PureComponet {
-
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       show: false,
-//       isIncludeComment: false,
-//       isIncludeFile: false,
-//       isCreateAllSubordinatedPage: false,
-//     };
-
-//     this.show = this.show.bind(this);
-//     this.cancel = this.cancel.bind(this);
-//     this.save = this.save.bind(this);
-
-//   }
-
-//   show() {
-
-//   }
-
-//   cancel() {
-//     this.hide();
-//   }
-
-//   hide() {
-//     this.setState({ show: false });
-//   }
-
-//   save() {
-
-//   }
-
-
-//   render() {
-//     return (
-//       <Modal isOpen={this.state.show} toggle={this.cancel} size="lg">
-//         <ModalHeader tag="h4" toggle={this.cancel} className="bg-primary text-light">
-//           アーカイブ作成
-//         </ModalHeader>
-
-//         <ModalBody className="container">
-//           <div className="custom-control">
-//             <button className="btn btn-outline-secondary d-block mx-auto px-5 mb-3" type="button">アーカイブを作成する</button>
-
-//             <input className="custom-control-input" type="checkbox" checked={this.state.isIncludeComment} />
-//             <label className="custom-control-label" onClick="this.">コメントもダウンロードする</label>
-
-//             <input className="custom-control-input" type="checkbox" checked={this.isIncludeFile} />
-//             <label className="custom-control-label" onClick="this.">添付ファイルもダウンロードする</label>
-
-//             <input className="custom-control-input" type="checkbox" checked={this.isCreateAllSubordinatedPage} />
-//             <label className="custom-control-label" onClick="this.">配下ページもダウンロードする</label>
-//           </div>
-//         </ModalBody>
-//       </Modal>
-//     );
-//   }
 ArchiveCreateModal.propTypes = {
+  t: PropTypes.func.isRequired, //  i18next
   isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
+  onClose: PropTypes.func,
 };
 
-export default ArchiveCreateModal;
+export default withTranslation()(ArchiveCreateModal);

@@ -12,8 +12,6 @@ import OutsideShareLinkModal from '../OutsideShareLinkModal';
 import { toastError } from '../../util/apiNotification';
 
 import ArchiveCreateModal from '../ArchiveCreateModal';
-// import ArchiveCreateModal from '../ArchiveCreateModal';
-import ArchiveCreateModal from '../ArchiveCreateModal';
 
 const PageShareManagement = (props) => {
   const { t, appContainer, pageContainer } = props;
@@ -53,12 +51,10 @@ const PageShareManagement = (props) => {
     exportPage(exportPageFile);
   }
   function openArchiveModalHandler() {
-    console.log('ログ出るで！');
     setIsArchiveCreateModalShown(true);
   }
 
   function closeArchiveCreateModalHandler() {
-    console.log('ログ閉じるで！');
     setIsArchiveCreateModalShown(false);
   }
 
@@ -70,18 +66,15 @@ const PageShareManagement = (props) => {
           isOpen={isOutsideShareLinkModalShown}
           onClose={closeOutsideShareLinkModalHandler}
         />
+
+        <ArchiveCreateModal
+          isOpen={isArchiveCreateModalShown}
+          onClose={closeArchiveCreateModalHandler}
+        />
       </>
     );
   }
 
-  function renderArchiveModals() {
-    return (
-      <ArchiveCreateModal
-        isOpen={isArchiveCreateModalShown}
-        onClose={closeArchiveCreateModalHandler}
-      />
-    );
-  }
 
   function renderCurrentUser() {
     return (
@@ -129,12 +122,12 @@ const PageShareManagement = (props) => {
           <span>{t('export_bulk.export_page_pdf')}</span>
         </button>
 
-        <button className="dropdown-item" type="button" onClick={openArchiveModalHandler}>アーカイブデータを作成する
+        <button className="dropdown-item" type="button" onClick={openArchiveModalHandler}>
+          <i className="icon-fw">{t('Create Archive Page')}</i>
         </button>
 
       </div>
       {renderModals()}
-      {renderArchiveModals()}
     </>
   );
 
