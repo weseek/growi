@@ -24,10 +24,10 @@ describe('ShareLink', () => {
     };
 
     const res = {
-      render: (page) => { return page },
+      render: jest.fn((page, renderVars) => { return page }),
     };
 
-    const shareLink = {
+    const findOneResult = {
       populate: null,
     };
 
@@ -43,56 +43,60 @@ describe('ShareLink', () => {
 
     test('share link is not found', async() => {
 
-      shareLink.populate = jest.fn(() => { return null });
+      findOneResult.populate = jest.fn(() => { return null });
 
       jest.spyOn(ShareLink, 'findOne').mockImplementation(() => {
-        return shareLink;
+        return findOneResult;
       });
 
       const response = await Page.showSharedPage(req, res);
 
-      expect(shareLink.populate).toHaveBeenCalled();
+      expect(findOneResult.populate).toHaveBeenCalled();
+      expect(res.render).toHaveBeenCalled();
       expect(response).toEqual('layout-growi/not_found_shared_page');
     });
 
     test('share link is found, but it does not have Page', async() => {
 
-      shareLink.populate = jest.fn(() => { return { _id: 'somePageId' } });
+      findOneResult.populate = jest.fn(() => { return { _id: 'somePageId' } });
 
       jest.spyOn(ShareLink, 'findOne').mockImplementation(() => {
-        return shareLink;
+        return findOneResult;
       });
       const response = await Page.showSharedPage(req, res);
 
-      expect(shareLink.populate).toHaveBeenCalled();
+      expect(findOneResult.populate).toHaveBeenCalled();
+      expect(res.render).toHaveBeenCalled();
       expect(response).toEqual('layout-growi/not_found_shared_page');
     });
 
 
     test('share link is found, but it is expired', async() => {
 
-      shareLink.populate = jest.fn(() => { return { _id: 'somePageId', relatedPage, isExpired: () => { return true } } });
+      findOneResult.populate = jest.fn(() => { return { _id: 'somePageId', relatedPage, isExpired: () => { return true } } });
 
       jest.spyOn(ShareLink, 'findOne').mockImplementation(() => {
-        return shareLink;
+        return findOneResult;
       });
 
       const response = await Page.showSharedPage(req, res);
 
-      expect(shareLink.populate).toHaveBeenCalled();
+      expect(findOneResult.populate).toHaveBeenCalled();
+      expect(res.render).toHaveBeenCalled();
       expect(response).toEqual('layout-growi/expired_shared_page');
     });
 
     test('share link is found, and it has the page you can see', async() => {
 
-      shareLink.populate = jest.fn(() => { return { _id: 'somePageId', relatedPage, isExpired: () => { return false } } });
+      findOneResult.populate = jest.fn(() => { return { _id: 'somePageId', relatedPage, isExpired: () => { return false } } });
 
       jest.spyOn(ShareLink, 'findOne').mockImplementation(() => {
-        return shareLink;
+        return findOneResult;
       });
       const response = await Page.showSharedPage(req, res);
 
-      expect(shareLink.populate).toHaveBeenCalled();
+      expect(findOneResult.populate).toHaveBeenCalled();
+      expect(res.render).toHaveBeenCalled();
       expect(response).toEqual('layout-growi/shared_page');
     });
   });
