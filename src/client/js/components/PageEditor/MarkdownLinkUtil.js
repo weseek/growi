@@ -6,8 +6,7 @@ import MarkdownTable from '../../models/MarkdownTable';
 class MarkdownLinkUtil {
 
   constructor() {
-    // TODO Regular expression for link /^([^\r\n|]*)\|(([^\r\n|]*\|)+)$/
-    this.linePartOfLink = /^\[/;
+    this.linePartOfLink = /^(\[+(.*)+\])(\(+(.*)+\))/;
     this.isInTable = this.isInTable.bind(this);
   }
 
