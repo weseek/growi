@@ -13,7 +13,10 @@ class GrowiNavbar extends React.Component {
 
   renderNavbarRight() {
     return (
-      <PageCreateButton />
+      <li className="nav-item d-none d-md-block">
+        <PageCreateButton />
+      </li>
+
     //   {% if isSearchServiceConfigured() %}
     //     <li class="nav-item d-md-none">
     //       <a type="button" class="nav-link px-4" data-target="#grw-search-top-collapse" data-toggle="collapse">
