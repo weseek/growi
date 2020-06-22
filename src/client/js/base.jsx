@@ -4,6 +4,7 @@ import loggerFactory from '@alias/logger';
 import Xss from '@commons/service/xss';
 
 import SearchTop from './components/Navbar/SearchTop';
+import GrowiNavbar from './components/Navbar/GrowiNavbar';
 import NavbarToggler from './components/Navbar/NavbarToggler';
 import PersonalDropdown from './components/Navbar/PersonalDropdown';
 import Sidebar from './components/Sidebar';
@@ -39,6 +40,7 @@ logger.info('AppContainer has been initialized');
  *  value: React Element
  */
 const componentMappings = {
+  'grw-navbar': <GrowiNavbar />,
   'grw-navbar-toggler': <NavbarToggler />,
 
   'grw-search-top': <SearchTop />,
