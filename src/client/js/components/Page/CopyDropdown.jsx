@@ -54,11 +54,11 @@ class CopyDropdown extends React.Component {
   }
 
   generatePagePathWithParams() {
-    const { pagePath, pageId } = this.props;
+    const { pagePath, pageId, isShareLinkMode } = this.props;
     if (pageId == null) {
       return null;
     }
-    if (pagePath == null) {
+    if (isShareLinkMode) {
       return decodeURI(`/share/${pageId}`);
     }
     return decodeURI(`${pagePath}${this.uriParams}`);
@@ -83,14 +83,7 @@ class CopyDropdown extends React.Component {
   }
 
   generateMarkdownLink() {
-    const { pagePath } = this.props;
-    let label;
-    if (pagePath == null) {
-      label = this.generatePagePathWithParams();
-    }
-    else {
-      label = decodeURI(`${pagePath}${this.uriParams}`);
-    }
+    const label = this.generatePagePathWithParams();
     const permalink = this.generatePermalink();
 
     return `[${label}](${permalink})`;
