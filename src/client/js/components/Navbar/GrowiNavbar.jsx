@@ -11,7 +11,7 @@ class GrowiNavbar extends React.Component {
 
   render() {
     const { appContainer } = this.props;
-    const appTitle = appContainer.config.crowi.title;
+    const { crowi } = appContainer.config;
 
     return (
       <nav className="navbar grw-navbar navbar-expand navbar-dark sticky-top mb-0 px-0">
@@ -34,7 +34,7 @@ class GrowiNavbar extends React.Component {
           <li id="grw-navbar-toggler" className="nav-item"></li>
         </ul>
         <div className="grw-app-title d-none d-md-block">
-          {appTitle}
+          {crowi.title}
         </div>
         {/*
 
@@ -54,16 +54,15 @@ class GrowiNavbar extends React.Component {
         <li id="login-user" class="nav-item"><a class="nav-link" href="/login">Login</a></li>
       {% endif %}
 
-      {% if getConfig('crowi', 'app:confidential') %}
-        <li class="nav-item confidential text-light">
-          <i class="icon-info d-md-none" data-toggle="tooltip" title="{{ getConfig('crowi', 'app:confidential') }}"></i>
-          <span class="d-none d-md-inline">
-            {{ getConfig('crowi', 'app:confidential') }}
-          </span>
-        </li>
-      {% endif %}
     </ul> */}
 
+
+        <li className="nav-item confidential text-light">
+          <i className="icon-info d-md-none" data-toggle="tooltip" title={crowi.confidential} />
+          <span className="d-none d-md-inline">
+            {crowi.confidential}
+          </span>
+        </li>
       </nav>
     );
   }
