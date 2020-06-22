@@ -10,7 +10,7 @@ class ShareLinkSetting extends React.Component {
 
   render() {
     return (
-      <div className="container">
+      <>
         <div className="mb-3">
           <h2 className="alert-anchor border-bottom">Shared Link List</h2>
         </div>
@@ -33,7 +33,7 @@ class ShareLinkSetting extends React.Component {
           </table>
         </div>
 
-      </div>
+      </>
     );
   }
 

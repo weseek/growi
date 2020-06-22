@@ -21,9 +21,9 @@ const ShareLinkList = (props) => {
     return (
       <>
         {props.shareLinks.map(shareLink => (
-          <tr>
-            <td>{shareLink.link}</td>
-            <td>{shareLink.expiration}</td>
+          <tr key={shareLink._id}>
+            <td>{shareLink._id}</td>
+            <td>{shareLink.expiredAt}</td>
             <td>{shareLink.description}</td>
             <td>
               <button className="btn btn-outline-warning" type="button" onClick={() => deleteLinkHandler(shareLink._id)}>

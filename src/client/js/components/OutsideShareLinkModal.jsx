@@ -31,6 +31,25 @@ class OutsideShareLinkModal extends React.Component {
     this.deleteLinkById = this.deleteLinkById.bind(this);
   }
 
+  componentDidMount() {
+    this.retrieveShareLinks();
+  }
+
+  async retrieveShareLinks() {
+    const { appContainer, pageContainer } = this.props;
+    const { pageId } = pageContainer.state;
+
+    try {
+      const res = await appContainer.apiv3.get('/share-links/', { relatedPage: pageId });
+      const { shareLinksResult } = res.data;
+      this.setState({ shareLinks: shareLinksResult });
+    }
+    catch (err) {
+      toastError(err);
+    }
+
+  }
+
   toggleShareLinkFormHandler() {
     this.setState({ isOpenShareLinkForm: !this.state.isOpenShareLinkForm });
   }
@@ -48,7 +67,7 @@ class OutsideShareLinkModal extends React.Component {
       toastError(err);
     }
 
-    // TODO GW-2764 retrieve share links
+    this.retrieveShareLinks();
   }
 
   async deleteLinkById(shareLinkId) {
@@ -57,13 +76,13 @@ class OutsideShareLinkModal extends React.Component {
     try {
       const res = await appContainer.apiv3Delete(`/share-links/${shareLinkId}`);
       const { deletedShareLink } = res.data;
-      toastSuccess(t('remove_share_link_success', { shareLinkId: deletedShareLink._id }));
+      toastSuccess(t('toaster.remove_share_link_success', { shareLinkId: deletedShareLink._id }));
     }
     catch (err) {
       toastError(err);
     }
 
-    // TODO GW-2764 retrieve share links
+    this.retrieveShareLinks();
   }
 
   render() {
@@ -79,7 +98,10 @@ class OutsideShareLinkModal extends React.Component {
             </div>
 
             <div>
-              <ShareLinkList shareLinks={this.state.shareLinks} />
+              <ShareLinkList
+                shareLinks={this.state.shareLinks}
+                onClickDeleteButton={this.deleteLinkById}
+              />
               <button
                 className="btn btn-outline-secondary d-block mx-auto px-5 mb-3"
                 type="button"
@@ -87,7 +109,7 @@ class OutsideShareLinkModal extends React.Component {
               >
                 {this.state.isOpenShareLinkForm ? 'Close' : 'New'}
               </button>
-              {this.state.isOpenShareLinkForm && <ShareLinkForm onCloseForm={this.toggleShareLinkFormHandler} onClickDeleteButton={this.deleteLinkById} />}
+              {this.state.isOpenShareLinkForm && <ShareLinkForm onCloseForm={this.toggleShareLinkFormHandler} />}
             </div>
           </div>
         </ModalBody>
