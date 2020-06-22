@@ -27,7 +27,7 @@ class GrowiNavbar extends React.Component {
     //     </li>
     //   {% endif %}
     // {% else %}
-    //   <li id="login-user" class="nav-item"><a class="nav-link" href="/login">Login</a></li> */}
+*/}
         <li className="grw-personal-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret">
           <PersonalDropdown />
         </li>
@@ -81,7 +81,7 @@ class GrowiNavbar extends React.Component {
 
         {/* Navbar Right  */}
         <ul className="navbar-nav ml-auto">
-          {currentUser != null && this.renderNavbarRight()}
+          {currentUser != null ? this.renderNavbarRight() : <li id="login-user" className="nav-item"><a className="nav-link" href="/login">Login</a></li>}
         </ul>
 
         {crowi.confidential != null && this.renderConfidential()}
