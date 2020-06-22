@@ -1,5 +1,3 @@
-import MarkdownTable from '../../models/MarkdownTable';
-
 /**
  * Utility for markdown link
  */
