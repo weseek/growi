@@ -8,25 +8,30 @@ import NavigationContainer from '../../services/NavigationContainer';
 import AppContainer from '../../services/AppContainer';
 
 import PageCreateButton from './PageCreateButton';
+import PersonalDropdown from './PersonalDropdown';
 
 class GrowiNavbar extends React.Component {
 
   renderNavbarRight() {
     return (
-      <li className="nav-item d-none d-md-block">
-        <PageCreateButton />
-      </li>
+      <>
+        <li className="nav-item d-none d-md-block">
+          <PageCreateButton />
+        </li>
 
-    //   {% if isSearchServiceConfigured() %}
+        {/* //   {% if isSearchServiceConfigured() %}
     //     <li class="nav-item d-md-none">
     //       <a type="button" class="nav-link px-4" data-target="#grw-search-top-collapse" data-toggle="collapse">
     //         <i class="icon-magnifier mr-2"></i>
     //       </a>
     //     </li>
     //   {% endif %}
-    //   <li id="personal-dropdown" class="grw-personal-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret"></li>
     // {% else %}
-    //   <li id="login-user" class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+    //   <li id="login-user" class="nav-item"><a class="nav-link" href="/login">Login</a></li> */}
+        <li className="grw-personal-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret">
+          <PersonalDropdown />
+        </li>
+      </>
     );
   }
 

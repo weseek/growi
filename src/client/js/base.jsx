@@ -44,9 +44,7 @@ const componentMappings = {
   'grw-navbar-toggler': <NavbarToggler />,
 
   'grw-search-top': <SearchTop />,
-  'personal-dropdown': <PersonalDropdown />,
 
-  'create-page-button': <PageCreateButton />,
   'create-page-button-icon': <PageCreateButton isIcon />,
   'page-create-modal': <PageCreateModal />,
 
