@@ -13,6 +13,7 @@ import { toastError } from '../../util/apiNotification';
 
 import ArchiveCreateModal from '../ArchiveCreateModal';
 // import ArchiveCreateModal from '../ArchiveCreateModal';
+import ArchiveCreateModal from '../ArchiveCreateModal';
 
 const PageShareManagement = (props) => {
   const { t, appContainer, pageContainer } = props;
@@ -20,6 +21,8 @@ const PageShareManagement = (props) => {
   const { currentUser } = appContainer;
 
   const [isOutsideShareLinkModalShown, setIsOutsideShareLinkModalShown] = useState(false);
+
+  const [isArchiveCreateModalShown, setIsArchiveCreateModalShown] = useState(false);
 
   function openOutsideShareLinkModalHandler() {
     setIsOutsideShareLinkModalShown(true);
@@ -49,6 +52,16 @@ const PageShareManagement = (props) => {
     const exportPageFile = getExportPageFile(type);
     exportPage(exportPageFile);
   }
+  function openArchiveModalHandler() {
+    console.log('ログ出るで！');
+    setIsArchiveCreateModalShown(true);
+  }
+
+  function closeArchiveCreateModalHandler() {
+    console.log('ログ閉じるで！');
+    setIsArchiveCreateModalShown(false);
+  }
+
 
   function renderModals() {
     return (
@@ -58,6 +71,15 @@ const PageShareManagement = (props) => {
           onClose={closeOutsideShareLinkModalHandler}
         />
       </>
+    );
+  }
+
+  function renderArchiveModals() {
+    return (
+      <ArchiveCreateModal
+        isOpen={isArchiveCreateModalShown}
+        onClose={closeArchiveCreateModalHandler}
+      />
     );
   }
 
@@ -92,13 +114,6 @@ const PageShareManagement = (props) => {
     );
   }
 
-  function openArchiveModalHandler() {
-    return (
-      console.log('ログ出るで！')
-    );
-  }
-
-
   return (
     <>
       {currentUser == null ? renderGuestUser() : renderCurrentUser()}
@@ -119,6 +134,7 @@ const PageShareManagement = (props) => {
 
       </div>
       {renderModals()}
+      {renderArchiveModals()}
     </>
   );
 
