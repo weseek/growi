@@ -1,5 +1,5 @@
 // don't add any more middlewares to this file.
-// all new middlewares should be an independent file under /server/routes/middlewares
+// all new middlewares should be an independent file under /server/middlewares
 // eslint-disable-next-line no-unused-vars
 const logger = require('@alias/logger')('growi:lib:middlewares');
 
@@ -9,7 +9,7 @@ const md5 = require('md5');
 const entities = require('entities');
 
 module.exports = (crowi) => {
-  const { configManager, appService } = crowi;
+  const { configManager } = crowi;
 
   const middlewares = {};
 
@@ -23,11 +23,6 @@ module.exports = (crowi) => {
 
       next();
     };
-  };
-
-  middlewares.loginCheckerForPassport = function(req, res, next) {
-    res.locals.user = req.user;
-    next();
   };
 
   middlewares.swigFunctions = function() {
@@ -158,35 +153,13 @@ module.exports = (crowi) => {
     };
   };
 
-  // this is for Installer
-  middlewares.applicationNotInstalled = async function(req, res, next) {
-    const isInstalled = await appService.isDBInitialized();
-
-    if (isInstalled) {
-      req.flash('errorMessage', 'Application already installed.');
-      return res.redirect('admin'); // admin以外はadminRequiredで'/'にリダイレクトされる
-    }
-
-    return next();
-  };
-
-  middlewares.applicationInstalled = async function(req, res, next) {
-    const isInstalled = await appService.isDBInitialized();
-
-    if (!isInstalled) {
-      return res.redirect('/installer');
-    }
-
-    return next();
-  };
-
   middlewares.awsEnabled = function() {
     return function(req, res, next) {
       if ((configManager.getConfig('crowi', 'aws:region') !== '' || this.configManager.getConfig('crowi', 'aws:customEndpoint') !== '')
           && configManager.getConfig('crowi', 'aws:bucket') !== ''
           && configManager.getConfig('crowi', 'aws:accessKeyId') !== ''
           && configManager.getConfig('crowi', 'aws:secretAccessKey') !== '') {
-        req.flash('globalError', 'AWS settings required to use this function. Please ask the administrator.');
+        req.flash('globalError', req.t('message.aws_sttings_required'));
         return res.redirect('/');
       }
 

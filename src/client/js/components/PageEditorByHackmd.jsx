@@ -286,7 +286,7 @@ class PageEditorByHackmd extends React.Component {
                 disabled={this.state.isInitializing}
                 onClick={() => { return this.resumeToEdit() }}
               >
-                <span className="btn-label"><i className="icon-control-end"></i></span>
+                <span className="btn-label"><i className="icon-fw icon-control-end"></i></span>
                 <span className="btn-text">{t('hackmd.resume_to_edit')}</span>
               </button>
             </div>
@@ -298,7 +298,7 @@ class PageEditorByHackmd extends React.Component {
               type="button"
               onClick={() => { return this.discardChanges() }}
             >
-              <span className="btn-label"><i className="icon-control-start"></i></span>
+              <span className="btn-label"><i className="icon-fw icon-control-start"></i></span>
               <span className="btn-text">{t('hackmd.discard_changes')}</span>
             </button>
           </div>
@@ -322,7 +322,7 @@ class PageEditorByHackmd extends React.Component {
               disabled={isRevisionOutdated || this.state.isInitializing}
               onClick={() => { return this.startToEdit() }}
             >
-              <span className="btn-label"><i className="icon-paper-plane"></i></span>
+              <span className="btn-label"><i className="icon-fw icon-paper-plane"></i></span>
               {t('hackmd.start_to_edit')}
             </button>
           </div>

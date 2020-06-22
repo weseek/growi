@@ -64,12 +64,18 @@
 /*
  * for Guest User Mode
  */
+// TODO: reactify and replace with `grw-not-available-for-guest`
 .dropdown-toggle.dropdown-toggle-disabled {
   cursor: not-allowed;
 }
 
+// TODO: reactify and replace with `grw-not-available-for-guest`
 .edit-button.edit-button-disabled {
   cursor: not-allowed;
+}
+
+.grw-not-available-for-guest {
+  cursor: not-allowed !important;
 }
 
 /*

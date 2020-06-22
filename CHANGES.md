@@ -1,8 +1,17 @@
 # CHANGES
 
-## v4.0.7-RC
+## v4.0.8-RC
 
 * 
+
+## v4.0.7
+
+* Feature: Set request timeout for Elasticsearch with env var `ELASTICSEARCH_REQUEST_TIMEOUT`
+* Improvement: Apply styles faster on booting client
+* Fix: Styles are not applyed on installer
+* Fix: Remove last-resort `next()`
+* Fix: Enable/disable Notification settings couldn't change when either of the params is undefined
+* Fix: Text overflow
 
 ## v4.0.6
 
@@ -1348,7 +1357,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
 
 * Fix: The problem that path including round bracket makes something bad
 * Fix: Recursively option processes also unexpedted pages
-* Fix: en-US translation
+* Fix: en_US translation
 
 ## v2.0.7
 

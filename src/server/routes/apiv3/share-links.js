@@ -8,7 +8,7 @@ const express = require('express');
 
 const router = express.Router();
 
-const { body, query } = require('express-validator/check');
+const { body } = require('express-validator/check');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -23,9 +23,9 @@ const today = new Date();
  */
 
 module.exports = (crowi) => {
-  const loginRequired = require('../../middleware/login-required')(crowi);
-  const csrf = require('../../middleware/csrf')(crowi);
-  const { ApiV3FormValidator } = crowi.middlewares;
+  const loginRequired = require('../../middlewares/login-required')(crowi);
+  const csrf = require('../../middlewares/csrf')(crowi);
+  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
   const ShareLink = crowi.model('ShareLink');
 
 
@@ -48,7 +48,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to get share links
    */
-  router.get('/', loginRequired, csrf, ApiV3FormValidator, async(req, res) => {
+  router.get('/', loginRequired, async(req, res) => {
     const { relatedPage } = req.query;
     try {
       const shareLinksResult = await ShareLink.find({ relatedPage: { $in: relatedPage } });
@@ -100,7 +100,7 @@ module.exports = (crowi) => {
    *            description: Succeeded to create one share link
    */
 
-  router.post('/', loginRequired, csrf, validator.shareLinkStatus, ApiV3FormValidator, async(req, res) => {
+  router.post('/', loginRequired, csrf, validator.shareLinkStatus, apiV3FormValidator, async(req, res) => {
     const { relatedPage, expiredAt, description } = req.body;
     const ShareLink = crowi.model('ShareLink');
 
@@ -123,21 +123,19 @@ module.exports = (crowi) => {
   *        tags: [ShareLinks]
   *        summary: /share-links/
   *        description: delete all share links related one page
-  *        requestBody:
-  *           required: true
-  *           content:
-  *             application/json:
-  *               schema:
-  *                 properties:
-  *                   relatedPage:
-  *                     type: string
-  *                     description: delete all share links that related one page
+  *        parameters:
+  *          - name: relatedPage
+  *            in: query
+  *            required: true
+  *            description: page id of share link
+  *            schema:
+  *              type: string
   *        responses:
   *          200:
   *            description: Succeeded to delete o all share links related one page
   */
   router.delete('/', loginRequired, csrf, async(req, res) => {
-    const { relatedPage } = req.body;
+    const { relatedPage } = req.query;
     const ShareLink = crowi.model('ShareLink');
 
     try {

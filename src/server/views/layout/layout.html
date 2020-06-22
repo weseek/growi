@@ -25,6 +25,8 @@
 
   {% include '../widget/headers/scripts-for-dev.html' %}
 
+  <script src="{{ webpack_asset('js/boot.js') }}"></script>
+
   <script src="{{ webpack_asset('js/vendors.js') }}" defer></script>
   <script src="{{ webpack_asset('js/commons.js') }}" defer></script>
   {% if getConfig('crowi', 'plugin:isEnabledPlugins') %}
@@ -67,8 +69,6 @@
   data-plugin-enabled="{{ getConfig('crowi', 'plugin:isEnabledPlugins') }}"
   {% block html_base_attr %}{% endblock %}
   data-csrftoken="{{ csrf() }}"
-  data-current-username="{% if user %}{{ user.username }}{% endif %}"
-  data-userlang="{% if user %}{{ user.lang }}{% endif %}"
  >
 
 <div id="wrapper">

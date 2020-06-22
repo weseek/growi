@@ -34,8 +34,8 @@ const validator = {
     }),
   ],
   notifyForPageGrant: [
-    body('isNotificationForOwnerPageEnabled').isBoolean(),
-    body('isNotificationForGroupPageEnabled').isBoolean(),
+    body('isNotificationForOwnerPageEnabled').if(value => value != null).isBoolean(),
+    body('isNotificationForGroupPageEnabled').if(value => value != null).isBoolean(),
   ],
 };
 
@@ -102,14 +102,13 @@ const validator = {
  *              description: trigger events for notify
  */
 module.exports = (crowi) => {
-  const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
-  const adminRequired = require('../../middleware/admin-required')(crowi);
-  const csrf = require('../../middleware/csrf')(crowi);
+  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
+  const adminRequired = require('../../middlewares/admin-required')(crowi);
+  const csrf = require('../../middlewares/csrf')(crowi);
+  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const UpdatePost = crowi.model('UpdatePost');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
-
-  const { ApiV3FormValidator } = crowi.middlewares;
 
   const GlobalNotificationMailSetting = crowi.models.GlobalNotificationMailSetting;
   const GlobalNotificationSlackSetting = crowi.models.GlobalNotificationSlackSetting;
@@ -167,7 +166,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/SlackConfigurationParams'
    */
-  router.put('/slack-configuration', loginRequiredStrictly, adminRequired, csrf, validator.slackConfiguration, ApiV3FormValidator, async(req, res) => {
+  router.put('/slack-configuration', loginRequiredStrictly, adminRequired, csrf, validator.slackConfiguration, apiV3FormValidator, async(req, res) => {
 
     const requestParams = {
       'slack:incomingWebhookUrl': req.body.webhookUrl,
@@ -220,7 +219,7 @@ module.exports = (crowi) => {
   *                      type: object
   *                      description: user trigger notifications for updated
   */
-  router.post('/user-notification', loginRequiredStrictly, adminRequired, csrf, validator.userNotification, ApiV3FormValidator, async(req, res) => {
+  router.post('/user-notification', loginRequiredStrictly, adminRequired, csrf, validator.userNotification, apiV3FormValidator, async(req, res) => {
     const { pathPattern, channel } = req.body;
     const UpdatePost = crowi.model('UpdatePost');
 
@@ -305,7 +304,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: notification param created
    */
-  router.post('/global-notification', loginRequiredStrictly, adminRequired, csrf, validator.globalNotification, ApiV3FormValidator, async(req, res) => {
+  router.post('/global-notification', loginRequiredStrictly, adminRequired, csrf, validator.globalNotification, apiV3FormValidator, async(req, res) => {
 
     const {
       notifyToType, toEmail, slackChannels, triggerPath, triggerEvents,
@@ -368,7 +367,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: notification param updated
    */
-  router.put('/global-notification/:id', loginRequiredStrictly, adminRequired, csrf, validator.globalNotification, ApiV3FormValidator, async(req, res) => {
+  router.put('/global-notification/:id', loginRequiredStrictly, adminRequired, csrf, validator.globalNotification, apiV3FormValidator, async(req, res) => {
     const { id } = req.params;
     const {
       notifyToType, toEmail, slackChannels, triggerPath, triggerEvents,
@@ -439,7 +438,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/NotifyForPageGrant'
    */
-  router.put('/notify-for-page-grant', loginRequiredStrictly, adminRequired, csrf, validator.notifyForPageGrant, ApiV3FormValidator, async(req, res) => {
+  router.put('/notify-for-page-grant', loginRequiredStrictly, adminRequired, csrf, validator.notifyForPageGrant, apiV3FormValidator, async(req, res) => {
 
     let requestParams = {
       'notification:owner-page:isEnabled': req.body.isNotificationForOwnerPageEnabled,
