@@ -12,6 +12,7 @@ import OutsideShareLinkModal from '../OutsideShareLinkModal';
 import { toastError } from '../../util/apiNotification';
 
 import ArchiveCreateModal from '../ArchiveCreateModal';
+// import ArchiveCreateModal from '../ArchiveCreateModal';
 
 const PageShareManagement = (props) => {
   const { t, appContainer, pageContainer } = props;
@@ -91,6 +92,12 @@ const PageShareManagement = (props) => {
     );
   }
 
+  function openArchiveModalHandler() {
+    return (
+      console.log('ログ出るで！')
+    );
+  }
+
 
   return (
     <>
@@ -106,6 +113,10 @@ const PageShareManagement = (props) => {
         <button type="button" className="dropdown-item" onClick={() => { exportPageHundler('pdf') }}>
           <span>{t('export_bulk.export_page_pdf')}</span>
         </button>
+
+        <button className="dropdown-item" type="button" onClick={openArchiveModalHandler}>アーカイブデータを作成する
+        </button>
+
       </div>
       {renderModals()}
     </>
