@@ -13,13 +13,13 @@ class InstallerForm extends React.Component {
 
     this.state = {
       isValidUserName: true,
-      checkedBtn: 'en_US',
+      selectedLang: {},
     };
     this.checkUserName = this.checkUserName.bind(this);
   }
 
   componentWillMount() {
-    this.changeLanguage('en_US');
+    this.changeLanguage({ id: 'en_US', displayName: 'English' });
   }
 
   checkUserName(event) {
@@ -34,9 +34,9 @@ class InstallerForm extends React.Component {
       .then((res) => { return this.setState({ isValidUserName: res.data.valid }) });
   }
 
-  changeLanguage(locale) {
-    i18next.changeLanguage(locale);
-    this.setState({ checkedBtn: locale });
+  changeLanguage(meta) {
+    i18next.changeLanguage(meta.id);
+    this.setState({ selectedLang: meta });
   }
 
   render() {
@@ -44,8 +44,6 @@ class InstallerForm extends React.Component {
     const unavailableUserId = this.state.isValidUserName
       ? ''
       : <span><i className="icon-fw icon-ban" />{ this.props.t('installer.unavaliable_user_id') }</span>;
-
-    const checkedBtn = this.state.checkedBtn;
 
     return (
       <div className={`login-dialog p-3 mx-auto${hasErrorClass}`}>
@@ -59,25 +57,31 @@ class InstallerForm extends React.Component {
         </div>
         <div className="row">
           <form role="form" action="/installer" method="post" id="register-form" className="col-md-12">
-            <div className="form-group text-center">
-              {
-                localeMetadatas.map(meta => (
-                  <div key={meta.id} className="custom-control custom-radio custom-control-inline">
-                    <input
-                      type="radio"
-                      className="custom-control-input"
-                      id={`register-form-check-${meta.id}`}
-                      name="registerForm[app:globalLang]"
-                      value={meta.id}
-                      checked={checkedBtn === meta.id}
-                      onChange={(e) => { if (e.target.checked) { this.changeLanguage(meta.id) } }}
-                    />
-                    <label className="custom-control-label" htmlFor={`register-form-check-${meta.id}`}>
+            <div className="dropdown mb-3">
+              <div className="d-flex dropdown-with-icon">
+                <i className="icon-bubbles border-0 rounded-0" />
+                <button
+                  type="button"
+                  className="btn btn-secondary dropdown-toggle text-right w-100 border-0 shadow-none"
+                  id="dropdownLanguage"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="true"
+                >
+                  <span className="float-left">
+                    {this.state.selectedLang.displayName}
+                  </span>
+                </button>
+                <div className="dropdown-menu" aria-labelledby="dropdownLanguage">
+                  {
+                  localeMetadatas.map(meta => (
+                    <button key={meta.id} className="dropdown-item" type="button" onClick={() => { this.changeLanguage(meta) }}>
                       {meta.displayName}
-                    </label>
-                  </div>
-                ))
-              }
+                    </button>
+                  ))
+                }
+                </div>
+              </div>
             </div>
 
             <div className={`input-group mb-3${hasErrorClass}`}>
