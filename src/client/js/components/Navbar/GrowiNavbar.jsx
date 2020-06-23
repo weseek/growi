@@ -59,7 +59,7 @@ class GrowiNavbar extends React.Component {
     const { currentUser } = appContainer;
 
     return (
-      <nav className="navbar grw-navbar navbar-expand navbar-dark sticky-top mb-0 px-0">
+      <>
 
         {/* Brand Logo  */}
         <div className="navbar-brand mr-0">
@@ -82,7 +82,7 @@ class GrowiNavbar extends React.Component {
         </ul>
 
         {crowi.confidential != null && this.renderConfidential()}
-      </nav>
+      </>
     );
   }
 
