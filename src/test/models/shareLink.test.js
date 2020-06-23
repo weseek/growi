@@ -24,7 +24,7 @@ describe('ShareLink', () => {
     };
 
     const res = {
-      render: jest.fn((page, renderVars) => { return page }),
+      render: jest.fn((page, renderVars = null) => { return { page, renderVars } }),
     };
 
     const findOneResult = {
@@ -53,7 +53,8 @@ describe('ShareLink', () => {
 
       expect(findOneResult.populate).toHaveBeenCalled();
       expect(res.render).toHaveBeenCalled();
-      expect(response).toEqual('layout-growi/not_found_shared_page');
+      expect(response.page).toEqual('layout-growi/not_found_shared_page');
+      expect(response.renderVars).toEqual(null);
     });
 
     test('share link is found, but it does not have Page', async() => {
@@ -67,7 +68,8 @@ describe('ShareLink', () => {
 
       expect(findOneResult.populate).toHaveBeenCalled();
       expect(res.render).toHaveBeenCalled();
-      expect(response).toEqual('layout-growi/not_found_shared_page');
+      expect(response.page).toEqual('layout-growi/not_found_shared_page');
+      expect(response.renderVars).toEqual(null);
     });
 
 
@@ -83,7 +85,8 @@ describe('ShareLink', () => {
 
       expect(findOneResult.populate).toHaveBeenCalled();
       expect(res.render).toHaveBeenCalled();
-      expect(response).toEqual('layout-growi/expired_shared_page');
+      expect(response.page).toEqual('layout-growi/expired_shared_page');
+      expect(response.renderVars).toEqual(null);
     });
 
     test('share link is found, and it has the page you can see', async() => {
@@ -97,7 +100,8 @@ describe('ShareLink', () => {
 
       expect(findOneResult.populate).toHaveBeenCalled();
       expect(res.render).toHaveBeenCalled();
-      expect(response).toEqual('layout-growi/shared_page');
+      expect(response.page).toEqual('layout-growi/shared_page');
+      expect(response.renderVars).not.toEqual(null);
     });
   });
 
