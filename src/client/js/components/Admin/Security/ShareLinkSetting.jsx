@@ -6,6 +6,7 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 import ShareLinkList from '../../ShareLinkList';
+import DeleteAllShareLinksModal from './DeleteAllShareLinksModal';
 
 class ShareLinkSetting extends React.Component {
 
@@ -18,10 +19,15 @@ class ShareLinkSetting extends React.Component {
     };
 
     this.showDeleteConfirmModal = this.showDeleteConfirmModal.bind(this);
+    this.closeDeleteConfirmModal = this.closeDeleteConfirmModal.bind(this);
   }
 
   showDeleteConfirmModal() {
     this.setState({ isDeleteConfirmModalShown: true });
+  }
+
+  closeDeleteConfirmModal() {
+    this.setState({ isDeleteConfirmModalShown: false });
   }
 
   render() {
@@ -35,6 +41,11 @@ class ShareLinkSetting extends React.Component {
         <ShareLinkList
           shareLinks={this.state.shareLinks}
           onClickDeleteButton={this.deleteLinkById}
+        />
+
+        <DeleteAllShareLinksModal
+          isOpen={this.state.isDeleteConfirmModalShown}
+          onClose={this.closeDeleteConfirmModal}
         />
 
       </>
