@@ -144,6 +144,7 @@ class CopyDropdown extends React.Component {
                 <DropdownItemContents title={t('copy_to_clipboard.Page path')} contents={pagePathWithParams} />
               </DropdownItem>
             </CopyToClipboard>
+
             <DropdownItem divider className="my-0"></DropdownItem>
 
             {/* Page path URL */}
