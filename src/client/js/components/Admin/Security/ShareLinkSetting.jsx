@@ -5,33 +5,31 @@ import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
+import ShareLinkList from '../../ShareLinkList';
 
 class ShareLinkSetting extends React.Component {
+
+  constructor() {
+    super();
+
+    this.state = {
+      shareLinks: [],
+    };
+
+  }
 
   render() {
     return (
       <>
-        <div className="mb-3">
-          <h2 className="alert-anchor border-bottom">Shared Link List</h2>
-        </div>
-        <button className="pull-right btn btn-danger" type="button">Delete all links</button>
+        <h2 className="border-bottom mb-3">
+          Shared Link List
+          <button type="button" className="btn btn-danger pull-right">Delete all links</button>
+        </h2>
 
-        <div className="table-responsive">
-          <table className="table table-bordered">
-            <thead>
-              <tr>
-                <th>Link</th>
-                <th>PagePath</th>
-                <th>Expiration</th>
-                <th>Description</th>
-                <th>Order</th>
-              </tr>
-            </thead>
-            <tbody>
-              {/* ShareLinkListを参考に */}
-            </tbody>
-          </table>
-        </div>
+        <ShareLinkList
+          shareLinks={this.state.shareLinks}
+          onClickDeleteButton={this.deleteLinkById}
+        />
 
       </>
     );
