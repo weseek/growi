@@ -152,6 +152,30 @@ module.exports = (crowi) => {
   /**
   * @swagger
   *
+  *    /share-links/all:
+  *      delete:
+  *        tags: [ShareLinks]
+  *        description: delete all share links
+  *        responses:
+  *          200:
+  *            description: Succeeded to remove all share links
+  */
+  router.delete('/all', loginRequired, adminRequired, csrf, async(req, res) => {
+
+    try {
+      const deletedShareLink = await ShareLink.deleteMany({});
+      return res.apiv3(deletedShareLink);
+    }
+    catch (err) {
+      const msg = 'Error occurred in delete all share link';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'delete-all-shareLink-failed'));
+    }
+  });
+
+  /**
+  * @swagger
+  *
   *    /share-links/{id}:
   *      delete:
   *        tags: [ShareLinks]
@@ -180,31 +204,6 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(msg, 'delete-shareLink-failed'));
     }
 
-  });
-
-  /**
-  * @swagger
-  *
-  *    /share-links/all:
-  *      delete:
-  *        tags: [ShareLinks]
-  *        description: delete all share links
-  *        responses:
-  *          200:
-  *            description: Succeeded to remove all share links
-  */
-  router.delete('/all', loginRequired, adminRequired, csrf, async(req, res) => {
-
-    try {
-      const deletedShareLink = null;
-      // const deletedShareLink = await ShareLink.deleteMany({});
-      return res.apiv3({ deletedShareLink });
-    }
-    catch (err) {
-      const msg = 'Error occurred in delete all share link';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'delete-all-shareLink-failed'));
-    }
   });
 
 

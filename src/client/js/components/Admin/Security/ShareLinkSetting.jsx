@@ -39,7 +39,6 @@ class ShareLinkSetting extends React.Component {
 
     try {
       const res = await appContainer.apiv3Delete('/share-links/all');
-      console.log(res);
       const count = res.data.n;
       toastSuccess(t('toaster.remove_share_link', { count }));
     }
@@ -55,8 +54,13 @@ class ShareLinkSetting extends React.Component {
       <>
         <h2 className="border-bottom mb-3">
           Shared Link List
-
-          <button type="button" className="btn btn-danger pull-right" onClick={this.showDeleteConfirmModal}>Delete all links</button>
+          <button
+            type="button"
+            className="btn btn-danger pull-right"
+            disabled={this.state.shareLinks.length === 0}
+            onClick={this.showDeleteConfirmModal}
+          >Delete all links
+          </button>
         </h2>
 
         <ShareLinkList

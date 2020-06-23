@@ -8,7 +8,7 @@ import {
 } from 'reactstrap';
 
 const DeleteAllShareLinksModal = React.memo((props) => {
-
+  const { t } = props;
 
   function closeModal() {
     if (props.onClose == null) {
@@ -41,7 +41,7 @@ const DeleteAllShareLinksModal = React.memo((props) => {
         </span>
       </ModalHeader>
       <ModalBody>
-        {props.count} 件の ShareLink 削除します
+        { t('share_link_notice', { count: props.count })}
       </ModalBody>
       <ModalFooter>
         <Button onClick={closeButtonHandler}>Cancel</Button>
@@ -56,6 +56,8 @@ const DeleteAllShareLinksModal = React.memo((props) => {
 });
 
 DeleteAllShareLinksModal.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
   count: PropTypes.number.isRequired,
