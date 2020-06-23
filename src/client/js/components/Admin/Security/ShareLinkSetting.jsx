@@ -6,7 +6,6 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
-import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 
 import ShareLinkList from '../../ShareLinkList';
 import DeleteAllShareLinksModal from './DeleteAllShareLinksModal';
@@ -81,12 +80,11 @@ class ShareLinkSetting extends React.Component {
 
 }
 
-const ShareLinkSettingWrapper = withUnstatedContainers(ShareLinkSetting, [AppContainer, AdminGeneralSecurityContainer]);
+const ShareLinkSettingWrapper = withUnstatedContainers(ShareLinkSetting, [AppContainer]);
 
 ShareLinkSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
-  adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
