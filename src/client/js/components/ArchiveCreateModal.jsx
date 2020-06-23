@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import {
@@ -13,6 +13,7 @@ const ArchiveCreateModal = (props) => {
   const [isCommentDownload, setIsCommentDownload] = useState(false);
   const [isFileDownload, setIsFileDownload] = useState(false);
   const [isSubordinatedPageDownload, setIsSubordinatedPageDownload] = useState(false);
+  const [fileType, setFileType] = useState('markDown');
 
 
   function changeIsCommentDownloadHandler() {
@@ -32,8 +33,14 @@ const ArchiveCreateModal = (props) => {
     }
 
     props.onClose();
-
   }
+
+  const handleChangeFileType = useCallback(
+    (filetype) => {
+      setFileType(filetype);
+    },
+    [fileType],
+  );
 
 
   return (
@@ -47,12 +54,37 @@ const ArchiveCreateModal = (props) => {
             <label>{t('File type')}: </label>
           </div>
           <div className="custom-control custom-radio custom-control-inline ">
-            <input type="radio" className="custom-control-input" />
-            <label className="custom-control-label">MarkDown(.md)</label>
+            <input
+              type="radio"
+              className="custom-control-input"
+              id="customRadio1"
+              name="isFileType"
+              value="customRadio1"
+              checked={fileType === 'markDown'}
+              onChange={() => {
+                handleChangeFileType('markDown');
+              }}
+            />
+            <label className="custom-control-label" htmlFor="customRadio1">
+              MarkDown(.md)
+            </label>
           </div>
-          <div className="custom-control custom-radio custom-control-inline">
-            <input type="radio" className="custom-control-input" />
-            <label className="custom-control-label">PDF(.pdf)</label>
+
+          <div className="custom-control custom-radio custom-control-inline ">
+            <input
+              type="radio"
+              className="custom-control-input"
+              id="customRadio2"
+              name="isFileType"
+              value="customRadio2"
+              checked={fileType === 'pdf'}
+              onChange={() => {
+                handleChangeFileType('pdf');
+              }}
+            />
+            <label className="custom-control-label" htmlFor="customRadio2">
+              PDF(.pdf)
+            </label>
           </div>
         </div>
 
@@ -77,7 +109,9 @@ const ArchiveCreateModal = (props) => {
             checked={isFileDownload}
             onChange={changeIsFileDownloadHandler}
           />
-          <label className="custom-control-label" htmlFor="downloadFile">{t('Include Attachment File')}</label>
+          <label className="custom-control-label" htmlFor="downloadFile">
+            {t('Include Attachment File')}
+          </label>
         </div>
         <div className="custom-control custom-checkbox custom-checkbox-warning">
           <input
@@ -93,7 +127,9 @@ const ArchiveCreateModal = (props) => {
         </div>
       </ModalBody>
       <ModalFooter>
-        <button type="button">Done</button>
+        <button type="button" className="btn btn-primary">
+          Done
+        </button>
       </ModalFooter>
     </Modal>
   );
