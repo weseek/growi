@@ -470,7 +470,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const hasLinkClass = additionalClassSet.has(MARKDOWN_LINK_ACTIVATED_CLASS);
 
     const isInTable = mtu.isInTable(editor);
-    const isInLink = mlu.isInTable(editor);
+    const isInLink = mlu.isInLink(editor);
 
     if (!hasCustomClass && isInTable) {
       additionalClassSet.add(MARKDOWN_TABLE_ACTIVATED_CLASS);
