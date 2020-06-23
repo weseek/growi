@@ -153,6 +153,9 @@ export default class AdminGeneralSecurityContainer extends Container {
   }
 
   /**
+   * Retrieve All Sharelinks
+   */
+  /**
    * Switch local enabled
    */
   async switchIsLocalEnabled() {
