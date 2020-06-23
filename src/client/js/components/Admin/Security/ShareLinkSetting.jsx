@@ -14,8 +14,14 @@ class ShareLinkSetting extends React.Component {
 
     this.state = {
       shareLinks: [],
+      isDeleteConfirmModalShown: false,
     };
 
+    this.showDeleteConfirmModal = this.showDeleteConfirmModal.bind(this);
+  }
+
+  showDeleteConfirmModal() {
+    this.setState({ isDeleteConfirmModalShown: true });
   }
 
   render() {
@@ -23,7 +29,7 @@ class ShareLinkSetting extends React.Component {
       <>
         <h2 className="border-bottom mb-3">
           Shared Link List
-          <button type="button" className="btn btn-danger pull-right">Delete all links</button>
+          <button type="button" className="btn btn-danger pull-right" onClick={this.showDeleteConfirmModal}>Delete all links</button>
         </h2>
 
         <ShareLinkList
