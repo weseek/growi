@@ -4,15 +4,20 @@ import { withTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
+import { pathUtils } from 'growi-commons';
+import { withUnstatedContainers } from './UnstatedUtils';
+import AppContainer from '../services/AppContainer';
+import PageContainer from '../services/PageContainer';
 
 
 const ArchiveCreateModal = (props) => {
-
-  const { t } = props;
-
+  const { t, pageContainer } = props;
+  const { path } = pageContainer.state;
+  const parentPath = pathUtils.addTrailingSlash(path);
   const [isCommentDownload, setIsCommentDownload] = useState(false);
   const [isFileDownload, setIsFileDownload] = useState(false);
   const [isSubordinatedPageDownload, setIsSubordinatedPageDownload] = useState(false);
+
   const [fileType, setFileType] = useState('markDown');
 
 
@@ -50,6 +55,12 @@ const ArchiveCreateModal = (props) => {
       </ModalHeader>
       <ModalBody>
         <div className="form-group">
+          <div className="form-group">
+            <label>{t('Target page')}</label>
+            <br />
+            <code>{parentPath}</code>
+          </div>
+
           <div className="custom-control custom-radio custom-control-inline ">
             <label>{t('File type')}: </label>
           </div>
@@ -135,10 +146,17 @@ const ArchiveCreateModal = (props) => {
   );
 };
 
+const ArchiveCreateModalWrapper = withUnstatedContainers(ArchiveCreateModal, [AppContainer, PageContainer]);
+
+
 ArchiveCreateModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
+  AppContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
+  path: PropTypes.string.isRequired,
 };
 
-export default withTranslation()(ArchiveCreateModal);
+
+export default withTranslation()(ArchiveCreateModalWrapper);
