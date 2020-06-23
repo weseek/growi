@@ -867,6 +867,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
         <GridEditModal
           ref={this.gridEditModal}
+          onSave={(grid) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), grid) }}
         />
         <HandsontableModal
           ref={this.handsontableModal}
