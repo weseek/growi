@@ -4,7 +4,7 @@
 class MarkdownLinkUtil {
 
   constructor() {
-    // https://regex101.com/r/1UuWBJ/7
+    // https://regex101.com/r/1UuWBJ/8
     this.linePartOfLink = /(\[+(.*)+\]){1}(\(+(.*)+\)){1}/;
     this.isInLink = this.isInLink.bind(this);
   }
