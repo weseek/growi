@@ -39,7 +39,7 @@ const ArchiveCreateModal = (props) => {
     (filetype) => {
       setFileType(filetype);
     },
-    [setFileType],
+    [fileType],
   );
 
 
