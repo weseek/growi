@@ -65,6 +65,22 @@ $table-hover-bg: $bgcolor-table-hover;
     background-color: rgba(white, 0.5);
   }
 
+  .dropdown-with-icon {
+    .dropdown-toggle {
+      color: white;
+      background-color: rgba(#505050, 0.7);
+      box-shadow: unset;
+      &:focus {
+        color: white;
+        background-color: rgba(#505050, 0.7);
+      }
+    }
+    i {
+      color: darken(white, 30%);
+      background-color: rgba(#444, 0.7);
+    }
+  }
+
   .input-group {
     .input-group-text {
       color: darken(white, 30%);
