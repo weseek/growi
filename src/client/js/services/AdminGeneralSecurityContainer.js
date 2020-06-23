@@ -30,6 +30,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       isGitHubEnabled: false,
       isTwitterEnabled: false,
       setupStrategies: [],
+      shareLinks: [],
     };
 
   }
