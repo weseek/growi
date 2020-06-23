@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import {
@@ -13,7 +13,7 @@ const ArchiveCreateModal = (props) => {
   const [isCommentDownload, setIsCommentDownload] = useState(false);
   const [isFileDownload, setIsFileDownload] = useState(false);
   const [isSubordinatedPageDownload, setIsSubordinatedPageDownload] = useState(false);
-  const [isFileType, setIsFileType] = useState('markDown');
+  const [fileType, setFileType] = useState('markDown');
 
 
   function changeIsCommentDownloadHandler() {
@@ -35,9 +35,12 @@ const ArchiveCreateModal = (props) => {
     props.onClose();
   }
 
-  function handleChangeFileType(isFileType) {
-    setIsFileType(isFileType);
-  }
+  const handleChangeFileType = useCallback(
+    (filetype) => {
+      setFileType(filetype);
+    },
+    [setFileType],
+  );
 
 
   return (
@@ -57,7 +60,7 @@ const ArchiveCreateModal = (props) => {
               id="customRadio1"
               name="isFileType"
               value="customRadio1"
-              checked={isFileType === 'markDown'}
+              checked={fileType === 'markDown'}
               onChange={() => {
                 handleChangeFileType('markDown');
               }}
@@ -74,7 +77,7 @@ const ArchiveCreateModal = (props) => {
               id="customRadio2"
               name="isFileType"
               value="customRadio2"
-              checked={isFileType === 'pdf'}
+              checked={fileType === 'pdf'}
               onChange={() => {
                 handleChangeFileType('pdf');
               }}
