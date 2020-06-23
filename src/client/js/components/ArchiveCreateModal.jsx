@@ -61,7 +61,7 @@ const ArchiveCreateModal = (props) => {
             <code>{parentPath}</code>
           </div>
 
-          <div className="custom-control custom-radio custom-control-inline ">
+          <div className="custom-control-inline">
             <label>{t('File type')}: </label>
           </div>
           <div className="custom-control custom-radio custom-control-inline ">
