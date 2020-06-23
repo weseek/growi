@@ -9,12 +9,27 @@ import {
 
 const DeleteAllShareLinksModal = React.memo((props) => {
 
-  function closeButtonHandler() {
+
+  function closeModal() {
     if (props.onClose == null) {
       return;
     }
 
     props.onClose();
+  }
+
+  function deleteAllLinkHandler() {
+    if (props.onClickDeleteButton == null) {
+      return;
+    }
+
+    props.onClickDeleteButton();
+
+    closeModal();
+  }
+
+  function closeButtonHandler() {
+    closeModal();
   }
 
   return (
@@ -26,14 +41,14 @@ const DeleteAllShareLinksModal = React.memo((props) => {
         </span>
       </ModalHeader>
       <ModalBody>
-        x 件の ShareLink 削除します
+        {props.count} 件の ShareLink 削除します
       </ModalBody>
       <ModalFooter>
         <Button onClick={closeButtonHandler}>Cancel</Button>
-        {/* <Button color="danger" onClick={this.props.confirmedToDelete}>
+        <Button color="danger" onClick={deleteAllLinkHandler}>
           <i className="icon icon-fire"></i>
             Delete
-        </Button> */}
+        </Button>
       </ModalFooter>
     </Modal>
   );
@@ -42,8 +57,9 @@ const DeleteAllShareLinksModal = React.memo((props) => {
 
 DeleteAllShareLinksModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-
+  onClose: PropTypes.func,
+  count: PropTypes.number.isRequired,
+  onClickDeleteButton: PropTypes.func,
 };
 
 export default withTranslation()(DeleteAllShareLinksModal);

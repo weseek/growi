@@ -24,6 +24,7 @@ const today = new Date();
 
 module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi);
+  const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
   const ShareLink = crowi.model('ShareLink');
@@ -136,7 +137,6 @@ module.exports = (crowi) => {
   */
   router.delete('/', loginRequired, csrf, async(req, res) => {
     const { relatedPage } = req.query;
-    const ShareLink = crowi.model('ShareLink');
 
     try {
       const deletedShareLink = await ShareLink.remove({ relatedPage });
@@ -180,6 +180,31 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(msg, 'delete-shareLink-failed'));
     }
 
+  });
+
+  /**
+  * @swagger
+  *
+  *    /share-links/all:
+  *      delete:
+  *        tags: [ShareLinks]
+  *        description: delete all share links
+  *        responses:
+  *          200:
+  *            description: Succeeded to remove all share links
+  */
+  router.delete('/all', loginRequired, adminRequired, csrf, async(req, res) => {
+
+    try {
+      const deletedShareLink = null;
+      // const deletedShareLink = await ShareLink.deleteMany({});
+      return res.apiv3({ deletedShareLink });
+    }
+    catch (err) {
+      const msg = 'Error occurred in delete all share link';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'delete-all-shareLink-failed'));
+    }
   });
 
 
