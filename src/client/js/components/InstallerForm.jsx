@@ -19,7 +19,7 @@ class InstallerForm extends React.Component {
   }
 
   componentWillMount() {
-    this.changeLanguage({ id: 'en_US', displayName: 'English' });
+    this.changeLanguage(localeMetadatas[0]);
   }
 
   checkUserName(event) {
