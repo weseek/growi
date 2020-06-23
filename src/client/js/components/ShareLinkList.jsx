@@ -25,7 +25,7 @@ const ShareLinkList = (props) => {
           <tr key={shareLink._id}>
             <td className="d-flex justify-content-between align-items-center">
               <span>{shareLink._id}</span>
-              <CopyDropdown isShareLinkMode="true" pageId={shareLink._id} />
+              <CopyDropdown isShareLinkMode="true" pageId={shareLink._id} pagePath={`/share/${shareLink._id}`} />
             </td>
             <td>{shareLink.expiredAt}</td>
             <td>{shareLink.description}</td>
