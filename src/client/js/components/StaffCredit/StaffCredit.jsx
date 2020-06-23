@@ -111,7 +111,13 @@ export default class StaffCredit extends React.Component {
 
   render() {
     return (
-      <Modal isOpen={this.state.isShown} onClosed={() => { () => { this.props.onDeleteRender(this) } }} toggle={this.deleteCredit} scrollable className="staff-credit">
+      <Modal
+        isOpen={this.state.isShown}
+        onClosed={() => { return () => { this.props.onDeleteRender(this) } }}
+        toggle={this.deleteCredit}
+        scrollable
+        className="staff-credit"
+      >
         <ModalBody className="credit-curtain">
           {this.renderContributors()}
         </ModalBody>

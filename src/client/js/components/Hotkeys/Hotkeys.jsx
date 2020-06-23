@@ -28,6 +28,7 @@ export default class Hotkeys extends React.Component {
     this.setState({
       view: viewCopy,
     });
+    return null;
   }
 
   // this function generates keymap depending on what keys were selected in this.hotkeyCommand
