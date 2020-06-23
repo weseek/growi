@@ -33,8 +33,8 @@ export default class StaffCredit extends React.Component {
     return ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
   }
 
-  static getComponent(supportClassesIndex, deleteRender) {
-    return <StaffCredit supportClassesIndex={supportClassesIndex} deleteRender={deleteRender} />;
+  static getComponent(supportClassesIndex, onDeleteRender) {
+    return <StaffCredit supportClassesIndex={supportClassesIndex} onDeleteRender={onDeleteRender} />;
   }
 
   // to delete the staffCredit and to inform that to Hotkeys.jsx
@@ -42,9 +42,6 @@ export default class StaffCredit extends React.Component {
     if (this.state.isShown) {
       this.setState({ isShown: false });
     }
-    setTimeout(() => {
-      this.props.deleteRender(this);
-    }, 200);
   }
 
   renderMembers(memberGroup, keyPrefix) {
@@ -114,7 +111,7 @@ export default class StaffCredit extends React.Component {
 
   render() {
     return (
-      <Modal isOpen={this.state.isShown} toggle={this.deleteCredit} scrollable className="staff-credit">
+      <Modal isOpen={this.state.isShown} onClosed={() => { () => { this.props.onDeleteRender(this) } }} toggle={this.deleteCredit} scrollable className="staff-credit">
         <ModalBody className="credit-curtain">
           {this.renderContributors()}
         </ModalBody>
@@ -124,6 +121,6 @@ export default class StaffCredit extends React.Component {
 
 }
 StaffCredit.propTypes = {
-  supportClassesIndex: PropTypes.func.isRequired,
-  deleteRender: PropTypes.number.isRequired,
+  supportClassesIndex: PropTypes.number,
+  onDeleteRender: PropTypes.func,
 };
