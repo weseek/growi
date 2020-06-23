@@ -155,6 +155,17 @@ export default class AdminGeneralSecurityContainer extends Container {
   /**
    * Retrieve All Sharelinks
    */
+  async retriveShareLinks() {
+    try {
+      const response = await this.appContainer.apiv3.get('/all-share-links/');
+      const { shareLinks } = response.data;
+      this.setState({ shareLinks });
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
+
   /**
    * Switch local enabled
    */
