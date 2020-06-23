@@ -7,7 +7,7 @@ import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-const DeleteAllShareLinksModal = (props) => {
+const DeleteAllShareLinksModal = React.memo((props) => {
 
   function closeButtonHandler() {
     if (props.onClose == null) {
@@ -37,7 +37,8 @@ const DeleteAllShareLinksModal = (props) => {
       </ModalFooter>
     </Modal>
   );
-};
+
+});
 
 DeleteAllShareLinksModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
