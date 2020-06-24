@@ -182,6 +182,7 @@ module.exports = function(crowi) {
       crowi: {
         title: crowi.appService.getAppTitle(),
         url: crowi.appService.getSiteUrl(),
+        confidential: crowi.appService.getAppConfidential(),
       },
       upload: {
         image: crowi.fileUploadService.getIsUploadable(),

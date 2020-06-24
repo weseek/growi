@@ -74,48 +74,7 @@
 <div id="wrapper">
 
   {% block layout_head_nav %}
-  <nav class="navbar grw-navbar navbar-expand navbar-dark fixed-top mb-0 px-0">
-    {# Brand Logo #}
-    <div class="navbar-brand mr-0">
-      <a class="grw-logo d-block" href="/">
-        {% include '../widget/logo.html' %}
-      </a>
-    </div>
-    <ul class="navbar-nav d-md-none">
-      <li id="grw-navbar-toggler" class="nav-item"></li>
-    </ul>
-    <div class="grw-app-title d-none d-md-block">
-      {{ appService.getAppTitle() | preventXss }}
-    </div>
-
-    {# Navbar Right #}
-    <ul class="navbar-nav ml-auto">
-      {% if user %}
-        <li id="create-page-button" class="nav-item d-none d-md-block"></li>
-        {% if isSearchServiceConfigured() %}
-          <li class="nav-item d-md-none">
-            <a type="button" class="nav-link px-4" data-target="#grw-search-top-collapse" data-toggle="collapse">
-              <i class="icon-magnifier mr-2"></i>
-            </a>
-          </li>
-        {% endif %}
-        <li id="personal-dropdown" class="grw-personal-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret"></li>
-      {% else %}
-        <li id="login-user" class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-      {% endif %}
-
-      {% if getConfig('crowi', 'app:confidential') %}
-        <li class="nav-item confidential text-light">
-          <i class="icon-info d-md-none" data-toggle="tooltip" title="{{ getConfig('crowi', 'app:confidential') }}"></i>
-          <span class="d-none d-md-inline">
-            {{ getConfig('crowi', 'app:confidential') }}
-          </span>
-        </li>
-      {% endif %}
-    </ul>
-
-  </nav>
-
+    <nav id="grw-navbar" class="navbar grw-navbar navbar-expand navbar-dark sticky-top mb-0 px-0"></nav>
   {% endblock  %} {# layout_head_nav #}
 
   {% block head_warn_breaking_changes %}{% include '../widget/alert_breaking_changes.html' %}{% endblock %}

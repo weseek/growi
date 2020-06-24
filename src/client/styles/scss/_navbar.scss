@@ -1,4 +1,6 @@
 .grw-navbar {
+  top: -$grw-navbar-height !important;
+
   max-height: $grw-navbar-height + $grw-navbar-border-width;
   border-top: 0;
   border-right: 0;
