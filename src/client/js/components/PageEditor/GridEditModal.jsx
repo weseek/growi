@@ -40,7 +40,7 @@ export default class GridEditModal extends React.PureComponent {
         <ModalBody>
           <div className="container">
             <div className="row">
-              <div className="col-2">
+              <div className="col-3">
                 <div className="device-titile-bar">Phone</div>
                 <div className="device-container"></div>
                 <div className="device-titile-bar">Tablet</div>
@@ -50,7 +50,7 @@ export default class GridEditModal extends React.PureComponent {
                 <div className="device-titile-bar">Large Desktop</div>
                 <div className="device-container"></div>
               </div>
-              <div className="row col-10 flex-nowrap overflow-auto">
+              <div className="row col-9 flex-nowrap overflow-auto">
                 <div className="bg-light mx-1 grid-edit-col">1</div>
                 <div className="bg-light mx-1 grid-edit-col">2</div>
                 <div className="bg-light mx-1 grid-edit-col">3</div>
