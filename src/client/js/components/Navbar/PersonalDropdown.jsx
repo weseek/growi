@@ -108,15 +108,13 @@ const PersonalDropdown = (props) => {
         <div className="px-4 pt-3 pb-2 text-center">
           <UserPicture user={user} size="lg" noLink noTooltip />
 
-          <div className="personal-infomation">
-            <h5 className="mt-2">
-              {user.name}
-            </h5>
+          <h5 className="mt-2">
+            {user.name}
+          </h5>
 
-            <div className="my-2">
-              <i className="icon-user icon-fw"></i>{user.username}<br />
-              <i className="icon-envelope icon-fw"></i><span className="grw-email-sm">{user.email}</span>
-            </div>
+          <div className="my-2">
+            <i className="icon-user icon-fw"></i>{user.username}<br />
+            <i className="icon-envelope icon-fw"></i><span className="grw-email-sm">{user.email}</span>
           </div>
 
           <div className="btn-group btn-block mt-2" role="group">
