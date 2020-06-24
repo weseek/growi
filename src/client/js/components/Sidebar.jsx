@@ -155,7 +155,9 @@ class Sidebar extends React.Component {
           stickyElemSelector=".grw-sidebar"
           calcViewHeightFunc={this.calcViewHeight}
         />
-        <SidebarContents />
+        <div id="grw-sidebar-content-container" className="grw-sidebar-content-container">
+          <SidebarContents />
+        </div>
       </>
     );
   };

@@ -23,9 +23,7 @@ const SidebarContents = (props) => {
   }
 
   return (
-    <div id="grw-sidebar-content-container" className="grw-sidebar-content-container">
-      <Contents />
-    </div>
+    <Contents />
   );
 
 };
