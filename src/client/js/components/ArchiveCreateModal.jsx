@@ -7,12 +7,11 @@ import {
 
 
 const ArchiveCreateModal = (props) => {
-
   const { t } = props;
-
   const [isCommentDownload, setIsCommentDownload] = useState(false);
   const [isFileDownload, setIsFileDownload] = useState(false);
   const [isSubordinatedPageDownload, setIsSubordinatedPageDownload] = useState(false);
+
   const [fileType, setFileType] = useState('markDown');
 
 
@@ -39,7 +38,7 @@ const ArchiveCreateModal = (props) => {
     (filetype) => {
       setFileType(filetype);
     },
-    [fileType],
+    [],
   );
 
 
@@ -50,7 +49,13 @@ const ArchiveCreateModal = (props) => {
       </ModalHeader>
       <ModalBody>
         <div className="form-group">
-          <div className="custom-control custom-radio custom-control-inline ">
+          <div className="form-group">
+            <label>{t('Target page')}</label>
+            <br />
+            <code>{props.path}</code>
+          </div>
+
+          <div className="custom-control-inline">
             <label>{t('File type')}: </label>
           </div>
           <div className="custom-control custom-radio custom-control-inline ">
@@ -135,10 +140,13 @@ const ArchiveCreateModal = (props) => {
   );
 };
 
+
 ArchiveCreateModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
+  path: PropTypes.string.isRequired,
 };
+
 
 export default withTranslation()(ArchiveCreateModal);
