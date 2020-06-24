@@ -51,18 +51,18 @@ export default class GridEditModal extends React.PureComponent {
                 <div className="device-container"></div>
               </div>
               <div className="row col-9 flex-nowrap overflow-auto">
-                <div className="bg-light mx-1 grid-edit-col">1</div>
-                <div className="bg-light mx-1 grid-edit-col">2</div>
-                <div className="bg-light mx-1 grid-edit-col">3</div>
-                <div className="bg-light mx-1 grid-edit-col">4</div>
-                <div className="bg-light mx-1 grid-edit-col">5</div>
-                <div className="bg-light mx-1 grid-edit-col">6</div>
-                <div className="bg-light mx-1 grid-edit-col">7</div>
-                <div className="bg-light mx-1 grid-edit-col">8</div>
-                <div className="bg-light mx-1 grid-edit-col">9</div>
-                <div className="bg-light mx-1 grid-edit-col">10</div>
-                <div className="bg-light mx-1 grid-edit-col">11</div>
-                <div className="bg-light mx-1 grid-edit-col">12</div>
+                <div className="bg-light mx-1 grid-edit-col"></div>
+                <div className="bg-light mx-1 grid-edit-col"></div>
+                <div className="bg-light mx-1 grid-edit-col"></div>
+                <div className="bg-light mx-1 grid-edit-col"></div>
+                <div className="bg-light mx-1 grid-edit-col"></div>
+                <div className="bg-light mx-1 grid-edit-col"></div>
+                <div className="bg-light mx-1 grid-edit-col"></div>
+                <div className="bg-light mx-1 grid-edit-col"></div>
+                <div className="bg-light mx-1 grid-edit-col"></div>
+                <div className="bg-light mx-1 grid-edit-col"></div>
+                <div className="bg-light mx-1 grid-edit-col"></div>
+                <div className="bg-light mx-1 grid-edit-col"></div>
               </div>
             </div>
           </div>
