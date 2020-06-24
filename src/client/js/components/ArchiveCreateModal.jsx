@@ -11,13 +11,13 @@ const ArchiveCreateModal = (props) => {
   const [isCommentDownload, setIsCommentDownload] = useState(false);
   const [isFileDownload, setIsFileDownload] = useState(false);
   const [isSubordinatedPageDownload, setIsSubordinatedPageDownload] = useState(false);
-
   const [fileType, setFileType] = useState('markDown');
-
+  const [hierarchyType, setHierarchyType] = useState('allSubordinatedPage');
 
   function changeIsCommentDownloadHandler() {
     setIsCommentDownload(!isCommentDownload);
   }
+
   function changeIsFileDownloadHandler() {
     setIsFileDownload(!isFileDownload);
   }
@@ -40,6 +40,10 @@ const ArchiveCreateModal = (props) => {
     },
     [],
   );
+
+  function handleChangeSubordinatedType(hierarchyType) {
+    setHierarchyType(hierarchyType);
+  }
 
 
   return (
@@ -129,7 +133,49 @@ const ArchiveCreateModal = (props) => {
           <label className="custom-control-label" htmlFor="subordinatedFile">
             {t('Include Subordinated Page')}
           </label>
+
+          <div className="FormGroup">
+            <div className="custom-control custom-radio custom-control-inline ">
+              <input
+                type="radio"
+                className="custom-control-input"
+                id="customRadio3"
+                name="isSubordinatedType"
+                value="customRadio3"
+                disabled={!isSubordinatedPageDownload}
+                checked={hierarchyType === 'allSubordinatedPage'}
+                onChange={() => {
+                  handleChangeSubordinatedType('allSubordinatedPage');
+                }}
+              />
+              <label className="custom-control-label" htmlFor="customRadio3">
+                全ての配下ページ
+              </label>
+            </div>
+          </div>
+          <div className="FormGroup">
+            <div className="custom-control custom-radio custom-control-inline ">
+              <input
+                type="radio"
+                className="custom-control-input"
+                id="customRadio4"
+                name="isSubordinatedType"
+                value="customRadio4"
+                disabled={!isSubordinatedPageDownload}
+                checked={hierarchyType === 'decideHierarchy'}
+                onChange={() => {
+                  handleChangeSubordinatedType('decideHierarchy');
+                }}
+              />
+              <label className="custom-control-label" htmlFor="customRadio4">
+                全ての配下ページ
+              </label>
+            </div>
+          </div>
+
+
         </div>
+
       </ModalBody>
       <ModalFooter>
         <button type="button" className="btn btn-primary">
