@@ -45,10 +45,12 @@
       </div>
     </div>
 
+    {% if user._id.toString() == pageUser._id.toString() %}
     <div class="tab-pane user-draft-list page-list" id="user-draft-list">
       <div class="page-list-container">
       </div>
     </div>
+    {% endif %}
   </div>
 </div>
 
