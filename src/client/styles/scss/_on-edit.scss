@@ -312,7 +312,17 @@ body.on-edit {
 /*
  Grid Edit Modal
 */
-.grid-edit-columns {
-  width: 10px;
+.device-titile-bar {
+  width: 170px;
+  height: 35px;
+}
+
+.device-container {
+  width: 170px;
+  height: 135px;
+}
+
+.grid-edit-col {
+  width: 60px;
   height: 100%;
 }
