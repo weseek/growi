@@ -31,6 +31,13 @@ export default class GridEditModal extends React.PureComponent {
   }
 
   render() {
+  showCols() {
+    const cols = [];
+    for (let i = 0; i < 12; i++) {
+      cols.push(<div className="bg-light mx-1 grid-edit-col"></div>);
+    }
+    return cols;
+  }
 
     return (
       <Modal isOpen={this.state.show} toggle={this.cancel} size="xl">
@@ -50,20 +57,7 @@ export default class GridEditModal extends React.PureComponent {
                 <div className="device-titile-bar">Large Desktop</div>
                 <div className="device-container"></div>
               </div>
-              <div className="row col-9 flex-nowrap overflow-auto">
-                <div className="bg-light mx-1 grid-edit-col"></div>
-                <div className="bg-light mx-1 grid-edit-col"></div>
-                <div className="bg-light mx-1 grid-edit-col"></div>
-                <div className="bg-light mx-1 grid-edit-col"></div>
-                <div className="bg-light mx-1 grid-edit-col"></div>
-                <div className="bg-light mx-1 grid-edit-col"></div>
-                <div className="bg-light mx-1 grid-edit-col"></div>
-                <div className="bg-light mx-1 grid-edit-col"></div>
-                <div className="bg-light mx-1 grid-edit-col"></div>
-                <div className="bg-light mx-1 grid-edit-col"></div>
-                <div className="bg-light mx-1 grid-edit-col"></div>
-                <div className="bg-light mx-1 grid-edit-col"></div>
-              </div>
+              <div className="row col-9 flex-nowrap overflow-auto">{this.showCols()}</div>
             </div>
           </div>
         </ModalBody>
