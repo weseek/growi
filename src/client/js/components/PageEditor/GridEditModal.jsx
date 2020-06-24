@@ -57,7 +57,7 @@ export default class GridEditModal extends React.PureComponent {
                 <div className="device-titile-bar">Large Desktop</div>
                 <div className="device-container"></div>
               </div>
-              <div className="row col-9 flex-nowrap overflow-auto">{this.showCols()}</div>
+              <div className="row col-9 flex-nowrap overflow-auto">{this.showColsBg()}</div>
             </div>
           </div>
         </ModalBody>
