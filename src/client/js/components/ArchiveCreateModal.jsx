@@ -111,7 +111,13 @@ const ArchiveCreateModal = (props) => {
           </label>
         </div>
         <div className="m-1 custom-control custom-checkbox custom-checkbox-warning">
-          <input className="custom-control-input" id="downloadFile" type="checkbox" checked={isFileDownload} onChange={changeIsFileDownloadHandler} />
+          <input
+            className="custom-control-input"
+            id="downloadFile"
+            type="checkbox"
+            checked={isFileDownload}
+            onChange={changeIsFileDownloadHandler}
+          />
           <label className="custom-control-label" htmlFor="downloadFile">
             {t('Include Attachment File')}
           </label>
