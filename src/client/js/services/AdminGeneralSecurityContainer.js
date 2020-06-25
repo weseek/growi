@@ -30,6 +30,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       isGitHubEnabled: false,
       isTwitterEnabled: false,
       setupStrategies: [],
+      shareLinks: [],
     };
 
   }
@@ -145,6 +146,20 @@ export default class AdminGeneralSecurityContainer extends Container {
       const response = await this.appContainer.apiv3.get('/security-setting/authentication');
       const { setupStrategies } = response.data;
       this.setState({ setupStrategies });
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
+
+  /**
+   * Retrieve All Sharelinks
+   */
+  async retriveShareLinks() {
+    try {
+      const response = await this.appContainer.apiv3.get('/all-share-links/');
+      const { shareLinks } = response.data;
+      this.setState({ shareLinks });
     }
     catch (err) {
       toastError(err);
