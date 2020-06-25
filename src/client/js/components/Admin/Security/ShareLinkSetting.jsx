@@ -71,11 +71,11 @@ class ShareLinkSetting extends React.Component {
     const { adminGeneralSecurityContainer } = this.props;
 
     const pager = (
-      <div className="my-3">
+      <div className="pull-right my-3">
         <PaginationWrapper
           activePage={adminGeneralSecurityContainer.state.activePage}
           changePage={this.handlePage}
-          totalItemsCount={adminGeneralSecurityContainer.state.totalLinks}
+          totalItemsCount={adminGeneralSecurityContainer.state.totalshareLinks}
           pagingLimit={adminGeneralSecurityContainer.state.pagingLimit}
         />
       </div>
@@ -85,10 +85,10 @@ class ShareLinkSetting extends React.Component {
     return (
       <Fragment>
         <div className="mb-3">
+          <button className="pull-right btn btn-danger" type="button">Delete all links</button>
           <h2 className="alert-anchor border-bottom">Shared Link List</h2>
         </div>
 
-        <button className="pull-right btn btn-danger" type="button">Delete all links</button>
         {pager}
         <div className="table-responsive">
           <table className="table table-bordered">
@@ -116,7 +116,6 @@ class ShareLinkSetting extends React.Component {
             </tbody>
           </table>
         </div>
-        {pager}
 
       </Fragment>
     );

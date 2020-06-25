@@ -31,7 +31,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       isTwitterEnabled: false,
       setupStrategies: [],
       shareLinks: [],
-      totalUsers: 0,
+      totalshareLinks: 0,
       pagingLimit: Infinity,
       activePage: 1,
     };
@@ -164,7 +164,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       page,
     };
 
-    const { data } = await this.appContainer.apiv3.get('/all-share-links/', params);
+    const { data } = await this.appContainer.apiv3.get('/security-setting/all-share-links', params);
 
     if (data.paginateResult == null) {
       throw new Error('data must conclude \'paginateResult\' property.');

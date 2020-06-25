@@ -565,20 +565,20 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: suceed to get all share links
    */
-  router.get('/all-share-links/', /* loginRequiredStrictly, adminRequired, csrf */ async(req, res) => {
+  router.get('/all-share-links/', /* loginRequiredStrictly, adminRequired, csrf, */ async(req, res) => {
     const ShareLink = crowi.model('ShareLink');
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const linkQuery = {};
     try {
-      const shareLinksResult = await ShareLink.paginate(
+      const paginateResult = await ShareLink.paginate(
         linkQuery,
         {
           page,
           limit,
         },
       );
-      return res.apiv3({ shareLinksResult });
+      return res.apiv3({ paginateResult });
     }
     catch (err) {
       const msg = 'Error occured in get share link';
