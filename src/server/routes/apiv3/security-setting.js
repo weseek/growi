@@ -567,7 +567,6 @@ module.exports = (crowi) => {
    */
   router.get('/all-share-links/', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const ShareLink = crowi.model('ShareLink');
-    // const Pages = crowi.model('page');
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const linkQuery = {};
