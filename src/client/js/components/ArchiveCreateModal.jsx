@@ -129,7 +129,7 @@ const ArchiveCreateModal = (props) => {
           </label>
           {isSubordinatedPageDownload && (
             <>
-              <div className="FormGroup m-1">
+              <div className="m-1 FormGroup">
                 <div className="custom-control custom-radio custom-control-inline ">
                   <input
                     type="radio"
@@ -148,7 +148,7 @@ const ArchiveCreateModal = (props) => {
                   </label>
                 </div>
               </div>
-              <div className="FormGroup m-1">
+              <div className="m-1 FormGroup">
                 <div className="custom-control custom-radio custom-control-inline ">
                   <input
                     type="radio"
