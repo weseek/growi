@@ -158,15 +158,26 @@ export default class AdminGeneralSecurityContainer extends Container {
   /**
    * Retrieve All Sharelinks
    */
-  async retriveShareLinks() {
-    try {
-      const response = await this.appContainer.apiv3.get('/all-share-links/');
-      const { shareLinks } = response.data;
-      this.setState({ shareLinks });
+  async retrieveShareLinksByPagingNum(page) {
+
+    const params = {
+      page,
+    };
+
+    const { data } = await this.appContainer.apiv3.get('/all-share-links/', params);
+
+    if (data.paginateResult == null) {
+      throw new Error('data must conclude \'paginateResult\' property.');
     }
-    catch (err) {
-      toastError(err);
-    }
+
+    const { docs: shareLinks, totalDocs: totalshareLinks, limit: pagingLimit } = data.paginateResult;
+
+    this.setState({
+      shareLinks,
+      totalshareLinks,
+      pagingLimit,
+      activePage: page,
+    });
   }
 
   /**
