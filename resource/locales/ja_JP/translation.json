@@ -60,6 +60,7 @@
   "Share": "共有",
   "Share Link": "共有用リンク",
   "share_link_notice":"{{count}} 件の共有リンクを削除します",
+  "delete_all_share_links":"全ての共有リンクを削除します"
   "Markdown Link": "Markdown形式のリンク",
   "Create/Edit Template": "テンプレートページの作成/編集",
   "Go to this version": "このバージョンを見る",

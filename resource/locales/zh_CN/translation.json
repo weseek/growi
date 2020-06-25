@@ -55,6 +55,7 @@
 	"Share": "分享",
   "Share Link": "分享链接",
   "share_link_notice":"remove {{count}} share links",
+  "delete_all_share_links":"Delete all share links",
 	"Markdown Link": "Markdown链接",
 	"Create/Edit Template": "创建/编辑 模板页面",
 	"Unportalize": "未启动",

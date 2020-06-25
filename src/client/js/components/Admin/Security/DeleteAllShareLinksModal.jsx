@@ -37,7 +37,7 @@ const DeleteAllShareLinksModal = React.memo((props) => {
       <ModalHeader tag="h4" toggle={closeButtonHandler} className="bg-danger text-light">
         <span>
           <i className="icon-fw icon-fire"></i>
-            Delete All Share links
+          {t('delete_all_share_links')}
         </span>
       </ModalHeader>
       <ModalBody>
