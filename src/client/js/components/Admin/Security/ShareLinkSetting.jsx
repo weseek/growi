@@ -68,6 +68,20 @@ class ShareLinkSetting extends React.Component {
   }
 
   render() {
+    const { adminGeneralSecurityContainer } = this.props;
+
+    const pager = (
+      <div className="my-3">
+        <PaginationWrapper
+          activePage={adminGeneralSecurityContainer.state.activePage}
+          changePage={this.handlePage}
+          totalItemsCount={adminGeneralSecurityContainer.state.totalLinks}
+          pagingLimit={adminGeneralSecurityContainer.state.pagingLimit}
+        />
+      </div>
+    );
+
+
     return (
       <Fragment>
         <div className="mb-3">
