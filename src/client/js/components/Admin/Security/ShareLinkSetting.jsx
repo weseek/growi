@@ -3,35 +3,77 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
+import AppContainer from '../../../services/AppContainer';
+
+import ShareLinkList from '../../ShareLinkList';
+import DeleteAllShareLinksModal from './DeleteAllShareLinksModal';
 
 class ShareLinkSetting extends React.Component {
+
+  constructor() {
+    super();
+
+    this.state = {
+      shareLinks: [],
+      isDeleteConfirmModalShown: false,
+    };
+
+    this.showDeleteConfirmModal = this.showDeleteConfirmModal.bind(this);
+    this.closeDeleteConfirmModal = this.closeDeleteConfirmModal.bind(this);
+    this.deleteAllLinksButtonHandler = this.deleteAllLinksButtonHandler.bind(this);
+  }
+
+  showDeleteConfirmModal() {
+    this.setState({ isDeleteConfirmModalShown: true });
+  }
+
+  closeDeleteConfirmModal() {
+    this.setState({ isDeleteConfirmModalShown: false });
+  }
+
+  async deleteAllLinksButtonHandler() {
+    const { t, appContainer } = this.props;
+
+    try {
+      const res = await appContainer.apiv3Delete('/share-links/all');
+      const { deletedCount } = res.data;
+      toastSuccess(t('toaster.remove_share_link', { count: deletedCount }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+
+  }
+
 
   render() {
     return (
       <>
-        <div className="mb-3">
-          <h2 className="alert-anchor border-bottom">Shared Link List</h2>
-        </div>
-        <button className="pull-right btn btn-danger" type="button">Delete all links</button>
+        <h2 className="border-bottom mb-3">
+          Shared Link List
+          <button
+            type="button"
+            className="btn btn-danger pull-right"
+            disabled={this.state.shareLinks.length === 0}
+            onClick={this.showDeleteConfirmModal}
+          >
+            Delete all links
+          </button>
+        </h2>
 
-        <div className="table-responsive">
-          <table className="table table-bordered">
-            <thead>
-              <tr>
-                <th>Link</th>
-                <th>PagePath</th>
-                <th>Expiration</th>
-                <th>Description</th>
-                <th>Order</th>
-              </tr>
-            </thead>
-            <tbody>
-              {/* ShareLinkListを参考に */}
-            </tbody>
-          </table>
-        </div>
+        <ShareLinkList
+          shareLinks={this.state.shareLinks}
+          onClickDeleteButton={this.deleteLinkById}
+        />
+
+        <DeleteAllShareLinksModal
+          isOpen={this.state.isDeleteConfirmModalShown}
+          onClose={this.closeDeleteConfirmModal}
+          count={this.state.shareLinks.length}
+          onClickDeleteButton={this.deleteAllLinksButtonHandler}
+        />
 
       </>
     );
@@ -39,10 +81,12 @@ class ShareLinkSetting extends React.Component {
 
 }
 
-const ShareLinkSettingWrapper = withUnstatedContainers(ShareLinkSetting, [AdminGeneralSecurityContainer]);
+const ShareLinkSettingWrapper = withUnstatedContainers(ShareLinkSetting, [AppContainer]);
 
 ShareLinkSetting.propTypes = {
-  adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
+  t: PropTypes.func.isRequired, // i18next
+
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
 export default withTranslation()(ShareLinkSettingWrapper);
