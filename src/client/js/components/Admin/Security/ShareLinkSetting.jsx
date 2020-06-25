@@ -26,6 +26,15 @@ class ShareLinkSetting extends React.Component {
     this.handlePage(1);
   }
 
+  async handlePage(page) {
+    try {
+      await this.props.adminGeneralSecurityContainer.retrieveShareLinksByPagingNum(page);
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
+
 
   async deleteLinkById() {
     const { t, adminGeneralSecurityContainer } = this.props;
