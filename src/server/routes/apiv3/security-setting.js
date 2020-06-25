@@ -565,7 +565,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: suceed to get all share links
    */
-  router.get('/all-share-links/', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.get('/all-share-links/', loginRequiredStrictly, adminRequired, async(req, res) => {
     const ShareLink = crowi.model('ShareLink');
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
@@ -603,7 +603,7 @@ module.exports = (crowi) => {
    *            description: succeed to delete all share links
    */
 
-  router.delete('/all-share-links/', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.delete('/all-share-links/', loginRequiredStrictly, adminRequired, async(req, res) => {
     const ShareLink = crowi.model('ShareLink');
     try {
       const removedAct = await ShareLink.remove({});
