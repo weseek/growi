@@ -101,6 +101,7 @@ class ShareLinkSetting extends React.Component {
             </tbody>
           </table>
         </div>
+        {pager}
 
       </Fragment>
     );
