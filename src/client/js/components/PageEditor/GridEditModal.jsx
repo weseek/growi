@@ -30,14 +30,6 @@ export default class GridEditModal extends React.PureComponent {
     this.hide();
   }
 
-  // showDevices() {
-  //   const devices = ['Phone', 'Tablet', 'Desktop', 'Large Desktop'];
-  //   for (let i = 0; i < devices.length; i++) {
-  //     devices.push(<div className="device-titile-bar">{devices}</div>);
-  //   }
-  //   return devices;
-  // }
-
   showBgCols() {
     const cols = [];
     for (let i = 0; i < 12; i++) {
