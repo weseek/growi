@@ -32,8 +32,8 @@ export default class AdminGeneralSecurityContainer extends Container {
       setupStrategies: [],
       shareLinks: [],
       totalshareLinks: 0,
-      pagingLimit: Infinity,
-      activePage: 1,
+      shareLinksPagingLimit: Infinity,
+      shareLinksActivePage: 1,
     };
 
   }
@@ -170,13 +170,13 @@ export default class AdminGeneralSecurityContainer extends Container {
       throw new Error('data must conclude \'paginateResult\' property.');
     }
 
-    const { docs: shareLinks, totalDocs: totalshareLinks, limit: pagingLimit } = data.paginateResult;
+    const { docs: shareLinks, totalDocs: totalshareLinks, limit: shareLinksPagingLimit } = data.paginateResult;
 
     this.setState({
       shareLinks,
       totalshareLinks,
-      pagingLimit,
-      activePage: page,
+      shareLinksPagingLimit,
+      shareLinksActivePage: page,
     });
   }
 

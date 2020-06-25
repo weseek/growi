@@ -39,10 +39,10 @@ class ShareLinkSetting extends React.Component {
     const pager = (
       <div className="pull-right my-3">
         <PaginationWrapper
-          activePage={adminGeneralSecurityContainer.state.activePage}
+          activePage={adminGeneralSecurityContainer.state.shareLinksActivePage}
           changePage={this.getShareLinkList}
           totalItemsCount={adminGeneralSecurityContainer.state.totalshareLinks}
-          pagingLimit={adminGeneralSecurityContainer.state.pagingLimit}
+          pagingLimit={adminGeneralSecurityContainer.state.shareLinksPagingLimit}
         />
       </div>
     );
