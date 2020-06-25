@@ -2,17 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import path from 'path';
+
 import {
   Modal,
   ModalHeader,
   ModalBody,
   ModalFooter,
 } from 'reactstrap';
+
 import Preview from './Preview';
-import PagePathAutoComplete from '../PagePathAutoComplete';
 
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
+
+import PagePathAutoComplete from '../PagePathAutoComplete';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
