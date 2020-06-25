@@ -18,7 +18,6 @@ class ShareLinkSetting extends React.Component {
     super();
 
     this.state = {
-      shareLinks: [],
       isDeleteConfirmModalShown: false,
     };
     this.getShareLinkList = this.getShareLinkList.bind(this);
