@@ -9,7 +9,7 @@ import PaginationWrapper from '../../PaginationWrapper';
 import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { toastError } from '../../../util/apiNotification';
 
 class ShareLinkSetting extends React.Component {
 
@@ -33,38 +33,6 @@ class ShareLinkSetting extends React.Component {
     catch (err) {
       toastError(err);
     }
-  }
-
-
-  async deleteLinkById() {
-    const { t, adminGeneralSecurityContainer } = this.props;
-
-    try {
-      await adminGeneralSecurityContainer.deleteLinkById();
-      toastSuccess(t('security_setting.updated_general_security_setting'));
-      // TODO:GW-2827,GW-2826で実装する
-    }
-    catch (err) {
-      toastError(err);
-    }
-
-    // this.retrieveShareLinks();
-    // TODO:後で作る
-  }
-
-  async deleteAllLinksButtonHandler() {
-    const { t, adminGeneralSecurityContainer } = this.props;
-    try {
-      await adminGeneralSecurityContainer.deleteAllLinksButtonHandler();
-      toastSuccess(t('security_setting.updated_general_security_setting'));
-      // TODO:GW-2827,GW-2960で実装する
-    }
-    catch (err) {
-      toastError(err);
-    }
-
-    // this.retrieveShareLinks();
-    // TODO:後で作る
   }
 
   render() {
