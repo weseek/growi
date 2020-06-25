@@ -39,6 +39,10 @@ class AppService {
     return -(this.configManager.getConfig('crowi', 'app:timezone') || 9) * 60;
   }
 
+  getAppConfidential() {
+    return this.configManager.getConfig('crowi', 'app:confidential');
+  }
+
   /**
    * Execute only once for installing application
    */
