@@ -93,6 +93,7 @@ const ShareLinkSettingWrapper = withUnstatedContainers(ShareLinkSetting, [AppCon
 
 ShareLinkSetting.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
 };
 
