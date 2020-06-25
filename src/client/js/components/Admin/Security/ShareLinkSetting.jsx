@@ -17,14 +17,14 @@ class ShareLinkSetting extends React.Component {
     super();
     this.state = {
     };
-    this.handlePage = this.handlePage.bind(this);
+    this.getShareLinkList = this.getShareLinkList.bind(this);
   }
 
   componentWillMount() {
-    this.handlePage(1);
+    this.getShareLinkList(1);
   }
 
-  async handlePage(page) {
+  async getShareLinkList(page) {
     try {
       await this.props.adminGeneralSecurityContainer.retrieveShareLinksByPagingNum(page);
     }
@@ -40,7 +40,7 @@ class ShareLinkSetting extends React.Component {
       <div className="pull-right my-3">
         <PaginationWrapper
           activePage={adminGeneralSecurityContainer.state.activePage}
-          changePage={this.handlePage}
+          changePage={this.getShareLinkList}
           totalItemsCount={adminGeneralSecurityContainer.state.totalshareLinks}
           pagingLimit={adminGeneralSecurityContainer.state.pagingLimit}
         />
