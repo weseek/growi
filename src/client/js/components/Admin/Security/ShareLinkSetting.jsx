@@ -79,7 +79,7 @@ class ShareLinkSetting extends React.Component {
     );
 
     const deleteAllButton = (
-      adminGeneralSecurityContainer.state.shareLinks.length === 0
+      adminGeneralSecurityContainer.state.shareLinks.length > 0
         ? (
           <button
             className="pull-right btn btn-danger"
@@ -125,6 +125,7 @@ class ShareLinkSetting extends React.Component {
                       <button
                         className="btn btn-outline-warning"
                         type="button"
+                        shareLinks={sharelink._id}
                         onClickDeleteButton={this.deleteLinkById}
                       >
                         <i className="icon-trash mr-2"></i>Delete
@@ -140,7 +141,7 @@ class ShareLinkSetting extends React.Component {
         <DeleteAllShareLinksModal
           isOpen={this.state.isDeleteConfirmModalShown}
           onClose={this.closeDeleteConfirmModal}
-          count={this.state.shareLinks.length}
+          count={adminGeneralSecurityContainer.state.shareLinks.length}
           onClickDeleteButton={this.deleteAllLinksButtonHandler}
         />
 
