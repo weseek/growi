@@ -33,7 +33,7 @@ export default class GridEditModal extends React.PureComponent {
   showBgCols() {
     const cols = [];
     for (let i = 0; i < 12; i++) {
-      cols.push(<div className="bg-light mx-1 grid-edit-col"></div>);
+      cols.push(<div className="bg-light mx-1 grid-bg-col"></div>);
     }
     return cols;
   }
