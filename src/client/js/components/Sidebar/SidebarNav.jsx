@@ -5,12 +5,12 @@ import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
+import NavigationContainer from '../../services/NavigationContainer';
 
 
 class SidebarNav extends React.Component {
 
   static propTypes = {
-    currentContentsId: PropTypes.string,
     onItemSelected: PropTypes.func,
   };
 
@@ -18,14 +18,17 @@ class SidebarNav extends React.Component {
   };
 
   itemSelectedHandler = (contentsId) => {
-    const { onItemSelected } = this.props;
+    const { navigationContainer, onItemSelected } = this.props;
     if (onItemSelected != null) {
       onItemSelected(contentsId);
     }
+
+    navigationContainer.setState({ sidebarContentsId: contentsId });
   }
 
   PrimaryItem = ({ id, label, iconName }) => {
-    const isSelected = this.props.currentContentsId === id;
+    const { sidebarContentsId } = this.props.navigationContainer.state;
+    const isSelected = sidebarContentsId === id;
 
     return (
       <button
@@ -59,7 +62,7 @@ class SidebarNav extends React.Component {
     const { PrimaryItem, SecondaryItem } = this;
 
     return (
-      <div className="grw-sidebar-nav d-flex flex-column justify-content-between pb-4">
+      <div className="grw-sidebar-nav">
         <div className="grw-sidebar-nav-primary-container">
           {!isSharedUser && <PrimaryItem id="custom" label="Custom Sidebar" iconName="code" />}
           {!isSharedUser && <PrimaryItem id="recent" label="Recent Changes" iconName="update" />}
@@ -80,11 +83,12 @@ class SidebarNav extends React.Component {
 
 SidebarNav.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 
 /**
  * Wrapper component for using unstated
  */
-const SidebarNavWrapper = withUnstatedContainers(SidebarNav, [AppContainer]);
+const SidebarNavWrapper = withUnstatedContainers(SidebarNav, [AppContainer, NavigationContainer]);
 
 export default withTranslation()(SidebarNavWrapper);

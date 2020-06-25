@@ -35,14 +35,8 @@
 
       {% include '../widget/page_content.html' %}
 
-      {# force remove #revision-toc from #content_main of parent #}
-      <script>
-        $('#revision-toc').remove();
-      </script>
-
     </div>
 
-    {# relocate #revision-toc #}
     <div class="col-xl-3 col-lg-4 d-none d-lg-block revision-toc-container">
       <div id="revision-toc" class="revision-toc sps sps--abv" data-sps-offset="75">
         <div id="revision-toc-content" class="revision-toc-content"></div>
