@@ -238,26 +238,6 @@ body.on-edit {
         min-width: 150px;
       }
     }
-
-    .modal-body {
-      height: 84vh;
-    }
-
-    .linkedit-preview {
-      .page-editor-preview-body {
-        height: 28vh;
-      }
-      @include media-breakpoint-up(md) {
-        .page-editor-preview-body {
-          height: 38vh;
-        }
-      }
-      @include media-breakpoint-up(lg) {
-        .page-editor-preview-body {
-          height: 80vh;
-        }
-      }
-    }
   }
 
   // .builtin-editor .tab-pane#edit

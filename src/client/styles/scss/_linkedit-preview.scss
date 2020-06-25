@@ -1,0 +1,15 @@
+.linkedit-preview {
+  // same height as forms
+  height: 327.5px;
+  @include media-breakpoint-up(lg) {
+    position: relative;
+    height: 100%;
+  }
+
+  .page-editor-preview-body {
+    @include media-breakpoint-up(lg) {
+      position: absolute;
+    }
+    height: 100%;
+  }
+}
