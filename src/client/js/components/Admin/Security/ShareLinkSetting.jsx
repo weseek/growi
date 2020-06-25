@@ -47,11 +47,25 @@ class ShareLinkSetting extends React.Component {
       </div>
     );
 
+    const deleteAllButton = (
+      adminGeneralSecurityContainer.state.shareLinks.length > 0
+        ? (
+          <button
+            className="pull-right btn btn-danger"
+            type="button"
+          >
+            Delete all links
+          </button>
+        )
+        : (
+          <p className="pull-right mr-2">No share links</p>
+        )
+    );
 
     return (
       <Fragment>
         <div className="mb-3">
-          <button className="pull-right btn btn-danger" type="button">Delete all links</button>
+          {deleteAllButton}
           <h2 className="alert-anchor border-bottom">Shared Link List</h2>
         </div>
 
@@ -77,7 +91,7 @@ class ShareLinkSetting extends React.Component {
                     <td>{sharelink.description}</td>
                     <td>
                       <button className="btn btn-outline-warning" type="button">
-                        <i className="icon-trash"></i>Delete
+                        <i className="icon-trash mr-2"></i>Delete
                       </button>
                     </td>
                   </tr>
