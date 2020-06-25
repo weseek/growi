@@ -7,12 +7,12 @@ if (process.env.NODE_ENV !== 'test') {
 
 const mongoose = require('mongoose');
 
-const { getMongoUri } = require('../lib/util/mongoose-utils');
+const { getMongoUri, mongoOptions } = require('../lib/util/mongoose-utils');
 
 const { getInstance } = require('./setup-crowi');
 
 module.exports = async() => {
-  await mongoose.connect(getMongoUri(), { useNewUrlParser: true });
+  await mongoose.connect(getMongoUri(), mongoOptions);
 
   // drop database
   await mongoose.connection.dropDatabase();

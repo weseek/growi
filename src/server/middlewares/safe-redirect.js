@@ -1,7 +1,7 @@
 /**
  * Redirect with prevention from Open Redirect
  *
- * Usage: app.use(require('middleware/safe-redirect')(['example.com', 'some.example.com:8080']))
+ * Usage: app.use(require('middlewares/safe-redirect')(['example.com', 'some.example.com:8080']))
  */
 
 const loggerFactory = require('@alias/logger');

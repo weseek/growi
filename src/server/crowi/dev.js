@@ -1,9 +1,11 @@
 const logger = require('@alias/logger')('growi:crowi:dev');
-const fs = require('fs');
 const path = require('path');
+
+const { listLocaleIds } = require('@commons/util/locale-utils');
 
 const swig = require('swig-templates');
 const onHeaders = require('on-headers');
+
 
 class CrowiDev {
 
@@ -38,12 +40,9 @@ class CrowiDev {
    */
   requireForAutoReloadServer() {
     // load all json files for live reloading
-    fs.readdirSync(this.crowi.localeDir)
-      .filter((filename) => {
-        return fs.statSync(path.join(this.crowi.localeDir, filename)).isDirectory();
-      })
-      .forEach((dirname) => {
-        require(path.join(this.crowi.localeDir, dirname, 'translation.json'));
+    listLocaleIds()
+      .forEach((localeId) => {
+        require(path.join(this.crowi.localeDir, localeId, 'translation.json'));
       });
   }
 
