@@ -31,6 +31,9 @@ export default class AdminGeneralSecurityContainer extends Container {
       isTwitterEnabled: false,
       setupStrategies: [],
       shareLinks: [],
+      totalUsers: 0,
+      pagingLimit: Infinity,
+      activePage: 1,
     };
 
   }
