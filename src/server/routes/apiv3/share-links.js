@@ -164,7 +164,8 @@ module.exports = (crowi) => {
 
     try {
       const deletedShareLink = await ShareLink.deleteMany({});
-      return res.apiv3(deletedShareLink);
+      const { deletedCount } = deletedShareLink;
+      return res.apiv3({ deletedCount });
     }
     catch (err) {
       const msg = 'Error occurred in delete all share link';
