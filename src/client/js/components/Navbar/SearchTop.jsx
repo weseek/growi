@@ -61,7 +61,7 @@ class SearchTop extends React.Component {
         </div>
       )
       : (
-        <div className="grw-search-top-fixed position-fixed">
+        <div className="grw-search-top-absolute position-absolute">
           {children}
         </div>
       );

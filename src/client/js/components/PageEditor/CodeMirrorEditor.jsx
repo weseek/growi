@@ -56,6 +56,7 @@ require('../../util/codemirror/autorefresh.ext');
 
 
 const MARKDOWN_TABLE_ACTIVATED_CLASS = 'markdown-table-activated';
+const MARKDOWN_LINK_ACTIVATED_CLASS = 'markdown-link-activated';
 
 export default class CodeMirrorEditor extends AbstractEditor {
 
@@ -466,8 +467,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
   cursorHandler(editor, event) {
     const { additionalClassSet } = this.state;
     const hasCustomClass = additionalClassSet.has(MARKDOWN_TABLE_ACTIVATED_CLASS);
+    const hasLinkClass = additionalClassSet.has(MARKDOWN_LINK_ACTIVATED_CLASS);
 
     const isInTable = mtu.isInTable(editor);
+    const isInLink = mlu.isInLink(editor);
 
     if (!hasCustomClass && isInTable) {
       additionalClassSet.add(MARKDOWN_TABLE_ACTIVATED_CLASS);
@@ -476,6 +479,16 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     if (hasCustomClass && !isInTable) {
       additionalClassSet.delete(MARKDOWN_TABLE_ACTIVATED_CLASS);
+      this.setState({ additionalClassSet });
+    }
+
+    if (!hasLinkClass && isInLink) {
+      additionalClassSet.add(MARKDOWN_LINK_ACTIVATED_CLASS);
+      this.setState({ additionalClassSet });
+    }
+
+    if (hasLinkClass && !isInLink) {
+      additionalClassSet.delete(MARKDOWN_LINK_ACTIVATED_CLASS);
       this.setState({ additionalClassSet });
     }
   }
