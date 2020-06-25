@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -54,7 +54,7 @@ class ShareLinkSetting extends React.Component {
 
   render() {
     return (
-      <>
+      <Fragment>
         <div className="mb-3">
           <h2 className="alert-anchor border-bottom">Shared Link List</h2>
         </div>
@@ -81,7 +81,7 @@ class ShareLinkSetting extends React.Component {
           </table>
         </div>
 
-      </>
+      </Fragment>
     );
   }
 
