@@ -30,8 +30,15 @@ export default class GridEditModal extends React.PureComponent {
     this.hide();
   }
 
-  render() {
-  showCols() {
+  // showDevices() {
+  //   const devices = ['Phone', 'Tablet', 'Desktop', 'Large Desktop'];
+  //   for (let i = 0; i < devices.length; i++) {
+  //     devices.push(<div className="device-titile-bar">{devices}</div>);
+  //   }
+  //   return devices;
+  // }
+
+  showBgCols() {
     const cols = [];
     for (let i = 0; i < 12; i++) {
       cols.push(<div className="bg-light mx-1 grid-edit-col"></div>);
@@ -39,6 +46,7 @@ export default class GridEditModal extends React.PureComponent {
     return cols;
   }
 
+  render() {
     return (
       <Modal isOpen={this.state.show} toggle={this.cancel} size="xl">
         <ModalHeader tag="h4" toggle={this.cancel} className="bg-primary text-light">
@@ -57,7 +65,7 @@ export default class GridEditModal extends React.PureComponent {
                 <div className="device-titile-bar">Large Desktop</div>
                 <div className="device-container"></div>
               </div>
-              <div className="row col-9 flex-nowrap overflow-auto">{this.showColsBg()}</div>
+              <div className="row col-9 flex-nowrap overflow-auto">{this.showBgCols()}</div>
             </div>
           </div>
         </ModalBody>
