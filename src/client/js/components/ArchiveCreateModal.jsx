@@ -97,7 +97,7 @@ const ArchiveCreateModal = (props) => {
           </div>
         </div>
 
-        <div className="custom-control custom-checkbox custom-checkbox-warning">
+        <div className="m-1 custom-control custom-checkbox custom-checkbox-warning">
           <input
             className="custom-control-input"
             name="comment"
@@ -110,13 +110,13 @@ const ArchiveCreateModal = (props) => {
             {t('Include Comment')}
           </label>
         </div>
-        <div className="custom-control custom-checkbox custom-checkbox-warning">
+        <div className="m-1 custom-control custom-checkbox custom-checkbox-warning">
           <input className="custom-control-input" id="downloadFile" type="checkbox" checked={isFileDownload} onChange={changeIsFileDownloadHandler} />
           <label className="custom-control-label" htmlFor="downloadFile">
             {t('Include Attachment File')}
           </label>
         </div>
-        <div className="custom-control custom-checkbox custom-checkbox-warning">
+        <div className="m-1 custom-control custom-checkbox custom-checkbox-warning">
           <input
             className="custom-control-input"
             id="subordinatedFile"
@@ -127,45 +127,48 @@ const ArchiveCreateModal = (props) => {
           <label className="custom-control-label" htmlFor="subordinatedFile">
             {t('Include Subordinated Page')}
           </label>
-
-          <div className="FormGroup">
-            <div className="custom-control custom-radio custom-control-inline ">
-              <input
-                type="radio"
-                className="custom-control-input"
-                id="customRadio3"
-                name="isSubordinatedType"
-                value="customRadio3"
-                disabled={!isSubordinatedPageDownload}
-                checked={hierarchyType === 'allSubordinatedPage'}
-                onChange={() => {
-                  handleChangeSubordinatedType('allSubordinatedPage');
-                }}
-              />
-              <label className="custom-control-label" htmlFor="customRadio3">
-                {t('All Subordinated Page')}
-              </label>
-            </div>
-          </div>
-          <div className="FormGroup">
-            <div className="custom-control custom-radio custom-control-inline ">
-              <input
-                type="radio"
-                className="custom-control-input"
-                id="customRadio4"
-                name="isSubordinatedType"
-                value="customRadio4"
-                disabled={!isSubordinatedPageDownload}
-                checked={hierarchyType === 'decideHierarchy'}
-                onChange={() => {
-                  handleChangeSubordinatedType('decideHierarchy');
-                }}
-              />
-              <label className="custom-control-label" htmlFor="customRadio4">
-                {t('Specify Hierarchy')}
-              </label>
-            </div>
-          </div>
+          {isSubordinatedPageDownload && (
+            <>
+              <div className="FormGroup m-1">
+                <div className="custom-control custom-radio custom-control-inline ">
+                  <input
+                    type="radio"
+                    className="custom-control-input"
+                    id="customRadio3"
+                    name="isSubordinatedType"
+                    value="customRadio3"
+                    disabled={!isSubordinatedPageDownload}
+                    checked={hierarchyType === 'allSubordinatedPage'}
+                    onChange={() => {
+                      handleChangeSubordinatedType('allSubordinatedPage');
+                    }}
+                  />
+                  <label className="custom-control-label" htmlFor="customRadio3">
+                    {t('All Subordinated Page')}
+                  </label>
+                </div>
+              </div>
+              <div className="FormGroup m-1">
+                <div className="custom-control custom-radio custom-control-inline ">
+                  <input
+                    type="radio"
+                    className="custom-control-input"
+                    id="customRadio4"
+                    name="isSubordinatedType"
+                    value="customRadio4"
+                    disabled={!isSubordinatedPageDownload}
+                    checked={hierarchyType === 'decideHierarchy'}
+                    onChange={() => {
+                      handleChangeSubordinatedType('decideHierarchy');
+                    }}
+                  />
+                  <label className="custom-control-label" htmlFor="customRadio4">
+                    {t('Specify Hierarchy')}
+                  </label>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </ModalBody>
       <ModalFooter>
