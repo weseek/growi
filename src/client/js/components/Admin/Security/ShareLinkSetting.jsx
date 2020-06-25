@@ -89,7 +89,7 @@ class ShareLinkSetting extends React.Component {
 
 }
 
-const ShareLinkSettingWrapper = withUnstatedContainers(ShareLinkSetting, [AdminGeneralSecurityContainer]);
+const ShareLinkSettingWrapper = withUnstatedContainers(ShareLinkSetting, [AppContainer, AdminGeneralSecurityContainer]);
 
 ShareLinkSetting.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
