@@ -3,21 +3,28 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import PaginationWrapper from '../../PaginationWrapper';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 
-import { toastError } from '../../../util/apiNotification';
+import DeleteAllShareLinksModal from './DeleteAllShareLinksModal';
 
 class ShareLinkSetting extends React.Component {
 
-  constructor(props) {
+  constructor() {
     super();
+
     this.state = {
+      shareLinks: [],
+      isDeleteConfirmModalShown: false,
     };
     this.getShareLinkList = this.getShareLinkList.bind(this);
+    this.showDeleteConfirmModal = this.showDeleteConfirmModal.bind(this);
+    this.closeDeleteConfirmModal = this.closeDeleteConfirmModal.bind(this);
+    this.deleteAllLinksButtonHandler = this.deleteAllLinksButtonHandler.bind(this);
   }
 
   componentWillMount() {
@@ -31,7 +38,31 @@ class ShareLinkSetting extends React.Component {
     catch (err) {
       toastError(err);
     }
+
   }
+
+  showDeleteConfirmModal() {
+    this.setState({ isDeleteConfirmModalShown: true });
+  }
+
+  closeDeleteConfirmModal() {
+    this.setState({ isDeleteConfirmModalShown: false });
+  }
+
+  async deleteAllLinksButtonHandler() {
+    const { t, appContainer } = this.props;
+
+    try {
+      const res = await appContainer.apiv3Delete('/share-links/all');
+      const { deletedCount } = res.data;
+      toastSuccess(t('toaster.remove_share_link', { count: deletedCount }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+
+  }
+
 
   render() {
     const { adminGeneralSecurityContainer } = this.props;
@@ -48,11 +79,12 @@ class ShareLinkSetting extends React.Component {
     );
 
     const deleteAllButton = (
-      adminGeneralSecurityContainer.state.shareLinks.length > 0
+      adminGeneralSecurityContainer.state.shareLinks.length === 0
         ? (
           <button
             className="pull-right btn btn-danger"
             type="button"
+            onClick={this.showDeleteConfirmModal}
           >
             Delete all links
           </button>
@@ -90,7 +122,11 @@ class ShareLinkSetting extends React.Component {
                     <td>{sharelink.expiredAt}</td>
                     <td>{sharelink.description}</td>
                     <td>
-                      <button className="btn btn-outline-warning" type="button">
+                      <button
+                        className="btn btn-outline-warning"
+                        type="button"
+                        onClickDeleteButton={this.deleteLinkById}
+                      >
                         <i className="icon-trash mr-2"></i>Delete
                       </button>
                     </td>
@@ -100,6 +136,13 @@ class ShareLinkSetting extends React.Component {
             </tbody>
           </table>
         </div>
+
+        <DeleteAllShareLinksModal
+          isOpen={this.state.isDeleteConfirmModalShown}
+          onClose={this.closeDeleteConfirmModal}
+          count={this.state.shareLinks.length}
+          onClickDeleteButton={this.deleteAllLinksButtonHandler}
+        />
 
       </Fragment>
     );
