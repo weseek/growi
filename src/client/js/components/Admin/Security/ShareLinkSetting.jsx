@@ -22,6 +22,10 @@ class ShareLinkSetting extends React.Component {
     this.deleteLinkById = this.deleteLinkById.bind(this);
   }
 
+  componentWillMount() {
+    this.handlePage(1);
+  }
+
 
   async deleteLinkById() {
     const { t, adminGeneralSecurityContainer } = this.props;
