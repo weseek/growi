@@ -106,10 +106,14 @@ class ShareLinkSetting extends React.Component {
                 return (
                   <tr key={sharelink._id}>
                     <td>{sharelink._id}</td>
-                    <td>{sharelink.relatedPage}</td>
+                    <td><a href={sharelink.relatedPage.path}>{sharelink.relatedPage.path}</a></td>
                     <td>{sharelink.expiredAt}</td>
                     <td>{sharelink.description}</td>
-                    <td>delete</td>
+                    <td>
+                      <button className="btn btn-outline-warning" type="button">
+                        <i className="icon-trash"></i>Delete
+                      </button>
+                    </td>
                   </tr>
                 );
               })}
