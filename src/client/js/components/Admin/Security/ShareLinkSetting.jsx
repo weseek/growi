@@ -13,7 +13,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 class ShareLinkSetting extends React.Component {
 
-  constructor() {
+  constructor(props) {
     super();
     this.state = {
       // shareLinks: [],
