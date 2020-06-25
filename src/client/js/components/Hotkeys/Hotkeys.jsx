@@ -24,7 +24,8 @@ export default class Hotkeys extends React.Component {
   // delete the instance in state.view
   deleteRender(instance) {
     const viewCopy = this.state.view.slice();
-    viewCopy.splice(instance.supportClassesIndex, 1);
+    const index = viewCopy.lastIndexOf(instance);
+    viewCopy.splice(index, 1);
     this.setState({
       view: viewCopy,
     });
@@ -52,9 +53,8 @@ export default class Hotkeys extends React.Component {
     let viewDetermined = this.supportClasses.filter((value) => {
       return strokeDetermined.toString() === value.getHotkeyStroke().toString();
     });
-    const that = this;
     viewDetermined = viewDetermined.map((value) => {
-      return value.getComponent((that.state.view.length), this.deleteRender);
+      return value.getComponent(this.deleteRender);
     });
     this.setState({
       view: this.state.view.concat(viewDetermined).flat(),

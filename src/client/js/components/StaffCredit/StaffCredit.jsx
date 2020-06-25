@@ -24,7 +24,6 @@ export default class StaffCredit extends React.Component {
     this.state = {
       isShown: true,
     };
-    this.supportClassesIndex = this.props.supportClassesIndex;
     this.deleteCredit = this.deleteCredit.bind(this);
   }
 
@@ -33,8 +32,8 @@ export default class StaffCredit extends React.Component {
     return ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
   }
 
-  static getComponent(supportClassesIndex, onDeleteRender) {
-    return <StaffCredit supportClassesIndex={supportClassesIndex} onDeleteRender={onDeleteRender} />;
+  static getComponent(onDeleteRender) {
+    return <StaffCredit onDeleteRender={onDeleteRender} />;
   }
 
   // to delete the staffCredit and to inform that to Hotkeys.jsx
@@ -127,6 +126,5 @@ export default class StaffCredit extends React.Component {
 
 }
 StaffCredit.propTypes = {
-  supportClassesIndex: PropTypes.number,
   onDeleteRender: PropTypes.func,
 };
