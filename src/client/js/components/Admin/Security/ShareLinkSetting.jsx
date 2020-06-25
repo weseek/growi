@@ -87,11 +87,17 @@ class ShareLinkSetting extends React.Component {
               </tr>
             </thead>
             <tbody>
-              {/* <ShareLinkList
-                shareLinks={this.state.shareLinks}
-                onClickDeleteButton={this.deleteLinkById}
-              /> */}
-              {/* TODO:GW-2827で実装 */}
+              {adminGeneralSecurityContainer.state.shareLinks.map((sharelink) => {
+                return (
+                  <tr key={sharelink._id}>
+                    <td>{sharelink._id}</td>
+                    <td>{sharelink.relatedPage}</td>
+                    <td>{sharelink.expiredAt}</td>
+                    <td>{sharelink.description}</td>
+                    <td>delete</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
