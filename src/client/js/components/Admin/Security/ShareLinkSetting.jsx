@@ -5,6 +5,8 @@ import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import PaginationWrapper from '../../PaginationWrapper';
+
+import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 
 import { toastSuccess, toastError } from '../../../util/apiNotification';
