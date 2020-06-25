@@ -17,6 +17,7 @@ class ShareLinkSetting extends React.Component {
     super();
     this.state = {
     };
+    this.handlePage = this.handlePage.bind(this);
     this.deleteAllLinksButtonHandler = this.deleteAllLinksButtonHandler.bind(this);
     this.deleteLinkById = this.deleteLinkById.bind(this);
   }
