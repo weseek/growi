@@ -73,8 +73,9 @@ class ShareLinkSetting extends React.Component {
         <div className="mb-3">
           <h2 className="alert-anchor border-bottom">Shared Link List</h2>
         </div>
-        <button className="pull-right btn btn-danger" type="button">Delete all links</button>
 
+        <button className="pull-right btn btn-danger" type="button">Delete all links</button>
+        {pager}
         <div className="table-responsive">
           <table className="table table-bordered">
             <thead>
