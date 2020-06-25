@@ -54,6 +54,8 @@
   "Include Attachment File": "添付ファイルも含める",
   "Include Comment": "コメントも含める",
   "Include Subordinated Page": "配下ページも含める",
+  "All Subordinated Page": "全ての配下ページ",
+  "Specify Hierarchy": "階層を指定",
   "username": "ユーザー名",
   "Created": "作成日",
   "Last updated": "最終更新",

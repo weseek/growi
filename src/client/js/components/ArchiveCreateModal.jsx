@@ -111,13 +111,7 @@ const ArchiveCreateModal = (props) => {
           </label>
         </div>
         <div className="custom-control custom-checkbox custom-checkbox-warning">
-          <input
-            className="custom-control-input"
-            id="downloadFile"
-            type="checkbox"
-            checked={isFileDownload}
-            onChange={changeIsFileDownloadHandler}
-          />
+          <input className="custom-control-input" id="downloadFile" type="checkbox" checked={isFileDownload} onChange={changeIsFileDownloadHandler} />
           <label className="custom-control-label" htmlFor="downloadFile">
             {t('Include Attachment File')}
           </label>
@@ -149,7 +143,7 @@ const ArchiveCreateModal = (props) => {
                 }}
               />
               <label className="custom-control-label" htmlFor="customRadio3">
-                全ての配下ページ
+                {t('All Subordinated Page')}
               </label>
             </div>
           </div>
@@ -168,14 +162,11 @@ const ArchiveCreateModal = (props) => {
                 }}
               />
               <label className="custom-control-label" htmlFor="customRadio4">
-                全ての配下ページ
+                {t('Specify Hierarchy')}
               </label>
             </div>
           </div>
-
-
         </div>
-
       </ModalBody>
       <ModalFooter>
         <button type="button" className="btn btn-primary">
