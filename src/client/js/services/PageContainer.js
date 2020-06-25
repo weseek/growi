@@ -16,9 +16,6 @@ import {
 } from '../util/interceptor/drawio-interceptor';
 
 const logger = loggerFactory('growi:services:PageContainer');
-const scrollThresForSticky = 0;
-const scrollThresForCompact = 30;
-const scrollThresForThrottling = 100;
 
 /**
  * Service container related to Page
@@ -74,9 +71,6 @@ export default class PageContainer extends Container {
       pageIdOnHackmd: mainContent.getAttribute('data-page-id-on-hackmd') || null,
       hasDraftOnHackmd: !!mainContent.getAttribute('data-page-has-draft-on-hackmd'),
       isHackmdDraftUpdatingInRealtime: false,
-
-      isHeaderSticky: false,
-      isSubnavCompact: false,
     };
 
     const { interceptorManager } = this.appContainer;
@@ -92,20 +86,6 @@ export default class PageContainer extends Container {
     this.checkAndUpdateImageUrlCached = this.checkAndUpdateImageUrlCached.bind(this);
     this.addWebSocketEventHandlers = this.addWebSocketEventHandlers.bind(this);
     this.addWebSocketEventHandlers();
-
-    window.addEventListener('scroll', () => {
-      const currentYOffset = window.pageYOffset;
-
-      // original throttling
-      if (this.state.isSubnavCompact && scrollThresForThrottling < currentYOffset) {
-        return;
-      }
-
-      this.setState({
-        isHeaderSticky: scrollThresForSticky < currentYOffset,
-        isSubnavCompact: scrollThresForCompact < currentYOffset,
-      });
-    });
 
     const unlinkPageButton = document.getElementById('unlink-page-button');
     if (unlinkPageButton != null) {
