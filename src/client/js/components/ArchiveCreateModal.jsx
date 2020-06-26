@@ -11,13 +11,14 @@ const ArchiveCreateModal = (props) => {
   const [isCommentDownload, setIsCommentDownload] = useState(false);
   const [isFileDownload, setIsFileDownload] = useState(false);
   const [isSubordinatedPageDownload, setIsSubordinatedPageDownload] = useState(false);
-
   const [fileType, setFileType] = useState('markDown');
-
+  const [hierarchyType, setHierarchyType] = useState('allSubordinatedPage');
+  const [hierarchyValue, setHierarchyValue] = useState(1);
 
   function changeIsCommentDownloadHandler() {
     setIsCommentDownload(!isCommentDownload);
   }
+
   function changeIsFileDownloadHandler() {
     setIsFileDownload(!isFileDownload);
   }
@@ -41,9 +42,17 @@ const ArchiveCreateModal = (props) => {
     [],
   );
 
+  function handleChangeSubordinatedType(hierarchyType) {
+    setHierarchyType(hierarchyType);
+  }
+
+  function handleHierarchyDepth(hierarchyValue) {
+    setHierarchyValue(hierarchyValue);
+  }
+
 
   return (
-    <Modal size="lg" isOpen={props.isOpen} toggle={closeModalHandler}>
+    <Modal isOpen={props.isOpen} toggle={closeModalHandler}>
       <ModalHeader tag="h4" toggle={closeModalHandler} className="bg-primary text-white">
         {t('Create Archive Page')}
       </ModalHeader>
@@ -93,7 +102,7 @@ const ArchiveCreateModal = (props) => {
           </div>
         </div>
 
-        <div className="custom-control custom-checkbox custom-checkbox-warning">
+        <div className="my-1 custom-control custom-checkbox custom-checkbox-info">
           <input
             className="custom-control-input"
             name="comment"
@@ -106,7 +115,7 @@ const ArchiveCreateModal = (props) => {
             {t('Include Comment')}
           </label>
         </div>
-        <div className="custom-control custom-checkbox custom-checkbox-warning">
+        <div className="my-1 custom-control custom-checkbox custom-checkbox-info">
           <input
             className="custom-control-input"
             id="downloadFile"
@@ -118,7 +127,7 @@ const ArchiveCreateModal = (props) => {
             {t('Include Attachment File')}
           </label>
         </div>
-        <div className="custom-control custom-checkbox custom-checkbox-warning">
+        <div className="my-1 custom-control custom-checkbox custom-checkbox-info">
           <input
             className="custom-control-input"
             id="subordinatedFile"
@@ -129,6 +138,61 @@ const ArchiveCreateModal = (props) => {
           <label className="custom-control-label" htmlFor="subordinatedFile">
             {t('Include Subordinated Page')}
           </label>
+          {isSubordinatedPageDownload && (
+            <>
+              <div className="FormGroup">
+                <div className="my-1 custom-control custom-radio custom-control-inline ">
+                  <input
+                    type="radio"
+                    className="custom-control-input"
+                    id="customRadio3"
+                    name="isSubordinatedType"
+                    value="customRadio3"
+                    disabled={!isSubordinatedPageDownload}
+                    checked={hierarchyType === 'allSubordinatedPage'}
+                    onChange={() => {
+                      handleChangeSubordinatedType('allSubordinatedPage');
+                    }}
+                  />
+                  <label className="custom-control-label" htmlFor="customRadio3">
+                    {t('All Subordinated Page')}
+                  </label>
+                </div>
+              </div>
+              <div className="FormGroup">
+                <div className="my-1 custom-control custom-radio custom-control-inline">
+                  <input
+                    type="radio"
+                    className="custom-control-input"
+                    id="customRadio4"
+                    name="isSubordinatedType"
+                    value="customRadio4"
+                    disabled={!isSubordinatedPageDownload}
+                    checked={hierarchyType === 'decideHierarchy'}
+                    onChange={() => {
+                      handleChangeSubordinatedType('decideHierarchy');
+                    }}
+                  />
+                  <label className="my-1 custom-control-label" htmlFor="customRadio4">
+                    {t('Specify Hierarchy')}
+                  </label>
+                </div>
+              </div>
+              <div className="my-1 custom-control costom-control-inline">
+                <input
+                  type="number"
+                  min="0"
+                  max="10"
+                  disabled={hierarchyType === 'allSubordinatedPage'}
+                  value={hierarchyValue}
+                  placeholder="1"
+                  onChange={(e) => {
+                    handleHierarchyDepth(e.target.value);
+                  }}
+                />
+              </div>
+            </>
+          )}
         </div>
       </ModalBody>
       <ModalFooter>
