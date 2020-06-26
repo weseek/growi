@@ -62,6 +62,7 @@ const CreateTemplateModal = (props) => {
         </div>
       </ModalBody>
     </Modal>
+
   );
 };
 
