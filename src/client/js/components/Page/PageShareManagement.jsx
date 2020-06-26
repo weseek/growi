@@ -28,26 +28,34 @@ const PageShareManagement = (props) => {
   }
 
   async function getExportPageFile(type) {
-    const { revisionId, pageId } = pageContainer.state;
+    const { revisionId } = pageContainer.state;
     try {
-      await appContainer.apiv3Get('/pages/export', {
-        revisionId, type, pageId,
+      const res = await appContainer.apiv3Get('/pages/export', {
+        revisionId, type,
       });
-      const exportPageFile = `${pageId}.${type}`;
-      return exportPageFile;
+
+      return res.data.exportPageFile;
     }
     catch (err) {
       toastError(Error(t('export_bulk.failed_to_export')));
     }
   }
 
-  function exportPage(exportPageFile) {
-    window.location.href = `/admin/export/${exportPageFile}`;
+  function exportPage(exportPageFile, type) {
+    const { pageId } = pageContainer.state;
+    const blob = new Blob(
+      [exportPageFile],
+      { type: type === 'md' ? 'text/markdown' : 'application/pdf' },
+    );
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = `${pageId}.${type}`;
+    link.click();
   }
 
   async function exportPageHundler(type) {
     const exportPageFile = await getExportPageFile(type);
-    await exportPage(exportPageFile);
+    await exportPage(exportPageFile, type);
   }
 
   function renderModals() {
