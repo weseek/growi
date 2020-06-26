@@ -4,13 +4,13 @@
 class MarkdownLinkUtil {
 
   constructor() {
-    this.getMarkdownLink = this.getMarkdownLink.bind(this);
+    this.getMarkdownLinkOrSelectedText = this.getMarkdownLinkOrSelectedText.bind(this);
     this.isInLink = this.isInLink.bind(this);
     this.getBeginningAndEndOfTheClosestLinkToCursor = this.getBeginningAndEndOfTheClosestLinkToCursor.bind(this);
   }
 
   // return text as markdown link if the cursor on markdown link else return text as default label of new link.
-  getMarkdownLink(editor) {
+  getMarkdownLinkOrSelectedText(editor) {
     if (!this.isInLink(editor)) {
       return editor.getDoc().getSelection();
     }
