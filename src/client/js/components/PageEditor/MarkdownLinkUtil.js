@@ -7,6 +7,7 @@ class MarkdownLinkUtil {
     this.getMarkdownLinkOrSelectedText = this.getMarkdownLinkOrSelectedText.bind(this);
     this.isInLink = this.isInLink.bind(this);
     this.getBeginningAndEndOfTheClosestLinkToCursor = this.getBeginningAndEndOfTheClosestLinkToCursor.bind(this);
+    this.replaceFocusedMarkdownLinkWithEditor = this.replaceFocusedMarkdownLinkWithEditor.bind(this);
   }
 
   // return text as markdown link if the cursor on markdown link else return text as default label of new link.
@@ -45,6 +46,9 @@ class MarkdownLinkUtil {
       endOfLink += 1;
     }
 
+    replaceFocusedMarkdownLinkWithEditor(editor) {
+      // GW-3023
+    }
     return { beginningOfLink, endOfLink };
   }
 
