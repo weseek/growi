@@ -69,7 +69,6 @@ module.exports = (options) => {
         '@client': helpers.root('src/client'),
         '@tmp': helpers.root('tmp'),
         '@alias/logger': helpers.root('src/lib/service/logger'),
-        '@alias/locales': helpers.root('resource/locales'),
         // replace bunyan
         bunyan: 'browser-bunyan',
       },
