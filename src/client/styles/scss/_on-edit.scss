@@ -11,6 +11,16 @@ body:not(.on-edit) {
 body.on-edit {
   overflow-y: hidden !important;
 
+  .grw-navbar {
+    position: fixed !important;
+    width: 100vw;
+  }
+
+  .page-wrapper {
+    position: relative;
+    top: $grw-navbar-border-width;
+  }
+
   // calculate margin
   $editor-header-plus-footer: 42px // .nav-tabs height
     + 1px //                          .page-editor-footer border-top
