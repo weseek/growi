@@ -64,6 +64,7 @@
   "Share Link": "共有用リンク",
   "share_link_notice":"{{count}} 件の共有リンクを削除します",
   "delete_all_share_links":"全ての共有リンクを削除します",
+  "No_share_links":"共有リンクが存在しません",
   "expire": "有効期限",
   "Unlimited": "無期限",
   "Days": "日間",

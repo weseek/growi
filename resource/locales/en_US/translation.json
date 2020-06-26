@@ -64,6 +64,7 @@
   "Share Link": "Share Link",
   "share_link_notice":"remove {{count}} share links",
   "delete_all_share_links":"Delete all share links",
+  "No_share_links":"No share links",
   "expire": "Expiration",
   "Unlimited": "Unlimited",
   "Days": "Days",
