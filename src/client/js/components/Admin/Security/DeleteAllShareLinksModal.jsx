@@ -44,10 +44,10 @@ const DeleteAllShareLinksModal = React.memo((props) => {
         { t('share_link_notice', { count: props.count })}
       </ModalBody>
       <ModalFooter>
-        <Button onClick={closeButtonHandler}>Cancel</Button>
+        <Button onClick={closeButtonHandler}>{t('Cancel')}</Button>
         <Button color="danger" onClick={deleteAllLinkHandler}>
           <i className="icon icon-fire"></i>
-            Delete
+          {t('Delete')}
         </Button>
       </ModalFooter>
     </Modal>
