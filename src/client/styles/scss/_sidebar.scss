@@ -58,7 +58,7 @@
   // override @atlaskit/navigation-next styles
   $navbar-total-height: $grw-navbar-height + $grw-navbar-border-width;
   div[data-layout-container='true'] {
-    height: 100vh;
+    max-height: calc(100vh - #{$grw-navbar-border-width});
 
     // css-teprsg
     > div:nth-of-type(2) {
@@ -95,6 +95,7 @@
 
   .grw-sidebar-nav {
     height: 100vh;
+    max-height: calc(100vh - #{$grw-navbar-border-width});
 
     .btn {
       width: $grw-sidebar-nav-width;
