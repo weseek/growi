@@ -8,7 +8,7 @@ const express = require('express');
 
 const router = express.Router();
 
-const { body, query } = require('express-validator/check');
+const { body } = require('express-validator/check');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -23,9 +23,10 @@ const today = new Date();
  */
 
 module.exports = (crowi) => {
-  const loginRequired = require('../../middleware/login-required')(crowi);
-  const csrf = require('../../middleware/csrf')(crowi);
-  const { ApiV3FormValidator } = crowi.middlewares;
+  const loginRequired = require('../../middlewares/login-required')(crowi);
+  const adminRequired = require('../../middlewares/admin-required')(crowi);
+  const csrf = require('../../middlewares/csrf')(crowi);
+  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
   const ShareLink = crowi.model('ShareLink');
 
 
@@ -48,7 +49,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to get share links
    */
-  router.get('/', loginRequired, csrf, ApiV3FormValidator, async(req, res) => {
+  router.get('/', loginRequired, async(req, res) => {
     const { relatedPage } = req.query;
     try {
       const shareLinksResult = await ShareLink.find({ relatedPage: { $in: relatedPage } });
@@ -64,13 +65,10 @@ module.exports = (crowi) => {
   validator.shareLinkStatus = [
     // validate the page id is null
     body('relatedPage').not().isEmpty().withMessage('Page Id is null'),
-
     // validate expireation date is not empty, is not before today and is date.
-    body('expiredAt').isAfter(today.toString()).withMessage('Your Selected date is past'),
-
+    body('expiredAt').if(value => value != null).isAfter(today.toString()).withMessage('Your Selected date is past'),
     // validate the length of description is max 100.
     body('description').isLength({ min: 0, max: 100 }).withMessage('Max length is 100'),
-
   ];
 
   /**
@@ -103,7 +101,7 @@ module.exports = (crowi) => {
    *            description: Succeeded to create one share link
    */
 
-  router.post('/', loginRequired, csrf, validator.shareLinkStatus, ApiV3FormValidator, async(req, res) => {
+  router.post('/', loginRequired, csrf, validator.shareLinkStatus, apiV3FormValidator, async(req, res) => {
     const { relatedPage, expiredAt, description } = req.body;
     const ShareLink = crowi.model('ShareLink');
 
@@ -126,22 +124,19 @@ module.exports = (crowi) => {
   *        tags: [ShareLinks]
   *        summary: /share-links/
   *        description: delete all share links related one page
-  *        requestBody:
-  *           required: true
-  *           content:
-  *             application/json:
-  *               schema:
-  *                 properties:
-  *                   relatedPage:
-  *                     type: string
-  *                     description: delete all share links that related one page
+  *        parameters:
+  *          - name: relatedPage
+  *            in: query
+  *            required: true
+  *            description: page id of share link
+  *            schema:
+  *              type: string
   *        responses:
   *          200:
   *            description: Succeeded to delete o all share links related one page
   */
   router.delete('/', loginRequired, csrf, async(req, res) => {
-    const { relatedPage } = req.body;
-    const ShareLink = crowi.model('ShareLink');
+    const { relatedPage } = req.query;
 
     try {
       const deletedShareLink = await ShareLink.remove({ relatedPage });
@@ -151,6 +146,31 @@ module.exports = (crowi) => {
       const msg = 'Error occured in delete share link';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'delete-shareLink-failed'));
+    }
+  });
+
+  /**
+  * @swagger
+  *
+  *    /share-links/all:
+  *      delete:
+  *        tags: [ShareLinks]
+  *        description: delete all share links
+  *        responses:
+  *          200:
+  *            description: Succeeded to remove all share links
+  */
+  router.delete('/all', loginRequired, adminRequired, csrf, async(req, res) => {
+
+    try {
+      const deletedShareLink = await ShareLink.deleteMany({});
+      const { deletedCount } = deletedShareLink;
+      return res.apiv3({ deletedCount });
+    }
+    catch (err) {
+      const msg = 'Error occurred in delete all share link';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'delete-all-shareLink-failed'));
     }
   });
 
@@ -177,7 +197,7 @@ module.exports = (crowi) => {
 
     try {
       const deletedShareLink = await ShareLink.findOneAndRemove({ _id: id });
-      return res.apiv3(deletedShareLink);
+      return res.apiv3({ deletedShareLink });
     }
     catch (err) {
       const msg = 'Error occurred in delete share link';
