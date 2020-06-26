@@ -350,16 +350,6 @@ class ExportService {
     return zipFile;
   }
 
-  /**
-   * create markdown file from String
-   * @param {String} exportData String will write in file
-   * @param {String} fileName filename without extension
-   */
-  cretaeMarkdownFile(exportData, fileName) {
-    const filePath = path.join(this.baseDir, `${fileName}.md`);
-    fs.writeFile(filePath, exportData, (err) => {});
-  }
-
 }
 
 module.exports = ExportService;
