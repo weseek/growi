@@ -215,7 +215,7 @@ module.exports = function(crowi, app) {
   function setHeaderToRes(res, attachment, forceDownload) {
     res.set({
       ETag: `Attachment-${attachment._id}`,
-      'Last-Modified': attachment.createdAt,
+      'Last-Modified': attachment.createdAt.toUTCString(),
     });
 
     // download

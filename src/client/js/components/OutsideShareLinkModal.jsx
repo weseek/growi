@@ -15,31 +15,110 @@ import PageContainer from '../services/PageContainer';
 import ShareLinkList from './ShareLinkList';
 import ShareLinkForm from './ShareLinkForm';
 
-const OutsideShareLinkModal = (props) => {
+import { toastSuccess, toastError } from '../util/apiNotification';
 
-  /* const { t } = props; */
+class OutsideShareLinkModal extends React.Component {
 
-  return (
-    <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} className="grw-create-page">
-      <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-light">Title
-      </ModalHeader>
-      <ModalBody>
-        <div className="container">
-          <div className="form-inline mb-3">
-            <h4>Shared Link List</h4>
-            <button className="ml-auto btn btn-danger" type="button">Delete all links</button>
+  constructor() {
+    super();
+    this.state = {
+      shareLinks: [],
+      isOpenShareLinkForm: false,
+    };
+
+    this.toggleShareLinkFormHandler = this.toggleShareLinkFormHandler.bind(this);
+    this.deleteAllLinksButtonHandler = this.deleteAllLinksButtonHandler.bind(this);
+    this.deleteLinkById = this.deleteLinkById.bind(this);
+  }
+
+  componentDidMount() {
+    this.retrieveShareLinks();
+  }
+
+  async retrieveShareLinks() {
+    const { appContainer, pageContainer } = this.props;
+    const { pageId } = pageContainer.state;
+
+    try {
+      const res = await appContainer.apiv3.get('/share-links/', { relatedPage: pageId });
+      const { shareLinksResult } = res.data;
+      this.setState({ shareLinks: shareLinksResult });
+    }
+    catch (err) {
+      toastError(err);
+    }
+
+  }
+
+  toggleShareLinkFormHandler() {
+    this.setState({ isOpenShareLinkForm: !this.state.isOpenShareLinkForm });
+    this.retrieveShareLinks();
+  }
+
+  async deleteAllLinksButtonHandler() {
+    const { t, appContainer, pageContainer } = this.props;
+    const { pageId } = pageContainer.state;
+
+    try {
+      const res = await appContainer.apiv3.delete('/share-links/', { relatedPage: pageId });
+      const count = res.data.n;
+      toastSuccess(t('toaster.remove_share_link', { count }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+
+    this.retrieveShareLinks();
+  }
+
+  async deleteLinkById(shareLinkId) {
+    const { t, appContainer } = this.props;
+
+    try {
+      const res = await appContainer.apiv3Delete(`/share-links/${shareLinkId}`);
+      const { deletedShareLink } = res.data;
+      toastSuccess(t('toaster.remove_share_link_success', { shareLinkId: deletedShareLink._id }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+
+    this.retrieveShareLinks();
+  }
+
+  render() {
+    return (
+      <Modal size="lg" isOpen={this.props.isOpen} toggle={this.props.onClose}>
+        <ModalHeader tag="h4" toggle={this.props.onClose} className="bg-primary text-light">Title
+        </ModalHeader>
+        <ModalBody>
+          <div className="container">
+            <div className="form-inline mb-3">
+              <h4>Shared Link List</h4>
+              <button className="ml-auto btn btn-danger" type="button" onClick={this.deleteAllLinksButtonHandler}>Delete all links</button>
+            </div>
+
+            <div>
+              <ShareLinkList
+                shareLinks={this.state.shareLinks}
+                onClickDeleteButton={this.deleteLinkById}
+              />
+              <button
+                className="btn btn-outline-secondary d-block mx-auto px-5 mb-3"
+                type="button"
+                onClick={this.toggleShareLinkFormHandler}
+              >
+                {this.state.isOpenShareLinkForm ? 'Close' : 'New'}
+              </button>
+              {this.state.isOpenShareLinkForm && <ShareLinkForm onCloseForm={this.toggleShareLinkFormHandler} />}
+            </div>
           </div>
+        </ModalBody>
+      </Modal>
+    );
+  }
 
-          <div>
-            <ShareLinkList />
-            <button className="btn btn-outline-secondary d-block mx-auto px-5 mb-3" type="button">+</button>
-            <ShareLinkForm />
-          </div>
-        </div>
-      </ModalBody>
-    </Modal>
-  );
-};
+}
 
 /**
  * Wrapper component for using unstated

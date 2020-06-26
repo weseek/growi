@@ -62,6 +62,8 @@
   "Last_Login": "Last login",
   "Share": "Share",
   "Share Link": "Share Link",
+  "share_link_notice":"remove {{count}} share links",
+  "delete_all_share_links":"Delete all share links",
   "Markdown Link": "Markdown Link",
   "Create/Edit Template": "Create/Edit template page",
   "Go to this version": "View this version",
@@ -188,16 +190,16 @@
   },
   "Password": "Password",
   "Password Settings": "Password settings",
-    "personal_settings": {
-    "disassociate_external_account": "Disassociate External Account",
-    "disassociate_external_account_desc": "Are you sure to disassociate the <strong>{{providerType}}</strong> account <strong>{{accountId}}</strong>?",
-    "set_new_password": "Set new Password",
-    "update_password": "Update password",
-      "current_password": "Current password",
-      "new_password": "New password",
-      "new_password_confirm": "Re-enter new password",
-      "password_is_not_set": "Password is not set"
-    },
+  "personal_settings": {
+  "disassociate_external_account": "Disassociate External Account",
+  "disassociate_external_account_desc": "Are you sure to disassociate the <strong>{{providerType}}</strong> account <strong>{{accountId}}</strong>?",
+  "set_new_password": "Set new Password",
+  "update_password": "Update password",
+    "current_password": "Current password",
+    "new_password": "New password",
+    "new_password_confirm": "Re-enter new password",
+    "password_is_not_set": "Password is not set"
+  },
   "security_settings": "Security settings",
   "API Settings": "API settings",
   "API Token Settings": "API token settings",
@@ -347,11 +349,14 @@
   "toaster": {
     "update_successed": "Succeeded to update {{target}}",
     "give_user_admin": "Succeeded to give {{username}} admin",
-    "remove_user_admin": "Succeeded to remove {{username}} admin ",
+    "remove_user_admin": "Succeeded to remove {{username}} admin",
     "activate_user_success": "Succeeded to activating {{username}}",
     "deactivate_user_success": "Succeeded to deactivate {{username}}",
-    "remove_user_success": "Succeeded to removing {{username}} ",
-    "remove_external_user_success": "Succeeded to remove {{accountId}} "
+    "remove_user_success": "Succeeded to removing {{username}}",
+    "remove_external_user_success": "Succeeded to remove {{accountId}}",
+    "remove_share_link_success": "Succeeded to remove {{shareLinkId}}",
+    "issue_share_link": "Succeeded to issue new share link",
+    "remove_share_link": "Succeeded to remove {{count}} share links"
   },
   "template": {
     "modal_label": {

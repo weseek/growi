@@ -1,0 +1,318 @@
+{
+	"admin_top": {
+		"management_wiki": "管理Wiki",
+		"system_information": "系统信息",
+		"wiki_administrator": "只有wiki管理员可以访问此页",
+		"assign_administrator": "您可以使用“授予管理员访问权限”按钮在“用户管理”页上将所选用户指定为wiki管理员",
+		"list_of_installed_plugins": "已安装插件列表",
+		"package_name": "包名称",
+		"specified_version": "指定版本",
+		"installed_version": "已安装版本",
+		"list_of_env_vars": "环境变量列表",
+		"env_var_priority": "对于安全性以外的环境变量，优先获取数据库的值。",
+		"about_security": "检查安全环境变量的<a href='/admin/security'>安全设置</a>。"
+	},
+	"app_setting": {
+		"site_name": "网站名称 ",
+		"sitename_change": "您可以更改用于标题和HTML标题的网站名称。",
+		"header_content": "此处输入的内容将显示在标题等中。",
+		"site_url_desc": "用于网站URL设置。",
+		"site_url_warn": "某些功能不起作用，因为未设置网站URL。",
+		"siteurl_help": "网站完整URL起始于 <code>http://</code> or <code>https://</code>.",
+		"confidential_name": "内部名称",
+		"confidential_example": "ex）：仅供内部使用",
+		"default_language": "新用户的默认语言",
+		"file_uploading": "文件上传",
+		"enable_files_except_image": "启用此选项将允许上传任何文件类型。如果没有此选项，则仅支持图像文件上载。",
+		"attach_enable": "如果启用此选项，则可以附加图像文件以外的文件。",
+		"update": "更新",
+		"mail_settings": "邮件设置",
+		"smtp_used": "如果您有SMTP设置，将使用它。",
+		"smtp_but_aws": "如果您没有SMTP设置，但有AWS设置，则电子邮件将由SES发送。",
+		"neihter_of": "如果两者都未选中，则不会发送电子邮件。",
+		"from_e-mail_address": "From e-mail address",
+		"smtp_settings": "SMTP 设置",
+		"host": "服务器",
+		"port": "端口号",
+		"user": "用户名",
+		"aws_settings": "AWS设置",
+		"aws_access": "这是用于AWS设置的。如果您完成了AWS设置，文件上传功能，个人资料图片功能等将被启用。",
+		"no_smtp_setting": "如果您没有SMTP设置，电子邮件将通过SES发送。您需要从电子邮件地址和生产设置进行验证。",
+		"change_setting": "注意：如果你更改此设置未完成，您将无法访问迄今为止上传的文件。",
+		"region": "Region",
+		"bucket_name": "Bucket name",
+		"custom_endpoint": "Custom endpoint",
+		"custom_endpoint_change": "输入对象存储服务（如MinIO）端点的URL，MinIO具有与S3兼容的API。如果为空，则使用Amazon S3。",
+		"plugin_settings": "插件设置",
+		"enable_plugin_loading": "启用插件加载",
+		"load_plugins": "加载插件",
+		"enable": "启用",
+		"disable": "停用",
+		"use_env_var_if_empty": "如果数据库中的值为空，则环境变量的值 <cod>{{variable}}</code> 启用。"
+	},
+	"markdown_setting": {
+		"lineBreak_header": "换行设置",
+		"lineBreak_desc": "您可以更改换行设置。",
+		"lineBreak_options": {
+			"enable_lineBreak": "启用换行符",
+			"enable_lineBreak_desc": "HTML中将文本页中的换行符转换为<code>&lt;br&gt;</code>",
+			"enable_lineBreak_for_comment": "注释中启用换行符",
+			"enable_lineBreak_for_comment_desc": "HTML中将注释中的换行符转换为<code>&lt;br&gt;</code>"
+		},
+		"presentation_header": "演示文稿设置",
+		"presentation_desc": "您可以更改演示文稿设置。",
+		"presentation_options": {
+			"page_break_setting": "分页设置",
+			"preset_one_separator": "预设 1",
+			"preset_one_separator_desc": "3 空行",
+			"preset_one_separator_value": "\\n\\n\\n",
+			"preset_two_separator": "预设 2",
+			"preset_two_separator_desc": "5 连字符",
+			"preset_two_separator_value": "-----",
+			"custom_separator": "自定义",
+			"custom_separator_desc": "正则表达式"
+		},
+		"xss_header": "阻止XSS（跨站点脚本）设置",
+		"xss_desc": "您可以更改标记文本中HTML标记的处理方式。",
+		"xss_options": {
+			"enable_xss_prevention": "启用XSS预防",
+			"remove_all_tags": "删除所有标记",
+			"remove_all_tags_desc": "Stripe all HTML tags and attributes",
+			"recommended_setting": "推荐设置",
+			"custom_whitelist": "自定义白名单",
+			"tag_names": "标记名",
+			"tag_attributes": "标记属性",
+			"import_recommended": "导入建议 {{target}}"
+		}
+	},
+	"customize_setting": {
+		"recommended": "推荐",
+		"layout": "布局",
+		"theme": "主体",
+		"layout_desc": {
+			"growi_title": "简约",
+			"growi_text1": "全屏布局 窄边距/填充",
+			"growi_text2": "页面底部显示和发布评论",
+			"growi_text3": "附目录",
+			"kibela_title": "清晰",
+			"kibela_text1": "内容居中对齐",
+			"kibela_text2": "在页面底部显示和发布评论",
+			"kibela_text3": "附目录",
+			"crowi_title": "分栏",
+			"crowi_text1": "可折叠边栏",
+			"crowi_text2": "在侧边栏中显示和发布评论",
+			"crowi_text3": "可折叠目录"
+		},
+		"behavior": "行为",
+		"behavior_desc": {
+			"growi_text1": "<code>/page</code> and <code>/page/</code> 都显示同一页。",
+			"growi_text2": "<code>/nonexistent_page</code> 显示编辑表单",
+			"growi_text3": "如果使用GROWI增强布局，则所有页面都显示子页面列表",
+			"crowi_text1": "<code>/page</code> 显示页面",
+			"crowi_text2": "<code>/page/</code> 显示子页列表",
+			"crowi_text3": "如果portal应用于<code>/page/</code>，则会显示portal和子页面列表",
+			"crowi_text4": "<code>/nonexistent_page</code> 显示编辑表单<",
+			"crowi_text5": "<code>/nonexistent_page/</code> 子页列表"
+		},
+		"theme_desc": {
+			"light_and_dark": "明暗模式",
+			"unique": "只有一种模式"
+		},
+		"function": "功能",
+		"function_desc": "您可以选择函数的有效/无效",
+		"function_options": {
+			"timeline": "时间线函数",
+			"timeline_desc1": "您可以显示子页的时间线。",
+			"timeline_desc2": "如果有许多子页，则在加载页时性能会降低。",
+			"timeline_desc3": "通过使列表页无效，可以加快列表页的显示速度。",
+			"tab_switch": "在浏览器中保存选项卡切换",
+			"tab_switch_desc1": "在浏览器中保存编辑选项卡和历史选项卡切换，并使其成为浏览器的前向/后向命令的对象。",
+			"tab_switch_desc2": "通过失效，您可以将页面转换作为浏览器的前向/后向命令的唯一对象。",
+			"attach_title_header": "自动创建新页面时添加h1节",
+			"attach_title_header_desc": "创建新页面时，将页面路径作为h1节添加到第一行",
+			"recent_created__n_draft_num_desc": "显示最近创建的页数和草稿数",
+			"recently_created_n_draft_num_desc": "用户页上显示的最近创建的页和草稿数",
+			"stale_notification": "在过期页上显示通知",
+			"stale_notification_desc": "显示自上次更新以来超过1年的页面通知。",
+			"show_all_reply_comments": "显示所有回复评论",
+			"show_all_reply_comments_desc": "当设置值为“关”时，将忽略最近两个之外的注释。"
+		},
+		"code_highlight": "代码突出显示",
+		"nocdn_desc": "当强制应用环境变量<code>NO_CDN=true</code><br>Github样式时，此函数被禁用。",
+		"custom_title": "自定义标题",
+		"custom_title_detail": "您可以自定义<code>&lt；title&gt；</code>标记。<br><code>&123；&123；sitename&&125；&125；</code>将自动替换为应用程序名称，并且<code>&123；&123；page&&125；&125；</code>将替换为页面名称/路径。",
+		"custom_title_detail_placeholder1": "<code>&#123；&#123；站点名称&#125；&#125；</code>-此wiki的站点名称。",
+		"custom_title_detail_placeholder2": "<code>&#123；&#123；页名&#125；&#125；</code>-当前页的页名。",
+		"custom_title_detail_placeholder3": "<code>&#123；&#123；页面路径&#125；&#125；</code>-当前页面的页面路径。",
+		"custom_header": "自定义HTML标题",
+		"custom_header_detail": "您可以自定义应用所有页面的HTML标题。您的自定义脚本将插入<code>&lt；header&gt；</code>中，但位于其他<code>&lt；script&gt；</code>标记之上。<br>重新链接页面以查看更改。",
+		"custom_css": "自定义CSS",
+		"write_css": "您可以编写应用于整个系统的CSS。",
+		"ctrl_space": "Ctrl+Space 自动完成",
+		"custom_script": "定制纸条",
+		"write_java": "您可以编写应用于整个系统的Javascript。",
+		"reflect_change": "您需要重新加载页面以反映更改。"
+	},
+	"importer_management": {
+		"beta_warning": "这个函数是Beta。",
+		"import_from": "Import from {{from}}",
+		"import_growi_archive": "Import GROWI archive",
+		"growi_settings": {
+			"description_of_import_mode": {
+				"about": "When you import data with the same name as an existing one, choose from the following three modes below.",
+				"insert": "Insert: Skip importing the data.",
+				"upsert": "Upsert: Overwrite and update the existing data with imported data.",
+				"flash_and_insert": "Flash and Insert: After deleting the existing data completely, import the data"
+			},
+			"growi_archive_file": "GROWI Archive File",
+			"uploaded_data": "Uploaded Data",
+			"extracted_file": "Extracted File",
+			"collection": "Collection",
+			"upload": "Upload",
+			"discard": "Discard uploaded data",
+			"errors": {
+				"at_least_one": "Select one or more collections.",
+				"page_and_revision": "'Pages' and 'Revisions' must be imported both.",
+				"depends": "'{{target}}' must be selected when '{{condition}}' is selected."
+			},
+			"configuration": {
+				"pages": {
+					"overwrite_author": {
+						"label": "Overwrite page's author with the current user",
+						"desc": "Recommended <span class=\"text-danger\">NOT</span> to check this when users will also be restored."
+					},
+					"set_public_to_page": {
+						"label": "Set 'Public' to the pages that is '{{from}}'",
+						"desc": "Make sure that this configuration makes all <b>'{{from}}'</b> pages readable from <span class=\"text-danger\">ANY users</span>."
+					},
+					"initialize_meta_datas": {
+						"label": "Initialize page's like, read users and comment count",
+						"desc": "Recommended <span class=\"text-danger\">NOT</span> to check this when users will also be restored."
+					},
+					"initialize_hackmd_related_datas": {
+						"label": "Initialize HackMD related data",
+						"desc": "Recommended to check this unless there is important drafts on HackMD."
+					}
+				},
+				"revisions": {
+					"overwrite_author": {
+						"label": "Overwrite revision's author with the current user",
+						"desc": "Recommended <span class=\"text-danger\">NOT</span> to check this when users will also be restored."
+					}
+				}
+			}
+		},
+		"esa_settings": {
+			"team_name": "Team name",
+			"access_token": "Access token",
+			"test_connection": "Test connection to esa"
+		},
+		"qiita_settings": {
+			"team_name": "Team name",
+			"access_token": "Access token",
+			"test_connection": "Test connection to qiita:team"
+		},
+		"import": "Import",
+		"page_skip": "Pages with a name that already exists on GROWI are not imported",
+		"Directory_hierarchy_tag": "Directory hierarchy tag"
+	},
+	"export_management": {
+		"exporting_collection_list": "正在导出集合列表",
+		"exported_data_list": "导出的存档数据列表",
+		"export_collections": "导出集合",
+		"check_all": "全部检查",
+		"uncheck_all": "全部取消选中",
+		"desc_password_seed": "DO NOT FORGET to set current <code>PASSWORD_SEED</code> to your new GROWI system when restoring user data, or users will NOT be able to login with their password.<br><br><strong>HINT:</strong><br>The current <code>PASSWORD_SEED</code> will be stored in <code>meta.json</code> in exported ZIP.",
+		"create_new_archive_data": "创建新的存档数据",
+		"export": "导出",
+		"cancel": "取消",
+		"file": "文件",
+		"growi_version": "Growi Version",
+		"collections": "Collections",
+		"exported_at": "Exported At",
+		"export_menu": "导出菜单",
+		"download": "下载",
+		"delete": "删除"
+	},
+	"user_management": {
+		"invite_users": "邀请新用户",
+		"click_twice_same_checkbox": "您应该至少选中一个复选框。",
+		"invite_modal": {
+			"emails": "电子邮件",
+			"invite_thru_email": "发送邀请电子邮件",
+			"valid_email": "需要有效的电子邮件地址",
+			"temporary_password": "创建的用户具有临时密码",
+			"send_new_password": "请将新密码发送给用户。",
+			"send_temporary_password": "请确保复制此屏幕上的临时密码并将其发送给用户。",
+			"existing_email": "以下电子邮件已存在"
+		},
+		"user_table": {
+			"administrator": "管理员",
+			"edit_menu": "编辑菜单",
+			"reset_password": "重置密码",
+			"administrator_menu": "管理员菜单",
+			"accept": "接受",
+			"deactivate_account": "停用帐户",
+			"your_own": "您不能停用自己的帐户",
+			"remove_admin_access": "删除管理员访问权限",
+			"cannot_remove": "您不能从管理员中删除自己",
+			"give_admin_access": "授予管理员访问权限"
+		},
+		"reset_password": "重置密码",
+		"reset_password_modal": {
+			"password_never_seen": "The temporary password can never be retrieved after this screen is closed.",
+			"password_reset_message": "Let the user know the new password below and strongly recommend to change another one immediately.",
+			"send_new_password": "Please send the new password to the user.",
+			"target_user": "Target User",
+			"new_password": "New Password"
+		},
+		"external_account": "外部账户管理",
+		"external_accounts": "外部账户",
+		"create_external_account": "创建外部账户",
+		"external_account_list": "外部账户列表",
+		"invite": "邀请",
+		"invited": "已邀请用户",
+		"back_to_user_management": "返回用户管理",
+		"authentication_provider": "身份认证",
+		"manage": "管理",
+		"password_setting": "密码设置",
+		"password_setting_help": "是否设置了密码？",
+		"set": "是",
+		"unset": "否",
+		"related_username": "相关用户的",
+		"cannot_invite_maximum_users": "邀请的用户数不能超过最大值。",
+		"current_users": "当前用户:"
+	},
+	"user_group_management": {
+		"create_group": "创建新组",
+		"deny_create_group": "不能用当前设置创建新组。",
+		"group_name": "组名",
+		"group_example": "e.g.：第1组",
+		"add_modal": {
+			"add_user": "将用户添加到创建的组",
+			"search_option": "搜索选项",
+			"enable_option": "启用{{option}",
+			"forward_match": "Forword匹配",
+			"partial_match": "部分匹配",
+			"backward_match": "向后匹配"
+		},
+		"group_list": "组列表",
+		"back_to_list": "返回组列表",
+		"basic_info": "基本信息",
+		"user_list": "用户列表",
+		"created_group": "已创建组",
+		"is_loading_data": "获取数据。。。",
+		"no_pages": "组没有查看权限的页面。",
+		"remove_from_group": "删除此用户",
+		"delete_modal": {
+			"header": "删除组",
+			"desc": "删除后，将无法检索已删除的组及其私人页。",
+			"dropdown_desc": "为私人页选择操作",
+			"select_group": "选择组",
+			"no_groups": "没有可选择的组",
+			"publish_pages": "全部发布",
+			"delete_pages": "全部删除",
+			"transfer_pages": "转移到另一组"
+		}
+	}
+}

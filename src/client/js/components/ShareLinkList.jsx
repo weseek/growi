@@ -1,7 +1,9 @@
 import React from 'react';
-import * as toastr from 'toastr';
+import PropTypes from 'prop-types';
+
 
 import { withTranslation } from 'react-i18next';
+import dateFnsFormat from 'date-fns/format';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
@@ -9,46 +11,23 @@ import AppContainer from '../services/AppContainer';
 
 const ShareLinkList = (props) => {
 
-  function deleteLinkHandler(shareLink) {
-    try {
-      // call api
-      toastr.success(`Successfully deleted ${shareLink._id}`);
+  function deleteLinkHandler(shareLinkId) {
+    if (props.onClickDeleteButton == null) {
+      return;
     }
-    catch (err) {
-      toastr.error(new Error(`Failed to delete ${shareLink._id}`));
-    }
+    props.onClickDeleteButton(shareLinkId);
   }
 
-  function GetShareLinkList() {
-    // dummy data
-    const dummyDate = new Date().toString();
-    const shareLinks = [
-      {
-        _id: '507f1f77bcf86cd799439011', link: '/507f1f77bcf86cd799439011', expiration: dummyDate, description: 'foobar',
-      },
-      {
-        _id: '52fcebd19a5c4ea066dbfa12', link: '/52fcebd19a5c4ea066dbfa12', expiration: dummyDate, description: 'test',
-      },
-      {
-        _id: '54759eb3c090d83494e2d804', link: '/54759eb3c090d83494e2d804', expiration: dummyDate, description: 'hoge',
-      },
-      {
-        _id: '5349b4ddd2781d08c09890f3', link: '/5349b4ddd2781d08c09890f3', expiration: dummyDate, description: 'fuga',
-      },
-      {
-        _id: '5349b4ddd2781d08c09890f4', link: '/5349b4ddd2781d08c09890f4', expiration: dummyDate, description: 'piyo',
-      },
-    ];
-
+  function renderShareLinks() {
     return (
       <>
-        {shareLinks.map(shareLink => (
-          <tr>
-            <td>{shareLink.link}</td>
-            <td>{shareLink.expiration}</td>
+        {props.shareLinks.map(shareLink => (
+          <tr key={shareLink._id}>
+            <td>{shareLink._id}</td>
+            <td>{shareLink.expiredAt && <span>{dateFnsFormat(new Date(shareLink.expiredAt), 'yyyy-MM-dd HH:mm')}</span>}</td>
             <td>{shareLink.description}</td>
             <td>
-              <button className="btn btn-outline-warning" type="button" onClick={() => deleteLinkHandler(shareLink)}>
+              <button className="btn btn-outline-warning" type="button" onClick={() => deleteLinkHandler(shareLink._id)}>
                 <i className="icon-trash"></i>Delete
               </button>
             </td>
@@ -70,16 +49,21 @@ const ShareLinkList = (props) => {
           </tr>
         </thead>
         <tbody>
-          <GetShareLinkList />
+          {renderShareLinks()}
         </tbody>
       </table>
     </div>
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
 const ShareLinkListWrapper = withUnstatedContainers(ShareLinkList, [AppContainer]);
+
+ShareLinkList.propTypes = {
+  t: PropTypes.func.isRequired, //  i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+
+  shareLinks: PropTypes.array.isRequired,
+  onClickDeleteButton: PropTypes.func,
+};
 
 export default withTranslation()(ShareLinkListWrapper);
