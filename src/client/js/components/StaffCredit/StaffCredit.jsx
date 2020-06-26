@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 import {
   Modal, ModalBody,
@@ -23,9 +24,7 @@ export default class StaffCredit extends React.Component {
     this.state = {
       isShown: true,
     };
-    this.multipleAllowance = true;
     this.deleteCredit = this.deleteCredit.bind(this);
-
   }
 
   // when this is called it returns the hotkey stroke
@@ -33,10 +32,11 @@ export default class StaffCredit extends React.Component {
     return ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
   }
 
-  static getComponent() {
-    return <StaffCredit />;
+  static getComponent(onDeleteRender) {
+    return <StaffCredit onDeleteRender={onDeleteRender} />;
   }
 
+  // to delete the staffCredit and to inform that to Hotkeys.jsx
   deleteCredit() {
     if (this.state.isShown) {
       this.setState({ isShown: false });
@@ -110,7 +110,13 @@ export default class StaffCredit extends React.Component {
 
   render() {
     return (
-      <Modal isOpen={this.state.isShown} toggle={this.deleteCredit} scrollable className="staff-credit">
+      <Modal
+        isOpen={this.state.isShown}
+        onClosed={() => { return () => { this.props.onDeleteRender(this) } }}
+        toggle={this.deleteCredit}
+        scrollable
+        className="staff-credit"
+      >
         <ModalBody className="credit-curtain">
           {this.renderContributors()}
         </ModalBody>
@@ -119,3 +125,6 @@ export default class StaffCredit extends React.Component {
   }
 
 }
+StaffCredit.propTypes = {
+  onDeleteRender: PropTypes.func,
+};
