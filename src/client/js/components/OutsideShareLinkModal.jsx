@@ -52,6 +52,7 @@ class OutsideShareLinkModal extends React.Component {
 
   toggleShareLinkFormHandler() {
     this.setState({ isOpenShareLinkForm: !this.state.isOpenShareLinkForm });
+    this.retrieveShareLinks();
   }
 
   async deleteAllLinksButtonHandler() {
