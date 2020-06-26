@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 
 import { withTranslation } from 'react-i18next';
+import dateFnsFormat from 'date-fns/format';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
@@ -23,7 +24,7 @@ const ShareLinkList = (props) => {
         {props.shareLinks.map(shareLink => (
           <tr key={shareLink._id}>
             <td>{shareLink._id}</td>
-            <td>{shareLink.expiredAt}</td>
+            <td>{shareLink.expiredAt && <span>{dateFnsFormat(new Date(shareLink.expiredAt), 'yyyy-MM-dd HH:mm')}</span>}</td>
             <td>{shareLink.description}</td>
             <td>
               <button className="btn btn-outline-warning" type="button" onClick={() => deleteLinkHandler(shareLink._id)}>

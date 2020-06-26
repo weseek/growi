@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import dateFnsFormat from 'date-fns/format';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
@@ -134,7 +135,7 @@ class ShareLinkSetting extends React.Component {
                   <tr key={sharelink._id}>
                     <td>{sharelink._id}</td>
                     <td><a href={sharelink.relatedPage.path}>{sharelink.relatedPage.path}</a></td>
-                    <td>{sharelink.expiredAt}</td>
+                    <td>{sharelink.expiredAt && <span>{dateFnsFormat(new Date(sharelink.expiredAt), 'yyyy-MM-dd HH:mm')}</span>}</td>
                     <td>{sharelink.description}</td>
                     <td>
                       <button
