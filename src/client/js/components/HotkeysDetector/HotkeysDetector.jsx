@@ -15,7 +15,6 @@ export default class HotkeysDetector extends React.Component {
   }
 
   check(event) {
-    console.log(event.key);
     this.setState({
       userCommand: this.state.userCommand.concat(event.key),
     });
