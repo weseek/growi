@@ -1383,20 +1383,6 @@ module.exports = function(crowi) {
     return addSlashOfEnd(path);
   };
 
-  /**
-   * return revision body by revisionId
-   */
-  pageSchema.statics.getMarkdown = async function(revisionId) {
-    const Revision = crowi.model('Revision');
-    let markdown;
-
-    await Revision.findById(revisionId, (err, revision) => {
-      markdown = revision.body;
-    });
-
-    return markdown;
-  };
-
   pageSchema.statics.GRANT_PUBLIC = GRANT_PUBLIC;
   pageSchema.statics.GRANT_RESTRICTED = GRANT_RESTRICTED;
   pageSchema.statics.GRANT_SPECIFIED = GRANT_SPECIFIED;
