@@ -40,6 +40,7 @@ class LinkEditModal extends React.PureComponent {
     this.show = this.show.bind(this);
     this.hide = this.hide.bind(this);
     this.cancel = this.cancel.bind(this);
+    this.parseMakdownLink = this.parseMakdownLink.bind(this);
     this.handleChangeLinkInput = this.handleChangeLinkInput.bind(this);
     this.handleChangeLabelInput = this.handleChangeLabelInput.bind(this);
     this.handleChangeTypeahead = this.handleChangeTypeahead.bind(this);
@@ -61,24 +62,7 @@ class LinkEditModal extends React.PureComponent {
   }
 
   show(defaultMarkdownLink = '') {
-    let labelInputValue = defaultMarkdownLink;
-    let linkInputValue = '';
-    let linkerType = 'mdLink';
-
-    if (defaultMarkdownLink.match(/^\[\[.*\]\]$/) && this.isApplyPukiwikiLikeLinkerPlugin) {
-      linkerType = 'pukiwikiLink';
-      labelInputValue = 'pukilabel';
-      linkInputValue = 'pukilink';
-    }
-    else if (defaultMarkdownLink.match(/^\[\/.*\]$/)) {
-      linkerType = 'growiLink';
-      labelInputValue = 'growilabel';
-      linkInputValue = 'growilink';
-    }
-    else if (defaultMarkdownLink.match(/^\[.*\]\(.*\)$/)) {
-      labelInputValue = 'mdlabel';
-      linkInputValue = 'mdlink';
-    }
+    const { labelInputValue, linkInputValue, linkerType } = this.parseMakdownLink(defaultMarkdownLink);
 
     this.setState({
       show: true,
@@ -86,6 +70,39 @@ class LinkEditModal extends React.PureComponent {
       linkInputValue,
       linkerType,
     });
+  }
+
+  parseMakdownLink(MarkdownLink) {
+    let labelInputValue = MarkdownLink;
+    let linkInputValue = '';
+    let linkerType = 'mdLink';
+
+    if (MarkdownLink.match(/^\[\[.*\]\]$/)) {
+    // if (MarkdownLink.match(/^\[\[.*\]\]$/) && this.isApplyPukiwikiLikeLinkerPlugin) {
+      linkerType = 'pukiwikiLink';
+      const value = MarkdownLink.slice(2, -2);
+      const indexOfSplit = value.lastIndexOf('>');
+      if (indexOfSplit < 0) {
+        labelInputValue = value;
+        linkInputValue = value;
+      }
+      labelInputValue = value.slice(0, indexOfSplit);
+      linkInputValue = value.slice(indexOfSplit + 1);
+    }
+    else if (MarkdownLink.match(/^\[\/.*\]$/)) {
+      linkerType = 'growiLink';
+      const value = MarkdownLink.slice(1, -1);
+      labelInputValue = value;
+      linkInputValue = value;
+    }
+    else if (MarkdownLink.match(/^\[.*\]\(.*\)$/)) {
+      const value = MarkdownLink.slice(1, -1);
+      const indexOfSplit = value.lastIndexOf('](');
+      labelInputValue = value.slice(0, indexOfSplit);
+      linkInputValue = value.slice(indexOfSplit + 2);
+    }
+
+    return { labelInputValue, linkInputValue, linkerType };
   }
 
   cancel() {
@@ -138,7 +155,6 @@ class LinkEditModal extends React.PureComponent {
     if (page != null) {
       this.handleChangeLinkInput(page.path);
     }
-
   }
 
   handleSelecteLinkerType(linkerType) {
@@ -167,8 +183,7 @@ class LinkEditModal extends React.PureComponent {
       markdown = res.page.revision.body;
       permalink = `${window.location.origin}/${res.page.id}`;
       isEnablePermanentLink = true;
-    }
-    catch (err) {
+    } catch (err) {
       markdown = `<div class="alert alert-warning" role="alert"><strong>${err.message}</strong></div>`;
     }
     this.setState({ markdown, permalink, isEnablePermanentLink });
@@ -176,13 +191,7 @@ class LinkEditModal extends React.PureComponent {
 
   generateLink() {
     const { pageContainer } = this.props;
-    const {
-      linkInputValue,
-      labelInputValue,
-      linkerType,
-      isUseRelativePath,
-      isUsePermanentLink,
-    } = this.state;
+    const { linkInputValue, labelInputValue, linkerType, isUseRelativePath, isUsePermanentLink } = this.state;
 
     let reshapedLink = linkInputValue;
 
@@ -320,7 +329,6 @@ class LinkEditModal extends React.PureComponent {
       </Modal>
     );
   }
-
 }
 
 LinkEditModal.propTypes = {
