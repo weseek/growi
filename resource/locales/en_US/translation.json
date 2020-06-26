@@ -59,6 +59,8 @@
   "Last_Login": "Last login",
   "Share": "Share",
   "Share Link": "Share Link",
+  "share_link_notice":"remove {{count}} share links",
+  "delete_all_share_links":"Delete all share links",
   "Markdown Link": "Markdown Link",
   "Create/Edit Template": "Create/Edit template page",
   "Go to this version": "View this version",
