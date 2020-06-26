@@ -45,11 +45,11 @@ class MarkdownLinkUtil {
       beginningOfLink -= 1;
       endOfLink += 1;
     }
-
-    replaceFocusedMarkdownLinkWithEditor(editor) {
-      // GW-3023
-    }
     return { beginningOfLink, endOfLink };
+  }
+
+  replaceFocusedMarkdownLinkWithEditor(editor) {
+    // GW-3023
   }
 
 }
