@@ -46,7 +46,7 @@ const ArchiveCreateModal = (props) => {
     setHierarchyType(hierarchyType);
   }
 
-  function handleHierarchyType(hierarchyValue) {
+  function handleHierarchyDepth(hierarchyValue) {
     setHierarchyValue(hierarchyValue);
   }
 
@@ -187,7 +187,7 @@ const ArchiveCreateModal = (props) => {
                   value={hierarchyValue}
                   placeholder="1"
                   onChange={(e) => {
-                    handleHierarchyType(e.target.value);
+                    handleHierarchyDepth(e.target.value);
                   }}
                 />
               </div>
