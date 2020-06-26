@@ -131,6 +131,7 @@ class ShareLinkForm extends React.Component {
 
   renderExpirationTypeOptions() {
     const { expirationType } = this.state;
+    const { t } = this.props;
 
     return (
       <div className="form-group">
@@ -144,7 +145,7 @@ class ShareLinkForm extends React.Component {
             checked={expirationType === 'unlimited'}
             onChange={() => { this.handleChangeExpirationType('unlimited') }}
           />
-          <label className="custom-control-label" htmlFor="customRadio1">Unlimited</label>
+          <label className="custom-control-label" htmlFor="customRadio1">{t('Unlimited')}</label>
         </div>
 
         <div className="custom-control custom-radio offset-4 mb-2">
@@ -168,7 +169,7 @@ class ShareLinkForm extends React.Component {
                 onFocus={() => { this.handleChangeExpirationType('numberOfDays') }}
                 onChange={e => this.handleChangeNumberOfDays(Number(e.target.value))}
               />
-              <span className="col-auto">Days</span>
+              <span className="col-auto">{t('Days')}</span>
             </div>
           </label>
         </div>
@@ -184,7 +185,7 @@ class ShareLinkForm extends React.Component {
             onChange={() => { this.handleChangeExpirationType('custom') }}
           />
           <label className="custom-control-label" htmlFor="customRadio3">
-            Custom
+            {t('Custom')}
           </label>
           <input
             type="date"
@@ -208,15 +209,16 @@ class ShareLinkForm extends React.Component {
   }
 
   renderDescriptionForm() {
+    const { t } = this.props;
     return (
       <div className="form-group row">
-        <label htmlFor="inputDesc" className="col-md-4 col-form-label">Description</label>
+        <label htmlFor="inputDesc" className="col-md-4 col-form-label">{t('description')}</label>
         <div className="col-md-4">
           <input
             type="text"
             className="form-control"
             id="inputDesc"
-            placeholder="Enter description"
+            placeholder={t('enter_desc')}
             value={this.state.description}
             onChange={e => this.handleChangeDescription(e.target.value)}
           />
@@ -226,9 +228,10 @@ class ShareLinkForm extends React.Component {
   }
 
   render() {
+    const { t } = this.props;
     return (
       <div className="share-link-form border p-3">
-        <h4>Expiration Date</h4>
+        <h4>{t('expire')}</h4>
         {this.renderExpirationTypeOptions()}
         <hr />
         {this.renderDescriptionForm()}
