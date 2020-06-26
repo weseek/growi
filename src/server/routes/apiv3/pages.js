@@ -96,22 +96,22 @@ module.exports = (crowi) => {
   *            description: Return currently page file path
   */
   router.get('/export', async(req, res) => {
-    const { exportService } = crowi;
+    const Revision = crowi.model('Revision');
 
     try {
       const {
-        revisionId, type, pageId,
+        revisionId, type,
       } = req.query;
-      const exportFileName = `${pageId}`;
-      const markdown = await Page.getMarkdown(revisionId);
+      const revisions = await Revision.findRevisions([revisionId]);
+      const markdown = revisions[0].body;
 
-      await exportService.cretaeMarkdownFile(markdown, exportFileName);
+      const exportPageFile = markdown;
 
       if (type === 'pdf') {
         // TODO: convert markdown to pdf (GW-2757)
       }
 
-      return res.apiv3({ exportFileName: `${exportFileName}.${type}` });
+      return res.apiv3({ exportPageFile });
     }
     catch (err) {
       res.code = 'unknown';
