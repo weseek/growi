@@ -105,7 +105,9 @@ class ShareLinkForm extends React.Component {
   }
 
   async handleIssueShareLink() {
-    const { t, appContainer, pageContainer } = this.props;
+    const {
+      t, appContainer, pageContainer,
+    } = this.props;
     const { pageId } = pageContainer.state;
     const { description } = this.state;
 
