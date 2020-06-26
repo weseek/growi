@@ -223,7 +223,7 @@
     "invite_users": "Invite new users",
     "click_twice_same_checkbox": "You should check at least one checkbox.",
     "invite_modal": {
-      "emails": "Emails (Possible to invite multiple people by emails with new lines)",
+      "emails": "Emails (Possible to invite multiple people with new lines)",
       "invite_thru_email": "Send invitation email",
       "valid_email": "Valid email address is required",
       "temporary_password": "The created user has a temporary password",
