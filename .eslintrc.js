@@ -18,6 +18,7 @@ module.exports = {
   },
   plugins: [
     "jest",
+    "react-hooks",
   ],
   rules: {
     'indent': [
@@ -33,5 +34,7 @@ module.exports = {
     ],
     // eslint-plugin-import rules
     'import/no-unresolved': [2, { ignore: ['^@'] }], // ignore @alias/..., @commons/..., ...
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
   },
 };
