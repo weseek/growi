@@ -17,7 +17,14 @@ const getModelSafely = (modelName) => {
   return null;
 };
 
+const mongoOptions = {
+  useNewUrlParser: true, // removes a deprecation warning when connecting
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+};
+
 module.exports = {
   getMongoUri,
   getModelSafely,
+  mongoOptions,
 };

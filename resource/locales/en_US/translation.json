@@ -186,16 +186,16 @@
   },
   "Password": "Password",
   "Password Settings": "Password settings",
-    "personal_settings": {
-    "disassociate_external_account": "Disassociate External Account",
-    "disassociate_external_account_desc": "Are you sure to disassociate the <strong>{{providerType}}</strong> account <strong>{{accountId}}</strong>?",
-    "set_new_password": "Set new Password",
-    "update_password": "Update password",
-      "current_password": "Current password",
-      "new_password": "New password",
-      "new_password_confirm": "Re-enter new password",
-      "password_is_not_set": "Password is not set"
-    },
+  "personal_settings": {
+  "disassociate_external_account": "Disassociate External Account",
+  "disassociate_external_account_desc": "Are you sure to disassociate the <strong>{{providerType}}</strong> account <strong>{{accountId}}</strong>?",
+  "set_new_password": "Set new Password",
+  "update_password": "Update password",
+    "current_password": "Current password",
+    "new_password": "New password",
+    "new_password_confirm": "Re-enter new password",
+    "password_is_not_set": "Password is not set"
+  },
   "security_settings": "Security settings",
   "API Settings": "API settings",
   "API Token Settings": "API token settings",

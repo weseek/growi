@@ -9,7 +9,7 @@ describe('safeRedirect', () => {
   ];
 
   beforeEach(async(done) => {
-    registerSafeRedirect = require('@server/middleware/safe-redirect')(whitelistOfHosts);
+    registerSafeRedirect = require('@server/middlewares/safe-redirect')(whitelistOfHosts);
     done();
   });
 
