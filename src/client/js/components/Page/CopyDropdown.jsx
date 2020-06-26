@@ -64,24 +64,24 @@ class CopyDropdown extends React.Component {
   }
 
   generatePermalink() {
-    const { pageId, pagePath, isShareLinkMode } = this.props;
+    const { pageId } = this.props;
 
     if (pageId == null) {
       return null;
-    }
-    if (isShareLinkMode) {
-      return decodeURI(`${origin}${pagePath}`);
     }
 
     return decodeURI(`${origin}/${pageId}${this.uriParams}`);
   }
 
   generateMarkdownLink() {
-    const { pagePath } = this.props;
+    const { pagePath, isShareLinkMode } = this.props;
 
     const label = decodeURI(`${pagePath}${this.uriParams}`);
     const permalink = this.generatePermalink();
 
+    if (isShareLinkMode) {
+      return `[${label}](${this.generatePagePathUrl()})`;
+    }
     return `[${label}](${permalink})`;
   }
 
