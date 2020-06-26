@@ -27,7 +27,7 @@ const TableOfContents = (props) => {
 
     // window height - revisionToc top - .system-version height
     return window.innerHeight - containerTop - 20;
-  });
+  }, []);
 
   const { tocHtml } = pageContainer.state;
 
