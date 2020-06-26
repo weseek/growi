@@ -15,12 +15,11 @@ import Preview from './Preview';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 
-import PagePathAutoComplete from '../PagePathAutoComplete';
+import SearchTypeahead from '../SearchTypeahead';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 class LinkEditModal extends React.PureComponent {
-
   constructor(props) {
     super(props);
 
@@ -28,7 +27,7 @@ class LinkEditModal extends React.PureComponent {
       show: false,
       isUseRelativePath: false,
       isUsePermanentLink: false,
-      linkInputValue: '',
+      linkInputValue: 'ss',
       labelInputValue: '',
       linkerType: 'mdLink',
       markdown: '',
@@ -43,6 +42,7 @@ class LinkEditModal extends React.PureComponent {
     this.cancel = this.cancel.bind(this);
     this.handleChangeLinkInput = this.handleChangeLinkInput.bind(this);
     this.handleChangeLabelInput = this.handleChangeLabelInput.bind(this);
+    this.handleChangeTypeahead = this.handleChangeTypeahead.bind(this);
     this.handleSelecteLinkerType = this.handleSelecteLinkerType.bind(this);
     this.toggleIsUseRelativePath = this.toggleIsUseRelativePath.bind(this);
     this.toggleIsUsePamanentLink = this.toggleIsUsePamanentLink.bind(this);
@@ -60,8 +60,32 @@ class LinkEditModal extends React.PureComponent {
     }
   }
 
-  show(defaultLabelInputValue = '') {
-    this.setState({ show: true, labelInputValue: defaultLabelInputValue });
+  show(defaultMarkdownLink = '') {
+    let labelInputValue = defaultMarkdownLink;
+    let linkInputValue = '';
+    let linkerType = 'mdLink';
+
+    if (defaultMarkdownLink.match(/^\[\[.*\]\]$/) && this.isApplyPukiwikiLikeLinkerPlugin) {
+      linkerType = 'pukiwikiLink';
+      labelInputValue = 'pukilabel';
+      linkInputValue = 'pukilink';
+    }
+    else if (defaultMarkdownLink.match(/^\[\/.*\]$/)) {
+      linkerType = 'growiLink';
+      labelInputValue = 'growilabel';
+      linkInputValue = 'growilink';
+    }
+    else if (defaultMarkdownLink.match(/^\[.*\]\(.*\)$/)) {
+      labelInputValue = 'mdlabel';
+      linkInputValue = 'mdlink';
+    }
+
+    this.setState({
+      show: true,
+      labelInputValue,
+      linkInputValue,
+      linkerType,
+    });
   }
 
   cancel() {
@@ -95,10 +119,7 @@ class LinkEditModal extends React.PureComponent {
   renderPreview() {
     return (
       <div className="linkedit-preview">
-        <Preview
-          markdown={this.state.markdown}
-          inputRef={() => {}}
-        />
+        <Preview markdown={this.state.markdown} inputRef={() => {}} />
       </div>
     );
   }
@@ -109,6 +130,15 @@ class LinkEditModal extends React.PureComponent {
 
   handleChangeLabelInput(label) {
     this.setState({ labelInputValue: label });
+  }
+
+  handleChangeTypeahead(submitedValues) {
+    const page = submitedValues[0]; // should be single page selected
+
+    if (page != null) {
+      this.handleChangeLinkInput(page.path);
+    }
+
   }
 
   handleSelecteLinkerType(linkerType) {
@@ -143,7 +173,6 @@ class LinkEditModal extends React.PureComponent {
     }
     this.setState({ markdown, permalink, isEnablePermanentLink });
   }
-
 
   generateLink() {
     const { pageContainer } = this.props;
@@ -189,9 +218,12 @@ class LinkEditModal extends React.PureComponent {
                 <div className="form-gorup my-3">
                   <label htmlFor="linkInput">Link</label>
                   <div className="input-group">
-                    <PagePathAutoComplete
+                    <SearchTypeahead
+                      onChange={this.handleChangeTypeahead}
                       onInputChange={this.handleChangeLinkInput}
-                      onSubmit={this.getPageWithLinkInputValue}
+                      inputName="link"
+                      placeholder="Input page path or URL"
+                      keywordOnInit={this.state.linkInputValue}
                     />
                   </div>
                 </div>
@@ -273,9 +305,7 @@ class LinkEditModal extends React.PureComponent {
               </div>
             </div>
             <div className="col-12 col-lg-6">
-              <div className="d-block mb-3">
-                {this.renderPreview()}
-              </div>
+              <div className="d-block mb-3">{this.renderPreview()}</div>
             </div>
           </div>
         </ModalBody>
