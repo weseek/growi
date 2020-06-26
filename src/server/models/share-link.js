@@ -25,6 +25,14 @@ schema.plugin(mongoosePaginate);
 schema.plugin(uniqueValidator);
 
 module.exports = function(crowi) {
+
+  schema.methods.isExpired = function() {
+    if (this.expiredAt == null) {
+      return false;
+    }
+    return this.expiredAt.getTime() < new Date().getTime();
+  };
+
   const model = mongoose.model('ShareLink', schema);
   return model;
 };
