@@ -10,15 +10,13 @@ class MarkdownLinkUtil {
 
   // return text as markdown link if the cursor on markdown link else return text as default label of new link.
   getMarkdownLink(editor) {
-    console.log(this.isInLink(editor));
     if (!this.isInLink(editor)) {
       return editor.getDoc().getSelection();
     }
     const curPos = editor.getCursor();
 
     const { beginningOfLink, endOfLink } = this.getBeginningAndEndOfTheClosestLinkToCursor(editor);
-    console.log(editor.getDoc().getLine(curPos.line).subString(beginningOfLink, endOfLink));
-    return editor.getDoc().getLine(curPos.line).subString(beginningOfLink, endOfLink);
+    return editor.getDoc().getLine(curPos.line).substring(beginningOfLink, endOfLink);
   }
 
 
@@ -77,8 +75,8 @@ class MarkdownLinkUtil {
 
   isInLink(editor) {
     const curPos = editor.getCursor();
-    const { endOfLink } = this.getBeginningAndEndOfTheClosestLinkToCursor(editor);
-    return curPos < endOfLink;
+    const { beginningOfLink, endOfLink } = this.getBeginningAndEndOfTheClosestLinkToCursor(editor);
+    return beginningOfLink >= 0 && endOfLink >= 0 && beginningOfLink <= curPos.ch && curPos.ch <= endOfLink;
   }
 
   // return beginning index and end index of the closest link to cursor
@@ -87,11 +85,11 @@ class MarkdownLinkUtil {
     const curPos = editor.getCursor();
     const line = editor.getDoc().getLine(curPos.line);
     let beginningOfLink = line.lastIndexOf('[', curPos.ch);
-    let endOfLink = line.indexOf(']', beginningOfLink);
-    if (line.charAt(endOfLink + 1) === '(') {
-      endOfLink = line.indexOf(')', endOfLink);
+    let endOfLink = line.indexOf(']', beginningOfLink) + 1;
+    if (line.charAt(endOfLink) === '(') {
+      endOfLink = line.indexOf(')', endOfLink) + 1;
     }
-    else if (line.charAt(beginningOfLink - 1) === '[' && line.charAt(endOfLink + 1) === ']') { // todo 先頭が[一つの時にえらーにならないか調査する
+    else if (line.charAt(beginningOfLink - 1) === '[' && line.charAt(endOfLink) === ']') { // todo 先頭が[一つの時にえらーにならないか調査する
       beginningOfLink -= 1;
       endOfLink += 1;
     }
