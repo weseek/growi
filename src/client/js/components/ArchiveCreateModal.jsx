@@ -4,6 +4,8 @@ import { withTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
+import AppContainer from '../services/AppContainer';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 
 const ArchiveCreateModal = (props) => {
@@ -41,6 +43,9 @@ const ArchiveCreateModal = (props) => {
     [],
   );
 
+  async function submit() {
+    await props.appContainer.apiv3Post('page/archive');
+  }
 
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={closeModalHandler}>
@@ -132,7 +137,7 @@ const ArchiveCreateModal = (props) => {
         </div>
       </ModalBody>
       <ModalFooter>
-        <button type="button" className="btn btn-primary">
+        <button type="button" className="btn btn-primary" onClick={submit}>
           Done
         </button>
       </ModalFooter>
@@ -144,9 +149,11 @@ const ArchiveCreateModal = (props) => {
 ArchiveCreateModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   isOpen: PropTypes.bool.isRequired,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   onClose: PropTypes.func,
   path: PropTypes.string.isRequired,
 };
+const ArchiveCreateModalWrapper = withUnstatedContainers(ArchiveCreateModal, [AppContainer]);
 
 
-export default withTranslation()(ArchiveCreateModal);
+export default withTranslation()(ArchiveCreateModalWrapper);

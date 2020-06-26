@@ -206,7 +206,7 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/Page'
    */
   router.post('/archive', accessTokenParser, loginRequired, async(req, res) => {
-    const PageArchive = this.crowi.model('PageArchive');
+    const PageArchive = crowi.model('PageArchive');
     const filePath = 'path';
     const creator = req.user._id;
     const basePagePath = '/base';
