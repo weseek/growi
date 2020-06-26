@@ -5,6 +5,7 @@ module.exports = function(crowi) {
   const pageArchiveSchema = new mongoose.Schema({
     filePath: { type: String, required: true },
     creator: { type: ObjectId, ref: 'User', index: true },
+    basePagePath: { type: String, required: true },
   }, {
     timestamps: true,
   });

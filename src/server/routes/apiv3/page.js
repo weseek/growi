@@ -182,5 +182,37 @@ module.exports = (crowi) => {
     return res.apiv3({ result });
   });
 
+  /**
+   * @swagger
+   *
+   *    /page/archive:
+   *      post:
+   *        tags: [Page]
+   *        summary: /page/archive
+   *        description: create page archive
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  targetPagePath:
+   *                    type: string
+   *        responses:
+   *          200:
+   *            description: create page archive
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/Page'
+   */
+  router.post('/archive', accessTokenParser, loginRequired, async(req, res) => {
+    const PageArchive = this.crowi.model('PageArchive');
+    const filePath = 'path';
+    const creator = req.user._id;
+    const basePagePath = '/base';
+    const archive = await PageArchive.create({ filePath, creator, basePagePath });
+    console.log(archive);
+  });
+
   return router;
 };
