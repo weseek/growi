@@ -24,6 +24,7 @@ class ShareLinkSetting extends React.Component {
     this.showDeleteConfirmModal = this.showDeleteConfirmModal.bind(this);
     this.closeDeleteConfirmModal = this.closeDeleteConfirmModal.bind(this);
     this.deleteAllLinksButtonHandler = this.deleteAllLinksButtonHandler.bind(this);
+    this.deleteLinkById = this.deleteLinkById.bind(this);
   }
 
   componentWillMount() {
@@ -59,7 +60,22 @@ class ShareLinkSetting extends React.Component {
     catch (err) {
       toastError(err);
     }
+    this.getShareLinkList(1);
+  }
 
+  async deleteLinkById(shareLinkId) {
+    const { t, appContainer, adminGeneralSecurityContainer } = this.props;
+
+    try {
+      const res = await appContainer.apiv3Delete(`/share-links/${shareLinkId}`);
+      const { deletedShareLink } = res.data;
+      toastSuccess(t('toaster.remove_share_link_success', { shareLinkId: deletedShareLink._id }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+
+    this.getShareLinkList(adminGeneralSecurityContainer.state.shareLinksActivePage);
   }
 
 
@@ -125,7 +141,7 @@ class ShareLinkSetting extends React.Component {
                         className="btn btn-outline-warning"
                         type="button"
                         shareLinks={sharelink._id}
-                        onClickDeleteButton={this.deleteLinkById}
+                        onClick={() => { this.deleteLinkById(sharelink._id) }}
                       >
                         <i className="icon-trash mr-2"></i>Delete
                       </button>

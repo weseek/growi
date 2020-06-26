@@ -45,10 +45,12 @@ class SecurityManagement extends React.Component {
     const { activeTab, activeComponents } = this.state;
     return (
       <Fragment>
-        <div>
+        <div className="mb-5">
           <SecuritySetting />
         </div>
-        <div>
+
+        {/* Shared Link List */}
+        <div className="mb-5">
           <ShareLinkSetting />
         </div>
 
