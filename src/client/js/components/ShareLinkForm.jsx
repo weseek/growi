@@ -245,9 +245,6 @@ class ShareLinkForm extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
 const ShareLinkFormWrapper = withUnstatedContainers(ShareLinkForm, [AppContainer, PageContainer]);
 
 ShareLinkForm.propTypes = {
@@ -256,5 +253,6 @@ ShareLinkForm.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   onCloseForm: PropTypes.func,
+};
 
 export default withTranslation()(ShareLinkFormWrapper);
