@@ -54,7 +54,10 @@ class CopyDropdown extends React.Component {
   }
 
   generatePagePathWithParams() {
-    const { pagePath } = this.props;
+    const { pagePath, shareLinkId, isShareLinkMode } = this.props;
+    if (isShareLinkMode) {
+      return decodeURI(`/share/${shareLinkId}`);
+    }
     return decodeURI(`${pagePath}${this.uriParams}`);
   }
 
@@ -74,14 +77,9 @@ class CopyDropdown extends React.Component {
   }
 
   generateMarkdownLink() {
-    const { pagePath, isShareLinkMode } = this.props;
-
-    const label = decodeURI(`${pagePath}${this.uriParams}`);
+    const label = this.generatePagePathWithParams();
     const permalink = this.generatePermalink();
 
-    if (isShareLinkMode) {
-      return `[${label}](${this.generatePagePathUrl()})`;
-    }
     return `[${label}](${permalink})`;
   }
 
@@ -156,7 +154,7 @@ class CopyDropdown extends React.Component {
             <DropdownItem divider className="my-0"></DropdownItem>
 
             {/* Parmanent Link */}
-            { (pageId && !isShareLinkMode) && (
+            { pageId && (
               <CopyToClipboard text={permalink} onCopy={this.showToolTip}>
                 <DropdownItem className="px-3">
                   <DropdownItemContents title={t('copy_to_clipboard.Parmanent link')} contents={permalink} />
@@ -167,7 +165,7 @@ class CopyDropdown extends React.Component {
             <DropdownItem divider className="my-0"></DropdownItem>
 
             {/* Page path + Parmanent Link */}
-            { (pageId && !isShareLinkMode) && (
+            { pageId && (
               <CopyToClipboard text={`${pagePathWithParams}\n${permalink}`} onCopy={this.showToolTip}>
                 <DropdownItem className="px-3">
                   <DropdownItemContents title={t('copy_to_clipboard.Page path and parmanent link')} contents={<>{pagePathWithParams}<br />{permalink}</>} />
@@ -204,6 +202,7 @@ CopyDropdown.propTypes = {
   pagePath: PropTypes.string.isRequired,
   pageId: PropTypes.string,
   buttonStyle: PropTypes.object,
+  shareLinkId: PropTypes.string,
   isShareLinkMode: PropTypes.bool,
 };
 
