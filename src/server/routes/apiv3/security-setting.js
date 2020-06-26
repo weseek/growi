@@ -287,11 +287,10 @@ const validator = {
  *            description: local account automatically linked the email matched
  */
 module.exports = (crowi) => {
-  const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
-  const adminRequired = require('../../middleware/admin-required')(crowi);
-  const csrf = require('../../middleware/csrf')(crowi);
-
-  const { ApiV3FormValidator } = crowi.middlewares;
+  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
+  const adminRequired = require('../../middlewares/admin-required')(crowi);
+  const csrf = require('../../middlewares/csrf')(crowi);
+  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   /**
    * @swagger
@@ -435,7 +434,7 @@ module.exports = (crowi) => {
    *                  type: object
    *                  description: updated param
    */
-  router.put('/authentication/enabled', loginRequiredStrictly, adminRequired, csrf, validator.authenticationSetting, ApiV3FormValidator, async(req, res) => {
+  router.put('/authentication/enabled', loginRequiredStrictly, adminRequired, csrf, validator.authenticationSetting, apiV3FormValidator, async(req, res) => {
     const { isEnabled, authId } = req.body;
 
     let setupStrategies = await crowi.passportService.getSetupStrategies();
@@ -518,7 +517,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/GeneralSetting'
    */
-  router.put('/general-setting', loginRequiredStrictly, adminRequired, csrf, validator.generalSetting, ApiV3FormValidator, async(req, res) => {
+  router.put('/general-setting', loginRequiredStrictly, adminRequired, csrf, validator.generalSetting, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:restrictGuestMode': req.body.restrictGuestMode,
       'security:pageCompleteDeletionAuthority': req.body.pageCompleteDeletionAuthority,
@@ -566,25 +565,55 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: suceed to get all share links
    */
-  router.get('/all-share-links/', /* loginRequiredStrictly, adminRequired, csrf, ApiV3FormValidator, */ async(req, res) => {
+  router.get('/all-share-links/', loginRequiredStrictly, adminRequired, async(req, res) => {
     const ShareLink = crowi.model('ShareLink');
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const linkQuery = {};
     try {
-      const shareLinksResult = await ShareLink.paginate(
+      const paginateResult = await ShareLink.paginate(
         linkQuery,
         {
           page,
           limit,
+          populate: {
+            path: 'relatedPage',
+            select: 'path',
+          },
         },
       );
-      return res.apiv3({ shareLinksResult });
+      return res.apiv3({ paginateResult });
     }
     catch (err) {
       const msg = 'Error occured in get share link';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'get-all-share-links-failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /_api/v3/security-setting/all-share-links:
+   *      delete:
+   *        tags: [ShareLinkSettings, apiv3]
+   *        description: Delete All ShareLinks at Share Link Setting
+   *        responses:
+   *          200:
+   *            description: succeed to delete all share links
+   */
+
+  router.delete('/all-share-links/', loginRequiredStrictly, adminRequired, async(req, res) => {
+    const ShareLink = crowi.model('ShareLink');
+    try {
+      const removedAct = await ShareLink.remove({});
+      const removeTotal = await removedAct.n;
+      return res.apiv3({ removeTotal });
+    }
+    catch (err) {
+      const msg = 'Error occured in delete all share links';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'failed-to-delete-all-share-links'));
     }
   });
 
@@ -609,7 +638,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/LocalSetting'
    */
-  router.put('/local-setting', loginRequiredStrictly, adminRequired, csrf, validator.localSetting, ApiV3FormValidator, async(req, res) => {
+  router.put('/local-setting', loginRequiredStrictly, adminRequired, csrf, validator.localSetting, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:registrationMode': req.body.registrationMode,
       'security:registrationWhiteList': req.body.registrationWhiteList,
@@ -651,7 +680,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/LdapAuthSetting'
    */
-  router.put('/ldap', loginRequiredStrictly, adminRequired, csrf, validator.ldapAuth, ApiV3FormValidator, async(req, res) => {
+  router.put('/ldap', loginRequiredStrictly, adminRequired, csrf, validator.ldapAuth, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:passport-ldap:serverUrl': req.body.serverUrl,
       'security:passport-ldap:isUserBind': req.body.isUserBind,
@@ -714,7 +743,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/SamlAuthSetting'
    */
-  router.put('/saml', loginRequiredStrictly, adminRequired, csrf, validator.samlAuth, ApiV3FormValidator, async(req, res) => {
+  router.put('/saml', loginRequiredStrictly, adminRequired, csrf, validator.samlAuth, apiV3FormValidator, async(req, res) => {
 
     //  For the value of each mandatory items,
     //  check whether it from the environment variables is empty and form value to update it is empty
@@ -805,7 +834,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/OidcAuthSetting'
    */
-  router.put('/oidc', loginRequiredStrictly, adminRequired, csrf, validator.oidcAuth, ApiV3FormValidator, async(req, res) => {
+  router.put('/oidc', loginRequiredStrictly, adminRequired, csrf, validator.oidcAuth, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:passport-oidc:providerName': req.body.oidcProviderName,
       'security:passport-oidc:issuerHost': req.body.oidcIssuerHost,
@@ -864,7 +893,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/BasicAuthSetting'
    */
-  router.put('/basic', loginRequiredStrictly, adminRequired, csrf, validator.basicAuth, ApiV3FormValidator, async(req, res) => {
+  router.put('/basic', loginRequiredStrictly, adminRequired, csrf, validator.basicAuth, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:passport-basic:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
     };
@@ -905,7 +934,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/GoogleOAuthSetting'
    */
-  router.put('/google-oauth', loginRequiredStrictly, adminRequired, csrf, validator.googleOAuth, ApiV3FormValidator, async(req, res) => {
+  router.put('/google-oauth', loginRequiredStrictly, adminRequired, csrf, validator.googleOAuth, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:passport-google:clientId': req.body.googleClientId,
       'security:passport-google:clientSecret': req.body.googleClientSecret,
@@ -950,7 +979,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/GitHubOAuthSetting'
    */
-  router.put('/github-oauth', loginRequiredStrictly, adminRequired, csrf, validator.githubOAuth, ApiV3FormValidator, async(req, res) => {
+  router.put('/github-oauth', loginRequiredStrictly, adminRequired, csrf, validator.githubOAuth, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:passport-github:clientId': req.body.githubClientId,
       'security:passport-github:clientSecret': req.body.githubClientSecret,
@@ -997,7 +1026,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/TwitterOAuthSetting'
    */
-  router.put('/twitter-oauth', loginRequiredStrictly, adminRequired, csrf, validator.twitterOAuth, ApiV3FormValidator, async(req, res) => {
+  router.put('/twitter-oauth', loginRequiredStrictly, adminRequired, csrf, validator.twitterOAuth, apiV3FormValidator, async(req, res) => {
 
     let requestParams = {
       'security:passport-twitter:consumerKey': req.body.twitterConsumerKey,

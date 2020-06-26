@@ -1,0 +1,702 @@
+{
+	"Help": "帮助",
+	"Edit": "编辑",
+	"Delete": "删除",
+	"delete_all": "删除所有",
+	"Duplicate": "复制",
+	"Copy": "复制",
+	"Login": "登录",
+	"Click to copy": "点击复制",
+	"Move/Rename": "移动/重命名",
+	"Moved": "移动",
+	"Redirected": "重定向",
+	"Unlinked": "Unlinked",
+	"Like!": "Like!",
+	"Seen by": "Seen by",
+	"Cancel": "取消",
+	"Create": "创建",
+	"Admin": "管理",
+	"administrator": "管理员",
+	"Tag": "标签",
+	"Tags": "Tags",
+	"New": "新建",
+	"Shortcuts": "快捷方式",
+	"eg": "e.g.",
+	"add": "添加",
+	"Undo": "撤销",
+	"Article": "主题",
+	"Page": "页面",
+	"Page Path": "相对路径",
+	"Category": "分类",
+	"User": "用户",
+	"status": "状态",
+	"account_id": "用户Id",
+	"Update": "更新",
+	"Update Page": "更新本页",
+	"Warning": "警告",
+	"Sign in": "登录",
+	"Sign up is here": "注册",
+	"Sign in is here": "登录",
+	"Sign up": "注册",
+	"Sign up with Google Account": "Sign up with Google Account",
+	"Sign in with Google Account": "Sign in with Google Account",
+	"Sign up with this Google Account": "Sign up with this Google Account",
+	"Example": "例如",
+	"Taro Yamada": "John Doe",
+	"List View": "列表",
+	"Timeline View": "时间线",
+	"History": "历史",
+	"Presentation Mode": "演示文稿",
+	"Not available for guest": "Not available for guest",
+	"username": "用户名",
+	"Created": "创建",
+	"Last updated": "上次更新",
+	"Last_Login": "上次登录",
+	"Share": "分享",
+  "Share Link": "分享链接",
+  "share_link_notice":"remove {{count}} share links",
+  "delete_all_share_links":"Delete all share links",
+	"Markdown Link": "Markdown链接",
+	"Create/Edit Template": "创建/编辑 模板页面",
+	"Unportalize": "未启动",
+	"Go to this version": "查看此版本",
+	"View diff": "查看差异",
+	"No diff": "无差异",
+	"Shrink versions that have no diffs": "收缩没有差异的版本",
+	"User ID": "用户ID",
+	"Home": "首页",
+	"User Settings": "用户设置",
+	"User Information": "用户信息",
+	"Basic Info": "基础信息",
+	"Name": "姓名",
+	"Email": "邮箱",
+	"Language": "语言",
+	"English": "英语",
+	"Japanese": "日语",
+	"Chinese": "简体中文",
+	"Set Profile Image": "头像",
+	"Upload Image": "上传图片",
+	"Current Image": "当前图片",
+	"Delete Image": "删除图片",
+	"Delete this image?": "删除图片?",
+	"Updated": "更新",
+	"Upload new image": "上传新图像",
+	"Connected": "Connected",
+	"Show": "显示",
+	"Hide": "隐藏",
+	"Reset": "重置",
+	"Disclose E-mail": "显示邮箱",
+	"page exists": "页面已存在",
+	"Error occurred": "Error occurred",
+	"Create today's": "Create today's ...",
+	"Memo": "memo",
+	"Input page name": "Input page name",
+	"Input page name (optional)": "Input page name (optional)",
+	"New Page": "新页面",
+	"Create under": "Create page under below:",
+	"Table of Contents": "Table of Contents",
+	"Wiki Management Home Page": "Wiki管理首页",
+	"App Settings": "系统设置",
+	"Site URL settings": "主页URL设置",
+	"Markdown Settings": "Markdown设置",
+	"Customize": "页面定制",
+	"Notification Settings": "通知设置",
+	"User_Management": "用户管理",
+	"external_account_management": "外部账户管理",
+	"UserGroup Management": "用户组管理",
+	"Full Text Search Management": "全文搜索管理",
+	"Import Data": "导入数据",
+	"Export Archive Data": "导出主题数据",
+	"Basic Settings": "基础设置",
+	"Basic authentication": "基本身份验证",
+	"Register limitation": "注册限制",
+	"The contents entered here will be shown in the header etc": "此处输入的内容将显示在标题等中",
+	"Public": "公共",
+	"Anyone with the link": "任何人",
+	"Specified users only": "仅指定用户",
+	"Only me": "只有我",
+	"Only inside the group": "仅组内",
+	"page_list_and_search_results": "页面列表/搜索结果",
+	"scope_of_page_disclosure": "页面公开范围",
+	"set_point": "设定值",
+	"always_displayed": "始终显示",
+	"always_hidden": "总是隐藏",
+	"displayed_or_hidden": "显示/隐藏",
+	"page_access_and_delete_rights": "页面访问/删除权限",
+	"Reselect the group": "重新选择组",
+	"Shareable link": "可分享链接",
+	"The whitelist of registration permission E-mail address": "注册许可电子邮件地址的白名单",
+	"Add tags for this page": "添加标签",
+	"Edit tags for this page": "编辑标签",
+	"You have no tag, You can set tags on pages": "你没有标签，可以在页面上设置标签",
+	"Show latest": "显示最新",
+	"Load latest": "家在最新",
+	"edited this page": "edited this page.",
+	"List Drafts": "草稿",
+	"Deleted Pages": "已删除页",
+	"Sign out": "退出",
+	"Disassociate": "解除关联",
+	"Recent Created": "最新创建",
+	"Recent Changes": "最新修改",
+	"form_validation": {
+		"error_message": "有些值不正确",
+		"required": "%s 是必需的",
+		"invalid_syntax": "%s的语法无效。"
+	},
+	"installer": {
+		"setup": "安装",
+		"create_initial_account": "创建初始用户",
+		"initial_account_will_be_administrator_automatically": "初始帐户将自动成为管理员。",
+		"unavaliable_user_id": "用户ID不可用"
+	},
+	"breaking_changes": {
+		"v346_using_basic_auth": "当前使用的基本身份验证在不久的将来将不再可用。从%s中删除设置"
+	},
+	"page_register": {
+		"notice": {
+			"restricted": "需要管理员批准。",
+			"restricted_defail": "一旦管理员批准您的注册，您就可以访问此wiki。"
+		},
+		"form_help": {
+			"email": "您必须有下面列出的电子邮件地址才能注册此wiki。",
+			"password": "密码长度必须至少为6个字符。",
+			"user_id": "您创建的网页的URL将包含您的用户ID。您的用户ID可以由字母、数字和一些符号组成。"
+		}
+	},
+	"Settings": "设置",
+	"page_me": {
+		"form_help": {
+			"profile_image1": "图像上传设置未完成。",
+			"profile_image2": "设置AWS或启用本地上传。"
+		}
+	},
+	"page_me_apitoken": {
+		"notice": {
+			"apitoken_issued": "API token 未发布。",
+			"update_token1": "您可以更新以生成新的API令牌。",
+			"update_token2": "您需要更新任何现有进程中的API令牌。"
+		}
+	},
+	"Password": "密码",
+	"Password Settings": "密码设置",
+	"personal_settings": {
+		"disassociate_external_account": "解除与外部帐户的关联",
+		"disassociate_external_account_desc": "是否确实要解除与<strong>{{providerType}}</strong>帐户<strong>{{providerType}}</strong> 的关联？",
+		"set_new_password": "设置新密码",
+		"update_password": "更新密码",
+		"current_password": "当前密码",
+		"new_password": "新密码",
+		"new_password_confirm": "重复新密码",
+		"password_is_not_set": "密码未设置"
+	},
+	"Security Settings": "安全设置",
+	"API Settings": "API设置",
+	"API Token Settings": "API token 设置",
+	"Current API Token": "当前 API token",
+	"Update API Token": "更新 API token",
+	"header_search_box": {
+		"label": {
+			"All pages": "所有页面",
+			"This tree": "当前分支"
+		},
+		"item_label": {
+			"All pages": "所有页面",
+			"This tree": "当前分支以下内容"
+		}
+	},
+	"copy_to_clipboard": {
+		"Copy to clipboard": "复制到剪贴板",
+		"Page path": "页面路径",
+		"Page URL": "页面Url",
+		"Parmanent link": "参数化链接",
+		"Page path and parmanent link": "页面路径及参数化链接",
+		"Markdown link": "Markdown链接"
+	},
+	"search_help": {
+		"title": "搜索帮助",
+		"and": {
+			"syntax help": "用空格分隔",
+			"desc": "在标题或正文中同时包含{{word1}、{{word2}的搜索页"
+		},
+		"exclude": {
+			"desc": "排除标题或正文中包含{{word}的页"
+		},
+		"phrase": {
+			"syntax help": "用双引号括起来",
+			"desc": "包含短语“{{phrase}”的搜索页"
+		},
+		"prefix": {
+			"desc": "只搜索标题以{{path}开头的页"
+		},
+		"exclude_prefix": {
+			"desc": "排除标题以{{path}开头的页"
+		},
+		"tag": {
+			"desc": "搜索带有{{tag}标记的页面"
+		},
+		"exclude_tag": {
+			"desc": "排除带有{{tag}标记的页"
+		}
+	},
+	"search": {
+		"search page bodies": "按[回车]键进行全文搜索"
+	},
+	"page_page": {
+		"notice": {
+			"version": "这不是当前版本。",
+			"moved": "此页已从<code>%s</code>",
+			"redirected": "您将从<code>%s</code>",
+			"duplicated": "此页来自<code>%s</code>",
+			"unlinked": "将网页重定向到此网页已被删除。",
+			"restricted": "访问此页受到限制",
+			"stale": "自上次更新以来，已超过{{count}年。",
+			"stale_plural": "自上次更新以来已过去{{count}年以上。"
+		}
+	},
+	"page_edit": {
+		"Show active line": "显示活动行",
+		"overwrite_scopes": "{{operation}和覆盖所有子体的作用域",
+		"notice": {
+			"conflict": "无法保存您所做的更改，因为其他人正在编辑此页。请在重新加载页面后重新编辑受影响的部分。"
+		}
+	},
+	"page_api_error": {
+		"notfound_or_forbidden": "未找到或禁止原始页。",
+		"already_exists": "新建页面已存在",
+		"outdated": "页面已被某人更新，现在已过时。",
+		"user_not_admin": "仅管理员用户可以完全删除"
+	},
+	"modal_rename": {
+		"label": {
+			"Move/Rename page": "页面 移动/重命名",
+			"New page name": "新建页面名称",
+			"Current page name": "当前页面名称",
+			"Recursively": "递归地",
+			"Do not update metadata": "不更新元数据",
+			"Redirect": "重定向"
+		},
+		"help": {
+			"redirect": "Redirect to new page if someone accesses <code>%s</code>",
+			"metadata": "Remains last update user and updated date as is",
+			"recursive": "Move/Rename children of under <code>%s</code> recursively"
+		}
+	},
+	"Put Back": "Put back",
+	"Delete Completely": "Delete completely",
+	"modal_delete": {
+		"delete_page": "Delete page",
+		"deleting_page": "Deleting page",
+		"delete_recursively": "Delete child pages recursively.",
+		"delete_completely": "Delete completely",
+		"delete_completely_restriction": "You don't have the authority to delete pages completely.",
+		"recursively": "Delete children of <code>%s</code> recursively.",
+		"completely": "Delete completely instead of putting it into trash."
+	},
+	"modal_empty": {
+		"empty_the_trash": "Empty The Trash",
+		"notice": "完全删除的页面是不可恢复的。"
+	},
+	"modal_duplicate": {
+		"label": {
+			"Duplicate page": "Duplicate page",
+			"New page name": "New page name",
+			"Current page name": "Current page name"
+		}
+	},
+	"modal_putback": {
+		"label": {
+			"Put Back Page": "Put back page",
+			"recursively": "Put back recursively"
+		},
+		"help": {
+			"recursively": "Put back children of under <code>%s</code> recursively"
+		}
+	},
+	"modal_shortcuts": {
+		"global": {
+			"title": "全局快捷方式",
+			"Open/Close shortcut help": "打开/关闭快捷方式帮助",
+			"Edit Page": "编辑页面",
+			"Create Page": "创建页面",
+			"Show Contributors": "显示参与者",
+			"Konami Code": "Konami Code",
+			"konami_code_url": "https://en.wikipedia.org/wiki/Konami_Code"
+		},
+		"editor": {
+			"title": "编辑器快捷方式",
+			"Indent": "缩进",
+			"Outdent": "回退缩进",
+			"Save Page": "保存页面",
+			"Delete Line": "删除行"
+		},
+		"commentform": {
+			"title": "注释窗体快捷方式",
+			"Post": "提交"
+		}
+	},
+	"toaster": {
+		"update_successed": "Succeeded to update {{target}}",
+		"give_user_admin": "Succeeded to give {{username}} admin",
+		"remove_user_admin": "Succeeded to remove {{username}} admin ",
+		"activate_user_success": "Succeeded to activating {{username}}",
+		"deactivate_user_success": "Succeeded to deactivate {{username}}",
+		"remove_user_success": "Succeeded to removing {{username}} ",
+		"remove_external_user_success": "Succeeded to remove {{accountId}} "
+	},
+	"template": {
+		"modal_label": {
+			"Create/Edit Template Page": "创建/编辑模板页",
+			"Create template under": "在下面创建模板页：<br/><code><small>%s</small></code>"
+		},
+		"option_label": {
+			"create/edit": "创建/编辑模板页。",
+			"select": "选择模板页面类型"
+		},
+		"children": {
+			"label": "子模板",
+			"desc": "仅应用于模板存在的同一级别页"
+		},
+		"decendants": {
+			"label": "子代模板",
+			"desc": "适用于所有分散页"
+		}
+	},
+	"sandbox": {
+		"header": "标题",
+		"header_x": "标题{{index}",
+		"block": "段落",
+		"block_detail": "写一段",
+		"empty_line": "空行",
+		"line_break": "换行符",
+		"line_break_detail": "（2空格）换行",
+		"typography": "排版",
+		"italics": "斜体",
+		"bold": "加粗",
+		"italic_bold": "斜体加粗",
+		"strikethrough": "删除线",
+		"link": "链接",
+		"code_highlight": "代码突出显示",
+		"list": "列表",
+		"unordered_list_x": "无序列表{{index}}",
+		"ordered_list_x": "有序列表{{index}}",
+		"task": "任务",
+		"task_checked": "选中的",
+		"task_unchecked": "未选中的",
+		"quote": "引用",
+		"quote1": "你可以写",
+		"quote2": "多行引用",
+		"quote_nested": "嵌套引用",
+		"table": "表格",
+		"image": "图片",
+		"alt_text": "Alt文本",
+		"insert_image": "插入图像",
+		"open_sandbox": "开放式沙箱"
+	},
+	"hackmd": {
+		"not_set_up": "HackMD is not set up.",
+		"start_to_edit": "Start to edit with HackMD",
+		"clone_page_content": "Click to clone page content and start to edit.",
+		"unsaved_draft": "HackMD has unsaved draft.",
+		"draft_outdated": "DRAFT MAY BE OUTDATED",
+		"based_on_revision": "The current draft on HackMD is based on",
+		"view_outdated_draft": "View the outdated draft on HackMD",
+		"resume_to_edit": "Resume to edit with HackMD",
+		"discard_changes": "Discard changes of HackMD",
+		"integration_failed": "HackMD Integration failed",
+		"fail_to_connect": "GROWI client failed to connect to GROWI agent for HackMD.",
+		"check_configuration": "Check your configuration following <a href='https://docs.growi.org/guide/admin-cookbook/integrate-with-hackmd.html'>the manual</a>.",
+		"not_initialized": "HackmdEditor component has not initialized",
+		"someone_editing": "Someone editing this page on HackMD",
+		"this_page_has_draft": "This page has a draft on HackMD"
+	},
+	"security_settings": "安全设置",
+	"security_setting": {
+		"Security settings": "安全设置",
+		"Guest Users Access": "来宾用户访问",
+		"Fixed by env var": "这是由env var<code>%s=%s</code>修复的。",
+		"Register limitation": "注册限制",
+		"Register limitation desc": "限制新用户注册",
+		"The whitelist of registration permission E-mail address": "注册许可电子邮件地址的白名单",
+		"users_without_account": "无法访问没有帐户的用户",
+		"example": "例子",
+		"restrict_emails": "您可以通过编写电子邮件域（以@开头）将电子邮件注册限制为wiki。",
+		"for_example": " 例如，如果要将注册限制为growi.org网站域，你可以写",
+		"in_this_case": "；在这种情况下，只有growi.org网站域将能够注册，所有其他用户将被拒绝。",
+		"insert_single": "请每行插入一个电子邮件地址。",
+		"page_listing_1": "页面列表/搜索<br>受“仅限我”限制",
+		"page_listing_1_desc": "列出/搜索时显示受“仅限我”选项限制的页面",
+		"page_listing_2": "页面列表/搜索<br>受用户组限制",
+		"page_listing_2_desc": "显示列出/搜索时受用户组限制的页面",
+		"complete_deletion": "限制完全删除页面",
+		"complete_deletion_explain": "限制可以完全删除页面的用户。",
+		"admin_only": "仅管理员",
+		"admin_and_author": "管理员|作者",
+		"anyone": "任何人",
+		"Authentication mechanism settings": "身份验证机制设置",
+		"setup_is_not_yet_complete": "安装尚未完成",
+		"alert_siteUrl_is_not_set": "主页URL未设置，通过 {{link}} 设置",
+		"xss_prevent_setting": "阻止XSS（跨站点脚本）",
+		"xss_prevent_setting_link": "转到Markdown设置",
+		"callback_URL": "回调URL",
+		"providerName": "提供程序名称",
+		"issuerHost": "发行者主机",
+		"scope": "Scope",
+		"desc_of_callback_URL": "在{{AuthName}}身份提供程序的设置中使用它",
+		"clientID": "Client ID",
+		"client_secret": "客户机密",
+		"updated_general_security_setting": "更新安全设置成功",
+		"setup_not_completed_yet": "安装尚未完成",
+		"guest_mode": {
+			"deny": "拒绝（仅限注册用户）",
+			"readonly": "接受（来宾可以只读）"
+		},
+		"registration_mode": {
+			"open": "打开（任何人都可以注册）",
+			"restricted": "受限（需要管理员批准）",
+			"closed": "已关闭（仅限邀请）"
+		},
+		"configuration": " 配置",
+		"optional": "可选的",
+		"Treat username matching as identical": "Automatically bind external accounts newly logged in to local accounts when <code>username</code> match",
+		"Treat username matching as identical_warn": "WARNING: Be aware of security because the system treats the same user as a match of <code>username</code>.",
+		"Treat email matching as identical": "Automatically bind external accounts newly logged in to local accounts when <code>email</code> match",
+		"Treat email matching as identical_warn": "WARNING: Be aware of security because the system treats the same user as a match of <code>email</code>.",
+		"Use env var if empty": "Use env var <code>{{env}}</code> if empty",
+		"Use default if both are empty": "If both ​​are empty, the default value <code>{{target}}</code> is used.",
+		"missing mandatory configs": "The following mandatory items are not set in either database nor environment variables.",
+		"Local": {
+			"name": "ID/Password",
+			"note for the only env option": "The LOCAL authentication is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}/code> .",
+			"enable_local": "Enable ID/Password"
+		},
+		"ldap": {
+			"enable_ldap": "Enable LDAP",
+			"server_url_detail": "The LDAP URL of the directory service in the format <code>ldap://host:port/DN</code> or <code>ldaps://host:port/DN</code>.",
+			"bind_mode": "Binding Mode",
+			"bind_manager": "Manager Bind",
+			"bind_user": "User Bind",
+			"bind_DN_manager_detail": "The DN of the account that authenticates and queries the directory service",
+			"bind_DN_user_detail1": "The query used to bind with the directory service.",
+			"bind_DN_user_detail2": "Use <code>&#123;&#123;username&#125;&#125;</code> to reference the username entered in the login page.",
+			"bind_DN_password": "Bind DN Password",
+			"bind_DN_password_manager_detail": "The password for the Bind DN account.",
+			"bind_DN_password_user_detail": "The password that is entered in the login page will be used to bind.",
+			"search_filter": "Search Filter",
+			"search_filter_detail1": "The query used to locate the authenticated user.",
+			"search_filter_detail2": "Use <code>&#123;&#123;username&#125;&#125;</code> to reference the username entered in the login page.",
+			"search_filter_detail3": "If empty, the filter <code>(uid=&#123;&#123;username&#125;&#125;)</code> is used.",
+			"search_filter_example1": "Match with 'uid' or 'mail'",
+			"search_filter_example2": "Match with 'sAMAccountName' for Active Directory",
+			"username_detail": "Specification of mappings for <code>username</code> when creating new users",
+			"name_detail": "Specification of mappings for full name when creating new users",
+			"mail_detail": "Specification of mappings for mail address when creating new users",
+			"group_search_base_DN": "Group Search Base DN",
+			"group_search_base_DN_detail": "The base DN from which to search for groups. If defined, also <code>Group Search Filter</code> must be defined for the search to work.",
+			"group_search_filter": "Group Search Filter",
+			"group_search_filter_detail1": "The query used to filter for groups.",
+			"group_search_filter_detail2": "Login via LDAP is accepted only when this query hits one or more groups.",
+			"group_search_filter_detail3": "Use <code>&#123;&#123;dn&#125;&#125;</code> to have it replaced of the found user object.",
+			"group_search_filter_detail4": "<code>(&(cn=group1)(memberUid=&#123;&#123;dn&#125;&#125;))</code> hits the groups which has <code>cn=group1</code> and <code>memberUid</code> includes the user's <code>uid</code>(when <code>Group DN Property</code> is not changed from the default value.)",
+			"group_search_user_DN_property": "User DN Property",
+			"group_search_user_DN_property_detail": "The property of user object to use in <code>&#123;&#123;dn&#125;&#125;</code> interpolation of <code>Group Search Filter</code>.",
+			"test_config": "Test Saved Configuration",
+			"updated_ldap": "Succeeded to update LDAP setting"
+		},
+		"SAML": {
+			"name": "SAML",
+			"enable_saml": "Enable SAML",
+			"id_detail": "Specification of the name of attribute which can identify the user in SAML Identity Provider",
+			"username_detail": "Specification of mappings for <code>username</code> when creating new users",
+			"mapping_detail": "Specification of mappings for {{target}} when creating new users",
+			"cert_detail": "PEM-encoded X.509 signing certificate to validate the response from IdP",
+			"Use env var if empty": "If the value in the database is empty, the value of the environment variable <code>{{env}}</code> is used.",
+			"note for the only env option": "The setting item that enables or disables the SAML authentication and the highlighted setting items use only the value of environment variables.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> .",
+			"attr_based_login_control_detail": "Limit who can sign up by using <code>&lt;saml: Attribute&gt;</code> element included in <code>&lt;saml: AttributeStatement&gt;</code> element and its child element <code>&lt;saml: AttributeValue&gt;</code>.",
+			"attr_based_login_control_rule_detail": "See <a href=\"https://lucene.apache.org/core/2_9_4/queryparsersyntax.html\" target=\"_blank\">Apache Lucene - Query Parser Syntax</a>.<h6>Supported Queries:</h6><ul><li>Terms</li><li>Fields</li><li>AND/NOT/OR Operator</li><li>Grouping</li></ul><h6>Unsupported Queries:</h6><ul><li>Wildcard, Fuzzy, Proximity, Range and Boosting</li><li>+/- Operator</li><li>Field Grouping</li></ul>",
+			"attr_based_login_control_rule_example": "<h6>Example</h6>If a rule is <code>(Department: A || Department: B) && Position: Leader</code>, users who have either <code>Department: A</code> or <code>Department: B</code> and have <code>Position: Leader</code> <strong>can</strong> sign in.",
+			"updated_saml": "Succeeded to update SAML setting"
+		},
+		"Basic": {
+			"enable_basic": "Enable Basic",
+			"name": "Basic Authentication",
+			"desc_1": "Login with <code>username</code> in Authorization header.",
+			"desc_2": "User will be automatically generated if not exist.",
+			"updated_basic": "Succeeded to update Basic setting"
+		},
+		"OAuth": {
+			"enable_oidc": "Enable OIDC",
+			"register": "Register for %s",
+			"change_redirect_url": "Enter <code>%s</code> <br>(where <code>%s</code> is your host name) for \"Authorized redirect URIs\".",
+			"Google": {
+				"enable_google": "Enable Google OAuth",
+				"name": "Google OAuth",
+				"register_1": "Access {{link}}",
+				"register_2": "Create Project if no projects exist",
+				"register_3": "Create Credentials &rightarrow; OAuth client ID &rightarrow; Select \"Web application\"",
+				"register_4": "Register your OAuth App with one of Authorized redirect URIs as <code>{{url}}</code>",
+				"register_5": "Copy and paste your ClientID and Client Secret above",
+				"updated_google": "Succeeded to update Google OAuth setting"
+			},
+			"Facebook": {
+				"name": "Facebook OAuth"
+			},
+			"Twitter": {
+				"enable_twitter": "Enable Twitter OAuth",
+				"name": "Twitter OAuth",
+				"register_1": "Access {{link}}",
+				"register_2": "Sign in Twitter",
+				"register_3": "Create Credentials &rightarrow; OAuth client ID &rightarrow; Select \"Web application\"",
+				"register_4": "Register your OAuth App with one of Authorized redirect URIs as <code>{{url}}</code>",
+				"register_5": "Copy and paste your ClientID and Client Secret above",
+				"updated_twitter": "Succeeded to update Twitter OAuth setting"
+			},
+			"GitHub": {
+				"enable_github": "Enable GitHub OAuth",
+				"name": "GitHub OAuth",
+				"register_1": "Access {{link}}",
+				"register_2": "Register your OAuth App with \"Authorization callback URL\" as <code>{{url}}</code>",
+				"register_3": "Copy and paste your ClientID and Client Secret above",
+				"updated_github": "Succeeded to update GitHub OAuth setting"
+			},
+			"OIDC": {
+				"name": "OpenID Connect",
+				"id_detail": "Specification of the name of attribute which can identify the user in OIDC claims",
+				"username_detail": "Specification of mappings for <code>username</code> when creating new users",
+				"name_detail": "Specification of mappings for <code>name</code> when creating new users",
+				"mapping_detail": "Specification of mappings for %s when creating new users",
+				"register_1": "Contant to OIDC IdP Administrator",
+				"register_2": "Register your OIDC App with \"Authorization callback URL\" as <code>%s</code>",
+				"register_3": "Copy and paste your ClientID and Client Secret above",
+				"updated_oidc": "Succeeded to update OpenID Connect"
+			},
+			"how_to": {
+				"google": "How to configure Google OAuth?",
+				"github": "How to configure GitHub OAuth?",
+				"twitter": "How to configure Twitter OAuth?",
+				"oidc": "How to configure OIDC?"
+			}
+		},
+		"form_item_name": {
+			"entryPoint": "Entry point",
+			"issuer": "Issuer",
+			"cert": "Certificate",
+			"attrMapId": "ID",
+			"attrMapUsername": "Username",
+			"attrMapMail": "Mail Address",
+			"attrMapFirstName": "First Name",
+			"attrMapLastName": "Last Name",
+			"ABLCRule": "Rule"
+		}
+	},
+	"notification_setting": {
+		"slack_incoming_configuration": "Slack Incoming Webhooks configuration",
+		"prioritize_webhook": "Prioritize incoming webhook than Slack App",
+		"prioritize_webhook_desc": "Check this option and GROWI use Incoming Webhooks even if Slack App settings are enabled.",
+		"slack_app_configuration": "Slack app configuration",
+		"slack_app_configuration_desc": "This is the way that compatible with Crowi,<br /> but not recommended in GROWI because it is <strong>too complex</strong>.",
+		"use_instead": "Please use Slack Incoming Webhooks Configuration instead.",
+		"how_to": {
+			"header": "How to configure Incoming Webhooks?",
+			"workspace": "(At Workspace) Add a hook",
+			"workspace_desc1": "Go to <a href='https: //slack.com/services/new/incoming-webhook'>Incoming Webhooks configuration page</a>.",
+			"workspace_desc2": "Choose the default channel to post.",
+			"workspace_desc3": "Add.",
+			"at_growi": "(At GROWI admin page) Set Webhook URL",
+			"at_growi_desc": "Input &rdquo;Webhook URL&rdquo; and submit on this page."
+		},
+		"user_trigger_notification_header": "Default notification settings for patterns",
+		"pattern": "Pattern",
+		"channel": "Channel",
+		"pattern_desc": "Path name of wiki. Pattern expression with <code>*</code> can be used.",
+		"channel_desc": "Slack channel name. Without <code>#</code>.",
+		"valid_page": "启用/禁用通知",
+		"link_notification_help": "<strong>只有那些知道“链接的任何人”链接的人才能查看的页面并不总是得到通知。</strong> ",
+		"just_me_notification_help": "<strong>被“仅限我”限制的页在编辑时被通知。</strong>",
+		"group_notification_help": "<strong>被“用户组”限制的页面在编辑时被通知。</strong>",
+		"notification_list": "List of notification settings",
+		"add_notification": "Add new",
+		"trigger_path": "Trigger path",
+		"trigger_path_help": "(expression with <code>*</code> is supported)",
+		"trigger_events": "Trigger events",
+		"notify_to": "Notify to",
+		"back_to_list": "Go back to list",
+		"notification_detail": "Notification Setting Details",
+		"event_pageCreate": "When new page is \"CREATED\"",
+		"event_pageEdit": "When page is \"EDITED\"",
+		"event_pageDelete": "When page is \"DELETED\"",
+		"event_pageMove": "When page is \"MOVED\" (renamed)",
+		"event_pageLike": "When someone \"LIKES\" page",
+		"event_comment": "When someone \"COMMENTS\" on page",
+		"email": {
+			"ifttt_link": "Create a new IFTTT applet with Email trigger"
+		},
+		"updated_slackApp": "Succeeded to update Slack App Configuration setting",
+		"add_notification_pattern": "Add user trigger notification patterns",
+		"delete_notification_pattern": "Delete notification pattern",
+		"delete_notification_pattern_desc1": "Delete Path: {{path}}",
+		"delete_notification_pattern_desc2": "Once deleted, it cannot be recovered",
+		"toggle_notification": "Updated setting of {{path}}"
+	},
+	"full_text_search_management": {
+		"elasticsearch_management": "Elasticsearch管理",
+		"connection_status": "连接状态",
+		"connection_status_label_unconfigured": "未配置",
+		"connection_status_label_connected": "已连接",
+		"connection_status_label_disconnected": "断开的",
+		"connection_status_label_erroroccured": "搜索服务出错",
+		"indices_status": "索引状态",
+		"indices_status_label_normalized": "标准化",
+		"indices_status_label_unnormalized": "重建或损坏",
+		"indices_summary": "索引摘要",
+		"reconnect": "重新连接",
+		"reconnect_button": "尝试重新连接",
+		"reconnect_description": "单击按钮尝试重新连接到Elasticsearch。",
+		"normalize": "规范化",
+		"normalize_button": "规范化索引",
+		"normalize_description": "单击按钮修复损坏的索引。",
+		"rebuild": "重建",
+		"rebuild_button": "重建索引",
+		"rebuild_description_1": "单击按钮以重新生成索引并添加所有页面数据。",
+		"rebuild_description_2": "这可能需要一段时间。"
+	},
+	"export_management": {
+		"exporting_collection_list": "正在导出集合列表",
+		"exported_data_list": "导出的存档数据列表",
+		"export_collections": "导出集合",
+		"check_all": "全部选中",
+		"uncheck_all": "全部取消选中",
+		"desc_password_seed": "还原用户数据时，不要忘记将当前的<code>密码种子设置到新的GROWI系统，否则用户将无法使用其密码登录。<br><br><strong>提示：</strong><br>当前的<code>密码种子将存储在<code>meta.json格式</code>在导出的zip压缩包中。",
+		"create_new_archive_data": "创建新的存档数据",
+		"export": "导出",
+		"cancel": "取消",
+		"file": "文件",
+		"growi_version": "Growi 版本号",
+		"collections": "收藏",
+		"exported_at": "导出在",
+		"export_menu": "导出菜单",
+		"download": "下载",
+		"delete": "删除"
+	},
+	"personal_dropdown": {
+		"home": "家",
+		"settings": "设置",
+		"color_mode": "颜色模式",
+		"sidebar_mode": "边栏模式",
+		"sidebar_mode_editor": "编辑器上的边栏模式",
+		"use_os_settings": "使用操作系统设置"
+	},
+	"search_result": {
+		"result_meta": "在{{total}中找到了{{keyword}。",
+		"deletion_mode_btn_lavel": "选择并删除页面",
+		"cancel": "取消",
+		"delete": "删除",
+		"check_all": "全部检查",
+		"deletion_modal_header": "删除页",
+		"delete_completely": "完全删除"
+	},
+	"login": {
+		"Sign in error": "登录错误",
+		"Registration successful": "注册成功",
+		"Setup": "安装程序"
+	}
+}

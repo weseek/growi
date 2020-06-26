@@ -14,16 +14,7 @@ import {
 } from '../util/color-scheme';
 import Apiv1ErrorHandler from '../util/apiv1ErrorHandler';
 
-import {
-  DetachCodeBlockInterceptor,
-  RestoreCodeBlockInterceptor,
-} from '../util/interceptor/detach-code-blocks';
-
-import {
-  DrawioInterceptor,
-} from '../util/interceptor/drawio-interceptor';
-
-import i18nFactory from '../util/i18n';
+import { i18nFactory } from '../util/i18n';
 import apiv3ErrorHandler from '../util/apiv3ErrorHandler';
 
 /**
@@ -54,8 +45,13 @@ export default class AppContainer extends Container {
     const userAgent = window.navigator.userAgent.toLowerCase();
     this.isMobile = /iphone|ipad|android/.test(userAgent);
 
-    const userlang = body.dataset.userlang;
-    this.i18n = i18nFactory(userlang);
+    const currentUserElem = document.getElementById('growi-current-user');
+    if (currentUserElem != null) {
+      this.currentUser = JSON.parse(currentUserElem.textContent);
+    }
+
+    const userLocaleId = this.currentUser?.lang;
+    this.i18n = i18nFactory(userLocaleId);
 
     this.containerInstances = {};
     this.componentInstances = {};
@@ -91,11 +87,6 @@ export default class AppContainer extends Container {
   initContents() {
     const body = document.querySelector('body');
 
-    const currentUserElem = document.getElementById('growi-current-user');
-    if (currentUserElem != null) {
-      this.currentUser = JSON.parse(currentUserElem.textContent);
-    }
-
     this.isAdmin = body.dataset.isAdmin === 'true';
 
     this.isDocSaved = true;
@@ -103,9 +94,6 @@ export default class AppContainer extends Container {
     this.originRenderer = new GrowiRenderer(this);
 
     this.interceptorManager = new InterceptorManager();
-    this.interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(this), 10); // process as soon as possible
-    this.interceptorManager.addInterceptor(new DrawioInterceptor(this), 20);
-    this.interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(this), 900); // process as late as possible
 
     if (this.currentUser != null) {
       // remove old user cache
