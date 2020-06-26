@@ -4,6 +4,7 @@
 class MarkdownLinkUtil {
 
   constructor() {
+    this.getMarkdownLink = this.getMarkdownLink.bind(this);
     this.isInLink = this.isInLink.bind(this);
     this.getBeginningAndEndOfTheClosestLinkToCursor = this.getBeginningAndEndOfTheClosestLinkToCursor.bind(this);
   }
@@ -13,64 +14,9 @@ class MarkdownLinkUtil {
     if (!this.isInLink(editor)) {
       return editor.getDoc().getSelection();
     }
-    const curPos = editor.getCursor();
-
     const { beginningOfLink, endOfLink } = this.getBeginningAndEndOfTheClosestLinkToCursor(editor);
+    const curPos = editor.getCursor();
     return editor.getDoc().getLine(curPos.line).substring(beginningOfLink, endOfLink);
-  }
-
-
-  /**
-   * return the postion of the BOL(beginning of link)
-   * (If the cursor is not in a link, return its position)
-   */
-  getBot(editor) {
-    const curPos = editor.getCursor();
-    if (!this.isInLink(editor)) {
-      return { line: curPos.line, ch: curPos.ch };
-    }
-
-    const firstLine = editor.getDoc().firstLine();
-    let line = curPos.line - 1;
-    for (; line >= firstLine; line--) {
-      const strLine = editor.getDoc().getLine(line);
-      if (!this.linePartOfTableRE.test(strLine)) {
-        break;
-      }
-    }
-    const botLine = Math.max(firstLine, line + 1);
-    return { line: botLine, ch: 0 };
-  }
-
-  /**
-   * return the postion of the EOT(end of table)
-   * (If the cursor is not in a table, return its position)
-   */
-  getEot(editor) {
-    const curPos = editor.getCursor();
-    if (!this.isInTable(editor)) {
-      return { line: curPos.line, ch: curPos.ch };
-    }
-
-    const lastLine = editor.getDoc().lastLine();
-    let line = curPos.line + 1;
-    for (; line <= lastLine; line++) {
-      const strLine = editor.getDoc().getLine(line);
-      if (!this.linePartOfTableRE.test(strLine)) {
-        break;
-      }
-    }
-    const eotLine = Math.min(line - 1, lastLine);
-    const lineLength = editor.getDoc().getLine(eotLine).length;
-    return { line: eotLine, ch: lineLength };
-  }
-
-  getSelectedTextInEditor(editor) {
-    return editor.getDoc().getSelection();
-  }
-
-  replaceFocusedMarkdownLinkWithEditor(editor, link) {
-    editor.getDoc().replaceSelection(link);
   }
 
   isInLink(editor) {
@@ -84,12 +30,17 @@ class MarkdownLinkUtil {
   getBeginningAndEndOfTheClosestLinkToCursor(editor) {
     const curPos = editor.getCursor();
     const line = editor.getDoc().getLine(curPos.line);
+
+    // get beginning and end of growi link ('[link]')
     let beginningOfLink = line.lastIndexOf('[', curPos.ch);
     let endOfLink = line.indexOf(']', beginningOfLink) + 1;
+
+    // if it is markdown link ('[label](link)'), get beginning and end of it
     if (line.charAt(endOfLink) === '(') {
       endOfLink = line.indexOf(')', endOfLink) + 1;
     }
-    else if (line.charAt(beginningOfLink - 1) === '[' && line.charAt(endOfLink) === ']') { // todo 先頭が[一つの時にえらーにならないか調査する
+    // if it is pukiwiki link ('[[link]]'), get beginning and end of it
+    else if (line.charAt(beginningOfLink - 1) === '[' && line.charAt(endOfLink) === ']') {
       beginningOfLink -= 1;
       endOfLink += 1;
     }
