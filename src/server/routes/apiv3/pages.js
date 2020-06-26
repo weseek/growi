@@ -90,14 +90,34 @@ module.exports = (crowi) => {
   *    /pages/export:
   *      get:
   *        tags: [Export]
-  *        description: get currently page file as md or pdf
+  *        description: create and return currently page file as md or pdf
   *        responses:
   *          200:
-  *            description: Return currently page file
+  *            description: Return currently page file path
   */
   router.get('/export', async(req, res) => {
-    // TODO use res.apiv3
-    return res.json({ ok: true });
+    const { exportService } = crowi;
+
+    try {
+      const {
+        revisionId, type, pageId,
+      } = req.query;
+      const exportFileName = `${pageId}`;
+      const markdown = await Page.getMarkdown(revisionId);
+
+      await exportService.cretaeMarkdownFile(markdown, exportFileName);
+
+      if (type === 'pdf') {
+        // TODO: convert markdown to pdf (GW-2757)
+      }
+
+      return res.apiv3({ exportFileName: `${exportFileName}.${type}` });
+    }
+    catch (err) {
+      res.code = 'unknown';
+      logger.error('Failed to get markdown', err);
+      return res.apiv3Err(err, 500);
+    }
   });
 
   return router;
