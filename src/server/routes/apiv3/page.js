@@ -129,8 +129,8 @@ module.exports = (crowi) => {
       body('isCommentDownload').isBoolean(),
       body('isFileDownload').isBoolean(),
       body('isSubordinatedPageDownload').isBoolean(),
-      body('fileType').isString(),
-      body('hierarchyType').isString(),
+      body('fileType').isString().isIn(['pdf', 'markDown']),
+      body('hierarchyType').isString().isIn(['allSubordinatedPage', 'decideHierarchy']),
       body('hierarchyValue').isNumeric(),
     ],
   };
