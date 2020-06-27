@@ -58,10 +58,9 @@ const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
 };
 
 const GrowiSubNavigation = (props) => {
-  const isPageForbidden = document.querySelector('#grw-subnav').getAttribute('data-is-forbidden-page') === 'true';
   const { appContainer, pageContainer } = props;
   const {
-    pageId, path, createdAt, creator, updatedAt, revisionAuthor,
+    pageId, path, createdAt, creator, updatedAt, revisionAuthor, isForbidden: isPageForbidden,
   } = pageContainer.state;
 
   const isPageNotFound = pageId == null;
@@ -70,16 +69,16 @@ const GrowiSubNavigation = (props) => {
   // Display only the RevisionPath
   if (isPageNotFound || isPageForbidden) {
     return (
-      <div className="px-3 py-3 grw-subnavbar">
+      <div className="grw-subnavbar d-flex align-items-center justify-content-between">
         <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
       </div>
     );
   }
 
-  const additionalClassNames = ['grw-subnavbar'];
+  const additionalClassNames = [''];
 
   return (
-    <div className={`d-flex align-items-center justify-content-between ${additionalClassNames.join(' ')}`}>
+    <div className={`grw-subnavbar d-flex align-items-center justify-content-between ${additionalClassNames.join(' ')}`}>
 
       {/* Page Path */}
       <div>
@@ -138,6 +137,8 @@ GrowiSubNavigation.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+
+  isCompactMode: PropTypes.bool,
 };
 
 export default withTranslation()(GrowiSubNavigationWrapper);

@@ -9,17 +9,6 @@ $easeInOutCubic: cubic-bezier(0.65, 0, 0.35, 1);
  * Styles
  */
 
-.grw-header {
-  .title {
-    padding: 0.5rem 15px;
-
-    line-height: 1em;
-
-    @include variable-font-size(28px);
-    line-height: 1.1em;
-  }
-}
-
 .grw-subnavbar {
   min-height: 115px;
   padding: 10px 30px;
