@@ -191,7 +191,7 @@ module.exports = (crowi) => {
     return res.apiv3({ result });
   });
 
-  router.post('/archive', accessTokenParser, loginRequired, csrf, async(req, res) => {
+  router.post('/archive', accessTokenParser, loginRequired, csrf, validator.archive, apiV3FormValidator, async(req, res) => {
 
     const {
       isCommentDownload,
