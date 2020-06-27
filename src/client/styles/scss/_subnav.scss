@@ -78,6 +78,9 @@ $easeInOutCubic: cubic-bezier(0.65, 0, 0.35, 1);
   }
 }
 
+/*
+ * Switching show/hide
+ */
 .grw-subnav-switcher {
   .grw-subnav-fixed-container {
     transition: transform 150ms $easeInOutCubic;
