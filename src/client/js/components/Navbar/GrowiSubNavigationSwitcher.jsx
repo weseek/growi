@@ -9,7 +9,7 @@ import GrowiSubNavigation from './GrowiSubNavigation';
 const logger = loggerFactory('growi:cli:GrowiSubNavigationSticky');
 
 
-const GrowiSubNavigationFixed = (props) => {
+const GrowiSubNavigationSwitcher = (props) => {
 
   const [isVisible, setVisible] = useState(false);
 
@@ -34,13 +34,15 @@ const GrowiSubNavigationFixed = (props) => {
   }, []);
 
   return (
-    <div className={`${isVisible ? '' : 'd-none'}`}>
-      <GrowiSubNavigation isCompactMode />
+    <div className={`grw-subnav-switcher ${isVisible ? '' : 'grw-subnav-switcher-hidden'}`}>
+      <div className="grw-subnav-fixed-container position-fixed w-100">
+        <GrowiSubNavigation isCompactMode />
+      </div>
     </div>
   );
 };
 
-GrowiSubNavigationFixed.propTypes = {
+GrowiSubNavigationSwitcher.propTypes = {
 };
 
-export default GrowiSubNavigationFixed;
+export default GrowiSubNavigationSwitcher;

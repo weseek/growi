@@ -38,7 +38,7 @@ import CommentContainer from './services/CommentContainer';
 import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
 import GrowiSubNavigation from './components/Navbar/GrowiSubNavigation';
-import GrowiSubNavigationFixed from './components/Navbar/GrowiSubNavigationFixed';
+import GrowiSubNavigationSwitcher from './components/Navbar/GrowiSubNavigationSwitcher';
 import GrowiSubNavigationForUserPage from './components/Navbar/GrowiSubNavigationForUserPage';
 import PersonalContainer from './services/PersonalContainer';
 
@@ -104,8 +104,8 @@ if (pageContainer.state.path != null) {
   Object.assign(componentMappings, {
     // eslint-disable-next-line quote-props
     'page': <Page />,
-    'grw-subnav': <GrowiSubNavigation />,
-    'grw-subnav-fixed': <GrowiSubNavigationFixed />,
+    'grw-subnav-container': <GrowiSubNavigation />,
+    'grw-subnav-switcher-container': <GrowiSubNavigationSwitcher />,
     'grw-subnav-for-user-page': <GrowiSubNavigationForUserPage />,
   });
 }

@@ -75,6 +75,11 @@
 
   {% block layout_head_nav %}
     <nav id="grw-navbar" class="navbar grw-navbar navbar-expand navbar-dark sticky-top mb-0 px-0"></nav>
+
+    {# Search #}
+    {% if isSearchServiceConfigured() %}
+      <div id="grw-search-top" class="search-top" role="search"></div>
+    {% endif %}
   {% endblock  %} {# layout_head_nav #}
 
   {% block head_warn_breaking_changes %}{% include '../widget/alert_breaking_changes.html' %}{% endblock %}
@@ -85,12 +90,6 @@
 
     <div class="flex-fill mw-0">
       {% block head_warn_alert_siteurl_undefined %}{% include '../widget/alert_siteurl_undefined.html' %}{% endblock %}
-
-      {# Search #}
-      {% if isSearchServiceConfigured() %}
-        <div id="grw-search-top" class="search-top" role="search"></div>
-      {% endif %}
-
       {% block layout_main %}{% endblock %}
     </div>
   </div>

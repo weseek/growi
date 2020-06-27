@@ -190,11 +190,11 @@ ul.pagination {
 /*
  * GROWI subnavigation
  */
-.grw-subnav-content {
+.grw-subnav {
   background-color: $bgcolor-subnav;
 }
 
-.grw-subnav-fixed .grw-subnav-content {
+.grw-subnav-fixed-container .grw-subnav {
   background-color: rgba($bgcolor-subnav, 0.85);
 }
 

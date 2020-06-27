@@ -16,11 +16,11 @@ body.kibela {
       background-color: $primary !important;
     }
 
-    .grw-subnav-content {
+    .grw-subnav {
       background-color: rgba(lighten($bgcolor-global, 50%), 1);
     }
 
-    .grw-subnav-fixed .grw-subnav-content {
+    .grw-subnav-fixed-container .grw-subnav {
       background-color: rgba(lighten($bgcolor-global, 50%), 0.85);
     }
 
