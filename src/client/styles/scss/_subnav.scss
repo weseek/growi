@@ -34,8 +34,8 @@ $easeInOutCubic: cubic-bezier(0.65, 0, 0.35, 1);
   }
 
   h1 {
-    @include variable-font-size(28px);
-    line-height: 1.1em;
+    @include variable-font-size(32px);
+    line-height: 1.4em;
   }
 
   .grw-page-path-nav {
