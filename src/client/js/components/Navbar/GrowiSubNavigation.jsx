@@ -58,9 +58,10 @@ const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
 };
 
 const GrowiSubNavigation = (props) => {
-  const { appContainer, pageContainer } = props;
+  const { appContainer, pageContainer, isCompactMode } = props;
   const {
-    pageId, path, createdAt, creator, updatedAt, revisionAuthor, isForbidden: isPageForbidden,
+    pageId, path, createdAt, creator, updatedAt, revisionAuthor,
+    isForbidden: isPageForbidden,
   } = pageContainer.state;
 
   const isPageNotFound = pageId == null;
@@ -69,20 +70,18 @@ const GrowiSubNavigation = (props) => {
   // Display only the RevisionPath
   if (isPageNotFound || isPageForbidden) {
     return (
-      <div className="grw-subnavbar d-flex align-items-center justify-content-between">
+      <div className="grw-subnav-content d-flex align-items-center justify-content-between">
         <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
       </div>
     );
   }
 
-  const additionalClassNames = [''];
-
   return (
-    <div className={`grw-subnavbar d-flex align-items-center justify-content-between ${additionalClassNames.join(' ')}`}>
+    <div className={`grw-subnav-content d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-content-compact' : ''}`}>
 
       {/* Page Path */}
       <div>
-        { !isPageNotFound && !isPageForbidden && (
+        { !isCompactMode && !isPageNotFound && !isPageForbidden && (
           <div className="mb-2">
             <TagLabels />
           </div>
@@ -108,18 +107,20 @@ const GrowiSubNavigation = (props) => {
         </div>
 
         {/* Page Authors */}
-        <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none">
-          { creator != null && (
-            <li className="pb-1">
-              <PageCreator creator={creator} createdAt={createdAt} />
-            </li>
-          ) }
-          { revisionAuthor != null && (
-            <li className="mt-1 pt-1 border-top">
-              <RevisionAuthor revisionAuthor={revisionAuthor} updatedAt={updatedAt} />
-            </li>
-          ) }
-        </ul>
+        { !isCompactMode && (
+          <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none">
+            { creator != null && (
+              <li className="pb-1">
+                <PageCreator creator={creator} createdAt={createdAt} />
+              </li>
+            ) }
+            { revisionAuthor != null && (
+              <li className="mt-1 pt-1 border-top">
+                <RevisionAuthor revisionAuthor={revisionAuthor} updatedAt={updatedAt} />
+              </li>
+            ) }
+          </ul>
+        ) }
       </div>
 
     </div>

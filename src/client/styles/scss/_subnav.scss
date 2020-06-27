@@ -9,7 +9,7 @@ $easeInOutCubic: cubic-bezier(0.65, 0, 0.35, 1);
  * Styles
  */
 
-.grw-subnavbar {
+.grw-subnav-content {
   min-height: 115px;
   padding: 10px 30px;
 
@@ -65,5 +65,12 @@ $easeInOutCubic: cubic-bezier(0.65, 0, 0.35, 1);
         height: 14px;
       }
     }
+  }
+
+  /*
+   * Compact Mode
+   */
+  &.grw-subnav-content-compact {
+    min-height: 85px;
   }
 }

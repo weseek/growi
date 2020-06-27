@@ -5,7 +5,7 @@ $color-list-hover: $color-global !default;
 $bgcolor-list-hover: lighten($bgcolor-global, 3%) !default;
 $color-list-active: $color-reversal !default;
 $bgcolor-list-active: $primary !default;
-$bgcolor-subnabvar: lighten($bgcolor-global, 3%) !default;
+$bgcolor-subnav: lighten($bgcolor-global, 3%) !default;
 $color-table: white !default;
 $bgcolor-table: #343a40 !default;
 $border-color-table: lighten($bgcolor-table, 7.5%) !default;
@@ -190,8 +190,12 @@ ul.pagination {
 /*
  * GROWI subnavigation
  */
-.grw-subnavbar {
-  background-color: $bgcolor-subnabvar;
+.grw-subnav-content {
+  background-color: $bgcolor-subnav;
+}
+
+.grw-subnav-fixed .grw-subnav-content {
+  background-color: rgba($bgcolor-subnav, 0.85);
 }
 
 // Search drop down

@@ -42,7 +42,7 @@ html[light] {
   // $bgcolor-list-active: $primary; // optional
 
   // Table colors
-  // $bgcolor-subnabvar: #; // optional
+  // $bgcolor-subnav: #; // optional
   // $color-table: #; // optional
   // $bgcolor-table: #; // optional
   // $border-color-table: #; // optional
@@ -74,7 +74,7 @@ html[light] {
   $bgcolor-sidebar-list-group: #fafbff; // optional
 
   // Subnavigation
-  // $bgcolor-subnabvar: #fafafa; // optional
+  // $bgcolor-subnav: #fafafa; // optional
 
   // Tabs
   // $color-nav-tabs-link-active: #; //optional
@@ -165,7 +165,7 @@ html[dark] {
   $bgcolor-sidebar-list-group: #1c2a3e; // optional
 
   // Subnavigation
-  $bgcolor-subnabvar: lighten($bgcolor-global, 4%); // optional
+  $bgcolor-subnav: lighten($bgcolor-global, 4%); // optional
 
   // Tabs
   $bordercolor-nav-tabs: #444; // optional
