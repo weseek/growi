@@ -124,6 +124,10 @@ module.exports = (crowi) => {
       body('pageId').isString(),
       body('bool').isBoolean(),
     ],
+
+    archive: [
+
+    ],
   };
 
   /**
@@ -180,6 +184,14 @@ module.exports = (crowi) => {
     const result = { page };
     result.seenUser = page.seenUsers;
     return res.apiv3({ result });
+  });
+
+  router.post('/archive', accessTokenParser, loginRequired, csrf, async(req, res) => {
+    const { hoge } = req.body;
+
+    console.log(hoge);
+
+    return res.apiv3({ });
   });
 
   return router;

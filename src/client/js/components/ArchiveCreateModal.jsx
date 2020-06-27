@@ -4,10 +4,13 @@ import { withTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
+import AppContainer from '../services/AppContainer';
+import { withUnstatedContainers } from './UnstatedUtils';
+import { toastSuccess, toastError } from '../util/apiNotification';
 
 
 const ArchiveCreateModal = (props) => {
-  const { t } = props;
+  const { t, appContainer } = props;
   const [isCommentDownload, setIsCommentDownload] = useState(false);
   const [isFileDownload, setIsFileDownload] = useState(false);
   const [isSubordinatedPageDownload, setIsSubordinatedPageDownload] = useState(false);
@@ -50,6 +53,17 @@ const ArchiveCreateModal = (props) => {
     setHierarchyValue(hierarchyValue);
   }
 
+  async function done() {
+
+    try {
+      await appContainer.apiv3Post('/page/archive', { hoge: 200 });
+      toastSuccess('Create Archive');
+    }
+
+    catch (e) {
+      toastError(e);
+    }
+  }
 
   return (
     <Modal isOpen={props.isOpen} toggle={closeModalHandler}>
@@ -196,7 +210,7 @@ const ArchiveCreateModal = (props) => {
         </div>
       </ModalBody>
       <ModalFooter>
-        <button type="button" className="btn btn-primary">
+        <button type="button" className="btn btn-primary" onClick={done}>
           Done
         </button>
       </ModalFooter>
@@ -204,13 +218,15 @@ const ArchiveCreateModal = (props) => {
   );
 };
 
+const ArchiveCreateModalWrapper = withUnstatedContainers(ArchiveCreateModal, [AppContainer]);
 
 ArchiveCreateModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
   path: PropTypes.string.isRequired,
 };
 
 
-export default withTranslation()(ArchiveCreateModal);
+export default withTranslation()(ArchiveCreateModalWrapper);
