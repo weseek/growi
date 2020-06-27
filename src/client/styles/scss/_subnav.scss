@@ -22,7 +22,7 @@ $easeInOutCubic: cubic-bezier(0.65, 0, 0.35, 1);
 
 .grw-subnavbar {
   min-height: 115px;
-  padding: 15px 30px;
+  padding: 10px 30px;
 
   &:hover {
     .btn-copy,
@@ -45,13 +45,25 @@ $easeInOutCubic: cubic-bezier(0.65, 0, 0.35, 1);
     }
   }
 
+  .btn-like,
+  .btn-bookmark {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+
   ul.authors {
-    padding-left: 1.5em;
-    margin: 0;
+    padding: 0.7em 0 0.7em 1.5em;
+    margin-bottom: 0;
+    margin-left: 1em;
 
     li {
       font-size: 12px;
       list-style: none;
+    }
+
+    .text-date {
+      font-size: 11px;
     }
 
     .picture {

@@ -91,28 +91,32 @@ const GrowiSubNavigation = (props) => {
         <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
       </div>
 
-      <div className="d-flex align-items-center">
-        { !isPageInTrash && (
-          /* Header Button */
-          <div className="mr-2">
-            <LikeButton pageId={pageId} isLiked={pageContainer.state.isLiked} />
-          </div>
-        ) }
-        { !isPageInTrash && (
+      <div className="d-flex">
+        <div>
+          { !isPageInTrash && (
+            <div className="d-flex">
+              <span className="mr-2">
+                <LikeButton pageId={pageId} isLiked={pageContainer.state.isLiked} />
+              </span>
+              <span className="mr-2">
+                <BookmarkButton pageId={pageId} crowi={appContainer} />
+              </span>
+            </div>
+          ) }
           <div>
-            <BookmarkButton pageId={pageId} crowi={appContainer} />
+            {/* View / Edit / HackMD button group */}
           </div>
-        ) }
+        </div>
 
         {/* Page Authors */}
-        <ul className="authors text-nowrap d-none d-lg-block d-edit-none">
+        <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none">
           { creator != null && (
-            <li>
+            <li className="pb-1">
               <PageCreator creator={creator} createdAt={createdAt} />
             </li>
           ) }
           { revisionAuthor != null && (
-            <li className="mt-1">
+            <li className="mt-1 pt-1 border-top">
               <RevisionAuthor revisionAuthor={revisionAuthor} updatedAt={updatedAt} />
             </li>
           ) }
