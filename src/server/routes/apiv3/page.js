@@ -126,7 +126,12 @@ module.exports = (crowi) => {
     ],
 
     archive: [
-
+      body('isCommentDownload').isBoolean(),
+      body('isFileDownload').isBoolean(),
+      body('isSubordinatedPageDownload').isBoolean(),
+      body('fileType').isString(),
+      body('hierarchyType').isString(),
+      body('hierarchyValue').isNumeric(),
     ],
   };
 
@@ -187,12 +192,22 @@ module.exports = (crowi) => {
   });
 
   router.post('/archive', accessTokenParser, loginRequired, csrf, async(req, res) => {
-    const isCommentDownload = req.body.isCommentDownload;
-    const isFileDownload = req.body.isFileDownload;
-    const isSubordinatedPageDownload = req.body.isSubordinatedPageDownload;
-    const fileType = req.body.fileType;
-    const hierarchyType = req.body.hierarchyType;
-    const hierarchyValue = req.body.hierarchyValue;
+
+    const {
+      isCommentDownload,
+      isFileDownload,
+      isSubordinatedPageDownload,
+      fileType,
+      hierarchyType,
+      hierarchyValue,
+    } = req.body;
+
+    // const isCommentDownload = req.body.isCommentDownload;
+    // const isFileDownload = req.body.isFileDownload;
+    // const isSubordinatedPageDownload = req.body.isSubordinatedPageDownload;
+    // const fileType = req.body.fileType;
+    // const hierarchyType = req.body.hierarchyType;
+    // const hierarchyValue = req.body.hierarchyValue;
 
     console.log(isCommentDownload);
     console.log(isFileDownload);
@@ -200,6 +215,7 @@ module.exports = (crowi) => {
     console.log(isSubordinatedPageDownload);
     console.log(hierarchyType);
     console.log(hierarchyValue);
+
     return res.apiv3({});
   });
 
