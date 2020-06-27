@@ -127,7 +127,7 @@ module.exports = (crowi) => {
 
     archive: [
       body('isCommentDownload').isBoolean(),
-      body('isFileDownload').isBoolean(),
+      body('isAppendedFileDownload').isBoolean(),
       body('isSubordinatedPageDownload').isBoolean(),
       body('fileType').isString().isIn(['pdf', 'markDown']),
       body('hierarchyType').isString().isIn(['allSubordinatedPage', 'decideHierarchy']),
@@ -195,22 +195,16 @@ module.exports = (crowi) => {
 
     const {
       isCommentDownload,
-      isFileDownload,
+      isAppendedFileDownload,
       isSubordinatedPageDownload,
       fileType,
       hierarchyType,
       hierarchyValue,
     } = req.body;
 
-    // const isCommentDownload = req.body.isCommentDownload;
-    // const isFileDownload = req.body.isFileDownload;
-    // const isSubordinatedPageDownload = req.body.isSubordinatedPageDownload;
-    // const fileType = req.body.fileType;
-    // const hierarchyType = req.body.hierarchyType;
-    // const hierarchyValue = req.body.hierarchyValue;
 
     console.log(isCommentDownload);
-    console.log(isFileDownload);
+    console.log(isAppendedFileDownload);
     console.log(fileType);
     console.log(isSubordinatedPageDownload);
     console.log(hierarchyType);

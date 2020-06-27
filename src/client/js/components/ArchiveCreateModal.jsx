@@ -12,7 +12,7 @@ import { toastSuccess, toastError } from '../util/apiNotification';
 const ArchiveCreateModal = (props) => {
   const { t, appContainer } = props;
   const [isCommentDownload, setIsCommentDownload] = useState(false);
-  const [isFileDownload, setIsFileDownload] = useState(false);
+  const [isAppendedFileDownload, setIsAppendedFileDownload] = useState(false);
   const [isSubordinatedPageDownload, setIsSubordinatedPageDownload] = useState(false);
   const [fileType, setFileType] = useState('markDown');
   const [hierarchyType, setHierarchyType] = useState('allSubordinatedPage');
@@ -22,8 +22,8 @@ const ArchiveCreateModal = (props) => {
     setIsCommentDownload(!isCommentDownload);
   }
 
-  function changeIsFileDownloadHandler() {
-    setIsFileDownload(!isFileDownload);
+  function changeIsAppendedFileDownloadHandler() {
+    setIsAppendedFileDownload(!isAppendedFileDownload);
   }
 
   function changeIsSubordinatedPageDownloadHandler() {
@@ -58,7 +58,7 @@ const ArchiveCreateModal = (props) => {
     try {
       await appContainer.apiv3Post('/page/archive', {
         isCommentDownload,
-        isFileDownload,
+        isAppendedFileDownload,
         isSubordinatedPageDownload,
         fileType,
         hierarchyType,
@@ -140,8 +140,8 @@ const ArchiveCreateModal = (props) => {
             className="custom-control-input"
             id="downloadFile"
             type="checkbox"
-            checked={isFileDownload}
-            onChange={changeIsFileDownloadHandler}
+            checked={isAppendedFileDownload}
+            onChange={changeIsAppendedFileDownloadHandler}
           />
           <label className="custom-control-label" htmlFor="downloadFile">
             {t('Include Attachment File')}
