@@ -56,10 +56,16 @@ const ArchiveCreateModal = (props) => {
   async function done() {
 
     try {
-      await appContainer.apiv3Post('/page/archive', { hoge: 200 });
+      await appContainer.apiv3Post('/page/archive', {
+        isCommentDownload,
+        isFileDownload,
+        isSubordinatedPageDownload,
+        fileType,
+        hierarchyType,
+        hierarchyValue,
+      });
       toastSuccess('Create Archive');
     }
-
     catch (e) {
       toastError(e);
     }

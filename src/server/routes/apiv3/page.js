@@ -187,11 +187,20 @@ module.exports = (crowi) => {
   });
 
   router.post('/archive', accessTokenParser, loginRequired, csrf, async(req, res) => {
-    const { hoge } = req.body;
+    const isCommentDownload = req.body.isCommentDownload;
+    const isFileDownload = req.body.isFileDownload;
+    const isSubordinatedPageDownload = req.body.isSubordinatedPageDownload;
+    const fileType = req.body.fileType;
+    const hierarchyType = req.body.hierarchyType;
+    const hierarchyValue = req.body.hierarchyValue;
 
-    console.log(hoge);
-
-    return res.apiv3({ });
+    console.log(isCommentDownload);
+    console.log(isFileDownload);
+    console.log(fileType);
+    console.log(isSubordinatedPageDownload);
+    console.log(hierarchyType);
+    console.log(hierarchyValue);
+    return res.apiv3({});
   });
 
   return router;
