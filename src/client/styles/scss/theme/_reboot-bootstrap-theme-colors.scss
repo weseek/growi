@@ -66,4 +66,7 @@ $theme-colors: map-merge($theme-colors, $colors);
   .badge-#{$color} {
     @include badge-variant($value);
   }
+  a.badge-#{$color} {
+    @include badge-variant($value);
+  }
 }

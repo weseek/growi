@@ -12,6 +12,8 @@ $border-color-table: #dee2e6 !default;
 $color-table-hover: $color-table !default;
 $bgcolor-table-hover: rgba(black, 0.075) !default;
 $bgcolor-sidebar-list-group: $bgcolor-list !default;
+$color-tags: #949494 !default;
+$bgcolor-tags: #ebebeb !default;
 
 // override bootstrap variables
 $table-color: $color-table;
@@ -176,5 +178,15 @@ $table-hover-bg: $bgcolor-table-hover;
 .comment-form {
   #slack-mark-white {
     display: none;
+  }
+}
+
+/*
+ * GROWI tags
+ */
+.grw-tag-labels {
+  .grw-tag-label {
+    color: $color-tags;
+    background-color: $bgcolor-tags;
   }
 }

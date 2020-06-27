@@ -4,24 +4,11 @@
   }
 }
 
-.tag-labels {
-  .manage-tags {
-    font-size: 10px;
-    cursor: pointer;
-  }
-
-  // .tag-icon:not(:first-child) {
-  //   margin-left: 5px;
-  // }
-
-  // .btn.btn-edit-tags,
-  // .tag-icon {
-  //   font-size: 10px;
-  // }
-
-  .tag-name {
+.grw-tag-labels {
+  .grw-tag-label {
     margin-left: 1px;
-    font-size: 10px;
+    font-size: 12px;
+    border-radius: $border-radius-xl;
   }
 }
 

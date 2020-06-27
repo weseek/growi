@@ -12,6 +12,8 @@ $border-color-table: lighten($bgcolor-table, 7.5%) !default;
 $color-table-hover: rgba(white, 0.075) !default;
 $bgcolor-table-hover: lighten($bgcolor-table, 7.5%) !default;
 $bgcolor-sidebar-list-group: $bgcolor-list !default;
+$color-tags: #949494 !default;
+$bgcolor-tags: $dark !default;
 
 // override bootstrap variables
 $table-dark-color: $color-table;
@@ -239,5 +241,15 @@ ul.pagination {
 .comment-form {
   #slack-mark-black {
     display: none;
+  }
+}
+
+/*
+ * GROWI tags
+ */
+.grw-tag-labels {
+  .grw-tag-label {
+    color: $color-tags;
+    background-color: $bgcolor-tags;
   }
 }

@@ -81,6 +81,10 @@ html[light] {
   // $bordercolor-nav-tabs-hover: # # $bordercolor-nav-tabs; // optional
   // $bordercolor-nav-tabs-active: # # $bgcolor-global; // optional
 
+  // Tags
+  // $color-tags: #; //optional
+  // $bgcolor-tags: #; //optional
+
   // Icon colors
   $color-editor-icons: $color-global;
 
@@ -168,6 +172,10 @@ html[dark] {
   // $color-nav-tabs-link-active: #; //optional
   $bordercolor-nav-tabs-hover: #666 #666 $bordercolor-nav-tabs; // optional
   // $bordercolor-nav-tabs-active: # # $bgcolor-global; // optional
+
+  // Tags
+  // $color-tags: #; //optional
+  // $bgcolor-tags: #; //optional
 
   // Icon colors
   $color-editor-icons: $color-global;

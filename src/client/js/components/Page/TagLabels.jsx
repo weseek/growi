@@ -102,15 +102,15 @@ class TagLabels extends React.Component {
 
     const tagElements = tags.map((tag) => {
       return (
-        <span key={`${pageId}_${tag}`} className="text-muted">
-          <a className="tag-name mr-2" href={`/_search?q=tag:${tag}`} key={`${pageId}_${tag}_link`}>{tag}</a>
-        </span>
+        <a key={`${pageId}_${tag}`} href={`/_search?q=tag:${tag}`} className="grw-tag-label badge badge-secondary mr-2">
+          {tag}
+        </a>
       );
     });
 
     return (
       <>
-        <form className="tag-labels form-inline">
+        <form className="grw-tag-labels form-inline">
           <i className="tag-icon icon-tag mr-2"></i>
 
           {tagElements}
@@ -121,7 +121,7 @@ class TagLabels extends React.Component {
                 <>{ t('Add tags for this page') }<i className="ml-1 icon-plus"></i></>
               )
               : (
-                <i className="ml-2 icon-plus"></i>
+                <i className="icon-plus"></i>
               )
             }
           </a>
