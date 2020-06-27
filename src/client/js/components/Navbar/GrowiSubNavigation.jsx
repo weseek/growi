@@ -79,14 +79,16 @@ const GrowiSubNavigation = (props) => {
   const additionalClassNames = ['grw-subnavbar'];
 
   return (
-    <div className={`d-flex align-items-center justify-content-between px-3 py-1 ${additionalClassNames.join(' ')}`}>
+    <div className={`d-flex align-items-center justify-content-between ${additionalClassNames.join(' ')}`}>
 
       {/* Page Path */}
       <div>
-        <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
         { !isPageNotFound && !isPageForbidden && (
-          <TagLabels />
+          <div className="mb-2">
+            <TagLabels />
+          </div>
         ) }
+        <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
       </div>
 
       <div className="d-flex align-items-center">

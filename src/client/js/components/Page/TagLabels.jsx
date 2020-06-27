@@ -98,38 +98,42 @@ class TagLabels extends React.Component {
     const { pageId } = this.props.pageContainer.state;
 
     const tags = this.getEditTargetData();
+    const isTagsEmpty = tags.length === 0;
 
     const tagElements = tags.map((tag) => {
       return (
         <span key={`${pageId}_${tag}`} className="text-muted">
-          <i className="tag-icon icon-tag mr-1"></i>
           <a className="tag-name mr-2" href={`/_search?q=tag:${tag}`} key={`${pageId}_${tag}_link`}>{tag}</a>
         </span>
       );
     });
 
     return (
-      <div className="tag-labels">
-        {tags.length === 0 && (
-          <a className="btn btn-link btn-edit-tags no-tags p-0 text-muted" onClick={this.showEditor}>
-            { t('Add tags for this page') } <i className="manage-tags ml-2 icon-plus"></i>
+      <>
+        <form className="tag-labels form-inline">
+          <i className="tag-icon icon-tag mr-2"></i>
+
+          {tagElements}
+
+          <a className={`btn btn-link btn-edit-tags p-0 text-muted ${isTagsEmpty ? 'no-tags' : ''}`} onClick={this.showEditor}>
+            { isTagsEmpty
+              ? (
+                <>{ t('Add tags for this page') }<i className="ml-1 icon-plus"></i></>
+              )
+              : (
+                <i className="ml-2 icon-plus"></i>
+              )
+            }
           </a>
-        )}
-        {tagElements}
-        {tags.length > 0 && (
-          <a className="btn btn-link btn-edit-tags p-0 text-muted" onClick={this.showEditor}>
-            <i className="manage-tags ml-2 icon-plus"></i> { t('Edit tags for this page') }
-          </a>
-        )}
+        </form>
 
         <TagEditor
           ref={(c) => { this.tagEditor = c }}
           appContainer={this.props.appContainer}
           show={this.state.showTagEditor}
           onTagsUpdated={this.tagsUpdatedHandler}
-        >
-        </TagEditor>
-      </div>
+        />
+      </>
     );
   }
 
