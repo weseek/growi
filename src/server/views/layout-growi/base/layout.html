@@ -12,8 +12,10 @@
 <header class="py-0">
   {% block content_header %}
     <div id="grw-subnav" class="grw-subnav d-edit-none"></div>
+    <div id="grw-subnav-fixed" class="grw-subnav grw-subnav-fixed position-fixed w-100 d-edit-none"></div>
   {% endblock %}
 </header>
+<div id="grw-subnav-sticky-trigger" class="sticky-top"></div>
 {% endblock %}
 
 <div id="main" class="main container-fluid {% if page %}{{ css.grant(page) }}{% endif %} {% block main_css_class %}{% endblock %}">
