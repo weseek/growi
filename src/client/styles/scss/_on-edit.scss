@@ -317,6 +317,24 @@ body.on-edit {
 }
 
 .grid-bg-col {
-  border-right: 5px solid white;
-  border-left: 5px solid white;
+  border-right: 5px solid yellow;
+  border-left: 5px solid yellow;
+}
+
+.grid-editable-col {
+  border-right: 5px solid purple;
+  border-left: 5px solid purple;
+}
+
+.bg-wrapper {
+  position: absolute;
+}
+
+.edit-wrapper {
+  position: relative;
+  opacity: 0.5;
+}
+
+.modal-body {
+  padding: 0 !important;
 }
