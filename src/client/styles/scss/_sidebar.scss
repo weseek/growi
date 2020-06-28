@@ -145,7 +145,6 @@
 
 // Drawer Mode
 @mixin drawer() {
-  position: fixed;
   z-index: $zindex-fixed - 2;
 
   // override @atlaskit/navigation-next styles
@@ -156,6 +155,8 @@
     }
   }
   div[data-testid='Navigation'] {
+    position: fixed;
+
     // css-xxx-Outer
     > div:nth-of-type(2) {
       display: none;
