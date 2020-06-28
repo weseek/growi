@@ -60,7 +60,16 @@
    * Compact Mode
    */
   &.grw-subnav-compact {
-    min-height: 85px;
+    min-height: 90px;
+
+    .btn-like,
+    .btn-bookmark {
+      @extend .btn-sm;
+
+      width: 30px;
+      height: 30px;
+      font-size: 15px !important;
+    }
   }
 }
 

@@ -90,8 +90,10 @@ const GrowiSubNavigation = (props) => {
       </div>
 
       <div className="d-flex">
-        <div>
-          { !isPageInTrash && (
+
+        {/* Buttons */}
+        { !isPageInTrash && (
+          <div className="d-flex flex-column align-items-end justify-content-center">
             <div className="d-flex">
               <span className="mr-2">
                 <LikeButton pageId={pageId} isLiked={pageContainer.state.isLiked} />
@@ -100,11 +102,16 @@ const GrowiSubNavigation = (props) => {
                 <BookmarkButton pageId={pageId} crowi={appContainer} />
               </span>
             </div>
-          ) }
-          <div>
-            {/* View / Edit / HackMD button group */}
+            <div className="mt-2">
+              {/* TODO: impl View / Edit / HackMD button group */}
+              {/* <div className="btn-group" role="group" aria-label="Basic example">
+                <button type="button" className="btn btn-outline-primary">Left</button>
+                <button type="button" className="btn btn-outline-primary">Middle</button>
+                <button type="button" className="btn btn-outline-primary">Right</button>
+              </div> */}
+            </div>
           </div>
-        </div>
+        ) }
 
         {/* Page Authors */}
         { !isCompactMode && (
