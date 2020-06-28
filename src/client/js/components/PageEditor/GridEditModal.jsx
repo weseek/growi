@@ -38,14 +38,6 @@ export default class GridEditModal extends React.PureComponent {
     return cols;
   }
 
-  editBgCols() {
-    const cols = [];
-    for (let i = 0; i < 12; i++) {
-      cols.push(<div className="bg-dark grid-editable-col col-1"></div>);
-    }
-    return cols;
-  }
-
   render() {
     return (
       <Modal isOpen={this.state.show} toggle={this.cancel} size="xl">
@@ -84,7 +76,6 @@ export default class GridEditModal extends React.PureComponent {
               </div>
               <div className="col-9">
                 <div className="row h-100 flex-nowrap overflow-auto">
-                  {this.editBgCols()}
                 </div>
               </div>
             </div>
