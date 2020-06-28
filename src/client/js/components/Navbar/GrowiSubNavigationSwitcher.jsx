@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import loggerFactory from '@alias/logger';
 
 import StickyEvents from 'sticky-events';
+import { debounce } from 'throttle-debounce';
 
 import GrowiSubNavigation from './GrowiSubNavigation';
 
@@ -12,6 +13,35 @@ const logger = loggerFactory('growi:cli:GrowiSubNavigationSticky');
 const GrowiSubNavigationSwitcher = (props) => {
 
   const [isVisible, setVisible] = useState(false);
+
+  const resetWidth = () => {
+    const elem = document.getElementById('grw-subnav-fixed-container');
+
+    if (elem == null || elem.parentNode == null) {
+      return;
+    }
+
+    // get parent width
+    const { clientWidth: width } = elem.parentNode;
+    // update style
+    elem.style.width = `${width}px`;
+  };
+
+  const resetWidthDebounced = debounce(100, resetWidth);
+
+  // setup effect by resizing event
+  useEffect(() => {
+    const resizeHandler = (event) => {
+      resetWidthDebounced();
+    };
+
+    window.addEventListener('resize', resizeHandler);
+
+    // return clean up handler
+    return () => {
+      window.removeEventListener('resize', resizeHandler);
+    };
+  }, []);
 
   const stickyChangeHandler = useCallback((event) => {
     logger.debug('StickyEvents.CHANGE detected');
@@ -33,9 +63,14 @@ const GrowiSubNavigationSwitcher = (props) => {
     };
   }, []);
 
+  // update width
+  useEffect(() => {
+    resetWidth();
+  });
+
   return (
     <div className={`grw-subnav-switcher ${isVisible ? '' : 'grw-subnav-switcher-hidden'}`}>
-      <div className="grw-subnav-fixed-container position-fixed w-100">
+      <div id="grw-subnav-fixed-container" className="grw-subnav-fixed-container position-fixed">
         <GrowiSubNavigation isCompactMode />
       </div>
     </div>
