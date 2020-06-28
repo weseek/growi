@@ -10,6 +10,15 @@ import GrowiSubNavigation from './GrowiSubNavigation';
 const logger = loggerFactory('growi:cli:GrowiSubNavigationSticky');
 
 
+/**
+ * Subnavigation
+ *
+ * needs:
+ *   #grw-subnav-fixed-container element
+ *   #grw-subnav-sticky-trigger element
+ *
+ * @param {object} props
+ */
 const GrowiSubNavigationSwitcher = (props) => {
 
   const [isVisible, setVisible] = useState(false);
