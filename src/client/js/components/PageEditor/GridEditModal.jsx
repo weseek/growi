@@ -49,12 +49,16 @@ export default class GridEditModal extends React.PureComponent {
             <div className="row">
               <div className="col-3">
                 <div className="device-titile-bar">Phone</div>
+                <h5>Phone</h5>
                 <div className="device-container"></div>
                 <div className="device-titile-bar">Tablet</div>
+                <h5>Tablet</h5>
                 <div className="device-container"></div>
                 <div className="device-titile-bar">Desktop</div>
+                <h5>Desktop</h5>
                 <div className="device-container"></div>
                 <div className="device-titile-bar">Large Desktop</div>
+                <h5>Large Desktop</h5>
                 <div className="device-container"></div>
               </div>
               <div className="row col-9 flex-nowrap overflow-auto">{this.showBgCols()}</div>
