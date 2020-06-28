@@ -157,6 +157,8 @@
   div[data-testid='Navigation'] {
     position: fixed;
 
+    max-width: 80vw;
+
     // css-xxx-Outer
     > div:nth-of-type(2) {
       display: none;
@@ -165,7 +167,7 @@
 
   &:not(.open) {
     div[data-testid='Navigation'] {
-      left: -#{$grw-sidebar-nav-width + $grw-sidebar-content-min-width};
+      left: -80vw;
     }
   }
   &.open {

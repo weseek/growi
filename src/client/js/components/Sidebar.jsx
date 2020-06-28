@@ -16,7 +16,7 @@ import SidebarNav from './Sidebar/SidebarNav';
 import SidebarContents from './Sidebar/SidebarContents';
 import StickyStretchableScroller from './StickyStretchableScroller';
 
-const sidebarDefaultWidth = 240;
+const sidebarDefaultWidth = 320;
 
 class Sidebar extends React.Component {
 
@@ -181,7 +181,7 @@ class Sidebar extends React.Component {
               experimental_hideNavVisuallyOnCollapse
               experimental_flyoutOnHover
               experimental_alternateFlyoutBehaviour
-              // experimental_fullWidthFlyout
+              experimental_fullWidthFlyout
               shouldHideGlobalNavShadow
               showContextualNavigation
             >
