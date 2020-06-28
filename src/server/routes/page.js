@@ -350,6 +350,9 @@ module.exports = function(crowi, app) {
     addRendarVarsForPage(renderVars, portalPage);
     await addRenderVarsForSlack(renderVars, portalPage);
 
+    const sharelinksNumber = await ShareLink.countDocuments({ relatedPage: portalPage._id });
+    renderVars.sharelinksNumber = sharelinksNumber;
+
     const limit = 50;
     const offset = parseInt(req.query.offset) || 0;
 
