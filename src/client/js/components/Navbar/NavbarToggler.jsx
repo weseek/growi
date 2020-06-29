@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
@@ -10,9 +10,11 @@ const NavbarToggler = (props) => {
 
   const { navigationContainer } = props;
 
-  const clickHandler = () => {
+  const clickHandler = useCallback(() => {
     navigationContainer.toggleDrawer();
-  };
+  }, []);
+
+  const iconClass = props.iconClass || 'icon-menu';
 
   return (
     <button
@@ -22,7 +24,7 @@ const NavbarToggler = (props) => {
       aria-label="Toggle navigation"
       onClick={clickHandler}
     >
-      <i className="icon-menu"></i>
+      <i className={iconClass}></i>
     </button>
   );
 
@@ -37,6 +39,8 @@ const NavbarTogglerWrapper = withUnstatedContainers(NavbarToggler, [NavigationCo
 NavbarToggler.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
+
+  iconClass: PropTypes.string,
 };
 
 export default withTranslation()(NavbarTogglerWrapper);
