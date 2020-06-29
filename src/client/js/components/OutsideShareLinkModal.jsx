@@ -90,7 +90,7 @@ class OutsideShareLinkModal extends React.Component {
     const { t, pageContainer } = this.props;
     const { path } = pageContainer.state;
     return (
-      <Modal size="lg" isOpen={this.props.isOpen} toggle={this.props.onClose}>
+      <Modal size="xl" isOpen={this.props.isOpen} toggle={this.props.onClose}>
         <ModalHeader tag="h4" toggle={this.props.onClose} className="bg-primary text-light">{t('share_links.Shere this page link to public')}
         </ModalHeader>
         <ModalBody>
