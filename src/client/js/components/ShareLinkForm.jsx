@@ -218,7 +218,7 @@ class ShareLinkForm extends React.Component {
             type="text"
             className="form-control"
             id="inputDesc"
-            placeholder={t('enter_desc')}
+            placeholder={t('share_links.enter_desc')}
             value={this.state.description}
             onChange={e => this.handleChangeDescription(e.target.value)}
           />
