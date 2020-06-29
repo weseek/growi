@@ -33,7 +33,7 @@ export default class GridEditModal extends React.PureComponent {
   showBgCols() {
     const cols = [];
     for (let i = 0; i < 12; i++) {
-      // [TODO support dark mode by GW-3037]
+      // [bg-light:TODO support dark mode by GW-3037]
       cols.push(<div className="bg-light grid-bg-col col-1"></div>);
     }
     return cols;
@@ -77,7 +77,8 @@ export default class GridEditModal extends React.PureComponent {
               </div>
               <div className="col-9">
                 <div className="row h-100 flex-nowrap overflow-auto">
-                  {/* [TODO support dark mode by GW-3037] */}
+                  {/* [bg-dark:TODO support dark mode by GW-3037] */}
+                  {/* [Just an example to check if bg-cols and editable-cols fit] */}
                   <div className="bg-dark grid-editable-col col-3"></div>
                   <div className="bg-dark grid-editable-col col-5"></div>
                   <div className="bg-dark grid-editable-col col-4"></div>
