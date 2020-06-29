@@ -231,7 +231,7 @@ class ShareLinkForm extends React.Component {
     const { t } = this.props;
     return (
       <div className="share-link-form border p-3">
-        <h4>{t('expire')}</h4>
+        <h4>{t('share_links.expire')}</h4>
         {this.renderExpirationTypeOptions()}
         <hr />
         {this.renderDescriptionForm()}
