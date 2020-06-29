@@ -1,6 +1,9 @@
 .grw-subnav {
-  min-height: 115px;
   padding: 10px 15px;
+
+  @include media-breakpoint-up(md) {
+    min-height: 115px;
+  }
 
   &:hover {
     .btn-copy,
