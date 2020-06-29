@@ -11,6 +11,7 @@ import AppContainer from '../services/AppContainer';
 
 const ShareLinkList = (props) => {
 
+  const { t } = props;
   function deleteLinkHandler(shareLinkId) {
     if (props.onClickDeleteButton == null) {
       return;
@@ -28,7 +29,7 @@ const ShareLinkList = (props) => {
             <td>{shareLink.description}</td>
             <td>
               <button className="btn btn-outline-warning" type="button" onClick={() => deleteLinkHandler(shareLink._id)}>
-                <i className="icon-trash"></i>Delete
+                <i className="icon-trash"></i>{t('Delete')}
               </button>
             </td>
           </tr>
@@ -42,10 +43,10 @@ const ShareLinkList = (props) => {
       <table className="table table-bordered">
         <thead>
           <tr>
-            <th>Link</th>
-            <th>Expiration</th>
-            <th>Description</th>
-            <th>Order</th>
+            <th>{t('share_links.Share Link')}</th>
+            <th>{t('share_links.expire')}</th>
+            <th>{t('share_links.description')}</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>

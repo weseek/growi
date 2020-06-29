@@ -81,7 +81,7 @@ class ShareLinkSetting extends React.Component {
 
 
   render() {
-    const { adminGeneralSecurityContainer } = this.props;
+    const { t, adminGeneralSecurityContainer } = this.props;
 
     const pager = (
       <div className="pull-right my-3">
@@ -102,11 +102,11 @@ class ShareLinkSetting extends React.Component {
             type="button"
             onClick={this.showDeleteConfirmModal}
           >
-            Delete all links
+            {t('share_links.delete_all_share_links')}
           </button>
         )
         : (
-          <p className="pull-right mr-2">No share links</p>
+          <p className="pull-right mr-2">{t('share_links.No_share_links')}</p>
         )
     );
 
@@ -114,7 +114,7 @@ class ShareLinkSetting extends React.Component {
       <Fragment>
         <div className="mb-3">
           {deleteAllButton}
-          <h2 className="alert-anchor border-bottom">Shared Link List</h2>
+          <h2 className="alert-anchor border-bottom">{t('share_links.share_link_management')}</h2>
         </div>
 
         {pager}
@@ -122,11 +122,11 @@ class ShareLinkSetting extends React.Component {
           <table className="table table-bordered">
             <thead>
               <tr>
-                <th>Link</th>
-                <th>PagePath</th>
-                <th>Expiration</th>
-                <th>Description</th>
-                <th>Order</th>
+                <th>{t('share_links.Share Link')}</th>
+                <th>{t('share_links.Page Path')}</th>
+                <th>{t('share_links.expire')}</th>
+                <th>{t('share_links.description')}</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -144,7 +144,7 @@ class ShareLinkSetting extends React.Component {
                         shareLinks={sharelink._id}
                         onClick={() => { this.deleteLinkById(sharelink._id) }}
                       >
-                        <i className="icon-trash mr-2"></i>Delete
+                        <i className="icon-trash mr-2"></i>{t('Delete')}
                       </button>
                     </td>
                   </tr>
