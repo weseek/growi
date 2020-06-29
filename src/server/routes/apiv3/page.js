@@ -124,6 +124,15 @@ module.exports = (crowi) => {
       body('pageId').isString(),
       body('bool').isBoolean(),
     ],
+
+    archive: [
+      body('isCommentDownload').isBoolean(),
+      body('isAttachmentFileDownload').isBoolean(),
+      body('isSubordinatedPageDownload').isBoolean(),
+      body('fileType').isString().isIn(['pdf', 'markDown']),
+      body('hierarchyType').isString().isIn(['allSubordinatedPage', 'decideHierarchy']),
+      body('hierarchyValue').isNumeric(),
+    ],
   };
 
   /**
@@ -180,6 +189,28 @@ module.exports = (crowi) => {
     const result = { page };
     result.seenUser = page.seenUsers;
     return res.apiv3({ result });
+  });
+
+  router.post('/archive', accessTokenParser, loginRequired, csrf, validator.archive, apiV3FormValidator, async(req, res) => {
+
+    const {
+      isCommentDownload,
+      isAttachmentFileDownload,
+      isSubordinatedPageDownload,
+      fileType,
+      hierarchyType,
+      hierarchyValue,
+    } = req.body;
+
+
+    console.log(isCommentDownload);
+    console.log(isAttachmentFileDownload);
+    console.log(fileType);
+    console.log(isSubordinatedPageDownload);
+    console.log(hierarchyType);
+    console.log(hierarchyValue);
+
+    return res.apiv3({});
   });
 
   return router;
