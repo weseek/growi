@@ -20,6 +20,7 @@ const ShareLinkList = (props) => {
     props.onClickDeleteButton(shareLinkId);
   }
 
+  // TODO pagePath が null だった場合の管理画面の挙動は別途実装する
   function renderShareLinks() {
     return (
       <>
@@ -66,7 +67,7 @@ const ShareLinkListWrapper = withUnstatedContainers(ShareLinkList, [AppContainer
 ShareLinkList.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pagePath: PropTypes.string.isRequired,
+  pagePath: PropTypes.string,
 
   shareLinks: PropTypes.array.isRequired,
   onClickDeleteButton: PropTypes.func,
