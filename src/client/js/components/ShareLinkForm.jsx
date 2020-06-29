@@ -212,7 +212,7 @@ class ShareLinkForm extends React.Component {
     const { t } = this.props;
     return (
       <div className="form-group row">
-        <label htmlFor="inputDesc" className="col-md-4 col-form-label">{t('description')}</label>
+        <label htmlFor="inputDesc" className="col-md-4 col-form-label">{t('share_links.description')}</label>
         <div className="col-md-4">
           <input
             type="text"
