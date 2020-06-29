@@ -63,7 +63,7 @@ export default class GridEditModal extends React.PureComponent {
               </div>
             </div>
           </div>
-          <div className="container position-relative edit-wrapper p-4">
+          <div className="container position-relative p-4">
             <div className="row">
               <div className="col-3">
                 <h5>Phone</h5>
