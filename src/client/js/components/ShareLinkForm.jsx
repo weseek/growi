@@ -145,7 +145,7 @@ class ShareLinkForm extends React.Component {
             checked={expirationType === 'unlimited'}
             onChange={() => { this.handleChangeExpirationType('unlimited') }}
           />
-          <label className="custom-control-label" htmlFor="customRadio1">{t('Unlimited')}</label>
+          <label className="custom-control-label" htmlFor="customRadio1">{t('share_links.Unlimited')}</label>
         </div>
 
         <div className="custom-control custom-radio offset-4 mb-2">
