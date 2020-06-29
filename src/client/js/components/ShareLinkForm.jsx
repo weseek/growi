@@ -169,7 +169,7 @@ class ShareLinkForm extends React.Component {
                 onFocus={() => { this.handleChangeExpirationType('numberOfDays') }}
                 onChange={e => this.handleChangeNumberOfDays(Number(e.target.value))}
               />
-              <span className="col-auto">{t('Days')}</span>
+              <span className="col-auto">{t('share_links.Days')}</span>
             </div>
           </label>
         </div>
