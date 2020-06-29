@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -16,6 +17,7 @@ export default class GridEditModal extends React.PureComponent {
     this.show = this.show.bind(this);
     this.hide = this.hide.bind(this);
     this.cancel = this.cancel.bind(this);
+    this.pasteCodedGrid = this.pasteCodedGrid.bind(this);
   }
 
   show() {
@@ -28,6 +30,13 @@ export default class GridEditModal extends React.PureComponent {
 
   cancel() {
     this.hide();
+  }
+
+  pasteCodedGrid() {
+    if (this.props.onSave != null) {
+      this.props.onSave();
+    }
+    this.cancel();
   }
 
   showBgCols() {
@@ -72,7 +81,7 @@ export default class GridEditModal extends React.PureComponent {
         <ModalFooter className="grw-modal-footer">
           <div className="ml-auto">
             <button type="button" className="mr-2 btn btn-secondary" onClick={this.cancel}>Cancel</button>
-            <button type="button" className="btn btn-primary">Done</button>
+            <button type="button" className="btn btn-primary" onClick={this.pasteCodedGrid}>Done</button>
           </div>
         </ModalFooter>
       </Modal>
@@ -80,3 +89,7 @@ export default class GridEditModal extends React.PureComponent {
   }
 
 }
+
+GridEditModal.propTypes = {
+  onSave: PropTypes.func,
+};
