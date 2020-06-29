@@ -18,6 +18,7 @@ import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
 import MarkdownTableInterceptor from './MarkdownTableInterceptor';
 import mtu from './MarkdownTableUtil';
 import mdu from './MarkdownDrawioUtil';
+import geu from './GridEditorUtil';
 import GridEditModal from './GridEditModal';
 import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
@@ -867,7 +868,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
         <GridEditModal
           ref={this.gridEditModal}
-          onSave={(grid) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), grid) }}
+          onSave={() => { return geu.replaceGridWithHtmlWithEditor(this.getCodeMirror()) }}
         />
         <HandsontableModal
           ref={this.handsontableModal}
