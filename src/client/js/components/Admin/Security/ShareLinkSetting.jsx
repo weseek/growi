@@ -113,7 +113,7 @@ class ShareLinkSetting extends React.Component {
       <Fragment>
         <div className="mb-3">
           {deleteAllButton}
-          <h2 className="alert-anchor border-bottom">{t('share_link_management')}</h2>
+          <h2 className="alert-anchor border-bottom">{t('share_links.share_link_management')}</h2>
         </div>
 
         {pager}
