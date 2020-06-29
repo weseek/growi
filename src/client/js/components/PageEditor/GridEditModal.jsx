@@ -86,7 +86,6 @@ export default class GridEditModal extends React.PureComponent {
               </div>
             </div>
           </div>
-
         </ModalBody>
         <ModalFooter className="grw-modal-footer">
           <div className="ml-auto">
