@@ -16,12 +16,14 @@ $color-tags: #949494 !default;
 $bgcolor-tags: #ebebeb !default;
 
 // override bootstrap variables
+$border-color: #dee2e6;
 $table-color: $color-table;
 $table-bg: $bgcolor-table;
 $table-border-color: $border-color-table;
 $table-hover-color: $color-table-hover;
 $table-hover-bg: $bgcolor-table-hover;
 
+@import 'reboot-bootstrap-border-colors';
 @import 'reboot-bootstrap-tables';
 
 // List Group
@@ -128,6 +130,11 @@ $table-hover-bg: $bgcolor-table-hover;
 
 .grw-subnav-fixed-container .grw-subnav {
   background-color: rgba($bgcolor-subnav, 0.85);
+}
+
+.grw-navbar-toggler {
+  @extend .btn-light;
+  color: #999;
 }
 
 /*

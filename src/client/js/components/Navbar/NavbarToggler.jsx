@@ -15,15 +15,15 @@ const NavbarToggler = (props) => {
   };
 
   return (
-    <a
-      className="nav-link grw-navbar-toggler border-0 waves-effect waves-light"
+    <button
+      className="grw-navbar-toggler btn btn-secondary btn-xl"
       type="button"
       aria-expanded="false"
       aria-label="Toggle navigation"
       onClick={clickHandler}
     >
       <i className="icon-menu"></i>
-    </a>
+    </button>
   );
 
 };

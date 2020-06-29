@@ -68,9 +68,6 @@ class GrowiNavbar extends React.Component {
           </a>
         </div>
 
-        <ul className="navbar-nav d-md-none">
-          <li id="grw-navbar-toggler" className="nav-item"></li>
-        </ul>
         <div className="grw-app-title d-none d-md-block">
           {crowi.title}
         </div>

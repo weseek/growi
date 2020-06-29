@@ -20,6 +20,8 @@ import BookmarkButton from '../BookmarkButton';
 
 import PageCreator from './PageCreator';
 import RevisionAuthor from './RevisionAuthor';
+import NavbarToggler from './NavbarToggler';
+
 
 // eslint-disable-next-line react/prop-types
 const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
@@ -79,16 +81,23 @@ const GrowiSubNavigation = (props) => {
   return (
     <div className={`grw-subnav d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact' : ''}`}>
 
-      {/* Page Path */}
-      <div>
-        { !isCompactMode && !isPageNotFound && !isPageForbidden && (
-          <div className="mb-2">
-            <TagLabels />
-          </div>
-        ) }
-        <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
+      {/* Left side */}
+      <div className="d-flex">
+        <div className="d-flex align-items-center border-right mr-3 pr-3">
+          <NavbarToggler />
+        </div>
+
+        <div>
+          { !isCompactMode && !isPageNotFound && !isPageForbidden && (
+            <div className="mb-2">
+              <TagLabels />
+            </div>
+          ) }
+          <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
+        </div>
       </div>
 
+      {/* Right side */}
       <div className="d-flex">
 
         {/* Buttons */}
