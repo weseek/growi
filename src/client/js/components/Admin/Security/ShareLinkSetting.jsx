@@ -101,7 +101,7 @@ class ShareLinkSetting extends React.Component {
             type="button"
             onClick={this.showDeleteConfirmModal}
           >
-            {t('delete_all_share_links')}
+            {t('share_links.delete_all_share_links')}
           </button>
         )
         : (
