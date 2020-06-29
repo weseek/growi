@@ -77,6 +77,7 @@ export default class GridEditModal extends React.PureComponent {
               </div>
               <div className="col-9">
                 <div className="row h-100 flex-nowrap overflow-auto">
+                  {/* [TODO support dark mode by GW-3037] */}
                   <div className="bg-dark grid-editable-col col-3"></div>
                   <div className="bg-dark grid-editable-col col-5"></div>
                   <div className="bg-dark grid-editable-col col-4"></div>
