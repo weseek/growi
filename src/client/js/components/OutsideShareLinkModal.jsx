@@ -87,7 +87,8 @@ class OutsideShareLinkModal extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
+    const { t, pageContainer } = this.props;
+    const { path } = pageContainer.state;
     return (
       <Modal size="lg" isOpen={this.props.isOpen} toggle={this.props.onClose}>
         <ModalHeader tag="h4" toggle={this.props.onClose} className="bg-primary text-light">{t('share_links.Shere this page link to public')}
@@ -103,6 +104,7 @@ class OutsideShareLinkModal extends React.Component {
               <ShareLinkList
                 shareLinks={this.state.shareLinks}
                 onClickDeleteButton={this.deleteLinkById}
+                pagePath={path}
               />
               <button
                 className="btn btn-outline-secondary d-block mx-auto px-5 mb-3"

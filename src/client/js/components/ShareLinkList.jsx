@@ -27,7 +27,7 @@ const ShareLinkList = (props) => {
           <tr key={shareLink._id}>
             <td className="d-flex justify-content-between align-items-center">
               <span>{shareLink._id}</span>
-              <CopyDropdown isShareLinkMode="true" shareLinkId={shareLink._id} pageId={shareLink.relatedPage} />
+              <CopyDropdown isShareLinkMode="true" shareLinkId={shareLink._id} pageId={shareLink.relatedPage} pagePath={props.pagePath} />
             </td>
             <td>{shareLink.expiredAt && <span>{dateFnsFormat(new Date(shareLink.expiredAt), 'yyyy-MM-dd HH:mm')}</span>}</td>
             <td>{shareLink.description}</td>
@@ -66,6 +66,7 @@ const ShareLinkListWrapper = withUnstatedContainers(ShareLinkList, [AppContainer
 ShareLinkList.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pagePath: PropTypes.string.isRequired,
 
   shareLinks: PropTypes.array.isRequired,
   onClickDeleteButton: PropTypes.func,
