@@ -41,7 +41,7 @@ const DeleteAllShareLinksModal = React.memo((props) => {
         </span>
       </ModalHeader>
       <ModalBody>
-        { t('share_link_notice', { count: props.count })}
+        { t('share_links.share_link_notice', { count: props.count })}
       </ModalBody>
       <ModalFooter>
         <Button onClick={closeButtonHandler}>{t('Cancel')}</Button>
