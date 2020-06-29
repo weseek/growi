@@ -311,7 +311,7 @@ class PageEditor extends React.Component {
           <Preview
             markdown={this.state.markdown}
             // eslint-disable-next-line no-return-assign
-            innerRef={(el) => { return this.previewElement = el }}
+            inputRef={(el) => { return this.previewElement = el }}
             isMathJaxEnabled={this.state.isMathJaxEnabled}
             renderMathJaxOnInit={false}
             onScroll={this.onPreviewScroll}
