@@ -105,7 +105,7 @@ class ShareLinkSetting extends React.Component {
           </button>
         )
         : (
-          <p className="pull-right mr-2">{t('No_share_links')}</p>
+          <p className="pull-right mr-2">{t('share_links.No_share_links')}</p>
         )
     );
 
