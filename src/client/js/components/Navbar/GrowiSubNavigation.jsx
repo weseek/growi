@@ -88,7 +88,7 @@ const GrowiSubNavigation = (props) => {
       {/* Left side */}
       <div className="d-flex">
         { isDrawerMode && (
-          <div className="d-flex align-items-center border-right mr-3 pr-3">
+          <div className="d-none d-md-flex align-items-center border-right mr-3 pr-3">
             <DrawerToggler />
           </div>
         ) }
