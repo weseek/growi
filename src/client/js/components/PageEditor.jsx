@@ -21,6 +21,8 @@ class PageEditor extends React.Component {
   constructor(props) {
     super(props);
 
+    this.previewElement = React.createRef();
+
     const config = this.props.appContainer.getConfig();
     const isUploadable = config.upload.image || config.upload.file;
     const isUploadableFile = config.upload.file;
@@ -309,7 +311,7 @@ class PageEditor extends React.Component {
           <Preview
             markdown={this.state.markdown}
             // eslint-disable-next-line no-return-assign
-            inputRef={(el) => { return this.previewElement = el }}
+            innerRef={(el) => { return this.previewElement = el }}
             isMathJaxEnabled={this.state.isMathJaxEnabled}
             renderMathJaxOnInit={false}
             onScroll={this.onPreviewScroll}
