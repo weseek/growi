@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import NavigationContainer from '../../services/NavigationContainer';
 
-const NavbarToggler = (props) => {
+const DrawerToggler = (props) => {
 
   const { navigationContainer } = props;
 
@@ -33,14 +33,14 @@ const NavbarToggler = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const NavbarTogglerWrapper = withUnstatedContainers(NavbarToggler, [NavigationContainer]);
+const DrawerTogglerWrapper = withUnstatedContainers(DrawerToggler, [NavigationContainer]);
 
 
-NavbarToggler.propTypes = {
+DrawerToggler.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 
   iconClass: PropTypes.string,
 };
 
-export default withTranslation()(NavbarTogglerWrapper);
+export default withTranslation()(DrawerTogglerWrapper);

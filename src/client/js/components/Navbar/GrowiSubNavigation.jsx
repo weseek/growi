@@ -21,7 +21,7 @@ import BookmarkButton from '../BookmarkButton';
 
 import PageCreator from './PageCreator';
 import RevisionAuthor from './RevisionAuthor';
-import NavbarToggler from './NavbarToggler';
+import DrawerToggler from './DrawerToggler';
 
 
 // eslint-disable-next-line react/prop-types
@@ -89,7 +89,7 @@ const GrowiSubNavigation = (props) => {
       <div className="d-flex">
         { isDrawerMode && (
           <div className="d-flex align-items-center border-right mr-3 pr-3">
-            <NavbarToggler />
+            <DrawerToggler />
           </div>
         ) }
 
