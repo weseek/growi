@@ -5474,10 +5474,10 @@ eslint-config-airbnb@^17.1.0:
     object.assign "^4.1.0"
     object.entries "^1.0.4"
 
-eslint-config-weseek@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/eslint-config-weseek/-/eslint-config-weseek-1.0.3.tgz#420f583371447def71af11a78baf39d65a3d9e4a"
-  integrity sha512-AXOuaZomA/h34EHMT+CmhU7TTDbsyqCl702yaY0PGt6wype/YWra9phTbPyHjuI+Uh8gh9eKX2tAhnruKK3Ivw==
+eslint-config-weseek@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/eslint-config-weseek/-/eslint-config-weseek-1.0.4.tgz#26f8dc5ce6e791f9eb379308f0fbac4902b25439"
+  integrity sha512-PkWrFlNDs5X+cyCDEZ6JFoHly0LQhDuPVbEiSxchguk9A8OvrUD+KBgIOWbQZSjI0YJV582zyGSTU5J1lwtpUw==
   dependencies:
     eslint-config-airbnb "^17.1.0"
 
@@ -5519,6 +5519,11 @@ eslint-plugin-jest@^23.0.3:
   integrity sha512-9cNxr66zeOyz1S9AkQL4/ouilR6QHpYj8vKOQZ60fu9hAt5PJWS4KqWqfr1aqN5NFEZSPjFOla2Azn+KTWiGwg==
   dependencies:
     "@typescript-eslint/experimental-utils" "^2.5.0"
+
+eslint-plugin-react-hooks@^4.0.4:
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-4.0.4.tgz#aed33b4254a41b045818cacb047b81e6df27fa58"
+  integrity sha512-equAdEIsUETLFNCmmCkiCGq6rkSK5MoJhXFPFYeUebcjKgBmWWcgVOqZyQC8Bv1BwVCnTq9tBxgJFgAJTWoJtA==
 
 eslint-plugin-react@^7.14.2:
   version "7.14.2"
