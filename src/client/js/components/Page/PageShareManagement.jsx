@@ -71,7 +71,7 @@ const PageShareManagement = (props) => {
       {currentUser == null ? renderGuestUser() : renderCurrentUser()}
       <div className="dropdown-menu dropdown-menu-right">
         <button className="dropdown-item" type="button" onClick={openOutsideShareLinkModalHandler}>
-          <i className="icon-fw icon-link"></i>{t('Shere this page link to public')}
+          <i className="icon-fw icon-link"></i>{t('share_links.Shere this page link to public')}
           <span className="ml-2 badge badge-info badge-pill">{pageContainer.state.shareLinksNumber}</span>
         </button>
       </div>

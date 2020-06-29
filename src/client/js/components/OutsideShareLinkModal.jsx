@@ -87,15 +87,16 @@ class OutsideShareLinkModal extends React.Component {
   }
 
   render() {
+    const { t } = this.props;
     return (
-      <Modal size="xl" isOpen={this.props.isOpen} toggle={this.props.onClose}>
-        <ModalHeader tag="h4" toggle={this.props.onClose} className="bg-primary text-light">Title
+      <Modal size="lg" isOpen={this.props.isOpen} toggle={this.props.onClose}>
+        <ModalHeader tag="h4" toggle={this.props.onClose} className="bg-primary text-light">{t('share_links.Shere this page link to public')}
         </ModalHeader>
         <ModalBody>
           <div className="container">
             <div className="form-inline mb-3">
-              <h4>Shared Link List</h4>
-              <button className="ml-auto btn btn-danger" type="button" onClick={this.deleteAllLinksButtonHandler}>Delete all links</button>
+              <h4>{t('share_links.share_link_list')}</h4>
+              <button className="ml-auto btn btn-danger" type="button" onClick={this.deleteAllLinksButtonHandler}>{t('delete_all')}</button>
             </div>
 
             <div>
@@ -108,7 +109,7 @@ class OutsideShareLinkModal extends React.Component {
                 type="button"
                 onClick={this.toggleShareLinkFormHandler}
               >
-                {this.state.isOpenShareLinkForm ? 'Close' : 'New'}
+                {this.state.isOpenShareLinkForm ? t('Close') : t('New')}
               </button>
               {this.state.isOpenShareLinkForm && <ShareLinkForm onCloseForm={this.toggleShareLinkFormHandler} />}
             </div>
