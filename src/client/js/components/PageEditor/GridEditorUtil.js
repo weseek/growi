@@ -10,6 +10,7 @@ class GridEditorUtil {
   replaceGridWithHtmlWithEditor(editor) {
     const curPos = editor.getCursor();
     editor.getDoc().replaceRange(
+      // dummy data
       '<div class="container"><div class="row"><div class="col-sm-6 col-md-5 col-lg-12">dummy</div></div></div>',
       { line: editor.getDoc().getCursor().line, ch: editor.getDoc().getCursor().ch },
     );
