@@ -210,6 +210,23 @@
     "password_is_not_set": "パスワードが設定されていません"
   },
   "security_settings": "セキュリティ設定",
+  "share_links": {
+    "Shere this page link to public": "外部に共有するリンクを発行する",
+    "share_link_list": "共有リンクリスト",
+    "share_link_management": "共有リンク管理",
+    "No_share_links":"共有リンクが存在しません",
+    "Share Link": "共有用リンク",
+    "Page Path": "ページパス",
+    "share_link_notice":"{{count}} 件の共有リンクを削除します",
+    "delete_all_share_links":"全ての共有リンクを削除します",
+    "expire": "有効期限",
+    "Days": "日間",
+    "Custom": "カスタム",
+    "description": "概要",
+    "enter_desc": "概要を入力",
+    "Unlimited": "無期限",
+    "Issue": "発行"
+  },
   "API Settings": "API設定",
   "API Token Settings": "API Token設定",
   "Current API Token": "現在のAPI Token",
