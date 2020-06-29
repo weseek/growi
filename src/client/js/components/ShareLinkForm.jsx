@@ -185,7 +185,7 @@ class ShareLinkForm extends React.Component {
             onChange={() => { this.handleChangeExpirationType('custom') }}
           />
           <label className="custom-control-label" htmlFor="customRadio3">
-            {t('Custom')}
+            {t('share_links.Custom')}
           </label>
           <input
             type="date"
