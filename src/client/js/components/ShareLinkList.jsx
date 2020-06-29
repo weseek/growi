@@ -20,7 +20,7 @@ const ShareLinkList = (props) => {
     props.onClickDeleteButton(shareLinkId);
   }
 
-  // TODO pagePath が null だった場合の管理画面の挙動は別途実装する
+  // TODO implement admin screen behavior when pagePath is null
   function renderShareLinks() {
     return (
       <>
