@@ -237,7 +237,7 @@ class ShareLinkForm extends React.Component {
         {this.renderDescriptionForm()}
         <div className="text-right">
           <button type="button" className="btn btn-primary" onClick={this.handleIssueShareLink}>
-            Issue
+            {t('share_links.Issue')}
           </button>
         </div>
       </div>
