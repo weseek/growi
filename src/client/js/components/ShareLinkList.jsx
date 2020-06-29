@@ -42,9 +42,9 @@ const ShareLinkList = (props) => {
       <table className="table table-bordered">
         <thead>
           <tr>
-            <th>{t('Share Link')}</th>
-            <th>{t('expire')}</th>
-            <th>{t('description')}</th>
+            <th>{t('share_links.Share Link')}</th>
+            <th>{t('share_links.expire')}</th>
+            <th>{t('share_links.description')}</th>
             <th></th>
           </tr>
         </thead>
