@@ -46,7 +46,7 @@ export default class GridEditModal extends React.PureComponent {
           Edit Grid
         </ModalHeader>
         <ModalBody className="p-0">
-          <div className="container bg-wrapper p-4">
+          <div className="container position-absolute p-4">
             <div className="row">
               <div className="col-3">
                 <h5>Phone</h5>
@@ -63,7 +63,7 @@ export default class GridEditModal extends React.PureComponent {
               </div>
             </div>
           </div>
-          <div className="container edit-wrapper p-4">
+          <div className="container position-relative edit-wrapper p-4">
             <div className="row">
               <div className="col-3">
                 <h5>Phone</h5>
