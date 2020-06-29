@@ -33,6 +33,7 @@ export default class GridEditModal extends React.PureComponent {
   showBgCols() {
     const cols = [];
     for (let i = 0; i < 12; i++) {
+      // [TODO support dark mode by GW-3037]
       cols.push(<div className="bg-light grid-bg-col col-1"></div>);
     }
     return cols;
