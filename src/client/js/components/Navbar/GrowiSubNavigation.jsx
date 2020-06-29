@@ -11,9 +11,10 @@ import PagePathHierarchicalLink from '@commons/components/PagePathHierarchicalLi
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
+import NavigationContainer from '../../services/NavigationContainer';
+import PageContainer from '../../services/PageContainer';
 
 import RevisionPathControls from '../Page/RevisionPathControls';
-import PageContainer from '../../services/PageContainer';
 import TagLabels from '../Page/TagLabels';
 import LikeButton from '../LikeButton';
 import BookmarkButton from '../BookmarkButton';
@@ -60,7 +61,10 @@ const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
 };
 
 const GrowiSubNavigation = (props) => {
-  const { appContainer, pageContainer, isCompactMode } = props;
+  const {
+    appContainer, navigationContainer, pageContainer, isCompactMode,
+  } = props;
+  const { isDrawerMode } = navigationContainer.state;
   const {
     pageId, path, createdAt, creator, updatedAt, revisionAuthor,
     isForbidden: isPageForbidden,
@@ -83,9 +87,11 @@ const GrowiSubNavigation = (props) => {
 
       {/* Left side */}
       <div className="d-flex">
-        <div className="d-flex align-items-center border-right mr-3 pr-3">
-          <NavbarToggler />
-        </div>
+        { isDrawerMode && (
+          <div className="d-flex align-items-center border-right mr-3 pr-3">
+            <NavbarToggler />
+          </div>
+        ) }
 
         <div>
           { !isCompactMode && !isPageNotFound && !isPageForbidden && (
@@ -147,12 +153,13 @@ const GrowiSubNavigation = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const GrowiSubNavigationWrapper = withUnstatedContainers(GrowiSubNavigation, [AppContainer, PageContainer]);
+const GrowiSubNavigationWrapper = withUnstatedContainers(GrowiSubNavigation, [AppContainer, NavigationContainer, PageContainer]);
 
 
 GrowiSubNavigation.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   isCompactMode: PropTypes.bool,
