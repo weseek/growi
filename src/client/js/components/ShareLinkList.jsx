@@ -8,6 +8,7 @@ import dateFnsFormat from 'date-fns/format';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import AppContainer from '../services/AppContainer';
+import CopyDropdown from './Page/CopyDropdown';
 
 const ShareLinkList = (props) => {
 
@@ -19,12 +20,16 @@ const ShareLinkList = (props) => {
     props.onClickDeleteButton(shareLinkId);
   }
 
+  // TODO implement admin screen behavior when pagePath is null
   function renderShareLinks() {
     return (
       <>
         {props.shareLinks.map(shareLink => (
           <tr key={shareLink._id}>
-            <td>{shareLink._id}</td>
+            <td className="d-flex justify-content-between align-items-center">
+              <span>{shareLink._id}</span>
+              <CopyDropdown isShareLinkMode="true" pagePath={props.pagePath} pageId={shareLink._id} />
+            </td>
             <td>{shareLink.expiredAt && <span>{dateFnsFormat(new Date(shareLink.expiredAt), 'yyyy-MM-dd HH:mm')}</span>}</td>
             <td>{shareLink.description}</td>
             <td>
@@ -62,6 +67,7 @@ const ShareLinkListWrapper = withUnstatedContainers(ShareLinkList, [AppContainer
 ShareLinkList.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pagePath: PropTypes.string,
 
   shareLinks: PropTypes.array.isRequired,
   onClickDeleteButton: PropTypes.func,
