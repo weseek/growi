@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import dateFnsFormat from 'date-fns/format';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
@@ -12,6 +11,7 @@ import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 
 import DeleteAllShareLinksModal from './DeleteAllShareLinksModal';
+import ShareLinkList from '../../ShareLinkList';
 
 class ShareLinkSetting extends React.Component {
 
@@ -118,41 +118,11 @@ class ShareLinkSetting extends React.Component {
         </div>
 
         {pager}
-        <div className="table-responsive">
-          <table className="table table-bordered">
-            <thead>
-              <tr>
-                <th>{t('share_links.Share Link')}</th>
-                <th>{t('share_links.Page Path')}</th>
-                <th>{t('share_links.expire')}</th>
-                <th>{t('share_links.description')}</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {adminGeneralSecurityContainer.state.shareLinks.map((sharelink) => {
-                return (
-                  <tr key={sharelink._id}>
-                    <td>{sharelink._id}</td>
-                    <td><a href={sharelink.relatedPage.path}>{sharelink.relatedPage.path}</a></td>
-                    <td>{sharelink.expiredAt && <span>{dateFnsFormat(new Date(sharelink.expiredAt), 'yyyy-MM-dd HH:mm')}</span>}</td>
-                    <td>{sharelink.description}</td>
-                    <td>
-                      <button
-                        className="btn btn-outline-warning"
-                        type="button"
-                        shareLinks={sharelink._id}
-                        onClick={() => { this.deleteLinkById(sharelink._id) }}
-                      >
-                        <i className="icon-trash mr-2"></i>{t('Delete')}
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+        <ShareLinkList
+          shareLinks={adminGeneralSecurityContainer.state.shareLinks}
+          onClickDeleteButton={this.deleteLinkById}
+          isAdmin
+        />
 
         <DeleteAllShareLinksModal
           isOpen={this.state.isDeleteConfirmModalShown}

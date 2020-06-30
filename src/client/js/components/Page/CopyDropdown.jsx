@@ -104,13 +104,14 @@ class CopyDropdown extends React.Component {
 
     const { DropdownItemContents } = this;
     const copyTarget = isShareLinkMode ? `copyShareLink${pageId}` : 'copyPagePathDropdown';
+    const dropdownToggleStyle = isShareLinkMode ? 'btn btn-secondary' : 'd-block text-muted bg-transparent btn-copy border-0';
 
     return (
       <>
         <UncontrolledDropdown id={copyTarget} className="grw-copy-dropdown">
           <DropdownToggle
             caret
-            className="d-block text-muted bg-transparent btn-copy border-0"
+            className={dropdownToggleStyle}
             style={this.props.buttonStyle}
           >
             { isShareLinkMode ? (
@@ -118,7 +119,7 @@ class CopyDropdown extends React.Component {
             ) : (<i className="ti-clipboard"></i>)}
           </DropdownToggle>
 
-          <DropdownMenu>
+          <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: null } }}>
 
             <div className="d-flex align-items-center justify-content-between">
               <DropdownItem header className="px-3">

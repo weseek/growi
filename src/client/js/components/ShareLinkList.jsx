@@ -20,16 +20,18 @@ const ShareLinkList = (props) => {
     props.onClickDeleteButton(shareLinkId);
   }
 
-  // TODO implement admin screen behavior when pagePath is null
   function renderShareLinks() {
     return (
       <>
         {props.shareLinks.map(shareLink => (
           <tr key={shareLink._id}>
-            <td className="d-flex justify-content-between align-items-center">
-              <span>{shareLink._id}</span>
-              <CopyDropdown isShareLinkMode="true" pagePath={props.pagePath} pageId={shareLink._id} />
+            <td>
+              <div className="d-flex">
+                <span className="mr-auto my-auto">{shareLink._id}</span>
+                <CopyDropdown isShareLinkMode pagePath={shareLink.relatedPage.path} pageId={shareLink._id} />
+              </div>
             </td>
+            {props.isAdmin && <td><a href={shareLink.relatedPage.path}>{shareLink.relatedPage.path}</a></td>}
             <td>{shareLink.expiredAt && <span>{dateFnsFormat(new Date(shareLink.expiredAt), 'yyyy-MM-dd HH:mm')}</span>}</td>
             <td>{shareLink.description}</td>
             <td>
@@ -49,6 +51,7 @@ const ShareLinkList = (props) => {
         <thead>
           <tr>
             <th>{t('share_links.Share Link')}</th>
+            {props.isAdmin && <th>{t('share_links.Page Path')}</th>}
             <th>{t('share_links.expire')}</th>
             <th>{t('share_links.description')}</th>
             <th></th>
@@ -67,10 +70,10 @@ const ShareLinkListWrapper = withUnstatedContainers(ShareLinkList, [AppContainer
 ShareLinkList.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pagePath: PropTypes.string,
 
   shareLinks: PropTypes.array.isRequired,
   onClickDeleteButton: PropTypes.func,
+  isAdmin: PropTypes.bool,
 };
 
 export default withTranslation()(ShareLinkListWrapper);
