@@ -61,7 +61,7 @@ class SearchTop extends React.Component {
         </div>
       )
       : (
-        <div className="grw-search-top-fixed position-fixed">
+        <div className="grw-search-top-absolute position-absolute">
           {children}
         </div>
       );
@@ -77,7 +77,7 @@ class SearchTop extends React.Component {
     const isReachable = config.isSearchServiceReachable;
 
     return (
-      <div className={`form-group mb-0 ${isReachable ? '' : 'has-error'}`}>
+      <div className={`form-group mb-0 d-print-none ${isReachable ? '' : 'has-error'}`}>
         <div className="input-group flex-nowrap">
           <div className="input-group-prepend">
             <button className="btn btn-secondary dropdown-toggle py-0" type="button" data-toggle="dropdown" aria-haspopup="true">

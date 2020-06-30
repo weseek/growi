@@ -3,7 +3,17 @@ import PropTypes from 'prop-types';
 
 import { UncontrolledTooltip } from 'reactstrap';
 
-const NotAvailableForGuest = ({ children }) => {
+import AppContainer from '../services/AppContainer';
+
+import { withUnstatedContainers } from './UnstatedUtils';
+
+const NotAvailableForGuest = (props) => {
+  const { appContainer, children } = props;
+  const isLoggedin = appContainer.currentUser != null;
+
+  if (isLoggedin) {
+    return props.children;
+  }
 
   const id = children.props.id || `grw-not-available-for-guest-${Math.random().toString(32).substring(2)}`;
 
@@ -24,7 +34,8 @@ const NotAvailableForGuest = ({ children }) => {
 };
 
 NotAvailableForGuest.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   children: PropTypes.node.isRequired,
 };
 
-export default NotAvailableForGuest;
+export default withUnstatedContainers(NotAvailableForGuest, [AppContainer]);

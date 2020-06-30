@@ -14,10 +14,6 @@ body {
   font-weight: bold;
 }
 
-#page-wrapper {
-  margin-top: $grw-navbar-height + $grw-navbar-border-width;
-}
-
 .grw-modal-head {
   font-size: 1em;
   border-bottom: 1px solid $gray-500;
@@ -79,6 +75,10 @@ body {
       }
     }
 
+    .row {
+      display: block !important;
+    }
+
     .revision-toc {
       float: none;
       max-width: 100%;
@@ -102,16 +102,5 @@ body {
       color: #666;
       border-top: solid 1px #ccc;
     }
-  }
-}
-
-.system-version {
-  position: fixed;
-  right: 0.5em;
-  bottom: 0;
-  opacity: 0.6;
-
-  > span {
-    margin-left: 0.5em;
   }
 }

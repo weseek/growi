@@ -13,9 +13,8 @@ import AppContainer from '../services/AppContainer';
 import NavigationContainer from '../services/NavigationContainer';
 
 import SidebarNav from './Sidebar/SidebarNav';
-import RecentChanges from './Sidebar/RecentChanges';
-import CustomSidebar from './Sidebar/CustomSidebar';
-
+import SidebarContents from './Sidebar/SidebarContents';
+import StickyStretchableScroller from './StickyStretchableScroller';
 
 const sidebarDefaultWidth = 240;
 
@@ -26,10 +25,6 @@ class Sidebar extends React.Component {
     navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
     navigationUIController: PropTypes.any.isRequired,
     isDrawerModeOnInit: PropTypes.bool,
-  };
-
-  state = {
-    currentContentsId: 'recent',
   };
 
   componentWillMount() {
@@ -127,42 +122,52 @@ class Sidebar extends React.Component {
   }
 
   itemSelectedHandler = (contentsId) => {
-    const { navigationUIController } = this.props;
-    const { currentContentsId } = this.state;
+    const { navigationContainer, navigationUIController } = this.props;
+    const { sidebarContentsId } = navigationContainer.state;
 
     // already selected
-    if (currentContentsId === contentsId) {
+    if (sidebarContentsId === contentsId) {
       navigationUIController.toggleCollapse();
     }
     // switch and expand
     else {
-      this.setState({ currentContentsId: contentsId });
       navigationUIController.expand();
     }
   }
 
+  calcViewHeight() {
+    const containerElem = document.querySelector('#grw-sidebar-content-container');
+    return window.innerHeight - containerElem.getBoundingClientRect().top;
+  }
+
   renderGlobalNavigation = () => (
-    <SidebarNav currentContentsId={this.state.currentContentsId} onItemSelected={this.itemSelectedHandler} />
+    <SidebarNav onItemSelected={this.itemSelectedHandler} />
   );
 
   renderSidebarContents = () => {
-    let contents = <CustomSidebar />;
+    const scrollTargetSelector = 'div[data-testid="ContextualNavigation"] div[role="group"]';
 
-    switch (this.state.currentContentsId) {
-      case 'recent':
-        contents = <RecentChanges />;
-        break;
-    }
-
-    return <div className="grw-sidebar-content-container">{contents}</div>;
-  }
+    return (
+      <>
+        <StickyStretchableScroller
+          scrollTargetSelector={scrollTargetSelector}
+          contentsElemSelector="#grw-sidebar-content-container"
+          stickyElemSelector=".grw-sidebar"
+          calcViewHeightFunc={this.calcViewHeight}
+        />
+        <div id="grw-sidebar-content-container" className="grw-sidebar-content-container">
+          <SidebarContents />
+        </div>
+      </>
+    );
+  };
 
   render() {
     const { isDrawerOpened } = this.props.navigationContainer.state;
 
     return (
       <>
-        <div className={`grw-sidebar ${this.isDrawerMode ? 'grw-sidebar-drawer' : ''} ${isDrawerOpened ? 'open' : ''}`}>
+        <div className={`grw-sidebar d-print-none ${this.isDrawerMode ? 'grw-sidebar-drawer' : ''} ${isDrawerOpened ? 'open' : ''}`}>
           <ThemeProvider
             theme={theme => ({
               ...theme,

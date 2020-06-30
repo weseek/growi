@@ -9,10 +9,10 @@
 {% block layout_main %}
 <div class="container-fluid p-0">
 
-  <div class="row body m-0 p-0">
+  <div class="row body m-0 p-0 d-print-block">
 
     <div id="main" class="main col-12 kibela-block round-corner {% if page %}{{ css.grant(page) }}{% endif %}{% block main_css_class %}{% endblock %}">
-      <div class="row grw-subnav d-edit-none">
+      <div class="row grw-subnav d-edit-none d-print-block">
         <div class="col-12 col-xl-9 col-lg-8 px-0 mx-0 bg-white kibela-border-top round-corner">
           {% block content_header %} {% endblock %}
         </div>

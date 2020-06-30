@@ -17,14 +17,8 @@
 
       {% include '../widget/page_content.html' %}
 
-      {# force remove #revision-toc from #content_main of parent #}
-      <script>
-        $('#revision-toc').remove();
-      </script>
-
     </div>
 
-    {# relocate #revision-toc #}
     <div class="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
       {% include './widget/liker-and-seenusers.html' %}
       <div id="revision-toc" class="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
