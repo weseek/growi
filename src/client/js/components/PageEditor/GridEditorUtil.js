@@ -2,6 +2,7 @@
  * Utility for grid editor
  */
 class GridEditorUtil {
+
   constructor() {
     // TODO url
     this.lineBeginPartOfGridRE = /(<[^/].*>)/;
@@ -9,13 +10,15 @@ class GridEditorUtil {
     this.linePartOfGridRE = /(<[^/].*>)[\s\S]*<\/.*>$/;
     this.replaceGridWithHtmlWithEditor = this.replaceGridWithHtmlWithEditor.bind(this);
   }
+
   /**
    * return boolean value whether the cursor position is in a row
    */
   isInRow(editor) {
     const curPos = editor.getCursor();
     // return this.linePartOfTableRE.test(editor.getDoc().getLine(curPos.line));
-    return this.linePartOfRow.test(editor.getDoc().getLine(curPos.line));
+    console.log(this.linePartOfGridRE.test(editor.getDoc().getLine(curPos.line)));
+    return this.linePartOfGridRE.test(editor.getDoc().getLine(curPos.line));
   }
 
   /**
@@ -82,9 +85,12 @@ class GridEditorUtil {
 
   replaceGridWithHtmlWithEditor(editor, grid) {
     const curPos = editor.getCursor();
+    editor.getDoc().replaceRange(grid.toString(), this.getBog(editor), this.getEog(editor));
     editor.getDoc().setCursor(curPos.line + 1, 2);
   }
+
 }
+
 // singleton pattern
 const instance = new GridEditorUtil();
 Object.freeze(instance);

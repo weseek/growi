@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
+import geu from './GridEditorUtil';
 
 export default class GridEditModal extends React.PureComponent {
 
@@ -21,6 +22,7 @@ export default class GridEditModal extends React.PureComponent {
   }
 
   show() {
+    this.expandGridDiagram();
     this.setState({ show: true });
   }
 
@@ -39,6 +41,14 @@ export default class GridEditModal extends React.PureComponent {
       this.props.onSave(pastedGridData);
     }
     this.cancel();
+  }
+
+  expandGridDiagram(isCursorInGrid, gridHtml) {
+    let gridFigureOnModal;
+    if (isCursorInGrid) {
+      gridFigureOnModal = gridHtml;
+      return gridFigureOnModal;
+    }
   }
 
   showBgCols() {
