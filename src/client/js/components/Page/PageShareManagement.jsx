@@ -42,6 +42,21 @@ const PageShareManagement = (props) => {
     }
   }
 
+  async function getArchivePageData() {
+    const pageId = pageContainer.state.pageId;
+    try {
+      await appContainer.apiv3Get('page/archive', { pageId });
+    }
+    catch (e) {
+      toastError(e);
+    }
+  }
+
+
+  function exportArchive(exportArchiveData) {
+
+  }
+
   function exportPage(exportPageFile) {
     // TODO implement
   }
@@ -50,8 +65,12 @@ const PageShareManagement = (props) => {
     const exportPageFile = getExportPageFile(type);
     exportPage(exportPageFile);
   }
+
   function openArchiveModalHandler() {
     setIsArchiveCreateModalShown(true);
+
+    const exportArchiveData = getArchivePageData();
+    exportArchive(exportArchiveData);
   }
 
   function closeArchiveCreateModalHandler() {

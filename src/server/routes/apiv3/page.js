@@ -213,5 +213,12 @@ module.exports = (crowi) => {
     return res.apiv3({});
   });
 
+  router.get('/archive', accessTokenParser, loginRequired, csrf, async(req, res) => {
+
+    const { pageId } = req.body;
+
+    console.log(pageId);
+  });
+
   return router;
 };
