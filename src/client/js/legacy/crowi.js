@@ -106,7 +106,7 @@ Crowi.initClassesByOS = function() {
   const platform = navigator.platform.toLowerCase();
   const isMac = (platform.indexOf('mac') > -1);
 
-  document.querySelectorAll('.system-version .cmd-key').forEach((element) => {
+  document.querySelectorAll('.cmd-key').forEach((element) => {
     if (isMac) {
       element.classList.add('mac');
     }
