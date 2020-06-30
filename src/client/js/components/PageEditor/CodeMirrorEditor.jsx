@@ -868,7 +868,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
         <GridEditModal
           ref={this.gridEditModal}
-          onSave={() => { return geu.replaceGridWithHtmlWithEditor(this.getCodeMirror()) }}
+          onSave={(grid) => { return geu.replaceGridWithHtmlWithEditor(this.getCodeMirror(), grid) }}
         />
         <HandsontableModal
           ref={this.handsontableModal}

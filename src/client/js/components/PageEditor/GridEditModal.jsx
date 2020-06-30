@@ -33,8 +33,10 @@ export default class GridEditModal extends React.PureComponent {
   }
 
   pasteCodedGrid() {
+    // dummy data
+    const pastedGridData = '<div class="container"><div class="row"><div class="col-sm-6 col-md-5 col-lg-12">dummy</div></div></div>';
     if (this.props.onSave != null) {
-      this.props.onSave();
+      this.props.onSave(pastedGridData);
     }
     this.cancel();
   }
