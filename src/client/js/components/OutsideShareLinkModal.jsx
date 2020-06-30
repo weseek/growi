@@ -10,7 +10,6 @@ import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import AppContainer from '../services/AppContainer';
-import PageContainer from '../services/PageContainer';
 
 import ShareLinkList from './ShareLinkList';
 import ShareLinkForm from './ShareLinkForm';
@@ -36,8 +35,7 @@ class OutsideShareLinkModal extends React.Component {
   }
 
   async retrieveShareLinks() {
-    const { appContainer, pageContainer } = this.props;
-    const { pageId } = pageContainer.state;
+    const { appContainer } = this.props;
 
     try {
       const res = await appContainer.apiv3.get('/share-links/', { relatedPage: pageId });
@@ -56,8 +54,7 @@ class OutsideShareLinkModal extends React.Component {
   }
 
   async deleteAllLinksButtonHandler() {
-    const { t, appContainer, pageContainer } = this.props;
-    const { pageId } = pageContainer.state;
+    const { t, appContainer } = this.props;
 
     try {
       const res = await appContainer.apiv3.delete('/share-links/', { relatedPage: pageId });
@@ -87,8 +84,8 @@ class OutsideShareLinkModal extends React.Component {
   }
 
   render() {
-    const { t, pageContainer } = this.props;
-    const { path } = pageContainer.state;
+    const { t } = this.props;
+
     return (
       <Modal size="xl" isOpen={this.props.isOpen} toggle={this.props.onClose}>
         <ModalHeader tag="h4" toggle={this.props.onClose} className="bg-primary text-light">{t('share_links.Shere this page link to public')}
@@ -125,12 +122,11 @@ class OutsideShareLinkModal extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const ModalControlWrapper = withUnstatedContainers(OutsideShareLinkModal, [AppContainer, PageContainer]);
+const ModalControlWrapper = withUnstatedContainers(OutsideShareLinkModal, [AppContainer]);
 
 OutsideShareLinkModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
