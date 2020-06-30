@@ -62,7 +62,6 @@ body {
 // printable style
 @media print {
   padding: 30px;
-
   a:after {
     display: none !important;
   }
@@ -73,6 +72,10 @@ body {
         font-size: 2em;
         color: #000;
       }
+    }
+
+    .row {
+      display: block !important;
     }
 
     .revision-toc {
