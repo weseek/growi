@@ -26,9 +26,11 @@ const ShareLinkList = (props) => {
       <>
         {props.shareLinks.map(shareLink => (
           <tr key={shareLink._id}>
-            <td className="d-flex justify-content-between align-items-center">
-              <span>{shareLink._id}</span>
-              <CopyDropdown isShareLinkMode="true" pagePath={props.pagePath} pageId={shareLink._id} />
+            <td>
+              <div className="d-flex">
+                <span className="mr-auto my-auto">{shareLink._id}</span>
+                <CopyDropdown isShareLinkMode pagePath={props.pagePath} pageId={shareLink._id} />
+              </div>
             </td>
             <td>{shareLink.expiredAt && <span>{dateFnsFormat(new Date(shareLink.expiredAt), 'yyyy-MM-dd HH:mm')}</span>}</td>
             <td>{shareLink.description}</td>
