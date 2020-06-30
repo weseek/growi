@@ -41,7 +41,7 @@ const DeleteAllShareLinksModal = React.memo((props) => {
         </span>
       </ModalHeader>
       <ModalBody>
-        { t('share_links.share_link_notice', { count: props.count })}
+        { t('share_links.share_link_notice')}
       </ModalBody>
       <ModalFooter>
         <Button onClick={closeButtonHandler}>{t('Cancel')}</Button>
@@ -60,7 +60,6 @@ DeleteAllShareLinksModal.propTypes = {
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
-  count: PropTypes.number.isRequired,
   onClickDeleteButton: PropTypes.func,
 };
 

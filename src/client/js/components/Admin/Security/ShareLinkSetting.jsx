@@ -127,7 +127,6 @@ class ShareLinkSetting extends React.Component {
         <DeleteAllShareLinksModal
           isOpen={this.state.isDeleteConfirmModalShown}
           onClose={this.closeDeleteConfirmModal}
-          count={adminGeneralSecurityContainer.state.shareLinks.length}
           onClickDeleteButton={this.deleteAllLinksButtonHandler}
         />
 

@@ -416,7 +416,7 @@
     "No_share_links":"No share links",
     "Share Link": "Share Link",
     "Page Path": "Page Path",
-    "share_link_notice":"remove {{count}} share links",
+    "share_link_notice":"remove all share links",
     "delete_all_share_links":"Delete all share links",
     "expire": "Expiration",
     "Days": "Days",
