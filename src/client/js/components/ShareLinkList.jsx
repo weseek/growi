@@ -32,6 +32,7 @@ const ShareLinkList = (props) => {
                 <CopyDropdown isShareLinkMode pagePath={props.pagePath} pageId={shareLink._id} />
               </div>
             </td>
+            {props.isAdmin && <td><a href={shareLink.relatedPage.path}>{shareLink.relatedPage.path}</a></td>}
             <td>{shareLink.expiredAt && <span>{dateFnsFormat(new Date(shareLink.expiredAt), 'yyyy-MM-dd HH:mm')}</span>}</td>
             <td>{shareLink.description}</td>
             <td>
@@ -51,6 +52,7 @@ const ShareLinkList = (props) => {
         <thead>
           <tr>
             <th>{t('share_links.Share Link')}</th>
+            {props.isAdmin && <th>{t('share_links.Page Path')}</th>}
             <th>{t('share_links.expire')}</th>
             <th>{t('share_links.description')}</th>
             <th></th>
@@ -73,6 +75,7 @@ ShareLinkList.propTypes = {
 
   shareLinks: PropTypes.array.isRequired,
   onClickDeleteButton: PropTypes.func,
+  isAdmin: PropTypes.bool,
 };
 
 export default withTranslation()(ShareLinkListWrapper);
