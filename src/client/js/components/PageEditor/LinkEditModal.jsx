@@ -8,6 +8,7 @@ import {
   ModalBody,
   ModalFooter,
 } from 'reactstrap';
+
 import Preview from './Preview';
 import PagePathAutoComplete from '../PagePathAutoComplete';
 
