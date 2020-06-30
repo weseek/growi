@@ -20,7 +20,6 @@ const ShareLinkList = (props) => {
     props.onClickDeleteButton(shareLinkId);
   }
 
-  // TODO implement admin screen behavior when pagePath is null
   function renderShareLinks() {
     return (
       <>
@@ -29,7 +28,7 @@ const ShareLinkList = (props) => {
             <td>
               <div className="d-flex">
                 <span className="mr-auto my-auto">{shareLink._id}</span>
-                <CopyDropdown isShareLinkMode pagePath={props.pagePath} pageId={shareLink._id} />
+                <CopyDropdown isShareLinkMode pagePath={shareLink.relatedPage.path} pageId={shareLink._id} />
               </div>
             </td>
             {props.isAdmin && <td><a href={shareLink.relatedPage.path}>{shareLink.relatedPage.path}</a></td>}
@@ -71,7 +70,6 @@ const ShareLinkListWrapper = withUnstatedContainers(ShareLinkList, [AppContainer
 ShareLinkList.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pagePath: PropTypes.string,
 
   shareLinks: PropTypes.array.isRequired,
   onClickDeleteButton: PropTypes.func,
