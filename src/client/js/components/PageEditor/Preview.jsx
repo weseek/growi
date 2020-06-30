@@ -82,7 +82,9 @@ class Preview extends React.PureComponent {
             className="page-editor-preview-body"
             ref={(elm) => {
                 this.previewElement = elm;
-                this.props.inputRef(elm);
+                if (this.props.inputRef != null) {
+                  this.props.inputRef(elm);
+                }
               }}
             onScroll={(event) => {
                 if (this.props.onScroll != null) {
@@ -112,7 +114,7 @@ Preview.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   markdown: PropTypes.string,
-  inputRef: PropTypes.func.isRequired, // for getting div element
+  inputRef: PropTypes.func,
   isMathJaxEnabled: PropTypes.bool,
   renderMathJaxOnInit: PropTypes.bool,
   onScroll: PropTypes.func,
