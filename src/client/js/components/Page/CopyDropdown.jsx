@@ -119,7 +119,7 @@ class CopyDropdown extends React.Component {
             ) : (<i className="ti-clipboard"></i>)}
           </DropdownToggle>
 
-          <DropdownMenu>
+          <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: null } }}>
 
             <div className="d-flex align-items-center justify-content-between">
               <DropdownItem header className="px-3">
