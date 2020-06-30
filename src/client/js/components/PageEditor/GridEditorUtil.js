@@ -7,7 +7,7 @@ class GridEditorUtil {
     // TODO url
     this.lineBeginPartOfGridRE = /(<[^/].*>)/;
     this.lineEndPartOfGridRE = /(<\/.*>)/;
-    this.linePartOfGridRE = /(<.*>)[\s\S]*<\/.*>$/;
+    this.linePartOfGridRE = /(<[^/].*>)[\s\S]*<\/.*>$/;
     this.replaceGridWithHtmlWithEditor = this.replaceGridWithHtmlWithEditor.bind(this);
   }
 
@@ -22,12 +22,12 @@ class GridEditorUtil {
     let isFound = false;
     for (; line >= firstLine; line--) {
       const strLine = editor.getDoc().getLine(line);
-      if (this.linePartOfGridRE.test(strLine)) {
+      if (this.lineBeginPartOfGridRE.test(strLine)) {
         isFound = true;
         break;
       }
 
-      if (this.linePartOfGridRE.test(strLine)) {
+      if (this.lineBeginPartOfGridRE.test(strLine)) {
         isFound = false;
         break;
       }
@@ -48,16 +48,16 @@ class GridEditorUtil {
     const curPos = editor.getCursor();
     const lastLine = editor.getDoc().lastLine();
 
-    let line = curPos.line + 1;
+    let line = curPos.line;
     let isFound = false;
     for (; line <= lastLine; line++) {
       const strLine = editor.getDoc().getLine(line);
-      if (this.linePartOfGridRE.test(strLine)) {
+      if (this.lineEndPartOfGridRE.test(strLine)) {
         isFound = true;
         break;
       }
 
-      if (this.lineBeginPartOfDrawioRE.test(strLine)) {
+      if (this.lineEndPartOfGridRE.test(strLine)) {
         isFound = false;
         break;
       }
