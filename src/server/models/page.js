@@ -1163,6 +1163,7 @@ module.exports = function(crowi) {
     const Attachment = crowi.model('Attachment');
     const Comment = crowi.model('Comment');
     const PageTagRelation = crowi.model('PageTagRelation');
+    const ShareLink = crowi.model('ShareLink');
     const Revision = crowi.model('Revision');
     const pageId = pageData._id;
     const socketClientId = options.socketClientId || null;
@@ -1173,6 +1174,7 @@ module.exports = function(crowi) {
     await Attachment.removeAttachmentsByPageId(pageId);
     await Comment.removeCommentsByPageId(pageId);
     await PageTagRelation.remove({ relatedPage: pageId });
+    await ShareLink.remove({ relatedPage: pageId });
     await Revision.removeRevisionsByPath(pageData.path);
     await this.findByIdAndRemove(pageId);
     await this.removeRedirectOriginPageByPath(pageData.path);
