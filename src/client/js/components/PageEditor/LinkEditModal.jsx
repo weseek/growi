@@ -85,7 +85,6 @@ class LinkEditModal extends React.PureComponent {
       <div className="linkedit-preview">
         <Preview
           markdown={this.state.markdown}
-          inputRef={() => {}}
         />
       </div>
     );
