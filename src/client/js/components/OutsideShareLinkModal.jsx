@@ -10,6 +10,7 @@ import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import AppContainer from '../services/AppContainer';
+import PageContainer from '../services/PageContainer';
 
 import ShareLinkList from './ShareLinkList';
 import ShareLinkForm from './ShareLinkForm';
@@ -35,7 +36,8 @@ class OutsideShareLinkModal extends React.Component {
   }
 
   async retrieveShareLinks() {
-    const { appContainer } = this.props;
+    const { appContainer, pageContainer } = this.props;
+    const { pageId } = pageContainer.state;
 
     try {
       const res = await appContainer.apiv3.get('/share-links/', { relatedPage: pageId });
@@ -54,7 +56,8 @@ class OutsideShareLinkModal extends React.Component {
   }
 
   async deleteAllLinksButtonHandler() {
-    const { t, appContainer } = this.props;
+    const { t, appContainer, pageContainer } = this.props;
+    const { pageId } = pageContainer.state;
 
     try {
       const res = await appContainer.apiv3.delete('/share-links/', { relatedPage: pageId });
@@ -122,11 +125,12 @@ class OutsideShareLinkModal extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const ModalControlWrapper = withUnstatedContainers(OutsideShareLinkModal, [AppContainer]);
+const ModalControlWrapper = withUnstatedContainers(OutsideShareLinkModal, [AppContainer, PageContainer]);
 
 OutsideShareLinkModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
