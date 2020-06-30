@@ -67,6 +67,16 @@ export default class GridEditModal extends React.PureComponent {
                 <h5>Large Desktop</h5>
                 <div className="device-container"></div>
               </div>
+              <div className="col-9">
+                <div className="row h-100">
+                  {this.showBgCols()}
+                </div>
+                <div className="row w-100 h-100 position-absolute grid-editable-row">
+                  <div className="bg-dark grid-editable-col col-3"></div>
+                  <div className="bg-dark grid-editable-col col-5"></div>
+                  <div className="bg-dark grid-editable-col col-4"></div>
+                </div>
+              </div>
               {/* <div className="col-9">
                 <div className="position-absolute">
                   <div className="row h-100 flex-nowrap overflow-auto">{this.showBgCols()}</div>
@@ -78,7 +88,7 @@ export default class GridEditModal extends React.PureComponent {
                     </div>
                   </div>
                 </div> */}
-              <div className="offset-3 col-9 position-absolute">
+              {/* <div className="offset-3 col-9 position-absolute">
                 <div className="row h-100 flex-nowrap overflow-auto">{this.showBgCols()}</div>
               </div>
               <div className="col-9 position-relative">
@@ -87,7 +97,7 @@ export default class GridEditModal extends React.PureComponent {
                   <div className="bg-dark grid-editable-col col-5"></div>
                   <div className="bg-dark grid-editable-col col-4"></div>
                 </div>
-              </div>
+              </div> */}
             </div>
             {/* <div className="col-9 position-relative">
                 <div className="row h-100 flex-nowrap overflow-auto">
