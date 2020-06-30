@@ -1,8 +1,8 @@
 .linkedit-preview {
-  // same height as forms
-  height: 327.5px;
+  height: 0;
+  padding-bottom: 50%;
 
   .page-editor-preview-body {
-    height: 100%;
+    overflow-y: unset !important;
   }
 }

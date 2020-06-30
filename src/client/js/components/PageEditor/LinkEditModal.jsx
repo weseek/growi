@@ -198,7 +198,7 @@ class LinkEditModal extends React.PureComponent {
                 </div>
               </form>
 
-              <div className="d-block d-lg-none mb-3">
+              <div className="d-block d-lg-none mb-3 overflow-auto">
                 {this.renderPreview()}
               </div>
 
@@ -264,7 +264,7 @@ class LinkEditModal extends React.PureComponent {
               </div>
             </div>
 
-            <div className="col d-none d-lg-block">
+            <div className="col d-none d-lg-block pr-0 mr-3 overflow-auto">
               {this.renderPreview()}
             </div>
           </div>
