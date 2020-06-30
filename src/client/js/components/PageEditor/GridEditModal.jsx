@@ -34,7 +34,16 @@ export default class GridEditModal extends React.PureComponent {
     const cols = [];
     for (let i = 0; i < 12; i++) {
       // [bg-light:TODO support dark mode by GW-3037]
-      cols.push(<div className="bg-light grid-bg-col col-1"></div>);
+      cols.push(<div className="bg-light grid-bg-col col-1">t</div>);
+    }
+    return cols;
+  }
+
+  showEditableCols() {
+    const cols = [];
+    for (let i = 0; i < 12; i++) {
+      // [bg-light:TODO support dark mode by GW-3037]
+      cols.push(<div className="bg-dark grid-bg-col col-1"></div>);
     }
     return cols;
   }
@@ -45,8 +54,8 @@ export default class GridEditModal extends React.PureComponent {
         <ModalHeader tag="h4" toggle={this.cancel} className="bg-primary text-light">
           Edit Grid
         </ModalHeader>
-        <ModalBody className="p-0">
-          <div className="container position-absolute p-4">
+        <ModalBody className="">
+          <div className="container">
             <div className="row">
               <div className="col-3">
                 <h5>Phone</h5>
@@ -58,12 +67,38 @@ export default class GridEditModal extends React.PureComponent {
                 <h5>Large Desktop</h5>
                 <div className="device-container"></div>
               </div>
-              <div className="col-9">
+              {/* <div className="col-9">
+                <div className="position-absolute">
+                  <div className="row h-100 flex-nowrap overflow-auto">{this.showBgCols()}</div>
+                  <div className="position-relative">
+                    <div className="row h-100 flex-nowrap overflow-auto">
+                      <div className="bg-dark grid-editable-col col-3"></div>
+                      <div className="bg-dark grid-editable-col col-5"></div>
+                      <div className="bg-dark grid-editable-col col-4"></div>
+                    </div>
+                  </div>
+                </div> */}
+              <div className="offset-3 col-9 position-absolute">
                 <div className="row h-100 flex-nowrap overflow-auto">{this.showBgCols()}</div>
               </div>
+              <div className="col-9 position-relative">
+                <div className="row h-100 flex-nowrap overflow-auto">
+                  <div className="bg-dark grid-editable-col col-3"></div>
+                  <div className="bg-dark grid-editable-col col-5"></div>
+                  <div className="bg-dark grid-editable-col col-4"></div>
+                </div>
+              </div>
             </div>
+            {/* <div className="col-9 position-relative">
+                <div className="row h-100 flex-nowrap overflow-auto">
+                  <div className="bg-dark grid-editable-col col-3"></div>
+                  <div className="bg-dark grid-editable-col col-5"></div>
+                  <div className="bg-dark grid-editable-col col-4"></div>
+                </div>
+              </div> */}
+            {/* </div> */}
           </div>
-          <div className="container position-relative p-4">
+          {/* <div className="container position-relative p-4">
             <div className="row">
               <div className="col-3">
                 <h5>Phone</h5>
@@ -78,14 +113,14 @@ export default class GridEditModal extends React.PureComponent {
               <div className="col-9">
                 <div className="row h-100 flex-nowrap overflow-auto">
                   {/* [bg-dark:TODO support dark mode by GW-3037] */}
-                  {/* [Just an example to check if bg-cols and editable-cols fit] */}
-                  <div className="bg-dark grid-editable-col col-3"></div>
+          {/* [Just an example to check if bg-cols and editable-cols fit] */}
+          {/* <div className="bg-dark grid-editable-col col-3"></div>
                   <div className="bg-dark grid-editable-col col-5"></div>
                   <div className="bg-dark grid-editable-col col-4"></div>
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </ModalBody>
         <ModalFooter className="grw-modal-footer">
           <div className="ml-auto">
