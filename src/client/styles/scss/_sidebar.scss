@@ -74,8 +74,6 @@
     // Adjust to be on top of the growi subnavigation
     // z-index: $zindex-sticky + 5;
 
-    transition: left 300ms cubic-bezier(0.25, 1, 0.5, 1);
-
     // css-xxx-ContainerNavigationMask
     > div:nth-of-type(1) {
     }
@@ -145,24 +143,21 @@
 
 // Drawer Mode
 @mixin drawer() {
-  z-index: $zindex-fixed - 2;
+  z-index: $zindex-fixed + 1;
 
   // override @atlaskit/navigation-next styles
   div[data-layout-container='true'] {
-    // css-teprsg
-    > div:nth-of-type(2) {
-      display: none;
-    }
+    height: 100vw;
   }
   div[data-testid='Navigation'] {
     position: fixed;
+    top: 0;
 
     max-width: 80vw;
 
-    // css-xxx-Outer
-    > div:nth-of-type(2) {
-      display: none;
-    }
+    // apply transition
+    transition-property: left;
+    @include apply-navigation-transition();
   }
 
   &:not(.open) {

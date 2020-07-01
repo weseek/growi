@@ -11,8 +11,13 @@ const MobileFooter = (props) => {
   } = props;
   const { isDrawerOpened } = navigationContainer.state;
 
+  const additionalClasses = ['grw-mobile-footer'];
+  if (isDrawerOpened) {
+    additionalClasses.push('grw-mobile-footer-drawer-opened');
+  }
+
   return (
-    <div className="navbar navbar-expand navbar-dark bg-primary d-md-none fixed-bottom px-0">
+    <div className={`navbar navbar-expand navbar-dark bg-primary d-md-none fixed-bottom px-0 ${additionalClasses.join(' ')}`}>
       <ul className="navbar-nav w-100">
         <li className="nav-item">
           <a type="button" className="nav-link btn-lg" onClick={() => navigationContainer.toggleDrawer()}>

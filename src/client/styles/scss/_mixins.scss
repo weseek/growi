@@ -218,3 +218,8 @@
     fill: $color;
   }
 }
+
+@mixin apply-navigation-transition() {
+  transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+  transition-duration: 300ms;
+}
