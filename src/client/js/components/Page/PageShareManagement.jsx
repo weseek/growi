@@ -50,9 +50,6 @@ const PageShareManagement = (props) => {
     }
   }
 
-  function exportArchive(exportArchiveData) {
-  }
-
   function exportPage(exportPageFile) {
     // TODO implement
   }
@@ -64,10 +61,9 @@ const PageShareManagement = (props) => {
 
   function openArchiveModalHandler() {
     setIsArchiveCreateModalShown(true);
-
-    const exportArchiveData = getArchivePageData();
-    exportArchive(exportArchiveData);
+    getArchivePageData();
   }
+
 
   function closeArchiveCreateModalHandler() {
     setIsArchiveCreateModalShown(false);
