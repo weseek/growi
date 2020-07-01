@@ -9,6 +9,8 @@ $font-family-monospace-not-strictly: Monaco, Menlo, Consolas, 'Courier New', Mei
 $grw-navbar-height: 52px;
 $grw-navbar-border-width: 3.3333px;
 
+$grw-navbar-bottom-height: 48px;
+
 $grw-sidebar-nav-width: 64px; // !!DO NOT CHANGE!! 'margin-left' for '.css-teprsg' is hardcoded
 $grw-sidebar-content-min-width: 240px;
 
@@ -19,5 +21,3 @@ $grw-logomark-width: 36px;
 // see also '_on-edit.scss'
 $grw-nav-main-left-tab-width: 95px;
 $grw-nav-main-tab-height: 42px;
-
-$grw-mobile-footer-height: 48px;

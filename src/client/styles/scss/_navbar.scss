@@ -56,14 +56,14 @@
   }
 }
 
-.grw-mobile-footer {
-  height: $grw-mobile-footer-height;
+.grw-navbar-bottom {
+  height: $grw-navbar-bottom-height;
 
   // apply transition
   transition-property: bottom;
   @include apply-navigation-transition();
 
-  &.grw-mobile-footer-drawer-opened {
-    bottom: -$grw-mobile-footer-height;
+  &.grw-navbar-bottom-drawer-opened {
+    bottom: -$grw-navbar-bottom-height;
   }
 }

@@ -5,6 +5,7 @@ import Xss from '@commons/service/xss';
 
 import SearchTop from './components/Navbar/SearchTop';
 import GrowiNavbar from './components/Navbar/GrowiNavbar';
+import GrowiNavbarBottom from './components/Navbar/GrowiNavbarBottom';
 import Sidebar from './components/Sidebar';
 import StaffCredit from './components/StaffCredit/StaffCredit';
 
@@ -12,7 +13,6 @@ import AppContainer from './services/AppContainer';
 import WebsocketContainer from './services/WebsocketContainer';
 import PageCreateButton from './components/Navbar/PageCreateButton';
 import PageCreateModal from './components/PageCreateModal';
-import MobileFooter from './components/MobileFooter';
 
 const logger = loggerFactory('growi:cli:app');
 
@@ -40,6 +40,7 @@ logger.info('AppContainer has been initialized');
  */
 const componentMappings = {
   'grw-navbar': <GrowiNavbar />,
+  'grw-navbar-bottom-container': <GrowiNavbarBottom />,
 
   'grw-search-top': <SearchTop />,
 
@@ -49,7 +50,6 @@ const componentMappings = {
   'grw-sidebar-wrapper': <Sidebar />,
 
   'staff-credit': <StaffCredit />,
-  'mobile-footer-container': <MobileFooter />,
 };
 
 export { appContainer, componentMappings };

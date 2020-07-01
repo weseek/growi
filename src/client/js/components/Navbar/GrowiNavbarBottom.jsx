@@ -1,19 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import NavigationContainer from '../services/NavigationContainer';
-import { withUnstatedContainers } from './UnstatedUtils';
+import NavigationContainer from '../../services/NavigationContainer';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
-const MobileFooter = (props) => {
+const GrowiNavbarBottom = (props) => {
 
   const {
     navigationContainer,
   } = props;
   const { isDrawerOpened } = navigationContainer.state;
 
-  const additionalClasses = ['grw-mobile-footer'];
+  const additionalClasses = ['grw-navbar-bottom'];
   if (isDrawerOpened) {
-    additionalClasses.push('grw-mobile-footer-drawer-opened');
+    additionalClasses.push('grw-navbar-bottom-drawer-opened');
   }
 
   return (
@@ -39,8 +39,8 @@ const MobileFooter = (props) => {
   );
 };
 
-MobileFooter.propTypes = {
+GrowiNavbarBottom.propTypes = {
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 
-export default withUnstatedContainers(MobileFooter, [NavigationContainer]);
+export default withUnstatedContainers(GrowiNavbarBottom, [NavigationContainer]);
