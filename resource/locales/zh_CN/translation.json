@@ -698,5 +698,29 @@
 		"Sign in error": "登录错误",
 		"Registration successful": "注册成功",
 		"Setup": "安装程序"
+	},
+	"message": {
+		"successfully_connected": "连接成功！",
+		"fail_to_save_access_token": "无法保存访问令牌。请再试一次。",
+		"fail_to_fetch_access_token": "无法获取访问令牌。请重新连接。",
+		"successfully_disconnected": "成功断开连接！",
+		"strategy_has_not_been_set_up": "{{strategy}尚未设置",
+		"maximum_number_of_users": "注册的用户数不能超过最大值。",
+		"database_error": "发生数据库服务器错误",
+		"sign_in_failure": "登录失败。",
+		"aws_sttings_required": "使用此功能所需的AWS设置。请询问管理员。",
+		"application_already_installed": "应用程序已安装。",
+		"email_address_could_not_be_used": "无法使用此电子邮件地址。（确保允许的电子邮件地址）",
+		"user_id_is_not_available.": "此用户ID不可用。",
+		"email_address_is_already_registered": "此电子邮件地址已注册。",
+		"can_not_register_maximum_number_of_users": "注册的用户数不能超过最大值。",
+		"failed_to_register": "注册失败。",
+		"successfully_created": "已成功创建用户{{username}。",
+		"can_not_activate_maximum_number_of_users": "无法激活超过最大用户数的用户。",
+		"failed_to_activate": "无法激活。",
+		"unable_to_use_this_user": "无法使用此用户。",
+		"complete_to_install1": "完成安装GROWI！请以管理员帐户登录。",
+		"complete_to_install2": "完成安装GROWI！请先检查此页上的每个设置。",
+		"failed_to_create_admin_user": "无法创建管理用户。{{errMessage}"
 	}
 }
