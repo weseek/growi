@@ -91,7 +91,7 @@ const StickyStretchableScroller = (props) => {
     if (contentsHeight < viewHeight) {
       $(scrollTargetSelector).slimScroll({ destroy: true });
     }
-  }, [contentsElemSelector, calcViewHeightFunc, calcContentsHeightFunc]);
+  }, [contentsElemSelector, calcViewHeightFunc, calcContentsHeightFunc, scrollTargetSelector]);
 
   const resetScrollbarDebounced = debounce(100, resetScrollbar);
 
@@ -99,7 +99,7 @@ const StickyStretchableScroller = (props) => {
   const stickyChangeHandler = useCallback((event) => {
     logger.debug('StickyEvents.CHANGE detected');
     resetScrollbar();
-  });
+  }, [resetScrollbar]);
 
   // setup effect by sticky event
   useEffect(() => {
@@ -118,7 +118,7 @@ const StickyStretchableScroller = (props) => {
     return () => {
       elem.removeEventListener(StickyEvents.CHANGE, stickyChangeHandler);
     };
-  }, []);
+  }, [stickyElemSelector, stickyChangeHandler]);
 
   // setup effect by resizing event
   useEffect(() => {
@@ -132,19 +132,19 @@ const StickyStretchableScroller = (props) => {
     return () => {
       window.removeEventListener('resize', resizeHandler);
     };
-  }, []);
+  }, [resetScrollbarDebounced]);
 
   // setup effect by isScrollTop
   useEffect(() => {
     if (navigationContainer.state.isScrollTop) {
       resetScrollbar();
     }
-  }, [navigationContainer.state.isScrollTop]);
+  }, [navigationContainer.state.isScrollTop, resetScrollbar]);
 
   // setup effect by update props
   useEffect(() => {
     resetScrollbarDebounced();
-  });
+  }, [resetScrollbarDebounced]);
 
   return (
     <>
