@@ -18,7 +18,7 @@ const DrawerToggler = (props) => {
 
   return (
     <button
-      className="grw-navbar-toggler btn btn-secondary btn-xl"
+      className="grw-drawer-toggler btn btn-secondary btn-xl"
       type="button"
       aria-expanded="false"
       aria-label="Toggle navigation"
