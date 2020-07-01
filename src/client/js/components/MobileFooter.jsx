@@ -21,7 +21,7 @@ const MobileFooter = (props) => {
       <ul className="navbar-nav w-100">
         <li className="nav-item">
           <a type="button" className="nav-link btn-lg" onClick={() => navigationContainer.toggleDrawer()}>
-            <i className={`${isDrawerOpened ? 'icon-arrow-left' : 'icon-menu'}`}></i>
+            <i className="icon-menu"></i>
           </a>
         </li>
         <li className="nav-item mx-auto">
