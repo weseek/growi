@@ -15,7 +15,7 @@ import ArchiveCreateModal from '../ArchiveCreateModal';
 const PageShareManagement = (props) => {
   const { t, appContainer, pageContainer } = props;
 
-  const { path } = pageContainer.state;
+  const { path, pageId } = pageContainer.state;
   const { currentUser } = appContainer;
 
   const [isOutsideShareLinkModalShown, setIsOutsideShareLinkModalShown] = useState(false);
@@ -43,7 +43,6 @@ const PageShareManagement = (props) => {
   }
 
   async function getArchivePageData() {
-    const pageId = pageContainer.state.pageId;
     try {
       await appContainer.apiv3Get('page/archive', { pageId });
     }
@@ -52,9 +51,7 @@ const PageShareManagement = (props) => {
     }
   }
 
-
   function exportArchive(exportArchiveData) {
-
   }
 
   function exportPage(exportPageFile) {
