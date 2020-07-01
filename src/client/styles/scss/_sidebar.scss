@@ -155,18 +155,18 @@
     max-width: 80vw;
 
     // apply transition
-    transition-property: left;
+    transition-property: transform;
     @include apply-navigation-transition();
   }
 
   &:not(.open) {
     div[data-testid='Navigation'] {
-      left: -80vw;
+      transform: translateX(-100%);
     }
   }
   &.open {
     div[data-testid='Navigation'] {
-      left: 0;
+      transform: translateX(0);
     }
   }
 }
