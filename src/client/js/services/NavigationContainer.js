@@ -111,6 +111,16 @@ export default class NavigationContainer extends Container {
   toggleDrawer() {
     const { isDrawerOpened } = this.state;
     this.setState({ isDrawerOpened: !isDrawerOpened });
+
+    // TODO: remove adding/removing classes after Reactify
+    const body = document.body;
+    const isOpenedInNewState = !isDrawerOpened;
+    if (isOpenedInNewState) {
+      body.classList.add('grw-drawer-opened');
+    }
+    else {
+      body.classList.remove('grw-drawer-opened');
+    }
   }
 
   /**
