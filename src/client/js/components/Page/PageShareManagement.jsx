@@ -22,12 +22,18 @@ const PageShareManagement = (props) => {
 
   const [isArchiveCreateModalShown, setIsArchiveCreateModalShown] = useState(false);
 
+  const [ArchiveError, setArchiveError] = useState(false);
+
   function openOutsideShareLinkModalHandler() {
     setIsOutsideShareLinkModalShown(true);
   }
 
   function closeOutsideShareLinkModalHandler() {
     setIsOutsideShareLinkModalShown(false);
+  }
+
+  function getArchiveError() {
+    setArchiveError('ページの取得に失敗しました');
   }
 
 
@@ -45,8 +51,8 @@ const PageShareManagement = (props) => {
     try {
       await appContainer.apiv3Get('page/archive', { pageId });
     }
-    catch (e) {
-      toastError(e);
+    catch (err) {
+      getArchiveError();
     }
   }
 
@@ -82,6 +88,7 @@ const PageShareManagement = (props) => {
           isOpen={isArchiveCreateModalShown}
           onClose={closeArchiveCreateModalHandler}
           path={path}
+          errorMessage={ArchiveError}
         />
       </>
     );
