@@ -138,6 +138,10 @@
       }
     }
   }
+
+  .grw-drawer-toggler {
+    display: none; // invisible in default
+  }
 }
 
 // Drawer Mode
@@ -168,6 +172,32 @@
     div[data-testid='Navigation'] {
       transform: translateX(0);
     }
+
+    .grw-drawer-toggler {
+      display: block;
+    }
+  }
+
+  .grw-drawer-toggler {
+    position: fixed;
+    top: 15px;
+    right: -15px;
+
+    @include media-breakpoint-up(md) {
+      width: 50px;
+      height: 50px;
+      font-size: 24px;
+    }
+
+    transform: translateX(100%);
+  }
+}
+
+@mixin drawer-toggler-mobile() {
+  .grw-drawer-toggler {
+    top: unset;
+    bottom: 15px;
+    transform: translateX(100%);
   }
 }
 
@@ -178,6 +208,7 @@
 
   @include media-breakpoint-down(sm) {
     @include drawer();
+    @include drawer-toggler-mobile();
   }
 }
 
