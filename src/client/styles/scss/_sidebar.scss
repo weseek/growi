@@ -144,6 +144,10 @@
   }
 }
 
+// Dock Mode
+@mixin dock() {
+}
+
 // Drawer Mode
 @mixin drawer() {
   z-index: $zindex-fixed + 1;
@@ -180,10 +184,13 @@
 
   .grw-drawer-toggler {
     position: fixed;
-    top: 15px;
     right: -15px;
 
+    @include media-breakpoint-down(sm) {
+      bottom: 15px;
+    }
     @include media-breakpoint-up(md) {
+      top: 15px;
       width: 50px;
       height: 50px;
       font-size: 24px;
@@ -193,22 +200,17 @@
   }
 }
 
-@mixin drawer-toggler-mobile() {
-  .grw-drawer-toggler {
-    top: unset;
-    bottom: 15px;
-    transform: translateX(100%);
-  }
-}
-
 .grw-sidebar {
-  &.grw-sidebar-drawer {
-    @include drawer();
-  }
-
   @include media-breakpoint-down(sm) {
     @include drawer();
-    @include drawer-toggler-mobile();
+  }
+  @include media-breakpoint-up(md) {
+    &.grw-sidebar-drawer {
+      @include drawer();
+    }
+    &:not(.grw-sidebar-drawer) {
+      @include dock();
+    }
   }
 }
 
