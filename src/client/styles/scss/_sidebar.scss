@@ -93,7 +93,6 @@
 
   .grw-sidebar-nav {
     height: 100vh;
-    max-height: calc(100vh - #{$grw-navbar-border-width});
 
     .btn {
       width: $grw-sidebar-nav-width;
