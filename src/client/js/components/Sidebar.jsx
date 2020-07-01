@@ -118,7 +118,7 @@ class Sidebar extends React.Component {
 
   backdropClickedHandler = () => {
     const { navigationContainer } = this.props;
-    navigationContainer.setState({ isDrawerOpened: false });
+    navigationContainer.toggleDrawer();
   }
 
   itemSelectedHandler = (contentsId) => {
