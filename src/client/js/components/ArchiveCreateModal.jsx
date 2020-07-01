@@ -6,22 +6,24 @@ import {
 } from 'reactstrap';
 import AppContainer from '../services/AppContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
+import { toastSuccess, toastError } from '../util/apiNotification';
 
 
 const ArchiveCreateModal = (props) => {
-  const { t } = props;
+  const { t, appContainer } = props;
   const [isCommentDownload, setIsCommentDownload] = useState(false);
-  const [isFileDownload, setIsFileDownload] = useState(false);
+  const [isAttachmentFileDownload, setIsAttachmentFileDownload] = useState(false);
   const [isSubordinatedPageDownload, setIsSubordinatedPageDownload] = useState(false);
-
   const [fileType, setFileType] = useState('markDown');
-
+  const [hierarchyType, setHierarchyType] = useState('allSubordinatedPage');
+  const [hierarchyValue, setHierarchyValue] = useState(1);
 
   function changeIsCommentDownloadHandler() {
     setIsCommentDownload(!isCommentDownload);
   }
-  function changeIsFileDownloadHandler() {
-    setIsFileDownload(!isFileDownload);
+
+  function changeIsAttachmentFileDownloadHandler() {
+    setIsAttachmentFileDownload(!isAttachmentFileDownload);
   }
 
   function changeIsSubordinatedPageDownloadHandler() {
@@ -43,12 +45,34 @@ const ArchiveCreateModal = (props) => {
     [],
   );
 
-  async function submit() {
-    await props.appContainer.apiv3Post('page/archive');
+  function handleChangeSubordinatedType(hierarchyType) {
+    setHierarchyType(hierarchyType);
+  }
+
+  function handleHierarchyDepth(hierarchyValue) {
+    setHierarchyValue(hierarchyValue);
+  }
+
+  async function done() {
+
+    try {
+      await appContainer.apiv3Post('/page/archive', {
+        isCommentDownload,
+        isAttachmentFileDownload,
+        isSubordinatedPageDownload,
+        fileType,
+        hierarchyType,
+        hierarchyValue,
+      });
+      toastSuccess(t('Submitted the request to create the archive'));
+    }
+    catch (e) {
+      toastError(e);
+    }
   }
 
   return (
-    <Modal size="lg" isOpen={props.isOpen} toggle={closeModalHandler}>
+    <Modal isOpen={props.isOpen} toggle={closeModalHandler}>
       <ModalHeader tag="h4" toggle={closeModalHandler} className="bg-primary text-white">
         {t('Create Archive Page')}
       </ModalHeader>
@@ -98,7 +122,7 @@ const ArchiveCreateModal = (props) => {
           </div>
         </div>
 
-        <div className="custom-control custom-checkbox custom-checkbox-warning">
+        <div className="my-1 custom-control custom-checkbox custom-checkbox-info">
           <input
             className="custom-control-input"
             name="comment"
@@ -111,19 +135,19 @@ const ArchiveCreateModal = (props) => {
             {t('Include Comment')}
           </label>
         </div>
-        <div className="custom-control custom-checkbox custom-checkbox-warning">
+        <div className="my-1 custom-control custom-checkbox custom-checkbox-info">
           <input
             className="custom-control-input"
             id="downloadFile"
             type="checkbox"
-            checked={isFileDownload}
-            onChange={changeIsFileDownloadHandler}
+            checked={isAttachmentFileDownload}
+            onChange={changeIsAttachmentFileDownloadHandler}
           />
           <label className="custom-control-label" htmlFor="downloadFile">
             {t('Include Attachment File')}
           </label>
         </div>
-        <div className="custom-control custom-checkbox custom-checkbox-warning">
+        <div className="my-1 custom-control custom-checkbox custom-checkbox-info">
           <input
             className="custom-control-input"
             id="subordinatedFile"
@@ -134,10 +158,65 @@ const ArchiveCreateModal = (props) => {
           <label className="custom-control-label" htmlFor="subordinatedFile">
             {t('Include Subordinated Page')}
           </label>
+          {isSubordinatedPageDownload && (
+            <>
+              <div className="FormGroup">
+                <div className="my-1 custom-control custom-radio custom-control-inline ">
+                  <input
+                    type="radio"
+                    className="custom-control-input"
+                    id="customRadio3"
+                    name="isSubordinatedType"
+                    value="customRadio3"
+                    disabled={!isSubordinatedPageDownload}
+                    checked={hierarchyType === 'allSubordinatedPage'}
+                    onChange={() => {
+                      handleChangeSubordinatedType('allSubordinatedPage');
+                    }}
+                  />
+                  <label className="custom-control-label" htmlFor="customRadio3">
+                    {t('All Subordinated Page')}
+                  </label>
+                </div>
+              </div>
+              <div className="FormGroup">
+                <div className="my-1 custom-control custom-radio custom-control-inline">
+                  <input
+                    type="radio"
+                    className="custom-control-input"
+                    id="customRadio4"
+                    name="isSubordinatedType"
+                    value="customRadio4"
+                    disabled={!isSubordinatedPageDownload}
+                    checked={hierarchyType === 'decideHierarchy'}
+                    onChange={() => {
+                      handleChangeSubordinatedType('decideHierarchy');
+                    }}
+                  />
+                  <label className="my-1 custom-control-label" htmlFor="customRadio4">
+                    {t('Specify Hierarchy')}
+                  </label>
+                </div>
+              </div>
+              <div className="my-1 custom-control costom-control-inline">
+                <input
+                  type="number"
+                  min="0"
+                  max="10"
+                  disabled={hierarchyType === 'allSubordinatedPage'}
+                  value={hierarchyValue}
+                  placeholder="1"
+                  onChange={(e) => {
+                    handleHierarchyDepth(e.target.value);
+                  }}
+                />
+              </div>
+            </>
+          )}
         </div>
       </ModalBody>
       <ModalFooter>
-        <button type="button" className="btn btn-primary" onClick={submit}>
+        <button type="button" className="btn btn-primary" onClick={done}>
           Done
         </button>
       </ModalFooter>
@@ -145,9 +224,11 @@ const ArchiveCreateModal = (props) => {
   );
 };
 
+const ArchiveCreateModalWrapper = withUnstatedContainers(ArchiveCreateModal, [AppContainer]);
 
 ArchiveCreateModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   isOpen: PropTypes.bool.isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   onClose: PropTypes.func,

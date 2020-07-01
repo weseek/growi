@@ -75,6 +75,10 @@ body {
       }
     }
 
+    .row {
+      display: block !important;
+    }
+
     .revision-toc {
       float: none;
       max-width: 100%;

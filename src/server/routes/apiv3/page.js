@@ -124,6 +124,15 @@ module.exports = (crowi) => {
       body('pageId').isString(),
       body('bool').isBoolean(),
     ],
+
+    archive: [
+      body('isCommentDownload').isBoolean(),
+      body('isAttachmentFileDownload').isBoolean(),
+      body('isSubordinatedPageDownload').isBoolean(),
+      body('fileType').isString().isIn(['pdf', 'markDown']),
+      body('hierarchyType').isString().isIn(['allSubordinatedPage', 'decideHierarchy']),
+      body('hierarchyValue').isNumeric(),
+    ],
   };
 
   /**
@@ -205,7 +214,17 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Page'
    */
-  router.post('/archive', accessTokenParser, loginRequired, async(req, res) => {
+  router.post('/archive', accessTokenParser, loginRequired, csrf, validator.archive, apiV3FormValidator, async(req, res) => {
+
+    const {
+      isCommentDownload,
+      isAttachmentFileDownload,
+      isSubordinatedPageDownload,
+      fileType,
+      hierarchyType,
+      hierarchyValue,
+    } = req.body;
+
     const PageArchive = crowi.model('PageArchive');
     const filePath = 'path';
     const creator = req.user._id;
