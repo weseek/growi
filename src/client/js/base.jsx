@@ -12,6 +12,7 @@ import AppContainer from './services/AppContainer';
 import WebsocketContainer from './services/WebsocketContainer';
 import PageCreateButton from './components/Navbar/PageCreateButton';
 import PageCreateModal from './components/PageCreateModal';
+import MobileFooter from './components/MobileFooter';
 
 const logger = loggerFactory('growi:cli:app');
 
@@ -48,6 +49,7 @@ const componentMappings = {
   'grw-sidebar-wrapper': <Sidebar />,
 
   'staff-credit': <StaffCredit />,
+  'mobile-footer-container': <MobileFooter />,
 };
 
 export { appContainer, componentMappings };
