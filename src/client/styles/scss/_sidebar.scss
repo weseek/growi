@@ -184,9 +184,12 @@
 
     @include media-breakpoint-down(sm) {
       bottom: 15px;
+      width: 42px;
+      height: 42px;
+      font-size: 18px;
     }
     @include media-breakpoint-up(md) {
-      top: 15px;
+      top: 72px;
       width: 50px;
       height: 50px;
       font-size: 24px;
