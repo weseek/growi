@@ -1163,19 +1163,24 @@ module.exports = function(crowi) {
     const Attachment = crowi.model('Attachment');
     const Comment = crowi.model('Comment');
     const PageTagRelation = crowi.model('PageTagRelation');
+    const ShareLink = crowi.model('ShareLink');
     const Revision = crowi.model('Revision');
     const pageId = pageData._id;
     const socketClientId = options.socketClientId || null;
 
     debug('Completely delete', pageData.path);
 
-    await Bookmark.removeBookmarksByPageId(pageId);
-    await Attachment.removeAttachmentsByPageId(pageId);
-    await Comment.removeCommentsByPageId(pageId);
-    await PageTagRelation.remove({ relatedPage: pageId });
-    await Revision.removeRevisionsByPath(pageData.path);
-    await this.findByIdAndRemove(pageId);
-    await this.removeRedirectOriginPageByPath(pageData.path);
+    await Promise.all([
+      Bookmark.removeBookmarksByPageId(pageId),
+      Attachment.removeAttachmentsByPageId(pageId),
+      Comment.removeCommentsByPageId(pageId),
+      PageTagRelation.remove({ relatedPage: pageId }),
+      ShareLink.remove({ relatedPage: pageId }),
+      Revision.removeRevisionsByPath(pageData.path),
+      this.findByIdAndRemove(pageId),
+      this.removeRedirectOriginPageByPath(pageData.path),
+    ]);
+
     if (socketClientId != null) {
       pageEvent.emit('delete', pageData, user, socketClientId); // update as renamed page
     }

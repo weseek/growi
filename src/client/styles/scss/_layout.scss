@@ -104,3 +104,14 @@ body {
     }
   }
 }
+
+.system-version {
+  position: fixed;
+  right: 0.5em;
+  bottom: 0;
+  opacity: 0.6;
+
+  > span {
+    margin-left: 0.5em;
+  }
+}
