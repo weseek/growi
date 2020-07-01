@@ -19,6 +19,15 @@ body {
   border-bottom: 1px solid $gray-500;
 }
 
+// padding settings for GrowiNavbarBottom
+.page-wrapper {
+  padding-bottom: $grw-navbar-bottom-height;
+
+  @include media-breakpoint-up(md) {
+    padding-bottom: unset;
+  }
+}
+
 .main {
   margin-top: 1rem;
 }
