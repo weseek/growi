@@ -32,7 +32,6 @@ const PageShareManagement = (props) => {
 
 
   async function getExportPageFile(type) {
-    const pageId = pageContainer.state.pageId;
     try {
       const res = await appContainer.apiv3Get('/pages/export', { pageId, type });
       return res;
