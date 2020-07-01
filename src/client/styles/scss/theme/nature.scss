@@ -96,11 +96,6 @@ html[dark] {
   @import 'apply-colors';
   @import 'apply-colors-light';
 
-  // hljs
-  .hljs {
-    background-color: $bgcolor-inline-code;
-  }
-
   // Search Top
   .search-top {
     .btn-secondary.dropdown-toggle {
