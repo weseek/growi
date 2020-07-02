@@ -74,7 +74,7 @@ class LinkEditModal extends React.PureComponent {
     let linkInputValue = '';
     let linkerType = 'mdLink';
 
-    // https://regex101.com/r/1UuWBJ/9
+    // https://regex101.com/r/2fNmUN/1
     if (MarkdownLink.match(/^\[\[.*\]\]$/) && this.isApplyPukiwikiLikeLinkerPlugin) {
       linkerType = 'pukiwikiLink';
       const value = MarkdownLink.slice(2, -2);
@@ -86,14 +86,14 @@ class LinkEditModal extends React.PureComponent {
       labelInputValue = value.slice(0, indexOfSplit);
       linkInputValue = value.slice(indexOfSplit + 1);
     }
-    // https://regex101.com/r/1UuWBJ/10
+    // https://regex101.com/r/DJfkYf/1
     else if (MarkdownLink.match(/^\[\/.*\]$/)) {
       linkerType = 'growiLink';
       const value = MarkdownLink.slice(1, -1);
       labelInputValue = value;
       linkInputValue = value;
     }
-    // https://regex101.com/r/1UuWBJ/11
+    // https://regex101.com/r/DZCKP3/1
     else if (MarkdownLink.match(/^\[.*\]\(.*\)$/)) {
       const value = MarkdownLink.slice(1, -1);
       const indexOfSplit = value.lastIndexOf('](');
