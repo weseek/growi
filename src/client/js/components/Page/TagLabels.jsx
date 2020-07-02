@@ -100,6 +100,7 @@ class TagLabels extends React.Component {
   }
 
   render() {
+    const tags = this.getEditTargetData();
     return (
       <React.Fragment>
         <div className="tag-labels">
@@ -107,6 +108,7 @@ class TagLabels extends React.Component {
         </div>
 
         <TagEditModal
+          tags={tags}
           isOpen={this.state.isTagEditModalShown}
           onClose={this.closeEditorModal}
           appContainer={this.props.appContainer}

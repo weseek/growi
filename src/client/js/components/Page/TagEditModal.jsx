@@ -1,68 +1,53 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import AppContainer from '../../services/AppContainer';
-
 import TagsInput from './TagsInput';
 
-export default class TagEditModal extends React.Component {
+function TagEditModal(props) {
+  const [tags, setTags] = useState(['hoge']);
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      tags: [],
-    };
-
-    this.onTagsUpdatedByTagsInput = this.onTagsUpdatedByTagsInput.bind(this);
-    this.closeModalHandler = this.closeModalHandler.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+  function onTagsUpdatedByTagsInput(tags) {
+    setTags(tags);
   }
 
-  onTagsUpdatedByTagsInput(tags) {
-    this.setState({ tags });
-  }
-
-  closeModalHandler() {
-    if (this.props.onClose == null) {
+  function closeModalHandler() {
+    if (props.onClose == null) {
       return;
     }
-    this.props.onClose();
+    props.onClose();
   }
 
-  async handleSubmit() {
-    this.props.onTagsUpdated(this.state.tags);
-    this.closeModalHandler();
+  async function handleSubmit() {
+    props.onTagsUpdated(tags);
+    closeModalHandler();
   }
 
-  render() {
-    return (
-      <Modal isOpen={this.props.isOpen} toggle={this.closeModalHandler} id="edit-tag-modal">
-        <ModalHeader tag="h4" toggle={this.closeModalHandler} className="bg-primary text-light">
+  return (
+    <Modal isOpen={props.isOpen} toggle={closeModalHandler} id="edit-tag-modal">
+      <ModalHeader tag="h4" toggle={closeModalHandler} className="bg-primary text-light">
           Edit Tags
-        </ModalHeader>
-        <ModalBody>
-          <TagsInput tags={this.state.tags} onTagsUpdated={this.onTagsUpdatedByTagsInput} />
-        </ModalBody>
-        <ModalFooter>
-          <Button color="primary" onClick={this.handleSubmit}>
+      </ModalHeader>
+      <ModalBody>
+        <TagsInput tags={tags} onTagsUpdated={onTagsUpdatedByTagsInput} />
+      </ModalBody>
+      <ModalFooter>
+        <Button color="primary" onClick={handleSubmit}>
             Done
-          </Button>
-        </ModalFooter>
-      </Modal>
-    );
-  }
+        </Button>
+      </ModalFooter>
+    </Modal>
+  );
 
 }
 
 TagEditModal.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
   onTagsUpdated: PropTypes.func.isRequired,
 };
+
+export default TagEditModal;
