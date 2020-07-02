@@ -69,37 +69,40 @@ class TagLabels extends React.Component {
     }
   }
 
-  render() {
+  renderTagLabels() {
     const { t } = this.props;
     const { pageId } = this.props.pageContainer.state;
-
     const tags = this.getEditTargetData();
 
-    const tagElements = tags.map((tag) => {
-      return (
-        <span key={`${pageId}_${tag}`} className="text-muted">
-          <i className="tag-icon icon-tag mr-1"></i>
-          <a className="tag-name mr-2" href={`/_search?q=tag:${tag}`} key={`${pageId}_${tag}_link`}>{tag}</a>
-        </span>
-      );
-    });
+    return (
+      <div className="tag-labels">
 
+        {tags.length === 0 && (
+        <a className="btn btn-link btn-edit-tags no-tags p-0 text-muted" onClick={this.openEditorModal}>
+          { t('Add tags for this page') } <i className="manage-tags ml-2 icon-plus"></i>
+        </a>
+        )}
+        {tags.map((tag) => {
+          return (
+            <span key={`${pageId}_${tag}`} className="text-muted">
+              <i className="tag-icon icon-tag mr-1"></i>
+              <a className="tag-name mr-2" href={`/_search?q=tag:${tag}`} key={`${pageId}_${tag}_link`}>{tag}</a>
+            </span>
+          );
+        })}
+        {tags.length > 0 && (
+        <a className="btn btn-link btn-edit-tags p-0 text-muted" onClick={this.openEditorModal}>
+          <i className="manage-tags ml-2 icon-plus"></i> { t('Edit tags for this page') }
+        </a>
+        )}
+      </div>
+    );
+  }
+
+  render() {
     return (
       <React.Fragment>
-
-        <div className="tag-labels">
-          {tags.length === 0 && (
-          <a className="btn btn-link btn-edit-tags no-tags p-0 text-muted" onClick={this.openEditorModal}>
-            { t('Add tags for this page') } <i className="manage-tags ml-2 icon-plus"></i>
-          </a>
-        )}
-          {tagElements}
-          {tags.length > 0 && (
-          <a className="btn btn-link btn-edit-tags p-0 text-muted" onClick={this.openEditorModal}>
-            <i className="manage-tags ml-2 icon-plus"></i> { t('Edit tags for this page') }
-          </a>
-        )}
-        </div>
+        {this.renderTagLabels()}
 
         <TagEditModal
           isOpen={this.state.isTagEditModalShown}
