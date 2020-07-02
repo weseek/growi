@@ -22,6 +22,8 @@ const PageShareManagement = (props) => {
 
   const [isArchiveCreateModalShown, setIsArchiveCreateModalShown] = useState(false);
 
+  const [archiveData, setArchiveData] = useState(null);
+
   const [archiveError, setArchiveError] = useState(null);
 
   function openOutsideShareLinkModalHandler() {
@@ -46,6 +48,7 @@ const PageShareManagement = (props) => {
   async function getArchivePageData() {
     try {
       await appContainer.apiv3Get('page/archive', { pageId });
+      setArchiveData('ここにページの変更を表示');
     }
     catch (err) {
       setArchiveError('ページ数の取得に失敗しました');
@@ -84,7 +87,8 @@ const PageShareManagement = (props) => {
           isOpen={isArchiveCreateModalShown}
           onClose={closeArchiveCreateModalHandler}
           path={path}
-          errorMessage={archiveError}
+          archiveError={archiveError}
+          archiveData={archiveData}
         />
       </>
     );
