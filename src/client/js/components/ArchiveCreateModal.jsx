@@ -231,11 +231,8 @@ ArchiveCreateModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   isOpen: PropTypes.bool.isRequired,
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   onClose: PropTypes.func,
   path: PropTypes.string.isRequired,
 };
-const ArchiveCreateModalWrapper = withUnstatedContainers(ArchiveCreateModal, [AppContainer]);
-
 
 export default withTranslation()(ArchiveCreateModalWrapper);
