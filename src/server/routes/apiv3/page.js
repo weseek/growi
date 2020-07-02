@@ -234,7 +234,8 @@ module.exports = (crowi) => {
       rootPagePath,
       numOfPages,
       hasComment: isCommentDownload,
-      hasAttachment: isAttachmentFileDownload});
+      hasAttachment: isAttachmentFileDownload,
+    });
   });
 
   return router;
