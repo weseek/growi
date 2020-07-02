@@ -74,14 +74,16 @@ class TagLabels extends React.Component {
     const { pageId } = this.props.pageContainer.state;
     const tags = this.getEditTargetData();
 
-    return (
-      <div className="tag-labels">
-
-        {tags.length === 0 && (
+    if (tags.length === 0) {
+      return (
         <a className="btn btn-link btn-edit-tags no-tags p-0 text-muted" onClick={this.openEditorModal}>
           { t('Add tags for this page') } <i className="manage-tags ml-2 icon-plus"></i>
         </a>
-        )}
+      );
+    }
+
+    return (
+      <>
         {tags.map((tag) => {
           return (
             <span key={`${pageId}_${tag}`} className="text-muted">
@@ -90,19 +92,19 @@ class TagLabels extends React.Component {
             </span>
           );
         })}
-        {tags.length > 0 && (
         <a className="btn btn-link btn-edit-tags p-0 text-muted" onClick={this.openEditorModal}>
           <i className="manage-tags ml-2 icon-plus"></i> { t('Edit tags for this page') }
         </a>
-        )}
-      </div>
+      </>
     );
   }
 
   render() {
     return (
       <React.Fragment>
-        {this.renderTagLabels()}
+        <div className="tag-labels">
+          {this.renderTagLabels()}
+        </div>
 
         <TagEditModal
           isOpen={this.state.isTagEditModalShown}
