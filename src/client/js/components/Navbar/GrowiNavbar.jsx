@@ -7,30 +7,28 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import NavigationContainer from '../../services/NavigationContainer';
 import AppContainer from '../../services/AppContainer';
 
+import GrowiLogo from '../GrowiLogo';
+
 import PageCreateButton from './PageCreateButton';
 import PersonalDropdown from './PersonalDropdown';
-import GrowiLogo from '../GrowiLogo';
+import GlobalSearch from './GlobalSearch';
 
 class GrowiNavbar extends React.Component {
 
   renderNavbarRight() {
     const { appContainer } = this.props;
-    const isReachable = appContainer.config.isSearchServiceReachable;
+    const { currentUser } = appContainer;
+
+    // render login button
+    if (currentUser == null) {
+      return <li id="login-user" className="nav-item"><a className="nav-link" href="/login">Login</a></li>;
+    }
 
     return (
       <>
         <li className="nav-item d-none d-md-block">
           <PageCreateButton />
         </li>
-
-        {isReachable
-         && (
-         <li className="nav-item d-md-none">
-           <a type="button" className="nav-link px-4" data-target="#grw-search-top-collapse" data-toggle="collapse">
-             <i className="icon-magnifier mr-2"></i>
-           </a>
-         </li>
-         )}
 
         <li className="grw-personal-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret">
           <PersonalDropdown />
@@ -54,9 +52,9 @@ class GrowiNavbar extends React.Component {
   }
 
   render() {
-    const { appContainer } = this.props;
-    const { crowi } = appContainer.config;
-    const { currentUser } = appContainer;
+    const { appContainer, navigationContainer } = this.props;
+    const { crowi, isSearchServiceConfigured } = appContainer.config;
+    const { isDeviceSmallerThanMd } = navigationContainer.state;
 
     return (
       <>
@@ -75,10 +73,16 @@ class GrowiNavbar extends React.Component {
 
         {/* Navbar Right  */}
         <ul className="navbar-nav ml-auto">
-          {currentUser != null ? this.renderNavbarRight() : <li id="login-user" className="nav-item"><a className="nav-link" href="/login">Login</a></li>}
+          {this.renderNavbarRight()}
         </ul>
 
         {crowi.confidential != null && this.renderConfidential()}
+
+        { isSearchServiceConfigured && !isDeviceSmallerThanMd && (
+          <div className="grw-search-top grw-search-top-absolute position-absolute">
+            <GlobalSearch />
+          </div>
+        ) }
       </>
     );
   }

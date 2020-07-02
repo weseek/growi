@@ -3,7 +3,6 @@ import React from 'react';
 import loggerFactory from '@alias/logger';
 import Xss from '@commons/service/xss';
 
-import SearchTop from './components/Navbar/SearchTop';
 import GrowiNavbar from './components/Navbar/GrowiNavbar';
 import GrowiNavbarBottom from './components/Navbar/GrowiNavbarBottom';
 import Sidebar from './components/Sidebar';
@@ -41,8 +40,6 @@ logger.info('AppContainer has been initialized');
 const componentMappings = {
   'grw-navbar': <GrowiNavbar />,
   'grw-navbar-bottom-container': <GrowiNavbarBottom />,
-
-  'grw-search-top': <SearchTop />,
 
   'create-page-button-icon': <PageCreateButton isIcon />,
   'page-create-modal': <PageCreateModal />,

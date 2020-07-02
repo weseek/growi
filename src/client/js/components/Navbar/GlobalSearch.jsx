@@ -9,7 +9,7 @@ import NavigationContainer from '../../services/NavigationContainer';
 import SearchForm from '../SearchForm';
 
 
-class SearchTop extends React.Component {
+class GlobalSearch extends React.Component {
 
   constructor(props) {
     super(props);
@@ -51,23 +51,7 @@ class SearchTop extends React.Component {
     window.location.href = url.href;
   }
 
-  Root = ({ children }) => {
-    const { isDeviceSmallerThanMd: isCollapsed } = this.props.navigationContainer.state;
-
-    return isCollapsed
-      ? (
-        <div id="grw-search-top-collapse" className="collapse bg-dark p-3">
-          {children}
-        </div>
-      )
-      : (
-        <div className="grw-search-top-absolute position-absolute">
-          {children}
-        </div>
-      );
-  };
-
-  SearchTopForm = () => {
+  render() {
     const { t, appContainer } = this.props;
     const scopeLabel = this.state.isScopeChildren
       ? t('header_search_box.label.This tree')
@@ -105,16 +89,9 @@ class SearchTop extends React.Component {
     );
   }
 
-  render() {
-    const { Root, SearchTopForm } = this;
-    return (
-      <Root><SearchTopForm /></Root>
-    );
-  }
-
 }
 
-SearchTop.propTypes = {
+GlobalSearch.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
@@ -123,6 +100,6 @@ SearchTop.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const SearchTopWrapper = withUnstatedContainers(SearchTop, [AppContainer, NavigationContainer]);
+const GlobalSearchWrapper = withUnstatedContainers(GlobalSearch, [AppContainer, NavigationContainer]);
 
-export default withTranslation()(SearchTopWrapper);
+export default withTranslation()(GlobalSearchWrapper);
