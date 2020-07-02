@@ -126,7 +126,7 @@ module.exports = (crowi) => {
     ],
 
     archive: [
-      body('basePagePath').isString(),
+      body('rootPagePath').isString(),
       body('isCommentDownload').isBoolean(),
       body('isAttachmentFileDownload').isBoolean(),
       body('isSubordinatedPageDownload').isBoolean(),
