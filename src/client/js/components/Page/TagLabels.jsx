@@ -17,11 +17,11 @@ class TagLabels extends React.Component {
     super(props);
 
     this.state = {
-      showTagEditor: false,
       isTagEditModalShown: false,
     };
 
-    this.showEditorModal = this.showEditorModal.bind(this);
+    this.openEditorModal = this.openEditorModal.bind(this);
+    this.closeEditorModal = this.closeEditorModal.bind(this);
     this.tagsUpdatedHandler = this.tagsUpdatedHandler.bind(this);
   }
 
@@ -35,8 +35,12 @@ class TagLabels extends React.Component {
     return (isEditorMode) ? this.props.editorContainer.state.tags : this.props.pageContainer.state.tags;
   }
 
-  showEditorModal() {
+  openEditorModal() {
     this.setState({ isTagEditModalShown: true });
+  }
+
+  closeEditorModal() {
+    this.setState({ isTagEditModalShown: false });
   }
 
   async tagsUpdatedHandler(tags) {
@@ -107,20 +111,20 @@ class TagLabels extends React.Component {
     return (
       <div className="tag-labels">
         {tags.length === 0 && (
-          <a className="btn btn-link btn-edit-tags no-tags p-0 text-muted" onClick={this.showEditorModal}>
+          <a className="btn btn-link btn-edit-tags no-tags p-0 text-muted" onClick={this.openEditorModal}>
             { t('Add tags for this page') } <i className="manage-tags ml-2 icon-plus"></i>
           </a>
         )}
         {tagElements}
         {tags.length > 0 && (
-          <a className="btn btn-link btn-edit-tags p-0 text-muted" onClick={this.showEditorModal}>
+          <a className="btn btn-link btn-edit-tags p-0 text-muted" onClick={this.openEditorModal}>
             <i className="manage-tags ml-2 icon-plus"></i> { t('Edit tags for this page') }
           </a>
         )}
         <TagEditModal
           isOpen={this.state.isTagEditModalShown}
+          onClose={this.closeEditorModal}
           appContainer={this.props.appContainer}
-          show={this.state.showTagEditor}
           onTagsUpdated={this.tagsUpdatedHandler}
         >
         </TagEditModal>

@@ -28,11 +28,14 @@ export default class TagEditModal extends React.Component {
   }
 
   closeModalHandler() {
+    if (this.props.onClose == null) {
+      return;
+    }
+    this.props.onClose();
   }
 
   async handleSubmit() {
     this.props.onTagsUpdated(this.state.tags);
-
   }
 
   render() {
@@ -59,5 +62,6 @@ TagEditModal.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func,
   onTagsUpdated: PropTypes.func.isRequired,
 };
