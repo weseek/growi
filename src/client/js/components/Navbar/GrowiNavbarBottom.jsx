@@ -24,7 +24,7 @@ const GrowiNavbarBottom = (props) => {
       { isDeviceSmallerThanMd && (
         <div id="grw-global-search-collapse" className="grw-global-search collapse bg-dark">
           <div className="p-3">
-            <GlobalSearch />
+            <GlobalSearch dropup />
           </div>
         </div>
       ) }

@@ -52,7 +52,7 @@ class GlobalSearch extends React.Component {
   }
 
   render() {
-    const { t, appContainer } = this.props;
+    const { t, appContainer, dropup } = this.props;
     const scopeLabel = this.state.isScopeChildren
       ? t('header_search_box.label.This tree')
       : t('header_search_box.label.All pages');
@@ -63,7 +63,7 @@ class GlobalSearch extends React.Component {
     return (
       <div className={`form-group mb-0 d-print-none ${isReachable ? '' : 'has-error'}`}>
         <div className="input-group flex-nowrap">
-          <div className="input-group-prepend">
+          <div className={`input-group-prepend ${dropup ? 'dropup' : ''}`}>
             <button className="btn btn-secondary dropdown-toggle py-0" type="button" data-toggle="dropdown" aria-haspopup="true">
               {scopeLabel}
             </button>
@@ -78,6 +78,7 @@ class GlobalSearch extends React.Component {
             onInputChange={this.onInputChange}
             onSubmit={this.search}
             placeholder="Search ..."
+            dropup={dropup}
           />
           <div className="btn-group-submit-search">
             <span className="btn-link text-decoration-none" onClick={this.search}>
@@ -95,6 +96,8 @@ GlobalSearch.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
+
+  dropup: PropTypes.bool,
 };
 
 /**
