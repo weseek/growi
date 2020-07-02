@@ -21,7 +21,11 @@ function TagEditModal(props) {
     props.onClose();
   }
 
-  async function handleSubmit() {
+  function handleSubmit() {
+    if (props.onTagsUpdated == null) {
+      return;
+    }
+
     props.onTagsUpdated(tags);
     closeModalHandler();
   }
@@ -47,7 +51,7 @@ function TagEditModal(props) {
 TagEditModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
-  onTagsUpdated: PropTypes.func.isRequired,
+  onTagsUpdated: PropTypes.func,
 };
 
 export default TagEditModal;
