@@ -667,7 +667,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   showLinkEditHandler() {
-    this.linkEditModal.current.show(mlu.getMarkdownLinkOrSelectedText(this.getCodeMirror()));
+    this.linkEditModal.current.show(mlu.getMarkdownLink(this.getCodeMirror()));
   }
 
   showHandsonTableHandler() {
