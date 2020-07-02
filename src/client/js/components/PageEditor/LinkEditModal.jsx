@@ -41,7 +41,6 @@ class LinkEditModal extends React.PureComponent {
     this.cancel = this.cancel.bind(this);
     this.handleChangeLabelInput = this.handleChangeLabelInput.bind(this);
     this.handleChangeLinkInput = this.handleChangeLinkInput.bind(this);
-    this.parseMakdownLink = this.parseMakdownLink.bind(this);
     this.handleSelecteLinkerType = this.handleSelecteLinkerType.bind(this);
     this.toggleIsUseRelativePath = this.toggleIsUseRelativePath.bind(this);
     this.setMarkdown = this.setMarkdown.bind(this);
@@ -58,50 +57,16 @@ class LinkEditModal extends React.PureComponent {
     }
   }
 
-  show(defaultMarkdownLink = '') {
-    const { labelInputValue, linkInputValue, linkerType } = this.parseMakdownLink(defaultMarkdownLink);
+  show(defaultMarkdownLink = null) {
+    // if defaultMarkdownLink is null, set default value in inputs.
+    const {type='mdLink', label='', link=''} = defaultMarkdownLink ;
 
     this.setState({
       show: true,
-      labelInputValue,
-      linkInputValue,
-      linkerType,
+      labelInputValue: label,
+      linkInputValue: link,
+      linkerType: type,
     });
-  }
-
-  parseMakdownLink(MarkdownLink) {
-    let labelInputValue = MarkdownLink;
-    let linkInputValue = '';
-    let linkerType = 'mdLink';
-
-    // https://regex101.com/r/2fNmUN/1
-    if (MarkdownLink.match(/^\[\[.*\]\]$/) && this.isApplyPukiwikiLikeLinkerPlugin) {
-      linkerType = 'pukiwikiLink';
-      const value = MarkdownLink.slice(2, -2);
-      const indexOfSplit = value.lastIndexOf('>');
-      if (indexOfSplit < 0) {
-        labelInputValue = value;
-        linkInputValue = value;
-      }
-      labelInputValue = value.slice(0, indexOfSplit);
-      linkInputValue = value.slice(indexOfSplit + 1);
-    }
-    // https://regex101.com/r/DJfkYf/1
-    else if (MarkdownLink.match(/^\[\/.*\]$/)) {
-      linkerType = 'growiLink';
-      const value = MarkdownLink.slice(1, -1);
-      labelInputValue = value;
-      linkInputValue = value;
-    }
-    // https://regex101.com/r/DZCKP3/1
-    else if (MarkdownLink.match(/^\[.*\]\(.*\)$/)) {
-      const value = MarkdownLink.slice(1, -1);
-      const indexOfSplit = value.lastIndexOf('](');
-      labelInputValue = value.slice(0, indexOfSplit);
-      linkInputValue = value.slice(indexOfSplit + 2);
-    }
-
-    return { labelInputValue, linkInputValue, linkerType };
   }
 
   cancel() {
