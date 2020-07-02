@@ -216,6 +216,7 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/Page'
    */
   router.post('/archive', accessTokenParser, loginRequired, csrf, validator.archive, apiV3FormValidator, async(req, res) => {
+
     const {
       basePagePath,
       isCommentDownload,
@@ -227,9 +228,18 @@ module.exports = (crowi) => {
     } = req.body;
     const PageArchive = crowi.model('PageArchive');
 
-    const filePath = 'path'; // ファイル作成タスクにてアーカイブzipファイルのパスを入れる
+    const filePath = 'path'; // TODO ファイル作成タスクにてアーカイブzipファイルのパスを入れる
+    const NumOfPages = 1; // TODO 最終的なページ数を入れる
     const creator = req.user._id;
-    const archive = await PageArchive.create({ filePath, creator, basePagePath });
+
+    const archive = await PageArchive.create({
+      filePath,
+      creator,
+      fileType,
+      basePagePath,
+      NumOfPages,
+      hasComment: isCommentDownload,
+      hasAttachment: isAttachmentFileDownload});
   });
 
   return router;

@@ -6,6 +6,10 @@ module.exports = function(crowi) {
     filePath: { type: String, required: true },
     creator: { type: ObjectId, ref: 'User', index: true },
     basePagePath: { type: String, required: true },
+    fileType: { type: String },
+    NumOfPages: { type: Number },
+    hasComment: { type: Boolean },
+    hasAttachment: { type: Boolean },
   }, {
     timestamps: true,
   });
