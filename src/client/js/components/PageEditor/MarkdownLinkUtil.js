@@ -26,8 +26,13 @@ class MarkdownLinkUtil {
     return beginningOfLink >= 0 && endOfLink >= 0 && beginningOfLink <= curPos.ch && curPos.ch <= endOfLink;
   }
 
-  replaceFocusedMarkdownLinkWithEditor(editor) {
-    // GW-3023
+  replaceFocusedMarkdownLinkWithEditor(editor, linkStr) {
+    const curPos = editor.getCursor();
+    const line = editor.getDoc().getLine(curPos.line);
+    const { beginningOfLink, endOfLink } = getBeginningAndEndIndexOfLink(line, curPos.ch)
+    editor.getDoc().replaceRange(linkStr, { line, ch: beginningOfLink }, { line, ch: endOfLink });
+    editor.getDoc().setCursor(curPos.line + 1, 2);
+    // 洗濯中テキスト内の改行対策
   }
 
 }
