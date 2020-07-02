@@ -166,10 +166,11 @@
   }
 }
 
-.admin-navigation > a + a {
-  margin-top: 2px;
-}
-
-.admin-navigation.sticky-top {
-  top: 30px;
+.admin-navigation {
+  & > a + a {
+    margin-top: 2px;
+  }
+  &.sticky-top {
+    top: 30px;
+  }
 }
