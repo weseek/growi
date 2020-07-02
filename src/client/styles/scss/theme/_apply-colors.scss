@@ -152,7 +152,7 @@ pre:not(.hljs):not(.CodeMirror-line) {
   }
 }
 
-.grw-search-top {
+.grw-global-search {
   .btn-secondary.dropdown-toggle {
     @include button-variant($bgcolor-search-top-dropdown, $bgcolor-search-top-dropdown);
   }

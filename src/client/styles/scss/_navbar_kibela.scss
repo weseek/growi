@@ -31,13 +31,5 @@
         color: white;
       }
     }
-    @media screen and (max-width: 790px) {
-      .grw-search-top {
-        display: none !important;
-      }
-      @media screen and (max-width: 540px) {
-        // TODO responsive after implementation of Sidebar
-      }
-    }
   }
 }

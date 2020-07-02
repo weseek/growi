@@ -79,7 +79,7 @@ class GrowiNavbar extends React.Component {
         {crowi.confidential != null && this.renderConfidential()}
 
         { isSearchServiceConfigured && !isDeviceSmallerThanMd && (
-          <div className="grw-search-top grw-search-top-absolute position-absolute">
+          <div className="grw-global-search grw-global-search-top position-absolute">
             <GlobalSearch />
           </div>
         ) }

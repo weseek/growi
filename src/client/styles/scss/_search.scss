@@ -59,7 +59,7 @@
 }
 
 // input styles
-.grw-search-top {
+.grw-global-search {
   .search-clear {
     top: 3px;
     right: 26px;
@@ -115,7 +115,7 @@
 }
 
 // layout
-.grw-search-top-absolute {
+.grw-global-search-top {
   // centering on navbar
   top: $grw-navbar-height / 2;
   left: 50vw;
