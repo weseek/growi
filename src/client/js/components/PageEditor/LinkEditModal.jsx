@@ -97,7 +97,6 @@ class LinkEditModal extends React.PureComponent {
       <div className="linkedit-preview">
         <Preview
           markdown={this.state.markdown}
-          inputRef={() => {}}
         />
       </div>
     );
@@ -197,6 +196,10 @@ class LinkEditModal extends React.PureComponent {
                 </div>
               </form>
 
+              <div className="d-block d-lg-none mb-3 overflow-auto">
+                {this.renderPreview()}
+              </div>
+
               <div className="card">
                 <div className="card-body">
                   <form className="form-group">
@@ -272,10 +275,9 @@ class LinkEditModal extends React.PureComponent {
                 </div>
               </div>
             </div>
-            <div className="col-12 col-lg-6">
-              <div className="d-block mb-3">
-                {this.renderPreview()}
-              </div>
+
+            <div className="col d-none d-lg-block pr-0 mr-3 overflow-auto">
+              {this.renderPreview()}
             </div>
           </div>
         </ModalBody>
