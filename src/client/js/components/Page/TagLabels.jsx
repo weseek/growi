@@ -85,26 +85,30 @@ class TagLabels extends React.Component {
     });
 
     return (
-      <div className="tag-labels">
-        {tags.length === 0 && (
+      <React.Fragment>
+
+        <div className="tag-labels">
+          {tags.length === 0 && (
           <a className="btn btn-link btn-edit-tags no-tags p-0 text-muted" onClick={this.openEditorModal}>
             { t('Add tags for this page') } <i className="manage-tags ml-2 icon-plus"></i>
           </a>
         )}
-        {tagElements}
-        {tags.length > 0 && (
+          {tagElements}
+          {tags.length > 0 && (
           <a className="btn btn-link btn-edit-tags p-0 text-muted" onClick={this.openEditorModal}>
             <i className="manage-tags ml-2 icon-plus"></i> { t('Edit tags for this page') }
           </a>
         )}
+        </div>
+
         <TagEditModal
           isOpen={this.state.isTagEditModalShown}
           onClose={this.closeEditorModal}
           appContainer={this.props.appContainer}
           onTagsUpdated={this.tagsUpdatedHandler}
-        >
-        </TagEditModal>
-      </div>
+        />
+
+      </React.Fragment>
     );
   }
 
