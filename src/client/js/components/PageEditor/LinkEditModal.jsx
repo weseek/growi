@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import path from 'path';
-
 import {
   Modal,
   ModalHeader,
@@ -10,9 +9,11 @@ import {
   ModalFooter,
 } from 'reactstrap';
 
-import PageContainer from '../../services/PageContainer';
-
+import Preview from './Preview';
 import PagePathAutoComplete from '../PagePathAutoComplete';
+
+import AppContainer from '../../services/AppContainer';
+import PageContainer from '../../services/PageContainer';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
@@ -25,9 +26,10 @@ class LinkEditModal extends React.PureComponent {
       show: false,
       isUseRelativePath: false,
       isUsePermanentLink: false,
-      linkInputValue: '',
+      linkInputValue: '/',
       labelInputValue: '',
       linkerType: 'mdLink',
+      markdown: '',
     };
 
     this.isApplyPukiwikiLikeLinkerPlugin = window.growiRenderer.preProcessors.some(process => process.constructor.name === 'PukiwikiLikeLinker');
@@ -40,9 +42,18 @@ class LinkEditModal extends React.PureComponent {
     this.handleChangeLabelInput = this.handleChangeLabelInput.bind(this);
     this.handleSelecteLinkerType = this.handleSelecteLinkerType.bind(this);
     this.toggleIsUseRelativePath = this.toggleIsUseRelativePath.bind(this);
+    this.setMarkdown = this.setMarkdown.bind(this);
     this.toggleIsUsePamanentLink = this.toggleIsUsePamanentLink.bind(this);
     this.save = this.save.bind(this);
     this.generateLink = this.generateLink.bind(this);
+  }
+
+  componentDidUpdate(prevState) {
+    const { linkInputValue: prevLinkInputValue } = prevState;
+    const { linkInputValue } = this.state;
+    if (linkInputValue !== prevLinkInputValue) {
+      this.setMarkdown(linkInputValue);
+    }
   }
 
   show(defaultLabelInputValue = '') {
@@ -71,11 +82,30 @@ class LinkEditModal extends React.PureComponent {
   }
 
   renderPreview() {
-    // TODO GW-2658
+    return (
+      <div className="linkedit-preview">
+        <Preview
+          markdown={this.state.markdown}
+        />
+      </div>
+    );
   }
 
   insertLinkIntoEditor() {
     // TODO GW-2659
+  }
+
+  async setMarkdown(path) {
+    let markdown = '';
+    try {
+      await this.props.appContainer.apiGet('/pages.get', { path }).then((res) => {
+        markdown = res.page.revision.body;
+      });
+    }
+    catch (err) {
+      markdown = `<div class="alert alert-warning" role="alert"><strong>${err.message}</strong></div>`;
+    }
+    this.setState({ markdown });
   }
 
   handleChangeLabelInput(label) {
@@ -101,13 +131,11 @@ class LinkEditModal extends React.PureComponent {
 
   inputChangeHandler(inputChangeValue) {
     this.setState({ linkInputValue: inputChangeValue });
-
   }
 
   submitHandler(submitValue) {
     this.setState({ linkInputValue: submitValue });
   }
-
 
   generateLink() {
     const { pageContainer } = this.props;
@@ -144,7 +172,7 @@ class LinkEditModal extends React.PureComponent {
 
         <ModalBody className="container">
           <div className="row">
-            <div className="col-12 col-lg-6">
+            <div className="col">
               <form className="form-group">
                 <div className="form-gorup my-3">
                   <label htmlFor="linkInput">Link</label>
@@ -169,6 +197,10 @@ class LinkEditModal extends React.PureComponent {
                   </div>
                 </div>
               </form>
+
+              <div className="d-block d-lg-none mb-3 overflow-auto">
+                {this.renderPreview()}
+              </div>
 
               <div className="card">
                 <div className="card-body">
@@ -231,11 +263,9 @@ class LinkEditModal extends React.PureComponent {
                 </div>
               </div>
             </div>
-            <div className="col-12 col-lg-6">
-              <div className="d-block d-lg-none">
-                {this.renderPreview}
-                render preview
-              </div>
+
+            <div className="col d-none d-lg-block pr-0 mr-3 overflow-auto">
+              {this.renderPreview()}
             </div>
           </div>
         </ModalBody>
@@ -254,6 +284,7 @@ class LinkEditModal extends React.PureComponent {
 }
 
 LinkEditModal.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   onSave: PropTypes.func,
 };
@@ -261,6 +292,6 @@ LinkEditModal.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const LinkEditModalWrapper = withUnstatedContainers(LinkEditModal, [PageContainer]);
+const LinkEditModalWrapper = withUnstatedContainers(LinkEditModal, [AppContainer, PageContainer]);
 
 export default LinkEditModalWrapper;
