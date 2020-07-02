@@ -36,6 +36,7 @@ export default class TagEditModal extends React.Component {
 
   async handleSubmit() {
     this.props.onTagsUpdated(this.state.tags);
+    this.closeModalHandler();
   }
 
   render() {

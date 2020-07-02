@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import * as toastr from 'toastr';
+import { toastSuccess, toastError } from '../../util/apiNotification';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
@@ -62,35 +62,11 @@ class TagLabels extends React.Component {
       pageContainer.setState({ tags });
       editorContainer.setState({ tags });
 
-      this.apiSuccessHandler();
+      toastSuccess('updated tags successfully');
     }
     catch (err) {
-      this.apiErrorHandler(err);
-      return;
+      toastError(err, 'fail to update tags');
     }
-  }
-
-  apiSuccessHandler() {
-    toastr.success(undefined, 'updated tags successfully', {
-      closeButton: true,
-      progressBar: true,
-      newestOnTop: false,
-      showDuration: '100',
-      hideDuration: '100',
-      timeOut: '1200',
-      extendedTimeOut: '150',
-    });
-  }
-
-  apiErrorHandler(err) {
-    toastr.error(err.message, 'Error occured', {
-      closeButton: true,
-      progressBar: true,
-      newestOnTop: false,
-      showDuration: '100',
-      hideDuration: '100',
-      timeOut: '3000',
-    });
   }
 
   render() {
