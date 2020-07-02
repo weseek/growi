@@ -1,4 +1,5 @@
-import Linker from '../models/Linker';
+import Linker from '../../models/Linker';
+import { ConnectionStates } from 'mongoose';
 
 /**
  * Utility for markdown link
@@ -17,13 +18,13 @@ class MarkdownLinkUtil {
       return Linker.fromMarkdownString(editor.getDoc().getSelection());
     }
     const curPos = editor.getCursor();
-    return Linker.fromLineContainsLink(editor.getDoc().getLine(curPos.line), curPos.ch)
+    return Linker.fromLineWithIndex(editor.getDoc().getLine(curPos.line), curPos.ch)
   }
 
   isInLink(editor) {
     const curPos = editor.getCursor();
     const { beginningOfLink, endOfLink } = Linker.getBeginningAndEndIndexOfLink(editor.getDoc().getLine(curPos.line), curPos.ch);
-    return beginningOfLink >= 0 && endOfLink >= 0 && beginningOfLink <= curPos.ch && curPos.ch <= endOfLink;
+    return beginningOfLink >= 0 && endOfLink >= 0;
   }
 
   replaceFocusedMarkdownLinkWithEditor(editor) {

@@ -1,10 +1,13 @@
+import { sl } from "date-fns/locale";
+
 const types = {
   markdownLink: 'mdLink',
   growiLink: 'growiLink',
   pukiwikiLink: 'pukiwikiLink',
 }
 
-const isApplyPukiwikiLikeLinkerPlugin = window.growiRenderer.preProcessors.some(process => process.constructor.name === 'PukiwikiLikeLinker');
+// const isApplyPukiwikiLikeLinkerPlugin = window.growiRenderer.preProcessors.some(process => process.constructor.name === 'PukiwikiLikeLinker');
+const isApplyPukiwikiLikeLinkerPlugin = true;
 
 export default class Linker {
 
@@ -46,7 +49,7 @@ export default class Linker {
     // https://regex101.com/r/DZCKP3/1
     else if (str.match(/^\[.*\]\(.*\)$/)) {
       type = types.markdownLink;
-      const value = MarkdownLink.slice(1, -1);
+      const value = str.slice(1, -1);
       const indexOfSplit = value.lastIndexOf('](');
       label = value.slice(0, indexOfSplit);
       link = value.slice(indexOfSplit + 2);
@@ -59,46 +62,52 @@ export default class Linker {
   static fromLineWithIndex(line, index) {
     const { beginningOfLink, endOfLink } = this.getBeginningAndEndIndexOfLink(line, index);
     let linkStr = '';
-    if (beginningOfLink < 0 || endOfLink < 0) {
+    if (beginningOfLink >= 0 && endOfLink >= 0) {
      linkStr = line.substring(beginningOfLink, endOfLink);
     }
+    console.log(linkStr);
+
     return this.fromMarkdownString(linkStr);
   }
 
-  // return beginning index and end index of the closest link to index
-  // if there is no link, return { beginningOfLink: -1, endOfLink: -1}
+  // return beginning and end indexies of link
+  // if index is not on link, return { beginningOfLink: -1, endOfLink: -1 }
   static getBeginningAndEndIndexOfLink(line, index) {
     let beginningOfLink, endOfLink;
-
-    // growi link ('[/link]')
-    [beginningOfLink, endOfLink] = this.getBeginningAndEndIndexWithPrefixAndSuffix(line, index, '[/', ']');
-
-    // markdown link ('[label](link)')
-    [beginningOfLink, endOfLink] = this.getBeginningAndEndIndexWithPrefixAndSuffix(line, index, '[', ')', '](');
 
     // pukiwiki link ('[[link]]')
     if (isApplyPukiwikiLikeLinkerPlugin) {
       [beginningOfLink, endOfLink] = this.getBeginningAndEndIndexWithPrefixAndSuffix(line, index, '[[', ']]');
     }
 
+    // growi link ('[/link]')
+    if (beginningOfLink < 0 || endOfLink < 0 || beginningOfLink > index || endOfLink < index){
+      [beginningOfLink, endOfLink] = this.getBeginningAndEndIndexWithPrefixAndSuffix(line, index, '[/', ']');
+    }
+
+    // markdown link ('[label](link)')
+    if (beginningOfLink < 0 || endOfLink < 0 || beginningOfLink > index || endOfLink < index){
+      [beginningOfLink, endOfLink] = this.getBeginningAndEndIndexWithPrefixAndSuffix(line, index, '[', ')', '](');
+    }
+
+    if (beginningOfLink < 0 || endOfLink < 0 || beginningOfLink > index || endOfLink < index) {
+      [beginningOfLink, endOfLink] = [-1, -1];
+    };
+
     return { beginningOfLink, endOfLink };
   }
 
   // return begin and end indexies as array only when index between prefix and suffix.
   // if line doesn't contain containText, return null.
-  static getBeginningAndEndIndexWithPrefixAndSuffix(line, index, prefix, suffix, containText=null) {
-    const beginningIndex = line.lastIndexOf(prefix, index + prefix.length);
-    let startIndex = beginningIndex;
-    if (containText != null){
-      startIndex = line.indexOf(containText, beginningOfLink);
-    }
-    const endIndex = line.indexOf(suffix, startIndex);
+  static getBeginningAndEndIndexWithPrefixAndSuffix(line, index, prefix, suffix, containText='') {
+    const beginningIndex = line.lastIndexOf(prefix, index);
+    const IndexOfContainText = line.indexOf(containText, beginningIndex + prefix.length);
+    const endIndex = line.indexOf(suffix, IndexOfContainText + containText.length);
 
-    if (beginningIndex < 0 || endIndex < 0 || startIndex < 0) {
+    if (beginningIndex < 0 || IndexOfContainText < 0 || endIndex < 0) {
       return [-1, -1];
     }
-
-    return [beginningIndex, endIndex + suffix.lengt];
+    return [beginningIndex, endIndex + suffix.length];
   }
 
 }

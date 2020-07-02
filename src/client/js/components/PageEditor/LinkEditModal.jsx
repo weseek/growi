@@ -34,7 +34,8 @@ class LinkEditModal extends React.PureComponent {
       markdown: '',
     };
 
-    this.isApplyPukiwikiLikeLinkerPlugin = window.growiRenderer.preProcessors.some(process => process.constructor.name === 'PukiwikiLikeLinker');
+    // this.isApplyPukiwikiLikeLinkerPlugin = window.growiRenderer.preProcessors.some(process => process.constructor.name === 'PukiwikiLikeLinker');
+    this.isApplyPukiwikiLikeLinkerPlugin = true;
 
     this.show = this.show.bind(this);
     this.hide = this.hide.bind(this);
@@ -58,6 +59,7 @@ class LinkEditModal extends React.PureComponent {
   }
 
   show(defaultMarkdownLink = null) {
+    console.log(defaultMarkdownLink);
     // if defaultMarkdownLink is null, set default value in inputs.
     const {type='mdLink', label='', link=''} = defaultMarkdownLink ;
 
