@@ -126,6 +126,7 @@ module.exports = (crowi) => {
     ],
 
     archive: [
+      body('basePagePath').isString(),
       body('isCommentDownload').isBoolean(),
       body('isAttachmentFileDownload').isBoolean(),
       body('isSubordinatedPageDownload').isBoolean(),
@@ -215,8 +216,8 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/Page'
    */
   router.post('/archive', accessTokenParser, loginRequired, csrf, validator.archive, apiV3FormValidator, async(req, res) => {
-
     const {
+      basePagePath,
       isCommentDownload,
       isAttachmentFileDownload,
       isSubordinatedPageDownload,
@@ -224,13 +225,11 @@ module.exports = (crowi) => {
       hierarchyType,
       hierarchyValue,
     } = req.body;
-
     const PageArchive = crowi.model('PageArchive');
-    const filePath = 'path';
+
+    const filePath = 'path'; // ファイル作成タスクにてアーカイブzipファイルのパスを入れる
     const creator = req.user._id;
-    const basePagePath = '/base';
     const archive = await PageArchive.create({ filePath, creator, basePagePath });
-    console.log(archive);
   });
 
   return router;

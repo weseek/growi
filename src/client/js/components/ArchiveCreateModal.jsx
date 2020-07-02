@@ -57,6 +57,7 @@ const ArchiveCreateModal = (props) => {
 
     try {
       await appContainer.apiv3Post('/page/archive', {
+        basePagePath: props.path,
         isCommentDownload,
         isAttachmentFileDownload,
         isSubordinatedPageDownload,
