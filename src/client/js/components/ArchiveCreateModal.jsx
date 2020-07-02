@@ -14,7 +14,7 @@ const ArchiveCreateModal = (props) => {
   const [isCommentDownload, setIsCommentDownload] = useState(false);
   const [isAttachmentFileDownload, setIsAttachmentFileDownload] = useState(false);
   const [isSubordinatedPageDownload, setIsSubordinatedPageDownload] = useState(false);
-  const [fileType, setFileType] = useState('markDown');
+  const [fileType, setFileType] = useState('markdown');
   const [hierarchyType, setHierarchyType] = useState('allSubordinatedPage');
   const [hierarchyValue, setHierarchyValue] = useState(1);
 
@@ -57,7 +57,7 @@ const ArchiveCreateModal = (props) => {
 
     try {
       await appContainer.apiv3Post('/page/archive', {
-        basePagePath: props.path,
+        rootPagePath: props.path,
         isCommentDownload,
         isAttachmentFileDownload,
         isSubordinatedPageDownload,
@@ -95,9 +95,9 @@ const ArchiveCreateModal = (props) => {
               id="customRadio1"
               name="isFileType"
               value="customRadio1"
-              checked={fileType === 'markDown'}
+              checked={fileType === 'markdown'}
               onChange={() => {
-                handleChangeFileType('markDown');
+                handleChangeFileType('markdown');
               }}
             />
             <label className="custom-control-label" htmlFor="customRadio1">

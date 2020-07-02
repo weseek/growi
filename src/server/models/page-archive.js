@@ -3,11 +3,10 @@ module.exports = function(crowi) {
   const ObjectId = mongoose.Schema.Types.ObjectId;
 
   const pageArchiveSchema = new mongoose.Schema({
-    filePath: { type: String, required: true },
-    creator: { type: ObjectId, ref: 'User', index: true },
-    basePagePath: { type: String, required: true },
-    fileType: { type: String },
-    NumOfPages: { type: Number },
+    owner: { type: ObjectId, ref: 'User', index: true },
+    rootPagePath: { type: String, required: true },
+    fileType: { type: String, enum: ['pdf', 'markdown'] },
+    numOfPages: { type: Number },
     hasComment: { type: Boolean },
     hasAttachment: { type: Boolean },
   }, {

@@ -130,7 +130,7 @@ module.exports = (crowi) => {
       body('isCommentDownload').isBoolean(),
       body('isAttachmentFileDownload').isBoolean(),
       body('isSubordinatedPageDownload').isBoolean(),
-      body('fileType').isString().isIn(['pdf', 'markDown']),
+      body('fileType').isString().isIn(['pdf', 'markdown']),
       body('hierarchyType').isString().isIn(['allSubordinatedPage', 'decideHierarchy']),
       body('hierarchyValue').isNumeric(),
     ],
@@ -216,28 +216,23 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/Page'
    */
   router.post('/archive', accessTokenParser, loginRequired, csrf, validator.archive, apiV3FormValidator, async(req, res) => {
-
-    const {
-      basePagePath,
-      isCommentDownload,
-      isAttachmentFileDownload,
-      isSubordinatedPageDownload,
-      fileType,
-      hierarchyType,
-      hierarchyValue,
-    } = req.body;
     const PageArchive = crowi.model('PageArchive');
 
-    const filePath = 'path'; // TODO ファイル作成タスクにてアーカイブzipファイルのパスを入れる
-    const NumOfPages = 1; // TODO 最終的なページ数を入れる
-    const creator = req.user._id;
-
-    const archive = await PageArchive.create({
-      filePath,
-      creator,
+    const {
+      rootPagePath,
+      isCommentDownload,
+      isAttachmentFileDownload,
       fileType,
-      basePagePath,
-      NumOfPages,
+    } = req.body;
+    const owner = req.user._id;
+
+    const numOfPages = 1; // TODO 最終的にzipファイルに取り込むページ数を入れる
+
+    await PageArchive.create({
+      owner,
+      fileType,
+      rootPagePath,
+      numOfPages,
       hasComment: isCommentDownload,
       hasAttachment: isAttachmentFileDownload});
   });
