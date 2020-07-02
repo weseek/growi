@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -8,11 +8,15 @@ import {
 import TagsInput from './TagsInput';
 
 function TagEditModal(props) {
-  const [tags, setTags] = useState(['hoge']);
+  const [tags, setTags] = useState([]);
 
   function onTagsUpdatedByTagsInput(tags) {
     setTags(tags);
   }
+
+  useEffect(() => {
+    setTags(props.tags);
+  }, [props.tags]);
 
   function closeModalHandler() {
     if (props.onClose == null) {
@@ -49,6 +53,7 @@ function TagEditModal(props) {
 }
 
 TagEditModal.propTypes = {
+  tags: PropTypes.array,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
   onTagsUpdated: PropTypes.func,
