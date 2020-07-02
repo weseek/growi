@@ -169,3 +169,7 @@
 .admin-navigation > a + a {
   margin-top: 2px;
 }
+
+.admin-navigation.sticky-top {
+  top: 30px;
+}
