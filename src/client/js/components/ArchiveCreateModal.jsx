@@ -216,7 +216,7 @@ const ArchiveCreateModal = (props) => {
         </div>
       </ModalBody>
       <ModalFooter>
-        {props.ArchiveError}
+        {props.errorMessage}
         <button type="button" className="btn btn-primary" onClick={done}>
           Done
         </button>
@@ -233,7 +233,7 @@ ArchiveCreateModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
   path: PropTypes.string.isRequired,
-  ArchiveError: PropTypes.string,
+  errorMessage: PropTypes.string,
 };
 
 
