@@ -9,7 +9,7 @@ import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 import EditorContainer from '../../services/EditorContainer';
 
-import TagEditor from './TagEditor';
+import TagEditModal from './TagEditModal';
 
 class TagLabels extends React.Component {
 
@@ -18,9 +18,10 @@ class TagLabels extends React.Component {
 
     this.state = {
       showTagEditor: false,
+      isTagEditModalShown: false,
     };
 
-    this.showEditor = this.showEditor.bind(this);
+    this.showEditorModal = this.showEditorModal.bind(this);
     this.tagsUpdatedHandler = this.tagsUpdatedHandler.bind(this);
   }
 
@@ -34,8 +35,8 @@ class TagLabels extends React.Component {
     return (isEditorMode) ? this.props.editorContainer.state.tags : this.props.pageContainer.state.tags;
   }
 
-  showEditor() {
-    this.tagEditor.show(this.getEditTargetData());
+  showEditorModal() {
+    this.setState({ isTagEditModalShown: true });
   }
 
   async tagsUpdatedHandler(tags) {
@@ -106,24 +107,23 @@ class TagLabels extends React.Component {
     return (
       <div className="tag-labels">
         {tags.length === 0 && (
-          <a className="btn btn-link btn-edit-tags no-tags p-0 text-muted" onClick={this.showEditor}>
+          <a className="btn btn-link btn-edit-tags no-tags p-0 text-muted" onClick={this.showEditorModal}>
             { t('Add tags for this page') } <i className="manage-tags ml-2 icon-plus"></i>
           </a>
         )}
         {tagElements}
         {tags.length > 0 && (
-          <a className="btn btn-link btn-edit-tags p-0 text-muted" onClick={this.showEditor}>
+          <a className="btn btn-link btn-edit-tags p-0 text-muted" onClick={this.showEditorModal}>
             <i className="manage-tags ml-2 icon-plus"></i> { t('Edit tags for this page') }
           </a>
         )}
-
-        <TagEditor
-          ref={(c) => { this.tagEditor = c }}
+        <TagEditModal
+          isOpen={this.state.isTagEditModalShown}
           appContainer={this.props.appContainer}
           show={this.state.showTagEditor}
           onTagsUpdated={this.tagsUpdatedHandler}
         >
-        </TagEditor>
+        </TagEditModal>
       </div>
     );
   }

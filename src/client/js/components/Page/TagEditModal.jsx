@@ -9,24 +9,18 @@ import AppContainer from '../../services/AppContainer';
 
 import TagsInput from './TagsInput';
 
-export default class TagEditor extends React.Component {
+export default class TagEditModal extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
       tags: [],
-      isOpenModal: false,
     };
 
-    this.show = this.show.bind(this);
     this.onTagsUpdatedByTagsInput = this.onTagsUpdatedByTagsInput.bind(this);
     this.closeModalHandler = this.closeModalHandler.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  show(tags) {
-    this.setState({ tags, isOpenModal: true });
   }
 
   onTagsUpdatedByTagsInput(tags) {
@@ -34,19 +28,16 @@ export default class TagEditor extends React.Component {
   }
 
   closeModalHandler() {
-    this.setState({ isOpenModal: false });
   }
 
   async handleSubmit() {
     this.props.onTagsUpdated(this.state.tags);
 
-    // close modal
-    this.setState({ isOpenModal: false });
   }
 
   render() {
     return (
-      <Modal isOpen={this.state.isOpenModal} toggle={this.closeModalHandler} id="edit-tag-modal">
+      <Modal isOpen={this.props.isOpen} toggle={this.closeModalHandler} id="edit-tag-modal">
         <ModalHeader tag="h4" toggle={this.closeModalHandler} className="bg-primary text-light">
           Edit Tags
         </ModalHeader>
@@ -64,8 +55,9 @@ export default class TagEditor extends React.Component {
 
 }
 
-TagEditor.propTypes = {
+TagEditModal.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
+  isOpen: PropTypes.bool.isRequired,
   onTagsUpdated: PropTypes.func.isRequired,
 };
