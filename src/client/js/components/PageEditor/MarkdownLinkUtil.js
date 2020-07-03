@@ -1,5 +1,4 @@
 import Linker from '../../models/Linker';
-import { ConnectionStates } from 'mongoose';
 
 /**
  * Utility for markdown link

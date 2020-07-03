@@ -1,5 +1,3 @@
-import { sl } from "date-fns/locale";
-
 const types = {
   markdownLink: 'mdLink',
   growiLink: 'growiLink',
