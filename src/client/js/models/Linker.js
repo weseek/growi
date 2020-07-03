@@ -1,12 +1,3 @@
-const types = {
-  markdownLink: 'mdLink',
-  growiLink: 'growiLink',
-  pukiwikiLink: 'pukiwikiLink',
-}
-
-// const isApplyPukiwikiLikeLinkerPlugin = window.growiRenderer.preProcessors.some(process => process.constructor.name === 'PukiwikiLikeLinker');
-const isApplyPukiwikiLikeLinkerPlugin = true;
-
 export default class Linker {
 
   constructor(type, label, link) {
@@ -15,17 +6,23 @@ export default class Linker {
     this.link = link;
   }
 
+  static types = {
+    markdownLink: 'mdLink',
+    growiLink: 'growiLink',
+    pukiwikiLink: 'pukiwikiLink',
+  }
+
   // create an instance of Linker from string
   static fromMarkdownString(str) {
     // if str doesn't mean a linker, create a link whose label is str
     let label=str;
     let link='';
-    let type=types.markdownLink;
+    let type=this.types.markdownLink;
 
     // pukiwiki
     // https://regex101.com/r/2fNmUN/1
-    if (str.match(/^\[\[.*\]\]$/) && isApplyPukiwikiLikeLinkerPlugin) {
-      type = types.pukiwikiLink;
+    if (str.match(/^\[\[.*\]\]$/)) {
+      type = this.types.pukiwikiLink;
       const value = str.slice(2, -2);
       const indexOfSplit = value.lastIndexOf('>');
       if (indexOfSplit < 0) {
@@ -38,7 +35,7 @@ export default class Linker {
     // growi
     // https://regex101.com/r/DJfkYf/1
     else if (str.match(/^\[\/.*\]$/)) {
-      type = types.growiLink;
+      type = this.types.growiLink;
       const value = str.slice(1, -1);
       label = value;
       link = value;
@@ -46,7 +43,7 @@ export default class Linker {
     // markdown
     // https://regex101.com/r/DZCKP3/1
     else if (str.match(/^\[.*\]\(.*\)$/)) {
-      type = types.markdownLink;
+      type = this.types.markdownLink;
       const value = str.slice(1, -1);
       const indexOfSplit = value.lastIndexOf('](');
       label = value.slice(0, indexOfSplit);
@@ -62,7 +59,7 @@ export default class Linker {
     // if index is in a link, extract it from line
     let linkStr = '';
     if (beginningOfLink >= 0 && endOfLink >= 0) {
-     linkStr = line.substring(beginningOfLink, endOfLink);
+      linkStr = line.substring(beginningOfLink, endOfLink);
     }
     return this.fromMarkdownString(linkStr);
   }
@@ -73,9 +70,7 @@ export default class Linker {
     let beginningOfLink, endOfLink;
 
     // pukiwiki link ('[[link]]')
-    if (isApplyPukiwikiLikeLinkerPlugin) {
-      [beginningOfLink, endOfLink] = this.getBeginningAndEndIndexWithPrefixAndSuffix(line, index, '[[', ']]');
-    }
+    [beginningOfLink, endOfLink] = this.getBeginningAndEndIndexWithPrefixAndSuffix(line, index, '[[', ']]');
 
     // if index is not in a pukiwiki link
     // growi link ('[/link]')
