@@ -29,8 +29,10 @@ export default class Linker {
         label = value;
         link = value;
       }
-      label = value.slice(0, indexOfSplit);
-      link = value.slice(indexOfSplit + 1);
+      else {
+        label = value.slice(0, indexOfSplit);
+        link = value.slice(indexOfSplit + 1);
+      }
     }
     // growi
     // https://regex101.com/r/DJfkYf/1
