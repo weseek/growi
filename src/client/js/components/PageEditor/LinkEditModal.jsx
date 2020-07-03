@@ -61,10 +61,11 @@ class LinkEditModal extends React.PureComponent {
   // defaultMarkdownLink is an instance of Linker
   show(defaultMarkdownLink = null) {
     // if defaultMarkdownLink is null, set default value in inputs.
-    const {type=Linker.types.markdownLink, label='', link=''} = defaultMarkdownLink ;
+    const { label = '', link = '' } = defaultMarkdownLink;
+    let { type = Linker.types.markdownLink } = defaultMarkdownLink;
 
     // if type of defaultMarkdownLink is pukiwikiLink when pukiwikiLikeLinker plugin is disable, change type(not change label and link)
-    if (type == Linker.types.pukiwikiLink && !this.isApplyPukiwikiLikeLinkerPlugin) {
+    if (type === Linker.types.pukiwikiLink && !this.isApplyPukiwikiLikeLinkerPlugin) {
       type = Linker.types.markdownLink;
     }
 

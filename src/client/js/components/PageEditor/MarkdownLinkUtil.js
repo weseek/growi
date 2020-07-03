@@ -17,7 +17,7 @@ class MarkdownLinkUtil {
       return Linker.fromMarkdownString(editor.getDoc().getSelection());
     }
     const curPos = editor.getCursor();
-    return Linker.fromLineWithIndex(editor.getDoc().getLine(curPos.line), curPos.ch)
+    return Linker.fromLineWithIndex(editor.getDoc().getLine(curPos.line), curPos.ch);
   }
 
   isInLink(editor) {
