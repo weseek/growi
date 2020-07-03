@@ -48,7 +48,7 @@ const PageShareManagement = (props) => {
   async function getArchivePageData() {
     try {
       await appContainer.apiv3Get('page/count-children-pages', { pageId });
-      setTotalPages({ pageId });
+      setTotalPages('合計〜ページの取得');
 
     }
     catch (err) {
