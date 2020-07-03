@@ -34,8 +34,7 @@ class LinkEditModal extends React.PureComponent {
       markdown: '',
     };
 
-    // this.isApplyPukiwikiLikeLinkerPlugin = window.growiRenderer.preProcessors.some(process => process.constructor.name === 'PukiwikiLikeLinker');
-    this.isApplyPukiwikiLikeLinkerPlugin = true;
+    this.isApplyPukiwikiLikeLinkerPlugin = window.growiRenderer.preProcessors.some(process => process.constructor.name === 'PukiwikiLikeLinker');
 
     this.show = this.show.bind(this);
     this.hide = this.hide.bind(this);
