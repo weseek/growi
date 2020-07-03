@@ -110,10 +110,19 @@ class OptionsSelector extends React.Component {
     });
 
     return (
-      <div className="my-0 form-group">
-        <label className="mr-2">Theme:</label>
-        <div className="btn-group btn-group-sm dropup">
-          <button className="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <div className="input-group">
+        <div className="input-group-prepend">
+          <span className="input-group-text" id="igt-theme">Theme</span>
+        </div>
+        <div className="input-group-append dropup">
+          <button
+            type="button"
+            className="btn btn-outline-secondary dropdown-toggle"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-describedby="igt-theme"
+          >
             {selectedTheme}
           </button>
           <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
@@ -137,10 +146,19 @@ class OptionsSelector extends React.Component {
     });
 
     return (
-      <div className="my-0 form-group">
-        <label className="mr-2">Keymap:</label>
-        <div className="btn-group btn-group-sm dropup">
-          <button className="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <div className="input-group">
+        <div className="input-group-prepend">
+          <span className="input-group-text" id="igt-keymap">Keymap</span>
+        </div>
+        <div className="input-group-append dropup">
+          <button
+            type="button"
+            className="btn btn-outline-secondary dropdown-toggle"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-describedby="igt-keymap"
+          >
             {selectedKeymapMode}
           </button>
           <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
@@ -157,7 +175,6 @@ class OptionsSelector extends React.Component {
 
         <Dropdown
           direction="up"
-          size="sm"
           className="grw-editor-configuration-dropdown"
           isOpen={this.state.isCddMenuOpened}
           toggle={this.onToggleConfigurationDropdown}
