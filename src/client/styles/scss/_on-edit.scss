@@ -119,22 +119,23 @@ body.on-edit {
     line-height: 1em;
   }
 
-  // .page-editor-footer {
   .grw-editor-navbar-bottom {
     height: $grw-editor-navbar-bottom-height;
-    //   width: 100%;
-    //   min-height: 40px;
-    //   padding: 3px;
-    //   margin: 0;
-    //   border-top: solid 1px transparent;
 
     .grw-grant-selector {
-      .dropdown-toggle {
-        min-width: 100px;
+      @include media-breakpoint-down(sm) {
+        .btn .label {
+          display: none;
+        }
+      }
+      @include media-breakpoint-up(md) {
+        .dropdown-toggle {
+          min-width: 100px;
 
-        // caret
-        &::after {
-          margin-left: 1em;
+          // caret
+          &::after {
+            margin-left: 1em;
+          }
         }
       }
     }
