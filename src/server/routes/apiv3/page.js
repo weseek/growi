@@ -209,13 +209,13 @@ module.exports = (crowi) => {
    *                    type: string
    *                    description: path of the root page
    *                  isCommentDownload:
-   *                    type: bool
+   *                    type: boolean
    *                    description: whether archive data contains comments
    *                  isAttachmentFileDownload:
-   *                    type: bool
+   *                    type: boolean
    *                    description: whether archive data contains attachments
    *                  isSubordinatedPageDownload:
-   *                    type: bool
+   *                    type: boolean
    *                    description: whether archive data children pages
    *                  fileType:
    *                    type: string
