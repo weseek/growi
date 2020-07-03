@@ -1,4 +1,4 @@
-import Linker from '../models/Linker';
+import Linker from '../../models/Linker';
 
 /**
  * Utility for markdown link
@@ -11,19 +11,19 @@ class MarkdownLinkUtil {
     this.replaceFocusedMarkdownLinkWithEditor = this.replaceFocusedMarkdownLinkWithEditor.bind(this);
   }
 
-  // return text as markdown link if the cursor on markdown link else return text as default label of new link.
+  // return an instance of Linker from cursor position or selected text.
   getMarkdownLink(editor) {
     if (!this.isInLink(editor)) {
       return Linker.fromMarkdownString(editor.getDoc().getSelection());
     }
     const curPos = editor.getCursor();
-    return Linker.fromLineContainsLink(editor.getDoc().getLine(curPos.line), curPos.ch)
+    return Linker.fromLineWithIndex(editor.getDoc().getLine(curPos.line), curPos.ch);
   }
 
   isInLink(editor) {
     const curPos = editor.getCursor();
     const { beginningOfLink, endOfLink } = Linker.getBeginningAndEndIndexOfLink(editor.getDoc().getLine(curPos.line), curPos.ch);
-    return beginningOfLink >= 0 && endOfLink >= 0 && beginningOfLink <= curPos.ch && curPos.ch <= endOfLink;
+    return beginningOfLink >= 0 && endOfLink >= 0;
   }
 
   replaceFocusedMarkdownLinkWithEditor(editor, linkStr) {
