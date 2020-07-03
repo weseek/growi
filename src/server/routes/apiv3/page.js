@@ -205,8 +205,27 @@ module.exports = (crowi) => {
    *            application/json:
    *              schema:
    *                properties:
-   *                  targetPagePath:
+   *                  rootPagePath:
    *                    type: string
+   *                    description: path of the root page
+   *                  isCommentDownload:
+   *                    type: bool
+   *                    description: whether archive data contains comments
+   *                  isAttachmentFileDownload:
+   *                    type: bool
+   *                    description: whether archive data contains attachments
+   *                  isSubordinatedPageDownload:
+   *                    type: bool
+   *                    description: whether archive data children pages
+   *                  fileType:
+   *                    type: string
+   *                    description: file type of archive data(.md, .pdf)
+   *                  hierarchyType:
+   *                    type: string
+   *                    description: method of select children pages archive data contains('allSubordinatedPage', 'decideHierarchy')
+   *                  hierarchyValue:
+   *                    type: number
+   *                    description: depth of hierarchy(use when hierarchyType is 'decideHierarchy')
    *        responses:
    *          200:
    *            description: create page archive
