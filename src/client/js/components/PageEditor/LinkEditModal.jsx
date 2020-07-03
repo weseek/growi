@@ -10,7 +10,6 @@ import {
 } from 'reactstrap';
 
 import Preview from './Preview';
-import PagePathAutoComplete from '../PagePathAutoComplete';
 
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
