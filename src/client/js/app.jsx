@@ -114,7 +114,7 @@ if (appContainer.currentUser != null) {
   Object.assign(componentMappings, {
     'page-editor': <PageEditor />,
     'page-editor-path-nav': <PagePathNavForEditor />,
-    'page-editor-options-selector': <OptionsSelector crowi={appContainer} />,
+    'page-editor-options-selector': <OptionsSelector />,
     'save-page-controls': <SavePageControls />,
   });
   if (pageContainer.state.pageId != null) {

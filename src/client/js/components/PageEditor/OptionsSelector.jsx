@@ -8,6 +8,7 @@ import {
 } from 'reactstrap';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
+import AppContainer from '../../services/AppContainer';
 import EditorContainer from '../../services/EditorContainer';
 
 
@@ -26,7 +27,7 @@ class OptionsSelector extends React.Component {
   constructor(props) {
     super(props);
 
-    const config = this.props.crowi.getConfig();
+    const config = this.props.appContainer.getConfig();
     const isMathJaxEnabled = !!config.env.MATHJAX;
 
     this.state = {
@@ -237,14 +238,13 @@ class OptionsSelector extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const OptionsSelectorWrapper = withUnstatedContainers(OptionsSelector, [EditorContainer]);
+const OptionsSelectorWrapper = withUnstatedContainers(OptionsSelector, [AppContainer, EditorContainer]);
 
 OptionsSelector.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
-
-  crowi: PropTypes.object.isRequired,
 };
 
 export default withTranslation()(OptionsSelectorWrapper);
