@@ -1,6 +1,7 @@
 module.exports = {
   Config: require('./config'),
   Page: require('./page'),
+  PageArchive: require('./page-archive'),
   PageTagRelation: require('./page-tag-relation'),
   User: require('./user'),
   ExternalAccount: require('./external-account'),
