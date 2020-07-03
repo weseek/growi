@@ -10,11 +10,8 @@ import SearchPage from './components/SearchPage';
 import TagsList from './components/TagsList';
 import PageEditor from './components/PageEditor';
 import PagePathNavForEditor from './components/PageEditor/PagePathNavForEditor';
-// eslint-disable-next-line import/no-duplicates
-import OptionsSelector from './components/PageEditor/OptionsSelector';
-// eslint-disable-next-line import/no-duplicates
+import EditorNavbarBottom from './components/PageEditor/EditorNavbarBottom';
 import { defaultEditorOptions, defaultPreviewOptions } from './components/PageEditor/OptionsSelector';
-import SavePageControls from './components/SavePageControls';
 import PageEditorByHackmd from './components/PageEditorByHackmd';
 import Page from './components/Page';
 import PageHistory from './components/PageHistory';
@@ -114,8 +111,7 @@ if (appContainer.currentUser != null) {
   Object.assign(componentMappings, {
     'page-editor': <PageEditor />,
     'page-editor-path-nav': <PagePathNavForEditor />,
-    'page-editor-options-selector': <OptionsSelector />,
-    'save-page-controls': <SavePageControls />,
+    'page-editor-navbar-bottom-container': <EditorNavbarBottom />,
   });
   if (pageContainer.state.pageId != null) {
     Object.assign(componentMappings, {

@@ -36,6 +36,10 @@ body.on-edit {
   }
 
   // show
+  .d-edit-block {
+    display: block !important;
+  }
+
   .d-edit-sm-block {
     @include media-breakpoint-up(sm) {
       display: block !important;
@@ -59,12 +63,6 @@ body.on-edit {
 
   &.hackmd .grw-nav-item-edit {
     display: none;
-  }
-
-  &.hackmd {
-    #page-editor-options-selector {
-      display: none !important;
-    }
   }
 
   &:not(.hackmd) .nav-tab-hackmd {
@@ -121,12 +119,14 @@ body.on-edit {
     line-height: 1em;
   }
 
-  .page-editor-footer {
-    width: 100%;
-    min-height: 40px;
-    padding: 3px;
-    margin: 0;
-    border-top: solid 1px transparent;
+  // .page-editor-footer {
+  .grw-editor-navbar-bottom {
+    height: $grw-editor-navbar-bottom-height;
+    //   width: 100%;
+    //   min-height: 40px;
+    //   padding: 3px;
+    //   margin: 0;
+    //   border-top: solid 1px transparent;
 
     .grw-grant-selector {
       .dropdown-toggle {
