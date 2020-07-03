@@ -44,7 +44,17 @@ export default class GridEditModal extends React.PureComponent {
   showBgCols() {
     const cols = [];
     for (let i = 0; i < 12; i++) {
+      // [bg-light:TODO support dark mode by GW-3037]
       cols.push(<div className="bg-light grid-bg-col col-1"></div>);
+    }
+    return cols;
+  }
+
+  showEditableCols() {
+    const cols = [];
+    for (let i = 0; i < 12; i++) {
+      // [bg-light:TODO support dark mode by GW-3037]
+      cols.push(<div className="bg-dark grid-bg-col col-1"></div>);
     }
     return cols;
   }
@@ -68,7 +78,17 @@ export default class GridEditModal extends React.PureComponent {
                 <h5>Large Desktop</h5>
                 <div className="device-container"></div>
               </div>
-              <div className="row col-9 flex-nowrap overflow-auto">{this.showBgCols()}</div>
+              <div className="col-9">
+                <div className="row h-100">
+                  {this.showBgCols()}
+                </div>
+                <div className="row w-100 h-100 position-absolute grid-editable-row">
+                  {/* [Just an example to check if bg-cols and editable-cols fit] */}
+                  <div className="bg-dark grid-editable-col col-3"></div>
+                  <div className="bg-dark grid-editable-col col-5"></div>
+                  <div className="bg-dark grid-editable-col col-4"></div>
+                </div>
+              </div>
             </div>
           </div>
         </ModalBody>
