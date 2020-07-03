@@ -4,6 +4,7 @@ export default class Linker {
     this.type = type;
     this.label = label;
     this.link = link;
+    // TODO GW-3074 相対パスを利用しているかの情報も持つようにする
   }
 
   static types = {
