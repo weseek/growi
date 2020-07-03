@@ -4,10 +4,10 @@
 class GridEditorUtil {
 
   constructor() {
-    // TODO url
-    this.lineBeginPartOfGridRE = /(<[^/].*>)/;
-    this.lineEndPartOfGridRE = /(<\/.*>)/;
-    this.linePartOfGridRE = /(<[^/].*>)[\s\S]*<\/.*>$/;
+    // https://regex101.com/r/7BN2fR/11
+    this.lineBeginPartOfGridRE = /^:::(\s.*)editable-row$/;
+    this.lineEndPartOfGridRE = /^:::$/;
+    this.isInRow = this.isInRow.bind(this);
     this.replaceGridWithHtmlWithEditor = this.replaceGridWithHtmlWithEditor.bind(this);
   }
 
@@ -15,10 +15,9 @@ class GridEditorUtil {
    * return boolean value whether the cursor position is in a row
    */
   isInRow(editor) {
-    const curPos = editor.getCursor();
-    // return this.linePartOfTableRE.test(editor.getDoc().getLine(curPos.line));
-    console.log(this.linePartOfGridRE.test(editor.getDoc().getLine(curPos.line)));
-    return this.linePartOfGridRE.test(editor.getDoc().getLine(curPos.line));
+    const bog = this.getBog(editor);
+    const eog = this.getEog(editor);
+    return (JSON.stringify(bog) !== JSON.stringify(eog));
   }
 
   /**
@@ -27,6 +26,10 @@ class GridEditorUtil {
   getBog(editor) {
     const curPos = editor.getCursor();
     const firstLine = editor.getDoc().firstLine();
+
+    if (this.lineBeginPartOfGridRE.test(editor.getDoc().getLine(curPos.line))) {
+      return { line: curPos.line, ch: 0 };
+    }
 
     let line = curPos.line - 1;
     let isFound = false;
@@ -37,7 +40,7 @@ class GridEditorUtil {
         break;
       }
 
-      if (this.lineBeginPartOfGridRE.test(strLine)) {
+      if (this.lineEndPartOfGridRE.test(strLine)) {
         isFound = false;
         break;
       }
@@ -58,7 +61,11 @@ class GridEditorUtil {
     const curPos = editor.getCursor();
     const lastLine = editor.getDoc().lastLine();
 
-    let line = curPos.line;
+    if (this.lineEndPartOfGridRE.test(editor.getDoc().getLine(curPos.line))) {
+      return { line: curPos.line, ch: editor.getDoc().getLine(curPos.line).length };
+    }
+
+    let line = curPos.line + 1;
     let isFound = false;
     for (; line <= lastLine; line++) {
       const strLine = editor.getDoc().getLine(line);
@@ -67,7 +74,7 @@ class GridEditorUtil {
         break;
       }
 
-      if (this.lineEndPartOfGridRE.test(strLine)) {
+      if (this.lineBeginPartOfGridRE.test(strLine)) {
         isFound = false;
         break;
       }
@@ -80,13 +87,13 @@ class GridEditorUtil {
     const eodLine = Math.min(line, lastLine);
     const lineLength = editor.getDoc().getLine(eodLine).length;
     return { line: eodLine, ch: lineLength };
-    // return { line: lastLine, ch: curPos.ch };
   }
 
   replaceGridWithHtmlWithEditor(editor, grid) {
     const curPos = editor.getCursor();
     editor.getDoc().replaceRange(grid.toString(), this.getBog(editor), this.getEog(editor));
     editor.getDoc().setCursor(curPos.line + 1, 2);
+    console.log(this.isInRow(editor));
   }
 
 }

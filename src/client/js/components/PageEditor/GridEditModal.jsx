@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-import geu from './GridEditorUtil';
 
 export default class GridEditModal extends React.PureComponent {
 
@@ -36,7 +35,9 @@ export default class GridEditModal extends React.PureComponent {
 
   pasteCodedGrid() {
     // dummy data
-    const pastedGridData = '<div class="container"><div class="row"><div class="col-sm-6 col-md-5 col-lg-12">dummy</div></div></div>';
+    const pastedGridData = `::: editable-row\n<div class="container">\n  <div class="row">
+    <div class="col-sm-6 col-md-5 col-lg-12">dummy</div>\n  </div>\n</div>\n:::`;
+
     if (this.props.onSave != null) {
       this.props.onSave(pastedGridData);
     }
@@ -54,6 +55,7 @@ export default class GridEditModal extends React.PureComponent {
   showBgCols() {
     const cols = [];
     for (let i = 0; i < 12; i++) {
+      // [bg-light:TODO support dark mode by GW-3037]
       cols.push(<div className="bg-light grid-bg-col col-1"></div>);
     }
     return cols;
@@ -65,6 +67,15 @@ export default class GridEditModal extends React.PureComponent {
     if (edited) {
       // Embed the html data in cols.
     }
+  }
+
+  showEditableCols() {
+    const cols = [];
+    for (let i = 0; i < 12; i++) {
+      // [bg-light:TODO support dark mode by GW-3037]
+      cols.push(<div className="bg-dark grid-bg-col col-1"></div>);
+    }
+    return cols;
   }
 
   render() {
@@ -86,7 +97,17 @@ export default class GridEditModal extends React.PureComponent {
                 <h5>Large Desktop</h5>
                 <div className="device-container"></div>
               </div>
-              <div className="row col-9 flex-nowrap overflow-auto">{this.showBgCols()}</div>
+              <div className="col-9">
+                <div className="row h-100">
+                  {this.showBgCols()}
+                </div>
+                <div className="row w-100 h-100 position-absolute grid-editable-row">
+                  {/* [Just an example to check if bg-cols and editable-cols fit] */}
+                  <div className="bg-dark grid-editable-col col-3"></div>
+                  <div className="bg-dark grid-editable-col col-5"></div>
+                  <div className="bg-dark grid-editable-col col-4"></div>
+                </div>
+              </div>
             </div>
           </div>
         </ModalBody>
