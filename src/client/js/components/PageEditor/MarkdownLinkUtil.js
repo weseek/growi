@@ -1,3 +1,4 @@
+import { cursorCoords } from 'codemirror/src/measurement/position_measurement';
 import Linker from '../../models/Linker';
 
 /**
@@ -26,13 +27,19 @@ class MarkdownLinkUtil {
     return beginningOfLink >= 0 && endOfLink >= 0;
   }
 
-  replaceFocusedMarkdownLinkWithEditor(editor, linkStr) {
+  // replace link(link is an instance of Linker)
+  replaceFocusedMarkdownLinkWithEditor(editor, link) {
     const curPos = editor.getCursor();
-    const line = editor.getDoc().getLine(curPos.line);
-    const { beginningOfLink, endOfLink } = getBeginningAndEndIndexOfLink(line, curPos.ch)
-    editor.getDoc().replaceRange(linkStr, { line, ch: beginningOfLink }, { line, ch: endOfLink });
-    editor.getDoc().setCursor(curPos.line + 1, 2);
-    // 洗濯中テキスト内の改行対策
+    const linkStr = link.generateMarkdownText();
+    if (!this.isInLink(editor)) {
+      editor.getDoc().replaceSelection(linkStr);
+    }
+    else {
+      const line = editor.getDoc().getLine(curPos.line);
+      const { beginningOfLink, endOfLink } = Linker.getBeginningAndEndIndexOfLink(line, curPos.ch);
+      editor.getDoc().replaceRange(linkStr, { line: curPos.line, ch: beginningOfLink }, { line: curPos.line, ch: endOfLink });
+    }
+    editor.getDoc().setCursor({ line: curPos.line, ch: linkStr.length });
   }
 
 }

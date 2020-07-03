@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import path from 'path';
 import {
   Modal,
   ModalHeader,
@@ -123,7 +122,9 @@ class LinkEditModal extends React.PureComponent {
 
   handleChangeTypeahead(selected) {
     const page = selected[0];
-    this.setState({ linkInputValue: page.path });
+    if (page != null) {
+      this.setState({ linkInputValue: page.path });
+    }
   }
 
   handleChangeLabelInput(label) {
@@ -160,21 +161,13 @@ class LinkEditModal extends React.PureComponent {
       isUseRelativePath,
     } = this.state;
 
-    let reshapedLink = linkInputValue;
-
-    if (isUseRelativePath && linkInputValue.match(/^\//)) {
-      reshapedLink = path.relative(pageContainer.state.path, linkInputValue);
-    }
-
-    if (linkerType === Linker.types.pukiwikiLink) {
-      return `[[${labelInputValue}>${reshapedLink}]]`;
-    }
-    if (linkerType === Linker.types.growiLink) {
-      return `[${reshapedLink}]`;
-    }
-    if (linkerType === Linker.types.markdownLink) {
-      return `[${labelInputValue}](${reshapedLink})`;
-    }
+    return new Linker(
+      linkerType,
+      labelInputValue,
+      linkInputValue,
+      isUseRelativePath,
+      pageContainer.state.path,
+    );
   }
 
   render() {

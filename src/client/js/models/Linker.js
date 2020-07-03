@@ -1,10 +1,15 @@
+import path from 'path';
+
 export default class Linker {
 
-  constructor(type, label, link) {
+  constructor(type = this.type.markdownLink, label = '', link = '', isUseRelativePath = false, rootPath = '') {
     this.type = type;
     this.label = label;
     this.link = link;
-    // TODO GW-3074 相対パスを利用しているかの情報も持つようにする
+    this.isUseRelativePath = isUseRelativePath;
+    this.rootPath = rootPath;
+
+    this.generateMarkdownText = this.generateMarkdownText.bind(this);
   }
 
   static types = {
@@ -12,6 +17,26 @@ export default class Linker {
     growiLink: 'growiLink',
     pukiwikiLink: 'pukiwikiLink',
   }
+
+  generateMarkdownText() {
+    let reshapedLink = this.link;
+
+    if (this.isUseRelativePath && this.link.match(/^\//)) {
+      reshapedLink = path.relative(this.rootPath, this.link);
+    }
+
+    if (this.type === Linker.types.pukiwikiLink) {
+      if (this.label === reshapedLink) return `[[${reshapedLink}]]`;
+      return `[[${this.label}>${reshapedLink}]]`;
+    }
+    if (this.type === Linker.types.growiLink) {
+      return `[${reshapedLink}]`;
+    }
+    if (this.type === Linker.types.markdownLink) {
+      return `[${this.label}](${reshapedLink})`;
+    }
+  }
+
 
   // create an instance of Linker from string
   static fromMarkdownString(str) {
