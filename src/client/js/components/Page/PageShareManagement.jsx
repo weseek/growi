@@ -22,7 +22,7 @@ const PageShareManagement = (props) => {
 
   const [isArchiveCreateModalShown, setIsArchiveCreateModalShown] = useState(false);
 
-  const [archiveData, setArchiveData] = useState(null);
+  const [totalPages, setTotalPages] = useState(null);
 
   const [errorMessage, setErrorMessage] = useState(null);
 
@@ -48,7 +48,8 @@ const PageShareManagement = (props) => {
   async function getArchivePageData() {
     try {
       await appContainer.apiv3Get('page/count-children-pages', { pageId });
-      setArchiveData('ここにページの変更を表示');
+      setTotalPages({ pageId });
+
     }
     catch (err) {
       setErrorMessage('ページ数の取得に失敗しました');
@@ -88,7 +89,7 @@ const PageShareManagement = (props) => {
           onClose={closeArchiveCreateModalHandler}
           path={path}
           errorMessage={errorMessage}
-          archiveData={archiveData}
+          totalPages={totalPages}
         />
       </>
     );
