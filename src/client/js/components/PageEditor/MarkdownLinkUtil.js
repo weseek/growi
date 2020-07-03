@@ -1,4 +1,3 @@
-import { cursorCoords } from 'codemirror/src/measurement/position_measurement';
 import Linker from '../../models/Linker';
 
 /**
