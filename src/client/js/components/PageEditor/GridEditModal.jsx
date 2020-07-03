@@ -72,6 +72,7 @@ export default class GridEditModal extends React.PureComponent {
                   {this.showBgCols()}
                 </div>
                 <div className="row w-100 h-100 position-absolute grid-editable-row">
+                  {/* [Just an example to check if bg-cols and editable-cols fit] */}
                   <div className="bg-dark grid-editable-col col-3"></div>
                   <div className="bg-dark grid-editable-col col-5"></div>
                   <div className="bg-dark grid-editable-col col-4"></div>
