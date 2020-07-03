@@ -42,7 +42,7 @@ class LinkEditModal extends React.PureComponent {
     this.show = this.show.bind(this);
     this.hide = this.hide.bind(this);
     this.cancel = this.cancel.bind(this);
-    this.handleChangeLinkInput = this.handleChangeLinkInput.bind(this);
+    this.handleChangeTypeahead = this.handleChangeTypeahead.bind(this);
     this.handleChangeLabelInput = this.handleChangeLabelInput.bind(this);
     this.handleChangeLinkInput = this.handleChangeLinkInput.bind(this);
     this.handleSelecteLinkerType = this.handleSelecteLinkerType.bind(this);
@@ -130,6 +130,11 @@ class LinkEditModal extends React.PureComponent {
       markdown = `<div class="alert alert-warning" role="alert"><strong>${err.message}</strong></div>`;
     }
     this.setState({ markdown });
+  }
+
+  handleChangeTypeahead(selected) {
+    const page = selected[0];
+    this.setState({ linkInputValue: page.path });
   }
 
   handleChangeLabelInput(label) {
