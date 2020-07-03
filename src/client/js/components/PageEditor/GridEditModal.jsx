@@ -54,7 +54,7 @@ export default class GridEditModal extends React.PureComponent {
         <ModalHeader tag="h4" toggle={this.cancel} className="bg-primary text-light">
           Edit Grid
         </ModalHeader>
-        <ModalBody className="">
+        <ModalBody>
           <div className="container">
             <div className="row">
               <div className="col-3">
