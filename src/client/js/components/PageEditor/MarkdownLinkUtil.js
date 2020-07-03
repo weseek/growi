@@ -11,7 +11,7 @@ class MarkdownLinkUtil {
     this.replaceFocusedMarkdownLinkWithEditor = this.replaceFocusedMarkdownLinkWithEditor.bind(this);
   }
 
-  // return text as markdown link if the cursor on markdown link else return text as default label of new link.
+  // return an instance of Linker from cursor position or selected text.
   getMarkdownLink(editor) {
     if (!this.isInLink(editor)) {
       return Linker.fromMarkdownString(editor.getDoc().getSelection());

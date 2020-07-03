@@ -57,6 +57,7 @@ class LinkEditModal extends React.PureComponent {
     }
   }
 
+  // defaultMarkdownLink is an instance of Linker
   show(defaultMarkdownLink = null) {
     // if defaultMarkdownLink is null, set default value in inputs.
     const {type='mdLink', label='', link=''} = defaultMarkdownLink ;
