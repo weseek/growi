@@ -216,7 +216,7 @@ const ArchiveCreateModal = (props) => {
         </div>
       </ModalBody>
       <ModalFooter>
-        {props.totalPages}
+        合計{props.totalPages}ページを取得
         {props.errorMessage}
         <button type="button" className="btn btn-primary" onClick={done}>
           Done
@@ -234,7 +234,7 @@ ArchiveCreateModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
   path: PropTypes.string.isRequired,
-  totalPages: PropTypes,
+  totalPages: PropTypes.number,
   errorMessage: PropTypes.string,
 
 };

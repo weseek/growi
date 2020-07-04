@@ -217,7 +217,8 @@ module.exports = (crowi) => {
     const { pageId } = req.query;
     console.log(pageId);
 
-    return res.apiv3({ pageId });
+    const dummy = 6;
+    return res.apiv3({ dummy });
   });
 
   return router;
