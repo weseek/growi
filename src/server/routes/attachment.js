@@ -4,6 +4,7 @@
 const logger = require('@alias/logger')('growi:routes:attachment');
 
 const fs = require('fs');
+const path = require('path');
 
 const ApiResponse = require('../util/apiResponse');
 
@@ -132,7 +133,7 @@ module.exports = function(crowi, app) {
   const User = crowi.model('User');
   const Page = crowi.model('Page');
   const fileUploader = require('../service/file-uploader')(crowi, app);
-
+  const configManager = crowi.configManager;
 
   /**
    * Check the user is accessible to the related page
@@ -193,6 +194,10 @@ module.exports = function(crowi, app) {
       return res.sendStatus(304);
     }
 
+    if (isEnableInternalRedirect()) {
+      return responseForInternalRedirect(res, attachment);
+    }
+
     let fileStream;
     try {
       fileStream = await fileUploader.findDeliveryFile(attachment);
@@ -203,6 +208,33 @@ module.exports = function(crowi, app) {
     }
 
     return fileStream.pipe(res);
+  }
+
+  /**
+   * check whether to use internal redirect of nginx or Apache.
+   */
+  function isEnableInternalRedirect() {
+    return process.env.FILE_UPLOAD == "local" && configManager.getConfig('crowi', 'app:useInternalRedirect');
+  }
+
+  /**
+   * responce using internal redirect of nginx or Apache.
+   *
+   * @param {Response} res
+   * @param {Attachment} attachment
+   */
+  function responseForInternalRedirect(res, attachment) {
+    const config = crowi.getConfig();
+    const dirName = (attachment.page != null) ? 'attachment' : 'user';
+    let internalPathRoot = configManager.getConfig('crowi', 'app:internalRedirectPath');
+    if (internalPathRoot.slice(-1) != "/") {
+      internalPathRoot += "/";
+    }
+    const internalPath = `${internalPathRoot}uploads/${dirName}/${attachment.fileName}`;
+    const storagePath = path.posix.join(crowi.publicDir, 'uploads', dirName, attachment.fileName);
+    res.set('X-Accel-Redirect', internalPath);
+    res.set('X-Sendfile', storagePath);
+    return res.end();
   }
 
   /**
