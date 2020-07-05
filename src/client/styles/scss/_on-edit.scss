@@ -19,12 +19,13 @@ body.on-edit {
   .page-wrapper {
     position: relative;
     top: $grw-navbar-border-width;
+    height: calc(100vh - #{$grw-navbar-border-width});
   }
 
   // calculate margin
-  $editor-header-plus-footer: 42px // .nav-tabs height
-    + 1px //                          .page-editor-footer border-top
-    + 40px !default; //               .page-editor-footer min-height
+  $editor-header-plus-footer: 42px //               .nav-tabs height
+    + 1px //                                        .page-editor-footer border-top
+    + $grw-editor-navbar-bottom-height !default; // .EditorNavbarBottom min-height
 
   @include expand-editor($editor-header-plus-footer);
 
@@ -105,6 +106,8 @@ body.on-edit {
   }
 
   .grw-page-path-nav-for-edit {
+    position: absolute;
+
     .grw-page-path-link {
       font-size: 20px;
       line-height: 1em;

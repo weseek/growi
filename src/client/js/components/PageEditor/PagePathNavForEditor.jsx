@@ -20,7 +20,7 @@ const PagePathNavForEditor = (props) => {
   const pagePathHierarchicalLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />;
 
   return (
-    <div className="grw-page-path-nav-for-edit mt-1">
+    <div className="grw-page-path-nav-for-edit">
       <span className="d-flex align-items-center flex-wrap">
         <h3 className="mb-0 grw-page-path-link">{pagePathHierarchicalLink}</h3>
         <RevisionPathControls
