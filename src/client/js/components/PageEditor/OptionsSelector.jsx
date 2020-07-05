@@ -208,9 +208,11 @@ class OptionsSelector extends React.Component {
 
     return (
       <DropdownItem toggle={false} onClick={this.onClickStyleActiveLine}>
-        <span className="icon-container"></span>
-        <span className="menuitem-label mr-2">{ t('page_edit.Show active line') }</span>
-        <span className="icon-container"><i className={iconClassName}></i></span>
+        <div className="d-flex justify-content-between">
+          <span className="icon-container"></span>
+          <span className="menuitem-label">{ t('page_edit.Show active line') }</span>
+          <span className="icon-container"><i className={iconClassName}></i></span>
+        </div>
       </DropdownItem>
     );
   }
@@ -233,9 +235,11 @@ class OptionsSelector extends React.Component {
 
     return (
       <DropdownItem toggle={false} onClick={this.onClickRenderMathJaxInRealtime}>
-        <span className="icon-container"><img src="/images/icons/fx.svg" width="14px" alt="fx"></img></span>
-        <span className="menuitem-label">MathJax Rendering</span>
-        <i className={iconClassName}></i>
+        <div className="d-flex justify-content-between">
+          <span className="icon-container"><img src="/images/icons/fx.svg" width="14px" alt="fx"></img></span>
+          <span className="menuitem-label">MathJax Rendering</span>
+          <span className="icon-container"><i className={iconClassName}></i></span>
+        </div>
       </DropdownItem>
     );
   }

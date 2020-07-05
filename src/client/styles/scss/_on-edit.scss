@@ -208,30 +208,12 @@ body.on-edit {
       overflow-y: scroll;
     }
 
-    #page-editor-options-selector {
-      .grw-editor-configuration-dropdown {
-        .icon-container {
-          display: inline-block;
-          width: 20px;
-        }
-
-        .dropdown-menu > li > a {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        }
+    .grw-editor-configuration-dropdown {
+      .icon-container {
+        width: 20px;
       }
-    }
-
-    #page-grant-selector {
-      .btn-group {
-        min-width: 150px;
-      }
-    }
-
-    #page-grant-selector {
-      .btn-group {
-        min-width: 150px;
+      .menuitem-label {
+        min-width: 130px;
       }
     }
   }
@@ -239,10 +221,6 @@ body.on-edit {
   // .builtin-editor .tab-pane#edit
 
   &.hackmd {
-    #page-editor-options-selector {
-      display: none;
-    }
-
     .hackmd-preinit,
     #iframe-hackmd-container > iframe {
       border: none;
