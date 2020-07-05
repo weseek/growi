@@ -19,7 +19,7 @@ const GrowiNavbarBottom = (props) => {
   }
 
   return (
-    <div className="d-md-none fixed-bottom">
+    <div className="d-md-none d-edit-none fixed-bottom">
 
       { isDeviceSmallerThanMd && (
         <div id="grw-global-search-collapse" className="grw-global-search collapse bg-dark">
