@@ -15,6 +15,15 @@ export default class HotkeysDetector extends React.Component {
   }
 
   check(event) {
+
+    if ((event.ctrlKey || event.metaKey) && (event.key == '/')) {
+      this.props.onDetected(['/']);
+      this.setState({
+        userCommand: [],
+      });
+      return null;
+    }
+
     this.setState({
       userCommand: this.state.userCommand.concat(event.key),
     });

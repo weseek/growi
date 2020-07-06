@@ -95,12 +95,6 @@ Crowi.handleKeyEHandler = (event) => {
   event.preventDefault();
 };
 
-Crowi.handleKeyCtrlSlashHandler = (event) => {
-  // show modal to create a page
-  $('#shortcuts-modal').modal('toggle');
-  event.preventDefault();
-};
-
 Crowi.initClassesByOS = function() {
   // add classes to cmd-key by OS
   const platform = navigator.platform.toLowerCase();
@@ -423,11 +417,6 @@ window.addEventListener('keydown', (event) => {
     case 'e':
       if (!event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey) {
         Crowi.handleKeyEHandler(event);
-      }
-      break;
-    case '/':
-      if (event.ctrlKey || event.metaKey) {
-        Crowi.handleKeyCtrlSlashHandler(event);
       }
       break;
     default:

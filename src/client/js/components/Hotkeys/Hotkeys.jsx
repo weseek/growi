@@ -2,6 +2,7 @@ import React from 'react';
 import HotkeysDetector from '../HotkeysDetector/HotkeysDetector';
 import StaffCredit from '../StaffCredit/StaffCredit';
 import MirrorMode from '../MirrorMode/MirrorMode';
+import ShowHotkeys from '../PageHotkeys/ShowHotkeys';
 
 export default class Hotkeys extends React.Component {
 
@@ -13,6 +14,7 @@ export default class Hotkeys extends React.Component {
     this.supportClasses = [
       StaffCredit,
       MirrorMode,
+      ShowHotkeys,
     ];
     this.keymap = this.keymapSet();
     this.deleteRender = this.deleteRender.bind(this);
