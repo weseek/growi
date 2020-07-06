@@ -9,7 +9,6 @@ import DevidedPagePath from '@commons/models/devided-page-path';
 import LinkedPagePath from '@commons/models/linked-page-path';
 import PagePathHierarchicalLink from '@commons/components/PagePathHierarchicalLink';
 
-import { isFrozen } from 'core-js/fn/object';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 

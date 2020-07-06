@@ -7,14 +7,14 @@
 
 
 {% block content_main_before %}
-  {% include '../widget/page_alerts.html' %}
+  {% include 'widget/header.html' with {forbidden: true} %}
 {% endblock %}
 
 
 {% block content_main %}
   <div class="row">
     <div class="col grw-page-content-container">
-      {% include '../widget/forbidden_content.html' with {forbidden: true} %}
+      {% include '../widget/forbidden_content.html' %}
     </div>
     <div class="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container"></div>
   </div>
