@@ -64,14 +64,6 @@ export default class GridEditModal extends React.PureComponent {
     return cols;
   }
 
-  // Get the already pasted code from the editor and expand it on the modal
-  getPastedGrid(edited) {
-    // When the cursor on editor is in row
-    if (edited) {
-      // Embed the html data in cols.
-    }
-  }
-
   showEditableCols() {
     const cols = [];
     for (let i = 0; i < 12; i++) {
