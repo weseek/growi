@@ -58,10 +58,12 @@ const EditorNavbarBottom = (props) => {
       {/* Collapsed OptionsSelector */}
       { isCollapsedOptionsSelectorEnabled && (
         <Collapse isOpen={isExpanded}>
-          <div className={`navbar navbar-expand border-top px-2 ${additionalClasses.join(' ')}`}>
-            <form className="form-inline ml-auto">
-              <OptionsSelector />
-            </form>
+          <div className="px-2"> {/* set padding for border-top */}
+            <div className={`navbar navbar-expand border-top px-0 ${additionalClasses.join(' ')}`}>
+              <form className="form-inline ml-auto">
+                <OptionsSelector />
+              </form>
+            </div>
           </div>
         </Collapse>
       ) }
