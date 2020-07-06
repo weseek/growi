@@ -24,7 +24,6 @@ export default class PageEdit extends React.Component {
     }
     // show editor
     $('a[data-toggle="tab"][href="#edit"]').tab('show');
-    event.preventDefault();
     return null;
   }
 
