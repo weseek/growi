@@ -12,16 +12,27 @@ export default class GridEditModal extends React.PureComponent {
 
     this.state = {
       show: false,
+      gridHtml: '',
     };
 
+    this.init = this.init.bind(this);
     this.show = this.show.bind(this);
     this.hide = this.hide.bind(this);
     this.cancel = this.cancel.bind(this);
     this.pasteCodedGrid = this.pasteCodedGrid.bind(this);
   }
 
-  show() {
-    this.expandGridDiagram();
+  init(gridHtml) {
+    const initGridHtml = gridHtml;
+    this.setState(
+      {
+        gridHtml: initGridHtml,
+      },
+    );
+  }
+
+  show(gridHtml) {
+    this.init(gridHtml);
     this.setState({ show: true });
   }
 
@@ -42,14 +53,6 @@ export default class GridEditModal extends React.PureComponent {
       this.props.onSave(pastedGridData);
     }
     this.cancel();
-  }
-
-  expandGridDiagram(isCursorInGrid, gridHtml) {
-    let gridFigureOnModal;
-    if (isCursorInGrid) {
-      gridFigureOnModal = gridHtml;
-      return gridFigureOnModal;
-    }
   }
 
   showBgCols() {
