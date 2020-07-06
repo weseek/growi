@@ -14,7 +14,7 @@
 {% block content_main %}
   <div class="row">
     <div class="col-12 col-xl-9 col-lg-8 bg-white round-corner">
-      {% include '../widget/not_creatable_content.html' %}
+      {% include '../widget/not_creatable_content.html' with {isCreatable: false} %}
     </div>
   </div>
 {% endblock %}

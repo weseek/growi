@@ -9,6 +9,7 @@ import DevidedPagePath from '@commons/models/devided-page-path';
 import LinkedPagePath from '@commons/models/linked-page-path';
 import PagePathHierarchicalLink from '@commons/components/PagePathHierarchicalLink';
 
+import { isFrozen } from 'core-js/fn/object';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
@@ -58,12 +59,12 @@ const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
 };
 
 const GrowiSubNavigation = (props) => {
-  const isPageForbidden = document.querySelector('#grw-subnav').getAttribute('data-is-forbidden-page') === 'true';
   const { appContainer, pageContainer } = props;
   const {
-    pageId, path, createdAt, creator, updatedAt, revisionAuthor,
+    pageId, path, createdAt, creator, updatedAt, revisionAuthor, isForbidden,
   } = pageContainer.state;
 
+  const isPageForbidden = isForbidden;
   const isPageNotFound = pageId == null;
   const isPageInTrash = isTrashPage(path);
 
