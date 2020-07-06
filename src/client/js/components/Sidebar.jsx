@@ -146,7 +146,6 @@ class Sidebar extends React.Component {
 
   renderSidebarContents = () => {
     const scrollTargetSelector = 'div[data-testid="ContextualNavigation"] div[role="group"]';
-
     return (
       <>
         <StickyStretchableScroller
@@ -156,7 +155,9 @@ class Sidebar extends React.Component {
           calcViewHeightFunc={this.calcViewHeight}
         />
         <div id="grw-sidebar-content-container" className="grw-sidebar-content-container">
-          <SidebarContents />
+          <SidebarContents
+            isSharedUser={this.props.appContainer.isSharedUser}
+          />
         </div>
       </>
     );

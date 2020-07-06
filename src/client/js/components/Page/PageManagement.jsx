@@ -83,6 +83,10 @@ const PageManagement = (props) => {
   }
 
   function renderModals() {
+    if (currentUser == null) {
+      return null;
+    }
+
     return (
       <>
         <PageRenameModal

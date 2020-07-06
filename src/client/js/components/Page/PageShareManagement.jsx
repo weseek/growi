@@ -24,6 +24,10 @@ const PageShareManagement = (props) => {
   }
 
   function renderModals() {
+    if (currentUser == null) {
+      return null;
+    }
+
     return (
       <>
         <OutsideShareLinkModal
