@@ -27,7 +27,7 @@ export default class NavigationContainer extends Container {
       isDrawerMode: null,
       isDrawerOpened: false,
 
-      sidebarContentsId: this.appContainer.isSharedUser ? 'custom' : 'recent',
+      sidebarContentsId: 'recent',
 
       isScrollTop: true,
 
