@@ -102,8 +102,6 @@ const PageDuplicateModal = (props) => {
                 />
               )}
             </div>
-          
-
             <div className="custom-control custom-checkbox custom-checkbox-warning">
               <input
                 className="custom-control-input"
@@ -113,7 +111,7 @@ const PageDuplicateModal = (props) => {
                 checked={isDuplicateWithChild}
                 onChange={changeIsDuplicateWithChildHandler}
               />
-              <label className="form-group" htmlFor="duplicatePageName">
+              <label className="custom-control-label" htmlFor="duplicatePageName">
                 { t('modal_duplicate.Duplicate with child') }
                 <p></p>
               </label>
