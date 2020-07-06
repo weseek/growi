@@ -7,7 +7,7 @@ import SearchTop from './components/Navbar/SearchTop';
 import GrowiNavbar from './components/Navbar/GrowiNavbar';
 import NavbarToggler from './components/Navbar/NavbarToggler';
 import Sidebar from './components/Sidebar';
-import StaffCredit from './components/StaffCredit/StaffCredit';
+import Hotkeys from './components/Hotkeys/Hotkeys';
 
 import AppContainer from './services/AppContainer';
 import WebsocketContainer from './services/WebsocketContainer';
@@ -49,7 +49,8 @@ const componentMappings = {
 
   'grw-sidebar-wrapper': <Sidebar />,
 
-  'staff-credit': <StaffCredit />,
+  hotkeys: <Hotkeys />,
+
 };
 
 export { appContainer, componentMappings };
