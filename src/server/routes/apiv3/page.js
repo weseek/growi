@@ -264,8 +264,9 @@ module.exports = (crowi) => {
     const { pageId } = req.query;
     console.log(pageId);
 
-    const dummy = 6;
-    return res.apiv3({ dummy });
+    const archivePageCount = await Page.countDocuments({ path: '/user/sy' });
+    console.log(archivePageCount);
+    return res.apiv3({ archivePageCount });
   });
 
   return router;
