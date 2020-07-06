@@ -328,6 +328,10 @@ body.on-edit {
       border-top-color: $border-color-theme;
     }
   }
+
+  .grw-editor-navbar-bottom {
+    background-color: darken($bgcolor-global, 2%);
+  }
 }
 
 /*
