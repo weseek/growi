@@ -10,7 +10,7 @@ import { withUnstatedContainers } from '../UnstatedUtils';
  * @extends {React.Component}
  */
 
-class PageCreate extends React.Component {
+export default class PageCreate extends React.Component {
 
   // when this is called it returns the hotkey stroke
   static getHotkeyStroke() {
@@ -18,11 +18,12 @@ class PageCreate extends React.Component {
   }
 
   static getComponent() {
-    return <PageCreate />;
+    const PageCreateWrapper = withUnstatedContainers(PageCreate, [NavigationContainer]);
+    return <PageCreateWrapper />;
   }
 
   componentDidMount() {
-    console.log(this.props);
+    this.props.navigationContainer.openPageCreateModal();
     return null;
   }
 
@@ -34,10 +35,8 @@ class PageCreate extends React.Component {
   }
 
 }
-const PageCreateWrapper = withUnstatedContainers(PageCreate, [NavigationContainer]);
+
 
 PageCreate.propTypes = {
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
-
-export default PageCreateWrapper;
