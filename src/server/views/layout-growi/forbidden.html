@@ -2,12 +2,12 @@
 
 
 {% block content_header %}
-  {% include '../widget/header.html' %}
+  {% include '../widget/header.html' with {forbidden: true} %}
 {% endblock %}
 
 
 {% block content_main_before %}
-  {% include '../widget/header.html' with {forbidden: true} %}
+  {% include '../widget/page_alerts.html' %}
 {% endblock %}
 
 
