@@ -26,6 +26,8 @@ const PageDuplicateModal = (props) => {
   const [errorCode, setErrorCode] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
 
+  const [isDuplicateWithChild, SetIsDuplicateWithChild] = useState(false);
+
   /**
    * change pageNameInput for PagePathAutoComplete
    * @param {string} value
@@ -40,6 +42,10 @@ const PageDuplicateModal = (props) => {
    */
   function inputChangeHandler(value) {
     setPageNameInput(value);
+  }
+
+  function changeIsDuplicateWithChildHandler() {
+    SetIsDuplicateWithChild(!isDuplicateWithChild);
   }
 
   async function duplicate() {
@@ -95,6 +101,20 @@ const PageDuplicateModal = (props) => {
                   required
                 />
               )}
+            </div>
+
+            <div className="custom-control custom-checkbox custom-checkbox-warning">
+              <input
+                className="custom-control-input"
+                name="dupicateWithChild"
+                id="dupicateWithChild"
+                type="checkbox"
+                checked={isDuplicateWithChild}
+                onChange={changeIsDuplicateWithChildHandler}
+              />
+              <label className="form-group" htmlFor="duplicatePageName">
+                { t(' modal_duplicate.Duplicate with child') }
+              </label>
             </div>
           </div>
         </div>
