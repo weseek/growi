@@ -257,5 +257,16 @@ module.exports = (crowi) => {
     });
   });
 
+  router.get('/count-children-pages', accessTokenParser, loginRequired, async(req, res) => {
+
+    // TO DO implement correct number at another task
+
+    const { pageId } = req.query;
+    console.log(pageId);
+
+    const dummy = 6;
+    return res.apiv3({ dummy });
+  });
+
   return router;
 };

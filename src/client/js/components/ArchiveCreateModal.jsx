@@ -217,6 +217,9 @@ const ArchiveCreateModal = (props) => {
         </div>
       </ModalBody>
       <ModalFooter>
+        {/* TO DO implement correct number at GW-3053 */}
+        合計{props.totalPages}ページ取得
+        {props.errorMessage}
         <button type="button" className="btn btn-primary" onClick={done}>
           Done
         </button>
@@ -233,6 +236,9 @@ ArchiveCreateModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
   path: PropTypes.string.isRequired,
+  totalPages: PropTypes.number,
+  errorMessage: PropTypes.string,
+
 };
 
 export default withTranslation()(ArchiveCreateModalWrapper);
