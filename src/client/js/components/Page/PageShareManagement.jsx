@@ -48,10 +48,10 @@ const PageShareManagement = (props) => {
   async function getArchivePageData() {
     try {
       const res = await appContainer.apiv3Get('page/count-children-pages', { pageId });
-      setTotalPages(res.data.dummy);
+      setTotalPages(`合計${res.data.dummy}ページの取得 `);
     }
     catch (err) {
-      setErrorMessage('ページ数の取得に失敗しました');
+      setErrorMessage(t('export_bulk.failed_to_count_pages'));
     }
   }
 
