@@ -85,16 +85,6 @@ Crowi.modifyScrollTop = function() {
   }, timeout);
 };
 
-Crowi.handleKeyEHandler = (event) => {
-  // ignore when dom that has 'modal in' classes exists
-  if (document.getElementsByClassName('modal in').length > 0) {
-    return;
-  }
-  // show editor
-  $('a[data-toggle="tab"][href="#edit"]').tab('show');
-  event.preventDefault();
-};
-
 Crowi.handleKeyCtrlSlashHandler = (event) => {
   // show modal to create a page
   $('#shortcuts-modal').modal('toggle');
@@ -420,11 +410,6 @@ window.addEventListener('keydown', (event) => {
   }
 
   switch (event.key) {
-    case 'e':
-      if (!event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey) {
-        Crowi.handleKeyEHandler(event);
-      }
-      break;
     case '/':
       if (event.ctrlKey || event.metaKey) {
         Crowi.handleKeyCtrlSlashHandler(event);
