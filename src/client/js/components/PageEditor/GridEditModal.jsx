@@ -24,11 +24,10 @@ export default class GridEditModal extends React.PureComponent {
 
   init(gridHtml) {
     const initGridHtml = gridHtml;
-    this.setState(
-      {
-        gridHtml: initGridHtml,
-      },
-    );
+    this.setState({ gridHtml: initGridHtml }, function() {
+      // display gridHtml for re-editing
+      console.log(this.state.gridHtml);
+    });
   }
 
   show(gridHtml) {
