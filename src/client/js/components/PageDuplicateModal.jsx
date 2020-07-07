@@ -26,7 +26,7 @@ const PageDuplicateModal = (props) => {
   const [errorCode, setErrorCode] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
 
-  const [isDuplicateRecursively, SetIsDuplicateRecursively] = useState(true);
+  const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
 
   /**
    * change pageNameInput for PagePathAutoComplete
@@ -45,7 +45,7 @@ const PageDuplicateModal = (props) => {
   }
 
   function changeIsDuplicateRecursivelyHandler() {
-    SetIsDuplicateRecursively(!isDuplicateRecursively);
+    setIsDuplicateRecursively(!isDuplicateRecursively);
   }
 
   async function duplicate() {
