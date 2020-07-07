@@ -23,7 +23,7 @@ const GrowiSubNavigationSwitcher = (props) => {
 
   const [isVisible, setVisible] = useState(false);
 
-  const resetWidth = () => {
+  const resetWidth = useCallback(() => {
     const elem = document.getElementById('grw-subnav-fixed-container');
 
     if (elem == null || elem.parentNode == null) {
@@ -34,15 +34,11 @@ const GrowiSubNavigationSwitcher = (props) => {
     const { clientWidth: width } = elem.parentNode;
     // update style
     elem.style.width = `${width}px`;
-  };
-
-  const resetWidthDebounced = debounce(100, resetWidth);
+  }, []);
 
   // setup effect by resizing event
   useEffect(() => {
-    const resizeHandler = (event) => {
-      resetWidthDebounced();
-    };
+    const resizeHandler = debounce(100, resetWidth);
 
     window.addEventListener('resize', resizeHandler);
 
@@ -70,7 +66,7 @@ const GrowiSubNavigationSwitcher = (props) => {
     return () => {
       elem.removeEventListener(StickyEvents.CHANGE, stickyChangeHandler);
     };
-  }, []);
+  }, [stickyChangeHandler]);
 
   // update width
   useEffect(() => {
