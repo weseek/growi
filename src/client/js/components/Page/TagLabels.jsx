@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -9,6 +9,7 @@ import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 import EditorContainer from '../../services/EditorContainer';
 
+import RenderTagLabels from './RenderTagLabels';
 import TagEditModal from './TagEditModal';
 
 class TagLabels extends React.Component {
@@ -23,11 +24,6 @@ class TagLabels extends React.Component {
     this.openEditorModal = this.openEditorModal.bind(this);
     this.closeEditorModal = this.closeEditorModal.bind(this);
     this.tagsUpdatedHandler = this.tagsUpdatedHandler.bind(this);
-    this.renderTagLabels = this.renderTagLabels.bind(this);
-  }
-
-  shouldComponentUpdate() {
-    return this.getEditTargetData() != null;
   }
 
   /**
@@ -36,8 +32,8 @@ class TagLabels extends React.Component {
    *   2. editorContainer.state.tags if isEditorMode is true
    */
   getEditTargetData() {
-    const { isEditorMode, editorContainer, pageContainer } = this.props;
-    return (isEditorMode) ? editorContainer.state.tags : pageContainer.state.tags;
+    const { isEditorMode } = this.props;
+    return (isEditorMode) ? this.props.editorContainer.state.tags : this.props.pageContainer.state.tags;
   }
 
   openEditorModal() {
@@ -74,47 +70,20 @@ class TagLabels extends React.Component {
     }
   }
 
-  renderTagLabels(tags) {
-    const { t } = this.props;
-    const { pageId } = this.props.pageContainer.state;
-
-    if (tags.length === 0) {
-      return (
-        <a className="btn btn-link btn-edit-tags no-tags p-0 text-muted" onClick={this.openEditorModal}>
-          { t('Add tags for this page') } <i className="manage-tags ml-2 icon-plus"></i>
-        </a>
-      );
-    }
-
-    return (
-      <>
-        {tags.map((tag) => {
-          return (
-            <span key={`${pageId}_${tag}`} className="text-muted">
-              <i className="tag-icon icon-tag mr-1"></i>
-              <a className="tag-name mr-2" href={`/_search?q=tag:${tag}`} key={`${pageId}_${tag}_link`}>{tag}</a>
-            </span>
-          );
-        })}
-        <a className="btn btn-link btn-edit-tags p-0 text-muted" onClick={this.openEditorModal}>
-          <i className="manage-tags ml-2 icon-plus"></i> { t('Edit tags for this page') }
-        </a>
-      </>
-    );
-
-  }
 
   render() {
     const tags = this.getEditTargetData();
 
-    if (tags == null) {
-      return <p>...</p>;
-    }
-
     return (
       <React.Fragment>
+
         <div className="tag-labels">
-          {this.renderTagLabels(tags)}
+          <Suspense fallback={<p>...</p>}>
+            <RenderTagLabels
+              tags={tags}
+              openEditorModal={this.openEditorModal}
+            />
+          </Suspense>
         </div>
 
         <TagEditModal
@@ -135,7 +104,6 @@ class TagLabels extends React.Component {
  * Wrapper component for using unstated
  */
 const TagLabelsWrapper = withUnstatedContainers(TagLabels, [AppContainer, PageContainer, EditorContainer]);
-
 
 TagLabels.propTypes = {
   t: PropTypes.func.isRequired, // i18next
