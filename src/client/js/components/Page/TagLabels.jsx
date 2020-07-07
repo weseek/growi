@@ -11,7 +11,7 @@ import EditorContainer from '../../services/EditorContainer';
 
 import TagEditModal from './TagEditModal';
 
-let tags = null;
+const tags = null;
 
 class TagLabels extends React.Component {
 
@@ -33,7 +33,7 @@ class TagLabels extends React.Component {
    *   1. pageContainer.state.tags if isEditorMode is false
    *   2. editorContainer.state.tags if isEditorMode is true
    */
-  async getEditTargetData() {
+  getEditTargetData() {
     const { isEditorMode } = this.props;
     return (isEditorMode) ? this.props.editorContainer.state.tags : this.props.pageContainer.state.tags;
   }
@@ -72,56 +72,47 @@ class TagLabels extends React.Component {
     }
   }
 
-  renderTagLabels() {
+  renderTagLabels(tags) {
     const { t } = this.props;
     const { pageId } = this.props.pageContainer.state;
 
-    const timeout = msec => new Promise((resolve) => {
-      setTimeout(resolve, msec);
-    });
-
-    if (tags !== null) {
-      if (tags.length === 0) {
-        return (
-          <a className="btn btn-link btn-edit-tags no-tags p-0 text-muted" onClick={this.openEditorModal}>
-            { t('Add tags for this page') } <i className="manage-tags ml-2 icon-plus"></i>
-          </a>
-        );
-      }
-
+    if (tags.length === 0) {
       return (
-        <>
-          {tags.map((tag) => {
-            return (
-              <span key={`${pageId}_${tag}`} className="text-muted">
-                <i className="tag-icon icon-tag mr-1"></i>
-                <a className="tag-name mr-2" href={`/_search?q=tag:${tag}`} key={`${pageId}_${tag}_link`}>{tag}</a>
-              </span>
-            );
-          })}
-          <a className="btn btn-link btn-edit-tags p-0 text-muted" onClick={this.openEditorModal}>
-            <i className="manage-tags ml-2 icon-plus"></i> { t('Edit tags for this page') }
-          </a>
-        </>
+        <a className="btn btn-link btn-edit-tags no-tags p-0 text-muted" onClick={this.openEditorModal}>
+          { t('Add tags for this page') } <i className="manage-tags ml-2 icon-plus"></i>
+        </a>
       );
-
     }
 
-    throw new Promise(async(resolve) => {
-      await timeout(5000);
-      tags = await this.getEditTargetData();
-      resolve();
-    });
+    return (
+      <>
+        {tags.map((tag) => {
+          return (
+            <span key={`${pageId}_${tag}`} className="text-muted">
+              <i className="tag-icon icon-tag mr-1"></i>
+              <a className="tag-name mr-2" href={`/_search?q=tag:${tag}`} key={`${pageId}_${tag}_link`}>{tag}</a>
+            </span>
+          );
+        })}
+        <a className="btn btn-link btn-edit-tags p-0 text-muted" onClick={this.openEditorModal}>
+          <i className="manage-tags ml-2 icon-plus"></i> { t('Edit tags for this page') }
+        </a>
+      </>
+    );
+
   }
 
   render() {
     const tags = this.getEditTargetData();
+
+    if (tags == null) {
+      return <p>...</p>;
+    }
+
     return (
       <React.Fragment>
         <div className="tag-labels">
-          <Suspense fallback={<p>Loading...</p>}>
-            <this.renderTagLabels />
-          </Suspense>
+          {this.renderTagLabels(tags)}
         </div>
 
         <TagEditModal
