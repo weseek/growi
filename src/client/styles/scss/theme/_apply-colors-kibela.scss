@@ -24,11 +24,6 @@ body.kibela {
       background-color: rgba(lighten($bgcolor-global, 50%), 0.85);
     }
 
-    /* kibela block */
-    .kibela-border-top {
-      border-top: solid 0.4em $thickborder;
-    }
-
     /* page wrapper */
     #page-wrapper {
       background-color: $bgcolor-global;
