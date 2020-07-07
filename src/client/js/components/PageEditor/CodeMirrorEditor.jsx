@@ -654,7 +654,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   showGridEditorHandler() {
-    this.gridEditModal.current.show();
+    this.gridEditModal.current.show(geu.getGridHtml(this.getCodeMirror()));
   }
 
   showHandsonTableHandler() {

@@ -12,15 +12,26 @@ export default class GridEditModal extends React.PureComponent {
 
     this.state = {
       show: false,
+      gridHtml: '',
     };
 
+    this.init = this.init.bind(this);
     this.show = this.show.bind(this);
     this.hide = this.hide.bind(this);
     this.cancel = this.cancel.bind(this);
     this.pasteCodedGrid = this.pasteCodedGrid.bind(this);
   }
 
-  show() {
+  init(gridHtml) {
+    const initGridHtml = gridHtml;
+    this.setState({ gridHtml: initGridHtml }, function() {
+      // display gridHtml for re-editing
+      console.log(this.state.gridHtml);
+    });
+  }
+
+  show(gridHtml) {
+    this.init(gridHtml);
     this.setState({ show: true });
   }
 

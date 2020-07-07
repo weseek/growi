@@ -7,7 +7,36 @@ class GridEditorUtil {
     // https://regex101.com/r/7BN2fR/11
     this.lineBeginPartOfGridRE = /^:::(\s.*)editable-row$/;
     this.lineEndPartOfGridRE = /^:::$/;
+    this.isInGridBlock = this.isInGridBlock.bind(this);
     this.replaceGridWithHtmlWithEditor = this.replaceGridWithHtmlWithEditor.bind(this);
+  }
+
+  /**
+   * return boolean value whether the cursor position is in a grid block
+   */
+  isInGridBlock(editor) {
+    const bog = this.getBog(editor);
+    const eog = this.getEog(editor);
+    return (JSON.stringify(bog) !== JSON.stringify(eog));
+  }
+
+  /**
+   * return grid html where the cursor is
+   */
+  getGridHtml(editor) {
+    const curPos = editor.getCursor();
+
+    if (this.isInGridBlock(editor)) {
+      const bog = this.getBog(editor);
+      const eog = this.getEog(editor);
+      // skip block begin sesion("::: editable-row")
+      bog.line++;
+      // skip block end sesion(":::")
+      eog.line--;
+      eog.ch = editor.getDoc().getLine(eog.line).length;
+      return editor.getDoc().getRange(bog, eog);
+    }
+    return editor.getDoc().getLine(curPos.line);
   }
 
   /**
