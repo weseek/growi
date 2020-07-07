@@ -50,11 +50,10 @@ textarea.form-control {
   background-color: lighten($bgcolor-global, 5%);
 }
 
-.input-group .input-group-addon {
-  color: theme-color('dark');
-  background-color: rgba($bgcolor-navbar, 0.4);
-  // FIXME: accent color
-  // border: 1px solid darken($border, 30%);
+.input-group > .input-group-prepend > .input-group-text {
+  color: color-yiq(theme-color('dark'));
+  background-color: theme-color('dark');
+  border: 1px solid theme-color('secondary');
   border-right: none;
 }
 
@@ -227,7 +226,7 @@ ul.pagination {
 /*
  * GROWI on-edit
  */
-.page-editor-footer {
+.grw-editor-navbar-bottom {
   #slack-mark-black {
     display: none;
   }

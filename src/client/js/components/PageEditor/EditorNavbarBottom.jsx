@@ -1,5 +1,7 @@
-import React, { useState /* useMemo */ } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+
+import { Collapse } from 'reactstrap';
 
 import NavigationContainer from '../../services/NavigationContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -15,18 +17,14 @@ const EditorNavbarBottom = (props) => {
   const {
     navigationContainer,
   } = props;
-  const { editorMode, isDrawerMode /* isDeviceSmallerThanMd */ } = navigationContainer.state;
-
-  const showOptionsSelector = editorMode !== 'hackmd';
+  const { editorMode, isDrawerMode, isDeviceSmallerThanMd } = navigationContainer.state;
 
   const additionalClasses = ['grw-editor-navbar-bottom'];
 
   const renderDrawerButton = () => (
-    isDrawerMode && (
-      <button type="button" className="btn btn-outline-secondary border-0" onClick={() => navigationContainer.toggleDrawer()}>
-        <i className="icon-menu"></i>
-      </button>
-    )
+    <button type="button" className="btn btn-outline-secondary border-0" onClick={() => navigationContainer.toggleDrawer()}>
+      <i className="icon-menu"></i>
+    </button>
   );
 
   // eslint-disable-next-line react/prop-types
@@ -42,16 +40,33 @@ const EditorNavbarBottom = (props) => {
     </div>
   );
 
+  const isOptionsSelectorEnabled = editorMode !== 'hackmd';
+  const isCollapsedOptionsSelectorEnabled = isOptionsSelectorEnabled && isDeviceSmallerThanMd;
+
   return (
-    <div className={`navbar navbar-expand border-top fixed-bottom px-2 ${additionalClasses.join(' ')}`}>
-      <form className="form-inline mr-auto">
-        { renderDrawerButton() }
-        { showOptionsSelector && <OptionsSelector /> }
-      </form>
-      <form className="form-inline">
-        <SavePageControls />
-        { renderExpandButton() }
-      </form>
+    <div className="fixed-bottom">
+      <div className={`navbar navbar-expand border-top px-2 ${additionalClasses.join(' ')}`}>
+        <form className="form-inline">
+          { isDrawerMode && renderDrawerButton() }
+          { isOptionsSelectorEnabled && !isDeviceSmallerThanMd && <OptionsSelector /> }
+        </form>
+        <form className="form-inline ml-auto">
+          <SavePageControls />
+          { isCollapsedOptionsSelectorEnabled && renderExpandButton() }
+        </form>
+      </div>
+      {/* Collapsed OptionsSelector */}
+      { isCollapsedOptionsSelectorEnabled && (
+        <Collapse isOpen={isExpanded}>
+          <div className="px-2"> {/* set padding for border-top */}
+            <div className={`navbar navbar-expand border-top px-0 ${additionalClasses.join(' ')}`}>
+              <form className="form-inline ml-auto">
+                <OptionsSelector />
+              </form>
+            </div>
+          </div>
+        </Collapse>
+      ) }
     </div>
   );
 };
