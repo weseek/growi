@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -10,8 +10,6 @@ import PageContainer from '../../services/PageContainer';
 import EditorContainer from '../../services/EditorContainer';
 
 import TagEditModal from './TagEditModal';
-
-const tags = null;
 
 class TagLabels extends React.Component {
 
@@ -26,6 +24,10 @@ class TagLabels extends React.Component {
     this.closeEditorModal = this.closeEditorModal.bind(this);
     this.tagsUpdatedHandler = this.tagsUpdatedHandler.bind(this);
     this.renderTagLabels = this.renderTagLabels.bind(this);
+  }
+
+  shouldComponentUpdate() {
+    return this.getEditTargetData() != null;
   }
 
   /**
