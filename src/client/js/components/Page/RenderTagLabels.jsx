@@ -17,8 +17,7 @@ function RenderTagLabels(props) {
   }
 
   if (tags == null) {
-    throw new Promise(async() => {
-    });
+    throw new Promise(() => {});
   }
 
   if (tags.length === 0) {
