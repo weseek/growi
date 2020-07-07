@@ -58,13 +58,18 @@ body {
 
 .grw-fixed-controls-container {
   position: fixed;
-  right: 1em;
-  bottom: 3em;
+  right: 1.5rem;
+  bottom: 3rem;
+  z-index: $zindex-fixed;
 
   transition: all 200ms linear;
 
-  .grw-fixed-controls-button-container {
-    box-shadow: 0 3px 4px rgba($black, 0.3);
+  .btn-create-page {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+
+    box-shadow: 2px 3px 6px #0000005d;
   }
 }
 

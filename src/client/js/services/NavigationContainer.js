@@ -171,4 +171,18 @@ export default class NavigationContainer extends Container {
     this.setState({ isPageCreateModalShown: false });
   }
 
+  smoothScrollIntoView(element = null, offsetTop = 0) {
+    const targetElement = element || window.document.body;
+
+    // get the distance to the target element top
+    const rectTop = targetElement.getBoundingClientRect().top;
+
+    const top = window.pageYOffset + rectTop - offsetTop;
+
+    window.scrollTo({
+      top,
+      behavior: 'smooth',
+    });
+  }
+
 }

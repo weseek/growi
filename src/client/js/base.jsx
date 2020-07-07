@@ -6,6 +6,7 @@ import Xss from '@commons/service/xss';
 import GrowiNavbar from './components/Navbar/GrowiNavbar';
 import GrowiNavbarBottom from './components/Navbar/GrowiNavbarBottom';
 import Sidebar from './components/Sidebar';
+import FixedControls from './components/FixedControls';
 import StaffCredit from './components/StaffCredit/StaffCredit';
 
 import AppContainer from './services/AppContainer';
@@ -43,6 +44,8 @@ const componentMappings = {
   'page-create-modal': <PageCreateModal />,
 
   'grw-sidebar-wrapper': <Sidebar />,
+
+  'grw-fixed-controls-container': <FixedControls />,
 
   'staff-credit': <StaffCredit />,
 };
