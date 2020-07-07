@@ -5,7 +5,8 @@ import { Container } from 'unstated';
  * @extends {Container} unstated Container
  */
 
-const scrollThresForThrottling = 100;
+const SCROLL_THRES_FAV = 60;
+const SCROLL_THRES_SKIP = 200;
 
 export default class NavigationContainer extends Container {
 
@@ -30,6 +31,7 @@ export default class NavigationContainer extends Container {
       sidebarContentsId: 'recent',
 
       isScrollTop: true,
+      showFav: false,
 
       isPageCreateModalShown: false,
     };
@@ -93,12 +95,13 @@ export default class NavigationContainer extends Container {
       const currentYOffset = window.pageYOffset;
 
       // original throttling
-      if (scrollThresForThrottling < currentYOffset) {
+      if (SCROLL_THRES_SKIP < currentYOffset) {
         return;
       }
 
       this.setState({
         isScrollTop: currentYOffset === 0,
+        showFav: SCROLL_THRES_FAV < currentYOffset,
       });
     });
   }
