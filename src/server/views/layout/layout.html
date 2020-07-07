@@ -93,13 +93,9 @@
 
 </div><!-- /#wrapper -->
 
-{% if user %}
-  <div class="grw-fixed-controls-container d-md-none d-edit-none animated fadeInUp faster">
-    <div class="grw-fixed-controls-button-container rounded-circle">
-      <div id='create-page-button-icon'></div>
-    </div>
-  </div>
-{% endif %}
+{% block fixed-controls %}
+<div id="grw-fixed-controls-container"></div>
+{% endblock %}
 
 <!-- /#staff-credit -->
 <div id="staff-credit"></div>
