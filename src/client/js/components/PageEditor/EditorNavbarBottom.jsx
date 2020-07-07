@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState /* useMemo */ } from 'react';
 import PropTypes from 'prop-types';
 
 import NavigationContainer from '../../services/NavigationContainer';
@@ -15,7 +15,7 @@ const EditorNavbarBottom = (props) => {
   const {
     navigationContainer,
   } = props;
-  const { editorMode, isDrawerMode, isDeviceSmallerThanMd } = navigationContainer.state;
+  const { editorMode, isDrawerMode /* isDeviceSmallerThanMd */ } = navigationContainer.state;
 
   const showOptionsSelector = editorMode !== 'hackmd';
 
