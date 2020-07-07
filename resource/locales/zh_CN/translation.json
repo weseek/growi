@@ -298,7 +298,8 @@
 		"label": {
 			"Duplicate page": "Duplicate page",
 			"New page name": "New page name",
-			"Current page name": "Current page name"
+			"Current page name": "Current page name",
+			"Duplicate with child": "Duplicate with child"
 		}
 	},
 	"modal_putback": {

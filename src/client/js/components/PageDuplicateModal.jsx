@@ -26,6 +26,8 @@ const PageDuplicateModal = (props) => {
   const [errorCode, setErrorCode] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
 
+  const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
+
   /**
    * change pageNameInput for PagePathAutoComplete
    * @param {string} value
@@ -40,6 +42,10 @@ const PageDuplicateModal = (props) => {
    */
   function inputChangeHandler(value) {
     setPageNameInput(value);
+  }
+
+  function changeIsDuplicateRecursivelyHandler() {
+    setIsDuplicateRecursively(!isDuplicateRecursively);
   }
 
   async function duplicate() {
@@ -97,6 +103,19 @@ const PageDuplicateModal = (props) => {
               )}
             </div>
           </div>
+        </div>
+        <div className="custom-control custom-checkbox custom-checkbox-warning">
+          <input
+            className="custom-control-input"
+            name="recursively"
+            id="cbDuplicateRecursively"
+            type="checkbox"
+            checked={isDuplicateRecursively}
+            onChange={changeIsDuplicateRecursivelyHandler}
+          />
+          <label className="custom-control-label" htmlFor="cbDuplicateRecursively">
+            { t('modal_duplicate.label.Duplicate with child') }
+          </label>
         </div>
       </ModalBody>
       <ModalFooter>
