@@ -34,8 +34,8 @@ class TagLabels extends React.Component {
    *   2. editorContainer.state.tags if isEditorMode is true
    */
   getEditTargetData() {
-    const { isEditorMode } = this.props;
-    return (isEditorMode) ? this.props.editorContainer.state.tags : this.props.pageContainer.state.tags;
+    const { isEditorMode, editorContainer, pageContainer } = this.props;
+    return (isEditorMode) ? editorContainer.state.tags : pageContainer.state.tags;
   }
 
   openEditorModal() {
