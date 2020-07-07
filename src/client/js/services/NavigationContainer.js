@@ -5,7 +5,6 @@ import { Container } from 'unstated';
  * @extends {Container} unstated Container
  */
 
-const SCROLL_THRES_FAV = 60;
 const SCROLL_THRES_SKIP = 200;
 
 export default class NavigationContainer extends Container {
@@ -31,7 +30,6 @@ export default class NavigationContainer extends Container {
       sidebarContentsId: 'recent',
 
       isScrollTop: true,
-      showFav: false,
 
       isPageCreateModalShown: false,
     };
@@ -101,7 +99,6 @@ export default class NavigationContainer extends Container {
 
       this.setState({
         isScrollTop: currentYOffset === 0,
-        showFav: SCROLL_THRES_FAV < currentYOffset,
       });
     });
   }
