@@ -83,7 +83,7 @@ const PagePathNav = ({
 /* eslint-disable react/prop-types */
 const UserInfo = ({ pageUser }) => {
   return (
-    <div className="users-info d-flex align-items-center d-edit-none">
+    <div className="grw-users-info d-flex align-items-center d-edit-none">
       <UserPicture user={pageUser} />
 
       <div className="users-meta">
