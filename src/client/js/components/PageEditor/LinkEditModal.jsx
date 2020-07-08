@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-
 import {
   Modal,
   ModalHeader,
@@ -195,6 +194,7 @@ class LinkEditModal extends React.PureComponent {
       labelInputValue,
       linkInputValue,
       isUseRelativePath,
+      pageContainer.state.path,
       isUsePermanentLink,
       permalink,
       pageContainer.state.path,

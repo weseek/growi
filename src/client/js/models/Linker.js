@@ -2,12 +2,22 @@ import path from 'path';
 
 export default class Linker {
 
-  constructor(type = this.type.markdownLink, label = '', link = '', isUseRelativePath = false, rootPath = '') {
+  constructor(
+      type,
+      label,
+      link,
+      isUseRelativePath = false,
+      rootPath = '',
+      isUsePermanentLink = false,
+      permalink = '',
+  ) {
     this.type = type;
     this.label = label;
     this.link = link;
     this.isUseRelativePath = isUseRelativePath;
     this.rootPath = rootPath;
+    this.isUsePermanentLink = isUsePermanentLink;
+    this.permalink = permalink;
 
     this.generateMarkdownText = this.generateMarkdownText.bind(this);
   }
@@ -31,6 +41,9 @@ export default class Linker {
     if (this.isUseRelativePath && this.link.match(/^\//)) {
       reshapedLink = path.relative(this.rootPath, this.link);
     }
+    if (this.isUsePermanentLink && this.permalink != null) {
+      reshapedLink = this.permalink;
+    }
 
     if (this.type === Linker.types.pukiwikiLink) {
       if (this.label === reshapedLink) return `[[${reshapedLink}]]`;
@@ -43,7 +56,6 @@ export default class Linker {
       return `[${this.label}](${reshapedLink})`;
     }
   }
-
 
   // create an instance of Linker from string
   static fromMarkdownString(str) {
@@ -75,7 +87,19 @@ export default class Linker {
       ({ label, link } = str.match(this.patterns.markdownLink).groups);
     }
 
-    return new Linker(type, label, link);
+    // TODO GW-3074 相対パスを利用しているかテキストから判定し以下の値に反映する
+    const isUseRelativePath = false;
+    const rootPath = '';
+
+    return new Linker(
+      type,
+      label,
+      link,
+      isUseRelativePath,
+      rootPath,
+      false,
+      '',
+    );
   }
 
   // create an instance of Linker from text with index
