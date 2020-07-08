@@ -28,9 +28,9 @@ export default class Linker {
     let type = this.types.markdownLink;
 
     // pukiwiki with separator ">".
-    if (str.match(this.patterns.pukiwikiWithLabel)) {
+    if (str.match(this.patterns.pukiwikiLinkWithLabel)) {
       type = this.types.pukiwikiLink;
-      ({ label, link } = str.match(this.patterns.pukiwikiWithLabel).groups);
+      ({ label, link } = str.match(this.patterns.pukiwikiLinkWithLabel).groups);
     }
     // pukiwiki without separator ">".
     else if (str.match(this.patterns.pukiwikiLinkWithoutLabel)) {
