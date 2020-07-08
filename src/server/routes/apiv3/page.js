@@ -203,8 +203,11 @@ module.exports = (crowi) => {
       if (revisionId) {
         markdown = '#Revision';
       }
-      else {
+      else if (pageId) {
         markdown = '#Page';
+      }
+      else {
+        return res.apiv3Err('Should provided pageId or revisionId');
       }
 
       return res.apiv3({ markdown });
