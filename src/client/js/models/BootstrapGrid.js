@@ -2,8 +2,12 @@ import GridEditModal from '../components/PageEditor/GridEditModal';
 
 export default class BootstrapGrid {
 
-  // constructor() {
-  // }
+  constructor(props) {
+
+    this.state = {
+
+    };
+  }
 
 
 }
