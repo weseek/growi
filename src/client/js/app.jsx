@@ -36,7 +36,6 @@ import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
 import GrowiSubNavigation from './components/Navbar/GrowiSubNavigation';
 import GrowiSubNavigationSwitcher from './components/Navbar/GrowiSubNavigationSwitcher';
-import GrowiSubNavigationForUserPage from './components/Navbar/GrowiSubNavigationForUserPage';
 import PersonalContainer from './services/PersonalContainer';
 
 import { appContainer, componentMappings } from './base';
@@ -103,7 +102,6 @@ if (pageContainer.state.path != null) {
     'page': <Page />,
     'grw-subnav-container': <GrowiSubNavigation />,
     'grw-subnav-switcher-container': <GrowiSubNavigationSwitcher />,
-    'grw-subnav-for-user-page': <GrowiSubNavigationForUserPage />,
   });
 }
 // additional definitions if user is logged in
