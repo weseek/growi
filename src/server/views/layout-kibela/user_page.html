@@ -7,7 +7,7 @@
 
 {% block content_header %}
   {% if pageUser %}
-    <header id="grw-subnav-for-user-page" class="grw-subnav grw-subnav-user-page" data-page-user="{{ pageUser|json }}"></header>
+    <header id="grw-subnav-container" class="grw-subnav grw-subnav-user-page" data-page-user="{{ pageUser|json }}"></header>
   {% else %}
     {% parent %}
   {% endif %}
