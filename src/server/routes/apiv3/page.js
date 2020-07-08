@@ -183,5 +183,37 @@ module.exports = (crowi) => {
     return res.apiv3({ result });
   });
 
+  /**
+  * @swagger
+  *
+  *    /pages/export:
+  *      get:
+  *        tags: [Export]
+  *        description: return page's markdown
+  *        responses:
+  *          200:
+  *            description: Return page's markdown
+  */
+  router.get('/export', async(req, res) => {
+    try {
+      const { pageId, revisionId } = req.query;
+      let markdown;
+
+      // TODO: GW-3061
+      if (revisionId) {
+        markdown = '#Revision';
+      }
+      else {
+        markdown = '#Page';
+      }
+
+      return res.apiv3({ markdown });
+    }
+    catch (err) {
+      logger.error('Failed to get markdown', err);
+      return res.apiv3Err(err, 500);
+    }
+  });
+
   return router;
 };
