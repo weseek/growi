@@ -44,7 +44,7 @@ const EditorNavbarBottom = (props) => {
   const isCollapsedOptionsSelectorEnabled = isOptionsSelectorEnabled && isDeviceSmallerThanMd;
 
   return (
-    <div className="fixed-bottom">
+    <div className={`${isCollapsedOptionsSelectorEnabled ? 'fixed-bottom' : ''} `}>
       <div className={`navbar navbar-expand border-top px-2 ${additionalClasses.join(' ')}`}>
         <form className="form-inline">
           { isDrawerMode && renderDrawerButton() }
