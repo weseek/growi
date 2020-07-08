@@ -197,7 +197,6 @@ class LinkEditModal extends React.PureComponent {
       pageContainer.state.path,
       isUsePermanentLink,
       permalink,
-      pageContainer.state.path,
     );
   }
 
