@@ -1,4 +1,4 @@
-import GridEditModal from '../components/PageEditor/GridEditModal';
+// import GridEditModal from '../components/PageEditor/GridEditModal';
 
 export default class BootstrapGrid {
 
