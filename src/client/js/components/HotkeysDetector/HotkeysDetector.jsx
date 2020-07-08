@@ -15,27 +15,47 @@ export default class HotkeysDetector extends React.Component {
   }
 
   check(event) {
+    this.processingCommands = this.hotkeyList;
 
-    if ((event.ctrlKey || event.metaKey) && (event.key === '/')) {
-      this.props.onDetected(['/']);
-      this.setState({
-        userCommand: [],
+    if (event.ctrlKey) {
+      this.processingCommands = this.processingCommands.filter((value) => {
+        return value.ctrlKey;
       });
-      return null;
     }
-
+    else if (event.metaKey) {
+      this.processingCommands = this.processingCommands.filter((value) => {
+        return value.metaKey;
+      });
+    }
+    else if (event.altKey) {
+      this.processingCommands = this.processingCommands.filter((value) => {
+        return value.altKey;
+      });
+    }
+    else if (event.shiftKey) {
+      this.processingCommands = this.processingCommands.filter((value) => {
+        return value.shiftKey;
+      });
+    }
+    else {
+      this.processingCommands = this.processingCommands.filter((value) => {
+        return ((!value.ctrlKey) && (!value.metaKey) && (!value.altKey) && (!value.shiftKey));
+      });
+    }
     this.setState({
       userCommand: this.state.userCommand.concat(event.key),
     });
-
     // filters the corresponding hotkeys(keys) that the user has pressed so far
     const tempUserCommand = this.state.userCommand;
-    this.processingCommands = this.hotkeyList.filter((value) => {
-      return value.slice(0, tempUserCommand.length).toString() === tempUserCommand.toString();
+    this.processingCommands = this.processingCommands.filter((value) => {
+      return value.stroke.slice(0, tempUserCommand.length).toString() === tempUserCommand.toString();
+    });
+    this.processingCommands = this.processingCommands.map((value) => {
+      return value.stroke;
     });
 
     // executes if there were keymap that matches what the user pressed fully.
-    if ((this.processingCommands.length === 1) && (this.hotkeyList.find(ary => ary.toString() === this.state.userCommand.toString()))) {
+    if ((this.processingCommands.length === 1) && (this.hotkeyList.find(obj => obj.stroke.toString() === this.state.userCommand.toString()))) {
       this.props.onDetected(this.processingCommands[0]);
       this.setState({
         userCommand: [],
