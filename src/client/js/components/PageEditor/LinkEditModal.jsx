@@ -75,6 +75,10 @@ class LinkEditModal extends React.PureComponent {
       labelInputValue: label,
       linkInputValue: link,
       linkerType: type,
+      isUseRelativePath: false,
+      isUsePermanentLink: false,
+      markdown: '',
+      permalink: '',
     });
   }
 
