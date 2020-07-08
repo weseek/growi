@@ -7,6 +7,8 @@ const { body } = require('express-validator');
 
 const router = express.Router();
 
+const markdownpdf = require('markdown-pdf');
+
 // const ErrorV3 = require('../../models/vo/error-apiv3');
 
 /**
@@ -195,6 +197,7 @@ module.exports = (crowi) => {
   *            description: Return page's markdown
   */
   router.get('/export', async(req, res) => {
+    let result;
     try {
       const { pageId, revisionId } = req.query;
       let markdown;
@@ -209,8 +212,14 @@ module.exports = (crowi) => {
       else {
         return res.apiv3Err('Should provided pageId or revisionId');
       }
+      result = markdown;
+      if (true) {
+        result = markdownpdf.from.string(markdown).to.buffer('exam.pdf', () => {
+          console.log('Done');
+        });
+      }
 
-      return res.apiv3({ markdown });
+      return res.apiv3({ result });
     }
     catch (err) {
       logger.error('Failed to get markdown', err);
