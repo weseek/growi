@@ -11,7 +11,11 @@ export default class ShowHotkeys extends React.Component {
   // when this is called it returns the hotkey stroke
   static getHotkeyStroke() {
     return {
-      stroke: ['/'], ctrlKey: true, metaKey: true, altKey: false, shiftKey: false,
+      stroke: ['/'],
+      ctrlKey: true,
+      metaKey: true,
+      altKey: false,
+      shiftKey: false,
     };
   }
 

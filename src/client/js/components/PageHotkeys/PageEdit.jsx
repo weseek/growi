@@ -11,7 +11,11 @@ export default class PageEdit extends React.Component {
   // when this is called it returns the hotkey stroke
   static getHotkeyStroke() {
     return {
-      stroke: ['e'], ctrlKey: false, metaKey: false, altKey: false, shiftKey: false,
+      stroke: ['e'],
+      ctrlKey: false,
+      metaKey: false,
+      altKey: false,
+      shiftKey: false,
     };
   }
 
