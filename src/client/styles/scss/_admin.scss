@@ -166,6 +166,11 @@
   }
 }
 
-.admin-navigation > a + a {
-  margin-top: 2px;
+.admin-navigation {
+  & > a + a {
+    margin-top: 2px;
+  }
+  &.sticky-top {
+    top: 30px;
+  }
 }
