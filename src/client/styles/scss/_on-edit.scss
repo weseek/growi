@@ -52,6 +52,11 @@ body.on-edit {
     display: none !important;
   }
 
+  // hide when HackMD view
+  &.hackmd .d-hackmd-none {
+    display: none;
+  }
+
   // hide unnecessary elements for growi layout
   .revision-toc-container {
     display: none !important;
@@ -68,14 +73,6 @@ body.on-edit {
 
   &:not(.hackmd) .nav-tab-hackmd {
     display: none;
-  }
-
-  // hide hackmd related alert
-  &.hackmd #page-status-alert {
-    .alert-hackmd-someone-editing,
-    .alert-hackmd-draft-exists {
-      display: none;
-    }
   }
 
   /*****************

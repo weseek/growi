@@ -72,7 +72,7 @@ Object.assign(componentMappings, {
   // 'revision-history': <PageHistory pageId={pageId} />,
   'tags-page': <TagsList crowi={appContainer} />,
 
-  'page-status-alert': <PageStatusAlert />,
+  'grw-page-status-alert-container': <PageStatusAlert />,
 
   'trash-page-alert': <TrashPageAlert />,
 
