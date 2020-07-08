@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import path from 'path';
-
 import {
   Modal,
   ModalHeader,
@@ -188,26 +186,18 @@ class LinkEditModal extends React.PureComponent {
       linkerType,
       isUseRelativePath,
       isUsePermanentLink,
+      permalink,
     } = this.state;
 
-    let reshapedLink = linkInputValue;
-
-    if (isUseRelativePath && linkInputValue.match(/^\//)) {
-      reshapedLink = path.relative(pageContainer.state.path, linkInputValue);
-    }
-    if (isUsePermanentLink) {
-      reshapedLink = this.state.permalink;
-    }
-
-    if (linkerType === Linker.types.pukiwikiLink) {
-      return `[[${labelInputValue}>${reshapedLink}]]`;
-    }
-    if (linkerType === Linker.types.growiLink) {
-      return `[${reshapedLink}]`;
-    }
-    if (linkerType === Linker.types.markdownLink) {
-      return `[${labelInputValue}](${reshapedLink})`;
-    }
+    return new Linker(
+      linkerType,
+      labelInputValue,
+      linkInputValue,
+      isUseRelativePath,
+      pageContainer.state.path,
+      isUsePermanentLink,
+      permalink,
+    );
   }
 
   render() {
