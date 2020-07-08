@@ -28,7 +28,7 @@ const PagePathNavForEditor = (props) => {
           pagePath={path}
         />
       </span>
-      <TagLabels />
+      <TagLabels isEditorMode />
     </div>
   );
 };

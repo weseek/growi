@@ -341,7 +341,8 @@
     "activate_user_success": "{{username}}を有効化しました",
     "deactivate_user_success": "{{username}}を無効化しました",
     "remove_user_success": "{{username}}を削除しました",
-    "remove_external_user_success": "{{accountId}}を削除しました"
+    "remove_external_user_success": "{{accountId}}を削除しました",
+    "failed_to_reset_password":"パスワードのリセットに失敗しました"
   },
   "template": {
     "modal_label": {

@@ -61,7 +61,7 @@ export default class PageContainer extends Container {
       isDeletable:  JSON.parse(mainContent.getAttribute('data-page-is-deletable')),
       isAbleToDeleteCompletely:  JSON.parse(mainContent.getAttribute('data-page-is-able-to-delete-completely')),
       pageUser: JSON.parse(mainContent.getAttribute('data-page-user')),
-      tags: [],
+      tags: null,
       hasChildren: JSON.parse(mainContent.getAttribute('data-page-has-children')),
       templateTagData: mainContent.getAttribute('data-template-tags') || null,
 
