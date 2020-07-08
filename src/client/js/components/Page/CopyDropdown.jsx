@@ -149,22 +149,22 @@ class CopyDropdown extends React.Component {
 
             <DropdownItem divider className="my-0"></DropdownItem>
 
-            {/* Parmanent Link */}
+            {/* Permanent Link */}
             { pageId && (
               <CopyToClipboard text={permalink} onCopy={this.showToolTip}>
                 <DropdownItem className="px-3">
-                  <DropdownItemContents title={t('copy_to_clipboard.Parmanent link')} contents={permalink} />
+                  <DropdownItemContents title={t('copy_to_clipboard.Permanent link')} contents={permalink} />
                 </DropdownItem>
               </CopyToClipboard>
             )}
 
             <DropdownItem divider className="my-0"></DropdownItem>
 
-            {/* Page path + Parmanent Link */}
+            {/* Page path + Permanent Link */}
             { pageId && (
               <CopyToClipboard text={`${pagePathWithParams}\n${permalink}`} onCopy={this.showToolTip}>
                 <DropdownItem className="px-3">
-                  <DropdownItemContents title={t('copy_to_clipboard.Page path and parmanent link')} contents={<>{pagePathWithParams}<br />{permalink}</>} />
+                  <DropdownItemContents title={t('copy_to_clipboard.Page path and permanent link')} contents={<>{pagePathWithParams}<br />{permalink}</>} />
                 </DropdownItem>
               </CopyToClipboard>
             )}

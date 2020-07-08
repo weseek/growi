@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import path from 'path';
 import {
   Modal,
   ModalHeader,
@@ -32,6 +31,7 @@ class LinkEditModal extends React.PureComponent {
       labelInputValue: '',
       linkerType: Linker.types.markdownLink,
       markdown: '',
+      permalink: '',
     };
 
     this.isApplyPukiwikiLikeLinkerPlugin = window.growiRenderer.preProcessors.some(process => process.constructor.name === 'PukiwikiLikeLinker');
@@ -44,17 +44,18 @@ class LinkEditModal extends React.PureComponent {
     this.handleChangeLinkInput = this.handleChangeLinkInput.bind(this);
     this.handleSelecteLinkerType = this.handleSelecteLinkerType.bind(this);
     this.toggleIsUseRelativePath = this.toggleIsUseRelativePath.bind(this);
-    this.setMarkdown = this.setMarkdown.bind(this);
     this.toggleIsUsePamanentLink = this.toggleIsUsePamanentLink.bind(this);
     this.save = this.save.bind(this);
     this.generateLink = this.generateLink.bind(this);
+    this.getPreview = this.getPreview.bind(this);
+    this.renderPreview = this.renderPreview.bind(this);
   }
 
   componentDidUpdate(prevState) {
     const { linkInputValue: prevLinkInputValue } = prevState;
     const { linkInputValue } = this.state;
     if (linkInputValue !== prevLinkInputValue) {
-      this.setMarkdown(linkInputValue);
+      this.getPreview(linkInputValue);
     }
   }
 
@@ -73,6 +74,8 @@ class LinkEditModal extends React.PureComponent {
       show: true,
       labelInputValue: label,
       linkInputValue: link,
+      isUsePermanentLink: false,
+      permalink: '',
       linkerType: type,
     });
   }
@@ -91,11 +94,18 @@ class LinkEditModal extends React.PureComponent {
     if (this.state.linkerType === Linker.types.growiLink) {
       return;
     }
-    this.setState({ isUseRelativePath: !this.state.isUseRelativePath });
+
+    // User can't use both relativePath and permalink at the same time
+    this.setState({ isUseRelativePath: !this.state.isUseRelativePath, isUsePermanentLink: false });
   }
 
   toggleIsUsePamanentLink() {
-    this.setState({ isUsePermanentLink: !this.state.isUsePermanentLink });
+    if (this.state.permalink === '' || this.state.linkerType === Linker.types.growiLink) {
+      return;
+    }
+
+    // User can't use both relativePath and permalink at the same time
+    this.setState({ isUsePermanentLink: !this.state.isUsePermanentLink, isUseRelativePath: false });
   }
 
   renderPreview() {
@@ -108,22 +118,25 @@ class LinkEditModal extends React.PureComponent {
     );
   }
 
-  async setMarkdown(path) {
+  async getPreview(path) {
     let markdown = '';
+    let permalink = '';
     try {
-      await this.props.appContainer.apiGet('/pages.get', { path }).then((res) => {
-        markdown = res.page.revision.body;
-      });
+      const res = await this.props.appContainer.apiGet('/pages.get', { path });
+      markdown = res.page.revision.body;
+      permalink = `${window.location.origin}/${res.page.id}`;
     }
     catch (err) {
       markdown = `<div class="alert alert-warning" role="alert"><strong>${err.message}</strong></div>`;
     }
-    this.setState({ markdown });
+    this.setState({ markdown, permalink });
   }
 
   handleChangeTypeahead(selected) {
     const page = selected[0];
-    this.setState({ linkInputValue: page.path });
+    if (page != null) {
+      this.setState({ linkInputValue: page.path });
+    }
   }
 
   handleChangeLabelInput(label) {
@@ -135,10 +148,12 @@ class LinkEditModal extends React.PureComponent {
   }
 
   handleSelecteLinkerType(linkerType) {
-    if (this.state.isUseRelativePath && linkerType === Linker.types.growiLink) {
-      this.toggleIsUseRelativePath();
+    let { isUseRelativePath, isUsePermanentLink } = this.state;
+    if (linkerType === Linker.types.growiLink) {
+      isUseRelativePath = false;
+      isUsePermanentLink = false;
     }
-    this.setState({ linkerType });
+    this.setState({ linkerType, isUseRelativePath, isUsePermanentLink });
   }
 
   save() {
@@ -158,23 +173,19 @@ class LinkEditModal extends React.PureComponent {
       labelInputValue,
       linkerType,
       isUseRelativePath,
+      isUsePermanentLink,
+      permalink,
     } = this.state;
 
-    let reshapedLink = linkInputValue;
-
-    if (isUseRelativePath && linkInputValue.match(/^\//)) {
-      reshapedLink = path.relative(pageContainer.state.path, linkInputValue);
-    }
-
-    if (linkerType === Linker.types.pukiwikiLink) {
-      return `[[${labelInputValue}>${reshapedLink}]]`;
-    }
-    if (linkerType === Linker.types.growiLink) {
-      return `[${reshapedLink}]`;
-    }
-    if (linkerType === Linker.types.markdownLink) {
-      return `[${labelInputValue}](${reshapedLink})`;
-    }
+    return new Linker(
+      linkerType,
+      labelInputValue,
+      linkInputValue,
+      isUseRelativePath,
+      pageContainer.state.path,
+      isUsePermanentLink,
+      permalink,
+    );
   }
 
   render() {
@@ -186,7 +197,7 @@ class LinkEditModal extends React.PureComponent {
 
         <ModalBody className="container">
           <div className="row">
-            <div className="col">
+            <div className="col-12 col-lg-6">
               <form className="form-group">
                 <div className="form-gorup my-3">
                   <label htmlFor="linkInput">Link</label>
@@ -198,14 +209,6 @@ class LinkEditModal extends React.PureComponent {
                       placeholder="Input page path or URL"
                       keywordOnInit={this.state.linkInputValue}
                     />
-                  </div>
-                </div>
-                <div className="form-inline">
-                  <div className="custom-control custom-checkbox custom-checkbox-info">
-                    <input className="custom-control-input" id="permanentLink" type="checkbox" checked={this.state.isUsePamanentLink} />
-                    <label className="custom-control-label" htmlFor="permanentLink" onClick={this.toggleIsUsePamanentLink}>
-                      Use permanent link
-                    </label>
                   </div>
                 </div>
               </form>
@@ -268,6 +271,20 @@ class LinkEditModal extends React.PureComponent {
                         />
                         <label className="custom-control-label" htmlFor="relativePath" onClick={this.toggleIsUseRelativePath}>
                           Use relative path
+                        </label>
+                      </div>
+                    </div>
+                    <div className="form-inline">
+                      <div className="custom-control custom-checkbox custom-checkbox-info">
+                        <input
+                          className="custom-control-input"
+                          id="permanentLink"
+                          type="checkbox"
+                          checked={this.state.isUsePermanentLink}
+                          disabled={this.state.permalink === '' || this.state.linkerType === Linker.types.growiLink}
+                        />
+                        <label className="custom-control-label" htmlFor="permanentLink" onClick={this.toggleIsUsePamanentLink}>
+                          Use permanent link
                         </label>
                       </div>
                     </div>
