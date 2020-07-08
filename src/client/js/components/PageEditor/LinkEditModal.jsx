@@ -134,7 +134,9 @@ class LinkEditModal extends React.PureComponent {
 
   handleChangeTypeahead(selected) {
     const page = selected[0];
-    this.setState({ linkInputValue: page.path });
+    if (page != null) {
+      this.setState({ linkInputValue: page.path });
+    }
   }
 
   handleChangeLabelInput(label) {
