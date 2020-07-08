@@ -22,6 +22,7 @@ import BookmarkButton from '../BookmarkButton';
 import PageCreator from './PageCreator';
 import RevisionAuthor from './RevisionAuthor';
 import DrawerToggler from './DrawerToggler';
+import UserPicture from '../User/UserPicture';
 
 
 // eslint-disable-next-line react/prop-types
@@ -60,6 +61,69 @@ const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
   );
 };
 
+// eslint-disable-next-line react/prop-types
+const UserPagePathNav = ({ pageId, pagePath }) => {
+  const linkedPagePath = new LinkedPagePath(pagePath);
+  const latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />;
+
+  return (
+    <div className="grw-page-path-nav">
+      <span className="d-flex align-items-center flex-wrap">
+        <h4 className="grw-user-page-path">{latterLink}</h4>
+        <RevisionPathControls
+          pageId={pageId}
+          pagePath={pagePath}
+        />
+      </span>
+    </div>
+  );
+};
+
+/* eslint-disable react/prop-types */
+const UserInfo = ({ pageUser }) => {
+  return (
+    <div className="grw-users-info d-flex align-items-center d-edit-none">
+      <UserPicture user={pageUser} />
+
+      <div className="users-meta">
+        <h1 className="user-page-name">
+          {pageUser.name}
+        </h1>
+        <div className="user-page-meta mt-1 mb-0">
+          <span className="user-page-username mr-2"><i className="icon-user mr-1"></i>{pageUser.username}</span>
+          <span className="user-page-email mr-2">
+            <i className="icon-envelope mr-1"></i>
+            {pageUser.isEmailPublished ? pageUser.email : '*****'}
+          </span>
+          {pageUser.introduction && <span className="user-page-introduction">{pageUser.introduction}</span>}
+        </div>
+      </div>
+
+    </div>
+  );
+};
+/* eslint-enable react/prop-types */
+
+/* eslint-disable react/prop-types */
+const PageReactionButtons = ({ appContainer, pageContainer }) => {
+
+  const { pageId, isLiked, pageUser } = pageContainer.state;
+
+  return (
+    <>
+      {pageUser == null && (
+      <span className="mr-2">
+        <LikeButton pageId={pageId} isLiked={isLiked} />
+      </span>
+      )}
+      <span className="mr-2">
+        <BookmarkButton pageId={pageId} crowi={appContainer} />
+      </span>
+    </>
+  );
+};
+/* eslint-enable react/prop-types */
+
 const GrowiSubNavigation = (props) => {
   const {
     appContainer, navigationContainer, pageContainer, isCompactMode,
@@ -67,10 +131,11 @@ const GrowiSubNavigation = (props) => {
   const { isDrawerMode } = navigationContainer.state;
   const {
     pageId, path, createdAt, creator, updatedAt, revisionAuthor,
-    isForbidden: isPageForbidden,
+    isForbidden: isPageForbidden, pageUser,
   } = pageContainer.state;
 
   const isPageNotFound = pageId == null;
+  const isUserPage = pageUser != null;
   const isPageInTrash = isTrashPage(path);
 
   // Display only the RevisionPath
@@ -94,42 +159,39 @@ const GrowiSubNavigation = (props) => {
         ) }
 
         <div>
-          { !isCompactMode && !isPageNotFound && !isPageForbidden && (
+          { !isCompactMode && !isPageNotFound && !isPageForbidden && !isUserPage && (
             <div className="mb-2">
               <TagLabels />
             </div>
           ) }
-          <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
+
+          {isUserPage ? <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
+          : <UserPagePathNav pageId={pageId} pagePath={path} />}
+
+          {isUserPage && <UserInfo pageUser={pageUser} />}
+
         </div>
       </div>
 
       {/* Right side */}
       <div className="d-flex">
 
-        {/* Buttons */}
-        { !isPageInTrash && (
-          <div className="d-flex flex-column align-items-end justify-content-center">
-            <div className="d-flex">
-              <span className="mr-2">
-                <LikeButton pageId={pageId} isLiked={pageContainer.state.isLiked} />
-              </span>
-              <span className="mr-2">
-                <BookmarkButton pageId={pageId} crowi={appContainer} />
-              </span>
-            </div>
+        <div className="d-flex flex-column align-items-end justify-content-center">
+          <div className="d-flex">
+            { !isPageInTrash && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
             <div className="mt-2">
               {/* TODO: impl View / Edit / HackMD button group */}
               {/* <div className="btn-group" role="group" aria-label="Basic example">
-                <button type="button" className="btn btn-outline-primary">Left</button>
-                <button type="button" className="btn btn-outline-primary">Middle</button>
-                <button type="button" className="btn btn-outline-primary">Right</button>
-              </div> */}
+              <button type="button" className="btn btn-outline-primary">Left</button>
+              <button type="button" className="btn btn-outline-primary">Middle</button>
+              <button type="button" className="btn btn-outline-primary">Right</button>
+            </div> */}
             </div>
           </div>
-        ) }
+        </div>
 
         {/* Page Authors */}
-        { !isCompactMode && (
+        { (!isCompactMode && !isUserPage) && (
           <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none">
             { creator != null && (
               <li className="pb-1">
