@@ -47,7 +47,7 @@ class LinkEditModal extends React.PureComponent {
     this.toggleIsUsePamanentLink = this.toggleIsUsePamanentLink.bind(this);
     this.save = this.save.bind(this);
     this.generateLink = this.generateLink.bind(this);
-    this.getPreviewWithLinkInputValue = this.getPreviewWithLinkInputValue.bind(this);
+    this.getPreview = this.getPreview.bind(this);
     this.renderPreview = this.renderPreview.bind(this);
   }
 
@@ -55,7 +55,7 @@ class LinkEditModal extends React.PureComponent {
     const { linkInputValue: prevLinkInputValue } = prevState;
     const { linkInputValue } = this.state;
     if (linkInputValue !== prevLinkInputValue) {
-      this.getPreviewWithLinkInputValue(linkInputValue);
+      this.getPreview(linkInputValue);
     }
   }
 
@@ -74,6 +74,8 @@ class LinkEditModal extends React.PureComponent {
       show: true,
       labelInputValue: label,
       linkInputValue: link,
+      isUsePermanentLink: false,
+      permalink: '',
       linkerType: type,
     });
   }
@@ -116,17 +118,18 @@ class LinkEditModal extends React.PureComponent {
     );
   }
 
-  async setMarkdown(path) {
+  async getPreview(path) {
     let markdown = '';
+    let permalink = '';
     try {
-      await this.props.appContainer.apiGet('/pages.get', { path }).then((res) => {
-        markdown = res.page.revision.body;
-      });
+      const res = await this.props.appContainer.apiGet('/pages.get', { path });
+      markdown = res.page.revision.body;
+      permalink = `${window.location.origin}/${res.page.id}`;
     }
     catch (err) {
       markdown = `<div class="alert alert-warning" role="alert"><strong>${err.message}</strong></div>`;
     }
-    this.setState({ markdown });
+    this.setState({ markdown, permalink });
   }
 
   handleChangeTypeahead(selected) {
@@ -161,20 +164,6 @@ class LinkEditModal extends React.PureComponent {
     }
 
     this.hide();
-  }
-
-  async getPreviewWithLinkInputValue(path) {
-    let markdown = '';
-    let permalink = '';
-    try {
-      const res = await this.props.appContainer.apiGet('/pages.get', { path });
-      markdown = res.page.revision.body;
-      permalink = `${window.location.origin}/${res.page.id}`;
-    }
-    catch (err) {
-      markdown = `<div class="alert alert-warning" role="alert"><strong>${err.message}</strong></div>`;
-    }
-    this.setState({ markdown, permalink });
   }
 
   generateLink() {
