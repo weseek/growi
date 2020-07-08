@@ -50,7 +50,7 @@ class LinkEditModal extends React.PureComponent {
     this.toggleIsUsePamanentLink = this.toggleIsUsePamanentLink.bind(this);
     this.save = this.save.bind(this);
     this.generateLink = this.generateLink.bind(this);
-    this.getPageWithLinkInputValue = this.getPageWithLinkInputValue.bind(this);
+    this.getPreviewWithLinkInputValue = this.getPreviewWithLinkInputValue.bind(this);
     this.renderPreview = this.renderPreview.bind(this);
   }
 
@@ -58,7 +58,7 @@ class LinkEditModal extends React.PureComponent {
     const { linkInputValue: prevLinkInputValue } = prevState;
     const { linkInputValue } = this.state;
     if (linkInputValue !== prevLinkInputValue) {
-      this.getPageWithLinkInputValue(linkInputValue);
+      this.getPreviewWithLinkInputValue(linkInputValue);
     }
   }
 
@@ -162,7 +162,7 @@ class LinkEditModal extends React.PureComponent {
     this.hide();
   }
 
-  async getPageWithLinkInputValue(path) {
+  async getPreviewWithLinkInputValue(path) {
     let markdown = '';
     let permalink = '';
     let isEnablePermanentLink = false;
