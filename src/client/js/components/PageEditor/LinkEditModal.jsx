@@ -32,7 +32,6 @@ class LinkEditModal extends React.PureComponent {
       linkerType: Linker.types.markdownLink,
       markdown: '',
       permalink: '',
-      isEnablePermanentLink: false,
     };
 
     this.isApplyPukiwikiLikeLinkerPlugin = window.growiRenderer.preProcessors.some(process => process.constructor.name === 'PukiwikiLikeLinker');
@@ -99,7 +98,7 @@ class LinkEditModal extends React.PureComponent {
   }
 
   toggleIsUsePamanentLink() {
-    if (!this.state.isEnablePermanentLink) {
+    if (this.state.permalink === '' || this.state.linkerType === Linker.types.growiLink) {
       return;
     }
 
@@ -146,10 +145,12 @@ class LinkEditModal extends React.PureComponent {
   }
 
   handleSelecteLinkerType(linkerType) {
-    if (this.state.isUseRelativePath && linkerType === Linker.types.growiLink) {
-      this.toggleIsUseRelativePath();
+    let { isUseRelativePath, isUsePermanentLink } = this.state;
+    if (linkerType === Linker.types.growiLink) {
+      isUseRelativePath = false;
+      isUsePermanentLink = false;
     }
-    this.setState({ linkerType });
+    this.setState({ linkerType, isUseRelativePath, isUsePermanentLink });
   }
 
   save() {
@@ -165,17 +166,15 @@ class LinkEditModal extends React.PureComponent {
   async getPreviewWithLinkInputValue(path) {
     let markdown = '';
     let permalink = '';
-    let isEnablePermanentLink = false;
     try {
       const res = await this.props.appContainer.apiGet('/pages.get', { path });
       markdown = res.page.revision.body;
       permalink = `${window.location.origin}/${res.page.id}`;
-      isEnablePermanentLink = true;
     }
     catch (err) {
       markdown = `<div class="alert alert-warning" role="alert"><strong>${err.message}</strong></div>`;
     }
-    this.setState({ markdown, permalink, isEnablePermanentLink });
+    this.setState({ markdown, permalink });
   }
 
   generateLink() {
@@ -293,7 +292,7 @@ class LinkEditModal extends React.PureComponent {
                           id="permanentLink"
                           type="checkbox"
                           checked={this.state.isUsePermanentLink}
-                          disabled={!this.state.isEnablePermanentLink}
+                          disabled={this.state.permalink === '' || this.state.linkerType === Linker.types.growiLink}
                         />
                         <label className="custom-control-label" htmlFor="permanentLink" onClick={this.toggleIsUsePamanentLink}>
                           Use permanent link
