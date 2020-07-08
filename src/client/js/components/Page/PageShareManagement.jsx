@@ -27,25 +27,24 @@ const PageShareManagement = (props) => {
     setIsOutsideShareLinkModalShown(false);
   }
 
-
-  async function getExportPageFile(type) {
-    const pageId = pageContainer.state.pageId;
+  async function getMarkdown() {
+    const { revisionId } = pageContainer.state;
     try {
-      const res = await appContainer.apiv3Get('/pages/export', { pageId, type });
-      return res;
+      const res = await appContainer.apiv3Get('/page/export', { revisionId });
+      return res.data.markdown;
     }
     catch (err) {
       toastError(Error(t('export_bulk.failed_to_export')));
     }
   }
 
-  function exportPage(exportPageFile) {
-    // TODO implement
+  async function exportPage(markdown, type) {
+    // TODO: GW-3063
   }
 
-  function exportPageHundler(type) {
-    const exportPageFile = getExportPageFile(type);
-    exportPage(exportPageFile);
+  async function exportPageHundler(type) {
+    const markdown = await getMarkdown();
+    await exportPage(markdown, type);
   }
 
   function renderModals() {
@@ -99,7 +98,7 @@ const PageShareManagement = (props) => {
           <i className="icon-fw icon-link"></i>{t('Shere this page link to public')}
           <span className="ml-2 badge badge-info badge-pill">{pageContainer.state.shareLinksNumber}</span>
         </button>
-        <button type="button" className="dropdown-item" onClick={() => { exportPageHundler('markdown') }}>
+        <button type="button" className="dropdown-item" onClick={() => { exportPageHundler('md') }}>
           <span>{t('export_bulk.export_page_markdown')}</span>
         </button>
         <button type="button" className="dropdown-item" onClick={() => { exportPageHundler('pdf') }}>
