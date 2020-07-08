@@ -25,27 +25,8 @@ import DrawerToggler from './DrawerToggler';
 import UserPicture from '../User/UserPicture';
 
 
-const PagePathNav = ({
-  // eslint-disable-next-line react/prop-types
-  pageId, pagePath, isPageForbidden, isUserPage,
-}) => {
-
-  if (isUserPage) {
-    const linkedPagePath = new LinkedPagePath(pagePath);
-    const latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />;
-
-    return (
-      <div className="grw-page-path-nav">
-        <span className="d-flex align-items-center flex-wrap">
-          <h4 className="grw-user-page-path">{latterLink}</h4>
-          <RevisionPathControls
-            pageId={pageId}
-            pagePath={pagePath}
-          />
-        </span>
-      </div>
-    );
-  }
+// eslint-disable-next-line react/prop-types
+const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
 
   const dPagePath = new DevidedPagePath(pagePath, false, true);
 
@@ -74,6 +55,24 @@ const PagePathNav = ({
           pageId={pageId}
           pagePath={pagePath}
           isPageForbidden={isPageForbidden}
+        />
+      </span>
+    </div>
+  );
+};
+
+// eslint-disable-next-line react/prop-types
+const UserPagePathNav = ({ pageId, pagePath }) => {
+  const linkedPagePath = new LinkedPagePath(pagePath);
+  const latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />;
+
+  return (
+    <div className="grw-page-path-nav">
+      <span className="d-flex align-items-center flex-wrap">
+        <h4 className="grw-user-page-path">{latterLink}</h4>
+        <RevisionPathControls
+          pageId={pageId}
+          pagePath={pagePath}
         />
       </span>
     </div>
@@ -165,7 +164,9 @@ const GrowiSubNavigation = (props) => {
               <TagLabels />
             </div>
           ) }
-          <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} isUserPage={isUserPage} />
+
+          {isUserPage ? <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
+          : <UserPagePathNav pageId={pageId} pagePath={path} />}
 
           {isUserPage && <UserInfo pageUser={pageUser} />}
 
