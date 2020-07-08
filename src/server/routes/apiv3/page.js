@@ -259,90 +259,15 @@ module.exports = (crowi) => {
 
   router.get('/count-children-pages', accessTokenParser, loginRequired, async(req, res) => {
 
-    // TO DO implement correct number at another task
-
-    const {
-      path,
-      isSubordinatedPageDownload,
-      hierarchyType,
-      hierarchyValue,
-    } = req.query;
+    const { path } = req.query;
 
     const searchWord = new RegExp(`^${path}`);
     const archivePageData = await Page.find({ path: { $in: searchWord } });
     const archivePagePaths = archivePageData.map(element => element.path);
+    console.log(archivePagePaths);
     const counts = archivePagePaths.map(element => element.split('/').length);
-    const archivePageCount = archivePagePaths.length;
-
-    if (isSubordinatedPageDownload === 'false') {
-      const archivePageCount = 1;
-      return res.apiv3({ archivePageCount });
-    }
-
-    if (hierarchyType === 'allSubordinatedPage') {
-      return res.apiv3({ archivePageCount });
-    }
-
-    if (hierarchyType === 'decideHierarchy') {
-      if (hierarchyValue === '0') {
-        const archivePageCount = 1;
-        return res.apiv3({ archivePageCount });
-      }
-
-      if (hierarchyValue === '1') {
-        const countFirst = counts.filter(count => count === 3);
-        const archivePageCount = countFirst.length;
-        return res.apiv3({ archivePageCount });
-      }
-
-      if (hierarchyValue === '2') {
-        const countSecond = counts.filter(count => count === 4);
-        const archivePageCount = countSecond.length;
-        return res.apiv3({ archivePageCount });
-      }
-
-      if (hierarchyValue === '3') {
-        const countThird = counts.filter(count => count === 5);
-        const archivePageCount = countThird.length;
-        return res.apiv3({ archivePageCount });
-      }
-
-      if (hierarchyValue === '4') {
-        const countFourth = counts.filter(count => count === 6);
-        const archivePageCount = countFourth.length;
-        return res.apiv3({ archivePageCount });
-      }
-
-      if (hierarchyValue === '5') {
-        const countFifth = counts.filter(count => count === 7);
-        const archivePageCount = countFifth.length;
-        return res.apiv3({ archivePageCount });
-      }
-
-      if (hierarchyValue === '6') {
-        const countSixth = counts.filter(count => count === 8);
-        const archivePageCount = countSixth.length;
-        return res.apiv3({ archivePageCount });
-      }
-
-      if (hierarchyValue === '7') {
-        const countSeventh = counts.filter(count => count === 9);
-        const archivePageCount = countSeventh.length;
-        return res.apiv3({ archivePageCount });
-      }
-
-      if (hierarchyValue === '8') {
-        const countEighth = counts.filter(count => count === 10);
-        const archivePageCount = countEighth.length;
-        return res.apiv3({ archivePageCount });
-      }
-
-      if (hierarchyValue === '9') {
-        const countNinth = counts.filter(count => count === 11);
-        const archivePageCount = countNinth.length;
-        return res.apiv3({ archivePageCount });
-      }
-    }
+    console.log(counts);
+    return res.apiv3({ counts });
   });
   return router;
 };
