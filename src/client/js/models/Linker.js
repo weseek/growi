@@ -18,6 +18,13 @@ export default class Linker {
     pukiwikiLink: 'pukiwikiLink',
   }
 
+  static patterns = {
+    pukiwikiLinkWithLabel: /^\[\[(?<label>.+)>(?<link>.+)\]\]$/, // https://regex101.com/r/2fNmUN/2
+    pukiwikiLinkWithoutLabel: /^\[\[(?<label>.+)\]\]$/, // https://regex101.com/r/S7w5Xu/1
+    growiLink: /^\[(?<label>\/.+)\]$/, // https://regex101.com/r/DJfkYf/3
+    markdownLink: /^\[(?<label>.*)\]\((?<link>.*)\)$/, // https://regex101.com/r/DZCKP3/2
+  }
+
   generateMarkdownText() {
     let reshapedLink = this.link;
 
@@ -45,37 +52,27 @@ export default class Linker {
     let link = '';
     let type = this.types.markdownLink;
 
-    // pukiwiki
-    // https://regex101.com/r/2fNmUN/1
-    if (str.match(/^\[\[.*\]\]$/)) {
+    // pukiwiki with separator ">".
+    if (str.match(this.patterns.pukiwikiWithLabel)) {
       type = this.types.pukiwikiLink;
-      const value = str.slice(2, -2);
-      const indexOfSplit = value.lastIndexOf('>');
-      if (indexOfSplit < 0) {
-        label = value;
-        link = value;
-      }
-      else {
-        label = value.slice(0, indexOfSplit);
-        link = value.slice(indexOfSplit + 1);
-      }
+      ({ label, link } = str.match(this.patterns.pukiwikiWithLabel).groups);
+    }
+    // pukiwiki without separator ">".
+    else if (str.match(this.patterns.pukiwikiLinkWithoutLabel)) {
+      type = this.types.pukiwikiLink;
+      ({ label } = str.match(this.patterns.pukiwikiLinkWithoutLabel).groups);
+      link = label;
     }
     // growi
-    // https://regex101.com/r/DJfkYf/1
-    else if (str.match(/^\[\/.*\]$/)) {
+    else if (str.match(this.patterns.growiLink)) {
       type = this.types.growiLink;
-      const value = str.slice(1, -1);
-      label = value;
-      link = value;
+      ({ label } = str.match(this.patterns.growiLink).groups);
+      link = label;
     }
     // markdown
-    // https://regex101.com/r/DZCKP3/1
-    else if (str.match(/^\[.*\]\(.*\)$/)) {
+    else if (str.match(this.patterns.markdownLink)) {
       type = this.types.markdownLink;
-      const value = str.slice(1, -1);
-      const indexOfSplit = value.lastIndexOf('](');
-      label = value.slice(0, indexOfSplit);
-      link = value.slice(indexOfSplit + 2);
+      ({ label, link } = str.match(this.patterns.markdownLink).groups);
     }
 
     return new Linker(type, label, link);
