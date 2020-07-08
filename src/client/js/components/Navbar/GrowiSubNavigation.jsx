@@ -165,10 +165,17 @@ const GrowiSubNavigation = (props) => {
             </div>
           ) }
 
-          {isUserPage ? <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
-          : <UserPagePathNav pageId={pageId} pagePath={path} />}
-
-          {isUserPage && <UserInfo pageUser={pageUser} />}
+          { isUserPage
+            ? (
+              <>
+                <UserPagePathNav pageId={pageId} pagePath={path} />
+                <UserInfo pageUser={pageUser} />
+              </>
+            )
+            : (
+              <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
+            )
+          }
 
         </div>
       </div>
