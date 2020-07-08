@@ -95,10 +95,10 @@ class OutsideShareLinkModal extends React.Component {
         </ModalHeader>
         <ModalBody>
           <div className="container">
-            <div className="form-inline mb-3">
-              <h4>{t('share_links.share_link_list')}</h4>
-              <button className="ml-auto btn btn-danger" type="button" onClick={this.deleteAllLinksButtonHandler}>{t('delete_all')}</button>
-            </div>
+            <h3 className="grw-modal-head  d-flex  pb-2">
+              { t('share_links.share_link_list') }
+              <button className="btn btn-danger ml-auto " type="button" onClick={this.deleteAllLinksButtonHandler}>{t('delete_all')}</button>
+            </h3>
 
             <div>
               <ShareLinkList

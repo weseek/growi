@@ -424,7 +424,8 @@
     "description": "description",
     "enter_desc": "Enter description",
     "Unlimited": "unlimited",
-    "Issue": "Issue"
+    "Issue": "Issue",
+    "Share_settings" :"Share settings"
   },
 	"security_setting": {
 		"Security settings": "安全设置",
