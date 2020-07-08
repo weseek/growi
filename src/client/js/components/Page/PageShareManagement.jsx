@@ -22,9 +22,6 @@ const PageShareManagement = (props) => {
 
   const [isArchiveCreateModalShown, setIsArchiveCreateModalShown] = useState(false);
 
-  const [totalPages, setTotalPages] = useState(null);
-
-  const [errorMessage, setErrorMessage] = useState(null);
 
   function openOutsideShareLinkModalHandler() {
     setIsOutsideShareLinkModalShown(true);
@@ -45,18 +42,6 @@ const PageShareManagement = (props) => {
     }
   }
 
-  async function getArchivePageData() {
-    try {
-      const res = await appContainer.apiv3Get('page/count-children-pages', { pageId });
-      setTotalPages(res.data.archivePageCount);
-      console.log(res.data.archivePageCount);
-
-    }
-    catch (err) {
-      setErrorMessage(t('export_bulk.failed_to_count_pages'));
-    }
-  }
-
   function exportPage(exportPageFile) {
     // TODO implement
   }
@@ -68,7 +53,6 @@ const PageShareManagement = (props) => {
 
   function openArchiveModalHandler() {
     setIsArchiveCreateModalShown(true);
-    getArchivePageData();
   }
 
 
@@ -89,8 +73,6 @@ const PageShareManagement = (props) => {
           isOpen={isArchiveCreateModalShown}
           onClose={closeArchiveCreateModalHandler}
           path={path}
-          errorMessage={errorMessage}
-          totalPages={totalPages}
         />
       </>
     );

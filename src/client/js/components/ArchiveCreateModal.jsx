@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import {
@@ -10,13 +10,16 @@ import { toastSuccess, toastError } from '../util/apiNotification';
 
 
 const ArchiveCreateModal = (props) => {
-  const { t, appContainer } = props;
+  const { t, appContainer, path } = props;
   const [isCommentDownload, setIsCommentDownload] = useState(false);
   const [isAttachmentFileDownload, setIsAttachmentFileDownload] = useState(false);
   const [isSubordinatedPageDownload, setIsSubordinatedPageDownload] = useState(false);
   const [fileType, setFileType] = useState('markdown');
-  const [hierarchyType, setHierarchyType] = useState('allSubordinatedPage');
+  const [hierarchyType, setHierarchyType] = useState(false);
   const [hierarchyValue, setHierarchyValue] = useState(1);
+  const [totalPages, setTotalPages] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+
 
   function changeIsCommentDownloadHandler() {
     setIsCommentDownload(!isCommentDownload);
@@ -53,6 +56,7 @@ const ArchiveCreateModal = (props) => {
     setHierarchyValue(hierarchyValue);
   }
 
+
   async function done() {
 
     try {
@@ -71,6 +75,24 @@ const ArchiveCreateModal = (props) => {
       toastError(e);
     }
   }
+
+  async function getArchivePageData() {
+    try {
+      const res = await appContainer.apiv3Get('page/count-children-pages', {
+        path, hierarchyType, hierarchyValue, isSubordinatedPageDownload,
+      });
+      setTotalPages(res.data.archivePageCount);
+    }
+    catch (e) {
+      setErrorMessage(t('export_bulk.failed_to_count_pages'));
+
+    }
+  }
+
+  useEffect(() => {
+    getArchivePageData();
+  }, [props.isOpen, hierarchyType, hierarchyValue, isSubordinatedPageDownload]);
+
 
   return (
     <Modal isOpen={props.isOpen} toggle={closeModalHandler}>
@@ -218,8 +240,8 @@ const ArchiveCreateModal = (props) => {
       </ModalBody>
       <ModalFooter>
         {/* TO DO implement correct number at GW-3053 */}
-        合計{props.totalPages}ページ取得
-        {props.errorMessage}
+        合計{totalPages}ページ取得
+        {errorMessage}
         <button type="button" className="btn btn-primary" onClick={done}>
           Done
         </button>
