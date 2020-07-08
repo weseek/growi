@@ -16,6 +16,7 @@ function RenderTagLabels(props) {
     props.openEditorModal();
   }
 
+  // activate suspense
   if (tags == null) {
     throw new Promise(() => {});
   }
