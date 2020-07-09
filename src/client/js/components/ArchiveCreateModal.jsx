@@ -53,9 +53,6 @@ const ArchiveCreateModal = (props) => {
     setHierarchyValue(hierarchyValue);
   }
 
-  // 次回タスクでモーダルにデータを渡す
-  // function displayPageData() {
-  // }
 
   async function done() {
     try {
@@ -221,8 +218,6 @@ const ArchiveCreateModal = (props) => {
       </ModalBody>
       <ModalFooter>
         {/* TO DO implement correct number at GW-3053 */}
-        {/* このdisplayPageData()が将来的に合計ページになる予定 */}
-        {/* {displayPageData()} */}
         合計{props.totalPages}ページ取得
         {props.errorMessage}
         <button type="button" className="btn btn-primary" onClick={done}>
@@ -243,7 +238,7 @@ ArchiveCreateModal.propTypes = {
   path: PropTypes.string.isRequired,
   totalPages: PropTypes.number,
   errorMessage: PropTypes.string,
-  archiveData: PropTypes.array,
+  archiveData: PropTypes.object,
 
 };
 

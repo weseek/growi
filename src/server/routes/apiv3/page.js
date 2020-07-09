@@ -271,7 +271,6 @@ module.exports = (crowi) => {
       const depthValue = depth.filter(element => element === value).length;
       archiveDataForHierarchy[value] = depthValue;
     });
-    console.log(archiveDataForHierarchy);
     return res.apiv3({ archiveDataForHierarchy });
   });
   return router;
