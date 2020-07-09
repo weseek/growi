@@ -83,6 +83,9 @@ class ShareLinkForm extends React.Component {
     }
 
     if (expirationType === 'numberOfDays') {
+      if (!isInteger(Number(this.state.numberOfDays))) {
+        throw new Error('Number of days is invalid value.');
+      }
       const date = new Date();
       date.setDate(date.getDate() + Number(this.state.numberOfDays));
       expiredAt = date;
