@@ -339,8 +339,9 @@
 		"activate_user_success": "Succeeded to activating {{username}}",
 		"deactivate_user_success": "Succeeded to deactivate {{username}}",
 		"remove_user_success": "Succeeded to removing {{username}} ",
-		"remove_external_user_success": "Succeeded to remove {{accountId}} "
-	},
+    "remove_external_user_success": "Succeeded to remove {{accountId}} ",
+    "failed_to_reset_password":"Failed to reset password"
+  },
 	"template": {
 		"modal_label": {
 			"Create/Edit Template Page": "创建/编辑模板页",

@@ -23,14 +23,14 @@ class PasswordResetModal extends React.Component {
   }
 
   async resetPassword() {
-    const { appContainer, userForPasswordResetModal } = this.props;
+    const { t, appContainer, userForPasswordResetModal } = this.props;
     try {
       const res = await appContainer.apiv3Put('/users/reset-password', { id: userForPasswordResetModal._id });
       const { newPassword } = res.data;
       this.setState({ temporaryPassword: newPassword, isPasswordResetDone: true });
     }
     catch (err) {
-      toastError(err);
+      toastError(err, t('toaster.failed_to_reset_password'));
     }
   }
 
