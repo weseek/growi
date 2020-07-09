@@ -58,7 +58,14 @@
 
   <!-- revision-history -->
   <li class="nav-item">
-    <a class="nav-link" href="#revision-history" role="tab" data-toggle="tab">
+    <a
+      {% if user %}
+        class="nav-link" href="#revision-history" role="tab" data-toggle="tab" {% endif %}
+      {% if not user %}
+        class="nav-link edit-button edit-button-disabled" data-toggle="tooltip"
+        data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
+      {% endif %}
+     >
       <i class="icon-layers icon-fw"></i><span class="d-none d-md-inline">{{ t('History') }}</span>
     </a>
   </li>
@@ -67,7 +74,7 @@
   {% if !isTrashPage() %}
     <li id="page-share-management" class="nav-item dropdown"></li>
   {% endif %}
-  
+
   <!-- icon-options-vertical -->
   {% if !isTrashPage() %}
     <li id="page-management" class="nav-item dropdown"></li>
