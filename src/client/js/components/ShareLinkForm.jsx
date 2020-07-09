@@ -18,10 +18,10 @@ class ShareLinkForm extends React.Component {
     super(props);
     this.state = {
       expirationType: 'unlimited',
-      numberOfDays: 7,
+      numberOfDays: '7',
       description: '',
       customExpirationDate: dateFnsFormat(new Date(), 'yyyy-MM-dd'),
-      customExpirationTime: dateFnsFormat(new Date(), 'hh:mm:s'),
+      customExpirationTime: dateFnsFormat(new Date(), 'hh:mm'),
     };
 
     this.handleChangeExpirationType = this.handleChangeExpirationType.bind(this);
@@ -40,7 +40,7 @@ class ShareLinkForm extends React.Component {
 
   /**
    * change numberOfDays
-   * @param {number} numberOfDays
+   * @param {string} numberOfDays
    */
   handleChangeNumberOfDays(numberOfDays) {
     this.setState({ numberOfDays });
@@ -83,13 +83,13 @@ class ShareLinkForm extends React.Component {
 
     if (expirationType === 'numberOfDays') {
       const date = new Date();
-      date.setDate(date.getDate() + this.state.numberOfDays);
+      date.setDate(date.getDate() + Number(this.state.numberOfDays));
       expiredAt = date;
     }
 
     if (expirationType === 'custom') {
       const { customExpirationDate, customExpirationTime } = this.state;
-      expiredAt = parse(`${customExpirationDate}T${customExpirationTime}`, "yyyy-MM-dd'T'HH:mm:ss", new Date());
+      expiredAt = parse(`${customExpirationDate}T${customExpirationTime}`, "yyyy-MM-dd'T'HH:mm", new Date());
     }
 
     return expiredAt;
