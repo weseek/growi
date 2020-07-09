@@ -264,10 +264,15 @@ module.exports = (crowi) => {
     const searchWord = new RegExp(`^${path}`);
     const archivePageData = await Page.find({ path: { $in: searchWord } });
     const archivePagePaths = archivePageData.map(element => element.path);
-    console.log(archivePagePaths);
-    const counts = archivePagePaths.map(element => element.match(/\//g || []).length);
-    console.log(counts);
-    return res.apiv3({ counts });
+    const depth = archivePagePaths.map(element => element.match(/\//g || []).length);
+    const setDepth = new Set(depth);
+    const archiveDataForHierarchy = {};
+    setDepth.forEach((value) => {
+      const depthValue = depth.filter(element => element === value).length;
+      archiveDataForHierarchy[value] = depthValue;
+    });
+    console.log(archiveDataForHierarchy);
+    return res.apiv3({ archiveDataForHierarchy });
   });
   return router;
 };

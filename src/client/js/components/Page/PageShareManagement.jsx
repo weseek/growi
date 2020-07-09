@@ -42,7 +42,7 @@ const PageShareManagement = (props) => {
 
   async function getArchivePageData() {
     const res = await appContainer.apiv3Get('page/count-children-pages', { path });
-    setArchiveData(res.data.counts);
+    console.log(res.data.archiveDataForHierarchy);
   }
 
   function exportPage(exportPageFile) {
