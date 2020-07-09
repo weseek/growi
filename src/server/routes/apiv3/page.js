@@ -265,7 +265,7 @@ module.exports = (crowi) => {
     const archivePageData = await Page.find({ path: { $in: searchWord } });
     const archivePagePaths = archivePageData.map(element => element.path);
     console.log(archivePagePaths);
-    const counts = archivePagePaths.map(element => element.split('/').length);
+    const counts = archivePagePaths.map(element => element.match(/\//g || []).length);
     console.log(counts);
     return res.apiv3({ counts });
   });

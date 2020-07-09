@@ -18,6 +18,7 @@ const PageShareManagement = (props) => {
   const { currentUser } = appContainer;
   const [isOutsideShareLinkModalShown, setIsOutsideShareLinkModalShown] = useState(false);
   const [isArchiveCreateModalShown, setIsArchiveCreateModalShown] = useState(false);
+  const [archiveData, setArchiveData] = useState(null);
 
 
   function openOutsideShareLinkModalHandler() {
@@ -41,7 +42,7 @@ const PageShareManagement = (props) => {
 
   async function getArchivePageData() {
     const res = await appContainer.apiv3Get('page/count-children-pages', { path });
-    return res;
+    setArchiveData(res.data.counts);
   }
 
   function exportPage(exportPageFile) {
@@ -76,6 +77,7 @@ const PageShareManagement = (props) => {
           isOpen={isArchiveCreateModalShown}
           onClose={closeArchiveCreateModalHandler}
           path={path}
+          archiveData={archiveData}
         />
       </>
     );

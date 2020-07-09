@@ -17,6 +17,7 @@ const ArchiveCreateModal = (props) => {
   const [fileType, setFileType] = useState('markdown');
   const [hierarchyType, setHierarchyType] = useState(false);
   const [hierarchyValue, setHierarchyValue] = useState(1);
+  const [errorMessage, setErrorMessage] = useState(false);
 
   function changeIsCommentDownloadHandler() {
     setIsCommentDownload(!isCommentDownload);
@@ -53,6 +54,77 @@ const ArchiveCreateModal = (props) => {
     setHierarchyValue(hierarchyValue);
   }
 
+  function displayPageData() {
+    try {
+      if (hierarchyType === !'allSubordinatedPage') {
+        return 1;
+      }
+      if (hierarchyType === 'allSubordinatedPage') {
+        return props.archiveData.length;
+      }
+
+      if (hierarchyType === 'decideHierarchy') {
+        // 今のところ最大深度で実装を可能にしていないので階層１０までとしている。
+        // const maxDepth = props.archiveData.reduce((a, b) => {
+        //   return Math.max(a, b);
+        // });
+
+        if (hierarchyValue === '1') {
+          const first = props.archiveData.filter(count => count === 1);
+          return first.length;
+        }
+
+        if (hierarchyValue === '2') {
+          const second = props.archiveData.filter(count => count === 2);
+          return second.length;
+        }
+
+        if (hierarchyValue === '3') {
+          const third = props.archiveData.filter(count => count === 3);
+          return third.length;
+        }
+
+        if (hierarchyValue === '4') {
+          const forth = props.archiveData.filter(count => count === 4);
+          return forth.length;
+        }
+
+        if (hierarchyValue === '5') {
+          const fifth = props.archiveData.filter(count => count === 5);
+          return fifth.length;
+        }
+
+        if (hierarchyValue === '6') {
+          const sixth = props.archiveData.filter(count => count === 6);
+          return sixth.length;
+        }
+
+        if (hierarchyValue === '7') {
+          const seventh = props.archiveData.filter(count => count === 7);
+          return seventh.length;
+        }
+
+        if (hierarchyValue === '8') {
+          const eighth = props.archiveData.filter(count => count === 8);
+          return eighth.length;
+        }
+        if (hierarchyValue === '9') {
+          const ninth = props.archiveData.filter(count => count === 9);
+          return ninth.length;
+        }
+
+        if (hierarchyValue === '10') {
+          const tenth = props.archiveData.filter(count => count === 10);
+          return tenth.length;
+        }
+      }
+    }
+    catch (err) {
+      setErrorMessage(t('export_bulk.failed_to_count_pages'));
+    }
+  }
+
+  // console.log(props.archiveData);
 
   async function done() {
     try {
@@ -202,7 +274,7 @@ const ArchiveCreateModal = (props) => {
               <div className="my-1 custom-control costom-control-inline">
                 <input
                   type="number"
-                  min="0"
+                  min="1"
                   max="10"
                   disabled={hierarchyType === 'allSubordinatedPage'}
                   value={hierarchyValue}
@@ -218,8 +290,8 @@ const ArchiveCreateModal = (props) => {
       </ModalBody>
       <ModalFooter>
         {/* TO DO implement correct number at GW-3053 */}
-        合計xページ取得
-        {t('export_bulk.failed_to_count_pages')}
+        {displayPageData()}
+        {errorMessage}
         <button type="button" className="btn btn-primary" onClick={done}>
           Done
         </button>
@@ -238,6 +310,7 @@ ArchiveCreateModal.propTypes = {
   path: PropTypes.string.isRequired,
   totalPages: PropTypes.number,
   errorMessage: PropTypes.string,
+  archiveData: PropTypes.array,
 
 };
 
