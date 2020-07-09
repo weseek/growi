@@ -211,8 +211,7 @@
     "enter_desc": "Enter description",
     "Unlimited": "unlimited",
     "Issue": "Issue",
-    "Share_settings" :"Share settings"
-
+    "share_settings" :"Share settings"
   },
   "API Settings": "API settings",
   "API Token Settings": "API token settings",

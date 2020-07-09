@@ -213,7 +213,7 @@
     "enter_desc": "概要を入力",
     "Unlimited": "無期限",
     "Issue": "発行",
-    "Share_settings" :"共有設定"
+    "share_settings" :"共有設定"
   },
   "API Settings": "API設定",
   "API Token Settings": "API Token設定",

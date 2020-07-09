@@ -239,14 +239,11 @@ class ShareLinkForm extends React.Component {
   render() {
     const { t } = this.props;
     return (
-
-      <div className="share-link-form  p-3">
-        <h3 className="grw-modal-head pb-2"> { t('share_links.Share_settings') }</h3>
+      <div className="share-link-form p-3">
+        <h3 className="grw-modal-head pb-2"> { t('share_links.share_settings') }</h3>
         <div className=" p-3">
           {this.renderExpirationTypeOptions()}
           {this.renderDescriptionForm()}
-          {/* <div className="text-right">
-          </div> */}
           <button type="button" className="btn btn-primary d-block mx-auto px-5" onClick={this.handleIssueShareLink}>
             {t('share_links.Issue')}
           </button>
