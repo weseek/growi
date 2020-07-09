@@ -53,9 +53,9 @@ const ArchiveCreateModal = (props) => {
     setHierarchyValue(hierarchyValue);
   }
 
-  function displayPageData() {
-
-  }
+  // 次回タスクでモーダルにデータを渡す
+  // function displayPageData() {
+  // }
 
   async function done() {
     try {

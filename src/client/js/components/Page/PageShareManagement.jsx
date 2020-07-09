@@ -18,7 +18,8 @@ const PageShareManagement = (props) => {
   const { currentUser } = appContainer;
   const [isOutsideShareLinkModalShown, setIsOutsideShareLinkModalShown] = useState(false);
   const [isArchiveCreateModalShown, setIsArchiveCreateModalShown] = useState(false);
-  const [archiveData, setArchiveData] = useState(null);
+  // 次回タスクデータを渡す
+  // const [archiveData, setArchiveData] = useState(null);
 
 
   function openOutsideShareLinkModalHandler() {
@@ -77,7 +78,8 @@ const PageShareManagement = (props) => {
           isOpen={isArchiveCreateModalShown}
           onClose={closeArchiveCreateModalHandler}
           path={path}
-          archiveData={archiveData}
+          // 次回タスクデータを渡す
+          // archiveData={archiveData}
         />
       </>
     );
