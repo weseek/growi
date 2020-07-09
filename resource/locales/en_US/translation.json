@@ -211,7 +211,8 @@
     "enter_desc": "Enter description",
     "Unlimited": "unlimited",
     "Issue": "Issue",
-    "share_settings" :"Share settings"
+    "share_settings" :"Share settings",
+    "Invalid_Number_of_Date" : "You entered invalid value"
   },
   "API Settings": "API settings",
   "API Token Settings": "API token settings",
