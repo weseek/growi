@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
 import parse from 'date-fns/parse';
 
+import { isInteger } from 'core-js/fn/number';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import { toastSuccess, toastError } from '../util/apiNotification';
@@ -74,6 +75,7 @@ class ShareLinkForm extends React.Component {
    * Generate expiredAt by expirationType
    */
   generateExpired() {
+    const { t } = this.props;
     const { expirationType } = this.state;
     let expiredAt;
 
@@ -82,6 +84,9 @@ class ShareLinkForm extends React.Component {
     }
 
     if (expirationType === 'numberOfDays') {
+      if (!isInteger(Number(this.state.numberOfDays))) {
+        throw new Error(t('share_links.Invalid_Number_of_Date'));
+      }
       const date = new Date();
       date.setDate(date.getDate() + Number(this.state.numberOfDays));
       expiredAt = date;
