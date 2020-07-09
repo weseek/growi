@@ -30,10 +30,6 @@ class PageStatusAlert extends React.Component {
     this.renderUpdatedAlert = this.renderUpdatedAlert.bind(this);
   }
 
-  componentWillMount() {
-    this.props.appContainer.registerComponentInstance('PageStatusAlert', this);
-  }
-
   refreshPage() {
     window.location.reload();
   }
@@ -41,15 +37,19 @@ class PageStatusAlert extends React.Component {
   renderSomeoneEditingAlert() {
     const { t } = this.props;
     return (
-      <div className="alert-hackmd-someone-editing alert alert-success fixed-bottom p-3 mb-0">
-        <i className="icon-fw icon-people"></i>
-        {t('hackmd.someone_editing')}
-        &nbsp;
-        <i className="fa fa-angle-double-right"></i>
-        &nbsp;
-        <a href="#hackmd" className="font-weight-bold text-decoration-none">
-          <u>Open HackMD Editor</u>
-        </a>
+      <div className="card grw-page-status-alert text-white text-center bg-success d-hackmd-none fixed-bottom">
+        <div className="card-body">
+          <p className="card-text">
+            <i className="icon-fw icon-people"></i>
+            {t('hackmd.someone_editing')}
+          </p>
+          <p className="card-text">
+            <a href="#hackmd" className="btn btn-lg btn-outline-white">
+              <i className="fa fa-fw fa-file-text-o"></i>
+              Open HackMD Editor
+            </a>
+          </p>
+        </div>
       </div>
     );
   }
@@ -57,15 +57,19 @@ class PageStatusAlert extends React.Component {
   renderDraftExistsAlert(isRealtime) {
     const { t } = this.props;
     return (
-      <div className="alert-hackmd-draft-exists alert alert-success fixed-bottom p-3 mb-0">
-        <i className="icon-fw icon-pencil"></i>
-        {t('hackmd.this_page_has_draft')}
-        &nbsp;
-        <i className="fa fa-angle-double-right"></i>
-        &nbsp;
-        <a href="#hackmd" className="font-weight-bold text-decoration-none">
-          <u>Open HackMD Editor</u>
-        </a>
+      <div className="card grw-page-status-alert text-white text-center bg-success d-hackmd-none fixed-bottom">
+        <div className="card-body">
+          <p className="card-text">
+            <i className="icon-fw icon-pencil"></i>
+            {t('hackmd.this_page_has_draft')}
+          </p>
+          <p className="card-text">
+            <a href="#hackmd" className="btn btn-lg btn-outline-white">
+              <i className="fa fa-fw fa-file-text-o"></i>
+              Open HackMD Editor
+            </a>
+          </p>
+        </div>
       </div>
     );
   }
@@ -76,15 +80,19 @@ class PageStatusAlert extends React.Component {
     const label2 = t('Load latest');
 
     return (
-      <div className="alert alert-warning fixed-bottom p-3 mb-0">
-        <i className="icon-fw icon-bulb"></i>
-        {this.props.pageContainer.state.lastUpdateUsername} {label1}
-        &nbsp;
-        <i className="fa fa-angle-double-right"></i>
-        &nbsp;
-        <a href="#" onClick={this.refreshPage} className="font-weight-bold text-decoration-none">
-          <u>{label2}</u>
-        </a>
+      <div className="card grw-page-status-alert text-white text-center bg-warning fixed-bottom">
+        <div className="card-body">
+          <p className="card-text">
+            <i className="icon-fw icon-bulb"></i>
+            {this.props.pageContainer.state.lastUpdateUsername} {label1}
+          </p>
+          <p className="card-text">
+            <a href="#" className="btn btn-lg btn-outline-white" onClick={this.refreshPage}>
+              <i className="icon-fw icon-reload"></i>
+              {label2}
+            </a>
+          </p>
+        </div>
       </div>
     );
   }

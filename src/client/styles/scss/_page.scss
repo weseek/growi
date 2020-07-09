@@ -179,3 +179,16 @@
     border: 0;
   }
 }
+
+.card.grw-page-status-alert {
+  $margin-bottom: $grw-navbar-bottom-height + 10px;
+  margin: 0 10px $margin-bottom;
+
+  box-shadow: 0 2px 5px 2px #0004;
+  opacity: 0.9;
+
+  @include media-breakpoint-up(md) {
+    width: 420px;
+    margin: 0 auto $margin-bottom;
+  }
+}

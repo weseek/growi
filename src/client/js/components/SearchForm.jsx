@@ -101,7 +101,7 @@ class SearchForm extends React.Component {
   }
 
   render() {
-    const { t, appContainer } = this.props;
+    const { t, appContainer, dropup } = this.props;
 
     const config = appContainer.getConfig();
     const isReachable = config.isSearchServiceReachable;
@@ -115,6 +115,7 @@ class SearchForm extends React.Component {
 
     return (
       <SearchTypeahead
+        dropup={dropup}
         onChange={this.onChange}
         onSubmit={this.props.onSubmit}
         onInputChange={this.props.onInputChange}
@@ -138,6 +139,7 @@ SearchForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
+  dropup: PropTypes.bool,
   keyword: PropTypes.string,
   onSubmit: PropTypes.func.isRequired,
   onInputChange: PropTypes.func,

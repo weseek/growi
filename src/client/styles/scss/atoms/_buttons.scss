@@ -1,5 +1,7 @@
-.btn.btn-like,
-.btn.btn-bookmark {
+.btn.btn-outline-info.btn-like,
+.btn.btn-outline-warning.btn-bookmark {
+  color: $secondary;
+
   &.active,
   &:hover {
     // header buttons are always white for active
@@ -9,8 +11,6 @@
   &:not(:hover):not(.active) {
     background-color: transparent;
   }
-  width: 35px;
-  height: 35px;
 }
 
 .btn-copy,
@@ -23,6 +23,15 @@
 
   &.no-tags {
     opacity: 0.7;
+  }
+}
+
+.btn-scroll-to-top {
+  opacity: 0.4;
+
+  i {
+    display: inline-block;
+    transform: rotate(90deg);
   }
 }
 

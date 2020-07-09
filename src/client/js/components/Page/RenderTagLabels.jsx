@@ -21,26 +21,29 @@ function RenderTagLabels(props) {
     throw new Promise(() => {});
   }
 
-  if (tags.length === 0) {
+  const isTagsEmpty = tags.length === 0;
+
+  const tagElements = tags.map((tag) => {
     return (
-      <a className="btn btn-link btn-edit-tags no-tags p-0 text-muted" onClick={openEditorHandler}>
-        { t('Add tags for this page') } <i className="manage-tags ml-2 icon-plus"></i>
+      <a key={`${pageId}_${tag}`} href={`/_search?q=tag:${tag}`} className="grw-tag-label badge badge-secondary mr-2">
+        {tag}
       </a>
     );
-  }
+  });
 
   return (
     <>
-      {tags.map((tag) => {
-        return (
-          <span key={`${pageId}_${tag}`} className="text-muted">
-            <i className="tag-icon icon-tag mr-1"></i>
-            <a className="tag-name mr-2" href={`/_search?q=tag:${tag}`} key={`${pageId}_${tag}_link`}>{tag}</a>
-          </span>
-        );
-      })}
-      <a className="btn btn-link btn-edit-tags p-0 text-muted" onClick={openEditorHandler}>
-        <i className="manage-tags ml-2 icon-plus"></i> { t('Edit tags for this page') }
+      {tagElements}
+
+      <a className={`btn btn-link btn-edit-tags p-0 text-muted ${isTagsEmpty ? 'no-tags' : ''}`} onClick={openEditorHandler}>
+        { isTagsEmpty
+          ? (
+            <>{ t('Add tags for this page') }<i className="ml-1 icon-plus"></i></>
+          )
+          : (
+            <i className="icon-plus"></i>
+          )
+        }
       </a>
     </>
   );

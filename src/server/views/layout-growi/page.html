@@ -1,11 +1,6 @@
 {% extends 'base/layout.html' %}
 
 
-{% block content_header %}
-  {% include 'widget/header.html' %}
-{% endblock %}
-
-
 {% block content_main_before %}
 {% endblock %}
 
@@ -17,6 +12,10 @@
 
       {% include '../widget/page_content.html' %}
 
+      <div class="page-list d-edit-none d-print-none mt-5">
+        {% include '../widget/page_list_and_timeline.html' %}
+      </div>
+
     </div>
 
     <div class="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
@@ -26,12 +25,6 @@
       </div>
     </div>
 
-  </div>
-
-  <div class="row page-list d-edit-none d-print-none mt-5">
-    <div class="col-md-10">
-      {% include '../widget/page_list_and_timeline.html' %}
-    </div>
   </div>
 {% endblock %}
 
