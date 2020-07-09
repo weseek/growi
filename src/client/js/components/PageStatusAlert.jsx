@@ -37,14 +37,14 @@ class PageStatusAlert extends React.Component {
   renderSomeoneEditingAlert() {
     const { t } = this.props;
     return (
-      <div className="card grw-page-status-alert text-white text-center bg-success d-hackmd-none fixed-bottom">
+      <div className="card grw-page-status-alert text-white bg-success d-hackmd-none fixed-bottom">
         <div className="card-body">
-          <p className="card-text">
+          <p className="card-text grw-card-label-container">
             <i className="icon-fw icon-people"></i>
             {t('hackmd.someone_editing')}
           </p>
-          <p className="card-text">
-            <a href="#hackmd" className="btn btn-lg btn-outline-white">
+          <p className="card-text grw-card-btn-container">
+            <a href="#hackmd" className="btn btn-outline-white">
               <i className="fa fa-fw fa-file-text-o"></i>
               Open HackMD Editor
             </a>
@@ -57,14 +57,14 @@ class PageStatusAlert extends React.Component {
   renderDraftExistsAlert(isRealtime) {
     const { t } = this.props;
     return (
-      <div className="card grw-page-status-alert text-white text-center bg-success d-hackmd-none fixed-bottom">
+      <div className="card grw-page-status-alert text-white bg-success d-hackmd-none fixed-bottom">
         <div className="card-body">
-          <p className="card-text">
+          <p className="card-text grw-card-label-container">
             <i className="icon-fw icon-pencil"></i>
             {t('hackmd.this_page_has_draft')}
           </p>
-          <p className="card-text">
-            <a href="#hackmd" className="btn btn-lg btn-outline-white">
+          <p className="card-text grw-card-btn-container">
+            <a href="#hackmd" className="btn btn-outline-white">
               <i className="fa fa-fw fa-file-text-o"></i>
               Open HackMD Editor
             </a>
@@ -80,14 +80,14 @@ class PageStatusAlert extends React.Component {
     const label2 = t('Load latest');
 
     return (
-      <div className="card grw-page-status-alert text-white text-center bg-warning fixed-bottom">
+      <div className="card grw-page-status-alert text-white bg-warning fixed-bottom">
         <div className="card-body">
-          <p className="card-text">
+          <p className="card-text grw-card-label-container">
             <i className="icon-fw icon-bulb"></i>
             {this.props.pageContainer.state.lastUpdateUsername} {label1}
           </p>
-          <p className="card-text">
-            <a href="#" className="btn btn-lg btn-outline-white" onClick={this.refreshPage}>
+          <p className="card-text grw-card-btn-container">
+            <a href="#" className="btn btn-outline-white" onClick={this.refreshPage}>
               <i className="icon-fw icon-reload"></i>
               {label2}
             </a>
@@ -119,6 +119,8 @@ class PageStatusAlert extends React.Component {
     else if (hasDraftOnHackmd) {
       content = this.renderDraftExistsAlert();
     }
+
+    content = this.renderUpdatedAlert();
 
     return content;
   }

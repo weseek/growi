@@ -182,13 +182,38 @@
 
 .card.grw-page-status-alert {
   $margin-bottom: $grw-navbar-bottom-height + 10px;
-  margin: 0 10px $margin-bottom;
 
-  box-shadow: 0 2px 5px 2px #0004;
+  box-shadow: 0px 2px 4px #0000004d;
   opacity: 0.9;
 
+  @include media-breakpoint-down(sm) {
+    margin: 0 10px $margin-bottom;
+
+    .grw-card-label-container {
+      text-align: center;
+    }
+    .grw-card-btn-container {
+      text-align: center;
+
+      .btn {
+        @include button-size($btn-padding-y-lg, $btn-padding-x-lg, $btn-font-size-lg, $btn-line-height-lg, $btn-border-radius-lg);
+      }
+    }
+  }
+
   @include media-breakpoint-up(md) {
-    width: 420px;
+    width: 700px;
     margin: 0 auto $margin-bottom;
+
+    .card-body {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .grw-card-label-container,
+    .grw-card-btn-container {
+      margin: 0;
+    }
   }
 }
