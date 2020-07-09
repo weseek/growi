@@ -88,8 +88,13 @@ export default class Linker {
     }
 
     // TODO GW-3074 相対パスを利用しているかテキストから判定し以下の値に反映する
-    const isUseRelativePath = false;
-    const rootPath = '';
+    const isUseRelativePath = link.startsWith('.');
+    const rootPath = window.location.pathname;
+    if (isUseRelativePath) {
+      link = path.resolve(rootPath, link);
+    }
+    const isUsePermanentLink = false;
+    const permalink = '';
 
     return new Linker(
       type,
@@ -97,8 +102,8 @@ export default class Linker {
       link,
       isUseRelativePath,
       rootPath,
-      false,
-      '',
+      isUsePermanentLink,
+      permalink,
     );
   }
 
