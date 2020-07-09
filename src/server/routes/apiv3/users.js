@@ -597,5 +597,20 @@ module.exports = (crowi) => {
     }
   });
 
+  router.put('/reset-password', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    const { id } = req.body;
+
+    try {
+      const newPassword = await User.resetPasswordByRandomString(id);
+      const user = await User.findById(id);
+
+      return res.apiv3({ user, newPassword });
+    }
+    catch (err) {
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(err));
+    }
+  });
+
   return router;
 };
