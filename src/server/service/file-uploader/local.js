@@ -108,10 +108,10 @@ module.exports = function(crowi) {
    */
   lib.respond = (res, attachment) => {
     // Responce using internal redirect of nginx or Apache.
-    const dirName = (attachment.page != null) ? 'attachment' : 'user';
+    const storagePath = getFilePathOnStorage(attachment);
+    const relativePath = path.relative(crowi.publicDir, storagePath);
     const internalPathRoot = lib.configManager.getConfig('crowi', 'app:internalRedirectPath');
-    const internalPath = urljoin(internalPathRoot, "uploads", dirName, attachment.fileName)
-    const storagePath = path.posix.join(crowi.publicDir, 'uploads', dirName, attachment.fileName);
+    const internalPath = urljoin(internalPathRoot, relativePath)
     res.set('X-Accel-Redirect', internalPath);
     res.set('X-Sendfile', storagePath);
     return res.end();
