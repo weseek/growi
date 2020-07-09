@@ -15,7 +15,7 @@ const ArchiveCreateModal = (props) => {
   const [isAttachmentFileDownload, setIsAttachmentFileDownload] = useState(false);
   const [isSubordinatedPageDownload, setIsSubordinatedPageDownload] = useState(false);
   const [fileType, setFileType] = useState('markdown');
-  const [hierarchyType, setHierarchyType] = useState(false);
+  const [hierarchyType, setHierarchyType] = useState('allSubordinatedPage');
   const [hierarchyValue, setHierarchyValue] = useState(1);
 
   function changeIsCommentDownloadHandler() {
