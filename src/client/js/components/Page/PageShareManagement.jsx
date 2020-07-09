@@ -30,7 +30,7 @@ const PageShareManagement = (props) => {
   async function getMarkdown() {
     const { revisionId } = pageContainer.state;
     try {
-      const res = await appContainer.apiv3Get('/page/export', { revisionId });
+      const res = await appContainer.apiv3Get('/page/export?format=md', { revisionId });
       return res.data.markdown;
     }
     catch (err) {
