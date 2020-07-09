@@ -67,32 +67,11 @@ export default class HotkeysDetector extends React.Component {
       this.setState({
         userCommand: [],
       });
-
-    // don't fire when not needed
-    if (!event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey) {
-      console.log(event.key);
+    }
+    else if (this.processingCommands.toString() === [].toString()) {
       this.setState({
-        userCommand: this.state.userCommand.concat(event.key),
+        userCommand: [],
       });
-
-      // filters the corresponding hotkeys(keys) that the user has pressed so far
-      const tempUserCommand = this.state.userCommand;
-      this.processingCommands = this.hotkeyList.filter((value) => {
-        return value.slice(0, tempUserCommand.length).toString() === tempUserCommand.toString();
-      });
-
-      // executes if there were keymap that matches what the user pressed fully.
-      if ((this.processingCommands.length === 1) && (this.hotkeyList.find(ary => ary.toString() === this.state.userCommand.toString()))) {
-        this.props.onDetected(this.processingCommands[0]);
-        this.setState({
-          userCommand: [],
-        });
-      }
-      else if (this.processingCommands.toString() === [].toString()) {
-        this.setState({
-          userCommand: [],
-        });
-      }
     }
     return null;
 
