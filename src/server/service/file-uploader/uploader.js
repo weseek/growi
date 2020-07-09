@@ -54,6 +54,21 @@ class Uploader {
 
   }
 
+  /**
+   * Checks if Uploader can respond to the HTTP request.
+   */
+  canRespond() {
+    return false;
+  }
+
+  /**
+   * Respond to the HTTP request.
+   * @param {Response} res
+   * @param {Response} attachment
+   */
+  respond(res, attachment) {
+    throw new Error('Implement this');
+  }
 }
 
 module.exports = Uploader;

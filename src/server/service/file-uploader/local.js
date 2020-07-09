@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const mkdir = require('mkdirp');
 const streamToPromise = require('stream-to-promise');
+const urljoin = require('url-join');
 
 module.exports = function(crowi) {
   const Uploader = require('./uploader');
@@ -90,6 +91,30 @@ module.exports = function(crowi) {
     const maxFileSize = crowi.configManager.getConfig('crowi', 'app:maxFileSize');
     const totalLimit = crowi.configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
     return lib.doCheckLimit(uploadFileSize, maxFileSize, totalLimit);
+  };
+
+  /**
+   * Checks if Uploader can respond to the HTTP request.
+   */
+  lib.canRespond = () => {
+    // Check whether to use internal redirect of nginx or Apache.
+    return process.env.FILE_UPLOAD == "local" && lib.configManager.getConfig('crowi', 'app:useInternalRedirect');
+  };
+
+  /**
+   * Respond to the HTTP request.
+   * @param {Response} res 
+   * @param {Response} attachment 
+   */
+  lib.respond = (res, attachment) => {
+    // Responce using internal redirect of nginx or Apache.
+    const dirName = (attachment.page != null) ? 'attachment' : 'user';
+    const internalPathRoot = lib.configManager.getConfig('crowi', 'app:internalRedirectPath');
+    const internalPath = urljoin(internalPathRoot, "uploads", dirName, attachment.fileName)
+    const storagePath = path.posix.join(crowi.publicDir, 'uploads', dirName, attachment.fileName);
+    res.set('X-Accel-Redirect', internalPath);
+    res.set('X-Sendfile', storagePath);
+    return res.end();
   };
 
   return lib;
