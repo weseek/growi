@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
 import parse from 'date-fns/parse';
 
+import { isInteger } from 'core-js/fn/number';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import { toastSuccess, toastError } from '../util/apiNotification';
