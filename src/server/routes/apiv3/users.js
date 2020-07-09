@@ -601,10 +601,11 @@ module.exports = (crowi) => {
     const { id } = req.body;
 
     try {
-      const newPassword = await User.resetPasswordByRandomString(id);
-      const user = await User.findById(id);
+      const [newPassword, user] = await Promise.all([
+        await User.resetPasswordByRandomString(id),
+        await User.findById(id)]);
 
-      return res.apiv3({ user, newPassword });
+      return res.apiv3({ newPassword, user });
     }
     catch (err) {
       logger.error('Error', err);
