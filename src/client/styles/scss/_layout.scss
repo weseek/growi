@@ -56,7 +56,7 @@ body {
   }
 }
 
-.grw-fixed-controls {
+.grw-fab {
   position: fixed;
   right: 1.5rem;
   bottom: 3rem;
@@ -70,6 +70,18 @@ body {
     font-size: 24px;
 
     box-shadow: 2px 3px 6px #0000005d;
+  }
+
+  .btn-scroll-to-top {
+    width: 40px;
+    height: 40px;
+
+    opacity: 0.4;
+
+    i {
+      display: inline-block;
+      transform: rotate(90deg);
+    }
   }
 }
 

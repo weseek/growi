@@ -6,7 +6,7 @@ import Xss from '@commons/service/xss';
 import GrowiNavbar from './components/Navbar/GrowiNavbar';
 import GrowiNavbarBottom from './components/Navbar/GrowiNavbarBottom';
 import Sidebar from './components/Sidebar';
-import Fav from './components/Fav';
+import Fab from './components/Fab';
 import StaffCredit from './components/StaffCredit/StaffCredit';
 
 import AppContainer from './services/AppContainer';
@@ -45,7 +45,7 @@ const componentMappings = {
 
   'grw-sidebar-wrapper': <Sidebar />,
 
-  'grw-fixed-controls-container': <Fav />,
+  'grw-fab-container': <Fab />,
 
   'staff-credit': <StaffCredit />,
 };
