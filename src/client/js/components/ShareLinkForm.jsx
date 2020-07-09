@@ -136,74 +136,82 @@ class ShareLinkForm extends React.Component {
     const { t } = this.props;
 
     return (
-      <div className="form-group">
-        <div className="custom-control custom-radio offset-4 mb-2">
-          <input
-            type="radio"
-            className="custom-control-input"
-            id="customRadio1"
-            name="expirationType"
-            value="customRadio1"
-            checked={expirationType === 'unlimited'}
-            onChange={() => { this.handleChangeExpirationType('unlimited') }}
-          />
-          <label className="custom-control-label" htmlFor="customRadio1">{t('share_links.Unlimited')}</label>
-        </div>
+      <div className="form-group row">
+        <label htmlFor="inputDesc" className="col-md-5 col-form-label">{t('share_links.expire')}</label>
+        <div className="col-md-7">
 
-        <div className="custom-control custom-radio offset-4 mb-2">
-          <input
-            type="radio"
-            className="custom-control-input"
-            id="customRadio2"
-            value="customRadio2"
-            checked={expirationType === 'numberOfDays'}
-            onChange={() => { this.handleChangeExpirationType('numberOfDays') }}
-            name="expirationType"
-          />
-          <label className="custom-control-label" htmlFor="customRadio2">
-            <div className="row align-items-center m-0">
+
+          <div className="custom-control custom-radio form-group ">
+            <input
+              type="radio"
+              className="custom-control-input"
+              id="customRadio1"
+              name="expirationType"
+              value="customRadio1"
+              checked={expirationType === 'unlimited'}
+              onChange={() => { this.handleChangeExpirationType('unlimited') }}
+            />
+            <label className="custom-control-label" htmlFor="customRadio1">{t('share_links.Unlimited')}</label>
+          </div>
+
+          <div className="custom-control custom-radio  form-group">
+            <input
+              type="radio"
+              className="custom-control-input"
+              id="customRadio2"
+              value="customRadio2"
+              checked={expirationType === 'numberOfDays'}
+              onChange={() => { this.handleChangeExpirationType('numberOfDays') }}
+              name="expirationType"
+            />
+            <label className="custom-control-label" htmlFor="customRadio2">
+              <div className="row align-items-center m-0">
+                <input
+                  type="number"
+                  min="1"
+                  className="col-4"
+                  name="expirationType"
+                  value={this.state.numberOfDays}
+                  onFocus={() => { this.handleChangeExpirationType('numberOfDays') }}
+                  onChange={e => this.handleChangeNumberOfDays(Number(e.target.value))}
+                />
+                <span className="col-auto">{t('share_links.Days')}</span>
+              </div>
+            </label>
+          </div>
+
+          <div className="custom-control custom-radio form-group text-nowrap mb-0">
+            <input
+              type="radio"
+              className="custom-control-input"
+              id="customRadio3"
+              name="expirationType"
+              value="customRadio3"
+              checked={expirationType === 'custom'}
+              onChange={() => { this.handleChangeExpirationType('custom') }}
+            />
+            <label className="custom-control-label" htmlFor="customRadio3">
+              {t('share_links.Custom')}
+            </label>
+            <div className="d-inline-flex flex-wrap">
               <input
-                type="number"
-                className="col-4"
-                name="expirationType"
-                value={this.state.numberOfDays}
-                onFocus={() => { this.handleChangeExpirationType('numberOfDays') }}
-                onChange={e => this.handleChangeNumberOfDays(e.target.value)}
+                type="date"
+                className="ml-3 mb-2"
+                name="customExpirationDate"
+                value={this.state.customExpirationDate}
+                onFocus={() => { this.handleChangeExpirationType('custom') }}
+                onChange={e => this.handleChangeCustomExpirationDate(e.target.value)}
               />
-              <span className="col-auto">{t('share_links.Days')}</span>
+              <input
+                type="time"
+                className="ml-3 mb-2"
+                name="customExpiration"
+                value={this.state.customExpirationTime}
+                onFocus={() => { this.handleChangeExpirationType('custom') }}
+                onChange={e => this.handleChangeCustomExpirationTime(e.target.value)}
+              />
             </div>
-          </label>
-        </div>
-
-        <div className="custom-control custom-radio offset-4 mb-2">
-          <input
-            type="radio"
-            className="custom-control-input"
-            id="customRadio3"
-            name="expirationType"
-            value="customRadio3"
-            checked={expirationType === 'custom'}
-            onChange={() => { this.handleChangeExpirationType('custom') }}
-          />
-          <label className="custom-control-label" htmlFor="customRadio3">
-            {t('share_links.Custom')}
-          </label>
-          <input
-            type="date"
-            className="ml-3"
-            name="customExpirationDate"
-            value={this.state.customExpirationDate}
-            onFocus={() => { this.handleChangeExpirationType('custom') }}
-            onChange={e => this.handleChangeCustomExpirationDate(e.target.value)}
-          />
-          <input
-            type="time"
-            className="ml-3"
-            name="customExpiration"
-            value={this.state.customExpirationTime}
-            onFocus={() => { this.handleChangeExpirationType('custom') }}
-            onChange={e => this.handleChangeCustomExpirationTime(e.target.value)}
-          />
+          </div>
         </div>
       </div>
     );
@@ -213,7 +221,7 @@ class ShareLinkForm extends React.Component {
     const { t } = this.props;
     return (
       <div className="form-group row">
-        <label htmlFor="inputDesc" className="col-md-4 col-form-label">{t('share_links.description')}</label>
+        <label htmlFor="inputDesc" className="col-md-5 col-form-label">{t('share_links.description')}</label>
         <div className="col-md-4">
           <input
             type="text"
@@ -231,13 +239,12 @@ class ShareLinkForm extends React.Component {
   render() {
     const { t } = this.props;
     return (
-      <div className="share-link-form border p-3">
-        <h4>{t('share_links.expire')}</h4>
-        {this.renderExpirationTypeOptions()}
-        <hr />
-        {this.renderDescriptionForm()}
-        <div className="text-right">
-          <button type="button" className="btn btn-primary" onClick={this.handleIssueShareLink}>
+      <div className="share-link-form p-3">
+        <h3 className="grw-modal-head pb-2"> { t('share_links.share_settings') }</h3>
+        <div className=" p-3">
+          {this.renderExpirationTypeOptions()}
+          {this.renderDescriptionForm()}
+          <button type="button" className="btn btn-primary d-block mx-auto px-5" onClick={this.handleIssueShareLink}>
             {t('share_links.Issue')}
           </button>
         </div>

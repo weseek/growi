@@ -212,7 +212,8 @@
     "description": "概要",
     "enter_desc": "概要を入力",
     "Unlimited": "無期限",
-    "Issue": "発行"
+    "Issue": "発行",
+    "share_settings" :"共有設定"
   },
   "API Settings": "API設定",
   "API Token Settings": "API Token設定",
