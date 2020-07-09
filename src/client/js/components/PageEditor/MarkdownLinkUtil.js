@@ -38,7 +38,6 @@ class MarkdownLinkUtil {
       const { beginningOfLink, endOfLink } = Linker.getBeginningAndEndIndexOfLink(line, curPos.ch);
       editor.getDoc().replaceRange(linkStr, { line: curPos.line, ch: beginningOfLink }, { line: curPos.line, ch: endOfLink });
     }
-    editor.getDoc().setCursor({ line: curPos.line, ch: linkStr.length });
   }
 
 }
