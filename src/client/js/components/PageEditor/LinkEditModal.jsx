@@ -78,9 +78,7 @@ class LinkEditModal extends React.PureComponent {
       permalink: '',
       linkerType: type,
       isUseRelativePath: false,
-      isUsePermanentLink: false,
       markdown: '',
-      permalink: '',
     });
   }
 
