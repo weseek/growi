@@ -8,6 +8,7 @@ import {
   ModalFooter,
 } from 'reactstrap';
 
+import path from 'path';
 import Preview from './Preview';
 
 import AppContainer from '../../services/AppContainer';
@@ -62,12 +63,18 @@ class LinkEditModal extends React.PureComponent {
   // defaultMarkdownLink is an instance of Linker
   show(defaultMarkdownLink = null) {
     // if defaultMarkdownLink is null, set default value in inputs.
-    const { label = '', link = '' } = defaultMarkdownLink;
-    let { type = Linker.types.markdownLink } = defaultMarkdownLink;
+    const { pageContainer } = this.props;
+    const { label = '' } = defaultMarkdownLink;
+    let { link = '', type = Linker.types.markdownLink } = defaultMarkdownLink;
 
     // if type of defaultMarkdownLink is pukiwikiLink when pukiwikiLikeLinker plugin is disable, change type(not change label and link)
     if (type === Linker.types.pukiwikiLink && !this.isApplyPukiwikiLikeLinkerPlugin) {
       type = Linker.types.markdownLink;
+    }
+
+    const isUseRelativePath = link.startsWith('.');
+    if (isUseRelativePath) {
+      link = path.resolve(pageContainer.state.path, link);
     }
 
     this.setState({
@@ -77,7 +84,7 @@ class LinkEditModal extends React.PureComponent {
       isUsePermanentLink: false,
       permalink: '',
       linkerType: type,
-      isUseRelativePath: false,
+      isUseRelativePath,
     });
   }
 
@@ -178,12 +185,15 @@ class LinkEditModal extends React.PureComponent {
       permalink,
     } = this.state;
 
+    let reshapedLink = linkInputValue;
+    if (isUseRelativePath && linkInputValue.match(/^\//)) {
+      reshapedLink = path.relative(pageContainer.state.path, linkInputValue);
+    }
+
     return new Linker(
       linkerType,
       labelInputValue,
-      linkInputValue,
-      isUseRelativePath,
-      pageContainer.state.path,
+      reshapedLink,
       isUsePermanentLink,
       permalink,
     );
