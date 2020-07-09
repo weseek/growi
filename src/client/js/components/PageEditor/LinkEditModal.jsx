@@ -74,6 +74,8 @@ class LinkEditModal extends React.PureComponent {
       show: true,
       labelInputValue: label,
       linkInputValue: link,
+      isUsePermanentLink: false,
+      permalink: '',
       linkerType: type,
       isUseRelativePath: false,
       isUsePermanentLink: false,
@@ -120,17 +122,18 @@ class LinkEditModal extends React.PureComponent {
     );
   }
 
-  async setMarkdown(path) {
+  async getPreview(path) {
     let markdown = '';
+    let permalink = '';
     try {
-      await this.props.appContainer.apiGet('/pages.get', { path }).then((res) => {
-        markdown = res.page.revision.body;
-      });
+      const res = await this.props.appContainer.apiGet('/pages.get', { path });
+      markdown = res.page.revision.body;
+      permalink = `${window.location.origin}/${res.page.id}`;
     }
     catch (err) {
       markdown = `<div class="alert alert-warning" role="alert"><strong>${err.message}</strong></div>`;
     }
-    this.setState({ markdown });
+    this.setState({ markdown, permalink });
   }
 
   handleChangeTypeahead(selected) {
@@ -165,20 +168,6 @@ class LinkEditModal extends React.PureComponent {
     }
 
     this.hide();
-  }
-
-  async getPreview(path) {
-    let markdown = '';
-    let permalink = '';
-    try {
-      const res = await this.props.appContainer.apiGet('/pages.get', { path });
-      markdown = res.page.revision.body;
-      permalink = `${window.location.origin}/${res.page.id}`;
-    }
-    catch (err) {
-      markdown = `<div class="alert alert-warning" role="alert"><strong>${err.message}</strong></div>`;
-    }
-    this.setState({ markdown, permalink });
   }
 
   generateLink() {
