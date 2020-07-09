@@ -14,7 +14,13 @@ export default class PageCreate extends React.Component {
 
   // when this is called it returns the hotkey stroke
   static getHotkeyStroke() {
-    return ['c'];
+    return {
+      stroke: ['c'],
+      ctrlKey: false,
+      metaKey: false,
+      altKey: false,
+      shiftKey: false,
+    };
   }
 
   static getComponent() {

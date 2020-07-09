@@ -29,7 +29,13 @@ export default class StaffCredit extends React.Component {
 
   // when this is called it returns the hotkey stroke
   static getHotkeyStroke() {
-    return ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    return {
+      stroke: ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'],
+      ctrlKey: false,
+      metaKey: false,
+      altKey: false,
+      shiftKey: false,
+    };
   }
 
   static getComponent(onDeleteRender) {

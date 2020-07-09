@@ -85,12 +85,6 @@ Crowi.modifyScrollTop = function() {
   }, timeout);
 };
 
-Crowi.handleKeyCtrlSlashHandler = (event) => {
-  // show modal to create a page
-  $('#shortcuts-modal').modal('toggle');
-  event.preventDefault();
-};
-
 Crowi.initClassesByOS = function() {
   // add classes to cmd-key by OS
   const platform = navigator.platform.toLowerCase();
@@ -397,25 +391,6 @@ window.addEventListener('hashchange', (e) => {
   }
   else {
     $('a[data-toggle="tab"][href="#revision-body"]').tab('show');
-  }
-});
-
-window.addEventListener('keydown', (event) => {
-  const target = event.target;
-
-  // ignore when target dom is input
-  const inputPattern = /^input|textinput|textarea$/i;
-  if (inputPattern.test(target.tagName) || target.isContentEditable) {
-    return;
-  }
-
-  switch (event.key) {
-    case '/':
-      if (event.ctrlKey || event.metaKey) {
-        Crowi.handleKeyCtrlSlashHandler(event);
-      }
-      break;
-    default:
   }
 });
 

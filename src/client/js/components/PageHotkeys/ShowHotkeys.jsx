@@ -1,34 +1,31 @@
 import React from 'react';
 
-
 /**
- * Page staff credit component
  *
  * @export
- * @class StaffCredit
  * @extends {React.Component}
  */
 
-export default class MirrorMode extends React.Component {
+export default class ShowHotkeys extends React.Component {
 
   // when this is called it returns the hotkey stroke
   static getHotkeyStroke() {
     return {
-      stroke: ['x', 'x', 'b', 'b', 'a', 'y', 'a', 'y', 'ArrowDown', 'ArrowLeft'],
-      ctrlKey: false,
-      metaKey: false,
+      stroke: ['/'],
+      ctrlKey: true,
+      metaKey: true,
       altKey: false,
       shiftKey: false,
     };
   }
 
   static getComponent() {
-    return <MirrorMode />;
+    return <ShowHotkeys />;
   }
 
   componentDidMount() {
-    const changeBody = document.body;
-    changeBody.classList.add('mirror');
+    // show modal to create a page
+    $('#shortcuts-modal').modal('toggle');
     return null;
   }
 
@@ -40,6 +37,3 @@ export default class MirrorMode extends React.Component {
   }
 
 }
-
-MirrorMode.propTypes = {
-};
