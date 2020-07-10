@@ -137,6 +137,18 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.BOOLEAN,
     default: false,
   },
+  USE_INTERNAL_REDIRECT: {
+    ns:      'crowi',
+    key:     'app:useInternalRedirect',
+    type:    TYPES.BOOLEAN,
+    default: false,
+  },
+  INTERNAL_REDIRECT_PATH: {
+    ns:      'crowi',
+    key:     'app:internalRedirectPath',
+    type:    TYPES.STRING,
+    default: "/growi-internal/",
+  },
   ELASTICSEARCH_URI: {
     ns:      'crowi',
     key:     'app:elasticsearchUri',

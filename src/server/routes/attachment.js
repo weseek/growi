@@ -193,6 +193,10 @@ module.exports = function(crowi, app) {
       return res.sendStatus(304);
     }
 
+    if (fileUploader.canRespond()) {
+      return fileUploader.respond(res, attachment);
+    }
+
     let fileStream;
     try {
       fileStream = await fileUploader.findDeliveryFile(attachment);
