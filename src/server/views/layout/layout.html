@@ -85,29 +85,22 @@
 
     <div class="flex-fill mw-0">
       {% block head_warn_alert_siteurl_undefined %}{% include '../widget/alert_siteurl_undefined.html' %}{% endblock %}
-
-      {% block search %}
-        {% if isSearchServiceConfigured() %}
-          <div id="grw-search-top" class="search-top" role="search"></div>
-        {% endif %}
-      {% endblock %}
-
       {% block layout_main %}{% endblock %}
     </div>
   </div>
 
+  <div id="grw-navbar-bottom-container"></div>
+
 </div><!-- /#wrapper -->
 
-{% if user %}
-  <div class="grw-fixed-controls-container d-md-none d-edit-none animated fadeInUp faster">
-    <div class="grw-fixed-controls-button-container rounded-circle">
-      <div id='create-page-button-icon'></div>
-    </div>
-  </div>
-{% endif %}
+{% block fixed-controls %}
+<div id="grw-fab-container"></div>
+{% endblock %}
 
 <!-- /#staff-credit -->
 <div id="staff-credit"></div>
+
+{% include '../widget/system-version.html' %}
 
 <div id="page-create-modal"></div>
 {% include '../modal/shortcuts.html' %}

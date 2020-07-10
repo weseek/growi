@@ -221,6 +221,7 @@ module.exports = function(crowi) {
       recentCreatedLimit: crowi.configManager.getConfig('crowi', 'customize:showRecentCreatedNumber'),
       isEnabledStaleNotification: crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
       isAclEnabled: crowi.aclService.isAclEnabled(),
+      isSearchServiceConfigured: crowi.searchService.isConfigured,
       isSearchServiceReachable: crowi.searchService.isReachable,
       globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
     };

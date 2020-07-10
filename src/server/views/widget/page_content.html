@@ -11,6 +11,7 @@
   data-page-has-draft-on-hackmd="{% if hasDraftOnHackmd %}{{ hasDraftOnHackmd.toString() }}{% endif %}"
   data-page-is-liked="{% if user %}{{ page.isLiked(user) }}{% else %}false{% endif %}"
   data-page-is-seen="{% if page and page.isSeenUser(user) %}1{% else %}0{% endif %}"
+  data-page-is-forbidden="{% if forbidden %}true{% else %}false{% endif %}"
   data-page-is-deleted="{% if page.isDeleted() %}true{% else %}false{% endif %}"
   data-page-is-deletable="{% if isDeletablePage() %}true{% else %}false{% endif %}"
   data-page-is-able-to-delete-completely="{% if user.canDeleteCompletely(page.creator._id) %}true{% else %}false{% endif %}"
@@ -19,6 +20,7 @@
   data-page-creator="{% if page %}{{ page.creator|json }}{% endif %}"
   data-page-updated-at="{% if page %}{{ page.updatedAt|datetz('Y/m/d H:i:s') }}{% endif %}"
   data-page-has-children="{% if pages.length > 0 %}true{% else %}false{% endif %}"
+  data-page-user="{% if pageUser %}{{ pageUser|json }}{% else %}null{% endif %}"
   data-share-links-number="{% if page %}{{ sharelinksNumber }}{% endif %}"
   >
 {% else %}
@@ -70,5 +72,5 @@
 
   </div>
 
-  <div id="page-status-alert"></div>
+  <div id="grw-page-status-alert-container"></div>
 </div>

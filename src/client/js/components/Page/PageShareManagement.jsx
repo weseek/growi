@@ -34,11 +34,11 @@ const PageShareManagement = (props) => {
     setIsOutsideShareLinkModalShown(false);
   }
 
-
-  async function getExportPageFile(type) {
+  async function getMarkdown() {
+    const { revisionId } = pageContainer.state;
     try {
-      const res = await appContainer.apiv3Get('/pages/export', { pageId, type });
-      return res;
+      const res = await appContainer.apiv3Get('/page/export', { revisionId });
+      return res.data.markdown;
     }
     catch (err) {
       toastError(Error(t('export_bulk.failed_to_export')));
@@ -59,9 +59,9 @@ const PageShareManagement = (props) => {
     // TODO implement
   }
 
-  function exportPageHundler(type) {
-    const exportPageFile = getExportPageFile(type);
-    exportPage(exportPageFile);
+  async function exportPageHundler(type) {
+    const markdown = await getMarkdown();
+    await exportPage(markdown, type);
   }
 
   function openArchiveModalHandler() {

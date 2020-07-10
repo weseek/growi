@@ -12,11 +12,13 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 import NavigationContainer from '../services/NavigationContainer';
 
+import DrawerToggler from './Navbar/DrawerToggler';
+
 import SidebarNav from './Sidebar/SidebarNav';
 import SidebarContents from './Sidebar/SidebarContents';
 import StickyStretchableScroller from './StickyStretchableScroller';
 
-const sidebarDefaultWidth = 240;
+const sidebarDefaultWidth = 320;
 
 class Sidebar extends React.Component {
 
@@ -118,7 +120,7 @@ class Sidebar extends React.Component {
 
   backdropClickedHandler = () => {
     const { navigationContainer } = this.props;
-    navigationContainer.setState({ isDrawerOpened: false });
+    navigationContainer.toggleDrawer();
   }
 
   itemSelectedHandler = (contentsId) => {
@@ -145,7 +147,8 @@ class Sidebar extends React.Component {
   );
 
   renderSidebarContents = () => {
-    const scrollTargetSelector = 'div[data-testid="ContextualNavigation"] div[role="group"]';
+    // const scrollTargetSelector = 'div[data-testid="ContextualNavigation"] div[role="group"]';
+    const scrollTargetSelector = '#grw-sidebar-content-container';
 
     return (
       <>
@@ -158,6 +161,8 @@ class Sidebar extends React.Component {
         <div id="grw-sidebar-content-container" className="grw-sidebar-content-container">
           <SidebarContents />
         </div>
+
+        <DrawerToggler iconClass="icon-arrow-left" />
       </>
     );
   };
@@ -181,7 +186,7 @@ class Sidebar extends React.Component {
               experimental_hideNavVisuallyOnCollapse
               experimental_flyoutOnHover
               experimental_alternateFlyoutBehaviour
-              // experimental_fullWidthFlyout
+              experimental_fullWidthFlyout
               shouldHideGlobalNavShadow
               showContextualNavigation
             >

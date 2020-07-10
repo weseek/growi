@@ -21,3 +21,11 @@
 .rbt-aux {
   display: none;
 }
+
+// seamless border for .input-group-prepend
+.input-group-prepend + div {
+  .rbt .rbt-input-main {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
