@@ -58,7 +58,7 @@ export default class GridEditModal extends React.PureComponent {
     return (
       <Modal isOpen={this.state.show} toggle={this.cancel} size="xl">
         <ModalHeader tag="h4" toggle={this.cancel} className="bg-primary text-light">
-          Edit Grid
+          Create Bootstrap 4 Grid
         </ModalHeader>
         <ModalBody>
         </ModalBody>
