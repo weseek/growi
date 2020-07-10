@@ -7,7 +7,9 @@ const { body } = require('express-validator');
 
 const router = express.Router();
 
-const markdownpdf = require('markdown-pdf');
+const path = require('path');
+const fs = require('fs');
+const ApiResponse = require('../../util/apiResponse');
 
 // const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -117,7 +119,7 @@ module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
-
+  const { exportService } = crowi;
   const globalNotificationService = crowi.getGlobalNotificationService();
   const { Page, GlobalNotificationSetting } = crowi.models;
 
@@ -196,29 +198,43 @@ module.exports = (crowi) => {
   *            description: Return page's markdown
   */
   router.get('/export', async(req, res) => {
-    let result;
     try {
-      const { pageId, revisionId } = req.query;
+      const { format, pageId=null, revisionId=null } = req.query;
       let markdown;
 
       // TODO: GW-3061
-      if (revisionId) {
+      if (revisionId != null) {
         markdown = '#Revision';
       }
-      else if (pageId) {
+      else if (pageId != null) {
         markdown = '#Page';
       }
       else {
         return res.apiv3Err('Should provided pageId or revisionId');
       }
-      result = markdown;
-      if (true) {
-        result = markdownpdf.from.string(markdown).to.buffer('exam.pdf', () => {
-          console.log('Done');
-        });
+
+      let fileStream, filePath;
+      const baseDir = path.join(crowi.tmpDir, 'exports');
+
+      try {
+        // write tmp file
+        if (format === 'md') {
+          filePath = path.join(baseDir, 'revisionId.md')
+          await fs.writeFileSync(filePath, markdown);
+        }
+        else if (format === 'pdf') {
+          filePath = path.join(baseDir, 'revisionId.pdf');
+          await exportService.convertToPdf(markdown, filePath);
+        }
+
+        fileStream = fs.createReadStream(filePath);
+      }
+      catch (e) {
+        logger.error(e);
+        return res.json(ApiResponse.error(e.message));
       }
 
-      return res.apiv3({ result });
+      return fileStream.pipe(res);
     }
     catch (err) {
       logger.error('Failed to get markdown', err);

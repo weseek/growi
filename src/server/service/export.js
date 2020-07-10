@@ -9,6 +9,7 @@ const archiver = require('archiver');
 const ConfigLoader = require('../service/config-loader');
 
 const toArrayIfNot = require('../../lib/util/toArrayIfNot');
+const markdownpdf = require('markdown-pdf');
 
 const CollectionProgressingStatus = require('../models/vo/collection-progressing-status');
 
@@ -348,6 +349,14 @@ class ExportService {
     }
 
     return zipFile;
+  }
+
+  async convertToPdf(md, path) {
+    return new Promise((resolve, reject) => {
+      markdownpdf().from.string(md).to(path, () => {
+        resolve(path);
+      });
+    });
   }
 
 }
