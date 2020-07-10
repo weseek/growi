@@ -78,6 +78,15 @@ export default class GridEditModal extends React.PureComponent {
                 </div>
               </div>
               <div className="col-7">
+                <label>Break point by display size :</label>
+                <input type="radio" id="mobile" name="disSize" value="mobile" />
+                <label htmlFor="mobile">Mobile</label>
+                <input type="radio" id="tablet" name="disSize" value="tablet" />
+                <label htmlFor="tablet">Tablet</label>
+                <input type="radio" id="phone" name="disSize" value="phone" />
+                <label htmlFor="phone">Phone</label>
+                <input type="radio" id="none" name="disSize" value="none" />
+                <label htmlFor="none">None</label>
               </div>
               {/* <h1>Preview</h1> */}
               <div className="col-6">
@@ -91,6 +100,7 @@ export default class GridEditModal extends React.PureComponent {
               <div className="col-2">
                 <label>Phone</label>
                 {/* phone */}
+              </div>
             </div>
           </div>
         </ModalBody>
