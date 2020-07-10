@@ -70,6 +70,7 @@ const ArchiveCreateModal = (props) => {
     catch (e) {
       toastError(e);
     }
+    closeModalHandler();
   }
 
   return (
