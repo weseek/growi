@@ -3,11 +3,11 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
-const { body } = require('express-validator');
+const { body, query } = require('express-validator');
 
 const router = express.Router();
 
-// const ErrorV3 = require('../../models/vo/error-apiv3');
+const ErrorV3 = require('../../models/vo/error-apiv3');
 
 /**
  * @swagger
@@ -125,6 +125,10 @@ module.exports = (crowi) => {
       body('pageId').isString(),
       body('bool').isBoolean(),
     ],
+    export: [
+      query('pageId').isString(),
+      query('revisionId').isString(),
+    ],
   };
 
   /**
@@ -194,27 +198,41 @@ module.exports = (crowi) => {
   *          200:
   *            description: Return page's markdown
   */
-  router.get('/export', async(req, res) => {
+  router.get('/export', validator.export, async(req, res) => {
     try {
       const { pageId, revisionId } = req.query;
-      let markdown;
+      let revisionIdFromPage;
 
-      // TODO: GW-3061
-      if (revisionId) {
-        markdown = '#Revision';
+      if (!pageId) {
+        throw new ErrorV3('Should provided pageId or both pageId and revisionId.', 400);
       }
-      else if (pageId) {
-        markdown = '#Page';
+
+      const isPageExist = await Page.count({ _id: pageId }) > 0;
+      if (!isPageExist) {
+        throw new ErrorV3(`Page ${pageId} is not exist.`, 404);
       }
-      else {
-        return res.apiv3Err('Should provided pageId or revisionId');
+
+      const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
+      if (!isAccessible) {
+        throw new ErrorV3(`Haven't the right to see the page ${pageId}.`, 403);
       }
+
+      if (!revisionId) {
+        const Page = crowi.model('Page');
+        const page = await Page.findByIdAndViewer(pageId);
+        revisionIdFromPage = page.revision;
+      }
+
+      const Revision = crowi.model('Revision');
+      const revisions = await Revision.findRevisions([revisionId || revisionIdFromPage]);
+      const markdown = revisions[0].body;
 
       return res.apiv3({ markdown });
     }
     catch (err) {
+      const code = err.code || 500;
       logger.error('Failed to get markdown', err);
-      return res.apiv3Err(err, 500);
+      return res.apiv3Err(err, code);
     }
   });
 
