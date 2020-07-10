@@ -119,7 +119,6 @@
   "Shareable link": "Shareable link",
   "The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
   "Add tags for this page": "Add tags for this page",
-  "Edit tags for this page": "Edit tags for this page",
   "You have no tag, You can set tags on pages": "You have no tag, You can set tags on pages",
   "Show latest": "Show latest",
   "Load latest": "Load latest",
@@ -342,7 +341,8 @@
     "activate_user_success": "Succeeded to activating {{username}}",
     "deactivate_user_success": "Succeeded to deactivate {{username}}",
     "remove_user_success": "Succeeded to removing {{username}} ",
-    "remove_external_user_success": "Succeeded to remove {{accountId}} "
+    "remove_external_user_success": "Succeeded to remove {{accountId}} ",
+    "failed_to_reset_password":"Failed to reset password"
   },
   "template": {
     "modal_label": {

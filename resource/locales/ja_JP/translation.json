@@ -118,7 +118,6 @@
   "Shareable link": "このページの共有用URL",
   "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
   "Add tags for this page": "タグを付ける",
-  "Edit tags for this page": "タグを編集する",
   "You have no tag, You can set tags on pages": "使用中のタグがありません",
   "Show latest": "最新のページを表示",
   "Load latest": "最新版を読み込む",
@@ -343,7 +342,8 @@
     "activate_user_success": "{{username}}を有効化しました",
     "deactivate_user_success": "{{username}}を無効化しました",
     "remove_user_success": "{{username}}を削除しました",
-    "remove_external_user_success": "{{accountId}}を削除しました"
+    "remove_external_user_success": "{{accountId}}を削除しました",
+    "failed_to_reset_password":"パスワードのリセットに失敗しました"
   },
   "template": {
     "modal_label": {
