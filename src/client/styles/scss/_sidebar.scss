@@ -21,7 +21,6 @@
   // sticky
   position: sticky;
   top: $grw-navbar-border-width;
-  z-index: $zindex-sticky;
 
   .ak-navigation-resize-button {
     position: fixed;
@@ -58,8 +57,6 @@
   // override @atlaskit/navigation-next styles
   $navbar-total-height: $grw-navbar-height + $grw-navbar-border-width;
   div[data-layout-container='true'] {
-    height: 100vh;
-
     // css-teprsg
     > div:nth-of-type(2) {
       padding-left: unset !important;
@@ -67,15 +64,6 @@
     }
   }
   div[data-testid='Navigation'] {
-    position: unset;
-
-    top: $navbar-total-height;
-
-    // Adjust to be on top of the growi subnavigation
-    // z-index: $zindex-sticky + 5;
-
-    transition: left 300ms cubic-bezier(0.25, 1, 0.5, 1);
-
     // css-xxx-ContainerNavigationMask
     > div:nth-of-type(1) {
     }
@@ -141,46 +129,88 @@
       }
     }
   }
+
+  .grw-drawer-toggler {
+    display: none; // invisible in default
+  }
+}
+
+// Dock Mode
+@mixin dock() {
+  z-index: $zindex-sticky;
+
+  // override @atlaskit/navigation-next styles
+  $navbar-total-height: $grw-navbar-height + $grw-navbar-border-width;
+  div[data-layout-container='true'] {
+    max-height: calc(100vh - #{$grw-navbar-border-width});
+  }
+  div[data-testid='Navigation'] {
+    position: unset;
+
+    top: $navbar-total-height;
+  }
 }
 
 // Drawer Mode
 @mixin drawer() {
-  position: fixed;
-  z-index: $zindex-fixed - 2;
+  z-index: $zindex-fixed + 1;
 
   // override @atlaskit/navigation-next styles
-  div[data-layout-container='true'] {
-    // css-teprsg
-    > div:nth-of-type(2) {
-      display: none;
-    }
-  }
   div[data-testid='Navigation'] {
-    // css-xxx-Outer
-    > div:nth-of-type(2) {
-      display: none;
-    }
+    max-width: 80vw;
+
+    // apply transition
+    transition-property: transform;
+    @include apply-navigation-transition();
   }
 
   &:not(.open) {
     div[data-testid='Navigation'] {
-      left: -#{$grw-sidebar-nav-width + $grw-sidebar-content-min-width};
+      transform: translateX(-100%);
     }
   }
   &.open {
     div[data-testid='Navigation'] {
-      left: 0;
+      transform: translateX(0);
     }
+
+    .grw-drawer-toggler {
+      display: block;
+    }
+  }
+
+  .grw-drawer-toggler {
+    position: fixed;
+    right: -15px;
+
+    @include media-breakpoint-down(sm) {
+      bottom: 15px;
+      width: 42px;
+      height: 42px;
+      font-size: 18px;
+    }
+    @include media-breakpoint-up(md) {
+      top: 72px;
+      width: 50px;
+      height: 50px;
+      font-size: 24px;
+    }
+
+    transform: translateX(100%);
   }
 }
 
 .grw-sidebar {
-  &.grw-sidebar-drawer {
-    @include drawer();
-  }
-
   @include media-breakpoint-down(sm) {
     @include drawer();
+  }
+  @include media-breakpoint-up(md) {
+    &.grw-sidebar-drawer {
+      @include drawer();
+    }
+    &:not(.grw-sidebar-drawer) {
+      @include dock();
+    }
   }
 }
 

@@ -5,21 +5,25 @@ $color-list-hover: $color-global !default;
 $bgcolor-list-hover: darken($bgcolor-global, 3%) !default;
 $color-list-active: $color-reversal !default;
 $bgcolor-list-active: $primary !default;
-$bgcolor-subnabvar: darken($bgcolor-global, 3%) !default;
+$bgcolor-subnav: darken($bgcolor-global, 3%) !default;
 $color-table: $color-global !default;
 $bgcolor-table: null !default;
 $border-color-table: #dee2e6 !default;
 $color-table-hover: $color-table !default;
 $bgcolor-table-hover: rgba(black, 0.075) !default;
 $bgcolor-sidebar-list-group: $bgcolor-list !default;
+$color-tags: #949494 !default;
+$bgcolor-tags: #ebebeb !default;
 
 // override bootstrap variables
+$border-color: #dee2e6;
 $table-color: $color-table;
 $table-bg: $bgcolor-table;
 $table-border-color: $border-color-table;
 $table-hover-color: $color-table-hover;
 $table-hover-bg: $bgcolor-table-hover;
 
+@import 'reboot-bootstrap-border-colors';
 @import 'reboot-bootstrap-tables';
 
 // List Group
@@ -120,8 +124,17 @@ $table-hover-bg: $bgcolor-table-hover;
 /*
  * GROWI subnavigation
  */
-.grw-subnavbar {
-  background-color: $bgcolor-subnabvar;
+.grw-subnav {
+  background-color: $bgcolor-subnav;
+}
+
+.grw-subnav-fixed-container .grw-subnav {
+  background-color: rgba($bgcolor-subnav, 0.85);
+}
+
+.grw-drawer-toggler {
+  @extend .btn-light;
+  color: #999;
 }
 
 /*
@@ -148,7 +161,7 @@ $table-hover-bg: $bgcolor-table-hover;
 /*
  * GROWI on-edit
  */
-.page-editor-footer {
+.grw-editor-navbar-bottom {
   #slack-mark-white {
     display: none;
   }
@@ -176,5 +189,15 @@ $table-hover-bg: $bgcolor-table-hover;
 .comment-form {
   #slack-mark-white {
     display: none;
+  }
+}
+
+/*
+ * GROWI tags
+ */
+.grw-tag-labels {
+  .grw-tag-label {
+    color: $color-tags;
+    background-color: $bgcolor-tags;
   }
 }

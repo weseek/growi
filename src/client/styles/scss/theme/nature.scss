@@ -44,7 +44,7 @@ html[dark] {
   $bgcolor-global: #fdfdfd;
   $bgcolor-inline-code: #f0f0f0; //optional
   $bgcolor-card: #f1ffe4;
-  $bgcolor-subnabvar: #fafafa;
+  $bgcolor-subnav: #fafafa;
 
   // Font colors
   $color-global: #460039;
@@ -97,7 +97,7 @@ html[dark] {
   @import 'apply-colors-light';
 
   // Search Top
-  .search-top {
+  .grw-global-search {
     .btn-secondary.dropdown-toggle {
       color: $color-search;
     }

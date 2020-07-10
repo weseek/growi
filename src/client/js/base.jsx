@@ -3,16 +3,15 @@ import React from 'react';
 import loggerFactory from '@alias/logger';
 import Xss from '@commons/service/xss';
 
-import SearchTop from './components/Navbar/SearchTop';
 import GrowiNavbar from './components/Navbar/GrowiNavbar';
-import NavbarToggler from './components/Navbar/NavbarToggler';
+import GrowiNavbarBottom from './components/Navbar/GrowiNavbarBottom';
 import Sidebar from './components/Sidebar';
 import ShareLinkAlert from './components/Page/ShareLinkAlert';
+import Fab from './components/Fab';
 import StaffCredit from './components/StaffCredit/StaffCredit';
 
 import AppContainer from './services/AppContainer';
 import WebsocketContainer from './services/WebsocketContainer';
-import PageCreateButton from './components/Navbar/PageCreateButton';
 import PageCreateModal from './components/PageCreateModal';
 
 const logger = loggerFactory('growi:cli:app');
@@ -41,16 +40,14 @@ logger.info('AppContainer has been initialized');
  */
 const componentMappings = {
   'grw-navbar': <GrowiNavbar />,
-  'grw-navbar-toggler': <NavbarToggler />,
+  'grw-navbar-bottom-container': <GrowiNavbarBottom />,
 
-  'grw-search-top': <SearchTop />,
-
-  'create-page-button-icon': <PageCreateButton isIcon />,
   'page-create-modal': <PageCreateModal />,
 
   'grw-sidebar-wrapper': <Sidebar />,
 
   'share-link-alert': <ShareLinkAlert />,
+  'grw-fab-container': <Fab />,
 
   'staff-credit': <StaffCredit />,
 };

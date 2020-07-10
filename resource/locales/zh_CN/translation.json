@@ -126,7 +126,6 @@
 	"Shareable link": "可分享链接",
 	"The whitelist of registration permission E-mail address": "注册许可电子邮件地址的白名单",
 	"Add tags for this page": "添加标签",
-	"Edit tags for this page": "编辑标签",
 	"You have no tag, You can set tags on pages": "你没有标签，可以在页面上设置标签",
 	"Show latest": "显示最新",
 	"Load latest": "家在最新",
@@ -340,8 +339,9 @@
 		"activate_user_success": "Succeeded to activating {{username}}",
 		"deactivate_user_success": "Succeeded to deactivate {{username}}",
 		"remove_user_success": "Succeeded to removing {{username}} ",
-		"remove_external_user_success": "Succeeded to remove {{accountId}} "
-	},
+    "remove_external_user_success": "Succeeded to remove {{accountId}} ",
+    "failed_to_reset_password":"Failed to reset password"
+  },
 	"template": {
 		"modal_label": {
 			"Create/Edit Template Page": "创建/编辑模板页",

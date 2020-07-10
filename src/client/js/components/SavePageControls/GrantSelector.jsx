@@ -146,7 +146,8 @@ class GrantSelector extends React.Component {
 
       const labelElm = (
         <span>
-          <i className={`icon icon-fw ${opt.iconClass}`}></i> {t(label)}
+          <i className={`icon icon-fw ${opt.iconClass}`}></i>
+          <span className="label">{t(label)}</span>
         </span>
       );
 
@@ -161,7 +162,12 @@ class GrantSelector extends React.Component {
 
     // add specified group option
     if (grantGroup != null) {
-      const labelElm = <span><i className="icon icon-fw icon-organization"></i> {this.getGroupName()}</span>;
+      const labelElm = (
+        <span>
+          <i className="icon icon-fw icon-organization"></i>
+          <span className="label">{this.getGroupName()}</span>
+        </span>
+      );
 
       // set dropdownToggleLabelElm
       dropdownToggleLabelElm = labelElm;
@@ -171,7 +177,7 @@ class GrantSelector extends React.Component {
 
     return (
       <div className="form-group grw-grant-selector mb-0">
-        <UncontrolledDropdown direction="up" size="sm">
+        <UncontrolledDropdown direction="up">
           <DropdownToggle color={dropdownToggleBtnColor} caret className="d-flex justify-content-between align-items-center" disabled={this.props.disabled}>
             {dropdownToggleLabelElm}
           </DropdownToggle>

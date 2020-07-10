@@ -597,5 +597,52 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /users/reset-password:
+   *      put:
+   *        tags: [Users]
+   *        operationId: resetPassword
+   *        summary: /users/reset-password
+   *        description: update imageUrlCache
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  id:
+   *                    type: string
+   *                    description: user id for reset password
+   *        responses:
+   *          200:
+   *            description: success resrt password
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    newPassword:
+   *                      type: string
+   *                    user:
+   *                      type: object
+   *                      description: Target user
+   */
+  router.put('/reset-password', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    const { id } = req.body;
+
+    try {
+      const [newPassword, user] = await Promise.all([
+        await User.resetPasswordByRandomString(id),
+        await User.findById(id)]);
+
+      return res.apiv3({ newPassword, user });
+    }
+    catch (err) {
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(err));
+    }
+  });
+
   return router;
 };
