@@ -63,6 +63,7 @@ export default class GridEditModal extends React.PureComponent {
         <ModalBody>
           <div className="container">
             <div className="row">
+              <div className="col-5">
                 <label htmlFor="gridPattern">Grid Pattern :</label>
                 <div className="dropdown">
                   <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
