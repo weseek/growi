@@ -79,27 +79,27 @@ export default class GridEditModal extends React.PureComponent {
               </div>
               <div className="col-7">
                 <label>Break point by display size :</label>
-                <input type="radio" id="mobile" name="disSize" value="mobile" />
-                <label htmlFor="mobile">Mobile</label>
+                <input type="radio" id="mobile" name="disSize" value="mobile" checked />
+                <label htmlFor="mobile"><i className="icon-screen-smartphone"></i> Mobile</label>
                 <input type="radio" id="tablet" name="disSize" value="tablet" />
-                <label htmlFor="tablet">Tablet</label>
-                <input type="radio" id="phone" name="disSize" value="phone" />
-                <label htmlFor="phone">Phone</label>
+                <label htmlFor="tablet"><i className="icon-screen-tablet"></i> Tablet</label>
+                <input type="radio" id="desktop" name="disSize" value="desktop" />
+                <label htmlFor="desktop"><i className="icon-screen-desktop"></i> Desktop</label>
                 <input type="radio" id="none" name="disSize" value="none" />
                 <label htmlFor="none">None</label>
               </div>
-              {/* <h1>Preview</h1> */}
-              <div className="col-6">
-                <label>Desktop</label>
+              <h1 className="w-100">Preview</h1>
+              <div className="col-6 bg-dark">
+                <label><i className="icon-screen-desktop"></i> Desktop</label>
                 {/* desktop */}
               </div>
-              <div className="col-4">
-                <label>Tablet</label>
+              <div className="col-4 bg-light">
+                <label><i className="icon-screen-tablet"></i> Tablet</label>
                 {/* tablet */}
               </div>
-              <div className="col-2">
-                <label>Phone</label>
-                {/* phone */}
+              <div className="col-2 bg-primary">
+                <label><i className="icon-screen-smartphone"></i> Mobile</label>
+                {/* mobile */}
               </div>
             </div>
           </div>
