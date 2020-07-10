@@ -21,6 +21,8 @@ class PageEditor extends React.Component {
   constructor(props) {
     super(props);
 
+    this.previewElement = React.createRef();
+
     const config = this.props.appContainer.getConfig();
     const isUploadable = config.upload.image || config.upload.file;
     const isUploadableFile = config.upload.file;
@@ -305,7 +307,7 @@ class PageEditor extends React.Component {
             onSave={this.onSaveWithShortcut}
           />
         </div>
-        <div className="d-none d-xl-block page-editor-preview-container flex-grow-1 flex-basis-0 mw-0">
+        <div className="d-none d-lg-block page-editor-preview-container flex-grow-1 flex-basis-0 mw-0">
           <Preview
             markdown={this.state.markdown}
             // eslint-disable-next-line no-return-assign

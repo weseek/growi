@@ -69,9 +69,9 @@ const AdminNavigation = (props) => {
   };
 
   return (
-    <div>
+    <React.Fragment>
       {/* List group */}
-      <div className="list-group admin-navigation d-none d-lg-block">
+      <div className="list-group admin-navigation sticky-top d-none d-lg-block">
         {getListGroupItemOrDropdownItemList(true)}
       </div>
 
@@ -104,7 +104,7 @@ const AdminNavigation = (props) => {
         </div>
       </div>
 
-    </div>
+    </React.Fragment>
   );
 };
 

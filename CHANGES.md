@@ -1,6 +1,20 @@
 # CHANGES
 
-## v4.0.7-RC
+## v4.0.8-RC
+
+* Improvement: Navigations
+    * New floating subnavigation
+    * New open drawer button
+    * New fixed bottom navbar on mobile
+    * New fixed bottom navbar for editor on mobile
+    * FAB (Floating action button)
+* Improvement: Sticky admin navigation
+* Fix: Reseting password doesn't work
+* Fix: Styles for printing
+* Fix: Unable to create page with original path after emptying trash
+* I18n: Support zh-CN
+
+## v4.0.7
 
 * Feature: Set request timeout for Elasticsearch with env var `ELASTICSEARCH_REQUEST_TIMEOUT`
 * Improvement: Apply styles faster on booting client
@@ -1353,7 +1367,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
 
 * Fix: The problem that path including round bracket makes something bad
 * Fix: Recursively option processes also unexpedted pages
-* Fix: en-US translation
+* Fix: en_US translation
 
 ## v2.0.7
 

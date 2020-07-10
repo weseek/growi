@@ -18,7 +18,7 @@
  *          lang:
  *            type: string
  *            description: language
- *            example: 'en-US'
+ *            example: 'en_US'
  *          status:
  *            type: integer
  *            description: status
