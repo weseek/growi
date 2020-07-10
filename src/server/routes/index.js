@@ -10,6 +10,7 @@ module.exports = function(crowi, app) {
   const loginRequiredStrictly = require('../middlewares/login-required')(crowi);
   const loginRequired = require('../middlewares/login-required')(crowi, true);
   const adminRequired = require('../middlewares/admin-required')(crowi);
+  const certifySharedPage = require('../middlewares/certify-shared-page')(crowi);
   const csrf = require('../middlewares/csrf')(crowi);
 
   const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
@@ -165,7 +166,7 @@ module.exports = function(crowi, app) {
   app.get('/_api/attachments.limit'   , accessTokenParser , loginRequiredStrictly, attachment.api.limit);
 
   app.get('/_api/revisions.get'       , accessTokenParser , loginRequired , revision.api.get);
-  app.get('/_api/revisions.ids'       , accessTokenParser , loginRequired , revision.api.ids);
+  app.get('/_api/revisions.ids'       , certifySharedPage , accessTokenParser , loginRequired , revision.api.ids);
   app.get('/_api/revisions.list'      , accessTokenParser , loginRequired , revision.api.list);
 
   app.get('/trash$'                   , loginRequired , page.trashPageShowWrapper);
