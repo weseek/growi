@@ -63,6 +63,18 @@ export default class GridEditModal extends React.PureComponent {
         <ModalBody>
           <div className="container">
             <div className="row">
+              {/* <h1>Preview</h1> */}
+              <div className="col-6">
+                <label>Desktop</label>
+                {/* desktop */}
+              </div>
+              <div className="col-4">
+                <label>Tablet</label>
+                {/* tablet */}
+              </div>
+              <div className="col-2">
+                <label>Phone</label>
+                {/* phone */}
             </div>
           </div>
         </ModalBody>
