@@ -9,7 +9,7 @@ import NavigationContainer from '../../services/NavigationContainer';
 import SearchForm from '../SearchForm';
 
 
-class SearchTop extends React.Component {
+class GlobalSearch extends React.Component {
 
   constructor(props) {
     super(props);
@@ -51,24 +51,8 @@ class SearchTop extends React.Component {
     window.location.href = url.href;
   }
 
-  Root = ({ children }) => {
-    const { isDeviceSmallerThanMd: isCollapsed } = this.props.navigationContainer.state;
-
-    return isCollapsed
-      ? (
-        <div id="grw-search-top-collapse" className="collapse bg-dark p-3">
-          {children}
-        </div>
-      )
-      : (
-        <div className="grw-search-top-absolute position-absolute">
-          {children}
-        </div>
-      );
-  };
-
-  SearchTopForm = () => {
-    const { t, appContainer } = this.props;
+  render() {
+    const { t, appContainer, dropup } = this.props;
     const scopeLabel = this.state.isScopeChildren
       ? t('header_search_box.label.This tree')
       : t('header_search_box.label.All pages');
@@ -79,7 +63,7 @@ class SearchTop extends React.Component {
     return (
       <div className={`form-group mb-0 d-print-none ${isReachable ? '' : 'has-error'}`}>
         <div className="input-group flex-nowrap">
-          <div className="input-group-prepend">
+          <div className={`input-group-prepend ${dropup ? 'dropup' : ''}`}>
             <button className="btn btn-secondary dropdown-toggle py-0" type="button" data-toggle="dropdown" aria-haspopup="true">
               {scopeLabel}
             </button>
@@ -94,6 +78,7 @@ class SearchTop extends React.Component {
             onInputChange={this.onInputChange}
             onSubmit={this.search}
             placeholder="Search ..."
+            dropup={dropup}
           />
           <div className="btn-group-submit-search">
             <span className="btn-link text-decoration-none" onClick={this.search}>
@@ -105,24 +90,19 @@ class SearchTop extends React.Component {
     );
   }
 
-  render() {
-    const { Root, SearchTopForm } = this;
-    return (
-      <Root><SearchTopForm /></Root>
-    );
-  }
-
 }
 
-SearchTop.propTypes = {
+GlobalSearch.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
+
+  dropup: PropTypes.bool,
 };
 
 /**
  * Wrapper component for using unstated
  */
-const SearchTopWrapper = withUnstatedContainers(SearchTop, [AppContainer, NavigationContainer]);
+const GlobalSearchWrapper = withUnstatedContainers(GlobalSearch, [AppContainer, NavigationContainer]);
 
-export default withTranslation()(SearchTopWrapper);
+export default withTranslation()(GlobalSearchWrapper);
