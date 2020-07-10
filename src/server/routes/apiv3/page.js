@@ -199,7 +199,7 @@ module.exports = (crowi) => {
   */
   router.get('/export', async(req, res) => {
     try {
-      const { format, pageId=null, revisionId=null } = req.query;
+      const { format, pageId = null, revisionId = null } = req.query;
       let markdown;
 
       // TODO: GW-3061
@@ -213,13 +213,14 @@ module.exports = (crowi) => {
         return res.apiv3Err('Should provided pageId or revisionId');
       }
 
-      let fileStream, filePath;
+      let fileStream;
+      let filePath;
       const baseDir = path.join(crowi.tmpDir, 'exports');
 
       try {
         // write tmp file
         if (format === 'md') {
-          filePath = path.join(baseDir, 'revisionId.md')
+          filePath = path.join(baseDir, 'revisionId.md');
           await fs.writeFileSync(filePath, markdown);
         }
         else if (format === 'pdf') {
