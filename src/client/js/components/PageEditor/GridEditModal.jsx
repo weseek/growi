@@ -61,6 +61,10 @@ export default class GridEditModal extends React.PureComponent {
           Create Bootstrap 4 Grid
         </ModalHeader>
         <ModalBody>
+          <div className="container">
+            <div className="row">
+            </div>
+          </div>
         </ModalBody>
         <ModalFooter className="grw-modal-footer">
           <div className="ml-auto">
