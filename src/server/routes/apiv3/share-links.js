@@ -23,9 +23,9 @@ const today = new Date();
  */
 
 module.exports = (crowi) => {
-  const loginRequired = require('../../middleware/login-required')(crowi);
-  const csrf = require('../../middleware/csrf')(crowi);
-  const { ApiV3FormValidator } = crowi.middlewares;
+  const loginRequired = require('../../middlewares/login-required')(crowi);
+  const csrf = require('../../middlewares/csrf')(crowi);
+  const ApiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
   const ShareLink = crowi.model('ShareLink');
 
 
