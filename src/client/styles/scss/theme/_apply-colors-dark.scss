@@ -5,21 +5,25 @@ $color-list-hover: $color-global !default;
 $bgcolor-list-hover: lighten($bgcolor-global, 3%) !default;
 $color-list-active: $color-reversal !default;
 $bgcolor-list-active: $primary !default;
-$bgcolor-subnabvar: lighten($bgcolor-global, 3%) !default;
+$bgcolor-subnav: lighten($bgcolor-global, 3%) !default;
 $color-table: white !default;
 $bgcolor-table: #343a40 !default;
 $border-color-table: lighten($bgcolor-table, 7.5%) !default;
 $color-table-hover: rgba(white, 0.075) !default;
 $bgcolor-table-hover: lighten($bgcolor-table, 7.5%) !default;
 $bgcolor-sidebar-list-group: $bgcolor-list !default;
+$color-tags: #949494 !default;
+$bgcolor-tags: $dark !default;
 
 // override bootstrap variables
+$border-color: #444;
 $table-dark-color: $color-table;
 $table-dark-bg: $bgcolor-table;
 $table-dark-border-color: $border-color-table;
 $table-dark-hover-color: $color-table-hover;
 $table-dark-hover-bg: $bgcolor-table-hover;
 
+@import 'reboot-bootstrap-border-colors';
 @import 'reboot-bootstrap-tables';
 
 // List Group
@@ -46,11 +50,10 @@ textarea.form-control {
   background-color: lighten($bgcolor-global, 5%);
 }
 
-.input-group .input-group-addon {
-  color: theme-color('dark');
-  background-color: rgba($bgcolor-navbar, 0.4);
-  // FIXME: accent color
-  // border: 1px solid darken($border, 30%);
+.input-group > .input-group-prepend > .input-group-text {
+  color: color-yiq(theme-color('dark'));
+  background-color: theme-color('dark');
+  border: 1px solid theme-color('secondary');
   border-right: none;
 }
 
@@ -59,9 +62,6 @@ textarea.form-control {
  */
 .dropdown-menu {
   background-color: $bgcolor-global;
-  > li > a {
-    color: $color-global;
-  }
 }
 
 /*
@@ -176,6 +176,14 @@ ul.pagination {
 }
 
 /*
+ * GROWI subnavigation
+ */
+.grw-drawer-toggler {
+  @extend .btn-dark;
+  color: #999;
+}
+
+/*
  * GROWI page list
  */
 .page-list {
@@ -191,8 +199,12 @@ ul.pagination {
 /*
  * GROWI subnavigation
  */
-.grw-subnavbar {
-  background-color: $bgcolor-subnabvar;
+.grw-subnav {
+  background-color: $bgcolor-subnav;
+}
+
+.grw-subnav-fixed-container .grw-subnav {
+  background-color: rgba($bgcolor-subnav, 0.85);
 }
 
 // Search drop down
@@ -214,7 +226,7 @@ ul.pagination {
 /*
  * GROWI on-edit
  */
-.page-editor-footer {
+.grw-editor-navbar-bottom {
   #slack-mark-black {
     display: none;
   }
@@ -242,5 +254,15 @@ ul.pagination {
 .comment-form {
   #slack-mark-black {
     display: none;
+  }
+}
+
+/*
+ * GROWI tags
+ */
+.grw-tag-labels {
+  .grw-tag-label {
+    color: $color-tags;
+    background-color: $bgcolor-tags;
   }
 }

@@ -6,7 +6,7 @@
   #}
   <li class="nav-item grw-main-nav-item-left">
     <a class="nav-link active" href="#revision-body" role="tab" data-toggle="tab">
-      <i class="icon-control-play icon-fw"></i><span class="d-none d-sm-inline">View</span>
+      <i class="icon-control-play icon-fw"></i><span class="d-none d-md-inline">View</span>
     </a>
   </li>
 
@@ -19,7 +19,7 @@
           data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
         {% endif %}
       >
-        <i class="icon-note icon-fw"></i><span class="d-none d-sm-inline">{{ t('Edit') }}</span>
+        <i class="icon-note icon-fw"></i><span class="d-none d-md-inline">{{ t('Edit') }}</span>
       </a>
     </li>
 
@@ -32,7 +32,7 @@
           data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
         {% endif %}
       >
-        <i class="fa fa-fw fa-file-text-o"></i><span class="d-none d-sm-inline">{{ t('HackMD') }}</span>
+        <i class="fa fa-fw fa-file-text-o"></i><span class="d-none d-md-inline">{{ t('HackMD') }}</span>
       </a>
     </li>
     {% endif %}
@@ -49,15 +49,15 @@
 
   <!-- presentation -->
   {% if not page.isTopPage() %}
-    <li class="nav-item">
+    <li class="nav-item d-edit-none">
       <a href="?presentation=1" class="nav-link toggle-presentation">
-        <i class="icon-film icon-fw"></i><span class="d-none d-md-inline">{{ t('Presentation Mode') }}</span>
+        <i class="icon-film icon-fw"></i><span class="d-none d-sm-inline">{{ t('Presentation Mode') }}</span>
       </a>
     </li>
   {% endif %}
 
   <!-- revision-history -->
-  <li class="nav-item">
+  <li class="nav-item d-edit-none">
     <a class="nav-link" href="#revision-history" role="tab" data-toggle="tab">
       <i class="icon-layers icon-fw"></i><span class="d-none d-md-inline">{{ t('History') }}</span>
     </a>
@@ -70,7 +70,7 @@
   
   <!-- icon-options-vertical -->
   {% if !isTrashPage() %}
-    <li id="page-management" class="nav-item dropdown"></li>
+    <li id="page-management" class="nav-item dropdown d-edit-none"></li>
   {% endif %}
 </ul>
 

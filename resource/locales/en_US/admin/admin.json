@@ -1,0 +1,303 @@
+{
+  "admin_top": {
+    "management_wiki": "Management Wiki",
+    "system_information": "System information",
+    "wiki_administrator": "Only wiki administrator can access this page",
+    "assign_administrator": "You can assign the selected user to be a wiki administrator on the User Management page using the 'Give admin access' button",
+    "list_of_installed_plugins": "List of installed plugins",
+    "package_name": "Package name",
+    "specified_version": "Specified version",
+    "installed_version": "Installed version",
+    "list_of_env_vars":"List of environment variables",
+    "env_var_priority": "For environment variables other than security, the value of the database is obtained preferentially.",
+    "about_security": "Check <a href='/admin/security'>Securtiy Settings</a> for security environment variables."
+  },
+  "app_setting": {
+    "site_name": "Site name",
+    "sitename_change": "You can change site name which is used for header and HTML title.",
+    "header_content": "The contents entered here will be shown in the header etc.",
+    "site_url_desc": "This is for the site URL setting.",
+    "site_url_warn": "Some features don't work because the site URL is not set.",
+    "siteurl_help": "Site full URL beginning from <code>http://</code> or <code>https://</code>.",
+    "confidential_name": "Confidential name",
+    "confidential_example": "ex): internal use only",
+    "default_language": "Default language for new users",
+    "file_uploading": "File uploading",
+    "enable_files_except_image": "Enabling this option will allow upload of any file type. Without this option, only image file upload is supported.",
+    "attach_enable": "You can attach files other than image files if you enable this option.",
+    "update": "Update",
+    "mail_settings": "Mail settings",
+    "smtp_used": "If you have SMTP settings, it will be used.",
+    "smtp_but_aws": "If you do not have SMTP settings but AWS settings,  e-mails will be sent by SES.",
+    "neihter_of": "If neither is selected, then no email will be sent.",
+    "from_e-mail_address": "From e-mail address",
+    "smtp_settings": "SMTP settings",
+    "host": "Host",
+    "port": "Port",
+    "user": "User",
+    "aws_settings": "AWS settings",
+    "aws_access": "This is for AWS settings. If you complete AWS settings, file upload function, profile picture function etc will be enabled.",
+    "no_smtp_setting": "If you do not have SMTP settings, e-mails will be sent via SES. You need to verify from e-mail address and production settings.",
+    "change_setting": "Caution:if you change this setting not completed, you will not be able to access files you have uploaded so far.",
+    "region": "Region",
+    "bucket_name": "Bucket name",
+    "custom_endpoint": "Custom endpoint",
+    "custom_endpoint_change": "Input the URL of the endpoint of an object storage service like MinIO that has a S3-compatible API.  Amazon S3 is used if empty.",
+    "plugin_settings": "Plugin settings",
+    "enable_plugin_loading": "Enable plugin loading",
+    "load_plugins": "Load_plugins",
+    "enable": "Enable",
+    "disable": "Disable",
+    "use_env_var_if_empty": "If the value in the database is empty, the value of the environment variable <cod>{{variable}}</code> is used."
+  },
+  "markdown_setting": {
+    "lineBreak_header": "Line break setting",
+    "lineBreak_desc": "You can change line break settings.",
+    "lineBreak_options": {
+      "enable_lineBreak": "Enable line break",
+      "enable_lineBreak_desc": "Convert line break in the text page to<code>&lt;br&gt;</code>in HTML",
+      "enable_lineBreak_for_comment": "Enable line break in comment",
+      "enable_lineBreak_for_comment_desc": "Convert line break in comment to<code>&lt;br&gt;</code>in HTML"
+    },
+    "presentation_header": "Presentation setting",
+    "presentation_desc": "You can change presentation settings.",
+    "presentation_options": {
+      "page_break_setting": "Page break setting",
+      "preset_one_separator": "Preset 1",
+      "preset_one_separator_desc": "3 Blank lines",
+      "preset_one_separator_value": "\\n\\n\\n",
+      "preset_two_separator": "Preset 2",
+      "preset_two_separator_desc": "5 Hyphens",
+      "preset_two_separator_value": "-----",
+      "custom_separator": "Custom",
+      "custom_separator_desc": "Regular expression"
+    },
+    "xss_header": "Prevent XSS(cross site scripting) setting",
+    "xss_desc": "You can change the handling of HTML tags in markdown text.",
+    "xss_options": {
+      "enable_xss_prevention": "Enable XSS prevention",
+      "remove_all_tags": "Remove all tags",
+      "remove_all_tags_desc": "Stripe all HTML tags and attributes",
+      "recommended_setting": "Recommended setting",
+      "custom_whitelist": "Custom whitelist",
+      "tag_names": "Tag names",
+      "tag_attributes": "Tag attributes",
+      "import_recommended": "Import recommended {{target}}"
+    }
+  },
+  "customize_setting": {
+    "recommended": "Recommended",
+    "layout": "Layout",
+    "theme": "Theme",
+    "layout_desc": {
+      "growi_title": "Simple and clear",
+      "growi_text1": "Full screen layout and thin margins/paddings",
+      "growi_text2": "Show and post comments at the bottom of the page",
+      "growi_text3": "Affix table-of-contents",
+      "kibela_title": "Easy viewing structure",
+      "kibela_text1": "Center aligned contents",
+      "kibela_text2": "Show and post comments at the bottom of the page",
+      "kibela_text3": "Affix Table-of-contents"
+    },
+    "theme_desc": {
+      "light_and_dark": "Light and dark modes",
+      "unique": "Only one mode"
+    },
+    "function": "Function",
+    "function_desc": "You can choose Valid/Invalid of the function",
+    "function_options": {
+      "timeline": "Timeline function",
+      "timeline_desc1": "You can show the timeline of the child pages.",
+      "timeline_desc2": "If there are many child pages, performance decreases while page loading.",
+      "timeline_desc3": "You can speed up list page display by invalidating.",
+      "tab_switch": "Save tab-switching in the browser",
+      "tab_switch_desc1": "Save edit tab and history tab switching in the browser and make it object for forward/back command of the browser.",
+      "tab_switch_desc2": "By invalidating, you can make page transition as the only object for forward/back command of the browser.",
+      "attach_title_header": "Add h1 section when create new page automatically",
+      "attach_title_header_desc": "Add page path to the first line as h1 section when create new page",
+      "recent_created__n_draft_num_desc": "Number of recently created pages & drafts displayed",
+      "recently_created_n_draft_num_desc": "Number of recently created pages and drafts displayed on user page",
+      "stale_notification": "Display notification on stale pages",
+      "stale_notification_desc": "Displays the notification to pages more than 1 year since the last update.",
+      "show_all_reply_comments": "Show all reply comments",
+      "show_all_reply_comments_desc": "When the setting value is off, comments other than the latest two are omitted."
+    },
+    "code_highlight": "Code highlight",
+    "nocdn_desc": "This function is disabled when the environment variable <code>NO_CDN=true</code>.<br>Github style has been forcibly applied.",
+    "custom_title": "Custom title",
+    "custom_title_detail": "You can customize <code>&lt;title&gt;</code> tag. Following placeholders will be automatically replaced:",
+    "custom_title_detail_placeholder1": "<code>&#123;&#123;sitename&#125;&#125;</code> - The site name of this wiki.",
+    "custom_title_detail_placeholder2": "<code>&#123;&#123;pagename&#125;&#125;</code> - The page name of the current page.",
+    "custom_title_detail_placeholder3": "<code>&#123;&#123;pagepath&#125;&#125;</code> - The page path of the current page.",
+    "custom_header": "Custom HTML header",
+    "custom_header_detail": "You can customize HTML header that applies all pages. Your custom script will be inserted in <code>&lt;header&gt;</code> but above other <code>&lt;script&gt;</code> tags.<br>Relaod page to see changes.",
+    "custom_css": "Custom CSS",
+    "write_css": "You can write CSS that is applied to whole system.",
+    "ctrl_space": "Ctrl+Space to autocomplete",
+    "custom_script": "Custom script",
+    "write_java": "You can write Javascript that is applied to whole system.",
+    "reflect_change": "You need to reload the page to reflect the change."
+  },
+  "importer_management": {
+    "beta_warning": "This function is Beta.",
+    "import_from": "Import from {{from}}",
+    "import_growi_archive": "Import GROWI archive",
+    "growi_settings": {
+      "description_of_import_mode": {
+        "about": "When you import data with the same name as an existing one, choose from the following three modes below.",
+        "insert": "Insert: Skip importing the data.",
+        "upsert": "Upsert: Overwrite and update the existing data with imported data.",
+        "flash_and_insert": "Flash and Insert: After deleting the existing data completely, import the data"
+      },
+      "growi_archive_file": "GROWI Archive File",
+      "uploaded_data": "Uploaded Data",
+      "extracted_file": "Extracted File",
+      "collection": "Collection",
+      "upload": "Upload",
+      "discard": "Discard uploaded data",
+      "errors": {
+        "at_least_one": "Select one or more collections.",
+        "page_and_revision": "'Pages' and 'Revisions' must be imported both.",
+        "depends": "'{{target}}' must be selected when '{{condition}}' is selected."
+      },
+      "configuration": {
+        "pages": {
+          "overwrite_author": {
+            "label": "Overwrite page's author with the current user",
+            "desc": "Recommended <span class=\"text-danger\">NOT</span> to check this when users will also be restored."
+          },
+          "set_public_to_page": {
+            "label": "Set 'Public' to the pages that is '{{from}}'",
+            "desc": "Make sure that this configuration makes all <b>'{{from}}'</b> pages readable from <span class=\"text-danger\">ANY users</span>."
+          },
+          "initialize_meta_datas": {
+            "label": "Initialize page's like, read users and comment count",
+            "desc": "Recommended <span class=\"text-danger\">NOT</span> to check this when users will also be restored."
+          },
+          "initialize_hackmd_related_datas": {
+            "label": "Initialize HackMD related data",
+            "desc": "Recommended to check this unless there is important drafts on HackMD."
+          }
+        },
+        "revisions": {
+          "overwrite_author": {
+            "label": "Overwrite revision's author with the current user",
+            "desc": "Recommended <span class=\"text-danger\">NOT</span> to check this when users will also be restored."
+          }
+        }
+      }
+    },
+    "esa_settings": {
+      "team_name": "Team name",
+      "access_token": "Access token",
+      "test_connection": "Test connection to esa"
+    },
+    "qiita_settings": {
+      "team_name": "Team name",
+      "access_token": "Access token",
+      "test_connection": "Test connection to qiita:team"
+    },
+    "import": "Import",
+    "page_skip": "Pages with a name that already exists on GROWI are not imported",
+    "Directory_hierarchy_tag": "Directory hierarchy tag"
+  },
+  "export_management": {
+    "exporting_collection_list": "Exporting Collection List",
+    "exported_data_list": "Exported Archive Data List",
+    "export_collections": "Export Collections",
+    "check_all": "Check All",
+    "uncheck_all": "Uncheck All",
+    "desc_password_seed": "DO NOT FORGET to set current <code>PASSWORD_SEED</code> to your new GROWI system when restoring user data, or users will NOT be able to login with their password.<br><br><strong>HINT:</strong><br>The current <code>PASSWORD_SEED</code> will be stored in <code>meta.json</code> in exported ZIP.",
+    "create_new_archive_data": "Create New Archive Data",
+    "export": "Export",
+    "cancel": "Cancel",
+    "file": "File",
+    "growi_version": "Growi Version",
+    "collections": "Collections",
+    "exported_at": "Exported At",
+    "export_menu": "Export Menu",
+    "download": "Download",
+    "delete": "Delete"
+  },
+  "user_management": {
+    "invite_users": "Invite new users",
+    "click_twice_same_checkbox": "You should check at least one checkbox.",
+    "invite_modal": {
+      "emails": "Emails (Possible to invite multiple people with new lines)",
+      "invite_thru_email": "Send invitation email",
+      "valid_email": "Valid email address is required",
+      "temporary_password": "The created user has a temporary password",
+      "send_new_password": "Please send the new password to the user.",
+      "send_temporary_password": "Be sure to copy the temporary password ON THIS SCREEN and send it to the user.",
+      "existing_email": "The following emails already exist"
+    },
+    "user_table": {
+      "administrator": "Administrator",
+      "edit_menu": "Edit menu",
+      "reset_password": "Reset password",
+      "administrator_menu": "Administrator Menu",
+      "accept": "Accept",
+      "deactivate_account": "Deactivate account",
+      "your_own": "You cannot deactivate your own account",
+      "remove_admin_access": "Remove admin access",
+      "cannot_remove": "You cannot remove yourself from administrator",
+      "give_admin_access": "Give admin access"
+    },
+    "reset_password": "Reset Password",
+    "reset_password_modal": {
+      "password_never_seen": "The temporary password can never be retrieved after this screen is closed.",
+      "password_reset_message": "Let the user know the new password below and strongly recommend to change another one immediately.",
+      "send_new_password": "Please send the new password to the user.",
+      "target_user": "Target User",
+      "new_password": "New Password"
+    },
+    "external_account": "External Account Management",
+    "external_accounts":"External accounts",
+    "create_external_account":"Create external account",
+    "external_account_list": "External Account List",
+    "invite": "Invite",
+    "invited": "User was invited",
+    "back_to_user_management": "Back to User Management",
+    "authentication_provider": "Authentication provider",
+    "manage": "Manage",
+    "password_setting": "Password setting",
+    "password_setting_help": "Is password set?",
+    "set": "Yes",
+    "unset": "No",
+    "related_username": "Related user's ",
+    "cannot_invite_maximum_users": "Can not invite more than the maximum number of users.",
+    "current_users": "Current users:"
+  },
+  "user_group_management": {
+    "create_group": "Create new group",
+    "deny_create_group": "You can't create a new group with the current settings.",
+    "group_name": "Group name",
+    "group_example": "e.g. : Group1",
+    "add_modal": {
+      "add_user": "Add a user to the created group",
+      "search_option": "Search option",
+      "enable_option": "Enable {{option}}",
+      "forward_match": "Forword match",
+      "partial_match": "Partial match",
+      "backward_match": "Backward match"
+    },
+    "group_list": "Group list",
+    "back_to_list": "Go back to group list",
+    "basic_info": "Basic info",
+    "user_list": "User list",
+    "created_group": "Group was created",
+    "is_loading_data": "Fetch data...",
+    "no_pages": "There are no pages the group has view permission.",
+    "remove_from_group": "Remove this user",
+    "delete_modal": {
+      "header": "Delete group",
+      "desc": "Once deleted, the deleted group and its private pages cannot be retrieved.",
+      "dropdown_desc": "Choose an action for private pages",
+      "select_group": "Select a group",
+      "no_groups": "No groups to select",
+      "publish_pages": "Publish all",
+      "delete_pages": "Delete all",
+      "transfer_pages": "Transfer to another group"
+    }
+  }
+}
