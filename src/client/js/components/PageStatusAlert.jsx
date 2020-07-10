@@ -120,8 +120,6 @@ class PageStatusAlert extends React.Component {
       content = this.renderDraftExistsAlert();
     }
 
-    content = this.renderUpdatedAlert();
-
     return content;
   }
 
