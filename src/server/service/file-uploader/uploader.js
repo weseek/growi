@@ -69,6 +69,7 @@ class Uploader {
   respond(res, attachment) {
     throw new Error('Implement this');
   }
+
 }
 
 module.exports = Uploader;
