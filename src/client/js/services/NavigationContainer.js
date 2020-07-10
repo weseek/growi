@@ -5,7 +5,7 @@ import { Container } from 'unstated';
  * @extends {Container} unstated Container
  */
 
-const scrollThresForThrottling = 100;
+const SCROLL_THRES_SKIP = 200;
 
 export default class NavigationContainer extends Container {
 
@@ -93,7 +93,7 @@ export default class NavigationContainer extends Container {
       const currentYOffset = window.pageYOffset;
 
       // original throttling
-      if (scrollThresForThrottling < currentYOffset) {
+      if (SCROLL_THRES_SKIP < currentYOffset) {
         return;
       }
 
@@ -169,6 +169,20 @@ export default class NavigationContainer extends Container {
 
   closePageCreateModal() {
     this.setState({ isPageCreateModalShown: false });
+  }
+
+  smoothScrollIntoView(element = null, offsetTop = 0) {
+    const targetElement = element || window.document.body;
+
+    // get the distance to the target element top
+    const rectTop = targetElement.getBoundingClientRect().top;
+
+    const top = window.pageYOffset + rectTop - offsetTop;
+
+    window.scrollTo({
+      top,
+      behavior: 'smooth',
+    });
   }
 
 }

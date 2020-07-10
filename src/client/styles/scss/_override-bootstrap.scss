@@ -88,6 +88,11 @@
     }
   }
 
+  // Badges
+  .badge {
+    @extend .badge-pill;
+  }
+
   //Modals
   .modal-open {
     position: fixed;
