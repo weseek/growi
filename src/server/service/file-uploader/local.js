@@ -98,20 +98,20 @@ module.exports = function(crowi) {
    */
   lib.canRespond = () => {
     // Check whether to use internal redirect of nginx or Apache.
-    return process.env.FILE_UPLOAD == "local" && lib.configManager.getConfig('crowi', 'app:useInternalRedirect');
+    return process.env.FILE_UPLOAD == 'local' && lib.configManager.getConfig('crowi', 'fileUpload:local:useInternalRedirect');
   };
 
   /**
    * Respond to the HTTP request.
-   * @param {Response} res 
-   * @param {Response} attachment 
+   * @param {Response} res
+   * @param {Response} attachment
    */
   lib.respond = (res, attachment) => {
     // Responce using internal redirect of nginx or Apache.
     const storagePath = getFilePathOnStorage(attachment);
     const relativePath = path.relative(crowi.publicDir, storagePath);
-    const internalPathRoot = lib.configManager.getConfig('crowi', 'app:internalRedirectPath');
-    const internalPath = urljoin(internalPathRoot, relativePath)
+    const internalPathRoot = lib.configManager.getConfig('crowi', 'fileUpload:local:internalRedirectPath');
+    const internalPath = urljoin(internalPathRoot, relativePath);
     res.set('X-Accel-Redirect', internalPath);
     res.set('X-Sendfile', storagePath);
     return res.end();

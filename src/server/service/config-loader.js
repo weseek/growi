@@ -137,17 +137,17 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.BOOLEAN,
     default: false,
   },
-  USE_INTERNAL_REDIRECT: {
+  FILE_UPLOAD_LOCAL_USE_INTERNAL_REDIRECT: {
     ns:      'crowi',
-    key:     'app:useInternalRedirect',
+    key:     'fileUpload:local:useInternalRedirect',
     type:    TYPES.BOOLEAN,
     default: false,
   },
-  INTERNAL_REDIRECT_PATH: {
+  FILE_UPLOAD_LOCAL_INTERNAL_REDIRECT_PATH: {
     ns:      'crowi',
-    key:     'app:internalRedirectPath',
+    key:     'fileUpload:local:internalRedirectPath',
     type:    TYPES.STRING,
-    default: "/growi-internal/",
+    default: '/growi-internal/',
   },
   ELASTICSEARCH_URI: {
     ns:      'crowi',
