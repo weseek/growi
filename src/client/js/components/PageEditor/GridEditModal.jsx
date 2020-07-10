@@ -63,6 +63,18 @@ export default class GridEditModal extends React.PureComponent {
         <ModalBody>
           <div className="container">
             <div className="row">
+                <label htmlFor="gridPattern">Grid Pattern :</label>
+                <div className="dropdown">
+                  <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Grid Pattern
+                  </button>
+                  <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    {/* TODO GW-3136 implement inside dropdown menu */}
+                    <a className="dropdown-item" href="#">6:6</a>
+                    <a className="dropdown-item" href="#">4:8</a>
+                    <a className="dropdown-item" href="#">8:4</a>
+                  </div>
+                </div>
               {/* <h1>Preview</h1> */}
               <div className="col-6">
                 <label>Desktop</label>
