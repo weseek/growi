@@ -3,15 +3,16 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import { localeMetadatas } from '../../util/i18n';
+
 import { toastSuccess, toastError } from '../../util/apiNotification';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-import AppContainer from '../../services/AppContainer';
 import PersonalContainer from '../../services/PersonalContainer';
 
 class BasicInfoSettings extends React.Component {
 
-  constructor(appContainer) {
+  constructor() {
     super();
 
     this.onClickSubmit = this.onClickSubmit.bind(this);
@@ -110,28 +111,21 @@ class BasicInfoSettings extends React.Component {
         <div className="form-group row">
           <label className="text-left text-md-right col-md-3 col-form-label">{t('Language')}</label>
           <div className="col-md-6">
-            <div className="custom-control custom-radio custom-control-inline">
-              <input
-                type="radio"
-                id="radioLangEn"
-                className="custom-control-input"
-                name="userForm[lang]"
-                checked={personalContainer.state.lang === 'en-US'}
-                onChange={() => { personalContainer.changeLang('en-US') }}
-              />
-              <label className="custom-control-label" htmlFor="radioLangEn">{t('English')}</label>
-            </div>
-            <div className="custom-control custom-radio custom-control-inline">
-              <input
-                type="radio"
-                id="radioLangJa"
-                className="custom-control-input"
-                name="userForm[lang]"
-                checked={personalContainer.state.lang === 'ja'}
-                onChange={() => { personalContainer.changeLang('ja') }}
-              />
-              <label className="custom-control-label" htmlFor="radioLangJa">{t('Japanese')}</label>
-            </div>
+            {
+              localeMetadatas.map(meta => (
+                <div key={meta.id} className="custom-control custom-radio custom-control-inline">
+                  <input
+                    type="radio"
+                    id={`radioLang${meta.id}`}
+                    className="custom-control-input"
+                    name="userForm[lang]"
+                    checked={personalContainer.state.lang === meta.id}
+                    onChange={() => { personalContainer.changeLang(meta.id) }}
+                  />
+                  <label className="custom-control-label" htmlFor={`radioLang${meta.id}`}>{meta.displayName}</label>
+                </div>
+              ))
+            }
           </div>
         </div>
 
@@ -149,11 +143,10 @@ class BasicInfoSettings extends React.Component {
 
 }
 
-const BasicInfoSettingsWrapper = withUnstatedContainers(BasicInfoSettings, [AppContainer, PersonalContainer]);
+const BasicInfoSettingsWrapper = withUnstatedContainers(BasicInfoSettings, [PersonalContainer]);
 
 BasicInfoSettings.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   personalContainer: PropTypes.instanceOf(PersonalContainer).isRequired,
 };
 

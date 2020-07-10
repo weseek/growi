@@ -38,7 +38,7 @@ module.exports = function(crowi) {
       'app:confidential'  : undefined,
 
       'app:fileUpload'    : false,
-      'app:globalLang'    : 'en-US',
+      'app:globalLang'    : 'en_US',
 
       'security:restrictGuestMode'      : 'Deny',
 
@@ -182,6 +182,7 @@ module.exports = function(crowi) {
       crowi: {
         title: crowi.appService.getAppTitle(),
         url: crowi.appService.getSiteUrl(),
+        confidential: crowi.appService.getAppConfidential(),
       },
       upload: {
         image: crowi.fileUploadService.getIsUploadable(),
@@ -220,6 +221,7 @@ module.exports = function(crowi) {
       recentCreatedLimit: crowi.configManager.getConfig('crowi', 'customize:showRecentCreatedNumber'),
       isEnabledStaleNotification: crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
       isAclEnabled: crowi.aclService.isAclEnabled(),
+      isSearchServiceConfigured: crowi.searchService.isConfigured,
       isSearchServiceReachable: crowi.searchService.isReachable,
       globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
     };

@@ -37,7 +37,7 @@ const validator = {};
  *          lang:
  *            type: string
  *            description: language
- *            example: 'en-US'
+ *            example: 'en_US'
  *          status:
  *            type: integer
  *            description: status
@@ -65,9 +65,10 @@ const validator = {};
  */
 
 module.exports = (crowi) => {
-  const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
-  const adminRequired = require('../../middleware/admin-required')(crowi);
-  const csrf = require('../../middleware/csrf')(crowi);
+  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
+  const adminRequired = require('../../middlewares/admin-required')(crowi);
+  const csrf = require('../../middlewares/csrf')(crowi);
+  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const {
     User,
@@ -76,7 +77,6 @@ module.exports = (crowi) => {
     UserGroupRelation,
   } = crowi.models;
 
-  const { ApiV3FormValidator } = crowi.middlewares;
 
   const statusNo = {
     registered: User.STATUS_REGISTERED,
@@ -150,7 +150,7 @@ module.exports = (crowi) => {
    *                      $ref: '#/components/schemas/PaginateResult'
    */
 
-  router.get('/', validator.statusList, ApiV3FormValidator, async(req, res) => {
+  router.get('/', validator.statusList, apiV3FormValidator, async(req, res) => {
 
     const page = parseInt(req.query.page) || 1;
     // status
@@ -241,7 +241,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: Users email that already exists
    */
-  router.post('/invite', loginRequiredStrictly, adminRequired, csrf, validator.inviteEmail, ApiV3FormValidator, async(req, res) => {
+  router.post('/invite', loginRequiredStrictly, adminRequired, csrf, validator.inviteEmail, apiV3FormValidator, async(req, res) => {
     try {
       const invitedUserList = await User.createUsersByInvitation(req.body.shapedEmailList, req.body.sendEmail);
       return res.apiv3({ invitedUserList });
@@ -530,7 +530,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: A result of `ExtenralAccount.findByIdAndRemove`
    */
-  router.delete('/external-accounts/:id/remove', loginRequiredStrictly, adminRequired, ApiV3FormValidator, async(req, res) => {
+  router.delete('/external-accounts/:id/remove', loginRequiredStrictly, adminRequired, apiV3FormValidator, async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -590,6 +590,53 @@ module.exports = (crowi) => {
       }
 
       return res.apiv3({});
+    }
+    catch (err) {
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(err));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /users/reset-password:
+   *      put:
+   *        tags: [Users]
+   *        operationId: resetPassword
+   *        summary: /users/reset-password
+   *        description: update imageUrlCache
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  id:
+   *                    type: string
+   *                    description: user id for reset password
+   *        responses:
+   *          200:
+   *            description: success resrt password
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    newPassword:
+   *                      type: string
+   *                    user:
+   *                      type: object
+   *                      description: Target user
+   */
+  router.put('/reset-password', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    const { id } = req.body;
+
+    try {
+      const [newPassword, user] = await Promise.all([
+        await User.resetPasswordByRandomString(id),
+        await User.findById(id)]);
+
+      return res.apiv3({ newPassword, user });
     }
     catch (err) {
       logger.error('Error', err);

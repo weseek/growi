@@ -113,14 +113,13 @@ const markdownpdf = require('markdown-pdf');
  *            description: boolean for like status
  */
 module.exports = (crowi) => {
-  const accessTokenParser = require('../../middleware/access-token-parser')(crowi);
-  const loginRequired = require('../../middleware/login-required')(crowi);
-  const csrf = require('../../middleware/csrf')(crowi);
+  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
+  const loginRequired = require('../../middlewares/login-required')(crowi);
+  const csrf = require('../../middlewares/csrf')(crowi);
+  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const globalNotificationService = crowi.getGlobalNotificationService();
   const { Page, GlobalNotificationSetting } = crowi.models;
-  const { ApiV3FormValidator } = crowi.middlewares;
-
 
   const validator = {
     likes: [
@@ -151,7 +150,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Page'
    */
-  router.put('/likes', accessTokenParser, loginRequired, csrf, validator.likes, ApiV3FormValidator, async(req, res) => {
+  router.put('/likes', accessTokenParser, loginRequired, csrf, validator.likes, apiV3FormValidator, async(req, res) => {
     const { pageId, bool } = req.body;
 
     let page;
