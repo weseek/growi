@@ -76,6 +76,9 @@ export default class GridEditModal extends React.PureComponent {
                     <a className="dropdown-item" href="#">8:4</a>
                   </div>
                 </div>
+              </div>
+              <div className="col-7">
+              </div>
               {/* <h1>Preview</h1> */}
               <div className="col-6">
                 <label>Desktop</label>
