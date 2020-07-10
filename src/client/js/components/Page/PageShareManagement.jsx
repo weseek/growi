@@ -28,9 +28,9 @@ const PageShareManagement = (props) => {
   }
 
   async function getMarkdown() {
-    const { revisionId } = pageContainer.state;
+    const { pageId, revisionId } = pageContainer.state;
     try {
-      const res = await appContainer.apiv3Get('/page/export', { revisionId });
+      const res = await appContainer.apiv3Get('/page/export', { pageId, revisionId });
       return res.data.markdown;
     }
     catch (err) {
