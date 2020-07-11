@@ -17,12 +17,11 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *    name: Search
  */
 module.exports = (crowi) => {
-  const accessTokenParser = require('../../middleware/access-token-parser')(crowi);
-  const loginRequired = require('../../middleware/login-required')(crowi);
-  const adminRequired = require('../../middleware/admin-required')(crowi);
-  const csrf = require('../../middleware/csrf')(crowi);
-
-  const { ApiV3FormValidator } = crowi.middlewares;
+  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
+  const loginRequired = require('../../middlewares/login-required')(crowi);
+  const adminRequired = require('../../middlewares/admin-required')(crowi);
+  const csrf = require('../../middlewares/csrf')(crowi);
+  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   /**
    * @swagger
@@ -114,7 +113,7 @@ module.exports = (crowi) => {
    *        200:
    *          description: Return 200
    */
-  router.put('/indices', accessTokenParser, loginRequired, adminRequired, csrf, validatorForPutIndices, ApiV3FormValidator, async(req, res) => {
+  router.put('/indices', accessTokenParser, loginRequired, adminRequired, csrf, validatorForPutIndices, apiV3FormValidator, async(req, res) => {
     const operation = req.body.operation;
 
     const { searchService } = crowi;

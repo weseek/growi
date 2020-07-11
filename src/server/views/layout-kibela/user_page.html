@@ -5,14 +5,6 @@
   user-page
 {% endblock %}
 
-{% block content_header %}
-  {% if pageUser %}
-    <header id="grw-subnav-for-user-page" class="grw-subnav grw-subnav-user-page" data-page-user="{{ pageUser|json }}"></header>
-  {% else %}
-    {% parent %}
-  {% endif %}
-{% endblock %}
-
 
 {% block content_main %}
   <div class="row pt-15">
@@ -35,14 +27,8 @@
 
       {% include '../widget/page_content.html' %}
 
-      {# force remove #revision-toc from #content_main of parent #}
-      <script>
-        $('#revision-toc').remove();
-      </script>
-
     </div>
 
-    {# relocate #revision-toc #}
     <div class="col-xl-3 col-lg-4 d-none d-lg-block revision-toc-container">
       <div id="revision-toc" class="revision-toc sps sps--abv" data-sps-offset="75">
         <div id="revision-toc-content" class="revision-toc-content"></div>

@@ -76,9 +76,7 @@ pre:not(.hljs):not(.CodeMirror-line) {
 
 // Dropdown
 .dropdown-menu {
-  form {
-    color: $color-global;
-  }
+  color: $color-global;
 }
 
 .dropdown-item {
@@ -154,7 +152,7 @@ pre:not(.hljs):not(.CodeMirror-line) {
   }
 }
 
-.search-top {
+.grw-global-search {
   .btn-secondary.dropdown-toggle {
     @include button-variant($bgcolor-search-top-dropdown, $bgcolor-search-top-dropdown);
   }
@@ -329,6 +327,10 @@ body.on-edit {
     .page-editor-footer {
       border-top-color: $border-color-theme;
     }
+  }
+
+  .grw-editor-navbar-bottom {
+    background-color: darken($bgcolor-global, 2%);
   }
 }
 

@@ -4,12 +4,13 @@ const autoReap = require('multer-autoreap');
 autoReap.options.reapOnError = true; // continue reaping the file even if an error occurs
 
 module.exports = function(crowi, app) {
-  const middlewares = require('../util/middlewares')(crowi, app);
-  const accessTokenParser = require('../middleware/access-token-parser')(crowi);
-  const loginRequiredStrictly = require('../middleware/login-required')(crowi);
-  const loginRequired = require('../middleware/login-required')(crowi, true);
-  const adminRequired = require('../middleware/admin-required')(crowi);
-  const csrf = require('../middleware/csrf')(crowi);
+  const applicationNotInstalled = require('../middlewares/application-not-installed')(crowi);
+  const applicationInstalled = require('../middlewares/application-installed')(crowi);
+  const accessTokenParser = require('../middlewares/access-token-parser')(crowi);
+  const loginRequiredStrictly = require('../middlewares/login-required')(crowi);
+  const loginRequired = require('../middlewares/login-required')(crowi, true);
+  const adminRequired = require('../middlewares/admin-required')(crowi);
+  const csrf = require('../middlewares/csrf')(crowi);
 
   const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
   const form = require('../form');
@@ -32,7 +33,7 @@ module.exports = function(crowi, app) {
 
   /* eslint-disable max-len, comma-spacing, no-multi-spaces */
 
-  app.get('/'                        , middlewares.applicationInstalled, loginRequired , page.showTopPage);
+  app.get('/'                        , applicationInstalled, loginRequired , page.showTopPage);
 
   // API v3
   app.use('/api-docs', require('./apiv3/docs')(crowi));
@@ -40,14 +41,14 @@ module.exports = function(crowi, app) {
 
   // installer
   if (!isInstalled) {
-    app.get('/installer'               , middlewares.applicationNotInstalled , installer.index);
-    app.post('/installer'              , middlewares.applicationNotInstalled , form.register , csrf, installer.install);
+    app.get('/installer'               , applicationNotInstalled , installer.index);
+    app.post('/installer'              , applicationNotInstalled , form.register , csrf, installer.install);
     return;
   }
 
   app.get('/login/error/:reason'     , login.error);
-  app.get('/login'                   , middlewares.applicationInstalled, loginPassport.loginWithMikan, login.preLogin, login.mikanLogin, login.login);
-  app.get('/login/growiUser'         , middlewares.applicationInstalled, login.preLogin, login.login);
+  app.get('/login'                   , applicationInstalled, loginPassport.loginWithMikan, login.preLogin, login.mikanLogin, login.login);
+  app.get('/login/growiUser'         , applicationInstalled, login.preLogin, login.login);
   app.get('/login/invited'           , login.invited);
   app.post('/login/activateInvited'  , form.invited                         , csrf, login.invited);
   app.post('/login'                  , form.login, csrf, loginPassport.loginWithLocal, loginPassport.loginWithMikan, loginPassport.loginWithLdap, loginPassport.loginFailure);
@@ -55,7 +56,7 @@ module.exports = function(crowi, app) {
   app.post('/_api/login/testLdap'    , loginRequiredStrictly , form.login , loginPassport.testLdapCredentials);
 
   app.post('/register'               , form.register                        , csrf, login.register);
-  app.get('/register'                , middlewares.applicationInstalled     , login.preLogin, login.register);
+  app.get('/register'                , applicationInstalled     , login.preLogin, login.register);
   app.get('/logout'                  , logout.logout);
 
   app.get('/admin'                          , loginRequiredStrictly , adminRequired , admin.index);

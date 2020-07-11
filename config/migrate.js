@@ -21,6 +21,8 @@ const mongodb = {
   databaseName: url.pathname.substring(1), // omit heading slash
   options: {
     useNewUrlParser: true, // removes a deprecation warning when connecting
+    useUnifiedTopology: true,
+    useFindAndModify: false,
   },
 };
 
