@@ -16,7 +16,7 @@
 }
 
 @mixin expand-editor($editor-header-plus-footer, $navbar-height-adjustment: 0px) {
-  $navbar-height: $grw-navbar-height + $grw-navbar-border-width + $navbar-height-adjustment;
+  $navbar-height: $grw-navbar-border-width + $navbar-height-adjustment;
   $header-plus-footer: $navbar-height + $editor-header-plus-footer + 2px; // add .main padding-top
 
   $editor-margin: $header-plus-footer //
@@ -217,4 +217,9 @@
   svg path {
     fill: $color;
   }
+}
+
+@mixin apply-navigation-transition() {
+  transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+  transition-duration: 300ms;
 }

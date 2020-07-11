@@ -4,6 +4,9 @@ import { Container } from 'unstated';
  * Service container related to options for Application
  * @extends {Container} unstated Container
  */
+
+const SCROLL_THRES_SKIP = 200;
+
 export default class NavigationContainer extends Container {
 
   constructor(appContainer) {
@@ -24,6 +27,10 @@ export default class NavigationContainer extends Container {
       isDrawerMode: null,
       isDrawerOpened: false,
 
+      sidebarContentsId: 'recent',
+
+      isScrollTop: true,
+
       isPageCreateModalShown: false,
     };
 
@@ -32,6 +39,7 @@ export default class NavigationContainer extends Container {
 
     this.initHotkeys();
     this.initDeviceSize();
+    this.initScrollEvent();
   }
 
   /**
@@ -78,6 +86,21 @@ export default class NavigationContainer extends Container {
     };
 
     this.appContainer.addBreakpointListener('md', mdOrAvobeHandler, true);
+  }
+
+  initScrollEvent() {
+    window.addEventListener('scroll', () => {
+      const currentYOffset = window.pageYOffset;
+
+      // original throttling
+      if (SCROLL_THRES_SKIP < currentYOffset) {
+        return;
+      }
+
+      this.setState({
+        isScrollTop: currentYOffset === 0,
+      });
+    });
   }
 
   setEditorMode(editorMode) {
@@ -146,6 +169,20 @@ export default class NavigationContainer extends Container {
 
   closePageCreateModal() {
     this.setState({ isPageCreateModalShown: false });
+  }
+
+  smoothScrollIntoView(element = null, offsetTop = 0) {
+    const targetElement = element || window.document.body;
+
+    // get the distance to the target element top
+    const rectTop = targetElement.getBoundingClientRect().top;
+
+    const top = window.pageYOffset + rectTop - offsetTop;
+
+    window.scrollTo({
+      top,
+      behavior: 'smooth',
+    });
   }
 
 }

@@ -170,7 +170,7 @@ module.exports = function(crowi, app) {
       return mailer.send({
         to: admin.email,
         subject: `[${appTitle}:admin] A New User Created and Waiting for Activation`,
-        template: path.join(crowi.localeDir, 'en-US/admin/userWaitingActivation.txt'),
+        template: path.join(crowi.localeDir, 'en_US/admin/userWaitingActivation.txt'),
         vars: {
           createdUser: userData,
           admin,

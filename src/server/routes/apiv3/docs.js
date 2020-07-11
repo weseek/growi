@@ -9,6 +9,7 @@ const router = express.Router();
 // paths to scan
 const APIS = [
   'src/server/routes/apiv3/**/*.js',
+  'src/server/models/**/*.js',
 ];
 
 module.exports = (crowi) => {

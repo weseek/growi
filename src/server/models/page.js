@@ -1185,18 +1185,17 @@ module.exports = function(crowi) {
   /**
    * Delete Bookmarks, Attachments, Revisions, Pages and emit delete
    */
-  pageSchema.statics.completelyDeletePageRecursively = async function(pageData, user, options = {}) {
-    const path = pageData.path;
+  pageSchema.statics.completelyDeletePageRecursively = async function(pagePath, user, options = {}) {
 
     const findOpts = { includeRedirect: true, includeTrashed: true };
-    const result = await this.findListWithDescendants(path, user, findOpts);
+    const result = await this.findListWithDescendants(pagePath, user, findOpts);
     const pages = result.pages;
 
     await Promise.all(pages.map((page) => {
       return this.completelyDeletePage(page, user, options);
     }));
 
-    return pageData;
+    return pagePath;
   };
 
   pageSchema.statics.removeByPath = function(path) {

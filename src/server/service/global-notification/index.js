@@ -9,7 +9,7 @@ class GlobalNotificationService {
 
   constructor(crowi) {
     this.crowi = crowi;
-    this.defaultLang = 'en-US'; // TODO: get defaultLang from app global config
+    this.defaultLang = 'en_US'; // TODO: get defaultLang from app global config
 
     this.gloabalNotificationMail = new GloabalNotificationMail(crowi);
     this.gloabalNotificationSlack = new GloabalNotificationSlack(crowi);

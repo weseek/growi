@@ -1,10 +1,5 @@
 {% extends 'base/layout.html' %}
 
-{% block content_header %}
- {% include 'widget/header.html' %}
- {% endblock %}
-
-
  {% block content_main_before%}
  {% endblock %}
 
@@ -18,12 +13,6 @@
 
   </div>
 
-  {# force remove #revision-toc from #content_main of parent #}
-  <script>
-    $('#revision-toc').remove();
-  </script>
-
-  {# relocate #revision-toc #}
   <div class="col-xl-3 col-lg-4 d-none d-lg-block revision-toc-container">
     <div id="revision-toc" class="revision-toc sps sps--abv" data-sps-offset="80">
       <div id="revision-toc-content" class="revision-toc-content"></div>

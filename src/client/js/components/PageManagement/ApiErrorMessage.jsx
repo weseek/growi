@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 
 const ApiErrorMessage = (props) => {
   const {
-    t, errorCode, errorMessage, linkPath,
+    t, errorCode, errorMessage, targetPath,
   } = props;
 
   function reload() {
@@ -18,7 +18,7 @@ const ApiErrorMessage = (props) => {
         return (
           <>
             <strong><i className="icon-fw icon-ban"></i>{ t('page_api_error.already_exists') }</strong>
-            <small><a href={linkPath}>{linkPath} <i className="icon-login"></i></a></small>
+            <small><a href={targetPath}>{targetPath} <i className="icon-login"></i></a></small>
           </>
         );
       case 'notfound_or_forbidden':
@@ -77,7 +77,7 @@ ApiErrorMessage.propTypes = {
 
   errorCode:    PropTypes.string,
   errorMessage: PropTypes.string,
-  linkPath:     PropTypes.string,
+  targetPath:   PropTypes.string,
 };
 
 export default withTranslation()(ApiErrorMessage);
