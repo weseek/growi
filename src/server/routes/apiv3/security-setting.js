@@ -227,28 +227,28 @@ const validator = {
  *          oidcIssuerHost:
  *            type: string
  *            description: issuer host for oidc
- *          oidcAuthorizationEndpoint
+ *          oidcAuthorizationEndpoint:
  *            type: string
  *            description: authorization endpoint for oidc
- *          oidcTokenEndpoint
+ *          oidcTokenEndpoint:
  *            type: string
  *            description: token endpoint for oidc
- *          oidcRevocationEndpoint
+ *          oidcRevocationEndpoint:
  *            type: string
  *            description: revocation endpoint for oidc
- *          oidcIntrospectionEndpoint
+ *          oidcIntrospectionEndpoint:
  *            type: string
  *            description: introspection endpoint for oidc
- *          oidcUserInfoEndpoint
+ *          oidcUserInfoEndpoint:
  *            type: string
  *            description: userinfo endpoint for oidc
- *          oidcEndSessionEndpoint
+ *          oidcEndSessionEndpoint:
  *            type: string
  *            description: end session endpoint for oidc
- *          oidcRegistrationEndpoint
+ *          oidcRegistrationEndpoint:
  *            type: string
  *            description: registration endpoint for oidc
- *          oidcJWKSUri
+ *          oidcJWKSUri:
  *            type: string
  *            description: JSON Web Key Set URI for oidc
  *          oidcClientId:
