@@ -66,11 +66,11 @@ const ArchiveCreateModal = (props) => {
         hierarchyValue,
       });
       toastSuccess(t('Submitted the request to create the archive'));
+      closeModalHandler();
     }
     catch (e) {
       toastError(e);
     }
-    closeModalHandler();
   }
 
   return (
