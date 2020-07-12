@@ -1,21 +1,15 @@
-import path from 'path';
-
 export default class Linker {
 
   constructor(
       type,
       label,
       link,
-      isUseRelativePath = false,
-      rootPath = '',
       isUsePermanentLink = false,
       permalink = '',
   ) {
     this.type = type;
     this.label = label;
     this.link = link;
-    this.isUseRelativePath = isUseRelativePath;
-    this.rootPath = rootPath;
     this.isUsePermanentLink = isUsePermanentLink;
     this.permalink = permalink;
 
@@ -38,9 +32,6 @@ export default class Linker {
   generateMarkdownText() {
     let reshapedLink = this.link;
 
-    if (this.isUseRelativePath && this.link.match(/^\//)) {
-      reshapedLink = path.relative(this.rootPath, this.link);
-    }
     if (this.isUsePermanentLink && this.permalink != null) {
       reshapedLink = this.permalink;
     }
@@ -87,18 +78,15 @@ export default class Linker {
       ({ label, link } = str.match(this.patterns.markdownLink).groups);
     }
 
-    // TODO GW-3074 相対パスを利用しているかテキストから判定し以下の値に反映する
-    const isUseRelativePath = false;
-    const rootPath = '';
+    const isUsePermanentLink = false;
+    const permalink = '';
 
     return new Linker(
       type,
       label,
       link,
-      isUseRelativePath,
-      rootPath,
-      false,
-      '',
+      isUsePermanentLink,
+      permalink,
     );
   }
 
