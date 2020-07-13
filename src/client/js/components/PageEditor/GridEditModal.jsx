@@ -5,7 +5,7 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import GridDivisionMenu from './GridMenu';
+import GridDivisionMenu from './GridDivisionMenu';
 
 export default class GridEditModal extends React.PureComponent {
 
