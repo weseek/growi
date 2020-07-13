@@ -1132,7 +1132,7 @@ module.exports = function(crowi) {
   };
 
   pageSchema.statics.revertDeletedPageRecursively = async function(targetPage, user, options = {}) {
-    const findOpts = { includeRedirect: true, includeTrashed: true };
+    const findOpts = { includeTrashed: true };
     const result = await this.findListWithDescendants(targetPage.path, user, findOpts);
     const pages = result.pages;
 
