@@ -33,8 +33,6 @@ export default class GridEditModal extends React.PureComponent {
   show(gridHtml) {
     this.init(gridHtml);
     this.setState({ show: true });
-    const html = this.convertRatiosAndSizeToHTML([1, 5, 6], 'sm');
-    console.log(html);
   }
 
   hide() {
@@ -47,8 +45,9 @@ export default class GridEditModal extends React.PureComponent {
 
   pasteCodedGrid() {
     // dummy data
-    const pastedGridData = `::: editable-row\n<div class="container">\n  <div class="row">
-    <div class="col-sm-6 col-md-5 col-lg-12">dummy</div>\n  </div>\n</div>\n:::`;
+    const pastedGridData = `::: editable-row\n<div class="container">\n\t<div class="row">\n\t${this.convertRatiosAndSizeToHTML([1, 5, 6], '')}\t</div>\n</div>\n:::`;
+    // display converted html on console
+    console.log(this.convertRatiosAndSizeToHTML([1, 5, 6], ''));
 
     if (this.props.onSave != null) {
       this.props.onSave(pastedGridData);
@@ -77,10 +76,10 @@ export default class GridEditModal extends React.PureComponent {
   convertRatiosAndSizeToHTML(ratioNumbers, responsiveSize) {
     let cols = '';
     for (let i = 0; i < ratioNumbers.length; i++) {
-      const className = `col${responsiveSize ? `-${responsiveSize}` : ''}-${ratioNumbers[i]}`;
-      cols += `<div class="${className}"></div>`;
+      const className = `col${responsiveSize ? `-${responsiveSize}` : ''}-${ratioNumbers[i]} bsGrid${i + 1}`;
+      cols += `<div class="${className}"></div>\n`;
     }
-    console.log(cols);
+    return cols;
   }
 
   render() {
