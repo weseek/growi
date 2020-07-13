@@ -53,8 +53,8 @@ const ArchiveCreateModal = (props) => {
     setHierarchyValue(hierarchyValue);
   }
 
-  async function done() {
 
+  async function done() {
     try {
       await appContainer.apiv3Post('/page/archive', {
         rootPagePath: props.path,
@@ -203,7 +203,7 @@ const ArchiveCreateModal = (props) => {
               <div className="my-1 custom-control costom-control-inline">
                 <input
                   type="number"
-                  min="0"
+                  min="1"
                   max="10"
                   disabled={hierarchyType === 'allSubordinatedPage'}
                   value={hierarchyValue}
@@ -239,6 +239,7 @@ ArchiveCreateModal.propTypes = {
   path: PropTypes.string.isRequired,
   totalPages: PropTypes.number,
   errorMessage: PropTypes.string,
+  archiveData: PropTypes.object,
 
 };
 
