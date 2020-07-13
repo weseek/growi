@@ -1266,22 +1266,30 @@ module.exports = function(crowi) {
     return updatedPageData;
   };
 
-  pageSchema.statics.renameRecursively = async function(pageData, newPagePathPrefix, user, options) {
+  pageSchema.statics.renameRecursively = async function(targetPage, newPagePathPrefix, user, options) {
     validateCrowi();
 
-    const path = pageData.path;
+    const path = targetPage.path;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(path)}`, 'i');
 
     // sanitize path
     newPagePathPrefix = crowi.xss.process(newPagePathPrefix); // eslint-disable-line no-param-reassign
 
+    // find descendants (this array does not include GRANT_RESTRICTED)
     const result = await this.findListWithDescendants(path, user, options);
-    await Promise.all(result.pages.map((page) => {
+    const pages = result.pages;
+    // add targetPage if 'grant' is GRANT_RESTRICTED
+    //  because findListWithDescendants excludes GRANT_RESTRICTED pages
+    if (targetPage.grant === GRANT_RESTRICTED) {
+      pages.push(targetPage);
+    }
+
+    await Promise.all(pages.map((page) => {
       const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
       return this.rename(page, newPagePath, user, options);
     }));
-    pageData.path = newPagePathPrefix;
-    return pageData;
+    targetPage.path = newPagePathPrefix;
+    return targetPage;
   };
 
   pageSchema.statics.handlePrivatePagesForDeletedGroup = async function(deletedGroup, action, transferToUserGroupId) {
