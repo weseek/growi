@@ -63,42 +63,81 @@ export default class GridEditModal extends React.PureComponent {
         <ModalBody>
           <div className="container">
             <div className="row">
-              <div className="col-5">
+              <div className="col-4">
                 <label htmlFor="gridPattern">Grid Pattern :</label>
                 <div className="dropdown">
-                  <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Grid Pattern
+                  <button
+                    className="btn btn-secondary dropdown-toggle"
+                    type="button"
+                    id="dropdownMenuButton"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    Grid Pattern
                   </button>
                   <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     {/* TODO GW-3136 implement inside dropdown menu */}
-                    <a className="dropdown-item" href="#">6:6</a>
-                    <a className="dropdown-item" href="#">4:8</a>
-                    <a className="dropdown-item" href="#">8:4</a>
+                    <a className="dropdown-item" href="#">
+                      6:6
+                    </a>
+                    <a className="dropdown-item" href="#">
+                      4:8
+                    </a>
+                    <a className="dropdown-item" href="#">
+                      8:4
+                    </a>
                   </div>
                 </div>
               </div>
-              <div className="col-7">
-                <label>Break point by display size :</label>
-                <input type="radio" id="mobile" name="disSize" value="mobile" checked />
-                <label htmlFor="mobile"><i className="icon-screen-smartphone"></i> Mobile</label>
-                <input type="radio" id="tablet" name="disSize" value="tablet" />
-                <label htmlFor="tablet"><i className="icon-screen-tablet"></i> Tablet</label>
-                <input type="radio" id="desktop" name="disSize" value="desktop" />
-                <label htmlFor="desktop"><i className="icon-screen-desktop"></i> Desktop</label>
-                <input type="radio" id="none" name="disSize" value="none" />
-                <label htmlFor="none">None</label>
+              <div className="col-8">
+                <div className="row">
+                  <div className="col-auto">
+                    <label>Break point by display size :</label>
+                  </div>
+                  <div className="col-auto">
+                    <div>
+                      <input type="radio" id="mobile" name="disSize" value="mobile" checked />
+                      <label htmlFor="mobile">
+                        <i className="icon-screen-smartphone"></i> Mobile
+                      </label>
+                    </div>
+                    <div>
+                      <input type="radio" id="tablet" name="disSize" value="tablet" />
+                      <label htmlFor="tablet">
+                        <i className="icon-screen-tablet"></i> Tablet
+                      </label>
+                    </div>
+                    <div>
+                      <input type="radio" id="desktop" name="disSize" value="desktop" />
+                      <label htmlFor="desktop">
+                        <i className="icon-screen-desktop"></i> Desktop
+                      </label>
+                    </div>
+                    <div>
+                      <input type="radio" id="none" name="disSize" value="none" />
+                      <label htmlFor="none">None</label>
+                    </div>
+                  </div>
+                </div>
               </div>
               <h1 className="w-100">Preview</h1>
               <div className="col-6 bg-dark">
-                <label><i className="icon-screen-desktop"></i> Desktop</label>
+                <label>
+                  <i className="icon-screen-desktop"></i> Desktop
+                </label>
                 {/* desktop */}
               </div>
               <div className="col-4 bg-light">
-                <label><i className="icon-screen-tablet"></i> Tablet</label>
+                <label>
+                  <i className="icon-screen-tablet"></i> Tablet
+                </label>
                 {/* tablet */}
               </div>
               <div className="col-2 bg-primary">
-                <label><i className="icon-screen-smartphone"></i> Mobile</label>
+                <label>
+                  <i className="icon-screen-smartphone"></i> Mobile
+                </label>
                 {/* mobile */}
               </div>
             </div>
@@ -106,8 +145,12 @@ export default class GridEditModal extends React.PureComponent {
         </ModalBody>
         <ModalFooter className="grw-modal-footer">
           <div className="ml-auto">
-            <button type="button" className="mr-2 btn btn-secondary" onClick={this.cancel}>Cancel</button>
-            <button type="button" className="btn btn-primary" onClick={this.pasteCodedGrid}>Done</button>
+            <button type="button" className="mr-2 btn btn-secondary" onClick={this.cancel}>
+              Cancel
+            </button>
+            <button type="button" className="btn btn-primary" onClick={this.pasteCodedGrid}>
+              Done
+            </button>
           </div>
         </ModalFooter>
       </Modal>
