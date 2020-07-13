@@ -128,19 +128,19 @@ export default class GridEditModal extends React.PureComponent {
                 <label>
                   <i className="icon-screen-desktop"></i> Desktop
                 </label>
-                {/* desktop */}
+                <div className="border"></div>
               </div>
-              <div className="col-4 bg-light">
+              <div className="col-3 bg-light">
                 <label>
                   <i className="icon-screen-tablet"></i> Tablet
                 </label>
-                {/* tablet */}
+                <div className="border"></div>
               </div>
-              <div className="col-2 bg-primary">
+              <div className="col-3 bg-primary">
                 <label>
                   <i className="icon-screen-smartphone"></i> Mobile
                 </label>
-                {/* mobile */}
+                <div className="border"></div>
               </div>
             </div>
           </div>
