@@ -63,9 +63,11 @@ export default class GridEditModal extends React.PureComponent {
         <ModalBody>
           <div className="container">
             <div className="row">
-              <div className="col-4">
-                <label htmlFor="gridPattern">Grid Pattern :</label>
-                <div className="dropdown">
+              <div className="col-5">
+                <div className="mr-2 d-inline">
+                  <label htmlFor="gridPattern">Grid Pattern :</label>
+                </div>
+                <div className="dropdown d-inline">
                   <button
                     className="btn btn-secondary dropdown-toggle"
                     type="button"
@@ -90,33 +92,33 @@ export default class GridEditModal extends React.PureComponent {
                   </div>
                 </div>
               </div>
-              <div className="col-8">
+              <div className="col-7">
                 <div className="row">
-                  <div className="col-auto">
+                  <div className="pr-1 col-auto">
                     <label>Break point by display size :</label>
                   </div>
-                  <div className="col-auto">
+                  <div className="pl-1 col-auto">
                     <div>
                       <input type="radio" id="mobile" name="disSize" value="mobile" checked />
                       <label htmlFor="mobile">
-                        <i className="icon-screen-smartphone"></i> Mobile
+                        <i className="icon-screen-smartphone p-1"></i> Mobile
                       </label>
                     </div>
                     <div>
                       <input type="radio" id="tablet" name="disSize" value="tablet" />
                       <label htmlFor="tablet">
-                        <i className="icon-screen-tablet"></i> Tablet
+                        <i className="icon-screen-tablet p-1"></i> Tablet
                       </label>
                     </div>
                     <div>
                       <input type="radio" id="desktop" name="disSize" value="desktop" />
                       <label htmlFor="desktop">
-                        <i className="icon-screen-desktop"></i> Desktop
+                        <i className="icon-screen-desktop p-1"></i> Desktop
                       </label>
                     </div>
                     <div>
                       <input type="radio" id="none" name="disSize" value="none" />
-                      <label htmlFor="none">None</label>
+                      <label htmlFor="none" className="p-1">None</label>
                     </div>
                   </div>
                 </div>
