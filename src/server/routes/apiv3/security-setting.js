@@ -65,6 +65,14 @@ const validator = {
   oidcAuth: [
     body('oidcProviderName').if(value => value != null).isString(),
     body('oidcIssuerHost').if(value => value != null).isString(),
+    body('oidcAuthorizationEndpoint').if(value => value != null).isString(),
+    body('oidcTokenEndpoint').if(value => value != null).isString(),
+    body('oidcRevocationEndpoint').if(value => value != null).isString(),
+    body('oidcIntrospectionEndpoint').if(value => value != null).isString(),
+    body('oidcUserInfoEndpoint').if(value => value != null).isString(),
+    body('oidcEndSessionEndpoint').if(value => value != null).isString(),
+    body('oidcRegistrationEndpoint').if(value => value != null).isString(),
+    body('oidcJWKSUri').if(value => value != null).isString(),
     body('oidcClientId').if(value => value != null).isString(),
     body('oidcClientSecret').if(value => value != null).isString(),
     body('oidcAttrMapId').if(value => value != null).isString(),
@@ -219,6 +227,30 @@ const validator = {
  *          oidcIssuerHost:
  *            type: string
  *            description: issuer host for oidc
+ *          oidcAuthorizationEndpoint:
+ *            type: string
+ *            description: authorization endpoint for oidc
+ *          oidcTokenEndpoint:
+ *            type: string
+ *            description: token endpoint for oidc
+ *          oidcRevocationEndpoint:
+ *            type: string
+ *            description: revocation endpoint for oidc
+ *          oidcIntrospectionEndpoint:
+ *            type: string
+ *            description: introspection endpoint for oidc
+ *          oidcUserInfoEndpoint:
+ *            type: string
+ *            description: userinfo endpoint for oidc
+ *          oidcEndSessionEndpoint:
+ *            type: string
+ *            description: end session endpoint for oidc
+ *          oidcRegistrationEndpoint:
+ *            type: string
+ *            description: registration endpoint for oidc
+ *          oidcJWKSUri:
+ *            type: string
+ *            description: JSON Web Key Set URI for oidc
  *          oidcClientId:
  *            type: string
  *            description: client id for oidc
@@ -376,6 +408,14 @@ module.exports = (crowi) => {
       oidcAuth: {
         oidcProviderName: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:providerName'),
         oidcIssuerHost: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:issuerHost'),
+        oidcAuthorizationEndpoint: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:authorizationEndpoint'),
+        oidcTokenEndpoint: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:tokenEndpoint'),
+        oidcRevocationEndpoint: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:revocationEndpoint'),
+        oidcIntrospectionEndpoint: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:introspectionEndpoint'),
+        oidcUserInfoEndpoint: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:userInfoEndpoint'),
+        oidcEndSessionEndpoint: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:endSessionEndpoint'),
+        oidcRegistrationEndpoint: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:registrationEndpoint'),
+        oidcJWKSUri: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:jwksUri'),
         oidcClientId: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:clientId'),
         oidcClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:clientSecret'),
         oidcAttrMapId: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:attrMapId'),
@@ -767,6 +807,14 @@ module.exports = (crowi) => {
     const requestParams = {
       'security:passport-oidc:providerName': req.body.oidcProviderName,
       'security:passport-oidc:issuerHost': req.body.oidcIssuerHost,
+      'security:passport-oidc:authorizationEndpoint': req.body.oidcAuthorizationEndpoint,
+      'security:passport-oidc:tokenEndpoint': req.body.oidcTokenEndpoint,
+      'security:passport-oidc:revocationEndpoint': req.body.oidcRevocationEndpoint,
+      'security:passport-oidc:introspectionEndpoint': req.body.oidcIntrospectionEndpoint,
+      'security:passport-oidc:userInfoEndpoint': req.body.oidcUserInfoEndpoint,
+      'security:passport-oidc:endSessionEndpoint': req.body.oidcEndSessionEndpoint,
+      'security:passport-oidc:registrationEndpoint': req.body.oidcRegistrationEndpoint,
+      'security:passport-oidc:jwksUri': req.body.oidcJWKSUri,
       'security:passport-oidc:clientId': req.body.oidcClientId,
       'security:passport-oidc:clientSecret': req.body.oidcClientSecret,
       'security:passport-oidc:attrMapId': req.body.oidcAttrMapId,
@@ -783,6 +831,14 @@ module.exports = (crowi) => {
       const securitySettingParams = {
         oidcProviderName: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:providerName'),
         oidcIssuerHost: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:issuerHost'),
+        oidcAuthorizationEndpoint: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:authorizationEndpoint'),
+        oidcTokenEndpoint: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:tokenEndpoint'),
+        oidcRevocationEndpoint: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:revocationEndpoint'),
+        oidcIntrospectionEndpoint: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:introspectionEndpoint'),
+        oidcUserInfoEndpoint: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:userInfoEndpoint'),
+        oidcEndSessionEndpoint: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:endSessionEndpoint'),
+        oidcRegistrationEndpoint: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:registrationEndpoint'),
+        oidcJWKSUri: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:jwksUri'),
         oidcClientId: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:clientId'),
         oidcClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:clientSecret'),
         oidcAttrMapId: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:attrMapId'),
