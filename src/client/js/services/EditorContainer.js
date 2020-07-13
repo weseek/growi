@@ -57,7 +57,7 @@ export default class EditorContainer extends Container {
    * initialize state for page permission
    */
   initStateGrant() {
-    const mainContent = document.querySelector('#content-main');
+    const mainContent = document.getElementById('content-main');
 
     if (mainContent == null) {
       logger.debug('#content-main element is not exists');
