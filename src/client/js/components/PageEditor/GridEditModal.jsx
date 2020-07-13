@@ -77,13 +77,16 @@ export default class GridEditModal extends React.PureComponent {
                     <div className="container">
                       <div className="row">
                         <div className="col">
-                          1 of 3
+                          2
+                          <a className="dropdown-item" href="#">6:6</a>
                         </div>
                         <div className="col">
-                          2 of 3
+                          3
+                          <a className="dropdown-item" href="#">4:4:4</a>
                         </div>
                         <div className="col">
-                          3 of 3
+                          4
+                          <a className="dropdown-item" href="#">3:3:3:3</a>
                         </div>
                       </div>
                     </div>
