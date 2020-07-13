@@ -42,9 +42,7 @@ export default class GridEditModal extends React.PureComponent {
   show(gridHtml) {
     this.init(gridHtml);
     this.setState({ show: true });
-    const cols = [1, 5, 6];
-    const size = '';
-    const html = this.convertRatiosAndSizeToHTML(cols, size);
+    const html = this.convertRatiosAndSizeToHTML([1, 5, 6], 'sm');
     console.log(html);
   }
 
@@ -86,14 +84,12 @@ export default class GridEditModal extends React.PureComponent {
   }
 
   convertRatiosAndSizeToHTML(ratioNumbers, responsiveSize) {
-    const cols = [];
+    let cols = '';
     for (let i = 0; i < ratioNumbers.length; i++) {
       const className = `col${responsiveSize ? `-${responsiveSize}` : ''}-${ratioNumbers[i]}`;
-      cols.push(<div className={className}></div>);
+      cols += `<div class="${className}"></div>`;
     }
-
     console.log(cols);
-    // return <>{cols}</>;
   }
 
   render() {
