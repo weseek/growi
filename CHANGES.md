@@ -1,6 +1,18 @@
 # CHANGES
 
-## v4.0.8-RC
+## v4.0.9-RC
+
+* Feature: Detailed configurations for OpenID Connect
+    * Authorization Endpoint
+    * Token Endpoint
+    * Revocation Endpoint
+    * Introspection Endpoint
+    * UserInfo Endpoint
+    * Registration Endpoint
+    * JSON Web Key Set URI
+
+
+## v4.0.8
 
 * Improvement: Navigations
     * New floating subnavigation
