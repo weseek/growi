@@ -80,15 +80,15 @@ export default class GridEditModal extends React.PureComponent {
                     {/* TODO GW-3136 implement inside dropdown menu */}
                     <div className="container">
                       <div className="row">
-                        <div className="col">
+                        <div className="col text-center">
                           2
                           <a className="dropdown-item" href="#">6:6</a>
                         </div>
-                        <div className="col">
+                        <div className="col text-center">
                           3
                           <a className="dropdown-item" href="#">4:4:4</a>
                         </div>
-                        <div className="col">
+                        <div className="col text-center">
                           4
                           <a className="dropdown-item" href="#">3:3:3:3</a>
                         </div>
