@@ -466,6 +466,14 @@
     "issuerHost": "Issuer Host",
     "scope": "Scope",
     "desc_of_callback_URL": "Use it in the setting of the {{AuthName}} Identity provider",
+    "authorization_endpoint": "Authorization Endpoint",
+    "token_endpoint": "Token Endpoint",
+    "revocation_endpoint": "Revocation Endpoint",
+    "introspection_endpoint": "Introspection Endpoint",
+    "userinfo_endpoint": "UserInfo Endpoint",
+    "end_session_endpoint": "EndSessioin Endpoint",
+    "registration_endpoint": "Registration Endpoint",
+    "jwks_uri": "JSON Web Key Set URL",
     "clientID": "Client ID",
     "client_secret": "Client Secret",
     "updated_general_security_setting": "Succeeded to update security setting",
@@ -591,7 +599,8 @@
         "register_1": "Contant to OIDC IdP Administrator",
         "register_2": "Register your OIDC App with \"Authorization callback URL\" as <code>%s</code>",
         "register_3": "Copy and paste your ClientID and Client Secret above",
-        "updated_oidc": "Succeeded to update OpenID Connect"
+        "updated_oidc": "Succeeded to update OpenID Connect",
+        "Use discovered URL if empty": "Use discovered URL from \"Issuer Host\" if empty"
       },
       "how_to": {
         "google": "How to configure Google OAuth?",
