@@ -80,7 +80,7 @@ export default class GridEditModal extends React.PureComponent {
                     {/* TODO GW-3136 implement inside dropdown menu */}
                     <div className="container">
                       <div className="row">
-                        <div className="col text-center">
+                        <div className="col-4 text-center">
                           2分割
                           <a className="dropdown-item" href="#">
                             <div className="row">
@@ -89,7 +89,7 @@ export default class GridEditModal extends React.PureComponent {
                             </div>
                           </a>
                         </div>
-                        <div className="col text-center">
+                        <div className="col-4 text-center">
                           3分割
                           <a className="dropdown-item" href="#">
                             <div className="row">
@@ -99,7 +99,7 @@ export default class GridEditModal extends React.PureComponent {
                             </div>
                           </a>
                         </div>
-                        <div className="col text-center">
+                        <div className="col-4 text-center">
                           4分割
                           <a className="dropdown-item" href="#">
                             <div className="row">
