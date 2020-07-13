@@ -45,9 +45,10 @@ export default class GridEditModal extends React.PureComponent {
 
   pasteCodedGrid() {
     // dummy data
-    const pastedGridData = `::: editable-row\n<div class="container">\n\t<div class="row">\n\t${this.convertRatiosAndSizeToHTML([1, 5, 6], '')}\t</div>\n</div>\n:::`;
+    const convertedHTML = this.convertRatiosAndSizeToHTML([1, 5, 6], 'sm');
+    const pastedGridData = `::: editable-row\n<div class="container">\n\t<div class="row">\n\t${convertedHTML}\t</div>\n</div>\n:::`;
     // display converted html on console
-    console.log(this.convertRatiosAndSizeToHTML([1, 5, 6], ''));
+    console.log(convertedHTML);
 
     if (this.props.onSave != null) {
       this.props.onSave(pastedGridData);
