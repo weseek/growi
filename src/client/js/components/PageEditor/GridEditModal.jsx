@@ -81,7 +81,7 @@ export default class GridEditModal extends React.PureComponent {
                     <div className="container">
                       <div className="row">
                         <div className="col text-center">
-                          2
+                          2分割
                           <a className="dropdown-item" href="#">
                             <div className="row">
                               <span className="badge-info col-6 border">6</span>
@@ -90,7 +90,7 @@ export default class GridEditModal extends React.PureComponent {
                           </a>
                         </div>
                         <div className="col text-center">
-                          3
+                          3分割
                           <a className="dropdown-item" href="#">
                             <div className="row">
                               <span className="badge-info col-4 border">4</span>
@@ -100,7 +100,7 @@ export default class GridEditModal extends React.PureComponent {
                           </a>
                         </div>
                         <div className="col text-center">
-                          4
+                          4分割
                           <a className="dropdown-item" href="#">
                             <div className="row">
                               <span className="badge-info col-3 border">3</span>
