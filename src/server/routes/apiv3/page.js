@@ -7,10 +7,6 @@ const { body } = require('express-validator');
 
 const router = express.Router();
 
-const path = require('path');
-const fs = require('fs');
-const ApiResponse = require('../../util/apiResponse');
-
 // const ErrorV3 = require('../../models/vo/error-apiv3');
 
 /**
@@ -199,7 +195,7 @@ module.exports = (crowi) => {
   */
   router.get('/export', async(req, res) => {
     try {
-      const { format, pageId = null, revisionId = null } = req.query;
+      const { type, pageId = null, revisionId = null } = req.query;
       let markdown;
 
       // TODO: GW-3061
@@ -213,29 +209,7 @@ module.exports = (crowi) => {
         return res.apiv3Err('Should provided pageId or revisionId');
       }
 
-      let fileStream;
-      let filePath;
-      const baseDir = path.join(crowi.tmpDir, 'exports');
-
-      try {
-        // write tmp file
-        if (format === 'md') {
-          filePath = path.join(baseDir, 'revisionId.md');
-          await fs.writeFileSync(filePath, markdown);
-        }
-        else if (format === 'pdf') {
-          filePath = path.join(baseDir, 'revisionId.pdf');
-          await exportService.convertToPdf(markdown, filePath);
-        }
-
-        fileStream = fs.createReadStream(filePath);
-      }
-      catch (e) {
-        logger.error(e);
-        return res.json(ApiResponse.error(e.message));
-      }
-
-      return fileStream.pipe(res);
+      return await exportService.createExportStream(res, markdown, type);
     }
     catch (err) {
       logger.error('Failed to get markdown', err);
