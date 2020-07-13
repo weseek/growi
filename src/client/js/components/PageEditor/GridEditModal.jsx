@@ -76,7 +76,7 @@ export default class GridEditModal extends React.PureComponent {
                   >
                   Grid Pattern
                   </button>
-                  <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <div className="dropdown-menu bs4grid-menu" aria-labelledby="dropdownMenuButton">
                     {/* TODO GW-3136 implement inside dropdown menu */}
                     <div className="container">
                       <div className="row">
