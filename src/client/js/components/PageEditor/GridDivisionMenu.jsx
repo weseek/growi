@@ -7,6 +7,7 @@ class GridDivisionMenu extends React.Component {
     return (
       <div className="container">
         <div className="row">
+          {/* TODO add other grid patterns by GW-3189 */}
           <div className="col-4 text-center">
             2分割
             <a className="dropdown-item" href="#">
