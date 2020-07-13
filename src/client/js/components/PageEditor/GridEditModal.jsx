@@ -5,15 +5,6 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-class BootstrapGrid {
-
-  constructor(colsRatios, responsiveSize) {
-    this.colsRatios = colsRatios;
-    this.responsiveSize = responsiveSize;
-  }
-
-}
-
 export default class GridEditModal extends React.PureComponent {
 
   constructor(props) {
