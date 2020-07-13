@@ -82,15 +82,33 @@ export default class GridEditModal extends React.PureComponent {
                       <div className="row">
                         <div className="col text-center">
                           2
-                          <a className="dropdown-item" href="#">6:6</a>
+                          <a className="dropdown-item" href="#">
+                            <div className="row">
+                              <span className="badge-info col-6 border">6</span>
+                              <span className="badge-info col-6 border">6</span>
+                            </div>
+                          </a>
                         </div>
                         <div className="col text-center">
                           3
-                          <a className="dropdown-item" href="#">4:4:4</a>
+                          <a className="dropdown-item" href="#">
+                            <div className="row">
+                              <span className="badge-info col-4 border">4</span>
+                              <span className="badge-info col-4 border">4</span>
+                              <span className="badge-info col-4 border">4</span>
+                            </div>
+                          </a>
                         </div>
                         <div className="col text-center">
                           4
-                          <a className="dropdown-item" href="#">3:3:3:3</a>
+                          <a className="dropdown-item" href="#">
+                            <div className="row">
+                              <span className="badge-info col-3 border">3</span>
+                              <span className="badge-info col-3 border">3</span>
+                              <span className="badge-info col-3 border">3</span>
+                              <span className="badge-info col-3 border">3</span>
+                            </div>
+                          </a>
                         </div>
                       </div>
                     </div>
