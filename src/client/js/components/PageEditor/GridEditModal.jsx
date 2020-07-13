@@ -42,6 +42,10 @@ export default class GridEditModal extends React.PureComponent {
   show(gridHtml) {
     this.init(gridHtml);
     this.setState({ show: true });
+    const cols = [1, 5, 6];
+    const size = '';
+    const html = this.convertRatiosAndSizeToHTML(cols, size);
+    console.log(html);
   }
 
   hide() {
@@ -79,6 +83,17 @@ export default class GridEditModal extends React.PureComponent {
       cols.push(<div className="bg-dark grid-bg-col col-1"></div>);
     }
     return cols;
+  }
+
+  convertRatiosAndSizeToHTML(ratioNumbers, responsiveSize) {
+    const cols = [];
+    for (let i = 0; i < ratioNumbers.length; i++) {
+      const className = `col${responsiveSize ? `-${responsiveSize}` : ''}-${ratioNumbers[i]}`;
+      cols.push(<div className={className}></div>);
+    }
+
+    console.log(cols);
+    // return <>{cols}</>;
   }
 
   render() {
