@@ -5,6 +5,8 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
+import GridDivisionMenu from './GridMenu';
+
 export default class GridEditModal extends React.PureComponent {
 
   constructor(props) {
@@ -77,41 +79,7 @@ export default class GridEditModal extends React.PureComponent {
                   Grid Pattern
                   </button>
                   <div className="dropdown-menu bs4grid-menu" aria-labelledby="dropdownMenuButton">
-                    {/* TODO GW-3136 implement inside dropdown menu */}
-                    <div className="container">
-                      <div className="row">
-                        <div className="col-4 text-center">
-                          2分割
-                          <a className="dropdown-item" href="#">
-                            <div className="row">
-                              <span className="badge-info col-6 border">6</span>
-                              <span className="badge-info col-6 border">6</span>
-                            </div>
-                          </a>
-                        </div>
-                        <div className="col-4 text-center">
-                          3分割
-                          <a className="dropdown-item" href="#">
-                            <div className="row">
-                              <span className="badge-info col-4 border">4</span>
-                              <span className="badge-info col-4 border">4</span>
-                              <span className="badge-info col-4 border">4</span>
-                            </div>
-                          </a>
-                        </div>
-                        <div className="col-4 text-center">
-                          4分割
-                          <a className="dropdown-item" href="#">
-                            <div className="row">
-                              <span className="badge-info col-3 border">3</span>
-                              <span className="badge-info col-3 border">3</span>
-                              <span className="badge-info col-3 border">3</span>
-                              <span className="badge-info col-3 border">3</span>
-                            </div>
-                          </a>
-                        </div>
-                      </div>
-                    </div>
+                    <GridDivisionMenu />
                   </div>
                 </div>
               </div>
