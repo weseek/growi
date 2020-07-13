@@ -94,10 +94,10 @@ export default class GridEditModal extends React.PureComponent {
               </div>
               <div className="col-7">
                 <div className="row">
-                  <div className="pr-1 col-auto">
+                  <div className="pr-2 col-auto">
                     <label>Break point by display size :</label>
                   </div>
-                  <div className="pl-1 col-auto">
+                  <div className="pl-2 col-auto">
                     <div>
                       <input type="radio" id="mobile" name="disSize" value="mobile" checked />
                       <label htmlFor="mobile">
