@@ -80,15 +80,9 @@ export default class GridEditModal extends React.PureComponent {
                   </button>
                   <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     {/* TODO GW-3136 implement inside dropdown menu */}
-                    <a className="dropdown-item" href="#">
-                      6:6
-                    </a>
-                    <a className="dropdown-item" href="#">
-                      4:8
-                    </a>
-                    <a className="dropdown-item" href="#">
-                      8:4
-                    </a>
+                    <a className="dropdown-item" href="#">6:6</a>
+                    <a className="dropdown-item" href="#">4:8</a>
+                    <a className="dropdown-item" href="#">8:4</a>
                   </div>
                 </div>
               </div>
