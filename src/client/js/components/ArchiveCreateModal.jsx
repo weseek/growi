@@ -239,8 +239,6 @@ ArchiveCreateModal.propTypes = {
   path: PropTypes.string.isRequired,
   totalPages: PropTypes.number,
   errorMessage: PropTypes.string,
-  archiveData: PropTypes.object,
-
 };
 
 export default withTranslation()(ArchiveCreateModalWrapper);
