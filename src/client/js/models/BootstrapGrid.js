@@ -5,6 +5,10 @@ export default class BootstrapGrid {
     this.responsiveSize = BootstrapGrid.validateResponsiveSize(responsiveSize);
   }
 
+  static ResponsiveSize = {
+    XS: 'xs', SM: 'sm', MD: 'md',
+  }
+
   static validateColsRatios(colsRatios) {
 
     if (colsRatios.length === 0) {
@@ -22,7 +26,7 @@ export default class BootstrapGrid {
   }
 
   static validateResponsiveSize(responsiveSize) {
-    if (responsiveSize === '' || responsiveSize === 'sm' || responsiveSize === 'md') {
+    if (responsiveSize === BootstrapGrid.ResponsiveSize.XS || responsiveSize === BootstrapGrid.ResponsiveSize.SM || this.responsiveSize === BootstrapGrid.ResponsiveSize.MD) {
       return responsiveSize;
     }
     return new Error('Incorrect size');
