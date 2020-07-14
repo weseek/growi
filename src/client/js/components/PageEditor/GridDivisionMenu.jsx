@@ -12,8 +12,8 @@ class GridDivisionMenu extends React.Component {
             2分割
             <a className="dropdown-item" href="#">
               <div className="row">
-                <span className="badge-info col-6 border">6</span>
-                <span className="badge-info col-6 border">6</span>
+                <span className="bg-info col-6 border">6</span>
+                <span className="bg-info col-6 border">6</span>
               </div>
             </a>
           </div>
@@ -21,9 +21,9 @@ class GridDivisionMenu extends React.Component {
             3分割
             <a className="dropdown-item" href="#">
               <div className="row">
-                <span className="badge-info col-4 border">4</span>
-                <span className="badge-info col-4 border">4</span>
-                <span className="badge-info col-4 border">4</span>
+                <span className="bg-info col-4 border">4</span>
+                <span className="bg-info col-4 border">4</span>
+                <span className="bg-info col-4 border">4</span>
               </div>
             </a>
           </div>
@@ -31,10 +31,10 @@ class GridDivisionMenu extends React.Component {
             4分割
             <a className="dropdown-item" href="#">
               <div className="row">
-                <span className="badge-info col-3 border">3</span>
-                <span className="badge-info col-3 border">3</span>
-                <span className="badge-info col-3 border">3</span>
-                <span className="badge-info col-3 border">3</span>
+                <span className="bg-info col-3 border">3</span>
+                <span className="bg-info col-3 border">3</span>
+                <span className="bg-info col-3 border">3</span>
+                <span className="bg-info col-3 border">3</span>
               </div>
             </a>
           </div>
