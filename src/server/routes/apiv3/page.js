@@ -271,7 +271,6 @@ module.exports = (crowi) => {
    */
   router.post('/archive', accessTokenParser, loginRequired, csrf, validator.archive, apiV3FormValidator, async(req, res) => {
     const PageArchive = crowi.model('PageArchive');
-
     const {
       rootPagePath,
       isCommentDownload,
@@ -290,6 +289,10 @@ module.exports = (crowi) => {
       hasComment: isCommentDownload,
       hasAttachment: isAttachmentFileDownload,
     });
+    const searchWord = new RegExp(`^${rootPagePath}`);
+    let archivePageData = await Page.find({ path: { $in: searchWord } });
+    archivePageData = archivePageData.map(element => element.path);
+    console.log(archivePageData);
   });
 
   router.get('/count-children-pages', accessTokenParser, loginRequired, async(req, res) => {
