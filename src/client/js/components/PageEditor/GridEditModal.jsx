@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -13,7 +12,6 @@ export default class GridEditModal extends React.PureComponent {
     this.state = {
       show: false,
       gridHtml: '',
-      handleCheckedType: 'Mobile',
     };
 
     this.init = this.init.bind(this);
@@ -53,10 +51,6 @@ export default class GridEditModal extends React.PureComponent {
       this.props.onSave(pastedGridData);
     }
     this.cancel();
-  }
-
-  handleChecked(value) {
-    this.props.handleCheckedType(value);
   }
 
 
@@ -105,7 +99,7 @@ export default class GridEditModal extends React.PureComponent {
                         className="custom-control-input"
                         name="disSize"
                         value="mobile"
-                        checked={handleChecked === 'Mobile'}
+                        checked
                       />
                       <label className="custom-control-label" htmlFor="mobile">
                         <i className="pl-2 pr-1 icon-screen-smartphone "></i> Mobile
@@ -118,7 +112,6 @@ export default class GridEditModal extends React.PureComponent {
                         className="custom-control-input"
                         name="disSize"
                         value="tablet"
-                        checked={handleChecked === 'tablet'}
                       />
                       <label className="custom-control-label" htmlFor="tablet">
                         <i className="pl-2 pr-1 icon-screen-tablet"></i> Tablet
@@ -131,7 +124,6 @@ export default class GridEditModal extends React.PureComponent {
                         className="custom-control-input"
                         name="disSize"
                         value="desktop"
-                        checked={handleChecked === 'desktop'}
                       />
                       <label className="custom-control-label" htmlFor="desktop">
                         <i className="pl-2 pr-1 icon-screen-desktop"></i> Desktop
@@ -144,7 +136,6 @@ export default class GridEditModal extends React.PureComponent {
                         className="custom-control-input"
                         name="disSize"
                         value="none"
-                        checked={handleChecked === 'none'}
                       />
                       <label className="custom-control-label pl-2" htmlFor="none">None</label>
                     </div>
@@ -185,5 +176,4 @@ export default class GridEditModal extends React.PureComponent {
 
 GridEditModal.propTypes = {
   onSave: PropTypes.func,
-  handleCheckedType: PropTypes,
 };
