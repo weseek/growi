@@ -56,7 +56,7 @@ export default class GridEditModal extends React.PureComponent {
 
   render() {
     return (
-      <Modal isOpen={this.state.show} toggle={this.cancel} size="xl">
+      <Modal isOpen={this.state.show} toggle={this.cancel} size="xl" className="grw-grid-edit-modal">
         <ModalHeader tag="h4" toggle={this.cancel} className="bg-primary text-light">
           Create Bootstrap 4 Grid
         </ModalHeader>
@@ -76,7 +76,7 @@ export default class GridEditModal extends React.PureComponent {
                   >
                   Grid Pattern
                   </button>
-                  <div className="dropdown-menu bs4grid-menu" aria-labelledby="dropdownMenuButton">
+                  <div className="dropdown-menu grid-division-menu" aria-labelledby="dropdownMenuButton">
                     <GridDivisionMenu />
                   </div>
                 </div>
