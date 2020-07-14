@@ -3,11 +3,11 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
-const { body } = require('express-validator');
+const { body, query } = require('express-validator');
 
 const router = express.Router();
 
-// const ErrorV3 = require('../../models/vo/error-apiv3');
+const ErrorV3 = require('../../models/vo/error-apiv3');
 
 /**
  * @swagger
@@ -124,6 +124,10 @@ module.exports = (crowi) => {
       body('pageId').isString(),
       body('bool').isBoolean(),
     ],
+    export: [
+      query('pageId').isString(),
+      query('revisionId').isString(),
+    ],
   };
 
   /**
@@ -193,21 +197,39 @@ module.exports = (crowi) => {
   *          200:
   *            description: Return page's markdown
   */
-  router.get('/export', async(req, res) => {
+  router.get('/export', validator.export, async(req, res) => {
     try {
-      const { pageId, revisionId } = req.query;
-      let markdown;
+      const { pageId = null, revisionId = null } = req.query;
 
-      // TODO: GW-3061
-      if (revisionId) {
-        markdown = '#Revision';
+      if (pageId == null) {
+        return res.apiv3Err(new ErrorV3('Should provided pageId or both pageId and revisionId.'));
       }
-      else if (pageId) {
-        markdown = '#Page';
+
+      const isPageExist = await Page.count({ _id: pageId }) > 0;
+      if (!isPageExist) {
+        return res.apiv3Err(new ErrorV3(`Page ${pageId} is not exist.`), 404);
+      }
+
+      const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
+      if (!isAccessible) {
+        return res.apiv3Err(new ErrorV3(`Haven't the right to see the page ${pageId}.`), 403);
+      }
+
+
+      let revisionIdForFind;
+      if (revisionId == null) {
+        const Page = crowi.model('Page');
+        const page = await Page.findByIdAndViewer(pageId);
+        revisionIdForFind = page.revision;
       }
       else {
-        return res.apiv3Err('Should provided pageId or revisionId');
+        revisionIdForFind = revisionId;
       }
+
+      const Revision = crowi.model('Revision');
+      const revision = await Revision.findById(revisionIdForFind);
+
+      const markdown = revision.body;
 
       return res.apiv3({ markdown });
     }
