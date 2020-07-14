@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
+import geu from './GridEditorUtil';
 
 export default class GridEditModal extends React.PureComponent {
 
@@ -45,7 +46,7 @@ export default class GridEditModal extends React.PureComponent {
 
   pasteCodedGrid() {
     // dummy data
-    const convertedHTML = this.convertRatiosAndSizeToHTML([1, 5, 6], 'sm');
+    const convertedHTML = geu.convertRatiosAndSizeToHTML([1, 5, 6], 'sm');
     const pastedGridData = `::: editable-row\n<div class="container">\n\t<div class="row">\n\t${convertedHTML}\t</div>\n</div>\n:::`;
     // display converted html on console
     console.log(convertedHTML);
@@ -70,15 +71,6 @@ export default class GridEditModal extends React.PureComponent {
     for (let i = 0; i < 12; i++) {
       // [bg-light:TODO support dark mode by GW-3037]
       cols.push(<div className="bg-dark grid-bg-col col-1"></div>);
-    }
-    return cols;
-  }
-
-  convertRatiosAndSizeToHTML(ratioNumbers, responsiveSize) {
-    let cols = '';
-    for (let i = 0; i < ratioNumbers.length; i++) {
-      const className = `col${responsiveSize ? `-${responsiveSize}` : ''}-${ratioNumbers[i]} bsGrid${i + 1}`;
-      cols += `<div class="${className}"></div>\n`;
     }
     return cols;
   }

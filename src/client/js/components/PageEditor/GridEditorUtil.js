@@ -114,6 +114,16 @@ class GridEditorUtil {
     editor.getDoc().setCursor(curPos.line + 1, 2);
   }
 
+  convertRatiosAndSizeToHTML(ratioNumbers, responsiveSize) {
+    let cols = '';
+    ratioNumbers.map((ratioNumber, i) => {
+      const className = `col${responsiveSize ? `-${responsiveSize}` : ''}-${ratioNumber} bsGrid${i + 1}`;
+      cols += `<div class="${className}"></div>\n`;
+      return;
+    });
+    return cols;
+  }
+
 }
 
 // singleton pattern
