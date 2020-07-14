@@ -47,7 +47,7 @@ export default class GridEditModal extends React.PureComponent {
   pasteCodedGrid() {
     // dummy data
     const convertedHTML = geu.convertRatiosAndSizeToHTML([1, 5, 6], 'sm');
-    const pastedGridData = `::: editable-row\n<div class="container">\n\t<div class="row">\n\t${convertedHTML}\t</div>\n</div>\n:::`;
+    const pastedGridData = `::: editable-row\n<div class="container">\n\t<div class="row">\n${convertedHTML}\n\t</div>\n</div>\n:::`;
     // display converted html on console
     console.log(convertedHTML);
 

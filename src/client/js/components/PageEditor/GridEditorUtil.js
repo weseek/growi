@@ -115,13 +115,11 @@ class GridEditorUtil {
   }
 
   convertRatiosAndSizeToHTML(ratioNumbers, responsiveSize) {
-    let cols = '';
-    ratioNumbers.map((ratioNumber, i) => {
+    const cols = ratioNumbers.map((ratioNumber, i) => {
       const className = `col${responsiveSize !== 'xs' ? `-${responsiveSize}` : ''}-${ratioNumber} bsGrid${i + 1}`;
-      cols += `<div class="${className}"></div>\n`;
-      return;
+      return `<div class="${className}"></div>`;
     });
-    return cols;
+    return cols.join('\n');
   }
 
 }
