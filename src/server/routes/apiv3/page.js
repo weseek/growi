@@ -201,7 +201,6 @@ module.exports = (crowi) => {
   router.get('/export', validator.export, async(req, res) => {
     try {
       const { pageId = null, revisionId = null } = req.query;
-      let revisionIdFromPage;
 
       if (pageId == null) {
         return res.apiv3Err(new ErrorV3('Should provided pageId or both pageId and revisionId.'));
@@ -217,14 +216,20 @@ module.exports = (crowi) => {
         return res.apiv3Err(new ErrorV3(`Haven't the right to see the page ${pageId}.`), 403);
       }
 
+
+      let revisionIdForFind;
       if (revisionId == null) {
         const Page = crowi.model('Page');
         const page = await Page.findByIdAndViewer(pageId);
-        revisionIdFromPage = page.revision;
+        revisionIdForFind = page.revision;
+      }
+      else {
+        revisionIdForFind = revisionId;
       }
 
       const Revision = crowi.model('Revision');
-      const revision = await Revision.findById([revisionId || revisionIdFromPage]);
+      const revision = Revision.findById(revisionIdForFind);
+
       const markdown = revision.body;
 
       return res.apiv3({ markdown });
