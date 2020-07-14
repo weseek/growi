@@ -6,30 +6,30 @@ export default class BootstrapGrid {
   }
 
   static ResponsiveSize = {
-    XS: 'xs', SM: 'sm', MD: 'md',
+    XS_SIZE: 'xs', SM_SIZE: 'sm', MD_SIZE: 'md',
   }
 
   static validateColsRatios(colsRatios) {
 
-    if (colsRatios.length === 0) {
-      return new Error('Incorrect value');
+    if (colsRatios.length < 2) {
+      return new Error('Incorrect array length of cols ratios');
     }
     let ratiosTotal = 0;
     colsRatios.forEach((ratio) => {
       ratiosTotal += ratio;
     });
     if (ratiosTotal !== 12) {
-      return new Error('Incorrect value');
+      return new Error('Incorrect cols ratios value');
     }
 
     return colsRatios;
   }
 
   static validateResponsiveSize(responsiveSize) {
-    if (responsiveSize === BootstrapGrid.ResponsiveSize.XS || responsiveSize === BootstrapGrid.ResponsiveSize.SM || this.responsiveSize === BootstrapGrid.ResponsiveSize.MD) {
+    if (responsiveSize === this.ResponsiveSize.XS_SIZE || responsiveSize === this.ResponsiveSize.SM_SIZE || responsiveSize === this.ResponsiveSize.MD_SIZE) {
       return responsiveSize;
     }
-    return new Error('Incorrect size');
+    return new Error('Incorrect responsive size');
   }
 
 }

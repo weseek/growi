@@ -34,10 +34,6 @@ export default class GridEditModal extends React.PureComponent {
   show(gridHtml) {
     this.init(gridHtml);
     this.setState({ show: true });
-    const test = new BootstrapGrid([1, 11], 'md');
-    const test1 = new BootstrapGrid([2, 10], 'dd');
-    console.log(test.responsiveSize);
-    console.log(test1.responsiveSize);
   }
 
   hide() {
