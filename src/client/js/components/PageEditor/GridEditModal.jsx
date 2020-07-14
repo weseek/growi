@@ -101,39 +101,39 @@ export default class GridEditModal extends React.PureComponent {
                     <div>
                       <input type="radio" id="mobile" name="disSize" value="mobile" checked />
                       <label htmlFor="mobile">
-                        <i className="icon-screen-smartphone p-1"></i> Mobile
+                        <i className="pl-2 pr-1 icon-screen-smartphone "></i> Mobile
                       </label>
                     </div>
                     <div>
                       <input type="radio" id="tablet" name="disSize" value="tablet" />
                       <label htmlFor="tablet">
-                        <i className="icon-screen-tablet p-1"></i> Tablet
+                        <i className="pl-2 pr-1 icon-screen-tablet"></i> Tablet
                       </label>
                     </div>
                     <div>
                       <input type="radio" id="desktop" name="disSize" value="desktop" />
                       <label htmlFor="desktop">
-                        <i className="icon-screen-desktop p-1"></i> Desktop
+                        <i className="pl-2 pr-1 icon-screen-desktop"></i> Desktop
                       </label>
                     </div>
                     <div>
                       <input type="radio" id="none" name="disSize" value="none" />
-                      <label htmlFor="none" className="p-1">None</label>
+                      <label htmlFor="none" className="pl-2">None</label>
                     </div>
                   </div>
                 </div>
               </div>
               <h1 className="pl-3 w-100">Preview</h1>
               <div className="col-6">
-                <label className="d-block"><i className="icon-screen-desktop"></i> Desktop</label>
+                <label className="d-block"><i className="pr-2 icon-screen-desktop"></i>Desktop</label>
                 <div className="border d-block"></div>
               </div>
               <div className="col-3">
-                <label className="d-block"><i className="icon-screen-tablet"></i> Tablet</label>
+                <label className="d-block"><i className="pr-2 icon-screen-tablet"></i>Tablet</label>
                 <div className="border d-block"></div>
               </div>
               <div className="col-3">
-                <label className="d-block"><i className="icon-screen-smartphone"></i> Mobile</label>
+                <label className="d-block"><i className="pr-2 icon-screen-smartphone"></i>Mobile</label>
                 <div className="border d-block"></div>
               </div>
             </div>
