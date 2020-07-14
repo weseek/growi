@@ -312,22 +312,9 @@ body.on-edit {
 /*
  Grid Edit Modal
 */
-.device-container {
-  height: 135px;
-}
 
-// [border-color:TODO support dark mode by GW-3037]
-.grid-bg-col {
-  border-right: 5px solid white;
-  border-left: 5px solid white;
-}
-
-.grid-editable-row {
-  top: 0;
-}
-
-.grid-editable-col {
-  border-right: 5px solid white;
-  border-left: 5px solid white;
-  opacity: 0.5;
+.grw-grid-edit-modal{
+  .grid-division-menu {
+    width: 600px;
+  }
 }

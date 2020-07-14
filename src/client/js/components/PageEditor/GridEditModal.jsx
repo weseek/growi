@@ -56,7 +56,7 @@ export default class GridEditModal extends React.PureComponent {
 
   render() {
     return (
-      <Modal isOpen={this.state.show} toggle={this.cancel} size="xl">
+      <Modal isOpen={this.state.show} toggle={this.cancel} size="xl" className="grw-grid-edit-modal">
         <ModalHeader tag="h4" toggle={this.cancel} className="bg-primary text-light">
           Create Bootstrap 4 Grid
         </ModalHeader>
@@ -66,14 +66,18 @@ export default class GridEditModal extends React.PureComponent {
               <div className="col-5">
                 <label htmlFor="gridPattern">Grid Pattern :</label>
                 <div className="dropdown">
-                  <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <button
+                    className="btn btn-secondary dropdown-toggle"
+                    type="button"
+                    id="dropdownMenuButton"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
                   Grid Pattern
                   </button>
-                  <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    {/* TODO GW-3136 implement inside dropdown menu */}
-                    <a className="dropdown-item" href="#">6:6</a>
-                    <a className="dropdown-item" href="#">4:8</a>
-                    <a className="dropdown-item" href="#">8:4</a>
+                  <div className="dropdown-menu grid-division-menu" aria-labelledby="dropdownMenuButton">
+                    <GridDivisionMenu />
                   </div>
                 </div>
               </div>
@@ -114,6 +118,46 @@ export default class GridEditModal extends React.PureComponent {
     );
   }
 
+}
+
+function GridDivisionMenu() {
+  return (
+    <div className="container">
+      <div className="row">
+        {/* TODO: add other grid patterns by GW-3189 */}
+        <div className="col-md-4 text-center">
+          <h6 className="dropdown-header">2分割</h6>
+          <a className="dropdown-item" href="#">
+            <div className="row">
+              <span className="bg-info col-6 border">6</span>
+              <span className="bg-info col-6 border">6</span>
+            </div>
+          </a>
+        </div>
+        <div className="col-md-4 text-center">
+          <h6 className="dropdown-header">3分割</h6>
+          <a className="dropdown-item" href="#">
+            <div className="row">
+              <span className="bg-info col-4 border">4</span>
+              <span className="bg-info col-4 border">4</span>
+              <span className="bg-info col-4 border">4</span>
+            </div>
+          </a>
+        </div>
+        <div className="col-md-4 text-center">
+          <h6 className="dropdown-header">4分割</h6>
+          <a className="dropdown-item" href="#">
+            <div className="row">
+              <span className="bg-info col-3 border">3</span>
+              <span className="bg-info col-3 border">3</span>
+              <span className="bg-info col-3 border">3</span>
+              <span className="bg-info col-3 border">3</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 GridEditModal.propTypes = {
