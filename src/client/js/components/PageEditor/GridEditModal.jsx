@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-import BootstrapGrid from '../../models/BootstrapGrid';
 
 export default class GridEditModal extends React.PureComponent {
 
