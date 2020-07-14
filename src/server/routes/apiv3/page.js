@@ -200,39 +200,38 @@ module.exports = (crowi) => {
   */
   router.get('/export', validator.export, async(req, res) => {
     try {
-      const { pageId, revisionId } = req.query;
+      const { pageId = null, revisionId = null } = req.query;
       let revisionIdFromPage;
 
-      if (!pageId) {
-        throw new ErrorV3('Should provided pageId or both pageId and revisionId.', 400);
+      if (pageId == null) {
+        return res.apiv3Err(new ErrorV3('Should provided pageId or both pageId and revisionId.'));
       }
 
       const isPageExist = await Page.count({ _id: pageId }) > 0;
       if (!isPageExist) {
-        throw new ErrorV3(`Page ${pageId} is not exist.`, 404);
+        return res.apiv3Err(new ErrorV3(`Page ${pageId} is not exist.`), 404);
       }
 
       const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
       if (!isAccessible) {
-        throw new ErrorV3(`Haven't the right to see the page ${pageId}.`, 403);
+        return res.apiv3Err(new ErrorV3(`Haven't the right to see the page ${pageId}.`), 403);
       }
 
-      if (!revisionId) {
+      if (revisionId == null) {
         const Page = crowi.model('Page');
         const page = await Page.findByIdAndViewer(pageId);
         revisionIdFromPage = page.revision;
       }
 
       const Revision = crowi.model('Revision');
-      const revisions = await Revision.findRevisions([revisionId || revisionIdFromPage]);
-      const markdown = revisions[0].body;
+      const revision = await Revision.findById([revisionId || revisionIdFromPage]);
+      const markdown = revision.body;
 
       return res.apiv3({ markdown });
     }
     catch (err) {
-      const code = err.code || 500;
       logger.error('Failed to get markdown', err);
-      return res.apiv3Err(err, code);
+      return res.apiv3Err(err, 500);
     }
   });
 
