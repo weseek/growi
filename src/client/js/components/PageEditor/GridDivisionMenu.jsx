@@ -8,7 +8,7 @@ class GridDivisionMenu extends React.Component {
       <div className="container">
         <div className="row">
           {/* TODO add other grid patterns by GW-3189 */}
-          <div className="col-4 text-center">
+          <div className="col-md-4 text-center">
             2分割
             <a className="dropdown-item" href="#">
               <div className="row">
@@ -17,7 +17,7 @@ class GridDivisionMenu extends React.Component {
               </div>
             </a>
           </div>
-          <div className="col-4 text-center">
+          <div className="col-md-4 text-center">
             3分割
             <a className="dropdown-item" href="#">
               <div className="row">
@@ -27,7 +27,7 @@ class GridDivisionMenu extends React.Component {
               </div>
             </a>
           </div>
-          <div className="col-4 text-center">
+          <div className="col-md-4 text-center">
             4分割
             <a className="dropdown-item" href="#">
               <div className="row">
