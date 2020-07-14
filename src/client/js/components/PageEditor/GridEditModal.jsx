@@ -13,6 +13,7 @@ export default class GridEditModal extends React.PureComponent {
     this.state = {
       show: false,
       gridHtml: '',
+      handleCheckedType: 'Mobile',
     };
 
     this.init = this.init.bind(this);
@@ -54,6 +55,11 @@ export default class GridEditModal extends React.PureComponent {
     this.cancel();
   }
 
+  handleChecked(value) {
+    this.props.handleCheckedType(value);
+  }
+
+
   render() {
     return (
       <Modal isOpen={this.state.show} toggle={this.cancel} size="xl">
@@ -88,31 +94,59 @@ export default class GridEditModal extends React.PureComponent {
               </div>
               <div className="col-7">
                 <div className="row">
-                  <div className="pr-2 col-auto">
+                  <div className="pr-5 col-auto">
                     <label>Break point by display size :</label>
                   </div>
-                  <div className="pl-2 col-auto">
+                  <div className="pl-2 col-auto custom-control custom-radio ">
                     <div>
-                      <input type="radio" id="mobile" name="disSize" value="mobile" checked />
-                      <label htmlFor="mobile">
+                      <input
+                        type="radio"
+                        id="mobile"
+                        className="custom-control-input"
+                        name="disSize"
+                        value="mobile"
+                        checked={handleChecked === 'Mobile'}
+                      />
+                      <label className="custom-control-label" htmlFor="mobile">
                         <i className="pl-2 pr-1 icon-screen-smartphone "></i> Mobile
                       </label>
                     </div>
                     <div>
-                      <input type="radio" id="tablet" name="disSize" value="tablet" />
-                      <label htmlFor="tablet">
+                      <input
+                        type="radio"
+                        id="tablet"
+                        className="custom-control-input"
+                        name="disSize"
+                        value="tablet"
+                        checked={handleChecked === 'tablet'}
+                      />
+                      <label className="custom-control-label" htmlFor="tablet">
                         <i className="pl-2 pr-1 icon-screen-tablet"></i> Tablet
                       </label>
                     </div>
                     <div>
-                      <input type="radio" id="desktop" name="disSize" value="desktop" />
-                      <label htmlFor="desktop">
+                      <input
+                        type="radio"
+                        id="desktop"
+                        className="custom-control-input"
+                        name="disSize"
+                        value="desktop"
+                        checked={handleChecked === 'desktop'}
+                      />
+                      <label className="custom-control-label" htmlFor="desktop">
                         <i className="pl-2 pr-1 icon-screen-desktop"></i> Desktop
                       </label>
                     </div>
                     <div>
-                      <input type="radio" id="none" name="disSize" value="none" />
-                      <label htmlFor="none" className="pl-2">None</label>
+                      <input
+                        type="radio"
+                        id="none"
+                        className="custom-control-input"
+                        name="disSize"
+                        value="none"
+                        checked={handleChecked === 'none'}
+                      />
+                      <label className="custom-control-label pl-2" htmlFor="none">None</label>
                     </div>
                   </div>
                 </div>
@@ -151,4 +185,5 @@ export default class GridEditModal extends React.PureComponent {
 
 GridEditModal.propTypes = {
   onSave: PropTypes.func,
+  handleCheckedType: PropTypes,
 };
