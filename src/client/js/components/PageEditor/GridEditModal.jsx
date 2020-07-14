@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
+import geu from './GridEditorUtil';
 
 export default class GridEditModal extends React.PureComponent {
 
@@ -45,8 +46,10 @@ export default class GridEditModal extends React.PureComponent {
 
   pasteCodedGrid() {
     // dummy data
-    const pastedGridData = `::: editable-row\n<div class="container">\n  <div class="row">
-    <div class="col-sm-6 col-md-5 col-lg-12">dummy</div>\n  </div>\n</div>\n:::`;
+    const convertedHTML = geu.convertRatiosAndSizeToHTML([1, 5, 6], 'sm');
+    const pastedGridData = `::: editable-row\n<div class="container">\n\t<div class="row">\n${convertedHTML}\n\t</div>\n</div>\n:::`;
+    // display converted html on console
+    console.log(convertedHTML);
 
     if (this.props.onSave != null) {
       this.props.onSave(pastedGridData);
