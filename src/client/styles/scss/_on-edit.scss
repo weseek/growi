@@ -312,6 +312,14 @@ body.on-edit {
 /*
  Grid Edit Modal
 */
-.border {
+.border-desktop {
+  height: 200px;
+}
+
+.border-tablet {
+  height: 200px;
+}
+
+.border-mobile {
   height: 200px;
 }

@@ -63,10 +63,11 @@ export default class GridEditModal extends React.PureComponent {
         <ModalBody>
           <div className="container">
             <div className="row">
-              <div className="col-5">
-                <div className="mr-2 d-inline">
+              <div className="col-4">
+                <div className="mr-3 d-inline">
                   <label htmlFor="gridPattern">Grid Pattern :</label>
                 </div>
+
                 <div className="dropdown d-inline">
                   <button
                     className="btn btn-secondary dropdown-toggle"
@@ -86,12 +87,12 @@ export default class GridEditModal extends React.PureComponent {
                   </div>
                 </div>
               </div>
-              <div className="col-7">
-                <div className="row">
-                  <div className="pr-5 col-auto">
-                    <label>Break point by display size :</label>
-                  </div>
-                  <div className="pl-2 col-auto custom-control custom-radio ">
+              <div className="col-4 text-right pr-0">
+                <label className="pr-3">Break point by display size :</label>
+              </div>
+              <div className="col-4 text-left pl-0">
+                <div className="d-inline-block">
+                  <div className="custom-control custom-radio ">
                     <div>
                       <input
                         type="radio"
@@ -142,21 +143,27 @@ export default class GridEditModal extends React.PureComponent {
                   </div>
                 </div>
               </div>
-              <h1 className="pl-3 w-100">Preview</h1>
+            </div>
+          </div>
+          <h1 className="pl-3 w-100">Preview</h1>
+          <div className="container">
+            <div className="row">
               <div className="col-6">
                 <label className="d-block"><i className="pr-2 icon-screen-desktop"></i>Desktop</label>
-                <div className="border d-block"></div>
+                <div className="border-desktop border d-block"></div>
               </div>
               <div className="col-3">
                 <label className="d-block"><i className="pr-2 icon-screen-tablet"></i>Tablet</label>
-                <div className="border d-block"></div>
+                <div className="border-tablet border d-block"></div>
               </div>
               <div className="col-3">
                 <label className="d-block"><i className="pr-2 icon-screen-smartphone"></i>Mobile</label>
-                <div className="border d-block"></div>
+                <div className="border-mobile border d-block"></div>
               </div>
             </div>
           </div>
+
+
         </ModalBody>
         <ModalFooter className="grw-modal-footer">
           <div className="ml-auto">
