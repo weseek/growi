@@ -13,13 +13,7 @@ export default class MirrorMode extends React.Component {
 
   // when this is called it returns the hotkey stroke
   static getHotkeyStroke() {
-    return {
-      stroke: ['x', 'x', 'b', 'b', 'a', 'y', 'a', 'y', 'ArrowDown', 'ArrowLeft'],
-      ctrlKey: false,
-      metaKey: false,
-      altKey: false,
-      shiftKey: false,
-    };
+    return [['x', 'x', 'b', 'b', 'a', 'y', 'a', 'y', 'ArrowDown', 'ArrowLeft']];
   }
 
   static getComponent() {
