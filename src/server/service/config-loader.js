@@ -107,6 +107,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
   //   type:    ,
   //   default:
   // },
+  NCHAN_URI: {
+    ns:      'crowi',
+    key:     'app:nchanUri',
+    type:    TYPES.STRING,
+    default: null,
+  },
   APP_SITE_URL: {
     ns:      'crowi',
     key:     'app:siteUrl',
@@ -118,6 +124,24 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     key:     'app:publishOpenAPI',
     type:    TYPES.BOOLEAN,
     default: false,
+  },
+  CONFIG_PUBSUB_SERVER_TYPE: {
+    ns:      'crowi',
+    key:     'configPubsub:serverType',
+    type:    TYPES.STRING,
+    default: null,
+  },
+  CONFIG_PUBSUB_NCHAN_PUBLISH_PATH: {
+    ns:      'crowi',
+    key:     'configPubsub:nchan:publishPath',
+    type:    TYPES.STRING,
+    default: '/pubsub',
+  },
+  CONFIG_PUBSUB_NCHAN_SUBSCRIBE_PATH: {
+    ns:      'crowi',
+    key:     'configPubsub:nchan:subscribePath',
+    type:    TYPES.STRING,
+    default: '/pubsub',
   },
   MAX_FILE_SIZE: {
     ns:      'crowi',
