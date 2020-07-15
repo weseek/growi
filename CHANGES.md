@@ -2,7 +2,7 @@
 
 ## v4.0.10-RC
 
-* 
+* Fix: Fail to rename/delete a page set as "Anyone with the link"
 
 ## v4.0.9
 
