@@ -191,22 +191,12 @@ export default class PageContainer extends Container {
     if (this.state.tocHtml !== tocHtml) {
       this.setState({ tocHtml });
     }
+
     const wikiHeader = 'revision-head-link';
-    const hoge = document.getElementsByClassName(wikiHeader);
-    console.log(hoge);
+    const hogeClass = document.getElementsByClassName(wikiHeader);
 
-    // hoge.addEventListener('click', () => {
-    //   this.navigationContainer.smoothScrollIntoView(hoge, 100);
-    // });
+    hogeClass.forEach(x => x.addEventListener('click', () => { this.navigationContainer.smoothScrollIntoView(wikiHeader, 100) }));
   }
-
-  /* onClickLinks() {
-    const headerLinkIcon = 'content-main';
-    const hoge = document.getElementById(headerLinkIcon);
-     headerLinkIcon.addEventListener('click', () => {
-    console.log(hoge);
-    };
-  } */
 
   /**
    * save success handler
