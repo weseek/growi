@@ -14,7 +14,6 @@ import {
 import {
   DrawioInterceptor,
 } from '../util/interceptor/drawio-interceptor';
-import NavigationContainer from './NavigationContainer';
 
 const logger = loggerFactory('growi:services:PageContainer');
 
