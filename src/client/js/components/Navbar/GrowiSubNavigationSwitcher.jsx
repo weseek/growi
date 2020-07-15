@@ -46,7 +46,7 @@ const GrowiSubNavigationSwitcher = (props) => {
     return () => {
       window.removeEventListener('resize', resizeHandler);
     };
-  }, []);
+  }, [resetWidth]);
 
   const stickyChangeHandler = useCallback((event) => {
     logger.debug('StickyEvents.CHANGE detected');
