@@ -312,19 +312,20 @@ body.on-edit {
 /*
  Grid Edit Modal
 */
-.border-desktop {
-  height: 200px;
-}
-
-.border-tablet {
-  height: 200px;
-}
-
-.border-mobile {
-  height: 200px;
-}
 
 .grw-grid-edit-modal {
+  .desktop-preview {
+    height: 200px;
+  }
+
+  .tablet-preview {
+    height: 200px;
+  }
+
+  .mobile-preview {
+    height: 200px;
+  }
+
   .grid-division-menu {
     width: 600px;
   }
