@@ -281,7 +281,7 @@ module.exports = (crowi) => {
 
     const numOfPages = 1; // TODO 最終的にzipファイルに取り込むページ数を入れる
 
-    await PageArchive.create({
+    const createdPageArchive = PageArchive.create({
       owner,
       fileType,
       rootPagePath,
