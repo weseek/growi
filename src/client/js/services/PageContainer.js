@@ -191,11 +191,6 @@ export default class PageContainer extends Container {
     if (this.state.tocHtml !== tocHtml) {
       this.setState({ tocHtml });
     }
-
-    const wikiHeader = 'revision-head-link';
-    const hogeClass = document.getElementsByClassName(wikiHeader);
-
-    hogeClass.forEach(x => x.addEventListener('click', () => { this.navigationContainer.smoothScrollIntoView(wikiHeader, 100) }));
   }
 
   /**
