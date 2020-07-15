@@ -14,6 +14,7 @@ import {
 import {
   DrawioInterceptor,
 } from '../util/interceptor/drawio-interceptor';
+import NavigationContainer from './NavigationContainer';
 
 const logger = loggerFactory('growi:services:PageContainer');
 
@@ -191,7 +192,22 @@ export default class PageContainer extends Container {
     if (this.state.tocHtml !== tocHtml) {
       this.setState({ tocHtml });
     }
+    const wikiHeader = 'revision-head-link';
+    const hoge = document.getElementsByClassName(wikiHeader);
+    console.log(hoge);
+
+    // hoge.addEventListener('click', () => {
+    //   this.navigationContainer.smoothScrollIntoView(hoge, 100);
+    // });
   }
+
+  /* onClickLinks() {
+    const headerLinkIcon = 'content-main';
+    const hoge = document.getElementById(headerLinkIcon);
+     headerLinkIcon.addEventListener('click', () => {
+    console.log(hoge);
+    };
+  } */
 
   /**
    * save success handler
