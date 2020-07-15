@@ -41,9 +41,6 @@ export default class Hotkeys extends React.Component {
   // this function generates keymap depending on what keys were selected in this.hotkeyCommand
   keymapSet() {
     let keymap = this.hotkeyList();
-    keymap = keymap.map((value) => {
-      return value.stroke;
-    });
     keymap = keymap.flat();
     keymap = new Set(keymap);
     return Array.from(keymap);
@@ -51,16 +48,17 @@ export default class Hotkeys extends React.Component {
 
   // this function generates list of all the hotkeys command
   hotkeyList() {
-    const hotkeyList = this.supportClasses.map((value) => {
+    let hotkeyList = this.supportClasses.map((value) => {
       return value.getHotkeyStroke();
     });
+    hotkeyList = hotkeyList.flat();
     return hotkeyList;
   }
 
   // activates when one of the hotkey strokes gets determined from HotkeysDetector
   onDetected(strokeDetermined) {
     let viewDetermined = this.supportClasses.filter((value) => {
-      return strokeDetermined.toString() === value.getHotkeyStroke().stroke.toString();
+      return value.getHotkeyStroke().find(stroke => stroke.toString() === strokeDetermined.toString());
     });
     viewDetermined = viewDetermined.map((value) => {
       return value.getComponent(this.deleteRender);
