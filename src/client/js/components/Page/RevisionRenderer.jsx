@@ -8,6 +8,8 @@ import GrowiRenderer from '../../util/GrowiRenderer';
 
 import RevisionBody from './RevisionBody';
 
+import NavigationContainer from '../../services/NavigationContainer';
+
 class RevisionRenderer extends React.PureComponent {
 
   constructor(props) {
@@ -53,6 +55,7 @@ class RevisionRenderer extends React.PureComponent {
       console.log(x);
       this.props.navigationContainer.smoothScrollIntoView(x, 120);
     }));
+
     const { interceptorManager } = this.props.appContainer;
 
     interceptorManager.process('postRenderHtml', this.currentRenderingContext);
@@ -124,12 +127,12 @@ class RevisionRenderer extends React.PureComponent {
 /**
  * Wrapper component for using unstated
  */
-const RevisionRendererWrapper = withUnstatedContainers(RevisionRenderer, [AppContainer, PageContainer]);
+const RevisionRendererWrapper = withUnstatedContainers(RevisionRenderer, [AppContainer, PageContainer, NavigationContainer]);
 
 RevisionRenderer.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-
+  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   markdown: PropTypes.string.isRequired,
   highlightKeywords: PropTypes.string,
