@@ -44,6 +44,15 @@ class RevisionRenderer extends React.PureComponent {
       return;
     }
 
+    const wikiHeader = 'revision-head-link';
+    const hogeClass = document.getElementsByClassName(wikiHeader);
+    // console.log(hogeClass);
+    const hogeClassArray = Array.from(hogeClass);
+    hogeClassArray.forEach(x => x.addEventListener('click', (e) => {
+      e.preventDefault();
+      console.log(x);
+      this.props.navigationContainer.smoothScrollIntoView(x, 120);
+    }));
     const { interceptorManager } = this.props.appContainer;
 
     interceptorManager.process('postRenderHtml', this.currentRenderingContext);
