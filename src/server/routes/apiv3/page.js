@@ -291,8 +291,13 @@ module.exports = (crowi) => {
     });
     const searchWord = new RegExp(`^${rootPagePath}`);
     let archivePageData = await Page.find({ path: { $in: searchWord } });
-    archivePageData = archivePageData.map(element => element.path);
+    archivePageData = archivePageData.map(element => element.id);
+    // create Archiveした時にその配下のページのPage IDを現時点ではコンソールログで出力している。
     console.log(archivePageData);
+
+    console.log(createdPageArchive);
+    return res.apiv3({ });
+
   });
 
   router.get('/count-children-pages', accessTokenParser, loginRequired, async(req, res) => {
