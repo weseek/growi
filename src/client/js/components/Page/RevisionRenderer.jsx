@@ -4,11 +4,10 @@ import PropTypes from 'prop-types';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
+import NavigationContainer from '../../services/NavigationContainer';
 import GrowiRenderer from '../../util/GrowiRenderer';
 
 import RevisionBody from './RevisionBody';
-
-import NavigationContainer from '../../services/NavigationContainer';
 
 class RevisionRenderer extends React.PureComponent {
 
