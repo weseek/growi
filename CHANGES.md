@@ -1,8 +1,32 @@
 # CHANGES
 
-## v4.0.8-RC
+## v4.0.10-RC
 
 * 
+
+## v4.0.9
+
+* Feature: Detailed configurations for OpenID Connect
+    * Authorization Endpoint
+    * Token Endpoint
+    * Revocation Endpoint
+    * Introspection Endpoint
+    * UserInfo Endpoint
+    * Registration Endpoint
+    * JSON Web Key Set URI
+* Improvement: Navigations
+    * New floating subnavigation
+    * New open drawer button
+    * New fixed bottom navbar on mobile
+    * New fixed bottom navbar for editor on mobile
+    * FAB (Floating action button)
+* Improvement: Sticky admin navigation
+* Fix: Reseting password doesn't work
+* Fix: Styles for printing
+* Fix: Unable to create page with original path after emptying trash
+* I18n: Support zh-CN
+
+## v4.0.8  (Missing number)
 
 ## v4.0.7
 

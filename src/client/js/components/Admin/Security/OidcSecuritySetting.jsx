@@ -170,6 +170,146 @@ class OidcSecurityManagement extends React.Component {
               </div>
             </div>
 
+            <div className="row mb-5 form-group">
+              <label htmlFor="oidcAuthorizationEndpoint" className="text-left text-md-right col-md-3 col-form-label">
+                {t('security_setting.authorization_endpoint')}
+              </label>
+              <div className="col-md-6">
+                <input
+                  className="form-control"
+                  type="text"
+                  name="oidcAuthorizationEndpoint"
+                  defaultValue={adminOidcSecurityContainer.state.oidcAuthorizationEndpoint || ''}
+                  onChange={e => adminOidcSecurityContainer.changeOidcAuthorizationEndpoint(e.target.value)}
+                />
+                <p className="form-text text-muted">
+                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.OIDC.Use discovered URL if empty') }} />
+                </p>
+              </div>
+            </div>
+
+            <div className="row mb-5 form-group">
+              <label htmlFor="oidcTokenEndpoint" className="text-left text-md-right col-md-3 col-form-label">{t('security_setting.token_endpoint')}</label>
+              <div className="col-md-6">
+                <input
+                  className="form-control"
+                  type="text"
+                  name="oidcTokenEndpoint"
+                  defaultValue={adminOidcSecurityContainer.state.oidcTokenEndpoint || ''}
+                  onChange={e => adminOidcSecurityContainer.changeOidcTokenEndpoint(e.target.value)}
+                />
+                <p className="form-text text-muted">
+                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.OIDC.Use discovered URL if empty') }} />
+                </p>
+              </div>
+            </div>
+
+            <div className="row mb-5 form-group">
+              <label htmlFor="oidcRevocationEndpoint" className="text-left text-md-right col-md-3 col-form-label">
+                {t('security_setting.revocation_endpoint')}
+              </label>
+              <div className="col-md-6">
+                <input
+                  className="form-control"
+                  type="text"
+                  name="oidcRevocationEndpoint"
+                  defaultValue={adminOidcSecurityContainer.state.oidcRevocationEndpoint || ''}
+                  onChange={e => adminOidcSecurityContainer.changeOidcRevocationEndpoint(e.target.value)}
+                />
+                <p className="form-text text-muted">
+                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.OIDC.Use discovered URL if empty') }} />
+                </p>
+              </div>
+            </div>
+
+            <div className="row mb-5 form-group">
+              <label htmlFor="oidcIntrospectionEndpoint" className="text-left text-md-right col-md-3 col-form-label">
+                {t('security_setting.introspection_endpoint')}
+              </label>
+              <div className="col-md-6">
+                <input
+                  className="form-control"
+                  type="text"
+                  name="oidcIntrospectionEndpoint"
+                  defaultValue={adminOidcSecurityContainer.state.oidcIntrospectionEndpoint || ''}
+                  onChange={e => adminOidcSecurityContainer.changeOidcIntrospectionEndpoint(e.target.value)}
+                />
+                <p className="form-text text-muted">
+                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.OIDC.Use discovered URL if empty') }} />
+                </p>
+              </div>
+            </div>
+
+            <div className="row mb-5 form-group">
+              <label htmlFor="oidcUserInfoEndpoint" className="text-left text-md-right col-md-3 col-form-label">
+                {t('security_setting.userinfo_endpoint')}
+              </label>
+              <div className="col-md-6">
+                <input
+                  className="form-control"
+                  type="text"
+                  name="oidcUserInfoEndpoint"
+                  defaultValue={adminOidcSecurityContainer.state.oidcUserInfoEndpoint || ''}
+                  onChange={e => adminOidcSecurityContainer.changeOidcUserInfoEndpoint(e.target.value)}
+                />
+                <p className="form-text text-muted">
+                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.OIDC.Use discovered URL if empty') }} />
+                </p>
+              </div>
+            </div>
+
+            <div className="row mb-5 form-group">
+              <label htmlFor="oidcEndSessionEndpoint" className="text-left text-md-right col-md-3 col-form-label">
+                {t('security_setting.end_session_endpoint')}
+              </label>
+              <div className="col-md-6">
+                <input
+                  className="form-control"
+                  type="text"
+                  name="oidcEndSessionEndpoint"
+                  defaultValue={adminOidcSecurityContainer.state.oidcEndSessionEndpoint || ''}
+                  onChange={e => adminOidcSecurityContainer.changeOidcEndSessionEndpoint(e.target.value)}
+                />
+                <p className="form-text text-muted">
+                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.OIDC.Use discovered URL if empty') }} />
+                </p>
+              </div>
+            </div>
+
+            <div className="row mb-5 form-group">
+              <label htmlFor="oidcRegistrationEndpoint" className="text-left text-md-right col-md-3 col-form-label">
+                {t('security_setting.registration_endpoint')}
+              </label>
+              <div className="col-md-6">
+                <input
+                  className="form-control"
+                  type="text"
+                  name="oidcRegistrationEndpoint"
+                  defaultValue={adminOidcSecurityContainer.state.oidcRegistrationEndpoint || ''}
+                  onChange={e => adminOidcSecurityContainer.changeOidcRegistrationEndpoint(e.target.value)}
+                />
+                <p className="form-text text-muted">
+                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.OIDC.Use discovered URL if empty') }} />
+                </p>
+              </div>
+            </div>
+
+            <div className="row mb-5 form-group">
+              <label htmlFor="oidcJWKSUri" className="text-left text-md-right col-md-3 col-form-label">{t('security_setting.jwks_uri')}</label>
+              <div className="col-md-6">
+                <input
+                  className="form-control"
+                  type="text"
+                  name="oidcJWKSUri"
+                  defaultValue={adminOidcSecurityContainer.state.oidcJWKSUri || ''}
+                  onChange={e => adminOidcSecurityContainer.changeOidcJWKSUri(e.target.value)}
+                />
+                <p className="form-text text-muted">
+                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.OIDC.Use discovered URL if empty') }} />
+                </p>
+              </div>
+            </div>
+
             <h3 className="alert-anchor border-bottom">
               Attribute Mapping ({t('security_setting.optional')})
             </h3>

@@ -12,7 +12,7 @@ const DrawerToggler = (props) => {
 
   const clickHandler = useCallback(() => {
     navigationContainer.toggleDrawer();
-  }, []);
+  }, [navigationContainer]);
 
   const iconClass = props.iconClass || 'icon-menu';
 

@@ -153,7 +153,7 @@
 
 // Drawer Mode
 @mixin drawer() {
-  z-index: $zindex-fixed + 1;
+  z-index: $zindex-fixed + 2;
 
   // override @atlaskit/navigation-next styles
   div[data-testid='Navigation'] {
@@ -231,5 +231,5 @@
 }
 
 .grw-sidebar-backdrop.modal-backdrop {
-  z-index: $zindex-fixed - 4;
+  z-index: $zindex-fixed + 1;
 }
