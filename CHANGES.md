@@ -2,7 +2,9 @@
 
 ## v4.0.10-RC
 
+* Improvement: Adjust ToC height
 * Fix: Fail to rename/delete a page set as "Anyone with the link"
+
 
 ## v4.0.9
 
