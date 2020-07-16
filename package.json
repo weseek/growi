@@ -103,7 +103,7 @@
     "express-validator": "^6.1.1",
     "express-webpack-assets": "^0.1.0",
     "graceful-fs": "^4.1.11",
-    "growi-commons": "^4.0.8",
+    "growi-commons": "^5.0.3",
     "helmet": "^3.13.0",
     "i18next": "^19.0.0",
     "i18next-express-middleware": "^1.4.1",
@@ -265,7 +265,7 @@
     "debug": "src/lib/service/logger/alias-for-debug"
   },
   "engines": {
-    "node": ">=10.17.0 <13",
+    "node": "^12 || ^14",
     "npm": ">=6.11.3 <7",
     "yarn": ">=1.19.1 <2"
   }
