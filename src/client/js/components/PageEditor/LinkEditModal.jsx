@@ -72,9 +72,13 @@ class LinkEditModal extends React.PureComponent {
       type = Linker.types.markdownLink;
     }
 
-    const isUseRelativePath = link.startsWith('.');
+    const url = new URL(link, window.location.origin);
+    const isUseRelativePath = url.origin !== window.location && !link.startsWith('/') && link !== '';
     if (isUseRelativePath) {
-      link = path.resolve(pageContainer.state.path, link);
+      const pagePath = pageContainer.state.path;
+      // rootPaths of md link and pukiwiki link are different
+      const rootPath = type === Linker.types.markdownLink ? path.dirname(pagePath) : pagePath;
+      link = path.resolve(rootPath, link);
     }
 
     this.setState({
