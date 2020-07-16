@@ -1,4 +1,4 @@
-.btn.btn-outline-warning.btn-bookmark {
+.btn.btn-outline-warning {
   color: $secondary;
 
   &.active,
@@ -14,12 +14,27 @@
 
 .btn.btn-like {
   color: $secondary;
-  background-color: lighten($info, 55%);
+  background-color: rgba(lighten($info, 15%), 0.5);
 
   &.active,
   &:hover {
     // header buttons are always white for active
-    color: $info !important;
+    color: lighten($info, 15%) !important;
+  }
+
+  &:not(:hover) {
+    background-color: transparent;
+  }
+}
+
+.btn.btn-bookmark {
+  color: $secondary;
+  background-color: rgba(lighten($warning, 20%), 0.5);
+
+  &.active,
+  &:hover {
+    // header buttons are always white for active
+    color: $warning !important;
   }
 
   &:not(:hover) {
