@@ -29,7 +29,7 @@ const PageShareManagement = (props) => {
 
   async function exportPageHundler(type) {
     try {
-      const { revisionId } = pageContainer.state;
+      const { pageId, revisionId } = pageContainer.state;
       const responseType = type === 'pdf' ? 'arraybuffer' : 'json';
       // const responseType = 'stream';
       const markdown = await appContainer.apiv3Get('/page/export', { revisionId, type, responseType });
