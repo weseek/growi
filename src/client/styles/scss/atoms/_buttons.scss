@@ -1,9 +1,9 @@
+.btn.btn-outline-info,
 .btn.btn-outline-warning {
   color: $secondary;
 
   &.active,
   &:hover {
-    // header buttons are always white for active
     color: white !important;
   }
 
@@ -14,11 +14,10 @@
 
 .btn.btn-like {
   color: $secondary;
-  background-color: rgba(lighten($info, 15%), 0.5);
+  background-color: rgba(lighten($info, 10%), 0.5);
 
   &.active,
   &:hover {
-    // header buttons are always white for active
     color: lighten($info, 15%) !important;
   }
 
@@ -33,7 +32,6 @@
 
   &.active,
   &:hover {
-    // header buttons are always white for active
     color: $warning !important;
   }
 
