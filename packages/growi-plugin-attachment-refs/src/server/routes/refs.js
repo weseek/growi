@@ -89,7 +89,7 @@ module.exports = (crowi) => {
         page: page._id,
         originalName: fileName,
       })
-      .populate({ path: 'creator', select: User.USER_PUBLIC_FIELDS, populate: User.IMAGE_POPULATION });
+      .populate({ path: 'creator', select: User.USER_PUBLIC_FIELDS });
 
     // not found
     if (attachment == null) {
@@ -183,7 +183,7 @@ module.exports = (crowi) => {
     }
 
     const attachments = await query
-      .populate({ path: 'creator', select: User.USER_PUBLIC_FIELDS, populate: User.IMAGE_POPULATION })
+      .populate({ path: 'creator', select: User.USER_PUBLIC_FIELDS })
       .exec();
 
     res.status(200).send({ attachments });
