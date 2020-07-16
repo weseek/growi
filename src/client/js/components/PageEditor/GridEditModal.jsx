@@ -12,7 +12,7 @@ export default class GridEditModal extends React.PureComponent {
 
     this.state = {
       // colsRatios: [6, 6],
-      responsiveSize: '',
+      responsiveSize: 'mobile',
       show: false,
       gridHtml: '',
     };
@@ -22,14 +22,22 @@ export default class GridEditModal extends React.PureComponent {
     this.hide = this.hide.bind(this);
     this.cancel = this.cancel.bind(this);
     this.pasteCodedGrid = this.pasteCodedGrid.bind(this);
-    this.onChangeResponsiveSize = this.onChangeResponsiveSize.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
-  async onChangeResponsiveSize(responsiveSize) {
-    await this.setState({ responsiveSize });
+  /* async handleChange(event) {
+    await this.setState({ responsiveSize: event.target.value });
     console.log(this.state.responsiveSize);
     console.log(this.state.responsiveSize === 'mobile');
 
+  } */
+
+  handleChange = async(e) => {
+    await this.setState({
+      responsiveSize: e.target.value,
+    });
+    console.log(this.state.responsiveSize);
+    console.log(this.state.responsiveSize === 'mobile');
   }
 
   init(gridHtml) {
@@ -101,46 +109,46 @@ export default class GridEditModal extends React.PureComponent {
                 <label className="pr-3">Break point by display size :</label>
               </div>
               <div className="col-4 text-left pl-0">
-                <div className="inline-block">
-                  <div className="custom-control custom-radio">
+                <div className="form-group">
+                  <div className="">
                     <input
-                      className="custom-control-input"
+                      className=""
                       type="radio"
                       id="mobile"
                       name="responsiveSize"
                       value="mobile"
                       checked={this.state.responsiveSize === 'mobile'}
-                      onChange={() => { this.onChangeResponsiveSize('mobile') }}
+                      onChange={this.handleChange}
                     />
-                    <label className="custom-control-label" htmlFor="mobile">
+                    <label className="" htmlFor="mobile">
                       <i className="pl-2 pr-1 icon-screen-smartphone "></i> Mobile / No break point
                     </label>
                   </div>
-                  <div className="custom-control custom-radio">
+                  <div className="">
                     <input
-                      className="custom-control-input"
+                      className=""
                       type="radio"
                       id="tablet"
                       name="responsiveSize"
                       value="tablet"
                       checked={this.state.responsiveSize === 'tablet'}
-                      onChange={() => { this.onChangeResponsiveSize('tablet') }}
+                      onChange={this.handleChange}
                     />
-                    <label className="custom-control-label" htmlFor="tablet">
+                    <label className="" htmlFor="tablet">
                       <i className="pl-2 pr-1 icon-screen-tablet"></i> Tablet
                     </label>
                   </div>
-                  <div className="custom-control custom-radio">
+                  <div className="">
                     <input
-                      className="custom-control-input"
+                      className=""
                       type="radio"
                       id="desktop"
                       name="responsiveSize"
                       value="desktop"
                       checked={this.state.responsiveSize === 'desktop'}
-                      onChange={() => { this.onChangeResponsiveSize('desktop') }}
+                      onChange={this.handleChange}
                     />
-                    <label className="custom-control-label" htmlFor="desktop">
+                    <label className="" htmlFor="desktop">
                       <i className="pl-2 pr-1 icon-screen-desktop"></i> Desktop
                     </label>
                   </div>
