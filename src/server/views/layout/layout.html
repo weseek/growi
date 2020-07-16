@@ -23,6 +23,10 @@
     {% include '../widget/headers/mathjax.html' %}
   {% endif %}
 
+  {% if local_config.env.DRAWIO_URI %}
+    {% include '../widget/headers/drawio.html' %}
+  {% endif %}
+
   {% include '../widget/headers/scripts-for-dev.html' %}
 
   <script src="{{ webpack_asset('js/boot.js') }}"></script>
