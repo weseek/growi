@@ -11,6 +11,8 @@ export default class GridEditModal extends React.PureComponent {
     super(props);
 
     this.state = {
+      // colsRatios: [6, 6],
+      responsiveSize: 'mobile',
       show: false,
       gridHtml: '',
     };
@@ -20,7 +22,30 @@ export default class GridEditModal extends React.PureComponent {
     this.hide = this.hide.bind(this);
     this.cancel = this.cancel.bind(this);
     this.pasteCodedGrid = this.pasteCodedGrid.bind(this);
+    this.onChangeResponsiveSize = this.onChangeResponsiveSize.bind(this);
   }
+
+  onChangeResponsiveSize(responsiveSize) {
+    // console.log(responsiveSize);
+    this.setState({ responsiveSize });
+    // console.log(this.state.responsiveSize === 'mobile');
+  }
+
+  /* checkedHandler() {
+    switch (this.state.responsiveSize) {
+      case 'mobile':
+        return true;
+
+      case 'tablet':
+        return true;
+
+      case 'diplay':
+        return true;
+
+      default:
+        return false;
+    }
+  } */
 
   init(gridHtml) {
     const initGridHtml = gridHtml;
@@ -91,55 +116,48 @@ export default class GridEditModal extends React.PureComponent {
                 <label className="pr-3">Break point by display size :</label>
               </div>
               <div className="col-4 text-left pl-0">
-                <div className="d-inline-block">
-                  <div className="custom-control custom-radio ">
-                    <div>
-                      <input
-                        type="radio"
-                        id="mobile"
-                        className="custom-control-input"
-                        name="disSize"
-                        value="mobile"
-                        checked
-                      />
-                      <label className="custom-control-label" htmlFor="mobile">
-                        <i className="pl-2 pr-1 icon-screen-smartphone "></i> Mobile
-                      </label>
-                    </div>
-                    <div>
-                      <input
-                        type="radio"
-                        id="tablet"
-                        className="custom-control-input"
-                        name="disSize"
-                        value="tablet"
-                      />
-                      <label className="custom-control-label" htmlFor="tablet">
-                        <i className="pl-2 pr-1 icon-screen-tablet"></i> Tablet
-                      </label>
-                    </div>
-                    <div>
-                      <input
-                        type="radio"
-                        id="desktop"
-                        className="custom-control-input"
-                        name="disSize"
-                        value="desktop"
-                      />
-                      <label className="custom-control-label" htmlFor="desktop">
-                        <i className="pl-2 pr-1 icon-screen-desktop"></i> Desktop
-                      </label>
-                    </div>
-                    <div>
-                      <input
-                        type="radio"
-                        id="none"
-                        className="custom-control-input"
-                        name="disSize"
-                        value="none"
-                      />
-                      <label className="custom-control-label pl-2" htmlFor="none">None</label>
-                    </div>
+                <div className="inline-block">
+                  <div className="custom-control custom-radio">
+                    <input
+                      className="custom-control-input"
+                      type="radio"
+                      id="mobile"
+                      name="responsiveSize"
+                      value="mobile"
+                      checked={this.state.responsiveSize === 'mobile'}
+                      onChange={() => { this.onChangeResponsiveSize('mobile') }}
+                    />
+                    <label className="custom-control-label" htmlFor="mobile">
+                      <i className="pl-2 pr-1 icon-screen-smartphone "></i> Mobile / No break point
+                    </label>
+                  </div>
+                  <div className="custom-control custom-radio">
+                    <input
+                      className="custom-control-input"
+                      type="radio"
+                      id="tablet"
+                      name="responsiveSize"
+                      value="tablet"
+                      checked={this.state.responsiveSize === 'tablet'}
+                      onChange={() => { this.onChangeResponsiveSize('tablet') }}
+                    />
+                    <label className="custom-control-label" htmlFor="tablet">
+                      <i className="pl-2 pr-1 icon-screen-tablet"></i> Tablet
+                    </label>
+                  </div>
+                  <div className="custom-control custom-radio">
+                    <input
+                      className="custom-control-input"
+                      type="radio"
+                      id="desktop"
+                      name="responsiveSize"
+                      value="desktop"
+                      checked={this.state.responsiveSize === 'desktop'}
+                      onChange={() => { this.onChangeResponsiveSize('desktop') }}
+                    />
+                    <label className="custom-control-label" htmlFor="desktop">
+                      <i className="pl-2 pr-1 icon-screen-desktop"></i> Desktop
+                    </label>
                   </div>
                 </div>
               </div>
