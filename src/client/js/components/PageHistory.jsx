@@ -27,6 +27,7 @@ class PageHistory extends React.Component {
   async componentWillMount() {
     const pageId = this.props.pageId;
     const shareLinkId = this.props.shareLinkId || null;
+
     if (!pageId) {
       return;
     }
