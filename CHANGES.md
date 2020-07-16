@@ -4,12 +4,14 @@
 
 ### BREAKING CHANGES
 
+* GROWI v4.1.x no longer support Node.js v10.x
 * GROWI v4.1.x no longer support growi-plugin-attachment-refs@v1
 
 Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/41x.html>
 
 ### Updates
 
+* Support: Support Node.js v14
 
 
 
