@@ -30,7 +30,7 @@ const PageShareManagement = (props) => {
   async function exportPageHundler(type) {
     const { pageId, revisionId } = pageContainer.state;
     try {
-      // TODO GW-3062 現状では pdf ファイル系ｋ色の場合空のデータがダウンロードされるので要修正
+      // TODO GW-3062 現状では pdf ファイル形式の場合空のデータがダウンロードされるので要修正
       const responseType = type === 'pdf' ? 'arraybuffer' : 'json';
       const data = await appContainer.apiv3Get('/page/export',
         {
