@@ -313,8 +313,9 @@ body.on-edit {
  Grid Edit Modal
 */
 
-.grw-grid-edit-modal{
+.grw-grid-edit-modal {
   .grid-division-menu {
-    width: 600px;
+    //[TODO: responsive by gw-3244]
+    width: 1000px;
   }
 }
