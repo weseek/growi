@@ -11,7 +11,7 @@ export default class BootstrapGrid {
 
   static validateColsRatios(colsRatios) {
 
-    if (colsRatios.length < 2) {
+    if (colsRatios.length < 2 || colsRatios.length > 4) {
       throw new Error('Incorrect array length of cols ratios');
     }
     const ratiosTotal = colsRatios.reduce((total, ratio) => { return total + ratio }, 0);
