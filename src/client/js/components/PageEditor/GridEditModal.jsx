@@ -12,7 +12,7 @@ export default class GridEditModal extends React.PureComponent {
 
     this.state = {
       // colsRatios: [6, 6],
-      responsiveSize: 'mobile',
+      responsiveSize: '',
       show: false,
       gridHtml: '',
     };
@@ -25,27 +25,12 @@ export default class GridEditModal extends React.PureComponent {
     this.onChangeResponsiveSize = this.onChangeResponsiveSize.bind(this);
   }
 
-  onChangeResponsiveSize(responsiveSize) {
-    // console.log(responsiveSize);
-    this.setState({ responsiveSize });
-    // console.log(this.state.responsiveSize === 'mobile');
+  async onChangeResponsiveSize(responsiveSize) {
+    await this.setState({ responsiveSize });
+    console.log(this.state.responsiveSize);
+    console.log(this.state.responsiveSize === 'mobile');
+
   }
-
-  /* checkedHandler() {
-    switch (this.state.responsiveSize) {
-      case 'mobile':
-        return true;
-
-      case 'tablet':
-        return true;
-
-      case 'diplay':
-        return true;
-
-      default:
-        return false;
-    }
-  } */
 
   init(gridHtml) {
     const initGridHtml = gridHtml;
