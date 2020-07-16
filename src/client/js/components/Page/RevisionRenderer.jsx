@@ -10,6 +10,7 @@ import GrowiRenderer from '../../util/GrowiRenderer';
 import RevisionBody from './RevisionBody';
 
 const WIKI_HEADER_LINK = 120;
+
 class RevisionRenderer extends React.PureComponent {
 
   constructor(props) {
