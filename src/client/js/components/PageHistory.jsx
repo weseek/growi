@@ -26,7 +26,7 @@ class PageHistory extends React.Component {
 
   async componentWillMount() {
     const pageId = this.props.pageId;
-
+    const shareLinkId = this.props.shareLinkId || null;
     if (!pageId) {
       return;
     }
@@ -34,7 +34,7 @@ class PageHistory extends React.Component {
     let res;
     try {
       this.setState({ isLoading: true });
-      res = await this.props.crowi.apiGet('/revisions.ids', { page_id: pageId });
+      res = await this.props.crowi.apiGet('/revisions.ids', { page_id: pageId, share_link_id: shareLinkId });
     }
     catch (err) {
       logger.error(err);
@@ -166,6 +166,8 @@ class PageHistory extends React.Component {
 
 PageHistory.propTypes = {
   t: PropTypes.func.isRequired, // i18next
+
+  shareLinkId: PropTypes.string,
   pageId: PropTypes.string,
   crowi: PropTypes.object.isRequired,
 };
