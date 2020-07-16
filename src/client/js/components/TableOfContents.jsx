@@ -33,7 +33,7 @@ const TableOfContents = (props) => {
 
   return (
     <>
-      {/* TODO add four contents */}
+      {/* TODO GW-3253 add four contents */}
       <StickyStretchableScroller
         contentsElemSelector=".revision-toc .markdownIt-TOC"
         stickyElemSelector="#revision-toc"
