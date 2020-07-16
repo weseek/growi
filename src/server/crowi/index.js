@@ -249,7 +249,13 @@ Crowi.prototype.setupSessionConfig = async function() {
 Crowi.prototype.setupConfigManager = async function() {
   const ConfigManager = require('../service/config-manager');
   this.configManager = new ConfigManager(this.model('Config'));
-  return this.configManager.loadConfigs();
+  await this.configManager.loadConfigs();
+
+  this.configPubsub = require('../service/config-pubsub')(this);
+  if (this.configPubsub != null) {
+    this.configPubsub.subscribe();
+    this.configManager.setPubsub(this.configPubsub);
+  }
 };
 
 Crowi.prototype.setupModels = async function() {

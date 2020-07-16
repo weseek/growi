@@ -8,7 +8,11 @@ class ConfigPubsubDelegator {
     }
   }
 
-  connect() {
+  subscribe() {
+    throw new Error('implement this');
+  }
+
+  publish() {
     throw new Error('implement this');
   }
 

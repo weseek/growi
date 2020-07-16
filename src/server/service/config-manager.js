@@ -1,5 +1,5 @@
 const logger = require('@alias/logger')('growi:service:ConfigManager');
-const ConfigLoader = require('../service/config-loader');
+const ConfigLoader = require('./config-loader');
 
 const KEYS_FOR_LOCAL_STRATEGY_USE_ONLY_ENV_OPTION = [
   'security:passport-local:isEnabled',
@@ -38,6 +38,14 @@ class ConfigManager {
 
     // cache all config keys
     this.reloadConfigKeys();
+  }
+
+  /**
+   * Set ConfigPubsubDelegator instance
+   * @param {ConfigPubsubDelegator} configPubsub
+   */
+  async setPubsub(configPubsub) {
+    this.configPubsub = configPubsub;
   }
 
   /**

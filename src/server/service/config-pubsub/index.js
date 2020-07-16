@@ -5,7 +5,7 @@ const envToModuleMappings = {
   nchan:   'nchan',
 };
 
-class ConfigPubsubDelegatorFactory {
+class ConfigPubsubFactory {
 
   initializeDelegator(crowi) {
     const type = crowi.configManager.getConfig('crowi', 'configPubsub:serverType');
@@ -36,7 +36,7 @@ class ConfigPubsubDelegatorFactory {
 
 }
 
-const factory = new ConfigPubsubDelegatorFactory();
+const factory = new ConfigPubsubFactory();
 
 module.exports = (crowi) => {
   return factory.getDelegator(crowi);
