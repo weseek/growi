@@ -1,6 +1,10 @@
 # CHANGES
 
-## v4.0.10-RC
+## v4.1.0-RC
+
+* 
+
+## v4.0.10
 
 * Improvement: Adjust ToC height
 * Fix: Fail to rename/delete a page set as "Anyone with the link"
