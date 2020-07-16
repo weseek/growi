@@ -110,12 +110,14 @@ class PageHistory extends React.Component {
   }
 
   fetchPageRevisionBody(revision) {
+    const shareLinkId = this.props.shareLinkId || null;
+
     if (revision.body) {
       return;
     }
 
     this.props.crowi.apiGet('/revisions.get',
-      { page_id: this.props.pageId, revision_id: revision._id })
+      { page_id: this.props.pageId, revision_id: revision._id, share_link_id: shareLinkId })
       .then((res) => {
         if (res.ok) {
           this.setState({
