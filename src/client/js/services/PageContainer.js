@@ -65,6 +65,7 @@ export default class PageContainer extends Container {
       hasChildren: JSON.parse(mainContent.getAttribute('data-page-has-children')),
       templateTagData: mainContent.getAttribute('data-template-tags') || null,
       shareLinksNumber:  mainContent.getAttribute('data-share-links-number'),
+      shareLinkId:   JSON.parse(mainContent.getAttribute('data-share-link-id')),
 
       // latest(on remote) information
       remoteRevisionId: revisionId,
