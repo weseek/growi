@@ -30,8 +30,8 @@ const PageShareManagement = (props) => {
   async function exportPageHundler(type) {
     const { pageId, revisionId } = pageContainer.state;
     try {
+      // TODO GW-3062 現状では pdf ファイル系ｋ色の場合空のデータがダウンロードされるので要修正
       const responseType = type === 'pdf' ? 'arraybuffer' : 'json';
-      // const responseType = 'stream';
       const data = await appContainer.apiv3Get('/page/export',
         {
           pageId,
@@ -39,14 +39,16 @@ const PageShareManagement = (props) => {
           type,
           responseType,
         });
+      const blobType = type === 'pdf' ? 'application/pdf' : 'application/json';
       const blob = new Blob(
         [data],
-        { type: 'text/plain' },
+        { type: blobType },
       );
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
       link.download = `${pageId}.${type}`;
       link.click();
+      link.remove();
     }
     catch (err) {
       toastError(Error(t('export_bulk.failed_to_export')));

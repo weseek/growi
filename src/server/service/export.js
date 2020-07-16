@@ -363,8 +363,9 @@ class ExportService {
         await fs.writeFileSync(filePath, markdown);
       }
       else if (type === 'pdf') {
-        filePath = path.join(baseDir, `${tmpFileName}.md`);
+        filePath = path.join(baseDir, `${tmpFileName}.pdf`);
         await this.convertToPdfAndWriteFile(markdown, filePath);
+        res.contentType('application/pdf');
       }
       else {
         throw new Error('requested file format is invaild');
