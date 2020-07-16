@@ -12,14 +12,11 @@ export default class BootstrapGrid {
   static validateColsRatios(colsRatios) {
 
     if (colsRatios.length < 2) {
-      return new Error('Incorrect array length of cols ratios');
+      throw new Error('Incorrect array length of cols ratios');
     }
-    let ratiosTotal = 0;
-    colsRatios.forEach((ratio) => {
-      ratiosTotal += ratio;
-    });
+    const ratiosTotal = colsRatios.reduce((sum, ratio) => { return sum += ratio }, 0);
     if (ratiosTotal !== 12) {
-      return new Error('Incorrect cols ratios value');
+      throw new Error('Incorrect cols ratios value');
     }
 
     return colsRatios;
@@ -29,7 +26,7 @@ export default class BootstrapGrid {
     if (responsiveSize === this.ResponsiveSize.XS_SIZE || responsiveSize === this.ResponsiveSize.SM_SIZE || responsiveSize === this.ResponsiveSize.MD_SIZE) {
       return responsiveSize;
     }
-    return new Error('Incorrect responsive size');
+    throw new Error('Incorrect responsive size');
   }
 
 }
