@@ -26,16 +26,14 @@ const TableOfContents = (props) => {
     const containerTop = containerElem.getBoundingClientRect().top;
 
     // window height - revisionToc top - .system-version - .grw-fab-container height
-    return window.innerHeight - containerTop - 20 - 175;
+    return window.innerHeight - containerTop - 20 - 155;
   }, []);
 
   const { tocHtml } = pageContainer.state;
 
   return (
     <>
-      <div className="my-2 text-center">
-        <button type="button">ここに新しいボタンが配置される</button>
-      </div>
+      {/* TODO add four contents */}
       <StickyStretchableScroller
         contentsElemSelector=".revision-toc .markdownIt-TOC"
         stickyElemSelector="#revision-toc"
