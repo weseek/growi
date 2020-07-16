@@ -25,27 +25,32 @@ const TableOfContents = (props) => {
     const containerElem = document.querySelector('#revision-toc');
     const containerTop = containerElem.getBoundingClientRect().top;
 
-    // window height - revisionToc top - .system-version height
-    return window.innerHeight - containerTop - 20;
+    // window height - revisionToc top - .system-version - .grw-fab-container height
+    return window.innerHeight - containerTop - 20 - 175;
   }, []);
 
   const { tocHtml } = pageContainer.state;
 
   return (
-    <StickyStretchableScroller
-      contentsElemSelector=".revision-toc .markdownIt-TOC"
-      stickyElemSelector="#revision-toc"
-      calcViewHeightFunc={calcViewHeight}
-    >
-      <div
-        id="revision-toc-content"
-        className="revision-toc-content"
+    <>
+      <div className="my-2 text-center">
+        <button type="button">ここに新しいボタンが配置される</button>
+      </div>
+      <StickyStretchableScroller
+        contentsElemSelector=".revision-toc .markdownIt-TOC"
+        stickyElemSelector="#revision-toc"
+        calcViewHeightFunc={calcViewHeight}
+      >
+        <div
+          id="revision-toc-content"
+          className="revision-toc-content"
         // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{
+          dangerouslySetInnerHTML={{
           __html: tocHtml,
         }}
-      />
-    </StickyStretchableScroller>
+        />
+      </StickyStretchableScroller>
+    </>
   );
 
 };
