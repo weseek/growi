@@ -1,6 +1,12 @@
 # CHANGES
 
-## v4.0.9-RC
+## v4.0.10-RC
+
+* Improvement: Adjust ToC height
+* Fix: Fail to rename/delete a page set as "Anyone with the link"
+
+
+## v4.0.9
 
 * Feature: Detailed configurations for OpenID Connect
     * Authorization Endpoint
@@ -10,10 +16,6 @@
     * UserInfo Endpoint
     * Registration Endpoint
     * JSON Web Key Set URI
-
-
-## v4.0.8
-
 * Improvement: Navigations
     * New floating subnavigation
     * New open drawer button
@@ -25,6 +27,8 @@
 * Fix: Styles for printing
 * Fix: Unable to create page with original path after emptying trash
 * I18n: Support zh-CN
+
+## v4.0.8  (Missing number)
 
 ## v4.0.7
 
