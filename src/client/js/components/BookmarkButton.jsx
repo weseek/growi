@@ -86,4 +86,3 @@ BookmarkButton.defaultProps = {
 };
 
 export default BookmarkButton;
-hahaha;
