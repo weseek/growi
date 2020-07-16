@@ -28,18 +28,24 @@ const PageShareManagement = (props) => {
   }
 
   async function exportPageHundler(type) {
+    const { pageId, revisionId } = pageContainer.state;
     try {
-      const { pageId, revisionId } = pageContainer.state;
       const responseType = type === 'pdf' ? 'arraybuffer' : 'json';
       // const responseType = 'stream';
-      const markdown = await appContainer.apiv3Get('/page/export', { revisionId, type, responseType });
+      const data = await appContainer.apiv3Get('/page/export',
+        {
+          pageId,
+          revisionId,
+          type,
+          responseType,
+        });
       const blob = new Blob(
-        [markdown],
+        [data],
         { type: 'text/plain' },
       );
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
-      link.download = `${revisionId}.${type}`;
+      link.download = `${pageId}.${type}`;
       link.click();
     }
     catch (err) {

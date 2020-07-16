@@ -199,7 +199,7 @@ module.exports = (crowi) => {
   */
   router.get('/export', validator.export, async(req, res) => {
     try {
-      const { pageId = null, revisionId = null } = req.query;
+      const { type, pageId = null, revisionId = null } = req.query;
 
       if (pageId == null) {
         return res.apiv3Err(new ErrorV3('Should provided pageId or both pageId and revisionId.'));
@@ -215,7 +215,6 @@ module.exports = (crowi) => {
         return res.apiv3Err(new ErrorV3(`Haven't the right to see the page ${pageId}.`), 403);
       }
 
-
       let revisionIdForFind;
       if (revisionId == null) {
         const Page = crowi.model('Page');
@@ -226,15 +225,14 @@ module.exports = (crowi) => {
         revisionIdForFind = revisionId;
       }
 
-      
       const Revision = crowi.model('Revision');
       const revision = await Revision.findById(revisionIdForFind);
 
       const markdown = revision.body;
-	  return await exportService.createExportStream(res, markdown, type);
+      return await exportService.createExportStream(res, revisionId, markdown, type);
     }
     catch (err) {
-      logger.error('Failed to get markdown', err);
+      logger.error('Failed to get page', err);
       return res.apiv3Err(err, 500);
     }
   });

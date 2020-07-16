@@ -351,7 +351,7 @@ class ExportService {
     return zipFile;
   }
 
-  async createExportStream(res, markdown, type) {
+  async createExportStream(res, tmpFileName, markdown, type) {
     let fileStream;
     let filePath;
     const baseDir = path.join(this.crowi.tmpDir, 'exports');
@@ -359,12 +359,12 @@ class ExportService {
     try {
       // create tmp file
       if (type === 'md') {
-        filePath = path.join(baseDir, 'revisionId.md');
+        filePath = path.join(baseDir, `${tmpFileName}.md`);
         await fs.writeFileSync(filePath, markdown);
       }
       else if (type === 'pdf') {
-        filePath = path.join(baseDir, 'revisionId.pdf');
-        await this.convertToPdf(markdown, filePath);
+        filePath = path.join(baseDir, `${tmpFileName}.md`);
+        await this.convertToPdfAndWriteFile(markdown, filePath);
       }
       else {
         throw new Error('requested file format is invaild');
@@ -379,7 +379,7 @@ class ExportService {
     return fileStream.pipe(res);
   }
 
-  async convertToPdf(md, path) {
+  async convertToPdfAndWriteFile(md, path) {
     return new Promise((resolve, reject) => {
       markdownpdf().from.string(md).to(path, () => {
         resolve(path);
