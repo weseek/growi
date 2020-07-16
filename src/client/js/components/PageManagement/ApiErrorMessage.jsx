@@ -42,12 +42,10 @@ const ApiErrorMessage = (props) => {
         return (
           <strong><i className="icon-fw icon-ban"></i> Invalid path</strong>
         );
-      case 'unknown':
+      default:
         return (
           <strong><i className="icon-fw icon-ban"></i> Unknown error occured</strong>
         );
-      default:
-        return null;
     }
   }
 
