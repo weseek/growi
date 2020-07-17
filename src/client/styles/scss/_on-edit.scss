@@ -314,6 +314,18 @@ body.on-edit {
 */
 
 .grw-grid-edit-modal {
+  .desktop-preview {
+    height: 200px;
+  }
+
+  .tablet-preview {
+    height: 200px;
+  }
+
+  .mobile-preview {
+    height: 200px;
+  }
+
   .grid-division-menu {
     //[TODO: responsive by gw-3244]
     width: 1000px;

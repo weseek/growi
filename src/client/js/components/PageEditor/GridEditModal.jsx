@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -57,6 +56,7 @@ export default class GridEditModal extends React.PureComponent {
     this.cancel();
   }
 
+
   render() {
     return (
       <Modal isOpen={this.state.show} toggle={this.cancel} size="xl" className="grw-grid-edit-modal">
@@ -66,9 +66,12 @@ export default class GridEditModal extends React.PureComponent {
         <ModalBody>
           <div className="container">
             <div className="row">
-              <div className="col-5">
-                <label htmlFor="gridPattern">Grid Pattern :</label>
-                <div className="dropdown">
+              <div className="col-4">
+                <div className="mr-3 d-inline">
+                  <label htmlFor="gridPattern">Grid Pattern :</label>
+                </div>
+
+                <div className="dropdown d-inline">
                   <button
                     className="btn btn-secondary dropdown-toggle"
                     type="button"
@@ -77,44 +80,97 @@ export default class GridEditModal extends React.PureComponent {
                     aria-haspopup="true"
                     aria-expanded="false"
                   >
-                  Grid Pattern
+                    Grid Pattern
                   </button>
                   <div className="dropdown-menu grid-division-menu" aria-labelledby="dropdownMenuButton">
                     <GridDivisionMenu />
                   </div>
                 </div>
               </div>
-              <div className="col-7">
-                <label>Break point by display size :</label>
-                <input type="radio" id="mobile" name="disSize" value="mobile" checked />
-                <label htmlFor="mobile"><i className="icon-screen-smartphone"></i> Mobile</label>
-                <input type="radio" id="tablet" name="disSize" value="tablet" />
-                <label htmlFor="tablet"><i className="icon-screen-tablet"></i> Tablet</label>
-                <input type="radio" id="desktop" name="disSize" value="desktop" />
-                <label htmlFor="desktop"><i className="icon-screen-desktop"></i> Desktop</label>
-                <input type="radio" id="none" name="disSize" value="none" />
-                <label htmlFor="none">None</label>
+              <div className="col-4 text-right pr-0">
+                <label className="pr-3">Break point by display size :</label>
               </div>
-              <h1 className="w-100">Preview</h1>
-              <div className="col-6 bg-dark">
-                <label><i className="icon-screen-desktop"></i> Desktop</label>
-                {/* desktop */}
+              <div className="col-4 text-left pl-0">
+                <div className="d-inline-block">
+                  <div className="custom-control custom-radio ">
+                    <div>
+                      <input
+                        type="radio"
+                        id="mobile"
+                        className="custom-control-input"
+                        name="disSize"
+                        value="mobile"
+                        checked
+                      />
+                      <label className="custom-control-label" htmlFor="mobile">
+                        <i className="pl-2 pr-1 icon-screen-smartphone "></i> Mobile
+                      </label>
+                    </div>
+                    <div>
+                      <input
+                        type="radio"
+                        id="tablet"
+                        className="custom-control-input"
+                        name="disSize"
+                        value="tablet"
+                      />
+                      <label className="custom-control-label" htmlFor="tablet">
+                        <i className="pl-2 pr-1 icon-screen-tablet"></i> Tablet
+                      </label>
+                    </div>
+                    <div>
+                      <input
+                        type="radio"
+                        id="desktop"
+                        className="custom-control-input"
+                        name="disSize"
+                        value="desktop"
+                      />
+                      <label className="custom-control-label" htmlFor="desktop">
+                        <i className="pl-2 pr-1 icon-screen-desktop"></i> Desktop
+                      </label>
+                    </div>
+                    <div>
+                      <input
+                        type="radio"
+                        id="none"
+                        className="custom-control-input"
+                        name="disSize"
+                        value="none"
+                      />
+                      <label className="custom-control-label pl-2" htmlFor="none">None</label>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="col-4 bg-light">
-                <label><i className="icon-screen-tablet"></i> Tablet</label>
-                {/* tablet */}
+            </div>
+            <div className="row">
+              <h1 className="pl-3 w-100">Preview</h1>
+              <div className="col-6">
+                <label className="d-block"><i className="pr-2 icon-screen-desktop"></i>Desktop</label>
+                <div className="desktop-preview border d-block"></div>
               </div>
-              <div className="col-2 bg-primary">
-                <label><i className="icon-screen-smartphone"></i> Mobile</label>
-                {/* mobile */}
+              <div className="col-3">
+                <label className="d-block"><i className="pr-2 icon-screen-tablet"></i>Tablet</label>
+                <div className="tablet-preview border d-block"></div>
+              </div>
+              <div className="col-3">
+                <label className="d-block"><i className="pr-2 icon-screen-smartphone"></i>Mobile</label>
+                <div className="mobile-preview border d-block"></div>
               </div>
             </div>
           </div>
+
+
         </ModalBody>
         <ModalFooter className="grw-modal-footer">
           <div className="ml-auto">
-            <button type="button" className="mr-2 btn btn-secondary" onClick={this.cancel}>Cancel</button>
-            <button type="button" className="btn btn-primary" onClick={this.pasteCodedGrid}>Done</button>
+            <button type="button" className="mr-2 btn btn-secondary" onClick={this.cancel}>
+              Cancel
+            </button>
+            <button type="button" className="btn btn-primary" onClick={this.pasteCodedGrid}>
+              Done
+            </button>
           </div>
         </ModalFooter>
       </Modal>
