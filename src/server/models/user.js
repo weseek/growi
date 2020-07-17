@@ -11,6 +11,8 @@ const md5 = require('md5');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 const crypto = require('crypto');
 
+const { listLocaleIds } = require('@commons/util/locale-utils');
+
 module.exports = function(crowi) {
   const STATUS_REGISTERED = 1;
   const STATUS_ACTIVE = 2;
@@ -19,13 +21,6 @@ module.exports = function(crowi) {
   const STATUS_INVITED = 5;
   const USER_PUBLIC_FIELDS = '_id image isEmailPublished isGravatarEnabled googleId name username email introduction'
   + 'status lang createdAt lastLoginAt admin imageUrlCached';
-  /* eslint-disable no-unused-vars */
-  const IMAGE_POPULATION = { path: 'imageAttachment', select: 'filePathProxied' };
-
-  const LANG_EN = 'en';
-  const LANG_EN_US = 'en-US';
-  const LANG_EN_GB = 'en-GB';
-  const LANG_JA = 'ja';
 
   const PAGE_ITEMS = 50;
 
@@ -58,9 +53,8 @@ module.exports = function(crowi) {
     apiToken: { type: String, index: true },
     lang: {
       type: String,
-      // eslint-disable-next-line no-eval
-      enum: Object.keys(getLanguageLabels()).map((k) => { return eval(k) }),
-      default: LANG_EN_US,
+      enum: listLocaleIds(),
+      default: 'en_US',
     },
     status: {
       type: Number, required: true, default: STATUS_ACTIVE, index: true,
@@ -145,16 +139,6 @@ module.exports = function(crowi) {
     hasher.update((new Date()).getTime() + user._id);
 
     return hasher.digest('base64');
-  }
-
-  function getLanguageLabels() {
-    const lang = {};
-    lang.LANG_EN = LANG_EN;
-    lang.LANG_EN_US = LANG_EN_US;
-    lang.LANG_EN_GB = LANG_EN_GB;
-    lang.LANG_JA = LANG_JA;
-
-    return lang;
   }
 
   userSchema.methods.isPasswordSet = function() {
@@ -355,7 +339,6 @@ module.exports = function(crowi) {
     });
   };
 
-  userSchema.statics.getLanguageLabels = getLanguageLabels;
   userSchema.statics.getUserStatusLabels = function() {
     const userStatus = {};
     userStatus[STATUS_REGISTERED] = 'Approval Pending';
@@ -633,7 +616,7 @@ module.exports = function(crowi) {
         return mailer.send({
           to: user.email,
           subject: `Invitation to ${appTitle}`,
-          template: path.join(crowi.localeDir, 'en-US/admin/userInvitation.txt'),
+          template: path.join(crowi.localeDir, 'en_US/admin/userInvitation.txt'),
           vars: {
             email: user.email,
             password: user.password,
@@ -765,13 +748,7 @@ module.exports = function(crowi) {
   userSchema.statics.STATUS_DELETED = STATUS_DELETED;
   userSchema.statics.STATUS_INVITED = STATUS_INVITED;
   userSchema.statics.USER_PUBLIC_FIELDS = USER_PUBLIC_FIELDS;
-  userSchema.statics.IMAGE_POPULATION = IMAGE_POPULATION;
   userSchema.statics.PAGE_ITEMS = PAGE_ITEMS;
-
-  userSchema.statics.LANG_EN = LANG_EN;
-  userSchema.statics.LANG_EN_US = LANG_EN_US;
-  userSchema.statics.LANG_EN_GB = LANG_EN_US;
-  userSchema.statics.LANG_JA = LANG_JA;
 
   return mongoose.model('User', userSchema);
 };

@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import i18next from 'i18next';
 import { withTranslation } from 'react-i18next';
 
+import { localeMetadatas } from '../util/i18n';
+
 class InstallerForm extends React.Component {
 
   constructor(props) {
@@ -11,13 +13,13 @@ class InstallerForm extends React.Component {
 
     this.state = {
       isValidUserName: true,
-      checkedBtn: 'en-US',
+      selectedLang: {},
     };
     this.checkUserName = this.checkUserName.bind(this);
   }
 
   componentWillMount() {
-    this.changeLanguage('en-US');
+    this.changeLanguage(localeMetadatas[0]);
   }
 
   checkUserName(event) {
@@ -32,9 +34,9 @@ class InstallerForm extends React.Component {
       .then((res) => { return this.setState({ isValidUserName: res.data.valid }) });
   }
 
-  changeLanguage(locale) {
-    i18next.changeLanguage(locale);
-    this.setState({ checkedBtn: locale });
+  changeLanguage(meta) {
+    i18next.changeLanguage(meta.id);
+    this.setState({ selectedLang: meta });
   }
 
   render() {
@@ -42,8 +44,6 @@ class InstallerForm extends React.Component {
     const unavailableUserId = this.state.isValidUserName
       ? ''
       : <span><i className="icon-fw icon-ban" />{ this.props.t('installer.unavaliable_user_id') }</span>;
-
-    const checkedBtn = this.state.checkedBtn;
 
     return (
       <div className={`login-dialog p-3 mx-auto${hasErrorClass}`}>
@@ -57,36 +57,30 @@ class InstallerForm extends React.Component {
         </div>
         <div className="row">
           <form role="form" action="/installer" method="post" id="register-form" className="col-md-12">
-            <div className="form-group text-center">
-              <div className="custom-control custom-radio custom-control-inline">
-                <input
-                  type="radio"
-                  className="custom-control-input"
-                  id="register-form-check-en"
-                  name="registerForm[app:globalLang]"
-                  value="en-US"
-                  checked={checkedBtn === 'en-US'}
-                  inline
-                  onChange={(e) => { if (e.target.checked) { this.changeLanguage('en-US') } }}
-                />
-                <label className="custom-control-label" htmlFor="register-form-check-en">
-                  English
-                </label>
-              </div>
-              <div className="custom-control custom-radio custom-control-inline">
-                <input
-                  type="radio"
-                  className="custom-control-input"
-                  id="register-form-check-jp"
-                  name="registerForm[app:globalLang]"
-                  value="ja"
-                  checked={checkedBtn === 'ja'}
-                  inline
-                  onChange={(e) => { if (e.target.checked) { this.changeLanguage('ja') } }}
-                />
-                <label className="custom-control-label" htmlFor="register-form-check-jp">
-                  日本語
-                </label>
+            <div className="dropdown mb-3">
+              <div className="d-flex dropdown-with-icon">
+                <i className="icon-bubbles border-0 rounded-0" />
+                <button
+                  type="button"
+                  className="btn btn-secondary dropdown-toggle text-right w-100 border-0 shadow-none"
+                  id="dropdownLanguage"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="true"
+                >
+                  <span className="float-left">
+                    {this.state.selectedLang.displayName}
+                  </span>
+                </button>
+                <div className="dropdown-menu" aria-labelledby="dropdownLanguage">
+                  {
+                  localeMetadatas.map(meta => (
+                    <button key={meta.id} className="dropdown-item" type="button" onClick={() => { this.changeLanguage(meta) }}>
+                      {meta.displayName}
+                    </button>
+                  ))
+                }
+                </div>
               </div>
             </div>
 

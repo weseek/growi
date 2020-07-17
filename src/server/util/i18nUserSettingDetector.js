@@ -5,6 +5,7 @@ module.exports = {
     if (req.user == null) {
       return null;
     }
+
     return req.user.lang || null;
   },
 

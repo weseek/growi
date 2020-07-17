@@ -4,7 +4,7 @@ const repl = require('repl');
 const fs = require('fs');
 const path = require('path');
 const mongoose = require('mongoose');
-const { getMongoUri } = require('@commons/util/mongoose-utils');
+const { getMongoUri, mongoOptions } = require('@commons/util/mongoose-utils');
 
 const models = require('./models');
 
@@ -34,7 +34,7 @@ fs.readFile(replHistoryPath, 'utf8', (err, data) => {
 replServer.context.mongoose = mongoose;
 replServer.context.models = models;
 
-mongoose.connect(getMongoUri(), { useNewUrlParser: true })
+mongoose.connect(getMongoUri(), mongoOptions)
   .then(() => {
     replServer.context.db = mongoose.connection.db;
   });

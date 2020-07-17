@@ -193,6 +193,10 @@ module.exports = function(crowi, app) {
       return res.sendStatus(304);
     }
 
+    if (fileUploader.canRespond()) {
+      return fileUploader.respond(res, attachment);
+    }
+
     let fileStream;
     try {
       fileStream = await fileUploader.findDeliveryFile(attachment);
@@ -215,7 +219,7 @@ module.exports = function(crowi, app) {
   function setHeaderToRes(res, attachment, forceDownload) {
     res.set({
       ETag: `Attachment-${attachment._id}`,
-      'Last-Modified': attachment.createdAt,
+      'Last-Modified': attachment.createdAt.toUTCString(),
     });
 
     // download

@@ -1,7 +1,9 @@
 /* eslint-disable import/prefer-default-export */
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'unstated';
 import { BasicInterceptor } from 'growi-commons';
+
 import Drawio from '../../components/Drawio';
 
 /**
@@ -132,12 +134,13 @@ export class DrawioInterceptor extends BasicInterceptor {
   renderReactDOM(drawioMapEntry, elem, isPreview) {
     ReactDOM.render(
       // eslint-disable-next-line react/jsx-filename-extension
-      <Drawio
-        appContainer={this.appContainer}
-        drawioContent={drawioMapEntry.contentHtml}
-        isPreview={isPreview}
-        rangeLineNumberOfMarkdown={drawioMapEntry.rangeLineNumberOfMarkdown}
-      />,
+      <Provider inject={[this.appContainer]}>
+        <Drawio
+          drawioContent={drawioMapEntry.contentHtml}
+          isPreview={isPreview}
+          rangeLineNumberOfMarkdown={drawioMapEntry.rangeLineNumberOfMarkdown}
+        />
+      </Provider>,
       elem,
     );
   }
