@@ -130,14 +130,13 @@ const PageManagement = (props) => {
   function renderDotsIconForGuestUser() {
     return (
       <>
-        <a
-          role="button"
-          className="nav-link dropdown-toggle dropdown-toggle-no-caret dropdown-toggle-disabled"
-          data-toggle={`${currentUser == null ? 'tooltip' : 'dropdown'}`}
+        <button
+          type="button"
+          className="btn nav-link bg-transparent dropdown-toggle dropdown-toggle-no-caret disabled"
           id="icon-options-guest-tltips"
         >
           <i className="icon-options-vertical"></i>
-        </a>
+        </button>
         <UncontrolledTooltip placement="top" target="icon-options-guest-tltips">
           {t('Not available for guest')}
         </UncontrolledTooltip>
