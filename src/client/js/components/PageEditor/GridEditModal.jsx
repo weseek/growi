@@ -22,7 +22,7 @@ export default class GridEditModal extends React.PureComponent {
     this.hide = this.hide.bind(this);
     this.cancel = this.cancel.bind(this);
     this.pasteCodedGrid = this.pasteCodedGrid.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+    /* this.handleChange = this.handleChange.bind(this); */
   }
 
   /* async handleChange(event) {
@@ -32,7 +32,7 @@ export default class GridEditModal extends React.PureComponent {
 
   } */
 
-  handleChange = async(e) => {
+  /* handleChange = async(e) => {
     console.log(`${e.target.value}hoge`);
     await this.setState({
       responsiveSize: e.target.value,
@@ -40,7 +40,7 @@ export default class GridEditModal extends React.PureComponent {
       console.log(this.state.responsiveSize);
     });
     console.log(this.state.responsiveSize === 'mobile');
-  }
+  } */
 
   init(gridHtml) {
     const initGridHtml = gridHtml;
@@ -112,45 +112,45 @@ export default class GridEditModal extends React.PureComponent {
               </div>
               <div className="col-4 text-left pl-0">
                 <div className="form-group inline-block">
-                  <div className="custom-control custom-radio">
+                  <div className="">
                     <input
-                      className="custom-control-input"
+                      className=""
                       type="radio"
                       id="mobile"
                       name="responsiveSize"
                       value="mobile"
+                      onChange={(e) => { this.setState({ responsiveSize: e.target.value }) }}
                       checked={this.state.responsiveSize === 'mobile'}
-                      onChange={this.handleChange}
                     />
-                    <label className="custom-control-label" htmlFor="mobile">
+                    <label className="" htmlFor="mobile">
                       <i className="pl-2 pr-1 icon-screen-smartphone "></i> Mobile / No break point
                     </label>
                   </div>
-                  <div className="custom-control custom-radio">
+                  <div className="">
                     <input
-                      className="custom-control-input"
+                      className=""
                       type="radio"
                       id="tablet"
                       name="responsiveSize"
                       value="tablet"
+                      onChange={(e) => { this.setState({ responsiveSize: e.target.value }) }}
                       checked={this.state.responsiveSize === 'tablet'}
-                      onChange={this.handleChange}
                     />
-                    <label className="custom-control-label" htmlFor="tablet">
+                    <label className="" htmlFor="tablet">
                       <i className="pl-2 pr-1 icon-screen-tablet"></i> Tablet
                     </label>
                   </div>
-                  <div className="custom-control custom-radio">
+                  <div className="">
                     <input
-                      className="custom-control-input"
+                      className=""
                       type="radio"
                       id="desktop"
                       name="responsiveSize"
                       value="desktop"
+                      onChange={(e) => { this.setState({ responsiveSize: e.target.value }) }}
                       checked={this.state.responsiveSize === 'desktop'}
-                      onChange={this.handleChange}
                     />
-                    <label className="custom-control-label" htmlFor="desktop">
+                    <label className="" htmlFor="desktop">
                       <i className="pl-2 pr-1 icon-screen-desktop"></i> Desktop
                     </label>
                   </div>
