@@ -116,7 +116,7 @@
       "attach_title_header": "新規ページ作成時の h1 セクション自動挿入",
       "attach_title_header_desc": "新規作成したページの1行目に、ページのパスを h1 セクションとして挿入します。",
       "list_num_desc_in_user_page": "ユーザーページに表示されるリスト数",
-      "all_list_num_desc_in_user_page": "ユーザーページにおける Boolmarks Recently Created My Drafts での、1ページの表示数を設定します。",
+      "all_list_num_desc_in_user_page": "ユーザーページにおける <Bookmarks> <Recently Created> <My Drafts> での、1ページの表示数を設定します。",
       "stale_notification": "古いページに通知を表示する",
       "stale_notification_desc": "最後の更新から1年を超えるページへの通知を表示します。",
       "show_all_reply_comments": "返信コメントを全て表示する",
