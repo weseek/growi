@@ -11,7 +11,7 @@ export default class GridEditModal extends React.PureComponent {
     super(props);
 
     this.state = {
-      // colsRatios: [6, 6],
+      colsRatios: [6, 6],
       responsiveSize: 'mobile',
       show: false,
       gridHtml: '',
@@ -22,6 +22,14 @@ export default class GridEditModal extends React.PureComponent {
     this.hide = this.hide.bind(this);
     this.cancel = this.cancel.bind(this);
     this.pasteCodedGrid = this.pasteCodedGrid.bind(this);
+  }
+
+  showGridPattern() {
+    const colsRatios = this.state.colsRatios;
+    const createdCol = colsRatios.map((colsRatio) => {
+      return `- ${colsRatio} `;
+    });
+    return createdCol.join('').slice(1);
   }
 
   init(gridHtml) {
@@ -68,31 +76,28 @@ export default class GridEditModal extends React.PureComponent {
         <ModalBody>
           <div className="container">
             <div className="row">
-              <div className="col-4">
+              <div className="col-3">
                 <div className="mr-3 d-inline">
                   <label htmlFor="gridPattern">Grid Pattern :</label>
                 </div>
-
-                <div className="dropdown d-inline">
-                  <button
-                    className="btn btn-secondary dropdown-toggle"
-                    type="button"
-                    id="dropdownMenuButton"
-                    data-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                  >
-                    Grid Pattern
-                  </button>
-                  <div className="dropdown-menu grid-division-menu" aria-labelledby="dropdownMenuButton">
-                    <GridDivisionMenu />
-                  </div>
+                <button
+                  className="btn btn-outline-secondary dropdown-toggle text-right col-12 col-md-auto"
+                  type="button"
+                  id="dropdownMenuButton"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  {this.showGridPattern()}
+                </button>
+                <div className="dropdown-menu grid-division-menu" aria-labelledby="dropdownMenuButton">
+                  <GridDivisionMenu />
                 </div>
               </div>
-              <div className="col-4 text-right pr-0">
+              <div className="col-3 text-right pr-0">
                 <label className="pr-3">Break point by display size :</label>
               </div>
-              <div className="col-4 text-left pl-0">
+              <div className="col-3 text-left pl-0">
                 <div className="form-group inline-block">
                   <div>
                     <input
@@ -170,40 +175,29 @@ export default class GridEditModal extends React.PureComponent {
 }
 
 function GridDivisionMenu() {
+  const gridDivisions = geu.mappingAllGridDivisionPatterns;
   return (
     <div className="container">
       <div className="row">
-        {/* TODO: add other grid patterns by GW-3189 */}
-        <div className="col-md-4 text-center">
-          <h6 className="dropdown-header">2分割</h6>
-          <a className="dropdown-item" href="#">
-            <div className="row">
-              <span className="bg-info col-6 border">6</span>
-              <span className="bg-info col-6 border">6</span>
+        {gridDivisions.map((gridDivion, i) => {
+          return (
+            <div className="col-md-4 text-center">
+              <h6 className="dropdown-header">{i + 2}分割</h6>
+              {gridDivion.map((gridOneDivision) => {
+                return (
+                  <a className="dropdown-item" href="#" onChange={() => { this.setState({ colsRatios: gridOneDivision }) }}>
+                    <div className="row">
+                      {gridOneDivision.map((gtd) => {
+                        const className = `bg-info col-${gtd} border`;
+                        return <span className={className}>{gtd}</span>;
+                      })}
+                    </div>
+                  </a>
+                );
+              })}
             </div>
-          </a>
-        </div>
-        <div className="col-md-4 text-center">
-          <h6 className="dropdown-header">3分割</h6>
-          <a className="dropdown-item" href="#">
-            <div className="row">
-              <span className="bg-info col-4 border">4</span>
-              <span className="bg-info col-4 border">4</span>
-              <span className="bg-info col-4 border">4</span>
-            </div>
-          </a>
-        </div>
-        <div className="col-md-4 text-center">
-          <h6 className="dropdown-header">4分割</h6>
-          <a className="dropdown-item" href="#">
-            <div className="row">
-              <span className="bg-info col-3 border">3</span>
-              <span className="bg-info col-3 border">3</span>
-              <span className="bg-info col-3 border">3</span>
-              <span className="bg-info col-3 border">3</span>
-            </div>
-          </a>
-        </div>
+          );
+        })}
       </div>
     </div>
   );
