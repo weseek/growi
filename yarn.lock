@@ -6770,10 +6770,10 @@ grapheme-splitter@^1.0.4:
   resolved "https://registry.yarnpkg.com/grapheme-splitter/-/grapheme-splitter-1.0.4.tgz#9cf3a665c6247479896834af35cf1dbb4400767e"
   integrity sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==
 
-growi-commons@^4.0.8:
-  version "4.0.8"
-  resolved "https://registry.yarnpkg.com/growi-commons/-/growi-commons-4.0.8.tgz#3040f2759f5eb13084b101e303c11028af2a8faf"
-  integrity sha512-AL/vm3R3LqiWwCbuEHPsDP8hapiz7ulKZXyW4399WHorx/7oEkSWb6sGdkvJiqSnRWxEcdPkfw6K0kgzilMpig==
+growi-commons@^5.0.3:
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/growi-commons/-/growi-commons-5.0.3.tgz#8ec745dcb2d3d003e3acd7d6fbec85cf0967354b"
+  integrity sha512-lV2jmqxWPiuzuVaetSY1uq7viwgRCNwLMnU78GaYix4jfXNcYzdrfedTlU3ZRiVIjLggSFb87EhYqtM/4RfjmA==
 
 growly@^1.3.0:
   version "1.3.0"
