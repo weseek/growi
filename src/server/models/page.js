@@ -693,7 +693,7 @@ module.exports = function(crowi) {
   /**
    * find pages that is match with `path` and its descendants
    */
-  pageSchema.statics.findListWithDescendants = async function(path, user, option) {
+  pageSchema.statics.findListWithDescendants = async function(path, user, option = {}) {
     const builder = new PageQueryBuilder(this.find());
     builder.addConditionToListWithDescendants(path, option);
 
@@ -1094,21 +1094,18 @@ module.exports = function(crowi) {
       throw new Error('This method does NOT supports deleting trashed pages.');
     }
 
-    const findOpts = { includeRedirect: true };
-    const result = await this.findListWithDescendants(targetPage.path, user, findOpts);
+    // find descendants (this array does not include GRANT_RESTRICTED)
+    const result = await this.findListWithDescendants(targetPage.path, user);
     const pages = result.pages;
+    // add targetPage if 'grant' is GRANT_RESTRICTED
+    //  because findListWithDescendants excludes GRANT_RESTRICTED pages
+    if (targetPage.grant === GRANT_RESTRICTED) {
+      pages.push(targetPage);
+    }
 
-    let updatedPage = null;
     await Promise.all(pages.map((page) => {
-      const isParent = (page.path === targetPage.path);
-      const p = this.deletePage(page, user, options);
-      if (isParent) {
-        updatedPage = p;
-      }
-      return p;
+      return this.deletePage(page, user, options);
     }));
-
-    return updatedPage;
   };
 
   pageSchema.statics.revertDeletedPage = async function(page, user, options = {}) {
@@ -1135,7 +1132,7 @@ module.exports = function(crowi) {
   };
 
   pageSchema.statics.revertDeletedPageRecursively = async function(targetPage, user, options = {}) {
-    const findOpts = { includeRedirect: true, includeTrashed: true };
+    const findOpts = { includeTrashed: true };
     const result = await this.findListWithDescendants(targetPage.path, user, findOpts);
     const pages = result.pages;
 
@@ -1190,17 +1187,23 @@ module.exports = function(crowi) {
   /**
    * Delete Bookmarks, Attachments, Revisions, Pages and emit delete
    */
-  pageSchema.statics.completelyDeletePageRecursively = async function(pagePath, user, options = {}) {
+  pageSchema.statics.completelyDeletePageRecursively = async function(targetPage, user, options = {}) {
+    const pagePath = targetPage.path;
 
-    const findOpts = { includeRedirect: true, includeTrashed: true };
+    const findOpts = { includeTrashed: true };
+
+    // find descendants (this array does not include GRANT_RESTRICTED)
     const result = await this.findListWithDescendants(pagePath, user, findOpts);
     const pages = result.pages;
+    // add targetPage if 'grant' is GRANT_RESTRICTED
+    //  because findListWithDescendants excludes GRANT_RESTRICTED pages
+    if (targetPage.grant === GRANT_RESTRICTED) {
+      pages.push(targetPage);
+    }
 
     await Promise.all(pages.map((page) => {
       return this.completelyDeletePage(page, user, options);
     }));
-
-    return pagePath;
   };
 
   pageSchema.statics.removeByPath = function(path) {
@@ -1268,22 +1271,30 @@ module.exports = function(crowi) {
     return updatedPageData;
   };
 
-  pageSchema.statics.renameRecursively = async function(pageData, newPagePathPrefix, user, options) {
+  pageSchema.statics.renameRecursively = async function(targetPage, newPagePathPrefix, user, options) {
     validateCrowi();
 
-    const path = pageData.path;
+    const path = targetPage.path;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(path)}`, 'i');
 
     // sanitize path
     newPagePathPrefix = crowi.xss.process(newPagePathPrefix); // eslint-disable-line no-param-reassign
 
+    // find descendants (this array does not include GRANT_RESTRICTED)
     const result = await this.findListWithDescendants(path, user, options);
-    await Promise.all(result.pages.map((page) => {
+    const pages = result.pages;
+    // add targetPage if 'grant' is GRANT_RESTRICTED
+    //  because findListWithDescendants excludes GRANT_RESTRICTED pages
+    if (targetPage.grant === GRANT_RESTRICTED) {
+      pages.push(targetPage);
+    }
+
+    await Promise.all(pages.map((page) => {
       const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
       return this.rename(page, newPagePath, user, options);
     }));
-    pageData.path = newPagePathPrefix;
-    return pageData;
+    targetPage.path = newPagePathPrefix;
+    return targetPage;
   };
 
   pageSchema.statics.handlePrivatePagesForDeletedGroup = async function(deletedGroup, action, transferToUserGroupId) {
