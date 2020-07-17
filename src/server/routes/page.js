@@ -447,7 +447,6 @@ module.exports = function(crowi, app) {
 
   actions.showSharedPage = async function(req, res, next) {
     const { linkId } = req.params;
-    const revisionId = req.query.revision;
 
     const layoutName = configManager.getConfig('crowi', 'customize:layout');
     const view = `layout-${layoutName}/shared_page`;
@@ -473,6 +472,8 @@ module.exports = function(crowi, app) {
 
     // presentation mode
     if (req.query.presentation) {
+      const revisionId = req.query.revision;
+
       page = await page.populateDataToMakePresentation(revisionId);
 
       // populate
