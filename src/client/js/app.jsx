@@ -93,8 +93,8 @@ if (pageContainer.state.pageId != null) {
     'seen-user-list': <SeenUserList />,
     'liker-list': <LikerList />,
 
-    'user-created-list': <RecentCreated />,
     'user-bookmark-list': <MyBookmarkList />,
+    'user-created-list': <RecentCreated />,
     'user-draft-list': <MyDraftList />,
   });
 }
