@@ -113,7 +113,7 @@ const PageManagement = (props) => {
     );
   }
 
-  function renderCurrentUserForDotsIcon() {
+  function renderDotsIconForCurrentUser() {
     return (
       <>
         <a
@@ -131,7 +131,7 @@ const PageManagement = (props) => {
     );
   }
 
-  function renderGuestUserForDotsIcon() {
+  function renderDotsIconForGuestUser() {
     return (
       <>
         <a
@@ -152,7 +152,7 @@ const PageManagement = (props) => {
 
   return (
     <>
-      {currentUser == null ? renderGuestUserForDotsIcon() : renderCurrentUserForDotsIcon()}
+      {currentUser == null ? renderDotsIconForGuestUser() : renderDotsIconForCurrentUser()}
       <div className="dropdown-menu dropdown-menu-right">
         {!isTopPagePath && renderDropdownItemForNotTopPage()}
         <button className="dropdown-item" type="button" onClick={openPageTemplateModalHandler}>
