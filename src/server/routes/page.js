@@ -447,6 +447,7 @@ module.exports = function(crowi, app) {
 
   actions.showSharedPage = async function(req, res, next) {
     const { linkId } = req.params;
+    const revisionId = req.query.revision;
 
     const layoutName = configManager.getConfig('crowi', 'customize:layout');
     const view = `layout-${layoutName}/shared_page`;
@@ -469,6 +470,15 @@ module.exports = function(crowi, app) {
     const renderVars = {};
 
     renderVars.sharelink = shareLink;
+
+    // presentation mode
+    if (req.query.presentation) {
+      page = await page.populateDataToMakePresentation(revisionId);
+
+      // populate
+      addRendarVarsForPage(renderVars, page);
+      return res.render('page_presentation', renderVars);
+    }
 
     // populate
     page = await page.populateDataToShowRevision();
@@ -1272,7 +1282,7 @@ module.exports = function(crowi, app) {
 
     const options = { socketClientId };
 
-    let page = await Page.findByIdAndViewer(pageId, req.user);
+    const page = await Page.findByIdAndViewer(pageId, req.user);
 
     if (page == null) {
       return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
@@ -1286,10 +1296,10 @@ module.exports = function(crowi, app) {
           return res.json(ApiResponse.error('You can not delete completely', 'user_not_admin'));
         }
         if (isRecursively) {
-          await Page.completelyDeletePageRecursively(page.path, req.user, options);
+          await Page.completelyDeletePageRecursively(page, req.user, options);
         }
         else {
-          page = await Page.completelyDeletePage(page, req.user, options);
+          await Page.completelyDeletePage(page, req.user, options);
         }
       }
       else {
@@ -1298,16 +1308,16 @@ module.exports = function(crowi, app) {
         }
 
         if (isRecursively) {
-          page = await Page.deletePageRecursively(page, req.user, options);
+          await Page.deletePageRecursively(page, req.user, options);
         }
         else {
-          page = await Page.deletePage(page, req.user, options);
+          await Page.deletePage(page, req.user, options);
         }
       }
     }
     catch (err) {
       logger.error('Error occured while get setting', err);
-      return res.json(ApiResponse.error('Failed to delete page.', 'unknown'));
+      return res.json(ApiResponse.error('Failed to delete page.', err.message));
     }
 
     debug('Page deleted', page.path);
