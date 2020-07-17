@@ -4,9 +4,12 @@ import PropTypes from 'prop-types';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
+import NavigationContainer from '../../services/NavigationContainer';
 import GrowiRenderer from '../../util/GrowiRenderer';
 
 import RevisionBody from './RevisionBody';
+
+const WIKI_HEADER_LINK = 120;
 
 class RevisionRenderer extends React.PureComponent {
 
@@ -43,6 +46,13 @@ class RevisionRenderer extends React.PureComponent {
       this.renderHtml();
       return;
     }
+
+    const HeaderLink = document.getElementsByClassName('revision-head-link');
+    const HeaderLinkArray = Array.from(HeaderLink);
+    HeaderLinkArray.forEach(link => link.addEventListener('click', (e) => {
+      e.preventDefault();
+      this.props.navigationContainer.smoothScrollIntoView(link, WIKI_HEADER_LINK);
+    }));
 
     const { interceptorManager } = this.props.appContainer;
 
@@ -115,12 +125,12 @@ class RevisionRenderer extends React.PureComponent {
 /**
  * Wrapper component for using unstated
  */
-const RevisionRendererWrapper = withUnstatedContainers(RevisionRenderer, [AppContainer, PageContainer]);
+const RevisionRendererWrapper = withUnstatedContainers(RevisionRenderer, [AppContainer, PageContainer, NavigationContainer]);
 
 RevisionRenderer.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-
+  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   markdown: PropTypes.string.isRequired,
   highlightKeywords: PropTypes.string,
