@@ -5,7 +5,7 @@ import {
 } from 'reactstrap';
 import geu from './GridEditorUtil';
 
-export default class GridEditModal extends React.PureComponent {
+export default class GridEditModal extends React.Component {
 
   constructor(props) {
     super(props);
@@ -22,6 +22,17 @@ export default class GridEditModal extends React.PureComponent {
     this.hide = this.hide.bind(this);
     this.cancel = this.cancel.bind(this);
     this.pasteCodedGrid = this.pasteCodedGrid.bind(this);
+    this.showGridPattern = this.showGridPattern.bind(this);
+    this.checkResposiveSize = this.checkResposiveSize.bind(this);
+  }
+
+  async checkResposiveSize(responsiveSize) {
+    await this.setState({ responsiveSize });
+  }
+
+  async checkColsRatios(colsRatios) {
+    console.log(colsRatios);
+    await this.setState({ colsRatios });
   }
 
   showGridPattern() {
@@ -105,7 +116,7 @@ export default class GridEditModal extends React.PureComponent {
                       id="mobile"
                       name="responsiveSize"
                       value="mobile"
-                      onChange={(e) => { this.setState({ responsiveSize: e.target.value }) }}
+                      onChange={() => { this.checkResposiveSize('mobile') }}
                       checked={this.state.responsiveSize === 'mobile'}
                     />
                     <label htmlFor="mobile">
@@ -118,7 +129,7 @@ export default class GridEditModal extends React.PureComponent {
                       id="tablet"
                       name="responsiveSize"
                       value="tablet"
-                      onChange={(e) => { this.setState({ responsiveSize: e.target.value }) }}
+                      onChange={() => { this.checkResposiveSize('tablet') }}
                       checked={this.state.responsiveSize === 'tablet'}
                     />
                     <label htmlFor="tablet">
@@ -131,7 +142,7 @@ export default class GridEditModal extends React.PureComponent {
                       id="desktop"
                       name="responsiveSize"
                       value="desktop"
-                      onChange={(e) => { this.setState({ responsiveSize: e.target.value }) }}
+                      onChange={() => { this.checkResposiveSize('desktop') }}
                       checked={this.state.responsiveSize === 'desktop'}
                     />
                     <label htmlFor="desktop">
@@ -185,7 +196,7 @@ function GridDivisionMenu() {
               <h6 className="dropdown-header">{i + 2}分割</h6>
               {gridDivion.map((gridOneDivision) => {
                 return (
-                  <a className="dropdown-item" href="#" onChange={() => { this.setState({ colsRatios: gridOneDivision }) }}>
+                  <a className="dropdown-item" href="#" onClick={() => { this.checkColsRatios(gridOneDivision) }}>
                     <div className="row">
                       {gridOneDivision.map((gtd) => {
                         const className = `bg-info col-${gtd} border`;
