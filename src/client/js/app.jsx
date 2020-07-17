@@ -23,6 +23,7 @@ import TrashPageAlert from './components/Page/TrashPageAlert';
 import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
 import RecentCreated from './components/RecentCreated/RecentCreated';
+import MyBookmarkList from './components/MyBookmarkList/MyBookmarkList';
 import MyDraftList from './components/MyDraftList/MyDraftList';
 import SeenUserList from './components/User/SeenUserList';
 import LikerList from './components/User/LikerList';
@@ -93,7 +94,7 @@ if (pageContainer.state.pageId != null) {
     'liker-list': <LikerList />,
 
     'user-created-list': <RecentCreated />,
-    'user-bookmarked-list': <MyBookmarkList />,
+    'user-bookmark-list': <MyBookmarkList />,
     'user-draft-list': <MyDraftList />,
   });
 }
