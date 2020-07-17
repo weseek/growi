@@ -33,10 +33,12 @@ export default class GridEditModal extends React.PureComponent {
   } */
 
   handleChange = async(e) => {
+    console.log(`${e.target.value}hoge`);
     await this.setState({
       responsiveSize: e.target.value,
+    }, function() {
+      console.log(this.state.responsiveSize);
     });
-    console.log(this.state.responsiveSize);
     console.log(this.state.responsiveSize === 'mobile');
   }
 
@@ -109,10 +111,10 @@ export default class GridEditModal extends React.PureComponent {
                 <label className="pr-3">Break point by display size :</label>
               </div>
               <div className="col-4 text-left pl-0">
-                <div className="form-group">
-                  <div className="">
+                <div className="form-group inline-block">
+                  <div className="custom-control custom-radio">
                     <input
-                      className=""
+                      className="custom-control-input"
                       type="radio"
                       id="mobile"
                       name="responsiveSize"
@@ -120,13 +122,13 @@ export default class GridEditModal extends React.PureComponent {
                       checked={this.state.responsiveSize === 'mobile'}
                       onChange={this.handleChange}
                     />
-                    <label className="" htmlFor="mobile">
+                    <label className="custom-control-label" htmlFor="mobile">
                       <i className="pl-2 pr-1 icon-screen-smartphone "></i> Mobile / No break point
                     </label>
                   </div>
-                  <div className="">
+                  <div className="custom-control custom-radio">
                     <input
-                      className=""
+                      className="custom-control-input"
                       type="radio"
                       id="tablet"
                       name="responsiveSize"
@@ -134,13 +136,13 @@ export default class GridEditModal extends React.PureComponent {
                       checked={this.state.responsiveSize === 'tablet'}
                       onChange={this.handleChange}
                     />
-                    <label className="" htmlFor="tablet">
+                    <label className="custom-control-label" htmlFor="tablet">
                       <i className="pl-2 pr-1 icon-screen-tablet"></i> Tablet
                     </label>
                   </div>
-                  <div className="">
+                  <div className="custom-control custom-radio">
                     <input
-                      className=""
+                      className="custom-control-input"
                       type="radio"
                       id="desktop"
                       name="responsiveSize"
@@ -148,7 +150,7 @@ export default class GridEditModal extends React.PureComponent {
                       checked={this.state.responsiveSize === 'desktop'}
                       onChange={this.handleChange}
                     />
-                    <label className="" htmlFor="desktop">
+                    <label className="custom-control-label" htmlFor="desktop">
                       <i className="pl-2 pr-1 icon-screen-desktop"></i> Desktop
                     </label>
                   </div>
@@ -191,29 +193,40 @@ export default class GridEditModal extends React.PureComponent {
 }
 
 function GridDivisionMenu() {
-  const gridDivisions = geu.mappingAllGridDivisionPatterns;
   return (
     <div className="container">
       <div className="row">
-        {gridDivisions.map((gridDivion, i) => {
-          return (
-            <div className="col-md-4 text-center">
-              <h6 className="dropdown-header">{i + 2}分割</h6>
-              {gridDivion.map((gridOneDivision) => {
-                return (
-                  <a className="dropdown-item" href="#">
-                    <div className="row">
-                      {gridOneDivision.map((gtd) => {
-                        const className = `bg-info col-${gtd} border`;
-                        return <span className={className}>{gtd}</span>;
-                      })}
-                    </div>
-                  </a>
-                );
-              })}
+        {/* TODO: add other grid patterns by GW-3189 */}
+        <div className="col-md-4 text-center">
+          <h6 className="dropdown-header">2分割</h6>
+          <a className="dropdown-item" href="#">
+            <div className="row">
+              <span className="bg-info col-6 border">6</span>
+              <span className="bg-info col-6 border">6</span>
             </div>
-          );
-        })}
+          </a>
+        </div>
+        <div className="col-md-4 text-center">
+          <h6 className="dropdown-header">3分割</h6>
+          <a className="dropdown-item" href="#">
+            <div className="row">
+              <span className="bg-info col-4 border">4</span>
+              <span className="bg-info col-4 border">4</span>
+              <span className="bg-info col-4 border">4</span>
+            </div>
+          </a>
+        </div>
+        <div className="col-md-4 text-center">
+          <h6 className="dropdown-header">4分割</h6>
+          <a className="dropdown-item" href="#">
+            <div className="row">
+              <span className="bg-info col-3 border">3</span>
+              <span className="bg-info col-3 border">3</span>
+              <span className="bg-info col-3 border">3</span>
+              <span className="bg-info col-3 border">3</span>
+            </div>
+          </a>
+        </div>
       </div>
     </div>
   );
