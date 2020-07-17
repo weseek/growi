@@ -51,8 +51,8 @@ textarea.form-control {
 }
 
 .input-group > .input-group-prepend > .input-group-text {
-  color: color-yiq(theme-color('dark'));
-  background-color: theme-color('dark');
+  color: theme-color('light');
+  background-color: theme-color('secondary');
   border: 1px solid theme-color('secondary');
   border-right: none;
 }
@@ -226,9 +226,24 @@ ul.pagination {
 /*
  * GROWI on-edit
  */
-.grw-editor-navbar-bottom {
-  #slack-mark-black {
-    display: none;
+body.on-edit {
+  .grw-editor-navbar-bottom {
+    #slack-mark-black {
+      display: none;
+    }
+    .btn.btn-outline-secondary {
+      color: $light !important;
+
+      &:active,
+      &:hover {
+        background-color: lighten($bgcolor-global, 10%) !important;
+      }
+
+      &:not(:hover):not(:active) {
+        background-color: $bgcolor-global !important;
+      }
+      border-color: $secondary !important;
+    }
   }
 }
 

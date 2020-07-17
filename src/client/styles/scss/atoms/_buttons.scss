@@ -13,20 +13,6 @@
   }
 }
 
-.btn.btn-outline-secondary {
-  color: $secondary !important;
-
-  &.active,
-  &:hover {
-    background-color: lighten($secondary, 50%) !important;
-  }
-
-  &:not(:hover):not(.active) {
-    background-color: white !important;
-  }
-  border-color: $light !important;
-}
-
 .btn-copy,
 .btn-edit {
   opacity: 0.3;
