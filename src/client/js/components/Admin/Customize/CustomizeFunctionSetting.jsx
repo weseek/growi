@@ -110,7 +110,7 @@ class CustomizeFunctionSetting extends React.Component {
             <div className="form-group row">
               <div className="offset-md-3 col-md-6 text-left">
                 <div className="my-0 w-100">
-                  <label>{t('admin:customize_setting.function_options.recent_created__n_draft_num_desc')}</label>
+                  <label>{t('admin:customize_setting.function_options.list_num_desc_in_user_page')}</label>
                 </div>
                 <Dropdown isOpen={this.state.isDropdownOpen} toggle={this.onToggleDropdown}>
                   <DropdownToggle className="text-right col-6" caret>
@@ -129,7 +129,7 @@ class CustomizeFunctionSetting extends React.Component {
                   </DropdownMenu>
                 </Dropdown>
                 <p className="form-text text-muted">
-                  {t('admin:customize_setting.function_options.recently_created_n_draft_num_desc')}
+                  {t('admin:customize_setting.function_options.all_list_num_desc_in_user_page')}
                 </p>
               </div>
             </div>
