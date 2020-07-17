@@ -33,7 +33,7 @@ class MyBookmarkList extends React.Component {
     await this.getMyBookmarkList(selectedPage);
   }
 
-  getMyBookmarkList(selectPageNumber) {
+  async getMyBookmarkList(selectPageNumber) {
     const { appContainer, pageContainer } = this.props;
     const { pageId } = pageContainer.state;
 
@@ -45,7 +45,7 @@ class MyBookmarkList extends React.Component {
 
     // pagesList get and pagination calculate
     /* /pages.myBookmarks is not exitst. TODO GW-3251 Create api v3 /pages.myBookmarks */
-    this.props.appContainer.apiGet('/pages.myBookmarks', {
+    await this.props.appContainer.apiGet('/pages.myBookmarks', {
       page_id: pageId, user: userId, limit, offset,
     })
       .then((res) => {
