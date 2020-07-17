@@ -10,11 +10,8 @@ import SearchPage from './components/SearchPage';
 import TagsList from './components/TagsList';
 import PageEditor from './components/PageEditor';
 import PagePathNavForEditor from './components/PageEditor/PagePathNavForEditor';
-// eslint-disable-next-line import/no-duplicates
-import OptionsSelector from './components/PageEditor/OptionsSelector';
-// eslint-disable-next-line import/no-duplicates
+import EditorNavbarBottom from './components/PageEditor/EditorNavbarBottom';
 import { defaultEditorOptions, defaultPreviewOptions } from './components/PageEditor/OptionsSelector';
-import SavePageControls from './components/SavePageControls';
 import PageEditorByHackmd from './components/PageEditorByHackmd';
 import Page from './components/Page';
 import PageHistory from './components/PageHistory';
@@ -38,7 +35,7 @@ import CommentContainer from './services/CommentContainer';
 import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
 import GrowiSubNavigation from './components/Navbar/GrowiSubNavigation';
-import GrowiSubNavigationForUserPage from './components/Navbar/GrowiSubNavigationForUserPage';
+import GrowiSubNavigationSwitcher from './components/Navbar/GrowiSubNavigationSwitcher';
 import PersonalContainer from './services/PersonalContainer';
 
 import { appContainer, componentMappings } from './base';
@@ -74,7 +71,7 @@ Object.assign(componentMappings, {
   // 'revision-history': <PageHistory pageId={pageId} />,
   'tags-page': <TagsList crowi={appContainer} />,
 
-  'page-status-alert': <PageStatusAlert />,
+  'grw-page-status-alert-container': <PageStatusAlert />,
 
   'trash-page-alert': <TrashPageAlert />,
 
@@ -103,8 +100,8 @@ if (pageContainer.state.path != null) {
   Object.assign(componentMappings, {
     // eslint-disable-next-line quote-props
     'page': <Page />,
-    'grw-subnav': <GrowiSubNavigation />,
-    'grw-subnav-for-user-page': <GrowiSubNavigationForUserPage />,
+    'grw-subnav-container': <GrowiSubNavigation />,
+    'grw-subnav-switcher-container': <GrowiSubNavigationSwitcher />,
   });
 }
 // additional definitions if user is logged in
@@ -112,8 +109,7 @@ if (appContainer.currentUser != null) {
   Object.assign(componentMappings, {
     'page-editor': <PageEditor />,
     'page-editor-path-nav': <PagePathNavForEditor />,
-    'page-editor-options-selector': <OptionsSelector crowi={appContainer} />,
-    'save-page-controls': <SavePageControls />,
+    'page-editor-navbar-bottom-container': <EditorNavbarBottom />,
   });
   if (pageContainer.state.pageId != null) {
     Object.assign(componentMappings, {

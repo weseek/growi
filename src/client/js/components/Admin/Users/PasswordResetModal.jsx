@@ -23,14 +23,14 @@ class PasswordResetModal extends React.Component {
   }
 
   async resetPassword() {
-    const { appContainer, userForPasswordResetModal } = this.props;
-
-    const res = await appContainer.apiPost('/admin/users.resetPassword', { user_id: userForPasswordResetModal._id });
-    if (res.ok) {
-      this.setState({ temporaryPassword: res.newPassword, isPasswordResetDone: true });
+    const { t, appContainer, userForPasswordResetModal } = this.props;
+    try {
+      const res = await appContainer.apiv3Put('/users/reset-password', { id: userForPasswordResetModal._id });
+      const { newPassword } = res.data;
+      this.setState({ temporaryPassword: newPassword, isPasswordResetDone: true });
     }
-    else {
-      toastError('Failed to reset password');
+    catch (err) {
+      toastError(err, t('toaster.failed_to_reset_password'));
     }
   }
 
@@ -38,23 +38,7 @@ class PasswordResetModal extends React.Component {
     const { t, userForPasswordResetModal } = this.props;
 
     return (
-      <div>
-        <p className="alert alert-danger">{t('admin:user_management.reset_password_modal.password_reset_message')}</p>
-        <p>
-          {t('admin:user_management.reset_password_modal.target_user')}: <code>{userForPasswordResetModal.email}</code>
-        </p>
-        <p>
-          {t('admin:user_management.reset_password_modal.new_password')}: <code>{this.state.temporaryPassword}</code>
-        </p>
-      </div>
-    );
-  }
-
-  returnModalBodyAfterReset() {
-    const { t, userForPasswordResetModal } = this.props;
-
-    return (
-      <div>
+      <>
         <p>
           {t('admin:user_management.reset_password_modal.password_never_seen')}<br />
           <span className="text-danger">{t('admin:user_management.reset_password_modal.send_new_password')}</span>
@@ -62,18 +46,42 @@ class PasswordResetModal extends React.Component {
         <p>
           {t('admin:user_management.reset_password_modal.target_user')}: <code>{userForPasswordResetModal.email}</code>
         </p>
-        <button type="submit" className="btn btn-primary" onClick={this.resetPassword}>
-          {t('admin:user_management.reset_password')}
-        </button>
-      </div>
+      </>
     );
   }
 
-  returnModalFooter() {
+  returnModalBodyAfterReset() {
+    const { t, userForPasswordResetModal } = this.props;
+
     return (
-      <div>
-        <button type="submit" className="btn btn-primary" onClick={this.props.onClose}>OK</button>
-      </div>
+      <>
+        <p className="alert alert-danger">{t('admin:user_management.reset_password_modal.password_reset_message')}</p>
+        <p>
+          {t('admin:user_management.reset_password_modal.target_user')}: <code>{userForPasswordResetModal.email}</code>
+        </p>
+        <p>
+          {t('admin:user_management.reset_password_modal.new_password')}: <code>{this.state.temporaryPassword}</code>
+        </p>
+      </>
+    );
+  }
+
+  returnModalFooterBeforeReset() {
+    const { t } = this.props;
+    return (
+      <button type="submit" className="btn btn-danger" onClick={this.resetPassword}>
+        {t('admin:user_management.reset_password')}
+      </button>
+    );
+  }
+
+  returnModalFooterAfterReset() {
+    const { t } = this.props;
+
+    return (
+      <button type="submit" className="btn btn-primary" onClick={this.props.onClose}>
+        {t('Close')}
+      </button>
     );
   }
 
@@ -87,10 +95,10 @@ class PasswordResetModal extends React.Component {
           {t('admin:user_management.reset_password') }
         </ModalHeader>
         <ModalBody>
-          {this.state.isPasswordResetDone ? this.renderModalBodyBeforeReset() : this.returnModalBodyAfterReset()}
+          {this.state.isPasswordResetDone ? this.returnModalBodyAfterReset() : this.renderModalBodyBeforeReset()}
         </ModalBody>
         <ModalFooter>
-          {this.state.isPasswordResetDone && this.returnModalFooter()}
+          {this.state.isPasswordResetDone ? this.returnModalFooterAfterReset() : this.returnModalFooterBeforeReset()}
         </ModalFooter>
       </Modal>
     );

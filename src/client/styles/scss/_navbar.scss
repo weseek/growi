@@ -1,4 +1,6 @@
 .grw-navbar {
+  top: -$grw-navbar-height !important;
+
   max-height: $grw-navbar-height + $grw-navbar-border-width;
   border-top: 0;
   border-right: 0;
@@ -7,11 +9,6 @@
 
   .grw-app-title {
     @include variable-font-size(24px);
-  }
-
-  .grw-navbar-toggler {
-    padding: 0.5rem;
-    font-size: 1.5em;
   }
 
   .grw-navbar-search {
@@ -56,5 +53,17 @@
     .grw-email-sm {
       font-size: 0.75em;
     }
+  }
+}
+
+.grw-navbar-bottom {
+  height: $grw-navbar-bottom-height;
+
+  // apply transition
+  transition-property: bottom;
+  @include apply-navigation-transition();
+
+  &.grw-navbar-bottom-drawer-opened {
+    bottom: -$grw-navbar-bottom-height;
   }
 }

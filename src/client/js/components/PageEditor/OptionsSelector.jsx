@@ -8,6 +8,7 @@ import {
 } from 'reactstrap';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
+import AppContainer from '../../services/AppContainer';
 import EditorContainer from '../../services/EditorContainer';
 
 
@@ -26,7 +27,7 @@ class OptionsSelector extends React.Component {
   constructor(props) {
     super(props);
 
-    const config = this.props.crowi.getConfig();
+    const config = this.props.appContainer.getConfig();
     const isMathJaxEnabled = !!config.env.MATHJAX;
 
     this.state = {
@@ -109,10 +110,19 @@ class OptionsSelector extends React.Component {
     });
 
     return (
-      <div className="my-0 form-group">
-        <label className="mr-2">Theme:</label>
-        <div className="btn-group btn-group-sm dropup">
-          <button className="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <div className="input-group">
+        <div className="input-group-prepend">
+          <span className="input-group-text" id="igt-theme">Theme</span>
+        </div>
+        <div className="input-group-append dropup">
+          <button
+            type="button"
+            className="btn btn-outline-secondary dropdown-toggle"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-describedby="igt-theme"
+          >
             {selectedTheme}
           </button>
           <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
@@ -136,10 +146,19 @@ class OptionsSelector extends React.Component {
     });
 
     return (
-      <div className="my-0 form-group">
-        <label className="mr-2">Keymap:</label>
-        <div className="btn-group btn-group-sm dropup">
-          <button className="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <div className="input-group">
+        <div className="input-group-prepend">
+          <span className="input-group-text" id="igt-keymap">Keymap</span>
+        </div>
+        <div className="input-group-append dropup">
+          <button
+            type="button"
+            className="btn btn-outline-secondary dropdown-toggle"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-describedby="igt-keymap"
+          >
             {selectedKeymapMode}
           </button>
           <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
@@ -156,7 +175,6 @@ class OptionsSelector extends React.Component {
 
         <Dropdown
           direction="up"
-          size="sm"
           className="grw-editor-configuration-dropdown"
           isOpen={this.state.isCddMenuOpened}
           toggle={this.onToggleConfigurationDropdown}
@@ -190,9 +208,11 @@ class OptionsSelector extends React.Component {
 
     return (
       <DropdownItem toggle={false} onClick={this.onClickStyleActiveLine}>
-        <span className="icon-container"></span>
-        <span className="menuitem-label mr-2">{ t('page_edit.Show active line') }</span>
-        <span className="icon-container"><i className={iconClassName}></i></span>
+        <div className="d-flex justify-content-between">
+          <span className="icon-container"></span>
+          <span className="menuitem-label">{ t('page_edit.Show active line') }</span>
+          <span className="icon-container"><i className={iconClassName}></i></span>
+        </div>
       </DropdownItem>
     );
   }
@@ -215,9 +235,11 @@ class OptionsSelector extends React.Component {
 
     return (
       <DropdownItem toggle={false} onClick={this.onClickRenderMathJaxInRealtime}>
-        <span className="icon-container"><img src="/images/icons/fx.svg" width="14px" alt="fx"></img></span>
-        <span className="menuitem-label">MathJax Rendering</span>
-        <i className={iconClassName}></i>
+        <div className="d-flex justify-content-between">
+          <span className="icon-container"><img src="/images/icons/fx.svg" width="14px" alt="fx"></img></span>
+          <span className="menuitem-label">MathJax Rendering</span>
+          <span className="icon-container"><i className={iconClassName}></i></span>
+        </div>
       </DropdownItem>
     );
   }
@@ -237,14 +259,13 @@ class OptionsSelector extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const OptionsSelectorWrapper = withUnstatedContainers(OptionsSelector, [EditorContainer]);
+const OptionsSelectorWrapper = withUnstatedContainers(OptionsSelector, [AppContainer, EditorContainer]);
 
 OptionsSelector.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
-
-  crowi: PropTypes.object.isRequired,
 };
 
 export default withTranslation()(OptionsSelectorWrapper);
