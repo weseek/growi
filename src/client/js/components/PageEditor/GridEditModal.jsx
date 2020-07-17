@@ -182,28 +182,26 @@ export default class GridEditModal extends React.PureComponent {
 function GridDivisionMenu() {
   const gridDivisions = geu.mappingAllGridDivisionPatterns;
   return (
-    <div className="container">
-      <div className="row">
-        {gridDivisions.map((gridDivion, i) => {
-          return (
-            <div className="col-md-4 text-center">
-              <h6 className="dropdown-header">{i + 2}分割</h6>
-              {gridDivion.map((gridOneDivision) => {
-                return (
-                  <a className="dropdown-item" href="#">
-                    <div className="row">
-                      {gridOneDivision.map((gtd) => {
-                        const className = `bg-info col-${gtd} border`;
-                        return <span className={className}>{gtd}</span>;
-                      })}
-                    </div>
-                  </a>
-                );
-              })}
-            </div>
-          );
-        })}
-      </div>
+    <div className="row">
+      {gridDivisions.map((gridDivion, i) => {
+        return (
+          <div className="col-md-4 text-center">
+            <h6 className="dropdown-header">{i + 2}分割</h6>
+            {gridDivion.map((gridOneDivision) => {
+              return (
+                <a className="dropdown-item" href="#">
+                  <div className="row">
+                    {gridOneDivision.map((gtd) => {
+                      const className = `bg-info col-${gtd} border`;
+                      return <span className={className}>{gtd}</span>;
+                    })}
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        );
+      })}
     </div>
   );
 }
