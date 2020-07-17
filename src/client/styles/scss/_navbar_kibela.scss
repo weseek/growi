@@ -20,7 +20,8 @@
         }
       }
     }
-    .create-page {
+
+    .btn-create-page {
       background: #5584e1;
       border-radius: 0.35em;
       &:hover {
@@ -29,14 +30,6 @@
       span,
       i {
         color: white;
-      }
-    }
-    @media screen and (max-width: 790px) {
-      .search-top {
-        display: none !important;
-      }
-      @media screen and (max-width: 540px) {
-        // TODO responsive after implementation of Sidebar
       }
     }
   }

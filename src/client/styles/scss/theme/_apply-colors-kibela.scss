@@ -16,13 +16,12 @@ body.kibela {
       background-color: $primary !important;
     }
 
-    .grw-subnavbar {
+    .grw-subnav {
       background-color: rgba(lighten($bgcolor-global, 50%), 1);
     }
 
-    /* kibela block */
-    .kibela-border-top {
-      border-top: solid 0.4em $thickborder;
+    .grw-subnav-fixed-container .grw-subnav {
+      background-color: rgba(lighten($bgcolor-global, 50%), 0.85);
     }
 
     /* page wrapper */

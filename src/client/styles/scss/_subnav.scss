@@ -1,26 +1,10 @@
-$easeInOutCubic: cubic-bezier(0.65, 0, 0.35, 1);
+.grw-subnav {
+  padding: 10px 15px;
 
-%transitionForCompactMode {
-  // set transition-duration (normal -> compact)
-  transition: all 300ms $easeInOutCubic;
-}
-
-/*
- * Styles
- */
-
-.grw-header {
-  .title {
-    padding: 0.5rem 15px;
-
-    line-height: 1em;
-
-    @include variable-font-size(28px);
-    line-height: 1.1em;
+  @include media-breakpoint-up(md) {
+    min-height: 115px;
   }
-}
 
-.grw-subnavbar {
   &:hover {
     .btn-copy,
     .btn-edit,
@@ -30,9 +14,15 @@ $easeInOutCubic: cubic-bezier(0.65, 0, 0.35, 1);
     }
   }
 
+  .grw-drawer-toggler {
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+  }
+
   h1 {
-    @include variable-font-size(28px);
-    line-height: 1.1em;
+    @include variable-font-size(32px);
+    line-height: 1.4em;
   }
 
   .grw-page-path-nav {
@@ -42,13 +32,25 @@ $easeInOutCubic: cubic-bezier(0.65, 0, 0.35, 1);
     }
   }
 
+  .btn-like,
+  .btn-bookmark {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+
   ul.authors {
-    padding-left: 1.5em;
-    margin: 0;
+    padding: 0.7em 0 0.7em 1.5em;
+    margin-bottom: 0;
+    margin-left: 1em;
 
     li {
       font-size: 12px;
       list-style: none;
+    }
+
+    .text-date {
+      font-size: 11px;
     }
 
     .picture {
@@ -60,6 +62,56 @@ $easeInOutCubic: cubic-bezier(0.65, 0, 0.35, 1);
         width: 14px;
         height: 14px;
       }
+    }
+  }
+
+  /*
+   * Compact Mode
+   */
+  &.grw-subnav-compact {
+    min-height: 70px;
+
+    @include media-breakpoint-up(md) {
+      min-height: 90px;
+    }
+
+    .btn-like,
+    .btn-bookmark {
+      @extend .btn-sm;
+
+      width: 30px;
+      height: 30px;
+      font-size: 15px !important;
+    }
+  }
+}
+
+/*
+ * Fixed ver
+ */
+$easeInOutCubic: cubic-bezier(0.65, 0, 0.35, 1);
+
+.grw-subnav-fixed-container {
+  top: $grw-navbar-border-width;
+  z-index: $zindex-sticky - 5;
+
+  .grw-subnav {
+    box-shadow: 0px 6px 6px -3px rgba(black, 0.15);
+  }
+}
+
+/*
+ * Switching show/hide
+ */
+.grw-subnav-switcher {
+  .grw-subnav-fixed-container {
+    transition: transform 150ms $easeInOutCubic;
+  }
+
+  &.grw-subnav-switcher-hidden {
+    .grw-subnav-fixed-container {
+      transition: unset;
+      transform: translateY(-100%);
     }
   }
 }

@@ -19,6 +19,15 @@ body {
   border-bottom: 1px solid $gray-500;
 }
 
+// padding settings for GrowiNavbarBottom
+.page-wrapper {
+  padding-bottom: $grw-navbar-bottom-height;
+
+  @include media-breakpoint-up(md) {
+    padding-bottom: unset;
+  }
+}
+
 .main {
   margin-top: 1rem;
 }
@@ -47,15 +56,32 @@ body {
   }
 }
 
-.grw-fixed-controls-container {
+.grw-fab {
   position: fixed;
-  right: 1em;
-  bottom: 3em;
+  right: 1.5rem;
+  bottom: 3rem;
+  z-index: $zindex-fixed;
 
   transition: all 200ms linear;
 
-  .grw-fixed-controls-button-container {
-    box-shadow: 0 3px 4px rgba($black, 0.3);
+  .btn-create-page {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+
+    box-shadow: 2px 3px 6px #0000005d;
+  }
+
+  .btn-scroll-to-top {
+    width: 40px;
+    height: 40px;
+
+    opacity: 0.4;
+
+    i {
+      display: inline-block;
+      transform: rotate(90deg);
+    }
   }
 }
 

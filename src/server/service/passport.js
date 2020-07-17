@@ -570,6 +570,40 @@ class PassportService {
     const oidcIssuer = await OIDCIssuer.discover(issuerHost);
     debug('Discovered issuer %s %O', oidcIssuer.issuer, oidcIssuer.metadata);
 
+    const authorizationEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:authorizationEndpoint');
+    if (authorizationEndpoint) {
+      oidcIssuer.metadata.authorization_endpoint = authorizationEndpoint;
+    }
+    const tokenEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:tokenEndpoint');
+    if (tokenEndpoint) {
+      oidcIssuer.metadata.token_endpoint = tokenEndpoint;
+    }
+    const revocationEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:revocationEndpoint');
+    if (revocationEndpoint) {
+      oidcIssuer.metadata.revocation_endpoint = revocationEndpoint;
+    }
+    const introspectionEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:introspectionEndpoint');
+    if (introspectionEndpoint) {
+      oidcIssuer.metadata.introspection_endpoint = introspectionEndpoint;
+    }
+    const userInfoEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:userInfoEndpoint');
+    if (userInfoEndpoint) {
+      oidcIssuer.metadata.userinfo_endpoint = userInfoEndpoint;
+    }
+    const endSessionEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:endSessionEndpoint');
+    if (endSessionEndpoint) {
+      oidcIssuer.metadata.end_session_endpoint = endSessionEndpoint;
+    }
+    const registrationEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:registrationEndpoint');
+    if (registrationEndpoint) {
+      oidcIssuer.metadata.registration_endpoint = registrationEndpoint;
+    }
+    const jwksUri = configManager.getConfig('crowi', 'security:passport-oidc:jwksUri');
+    if (jwksUri) {
+      oidcIssuer.metadata.jwks_uri = jwksUri;
+    }
+    debug('Configured issuer %s %O', oidcIssuer.issuer, oidcIssuer.metadata);
+
     const client = new oidcIssuer.Client({
       client_id: clientId,
       client_secret: clientSecret,

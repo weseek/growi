@@ -118,7 +118,6 @@
   "Shareable link": "このページの共有用URL",
   "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
   "Add tags for this page": "タグを付ける",
-  "Edit tags for this page": "タグを編集する",
   "You have no tag, You can set tags on pages": "使用中のタグがありません",
   "Show latest": "最新のページを表示",
   "Load latest": "最新版を読み込む",
@@ -343,7 +342,8 @@
     "activate_user_success": "{{username}}を有効化しました",
     "deactivate_user_success": "{{username}}を無効化しました",
     "remove_user_success": "{{username}}を削除しました",
-    "remove_external_user_success": "{{accountId}}を削除しました"
+    "remove_external_user_success": "{{accountId}}を削除しました",
+    "failed_to_reset_password":"パスワードのリセットに失敗しました"
   },
   "template": {
     "modal_label": {
@@ -448,6 +448,14 @@
     "xss_prevent_setting_link": "マークダウン設定ページに移動",
     "callback_URL": "コールバックURL",
     "desc_of_callback_URL": "{{AuthName}} プロバイダ側の設定で利用してください。",
+    "authorization_endpoint": "認可エンドポイント",
+    "token_endpoint": "トークンエンドポイント",
+    "revocation_endpoint": "失効エンドポイント",
+    "introspection_endpoint": "検証エンドポイント",
+    "userinfo_endpoint": "ユーザ情報エンドポイント",
+    "end_session_endpoint": "セッション終了エンドポイント",
+    "registration_endpoint": "登録エンドポイント",
+    "jwks_uri": "JSON Web Key Set URL",
     "clientID": "クライアントID",
     "client_secret": "クライアントシークレット",
     "updated_general_security_setting": "セキュリティ設定を更新しました。",
@@ -569,7 +577,8 @@
         "username_detail": "新規ユーザーのアカウント名(<code>username</code>)に関連付ける属性",
         "name_detail": "新規ユーザー名(<code>name</code>)に関連付ける属性",
         "mapping_detail": "新規ユーザーの{{target}}に関連付ける属性",
-        "updated_oidc": "OpenID Connect を更新しました"
+        "updated_oidc": "OpenID Connect を更新しました",
+        "Use discovered URL if empty": "データベース側の値が空の場合、\"Issuer Host\"から検出した値を利用します。"
       },
       "how_to": {
         "google": "Google OAuth の設定方法",

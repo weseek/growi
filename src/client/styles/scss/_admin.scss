@@ -1,4 +1,13 @@
 .admin-page {
+  .title {
+    padding: 0.5rem 15px;
+
+    line-height: 1em;
+
+    @include variable-font-size(28px);
+    line-height: 1.1em;
+  }
+
   .admin-user-menu {
     .dropdown-menu {
       right: 0;
@@ -159,10 +168,6 @@
     &.use-only-env-vars .from-env-vars {
       background-color: rgba($info, 0.1);
     }
-  }
-
-  .grw-fixed-controls-container {
-    display: none;
   }
 }
 
