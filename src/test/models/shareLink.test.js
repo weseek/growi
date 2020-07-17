@@ -21,9 +21,9 @@ describe('ShareLink', () => {
       params: {
         linkId: 'someLinkId',
       },
-      query:{
-        revision: 'someRevision'
-      }
+      query: {
+        revision: 'someRevision',
+      },
     };
 
     const res = {
