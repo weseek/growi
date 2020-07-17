@@ -22,25 +22,7 @@ export default class GridEditModal extends React.PureComponent {
     this.hide = this.hide.bind(this);
     this.cancel = this.cancel.bind(this);
     this.pasteCodedGrid = this.pasteCodedGrid.bind(this);
-    /* this.handleChange = this.handleChange.bind(this); */
   }
-
-  /* async handleChange(event) {
-    await this.setState({ responsiveSize: event.target.value });
-    console.log(this.state.responsiveSize);
-    console.log(this.state.responsiveSize === 'mobile');
-
-  } */
-
-  /* handleChange = async(e) => {
-    console.log(`${e.target.value}hoge`);
-    await this.setState({
-      responsiveSize: e.target.value,
-    }, function() {
-      console.log(this.state.responsiveSize);
-    });
-    console.log(this.state.responsiveSize === 'mobile');
-  } */
 
   init(gridHtml) {
     const initGridHtml = gridHtml;
@@ -112,9 +94,8 @@ export default class GridEditModal extends React.PureComponent {
               </div>
               <div className="col-4 text-left pl-0">
                 <div className="form-group inline-block">
-                  <div className="">
+                  <div>
                     <input
-                      className=""
                       type="radio"
                       id="mobile"
                       name="responsiveSize"
@@ -122,13 +103,12 @@ export default class GridEditModal extends React.PureComponent {
                       onChange={(e) => { this.setState({ responsiveSize: e.target.value }) }}
                       checked={this.state.responsiveSize === 'mobile'}
                     />
-                    <label className="" htmlFor="mobile">
+                    <label htmlFor="mobile">
                       <i className="pl-2 pr-1 icon-screen-smartphone "></i> Mobile / No break point
                     </label>
                   </div>
-                  <div className="">
+                  <div>
                     <input
-                      className=""
                       type="radio"
                       id="tablet"
                       name="responsiveSize"
@@ -136,13 +116,12 @@ export default class GridEditModal extends React.PureComponent {
                       onChange={(e) => { this.setState({ responsiveSize: e.target.value }) }}
                       checked={this.state.responsiveSize === 'tablet'}
                     />
-                    <label className="" htmlFor="tablet">
+                    <label htmlFor="tablet">
                       <i className="pl-2 pr-1 icon-screen-tablet"></i> Tablet
                     </label>
                   </div>
-                  <div className="">
+                  <div>
                     <input
-                      className=""
                       type="radio"
                       id="desktop"
                       name="responsiveSize"
@@ -150,7 +129,7 @@ export default class GridEditModal extends React.PureComponent {
                       onChange={(e) => { this.setState({ responsiveSize: e.target.value }) }}
                       checked={this.state.responsiveSize === 'desktop'}
                     />
-                    <label className="" htmlFor="desktop">
+                    <label htmlFor="desktop">
                       <i className="pl-2 pr-1 icon-screen-desktop"></i> Desktop
                     </label>
                   </div>
@@ -173,8 +152,6 @@ export default class GridEditModal extends React.PureComponent {
               </div>
             </div>
           </div>
-
-
         </ModalBody>
         <ModalFooter className="grw-modal-footer">
           <div className="ml-auto">
