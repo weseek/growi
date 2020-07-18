@@ -12,7 +12,7 @@ class ConfigPubsubDelegator {
     throw new Error('implement this');
   }
 
-  publish() {
+  async publish() {
     throw new Error('implement this');
   }
 

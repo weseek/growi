@@ -53,7 +53,7 @@ class NchanDelegator extends ConfigPubsubDelegator {
   /**
    * @inheritdoc
    */
-  publish(message) {
+  async publish(message) {
     const pathname = this.channelId == null
       ? this.publishPath //                                 /pub
       : path.join(this.subscribePath, this.channelId); //   /pub/my-channel-id
@@ -62,7 +62,7 @@ class NchanDelegator extends ConfigPubsubDelegator {
 
     logger.debug('Publish message', message);
 
-    axios.post(publishUri.toString(), message);
+    return axios.post(publishUri.toString(), message);
   }
 
   /**

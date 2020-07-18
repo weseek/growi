@@ -312,7 +312,7 @@ class ConfigManager {
 
   async publishUpdateMessage(updatedAt) {
     const message = JSON.stringify({ updatedAt });
-    this.configPubsub.publish(message);
+    return this.configPubsub.publish(message);
   }
 
   async handleUpdateMessage(message) {
