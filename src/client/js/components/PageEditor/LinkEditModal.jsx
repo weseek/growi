@@ -72,8 +72,8 @@ class LinkEditModal extends React.PureComponent {
       type = Linker.types.markdownLink;
     }
 
-    const url = new URL(link, 'http://example.com/dummy');
-    const isUseRelativePath = url.href === 'http://example.com/dummy' && !link.startsWith('/') && link !== '';
+    const url = new URL(link, 'http://example.com');
+    const isUseRelativePath = url.origin === 'http://example.com' && !link.startsWith('/') && link !== '';
     if (isUseRelativePath) {
       const rootPath = this.getRootPath(type);
       link = path.resolve(rootPath, link);
