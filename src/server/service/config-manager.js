@@ -312,7 +312,13 @@ class ConfigManager {
 
   async publishUpdateMessage(updatedAt) {
     const message = JSON.stringify({ updatedAt });
-    return this.configPubsub.publish(message);
+
+    try {
+      await this.configPubsub.publish(message);
+    }
+    catch (e) {
+      logger.error('Failed to publish update message with configPubsub: ', e.message);
+    }
   }
 
   async handleUpdateMessage(message) {
@@ -324,7 +330,7 @@ class ConfigManager {
       parsedMessage = JSON.parse(message);
 
       if (!(parsedMessage instanceof Object)) {
-        throw new Error('A message could not be parsed to JSON object', message);
+        throw new Error('A message could not be parsed to JSON object: ', message);
       }
 
       // parse Date
