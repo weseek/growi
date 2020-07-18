@@ -36,6 +36,10 @@ export default class Linker {
       reshapedLink = this.permalink;
     }
 
+    if (this.label === '') {
+      this.label = reshapedLink;
+    }
+
     if (this.type === Linker.types.pukiwikiLink) {
       if (this.label === reshapedLink) return `[[${reshapedLink}]]`;
       return `[[${this.label}>${reshapedLink}]]`;
