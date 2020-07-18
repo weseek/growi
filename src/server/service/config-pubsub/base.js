@@ -8,6 +8,10 @@ class ConfigPubsubDelegator {
     }
   }
 
+  shouldResubscribe() {
+    throw new Error('implement this');
+  }
+
   subscribe(forceReconnect) {
     throw new Error('implement this');
   }

@@ -17,10 +17,21 @@ class NchanDelegator extends ConfigPubsubDelegator {
 
     this.channelId = channelId;
     this.messageHandlers = [];
-    this.isReconnecting = false;
+    this.isConnecting = false;
 
     this.client = null;
     this.connection = null;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  shouldResubscribe() {
+    if (this.connection != null && this.connection.connected) {
+      return false;
+    }
+
+    return !this.isConnecting;
   }
 
   /**
@@ -33,23 +44,19 @@ class NchanDelegator extends ConfigPubsubDelegator {
       }
     }
 
-    // init client and connect
+    // init client
     if (this.client == null) {
       this.initClient();
-      const url = this.constructUrl(this.subscribePath).toString();
-      this.client.connect(url.toString());
-
-      return;
     }
 
-    // reconnect
-    if (this.connection != null && !this.connection.connected && !this.isReconnecting) {
+    if (this.shouldResubscribe()) {
       logger.info('The connection to config pubsub server is offline. Try to reconnect...');
-      this.isReconnecting = true;
-
-      const url = this.constructUrl(this.subscribePath).toString();
-      this.client.connect(url.toString());
     }
+
+    // connect
+    this.isConnecting = true;
+    const url = this.constructUrl(this.subscribePath).toString();
+    this.client.connect(url.toString());
   }
 
   /**
@@ -92,23 +99,22 @@ class NchanDelegator extends ConfigPubsubDelegator {
 
     client.on('connectFailed', (error) => {
       logger.warn(`Connect Error: ${error.toString()}`);
-      this.isReconnecting = false;
+      this.isConnecting = false;
     });
 
     client.on('connect', (connection) => {
-      this.isReconnecting = false;
+      this.isConnecting = false;
+      this.connection = connection;
 
       logger.info('WebSocket client connected');
 
       connection.on('error', (error) => {
-        this.isReconnecting = false;
+        this.isConnecting = false;
         logger.error(`Connection Error: ${error.toString()}`);
       });
       connection.on('close', () => {
         logger.info('WebSocket connection closed');
       });
-
-      this.connection = connection;
 
       // register all message handlers
       this.messageHandlers.forEach(handler => this.addMessageHandler(handler));

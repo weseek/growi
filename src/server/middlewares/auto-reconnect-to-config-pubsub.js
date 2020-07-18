@@ -1,8 +1,8 @@
 module.exports = (crowi) => {
   const { configPubsub } = crowi;
 
-  return async(req, res, next) => {
-    if (configPubsub != null) {
+  return (req, res, next) => {
+    if (configPubsub != null && configPubsub.shouldResubscribe()) {
       configPubsub.subscribe();
     }
 
