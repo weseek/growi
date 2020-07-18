@@ -1,6 +1,7 @@
 const logger = require('@alias/logger')('growi:service:config-pubsub:nchan');
 
 const path = require('path');
+const axios = require('axios');
 const WebSocketClient = require('websocket').client;
 
 const ConfigPubsubDelegator = require('./base');
@@ -52,14 +53,16 @@ class NchanDelegator extends ConfigPubsubDelegator {
   /**
    * @inheritdoc
    */
-  publish() {
+  publish(message) {
     const pathname = this.channelId == null
       ? this.publishPath //                                 /pub
       : path.join(this.subscribePath, this.channelId); //   /pub/my-channel-id
 
     const publishUri = new URL(pathname, this.uri);
 
-    throw new Error('implement this');
+    logger.debug('Publish message', message);
+
+    axios.post(publishUri.toString(), message);
   }
 
   /**

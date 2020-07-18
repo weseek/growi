@@ -25,6 +25,7 @@ class ConfigManager {
     this.configLoader = new ConfigLoader(this.configModel);
     this.configObject = null;
     this.configKeys = [];
+    this.lastLoadedAt = null;
 
     this.getConfig = this.getConfig.bind(this);
   }
@@ -38,6 +39,8 @@ class ConfigManager {
 
     // cache all config keys
     this.reloadConfigKeys();
+
+    this.lastLoadedAt = new Date();
   }
 
   /**
@@ -47,7 +50,8 @@ class ConfigManager {
   async setPubsub(configPubsub) {
     this.configPubsub = configPubsub;
     this.configPubsub.addMessageHandler((message) => {
-      logger.info('message recieved', message);
+      logger.debug('Recieved message from publisher', message);
+      this.handleUpdateMessage(message);
     });
   }
 
@@ -187,8 +191,15 @@ class ConfigManager {
     }
     await this.configModel.bulkWrite(queries);
 
+    // get updated date before loading
+    //  to avoid triggering a reload by the own notification
+    const updatedAt = new Date();
+
     await this.loadConfigs();
     this.reloadConfigKeys();
+
+    // publish updated date after reloading
+    this.publishUpdateMessage(updatedAt);
   }
 
   /**
@@ -296,6 +307,37 @@ class ConfigManager {
 
   convertInsertValue(value) {
     return JSON.stringify(value === '' ? null : value);
+  }
+
+  async publishUpdateMessage(updatedAt) {
+    const message = JSON.stringify({ updatedAt });
+    this.configPubsub.publish(message);
+  }
+
+  async handleUpdateMessage(message) {
+    let parsedMessage;
+    let updatedAt;
+
+    try {
+      // parse JSON
+      parsedMessage = JSON.parse(message);
+
+      if (!(parsedMessage instanceof Object)) {
+        throw new Error('A message could not be parsed to JSON object', message);
+      }
+
+      // parse Date
+      updatedAt = new Date(parsedMessage.updatedAt);
+    }
+    catch (e) {
+      logger.warn(e.message);
+      return;
+    }
+
+    if (this.lastLoadedAt == null || this.lastLoadedAt < updatedAt) {
+      logger.info('Reload configs by pubsub notification');
+      return this.loadConfigs();
+    }
   }
 
 }
