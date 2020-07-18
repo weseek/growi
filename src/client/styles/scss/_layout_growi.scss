@@ -23,7 +23,8 @@
 
   .revision-toc {
     position: sticky;
-    top: calc(46px + 5px);
+    // growisubnavigation + grw-navbar-boder
+    top: calc(100px + 4px);
     min-width: 100%;
     margin-top: 5px;
 
