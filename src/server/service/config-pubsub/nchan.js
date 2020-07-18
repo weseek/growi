@@ -1,6 +1,6 @@
 const logger = require('@alias/logger')('growi:service:config-pubsub:nchan');
 
-// const io = require('socket.io-client');
+const path = require('path');
 const WebSocketClient = require('websocket').client;
 
 const ConfigPubsubDelegator = require('./base');
@@ -8,73 +8,85 @@ const ConfigPubsubDelegator = require('./base');
 
 class NchanDelegator extends ConfigPubsubDelegator {
 
-  constructor(uri, publishPath, subscribePath) {
+  constructor(uri, publishPath, subscribePath, channelId) {
     super(uri);
 
     this.publishPath = publishPath;
     this.subscribePath = subscribePath;
 
-    this.socket = null;
+    this.channelId = channelId;
+
+    this.client = null;
+    this.connection = null;
   }
 
   /**
    * @inheritdoc
    */
-  subscribe() {
-    if (this.socket == null) {
-      const client = new WebSocketClient();
-
-      client.on('connectFailed', (error) => {
-        console.log(`Connect Error: ${error.toString()}`);
-      });
-
-      client.on('connect', (connection) => {
-        console.log('WebSocket Client Connected');
-        connection.on('error', (error) => {
-          console.log(`Connection Error: ${error.toString()}`);
-        });
-        connection.on('close', () => {
-          console.log('echo-protocol Connection Closed');
-        });
-        connection.on('message', (message) => {
-          if (message.type === 'utf8') {
-            console.log(`Received: '${message.utf8Data}'`);
-          }
-        });
-      });
-
-      const websocketUri = new URL(this.subscribePath, this.uri);
-      client.connect(websocketUri.toString());
-
-      this.client = client;
-
-
-      // this.socket = io(this.uri, { path: this.subscribePath, transports: ['websocket'] });
-
-      // this.socket.on('connect', (date) => {
-      //   console.log('connected', this.url, { path: this.subscribePath });
-      // });
-      // this.socket.on('connect_error', (error) => {
-      //   console.log('connect error', error);
-      // });
-      // this.socket.on('connect_timeout', (error) => {
-      //   console.log('connect timeout', error);
-      // });
-      // this.socket.on('update', (date) => {
-      //   console.log('received update event', date);
-      // });
+  subscribe(forceReconnect) {
+    if (forceReconnect) {
+      if (this.connection != null && this.connection.connected) {
+        this.connection.close();
+      }
     }
 
-    // if (!this.socket.connected) {
-    //   this.socket.connect();
-    // }
+    const pathname = this.channelId == null
+      ? this.subscribePath //                               /sub
+      : path.join(this.subscribePath, this.channelId); //   /sub/my-channel-id
+
+    const subscribeUri = new URL(pathname, this.uri);
+
+    // init client and connect
+    if (this.client == null) {
+      this.initClient();
+      this.client.connect(subscribeUri.toString());
+    }
+
+    // reconnect
+    if (this.connection != null && !this.connection.connected) {
+      this.client.connect(subscribeUri.toString());
+    }
   }
 
   /**
    * @inheritdoc
    */
   publish() {
+    const pathname = this.channelId == null
+      ? this.publishPath //                                 /pub
+      : path.join(this.subscribePath, this.channelId); //   /pub/my-channel-id
+
+    const publishUri = new URL(pathname, this.uri);
+
     throw new Error('implement this');
+  }
+
+  initClient() {
+    const client = new WebSocketClient();
+
+    client.on('connectFailed', (error) => {
+      logger.warn(`Connect Error: ${error.toString()}`);
+    });
+
+    client.on('connect', (connection) => {
+      logger.info('WebSocket client connected');
+
+      connection.on('error', (error) => {
+        logger.error(`Connection Error: ${error.toString()}`);
+      });
+      connection.on('close', () => {
+        logger.info('WebSocket connection closed');
+      });
+      connection.on('message', (message) => {
+        if (message.type === 'utf8') {
+          logger.info(message.utf8Data);
+        }
+      });
+
+      this.connection = connection;
+    });
+
+    this.client = client;
   }
 
 }

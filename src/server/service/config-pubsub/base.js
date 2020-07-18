@@ -8,7 +8,7 @@ class ConfigPubsubDelegator {
     }
   }
 
-  subscribe() {
+  subscribe(forceReconnect) {
     throw new Error('implement this');
   }
 
