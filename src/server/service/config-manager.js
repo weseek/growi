@@ -196,10 +196,11 @@ class ConfigManager {
     const updatedAt = new Date();
 
     await this.loadConfigs();
-    this.reloadConfigKeys();
 
     // publish updated date after reloading
-    this.publishUpdateMessage(updatedAt);
+    if (this.configPubsub != null) {
+      this.publishUpdateMessage(updatedAt);
+    }
   }
 
   /**
