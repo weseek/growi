@@ -46,6 +46,9 @@ class ConfigManager {
    */
   async setPubsub(configPubsub) {
     this.configPubsub = configPubsub;
+    this.configPubsub.addMessageHandler((message) => {
+      logger.info('message recieved', message);
+    });
   }
 
   /**

@@ -15,6 +15,7 @@ class NchanDelegator extends ConfigPubsubDelegator {
     this.subscribePath = subscribePath;
 
     this.channelId = channelId;
+    this.messageHandlers = [];
 
     this.client = null;
     this.connection = null;
@@ -61,6 +62,24 @@ class NchanDelegator extends ConfigPubsubDelegator {
     throw new Error('implement this');
   }
 
+  /**
+   * @inheritdoc
+   */
+  addMessageHandler(handler) {
+    this.messageHandlers.push(handler);
+
+    if (this.connection != null) {
+      this.connection.on('message', (message) => {
+        if (message.type === 'utf8') {
+          handler(message.utf8Data);
+        }
+        else {
+          logger.warn('Only utf8 message is supported.');
+        }
+      });
+    }
+  }
+
   initClient() {
     const client = new WebSocketClient();
 
@@ -77,13 +96,11 @@ class NchanDelegator extends ConfigPubsubDelegator {
       connection.on('close', () => {
         logger.info('WebSocket connection closed');
       });
-      connection.on('message', (message) => {
-        if (message.type === 'utf8') {
-          logger.info(message.utf8Data);
-        }
-      });
 
       this.connection = connection;
+
+      // register all message handlers
+      this.messageHandlers.forEach(handler => this.addMessageHandler(handler));
     });
 
     this.client = client;

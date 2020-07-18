@@ -16,6 +16,10 @@ class ConfigPubsubDelegator {
     throw new Error('implement this');
   }
 
+  addMessageHandler(handler) {
+    throw new Error('implement this');
+  }
+
 }
 
 module.exports = ConfigPubsubDelegator;
