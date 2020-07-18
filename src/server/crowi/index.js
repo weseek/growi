@@ -251,6 +251,7 @@ Crowi.prototype.setupConfigManager = async function() {
   this.configManager = new ConfigManager(this.model('Config'));
   await this.configManager.loadConfigs();
 
+  // setup pubsub
   this.configPubsub = require('../service/config-pubsub')(this);
   if (this.configPubsub != null) {
     this.configPubsub.subscribe();
