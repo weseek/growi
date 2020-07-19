@@ -42,6 +42,9 @@ describe('ShareLink', () => {
           creator: {},
         };
       },
+      initLatestRevisionField: (revisionId)=>{
+        return revisionId;
+      }
     };
 
     test('share link is not found', async() => {
