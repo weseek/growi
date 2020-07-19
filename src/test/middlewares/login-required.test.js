@@ -52,7 +52,7 @@ describe('loginRequired', () => {
       expect(result).toBe('redirect');
     });
 
-    test('pass anyone into sharedPage when aclService.isGuestAllowedToRead() returns true', () => {
+    test('pass anyone into sharedPage when aclService.isGuestAllowedToRead() returns false', () => {
 
       req.isSharedPage = true;
 
