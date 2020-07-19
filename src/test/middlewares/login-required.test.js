@@ -54,7 +54,7 @@ describe('loginRequired', () => {
 
     test('pass anyone into sharedPage when aclService.isGuestAllowedToRead() returns true', () => {
 
-      req.isSharedPage = true
+      req.isSharedPage = true;
 
       // prepare spy for AclService.isGuestAllowedToRead
       const isGuestAllowedToReadSpy = jest.spyOn(crowi.aclService, 'isGuestAllowedToRead')
