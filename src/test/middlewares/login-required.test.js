@@ -52,6 +52,22 @@ describe('loginRequired', () => {
       expect(result).toBe('redirect');
     });
 
+    test('pass anyone into sharedPage when aclService.isGuestAllowedToRead() returns true', () => {
+
+      req.isSharedPage = true
+
+      // prepare spy for AclService.isGuestAllowedToRead
+      const isGuestAllowedToReadSpy = jest.spyOn(crowi.aclService, 'isGuestAllowedToRead')
+        .mockImplementation(() => false);
+
+      const result = loginRequired(req, res, next);
+
+      expect(isGuestAllowedToReadSpy).toHaveBeenCalled();
+      expect(next).toHaveBeenCalled();
+      expect(res.redirect).not.toHaveBeenCalled();
+      expect(result).toBe('next');
+    });
+
   });
 
 
