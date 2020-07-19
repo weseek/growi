@@ -480,6 +480,8 @@ module.exports = function(crowi, app) {
       return res.render('page_presentation', renderVars);
     }
 
+    page.initLatestRevisionField(revisionId);
+
     // populate
     page = await page.populateDataToShowRevision();
     addRendarVarsForPage(renderVars, page);
