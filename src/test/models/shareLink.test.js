@@ -42,7 +42,7 @@ describe('ShareLink', () => {
           creator: {},
         };
       },
-      initLatestRevisionField: (revisionId)=>{
+      initLatestRevisionField: (revisionId) => {
         return revisionId;
       }
     };
