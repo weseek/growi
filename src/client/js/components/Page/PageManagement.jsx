@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { UncontrolledTooltip } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
 
 import { isTopPage } from '@commons/util/path-utils';
@@ -112,19 +113,41 @@ const PageManagement = (props) => {
     );
   }
 
+  function renderDotsIconForCurrentUser() {
+    return (
+      <>
+        <button
+          type="button"
+          className="btn-link nav-link bg-transparent dropdown-toggle dropdown-toggle-no-caret"
+          data-toggle="dropdown"
+        >
+          <i className="icon-options-vertical"></i>
+        </button>
+      </>
+    );
+  }
+
+  function renderDotsIconForGuestUser() {
+    return (
+      <>
+        <button
+          type="button"
+          className="btn nav-link bg-transparent dropdown-toggle dropdown-toggle-no-caret disabled"
+          id="icon-options-guest-tltips"
+        >
+          <i className="icon-options-vertical"></i>
+        </button>
+        <UncontrolledTooltip placement="top" target="icon-options-guest-tltips">
+          {t('Not available for guest')}
+        </UncontrolledTooltip>
+      </>
+    );
+  }
+
+
   return (
     <>
-      <a
-        role="button"
-        className={`nav-link dropdown-toggle dropdown-toggle-no-caret ${currentUser == null && 'dropdown-toggle-disabled'}`}
-        href="#"
-        data-toggle={`${currentUser == null ? 'tooltip' : 'dropdown'}`}
-        data-placement="top"
-        data-container="body"
-        title={t('Not available for guest')}
-      >
-        <i className="icon-options-vertical"></i>
-      </a>
+      {currentUser == null ? renderDotsIconForGuestUser() : renderDotsIconForCurrentUser()}
       <div className="dropdown-menu dropdown-menu-right">
         {!isTopPagePath && renderDropdownItemForNotTopPage()}
         <button className="dropdown-item" type="button" onClick={openPageTemplateModalHandler}>
