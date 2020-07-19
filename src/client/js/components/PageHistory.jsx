@@ -101,7 +101,7 @@ class PageHistory extends React.Component {
     const diffOpened = this.state.diffOpened;
     const revisionId = revision._id;
 
-      diffOpened[revisionId] = !(diffOpened[revisionId]);
+    diffOpened[revisionId] = !(diffOpened[revisionId]);
     this.setState({
       diffOpened,
     });
