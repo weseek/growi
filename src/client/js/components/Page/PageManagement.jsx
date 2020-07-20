@@ -23,6 +23,7 @@ const PageManagement = (props) => {
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
   const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);
   const [duplicateModalPaths, setDuplicateModalPaths] = useState(false);
+  const [duplicateError, setDuplicateError] = useState(null);
 
   function openPageRenameModalHandler() {
     setIsPageRenameModalShown(true);
@@ -39,7 +40,7 @@ const PageManagement = (props) => {
       setDuplicateModalPaths(res.data.duplicatePaths);
     }
     catch (err) {
-      console.log('エラーやで');
+      setDuplicateError(t('modal_duplicate.label.Fail to get subordinated pages'));
     }
   }
 
@@ -102,6 +103,7 @@ const PageManagement = (props) => {
           isOpen={isPageDuplicateModalShown}
           onClose={closePageDuplicateModalHandler}
           pageDuplicateModalPaths={duplicateModalPaths}
+          duplicateError={duplicateError}
         />
         <CreateTemplateModal
           isOpen={isPageTemplateModalShown}
