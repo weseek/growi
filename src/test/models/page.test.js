@@ -215,7 +215,7 @@ describe('Page', () => {
         const page = await Page.findOne({ path: '/user/anonymous0/memo' });
 
         const bool = await Page.isAccessiblePageByViewer(page.id, user);
-        expect(bool).toEqual(false);
+        expect(bool).toEqual(true);
       });
     });
 
