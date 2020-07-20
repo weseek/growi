@@ -180,7 +180,7 @@ class ConfigManager extends ConfigPubsubMessageHandlable {
    *  );
    * ```
    */
-  async updateConfigsInTheSameNamespace(namespace, configs) {
+  async updateConfigsInTheSameNamespace(namespace, configs, withoutPublishingConfigPubsubMessage) {
     const queries = [];
     for (const key of Object.keys(configs)) {
       queries.push({
@@ -193,15 +193,11 @@ class ConfigManager extends ConfigPubsubMessageHandlable {
     }
     await this.configModel.bulkWrite(queries);
 
-    // get updated date before loading
-    //  to avoid triggering a reload by the own notification
-    const updatedAt = new Date();
-
     await this.loadConfigs();
 
     // publish updated date after reloading
-    if (this.configPubsub != null) {
-      this.publishUpdateMessage(updatedAt);
+    if (this.configPubsub != null && !withoutPublishingConfigPubsubMessage) {
+      this.publishUpdateMessage(new Date());
     }
   }
 
@@ -328,19 +324,19 @@ class ConfigManager extends ConfigPubsubMessageHandlable {
    */
   shouldHandleConfigPubsubMessage(configPubsubMessage) {
     const { eventName, updatedAt } = configPubsubMessage;
-    return eventName === 'configUpdated' && updatedAt != null;
+    if (eventName !== 'configUpdated' || updatedAt == null) {
+      return false;
+    }
+
+    return this.lastLoadedAt != null && this.lastLoadedAt < new Date(configPubsubMessage.updatedAt);
   }
 
   /**
    * @inheritdoc
    */
   async handleConfigPubsubMessage(configPubsubMessage) {
-    const updatedAt = new Date(configPubsubMessage.updatedAt);
-
-    if (this.lastLoadedAt == null || this.lastLoadedAt < updatedAt) {
-      logger.info('Reload configs by pubsub notification');
-      return this.loadConfigs();
-    }
+    logger.info('Reload configs by pubsub notification');
+    return this.loadConfigs();
   }
 
 }
