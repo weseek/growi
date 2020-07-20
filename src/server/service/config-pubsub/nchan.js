@@ -146,7 +146,10 @@ class NchanDelegator extends ConfigPubsubDelegator {
     try {
       const configPubsubMessage = ConfigPubsubMessage.parse(message.utf8Data);
 
-      if (handlable.souldHandleConfigPubsubMessage(configPubsubMessage)) {
+      const shouldHandle = handlable.shouldHandleConfigPubsubMessage(configPubsubMessage);
+      logger.debug(`shouldHandle: ${shouldHandle}`, configPubsubMessage);
+
+      if (handlable.shouldHandleConfigPubsubMessage(configPubsubMessage)) {
         handlable.handleConfigPubsubMessage(configPubsubMessage);
       }
     }

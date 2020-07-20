@@ -1,7 +1,7 @@
 // TODO: make interface with TS
 class ConfigPubsubMessageHandlable {
 
-  souldHandleConfigPubsubMessage(configPubsubMessage) {
+  shouldHandleConfigPubsubMessage(configPubsubMessage) {
     throw new Error('implement this');
   }
 

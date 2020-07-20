@@ -326,7 +326,7 @@ class ConfigManager extends ConfigPubsubMessageHandlable {
   /**
    * @inheritdoc
    */
-  souldHandleConfigPubsubMessage(configPubsubMessage) {
+  shouldHandleConfigPubsubMessage(configPubsubMessage) {
     const { eventName, updatedAt } = configPubsubMessage;
     return eventName === 'configUpdated' && updatedAt != null;
   }
