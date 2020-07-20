@@ -1,5 +1,5 @@
 // TODO: make interface with TS
-class ConfigPubsubHandlable {
+class ConfigPubsubMessageHandlable {
 
   souldHandleConfigPubsubMessage(configPubsubMessage) {
     throw new Error('implement this');
@@ -11,4 +11,4 @@ class ConfigPubsubHandlable {
 
 }
 
-module.exports = ConfigPubsubHandlable;
+module.exports = ConfigPubsubMessageHandlable;

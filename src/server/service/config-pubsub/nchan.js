@@ -5,6 +5,7 @@ const axios = require('axios');
 const WebSocketClient = require('websocket').client;
 
 const ConfigPubsubMessage = require('../../models/vo/config-pubsub-message');
+const ConfigPubsubMessageHandlable = require('../config-pubsub/handlable');
 const ConfigPubsubDelegator = require('./base');
 
 
@@ -77,6 +78,12 @@ class NchanDelegator extends ConfigPubsubDelegator {
    * @inheritdoc
    */
   addMessageHandler(handlable) {
+    if (!(handlable instanceof ConfigPubsubMessageHandlable)) {
+      logger.warn('Unsupported instance');
+      logger.debug('Unsupported instance: ', handlable);
+      return;
+    }
+
     this.handlableList.push(handlable);
 
     if (this.connection != null) {

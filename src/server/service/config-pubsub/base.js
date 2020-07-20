@@ -26,7 +26,7 @@ class ConfigPubsubDelegator {
 
   /**
    * Add message handler
-   * @param {ConfigPubsubHandlable} handlable
+   * @param {ConfigPubsubMessageHandlable} handlable
    */
   addMessageHandler(handlable) {
     throw new Error('implement this');

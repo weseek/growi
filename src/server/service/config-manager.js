@@ -1,7 +1,7 @@
 const logger = require('@alias/logger')('growi:service:ConfigManager');
 
 const ConfigPubsubMessage = require('../models/vo/config-pubsub-message');
-const ConfigPubsubHandlable = require('./config-pubsub/handlable');
+const ConfigPubsubMessageHandlable = require('./config-pubsub/handlable');
 
 const ConfigLoader = require('./config-loader');
 
@@ -22,7 +22,7 @@ const KEYS_FOR_SAML_USE_ONLY_ENV_OPTION = [
   'security:passport-saml:ABLCRule',
 ];
 
-class ConfigManager extends ConfigPubsubHandlable {
+class ConfigManager extends ConfigPubsubMessageHandlable {
 
   constructor(configModel) {
     super();
