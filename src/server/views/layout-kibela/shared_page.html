@@ -2,7 +2,7 @@
 
 
 {% block content_header %}
-  <h1 class="p-3">{{ page.path }}</h1>
+  <h1 class="p-3">{{ page.path | preventXss }}</h1>
 {% endblock %}
 
 
