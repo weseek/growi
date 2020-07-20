@@ -114,7 +114,7 @@ class PageHistory extends React.Component {
     const shareLinkId = this.props.shareLinkId || null;
 
     if (revision.body) {
-      return;
+      // return;
     }
 
     this.props.crowi.apiGet('/revisions.get',
