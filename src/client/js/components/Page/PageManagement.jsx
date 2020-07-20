@@ -23,6 +23,7 @@ const PageManagement = (props) => {
   const [isPageDuplicateModalShown, setIsPageDuplicateModalShown] = useState(false);
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
   const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);
+  const [duplicateModalPath, setDuplicateModalPath] = useState(false);
 
   function openPageRenameModalHandler() {
     setIsPageRenameModalShown(true);
@@ -35,8 +36,7 @@ const PageManagement = (props) => {
   async function openPageDuplicateModalHandler() {
     setIsPageDuplicateModalShown(true);
     const res = await appContainer.apiv3Get('/pages/duplicate', { path });
-    console.log(res.data.duplicatePath);
-
+    setDuplicateModalPath(res.data.duplicatePath);
   }
 
   function closePageDuplicateModalHandler() {
@@ -97,6 +97,7 @@ const PageManagement = (props) => {
         <PageDuplicateModal
           isOpen={isPageDuplicateModalShown}
           onClose={closePageDuplicateModalHandler}
+          pageDuplicateModalPath={duplicateModalPath}
         />
         <CreateTemplateModal
           isOpen={isPageTemplateModalShown}

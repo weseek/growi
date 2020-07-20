@@ -104,7 +104,6 @@ const PageDuplicateModal = (props) => {
           />
           <label className="custom-control-label" htmlFor="cbDuplicateRecursively">
             {t('modal_duplicate.label.Duplicate with child')}
-
           </label>
         </div>
       </ModalBody>
@@ -132,6 +131,7 @@ PageDuplicateModal.propTypes = {
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  pageDuplicateModalPath: PropTypes.array,
 };
 
 export default withTranslation()(PageDuplicateModallWrapper);
