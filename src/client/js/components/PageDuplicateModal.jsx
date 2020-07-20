@@ -28,6 +28,8 @@ const PageDuplicateModal = (props) => {
 
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
 
+  const duplicatedNewPaths = ['/hoge', '/hoge/hoge', '/test/test/test'];
+
   /**
    * change pageNameInput for PagePathAutoComplete
    * @param {string} value
@@ -116,6 +118,11 @@ const PageDuplicateModal = (props) => {
           <label className="custom-control-label" htmlFor="cbDuplicateRecursively">
             { t('modal_duplicate.label.Duplicate with child') }
           </label>
+          <div>
+            <ul>
+              {isDuplicateRecursively && duplicatedNewPaths.map(duplicatedNewPath => <li>{duplicatedNewPath}</li>)}
+            </ul>
+          </div>
         </div>
       </ModalBody>
       <ModalFooter>
