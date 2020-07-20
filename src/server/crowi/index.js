@@ -317,18 +317,22 @@ Crowi.prototype.setupPassport = async function() {
   this.passportService.setupSerializer();
   // setup strategies
   try {
-    this.passportService.setupLocalStrategy();
-    this.passportService.setupLdapStrategy();
-    this.passportService.setupGoogleStrategy();
-    this.passportService.setupGitHubStrategy();
-    this.passportService.setupTwitterStrategy();
-    this.passportService.setupOidcStrategy();
-    this.passportService.setupSamlStrategy();
-    this.passportService.setupBasicStrategy();
+    this.passportService.setupStrategyById('local');
+    this.passportService.setupStrategyById('ldap');
+    this.passportService.setupStrategyById('saml');
+    this.passportService.setupStrategyById('oidc');
+    this.passportService.setupStrategyById('basic');
+    this.passportService.setupStrategyById('google');
+    this.passportService.setupStrategyById('github');
+    this.passportService.setupStrategyById('twitter');
   }
   catch (err) {
     logger.error(err);
   }
+
+  // add as a message handler
+  this.configPubsub.addMessageHandler(this.passportService);
+
   return Promise.resolve();
 };
 

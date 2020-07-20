@@ -1,6 +1,7 @@
 const logger = require('@alias/logger')('growi:service:PassportService');
 const urljoin = require('url-join');
 const luceneQueryParser = require('lucene-query-parser');
+
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const LdapStrategy = require('passport-ldapauth');
@@ -12,10 +13,13 @@ const SamlStrategy = require('passport-saml').Strategy;
 const OIDCIssuer = require('openid-client').Issuer;
 const BasicStrategy = require('passport-http').BasicStrategy;
 
+const ConfigPubsubMessage = require('../models/vo/config-pubsub-message');
+const ConfigPubsubMessageHandlable = require('./config-pubsub/handlable');
+
 /**
  * the service class of Passport
  */
-class PassportService {
+class PassportService extends ConfigPubsubMessageHandlable {
 
   // see '/lib/form/login.js'
   static get USERNAME_FIELD() { return 'loginForm[username]' }
@@ -23,7 +27,10 @@ class PassportService {
   static get PASSWORD_FIELD() { return 'loginForm[password]' }
 
   constructor(crowi) {
+    super();
+
     this.crowi = crowi;
+    this.lastLoadedAt = null;
 
     /**
      * the flag whether LocalStrategy is set up successfully
@@ -118,6 +125,47 @@ class PassportService {
     };
   }
 
+
+  /**
+   * @inheritdoc
+   */
+  shouldHandleConfigPubsubMessage(configPubsubMessage) {
+    const { eventName, reloadedAt, strategyId } = configPubsubMessage;
+    if (eventName !== 'passportServiceUpdated' || reloadedAt == null || strategyId == null) {
+      return false;
+    }
+
+    return this.lastLoadedAt != null && this.lastLoadedAt < new Date(configPubsubMessage.reloadedAt);
+  }
+
+  /**
+   * @inheritdoc
+   */
+  async handleConfigPubsubMessage(configPubsubMessage) {
+    const { configManager } = this.crowi;
+    const { strategyId } = configPubsubMessage;
+
+    logger.info('Reset strategy by pubsub notification');
+    await configManager.loadConfigs();
+    return this.setupStrategyById(strategyId);
+  }
+
+  async publishUpdatedMessage(strategyId) {
+    if (this.crowi.configPubsub != null) {
+      const configPubsubMessage = new ConfigPubsubMessage('passportStrategyReloaded', {
+        reloadedAt: new Date(),
+        strategyId,
+      });
+
+      try {
+        await this.crowi.configPubsub.publish(configPubsubMessage);
+      }
+      catch (e) {
+        logger.error('Failed to publish update message with configPubsub: ', e.message);
+      }
+    }
+  }
+
   /**
    * get SetupStrategies
    *
@@ -152,7 +200,7 @@ class PassportService {
   /**
    * setup strategy by target name
    */
-  setupStrategyById(authId) {
+  async setupStrategyById(authId) {
     const func = this.getSetupFunction(authId);
 
     try {
@@ -163,6 +211,7 @@ class PassportService {
       this[func.reset]();
     }
 
+    this.lastLoadedAt = new Date();
   }
 
   /**
