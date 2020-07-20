@@ -217,14 +217,6 @@ describe('Page', () => {
         const bool = await Page.isAccessiblePageByViewer(page.id, user);
         expect(bool).toEqual(false);
       });
-      test('should return true even without user at shared page', async() => {
-        const user = null;
-        const page = await Page.findOne({ path: '/grant/owner' });
-        const isSharedPage = true;
-
-        const bool = await Page.isAccessiblePageByViewer(page.id, user, isSharedPage);
-        expect(bool).toEqual(true);
-      });
     });
 
     describe('with a public page', () => {
@@ -240,14 +232,6 @@ describe('Page', () => {
         const page = await Page.findOne({ path: '/grant/public' });
 
         const bool = await Page.isAccessiblePageByViewer(page.id, user);
-        expect(bool).toEqual(true);
-      });
-      test('should return true even without user at shared page', async() => {
-        const user = null;
-        const page = await Page.findOne({ path: '/grant/owner' });
-        const isSharedPage = true;
-
-        const bool = await Page.isAccessiblePageByViewer(page.id, user, isSharedPage);
         expect(bool).toEqual(true);
       });
     });
@@ -266,14 +250,6 @@ describe('Page', () => {
 
         const bool = await Page.isAccessiblePageByViewer(page.id, user);
         expect(bool).toEqual(false);
-      });
-      test('should return true even without user at shared page', async() => {
-        const user = null;
-        const page = await Page.findOne({ path: '/grant/owner' });
-        const isSharedPage = true;
-
-        const bool = await Page.isAccessiblePageByViewer(page.id, user, isSharedPage);
-        expect(bool).toEqual(true);
       });
     });
   });
