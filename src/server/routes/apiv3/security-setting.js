@@ -331,7 +331,7 @@ module.exports = (crowi) => {
     await configManager.updateConfigsInTheSameNamespace('crowi', params, true);
 
     await passportService.setupStrategyById(authId);
-    await passportService.publishUpdatedMessage(authId);
+    passportService.publishUpdatedMessage(authId);
   }
 
   /**
