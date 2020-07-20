@@ -328,7 +328,7 @@ class ConfigManager extends ConfigPubsubMessageHandlable {
       return false;
     }
 
-    return this.lastLoadedAt != null && this.lastLoadedAt < new Date(configPubsubMessage.updatedAt);
+    return this.lastLoadedAt == null || this.lastLoadedAt < new Date(configPubsubMessage.updatedAt);
   }
 
   /**

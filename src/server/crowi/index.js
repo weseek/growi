@@ -256,7 +256,7 @@ Crowi.prototype.setupConfigManager = async function() {
   if (this.configPubsub != null) {
     this.configPubsub.subscribe();
     this.configManager.setPubsub(this.configPubsub);
-    // add handler
+    // add as a message handler
     this.configPubsub.addMessageHandler(this.configManager);
   }
 };

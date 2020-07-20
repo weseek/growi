@@ -130,12 +130,12 @@ class PassportService extends ConfigPubsubMessageHandlable {
    * @inheritdoc
    */
   shouldHandleConfigPubsubMessage(configPubsubMessage) {
-    const { eventName, reloadedAt, strategyId } = configPubsubMessage;
-    if (eventName !== 'passportServiceUpdated' || reloadedAt == null || strategyId == null) {
+    const { eventName, updatedAt, strategyId } = configPubsubMessage;
+    if (eventName !== 'passportServiceUpdated' || updatedAt == null || strategyId == null) {
       return false;
     }
 
-    return this.lastLoadedAt != null && this.lastLoadedAt < new Date(configPubsubMessage.reloadedAt);
+    return this.lastLoadedAt == null || this.lastLoadedAt < new Date(configPubsubMessage.updatedAt);
   }
 
   /**
@@ -151,14 +151,16 @@ class PassportService extends ConfigPubsubMessageHandlable {
   }
 
   async publishUpdatedMessage(strategyId) {
-    if (this.crowi.configPubsub != null) {
+    const { configPubsub } = this.crowi;
+
+    if (configPubsub != null) {
       const configPubsubMessage = new ConfigPubsubMessage('passportStrategyReloaded', {
-        reloadedAt: new Date(),
+        updatedAt: new Date(),
         strategyId,
       });
 
       try {
-        await this.crowi.configPubsub.publish(configPubsubMessage);
+        await configPubsub.publish(configPubsubMessage);
       }
       catch (e) {
         logger.error('Failed to publish update message with configPubsub: ', e.message);
