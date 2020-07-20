@@ -1,6 +1,11 @@
+const logger = require('@alias/logger')('growi:service:config-pubsub:base');
+
+const ConfigPubsubMessageHandlable = require('../config-pubsub/handlable');
+
 class ConfigPubsubDelegator {
 
   constructor(uri) {
+    this.uid = Math.floor(Math.random() * 100000);
     this.uri = uri;
 
     if (uri == null) {
@@ -21,7 +26,7 @@ class ConfigPubsubDelegator {
    * @param {ConfigPubsubMessage} configPubsubMessage
    */
   async publish(configPubsubMessage) {
-    throw new Error('implement this');
+    configPubsubMessage.setPublisherUid(this.uid);
   }
 
   /**
@@ -29,7 +34,11 @@ class ConfigPubsubDelegator {
    * @param {ConfigPubsubMessageHandlable} handlable
    */
   addMessageHandler(handlable) {
-    throw new Error('implement this');
+    if (!(handlable instanceof ConfigPubsubMessageHandlable)) {
+      logger.warn('Unsupported instance');
+      logger.debug('Unsupported instance: ', handlable);
+      return;
+    }
   }
 
 }

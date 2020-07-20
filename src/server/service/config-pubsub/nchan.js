@@ -5,7 +5,6 @@ const axios = require('axios');
 const WebSocketClient = require('websocket').client;
 
 const ConfigPubsubMessage = require('../../models/vo/config-pubsub-message');
-const ConfigPubsubMessageHandlable = require('../config-pubsub/handlable');
 const ConfigPubsubDelegator = require('./base');
 
 
@@ -69,7 +68,10 @@ class NchanDelegator extends ConfigPubsubDelegator {
    * @inheritdoc
    */
   async publish(configPubsubMessage) {
+    await super.publish(configPubsubMessage);
+
     logger.debug('Publish message', configPubsubMessage);
+
     const url = this.constructUrl(this.publishPath).toString();
     return axios.post(url, JSON.stringify(configPubsubMessage));
   }
@@ -78,11 +80,7 @@ class NchanDelegator extends ConfigPubsubDelegator {
    * @inheritdoc
    */
   addMessageHandler(handlable) {
-    if (!(handlable instanceof ConfigPubsubMessageHandlable)) {
-      logger.warn('Unsupported instance');
-      logger.debug('Unsupported instance: ', handlable);
-      return;
-    }
+    super.addMessageHandler(handlable);
 
     this.handlableList.push(handlable);
 
@@ -146,10 +144,17 @@ class NchanDelegator extends ConfigPubsubDelegator {
     try {
       const configPubsubMessage = ConfigPubsubMessage.parse(message.utf8Data);
 
-      const shouldHandle = handlable.shouldHandleConfigPubsubMessage(configPubsubMessage);
-      logger.debug(`shouldHandle: ${shouldHandle}`, configPubsubMessage);
+      // check uid
+      if (configPubsubMessage.publisherUid === this.uid) {
+        logger.debug('This message will not be processed because this is sent by the publisher itself: ', this.uid);
+        return;
+      }
 
-      if (handlable.shouldHandleConfigPubsubMessage(configPubsubMessage)) {
+      // check shouldHandleConfigPubsubMessage
+      const shouldHandle = handlable.shouldHandleConfigPubsubMessage(configPubsubMessage);
+      logger.debug(`${handlable.constructor.name}.shouldHandle(`, configPubsubMessage, `) => ${shouldHandle}`);
+
+      if (shouldHandle) {
         handlable.handleConfigPubsubMessage(configPubsubMessage);
       }
     }

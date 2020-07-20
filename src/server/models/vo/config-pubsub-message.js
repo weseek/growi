@@ -7,6 +7,10 @@ class ConfigPubsubMessage {
     }
   }
 
+  setPublisherUid(uid) {
+    this.publisherUid = uid;
+  }
+
   static parse(messageString) {
     const body = JSON.parse(messageString);
 
