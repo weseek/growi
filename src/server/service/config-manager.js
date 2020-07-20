@@ -1,4 +1,8 @@
 const logger = require('@alias/logger')('growi:service:ConfigManager');
+
+const ConfigPubsubMessage = require('../models/vo/config-pubsub-message');
+const ConfigPubsubHandlable = require('./config-pubsub/handlable');
+
 const ConfigLoader = require('./config-loader');
 
 const KEYS_FOR_LOCAL_STRATEGY_USE_ONLY_ENV_OPTION = [
@@ -18,9 +22,11 @@ const KEYS_FOR_SAML_USE_ONLY_ENV_OPTION = [
   'security:passport-saml:ABLCRule',
 ];
 
-class ConfigManager {
+class ConfigManager extends ConfigPubsubHandlable {
 
   constructor(configModel) {
+    super();
+
     this.configModel = configModel;
     this.configLoader = new ConfigLoader(this.configModel);
     this.configObject = null;
@@ -49,10 +55,6 @@ class ConfigManager {
    */
   async setPubsub(configPubsub) {
     this.configPubsub = configPubsub;
-    this.configPubsub.addMessageHandler((message) => {
-      logger.debug('Recieved message from publisher', message);
-      this.handleUpdateMessage(message);
-    });
   }
 
   /**
@@ -311,35 +313,29 @@ class ConfigManager {
   }
 
   async publishUpdateMessage(updatedAt) {
-    const message = JSON.stringify({ updatedAt });
+    const configPubsubMessage = new ConfigPubsubMessage('configUpdated', { updatedAt });
 
     try {
-      await this.configPubsub.publish(message);
+      await this.configPubsub.publish(configPubsubMessage);
     }
     catch (e) {
       logger.error('Failed to publish update message with configPubsub: ', e.message);
     }
   }
 
-  async handleUpdateMessage(message) {
-    let parsedMessage;
-    let updatedAt;
+  /**
+   * @inheritdoc
+   */
+  souldHandleConfigPubsubMessage(configPubsubMessage) {
+    const { eventName, updatedAt } = configPubsubMessage;
+    return eventName === 'configUpdated' && updatedAt != null;
+  }
 
-    try {
-      // parse JSON
-      parsedMessage = JSON.parse(message);
-
-      if (!(parsedMessage instanceof Object)) {
-        throw new Error('A message could not be parsed to JSON object: ', message);
-      }
-
-      // parse Date
-      updatedAt = new Date(parsedMessage.updatedAt);
-    }
-    catch (e) {
-      logger.warn(e.message);
-      return;
-    }
+  /**
+   * @inheritdoc
+   */
+  async handleConfigPubsubMessage(configPubsubMessage) {
+    const updatedAt = new Date(configPubsubMessage.updatedAt);
 
     if (this.lastLoadedAt == null || this.lastLoadedAt < updatedAt) {
       logger.info('Reload configs by pubsub notification');

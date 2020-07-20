@@ -4,6 +4,7 @@ const path = require('path');
 const axios = require('axios');
 const WebSocketClient = require('websocket').client;
 
+const ConfigPubsubMessage = require('../../models/vo/config-pubsub-message');
 const ConfigPubsubDelegator = require('./base');
 
 
@@ -16,8 +17,12 @@ class NchanDelegator extends ConfigPubsubDelegator {
     this.subscribePath = subscribePath;
 
     this.channelId = channelId;
-    this.messageHandlers = [];
     this.isConnecting = false;
+
+    /**
+     * A list of ConfigPubsubHandler instance
+     */
+    this.handlableList = [];
 
     this.client = null;
     this.connection = null;
@@ -62,26 +67,21 @@ class NchanDelegator extends ConfigPubsubDelegator {
   /**
    * @inheritdoc
    */
-  async publish(message) {
-    logger.debug('Publish message', message);
+  async publish(configPubsubMessage) {
+    logger.debug('Publish message', configPubsubMessage);
     const url = this.constructUrl(this.publishPath).toString();
-    return axios.post(url, message);
+    return axios.post(url, JSON.stringify(configPubsubMessage));
   }
 
   /**
    * @inheritdoc
    */
-  addMessageHandler(handler) {
-    this.messageHandlers.push(handler);
+  addMessageHandler(handlable) {
+    this.handlableList.push(handlable);
 
     if (this.connection != null) {
-      this.connection.on('message', (message) => {
-        if (message.type === 'utf8') {
-          handler(message.utf8Data);
-        }
-        else {
-          logger.warn('Only utf8 message is supported.');
-        }
+      this.connection.on('message', (messageObj) => {
+        this.handleMessage(messageObj, handlable);
       });
     }
   }
@@ -117,10 +117,35 @@ class NchanDelegator extends ConfigPubsubDelegator {
       });
 
       // register all message handlers
-      this.messageHandlers.forEach(handler => this.addMessageHandler(handler));
+      this.handlableList.forEach(handler => this.addMessageHandler(handler));
     });
 
     this.client = client;
+  }
+
+  /**
+   * Handle message string with the specified ConfigPubsubHandler
+   *
+   * @see https://github.com/theturtle32/WebSocket-Node/blob/1f7ffba2f7a6f9473bcb39228264380ce2772ba7/docs/WebSocketConnection.md#message
+   *
+   * @param {object} message WebSocket-Node message object
+   * @param {ConfigPubsubHandler} handlable
+   */
+  handleMessage(message, handlable) {
+    if (message.type !== 'utf8') {
+      logger.warn('Only utf8 message is supported.');
+    }
+
+    try {
+      const configPubsubMessage = ConfigPubsubMessage.parse(message.utf8Data);
+
+      if (handlable.souldHandleConfigPubsubMessage(configPubsubMessage)) {
+        handlable.handleConfigPubsubMessage(configPubsubMessage);
+      }
+    }
+    catch (err) {
+      logger.warn('Could not handle a message: ', err.message);
+    }
   }
 
 }

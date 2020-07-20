@@ -16,11 +16,19 @@ class ConfigPubsubDelegator {
     throw new Error('implement this');
   }
 
-  async publish() {
+  /**
+   * Publish message
+   * @param {ConfigPubsubMessage} configPubsubMessage
+   */
+  async publish(configPubsubMessage) {
     throw new Error('implement this');
   }
 
-  addMessageHandler(handler) {
+  /**
+   * Add message handler
+   * @param {ConfigPubsubHandlable} handlable
+   */
+  addMessageHandler(handlable) {
     throw new Error('implement this');
   }
 
