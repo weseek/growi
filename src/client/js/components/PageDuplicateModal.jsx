@@ -44,8 +44,12 @@ const PageDuplicateModal = (props) => {
     setPageNameInput(value);
   }
 
-  function changeIsDuplicateRecursivelyHandler() {
+  async function changeIsDuplicateRecursivelyHandler() {
     setIsDuplicateRecursively(!isDuplicateRecursively);
+
+    const res = await appContainer.apiv3Get('/pages/duplicate', { path });
+    const { duplicatePath } = res;
+    console.log(duplicatePath);
   }
 
   async function duplicate() {

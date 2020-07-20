@@ -82,5 +82,14 @@ module.exports = (crowi) => {
     }
   });
 
+  router.get('/duplicate', async(req, res) => {
+    const { path } = req.query;
+    const searchWord = new RegExp(`^${path}`);
+    const duplicateData = await Page.find({ path: { $in: searchWord } });
+    const duplicatePath = duplicateData.map(element => element.path);
+    console.log(duplicatePath);
+    return res.apiv3({ duplicatePath });
+  });
+
   return router;
 };
