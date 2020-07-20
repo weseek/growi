@@ -496,9 +496,12 @@ Crowi.prototype.setUpAcl = async function() {
 Crowi.prototype.setUpCustomize = async function() {
   const CustomizeService = require('../service/customize');
   if (this.customizeService == null) {
-    this.customizeService = new CustomizeService(this.configManager, this.appService, this.xssService);
+    this.customizeService = new CustomizeService(this.configManager, this.appService, this.xssService, this.configPubsub);
     this.customizeService.initCustomCss();
     this.customizeService.initCustomTitle();
+
+    // add as a message handler
+    this.configPubsub.addMessageHandler(this.customizeService);
   }
 };
 
