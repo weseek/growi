@@ -202,33 +202,78 @@ describe('Page', () => {
   });
 
   describe('.isAccessiblePageByViewer', () => {
-    describe('with a granted user', () => {
-      test('should return true', async() => {
+    describe('with a granted page', () => {
+      test('should return true with granted user', async() => {
         const user = await User.findOne({ email: 'anonymous0@example.com' });
         const page = await Page.findOne({ path: '/user/anonymous0/memo' });
 
         const bool = await Page.isAccessiblePageByViewer(page.id, user);
         expect(bool).toEqual(true);
       });
+      test('should return false without user', async() => {
+        const user = null;
+        const page = await Page.findOne({ path: '/user/anonymous0/memo' });
+
+        const bool = await Page.isAccessiblePageByViewer(page.id, user);
+        expect(bool).toEqual(false);
+      });
+      test('should return true even without user at shared page', async() => {
+        const user = null;
+        const page = await Page.findOne({ path: '/grant/owner' });
+        const isSharedPage = true;
+
+        const bool = await Page.isAccessiblePageByViewer(page.id, user, isSharedPage);
+        expect(bool).toEqual(true);
+      });
     });
 
     describe('with a public page', () => {
-      test('should return true', async() => {
+      test('should return true with user', async() => {
         const user = await User.findOne({ email: 'anonymous1@example.com' });
         const page = await Page.findOne({ path: '/grant/public' });
 
         const bool = await Page.isAccessiblePageByViewer(page.id, user);
         expect(bool).toEqual(true);
       });
+      test('should return true with out', async() => {
+        const user = null;
+        const page = await Page.findOne({ path: '/grant/public' });
+
+        const bool = await Page.isAccessiblePageByViewer(page.id, user);
+        expect(bool).toEqual(true);
+      });
+      test('should return true even without user at shared page', async() => {
+        const user = null;
+        const page = await Page.findOne({ path: '/grant/owner' });
+        const isSharedPage = true;
+
+        const bool = await Page.isAccessiblePageByViewer(page.id, user, isSharedPage);
+        expect(bool).toEqual(true);
+      });
     });
 
-    describe('with a restricted page and an user who has no grant', () => {
-      test('should return false', async() => {
+    describe('with a restricted page', () => {
+      test('should return false with user who has no grant', async() => {
         const user = await User.findOne({ email: 'anonymous1@example.com' });
         const page = await Page.findOne({ path: '/grant/owner' });
 
         const bool = await Page.isAccessiblePageByViewer(page.id, user);
         expect(bool).toEqual(false);
+      });
+      test('should return false without user', async() => {
+        const user = null;
+        const page = await Page.findOne({ path: '/grant/owner' });
+
+        const bool = await Page.isAccessiblePageByViewer(page.id, user);
+        expect(bool).toEqual(false);
+      });
+      test('should return true even without user at shared page', async() => {
+        const user = null;
+        const page = await Page.findOne({ path: '/grant/owner' });
+        const isSharedPage = true;
+
+        const bool = await Page.isAccessiblePageByViewer(page.id, user, isSharedPage);
+        expect(bool).toEqual(true);
       });
     });
   });
