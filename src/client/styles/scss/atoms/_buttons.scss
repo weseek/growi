@@ -1,17 +1,3 @@
-.btn.btn-outline-info,
-.btn.btn-outline-warning {
-  color: $secondary;
-
-  &.active,
-  &:hover {
-    color: white !important;
-  }
-
-  &:not(:hover):not(.active) {
-    background-color: transparent;
-  }
-}
-
 .btn.btn-like {
   color: $secondary;
   background-color: rgba(lighten($info, 10%), 0.5);
@@ -27,18 +13,25 @@
 }
 
 .btn.btn-bookmark {
-  color: $secondary;
-  background-color: rgba(lighten($warning, 20%), 0.5);
-
-  &.active,
-  &:hover {
+  @include button-outline-variant($secondary, $warning, rgba(lighten($warning, 20%), 0.5), rgba(lighten($warning, 20%), 0.5));
+  &.active {
     color: $warning !important;
   }
-
-  &:not(:hover) {
-    background-color: transparent;
-  }
 }
+
+// .btn.btn-bookmark {
+//   color: $secondary;
+//   background-color: rgba(lighten($warning, 20%), 0.5);
+
+//   &.active,
+//   &:hover {
+//     color: $warning !important;
+//   }
+
+//   &:not(:hover) {
+//     background-color: transparent;
+//   }
+// }
 
 .btn-copy,
 .btn-edit {
