@@ -108,7 +108,11 @@ const PageDuplicateModal = (props) => {
         </div>
       </ModalBody>
       <ModalFooter>
-        <ApiErrorMessage errorCode={errorCode} errorMessage={errorMessage} targetPath={pageNameInput} />
+        <ApiErrorMessage
+          errorCode={errorCode}
+          errorMessage={errorMessage}
+          targetPath={pageNameInput}
+        />
         <button type="button" className="btn btn-primary" onClick={duplicate}>
           Duplicate page
         </button>
@@ -131,7 +135,7 @@ PageDuplicateModal.propTypes = {
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  pageDuplicateModalPath: PropTypes.array,
+  pageDuplicateModalPaths: PropTypes.array,
 };
 
 export default withTranslation()(PageDuplicateModallWrapper);

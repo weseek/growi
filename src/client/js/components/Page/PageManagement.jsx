@@ -18,12 +18,11 @@ const PageManagement = (props) => {
 
   const { currentUser } = appContainer;
   const isTopPagePath = isTopPage(path);
-
   const [isPageRenameModalShown, setIsPageRenameModalShown] = useState(false);
   const [isPageDuplicateModalShown, setIsPageDuplicateModalShown] = useState(false);
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
   const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);
-  const [duplicateModalPath, setDuplicateModalPath] = useState(false);
+  const [duplicateModalPaths, setDuplicateModalPaths] = useState(false);
 
   function openPageRenameModalHandler() {
     setIsPageRenameModalShown(true);
@@ -35,8 +34,13 @@ const PageManagement = (props) => {
 
   async function openPageDuplicateModalHandler() {
     setIsPageDuplicateModalShown(true);
-    const res = await appContainer.apiv3Get('/pages/duplicate', { path });
-    setDuplicateModalPath(res.data.duplicatePath);
+    try {
+      const res = await appContainer.apiv3Get('/pages/duplicate', { path });
+      setDuplicateModalPaths(res.data.duplicatePaths);
+    }
+    catch (err) {
+      console.log('エラーやで');
+    }
   }
 
   function closePageDuplicateModalHandler() {
@@ -97,7 +101,7 @@ const PageManagement = (props) => {
         <PageDuplicateModal
           isOpen={isPageDuplicateModalShown}
           onClose={closePageDuplicateModalHandler}
-          pageDuplicateModalPath={duplicateModalPath}
+          pageDuplicateModalPaths={duplicateModalPaths}
         />
         <CreateTemplateModal
           isOpen={isPageTemplateModalShown}
