@@ -32,8 +32,11 @@ const PageManagement = (props) => {
     setIsPageRenameModalShown(false);
   }
 
-  function openPageDuplicateModalHandler() {
+  async function openPageDuplicateModalHandler() {
     setIsPageDuplicateModalShown(true);
+    const res = await appContainer.apiv3Get('/pages/duplicate', { path });
+    console.log(res.data.duplicatePath);
+
   }
 
   function closePageDuplicateModalHandler() {
@@ -81,6 +84,7 @@ const PageManagement = (props) => {
       </>
     );
   }
+
 
   function renderModals() {
     return (

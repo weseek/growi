@@ -44,12 +44,8 @@ const PageDuplicateModal = (props) => {
     setPageNameInput(value);
   }
 
-  async function changeIsDuplicateRecursivelyHandler() {
+  function changeIsDuplicateRecursivelyHandler() {
     setIsDuplicateRecursively(!isDuplicateRecursively);
-
-    const res = await appContainer.apiv3Get('/pages/duplicate', { path });
-    const { duplicatePath } = res;
-    console.log(duplicatePath);
   }
 
   async function duplicate() {
@@ -73,37 +69,26 @@ const PageDuplicateModal = (props) => {
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} className="grw-duplicate-page">
       <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-light">
-        { t('modal_duplicate.label.Duplicate page') }
+        {t('modal_duplicate.label.Duplicate page')}
       </ModalHeader>
       <ModalBody>
         <div className="form-group">
-          <label>{ t('modal_duplicate.label.Current page name') }</label><br />
-          <code>{ path }</code>
+          <label>{t('modal_duplicate.label.Current page name')}</label>
+          <br />
+          <code>{path}</code>
         </div>
         <div className="form-group">
-          <label htmlFor="duplicatePageName">{ t('modal_duplicate.label.New page name') }</label><br />
+          <label htmlFor="duplicatePageName">{t('modal_duplicate.label.New page name')}</label>
+          <br />
           <div className="input-group">
             <div className="input-group-prepend">
               <span className="input-group-text">{crowi.url}</span>
             </div>
             <div className="flex-fill">
-              {isReachable
-              ? (
-                <PagePathAutoComplete
-                  crowi={appContainer}
-                  initializedPath={path}
-                  onSubmit={ppacSubmitHandler}
-                  onInputChange={ppacInputChangeHandler}
-                />
-              )
-              : (
-                <input
-                  type="text"
-                  value={pageNameInput}
-                  className="form-control"
-                  onChange={e => inputChangeHandler(e.target.value)}
-                  required
-                />
+              {isReachable ? (
+                <PagePathAutoComplete crowi={appContainer} initializedPath={path} onSubmit={ppacSubmitHandler} onInputChange={ppacInputChangeHandler} />
+              ) : (
+                <input type="text" value={pageNameInput} className="form-control" onChange={e => inputChangeHandler(e.target.value)} required />
               )}
             </div>
           </div>
@@ -118,16 +103,18 @@ const PageDuplicateModal = (props) => {
             onChange={changeIsDuplicateRecursivelyHandler}
           />
           <label className="custom-control-label" htmlFor="cbDuplicateRecursively">
-            { t('modal_duplicate.label.Duplicate with child') }
+            {t('modal_duplicate.label.Duplicate with child')}
+
           </label>
         </div>
       </ModalBody>
       <ModalFooter>
         <ApiErrorMessage errorCode={errorCode} errorMessage={errorMessage} targetPath={pageNameInput} />
-        <button type="button" className="btn btn-primary" onClick={duplicate}>Duplicate page</button>
+        <button type="button" className="btn btn-primary" onClick={duplicate}>
+          Duplicate page
+        </button>
       </ModalFooter>
     </Modal>
-
   );
 };
 
