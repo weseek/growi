@@ -36,6 +36,10 @@ export default class Linker {
       reshapedLink = this.permalink;
     }
 
+    if (this.label === '') {
+      this.label = reshapedLink;
+    }
+
     if (this.type === Linker.types.pukiwikiLink) {
       if (this.label === reshapedLink) return `[[${reshapedLink}]]`;
       return `[[${this.label}>${reshapedLink}]]`;
@@ -66,16 +70,16 @@ export default class Linker {
       ({ label } = str.match(this.patterns.pukiwikiLinkWithoutLabel).groups);
       link = label;
     }
+    // markdown
+    else if (str.match(this.patterns.markdownLink)) {
+      type = this.types.markdownLink;
+      ({ label, link } = str.match(this.patterns.markdownLink).groups);
+    }
     // growi
     else if (str.match(this.patterns.growiLink)) {
       type = this.types.growiLink;
       ({ label } = str.match(this.patterns.growiLink).groups);
       link = label;
-    }
-    // markdown
-    else if (str.match(this.patterns.markdownLink)) {
-      type = this.types.markdownLink;
-      ({ label, link } = str.match(this.patterns.markdownLink).groups);
     }
 
     const isUsePermanentLink = false;
@@ -110,19 +114,16 @@ export default class Linker {
     // pukiwiki link ('[[link]]')
     [beginningOfLink, endOfLink] = this.getBeginningAndEndIndexWithPrefixAndSuffix(line, index, '[[', ']]');
 
-    // if index is not in a pukiwiki link
-    // growi link ('[/link]')
-    if (beginningOfLink < 0 || endOfLink < 0 || beginningOfLink > index || endOfLink < index) {
-      [beginningOfLink, endOfLink] = this.getBeginningAndEndIndexWithPrefixAndSuffix(line, index, '[/', ']');
-    }
-
-    // and if index is not in a growi link
     // markdown link ('[label](link)')
     if (beginningOfLink < 0 || endOfLink < 0 || beginningOfLink > index || endOfLink < index) {
       [beginningOfLink, endOfLink] = this.getBeginningAndEndIndexWithPrefixAndSuffix(line, index, '[', ')', '](');
     }
 
-    // and if index is not in a markdown link
+    // growi link ('[/link]')
+    if (beginningOfLink < 0 || endOfLink < 0 || beginningOfLink > index || endOfLink < index) {
+      [beginningOfLink, endOfLink] = this.getBeginningAndEndIndexWithPrefixAndSuffix(line, index, '[/', ']');
+    }
+
     // return { beginningOfLink: -1, endOfLink: -1 }
     if (beginningOfLink < 0 || endOfLink < 0 || beginningOfLink > index || endOfLink < index) {
       [beginningOfLink, endOfLink] = [-1, -1];

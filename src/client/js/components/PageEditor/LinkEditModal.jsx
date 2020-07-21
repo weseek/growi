@@ -50,6 +50,7 @@ class LinkEditModal extends React.PureComponent {
     this.generateLink = this.generateLink.bind(this);
     this.getPreview = this.getPreview.bind(this);
     this.renderPreview = this.renderPreview.bind(this);
+    this.getRootPath = this.getRootPath.bind(this);
   }
 
   componentDidUpdate(prevState) {
@@ -63,7 +64,6 @@ class LinkEditModal extends React.PureComponent {
   // defaultMarkdownLink is an instance of Linker
   show(defaultMarkdownLink = null) {
     // if defaultMarkdownLink is null, set default value in inputs.
-    const { pageContainer } = this.props;
     const { label = '' } = defaultMarkdownLink;
     let { link = '', type = Linker.types.markdownLink } = defaultMarkdownLink;
 
@@ -72,9 +72,11 @@ class LinkEditModal extends React.PureComponent {
       type = Linker.types.markdownLink;
     }
 
-    const isUseRelativePath = link.startsWith('.');
+    const url = new URL(link, 'http://example.com');
+    const isUseRelativePath = url.origin === 'http://example.com' && !link.startsWith('/') && link !== '';
     if (isUseRelativePath) {
-      link = path.resolve(pageContainer.state.path, link);
+      const rootPath = this.getRootPath(type);
+      link = path.resolve(rootPath, link);
     }
 
     this.setState({
@@ -99,7 +101,7 @@ class LinkEditModal extends React.PureComponent {
   }
 
   toggleIsUseRelativePath() {
-    if (this.state.linkerType === Linker.types.growiLink) {
+    if (!this.state.linkInputValue.startsWith('/') || this.state.linkerType === Linker.types.growiLink) {
       return;
     }
 
@@ -152,7 +154,11 @@ class LinkEditModal extends React.PureComponent {
   }
 
   handleChangeLinkInput(link) {
-    this.setState({ linkInputValue: link });
+    let isUseRelativePath = this.state.isUseRelativePath;
+    if (!this.state.linkInputValue.startsWith('/') || this.state.linkerType === Linker.types.growiLink) {
+      isUseRelativePath = false;
+    }
+    this.setState({ linkInputValue: link, isUseRelativePath, isUsePermanentLink: false });
   }
 
   handleSelecteLinkerType(linkerType) {
@@ -175,7 +181,6 @@ class LinkEditModal extends React.PureComponent {
   }
 
   generateLink() {
-    const { pageContainer } = this.props;
     const {
       linkInputValue,
       labelInputValue,
@@ -186,8 +191,9 @@ class LinkEditModal extends React.PureComponent {
     } = this.state;
 
     let reshapedLink = linkInputValue;
-    if (isUseRelativePath && linkInputValue.match(/^\//)) {
-      reshapedLink = path.relative(pageContainer.state.path, linkInputValue);
+    if (isUseRelativePath) {
+      const rootPath = this.getRootPath(linkerType);
+      reshapedLink = rootPath === linkInputValue ? '.' : path.relative(rootPath, linkInputValue);
     }
 
     return new Linker(
@@ -197,6 +203,13 @@ class LinkEditModal extends React.PureComponent {
       isUsePermanentLink,
       permalink,
     );
+  }
+
+  getRootPath(type) {
+    const { pageContainer } = this.props;
+    const pagePath = pageContainer.state.path;
+    // rootPaths of md link and pukiwiki link are different
+    return type === Linker.types.markdownLink ? path.dirname(pagePath) : pagePath;
   }
 
   render() {
@@ -278,7 +291,7 @@ class LinkEditModal extends React.PureComponent {
                           id="relativePath"
                           type="checkbox"
                           checked={this.state.isUseRelativePath}
-                          disabled={this.state.linkerType === Linker.types.growiLink}
+                          disabled={!this.state.linkInputValue.startsWith('/') || this.state.linkerType === Linker.types.growiLink}
                         />
                         <label className="custom-control-label" htmlFor="relativePath" onClick={this.toggleIsUseRelativePath}>
                           Use relative path
