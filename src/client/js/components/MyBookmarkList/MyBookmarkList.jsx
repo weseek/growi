@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import loggerFactory from '@alias/logger';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-import loggerFactory from '@alias/logger';
 
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
@@ -47,8 +47,10 @@ class MyBookmarkList extends React.Component {
     const limit = 10;
     const offset = (selectPageNumber - 1) * limit;
 
-    // pagesList get and pagination calculate
+
     /* /pages.myBookmarks is not exitst. TODO GW-3251 Create api v3 /pages.myBookmarks */
+
+    // This block is cited from MyDraftList
     /* await this.props.appContainer.apiGet('/pages.myBookmarks', {
       page_id: pageId, user: userId, limit, offset,
     })
@@ -63,8 +65,9 @@ class MyBookmarkList extends React.Component {
           pagingLimit: limit,
         });
       }); */
+    /*  */
     try {
-      await appContainer.retrieveMyBookmarkList(pageId, userId, limit, offset);
+      await pageContainer.retrieveMyBookmarkList(pageId, userId, limit, offset);
     }
     catch (error) {
       logger.error('failed to fetch data', error);
