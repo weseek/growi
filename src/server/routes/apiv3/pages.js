@@ -16,6 +16,9 @@ module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
+  const pathUtils = require('growi-commons').pathUtils;
+  const ApiResponse = require('../../util/apiResponse');
+  const pagesJsRouter = require('../page.js');
 
   const Page = crowi.model('Page');
 
@@ -80,6 +83,78 @@ module.exports = (crowi) => {
       logger.error('Failed to delete trash pages', err);
       return res.apiv3Err(err, 500);
     }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /pages.duplicate:
+   *      post:
+   *        tags: [Pages]
+   *        operationId: duplicatePage
+   *        summary: /pages/duplicate
+   *        description: Duplicate page
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  page_id:
+   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                  new_path:
+   *                    $ref: '#/components/schemas/Page/properties/path'
+   *                required:
+   *                  - page_id
+   *        responses:
+   *          200:
+   *            description: Succeeded to duplicate page.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    ok:
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                    page:
+   *                      $ref: '#/components/schemas/Page'
+   *                    tags:
+   *                      $ref: '#/components/schemas/Tags'
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
+  /**
+   * @api {post} /pages/duplicate Duplicate page
+   * @apiName DuplicatePage
+   * @apiGroup Page
+   *
+   * @apiParam {String} page_id Page Id.
+   * @apiParam {String} new_path New path name.
+   */
+  router.post('/duplicate', async(req, res) => {
+    const { pageId, pageNameInput } = req.body;
+    let newPagePath = pathUtils.normalizePath(pageNameInput);
+
+    const page = await Page.findByIdAndViewer(pageId, req.user);
+
+    if (page == null) {
+      return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
+    }
+
+    // check whether path starts slash
+    newPagePath = pathUtils.addHeadingSlash(newPagePath);
+
+    await page.populateDataToShowRevision();
+    const originTags = await page.findRelatedTagsById();
+
+    req.body.path = newPagePath;
+    req.body.body = page.revision.body;
+    req.body.grant = page.grant;
+    req.body.grantedUsers = page.grantedUsers;
+    req.body.grantUserGroupId = page.grantedGroup;
+    req.body.pageTags = originTags;
+
+    return pagesJsRouter.api.create(res.req);
   });
 
   router.get('/duplicate', loginRequired, async(req, res) => {
