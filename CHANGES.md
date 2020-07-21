@@ -11,6 +11,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/41x.html>
 
 ### Updates
 
+* Fix: New settings of SMTP and AWS SES are not reflected when server is running
 * Support: Support Node.js v14
 
 
