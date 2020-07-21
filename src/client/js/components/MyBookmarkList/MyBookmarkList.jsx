@@ -45,7 +45,7 @@ class MyBookmarkList extends React.Component {
 
     // pagesList get and pagination calculate
     /* /pages.myBookmarks is not exitst. TODO GW-3251 Create api v3 /pages.myBookmarks */
-    await this.props.appContainer.apiGet('/pages.myBookmarks', {
+    /* await this.props.appContainer.apiGet('/pages.myBookmarks', {
       page_id: pageId, user: userId, limit, offset,
     })
       .then((res) => {
@@ -58,7 +58,14 @@ class MyBookmarkList extends React.Component {
           totalPages,
           pagingLimit: limit,
         });
-      });
+      }); */
+    try {
+      await appContainer.retrieveMyBookmarkList(pageId, userId, limit, offset);
+    }
+    catch (error) {
+      logger.error('failed to fetch data', error);
+      toastError(error, 'Error occurred in updating History');
+    }
   }
 
   /**
