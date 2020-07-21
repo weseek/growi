@@ -327,7 +327,9 @@ Crowi.prototype.setupPassport = async function() {
   }
 
   // add as a message handler
-  this.configPubsub.addMessageHandler(this.passportService);
+  if (this.configPubsub != null) {
+    this.configPubsub.addMessageHandler(this.passportService);
+  }
 
   return Promise.resolve();
 };
@@ -342,7 +344,9 @@ Crowi.prototype.setupMailer = async function() {
   this.mailService = new MailService(this);
 
   // add as a message handler
-  this.configPubsub.addMessageHandler(this.mailService);
+  if (this.configPubsub != null) {
+    this.configPubsub.addMessageHandler(this.mailService);
+  }
 };
 
 Crowi.prototype.setupSlack = async function() {
@@ -497,7 +501,9 @@ Crowi.prototype.setUpCustomize = async function() {
     this.customizeService.initCustomTitle();
 
     // add as a message handler
-    this.configPubsub.addMessageHandler(this.customizeService);
+    if (this.configPubsub != null) {
+      this.configPubsub.addMessageHandler(this.customizeService);
+    }
   }
 };
 
