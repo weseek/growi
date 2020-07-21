@@ -32,11 +32,12 @@ const TableOfContents = (props) => {
 
   const { tocHtml } = pageContainer.state;
 
+  // execute after generation toc html
   useEffect(() => {
     const tocDom = document.getElementById('revision-toc-content');
     const anchorsInToc = Array.from(tocDom.getElementsByTagName('a'));
     navigationContainer.addSmoothScrollEvent(anchorsInToc);
-  }, [tocHtml]);
+  }, [tocHtml, navigationContainer]);
 
   return (
     <>
