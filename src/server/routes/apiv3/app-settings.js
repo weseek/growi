@@ -366,8 +366,11 @@ module.exports = (crowi) => {
     try {
       const { configManager, mailService } = crowi;
 
-      await configManager.updateConfigsInTheSameNamespace('crowi', requestMailSettingParams);
+      // update config without publishing ConfigPubsubMessage
+      await configManager.updateConfigsInTheSameNamespace('crowi', requestMailSettingParams, true);
+
       await mailService.initialize();
+      mailService.publishUpdatedMessage();
 
       const mailSettingParams = {
         fromAddress: configManager.getConfig('crowi', 'mail:from'),
@@ -420,8 +423,11 @@ module.exports = (crowi) => {
     try {
       const { configManager, mailService } = crowi;
 
-      await configManager.updateConfigsInTheSameNamespace('crowi', requestAwsSettingParams);
+      // update config without publishing ConfigPubsubMessage
+      await configManager.updateConfigsInTheSameNamespace('crowi', requestAwsSettingParams, true);
+
       await mailService.initialize();
+      mailService.publishUpdatedMessage();
 
       const awsSettingParams = {
         region: crowi.configManager.getConfig('crowi', 'aws:region'),

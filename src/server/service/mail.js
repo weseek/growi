@@ -3,17 +3,64 @@ const logger = require('@alias/logger')('growi:service:mail');
 const nodemailer = require('nodemailer');
 const swig = require('swig-templates');
 
-class MailService {
+
+const ConfigPubsubMessage = require('../models/vo/config-pubsub-message');
+const ConfigPubsubMessageHandlable = require('./config-pubsub/handlable');
+
+
+class MailService extends ConfigPubsubMessageHandlable {
 
   constructor(crowi) {
+    super();
+
     this.appService = crowi.appService;
     this.configManager = crowi.configManager;
+    this.configPubsub = crowi.configPubsub;
 
     this.mailConfig = {};
     this.mailer = {};
 
     this.initialize();
   }
+
+  /**
+   * @inheritdoc
+   */
+  shouldHandleConfigPubsubMessage(configPubsubMessage) {
+    const { eventName, updatedAt } = configPubsubMessage;
+    if (eventName !== 'mailServiceUpdated' || updatedAt == null) {
+      return false;
+    }
+
+    return this.lastLoadedAt == null || this.lastLoadedAt < new Date(configPubsubMessage.updatedAt);
+  }
+
+  /**
+   * @inheritdoc
+   */
+  async handleConfigPubsubMessage(configPubsubMessage) {
+    const { configManager } = this;
+
+    logger.info('Initialize mail settings by pubsub notification');
+    await configManager.loadConfigs();
+    this.initialize();
+  }
+
+  async publishUpdatedMessage() {
+    const { configPubsub } = this;
+
+    if (configPubsub != null) {
+      const configPubsubMessage = new ConfigPubsubMessage('mailServiceUpdated', { updatedAt: new Date() });
+
+      try {
+        await configPubsub.publish(configPubsubMessage);
+      }
+      catch (e) {
+        logger.error('Failed to publish update message with configPubsub: ', e.message);
+      }
+    }
+  }
+
 
   initialize() {
     const { appService, configManager } = this;

@@ -340,6 +340,9 @@ Crowi.prototype.setupSearcher = async function() {
 Crowi.prototype.setupMailer = async function() {
   const MailService = require('@server/service/mail');
   this.mailService = new MailService(this);
+
+  // add as a message handler
+  this.configPubsub.addMessageHandler(this.mailService);
 };
 
 Crowi.prototype.setupSlack = async function() {
