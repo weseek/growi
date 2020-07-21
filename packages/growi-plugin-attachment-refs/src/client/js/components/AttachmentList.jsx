@@ -88,7 +88,7 @@ export default class AttachmentList extends React.Component {
         res = await axios.get('/_api/plugin/ref', {
           params: {
             pagePath: refsContext.pagePath,
-            fileName: refsContext.fileName,
+            fileNameOrId: refsContext.fileNameOrId,
             options: refsContext.options,
           },
         });

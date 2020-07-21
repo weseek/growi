@@ -43,11 +43,13 @@ Usage
 ```
 $ref(file.txt)
 $ref(file.txt, page=/somewhere/page)
+$ref(5f17286fd7fbb1104fdbd111, page=/somewhere/page)
 ```
 
 #### Options
 
 - **`file`** : File name of reference file (default: the first argument)
+- **`id`** : Attachment ID of reference file (default: the first argument)
 - *`page`* : Target page path of reference file (default: current page)
 
 
@@ -74,11 +76,13 @@ $refs(/somewhere/page, regexp=/^file.*\.txt$/)
 
 ```
 $refimg(pict.png, width=50%, alt=Pic)
+$refimg(5f17286fd7fbb1104fdbd111, width=50%, alt=Pic)
 ```
 
 #### Options
 
 - **`file`** : File name of reference file (default: the first argument)
+- **`id`** : Attachment ID of reference file (default: the first argument)
 - *`width`* : width
 - *`height`* : height
 - *`max-width`* : max-width

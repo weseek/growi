@@ -67,7 +67,7 @@ module.exports = (crowi) => {
    */
   router.get('/ref', async(req, res) => {
     const user = req.user;
-    const { pagePath, fileName } = req.query;
+    const { pagePath, fileNameOrId } = req.query;
     // eslint-disable-next-line no-unused-vars
     const options = JSON.parse(req.query.options);
 
@@ -93,17 +93,20 @@ module.exports = (crowi) => {
     const attachment = await Attachment
       .findOne({
         page: page._id,
-        originalName: fileName,
+        $or: [
+          { _id: fileNameOrId },
+          { originalName: fileNameOrId },
+        ],
       })
       .populate({ path: 'creator', select: User.USER_PUBLIC_FIELDS, populate: creatorPopulateOpt });
 
     // not found
     if (attachment == null) {
-      res.status(404).send(`attachment (fileName: '${fileName}') is not found.`);
+      res.status(404).send(`attachment '${fileNameOrId}' is not found.`);
       return;
     }
 
-    logger.debug(`attachment '${attachment.id}' is found from filename '${fileName}'`);
+    logger.debug(`attachment '${attachment.id}' is found from fileNameOrId '${fileNameOrId}'`);
 
     // forbidden
     const isAccessible = await Page.isAccessiblePageByViewer(attachment.page, user);
