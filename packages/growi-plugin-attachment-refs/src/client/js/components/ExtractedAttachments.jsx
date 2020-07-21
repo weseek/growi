@@ -145,7 +145,7 @@ export default class ExtractedAttachments extends React.PureComponent {
       });
 
     // overwrite react-images modal styles
-    const zIndex = 17; // > header.affix
+    const zIndex = 1030; // > grw-navbar
     const modalStyles = {
       blanket: (styleObj) => {
         return Object.assign(styleObj, { zIndex });
