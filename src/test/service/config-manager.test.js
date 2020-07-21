@@ -5,6 +5,8 @@ describe('ConfigManager test', () => {
   let configManager;
 
   beforeEach(async(done) => {
+    process.env.CONFIG_PUBSUB_SERVER_TYPE = 'nchan';
+
     crowi = await getInstance();
     configManager = crowi.configManager;
     done();
@@ -13,14 +15,10 @@ describe('ConfigManager test', () => {
 
   describe('updateConfigsInTheSameNamespace()', () => {
 
-    const configLoaderMock = {};
     const configModelMock = {};
 
     beforeEach(async(done) => {
       configManager.configPubsub = {};
-
-      // prepare mocks for loadConfigs method
-      configManager.configLoader = configLoaderMock;
 
       // prepare mocks for updateConfigsInTheSameNamespace method
       configManager.configModel = configModelMock;
@@ -28,32 +26,30 @@ describe('ConfigManager test', () => {
       done();
     });
 
-    test('invoke publishUpdateMessage() after loadConfigs() with correct updatedAt arg', async() => {
-      // define sleep function
-      const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-
-      // replace methods with mock
-      configLoaderMock.load = jest.fn(async() => {
-        await sleep(500);
-      });
-      configManager.reloadConfigKeys = jest.fn();
+    test('invoke publishUpdateMessage()', async() => {
       configModelMock.bulkWrite = jest.fn();
-
-      let publishedUpdatedDate;
-      configManager.publishUpdateMessage = jest.fn((date) => {
-        publishedUpdatedDate = date;
-      });
-
-      expect(configManager.lastLoadedAt < new Date()).toBeTruthy();
+      configManager.loadConfigs = jest.fn();
+      configManager.publishUpdateMessage = jest.fn();
 
       const dummyConfig = { dummyKey: 'dummyValue' };
       await configManager.updateConfigsInTheSameNamespace('dummyNs', dummyConfig);
 
       expect(configModelMock.bulkWrite).toHaveBeenCalledTimes(1);
+      expect(configManager.loadConfigs).toHaveBeenCalledTimes(1);
       expect(configManager.publishUpdateMessage).toHaveBeenCalledTimes(1);
-      expect(configLoaderMock.load).toHaveBeenCalledTimes(1);
-      expect(configManager.reloadConfigKeys).toHaveBeenCalledTimes(1);
-      expect(configManager.lastLoadedAt.getTime() - publishedUpdatedDate.getTime() >= 500).toBeTruthy();
+    });
+
+    test('does not invoke publishUpdateMessage()', async() => {
+      configModelMock.bulkWrite = jest.fn();
+      configManager.loadConfigs = jest.fn();
+      configManager.publishUpdateMessage = jest.fn();
+
+      const dummyConfig = { dummyKey: 'dummyValue' };
+      await configManager.updateConfigsInTheSameNamespace('dummyNs', dummyConfig, true);
+
+      expect(configModelMock.bulkWrite).toHaveBeenCalledTimes(1);
+      expect(configManager.loadConfigs).toHaveBeenCalledTimes(1);
+      expect(configManager.publishUpdateMessage).not.toHaveBeenCalled();
     });
 
   });
