@@ -64,6 +64,13 @@ textarea.form-control {
   background-color: $bgcolor-global;
 }
 
+.dropdown-item {
+  &:hover {
+    color: $light;
+    background-color: lighten($bgcolor-global, 15%);
+  }
+}
+
 /*
  * Table
  */
@@ -233,16 +240,17 @@ body.on-edit {
     }
     .btn.btn-outline-secondary {
       color: $light !important;
+      background-color: $bgcolor-global !important;
+      border-color: $secondary !important;
 
       &:active,
+      &:focus,
       &:hover {
         background-color: lighten($bgcolor-global, 10%) !important;
       }
-
-      &:not(:hover):not(:active) {
-        background-color: $bgcolor-global !important;
-      }
-      border-color: $secondary !important;
+    }
+    .show .btn.btn-outline-secondary {
+      background-color: lighten($bgcolor-global, 10%) !important;
     }
   }
 }
