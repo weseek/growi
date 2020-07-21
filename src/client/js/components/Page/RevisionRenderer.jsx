@@ -51,6 +51,8 @@ class RevisionRenderer extends React.PureComponent {
     const HeaderLinkArray = Array.from(HeaderLink);
     HeaderLinkArray.forEach(link => link.addEventListener('click', (e) => {
       e.preventDefault();
+
+      window.location.hash = link.getAttribute('href');
       this.props.navigationContainer.smoothScrollIntoView(link, WIKI_HEADER_LINK);
     }));
 

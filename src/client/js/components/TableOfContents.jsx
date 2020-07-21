@@ -1,13 +1,16 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
 import { withTranslation } from 'react-i18next';
 
 import PageContainer from '../services/PageContainer';
+import NavigationContainer from '../services/NavigationContainer';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 import StickyStretchableScroller from './StickyStretchableScroller';
+
+const WIKI_HEADER_LINK = 120;
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:TableOfContents');
@@ -30,6 +33,18 @@ const TableOfContents = (props) => {
   }, []);
 
   const { tocHtml } = pageContainer.state;
+
+  useEffect(() => {
+    const tocDom = document.getElementById('revision-toc-content');
+    const anchorsInToc = Array.from(tocDom.getElementsByTagName('a'));
+    anchorsInToc.forEach(link => link.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      window.location.hash = link.getAttribute('href').replace('#', '');
+      const huga = document.getElementById(link.getAttribute('href').replace('#', ''));
+      props.navigationContainer.smoothScrollIntoView(huga, WIKI_HEADER_LINK);
+    }));
+  }, [tocHtml]);
 
   return (
     <>
@@ -56,10 +71,11 @@ const TableOfContents = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const TableOfContentsWrapper = withUnstatedContainers(TableOfContents, [PageContainer]);
+const TableOfContentsWrapper = withUnstatedContainers(TableOfContents, [PageContainer, NavigationContainer]);
 
 TableOfContents.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 
 export default withTranslation()(TableOfContentsWrapper);
