@@ -27,6 +27,7 @@ import MyDraftList from './components/MyDraftList/MyDraftList';
 import SeenUserList from './components/User/SeenUserList';
 import LikerList from './components/User/LikerList';
 import TableOfContents from './components/TableOfContents';
+import TopOfTableContents from './components/TopOfTableContents';
 
 import PersonalSettings from './components/Me/PersonalSettings';
 import NavigationContainer from './services/NavigationContainer';
@@ -78,6 +79,7 @@ Object.assign(componentMappings, {
   'page-timeline': <PageTimeline />,
 
   'personal-setting': <PersonalSettings crowi={personalContainer} />,
+
 });
 
 // additional definitions if data exists
@@ -87,8 +89,8 @@ if (pageContainer.state.pageId != null) {
     'page-comment-write': <CommentEditorLazyRenderer />,
     'page-attachment': <PageAttachment />,
     'page-management': <PageManagement />,
-
     'revision-toc': <TableOfContents />,
+    'top-of-table-contents': <TopOfTableContents />,
     'seen-user-list': <SeenUserList />,
     'liker-list': <LikerList />,
 
