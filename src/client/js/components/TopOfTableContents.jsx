@@ -11,7 +11,7 @@ const TopOfTableContents = (props) => {
 
   return (
     <>
-      <div className="liker-and-seenusers d-flex align-items-end pb-1">
+      <div className="liker-and-seenusers d-flex align-items-end pb-2">
         <button type="button" className="bg-transparent border-0">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14">
             <defs>
@@ -127,7 +127,7 @@ const TopOfTableContents = (props) => {
           </svg>
 
         </button>
-
+        {/* [TODO: Footprints' icon setting by GW-3308] */}
         <div
           id="seen-user-list"
           data-user-ids-str="{{ page.seenUsers|slice(-15)|default([])|reverse|join(',') }}"
