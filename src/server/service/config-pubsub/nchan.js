@@ -146,13 +146,13 @@ class NchanDelegator extends ConfigPubsubDelegator {
 
       // check uid
       if (configPubsubMessage.publisherUid === this.uid) {
-        logger.debug('This message will not be processed because this is sent by the publisher itself: ', this.uid);
+        logger.debug(`Skip processing by ${handlable.constructor.name} because this message is sent by the publisher itself:`, `from ${this.uid}`);
         return;
       }
 
       // check shouldHandleConfigPubsubMessage
       const shouldHandle = handlable.shouldHandleConfigPubsubMessage(configPubsubMessage);
-      logger.debug(`${handlable.constructor.name}.shouldHandle(`, configPubsubMessage, `) => ${shouldHandle}`);
+      logger.debug(`${handlable.constructor.name}.shouldHandleConfigPubsubMessage(`, configPubsubMessage, `) => ${shouldHandle}`);
 
       if (shouldHandle) {
         handlable.handleConfigPubsubMessage(configPubsubMessage);
