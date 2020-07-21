@@ -18,7 +18,6 @@ module.exports = (crowi) => {
   const csrf = require('../../middlewares/csrf')(crowi);
   const pathUtils = require('growi-commons').pathUtils;
   const ApiResponse = require('../../util/apiResponse');
-  const pagesJsRouter = require('../page.js');
 
   const Page = crowi.model('Page');
 
@@ -128,8 +127,8 @@ module.exports = (crowi) => {
    * @apiName DuplicatePage
    * @apiGroup Page
    *
-   * @apiParam {String} page_id Page Id.
-   * @apiParam {String} new_path New path name.
+   * @apiParam {String}  Page Id.
+   * @apiParam {String}  New path name.
    */
   router.post('/duplicate', async(req, res) => {
     const { pageId, pageNameInput } = req.body;
@@ -154,7 +153,9 @@ module.exports = (crowi) => {
     req.body.grantUserGroupId = page.grantedGroup;
     req.body.pageTags = originTags;
 
-    return pagesJsRouter.api.create(res.req);
+    // return api.create(req, res);
+    // 以下はダミーです
+    return res.apiv3({});
   });
 
   router.get('/duplicate', loginRequired, async(req, res) => {
