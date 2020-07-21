@@ -79,7 +79,6 @@ Object.assign(componentMappings, {
   'page-timeline': <PageTimeline />,
 
   'personal-setting': <PersonalSettings crowi={personalContainer} />,
-
 });
 
 // additional definitions if data exists
@@ -89,6 +88,7 @@ if (pageContainer.state.pageId != null) {
     'page-comment-write': <CommentEditorLazyRenderer />,
     'page-attachment': <PageAttachment />,
     'page-management': <PageManagement />,
+
     'revision-toc': <TableOfContents />,
     'top-of-table-contents': <TopOfTableContents />,
     'seen-user-list': <SeenUserList />,
