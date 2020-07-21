@@ -16,8 +16,6 @@ module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
-  const pathUtils = require('growi-commons').pathUtils;
-  const ApiResponse = require('../../util/apiResponse');
 
   const Page = crowi.model('Page');
 
@@ -82,37 +80,6 @@ module.exports = (crowi) => {
       logger.error('Failed to delete trash pages', err);
       return res.apiv3Err(err, 500);
     }
-  });
-
-  /**
-   * GW-3143 edit swagger
-   */
-  router.post('/duplicate', async(req, res) => {
-    const { pageId, pageNameInput } = req.body;
-    let newPagePath = pathUtils.normalizePath(pageNameInput);
-
-    const page = await Page.findByIdAndViewer(pageId, req.user);
-
-    if (page == null) {
-      return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
-    }
-
-    // check whether path starts slash
-    newPagePath = pathUtils.addHeadingSlash(newPagePath);
-
-    await page.populateDataToShowRevision();
-    const originTags = await page.findRelatedTagsById();
-
-    req.body.path = newPagePath;
-    req.body.body = page.revision.body;
-    req.body.grant = page.grant;
-    req.body.grantedUsers = page.grantedUsers;
-    req.body.grantUserGroupId = page.grantedGroup;
-    req.body.pageTags = originTags;
-
-    // return api.create(req, res);
-    // 以下はダミーです
-    return res.apiv3({});
   });
 
   router.get('/duplicate', loginRequired, async(req, res) => {

@@ -1447,6 +1447,78 @@ module.exports = function(crowi, app) {
   };
 
   /**
+   * @swagger
+   *
+   *    /pages.duplicate:
+   *      post:
+   *        tags: [Pages]
+   *        operationId: duplicatePage
+   *        summary: /pages.duplicate
+   *        description: Duplicate page
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  page_id:
+   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                  new_path:
+   *                    $ref: '#/components/schemas/Page/properties/path'
+   *                required:
+   *                  - page_id
+   *        responses:
+   *          200:
+   *            description: Succeeded to duplicate page.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    ok:
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                    page:
+   *                      $ref: '#/components/schemas/Page'
+   *                    tags:
+   *                      $ref: '#/components/schemas/Tags'
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
+  /**
+   * @api {post} /pages.duplicate Duplicate page
+   * @apiName DuplicatePage
+   * @apiGroup Page
+   *
+   * @apiParam {String} page_id Page Id.
+   * @apiParam {String} new_path New path name.
+   */
+  api.duplicate = async function(req, res) {
+    const pageId = req.body.page_id;
+    let newPagePath = pathUtils.normalizePath(req.body.new_path);
+
+    const page = await Page.findByIdAndViewer(pageId, req.user);
+
+    if (page == null) {
+      return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
+    }
+
+    // check whether path starts slash
+    newPagePath = pathUtils.addHeadingSlash(newPagePath);
+
+    await page.populateDataToShowRevision();
+    const originTags = await page.findRelatedTagsById();
+
+    req.body.path = newPagePath;
+    req.body.body = page.revision.body;
+    req.body.grant = page.grant;
+    req.body.grantedUsers = page.grantedUsers;
+    req.body.grantUserGroupId = page.grantedGroup;
+    req.body.pageTags = originTags;
+
+    return api.create(req, res);
+  };
+
+  /**
    * @api {post} /pages.unlink Remove the redirecting page
    * @apiName UnlinkPage
    * @apiGroup Page
