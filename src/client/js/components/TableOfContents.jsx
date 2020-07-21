@@ -7,6 +7,7 @@ import { withTranslation } from 'react-i18next';
 import PageContainer from '../services/PageContainer';
 
 import { withUnstatedContainers } from './UnstatedUtils';
+import TopOfTableContents from './TopOfTableContents';
 import StickyStretchableScroller from './StickyStretchableScroller';
 
 // eslint-disable-next-line no-unused-vars
@@ -34,6 +35,7 @@ const TableOfContents = (props) => {
   return (
     <>
       {/* TODO GW-3253 add four contents */}
+      <TopOfTableContents />
       <StickyStretchableScroller
         contentsElemSelector=".revision-toc .markdownIt-TOC"
         stickyElemSelector="#revision-toc"
