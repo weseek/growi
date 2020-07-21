@@ -1,18 +1,49 @@
-/**
- * mailer
- */
+const logger = require('@alias/logger')('growi:service:mail');
 
-module.exports = function(crowi) {
-  const logger = require('@alias/logger')('growi:lib:mailer');
-  const nodemailer = require('nodemailer');
-  const swig = require('swig-templates');
+const nodemailer = require('nodemailer');
+const swig = require('swig-templates');
 
-  const { configManager, appService } = crowi;
+class MailService {
 
-  const mailConfig = {};
-  let mailer = {};
+  constructor(crowi) {
+    this.appService = crowi.appService;
+    this.configManager = crowi.configManager;
 
-  function createSMTPClient(option) {
+    this.mailConfig = {};
+    this.mailer = {};
+
+    this.initialize();
+  }
+
+  initialize() {
+    const { appService, configManager } = this;
+
+    if (!configManager.getConfig('crowi', 'mail:from')) {
+      this.mailer = null;
+      return;
+    }
+
+    // Priority 1. SMTP
+    if (configManager.getConfig('crowi', 'mail:smtpHost') && configManager.getConfig('crowi', 'mail:smtpPort')) {
+      this.mailer = this.createSMTPClient();
+    }
+    // Priority 2. SES
+    else if (configManager.getConfig('crowi', 'aws:accessKeyId') && configManager.getConfig('crowi', 'aws:secretAccessKey')) {
+      this.mailer = this.createSESClient();
+    }
+    else {
+      this.mailer = null;
+    }
+
+    this.mailConfig.from = configManager.getConfig('crowi', 'mail:from');
+    this.mailConfig.subject = `${appService.getAppTitle()}からのメール`;
+
+    logger.debug('mailer initialized');
+  }
+
+  createSMTPClient(option) {
+    const { configManager } = this;
+
     logger.debug('createSMTPClient option', option);
     if (!option) {
       option = { // eslint-disable-line no-param-reassign
@@ -38,7 +69,9 @@ module.exports = function(crowi) {
     return client;
   }
 
-  function createSESClient(option) {
+  createSESClient(option) {
+    const { configManager } = this;
+
     if (!option) {
       option = { // eslint-disable-line no-param-reassign
         accessKeyId: configManager.getConfig('crowi', 'aws:accessKeyId'),
@@ -53,48 +86,22 @@ module.exports = function(crowi) {
     return client;
   }
 
-  function initialize() {
-    if (!configManager.getConfig('crowi', 'mail:from')) {
-      mailer = undefined;
-      return;
-    }
-
-    if (configManager.getConfig('crowi', 'mail:smtpHost') && configManager.getConfig('crowi', 'mail:smtpPort')
-    ) {
-      // SMTP 設定がある場合はそれを優先
-      mailer = createSMTPClient();
-    }
-    else if (configManager.getConfig('crowi', 'aws:accessKeyId') && configManager.getConfig('crowi', 'aws:secretAccessKey')) {
-      // AWS 設定がある場合はSESを設定
-      mailer = createSESClient();
-    }
-    else {
-      mailer = undefined;
-    }
-
-    mailConfig.from = configManager.getConfig('crowi', 'mail:from');
-    mailConfig.subject = `${appService.getAppTitle()}からのメール`;
-
-    logger.debug('mailer initialized');
-  }
-
-  function setupMailConfig(overrideConfig) {
+  setupMailConfig(overrideConfig) {
     const c = overrideConfig;
 
-
     let mc = {};
-    mc = mailConfig;
+    mc = this.mailConfig;
 
     mc.to = c.to;
-    mc.from = c.from || mailConfig.from;
+    mc.from = c.from || this.mailConfig.from;
     mc.text = c.text;
-    mc.subject = c.subject || mailConfig.subject;
+    mc.subject = c.subject || this.mailConfig.subject;
 
     return mc;
   }
 
-  async function send(config) {
-    if (mailer == null) {
+  async send(config) {
+    if (this.mailer == null) {
       throw new Error('Mailer is not completed to set up. Please set up SMTP or AWS setting.');
     }
 
@@ -105,16 +112,9 @@ module.exports = function(crowi) {
     );
 
     config.text = output;
-    return mailer.sendMail(setupMailConfig(config));
+    return this.mailer.sendMail(this.setupMailConfig(config));
   }
 
+}
 
-  initialize();
-
-  return {
-    createSMTPClient,
-    createSESClient,
-    mailer,
-    send,
-  };
-};
+module.exports = MailService;

@@ -37,7 +37,7 @@ function Crowi(rootdir) {
 
   this.config = {};
   this.configManager = null;
-  this.mailer = {};
+  this.mailService = null;
   this.passportService = null;
   this.globalNotificationService = null;
   this.slackNotificationService = null;
@@ -286,10 +286,6 @@ Crowi.prototype.scanRuntimeVersions = async function() {
   });
 };
 
-Crowi.prototype.getMailer = function() {
-  return this.mailer;
-};
-
 Crowi.prototype.getSlack = function() {
   return this.slack;
 };
@@ -342,11 +338,8 @@ Crowi.prototype.setupSearcher = async function() {
 };
 
 Crowi.prototype.setupMailer = async function() {
-  const self = this;
-  return new Promise(((resolve, reject) => {
-    self.mailer = require('../util/mailer')(self);
-    resolve();
-  }));
+  const MailService = require('@server/service/mail');
+  this.mailService = new MailService(this);
 };
 
 Crowi.prototype.setupSlack = async function() {

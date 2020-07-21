@@ -18,15 +18,13 @@ module.exports = {
   'growi:service:PassportService': 'debug',
   'growi:service:config-pubsub:*': 'debug',
   // 'growi:service:ConfigManager': 'debug',
+  // 'growi:service:mail': 'debug',
   'growi:lib:search': 'debug',
   // 'growi:service:GlobalNotification': 'debug',
   // 'growi:lib:importer': 'debug',
   // 'growi:routes:page': 'debug',
   'growi-plugin:*': 'debug',
   // 'growi:InterceptorManager': 'debug',
-
-  // email
-  // 'growi:lib:mailer': 'debug',
 
   /*
    * configure level for client

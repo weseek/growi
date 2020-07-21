@@ -292,7 +292,7 @@ module.exports = (crowi) => {
    * validate mail setting send test mail
    */
   async function validateMailSetting(req) {
-    const mailer = crowi.mailer;
+    const { mailService } = crowi;
     const option = {
       host: req.body.smtpHost,
       port: req.body.smtpPort,
@@ -307,7 +307,7 @@ module.exports = (crowi) => {
       option.secure = true;
     }
 
-    const smtpClient = mailer.createSMTPClient(option);
+    const smtpClient = mailService.createSMTPClient(option);
     debug('mailer setup for validate SMTP setting', smtpClient);
 
     const mailOptions = {
@@ -344,7 +344,6 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/MailSettingParams'
    */
   router.put('/mail-setting', loginRequiredStrictly, adminRequired, csrf, validator.mailSetting, apiV3FormValidator, async(req, res) => {
-    // テストメール送信によるバリデート
     try {
       await validateMailSetting(req);
     }
@@ -365,13 +364,17 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestMailSettingParams);
+      const { configManager, mailService } = crowi;
+
+      await configManager.updateConfigsInTheSameNamespace('crowi', requestMailSettingParams);
+      await mailService.initialize();
+
       const mailSettingParams = {
-        fromAddress: crowi.configManager.getConfig('crowi', 'mail:from'),
-        smtpHost: crowi.configManager.getConfig('crowi', 'mail:smtpHost'),
-        smtpPort: crowi.configManager.getConfig('crowi', 'mail:smtpPort'),
-        smtpUser: crowi.configManager.getConfig('crowi', 'mail:smtpUser'),
-        smtpPassword: crowi.configManager.getConfig('crowi', 'mail:smtpPassword'),
+        fromAddress: configManager.getConfig('crowi', 'mail:from'),
+        smtpHost: configManager.getConfig('crowi', 'mail:smtpHost'),
+        smtpPort: configManager.getConfig('crowi', 'mail:smtpPort'),
+        smtpUser: configManager.getConfig('crowi', 'mail:smtpUser'),
+        smtpPassword: configManager.getConfig('crowi', 'mail:smtpPassword'),
       };
       return res.apiv3({ mailSettingParams });
     }
@@ -415,7 +418,11 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestAwsSettingParams);
+      const { configManager, mailService } = crowi;
+
+      await configManager.updateConfigsInTheSameNamespace('crowi', requestAwsSettingParams);
+      await mailService.initialize();
+
       const awsSettingParams = {
         region: crowi.configManager.getConfig('crowi', 'aws:region'),
         customEndpoint: crowi.configManager.getConfig('crowi', 'aws:customEndpoint'),
