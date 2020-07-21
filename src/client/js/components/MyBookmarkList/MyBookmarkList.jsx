@@ -13,7 +13,7 @@ import PaginationWrapper from '../PaginationWrapper';
 
 import Page from '../PageList/Page';
 
-const logger = loggerFactory('growi:History');
+const logger = loggerFactory('growi:MyBookmarkList');
 class MyBookmarkList extends React.Component {
 
   constructor(props) {
@@ -43,8 +43,7 @@ class MyBookmarkList extends React.Component {
 
     const userId = appContainer.currentUserId;
     /* TODO GW-3255 get config from customize settings */
-    /* const limit = appContainer.getConfig().recentCreatedLimit; */
-    const limit = 10;
+    const limit = appContainer.getConfig().recentCreatedLimit;
     const offset = (selectPageNumber - 1) * limit;
 
 
@@ -65,13 +64,12 @@ class MyBookmarkList extends React.Component {
           pagingLimit: limit,
         });
       }); */
-    /*  */
     try {
       await pageContainer.retrieveMyBookmarkList(pageId, userId, limit, offset);
     }
     catch (error) {
       logger.error('failed to fetch data', error);
-      toastError(error, 'Error occurred in updating History');
+      toastError(error, 'Error occurred in bookmark list');
     }
   }
 
