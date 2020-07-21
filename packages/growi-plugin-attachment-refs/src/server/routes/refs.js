@@ -84,12 +84,18 @@ module.exports = (crowi) => {
       return;
     }
 
+    let creatorPopulateOpt;
+    // set populate option for backward compatibility against to GROWI <= v4.0.x
+    if (User.IMAGE_POPULATION != null) {
+      creatorPopulateOpt = User.IMAGE_POPULATION;
+    }
+
     const attachment = await Attachment
       .findOne({
         page: page._id,
         originalName: fileName,
       })
-      .populate({ path: 'creator', select: User.USER_PUBLIC_FIELDS });
+      .populate({ path: 'creator', select: User.USER_PUBLIC_FIELDS, populate: creatorPopulateOpt });
 
     // not found
     if (attachment == null) {
