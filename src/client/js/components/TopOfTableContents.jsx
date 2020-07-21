@@ -11,7 +11,6 @@ const TopOfTableContents = (props) => {
 
   return (
     <>
-      {/* TODO GW-3253 add four contents */}
       <div className="liker-and-seenusers d-flex align-items-end pb-1">
         <button type="button" className="bg-transparent border-0">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14">
