@@ -85,50 +85,7 @@ module.exports = (crowi) => {
   });
 
   /**
-   * @swagger
-   *
-   *    /pages.duplicate:
-   *      post:
-   *        tags: [Pages]
-   *        operationId: duplicatePage
-   *        summary: /pages/duplicate
-   *        description: Duplicate page
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  page_id:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
-   *                  new_path:
-   *                    $ref: '#/components/schemas/Page/properties/path'
-   *                required:
-   *                  - page_id
-   *        responses:
-   *          200:
-   *            description: Succeeded to duplicate page.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    page:
-   *                      $ref: '#/components/schemas/Page'
-   *                    tags:
-   *                      $ref: '#/components/schemas/Tags'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  /**
-   * @api {post} /pages/duplicate Duplicate page
-   * @apiName DuplicatePage
-   * @apiGroup Page
-   *
-   * @apiParam {String}  Page Id.
-   * @apiParam {String}  New path name.
+   * GW-3143 edit swagger
    */
   router.post('/duplicate', async(req, res) => {
     const { pageId, pageNameInput } = req.body;
