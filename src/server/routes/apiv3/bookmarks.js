@@ -103,7 +103,6 @@ module.exports = (crowi) => {
     }
   });
 
-
   /**
    * @swagger
    *
@@ -127,7 +126,7 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/Bookmark'
    */
   router.put('/', accessTokenParser, loginRequired, csrf, validator.bookmarks, apiV3FormValidator, async(req, res) => {
-    const { pageId, bool } = req.body;
+    const { pageId, bool } = req.query;
 
     let bookmark;
     try {
@@ -151,6 +150,18 @@ module.exports = (crowi) => {
     bookmark.depopulate('user');
 
     return res.apiv3({ bookmark });
+  });
+
+  router.get('/users/:id', /* accessTokenParser, loginRequired, csrf, */ apiV3FormValidator, async(req, res) => {
+    const { userId } = req.body;
+    try {
+      const bookmark = await Bookmark.find({ user: userId });
+      return res.apiv3({ bookmark });
+    }
+    catch (err) {
+      logger.error('get-bookmark-failed', err);
+      return res.apiv3Err(err, 500);
+    }
   });
 
   return router;
