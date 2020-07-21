@@ -9,8 +9,6 @@ import GrowiRenderer from '../../util/GrowiRenderer';
 
 import RevisionBody from './RevisionBody';
 
-const WIKI_HEADER_LINK = 120;
-
 class RevisionRenderer extends React.PureComponent {
 
   constructor(props) {
@@ -38,7 +36,7 @@ class RevisionRenderer extends React.PureComponent {
 
   componentDidUpdate(prevProps) {
     const { markdown: prevMarkdown, highlightKeywords: prevHighlightKeywords } = prevProps;
-    const { markdown, highlightKeywords } = this.props;
+    const { markdown, highlightKeywords, navigationContainer } = this.props;
 
     // render only when props.markdown is updated
     if (markdown !== prevMarkdown || highlightKeywords !== prevHighlightKeywords) {
@@ -49,12 +47,7 @@ class RevisionRenderer extends React.PureComponent {
 
     const HeaderLink = document.getElementsByClassName('revision-head-link');
     const HeaderLinkArray = Array.from(HeaderLink);
-    HeaderLinkArray.forEach(link => link.addEventListener('click', (e) => {
-      e.preventDefault();
-
-      window.location.hash = link.getAttribute('href');
-      this.props.navigationContainer.smoothScrollIntoView(link, WIKI_HEADER_LINK);
-    }));
+    navigationContainer.addSmoothScrollEvent(HeaderLinkArray);
 
     const { interceptorManager } = this.props.appContainer;
 

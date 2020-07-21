@@ -10,8 +10,6 @@ import NavigationContainer from '../services/NavigationContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
 import StickyStretchableScroller from './StickyStretchableScroller';
 
-const WIKI_HEADER_LINK = 120;
-
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:TableOfContents');
 
@@ -21,7 +19,7 @@ const logger = loggerFactory('growi:TableOfContents');
  */
 const TableOfContents = (props) => {
 
-  const { pageContainer } = props;
+  const { pageContainer, navigationContainer } = props;
 
   const calcViewHeight = useCallback(() => {
     // calculate absolute top of '#revision-toc' element
@@ -37,13 +35,7 @@ const TableOfContents = (props) => {
   useEffect(() => {
     const tocDom = document.getElementById('revision-toc-content');
     const anchorsInToc = Array.from(tocDom.getElementsByTagName('a'));
-    anchorsInToc.forEach(link => link.addEventListener('click', (e) => {
-      e.preventDefault();
-
-      window.location.hash = link.getAttribute('href').replace('#', '');
-      const huga = document.getElementById(link.getAttribute('href').replace('#', ''));
-      props.navigationContainer.smoothScrollIntoView(huga, WIKI_HEADER_LINK);
-    }));
+    navigationContainer.addSmoothScrollEvent(anchorsInToc);
   }, [tocHtml]);
 
   return (
