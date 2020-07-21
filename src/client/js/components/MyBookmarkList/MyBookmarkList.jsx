@@ -3,13 +3,17 @@ import PropTypes from 'prop-types';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
+import loggerFactory from '@alias/logger';
+
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
+import { toastError } from '../../util/apiNotification';
 
 import PaginationWrapper from '../PaginationWrapper';
 
 import Page from '../PageList/Page';
 
+const logger = loggerFactory('growi:History');
 class MyBookmarkList extends React.Component {
 
   constructor(props) {
