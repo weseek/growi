@@ -129,12 +129,6 @@ const TopOfTableContents = (props) => {
         </button>
 
         <div
-          id="liker-list"
-          data-user-ids-str="{{ page.liker|slice(-15)|default([])|reverse|join(',') }}"
-          data-sum-of-likers="{{ page.liker.length|default(0) }}"
-        >
-        </div>
-        <div
           id="seen-user-list"
           data-user-ids-str="{{ page.seenUsers|slice(-15)|default([])|reverse|join(',') }}"
           data-sum-of-seen-users="{{ page.seenUsers.length|default(0) }}"
