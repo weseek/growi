@@ -69,7 +69,7 @@ class MyBookmarkList extends React.Component {
     }
     catch (error) {
       logger.error('failed to fetch data', error);
-      toastError(error, 'Error occurred in bookmark list');
+      toastError(error, 'Error occurred in bookmark page list');
     }
   }
 
