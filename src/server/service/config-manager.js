@@ -197,7 +197,7 @@ class ConfigManager extends ConfigPubsubMessageHandlable {
 
     // publish updated date after reloading
     if (this.configPubsub != null && !withoutPublishingConfigPubsubMessage) {
-      this.publishUpdateMessage(new Date());
+      this.publishUpdateMessage();
     }
   }
 
@@ -308,8 +308,8 @@ class ConfigManager extends ConfigPubsubMessageHandlable {
     return JSON.stringify(value === '' ? null : value);
   }
 
-  async publishUpdateMessage(updatedAt) {
-    const configPubsubMessage = new ConfigPubsubMessage('configUpdated', { updatedAt });
+  async publishUpdateMessage() {
+    const configPubsubMessage = new ConfigPubsubMessage('configUpdated', { updatedAt: new Date() });
 
     try {
       await this.configPubsub.publish(configPubsubMessage);
