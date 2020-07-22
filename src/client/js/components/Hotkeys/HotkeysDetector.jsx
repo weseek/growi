@@ -1,21 +1,16 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
+
 import { GlobalHotKeys } from 'react-hotkeys';
 
-export default class HotkeysDetector extends React.PureComponent {
+let userCommand = [];
+let processingCommands = [];
 
-  constructor(props) {
-    super(props);
-    this.hotkeyList = this.props.hotkeyList;
-    this.state = {
-      userCommand: [],
-    };
-    this.processingCommands = [];
-    this.check = this.check.bind(this);
-  }
+const HotkeysDetector = (props) => {
 
-  check(event) {
+  const checkHandler = useCallback((event) => {
     const target = event.target;
+
     // ignore when target dom is input
     const inputPattern = /^input|textinput|textarea$/i;
     if (inputPattern.test(target.tagName) || target.isContentEditable) {
@@ -25,7 +20,7 @@ export default class HotkeysDetector extends React.PureComponent {
     event.preventDefault();
 
     let eventKey = event.key;
-    this.processingCommands = this.hotkeyList;
+    processingCommands = props.hotkeyList;
 
     if (event.ctrlKey) {
       eventKey += '+ctrl';
@@ -39,43 +34,35 @@ export default class HotkeysDetector extends React.PureComponent {
     if (event.shiftKey) {
       eventKey += '+shift';
     }
-    this.setState({
-      userCommand: this.state.userCommand.concat(eventKey),
-    });
+
+    userCommand = userCommand.concat(eventKey);
+
     // filters the corresponding hotkeys(keys) that the user has pressed so far
-    const tempUserCommand = this.state.userCommand;
-    this.processingCommands = this.processingCommands.filter((value) => {
-      return value.slice(0, tempUserCommand.length).toString() === tempUserCommand.toString();
+    processingCommands = processingCommands.filter((value) => {
+      return value.slice(0, userCommand.length).toString() === userCommand.toString();
     });
 
     // executes if there were keymap that matches what the user pressed fully.
-    if ((this.processingCommands.length === 1) && (this.hotkeyList.find(ary => ary.toString() === this.state.userCommand.toString()))) {
-      this.props.onDetected(this.processingCommands[0]);
-      this.setState({
-        userCommand: [],
-      });
+    if ((processingCommands.length === 1) && (props.hotkeyList.find(ary => ary.toString() === userCommand.toString()))) {
+      props.onDetected(processingCommands[0]);
+      userCommand = [];
     }
-    else if (this.processingCommands.toString() === [].toString()) {
-      this.setState({
-        userCommand: [],
-      });
+    else if (processingCommands.toString() === [].toString()) {
+      userCommand = [];
     }
-    return null;
+  }, [props]);
 
-  }
+  const keyMap = { check: Array.from(new Set(props.hotkeyList)) };
+  const handlers = { check: checkHandler };
+  return (
+    <GlobalHotKeys keyMap={keyMap} handlers={handlers} />
+  );
 
-  render() {
-    const keyMap = { check: Array.from(new Set(this.props.hotkeyList)) };
-    const handlers = { check: (event) => { return this.check(event) } };
-    return (
-      <GlobalHotKeys keyMap={keyMap} handlers={handlers}>
-      </GlobalHotKeys>
-    );
-  }
-
-}
+};
 
 HotkeysDetector.propTypes = {
   onDetected: PropTypes.func.isRequired,
   hotkeyList: PropTypes.array.isRequired,
 };
+
+export default HotkeysDetector;
