@@ -13,6 +13,7 @@ const router = express.Router();
  *    name: Pages
  */
 module.exports = (crowi) => {
+  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
@@ -82,7 +83,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.get('/duplicate', loginRequired, async(req, res) => {
+  router.get('/duplicate', accessTokenParser, loginRequired, async(req, res) => {
     const { path, pageId } = req.query;
     const searchWord = new RegExp(`^${path}`);
     const duplicateData = await Page.find({ path: searchWord });
