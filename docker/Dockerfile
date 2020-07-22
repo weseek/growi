@@ -7,7 +7,7 @@ ARG flavor=default
 ##
 ## deps-resolver
 ##
-FROM node:12-slim AS deps-resolver
+FROM node:14-slim AS deps-resolver
 LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
 ENV appDir /opt/growi
@@ -43,7 +43,7 @@ RUN --mount=type=cache,target=/usr/local/share/.cache/yarn \
 ##
 ## prebuilder-default
 ##
-FROM node:12-slim AS prebuilder-default
+FROM node:14-slim AS prebuilder-default
 LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
 ENV appDir /opt/growi
