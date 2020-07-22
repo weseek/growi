@@ -25,7 +25,7 @@ class MailSetting extends React.Component {
 
     try {
       await adminAppContainer.updateMailSettingHandler();
-      toastSuccess(t('toster.update_successed', { target: t('admin:app_setting.mail_settings') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.mail_settings') }));
     }
     catch (err) {
       toastError(err);
