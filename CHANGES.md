@@ -1,6 +1,30 @@
 # CHANGES
 
-## v4.0.9-RC
+## v4.1.0-RC
+
+### BREAKING CHANGES
+
+* GROWI v4.1.x no longer support Node.js v10.x
+* GROWI v4.1.x no longer support growi-plugin-attachment-refs@v1
+
+Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/41x.html>
+
+### Updates
+
+* Feature: Config synchronization for multiple GROWI Apps
+* Improvement: Determine whether the "In Use" badge is displayed or not by attachment ID
+* Fix: New settings of SMTP and AWS SES are not reflected when server is running
+* Support: Support Node.js v14
+
+
+
+## v4.0.10
+
+* Improvement: Adjust ToC height
+* Fix: Fail to rename/delete a page set as "Anyone with the link"
+
+
+## v4.0.9
 
 * Feature: Detailed configurations for OpenID Connect
     * Authorization Endpoint
@@ -10,10 +34,6 @@
     * UserInfo Endpoint
     * Registration Endpoint
     * JSON Web Key Set URI
-
-
-## v4.0.8
-
 * Improvement: Navigations
     * New floating subnavigation
     * New open drawer button
@@ -25,6 +45,8 @@
 * Fix: Styles for printing
 * Fix: Unable to create page with original path after emptying trash
 * I18n: Support zh-CN
+
+## v4.0.8  (Missing number)
 
 ## v4.0.7
 
