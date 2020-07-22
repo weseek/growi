@@ -149,7 +149,7 @@ class UserInviteModal extends React.Component {
 
     return (
       <>
-        <p className="text-warning">{t('admin:user_management.existing_email')}</p>
+        <p className="text-warning">{t('admin:user_management.invite_modal.existing_email')}</p>
         <ul>
           {emailList.map((user) => {
             return (

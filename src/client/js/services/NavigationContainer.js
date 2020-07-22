@@ -6,6 +6,7 @@ import { Container } from 'unstated';
  */
 
 const SCROLL_THRES_SKIP = 200;
+const WIKI_HEADER_LINK = 120;
 
 export default class NavigationContainer extends Container {
 
@@ -149,6 +150,21 @@ export default class NavigationContainer extends Container {
 
   closePageCreateModal() {
     this.setState({ isPageCreateModalShown: false });
+  }
+
+  /**
+   * Function that implements the click event for realizing smooth scroll
+   * @param {array} elements
+   */
+  addSmoothScrollEvent(elements = {}) {
+    elements.forEach(link => link.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      const href = link.getAttribute('href').replace('#', '');
+      window.location.hash = href;
+      const targetDom = document.getElementById(href);
+      this.smoothScrollIntoView(targetDom, WIKI_HEADER_LINK);
+    }));
   }
 
   smoothScrollIntoView(element = null, offsetTop = 0) {
