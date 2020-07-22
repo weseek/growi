@@ -8,11 +8,8 @@ let processingCommands = [];
 
 const HotkeysDetector = (props) => {
 
-  const checkHandler = useCallback((event) => {
-    event.preventDefault();
-
+  const getKeyExpression = useCallback((event) => {
     let eventKey = event.key;
-    processingCommands = props.hotkeyList;
 
     if (event.ctrlKey) {
       eventKey += '+ctrl';
@@ -26,6 +23,15 @@ const HotkeysDetector = (props) => {
     if (event.shiftKey) {
       eventKey += '+shift';
     }
+
+    return eventKey;
+  }, []);
+
+  const checkHandler = useCallback((event) => {
+    event.preventDefault();
+
+    const eventKey = getKeyExpression(event);
+    processingCommands = props.hotkeyList;
 
     userCommand = userCommand.concat(eventKey);
 
@@ -42,10 +48,12 @@ const HotkeysDetector = (props) => {
     else if (processingCommands.toString() === [].toString()) {
       userCommand = [];
     }
-  }, [props]);
+  }, [props, getKeyExpression]);
 
-  const keyMap = { check: Array.from(new Set(props.hotkeyList)) };
+  const keySet = new Set(props.hotkeyList);
+  const keyMap = { check: Array.from(keySet) };
   const handlers = { check: checkHandler };
+
   return (
     <GlobalHotKeys keyMap={keyMap} handlers={handlers} />
   );
