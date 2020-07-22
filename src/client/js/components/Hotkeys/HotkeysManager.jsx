@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import HotkeysDetector from '../HotkeysDetector/HotkeysDetector';
+
+import HotkeysDetector from './HotkeysDetector';
 import StaffCredit from '../StaffCredit/StaffCredit';
 import MirrorMode from '../MirrorMode/MirrorMode';
 import ShowHotkeys from '../PageHotkeys/ShowHotkeys';
