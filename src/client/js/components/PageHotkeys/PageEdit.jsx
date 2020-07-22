@@ -1,37 +1,30 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 
-/**
- *
- * @export
- * @extends {React.Component}
- */
+const PageEdit = (props) => {
 
-export default class PageEdit extends React.Component {
-
-  // when this is called it returns the hotkey stroke
-  static getHotkeyStroke() {
-    return [['e']];
-  }
-
-  static getComponent() {
-    return <PageEdit />;
-  }
-
-  componentDidMount() {
+  // setup effect
+  useEffect(() => {
     // ignore when dom that has 'modal in' classes exists
     if (document.getElementsByClassName('modal in').length > 0) {
       return;
     }
     // show editor
     $('a[data-toggle="tab"][href="#edit"]').tab('show');
-    return null;
-  }
 
-  render() {
-    return (
-      <React.Fragment>
-      </React.Fragment>
-    );
-  }
+    // remove this
+    props.onDeleteRender(this);
+  }, [props]);
 
-}
+  return <></>;
+};
+
+PageEdit.getHotkeyStrokes = () => {
+  return [['e']];
+};
+
+PageEdit.propTypes = {
+  onDeleteRender: PropTypes.func.isRequired,
+};
+
+export default PageEdit;
