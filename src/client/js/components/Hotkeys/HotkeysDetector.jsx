@@ -9,14 +9,6 @@ let processingCommands = [];
 const HotkeysDetector = (props) => {
 
   const checkHandler = useCallback((event) => {
-    const target = event.target;
-
-    // ignore when target dom is input
-    const inputPattern = /^input|textinput|textarea$/i;
-    if (inputPattern.test(target.tagName) || target.isContentEditable) {
-      return;
-    }
-
     event.preventDefault();
 
     let eventKey = event.key;
