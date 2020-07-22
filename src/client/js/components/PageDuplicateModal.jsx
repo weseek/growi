@@ -120,10 +120,15 @@ const PageDuplicateModal = (props) => {
           </label>
           <div>
             <ul>
-              {isDuplicateRecursively && duplicatedNewPaths.map(duplicatedNewPath => <li>{duplicatedNewPath}</li>)}
-            </ul>
-            <ul>
-              {isDuplicateRecursively && <li><code>{duplicatedNewPaths.filter(duplicatedNewPath => existPaths.includes(duplicatedNewPath))}</code></li>}
+              {isDuplicateRecursively && duplicatedNewPaths.map((duplicatedNewPath) => {
+                const existPath = existPaths.includes(duplicatedNewPath);
+                if (existPath) {
+                   console.log(duplicatedNewPath);
+                }
+                else {
+                  return <li>{duplicatedNewPath}</li>;
+                }
+              })}
             </ul>
           </div>
         </div>
