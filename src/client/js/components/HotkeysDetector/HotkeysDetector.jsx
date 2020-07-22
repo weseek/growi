@@ -65,7 +65,7 @@ export default class HotkeysDetector extends React.PureComponent {
   }
 
   render() {
-    const keyMap = { check: this.props.keymap };
+    const keyMap = { check: Array.from(new Set(this.props.hotkeyList)) };
     const handlers = { check: (event) => { return this.check(event) } };
     return (
       <GlobalHotKeys keyMap={keyMap} handlers={handlers}>
@@ -77,6 +77,5 @@ export default class HotkeysDetector extends React.PureComponent {
 
 HotkeysDetector.propTypes = {
   onDetected: PropTypes.func.isRequired,
-  keymap: PropTypes.array.isRequired,
   hotkeyList: PropTypes.array.isRequired,
 };
