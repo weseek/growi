@@ -29,7 +29,7 @@ const PageDuplicateModal = (props) => {
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
 
   const duplicatedNewPaths = ['/hoge', '/hoge/hoge', '/test/test/test']; // delete after merge
-  const exsitsPaths = ['/hoge1', '/hoge/hoge']; // delete after merge
+  const existPaths = ['/hoge1', '/hoge/hoge']; // delete after merge
   /**
    * change pageNameInput for PagePathAutoComplete
    * @param {string} value
@@ -123,7 +123,7 @@ const PageDuplicateModal = (props) => {
               {isDuplicateRecursively && duplicatedNewPaths.map(duplicatedNewPath => <li>{duplicatedNewPath}</li>)}
             </ul>
             <ul>
-              {isDuplicateRecursively && <li><code>{duplicatedNewPaths.filter(duplicatedNewPath => exsitsPaths.includes(duplicatedNewPath))}</code></li>}
+              {isDuplicateRecursively && <li><code>{duplicatedNewPaths.filter(duplicatedNewPath => existPaths.includes(duplicatedNewPath))}</code></li>}
             </ul>
           </div>
         </div>
