@@ -20,6 +20,7 @@ module.exports = function(crowi, app) {
 
   const registerSafeRedirect = require('../middlewares/safe-redirect')();
   const injectCurrentuserToLocalvars = require('../middlewares/inject-currentuser-to-localvars')();
+  const autoReconnectToConfigPubsub = require('../middlewares/auto-reconnect-to-config-pubsub')(crowi);
   const { listLocaleIds } = require('@commons/util/locale-utils');
 
   const avoidSessionRoutes = require('../routes/avoid-session-routes');
@@ -117,6 +118,7 @@ module.exports = function(crowi, app) {
 
   app.use(registerSafeRedirect);
   app.use(injectCurrentuserToLocalvars);
+  app.use(autoReconnectToConfigPubsub);
 
   const middlewares = require('../util/middlewares')(crowi, app);
   app.use(middlewares.swigFilters(swig));

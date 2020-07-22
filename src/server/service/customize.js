@@ -3,15 +3,62 @@ const logger = require('@alias/logger')('growi:service:CustomizeService');
 
 const DevidedPagePath = require('@commons/models/devided-page-path');
 
+const ConfigPubsubMessage = require('../models/vo/config-pubsub-message');
+const ConfigPubsubMessageHandlable = require('./config-pubsub/handlable');
+
+
 /**
  * the service class of CustomizeService
  */
-class CustomizeService {
+class CustomizeService extends ConfigPubsubMessageHandlable {
 
   constructor(configManager, appService, xssService) {
+    super();
+
     this.configManager = configManager;
     this.appService = appService;
     this.xssService = xssService;
+
+    this.lastLoadedAt = null;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  shouldHandleConfigPubsubMessage(configPubsubMessage) {
+    const { eventName, updatedAt } = configPubsubMessage;
+    if (eventName !== 'customizeServiceUpdated' || updatedAt == null) {
+      return false;
+    }
+
+    return this.lastLoadedAt == null || this.lastLoadedAt < new Date(configPubsubMessage.updatedAt);
+  }
+
+  /**
+   * @inheritdoc
+   */
+  async handleConfigPubsubMessage(configPubsubMessage) {
+    const { configManager } = this.appService;
+
+    logger.info('Reset customized value by pubsub notification');
+    await configManager.loadConfigs();
+    this.initCustomCss();
+    this.initCustomTitle();
+  }
+
+  async publishUpdatedMessage() {
+    const { configPubsub } = this.appService;
+
+    if (configPubsub != null) {
+      const configPubsubMessage = new ConfigPubsubMessage('customizeServiceUpdated', { updatedAt: new Date() });
+
+      try {
+        await configPubsub.publish(configPubsubMessage);
+      }
+      catch (e) {
+        logger.error('Failed to publish update message with configPubsub: ', e.message);
+      }
+    }
   }
 
   /**
@@ -24,6 +71,8 @@ class CustomizeService {
 
     // uglify and store
     this.customCss = uglifycss.processString(rawCss);
+
+    this.lastLoadedAt = new Date();
   }
 
   getCustomCss() {
@@ -42,6 +91,8 @@ class CustomizeService {
     }
 
     this.customTitleTemplate = configValue;
+
+    this.lastLoadedAt = new Date();
   }
 
   generateCustomTitle(pageOrPath) {

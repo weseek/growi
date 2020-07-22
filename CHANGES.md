@@ -11,6 +11,9 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/41x.html>
 
 ### Updates
 
+* Feature: Config synchronization for multiple GROWI Apps
+* Improvement: Determine whether the "In Use" badge is displayed or not by attachment ID
+* Fix: New settings of SMTP and AWS SES are not reflected when server is running
 * Support: Support Node.js v14
 
 
