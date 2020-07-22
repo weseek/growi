@@ -1,42 +1,31 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
+
 import NavigationContainer from '../../services/NavigationContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
+const PageCreate = (props) => {
 
-/**
- *
- * @export
- * @extends {React.Component}
- */
+  // setup effect
+  useEffect(() => {
+    props.navigationContainer.openPageCreateModal();
 
-export default class PageCreate extends React.Component {
+    // remove this
+    props.onDeleteRender(this);
+  }, [props]);
 
-  // when this is called it returns the hotkey stroke
-  static getHotkeyStroke() {
-    return [['c']];
-  }
-
-  static getComponent() {
-    const PageCreateWrapper = withUnstatedContainers(PageCreate, [NavigationContainer]);
-    return <PageCreateWrapper />;
-  }
-
-  componentDidMount() {
-    this.props.navigationContainer.openPageCreateModal();
-    return null;
-  }
-
-  render() {
-    return (
-      <React.Fragment>
-      </React.Fragment>
-    );
-  }
-
-}
-
+  return <></>;
+};
 
 PageCreate.propTypes = {
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
+  onDeleteRender: PropTypes.func.isRequired,
 };
+
+const PageCreateWrapper = withUnstatedContainers(PageCreate, [NavigationContainer]);
+
+PageCreateWrapper.getHotkeyStrokes = () => {
+  return [['c']];
+};
+
+export default PageCreateWrapper;

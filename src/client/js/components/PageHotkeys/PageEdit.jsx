@@ -19,12 +19,12 @@ const PageEdit = (props) => {
   return <></>;
 };
 
-PageEdit.getHotkeyStrokes = () => {
-  return [['e']];
-};
-
 PageEdit.propTypes = {
   onDeleteRender: PropTypes.func.isRequired,
+};
+
+PageEdit.getHotkeyStrokes = () => {
+  return [['e']];
 };
 
 export default PageEdit;

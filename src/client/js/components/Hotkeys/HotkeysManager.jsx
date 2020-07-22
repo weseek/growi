@@ -9,9 +9,9 @@ import PageEdit from '../PageHotkeys/PageEdit';
 
 // define supported components list
 const SUPPORTED_COMPONENTS = [
-  StaffCredit,
-  MirrorMode,
-  ShowHotkeys,
+  // StaffCredit,
+  // MirrorMode,
+  // ShowHotkeys,
   PageCreate,
   PageEdit,
 ];
