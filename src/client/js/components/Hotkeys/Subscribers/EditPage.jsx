@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-const PageEdit = (props) => {
+const EditPage = (props) => {
 
   // setup effect
   useEffect(() => {
@@ -19,12 +19,12 @@ const PageEdit = (props) => {
   return <></>;
 };
 
-PageEdit.propTypes = {
+EditPage.propTypes = {
   onDeleteRender: PropTypes.func.isRequired,
 };
 
-PageEdit.getHotkeyStrokes = () => {
+EditPage.getHotkeyStrokes = () => {
   return [['e']];
 };
 
-export default PageEdit;
+export default EditPage;

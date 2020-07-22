@@ -4,16 +4,16 @@ import HotkeysDetector from './HotkeysDetector';
 import StaffCredit from '../StaffCredit/StaffCredit';
 import MirrorMode from '../MirrorMode/MirrorMode';
 import ShowHotkeys from '../PageHotkeys/ShowHotkeys';
-import PageCreate from '../PageHotkeys/PageCreate';
-import PageEdit from '../PageHotkeys/PageEdit';
+import CreatePage from './Subscribers/CreatePage';
+import EditPage from './Subscribers/EditPage';
 
 // define supported components list
 const SUPPORTED_COMPONENTS = [
   // StaffCredit,
   // MirrorMode,
   // ShowHotkeys,
-  PageCreate,
-  PageEdit,
+  CreatePage,
+  EditPage,
 ];
 
 const STROKE_TO_COMPONENT_MAP = {};

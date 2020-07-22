@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import NavigationContainer from '../../services/NavigationContainer';
-import { withUnstatedContainers } from '../UnstatedUtils';
+import NavigationContainer from '../../../services/NavigationContainer';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
-const PageCreate = (props) => {
+const CreatePage = (props) => {
 
   // setup effect
   useEffect(() => {
@@ -17,15 +17,15 @@ const PageCreate = (props) => {
   return <></>;
 };
 
-PageCreate.propTypes = {
+CreatePage.propTypes = {
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
   onDeleteRender: PropTypes.func.isRequired,
 };
 
-const PageCreateWrapper = withUnstatedContainers(PageCreate, [NavigationContainer]);
+const CreatePageWrapper = withUnstatedContainers(CreatePage, [NavigationContainer]);
 
-PageCreateWrapper.getHotkeyStrokes = () => {
+CreatePageWrapper.getHotkeyStrokes = () => {
   return [['c']];
 };
 
-export default PageCreateWrapper;
+export default CreatePageWrapper;
