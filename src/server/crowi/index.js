@@ -37,7 +37,7 @@ function Crowi(rootdir) {
 
   this.config = {};
   this.configManager = null;
-  this.mailer = {};
+  this.mailService = null;
   this.passportService = null;
   this.globalNotificationService = null;
   this.slackNotificationService = null;
@@ -249,7 +249,16 @@ Crowi.prototype.setupSessionConfig = async function() {
 Crowi.prototype.setupConfigManager = async function() {
   const ConfigManager = require('../service/config-manager');
   this.configManager = new ConfigManager(this.model('Config'));
-  return this.configManager.loadConfigs();
+  await this.configManager.loadConfigs();
+
+  // setup pubsub
+  this.configPubsub = require('../service/config-pubsub')(this);
+  if (this.configPubsub != null) {
+    this.configPubsub.subscribe();
+    this.configManager.setPubsub(this.configPubsub);
+    // add as a message handler
+    this.configPubsub.addMessageHandler(this.configManager);
+  }
 };
 
 Crowi.prototype.setupModels = async function() {
@@ -275,10 +284,6 @@ Crowi.prototype.scanRuntimeVersions = async function() {
       resolve();
     });
   });
-};
-
-Crowi.prototype.getMailer = function() {
-  return this.mailer;
 };
 
 Crowi.prototype.getSlack = function() {
@@ -308,18 +313,24 @@ Crowi.prototype.setupPassport = async function() {
   this.passportService.setupSerializer();
   // setup strategies
   try {
-    this.passportService.setupLocalStrategy();
-    this.passportService.setupLdapStrategy();
-    this.passportService.setupGoogleStrategy();
-    this.passportService.setupGitHubStrategy();
-    this.passportService.setupTwitterStrategy();
-    this.passportService.setupOidcStrategy();
-    this.passportService.setupSamlStrategy();
-    this.passportService.setupBasicStrategy();
+    this.passportService.setupStrategyById('local');
+    this.passportService.setupStrategyById('ldap');
+    this.passportService.setupStrategyById('saml');
+    this.passportService.setupStrategyById('oidc');
+    this.passportService.setupStrategyById('basic');
+    this.passportService.setupStrategyById('google');
+    this.passportService.setupStrategyById('github');
+    this.passportService.setupStrategyById('twitter');
   }
   catch (err) {
     logger.error(err);
   }
+
+  // add as a message handler
+  if (this.configPubsub != null) {
+    this.configPubsub.addMessageHandler(this.passportService);
+  }
+
   return Promise.resolve();
 };
 
@@ -329,11 +340,13 @@ Crowi.prototype.setupSearcher = async function() {
 };
 
 Crowi.prototype.setupMailer = async function() {
-  const self = this;
-  return new Promise(((resolve, reject) => {
-    self.mailer = require('../util/mailer')(self);
-    resolve();
-  }));
+  const MailService = require('@server/service/mail');
+  this.mailService = new MailService(this);
+
+  // add as a message handler
+  if (this.configPubsub != null) {
+    this.configPubsub.addMessageHandler(this.mailService);
+  }
 };
 
 Crowi.prototype.setupSlack = async function() {
@@ -483,9 +496,14 @@ Crowi.prototype.setUpAcl = async function() {
 Crowi.prototype.setUpCustomize = async function() {
   const CustomizeService = require('../service/customize');
   if (this.customizeService == null) {
-    this.customizeService = new CustomizeService(this.configManager, this.appService, this.xssService);
+    this.customizeService = new CustomizeService(this.configManager, this.appService, this.xssService, this.configPubsub);
     this.customizeService.initCustomCss();
     this.customizeService.initCustomTitle();
+
+    // add as a message handler
+    if (this.configPubsub != null) {
+      this.configPubsub.addMessageHandler(this.customizeService);
+    }
   }
 };
 
