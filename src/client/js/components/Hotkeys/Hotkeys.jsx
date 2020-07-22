@@ -6,6 +6,15 @@ import ShowHotkeys from '../PageHotkeys/ShowHotkeys';
 import PageCreate from '../PageHotkeys/PageCreate';
 import PageEdit from '../PageHotkeys/PageEdit';
 
+
+const SUPPORTED_COMPONENTS = [
+  StaffCredit,
+  MirrorMode,
+  ShowHotkeys,
+  PageCreate,
+  PageEdit,
+];
+
 export default class Hotkeys extends React.Component {
 
   constructor(props) {
@@ -13,58 +22,49 @@ export default class Hotkeys extends React.Component {
     this.state = {
       view: [],
     };
-    this.supportClasses = [
-      StaffCredit,
-      MirrorMode,
-      ShowHotkeys,
-      PageCreate,
-      PageEdit,
-    ];
-    this.keymap = this.keymapSet();
+
+    this.strokeToComponentMap = {};
+    SUPPORTED_COMPONENTS.forEach((comp) => {
+      const strokes = comp.getHotkeyStrokes();
+      strokes.forEach((stroke) => {
+        this.strokeToComponentMap[stroke.toString()] = comp;
+      });
+    });
+
+    // generates list of all the hotkeys command
+    this.hotkeyList = Object.keys(this.strokeToComponentMap);
+
+    // generates keymap depending on what keys were selected in this.hotkeyCommand
+    this.keymap = Array.from(new Set(this.hotkeyList));
+
     this.deleteRender = this.deleteRender.bind(this);
-    this.hotkeyList = this.hotkeyList();
     this.onDetected = this.onDetected.bind(this);
-    this.keymapSet = this.keymapSet.bind(this);
   }
 
-  // delete the instance in state.view
+  /**
+   * delete the instance in state.view
+   */
   deleteRender(instance) {
-    const viewCopy = this.state.view.slice();
-    const index = viewCopy.lastIndexOf(instance);
-    viewCopy.splice(index, 1);
+    const { view } = this.state;
+    const index = view.lastIndexOf(instance);
+
+    const newView = view.slice(); // shallow copy
+    newView.splice(index, 1);
     this.setState({
-      view: viewCopy,
+      view: newView,
     });
-    return null;
   }
 
-  // this function generates keymap depending on what keys were selected in this.hotkeyCommand
-  keymapSet() {
-    let keymap = this.hotkeyList();
-    keymap = keymap.flat();
-    keymap = new Set(keymap);
-    return Array.from(keymap);
-  }
-
-  // this function generates list of all the hotkeys command
-  hotkeyList() {
-    let hotkeyList = this.supportClasses.map((value) => {
-      return value.getHotkeyStroke();
-    });
-    hotkeyList = hotkeyList.flat();
-    return hotkeyList;
-  }
-
-  // activates when one of the hotkey strokes gets determined from HotkeysDetector
+  /**
+   * activates when one of the hotkey strokes gets determined from HotkeysDetector
+   */
   onDetected(strokeDetermined) {
-    let viewDetermined = this.supportClasses.filter((value) => {
-      return value.getHotkeyStroke().find(stroke => stroke.toString() === strokeDetermined.toString());
-    });
-    viewDetermined = viewDetermined.map((value) => {
-      return value.getComponent(this.deleteRender);
-    });
+    const key = (Math.random() * 1000).toString();
+    const Component = this.strokeToComponentMap[strokeDetermined.toString()];
+    const newComponent = <Component key={key} onDeleteRender={this.deleteRender} />;
+
     this.setState({
-      view: this.state.view.concat(viewDetermined).flat(),
+      view: this.state.view.concat(newComponent).flat(),
     });
   }
 

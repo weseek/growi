@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { GlobalHotKeys } from 'react-hotkeys';
 
-export default class HotkeysDetector extends React.Component {
+export default class HotkeysDetector extends React.PureComponent {
 
   constructor(props) {
     super(props);
@@ -16,12 +16,15 @@ export default class HotkeysDetector extends React.Component {
 
   check(event) {
     const target = event.target;
-    let eventKey = event.key;
     // ignore when target dom is input
     const inputPattern = /^input|textinput|textarea$/i;
     if (inputPattern.test(target.tagName) || target.isContentEditable) {
       return;
     }
+
+    event.preventDefault();
+
+    let eventKey = event.key;
     this.processingCommands = this.hotkeyList;
 
     if (event.ctrlKey) {

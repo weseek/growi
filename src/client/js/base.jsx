@@ -45,7 +45,7 @@ const componentMappings = {
 
   'grw-sidebar-wrapper': <Sidebar />,
 
-  hotkeys: <Hotkeys />,
+  'grw-hotkeys': <Hotkeys />,
 
   'grw-fab-container': <Fab />,
 };
