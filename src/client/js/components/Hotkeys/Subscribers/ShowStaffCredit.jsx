@@ -5,7 +5,7 @@ import StaffCredit from '../../StaffCredit/StaffCredit';
 
 const ShowStaffCredit = (props) => {
 
-  return <StaffCredit onClose={() => props.onDeleteRender(this)} />;
+  return <StaffCredit onClosed={() => props.onDeleteRender(this)} />;
 
 };
 
