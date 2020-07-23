@@ -109,7 +109,7 @@ class AppService extends ConfigPubsubMessageHandlable {
   async initDB(globalLang) {
     const initialConfig = this.configManager.configModel.getConfigsObjectForInstalling();
     initialConfig['app:globalLang'] = globalLang;
-    await this.configManager.updateConfigsInTheSameNamespace('crowi', initialConfig);
+    await this.configManager.updateConfigsInTheSameNamespace('crowi', initialConfig, true);
   }
 
   async isDBInitialized() {
