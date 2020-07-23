@@ -143,6 +143,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: '/pubsub',
   },
+  CONFIG_PUBSUB_NCHAN_CHANNEL_ID: {
+    ns:      'crowi',
+    key:     'configPubsub:nchan:channelId',
+    type:    TYPES.STRING,
+    default: null,
+  },
   MAX_FILE_SIZE: {
     ns:      'crowi',
     key:     'app:maxFileSize',

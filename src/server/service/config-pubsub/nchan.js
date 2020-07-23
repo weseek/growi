@@ -61,6 +61,7 @@ class NchanDelegator extends ConfigPubsubDelegator {
     // connect
     this.isConnecting = true;
     const url = this.constructUrl(this.subscribePath).toString();
+    logger.debug(`Subscribe to ${url}`);
     this.client.connect(url.toString());
   }
 
@@ -70,9 +71,10 @@ class NchanDelegator extends ConfigPubsubDelegator {
   async publish(configPubsubMessage) {
     await super.publish(configPubsubMessage);
 
-    logger.debug('Publish message', configPubsubMessage);
-
     const url = this.constructUrl(this.publishPath).toString();
+
+    logger.debug('Publish message', configPubsubMessage, `to ${url}`);
+
     return axios.post(url, JSON.stringify(configPubsubMessage));
   }
 
@@ -187,6 +189,7 @@ module.exports = function(crowi) {
 
   const publishPath = configManager.getConfig('crowi', 'configPubsub:nchan:publishPath');
   const subscribePath = configManager.getConfig('crowi', 'configPubsub:nchan:subscribePath');
+  const channelId = configManager.getConfig('crowi', 'configPubsub:nchan:channelId');
 
-  return new NchanDelegator(uri, publishPath, subscribePath);
+  return new NchanDelegator(uri, publishPath, subscribePath, channelId);
 };
