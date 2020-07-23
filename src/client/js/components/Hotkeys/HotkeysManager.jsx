@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import HotkeysDetector from './HotkeysDetector';
 import StaffCredit from '../StaffCredit/StaffCredit';
 import MirrorMode from '../MirrorMode/MirrorMode';
-import ShowHotkeys from '../PageHotkeys/ShowHotkeys';
+import ShowHotkeys from './Subscribers/ShowHotkeys';
 import CreatePage from './Subscribers/CreatePage';
 import EditPage from './Subscribers/EditPage';
 
@@ -11,7 +11,7 @@ import EditPage from './Subscribers/EditPage';
 const SUPPORTED_COMPONENTS = [
   // StaffCredit,
   // MirrorMode,
-  // ShowHotkeys,
+  ShowHotkeys,
   CreatePage,
   EditPage,
 ];
@@ -20,7 +20,7 @@ const STROKE_TO_COMPONENT_MAP = {};
 SUPPORTED_COMPONENTS.forEach((comp) => {
   const strokes = comp.getHotkeyStrokes();
   strokes.forEach((stroke) => {
-    STROKE_TO_COMPONENT_MAP[stroke.toString()] = comp;
+    STROKE_TO_COMPONENT_MAP[stroke] = comp;
   });
 });
 
