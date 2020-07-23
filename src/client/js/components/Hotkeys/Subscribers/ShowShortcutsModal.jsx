@@ -1,33 +1,26 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 
-/**
- *
- * @export
- * @extends {React.Component}
- */
+const ShowShortcutsModal = (props) => {
 
-export default class ShowHotkeys extends React.Component {
-
-  // when this is called it returns the hotkey stroke
-  static getHotkeyStroke() {
-    return [['/+ctrl'], ['/+meta']];
-  }
-
-  static getComponent() {
-    return <ShowHotkeys />;
-  }
-
-  componentDidMount() {
+  // setup effect
+  useEffect(() => {
     // show modal to create a page
     $('#shortcuts-modal').modal('toggle');
-    return null;
-  }
 
-  render() {
-    return (
-      <React.Fragment>
-      </React.Fragment>
-    );
-  }
+    // remove this
+    props.onDeleteRender(this);
+  }, [props]);
 
-}
+  return <></>;
+};
+
+ShowShortcutsModal.propTypes = {
+  onDeleteRender: PropTypes.func.isRequired,
+};
+
+ShowShortcutsModal.getHotkeyStrokes = () => {
+  return [['/+ctrl'], ['/+meta']];
+};
+
+export default ShowShortcutsModal;
