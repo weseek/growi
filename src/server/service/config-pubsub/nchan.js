@@ -32,10 +32,6 @@ class NchanDelegator extends ConfigPubsubDelegator {
    * @inheritdoc
    */
   shouldResubscribe() {
-    if (this.client == null) {
-      return false;
-    }
-
     if (this.connection != null && this.connection.connected) {
       return false;
     }
@@ -53,7 +49,7 @@ class NchanDelegator extends ConfigPubsubDelegator {
       }
     }
 
-    if (this.shouldResubscribe()) {
+    if (this.client != null && this.shouldResubscribe()) {
       logger.info('The connection to config pubsub server is offline. Try to reconnect...');
     }
 
