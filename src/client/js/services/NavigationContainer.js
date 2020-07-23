@@ -37,8 +37,6 @@ export default class NavigationContainer extends Container {
 
     this.openPageCreateModal = this.openPageCreateModal.bind(this);
     this.closePageCreateModal = this.closePageCreateModal.bind(this);
-
-    this.initHotkeys();
     this.initDeviceSize();
     this.initScrollEvent();
   }
@@ -50,24 +48,6 @@ export default class NavigationContainer extends Container {
     return 'NavigationContainer';
   }
 
-  initHotkeys() {
-    window.addEventListener('keydown', (event) => {
-      const target = event.target;
-
-      // ignore when target dom is input
-      const inputPattern = /^input|textinput|textarea$/i;
-      if (inputPattern.test(target.tagName) || target.isContentEditable) {
-        return;
-      }
-
-      if (event.key === 'c') {
-        // don't fire when not needed
-        if (!event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey) {
-          this.setState({ isPageCreateModalShown: true });
-        }
-      }
-    });
-  }
 
   initDeviceSize() {
     const mdOrAvobeHandler = async(mql) => {
