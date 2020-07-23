@@ -35,6 +35,8 @@ function Crowi(rootdir) {
   this.tmpDir = path.join(this.rootDir, 'tmp') + sep;
   this.cacheDir = path.join(this.tmpDir, 'cache');
 
+  this.express = null;
+
   this.config = {};
   this.configManager = null;
   this.mailService = null;
@@ -378,7 +380,9 @@ Crowi.prototype.start = async function() {
   }
 
   await this.init();
-  const express = await this.buildServer();
+  await this.buildServer();
+
+  const { express } = this;
 
   // setup plugins
   this.pluginService = new PluginService(this, express);
@@ -401,14 +405,14 @@ Crowi.prototype.start = async function() {
   this.io = io;
 
   // setup Express Routes
-  this.setupRoutesAtLast(express);
+  this.setupRoutesAtLast();
 
   return serverListening;
 };
 
-Crowi.prototype.buildServer = function() {
-  const express = require('express')();
+Crowi.prototype.buildServer = async function() {
   const env = this.node_env;
+  const express = require('express')();
 
   require('./express-init')(this, express);
 
@@ -427,15 +431,15 @@ Crowi.prototype.buildServer = function() {
     express.use(morgan('dev'));
   }
 
-  return Promise.resolve(express);
+  this.express = express;
 };
 
 /**
  * setup Express Routes
  * !! this must be at last because it includes '/*' route !!
  */
-Crowi.prototype.setupRoutesAtLast = function(app) {
-  require('../routes')(this, app);
+Crowi.prototype.setupRoutesAtLast = function() {
+  require('../routes')(this, this.express);
 };
 
 /**
