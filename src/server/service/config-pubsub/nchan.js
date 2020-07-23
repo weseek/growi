@@ -85,12 +85,7 @@ class NchanDelegator extends ConfigPubsubDelegator {
    */
   addMessageHandler(handlable) {
     super.addMessageHandler(handlable);
-
-    if (this.connection != null) {
-      this.connection.on('message', (messageObj) => {
-        this.handleMessage(messageObj, handlable);
-      });
-    }
+    this.registerMessageHandlerToConnection(handlable);
   }
 
   /**
@@ -99,6 +94,14 @@ class NchanDelegator extends ConfigPubsubDelegator {
   removeMessageHandler(handlable) {
     super.removeMessageHandler(handlable);
     this.subscribe(true);
+  }
+
+  registerMessageHandlerToConnection(handlable) {
+    if (this.connection != null) {
+      this.connection.on('message', (messageObj) => {
+        this.handleMessage(messageObj, handlable);
+      });
+    }
   }
 
   constructUrl(basepath) {
@@ -132,7 +135,7 @@ class NchanDelegator extends ConfigPubsubDelegator {
       });
 
       // register all message handlers
-      this.handlableList.forEach(handler => this.addMessageHandler(handler));
+      this.handlableList.forEach(handler => this.registerMessageHandlerToConnection(handler));
     });
 
     this.client = client;
