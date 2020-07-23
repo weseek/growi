@@ -84,10 +84,8 @@ module.exports = function(crowi) {
     }
     // create initial pages
     await createInitialPages(adminUser, language);
-    // init plugins
-    crowi.pluginService.autoDetectAndLoadPlugins();
-    // setup routes
-    crowi.setupRoutesAtLast();
+
+    crowi.setupAfterInstall();
 
     // login with passport
     req.logIn(adminUser, (err) => {

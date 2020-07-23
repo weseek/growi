@@ -442,6 +442,11 @@ Crowi.prototype.setupRoutesAtLast = function() {
   require('../routes')(this, this.express);
 };
 
+Crowi.prototype.setupAfterInstall = function() {
+  this.pluginService.autoDetectAndLoadPlugins();
+  this.setupRoutesAtLast();
+};
+
 /**
  * require API for plugins
  *
@@ -517,7 +522,7 @@ Crowi.prototype.setUpCustomize = async function() {
 Crowi.prototype.setUpApp = async function() {
   const AppService = require('../service/app');
   if (this.appService == null) {
-    this.appService = new AppService(this.configManager);
+    this.appService = new AppService(this);
   }
 };
 

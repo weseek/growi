@@ -6,8 +6,9 @@ const { pathUtils } = require('growi-commons');
  */
 class AppService {
 
-  constructor(configManager) {
-    this.configManager = configManager;
+  constructor(crowi) {
+    this.crowi = crowi;
+    this.configManager = crowi.configManager;
   }
 
   getAppTitle() {
