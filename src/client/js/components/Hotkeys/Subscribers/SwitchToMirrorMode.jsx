@@ -1,39 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 
+const SwitchToMirrorMode = (props) => {
 
-/**
- * Page staff credit component
- *
- * @export
- * @class StaffCredit
- * @extends {React.Component}
- */
+  // setup effect
+  useEffect(() => {
+    document.body.classList.add('mirror');
 
-export default class MirrorMode extends React.Component {
+    // remove this
+    props.onDeleteRender(this);
+  }, [props]);
 
-  // when this is called it returns the hotkey stroke
-  static getHotkeyStroke() {
-    return [['x', 'x', 'b', 'b', 'a', 'y', 'a', 'y', 'ArrowDown', 'ArrowLeft']];
-  }
-
-  static getComponent() {
-    return <MirrorMode />;
-  }
-
-  componentDidMount() {
-    const changeBody = document.body;
-    changeBody.classList.add('mirror');
-    return null;
-  }
-
-  render() {
-    return (
-      <React.Fragment>
-      </React.Fragment>
-    );
-  }
-
-}
-
-MirrorMode.propTypes = {
+  return <></>;
 };
+
+SwitchToMirrorMode.propTypes = {
+  onDeleteRender: PropTypes.func.isRequired,
+};
+
+SwitchToMirrorMode.getHotkeyStrokes = () => {
+  return [['x', 'x', 'b', 'b', 'a', 'y', 'a', 'y', 'ArrowDown', 'ArrowLeft']];
+};
+
+export default SwitchToMirrorMode;
