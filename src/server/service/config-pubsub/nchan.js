@@ -32,6 +32,10 @@ class NchanDelegator extends ConfigPubsubDelegator {
    * @inheritdoc
    */
   shouldResubscribe() {
+    if (this.client == null) {
+      return false;
+    }
+
     if (this.connection != null && this.connection.connected) {
       return false;
     }
@@ -49,13 +53,13 @@ class NchanDelegator extends ConfigPubsubDelegator {
       }
     }
 
+    if (this.shouldResubscribe()) {
+      logger.info('The connection to config pubsub server is offline. Try to reconnect...');
+    }
+
     // init client
     if (this.client == null) {
       this.initClient();
-    }
-
-    if (this.shouldResubscribe()) {
-      logger.info('The connection to config pubsub server is offline. Try to reconnect...');
     }
 
     // connect
@@ -82,13 +86,19 @@ class NchanDelegator extends ConfigPubsubDelegator {
   addMessageHandler(handlable) {
     super.addMessageHandler(handlable);
 
-    this.handlableList.push(handlable);
-
     if (this.connection != null) {
       this.connection.on('message', (messageObj) => {
         this.handleMessage(messageObj, handlable);
       });
     }
+  }
+
+  /**
+   * @inheritdoc
+   */
+  removeMessageHandler(handlable) {
+    super.removeMessageHandler(handlable);
+    this.subscribe(true);
   }
 
   constructUrl(basepath) {
