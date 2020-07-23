@@ -523,6 +523,12 @@ Crowi.prototype.setUpApp = async function() {
   const AppService = require('../service/app');
   if (this.appService == null) {
     this.appService = new AppService(this);
+
+    // add as a message handler
+    const isInstalled = this.configManager.getConfig('crowi', 'app:installed');
+    if (this.configPubsub != null && !isInstalled) {
+      this.configPubsub.addMessageHandler(this.appService);
+    }
   }
 };
 
