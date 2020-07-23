@@ -39,6 +39,22 @@ class ConfigPubsubDelegator {
       logger.debug('Unsupported instance: ', handlable);
       return;
     }
+
+    this.handlableList.push(handlable);
+  }
+
+  /**
+   * Remove message handler
+   * @param {ConfigPubsubMessageHandlable} handlable
+   */
+  removeMessageHandler(handlable) {
+    if (!(handlable instanceof ConfigPubsubMessageHandlable)) {
+      logger.warn('Unsupported instance');
+      logger.debug('Unsupported instance: ', handlable);
+      return;
+    }
+
+    this.handlableList = this.handlableList.filter(h => h !== handlable);
   }
 
 }
