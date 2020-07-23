@@ -1,13 +1,26 @@
-import React, { useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import { GlobalHotKeys } from 'react-hotkeys';
 
-let userCommand = [];
-let processingCommands = [];
+import HotkeyStroke from '../../models/HotkeyStroke';
 
 const HotkeysDetector = (props) => {
 
+  const { keySet, strokeSet, onDetected } = props;
+
+  // memorize HotkeyStroke instances
+  const hotkeyStrokes = useMemo(
+    () => {
+      const strokes = Array.from(strokeSet);
+      return strokes.map(stroke => new HotkeyStroke(stroke));
+    },
+    [strokeSet],
+  );
+
+  /**
+   * return key expression string includes modifier
+   */
   const getKeyExpression = useCallback((event) => {
     let eventKey = event.key;
 
@@ -27,32 +40,30 @@ const HotkeysDetector = (props) => {
     return eventKey;
   }, []);
 
+  /**
+   * evaluate the key user pressed and trigger onDetected
+   */
   const checkHandler = useCallback((event) => {
     event.preventDefault();
 
     const eventKey = getKeyExpression(event);
-    processingCommands = props.hotkeyList;
 
-    userCommand = userCommand.concat(eventKey);
-
-    // filters the corresponding hotkeys(keys) that the user has pressed so far
-    processingCommands = processingCommands.filter((value) => {
-      return value.slice(0, userCommand.length).toString() === userCommand.toString();
+    hotkeyStrokes.forEach((hotkeyStroke) => {
+      if (hotkeyStroke.evaluate(eventKey)) {
+        onDetected(hotkeyStroke.stroke);
+      }
     });
+  }, [hotkeyStrokes, getKeyExpression, onDetected]);
 
-    // executes if there were keymap that matches what the user pressed fully.
-    if ((processingCommands.length === 1) && (props.hotkeyList.find(ary => ary.toString() === userCommand.toString()))) {
-      props.onDetected(processingCommands[0]);
-      userCommand = [];
-    }
-    else if (processingCommands.toString() === [].toString()) {
-      userCommand = [];
-    }
-  }, [props, getKeyExpression]);
+  // memorize keyMap for GlobalHotKeys
+  const keyMap = useMemo(() => {
+    return { check: Array.from(keySet) };
+  }, [keySet]);
 
-  const keySet = new Set(props.hotkeyList);
-  const keyMap = { check: Array.from(keySet) };
-  const handlers = { check: checkHandler };
+  // memorize handlers for GlobalHotKeys
+  const handlers = useMemo(() => {
+    return { check: checkHandler };
+  }, [checkHandler]);
 
   return (
     <GlobalHotKeys keyMap={keyMap} handlers={handlers} />
@@ -62,7 +73,8 @@ const HotkeysDetector = (props) => {
 
 HotkeysDetector.propTypes = {
   onDetected: PropTypes.func.isRequired,
-  hotkeyList: PropTypes.array.isRequired,
+  keySet: PropTypes.instanceOf(Set).isRequired,
+  strokeSet: PropTypes.instanceOf(Set).isRequired,
 };
 
 export default HotkeysDetector;

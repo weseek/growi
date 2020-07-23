@@ -16,11 +16,22 @@ const SUPPORTED_COMPONENTS = [
   EditPage,
 ];
 
+const KEY_SET = new Set();
+const STROKE_SET = new Set();
 const STROKE_TO_COMPONENT_MAP = {};
+
 SUPPORTED_COMPONENTS.forEach((comp) => {
   const strokes = comp.getHotkeyStrokes();
+
   strokes.forEach((stroke) => {
-    STROKE_TO_COMPONENT_MAP[stroke] = comp;
+    // register key
+    stroke.forEach(key => KEY_SET.add(key));
+    // register stroke
+    STROKE_SET.add(stroke);
+    // register component
+    const componentList = STROKE_TO_COMPONENT_MAP[stroke] || [];
+    componentList.push(comp);
+    STROKE_TO_COMPONENT_MAP[stroke.toString()] = componentList;
   });
 });
 
@@ -43,16 +54,21 @@ const HotkeysManager = (props) => {
    */
   const onDetected = (strokeDetermined) => {
     const key = (Math.random() * 1000).toString();
-    const Component = STROKE_TO_COMPONENT_MAP[strokeDetermined.toString()];
-    const newComponent = <Component key={key} onDeleteRender={deleteRender} />;
+    const components = STROKE_TO_COMPONENT_MAP[strokeDetermined.toString()];
 
-    const newView = view.concat(newComponent).flat();
-    setView(newView);
+    const newViews = components.map(Component => (
+      <Component key={key} onDeleteRender={deleteRender} />
+    ));
+    setView(view.concat(newViews).flat());
   };
 
   return (
     <>
-      <HotkeysDetector onDetected={stroke => onDetected(stroke)} hotkeyList={Object.keys(STROKE_TO_COMPONENT_MAP)} />
+      <HotkeysDetector
+        onDetected={stroke => onDetected(stroke)}
+        keySet={KEY_SET}
+        strokeSet={STROKE_SET}
+      />
       {view}
     </>
   );
