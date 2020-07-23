@@ -1,6 +1,7 @@
-const debug = require('debug')('growi:service:PassportService');
+const logger = require('@alias/logger')('growi:service:PassportService');
 const urljoin = require('url-join');
 const luceneQueryParser = require('lucene-query-parser');
+
 const passport = require('passport');
 const axios = require('axios');
 const LocalStrategy = require('passport-local').Strategy;
@@ -14,10 +15,13 @@ const SamlStrategy = require('passport-saml').Strategy;
 const OIDCIssuer = require('openid-client').Issuer;
 const BasicStrategy = require('passport-http').BasicStrategy;
 
+const ConfigPubsubMessage = require('../models/vo/config-pubsub-message');
+const ConfigPubsubMessageHandlable = require('./config-pubsub/handlable');
+
 /**
  * the service class of Passport
  */
-class PassportService {
+class PassportService extends ConfigPubsubMessageHandlable {
 
   // see '/lib/form/login.js'
   static get USERNAME_FIELD() { return 'loginForm[username]' }
@@ -25,7 +29,10 @@ class PassportService {
   static get PASSWORD_FIELD() { return 'loginForm[password]' }
 
   constructor(crowi) {
+    super();
+
     this.crowi = crowi;
+    this.lastLoadedAt = null;
 
     /**
      * the flag whether LocalStrategy is set up successfully
@@ -129,6 +136,49 @@ class PassportService {
     };
   }
 
+
+  /**
+   * @inheritdoc
+   */
+  shouldHandleConfigPubsubMessage(configPubsubMessage) {
+    const { eventName, updatedAt, strategyId } = configPubsubMessage;
+    if (eventName !== 'passportServiceUpdated' || updatedAt == null || strategyId == null) {
+      return false;
+    }
+
+    return this.lastLoadedAt == null || this.lastLoadedAt < new Date(configPubsubMessage.updatedAt);
+  }
+
+  /**
+   * @inheritdoc
+   */
+  async handleConfigPubsubMessage(configPubsubMessage) {
+    const { configManager } = this.crowi;
+    const { strategyId } = configPubsubMessage;
+
+    logger.info('Reset strategy by pubsub notification');
+    await configManager.loadConfigs();
+    return this.setupStrategyById(strategyId);
+  }
+
+  async publishUpdatedMessage(strategyId) {
+    const { configPubsub } = this.crowi;
+
+    if (configPubsub != null) {
+      const configPubsubMessage = new ConfigPubsubMessage('passportStrategyReloaded', {
+        updatedAt: new Date(),
+        strategyId,
+      });
+
+      try {
+        await configPubsub.publish(configPubsubMessage);
+      }
+      catch (e) {
+        logger.error('Failed to publish update message with configPubsub: ', e.message);
+      }
+    }
+  }
+
   /**
    * get SetupStrategies
    *
@@ -164,17 +214,18 @@ class PassportService {
   /**
    * setup strategy by target name
    */
-  setupStrategyById(authId) {
+  async setupStrategyById(authId) {
     const func = this.getSetupFunction(authId);
 
     try {
       this[func.setup]();
     }
     catch (err) {
-      debug(err);
+      logger.debug(err);
       this[func.reset]();
     }
 
+    this.lastLoadedAt = new Date();
   }
 
   /**
@@ -183,7 +234,7 @@ class PassportService {
    * @memberof PassportService
    */
   resetLocalStrategy() {
-    debug('LocalStrategy: reset');
+    logger.debug('LocalStrategy: reset');
     passport.unuse('local');
     this.isLocalStrategySetup = false;
   }
@@ -206,7 +257,7 @@ class PassportService {
       return;
     }
 
-    debug('LocalStrategy: setting up..');
+    logger.debug('LocalStrategy: setting up..');
 
     const User = this.crowi.model('User');
 
@@ -229,7 +280,7 @@ class PassportService {
     ));
 
     this.isLocalStrategySetup = true;
-    debug('LocalStrategy: setup is done');
+    logger.debug('LocalStrategy: setup is done');
   }
 
   /**
@@ -238,7 +289,7 @@ class PassportService {
    * @memberof PassportService
    */
   resetMikanStrategy() {
-    debug('MikanStrategy: reset');
+    logger.debug('MikanStrategy: reset');
     passport.unuse('cookie');
     this.isMikanStrategySetup = false;
   }
@@ -260,7 +311,7 @@ class PassportService {
       return;
     }
 
-    debug('MikanStrategy: setting up..');
+    logger.debug('MikanStrategy: setting up..');
 
     const apiUrl = configManager.getConfig('crowi', 'security:passport-mikan:apiUrl');
     const cookieName = configManager.getConfig('crowi', 'security:passport-mikan:cookieName');
@@ -316,7 +367,7 @@ class PassportService {
     ));
 
     this.isMikanStrategySetup = true;
-    debug('MikanStrategy: setup is done');
+    logger.debug('MikanStrategy: setup is done');
   }
 
   /**
@@ -325,7 +376,7 @@ class PassportService {
    * @memberof PassportService
    */
   resetLdapStrategy() {
-    debug('LdapStrategy: reset');
+    logger.debug('LdapStrategy: reset');
     passport.unuse('ldapauth');
     this.isLdapStrategySetup = false;
   }
@@ -349,11 +400,11 @@ class PassportService {
       return;
     }
 
-    debug('LdapStrategy: setting up..');
+    logger.debug('LdapStrategy: setting up..');
 
     passport.use(new LdapStrategy(this.getLdapConfigurationFunc(config, { passReqToCallback: true }),
       (req, ldapAccountInfo, done) => {
-        debug('LDAP authentication has succeeded', ldapAccountInfo);
+        logger.debug('LDAP authentication has succeeded', ldapAccountInfo);
 
         // store ldapAccountInfo to req
         req.ldapAccountInfo = ldapAccountInfo;
@@ -362,7 +413,7 @@ class PassportService {
       }));
 
     this.isLdapStrategySetup = true;
-    debug('LdapStrategy: setup is done');
+    logger.debug('LdapStrategy: setup is done');
   }
 
   /**
@@ -434,23 +485,23 @@ class PassportService {
     // see: https://regex101.com/r/0tuYBB/1
     const match = serverUrl.match(/(ldaps?:\/\/[^/]+)\/(.*)?/);
     if (match == null || match.length < 1) {
-      debug('LdapStrategy: serverUrl is invalid');
+      logger.debug('LdapStrategy: serverUrl is invalid');
       return (req, callback) => { callback({ message: 'serverUrl is invalid' }) };
     }
     const url = match[1];
     const searchBase = match[2] || '';
 
-    debug(`LdapStrategy: url=${url}`);
-    debug(`LdapStrategy: searchBase=${searchBase}`);
-    debug(`LdapStrategy: isUserBind=${isUserBind}`);
+    logger.debug(`LdapStrategy: url=${url}`);
+    logger.debug(`LdapStrategy: searchBase=${searchBase}`);
+    logger.debug(`LdapStrategy: isUserBind=${isUserBind}`);
     if (!isUserBind) {
-      debug(`LdapStrategy: bindDN=${bindDN}`);
-      debug(`LdapStrategy: bindCredentials=${bindCredentials}`);
+      logger.debug(`LdapStrategy: bindDN=${bindDN}`);
+      logger.debug(`LdapStrategy: bindCredentials=${bindCredentials}`);
     }
-    debug(`LdapStrategy: searchFilter=${searchFilter}`);
-    debug(`LdapStrategy: groupSearchBase=${groupSearchBase}`);
-    debug(`LdapStrategy: groupSearchFilter=${groupSearchFilter}`);
-    debug(`LdapStrategy: groupDnProperty=${groupDnProperty}`);
+    logger.debug(`LdapStrategy: searchFilter=${searchFilter}`);
+    logger.debug(`LdapStrategy: groupSearchBase=${groupSearchBase}`);
+    logger.debug(`LdapStrategy: groupSearchFilter=${groupSearchFilter}`);
+    logger.debug(`LdapStrategy: groupDnProperty=${groupDnProperty}`);
 
     return (req, callback) => {
       // get credentials from form data
@@ -484,7 +535,7 @@ class PassportService {
           passwordField: PassportService.PASSWORD_FIELD,
           server: serverOpt,
         }, opts);
-        debug('ldap configuration: ', mergedOpts);
+        logger.debug('ldap configuration: ', mergedOpts);
 
         // store configuration to req
         req.ldapConfiguration = mergedOpts;
@@ -511,7 +562,7 @@ class PassportService {
       return;
     }
 
-    debug('GoogleStrategy: setting up..');
+    logger.debug('GoogleStrategy: setting up..');
     passport.use(
       new GoogleStrategy(
         {
@@ -533,7 +584,7 @@ class PassportService {
     );
 
     this.isGoogleStrategySetup = true;
-    debug('GoogleStrategy: setup is done');
+    logger.debug('GoogleStrategy: setup is done');
   }
 
   /**
@@ -542,7 +593,7 @@ class PassportService {
    * @memberof PassportService
    */
   resetGoogleStrategy() {
-    debug('GoogleStrategy: reset');
+    logger.debug('GoogleStrategy: reset');
     passport.unuse('google');
     this.isGoogleStrategySetup = false;
   }
@@ -559,7 +610,7 @@ class PassportService {
       return;
     }
 
-    debug('GitHubStrategy: setting up..');
+    logger.debug('GitHubStrategy: setting up..');
     passport.use(
       new GitHubStrategy(
         {
@@ -581,7 +632,7 @@ class PassportService {
     );
 
     this.isGitHubStrategySetup = true;
-    debug('GitHubStrategy: setup is done');
+    logger.debug('GitHubStrategy: setup is done');
   }
 
   /**
@@ -590,7 +641,7 @@ class PassportService {
    * @memberof PassportService
    */
   resetGitHubStrategy() {
-    debug('GitHubStrategy: reset');
+    logger.debug('GitHubStrategy: reset');
     passport.unuse('github');
     this.isGitHubStrategySetup = false;
   }
@@ -607,7 +658,7 @@ class PassportService {
       return;
     }
 
-    debug('TwitterStrategy: setting up..');
+    logger.debug('TwitterStrategy: setting up..');
     passport.use(
       new TwitterStrategy(
         {
@@ -629,7 +680,7 @@ class PassportService {
     );
 
     this.isTwitterStrategySetup = true;
-    debug('TwitterStrategy: setup is done');
+    logger.debug('TwitterStrategy: setup is done');
   }
 
   /**
@@ -638,7 +689,7 @@ class PassportService {
    * @memberof PassportService
    */
   resetTwitterStrategy() {
-    debug('TwitterStrategy: reset');
+    logger.debug('TwitterStrategy: reset');
     passport.unuse('twitter');
     this.isTwitterStrategySetup = false;
   }
@@ -655,7 +706,7 @@ class PassportService {
       return;
     }
 
-    debug('OidcStrategy: setting up..');
+    logger.debug('OidcStrategy: setting up..');
 
     // setup client
     // extend oidc request timeouts
@@ -667,7 +718,41 @@ class PassportService {
       ? urljoin(this.crowi.appService.getSiteUrl(), '/passport/oidc/callback')
       : configManager.getConfig('crowi', 'security:passport-oidc:callbackUrl'); // DEPRECATED: backward compatible with v3.2.3 and below
     const oidcIssuer = await OIDCIssuer.discover(issuerHost);
-    debug('Discovered issuer %s %O', oidcIssuer.issuer, oidcIssuer.metadata);
+    logger.debug('Discovered issuer %s %O', oidcIssuer.issuer, oidcIssuer.metadata);
+
+    const authorizationEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:authorizationEndpoint');
+    if (authorizationEndpoint) {
+      oidcIssuer.metadata.authorization_endpoint = authorizationEndpoint;
+    }
+    const tokenEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:tokenEndpoint');
+    if (tokenEndpoint) {
+      oidcIssuer.metadata.token_endpoint = tokenEndpoint;
+    }
+    const revocationEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:revocationEndpoint');
+    if (revocationEndpoint) {
+      oidcIssuer.metadata.revocation_endpoint = revocationEndpoint;
+    }
+    const introspectionEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:introspectionEndpoint');
+    if (introspectionEndpoint) {
+      oidcIssuer.metadata.introspection_endpoint = introspectionEndpoint;
+    }
+    const userInfoEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:userInfoEndpoint');
+    if (userInfoEndpoint) {
+      oidcIssuer.metadata.userinfo_endpoint = userInfoEndpoint;
+    }
+    const endSessionEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:endSessionEndpoint');
+    if (endSessionEndpoint) {
+      oidcIssuer.metadata.end_session_endpoint = endSessionEndpoint;
+    }
+    const registrationEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:registrationEndpoint');
+    if (registrationEndpoint) {
+      oidcIssuer.metadata.registration_endpoint = registrationEndpoint;
+    }
+    const jwksUri = configManager.getConfig('crowi', 'security:passport-oidc:jwksUri');
+    if (jwksUri) {
+      oidcIssuer.metadata.jwks_uri = jwksUri;
+    }
+    logger.debug('Configured issuer %s %O', oidcIssuer.issuer, oidcIssuer.metadata);
 
     const client = new oidcIssuer.Client({
       client_id: clientId,
@@ -690,7 +775,7 @@ class PassportService {
     })));
 
     this.isOidcStrategySetup = true;
-    debug('OidcStrategy: setup is done');
+    logger.debug('OidcStrategy: setup is done');
   }
 
   /**
@@ -699,7 +784,7 @@ class PassportService {
    * @memberof PassportService
    */
   resetOidcStrategy() {
-    debug('OidcStrategy: reset');
+    logger.debug('OidcStrategy: reset');
     passport.unuse('oidc');
     this.isOidcStrategySetup = false;
   }
@@ -716,7 +801,7 @@ class PassportService {
       return;
     }
 
-    debug('SamlStrategy: setting up..');
+    logger.debug('SamlStrategy: setting up..');
     passport.use(
       new SamlStrategy(
         {
@@ -738,7 +823,7 @@ class PassportService {
     );
 
     this.isSamlStrategySetup = true;
-    debug('SamlStrategy: setup is done');
+    logger.debug('SamlStrategy: setup is done');
   }
 
   /**
@@ -747,7 +832,7 @@ class PassportService {
    * @memberof PassportService
    */
   resetSamlStrategy() {
-    debug('SamlStrategy: reset');
+    logger.debug('SamlStrategy: reset');
     passport.unuse('saml');
     this.isSamlStrategySetup = false;
   }
@@ -783,15 +868,15 @@ class PassportService {
   verifySAMLResponseByABLCRule(response) {
     const rule = this.crowi.configManager.getConfig('crowi', 'security:passport-saml:ABLCRule');
     if (rule == null) {
-      debug('There is no ABLCRule.');
+      logger.debug('There is no ABLCRule.');
       return true;
     }
 
     const luceneRule = this.parseABLCRule(rule);
-    debug({ 'Parsed Rule': JSON.stringify(luceneRule, null, 2) });
+    logger.debug({ 'Parsed Rule': JSON.stringify(luceneRule, null, 2) });
 
     const attributes = this.extractAttributesFromSAMLResponse(response);
-    debug({ 'Extracted Attributes': JSON.stringify(attributes, null, 2) });
+    logger.debug({ 'Extracted Attributes': JSON.stringify(attributes, null, 2) });
 
     return this.evaluateRuleForSamlAttributes(attributes, luceneRule);
   }
@@ -892,7 +977,7 @@ class PassportService {
    * @memberof PassportService
    */
   resetBasicStrategy() {
-    debug('BasicStrategy: reset');
+    logger.debug('BasicStrategy: reset');
     passport.unuse('basic');
     this.isBasicStrategySetup = false;
   }
@@ -914,7 +999,7 @@ class PassportService {
       return;
     }
 
-    debug('BasicStrategy: setting up..');
+    logger.debug('BasicStrategy: setting up..');
 
     passport.use(new BasicStrategy(
       (userId, password, done) => {
@@ -926,7 +1011,7 @@ class PassportService {
     ));
 
     this.isBasicStrategySetup = true;
-    debug('BasicStrategy: setup is done');
+    logger.debug('BasicStrategy: setup is done');
   }
 
   /**
@@ -940,7 +1025,7 @@ class PassportService {
       throw new Error('serializer/deserializer have already been set up');
     }
 
-    debug('setting up serializer and deserializer');
+    logger.debug('setting up serializer and deserializer');
 
     const User = this.crowi.model('User');
 
