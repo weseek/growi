@@ -23,7 +23,7 @@ class AppService extends ConfigPubsubMessageHandlable {
    */
   shouldHandleConfigPubsubMessage(configPubsubMessage) {
     const { eventName } = configPubsubMessage;
-    if (eventName !== 'postInstallation') {
+    if (eventName !== 'systemInstalled') {
       return false;
     }
 
@@ -56,7 +56,7 @@ class AppService extends ConfigPubsubMessageHandlable {
     const { configPubsub } = this;
 
     if (configPubsub != null) {
-      const configPubsubMessage = new ConfigPubsubMessage('postInstallation');
+      const configPubsubMessage = new ConfigPubsubMessage('systemInstalled');
 
       try {
         await configPubsub.publish(configPubsubMessage);
