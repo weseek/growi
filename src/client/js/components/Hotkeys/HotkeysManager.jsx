@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import HotkeysDetector from './HotkeysDetector';
 import StaffCredit from '../StaffCredit/StaffCredit';
 import MirrorMode from '../MirrorMode/MirrorMode';
-import ShowHotkeys from './Subscribers/ShowHotkeys';
+import ShowShortcutsModal from './Subscribers/ShowShortcutsModal';
 import CreatePage from './Subscribers/CreatePage';
 import EditPage from './Subscribers/EditPage';
 
@@ -11,7 +11,7 @@ import EditPage from './Subscribers/EditPage';
 const SUPPORTED_COMPONENTS = [
   // StaffCredit,
   // MirrorMode,
-  ShowHotkeys,
+  ShowShortcutsModal,
   CreatePage,
   EditPage,
 ];
