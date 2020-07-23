@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 
 import HotkeysDetector from './HotkeysDetector';
-import StaffCredit from '../StaffCredit/StaffCredit';
-import MirrorMode from '../MirrorMode/MirrorMode';
+
+import ShowStaffCredit from './Subscribers/ShowStaffCredit';
+import SwitchToMirrorMode from './Subscribers/SwitchToMirrorMode';
 import ShowShortcutsModal from './Subscribers/ShowShortcutsModal';
 import CreatePage from './Subscribers/CreatePage';
 import EditPage from './Subscribers/EditPage';
 
 // define supported components list
 const SUPPORTED_COMPONENTS = [
-  // StaffCredit,
-  // MirrorMode,
+  ShowStaffCredit,
+  SwitchToMirrorMode,
   ShowShortcutsModal,
   CreatePage,
   EditPage,

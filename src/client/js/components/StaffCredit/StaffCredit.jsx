@@ -14,26 +14,18 @@ import contributors from './Contributor';
  * @extends {React.Component}
  */
 
+// eslint-disable-next-line no-unused-vars
+const logger = loggerFactory('growi:cli:StaffCredit');
 
 export default class StaffCredit extends React.Component {
 
   constructor(props) {
 
     super(props);
-    this.logger = loggerFactory('growi:StaffCredit');
     this.state = {
       isShown: true,
     };
     this.deleteCredit = this.deleteCredit.bind(this);
-  }
-
-  // when this is called it returns the hotkey stroke
-  static getHotkeyStroke() {
-    return [['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a']];
-  }
-
-  static getComponent(onDeleteRender) {
-    return <StaffCredit onDeleteRender={onDeleteRender} />;
   }
 
   // to delete the staffCredit and to inform that to Hotkeys.jsx
@@ -109,10 +101,16 @@ export default class StaffCredit extends React.Component {
   }
 
   render() {
+    const { onClosed } = this.props;
+
     return (
       <Modal
         isOpen={this.state.isShown}
-        onClosed={() => { return () => { this.props.onDeleteRender(this) } }}
+        onClosed={() => {
+          if (onClosed != null) {
+            onClosed();
+          }
+        }}
         toggle={this.deleteCredit}
         scrollable
         className="staff-credit"
@@ -126,5 +124,5 @@ export default class StaffCredit extends React.Component {
 
 }
 StaffCredit.propTypes = {
-  onDeleteRender: PropTypes.func,
+  onClosed: PropTypes.func,
 };
