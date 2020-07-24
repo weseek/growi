@@ -3,6 +3,7 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
+const { query } = require('express-validator');
 
 
 const router = express.Router();
@@ -19,6 +20,14 @@ module.exports = (crowi) => {
   const csrf = require('../../middlewares/csrf')(crowi);
 
   const Page = crowi.model('Page');
+
+  const validator = {
+    duplicate: [
+      query('path').isString(),
+      query('PageId').isNumeric(),
+    ],
+
+  };
 
   /**
    * @swagger
@@ -83,7 +92,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.get('/duplicate', accessTokenParser, loginRequired, async(req, res) => {
+  router.get('/duplicate', accessTokenParser, loginRequired, validator.duplicate, async(req, res) => {
     const { path, pageId } = req.query;
     const searchWord = new RegExp(`^${path}`);
     const duplicateData = await Page.find({ path: searchWord });
