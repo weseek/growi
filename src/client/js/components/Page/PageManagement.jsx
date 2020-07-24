@@ -38,7 +38,7 @@ const PageManagement = (props) => {
   async function openPageDuplicateModalHandler() {
     setIsPageDuplicateModalShown(true);
     try {
-      const res = await appContainer.apiv3Get('/pages/duplicate', { path, pageId });
+      const res = await appContainer.apiv3Get('/pages/duplicate', { pageId });
       setDuplicateModalPaths(res.data.duplicatePaths);
     }
     catch (err) {
