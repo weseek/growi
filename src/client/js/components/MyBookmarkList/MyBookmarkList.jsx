@@ -33,17 +33,13 @@ class MyBookmarkList extends React.Component {
   }
 
   getMyBookmarkList(selectPageNumber) {
-    const { appContainer, pageContainer } = this.props;
-    const { pageId } = pageContainer.state;
+    const { appContainer } = this.props;
 
     const userId = appContainer.currentUserId;
     const limit = appContainer.getConfig().recentCreatedLimit;
-    const offset = (selectPageNumber - 1) * limit;
 
     // pagesList get and pagination calculate
-    this.props.appContainer.apiGet('/pages.recentCreated', {
-      page_id: pageId, user: userId, limit, offset,
-    })
+    this.props.appContainer.apiv3.get(`/bookamrks/${userId}`)
       .then((res) => {
         const totalPages = res.totalCount;
         const pages = res.pages;

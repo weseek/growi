@@ -152,7 +152,7 @@ module.exports = (crowi) => {
     return res.apiv3({ bookmark });
   });
 
-  router.get('/users/:id', /* accessTokenParser, loginRequired, csrf, */ apiV3FormValidator, async(req, res) => {
+  router.get('/:id/users', /* accessTokenParser, loginRequired, csrf, */ apiV3FormValidator, async(req, res) => {
     const { userId } = req.body;
     try {
       const bookmark = await Bookmark.find({ user: userId });
