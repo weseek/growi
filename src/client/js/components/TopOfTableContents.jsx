@@ -13,7 +13,7 @@ const TopOfTableContents = (props) => {
     <>
       <div className="liker-and-seenusers d-flex align-items-end pb-2">
         <button type="button" className="bg-transparent border-0">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" className="table-top-icon">
             <defs>
             </defs>
             <g id="レイヤー_2" data-name="レイヤー 2">
@@ -31,7 +31,7 @@ const TopOfTableContents = (props) => {
         </button>
 
         <button type="button" className="bg-transparent border-0">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" className="table-top-icon">
             <defs>
             </defs>
             <g id="レイヤー_2" data-name="レイヤー 2">
@@ -51,7 +51,7 @@ const TopOfTableContents = (props) => {
         </button>
 
         <button type="button" className="bg-transparent border-0">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" className="table-top-icon">
             <defs>
             </defs>
             <g id="レイヤー_2" data-name="レイヤー 2">
@@ -71,7 +71,7 @@ const TopOfTableContents = (props) => {
         </button>
 
         <button type="button" className="bg-transparent border-0">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" className="table-top-icon">
             <defs>
             </defs>
             <g id="レイヤー_2" data-name="レイヤー 2">
