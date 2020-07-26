@@ -6,8 +6,7 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
-// import { toastError } from '../../util/apiNotification';
-// import PaginationWrapper from '../PaginationWrapper';
+import PaginationWrapper from '../PaginationWrapper';
 import Page from '../PageList/Page';
 
 class MyBookmarkList extends React.Component {
@@ -17,28 +16,46 @@ class MyBookmarkList extends React.Component {
 
     this.state = {
       pages: [],
+      activePage: 1,
+      totalPages: 0,
+      pagingLimit: Infinity,
     };
 
+    this.handlePage = this.handlePage.bind(this);
   }
 
+  componentWillMount() {
+    this.getMyBookmarkList(1);
+  }
 
-  /* async getMyBookmarkList(selectPageNumber) {
-    const { appContainer } = this.props;
+  async handlePage(selectedPage) {
+    await this.getMyBookmarkList(selectedPage);
+  }
+
+  getMyBookmarkList(selectPageNumber) {
+    const { appContainer, pageContainer } = this.props;
+    const { pageId } = pageContainer.state;
+
     const userId = appContainer.currentUserId;
-    const limit = 10;
+    const limit = appContainer.getConfig().recentCreatedLimit;
     const offset = (selectPageNumber - 1) * limit;
 
-    try {
-      const { data } = await appContainer.apiv3.get(`/bookmarks/users/${userId}`, { limit, offset });
-      const { docs: pages, totalDocs: totalPages, limit: pagingLimit } = data.paginateResult;
-      this.setState({
-        pages,
+    // pagesList get and pagination calculate
+    this.props.appContainer.apiGet('/pages.recentCreated', {
+      page_id: pageId, user: userId, limit, offset,
+    })
+      .then((res) => {
+        const totalPages = res.totalCount;
+        const pages = res.pages;
+        const activePage = selectPageNumber;
+        this.setState({
+          pages,
+          activePage,
+          totalPages,
+          pagingLimit: limit,
+        });
       });
-    }
-    catch (error) {
-      toastError(error, 'Error occurred in updating History');
-    }
-  } */
+  }
 
 
   /**
@@ -65,12 +82,12 @@ class MyBookmarkList extends React.Component {
         <ul className="page-list-ul page-list-ul-flat mb-3">
           {pageList}
         </ul>
-        {/* <PaginationWrapper
+        <PaginationWrapper
           activePage={this.state.activePage}
           changePage={this.handlePage}
           totalItemsCount={this.state.totalPages}
           pagingLimit={this.state.pagingLimit}
-        /> */}
+        />
       </div>
     );
   }
