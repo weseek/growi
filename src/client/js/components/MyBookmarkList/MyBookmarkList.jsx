@@ -36,7 +36,10 @@ class MyBookmarkList extends React.Component {
     const { appContainer } = this.props;
 
     const userId = appContainer.currentUserId;
+    /* TODO GW-3255 get config from customize settings */
     const limit = appContainer.getConfig().recentCreatedLimit;
+    // const offset = (selectPageNumber - 1) * limit;
+
 
     // pagesList get and pagination calculate
     this.props.appContainer.apiv3.get(`/bookamrks/${userId}`)
