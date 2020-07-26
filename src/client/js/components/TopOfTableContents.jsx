@@ -26,8 +26,6 @@ const TopOfTableContents = (props) => {
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" className="table-top-icon" width="20" height="20">
             <rect className="cls-1" width="14" height="14" />
             <path
-              id="Icon_material-timeline"
-              data-name="Icon material-timeline"
               d="M13.6,4.6a1.2,1.2,0,0,1-1.2,1.2,1,1,0,0,1-.3,0L10,7.89a1.1,1.1,0,0,1,0,.31,1.2,1.2,0,1,1-2.4,0,1.1,1.1,0,0,1,
               0-.31L6.11,6.36a1.3,1.3,0,0,1-.62,0L2.75,9.1a1,1,0,0,1,0,.3A1.2,1.2,0,1,1,1.6,8.2a1,1,0,0,1,.3,0L4.64,
               5.51a1.1,1.1,0,0,1,0-.31A1.2,1.2,0,0,1,7,5.2a1.1,1.1,0,0,1,0,.31L8.49,7a1.3,1.3,0,0,1,.62,0L11.25,4.9a1,
@@ -53,7 +51,7 @@ const TopOfTableContents = (props) => {
         <button type="button" className="bg-transparent border-0">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" className="table-top-icon" width="20" height="20">
             <rect className="cls-1" width="14" height="14" />
-            <g id="_" data-name=" " className="cls-2">
+            <g className="cls-2">
               <path d="M2.9,13a2,2,0,0,1-1.44-.63,2.28,2.28,0,0,1,0-3.23l7-7.38a2.48,2.48,0,0,1,1.22-.7,2.61,
               2.61,0,0,1,1.41.09A3.46,3.46,0,0,1,12.37,2a3.94,3.94,0,0,1,.36.45A2.61,2.61,0,0,1,13,3a3.41,3.41,
               0,0,1,.16.57,3.06,3.06,0,0,1-.82,2.75L7.07,11.86a.35.35,0,0,1-.26.13.4.4,0,0,1-.28-.1.47.47,0,0,
