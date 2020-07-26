@@ -15,13 +15,6 @@ const TopOfTableContents = (props) => {
         <button type="button" className="bg-transparent border-0">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14">
             <defs>
-              <style>
-                {'\
-                .cls-1{\
-                fill: none;\
-                }\
-                '}
-              </style>
             </defs>
             <g id="レイヤー_2" data-name="レイヤー 2">
               <g id="レイヤー_1-2" data-name="レイヤー 1">
@@ -40,13 +33,6 @@ const TopOfTableContents = (props) => {
         <button type="button" className="bg-transparent border-0">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14">
             <defs>
-              <style>
-                {'\
-                .cls-1{\
-                fill: none;\
-                }\
-                '}
-              </style>
             </defs>
             <g id="レイヤー_2" data-name="レイヤー 2">
               <g id="レイヤー_1-2" data-name="レイヤー 1">
@@ -67,13 +53,6 @@ const TopOfTableContents = (props) => {
         <button type="button" className="bg-transparent border-0">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14">
             <defs>
-              <style>
-                {'\
-                .cls-1{\
-                fill: none;\
-                }\
-                '}
-              </style>
             </defs>
             <g id="レイヤー_2" data-name="レイヤー 2">
               <g id="レイヤー_1-2" data-name="レイヤー 1">
@@ -94,15 +73,6 @@ const TopOfTableContents = (props) => {
         <button type="button" className="bg-transparent border-0">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14">
             <defs>
-              <style>
-                {'\
-                .cls-1{\
-                fill: none;\
-                }\
-                .cls-2{\
-                isolation: isolate;\
-                '}
-              </style>
             </defs>
             <g id="レイヤー_2" data-name="レイヤー 2">
               <g id="レイヤー_1-2" data-name="レイヤー 1">
