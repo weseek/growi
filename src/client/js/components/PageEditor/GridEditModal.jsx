@@ -58,7 +58,6 @@ export default class GridEditModal extends React.Component {
 
   hide() {
     this.setState({ show: false });
-    console.log(this.state);
   }
 
   cancel() {
