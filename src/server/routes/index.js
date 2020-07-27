@@ -21,7 +21,6 @@ module.exports = function(crowi, app) {
   const logout = require('./logout')(crowi, app);
   const me = require('./me')(crowi, app);
   const admin = require('./admin')(crowi, app);
-  const installer = require('./installer')(crowi, app);
   const user = require('./user')(crowi, app);
   const attachment = require('./attachment')(crowi, app);
   const comment = require('./comment')(crowi, app);
@@ -42,6 +41,7 @@ module.exports = function(crowi, app) {
 
   // installer
   if (!isInstalled) {
+    const installer = require('./installer')(crowi);
     app.get('/installer'               , applicationNotInstalled , installer.index);
     app.post('/installer'              , applicationNotInstalled , form.register , csrf, installer.install);
     return;

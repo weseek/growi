@@ -7,8 +7,8 @@ import GrowiNavbar from './components/Navbar/GrowiNavbar';
 import GrowiNavbarBottom from './components/Navbar/GrowiNavbarBottom';
 import Sidebar from './components/Sidebar';
 import ShareLinkAlert from './components/Page/ShareLinkAlert';
+import HotkeysManager from './components/Hotkeys/HotkeysManager';
 import Fab from './components/Fab';
-import StaffCredit from './components/StaffCredit/StaffCredit';
 
 import AppContainer from './services/AppContainer';
 import WebsocketContainer from './services/WebsocketContainer';
@@ -48,8 +48,8 @@ const componentMappings = {
 
   'share-link-alert': <ShareLinkAlert />,
   'grw-fab-container': <Fab />,
+  'grw-hotkeys-manager': <HotkeysManager />,
 
-  'staff-credit': <StaffCredit />,
 };
 
 export { appContainer, componentMappings };

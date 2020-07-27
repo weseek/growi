@@ -96,14 +96,6 @@ const extractToAncestorsPaths = (pagePath) => {
   return ancestorsPaths;
 };
 
-const addSlashOfEnd = (path) => {
-  let returnPath = path;
-  if (!path.match(/\/$/)) {
-    returnPath += '/';
-  }
-  return returnPath;
-};
-
 /**
  * populate page (Query or Document) to show revision
  * @param {any} page Query or Document
@@ -148,15 +140,50 @@ class PageQueryBuilder {
   }
 
   /**
-   * generate the query to find the page that is match with `path` and its descendants
+   * generate the query to find the pages '{path}/*' and '{path}' self.
+   * If top page, return without doing anything.
    */
   addConditionToListWithDescendants(path, option) {
-    // ignore other pages than descendants
-    // eslint-disable-next-line no-param-reassign
-    path = addSlashOfEnd(path);
+    // No request is set for the top page
+    if (isTopPage(path)) {
+      return this;
+    }
 
-    this.addConditionToListByStartWith(path, option);
+    const pathNormalized = pathUtils.normalizePath(path);
+    const pathWithTrailingSlash = pathUtils.addTrailingSlash(path);
+
+    const startsPattern = escapeStringRegexp(pathWithTrailingSlash);
+
+    this.query = this.query
+      .and({
+        $or: [
+          { path: pathNormalized },
+          { path: new RegExp(`^${startsPattern}`) },
+        ],
+      });
+
     return this;
+  }
+
+  /**
+   * generate the query to find the pages '{path}/*' (exclude '{path}' self).
+   * If top page, return without doing anything.
+   */
+  addConditionToListOnlyDescendants(path, option) {
+    // No request is set for the top page
+    if (isTopPage(path)) {
+      return this;
+    }
+
+    const pathWithTrailingSlash = pathUtils.addTrailingSlash(path);
+
+    const startsPattern = escapeStringRegexp(pathWithTrailingSlash);
+
+    this.query = this.query
+      .and({ path: new RegExp(`^${startsPattern}`) });
+
+    return this;
+
   }
 
   /**
@@ -173,36 +200,11 @@ class PageQueryBuilder {
     if (isTopPage(path)) {
       return this;
     }
-    const pathCondition = [];
 
-    /*
-     * 1. add condition for finding the page completely match with `path` w/o last slash
-     */
-    let pathSlashOmitted = path;
-    if (path.match(/\/$/)) {
-      pathSlashOmitted = path.substr(0, path.length - 1);
-      pathCondition.push({ path: pathSlashOmitted });
-    }
-    /*
-     * 2. add decendants
-     */
-    const pattern = escapeStringRegexp(path); // escape
-
-    let queryReg;
-    try {
-      queryReg = new RegExp(`^${pattern}`);
-    }
-    // if regular expression is invalid
-    catch (e) {
-      // force to escape
-      queryReg = new RegExp(`^${escapeStringRegexp(pattern)}`);
-    }
-    pathCondition.push({ path: queryReg });
+    const startsPattern = escapeStringRegexp(path);
 
     this.query = this.query
-      .and({
-        $or: pathCondition,
-      });
+      .and({ path: new RegExp(`^${startsPattern}`) });
 
     return this;
   }
@@ -1389,13 +1391,6 @@ module.exports = function(crowi) {
   pageSchema.statics.getHistories = function() {
     // TODO
 
-  };
-
-  /**
-   * return path that added slash to the end for specified path
-   */
-  pageSchema.statics.addSlashOfEnd = function(path) {
-    return addSlashOfEnd(path);
   };
 
   pageSchema.statics.GRANT_PUBLIC = GRANT_PUBLIC;
