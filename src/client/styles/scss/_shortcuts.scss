@@ -1,15 +1,4 @@
 #shortcuts-modal {
-  @include media-breakpoint-only(xs) {
-    .modal-dialog {
-      width: 750px;
-    }
-  }
-  @include media-breakpoint-up(sm) {
-    table {
-      table-layout: fixed;
-    }
-  }
-
   h3 {
     margin-bottom: 1em;
   }
@@ -20,6 +9,15 @@
     }
     td {
       min-width: 170px;
+    }
+  }
+
+  @include media-breakpoint-up(sm) {
+    table {
+      table-layout: fixed;
+      th {
+        width: 170px;
+      }
     }
   }
 

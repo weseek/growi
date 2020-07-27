@@ -12,12 +12,13 @@ const ConfigPubsubMessageHandlable = require('./config-pubsub/handlable');
  */
 class CustomizeService extends ConfigPubsubMessageHandlable {
 
-  constructor(configManager, appService, xssService) {
+  constructor(crowi) {
     super();
 
-    this.configManager = configManager;
-    this.appService = appService;
-    this.xssService = xssService;
+    this.configManager = crowi.configManager;
+    this.configPubsub = crowi.configPubsub;
+    this.appService = crowi.appService;
+    this.xssService = crowi.xssService;
 
     this.lastLoadedAt = null;
   }
@@ -38,7 +39,7 @@ class CustomizeService extends ConfigPubsubMessageHandlable {
    * @inheritdoc
    */
   async handleConfigPubsubMessage(configPubsubMessage) {
-    const { configManager } = this.appService;
+    const { configManager } = this;
 
     logger.info('Reset customized value by pubsub notification');
     await configManager.loadConfigs();
@@ -47,7 +48,7 @@ class CustomizeService extends ConfigPubsubMessageHandlable {
   }
 
   async publishUpdatedMessage() {
-    const { configPubsub } = this.appService;
+    const { configPubsub } = this;
 
     if (configPubsub != null) {
       const configPubsubMessage = new ConfigPubsubMessage('customizeServiceUpdated', { updatedAt: new Date() });
