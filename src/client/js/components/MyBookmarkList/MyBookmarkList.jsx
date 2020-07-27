@@ -45,9 +45,10 @@ class MyBookmarkList extends React.Component {
     // const offset = (selectPageNumber - 1) * limit;
 
     try {
-      const bookmarkList = await this.props.appContainer.apiv3.get('/users', userId);
+      const response = await this.props.appContainer.apiv3.get('/bookmarks/byUser');
+      const pageList = response.data.pageList;
       this.setState({
-        pages: bookmarkList,
+        pages: pageList,
       });
     }
     catch (error) {
