@@ -93,17 +93,15 @@ module.exports = (crowi) => {
   });
 
   router.get('/duplicate', accessTokenParser, loginRequired, validator.duplicate, async(req, res) => {
-    const { pageId } = req.query;
+    const { path } = req.query;
 
-    const page = await Page.findByIdAndViewer(pageId, req.user);
+    const result = await Page.findListWithDescendants(path, req.user);
+    const pages = result.pages;
+    const duplicatePaths = pages.map(element => element.path);
 
-    // const searchWord = new RegExp(`^${path}`);
-    // const duplicateData = await Page.find({ path: searchWord });
-    // const duplicatePaths = duplicateData.map(element => element.path);
-    // console.log(duplicatePaths);
-    // console.log(pageId);
-    console.log(page);
-    return res.apiv3({ page });
+    console.log(duplicatePaths);
+    console.log(req.user);
+    return res.apiv3({ });
   });
 
   return router;

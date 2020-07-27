@@ -15,7 +15,7 @@ import CreateTemplateModal from '../CreateTemplateModal';
 const PageManagement = (props) => {
   const { t, appContainer, pageContainer } = props;
   const {
-    path, isDeletable, isAbleToDeleteCompletely, pageId,
+    path, isDeletable, isAbleToDeleteCompletely, page, pageId,
   } = pageContainer.state;
 
   const { currentUser } = appContainer;
@@ -38,7 +38,7 @@ const PageManagement = (props) => {
   async function openPageDuplicateModalHandler() {
     setIsPageDuplicateModalShown(true);
     try {
-      const res = await appContainer.apiv3Get('/pages/duplicate', { pageId });
+      const res = await appContainer.apiv3Get('/pages/duplicate', { path });
       setDuplicateModalPaths(res.data.duplicatePaths);
     }
     catch (err) {
