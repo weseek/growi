@@ -11,6 +11,7 @@ describe('Page', () => {
   // eslint-disable-next-line no-unused-vars
   let crowi;
   let Page;
+  let PageQueryBuilder;
   let User;
   let UserGroup;
   let UserGroupRelation;
@@ -22,6 +23,8 @@ describe('Page', () => {
     UserGroup = mongoose.model('UserGroup');
     UserGroupRelation = mongoose.model('UserGroupRelation');
     Page = mongoose.model('Page');
+    PageQueryBuilder = Page.PageQueryBuilder;
+
 
     await User.insertMany([
       { name: 'Anon 0', username: 'anonymous0', email: 'anonymous0@example.com' },
@@ -297,42 +300,78 @@ describe('Page', () => {
     });
   });
 
-  describe('findListWithDescendants', () => {
-    test('should return only /page/', async() => {
-      const result = await Page.findListWithDescendants('/page/', testUser0, { isRegExpEscapedFromPath: true });
+  describe('PageQueryBuilder.addConditionToListWithDescendants', () => {
+    test('can retrieve descendants of /page', async() => {
+      const builder = new PageQueryBuilder(Page.find());
+      builder.addConditionToListWithDescendants('/page');
+
+      const result = await builder.query.exec();
 
       // assert totalCount
-      expect(result.totalCount).toEqual(1);
+      expect(result.length).toEqual(1);
       // assert paths
-      const pagePaths = result.pages.map((page) => { return page.path });
+      const pagePaths = result.map((page) => { return page.path });
       expect(pagePaths).toContainEqual('/page/for/extended');
     });
 
-    test('should return only /page1/', async() => {
-      const result = await Page.findListWithDescendants('/page1/', testUser0, { isRegExpEscapedFromPath: true });
+    test('can retrieve descendants of /page1', async() => {
+      const builder = new PageQueryBuilder(Page.find());
+      builder.addConditionToListWithDescendants('/page1/');
+
+      const result = await builder.query.exec();
 
       // assert totalCount
-      expect(result.totalCount).toEqual(2);
+      expect(result.length).toEqual(2);
       // assert paths
-      const pagePaths = result.pages.map((page) => { return page.path });
+      const pagePaths = result.map((page) => { return page.path });
       expect(pagePaths).toContainEqual('/page1');
       expect(pagePaths).toContainEqual('/page1/child1');
     });
   });
 
-  describe('findListByStartWith', () => {
-    test('should return pages which starts with /page', async() => {
-      const result = await Page.findListByStartWith('/page', testUser0, {});
+  describe('PageQueryBuilder.addConditionToListOnlyDescendants', () => {
+    test('can retrieve only descendants of /page', async() => {
+      const builder = new PageQueryBuilder(Page.find());
+      builder.addConditionToListOnlyDescendants('/page');
+
+      const result = await builder.query.exec();
 
       // assert totalCount
-      expect(result.totalCount).toEqual(4);
+      expect(result.length).toEqual(1);
       // assert paths
-      const pagePaths = result.pages.map((page) => { return page.path });
+      const pagePaths = result.map((page) => { return page.path });
+      expect(pagePaths).toContainEqual('/page/for/extended');
+    });
+
+    test('can retrieve only descendants of /page1', async() => {
+      const builder = new PageQueryBuilder(Page.find());
+      builder.addConditionToListOnlyDescendants('/page1');
+
+      const result = await builder.query.exec();
+
+      // assert totalCount
+      expect(result.length).toEqual(1);
+      // assert paths
+      const pagePaths = result.map((page) => { return page.path });
+      expect(pagePaths).toContainEqual('/page1/child1');
+    });
+  });
+
+  describe('PageQueryBuilder.addConditionToListByStartWith', () => {
+    test('can retrieve pages which starts with /page', async() => {
+      const builder = new PageQueryBuilder(Page.find());
+      builder.addConditionToListByStartWith('/page');
+
+      const result = await builder.query.exec();
+
+      // assert totalCount
+      expect(result.length).toEqual(4);
+      // assert paths
+      const pagePaths = result.map((page) => { return page.path });
       expect(pagePaths).toContainEqual('/page/for/extended');
       expect(pagePaths).toContainEqual('/page1');
       expect(pagePaths).toContainEqual('/page1/child1');
       expect(pagePaths).toContainEqual('/page2');
     });
-
   });
 });
