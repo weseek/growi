@@ -26,13 +26,12 @@ export default class GridEditModal extends React.Component {
     this.checkResposiveSize = this.checkResposiveSize.bind(this);
   }
 
-  async checkResposiveSize(responsiveSize) {
-    await this.setState({ responsiveSize });
+  async checkResposiveSize(rs) {
+    await this.setState({ responsiveSize: rs });
   }
 
-  async checkColsRatios(colsRatios) {
-    console.log(colsRatios);
-    await this.setState({ colsRatios });
+  async checkColsRatios(cr) {
+    await this.setState({ colsRatios: cr });
   }
 
   showGridPattern() {
@@ -77,6 +76,34 @@ export default class GridEditModal extends React.Component {
     this.cancel();
   }
 
+  GridDivisionMenu() {
+    const gridDivisions = geu.mappingAllGridDivisionPatterns;
+    return (
+      <div className="container">
+        <div className="row">
+          {gridDivisions.map((gridDivion, i) => {
+            return (
+              <div className="col-md-4 text-center">
+                <h6 className="dropdown-header">{i + 2}分割</h6>
+                {gridDivion.map((gridOneDivision) => {
+                  return (
+                    <button className="dropdown-item" onClick={() => { this.checkColsRatios(gridOneDivision) }}>
+                      <div className="row">
+                        {gridOneDivision.map((gtd) => {
+                          const className = `bg-info col-${gtd} border`;
+                          return <span className={className}>{gtd}</span>;
+                        })}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
 
   render() {
     return (
@@ -102,7 +129,7 @@ export default class GridEditModal extends React.Component {
                   {this.showGridPattern()}
                 </button>
                 <div className="dropdown-menu grid-division-menu" aria-labelledby="dropdownMenuButton">
-                  <GridDivisionMenu />
+                  {this.GridDivisionMenu()}
                 </div>
               </div>
               <div className="col-3 text-right pr-0">
@@ -115,6 +142,7 @@ export default class GridEditModal extends React.Component {
                       type="radio"
                       id="mobile"
                       name="responsiveSize"
+                      className="custom-control-input"
                       value="mobile"
                       onChange={() => { this.checkResposiveSize('mobile') }}
                       checked={this.state.responsiveSize === 'mobile'}
@@ -128,6 +156,7 @@ export default class GridEditModal extends React.Component {
                       type="radio"
                       id="tablet"
                       name="responsiveSize"
+                      className="custom-control-input"
                       value="tablet"
                       onChange={() => { this.checkResposiveSize('tablet') }}
                       checked={this.state.responsiveSize === 'tablet'}
@@ -141,6 +170,7 @@ export default class GridEditModal extends React.Component {
                       type="radio"
                       id="desktop"
                       name="responsiveSize"
+                      className="custom-control-input"
                       value="desktop"
                       onChange={() => { this.checkResposiveSize('desktop') }}
                       checked={this.state.responsiveSize === 'desktop'}
@@ -185,34 +215,34 @@ export default class GridEditModal extends React.Component {
 
 }
 
-function GridDivisionMenu() {
-  const gridDivisions = geu.mappingAllGridDivisionPatterns;
-  return (
-    <div className="container">
-      <div className="row">
-        {gridDivisions.map((gridDivion, i) => {
-          return (
-            <div className="col-md-4 text-center">
-              <h6 className="dropdown-header">{i + 2}分割</h6>
-              {gridDivion.map((gridOneDivision) => {
-                return (
-                  <a className="dropdown-item" href="#" onClick={() => { this.checkColsRatios(gridOneDivision) }}>
-                    <div className="row">
-                      {gridOneDivision.map((gtd) => {
-                        const className = `bg-info col-${gtd} border`;
-                        return <span className={className}>{gtd}</span>;
-                      })}
-                    </div>
-                  </a>
-                );
-              })}
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
+// GridDivisionMenu() {
+//   const gridDivisions = geu.mappingAllGridDivisionPatterns;
+//   return (
+//     <div className="container">
+//       <div className="row">
+//         {gridDivisions.map((gridDivion, i) => {
+//           return (
+//             <div className="col-md-4 text-center">
+//               <h6 className="dropdown-header">{i + 2}分割</h6>
+//               {gridDivion.map((gridOneDivision) => {
+//                 return (
+//                   <button className="dropdown-item" onClick={() => { this.checkColsRatios(gridOneDivision) }}>
+//                     <div className="row">
+//                       {gridOneDivision.map((gtd) => {
+//                         const className = `bg-info col-${gtd} border`;
+//                         return <span className={className}>{gtd}</span>;
+//                       })}
+//                     </div>
+//                   </button>
+//                 );
+//               })}
+//             </div>
+//           );
+//         })}
+//       </div>
+//     </div>
+//   );
+// }
 
 GridEditModal.propTypes = {
   onSave: PropTypes.func,
