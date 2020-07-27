@@ -244,11 +244,11 @@ class LinkEditModal extends React.PureComponent {
               <div className="card">
                 <div className="card-body">
                   <form className="form-group">
-                    <div className="form-group btn-group d-flex" role="group" aria-label="type">
+                    <div className="form-group btn-group w-100" role="group" aria-label="type">
                       <button
                         type="button"
                         name={Linker.types.markdownLink}
-                        className={`btn btn-outline-secondary w-100 ${this.state.linkerType === Linker.types.markdownLink && 'active'}`}
+                        className={`btn btn-outline-secondary col ${this.state.linkerType === Linker.types.markdownLink && 'active'}`}
                         onClick={e => this.handleSelecteLinkerType(e.target.name)}
                       >
                         Markdown
@@ -256,7 +256,7 @@ class LinkEditModal extends React.PureComponent {
                       <button
                         type="button"
                         name={Linker.types.growiLink}
-                        className={`btn btn-outline-secondary w-100 ${this.state.linkerType === Linker.types.growiLink && 'active'}`}
+                        className={`btn btn-outline-secondary col ${this.state.linkerType === Linker.types.growiLink && 'active'}`}
                         onClick={e => this.handleSelecteLinkerType(e.target.name)}
                       >
                         Growi Original
@@ -265,7 +265,7 @@ class LinkEditModal extends React.PureComponent {
                         <button
                           type="button"
                           name={Linker.types.pukiwikiLink}
-                          className={`btn btn-outline-secondary w-100 ${this.state.linkerType === Linker.types.pukiwikiLink && 'active'}`}
+                          className={`btn btn-outline-secondary col ${this.state.linkerType === Linker.types.pukiwikiLink && 'active'}`}
                           onClick={e => this.handleSelecteLinkerType(e.target.name)}
                         >
                           Pukiwiki
