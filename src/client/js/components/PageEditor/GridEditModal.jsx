@@ -4,6 +4,7 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 import geu from './GridEditorUtil';
+import BootstrapGrid from '../../models/BootstrapGrid';
 
 export default class GridEditModal extends React.Component {
 
@@ -12,7 +13,7 @@ export default class GridEditModal extends React.Component {
 
     this.state = {
       colsRatios: [6, 6],
-      responsiveSize: 'mobile',
+      responsiveSize: BootstrapGrid.ResponsiveSize.XS_SIZE,
       show: false,
       gridHtml: '',
     };
@@ -57,6 +58,7 @@ export default class GridEditModal extends React.Component {
 
   hide() {
     this.setState({ show: false });
+    console.log(this.state);
   }
 
   cancel() {
@@ -76,7 +78,7 @@ export default class GridEditModal extends React.Component {
     this.cancel();
   }
 
-  GridDivisionMenu() {
+  gridDivisionMenu() {
     const gridDivisions = geu.mappingAllGridDivisionPatterns;
     return (
       <div className="container">
@@ -87,7 +89,7 @@ export default class GridEditModal extends React.Component {
                 <h6 className="dropdown-header">{i + 2}分割</h6>
                 {gridDivion.map((gridOneDivision) => {
                   return (
-                    <button className="dropdown-item" onClick={() => { this.checkColsRatios(gridOneDivision) }}>
+                    <button className="dropdown-item" type="button" onClick={() => { this.checkColsRatios(gridOneDivision) }}>
                       <div className="row">
                         {gridOneDivision.map((gtd) => {
                           const className = `bg-info col-${gtd} border`;
@@ -129,7 +131,7 @@ export default class GridEditModal extends React.Component {
                   {this.showGridPattern()}
                 </button>
                 <div className="dropdown-menu grid-division-menu" aria-labelledby="dropdownMenuButton">
-                  {this.GridDivisionMenu()}
+                  {this.gridDivisionMenu()}
                 </div>
               </div>
               <div className="col-3 text-right pr-0">
@@ -140,42 +142,39 @@ export default class GridEditModal extends React.Component {
                   <div>
                     <input
                       type="radio"
-                      id="mobile"
+                      id={BootstrapGrid.ResponsiveSize.XS_SIZE}
                       name="responsiveSize"
-                      className="custom-control-input"
-                      value="mobile"
-                      onChange={() => { this.checkResposiveSize('mobile') }}
-                      checked={this.state.responsiveSize === 'mobile'}
+                      value={BootstrapGrid.ResponsiveSize.XS_SIZE}
+                      onChange={(e) => { this.checkResposiveSize(e.target.value) }}
+                      checked={this.state.responsiveSize === BootstrapGrid.ResponsiveSize.XS_SIZE}
                     />
-                    <label htmlFor="mobile">
-                      <i className="pl-2 pr-1 icon-screen-smartphone "></i> Mobile / No break point
+                    <label htmlFor={BootstrapGrid.ResponsiveSize.XS_SIZE}>
+                      <i className="pl-2 pr-1 icon-screen-smartphone"></i> Mobile / No break point
                     </label>
                   </div>
                   <div>
                     <input
                       type="radio"
-                      id="tablet"
+                      id={BootstrapGrid.ResponsiveSize.SM_SIZE}
                       name="responsiveSize"
-                      className="custom-control-input"
-                      value="tablet"
-                      onChange={() => { this.checkResposiveSize('tablet') }}
-                      checked={this.state.responsiveSize === 'tablet'}
+                      value={BootstrapGrid.ResponsiveSize.SM_SIZE}
+                      onChange={(e) => { this.checkResposiveSize(e.target.value) }}
+                      checked={this.state.responsiveSize === BootstrapGrid.ResponsiveSize.SM_SIZE}
                     />
-                    <label htmlFor="tablet">
+                    <label htmlFor={BootstrapGrid.ResponsiveSize.SM_SIZE}>
                       <i className="pl-2 pr-1 icon-screen-tablet"></i> Tablet
                     </label>
                   </div>
                   <div>
                     <input
                       type="radio"
-                      id="desktop"
+                      id={BootstrapGrid.ResponsiveSize.MD_SIZE}
                       name="responsiveSize"
-                      className="custom-control-input"
-                      value="desktop"
-                      onChange={() => { this.checkResposiveSize('desktop') }}
-                      checked={this.state.responsiveSize === 'desktop'}
+                      value={BootstrapGrid.ResponsiveSize.MD_SIZE}
+                      onChange={(e) => { this.checkResposiveSize(e.target.value) }}
+                      checked={this.state.responsiveSize === BootstrapGrid.ResponsiveSize.MD_SIZE}
                     />
-                    <label htmlFor="desktop">
+                    <label htmlFor={BootstrapGrid.ResponsiveSize.MD_SIZE}>
                       <i className="pl-2 pr-1 icon-screen-desktop"></i> Desktop
                     </label>
                   </div>
@@ -214,35 +213,6 @@ export default class GridEditModal extends React.Component {
   }
 
 }
-
-// GridDivisionMenu() {
-//   const gridDivisions = geu.mappingAllGridDivisionPatterns;
-//   return (
-//     <div className="container">
-//       <div className="row">
-//         {gridDivisions.map((gridDivion, i) => {
-//           return (
-//             <div className="col-md-4 text-center">
-//               <h6 className="dropdown-header">{i + 2}分割</h6>
-//               {gridDivion.map((gridOneDivision) => {
-//                 return (
-//                   <button className="dropdown-item" onClick={() => { this.checkColsRatios(gridOneDivision) }}>
-//                     <div className="row">
-//                       {gridOneDivision.map((gtd) => {
-//                         const className = `bg-info col-${gtd} border`;
-//                         return <span className={className}>{gtd}</span>;
-//                       })}
-//                     </div>
-//                   </button>
-//                 );
-//               })}
-//             </div>
-//           );
-//         })}
-//       </div>
-//     </div>
-//   );
-// }
 
 GridEditModal.propTypes = {
   onSave: PropTypes.func,
