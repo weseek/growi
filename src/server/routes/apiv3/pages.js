@@ -13,9 +13,11 @@ const router = express.Router();
  *    name: Pages
  */
 module.exports = (crowi) => {
+  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
+  const ApiResponse = require('../../util/apiResponse');
 
   const Page = crowi.model('Page');
 
@@ -79,6 +81,17 @@ module.exports = (crowi) => {
       res.code = 'unknown';
       logger.error('Failed to delete trash pages', err);
       return res.apiv3Err(err, 500);
+    }
+  });
+
+  router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
+    try {
+      let result = null;
+      result = await Page.findListByCreator(req.user);
+      return res.apiv3(ApiResponse.success(result));
+    }
+    catch (err) {
+      return res.apiv3(ApiResponse.error(err));
     }
   });
 
