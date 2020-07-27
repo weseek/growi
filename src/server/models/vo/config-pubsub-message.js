@@ -1,6 +1,6 @@
 class ConfigPubsubMessage {
 
-  constructor(eventName, body) {
+  constructor(eventName, body = {}) {
     this.eventName = eventName;
     for (const [key, value] of Object.entries(body)) {
       this[key] = value;

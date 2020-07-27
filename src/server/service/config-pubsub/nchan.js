@@ -49,18 +49,19 @@ class NchanDelegator extends ConfigPubsubDelegator {
       }
     }
 
+    if (this.client != null && this.shouldResubscribe()) {
+      logger.info('The connection to config pubsub server is offline. Try to reconnect...');
+    }
+
     // init client
     if (this.client == null) {
       this.initClient();
     }
 
-    if (this.shouldResubscribe()) {
-      logger.info('The connection to config pubsub server is offline. Try to reconnect...');
-    }
-
     // connect
     this.isConnecting = true;
     const url = this.constructUrl(this.subscribePath).toString();
+    logger.debug(`Subscribe to ${url}`);
     this.client.connect(url.toString());
   }
 
@@ -70,9 +71,10 @@ class NchanDelegator extends ConfigPubsubDelegator {
   async publish(configPubsubMessage) {
     await super.publish(configPubsubMessage);
 
-    logger.debug('Publish message', configPubsubMessage);
-
     const url = this.constructUrl(this.publishPath).toString();
+
+    logger.debug('Publish message', configPubsubMessage, `to ${url}`);
+
     return axios.post(url, JSON.stringify(configPubsubMessage));
   }
 
@@ -81,9 +83,18 @@ class NchanDelegator extends ConfigPubsubDelegator {
    */
   addMessageHandler(handlable) {
     super.addMessageHandler(handlable);
+    this.registerMessageHandlerToConnection(handlable);
+  }
 
-    this.handlableList.push(handlable);
+  /**
+   * @inheritdoc
+   */
+  removeMessageHandler(handlable) {
+    super.removeMessageHandler(handlable);
+    this.subscribe(true);
+  }
 
+  registerMessageHandlerToConnection(handlable) {
     if (this.connection != null) {
       this.connection.on('message', (messageObj) => {
         this.handleMessage(messageObj, handlable);
@@ -122,7 +133,7 @@ class NchanDelegator extends ConfigPubsubDelegator {
       });
 
       // register all message handlers
-      this.handlableList.forEach(handler => this.addMessageHandler(handler));
+      this.handlableList.forEach(handler => this.registerMessageHandlerToConnection(handler));
     });
 
     this.client = client;
@@ -178,6 +189,7 @@ module.exports = function(crowi) {
 
   const publishPath = configManager.getConfig('crowi', 'configPubsub:nchan:publishPath');
   const subscribePath = configManager.getConfig('crowi', 'configPubsub:nchan:subscribePath');
+  const channelId = configManager.getConfig('crowi', 'configPubsub:nchan:channelId');
 
-  return new NchanDelegator(uri, publishPath, subscribePath);
+  return new NchanDelegator(uri, publishPath, subscribePath, channelId);
 };
