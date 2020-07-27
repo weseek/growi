@@ -140,6 +140,7 @@ export default class GridEditModal extends React.Component {
               <div className="col-3 text-left pl-0">
                 <div className="form-group inline-block">
                   <div>
+                    {/* TODO unite radio button style with that of AppSetting.jsx by GW-3342 */}
                     <input
                       type="radio"
                       id={BootstrapGrid.ResponsiveSize.XS_SIZE}
