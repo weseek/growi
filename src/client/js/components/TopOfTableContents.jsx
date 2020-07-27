@@ -11,9 +11,9 @@ const TopOfTableContents = (props) => {
 
   return (
     <>
-      {/* TODO: make svg icons components by GW-3349 */}
       <div className="top-of-table-contents d-flex align-items-end pb-1">
         <button type="button" className="bg-transparent border-0">
+          {/* TODO: make svg icons components by GW-3349 */}
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" className="table-top-icon" width="20" height="20">
             <rect className="cls-1" width="14" height="14" />
             <path d="M12.63,2.72H1.37a.54.54,0,0,1,0-1.08H12.63a.54.54,0,0,1,0,1.08Z" />
