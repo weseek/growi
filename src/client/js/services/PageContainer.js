@@ -419,71 +419,94 @@ export default class PageContainer extends Container {
   }
 
   addWebSocketEventHandlers() {
-    const pageContainer = this;
+    // const pageContainer = this;
     const websocketContainer = this.appContainer.getContainer('WebsocketContainer');
     const socket = websocketContainer.getWebSocket();
 
-    socket.on('page:create', (data) => {
-      // skip if triggered myself
-      if (data.socketClientId != null && data.socketClientId === websocketContainer.getSocketClientId()) {
+
+    socket.onerror = function() {
+      console.log('Connection Error');
+    };
+    // websocket onopen event listener
+    socket.onopen = () => {
+      console.log('connected websocket main component');
+
+      // that.timeout = 250; // reset timer to 250 on open of websocket connection
+      // clearTimeout(connectInterval); // clear Interval on on open of websocket connection
+    };
+
+    socket.onclose = function() {
+      console.log('echo-protocol Client Closed');
+    };
+
+    socket.onmessage = function(e) {
+      if (typeof e.data !== 'string') {
         return;
       }
+      console.log(`Received: '${e.data}'`);
 
-      logger.debug({ obj: data }, `websocket on 'page:create'`); // eslint-disable-line quotes
+    };
+    // socket.on('page:create', (data) => {
+    //   // skip if triggered myself
+    //   if (data.socketClientId != null && data.socketClientId === websocketContainer.getSocketClientId()) {
+    //     return;
+    //   }
 
-      // update PageStatusAlert
-      if (data.page.path === pageContainer.state.path) {
-        this.setLatestRemotePageData(data.page, data.user);
-      }
-    });
+    //   logger.debug({ obj: data }, `websocket on 'page:create'`); // eslint-disable-line quotes
 
-    socket.on('page:update', (data) => {
-      // skip if triggered myself
-      if (data.socketClientId != null && data.socketClientId === websocketContainer.getSocketClientId()) {
-        return;
-      }
+    //   // update PageStatusAlert
+    //   if (data.page.path === pageContainer.state.path) {
+    //     this.setLatestRemotePageData(data.page, data.user);
+    //   }
+    // });
 
-      logger.debug({ obj: data }, `websocket on 'page:update'`); // eslint-disable-line quotes
+    // socket.on('page:update', (data) => {
+    //   // skip if triggered myself
+    //   if (data.socketClientId != null && data.socketClientId === websocketContainer.getSocketClientId()) {
+    //     return;
+    //   }
 
-      if (data.page.path === pageContainer.state.path) {
-        // update PageStatusAlert
-        pageContainer.setLatestRemotePageData(data.page, data.user);
-        // update remote data
-        const page = data.page;
-        pageContainer.setState({
-          remoteRevisionId: page.revision._id,
-          revisionIdHackmdSynced: page.revisionHackmdSynced,
-          hasDraftOnHackmd: page.hasDraftOnHackmd,
-        });
-      }
-    });
+    //   logger.debug({ obj: data }, `websocket on 'page:update'`); // eslint-disable-line quotes
 
-    socket.on('page:delete', (data) => {
-      // skip if triggered myself
-      if (data.socketClientId != null && data.socketClientId === websocketContainer.getSocketClientId()) {
-        return;
-      }
+    //   if (data.page.path === pageContainer.state.path) {
+    //     // update PageStatusAlert
+    //     pageContainer.setLatestRemotePageData(data.page, data.user);
+    //     // update remote data
+    //     const page = data.page;
+    //     pageContainer.setState({
+    //       remoteRevisionId: page.revision._id,
+    //       revisionIdHackmdSynced: page.revisionHackmdSynced,
+    //       hasDraftOnHackmd: page.hasDraftOnHackmd,
+    //     });
+    //   }
+    // });
 
-      logger.debug({ obj: data }, `websocket on 'page:delete'`); // eslint-disable-line quotes
+    // socket.on('page:delete', (data) => {
+    //   // skip if triggered myself
+    //   if (data.socketClientId != null && data.socketClientId === websocketContainer.getSocketClientId()) {
+    //     return;
+    //   }
 
-      // update PageStatusAlert
-      if (data.page.path === pageContainer.state.path) {
-        pageContainer.setLatestRemotePageData(data.page, data.user);
-      }
-    });
+    //   logger.debug({ obj: data }, `websocket on 'page:delete'`); // eslint-disable-line quotes
 
-    socket.on('page:editingWithHackmd', (data) => {
-      // skip if triggered myself
-      if (data.socketClientId != null && data.socketClientId === websocketContainer.getSocketClientId()) {
-        return;
-      }
+    //   // update PageStatusAlert
+    //   if (data.page.path === pageContainer.state.path) {
+    //     pageContainer.setLatestRemotePageData(data.page, data.user);
+    //   }
+    // });
 
-      logger.debug({ obj: data }, `websocket on 'page:editingWithHackmd'`); // eslint-disable-line quotes
+    // socket.on('page:editingWithHackmd', (data) => {
+    //   // skip if triggered myself
+    //   if (data.socketClientId != null && data.socketClientId === websocketContainer.getSocketClientId()) {
+    //     return;
+    //   }
 
-      if (data.page.path === pageContainer.state.path) {
-        pageContainer.setState({ isHackmdDraftUpdatingInRealtime: true });
-      }
-    });
+    //   logger.debug({ obj: data }, `websocket on 'page:editingWithHackmd'`); // eslint-disable-line quotes
+
+    //   if (data.page.path === pageContainer.state.path) {
+    //     pageContainer.setState({ isHackmdDraftUpdatingInRealtime: true });
+    //   }
+    // });
 
   }
 

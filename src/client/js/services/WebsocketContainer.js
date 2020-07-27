@@ -1,6 +1,6 @@
 import { Container } from 'unstated';
 
-import io from 'socket.io-client';
+import { w3cwebsocket as W3CWebSocket } from 'websocket';
 
 /**
  * Service container related to options for WebSocket
@@ -14,7 +14,7 @@ export default class WebsocketContainer extends Container {
     this.appContainer = appContainer;
     this.appContainer.registerContainer(this);
 
-    this.socket = io();
+    this.socket =  new W3CWebSocket('ws://localhost:8080/', 'echo-protocol');
     this.socketClientId = Math.floor(Math.random() * 100000);
 
     this.state = {
