@@ -118,10 +118,10 @@ const PersonalDropdown = (props) => {
           </div>
 
           <div className="btn-group btn-block mt-2" role="group">
-            <a className="btn btn-sm btn-outline-secondary" href={`/user/${user.username}`}>
+            <a className="btn btn-sm btn-outline-secondary col" href={`/user/${user.username}`}>
               <i className="icon-fw icon-home"></i>{ t('personal_dropdown.home') }
             </a>
-            <a className="btn btn-sm btn-outline-secondary" href="/me">
+            <a className="btn btn-sm btn-outline-secondary col" href="/me">
               <i className="icon-fw icon-wrench"></i>{ t('personal_dropdown.settings') }
             </a>
           </div>
