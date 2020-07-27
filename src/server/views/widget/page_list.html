@@ -8,7 +8,7 @@
 {% endif %}
 
 <li>
-  <img src="{{ listPage.lastUpdateUser.imageUrlCached }}" class="picture rounded-circle">
+  <img src="{{ listPage.lastUpdateUser.imageUrlCached|default('/images/icons/user.svg') }}" class="picture rounded-circle">
   <a href="{{ encodeURI(listPage.path) }}" class="text-break ml-1">
     {{ listPage.path | preventXss }}
   </a>
