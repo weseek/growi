@@ -7,6 +7,8 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 
 import PageContainer from '../../services/PageContainer';
 
+import FootstampIcon from '../FootstampIcon';
+
 class SeenUserList extends React.Component {
 
   render() {
@@ -14,7 +16,7 @@ class SeenUserList extends React.Component {
     return (
       <div className="dropdown text-right">
         <button className="btn btn-link dropdown-toggle text-danger" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <i className="fa fa-fw fa-paw"></i>
+          <FootstampIcon />
           <span className="seen-user-count">{pageContainer.state.sumOfSeenUsers}</span>
         </button>
         <span className="dropdown-menu dropdown-menu-right px-2 col user-list-content text-truncate text-muted">
