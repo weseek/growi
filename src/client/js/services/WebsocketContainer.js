@@ -14,7 +14,7 @@ export default class WebsocketContainer extends Container {
     this.appContainer = appContainer;
     this.appContainer.registerContainer(this);
 
-    this.socket =  new W3CWebSocket('ws://localhost:8080/', 'echo-protocol');
+    this.socket = new W3CWebSocket('ws://localhost:8080/', 'echo-protocol');
     this.socketClientId = Math.floor(Math.random() * 100000);
 
     this.state = {

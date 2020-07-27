@@ -439,12 +439,28 @@ export default class PageContainer extends Container {
       console.log('echo-protocol Client Closed');
     };
 
-    socket.onmessage = function(e) {
-      if (typeof e.data !== 'string') {
+    socket.onmessage = function(eventName, data) {
+      if (typeof eventName !== 'string') {
         return;
       }
-      console.log(`Received: '${e.data}'`);
+      console.log(`Received: '${eventName}'`);
 
+      switch (eventName) {
+        case 'page:create':
+          // TODO
+          break;
+        case 'page:update':
+          // TODO
+          break;
+        case 'page:delete':
+          // TODO
+          break;
+        case 'page:editingWithHackmd':
+          // TODO
+          break;
+        default:
+          break;
+      }
     };
     // socket.on('page:create', (data) => {
     //   // skip if triggered myself
