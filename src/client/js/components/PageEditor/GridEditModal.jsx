@@ -181,12 +181,13 @@ export default class GridEditModal extends React.PureComponent {
 
 function GridDivisionMenu() {
   const gridDivisions = geu.mappingAllGridDivisionPatterns;
+  const numberOfGridDivisions = geu.numberOfGridDivisions;
   return (
     <div className="row">
       {gridDivisions.map((gridDivion, i) => {
         return (
           <div className="col-md-4 text-center">
-            <h6 className="dropdown-header">{i + 2}分割</h6>
+            <h6 className="dropdown-header">{numberOfGridDivisions[i]}分割</h6>
             {gridDivion.map((gridOneDivision) => {
               return (
                 <a className="dropdown-item" href="#">

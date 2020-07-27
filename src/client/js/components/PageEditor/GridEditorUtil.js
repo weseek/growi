@@ -18,6 +18,7 @@ class GridEditorUtil {
         [2, 2, 4, 4], [4, 4, 2, 2], [2, 4, 2, 4], [4, 2, 4, 2], [3, 3, 3, 3], [2, 2, 2, 6], [6, 2, 2, 2],
       ],
     ];
+    this.numberOfGridDivisions = [2, 3, 4];
     this.isInGridBlock = this.isInGridBlock.bind(this);
     this.replaceGridWithHtmlWithEditor = this.replaceGridWithHtmlWithEditor.bind(this);
   }
