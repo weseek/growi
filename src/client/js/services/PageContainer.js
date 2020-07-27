@@ -427,12 +427,9 @@ export default class PageContainer extends Container {
     socket.onerror = function() {
       console.log('Connection Error');
     };
-    // websocket onopen event listener
+
     socket.onopen = () => {
       console.log('connected websocket main component');
-
-      // that.timeout = 250; // reset timer to 250 on open of websocket connection
-      // clearTimeout(connectInterval); // clear Interval on on open of websocket connection
     };
 
     socket.onclose = function() {
