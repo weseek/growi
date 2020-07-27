@@ -26,8 +26,8 @@ const TableOfContents = (props) => {
     const containerElem = document.querySelector('#revision-toc');
     const containerTop = containerElem.getBoundingClientRect().top;
 
-    // window height - revisionToc top - .system-version - .grw-fab-container height
-    return window.innerHeight - containerTop - 20 - 155;
+    // window height - revisionToc top - .system-version - .grw-fab-container height - top-of-table-contents height
+    return window.innerHeight - containerTop - 20 - 155 - 26;
   }, []);
 
   const { tocHtml } = pageContainer.state;
