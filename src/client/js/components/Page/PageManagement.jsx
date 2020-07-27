@@ -14,9 +14,7 @@ import CreateTemplateModal from '../CreateTemplateModal';
 
 const PageManagement = (props) => {
   const { t, appContainer, pageContainer } = props;
-  const {
-    path, isDeletable, isAbleToDeleteCompletely, page, pageId,
-  } = pageContainer.state;
+  const { path, isDeletable, isAbleToDeleteCompletely } = pageContainer.state;
 
   const { currentUser } = appContainer;
   const isTopPagePath = isTopPage(path);
