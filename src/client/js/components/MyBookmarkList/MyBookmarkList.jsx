@@ -38,8 +38,7 @@ class MyBookmarkList extends React.Component {
   }
 
   async getMyBookmarkList(selectPageNumber) {
-    const { appContainer, pageContainer } = this.props;
-    const { pageId } = pageContainer.state;
+    const { appContainer } = this.props;
 
     const userId = appContainer.currentUserId;
     /* TODO GW-3255 get config from customize settings */
