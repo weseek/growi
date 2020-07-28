@@ -90,7 +90,7 @@ if (pageContainer.state.pageId != null) {
     'page-management': <PageManagement />,
 
     'revision-toc': <TableOfContents />,
-    'top-of-table-contents': <TopOfTableContents />,
+
     'seen-user-list': <SeenUserList />,
     'liker-list': <LikerList />,
 
