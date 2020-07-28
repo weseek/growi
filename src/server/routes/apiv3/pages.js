@@ -17,7 +17,6 @@ module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
-  const ApiResponse = require('../../util/apiResponse');
 
   const Page = crowi.model('Page');
 
@@ -86,17 +85,16 @@ module.exports = (crowi) => {
 
   router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
 
-    // path は一時的なものです。クライアントを実装した際に渡します。
+    // path は一時的なものです。クライアントを実装した際に渡します。GW-3297 or 3298
     const path = '/hoge';
 
     try {
       const result = await Page.findListWithDescendants(path, req.user);
-      return res.apiv3(ApiResponse.success(result));
-
-      // return res.apiv3(ApiResponse.success(result));
+      return res.apiv3(result);
     }
     catch (err) {
-      return res.apiv3(ApiResponse.error(err));
+      logger.error('Failed to get Descendants Pages', err);
+      return res.apiv3Err(err, 500);
     }
   });
 
