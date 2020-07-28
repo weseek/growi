@@ -48,7 +48,7 @@ class WhiteListInput extends React.Component {
             rows="6"
             cols="40"
             ref={this.tagWhiteList}
-            value={adminMarkDownContainer.state.tagWhiteList}
+            defaultValue={adminMarkDownContainer.state.tagWhiteList}
             onChange={(e) => { adminMarkDownContainer.setState({ tagWhiteList: e.target.value }) }}
           />
         </div>
@@ -65,7 +65,7 @@ class WhiteListInput extends React.Component {
             rows="6"
             cols="40"
             ref={this.attrWhiteList}
-            value={adminMarkDownContainer.state.attrWhiteList}
+            defaultValue={adminMarkDownContainer.state.attrWhiteList}
             onChange={(e) => { adminMarkDownContainer.setState({ attrWhiteList: e.target.value }) }}
           />
         </div>

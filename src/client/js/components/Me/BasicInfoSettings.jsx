@@ -53,7 +53,7 @@ class BasicInfoSettings extends React.Component {
               className="form-control"
               type="text"
               name="userForm[name]"
-              value={personalContainer.state.name}
+              defaultValue={personalContainer.state.name}
               onChange={(e) => { personalContainer.changeName(e.target.value) }}
             />
           </div>
@@ -66,7 +66,7 @@ class BasicInfoSettings extends React.Component {
               className="form-control"
               type="text"
               name="userForm[email]"
-              value={personalContainer.state.email}
+              defaultValue={personalContainer.state.email}
               onChange={(e) => { personalContainer.changeEmail(e.target.value) }}
             />
             {registrationWhiteList.length !== 0 && (

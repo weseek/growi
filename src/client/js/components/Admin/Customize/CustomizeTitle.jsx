@@ -71,7 +71,7 @@ class CustomizeTitle extends React.Component {
           <div className="form-group col-12">
             <input
               className="form-control"
-              value={currentCustomizeTitle}
+              defaultValue={currentCustomizeTitle}
               onChange={(e) => { adminCustomizeContainer.changeCustomizeTitle(e.target.value) }}
             />
           </div>

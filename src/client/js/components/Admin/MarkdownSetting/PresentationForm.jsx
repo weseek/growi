@@ -110,7 +110,7 @@ class PresentationForm extends React.Component {
                     { t('admin:markdown_setting.presentation_options.custom_separator_desc') }
                     <input
                       className="form-control"
-                      value={pageBreakCustomSeparator}
+                      defaultValue={pageBreakCustomSeparator}
                       onChange={(e) => { adminMarkDownContainer.setPageBreakCustomSeparator(e.target.value) }}
                     />
                   </div>

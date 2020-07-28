@@ -137,7 +137,7 @@ class GitHubSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="githubClientSecret"
-                  value={adminGitHubSecurityContainer.state.githubClientSecret || ''}
+                  defaultValue={adminGitHubSecurityContainer.state.githubClientSecret || ''}
                   onChange={e => adminGitHubSecurityContainer.changeGitHubClientSecret(e.target.value)}
                 />
                 <p className="form-text text-muted">

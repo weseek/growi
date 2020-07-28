@@ -116,7 +116,7 @@ class OidcSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="oidcProviderName"
-                  value={adminOidcSecurityContainer.state.oidcProviderName || ''}
+                  defaultValue={adminOidcSecurityContainer.state.oidcProviderName || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcProviderName(e.target.value)}
                 />
               </div>
@@ -129,7 +129,7 @@ class OidcSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="oidcIssuerHost"
-                  value={adminOidcSecurityContainer.state.oidcIssuerHost || ''}
+                  defaultValue={adminOidcSecurityContainer.state.oidcIssuerHost || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcIssuerHost(e.target.value)}
                 />
                 <p className="form-text text-muted">
@@ -145,7 +145,7 @@ class OidcSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="oidcClientId"
-                  value={adminOidcSecurityContainer.state.oidcClientId || ''}
+                  defaultValue={adminOidcSecurityContainer.state.oidcClientId || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcClientId(e.target.value)}
                 />
                 <p className="form-text text-muted">
@@ -161,7 +161,7 @@ class OidcSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="oidcClientSecret"
-                  value={adminOidcSecurityContainer.state.oidcClientSecret || ''}
+                  defaultValue={adminOidcSecurityContainer.state.oidcClientSecret || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcClientSecret(e.target.value)}
                 />
                 <p className="form-text text-muted">
@@ -179,7 +179,7 @@ class OidcSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="oidcAuthorizationEndpoint"
-                  value={adminOidcSecurityContainer.state.oidcAuthorizationEndpoint || ''}
+                  defaultValue={adminOidcSecurityContainer.state.oidcAuthorizationEndpoint || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcAuthorizationEndpoint(e.target.value)}
                 />
                 <p className="form-text text-muted">
@@ -195,7 +195,7 @@ class OidcSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="oidcTokenEndpoint"
-                  value={adminOidcSecurityContainer.state.oidcTokenEndpoint || ''}
+                  defaultValue={adminOidcSecurityContainer.state.oidcTokenEndpoint || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcTokenEndpoint(e.target.value)}
                 />
                 <p className="form-text text-muted">
@@ -213,7 +213,7 @@ class OidcSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="oidcRevocationEndpoint"
-                  value={adminOidcSecurityContainer.state.oidcRevocationEndpoint || ''}
+                  defaultValue={adminOidcSecurityContainer.state.oidcRevocationEndpoint || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcRevocationEndpoint(e.target.value)}
                 />
                 <p className="form-text text-muted">
@@ -231,7 +231,7 @@ class OidcSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="oidcIntrospectionEndpoint"
-                  value={adminOidcSecurityContainer.state.oidcIntrospectionEndpoint || ''}
+                  defaultValue={adminOidcSecurityContainer.state.oidcIntrospectionEndpoint || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcIntrospectionEndpoint(e.target.value)}
                 />
                 <p className="form-text text-muted">
@@ -249,7 +249,7 @@ class OidcSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="oidcUserInfoEndpoint"
-                  value={adminOidcSecurityContainer.state.oidcUserInfoEndpoint || ''}
+                  defaultValue={adminOidcSecurityContainer.state.oidcUserInfoEndpoint || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcUserInfoEndpoint(e.target.value)}
                 />
                 <p className="form-text text-muted">
@@ -267,7 +267,7 @@ class OidcSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="oidcEndSessionEndpoint"
-                  value={adminOidcSecurityContainer.state.oidcEndSessionEndpoint || ''}
+                  defaultValue={adminOidcSecurityContainer.state.oidcEndSessionEndpoint || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcEndSessionEndpoint(e.target.value)}
                 />
                 <p className="form-text text-muted">
@@ -285,7 +285,7 @@ class OidcSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="oidcRegistrationEndpoint"
-                  value={adminOidcSecurityContainer.state.oidcRegistrationEndpoint || ''}
+                  defaultValue={adminOidcSecurityContainer.state.oidcRegistrationEndpoint || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcRegistrationEndpoint(e.target.value)}
                 />
                 <p className="form-text text-muted">
@@ -301,7 +301,7 @@ class OidcSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="oidcJWKSUri"
-                  value={adminOidcSecurityContainer.state.oidcJWKSUri || ''}
+                  defaultValue={adminOidcSecurityContainer.state.oidcJWKSUri || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcJWKSUri(e.target.value)}
                 />
                 <p className="form-text text-muted">
@@ -321,7 +321,7 @@ class OidcSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="oidcAttrMapId"
-                  value={adminOidcSecurityContainer.state.oidcAttrMapId || ''}
+                  defaultValue={adminOidcSecurityContainer.state.oidcAttrMapId || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcAttrMapId(e.target.value)}
                 />
                 <p className="form-text text-muted">
@@ -337,7 +337,7 @@ class OidcSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="oidcAttrMapUserName"
-                  value={adminOidcSecurityContainer.state.oidcAttrMapUserName || ''}
+                  defaultValue={adminOidcSecurityContainer.state.oidcAttrMapUserName || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcAttrMapUserName(e.target.value)}
                 />
                 <p className="form-text text-muted">
@@ -353,7 +353,7 @@ class OidcSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="oidcAttrMapName"
-                  value={adminOidcSecurityContainer.state.oidcAttrMapName || ''}
+                  defaultValue={adminOidcSecurityContainer.state.oidcAttrMapName || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcAttrMapName(e.target.value)}
                 />
                 <p className="form-text text-muted">
@@ -369,7 +369,7 @@ class OidcSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="oidcAttrMapEmail"
-                  value={adminOidcSecurityContainer.state.oidcAttrMapEmail || ''}
+                  defaultValue={adminOidcSecurityContainer.state.oidcAttrMapEmail || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcAttrMapEmail(e.target.value)}
                 />
                 <p className="form-text text-muted">
@@ -384,7 +384,7 @@ class OidcSecurityManagement extends React.Component {
                 <input
                   className="form-control"
                   type="text"
-                  value={adminOidcSecurityContainer.state.callbackUrl || ''}
+                  defaultValue={adminOidcSecurityContainer.state.callbackUrl || ''}
                   readOnly
                 />
                 <p className="form-text text-muted small">{t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
