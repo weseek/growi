@@ -32,7 +32,6 @@ const TopOfTableContents = (props) => {
         <button type="button" className="bg-transparent border-0">
           <Attachment />
         </button>
-
         {/* [TODO: setting Footprints' icon by GW-3308] */}
         <div
           id="seen-user-list"
