@@ -1111,11 +1111,11 @@ module.exports = function(crowi) {
       throw new Error('This method does NOT supports deleting trashed pages.');
     }
 
-    // find descendants (this array does not include GRANT_RESTRICTED)
-    const result = await this.findListWithDescendants(targetPage.path, user);
+    // find manageable descendants (this array does not include GRANT_RESTRICTED)
+    const result = await this.findManageableListWithDescendants(targetPage.path, user, options);
     const pages = result.pages;
     // add targetPage if 'grant' is GRANT_RESTRICTED
-    //  because findListWithDescendants excludes GRANT_RESTRICTED pages
+    //  because findManageableListWithDescendants excludes GRANT_RESTRICTED pages
     if (targetPage.grant === GRANT_RESTRICTED) {
       pages.push(targetPage);
     }
