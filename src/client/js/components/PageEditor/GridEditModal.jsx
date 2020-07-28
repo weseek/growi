@@ -37,10 +37,7 @@ export default class GridEditModal extends React.Component {
 
   showGridPattern() {
     const colsRatios = this.state.colsRatios;
-    const createdCol = colsRatios.map((colsRatio) => {
-      return `- ${colsRatio} `;
-    });
-    return createdCol.join('').slice(1);
+    return colsRatios.join(' - ');
   }
 
   init(gridHtml) {
