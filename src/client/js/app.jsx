@@ -27,7 +27,6 @@ import MyDraftList from './components/MyDraftList/MyDraftList';
 import SeenUserList from './components/User/SeenUserList';
 import LikerList from './components/User/LikerList';
 import TableOfContents from './components/TableOfContents';
-import TopOfTableContents from './components/TopOfTableContents';
 
 import PersonalSettings from './components/Me/PersonalSettings';
 import NavigationContainer from './services/NavigationContainer';
@@ -90,7 +89,6 @@ if (pageContainer.state.pageId != null) {
     'page-management': <PageManagement />,
 
     'revision-toc': <TableOfContents />,
-
     'seen-user-list': <SeenUserList />,
     'liker-list': <LikerList />,
 
