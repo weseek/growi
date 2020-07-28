@@ -703,6 +703,20 @@ module.exports = function(crowi) {
   };
 
   /**
+   * find pages that is match with `path` and its descendants whitch user is able to manage
+   */
+  pageSchema.statics.findManageableListWithDescendants = async function(path, user, option = {}) {
+    const builder = new PageQueryBuilder(this.find());
+    builder.addConditionToListWithDescendants(path, option);
+    builder.addConditionToExcludeRedirect();
+
+    // add grant conditions
+    await addConditionToFilteringByViewerToEdit(builder, user);
+
+    return await findListFromBuilderAndViewer(builder, user, false, option);
+  };
+
+  /**
    * find pages that start with `path`
    */
   pageSchema.statics.findListByStartWith = async function(path, user, option) {
@@ -1043,6 +1057,7 @@ module.exports = function(crowi) {
   };
 
   pageSchema.statics.applyScopesToDescendantsAsyncronously = async function(parentPage, user) {
+    //
     const builder = new PageQueryBuilder(this.find());
     builder.addConditionToListWithDescendants(parentPage.path);
 
@@ -1277,11 +1292,11 @@ module.exports = function(crowi) {
     // sanitize path
     newPagePathPrefix = crowi.xss.process(newPagePathPrefix); // eslint-disable-line no-param-reassign
 
-    // find descendants (this array does not include GRANT_RESTRICTED)
-    const result = await this.findListWithDescendants(path, user, options);
+   // find manageable descendants (this array does not include GRANT_RESTRICTED)
+    const result = await this.findManageableListWithDescendants(path, user, options);
     const pages = result.pages;
     // add targetPage if 'grant' is GRANT_RESTRICTED
-    //  because findListWithDescendants excludes GRANT_RESTRICTED pages
+    //  because findManageableListWithDescendants excludes GRANT_RESTRICTED pages
     if (targetPage.grant === GRANT_RESTRICTED) {
       pages.push(targetPage);
     }
