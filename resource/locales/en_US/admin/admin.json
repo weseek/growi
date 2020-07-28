@@ -35,6 +35,7 @@
     "host": "Host",
     "port": "Port",
     "user": "User",
+    "initialize_mail_settings": "initialize mail settings",
     "aws_settings": "AWS settings",
     "aws_access": "This is for AWS settings. If you complete AWS settings, file upload function, profile picture function etc will be enabled.",
     "no_smtp_setting": "If you do not have SMTP settings, e-mails will be sent via SES. You need to verify from e-mail address and production settings.",

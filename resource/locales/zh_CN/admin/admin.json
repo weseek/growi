@@ -35,6 +35,7 @@
 		"host": "服务器",
 		"port": "端口号",
 		"user": "用户名",
+    "initialize_mail_settings": "初始化设定",
 		"aws_settings": "AWS设置",
 		"aws_access": "这是用于AWS设置的。如果您完成了AWS设置，文件上传功能，个人资料图片功能等将被启用。",
 		"no_smtp_setting": "如果您没有SMTP设置，电子邮件将通过SES发送。您需要从电子邮件地址和生产设置进行验证。",

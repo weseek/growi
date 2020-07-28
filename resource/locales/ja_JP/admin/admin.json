@@ -35,6 +35,7 @@
     "host": "ホスト",
     "port": "ポート",
     "user": "ユーザー",
+    "initialize_mail_settings": "設定を初期化",
     "aws_settings": "AWS設定",
     "aws_access": "AWS にアクセスするための設定を行います。AWS の設定を完了させると、ファイルアップロード機能、プロフィール写真機能などが有効になります。",
     "no_smtp_setting": "また、SMTP の設定が無い場合、SES を利用したメール送信が行われます。FromメールアドレスのVerify、プロダクション利用設定をする必要があります。",
