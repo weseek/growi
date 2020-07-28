@@ -11,6 +11,7 @@ module.exports = function(crowi, app) {
   const loginRequired = require('../middlewares/login-required')(crowi, true);
   const adminRequired = require('../middlewares/admin-required')(crowi);
   const certifySharedPage = require('../middlewares/certify-shared-page')(crowi);
+  const certifySharedFile = require('../middlewares/certify-shared-file')(crowi);
   const csrf = require('../middlewares/csrf')(crowi);
 
   const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
@@ -121,7 +122,7 @@ module.exports = function(crowi, app) {
 
   app.get('/:id([0-9a-z]{24})'       , loginRequired , page.redirector);
   app.get('/_r/:id([0-9a-z]{24})'    , loginRequired , page.redirector); // alias
-  app.get('/attachment/:id([0-9a-z]{24})'  , loginRequired, attachment.api.get);
+  app.get('/attachment/:id([0-9a-z]{24})' , certifySharedFile , loginRequired, attachment.api.get);
   app.get('/attachment/profile/:id([0-9a-z]{24})' , loginRequired, attachment.api.get);
   app.get('/attachment/:pageId/:fileName', loginRequired, attachment.api.obsoletedGetForMongoDB); // DEPRECATED: remains for backward compatibility for v3.3.x or below
   app.get('/download/:id([0-9a-z]{24})'    , loginRequired, attachment.api.download);
