@@ -1150,7 +1150,7 @@ module.exports = function(crowi) {
 
   pageSchema.statics.revertDeletedPageRecursively = async function(targetPage, user, options = {}) {
     const findOpts = { includeTrashed: true };
-    const result = await this.findListWithDescendants(targetPage.path, user, findOpts);
+    const result = await this.findManageableListWithDescendants(targetPage.path, user, findOpts);
     const pages = result.pages;
 
     let updatedPage = null;
@@ -1204,11 +1204,11 @@ module.exports = function(crowi) {
 
     const findOpts = { includeTrashed: true };
 
-    // find descendants (this array does not include GRANT_RESTRICTED)
-    const result = await this.findListWithDescendants(pagePath, user, findOpts);
+    // find manageable descendants (this array does not include GRANT_RESTRICTED)
+    const result = await this.findManageableListWithDescendants(pagePath, user, findOpts);
     const pages = result.pages;
     // add targetPage if 'grant' is GRANT_RESTRICTED
-    //  because findListWithDescendants excludes GRANT_RESTRICTED pages
+    //  because findManageableListWithDescendants excludes GRANT_RESTRICTED pages
     if (targetPage.grant === GRANT_RESTRICTED) {
       pages.push(targetPage);
     }
