@@ -71,7 +71,7 @@ class SlackAppConfiguration extends React.Component {
                 <input
                   className="form-control"
                   type="text"
-                  defaultValue={adminNotificationContainer.state.webhookUrl || ''}
+                  value={adminNotificationContainer.state.webhookUrl || ''}
                   onChange={e => adminNotificationContainer.changeWebhookUrl(e.target.value)}
                 />
               </div>
@@ -123,7 +123,7 @@ class SlackAppConfiguration extends React.Component {
                   <input
                     className="form-control"
                     type="text"
-                    defaultValue={adminNotificationContainer.state.slackToken || ''}
+                    value={adminNotificationContainer.state.slackToken || ''}
                     onChange={e => adminNotificationContainer.changeSlackToken(e.target.value)}
                   />
                 </div>

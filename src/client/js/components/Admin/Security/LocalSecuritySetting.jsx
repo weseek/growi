@@ -144,7 +144,7 @@ class LocalSecuritySetting extends React.Component {
                   className="form-control"
                   type="textarea"
                   name="registrationWhiteList"
-                  defaultValue={adminLocalSecurityContainer.state.registrationWhiteList.join('\n')}
+                  value={adminLocalSecurityContainer.state.registrationWhiteList.join('\n')}
                   onChange={e => adminLocalSecurityContainer.changeRegistrationWhiteList(e.target.value)}
                 />
                 <p className="form-text text-muted small">{t('security_setting.restrict_emails')}<br />{t('security_setting.for_example')}

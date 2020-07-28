@@ -58,7 +58,7 @@ class AwsSetting extends React.Component {
             <input
               className="form-control"
               placeholder={`${t('eg')} ap-northeast-1`}
-              defaultValue={adminAppContainer.state.region || ''}
+              value={adminAppContainer.state.region || ''}
               onChange={(e) => {
                 adminAppContainer.changeRegion(e.target.value);
               }}
@@ -75,7 +75,7 @@ class AwsSetting extends React.Component {
               className="form-control"
               type="text"
               placeholder={`${t('eg')} http://localhost:9000`}
-              defaultValue={adminAppContainer.state.customEndpoint || ''}
+              value={adminAppContainer.state.customEndpoint || ''}
               onChange={(e) => {
                 adminAppContainer.changeCustomEndpoint(e.target.value);
               }}
@@ -93,7 +93,7 @@ class AwsSetting extends React.Component {
               className="form-control"
               type="text"
               placeholder={`${t('eg')} crowi`}
-              defaultValue={adminAppContainer.state.bucket || ''}
+              value={adminAppContainer.state.bucket || ''}
               onChange={(e) => {
                 adminAppContainer.changeBucket(e.target.value);
               }}
@@ -109,7 +109,7 @@ class AwsSetting extends React.Component {
             <input
               className="form-control"
               type="text"
-              defaultValue={adminAppContainer.state.accessKeyId || ''}
+              value={adminAppContainer.state.accessKeyId || ''}
               onChange={(e) => {
                 adminAppContainer.changeAccessKeyId(e.target.value);
               }}
@@ -125,7 +125,7 @@ class AwsSetting extends React.Component {
             <input
               className="form-control"
               type="text"
-              defaultValue={adminAppContainer.state.secretAccessKey || ''}
+              value={adminAppContainer.state.secretAccessKey || ''}
               onChange={(e) => {
                 adminAppContainer.changeSecretAccessKey(e.target.value);
               }}

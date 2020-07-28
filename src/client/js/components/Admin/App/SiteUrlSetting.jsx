@@ -62,7 +62,7 @@ class SiteUrlSetting extends React.Component {
                       className="form-control"
                       type="text"
                       name="settingForm[app:siteUrl]"
-                      defaultValue={adminAppContainer.state.siteUrl || ''}
+                      value={adminAppContainer.state.siteUrl || ''}
                       onChange={(e) => { adminAppContainer.changeSiteUrl(e.target.value) }}
                       placeholder="e.g. https://my.growi.org"
                     />

@@ -115,7 +115,7 @@ class SamlSecurityManagement extends React.Component {
             <input
               className="form-control"
               type="text"
-              defaultValue={adminSamlSecurityContainer.state.callbackUrl}
+              value={adminSamlSecurityContainer.state.callbackUrl}
               readOnly
             />
             <p className="form-text text-muted small">{t('security_setting.desc_of_callback_URL', { AuthName: 'SAML Identity' })}</p>
@@ -169,7 +169,7 @@ class SamlSecurityManagement extends React.Component {
                       type="text"
                       name="samlEntryPoint"
                       readOnly={useOnlyEnvVars}
-                      defaultValue={adminSamlSecurityContainer.state.samlEntryPoint}
+                      value={adminSamlSecurityContainer.state.samlEntryPoint}
                       onChange={e => adminSamlSecurityContainer.changeSamlEntryPoint(e.target.value)}
                     />
                   </td>
@@ -193,7 +193,7 @@ class SamlSecurityManagement extends React.Component {
                       type="text"
                       name="samlEnvVarissuer"
                       readOnly={useOnlyEnvVars}
-                      defaultValue={adminSamlSecurityContainer.state.samlIssuer}
+                      value={adminSamlSecurityContainer.state.samlIssuer}
                       onChange={e => adminSamlSecurityContainer.changeSamlIssuer(e.target.value)}
                     />
                   </td>
@@ -218,7 +218,7 @@ class SamlSecurityManagement extends React.Component {
                       rows="5"
                       name="samlCert"
                       readOnly={useOnlyEnvVars}
-                      defaultValue={adminSamlSecurityContainer.state.samlCert}
+                      value={adminSamlSecurityContainer.state.samlCert}
                       onChange={e => adminSamlSecurityContainer.changeSamlCert(e.target.value)}
                     />
                     <p>
@@ -278,7 +278,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       className="form-control"
                       type="text"
                       readOnly={useOnlyEnvVars}
-                      defaultValue={adminSamlSecurityContainer.state.samlAttrMapId}
+                      value={adminSamlSecurityContainer.state.samlAttrMapId}
                       onChange={e => adminSamlSecurityContainer.changeSamlAttrMapId(e.target.value)}
                     />
                     <p className="form-text text-muted">
@@ -306,7 +306,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       className="form-control"
                       type="text"
                       readOnly={useOnlyEnvVars}
-                      defaultValue={adminSamlSecurityContainer.state.samlAttrMapUsername}
+                      value={adminSamlSecurityContainer.state.samlAttrMapUsername}
                       onChange={e => adminSamlSecurityContainer.changeSamlAttrMapUserName(e.target.value)}
                     />
                     <p className="form-text text-muted">
@@ -332,7 +332,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       className="form-control"
                       type="text"
                       readOnly={useOnlyEnvVars}
-                      defaultValue={adminSamlSecurityContainer.state.samlAttrMapMail}
+                      value={adminSamlSecurityContainer.state.samlAttrMapMail}
                       onChange={e => adminSamlSecurityContainer.changeSamlAttrMapMail(e.target.value)}
                     />
                     <p className="form-text text-muted">
@@ -358,7 +358,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       className="form-control"
                       type="text"
                       readOnly={useOnlyEnvVars}
-                      defaultValue={adminSamlSecurityContainer.state.samlAttrMapFirstName}
+                      value={adminSamlSecurityContainer.state.samlAttrMapFirstName}
                       onChange={e => adminSamlSecurityContainer.changeSamlAttrMapFirstName(e.target.value)}
                     />
                     <p className="form-text text-muted">
@@ -389,7 +389,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       className="form-control"
                       type="text"
                       readOnly={useOnlyEnvVars}
-                      defaultValue={adminSamlSecurityContainer.state.samlAttrMapLastName}
+                      value={adminSamlSecurityContainer.state.samlAttrMapLastName}
                       onChange={e => adminSamlSecurityContainer.changeSamlAttrMapLastName(e.target.value)}
                     />
                     <p className="form-text text-muted">
@@ -490,7 +490,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      defaultValue={adminSamlSecurityContainer.state.samlABLCRule || ''}
+                      value={adminSamlSecurityContainer.state.samlABLCRule || ''}
                       onChange={(e) => { adminSamlSecurityContainer.changeSamlABLCRule(e.target.value) }}
                       readOnly={useOnlyEnvVars}
                     />

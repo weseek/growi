@@ -45,7 +45,7 @@ class AppSetting extends React.Component {
             <input
               className="form-control"
               type="text"
-              defaultValue={adminAppContainer.state.title || ''}
+              value={adminAppContainer.state.title || ''}
               onChange={(e) => {
                 adminAppContainer.changeTitle(e.target.value);
               }}
@@ -65,7 +65,7 @@ class AppSetting extends React.Component {
             <input
               className="form-control"
               type="text"
-              defaultValue={adminAppContainer.state.confidential || ''}
+              value={adminAppContainer.state.confidential || ''}
               onChange={(e) => {
                 adminAppContainer.changeConfidential(e.target.value);
               }}

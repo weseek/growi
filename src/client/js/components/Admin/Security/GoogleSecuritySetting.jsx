@@ -122,7 +122,7 @@ class GoogleSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="googleClientId"
-                  defaultValue={adminGoogleSecurityContainer.state.googleClientId || ''}
+                  value={adminGoogleSecurityContainer.state.googleClientId || ''}
                   onChange={e => adminGoogleSecurityContainer.changeGoogleClientId(e.target.value)}
                 />
                 <p className="form-text text-muted">
@@ -138,7 +138,7 @@ class GoogleSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="googleClientSecret"
-                  defaultValue={adminGoogleSecurityContainer.state.googleClientSecret || ''}
+                  value={adminGoogleSecurityContainer.state.googleClientSecret || ''}
                   onChange={e => adminGoogleSecurityContainer.changeGoogleClientSecret(e.target.value)}
                 />
                 <p className="form-text text-muted">

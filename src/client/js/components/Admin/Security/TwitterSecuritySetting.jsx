@@ -121,7 +121,7 @@ class TwitterSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="TwitterConsumerId"
-                  defaultValue={adminTwitterSecurityContainer.state.twitterConsumerKey || ''}
+                  value={adminTwitterSecurityContainer.state.twitterConsumerKey || ''}
                   onChange={e => adminTwitterSecurityContainer.changeTwitterConsumerKey(e.target.value)}
                 />
                 <p className="form-text text-muted">
@@ -137,7 +137,7 @@ class TwitterSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="TwitterConsumerSecret"
-                  defaultValue={adminTwitterSecurityContainer.state.twitterConsumerSecret || ''}
+                  value={adminTwitterSecurityContainer.state.twitterConsumerSecret || ''}
                   onChange={e => adminTwitterSecurityContainer.changeTwitterConsumerSecret(e.target.value)}
                 />
                 <p className="form-text text-muted">

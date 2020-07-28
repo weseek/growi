@@ -257,7 +257,7 @@ export default class TextAreaEditor extends AbstractEditor {
           type="textarea"
           className="textarea-editor shadow-none"
           innerRef={(c) => { this.textarea = c }}
-          defaultValue={this.state.value}
+          value={this.state.value}
           onChange={(e) => {
           if (this.props.onChange != null) {
             this.props.onChange(e.target.value);
