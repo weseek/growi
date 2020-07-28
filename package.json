@@ -137,6 +137,7 @@
     "passport-twitter": "^1.0.4",
     "react-card-flip": "^1.0.10",
     "react-image-crop": "^8.3.0",
+    "reconnecting-websocket": "^4.4.0",
     "redis": "^3.0.2",
     "rimraf": "^3.0.0",
     "slack-node": "^0.1.8",
@@ -148,7 +149,7 @@
     "unzipper": "^0.10.5",
     "url-join": "^4.0.0",
     "validator": "^12.0.0",
-    "websocket": "^1.0.31",
+    "ws": "^7.3.1",
     "xss": "^1.0.6"
   },
   "devDependencies": {

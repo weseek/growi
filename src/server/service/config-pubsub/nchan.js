@@ -2,7 +2,9 @@ const logger = require('@alias/logger')('growi:service:config-pubsub:nchan');
 
 const path = require('path');
 const axios = require('axios');
-const WebSocketClient = require('websocket').client;
+// const WebSocketClient = require('websocket').client;
+const WebSocket = require('ws');
+const ReconnectingWebSocket = require('reconnecting-websocket');
 
 const ConfigPubsubMessage = require('../../models/vo/config-pubsub-message');
 const ConfigPubsubDelegator = require('./base');
@@ -17,52 +19,48 @@ class NchanDelegator extends ConfigPubsubDelegator {
     this.subscribePath = subscribePath;
 
     this.channelId = channelId;
-    this.isConnecting = false;
+    // this.isConnecting = false;
 
     /**
      * A list of ConfigPubsubHandler instance
      */
-    this.handlableList = [];
+    this.handlableToEventListenerMap = {};
 
-    this.client = null;
-    this.connection = null;
+    this.socket = null;
+    // this.connection = null;
   }
 
   /**
    * @inheritdoc
    */
   shouldResubscribe() {
-    if (this.connection != null && this.connection.connected) {
-      return false;
-    }
-
-    return !this.isConnecting;
+    return this.socket.readyState === ReconnectingWebSocket.CLOSED;
   }
 
   /**
    * @inheritdoc
    */
   subscribe(forceReconnect = false) {
-    if (forceReconnect) {
-      if (this.connection != null && this.connection.connected) {
-        this.connection.close();
-      }
-    }
+    // if (forceReconnect) {
+    //   if (this.connection != null && this.connection.connected) {
+    //     this.connection.close();
+    //   }
+    // }
 
-    if (this.client != null && this.shouldResubscribe()) {
+    if (this.socket != null && this.shouldResubscribe()) {
       logger.info('The connection to config pubsub server is offline. Try to reconnect...');
     }
 
     // init client
-    if (this.client == null) {
+    if (this.socket == null) {
       this.initClient();
     }
 
     // connect
-    this.isConnecting = true;
-    const url = this.constructUrl(this.subscribePath).toString();
-    logger.debug(`Subscribe to ${url}`);
-    this.client.connect(url.toString());
+    // this.isConnecting = true;
+    // const url = this.constructUrl(this.subscribePath).toString();
+    // logger.debug(`Subscribe to ${url}`);
+    // this.socket.reconnect();
   }
 
   /**
@@ -82,24 +80,40 @@ class NchanDelegator extends ConfigPubsubDelegator {
    * @inheritdoc
    */
   addMessageHandler(handlable) {
+    if (this.socket == null) {
+      logger.error('socket has not initialized yet.');
+      return;
+    }
+
     super.addMessageHandler(handlable);
-    this.registerMessageHandlerToConnection(handlable);
+    this.registerMessageHandlerToSocket(handlable);
   }
 
   /**
    * @inheritdoc
    */
   removeMessageHandler(handlable) {
+    if (this.socket == null) {
+      logger.error('socket has not initialized yet.');
+      return;
+    }
+
     super.removeMessageHandler(handlable);
-    this.subscribe(true);
+
+    const eventListener = this.handlableToEventListenerMap[handlable];
+    if (eventListener != null) {
+      this.socket.removeEventListener('message', eventListener);
+      delete this.handlableToEventListenerMap[handlable];
+    }
   }
 
-  registerMessageHandlerToConnection(handlable) {
-    if (this.connection != null) {
-      this.connection.on('message', (messageObj) => {
-        this.handleMessage(messageObj, handlable);
-      });
-    }
+  registerMessageHandlerToSocket(handlable) {
+    const eventListener = (messageObj) => {
+      this.handleMessage(messageObj, handlable);
+    };
+
+    this.socket.addEventListener('message', eventListener);
+    this.handlableToEventListenerMap[handlable] = eventListener;
   }
 
   constructUrl(basepath) {
@@ -111,32 +125,47 @@ class NchanDelegator extends ConfigPubsubDelegator {
   }
 
   initClient() {
-    const client = new WebSocketClient();
-
-    client.on('connectFailed', (error) => {
-      logger.warn(`Connect Error: ${error.toString()}`);
-      this.isConnecting = false;
+    // const client = new WebSocketClient();
+    const url = this.constructUrl(this.publishPath).toString();
+    const socket = new ReconnectingWebSocket(url, [], {
+      WebSocket,
     });
 
-    client.on('connect', (connection) => {
-      this.isConnecting = false;
-      this.connection = connection;
-
-      logger.info('WebSocket client connected');
-
-      connection.on('error', (error) => {
-        this.isConnecting = false;
-        logger.error(`Connection Error: ${error.toString()}`);
-      });
-      connection.on('close', () => {
-        logger.info('WebSocket connection closed');
-      });
-
-      // register all message handlers
-      this.handlableList.forEach(handler => this.registerMessageHandlerToConnection(handler));
+    // client.on('connectFailed', (error) => {
+    //   logger.warn(`Connect Error: ${error.toString()}`);
+    //   this.isConnecting = false;
+    // });
+    socket.addEventListener('close', () => {
+      logger.info('WebSocket client disconnected');
+    });
+    socket.addEventListener('error', (error) => {
+      logger.error('WebSocket error occured:', error.message);
     });
 
-    this.client = client;
+    // client.on('connect', (connection) => {
+    //   this.isConnecting = false;
+    //   this.connection = connection;
+
+    //   logger.info('WebSocket client connected');
+
+    //   connection.on('error', (error) => {
+    //     this.isConnecting = false;
+    //     logger.error(`Connection Error: ${error.toString()}`);
+    //   });
+    //   connection.on('close', () => {
+    //     logger.info('WebSocket connection closed');
+    //   });
+
+    //   // register all message handlers
+    //   this.handlableList.forEach(handler => this.registerMessageHandlerToConnection(handler));
+    // });
+    socket.addEventListener('open', () => {
+      logger.info('WebSocket client connected.');
+    });
+
+    this.handlableList.forEach(handlable => this.registerMessageHandlerToSocket(handlable));
+
+    this.socket = socket;
   }
 
   /**

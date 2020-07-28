@@ -11,6 +11,8 @@ class ConfigPubsubDelegator {
     if (uri == null) {
       throw new Error('uri must be set');
     }
+
+    this.handlableList = [];
   }
 
   shouldResubscribe() {
