@@ -10,16 +10,16 @@ class GridEditorUtil {
     this.mappingAllGridDivisionPatterns = [
       {
         numberOfGridDivisions: 2,
-        mapping: [[2, 10], [4, 8], [6, 6], [8, 4], [10, 2]]
+        mapping: [[2, 10], [4, 8], [6, 6], [8, 4], [10, 2]],
       },
       {
         numberOfGridDivisions: 3,
-        mapping: [[2, 5, 5], [5, 2, 5], [5, 5, 2], [4, 4, 4], [3, 3, 6], [3, 6, 3], [6, 3, 3]]
+        mapping: [[2, 5, 5], [5, 2, 5], [5, 5, 2], [4, 4, 4], [3, 3, 6], [3, 6, 3], [6, 3, 3]],
       },
       {
         numberOfGridDivisions: 4,
-        mapping: [[2, 2, 4, 4], [4, 4, 2, 2], [2, 4, 2, 4], [4, 2, 4, 2], [3, 3, 3, 3], [2, 2, 2, 6], [6, 2, 2, 2]]
-      }
+        mapping: [[2, 2, 4, 4], [4, 4, 2, 2], [2, 4, 2, 4], [4, 2, 4, 2], [3, 3, 3, 3], [2, 2, 2, 6], [6, 2, 2, 2]],
+      },
     ];
     this.isInGridBlock = this.isInGridBlock.bind(this);
     this.replaceGridWithHtmlWithEditor = this.replaceGridWithHtmlWithEditor.bind(this);
