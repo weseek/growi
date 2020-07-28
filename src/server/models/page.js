@@ -705,13 +705,19 @@ module.exports = function(crowi) {
   /**
    * find pages that is match with `path` and its descendants whitch user is able to manage
    */
-  pageSchema.statics.findManageableListWithDescendants = async function(path, user, option = {}) {
+  pageSchema.statics.findManageableListWithDescendants = async function(page, user, option = {}) {
     const builder = new PageQueryBuilder(this.find());
-    builder.addConditionToListWithDescendants(path, option);
+    builder.addConditionToListWithDescendants(page.path, option);
     builder.addConditionToExcludeRedirect();
 
     // add grant conditions
     await addConditionToFilteringByViewerToEdit(builder, user);
+
+    // add targetPage if 'grant' is GRANT_RESTRICTED
+    // because addConditionToListWithDescendants excludes GRANT_RESTRICTED pages
+    if (page.grant === GRANT_RESTRICTED) {
+      pages.push(page.path);
+    }
 
     return await findListFromBuilderAndViewer(builder, user, false, option);
   };
@@ -1111,13 +1117,8 @@ module.exports = function(crowi) {
     }
 
     // find manageable descendants (this array does not include GRANT_RESTRICTED)
-    const result = await this.findManageableListWithDescendants(targetPage.path, user, options);
+    const result = await this.findManageableListWithDescendants(targetPage, user, options);
     const pages = result.pages;
-    // add targetPage if 'grant' is GRANT_RESTRICTED
-    //  because findManageableListWithDescendants excludes GRANT_RESTRICTED pages
-    if (targetPage.grant === GRANT_RESTRICTED) {
-      pages.push(targetPage);
-    }
 
     await Promise.all(pages.map((page) => {
       return this.deletePage(page, user, options);
@@ -1149,7 +1150,7 @@ module.exports = function(crowi) {
 
   pageSchema.statics.revertDeletedPageRecursively = async function(targetPage, user, options = {}) {
     const findOpts = { includeTrashed: true };
-    const result = await this.findManageableListWithDescendants(targetPage.path, user, findOpts);
+    const result = await this.findManageableListWithDescendants(targetPage, user, findOpts);
     const pages = result.pages;
 
     let updatedPage = null;
@@ -1291,14 +1292,9 @@ module.exports = function(crowi) {
     // sanitize path
     newPagePathPrefix = crowi.xss.process(newPagePathPrefix); // eslint-disable-line no-param-reassign
 
-    // find manageable descendants (this array does not include GRANT_RESTRICTED)
-    const result = await this.findManageableListWithDescendants(path, user, options);
+    // find manageable descendants
+    const result = await this.findManageableListWithDescendants(targetPage, user, options);
     const pages = result.pages;
-    // add targetPage if 'grant' is GRANT_RESTRICTED
-    //  because findManageableListWithDescendants excludes GRANT_RESTRICTED pages
-    if (targetPage.grant === GRANT_RESTRICTED) {
-      pages.push(targetPage);
-    }
 
     await Promise.all(pages.map((page) => {
       const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
