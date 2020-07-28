@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
+import PageContainer from '../services/PageContainer';
+
 import PageList from './PageList';
 import TimeLine from './TimeLine';
 import RecentChanges from './RecentChanges';
 import Attachment from './Attachment';
-
-import PageContainer from '../services/PageContainer';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
