@@ -703,6 +703,28 @@ module.exports = function(crowi) {
   };
 
   /**
+   * find pages that is match with `path` and its descendants whitch user is able to manage
+   */
+  pageSchema.statics.findManageableListWithDescendants = async function(page, user, option = {}) {
+    const builder = new PageQueryBuilder(this.find());
+    builder.addConditionToListWithDescendants(page.path, option);
+    builder.addConditionToExcludeRedirect();
+
+    // add grant conditions
+    await addConditionToFilteringByViewerToEdit(builder, user);
+
+    const { pages } = await findListFromBuilderAndViewer(builder, user, false, option);
+
+    // add page if 'grant' is GRANT_RESTRICTED
+    // because addConditionToListWithDescendants excludes GRANT_RESTRICTED pages
+    if (page.grant === GRANT_RESTRICTED) {
+      pages.push(page);
+    }
+
+    return pages;
+  };
+
+  /**
    * find pages that start with `path`
    */
   pageSchema.statics.findListByStartWith = async function(path, user, option) {
@@ -1096,14 +1118,8 @@ module.exports = function(crowi) {
       throw new Error('This method does NOT supports deleting trashed pages.');
     }
 
-    // find descendants (this array does not include GRANT_RESTRICTED)
-    const result = await this.findListWithDescendants(targetPage.path, user);
-    const pages = result.pages;
-    // add targetPage if 'grant' is GRANT_RESTRICTED
-    //  because findListWithDescendants excludes GRANT_RESTRICTED pages
-    if (targetPage.grant === GRANT_RESTRICTED) {
-      pages.push(targetPage);
-    }
+    // find manageable descendants (this array does not include GRANT_RESTRICTED)
+    const pages = await this.findManageableListWithDescendants(targetPage, user, options);
 
     await Promise.all(pages.map((page) => {
       return this.deletePage(page, user, options);
@@ -1135,8 +1151,7 @@ module.exports = function(crowi) {
 
   pageSchema.statics.revertDeletedPageRecursively = async function(targetPage, user, options = {}) {
     const findOpts = { includeTrashed: true };
-    const result = await this.findListWithDescendants(targetPage.path, user, findOpts);
-    const pages = result.pages;
+    const pages = await this.findManageableListWithDescendants(targetPage, user, findOpts);
 
     let updatedPage = null;
     await Promise.all(pages.map((page) => {
@@ -1185,18 +1200,10 @@ module.exports = function(crowi) {
    * Delete Bookmarks, Attachments, Revisions, Pages and emit delete
    */
   pageSchema.statics.completelyDeletePageRecursively = async function(targetPage, user, options = {}) {
-    const pagePath = targetPage.path;
-
     const findOpts = { includeTrashed: true };
 
-    // find descendants (this array does not include GRANT_RESTRICTED)
-    const result = await this.findListWithDescendants(pagePath, user, findOpts);
-    const pages = result.pages;
-    // add targetPage if 'grant' is GRANT_RESTRICTED
-    //  because findListWithDescendants excludes GRANT_RESTRICTED pages
-    if (targetPage.grant === GRANT_RESTRICTED) {
-      pages.push(targetPage);
-    }
+    // find manageable descendants (this array does not include GRANT_RESTRICTED)
+    const pages = await this.findManageableListWithDescendants(targetPage, user, findOpts);
 
     await Promise.all(pages.map((page) => {
       return this.completelyDeletePage(page, user, options);
@@ -1277,14 +1284,8 @@ module.exports = function(crowi) {
     // sanitize path
     newPagePathPrefix = crowi.xss.process(newPagePathPrefix); // eslint-disable-line no-param-reassign
 
-    // find descendants (this array does not include GRANT_RESTRICTED)
-    const result = await this.findListWithDescendants(path, user, options);
-    const pages = result.pages;
-    // add targetPage if 'grant' is GRANT_RESTRICTED
-    //  because findListWithDescendants excludes GRANT_RESTRICTED pages
-    if (targetPage.grant === GRANT_RESTRICTED) {
-      pages.push(targetPage);
-    }
+    // find manageable descendants
+    const pages = await this.findManageableListWithDescendants(targetPage, user, options);
 
     await Promise.all(pages.map((page) => {
       const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
