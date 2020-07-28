@@ -1200,17 +1200,10 @@ module.exports = function(crowi) {
    * Delete Bookmarks, Attachments, Revisions, Pages and emit delete
    */
   pageSchema.statics.completelyDeletePageRecursively = async function(targetPage, user, options = {}) {
-    const pagePath = targetPage.path;
-
     const findOpts = { includeTrashed: true };
 
     // find manageable descendants (this array does not include GRANT_RESTRICTED)
-    const pages = await this.findManageableListWithDescendants(pagePath, user, findOpts);
-    // add targetPage if 'grant' is GRANT_RESTRICTED
-    //  because findManageableListWithDescendants excludes GRANT_RESTRICTED pages
-    if (targetPage.grant === GRANT_RESTRICTED) {
-      pages.push(targetPage);
-    }
+    const pages = await this.findManageableListWithDescendants(targetPage, user, findOpts);
 
     await Promise.all(pages.map((page) => {
       return this.completelyDeletePage(page, user, options);
