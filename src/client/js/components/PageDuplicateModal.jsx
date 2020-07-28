@@ -122,12 +122,14 @@ const PageDuplicateModal = (props) => {
             <ul>
               {isDuplicateRecursively && duplicatedNewPaths.map((duplicatedNewPath) => {
                 const existPath = existPaths.includes(duplicatedNewPath);
+                let result;
                 if (existPath) {
-                   console.log(duplicatedNewPath);
+                  result = <li className="text-danger">{duplicatedNewPath}</li>;
                 }
                 else {
-                  return <li>{duplicatedNewPath}</li>;
+                  result = <li>{duplicatedNewPath}</li>;
                 }
+                return result;
               })}
             </ul>
           </div>
