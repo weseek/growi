@@ -85,10 +85,15 @@ module.exports = (crowi) => {
   });
 
   router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
+
+    // path は一時的なものです。クライアントを実装した際に渡します。
+    const path = '/hoge';
+
     try {
-      let result = null;
-      result = await Page.findListByCreator(req.user);
+      const result = await Page.findListWithDescendants(path, req.user);
       return res.apiv3(ApiResponse.success(result));
+
+      // return res.apiv3(ApiResponse.success(result));
     }
     catch (err) {
       return res.apiv3(ApiResponse.error(err));
