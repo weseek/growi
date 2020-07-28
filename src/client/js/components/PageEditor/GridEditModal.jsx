@@ -4,13 +4,16 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 import geu from './GridEditorUtil';
+import BootstrapGrid from '../../models/BootstrapGrid';
 
-export default class GridEditModal extends React.PureComponent {
+export default class GridEditModal extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
+      colsRatios: [6, 6],
+      responsiveSize: BootstrapGrid.ResponsiveSize.XS_SIZE,
       show: false,
       gridHtml: '',
     };
@@ -20,6 +23,21 @@ export default class GridEditModal extends React.PureComponent {
     this.hide = this.hide.bind(this);
     this.cancel = this.cancel.bind(this);
     this.pasteCodedGrid = this.pasteCodedGrid.bind(this);
+    this.showGridPattern = this.showGridPattern.bind(this);
+    this.checkResposiveSize = this.checkResposiveSize.bind(this);
+  }
+
+  async checkResposiveSize(rs) {
+    await this.setState({ responsiveSize: rs });
+  }
+
+  async checkColsRatios(cr) {
+    await this.setState({ colsRatios: cr });
+  }
+
+  showGridPattern() {
+    const colsRatios = this.state.colsRatios;
+    return colsRatios.join(' - ');
   }
 
   init(gridHtml) {
@@ -56,6 +74,34 @@ export default class GridEditModal extends React.PureComponent {
     this.cancel();
   }
 
+  gridDivisionMenu() {
+    const gridDivisions = geu.mappingAllGridDivisionPatterns;
+    return (
+      <div className="container">
+        <div className="row">
+          {gridDivisions.map((gridDivion, i) => {
+            return (
+              <div className="col-md-4 text-center">
+                <h6 className="dropdown-header">{gridDivion.numberOfGridDivisions}分割</h6>
+                {gridDivion.mapping.map((gridOneDivision) => {
+                  return (
+                    <button className="dropdown-item" type="button" onClick={() => { this.checkColsRatios(gridOneDivision) }}>
+                      <div className="row">
+                        {gridOneDivision.map((god) => {
+                          const className = `bg-info col-${god} border`;
+                          return <span className={className}>{god}</span>;
+                        })}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
 
   render() {
     return (
@@ -66,80 +112,68 @@ export default class GridEditModal extends React.PureComponent {
         <ModalBody>
           <div className="container">
             <div className="row">
-              <div className="col-4">
+              <div className="col-3">
                 <div className="mr-3 d-inline">
                   <label htmlFor="gridPattern">Grid Pattern :</label>
                 </div>
-
-                <div className="dropdown d-inline">
-                  <button
-                    className="btn btn-secondary dropdown-toggle"
-                    type="button"
-                    id="dropdownMenuButton"
-                    data-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                  >
-                    Grid Pattern
-                  </button>
-                  <div className="dropdown-menu grid-division-menu" aria-labelledby="dropdownMenuButton">
-                    <GridDivisionMenu />
-                  </div>
+                <button
+                  className="btn btn-outline-secondary dropdown-toggle text-right col-12 col-md-auto"
+                  type="button"
+                  id="dropdownMenuButton"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  {this.showGridPattern()}
+                </button>
+                <div className="dropdown-menu grid-division-menu" aria-labelledby="dropdownMenuButton">
+                  {this.gridDivisionMenu()}
                 </div>
               </div>
-              <div className="col-4 text-right pr-0">
+              <div className="col-3 text-right pr-0">
                 <label className="pr-3">Break point by display size :</label>
               </div>
-              <div className="col-4 text-left pl-0">
-                <div className="d-inline-block">
-                  <div className="custom-control custom-radio ">
-                    <div>
-                      <input
-                        type="radio"
-                        id="mobile"
-                        className="custom-control-input"
-                        name="disSize"
-                        value="mobile"
-                        checked
-                      />
-                      <label className="custom-control-label" htmlFor="mobile">
-                        <i className="pl-2 pr-1 icon-screen-smartphone "></i> Mobile
-                      </label>
-                    </div>
-                    <div>
-                      <input
-                        type="radio"
-                        id="tablet"
-                        className="custom-control-input"
-                        name="disSize"
-                        value="tablet"
-                      />
-                      <label className="custom-control-label" htmlFor="tablet">
-                        <i className="pl-2 pr-1 icon-screen-tablet"></i> Tablet
-                      </label>
-                    </div>
-                    <div>
-                      <input
-                        type="radio"
-                        id="desktop"
-                        className="custom-control-input"
-                        name="disSize"
-                        value="desktop"
-                      />
-                      <label className="custom-control-label" htmlFor="desktop">
-                        <i className="pl-2 pr-1 icon-screen-desktop"></i> Desktop
-                      </label>
-                    </div>
-                    <div>
-                      <input
-                        type="radio"
-                        id="none"
-                        className="custom-control-input"
-                        name="disSize"
-                        value="none"
-                      />
-                      <label className="custom-control-label pl-2" htmlFor="none">None</label>
-                    </div>
+              <div className="col-3 text-left pl-0">
+                <div className="form-group inline-block">
+                  <div>
+                    {/* TODO unite radio button style with that of AppSetting.jsx by GW-3342 */}
+                    <input
+                      type="radio"
+                      id={BootstrapGrid.ResponsiveSize.XS_SIZE}
+                      name="responsiveSize"
+                      value={BootstrapGrid.ResponsiveSize.XS_SIZE}
+                      onChange={(e) => { this.checkResposiveSize(e.target.value) }}
+                      checked={this.state.responsiveSize === BootstrapGrid.ResponsiveSize.XS_SIZE}
+                    />
+                    <label htmlFor={BootstrapGrid.ResponsiveSize.XS_SIZE}>
+                      <i className="pl-2 pr-1 icon-screen-smartphone"></i> Mobile / No break point
+                    </label>
+                  </div>
+                  <div>
+                    <input
+                      type="radio"
+                      id={BootstrapGrid.ResponsiveSize.SM_SIZE}
+                      name="responsiveSize"
+                      value={BootstrapGrid.ResponsiveSize.SM_SIZE}
+                      onChange={(e) => { this.checkResposiveSize(e.target.value) }}
+                      checked={this.state.responsiveSize === BootstrapGrid.ResponsiveSize.SM_SIZE}
+                    />
+                    <label htmlFor={BootstrapGrid.ResponsiveSize.SM_SIZE}>
+                      <i className="pl-2 pr-1 icon-screen-tablet"></i> Tablet
+                    </label>
+                  </div>
+                  <div>
+                    <input
+                      type="radio"
+                      id={BootstrapGrid.ResponsiveSize.MD_SIZE}
+                      name="responsiveSize"
+                      value={BootstrapGrid.ResponsiveSize.MD_SIZE}
+                      onChange={(e) => { this.checkResposiveSize(e.target.value) }}
+                      checked={this.state.responsiveSize === BootstrapGrid.ResponsiveSize.MD_SIZE}
+                    />
+                    <label htmlFor={BootstrapGrid.ResponsiveSize.MD_SIZE}>
+                      <i className="pl-2 pr-1 icon-screen-desktop"></i> Desktop
+                    </label>
                   </div>
                 </div>
               </div>
@@ -160,8 +194,6 @@ export default class GridEditModal extends React.PureComponent {
               </div>
             </div>
           </div>
-
-
         </ModalBody>
         <ModalFooter className="grw-modal-footer">
           <div className="ml-auto">
@@ -177,33 +209,6 @@ export default class GridEditModal extends React.PureComponent {
     );
   }
 
-}
-
-function GridDivisionMenu() {
-  const gridDivisions = geu.mappingAllGridDivisionPatterns;
-  return (
-    <div className="row">
-      {gridDivisions.map((gridDivion, i) => {
-        return (
-          <div className="col-md-4 text-center">
-            <h6 className="dropdown-header">{gridDivion.numberOfGridDivisions}分割</h6>
-            {gridDivion.mapping.map((gridOneDivision) => {
-              return (
-                <a className="dropdown-item" href="#">
-                  <div className="row">
-                    {gridOneDivision.map((gtd) => {
-                      const className = `bg-info col-${gtd} border`;
-                      return <span className={className}>{gtd}</span>;
-                    })}
-                  </div>
-                </a>
-              );
-            })}
-          </div>
-        );
-      })}
-    </div>
-  );
 }
 
 GridEditModal.propTypes = {
