@@ -10,13 +10,13 @@ import AppContainer from '../services/AppContainer';
 import NavigationContainer from '../services/NavigationContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
 
-const PageCreateModal = (props) => {
-  const { t, navigationContainer } = props;
+const TopOfTableContentsModal = (props) => {
+  // const { t, navigationContainer } = props; tは後ほど入れる
 
   return (
-    <Modal size="lg" isOpen={navigationContainer.state.isPageCreateModalShown} toggle={navigationContainer.closePageCreateModal} className="grw-create-page">
-      <ModalHeader tag="h4" toggle={navigationContainer.closePageCreateModal} className="bg-primary text-light">
-        { t('New Page') }
+    <Modal size="lg" className="grw-create-page">
+      <ModalHeader tag="h4" className="bg-primary text-light">
+        TopOfTableContentsModal
       </ModalHeader>
       <ModalBody>
       </ModalBody>
@@ -29,10 +29,10 @@ const PageCreateModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const ModalControlWrapper = withUnstatedContainers(PageCreateModal, [AppContainer, NavigationContainer]);
+const ModalControlWrapper = withUnstatedContainers(TopOfTableContentsModal, [AppContainer, NavigationContainer]);
 
 
-PageCreateModal.propTypes = {
+TopOfTableContentsModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
