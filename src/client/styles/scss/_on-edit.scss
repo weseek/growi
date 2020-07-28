@@ -325,7 +325,9 @@ body.on-edit {
   }
 
   .grid-division-menu {
-    //[TODO: responsive by gw-3244]
-    width: 1000px;
+    width: 60vw;
+    @include media-breakpoint-down(lg) {
+      width: 80vw;
+    }
   }
 }

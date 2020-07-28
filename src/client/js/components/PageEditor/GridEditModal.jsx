@@ -85,14 +85,14 @@ export default class GridEditModal extends React.Component {
           {gridDivisions.map((gridDivion, i) => {
             return (
               <div className="col-md-4 text-center">
-                <h6 className="dropdown-header">{i + 2}分割</h6>
-                {gridDivion.map((gridOneDivision) => {
+                <h6 className="dropdown-header">{gridDivion.numberOfGridDivisions}分割</h6>
+                {gridDivion.mapping.map((gridOneDivision) => {
                   return (
                     <button className="dropdown-item" type="button" onClick={() => { this.checkColsRatios(gridOneDivision) }}>
                       <div className="row">
-                        {gridOneDivision.map((gtd) => {
-                          const className = `bg-info col-${gtd} border`;
-                          return <span className={className}>{gtd}</span>;
+                        {gridOneDivision.map((god) => {
+                          const className = `bg-info col-${god} border`;
+                          return <span className={className}>{god}</span>;
                         })}
                       </div>
                     </button>
