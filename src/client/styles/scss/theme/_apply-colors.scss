@@ -246,8 +246,12 @@ pre:not(.hljs):not(.CodeMirror-line) {
   }
 }
 
-.liker-and-seenusers {
+.top-of-table-contents {
   border-bottom-color: $bordercolor-nav-tabs;
+
+  .table-top-icon {
+    fill: $color-link;
+  }
 }
 
 /*
