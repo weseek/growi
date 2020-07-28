@@ -108,8 +108,7 @@ module.exports = (crowi) => {
 
   router.get('/duplicate', accessTokenParser, loginRequired, async(req, res) => {
     const { path } = req.query;
-    const builder = new PageQueryBuilder(path);
-
+    const builder = new PageQueryBuilder(this.find());
 
     // const result = await Page.findListWithDescendants(path, req.user);
     // const pages = result.pages;
@@ -117,9 +116,9 @@ module.exports = (crowi) => {
     // console.log(duplicatePaths);
     // console.log(req.user);
 
-    const builderPaths = await addConditionToFilteringByViewerToEdit(builder);
-    console.log(builderPaths);
-    return res.apiv3({ builder });
+    await addConditionToFilteringByViewerToEdit(builder);
+    console.log(builder);
+    return res.apiv3({ path });
   });
 
   return router;
