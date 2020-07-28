@@ -1291,7 +1291,7 @@ module.exports = function(crowi) {
     // sanitize path
     newPagePathPrefix = crowi.xss.process(newPagePathPrefix); // eslint-disable-line no-param-reassign
 
-   // find manageable descendants (this array does not include GRANT_RESTRICTED)
+    // find manageable descendants (this array does not include GRANT_RESTRICTED)
     const result = await this.findManageableListWithDescendants(path, user, options);
     const pages = result.pages;
     // add targetPage if 'grant' is GRANT_RESTRICTED
