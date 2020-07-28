@@ -1057,7 +1057,6 @@ module.exports = function(crowi) {
   };
 
   pageSchema.statics.applyScopesToDescendantsAsyncronously = async function(parentPage, user) {
-    //
     const builder = new PageQueryBuilder(this.find());
     builder.addConditionToListWithDescendants(parentPage.path);
 
