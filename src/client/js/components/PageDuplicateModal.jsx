@@ -124,7 +124,7 @@ const PageDuplicateModal = (props) => {
                 const existPath = existPaths.includes(duplicatedNewPath);
                 let result;
                 if (existPath) {
-                  result = <li className="text-danger">{duplicatedNewPath} ×</li>;
+                  result = <li className="text-danger">{duplicatedNewPath} (exist)</li>;
                 }
                 else {
                   result = <li>{duplicatedNewPath}</li>;
