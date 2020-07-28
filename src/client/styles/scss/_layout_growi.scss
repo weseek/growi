@@ -5,9 +5,7 @@
     padding: 0;
   }
 
-  .liker-and-seenusers {
-    // adjusting position with negative margin
-    height: $grw-nav-main-tab-height;
+  .top-of-table-contents {
     line-height: 1.25;
     border-bottom: 1px solid transparent;
 
@@ -18,6 +16,12 @@
       .seen-user-count {
         font-weight: bold;
       }
+    }
+    .cls-1 {
+      fill: none;
+    }
+    .cls-2 {
+      isolation: isolate;
     }
   }
 
