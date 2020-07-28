@@ -14,9 +14,9 @@ class SeenUserList extends React.Component {
   render() {
     const { pageContainer } = this.props;
     return (
-      <div className="dropdown text-right">
-        <button className="btn btn-link dropdown-toggle text-danger" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <FootstampIcon />
+      <div className="dropdown text-right ">
+        <button className="btn btn-danger dropdown-toggle " type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <span className="mr-2"><FootstampIcon /></span>
           <span className="seen-user-count">{pageContainer.state.sumOfSeenUsers}</span>
         </button>
         <span className="dropdown-menu dropdown-menu-right px-2 col user-list-content text-truncate text-muted">

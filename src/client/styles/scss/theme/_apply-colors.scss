@@ -14,6 +14,7 @@ $bordercolor-nav-tabs: #dee2e6 !default;
 $bordercolor-nav-tabs-hover: #e9ecef #e9ecef $bordercolor-nav-tabs !default;
 $color-nav-tabs-link-active: #495057 !default;
 $bordercolor-nav-tabs-active: $bordercolor-nav-tabs $bordercolor-nav-tabs $bgcolor-global !default;
+$seen-user: #549c79;
 
 // override bootstrap variables
 $body-bg: $bgcolor-global;
@@ -423,4 +424,10 @@ mark.rbt-highlight-text {
  */
 .bg-box {
   background-color: $bgcolor-global;
+}
+
+.btn-seen-user {
+  .btn {
+    @include button-variant(red, blue, darken(red, 7.5%), darken(blue, 10%), $bgcolor-sidebar-nav-item-active, $bgcolor-sidebar-nav-item-active);
+  }
 }
