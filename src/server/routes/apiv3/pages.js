@@ -7,6 +7,7 @@ const express = require('express');
 
 const router = express.Router();
 
+
 /**
  * @swagger
  *  tags:
@@ -91,11 +92,13 @@ module.exports = (crowi) => {
     // const duplicatePaths = pages.map(element => element.path);
     // console.log(duplicatePaths);
     // console.log(req.user);
+    const pageData = await Page.findByPath(path);
 
-    const result = await Page.findManageableListWithDescendants(req.page, req.user);
-    console.log(result);
-    console.log(path);
-    return res.apiv3({});
+    const result = await Page.findManageableListWithDescendants(pageData, req.user);
+
+    const resultPaths = result.map(element => element.path);
+
+    return res.apiv3({ resultPaths });
   });
 
   return router;

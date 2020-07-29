@@ -14,8 +14,12 @@ import PageContainer from '../services/PageContainer';
 import PagePathAutoComplete from './PagePathAutoComplete';
 import ApiErrorMessage from './PageManagement/ApiErrorMessage';
 
+
 const PageDuplicateModal = (props) => {
-  const { t, appContainer, pageContainer } = props;
+  const {
+    t, appContainer, pageContainer,
+  } = props;
+
 
   const config = appContainer.getConfig();
   const isReachable = config.isSearchServiceReachable;
@@ -27,8 +31,6 @@ const PageDuplicateModal = (props) => {
   const [errorMessage, setErrorMessage] = useState(null);
 
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
-
-  const duplicatedNewPaths = ['/hoge', '/hoge/hoge', '/test/test/test'];
 
   /**
    * change pageNameInput for PagePathAutoComplete
@@ -109,7 +111,9 @@ const PageDuplicateModal = (props) => {
           </label>
           <div>
             <ul>
-              {isDuplicateRecursively && duplicatedNewPaths.map(duplicatedNewPath => <li>{duplicatedNewPath}</li>)}
+              {isDuplicateRecursively && props.pageDuplicateModalPaths.map(
+                duplicatedNewPath => <li key={duplicatedNewPath}>{duplicatedNewPath}</li>,
+)}
             </ul>
           </div>
           <div> {props.duplicateError} </div>

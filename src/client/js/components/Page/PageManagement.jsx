@@ -14,7 +14,9 @@ import CreateTemplateModal from '../CreateTemplateModal';
 
 const PageManagement = (props) => {
   const { t, appContainer, pageContainer } = props;
-  const { path, isDeletable, isAbleToDeleteCompletely } = pageContainer.state;
+  const {
+    path, isDeletable, isAbleToDeleteCompletely,
+  } = pageContainer.state;
 
   const { currentUser } = appContainer;
   const isTopPagePath = isTopPage(path);
@@ -22,7 +24,7 @@ const PageManagement = (props) => {
   const [isPageDuplicateModalShown, setIsPageDuplicateModalShown] = useState(false);
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
   const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);
-  const [duplicateModalPaths, setDuplicateModalPaths] = useState(false);
+  const [duplicateModalPaths, setDuplicateModalPaths] = useState([]);
   const [duplicateError, setDuplicateError] = useState(null);
 
   function openPageRenameModalHandler() {
@@ -37,7 +39,7 @@ const PageManagement = (props) => {
     setIsPageDuplicateModalShown(true);
     try {
       const res = await appContainer.apiv3Get('/pages/duplicate', { path });
-      setDuplicateModalPaths(res.data.duplicatePaths);
+      setDuplicateModalPaths(res.data.resultPaths);
     }
     catch (err) {
       setDuplicateError(t('modal_duplicate.label.Fail to get subordinated pages'));
