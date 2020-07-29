@@ -19,7 +19,7 @@ const PageAccessoriesModal = (props) => {
       toggle={props.onClose}
       className="grw-create-page"
     >
-      <ModalHeader tag="h4" className="bg-primary text-light">
+      <ModalHeader tag="h4">
         { t('TopOfTableContentsModal') }
       </ModalHeader>
       <ModalBody>

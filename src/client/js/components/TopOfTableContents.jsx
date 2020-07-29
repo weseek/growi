@@ -44,15 +44,15 @@ const TopOfTableContents = (props) => {
           <PageList />
         </button>
 
-        <button type="button" className="bg-transparent border-0">
-          <TimeLine onClick={renderModal} />
+        <button type="button" className="bg-transparent border-0" onClick={openPageAccessoriesModal}>
+          <TimeLine />
         </button>
 
-        <button type="button" className="bg-transparent border-0">
+        <button type="button" className="bg-transparent border-0" onClick={openPageAccessoriesModal}>
           <RecentChanges />
         </button>
 
-        <button type="button" className="bg-transparent border-0">
+        <button type="button" className="bg-transparent border-0" onClick={openPageAccessoriesModal}>
           <Attachment />
         </button>
         {/* [TODO: setting Footprints' icon by GW-3308] */}
