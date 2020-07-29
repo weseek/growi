@@ -3,10 +3,6 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
-const mongoose = require('mongoose');
-
-const Page = mongoose.model('Page');
-const { PageQueryBuilder } = Page;
 
 
 const router = express.Router();
@@ -24,24 +20,6 @@ module.exports = (crowi) => {
 
   const Page = crowi.model('Page');
 
-  function validateCrowi() {
-    if (crowi == null) {
-      throw new Error('"crowi" is null. Init User model with "crowi" argument first.');
-    }
-  }
-
-  async function addConditionToFilteringByViewerToEdit(builder, user) {
-    validateCrowi();
-
-    // determine UserGroup condition
-    let userGroups = null;
-    if (user != null) {
-      const UserGroupRelation = crowi.model('UserGroupRelation');
-      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
-
-    return builder.addConditionToFilteringByViewer(user, userGroups, false, false, false);
-  }
 
   /**
    * @swagger
@@ -108,17 +86,16 @@ module.exports = (crowi) => {
 
   router.get('/duplicate', accessTokenParser, loginRequired, async(req, res) => {
     const { path } = req.query;
-    const builder = new PageQueryBuilder(this.find());
-
     // const result = await Page.findListWithDescendants(path, req.user);
     // const pages = result.pages;
     // const duplicatePaths = pages.map(element => element.path);
     // console.log(duplicatePaths);
     // console.log(req.user);
 
-    await addConditionToFilteringByViewerToEdit(builder);
-    console.log(builder);
-    return res.apiv3({ path });
+    const result = await Page.findManageableListWithDescendants(req.page, req.user);
+    console.log(result);
+    console.log(path);
+    return res.apiv3({});
   });
 
   return router;

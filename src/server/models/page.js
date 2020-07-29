@@ -701,6 +701,27 @@ module.exports = function(crowi) {
   };
 
   /**
+   * find pages that is match with `path` and its descendants whitch user is able to manage
+   */
+  pageSchema.statics.findManageableListWithDescendants = async function(page, user, option = {}) {
+    const builder = new PageQueryBuilder(this.find());
+    builder.addConditionToListWithDescendants(page.path, option);
+    builder.addConditionToExcludeRedirect();
+
+    // add grant conditions
+    await addConditionToFilteringByViewerToEdit(builder, user);
+    const { pages } = await findListFromBuilderAndViewer(builder, user, false, option);
+
+    // add page if 'grant' is GRANT_RESTRICTED
+    // because addConditionToListWithDescendants excludes GRANT_RESTRICTED pages
+    if (page.grant === GRANT_RESTRICTED) {
+      pages.push(page);
+    }
+
+    return pages;
+  };
+
+  /**
    * find pages that start with `path`
    */
   pageSchema.statics.findListByStartWith = async function(path, user, option) {
