@@ -711,7 +711,6 @@ module.exports = function(crowi) {
     // add grant conditions
     await addConditionToFilteringByViewerToEdit(builder, user);
     const { pages } = await findListFromBuilderAndViewer(builder, user, false, option);
-
     // add page if 'grant' is GRANT_RESTRICTED
     // because addConditionToListWithDescendants excludes GRANT_RESTRICTED pages
     if (page.grant === GRANT_RESTRICTED) {
