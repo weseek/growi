@@ -6,6 +6,11 @@ import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
 
+import PageList from './PageList';
+import TimeLine from './TimeLine';
+import RecentChanges from './RecentChanges';
+import Attachment from './Attachment';
+
 import { withUnstatedContainers } from './UnstatedUtils';
 import PageContainer from '../services/PageContainer';
 
@@ -20,7 +25,32 @@ const PageAccessoriesModal = (props) => {
       className="grw-create-page"
     >
       <ModalHeader tag="h4">
-        { t('TopOfTableContentsModal') }
+        <ul className="nav">
+          <li className="nav-item">
+            <a className="nav-link active" href="#">
+              <PageList className="mx-5" />
+              ページリスト
+            </a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link" href="#">
+              <TimeLine />
+              タイムライン
+            </a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link" href="#">
+              <RecentChanges />
+              更新履歴
+            </a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link" href="#">
+              <Attachment />
+              添付データ
+            </a>
+          </li>
+        </ul>
       </ModalHeader>
       <ModalBody>
       </ModalBody>
