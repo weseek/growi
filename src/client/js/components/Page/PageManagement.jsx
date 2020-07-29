@@ -128,7 +128,7 @@ const PageManagement = (props) => {
         </button>
         {(!isTopPagePath && isDeletable) && renderDropdownItemForDeletablePage()}
       </div>
-      {/* {renderModals()} */}
+      {renderModals()}
     </>
   );
 };

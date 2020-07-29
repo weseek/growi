@@ -45,15 +45,15 @@ const TopOfTableContents = (props) => {
         </button>
 
         <button type="button" className="bg-transparent border-0">
-          <TimeLine /* onClick=penTopOfTableContentsModal */ />
+          <TimeLine onClick={renderModal} />
         </button>
 
         <button type="button" className="bg-transparent border-0">
-          <RecentChanges /* onClick=this.openTopOfTableContentsModal */ />
+          <RecentChanges />
         </button>
 
         <button type="button" className="bg-transparent border-0">
-          <Attachment /* onClick=this.openTopOfTableContentsModal */ />
+          <Attachment />
         </button>
         {/* [TODO: setting Footprints' icon by GW-3308] */}
         <div
