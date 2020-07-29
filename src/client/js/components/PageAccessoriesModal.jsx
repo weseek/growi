@@ -7,16 +7,15 @@ import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from './UnstatedUtils';
-import TopOfTableContents from './TopOfTableContents';
 
 const PageAccessoriesModal = (props) => {
-  const { topOfTableContents } = props;
+  // const { pageContainer } = props;
 
   return (
     <Modal
       size="lg"
-      isOpen={topOfTableContents.isOpen}
-      toggle={topOfTableContents.onClose}
+      // isOpen={.isOpen}
+      // toggle={.onClose}
       className="grw-create-page"
     >
       <ModalHeader tag="h4" className="bg-primary text-light">
@@ -33,13 +32,13 @@ const PageAccessoriesModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageAccessoriesModalWrapper = withUnstatedContainers(PageAccessoriesModal, [TopOfTableContents]);
+const PageAccessoriesModalWrapper = withUnstatedContainers(PageAccessoriesModal, []);
 
 
 PageAccessoriesModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   // appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  topOfTableContents: PropTypes.instanceOf(TopOfTableContents).isRequired,
+  topOfTableContents: PropTypes.instanceOf().isRequired,
 };
 
 export default withTranslation()(PageAccessoriesModalWrapper);
