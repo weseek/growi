@@ -42,15 +42,17 @@ class MyBookmarkList extends React.Component {
 
     const userId = appContainer.currentUserId;
     const limit = appContainer.getConfig().recentCreatedLimit;
-    /* const offset = (selectPageNumber - 1) * limit; */
+    const offset = (selectPageNumber - 1) * limit;
+    const params = { limit, offset };
 
     try {
-      const response = await this.props.appContainer.apiv3.get('/bookmarks/byUser', { userId });
+      const response = await this.props.appContainer.apiv3.get(`/bookmarks/${userId}`, params);
       const pageList = response.data.pageList;
       const totalPages = pageList.length;
       const activePage = selectPageNumber;
+      const currentPages = pageList.slice((activePage - 1) * limit, activePage * limit);
       this.setState({
-        pages: pageList,
+        pages: currentPages,
         activePage,
         totalPages,
         pagingLimit: limit,
