@@ -105,7 +105,7 @@ module.exports = (crowi) => {
 
   // select page from bookmark where userid = userid
 
-  router.get('/userId', /* accessTokenParser, loginRequired, csrf, */ apiV3FormValidator, async(req, res) => {
+  router.get('/:userId', /* accessTokenParser, loginRequired, csrf, */ apiV3FormValidator, async(req, res) => {
     const { userId } = req.query;
     try {
       const bookmark = await Bookmark
