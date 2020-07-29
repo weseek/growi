@@ -105,12 +105,14 @@ module.exports = (crowi) => {
 
   // select page from bookmark where userid = userid
 
-  router.get('/byUser', /* accessTokenParser, loginRequired, csrf, */ apiV3FormValidator, async(req, res) => {
-    const { userId } = req.query;
+  router.get('/:userId', /* accessTokenParser, loginRequired, csrf, */ apiV3FormValidator, async(req, res) => {
+    const { userId } = req.params;
+    // const limit = parseInt(req.query.limit) || 10;
     try {
       const bookmarks = await Bookmark
         .find({ user: userId })
-        .populate({ path: 'page', model: 'Page' });
+        .populate({ path: 'page', model: 'Page' })
+        /* .limit(limit) */;
       const pageList = bookmarks.map((bookmark) => {
         return bookmark.page;
       });
