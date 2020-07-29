@@ -16,9 +16,7 @@ import ApiErrorMessage from './PageManagement/ApiErrorMessage';
 
 
 const PageDuplicateModal = (props) => {
-  const {
-    t, appContainer, pageContainer,
-  } = props;
+  const { t, appContainer, pageContainer } = props;
 
 
   const config = appContainer.getConfig();
@@ -111,9 +109,7 @@ const PageDuplicateModal = (props) => {
           </label>
           <div>
             <ul>
-              {isDuplicateRecursively && props.pageDuplicateModalPaths.map(
-                duplicatedNewPath => <li key={duplicatedNewPath}>{duplicatedNewPath}</li>,
-)}
+              {isDuplicateRecursively && props.pageDuplicateModalPaths.map(duplicatedNewPath => <li key={duplicatedNewPath}>{duplicatedNewPath}</li>)}
             </ul>
           </div>
           <div> {props.duplicateError} </div>
