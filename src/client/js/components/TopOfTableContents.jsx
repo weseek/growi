@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
@@ -10,27 +10,50 @@ import TimeLine from './TimeLine';
 import RecentChanges from './RecentChanges';
 import Attachment from './Attachment';
 
+import PageAccessoriesModal from './PageAccessoriesModal';
+
 import { withUnstatedContainers } from './UnstatedUtils';
 
 const TopOfTableContents = (props) => {
 
+  const [isPageAccessoriesModalShown, setIsPageAccessoriesModalShown] = useState(false);
+
+  function openPageAccessoriesModal() {
+    setIsPageAccessoriesModalShown(true);
+  }
+
+  function closePageAccessoriesModal() {
+    setIsPageAccessoriesModalShown(false);
+  }
+
+  function renderModal() {
+    return (
+      <>
+        <PageAccessoriesModal
+          isOpen={isPageAccessoriesModalShown}
+          onClose={closePageAccessoriesModal}
+        />
+      </>
+    );
+  }
+
   return (
     <>
       <div className="top-of-table-contents d-flex align-items-end pb-1">
-        <button type="button" className="bg-transparent border-0">
+        <button type="button" className="bg-transparent border-0" onClick={openPageAccessoriesModal}>
           <PageList />
         </button>
 
         <button type="button" className="bg-transparent border-0">
-          <TimeLine />
+          <TimeLine /* onClick=penTopOfTableContentsModal */ />
         </button>
 
         <button type="button" className="bg-transparent border-0">
-          <RecentChanges />
+          <RecentChanges /* onClick=this.openTopOfTableContentsModal */ />
         </button>
 
         <button type="button" className="bg-transparent border-0">
-          <Attachment />
+          <Attachment /* onClick=this.openTopOfTableContentsModal */ />
         </button>
         {/* [TODO: setting Footprints' icon by GW-3308] */}
         <div
@@ -40,11 +63,10 @@ const TopOfTableContents = (props) => {
         >
         </div>
       </div>
+      {renderModal()}
     </>
   );
-
 };
-
 /**
  * Wrapper component for using unstated
  */
