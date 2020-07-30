@@ -19,7 +19,6 @@ class NchanDelegator extends ConfigPubsubDelegator {
     this.subscribePath = subscribePath;
 
     this.channelId = channelId;
-    // this.isConnecting = false;
 
     /**
      * A list of ConfigPubsubHandler instance
@@ -27,7 +26,6 @@ class NchanDelegator extends ConfigPubsubDelegator {
     this.handlableToEventListenerMap = {};
 
     this.socket = null;
-    // this.connection = null;
   }
 
   /**
@@ -73,7 +71,7 @@ class NchanDelegator extends ConfigPubsubDelegator {
 
     logger.debug('Publish message', configPubsubMessage, `to ${url}`);
 
-    return axios.post(url, JSON.stringify(configPubsubMessage));
+    return axios.post(url, configPubsubMessage);
   }
 
   /**
@@ -131,10 +129,6 @@ class NchanDelegator extends ConfigPubsubDelegator {
       WebSocket,
     });
 
-    // client.on('connectFailed', (error) => {
-    //   logger.warn(`Connect Error: ${error.toString()}`);
-    //   this.isConnecting = false;
-    // });
     socket.addEventListener('close', () => {
       logger.info('WebSocket client disconnected');
     });
@@ -142,23 +136,6 @@ class NchanDelegator extends ConfigPubsubDelegator {
       logger.error('WebSocket error occured:', error.message);
     });
 
-    // client.on('connect', (connection) => {
-    //   this.isConnecting = false;
-    //   this.connection = connection;
-
-    //   logger.info('WebSocket client connected');
-
-    //   connection.on('error', (error) => {
-    //     this.isConnecting = false;
-    //     logger.error(`Connection Error: ${error.toString()}`);
-    //   });
-    //   connection.on('close', () => {
-    //     logger.info('WebSocket connection closed');
-    //   });
-
-    //   // register all message handlers
-    //   this.handlableList.forEach(handler => this.registerMessageHandlerToConnection(handler));
-    // });
     socket.addEventListener('open', () => {
       logger.info('WebSocket client connected.');
     });
