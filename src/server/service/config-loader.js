@@ -107,6 +107,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
   //   type:    ,
   //   default:
   // },
+  DRAWIO_URI: {
+    ns:      'crowi',
+    key:     'app:drawioUri',
+    type:    TYPES.STRING,
+    default: null,
+  },
   NCHAN_URI: {
     ns:      'crowi',
     key:     'app:nchanUri',
