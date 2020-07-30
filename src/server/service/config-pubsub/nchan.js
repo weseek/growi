@@ -123,6 +123,7 @@ class NchanDelegator extends ConfigPubsubDelegator {
     const url = this.constructUrl(this.publishPath).toString();
     const socket = new ReconnectingWebSocket(url, [], {
       WebSocket,
+      maxRetries: 3,
       startClosed: true,
     });
 
