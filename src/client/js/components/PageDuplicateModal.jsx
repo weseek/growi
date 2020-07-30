@@ -14,10 +14,8 @@ import PageContainer from '../services/PageContainer';
 import PagePathAutoComplete from './PagePathAutoComplete';
 import ApiErrorMessage from './PageManagement/ApiErrorMessage';
 
-
 const PageDuplicateModal = (props) => {
   const { t, appContainer, pageContainer } = props;
-
 
   const config = appContainer.getConfig();
   const isReachable = config.isSearchServiceReachable;
@@ -88,9 +86,22 @@ const PageDuplicateModal = (props) => {
             </div>
             <div className="flex-fill">
               {isReachable ? (
-                <PagePathAutoComplete crowi={appContainer} initializedPath={path} onSubmit={ppacSubmitHandler} onInputChange={ppacInputChangeHandler} />
-              ) : (
-                <input type="text" value={pageNameInput} className="form-control" onChange={e => inputChangeHandler(e.target.value)} required />
+
+                <PagePathAutoComplete
+                  crowi={appContainer}
+                  initializedPath={path}
+                  onSubmit={ppacSubmitHandler}
+                  onInputChange={ppacInputChangeHandler}
+                />
+              )
+              : (
+                <input
+                  type="text"
+                  value={pageNameInput}
+                  className="form-control"
+                  onChange={e => inputChangeHandler(e.target.value)}
+                  required
+                />
               )}
             </div>
           </div>

@@ -147,8 +147,8 @@ module.exports = function(crowi, app) {
   app.post('/_api/pages.rename'       , accessTokenParser , loginRequiredStrictly , csrf, page.api.rename);
   app.post('/_api/pages.remove'       , loginRequiredStrictly , csrf, page.api.remove); // (Avoid from API Token)
   app.post('/_api/pages.revertRemove' , loginRequiredStrictly , csrf, page.api.revertRemove); // (Avoid from API Token)
-  app.post('/_api/pages.unlink', loginRequiredStrictly, csrf, page.api.unlink); // (Avoid from API Token)
-  app.post('/_api/pages.duplicate', accessTokenParser, loginRequiredStrictly, csrf, page.api.duplicate);
+  app.post('/_api/pages.unlink'       , loginRequiredStrictly , csrf, page.api.unlink); // (Avoid from API Token)
+  app.post('/_api/pages.duplicate'    , accessTokenParser     , loginRequiredStrictly, csrf, page.api.duplicate);
   app.get('/tags'                     , loginRequired, tag.showPage);
   app.get('/_api/tags.list'           , accessTokenParser, loginRequired, tag.api.list);
   app.get('/_api/tags.search'         , accessTokenParser, loginRequired, tag.api.search);
