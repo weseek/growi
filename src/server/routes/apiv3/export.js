@@ -48,15 +48,16 @@ module.exports = (crowi) => {
   this.adminEvent = crowi.event('admin');
 
   // setup event
-  this.adminEvent.on('onProgressForExport', (data) => {
-    crowi.getIo().sockets.emit('admin:onProgressForExport', data);
-  });
-  this.adminEvent.on('onStartZippingForExport', (data) => {
-    crowi.getIo().sockets.emit('admin:onStartZippingForExport', data);
-  });
-  this.adminEvent.on('onTerminateForExport', (data) => {
-    crowi.getIo().sockets.emit('admin:onTerminateForExport', data);
-  });
+  // FIXME: with GW-3262
+  // this.adminEvent.on('onProgressForExport', (data) => {
+  //   crowi.getIo().sockets.emit('admin:onProgressForExport', data);
+  // });
+  // this.adminEvent.on('onStartZippingForExport', (data) => {
+  //   crowi.getIo().sockets.emit('admin:onStartZippingForExport', data);
+  // });
+  // this.adminEvent.on('onTerminateForExport', (data) => {
+  //   crowi.getIo().sockets.emit('admin:onTerminateForExport', data);
+  // });
 
 
   /**

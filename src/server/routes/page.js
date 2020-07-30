@@ -155,18 +155,19 @@ module.exports = function(crowi, app) {
   // register page events
 
   const pageEvent = crowi.event('page');
-  pageEvent.on('create', (page, user, socketClientId) => {
-    page = serializeToObj(page); // eslint-disable-line no-param-reassign
-    crowi.getIo().sockets.emit('page:create', { page, user, socketClientId });
-  });
-  pageEvent.on('update', (page, user, socketClientId) => {
-    page = serializeToObj(page); // eslint-disable-line no-param-reassign
-    crowi.getIo().sockets.emit('page:update', { page, user, socketClientId });
-  });
-  pageEvent.on('delete', (page, user, socketClientId) => {
-    page = serializeToObj(page); // eslint-disable-line no-param-reassign
-    crowi.getIo().sockets.emit('page:delete', { page, user, socketClientId });
-  });
+  // FIXME: with GW-3262
+  // pageEvent.on('create', (page, user, socketClientId) => {
+  //   page = serializeToObj(page); // eslint-disable-line no-param-reassign
+  //   crowi.getIo().sockets.emit('page:create', { page, user, socketClientId });
+  // });
+  // pageEvent.on('update', (page, user, socketClientId) => {
+  //   page = serializeToObj(page); // eslint-disable-line no-param-reassign
+  //   crowi.getIo().sockets.emit('page:update', { page, user, socketClientId });
+  // });
+  // pageEvent.on('delete', (page, user, socketClientId) => {
+  //   page = serializeToObj(page); // eslint-disable-line no-param-reassign
+  //   crowi.getIo().sockets.emit('page:delete', { page, user, socketClientId });
+  // });
 
 
   function serializeToObj(page) {

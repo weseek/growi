@@ -69,15 +69,16 @@ module.exports = (crowi) => {
   this.adminEvent = crowi.event('admin');
 
   // setup event
-  this.adminEvent.on('onProgressForImport', (data) => {
-    crowi.getIo().sockets.emit('admin:onProgressForImport', data);
-  });
-  this.adminEvent.on('onTerminateForImport', (data) => {
-    crowi.getIo().sockets.emit('admin:onTerminateForImport', data);
-  });
-  this.adminEvent.on('onErrorForImport', (data) => {
-    crowi.getIo().sockets.emit('admin:onErrorForImport', data);
-  });
+  // FIXME: with GW-3262
+  // this.adminEvent.on('onProgressForImport', (data) => {
+  //   crowi.getIo().sockets.emit('admin:onProgressForImport', data);
+  // });
+  // this.adminEvent.on('onTerminateForImport', (data) => {
+  //   crowi.getIo().sockets.emit('admin:onTerminateForImport', data);
+  // });
+  // this.adminEvent.on('onErrorForImport', (data) => {
+  //   crowi.getIo().sockets.emit('admin:onErrorForImport', data);
+  // });
 
   const uploads = multer({
     storage: multer.diskStorage({

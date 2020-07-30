@@ -41,9 +41,10 @@ module.exports = function(crowi, app) {
   let stylesScriptContentTpl;
 
   // init 'saveOnHackmd' event
-  pageEvent.on('saveOnHackmd', (page) => {
-    crowi.getIo().sockets.emit('page:editingWithHackmd', { page });
-  });
+  // FIXME: with GW-3262
+  // pageEvent.on('saveOnHackmd', (page) => {
+  //   crowi.getIo().sockets.emit('page:editingWithHackmd', { page });
+  // });
 
   /**
    * GET /_hackmd/load-agent
