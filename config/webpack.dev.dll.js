@@ -27,7 +27,6 @@ module.exports = {
       'react', 'react-dom',
       'reactstrap', 'react-bootstrap-typeahead',
       'react-i18next', 'react-dropzone', 'react-hotkeys', 'react-copy-to-clipboard', 'react-waypoint',
-      'socket.io-client',
       'toastr',
       'unstated',
       'xss',
