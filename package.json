@@ -148,6 +148,7 @@
     "unzipper": "^0.10.5",
     "url-join": "^4.0.0",
     "validator": "^12.0.0",
+    "websocket": "^1.0.31",
     "xss": "^1.0.6"
   },
   "devDependencies": {
