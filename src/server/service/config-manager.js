@@ -1,5 +1,9 @@
 const logger = require('@alias/logger')('growi:service:ConfigManager');
-const ConfigLoader = require('../service/config-loader');
+
+const ConfigPubsubMessage = require('../models/vo/config-pubsub-message');
+const ConfigPubsubMessageHandlable = require('./config-pubsub/handlable');
+
+const ConfigLoader = require('./config-loader');
 
 const KEYS_FOR_LOCAL_STRATEGY_USE_ONLY_ENV_OPTION = [
   'security:passport-local:isEnabled',
@@ -18,13 +22,16 @@ const KEYS_FOR_SAML_USE_ONLY_ENV_OPTION = [
   'security:passport-saml:ABLCRule',
 ];
 
-class ConfigManager {
+class ConfigManager extends ConfigPubsubMessageHandlable {
 
   constructor(configModel) {
+    super();
+
     this.configModel = configModel;
     this.configLoader = new ConfigLoader(this.configModel);
     this.configObject = null;
     this.configKeys = [];
+    this.lastLoadedAt = null;
 
     this.getConfig = this.getConfig.bind(this);
   }
@@ -38,6 +45,16 @@ class ConfigManager {
 
     // cache all config keys
     this.reloadConfigKeys();
+
+    this.lastLoadedAt = new Date();
+  }
+
+  /**
+   * Set ConfigPubsubDelegator instance
+   * @param {ConfigPubsubDelegator} configPubsub
+   */
+  async setPubsub(configPubsub) {
+    this.configPubsub = configPubsub;
   }
 
   /**
@@ -163,7 +180,7 @@ class ConfigManager {
    *  );
    * ```
    */
-  async updateConfigsInTheSameNamespace(namespace, configs) {
+  async updateConfigsInTheSameNamespace(namespace, configs, withoutPublishingConfigPubsubMessage) {
     const queries = [];
     for (const key of Object.keys(configs)) {
       queries.push({
@@ -177,7 +194,11 @@ class ConfigManager {
     await this.configModel.bulkWrite(queries);
 
     await this.loadConfigs();
-    this.reloadConfigKeys();
+
+    // publish updated date after reloading
+    if (this.configPubsub != null && !withoutPublishingConfigPubsubMessage) {
+      this.publishUpdateMessage();
+    }
   }
 
   /**
@@ -285,6 +306,37 @@ class ConfigManager {
 
   convertInsertValue(value) {
     return JSON.stringify(value === '' ? null : value);
+  }
+
+  async publishUpdateMessage() {
+    const configPubsubMessage = new ConfigPubsubMessage('configUpdated', { updatedAt: new Date() });
+
+    try {
+      await this.configPubsub.publish(configPubsubMessage);
+    }
+    catch (e) {
+      logger.error('Failed to publish update message with configPubsub: ', e.message);
+    }
+  }
+
+  /**
+   * @inheritdoc
+   */
+  shouldHandleConfigPubsubMessage(configPubsubMessage) {
+    const { eventName, updatedAt } = configPubsubMessage;
+    if (eventName !== 'configUpdated' || updatedAt == null) {
+      return false;
+    }
+
+    return this.lastLoadedAt == null || this.lastLoadedAt < new Date(configPubsubMessage.updatedAt);
+  }
+
+  /**
+   * @inheritdoc
+   */
+  async handleConfigPubsubMessage(configPubsubMessage) {
+    logger.info('Reload configs by pubsub notification');
+    return this.loadConfigs();
   }
 
 }
