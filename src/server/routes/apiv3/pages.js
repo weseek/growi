@@ -83,7 +83,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.get('/duplicate', accessTokenParser, loginRequired, async(req, res) => {
+  router.get('/subordinated-list', accessTokenParser, loginRequired, async(req, res) => {
     const { path } = req.query;
 
     const pageData = await Page.findByPath(path);

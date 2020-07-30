@@ -78,21 +78,20 @@ const PageDuplicateModal = (props) => {
           <code>{path}</code>
         </div>
         <div className="form-group">
-          <label htmlFor="duplicatePageName">{t('modal_duplicate.label.New page name')}</label>
-          <br />
+          <label htmlFor="duplicatePageName">{ t('modal_duplicate.label.New page name') }</label><br />
           <div className="input-group">
             <div className="input-group-prepend">
               <span className="input-group-text">{crowi.url}</span>
             </div>
             <div className="flex-fill">
               {isReachable
-                ? (
-                  <PagePathAutoComplete
-                    crowi={appContainer}
-                    initializedPath={path}
-                    onSubmit={ppacSubmitHandler}
-                    onInputChange={ppacInputChangeHandler}
-                  />
+              ? (
+                <PagePathAutoComplete
+                  crowi={appContainer}
+                  initializedPath={path}
+                  onSubmit={ppacSubmitHandler}
+                  onInputChange={ppacInputChangeHandler}
+                />
               )
               : (
                 <input
@@ -116,7 +115,7 @@ const PageDuplicateModal = (props) => {
             onChange={changeIsDuplicateRecursivelyHandler}
           />
           <label className="custom-control-label" htmlFor="cbDuplicateRecursively">
-            {t('modal_duplicate.label.Duplicate with child')}
+            { t('modal_duplicate.label.Duplicate with child') }
           </label>
           <div>
             <ul>
@@ -128,9 +127,7 @@ const PageDuplicateModal = (props) => {
       </ModalBody>
       <ModalFooter>
         <ApiErrorMessage errorCode={errorCode} errorMessage={errorMessage} targetPath={pageNameInput} />
-        <button type="button" className="btn btn-primary" onClick={duplicate}>
-          Duplicate page
-        </button>
+        <button type="button" className="btn btn-primary" onClick={duplicate}>Duplicate page</button>
       </ModalFooter>
     </Modal>
   );
