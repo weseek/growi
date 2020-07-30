@@ -237,15 +237,17 @@ module.exports = (crowi) => {
       }
       // const ab = new Uint8Array(buf).buffer;
 
-      const { Readable } = require('stream');
-      const readable = new Readable();
-      readable._read = () => {};
-      readable.push(ab);
-      readable.push(null);
-      return readable.pipe(res);
+      // const { Readable } = require('stream');
+      // const readable = new Readable();
+      // readable._read = () => {};
+      // readable.push(ab);
+      // readable.push(null);
+      // return readable.pipe(res);
       // res.type('arraybuffer');
-      // res.setHeader('Content-Type', 'application/pdf');
-      // return res.send(ab);
+      const fs = require('fs');
+      fs.writeFile('test.pdf', Buffer.from(ab), 'binary', () => {});
+      res.setHeader('Content-Type', 'application/pdf');
+      return res.send(ab);
     }
     catch (err) {
       logger.error('Failed to get page', err);
