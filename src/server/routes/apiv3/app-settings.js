@@ -320,6 +320,27 @@ module.exports = (crowi) => {
     await sendMailPromiseWrapper(smtpClient, mailOptions);
   }
 
+  const updateMailSettinConfig = async function(requestMailSettingParams) {
+    const {
+      configManager,
+      mailService,
+    } = crowi;
+
+    // update config without publishing ConfigPubsubMessage
+    await configManager.updateConfigsInTheSameNamespace('crowi', requestMailSettingParams, true);
+
+    await mailService.initialize();
+    mailService.publishUpdatedMessage();
+
+    return {
+      fromAddress: configManager.getConfig('crowi', 'mail:from'),
+      smtpHost: configManager.getConfig('crowi', 'mail:smtpHost'),
+      smtpPort: configManager.getConfig('crowi', 'mail:smtpPort'),
+      smtpUser: configManager.getConfig('crowi', 'mail:smtpUser'),
+      smtpPassword: configManager.getConfig('crowi', 'mail:smtpPassword'),
+    };
+  };
+
   /**
    * @swagger
    *
@@ -364,21 +385,7 @@ module.exports = (crowi) => {
     };
 
     try {
-      const { configManager, mailService } = crowi;
-
-      // update config without publishing ConfigPubsubMessage
-      await configManager.updateConfigsInTheSameNamespace('crowi', requestMailSettingParams, true);
-
-      await mailService.initialize();
-      mailService.publishUpdatedMessage();
-
-      const mailSettingParams = {
-        fromAddress: configManager.getConfig('crowi', 'mail:from'),
-        smtpHost: configManager.getConfig('crowi', 'mail:smtpHost'),
-        smtpPort: configManager.getConfig('crowi', 'mail:smtpPort'),
-        smtpUser: configManager.getConfig('crowi', 'mail:smtpUser'),
-        smtpPassword: configManager.getConfig('crowi', 'mail:smtpPassword'),
-      };
+      const mailSettingParams = updateMailSettinConfig(requestMailSettingParams);
       return res.apiv3({ mailSettingParams });
     }
     catch (err) {
@@ -421,36 +428,15 @@ module.exports = (crowi) => {
     };
 
     try {
-      const {
-        configManager,
-        mailService,
-      } = crowi;
-
-      // update config without publishing ConfigPubsubMessage
-      await configManager.updateConfigsInTheSameNamespace('crowi', requestMailSettingParams, true);
-
-      await mailService.initialize();
-      mailService.publishUpdatedMessage();
-
-      const mailSettingParams = {
-        fromAddress: configManager.getConfig('crowi', 'mail:from'),
-        smtpHost: configManager.getConfig('crowi', 'mail:smtpHost'),
-        smtpPort: configManager.getConfig('crowi', 'mail:smtpPort'),
-        smtpUser: configManager.getConfig('crowi', 'mail:smtpUser'),
-        smtpPassword: configManager.getConfig('crowi', 'mail:smtpPassword'),
-      };
-      return res.apiv3({
-        mailSettingParams,
-      });
+      const mailSettingParams = updateMailSettinConfig(requestMailSettingParams);
+      return res.apiv3({ mailSettingParams });
     }
     catch (err) {
-      const msg = 'Error occurred in updating mail setting';
+      const msg = 'Error occurred in initializing mail setting';
       logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-mailSetting-failed'));
+      return res.apiv3Err(new ErrorV3(msg, 'initialize-mailSetting-failed'));
     }
   });
-
-  // setMailSettings
 
   /**
    * @swagger
