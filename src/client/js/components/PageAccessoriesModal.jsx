@@ -22,15 +22,13 @@ const PageAccessoriesModal = (props) => {
       size="lg"
       isOpen={props.isOpen}
       toggle={props.onClose}
-      className="grw-create-page"
+      className="grw-page-accessories-modal"
     >
       <ModalBody>
-        <ul className="nav">
+        <ul className="nav border-bottom">
           <li className="nav-item">
             <a className={`nav-link ${props.isActive === 'pageList' && 'active'}`} href="#">
-              <PageList
-                className="mx-5"
-              />
+              <PageList />
               ページリスト
             </a>
           </li>

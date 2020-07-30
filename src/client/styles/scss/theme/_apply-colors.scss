@@ -253,6 +253,16 @@ pre:not(.hljs):not(.CodeMirror-line) {
   }
 }
 
+.grw-page-accessories-modal {
+  .table-top-icon {
+    fill: $color-link;
+  }
+  .active {
+    border-bottom: 2px solid $color-link;
+  }
+  
+}
+
 /*
  * cards
  */
