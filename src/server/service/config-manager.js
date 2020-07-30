@@ -1,5 +1,7 @@
 const logger = require('@alias/logger')('growi:service:ConfigManager');
 
+const parseISO = require('date-fns/parseISO');
+
 const ConfigPubsubMessage = require('../models/vo/config-pubsub-message');
 const ConfigPubsubMessageHandlable = require('./config-pubsub/handlable');
 
@@ -328,7 +330,7 @@ class ConfigManager extends ConfigPubsubMessageHandlable {
       return false;
     }
 
-    return this.lastLoadedAt == null || this.lastLoadedAt < new Date(configPubsubMessage.updatedAt);
+    return this.lastLoadedAt == null || this.lastLoadedAt < parseISO(configPubsubMessage.updatedAt);
   }
 
   /**
