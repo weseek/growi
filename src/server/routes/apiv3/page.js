@@ -229,7 +229,23 @@ module.exports = (crowi) => {
       const revision = await Revision.findById(revisionIdForFind);
 
       const markdown = revision.body;
-      return await exportService.createExportStream(res, revisionId, markdown, type);
+      const buf = await exportService.convertToPdfFromMd(markdown);
+      const ab = new ArrayBuffer(buf.length);
+      const view = new Uint8Array(ab);
+      for (let i = 0; i < buf.length; ++i) {
+        view[i] = buf[i];
+      }
+      // const ab = new Uint8Array(buf).buffer;
+
+      const { Readable } = require('stream');
+      const readable = new Readable();
+      readable._read = () => {};
+      readable.push(ab);
+      readable.push(null);
+      return readable.pipe(res);
+      // res.type('arraybuffer');
+      // res.setHeader('Content-Type', 'application/pdf');
+      // return res.send(ab);
     }
     catch (err) {
       logger.error('Failed to get page', err);

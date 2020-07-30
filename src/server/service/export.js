@@ -351,40 +351,13 @@ class ExportService {
     return zipFile;
   }
 
-  async createExportStream(res, tmpFileName, markdown, type) {
-    let fileStream;
-    let filePath;
-    const baseDir = path.join(this.crowi.tmpDir, 'exports');
-
-    try {
-      // create tmp file
-      if (type === 'md') {
-        filePath = path.join(baseDir, `${tmpFileName}.md`);
-        await fs.writeFileSync(filePath, markdown);
-      }
-      else if (type === 'pdf') {
-        filePath = path.join(baseDir, `${tmpFileName}.pdf`);
-        await this.convertToPdfAndWriteFile(markdown, filePath);
-        res.contentType('application/pdf');
-      }
-      else {
-        throw new Error('requested file format is invaild');
-      }
-      fileStream = fs.createReadStream(filePath);
-    }
-    catch (e) {
-      logger.error(e);
-      return new Error(e);
-    }
-
-    return fileStream.pipe(res);
-  }
-
-  async convertToPdfAndWriteFile(md, path) {
+  async convertToPdfFromMd(md) {
     return new Promise((resolve, reject) => {
-      markdownpdf().from.string(md).to(path, () => {
-        resolve(path);
-      });
+      markdownpdf()
+        .from.string(md)
+        .to.buffer({}, (opt, buffer) => {
+          resolve(buffer);
+        });
     });
   }
 
