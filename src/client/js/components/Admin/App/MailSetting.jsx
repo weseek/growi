@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
 
+import {
+  Modal, ModalHeader, ModalBody, ModalFooter,
+} from 'reactstrap';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
@@ -16,8 +19,22 @@ class MailSetting extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      isInitializeValueModalOpen: false,
+    };
+
+    this.openInitializeValueModal = this.openInitializeValueModal.bind(this);
+    this.closeInitializeValueModal = this.closeInitializeValueModal.bind(this);
     this.submitHandler = this.submitHandler.bind(this);
     this.initialize = this.initialize.bind(this);
+  }
+
+  openInitializeValueModal() {
+    this.setState({ isInitializeValueModalOpen: true });
+  }
+
+  closeInitializeValueModal() {
+    this.setState({ isInitializeValueModalOpen: false });
   }
 
   async submitHandler() {
@@ -38,7 +55,8 @@ class MailSetting extends React.Component {
 
     try {
       await adminAppContainer.initializeMailSettingHandler();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.mail_settings') }));
+      toastSuccess(t('toaster.initialize_successed', { target: t('admin:app_setting.mail_settings') }));
+      this.closeInitializeValueModal();
     }
     catch (err) {
       toastError(err);
@@ -114,11 +132,33 @@ class MailSetting extends React.Component {
             </button>
           </div>
           <div className="offset-1">
-            <button type="button" className="btn btn-secondary" onClick={this.initialize} disabled={adminAppContainer.state.retrieveError != null}>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={this.openInitializeValueModal}
+              disabled={adminAppContainer.state.retrieveError != null}
+            >
               {t('admin:app_setting.initialize_mail_settings')}
             </button>
           </div>
         </div>
+        <Modal isOpen={this.state.isInitializeValueModalOpen} toggle={this.closeInitializeValueModal} className="initialize-mail-settings">
+          <ModalHeader tag="h4" toggle={this.closeInitializeValueModal} className="bg-danger text-light">
+            メール設定の初期化
+            {/* {t('template.modal_label.Create/Edit Template Page')} */}
+          </ModalHeader>
+          <ModalBody>
+            一度初期化した設定は戻せません。本当に初期化しますか
+          </ModalBody>
+          <ModalFooter>
+            <button type="button" className="btn btn-danger" onClick={this.initialize}>
+              初期化する
+            </button>
+            <button type="button" className="btn btn-secondary" onClick={this.closeInitializeValueModal}>
+              キャンセル
+            </button>
+          </ModalFooter>
+        </Modal>
       </React.Fragment>
     );
   }
