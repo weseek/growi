@@ -18,11 +18,21 @@ const logger = loggerFactory('growi:MarkDown');
 
 class MarkdownSetting extends React.Component {
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isRetrieving: true,
+    };
+
+  }
+
   async componentDidMount() {
     const { adminMarkDownContainer } = this.props;
 
     try {
       await adminMarkDownContainer.retrieveMarkdownData();
+      this.setState({ isRetrieving: false });
     }
     catch (err) {
       toastError(err);
@@ -33,6 +43,10 @@ class MarkdownSetting extends React.Component {
   }
 
   render() {
+    if (this.state.isRetrieving) {
+      return null;
+    }
+
     const { t } = this.props;
 
     return (

@@ -25,6 +25,7 @@ class NotificationSetting extends React.Component {
     super();
 
     this.state = {
+      isRetrieving: true,
       activeTab: 'slack-configuration',
       // Prevent unnecessary rendering
       activeComponents: new Set(['slack-configuration']),
@@ -38,6 +39,7 @@ class NotificationSetting extends React.Component {
 
     try {
       await adminNotificationContainer.retrieveNotificationData();
+      this.setState({ isRetrieving: false });
     }
     catch (err) {
       toastError(err);
@@ -54,6 +56,10 @@ class NotificationSetting extends React.Component {
   }
 
   render() {
+    if (this.state.isRetrieving) {
+      return null;
+    }
+
     const { activeTab, activeComponents } = this.state;
 
     return (
