@@ -2,7 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Modal, ModalHeader, ModalBody } from 'reactstrap';
+import { Modal, ModalBody } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
 
@@ -24,8 +24,8 @@ const PageAccessoriesModal = (props) => {
       toggle={props.onClose}
       className="grw-create-page"
     >
-      <ModalHeader tag="h4">
-        <ul className="nav nav-tabs"> {/* nav-tabsは一時的につけているだけ */}
+      <ModalBody>
+        <ul className="nav">
           <li className="nav-item">
             <a className={`nav-link ${props.isActive === 'pageList' && 'active'}`} href="#">
               <PageList
@@ -53,8 +53,6 @@ const PageAccessoriesModal = (props) => {
             </a>
           </li>
         </ul>
-      </ModalHeader>
-      <ModalBody>
       </ModalBody>
     </Modal>
 
