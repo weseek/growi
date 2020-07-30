@@ -495,13 +495,7 @@ describe('Page', () => {
       const pages = await Page.findManageableListWithDescendants(parentPage, null);
 
       // assert totalCount
-      expect(pages.length).toEqual(2);
-
-      console.log(pages)
-      // assert paths
-      const pagePaths = await pages.map((page) => { return page.path });
-      expect(pagePaths).toContainEqual('/grant/public');
-      expect(pagePaths).toContainEqual('/grant');
+      expect(pages).toBeNull();
     });
   });
 
