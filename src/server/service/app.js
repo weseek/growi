@@ -1,13 +1,73 @@
 const logger = require('@alias/logger')('growi:service:AppService'); // eslint-disable-line no-unused-vars
 const { pathUtils } = require('growi-commons');
 
+
+const ConfigPubsubMessage = require('../models/vo/config-pubsub-message');
+const ConfigPubsubMessageHandlable = require('./config-pubsub/handlable');
+
 /**
  * the service class of AppService
  */
-class AppService {
+class AppService extends ConfigPubsubMessageHandlable {
 
-  constructor(configManager) {
-    this.configManager = configManager;
+  constructor(crowi) {
+    super();
+
+    this.crowi = crowi;
+    this.configManager = crowi.configManager;
+    this.configPubsub = crowi.configPubsub;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  shouldHandleConfigPubsubMessage(configPubsubMessage) {
+    const { eventName } = configPubsubMessage;
+    if (eventName !== 'systemInstalled') {
+      return false;
+    }
+
+    const isInstalled = this.crowi.configManager.getConfig('crowi', 'app:installed');
+
+    return !isInstalled;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  async handleConfigPubsubMessage(configPubsubMessage) {
+    logger.info('Invoke post installation process by pubsub notification');
+
+    const { crowi, configManager, configPubsub } = this;
+
+    // load config and setup
+    await configManager.loadConfigs();
+
+    const isInstalled = this.crowi.configManager.getConfig('crowi', 'app:installed');
+    if (isInstalled) {
+      crowi.setupAfterInstall();
+
+      // remove message handler
+      configPubsub.removeMessageHandler(this);
+    }
+  }
+
+  async publishPostInstallationMessage() {
+    const { configPubsub } = this;
+
+    if (configPubsub != null) {
+      const configPubsubMessage = new ConfigPubsubMessage('systemInstalled');
+
+      try {
+        await configPubsub.publish(configPubsubMessage);
+      }
+      catch (e) {
+        logger.error('Failed to publish post installation message with configPubsub: ', e.message);
+      }
+    }
+
+    // remove message handler
+    configPubsub.removeMessageHandler(this);
   }
 
   getAppTitle() {
@@ -49,7 +109,7 @@ class AppService {
   async initDB(globalLang) {
     const initialConfig = this.configManager.configModel.getConfigsObjectForInstalling();
     initialConfig['app:globalLang'] = globalLang;
-    await this.configManager.updateConfigsInTheSameNamespace('crowi', initialConfig);
+    await this.configManager.updateConfigsInTheSameNamespace('crowi', initialConfig, true);
   }
 
   async isDBInitialized() {

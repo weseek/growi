@@ -35,9 +35,11 @@ function Crowi(rootdir) {
   this.tmpDir = path.join(this.rootDir, 'tmp') + sep;
   this.cacheDir = path.join(this.tmpDir, 'cache');
 
+  this.express = null;
+
   this.config = {};
   this.configManager = null;
-  this.mailer = {};
+  this.mailService = null;
   this.passportService = null;
   this.globalNotificationService = null;
   this.slackNotificationService = null;
@@ -249,7 +251,16 @@ Crowi.prototype.setupSessionConfig = async function() {
 Crowi.prototype.setupConfigManager = async function() {
   const ConfigManager = require('../service/config-manager');
   this.configManager = new ConfigManager(this.model('Config'));
-  return this.configManager.loadConfigs();
+  await this.configManager.loadConfigs();
+
+  // setup pubsub
+  this.configPubsub = require('../service/config-pubsub')(this);
+  if (this.configPubsub != null) {
+    this.configPubsub.subscribe();
+    this.configManager.setPubsub(this.configPubsub);
+    // add as a message handler
+    this.configPubsub.addMessageHandler(this.configManager);
+  }
 };
 
 Crowi.prototype.setupModels = async function() {
@@ -275,10 +286,6 @@ Crowi.prototype.scanRuntimeVersions = async function() {
       resolve();
     });
   });
-};
-
-Crowi.prototype.getMailer = function() {
-  return this.mailer;
 };
 
 Crowi.prototype.getSlack = function() {
@@ -308,18 +315,24 @@ Crowi.prototype.setupPassport = async function() {
   this.passportService.setupSerializer();
   // setup strategies
   try {
-    this.passportService.setupLocalStrategy();
-    this.passportService.setupLdapStrategy();
-    this.passportService.setupGoogleStrategy();
-    this.passportService.setupGitHubStrategy();
-    this.passportService.setupTwitterStrategy();
-    this.passportService.setupOidcStrategy();
-    this.passportService.setupSamlStrategy();
-    this.passportService.setupBasicStrategy();
+    this.passportService.setupStrategyById('local');
+    this.passportService.setupStrategyById('ldap');
+    this.passportService.setupStrategyById('saml');
+    this.passportService.setupStrategyById('oidc');
+    this.passportService.setupStrategyById('basic');
+    this.passportService.setupStrategyById('google');
+    this.passportService.setupStrategyById('github');
+    this.passportService.setupStrategyById('twitter');
   }
   catch (err) {
     logger.error(err);
   }
+
+  // add as a message handler
+  if (this.configPubsub != null) {
+    this.configPubsub.addMessageHandler(this.passportService);
+  }
+
   return Promise.resolve();
 };
 
@@ -329,11 +342,13 @@ Crowi.prototype.setupSearcher = async function() {
 };
 
 Crowi.prototype.setupMailer = async function() {
-  const self = this;
-  return new Promise(((resolve, reject) => {
-    self.mailer = require('../util/mailer')(self);
-    resolve();
-  }));
+  const MailService = require('@server/service/mail');
+  this.mailService = new MailService(this);
+
+  // add as a message handler
+  if (this.configPubsub != null) {
+    this.configPubsub.addMessageHandler(this.mailService);
+  }
 };
 
 Crowi.prototype.setupSlack = async function() {
@@ -365,7 +380,9 @@ Crowi.prototype.start = async function() {
   }
 
   await this.init();
-  const express = await this.buildServer();
+  await this.buildServer();
+
+  const { express } = this;
 
   // setup plugins
   this.pluginService = new PluginService(this, express);
@@ -388,14 +405,14 @@ Crowi.prototype.start = async function() {
   this.io = io;
 
   // setup Express Routes
-  this.setupRoutesAtLast(express);
+  this.setupRoutesAtLast();
 
   return serverListening;
 };
 
-Crowi.prototype.buildServer = function() {
-  const express = require('express')();
+Crowi.prototype.buildServer = async function() {
   const env = this.node_env;
+  const express = require('express')();
 
   require('./express-init')(this, express);
 
@@ -414,15 +431,20 @@ Crowi.prototype.buildServer = function() {
     express.use(morgan('dev'));
   }
 
-  return Promise.resolve(express);
+  this.express = express;
 };
 
 /**
  * setup Express Routes
  * !! this must be at last because it includes '/*' route !!
  */
-Crowi.prototype.setupRoutesAtLast = function(app) {
-  require('../routes')(this, app);
+Crowi.prototype.setupRoutesAtLast = function() {
+  require('../routes')(this, this.express);
+};
+
+Crowi.prototype.setupAfterInstall = function() {
+  this.pluginService.autoDetectAndLoadPlugins();
+  this.setupRoutesAtLast();
 };
 
 /**
@@ -483,9 +505,14 @@ Crowi.prototype.setUpAcl = async function() {
 Crowi.prototype.setUpCustomize = async function() {
   const CustomizeService = require('../service/customize');
   if (this.customizeService == null) {
-    this.customizeService = new CustomizeService(this.configManager, this.appService, this.xssService);
+    this.customizeService = new CustomizeService(this);
     this.customizeService.initCustomCss();
     this.customizeService.initCustomTitle();
+
+    // add as a message handler
+    if (this.configPubsub != null) {
+      this.configPubsub.addMessageHandler(this.customizeService);
+    }
   }
 };
 
@@ -495,7 +522,13 @@ Crowi.prototype.setUpCustomize = async function() {
 Crowi.prototype.setUpApp = async function() {
   const AppService = require('../service/app');
   if (this.appService == null) {
-    this.appService = new AppService(this.configManager);
+    this.appService = new AppService(this);
+
+    // add as a message handler
+    const isInstalled = this.configManager.getConfig('crowi', 'app:installed');
+    if (this.configPubsub != null && !isInstalled) {
+      this.configPubsub.addMessageHandler(this.appService);
+    }
   }
 };
 

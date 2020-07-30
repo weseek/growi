@@ -85,22 +85,6 @@ Crowi.modifyScrollTop = function() {
   }, timeout);
 };
 
-Crowi.handleKeyEHandler = (event) => {
-  // ignore when dom that has 'modal in' classes exists
-  if (document.getElementsByClassName('modal in').length > 0) {
-    return;
-  }
-  // show editor
-  $('a[data-toggle="tab"][href="#edit"]').tab('show');
-  event.preventDefault();
-};
-
-Crowi.handleKeyCtrlSlashHandler = (event) => {
-  // show modal to create a page
-  $('#shortcuts-modal').modal('toggle');
-  event.preventDefault();
-};
-
 Crowi.initClassesByOS = function() {
   // add classes to cmd-key by OS
   const platform = navigator.platform.toLowerCase();
@@ -407,30 +391,6 @@ window.addEventListener('hashchange', (e) => {
   }
   else {
     $('a[data-toggle="tab"][href="#revision-body"]').tab('show');
-  }
-});
-
-window.addEventListener('keydown', (event) => {
-  const target = event.target;
-
-  // ignore when target dom is input
-  const inputPattern = /^input|textinput|textarea$/i;
-  if (inputPattern.test(target.tagName) || target.isContentEditable) {
-    return;
-  }
-
-  switch (event.key) {
-    case 'e':
-      if (!event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey) {
-        Crowi.handleKeyEHandler(event);
-      }
-      break;
-    case '/':
-      if (event.ctrlKey || event.metaKey) {
-        Crowi.handleKeyCtrlSlashHandler(event);
-      }
-      break;
-    default:
   }
 });
 
