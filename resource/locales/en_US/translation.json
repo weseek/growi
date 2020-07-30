@@ -336,6 +336,7 @@
   },
   "toaster": {
     "update_successed": "Succeeded to update {{target}}",
+    "initialize_successed": "Succeeded to initialize {{target}}",
     "give_user_admin": "Succeeded to give {{username}} admin",
     "remove_user_admin": "Succeeded to remove {{username}} admin ",
     "activate_user_success": "Succeeded to activating {{username}}",

@@ -144,18 +144,17 @@ class MailSetting extends React.Component {
         </div>
         <Modal isOpen={this.state.isInitializeValueModalOpen} toggle={this.closeInitializeValueModal} className="initialize-mail-settings">
           <ModalHeader tag="h4" toggle={this.closeInitializeValueModal} className="bg-danger text-light">
-            メール設定の初期化
-            {/* {t('template.modal_label.Create/Edit Template Page')} */}
+            {t('admin:app_setting.initialize_mail_modal_header')}
           </ModalHeader>
           <ModalBody>
-            一度初期化した設定は戻せません。本当に初期化しますか
+            {t('admin:app_setting.confirm_to_initialize_mail_settings')}
           </ModalBody>
           <ModalFooter>
             <button type="button" className="btn btn-danger" onClick={this.initialize}>
-              初期化する
+              {t('Initialize')}
             </button>
             <button type="button" className="btn btn-secondary" onClick={this.closeInitializeValueModal}>
-              キャンセル
+              {t('Cancel')}
             </button>
           </ModalFooter>
         </Modal>

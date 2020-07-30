@@ -36,6 +36,8 @@
     "port": "Port",
     "user": "User",
     "initialize_mail_settings": "initialize mail settings",
+    "initialize_mail_modal_header": "Initialize mail",
+    "confirm_to_initialize_mail_settings": "You can't restore to the current settings. Are you sure you want to initialize mail settings?",
     "aws_settings": "AWS settings",
     "aws_access": "This is for AWS settings. If you complete AWS settings, file upload function, profile picture function etc will be enabled.",
     "no_smtp_setting": "If you do not have SMTP settings, e-mails will be sent via SES. You need to verify from e-mail address and production settings.",
