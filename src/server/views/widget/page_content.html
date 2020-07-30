@@ -24,6 +24,8 @@
   data-page-updated-at="{% if page %}{{ page.updatedAt|datetz('Y/m/d H:i:s') }}{% endif %}"
   data-page-has-children="{% if pages.length > 0 %}true{% else %}false{% endif %}"
   data-page-user="{% if pageUser %}{{ pageUser|json }}{% else %}null{% endif %}"
+  data-page-ids-of-seen-users="{{ page.seenUsers|slice(-15)|default([])|reverse|join(',') }}"
+  data-page-count-of-seen-users="{{ page.seenUsers.length|default(0) }}"
   >
 {% else %}
 <div id="content-main" class="content-main"
