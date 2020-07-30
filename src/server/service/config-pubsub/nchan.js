@@ -154,12 +154,8 @@ class NchanDelegator extends ConfigPubsubDelegator {
    * @param {ConfigPubsubHandler} handlable
    */
   handleMessage(message, handlable) {
-    if (message.type !== 'utf8') {
-      logger.warn('Only utf8 message is supported.');
-    }
-
     try {
-      const configPubsubMessage = ConfigPubsubMessage.parse(message.utf8Data);
+      const configPubsubMessage = ConfigPubsubMessage.parse(message.data);
 
       // check uid
       if (configPubsubMessage.publisherUid === this.uid) {
