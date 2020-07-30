@@ -7,7 +7,6 @@ const express = require('express');
 
 const router = express.Router();
 
-
 /**
  * @swagger
  *  tags:
@@ -20,7 +19,6 @@ module.exports = (crowi) => {
   const csrf = require('../../middlewares/csrf')(crowi);
 
   const Page = crowi.model('Page');
-
 
   /**
    * @swagger
@@ -96,6 +94,5 @@ module.exports = (crowi) => {
 
     return res.apiv3({ resultPaths });
   });
-
   return router;
 };
