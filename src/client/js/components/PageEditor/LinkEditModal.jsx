@@ -8,6 +8,8 @@ import {
   ModalFooter,
 } from 'reactstrap';
 
+import { debounce } from 'throttle-debounce';
+
 import path from 'path';
 import Preview from './Preview';
 
@@ -48,16 +50,17 @@ class LinkEditModal extends React.PureComponent {
     this.toggleIsUsePamanentLink = this.toggleIsUsePamanentLink.bind(this);
     this.save = this.save.bind(this);
     this.generateLink = this.generateLink.bind(this);
-    this.getPreview = this.getPreview.bind(this);
     this.renderPreview = this.renderPreview.bind(this);
     this.getRootPath = this.getRootPath.bind(this);
+
+    this.getPreviewDebounced = debounce(200, this.getPreview.bind(this));
   }
 
   componentDidUpdate(prevState) {
     const { linkInputValue: prevLinkInputValue } = prevState;
     const { linkInputValue } = this.state;
     if (linkInputValue !== prevLinkInputValue) {
-      this.getPreview(linkInputValue);
+      this.getPreviewDebounced(linkInputValue);
     }
   }
 
