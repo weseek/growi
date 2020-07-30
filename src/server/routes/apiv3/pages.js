@@ -87,11 +87,7 @@ module.exports = (crowi) => {
 
   router.get('/duplicate', accessTokenParser, loginRequired, async(req, res) => {
     const { path } = req.query;
-    // const result = await Page.findListWithDescendants(path, req.user);
-    // const pages = result.pages;
-    // const duplicatePaths = pages.map(element => element.path);
-    // console.log(duplicatePaths);
-    // console.log(req.user);
+
     const pageData = await Page.findByPath(path);
 
     const result = await Page.findManageableListWithDescendants(pageData, req.user);
