@@ -69,12 +69,10 @@ const PageDuplicateModal = (props) => {
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} className="grw-duplicate-page">
       <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-light">
-        {t('modal_duplicate.label.Duplicate page')}
+        { t('modal_duplicate.label.Duplicate page') }
       </ModalHeader>
       <ModalBody>
-        <div className="form-group">
-          <label>{t('modal_duplicate.label.Current page name')}</label>
-          <br />
+        <div className="form-group"><label>{t('modal_duplicate.label.Current page name')}</label><br />
           <code>{path}</code>
         </div>
         <div className="form-group">
