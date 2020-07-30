@@ -15,20 +15,19 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import PageContainer from '../services/PageContainer';
 
 const PageAccessoriesModal = (props) => {
-  const { t } = props;
+  // const { t } = props;
 
   return (
     <Modal
       size="lg"
       isOpen={props.isOpen}
       toggle={props.onClose}
-      isActive={props.isActive}
       className="grw-create-page"
     >
       <ModalHeader tag="h4">
         <ul className="nav nav-tabs"> {/* nav-tabsは一時的につけているだけ */}
           <li className="nav-item">
-            <a className={`nav-link page-accessories ${isActive === 'pageList' && 'active'}`} href="#">
+            <a className={`nav-link ${props.isActive === 'pageList' && 'active'}`} href="#">
               <PageList
                 className="mx-5"
               />
@@ -36,19 +35,19 @@ const PageAccessoriesModal = (props) => {
             </a>
           </li>
           <li className="nav-item">
-            <a className={`nav-link page-accessories ${isActive === 'pageList' && 'active'}`} href="#">
+            <a className={`nav-link ${props.isActive === 'timeLine' && 'active'}`} href="#">
               <TimeLine />
               タイムライン
             </a>
           </li>
           <li className="nav-item">
-            <a className={`nav-link page-accessories ${isActive === 'recentChanges' && 'active'}`} href="#">
+            <a className={`nav-link ${props.isActive === 'recentChanges' && 'active'}`} href="#">
               <RecentChanges />
               更新履歴
             </a>
           </li>
           <li className="nav-item">
-            <a className={`nav-link page-accessories ${isActive === 'attachment' && 'active'}`} href="#">
+            <a className={`nav-link ${props.isActive === 'attachment' && 'active'}`} href="#">
               <Attachment />
               添付データ
             </a>
