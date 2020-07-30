@@ -1,6 +1,6 @@
 import { Container } from 'unstated';
 
-import io from 'socket.io-client';
+import ReconnectingWebSocket from 'reconnecting-websocket';
 
 /**
  * Service container related to options for WebSocket
@@ -14,12 +14,17 @@ export default class WebsocketContainer extends Container {
     this.appContainer = appContainer;
     this.appContainer.registerContainer(this);
 
-    this.socket = io();
-    this.socketClientId = Math.floor(Math.random() * 100000);
-
     this.state = {
     };
 
+    this.socket = null;
+
+    this.initSocket();
+  }
+
+  initSocket() {
+    this.socket = new ReconnectingWebSocket();
+    this.socketClientId = Math.floor(Math.random() * 100000);
   }
 
   /**

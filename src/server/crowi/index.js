@@ -9,14 +9,15 @@ const Xss = require('@commons/service/xss');
 const { getMongoUri, mongoOptions } = require('@commons/util/mongoose-utils');
 
 const path = require('path');
-
-const sep = path.sep;
+const WebSocket = require('ws');
 
 const mongoose = require('mongoose');
 
 const models = require('../models');
 
 const PluginService = require('../plugins/plugin.service');
+
+const sep = path.sep;
 
 function Crowi(rootdir) {
   const self = this;
@@ -269,9 +270,10 @@ Crowi.prototype.setupModels = async function() {
   });
 };
 
-Crowi.prototype.getIo = function() {
-  return this.io;
-};
+// FIXME: with GW-3262
+// Crowi.prototype.getIo = function() {
+//   return this.io;
+// };
 
 Crowi.prototype.scanRuntimeVersions = async function() {
   const self = this;
@@ -399,10 +401,11 @@ Crowi.prototype.start = async function() {
   });
 
   // setup WebSocket
-  const io = require('socket.io')(serverListening);
-  io.sockets.on('connection', (socket) => {
-  });
-  this.io = io;
+  // FIXME: with GW-3262
+  // const io = require('socket.io')(serverListening);
+  // io.sockets.on('connection', (socket) => {
+  // });
+  // this.io = io;
 
   // setup Express Routes
   this.setupRoutesAtLast();
