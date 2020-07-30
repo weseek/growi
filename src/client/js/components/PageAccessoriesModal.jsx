@@ -22,30 +22,33 @@ const PageAccessoriesModal = (props) => {
       size="lg"
       isOpen={props.isOpen}
       toggle={props.onClose}
+      isActive={props.isActive}
       className="grw-create-page"
     >
       <ModalHeader tag="h4">
-        <ul className="nav">
+        <ul className="nav nav-tabs"> {/* nav-tabsは一時的につけているだけ */}
           <li className="nav-item">
-            <a className="nav-link active" href="#">
-              <PageList className="mx-5" />
+            <a className={`nav-link page-accessories ${isActive === 'pageList' && 'active'}`} href="#">
+              <PageList
+                className="mx-5"
+              />
               ページリスト
             </a>
           </li>
           <li className="nav-item">
-            <a className="nav-link" href="#">
+            <a className={`nav-link page-accessories ${isActive === 'pageList' && 'active'}`} href="#">
               <TimeLine />
               タイムライン
             </a>
           </li>
           <li className="nav-item">
-            <a className="nav-link" href="#">
+            <a className={`nav-link page-accessories ${isActive === 'recentChanges' && 'active'}`} href="#">
               <RecentChanges />
               更新履歴
             </a>
           </li>
           <li className="nav-item">
-            <a className="nav-link" href="#">
+            <a className={`nav-link page-accessories ${isActive === 'attachment' && 'active'}`} href="#">
               <Attachment />
               添付データ
             </a>
@@ -69,8 +72,10 @@ const PageAccessoriesModalWrapper = withUnstatedContainers(PageAccessoriesModal,
 PageAccessoriesModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  isActive: PropTypes.bool.isRequired,
 };
 
 export default withTranslation()(PageAccessoriesModalWrapper);

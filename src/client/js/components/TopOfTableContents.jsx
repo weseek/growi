@@ -17,9 +17,11 @@ import { withUnstatedContainers } from './UnstatedUtils';
 const TopOfTableContents = (props) => {
 
   const [isPageAccessoriesModalShown, setIsPageAccessoriesModalShown] = useState(false);
+  const [activeTab, setActiveTab] = useState('');
 
-  function openPageAccessoriesModal() {
+  function openPageAccessoriesModal(activeTab) {
     setIsPageAccessoriesModalShown(true);
+    setActiveTab(activeTab);
   }
 
   function closePageAccessoriesModal() {
@@ -32,6 +34,7 @@ const TopOfTableContents = (props) => {
         <PageAccessoriesModal
           isOpen={isPageAccessoriesModalShown}
           onClose={closePageAccessoriesModal}
+          isActive={activeTab}
         />
       </>
     );
@@ -40,19 +43,19 @@ const TopOfTableContents = (props) => {
   return (
     <>
       <div className="top-of-table-contents d-flex align-items-end pb-1">
-        <button type="button" className="bg-transparent border-0" onClick={openPageAccessoriesModal}>
+        <button type="button" className="bg-transparent border-0" onClick={openPageAccessoriesModal('pageList')}>
           <PageList />
         </button>
 
-        <button type="button" className="bg-transparent border-0" onClick={openPageAccessoriesModal}>
+        <button type="button" className="bg-transparent border-0 active" onClick={openPageAccessoriesModal('timeLine')}>
           <TimeLine />
         </button>
 
-        <button type="button" className="bg-transparent border-0" onClick={openPageAccessoriesModal}>
+        <button type="button" className="bg-transparent border-0" onClick={openPageAccessoriesModal('recentChanges')}>
           <RecentChanges />
         </button>
 
-        <button type="button" className="bg-transparent border-0" onClick={openPageAccessoriesModal}>
+        <button type="button" className="bg-transparent border-0" onClick={openPageAccessoriesModal('attachment')}>
           <Attachment />
         </button>
         {/* [TODO: setting Footprints' icon by GW-3308] */}
