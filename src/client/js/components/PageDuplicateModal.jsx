@@ -28,8 +28,8 @@ const PageDuplicateModal = (props) => {
 
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
 
-  const duplicatedNewPaths = ['/hoge', '/hoge/hoge', '/test/test/test']; // delete after merge
-  const existPaths = ['/hoge1', '/hoge/hoge']; // delete after merge
+  const duplicatedNewPaths = ['/hoge', '/hoge/hoge', '/test/test/test']; // Path created after duplication, delete after merge
+  const existPaths = ['/hoge1', '/hoge/hoge']; // Path exists in DB, delete after merge
   /**
    * change pageNameInput for PagePathAutoComplete
    * @param {string} value
