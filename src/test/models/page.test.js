@@ -432,6 +432,22 @@ describe('Page', () => {
       expect(pagePaths).toContainEqual('/grant/public');
       expect(pagePaths).toContainEqual('/grant');
     });
+
+    test('can retrieve all pages without user', async() => {
+      const result = await Page.findListWithDescendants('/grant', null);
+      const { pages } = result;
+
+      // assert totalCount
+      expect(pages.length).toEqual(5);
+
+      // assert paths
+      const pagePaths = await pages.map((page) => { return page.path });
+      expect(pagePaths).toContainEqual('/grant/groupacl');
+      expect(pagePaths).toContainEqual('/grant/specified');
+      expect(pagePaths).toContainEqual('/grant/owner');
+      expect(pagePaths).toContainEqual('/grant/public');
+      expect(pagePaths).toContainEqual('/grant');
+    });
   });
 
   describe('.findManageableListWithDescendants', () => {
@@ -463,13 +479,25 @@ describe('Page', () => {
       expect(pagePaths).toContainEqual('/grant');
     });
 
-
     test('can retrieve only public page which starts with testUser2', async() => {
       const pages = await Page.findManageableListWithDescendants(parentPage, testUser2);
 
       // assert totalCount
       expect(pages.length).toEqual(2);
 
+      // assert paths
+      const pagePaths = await pages.map((page) => { return page.path });
+      expect(pagePaths).toContainEqual('/grant/public');
+      expect(pagePaths).toContainEqual('/grant');
+    });
+
+    test('can retrieve only public page which starts without user', async() => {
+      const pages = await Page.findManageableListWithDescendants(parentPage, null);
+
+      // assert totalCount
+      expect(pages.length).toEqual(2);
+
+      console.log(pages)
       // assert paths
       const pagePaths = await pages.map((page) => { return page.path });
       expect(pagePaths).toContainEqual('/grant/public');
