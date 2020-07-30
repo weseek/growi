@@ -1,4 +1,3 @@
-
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -15,7 +14,7 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import PageContainer from '../services/PageContainer';
 
 const PageAccessoriesModal = (props) => {
-  // const { t } = props;
+  const { t } = props;
 
   return (
     <Modal
@@ -29,25 +28,25 @@ const PageAccessoriesModal = (props) => {
           <li className="nav-item">
             <a className={`nav-link ${props.isActive === 'pageList' && 'active'}`} href="#">
               <PageList />
-              ページリスト
+              { t('page_list') }
             </a>
           </li>
           <li className="nav-item">
             <a className={`nav-link ${props.isActive === 'timeLine' && 'active'}`} href="#">
               <TimeLine />
-              タイムライン
+              { t('Timeline View') }
             </a>
           </li>
           <li className="nav-item">
             <a className={`nav-link ${props.isActive === 'recentChanges' && 'active'}`} href="#">
               <RecentChanges />
-              更新履歴
+              { t('History') }
             </a>
           </li>
           <li className="nav-item">
             <a className={`nav-link ${props.isActive === 'attachment' && 'active'}`} href="#">
               <Attachment />
-              添付データ
+              { t('attachment_data') }
             </a>
           </li>
         </ul>
