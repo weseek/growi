@@ -20,6 +20,8 @@ import {
 
 import UserPicture from '../User/UserPicture';
 
+import GrowiLogo from '../GrowiLogo';
+
 const PersonalDropdown = (props) => {
 
   const { t, appContainer, navigationContainer } = props;
@@ -81,7 +83,7 @@ const PersonalDropdown = (props) => {
   /* eslint-disable react/prop-types */
   const DrawerIcon = props => (
     <>
-      <i id={props.id} className="icon-drawer px-2"></i>
+      <div id={props.id} className="px-2"><GrowiLogo /></div>
       <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Drawer</UncontrolledTooltip>
     </>
   );
