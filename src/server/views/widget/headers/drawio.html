@@ -1,8 +1,8 @@
 <!-- draw.io -->
-{% if local_config.env.DRAWIO_URI %}
+{% if getConfig('crowi', 'app:drawioUri') %}
 <script type="text/javascript">
   // refs: https://github.com/jgraph/drawio/blob/v13.4.3/etc/build/build.xml#L35-L38
-  let url = new URL("{{ local_config.env.DRAWIO_URI }}");
+  let url = new URL("{{ getConfig('crowi', 'app:drawioUri') }}");
   let origin = url.origin;
   window.DRAWIO_BASE_URL = origin;
   window.DRAWIO_LIGHTBOX_URL = origin;
