@@ -430,12 +430,16 @@ mark.rbt-highlight-text {
   background-color: $bgcolor-global;
 }
 
-// een-user-list
 .btn.btn-seen-user-list {
   @include button-outline-variant($color-seen-user, $color-seen-user, transparent, transparent);
-  &:not(:disabled):not(.disabled):not(:hover) {
-    background-color: transparent;
+  &:active {
+    color: $color-seen-user !important;
   }
+  &:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+  border-left-color: $bordercolor-nav-tabs;
 }
 
 .svg.footstamp-icon {
