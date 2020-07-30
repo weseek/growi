@@ -39,13 +39,10 @@ class NchanDelegator extends ConfigPubsubDelegator {
    * @inheritdoc
    */
   subscribe(forceReconnect = false) {
-    // if (forceReconnect) {
-    //   if (this.connection != null && this.connection.connected) {
-    //     this.connection.close();
-    //   }
-    // }
-
-    if (this.socket != null && this.shouldResubscribe()) {
+    if (forceReconnect) {
+      logger.info('Force reconnecting is requested. Try to reconnect...');
+    }
+    else if (this.socket != null && this.shouldResubscribe()) {
       logger.info('The connection to config pubsub server is offline. Try to reconnect...');
     }
 
@@ -55,10 +52,9 @@ class NchanDelegator extends ConfigPubsubDelegator {
     }
 
     // connect
-    // this.isConnecting = true;
-    // const url = this.constructUrl(this.subscribePath).toString();
-    // logger.debug(`Subscribe to ${url}`);
-    // this.socket.reconnect();
+    if (forceReconnect || this.shouldResubscribe()) {
+      this.socket.reconnect();
+    }
   }
 
   /**
@@ -127,6 +123,7 @@ class NchanDelegator extends ConfigPubsubDelegator {
     const url = this.constructUrl(this.publishPath).toString();
     const socket = new ReconnectingWebSocket(url, [], {
       WebSocket,
+      startClosed: true,
     });
 
     socket.addEventListener('close', () => {
