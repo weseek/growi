@@ -85,14 +85,14 @@ const PageDuplicateModal = (props) => {
               <span className="input-group-text">{crowi.url}</span>
             </div>
             <div className="flex-fill">
-              {isReachable ? (
-
-                <PagePathAutoComplete
-                  crowi={appContainer}
-                  initializedPath={path}
-                  onSubmit={ppacSubmitHandler}
-                  onInputChange={ppacInputChangeHandler}
-                />
+              {isReachable
+                ? (
+                  <PagePathAutoComplete
+                    crowi={appContainer}
+                    initializedPath={path}
+                    onSubmit={ppacSubmitHandler}
+                    onInputChange={ppacInputChangeHandler}
+                  />
               )
               : (
                 <input
