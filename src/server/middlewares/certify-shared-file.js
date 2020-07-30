@@ -1,30 +1,48 @@
 const loggerFactory = require('@alias/logger');
+const shareLinks = require('../routes/apiv3/share-links');
 
 const logger = loggerFactory('growi:middleware:certify-shared-fire');
 
 module.exports = (crowi) => {
 
   return async(req, res, next) => {
-    // TODO
-    // const pageId = req.query.page_id || req.body.page_id || null;
-    // const shareLinkId = req.query.share_link_id || req.body.share_link_id || null;
-    // if (pageId == null || shareLinkId == null) {
-    //   return next();
-    // }
 
-    // const ShareLink = crowi.model('ShareLink');
-    // const sharelink = await ShareLink.findOne({ _id: shareLinkId, relatedPage: pageId });
+    const fileId = req.params.id || null;
 
-    // // check sharelink enabled
-    // if (sharelink == null || sharelink.isExpired()) {
-    //   return next();
-    // }
+    if (fileId == null) {
+      return next();
+    }
 
-    // logger.debug('shareLink id is', sharelink._id);
+    console.log('hoge');
 
-    // req.isSharedPage = true;
+    // No need to check shared page if user exists
+    if (req.user != null) {
+      next();
+    }
 
-    // logger.debug('Confirmed target page id is a share page');
+    const Attachment = crowi.model('Attachment');
+    const ShareLink = crowi.model('ShareLink');
+
+    const attachment = await Attachment.findOne({ _id: fileId });
+
+    if (attachment == null) {
+      return next();
+    }
+
+    const shareLinks = await ShareLink.find({ relatedPage: attachment.page });
+
+    // If sharelinks don't exist, skip it
+    if (shareLinks.length === 0) {
+      return next();
+    }
+
+    // Is there a valid share link
+    await Promise.all(shareLinks.map((sharelink) => {
+      if (!sharelink.isExpired()) {
+        logger.debug('Confirmed target file belong to a share page');
+        return req.isSharedPage = true;
+      }
+    }));
 
     next();
   };
