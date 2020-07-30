@@ -51,7 +51,7 @@ export default class PageContainer extends Container {
       isLiked: JSON.parse(mainContent.getAttribute('data-page-is-liked')),
       seenUsers: [],
       likerUsers: [],
-      sumOfSeenUsers: 0,
+      countOfSeenUsers: mainContent.getAttribute('data-page-count-of-seen-users'),
       sumOfLikers: 0,
       createdAt: mainContent.getAttribute('data-page-created-at'),
       creator: JSON.parse(mainContent.getAttribute('data-page-creator')),
@@ -129,8 +129,7 @@ export default class PageContainer extends Container {
 
     const seenUserListElem = document.getElementById('seen-user-list');
     if (seenUserListElem != null) {
-      const { userIdsStr, sumOfSeenUsers } = seenUserListElem.dataset;
-      this.setState({ sumOfSeenUsers });
+      const { userIdsStr } = seenUserListElem.dataset;
 
       if (userIdsStr === '') {
         return;
