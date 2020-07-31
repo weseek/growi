@@ -385,7 +385,7 @@ module.exports = (crowi) => {
     };
 
     try {
-      const mailSettingParams = updateMailSettinConfig(requestMailSettingParams);
+      const mailSettingParams = await updateMailSettinConfig(requestMailSettingParams);
       return res.apiv3({ mailSettingParams });
     }
     catch (err) {
@@ -428,7 +428,7 @@ module.exports = (crowi) => {
     };
 
     try {
-      const mailSettingParams = updateMailSettinConfig(requestMailSettingParams);
+      const mailSettingParams = await updateMailSettinConfig(requestMailSettingParams);
       return res.apiv3({ mailSettingParams });
     }
     catch (err) {
