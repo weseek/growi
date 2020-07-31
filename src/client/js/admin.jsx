@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'unstated';
 import { I18nextProvider } from 'react-i18next';
@@ -86,7 +86,14 @@ logger.info('unstated containers have been initialized');
  */
 Object.assign(componentMappings, {
   'admin-home': <AdminHome />,
-  'admin-app': <AppSettingsPage />,
+  'admin-app':
+  <Suspense fallback={(
+    <div className="row">
+      <i className="fa fa-5x fa-spinner fa-pulse mx-auto text-muted"></i>
+    </div>
+    )}
+  ><AppSettingsPage />
+  </Suspense>,
   'admin-markdown-setting': <MarkdownSetting />,
   'admin-customize': <Customize />,
   'admin-importer': <ImportDataPage />,

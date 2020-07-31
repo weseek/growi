@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
@@ -12,30 +12,24 @@ import RenderAppSettingsPage from './RenderAppSettingsPage';
 
 const logger = loggerFactory('growi:appSettings');
 
-class AppSettingsPage extends React.Component {
+function AppSettingsPage(props) {
 
-  async componentDidMount() {
-    const { adminAppContainer } = this.props;
-
-    try {
-      await adminAppContainer.retrieveAppSettingsData();
-    }
-    catch (err) {
-      toastError(err);
-      adminAppContainer.setState({ retrieveError: err.message });
-      logger.error(err);
-    }
+  if (props.adminAppContainer.state.isRetrieving) {
+    throw new Promise(async() => {
+      try {
+        await props.adminAppContainer.retrieveAppSettingsData();
+      }
+      catch (err) {
+        toastError(err);
+        props.adminAppContainer.setState({ retrieveError: err.message });
+        logger.error(err);
+      }
+    });
   }
 
-  render() {
-    return (
-      <Suspense fallback={<div className="text-center"><i className="fa fa-5x fa-spinner fa-pulse mx-auto text-muted"></i></div>}>
-        <RenderAppSettingsPage />
-      </Suspense>
-    );
-  }
-
+  return <RenderAppSettingsPage />;
 }
+
 
 AppSettingsPage.propTypes = {
   t: PropTypes.func.isRequired, // i18next

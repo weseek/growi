@@ -2,25 +2,15 @@ import React, { Fragment } from 'react';
 import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-
-import AdminAppContainer from '../../../services/AdminAppContainer';
-
 import AppSetting from './AppSetting';
 import SiteUrlSetting from './SiteUrlSetting';
 import MailSetting from './MailSetting';
 import AwsSetting from './AwsSetting';
 import PluginSetting from './PluginSetting';
 
-
-class AppSettingsPage extends React.Component {
+class RenderAppSettingsPage extends React.Component {
 
   render() {
-    // activate suspense
-    if (this.props.adminAppContainer.state.isRetrieving) {
-      throw new Promise(() => {});
-    }
-
     const { t } = this.props;
 
     return (
@@ -65,15 +55,8 @@ class AppSettingsPage extends React.Component {
 
 }
 
-AppSettingsPage.propTypes = {
+RenderAppSettingsPage.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 
-/**
- * Wrapper component for using unstated
- */
-const AppSettingsPageWrapper = withUnstatedContainers(AppSettingsPage, [AdminAppContainer]);
-
-
-export default withTranslation()(AppSettingsPageWrapper);
+export default withTranslation()(RenderAppSettingsPage);
