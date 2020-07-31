@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Modal, ModalBody } from 'reactstrap';
+import {
+  Modal, ModalBody, TabContent, Nav, NavItem, NavLink,
+} from 'reactstrap';
+
 
 import { withTranslation } from 'react-i18next';
 
@@ -17,42 +20,88 @@ const PageAccessoriesModal = (props) => {
   const { t } = props;
 
   return (
-    <Modal
-      size="lg"
-      isOpen={props.isOpen}
-      toggle={props.onClose}
-      className="grw-page-accessories-modal"
-    >
-      <ModalBody>
-        <ul className="nav border-bottom">
-          <li className="nav-item">
-            <a className={`nav-link ${props.isActive === 'pageList' && 'active'}`} href="#">
-              <PageList />
-              { t('page_list') }
-            </a>
-          </li>
-          <li className="nav-item">
-            <a className={`nav-link ${props.isActive === 'timeLine' && 'active'}`} href="#">
-              <TimeLine />
-              { t('Timeline View') }
-            </a>
-          </li>
-          <li className="nav-item">
-            <a className={`nav-link ${props.isActive === 'recentChanges' && 'active'}`} href="#">
-              <RecentChanges />
-              { t('History') }
-            </a>
-          </li>
-          <li className="nav-item">
-            <a className={`nav-link ${props.isActive === 'attachment' && 'active'}`} href="#">
-              <Attachment />
-              { t('attachment_data') }
-            </a>
-          </li>
-        </ul>
-      </ModalBody>
-    </Modal>
-
+    // <Modal
+    //   size="lg"
+    //   isOpen={props.isOpen}
+    //   toggle={props.onClose}
+    //   className="grw-page-accessories-modal"
+    // >
+    //   <ModalBody>
+    //     <ul className="nav border-bottom">
+    //       <li className="nav-item">
+  // <a className={`nav-link ${props.isActive === 'pageList' && 'active'}`}>
+  //   <PageList />
+  //   { t('page_list') }
+  // </a>
+    //       </li>
+    //       <li className="nav-item">
+    // <a className={`nav-link ${props.isActive === 'timeLine' && 'active'}`}>
+    //   <TimeLine />
+    //   { t('Timeline View') }
+    // </a>
+    //       </li>
+    //       <li className="nav-item">
+    // <a className={`nav-link ${props.isActive === 'recentChanges' && 'active'}`}>
+    //   <RecentChanges />
+    //   { t('History') }
+    // </a>
+    //       </li>
+    //       <li className="nav-item">
+    // <a className={`nav-link ${props.isActive === 'attachment' && 'active'}`}>
+    //   <Attachment />
+    //   { t('attachment_data') }
+    // </a>
+    //       </li>
+    //     </ul>
+    //   </ModalBody>
+    // </Modal>
+    <React.Fragment>
+      <Modal
+        size="lg"
+        isOpen={props.isOpen}
+        toggle={props.onClose}
+        className="grw-page-accessories-modal"
+      >
+        <ModalBody>
+          <Nav>
+            <NavItem className="border-bottom">
+              <NavLink>
+                <a className={`nav-link ${props.isActive === 'pageList' && 'active'}`}>
+                  <PageList />
+                  { t('page_list') }
+                </a>
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink>
+                <a className={`nav-link ${props.isActive === 'timeLine' && 'active'}`}>
+                  <TimeLine />
+                  { t('Timeline View') }
+                </a>
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink>
+                <a className={`nav-link ${props.isActive === 'recentChanges' && 'active'}`}>
+                  <RecentChanges />
+                  { t('History') }
+                </a>
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink>
+                <a className={`nav-link ${props.isActive === 'attachment' && 'active'}`}>
+                  <Attachment />
+                  { t('attachment_data') }
+                </a>
+              </NavLink>
+            </NavItem>
+          </Nav>
+          <TabContent>
+          </TabContent>
+        </ModalBody>
+      </Modal>
+    </React.Fragment>
   );
 };
 
@@ -68,8 +117,8 @@ PageAccessoriesModal.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  isActive: PropTypes.bool.isRequired,
+  onClose: PropTypes.func,
+  isActive: PropTypes.string.isRequired,
 };
 
 export default withTranslation()(PageAccessoriesModalWrapper);
