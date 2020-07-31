@@ -5,17 +5,13 @@ const logger = loggerFactory('growi:middleware:certify-shared-fire');
 module.exports = (crowi) => {
 
   return async(req, res, next) => {
+    const { referer } = req.headers;
+
+    if (!referer.match(/share/)) {
+      next();
+    }
 
     const fileId = req.params.id || null;
-
-    if (fileId == null) {
-      next();
-    }
-
-    // No need to check shared page if user exists
-    if (req.user != null) {
-      next();
-    }
 
     const Attachment = crowi.model('Attachment');
     const ShareLink = crowi.model('ShareLink');
@@ -34,13 +30,13 @@ module.exports = (crowi) => {
     }
 
     // Is there a valid share link
-    await Promise.all(shareLinks.map((sharelink) => {
+    shareLinks.map((sharelink) => {
       if (!sharelink.isExpired()) {
         logger.debug('Confirmed target file belong to a share page');
         req.isSharedPage = true;
       }
       return;
-    }));
+    });
 
     next();
   };
