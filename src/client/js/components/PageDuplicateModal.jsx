@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -25,6 +25,8 @@ const PageDuplicateModal = (props) => {
   const [pageNameInput, setPageNameInput] = useState(path);
   const [errorCode, setErrorCode] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [duplicateModalPaths, setDuplicateModalPaths] = useState([]);
+  const [duplicateError, setDuplicateError] = useState(null);
 
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
 
@@ -48,11 +50,25 @@ const PageDuplicateModal = (props) => {
     setIsDuplicateRecursively(!isDuplicateRecursively);
   }
 
+  async function getSubordinatedList() {
+    try {
+      const res = await appContainer.apiv3Get('/pages/subordinated-list', { path });
+      setDuplicateModalPaths(res.data.resultPaths);
+    }
+    catch (err) {
+      setDuplicateError(t('modal_duplicate.label.Fail to get subordinated pages'));
+    }
+  }
+
+  useEffect(() => {
+    getSubordinatedList();
+  }, [props.isOpen]);
+
   async function duplicate() {
     try {
       setErrorCode(null);
       setErrorMessage(null);
-      const res = await appContainer.apiPost('/pages.duplicate', { page_id: pageId, new_path: pageNameInput });
+      const res = await appContainer.apiv3Post('/pages/duplicate', { page_id: pageId, new_path: pageNameInput });
       const { page } = res;
       window.location.href = encodeURI(`${page.path}?duplicated=${path}`);
     }
@@ -117,10 +133,10 @@ const PageDuplicateModal = (props) => {
           </label>
           <div>
             <ul>
-              {isDuplicateRecursively && props.pageDuplicateModalPaths.map(duplicatedNewPath => <li key={duplicatedNewPath}>{duplicatedNewPath}</li>)}
+              {isDuplicateRecursively && duplicateModalPaths.map(duplicatedNewPath => <li key={duplicatedNewPath}>{duplicatedNewPath}</li>)}
             </ul>
           </div>
-          <div> {props.duplicateError} </div>
+          <div> {duplicateError} </div>
         </div>
       </ModalBody>
       <ModalFooter>
@@ -145,8 +161,6 @@ PageDuplicateModal.propTypes = {
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  pageDuplicateModalPaths: PropTypes.array,
-  duplicateError: PropTypes.string,
 };
 
 export default withTranslation()(PageDuplicateModallWrapper);
