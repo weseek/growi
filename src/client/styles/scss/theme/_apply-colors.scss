@@ -254,6 +254,9 @@ pre:not(.hljs):not(.CodeMirror-line) {
 }
 
 .grw-page-accessories-modal {
+  .nav-title {
+    color: $color-link;
+  }
   .table-top-icon {
     fill: $color-link;
   }
