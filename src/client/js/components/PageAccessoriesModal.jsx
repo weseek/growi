@@ -30,34 +30,26 @@ const PageAccessoriesModal = (props) => {
           <Nav className="nav-title border-bottom">
             <NavItem className={`nav-link ${props.isActive === 'pageList' && 'active'}`}>
               <NavLink>
-                <a>
-                  <PageList />
-                  { t('page_list') }
-                </a>
+                <PageList />
+                { t('page_list') }
               </NavLink>
             </NavItem>
             <NavItem className={`nav-link ${props.isActive === 'timeLine' && 'active'}`}>
               <NavLink>
-                <a>
-                  <TimeLine />
-                  { t('Timeline View') }
-                </a>
+                <TimeLine />
+                { t('Timeline View') }
               </NavLink>
             </NavItem>
             <NavItem className={`nav-link ${props.isActive === 'recentChanges' && 'active'}`}>
               <NavLink>
-                <a>
-                  <RecentChanges />
-                  { t('History') }
-                </a>
+                <RecentChanges />
+                { t('History') }
               </NavLink>
             </NavItem>
             <NavItem className={`nav-link ${props.isActive === 'attachment' && 'active'}`}>
               <NavLink>
-                <a>
-                  <Attachment />
-                  { t('attachment_data') }
-                </a>
+                <Attachment />
+                { t('attachment_data') }
               </NavLink>
             </NavItem>
           </Nav>
