@@ -3,9 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
 
-import {
-  Modal, ModalHeader, ModalBody, ModalFooter,
-} from 'reactstrap';
+import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
@@ -147,16 +145,18 @@ class MailSetting extends React.Component {
             {t('admin:app_setting.initialize_mail_modal_header')}
           </ModalHeader>
           <ModalBody>
-            {t('admin:app_setting.confirm_to_initialize_mail_settings')}
+            <div className="text-center mb-4">
+              {t('admin:app_setting.confirm_to_initialize_mail_settings')}
+            </div>
+            <div className="text-center my-2">
+              <button type="button" className="btn btn-outline-secondary mr-4" onClick={this.closeInitializeValueModal}>
+                {t('Cancel')}
+              </button>
+              <button type="button" className="btn btn-danger" onClick={this.initialize}>
+                {t('Initialize')}
+              </button>
+            </div>
           </ModalBody>
-          <ModalFooter>
-            <button type="button" className="btn btn-danger" onClick={this.initialize}>
-              {t('Initialize')}
-            </button>
-            <button type="button" className="btn btn-secondary" onClick={this.closeInitializeValueModal}>
-              {t('Cancel')}
-            </button>
-          </ModalFooter>
         </Modal>
       </React.Fragment>
     );
