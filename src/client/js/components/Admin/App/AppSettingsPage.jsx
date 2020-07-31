@@ -30,7 +30,6 @@ function AppSettingsPage(props) {
   return <RenderAppSettingsPage />;
 }
 
-
 AppSettingsPage.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
