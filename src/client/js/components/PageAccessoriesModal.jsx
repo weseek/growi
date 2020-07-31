@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Modal, ModalBody, TabContent, Nav, NavItem, NavLink,
+  Modal, ModalBody, Nav, NavItem, NavLink, TabContent,
 } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
