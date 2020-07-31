@@ -420,11 +420,11 @@ module.exports = (crowi) => {
    */
   router.delete('/mail-setting', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const requestMailSettingParams = {
-      'mail:from': '',
-      'mail:smtpHost': '',
-      'mail:smtpPort': '',
-      'mail:smtpUser': '',
-      'mail:smtpPassword': '',
+      'mail:from': null,
+      'mail:smtpHost': null,
+      'mail:smtpPort': null,
+      'mail:smtpUser': null,
+      'mail:smtpPassword': null,
     };
 
     try {
