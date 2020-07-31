@@ -79,6 +79,19 @@ const injectableContainers = [
 
 logger.info('unstated containers have been initialized');
 
+const createSuspenseComponent = function(component) {
+  return (
+    <Suspense fallback={(
+      <div className="row">
+        <i className="fa fa-5x fa-spinner fa-pulse mx-auto text-muted"></i>
+      </div>
+      )}
+    >
+      {component}
+    </Suspense>
+  );
+};
+
 /**
  * define components
  *  key: id of element
@@ -86,19 +99,12 @@ logger.info('unstated containers have been initialized');
  */
 Object.assign(componentMappings, {
   'admin-home': <AdminHome />,
-  'admin-app':
-  <Suspense fallback={(
-    <div className="row">
-      <i className="fa fa-5x fa-spinner fa-pulse mx-auto text-muted"></i>
-    </div>
-    )}
-  ><AppSettingsPage />
-  </Suspense>,
-  'admin-markdown-setting': <MarkdownSetting />,
+  'admin-app': createSuspenseComponent(<AppSettingsPage />),
+  'admin-markdown-setting': createSuspenseComponent(<MarkdownSetting />),
   'admin-customize': <Customize />,
   'admin-importer': <ImportDataPage />,
   'admin-export-page': <ExportArchiveDataPage />,
-  'admin-notification-setting': <NotificationSetting />,
+  'admin-notification-setting': createSuspenseComponent(<NotificationSetting />),
   'admin-global-notification-setting': <ManageGlobalNotification />,
   'admin-user-page': <UserManagement />,
   'admin-external-account-setting': <ManageExternalAccount />,
