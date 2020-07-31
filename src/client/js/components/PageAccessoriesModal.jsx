@@ -63,34 +63,34 @@ const PageAccessoriesModal = (props) => {
         className="grw-page-accessories-modal"
       >
         <ModalBody>
-          <Nav>
-            <NavItem className="border-bottom">
+          <Nav className="nav-title border-bottom">
+            <NavItem className={`nav-link ${props.isActive === 'pageList' && 'active'}`}>
               <NavLink>
-                <a className={`nav-link ${props.isActive === 'pageList' && 'active'}`}>
+                <a>
                   <PageList />
                   { t('page_list') }
                 </a>
               </NavLink>
             </NavItem>
-            <NavItem>
+            <NavItem className={`nav-link ${props.isActive === 'timeLine' && 'active'}`}>
               <NavLink>
-                <a className={`nav-link ${props.isActive === 'timeLine' && 'active'}`}>
+                <a>
                   <TimeLine />
                   { t('Timeline View') }
                 </a>
               </NavLink>
             </NavItem>
-            <NavItem>
+            <NavItem className={`nav-link ${props.isActive === 'recentChanges' && 'active'}`}>
               <NavLink>
-                <a className={`nav-link ${props.isActive === 'recentChanges' && 'active'}`}>
+                <a>
                   <RecentChanges />
                   { t('History') }
                 </a>
               </NavLink>
             </NavItem>
-            <NavItem>
+            <NavItem className={`nav-link ${props.isActive === 'attachment' && 'active'}`}>
               <NavLink>
-                <a className={`nav-link ${props.isActive === 'attachment' && 'active'}`}>
+                <a>
                   <Attachment />
                   { t('attachment_data') }
                 </a>
