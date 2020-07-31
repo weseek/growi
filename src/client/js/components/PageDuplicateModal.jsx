@@ -25,7 +25,7 @@ const PageDuplicateModal = (props) => {
   const [pageNameInput, setPageNameInput] = useState(path);
   const [errorCode, setErrorCode] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [duplicateModalPaths, setDuplicateModalPaths] = useState([]);
+  const [subordinatedPaths, setSubordinatedPaths] = useState([]);
   const [duplicateError, setDuplicateError] = useState(null);
 
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
@@ -53,7 +53,7 @@ const PageDuplicateModal = (props) => {
   async function getSubordinatedList() {
     try {
       const res = await appContainer.apiv3Get('/pages/subordinated-list', { path });
-      setDuplicateModalPaths(res.data.resultPaths);
+      setSubordinatedPaths(res.data.resultPaths);
     }
     catch (err) {
       setDuplicateError(t('modal_duplicate.label.Fail to get subordinated pages'));
@@ -133,7 +133,7 @@ const PageDuplicateModal = (props) => {
           </label>
           <div>
             <ul>
-              {isDuplicateRecursively && duplicateModalPaths.map(duplicatedNewPath => <li key={duplicatedNewPath}>{duplicatedNewPath}</li>)}
+              {isDuplicateRecursively && subordinatedPaths.map(duplicatedNewPath => <li key={duplicatedNewPath}>{duplicatedNewPath}</li>)}
             </ul>
           </div>
           <div> {duplicateError} </div>
