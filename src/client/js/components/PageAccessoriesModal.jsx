@@ -5,7 +5,6 @@ import {
   Modal, ModalBody, TabContent, Nav, NavItem, NavLink,
 } from 'reactstrap';
 
-
 import { withTranslation } from 'react-i18next';
 
 import PageList from './PageList';
@@ -20,41 +19,6 @@ const PageAccessoriesModal = (props) => {
   const { t } = props;
 
   return (
-    // <Modal
-    //   size="lg"
-    //   isOpen={props.isOpen}
-    //   toggle={props.onClose}
-    //   className="grw-page-accessories-modal"
-    // >
-    //   <ModalBody>
-    //     <ul className="nav border-bottom">
-    //       <li className="nav-item">
-  // <a className={`nav-link ${props.isActive === 'pageList' && 'active'}`}>
-  //   <PageList />
-  //   { t('page_list') }
-  // </a>
-    //       </li>
-    //       <li className="nav-item">
-    // <a className={`nav-link ${props.isActive === 'timeLine' && 'active'}`}>
-    //   <TimeLine />
-    //   { t('Timeline View') }
-    // </a>
-    //       </li>
-    //       <li className="nav-item">
-    // <a className={`nav-link ${props.isActive === 'recentChanges' && 'active'}`}>
-    //   <RecentChanges />
-    //   { t('History') }
-    // </a>
-    //       </li>
-    //       <li className="nav-item">
-    // <a className={`nav-link ${props.isActive === 'attachment' && 'active'}`}>
-    //   <Attachment />
-    //   { t('attachment_data') }
-    // </a>
-    //       </li>
-    //     </ul>
-    //   </ModalBody>
-    // </Modal>
     <React.Fragment>
       <Modal
         size="lg"
