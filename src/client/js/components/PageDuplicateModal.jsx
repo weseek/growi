@@ -26,7 +26,7 @@ const PageDuplicateModal = (props) => {
   const [errorCode, setErrorCode] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [subordinatedPaths, setSubordinatedPaths] = useState([]);
-  const [duplicateError, setDuplicateError] = useState(null);
+  const [getSubordinatedError, setGetSuborinatedError] = useState(null);
 
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
 
@@ -56,7 +56,7 @@ const PageDuplicateModal = (props) => {
       setSubordinatedPaths(res.data.resultPaths);
     }
     catch (err) {
-      setDuplicateError(t('modal_duplicate.label.Fail to get subordinated pages'));
+      setGetSuborinatedError(t('modal_duplicate.label.Fail to get subordinated pages'));
     }
   }
 
@@ -136,7 +136,7 @@ const PageDuplicateModal = (props) => {
               {isDuplicateRecursively && subordinatedPaths.map(duplicatedNewPath => <li key={duplicatedNewPath}>{duplicatedNewPath}</li>)}
             </ul>
           </div>
-          <div> {duplicateError} </div>
+          <div> {getSubordinatedError} </div>
         </div>
       </ModalBody>
       <ModalFooter>
