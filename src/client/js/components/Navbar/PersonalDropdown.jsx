@@ -20,7 +20,9 @@ import {
 
 import UserPicture from '../User/UserPicture';
 
-import GrowiLogo from '../GrowiLogo';
+import SidebarDrawerIcon from '../SidebarDrawerIcon';
+import SidebarDockIcon from '../SidebarDockIcon';
+
 
 const PersonalDropdown = (props) => {
 
@@ -83,14 +85,14 @@ const PersonalDropdown = (props) => {
   /* eslint-disable react/prop-types */
   const DrawerIcon = props => (
     <>
-      <div id={props.id} className="px-2"><GrowiLogo /></div>
+      <div id={props.id} className="px-2"><SidebarDrawerIcon /></div>
       <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Drawer</UncontrolledTooltip>
     </>
   );
   const DockIcon = props => (
     <>
-      <i id={props.id} className="ti-layout-sidebar-left px-2"></i>
-      <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Dock</UncontrolledTooltip>
+      <div id={props.id} className="px-2"><SidebarDockIcon /></div>
+      <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Drawer</UncontrolledTooltip>
     </>
   );
   /* eslint-enable react/prop-types */
