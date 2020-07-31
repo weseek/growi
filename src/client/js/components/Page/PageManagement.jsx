@@ -22,8 +22,6 @@ const PageManagement = (props) => {
   const [isPageDuplicateModalShown, setIsPageDuplicateModalShown] = useState(false);
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
   const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);
-  // const [duplicateModalPaths, setDuplicateModalPaths] = useState([]);
-  // const [duplicateError, setDuplicateError] = useState(null);
 
   function openPageRenameModalHandler() {
     setIsPageRenameModalShown(true);
