@@ -18,6 +18,7 @@ export default class AdminMarkDownContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
+      isRetrieving: true,
       retrieveError: null,
       isEnabledLinebreaks: false,
       isEnabledLinebreaksInComments: false,
@@ -48,6 +49,7 @@ export default class AdminMarkDownContainer extends Container {
       const { markdownParams } = response.data;
 
       this.setState({
+        isRetrieving: false,
         isEnabledLinebreaks: markdownParams.isEnabledLinebreaks,
         isEnabledLinebreaksInComments: markdownParams.isEnabledLinebreaksInComments,
         pageBreakSeparator: markdownParams.pageBreakSeparator,
