@@ -25,9 +25,6 @@ const TopOfTableContents = (props) => {
   }
 
   function closePageAccessoriesModal() {
-    if (props.onClose == null) {
-      return;
-    }
     setIsPageAccessoriesModalShown(false);
   }
 
@@ -80,7 +77,6 @@ const TopOfTableContentsWrapper = withUnstatedContainers(TopOfTableContents, [Pa
 
 TopOfTableContents.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  onClose: PropTypes.func,
 };
 
 export default withTranslation()(TopOfTableContentsWrapper);

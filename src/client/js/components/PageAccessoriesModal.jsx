@@ -18,12 +18,14 @@ import PageContainer from '../services/PageContainer';
 const PageAccessoriesModal = (props) => {
   const { t } = props;
 
+  const onClose = props.onClose || null;
+
   return (
     <React.Fragment>
       <Modal
         size="lg"
         isOpen={props.isOpen}
-        toggle={props.onClose}
+        toggle={onClose}
         className="grw-page-accessories-modal"
       >
         <ModalBody>
