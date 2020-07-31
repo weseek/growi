@@ -1668,6 +1668,11 @@
   resolved "https://registry.yarnpkg.com/@kaishuu0123/markdown-it-fence/-/markdown-it-fence-0.2.0.tgz#f46722bfce4ab7eb3e051def5090dcae1bd6e36b"
   integrity sha512-mdqKA+bXfJPl7gAg9tis8fGlea2oppBM068YbMDSXKWM6H18nVSZLrVKPHXpPWBgSv1ceeKkoWj8K1ntpIHlrw==
 
+"@kaishuu0123/markdown-it-fence@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@kaishuu0123/markdown-it-fence/-/markdown-it-fence-1.0.0.tgz#07525441b731e9ba518d886e203da2557e533f0e"
+  integrity sha512-4e+1JVCN3Qg2KvZkyvlmaay929bfeqf3MyA9agyx49gXKYhp5fvFQD0/0moBP52Kj/u0LCdVEnNWXn1s8Zi5sQ==
+
 "@lykmapipo/common@>=0.34.2", "@lykmapipo/common@>=0.34.3":
   version "0.34.3"
   resolved "https://registry.yarnpkg.com/@lykmapipo/common/-/common-0.34.3.tgz#eb74fa4af14f2f1e59ddd42491f05ab69f96bd71"
@@ -9117,12 +9122,12 @@ markdown-it-blockdiag@^1.1.1:
     url-join "^4.0.0"
     utf8-bytes "0.0.1"
 
-markdown-it-drawio-viewer@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/markdown-it-drawio-viewer/-/markdown-it-drawio-viewer-1.2.0.tgz#d47648c039f12e4c5ca706ed4d0f5dc19400c9a2"
-  integrity sha512-Hu9jxqKLVfFhk2T8J4ayaVbuoW2RSugRrXIsREMW7MMWFDciBgs9C8ADKaTav7JITY5fp7q6KJU7pqP/5dMRnA==
+markdown-it-drawio-viewer@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/markdown-it-drawio-viewer/-/markdown-it-drawio-viewer-1.3.0.tgz#bd70b5df7655080afbbe83a2d3bc9ac10f4e433e"
+  integrity sha512-aGm1sa9kWsuSDXwRMMSma6c026GRqcsKyFldO7hRv3vywE3SSDWFXUWDJ6j7kU5nXbQTd1LtcBokCyfn6JyunQ==
   dependencies:
-    "@kaishuu0123/markdown-it-fence" "^0.2.0"
+    "@kaishuu0123/markdown-it-fence" "^1.0.0"
     xmldoc "^1.1.2"
 
 markdown-it-emoji@^1.4.0:
