@@ -92,7 +92,7 @@ const PersonalDropdown = (props) => {
   const DockIcon = props => (
     <>
       <div id={props.id} className="px-2"><SidebarDockIcon /></div>
-      <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Drawer</UncontrolledTooltip>
+      <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Dock</UncontrolledTooltip>
     </>
   );
   /* eslint-enable react/prop-types */
