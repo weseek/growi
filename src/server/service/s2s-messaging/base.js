@@ -1,8 +1,8 @@
-const logger = require('@alias/logger')('growi:service:config-pubsub:base');
+const logger = require('@alias/logger')('growi:service:s2s-messaging:base');
 
-const ConfigPubsubMessageHandlable = require('../config-pubsub/handlable');
+const S2sMessageHandlable = require('./handlable');
 
-class ConfigPubsubDelegator {
+class S2sMessagingServiceDelegator {
 
   constructor(uri) {
     this.uid = Math.floor(Math.random() * 100000);
@@ -25,18 +25,18 @@ class ConfigPubsubDelegator {
 
   /**
    * Publish message
-   * @param {ConfigPubsubMessage} configPubsubMessage
+   * @param {S2sMessage} s2sMessage
    */
-  async publish(configPubsubMessage) {
-    configPubsubMessage.setPublisherUid(this.uid);
+  async publish(s2sMessage) {
+    s2sMessage.setPublisherUid(this.uid);
   }
 
   /**
    * Add message handler
-   * @param {ConfigPubsubMessageHandlable} handlable
+   * @param {S2sMessageHandlable} handlable
    */
   addMessageHandler(handlable) {
-    if (!(handlable instanceof ConfigPubsubMessageHandlable)) {
+    if (!(handlable instanceof S2sMessageHandlable)) {
       logger.warn('Unsupported instance');
       logger.debug('Unsupported instance: ', handlable);
       return;
@@ -47,10 +47,10 @@ class ConfigPubsubDelegator {
 
   /**
    * Remove message handler
-   * @param {ConfigPubsubMessageHandlable} handlable
+   * @param {S2sMessageHandlable} handlable
    */
   removeMessageHandler(handlable) {
-    if (!(handlable instanceof ConfigPubsubMessageHandlable)) {
+    if (!(handlable instanceof S2sMessageHandlable)) {
       logger.warn('Unsupported instance');
       logger.debug('Unsupported instance: ', handlable);
       return;
@@ -61,4 +61,4 @@ class ConfigPubsubDelegator {
 
 }
 
-module.exports = ConfigPubsubDelegator;
+module.exports = S2sMessagingServiceDelegator;

@@ -1,14 +1,14 @@
-const logger = require('@alias/logger')('growi:service:ConfigPubsubFactory');
+const logger = require('@alias/logger')('growi:service:s2s-messaging:S2sMessagingServiceFactory');
 
 const envToModuleMappings = {
   redis:   'redis',
   nchan:   'nchan',
 };
 
-class ConfigPubsubFactory {
+class S2sMessagingServiceFactory {
 
   initializeDelegator(crowi) {
-    const type = crowi.configManager.getConfig('crowi', 'configPubsub:serverType');
+    const type = crowi.configManager.getConfig('crowi', 's2sMessagingPubsub:serverType');
 
     if (type == null) {
       logger.info('Config pub/sub server is not defined.');
@@ -36,7 +36,7 @@ class ConfigPubsubFactory {
 
 }
 
-const factory = new ConfigPubsubFactory();
+const factory = new S2sMessagingServiceFactory();
 
 module.exports = (crowi) => {
   return factory.getDelegator(crowi);

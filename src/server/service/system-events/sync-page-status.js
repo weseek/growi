@@ -1,15 +1,15 @@
 const logger = require('@alias/logger')('growi:service:system-events:SyncPageStatusService');
 
-const ConfigPubsubMessage = require('../../models/vo/config-pubsub-message');
-const ConfigPubsubMessageHandlable = require('../config-pubsub/handlable');
+const S2sMessage = require('../../models/vo/s2s-message');
+const S2sMessageHandlable = require('../s2s-messaging/handlable');
 
-class SyncPageStatusService extends ConfigPubsubMessageHandlable {
+class SyncPageStatusService extends S2sMessageHandlable {
 
-  constructor(crowi, configPubsub, socketIoService) {
+  constructor(crowi, s2sMessagingService, socketIoService) {
     super();
 
     this.crowi = crowi;
-    this.configPubsub = configPubsub;
+    this.s2sMessagingService = s2sMessagingService;
     this.socketIoService = socketIoService;
 
     this.emitter = crowi.events.page;
@@ -20,8 +20,8 @@ class SyncPageStatusService extends ConfigPubsubMessageHandlable {
   /**
    * @inheritdoc
    */
-  shouldHandleConfigPubsubMessage(configPubsubMessage) {
-    const { eventName } = configPubsubMessage;
+  shouldHandleS2sMessage(s2sMessage) {
+    const { eventName } = s2sMessage;
     if (eventName !== 'pageStatusUpdated') {
       return false;
     }
@@ -32,8 +32,8 @@ class SyncPageStatusService extends ConfigPubsubMessageHandlable {
   /**
    * @inheritdoc
    */
-  async handleConfigPubsubMessage(configPubsubMessage) {
-    const { socketIoEventName, page, user } = configPubsubMessage;
+  async handleS2sMessage(s2sMessage) {
+    const { socketIoEventName, page, user } = s2sMessage;
     const { socketIoService } = this;
 
     // emit the updated information to clients
@@ -41,16 +41,16 @@ class SyncPageStatusService extends ConfigPubsubMessageHandlable {
   }
 
   async publishToOtherServers(socketIoEventName, page, user) {
-    const { configPubsub } = this;
+    const { s2sMessagingService } = this;
 
-    if (configPubsub != null) {
-      const configPubsubMessage = new ConfigPubsubMessage('pageStatusUpdated', { socketIoEventName, page, user });
+    if (s2sMessagingService != null) {
+      const s2sMessage = new S2sMessage('pageStatusUpdated', { socketIoEventName, page, user });
 
       try {
-        await configPubsub.publish(configPubsubMessage);
+        await s2sMessagingService.publish(s2sMessage);
       }
       catch (e) {
-        logger.error('Failed to publish update message with configPubsub: ', e.message);
+        logger.error('Failed to publish update message with S2sMessagingService: ', e.message);
       }
     }
   }
