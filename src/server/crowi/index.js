@@ -1,5 +1,3 @@
-
-
 const debug = require('debug')('growi:crowi');
 const logger = require('@alias/logger')('growi:crowi');
 const pkg = require('@root/package.json');
@@ -53,6 +51,8 @@ function Crowi(rootdir) {
   this.importService = null;
   this.searchService = null;
   this.socketIoService = null;
+  this.pageService = null;
+  this.syncPageStatusService = null;
   this.cdnResourcesService = new CdnResourcesService();
   this.interceptorManager = new InterceptorManager();
   this.xss = new Xss();
@@ -107,6 +107,8 @@ Crowi.prototype.init = async function() {
     this.setupUserGroup(),
     this.setupExport(),
     this.setupImport(),
+    this.setupPageService(),
+    this.setupSyncPageStatusService(),
   ]);
 
   // globalNotification depends on slack and mailer
@@ -577,6 +579,20 @@ Crowi.prototype.setupImport = async function() {
   const ImportService = require('../service/import');
   if (this.importService == null) {
     this.importService = new ImportService(this);
+  }
+};
+
+Crowi.prototype.setupPageService = async function() {
+  const PageEventService = require('../service/page');
+  if (this.pageService == null) {
+    this.pageService = new PageEventService(this);
+  }
+};
+
+Crowi.prototype.setupSyncPageStatusService = async function() {
+  const SyncPageStatusService = require('../service/system-events/sync-page-status');
+  if (this.syncPageStatusService == null) {
+    this.syncPageStatusService = new SyncPageStatusService(this, this.configPubsubService, this.socketIoService);
   }
 };
 
