@@ -1,5 +1,8 @@
 import SocketIoContainer from './SocketIoContainer';
 
+/**
+ * A subclass of SocketIoContainer for /admin namespace
+ */
 export default class AdminSocketIoContainer extends SocketIoContainer {
 
   constructor(appContainer) {
