@@ -592,7 +592,12 @@ Crowi.prototype.setupPageService = async function() {
 Crowi.prototype.setupSyncPageStatusService = async function() {
   const SyncPageStatusService = require('../service/system-events/sync-page-status');
   if (this.syncPageStatusService == null) {
-    this.syncPageStatusService = new SyncPageStatusService(this, this.configPubsubService, this.socketIoService);
+    this.syncPageStatusService = new SyncPageStatusService(this, this.configPubsub, this.socketIoService);
+
+    // add as a message handler
+    if (this.configPubsub != null) {
+      this.configPubsub.addMessageHandler(this.syncPageStatusService);
+    }
   }
 };
 
