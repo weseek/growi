@@ -30,25 +30,25 @@ const PageAccessoriesModal = (props) => {
       >
         <ModalBody>
           <Nav className="nav-title border-bottom">
-            <NavItem className={`nav-link ${props.isActive === 'pageList' && 'active'}`}>
+            <NavItem className={`nav-link ${props.activeTab === 'pageList' && 'active'}`}>
               <NavLink>
                 <PageList />
                 { t('page_list') }
               </NavLink>
             </NavItem>
-            <NavItem className={`nav-link ${props.isActive === 'timeLine' && 'active'}`}>
+            <NavItem className={`nav-link ${props.activeTab === 'timeLine' && 'active'}`}>
               <NavLink>
                 <TimeLine />
                 { t('Timeline View') }
               </NavLink>
             </NavItem>
-            <NavItem className={`nav-link ${props.isActive === 'recentChanges' && 'active'}`}>
+            <NavItem className={`nav-link ${props.activeTab === 'recentChanges' && 'active'}`}>
               <NavLink>
                 <RecentChanges />
                 { t('History') }
               </NavLink>
             </NavItem>
-            <NavItem className={`nav-link ${props.isActive === 'attachment' && 'active'}`}>
+            <NavItem className={`nav-link ${props.activeTab === 'attachment' && 'active'}`}>
               <NavLink>
                 <Attachment />
                 { t('attachment_data') }
@@ -76,7 +76,7 @@ PageAccessoriesModal.propTypes = {
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
-  isActive: PropTypes.string.isRequired,
+  activeTab: PropTypes.string.isRequired,
 };
 
 export default withTranslation()(PageAccessoriesModalWrapper);
