@@ -2,6 +2,10 @@ const socketIo = require('socket.io');
 
 class SocketIoService {
 
+  get isInitialized() {
+    return (this.io != null);
+  }
+
   attachServer(server) {
     this.io = socketIo(server, {
       transports: ['websocket'],

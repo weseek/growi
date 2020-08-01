@@ -37,7 +37,9 @@ class SyncPageStatusService extends S2sMessageHandlable {
     const { socketIoService } = this;
 
     // emit the updated information to clients
-    socketIoService.getDefaultSocket().emit(socketIoEventName, { page, user });
+    if (socketIoService.isInitialized) {
+      socketIoService.getDefaultSocket().emit(socketIoEventName, { page, user });
+    }
   }
 
   async publishToOtherServers(socketIoEventName, page, user) {
