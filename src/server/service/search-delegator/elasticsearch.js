@@ -17,10 +17,9 @@ const BULK_REINDEX_SIZE = 100;
 
 class ElasticsearchDelegator {
 
-  constructor(configManager, socketIoService, crowi) {
+  constructor(configManager, socketIoService) {
     this.configManager = configManager;
-    // this.socketIoService = socketIoService;
-    this.crowi = crowi;
+    this.socketIoService = socketIoService;
 
     this.client = null;
 
@@ -226,7 +225,7 @@ class ElasticsearchDelegator {
     catch (error) {
       logger.warn('An error occured while \'rebuildIndex\', normalize indices anyway.');
 
-      const socket = this.crowi.socketIoService.getAdminSocket();
+      const socket = this.socketIoService.getAdminSocket();
       socket.emit('rebuildingFailed', { error: error.message });
 
       throw error;
@@ -361,7 +360,7 @@ class ElasticsearchDelegator {
     const Bookmark = mongoose.model('Bookmark');
     const PageTagRelation = mongoose.model('PageTagRelation');
 
-    const socket = this.crowi.socketIoService.getAdminSocket();
+    const socket = this.socketIoService.getAdminSocket();
 
     // prepare functions invoked from custom streams
     const prepareBodyForCreate = this.prepareBodyForCreate.bind(this);

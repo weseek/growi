@@ -13,14 +13,11 @@ module.exports = function(crowi, app) {
     aclService,
     slackNotificationService,
     exportService,
-    socketIoService,
   } = crowi;
 
   const recommendedWhitelist = require('@commons/service/xss/recommended-whitelist');
   const ApiResponse = require('../util/apiResponse');
   const importer = require('../util/importer')(crowi);
-
-  const searchEvent = crowi.event('search');
 
   const MAX_PAGE_LIST = 50;
   const actions = {};
@@ -84,17 +81,6 @@ module.exports = function(crowi, app) {
 
     return pager;
   }
-
-  // setup websocket event for rebuild index
-  // searchEvent.on('addPageProgress', (total, current, skip) => {
-  //   socketIoService.getAdminSocket().emit('admin:addPageProgress', { total, current, skip });
-  // });
-  // searchEvent.on('finishAddPage', (total, current, skip) => {
-  //   socketIoService.getAdminSocket().emit('admin:finishAddPage', { total, current, skip });
-  // });
-  // searchEvent.on('rebuildingFailed', (error) => {
-  //   socketIoService.getAdminSocket().emit('admin:rebuildingFailed', { error: error.message });
-  // });
 
   actions.index = function(req, res) {
     return res.render('admin/index');

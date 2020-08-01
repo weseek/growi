@@ -9,7 +9,6 @@ const Xss = require('@commons/service/xss');
 const { getMongoUri, mongoOptions } = require('@commons/util/mongoose-utils');
 
 const path = require('path');
-const WebSocket = require('ws');
 
 const mongoose = require('mongoose');
 
@@ -70,7 +69,6 @@ function Crowi(rootdir) {
   this.events = {
     user: new (require(`${self.eventsDir}user`))(this),
     page: new (require(`${self.eventsDir}page`))(this),
-    search: new (require(`${self.eventsDir}search`))(this),
     bookmark: new (require(`${self.eventsDir}bookmark`))(this),
     tag: new (require(`${self.eventsDir}tag`))(this),
     admin: new (require(`${self.eventsDir}admin`))(this),
@@ -82,6 +80,7 @@ Crowi.prototype.init = async function() {
   await this.setupModels();
   await this.setupSessionConfig();
   await this.setupConfigManager();
+  await this.setupSocketIoService();
 
   // customizeService depends on AppService and XssService
   // passportService depends on appService
@@ -265,6 +264,13 @@ Crowi.prototype.setupConfigManager = async function() {
   }
 };
 
+Crowi.prototype.setupSocketIoService = async function() {
+  const SocketIoService = require('../service/socket-io');
+  if (this.socketIoService == null) {
+    this.socketIoService = new SocketIoService();
+  }
+};
+
 Crowi.prototype.setupModels = async function() {
   Object.keys(models).forEach((key) => {
     return this.model(key, models[key](this));
@@ -396,8 +402,7 @@ Crowi.prototype.start = async function() {
     }
   });
 
-  // setup socket.io
-  await this.setupSocketIoService(serverListening);
+  this.socketIoService.attachServer(serverListening);
 
   // setup Express Routes
   this.setupRoutesAtLast();
@@ -572,13 +577,6 @@ Crowi.prototype.setupImport = async function() {
   const ImportService = require('../service/import');
   if (this.importService == null) {
     this.importService = new ImportService(this);
-  }
-};
-
-Crowi.prototype.setupSocketIoService = async function(server) {
-  const SocketIoService = require('../service/socket-io');
-  if (this.socketIoService == null) {
-    this.socketIoService = new SocketIoService(server);
   }
 };
 

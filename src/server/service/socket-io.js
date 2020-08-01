@@ -2,7 +2,7 @@ const socketIo = require('socket.io');
 
 class SocketIoService {
 
-  constructor(server) {
+  attachServer(server) {
     this.io = socketIo(server, {
       transports: ['websocket'],
     });
@@ -12,10 +12,16 @@ class SocketIoService {
   }
 
   getDefaultSocket() {
+    if (this.io == null) {
+      throw new Error('Http server has not attached yet.');
+    }
     return this.io.sockets;
   }
 
   getAdminSocket() {
+    if (this.io == null) {
+      throw new Error('Http server has not attached yet.');
+    }
     return this.adminNamespace;
   }
 
