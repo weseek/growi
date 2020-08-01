@@ -60,7 +60,7 @@ const generateOverwriteParams = (collectionName, req, options) => {
 };
 
 module.exports = (crowi) => {
-  const { growiBridgeService, importService } = crowi;
+  const { growiBridgeService, importService, socketIoService } = crowi;
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
@@ -69,16 +69,15 @@ module.exports = (crowi) => {
   this.adminEvent = crowi.event('admin');
 
   // setup event
-  // FIXME: with GW-3262
-  // this.adminEvent.on('onProgressForImport', (data) => {
-  //   crowi.getIo().sockets.emit('admin:onProgressForImport', data);
-  // });
-  // this.adminEvent.on('onTerminateForImport', (data) => {
-  //   crowi.getIo().sockets.emit('admin:onTerminateForImport', data);
-  // });
-  // this.adminEvent.on('onErrorForImport', (data) => {
-  //   crowi.getIo().sockets.emit('admin:onErrorForImport', data);
-  // });
+  this.adminEvent.on('onProgressForImport', (data) => {
+    socketIoService.getAdminSocket().emit('admin:onProgressForImport', data);
+  });
+  this.adminEvent.on('onTerminateForImport', (data) => {
+    socketIoService.getAdminSocket().emit('admin:onTerminateForImport', data);
+  });
+  this.adminEvent.on('onErrorForImport', (data) => {
+    socketIoService.getAdminSocket().emit('admin:onErrorForImport', data);
+  });
 
   const uploads = multer({
     storage: multer.diskStorage({
