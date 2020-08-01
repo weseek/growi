@@ -53,6 +53,7 @@ function Crowi(rootdir) {
   this.exportService = null;
   this.importService = null;
   this.searchService = null;
+  this.socketIoService = null;
   this.cdnResourcesService = new CdnResourcesService();
   this.interceptorManager = new InterceptorManager();
   this.xss = new Xss();
@@ -270,11 +271,6 @@ Crowi.prototype.setupModels = async function() {
   });
 };
 
-// FIXME: with GW-3262
-// Crowi.prototype.getIo = function() {
-//   return this.io;
-// };
-
 Crowi.prototype.scanRuntimeVersions = async function() {
   const self = this;
 
@@ -400,12 +396,8 @@ Crowi.prototype.start = async function() {
     }
   });
 
-  // setup WebSocket
-  // FIXME: with GW-3262
-  // const io = require('socket.io')(serverListening);
-  // io.sockets.on('connection', (socket) => {
-  // });
-  // this.io = io;
+  // setup socket.io
+  await this.setupSocketIoService(serverListening);
 
   // setup Express Routes
   this.setupRoutesAtLast();
@@ -580,6 +572,13 @@ Crowi.prototype.setupImport = async function() {
   const ImportService = require('../service/import');
   if (this.importService == null) {
     this.importService = new ImportService(this);
+  }
+};
+
+Crowi.prototype.setupSocketIoService = async function(server) {
+  const SocketIoService = require('../service/socket-io');
+  if (this.socketIoService == null) {
+    this.socketIoService = new SocketIoService(server);
   }
 };
 
