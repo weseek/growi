@@ -314,7 +314,7 @@ class ConfigManager extends S2sMessageHandlable {
     const s2sMessage = new S2sMessage('configUpdated', { updatedAt: new Date() });
 
     try {
-      await s2sMessagingService.publish(s2sMessage);
+      await this.s2sMessagingService.publish(s2sMessage);
     }
     catch (e) {
       logger.error('Failed to publish update message with S2sMessagingService: ', e.message);
