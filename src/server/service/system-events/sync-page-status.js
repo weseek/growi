@@ -35,6 +35,9 @@ class SyncPageStatusService {
       page = pageService.serializeToObj(page); // eslint-disable-line no-param-reassign
       socketIoService.getDefaultSocket().emit('page:delete', { page, user, socketClientId });
     });
+    this.emitter.on('saveOnHackmd', (page) => {
+      socketIoService.getDefaultSocket().emit('page:editingWithHackmd', { page });
+    });
   }
 
 }
