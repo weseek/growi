@@ -1,5 +1,8 @@
 const socketIo = require('socket.io');
 
+/**
+ * Serve socket.io for server-to-client messaging
+ */
 class SocketIoService {
 
   get isInitialized() {

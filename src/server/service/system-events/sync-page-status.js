@@ -3,6 +3,19 @@ const logger = require('@alias/logger')('growi:service:system-events:SyncPageSta
 const S2sMessage = require('../../models/vo/s2s-message');
 const S2sMessageHandlable = require('../s2s-messaging/handlable');
 
+/**
+ * This service notify page status
+ *  to clients who are connecting to this server
+ *  and also notify to clients connecting to other GROWI servers
+ *
+ * Sequence:
+ *  1. A client A1 connecting to GROWI server A updates a page
+ *  2. GROWI server A notify the information
+ *    2.1 -- to client A2, A3, ... with SocketIoService
+ *    2.2 -- to other GROWI servers with S2sMessagingService
+ *  3. GROWI server B, C, ... relay the information to clients B1, B2, .. C1, C2, ... with SocketIoService
+ *
+ */
 class SyncPageStatusService extends S2sMessageHandlable {
 
   constructor(crowi, s2sMessagingService, socketIoService) {

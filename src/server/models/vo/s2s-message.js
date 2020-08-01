@@ -1,3 +1,6 @@
+/**
+ * Server-to-server message VO
+ */
 class S2sMessage {
 
   constructor(eventName, body = {}) {

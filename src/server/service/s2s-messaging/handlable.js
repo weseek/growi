@@ -1,4 +1,8 @@
 // TODO: make interface with TS
+
+/**
+ * The interface to handle server-to-server message
+ */
 class S2sMessageHandlable {
 
   shouldHandleS2sMessage(s2sMessage) {

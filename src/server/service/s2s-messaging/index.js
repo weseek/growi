@@ -5,6 +5,9 @@ const envToModuleMappings = {
   nchan:   'nchan',
 };
 
+/**
+ * Instanciate server-to-server messaging service
+ */
 class S2sMessagingServiceFactory {
 
   initializeDelegator(crowi) {
