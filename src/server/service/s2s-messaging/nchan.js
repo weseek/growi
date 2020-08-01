@@ -2,7 +2,6 @@ const logger = require('@alias/logger')('growi:service:s2s-messaging:nchan');
 
 const path = require('path');
 const axios = require('axios');
-// const WebSocketClient = require('websocket').client;
 const WebSocket = require('ws');
 const ReconnectingWebSocket = require('reconnecting-websocket');
 
