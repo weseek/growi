@@ -50,7 +50,7 @@ const logger = loggerFactory('growi:admin');
 appContainer.initContents();
 
 const { i18n } = appContainer;
-const websocketContainer = appContainer.getContainer('WebsocketContainer');
+const socketIoContainer = appContainer.getContainer('SocketIoContainer');
 
 // create unstated container instance
 const navigationContainer = new NavigationContainer(appContainer);
@@ -64,7 +64,7 @@ const adminMarkDownContainer = new AdminMarkDownContainer(appContainer);
 const adminUserGroupDetailContainer = new AdminUserGroupDetailContainer(appContainer);
 const injectableContainers = [
   appContainer,
-  websocketContainer,
+  socketIoContainer,
   navigationContainer,
   adminAppContainer,
   adminHomeContainer,

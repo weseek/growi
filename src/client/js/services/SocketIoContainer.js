@@ -6,7 +6,7 @@ import io from 'socket.io-client';
  * Service container related to options for WebSocket
  * @extends {Container} unstated Container
  */
-export default class WebsocketContainer extends Container {
+export default class SocketIoContainer extends Container {
 
   constructor(appContainer) {
     super();
@@ -28,10 +28,10 @@ export default class WebsocketContainer extends Container {
    * Workaround for the mangling in production build to break constructor.name
    */
   static getClassName() {
-    return 'WebsocketContainer';
+    return 'SocketIoContainer';
   }
 
-  getWebSocket() {
+  getSocket() {
     return this.socket;
   }
 
