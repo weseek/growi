@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
-import SocketIoContainer from '../../../services/SocketIoContainer';
+import AdminSocketIoContainer from '../../../services/AdminSocketIoContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import StatusTable from './StatusTable';
@@ -45,7 +45,7 @@ class ElasticsearchManagement extends React.Component {
   }
 
   initWebSockets() {
-    const socket = this.props.socketIoContainer.getSocket();
+    const socket = this.props.adminSocketIoContainer.getSocket();
 
     socket.on('admin:addPageProgress', (data) => {
       this.setState({
@@ -224,12 +224,12 @@ class ElasticsearchManagement extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const ElasticsearchManagementWrapper = withUnstatedContainers(ElasticsearchManagement, [AppContainer, SocketIoContainer]);
+const ElasticsearchManagementWrapper = withUnstatedContainers(ElasticsearchManagement, [AppContainer, AdminSocketIoContainer]);
 
 ElasticsearchManagement.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  socketIoContainer: PropTypes.instanceOf(SocketIoContainer).isRequired,
+  adminSocketIoContainer: PropTypes.instanceOf(AdminSocketIoContainer).isRequired,
 };
 
 export default withTranslation()(ElasticsearchManagementWrapper);

@@ -13,6 +13,7 @@ module.exports = function(crowi, app) {
     aclService,
     slackNotificationService,
     exportService,
+    socketIoService,
   } = crowi;
 
   const recommendedWhitelist = require('@commons/service/xss/recommended-whitelist');

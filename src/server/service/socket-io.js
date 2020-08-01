@@ -6,10 +6,17 @@ class SocketIoService {
     this.io = socketIo(server, {
       transports: ['websocket'],
     });
+
+    // create namespace for admin
+    this.adminNamespace = this.io.of('/admin');
   }
 
-  getIo() {
-    return this.io;
+  getDefaultSocket() {
+    return this.io.sockets;
+  }
+
+  getAdminSocket() {
+    return this.adminNamespace;
   }
 
 }

@@ -8,7 +8,7 @@ import ImportOptionForRevisions from '@commons/models/admin/import-option-for-re
 
 import { withUnstatedContainers } from '../../../UnstatedUtils';
 import AppContainer from '../../../../services/AppContainer';
-import SocketIoContainer from '../../../../services/SocketIoContainer';
+import AdminSocketIoContainer from '../../../../services/AdminSocketIoContainer';
 import { toastSuccess, toastError } from '../../../../util/apiNotification';
 
 
@@ -102,7 +102,7 @@ class ImportForm extends React.Component {
   }
 
   setupWebsocketEventHandler() {
-    const socket = this.props.socketIoContainer.getSocket();
+    const socket = this.props.adminSocketIoContainer.getSocket();
 
     // websocket event
     // eslint-disable-next-line object-curly-newline
@@ -142,7 +142,7 @@ class ImportForm extends React.Component {
   }
 
   teardownWebsocketEventHandler() {
-    const socket = this.props.socketIoContainer.getSocket();
+    const socket = this.props.adminSocketIoContainer.getSocket();
 
     socket.removeAllListeners('admin:onProgressForImport');
     socket.removeAllListeners('admin:onTerminateForImport');
@@ -493,7 +493,7 @@ class ImportForm extends React.Component {
 ImportForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  socketIoContainer: PropTypes.instanceOf(SocketIoContainer).isRequired,
+  adminSocketIoContainer: PropTypes.instanceOf(AdminSocketIoContainer).isRequired,
 
   fileName: PropTypes.string,
   innerFileStats: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -504,6 +504,6 @@ ImportForm.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const ImportFormWrapper = withUnstatedContainers(ImportForm, [AppContainer, SocketIoContainer]);
+const ImportFormWrapper = withUnstatedContainers(ImportForm, [AppContainer, AdminSocketIoContainer]);
 
 export default withTranslation()(ImportFormWrapper);

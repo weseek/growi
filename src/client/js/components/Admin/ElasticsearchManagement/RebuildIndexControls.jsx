@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
-import SocketIoContainer from '../../../services/SocketIoContainer';
+import AdminSocketIoContainer from '../../../services/AdminSocketIoContainer';
 
 import ProgressBar from '../Common/ProgressBar';
 
@@ -25,7 +25,7 @@ class RebuildIndexControls extends React.Component {
   }
 
   initWebSockets() {
-    const socket = this.props.socketIoContainer.getSocket();
+    const socket = this.props.adminSocketIoContainer.getSocket();
 
     socket.on('admin:addPageProgress', (data) => {
       this.setState({
@@ -97,12 +97,12 @@ class RebuildIndexControls extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const RebuildIndexControlsWrapper = withUnstatedContainers(RebuildIndexControls, [AppContainer, SocketIoContainer]);
+const RebuildIndexControlsWrapper = withUnstatedContainers(RebuildIndexControls, [AppContainer, AdminSocketIoContainer]);
 
 RebuildIndexControls.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  socketIoContainer: PropTypes.instanceOf(SocketIoContainer).isRequired,
+  adminSocketIoContainer: PropTypes.instanceOf(AdminSocketIoContainer).isRequired,
 
   isRebuildingProcessing: PropTypes.bool.isRequired,
   isRebuildingCompleted: PropTypes.bool.isRequired,

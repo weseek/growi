@@ -8,13 +8,15 @@ import io from 'socket.io-client';
  */
 export default class SocketIoContainer extends Container {
 
-  constructor(appContainer) {
+  constructor(appContainer, namespace) {
     super();
 
     this.appContainer = appContainer;
     this.appContainer.registerContainer(this);
 
-    this.socket = io({
+    const ns = namespace || '/';
+
+    this.socket = io(ns, {
       transports: ['websocket'],
     });
     this.socketClientId = Math.floor(Math.random() * 100000);
