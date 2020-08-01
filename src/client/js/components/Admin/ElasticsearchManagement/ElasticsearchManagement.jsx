@@ -47,20 +47,20 @@ class ElasticsearchManagement extends React.Component {
   initWebSockets() {
     const socket = this.props.adminSocketIoContainer.getSocket();
 
-    socket.on('admin:addPageProgress', (data) => {
+    socket.on('addPageProgress', (data) => {
       this.setState({
         isRebuildingProcessing: true,
       });
     });
 
-    socket.on('admin:finishAddPage', (data) => {
+    socket.on('finishAddPage', (data) => {
       this.setState({
         isRebuildingProcessing: false,
         isRebuildingCompleted: true,
       });
     });
 
-    socket.on('admin:rebuildingFailed', (data) => {
+    socket.on('rebuildingFailed', (data) => {
       toastError(new Error(data.error), 'Rebuilding Index has failed.');
     });
   }

@@ -86,15 +86,14 @@ module.exports = function(crowi, app) {
   }
 
   // setup websocket event for rebuild index
-  // FIXME: with GW-3262
   // searchEvent.on('addPageProgress', (total, current, skip) => {
-  //   crowi.getIo().sockets.emit('admin:addPageProgress', { total, current, skip });
+  //   socketIoService.getAdminSocket().emit('admin:addPageProgress', { total, current, skip });
   // });
   // searchEvent.on('finishAddPage', (total, current, skip) => {
-  //   crowi.getIo().sockets.emit('admin:finishAddPage', { total, current, skip });
+  //   socketIoService.getAdminSocket().emit('admin:finishAddPage', { total, current, skip });
   // });
   // searchEvent.on('rebuildingFailed', (error) => {
-  //   crowi.getIo().sockets.emit('admin:rebuildingFailed', { error: error.message });
+  //   socketIoService.getAdminSocket().emit('admin:rebuildingFailed', { error: error.message });
   // });
 
   actions.index = function(req, res) {

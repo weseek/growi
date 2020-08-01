@@ -27,15 +27,19 @@ class RebuildIndexControls extends React.Component {
   initWebSockets() {
     const socket = this.props.adminSocketIoContainer.getSocket();
 
-    socket.on('admin:addPageProgress', (data) => {
+    socket.on('addPageProgress', (data) => {
       this.setState({
-        ...data,
+        total: data.totalCount,
+        current: data.count,
+        skip: data.skipped,
       });
     });
 
-    socket.on('admin:finishAddPage', (data) => {
+    socket.on('finishAddPage', (data) => {
       this.setState({
-        ...data,
+        total: data.totalCount,
+        current: data.count,
+        skip: data.skipped,
       });
     });
 

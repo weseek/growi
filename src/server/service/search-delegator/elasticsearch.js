@@ -17,9 +17,10 @@ const BULK_REINDEX_SIZE = 100;
 
 class ElasticsearchDelegator {
 
-  constructor(configManager, searchEvent) {
+  constructor(configManager, socketIoService, crowi) {
     this.configManager = configManager;
-    this.searchEvent = searchEvent;
+    // this.socketIoService = socketIoService;
+    this.crowi = crowi;
 
     this.client = null;
 
@@ -225,8 +226,8 @@ class ElasticsearchDelegator {
     catch (error) {
       logger.warn('An error occured while \'rebuildIndex\', normalize indices anyway.');
 
-      const { searchEvent } = this;
-      searchEvent.emit('rebuildingFailed', error);
+      const socket = this.crowi.socketIoService.getAdminSocket();
+      socket.emit('rebuildingFailed', { error: error.message });
 
       throw error;
     }
@@ -360,7 +361,7 @@ class ElasticsearchDelegator {
     const Bookmark = mongoose.model('Bookmark');
     const PageTagRelation = mongoose.model('PageTagRelation');
 
-    const { searchEvent } = this;
+    const socket = this.crowi.socketIoService.getAdminSocket();
 
     // prepare functions invoked from custom streams
     const prepareBodyForCreate = this.prepareBodyForCreate.bind(this);
@@ -458,7 +459,7 @@ class ElasticsearchDelegator {
           logger.info(`Adding pages progressing: (count=${count}, errors=${res.errors}, took=${res.took}ms)`);
 
           if (isEmittingProgressEvent) {
-            searchEvent.emit('addPageProgress', totalCount, count, skipped);
+            socket.emit('addPageProgress', { totalCount, count, skipped });
           }
         }
         catch (err) {
@@ -471,7 +472,7 @@ class ElasticsearchDelegator {
         logger.info(`Adding pages has completed: (totalCount=${totalCount}, skipped=${skipped})`);
 
         if (isEmittingProgressEvent) {
-          searchEvent.emit('finishAddPage', totalCount, count, skipped);
+          socket.emit('finishAddPage', { totalCount, count, skipped });
         }
         callback();
       },
