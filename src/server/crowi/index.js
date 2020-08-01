@@ -265,7 +265,7 @@ Crowi.prototype.setupS2sMessagingService = async function() {
   const s2sMessagingService = require('../service/s2s-messaging')(this);
   if (s2sMessagingService != null) {
     s2sMessagingService.subscribe();
-    this.configManager.setPubsub(s2sMessagingService);
+    this.configManager.setS2sMessagingService(s2sMessagingService);
     // add as a message handler
     s2sMessagingService.addMessageHandler(this.configManager);
 

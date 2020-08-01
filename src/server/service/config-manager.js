@@ -55,7 +55,7 @@ class ConfigManager extends S2sMessageHandlable {
    * Set S2sMessagingServiceDelegator instance
    * @param {S2sMessagingServiceDelegator} s2sMessagingService
    */
-  async setPubsub(s2sMessagingService) {
+  async setS2sMessagingService(s2sMessagingService) {
     this.s2sMessagingService = s2sMessagingService;
   }
 
