@@ -18,11 +18,25 @@ const TopOfTableContents = (props) => {
 
   const [isPageAccessoriesModalShown, setIsPageAccessoriesModalShown] = useState(false);
   const [activeTab, setActiveTab] = useState('');
+  // Prevent unnecessary rendering
+  const [activeComponents, setActiveComponents] = useState(new Set());
+
 
   function openPageAccessoriesModal(activeTab) {
     setIsPageAccessoriesModalShown(true);
     setActiveTab(activeTab);
   }
+
+  function toggleActiveTab(clickedTab) {
+    activeComponents.add(clickedTab);
+    setActiveComponents(activeComponents);
+
+    setActiveTab(clickedTab);
+
+    console.log(`clickedTab is ${activeTab}`);
+    console.log(`activeComponents are ${activeComponents}`);
+  }
+
 
   function closePageAccessoriesModal() {
     setIsPageAccessoriesModalShown(false);
@@ -32,9 +46,10 @@ const TopOfTableContents = (props) => {
     return (
       <>
         <PageAccessoriesModal
-          isOpen={isPageAccessoriesModalShown}
-          onClose={closePageAccessoriesModal}
+          isOpen={isPageAccessoriesModalShown} //
+          onClose={closePageAccessoriesModal} // 関数
           activeTab={activeTab}
+          toggleTab={toggleActiveTab}
         />
       </>
     );

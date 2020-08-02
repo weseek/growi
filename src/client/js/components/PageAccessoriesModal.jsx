@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -17,8 +17,7 @@ import PageContainer from '../services/PageContainer';
 
 const PageAccessoriesModal = (props) => {
   const { t } = props;
-  // Prevent unnecessary rendering
-  const [activeComponents, setActiveComponents] = useState(new Set(['']));
+
 
   function closeModalHandler() {
     if (props.onClose == null) {
@@ -26,14 +25,6 @@ const PageAccessoriesModal = (props) => {
     }
     props.onClose();
   }
-
-  function toggleActiveTab(activeTab) {
-    console.log(activeTab);
-
-    setActiveComponents(activeComponents.add(activeTab));
-    console.log(activeComponents);
-  }
-
 
   return (
     <React.Fragment>
@@ -47,7 +38,7 @@ const PageAccessoriesModal = (props) => {
           <Nav className="nav-title border-bottom">
             <NavItem className={`nav-link ${props.activeTab === 'pageList' && 'active'}`}>
               <NavLink
-                onClick={() => { toggleActiveTab('pageList') }}
+                onClick={() => { props.toggleTab('pageList') }}
               >
                 <PageList />
                 { t('page_list') }
@@ -55,7 +46,7 @@ const PageAccessoriesModal = (props) => {
             </NavItem>
             <NavItem className={`nav-link ${props.activeTab === 'timeLine' && 'active'}`}>
               <NavLink
-                onClick={() => { toggleActiveTab('timeLine') }}
+                onClick={() => { props.toggleTab('timeLine') }}
               >
                 <TimeLine />
                 { t('Timeline View') }
@@ -63,7 +54,7 @@ const PageAccessoriesModal = (props) => {
             </NavItem>
             <NavItem className={`nav-link ${props.activeTab === 'recentChanges' && 'active'}`}>
               <NavLink
-                onClick={() => { toggleActiveTab('recentChanges') }}
+                onClick={() => { props.toggleTab('recentChanges') }}
               >
                 <RecentChanges />
                 { t('History') }
@@ -71,7 +62,7 @@ const PageAccessoriesModal = (props) => {
             </NavItem>
             <NavItem className={`nav-link ${props.activeTab === 'attachment' && 'active'}`}>
               <NavLink
-                onClick={() => { toggleActiveTab('attachment') }}
+                onClick={() => { props.toggleTab('attachment') }}
               >
                 <Attachment />
                 { t('attachment_data') }
@@ -100,6 +91,7 @@ PageAccessoriesModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
   activeTab: PropTypes.string.isRequired,
+  toggleTab: PropTypes.string.isRequired,
 };
 
 export default withTranslation()(PageAccessoriesModalWrapper);
