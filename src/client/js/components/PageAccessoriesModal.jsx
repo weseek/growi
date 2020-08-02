@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -17,6 +17,8 @@ import PageContainer from '../services/PageContainer';
 
 const PageAccessoriesModal = (props) => {
   const { t } = props;
+  // Prevent unnecessary rendering
+  const [activeComponents, setActiveComponents] = useState(new Set(['']));
 
   function closeModalHandler() {
     if (props.onClose == null) {
@@ -24,6 +26,14 @@ const PageAccessoriesModal = (props) => {
     }
     props.onClose();
   }
+
+  function toggleActiveTab(activeTab) {
+    console.log(activeTab);
+
+    setActiveComponents(activeComponents.add(activeTab));
+    console.log(activeComponents);
+  }
+
 
   return (
     <React.Fragment>
@@ -36,25 +46,33 @@ const PageAccessoriesModal = (props) => {
         <ModalBody>
           <Nav className="nav-title border-bottom">
             <NavItem className={`nav-link ${props.activeTab === 'pageList' && 'active'}`}>
-              <NavLink>
+              <NavLink
+                onClick={() => { toggleActiveTab('pageList') }}
+              >
                 <PageList />
                 { t('page_list') }
               </NavLink>
             </NavItem>
             <NavItem className={`nav-link ${props.activeTab === 'timeLine' && 'active'}`}>
-              <NavLink>
+              <NavLink
+                onClick={() => { toggleActiveTab('timeLine') }}
+              >
                 <TimeLine />
                 { t('Timeline View') }
               </NavLink>
             </NavItem>
             <NavItem className={`nav-link ${props.activeTab === 'recentChanges' && 'active'}`}>
-              <NavLink>
+              <NavLink
+                onClick={() => { toggleActiveTab('recentChanges') }}
+              >
                 <RecentChanges />
                 { t('History') }
               </NavLink>
             </NavItem>
             <NavItem className={`nav-link ${props.activeTab === 'attachment' && 'active'}`}>
-              <NavLink>
+              <NavLink
+                onClick={() => { toggleActiveTab('attachment') }}
+              >
                 <Attachment />
                 { t('attachment_data') }
               </NavLink>
