@@ -28,15 +28,11 @@ const TopOfTableContents = (props) => {
     setActiveTab(activeTab);
   }
 
-  function toggleActiveTab(clickedTab) {
+  function switchActiveTab(clickedTab) {
     activeComponents.add(clickedTab);
     setActiveComponents(activeComponents);
 
     setActiveTab(clickedTab);
-
-    console.log(`clickedTab is ${clickedTab}`);
-    // console.log(`activeTab is ${activeTab}`);
-    // console.log(`activeComponents are ${activeComponents}`);
   }
 
 
@@ -51,7 +47,7 @@ const TopOfTableContents = (props) => {
           isOpen={isPageAccessoriesModalShown}
           onClose={closePageAccessoriesModal}
           activeTab={activeTab}
-          toggleTab={toggleActiveTab}
+          switchTab={switchActiveTab}
         />
       </>
     );

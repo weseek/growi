@@ -38,7 +38,7 @@ const PageAccessoriesModal = (props) => {
           <Nav className="nav-title border-bottom">
             <NavItem className={`nav-link ${props.activeTab === 'pageList' && 'active'}`}>
               <NavLink
-                onClick={() => { props.toggleTab('pageList') }}
+                onClick={() => { props.switchTab('pageList') }}
               >
                 <PageList />
                 { t('page_list') }
@@ -46,7 +46,7 @@ const PageAccessoriesModal = (props) => {
             </NavItem>
             <NavItem className={`nav-link ${props.activeTab === 'timeLine' && 'active'}`}>
               <NavLink
-                onClick={() => { props.toggleTab('timeLine') }}
+                onClick={() => { props.switchTab('timeLine') }}
               >
                 <TimeLine />
                 { t('Timeline View') }
@@ -54,7 +54,7 @@ const PageAccessoriesModal = (props) => {
             </NavItem>
             <NavItem className={`nav-link ${props.activeTab === 'recentChanges' && 'active'}`}>
               <NavLink
-                onClick={() => { props.toggleTab('recentChanges') }}
+                onClick={() => { props.switchTab('recentChanges') }}
               >
                 <RecentChanges />
                 { t('History') }
@@ -62,7 +62,7 @@ const PageAccessoriesModal = (props) => {
             </NavItem>
             <NavItem className={`nav-link ${props.activeTab === 'attachment' && 'active'}`}>
               <NavLink
-                onClick={() => { props.toggleTab('attachment') }}
+                onClick={() => { props.switchTab('attachment') }}
               >
                 <Attachment />
                 { t('attachment_data') }
@@ -91,7 +91,7 @@ PageAccessoriesModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
   activeTab: PropTypes.string.isRequired,
-  toggleTab: PropTypes.func,
+  switchTab: PropTypes.func,
 };
 
 export default withTranslation()(PageAccessoriesModalWrapper);
