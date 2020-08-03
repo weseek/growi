@@ -31,7 +31,7 @@ const PageManagement = (props) => {
     setIsPageRenameModalShown(false);
   }
 
-  async function openPageDuplicateModalHandler() {
+  function openPageDuplicateModalHandler() {
     setIsPageDuplicateModalShown(true);
   }
   function closePageDuplicateModalHandler() {
