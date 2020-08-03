@@ -86,13 +86,21 @@ module.exports = (crowi) => {
   router.get('/subordinated-list', accessTokenParser, loginRequired, async(req, res) => {
     const { path } = req.query;
 
-    const pageData = await Page.findByPath(path);
+    try {
+      const pageData = await Page.findByPath(path);
 
-    const result = await Page.findManageableListWithDescendants(pageData, req.user);
+      const result = await Page.findManageableListWithDescendants(pageData, req.user);
 
-    const resultPaths = result.map(element => element.path);
+      const resultPaths = result.map(element => element.path);
 
-    return res.apiv3({ resultPaths });
+      return res.apiv3({ resultPaths });
+    }
+    catch (err) {
+      res.code = 'unknown';
+      logger.error('Failed to find the path', err);
+      return res.apiv3Err(err, 500);
+    }
+
   });
   return router;
 };

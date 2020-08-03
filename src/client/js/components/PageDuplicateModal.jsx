@@ -61,7 +61,7 @@ const PageDuplicateModal = (props) => {
   }, [appContainer, path, t]);
 
   useEffect(() => {
-    if (props.isOpen === true) {
+    if (props.isOpen) {
       getSubordinatedList();
     }
   }, [props.isOpen, getSubordinatedList]);
