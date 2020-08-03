@@ -108,19 +108,6 @@ module.exports = (crowi) => {
   router.get('/:userId', /* accessTokenParser, loginRequired, apiV3FormValidator, */ async(req, res) => {
     const { userId } = req.params;
     const { limit, offset } = req.query;
-    /* try {
-      const bookmarks = await Bookmark
-        .find({ user: userId })
-        .populate({ path: 'page', model: 'Page' });
-      const pageList = bookmarks.map((bookmark) => {
-        return bookmark.page;
-      });
-      return res.apiv3({ pageList });
-    }
-    catch (err) {
-      logger.error('get-bookmark-failed', err);
-      return res.apiv3Err(err, 500);
-    } */
     try {
       const paginationResult = await Bookmark.paginate(
         {
