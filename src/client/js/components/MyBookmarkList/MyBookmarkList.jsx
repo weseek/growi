@@ -33,8 +33,8 @@ class MyBookmarkList extends React.Component {
     this.getMyBookmarkList(1);
   }
 
-  async handlePage(selectedPage) {
-    await this.getMyBookmarkList(selectedPage);
+  async handlePage(selectPageNumber) {
+    await this.getMyBookmarkList(selectPageNumber);
   }
 
   async getMyBookmarkList(selectPageNumber) {
@@ -48,9 +48,9 @@ class MyBookmarkList extends React.Component {
 
     try {
       const { data } = await this.props.appContainer.apiv3.get(`/bookmarks/${userId}`, params);
-      /* if (data.paginateResult == null) {
+      if (data.paginationResult == null) {
         throw new Error('data must conclude \'paginateResult\' property.');
-      } */
+      }
       const {
         docs: pages, totalDocs: totalPages, limit: pagingLimit, page: activePage,
       } = data.paginationResult;
@@ -73,21 +73,20 @@ class MyBookmarkList extends React.Component {
    * @param {any} pages Array of pages Model Obj
    *
    */
-  generatePageList() {
-    return this.state.pages.map(page => (
-      <li key={`my-bookmarks-list:list-view:${page._id}`}>
-        <Page page={page} />
+  generatePageList(pages) {
+    return pages.map(page => (
+      <li key={`my-bookmarks:${page._id}`}>
+        <Page page={page.page} />
       </li>
     ));
   }
 
 
   render() {
-
     return (
       <div className="page-list-container-create">
         <ul className="page-list-ul page-list-ul-flat mb-3">
-          {this.generatePageList()}
+          {this.generatePageList(this.state.pages)}
         </ul>
         <PaginationWrapper
           activePage={this.state.activePage}
