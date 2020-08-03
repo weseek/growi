@@ -90,7 +90,7 @@ PageAccessoriesModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
   activeTab: PropTypes.string.isRequired,
-  switchTab: PropTypes.func,
+  switchTab: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(PageAccessoriesModalWrapper);
