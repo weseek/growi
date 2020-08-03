@@ -116,6 +116,7 @@ module.exports = (crowi) => {
    *        parameters:
    *          - name: userId
    *            in: path
+   *            required: true
    *            description: user id
    *            schema:
    *              type: string
