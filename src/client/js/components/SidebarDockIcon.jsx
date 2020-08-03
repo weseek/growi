@@ -6,7 +6,6 @@ const SidebarDockIcon = () => (
     width="18"
     height="18"
     viewBox="0 0 23 23"
-    className="sidebar-mode-icon"
   >
     <rect className="icon-collision" width="23" height="23" fillOpacity="0" />
     <g className="sidebar-dock-icon">
