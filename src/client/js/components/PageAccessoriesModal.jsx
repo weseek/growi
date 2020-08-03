@@ -37,7 +37,7 @@ const PageAccessoriesModal = (props) => {
           <Nav className="nav-title border-bottom">
             <NavItem className={`nav-link ${props.activeTab === 'pageList' && 'active'}`}>
               <NavLink
-                onClick={() => { props.switchTab('pageList') }}
+                onClick={() => { props.onSwitch('pageList') }}
               >
                 <PageList />
                 { t('page_list') }
@@ -45,7 +45,7 @@ const PageAccessoriesModal = (props) => {
             </NavItem>
             <NavItem className={`nav-link ${props.activeTab === 'timeLine' && 'active'}`}>
               <NavLink
-                onClick={() => { props.switchTab('timeLine') }}
+                onClick={() => { props.onSwitch('timeLine') }}
               >
                 <TimeLine />
                 { t('Timeline View') }
@@ -53,7 +53,7 @@ const PageAccessoriesModal = (props) => {
             </NavItem>
             <NavItem className={`nav-link ${props.activeTab === 'recentChanges' && 'active'}`}>
               <NavLink
-                onClick={() => { props.switchTab('recentChanges') }}
+                onClick={() => { props.onSwitch('recentChanges') }}
               >
                 <RecentChanges />
                 { t('History') }
@@ -61,7 +61,7 @@ const PageAccessoriesModal = (props) => {
             </NavItem>
             <NavItem className={`nav-link ${props.activeTab === 'attachment' && 'active'}`}>
               <NavLink
-                onClick={() => { props.switchTab('attachment') }}
+                onClick={() => { props.onSwitch('attachment') }}
               >
                 <Attachment />
                 { t('attachment_data') }

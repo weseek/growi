@@ -43,7 +43,7 @@ const TopOfTableContents = (props) => {
           isOpen={isPageAccessoriesModalShown}
           onClose={closePageAccessoriesModal}
           activeTab={activeTab}
-          switchTab={switchActiveTab}
+          onSwitch={switchActiveTab}
         />
       </>
     );
