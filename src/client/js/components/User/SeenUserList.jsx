@@ -11,22 +11,32 @@ import FootstampIcon from '../FootstampIcon';
 
 class SeenUserList extends React.Component {
 
+  userListContent() {
+    const { pageContainer } = this.props;
+    return (
+      <div className="px-2 text-right user-list-content text-truncate text-muted">
+        <UserPictureList users={pageContainer.state.seenUsers} />
+      </div>
+    );
+  }
+
+
   render() {
     const { pageContainer } = this.props;
     return (
-      <button type="button" className="btn btn-seen-user-list border-0 px-1 py-0" data-container="body" data-toggle="popover" data-placement="bottom" data-html="true" data-content_div_id="seen-user-content">
+      <button
+        type="button"
+        className="btn btn-seen-user-list border-0 px-1 py-0"
+        data-container="body"
+        data-toggle="popover"
+        data-placement="bottom"
+        data-content={this.userListContent}
+      >
         <span className="mr-2 svg footstamp-icon"><FootstampIcon /></span>
         <span className="seen-user-count">{pageContainer.state.countOfSeenUsers}</span>
       </button>
+
     );
-
-  }
-
-  render() {
-    const { user-list-content } = ;
-      <div id="seen-user-content" className="hide px-2 text-right user-list-content text-truncate text-muted">
-        <UserPictureList users={pageContainer.state.seenUsers} />
-      </div>
   }
 
 }
