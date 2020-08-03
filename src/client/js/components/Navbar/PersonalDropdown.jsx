@@ -22,6 +22,8 @@ import UserPicture from '../User/UserPicture';
 
 import SidebarDrawerIcon from '../SidebarDrawerIcon';
 import SidebarDockIcon from '../SidebarDockIcon';
+import DarkModeIcon from '../DarkModeIcon';
+import LightModeIcon from '../LightModeIcon';
 
 
 const PersonalDropdown = (props) => {
