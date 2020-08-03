@@ -672,6 +672,7 @@ module.exports = function(crowi, app) {
    * @apiParam {String} grant
    * @apiParam {Array} pageTags
    */
+  // TODO If everything that depends on this route, delete it too
   api.create = async function(req, res) {
     const body = req.body.body || null;
     let pagePath = req.body.path || null;
