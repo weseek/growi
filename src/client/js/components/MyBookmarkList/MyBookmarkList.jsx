@@ -46,16 +46,16 @@ class MyBookmarkList extends React.Component {
     const params = { limit, offset };
 
     try {
-      const response = await this.props.appContainer.apiv3.get(`/bookmarks/${userId}`, params);
-      const pageList = response.data.pageList;
-      const totalPages = pageList.length;
-      const activePage = selectPageNumber;
-      const currentPages = pageList.slice((activePage - 1) * limit, activePage * limit);
+      const { data } = await this.props.appContainer.apiv3.get(`/bookmarks/${userId}`, params);
+      if (data.paginateResult == null) {
+        throw new Error('data must conclude \'paginateResult\' property.');
+      }
+      const { docs: pages, totalDocs: totalPages, limit: pagingLimit } = data.paginateResult;
       this.setState({
-        pages: currentPages,
-        activePage,
+        pages,
         totalPages,
-        pagingLimit: limit,
+        pagingLimit,
+        activePage: selectPageNumber,
       });
     }
     catch (error) {
