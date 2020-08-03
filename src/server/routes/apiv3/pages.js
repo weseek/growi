@@ -24,9 +24,8 @@ module.exports = (crowi) => {
   const PageTagRelation = crowi.model('PageTagRelation');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
 
-  const pageService = crowi.pageService;
   const globalNotificationService = crowi.getGlobalNotificationService();
-  const { slackNotificationService } = crowi;
+  const { pageService, slackNotificationService } = crowi;
 
   // user notification
   // TODO GW-3387 create '/service/user-notification' module
