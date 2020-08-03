@@ -25,38 +25,8 @@ module.exports = (crowi) => {
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
 
   const globalNotificationService = crowi.getGlobalNotificationService();
-  const { pageService, slackNotificationService } = crowi;
-
-  // user notification
-  // TODO GW-3387 create '/service/user-notification' module
-  /**
-   *
-   * @param {Page} page
-   * @param {User} user
-   * @param {string} slackChannelsStr comma separated string. e.g. 'general,channel1,channel2'
-   * @param {boolean} updateOrCreate
-   * @param {string} previousRevision
-   */
-  async function notifyToSlackByUser(page, user, slackChannelsStr, updateOrCreate, previousRevision) {
-    await page.updateSlackChannel(slackChannelsStr)
-      .catch((err) => {
-        logger.error('Error occured in updating slack channels: ', err);
-      });
-
-
-    if (slackNotificationService.hasSlackConfig()) {
-      const slackChannels = slackChannelsStr != null ? slackChannelsStr.split(',') : [null];
-
-      const promises = slackChannels.map((chan) => {
-        return crowi.slack.postPage(page, user, chan, updateOrCreate, previousRevision);
-      });
-
-      Promise.all(promises)
-        .catch((err) => {
-          logger.error('Error occured in sending slack notification: ', err);
-        });
-    }
-  }
+  const userNotificationService = crowi.getUserNotificationService();
+  const { pageService } = crowi;
 
   // TODO write swagger(GW-3384) and validation(GW-3385)
   router.post('/', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
@@ -106,7 +76,7 @@ module.exports = (crowi) => {
 
     // user notification
     if (isSlackEnabled) {
-      await notifyToSlackByUser(createdPage, req.user, slackChannels, 'create', false);
+      await userNotificationService.fire(createdPage, req.user, slackChannels, 'create', false);
     }
 
     return res.apiv3(result);
