@@ -77,7 +77,7 @@ module.exports = (crowi) => {
     }
 
     // user notification
-    if (isSlackEnabled) {
+    if (isSlackEnabled && userNotificationService != null) {
       await userNotificationService.fire(createdPage, req.user, slackChannels, 'create', false);
     }
 
