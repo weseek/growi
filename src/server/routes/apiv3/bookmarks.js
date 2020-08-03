@@ -105,9 +105,10 @@ module.exports = (crowi) => {
 
   // select page from bookmark where userid = userid
 
-  router.get('/:userId', accessTokenParser, loginRequired, apiV3FormValidator, async(req, res) => {
+  router.get('/:userId', /* accessTokenParser, loginRequired, apiV3FormValidator, */ async(req, res) => {
     const { userId } = req.params;
-    try {
+    const { limit, offset } = req.query;
+    /* try {
       const bookmarks = await Bookmark
         .find({ user: userId })
         .populate({ path: 'page', model: 'Page' });
