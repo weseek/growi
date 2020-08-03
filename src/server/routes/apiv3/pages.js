@@ -67,11 +67,13 @@ module.exports = (crowi) => {
     }
 
     // global notification
-    try {
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, req.user);
-    }
-    catch (err) {
-      logger.error('Create notification failed', err);
+    if(globalNotificationService != null){
+      try {
+        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, req.user);
+      }
+      catch (err) {
+        logger.error('Create notification failed', err);
+      }
     }
 
     // user notification
