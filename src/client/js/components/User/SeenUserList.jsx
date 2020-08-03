@@ -14,7 +14,7 @@ class SeenUserList extends React.Component {
     return (
       <div className="user-list-content text-truncate text-muted text-right">
         <span className="text-danger">
-          <span className="seen-user-count">{pageContainer.state.sumOfSeenUsers}</span>
+          <span className="seen-user-count">{pageContainer.state.countOfSeenUsers}</span>
           <i className="fa fa-fw fa-paw"></i>
         </span>
         <span className="mr-1">

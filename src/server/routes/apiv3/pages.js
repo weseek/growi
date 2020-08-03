@@ -13,6 +13,7 @@ const router = express.Router();
  *    name: Pages
  */
 module.exports = (crowi) => {
+  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
@@ -78,6 +79,21 @@ module.exports = (crowi) => {
     catch (err) {
       res.code = 'unknown';
       logger.error('Failed to delete trash pages', err);
+      return res.apiv3Err(err, 500);
+    }
+  });
+
+  router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
+
+    // path は一時的なものです。クライアントを実装した際に渡します。GW-3297 or 3298
+    const path = '/hoge';
+
+    try {
+      const result = await Page.findListWithDescendants(path, req.user);
+      return res.apiv3(result);
+    }
+    catch (err) {
+      logger.error('Failed to get Descendants Pages', err);
       return res.apiv3Err(err, 500);
     }
   });
