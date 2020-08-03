@@ -1,10 +1,17 @@
 # CHANGES
 
-## v4.0.10-RC
+
+## v4.0.11-RC
+
+* Fix: Fab on search result page does not displayed
+* Fix: Adjust margin/padding for search result page
+* Fix: PageAlert broken
+    * Introduced by v4.0.9
+
+## v4.0.10
 
 * Improvement: Adjust ToC height
 * Fix: Fail to rename/delete a page set as "Anyone with the link"
-
 
 ## v4.0.9
 
