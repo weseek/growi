@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "4.0.11-RC",
+  "version": "4.1.0-RC",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -103,7 +103,7 @@
     "express-validator": "^6.1.1",
     "express-webpack-assets": "^0.1.0",
     "graceful-fs": "^4.1.11",
-    "growi-commons": "^4.0.8",
+    "growi-commons": "^5.0.3",
     "helmet": "^3.13.0",
     "i18next": "^19.0.0",
     "i18next-express-middleware": "^1.4.1",
@@ -137,10 +137,11 @@
     "passport-twitter": "^1.0.4",
     "react-card-flip": "^1.0.10",
     "react-image-crop": "^8.3.0",
+    "reconnecting-websocket": "^4.4.0",
     "redis": "^3.0.2",
     "rimraf": "^3.0.0",
     "slack-node": "^0.1.8",
-    "socket.io": "^2.0.3",
+    "socket.io": "^2.3.0",
     "stream-to-promise": "^2.2.0",
     "string-width": "^4.1.0",
     "swig-templates": "^2.0.2",
@@ -148,6 +149,7 @@
     "unzipper": "^0.10.5",
     "url-join": "^4.0.0",
     "validator": "^12.0.0",
+    "ws": "^7.3.1",
     "xss": "^1.0.6"
   },
   "devDependencies": {
@@ -202,7 +204,7 @@
     "lodash-webpack-plugin": "^0.11.5",
     "markdown-it": "^10.0.0",
     "markdown-it-blockdiag": "^1.1.1",
-    "markdown-it-drawio-viewer": "^1.2.0",
+    "markdown-it-drawio-viewer": "^1.3.0",
     "markdown-it-emoji": "^1.4.0",
     "markdown-it-footnote": "^3.0.1",
     "markdown-it-mathjax": "^2.0.0",
@@ -239,7 +241,7 @@
     "rs-i18n": "^0.0.9",
     "sass-loader": "^8.0.0",
     "simple-load-script": "^1.0.2",
-    "socket.io-client": "^2.0.3",
+    "socket.io-client": "^2.3.0",
     "sticky-events": "^3.1.3",
     "style-loader": "^1.0.0",
     "styled-components": "^5.0.1",
@@ -265,7 +267,7 @@
     "debug": "src/lib/service/logger/alias-for-debug"
   },
   "engines": {
-    "node": ">=10.17.0 <13",
+    "node": "^12 || ^14",
     "npm": ">=6.11.3 <7",
     "yarn": ">=1.19.1 <2"
   }

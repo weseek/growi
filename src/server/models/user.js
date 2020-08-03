@@ -21,8 +21,6 @@ module.exports = function(crowi) {
   const STATUS_INVITED = 5;
   const USER_PUBLIC_FIELDS = '_id image isEmailPublished isGravatarEnabled googleId name username email introduction'
   + 'status lang createdAt lastLoginAt admin imageUrlCached';
-  /* eslint-disable no-unused-vars */
-  const IMAGE_POPULATION = { path: 'imageAttachment', select: 'filePathProxied' };
 
   const PAGE_ITEMS = 50;
 
@@ -606,8 +604,8 @@ module.exports = function(crowi) {
   };
 
   userSchema.statics.sendEmailbyUserList = async function(userList) {
-    const mailer = crowi.getMailer();
-    const appTitle = crowi.appService.getAppTitle();
+    const { appService, mailService } = crowi;
+    const appTitle = appService.getAppTitle();
 
     await Promise.all(userList.map(async(user) => {
       if (user.password == null) {
@@ -615,7 +613,7 @@ module.exports = function(crowi) {
       }
 
       try {
-        return mailer.send({
+        return mailService.send({
           to: user.email,
           subject: `Invitation to ${appTitle}`,
           template: path.join(crowi.localeDir, 'en_US/admin/userInvitation.txt'),
@@ -750,7 +748,6 @@ module.exports = function(crowi) {
   userSchema.statics.STATUS_DELETED = STATUS_DELETED;
   userSchema.statics.STATUS_INVITED = STATUS_INVITED;
   userSchema.statics.USER_PUBLIC_FIELDS = USER_PUBLIC_FIELDS;
-  userSchema.statics.IMAGE_POPULATION = IMAGE_POPULATION;
   userSchema.statics.PAGE_ITEMS = PAGE_ITEMS;
 
   return mongoose.model('User', userSchema);

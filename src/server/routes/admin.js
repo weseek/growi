@@ -19,8 +19,6 @@ module.exports = function(crowi, app) {
   const ApiResponse = require('../util/apiResponse');
   const importer = require('../util/importer')(crowi);
 
-  const searchEvent = crowi.event('search');
-
   const MAX_PAGE_LIST = 50;
   const actions = {};
 
@@ -83,17 +81,6 @@ module.exports = function(crowi, app) {
 
     return pager;
   }
-
-  // setup websocket event for rebuild index
-  searchEvent.on('addPageProgress', (total, current, skip) => {
-    crowi.getIo().sockets.emit('admin:addPageProgress', { total, current, skip });
-  });
-  searchEvent.on('finishAddPage', (total, current, skip) => {
-    crowi.getIo().sockets.emit('admin:finishAddPage', { total, current, skip });
-  });
-  searchEvent.on('rebuildingFailed', (error) => {
-    crowi.getIo().sockets.emit('admin:rebuildingFailed', { error: error.message });
-  });
 
   actions.index = function(req, res) {
     return res.render('admin/index');
