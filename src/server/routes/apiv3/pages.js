@@ -67,7 +67,7 @@ module.exports = (crowi) => {
     }
 
     // global notification
-    if(globalNotificationService != null){
+    if (globalNotificationService != null) {
       try {
         await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, req.user);
       }
