@@ -26,21 +26,54 @@ module.exports = (crowi) => {
 
   const pageService = crowi.pageService;
   const globalNotificationService = crowi.getGlobalNotificationService();
+  const { slackNotificationService } = crowi;
+
+  // user notification
+  // TODO GW-3387 create '/service/user-notification' module
+  /**
+   *
+   * @param {Page} page
+   * @param {User} user
+   * @param {string} slackChannelsStr comma separated string. e.g. 'general,channel1,channel2'
+   * @param {boolean} updateOrCreate
+   * @param {string} previousRevision
+   */
+  async function notifyToSlackByUser(page, user, slackChannelsStr, updateOrCreate, previousRevision) {
+    await page.updateSlackChannel(slackChannelsStr)
+      .catch((err) => {
+        logger.error('Error occured in updating slack channels: ', err);
+      });
+
+
+    if (slackNotificationService.hasSlackConfig()) {
+      const slackChannels = slackChannelsStr != null ? slackChannelsStr.split(',') : [null];
+
+      const promises = slackChannels.map((chan) => {
+        return crowi.slack.postPage(page, user, chan, updateOrCreate, previousRevision);
+      });
+
+      Promise.all(promises)
+        .catch((err) => {
+          logger.error('Error occured in sending slack notification: ', err);
+        });
+    }
+  }
 
   // TODO write swagger(GW-3384) and validation(GW-3385)
   router.post('/', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
     const {
       body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, socketClientId, pageTags,
     } = req.body;
-    let pagePath = req.body.path;
+    let { path } = req.body;
 
     // check whether path starts slash
-    pagePath = pathUtils.addHeadingSlash(pagePath);
+    path = pathUtils.addHeadingSlash(path);
 
     // check page existence
-    const isExist = await Page.count({ path: pagePath }) > 0;
+    const isExist = await Page.count({ path }) > 0;
     if (isExist) {
-      return res.apiv3Err(err, 409);
+      res.code = 'page_exists';
+      return res.apiv3Err('Page exists', 409);
     }
 
     const options = { socketClientId };
@@ -49,7 +82,7 @@ module.exports = (crowi) => {
       options.grantUserGroupId = grantUserGroupId;
     }
 
-    const createdPage = await Page.create(pagePath, body, req.user, options);
+    const createdPage = await Page.create(path, body, req.user, options);
 
     let savedTags;
     if (pageTags != null) {
