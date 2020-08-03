@@ -3,6 +3,7 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
+const { body } = require('express-validator');
 const pathUtils = require('growi-commons').pathUtils;
 
 
@@ -14,13 +15,12 @@ const router = express.Router();
  *    name: Pages
  */
 module.exports = (crowi) => {
-  const pathUtils = require('growi-commons').pathUtils;
-
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
+  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const Page = crowi.model('Page');
   const PageTagRelation = crowi.model('PageTagRelation');
@@ -28,6 +28,13 @@ module.exports = (crowi) => {
 
   const globalNotificationService = crowi.getGlobalNotificationService();
   const { pageService, slackNotificationService } = crowi;
+
+  const validator = {
+    duplicate: [
+      body('pageId').isString(),
+      body('pageNameInput').isString(),
+    ],
+  };
 
   // user notification
   // TODO GW-3387 create '/service/user-notification' module
@@ -177,7 +184,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/duplicate', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
+  router.post('/duplicate', accessTokenParser, loginRequiredStrictly, csrf, validator.duplicate, apiV3FormValidator, async(req, res) => {
     const pageId = req.body.page_id;
     let newPagePath = pathUtils.normalizePath(req.body.new_path);
 
@@ -186,8 +193,6 @@ module.exports = (crowi) => {
     if (page == null) {
       res.code = 'Page is not found';
       logger.error('Failed to find the pages');
-      // return res.apiv3Err();
-      // return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
     }
 
     // check whether path starts slash
@@ -203,8 +208,24 @@ module.exports = (crowi) => {
     req.body.grantUserGroupId = page.grantedGroup;
     req.body.pageTags = originTags;
 
-    return res.apiv3({});
+    const createdPage = await Page.create(req.body.path, req.body, req.user);
 
+    let savedTags;
+    if (req.pageTags != null) {
+      await PageTagRelation.updatePageTags(createdPage.id, req.pageTags);
+      savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
+    }
+
+    const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
+
+    // global notification
+    try {
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, req.user);
+    }
+    catch (err) {
+      logger.error('Create notification failed', err);
+    }
+    return res.apiv3(result);
   });
 
 
