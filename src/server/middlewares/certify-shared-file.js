@@ -1,4 +1,5 @@
 const loggerFactory = require('@alias/logger');
+const url = require('url');
 
 const logger = loggerFactory('growi:middleware:certify-shared-fire');
 
@@ -6,8 +7,9 @@ module.exports = (crowi) => {
 
   return async(req, res, next) => {
     const { referer } = req.headers;
+    const {path} = url.parse(referer)
 
-    if (!referer.match(/share/)) {
+    if (!path.startsWith('/share/')) {
       next();
     }
 
