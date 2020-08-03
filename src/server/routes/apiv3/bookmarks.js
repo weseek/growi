@@ -120,6 +120,26 @@ module.exports = (crowi) => {
     catch (err) {
       logger.error('get-bookmark-failed', err);
       return res.apiv3Err(err, 500);
+    } */
+    try {
+      const paginationResult = await Bookmark.paginate(
+        {
+          user: { $in: userId },
+        },
+        {
+          populate: {
+            path: 'page',
+            model: 'Page',
+          },
+          limit,
+          offset,
+        },
+      );
+      return res.apiv3({ paginationResult });
+    }
+    catch (err) {
+      logger.error('get-bookmark-failed', err);
+      return res.apiv3Err(err, 500);
     }
   });
 
