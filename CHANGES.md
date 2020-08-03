@@ -25,8 +25,6 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/41x.html>
 * Fix: DrawioModal cuts without beginning/ending line
 * Fix: New settings of SMTP and AWS SES are not reflected when server is running
 * Fix: Sidebar layout broken when using Kibela layout
-* Fix: PageAlert broken
-    * Introduced by v4.0.9
 * Support: Support Node.js v14
 * Support: Update libs
     * mathjax
