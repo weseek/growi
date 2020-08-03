@@ -13,6 +13,7 @@ const router = express.Router();
  *    name: Pages
  */
 module.exports = (crowi) => {
+  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
@@ -82,5 +83,24 @@ module.exports = (crowi) => {
     }
   });
 
+  router.get('/subordinated-list', accessTokenParser, loginRequired, async(req, res) => {
+    const { path } = req.query;
+
+    try {
+      const pageData = await Page.findByPath(path);
+
+      const result = await Page.findManageableListWithDescendants(pageData, req.user);
+
+      const resultPaths = result.map(element => element.path);
+
+      return res.apiv3({ resultPaths });
+    }
+    catch (err) {
+      res.code = 'unknown';
+      logger.error('Failed to find the path', err);
+      return res.apiv3Err(err, 500);
+    }
+
+  });
   return router;
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -25,10 +25,10 @@ const PageDuplicateModal = (props) => {
   const [pageNameInput, setPageNameInput] = useState(path);
   const [errorCode, setErrorCode] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [subordinatedPaths, setSubordinatedPaths] = useState([]);
+  const [getSubordinatedError, setGetSuborinatedError] = useState(null);
 
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
-
-  const duplicatedNewPaths = ['/hoge', '/hoge/hoge', '/test/test/test'];
 
   /**
    * change pageNameInput for PagePathAutoComplete
@@ -49,6 +49,22 @@ const PageDuplicateModal = (props) => {
   function changeIsDuplicateRecursivelyHandler() {
     setIsDuplicateRecursively(!isDuplicateRecursively);
   }
+
+  const getSubordinatedList = useCallback(async() => {
+    try {
+      const res = await appContainer.apiv3Get('/pages/subordinated-list', { path });
+      setSubordinatedPaths(res.data.resultPaths);
+    }
+    catch (err) {
+      setGetSuborinatedError(t('modal_duplicate.label.Fail to get subordinated pages'));
+    }
+  }, [appContainer, path, t]);
+
+  useEffect(() => {
+    if (props.isOpen) {
+      getSubordinatedList();
+    }
+  }, [props.isOpen, getSubordinatedList]);
 
   async function duplicate() {
     try {
@@ -74,9 +90,8 @@ const PageDuplicateModal = (props) => {
         { t('modal_duplicate.label.Duplicate page') }
       </ModalHeader>
       <ModalBody>
-        <div className="form-group">
-          <label>{ t('modal_duplicate.label.Current page name') }</label><br />
-          <code>{ path }</code>
+        <div className="form-group"><label>{t('modal_duplicate.label.Current page name')}</label><br />
+          <code>{path}</code>
         </div>
         <div className="form-group">
           <label htmlFor="duplicatePageName">{ t('modal_duplicate.label.New page name') }</label><br />
@@ -120,9 +135,10 @@ const PageDuplicateModal = (props) => {
           </label>
           <div>
             <ul>
-              {isDuplicateRecursively && duplicatedNewPaths.map(duplicatedNewPath => <li>{duplicatedNewPath}</li>)}
+              {isDuplicateRecursively && subordinatedPaths.map(duplicatedNewPath => <li key={duplicatedNewPath}>{duplicatedNewPath}</li>)}
             </ul>
           </div>
+          <div> {getSubordinatedError} </div>
         </div>
       </ModalBody>
       <ModalFooter>
@@ -130,7 +146,6 @@ const PageDuplicateModal = (props) => {
         <button type="button" className="btn btn-primary" onClick={duplicate}>Duplicate page</button>
       </ModalFooter>
     </Modal>
-
   );
 };
 

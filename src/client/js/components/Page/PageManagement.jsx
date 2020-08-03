@@ -18,7 +18,6 @@ const PageManagement = (props) => {
 
   const { currentUser } = appContainer;
   const isTopPagePath = isTopPage(path);
-
   const [isPageRenameModalShown, setIsPageRenameModalShown] = useState(false);
   const [isPageDuplicateModalShown, setIsPageDuplicateModalShown] = useState(false);
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
@@ -35,7 +34,6 @@ const PageManagement = (props) => {
   function openPageDuplicateModalHandler() {
     setIsPageDuplicateModalShown(true);
   }
-
   function closePageDuplicateModalHandler() {
     setIsPageDuplicateModalShown(false);
   }
