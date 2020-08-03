@@ -46,7 +46,7 @@ const logger = loggerFactory('growi:cli:app');
 appContainer.initContents();
 
 const { i18n } = appContainer;
-const websocketContainer = appContainer.getContainer('WebsocketContainer');
+const socketIoContainer = appContainer.getContainer('SocketIoContainer');
 
 // create unstated container instance
 const navigationContainer = new NavigationContainer(appContainer);
@@ -56,7 +56,7 @@ const editorContainer = new EditorContainer(appContainer, defaultEditorOptions, 
 const tagContainer = new TagContainer(appContainer);
 const personalContainer = new PersonalContainer(appContainer);
 const injectableContainers = [
-  appContainer, websocketContainer, navigationContainer, pageContainer, commentContainer, editorContainer, tagContainer, personalContainer,
+  appContainer, socketIoContainer, navigationContainer, pageContainer, commentContainer, editorContainer, tagContainer, personalContainer,
 ];
 
 logger.info('unstated containers have been initialized');

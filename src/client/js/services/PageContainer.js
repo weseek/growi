@@ -316,11 +316,11 @@ export default class PageContainer extends Container {
   }
 
   async createPage(pagePath, markdown, tmpParams) {
-    const websocketContainer = this.appContainer.getContainer('WebsocketContainer');
+    const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
 
     // clone
     const params = Object.assign(tmpParams, {
-      socketClientId: websocketContainer.getSocketClientId(),
+      socketClientId: socketIoContainer.getSocketClientId(),
       path: pagePath,
       body: markdown,
     });
@@ -333,11 +333,11 @@ export default class PageContainer extends Container {
   }
 
   async updatePage(pageId, revisionId, markdown, tmpParams) {
-    const websocketContainer = this.appContainer.getContainer('WebsocketContainer');
+    const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
 
     // clone
     const params = Object.assign(tmpParams, {
-      socketClientId: websocketContainer.getSocketClientId(),
+      socketClientId: socketIoContainer.getSocketClientId(),
       page_id: pageId,
       revision_id: revisionId,
       body: markdown,
@@ -351,7 +351,7 @@ export default class PageContainer extends Container {
   }
 
   deletePage(isRecursively, isCompletely) {
-    const websocketContainer = this.appContainer.getContainer('WebsocketContainer');
+    const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
 
     // control flag
     const completely = isCompletely ? true : null;
@@ -362,13 +362,13 @@ export default class PageContainer extends Container {
       completely,
       page_id: this.state.pageId,
       revision_id: this.state.revisionId,
-      socketClientId: websocketContainer.getSocketClientId(),
+      socketClientId: socketIoContainer.getSocketClientId(),
     });
 
   }
 
   revertRemove(isRecursively) {
-    const websocketContainer = this.appContainer.getContainer('WebsocketContainer');
+    const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
 
     // control flag
     const recursively = isRecursively ? true : null;
@@ -376,12 +376,12 @@ export default class PageContainer extends Container {
     return this.appContainer.apiPost('/pages.revertRemove', {
       recursively,
       page_id: this.state.pageId,
-      socketClientId: websocketContainer.getSocketClientId(),
+      socketClientId: socketIoContainer.getSocketClientId(),
     });
   }
 
   rename(pageNameInput, isRenameRecursively, isRenameRedirect, isRenameMetadata) {
-    const websocketContainer = this.appContainer.getContainer('WebsocketContainer');
+    const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
     const isRecursively = isRenameRecursively ? true : null;
     const isRedirect = isRenameRedirect ? true : null;
     const isRemain = isRenameMetadata ? true : null;
@@ -393,7 +393,7 @@ export default class PageContainer extends Container {
       new_path: pageNameInput,
       create_redirect: isRedirect,
       remain_metadata: isRemain,
-      socketClientId: websocketContainer.getSocketClientId(),
+      socketClientId: socketIoContainer.getSocketClientId(),
     });
   }
 
@@ -422,12 +422,12 @@ export default class PageContainer extends Container {
 
   addWebSocketEventHandlers() {
     const pageContainer = this;
-    const websocketContainer = this.appContainer.getContainer('WebsocketContainer');
-    const socket = websocketContainer.getWebSocket();
+    const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
+    const socket = socketIoContainer.getSocket();
 
     socket.on('page:create', (data) => {
       // skip if triggered myself
-      if (data.socketClientId != null && data.socketClientId === websocketContainer.getSocketClientId()) {
+      if (data.socketClientId != null && data.socketClientId === socketIoContainer.getSocketClientId()) {
         return;
       }
 
@@ -441,7 +441,7 @@ export default class PageContainer extends Container {
 
     socket.on('page:update', (data) => {
       // skip if triggered myself
-      if (data.socketClientId != null && data.socketClientId === websocketContainer.getSocketClientId()) {
+      if (data.socketClientId != null && data.socketClientId === socketIoContainer.getSocketClientId()) {
         return;
       }
 
@@ -462,7 +462,7 @@ export default class PageContainer extends Container {
 
     socket.on('page:delete', (data) => {
       // skip if triggered myself
-      if (data.socketClientId != null && data.socketClientId === websocketContainer.getSocketClientId()) {
+      if (data.socketClientId != null && data.socketClientId === socketIoContainer.getSocketClientId()) {
         return;
       }
 
@@ -476,7 +476,7 @@ export default class PageContainer extends Container {
 
     socket.on('page:editingWithHackmd', (data) => {
       // skip if triggered myself
-      if (data.socketClientId != null && data.socketClientId === websocketContainer.getSocketClientId()) {
+      if (data.socketClientId != null && data.socketClientId === socketIoContainer.getSocketClientId()) {
         return;
       }
 

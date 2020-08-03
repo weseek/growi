@@ -131,27 +131,27 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.BOOLEAN,
     default: false,
   },
-  CONFIG_PUBSUB_SERVER_TYPE: {
+  S2SMSG_PUBSUB_SERVER_TYPE: {
     ns:      'crowi',
-    key:     'configPubsub:serverType',
+    key:     's2sMessagingPubsub:serverType',
     type:    TYPES.STRING,
     default: null,
   },
-  CONFIG_PUBSUB_NCHAN_PUBLISH_PATH: {
+  S2SMSG_PUBSUB_NCHAN_PUBLISH_PATH: {
     ns:      'crowi',
-    key:     'configPubsub:nchan:publishPath',
+    key:     's2sMessagingPubsub:nchan:publishPath',
     type:    TYPES.STRING,
     default: '/pubsub',
   },
-  CONFIG_PUBSUB_NCHAN_SUBSCRIBE_PATH: {
+  S2SMSG_PUBSUB_NCHAN_SUBSCRIBE_PATH: {
     ns:      'crowi',
-    key:     'configPubsub:nchan:subscribePath',
+    key:     's2sMessagingPubsub:nchan:subscribePath',
     type:    TYPES.STRING,
     default: '/pubsub',
   },
-  CONFIG_PUBSUB_NCHAN_CHANNEL_ID: {
+  S2SMSG_PUBSUB_NCHAN_CHANNEL_ID: {
     ns:      'crowi',
-    key:     'configPubsub:nchan:channelId',
+    key:     's2sMessagingPubsub:nchan:channelId',
     type:    TYPES.STRING,
     default: null,
   },
