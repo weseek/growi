@@ -79,6 +79,13 @@ pre:not(.hljs):not(.CodeMirror-line) {
   color: $color-global;
 }
 
+.grw-personal-dropdown {
+  .sidebar-dock-icon,
+  .sidebar-drawer-icon {
+    fill: $color-global;
+  }
+}
+
 .dropdown-item {
   color: $color-global;
   &.active,
