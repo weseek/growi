@@ -30,7 +30,9 @@ class SeenUserList extends React.Component {
         data-container="body"
         data-toggle="popover"
         data-placement="bottom"
-        data-content={this.userListContent}
+        data-html="true"
+        data-content="ああああ05ああああ10ああああ15ああああ20"
+        // {this.userListContent}
       >
         <span className="mr-2 svg footstamp-icon"><FootstampIcon /></span>
         <span className="seen-user-count">{pageContainer.state.countOfSeenUsers}</span>
