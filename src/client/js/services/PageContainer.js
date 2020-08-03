@@ -323,11 +323,10 @@ export default class PageContainer extends Container {
       body: markdown,
     });
 
-    const res = await this.appContainer.apiPost('/pages.create', params);
-    if (!res.ok) {
-      throw new Error(res.error);
-    }
-    return { page: res.page, tags: res.tags };
+    const res = await this.appContainer.apiv3Post('/pages/', params);
+    const { page, tags } = res.data;
+
+    return { page, tags };
   }
 
   async updatePage(pageId, revisionId, markdown, tmpParams) {

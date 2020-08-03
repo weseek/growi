@@ -64,10 +64,11 @@ class AppService extends S2sMessageHandlable {
       catch (e) {
         logger.error('Failed to publish post installation message with S2sMessagingService: ', e.message);
       }
+
+      // remove message handler
+      s2sMessagingService.removeMessageHandler(this);
     }
 
-    // remove message handler
-    s2sMessagingService.removeMessageHandler(this);
   }
 
   getAppTitle() {
