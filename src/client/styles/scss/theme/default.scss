@@ -20,8 +20,8 @@ html[light] {
 
   // Background colors
   $bgcolor-global: white;
-  $bgcolor-inline-code: lighten($light, 4%); //optional
-  $bgcolor-card: lighten($light, 7%);
+  $bgcolor-inline-code: $gray-100; //optional
+  $bgcolor-card: $gray-50;
 
   // Font colors
   $color-global: #112744;
@@ -31,8 +31,8 @@ html[light] {
   $color-link-hover: lighten($color-link, 20%);
   $color-link-wiki: $color-link;
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
-  $color-link-nabvar: darken($light, 30%);
-  $color-inline-code: darken($danger, 15%); // optional
+  $color-link-nabvar: $gray-500;
+  $color-inline-code: darken($red, 15%); // optional
 
   // List Group colors
   // $color-list: $color-global; // optional
@@ -51,7 +51,7 @@ html[light] {
   // $bgcolor-table-hover: #; // optional
 
   // Navbar
-  $bgcolor-navbar: darken($dark, 5%);
+  $bgcolor-navbar: $gray-900;
   $bgcolor-search-top-dropdown: $accent;
   $border-image-navbar: linear-gradient(to right, #36c9ff 0%, #36c9ff 33%, #7926ff 66%, #ff2eff 100%);
 
@@ -61,7 +61,7 @@ html[light] {
 
   // Sidebar
   $bgcolor-sidebar: $primary;
-  $bgcolor-sidebar-nav-item-active: rgba(#000000, 0.37); // optional
+  $bgcolor-sidebar-nav-item-active: rgba(black, 0.37); // optional
   $text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
   // Sidebar resize button
   $color-resize-button: $color-reversal;
@@ -70,9 +70,9 @@ html[light] {
   $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
   // Sidebar contents
   $color-sidebar-context: $color-global;
-  $bgcolor-sidebar-context: lighten($light, 4%);
+  $bgcolor-sidebar-context: $gray-100;
   // Sidebar list group
-  $bgcolor-sidebar-list-group: lighten($light, 7%); // optional
+  $bgcolor-sidebar-list-group: $gray-50; // optional
 
   // Subnavigation
   // $bgcolor-subnav: #fafafa; // optional
@@ -90,8 +90,8 @@ html[light] {
   $color-editor-icons: $color-global;
 
   // Border colors
-  $border-color-theme: darken($light, 10%);
-  $bordercolor-inline-code: darken($light, 20%); // optional
+  $border-color-theme: $gray-400;
+  $bordercolor-inline-code: $gray-400; // optional
 
   // Dropdown colors
   $bgcolor-dropdown-link-active: $growi-blue;
