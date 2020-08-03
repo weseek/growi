@@ -104,6 +104,44 @@ module.exports = (crowi) => {
   });
 
   // select page from bookmark where userid = userid
+  /**
+   * @swagger
+   *
+   *    /bookmarks/{userId}:
+   *      get:
+   *        tags: [Bookmarks]
+   *        summary: /bookmarks/{userId}
+   *        description: Get my bookmarked status
+   *        operationId: getMyBookmarkedStatus
+   *        parameters:
+   *          - name: userId
+   *            in: path
+   *            description: user id
+   *            schema:
+   *              type: string
+   *          - name: page
+   *            in: query
+   *            description: selected page number
+   *            schema:
+   *              type: number
+   *          - name: limit
+   *            in: query
+   *            description: page item limit
+   *            schema:
+   *              type: number
+   *          - name: offset
+   *            in: query
+   *            description: page item offset
+   *            schema:
+   *              type: number
+   *        responses:
+   *          200:
+   *            description: Succeeded to get my bookmarked status.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/Bookmark'
+   */
   validator.myBookmarkList = [
     query('page').isInt({ min: 1 }),
   ];
