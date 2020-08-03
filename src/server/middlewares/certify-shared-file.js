@@ -7,7 +7,7 @@ module.exports = (crowi) => {
 
   return async(req, res, next) => {
     const { referer } = req.headers;
-    const {path} = url.parse(referer)
+    const { path } = url.parse(referer);
 
     if (!path.startsWith('/share/')) {
       next();
