@@ -107,7 +107,7 @@ module.exports = (crowi) => {
 
   router.get('/:userId', /* accessTokenParser, loginRequired, apiV3FormValidator, */ async(req, res) => {
     const { userId } = req.params;
-    const { limit, offset } = req.query;
+    const { page, limit, offset } = req.query;
     try {
       const paginationResult = await Bookmark.paginate(
         {
@@ -118,6 +118,7 @@ module.exports = (crowi) => {
             path: 'page',
             model: 'Page',
           },
+          page,
           limit,
           offset,
         },
