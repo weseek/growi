@@ -24,6 +24,8 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/41x.html>
 * Fix: PageAlert broken
     * Introduced by v4.0.9
 * Support: Support Node.js v14
+* Support: Update libs
+    * mathjax
 
 
 
