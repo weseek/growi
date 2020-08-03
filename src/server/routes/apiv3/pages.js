@@ -27,7 +27,7 @@ module.exports = (crowi) => {
   const pageService = crowi.pageService;
   const globalNotificationService = crowi.getGlobalNotificationService();
 
-  // TODO swagger and validation
+  // TODO write swagger(GW-3384) and validation(GW-3385)
   router.post('/', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
     const {
       body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, socketClientId, pageTags,
