@@ -19,9 +19,7 @@ const TopOfTableContents = (props) => {
   const [isPageAccessoriesModalShown, setIsPageAccessoriesModalShown] = useState(false);
   const [activeTab, setActiveTab] = useState('');
   // Prevent unnecessary rendering
-  const [activeComponents, setActiveComponents] = useState(new Set());
-  console.log(`activeTab is ${activeTab}`);
-  console.log(`activeComponents are ${activeComponents}`);
+  const [activeComponents, setActiveComponents] = useState(new Set(['']));
 
   function openPageAccessoriesModal(activeTab) {
     setIsPageAccessoriesModalShown(true);
@@ -31,7 +29,6 @@ const TopOfTableContents = (props) => {
   function switchActiveTab(clickedTab) {
     activeComponents.add(clickedTab);
     setActiveComponents(activeComponents);
-
     setActiveTab(clickedTab);
   }
 
