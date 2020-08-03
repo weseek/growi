@@ -27,13 +27,17 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/41x.html>
 * Support: Update libs
     * mathjax
 
+## v4.0.11
 
+* Fix: Fab on search result page does not displayed
+* Fix: Adjust margin/padding for search result page
+* Fix: PageAlert broken
+    * Introduced by v4.0.9
 
 ## v4.0.10
 
 * Improvement: Adjust ToC height
 * Fix: Fail to rename/delete a page set as "Anyone with the link"
-
 
 ## v4.0.9
 
