@@ -43,19 +43,19 @@ module.exports = (crowi) => {
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
 
-  const { exportService } = crowi;
+  const { exportService, socketIoService } = crowi;
 
   this.adminEvent = crowi.event('admin');
 
   // setup event
   this.adminEvent.on('onProgressForExport', (data) => {
-    crowi.getIo().sockets.emit('admin:onProgressForExport', data);
+    socketIoService.getAdminSocket().emit('admin:onProgressForExport', data);
   });
   this.adminEvent.on('onStartZippingForExport', (data) => {
-    crowi.getIo().sockets.emit('admin:onStartZippingForExport', data);
+    socketIoService.getAdminSocket().emit('admin:onStartZippingForExport', data);
   });
   this.adminEvent.on('onTerminateForExport', (data) => {
-    crowi.getIo().sockets.emit('admin:onTerminateForExport', data);
+    socketIoService.getAdminSocket().emit('admin:onTerminateForExport', data);
   });
 
 
