@@ -3,6 +3,7 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
+const pathUtils = require('growi-commons').pathUtils;
 
 
 const router = express.Router();
@@ -15,10 +16,69 @@ const router = express.Router();
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
+  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi, true);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
 
   const Page = crowi.model('Page');
+  const PageTagRelation = crowi.model('PageTagRelation');
+  const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
+
+  const pageService = crowi.pageService;
+  const globalNotificationService = crowi.getGlobalNotificationService();
+
+  // TODO swagger and validation
+  router.post('/', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+    const {
+      body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, socketClientId, pageTags,
+    } = req.body;
+    let pagePath = req.body.path;
+
+    // check whether path starts slash
+    pagePath = pathUtils.addHeadingSlash(pagePath);
+
+    // check page existence
+    const isExist = await Page.count({ path: pagePath }) > 0;
+    if (isExist) {
+      return res.apiv3Err(err, 409);
+    }
+
+    const options = { socketClientId };
+    if (grant != null) {
+      options.grant = grant;
+      options.grantUserGroupId = grantUserGroupId;
+    }
+
+    const createdPage = await Page.create(pagePath, body, req.user, options);
+
+    let savedTags;
+    if (pageTags != null) {
+      await PageTagRelation.updatePageTags(createdPage.id, pageTags);
+      savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
+    }
+
+    const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
+
+    // update scopes for descendants
+    if (overwriteScopesOfDescendants) {
+      Page.applyScopesToDescendantsAsyncronously(createdPage, req.user);
+    }
+
+    // global notification
+    try {
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, req.user);
+    }
+    catch (err) {
+      logger.error('Create notification failed', err);
+    }
+
+    // user notification
+    if (isSlackEnabled) {
+      await notifyToSlackByUser(createdPage, req.user, slackChannels, 'create', false);
+    }
+
+    return res.apiv3(result);
+  });
 
   /**
    * @swagger
