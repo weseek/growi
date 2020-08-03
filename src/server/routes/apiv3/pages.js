@@ -13,8 +13,12 @@ const router = express.Router();
  *    name: Pages
  */
 module.exports = (crowi) => {
+  const pathUtils = require('growi-commons').pathUtils;
+
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
+  const loginRequiredStrictly = require('../middlewares/login-required')(crowi);
+
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
 
@@ -82,6 +86,37 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
   });
+
+  router.put('/duplicate', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
+    const pageId = req.body.page_id;
+    let newPagePath = pathUtils.normalizePath(req.body.new_path);
+
+    const page = await Page.findByIdAndViewer(pageId, req.user);
+
+    if (page == null) {
+      res.code = 'Page is not found';
+      logger.error('Failed to find the pages');
+      return res.apiv3Err();
+      // return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
+    }
+
+    // check whether path starts slash
+    newPagePath = pathUtils.addHeadingSlash(newPagePath);
+
+    await page.populateDataToShowRevision();
+    const originTags = await page.findRelatedTagsById();
+
+    req.body.path = newPagePath;
+    req.body.body = page.revision.body;
+    req.body.grant = page.grant;
+    req.body.grantedUsers = page.grantedUsers;
+    req.body.grantUserGroupId = page.grantedGroup;
+    req.body.pageTags = originTags;
+
+    return res.apiv3({});
+
+  });
+
 
   router.get('/subordinated-list', accessTokenParser, loginRequired, async(req, res) => {
     const { path } = req.query;
