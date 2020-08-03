@@ -18,7 +18,6 @@ import PageContainer from '../services/PageContainer';
 const PageAccessoriesModal = (props) => {
   const { t } = props;
 
-
   function closeModalHandler() {
     if (props.onClose == null) {
       return;

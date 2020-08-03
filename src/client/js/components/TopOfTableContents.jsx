@@ -32,7 +32,6 @@ const TopOfTableContents = (props) => {
     setActiveTab(clickedTab);
   }
 
-
   function closePageAccessoriesModal() {
     setIsPageAccessoriesModalShown(false);
   }
