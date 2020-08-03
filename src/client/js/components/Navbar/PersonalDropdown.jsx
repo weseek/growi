@@ -85,13 +85,13 @@ const PersonalDropdown = (props) => {
   /* eslint-disable react/prop-types */
   const DrawerIcon = props => (
     <>
-      <div id={props.id} className="px-2"><SidebarDrawerIcon /></div>
+      <div id={props.id} className="px-2 personal-dropdown svg"><SidebarDrawerIcon /></div>
       <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Drawer</UncontrolledTooltip>
     </>
   );
   const DockIcon = props => (
     <>
-      <div id={props.id} className="px-2"><SidebarDockIcon /></div>
+      <div id={props.id} className="px-2 personal-dropdown svg"><SidebarDockIcon /></div>
       <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Dock</UncontrolledTooltip>
     </>
   );

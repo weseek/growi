@@ -88,6 +88,10 @@ pre:not(.hljs):not(.CodeMirror-line) {
   }
 }
 
+.svg.personal-dropdown {
+  fill: $color-global;
+}
+
 // Form
 .form-control {
   @include form-control-focus();
@@ -423,12 +427,4 @@ mark.rbt-highlight-text {
  */
 .bg-box {
   background-color: $bgcolor-global;
-}
-
-.icon-collision {
-  fill: transparent;
-}
-
-.personal-dropdown-icons {
-  fill: $color-global;
 }

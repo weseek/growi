@@ -7,8 +7,8 @@ const SidebarDrawerIcon = () => (
     height="18"
     viewBox="0 0 23 23"
   >
-    <rect className="icon-collision" width="23" height="23" />
-    <g className="personal-dropdown-icons">
+    <rect className="icon-collision" width="23" height="23" fillOpacity="0" />
+    <g className="sidebar-drawer-icon">
       <path d="M20.9,3.9c0.3,0,0.6,0.3,0.6,0.6v13.9c0,0.3-0.3,0.6-0.6,0.6H2.1c-0.3,0-0.6-0.3-0.6-0.6V4.5c0-0.3,0.3-0.6,0.6-0.6H20.9
         M20.9,2.4H2.1C1,2.4,0,3.4,0,4.5c0,0,0,0,0,0v13.9c0,1.2,1,2.1,2.1,2.1c0,0,0,0,0,0h18.7c1.2,0,2.1-0.9,2.1-2.1c0,0,0,0,0,0V4.5
         C23,3.4,22,2.4,20.9,2.4C20.9,2.4,20.9,2.4,20.9,2.4z"
