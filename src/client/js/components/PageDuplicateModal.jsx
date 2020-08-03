@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -50,7 +50,7 @@ const PageDuplicateModal = (props) => {
     setIsDuplicateRecursively(!isDuplicateRecursively);
   }
 
-  async function getSubordinatedList() {
+  const getSubordinatedList = useCallback(async() => {
     try {
       const res = await appContainer.apiv3Get('/pages/subordinated-list', { path });
       setSubordinatedPaths(res.data.resultPaths);
@@ -58,11 +58,13 @@ const PageDuplicateModal = (props) => {
     catch (err) {
       setGetSuborinatedError(t('modal_duplicate.label.Fail to get subordinated pages'));
     }
-  }
+  }, [appContainer, path, t]);
 
   useEffect(() => {
-    getSubordinatedList();
-  }, [props.isOpen]);
+    if (props.isOpen === true) {
+      getSubordinatedList();
+    }
+  }, [props.isOpen, getSubordinatedList]);
 
   async function duplicate() {
     try {
