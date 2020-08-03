@@ -112,6 +112,9 @@ module.exports = (crowi) => {
     const { userId } = req.params;
     const { page, limit, offset } = req.query;
     try {
+      if (userId == null) {
+        return res.apiv3Err('User id is not found or forbidden', 400);
+      }
       const paginationResult = await Bookmark.paginate(
         {
           user: { $in: userId },
