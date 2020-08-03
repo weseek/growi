@@ -17,7 +17,7 @@ module.exports = (crowi) => {
 
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
-  const loginRequiredStrictly = require('../middlewares/login-required')(crowi);
+  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
 
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
@@ -96,7 +96,7 @@ module.exports = (crowi) => {
     if (page == null) {
       res.code = 'Page is not found';
       logger.error('Failed to find the pages');
-      return res.apiv3Err();
+      // return res.apiv3Err();
       // return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
     }
 
