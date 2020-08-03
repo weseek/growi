@@ -108,7 +108,7 @@ module.exports = (crowi) => {
     query('page').isInt({ min: 1 }),
   ];
 
-  router.get('/:userId', /* accessTokenParser, loginRequired, */ validator.myBookmarkList, apiV3FormValidator, async(req, res) => {
+  router.get('/:userId', accessTokenParser, loginRequired, validator.myBookmarkList, apiV3FormValidator, async(req, res) => {
     const { userId } = req.params;
     const { page, limit, offset } = req.query;
     try {
