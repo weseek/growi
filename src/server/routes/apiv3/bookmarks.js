@@ -144,9 +144,7 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/Bookmark'
    */
   validator.myBookmarkList = [
-    oneOf([
-      query('page').isInt({ min: 1 }),
-    ]),
+    query('page').isInt({ min: 1 }),
   ];
 
   router.get('/:userId', /* accessTokenParser, loginRequired, */ validator.myBookmarkList, apiV3FormValidator, async(req, res) => {
