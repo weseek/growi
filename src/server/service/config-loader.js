@@ -107,6 +107,18 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
   //   type:    ,
   //   default:
   // },
+  DRAWIO_URI: {
+    ns:      'crowi',
+    key:     'app:drawioUri',
+    type:    TYPES.STRING,
+    default: null,
+  },
+  NCHAN_URI: {
+    ns:      'crowi',
+    key:     'app:nchanUri',
+    type:    TYPES.STRING,
+    default: null,
+  },
   APP_SITE_URL: {
     ns:      'crowi',
     key:     'app:siteUrl',
@@ -118,6 +130,30 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     key:     'app:publishOpenAPI',
     type:    TYPES.BOOLEAN,
     default: false,
+  },
+  S2SMSG_PUBSUB_SERVER_TYPE: {
+    ns:      'crowi',
+    key:     's2sMessagingPubsub:serverType',
+    type:    TYPES.STRING,
+    default: null,
+  },
+  S2SMSG_PUBSUB_NCHAN_PUBLISH_PATH: {
+    ns:      'crowi',
+    key:     's2sMessagingPubsub:nchan:publishPath',
+    type:    TYPES.STRING,
+    default: '/pubsub',
+  },
+  S2SMSG_PUBSUB_NCHAN_SUBSCRIBE_PATH: {
+    ns:      'crowi',
+    key:     's2sMessagingPubsub:nchan:subscribePath',
+    type:    TYPES.STRING,
+    default: '/pubsub',
+  },
+  S2SMSG_PUBSUB_NCHAN_CHANNEL_ID: {
+    ns:      'crowi',
+    key:     's2sMessagingPubsub:nchan:channelId',
+    type:    TYPES.STRING,
+    default: null,
   },
   MAX_FILE_SIZE: {
     ns:      'crowi',

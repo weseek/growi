@@ -5,11 +5,6 @@ body.kibela {
     padding-top: 10px !important;
   }
 
-  /* navbar for kibela */
-  #page-wrapper {
-    margin-top: $grw-navbar-height + $grw-navbar-border-width;
-  }
-
   /* Logo */
   .logo {
     .logo-mark {
@@ -51,7 +46,7 @@ body.kibela {
 
   .kibela-block {
     position: relative;
-    top: 10px;
+    top: 30px;
     right: 100px;
     bottom: 0px;
     left: 0px;
