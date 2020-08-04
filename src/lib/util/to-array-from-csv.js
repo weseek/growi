@@ -1,4 +1,3 @@
-
 // converts csv item to array
 const toArrayFromCsv = (text) => {
   if (text == null) {
