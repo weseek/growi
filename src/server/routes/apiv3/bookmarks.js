@@ -3,7 +3,7 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:bookmarks'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
-const { body, query } = require('express-validator');
+const { body, query, oneOf } = require('express-validator');
 
 const router = express.Router();
 
@@ -144,12 +144,14 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/Bookmark'
    */
   validator.myBookmarkList = [
-    query('page').isInt({ min: 1 }),
+    oneOf([
+      query('page').isInt({ min: 1 }),
+    ]),
   ];
 
-  router.get('/:userId', accessTokenParser, loginRequired, validator.myBookmarkList, apiV3FormValidator, async(req, res) => {
+  router.get('/:userId', /* accessTokenParser, loginRequired, */ validator.myBookmarkList, apiV3FormValidator, async(req, res) => {
     const { userId } = req.params;
-    const { page, limit, offset } = req.query;
+    const { page, limit } = req.query;
     if (userId == null) {
       return res.apiv3Err('User id is not found or forbidden', 400);
     }
@@ -168,7 +170,6 @@ module.exports = (crowi) => {
           },
           page,
           limit,
-          offset,
         },
       );
       return res.apiv3({ paginationResult });

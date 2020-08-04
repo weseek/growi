@@ -42,9 +42,8 @@ class MyBookmarkList extends React.Component {
 
     const userId = appContainer.currentUserId;
     const limit = appContainer.getConfig().recentCreatedLimit;
-    const offset = (selectPageNumber - 1) * limit;
     const page = selectPageNumber;
-    const params = { page, limit, offset };
+    const params = { page, limit };
 
     try {
       const { data } = await this.props.appContainer.apiv3.get(`/bookmarks/${userId}`, params);
