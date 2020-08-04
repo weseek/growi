@@ -46,7 +46,7 @@ module.exports = (crowi) => {
     ],
   };
 
-  // TODO write swagger(GW-3384) and validation(GW-3385)
+  // TODO write swagger(GW-3384)
   router.post('/', accessTokenParser, loginRequiredStrictly, csrf, validator.createPage, apiV3FormValidator, async(req, res) => {
     const {
       body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, socketClientId, pageTags,
