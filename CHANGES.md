@@ -2,7 +2,7 @@
 
 ## v4.1.1-RC
 
-* 
+* Fix: "Append params" switch of CopyDropdown does not work when multiple CopyDropdown instance exists
 
 ## v4.1.0
 
