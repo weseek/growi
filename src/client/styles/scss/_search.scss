@@ -193,12 +193,12 @@
   }
 
   .search-result-content {
-    padding-bottom: 32px;
+    padding-bottom: 36px;
 
     .search-result-page {
-      padding-top: 48px;
+      padding-top: 64px;
       // adjust for anchor links by the height of fixed .search-page-input
-      margin-top: -48px;
+      margin-top: -64px;
 
       > h2 {
         margin-right: 10px;
@@ -221,7 +221,7 @@
 
 .search-page-input {
   position: sticky;
-  top: 65px;
+  top: 15px;
   // placed at front-most
   z-index: 15;
 
