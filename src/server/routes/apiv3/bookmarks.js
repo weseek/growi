@@ -3,7 +3,7 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:bookmarks'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
-const { body } = require('express-validator');
+const { body, query } = require('express-validator');
 
 const router = express.Router();
 
@@ -104,14 +104,73 @@ module.exports = (crowi) => {
   });
 
   // select page from bookmark where userid = userid
+  /**
+   * @swagger
+   *
+   *    /bookmarks/{userId}:
+   *      get:
+   *        tags: [Bookmarks]
+   *        summary: /bookmarks/{userId}
+   *        description: Get my bookmarked status
+   *        operationId: getMyBookmarkedStatus
+   *        parameters:
+   *          - name: userId
+   *            in: path
+   *            required: true
+   *            description: user id
+   *            schema:
+   *              type: string
+   *          - name: page
+   *            in: query
+   *            description: selected page number
+   *            schema:
+   *              type: number
+   *          - name: limit
+   *            in: query
+   *            description: page item limit
+   *            schema:
+   *              type: number
+   *          - name: offset
+   *            in: query
+   *            description: page item offset
+   *            schema:
+   *              type: number
+   *        responses:
+   *          200:
+   *            description: Succeeded to get my bookmarked status.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/Bookmark'
+   */
+  validator.myBookmarkList = [
+    query('page').isInt({ min: 1 }),
+  ];
 
-  router.get('/userId', /* accessTokenParser, loginRequired, csrf, */ apiV3FormValidator, async(req, res) => {
-    const { userId } = req.query;
+  router.get('/:userId', accessTokenParser, loginRequired, validator.myBookmarkList, apiV3FormValidator, async(req, res) => {
+    const { userId } = req.params;
+    const { page, limit } = req.query;
+    if (userId == null) {
+      return res.apiv3Err('User id is not found or forbidden', 400);
+    }
+    if (limit == null) {
+      return res.apiv3Err('Could not catch page limit', 400);
+    }
     try {
-      const bookmark = await Bookmark
-        .find({ user: userId })
-        .populate({ path: 'page', model: 'Page' });
-      return res.apiv3({ bookmark });
+      const paginationResult = await Bookmark.paginate(
+        {
+          user: { $in: userId },
+        },
+        {
+          populate: {
+            path: 'page',
+            model: 'Page',
+          },
+          page,
+          limit,
+        },
+      );
+      return res.apiv3({ paginationResult });
     }
     catch (err) {
       logger.error('get-bookmark-failed', err);

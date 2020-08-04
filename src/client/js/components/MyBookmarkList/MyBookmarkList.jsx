@@ -33,39 +33,35 @@ class MyBookmarkList extends React.Component {
     this.getMyBookmarkList(1);
   }
 
-  async handlePage(selectedPage) {
-    await this.getMyBookmarkList(selectedPage);
+  async handlePage(selectPageNumber) {
+    await this.getMyBookmarkList(selectPageNumber);
   }
 
   async getMyBookmarkList(selectPageNumber) {
-    const { appContainer, pageContainer } = this.props;
-    const { pageId } = pageContainer.state;
+    const { appContainer } = this.props;
 
     const userId = appContainer.currentUserId;
-    /* TODO GW-3255 get config from customize settings */
+    /* TODO #1 change variable name in models/config.js */
+    /* TODO #2 change variable name in database keys */
+    /* TODO #3 write migration */
     const limit = appContainer.getConfig().recentCreatedLimit;
-    const offset = (selectPageNumber - 1) * limit;
+    const page = selectPageNumber;
+    const params = { page, limit };
 
-
-    /* /pages.myBookmarks is not exitst. TODO GW-3251 Create api v3 /pages.myBookmarks */
-
-    // This block is cited from MyDraftList
-    /* await this.props.appContainer.apiGet('/pages.myBookmarks', {
-      page_id: pageId, user: userId, limit, offset,
-    })
-      .then((res) => {
-        const totalPages = res.totalCount;
-        const pages = res.pages;
-        const activePage = selectPageNumber;
-        this.setState({
-          pages,
-          activePage,
-          totalPages,
-          pagingLimit: limit,
-        });
-      }); */
     try {
-      await pageContainer.retrieveMyBookmarkList(pageId, userId, limit, offset);
+      const { data } = await this.props.appContainer.apiv3.get(`/bookmarks/${userId}`, params);
+      if (data.paginationResult == null) {
+        throw new Error('data must conclude \'paginateResult\' property.');
+      }
+      const {
+        docs: pages, totalDocs: totalPages, limit: pagingLimit, page: activePage,
+      } = data.paginationResult;
+      this.setState({
+        pages,
+        totalPages,
+        pagingLimit,
+        activePage,
+      });
     }
     catch (error) {
       logger.error('failed to fetch data', error);
@@ -80,22 +76,19 @@ class MyBookmarkList extends React.Component {
    *
    */
   generatePageList(pages) {
-    /* TODO GW-3251 */
     return pages.map(page => (
-      <li key={`my-bookmarks-list:list-view:${page._id}`}>
-        <Page page={page} />
+      <li key={`my-bookmarks:${page._id}`}>
+        <Page page={page.page} />
       </li>
     ));
   }
 
 
   render() {
-    const pageList = this.generatePageList(this.state.pages);
-
     return (
       <div className="page-list-container-create">
         <ul className="page-list-ul page-list-ul-flat mb-3">
-          {pageList}
+          {this.generatePageList(this.state.pages)}
         </ul>
         <PaginationWrapper
           activePage={this.state.activePage}
