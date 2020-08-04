@@ -35,7 +35,7 @@ class UserNotificationService {
     }
 
     if (!slackNotificationService.hasSlackConfig()) {
-      return;
+      throw new Error('slackNotificationService has not been set up');
     }
 
     // "dev,slacktest" => [dev,slacktest]
