@@ -186,7 +186,7 @@ module.exports = (crowi) => {
 
   router.post('/duplicate', accessTokenParser, loginRequiredStrictly, csrf, validator.duplicate, apiV3FormValidator, async(req, res) => {
     const pageId = req.body.page_id;
-    let newPagePath = pathUtils.normalizePath(req.body.new_path);
+    let newPagePath = pathUtils.normalizePath(req.body.pageNameInput);
 
     const page = await Page.findByIdAndViewer(pageId, req.user);
 
@@ -208,24 +208,7 @@ module.exports = (crowi) => {
     req.body.grantUserGroupId = page.grantedGroup;
     req.body.pageTags = originTags;
 
-    const createdPage = await Page.create(req.body.path, req.body, req.user);
-
-    let savedTags;
-    if (req.pageTags != null) {
-      await PageTagRelation.updatePageTags(createdPage.id, req.pageTags);
-      savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
-    }
-
-    const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
-
-    // global notification
-    try {
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, req.user);
-    }
-    catch (err) {
-      logger.error('Create notification failed', err);
-    }
-    return res.apiv3(result);
+    res.redirect(307, '/_api/v3/pages');
   });
 
 
