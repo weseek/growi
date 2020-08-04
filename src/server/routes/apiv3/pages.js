@@ -5,6 +5,8 @@ const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line
 const express = require('express');
 const pathUtils = require('growi-commons').pathUtils;
 
+const ErrorV3 = require('../../models/vo/error-apiv3');
+
 
 const router = express.Router();
 
@@ -23,6 +25,7 @@ module.exports = (crowi) => {
   const Page = crowi.model('Page');
   const PageTagRelation = crowi.model('PageTagRelation');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
+
 
   const globalNotificationService = crowi.getGlobalNotificationService();
   const { pageService, slackNotificationService } = crowi;
@@ -204,6 +207,15 @@ module.exports = (crowi) => {
     req.body.grantUserGroupId = page.grantedGroup;
     req.body.pageTags = originTags;
 
+    // check page existence
+    const isExist = (await Page.count(req.body.path)) > 0;
+    if (isExist) {
+      res.code = 'page_exists';
+      return res.apiv3Err(new ErrorV3('Page exists'), 409);
+      // return res.apiv3Err('Page exists', 409);
+
+    }
+
     const createdPage = await Page.create(req.body.path, req.body.body, req.user);
 
     let savedTags;
@@ -213,15 +225,6 @@ module.exports = (crowi) => {
     }
 
     const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
-
-
-    // global notification
-    try {
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, req.user);
-    }
-    catch (err) {
-      logger.error('Create notification failed', err);
-    }
 
     return res.apiv3(result);
   });
