@@ -3,7 +3,7 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:bookmarks'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
-const { body, query, oneOf } = require('express-validator');
+const { body, query } = require('express-validator');
 
 const router = express.Router();
 
@@ -147,7 +147,7 @@ module.exports = (crowi) => {
     query('page').isInt({ min: 1 }),
   ];
 
-  router.get('/:userId', /* accessTokenParser, loginRequired, */ validator.myBookmarkList, apiV3FormValidator, async(req, res) => {
+  router.get('/:userId', accessTokenParser, loginRequired, validator.myBookmarkList, apiV3FormValidator, async(req, res) => {
     const { userId } = req.params;
     const { page, limit } = req.query;
     if (userId == null) {
