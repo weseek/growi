@@ -169,8 +169,6 @@ module.exports = (crowi) => {
       return res.apiv3Err(`Could not use the path '${newPagePath})'`, 409);
     }
 
-    console.log(newPagePath);
-
     // check whether path starts slash
     newPagePath = pathUtils.addHeadingSlash(newPagePath);
 
