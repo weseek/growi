@@ -154,7 +154,7 @@ module.exports = (crowi) => {
 
   // TODO swagger and validation
   router.put('/rename', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
-    const { pageId, isRecursively,revisionId } = req.body;
+    const { pageId, isRecursively, revisionId } = req.body;
 
     let newPagePath = pathUtils.normalizePath(req.body.newPagePath);
 
