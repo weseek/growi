@@ -152,6 +152,79 @@ module.exports = (crowi) => {
     }
   });
 
+  // TODO swagger and validation
+  router.put('/rename', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
+    const { pageId, isRecursively,revisionId } = req.body;
+
+    let newPagePath = pathUtils.normalizePath(req.body.newPagePath);
+
+    const options = {
+      createRedirectPage: req.body.isRenameRedirect,
+      updateMetadata: req.body.isRemainMetadata,
+      socketClientId: +req.body.socketClientId || undefined,
+    };
+
+    if (!Page.isCreatableName(newPagePath)) {
+      res.code = 'invalid_path';
+      return res.apiv3Err(`Could not use the path '${newPagePath})'`, 409);
+    }
+
+    console.log(newPagePath);
+
+    // check whether path starts slash
+    newPagePath = pathUtils.addHeadingSlash(newPagePath);
+
+    const isExist = await Page.count({ path: newPagePath }) > 0;
+    if (isExist) {
+      // if page found, cannot cannot rename to that path
+      res.code = 'already_exists';
+      return res.apiv3Err(`'new_path=${newPagePath}' already exists`, 409);
+    }
+
+    let page;
+
+    try {
+      page = await Page.findByIdAndViewer(pageId, req.user);
+
+      if (page == null) {
+        res.code = 'notfound_or_forbidden';
+        return res.apiv3Err(`Page '${pageId}' is not found or forbidden`, 401);
+      }
+
+      if (!page.isUpdatable(revisionId)) {
+        res.code = 'notfound_or_forbidden';
+        return res.apiv3Err('Someone could update this page, so couldn\'t delete.', 409);
+      }
+
+      if (isRecursively) {
+        page = await Page.renameRecursively(page, newPagePath, req.user, options);
+      }
+      else {
+        page = await Page.rename(page, newPagePath, req.user, options);
+      }
+    }
+    catch (err) {
+      logger.error(err);
+      res.code = 'unknown';
+      return res.apiv3Err('Failed to update page.', 500);
+    }
+
+    // result.page = page; // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+
+    try {
+      // global notification
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_MOVE, page, req.user, {
+        oldPath: req.body.path,
+      });
+    }
+    catch (err) {
+      logger.error('Move notification failed', err);
+    }
+
+    return res.apiv3({ page });
+  });
+
+
   /**
   * @swagger
   *
