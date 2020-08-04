@@ -7,7 +7,10 @@ const toArrayFromCsv = (text) => {
   }
 
   text.split(',').forEach((element) => {
-    array.push(element.trim());
+    const trimedElement = element.trim();
+    if (trimedElement !== '') {
+      array.push(trimedElement);
+    }
   });
 
   return array;

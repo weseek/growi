@@ -1,4 +1,4 @@
-const toArrayFromCsv = require('@commons/util/to-array-from-csv');
+const toArrayFromCsv = require('../../lib/util/to-array-from-csv');
 
 describe('To array from csv', () => {
 
@@ -14,7 +14,7 @@ describe('To array from csv', () => {
 
   test('case 3', () => {
     const result = toArrayFromCsv('');
-    expect(result).toStrictEqual(['']);
+    expect(result).toStrictEqual([]);
   });
 
   test('case 4', () => {
