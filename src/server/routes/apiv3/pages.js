@@ -5,6 +5,7 @@ const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line
 const express = require('express');
 const pathUtils = require('growi-commons').pathUtils;
 
+const { body } = require('express-validator/check');
 
 const router = express.Router();
 
@@ -19,6 +20,7 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
+  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const Page = crowi.model('Page');
   const PageTagRelation = crowi.model('PageTagRelation');
@@ -27,6 +29,13 @@ module.exports = (crowi) => {
   const globalNotificationService = crowi.getGlobalNotificationService();
   const { pageService, slackNotificationService } = crowi;
 
+const validator = {
+  createPage: [
+    body('body').exists().not().isEmpty({ ignore_whitespace:true }).withMessage('body is required'),
+    body('path').exists().not().isEmpty({ ignore_whitespace:true }).withMessage('path is required'),
+
+  ],
+}
   // user notification
   // TODO GW-3387 create '/service/user-notification' module
   /**
@@ -59,12 +68,15 @@ module.exports = (crowi) => {
   }
 
   // TODO write swagger(GW-3384) and validation(GW-3385)
-  router.post('/', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
+  router.post('/', accessTokenParser, loginRequiredStrictly, csrf, validator.createPage, apiV3FormValidator, async(req, res) => {
     const {
       body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, socketClientId, pageTags,
     } = req.body;
     let { path } = req.body;
 
+    console.log(req.body);
+
+    return res.apiv3({});
     // check whether path starts slash
     path = pathUtils.addHeadingSlash(path);
 
