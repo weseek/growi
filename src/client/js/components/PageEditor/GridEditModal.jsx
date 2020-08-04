@@ -40,6 +40,30 @@ export default class GridEditModal extends React.Component {
     return colsRatios.join(' - ');
   }
 
+  showBreakPoint() {
+    if (this.state.responsiveSize === BootstrapGrid.ResponsiveSize.XS_SIZE) {
+      return (
+        <span>
+          <i className="pr-1 icon-screen-smartphone"></i> Mobile / No break breakPoint
+        </span>
+      );
+    }
+    if (this.state.responsiveSize === BootstrapGrid.ResponsiveSize.SM_SIZE) {
+      return (
+        <span>
+          <i className="pr-1 icon-screen-tablet"></i> tablet
+        </span>
+      );
+    }
+    if (this.state.responsiveSize === BootstrapGrid.ResponsiveSize.MD_SIZE) {
+      return (
+        <span>
+          <i className="pr-1 icon-screen-desktop"></i> desktop
+        </span>
+      );
+    }
+  }
+
   init(gridHtml) {
     const initGridHtml = gridHtml;
     this.setState({ gridHtml: initGridHtml }, function() {
@@ -112,7 +136,7 @@ export default class GridEditModal extends React.Component {
         <ModalBody>
           <div className="container">
             <div className="row">
-              <div className="col-3">
+              <div className="col-4">
                 <div className="mr-3 d-inline">
                   <label htmlFor="gridPattern">Grid Pattern :</label>
                 </div>
@@ -130,54 +154,30 @@ export default class GridEditModal extends React.Component {
                   {this.gridDivisionMenu()}
                 </div>
               </div>
-              <div className="col-3 text-right pr-0">
-                <label className="pr-3">Break point by display size :</label>
-              </div>
-              <div className="col-3 text-left pl-0">
-                <div className="form-group inline-block">
-                  <div className="custom-control custom-radio">
-                    {/* TODO unite radio button style with that of AppSetting.jsx by GW-3342 */}
-                    <input
-                      type="radio"
-                      id={`radio-${BootstrapGrid.ResponsiveSize.XS_SIZE}`}
-                      className="custom-control-input"
-                      name="responsiveSize"
-                      value={BootstrapGrid.ResponsiveSize.XS_SIZE}
-                      onChange={(e) => { this.checkResposiveSize(e.target.value) }}
-                      checked={this.state.responsiveSize === BootstrapGrid.ResponsiveSize.XS_SIZE}
-                    />
-                    <label htmlFor={`radio-${BootstrapGrid.ResponsiveSize.XS_SIZE}`} className="custom-control-label">
-                      <i className="pl-2 pr-1 icon-screen-smartphone"></i> Mobile / No break point
-                    </label>
-                  </div>
-                  <div className="custom-control custom-radio">
-                    <input
-                      type="radio"
-                      id={`radio-${BootstrapGrid.ResponsiveSize.SM_SIZE}`}
-                      className="custom-control-input"
-                      name="responsiveSize"
-                      value={BootstrapGrid.ResponsiveSize.SM_SIZE}
-                      onChange={(e) => { this.checkResposiveSize(e.target.value) }}
-                      checked={this.state.responsiveSize === BootstrapGrid.ResponsiveSize.SM_SIZE}
-                    />
-                    <label htmlFor={`radio-${BootstrapGrid.ResponsiveSize.SM_SIZE}`} className="custom-control-label">
-                      <i className="pl-2 pr-1 icon-screen-tablet"></i> Tablet
-                    </label>
-                  </div>
-                  <div className="custom-control custom-radio">
-                    <input
-                      type="radio"
-                      id={`radio-${BootstrapGrid.ResponsiveSize.MD_SIZE}`}
-                      className="custom-control-input"
-                      name="responsiveSize"
-                      value={BootstrapGrid.ResponsiveSize.MD_SIZE}
-                      onChange={(e) => { this.checkResposiveSize(e.target.value) }}
-                      checked={this.state.responsiveSize === BootstrapGrid.ResponsiveSize.MD_SIZE}
-                    />
-                    <label htmlFor={`radio-${BootstrapGrid.ResponsiveSize.MD_SIZE}`} className="custom-control-label">
-                      <i className="pl-2 pr-1 icon-screen-desktop"></i> Desktop
-                    </label>
-                  </div>
+              <div className="col-8">
+                <div className="mr-3 d-inline">
+                  <label htmlFor="breakPoint">Break point by display size :</label>
+                </div>
+                <div
+                  className="btn btn-outline-secondary dropdown-toggle text-right col-12 col-md-auto"
+                  type="button"
+                  id="dropdownMenuButton"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  {this.showBreakPoint()}
+                </div>
+                <div className="dropdown-menu break-point-menu" aria-labelledby="dropdownMenuButton">
+                  <button className="dropdown-item" type="button" onClick={() => { this.checkResposiveSize(BootstrapGrid.ResponsiveSize.XS_SIZE) }}>
+                    <i className="pl-2 pr-1 icon-screen-smartphone"></i> Mobile / No break point
+                  </button>
+                  <button className="dropdown-item" type="button" onClick={() => { this.checkResposiveSize(BootstrapGrid.ResponsiveSize.SM_SIZE) }}>
+                    <i className="pl-2 pr-1 icon-screen-tablet"></i> Tablet
+                  </button>
+                  <button className="dropdown-item" type="button" onClick={() => { this.checkResposiveSize(BootstrapGrid.ResponsiveSize.MD_SIZE) }}>
+                    <i className="pl-2 pr-1 icon-screen-desktop"></i> Desktop
+                  </button>
                 </div>
               </div>
             </div>
