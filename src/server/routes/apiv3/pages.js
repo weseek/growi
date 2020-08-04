@@ -62,13 +62,8 @@ module.exports = (crowi) => {
   // TODO write swagger(GW-3384) and validation(GW-3385)
   router.post('/', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
     const {
-      body, grant, grantUserGroupId, pageTags,
+      body, grant, grantUserGroupId, pageTags, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, socketClientId,
     } = req.body;
-
-    const overwriteScopesOfDescendants = req.body.overwriteScopesOfDescendants || null;
-    const isSlackEnabled = req.body.isSlackEnabled || null;
-    const slackChannels = req.body.slackChannels || null;
-    const socketClientId = req.body.socketClientId || null;
 
 
     let { path } = req.body;
@@ -198,6 +193,7 @@ module.exports = (crowi) => {
     // check whether path starts slash
     newPagePath = pathUtils.addHeadingSlash(newPagePath);
 
+
     await page.populateDataToShowRevision();
     const originTags = await page.findRelatedTagsById();
 
@@ -208,7 +204,26 @@ module.exports = (crowi) => {
     req.body.grantUserGroupId = page.grantedGroup;
     req.body.pageTags = originTags;
 
-    res.redirect(307, '/_api/v3/pages');
+    const createdPage = await Page.create(req.body.path, req.body.body, req.user);
+
+    let savedTags;
+    if (req.body.pageTags != null) {
+      await PageTagRelation.updatePageTags(createdPage.id, req.body.pageTags);
+      savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
+    }
+
+    const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
+
+
+    // global notification
+    try {
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, req.user);
+    }
+    catch (err) {
+      logger.error('Create notification failed', err);
+    }
+
+    return res.apiv3(result);
   });
 
 
