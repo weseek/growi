@@ -3,7 +3,7 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
-const { body } = require('express-validator');
+// const { body } = require('express-validator');
 const pathUtils = require('growi-commons').pathUtils;
 
 
@@ -20,7 +20,7 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
-  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
+  // const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const Page = crowi.model('Page');
   const PageTagRelation = crowi.model('PageTagRelation');
@@ -29,12 +29,12 @@ module.exports = (crowi) => {
   const globalNotificationService = crowi.getGlobalNotificationService();
   const { pageService, slackNotificationService } = crowi;
 
-  const validator = {
-    duplicate: [
-      body('pageId').isString(),
-      body('pageNameInput').isString(),
-    ],
-  };
+  // const validator = {
+  //   duplicate: [
+  //     body('pageId').isString(),
+  //     body('pageNameInput').isString(),
+  //   ],
+  // };
 
   // user notification
   // TODO GW-3387 create '/service/user-notification' module
@@ -70,8 +70,15 @@ module.exports = (crowi) => {
   // TODO write swagger(GW-3384) and validation(GW-3385)
   router.post('/', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
     const {
-      body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, socketClientId, pageTags,
+      body, grant, grantUserGroupId, pageTags,
     } = req.body;
+
+    const overwriteScopesOfDescendants = req.body.overwriteScopesOfDescendants || null;
+    const isSlackEnabled = req.body.isSlackEnabled || null;
+    const slackChannels = req.body.slackChannels || null;
+    const socketClientId = req.body.socketClientId || null;
+
+
     let { path } = req.body;
 
     // check whether path starts slash
@@ -184,8 +191,9 @@ module.exports = (crowi) => {
     }
   });
 
-  router.post('/duplicate', accessTokenParser, loginRequiredStrictly, csrf, validator.duplicate, apiV3FormValidator, async(req, res) => {
-    const pageId = req.body.page_id;
+  router.post('/duplicate', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
+    const { pageId } = req.body;
+
     let newPagePath = pathUtils.normalizePath(req.body.pageNameInput);
 
     const page = await Page.findByIdAndViewer(pageId, req.user);
