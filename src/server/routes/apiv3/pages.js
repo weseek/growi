@@ -72,13 +72,18 @@ module.exports = (crowi) => {
         await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, req.user);
       }
       catch (err) {
-        logger.error('Create notification failed', err);
+        logger.error('Create grobal notification failed', err);
       }
     }
 
     // user notification
     if (isSlackEnabled && userNotificationService != null) {
-      await userNotificationService.fire(createdPage, req.user, slackChannels, 'create', false);
+      try {
+        await userNotificationService.fire(createdPage, req.user, slackChannels, 'create', false);
+      }
+      catch (err) {
+        logger.error('Create user notification failed', err);
+      }
     }
 
     return res.apiv3(result);

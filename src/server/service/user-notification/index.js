@@ -1,6 +1,6 @@
 const logger = require('@alias/logger')('growi:service:UserNotificationService');
 
-const toArrayFromCsv = require('@commons/util/toArrayFromCsv');
+const toArrayFromCsv = require('@commons/util/to-array-from-csv');
 
 /**
  * service class of UserNotification
@@ -31,9 +31,8 @@ class UserNotificationService {
       await page.updateSlackChannel(slackChannelsStr);
     }
     catch (err) {
-      logger.error('Error occured in updating slack channels: ', err);
+      throw new Error(err);
     }
-
 
     if (!slackNotificationService.hasSlackConfig()) {
       return;
@@ -46,7 +45,7 @@ class UserNotificationService {
       return slack.postPage(page, user, chan, updateOrCreate, previousRevision);
     });
 
-    Promise.all(promises)
+    Promise.allSettled(promises)
       .catch((err) => {
         logger.error('Error occured in sending slack notification: ', err);
       });
