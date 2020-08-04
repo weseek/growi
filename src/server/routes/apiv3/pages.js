@@ -38,6 +38,11 @@ module.exports = (crowi) => {
       body('path').exists().not().isEmpty({ ignore_whitespace: true })
         .withMessage('path is required'),
       body('grant').if(value => value != null).isInt({ min: 1, max: 5 }).withMessage('grant must be integer from 1 to 5'),
+      body('overwriteScopesOfDescendants').if(value => value != null).isBoolean().withMessage('overwriteScopesOfDescendants must be boolean'),
+      body('isSlackEnabled').if(value => value != null).isBoolean().withMessage('isSlackEnabled must be boolean'),
+      body('slackChannels').if(value => value != null).isString().withMessage('slackChannels must be string'),
+      body('socketClientId').if(value => value != null).isInt().withMessage('socketClientId must be string'),
+      body('pageTags').if(value => value != null).isArray().withMessage('pageTags must be array'),
     ],
   };
 
@@ -48,9 +53,6 @@ module.exports = (crowi) => {
     } = req.body;
     let { path } = req.body;
 
-    console.log(req.body);
-
-    // return res.apiv3({});
     // check whether path starts slash
     path = pathUtils.addHeadingSlash(path);
 
