@@ -29,13 +29,16 @@ module.exports = (crowi) => {
   const globalNotificationService = crowi.getGlobalNotificationService();
   const { pageService, slackNotificationService } = crowi;
 
-const validator = {
-  createPage: [
-    body('body').exists().not().isEmpty({ ignore_whitespace:true }).withMessage('body is required'),
-    body('path').exists().not().isEmpty({ ignore_whitespace:true }).withMessage('path is required'),
+  const validator = {
+    createPage: [
+      body('body').exists().not().isEmpty({ ignore_whitespace: true })
+        .withMessage('body is required'),
+      body('path').exists().not().isEmpty({ ignore_whitespace: true })
+        .withMessage('path is required'),
+      body('grant').if(value => value != null).isInt({ min: 1, max: 5 }).withMessage('grant must be integer from 1 to 5'),
 
-  ],
-}
+    ],
+  };
   // user notification
   // TODO GW-3387 create '/service/user-notification' module
   /**
