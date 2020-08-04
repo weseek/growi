@@ -1,4 +1,4 @@
-const toArrayFromCsv = require('../../lib/util/to-array-from-csv');
+const toArrayFromCsv = require('@commons/util/to-array-from-csv');
 
 describe('To array from csv', () => {
 
