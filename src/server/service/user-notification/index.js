@@ -1,6 +1,6 @@
 const logger = require('@alias/logger')('growi:service:UserNotificationService');
 
-const toArrayFromCsv = require('../../../lib/util/toArrayFromCsv');
+const toArrayFromCsv = require('@commons/util/toArrayFromCsv');
 
 /**
  * service class of UserNotification

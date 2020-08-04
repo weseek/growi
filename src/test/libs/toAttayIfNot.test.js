@@ -1,8 +1,8 @@
-const toArrayFromCsv = require('../../lib/util/toArrayFromCsv');
+const toArrayFromCsv = require('@commons/util/to-array-from-csv');
 
 describe('Slack Util', () => {
 
-  test('post comment method exists', () => {
+  test('post', () => {
     const result = toArrayFromCsv('dev,general');
     expect(result).toStrictEqual(['dev', 'general']);
   });
