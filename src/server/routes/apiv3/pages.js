@@ -3,7 +3,6 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
-// const { body } = require('express-validator');
 const pathUtils = require('growi-commons').pathUtils;
 
 
@@ -20,7 +19,6 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
-  // const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const Page = crowi.model('Page');
   const PageTagRelation = crowi.model('PageTagRelation');
@@ -29,12 +27,6 @@ module.exports = (crowi) => {
   const globalNotificationService = crowi.getGlobalNotificationService();
   const { pageService, slackNotificationService } = crowi;
 
-  // const validator = {
-  //   duplicate: [
-  //     body('pageId').isString(),
-  //     body('pageNameInput').isString(),
-  //   ],
-  // };
 
   // user notification
   // TODO GW-3387 create '/service/user-notification' module
