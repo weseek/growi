@@ -153,6 +153,9 @@ module.exports = (crowi) => {
     if (userId == null) {
       return res.apiv3Err('User id is not found or forbidden', 400);
     }
+    if (limit == null) {
+      return res.apiv3Err('Could not catch page limit', 400);
+    }
     try {
       const paginationResult = await Bookmark.paginate(
         {
