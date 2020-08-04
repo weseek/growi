@@ -136,7 +136,7 @@ export default class GridEditModal extends React.Component {
         <ModalBody>
           <div className="container">
             <div className="row">
-              <div className="col-4">
+              <div className="col-6">
                 <div className="mr-3 d-inline">
                   <label htmlFor="gridPattern">Grid Pattern :</label>
                 </div>
@@ -154,7 +154,7 @@ export default class GridEditModal extends React.Component {
                   {this.gridDivisionMenu()}
                 </div>
               </div>
-              <div className="col-8">
+              <div className="col-6">
                 <div className="mr-3 d-inline">
                   <label htmlFor="breakPoint">Break point by display size :</label>
                 </div>
