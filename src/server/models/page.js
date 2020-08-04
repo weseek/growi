@@ -96,14 +96,6 @@ const extractToAncestorsPaths = (pagePath) => {
   return ancestorsPaths;
 };
 
-const addSlashOfEnd = (path) => {
-  let returnPath = path;
-  if (!path.match(/\/$/)) {
-    returnPath += '/';
-  }
-  return returnPath;
-};
-
 /**
  * populate page (Query or Document) to show revision
  * @param {any} page Query or Document
@@ -148,15 +140,50 @@ class PageQueryBuilder {
   }
 
   /**
-   * generate the query to find the page that is match with `path` and its descendants
+   * generate the query to find the pages '{path}/*' and '{path}' self.
+   * If top page, return without doing anything.
    */
   addConditionToListWithDescendants(path, option) {
-    // ignore other pages than descendants
-    // eslint-disable-next-line no-param-reassign
-    path = addSlashOfEnd(path);
+    // No request is set for the top page
+    if (isTopPage(path)) {
+      return this;
+    }
 
-    this.addConditionToListByStartWith(path, option);
+    const pathNormalized = pathUtils.normalizePath(path);
+    const pathWithTrailingSlash = pathUtils.addTrailingSlash(path);
+
+    const startsPattern = escapeStringRegexp(pathWithTrailingSlash);
+
+    this.query = this.query
+      .and({
+        $or: [
+          { path: pathNormalized },
+          { path: new RegExp(`^${startsPattern}`) },
+        ],
+      });
+
     return this;
+  }
+
+  /**
+   * generate the query to find the pages '{path}/*' (exclude '{path}' self).
+   * If top page, return without doing anything.
+   */
+  addConditionToListOnlyDescendants(path, option) {
+    // No request is set for the top page
+    if (isTopPage(path)) {
+      return this;
+    }
+
+    const pathWithTrailingSlash = pathUtils.addTrailingSlash(path);
+
+    const startsPattern = escapeStringRegexp(pathWithTrailingSlash);
+
+    this.query = this.query
+      .and({ path: new RegExp(`^${startsPattern}`) });
+
+    return this;
+
   }
 
   /**
@@ -173,36 +200,11 @@ class PageQueryBuilder {
     if (isTopPage(path)) {
       return this;
     }
-    const pathCondition = [];
 
-    /*
-     * 1. add condition for finding the page completely match with `path` w/o last slash
-     */
-    let pathSlashOmitted = path;
-    if (path.match(/\/$/)) {
-      pathSlashOmitted = path.substr(0, path.length - 1);
-      pathCondition.push({ path: pathSlashOmitted });
-    }
-    /*
-     * 2. add decendants
-     */
-    const pattern = escapeStringRegexp(path); // escape
-
-    let queryReg;
-    try {
-      queryReg = new RegExp(`^${pattern}`);
-    }
-    // if regular expression is invalid
-    catch (e) {
-      // force to escape
-      queryReg = new RegExp(`^${escapeStringRegexp(pattern)}`);
-    }
-    pathCondition.push({ path: queryReg });
+    const startsPattern = escapeStringRegexp(path);
 
     this.query = this.query
-      .and({
-        $or: pathCondition,
-      });
+      .and({ path: new RegExp(`^${startsPattern}`) });
 
     return this;
   }
@@ -701,6 +703,32 @@ module.exports = function(crowi) {
   };
 
   /**
+   * find pages that is match with `path` and its descendants whitch user is able to manage
+   */
+  pageSchema.statics.findManageableListWithDescendants = async function(page, user, option = {}) {
+    if (user == null) {
+      return null;
+    }
+
+    const builder = new PageQueryBuilder(this.find());
+    builder.addConditionToListWithDescendants(page.path, option);
+    builder.addConditionToExcludeRedirect();
+
+    // add grant conditions
+    await addConditionToFilteringByViewerToEdit(builder, user);
+
+    const { pages } = await findListFromBuilderAndViewer(builder, user, false, option);
+
+    // add page if 'grant' is GRANT_RESTRICTED
+    // because addConditionToListWithDescendants excludes GRANT_RESTRICTED pages
+    if (page.grant === GRANT_RESTRICTED) {
+      pages.push(page);
+    }
+
+    return pages;
+  };
+
+  /**
    * find pages that start with `path`
    */
   pageSchema.statics.findListByStartWith = async function(path, user, option) {
@@ -1094,14 +1122,8 @@ module.exports = function(crowi) {
       throw new Error('This method does NOT supports deleting trashed pages.');
     }
 
-    // find descendants (this array does not include GRANT_RESTRICTED)
-    const result = await this.findListWithDescendants(targetPage.path, user);
-    const pages = result.pages;
-    // add targetPage if 'grant' is GRANT_RESTRICTED
-    //  because findListWithDescendants excludes GRANT_RESTRICTED pages
-    if (targetPage.grant === GRANT_RESTRICTED) {
-      pages.push(targetPage);
-    }
+    // find manageable descendants (this array does not include GRANT_RESTRICTED)
+    const pages = await this.findManageableListWithDescendants(targetPage, user, options);
 
     await Promise.all(pages.map((page) => {
       return this.deletePage(page, user, options);
@@ -1133,8 +1155,7 @@ module.exports = function(crowi) {
 
   pageSchema.statics.revertDeletedPageRecursively = async function(targetPage, user, options = {}) {
     const findOpts = { includeTrashed: true };
-    const result = await this.findListWithDescendants(targetPage.path, user, findOpts);
-    const pages = result.pages;
+    const pages = await this.findManageableListWithDescendants(targetPage, user, findOpts);
 
     let updatedPage = null;
     await Promise.all(pages.map((page) => {
@@ -1183,18 +1204,10 @@ module.exports = function(crowi) {
    * Delete Bookmarks, Attachments, Revisions, Pages and emit delete
    */
   pageSchema.statics.completelyDeletePageRecursively = async function(targetPage, user, options = {}) {
-    const pagePath = targetPage.path;
-
     const findOpts = { includeTrashed: true };
 
-    // find descendants (this array does not include GRANT_RESTRICTED)
-    const result = await this.findListWithDescendants(pagePath, user, findOpts);
-    const pages = result.pages;
-    // add targetPage if 'grant' is GRANT_RESTRICTED
-    //  because findListWithDescendants excludes GRANT_RESTRICTED pages
-    if (targetPage.grant === GRANT_RESTRICTED) {
-      pages.push(targetPage);
-    }
+    // find manageable descendants (this array does not include GRANT_RESTRICTED)
+    const pages = await this.findManageableListWithDescendants(targetPage, user, findOpts);
 
     await Promise.all(pages.map((page) => {
       return this.completelyDeletePage(page, user, options);
@@ -1275,14 +1288,8 @@ module.exports = function(crowi) {
     // sanitize path
     newPagePathPrefix = crowi.xss.process(newPagePathPrefix); // eslint-disable-line no-param-reassign
 
-    // find descendants (this array does not include GRANT_RESTRICTED)
-    const result = await this.findListWithDescendants(path, user, options);
-    const pages = result.pages;
-    // add targetPage if 'grant' is GRANT_RESTRICTED
-    //  because findListWithDescendants excludes GRANT_RESTRICTED pages
-    if (targetPage.grant === GRANT_RESTRICTED) {
-      pages.push(targetPage);
-    }
+    // find manageable descendants
+    const pages = await this.findManageableListWithDescendants(targetPage, user, options);
 
     await Promise.all(pages.map((page) => {
       const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
@@ -1384,13 +1391,6 @@ module.exports = function(crowi) {
   pageSchema.statics.getHistories = function() {
     // TODO
 
-  };
-
-  /**
-   * return path that added slash to the end for specified path
-   */
-  pageSchema.statics.addSlashOfEnd = function(path) {
-    return addSlashOfEnd(path);
   };
 
   pageSchema.statics.GRANT_PUBLIC = GRANT_PUBLIC;
