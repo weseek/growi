@@ -1,17 +1,13 @@
 // converts csv item to array
 const toArrayFromCsv = (text) => {
-  const array = [];
+  let array = [];
 
   if (text == null) {
     return array;
   }
 
-  text.split(',').forEach((element) => {
-    const trimedElement = element.trim();
-    if (trimedElement !== '') {
-      array.push(trimedElement);
-    }
-  });
+  array = text.split(',').map(el => el.trim());
+  array = array.filter(el => el !== '');
 
   return array;
 };
