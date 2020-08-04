@@ -150,10 +150,10 @@ module.exports = (crowi) => {
   router.get('/:userId', accessTokenParser, loginRequired, validator.myBookmarkList, apiV3FormValidator, async(req, res) => {
     const { userId } = req.params;
     const { page, limit, offset } = req.query;
+    if (userId == null) {
+      return res.apiv3Err('User id is not found or forbidden', 400);
+    }
     try {
-      if (userId == null) {
-        return res.apiv3Err('User id is not found or forbidden', 400);
-      }
       const paginationResult = await Bookmark.paginate(
         {
           user: { $in: userId },
