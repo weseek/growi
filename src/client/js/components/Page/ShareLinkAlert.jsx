@@ -5,12 +5,26 @@ import { withTranslation } from 'react-i18next';
 
 const ShareLinkAlert = (props) => {
   const { t } = props;
+
+
   const shareContent = document.getElementById('is-shared-page');
-  const expiredAt = shareContent.getAttribute('data-share-link-expired-at');
+  let expiredAt = shareContent.getAttribute('data-share-link-expired-at');
   const createdAt = shareContent.getAttribute('data-share-link-created-at');
-  const wholeTime = new Date(expiredAt).getTime() - new Date(createdAt).getTime();
-  const remainingTime = new Date(expiredAt).getTime() - new Date().getTime();
-  const ratio = remainingTime / wholeTime;
+
+  function generateRatio() {
+    const wholeTime = new Date(expiredAt).getTime() - new Date(createdAt).getTime();
+    const remainingTime = new Date(expiredAt).getTime() - new Date().getTime();
+    return remainingTime / wholeTime;
+  }
+
+  let ratio = 1;
+
+  if (expiredAt !== '') {
+    ratio = generateRatio();
+  }
+  else {
+    expiredAt = t('share_links.Unlimited');
+  }
 
   function specifyColor() {
     let color;

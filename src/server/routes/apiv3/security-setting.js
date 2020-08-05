@@ -613,25 +613,55 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: suceed to get all share links
    */
-  router.get('/all-share-links/', /* loginRequiredStrictly, adminRequired, csrf, ApiV3FormValidator, */ async(req, res) => {
+  router.get('/all-share-links/', loginRequiredStrictly, adminRequired, async(req, res) => {
     const ShareLink = crowi.model('ShareLink');
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const linkQuery = {};
     try {
-      const shareLinksResult = await ShareLink.paginate(
+      const paginateResult = await ShareLink.paginate(
         linkQuery,
         {
           page,
           limit,
+          populate: {
+            path: 'relatedPage',
+            select: 'path',
+          },
         },
       );
-      return res.apiv3({ shareLinksResult });
+      return res.apiv3({ paginateResult });
     }
     catch (err) {
       const msg = 'Error occured in get share link';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'get-all-share-links-failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /_api/v3/security-setting/all-share-links:
+   *      delete:
+   *        tags: [ShareLinkSettings, apiv3]
+   *        description: Delete All ShareLinks at Share Link Setting
+   *        responses:
+   *          200:
+   *            description: succeed to delete all share links
+   */
+
+  router.delete('/all-share-links/', loginRequiredStrictly, adminRequired, async(req, res) => {
+    const ShareLink = crowi.model('ShareLink');
+    try {
+      const removedAct = await ShareLink.remove({});
+      const removeTotal = await removedAct.n;
+      return res.apiv3({ removeTotal });
+    }
+    catch (err) {
+      const msg = 'Error occured in delete all share links';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'failed-to-delete-all-share-links'));
     }
   });
 

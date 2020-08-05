@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { UncontrolledTooltip } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
-
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 import AppContainer from '../../services/AppContainer';
@@ -11,13 +10,13 @@ import OutsideShareLinkModal from '../OutsideShareLinkModal';
 
 import { toastError } from '../../util/apiNotification';
 
-
 const PageShareManagement = (props) => {
   const { t, appContainer, pageContainer } = props;
 
   const { currentUser } = appContainer;
 
   const [isOutsideShareLinkModalShown, setIsOutsideShareLinkModalShown] = useState(false);
+
 
   function openOutsideShareLinkModalHandler() {
     setIsOutsideShareLinkModalShown(true);
@@ -55,6 +54,10 @@ const PageShareManagement = (props) => {
   }
 
   function renderModals() {
+    if (currentUser == null) {
+      return null;
+    }
+
     return (
       <>
         <OutsideShareLinkModal
@@ -64,6 +67,7 @@ const PageShareManagement = (props) => {
       </>
     );
   }
+
 
   function renderCurrentUser() {
     return (
@@ -96,13 +100,12 @@ const PageShareManagement = (props) => {
     );
   }
 
-
   return (
     <>
       {currentUser == null ? renderGuestUser() : renderCurrentUser()}
       <div className="dropdown-menu dropdown-menu-right">
         <button className="dropdown-item" type="button" onClick={openOutsideShareLinkModalHandler}>
-          <i className="icon-fw icon-link"></i>{t('Shere this page link to public')}
+          <i className="icon-fw icon-link"></i>{t('share_links.Shere this page link to public')}
           <span className="ml-2 badge badge-info badge-pill">{pageContainer.state.shareLinksNumber}</span>
         </button>
         <button type="button" className="dropdown-item" onClick={() => { exportPageHundler('md') }}>
