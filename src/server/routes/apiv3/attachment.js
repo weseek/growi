@@ -29,7 +29,7 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error('attachment not found', err);
-      return res.apiv3Err(err, 404); // 400?
+      return res.apiv3Err(err, 404);
     }
   });
 
