@@ -12,6 +12,20 @@ import AppSettingsPageContents from './AppSettingsPageContents';
 const logger = loggerFactory('growi:appSettings');
 
 function AppSettingsPage(props) {
+  return (
+    <Suspense
+      fallback={(
+        <div className="row">
+          <i className="fa fa-5x fa-spinner fa-pulse mx-auto text-muted"></i>
+        </div>
+)}
+    >
+      <RenderAppSettingsPageWrapper />
+    </Suspense>
+  );
+}
+
+function RenderAppSettingsPage(props) {
   if (props.adminAppContainer.state.title === 0) {
     throw new Promise(async() => {
       try {
@@ -28,27 +42,13 @@ function AppSettingsPage(props) {
   return <AppSettingsPageContents />;
 }
 
-AppSettingsPage.propTypes = {
+RenderAppSettingsPage.propTypes = {
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 
 /**
  * Wrapper component for using unstated
  */
-const AppSettingsPageWrapper = withUnstatedContainers(AppSettingsPage, [AdminAppContainer]);
+const RenderAppSettingsPageWrapper = withUnstatedContainers(RenderAppSettingsPage, [AdminAppContainer]);
 
-function AppSettingsPageSuspenseWrapper(props) {
-  return (
-    <Suspense
-      fallback={(
-        <div className="row">
-          <i className="fa fa-5x fa-spinner fa-pulse mx-auto text-muted"></i>
-        </div>
-      )}
-    >
-      <AppSettingsPageWrapper />
-    </Suspense>
-  );
-}
-
-export default AppSettingsPageSuspenseWrapper;
+export default AppSettingsPage;
