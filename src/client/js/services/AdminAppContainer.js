@@ -18,7 +18,6 @@ export default class AdminAppContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      isRetrieving: true,
       retrieveError: null,
       title: '',
       confidential: '',

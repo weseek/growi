@@ -48,7 +48,6 @@ export default class AdminNotificationContainer extends Container {
       const { notificationParams } = response.data;
 
       this.setState({
-        isRetrieving: false,
         webhookUrl: notificationParams.webhookUrl,
         isIncomingWebhookPrioritized: notificationParams.isIncomingWebhookPrioritized,
         slackToken: notificationParams.slackToken,

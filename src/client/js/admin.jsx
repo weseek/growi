@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'unstated';
 import { I18nextProvider } from 'react-i18next';
@@ -79,19 +79,6 @@ const injectableContainers = [
 
 logger.info('unstated containers have been initialized');
 
-const createSuspenseComponent = function(component) {
-  return (
-    <Suspense fallback={(
-      <div className="row">
-        <i className="fa fa-5x fa-spinner fa-pulse mx-auto text-muted"></i>
-      </div>
-      )}
-    >
-      {component}
-    </Suspense>
-  );
-};
-
 /**
  * define components
  *  key: id of element
@@ -99,12 +86,12 @@ const createSuspenseComponent = function(component) {
  */
 Object.assign(componentMappings, {
   'admin-home': <AdminHome />,
-  'admin-app': createSuspenseComponent(<AppSettingsPage />),
-  'admin-markdown-setting': createSuspenseComponent(<MarkdownSetting />),
+  'admin-app': <AppSettingsPage />,
+  'admin-markdown-setting': <MarkdownSetting />,
   'admin-customize': <Customize />,
   'admin-importer': <ImportDataPage />,
   'admin-export-page': <ExportArchiveDataPage />,
-  'admin-notification-setting': createSuspenseComponent(<NotificationSetting />),
+  'admin-notification-setting': <NotificationSetting />,
   'admin-global-notification-setting': <ManageGlobalNotification />,
   'admin-user-page': <UserManagement />,
   'admin-external-account-setting': <ManageExternalAccount />,
