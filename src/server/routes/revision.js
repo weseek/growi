@@ -45,7 +45,6 @@
  */
 
 module.exports = function(crowi, app) {
-  const debug = require('debug')('growi:routes:revision');
   const logger = require('@alias/logger')('growi:routes:revision');
   const Page = crowi.model('Page');
   const Revision = crowi.model('Revision');
