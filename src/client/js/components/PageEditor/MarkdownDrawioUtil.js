@@ -139,17 +139,17 @@ class MarkdownDrawioUtil {
    */
   replaceDrawioInMarkdown(drawioData, markdown, beginLineNumber, endLineNumber) {
     const splitMarkdown = markdown.split(/\r\n|\r|\n/);
-    const markdownBeforeDrawio = splitMarkdown.slice(0, beginLineNumber);
+    const markdownBeforeDrawio = splitMarkdown.slice(0, beginLineNumber - 1);
     const markdownAfterDrawio = splitMarkdown.slice(endLineNumber);
 
     let newMarkdown = '';
     if (markdownBeforeDrawio.length > 0) {
       newMarkdown += `${markdownBeforeDrawio.join('\n')}\n`;
-      newMarkdown += '::: drawio\n';
     }
+    newMarkdown += '::: drawio\n';
     newMarkdown += drawioData;
+    newMarkdown += '\n:::';
     if (markdownAfterDrawio.length > 0) {
-      newMarkdown += '\n:::';
       newMarkdown += `\n${markdownAfterDrawio.join('\n')}`;
     }
 
