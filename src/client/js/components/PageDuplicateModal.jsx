@@ -6,7 +6,6 @@ import {
 } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
-
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import AppContainer from '../services/AppContainer';
@@ -27,7 +26,6 @@ const PageDuplicateModal = (props) => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [subordinatedPaths, setSubordinatedPaths] = useState([]);
   const [getSubordinatedError, setGetSuborinatedError] = useState(null);
-
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
 
   /**

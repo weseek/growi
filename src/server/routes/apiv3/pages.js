@@ -5,9 +5,9 @@ const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line
 const express = require('express');
 const pathUtils = require('growi-commons').pathUtils;
 
+const { body } = require('express-validator/check');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
-const { body } = require('express-validator/check');
 
 const router = express.Router();
 
@@ -27,7 +27,6 @@ module.exports = (crowi) => {
   const Page = crowi.model('Page');
   const PageTagRelation = crowi.model('PageTagRelation');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
-
 
   const globalNotificationService = crowi.getGlobalNotificationService();
   const userNotificationService = crowi.getUserNotificationService();
@@ -54,7 +53,6 @@ module.exports = (crowi) => {
     const {
       body, grant, grantUserGroupId, pageTags, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, socketClientId,
     } = req.body;
-
 
     let { path } = req.body;
 
@@ -192,7 +190,6 @@ module.exports = (crowi) => {
       logger.error('Failed to find the pages');
     }
 
-
     // check whether path starts slash
     newPagePath = pathUtils.addHeadingSlash(newPagePath);
 
@@ -206,7 +203,6 @@ module.exports = (crowi) => {
     req.body.grantedUsers = page.grantedUsers;
     req.body.grantUserGroupId = page.grantedGroup;
     req.body.pageTags = originTags;
-
 
     // check page existence
     const isExist = (await Page.count({ path: req.body.path })) > 0;
