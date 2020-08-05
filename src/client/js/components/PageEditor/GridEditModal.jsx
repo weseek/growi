@@ -18,13 +18,15 @@ export default class GridEditModal extends React.Component {
       gridHtml: '',
     };
 
+    this.checkResposiveSize = this.checkResposiveSize.bind(this);
+    this.checkColsRatios = this.checkColsRatios.bind(this);
     this.init = this.init.bind(this);
     this.show = this.show.bind(this);
     this.hide = this.hide.bind(this);
     this.cancel = this.cancel.bind(this);
     this.pasteCodedGrid = this.pasteCodedGrid.bind(this);
-    this.showGridPattern = this.showGridPattern.bind(this);
-    this.checkResposiveSize = this.checkResposiveSize.bind(this);
+    this.renderSelectedGridPattern = this.renderSelectedGridPattern.bind(this);
+    this.renderSelectedBreakPoint = this.renderSelectedBreakPoint.bind(this);
   }
 
   async checkResposiveSize(rs) {
@@ -33,25 +35,6 @@ export default class GridEditModal extends React.Component {
 
   async checkColsRatios(cr) {
     await this.setState({ colsRatios: cr });
-  }
-
-  showGridPattern() {
-    const colsRatios = this.state.colsRatios;
-    return colsRatios.join(' - ');
-  }
-
-  showBreakPoint() {
-    const resSizes = BootstrapGrid.ResponsiveSize;
-    const output = Object.values(resSizes).map((resSize) => {
-      return (this.state.responsiveSize === resSize
-        && (
-        <span>
-          <i className={`pr-1 icon-screen-${resSize}`}> {resSize}</i>
-        </span>
-        )
-      );
-    });
-    return output;
   }
 
   init(gridHtml) {
@@ -88,7 +71,26 @@ export default class GridEditModal extends React.Component {
     this.cancel();
   }
 
-  gridDivisionMenu() {
+  renderSelectedGridPattern() {
+    const colsRatios = this.state.colsRatios;
+    return colsRatios.join(' - ');
+  }
+
+  renderSelectedBreakPoint() {
+    const resSizes = BootstrapGrid.ResponsiveSize;
+    const output = Object.values(resSizes).map((resSize) => {
+      return (this.state.responsiveSize === resSize
+        && (
+        <span>
+          <i className={`pr-1 icon-screen-${resSize}`}> {resSize}</i>
+        </span>
+        )
+      );
+    });
+    return output;
+  }
+
+  renderGridDivisionMenu() {
     const gridDivisions = geu.mappingAllGridDivisionPatterns;
     return (
       <div className="container">
@@ -117,7 +119,7 @@ export default class GridEditModal extends React.Component {
     );
   }
 
-  showBreakPointMenu() {
+  renderBreakPointMenu() {
     const resSizes = BootstrapGrid.ResponsiveSize;
     const output = Object.values(resSizes).map((resSize) => {
       return (
@@ -150,10 +152,10 @@ export default class GridEditModal extends React.Component {
                   aria-haspopup="true"
                   aria-expanded="false"
                 >
-                  {this.showGridPattern()}
+                  {this.renderSelectedGridPattern()}
                 </button>
                 <div className="dropdown-menu grid-division-menu" aria-labelledby="dropdownMenuButton">
-                  {this.gridDivisionMenu()}
+                  {this.renderGridDivisionMenu()}
                 </div>
               </div>
               <div className="col-6">
@@ -168,10 +170,10 @@ export default class GridEditModal extends React.Component {
                   aria-haspopup="true"
                   aria-expanded="false"
                 >
-                  {this.showBreakPoint()}
+                  {this.renderSelectedBreakPoint()}
                 </div>
                 <div className="dropdown-menu break-point-menu" aria-labelledby="dropdownMenuButton">
-                  {this.showBreakPointMenu()}
+                  {this.renderBreakPointMenu()}
                 </div>
               </div>
             </div>
