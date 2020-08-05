@@ -100,13 +100,13 @@ const PersonalDropdown = (props) => {
 
   const LightIcon = props => (
     <>
-      <div id={props.id} className="px-2 lightmode-icon,"><LightModeIcon /></div>
+      <div id={props.id} className={`px-2 lightmode-icon ${useOsSettings ? 'use-os-setting' : ''}`}><LightModeIcon /></div>
       <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Light</UncontrolledTooltip>
     </>
   );
   const DarkIcon = props => (
     <>
-      <div id={props.id} className="px-2 darkmode-icon,"><DarkModeIcon /></div>
+      <div id={props.id} className={`px-2 darkmode-icon ${useOsSettings ? 'fill-muted' : ''}`}><DarkModeIcon /></div>
       <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Dark</UncontrolledTooltip>
     </>
   );
@@ -207,9 +207,7 @@ const PersonalDropdown = (props) => {
           </div>
           <div className="form-row justify-content-center">
             <div className="form-group col-auto mb-0 d-flex align-items-center">
-              <span className={useOsSettings ? '' : 'fill-muted'}>
-                <LightIcon id="icon-prefer-light" />
-              </span>
+              <LightIcon id="icon-prefer-light" />
               <div className="custom-control custom-switch custom-checkbox-secondary ml-2">
                 <input
                   id="swUserPreference"
@@ -221,9 +219,7 @@ const PersonalDropdown = (props) => {
                 />
                 <label className="custom-control-label" htmlFor="swUserPreference"></label>
               </div>
-              <span className={useOsSettings ? '' : 'darkmode-icon use-os-setting'}>
-                <DarkIcon id="icon-prefer-dark" />
-              </span>
+              <DarkIcon id="icon-prefer-dark" />
             </div>
           </div>
         </form>
