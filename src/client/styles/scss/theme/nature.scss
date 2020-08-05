@@ -88,7 +88,7 @@ html[dark] {
   $color-dropdown-link-hover: $color-global;
 
   // Table colors
-  $border-color-table: #aaa; // optional
+  $border-color-table: $gray-400; // optional
 
   // admin theme box
   $color-theme-color-box: lighten($primary, 20%);
