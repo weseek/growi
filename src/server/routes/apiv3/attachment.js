@@ -17,13 +17,15 @@ const router = express.Router();
 
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
-  const loginRequired = require('../../middlewares/login-required')(crowi);
+  // const loginRequired = require('../../middlewares/login-required')(crowi);
   const Attachment = crowi.model('Attachment');
 
-  router.get('/attachment', accessTokenParser, loginRequired, async(req, res) => {
+  // router.get('/attachment', accessTokenParser, loginRequired, async(req, res) => {
+  router.get('/list', accessTokenParser, async(req, res) => {
+    const id = req.query.id;
+    // const ids = console.log(req.query.id);
 
     try {
-      const id = req.params.id;
       const attachment = await Attachment.findById(id);
       return res.apiv3({ attachment });
     }
