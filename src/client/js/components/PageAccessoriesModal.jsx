@@ -25,11 +25,11 @@ const PageAccessoriesModal = (props) => {
     props.onClose();
   }
 
-  function switchTabHandler() {
+  function switchTabHandler(clickedTab) {
     if (props.onSwitch == null) {
       return;
     }
-    props.onSwitch();
+    props.onSwitch(clickedTab);
   }
 
   return (
@@ -38,14 +38,13 @@ const PageAccessoriesModal = (props) => {
         size="lg"
         isOpen={props.isOpen}
         toggle={closeModalHandler}
-        toggleSwitch={switchTabHandler}
         className="grw-page-accessories-modal"
       >
         <ModalBody>
           <Nav className="nav-title border-bottom">
             <NavItem className={`nav-link ${props.activeTab === 'pageList' && 'active'}`}>
               <NavLink
-                onClick={() => { props.onSwitch('pageList') }}
+                onClick={() => { switchTabHandler('pageList') }}
               >
                 <PageList />
                 { t('page_list') }
@@ -53,7 +52,7 @@ const PageAccessoriesModal = (props) => {
             </NavItem>
             <NavItem className={`nav-link ${props.activeTab === 'timeLine' && 'active'}`}>
               <NavLink
-                onClick={() => { props.onSwitch('timeLine') }}
+                onClick={() => { switchTabHandler('timeLine') }}
               >
                 <TimeLine />
                 { t('Timeline View') }
@@ -61,7 +60,7 @@ const PageAccessoriesModal = (props) => {
             </NavItem>
             <NavItem className={`nav-link ${props.activeTab === 'recentChanges' && 'active'}`}>
               <NavLink
-                onClick={() => { props.onSwitch('recentChanges') }}
+                onClick={() => { switchTabHandler('recentChanges') }}
               >
                 <RecentChanges />
                 { t('History') }
@@ -69,7 +68,7 @@ const PageAccessoriesModal = (props) => {
             </NavItem>
             <NavItem className={`nav-link ${props.activeTab === 'attachment' && 'active'}`}>
               <NavLink
-                onClick={() => { props.onSwitch('attachment') }}
+                onClick={() => { switchTabHandler('attachment') }}
               >
                 <Attachment />
                 { t('attachment_data') }
