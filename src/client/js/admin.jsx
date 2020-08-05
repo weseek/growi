@@ -25,7 +25,6 @@ import AdminNavigation from './components/Admin/Common/AdminNavigation';
 
 import NavigationContainer from './services/NavigationContainer';
 
-import AdminSocketIoContainer from './services/AdminSocketIoContainer';
 import AdminHomeContainer from './services/AdminHomeContainer';
 import AdminCustomizeContainer from './services/AdminCustomizeContainer';
 import AdminUserGroupDetailContainer from './services/AdminUserGroupDetailContainer';
@@ -51,11 +50,11 @@ const logger = loggerFactory('growi:admin');
 appContainer.initContents();
 
 const { i18n } = appContainer;
+const websocketContainer = appContainer.getContainer('WebsocketContainer');
 
 // create unstated container instance
 const navigationContainer = new NavigationContainer(appContainer);
 const adminAppContainer = new AdminAppContainer(appContainer);
-const adminSocketIoContainer = new AdminSocketIoContainer(appContainer);
 const adminHomeContainer = new AdminHomeContainer(appContainer);
 const adminCustomizeContainer = new AdminCustomizeContainer(appContainer);
 const adminUsersContainer = new AdminUsersContainer(appContainer);
@@ -65,9 +64,9 @@ const adminMarkDownContainer = new AdminMarkDownContainer(appContainer);
 const adminUserGroupDetailContainer = new AdminUserGroupDetailContainer(appContainer);
 const injectableContainers = [
   appContainer,
+  websocketContainer,
   navigationContainer,
   adminAppContainer,
-  adminSocketIoContainer,
   adminHomeContainer,
   adminCustomizeContainer,
   adminUsersContainer,

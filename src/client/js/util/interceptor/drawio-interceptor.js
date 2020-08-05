@@ -18,6 +18,22 @@ export class DrawioInterceptor extends BasicInterceptor {
 
     this.previousPreviewContext = null;
     this.appContainer = appContainer;
+
+    // define callback function invoked by viewer.min.js of draw.io
+    // refs: https://github.com/jgraph/drawio/blob/v12.9.1/etc/build/build.xml#L219-L232
+    window.onDrawioViewerLoad = function() {
+      const DrawioViewer = window.GraphViewer;
+
+      if (DrawioViewer != null) {
+        // disable useResizeSensor and checkVisibleState
+        //   for preventing resize event by viewer.min.js
+        DrawioViewer.useResizeSensor = false;
+        DrawioViewer.prototype.checkVisibleState = false;
+
+        // initialize
+        DrawioViewer.processElements();
+      }
+    };
   }
 
   /**

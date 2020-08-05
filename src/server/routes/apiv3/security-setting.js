@@ -324,16 +324,6 @@ module.exports = (crowi) => {
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
-  async function updateAndReloadStrategySettings(authId, params) {
-    const { configManager, passportService } = crowi;
-
-    // update config without publishing S2sMessage
-    await configManager.updateConfigsInTheSameNamespace('crowi', params, true);
-
-    await passportService.setupStrategyById(authId);
-    passportService.publishUpdatedMessage(authId);
-  }
-
   /**
    * @swagger
    *
@@ -499,7 +489,9 @@ module.exports = (crowi) => {
     const enableParams = { [`security:passport-${authId}:isEnabled`]: isEnabled };
 
     try {
-      await updateAndReloadStrategySettings(authId, enableParams);
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', enableParams);
+
+      await crowi.passportService.setupStrategyById(authId);
 
       const responseParams = {
         [`security:passport-${authId}:isEnabled`]: await crowi.configManager.getConfig('crowi', `security:passport-${authId}:isEnabled`),
@@ -621,8 +613,8 @@ module.exports = (crowi) => {
       'security:registrationWhiteList': req.body.registrationWhiteList,
     };
     try {
-      await updateAndReloadStrategySettings('local', requestParams);
-
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await crowi.passportService.setupStrategyById('local');
       const localSettingParams = {
         registrationMode: await crowi.configManager.getConfig('crowi', 'security:registrationMode'),
         registrationWhiteList: await crowi.configManager.getConfig('crowi', 'security:registrationWhiteList'),
@@ -674,8 +666,8 @@ module.exports = (crowi) => {
     };
 
     try {
-      await updateAndReloadStrategySettings('ldap', requestParams);
-
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await crowi.passportService.setupStrategyById('ldap');
       const securitySettingParams = {
         serverUrl: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:serverUrl'),
         isUserBind: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isUserBind'),
@@ -765,8 +757,8 @@ module.exports = (crowi) => {
     };
 
     try {
-      await updateAndReloadStrategySettings('saml', requestParams);
-
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await crowi.passportService.setupStrategyById('saml');
       const securitySettingParams = {
         missingMandatoryConfigKeys: await crowi.passportService.getSamlMissingMandatoryConfigKeys(),
         samlEntryPoint: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:entryPoint'),
@@ -834,8 +826,8 @@ module.exports = (crowi) => {
     };
 
     try {
-      await updateAndReloadStrategySettings('oidc', requestParams);
-
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await crowi.passportService.setupStrategyById('oidc');
       const securitySettingParams = {
         oidcProviderName: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:providerName'),
         oidcIssuerHost: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:issuerHost'),
@@ -892,8 +884,8 @@ module.exports = (crowi) => {
     };
 
     try {
-      await updateAndReloadStrategySettings('basic', requestParams);
-
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await crowi.passportService.setupStrategyById('basic');
       const securitySettingParams = {
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-basic:isSameUsernameTreatedAsIdenticalUser'),
       };
@@ -935,8 +927,8 @@ module.exports = (crowi) => {
     };
 
     try {
-      await updateAndReloadStrategySettings('google', requestParams);
-
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await crowi.passportService.setupStrategyById('google');
       const securitySettingParams = {
         googleClientId: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientId'),
         googleClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientSecret'),
@@ -980,8 +972,8 @@ module.exports = (crowi) => {
     };
 
     try {
-      await updateAndReloadStrategySettings('github', requestParams);
-
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await crowi.passportService.setupStrategyById('github');
       const securitySettingParams = {
         githubClientId: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientId'),
         githubClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientSecret'),
@@ -1030,8 +1022,8 @@ module.exports = (crowi) => {
     requestParams = removeNullPropertyFromObject(requestParams);
 
     try {
-      await updateAndReloadStrategySettings('twitter', requestParams);
-
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await crowi.passportService.setupStrategyById('twitter');
       const securitySettingParams = {
         twitterConsumerId: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerKey'),
         twitterConsumerSecret: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerSecret'),

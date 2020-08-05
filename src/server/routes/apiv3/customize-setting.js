@@ -375,9 +375,7 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams, true);
-      crowi.customizeService.publishUpdatedMessage();
-
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const customizedParams = {
         customizeTitle: await crowi.configManager.getConfig('crowi', 'customize:title'),
       };
@@ -460,9 +458,7 @@ module.exports = (crowi) => {
       'customize:css': req.body.customizeCss,
     };
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams, true);
-      crowi.customizeService.publishUpdatedMessage();
-
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const customizedParams = {
         customizeCss: await crowi.configManager.getConfig('crowi', 'customize:css'),
       };

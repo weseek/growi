@@ -16,15 +16,16 @@ module.exports = {
   'growi:routes:login-passport': 'debug',
   'growi:middleware:safe-redirect': 'debug',
   'growi:service:PassportService': 'debug',
-  'growi:service:s2s-messaging:*': 'debug',
   // 'growi:service:ConfigManager': 'debug',
-  // 'growi:service:mail': 'debug',
   'growi:lib:search': 'debug',
   // 'growi:service:GlobalNotification': 'debug',
   // 'growi:lib:importer': 'debug',
   // 'growi:routes:page': 'debug',
   'growi-plugin:*': 'debug',
   // 'growi:InterceptorManager': 'debug',
+
+  // email
+  // 'growi:lib:mailer': 'debug',
 
   /*
    * configure level for client

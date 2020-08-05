@@ -604,8 +604,8 @@ module.exports = function(crowi) {
   };
 
   userSchema.statics.sendEmailbyUserList = async function(userList) {
-    const { appService, mailService } = crowi;
-    const appTitle = appService.getAppTitle();
+    const mailer = crowi.getMailer();
+    const appTitle = crowi.appService.getAppTitle();
 
     await Promise.all(userList.map(async(user) => {
       if (user.password == null) {
@@ -613,7 +613,7 @@ module.exports = function(crowi) {
       }
 
       try {
-        return mailService.send({
+        return mailer.send({
           to: user.email,
           subject: `Invitation to ${appTitle}`,
           template: path.join(crowi.localeDir, 'en_US/admin/userInvitation.txt'),

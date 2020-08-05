@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
-import AdminSocketIoContainer from '../../../services/AdminSocketIoContainer';
+import WebsocketContainer from '../../../services/WebsocketContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import StatusTable from './StatusTable';
@@ -45,22 +45,22 @@ class ElasticsearchManagement extends React.Component {
   }
 
   initWebSockets() {
-    const socket = this.props.adminSocketIoContainer.getSocket();
+    const socket = this.props.websocketContainer.getWebSocket();
 
-    socket.on('addPageProgress', (data) => {
+    socket.on('admin:addPageProgress', (data) => {
       this.setState({
         isRebuildingProcessing: true,
       });
     });
 
-    socket.on('finishAddPage', (data) => {
+    socket.on('admin:finishAddPage', (data) => {
       this.setState({
         isRebuildingProcessing: false,
         isRebuildingCompleted: true,
       });
     });
 
-    socket.on('rebuildingFailed', (data) => {
+    socket.on('admin:rebuildingFailed', (data) => {
       toastError(new Error(data.error), 'Rebuilding Index has failed.');
     });
   }
@@ -224,12 +224,12 @@ class ElasticsearchManagement extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const ElasticsearchManagementWrapper = withUnstatedContainers(ElasticsearchManagement, [AppContainer, AdminSocketIoContainer]);
+const ElasticsearchManagementWrapper = withUnstatedContainers(ElasticsearchManagement, [AppContainer, WebsocketContainer]);
 
 ElasticsearchManagement.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  adminSocketIoContainer: PropTypes.instanceOf(AdminSocketIoContainer).isRequired,
+  websocketContainer: PropTypes.instanceOf(WebsocketContainer).isRequired,
 };
 
 export default withTranslation()(ElasticsearchManagementWrapper);

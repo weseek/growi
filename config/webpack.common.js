@@ -96,6 +96,10 @@ module.exports = (options) => {
             basenameAsNamespace: true,
           },
         },
+        { // see https://github.com/abpetkov/switchery/issues/120
+          test: /switchery\.js$/,
+          loader: 'imports-loader?module=>false,exports=>false,define=>false,this=>window',
+        },
         /*
          * File loader for supporting images, for example, in CSS files.
          */

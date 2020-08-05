@@ -7,8 +7,9 @@ module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:login');
   const logger = require('@alias/logger')('growi:routes:login');
   const path = require('path');
+  const mailer = crowi.getMailer();
   const User = crowi.model('User');
-  const { configManager, appService, aclService, mailService } = crowi;
+  const { configManager, appService, aclService } = crowi;
 
   const actions = {};
 
@@ -157,7 +158,7 @@ module.exports = function(crowi, app) {
     const appTitle = appService.getAppTitle();
 
     const promises = admins.map((admin) => {
-      return mailService.send({
+      return mailer.send({
         to: admin.email,
         subject: `[${appTitle}:admin] A New User Created and Waiting for Activation`,
         template: path.join(crowi.localeDir, 'en_US/admin/userWaitingActivation.txt'),

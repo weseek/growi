@@ -1,3 +1,5 @@
+
+
 const debug = require('debug')('growi:crowi');
 const logger = require('@alias/logger')('growi:crowi');
 const pkg = require('@root/package.json');
@@ -8,13 +10,13 @@ const { getMongoUri, mongoOptions } = require('@commons/util/mongoose-utils');
 
 const path = require('path');
 
+const sep = path.sep;
+
 const mongoose = require('mongoose');
 
 const models = require('../models');
 
 const PluginService = require('../plugins/plugin.service');
-
-const sep = path.sep;
 
 function Crowi(rootdir) {
   const self = this;
@@ -33,12 +35,9 @@ function Crowi(rootdir) {
   this.tmpDir = path.join(this.rootDir, 'tmp') + sep;
   this.cacheDir = path.join(this.tmpDir, 'cache');
 
-  this.express = null;
-
   this.config = {};
   this.configManager = null;
-  this.s2sMessagingService = null;
-  this.mailService = null;
+  this.mailer = {};
   this.passportService = null;
   this.globalNotificationService = null;
   this.slackNotificationService = null;
@@ -51,9 +50,6 @@ function Crowi(rootdir) {
   this.exportService = null;
   this.importService = null;
   this.searchService = null;
-  this.socketIoService = null;
-  this.pageService = null;
-  this.syncPageStatusService = null;
   this.cdnResourcesService = new CdnResourcesService();
   this.interceptorManager = new InterceptorManager();
   this.xss = new Xss();
@@ -70,6 +66,7 @@ function Crowi(rootdir) {
   this.events = {
     user: new (require(`${self.eventsDir}user`))(this),
     page: new (require(`${self.eventsDir}page`))(this),
+    search: new (require(`${self.eventsDir}search`))(this),
     bookmark: new (require(`${self.eventsDir}bookmark`))(this),
     tag: new (require(`${self.eventsDir}tag`))(this),
     admin: new (require(`${self.eventsDir}admin`))(this),
@@ -81,10 +78,6 @@ Crowi.prototype.init = async function() {
   await this.setupModels();
   await this.setupSessionConfig();
   await this.setupConfigManager();
-
-  // setup messaging services
-  await this.setupS2sMessagingService();
-  await this.setupSocketIoService();
 
   // customizeService depends on AppService and XssService
   // passportService depends on appService
@@ -111,8 +104,6 @@ Crowi.prototype.init = async function() {
     this.setupUserGroup(),
     this.setupExport(),
     this.setupImport(),
-    this.setupPageService(),
-    this.setupSyncPageStatusService(),
   ]);
 
   // globalNotification depends on slack and mailer
@@ -261,29 +252,14 @@ Crowi.prototype.setupConfigManager = async function() {
   return this.configManager.loadConfigs();
 };
 
-Crowi.prototype.setupS2sMessagingService = async function() {
-  const s2sMessagingService = require('../service/s2s-messaging')(this);
-  if (s2sMessagingService != null) {
-    s2sMessagingService.subscribe();
-    this.configManager.setS2sMessagingService(s2sMessagingService);
-    // add as a message handler
-    s2sMessagingService.addMessageHandler(this.configManager);
-
-    this.s2sMessagingService = s2sMessagingService;
-  }
-};
-
-Crowi.prototype.setupSocketIoService = async function() {
-  const SocketIoService = require('../service/socket-io');
-  if (this.socketIoService == null) {
-    this.socketIoService = new SocketIoService();
-  }
-};
-
 Crowi.prototype.setupModels = async function() {
   Object.keys(models).forEach((key) => {
     return this.model(key, models[key](this));
   });
+};
+
+Crowi.prototype.getIo = function() {
+  return this.io;
 };
 
 Crowi.prototype.scanRuntimeVersions = async function() {
@@ -299,6 +275,10 @@ Crowi.prototype.scanRuntimeVersions = async function() {
       resolve();
     });
   });
+};
+
+Crowi.prototype.getMailer = function() {
+  return this.mailer;
 };
 
 Crowi.prototype.getSlack = function() {
@@ -328,24 +308,18 @@ Crowi.prototype.setupPassport = async function() {
   this.passportService.setupSerializer();
   // setup strategies
   try {
-    this.passportService.setupStrategyById('local');
-    this.passportService.setupStrategyById('ldap');
-    this.passportService.setupStrategyById('saml');
-    this.passportService.setupStrategyById('oidc');
-    this.passportService.setupStrategyById('basic');
-    this.passportService.setupStrategyById('google');
-    this.passportService.setupStrategyById('github');
-    this.passportService.setupStrategyById('twitter');
+    this.passportService.setupLocalStrategy();
+    this.passportService.setupLdapStrategy();
+    this.passportService.setupGoogleStrategy();
+    this.passportService.setupGitHubStrategy();
+    this.passportService.setupTwitterStrategy();
+    this.passportService.setupOidcStrategy();
+    this.passportService.setupSamlStrategy();
+    this.passportService.setupBasicStrategy();
   }
   catch (err) {
     logger.error(err);
   }
-
-  // add as a message handler
-  if (this.s2sMessagingService != null) {
-    this.s2sMessagingService.addMessageHandler(this.passportService);
-  }
-
   return Promise.resolve();
 };
 
@@ -355,13 +329,11 @@ Crowi.prototype.setupSearcher = async function() {
 };
 
 Crowi.prototype.setupMailer = async function() {
-  const MailService = require('@server/service/mail');
-  this.mailService = new MailService(this);
-
-  // add as a message handler
-  if (this.s2sMessagingService != null) {
-    this.s2sMessagingService.addMessageHandler(this.mailService);
-  }
+  const self = this;
+  return new Promise(((resolve, reject) => {
+    self.mailer = require('../util/mailer')(self);
+    resolve();
+  }));
 };
 
 Crowi.prototype.setupSlack = async function() {
@@ -393,9 +365,7 @@ Crowi.prototype.start = async function() {
   }
 
   await this.init();
-  await this.buildServer();
-
-  const { express } = this;
+  const express = await this.buildServer();
 
   // setup plugins
   this.pluginService = new PluginService(this, express);
@@ -411,17 +381,21 @@ Crowi.prototype.start = async function() {
     }
   });
 
-  this.socketIoService.attachServer(serverListening);
+  // setup WebSocket
+  const io = require('socket.io')(serverListening);
+  io.sockets.on('connection', (socket) => {
+  });
+  this.io = io;
 
   // setup Express Routes
-  this.setupRoutesAtLast();
+  this.setupRoutesAtLast(express);
 
   return serverListening;
 };
 
-Crowi.prototype.buildServer = async function() {
-  const env = this.node_env;
+Crowi.prototype.buildServer = function() {
   const express = require('express')();
+  const env = this.node_env;
 
   require('./express-init')(this, express);
 
@@ -440,20 +414,15 @@ Crowi.prototype.buildServer = async function() {
     express.use(morgan('dev'));
   }
 
-  this.express = express;
+  return Promise.resolve(express);
 };
 
 /**
  * setup Express Routes
  * !! this must be at last because it includes '/*' route !!
  */
-Crowi.prototype.setupRoutesAtLast = function() {
-  require('../routes')(this, this.express);
-};
-
-Crowi.prototype.setupAfterInstall = function() {
-  this.pluginService.autoDetectAndLoadPlugins();
-  this.setupRoutesAtLast();
+Crowi.prototype.setupRoutesAtLast = function(app) {
+  require('../routes')(this, app);
 };
 
 /**
@@ -514,14 +483,9 @@ Crowi.prototype.setUpAcl = async function() {
 Crowi.prototype.setUpCustomize = async function() {
   const CustomizeService = require('../service/customize');
   if (this.customizeService == null) {
-    this.customizeService = new CustomizeService(this);
+    this.customizeService = new CustomizeService(this.configManager, this.appService, this.xssService);
     this.customizeService.initCustomCss();
     this.customizeService.initCustomTitle();
-
-    // add as a message handler
-    if (this.s2sMessagingService != null) {
-      this.s2sMessagingService.addMessageHandler(this.customizeService);
-    }
   }
 };
 
@@ -531,13 +495,7 @@ Crowi.prototype.setUpCustomize = async function() {
 Crowi.prototype.setUpApp = async function() {
   const AppService = require('../service/app');
   if (this.appService == null) {
-    this.appService = new AppService(this);
-
-    // add as a message handler
-    const isInstalled = this.configManager.getConfig('crowi', 'app:installed');
-    if (this.s2sMessagingService != null && !isInstalled) {
-      this.s2sMessagingService.addMessageHandler(this.appService);
-    }
+    this.appService = new AppService(this.configManager);
   }
 };
 
@@ -586,25 +544,6 @@ Crowi.prototype.setupImport = async function() {
   const ImportService = require('../service/import');
   if (this.importService == null) {
     this.importService = new ImportService(this);
-  }
-};
-
-Crowi.prototype.setupPageService = async function() {
-  const PageEventService = require('../service/page');
-  if (this.pageService == null) {
-    this.pageService = new PageEventService(this);
-  }
-};
-
-Crowi.prototype.setupSyncPageStatusService = async function() {
-  const SyncPageStatusService = require('../service/system-events/sync-page-status');
-  if (this.syncPageStatusService == null) {
-    this.syncPageStatusService = new SyncPageStatusService(this, this.s2sMessagingService, this.socketIoService);
-
-    // add as a message handler
-    if (this.s2sMessagingService != null) {
-      this.s2sMessagingService.addMessageHandler(this.syncPageStatusService);
-    }
   }
 };
 

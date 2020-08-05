@@ -23,8 +23,6 @@
     {% include '../widget/headers/mathjax.html' %}
   {% endif %}
 
-  {% include '../widget/headers/drawio.html' %}
-
   {% include '../widget/headers/scripts-for-dev.html' %}
 
   <script src="{{ webpack_asset('js/boot.js') }}"></script>
@@ -99,7 +97,8 @@
 <div id="grw-fab-container"></div>
 {% endblock %}
 
-<div id="grw-hotkeys-manager"></div>
+<!-- /#staff-credit -->
+<div id="staff-credit"></div>
 
 {% include '../widget/system-version.html' %}
 

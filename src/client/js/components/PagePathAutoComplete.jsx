@@ -37,6 +37,7 @@ const PagePathAutoComplete = (props) => {
 
   return (
     <SearchTypeahead
+      crowi={props.crowi}
       onSubmit={submitHandler}
       onChange={inputChangeHandler}
       onInputChange={props.onInputChange}
@@ -50,6 +51,7 @@ const PagePathAutoComplete = (props) => {
 };
 
 PagePathAutoComplete.propTypes = {
+  crowi:            PropTypes.object.isRequired,
   initializedPath:  PropTypes.string,
   addTrailingSlash: PropTypes.bool,
 

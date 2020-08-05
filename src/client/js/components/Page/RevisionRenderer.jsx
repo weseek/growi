@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
-import NavigationContainer from '../../services/NavigationContainer';
 import GrowiRenderer from '../../util/GrowiRenderer';
 
 import RevisionBody from './RevisionBody';
@@ -36,7 +35,7 @@ class RevisionRenderer extends React.PureComponent {
 
   componentDidUpdate(prevProps) {
     const { markdown: prevMarkdown, highlightKeywords: prevHighlightKeywords } = prevProps;
-    const { markdown, highlightKeywords, navigationContainer } = this.props;
+    const { markdown, highlightKeywords } = this.props;
 
     // render only when props.markdown is updated
     if (markdown !== prevMarkdown || highlightKeywords !== prevHighlightKeywords) {
@@ -44,10 +43,6 @@ class RevisionRenderer extends React.PureComponent {
       this.renderHtml();
       return;
     }
-
-    const HeaderLink = document.getElementsByClassName('revision-head-link');
-    const HeaderLinkArray = Array.from(HeaderLink);
-    navigationContainer.addSmoothScrollEvent(HeaderLinkArray);
 
     const { interceptorManager } = this.props.appContainer;
 
@@ -120,12 +115,12 @@ class RevisionRenderer extends React.PureComponent {
 /**
  * Wrapper component for using unstated
  */
-const RevisionRendererWrapper = withUnstatedContainers(RevisionRenderer, [AppContainer, PageContainer, NavigationContainer]);
+const RevisionRendererWrapper = withUnstatedContainers(RevisionRenderer, [AppContainer, PageContainer]);
 
 RevisionRenderer.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
+
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   markdown: PropTypes.string.isRequired,
   highlightKeywords: PropTypes.string,

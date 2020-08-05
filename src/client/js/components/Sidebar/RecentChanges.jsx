@@ -59,7 +59,7 @@ class RecentChanges extends React.Component {
     return (
       <li className="list-group-item p-2">
         <div className="d-flex w-100">
-          <UserPicture user={page.lastUpdateUser} size="md" noTooltip />
+          <UserPicture user={page.lastUpdateUser} size="md" />
           <div className="flex-grow-1 ml-2">
             { !dPagePath.isRoot && <FormerLink /> }
             <h5 className="mb-1">

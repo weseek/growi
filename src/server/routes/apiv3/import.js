@@ -60,7 +60,7 @@ const generateOverwriteParams = (collectionName, req, options) => {
 };
 
 module.exports = (crowi) => {
-  const { growiBridgeService, importService, socketIoService } = crowi;
+  const { growiBridgeService, importService } = crowi;
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
@@ -70,13 +70,13 @@ module.exports = (crowi) => {
 
   // setup event
   this.adminEvent.on('onProgressForImport', (data) => {
-    socketIoService.getAdminSocket().emit('admin:onProgressForImport', data);
+    crowi.getIo().sockets.emit('admin:onProgressForImport', data);
   });
   this.adminEvent.on('onTerminateForImport', (data) => {
-    socketIoService.getAdminSocket().emit('admin:onTerminateForImport', data);
+    crowi.getIo().sockets.emit('admin:onTerminateForImport', data);
   });
   this.adminEvent.on('onErrorForImport', (data) => {
-    socketIoService.getAdminSocket().emit('admin:onErrorForImport', data);
+    crowi.getIo().sockets.emit('admin:onErrorForImport', data);
   });
 
   const uploads = multer({

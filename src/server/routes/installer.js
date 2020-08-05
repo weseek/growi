@@ -1,4 +1,4 @@
-module.exports = function(crowi) {
+module.exports = function(crowi, app) {
   const logger = require('@alias/logger')('growi:routes:installer');
   const path = require('path');
   const fs = require('graceful-fs');
@@ -84,9 +84,10 @@ module.exports = function(crowi) {
     }
     // create initial pages
     await createInitialPages(adminUser, language);
-
-    crowi.setupAfterInstall();
-    appService.publishPostInstallationMessage();
+    // init plugins
+    crowi.pluginService.autoDetectAndLoadPlugins();
+    // setup routes
+    crowi.setupRoutesAtLast(app);
 
     // login with passport
     req.logIn(adminUser, (err) => {

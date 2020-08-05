@@ -6,19 +6,15 @@ import io from 'socket.io-client';
  * Service container related to options for WebSocket
  * @extends {Container} unstated Container
  */
-export default class SocketIoContainer extends Container {
+export default class WebsocketContainer extends Container {
 
-  constructor(appContainer, namespace) {
+  constructor(appContainer) {
     super();
 
     this.appContainer = appContainer;
     this.appContainer.registerContainer(this);
 
-    const ns = namespace || '/';
-
-    this.socket = io(ns, {
-      transports: ['websocket'],
-    });
+    this.socket = io();
     this.socketClientId = Math.floor(Math.random() * 100000);
 
     this.state = {
@@ -30,10 +26,10 @@ export default class SocketIoContainer extends Container {
    * Workaround for the mangling in production build to break constructor.name
    */
   static getClassName() {
-    return 'SocketIoContainer';
+    return 'WebsocketContainer';
   }
 
-  getSocket() {
+  getWebSocket() {
     return this.socket;
   }
 

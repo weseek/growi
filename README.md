@@ -111,11 +111,11 @@ See [confirmed versions](https://docs.growi.org/en/dev/startup/dev-env.html#set-
 
 |command|desc|
 |--|--|
-|`yarn run build:prod`|Build the client|
-|`yarn run server:prod`|Launch the server|
-|`yarn start`|Invoke `yarn run build:prod` and `yarn run server:prod`|
+|`npm run build:prod`|Build the client|
+|`npm run server:prod`|Launch the server|
+|`npm start`|Invoke `npm run build:prod` and `npm run server:prod`|
 
-For more info, see [GROWI Docs: List of npm Commands](https://docs.growi.org/en/dev/startup-v2/launch.html#list-of-npm-commands).
+For more info, see [GROWI Docs: List of npm Commands](https://docs.growi.org/en/dev/startup/launch.html#list-of-npm-commands).
 
 
 Documentation

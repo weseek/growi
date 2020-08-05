@@ -42,15 +42,17 @@ class SearchService {
   initDelegator() {
     logger.info('Initializing search delegator');
 
+    const searchEvent = this.crowi.event('search');
+
     if (this.isSearchboxEnabled) {
       logger.info('Searchbox is enabled');
       const SearchboxDelegator = require('./search-delegator/searchbox.js');
-      return new SearchboxDelegator(this.configManager, this.crowi.socketIoService);
+      return new SearchboxDelegator(this.configManager, searchEvent);
     }
     if (this.isElasticsearchEnabled) {
       logger.info('Elasticsearch (not Searchbox) is enabled');
       const ElasticsearchDelegator = require('./search-delegator/elasticsearch.js');
-      return new ElasticsearchDelegator(this.configManager, this.crowi.socketIoService);
+      return new ElasticsearchDelegator(this.configManager, searchEvent);
     }
 
   }

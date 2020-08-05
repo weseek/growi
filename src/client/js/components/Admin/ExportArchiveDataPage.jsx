@@ -8,7 +8,7 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 // import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../services/AppContainer';
-import AdminSocketIoContainer from '../../services/AdminSocketIoContainer';
+import WebsocketContainer from '../../services/WebsocketContainer';
 
 import ProgressBar from './Common/ProgressBar';
 
@@ -67,7 +67,7 @@ class ExportArchiveDataPage extends React.Component {
   }
 
   setupWebsocketEventHandler() {
-    const socket = this.props.adminSocketIoContainer.getSocket();
+    const socket = this.props.websocketContainer.getWebSocket();
 
     // websocket event
     socket.on('admin:onProgressForExport', ({ currentCount, totalCount, progressList }) => {
@@ -248,12 +248,12 @@ class ExportArchiveDataPage extends React.Component {
 ExportArchiveDataPage.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  adminSocketIoContainer: PropTypes.instanceOf(AdminSocketIoContainer).isRequired,
+  websocketContainer: PropTypes.instanceOf(WebsocketContainer).isRequired,
 };
 
 /**
  * Wrapper component for using unstated
  */
-const ExportArchiveDataPageWrapper = withUnstatedContainers(ExportArchiveDataPage, [AppContainer, AdminSocketIoContainer]);
+const ExportArchiveDataPageWrapper = withUnstatedContainers(ExportArchiveDataPage, [AppContainer, WebsocketContainer]);
 
 export default withTranslation()(ExportArchiveDataPageWrapper);

@@ -8,6 +8,7 @@ class GlobalNotificationMailService {
 
   constructor(crowi) {
     this.crowi = crowi;
+    this.mailer = crowi.getMailer();
     this.type = crowi.model('GlobalNotificationSetting').TYPE.MAIL;
     this.event = crowi.model('GlobalNotificationSetting').EVENT;
   }
@@ -23,15 +24,13 @@ class GlobalNotificationMailService {
    * @param {{ comment: Comment, oldPath: string }} _ event specific vars
    */
   async fire(event, path, triggeredBy, vars) {
-    const { mailService } = this.crowi;
-
     const GlobalNotification = this.crowi.model('GlobalNotificationSetting');
     const notifications = await GlobalNotification.findSettingByPathAndEvent(event, path, this.type);
 
     const option = this.generateOption(event, path, triggeredBy, vars);
 
     await Promise.all(notifications.map((notification) => {
-      return mailService.send({ ...option, to: notification.toEmail });
+      return this.mailer.send({ ...option, to: notification.toEmail });
     }));
   }
 

@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
 
-import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
+import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 const logger = loggerFactory('growi:appSettings');
 
@@ -17,22 +17,7 @@ class MailSetting extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      isInitializeValueModalOpen: false,
-    };
-
-    this.openInitializeValueModal = this.openInitializeValueModal.bind(this);
-    this.closeInitializeValueModal = this.closeInitializeValueModal.bind(this);
     this.submitHandler = this.submitHandler.bind(this);
-    this.initialize = this.initialize.bind(this);
-  }
-
-  openInitializeValueModal() {
-    this.setState({ isInitializeValueModalOpen: true });
-  }
-
-  closeInitializeValueModal() {
-    this.setState({ isInitializeValueModalOpen: false });
   }
 
   async submitHandler() {
@@ -40,21 +25,7 @@ class MailSetting extends React.Component {
 
     try {
       await adminAppContainer.updateMailSettingHandler();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.mail_settings') }));
-    }
-    catch (err) {
-      toastError(err);
-      logger.error(err);
-    }
-  }
-
-  async initialize() {
-    const { t, adminAppContainer } = this.props;
-
-    try {
-      await adminAppContainer.initializeMailSettingHandler();
-      toastSuccess(t('toaster.initialize_successed', { target: t('admin:app_setting.mail_settings') }));
-      this.closeInitializeValueModal();
+      toastSuccess(t('toster.update_successed', { target: t('admin:app_setting.mail_settings') }));
     }
     catch (err) {
       toastError(err);
@@ -123,41 +94,7 @@ class MailSetting extends React.Component {
           </div>
         </div>
 
-        <div className="row my-3">
-          <div className="offset-5">
-            <button type="button" className="btn btn-primary" onClick={this.submitHandler} disabled={adminAppContainer.state.retrieveError != null}>
-              { t('Update') }
-            </button>
-          </div>
-          <div className="offset-1">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={this.openInitializeValueModal}
-              disabled={adminAppContainer.state.retrieveError != null}
-            >
-              {t('admin:app_setting.initialize_mail_settings')}
-            </button>
-          </div>
-        </div>
-        <Modal isOpen={this.state.isInitializeValueModalOpen} toggle={this.closeInitializeValueModal} className="initialize-mail-settings">
-          <ModalHeader tag="h4" toggle={this.closeInitializeValueModal} className="bg-danger text-light">
-            {t('admin:app_setting.initialize_mail_modal_header')}
-          </ModalHeader>
-          <ModalBody>
-            <div className="text-center mb-4">
-              {t('admin:app_setting.confirm_to_initialize_mail_settings')}
-            </div>
-            <div className="text-center my-2">
-              <button type="button" className="btn btn-outline-secondary mr-4" onClick={this.closeInitializeValueModal}>
-                {t('Cancel')}
-              </button>
-              <button type="button" className="btn btn-danger" onClick={this.initialize}>
-                {t('Initialize')}
-              </button>
-            </div>
-          </ModalBody>
-        </Modal>
+        <AdminUpdateButtonRow onClick={this.submitHandler} disabled={adminAppContainer.state.retrieveError != null} />
       </React.Fragment>
     );
   }

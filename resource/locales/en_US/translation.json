@@ -207,8 +207,8 @@
     "Copy to clipboard": "Copy to clipboard",
     "Page path": "Page path",
     "Page URL": "Page URL",
-    "Permanent link": "Permanent link",
-    "Page path and permanent link": "Page path and permanent link",
+    "Parmanent link": "Parmanent link",
+    "Page path and parmanent link": "Page path and parmanent link",
     "Markdown link": "Markdown link"
   },
   "search_help": {
@@ -318,7 +318,6 @@
       "Edit Page": "Edit Page",
       "Create Page": "Create Page",
       "Show Contributors": "Show Contributors",
-      "MirrorMode": "Mirror Mode",
       "Konami Code": "Konami Code",
       "konami_code_url": "https://en.wikipedia.org/wiki/Konami_Code"
     },
@@ -336,7 +335,6 @@
   },
   "toaster": {
     "update_successed": "Succeeded to update {{target}}",
-    "initialize_successed": "Succeeded to initialize {{target}}",
     "give_user_admin": "Succeeded to give {{username}} admin",
     "remove_user_admin": "Succeeded to remove {{username}} admin ",
     "activate_user_success": "Succeeded to activating {{username}}",

@@ -21,8 +21,6 @@ class CopyDropdown extends React.Component {
       isParamsAppended: true,
     };
 
-    this.id = (Math.random() * 1000).toString();
-
     this.toggle = this.toggle.bind(this);
     this.showToolTip = this.showToolTip.bind(this);
     this.generatePagePathWithParams = this.generatePagePathWithParams.bind(this);
@@ -99,9 +97,7 @@ class CopyDropdown extends React.Component {
     const pagePathUrl = this.generatePagePathUrl();
     const permalink = this.generatePermalink();
 
-    const { id, DropdownItemContents } = this;
-
-    const customSwitchForParamsId = `customSwitchForParams_${id}`;
+    const { DropdownItemContents } = this;
 
     return (
       <>
@@ -124,12 +120,12 @@ class CopyDropdown extends React.Component {
               <div className="px-3 custom-control custom-switch custom-switch-sm">
                 <input
                   type="checkbox"
-                  id={customSwitchForParamsId}
+                  id="customSwitchForParams"
                   className="custom-control-input"
                   checked={isParamsAppended}
                   onChange={e => this.setState({ isParamsAppended: !isParamsAppended })}
                 />
-                <label className="custom-control-label small" htmlFor={customSwitchForParamsId}>Append params</label>
+                <label className="custom-control-label small" htmlFor="customSwitchForParams">Append params</label>
               </div>
             </div>
 
@@ -153,22 +149,22 @@ class CopyDropdown extends React.Component {
 
             <DropdownItem divider className="my-0"></DropdownItem>
 
-            {/* Permanent Link */}
+            {/* Parmanent Link */}
             { pageId && (
               <CopyToClipboard text={permalink} onCopy={this.showToolTip}>
                 <DropdownItem className="px-3">
-                  <DropdownItemContents title={t('copy_to_clipboard.Permanent link')} contents={permalink} />
+                  <DropdownItemContents title={t('copy_to_clipboard.Parmanent link')} contents={permalink} />
                 </DropdownItem>
               </CopyToClipboard>
             )}
 
             <DropdownItem divider className="my-0"></DropdownItem>
 
-            {/* Page path + Permanent Link */}
+            {/* Page path + Parmanent Link */}
             { pageId && (
               <CopyToClipboard text={`${pagePathWithParams}\n${permalink}`} onCopy={this.showToolTip}>
                 <DropdownItem className="px-3">
-                  <DropdownItemContents title={t('copy_to_clipboard.Page path and permanent link')} contents={<>{pagePathWithParams}<br />{permalink}</>} />
+                  <DropdownItemContents title={t('copy_to_clipboard.Page path and parmanent link')} contents={<>{pagePathWithParams}<br />{permalink}</>} />
                 </DropdownItem>
               </CopyToClipboard>
             )}

@@ -266,19 +266,6 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
-   * Initialize mail setting
-   * @memberOf AdminAppContainer
-   * @return {Array} Appearance
-   */
-  async initializeMailSettingHandler() {
-    const response = await this.appContainer.apiv3.delete('/app-settings/mail-setting', {});
-    const {
-      mailSettingParams,
-    } = response.data;
-    this.setState(mailSettingParams);
-  }
-
-  /**
    * Update AWS setting
    * @memberOf AdminAppContainer
    * @return {Array} Appearance

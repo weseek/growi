@@ -149,9 +149,41 @@ module.exports = function(crowi, app) {
   const { slackNotificationService, configManager } = crowi;
   const interceptorManager = crowi.getInterceptorManager();
   const globalNotificationService = crowi.getGlobalNotificationService();
-  const pageService = crowi.pageService;
 
   const actions = {};
+
+  // register page events
+
+  const pageEvent = crowi.event('page');
+  pageEvent.on('create', (page, user, socketClientId) => {
+    page = serializeToObj(page); // eslint-disable-line no-param-reassign
+    crowi.getIo().sockets.emit('page:create', { page, user, socketClientId });
+  });
+  pageEvent.on('update', (page, user, socketClientId) => {
+    page = serializeToObj(page); // eslint-disable-line no-param-reassign
+    crowi.getIo().sockets.emit('page:update', { page, user, socketClientId });
+  });
+  pageEvent.on('delete', (page, user, socketClientId) => {
+    page = serializeToObj(page); // eslint-disable-line no-param-reassign
+    crowi.getIo().sockets.emit('page:delete', { page, user, socketClientId });
+  });
+
+
+  function serializeToObj(page) {
+    const returnObj = page.toObject();
+    if (page.revisionHackmdSynced != null && page.revisionHackmdSynced._id != null) {
+      returnObj.revisionHackmdSynced = page.revisionHackmdSynced._id;
+    }
+
+    if (page.lastUpdateUser != null && page.lastUpdateUser instanceof User) {
+      returnObj.lastUpdateUser = page.lastUpdateUser.toObject();
+    }
+    if (page.creator != null && page.creator instanceof User) {
+      returnObj.creator = page.creator.toObject();
+    }
+
+    return returnObj;
+  }
 
   function getPathFromRequest(req) {
     return pathUtils.normalizePath(req.params[0] || '');
@@ -710,7 +742,7 @@ module.exports = function(crowi, app) {
       savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
     }
 
-    const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
+    const result = { page: serializeToObj(createdPage), tags: savedTags };
     res.json(ApiResponse.success(result));
 
     // update scopes for descendants
@@ -839,7 +871,7 @@ module.exports = function(crowi, app) {
       savedTags = await PageTagRelation.listTagNamesByPage(pageId);
     }
 
-    const result = { page: pageService.serializeToObj(page), tags: savedTags };
+    const result = { page: serializeToObj(page), tags: savedTags };
     res.json(ApiResponse.success(result));
 
     // update scopes for descendants

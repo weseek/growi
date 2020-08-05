@@ -162,6 +162,7 @@ const PageCreateModal = (props) => {
               {isReachable
                 ? (
                   <PagePathAutoComplete
+                    crowi={appContainer}
                     initializedPath={pathname}
                     addTrailingSlash
                     onSubmit={ppacSubmitHandler}

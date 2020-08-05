@@ -143,6 +143,7 @@ function connectToParentWithPenpal() {
   console.log('[HackMD] Loading GROWI agent for HackMD...');
 
   window.addEventListener('load', (event) => {
+    console.log('loaded');
     addEventListenersToCodemirror();
   });
 

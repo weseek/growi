@@ -1,11 +1,10 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
 import { withTranslation } from 'react-i18next';
 
 import PageContainer from '../services/PageContainer';
-import NavigationContainer from '../services/NavigationContainer';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 import StickyStretchableScroller from './StickyStretchableScroller';
@@ -19,7 +18,7 @@ const logger = loggerFactory('growi:TableOfContents');
  */
 const TableOfContents = (props) => {
 
-  const { pageContainer, navigationContainer } = props;
+  const { pageContainer } = props;
 
   const calcViewHeight = useCallback(() => {
     // calculate absolute top of '#revision-toc' element
@@ -31,13 +30,6 @@ const TableOfContents = (props) => {
   }, []);
 
   const { tocHtml } = pageContainer.state;
-
-  // execute after generation toc html
-  useEffect(() => {
-    const tocDom = document.getElementById('revision-toc-content');
-    const anchorsInToc = Array.from(tocDom.getElementsByTagName('a'));
-    navigationContainer.addSmoothScrollEvent(anchorsInToc);
-  }, [tocHtml, navigationContainer]);
 
   return (
     <>
@@ -64,11 +56,10 @@ const TableOfContents = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const TableOfContentsWrapper = withUnstatedContainers(TableOfContents, [PageContainer, NavigationContainer]);
+const TableOfContentsWrapper = withUnstatedContainers(TableOfContents, [PageContainer]);
 
 TableOfContents.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 
 export default withTranslation()(TableOfContentsWrapper);
