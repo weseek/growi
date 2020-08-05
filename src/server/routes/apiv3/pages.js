@@ -174,6 +174,7 @@ module.exports = (crowi) => {
       logger.error('Failed to find the pages');
     }
 
+
     // check whether path starts slash
     newPagePath = pathUtils.addHeadingSlash(newPagePath);
 
@@ -188,11 +189,12 @@ module.exports = (crowi) => {
     req.body.grantUserGroupId = page.grantedGroup;
     req.body.pageTags = originTags;
 
+
     // check page existence
-    const isExist = (await Page.count(req.body.path)) > 0;
+    const isExist = (await Page.count( req.body.path: pageNameInput)) > 0;
     if (isExist) {
       res.code = 'page_exists';
-      return res.apiv3Err(new ErrorV3('This page is already exist.', 'already_exists'), 409);
+      return res.apiv3Err(new ErrorV3('Page exists', 'already_exists'), 409);
     }
 
     const createdPage = await Page.create(req.body.path, req.body.body, req.user);
