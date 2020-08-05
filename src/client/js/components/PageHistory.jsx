@@ -26,6 +26,7 @@ class PageHistory extends React.Component {
 
   async componentWillMount() {
     const pageId = this.props.pageId;
+    const shareLinkId = this.props.shareLinkId || null;
 
     if (!pageId) {
       return;
@@ -34,7 +35,7 @@ class PageHistory extends React.Component {
     let res;
     try {
       this.setState({ isLoading: true });
-      res = await this.props.crowi.apiGet('/revisions.ids', { page_id: pageId });
+      res = await this.props.crowi.apiGet('/revisions.ids', { page_id: pageId, share_link_id: shareLinkId });
     }
     catch (err) {
       logger.error(err);
@@ -110,12 +111,14 @@ class PageHistory extends React.Component {
   }
 
   fetchPageRevisionBody(revision) {
+    const shareLinkId = this.props.shareLinkId || null;
+
     if (revision.body) {
       return;
     }
 
     this.props.crowi.apiGet('/revisions.get',
-      { page_id: this.props.pageId, revision_id: revision._id })
+      { page_id: this.props.pageId, revision_id: revision._id, share_link_id: shareLinkId })
       .then((res) => {
         if (res.ok) {
           this.setState({
@@ -166,6 +169,8 @@ class PageHistory extends React.Component {
 
 PageHistory.propTypes = {
   t: PropTypes.func.isRequired, // i18next
+
+  shareLinkId: PropTypes.string,
   pageId: PropTypes.string,
   crowi: PropTypes.object.isRequired,
 };

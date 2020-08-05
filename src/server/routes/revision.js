@@ -102,6 +102,7 @@ module.exports = function(crowi, app) {
   actions.api.get = async function(req, res) {
     const pageId = req.query.page_id;
     const revisionId = req.query.revision_id;
+    const { isSharedPage } = req;
 
     if (!pageId || !revisionId) {
       return res.json(ApiResponse.error('Parameter page_id and revision_id are required.'));
@@ -109,7 +110,7 @@ module.exports = function(crowi, app) {
 
     // check whether accessible
     const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
-    if (!isAccessible) {
+    if (!isSharedPage && !isAccessible) {
       return res.json(ApiResponse.error('Current user is not accessible to this page.'));
     }
 

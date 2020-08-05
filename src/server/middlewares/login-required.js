@@ -17,6 +17,12 @@ module.exports = (crowi, isGuestAllowed = false) => {
       return next();
     }
 
+    // check the page is shared
+    if (isGuestAllowed && req.isSharedPage) {
+      logger.debug('Target page is shared page');
+      return next();
+    }
+
     const User = crowi.model('User');
 
     // check the user logged in
