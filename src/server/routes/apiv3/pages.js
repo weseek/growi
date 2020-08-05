@@ -146,9 +146,8 @@ module.exports = (crowi) => {
       return res.apiv3(result);
     }
     catch (err) {
-      res.code = 'unknown';
       logger.error('Failed to get recent pages', err);
-      return res.apiv3Err(err, 500);
+      return res.apiv3Err(err, 500, 'unknown');
     }
   });
 
@@ -165,8 +164,7 @@ module.exports = (crowi) => {
     };
 
     if (!Page.isCreatableName(newPagePath)) {
-      res.code = 'invalid_path';
-      return res.apiv3Err(`Could not use the path '${newPagePath})'`, 409);
+      return res.apiv3Err(`Could not use the path '${newPagePath})'`, 409, 'invalid_path');
     }
 
     // check whether path starts slash
@@ -175,8 +173,7 @@ module.exports = (crowi) => {
     const isExist = await Page.count({ path: newPagePath }) > 0;
     if (isExist) {
       // if page found, cannot cannot rename to that path
-      res.code = 'already_exists';
-      return res.apiv3Err(`'new_path=${newPagePath}' already exists`, 409);
+      return res.apiv3Err(`'new_path=${newPagePath}' already exists`, 409, 'already_exists');
     }
 
     let page;
@@ -185,13 +182,11 @@ module.exports = (crowi) => {
       page = await Page.findByIdAndViewer(pageId, req.user);
 
       if (page == null) {
-        res.code = 'notfound_or_forbidden';
-        return res.apiv3Err(`Page '${pageId}' is not found or forbidden`, 401);
+        return res.apiv3Err(`Page '${pageId}' is not found or forbidden`, 401, 'notfound_or_forbidden');
       }
 
       if (!page.isUpdatable(revisionId)) {
-        res.code = 'notfound_or_forbidden';
-        return res.apiv3Err('Someone could update this page, so couldn\'t delete.', 409);
+        return res.apiv3Err('Someone could update this page, so couldn\'t delete.', 409, 'notfound_or_forbidden');
       }
 
       if (isRecursively) {
@@ -203,8 +198,7 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error(err);
-      res.code = 'unknown';
-      return res.apiv3Err('Failed to update page.', 500);
+      return res.apiv3Err('Failed to update page.', 500, 'unknown');
     }
 
     // result.page = page; // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
