@@ -386,20 +386,6 @@ module.exports = (crowi) => {
 
     try {
       const mailSettingParams = await updateMailSettinConfig(requestMailSettingParams);
-
-      // update config without publishing S2sMessage
-      await configManager.updateConfigsInTheSameNamespace('crowi', requestMailSettingParams, true);
-
-      await mailService.initialize();
-      mailService.publishUpdatedMessage();
-
-      const mailSettingParams = {
-        fromAddress: configManager.getConfig('crowi', 'mail:from'),
-        smtpHost: configManager.getConfig('crowi', 'mail:smtpHost'),
-        smtpPort: configManager.getConfig('crowi', 'mail:smtpPort'),
-        smtpUser: configManager.getConfig('crowi', 'mail:smtpUser'),
-        smtpPassword: configManager.getConfig('crowi', 'mail:smtpPassword'),
-      };
       return res.apiv3({ mailSettingParams });
     }
     catch (err) {
