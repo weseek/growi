@@ -201,7 +201,7 @@ module.exports = (crowi) => {
       return res.apiv3Err('Failed to update page.', 500, 'unknown');
     }
 
-    const result = { page: pageService.serializeToObj(page)};
+    const result = { page: pageService.serializeToObj(page) };
 
     try {
       // global notification
