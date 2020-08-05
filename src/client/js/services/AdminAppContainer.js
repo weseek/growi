@@ -78,7 +78,6 @@ export default class AdminAppContainer extends Container {
       const { appSettingsParams } = response.data;
 
       this.setState({
-        isRetrieving: false,
         title: appSettingsParams.title,
         confidential: appSettingsParams.confidential,
         globalLang: appSettingsParams.globalLang,
