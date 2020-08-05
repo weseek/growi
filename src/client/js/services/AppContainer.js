@@ -339,9 +339,8 @@ export default class AppContainer extends Container {
       return res.data;
     }
     catch (err) {
-      const { code } = err.response.data;
       const errors = apiv3ErrorHandler(err);
-      throw { ...errors, code };
+      throw errors;
     }
   }
 

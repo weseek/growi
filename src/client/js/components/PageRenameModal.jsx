@@ -23,8 +23,8 @@ const PageRenameModal = (props) => {
   const { crowi } = appContainer.config;
 
   const [pageNameInput, setPageNameInput] = useState(path);
-  const [errorCode, setErrorCode] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
+
+  const [errors, setErrors] = useState([]);
 
   const [isRenameRecursively, SetIsRenameRecursively] = useState(true);
   const [isRenameRedirect, SetIsRenameRedirect] = useState(false);
@@ -52,8 +52,7 @@ const PageRenameModal = (props) => {
 
   async function rename() {
     try {
-      setErrorCode(null);
-      setErrorMessage(null);
+      setErrors([]);
 
       const response = await pageContainer.rename(
         pageNameInput,
@@ -71,9 +70,8 @@ const PageRenameModal = (props) => {
 
       window.location.href = `${url.pathname}${url.search}`;
     }
-    catch (err) {
-      setErrorCode(err[0].code);
-      setErrorMessage(err.message);
+    catch (errs) {
+      setErrors(errs);
     }
   }
 
@@ -150,7 +148,7 @@ const PageRenameModal = (props) => {
         </div>
       </ModalBody>
       <ModalFooter>
-        <ApiErrorMessage errorCode={errorCode} errorMessage={errorMessage} targetPath={pageNameInput} />
+        <ApiErrorMessage errors={errors} targetPath={pageNameInput} />
         <button type="button" className="btn btn-primary" onClick={rename}>Rename</button>
       </ModalFooter>
     </Modal>
