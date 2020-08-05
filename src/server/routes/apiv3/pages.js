@@ -151,7 +151,7 @@ module.exports = (crowi) => {
     }
   });
 
-  // TODO swagger and validation
+  // TODO write swagger(GW-3430) and add validation (GW-3429)
   router.put('/rename', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
     const { pageId, isRecursively, revisionId } = req.body;
 
