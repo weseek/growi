@@ -5,6 +5,7 @@ const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line
 const express = require('express');
 const pathUtils = require('growi-commons').pathUtils;
 
+const { body } = require('express-validator/check');
 
 const router = express.Router();
 
@@ -19,6 +20,7 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
+  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const Page = crowi.model('Page');
   const PageTagRelation = crowi.model('PageTagRelation');
@@ -26,10 +28,26 @@ module.exports = (crowi) => {
 
   const globalNotificationService = crowi.getGlobalNotificationService();
   const userNotificationService = crowi.getUserNotificationService();
+
   const { pageService } = crowi;
 
-  // TODO write swagger(GW-3384) and validation(GW-3385)
-  router.post('/', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
+  const validator = {
+    createPage: [
+      body('body').exists().not().isEmpty({ ignore_whitespace: true })
+        .withMessage('body is required'),
+      body('path').exists().not().isEmpty({ ignore_whitespace: true })
+        .withMessage('path is required'),
+      body('grant').if(value => value != null).isInt({ min: 0, max: 5 }).withMessage('grant must be integer from 1 to 5'),
+      body('overwriteScopesOfDescendants').if(value => value != null).isBoolean().withMessage('overwriteScopesOfDescendants must be boolean'),
+      body('isSlackEnabled').if(value => value != null).isBoolean().withMessage('isSlackEnabled must be boolean'),
+      body('slackChannels').if(value => value != null).isString().withMessage('slackChannels must be string'),
+      body('socketClientId').if(value => value != null).isInt().withMessage('socketClientId must be string'),
+      body('pageTags').if(value => value != null).isArray().withMessage('pageTags must be array'),
+    ],
+  };
+
+  // TODO write swagger(GW-3384)
+  router.post('/', accessTokenParser, loginRequiredStrictly, csrf, validator.createPage, apiV3FormValidator, async(req, res) => {
     const {
       body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, socketClientId, pageTags,
     } = req.body;
