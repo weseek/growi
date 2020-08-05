@@ -268,7 +268,7 @@ ShareLinkForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-
   onCloseForm: PropTypes.func,
+};
 
 export default withTranslation()(ShareLinkFormWrapper);
