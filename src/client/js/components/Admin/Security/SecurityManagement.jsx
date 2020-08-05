@@ -18,6 +18,7 @@ import GoogleSecuritySetting from './GoogleSecuritySetting';
 import GitHubSecuritySetting from './GitHubSecuritySetting';
 import TwitterSecuritySetting from './TwitterSecuritySetting';
 import FacebookSecuritySetting from './FacebookSecuritySetting';
+import ShareLinkSetting from './ShareLinkSetting';
 
 class SecurityManagement extends React.Component {
 
@@ -44,9 +45,15 @@ class SecurityManagement extends React.Component {
     const { activeTab, activeComponents } = this.state;
     return (
       <Fragment>
-        <div>
+        <div className="mb-5">
           <SecuritySetting />
         </div>
+
+        {/* Shared Link List */}
+        <div className="mb-5">
+          <ShareLinkSetting />
+        </div>
+
 
         {/* XSS configuration link */}
         <div className="mb-5">

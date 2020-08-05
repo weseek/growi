@@ -3,16 +3,16 @@
 //
 
 // determine optional variables
-$border-image-navbar: linear-gradient(to right, #ccc 0%, #ccc 100%) !default;
+$border-image-navbar: linear-gradient(to right, $gray-300 0%, $gray-300 100%) !default;
 $bgcolor-search-top-dropdown: $secondary !default;
 $bgcolor-sidebar-nav-item-active: darken($bgcolor-sidebar, 10%) !default;
 $text-shadow-sidebar-nav-item-active: 1px 1px 2px $primary !default;
-$bgcolor-inline-code: #f0f0f0 !default;
-$color-inline-code: #c7254e !default;
-$bordercolor-inline-code: #ccc8c8 !default;
-$bordercolor-nav-tabs: #dee2e6 !default;
-$bordercolor-nav-tabs-hover: #e9ecef #e9ecef $bordercolor-nav-tabs !default;
-$color-nav-tabs-link-active: #495057 !default;
+$bgcolor-inline-code: $gray-100 !default;
+$color-inline-code: darken($red, 15%) !default;
+$bordercolor-inline-code: $gray-400 !default;
+$bordercolor-nav-tabs: $gray-300 !default;
+$bordercolor-nav-tabs-hover: $gray-200 $gray-200 $bordercolor-nav-tabs !default;
+$color-nav-tabs-link-active: $gray-600 !default;
 $bordercolor-nav-tabs-active: $bordercolor-nav-tabs $bordercolor-nav-tabs $bgcolor-global !default;
 
 // override bootstrap variables
@@ -264,7 +264,7 @@ pre:not(.hljs):not(.CodeMirror-line) {
  */
 .admin-page {
   span.slider {
-    background-color: #ccc;
+    background-color: $gray-300;
 
     &:before {
       background-color: white;
