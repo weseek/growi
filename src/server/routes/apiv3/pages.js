@@ -201,7 +201,7 @@ module.exports = (crowi) => {
       return res.apiv3Err('Failed to update page.', 500, 'unknown');
     }
 
-    // result.page = page; // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+    const result = { page: pageService.serializeToObj(page)};
 
     try {
       // global notification
@@ -213,7 +213,7 @@ module.exports = (crowi) => {
       logger.error('Move notification failed', err);
     }
 
-    return res.apiv3({ page });
+    return res.apiv3(result);
   });
 
 
