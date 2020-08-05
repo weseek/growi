@@ -38,11 +38,11 @@ $themecolor: #12b105;
 html[light],
 html[dark] {
   $primary: #460039;
-  $light: #f0f0f0;
+  $light: $gray-100;
 
   // Background colors
   $bgcolor-global: #fdfdfd;
-  $bgcolor-inline-code: #f0f0f0; //optional
+  $bgcolor-inline-code: $gray-100; //optional
   $bgcolor-card: #f1ffe4;
   $bgcolor-subnav: #fafafa;
 

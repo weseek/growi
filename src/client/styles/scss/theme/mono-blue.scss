@@ -12,7 +12,7 @@ html[light] {
 
   // Background colors
   $bgcolor-global: $themelight;
-  $bgcolor-inline-code: #f0f0f0; //optional
+  $bgcolor-inline-code: $gray-100; //optional
   $bgcolor-card: darken($themelight, 5%);
 
   // Font colors
