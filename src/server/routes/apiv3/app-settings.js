@@ -366,7 +366,7 @@ module.exports = (crowi) => {
     try {
       const { configManager, mailService } = crowi;
 
-      // update config without publishing ConfigPubsubMessage
+      // update config without publishing S2sMessage
       await configManager.updateConfigsInTheSameNamespace('crowi', requestMailSettingParams, true);
 
       await mailService.initialize();
@@ -423,7 +423,7 @@ module.exports = (crowi) => {
     try {
       const { configManager, mailService } = crowi;
 
-      // update config without publishing ConfigPubsubMessage
+      // update config without publishing S2sMessage
       await configManager.updateConfigsInTheSameNamespace('crowi', requestAwsSettingParams, true);
 
       await mailService.initialize();
