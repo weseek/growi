@@ -100,13 +100,13 @@ const PersonalDropdown = (props) => {
 
   const LightIcon = props => (
     <>
-      <div id={props.id} className={`px-2 lightmode-icon ${useOsSettings ? 'use-os-setting' : ''}`}><LightModeIcon /></div>
+      <div id={props.id} className={`px-2 lightmode-icon ${useOsSettings ? 'use-os-settings' : ''}`}><LightModeIcon /></div>
       <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Light</UncontrolledTooltip>
     </>
   );
   const DarkIcon = props => (
     <>
-      <div id={props.id} className={`px-2 darkmode-icon ${useOsSettings ? 'fill-muted' : ''}`}><DarkModeIcon /></div>
+      <div id={props.id} className={`px-2 darkmode-icon ${useOsSettings ? 'use-os-settings' : ''}`}><DarkModeIcon /></div>
       <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Dark</UncontrolledTooltip>
     </>
   );

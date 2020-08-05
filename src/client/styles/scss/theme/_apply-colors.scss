@@ -86,16 +86,11 @@ pre:not(.hljs):not(.CodeMirror-line) {
   .sidebar-drawer-icon {
     fill: $color-global;
   }
-  .lightmode-icon,
-  .darkmode-icon {
-    .use-os-setting {
-      fill: red !important;
-    }
-  }
-}
 
-.fill-muted {
-  fill: blue !important;
+  .lightmode-icon.use-os-settings,
+  .darkmode-icon.use-os-settings {
+    fill: $secondary;
+  }
 }
 
 .dropdown-item {
