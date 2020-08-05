@@ -6,6 +6,7 @@ const express = require('express');
 const pathUtils = require('growi-commons').pathUtils;
 
 const { body } = require('express-validator/check');
+const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const router = express.Router();
 
@@ -164,7 +165,7 @@ module.exports = (crowi) => {
     };
 
     if (!Page.isCreatableName(newPagePath)) {
-      return res.apiv3Err(`Could not use the path '${newPagePath})'`, 409, 'invalid_path');
+      return res.apiv3Err(new ErrorV3(`Could not use the path '${newPagePath})'`, 'invalid_path'), 409);
     }
 
     // check whether path starts slash
@@ -173,7 +174,7 @@ module.exports = (crowi) => {
     const isExist = await Page.count({ path: newPagePath }) > 0;
     if (isExist) {
       // if page found, cannot cannot rename to that path
-      return res.apiv3Err(`'new_path=${newPagePath}' already exists`, 409, 'already_exists');
+      return res.apiv3Err(new ErrorV3(`'new_path=${newPagePath}' already exists`, 'already_exists'), 409);
     }
 
     let page;
@@ -182,11 +183,11 @@ module.exports = (crowi) => {
       page = await Page.findByIdAndViewer(pageId, req.user);
 
       if (page == null) {
-        return res.apiv3Err(`Page '${pageId}' is not found or forbidden`, 401, 'notfound_or_forbidden');
+        return res.apiv3Err(new ErrorV3(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 401);
       }
 
       if (!page.isUpdatable(revisionId)) {
-        return res.apiv3Err('Someone could update this page, so couldn\'t delete.', 409, 'notfound_or_forbidden');
+        return res.apiv3Err(new ErrorV3('Someone could update this page, so couldn\'t delete.', 'notfound_or_forbidden'), 409);
       }
 
       if (isRecursively) {
@@ -198,7 +199,7 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error(err);
-      return res.apiv3Err('Failed to update page.', 500, 'unknown');
+      return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
     }
 
     const result = { page: pageService.serializeToObj(page) };

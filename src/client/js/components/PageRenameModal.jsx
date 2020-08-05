@@ -72,7 +72,7 @@ const PageRenameModal = (props) => {
       window.location.href = `${url.pathname}${url.search}`;
     }
     catch (err) {
-      setErrorCode(err.code);
+      setErrorCode(err[0].code);
       setErrorMessage(err.message);
     }
   }
