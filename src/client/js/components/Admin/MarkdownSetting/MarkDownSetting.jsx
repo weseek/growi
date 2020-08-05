@@ -38,7 +38,7 @@ class MarkdownSetting extends React.Component {
     return (
       <React.Fragment>
         {/* Line Break Setting */}
-        <h2 className="admin-setting-header">{ t('admin:markdown_setting.lineBreak_header') }</h2>
+        <h2 className="admin-setting-header">{t('admin:markdown_setting.lineBreak_header')}</h2>
         <Card className="card well my-3">
           <CardBody className="px-0 py-2">{ t('admin:markdown_setting.lineBreak_desc') }</CardBody>
         </Card>
