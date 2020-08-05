@@ -4,18 +4,18 @@ const nodemailer = require('nodemailer');
 const swig = require('swig-templates');
 
 
-const ConfigPubsubMessage = require('../models/vo/config-pubsub-message');
-const ConfigPubsubMessageHandlable = require('./config-pubsub/handlable');
+const S2sMessage = require('../models/vo/s2s-message');
+const S2sMessageHandlable = require('./s2s-messaging/handlable');
 
 
-class MailService extends ConfigPubsubMessageHandlable {
+class MailService extends S2sMessageHandlable {
 
   constructor(crowi) {
     super();
 
     this.appService = crowi.appService;
     this.configManager = crowi.configManager;
-    this.configPubsub = crowi.configPubsub;
+    this.s2sMessagingService = crowi.s2sMessagingService;
 
     this.mailConfig = {};
     this.mailer = {};
@@ -26,19 +26,19 @@ class MailService extends ConfigPubsubMessageHandlable {
   /**
    * @inheritdoc
    */
-  shouldHandleConfigPubsubMessage(configPubsubMessage) {
-    const { eventName, updatedAt } = configPubsubMessage;
+  shouldHandleS2sMessage(s2sMessage) {
+    const { eventName, updatedAt } = s2sMessage;
     if (eventName !== 'mailServiceUpdated' || updatedAt == null) {
       return false;
     }
 
-    return this.lastLoadedAt == null || this.lastLoadedAt < new Date(configPubsubMessage.updatedAt);
+    return this.lastLoadedAt == null || this.lastLoadedAt < new Date(s2sMessage.updatedAt);
   }
 
   /**
    * @inheritdoc
    */
-  async handleConfigPubsubMessage(configPubsubMessage) {
+  async handleS2sMessage(s2sMessage) {
     const { configManager } = this;
 
     logger.info('Initialize mail settings by pubsub notification');
@@ -47,16 +47,16 @@ class MailService extends ConfigPubsubMessageHandlable {
   }
 
   async publishUpdatedMessage() {
-    const { configPubsub } = this;
+    const { s2sMessagingService } = this;
 
-    if (configPubsub != null) {
-      const configPubsubMessage = new ConfigPubsubMessage('mailServiceUpdated', { updatedAt: new Date() });
+    if (s2sMessagingService != null) {
+      const s2sMessage = new S2sMessage('mailServiceUpdated', { updatedAt: new Date() });
 
       try {
-        await configPubsub.publish(configPubsubMessage);
+        await s2sMessagingService.publish(s2sMessage);
       }
       catch (e) {
-        logger.error('Failed to publish update message with configPubsub: ', e.message);
+        logger.error('Failed to publish update message with S2sMessagingService: ', e.message);
       }
     }
   }

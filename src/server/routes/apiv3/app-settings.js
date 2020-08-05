@@ -326,7 +326,7 @@ module.exports = (crowi) => {
       mailService,
     } = crowi;
 
-    // update config without publishing ConfigPubsubMessage
+    // update config without publishing S2sMessage
     await configManager.updateConfigsInTheSameNamespace('crowi', requestMailSettingParams, true);
 
     await mailService.initialize();
@@ -386,6 +386,20 @@ module.exports = (crowi) => {
 
     try {
       const mailSettingParams = await updateMailSettinConfig(requestMailSettingParams);
+
+      // update config without publishing S2sMessage
+      await configManager.updateConfigsInTheSameNamespace('crowi', requestMailSettingParams, true);
+
+      await mailService.initialize();
+      mailService.publishUpdatedMessage();
+
+      const mailSettingParams = {
+        fromAddress: configManager.getConfig('crowi', 'mail:from'),
+        smtpHost: configManager.getConfig('crowi', 'mail:smtpHost'),
+        smtpPort: configManager.getConfig('crowi', 'mail:smtpPort'),
+        smtpUser: configManager.getConfig('crowi', 'mail:smtpUser'),
+        smtpPassword: configManager.getConfig('crowi', 'mail:smtpPassword'),
+      };
       return res.apiv3({ mailSettingParams });
     }
     catch (err) {
@@ -426,7 +440,6 @@ module.exports = (crowi) => {
       'mail:smtpUser': null,
       'mail:smtpPassword': null,
     };
-
     try {
       const mailSettingParams = await updateMailSettinConfig(requestMailSettingParams);
       return res.apiv3({ mailSettingParams });
@@ -473,7 +486,7 @@ module.exports = (crowi) => {
     try {
       const { configManager, mailService } = crowi;
 
-      // update config without publishing ConfigPubsubMessage
+      // update config without publishing S2sMessage
       await configManager.updateConfigsInTheSameNamespace('crowi', requestAwsSettingParams, true);
 
       await mailService.initialize();
