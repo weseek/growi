@@ -28,7 +28,7 @@ export default class GridEditModal extends React.Component {
   }
 
   async checkResposiveSize(rs) {
-    await this.setState({ responsiveSize: rs });
+    // await this.setState({ responsiveSize: rs });
   }
 
   async checkColsRatios(cr) {
@@ -41,27 +41,17 @@ export default class GridEditModal extends React.Component {
   }
 
   showBreakPoint() {
-    if (this.state.responsiveSize === BootstrapGrid.ResponsiveSize.XS_SIZE) {
-      return (
+    const resSizes = BootstrapGrid.ResponsiveSize;
+    const output = Object.values(resSizes).map((resSize) => {
+      return (this.state.responsiveSize === resSize
+        && (
         <span>
-          <i className="pr-1 icon-screen-smartphone"></i> Mobile / No break breakPoint
+          <i className={`pr-1 icon-screen-${resSize}`}> {resSize}</i>
         </span>
+        )
       );
-    }
-    if (this.state.responsiveSize === BootstrapGrid.ResponsiveSize.SM_SIZE) {
-      return (
-        <span>
-          <i className="pr-1 icon-screen-tablet"></i> tablet
-        </span>
-      );
-    }
-    if (this.state.responsiveSize === BootstrapGrid.ResponsiveSize.MD_SIZE) {
-      return (
-        <span>
-          <i className="pr-1 icon-screen-desktop"></i> desktop
-        </span>
-      );
-    }
+    });
+    return output;
   }
 
   init(gridHtml) {
