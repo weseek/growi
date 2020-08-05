@@ -320,6 +320,27 @@ module.exports = (crowi) => {
     await sendMailPromiseWrapper(smtpClient, mailOptions);
   }
 
+  const updateMailSettinConfig = async function(requestMailSettingParams) {
+    const {
+      configManager,
+      mailService,
+    } = crowi;
+
+    // update config without publishing S2sMessage
+    await configManager.updateConfigsInTheSameNamespace('crowi', requestMailSettingParams, true);
+
+    await mailService.initialize();
+    mailService.publishUpdatedMessage();
+
+    return {
+      fromAddress: configManager.getConfig('crowi', 'mail:from'),
+      smtpHost: configManager.getConfig('crowi', 'mail:smtpHost'),
+      smtpPort: configManager.getConfig('crowi', 'mail:smtpPort'),
+      smtpUser: configManager.getConfig('crowi', 'mail:smtpUser'),
+      smtpPassword: configManager.getConfig('crowi', 'mail:smtpPassword'),
+    };
+  };
+
   /**
    * @swagger
    *
@@ -327,7 +348,7 @@ module.exports = (crowi) => {
    *      put:
    *        tags: [AppSettings]
    *        operationId: updateAppSettingMailSetting
-   *        summary: /app-settings/site-url-setting
+   *        summary: /app-settings/mail-setting
    *        description: Update mail setting
    *        requestBody:
    *          required: true
@@ -364,27 +385,55 @@ module.exports = (crowi) => {
     };
 
     try {
-      const { configManager, mailService } = crowi;
-
-      // update config without publishing ConfigPubsubMessage
-      await configManager.updateConfigsInTheSameNamespace('crowi', requestMailSettingParams, true);
-
-      await mailService.initialize();
-      mailService.publishUpdatedMessage();
-
-      const mailSettingParams = {
-        fromAddress: configManager.getConfig('crowi', 'mail:from'),
-        smtpHost: configManager.getConfig('crowi', 'mail:smtpHost'),
-        smtpPort: configManager.getConfig('crowi', 'mail:smtpPort'),
-        smtpUser: configManager.getConfig('crowi', 'mail:smtpUser'),
-        smtpPassword: configManager.getConfig('crowi', 'mail:smtpPassword'),
-      };
+      const mailSettingParams = await updateMailSettinConfig(requestMailSettingParams);
       return res.apiv3({ mailSettingParams });
     }
     catch (err) {
       const msg = 'Error occurred in updating mail setting';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-mailSetting-failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /app-settings/mail-setting:
+   *      delete:
+   *        tags: [AppSettings]
+   *        operationId: deleteAppSettingMailSetting
+   *        summary: /app-settings/mail-setting
+   *        description: delete mail setting
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/MailSettingParams'
+   *        responses:
+   *          200:
+   *            description: Succeeded to delete mail setting
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/MailSettingParams'
+   */
+  router.delete('/mail-setting', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    const requestMailSettingParams = {
+      'mail:from': null,
+      'mail:smtpHost': null,
+      'mail:smtpPort': null,
+      'mail:smtpUser': null,
+      'mail:smtpPassword': null,
+    };
+    try {
+      const mailSettingParams = await updateMailSettinConfig(requestMailSettingParams);
+      return res.apiv3({ mailSettingParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in initializing mail setting';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'initialize-mailSetting-failed'));
     }
   });
 
@@ -423,7 +472,7 @@ module.exports = (crowi) => {
     try {
       const { configManager, mailService } = crowi;
 
-      // update config without publishing ConfigPubsubMessage
+      // update config without publishing S2sMessage
       await configManager.updateConfigsInTheSameNamespace('crowi', requestAwsSettingParams, true);
 
       await mailService.initialize();

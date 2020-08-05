@@ -42,11 +42,11 @@ html[dark] {
   $primary: #d3c665;
   // Background colors
   $bgcolor-card: #f5f5f5;
-  $bgcolor-inline-code: #f0f0f0; //optional
+  $bgcolor-inline-code: $gray-100; //optional
 
   // Font colors
   $color-global: #112744;
-  $color-reversal: #eee;
+  $color-reversal: $gray-100;
   $color-link: $subthemecolor;
   $color-link-hover: lighten($color-link, 10%);
   $color-link-nabvar: $color-reversal;
@@ -90,7 +90,7 @@ html[dark] {
   $color-editor-icons: $color-global;
 
   // Border colors
-  $border-color-theme: #ccc; // former: `$navbar-border: #ccc;`
+  $border-color-theme: $gray-300; // former: `$navbar-border: $gray-300;`
   $bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors

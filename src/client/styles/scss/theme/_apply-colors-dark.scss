@@ -141,7 +141,7 @@ ul.pagination {
 
   .btn-fill {
     .btn-label {
-      color: #ccc;
+      color: $gray-300;
     }
     .btn-label-text {
       color: #aaa;
@@ -180,7 +180,7 @@ ul.pagination {
  */
 .grw-drawer-toggler {
   @extend .btn-dark;
-  color: #999;
+  color: $gray-400;
 }
 
 /*

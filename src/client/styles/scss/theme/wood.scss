@@ -63,7 +63,7 @@ html[dark] {
   // List Group colors
   // $color-list: $color-global;
   $bgcolor-list: transparent;
-  $color-list-hover: #eee;
+  $color-list-hover: $gray-100;
   $bgcolor-list-hover: darken($bgcolor-global, 3%);
   // $color-list-active: $color-reversal;
   // $bgcolor-list-active: $primary;
@@ -97,7 +97,7 @@ html[dark] {
   $bgcolor-resize-button: $themecolor;
 
   // Border colors
-  $border-color-theme: #ccc; // former: `$navbar-border: #ccc;`
+  $border-color-theme: $gray-300; // former: `$navbar-border: $gray-300;`
   $bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
