@@ -18,7 +18,7 @@ describe('ConfigManager test', () => {
     const configModelMock = {};
 
     beforeEach(async(done) => {
-      configManager.configPubsub = {};
+      configManager.s2sMessagingService = {};
 
       // prepare mocks for updateConfigsInTheSameNamespace method
       configManager.configModel = configModelMock;

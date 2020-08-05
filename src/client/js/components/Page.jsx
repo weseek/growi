@@ -61,7 +61,7 @@ class Page extends React.Component {
    */
   launchDrawioModal(beginLineNumber, endLineNumber) {
     const markdown = this.props.pageContainer.state.markdown;
-    const drawioMarkdownArray = markdown.split(/\r\n|\r|\n/).slice(beginLineNumber, endLineNumber);
+    const drawioMarkdownArray = markdown.split(/\r\n|\r|\n/).slice(beginLineNumber - 1, endLineNumber);
     const drawioData = drawioMarkdownArray.slice(1, drawioMarkdownArray.length - 1).join('\n').trim();
     this.setState({ currentTargetDrawioArea: { beginLineNumber, endLineNumber } });
     this.drawioModal.current.show(drawioData);

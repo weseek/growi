@@ -21,6 +21,8 @@ class CopyDropdown extends React.Component {
       isParamsAppended: true,
     };
 
+    this.id = (Math.random() * 1000).toString();
+
     this.toggle = this.toggle.bind(this);
     this.showToolTip = this.showToolTip.bind(this);
     this.generatePagePathWithParams = this.generatePagePathWithParams.bind(this);
@@ -97,7 +99,9 @@ class CopyDropdown extends React.Component {
     const pagePathUrl = this.generatePagePathUrl();
     const permalink = this.generatePermalink();
 
-    const { DropdownItemContents } = this;
+    const { id, DropdownItemContents } = this;
+
+    const customSwitchForParamsId = `customSwitchForParams_${id}`;
 
     return (
       <>
@@ -120,12 +124,12 @@ class CopyDropdown extends React.Component {
               <div className="px-3 custom-control custom-switch custom-switch-sm">
                 <input
                   type="checkbox"
-                  id="customSwitchForParams"
+                  id={customSwitchForParamsId}
                   className="custom-control-input"
                   checked={isParamsAppended}
                   onChange={e => this.setState({ isParamsAppended: !isParamsAppended })}
                 />
-                <label className="custom-control-label small" htmlFor="customSwitchForParams">Append params</label>
+                <label className="custom-control-label small" htmlFor={customSwitchForParamsId}>Append params</label>
               </div>
             </div>
 
