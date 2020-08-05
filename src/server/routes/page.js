@@ -318,6 +318,9 @@ module.exports = function(crowi, app) {
     addRendarVarsForPage(renderVars, portalPage);
     await addRenderVarsForSlack(renderVars, portalPage);
 
+    const sharelinksNumber = await ShareLink.countDocuments({ relatedPage: portalPage._id });
+    renderVars.sharelinksNumber = sharelinksNumber;
+
     const limit = 50;
     const offset = parseInt(req.query.offset) || 0;
 
@@ -412,20 +415,22 @@ module.exports = function(crowi, app) {
 
   actions.showSharedPage = async function(req, res, next) {
     const { linkId } = req.params;
+    const revisionId = req.query.revision;
 
     const layoutName = configManager.getConfig('crowi', 'customize:layout');
     const view = `layout-${layoutName}/shared_page`;
 
     const shareLink = await ShareLink.findOne({ _id: linkId }).populate('relatedPage');
-    let page = shareLink.relatedPage;
 
-    if (page == null) {
-      // page is not found
+    if (shareLink == null || shareLink.relatedPage == null) {
+      // page or sharelink are not found
       return res.render(`layout-${layoutName}/not_found_shared_page`);
     }
 
+    let page = shareLink.relatedPage;
+
     // check if share link is expired
-    if (shareLink.expiredAt.getTime() < new Date().getTime()) {
+    if (shareLink.isExpired()) {
       // page is not found
       return res.render(`layout-${layoutName}/expired_shared_page`);
     }
@@ -433,6 +438,17 @@ module.exports = function(crowi, app) {
     const renderVars = {};
 
     renderVars.sharelink = shareLink;
+
+    // presentation mode
+    if (req.query.presentation) {
+      page = await page.populateDataToMakePresentation(revisionId);
+
+      // populate
+      addRendarVarsForPage(renderVars, page);
+      return res.render('page_presentation', renderVars);
+    }
+
+    page.initLatestRevisionField(revisionId);
 
     // populate
     page = await page.populateDataToShowRevision();

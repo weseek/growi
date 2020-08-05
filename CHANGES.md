@@ -2,7 +2,14 @@
 
 ## v4.1.1-RC
 
-* Fix: "Append params" switch of CopyDropdown does not work when multiple CopyDropdown instance exists
+* Feature: External share link
+* Feature: Create/edit linker with GUI
+* Improvement: Optimize some features that operate revision data
+    * Page history
+    * Renaming pages
+    * Deleting pages
+* Fix: "Append params" switch of CopyDropdown does not work when multiple CopyDropdown instance exists\
+
 
 ## v4.1.0
 
