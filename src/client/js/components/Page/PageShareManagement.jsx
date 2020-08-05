@@ -30,17 +30,11 @@ const PageShareManagement = (props) => {
   async function exportPageHundler(type) {
     const { pageId, revisionId } = pageContainer.state;
     try {
-      // TODO GW-3062 現状では pdf ファイル形式の場合空のデータがダウンロードされるので要修正
-      // const responseType = type === 'pdf' ? 'arraybuffer' : 'json';
       const axios = require('axios').create({
         responseType: 'arraybuffer',
-        headers: {
-          'Content-Type': 'application/pdf',
-        },
       });
 
-      const data = await axios.get('/_api/v3/page/export', {
-      // const data = await appContainer.apiv3Get('/page/export',
+      const { data } = await axios.get('/_api/v3/page/export', {
         params:
           {
             pageId,
@@ -48,15 +42,10 @@ const PageShareManagement = (props) => {
             type,
           },
       });
-      console.log(data.data);
-      const blobType = type === 'pdf' ? 'application/pdf' : 'application/json';
-      const blob = new Blob(
-        [data.data],
-        { type: blobType },
-      );
+      const blob = new Blob([data]);
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
-      link.download = `${pageId}.${type}`;
+      link.download = `${revisionId}.${type}`;
       link.click();
       link.remove();
     }

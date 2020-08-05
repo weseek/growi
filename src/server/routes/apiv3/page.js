@@ -227,27 +227,10 @@ module.exports = (crowi) => {
 
       const Revision = crowi.model('Revision');
       const revision = await Revision.findById(revisionIdForFind);
-
       const markdown = revision.body;
-      const buf = await exportService.convertToPdfFromMd(markdown);
-      const ab = new ArrayBuffer(buf.length);
-      const view = new Uint8Array(ab);
-      for (let i = 0; i < buf.length; ++i) {
-        view[i] = buf[i];
-      }
-      // const ab = new Uint8Array(buf).buffer;
+      const data = type === 'pdf' ? await exportService.convertMdToPdf(markdown) : markdown;
 
-      // const { Readable } = require('stream');
-      // const readable = new Readable();
-      // readable._read = () => {};
-      // readable.push(ab);
-      // readable.push(null);
-      // return readable.pipe(res);
-      // res.type('arraybuffer');
-      const fs = require('fs');
-      fs.writeFile('test.pdf', Buffer.from(ab), 'binary', () => {});
-      res.setHeader('Content-Type', 'application/pdf');
-      return res.send(ab);
+      return res.send(data);
     }
     catch (err) {
       logger.error('Failed to get page', err);

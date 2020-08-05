@@ -351,7 +351,8 @@ class ExportService {
     return zipFile;
   }
 
-  async convertToPdfFromMd(md) {
+  // convert md text to pdf as buffer data (promise wrapper)
+  async convertMdToPdf(md) {
     return new Promise((resolve, reject) => {
       markdownpdf()
         .from.string(md)
