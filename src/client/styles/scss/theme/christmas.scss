@@ -136,11 +136,11 @@ html[dark] {
   .nologin {
     .input-group {
       .input-group-text {
-        color: #444;
+        color: $gray- 700;
         background-color: rgba(darken(white, 20%), 0.6);
       }
       .form-control {
-        color: #444;
+        color: $gray- 700;
         background-color: rgba(white, 0.6);
       }
     }
