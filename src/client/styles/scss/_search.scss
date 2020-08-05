@@ -1,6 +1,6 @@
 .search-listpage-icon {
   font-size: 16px;
-  color: #$gray-400;
+  color: $gray-400;
 }
 
 .search-listpage-clear {
@@ -26,7 +26,7 @@
     width: 24px;
     height: 24px;
     padding: 0;
-    color: #$gray-400;
+    color: $gray-400;
   }
 
   .rbt-menu {
@@ -48,7 +48,7 @@
 
       .page-list-meta {
         font-size: 0.9em;
-        color: #$gray-400;
+        color: $gray-400;
 
         > span {
           margin-right: 0.3rem;
