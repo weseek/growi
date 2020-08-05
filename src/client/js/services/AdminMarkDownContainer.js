@@ -19,7 +19,8 @@ export default class AdminMarkDownContainer extends Container {
 
     this.state = {
       retrieveError: null,
-      isEnabledLinebreaks: false,
+      // set dummy value tile for using suspense
+      isEnabledLinebreaks: 0,
       isEnabledLinebreaksInComments: false,
       pageBreakSeparator: 1,
       pageBreakCustomSeparator: '',

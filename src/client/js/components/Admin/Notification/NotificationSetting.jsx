@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
 import loggerFactory from '@alias/logger';
 
@@ -9,13 +8,13 @@ import { toastError } from '../../../util/apiNotification';
 
 import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
 
-import RenderNotificationSetting from './RenderNotificationSetting';
+import NotificationSettingPageContents from './NotificationSettingPageContents';
 
 const logger = loggerFactory('growi:NotificationSetting');
 
 function NotificationSetting(props) {
 
-  if (props.adminNotificationContainer.state.isRetrieving) {
+  if (props.adminNotificationContainer.state.selectSlackOption === 0) {
     throw new Promise(async() => {
       try {
         await props.adminNotificationContainer.retrieveNotificationData();
@@ -27,7 +26,7 @@ function NotificationSetting(props) {
       }
     });
   }
-  return <RenderNotificationSetting />;
+  return <NotificationSettingPageContents />;
 }
 
 const NotificationSettingWrapper = withUnstatedContainers(NotificationSetting, [AdminNotificationContainer]);
@@ -38,4 +37,18 @@ NotificationSetting.propTypes = {
 
 };
 
-export default withTranslation()(NotificationSettingWrapper);
+function NotificationSettingSuspenseWrapper(props) {
+  return (
+    <Suspense
+      fallback={(
+        <div className="row">
+          <i className="fa fa-5x fa-spinner fa-pulse mx-auto text-muted"></i>
+        </div>
+      )}
+    >
+      <NotificationSettingWrapper />
+    </Suspense>
+  );
+}
+
+export default NotificationSettingSuspenseWrapper;

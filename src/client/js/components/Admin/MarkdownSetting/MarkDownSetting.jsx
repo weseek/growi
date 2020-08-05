@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
 import loggerFactory from '@alias/logger';
 
@@ -9,13 +8,13 @@ import { toastError } from '../../../util/apiNotification';
 
 import AdminMarkDownContainer from '../../../services/AdminMarkDownContainer';
 
-import RenderMarkDownSetting from './RenderMarkDownSetting';
+import MarkDownSettingPageContents from './MarkDownSettingPageContents';
 
 const logger = loggerFactory('growi:MarkDown');
 
 function MarkDownSetting(props) {
 
-  if (props.adminMarkDownContainer.state.isRetrieving) {
+  if (props.adminMarkDownContainer.state.isEnabledLinebreaks === 0) {
     throw new Promise(async() => {
       try {
         await props.adminMarkDownContainer.retrieveMarkdownData();
@@ -28,7 +27,7 @@ function MarkDownSetting(props) {
     });
   }
 
-  return <RenderMarkDownSetting />;
+  return <MarkDownSettingPageContents />;
 }
 
 const MarkdownSettingWrapper = withUnstatedContainers(MarkDownSetting, [AdminMarkDownContainer]);
@@ -38,4 +37,19 @@ MarkDownSetting.propTypes = {
   adminMarkDownContainer: PropTypes.instanceOf(AdminMarkDownContainer).isRequired,
 };
 
-export default withTranslation()(MarkdownSettingWrapper);
+function MarkdownSettingSuspenseWrapper(props) {
+  return (
+    <Suspense
+      fallback={(
+        <div className="row">
+          <i className="fa fa-5x fa-spinner fa-pulse mx-auto text-muted"></i>
+        </div>
+      )}
+    >
+      <MarkdownSettingWrapper />
+    </Suspense>
+  );
+}
+
+
+export default MarkdownSettingSuspenseWrapper;

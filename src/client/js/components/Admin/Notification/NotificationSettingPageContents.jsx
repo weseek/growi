@@ -9,7 +9,7 @@ import SlackAppConfiguration from './SlackAppConfiguration';
 import UserTriggerNotification from './UserTriggerNotification';
 import GlobalNotification from './GlobalNotification';
 
-class RenderNotificationSetting extends React.Component {
+class NotificationSettingPageContents extends React.Component {
 
   constructor() {
     super();
@@ -81,8 +81,8 @@ class RenderNotificationSetting extends React.Component {
 
 }
 
-RenderNotificationSetting.propTypes = {
+NotificationSettingPageContents.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 };
 
-export default withTranslation()(RenderNotificationSetting);
+export default withTranslation()(NotificationSettingPageContents);

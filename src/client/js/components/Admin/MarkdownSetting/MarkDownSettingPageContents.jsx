@@ -7,7 +7,7 @@ import LineBreakForm from './LineBreakForm';
 import PresentationForm from './PresentationForm';
 import XssForm from './XssForm';
 
-class RenderMarkDownSetting extends React.Component {
+class MarkDownSettingPageContents extends React.Component {
 
   render() {
     const { t } = this.props;
@@ -40,8 +40,8 @@ class RenderMarkDownSetting extends React.Component {
 
 }
 
-RenderMarkDownSetting.propTypes = {
+MarkDownSettingPageContents.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 };
 
-export default withTranslation()(RenderMarkDownSetting);
+export default withTranslation()(MarkDownSettingPageContents);
