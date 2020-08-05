@@ -11,7 +11,7 @@ import Fab from './components/Fab';
 import ShareLinkAlert from './components/Page/ShareLinkAlert';
 
 import AppContainer from './services/AppContainer';
-import WebsocketContainer from './services/WebsocketContainer';
+import SocketIoContainer from './services/SocketIoContainer';
 import PageCreateModal from './components/PageCreateModal';
 
 const logger = loggerFactory('growi:cli:app');
@@ -27,7 +27,7 @@ window.xss = xss;
 // create unstated container instance
 const appContainer = new AppContainer();
 // eslint-disable-next-line no-unused-vars
-const websocketContainer = new WebsocketContainer(appContainer);
+const socketIoContainer = new SocketIoContainer(appContainer);
 
 appContainer.initApp();
 

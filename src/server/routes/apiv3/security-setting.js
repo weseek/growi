@@ -327,7 +327,7 @@ module.exports = (crowi) => {
   async function updateAndReloadStrategySettings(authId, params) {
     const { configManager, passportService } = crowi;
 
-    // update config without publishing ConfigPubsubMessage
+    // update config without publishing S2sMessage
     await configManager.updateConfigsInTheSameNamespace('crowi', params, true);
 
     await passportService.setupStrategyById(authId);
