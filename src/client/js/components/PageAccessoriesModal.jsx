@@ -25,6 +25,13 @@ const PageAccessoriesModal = (props) => {
     props.onClose();
   }
 
+  function switchTabHandler(clickedTab) {
+    if (props.onSwitch == null) {
+      return;
+    }
+    props.onSwitch(clickedTab);
+  }
+
   return (
     <React.Fragment>
       <Modal
@@ -36,25 +43,33 @@ const PageAccessoriesModal = (props) => {
         <ModalBody>
           <Nav className="nav-title border-bottom">
             <NavItem className={`nav-link ${props.activeTab === 'pageList' && 'active'}`}>
-              <NavLink>
+              <NavLink
+                onClick={() => { switchTabHandler('pageList') }}
+              >
                 <PageList />
                 { t('page_list') }
               </NavLink>
             </NavItem>
             <NavItem className={`nav-link ${props.activeTab === 'timeLine' && 'active'}`}>
-              <NavLink>
+              <NavLink
+                onClick={() => { switchTabHandler('timeLine') }}
+              >
                 <TimeLine />
                 { t('Timeline View') }
               </NavLink>
             </NavItem>
             <NavItem className={`nav-link ${props.activeTab === 'recentChanges' && 'active'}`}>
-              <NavLink>
+              <NavLink
+                onClick={() => { switchTabHandler('recentChanges') }}
+              >
                 <RecentChanges />
                 { t('History') }
               </NavLink>
             </NavItem>
             <NavItem className={`nav-link ${props.activeTab === 'attachment' && 'active'}`}>
-              <NavLink>
+              <NavLink
+                onClick={() => { switchTabHandler('attachment') }}
+              >
                 <Attachment />
                 { t('attachment_data') }
               </NavLink>
@@ -82,6 +97,7 @@ PageAccessoriesModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
   activeTab: PropTypes.string.isRequired,
+  onSwitch: PropTypes.func,
 };
 
 export default withTranslation()(PageAccessoriesModalWrapper);
