@@ -1348,6 +1348,7 @@ module.exports = function(crowi, app) {
    * @apiParam {String} new_path New path name.
    * @apiParam {Bool} create_redirect
    */
+  // TODO remove after GW-3429 and GW-3430
   api.rename = async function(req, res) {
     const pageId = req.body.page_id;
     const previousRevision = req.body.revision_id || null;
