@@ -29,6 +29,7 @@ class MarkdownSetting extends React.Component {
       adminMarkDownContainer.setState({ retrieveError: err.message });
       logger.error(err);
     }
+
   }
 
   render() {
@@ -37,23 +38,23 @@ class MarkdownSetting extends React.Component {
     return (
       <React.Fragment>
         {/* Line Break Setting */}
-        <h2 className="admin-setting-header">{t('admin:markdown_setting.lineBreak_header')}</h2>
+        <h2 className="admin-setting-header">{ t('admin:markdown_setting.lineBreak_header') }</h2>
         <Card className="card well my-3">
-          <CardBody className="px-0 py-2">{t('admin:markdown_setting.lineBreak_desc')}</CardBody>
+          <CardBody className="px-0 py-2">{ t('admin:markdown_setting.lineBreak_desc') }</CardBody>
         </Card>
         <LineBreakForm />
 
         {/* Presentation Setting */}
-        <h2 className="admin-setting-header">{t('admin:markdown_setting.presentation_header')}</h2>
+        <h2 className="admin-setting-header">{ t('admin:markdown_setting.presentation_header') }</h2>
         <Card className="card well my-3">
-          <CardBody className="px-0 py-2">{t('admin:markdown_setting.presentation_desc')}</CardBody>
+          <CardBody className="px-0 py-2">{ t('admin:markdown_setting.presentation_desc') }</CardBody>
         </Card>
         <PresentationForm />
 
         {/* XSS Setting */}
-        <h2 className="admin-setting-header">{t('admin:markdown_setting.xss_header')}</h2>
+        <h2 className="admin-setting-header">{ t('admin:markdown_setting.xss_header') }</h2>
         <Card className="card well my-3">
-          <CardBody className="px-0 py-2">{t('admin:markdown_setting.xss_desc')}</CardBody>
+          <CardBody className="px-0 py-2">{ t('admin:markdown_setting.xss_desc') }</CardBody>
         </Card>
         <XssForm />
       </React.Fragment>
@@ -68,6 +69,7 @@ MarkdownSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminMarkDownContainer: PropTypes.instanceOf(AdminMarkDownContainer).isRequired,
+
 };
 
 export default withTranslation()(MarkdownSettingWrapper);
