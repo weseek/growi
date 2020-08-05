@@ -19,7 +19,8 @@ export default class AdminAppContainer extends Container {
 
     this.state = {
       retrieveError: null,
-      title: undefined,
+      // set dummy value tile for using suspense
+      title: 0,
       confidential: '',
       globalLang: '',
       fileUpload: '',

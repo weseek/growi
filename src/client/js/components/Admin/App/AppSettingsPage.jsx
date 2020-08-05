@@ -12,8 +12,7 @@ import AppSettingsPageContents from './AppSettingsPageContents';
 const logger = loggerFactory('growi:appSettings');
 
 function AppSettingsPage(props) {
-
-  if (props.adminAppContainer.state.title === undefined) {
+  if (props.adminAppContainer.state.title === 0) {
     throw new Promise(async() => {
       try {
         await props.adminAppContainer.retrieveAppSettingsData();
