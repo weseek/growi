@@ -81,11 +81,21 @@ pre:not(.hljs):not(.CodeMirror-line) {
 
 .grw-personal-dropdown {
   .lightmode-icon,
-  .Darkmode-icon,
+  .darkmode-icon,
   .sidebar-dock-icon,
   .sidebar-drawer-icon {
     fill: $color-global;
   }
+  .lightmode-icon,
+  .darkmode-icon {
+    .use-os-setting {
+      fill: red !important;
+    }
+  }
+}
+
+.fill-muted {
+  color: blue !important;
 }
 
 .dropdown-item {
