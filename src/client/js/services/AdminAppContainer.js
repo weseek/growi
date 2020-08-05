@@ -19,7 +19,7 @@ export default class AdminAppContainer extends Container {
 
     this.state = {
       retrieveError: null,
-      title: '',
+      title: undefined,
       confidential: '',
       globalLang: '',
       fileUpload: '',

@@ -1,5 +1,4 @@
-import React from 'react';
-import { withTranslation } from 'react-i18next';
+import React, { Suspense } from 'react';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
@@ -8,13 +7,13 @@ import { toastError } from '../../../util/apiNotification';
 
 import AdminAppContainer from '../../../services/AdminAppContainer';
 
-import RenderAppSettingsPage from './RenderAppSettingsPage';
+import AppSettingsPageContents from './AppSettingsPageContents';
 
 const logger = loggerFactory('growi:appSettings');
 
 function AppSettingsPage(props) {
 
-  if (props.adminAppContainer.state.isRetrieving) {
+  if (props.adminAppContainer.state.title === undefined) {
     throw new Promise(async() => {
       try {
         await props.adminAppContainer.retrieveAppSettingsData();
@@ -27,11 +26,10 @@ function AppSettingsPage(props) {
     });
   }
 
-  return <RenderAppSettingsPage />;
+  return <AppSettingsPageContents />;
 }
 
 AppSettingsPage.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 
@@ -40,5 +38,18 @@ AppSettingsPage.propTypes = {
  */
 const AppSettingsPageWrapper = withUnstatedContainers(AppSettingsPage, [AdminAppContainer]);
 
+function AppSettingsPageSuspenseWrapper(props) {
+  return (
+    <Suspense
+      fallback={(
+        <div className="row">
+          <i className="fa fa-5x fa-spinner fa-pulse mx-auto text-muted"></i>
+        </div>
+      )}
+    >
+      <AppSettingsPageWrapper />
+    </Suspense>
+  );
+}
 
-export default withTranslation()(AppSettingsPageWrapper);
+export default AppSettingsPageSuspenseWrapper;
