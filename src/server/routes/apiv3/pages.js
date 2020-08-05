@@ -28,39 +28,8 @@ module.exports = (crowi) => {
 
 
   const globalNotificationService = crowi.getGlobalNotificationService();
-  const { pageService, slackNotificationService } = crowi;
-
-
-  // user notification
-  // TODO GW-3387 create '/service/user-notification' module
-  /**
-   *
-   * @param {Page} page
-   * @param {User} user
-   * @param {string} slackChannelsStr comma separated string. e.g. 'general,channel1,channel2'
-   * @param {boolean} updateOrCreate
-   * @param {string} previousRevision
-   */
-  async function notifyToSlackByUser(page, user, slackChannelsStr, updateOrCreate, previousRevision) {
-    await page.updateSlackChannel(slackChannelsStr)
-      .catch((err) => {
-        logger.error('Error occured in updating slack channels: ', err);
-      });
-
-
-    if (slackNotificationService.hasSlackConfig()) {
-      const slackChannels = slackChannelsStr != null ? slackChannelsStr.split(',') : [null];
-
-      const promises = slackChannels.map((chan) => {
-        return crowi.slack.postPage(page, user, chan, updateOrCreate, previousRevision);
-      });
-
-      Promise.all(promises)
-        .catch((err) => {
-          logger.error('Error occured in sending slack notification: ', err);
-        });
-    }
-  }
+  const userNotificationService = crowi.getUserNotificationService();
+  const { pageService } = crowi;
 
   // TODO write swagger(GW-3384) and validation(GW-3385)
   router.post('/', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
@@ -103,16 +72,28 @@ module.exports = (crowi) => {
     }
 
     // global notification
-    try {
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, req.user);
-    }
-    catch (err) {
-      logger.error('Create notification failed', err);
+    if (globalNotificationService != null) {
+      try {
+        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, req.user);
+      }
+      catch (err) {
+        logger.error('Create grobal notification failed', err);
+      }
     }
 
     // user notification
-    if (isSlackEnabled) {
-      await notifyToSlackByUser(createdPage, req.user, slackChannels, 'create', false);
+    if (isSlackEnabled && userNotificationService != null) {
+      try {
+        const results = await userNotificationService.fire(createdPage, req.user, slackChannels, 'create', false);
+        results.forEach((result) => {
+          if (result.status === 'rejected') {
+            logger.error('Create user notification failed', result.reason);
+          }
+        });
+      }
+      catch (err) {
+        logger.error('Create user notification failed', err);
+      }
     }
 
     return res.apiv3(result);
