@@ -80,9 +80,16 @@ pre:not(.hljs):not(.CodeMirror-line) {
 }
 
 .grw-personal-dropdown {
+  .lightmode-icon,
+  .darkmode-icon,
   .sidebar-dock-icon,
   .sidebar-drawer-icon {
     fill: $color-global;
+  }
+
+  .lightmode-icon.use-os-settings,
+  .darkmode-icon.use-os-settings {
+    fill: $secondary;
   }
 }
 

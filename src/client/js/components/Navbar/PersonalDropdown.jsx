@@ -22,6 +22,8 @@ import UserPicture from '../User/UserPicture';
 
 import SidebarDrawerIcon from '../SidebarDrawerIcon';
 import SidebarDockIcon from '../SidebarDockIcon';
+import DarkModeIcon from '../DarkModeIcon';
+import LightModeIcon from '../LightModeIcon';
 
 
 const PersonalDropdown = (props) => {
@@ -95,7 +97,20 @@ const PersonalDropdown = (props) => {
       <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Dock</UncontrolledTooltip>
     </>
   );
-  /* eslint-enable react/prop-types */
+
+  const LightIcon = props => (
+    <>
+      <div id={props.id} className={`px-2 lightmode-icon ${useOsSettings ? 'use-os-settings' : ''}`}><LightModeIcon /></div>
+      <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Light</UncontrolledTooltip>
+    </>
+  );
+  const DarkIcon = props => (
+    <>
+      <div id={props.id} className={`px-2 darkmode-icon ${useOsSettings ? 'use-os-settings' : ''}`}><DarkModeIcon /></div>
+      <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Dark</UncontrolledTooltip>
+    </>
+  );
+
 
   return (
     <>
@@ -192,7 +207,7 @@ const PersonalDropdown = (props) => {
           </div>
           <div className="form-row justify-content-center">
             <div className="form-group col-auto mb-0 d-flex align-items-center">
-              <span className={useOsSettings ? '' : 'text-muted'}>Light</span>
+              <LightIcon id="icon-prefer-light" />
               <div className="custom-control custom-switch custom-checkbox-secondary ml-2">
                 <input
                   id="swUserPreference"
@@ -204,7 +219,7 @@ const PersonalDropdown = (props) => {
                 />
                 <label className="custom-control-label" htmlFor="swUserPreference"></label>
               </div>
-              <span className={useOsSettings ? '' : 'text-muted'}>Dark</span>
+              <DarkIcon id="icon-prefer-dark" />
             </div>
           </div>
         </form>
