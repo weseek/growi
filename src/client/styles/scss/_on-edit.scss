@@ -187,7 +187,8 @@ body.on-edit {
       }
 
       // add icon on cursor
-      .markdown-table-activated, .markdown-link-activated {
+      .markdown-table-activated,
+      .markdown-link-activated {
         .CodeMirror-cursor {
           &:after {
             position: relative;
@@ -197,7 +198,7 @@ body.on-edit {
             width: 1em;
             height: 1em;
             content: ' ';
-  
+
             background-repeat: no-repeat;
             background-size: 1em;
           }
@@ -312,10 +313,10 @@ body.on-edit {
   .tooltip-inner {
     color: #000;
     background-color: #fff;
-    border: 1px solid #ccc;
+    border: 1px solid #$gray-300;
   }
 
   .tooltip-arrow {
-    border-bottom: 5px solid #ccc;
+    border-bottom: 5px solid #$gray-300;
   }
 }

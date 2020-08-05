@@ -64,13 +64,13 @@ html[dark] {
   $bgcolor-sidebar-list-group: #eff8f7; // optional
 
   // Tabs
-  $bordercolor-nav-tabs: #ccc; // optional
+  $bordercolor-nav-tabs: #$gray-300; // optional
 
   // Icon colors
   $color-editor-icons: $color-global;
 
   // Border colors
-  $border-color-theme: #ccc;
+  $border-color-theme: #$gray-300;
   $bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors

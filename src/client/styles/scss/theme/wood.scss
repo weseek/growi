@@ -97,7 +97,7 @@ html[dark] {
   $bgcolor-resize-button: $themecolor;
 
   // Border colors
-  $border-color-theme: #ccc; // former: `$navbar-border: #ccc;`
+  $border-color-theme: #$gray-300; // former: `$navbar-border: #$gray-300;`
   $bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors

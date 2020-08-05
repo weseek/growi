@@ -93,7 +93,7 @@ html[dark] {
   $color-editor-icons: $color-global;
 
   // Border colors
-  $border-color-theme: #ccc; // former: `$navbar-border: #ccc;`
+  $border-color-theme: #$gray-300; // former: `$navbar-border: #$gray-300;`
   $bordercolor-inline-code: #4d4d4d; // optional
 
   // Dropdown colors

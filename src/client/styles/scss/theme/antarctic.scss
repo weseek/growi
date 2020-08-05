@@ -98,7 +98,7 @@ html[dark] {
   $color-editor-icons: $color-global;
 
   // Border colors
-  $border-color-theme: #ccc; // former: `$navbar-border: #ccc;`
+  $border-color-theme: #$gray-300; // former: `$navbar-border: #$gray-300;`
   $bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
@@ -175,7 +175,7 @@ html[dark] {
 //   $color-editor-icons: darken($accentcolor, 15%);
 
 //   // Border colors
-//   $border-color-theme: black; // former: `$navbar-border: #ccc;`
+//   $border-color-theme: black; // former: `$navbar-border: #$gray-300;`
 
 //   // Dropdown colors
 //   $bgcolor-dropdown-link-active: $primary;
