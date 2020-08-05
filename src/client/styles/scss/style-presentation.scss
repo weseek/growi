@@ -94,7 +94,7 @@
           > td {
             padding: 1em;
             vertical-align: top;
-            border-top: 1px solid #999;
+            border-top: 1px solid #$gray-400;
           }
         }
       }
@@ -120,14 +120,14 @@
       }
 
       // .table-bordered
-      border: 1px solid #999;
+      border: 1px solid #$gray-400;
       > thead,
       > tbody,
       > tfoot {
         > tr {
           > th,
           > td {
-            border: 1px solid #999;
+            border: 1px solid #$gray-400;
           }
         }
       }
