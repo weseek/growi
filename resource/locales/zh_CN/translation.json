@@ -249,7 +249,8 @@
 			"unlinked": "将网页重定向到此网页已被删除。",
 			"restricted": "访问此页受到限制",
 			"stale": "自上次更新以来，已超过{{count}年。",
-			"stale_plural": "自上次更新以来已过去{{count}年以上。"
+      "stale_plural": "自上次更新以来已过去{{count}年以上。",
+      "no_deadline": "This page has no expiration date"
 		}
 	},
 	"page_edit": {

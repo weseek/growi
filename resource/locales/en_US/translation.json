@@ -274,7 +274,8 @@
       "restricted": "Access to this page is restricted",
       "stale": "More than {{count}} year has passed since last update.",
       "stale_plural": "More than {{count}} years has passed since last update.",
-      "expiration": "This share link will expire <strong>{{expiredAt}}</strong>."
+      "expiration": "This share link will expire at <strong>{{expiredAt}}</strong>.",
+      "no_deadline":"This page has no expiration date"
     }
   },
   "page_edit": {
