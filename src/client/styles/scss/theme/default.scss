@@ -183,7 +183,7 @@ html[dark] {
 
   // Border colors
   $border-color-theme: #444;
-  $bordercolor-inline-code: #666; // optional
+  $bordercolor-inline-code: #$secondary; // optional
 
   // Dropdown colors
   $bgcolor-dropdown-link-active: $primary;
