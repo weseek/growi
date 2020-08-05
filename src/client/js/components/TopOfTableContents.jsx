@@ -15,7 +15,6 @@ import PageAccessoriesModal from './PageAccessoriesModal';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 const TopOfTableContents = (props) => {
-  const { onSwitch } = props;
 
   const [isPageAccessoriesModalShown, setIsPageAccessoriesModalShown] = useState(false);
   const [activeTab, setActiveTab] = useState('');
@@ -28,9 +27,6 @@ const TopOfTableContents = (props) => {
   }
 
   function switchActiveTab(clickedTab) {
-    if (onSwitch == null) {
-      return;
-    }
     activeComponents.add(clickedTab);
     setActiveComponents(activeComponents);
     setActiveTab(clickedTab);
@@ -90,7 +86,6 @@ const TopOfTableContentsWrapper = withUnstatedContainers(TopOfTableContents, [Pa
 
 TopOfTableContents.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  onSwitch: PropTypes.func,
 };
 
 export default withTranslation()(TopOfTableContentsWrapper);

@@ -25,12 +25,20 @@ const PageAccessoriesModal = (props) => {
     props.onClose();
   }
 
+  function switchTabHandler() {
+    if (props.onSwitch == null) {
+      return;
+    }
+    props.onSwitch();
+  }
+
   return (
     <React.Fragment>
       <Modal
         size="lg"
         isOpen={props.isOpen}
         toggle={closeModalHandler}
+        toggleSwitch={switchTabHandler}
         className="grw-page-accessories-modal"
       >
         <ModalBody>
