@@ -15,7 +15,7 @@ const apiv3ErrorHandler = (_err, header = 'Error') => {
     logger.error(err.message);
   }
 
-  return {errs, code};
+  return { errs, code };
 };
 
 export default apiv3ErrorHandler;
