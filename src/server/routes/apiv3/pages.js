@@ -192,9 +192,7 @@ module.exports = (crowi) => {
     const isExist = (await Page.count(req.body.path)) > 0;
     if (isExist) {
       res.code = 'page_exists';
-      return res.apiv3Err(new ErrorV3('Page exists'), 409);
-      // return res.apiv3Err('Page exists', 409);
-
+      return res.apiv3Err(new ErrorV3('This page is already exist.', 'already_exists'));
     }
 
     const createdPage = await Page.create(req.body.path, req.body.body, req.user);

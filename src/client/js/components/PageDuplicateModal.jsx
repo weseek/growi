@@ -75,9 +75,8 @@ const PageDuplicateModal = (props) => {
       window.location.href = encodeURI(`${result}?duplicated=${path}`);
     }
     catch (err) {
-      console.log(err);
-      setErrorCode(err.code);
-      setErrorMessage(err.message);
+      setErrorCode(err[0].code);
+      setErrorMessage(err[0].message);
     }
   }
 
