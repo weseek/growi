@@ -16,7 +16,7 @@ pre.hljs {
     font-style: normal;
     font-weight: bold;
     color: #333;
-    background: #ccc;
+    background: $gray-300;
     opacity: 0.6;
   }
 }
@@ -24,12 +24,12 @@ pre.hljs {
 // styles for highlightjs-line-numbers
 .hljs-ln td.hljs-ln-numbers {
   padding-right: 5px;
-  color: #ccc;
+  color: $gray-300;
 
   text-align: center;
   vertical-align: top;
   user-select: none;
-  border-right: 1px solid #ccc;
+  border-right: 1px solid $gray-300;
 }
 
 .hljs-ln td.hljs-ln-code {

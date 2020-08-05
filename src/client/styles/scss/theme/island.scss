@@ -10,7 +10,7 @@ html[dark] {
   // Background colors
   $bgcolor-card: #f5f5f5;
   $bgcolor-global: lighten($color-themelight, 10%);
-  $bgcolor-inline-code: #f0f0f0; //optional
+  $bgcolor-inline-code: $gray-100; //optional
 
   // Font colors
   $color-global: #112744;
@@ -64,13 +64,13 @@ html[dark] {
   $bgcolor-sidebar-list-group: #eff8f7; // optional
 
   // Tabs
-  $bordercolor-nav-tabs: #ccc; // optional
+  $bordercolor-nav-tabs: $gray-300; // optional
 
   // Icon colors
   $color-editor-icons: $color-global;
 
   // Border colors
-  $border-color-theme: #ccc;
+  $border-color-theme: $gray-300;
   $bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors

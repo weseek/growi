@@ -94,7 +94,7 @@ body {
   }
   .main {
     header {
-      border-bottom: solid 1px #666;
+      border-bottom: solid 1px $secondary;
       h1 {
         font-size: 2em;
         color: #000;
@@ -125,8 +125,8 @@ body {
 
     .meta {
       margin-top: 32px;
-      color: #666;
-      border-top: solid 1px #ccc;
+      color: $secondary;
+      border-top: solid 1px $gray-300;
     }
   }
 }
