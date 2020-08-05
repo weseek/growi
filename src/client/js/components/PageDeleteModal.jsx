@@ -32,8 +32,8 @@ const PageDeleteModal = (props) => {
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
   const deleteMode = isDeleteCompletely ? 'completely' : 'temporary';
-  const [errorCode, setErrorCode] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
+
+  const [errors, setErrors] = useState([]);
 
   function changeIsDeleteRecursivelyHandler() {
     setIsDeleteRecursively(!isDeleteRecursively);
@@ -47,8 +47,7 @@ const PageDeleteModal = (props) => {
   }
 
   async function deletePage() {
-    setErrorCode(null);
-    setErrorMessage(null);
+    setErrors([]);
 
     try {
       const response = await pageContainer.deletePage(isDeleteRecursively, isDeleteCompletely);
@@ -56,8 +55,7 @@ const PageDeleteModal = (props) => {
       window.location.href = encodeURI(trashPagePath);
     }
     catch (err) {
-      setErrorCode(err.code);
-      setErrorMessage(err.message);
+      setErrors(err);
     }
   }
 
@@ -124,7 +122,7 @@ const PageDeleteModal = (props) => {
         {!isDeleteCompletelyModal && renderDeleteCompletelyForm()}
       </ModalBody>
       <ModalFooter>
-        <ApiErrorMessage errorCode={errorCode} errorMessage={errorMessage} />
+        <ApiErrorMessage errors={errors} />
         <button type="button" className={`btn btn-${deleteIconAndKey[deleteMode].color}`} onClick={deleteButtonHandler}>
           <i className={`icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
           { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }

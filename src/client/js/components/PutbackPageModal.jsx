@@ -18,8 +18,7 @@ const PutBackPageModal = (props) => {
     t, isOpen, onClose, pageContainer, path,
   } = props;
 
-  const [errorCode, setErrorCode] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [errors, setErrors] = useState([]);
 
   const [isPutbackRecursively, setIsPutbackRecursively] = useState(true);
 
@@ -28,8 +27,7 @@ const PutBackPageModal = (props) => {
   }
 
   async function putbackPage() {
-    setErrorCode(null);
-    setErrorMessage(null);
+    setErrors([]);
 
     try {
       const response = await pageContainer.revertRemove(isPutbackRecursively);
@@ -37,8 +35,7 @@ const PutBackPageModal = (props) => {
       window.location.href = encodeURI(putbackPagePath);
     }
     catch (err) {
-      setErrorCode(err.code);
-      setErrorMessage(err.message);
+      setErrors(err);
     }
   }
 
@@ -73,7 +70,7 @@ const PutBackPageModal = (props) => {
         </div>
       </ModalBody>
       <ModalFooter>
-        <ApiErrorMessage errorCode={errorCode} errorMessage={errorMessage} />
+        <ApiErrorMessage errors={errors} />
         <button type="button" className="btn btn-info" onClick={putbackPageButtonHandler}>
           <i className="icon-action-undo mr-2" aria-hidden="true"></i> { t('Put Back') }
         </button>

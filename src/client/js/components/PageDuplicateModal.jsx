@@ -23,8 +23,9 @@ const PageDuplicateModal = (props) => {
   const { crowi } = appContainer.config;
 
   const [pageNameInput, setPageNameInput] = useState(path);
-  const [errorCode, setErrorCode] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
+
+  const [errors, setErrors] = useState([]);
+
   const [subordinatedPaths, setSubordinatedPaths] = useState([]);
   const [getSubordinatedError, setGetSuborinatedError] = useState(null);
 
@@ -67,16 +68,15 @@ const PageDuplicateModal = (props) => {
   }, [props.isOpen, getSubordinatedList]);
 
   async function duplicate() {
+    setErrors([]);
+
     try {
-      setErrorCode(null);
-      setErrorMessage(null);
       const res = await appContainer.apiPost('/pages.duplicate', { page_id: pageId, new_path: pageNameInput });
       const { page } = res;
       window.location.href = encodeURI(`${page.path}?duplicated=${path}`);
     }
     catch (err) {
-      setErrorCode(err.code);
-      setErrorMessage(err.message);
+      setErrors(err);
     }
   }
 
@@ -142,7 +142,7 @@ const PageDuplicateModal = (props) => {
         </div>
       </ModalBody>
       <ModalFooter>
-        <ApiErrorMessage errorCode={errorCode} errorMessage={errorMessage} targetPath={pageNameInput} />
+        <ApiErrorMessage errors={errors} targetPath={pageNameInput} />
         <button type="button" className="btn btn-primary" onClick={duplicate}>Duplicate page</button>
       </ModalFooter>
     </Modal>

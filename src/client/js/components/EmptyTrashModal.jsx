@@ -15,19 +15,19 @@ const EmptyTrashModal = (props) => {
   const {
     t, isOpen, onClose, appContainer,
   } = props;
-  const [errorCode, setErrorCode] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
+
+  const [errors, setErrors] = useState([]);
 
   async function emptyTrash() {
-    setErrorCode(null);
-    setErrorMessage(null);
+    setErrors([]);
+
     try {
       await appContainer.apiv3Delete('/pages/empty-trash');
       window.location.reload();
     }
     catch (err) {
-      setErrorCode(err.code);
-      setErrorMessage(err.message);
+      setErrors(err);
+
     }
   }
 
@@ -44,7 +44,7 @@ const EmptyTrashModal = (props) => {
         { t('modal_empty.notice')}
       </ModalBody>
       <ModalFooter>
-        <ApiErrorMessage errorCode={errorCode} errorMessage={errorMessage} />
+        <ApiErrorMessage errors={errors} />
         <button type="button" className="btn btn-danger" onClick={emptyButtonHandler}>
           <i className="icon-trash mr-2" aria-hidden="true"></i> Empty
         </button>
