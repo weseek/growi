@@ -77,5 +77,6 @@ ShareLinkList.propTypes = {
   shareLinks: PropTypes.array.isRequired,
   onClickDeleteButton: PropTypes.func,
   isAdmin: PropTypes.bool,
+};
 
 export default withTranslation()(ShareLinkListWrapper);
