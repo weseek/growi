@@ -1,55 +1,73 @@
-import React, { Suspense } from 'react';
+import React from 'react';
+import { Card, CardBody } from 'reactstrap';
 import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 
 import loggerFactory from '@alias/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
 
+import AppContainer from '../../../services/AppContainer';
+import LineBreakForm from './LineBreakForm';
+import PresentationForm from './PresentationForm';
+import XssForm from './XssForm';
 import AdminMarkDownContainer from '../../../services/AdminMarkDownContainer';
-
-import MarkDownSettingPageContents from './MarkDownSettingPageContents';
 
 const logger = loggerFactory('growi:MarkDown');
 
-function MarkDownSetting(props) {
+class MarkdownSetting extends React.Component {
 
-  if (props.adminMarkDownContainer.state.isEnabledLinebreaks === 0) {
-    throw new Promise(async() => {
-      try {
-        await props.adminMarkDownContainer.retrieveMarkdownData();
-      }
-      catch (err) {
-        toastError(err);
-        props.adminMarkDownContainer.setState({ retrieveError: err.message });
-        logger.error(err);
-      }
-    });
+  async componentDidMount() {
+    const { adminMarkDownContainer } = this.props;
+
+    try {
+      await adminMarkDownContainer.retrieveMarkdownData();
+    }
+    catch (err) {
+      toastError(err);
+      adminMarkDownContainer.setState({ retrieveError: err.message });
+      logger.error(err);
+    }
   }
 
-  return <MarkDownSettingPageContents />;
+  render() {
+    const { t } = this.props;
+
+    return (
+      <React.Fragment>
+        {/* Line Break Setting */}
+        <h2 className="admin-setting-header">{t('admin:markdown_setting.lineBreak_header')}</h2>
+        <Card className="card well my-3">
+          <CardBody className="px-0 py-2">{t('admin:markdown_setting.lineBreak_desc')}</CardBody>
+        </Card>
+        <LineBreakForm />
+
+        {/* Presentation Setting */}
+        <h2 className="admin-setting-header">{t('admin:markdown_setting.presentation_header')}</h2>
+        <Card className="card well my-3">
+          <CardBody className="px-0 py-2">{t('admin:markdown_setting.presentation_desc')}</CardBody>
+        </Card>
+        <PresentationForm />
+
+        {/* XSS Setting */}
+        <h2 className="admin-setting-header">{t('admin:markdown_setting.xss_header')}</h2>
+        <Card className="card well my-3">
+          <CardBody className="px-0 py-2">{t('admin:markdown_setting.xss_desc')}</CardBody>
+        </Card>
+        <XssForm />
+      </React.Fragment>
+    );
+  }
+
 }
 
-const MarkdownSettingWrapper = withUnstatedContainers(MarkDownSetting, [AdminMarkDownContainer]);
+const MarkdownSettingWrapper = withUnstatedContainers(MarkdownSetting, [AppContainer, AdminMarkDownContainer]);
 
-MarkDownSetting.propTypes = {
+MarkdownSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminMarkDownContainer: PropTypes.instanceOf(AdminMarkDownContainer).isRequired,
 };
 
-function MarkdownSettingSuspenseWrapper(props) {
-  return (
-    <Suspense
-      fallback={(
-        <div className="row">
-          <i className="fa fa-5x fa-spinner fa-pulse mx-auto text-muted"></i>
-        </div>
-      )}
-    >
-      <MarkdownSettingWrapper />
-    </Suspense>
-  );
-}
-
-
-export default MarkdownSettingSuspenseWrapper;
+export default withTranslation()(MarkdownSettingWrapper);

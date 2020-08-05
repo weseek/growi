@@ -19,8 +19,7 @@ export default class AdminNotificationContainer extends Container {
 
     this.state = {
       retrieveError: null,
-      // set dummy value selectSlackOption for using suspense
-      selectSlackOption: 0,
+      selectSlackOption: 'Incoming Webhooks',
       webhookUrl: '',
       isIncomingWebhookPrioritized: false,
       slackToken: '',
