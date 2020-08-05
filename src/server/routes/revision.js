@@ -164,24 +164,27 @@ module.exports = function(crowi, app) {
    *
    * @apiParam {String} page_id      Page Id.
    */
-  actions.api.ids = function(req, res) {
-    const pageId = req.query.page_id || null;
+  actions.api.ids = async function(req, res) {
+    const pageId = req.query.page_id;
+    const { isSharedPage } = req;
 
-    if (pageId && crowi.isPageId(pageId)) {
-      Page.findByIdAndViewer(pageId, req.user)
-        .then((pageData) => {
-          debug('Page found', pageData._id, pageData.path);
-          return Revision.findRevisionList(pageData.path);
-        })
-        .then((revisions) => {
-          return res.json(ApiResponse.success({ revisions }));
-        })
-        .catch((err) => {
-          return res.json(ApiResponse.error(err));
-        });
+    if (pageId == null) {
+      return res.json(ApiResponse.error('Parameter page_id is required.'));
     }
-    else {
-      return res.json(ApiResponse.error('Parameter error.'));
+
+    // check whether accessible
+    if (!isSharedPage && !(await Page.isAccessiblePageByViewer(pageId, req.user))) {
+      return res.json(ApiResponse.error('Current user is not accessible to this page.'));
+    }
+
+    try {
+      const page = await Page.findOne({ _id: pageId });
+      const revisions = await Revision.findRevisionIdList(page.path);
+          return res.json(ApiResponse.success({ revisions }));
+    }
+    catch (err) {
+      logger.error('Error revisios.ids', err);
+          return res.json(ApiResponse.error(err));
     }
   };
 
