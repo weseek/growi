@@ -43,7 +43,8 @@ const ShareLinkAlert = (props) => {
   return (
     <p className={`alert alert-${specifyColor()} py-3 px-4`}>
       <i className="icon-fw icon-link"></i>
-      {(expiredAt === ""  ? <span>{t('page_page.notice.no_deadline')}</span>
+      {(expiredAt === '' ? <span>{t('page_page.notice.no_deadline')}</span>
+      // eslint-disable-next-line react/no-danger
       : <span dangerouslySetInnerHTML={{ __html: t('page_page.notice.expiration', { expiredAt }) }} />
       )}
     </p>
