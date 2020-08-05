@@ -31,12 +31,12 @@ const PageShareManagement = (props) => {
     const { pageId, revisionId } = pageContainer.state;
     try {
       // TODO GW-3062 現状では pdf ファイル形式の場合空のデータがダウンロードされるので要修正
-      const responseType = type === 'pdf' ? 'arraybuffer' : 'json';
+      // const responseType = type === 'pdf' ? 'arraybuffer' : 'json';
       const axios = require('axios').create({
+        responseType: 'arraybuffer',
         headers: {
           'Content-Type': 'application/pdf',
         },
-        responseType: 'arraybuffer',
       });
 
       const data = await axios.get('/_api/v3/page/export', {
