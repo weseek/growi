@@ -46,7 +46,7 @@ html[dark] {
 
   // Font colors
   $color-global: #112744;
-  $color-reversal: #eee;
+  $color-reversal: $gray-100;
   $color-link: $subthemecolor;
   $color-link-hover: lighten($color-link, 10%);
   $color-link-nabvar: $color-reversal;
