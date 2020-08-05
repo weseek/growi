@@ -28,7 +28,7 @@ export default class GridEditModal extends React.Component {
   }
 
   async checkResposiveSize(rs) {
-    // await this.setState({ responsiveSize: rs });
+    await this.setState({ responsiveSize: rs });
   }
 
   async checkColsRatios(cr) {
@@ -117,6 +117,18 @@ export default class GridEditModal extends React.Component {
     );
   }
 
+  showBreakPointMenu() {
+    const resSizes = BootstrapGrid.ResponsiveSize;
+    const output = Object.values(resSizes).map((resSize) => {
+      return (
+        <button className="dropdown-item" type="button" onClick={() => { this.checkResposiveSize(resSize) }}>
+          <i className={`pl-2 pr-1 icon-screen-${resSize}`}></i> {resSize}
+        </button>
+      );
+    });
+    return output;
+  }
+
   render() {
     return (
       <Modal isOpen={this.state.show} toggle={this.cancel} size="xl" className="grw-grid-edit-modal">
@@ -159,15 +171,7 @@ export default class GridEditModal extends React.Component {
                   {this.showBreakPoint()}
                 </div>
                 <div className="dropdown-menu break-point-menu" aria-labelledby="dropdownMenuButton">
-                  <button className="dropdown-item" type="button" onClick={() => { this.checkResposiveSize(BootstrapGrid.ResponsiveSize.XS_SIZE) }}>
-                    <i className="pl-2 pr-1 icon-screen-smartphone"></i> Mobile / No break point
-                  </button>
-                  <button className="dropdown-item" type="button" onClick={() => { this.checkResposiveSize(BootstrapGrid.ResponsiveSize.SM_SIZE) }}>
-                    <i className="pl-2 pr-1 icon-screen-tablet"></i> Tablet
-                  </button>
-                  <button className="dropdown-item" type="button" onClick={() => { this.checkResposiveSize(BootstrapGrid.ResponsiveSize.MD_SIZE) }}>
-                    <i className="pl-2 pr-1 icon-screen-desktop"></i> Desktop
-                  </button>
+                  {this.showBreakPointMenu()}
                 </div>
               </div>
             </div>
