@@ -179,88 +179,11 @@ module.exports = function(crowi, app) {
     try {
       const page = await Page.findOne({ _id: pageId });
       const revisions = await Revision.findRevisionIdList(page.path);
-          return res.json(ApiResponse.success({ revisions }));
+      return res.json(ApiResponse.success({ revisions }));
     }
     catch (err) {
       logger.error('Error revisios.ids', err);
-          return res.json(ApiResponse.error(err));
-    }
-  };
-
-  /**
-   * @swagger
-   *
-   *    /revisions.list:
-   *      get:
-   *        tags: [Revisions, CrowiCompatibles]
-   *        operationId: revisions.list
-   *        summary: /revisions.list
-   *        description: Get revisions
-   *        parameters:
-   *          - in: query
-   *            name: page_id
-   *            schema:
-   *              $ref: '#/components/schemas/Page/properties/_id'
-   *          - in: query
-   *            name: revision_ids
-   *            schema:
-   *              type: string
-   *              description: revision ids
-   *              example: 5e0734e472560e001761fa68,5e079a0a0afa6700170a75fb
-   *        responses:
-   *          200:
-   *            description: Succeeded to get revisions.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    revisions:
-   *                      type: array
-   *                      items:
-   *                        $ref: '#/components/schemas/Revision'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  /**
-   * @api {get} /revisions.list Get revisions
-   * @apiName ListRevision
-   * @apiGroup Revision
-   *
-   * @apiParam {String} revision_ids Revision Ids.
-   * @apiParam {String} page_id      Page Id.
-   */
-  actions.api.list = function(req, res) {
-    const revisionIds = (req.query.revision_ids || '').split(',');
-    const pageId = req.query.page_id || null;
-
-    if (pageId) {
-      Page.findByIdAndViewer(pageId, req.user)
-        .then((pageData) => {
-          debug('Page found', pageData._id, pageData.path);
-          return Revision.findRevisionList(pageData.path, {});
-        })
-        .then((revisions) => {
-          return res.json(ApiResponse.success(revisions));
-        })
-        .catch((err) => {
-          return res.json(ApiResponse.error(err));
-        });
-    }
-    else if (revisionIds.length > 0) {
-      Revision.findRevisions(revisionIds)
-        .then((revisions) => {
-          return res.json(ApiResponse.success(revisions));
-        })
-        .catch((err) => {
-          return res.json(ApiResponse.error(err));
-        });
-    }
-    else {
-      return res.json(ApiResponse.error('Parameter error.'));
+      return res.json(ApiResponse.error(err));
     }
   };
 

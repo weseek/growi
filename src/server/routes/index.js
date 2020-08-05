@@ -168,7 +168,6 @@ module.exports = function(crowi, app) {
 
   app.get('/_api/revisions.get'       , certifySharedPage , accessTokenParser , loginRequired , revision.api.get);
   app.get('/_api/revisions.ids'       , certifySharedPage , accessTokenParser , loginRequired , revision.api.ids);
-  app.get('/_api/revisions.list'      , accessTokenParser , loginRequired , revision.api.list);
 
   app.get('/trash$'                   , loginRequired , page.trashPageShowWrapper);
   app.get('/trash/$'                  , loginRequired , page.trashPageListShowWrapper);
