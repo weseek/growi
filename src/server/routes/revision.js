@@ -109,8 +109,7 @@ module.exports = function(crowi, app) {
     }
 
     // check whether accessible
-    const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
-    if (!isSharedPage && !isAccessible) {
+    if (!isSharedPage && !(await Page.isAccessiblePageByViewer(pageId, req.user))) {
       return res.json(ApiResponse.error('Current user is not accessible to this page.'));
     }
 
