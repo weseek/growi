@@ -79,7 +79,7 @@ html[dark] {
   $color-editor-icons: $color-global;
 
   // Border colors
-  $border-color-theme: #$gray-300;
+  $border-color-theme: $gray-300;
   $bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors

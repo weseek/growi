@@ -313,10 +313,10 @@ body.on-edit {
   .tooltip-inner {
     color: #000;
     background-color: #fff;
-    border: 1px solid #$gray-300;
+    border: 1px solid $gray-300;
   }
 
   .tooltip-arrow {
-    border-bottom: 5px solid #$gray-300;
+    border-bottom: 5px solid $gray-300;
   }
 }

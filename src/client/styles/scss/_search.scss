@@ -11,7 +11,7 @@
   height: 22px;
   padding: 8px;
   font-size: 0.6em;
-  color: #$gray-300;
+  color: $gray-300;
 }
 
 .search-typeahead {
@@ -213,7 +213,7 @@
       .wiki {
         padding: 16px;
         font-size: 13px;
-        border: solid 1px #$gray-300;
+        border: solid 1px $gray-300;
       }
     }
   }
