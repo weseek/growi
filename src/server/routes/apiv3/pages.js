@@ -4,6 +4,7 @@ const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line
 
 const express = require('express');
 const pathUtils = require('growi-commons').pathUtils;
+const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const { body } = require('express-validator/check');
 
@@ -240,9 +241,7 @@ module.exports = (crowi) => {
       return res.apiv3({ pages });
     }
     catch (err) {
-      res.code = 'unknown';
-      logger.error('Failed to delete trash pages', err);
-      return res.apiv3Err(err, 500);
+      return res.apiv3Err(new ErrorV3(err.message), 500, 'unknown');
     }
   });
 

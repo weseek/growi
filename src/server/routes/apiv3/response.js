@@ -13,7 +13,7 @@ const addCustomFunctionToResponse = (express, crowi) => {
     this.json({ data: obj });
   };
 
-  express.response.apiv3Err = function(_err, status = 400, info) { // not arrow function
+  express.response.apiv3Err = function(_err, status = 400, code) { // not arrow function
     if (!Number.isInteger(status)) {
       throw new Error('invalid status supplied to res.apiv3Err');
     }
@@ -33,7 +33,7 @@ const addCustomFunctionToResponse = (express, crowi) => {
       throw new Error('invalid error supplied to res.apiv3Err');
     });
 
-    this.status(status).json({ errors, info });
+    this.status(status).json({ errors, code });
   };
 };
 
