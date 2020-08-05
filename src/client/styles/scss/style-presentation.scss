@@ -101,7 +101,7 @@
       // Bottom align for column headings
       > thead > tr > th {
         vertical-align: bottom;
-        border-bottom: 2px solid #888;
+        border-bottom: 2px solid $gray-500;
       }
       // Remove top border from thead by default
       > caption + thead,
@@ -116,7 +116,7 @@
       }
       // Account for multiple tbody instances
       > tbody + tbody {
-        border-top: 2px solid #888;
+        border-top: 2px solid $gray-500;
       }
 
       // .table-bordered
