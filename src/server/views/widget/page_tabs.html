@@ -63,6 +63,11 @@
     </a>
   </li>
 
+  <!-- Outside-share-link -->
+  {% if !isTrashPage() %}
+    <li id="page-share-management" class="nav-item dropdown d-edit-none"></li>
+  {% endif %}
+
   <!-- icon-options-vertical -->
   {% if !isTrashPage() %}
     <li id="page-management" class="nav-item dropdown d-edit-none"></li>
