@@ -8,7 +8,7 @@ import MailSetting from './MailSetting';
 import AwsSetting from './AwsSetting';
 import PluginSetting from './PluginSetting';
 
-class RenderAppSettingsPage extends React.Component {
+class AppSettingsPageContents extends React.Component {
 
   render() {
     const { t } = this.props;
@@ -55,8 +55,8 @@ class RenderAppSettingsPage extends React.Component {
 
 }
 
-RenderAppSettingsPage.propTypes = {
+AppSettingsPageContents.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 };
 
-export default withTranslation()(RenderAppSettingsPage);
+export default withTranslation()(AppSettingsPageContents);
