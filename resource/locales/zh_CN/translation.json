@@ -32,7 +32,8 @@
 	"User": "用户",
 	"status": "状态",
 	"account_id": "用户Id",
-	"Update": "更新",
+	"Initialize": "初始化",
+  "Update": "更新",
 	"Update Page": "更新本页",
 	"Warning": "警告",
 	"Sign in": "登录",
@@ -334,6 +335,7 @@
 	},
 	"toaster": {
 		"update_successed": "Succeeded to update {{target}}",
+    "initialize_successed": "Succeeded to initialize {{target}}",
 		"give_user_admin": "Succeeded to give {{username}} admin",
 		"remove_user_admin": "Succeeded to remove {{username}} admin ",
 		"activate_user_success": "Succeeded to activating {{username}}",

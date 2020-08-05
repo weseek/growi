@@ -231,8 +231,8 @@
     "Copy to clipboard": "Copy to clipboard",
     "Page path": "Page path",
     "Page URL": "Page URL",
-    "Parmanent link": "Parmanent link",
-    "Page path and parmanent link": "Page path and parmanent link",
+    "Permanent link": "Permanent link",
+    "Page path and permanent link": "Page path and permanent link",
     "Markdown link": "Markdown link"
   },
   "search_help": {
@@ -361,6 +361,7 @@
   },
   "toaster": {
     "update_successed": "Succeeded to update {{target}}",
+    "initialize_successed": "Succeeded to initialize {{target}}",
     "give_user_admin": "Succeeded to give {{username}} admin",
     "remove_user_admin": "Succeeded to remove {{username}} admin",
     "activate_user_success": "Succeeded to activating {{username}}",
