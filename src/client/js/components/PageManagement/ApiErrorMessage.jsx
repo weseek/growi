@@ -12,6 +12,10 @@ const ApiErrorMessage = (props) => {
     window.location.reload();
   }
 
+  if (errors == null) {
+    return null;
+  }
+
   function renderMessage(err) {
 
     function renderMessageByErrorCode() {
@@ -52,29 +56,23 @@ const ApiErrorMessage = (props) => {
     }
 
     if (err.code != null) {
-      return (
-        <span className="text-danger">
-          {renderMessageByErrorCode()}
-        </span>
-      );
+      return renderMessageByErrorCode();
     }
 
     if (err.message != null) {
-      return (
-        <span className="text-danger">
-          {err.message}
-        </span>
-      );
+      return err.message;
     }
 
-    // render null if no error has occurred
-    return null;
   }
 
   return (
     <>
       {errors.map((error) => {
-        return renderMessage(error);
+        return (
+          <span key={error.message} className="text-danger">
+            {renderMessage(error)}
+          </span>
+        );
       })}
     </>
   );
