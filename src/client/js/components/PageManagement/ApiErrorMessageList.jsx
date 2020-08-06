@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import ApiErrorMessage from './ApiErrorMessage';
 import toArrayIfNot from '../../../../lib/util/toArrayIfNot';
 
-function ApiErrorMessageWrapper(props) {
+function ApiErrorMessageList(props) {
   const errs = toArrayIfNot(props.errs);
 
   return (
@@ -15,9 +15,9 @@ function ApiErrorMessageWrapper(props) {
 
 }
 
-ApiErrorMessageWrapper.propTypes = {
+ApiErrorMessageList.propTypes = {
   errs:         PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   targetPath:   PropTypes.string,
 };
 
-export default ApiErrorMessageWrapper;
+export default ApiErrorMessageList;

@@ -10,7 +10,7 @@ import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from './UnstatedUtils';
 import PageContainer from '../services/PageContainer';
 
-import ApiErrorMessageWrapper from './PageManagement/ApiErrorMessageWrapper';
+import ApiErrorMessageWrapper from './PageManagement/ApiErrorMessageList';
 
 const deleteIconAndKey = {
   completely: {

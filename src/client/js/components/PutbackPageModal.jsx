@@ -11,7 +11,7 @@ import { withUnstatedContainers } from './UnstatedUtils';
 
 import PageContainer from '../services/PageContainer';
 
-import ApiErrorMessageWrapper from './PageManagement/ApiErrorMessageWrapper';
+import ApiErrorMessageWrapper from './PageManagement/ApiErrorMessageList';
 
 const PutBackPageModal = (props) => {
   const {

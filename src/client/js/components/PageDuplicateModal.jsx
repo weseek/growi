@@ -12,7 +12,7 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 import PagePathAutoComplete from './PagePathAutoComplete';
-import ApiErrorMessageWrapper from './PageManagement/ApiErrorMessageWrapper';
+import ApiErrorMessageWrapper from './PageManagement/ApiErrorMessageList';
 
 const PageDuplicateModal = (props) => {
   const { t, appContainer, pageContainer } = props;

@@ -9,7 +9,7 @@ import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import AppContainer from '../services/AppContainer';
-import ApiErrorMessageWrapper from './PageManagement/ApiErrorMessageWrapper';
+import ApiErrorMessageWrapper from './PageManagement/ApiErrorMessageList';
 
 const EmptyTrashModal = (props) => {
   const {
