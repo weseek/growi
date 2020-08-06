@@ -16,11 +16,12 @@ export default class AdminAppContainer extends Container {
     super();
 
     this.appContainer = appContainer;
+    this.dummyTitle = 0;
 
     this.state = {
       retrieveError: null,
       // set dummy value tile for using suspense
-      title: 0,
+      title: this.dummyTitle,
       confidential: '',
       globalLang: '',
       fileUpload: '',

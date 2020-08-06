@@ -26,7 +26,7 @@ function AppSettingsPage(props) {
 }
 
 function RenderAppSettingsPage(props) {
-  if (props.adminAppContainer.state.title === 0) {
+  if (props.adminAppContainer.state.title === props.adminAppContainer.dummyTitle) {
     throw new Promise(async() => {
       try {
         await props.adminAppContainer.retrieveAppSettingsData();
