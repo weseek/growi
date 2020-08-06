@@ -125,7 +125,6 @@ module.exports = (crowi) => {
       body('bool').isBoolean(),
     ],
     export: [
-      query('pageId').isString(),
       query('revisionId').isString(),
     ],
   };
@@ -197,9 +196,10 @@ module.exports = (crowi) => {
   *          200:
   *            description: Return page's markdown
   */
-  router.get('/export', validator.export, async(req, res) => {
+  router.get('/export/:pageId', validator.export, async(req, res) => {
     try {
-      const { pageId = null, revisionId = null } = req.query;
+      const { pageId } = req.params;
+      const { revisionId = null } = req.query;
 
       if (pageId == null) {
         return res.apiv3Err(new ErrorV3('Should provided pageId or both pageId and revisionId.'));
@@ -231,7 +231,13 @@ module.exports = (crowi) => {
 
       const markdown = revision.body;
 
-      return res.apiv3({ markdown });
+      const Readable = require('stream').Readable;
+      const readable = new Readable();
+      readable._read = () => {}; 
+      readable.push(markdown);
+      readable.push(null);
+      res.set('Content-Type', 'text/markdown');
+      return readable.pipe(res);
     }
     catch (err) {
       logger.error('Failed to get markdown', err);

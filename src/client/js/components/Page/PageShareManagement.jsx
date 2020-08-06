@@ -28,18 +28,7 @@ const PageShareManagement = (props) => {
 
   async function exportPageHandler() {
     const { pageId, revisionId } = pageContainer.state;
-    try {
-      const { data } = await appContainer.apiv3Get('/page/export', { pageId, revisionId });
-      const blob = new Blob([data.markdown]);
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = `${revisionId}.md`;
-      link.click();
-      link.remove();
-    }
-    catch (err) {
-      toastError(Error(t('export_bulk.failed_to_export')));
-    }
+    window.location.href = `/_api/v3/page/export/${pageId}?_csrf=${appContainer.csrfToken}&format=md&revisionId=${revisionId}&contentType=text/markdown`;
   }
 
   function renderModals() {
