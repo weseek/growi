@@ -19,7 +19,7 @@ $subthemecolor: #30882c;
 $bgcolor-global: $themelight;
 $linktext: $subthemecolor;
 $linktext-hover: lighten($subthemecolor, 15%);
-$sidebar-text: #ffffff;
+$sidebar-text: white;
 $fillcolor-logo-mark: lighten(desaturate($themecolor, 50%), 50%);
 $color-link-wiki: lighten($subthemecolor, 5%);
 $color-link-wiki-hover: lighten($color-link-wiki, 15%);
