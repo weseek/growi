@@ -20,7 +20,7 @@ html[dark] {
   $color-link: rgb(74, 109, 204);
   $color-link-hover: lighten($color-link, 12%);
   $sidebar-text: $bgcolor-theme;
-  $color-reversal: #eee;
+  $color-reversal: $gray-100;
 
   $primary: $bgcolor-theme;
   $info: lighten($bgcolor-theme, 20%);
