@@ -233,7 +233,7 @@ module.exports = (crowi) => {
 
       const Readable = require('stream').Readable;
       const readable = new Readable();
-      readable._read = () => {}; 
+      readable._read = () => {};
       readable.push(markdown);
       readable.push(null);
       res.set('Content-Type', 'text/markdown');
