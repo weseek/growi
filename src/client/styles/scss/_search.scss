@@ -1,6 +1,6 @@
 .search-listpage-icon {
   font-size: 16px;
-  color: #999;
+  color: $gray-400;
 }
 
 .search-listpage-clear {
@@ -11,7 +11,7 @@
   height: 22px;
   padding: 8px;
   font-size: 0.6em;
-  color: #ccc;
+  color: $gray-300;
 }
 
 .search-typeahead {
@@ -26,7 +26,7 @@
     width: 24px;
     height: 24px;
     padding: 0;
-    color: #999;
+    color: $gray-400;
   }
 
   .rbt-menu {
@@ -48,7 +48,7 @@
 
       .page-list-meta {
         font-size: 0.9em;
-        color: #999;
+        color: $gray-400;
 
         > span {
           margin-right: 0.3rem;
@@ -213,7 +213,7 @@
       .wiki {
         padding: 16px;
         font-size: 13px;
-        border: solid 1px #ccc;
+        border: solid 1px $gray-300;
       }
     }
   }
