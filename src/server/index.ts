@@ -3,6 +3,11 @@ import Server from 'next/dist/next-server/server/next-server';
 
 import express, { Request, Response } from 'express';
 import { ParsedUrlQuery } from 'querystring';
+import Logger from 'bunyan';
+
+import loggerFactory from '~/utils/logger';
+
+const logger: Logger = loggerFactory('growi');
 
 const dev: boolean = process.env.NODE_ENV !== 'production';
 const app: Server = next({ dev });
@@ -37,7 +42,7 @@ async function main() {
     });
     server.listen(port, (err?: Error) => {
       if (err) throw err;
-      console.log(`> Ready on localhost:${port} - env ${process.env.NODE_ENV}`);
+      logger.info(`> Ready on localhost:${port} - env ${process.env.NODE_ENV}`);
     });
   }
   catch (e) {

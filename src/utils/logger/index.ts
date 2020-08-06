@@ -1,18 +1,25 @@
-const bunyan = require('bunyan'); // will be replaced to browser-bunyan on browser by webpack
-const minimatch = require('minimatch');
+import bunyan from 'bunyan'; // will be replaced to browser-bunyan on browser by webpack
+import minimatch from 'minimatch';
+
+import { logger as configOfLogger } from '@root/config';
 
 const isBrowser = typeof window !== 'undefined';
 const isProd = process.env.NODE_ENV === 'production';
 
-const config = require('@root/config').logger;
 const stream = isProd ? require('./stream.prod') : require('./stream.dev');
 
 // logger store
-const loggers = {};
+interface BunyanStore {
+  [key: string] : bunyan;
+}
+const loggers: BunyanStore = {};
 
 
 // merge configuration from environment variables
-const envLevelMap = {
+interface EnvLevelMap {
+  [key: string] : string;
+}
+const envLevelMap: EnvLevelMap = {
   INFO:   'info',
   DEBUG:  'debug',
   WARN:   'warn',
@@ -24,7 +31,7 @@ Object.keys(envLevelMap).forEach((envName) => { // ['INFO', 'DEBUG', ...].forEac
   if (envVars != null) {
     const level = envLevelMap[envName];
     envVars.split(',').forEach((ns) => { // ['growi:routes:page', 'growi:models.page', ...].forEach
-      config[ns.trim()] = level;
+      configOfLogger[ns.trim()] = level;
     });
   }
 });
@@ -34,19 +41,19 @@ Object.keys(envLevelMap).forEach((envName) => { // ['INFO', 'DEBUG', ...].forEac
  * determine logger level
  * @param {string} name Logger name
  */
-function determineLoggerLevel(name) {
+function determineLoggerLevel(name: string) {
   if (isBrowser && isProd) {
     return 'error';
   }
 
-  let level = config.default;
+  let level = configOfLogger.default;
 
   /* eslint-disable array-callback-return, no-useless-return */
   // retrieve configured level
-  Object.keys(config).some((key) => { //  breakable forEach
+  Object.keys(configOfLogger).some((key) => { //  breakable forEach
     // test whether 'name' matches to 'key'(blob)
     if (minimatch(name, key)) {
-      level = config[key];
+      level = configOfLogger[key];
       return; //                          break if match
     }
   });
@@ -54,7 +61,7 @@ function determineLoggerLevel(name) {
   return level;
 }
 
-module.exports = (name) => {
+export default function(name: string): bunyan {
   // create logger instance if absent
   if (loggers[name] == null) {
     loggers[name] = bunyan.createLogger({
@@ -65,4 +72,4 @@ module.exports = (name) => {
   }
 
   return loggers[name];
-};
+}
