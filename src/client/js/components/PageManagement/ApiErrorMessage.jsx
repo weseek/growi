@@ -6,18 +6,18 @@ import toArrayIfNot from '../../../../lib/util/toArrayIfNot';
 
 const ApiErrorMessage = (props) => {
   const {
-    t, errors, targetPath,
+    t, errForDisplay, targetPath,
   } = props;
 
   function reload() {
     window.location.reload();
   }
 
-  if (errors == null) {
+  if (errForDisplay == null) {
     return null;
   }
 
-  const errArray = toArrayIfNot(errors);
+  const errArray = toArrayIfNot(errForDisplay);
 
   function renderMessage(err) {
 
@@ -85,7 +85,7 @@ const ApiErrorMessage = (props) => {
 ApiErrorMessage.propTypes = {
   t:            PropTypes.func.isRequired, //  i18next
 
-  errors:       PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  errForDisplay:       PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   targetPath:   PropTypes.string,
 };
 
