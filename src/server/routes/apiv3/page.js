@@ -199,7 +199,7 @@ module.exports = (crowi) => {
   */
   router.get('/export', validator.export, async(req, res) => {
     try {
-      const { pageId = null, revisionId = null } = req.query;
+      const { format, pageId = null, revisionId = null } = req.query;
 
       if (pageId == null) {
         return res.apiv3Err(new ErrorV3('Should provided pageId or both pageId and revisionId.'));
