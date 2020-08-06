@@ -25,6 +25,8 @@
   data-page-has-children="{% if pages.length > 0 %}true{% else %}false{% endif %}"
   data-page-user="{% if pageUser %}{{ pageUser|json }}{% else %}null{% endif %}"
   data-share-links-number="{% if page %}{{ sharelinksNumber }}{% endif %}"
+  data-share-link-id="{% if sharelink %}{{ sharelink._id|json }}{% endif %}"
+  data-page-user="{% if pageUser %}{{ pageUser|json }}{% else %}null{% endif %}"
   >
 {% else %}
 <div id="content-main" class="content-main"

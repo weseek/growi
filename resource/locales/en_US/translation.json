@@ -19,6 +19,7 @@
   "Tag": "Tag",
   "Tags": "Tags",
   "New": "New",
+  "Close": "Close",
   "Shortcuts": "Shortcuts",
   "eg": "e.g.",
   "add": "Add",
@@ -47,7 +48,6 @@
   "History": "History",
   "Presentation Mode": "Presentation",
   "Not available for guest": "Not available for guest",
-  "Shere this page link to public": "Shere this page link to public",
   "Create Archive Page": "Create Archive Page",
   "File type": "File type",
   "Target page": "Target page",
@@ -62,9 +62,6 @@
   "Last updated": "Updated",
   "Last_Login": "Last login",
   "Share": "Share",
-  "Share Link": "Share Link",
-  "share_link_notice":"remove {{count}} share links",
-  "delete_all_share_links":"Delete all share links",
   "Markdown Link": "Markdown Link",
   "Create/Edit Template": "Create/Edit template page",
   "Go to this version": "View this version",
@@ -201,6 +198,25 @@
     "password_is_not_set": "Password is not set"
   },
   "security_settings": "Security settings",
+  "share_links": {
+    "Shere this page link to public": "Shere this page link to public",
+    "share_link_list": "Share link list",
+    "share_link_management": "Share Link Management",
+    "No_share_links":"No share links",
+    "Share Link": "Share Link",
+    "Page Path": "Page Path",
+    "share_link_notice":"remove all share links",
+    "delete_all_share_links":"Delete all share links",
+    "expire": "Expiration",
+    "Days": "Days",
+    "Custom": "Custom",
+    "description": "description",
+    "enter_desc": "Enter description",
+    "Unlimited": "unlimited",
+    "Issue": "Issue",
+    "share_settings" :"Share settings",
+    "Invalid_Number_of_Date" : "You entered invalid value"
+  },
   "API Settings": "API settings",
   "API Token Settings": "API token settings",
   "Current API Token": "Current API token",
@@ -219,8 +235,8 @@
     "Copy to clipboard": "Copy to clipboard",
     "Page path": "Page path",
     "Page URL": "Page URL",
-    "Parmanent link": "Parmanent link",
-    "Page path and parmanent link": "Page path and parmanent link",
+    "Permanent link": "Permanent link",
+    "Page path and permanent link": "Page path and permanent link",
     "Markdown link": "Markdown link"
   },
   "search_help": {
@@ -262,7 +278,8 @@
       "restricted": "Access to this page is restricted",
       "stale": "More than {{count}} year has passed since last update.",
       "stale_plural": "More than {{count}} years has passed since last update.",
-      "expiration": "This share link will expire <strong>{{expiredAt}}</strong>."
+      "expiration": "This share link will expire at <strong>{{expiredAt}}</strong>.",
+      "no_deadline":"This page has no expiration date"
     }
   },
   "page_edit": {
@@ -349,6 +366,7 @@
   },
   "toaster": {
     "update_successed": "Succeeded to update {{target}}",
+    "initialize_successed": "Succeeded to initialize {{target}}",
     "give_user_admin": "Succeeded to give {{username}} admin",
     "remove_user_admin": "Succeeded to remove {{username}} admin",
     "activate_user_success": "Succeeded to activating {{username}}",

@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import dateFnsFormat from 'date-fns/format';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
@@ -12,6 +11,7 @@ import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 
 import DeleteAllShareLinksModal from './DeleteAllShareLinksModal';
+import ShareLinkList from '../../ShareLinkList';
 
 class ShareLinkSetting extends React.Component {
 
@@ -81,7 +81,7 @@ class ShareLinkSetting extends React.Component {
 
 
   render() {
-    const { adminGeneralSecurityContainer } = this.props;
+    const { t, adminGeneralSecurityContainer } = this.props;
 
     const pager = (
       <div className="pull-right my-3">
@@ -102,11 +102,11 @@ class ShareLinkSetting extends React.Component {
             type="button"
             onClick={this.showDeleteConfirmModal}
           >
-            Delete all links
+            {t('share_links.delete_all_share_links')}
           </button>
         )
         : (
-          <p className="pull-right mr-2">No share links</p>
+          <p className="pull-right mr-2">{t('share_links.No_share_links')}</p>
         )
     );
 
@@ -114,50 +114,19 @@ class ShareLinkSetting extends React.Component {
       <Fragment>
         <div className="mb-3">
           {deleteAllButton}
-          <h2 className="alert-anchor border-bottom">Shared Link List</h2>
+          <h2 className="alert-anchor border-bottom">{t('share_links.share_link_management')}</h2>
         </div>
 
         {pager}
-        <div className="table-responsive">
-          <table className="table table-bordered">
-            <thead>
-              <tr>
-                <th>Link</th>
-                <th>PagePath</th>
-                <th>Expiration</th>
-                <th>Description</th>
-                <th>Order</th>
-              </tr>
-            </thead>
-            <tbody>
-              {adminGeneralSecurityContainer.state.shareLinks.map((sharelink) => {
-                return (
-                  <tr key={sharelink._id}>
-                    <td>{sharelink._id}</td>
-                    <td><a href={sharelink.relatedPage.path}>{sharelink.relatedPage.path}</a></td>
-                    <td>{sharelink.expiredAt && <span>{dateFnsFormat(new Date(sharelink.expiredAt), 'yyyy-MM-dd HH:mm')}</span>}</td>
-                    <td>{sharelink.description}</td>
-                    <td>
-                      <button
-                        className="btn btn-outline-warning"
-                        type="button"
-                        shareLinks={sharelink._id}
-                        onClick={() => { this.deleteLinkById(sharelink._id) }}
-                      >
-                        <i className="icon-trash mr-2"></i>Delete
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+        <ShareLinkList
+          shareLinks={adminGeneralSecurityContainer.state.shareLinks}
+          onClickDeleteButton={this.deleteLinkById}
+          isAdmin
+        />
 
         <DeleteAllShareLinksModal
           isOpen={this.state.isDeleteConfirmModalShown}
           onClose={this.closeDeleteConfirmModal}
-          count={adminGeneralSecurityContainer.state.shareLinks.length}
           onClickDeleteButton={this.deleteAllLinksButtonHandler}
         />
 

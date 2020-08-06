@@ -2,7 +2,14 @@
 
 ## v4.1.1-RC
 
+* Feature: External share link
+* Feature: Create/edit linker with GUI
+* Improvement: Optimize some features that operate revision data
+    * Page history
+    * Renaming pages
+    * Deleting pages
 * Fix: "Append params" switch of CopyDropdown does not work when multiple CopyDropdown instance exists
+* Fix: Access token parser
 
 ## v4.1.0
 

@@ -21,6 +21,9 @@ describe('ShareLink', () => {
       params: {
         linkId: 'someLinkId',
       },
+      query: {
+        revision: 'someRevision',
+      },
     };
 
     const res = {
@@ -38,6 +41,9 @@ describe('ShareLink', () => {
           revision: {},
           creator: {},
         };
+      },
+      initLatestRevisionField: (revisionId) => {
+        return revisionId;
       },
     };
 

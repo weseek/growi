@@ -66,10 +66,13 @@ class CopyDropdown extends React.Component {
   }
 
   generatePermalink() {
-    const { pageId } = this.props;
+    const { pageId, isShareLinkMode } = this.props;
 
     if (pageId == null) {
       return null;
+    }
+    if (isShareLinkMode) {
+      return decodeURI(`${origin}/share/${pageId}`);
     }
 
     return decodeURI(`${origin}/${pageId}${this.uriParams}`);
@@ -92,12 +95,17 @@ class CopyDropdown extends React.Component {
   );
 
   render() {
-    const { t, pageId } = this.props;
+    const {
+      t, pageId, isShareLinkMode,
+    } = this.props;
     const { isParamsAppended } = this.state;
 
     const pagePathWithParams = this.generatePagePathWithParams();
     const pagePathUrl = this.generatePagePathUrl();
     const permalink = this.generatePermalink();
+
+    const copyTarget = isShareLinkMode ? `copyShareLink${pageId}` : 'copyPagePathDropdown';
+    const dropdownToggleStyle = isShareLinkMode ? 'btn btn-secondary' : 'd-block text-muted bg-transparent btn-copy border-0';
 
     const { id, DropdownItemContents } = this;
 
@@ -105,17 +113,18 @@ class CopyDropdown extends React.Component {
 
     return (
       <>
-        <UncontrolledDropdown id="copyPagePathDropdown" className="grw-copy-dropdown">
-
+        <UncontrolledDropdown id={copyTarget} className="grw-copy-dropdown">
           <DropdownToggle
             caret
-            className="d-block text-muted bg-transparent btn-copy border-0"
+            className={dropdownToggleStyle}
             style={this.props.buttonStyle}
           >
-            <i className="ti-clipboard"></i>
+            { isShareLinkMode ? (
+              <>Copy Link</>
+            ) : (<i className="ti-clipboard"></i>)}
           </DropdownToggle>
 
-          <DropdownMenu>
+          <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: null } }}>
 
             <div className="d-flex align-items-center justify-content-between">
               <DropdownItem header className="px-3">
@@ -150,25 +159,24 @@ class CopyDropdown extends React.Component {
                 <DropdownItemContents title={t('copy_to_clipboard.Page URL')} contents={pagePathUrl} />
               </DropdownItem>
             </CopyToClipboard>
-
             <DropdownItem divider className="my-0"></DropdownItem>
 
-            {/* Parmanent Link */}
+            {/* Permanent Link */}
             { pageId && (
               <CopyToClipboard text={permalink} onCopy={this.showToolTip}>
                 <DropdownItem className="px-3">
-                  <DropdownItemContents title={t('copy_to_clipboard.Parmanent link')} contents={permalink} />
+                  <DropdownItemContents title={t('copy_to_clipboard.Permanent link')} contents={permalink} />
                 </DropdownItem>
               </CopyToClipboard>
             )}
 
             <DropdownItem divider className="my-0"></DropdownItem>
 
-            {/* Page path + Parmanent Link */}
+            {/* Page path + Permanent Link */}
             { pageId && (
               <CopyToClipboard text={`${pagePathWithParams}\n${permalink}`} onCopy={this.showToolTip}>
                 <DropdownItem className="px-3">
-                  <DropdownItemContents title={t('copy_to_clipboard.Page path and parmanent link')} contents={<>{pagePathWithParams}<br />{permalink}</>} />
+                  <DropdownItemContents title={t('copy_to_clipboard.Page path and permanent link')} contents={<>{pagePathWithParams}<br />{permalink}</>} />
                 </DropdownItem>
               </CopyToClipboard>
             )}
@@ -187,7 +195,7 @@ class CopyDropdown extends React.Component {
 
         </UncontrolledDropdown>
 
-        <Tooltip placement="bottom" isOpen={this.state.tooltipOpen} target="copyPagePathDropdown" fade={false}>
+        <Tooltip placement="bottom" isOpen={this.state.tooltipOpen} target={copyTarget} fade={false}>
           copied!
         </Tooltip>
       </>
@@ -202,6 +210,7 @@ CopyDropdown.propTypes = {
   pagePath: PropTypes.string.isRequired,
   pageId: PropTypes.string,
   buttonStyle: PropTypes.object,
+  isShareLinkMode: PropTypes.bool,
 };
 
 export default withTranslation()(CopyDropdown);

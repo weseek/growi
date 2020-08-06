@@ -2,7 +2,7 @@
 
 
 {% block content_header %}
-  <h1 class="p-3">{{ encodeURI(page.path) }}</h1>
+  <h1 class="p-3">{{ page.path | preventXss }}</h1>
 {% endblock %}
 
 
@@ -14,10 +14,15 @@
 {% endblock %}
 
 {% block content_main %}
-  <div class="row" id="is-shared-page" data-share-link-expired-at="{{ sharelink.expiredAt|datetz('Y/m/d H:i:s')}}" data-share-link-created-at="{{ sharelink.createdAt|datetz('Y/m/d H:i:s')}}">
+  <div
+    class="row"
+    id="is-shared-page"
+    data-share-link-expired-at="{% if sharelink.expiredAt %}{{ sharelink.expiredAt|datetz('Y/m/d H:i:s')}}{% endif %}"
+    data-share-link-created-at="{{ sharelink.createdAt|datetz('Y/m/d H:i:s')}}"
+  >
     {% block content_page %}
       <div class="col grw-page-content-container">
-      <div id="share-link-alert"></div>
+        <div id="share-link-alert"></div>
 
         {% include '../widget/page_content.html' %}
         {# force remove #revision-toc from #content_main of parent #}
@@ -36,7 +41,6 @@
     {% endblock %}
 
   </div>
-
 {% endblock %}
 
 

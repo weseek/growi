@@ -159,7 +159,9 @@ class Sidebar extends React.Component {
           calcViewHeightFunc={this.calcViewHeight}
         />
         <div id="grw-sidebar-content-container" className="grw-sidebar-content-container">
-          <SidebarContents />
+          <SidebarContents
+            isSharedUser={this.props.appContainer.isSharedUser}
+          />
         </div>
 
         <DrawerToggler iconClass="icon-arrow-left" />
