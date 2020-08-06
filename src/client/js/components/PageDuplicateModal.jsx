@@ -101,7 +101,6 @@ const PageDuplicateModal = (props) => {
               {isReachable
               ? (
                 <PagePathAutoComplete
-                  crowi={appContainer}
                   initializedPath={path}
                   onSubmit={ppacSubmitHandler}
                   onInputChange={ppacInputChangeHandler}
