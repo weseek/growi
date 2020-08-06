@@ -22,15 +22,15 @@ module.exports = (crowi) => {
 
   // router.get('/attachment', accessTokenParser, loginRequired, async(req, res) => {
   router.get('/list', accessTokenParser, async(req, res) => {
-    const id = req.query.id;
-    // const ids = console.log(req.query.id);
 
     try {
-      const attachment = await Attachment.findById(id);
-      return res.apiv3({ attachment });
+      const id = req.query.page;
+      const attachments = await Attachment.find({ page: id });
+
+      return res.apiv3({ attachments });
     }
     catch (err) {
-      logger.error('attachment not found', err);
+      logger.error('Attachment not found', err);
       return res.apiv3Err(err, 404);
     }
   });
