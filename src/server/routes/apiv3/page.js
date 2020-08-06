@@ -215,6 +215,7 @@ module.exports = (crowi) => {
         return res.apiv3Err(new ErrorV3(`Haven't the right to see the page ${pageId}.`), 403);
       }
 
+
       let revisionIdForFind;
       if (revisionId == null) {
         const Page = crowi.model('Page');
@@ -227,6 +228,7 @@ module.exports = (crowi) => {
 
       const Revision = crowi.model('Revision');
       const revision = await Revision.findById(revisionIdForFind);
+      
       const markdown = revision.body;
 
       return res.apiv3({ markdown });
