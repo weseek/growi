@@ -16,7 +16,6 @@ const EmptyTrashModal = (props) => {
     t, isOpen, onClose, appContainer,
   } = props;
 
-  // errors:array
   const [errors, setErrors] = useState(null);
 
   async function emptyTrash() {
@@ -26,9 +25,8 @@ const EmptyTrashModal = (props) => {
       await appContainer.apiv3Delete('/pages/empty-trash');
       window.location.reload();
     }
-    catch (errors) {
-      setErrors(errors);
-
+    catch (err) {
+      setErrors(err);
     }
   }
 

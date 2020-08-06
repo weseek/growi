@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
+import toArrayIfNot from '../../../../lib/util/toArrayIfNot';
 
 const ApiErrorMessage = (props) => {
   const {
@@ -15,6 +16,8 @@ const ApiErrorMessage = (props) => {
   if (errors == null) {
     return null;
   }
+
+  const errArray = toArrayIfNot(errors);
 
   function renderMessage(err) {
 
@@ -67,7 +70,7 @@ const ApiErrorMessage = (props) => {
 
   return (
     <>
-      {errors.map((error) => {
+      {errArray.map((error) => {
         return (
           <span key={error.message} className="text-danger">
             {renderMessage(error)}
@@ -82,7 +85,7 @@ const ApiErrorMessage = (props) => {
 ApiErrorMessage.propTypes = {
   t:            PropTypes.func.isRequired, //  i18next
 
-  errors:       PropTypes.array,
+  errors:       PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   targetPath:   PropTypes.string,
 };
 

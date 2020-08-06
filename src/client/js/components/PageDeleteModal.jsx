@@ -33,7 +33,6 @@ const PageDeleteModal = (props) => {
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
   const deleteMode = isDeleteCompletely ? 'completely' : 'temporary';
 
-  // errors:array
   const [errors, setErrors] = useState(null);
 
   function changeIsDeleteRecursivelyHandler() {
@@ -55,8 +54,8 @@ const PageDeleteModal = (props) => {
       const trashPagePath = response.page.path;
       window.location.href = encodeURI(trashPagePath);
     }
-    catch (errors) {
-      setErrors(errors);
+    catch (err) {
+      setErrors(err);
     }
   }
 

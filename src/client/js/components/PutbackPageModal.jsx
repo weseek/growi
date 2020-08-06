@@ -18,7 +18,6 @@ const PutBackPageModal = (props) => {
     t, isOpen, onClose, pageContainer, path,
   } = props;
 
-  // errors:array
   const [errors, setErrors] = useState(null);
 
   const [isPutbackRecursively, setIsPutbackRecursively] = useState(true);
@@ -35,8 +34,8 @@ const PutBackPageModal = (props) => {
       const putbackPagePath = response.page.path;
       window.location.href = encodeURI(putbackPagePath);
     }
-    catch (errors) {
-      setErrors(errors);
+    catch (err) {
+      setErrors(err);
     }
   }
 

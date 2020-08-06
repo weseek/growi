@@ -76,9 +76,8 @@ const PageDuplicateModal = (props) => {
       const { page } = res;
       window.location.href = encodeURI(`${page.path}?duplicated=${path}`);
     }
-    catch (errors) {
-      // TODO GW-3316 set errors
-      // setErrors(errors);
+    catch (err) {
+      setErrors(err);
     }
   }
 
