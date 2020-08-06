@@ -12,6 +12,7 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 import ApiErrorMessage from './PageManagement/ApiErrorMessage';
+import ApiErrorMessageWrapper from './PageManagement/ApiErrorMessageWrapper';
 
 const PageRenameModal = (props) => {
   const {
@@ -24,7 +25,7 @@ const PageRenameModal = (props) => {
 
   const [pageNameInput, setPageNameInput] = useState(path);
 
-  const [errForDisplay, setErrForDisplay] = useState(null);
+  const [errs, setErrs] = useState(null);
 
   const [isRenameRecursively, SetIsRenameRecursively] = useState(true);
   const [isRenameRedirect, SetIsRenameRedirect] = useState(false);
@@ -51,7 +52,7 @@ const PageRenameModal = (props) => {
   }
 
   async function rename() {
-    setErrForDisplay(null);
+    setErrs(null);
 
     try {
       const response = await pageContainer.rename(
@@ -71,7 +72,7 @@ const PageRenameModal = (props) => {
       window.location.href = `${url.pathname}${url.search}`;
     }
     catch (err) {
-      setErrForDisplay(err);
+      setErrs(err);
     }
   }
 
@@ -148,7 +149,7 @@ const PageRenameModal = (props) => {
         </div>
       </ModalBody>
       <ModalFooter>
-        <ApiErrorMessage errForDisplay={errForDisplay} targetPath={pageNameInput} />
+        <ApiErrorMessageWrapper errs={errs} targetPath={pageNameInput} />
         <button type="button" className="btn btn-primary" onClick={rename}>Rename</button>
       </ModalFooter>
     </Modal>

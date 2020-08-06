@@ -12,13 +12,14 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import PageContainer from '../services/PageContainer';
 
 import ApiErrorMessage from './PageManagement/ApiErrorMessage';
+import ApiErrorMessageWrapper from './PageManagement/ApiErrorMessageWrapper';
 
 const PutBackPageModal = (props) => {
   const {
     t, isOpen, onClose, pageContainer, path,
   } = props;
 
-  const [errForDisplay, setErrForDisplay] = useState(null);
+  const [errs, setErrs] = useState(null);
 
   const [isPutbackRecursively, setIsPutbackRecursively] = useState(true);
 
@@ -27,7 +28,7 @@ const PutBackPageModal = (props) => {
   }
 
   async function putbackPage() {
-    setErrForDisplay(null);
+    setErrs(null);
 
     try {
       const response = await pageContainer.revertRemove(isPutbackRecursively);
@@ -35,7 +36,7 @@ const PutBackPageModal = (props) => {
       window.location.href = encodeURI(putbackPagePath);
     }
     catch (err) {
-      setErrForDisplay(err);
+      setErrs(err);
     }
   }
 
@@ -70,7 +71,7 @@ const PutBackPageModal = (props) => {
         </div>
       </ModalBody>
       <ModalFooter>
-        <ApiErrorMessage errForDisplay={errForDisplay} />
+        <ApiErrorMessageWrapper errs={errs} />
         <button type="button" className="btn btn-info" onClick={putbackPageButtonHandler}>
           <i className="icon-action-undo mr-2" aria-hidden="true"></i> { t('Put Back') }
         </button>
