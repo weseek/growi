@@ -18,7 +18,7 @@ function AppSettingsPage(props) {
         <div className="row">
           <i className="fa fa-5x fa-spinner fa-pulse mx-auto text-muted"></i>
         </div>
-)}
+      )}
     >
       <RenderAppSettingsPageWrapper />
     </Suspense>
