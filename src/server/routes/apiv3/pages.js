@@ -60,8 +60,7 @@ module.exports = (crowi) => {
     // check page existence
     const isExist = await Page.count({ path }) > 0;
     if (isExist) {
-      res.code = 'page_exists';
-      return res.apiv3Err('Page exists', 409);
+      return res.apiv3Err(new ErrorV3('Failed to post page', 'page_exists'), 500);
     }
 
     const options = { socketClientId };
@@ -148,7 +147,7 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error('Failed to get recent pages', err);
-      return res.apiv3Err(err, 500, 'unknown');
+      return res.apiv3Err(new ErrorV3('Failed to get recent pages', 'unknown'), 500);
     }
   });
 
@@ -235,7 +234,7 @@ module.exports = (crowi) => {
       return res.apiv3({ pages });
     }
     catch (err) {
-      return res.apiv3Err(err, 500, 'unknown');
+      return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
     }
   });
 
@@ -252,9 +251,7 @@ module.exports = (crowi) => {
       return res.apiv3({ resultPaths });
     }
     catch (err) {
-      res.code = 'unknown';
-      logger.error('Failed to find the path', err);
-      return res.apiv3Err(err, 500);
+      return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
     }
 
   });
