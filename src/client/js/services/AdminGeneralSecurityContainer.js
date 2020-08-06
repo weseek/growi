@@ -30,6 +30,10 @@ export default class AdminGeneralSecurityContainer extends Container {
       isGitHubEnabled: false,
       isTwitterEnabled: false,
       setupStrategies: [],
+      shareLinks: [],
+      totalshareLinks: 0,
+      shareLinksPagingLimit: Infinity,
+      shareLinksActivePage: 1,
     };
 
   }
@@ -149,6 +153,31 @@ export default class AdminGeneralSecurityContainer extends Container {
     catch (err) {
       toastError(err);
     }
+  }
+
+  /**
+   * Retrieve All Sharelinks
+   */
+  async retrieveShareLinksByPagingNum(page) {
+
+    const params = {
+      page,
+    };
+
+    const { data } = await this.appContainer.apiv3.get('/security-setting/all-share-links', params);
+
+    if (data.paginateResult == null) {
+      throw new Error('data must conclude \'paginateResult\' property.');
+    }
+
+    const { docs: shareLinks, totalDocs: totalshareLinks, limit: shareLinksPagingLimit } = data.paginateResult;
+
+    this.setState({
+      shareLinks,
+      totalshareLinks,
+      shareLinksPagingLimit,
+      shareLinksActivePage: page,
+    });
   }
 
   /**

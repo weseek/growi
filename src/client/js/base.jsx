@@ -6,11 +6,12 @@ import Xss from '@commons/service/xss';
 import GrowiNavbar from './components/Navbar/GrowiNavbar';
 import GrowiNavbarBottom from './components/Navbar/GrowiNavbarBottom';
 import Sidebar from './components/Sidebar';
+import ShareLinkAlert from './components/Page/ShareLinkAlert';
 import HotkeysManager from './components/Hotkeys/HotkeysManager';
 import Fab from './components/Fab';
 
 import AppContainer from './services/AppContainer';
-import WebsocketContainer from './services/WebsocketContainer';
+import SocketIoContainer from './services/SocketIoContainer';
 import PageCreateModal from './components/PageCreateModal';
 
 const logger = loggerFactory('growi:cli:app');
@@ -26,7 +27,7 @@ window.xss = xss;
 // create unstated container instance
 const appContainer = new AppContainer();
 // eslint-disable-next-line no-unused-vars
-const websocketContainer = new WebsocketContainer(appContainer);
+const socketIoContainer = new SocketIoContainer(appContainer);
 
 appContainer.initApp();
 
@@ -45,9 +46,10 @@ const componentMappings = {
 
   'grw-sidebar-wrapper': <Sidebar />,
 
+  'share-link-alert': <ShareLinkAlert />,
+  'grw-fab-container': <Fab />,
   'grw-hotkeys-manager': <HotkeysManager />,
 
-  'grw-fab-container': <Fab />,
 };
 
 export { appContainer, componentMappings };

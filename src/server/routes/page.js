@@ -142,6 +142,7 @@ module.exports = function(crowi, app) {
   const PageTagRelation = crowi.model('PageTagRelation');
   const UpdatePost = crowi.model('UpdatePost');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
+  const ShareLink = crowi.model('ShareLink');
 
   const ApiResponse = require('../util/apiResponse');
   const getToday = require('../util/getToday');
@@ -149,41 +150,9 @@ module.exports = function(crowi, app) {
   const { slackNotificationService, configManager } = crowi;
   const interceptorManager = crowi.getInterceptorManager();
   const globalNotificationService = crowi.getGlobalNotificationService();
+  const pageService = crowi.pageService;
 
   const actions = {};
-
-  // register page events
-
-  const pageEvent = crowi.event('page');
-  pageEvent.on('create', (page, user, socketClientId) => {
-    page = serializeToObj(page); // eslint-disable-line no-param-reassign
-    crowi.getIo().sockets.emit('page:create', { page, user, socketClientId });
-  });
-  pageEvent.on('update', (page, user, socketClientId) => {
-    page = serializeToObj(page); // eslint-disable-line no-param-reassign
-    crowi.getIo().sockets.emit('page:update', { page, user, socketClientId });
-  });
-  pageEvent.on('delete', (page, user, socketClientId) => {
-    page = serializeToObj(page); // eslint-disable-line no-param-reassign
-    crowi.getIo().sockets.emit('page:delete', { page, user, socketClientId });
-  });
-
-
-  function serializeToObj(page) {
-    const returnObj = page.toObject();
-    if (page.revisionHackmdSynced != null && page.revisionHackmdSynced._id != null) {
-      returnObj.revisionHackmdSynced = page.revisionHackmdSynced._id;
-    }
-
-    if (page.lastUpdateUser != null && page.lastUpdateUser instanceof User) {
-      returnObj.lastUpdateUser = page.lastUpdateUser.toObject();
-    }
-    if (page.creator != null && page.creator instanceof User) {
-      returnObj.creator = page.creator.toObject();
-    }
-
-    return returnObj;
-  }
 
   function getPathFromRequest(req) {
     return pathUtils.normalizePath(req.params[0] || '');
@@ -349,6 +318,9 @@ module.exports = function(crowi, app) {
     addRendarVarsForPage(renderVars, portalPage);
     await addRenderVarsForSlack(renderVars, portalPage);
 
+    const sharelinksNumber = await ShareLink.countDocuments({ relatedPage: portalPage._id });
+    renderVars.sharelinksNumber = sharelinksNumber;
+
     const limit = 50;
     const offset = parseInt(req.query.offset) || 0;
 
@@ -393,6 +365,9 @@ module.exports = function(crowi, app) {
     await addRenderVarsForSlack(renderVars, page);
     await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
 
+    const sharelinksNumber = await ShareLink.countDocuments({ relatedPage: page._id });
+    renderVars.sharelinksNumber = sharelinksNumber;
+
     if (isUserPage(page.path)) {
       // change template
       view = `layout-${layoutName}/user_page`;
@@ -436,6 +411,52 @@ module.exports = function(crowi, app) {
     }
     // delegate to showPageForGrowiBehavior
     return showPageForGrowiBehavior(req, res, next);
+  };
+
+  actions.showSharedPage = async function(req, res, next) {
+    const { linkId } = req.params;
+    const revisionId = req.query.revision;
+
+    const layoutName = configManager.getConfig('crowi', 'customize:layout');
+    const view = `layout-${layoutName}/shared_page`;
+
+    const shareLink = await ShareLink.findOne({ _id: linkId }).populate('relatedPage');
+
+    if (shareLink == null || shareLink.relatedPage == null) {
+      // page or sharelink are not found
+      return res.render(`layout-${layoutName}/not_found_shared_page`);
+    }
+
+    let page = shareLink.relatedPage;
+
+    // check if share link is expired
+    if (shareLink.isExpired()) {
+      // page is not found
+      return res.render(`layout-${layoutName}/expired_shared_page`);
+    }
+
+    const renderVars = {};
+
+    renderVars.sharelink = shareLink;
+
+    // presentation mode
+    if (req.query.presentation) {
+      page = await page.populateDataToMakePresentation(revisionId);
+
+      // populate
+      addRendarVarsForPage(renderVars, page);
+      return res.render('page_presentation', renderVars);
+    }
+
+    page.initLatestRevisionField(revisionId);
+
+    // populate
+    page = await page.populateDataToShowRevision();
+    addRendarVarsForPage(renderVars, page);
+    addRendarVarsForScope(renderVars, page);
+
+    await interceptorManager.process('beforeRenderPage', req, res, renderVars);
+    return res.render(view, renderVars);
   };
 
   /**
@@ -742,7 +763,7 @@ module.exports = function(crowi, app) {
       savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
     }
 
-    const result = { page: serializeToObj(createdPage), tags: savedTags };
+    const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
     res.json(ApiResponse.success(result));
 
     // update scopes for descendants
@@ -871,7 +892,7 @@ module.exports = function(crowi, app) {
       savedTags = await PageTagRelation.listTagNamesByPage(pageId);
     }
 
-    const result = { page: serializeToObj(page), tags: savedTags };
+    const result = { page: pageService.serializeToObj(page), tags: savedTags };
     res.json(ApiResponse.success(result));
 
     // update scopes for descendants
