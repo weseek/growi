@@ -41,7 +41,7 @@ html[light],
 html[dark] {
   $primary: #d3c665;
   // Background colors
-  $bgcolor-card: #f5f5f5;
+  $bgcolor-card: $gray-50;
   $bgcolor-inline-code: $gray-100; //optional
 
   // Font colors
