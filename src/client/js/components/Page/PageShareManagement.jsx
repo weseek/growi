@@ -26,14 +26,14 @@ const PageShareManagement = (props) => {
     setIsOutsideShareLinkModalShown(false);
   }
 
-  async function exportPageHundler(format) {
+  async function exportPageHundler() {
     const { pageId, revisionId } = pageContainer.state;
     try {
-      const { data } = await appContainer.apiv3Get('/page/export', { format, pageId, revisionId });
+      const { data } = await appContainer.apiv3Get('/page/export', { pageId, revisionId });
       const blob = new Blob([data.markdown]);
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
-      link.download = `${revisionId}.${format}`;
+      link.download = `${revisionId}.md`;
       link.click();
       link.remove();
     }
@@ -97,7 +97,7 @@ const PageShareManagement = (props) => {
           <i className="icon-fw icon-link"></i>{t('share_links.Shere this page link to public')}
           <span className="ml-2 badge badge-info badge-pill">{pageContainer.state.shareLinksNumber}</span>
         </button>
-        <button type="button" className="dropdown-item" onClick={() => { exportPageHundler('md') }}>
+        <button type="button" className="dropdown-item" onClick={() => { exportPageHundler() }}>
           <span>{t('export_bulk.export_page_markdown')}</span>
         </button>
       </div>
