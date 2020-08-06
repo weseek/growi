@@ -12,7 +12,7 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 import PagePathAutoComplete from './PagePathAutoComplete';
-import ApiErrorMessageWrapper from './PageManagement/ApiErrorMessageList';
+import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
 const PageDuplicateModal = (props) => {
   const { t, appContainer, pageContainer } = props;
@@ -141,7 +141,7 @@ const PageDuplicateModal = (props) => {
         </div>
       </ModalBody>
       <ModalFooter>
-        <ApiErrorMessageWrapper errs={errs} targetPath={pageNameInput} />
+        <ApiErrorMessageList errs={errs} targetPath={pageNameInput} />
         <button type="button" className="btn btn-primary" onClick={duplicate}>Duplicate page</button>
       </ModalFooter>
     </Modal>

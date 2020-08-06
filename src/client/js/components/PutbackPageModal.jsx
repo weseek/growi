@@ -11,7 +11,7 @@ import { withUnstatedContainers } from './UnstatedUtils';
 
 import PageContainer from '../services/PageContainer';
 
-import ApiErrorMessageWrapper from './PageManagement/ApiErrorMessageList';
+import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
 const PutBackPageModal = (props) => {
   const {
@@ -70,7 +70,7 @@ const PutBackPageModal = (props) => {
         </div>
       </ModalBody>
       <ModalFooter>
-        <ApiErrorMessageWrapper errs={errs} />
+        <ApiErrorMessageList errs={errs} />
         <button type="button" className="btn btn-info" onClick={putbackPageButtonHandler}>
           <i className="icon-action-undo mr-2" aria-hidden="true"></i> { t('Put Back') }
         </button>

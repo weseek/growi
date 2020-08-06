@@ -9,7 +9,7 @@ import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import AppContainer from '../services/AppContainer';
-import ApiErrorMessageWrapper from './PageManagement/ApiErrorMessageList';
+import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
 const EmptyTrashModal = (props) => {
   const {
@@ -43,7 +43,7 @@ const EmptyTrashModal = (props) => {
         { t('modal_empty.notice')}
       </ModalBody>
       <ModalFooter>
-        <ApiErrorMessageWrapper errs={errs} />
+        <ApiErrorMessageList errs={errs} />
         <button type="button" className="btn btn-danger" onClick={emptyButtonHandler}>
           <i className="icon-trash mr-2" aria-hidden="true"></i> Empty
         </button>

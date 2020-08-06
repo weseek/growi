@@ -10,7 +10,7 @@ import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from './UnstatedUtils';
 import PageContainer from '../services/PageContainer';
 
-import ApiErrorMessageWrapper from './PageManagement/ApiErrorMessageList';
+import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
 const deleteIconAndKey = {
   completely: {
@@ -122,7 +122,7 @@ const PageDeleteModal = (props) => {
         {!isDeleteCompletelyModal && renderDeleteCompletelyForm()}
       </ModalBody>
       <ModalFooter>
-        <ApiErrorMessageWrapper errs={errs} />
+        <ApiErrorMessageList errs={errs} />
         <button type="button" className={`btn btn-${deleteIconAndKey[deleteMode].color}`} onClick={deleteButtonHandler}>
           <i className={`icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
           { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }

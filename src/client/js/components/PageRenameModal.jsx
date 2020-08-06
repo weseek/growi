@@ -11,7 +11,7 @@ import { withUnstatedContainers } from './UnstatedUtils';
 
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
-import ApiErrorMessageWrapper from './PageManagement/ApiErrorMessageList';
+import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
 const PageRenameModal = (props) => {
   const {
@@ -148,7 +148,7 @@ const PageRenameModal = (props) => {
         </div>
       </ModalBody>
       <ModalFooter>
-        <ApiErrorMessageWrapper errs={errs} targetPath={pageNameInput} />
+        <ApiErrorMessageList errs={errs} targetPath={pageNameInput} />
         <button type="button" className="btn btn-primary" onClick={rename}>Rename</button>
       </ModalFooter>
     </Modal>
