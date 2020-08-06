@@ -62,7 +62,7 @@ class CopyDropdown extends React.Component {
 
   generatePagePathUrl() {
     const { origin } = window.location;
-    return `${origin}${this.generatePagePathWithParams()}`;
+    return `${origin}${encodeURI(this.generatePagePathWithParams())}`;
   }
 
   generatePermalink() {
@@ -75,7 +75,7 @@ class CopyDropdown extends React.Component {
       return decodeURI(`${origin}/share/${pageId}`);
     }
 
-    return decodeURI(`${origin}/${pageId}${this.uriParams}`);
+    return decodeURI(`${origin}/${pageId}`) + this.uriParams;
   }
 
   generateMarkdownLink() {
