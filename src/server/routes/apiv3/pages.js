@@ -6,6 +6,7 @@ const express = require('express');
 const pathUtils = require('growi-commons').pathUtils;
 
 const { body } = require('express-validator/check');
+const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const router = express.Router();
 
@@ -179,8 +180,7 @@ module.exports = (crowi) => {
     // check page existence
     const isExist = await Page.count({ path }) > 0;
     if (isExist) {
-      res.code = 'page_exists';
-      return res.apiv3Err('Page exists', 409);
+      return res.apiv3Err(new ErrorV3('Failed to post page', 'page_exists'), 500);
     }
 
     const options = { socketClientId };
@@ -266,11 +266,76 @@ module.exports = (crowi) => {
       return res.apiv3(result);
     }
     catch (err) {
-      res.code = 'unknown';
       logger.error('Failed to get recent pages', err);
-      return res.apiv3Err(err, 500);
+      return res.apiv3Err(new ErrorV3('Failed to get recent pages', 'unknown'), 500);
     }
   });
+
+  // TODO write swagger(GW-3430) and add validation (GW-3429)
+  router.put('/rename', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
+    const { pageId, isRecursively, revisionId } = req.body;
+
+    let newPagePath = pathUtils.normalizePath(req.body.newPagePath);
+
+    const options = {
+      createRedirectPage: req.body.isRenameRedirect,
+      updateMetadata: req.body.isRemainMetadata,
+      socketClientId: +req.body.socketClientId || undefined,
+    };
+
+    if (!Page.isCreatableName(newPagePath)) {
+      return res.apiv3Err(new ErrorV3(`Could not use the path '${newPagePath})'`, 'invalid_path'), 409);
+    }
+
+    // check whether path starts slash
+    newPagePath = pathUtils.addHeadingSlash(newPagePath);
+
+    const isExist = await Page.count({ path: newPagePath }) > 0;
+    if (isExist) {
+      // if page found, cannot cannot rename to that path
+      return res.apiv3Err(new ErrorV3(`${newPagePath} already exists`, 'already_exists'), 409);
+    }
+
+    let page;
+
+    try {
+      page = await Page.findByIdAndViewer(pageId, req.user);
+
+      if (page == null) {
+        return res.apiv3Err(new ErrorV3(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 401);
+      }
+
+      if (!page.isUpdatable(revisionId)) {
+        return res.apiv3Err(new ErrorV3('Someone could update this page, so couldn\'t delete.', 'notfound_or_forbidden'), 409);
+      }
+
+      if (isRecursively) {
+        page = await Page.renameRecursively(page, newPagePath, req.user, options);
+      }
+      else {
+        page = await Page.rename(page, newPagePath, req.user, options);
+      }
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
+    }
+
+    const result = { page: pageService.serializeToObj(page) };
+
+    try {
+      // global notification
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_MOVE, page, req.user, {
+        oldPath: req.body.path,
+      });
+    }
+    catch (err) {
+      logger.error('Move notification failed', err);
+    }
+
+    return res.apiv3(result);
+  });
+
 
   /**
   * @swagger
@@ -289,9 +354,7 @@ module.exports = (crowi) => {
       return res.apiv3({ pages });
     }
     catch (err) {
-      res.code = 'unknown';
-      logger.error('Failed to delete trash pages', err);
-      return res.apiv3Err(err, 500);
+      return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
     }
   });
 
@@ -308,9 +371,7 @@ module.exports = (crowi) => {
       return res.apiv3({ resultPaths });
     }
     catch (err) {
-      res.code = 'unknown';
-      logger.error('Failed to find the path', err);
-      return res.apiv3Err(err, 500);
+      return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
     }
 
   });
