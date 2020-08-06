@@ -1,8 +1,9 @@
 module.exports = {
+  parser: '@typescript-eslint/parser',
   extends: [
     'weseek',
-    'weseek/react',
-    "plugin:jest/recommended",
+    'weseek/typescript-next',
+    'plugin:jest/recommended',
   ],
   env: {
     jquery: true,
@@ -32,6 +33,6 @@ module.exports = {
       },
     ],
     // eslint-plugin-import rules
-    'import/no-unresolved': [2, { ignore: ['^@'] }], // ignore @alias/..., @commons/..., ...
+    // 'import/no-unresolved': [2, { ignore: ['^@'] }], // ignore @alias/..., @commons/..., ...
   },
 };

@@ -1,10 +1,6 @@
 {
-  // 既定の改行文字。LF の場合には \n を CRLF の場合には \r\n を使用してください。
+  // The default end of line character.
   "files.eol": "\n",
-  // 指定した構文に対してプロファイルを定義するか、特定の規則がある独自のプロファイルをご使用ください。
-  "emmet.syntaxProfiles": {
-    "javascript": "jsx"
-  },
 
   // use stylelint-plus
   // see https://qiita.com/y-w/items/bd7f11013fe34b69f0df#vs-code%E3%81%A8%E7%B5%84%E3%81%BF%E5%90%88%E3%82%8F%E3%81%9B%E3%82%8B
