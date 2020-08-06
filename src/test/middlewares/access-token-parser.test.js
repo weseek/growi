@@ -38,17 +38,13 @@ describe('loginRequired', () => {
     };
     const res = {};
     const next = jest.fn().mockReturnValue('next');
-    //  crowi.model = jest.fn().mockReturnValue('huge');
-
-    // const findUserByApiToken = jest.spyOn(User, 'findUserByApiToken').mockImplementation((accessToken) => {
-    //   return User.find({ apiToken: accessToken });
-    // });
 
     test('without accessToken', async() => {
       const result = await accessTokenParser(req, res, next);
 
       expect(next).toHaveBeenCalled();
       expect(result).toBe('next');
+      expect(req.skipCsrfVerify).toBe(false);
     });
 
     test('with invalid accessToken', async() => {
