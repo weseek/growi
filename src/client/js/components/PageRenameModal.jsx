@@ -24,7 +24,8 @@ const PageRenameModal = (props) => {
 
   const [pageNameInput, setPageNameInput] = useState(path);
 
-  const [errors, setErrors] = useState([]);
+  // errors:array
+  const [errors, setErrors] = useState(null);
 
   const [isRenameRecursively, SetIsRenameRecursively] = useState(true);
   const [isRenameRedirect, SetIsRenameRedirect] = useState(false);
@@ -52,7 +53,7 @@ const PageRenameModal = (props) => {
 
   async function rename() {
     try {
-      setErrors([]);
+      setErrors(null);
 
       const response = await pageContainer.rename(
         pageNameInput,
@@ -70,8 +71,8 @@ const PageRenameModal = (props) => {
 
       window.location.href = `${url.pathname}${url.search}`;
     }
-    catch (errs) {
-      setErrors(errs);
+    catch (errors) {
+      setErrors(errors);
     }
   }
 

@@ -24,7 +24,8 @@ const PageDuplicateModal = (props) => {
 
   const [pageNameInput, setPageNameInput] = useState(path);
 
-  const [errors, setErrors] = useState([]);
+  // errors:array
+  const [errors, setErrors] = useState(null);
 
   const [subordinatedPaths, setSubordinatedPaths] = useState([]);
   const [getSubordinatedError, setGetSuborinatedError] = useState(null);
@@ -68,15 +69,15 @@ const PageDuplicateModal = (props) => {
   }, [props.isOpen, getSubordinatedList]);
 
   async function duplicate() {
-    setErrors([]);
+    setErrors(null);
 
     try {
       const res = await appContainer.apiPost('/pages.duplicate', { page_id: pageId, new_path: pageNameInput });
       const { page } = res;
       window.location.href = encodeURI(`${page.path}?duplicated=${path}`);
     }
-    catch (err) {
-      setErrors(err);
+    catch (errors) {
+      setErrors(errors);
     }
   }
 

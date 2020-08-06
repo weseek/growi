@@ -33,7 +33,8 @@ const PageDeleteModal = (props) => {
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
   const deleteMode = isDeleteCompletely ? 'completely' : 'temporary';
 
-  const [errors, setErrors] = useState([]);
+  // errors:array
+  const [errors, setErrors] = useState(null);
 
   function changeIsDeleteRecursivelyHandler() {
     setIsDeleteRecursively(!isDeleteRecursively);
@@ -47,15 +48,15 @@ const PageDeleteModal = (props) => {
   }
 
   async function deletePage() {
-    setErrors([]);
+    setErrors(null);
 
     try {
       const response = await pageContainer.deletePage(isDeleteRecursively, isDeleteCompletely);
       const trashPagePath = response.page.path;
       window.location.href = encodeURI(trashPagePath);
     }
-    catch (err) {
-      setErrors(err);
+    catch (errors) {
+      setErrors(errors);
     }
   }
 

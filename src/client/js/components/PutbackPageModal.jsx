@@ -18,7 +18,8 @@ const PutBackPageModal = (props) => {
     t, isOpen, onClose, pageContainer, path,
   } = props;
 
-  const [errors, setErrors] = useState([]);
+  // errors:array
+  const [errors, setErrors] = useState(null);
 
   const [isPutbackRecursively, setIsPutbackRecursively] = useState(true);
 
@@ -27,15 +28,15 @@ const PutBackPageModal = (props) => {
   }
 
   async function putbackPage() {
-    setErrors([]);
+    setErrors(null);
 
     try {
       const response = await pageContainer.revertRemove(isPutbackRecursively);
       const putbackPagePath = response.page.path;
       window.location.href = encodeURI(putbackPagePath);
     }
-    catch (err) {
-      setErrors(err);
+    catch (errors) {
+      setErrors(errors);
     }
   }
 
