@@ -148,7 +148,7 @@ html[dark] {
 
   // Logo colors
   $bgcolor-logo: $bgcolor-navbar;
-  $fillcolor-logo-mark: $gray- 700;
+  $fillcolor-logo-mark: $gray-700;
 
   // Sidebar
   $bgcolor-sidebar: #122c55;
@@ -169,7 +169,7 @@ html[dark] {
   $bgcolor-subnav: lighten($bgcolor-global, 4%); // optional
 
   // Tabs
-  $bordercolor-nav-tabs: $gray- 700; // optional
+  $bordercolor-nav-tabs: $gray-700; // optional
   // $color-nav-tabs-link-active: #; //optional
   $bordercolor-nav-tabs-hover: #666 #666 $bordercolor-nav-tabs; // optional
   // $bordercolor-nav-tabs-active: # # $bgcolor-global; // optional
@@ -182,7 +182,7 @@ html[dark] {
   $color-editor-icons: $color-global;
 
   // Border colors
-  $border-color-theme: $gray- 700;
+  $border-color-theme: $gray-700;
   $bordercolor-inline-code: $secondary; // optional
 
   // Dropdown colors
