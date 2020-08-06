@@ -29,7 +29,7 @@ module.exports = (crowi) => {
 
     logger.debug('Access token parsed: skipCsrfVerify');
 
-    next();
+    return next();
   };
 
 };
