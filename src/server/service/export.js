@@ -6,7 +6,6 @@ const mongoose = require('mongoose');
 const { Transform } = require('stream');
 const streamToPromise = require('stream-to-promise');
 const archiver = require('archiver');
-const markdownpdf = require('markdown-pdf');
 const ConfigLoader = require('../service/config-loader');
 
 const toArrayIfNot = require('../../lib/util/toArrayIfNot');
@@ -349,17 +348,6 @@ class ExportService {
     }
 
     return zipFile;
-  }
-
-  // convert md text to pdf as buffer data (promise wrapper)
-  async convertMdToPdf(md) {
-    return new Promise((resolve, reject) => {
-      markdownpdf()
-        .from.string(md)
-        .to.buffer({}, (opt, buffer) => {
-          resolve(buffer);
-        });
-    });
   }
 
 }

@@ -115,7 +115,7 @@ module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
-  const { exportService } = crowi;
+
   const globalNotificationService = crowi.getGlobalNotificationService();
   const { Page, GlobalNotificationSetting } = crowi.models;
 
@@ -199,7 +199,7 @@ module.exports = (crowi) => {
   */
   router.get('/export', validator.export, async(req, res) => {
     try {
-      const { type, pageId = null, revisionId = null } = req.query;
+      const { pageId = null, revisionId = null } = req.query;
 
       if (pageId == null) {
         return res.apiv3Err(new ErrorV3('Should provided pageId or both pageId and revisionId.'));
@@ -228,12 +228,11 @@ module.exports = (crowi) => {
       const Revision = crowi.model('Revision');
       const revision = await Revision.findById(revisionIdForFind);
       const markdown = revision.body;
-      const data = type === 'pdf' ? await exportService.convertMdToPdf(markdown) : markdown;
 
-      return res.send(data);
+      return res.apiv3({ markdown });
     }
     catch (err) {
-      logger.error('Failed to get page', err);
+      logger.error('Failed to get markdown', err);
       return res.apiv3Err(err, 500);
     }
   });
