@@ -81,7 +81,7 @@ html[dark] {
 
   // Sidebar
   $bgcolor-sidebar: $themecolor;
-  $bgcolor-sidebar-nav-item-active: rgba(#000000, 0.37); // optional
+  $bgcolor-sidebar-nav-item-active: rgba(black, 0.37); // optional
   $text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
   // Sidebar resize button
   $color-resize-button: $color-reversal;
@@ -151,7 +151,7 @@ html[dark] {
 
 //   // Font colors
 //   $color-global: #eeeeee;
-//   $color-reversal: #333333;
+//   $color-reversal: $gray-900;
 //   // $color-header: desaturate($primary, 20%);
 //   $color-link: $primary;
 //   $color-link-hover: lighten($color-link, 10%);

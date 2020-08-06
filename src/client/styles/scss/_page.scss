@@ -65,7 +65,7 @@
 
       .revision-history-diff {
         padding-left: 40px;
-        color: #333;
+        color: $gray-900;
         table-layout: fixed;
       }
     }
@@ -171,7 +171,7 @@
   left: 5%;
   width: 90%;
   height: 90%;
-  background: #000;
+  background: black;
 
   iframe {
     width: 100%;

@@ -117,7 +117,7 @@ html[dark] {
 
   // Font colors
   $color-global: #a8a8a8;
-  $color-reversal: #333333;
+  $color-reversal: $gray-900;
   // $color-header: desaturate($primary, 20%);
   $color-link: #7b9ad5;
   $color-link-hover: lighten($color-link, 10%);
