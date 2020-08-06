@@ -1,6 +1,6 @@
 import React from 'react';
 
-const LightModeIcon = () => (
+const EditNewPageIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="27"
@@ -24,4 +24,4 @@ const LightModeIcon = () => (
 );
 
 
-export default LightModeIcon;
+export default EditNewPageIcon;
