@@ -54,7 +54,7 @@ body .page-list {
 .popular-page-high {
   font-size: 1.1em;
   font-weight: bold;
-  color: #e80000;
+  color: darken($red, 5%);
 }
 
 .popular-page-mid {
