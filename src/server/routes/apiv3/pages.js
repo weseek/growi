@@ -14,6 +14,92 @@ const router = express.Router();
  *  tags:
  *    name: Pages
  */
+
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      Page:
+ *        description: Page
+ *        type: object
+ *        properties:
+ *          _id:
+ *            type: string
+ *            description: page ID
+ *            example: 5e07345972560e001761fa63
+ *          __v:
+ *            type: number
+ *            description: DB record version
+ *            example: 0
+ *          commentCount:
+ *            type: number
+ *            description: count of comments
+ *            example: 3
+ *          createdAt:
+ *            type: string
+ *            description: date created at
+ *            example: 2010-01-01T00:00:00.000Z
+ *          creator:
+ *            $ref: '#/components/schemas/User'
+ *          extended:
+ *            type: object
+ *            description: extend data
+ *            example: {}
+ *          grant:
+ *            type: number
+ *            description: grant
+ *            example: 1
+ *          grantedUsers:
+ *            type: array
+ *            description: granted users
+ *            items:
+ *              type: string
+ *              description: user ID
+ *            example: ["5ae5fccfc5577b0004dbd8ab"]
+ *          lastUpdateUser:
+ *            $ref: '#/components/schemas/User'
+ *          liker:
+ *            type: array
+ *            description: granted users
+ *            items:
+ *              type: string
+ *              description: user ID
+ *            example: []
+ *          path:
+ *            type: string
+ *            description: page path
+ *            example: /
+ *          redirectTo:
+ *            type: string
+ *            description: redirect path
+ *            example: ""
+ *          revision:
+ *            type: string
+ *            description: revision ID
+ *            example: ["5ae5fccfc5577b0004dbd8ab"]
+ *          seenUsers:
+ *            type: array
+ *            description: granted users
+ *            items:
+ *              type: string
+ *              description: user ID
+ *            example: ["5ae5fccfc5577b0004dbd8ab"]
+ *          status:
+ *            type: string
+ *            description: status
+ *            enum:
+ *              - 'wip'
+ *              - 'published'
+ *              - 'deleted'
+ *              - 'deprecated'
+ *            example: published
+ *          updatedAt:
+ *            type: string
+ *            description: date updated at
+ *            example: 2010-01-01T00:00:00.000Z
+ */
+
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
@@ -46,7 +132,41 @@ module.exports = (crowi) => {
     ],
   };
 
-  // TODO write swagger(GW-3384)
+  /**
+   * @swagger
+   *
+   *    /pages/create:
+   *      post:
+   *        tags: [Pages]
+   *        operationId: createPage
+   *        description: Create page
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  body:
+   *                    type: string
+   *                    description: Text of page
+   *                  path:
+   *                    $ref: '#/components/schemas/Page/properties/path'
+   *                  grant:
+   *                    $ref: '#/components/schemas/Page/properties/grant'
+   *                required:
+   *                  - body
+   *                  - path
+   *        responses:
+   *          200:
+   *            description: Succeeded to create page.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    page:
+   *                      $ref: '#/components/schemas/Page'
+   *          409:
+   *            description: page path is already existed
+   */
   router.post('/', accessTokenParser, loginRequiredStrictly, csrf, validator.createPage, apiV3FormValidator, async(req, res) => {
     const {
       body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, socketClientId, pageTags,
