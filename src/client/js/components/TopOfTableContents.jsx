@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
@@ -10,26 +10,61 @@ import TimeLine from './TimeLine';
 import RecentChanges from './RecentChanges';
 import Attachment from './Attachment';
 
+import PageAccessoriesModal from './PageAccessoriesModal';
+
 import { withUnstatedContainers } from './UnstatedUtils';
 
 const TopOfTableContents = (props) => {
 
+  const [isPageAccessoriesModalShown, setIsPageAccessoriesModalShown] = useState(false);
+  const [activeTab, setActiveTab] = useState('');
+  // Prevent unnecessary rendering
+  const [activeComponents, setActiveComponents] = useState(new Set(['']));
+
+  function openPageAccessoriesModal(activeTab) {
+    setIsPageAccessoriesModalShown(true);
+    setActiveTab(activeTab);
+  }
+
+  function switchActiveTab(clickedTab) {
+    activeComponents.add(clickedTab);
+    setActiveComponents(activeComponents);
+    setActiveTab(clickedTab);
+  }
+
+  function closePageAccessoriesModal() {
+    setIsPageAccessoriesModalShown(false);
+  }
+
+  function renderModal() {
+    return (
+      <>
+        <PageAccessoriesModal
+          isOpen={isPageAccessoriesModalShown}
+          onClose={closePageAccessoriesModal}
+          activeTab={activeTab}
+          onSwitch={switchActiveTab}
+        />
+      </>
+    );
+  }
+
   return (
     <>
       <div className="top-of-table-contents d-flex align-items-end pb-1">
-        <button type="button" className="bg-transparent border-0">
+        <button type="button" className="bg-transparent border-0" onClick={() => openPageAccessoriesModal('pageList')}>
           <PageList />
         </button>
 
-        <button type="button" className="bg-transparent border-0">
+        <button type="button" className="bg-transparent border-0 active" onClick={() => openPageAccessoriesModal('timeLine')}>
           <TimeLine />
         </button>
 
-        <button type="button" className="bg-transparent border-0">
+        <button type="button" className="bg-transparent border-0" onClick={() => openPageAccessoriesModal('recentChanges')}>
           <RecentChanges />
         </button>
 
-        <button type="button" className="bg-transparent border-0">
+        <button type="button" className="bg-transparent border-0" onClick={() => openPageAccessoriesModal('attachment')}>
           <Attachment />
         </button>
         {/* [TODO: setting Footprints' icon by GW-3308] */}
@@ -40,11 +75,10 @@ const TopOfTableContents = (props) => {
         >
         </div>
       </div>
+      {renderModal()}
     </>
   );
-
 };
-
 /**
  * Wrapper component for using unstated
  */

@@ -8,6 +8,7 @@ const Attachment = () => (
     width="20"
     height="20"
   >
+    <rect width="14" height="14" fillOpacity="0" />
     <g className="cls-1">
       <path
         d="M2.9,13a2,2,0,0,1-1.44-.63,2.28,2.28,0,0,1,0-3.23l7-7.38a2.48,2.48,0,0,1,1.22-.7,2.61,
