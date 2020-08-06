@@ -1,5 +1,5 @@
 
-import React, { Fragment } from 'react';
+import React, { Fragment, Suspense } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -26,14 +26,14 @@ function Customize(props) {
         </div>
       )}
     >
-      <RenderCustomizePage />
+      <RenderCustomizeWrapper />
     </Suspense>
   );
 }
 
-function RenderCustomizePage(props) {
+function RenderCustomizeWrapper(props) {
   if (props.adminCustomizeContainer.state.currentTheme === props.adminAppContainer.dummyCurrentTheme) {
-    throw new Promise(async () => {
+    throw new Promise(async() => {
       try {
         await adminCustomizeContainer.retrieveCustomizeData();
         this.setState({ isRetrieving: false });
@@ -73,12 +73,11 @@ function RenderCustomizePage(props) {
   );
 }
 
-const CustomizeWrapper = withUnstatedContainers(Customize, [AppContainer, AdminCustomizeContainer]);
+const RenderCustomizeWrapper = withUnstatedContainers(RenderCustomizePage, [AppContainer, AdminCustomizeContainer]);
 
-Customize.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
+RenderCustomizePage.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
 };
 
-export default withTranslation()(CustomizeWrapper);
+export default Customize;
