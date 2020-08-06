@@ -16,10 +16,12 @@ export default class AdminMarkDownContainer extends Container {
     super();
 
     this.appContainer = appContainer;
+    this.dummyIsEnabledLinebreaks = 0;
 
     this.state = {
       retrieveError: null,
-      isEnabledLinebreaks: false,
+      // set dummy value tile for using suspense
+      isEnabledLinebreaks: this.dummyIsEnabledLinebreaks,
       isEnabledLinebreaksInComments: false,
       pageBreakSeparator: 1,
       pageBreakCustomSeparator: '',
