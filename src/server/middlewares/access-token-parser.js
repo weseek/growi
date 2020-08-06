@@ -19,7 +19,7 @@ module.exports = (crowi) => {
 
     if (user == null) {
       logger.debug('The access token is invalid');
-      next();
+      return next();
     }
 
     // transforming attributes
