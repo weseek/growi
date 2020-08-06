@@ -11,7 +11,6 @@ import { withUnstatedContainers } from './UnstatedUtils';
 
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
-import ApiErrorMessage from './PageManagement/ApiErrorMessage';
 import ApiErrorMessageWrapper from './PageManagement/ApiErrorMessageWrapper';
 
 const PageRenameModal = (props) => {
