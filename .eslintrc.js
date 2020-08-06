@@ -7,7 +7,7 @@ module.exports = {
   ],
   env: {
     jquery: true,
-    "jest/globals": true,
+    'jest/globals': true,
   },
   globals: {
     $: true,
@@ -18,10 +18,10 @@ module.exports = {
     window: true,
   },
   plugins: [
-    "jest",
+    'jest',
   ],
   rules: {
-    'indent': [
+    indent: [
       'error',
       2,
       {
