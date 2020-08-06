@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const { getInstance } = require('../setup-crowi');
 
-describe('loginRequired', () => {
+describe('accessTokenParser', () => {
   let crowi;
   let accessTokenParser;
 
@@ -26,60 +26,58 @@ describe('loginRequired', () => {
     done();
   });
 
-  describe('accessTokenParser', () => {
-    crowi = {
-      model: jest.fn().mockReturnValue(User),
-    };
-    const req = {
-      skipCsrfVerify: false,
-      query: {},
-      body: {},
-      user: {},
-    };
-    const res = {};
-    const next = jest.fn().mockReturnValue('next');
+  crowi = {
+    model: jest.fn().mockReturnValue(User),
+  };
+  const req = {
+    skipCsrfVerify: false,
+    query: {},
+    body: {},
+    user: {},
+  };
 
-    test('without accessToken', async() => {
-      const result = await accessTokenParser(req, res, next);
+  const res = {};
+  const next = jest.fn().mockReturnValue('next');
 
-      expect(next).toHaveBeenCalled();
-      expect(result).toBe('next');
-      expect(req.skipCsrfVerify).toBe(false);
-    });
+  test('without accessToken', async() => {
+    const result = await accessTokenParser(req, res, next);
 
-    test('with invalid accessToken', async() => {
-      req.query.access_token = 'invalidAccessToken';
-
-      const result = await accessTokenParser(req, res, next);
-
-      expect(next).toHaveBeenCalled();
-      expect(result).toBe('next');
-      expect(req.skipCsrfVerify).toBe(false);
-    });
-
-    test('with accessToken in query', async() => {
-      req.query.access_token = 'N4xPDjh48TBsC7ahUN+ajjL5asnGpwtA5VAR+EhIDeg=';
-
-      const result = await accessTokenParser(req, res, next);
-
-      expect(next).toHaveBeenCalled();
-      expect(result).toBe('next');
-      expect(req.skipCsrfVerify).toBe(true);
-      expect(req.user._id).toStrictEqual(targetUser._id);
-    });
-
-    test('with accessToken in body', async() => {
-      req.body.access_token = 'N4xPDjh48TBsC7ahUN+ajjL5asnGpwtA5VAR+EhIDeg=';
-
-      const result = await accessTokenParser(req, res, next);
-
-      expect(next).toHaveBeenCalled();
-      expect(result).toBe('next');
-      expect(req.skipCsrfVerify).toBe(true);
-      expect(req.user._id).toStrictEqual(targetUser._id);
-    });
-
-
+    expect(next).toHaveBeenCalled();
+    expect(result).toBe('next');
+    expect(req.skipCsrfVerify).toBe(false);
   });
+
+  test('with invalid accessToken', async() => {
+    req.query.access_token = 'invalidAccessToken';
+
+    const result = await accessTokenParser(req, res, next);
+
+    expect(next).toHaveBeenCalled();
+    expect(result).toBe('next');
+    expect(req.skipCsrfVerify).toBe(false);
+  });
+
+  test('with accessToken in query', async() => {
+    req.query.access_token = 'N4xPDjh48TBsC7ahUN+ajjL5asnGpwtA5VAR+EhIDeg=';
+
+    const result = await accessTokenParser(req, res, next);
+
+    expect(next).toHaveBeenCalled();
+    expect(result).toBe('next');
+    expect(req.skipCsrfVerify).toBe(true);
+    expect(req.user._id).toStrictEqual(targetUser._id);
+  });
+
+  test('with accessToken in body', async() => {
+    req.body.access_token = 'N4xPDjh48TBsC7ahUN+ajjL5asnGpwtA5VAR+EhIDeg=';
+
+    const result = await accessTokenParser(req, res, next);
+
+    expect(next).toHaveBeenCalled();
+    expect(result).toBe('next');
+    expect(req.skipCsrfVerify).toBe(true);
+    expect(req.user._id).toStrictEqual(targetUser._id);
+  });
+
 
 });
