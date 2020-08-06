@@ -57,6 +57,7 @@ const PageShareManagement = (props) => {
     );
   }
 
+
   function renderCurrentUser() {
     return (
       <>

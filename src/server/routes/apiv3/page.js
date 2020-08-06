@@ -228,7 +228,7 @@ module.exports = (crowi) => {
 
       const Revision = crowi.model('Revision');
       const revision = await Revision.findById(revisionIdForFind);
-      
+
       const markdown = revision.body;
 
       return res.apiv3({ markdown });
