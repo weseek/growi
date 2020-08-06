@@ -6,14 +6,7 @@ const express = require('express');
 
 const router = express.Router();
 
-/**
- * @swagger
- *
- *     /attachment:
- *      get:
- *        tags: [Attachment]
- *
- */
+// TODO: add swagger by GW3441
 
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
