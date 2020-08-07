@@ -157,7 +157,7 @@ module.exports = (crowi) => {
    *                  - body
    *                  - path
    *        responses:
-   *          200:
+   *          201:
    *            description: Succeeded to create page.
    *            content:
    *              application/json:
@@ -229,7 +229,7 @@ module.exports = (crowi) => {
       }
     }
 
-    return res.apiv3(result);
+    return res.apiv3(result, 201);
   });
 
   /**
