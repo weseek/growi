@@ -69,7 +69,7 @@ const PageDuplicateModal = (props) => {
     setErrs(null);
 
     try {
-      const res = await appContainer.apiPost('/pages/duplicate', { page_id: pageId, new_path: pageNameInput });
+      const res = await appContainer.apiv3Post('/pages/duplicate', { pageId, pageNameInput });
       const { page } = res;
       window.location.href = encodeURI(`${page.path}?duplicated=${path}`);
     }
