@@ -6,7 +6,7 @@ const express = require('express');
 
 const router = express.Router();
 
-const ApiResponse = require('../../util/apiResponse');
+const ErrorV3 = require('../../models/vo/error-apiv3');
 
 // TODO: add swagger by GW3441
 
@@ -24,7 +24,8 @@ module.exports = (crowi) => {
       // check whether accessible
       const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
       if (!isAccessible) {
-        return res.json(ApiResponse.error('Current user is not accessible to this page.'));
+        const msg = 'Current user is not accessible to this page.';
+        return res.apiv3Err(new ErrorV3(msg, 'attachment-list-failed'), 403);
       }
 
       const attachments = await Attachment.find({ page: pageId });
