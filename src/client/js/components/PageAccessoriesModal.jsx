@@ -7,10 +7,10 @@ import {
 
 import { withTranslation } from 'react-i18next';
 
-import PageList from './PageList';
-import TimeLine from './TimeLine';
-import RecentChanges from './RecentChanges';
-import Attachment from './Attachment';
+import PageList from './Icons/PageList';
+import TimeLine from './Icons/TimeLine';
+import RecentChanges from './Icons/RecentChanges';
+import Attachment from './Icons/Attachment';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 import PageContainer from '../services/PageContainer';
