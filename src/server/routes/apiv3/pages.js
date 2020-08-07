@@ -271,7 +271,57 @@ module.exports = (crowi) => {
     }
   });
 
-  // TODO write swagger(GW-3430) and add validation (GW-3429)
+  /**
+   * @swagger
+   *
+   *    /pages/rename:
+   *      post:
+   *        tags: [Pages]
+   *        operationId: renamePage
+   *        description: Rename page
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  pageId:
+   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                  path:
+   *                    $ref: '#/components/schemas/Page/properties/path'
+   *                  revisionId:
+   *                    type: string
+   *                    description: revision ID
+   *                    example: 5e07345972560e001761fa63
+   *                  newPagePath:
+   *                    type: string
+   *                    description: new path
+   *                    example: /user/alice/new_test
+   *                  isRenameRedirect:
+   *                    type: boolean
+   *                    description: whether redirect page
+   *                  isRemainMetadata:
+   *                    type: boolean
+   *                    description: whether remain meta data
+   *                  isRecursively:
+   *                    type: boolean
+   *                    description: whether rename page with descendants
+   *                required:
+   *                  - pageId
+   *                  - revisionId
+   *        responses:
+   *          200:
+   *            description: Succeeded to rename page.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    page:
+   *                      $ref: '#/components/schemas/Page'
+   *          401:
+   *            description: page id is invalid
+   *          409:
+   *            description: page path is already existed
+   */
   router.put('/rename', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
     const { pageId, isRecursively, revisionId } = req.body;
 
