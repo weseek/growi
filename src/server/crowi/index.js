@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
 
-import express, { Request, Response } from 'express';
 import next from 'next';
 
 import path from 'path';
@@ -394,7 +393,6 @@ Crowi.prototype.setupSessionConfig = async function() {
 Crowi.prototype.start = async function() {
   const dev = process.env.NODE_ENV !== 'production';
   this.nextApp = next({ dev });
-  const port = process.env.PORT || 3000;
 
   await this.nextApp.prepare();
 
