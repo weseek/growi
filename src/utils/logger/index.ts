@@ -1,7 +1,7 @@
 import bunyan from 'bunyan'; // will be replaced to browser-bunyan on browser by webpack
 import minimatch from 'minimatch';
 
-import { logger as configOfLogger } from '@root/config';
+import { logger as configOfLogger } from '^/config';
 
 const isBrowser = typeof window !== 'undefined';
 const isProd = process.env.NODE_ENV === 'production';

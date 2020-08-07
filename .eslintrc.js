@@ -32,7 +32,5 @@ module.exports = {
         FunctionExpression: { body: 1, parameters: 2 },
       },
     ],
-    // eslint-plugin-import rules
-    'import/no-unresolved': [2, { ignore: ['^@'] }], // ignore @alias/..., @commons/..., ...
   },
 };

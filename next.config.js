@@ -6,7 +6,8 @@ module.exports = withSass({
   webpack(config) {
     config.resolve.alias = {
       ...config.resolve.alias,
-      '~': path.resolve(__dirname, './'), // src
+      '~': path.resolve(__dirname, './src'), // src
+      '^': path.resolve(__dirname, './'), // project root
     };
     return config;
   },

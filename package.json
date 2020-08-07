@@ -20,7 +20,7 @@
     "url": "https://github.com/weseek/growi/issues"
   },
   "scripts": {
-    "dev": "ts-node-dev --project tsconfig.server.json --ignore-watch .next src/server/index.ts",
+    "dev": "ts-node-dev --project tsconfig.server.json -r tsconfig-paths/register --ignore-watch .next src/server/index.ts",
     "build": "next build && tsc --project tsconfig.server.json",
     "start": "cross-env NODE_ENV=production node dist/index.js",
     "build:api:jsdoc": "swagger-jsdoc -o tmp/swagger.json -d config/swagger-definition.js",
@@ -154,6 +154,7 @@
     "stream-to-promise": "^2.2.0",
     "string-width": "^4.1.0",
     "swig-templates": "^2.0.2",
+    "tsconfig-paths": "^3.9.0",
     "uglifycss": "^0.0.29",
     "unzipper": "^0.10.5",
     "url-join": "^4.0.0",
@@ -175,6 +176,7 @@
     "@babel/polyfill": "^7.4.4",
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-react": "^7.0.0",
+    "@browser-bunyan/console-formatted-stream": "^1.5.3",
     "@handsontable/react": "=2.1.0",
     "@types/bunyan": "^1.8.6",
     "@types/express": "^4.17.7",
