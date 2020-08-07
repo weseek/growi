@@ -16,10 +16,12 @@ export default class AdminNotificationContainer extends Container {
     super();
 
     this.appContainer = appContainer;
+    this.dummySelectSlackOption = 0;
 
     this.state = {
       retrieveError: null,
-      selectSlackOption: 'Incoming Webhooks',
+      // set dummy value tile for using suspense
+      selectSlackOption: this.dummySelectSlackOption,
       webhookUrl: '',
       isIncomingWebhookPrioritized: false,
       slackToken: '',
