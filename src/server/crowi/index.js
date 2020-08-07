@@ -2,132 +2,131 @@
 
 import express, { Request, Response } from 'express';
 import next from 'next';
-import Server from 'next/dist/next-server/server/next-server';
-import { builtinModules } from 'module';
 
-// const path = require('path');
-// const mongoose = require('mongoose');
+import path from 'path';
+import mongoose from 'mongoose';
 
 import loggerFactory from '~/utils/logger';
+import pkg from '^/package.json';
+
+import { getMongoUri, mongoOptions } from '~/utils/mongoose-utils';
 
 const logger = loggerFactory('growi:crowi');
-// const pkg = require('^/package.json');
 // const InterceptorManager = require('~/service/interceptor-manager');
 // const CdnResourcesService = require('~/service/cdn-resources-service');
 // const Xss = require('~/service/xss');
-// const { getMongoUri, mongoOptions } = require('~/utils/mongoose-utils');
 
 
 // const models = require('../models');
 
 // const PluginService = require('../plugins/plugin.service');
 
-// const sep = path.sep;
+const sep = path.sep;
 
 function Crowi(rootdir) {
-  // const self = this;
 
-  // this.version = pkg.version;
-  // this.runtimeVersions = undefined; // initialized by scanRuntimeVersions()
+  this.version = pkg.version;
+  this.runtimeVersions = undefined; // initialized by scanRuntimeVersions()
 
-  // this.rootDir = rootdir;
-  // this.pluginDir = path.join(this.rootDir, 'node_modules') + sep;
-  // this.publicDir = path.join(this.rootDir, 'public') + sep;
-  // this.libDir = path.join(this.rootDir, 'src/server') + sep;
-  // this.eventsDir = path.join(this.libDir, 'events') + sep;
-  // this.viewsDir = path.join(this.libDir, 'views') + sep;
-  // this.resourceDir = path.join(this.rootDir, 'resource') + sep;
-  // this.localeDir = path.join(this.resourceDir, 'locales') + sep;
-  // this.tmpDir = path.join(this.rootDir, 'tmp') + sep;
-  // this.cacheDir = path.join(this.tmpDir, 'cache');
+  this.rootDir = rootdir;
+  this.pluginDir = path.join(this.rootDir, 'node_modules') + sep;
+  this.publicDir = path.join(this.rootDir, 'public') + sep;
+  this.libDir = path.join(this.rootDir, 'src/server') + sep;
+  this.eventsDir = path.join(this.libDir, 'events') + sep;
+  this.viewsDir = path.join(this.libDir, 'views') + sep;
+  this.resourceDir = path.join(this.rootDir, 'resource') + sep;
+  this.localeDir = path.join(this.resourceDir, 'locales') + sep;
+  this.tmpDir = path.join(this.rootDir, 'tmp') + sep;
+  this.cacheDir = path.join(this.tmpDir, 'cache');
 
-  // this.express = null;
+  this.nextApp = null;
+  this.express = null;
 
-  // this.config = {};
-  // this.configManager = null;
-  // this.s2sMessagingService = null;
-  // this.mailService = null;
-  // this.passportService = null;
-  // this.globalNotificationService = null;
-  // this.slackNotificationService = null;
-  // this.xssService = null;
-  // this.aclService = null;
-  // this.appService = null;
-  // this.fileUploadService = null;
-  // this.restQiitaAPIService = null;
-  // this.growiBridgeService = null;
-  // this.exportService = null;
-  // this.importService = null;
-  // this.searchService = null;
-  // this.socketIoService = null;
-  // this.pageService = null;
-  // this.syncPageStatusService = null;
+  this.config = {};
+  this.configManager = null;
+  this.s2sMessagingService = null;
+  this.mailService = null;
+  this.passportService = null;
+  this.globalNotificationService = null;
+  this.slackNotificationService = null;
+  this.xssService = null;
+  this.aclService = null;
+  this.appService = null;
+  this.fileUploadService = null;
+  this.restQiitaAPIService = null;
+  this.growiBridgeService = null;
+  this.exportService = null;
+  this.importService = null;
+  this.searchService = null;
+  this.socketIoService = null;
+  this.pageService = null;
+  this.syncPageStatusService = null;
   // this.cdnResourcesService = new CdnResourcesService();
   // this.interceptorManager = new InterceptorManager();
   // this.xss = new Xss();
 
-  // this.tokens = null;
+  this.tokens = null;
 
-  // this.models = {};
+  this.models = {};
 
-  // this.env = process.env;
-  // this.node_env = this.env.NODE_ENV || 'development';
+  this.env = process.env;
+  this.node_env = this.env.NODE_ENV || 'development';
 
-  // this.port = this.env.PORT || 3000;
+  this.port = this.env.PORT || 3000;
 
-  // this.events = {
-  //   user: new (require(`${self.eventsDir}user`))(this),
-  //   page: new (require(`${self.eventsDir}page`))(this),
-  //   bookmark: new (require(`${self.eventsDir}bookmark`))(this),
-  //   tag: new (require(`${self.eventsDir}tag`))(this),
-  //   admin: new (require(`${self.eventsDir}admin`))(this),
-  // };
+  this.events = {
+    // user: new (require(`${self.eventsDir}user`))(this),
+    // page: new (require(`${self.eventsDir}page`))(this),
+    // bookmark: new (require(`${self.eventsDir}bookmark`))(this),
+    // tag: new (require(`${self.eventsDir}tag`))(this),
+    // admin: new (require(`${self.eventsDir}admin`))(this),
+  };
 }
 
-// Crowi.prototype.init = async function() {
-//   await this.setupDatabase();
-//   await this.setupModels();
-//   await this.setupSessionConfig();
-//   await this.setupConfigManager();
+Crowi.prototype.init = async function() {
+  await this.setupDatabase();
+  await this.setupSessionConfig();
+  // await this.setupModels();
+  // await this.setupConfigManager();
 
-//   // setup messaging services
-//   await this.setupS2sMessagingService();
-//   await this.setupSocketIoService();
+  // // setup messaging services
+  // await this.setupS2sMessagingService();
+  // await this.setupSocketIoService();
 
-//   // customizeService depends on AppService and XssService
-//   // passportService depends on appService
-//   // slack depends on setUpSlacklNotification
-//   // export and import depends on setUpGrowiBridge
-//   await Promise.all([
-//     this.setUpApp(),
-//     this.setUpXss(),
-//     this.setUpSlacklNotification(),
-//     this.setUpGrowiBridge(),
-//   ]);
+  // // customizeService depends on AppService and XssService
+  // // passportService depends on appService
+  // // slack depends on setUpSlacklNotification
+  // // export and import depends on setUpGrowiBridge
+  // await Promise.all([
+  //   this.setUpApp(),
+  //   this.setUpXss(),
+  //   this.setUpSlacklNotification(),
+  //   this.setUpGrowiBridge(),
+  // ]);
 
-//   await Promise.all([
-//     this.scanRuntimeVersions(),
-//     this.setupPassport(),
-//     this.setupSearcher(),
-//     this.setupMailer(),
-//     this.setupSlack(),
-//     this.setupCsrf(),
-//     this.setUpFileUpload(),
-//     this.setUpAcl(),
-//     this.setUpCustomize(),
-//     this.setUpRestQiitaAPI(),
-//     this.setupUserGroup(),
-//     this.setupExport(),
-//     this.setupImport(),
-//     this.setupPageService(),
-//     this.setupSyncPageStatusService(),
-//   ]);
+  // await Promise.all([
+  //   this.scanRuntimeVersions(),
+  //   this.setupPassport(),
+  //   this.setupSearcher(),
+  //   this.setupMailer(),
+  //   this.setupSlack(),
+  //   this.setupCsrf(),
+  //   this.setUpFileUpload(),
+  //   this.setUpAcl(),
+  //   this.setUpCustomize(),
+  //   this.setUpRestQiitaAPI(),
+  //   this.setupUserGroup(),
+  //   this.setupExport(),
+  //   this.setupImport(),
+  //   this.setupPageService(),
+  //   this.setupSyncPageStatusService(),
+  // ]);
 
-//   // globalNotification depends on slack and mailer
-//   await Promise.all([
-//     this.setUpGlobalNotification(),
-//   ]);
-// };
+  // // globalNotification depends on slack and mailer
+  // await Promise.all([
+  //   this.setUpGlobalNotification(),
+  // ]);
+};
 
 // Crowi.prototype.initForTest = async function() {
 //   await this.setupModels();
@@ -208,60 +207,60 @@ function Crowi(rootdir) {
 //   return this.events[name];
 // };
 
-// Crowi.prototype.setupDatabase = function() {
-//   mongoose.Promise = global.Promise;
+Crowi.prototype.setupDatabase = function() {
+  mongoose.Promise = global.Promise;
 
-//   // mongoUri = mongodb://user:password@host/dbname
-//   const mongoUri = getMongoUri();
+  // mongoUri = mongodb://user:password@host/dbname
+  const mongoUri = getMongoUri();
 
-//   return mongoose.connect(mongoUri, mongoOptions);
-// };
+  return mongoose.connect(mongoUri, mongoOptions);
+};
 
-// Crowi.prototype.setupSessionConfig = async function() {
-//   const session = require('express-session');
-//   const sessionAge = (1000 * 3600 * 24 * 30);
-//   const redisUrl = this.env.REDISTOGO_URL || this.env.REDIS_URI || this.env.REDIS_URL || null;
-//   const uid = require('uid-safe').sync;
+Crowi.prototype.setupSessionConfig = async function() {
+  const session = require('express-session');
+  const sessionAge = (1000 * 3600 * 24 * 30);
+  const redisUrl = this.env.REDISTOGO_URL || this.env.REDIS_URI || this.env.REDIS_URL || null;
+  const uid = require('uid-safe').sync;
 
-//   // generate pre-defined uid for healthcheck
-//   const healthcheckUid = uid(24);
+  // generate pre-defined uid for healthcheck
+  const healthcheckUid = uid(24);
 
-//   const sessionConfig = {
-//     rolling: true,
-//     secret: this.env.SECRET_TOKEN || 'this is default session secret',
-//     resave: false,
-//     saveUninitialized: true,
-//     cookie: {
-//       maxAge: sessionAge,
-//     },
-//     genid(req) {
-//       // return pre-defined uid when healthcheck
-//       if (req.path === '/_api/v3/healthcheck') {
-//         return healthcheckUid;
-//       }
-//       return uid(24);
-//     },
-//   };
+  const sessionConfig = {
+    rolling: true,
+    secret: this.env.SECRET_TOKEN || 'this is default session secret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      maxAge: sessionAge,
+    },
+    genid(req) {
+      // return pre-defined uid when healthcheck
+      if (req.path === '/_api/v3/healthcheck') {
+        return healthcheckUid;
+      }
+      return uid(24);
+    },
+  };
 
-//   if (this.env.SESSION_NAME) {
-//     sessionConfig.name = this.env.SESSION_NAME;
-//   }
+  if (this.env.SESSION_NAME) {
+    sessionConfig.name = this.env.SESSION_NAME;
+  }
 
-//   // use Redis for session store
-//   if (redisUrl) {
-//     const redis = require('redis');
-//     const redisClient = redis.createClient({ url: redisUrl });
-//     const RedisStore = require('connect-redis')(session);
-//     sessionConfig.store = new RedisStore({ client: redisClient });
-//   }
-//   // use MongoDB for session store
-//   else {
-//     const MongoStore = require('connect-mongo')(session);
-//     sessionConfig.store = new MongoStore({ mongooseConnection: mongoose.connection });
-//   }
+  // use Redis for session store
+  if (redisUrl) {
+    const redis = require('redis');
+    const redisClient = redis.createClient({ url: redisUrl });
+    const RedisStore = require('connect-redis')(session);
+    sessionConfig.store = new RedisStore({ client: redisClient });
+  }
+  // use MongoDB for session store
+  else {
+    const MongoStore = require('connect-mongo')(session);
+    sessionConfig.store = new MongoStore({ mongooseConnection: mongoose.connection });
+  }
 
-//   this.sessionConfig = sessionConfig;
-// };
+  this.sessionConfig = sessionConfig;
+};
 
 // Crowi.prototype.setupConfigManager = async function() {
 //   const ConfigManager = require('../service/config-manager');
@@ -392,92 +391,83 @@ function Crowi(rootdir) {
 //   return this.tokens;
 // };
 
-// Crowi.prototype.start = async function() {
-//   // init CrowiDev
-//   if (this.node_env === 'development') {
-//     const CrowiDev = require('./dev');
-//     this.crowiDev = new CrowiDev(this);
-//     this.crowiDev.init();
-//   }
-
-//   await this.init();
-//   await this.buildServer();
-
-//   const { express } = this;
-
-//   // setup plugins
-//   this.pluginService = new PluginService(this, express);
-//   this.pluginService.autoDetectAndLoadPlugins();
-
-//   const server = (this.node_env === 'development') ? this.crowiDev.setupServer(express) : express;
-
-//   // listen
-//   const serverListening = server.listen(this.port, () => {
-//     logger.info(`[${this.node_env}] Express server is listening on port ${this.port}`);
-//     if (this.node_env === 'development') {
-//       this.crowiDev.setupExpressAfterListening(express);
-//     }
-//   });
-
-//   this.socketIoService.attachServer(serverListening);
-
-//   // setup Express Routes
-//   this.setupRoutesAtLast();
-
-//   return serverListening;
-// };
-
 Crowi.prototype.start = async function() {
   const dev = process.env.NODE_ENV !== 'production';
-  const nextApp = next({ dev });
-  const handle = nextApp.getRequestHandler();
+  this.nextApp = next({ dev });
   const port = process.env.PORT || 3000;
 
-  await nextApp.prepare();
+  await this.nextApp.prepare();
 
-  const app = express();
-  app.all('*', (req, res) => {
-    return handle(req, res);
-  });
-  const server = app.listen(port, (err) => {
-    if (err) throw err;
-    logger.info(`> Ready on localhost:${port} - env ${process.env.NODE_ENV}`);
+  // init CrowiDev
+  if (dev) {
+    const CrowiDev = require('./dev');
+    this.crowiDev = new CrowiDev(this);
+    this.crowiDev.init();
+  }
+
+  await this.init();
+  await this.buildServer();
+
+  const { express } = this;
+
+  // setup plugins
+  // this.pluginService = new PluginService(this, express);
+  // this.pluginService.autoDetectAndLoadPlugins();
+
+  const server = dev ? this.crowiDev.setupServer(express) : express;
+
+  // listen
+  const serverListening = server.listen(this.port, () => {
+    logger.info(`[${this.node_env}] Express server is listening on port ${this.port}`);
+    if (this.node_env === 'development') {
+      this.crowiDev.setupExpressAfterListening(express);
+    }
   });
 
-  return server;
+  // this.socketIoService.attachServer(serverListening);
+
+  // setup Express Routes
+  this.setupRoutesAtLast();
+
+  return serverListening;
 };
 
-// Crowi.prototype.buildServer = async function() {
-//   const env = this.node_env;
-//   const express = require('express')();
+Crowi.prototype.buildServer = async function() {
+  const env = this.node_env;
+  const express = require('express')();
 
-//   require('./express-init')(this, express);
+  require('./express-init')(this, express);
 
-//   // use bunyan
-//   if (env === 'production') {
-//     const expressBunyanLogger = require('express-bunyan-logger');
-//     const logger = require('~/utils/logger')('express');
-//     express.use(expressBunyanLogger({
-//       logger,
-//       excludes: ['*'],
-//     }));
-//   }
-//   // use morgan
-//   else {
-//     const morgan = require('morgan');
-//     express.use(morgan('dev'));
-//   }
+  // use bunyan
+  if (env === 'production') {
+    const expressBunyanLogger = require('express-bunyan-logger');
+    const logger = require('~/utils/logger')('express');
+    express.use(expressBunyanLogger({
+      logger,
+      excludes: ['*'],
+    }));
+  }
+  // use morgan
+  else {
+    const morgan = require('morgan');
+    express.use(morgan('dev'));
+  }
 
-//   this.express = express;
-// };
+  this.express = express;
+};
 
-// /**
-//  * setup Express Routes
-//  * !! this must be at last because it includes '/*' route !!
-//  */
-// Crowi.prototype.setupRoutesAtLast = function() {
-//   require('../routes')(this, this.express);
-// };
+/**
+ * setup Express Routes
+ * !! this must be at last because it includes '/*' route !!
+ */
+Crowi.prototype.setupRoutesAtLast = function() {
+  // require('../routes')(this, this.express);
+
+  const handle = this.nextApp.getRequestHandler();
+  this.express.all('*', (req, res) => {
+    return handle(req, res);
+  });
+};
 
 // Crowi.prototype.setupAfterInstall = function() {
 //   this.pluginService.autoDetectAndLoadPlugins();

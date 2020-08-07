@@ -1,11 +1,12 @@
-const logger = require('@alias/logger')('growi:crowi:dev');
-const path = require('path');
+import path from 'path';
+import swig from 'swig-templates';
+import onHeaders from 'on-headers';
 
-const { listLocaleIds } = require('@commons/util/locale-utils');
+import loggerFactory from '~/utils/logger';
 
-const swig = require('swig-templates');
-const onHeaders = require('on-headers');
+const logger = loggerFactory('growi:crowi:dev');
 
+const { listLocaleIds } = require('~/utils/locale-utils');
 
 class CrowiDev {
 
@@ -20,31 +21,24 @@ class CrowiDev {
   }
 
   init() {
-    this.requireForAutoReloadServer();
-
-    this.initPromiseRejectionWarningHandler();
-    this.initSwig();
+    // this.requireForAutoReloadServer();
+    // this.initSwig();
   }
 
-  initPromiseRejectionWarningHandler() {
-    // https://qiita.com/syuilo/items/0800d7e44e93203c7285
-    process.on('unhandledRejection', console.dir); // eslint-disable-line no-console
-  }
+  // initSwig() {
+  //   swig.setDefaults({ cache: false });
+  // }
 
-  initSwig() {
-    swig.setDefaults({ cache: false });
-  }
-
-  /**
-   * require files for node-dev auto reloading
-   */
-  requireForAutoReloadServer() {
-    // load all json files for live reloading
-    listLocaleIds()
-      .forEach((localeId) => {
-        require(path.join(this.crowi.localeDir, localeId, 'translation.json'));
-      });
-  }
+  // /**
+  //  * require files for node-dev auto reloading
+  //  */
+  // requireForAutoReloadServer() {
+  //   // load all json files for live reloading
+  //   listLocaleIds()
+  //     .forEach((localeId) => {
+  //       require(path.join(this.crowi.localeDir, localeId, 'translation.json'));
+  //     });
+  // }
 
   /**
    *
@@ -92,7 +86,7 @@ class CrowiDev {
    */
   setupExpressAfterListening(app) {
     this.setupHeaderDebugger(app);
-    this.setupBrowserSync(app);
+    // this.setupBrowserSync(app);
   }
 
   setupHeaderDebugger(app) {
@@ -106,21 +100,21 @@ class CrowiDev {
     });
   }
 
-  setupBrowserSync(app) {
-    logger.debug('setupBrowserSync');
+  // setupBrowserSync(app) {
+  //   logger.debug('setupBrowserSync');
 
-    const browserSync = require('browser-sync');
-    const bs = browserSync.create().init({
-      logSnippet: false,
-      notify: false,
-      files: [
-        `${this.crowi.viewsDir}/**/*.html`,
-        `${this.crowi.publicDir}/**/*.js`,
-        `${this.crowi.publicDir}/**/*.css`,
-      ],
-    });
-    app.use(require('connect-browser-sync')(bs));
-  }
+  //   const browserSync = require('browser-sync');
+  //   const bs = browserSync.create().init({
+  //     logSnippet: false,
+  //     notify: false,
+  //     files: [
+  //       `${this.crowi.viewsDir}/**/*.html`,
+  //       `${this.crowi.publicDir}/**/*.js`,
+  //       `${this.crowi.publicDir}/**/*.css`,
+  //     ],
+  //   });
+  //   app.use(require('connect-browser-sync')(bs));
+  // }
 
 }
 

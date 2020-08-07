@@ -4,7 +4,7 @@
  * Usage: app.use(require('middlewares/safe-redirect')(['example.com', 'some.example.com:8080']))
  */
 
-const loggerFactory = require('@alias/logger');
+import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:middleware:safe-redirect');
 
