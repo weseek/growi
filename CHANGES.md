@@ -1,6 +1,17 @@
 # CHANGES
 
-## v4.1.0-RC
+## v4.1.1-RC
+
+* Feature: External share link
+* Feature: Create/edit linker with GUI
+* Improvement: Optimize some features that operate revision data
+    * Page history
+    * Renaming pages
+    * Deleting pages
+* Fix: "Append params" switch of CopyDropdown does not work when multiple CopyDropdown instance exists
+* Fix: Access token parser
+
+## v4.1.0
 
 ### BREAKING CHANGES
 
@@ -11,15 +22,31 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/41x.html>
 
 ### Updates
 
+* Feature: Server settings synchronization for multiple GROWI Apps
+* Feature: Page status alert synchronization for multiple GROWI Apps
+* Feature: Smooth scroll for anchor links
+* Feature: Mirror Mode with [Konami Code](https://en.wikipedia.org/wiki/Konami_Code)
+* Improvement: Determine whether the "In Use" badge is displayed or not by attachment ID
+* Improvement: draw.io under NO_CDN environment
+* Fix: Deleting/renaming with recursive option affects pages that are inaccessible to active users
+* Fix: DrawioModal cuts without beginning/ending line
+* Fix: New settings of SMTP and AWS SES are not reflected when server is running
+* Fix: Sidebar layout broken when using Kibela layout
 * Support: Support Node.js v14
+* Support: Update libs
+    * mathjax
 
+## v4.0.11
 
+* Fix: Fab on search result page does not displayed
+* Fix: Adjust margin/padding for search result page
+* Fix: PageAlert broken
+    * Introduced by v4.0.9
 
 ## v4.0.10
 
 * Improvement: Adjust ToC height
 * Fix: Fail to rename/delete a page set as "Anyone with the link"
-
 
 ## v4.0.9
 

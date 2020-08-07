@@ -324,6 +324,16 @@ module.exports = (crowi) => {
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
+  async function updateAndReloadStrategySettings(authId, params) {
+    const { configManager, passportService } = crowi;
+
+    // update config without publishing S2sMessage
+    await configManager.updateConfigsInTheSameNamespace('crowi', params, true);
+
+    await passportService.setupStrategyById(authId);
+    passportService.publishUpdatedMessage(authId);
+  }
+
   /**
    * @swagger
    *
@@ -489,9 +499,7 @@ module.exports = (crowi) => {
     const enableParams = { [`security:passport-${authId}:isEnabled`]: isEnabled };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', enableParams);
-
-      await crowi.passportService.setupStrategyById(authId);
+      await updateAndReloadStrategySettings(authId, enableParams);
 
       const responseParams = {
         [`security:passport-${authId}:isEnabled`]: await crowi.configManager.getConfig('crowi', `security:passport-${authId}:isEnabled`),
@@ -586,6 +594,77 @@ module.exports = (crowi) => {
     }
   });
 
+
+  /**
+   * @swagger
+   *
+   *    /_api/v3/security-setting/all-share-links:
+   *      get:
+   *        tags: [ShareLinkSettings, apiv3]
+   *        description: Get All ShareLinks at Share Link Setting
+   *        responses:
+   *          200:
+   *            description: all share links
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    securityParams:
+   *                      type: object
+   *                      description: suceed to get all share links
+   */
+  router.get('/all-share-links/', loginRequiredStrictly, adminRequired, async(req, res) => {
+    const ShareLink = crowi.model('ShareLink');
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const linkQuery = {};
+    try {
+      const paginateResult = await ShareLink.paginate(
+        linkQuery,
+        {
+          page,
+          limit,
+          populate: {
+            path: 'relatedPage',
+            select: 'path',
+          },
+        },
+      );
+      return res.apiv3({ paginateResult });
+    }
+    catch (err) {
+      const msg = 'Error occured in get share link';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'get-all-share-links-failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /_api/v3/security-setting/all-share-links:
+   *      delete:
+   *        tags: [ShareLinkSettings, apiv3]
+   *        description: Delete All ShareLinks at Share Link Setting
+   *        responses:
+   *          200:
+   *            description: succeed to delete all share links
+   */
+
+  router.delete('/all-share-links/', loginRequiredStrictly, adminRequired, async(req, res) => {
+    const ShareLink = crowi.model('ShareLink');
+    try {
+      const removedAct = await ShareLink.remove({});
+      const removeTotal = await removedAct.n;
+      return res.apiv3({ removeTotal });
+    }
+    catch (err) {
+      const msg = 'Error occured in delete all share links';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'failed-to-delete-all-share-links'));
+    }
+  });
+
   /**
    * @swagger
    *
@@ -613,8 +692,8 @@ module.exports = (crowi) => {
       'security:registrationWhiteList': req.body.registrationWhiteList,
     };
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
-      await crowi.passportService.setupStrategyById('local');
+      await updateAndReloadStrategySettings('local', requestParams);
+
       const localSettingParams = {
         registrationMode: await crowi.configManager.getConfig('crowi', 'security:registrationMode'),
         registrationWhiteList: await crowi.configManager.getConfig('crowi', 'security:registrationWhiteList'),
@@ -666,8 +745,8 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
-      await crowi.passportService.setupStrategyById('ldap');
+      await updateAndReloadStrategySettings('ldap', requestParams);
+
       const securitySettingParams = {
         serverUrl: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:serverUrl'),
         isUserBind: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isUserBind'),
@@ -757,8 +836,8 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
-      await crowi.passportService.setupStrategyById('saml');
+      await updateAndReloadStrategySettings('saml', requestParams);
+
       const securitySettingParams = {
         missingMandatoryConfigKeys: await crowi.passportService.getSamlMissingMandatoryConfigKeys(),
         samlEntryPoint: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:entryPoint'),
@@ -826,8 +905,8 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
-      await crowi.passportService.setupStrategyById('oidc');
+      await updateAndReloadStrategySettings('oidc', requestParams);
+
       const securitySettingParams = {
         oidcProviderName: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:providerName'),
         oidcIssuerHost: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:issuerHost'),
@@ -884,8 +963,8 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
-      await crowi.passportService.setupStrategyById('basic');
+      await updateAndReloadStrategySettings('basic', requestParams);
+
       const securitySettingParams = {
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-basic:isSameUsernameTreatedAsIdenticalUser'),
       };
@@ -927,8 +1006,8 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
-      await crowi.passportService.setupStrategyById('google');
+      await updateAndReloadStrategySettings('google', requestParams);
+
       const securitySettingParams = {
         googleClientId: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientId'),
         googleClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientSecret'),
@@ -972,8 +1051,8 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
-      await crowi.passportService.setupStrategyById('github');
+      await updateAndReloadStrategySettings('github', requestParams);
+
       const securitySettingParams = {
         githubClientId: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientId'),
         githubClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientSecret'),
@@ -1022,8 +1101,8 @@ module.exports = (crowi) => {
     requestParams = removeNullPropertyFromObject(requestParams);
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
-      await crowi.passportService.setupStrategyById('twitter');
+      await updateAndReloadStrategySettings('twitter', requestParams);
+
       const securitySettingParams = {
         twitterConsumerId: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerKey'),
         twitterConsumerSecret: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerSecret'),

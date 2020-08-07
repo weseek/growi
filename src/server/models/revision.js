@@ -9,7 +9,7 @@ module.exports = function(crowi) {
 
   const ObjectId = mongoose.Schema.Types.ObjectId;
   const revisionSchema = new mongoose.Schema({
-    path: { type: String, required: true },
+    path: { type: String, required: true, index: true },
     body: {
       type: String,
       required: true,

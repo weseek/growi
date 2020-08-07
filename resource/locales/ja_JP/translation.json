@@ -19,6 +19,7 @@
   "Tag": "タグ",
   "Tags": "タグ",
   "New": "作成",
+  "Close": "閉じる",
   "Shortcuts": "ショートカット",
   "eg": "例:",
   "add": "追加",
@@ -30,6 +31,7 @@
   "User": "ユーザー",
   "status": "ステータス",
   "account_id": "アカウントID",
+  "Initialize": "初期化",
   "Update": "更新",
   "Update Page": "ページを更新",
   "Warning": "注意",
@@ -47,12 +49,16 @@
   "History": "更新履歴",
   "Presentation Mode": "プレゼンテーション",
   "Not available for guest": "ゲストユーザーは利用できません",
+  "Create Archive Page": "アーカイブページの作成",
+  "File type": "ファイル形式",
+  "Include Attachment File": "添付ファイルも含める",
+  "Include Comment": "コメントも含める",
+  "Include Subordinated Page": "配下ページも含める",
   "username": "ユーザー名",
   "Created": "作成日",
   "Last updated": "最終更新",
   "Last_Login": "最終ログイン",
   "Share": "共有",
-  "Share Link": "共有用リンク",
   "Markdown Link": "Markdown形式のリンク",
   "Create/Edit Template": "テンプレートページの作成/編集",
   "Go to this version": "このバージョンを見る",
@@ -191,6 +197,25 @@
     "password_is_not_set": "パスワードが設定されていません"
   },
   "security_settings": "セキュリティ設定",
+  "share_links": {
+    "Shere this page link to public": "外部に共有するリンクを発行する",
+    "share_link_list": "共有リンクリスト",
+    "share_link_management": "共有リンク管理",
+    "No_share_links":"共有リンクが存在しません",
+    "Share Link": "共有用リンク",
+    "Page Path": "ページパス",
+    "share_link_notice":"共有リンクを全て削除します",
+    "delete_all_share_links":"全ての共有リンクを削除します",
+    "expire": "有効期限",
+    "Days": "日間",
+    "Custom": "カスタム",
+    "description": "概要",
+    "enter_desc": "概要を入力",
+    "Unlimited": "無期限",
+    "Issue": "発行",
+    "share_settings" :"共有設定",
+    "Invalid_Number_of_Date" : "有効期限の日数には整数を入力してください"
+  },
   "API Settings": "API設定",
   "API Token Settings": "API Token設定",
   "Current API Token": "現在のAPI Token",
@@ -209,8 +234,8 @@
     "Copy to clipboard": "クリップボードにコピー",
     "Page path": "ページ名",
     "Page URL": "ページURL",
-    "Parmanent link": "パーマリンク",
-    "Page path and parmanent link": "ページ名とパーマリンク",
+    "Permanent link": "パーマリンク",
+    "Page path and permanent link": "ページ名とパーマリンク",
     "Markdown link": "マークダウン形式のリンク"
   },
   "search_help": {
@@ -250,7 +275,9 @@
       "duplicated": "このページは <code>%s</code> から複製されました。",
       "unlinked": "このページへのリダイレクトは削除されました。",
       "restricted": "このページの閲覧は制限されています",
-      "stale": "このページは最終更新日から{{count}}年以上が経過しています。"
+      "stale": "このページは最終更新日から{{count}}年以上が経過しています。",
+      "expiration": "この共有パーマリンクの有効期限は <strong>{{expiredAt}}</strong> です。",
+      "no_deadline": "このページに有効期限は設定されていません。"
     }
   },
   "page_edit": {
@@ -319,6 +346,7 @@
       "Edit Page": "ページ編集",
       "Create Page": "ページ作成",
       "Show Contributors": "コントリビューター<br>を表示",
+      "MirrorMode": "ミラーモード",
       "Konami Code": "コナミコマンド",
       "konami_code_url": "https://ja.wikipedia.org/wiki/コナミコマンド"
     },
@@ -336,12 +364,16 @@
   },
   "toaster": {
     "update_successed": "{{target}}を更新しました",
+    "initialize_successed": "{{target}}を初期化しました",
     "give_user_admin": "{{username}}を管理者に設定しました",
     "remove_user_admin": "{{username}}を管理者から外しました",
     "activate_user_success": "{{username}}を有効化しました",
     "deactivate_user_success": "{{username}}を無効化しました",
     "remove_user_success": "{{username}}を削除しました",
     "remove_external_user_success": "{{accountId}}を削除しました",
+    "remove_share_link_success": "{{shareLinkId}}を削除しました",
+    "issue_share_link": "共有リンクを作成しました",
+    "remove_share_link": "共有リンクを{{count}}件削除しました",
     "failed_to_reset_password":"パスワードのリセットに失敗しました"
   },
   "template": {

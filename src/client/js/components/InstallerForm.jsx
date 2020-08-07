@@ -15,24 +15,24 @@ class InstallerForm extends React.Component {
       isValidUserName: true,
       selectedLang: {},
     };
-    this.checkUserName = this.checkUserName.bind(this);
+    // this.checkUserName = this.checkUserName.bind(this);
   }
 
   componentWillMount() {
     this.changeLanguage(localeMetadatas[0]);
   }
 
-  checkUserName(event) {
-    const axios = require('axios').create({
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest',
-      },
-      responseType: 'json',
-    });
-    axios.get('/_api/check_username', { params: { username: event.target.value } })
-      .then((res) => { return this.setState({ isValidUserName: res.data.valid }) });
-  }
+  // checkUserName(event) {
+  //   const axios = require('axios').create({
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'X-Requested-With': 'XMLHttpRequest',
+  //     },
+  //     responseType: 'json',
+  //   });
+  //   axios.get('/_api/check_username', { params: { username: event.target.value } })
+  //     .then((res) => { return this.setState({ isValidUserName: res.data.valid }) });
+  // }
 
   changeLanguage(meta) {
     i18next.changeLanguage(meta.id);
@@ -94,7 +94,7 @@ class InstallerForm extends React.Component {
                 placeholder={this.props.t('User ID')}
                 name="registerForm[username]"
                 defaultValue={this.props.userName}
-                onBlur={this.checkUserName}
+                // onBlur={this.checkUserName} // need not to check username before installation -- 2020.07.24 Yuki Takei
                 required
               />
             </div>

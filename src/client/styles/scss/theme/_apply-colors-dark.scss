@@ -16,7 +16,7 @@ $color-tags: #949494 !default;
 $bgcolor-tags: $dark !default;
 
 // override bootstrap variables
-$border-color: #444;
+$border-color: $gray-700;
 $table-dark-color: $color-table;
 $table-dark-bg: $bgcolor-table;
 $table-dark-border-color: $border-color-table;
@@ -132,7 +132,7 @@ ul.pagination {
   .input-group {
     .input-group-text {
       color: darken(white, 30%);
-      background-color: rgba(#444, 0.7);
+      background-color: rgba($gray-700, 0.7);
     }
 
     .form-control {
@@ -148,10 +148,10 @@ ul.pagination {
 
   .btn-fill {
     .btn-label {
-      color: #ccc;
+      color: $gray-300;
     }
     .btn-label-text {
-      color: #aaa;
+      color: $gray-400;
     }
   }
 
@@ -187,7 +187,7 @@ ul.pagination {
  */
 .grw-drawer-toggler {
   @extend .btn-dark;
-  color: #999;
+  color: $gray-400;
 }
 
 /*
