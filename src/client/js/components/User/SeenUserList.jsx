@@ -21,8 +21,8 @@ const SeenUserList = (props) => {
   const { pageContainer } = props;
   return (
     <div>
-      <Button id="SeenUserPopover" type="button" className="btn btn-seen-user-list border-0 px-1 py-0" style={{ backgroundColor: 'transparent' }}>
-        <span className="mr-2 svg footstamp-icon"><FootstampIcon /></span>
+      <Button id="SeenUserPopover" type="button" className="btn btn-seen-user-lists border-0 px-1 py-0 bg-transparent">
+        <span className="mr-2 footstamp-icon"><FootstampIcon /></span>
         <span className="seen-user-count">{pageContainer.state.countOfSeenUsers}</span>
       </Button>
       <Popover placement="bottom" isOpen={popoverOpen} target="SeenUserPopover" toggle={toggle} trigger="legacy">
