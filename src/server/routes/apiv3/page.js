@@ -236,7 +236,7 @@ module.exports = (crowi) => {
       readable._read = () => {};
       readable.push(markdown);
       readable.push(null);
-      res.set('Content-Type', 'text/markdown');
+      res.set('Content-Type', 'application/octet-stream');
       return readable.pipe(res);
     }
     catch (err) {

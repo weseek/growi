@@ -26,7 +26,7 @@ const PageShareManagement = (props) => {
 
   async function exportPageHandler() {
     const { pageId, revisionId } = pageContainer.state;
-    window.location.href = `/_api/v3/page/export/${pageId}?_csrf=${appContainer.csrfToken}&format=md&revisionId=${revisionId}&contentType=text/markdown`;
+    window.location.href = `/_api/v3/page/export/${pageId}?_csrf=${appContainer.csrfToken}&format=md&revisionId=${revisionId}`;
   }
 
   function renderModals() {
