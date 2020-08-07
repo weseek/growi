@@ -326,7 +326,7 @@ module.exports = (crowi) => {
 
     try {
       const createdNotification = await notification.save();
-      return res.apiv3({ createdNotification }, 200);
+      return res.apiv3({ createdNotification }, 201);
     }
     catch (err) {
       const msg = 'Error occurred in updating global notification';
