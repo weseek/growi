@@ -18,7 +18,7 @@ import CustomizeTitle from './CustomizeTitle';
 
 const logger = loggerFactory('growi:services:AdminCustomizePage');
 
-function Customize(props) {
+function CustomizePageWithContainerWithSusupense(props) {
   return (
     <Suspense
       fallback={(
@@ -27,12 +27,12 @@ function Customize(props) {
         </div>
       )}
     >
-      <RenderCustomizePageWrapper />
+      <CustomizePageWithUnstatedContainer />
     </Suspense>
   );
 }
 
-function RenderCustomizePage(props) {
+function Customize(props) {
   const { adminCustomizeContainer } = props;
 
   if (adminCustomizeContainer.state.currentTheme === adminCustomizeContainer.dummyCurrentTheme) {
@@ -75,10 +75,10 @@ function RenderCustomizePage(props) {
   );
 }
 
-const RenderCustomizePageWrapper = withUnstatedContainers(RenderCustomizePage, [AdminCustomizeContainer]);
+const CustomizePageWithUnstatedContainer = withUnstatedContainers(Customize, [AdminCustomizeContainer]);
 
-RenderCustomizePage.propTypes = {
+Customize.propTypes = {
   adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
 };
 
-export default Customize;
+export default CustomizePageWithContainerWithSusupense;

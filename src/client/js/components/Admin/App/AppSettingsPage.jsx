@@ -11,7 +11,7 @@ import AppSettingsPageContents from './AppSettingsPageContents';
 
 const logger = loggerFactory('growi:appSettings');
 
-function AppSettingsPage(props) {
+function AppSettingsPageWithContainerWithSuspense(props) {
   return (
     <Suspense
       fallback={(
@@ -20,12 +20,12 @@ function AppSettingsPage(props) {
         </div>
       )}
     >
-      <RenderAppSettingsPageWrapper />
+      <AppSettingsPageWithUnstatedContainer />
     </Suspense>
   );
 }
 
-function RenderAppSettingsPage(props) {
+function AppSettingsPage(props) {
   if (props.adminAppContainer.state.title === props.adminAppContainer.dummyTitle) {
     throw new Promise(async() => {
       try {
@@ -42,13 +42,13 @@ function RenderAppSettingsPage(props) {
   return <AppSettingsPageContents />;
 }
 
-RenderAppSettingsPage.propTypes = {
+AppSettingsPage.propTypes = {
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 
 /**
  * Wrapper component for using unstated
  */
-const RenderAppSettingsPageWrapper = withUnstatedContainers(RenderAppSettingsPage, [AdminAppContainer]);
+const AppSettingsPageWithUnstatedContainer = withUnstatedContainers(AppSettingsPage, [AdminAppContainer]);
 
-export default AppSettingsPage;
+export default AppSettingsPageWithContainerWithSuspense;

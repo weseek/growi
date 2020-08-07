@@ -8,7 +8,7 @@ import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurit
 
 import SecuritySettingContents from './SecuritySettingContents';
 
-function SecuritySetting(props) {
+function SecuritySettingWithContainerWithSuspense(props) {
   return (
     <Suspense
       fallback={(
@@ -17,12 +17,12 @@ function SecuritySetting(props) {
         </div>
       )}
     >
-      <RenderSecuritySettingWrapper />
+      <SecuritySettingWithUnstatedContainer />
     </Suspense>
   );
 }
 
-function RenderAppSettingsPage(props) {
+function SecuritySetting(props) {
   const { adminGeneralSecurityContainer } = props;
   if (adminGeneralSecurityContainer.state.currentRestrictGuestMode === adminGeneralSecurityContainer.dummyCurrentRestrictGuestMode) {
     throw new Promise(async() => {
@@ -39,10 +39,10 @@ function RenderAppSettingsPage(props) {
   return <SecuritySettingContents />;
 }
 
-RenderAppSettingsPage.propTypes = {
+SecuritySetting.propTypes = {
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
 };
 
-const RenderSecuritySettingWrapper = withUnstatedContainers(RenderAppSettingsPage, [AdminGeneralSecurityContainer]);
+const SecuritySettingWithUnstatedContainer = withUnstatedContainers(SecuritySetting, [AdminGeneralSecurityContainer]);
 
-export default SecuritySetting;
+export default SecuritySettingWithContainerWithSuspense;

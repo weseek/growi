@@ -11,7 +11,7 @@ import AdminMarkDownContainer from '../../../services/AdminMarkDownContainer';
 
 const logger = loggerFactory('growi:MarkDown');
 
-function MarkdownSetting(props) {
+function MarkdownSettingWithContainerWithSuspense(props) {
   return (
     <Suspense
       fallback={(
@@ -20,12 +20,12 @@ function MarkdownSetting(props) {
         </div>
       )}
     >
-      <RenderMarkdownSettingWrapper />
+      <MarkdownSettingWithUnstatedContainer />
     </Suspense>
   );
 }
 
-function RenderMarkdownSetting(props) {
+function MarkdownSetting(props) {
   const { adminMarkDownContainer } = props;
 
   if (adminMarkDownContainer.state.isEnabledLinebreaks === adminMarkDownContainer.dummyIsEnabledLinebreaks) {
@@ -44,10 +44,10 @@ function RenderMarkdownSetting(props) {
   return <MarkDownSettingContents />;
 }
 
-const RenderMarkdownSettingWrapper = withUnstatedContainers(RenderMarkdownSetting, [AdminMarkDownContainer]);
+const MarkdownSettingWithUnstatedContainer = withUnstatedContainers(MarkdownSetting, [AdminMarkDownContainer]);
 
-RenderMarkdownSetting.propTypes = {
+MarkdownSetting.propTypes = {
   adminMarkDownContainer: PropTypes.instanceOf(AdminMarkDownContainer).isRequired,
 };
 
-export default MarkdownSetting;
+export default MarkdownSettingWithContainerWithSuspense;

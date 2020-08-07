@@ -11,7 +11,7 @@ import ImportDataPageContents from './ImportData/ImportDataPageContents';
 
 const logger = loggerFactory('growi:importer');
 
-function ImportDataPage(props) {
+function ImportDataPageWithContainerWithSuspense(props) {
   return (
     <Suspense
       fallback={(
@@ -20,12 +20,12 @@ function ImportDataPage(props) {
         </div>
       )}
     >
-      <RenderImportDataPageWrapper />
+      <ImportDataPageWithUnstatedContainer />
     </Suspense>
   );
 }
 
-function RenderImportDataPage(props) {
+function ImportDataPage(props) {
   const { adminImportContainer } = props;
 
   if (adminImportContainer.state.esaTeamName === adminImportContainer.dummyEsaTeamName) {
@@ -44,7 +44,7 @@ function RenderImportDataPage(props) {
   return <ImportDataPageContents />;
 }
 
-RenderImportDataPage.propTypes = {
+ImportDataPage.propTypes = {
   adminImportContainer: PropTypes.instanceOf(AdminImportContainer).isRequired,
 };
 
@@ -52,6 +52,6 @@ RenderImportDataPage.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const RenderImportDataPageWrapper = withUnstatedContainers(RenderImportDataPage, [AdminImportContainer]);
+const ImportDataPageWithUnstatedContainer = withUnstatedContainers(ImportDataPage, [AdminImportContainer]);
 
-export default ImportDataPage;
+export default ImportDataPageWithContainerWithSuspense;

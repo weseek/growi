@@ -12,7 +12,7 @@ import NotificationSettingContents from './NotificationSettingContents';
 
 const logger = loggerFactory('growi:NotificationSetting');
 
-function NotificationSetting(props) {
+function NotificationSettingWithContainerWithSuspense(props) {
   return (
     <Suspense
       fallback={(
@@ -21,12 +21,12 @@ function NotificationSetting(props) {
         </div>
       )}
     >
-      <RenderNotificationSettingWrapper />
+      <NotificationSettingWithUnstatedContainer />
     </Suspense>
   );
 }
 
-function RenderNotificationSetting(props) {
+function NotificationSetting(props) {
   const { adminNotificationContainer } = props;
   if (adminNotificationContainer.state.webhookUrl === adminNotificationContainer.dummyWebhookUrl) {
     throw new Promise(async() => {
@@ -44,10 +44,10 @@ function RenderNotificationSetting(props) {
   return <NotificationSettingContents />;
 }
 
-const RenderNotificationSettingWrapper = withUnstatedContainers(RenderNotificationSetting, [AdminNotificationContainer]);
+const NotificationSettingWithUnstatedContainer = withUnstatedContainers(NotificationSetting, [AdminNotificationContainer]);
 
-RenderNotificationSetting.propTypes = {
+NotificationSetting.propTypes = {
   adminNotificationContainer: PropTypes.instanceOf(AdminNotificationContainer).isRequired,
 };
 
-export default NotificationSetting;
+export default NotificationSettingWithContainerWithSuspense;
