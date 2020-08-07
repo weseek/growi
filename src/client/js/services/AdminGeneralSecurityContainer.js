@@ -15,6 +15,7 @@ export default class AdminGeneralSecurityContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
+      retrieveError: null,
       wikiMode: '',
       currentRestrictGuestMode: 'Deny',
       currentPageCompleteDeletionAuthority: 'adminOnly',
