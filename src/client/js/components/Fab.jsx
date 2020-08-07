@@ -7,6 +7,7 @@ import StickyEvents from 'sticky-events';
 import NavigationContainer from '../services/NavigationContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
 import EditNewPageIcon from './EditNewPageIcon';
+import ReturnTopIcon from './ReturnTopIcon';
 
 const logger = loggerFactory('growi:cli:Fab');
 
@@ -52,7 +53,7 @@ const Fab = (props) => {
       </div>
       <div className={`rounded-circle position-absolute ${animateClasses}`} style={{ bottom: 0, right: 0 }}>
         <button type="button" className="btn btn-light btn-scroll-to-top rounded-circle p-0" onClick={() => navigationContainer.smoothScrollIntoView()}>
-          <i className="icon-control-start"></i>
+          <ReturnTopIcon />
         </button>
       </div>
     </div>
