@@ -5,10 +5,10 @@ import { withTranslation } from 'react-i18next';
 
 import PageContainer from '../services/PageContainer';
 
-import PageList from './PageList';
-import TimeLine from './TimeLine';
-import RecentChanges from './RecentChanges';
-import Attachment from './Attachment';
+import PageListIcon from './Icons/PageListIcon';
+import TimeLineIcon from './Icons/TimeLineIcon';
+import RecentChangesIcon from './Icons/RecentChangesIcon';
+import AttachmentIcon from './Icons/AttachmentIcon';
 
 import PageAccessoriesModal from './PageAccessoriesModal';
 
@@ -53,19 +53,19 @@ const TopOfTableContents = (props) => {
     <>
       <div className="top-of-table-contents d-flex align-items-end pb-1">
         <button type="button" className="bg-transparent border-0" onClick={() => openPageAccessoriesModal('pageList')}>
-          <PageList />
+          <PageListIcon />
         </button>
 
         <button type="button" className="bg-transparent border-0 active" onClick={() => openPageAccessoriesModal('timeLine')}>
-          <TimeLine />
+          <TimeLineIcon />
         </button>
 
         <button type="button" className="bg-transparent border-0" onClick={() => openPageAccessoriesModal('recentChanges')}>
-          <RecentChanges />
+          <RecentChangesIcon />
         </button>
 
         <button type="button" className="bg-transparent border-0" onClick={() => openPageAccessoriesModal('attachment')}>
-          <Attachment />
+          <AttachmentIcon />
         </button>
         {/* [TODO: setting Footprints' icon by GW-3308] */}
         <div
