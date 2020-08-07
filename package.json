@@ -20,7 +20,7 @@
     "url": "https://github.com/weseek/growi/issues"
   },
   "scripts": {
-    "dev": "ts-node-dev --project tsconfig.server.json -r tsconfig-paths/register --ignore-watch .next src/server/index.ts",
+    "dev": "ts-node-dev --project tsconfig.server.json -r tsconfig-paths/register --ignore-watch .next src/server/app.ts",
     "build": "next build && tsc --project tsconfig.server.json",
     "start": "cross-env NODE_ENV=production node dist/index.js",
     "build:api:jsdoc": "swagger-jsdoc -o tmp/swagger.json -d config/swagger-definition.js",
