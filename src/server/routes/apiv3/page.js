@@ -8,6 +8,7 @@ const { body, query } = require('express-validator');
 const router = express.Router();
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
+const exportService = require('../../service/export');
 
 /**
  * @swagger
@@ -199,7 +200,7 @@ module.exports = (crowi) => {
   router.get('/export/:pageId', validator.export, async(req, res) => {
     try {
       const { pageId } = req.params;
-      const { revisionId = null } = req.query;
+      const { format, revisionId = null } = req.query;
 
       if (pageId == null) {
         return res.apiv3Err(new ErrorV3('Should provided pageId or both pageId and revisionId.'));
@@ -231,13 +232,8 @@ module.exports = (crowi) => {
 
       const markdown = revision.body;
 
-      const Readable = require('stream').Readable;
-      const readable = new Readable();
-      readable._read = () => {};
-      readable.push(markdown);
-      readable.push(null);
-      res.set('Content-Type', 'application/octet-stream');
-      return readable.pipe(res);
+      const fileName = pageId != null ? pageId : revisionId;
+      return exportService.getReadStreamAsFileFromString(res, markdown, fileName, format);
     }
     catch (err) {
       logger.error('Failed to get markdown', err);

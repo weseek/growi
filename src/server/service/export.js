@@ -350,6 +350,18 @@ class ExportService {
     return zipFile;
   }
 
+  createReadStreamAsFileFromString(res, str, format, fileName) {
+    const Readable = require('stream').Readable;
+    const readable = new Readable();
+    readable._read = () => {};
+    readable.push(str);
+    readable.push(null);
+    res.set({
+      'Content-Disposition': `attachment;filename*=UTF-8''${fileName}.${format}`,
+    });
+    return readable.pipe(res);
+  }
+
 }
 
 module.exports = ExportService;
