@@ -117,7 +117,7 @@ html[dark] {
 
   // Font colors
   $color-global: #a8a8a8;
-  $color-reversal: #333333;
+  $color-reversal: $gray-900;
   // $color-header: desaturate($primary, 20%);
   $color-link: #7b9ad5;
   $color-link-hover: lighten($color-link, 10%);
@@ -148,7 +148,7 @@ html[dark] {
 
   // Logo colors
   $bgcolor-logo: $bgcolor-navbar;
-  $fillcolor-logo-mark: #444;
+  $fillcolor-logo-mark: $gray-700;
 
   // Sidebar
   $bgcolor-sidebar: #122c55;
@@ -169,7 +169,7 @@ html[dark] {
   $bgcolor-subnav: lighten($bgcolor-global, 4%); // optional
 
   // Tabs
-  $bordercolor-nav-tabs: #444; // optional
+  $bordercolor-nav-tabs: $gray-700; // optional
   // $color-nav-tabs-link-active: #; //optional
   $bordercolor-nav-tabs-hover: #666 #666 $bordercolor-nav-tabs; // optional
   // $bordercolor-nav-tabs-active: # # $bgcolor-global; // optional
@@ -182,8 +182,8 @@ html[dark] {
   $color-editor-icons: $color-global;
 
   // Border colors
-  $border-color-theme: #444;
-  $bordercolor-inline-code: #666; // optional
+  $border-color-theme: $gray-700;
+  $bordercolor-inline-code: $secondary; // optional
 
   // Dropdown colors
   $bgcolor-dropdown-link-active: $primary;

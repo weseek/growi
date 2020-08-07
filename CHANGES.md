@@ -8,8 +8,8 @@
     * Page history
     * Renaming pages
     * Deleting pages
-* Fix: "Append params" switch of CopyDropdown does not work when multiple CopyDropdown instance exists\
-
+* Fix: "Append params" switch of CopyDropdown does not work when multiple CopyDropdown instance exists
+* Fix: Access token parser
 
 ## v4.1.0
 

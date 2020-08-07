@@ -10,7 +10,7 @@ import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from './UnstatedUtils';
 import PageContainer from '../services/PageContainer';
 
-import ApiErrorMessage from './PageManagement/ApiErrorMessage';
+import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
 const deleteIconAndKey = {
   completely: {
@@ -33,7 +33,7 @@ const PageDeleteModal = (props) => {
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
   const deleteMode = isDeleteCompletely ? 'completely' : 'temporary';
 
-  const [errForDisplay, setErrForDisplay] = useState(null);
+  const [errs, setErrs] = useState(null);
 
   function changeIsDeleteRecursivelyHandler() {
     setIsDeleteRecursively(!isDeleteRecursively);
@@ -47,7 +47,7 @@ const PageDeleteModal = (props) => {
   }
 
   async function deletePage() {
-    setErrForDisplay(null);
+    setErrs(null);
 
     try {
       const response = await pageContainer.deletePage(isDeleteRecursively, isDeleteCompletely);
@@ -55,7 +55,7 @@ const PageDeleteModal = (props) => {
       window.location.href = encodeURI(trashPagePath);
     }
     catch (err) {
-      setErrForDisplay(err);
+      setErrs(err);
     }
   }
 
@@ -122,7 +122,7 @@ const PageDeleteModal = (props) => {
         {!isDeleteCompletelyModal && renderDeleteCompletelyForm()}
       </ModalBody>
       <ModalFooter>
-        <ApiErrorMessage errForDisplay={errForDisplay} />
+        <ApiErrorMessageList errs={errs} />
         <button type="button" className={`btn btn-${deleteIconAndKey[deleteMode].color}`} onClick={deleteButtonHandler}>
           <i className={`icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
           { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }

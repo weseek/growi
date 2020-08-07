@@ -12,7 +12,7 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 import PagePathAutoComplete from './PagePathAutoComplete';
-import ApiErrorMessage from './PageManagement/ApiErrorMessage';
+import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
 const PageDuplicateModal = (props) => {
   const { t, appContainer, pageContainer } = props;
@@ -24,7 +24,7 @@ const PageDuplicateModal = (props) => {
 
   const [pageNameInput, setPageNameInput] = useState(path);
 
-  const [errForDisplay, setErrForDisplay] = useState(null);
+  const [errs, setErrs] = useState(null);
 
   const [subordinatedPaths, setSubordinatedPaths] = useState([]);
   const [getSubordinatedError, setGetSuborinatedError] = useState(null);
@@ -68,7 +68,7 @@ const PageDuplicateModal = (props) => {
   }, [props.isOpen, getSubordinatedList]);
 
   async function duplicate() {
-    setErrForDisplay(null);
+    setErrs(null);
 
     try {
       const res = await appContainer.apiPost('/pages.duplicate', { page_id: pageId, new_path: pageNameInput });
@@ -76,7 +76,7 @@ const PageDuplicateModal = (props) => {
       window.location.href = encodeURI(`${page.path}?duplicated=${path}`);
     }
     catch (err) {
-      setErrForDisplay(err);
+      setErrs(err);
     }
   }
 
@@ -141,7 +141,7 @@ const PageDuplicateModal = (props) => {
         </div>
       </ModalBody>
       <ModalFooter>
-        <ApiErrorMessage errForDisplay={errForDisplay} targetPath={pageNameInput} />
+        <ApiErrorMessageList errs={errs} targetPath={pageNameInput} />
         <button type="button" className="btn btn-primary" onClick={duplicate}>Duplicate page</button>
       </ModalFooter>
     </Modal>
