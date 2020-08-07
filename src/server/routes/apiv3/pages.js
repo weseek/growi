@@ -365,6 +365,12 @@ module.exports = (crowi) => {
 
     let newPagePath = pathUtils.normalizePath(req.body.pageNameInput);
 
+    // check page existence
+    const isExist = (await Page.count({ path: newPagePath })) > 0;
+    if (isExist) {
+      return res.apiv3Err(new ErrorV3(`Page exists '${newPagePath})'`, 'already_exists'), 409);
+    }
+
     const page = await Page.findByIdAndViewer(pageId, req.user);
 
     if (page == null) {
@@ -375,33 +381,18 @@ module.exports = (crowi) => {
     // check whether path starts slash
     newPagePath = pathUtils.addHeadingSlash(newPagePath);
 
-
     await page.populateDataToShowRevision();
+
     const originTags = await page.findRelatedTagsById();
-
-    req.body.path = newPagePath;
-    req.body.body = page.revision.body;
-    req.body.grant = page.grant;
-    req.body.grantedUsers = page.grantedUsers;
-    req.body.grantUserGroupId = page.grantedGroup;
-    req.body.pageTags = originTags;
-
-    // check page existence
-    const isExist = (await Page.count({ path: req.body.path })) > 0;
-    if (isExist) {
-      return res.apiv3Err(new ErrorV3(`Page exists '${req.body.path})'`, 'already_exists'), 409);
-    }
-
-    const createdPage = await Page.create(req.body.path, req.body.body, req.user);
+    const createdPage = await Page.create(newPagePath, page.revision.body, req.user);
 
     let savedTags;
-    if (req.body.pageTags != null) {
-      await PageTagRelation.updatePageTags(createdPage.id, req.body.pageTags);
+    if (originTags != null) {
+      await PageTagRelation.updatePageTags(createdPage.id, originTags);
       savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
     }
 
     const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
-
     return res.apiv3(result);
   });
 
