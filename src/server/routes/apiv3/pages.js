@@ -157,7 +157,7 @@ module.exports = (crowi) => {
    *                  - body
    *                  - path
    *        responses:
-   *          200:
+   *          201:
    *            description: Succeeded to create page.
    *            content:
    *              application/json:
@@ -229,7 +229,7 @@ module.exports = (crowi) => {
       }
     }
 
-    return res.apiv3(result);
+    return res.apiv3(result, 201);
   });
 
   /**
@@ -274,12 +274,12 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /pages/duplicate:
+   *
+   *    /pages/rename:
    *      post:
    *        tags: [Pages]
-   *        operationId: duplicatePage
-   *        summary: /pages/duplicate
-   *        description: Duplicate page
+   *        operationId: renamePage
+   *        description: Rename page
    *        requestBody:
    *          content:
    *            application/json:
@@ -287,28 +287,42 @@ module.exports = (crowi) => {
    *                properties:
    *                  pageId:
    *                    $ref: '#/components/schemas/Page/properties/_id'
-   *                  pageNameInput:
+   *                  path:
    *                    $ref: '#/components/schemas/Page/properties/path'
+   *                  revisionId:
+   *                    type: string
+   *                    description: revision ID
+   *                    example: 5e07345972560e001761fa63
+   *                  newPagePath:
+   *                    type: string
+   *                    description: new path
+   *                    example: /user/alice/new_test
+   *                  isRenameRedirect:
+   *                    type: boolean
+   *                    description: whether redirect page
+   *                  isRemainMetadata:
+   *                    type: boolean
+   *                    description: whether remain meta data
+   *                  isRecursively:
+   *                    type: boolean
+   *                    description: whether rename page with descendants
    *                required:
    *                  - pageId
+   *                  - revisionId
    *        responses:
    *          200:
-   *            description: Succeeded to duplicate page.
+   *            description: Succeeded to rename page.
    *            content:
    *              application/json:
    *                schema:
    *                  properties:
    *                    page:
    *                      $ref: '#/components/schemas/Page'
-   *          403:
-   *            description: Failed to connect server.
-   *          500:
-   *            $ref: '#/components/responses/500'
+   *          401:
+   *            description: page id is invalid
+   *          409:
+   *            description: page path is already existed
    */
-
-  // TODO write duplicate(GW-3316)
-
-  // TODO write swagger(GW-3430) and add validation (GW-3429)
   router.put('/rename', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
     const { pageId, isRecursively, revisionId } = req.body;
 
