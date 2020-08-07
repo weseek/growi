@@ -271,6 +271,54 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   *    /pages/duplicate:
+   *      post:
+   *        tags: [Pages]
+   *        operationId: duplicatePage
+   *        summary: /pages/duplicate
+   *        description: Duplicate page
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  page_id:
+   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                  new_path:
+   *                    $ref: '#/components/schemas/Page/properties/path'
+   *                required:
+   *                  - page_id
+   *        responses:
+   *          200:
+   *            description: Succeeded to duplicate page.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    ok:
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                    page:
+   *                      $ref: '#/components/schemas/Page'
+   *                    tags:
+   *                      $ref: '#/components/schemas/Tags'
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
+  /**
+   * @api {post} /pages.duplicate Duplicate page
+   * @apiName DuplicatePage
+   * @apiGroup Page
+   *
+   * @apiParam {String} page_id Page Id.
+   * @apiParam {String} new_path New path name.
+   */
+  // TODO write duplicate(GW-3316)
+
   // TODO write swagger(GW-3430) and add validation (GW-3429)
   router.put('/rename', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
     const { pageId, isRecursively, revisionId } = req.body;
