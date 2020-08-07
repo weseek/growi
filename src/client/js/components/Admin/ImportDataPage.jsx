@@ -1,5 +1,4 @@
 import React, { Suspense } from 'react';
-import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
@@ -27,7 +26,9 @@ function ImportDataPage(props) {
 }
 
 function RenderImportDataPage(props) {
-  if (props.adminImportContainer.state.title === props.adminImportContainer.dummyTitle) {
+  const { adminImportContainer } = props;
+
+  if (adminImportContainer.state.esaTeamName === adminImportContainer.dummyEsaTeamName) {
     throw new Promise(async() => {
       try {
         await props.adminImportContainer.retrieveImportSettingsData();
@@ -41,11 +42,9 @@ function RenderImportDataPage(props) {
   }
 
   return <ImportDataPageContents />;
-
 }
 
 RenderImportDataPage.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
   adminImportContainer: PropTypes.instanceOf(AdminImportContainer).isRequired,
 };
 
@@ -55,4 +54,4 @@ RenderImportDataPage.propTypes = {
  */
 const RenderImportDataPageWrapper = withUnstatedContainers(RenderImportDataPage, [AdminImportContainer]);
 
-export default withTranslation()(ImportDataPage);
+export default ImportDataPage;

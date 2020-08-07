@@ -22,7 +22,7 @@ export default class AdminCustomizeContainer extends Container {
     this.state = {
       retrieveError: null,
       // set dummy value tile for using suspense
-      currentTheme: dummyCurrentTheme,
+      currentTheme: this.dummyCurrentTheme,
       currentLayout: '',
       isEnabledTimeline: false,
       isSavedStatesOfTabChanges: false,

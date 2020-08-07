@@ -78,7 +78,7 @@ export default class AdminImportContainer extends Container {
         'importer:esa:team_name': this.state.esaTeamName,
         'importer:esa:access_token': this.state.esaAccessToken,
       };
-      await this.props.appContainer.apiPost('/admin/import/esa', params);
+      await this.appContainer.apiPost('/admin/import/esa', params);
       toastSuccess('Import posts from esa success.');
     }
     catch (err) {
@@ -93,7 +93,7 @@ export default class AdminImportContainer extends Container {
         'importer:esa:team_name': this.state.esaTeamName,
         'importer:esa:access_token': this.state.esaAccessToken,
       };
-      await this.props.appContainer.apiPost('/admin/import/testEsaAPI', params);
+      await this.appContainer.apiPost('/admin/import/testEsaAPI', params);
       toastSuccess('Test connection to esa success.');
     }
     catch (error) {
@@ -107,7 +107,7 @@ export default class AdminImportContainer extends Container {
       'importer:esa:access_token': this.state.esaAccessToken,
     };
     try {
-      await this.props.appContainer.apiPost('/admin/settings/importerEsa', params);
+      await this.appContainer.apiPost('/admin/settings/importerEsa', params);
       toastSuccess('Updated');
     }
     catch (err) {
@@ -122,7 +122,7 @@ export default class AdminImportContainer extends Container {
         'importer:qiita:team_name': this.state.qiitaTeamName,
         'importer:qiita:access_token': this.state.qiitaAccessToken,
       };
-      await this.props.appContainer.apiPost('/admin/import/qiita', params);
+      await this.appContainer.apiPost('/admin/import/qiita', params);
       toastSuccess('Import posts from qiita:team success.');
     }
     catch (err) {
@@ -138,7 +138,7 @@ export default class AdminImportContainer extends Container {
         'importer:qiita:team_name': this.state.qiitaTeamName,
         'importer:qiita:access_token': this.state.qiitaAccessToken,
       };
-      await this.props.appContainer.apiPost('/admin/import/testQiitaAPI', params);
+      await this.appContainer.apiPost('/admin/import/testQiitaAPI', params);
       toastSuccess('Test connection to qiita:team success.');
     }
     catch (err) {
@@ -153,7 +153,7 @@ export default class AdminImportContainer extends Container {
       'importer:qiita:access_token': this.state.qiitaAccessToken,
     };
     try {
-      await this.props.appContainer.apiPost('/admin/settings/importerQiita', params);
+      await this.appContainer.apiPost('/admin/settings/importerQiita', params);
       toastSuccess('Updated');
     }
     catch (err) {

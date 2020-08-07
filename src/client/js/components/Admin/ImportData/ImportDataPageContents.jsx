@@ -240,6 +240,6 @@ ImportDataPageContents.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const ImportDataPageContentsWrapper = withUnstatedContainers(GrowiArchiveSection, [AdminImportContainer]);
+const ImportDataPageContentsWrapper = withUnstatedContainers(ImportDataPageContents, [AdminImportContainer]);
 
 export default withTranslation()(ImportDataPageContentsWrapper);

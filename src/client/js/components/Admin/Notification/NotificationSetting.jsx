@@ -28,7 +28,7 @@ function NotificationSetting(props) {
 
 function RenderNotificationSetting(props) {
   const { adminNotificationContainer } = props;
-  if (adminNotificationContainer.state.selectSlackOption === adminNotificationContainer.dummySelectSlackOption) {
+  if (adminNotificationContainer.state.webhookUrl === adminNotificationContainer.dummyWebhookUrl) {
     throw new Promise(async() => {
       try {
         await adminNotificationContainer.retrieveNotificationData();

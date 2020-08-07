@@ -24,7 +24,7 @@ function SecuritySetting(props) {
 
 function RenderAppSettingsPage(props) {
   const { adminGeneralSecurityContainer } = props;
-  if (adminGeneralSecurityContainer.state.title === adminGeneralSecurityContainer.dummyTitle) {
+  if (adminGeneralSecurityContainer.state.currentRestrictGuestMode === adminGeneralSecurityContainer.dummyCurrentRestrictGuestMode) {
     throw new Promise(async() => {
       try {
         await adminGeneralSecurityContainer.retrieveSecurityData();

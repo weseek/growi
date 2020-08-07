@@ -1,9 +1,8 @@
 
 import React, { Fragment, Suspense } from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
-import AppContainer from '../../../services/AppContainer';
+import loggerFactory from '@alias/logger';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -17,6 +16,8 @@ import CustomizeScriptSetting from './CustomizeScriptSetting';
 import CustomizeHeaderSetting from './CustomizeHeaderSetting';
 import CustomizeTitle from './CustomizeTitle';
 
+const logger = loggerFactory('growi:services:AdminCustomizePage');
+
 function Customize(props) {
   return (
     <Suspense
@@ -26,21 +27,22 @@ function Customize(props) {
         </div>
       )}
     >
-      <RenderCustomizeWrapper />
+      <RenderCustomizePageWrapper />
     </Suspense>
   );
 }
 
-function RenderCustomizeWrapper(props) {
-  if (props.adminCustomizeContainer.state.currentTheme === props.adminAppContainer.dummyCurrentTheme) {
+function RenderCustomizePage(props) {
+  const { adminCustomizeContainer } = props;
+
+  if (adminCustomizeContainer.state.currentTheme === adminCustomizeContainer.dummyCurrentTheme) {
     throw new Promise(async() => {
       try {
         await adminCustomizeContainer.retrieveCustomizeData();
-        this.setState({ isRetrieving: false });
       }
       catch (err) {
         toastError(err);
-        props.adminAppContainer.setState({ retrieveError: err.message });
+        adminCustomizeContainer.setState({ retrieveError: err.message });
         logger.error(err);
       }
     });
@@ -73,10 +75,9 @@ function RenderCustomizeWrapper(props) {
   );
 }
 
-const RenderCustomizeWrapper = withUnstatedContainers(RenderCustomizePage, [AppContainer, AdminCustomizeContainer]);
+const RenderCustomizePageWrapper = withUnstatedContainers(RenderCustomizePage, [AdminCustomizeContainer]);
 
 RenderCustomizePage.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
 };
 
