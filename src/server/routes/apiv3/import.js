@@ -109,13 +109,13 @@ module.exports = (crowi) => {
    *      responses:
    *        200:
    *          description: import settings params
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    importSettingsParams:
-   *                      type: object
-   *                      description: import settings params
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  importSettingsParams:
+   *                    type: object
+   *                    description: import settings params
    */
   router.get('/', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
     try {
