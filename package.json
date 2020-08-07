@@ -120,7 +120,6 @@
     "method-override": "^3.0.0",
     "migrate-mongo": "^7.0.1",
     "mkdirp": "^1.0.3",
-    "module-alias": "^2.0.6",
     "mongoose": "5.9.18",
     "mongoose-gridfs": "^1.2.42",
     "mongoose-paginate-v2": "^1.3.9",
@@ -276,13 +275,6 @@
     "webpack-bundle-analyzer": "^3.0.2",
     "webpack-cli": "^3.3.7",
     "webpack-merge": "^4.2.2"
-  },
-  "_moduleAliases": {
-    "@root": ".",
-    "@commons": "src/lib",
-    "@server": "src/server",
-    "@alias/logger": "src/lib/service/logger",
-    "debug": "src/lib/service/logger/alias-for-debug"
   },
   "engines": {
     "node": "^12 || ^14",
