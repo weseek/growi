@@ -2,53 +2,51 @@ import next from 'next';
 import Server from 'next/dist/next-server/server/next-server';
 
 import express, { Request, Response } from 'express';
-import { ParsedUrlQuery } from 'querystring';
 import Logger from 'bunyan';
 
 import loggerFactory from '~/utils/logger';
+import { hasProcessFlag } from '~/utils/process-utils';
 
 const logger: Logger = loggerFactory('growi');
 
 const dev: boolean = process.env.NODE_ENV !== 'production';
-const app: Server = next({ dev });
-const handle = app.getRequestHandler();
+const nextApp: Server = next({ dev });
+const handle = nextApp.getRequestHandler();
 const port: string | number = process.env.PORT || 3000;
-
-function installErrorHandler(app: Server) {
-  const _renderErrorToHTML = app.renderErrorToHTML.bind(app);
-
-  app.renderErrorToHTML = (err: Error, req: Request, res: Response, pathname: string, query: ParsedUrlQuery) => {
-    if (err) {
-      console.error(err);
-    }
-
-    return _renderErrorToHTML(err, req, res, pathname, query);
-  };
-
-  return app;
-}
 
 async function main() {
   try {
-    await app.prepare();
+    await nextApp.prepare();
 
-    // TODO: set error handler
-    // https://github.com/vercel/next.js/issues/1852#issuecomment-353671222
-    installErrorHandler(app);
-
-    const server = express();
-    server.all('*', (req: Request, res: Response) => {
+    const app = express();
+    app.all('*', (req: Request, res: Response) => {
       return handle(req, res);
     });
-    server.listen(port, (err?: Error) => {
+    const server = app.listen(port, (err?: Error) => {
       if (err) throw err;
       logger.info(`> Ready on localhost:${port} - env ${process.env.NODE_ENV}`);
     });
+
+    if (hasProcessFlag('ci')) {
+      logger.info('"--ci" flag is detected. Exit process.');
+      server.close(() => {
+        process.exit();
+      });
+    }
   }
-  catch (e) {
-    console.error(e);
+  catch (err) {
+    logger.error('An error occurred, unable to start the server');
+    logger.error(err);
     process.exit(1);
   }
 }
+
+process.on('uncaughtException', (err?: Error) => {
+  logger.error('Uncaught Exception: ', err);
+});
+
+process.on('unhandledRejection', (reason, p) => {
+  logger.error('Unhandled Rejection: Promise:', p, 'Reason:', reason);
+});
 
 main();
