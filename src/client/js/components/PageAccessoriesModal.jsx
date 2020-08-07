@@ -7,10 +7,10 @@ import {
 
 import { withTranslation } from 'react-i18next';
 
-import PageList from './Icons/PageList';
-import TimeLine from './Icons/TimeLine';
-import RecentChanges from './Icons/RecentChanges';
-import Attachment from './Icons/Attachment';
+import PageListIcon from './Icons/PageListIcon';
+import TimeLineIcon from './Icons/TimeLineIcon';
+import RecentChangesIcon from './Icons/RecentChangesIcon';
+import AttachmentIcon from './Icons/AttachmentIcon';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 import PageContainer from '../services/PageContainer';
@@ -46,7 +46,7 @@ const PageAccessoriesModal = (props) => {
               <NavLink
                 onClick={() => { switchTabHandler('pageList') }}
               >
-                <PageList />
+                <PageListIcon />
                 { t('page_list') }
               </NavLink>
             </NavItem>
@@ -54,7 +54,7 @@ const PageAccessoriesModal = (props) => {
               <NavLink
                 onClick={() => { switchTabHandler('timeLine') }}
               >
-                <TimeLine />
+                <TimeLineIcon />
                 { t('Timeline View') }
               </NavLink>
             </NavItem>
@@ -62,7 +62,7 @@ const PageAccessoriesModal = (props) => {
               <NavLink
                 onClick={() => { switchTabHandler('recentChanges') }}
               >
-                <RecentChanges />
+                <RecentChangesIcon />
                 { t('History') }
               </NavLink>
             </NavItem>
@@ -70,7 +70,7 @@ const PageAccessoriesModal = (props) => {
               <NavLink
                 onClick={() => { switchTabHandler('attachment') }}
               >
-                <Attachment />
+                <AttachmentIcon />
                 { t('attachment_data') }
               </NavLink>
             </NavItem>
