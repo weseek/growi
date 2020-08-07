@@ -285,12 +285,12 @@ module.exports = (crowi) => {
    *            application/json:
    *              schema:
    *                properties:
-   *                  page_id:
+   *                  pageId:
    *                    $ref: '#/components/schemas/Page/properties/_id'
-   *                  new_path:
+   *                  pageNameInput:
    *                    $ref: '#/components/schemas/Page/properties/path'
    *                required:
-   *                  - page_id
+   *                  - pageId
    *        responses:
    *          200:
    *            description: Succeeded to duplicate page.
@@ -298,25 +298,14 @@ module.exports = (crowi) => {
    *              application/json:
    *                schema:
    *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
    *                    page:
    *                      $ref: '#/components/schemas/Page'
-   *                    tags:
-   *                      $ref: '#/components/schemas/Tags'
    *          403:
-   *            $ref: '#/components/responses/403'
+   *            description: Failed to connect server.
    *          500:
    *            $ref: '#/components/responses/500'
    */
-  /**
-   * @api {post} /pages.duplicate Duplicate page
-   * @apiName DuplicatePage
-   * @apiGroup Page
-   *
-   * @apiParam {String} page_id Page Id.
-   * @apiParam {String} new_path New path name.
-   */
+
   // TODO write duplicate(GW-3316)
 
   // TODO write swagger(GW-3430) and add validation (GW-3429)
