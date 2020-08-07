@@ -431,3 +431,13 @@ mark.rbt-highlight-text {
 .bg-box {
   background-color: $bgcolor-global;
 }
+
+.grw-fab {
+  .btn-create-page {
+    fill: color-yiq($primary);
+  }
+
+  .btn-scroll-to-top {
+    fill: $gray-900;
+  }
+}

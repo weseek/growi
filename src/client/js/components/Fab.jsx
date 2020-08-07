@@ -48,9 +48,7 @@ const Fab = (props) => {
           className="btn btn-lg btn-create-page btn-primary rounded-circle p-0 waves-effect waves-light"
           onClick={navigationContainer.openPageCreateModal}
         >
-          <div className="mb-2">
-            <EditNewPageIcon />
-          </div>
+          <EditNewPageIcon />
         </button>
       </div>
       <div className={`rounded-circle position-absolute ${animateClasses}`} style={{ bottom: 0, right: 0 }}>

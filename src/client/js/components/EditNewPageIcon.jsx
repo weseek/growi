@@ -5,7 +5,7 @@ const EditNewPageIcon = () => (
     xmlns="http://www.w3.org/2000/svg"
     width="27"
     height="27"
-    viewBox="0 0 27 27"
+    viewBox="0 0 27 30"
   >
     <path
       d="M22.81,8.2a4.2,4.2,0,0,0,1.36-2.95,4,4,0,0,0-1.43-2.81,4.53,4.53,0,0,0-1.28-.89,3.26,3.26,0,
