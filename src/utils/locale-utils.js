@@ -1,12 +1,13 @@
-const fs = require('fs');
+import path from 'path';
+import fs from 'fs';
 
-const helpers = require('./helpers');
+const localesDir = path.resolve(__dirname, '../../resource/locales');
 
 /**
  * List locales dirents
  */
 function listLocaleDirents() {
-  const allDirents = fs.readdirSync(helpers.root('resource/locales'), { withFileTypes: true });
+  const allDirents = fs.readdirSync(localesDir, { withFileTypes: true });
   return allDirents
     .filter(dirent => dirent.isDirectory());
 }
@@ -17,7 +18,7 @@ function listLocaleDirents() {
 function listLocaleMetadatas() {
   return listLocaleDirents()
     .map(dir => dir.name)
-    .map(localeDirName => require(`../../../resource/locales/${localeDirName}/meta.json`));
+    .map(localeDirName => require(`^/resource/locales/${localeDirName}/meta.json`));
 }
 
 /**
