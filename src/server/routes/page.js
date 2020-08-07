@@ -676,55 +676,6 @@ module.exports = function(crowi, app) {
     }
   };
 
-  /**
-   * @swagger
-   *
-   *    /pages.create:
-   *      post:
-   *        tags: [Pages, CrowiCompatibles]
-   *        operationId: createPage
-   *        summary: /pages.create
-   *        description: Create page
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  body:
-   *                    $ref: '#/components/schemas/Revision/properties/body'
-   *                  path:
-   *                    $ref: '#/components/schemas/Page/properties/path'
-   *                  grant:
-   *                    $ref: '#/components/schemas/Page/properties/grant'
-   *                required:
-   *                  - body
-   *                  - path
-   *        responses:
-   *          200:
-   *            description: Succeeded to create page.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    page:
-   *                      $ref: '#/components/schemas/Page'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  /**
-   * @api {post} /pages.create Create new page
-   * @apiName CreatePage
-   * @apiGroup Page
-   *
-   * @apiParam {String} body
-   * @apiParam {String} path
-   * @apiParam {String} grant
-   * @apiParam {Array} pageTags
-   */
   // TODO If everything that depends on this route, delete it too
   api.create = async function(req, res) {
     const body = req.body.body || null;
@@ -1401,6 +1352,7 @@ module.exports = function(crowi, app) {
    * @apiParam {String} new_path New path name.
    * @apiParam {Bool} create_redirect
    */
+  // TODO remove after GW-3429 and GW-3430
   api.rename = async function(req, res) {
     const pageId = req.body.page_id;
     const previousRevision = req.body.revision_id || null;

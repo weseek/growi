@@ -11,7 +11,7 @@ import { withUnstatedContainers } from './UnstatedUtils';
 
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
-import ApiErrorMessage from './PageManagement/ApiErrorMessage';
+import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
 const PageRenameModal = (props) => {
   const {
@@ -23,8 +23,8 @@ const PageRenameModal = (props) => {
   const { crowi } = appContainer.config;
 
   const [pageNameInput, setPageNameInput] = useState(path);
-  const [errorCode, setErrorCode] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
+
+  const [errs, setErrs] = useState(null);
 
   const [isRenameRecursively, SetIsRenameRecursively] = useState(true);
   const [isRenameRedirect, SetIsRenameRedirect] = useState(false);
@@ -51,10 +51,9 @@ const PageRenameModal = (props) => {
   }
 
   async function rename() {
-    try {
-      setErrorCode(null);
-      setErrorMessage(null);
+    setErrs(null);
 
+    try {
       const response = await pageContainer.rename(
         pageNameInput,
         isRenameRecursively,
@@ -62,7 +61,7 @@ const PageRenameModal = (props) => {
         isRenameMetadata,
       );
 
-      const { page } = response;
+      const { page } = response.data;
       const url = new URL(page.path, 'https://dummy');
       url.searchParams.append('renamedFrom', path);
       if (isRenameRedirect) {
@@ -72,8 +71,7 @@ const PageRenameModal = (props) => {
       window.location.href = `${url.pathname}${url.search}`;
     }
     catch (err) {
-      setErrorCode(err.code);
-      setErrorMessage(err.message);
+      setErrs(err);
     }
   }
 
@@ -150,7 +148,7 @@ const PageRenameModal = (props) => {
         </div>
       </ModalBody>
       <ModalFooter>
-        <ApiErrorMessage errorCode={errorCode} errorMessage={errorMessage} targetPath={pageNameInput} />
+        <ApiErrorMessageList errs={errs} targetPath={pageNameInput} />
         <button type="button" className="btn btn-primary" onClick={rename}>Rename</button>
       </ModalFooter>
     </Modal>
