@@ -20,12 +20,13 @@ module.exports = (crowi) => {
 
     try {
       const pageId = req.query.page;
+
       // check whether accessible
       const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
-
       if (!isAccessible) {
         return res.json(ApiResponse.error('Current user is not accessible to this page.'));
       }
+
       const attachments = await Attachment.find({ page: pageId });
       return res.apiv3({ attachments });
     }
