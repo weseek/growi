@@ -385,8 +385,8 @@ module.exports = (crowi) => {
 
     const originTags = await page.findRelatedTagsById();
     const createdPage = await Page.create(newPagePath, page.revision.body, req.user);
-
     let savedTags;
+
     if (originTags != null) {
       await PageTagRelation.updatePageTags(createdPage.id, originTags);
       savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
