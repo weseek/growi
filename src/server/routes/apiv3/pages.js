@@ -8,7 +8,6 @@ const pathUtils = require('growi-commons').pathUtils;
 const { body } = require('express-validator/check');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
-
 const router = express.Router();
 
 /**
@@ -171,7 +170,7 @@ module.exports = (crowi) => {
    */
   router.post('/', accessTokenParser, loginRequiredStrictly, csrf, validator.createPage, apiV3FormValidator, async(req, res) => {
     const {
-      body, grant, grantUserGroupId, pageTags, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, socketClientId,
+      body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, socketClientId, pageTags,
     } = req.body;
 
     let { path } = req.body;
