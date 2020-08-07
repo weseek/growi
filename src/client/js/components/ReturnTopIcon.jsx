@@ -3,8 +3,8 @@ import React from 'react';
 const ReturnTopIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="23"
-    height="23"
+    width="18"
+    height="18"
     viewBox="0 0 23 23"
   >
     <path d="M.41,18.71a.82.82,0,0,0,0,.26.71.71,0,0,0,0,.29.5.5,0,0,0,.16.22.66.66,0,0,0,.51.21.67.67,0,0,0,
