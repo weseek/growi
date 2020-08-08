@@ -1,4 +1,5 @@
 /* eslint-disable no-use-before-define */
+import { listLocaleIds } from '~/utils/locale-utils';
 
 const debug = require('debug')('growi:models:user');
 const logger = require('@alias/logger')('growi:models:user');
@@ -11,7 +12,6 @@ const md5 = require('md5');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 const crypto = require('crypto');
 
-const { listLocaleIds } = require('@commons/util/locale-utils');
 
 module.exports = function(crowi) {
   const STATUS_REGISTERED = 1;

@@ -1,12 +1,13 @@
-import path from 'path';
-import fs from 'fs';
+import fs, { Dirent } from 'fs';
 
-const localesDir = path.resolve(__dirname, '../../resource/locales');
+import { resolveFromRoot } from './project-dir-utils';
+
+const localesDir = resolveFromRoot('resource/locales');
 
 /**
  * List locales dirents
  */
-function listLocaleDirents() {
+function listLocaleDirents(): Dirent[] {
   const allDirents = fs.readdirSync(localesDir, { withFileTypes: true });
   return allDirents
     .filter(dirent => dirent.isDirectory());
@@ -15,7 +16,7 @@ function listLocaleDirents() {
 /**
  * List locales aliases
  */
-function listLocaleMetadatas() {
+export function listLocaleMetadatas(): Record<string, unknown>[] {
   return listLocaleDirents()
     .map(dir => dir.name)
     .map(localeDirName => require(`^/resource/locales/${localeDirName}/meta.json`));
@@ -24,12 +25,7 @@ function listLocaleMetadatas() {
 /**
  * List locales IDs (=subdir names)
  */
-function listLocaleIds() {
+export function listLocaleIds(): string[] {
   return listLocaleMetadatas()
-    .map(meta => meta.id);
+    .map(meta => meta.id as string);
 }
-
-module.exports = {
-  listLocaleMetadatas,
-  listLocaleIds,
-};

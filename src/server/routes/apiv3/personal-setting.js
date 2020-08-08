@@ -1,13 +1,12 @@
 /* eslint-disable no-unused-vars */
-const loggerFactory = require('@alias/logger');
+import loggerFactory from '~/utils/logger';
+import { listLocaleIds } from '~/utils/locale-utils';
 
 const logger = loggerFactory('growi:routes:apiv3:personal-setting');
 
 const express = require('express');
 
 const passport = require('passport');
-
-const { listLocaleIds } = require('@commons/util/locale-utils');
 
 const router = express.Router();
 

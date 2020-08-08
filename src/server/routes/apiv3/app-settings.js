@@ -1,4 +1,5 @@
-const loggerFactory = require('@alias/logger');
+import loggerFactory from '~/utils/logger';
+import { listLocaleIds } from '~/utils/locale-utils';
 
 const logger = loggerFactory('growi:routes:apiv3:app-settings');
 
@@ -6,7 +7,6 @@ const debug = require('debug')('growi:routes:admin');
 
 const express = require('express');
 
-const { listLocaleIds } = require('@commons/util/locale-utils');
 
 const router = express.Router();
 

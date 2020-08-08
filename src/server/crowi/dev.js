@@ -4,10 +4,10 @@ import onHeaders from 'on-headers';
 
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
+import { listLocaleIds } from '~/utils/locale-utils';
 
 const logger = loggerFactory('growi:crowi:dev');
 
-const { listLocaleIds } = require('~/utils/locale-utils');
 
 class CrowiDev {
 
