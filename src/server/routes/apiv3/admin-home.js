@@ -70,7 +70,7 @@ module.exports = (crowi) => {
       nodeVersion: crowi.runtimeVersions.versions.node ? crowi.runtimeVersions.versions.node.version.version : '-',
       npmVersion: crowi.runtimeVersions.versions.npm ? crowi.runtimeVersions.versions.npm.version.version : '-',
       yarnVersion: crowi.runtimeVersions.versions.yarn ? crowi.runtimeVersions.versions.yarn.version.version : '-',
-      installedPlugins: pluginUtils.listPlugins(crowi.rootDir),
+      installedPlugins: pluginUtils.listPlugins(),
       envVars: await ConfigLoader.getEnvVarsForDisplay(true),
     };
 

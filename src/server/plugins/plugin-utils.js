@@ -1,9 +1,12 @@
-const path = require('path');
+import loggerFactory from '~/utils/logger';
+import { resolveFromRoot } from '~/utils/project-dir-utils';
+
 const fs = require('graceful-fs');
-const logger = require('@alias/logger')('growi:plugins:plugin-utils');
 const packageInstalledVersionSync = require('package-installed-version-sync');
 
 const PluginUtilsV2 = require('./plugin-utils-v2');
+
+const logger = loggerFactory('growi:plugins:plugin-utils');
 
 const pluginUtilsV2 = new PluginUtilsV2();
 
@@ -56,8 +59,8 @@ class PluginUtils {
    *
    * @memberOf PluginService
    */
-  listPlugins(rootDir) {
-    const packagePath = path.join(rootDir, 'package.json');
+  listPlugins() {
+    const packagePath = resolveFromRoot('package.json');
 
     // Make sure package.json exists
     if (!fs.existsSync(packagePath)) {
@@ -89,8 +92,8 @@ class PluginUtils {
    *
    * @memberOf PluginService
    */
-  listPluginNames(rootDir) {
-    const plugins = this.listPlugins(rootDir);
+  listPluginNames() {
+    const plugins = this.listPlugins();
     return plugins.map((plugin) => { return plugin.name });
   }
 

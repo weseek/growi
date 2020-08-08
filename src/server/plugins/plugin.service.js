@@ -1,5 +1,8 @@
-const logger = require('@alias/logger')('growi:plugins:PluginService');
+import loggerFactory from '~/utils/logger';
+
 const PluginUtils = require('./plugin-utils');
+
+const logger = loggerFactory('growi:plugins:PluginService');
 
 class PluginService {
 
@@ -15,7 +18,7 @@ class PluginService {
     // import plugins
     if (isEnabledPlugins) {
       logger.debug('Plugins are enabled');
-      this.loadPlugins(this.pluginUtils.listPluginNames(this.crowi.rootDir));
+      this.loadPlugins(this.pluginUtils.listPluginNames());
 
       // when dev
       if (this.crowi.node_env === 'development') {

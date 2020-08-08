@@ -5,15 +5,16 @@ import next from 'next';
 import path from 'path';
 import mongoose from 'mongoose';
 
-import loggerFactory from '~/utils/logger';
 import pkg from '^/package.json';
 
+import InterceptorManager from '~/service/interceptor-manager';
+import CdnResourcesService from '~/service/cdn-resources-service';
+import Xss from '~/service/xss';
+import loggerFactory from '~/utils/logger';
 import { getMongoUri, mongoOptions } from '~/utils/mongoose-utils';
+import { projectRoot } from '~/utils/project-dir-utils';
 
 const logger = loggerFactory('growi:crowi');
-// const InterceptorManager = require('~/service/interceptor-manager');
-// const CdnResourcesService = require('~/service/cdn-resources-service');
-// const Xss = require('~/service/xss');
 
 
 // const models = require('../models');
@@ -22,20 +23,19 @@ const logger = loggerFactory('growi:crowi');
 
 const sep = path.sep;
 
-function Crowi(rootdir) {
+function Crowi() {
 
   this.version = pkg.version;
   this.runtimeVersions = undefined; // initialized by scanRuntimeVersions()
 
-  this.rootDir = rootdir;
-  this.pluginDir = path.join(this.rootDir, 'node_modules') + sep;
-  this.publicDir = path.join(this.rootDir, 'public') + sep;
-  this.libDir = path.join(this.rootDir, 'src/server') + sep;
+  this.pluginDir = path.join(projectRoot, 'node_modules') + sep;
+  this.publicDir = path.join(projectRoot, 'public') + sep;
+  this.libDir = path.join(projectRoot, 'src/server') + sep;
   this.eventsDir = path.join(this.libDir, 'events') + sep;
   this.viewsDir = path.join(this.libDir, 'views') + sep;
-  this.resourceDir = path.join(this.rootDir, 'resource') + sep;
+  this.resourceDir = path.join(projectRoot, 'resource') + sep;
   this.localeDir = path.join(this.resourceDir, 'locales') + sep;
-  this.tmpDir = path.join(this.rootDir, 'tmp') + sep;
+  this.tmpDir = path.join(projectRoot, 'tmp') + sep;
   this.cacheDir = path.join(this.tmpDir, 'cache');
 
   this.nextApp = null;
@@ -60,9 +60,9 @@ function Crowi(rootdir) {
   this.socketIoService = null;
   this.pageService = null;
   this.syncPageStatusService = null;
-  // this.cdnResourcesService = new CdnResourcesService();
-  // this.interceptorManager = new InterceptorManager();
-  // this.xss = new Xss();
+  this.cdnResourcesService = new CdnResourcesService();
+  this.interceptorManager = new InterceptorManager();
+  this.xss = new Xss();
 
   this.tokens = null;
 

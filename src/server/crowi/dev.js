@@ -3,6 +3,7 @@ import swig from 'swig-templates';
 import onHeaders from 'on-headers';
 
 import loggerFactory from '~/utils/logger';
+import { resolveFromRoot } from '~/utils/project-dir-utils';
 
 const logger = loggerFactory('growi:crowi:dev');
 
@@ -60,8 +61,8 @@ class CrowiDev {
       const https = require('https');
 
       const options = {
-        key: fs.readFileSync(path.join(this.crowi.rootDir, './resource/certs/localhost/key.pem')),
-        cert: fs.readFileSync(path.join(this.crowi.rootDir, './resource/certs/localhost/cert.pem')),
+        key: fs.readFileSync(resolveFromRoot('resource/certs/localhost/key.pem')),
+        cert: fs.readFileSync(resolveFromRoot('resource/certs/localhost/cert.pem')),
       };
 
       server = https.createServer(options, app);

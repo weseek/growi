@@ -1,4 +1,3 @@
-import path from 'path';
 import Logger from 'bunyan';
 
 import loggerFactory from '~/utils/logger';
@@ -22,7 +21,7 @@ async function main() {
   try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const Crowi = require('./crowi');
-    const growi = new Crowi(path.resolve(__dirname, '../../'));
+    const growi = new Crowi();
     const server = await growi.start();
 
     if (hasProcessFlag('ci')) {

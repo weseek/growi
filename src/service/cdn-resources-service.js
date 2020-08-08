@@ -1,12 +1,13 @@
 import path from 'path';
+
 import loggerFactory from '~/utils/logger';
+import { projectRoot } from '~/utils/project-dir-utils';
 
 const { URL } = require('url');
 const urljoin = require('url-join');
 
 const { envUtils } = require('growi-commons');
 
-const projectRoot = path.resolve(__dirname, '../../');
 const cdnLocalScriptRoot = path.join(projectRoot, 'public/js/cdn');
 const cdnLocalScriptWebRoot = '/js/cdn';
 const cdnLocalStyleRoot = path.join(projectRoot, 'public/styles/cdn');
