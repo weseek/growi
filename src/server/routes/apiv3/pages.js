@@ -421,19 +421,25 @@ module.exports = (crowi) => {
     }
 
     const page = await Page.findByIdAndViewer(pageId, req.user);
+    const options = { page };
+    options.grant = page.grant;
+    options.grantUserGroupId = page.grantedGroup;
+    options.grantedUsers = page.grantedUsers;
 
     if (page == null) {
       res.code = 'Page is not found';
       logger.error('Failed to find the pages');
+      return res.apiv3Err(new ErrorV3('Not Founded the page', 'notfound_or_forbidden'), 404);
     }
 
     // check whether path starts slash
     newPagePath = pathUtils.addHeadingSlash(newPagePath);
-
     await page.populateDataToShowRevision();
 
+
+    const createdPage = await Page.create(newPagePath, page.revision.body, req.user, options);
+
     const originTags = await page.findRelatedTagsById();
-    const createdPage = await Page.create(newPagePath, page.revision.body, req.user);
     let savedTags;
 
     if (originTags != null) {
