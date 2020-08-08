@@ -1,4 +1,6 @@
-const logger = require('@alias/logger')('growi:InterceptorManager');
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:InterceptorManager');
 
 /**
  * the manager class of Interceptor

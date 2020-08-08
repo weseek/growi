@@ -1,3 +1,5 @@
+import loggerFactory from '~/utils/logger';
+
 const axios = require('axios');
 const path = require('path');
 const { URL } = require('url');
@@ -7,13 +9,12 @@ const mkdirp = require('mkdirp');
 const replaceStream = require('replacestream');
 const streamToPromise = require('stream-to-promise');
 
-const CdnResource = require('../models/cdn-resource');
-
+const CdnResource = require('~/models/cdn-resource');
 
 class CdnResourcesDownloader {
 
   constructor() {
-    this.logger = require('@alias/logger')('growi:service:CdnResourcesDownloader');
+    this.logger = loggerFactory('growi:service:CdnResourcesDownloader');
   }
 
   /**

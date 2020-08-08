@@ -1,20 +1,22 @@
+import path from 'path';
+import loggerFactory from '~/utils/logger';
+
 const { URL } = require('url');
 const urljoin = require('url-join');
 
-const helpers = require('@commons/util/helpers');
-
 const { envUtils } = require('growi-commons');
 
-const cdnLocalScriptRoot = 'public/js/cdn';
+const projectRoot = path.resolve(__dirname, '../../');
+const cdnLocalScriptRoot = path.join(projectRoot, 'public/js/cdn');
 const cdnLocalScriptWebRoot = '/js/cdn';
-const cdnLocalStyleRoot = 'public/styles/cdn';
+const cdnLocalStyleRoot = path.join(projectRoot, 'public/styles/cdn');
 const cdnLocalStyleWebRoot = '/styles/cdn';
 
 
 class CdnResourcesService {
 
   constructor() {
-    this.logger = require('@alias/logger')('growi:service:CdnResourcesService');
+    this.logger = loggerFactory('growi:service:CdnResourcesService');
 
     this.loadManifests();
   }
@@ -24,7 +26,7 @@ class CdnResourcesService {
   }
 
   loadManifests() {
-    this.cdnManifests = require('@root/resource/cdn-manifests');
+    this.cdnManifests = require('^/resource/cdn-manifests');
     this.logger.debug('manifest data loaded : ', this.cdnManifests);
   }
 
@@ -50,15 +52,13 @@ class CdnResourcesService {
    * @param {CdnResourceDownloader} cdnResourceDownloader
    */
   async downloadAndWriteAll(cdnResourceDownloader) {
-    const CdnResource = require('@commons/models/cdn-resource');
+    const CdnResource = require('~/models/cdn-resource');
 
     const cdnScriptResources = this.cdnManifests.js.map((manifest) => {
-      const outDir = helpers.root(cdnLocalScriptRoot);
-      return new CdnResource(manifest.name, manifest.url, outDir);
+      return new CdnResource(manifest.name, manifest.url, cdnLocalScriptRoot);
     });
     const cdnStyleResources = this.cdnManifests.style.map((manifest) => {
-      const outDir = helpers.root(cdnLocalStyleRoot);
-      return new CdnResource(manifest.name, manifest.url, outDir);
+      return new CdnResource(manifest.name, manifest.url, cdnLocalStyleRoot);
     });
 
     const dlStylesOptions = {
