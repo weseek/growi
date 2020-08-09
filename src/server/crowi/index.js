@@ -19,7 +19,7 @@ const logger = loggerFactory('growi:crowi');
 
 const models = require('../models');
 
-// const PluginService = require('../plugins/plugin.service');
+const PluginService = require('../plugins/plugin.service');
 
 const sep = path.sep;
 
@@ -409,8 +409,8 @@ Crowi.prototype.start = async function() {
   const { express } = this;
 
   // setup plugins
-  // this.pluginService = new PluginService(this, express);
-  // this.pluginService.autoDetectAndLoadPlugins();
+  this.pluginService = new PluginService(this, express);
+  this.pluginService.autoDetectAndLoadPlugins();
 
   const server = dev ? this.crowiDev.setupServer(express) : express;
 
