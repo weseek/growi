@@ -40,6 +40,9 @@ const HotkeysDetector = (props) => {
     return eventKey;
   }, []);
 
+  /**
+   * Workaround for Mac standard shortcut keys
+   */
   const isNeedWorkaroundForMac = (eventKey) => {
     const platform = navigator.platform.toLowerCase();
     const isMac = (platform.indexOf('mac') > -1);
