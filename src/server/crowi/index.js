@@ -17,7 +17,7 @@ import { projectRoot } from '~/utils/project-dir-utils';
 const logger = loggerFactory('growi:crowi');
 
 
-// const models = require('../models');
+const models = require('../models');
 
 // const PluginService = require('../plugins/plugin.service');
 
@@ -74,18 +74,18 @@ function Crowi() {
   this.port = this.env.PORT || 3000;
 
   this.events = {
-    // user: new (require(`${self.eventsDir}user`))(this),
-    // page: new (require(`${self.eventsDir}page`))(this),
-    // bookmark: new (require(`${self.eventsDir}bookmark`))(this),
-    // tag: new (require(`${self.eventsDir}tag`))(this),
-    // admin: new (require(`${self.eventsDir}admin`))(this),
+    user: new (require(`${this.eventsDir}user`))(this),
+    page: new (require(`${this.eventsDir}page`))(this),
+    bookmark: new (require(`${this.eventsDir}bookmark`))(this),
+    tag: new (require(`${this.eventsDir}tag`))(this),
+    admin: new (require(`${this.eventsDir}admin`))(this),
   };
 }
 
 Crowi.prototype.init = async function() {
   await this.setupDatabase();
   await this.setupSessionConfig();
-  // await this.setupModels();
+  await this.setupModels();
   // await this.setupConfigManager();
 
   // // setup messaging services
@@ -187,24 +187,24 @@ Crowi.prototype.init = async function() {
 //   return this.env;
 // };
 
-// // getter/setter of model instance
-// //
-// Crowi.prototype.model = function(name, model) {
-//   if (model != null) {
-//     this.models[name] = model;
-//   }
+// getter/setter of model instance
+//
+Crowi.prototype.model = function(name, model) {
+  if (model != null) {
+    this.models[name] = model;
+  }
 
-//   return this.models[name];
-// };
+  return this.models[name];
+};
 
-// // getter/setter of event instance
-// Crowi.prototype.event = function(name, event) {
-//   if (event) {
-//     this.events[name] = event;
-//   }
+// getter/setter of event instance
+Crowi.prototype.event = function(name, event) {
+  if (event) {
+    this.events[name] = event;
+  }
 
-//   return this.events[name];
-// };
+  return this.events[name];
+};
 
 Crowi.prototype.setupDatabase = function() {
   mongoose.Promise = global.Promise;
@@ -286,11 +286,11 @@ Crowi.prototype.setupSessionConfig = async function() {
 //   }
 // };
 
-// Crowi.prototype.setupModels = async function() {
-//   Object.keys(models).forEach((key) => {
-//     return this.model(key, models[key](this));
-//   });
-// };
+Crowi.prototype.setupModels = async function() {
+  Object.keys(models).forEach((key) => {
+    return this.model(key, models[key](this));
+  });
+};
 
 // Crowi.prototype.scanRuntimeVersions = async function() {
 //   const self = this;

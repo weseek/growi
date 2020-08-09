@@ -61,7 +61,7 @@ function determineLoggerLevel(name: string) {
   return level;
 }
 
-export default function(name: string): bunyan {
+const loggerFactory = function(name: string): bunyan {
   // create logger instance if absent
   if (loggers[name] == null) {
     loggers[name] = bunyan.createLogger({
@@ -72,4 +72,7 @@ export default function(name: string): bunyan {
   }
 
   return loggers[name];
-}
+};
+
+export default loggerFactory;
+module.exports = loggerFactory; // backward compatibility for CommonJS

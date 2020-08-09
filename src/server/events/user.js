@@ -1,4 +1,7 @@
-const debug = require('debug')('growi:events:user');
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:events:user');
+
 const util = require('util');
 const events = require('events');
 
@@ -24,10 +27,10 @@ UserEvent.prototype.onActivated = async function(user) {
       await Page.create(userPagePath, body, user, {});
 
       // page created
-      debug('User page created', page);
+      logger.debug('User page created', page);
     }
     catch (err) {
-      debug('Failed to create user page', err);
+      logger.debug('Failed to create user page', err);
     }
   }
 };

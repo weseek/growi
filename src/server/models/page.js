@@ -397,7 +397,7 @@ module.exports = function(crowi) {
 
   pageSchema.methods.seen = async function(userData) {
     if (this.isSeenUser(userData)) {
-      debug('seenUsers not updated');
+      logger.debug('seenUsers not updated');
       return this;
     }
 
@@ -408,7 +408,7 @@ module.exports = function(crowi) {
     const added = this.seenUsers.addToSet(userData);
     const saved = await this.save();
 
-    debug('seenUsers updated!', added);
+    logger.debug('seenUsers updated!', added);
 
     return saved;
   };
@@ -495,7 +495,7 @@ module.exports = function(crowi) {
       .then((count) => {
         self.update({ _id: pageId }, { commentCount: count }, {}, (err, data) => {
           if (err) {
-            debug('Update commentCount Error', err);
+            logger.debug('Update commentCount Error', err);
             throw err;
           }
 
@@ -969,7 +969,7 @@ module.exports = function(crowi) {
 
   async function pushRevision(pageData, newRevision, user) {
     await newRevision.save();
-    debug('Successfully saved new revision', newRevision);
+    logger.debug('Successfully saved new revision', newRevision);
 
     pageData.revision = newRevision;
     pageData.lastUpdateUser = user;
@@ -1149,7 +1149,7 @@ module.exports = function(crowi) {
 
     page.status = STATUS_PUBLISHED;
     page.lastUpdateUser = user;
-    debug('Revert deleted the page', page, newPath);
+    logger.debug('Revert deleted the page', page, newPath);
     const updatedPage = await this.rename(page, newPath, user, {});
 
     return updatedPage;
@@ -1188,7 +1188,7 @@ module.exports = function(crowi) {
     const pageId = pageData._id;
     const socketClientId = options.socketClientId || null;
 
-    debug('Completely delete', pageData.path);
+    logger.debug('Completely delete', pageData.path);
 
     await Promise.all([
       Bookmark.removeBookmarksByPageId(pageId),
