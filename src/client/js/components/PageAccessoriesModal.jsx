@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Modal, ModalBody, Nav, NavItem, NavLink, TabContent,
+  Modal, ModalBody, Nav, NavItem, NavLink, TabContent, TabPane,
 } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
@@ -14,6 +14,7 @@ import AttachmentIcon from './Icons/AttachmentIcon';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 import PageContainer from '../services/PageContainer';
+import PageAttachment from './PageAttachment';
 
 const PageAccessoriesModal = (props) => {
   const { t } = props;
@@ -69,13 +70,18 @@ const PageAccessoriesModal = (props) => {
             <NavItem className={`nav-link ${props.activeTab === 'attachment' && 'active'}`}>
               <NavLink
                 onClick={() => { switchTabHandler('attachment') }}
+                href="#attachment"
               >
                 <AttachmentIcon />
                 { t('attachment_data') }
               </NavLink>
             </NavItem>
           </Nav>
-          <TabContent>
+          <TabContent activeTab={props.activeTab}>
+            <TabPane tabId="attachment">
+              <PageAttachment />
+              {/* {activeComponents.has('global-notification') && <GlobalNotification />} */}
+            </TabPane>
           </TabContent>
         </ModalBody>
       </Modal>
