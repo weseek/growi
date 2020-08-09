@@ -79,8 +79,7 @@ const PageAccessoriesModal = (props) => {
           </Nav>
           <TabContent activeTab={props.activeTab}>
             <TabPane tabId="attachment" className="p-4">
-              <PageAttachment />
-              {/* {activeComponents.has('global-notification') && <GlobalNotification />} */}
+              {props.activeComponents.has('attachment') && <PageAttachment /> }
             </TabPane>
           </TabContent>
         </ModalBody>
@@ -103,6 +102,7 @@ PageAccessoriesModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
   activeTab: PropTypes.string.isRequired,
+  activeComponents: PropTypes.string.isRequired,
   onSwitch: PropTypes.func,
 };
 
