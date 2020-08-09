@@ -43,7 +43,7 @@ const PageAccessoriesModal = (props) => {
       >
         <ModalBody>
           <Nav className="nav-title border-bottom">
-            <NavItem className={`nav-link ${props.activeTab === 'pageList' && 'active'}`}>
+            <NavItem className={`nav-link ${props.activeTab === 'pageList' && 'active active-border'}`}>
               <NavLink
                 onClick={() => { switchTabHandler('pageList') }}
               >
@@ -51,7 +51,7 @@ const PageAccessoriesModal = (props) => {
                 { t('page_list') }
               </NavLink>
             </NavItem>
-            <NavItem className={`nav-link ${props.activeTab === 'timeLine' && 'active'}`}>
+            <NavItem className={`nav-link ${props.activeTab === 'timeLine' && 'active active-border'}`}>
               <NavLink
                 onClick={() => { switchTabHandler('timeLine') }}
               >
@@ -59,7 +59,7 @@ const PageAccessoriesModal = (props) => {
                 { t('Timeline View') }
               </NavLink>
             </NavItem>
-            <NavItem className={`nav-link ${props.activeTab === 'recentChanges' && 'active'}`}>
+            <NavItem className={`nav-link ${props.activeTab === 'recentChanges' && 'active active-border'}`}>
               <NavLink
                 onClick={() => { switchTabHandler('recentChanges') }}
               >
@@ -67,7 +67,7 @@ const PageAccessoriesModal = (props) => {
                 { t('History') }
               </NavLink>
             </NavItem>
-            <NavItem className={`nav-link ${props.activeTab === 'attachment' && 'active'}`}>
+            <NavItem className={`nav-link ${props.activeTab === 'attachment' && 'active active-border'}`}>
               <NavLink
                 onClick={() => { switchTabHandler('attachment') }}
                 href="#attachment"
@@ -78,7 +78,7 @@ const PageAccessoriesModal = (props) => {
             </NavItem>
           </Nav>
           <TabContent activeTab={props.activeTab}>
-            <TabPane tabId="attachment">
+            <TabPane tabId="attachment" className="p-4">
               <PageAttachment />
               {/* {activeComponents.has('global-notification') && <GlobalNotification />} */}
             </TabPane>
