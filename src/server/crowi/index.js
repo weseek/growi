@@ -86,7 +86,7 @@ Crowi.prototype.init = async function() {
   await this.setupDatabase();
   await this.setupSessionConfig();
   await this.setupModels();
-  // await this.setupConfigManager();
+  await this.setupConfigManager();
 
   // // setup messaging services
   // await this.setupS2sMessagingService();
@@ -175,17 +175,17 @@ Crowi.prototype.init = async function() {
 //   return false;
 // };
 
-// Crowi.prototype.setConfig = function(config) {
-//   this.config = config;
-// };
+Crowi.prototype.setConfig = function(config) {
+  this.config = config;
+};
 
-// Crowi.prototype.getConfig = function() {
-//   return this.config;
-// };
+Crowi.prototype.getConfig = function() {
+  return this.config;
+};
 
-// Crowi.prototype.getEnv = function() {
-//   return this.env;
-// };
+Crowi.prototype.getEnv = function() {
+  return this.env;
+};
 
 // getter/setter of model instance
 //
@@ -261,11 +261,11 @@ Crowi.prototype.setupSessionConfig = async function() {
   this.sessionConfig = sessionConfig;
 };
 
-// Crowi.prototype.setupConfigManager = async function() {
-//   const ConfigManager = require('../service/config-manager');
-//   this.configManager = new ConfigManager(this.model('Config'));
-//   return this.configManager.loadConfigs();
-// };
+Crowi.prototype.setupConfigManager = async function() {
+  const ConfigManager = require('../service/config-manager');
+  this.configManager = new ConfigManager(this.model('Config'));
+  return this.configManager.loadConfigs();
+};
 
 // Crowi.prototype.setupS2sMessagingService = async function() {
 //   const s2sMessagingService = require('../service/s2s-messaging')(this);

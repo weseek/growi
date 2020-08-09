@@ -1,4 +1,6 @@
-const logger = require('@alias/logger')('growi:service:ConfigManager');
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:service:ConfigManager');
 
 const parseISO = require('date-fns/parseISO');
 

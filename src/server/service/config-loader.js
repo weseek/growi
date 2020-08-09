@@ -1,7 +1,9 @@
-const debug = require('debug')('growi:service:ConfigLoader');
+import loggerFactory from '~/utils/logger';
+
 const { envUtils } = require('growi-commons');
 const isSecurityEnv = require('../../lib/util/isSecurityEnv');
 
+const logger = loggerFactory('growi:service:ConfigLoader');
 
 const TYPES = {
   NUMBER:  { parse: (v) => { return parseInt(v, 10) } },
@@ -378,7 +380,7 @@ class ConfigLoader {
       config[doc.ns][doc.key] = JSON.parse(doc.value);
     }
 
-    debug('ConfigLoader#loadFromDB', config);
+    logger.debug('ConfigLoader#loadFromDB', config);
 
     return config;
   }
@@ -399,7 +401,7 @@ class ConfigLoader {
       }
     }
 
-    debug('ConfigLoader#loadFromEnvVars', config);
+    logger.debug('ConfigLoader#loadFromEnvVars', config);
 
     return config;
   }
@@ -422,7 +424,7 @@ class ConfigLoader {
       config[ENV_VAR_NAME] = configInfo.type.parse(process.env[ENV_VAR_NAME]);
     }
 
-    debug('ConfigLoader#getEnvVarsForDisplay', config);
+    logger.debug('ConfigLoader#getEnvVarsForDisplay', config);
     return config;
   }
 
