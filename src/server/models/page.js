@@ -2,9 +2,13 @@
 /* eslint-disable no-return-await */
 
 /* eslint-disable no-use-before-define */
-const logger = require('@alias/logger')('growi:models:page');
 
-const debug = require('debug')('growi:models:page');
+import loggerFactory from '~/utils/logger';
+import templateChecker from '~/utils/template-checker';
+import { isTopPage } from '~/utils/path-utils';
+
+const logger = loggerFactory('growi:models:page');
+
 const nodePath = require('path');
 const urljoin = require('url-join');
 const mongoose = require('mongoose');
@@ -13,8 +17,6 @@ const uniqueValidator = require('mongoose-unique-validator');
 const differenceInYears = require('date-fns/differenceInYears');
 
 const { pathUtils } = require('growi-commons');
-const templateChecker = require('@commons/util/template-checker');
-const { isTopPage } = require('@commons/util/path-utils');
 const escapeStringRegexp = require('escape-string-regexp');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;

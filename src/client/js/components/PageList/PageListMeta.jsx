@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import templateChecker from '@commons/util/template-checker';
-import { isTopPage } from '@commons/util/path-utils';
+
+import { isTopPage } from '~/utils/path-utils';
+import templateChecker from '~/utils/template-checker';
 
 export default class PageListMeta extends React.Component {
 
