@@ -434,7 +434,7 @@ module.exports = (crowi) => {
 
     // check whether path starts slash
     newPagePath = pathUtils.addHeadingSlash(newPagePath);
-    await page.populateDataToShowRevision();
+    await page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate();
 
 
     const createdPage = await Page.create(newPagePath, page.revision.body, req.user, options);
