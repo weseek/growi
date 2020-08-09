@@ -43,27 +43,27 @@ const PageAccessoriesModal = (props) => {
       >
         <ModalBody>
           <Nav className="nav-title border-bottom">
-            <NavItem className={`nav-link ${props.activeTab === 'pageList' && 'active active-border'}`}>
+            <NavItem className={`nav-link ${props.activeTab === 'pagelist' && 'active active-border'}`}>
               <NavLink
-                onClick={() => { switchTabHandler('pageList') }}
+                onClick={() => { switchTabHandler('pagelist') }}
                 href="#pagelist"
               >
                 <PageListIcon />
                 { t('page_list') }
               </NavLink>
             </NavItem>
-            <NavItem className={`nav-link ${props.activeTab === 'timeLine' && 'active active-border'}`}>
+            <NavItem className={`nav-link ${props.activeTab === 'timeline' && 'active active-border'}`}>
               <NavLink
-                onClick={() => { switchTabHandler('timeLine') }}
+                onClick={() => { switchTabHandler('timeline') }}
                 href="#timeline"
               >
                 <TimeLineIcon />
                 { t('Timeline View') }
               </NavLink>
             </NavItem>
-            <NavItem className={`nav-link ${props.activeTab === 'recentChanges' && 'active active-border'}`}>
+            <NavItem className={`nav-link ${props.activeTab === 'recent-changes' && 'active active-border'}`}>
               <NavLink
-                onClick={() => { switchTabHandler('recentChanges') }}
+                onClick={() => { switchTabHandler('recent-changes') }}
                 href="#recent-changes"
               >
                 <RecentChangesIcon />

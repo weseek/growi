@@ -55,15 +55,15 @@ const TopOfTableContents = (props) => {
   return (
     <>
       <div className="top-of-table-contents d-flex align-items-end pb-1">
-        <button type="button" className="bg-transparent border-0" onClick={() => openPageAccessoriesModal('pageList')}>
+        <button type="button" className="bg-transparent border-0" onClick={() => openPageAccessoriesModal('pagelist')}>
           <PageListIcon />
         </button>
 
-        <button type="button" className="bg-transparent border-0 active" onClick={() => openPageAccessoriesModal('timeLine')}>
+        <button type="button" className="bg-transparent border-0 active" onClick={() => openPageAccessoriesModal('timeline')}>
           <TimeLineIcon />
         </button>
 
-        <button type="button" className="bg-transparent border-0" onClick={() => openPageAccessoriesModal('recentChanges')}>
+        <button type="button" className="bg-transparent border-0" onClick={() => openPageAccessoriesModal('recent-changes')}>
           <RecentChangesIcon />
         </button>
 
