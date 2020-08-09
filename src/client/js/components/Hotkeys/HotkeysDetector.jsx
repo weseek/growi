@@ -40,11 +40,23 @@ const HotkeysDetector = (props) => {
     return eventKey;
   }, []);
 
+  const isNeedWorkaroundForMac = (eventKey) => {
+    const platform = navigator.platform.toLowerCase();
+    const isMac = (platform.indexOf('mac') > -1);
+    const throughCommands = ['a', 'z', 'x', 'c', 'v'].map(char => `${char}+meta`);
+
+    return isMac && throughCommands.includes(eventKey);
+  };
+
   /**
    * evaluate the key user pressed and trigger onDetected
    */
   const checkHandler = useCallback((event) => {
     const eventKey = getKeyExpression(event);
+
+    if (!isNeedWorkaroundForMac(eventKey)) {
+      event.preventDefault();
+    }
 
     hotkeyStrokes.forEach((hotkeyStroke) => {
       if (hotkeyStroke.evaluate(eventKey)) {
