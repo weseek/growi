@@ -102,7 +102,7 @@ PageAccessoriesModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
   activeTab: PropTypes.string.isRequired,
-  activeComponents: PropTypes.string.isRequired,
+  activeComponents: PropTypes.object.isRequired,
   onSwitch: PropTypes.func,
 };
 

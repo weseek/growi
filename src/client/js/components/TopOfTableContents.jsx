@@ -24,6 +24,8 @@ const TopOfTableContents = (props) => {
   function openPageAccessoriesModal(activeTab) {
     setIsPageAccessoriesModalShown(true);
     setActiveTab(activeTab);
+    activeComponents.add(activeTab);
+    setActiveComponents(activeComponents);
   }
 
   function switchActiveTab(clickedTab) {
