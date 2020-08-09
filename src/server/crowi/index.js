@@ -163,17 +163,17 @@ Crowi.prototype.init = async function() {
 //   // ]);
 // };
 
-// Crowi.prototype.isPageId = function(pageId) {
-//   if (!pageId) {
-//     return false;
-//   }
+Crowi.prototype.isPageId = function(pageId) {
+  if (!pageId) {
+    return false;
+  }
 
-//   if (typeof pageId === 'string' && pageId.match(/^[\da-f]{24}$/)) {
-//     return true;
-//   }
+  if (typeof pageId === 'string' && pageId.match(/^[\da-f]{24}$/)) {
+    return true;
+  }
 
-//   return false;
-// };
+  return false;
+};
 
 Crowi.prototype.setConfig = function(config) {
   this.config = config;
@@ -292,103 +292,103 @@ Crowi.prototype.setupModels = async function() {
   });
 };
 
-// Crowi.prototype.scanRuntimeVersions = async function() {
-//   const self = this;
+Crowi.prototype.scanRuntimeVersions = async function() {
+  const self = this;
 
-//   const check = require('check-node-version');
-//   return new Promise((resolve, reject) => {
-//     check((err, result) => {
-//       if (err) {
-//         reject(err);
-//       }
-//       self.runtimeVersions = result;
-//       resolve();
-//     });
-//   });
-// };
+  const check = require('check-node-version');
+  return new Promise((resolve, reject) => {
+    check((err, result) => {
+      if (err) {
+        reject(err);
+      }
+      self.runtimeVersions = result;
+      resolve();
+    });
+  });
+};
 
-// Crowi.prototype.getSlack = function() {
-//   return this.slack;
-// };
+Crowi.prototype.getSlack = function() {
+  return this.slack;
+};
 
-// Crowi.prototype.getInterceptorManager = function() {
-//   return this.interceptorManager;
-// };
+Crowi.prototype.getInterceptorManager = function() {
+  return this.interceptorManager;
+};
 
-// Crowi.prototype.getGlobalNotificationService = function() {
-//   return this.globalNotificationService;
-// };
+Crowi.prototype.getGlobalNotificationService = function() {
+  return this.globalNotificationService;
+};
 
-// Crowi.prototype.getRestQiitaAPIService = function() {
-//   return this.restQiitaAPIService;
-// };
+Crowi.prototype.getRestQiitaAPIService = function() {
+  return this.restQiitaAPIService;
+};
 
-// Crowi.prototype.setupPassport = async function() {
-//   debug('Passport is enabled');
+Crowi.prototype.setupPassport = async function() {
+  logger.debug('Passport is enabled');
 
-//   // initialize service
-//   const PassportService = require('../service/passport');
-//   if (this.passportService == null) {
-//     this.passportService = new PassportService(this);
-//   }
-//   this.passportService.setupSerializer();
-//   // setup strategies
-//   try {
-//     this.passportService.setupStrategyById('local');
-//     this.passportService.setupStrategyById('ldap');
-//     this.passportService.setupStrategyById('saml');
-//     this.passportService.setupStrategyById('oidc');
-//     this.passportService.setupStrategyById('basic');
-//     this.passportService.setupStrategyById('google');
-//     this.passportService.setupStrategyById('github');
-//     this.passportService.setupStrategyById('twitter');
-//   }
-//   catch (err) {
-//     logger.error(err);
-//   }
+  // initialize service
+  const PassportService = require('../service/passport');
+  if (this.passportService == null) {
+    this.passportService = new PassportService(this);
+  }
+  this.passportService.setupSerializer();
+  // setup strategies
+  try {
+    this.passportService.setupStrategyById('local');
+    this.passportService.setupStrategyById('ldap');
+    this.passportService.setupStrategyById('saml');
+    this.passportService.setupStrategyById('oidc');
+    this.passportService.setupStrategyById('basic');
+    this.passportService.setupStrategyById('google');
+    this.passportService.setupStrategyById('github');
+    this.passportService.setupStrategyById('twitter');
+  }
+  catch (err) {
+    logger.error(err);
+  }
 
-//   // add as a message handler
-//   if (this.s2sMessagingService != null) {
-//     this.s2sMessagingService.addMessageHandler(this.passportService);
-//   }
+  // add as a message handler
+  if (this.s2sMessagingService != null) {
+    this.s2sMessagingService.addMessageHandler(this.passportService);
+  }
 
-//   return Promise.resolve();
-// };
+  return Promise.resolve();
+};
 
-// Crowi.prototype.setupSearcher = async function() {
-//   const SearchService = require('~/server/service/search');
-//   this.searchService = new SearchService(this);
-// };
+Crowi.prototype.setupSearcher = async function() {
+  const SearchService = require('~/server/service/search');
+  this.searchService = new SearchService(this);
+};
 
-// Crowi.prototype.setupMailer = async function() {
-//   const MailService = require('~/server/service/mail');
-//   this.mailService = new MailService(this);
+Crowi.prototype.setupMailer = async function() {
+  const MailService = require('~/server/service/mail');
+  this.mailService = new MailService(this);
 
-//   // add as a message handler
-//   if (this.s2sMessagingService != null) {
-//     this.s2sMessagingService.addMessageHandler(this.mailService);
-//   }
-// };
+  // add as a message handler
+  if (this.s2sMessagingService != null) {
+    this.s2sMessagingService.addMessageHandler(this.mailService);
+  }
+};
 
-// Crowi.prototype.setupSlack = async function() {
-//   const self = this;
+Crowi.prototype.setupSlack = async function() {
+  const self = this;
 
-//   return new Promise(((resolve, reject) => {
-//     self.slack = require('../util/slack')(self);
-//     resolve();
-//   }));
-// };
+  return new Promise(((resolve, reject) => {
+    self.slack = require('../util/slack')(self);
+    resolve();
+  }));
+};
 
-// Crowi.prototype.setupCsrf = async function() {
-//   const Tokens = require('csrf');
-//   this.tokens = new Tokens();
+Crowi.prototype.setupCsrf = async function() {
+  const Tokens = require('csrf');
+  this.tokens = new Tokens();
 
-//   return Promise.resolve();
-// };
+  return Promise.resolve();
+};
 
-// Crowi.prototype.getTokens = function() {
-//   return this.tokens;
-// };
+Crowi.prototype.getTokens = function() {
+  return this.tokens;
+};
 
 Crowi.prototype.start = async function() {
   const dev = process.env.NODE_ENV !== 'production';
@@ -467,161 +467,161 @@ Crowi.prototype.setupRoutesAtLast = function() {
   });
 };
 
-// Crowi.prototype.setupAfterInstall = function() {
-//   this.pluginService.autoDetectAndLoadPlugins();
-//   this.setupRoutesAtLast();
-// };
+Crowi.prototype.setupAfterInstall = function() {
+  this.pluginService.autoDetectAndLoadPlugins();
+  this.setupRoutesAtLast();
+};
 
-// /**
-//  * require API for plugins
-//  *
-//  * @param {string} modulePath relative path from /lib/crowi/index.js
-//  * @return {module}
-//  *
-//  * @memberof Crowi
-//  */
-// Crowi.prototype.require = function(modulePath) {
-//   return require(modulePath);
-// };
+/**
+ * require API for plugins
+ *
+ * @param {string} modulePath relative path from /lib/crowi/index.js
+ * @return {module}
+ *
+ * @memberof Crowi
+ */
+Crowi.prototype.require = function(modulePath) {
+  return require(modulePath);
+};
 
-// /**
-//  * setup GlobalNotificationService
-//  */
-// Crowi.prototype.setUpGlobalNotification = async function() {
-//   const GlobalNotificationService = require('../service/global-notification');
-//   if (this.globalNotificationService == null) {
-//     this.globalNotificationService = new GlobalNotificationService(this);
-//   }
-// };
+/**
+ * setup GlobalNotificationService
+ */
+Crowi.prototype.setUpGlobalNotification = async function() {
+  const GlobalNotificationService = require('../service/global-notification');
+  if (this.globalNotificationService == null) {
+    this.globalNotificationService = new GlobalNotificationService(this);
+  }
+};
 
-// /**
-//  * setup SlackNotificationService
-//  */
-// Crowi.prototype.setUpSlacklNotification = async function() {
-//   const SlackNotificationService = require('../service/slack-notification');
-//   if (this.slackNotificationService == null) {
-//     this.slackNotificationService = new SlackNotificationService(this.configManager);
-//   }
-// };
+/**
+ * setup SlackNotificationService
+ */
+Crowi.prototype.setUpSlacklNotification = async function() {
+  const SlackNotificationService = require('../service/slack-notification');
+  if (this.slackNotificationService == null) {
+    this.slackNotificationService = new SlackNotificationService(this.configManager);
+  }
+};
 
-// /**
-//  * setup XssService
-//  */
-// Crowi.prototype.setUpXss = async function() {
-//   const XssService = require('../service/xss');
-//   if (this.xssService == null) {
-//     this.xssService = new XssService(this.configManager);
-//   }
-// };
+/**
+ * setup XssService
+ */
+Crowi.prototype.setUpXss = async function() {
+  const XssService = require('../service/xss');
+  if (this.xssService == null) {
+    this.xssService = new XssService(this.configManager);
+  }
+};
 
-// /**
-//  * setup AclService
-//  */
-// Crowi.prototype.setUpAcl = async function() {
-//   const AclService = require('../service/acl');
-//   if (this.aclService == null) {
-//     this.aclService = new AclService(this.configManager);
-//   }
-// };
+/**
+ * setup AclService
+ */
+Crowi.prototype.setUpAcl = async function() {
+  const AclService = require('../service/acl');
+  if (this.aclService == null) {
+    this.aclService = new AclService(this.configManager);
+  }
+};
 
-// /**
-//  * setup CustomizeService
-//  */
-// Crowi.prototype.setUpCustomize = async function() {
-//   const CustomizeService = require('../service/customize');
-//   if (this.customizeService == null) {
-//     this.customizeService = new CustomizeService(this);
-//     this.customizeService.initCustomCss();
-//     this.customizeService.initCustomTitle();
+/**
+ * setup CustomizeService
+ */
+Crowi.prototype.setUpCustomize = async function() {
+  const CustomizeService = require('../service/customize');
+  if (this.customizeService == null) {
+    this.customizeService = new CustomizeService(this);
+    this.customizeService.initCustomCss();
+    this.customizeService.initCustomTitle();
 
-//     // add as a message handler
-//     if (this.s2sMessagingService != null) {
-//       this.s2sMessagingService.addMessageHandler(this.customizeService);
-//     }
-//   }
-// };
+    // add as a message handler
+    if (this.s2sMessagingService != null) {
+      this.s2sMessagingService.addMessageHandler(this.customizeService);
+    }
+  }
+};
 
-// /**
-//  * setup AppService
-//  */
-// Crowi.prototype.setUpApp = async function() {
-//   const AppService = require('../service/app');
-//   if (this.appService == null) {
-//     this.appService = new AppService(this);
+/**
+ * setup AppService
+ */
+Crowi.prototype.setUpApp = async function() {
+  const AppService = require('../service/app');
+  if (this.appService == null) {
+    this.appService = new AppService(this);
 
-//     // add as a message handler
-//     const isInstalled = this.configManager.getConfig('crowi', 'app:installed');
-//     if (this.s2sMessagingService != null && !isInstalled) {
-//       this.s2sMessagingService.addMessageHandler(this.appService);
-//     }
-//   }
-// };
+    // add as a message handler
+    const isInstalled = this.configManager.getConfig('crowi', 'app:installed');
+    if (this.s2sMessagingService != null && !isInstalled) {
+      this.s2sMessagingService.addMessageHandler(this.appService);
+    }
+  }
+};
 
-// /**
-//  * setup FileUploadService
-//  */
-// Crowi.prototype.setUpFileUpload = async function() {
-//   if (this.fileUploadService == null) {
-//     this.fileUploadService = require('../service/file-uploader')(this);
-//   }
-// };
+/**
+ * setup FileUploadService
+ */
+Crowi.prototype.setUpFileUpload = async function() {
+  if (this.fileUploadService == null) {
+    this.fileUploadService = require('../service/file-uploader')(this);
+  }
+};
 
-// /**
-//  * setup RestQiitaAPIService
-//  */
-// Crowi.prototype.setUpRestQiitaAPI = async function() {
-//   const RestQiitaAPIService = require('../service/rest-qiita-API');
-//   if (this.restQiitaAPIService == null) {
-//     this.restQiitaAPIService = new RestQiitaAPIService(this);
-//   }
-// };
+/**
+ * setup RestQiitaAPIService
+ */
+Crowi.prototype.setUpRestQiitaAPI = async function() {
+  const RestQiitaAPIService = require('../service/rest-qiita-API');
+  if (this.restQiitaAPIService == null) {
+    this.restQiitaAPIService = new RestQiitaAPIService(this);
+  }
+};
 
-// Crowi.prototype.setupUserGroup = async function() {
-//   const UserGroupService = require('../service/user-group');
-//   if (this.userGroupService == null) {
-//     this.userGroupService = new UserGroupService(this);
-//     return this.userGroupService.init();
-//   }
-// };
+Crowi.prototype.setupUserGroup = async function() {
+  const UserGroupService = require('../service/user-group');
+  if (this.userGroupService == null) {
+    this.userGroupService = new UserGroupService(this);
+    return this.userGroupService.init();
+  }
+};
 
-// Crowi.prototype.setUpGrowiBridge = async function() {
-//   const GrowiBridgeService = require('../service/growi-bridge');
-//   if (this.growiBridgeService == null) {
-//     this.growiBridgeService = new GrowiBridgeService(this);
-//   }
-// };
+Crowi.prototype.setUpGrowiBridge = async function() {
+  const GrowiBridgeService = require('../service/growi-bridge');
+  if (this.growiBridgeService == null) {
+    this.growiBridgeService = new GrowiBridgeService(this);
+  }
+};
 
-// Crowi.prototype.setupExport = async function() {
-//   const ExportService = require('../service/export');
-//   if (this.exportService == null) {
-//     this.exportService = new ExportService(this);
-//   }
-// };
+Crowi.prototype.setupExport = async function() {
+  const ExportService = require('../service/export');
+  if (this.exportService == null) {
+    this.exportService = new ExportService(this);
+  }
+};
 
-// Crowi.prototype.setupImport = async function() {
-//   const ImportService = require('../service/import');
-//   if (this.importService == null) {
-//     this.importService = new ImportService(this);
-//   }
-// };
+Crowi.prototype.setupImport = async function() {
+  const ImportService = require('../service/import');
+  if (this.importService == null) {
+    this.importService = new ImportService(this);
+  }
+};
 
-// Crowi.prototype.setupPageService = async function() {
-//   const PageEventService = require('../service/page');
-//   if (this.pageService == null) {
-//     this.pageService = new PageEventService(this);
-//   }
-// };
+Crowi.prototype.setupPageService = async function() {
+  const PageEventService = require('../service/page');
+  if (this.pageService == null) {
+    this.pageService = new PageEventService(this);
+  }
+};
 
-// Crowi.prototype.setupSyncPageStatusService = async function() {
-//   const SyncPageStatusService = require('../service/system-events/sync-page-status');
-//   if (this.syncPageStatusService == null) {
-//     this.syncPageStatusService = new SyncPageStatusService(this, this.s2sMessagingService, this.socketIoService);
+Crowi.prototype.setupSyncPageStatusService = async function() {
+  const SyncPageStatusService = require('../service/system-events/sync-page-status');
+  if (this.syncPageStatusService == null) {
+    this.syncPageStatusService = new SyncPageStatusService(this, this.s2sMessagingService, this.socketIoService);
 
-//     // add as a message handler
-//     if (this.s2sMessagingService != null) {
-//       this.s2sMessagingService.addMessageHandler(this.syncPageStatusService);
-//     }
-//   }
-// };
+    // add as a message handler
+    if (this.s2sMessagingService != null) {
+      this.s2sMessagingService.addMessageHandler(this.syncPageStatusService);
+    }
+  }
+};
 
 module.exports = Crowi;
