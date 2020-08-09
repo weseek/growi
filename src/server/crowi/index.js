@@ -89,8 +89,8 @@ Crowi.prototype.init = async function() {
   await this.setupConfigManager();
 
   // // setup messaging services
-  // await this.setupS2sMessagingService();
-  // await this.setupSocketIoService();
+  await this.setupS2sMessagingService();
+  await this.setupSocketIoService();
 
   // // customizeService depends on AppService and XssService
   // // passportService depends on appService
@@ -267,24 +267,24 @@ Crowi.prototype.setupConfigManager = async function() {
   return this.configManager.loadConfigs();
 };
 
-// Crowi.prototype.setupS2sMessagingService = async function() {
-//   const s2sMessagingService = require('../service/s2s-messaging')(this);
-//   if (s2sMessagingService != null) {
-//     s2sMessagingService.subscribe();
-//     this.configManager.setS2sMessagingService(s2sMessagingService);
-//     // add as a message handler
-//     s2sMessagingService.addMessageHandler(this.configManager);
+Crowi.prototype.setupS2sMessagingService = async function() {
+  const s2sMessagingService = require('../service/s2s-messaging')(this);
+  if (s2sMessagingService != null) {
+    s2sMessagingService.subscribe();
+    this.configManager.setS2sMessagingService(s2sMessagingService);
+    // add as a message handler
+    s2sMessagingService.addMessageHandler(this.configManager);
 
-//     this.s2sMessagingService = s2sMessagingService;
-//   }
-// };
+    this.s2sMessagingService = s2sMessagingService;
+  }
+};
 
-// Crowi.prototype.setupSocketIoService = async function() {
-//   const SocketIoService = require('../service/socket-io');
-//   if (this.socketIoService == null) {
-//     this.socketIoService = new SocketIoService();
-//   }
-// };
+Crowi.prototype.setupSocketIoService = async function() {
+  const SocketIoService = require('../service/socket-io');
+  if (this.socketIoService == null) {
+    this.socketIoService = new SocketIoService();
+  }
+};
 
 Crowi.prototype.setupModels = async function() {
   Object.keys(models).forEach((key) => {
@@ -422,7 +422,7 @@ Crowi.prototype.start = async function() {
     }
   });
 
-  // this.socketIoService.attachServer(serverListening);
+  this.socketIoService.attachServer(serverListening);
 
   // setup Express Routes
   this.setupRoutesAtLast();

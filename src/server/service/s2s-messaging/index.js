@@ -1,4 +1,6 @@
-const logger = require('@alias/logger')('growi:service:s2s-messaging:S2sMessagingServiceFactory');
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:service:s2s-messaging:S2sMessagingServiceFactory');
 
 const envToModuleMappings = {
   redis:   'redis',
