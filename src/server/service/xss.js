@@ -1,7 +1,10 @@
-const logger = require('@alias/logger')('growi:service:XssSerivce'); // eslint-disable-line no-unused-vars
+import loggerFactory from '~/utils/logger';
 
-const Xss = require('@commons/service/xss');
-const { tags, attrs } = require('@commons/service/xss/recommended-whitelist');
+const Xss = require('~/service/xss');
+const { tags, attrs } = require('~/service/xss/recommended-whitelist');
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const logger = loggerFactory('growi:service:XssSerivce');
 
 /**
  * the service class of XssSerivce

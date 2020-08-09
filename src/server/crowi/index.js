@@ -92,16 +92,16 @@ Crowi.prototype.init = async function() {
   await this.setupS2sMessagingService();
   await this.setupSocketIoService();
 
-  // // customizeService depends on AppService and XssService
-  // // passportService depends on appService
-  // // slack depends on setUpSlacklNotification
-  // // export and import depends on setUpGrowiBridge
-  // await Promise.all([
-  //   this.setUpApp(),
-  //   this.setUpXss(),
-  //   this.setUpSlacklNotification(),
-  //   this.setUpGrowiBridge(),
-  // ]);
+  // customizeService depends on AppService and XssService
+  // passportService depends on appService
+  // slack depends on setUpSlacklNotification
+  // export and import depends on setUpGrowiBridge
+  await Promise.all([
+    this.setUpApp(),
+    this.setUpXss(),
+    this.setUpSlacklNotification(),
+    this.setUpGrowiBridge(),
+  ]);
 
   // await Promise.all([
   //   this.scanRuntimeVersions(),
