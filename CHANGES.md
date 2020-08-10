@@ -8,7 +8,10 @@
     * Page history
     * Renaming pages
     * Deleting pages
+* Fix: Cmd+c/v/... does not work on Mac
+    * Introduced by v4.1.0
 * Fix: "Append params" switch of CopyDropdown does not work when multiple CopyDropdown instance exists
+* Fix: Blockdiag does not be rendered
 * Fix: Access token parser
 
 ## v4.1.0
