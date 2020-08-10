@@ -71,14 +71,6 @@ jobs:
         [[ ${{ matrix.flavor }} = "nocdn" ]] && suffix="-nocdn" || suffix=""
         echo ::set-env name=SUFFIX::$suffix
 
-    - name: Cache/Restore yarn cache
-      uses: actions/cache@v1
-      with:
-        path: /usr/local/share/.cache/yarn
-        key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-yarn-${{ matrix.node-version }}-
-
     - name: Set up Docker Buildx
       uses: crazy-max/ghaction-docker-buildx@v3
 
