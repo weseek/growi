@@ -84,7 +84,7 @@ class CopyDropdown extends React.Component {
       return decodeURI(`${origin}/share/${pageId}`);
     }
 
-    return decodeURI(`${origin}/${pageId}`) + this.encodeSpaces(decodeURI(this.uriParams));
+    return this.encodeSpaces(decodeURI(`${origin}/${pageId}${this.uriParams}`));
   }
 
   generateMarkdownLink() {
