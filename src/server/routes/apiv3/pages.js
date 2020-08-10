@@ -416,7 +416,6 @@ module.exports = (crowi) => {
    *      post:
    *        tags: [Pages]
    *        operationId: duplicatePage
-   *        summary: /pages/duplicate
    *        description: Duplicate page
    *        requestBody:
    *          content:
