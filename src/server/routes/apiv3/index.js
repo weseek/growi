@@ -39,6 +39,7 @@ module.exports = (crowi) => {
 
   router.use('/page', require('./page')(crowi));
   router.use('/pages', require('./pages')(crowi));
+  router.use('/share-links', require('./share-links')(crowi));
 
   router.use('/bookmarks', require('./bookmarks')(crowi));
 

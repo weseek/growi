@@ -1,6 +1,25 @@
 # CHANGES
 
-## v4.1.0-RC
+## v4.1.2-RC
+
+* Feature: Create/edit linker with GUI
+
+
+## v4.1.1
+
+* Feature: External share link
+* Improvement: Optimize some features that operate revision data
+    * Page history
+    * Renaming pages
+    * Deleting pages
+* Fix: Cmd+c/v/... does not work on Mac
+    * Introduced by v4.1.0
+* Fix: "Append params" switch of CopyDropdown does not work when multiple CopyDropdown instance exists
+* Fix: "Append params" switch of CopyDropdown escapes spaces
+* Fix: Blockdiag does not be rendered
+* Fix: Access token parser
+
+## v4.1.0
 
 ### BREAKING CHANGES
 
@@ -21,8 +40,6 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/41x.html>
 * Fix: DrawioModal cuts without beginning/ending line
 * Fix: New settings of SMTP and AWS SES are not reflected when server is running
 * Fix: Sidebar layout broken when using Kibela layout
-* Fix: PageAlert broken
-    * Introduced by v4.0.9
 * Support: Support Node.js v14
 * Support: Update libs
     * mathjax
