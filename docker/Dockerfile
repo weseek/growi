@@ -92,7 +92,7 @@ WORKDIR ${appDir}
 ##
 ## release
 ##
-FROM node:12-alpine
+FROM node:14-alpine
 LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
 ENV appDir /opt/growi
