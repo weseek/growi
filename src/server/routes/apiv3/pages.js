@@ -410,41 +410,41 @@ module.exports = (crowi) => {
   });
 
   /**
-* @swagger
-*
-*    /pages/duplicate:
-*      post:
-*        tags: [Pages]
-*        operationId: duplicatePage
-*        summary: /pages/duplicate
-*        description: Duplicate page
-*        requestBody:
-*          content:
-*            application/json:
-*              schema:
-*                properties:
-*                  pageId:
-*                    $ref: '#/components/schemas/Page/properties/_id'
-*                  pageNameInput:
-*                    $ref: '#/components/schemas/Page/properties/path'
-*                required:
-*                  - pageId
-*        responses:
-*          200:
-*            description: Succeeded to duplicate page.
-*            content:
-*              application/json:
-*                schema:
-*                  properties:
-*                    page:
-*                      $ref: '#/components/schemas/Page'
-*                    tags:
-*                      $ref: '#/components/schemas/Tags'
-*          403:
-*            description: Failed to connect server.
-*          500:
-*            $ref: '#/components/responses/500'
-*/
+  * @swagger
+  *
+  *    /pages/duplicate:
+  *      post:
+  *        tags: [Pages]
+  *        operationId: duplicatePage
+  *        summary: /pages/duplicate
+  *        description: Duplicate page
+  *        requestBody:
+  *          content:
+  *            application/json:
+  *              schema:
+  *                properties:
+  *                  pageId:
+  *                    $ref: '#/components/schemas/Page/properties/_id'
+  *                  pageNameInput:
+  *                    $ref: '#/components/schemas/Page/properties/path'
+  *                required:
+  *                  - pageId
+  *        responses:
+  *          200:
+  *            description: Succeeded to duplicate page.
+  *            content:
+  *              application/json:
+  *                schema:
+  *                  properties:
+  *                    page:
+  *                      $ref: '#/components/schemas/Page'
+  *                    tags:
+  *                      $ref: '#/components/schemas/Tags'
+  *          403:
+  *            description: Failed to connect server.
+  *          500:
+  *            $ref: '#/components/responses/500'
+  */
 
   // TODO write duplicate(GW-3316)
 
