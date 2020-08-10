@@ -429,6 +429,9 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('Not Founded the page', 'notfound_or_forbidden'), 404);
     }
 
+    // check whether path starts slash
+    newPagePath = pathUtils.addHeadingSlash(newPagePath);
+
     // population
     await page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate();
 
@@ -437,10 +440,6 @@ module.exports = (crowi) => {
     options.grant = page.grant;
     options.grantUserGroupId = page.grantedGroup;
     options.grantedUsers = page.grantedUsers;
-
-    // check whether path starts slash
-    newPagePath = pathUtils.addHeadingSlash(newPagePath);
-
 
     const createdPage = await Page.create(newPagePath, page.revision.body, req.user, options);
 
