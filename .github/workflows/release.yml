@@ -80,7 +80,7 @@ jobs:
           ${{ runner.os }}-yarn-${{ matrix.node-version }}-
 
     - name: Set up Docker Buildx
-      uses: crazy-max/ghaction-docker-buildx@v1.0.4
+      uses: crazy-max/ghaction-docker-buildx@v3
 
     - name: Login to docker.io registry
       run: |
