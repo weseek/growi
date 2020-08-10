@@ -389,16 +389,16 @@ module.exports = (crowi) => {
 
 
   /**
-  * @swagger
-  *
-  *    /pages/empty-trash:
-  *      delete:
-  *        tags: [Pages]
-  *        description: empty trash
-  *        responses:
-  *          200:
-  *            description: Succeeded to remove all trash pages
-  */
+   * @swagger
+   *
+   *    /pages/empty-trash:
+   *      delete:
+   *        tags: [Pages]
+   *        description: empty trash
+   *        responses:
+   *          200:
+   *            description: Succeeded to remove all trash pages
+   */
   router.delete('/empty-trash', loginRequired, adminRequired, csrf, async(req, res) => {
     try {
       const pages = await Page.completelyDeletePageRecursively('/trash', req.user);
