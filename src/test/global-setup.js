@@ -1,5 +1,3 @@
-require('module-alias/register');
-
 // check env
 if (process.env.NODE_ENV !== 'test') {
   throw new Error('\'process.env.NODE_ENV\' must be \'test\'');
@@ -7,7 +5,7 @@ if (process.env.NODE_ENV !== 'test') {
 
 const mongoose = require('mongoose');
 
-const { getMongoUri, mongoOptions } = require('../lib/util/mongoose-utils');
+const { getMongoUri, mongoOptions } = require('../utils/mongoose-utils');
 
 const { getInstance } = require('./setup-crowi');
 

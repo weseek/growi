@@ -1,34 +1,39 @@
 // For a detailed explanation regarding each configuration property, visit:
 // https://jestjs.io/docs/en/configuration.html
+// https://kulshekhar.github.io/ts-jest/user/config/
 
 const MODULE_NAME_MAPPING = {
-  '@root/(.+)': '<rootDir>/$1',
-  '@commons/(.+)': '<rootDir>/src/lib/$1',
-  '@server/(.+)': '<rootDir>/src/server/$1',
-  '@alias/logger': '<rootDir>/src/lib/service/logger',
-  // -- doesn't work with unknown error -- 2019.06.19 Yuki Takei
-  // debug: '<rootDir>/src/lib/service/logger/alias-for-debug',
+  '^\\^/(.+)$': '<rootDir>/$1',
+  '^~/(.+)$': '<rootDir>/src/$1',
+  '^@alias/logger$': '<rootDir>/src/utils/logger',
 };
 
 module.exports = {
   // Indicates whether each individual test should be reported during the run
   verbose: true,
 
+  preset: 'ts-jest/presets/js-with-ts',
+
   rootDir: '../',
-  globalSetup: '<rootDir>/src/test/global-setup.js',
-  globalTeardown: '<rootDir>/src/test/global-teardown.js',
+  roots: ['<rootDir>/src'],
 
   projects: [
     {
       displayName: 'server',
-      testEnvironment: 'node',
+
+      preset: 'ts-jest/presets/js-with-ts',
+
       rootDir: '.',
+      roots: ['<rootDir>/src'],
+      testEnvironment: 'node',
+      globalSetup: '<rootDir>/src/test/global-setup.js',
+      globalTeardown: '<rootDir>/src/test/global-teardown.js',
       setupFilesAfterEnv: ['<rootDir>/src/test/setup.js'],
-      testMatch: ['<rootDir>/src/test/**/*.test.js'],
+      testMatch: ['<rootDir>/src/test/**/*.test.ts', '<rootDir>/src/test/**/*.test.js'],
       // Automatically clear mock calls and instances between every test
       clearMocks: true,
-      // A map from regular expressions to module names that allow to stub out resources with a single module
       moduleNameMapper: MODULE_NAME_MAPPING,
+
     },
     // {
     //   displayName: 'client',

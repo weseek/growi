@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const { getMongoUri, mongoOptions } = require('@commons/util/mongoose-utils');
+const { getMongoUri, mongoOptions } = require('~/utils/mongoose-utils');
 
 mongoose.Promise = global.Promise;
 
