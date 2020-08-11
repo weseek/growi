@@ -32,6 +32,8 @@ const PageDuplicateModal = (props) => {
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
   const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
 
+  const existPaths = ['/test146'];
+
   /**
    * change pageNameInput for PagePathAutoComplete
    * @param {string} value
@@ -54,6 +56,23 @@ const PageDuplicateModal = (props) => {
 
   function changeIsDuplicateRecursivelyWithoutExistPathHandler() {
     setIsDuplicateRecursivelyWithoutExistPath(!isDuplicateRecursivelyWithoutExistPath);
+  }
+
+  function checkExistPath() {
+    let existFlag = false;
+    return subordinatedPaths.map((duplicatedNewPath) => {
+        const existPath = existPaths.includes(duplicatedNewPath); // existPaths is dummy data
+        let result;
+        if (existPath) {
+          result = <li className="text-danger">{duplicatedNewPath} (exist)</li>;
+          existFlag = true;
+        }
+        else {
+          result = <li>{duplicatedNewPath}</li>;
+        }
+        return result;
+      })
+    );
   }
 
   const getSubordinatedList = useCallback(async() => {
@@ -140,24 +159,21 @@ const PageDuplicateModal = (props) => {
             </label>
           </ul>
           <ul>
-            {subordinatedPaths.length > 0 && (
-              <input
-                className="custom-control-input"
-                name="withoutExistRecursively"
-                id="cbDuplicatewithoutExistRecursively"
-                type="checkbox"
-                checked={isDuplicateRecursivelyWithoutExistPath}
-                onChange={changeIsDuplicateRecursivelyWithoutExistPathHandler}
-              />
-              )
-            }
+            <input
+              className="custom-control-input"
+              name="withoutExistRecursively"
+              id="cbDuplicatewithoutExistRecursively"
+              type="checkbox"
+              checked={isDuplicateRecursivelyWithoutExistPath}
+              onChange={changeIsDuplicateRecursivelyWithoutExistPathHandler}
+            />
             <label className="custom-control-label" htmlFor="cbDuplicatewithoutExistRecursively">
               { t('modal_duplicate.label.Duplicate without exist path') }
             </label>
           </ul>
           <div>
             <ul>
-              {isDuplicateRecursively && subordinatedPaths.map(duplicatedNewPath => <li key={duplicatedNewPath}>{duplicatedNewPath}</li>)}
+              {isDuplicateRecursively && checkExistPath()}
             </ul>
           </div>
           <div> {getSubordinatedError} </div>
