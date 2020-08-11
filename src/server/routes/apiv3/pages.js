@@ -283,6 +283,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
+   *
    *    /pages/rename:
    *      post:
    *        tags: [Pages]
@@ -397,16 +398,16 @@ module.exports = (crowi) => {
 
 
   /**
-  * @swagger
-  *
-  *    /pages/empty-trash:
-  *      delete:
-  *        tags: [Pages]
-  *        description: empty trash
-  *        responses:
-  *          200:
-  *            description: Succeeded to remove all trash pages
-  */
+   * @swagger
+   *
+   *    /pages/empty-trash:
+   *      delete:
+   *        tags: [Pages]
+   *        description: empty trash
+   *        responses:
+   *          200:
+   *            description: Succeeded to remove all trash pages
+   */
   router.delete('/empty-trash', loginRequired, adminRequired, csrf, async(req, res) => {
     try {
       const pages = await Page.completelyDeletePageRecursively('/trash', req.user);
@@ -416,6 +417,44 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
     }
   });
+
+  /**
+   * @swagger
+   *
+   *
+   *    /pages/duplicate:
+   *      post:
+   *        tags: [Pages]
+   *        operationId: duplicatePage
+   *        description: Duplicate page
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  pageId:
+   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                  pageNameInput:
+   *                    $ref: '#/components/schemas/Page/properties/path'
+   *                required:
+   *                  - pageId
+   *        responses:
+   *          200:
+   *            description: Succeeded to duplicate page.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    page:
+   *                      $ref: '#/components/schemas/Page'
+   *
+   *          403:
+   *            description: Forbidden to duplicate page.
+   *          500:
+   *            description: Internal server error.
+   */
+  // TODO write duplicate(GW-3316)
+
 
   router.get('/subordinated-list', accessTokenParser, loginRequired, async(req, res) => {
     const { path } = req.query;
