@@ -203,20 +203,15 @@ module.exports = (crowi) => {
       const { pageId } = req.params;
       const { format, revisionId = null } = req.query;
 
-      if (pageId == null) {
-        return res.apiv3Err(new ErrorV3('Should provided pageId or both pageId and revisionId.'));
-      }
+      const page = await Page.findByIdAndViewer(pageId, req.user);
 
-      const isPageExist = await Page.count({ _id: pageId }) > 0;
-      if (!isPageExist) {
+      if (page == null) {
+        const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
+        if (isAccessible) {
+          return res.apiv3Err(new ErrorV3(`Haven't the right to see the page ${pageId}.`), 403);
+        }
         return res.apiv3Err(new ErrorV3(`Page ${pageId} is not exist.`), 404);
       }
-
-      const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
-      if (!isAccessible) {
-        return res.apiv3Err(new ErrorV3(`Haven't the right to see the page ${pageId}.`), 403);
-      }
-
 
       let revisionIdForFind;
       if (revisionId == null) {
