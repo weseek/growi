@@ -10,7 +10,7 @@ module.exports = (crowi) => {
     const { path } = url.parse(referer);
 
     if (!path.startsWith('/share/')) {
-      next();
+      return next();
     }
 
     const fileId = req.params.id || null;
@@ -21,14 +21,14 @@ module.exports = (crowi) => {
     const attachment = await Attachment.findOne({ _id: fileId });
 
     if (attachment == null) {
-      next();
+      return next();
     }
 
     const shareLinks = await ShareLink.find({ relatedPage: attachment.page });
 
     // If sharelinks don't exist, skip it
     if (shareLinks.length === 0) {
-      next();
+      return next();
     }
 
     // Is there a valid share link
