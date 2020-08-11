@@ -327,7 +327,8 @@
       "New page name": "New page name",
       "Fail to get subordinated pages": "Fail to get subordinated pages",
       "Current page name": "Current page name",
-      "Duplicate with child": "Duplicate with child"
+      "Duplicate with child": "Duplicate with child",
+      "Duplicate without exist path": "Duplicate without exist path"
     }
   },
   "modal_putback": {
