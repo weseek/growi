@@ -4,6 +4,7 @@ const logger = loggerFactory('growi:routes:apiv3:pages');
 
 const express = require('express');
 
+const { query } = require('express-validator/check');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const router = express.Router();
@@ -17,11 +18,18 @@ module.exports = (crowi) => {
   const certifySharedPage = require('../../middlewares/certify-shared-file')(crowi);
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi);
+  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const {
     Revision,
     Page,
   } = crowi.models;
+
+  const validator = {
+    retrieveRevisions: [
+      query('pageId').exists().withMessage('pageId is required'),
+    ],
+  };
 
   /**
    * @swagger
@@ -41,7 +49,7 @@ module.exports = (crowi) => {
    *            description: Return revisions belong to page
    *
    */
-  router.get('/list', certifySharedPage, accessTokenParser, loginRequired, async(req, res) => {
+  router.get('/list', certifySharedPage, accessTokenParser, loginRequired, validator.retrieveRevisions, apiV3FormValidator, async(req, res) => {
     const { pageId } = req.query;
     const { isSharedPage } = req;
 
