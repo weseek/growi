@@ -16,11 +16,12 @@ export default class AdminNotificationContainer extends Container {
     super();
 
     this.appContainer = appContainer;
+    this.dummyWebhookUrl = 0;
 
     this.state = {
       retrieveError: null,
       selectSlackOption: 'Incoming Webhooks',
-      webhookUrl: '',
+      webhookUrl: this.dummyWebhookUrl,
       isIncomingWebhookPrioritized: false,
       slackToken: '',
       userNotifications: [],

@@ -1,9 +1,8 @@
 
-import React, { Fragment } from 'react';
+import React, { Fragment, Suspense } from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
-import AppContainer from '../../../services/AppContainer';
+import loggerFactory from '@alias/logger';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -17,70 +16,69 @@ import CustomizeScriptSetting from './CustomizeScriptSetting';
 import CustomizeHeaderSetting from './CustomizeHeaderSetting';
 import CustomizeTitle from './CustomizeTitle';
 
-class Customize extends React.Component {
+const logger = loggerFactory('growi:services:AdminCustomizePage');
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isRetrieving: true,
-    };
-
-  }
-
-  async componentDidMount() {
-    const { adminCustomizeContainer } = this.props;
-
-    try {
-      await adminCustomizeContainer.retrieveCustomizeData();
-      this.setState({ isRetrieving: false });
-    }
-    catch (err) {
-      toastError(err);
-    }
-
-  }
-
-  render() {
-    if (this.state.isRetrieving) {
-      return null;
-    }
-
-    return (
-      <Fragment>
-        <div className="mb-5">
-          <CustomizeLayoutSetting />
+function CustomizePageWithContainerWithSusupense(props) {
+  return (
+    <Suspense
+      fallback={(
+        <div className="row">
+          <i className="fa fa-5x fa-spinner fa-pulse mx-auto text-muted"></i>
         </div>
-        <div className="mb-5">
-          <CustomizeFunctionSetting />
-        </div>
-        <div className="mb-5">
-          <CustomizeHighlightSetting />
-        </div>
-        <div className="mb-5">
-          <CustomizeTitle />
-        </div>
-        <div className="mb-5">
-          <CustomizeHeaderSetting />
-        </div>
-        <div className="mb-5">
-          <CustomizeCssSetting />
-        </div>
-        <div className="mb-5">
-          <CustomizeScriptSetting />
-        </div>
-      </Fragment>
-    );
-  }
-
+      )}
+    >
+      <CustomizePageWithUnstatedContainer />
+    </Suspense>
+  );
 }
 
-const CustomizeWrapper = withUnstatedContainers(Customize, [AppContainer, AdminCustomizeContainer]);
+function Customize(props) {
+  const { adminCustomizeContainer } = props;
+
+  if (adminCustomizeContainer.state.currentTheme === adminCustomizeContainer.dummyCurrentTheme) {
+    throw new Promise(async() => {
+      try {
+        await adminCustomizeContainer.retrieveCustomizeData();
+      }
+      catch (err) {
+        toastError(err);
+        adminCustomizeContainer.setState({ retrieveError: err.message });
+        logger.error(err);
+      }
+    });
+  }
+
+  return (
+    <Fragment>
+      <div className="mb-5">
+        <CustomizeLayoutSetting />
+      </div>
+      <div className="mb-5">
+        <CustomizeFunctionSetting />
+      </div>
+      <div className="mb-5">
+        <CustomizeHighlightSetting />
+      </div>
+      <div className="mb-5">
+        <CustomizeTitle />
+      </div>
+      <div className="mb-5">
+        <CustomizeHeaderSetting />
+      </div>
+      <div className="mb-5">
+        <CustomizeCssSetting />
+      </div>
+      <div className="mb-5">
+        <CustomizeScriptSetting />
+      </div>
+    </Fragment>
+  );
+}
+
+const CustomizePageWithUnstatedContainer = withUnstatedContainers(Customize, [AdminCustomizeContainer]);
 
 Customize.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
 };
 
-export default withTranslation()(CustomizeWrapper);
+export default CustomizePageWithContainerWithSusupense;
