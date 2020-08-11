@@ -65,8 +65,6 @@ export default class PageRevisionList extends React.Component {
     const { t } = this.props;
 
     const revisions = this.props.revisions;
-
-
     const revisionCount = this.props.revisions.length;
 
     let hasDiffPrev;

@@ -73,6 +73,7 @@ function PageHistory(props) {
 
     const res = await appContainer.apiv3Get('/revisions/list', { pageId, share_link_id: shareLinkId });
     const rev = res.data.revisions;
+    console.log(rev);
     const diffOpened = {};
     const lastId = rev.length - 1;
 
@@ -103,6 +104,8 @@ function PageHistory(props) {
     if (lastId !== 0 && lastId !== 1 && rev[lastId]) {
       fetchPageRevisionBody(rev[lastId]);
     }
+
+    isLoaded = true;
 
     return;
   }
@@ -137,7 +140,6 @@ function PageHistory(props) {
     throw new Promise(async() => {
       try {
         await retrieveRevisions();
-        isLoaded = true;
       }
       catch (err) {
         toastError(err);
