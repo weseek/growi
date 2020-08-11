@@ -8,11 +8,14 @@ import { toastError } from '../util/apiNotification';
 import PageRevisionList from './PageHistory/PageRevisionList';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
+import fetchProfileData from './FakeApi';
+
+const resource = fetchProfileData();
 
 const logger = loggerFactory('growi:PageHistory');
 
 // set dummy value tile for using suspense
-let isLoaded = false;
+const isLoaded = false;
 
 function AppSettingsPage(props) {
   return (
@@ -72,7 +75,6 @@ function PageHistory(props) {
 
     const res = await appContainer.apiv3Get('/revisions/list', { pageId, share_link_id: shareLinkId });
     const rev = res.data.revisions;
-    console.log(rev);
     const diffOpened = {};
     const lastId = rev.length - 1;
 
@@ -133,20 +135,8 @@ function PageHistory(props) {
     fetchPageRevisionBody(getPreviousRevision(revision));
   }
 
-  if (!isLoaded) {
-    throw new Promise(async() => {
-      try {
-        await retrieveRevisions();
-        isLoaded = true;
-        return;
-      }
-      catch (err) {
-        toastError(err);
-        logger.error(err);
-        setErrorMessage(err);
-      }
-    });
-  }
+  const user = resource.read();
+  console.log(user);
 
   return (
     <div className="mt-4">
