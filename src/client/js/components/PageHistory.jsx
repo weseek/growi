@@ -15,6 +15,7 @@ class PageHistory extends React.Component {
     super(props);
 
     this.state = {
+      // TODO use suspense
       isLoaded: false,
       isLoading: false,
       errorMessage: null,
