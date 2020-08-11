@@ -350,7 +350,7 @@ class ExportService {
     return zipFile;
   }
 
-  getReadStreamAsFileFromString(res, str, format, fileName) {
+  getReadStreamAsFileFromString(res, str, fileName, format) {
     const Readable = require('stream').Readable;
     const readable = new Readable();
     readable._read = () => {};
