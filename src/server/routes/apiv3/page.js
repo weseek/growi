@@ -199,10 +199,11 @@ module.exports = (crowi) => {
   *            description: Return page's markdown
   */
   router.get('/export/:pageId', validator.export, async(req, res) => {
-    try {
-      const { pageId } = req.params;
-      const { format, revisionId = null } = req.query;
+    const { pageId } = req.params;
+    const { format, revisionId = null } = req.query;
+    let revision;
 
+    try {
       const Page = crowi.model('Page');
       const page = await Page.findByIdAndViewer(pageId, req.user);
 
@@ -218,20 +219,29 @@ module.exports = (crowi) => {
       const revisionIdForFind = revisionId || page.revision;
 
       const Revision = crowi.model('Revision');
-      const revision = await Revision.findById(revisionIdForFind);
-
-      const fileName = revisionIdForFind;
-      const stream = exportService.getReadStreamFromRevision(revision);
-
-      res.set({
-        'Content-Disposition': `attachment;filename*=UTF-8''${fileName}.${format}`,
-      });
-      return stream.pipe(res);
+      revision = await Revision.findById(revisionIdForFind);
     }
     catch (err) {
-      logger.error('Failed to get markdown', err);
+      logger.error('Failed to get page data', err);
       return res.apiv3Err(err, 500);
     }
+
+    const fileName = revision.id;
+    let stream;
+
+    try {
+      stream = exportService.getReadStreamFromRevision(revision, format);
+    }
+    catch (err) {
+      logger.error('Failed to create readStream', err);
+      return res.apiv3Err(err, 500);
+    }
+
+    res.set({
+      'Content-Disposition': `attachment;filename*=UTF-8''${fileName}.${format}`,
+    });
+
+    return stream.pipe(res);
   });
 
   return router;
