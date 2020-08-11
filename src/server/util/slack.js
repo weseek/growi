@@ -1,4 +1,7 @@
-const debug = require('debug')('growi:util:slack');
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:util:slack');
+
 const urljoin = require('url-join');
 
 /**
@@ -19,8 +22,8 @@ module.exports = function(crowi) {
       client.setWebhook(configManager.getConfig('notification', 'slack:incomingWebhookUrl'));
       client.webhook(messageObj, (err, res) => {
         if (err) {
-          debug('Post error', err, res);
-          debug('Sent data to slack is:', messageObj);
+          logger.debug('Post error', err, res);
+          logger.debug('Sent data to slack is:', messageObj);
           return reject(err);
         }
         resolve(res);
@@ -37,8 +40,8 @@ module.exports = function(crowi) {
       }
       client.api('chat.postMessage', messageObj, (err, res) => {
         if (err) {
-          debug('Post error', err, res);
-          debug('Sent data to slack is:', messageObj);
+          logger.debug('Post error', err, res);
+          logger.debug('Sent data to slack is:', messageObj);
           return reject(err);
         }
         resolve(res);
@@ -70,7 +73,7 @@ module.exports = function(crowi) {
     let diffText = '';
 
     diff.diffLines(previousRevision.body, page.revision.body).forEach((line) => {
-      debug('diff line', line);
+      logger.debug('diff line', line);
       const value = line.value.replace(/\r\n|\r/g, '\n'); // eslint-disable-line no-unused-vars
       if (line.added) {
         diffText += `${line.value} ... :lower_left_fountain_pen:`;
@@ -87,7 +90,7 @@ module.exports = function(crowi) {
       }
     });
 
-    debug('diff is', diffText);
+    logger.debug('diff is', diffText);
 
     return diffText;
   };
@@ -240,22 +243,22 @@ module.exports = function(crowi) {
     // when incoming Webhooks is prioritized
     if (configManager.getConfig('notification', 'slack:isIncomingWebhookPrioritized')) {
       if (configManager.getConfig('notification', 'slack:incomingWebhookUrl')) {
-        debug('posting message with IncomingWebhook');
+        logger.debug('posting message with IncomingWebhook');
         return postWithIwh(messageObj);
       }
       if (configManager.getConfig('notification', 'slack:token')) {
-        debug('posting message with Web API');
+        logger.debug('posting message with Web API');
         return postWithWebApi(messageObj);
       }
     }
     // else
     else {
       if (configManager.getConfig('notification', 'slack:token')) {
-        debug('posting message with Web API');
+        logger.debug('posting message with Web API');
         return postWithWebApi(messageObj);
       }
       if (configManager.getConfig('notification', 'slack:incomingWebhookUrl')) {
-        debug('posting message with IncomingWebhook');
+        logger.debug('posting message with IncomingWebhook');
         return postWithIwh(messageObj);
       }
     }

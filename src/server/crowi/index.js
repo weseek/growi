@@ -103,12 +103,12 @@ Crowi.prototype.init = async function() {
     this.setUpGrowiBridge(),
   ]);
 
-  // await Promise.all([
-  //   this.scanRuntimeVersions(),
-  //   this.setupPassport(),
-  //   this.setupSearcher(),
-  //   this.setupMailer(),
-  //   this.setupSlack(),
+  await Promise.all([
+    this.scanRuntimeVersions(),
+    this.setupPassport(),
+    this.setupSearcher(),
+    this.setupMailer(),
+    this.setupSlack(),
   //   this.setupCsrf(),
   //   this.setUpFileUpload(),
   //   this.setUpAcl(),
@@ -119,7 +119,7 @@ Crowi.prototype.init = async function() {
   //   this.setupImport(),
   //   this.setupPageService(),
   //   this.setupSyncPageStatusService(),
-  // ]);
+  ]);
 
   // // globalNotification depends on slack and mailer
   // await Promise.all([

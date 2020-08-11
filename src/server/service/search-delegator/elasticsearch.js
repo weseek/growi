@@ -1,4 +1,7 @@
-const logger = require('@alias/logger')('growi:service:search-delegator:elasticsearch');
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:service:search-delegator:elasticsearch');
+
 const elasticsearch = require('elasticsearch');
 const mongoose = require('mongoose');
 

@@ -1,5 +1,8 @@
 // eslint-disable-next-line no-unused-vars
-const logger = require('@alias/logger')('growi:service:search-delegator:searchbox');
+import loggerFactory from '~/utils/logger';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const logger = loggerFactory('growi:service:search-delegator:searchbox');
 
 const ElasticsearchDelegator = require('./elasticsearch');
 
