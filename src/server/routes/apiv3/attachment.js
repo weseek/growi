@@ -8,7 +8,6 @@ const router = express.Router();
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
-
 /**
  * @swagger
  *  tags:
