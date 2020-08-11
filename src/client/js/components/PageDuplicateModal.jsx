@@ -30,6 +30,7 @@ const PageDuplicateModal = (props) => {
   const [getSubordinatedError, setGetSuborinatedError] = useState(null);
 
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
+  const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
 
   /**
    * change pageNameInput for PagePathAutoComplete
@@ -49,6 +50,10 @@ const PageDuplicateModal = (props) => {
 
   function changeIsDuplicateRecursivelyHandler() {
     setIsDuplicateRecursively(!isDuplicateRecursively);
+  }
+
+  function changeIsDuplicateRecursivelyWithoutExistPathHandler() {
+    setIsDuplicateRecursivelyWithoutExistPath(!isDuplicateRecursivelyWithoutExistPath);
   }
 
   const getSubordinatedList = useCallback(async() => {
@@ -141,13 +146,13 @@ const PageDuplicateModal = (props) => {
                 name="withoutExistRecursively"
                 id="cbDuplicatewithoutExistRecursively"
                 type="checkbox"
-                checked={isDuplicateRecursively}
-                onChange={changeIsDuplicateRecursivelyHandler}
+                checked={isDuplicateRecursivelyWithoutExistPath}
+                onChange={changeIsDuplicateRecursivelyWithoutExistPathHandler}
               />
               )
             }
             <label className="custom-control-label" htmlFor="cbDuplicateRecursively">
-              { t('modal_duplicate.label.Duplicate with child') }
+              { t('modal_duplicate.label.Duplicate without exist path') }
             </label>
           </ul>
           <div>
