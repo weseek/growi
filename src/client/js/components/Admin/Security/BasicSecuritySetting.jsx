@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
 
-import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 import AdminBasicSecurityContainer from '../../../services/AdminBasicSecurityContainer';
 
 import BasicSecurityManagementContents from './BasicSecuritySettingContents';
@@ -28,13 +27,10 @@ function BasicSecurityManagement(props) {
 }
 
 BasicSecurityManagement.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
   adminBasicSecurityContainer: PropTypes.instanceOf(AdminBasicSecurityContainer).isRequired,
 };
 
 const BasicSecurityManagementWithUnstatedContainer = withUnstatedContainers(BasicSecurityManagement, [
-  AdminGeneralSecurityContainer,
   AdminBasicSecurityContainer,
 ]);
 

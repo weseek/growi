@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
 
-import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 import AdminLdapSecurityContainer from '../../../services/AdminLdapSecurityContainer';
 
 import LdapSecuritySettingContents from './LdapSecuritySettingContents';
@@ -28,12 +27,10 @@ function LdapSecuritySetting(props) {
 }
 
 LdapSecuritySetting.propTypes = {
-  adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
   adminLdapSecurityContainer: PropTypes.instanceOf(AdminLdapSecurityContainer).isRequired,
 };
 
 const LdapSecuritySettingWithUnstatedContainer = withUnstatedContainers(LdapSecuritySetting, [
-  AdminGeneralSecurityContainer,
   AdminLdapSecurityContainer,
 ]);
 

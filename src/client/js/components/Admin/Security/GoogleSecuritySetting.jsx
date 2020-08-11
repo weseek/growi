@@ -5,8 +5,6 @@ import PropTypes from 'prop-types';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
 
-import AppContainer from '../../../services/AppContainer';
-import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 import AdminGoogleSecurityContainer from '../../../services/AdminGoogleSecurityContainer';
 import GoogleSecurityManagementContents from './GoogleSecuritySettingContents';
 
@@ -31,14 +29,10 @@ function GoogleSecurityManagement(props) {
 
 GoogleSecurityManagement.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
   adminGoogleSecurityContainer: PropTypes.instanceOf(AdminGoogleSecurityContainer).isRequired,
 };
 
 const GoogleSecurityManagementWithUnstatedContainer = withUnstatedContainers(GoogleSecurityManagement, [
-  AppContainer,
-  AdminGeneralSecurityContainer,
   AdminGoogleSecurityContainer,
 ]);
 

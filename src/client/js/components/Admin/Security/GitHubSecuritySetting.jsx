@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
 
-import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 import AdminGitHubSecurityContainer from '../../../services/AdminGitHubSecurityContainer';
 
 import GitHubSecuritySettingContents from './GitHubSecuritySettingContents';
@@ -30,13 +29,10 @@ function GitHubSecurityManagement(props) {
 
 
 GitHubSecurityManagement.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
   adminGitHubSecurityContainer: PropTypes.instanceOf(AdminGitHubSecurityContainer).isRequired,
 };
 
 const GitHubSecurityManagementWithUnstatedContainer = withUnstatedContainers(GitHubSecurityManagement, [
-  AdminGeneralSecurityContainer,
   AdminGitHubSecurityContainer,
 ]);
 
