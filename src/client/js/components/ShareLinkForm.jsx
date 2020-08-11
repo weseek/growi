@@ -259,13 +259,15 @@ class ShareLinkForm extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
 const ShareLinkFormWrapper = withUnstatedContainers(ShareLinkForm, [AppContainer, PageContainer]);
 
 ShareLinkForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-
   onCloseForm: PropTypes.func,
 };
 
