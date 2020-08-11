@@ -121,17 +121,35 @@ const PageDuplicateModal = (props) => {
           </div>
         </div>
         <div className="custom-control custom-checkbox custom-checkbox-warning">
-          <input
-            className="custom-control-input"
-            name="recursively"
-            id="cbDuplicateRecursively"
-            type="checkbox"
-            checked={isDuplicateRecursively}
-            onChange={changeIsDuplicateRecursivelyHandler}
-          />
-          <label className="custom-control-label" htmlFor="cbDuplicateRecursively">
-            { t('modal_duplicate.label.Duplicate with child') }
-          </label>
+          <ul>
+            <input
+              className="custom-control-input"
+              name="recursively"
+              id="cbDuplicateRecursively"
+              type="checkbox"
+              checked={isDuplicateRecursively}
+              onChange={changeIsDuplicateRecursivelyHandler}
+            />
+            <label className="custom-control-label" htmlFor="cbDuplicateRecursively">
+              { t('modal_duplicate.label.Duplicate with child') }
+            </label>
+          </ul>
+          <ul>
+            {subordinatedPaths.length > 0 && (
+              <input
+                className="custom-control-input"
+                name="withoutExistRecursively"
+                id="cbDuplicatewithoutExistRecursively"
+                type="checkbox"
+                checked={isDuplicateRecursively}
+                onChange={changeIsDuplicateRecursivelyHandler}
+              />
+              )
+            }
+            <label className="custom-control-label" htmlFor="cbDuplicateRecursively">
+              { t('modal_duplicate.label.Duplicate with child') }
+            </label>
+          </ul>
           <div>
             <ul>
               {isDuplicateRecursively && subordinatedPaths.map(duplicatedNewPath => <li key={duplicatedNewPath}>{duplicatedNewPath}</li>)}
