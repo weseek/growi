@@ -17,11 +17,13 @@ export default class AdminGitHubSecurityContainer extends Container {
     super();
 
     this.appContainer = appContainer;
+    this.dummyGithubClientId = 0;
 
     this.state = {
       retrieveError: null,
-      appSiteUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/github/callback'),
-      githubClientId: '',
+      callbackUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/github/callback'),
+      // set dummy value tile for using suspense
+      githubClientId: this.dummyGithubClientId,
       githubClientSecret: '',
       isSameUsernameTreatedAsIdenticalUser: false,
     };
