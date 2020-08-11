@@ -15,10 +15,12 @@ export default class AdminLdapSecurityContainer extends Container {
     super();
 
     this.appContainer = appContainer;
+    this.dummyServerUrl = 0;
 
     this.state = {
       retrieveError: null,
-      serverUrl: '',
+      // set dummy value tile for using suspense
+      serverUrl: this.dummyServerUrl,
       isUserBind: false,
       ldapBindDN: '',
       ldapBindDNPassword: '',
