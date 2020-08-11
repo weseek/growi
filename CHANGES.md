@@ -1,9 +1,12 @@
 # CHANGES
 
-## v4.1.2-RC
+## v4.1.3-RC
 
 * Feature: Create/edit linker with GUI
 
+## v4.1.2
+
+* Fix: Uploaded images do not displayed
 
 ## v4.1.1
 
