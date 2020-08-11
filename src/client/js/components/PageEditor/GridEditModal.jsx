@@ -126,10 +126,15 @@ export default class GridEditModal extends React.Component {
 
   renderBreakPointMenu() {
     const resSizes = BootstrapGrid.ResponsiveSize;
-    const output = Object.values(resSizes).map((resSize) => {
+    const responsiveSizeToIconClassMap = {
+      [resSizes.XS_SIZE]: 'smartphone',
+      [resSizes.SM_SIZE]: 'tablet',
+      [resSizes.MD_SIZE]: 'desktop',
+    };
+    const output = Object.entries(responsiveSizeToIconClassMap).map((resSize) => {
       return (
-        <button className="dropdown-item" type="button" onClick={() => { this.checkResposiveSize(resSize) }}>
-          <i className={`pl-2 pr-1 icon-screen-${resSize}`}></i> {resSize}
+        <button className="dropdown-item" type="button" onClick={() => { this.checkResposiveSize(resSize[0]) }}>
+          <i className={`pl-2 pr-1 icon-screen-${resSize[1]}`}></i> {resSize[1]}
         </button>
       );
     });
