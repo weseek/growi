@@ -36,6 +36,9 @@ function PageHistory(props) {
   const [revisions, setRevisions] = useState([]);
   const [diffOpened, setDiffOpened] = useState(null);
 
+  const { appContainer, pageContainer } = props;
+  const { shareLinkId, pageId } = pageContainer.state;
+
   function fetchPageRevisionBody(revision) {
     const { appContainer, pageContainer } = props;
     const { pageId, shareLinkId } = pageContainer.state;
@@ -135,8 +138,8 @@ function PageHistory(props) {
     fetchPageRevisionBody(getPreviousRevision(revision));
   }
 
-  const user = resource.read();
-  console.log(user);
+  const res = resource.read(appContainer.apiv3Get('/revisions/list', { pageId, share_link_id: shareLinkId }));
+  console.log(res);
 
   return (
     <div className="mt-4">
