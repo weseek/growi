@@ -27,6 +27,8 @@ export default class GridEditModal extends React.Component {
     this.pasteCodedGrid = this.pasteCodedGrid.bind(this);
     this.renderSelectedGridPattern = this.renderSelectedGridPattern.bind(this);
     this.renderSelectedBreakPoint = this.renderSelectedBreakPoint.bind(this);
+    this.renderNoBreakPreview = this.renderNoBreakPreview.bind(this);
+    this.renderBreakPreview = this.renderBreakPreview.bind(this);
   }
 
   async checkResposiveSize(rs) {
@@ -79,7 +81,7 @@ export default class GridEditModal extends React.Component {
   renderSelectedBreakPoint() {
     const resSizes = BootstrapGrid.ResponsiveSize;
     const responsiveSizeForMap = {
-      [resSizes.XS_SIZE]: { IconClass: 'icon-screen-smartphone', DisplayText: 'Smartphone / No Break' },
+      [resSizes.XS_SIZE]: { IconClass: 'icon-screen-smartphone', DisplayText: 'Smartphone / No Break Point' },
       [resSizes.SM_SIZE]: { IconClass: 'icon-screen-tablet', DisplayText: 'Tablet' },
       [resSizes.MD_SIZE]: { IconClass: 'icon-screen-desktop', DisplayText: 'Desktop' },
     };
@@ -127,7 +129,7 @@ export default class GridEditModal extends React.Component {
   renderBreakPointMenu() {
     const resSizes = BootstrapGrid.ResponsiveSize;
     const responsiveSizeForMap = {
-      [resSizes.XS_SIZE]: { IconClass: 'icon-screen-smartphone', DisplayText: 'Smartphone / No Break' },
+      [resSizes.XS_SIZE]: { IconClass: 'icon-screen-smartphone', DisplayText: 'Smartphone / No Break Point' },
       [resSizes.SM_SIZE]: { IconClass: 'icon-screen-tablet', DisplayText: 'Tablet' },
       [resSizes.MD_SIZE]: { IconClass: 'icon-screen-desktop', DisplayText: 'Desktop' },
     };
@@ -139,6 +141,32 @@ export default class GridEditModal extends React.Component {
       );
     });
     return output;
+  }
+
+  renderNoBreakPreview() {
+    const { colsRatios } = this.state;
+    const convertedHTML = colsRatios.map((colsRatios) => {
+      const className = `bg-info col-${colsRatios} border`;
+      return (
+        <div className={className}></div>
+      );
+    });
+    return (
+      <div className="row">{convertedHTML}</div>
+    );
+  }
+
+  renderBreakPreview() {
+    const { colsRatios } = this.state;
+    const convertedHTML = colsRatios.map(() => {
+      const className = 'bg-info col-12 border';
+      return (
+        <div className={className}></div>
+      );
+    });
+    return (
+      <div className="row">{convertedHTML}</div>
+    );
   }
 
   render() {
@@ -191,15 +219,21 @@ export default class GridEditModal extends React.Component {
               <h1 className="pl-3 w-100">Preview</h1>
               <div className="col-6">
                 <label className="d-block"><i className="pr-2 icon-screen-desktop"></i>Desktop</label>
-                <div className="desktop-preview border d-block"></div>
+                <div className="desktop-preview d-block">
+                  {this.renderNoBreakPreview()}
+                </div>
               </div>
               <div className="col-3">
                 <label className="d-block"><i className="pr-2 icon-screen-tablet"></i>Tablet</label>
-                <div className="tablet-preview border d-block"></div>
+                <div className="tablet-preview d-block">
+                  {this.renderNoBreakPreview()}
+                </div>
               </div>
               <div className="col-3">
                 <label className="d-block"><i className="pr-2 icon-screen-smartphone"></i>Mobile</label>
-                <div className="mobile-preview border d-block"></div>
+                <div className="mobile-preview d-block">
+                  {this.renderNoBreakPreview()}
+                </div>
               </div>
             </div>
           </div>
