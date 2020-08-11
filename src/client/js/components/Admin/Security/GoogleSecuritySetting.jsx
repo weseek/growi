@@ -28,7 +28,6 @@ function GoogleSecurityManagement(props) {
 
 
 GoogleSecurityManagement.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
   adminGoogleSecurityContainer: PropTypes.instanceOf(AdminGoogleSecurityContainer).isRequired,
 };
 
