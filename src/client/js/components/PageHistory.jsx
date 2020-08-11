@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
 import { withTranslation } from 'react-i18next';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 import PageRevisionList from './PageHistory/PageRevisionList';
+import AppContainer from '../services/AppContainer';
 
 const logger = loggerFactory('growi:PageHistory');
 class PageHistory extends React.Component {
@@ -25,7 +27,7 @@ class PageHistory extends React.Component {
   }
 
   async componentWillMount() {
-    const pageId = this.props.pageId;
+    const { appContainer, pageId } = this.props;
     const shareLinkId = this.props.shareLinkId || null;
 
     if (!pageId) {
@@ -35,7 +37,7 @@ class PageHistory extends React.Component {
     let res;
     try {
       this.setState({ isLoading: true });
-      res = await this.props.crowi.apiGet('/revisions.ids', { page_id: pageId, share_link_id: shareLinkId });
+      res = await appContainer.apiv3Get(`/revisions/${pageId}`, { share_link_id: shareLinkId });
     }
     catch (err) {
       logger.error(err);
@@ -111,13 +113,14 @@ class PageHistory extends React.Component {
   }
 
   fetchPageRevisionBody(revision) {
+    const { appContainer } = this.props;
     const shareLinkId = this.props.shareLinkId || null;
 
     if (revision.body) {
       return;
     }
 
-    this.props.crowi.apiGet('/revisions.get',
+    appContainer.apiGet('/revisions.get',
       { page_id: this.props.pageId, revision_id: revision._id, share_link_id: shareLinkId })
       .then((res) => {
         if (res.ok) {
@@ -167,12 +170,16 @@ class PageHistory extends React.Component {
 
 }
 
+const PageHistoryWrapper = withUnstatedContainers(PageHistory, [AppContainer]);
+
+
 PageHistory.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+
   t: PropTypes.func.isRequired, // i18next
 
   shareLinkId: PropTypes.string,
   pageId: PropTypes.string,
-  crowi: PropTypes.object.isRequired,
 };
 
-export default withTranslation()(PageHistory);
+export default withTranslation()(PageHistoryWrapper);
