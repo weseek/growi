@@ -58,7 +58,7 @@ require('../../util/codemirror/autorefresh.ext');
 const MARKDOWN_TABLE_ACTIVATED_CLASS = 'markdown-table-activated';
 // TODO: activate by GW-3443
 // const MARKDOWN_LINK_ACTIVATED_CLASS = 'markdown-link-activated';
-const MARKDOWN_LINK_ACTIVATED_CLASS = 'markdown-link-activated';
+const MARKDOWN_LINK_ACTIVATED_CLASS = '';
 
 export default class CodeMirrorEditor extends AbstractEditor {
 
