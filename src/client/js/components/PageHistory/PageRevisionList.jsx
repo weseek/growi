@@ -1,10 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { withTranslation } from 'react-i18next';
+
 import Revision from './Revision';
 import RevisionDiff from './RevisionDiff';
 
-export default class PageRevisionList extends React.Component {
+class PageRevisionList extends React.Component {
 
   constructor(props) {
     super(props);
@@ -64,6 +66,7 @@ export default class PageRevisionList extends React.Component {
   render() {
     const { t } = this.props;
 
+    console.log(this.props);
     const revisions = this.props.revisions;
     const revisionCount = this.props.revisions.length;
 
@@ -115,7 +118,10 @@ export default class PageRevisionList extends React.Component {
 
 PageRevisionList.propTypes = {
   t: PropTypes.func.isRequired, // i18next
+
   revisions: PropTypes.array,
   diffOpened: PropTypes.object,
   onDiffOpenClicked: PropTypes.func.isRequired,
 };
+
+export default withTranslation()(PageRevisionList);

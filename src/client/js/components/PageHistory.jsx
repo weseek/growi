@@ -2,7 +2,6 @@ import React, { Suspense, useState } from 'react';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
-import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from './UnstatedUtils';
 import { toastError } from '../util/apiNotification';
 
@@ -31,7 +30,7 @@ function AppSettingsPage(props) {
 function PageHistory(props) {
 
   const [errorMessage, setErrorMessage] = useState(null);
-  const [revisions, setRevisions] = useState();
+  const [revisions, setRevisions] = useState([]);
   const [diffOpened, setDiffOpened] = useState(null);
 
   function fetchPageRevisionBody(revision) {
@@ -105,8 +104,6 @@ function PageHistory(props) {
       fetchPageRevisionBody(rev[lastId]);
     }
 
-    isLoaded = true;
-
     return;
   }
 
@@ -136,10 +133,12 @@ function PageHistory(props) {
     fetchPageRevisionBody(getPreviousRevision(revision));
   }
 
-  if (isLoaded) {
+  if (!isLoaded) {
     throw new Promise(async() => {
       try {
         await retrieveRevisions();
+        isLoaded = true;
+        return;
       }
       catch (err) {
         toastError(err);
@@ -157,7 +156,6 @@ function PageHistory(props) {
       </div>
         ) }
       <PageRevisionList
-        t={props.t}
         revisions={revisions}
         diffOpened={diffOpened}
         getPreviousRevision={getPreviousRevision}
@@ -168,17 +166,14 @@ function PageHistory(props) {
 
 }
 
-const PageHistoryWrapper = withUnstatedContainers(PageHistory, [AppContainer, PageContainer]);
+const PageHistoryWrapper2 = withUnstatedContainers(PageHistory, [AppContainer, PageContainer]);
 
 
 PageHistory.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
-  t: PropTypes.func.isRequired, // i18next
-
 };
 
-const PageHistoryWrapper2 = withTranslation()(PageHistoryWrapper);
 
 export default AppSettingsPage;
