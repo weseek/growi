@@ -421,6 +421,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
+   *
    *    /pages/duplicate:
    *      post:
    *        tags: [Pages]
@@ -446,14 +447,12 @@ module.exports = (crowi) => {
    *                  properties:
    *                    page:
    *                      $ref: '#/components/schemas/Page'
-   *                    tags:
-   *                      $ref: '#/components/schemas/Tags'
+   *
    *          403:
    *            description: Failed to connect server.
    *          500:
    *            $ref: '#/components/responses/500'
    */
-
   // TODO write duplicate(GW-3316)
 
 
