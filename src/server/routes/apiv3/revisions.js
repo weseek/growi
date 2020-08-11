@@ -1,10 +1,8 @@
 const loggerFactory = require('@alias/logger');
 
-const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
+const logger = loggerFactory('growi:routes:apiv3:pages');
 
 const express = require('express');
-const certifySharedPage = require('../../middlewares/certify-shared-page');
-const accessTokenParser = require('../../middlewares/access-token-parser');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -16,10 +14,14 @@ const router = express.Router();
  *    name: Revisions
  */
 module.exports = (crowi) => {
-  const loginRequired = require('../../middlewares/login-required')(crowi, true);
+  const certifySharedPage = require('../../middlewares/certify-shared-file')(crowi);
+  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
+  const loginRequired = require('../../middlewares/login-required')(crowi);
 
-  const Page = crowi.model('Page');
-  const Revision = crowi.model('Revision');
+  const {
+    Revision,
+    Page,
+  } = crowi.models;
 
   /**
    * @swagger
@@ -50,7 +52,7 @@ module.exports = (crowi) => {
     catch (err) {
       const msg = 'Error occurred in getting revisions by poge id';
       logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'faild-to-find-revisions'), 403);
+      return res.apiv3Err(new ErrorV3(msg, 'faild-to-find-revisions'), 500);
     }
 
   });

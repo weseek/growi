@@ -47,11 +47,11 @@ class PageHistory extends React.Component {
     finally {
       this.setState({ isLoading: false });
     }
-
-    const rev = res.revisions;
+    const rev = res.data.revisions;
     const diffOpened = {};
     const lastId = rev.length - 1;
-    res.revisions.forEach((revision, i) => {
+
+    res.data.revisions.forEach((revision, i) => {
       const user = revision.author;
       if (user) {
         rev[i].author = user;
