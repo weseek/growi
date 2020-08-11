@@ -25,11 +25,11 @@ const PageShareManagement = (props) => {
     setIsOutsideShareLinkModalShown(false);
   }
 
-  async function exportPageHandler() {
+  async function exportPageHandler(format) {
     const { pageId, revisionId } = pageContainer.state;
     const url = new URL(urljoin(window.location.origin, '_api/v3/page/export', pageId));
     url.searchParams.append('_csrf', appContainer.csrfToken);
-    url.searchParams.append('format', 'md');
+    url.searchParams.append('format', format);
     url.searchParams.append('revisionId', revisionId);
     window.location.href = url.href;
   }
@@ -89,7 +89,7 @@ const PageShareManagement = (props) => {
           <i className="icon-fw icon-link"></i>{t('share_links.Shere this page link to public')}
           <span className="ml-2 badge badge-info badge-pill">{pageContainer.state.shareLinksNumber}</span>
         </button>
-        <button type="button" className="dropdown-item" onClick={() => { exportPageHandler() }}>
+        <button type="button" className="dropdown-item" onClick={() => { exportPageHandler('md') }}>
           <span>{t('export_bulk.export_page_markdown')}</span>
         </button>
       </div>
