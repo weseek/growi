@@ -135,9 +135,9 @@ module.exports = (crowi) => {
       body('pageId').exists().withMessage('pageId is required'),
       body('revisionId').exists().withMessage('revisionId is required'),
       body('newPagePath').exists().withMessage('newPagePath is required'),
-      body('isRenameRedirect').if(value => value != null).isBoolean().withMessage('isRenameRedirect is must be boolean'),
-      body('isRemainMetadata').if(value => value != null).isBoolean().withMessage('isRemainMetadata is must be boolean'),
-      body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively is must be boolean'),
+      body('isRenameRedirect').if(value => value != null).isBoolean().withMessage('isRenameRedirect must be boolean'),
+      body('isRemainMetadata').if(value => value != null).isBoolean().withMessage('isRemainMetadata must be boolean'),
+      body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
       body('socketClientId').if(value => value != null).isInt().withMessage('socketClientId must be int'),
     ],
   };
