@@ -231,10 +231,13 @@ module.exports = (crowi) => {
       const Revision = crowi.model('Revision');
       const revision = await Revision.findById(revisionIdForFind);
 
-      const markdown = revision.body;
+      const fileName = revisionId;
+      const stream = exportService.getReadStreamFromRevision(revision);
 
-      const fileName = pageId != null ? pageId : revisionId;
-      return exportService.getReadStreamAsFileFromString(res, markdown, fileName, format);
+      res.set({
+        'Content-Disposition': `attachment;filename*=UTF-8''${fileName}.${format}`,
+      });
+      return stream.pipe(res);
     }
     catch (err) {
       logger.error('Failed to get markdown', err);
