@@ -6,8 +6,8 @@ import StickyEvents from 'sticky-events';
 
 import NavigationContainer from '../services/NavigationContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
-import EditNewPageIcon from './EditNewPageIcon';
-import ReturnTopIcon from './ReturnTopIcon';
+import EditNewPageIcon from './Icons/EditNewPageIcon';
+import ReturnTopIcon from './Icons/ReturnTopIcon';
 
 const logger = loggerFactory('growi:cli:Fab');
 
