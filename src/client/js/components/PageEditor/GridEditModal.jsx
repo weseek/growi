@@ -13,7 +13,7 @@ export default class GridEditModal extends React.Component {
 
     this.state = {
       colsRatios: [6, 6],
-      responsiveSize: BootstrapGrid.ResponsiveSize.XS_SIZE[0],
+      responsiveSize: BootstrapGrid.ResponsiveSize.XS_SIZE,
       show: false,
       gridHtml: '',
     };
@@ -79,10 +79,10 @@ export default class GridEditModal extends React.Component {
   renderSelectedBreakPoint() {
     const resSizes = BootstrapGrid.ResponsiveSize;
     const output = Object.values(resSizes).map((resSizes) => {
-      return (this.state.responsiveSize === resSizes[0]
+      return (this.state.responsiveSize === resSizes
         && (
         <span>
-          <i className={`pr-1 icon-screen-${resSizes[1]}`}> {resSizes[1]}</i>
+          <i className={`pr-1 icon-screen-${resSizes}`}> {resSizes}</i>
         </span>
         )
       );
@@ -123,8 +123,8 @@ export default class GridEditModal extends React.Component {
     const resSizes = BootstrapGrid.ResponsiveSize;
     const output = Object.values(resSizes).map((resSize) => {
       return (
-        <button className="dropdown-item" type="button" onClick={() => { this.checkResposiveSize(resSize[0]) }}>
-          <i className={`pl-2 pr-1 icon-screen-${resSize[1]}`}></i> {resSize[1]}
+        <button className="dropdown-item" type="button" onClick={() => { this.checkResposiveSize(resSize) }}>
+          <i className={`pl-2 pr-1 icon-screen-${resSize}`}></i> {resSize}
         </button>
       );
     });
