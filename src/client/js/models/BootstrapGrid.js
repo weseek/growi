@@ -6,7 +6,7 @@ export default class BootstrapGrid {
   }
 
   static ResponsiveSize = {
-    XS_SIZE: ['xs', 'smartphone'], SM_SIZE: ['sm', 'tablet'], MD_SIZE: ['md', 'desktop'],
+    XS_SIZE: 'xs', SM_SIZE: 'sm', MD_SIZE: 'md',
   }
 
   static validateColsRatios(colsRatios) {
@@ -23,9 +23,9 @@ export default class BootstrapGrid {
   }
 
   static validateResponsiveSize(responsiveSize) {
-    if (responsiveSize === this.ResponsiveSize.XS_SIZE[0]
-      || responsiveSize === this.ResponsiveSize.SM_SIZE[0]
-      || responsiveSize === this.ResponsiveSize.MD_SIZE[0]) {
+    if (responsiveSize === this.ResponsiveSize.XS_SIZE
+      || responsiveSize === this.ResponsiveSize.SM_SIZE
+      || responsiveSize === this.ResponsiveSize.MD_SIZE) {
       return responsiveSize;
     }
     throw new Error('Incorrect responsive size');
