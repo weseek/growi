@@ -8,12 +8,16 @@ import { toastError } from '../util/apiNotification';
 
 import PageRevisionList from './PageHistory/PageRevisionList';
 import AppContainer from '../services/AppContainer';
+import PageContainer from '../services/PageContainer';
 
 
 const logger = loggerFactory('growi:PageHistory');
 
+// set dummy value tile for using suspense
+const dummyValue = 0;
 
-function AppSettingsPage() {
+function AppSettingsPage(props) {
+  console.log(props);
   return (
     <Suspense
       fallback={(
@@ -22,14 +26,14 @@ function AppSettingsPage() {
         </div>
       )}
     >
-      <PageHistoryWrapper2 />
+      <PageHistoryWrapper2 props={props} />
     </Suspense>
   );
 }
 function PageHistory(props) {
 
   const [errorMessage, setErrorMessage] = useState(null);
-  const [revisions, setRevisions] = useState(null);
+  const [revisions, setRevisions] = useState(dummyValue);
   const [diffOpened, setDiffOpened] = useState(null);
 
   function fetchPageRevisionBody(revision) {
@@ -62,8 +66,8 @@ function PageHistory(props) {
   }
 
   async function retrieveRevisions() {
-    const { appContainer, pageId } = props;
-    const shareLinkId = props.shareLinkId || null;
+    const { appContainer, pageContainer } = props;
+    const { shareLinkId, pageId } = pageContainer.state;
 
     if (!pageId) {
       return;
@@ -88,7 +92,7 @@ function PageHistory(props) {
       }
     });
 
-    setRevisions(rev);
+    setRevisions(['huga']);
     setDiffOpened(diffOpened);
 
     // load 0, and last default
@@ -101,6 +105,8 @@ function PageHistory(props) {
     if (lastId !== 0 && lastId !== 1 && rev[lastId]) {
       fetchPageRevisionBody(rev[lastId]);
     }
+
+    return;
   }
 
   function getPreviousRevision(currentRevision) {
@@ -130,7 +136,7 @@ function PageHistory(props) {
   }
 
 
-  if (revisions == null) {
+  if (dummyValue === revisions) {
     throw new Promise(async() => {
       try {
         await retrieveRevisions();
@@ -162,11 +168,12 @@ function PageHistory(props) {
 
 }
 
-const PageHistoryWrapper = withUnstatedContainers(PageHistory, [AppContainer]);
+const PageHistoryWrapper = withUnstatedContainers(PageHistory, [AppContainer, PageContainer]);
 
 
 PageHistory.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   t: PropTypes.func.isRequired, // i18next
 
