@@ -26,10 +26,16 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /revisions/:
+   *    /revisions/list:
    *      get:
    *        tags: [Revisions]
    *        description: Get revisions by page id
+   *        parameters:
+   *          - in: query
+   *            name: pageId
+   *            schema:
+   *              type: string
+   *              description:  page id
    *        responses:
    *          200:
    *            description: Return revisions belong to page
