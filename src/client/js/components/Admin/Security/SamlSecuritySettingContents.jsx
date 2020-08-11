@@ -36,9 +36,6 @@ class SamlSecurityManagementContents extends React.Component {
     const { useOnlyEnvVars } = adminSamlSecurityContainer.state;
     const { isSamlEnabled } = adminGeneralSecurityContainer.state;
 
-    if (this.state.isRetrieving) {
-      return null;
-    }
     return (
       <React.Fragment>
 
@@ -141,7 +138,7 @@ class SamlSecurityManagementContents extends React.Component {
                     <input
                       className="form-control"
                       type="text"
-                      value={this.state.envEntryPoint || ''}
+                      value={adminSamlSecurityContainer.state.envEntryPoint || ''}
                       readOnly
                     />
                     <p className="form-text text-muted">
@@ -165,7 +162,7 @@ class SamlSecurityManagementContents extends React.Component {
                     <input
                       className="form-control"
                       type="text"
-                      value={this.state.envIssuer || ''}
+                      value={adminSamlSecurityContainer.state.envIssuer || ''}
                       readOnly
                     />
                     <p className="form-text text-muted">
@@ -211,7 +208,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       type="text"
                       rows="5"
                       readOnly
-                      value={this.state.envCert || ''}
+                      value={adminSamlSecurityContainer.state.envCert || ''}
                     />
                     <p className="form-text text-muted">
                       <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_CERT' }) }} />
@@ -255,7 +252,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      value={this.state.envAttrMapId || ''}
+                      value={adminSamlSecurityContainer.state.envAttrMapId || ''}
                       readOnly
                     />
                     <p className="form-text text-muted">
@@ -281,7 +278,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      value={this.state.envAttrMapUsername || ''}
+                      value={adminSamlSecurityContainer.state.envAttrMapUsername || ''}
                       readOnly
                     />
                     <p className="form-text text-muted">
@@ -307,7 +304,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      value={this.state.envAttrMapMail || ''}
+                      value={adminSamlSecurityContainer.state.envAttrMapMail || ''}
                       readOnly
                     />
                     <p className="form-text text-muted">
@@ -334,7 +331,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      value={this.state.envAttrMapFirstName || ''}
+                      value={adminSamlSecurityContainer.state.envAttrMapFirstName || ''}
                       readOnly
                     />
                     <p className="form-text text-muted">
@@ -365,7 +362,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      value={this.state.envAttrMapLastName || ''}
+                      value={adminSamlSecurityContainer.state.envAttrMapLastName || ''}
                       readOnly
                     />
                     <p className="form-text text-muted">
@@ -469,7 +466,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      value={this.state.envABLCRule || ''}
+                      value={adminSamlSecurityContainer.state.envABLCRule || ''}
                       readOnly
                     />
                     <p className="form-text text-muted">

@@ -50,9 +50,6 @@ class LdapSecuritySettingContents extends React.Component {
     const { t, adminGeneralSecurityContainer, adminLdapSecurityContainer } = this.props;
     const { isLdapEnabled } = adminGeneralSecurityContainer.state;
 
-    if (this.state.isRetrieving) {
-      return null;
-    }
     return (
       <React.Fragment>
 

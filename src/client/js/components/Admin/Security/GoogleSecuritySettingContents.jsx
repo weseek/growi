@@ -35,9 +35,6 @@ class GoogleSecurityManagementContents extends React.Component {
     const { t, adminGeneralSecurityContainer, adminGoogleSecurityContainer } = this.props;
     const { isGoogleEnabled } = adminGeneralSecurityContainer.state;
 
-    if (this.state.isRetrieving) {
-      return null;
-    }
     return (
 
       <React.Fragment>
@@ -46,9 +43,9 @@ class GoogleSecurityManagementContents extends React.Component {
           {t('security_setting.OAuth.Google.name')}
         </h2>
 
-        {this.state.retrieveError != null && (
+        {adminGoogleSecurityContainer.state.retrieveError != null && (
           <div className="alert alert-danger">
-            <p>{t('Error occurred')} : {this.state.err}</p>
+            <p>{t('Error occurred')} : {adminGoogleSecurityContainer.state.retrieveError}</p>
           </div>
         )}
 

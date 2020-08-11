@@ -35,10 +35,6 @@ class OidcSecurityManagementContents extends React.Component {
     const { t, adminGeneralSecurityContainer, adminOidcSecurityContainer } = this.props;
     const { isOidcEnabled } = adminGeneralSecurityContainer.state;
 
-    if (this.state.isRetrieving) {
-      return null;
-    }
-
     return (
 
       <React.Fragment>

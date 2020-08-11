@@ -34,9 +34,6 @@ class BasicSecurityManagementContents extends React.Component {
     const { t, adminGeneralSecurityContainer, adminBasicSecurityContainer } = this.props;
     const { isBasicEnabled } = adminGeneralSecurityContainer.state;
 
-    if (this.state.isRetrieving) {
-      return null;
-    }
     return (
       <React.Fragment>
 
@@ -44,9 +41,9 @@ class BasicSecurityManagementContents extends React.Component {
           { t('security_setting.Basic.name') }
         </h2>
 
-        {this.state.retrieveError != null && (
+        {adminBasicSecurityContainer.state.retrieveError != null && (
         <div className="alert alert-danger">
-          <p>{t('Error occurred')} : {this.state.err}</p>
+          <p>{t('Error occurred')} : {adminBasicSecurityContainer.state.retrieveError}</p>
         </div>
         )}
 

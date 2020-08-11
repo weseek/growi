@@ -34,9 +34,6 @@ class GitHubSecurityManagementContents extends React.Component {
     const { t, adminGeneralSecurityContainer, adminGitHubSecurityContainer } = this.props;
     const { isGitHubEnabled } = adminGeneralSecurityContainer.state;
 
-    if (this.state.isRetrieving) {
-      return null;
-    }
     return (
 
       <React.Fragment>
@@ -45,9 +42,9 @@ class GitHubSecurityManagementContents extends React.Component {
           {t('security_setting.OAuth.GitHub.name')}
         </h2>
 
-        {this.state.retrieveError != null && (
+        {adminGitHubSecurityContainer.state.retrieveError != null && (
           <div className="alert alert-danger">
-            <p>{t('Error occurred')} : {this.state.err}</p>
+            <p>{t('Error occurred')} : {adminGitHubSecurityContainer.state.retrieveError}</p>
           </div>
         )}
 

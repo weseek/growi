@@ -35,16 +35,12 @@ class LocalSecuritySettingContents extends React.Component {
     const { registrationMode } = adminLocalSecurityContainer.state;
     const { isLocalEnabled } = adminGeneralSecurityContainer.state;
 
-    if (this.state.isRetrieving) {
-      return null;
-    }
-
     return (
       <React.Fragment>
-        {this.state.retrieveError != null && (
+        {adminLocalSecurityContainer.state.retrieveError != null && (
           <div className="alert alert-danger">
             <p>
-              {t('Error occurred')} : {this.state.err}
+              {t('Error occurred')} : {adminLocalSecurityContainer.state.retrieveError}
             </p>
           </div>
         )}

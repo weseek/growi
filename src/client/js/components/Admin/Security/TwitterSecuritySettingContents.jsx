@@ -34,9 +34,6 @@ class TwitterSecurityManagementContents extends React.Component {
     const { t, adminGeneralSecurityContainer, adminTwitterSecurityContainer } = this.props;
     const { isTwitterEnabled } = adminGeneralSecurityContainer.state;
 
-    if (this.state.isRetrieving) {
-      return null;
-    }
     return (
 
       <React.Fragment>
@@ -45,9 +42,9 @@ class TwitterSecurityManagementContents extends React.Component {
           {t('security_setting.OAuth.Twitter.name')}
         </h2>
 
-        {this.state.retrieveError != null && (
+        {adminTwitterSecurityContainer.state.retrieveError != null && (
           <div className="alert alert-danger">
-            <p>{t('Error occurred')} : {this.state.err}</p>
+            <p>{t('Error occurred')} : {adminTwitterSecurityContainer.state.retrieveError}</p>
           </div>
         )}
 
