@@ -350,6 +350,18 @@ class ExportService {
     return zipFile;
   }
 
+  getReadStreamFromRevision(revision) {
+    const markdown = revision.body;
+
+    const Readable = require('stream').Readable;
+    const readable = new Readable();
+    readable._read = () => {};
+    readable.push(markdown);
+    readable.push(null);
+
+    return readable;
+  }
+
 }
 
 module.exports = ExportService;

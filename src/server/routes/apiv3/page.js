@@ -118,6 +118,7 @@ module.exports = (crowi) => {
 
   const globalNotificationService = crowi.getGlobalNotificationService();
   const { Page, GlobalNotificationSetting } = crowi.models;
+  const { exportService } = crowi;
 
   const validator = {
     likes: [
@@ -125,7 +126,7 @@ module.exports = (crowi) => {
       body('bool').isBoolean(),
     ],
     export: [
-      query('pageId').isString(),
+      query('format').isString().isIn(['md', 'pdf']),
       query('revisionId').isString(),
     ],
   };
@@ -197,41 +198,35 @@ module.exports = (crowi) => {
   *          200:
   *            description: Return page's markdown
   */
-  router.get('/export', validator.export, async(req, res) => {
+  router.get('/export/:pageId', validator.export, async(req, res) => {
     try {
-      const { pageId = null, revisionId = null } = req.query;
+      const { pageId } = req.params;
+      const { format, revisionId = null } = req.query;
 
-      if (pageId == null) {
-        return res.apiv3Err(new ErrorV3('Should provided pageId or both pageId and revisionId.'));
-      }
+      const Page = crowi.model('Page');
+      const page = await Page.findByIdAndViewer(pageId, req.user);
 
-      const isPageExist = await Page.count({ _id: pageId }) > 0;
-      if (!isPageExist) {
+      if (page == null) {
+        const isPageExist = await Page.count({ _id: pageId }) > 0;
+        if (isPageExist) {
+          // This page exists but req.user has not read permission
+          return res.apiv3Err(new ErrorV3(`Haven't the right to see the page ${pageId}.`), 403);
+        }
         return res.apiv3Err(new ErrorV3(`Page ${pageId} is not exist.`), 404);
       }
 
-      const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
-      if (!isAccessible) {
-        return res.apiv3Err(new ErrorV3(`Haven't the right to see the page ${pageId}.`), 403);
-      }
-
-
-      let revisionIdForFind;
-      if (revisionId == null) {
-        const Page = crowi.model('Page');
-        const page = await Page.findByIdAndViewer(pageId);
-        revisionIdForFind = page.revision;
-      }
-      else {
-        revisionIdForFind = revisionId;
-      }
+      const revisionIdForFind = revisionId || page.revision;
 
       const Revision = crowi.model('Revision');
       const revision = await Revision.findById(revisionIdForFind);
 
-      const markdown = revision.body;
+      const fileName = revisionIdForFind;
+      const stream = exportService.getReadStreamFromRevision(revision);
 
-      return res.apiv3({ markdown });
+      res.set({
+        'Content-Disposition': `attachment;filename*=UTF-8''${fileName}.${format}`,
+      });
+      return stream.pipe(res);
     }
     catch (err) {
       logger.error('Failed to get markdown', err);
