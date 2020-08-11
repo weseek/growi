@@ -8,7 +8,6 @@ const { body, query } = require('express-validator');
 const router = express.Router();
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
-const exportService = require('../../service/export');
 
 /**
  * @swagger
@@ -119,6 +118,7 @@ module.exports = (crowi) => {
 
   const globalNotificationService = crowi.getGlobalNotificationService();
   const { Page, GlobalNotificationSetting } = crowi.models;
+  const { exportService } = crowi;
 
   const validator = {
     likes: [
