@@ -31,6 +31,13 @@ module.exports = (crowi) => {
    *        responses:
    *          200:
    *            description: Return attachment list
+   *        parameters:
+   *          - name: page_id
+   *            in: query
+   *            required: true
+   *            description: page id
+   *            schema:
+   *              type: string
    */
 
   router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
