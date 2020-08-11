@@ -23,7 +23,7 @@ function AppSettingsPage(props) {
         </div>
       )}
     >
-      <PageHistoryWrapper2 props={props} />
+      <RenderPageHistoryWrapper props={props} />
     </Suspense>
   );
 }
@@ -166,14 +166,12 @@ function PageHistory(props) {
 
 }
 
-const PageHistoryWrapper2 = withUnstatedContainers(PageHistory, [AppContainer, PageContainer]);
+const RenderPageHistoryWrapper = withUnstatedContainers(PageHistory, [AppContainer, PageContainer]);
 
 
 PageHistory.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-
 };
-
 
 export default AppSettingsPage;
