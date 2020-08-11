@@ -151,7 +151,7 @@ const PageDuplicateModal = (props) => {
               />
               )
             }
-            <label className="custom-control-label" htmlFor="cbDuplicateRecursively">
+            <label className="custom-control-label" htmlFor="cbDuplicatewithoutExistRecursively">
               { t('modal_duplicate.label.Duplicate without exist path') }
             </label>
           </ul>
