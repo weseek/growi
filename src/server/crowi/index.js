@@ -117,14 +117,14 @@ Crowi.prototype.init = async function() {
     this.setupUserGroup(),
     this.setupExport(),
     this.setupImport(),
-  //   this.setupPageService(),
-  //   this.setupSyncPageStatusService(),
+    this.setupPageService(),
+    this.setupSyncPageStatusService(),
   ]);
 
   // // globalNotification depends on slack and mailer
-  // await Promise.all([
-  //   this.setUpGlobalNotification(),
-  // ]);
+  await Promise.all([
+    this.setUpGlobalNotification(),
+  ]);
 };
 
 // Crowi.prototype.initForTest = async function() {
