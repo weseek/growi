@@ -142,6 +142,28 @@ module.exports = (crowi) => {
     ],
   };
 
+  async function pageCreateAction(argument) {
+    const {
+      path,
+      body,
+      user,
+      page,
+      options,
+    } = argument;
+
+    const createdPage = Page.create(path, body, user, options);
+
+    const originTags = await page.findRelatedTagsById();
+    let savedTags;
+
+    if (originTags != null) {
+      await PageTagRelation.updatePageTags(createdPage.id, originTags);
+      savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
+    }
+    const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
+    return result;
+  }
+
   /**
    * @swagger
    *
@@ -199,25 +221,31 @@ module.exports = (crowi) => {
       options.grantUserGroupId = grantUserGroupId;
     }
 
-    const createdPage = await Page.create(path, body, req.user, options);
+    const result = await pageCreateAction({
+      path,
+      body,
+      user: req.user,
+      options,
+      pageTags,
+    });
 
-    let savedTags;
-    if (pageTags != null) {
-      await PageTagRelation.updatePageTags(createdPage.id, pageTags);
-      savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
-    }
+    // let savedTags;
+    // if (pageTags != null) {
+    //   await PageTagRelation.updatePageTags(createdPage.id, pageTags);
+    //   savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
+    // }
 
-    const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
+    // const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
 
     // update scopes for descendants
     if (overwriteScopesOfDescendants) {
-      Page.applyScopesToDescendantsAsyncronously(createdPage, req.user);
+      Page.applyScopesToDescendantsAsyncronously(result.createdPage, req.user);
     }
 
     // global notification
     if (globalNotificationService != null) {
       try {
-        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, req.user);
+        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, result.createdPage, req.user);
       }
       catch (err) {
         logger.error('Create grobal notification failed', err);
@@ -227,7 +255,7 @@ module.exports = (crowi) => {
     // user notification
     if (isSlackEnabled && userNotificationService != null) {
       try {
-        const results = await userNotificationService.fire(createdPage, req.user, slackChannels, 'create', false);
+        const results = await userNotificationService.fire(result.createdPage, req.user, slackChannels, 'create', false);
         results.forEach((result) => {
           if (result.status === 'rejected') {
             logger.error('Create user notification failed', result.reason);
@@ -474,9 +502,6 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('Not Founded the page', 'notfound_or_forbidden'), 404);
     }
 
-    // check whether path starts slash
-    // newPagePath = pathUtils.addHeadingSlash(newPagePath);
-
     // populate
     await page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate();
 
@@ -486,17 +511,32 @@ module.exports = (crowi) => {
     options.grantUserGroupId = page.grantedGroup;
     options.grantedUsers = page.grantedUsers;
 
-    const createdPage = await Page.create(newPagePath, page.revision.body, req.user, options);
+    const result = await pageCreateAction({
+      path: newPagePath,
+      body: page.revision.body,
+      page,
+      options,
+    });
 
-    const originTags = await page.findRelatedTagsById();
-    let savedTags;
+    // const originTags = await page.findRelatedTagsById();
+    // let savedTags;
 
-    if (originTags != null) {
-      await PageTagRelation.updatePageTags(createdPage.id, originTags);
-      savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
+    // if (originTags != null) {
+    //   await PageTagRelation.updatePageTags(createdPage.id, originTags);
+    //   savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
+    // }
+
+    // global notification
+    if (globalNotificationService != null) {
+      try {
+        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, result.createdPage, req.user);
+      }
+      catch (err) {
+        logger.error('Create grobal notification failed', err);
+      }
     }
 
-    const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
+    // const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
     return res.apiv3(result);
   });
 
