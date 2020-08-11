@@ -78,16 +78,16 @@ export default class GridEditModal extends React.Component {
 
   renderSelectedBreakPoint() {
     const resSizes = BootstrapGrid.ResponsiveSize;
-    const responsiveSizeToIconClassMap = {
-      [resSizes.XS_SIZE]: 'icon-screen-smartphone',
-      [resSizes.SM_SIZE]: 'icon-screen-tablet',
-      [resSizes.MD_SIZE]: 'icon-screen-desktop',
+    const responsiveSizeForMap = {
+      [resSizes.XS_SIZE]: { IconClass: 'icon-screen-smartphone', DisplayText: 'Smartphone / No Break' },
+      [resSizes.SM_SIZE]: { IconClass: 'icon-screen-tablet', DisplayText: 'Tablet' },
+      [resSizes.MD_SIZE]: { IconClass: 'icon-screen-desktop', DisplayText: 'Desktop' },
     };
-    const output = Object.entries(responsiveSizeToIconClassMap).map((resSizes) => {
-      return (this.state.responsiveSize === resSizes[0]
+    const output = Object.entries(responsiveSizeForMap).map((responsiveSizeForMap) => {
+      return (this.state.responsiveSize === responsiveSizeForMap[0]
         && (
         <span>
-          <i className={`pr-1 ${resSizes[1]}`}> {resSizes[1]}</i>
+          <i className={`pr-1 ${responsiveSizeForMap[1].IconClass}`}> {responsiveSizeForMap[1].DisplayText}</i>
         </span>
         )
       );
@@ -126,15 +126,15 @@ export default class GridEditModal extends React.Component {
 
   renderBreakPointMenu() {
     const resSizes = BootstrapGrid.ResponsiveSize;
-    const responsiveSizeToIconClassMap = {
-      [resSizes.XS_SIZE]: 'icon-screen-smartphone',
-      [resSizes.SM_SIZE]: 'icon-screen-tablet',
-      [resSizes.MD_SIZE]: 'icon-screen-desktop',
+    const responsiveSizeForMap = {
+      [resSizes.XS_SIZE]: { IconClass: 'icon-screen-smartphone', DisplayText: 'Smartphone / No Break' },
+      [resSizes.SM_SIZE]: { IconClass: 'icon-screen-tablet', DisplayText: 'Tablet' },
+      [resSizes.MD_SIZE]: { IconClass: 'icon-screen-desktop', DisplayText: 'Desktop' },
     };
-    const output = Object.entries(responsiveSizeToIconClassMap).map((resSize) => {
+    const output = Object.entries(responsiveSizeForMap).map((responsiveSizeForMap) => {
       return (
-        <button className="dropdown-item" type="button" onClick={() => { this.checkResposiveSize(resSize[0]) }}>
-          <i className={`pl-2 pr-1 ${resSize[1]}`}></i> {resSize[1]}
+        <button className="dropdown-item" type="button" onClick={() => { this.checkResposiveSize(responsiveSizeForMap[0]) }}>
+          <i className={`pl-2 pr-1 ${responsiveSizeForMap[1].IconClass}`}></i> {responsiveSizeForMap[1].DisplayText}
         </button>
       );
     });
