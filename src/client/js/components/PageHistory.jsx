@@ -37,7 +37,7 @@ class PageHistory extends React.Component {
     let res;
     try {
       this.setState({ isLoading: true });
-      res = await appContainer.apiv3Get(`/revisions/${pageId}`, { share_link_id: shareLinkId });
+      res = await appContainer.apiv3Get('/revisions/list', { pageId, share_link_id: shareLinkId });
     }
     catch (err) {
       logger.error(err);
