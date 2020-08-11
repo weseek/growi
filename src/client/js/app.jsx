@@ -141,7 +141,9 @@ $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', () => {
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
       <ErrorBoundary>
-        <PageHistory shareLinkId={pageContainer.state.shareLinkId} pageId={pageContainer.state.pageId} crowi={appContainer} />
+        <Provider inject={injectableContainers}>
+          <PageHistory />
+        </Provider>
       </ErrorBoundary>
     </I18nextProvider>, document.getElementById('revision-history'),
   );

@@ -3,8 +3,11 @@ import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
 import { withTranslation } from 'react-i18next';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 import PageRevisionList from './PageHistory/PageRevisionList';
+import AppContainer from '../services/AppContainer';
+import PageContainer from '../services/PageContainer';
 
 const logger = loggerFactory('growi:PageHistory');
 class PageHistory extends React.Component {
@@ -13,6 +16,7 @@ class PageHistory extends React.Component {
     super(props);
 
     this.state = {
+      // TODO use suspense
       isLoaded: false,
       isLoading: false,
       errorMessage: null,
@@ -25,8 +29,8 @@ class PageHistory extends React.Component {
   }
 
   async componentWillMount() {
-    const pageId = this.props.pageId;
-    const shareLinkId = this.props.shareLinkId || null;
+    const { appContainer, pageContainer } = this.props;
+    const { shareLinkId, pageId } = pageContainer.state;
 
     if (!pageId) {
       return;
@@ -35,7 +39,7 @@ class PageHistory extends React.Component {
     let res;
     try {
       this.setState({ isLoading: true });
-      res = await this.props.crowi.apiGet('/revisions.ids', { page_id: pageId, share_link_id: shareLinkId });
+      res = await appContainer.apiv3Get('/revisions/list', { pageId, share_link_id: shareLinkId });
     }
     catch (err) {
       logger.error(err);
@@ -45,11 +49,11 @@ class PageHistory extends React.Component {
     finally {
       this.setState({ isLoading: false });
     }
-
-    const rev = res.revisions;
+    const rev = res.data.revisions;
     const diffOpened = {};
     const lastId = rev.length - 1;
-    res.revisions.forEach((revision, i) => {
+
+    res.data.revisions.forEach((revision, i) => {
       const user = revision.author;
       if (user) {
         rev[i].author = user;
@@ -111,14 +115,15 @@ class PageHistory extends React.Component {
   }
 
   fetchPageRevisionBody(revision) {
-    const shareLinkId = this.props.shareLinkId || null;
+    const { appContainer, pageContainer } = this.props;
+    const { shareLinkId, pageId } = pageContainer.state;
 
     if (revision.body) {
       return;
     }
 
-    this.props.crowi.apiGet('/revisions.get',
-      { page_id: this.props.pageId, revision_id: revision._id, share_link_id: shareLinkId })
+    appContainer.apiGet('/revisions.get',
+      { page_id: pageId, revision_id: revision._id, share_link_id: shareLinkId })
       .then((res) => {
         if (res.ok) {
           this.setState({
@@ -167,12 +172,15 @@ class PageHistory extends React.Component {
 
 }
 
+const PageHistoryWrapper = withUnstatedContainers(PageHistory, [AppContainer, PageContainer]);
+
+
 PageHistory.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+
   t: PropTypes.func.isRequired, // i18next
 
-  shareLinkId: PropTypes.string,
-  pageId: PropTypes.string,
-  crowi: PropTypes.object.isRequired,
 };
 
-export default withTranslation()(PageHistory);
+export default withTranslation()(PageHistoryWrapper);
