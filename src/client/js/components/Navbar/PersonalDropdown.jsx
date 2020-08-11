@@ -20,10 +20,10 @@ import {
 
 import UserPicture from '../User/UserPicture';
 
-import SidebarDrawerIcon from '../SidebarDrawerIcon';
-import SidebarDockIcon from '../SidebarDockIcon';
-import DarkModeIcon from '../DarkModeIcon';
-import LightModeIcon from '../LightModeIcon';
+import SidebarDrawerIcon from '../Icons/SidebarDrawerIcon';
+import SidebarDockIcon from '../Icons/SidebarDockIcon';
+import DarkModeIcon from '../Icons/DarkModeIcon';
+import LightModeIcon from '../Icons/LightModeIcon';
 
 
 const PersonalDropdown = (props) => {
