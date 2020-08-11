@@ -1,5 +1,4 @@
 // file uploader virtual class
-// 各アップローダーで共通のメソッドはここで定義する
 
 class Uploader {
 

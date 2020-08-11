@@ -1,4 +1,6 @@
-const logger = require('@alias/logger')('growi:service:fileUploaderAws');
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:service:fileUploaderAws');
 
 const urljoin = require('url-join');
 const aws = require('aws-sdk');

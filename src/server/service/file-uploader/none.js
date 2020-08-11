@@ -1,7 +1,9 @@
 // crowi-fileupload-none
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:service:fileUploaderNone');
 
 module.exports = function(crowi) {
-  const debug = require('debug')('growi:service:fileUploaderNone');
   const Uploader = require('./uploader');
   const lib = new Uploader(crowi);
 
@@ -10,12 +12,12 @@ module.exports = function(crowi) {
   };
 
   lib.deleteFile = function(filePath) {
-    debug(`File deletion: ${filePath}`);
+    logger.debug(`File deletion: ${filePath}`);
     throw new Error('not implemented');
   };
 
   lib.uploadFile = function(filePath, contentType, fileStream, options) {
-    debug(`File uploading: ${filePath}`);
+    logger.debug(`File uploading: ${filePath}`);
     throw new Error('not implemented');
   };
 

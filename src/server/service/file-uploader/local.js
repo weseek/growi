@@ -1,4 +1,6 @@
-const logger = require('@alias/logger')('growi:service:fileUploaderLocal');
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:service:fileUploaderLocal');
 
 const fs = require('fs');
 const path = require('path');
