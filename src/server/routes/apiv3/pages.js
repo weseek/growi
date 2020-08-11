@@ -449,9 +449,9 @@ module.exports = (crowi) => {
    *                      $ref: '#/components/schemas/Page'
    *
    *          403:
-   *            description: Failed to connect server.
+   *            description: Forbidden to duplicate page.
    *          500:
-   *            $ref: '#/components/responses/500'
+   *            description: Internal server error.
    */
   // TODO write duplicate(GW-3316)
 
