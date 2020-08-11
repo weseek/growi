@@ -51,12 +51,12 @@ const TopOfTableContents = (props) => {
 
   return (
     <>
-      <div className="top-of-table-contents d-flex align-items-end pb-1">
+      <div className="top-of-table-contents d-flex align-items-center pb-1 ">
         <button type="button" className="bg-transparent border-0" onClick={() => openPageAccessoriesModal('pageList')}>
           <PageListIcon />
         </button>
 
-        <button type="button" className="bg-transparent border-0 active" onClick={() => openPageAccessoriesModal('timeLine')}>
+        <button type="button" className="bg-transparent border-0" onClick={() => openPageAccessoriesModal('timeLine')}>
           <TimeLineIcon />
         </button>
 
@@ -69,6 +69,7 @@ const TopOfTableContents = (props) => {
         </button>
         {/* [TODO: setting Footprints' icon by GW-3308] */}
         <div
+          className="justify-content-end"
           id="seen-user-list"
           data-user-ids-str="{{ page.seenUsers|slice(-15)|default([])|reverse|join(',') }}"
           data-sum-of-seen-users="{{ page.seenUsers.length|default(0) }}"

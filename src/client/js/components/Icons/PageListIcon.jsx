@@ -5,8 +5,7 @@ const PageList = () => (
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 14 14"
     className="table-top-icon"
-    width="20"
-    height="20"
+
   >
     <rect width="14" height="14" fillOpacity="0" />
     <path d="M12.63,2.72H1.37a.54.54,0,0,1,0-1.08H12.63a.54.54,0,0,1,0,1.08Z" />

@@ -26,7 +26,7 @@ const SeenUserList = (props) => {
         <span className="seen-user-count">{pageContainer.state.countOfSeenUsers}</span>
       </Button>
       <Popover placement="bottom" isOpen={popoverOpen} target="SeenUserPopover" toggle={toggle} trigger="legacy">
-        <PopoverBody className="col">
+        <PopoverBody className="seen-user-popover">
           <div className="px-2 text-right user-list-content text-truncate text-muted">
             <UserPictureList users={pageContainer.state.seenUsers} />
           </div>

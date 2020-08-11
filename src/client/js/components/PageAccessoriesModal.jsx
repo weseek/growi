@@ -46,7 +46,7 @@ const PageAccessoriesModal = (props) => {
               <NavLink
                 onClick={() => { switchTabHandler('pageList') }}
               >
-                <PageListIcon />
+                <svg width="20px" height="20px"><PageListIcon /></svg>
                 { t('page_list') }
               </NavLink>
             </NavItem>
