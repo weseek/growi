@@ -40,7 +40,7 @@ module.exports = (crowi) => {
       return;
     });
 
-    return next();
+    next();
   };
 
 };
