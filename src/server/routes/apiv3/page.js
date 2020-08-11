@@ -207,7 +207,7 @@ module.exports = (crowi) => {
       const page = await Page.findByIdAndViewer(pageId, req.user);
 
       if (page == null) {
-        const isPageExist = await Page.findById(pageId);
+        const isPageExist = await Page.count({ _id: pageId }) > 0;
         if (isPageExist) {
           // This page exists but req.user has not read permission
           return res.apiv3Err(new ErrorV3(`Haven't the right to see the page ${pageId}.`), 403);
