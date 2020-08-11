@@ -79,15 +79,15 @@ export default class GridEditModal extends React.Component {
   renderSelectedBreakPoint() {
     const resSizes = BootstrapGrid.ResponsiveSize;
     const responsiveSizeToIconClassMap = {
-      [resSizes.XS_SIZE]: 'smartphone',
-      [resSizes.SM_SIZE]: 'tablet',
-      [resSizes.MD_SIZE]: 'desktop',
+      [resSizes.XS_SIZE]: 'icon-screen-smartphone',
+      [resSizes.SM_SIZE]: 'icon-screen-tablet',
+      [resSizes.MD_SIZE]: 'icon-screen-desktop',
     };
     const output = Object.entries(responsiveSizeToIconClassMap).map((resSizes) => {
       return (this.state.responsiveSize === resSizes[0]
         && (
         <span>
-          <i className={`pr-1 icon-screen-${resSizes[1]}`}> {resSizes[1]}</i>
+          <i className={`pr-1 ${resSizes[1]}`}> {resSizes[1]}</i>
         </span>
         )
       );
@@ -127,14 +127,14 @@ export default class GridEditModal extends React.Component {
   renderBreakPointMenu() {
     const resSizes = BootstrapGrid.ResponsiveSize;
     const responsiveSizeToIconClassMap = {
-      [resSizes.XS_SIZE]: 'smartphone',
-      [resSizes.SM_SIZE]: 'tablet',
-      [resSizes.MD_SIZE]: 'desktop',
+      [resSizes.XS_SIZE]: 'icon-screen-smartphone',
+      [resSizes.SM_SIZE]: 'icon-screen-tablet',
+      [resSizes.MD_SIZE]: 'icon-screen-desktop',
     };
     const output = Object.entries(responsiveSizeToIconClassMap).map((resSize) => {
       return (
         <button className="dropdown-item" type="button" onClick={() => { this.checkResposiveSize(resSize[0]) }}>
-          <i className={`pl-2 pr-1 icon-screen-${resSize[1]}`}></i> {resSize[1]}
+          <i className={`pl-2 pr-1 ${resSize[1]}`}></i> {resSize[1]}
         </button>
       );
     });
