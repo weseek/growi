@@ -1,4 +1,6 @@
-const logger = require('@alias/logger')('growi:service:UserGroupService'); // eslint-disable-line no-unused-vars
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:service:UserGroupService');
 
 const mongoose = require('mongoose');
 

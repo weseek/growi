@@ -1,10 +1,11 @@
 // eslint-disable-next-line no-unused-vars
-const logger = require('@alias/logger')('growi:service:CustomizeService');
+import loggerFactory from '~/utils/logger';
+import DevidedPagePath from '~/models/devided-page-path';
 
-const DevidedPagePath = require('@commons/models/devided-page-path');
+import S2sMessage from '../models/vo/s2s-message';
+import S2sMessageHandlable from './s2s-messaging/handlable';
 
-const S2sMessage = require('../models/vo/s2s-message');
-const S2sMessageHandlable = require('./s2s-messaging/handlable');
+const logger = loggerFactory('growi:service:CustomizeService');
 
 
 /**

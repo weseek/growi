@@ -1,4 +1,7 @@
-const logger = require('@alias/logger')('growi:service:AclService'); // eslint-disable-line no-unused-vars
+import loggerFactory from '~/utils/logger';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const logger = loggerFactory('growi:service:AclService');
 
 /**
  * the service class of AclService
