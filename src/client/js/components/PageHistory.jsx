@@ -10,14 +10,12 @@ import PageRevisionList from './PageHistory/PageRevisionList';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 
-
 const logger = loggerFactory('growi:PageHistory');
 
 // set dummy value tile for using suspense
-const dummyValue = 0;
+let isLoaded = false;
 
 function AppSettingsPage(props) {
-  console.log(props);
   return (
     <Suspense
       fallback={(
@@ -33,18 +31,18 @@ function AppSettingsPage(props) {
 function PageHistory(props) {
 
   const [errorMessage, setErrorMessage] = useState(null);
-  const [revisions, setRevisions] = useState(dummyValue);
+  const [revisions, setRevisions] = useState();
   const [diffOpened, setDiffOpened] = useState(null);
 
   function fetchPageRevisionBody(revision) {
-    const { appContainer } = props;
-    const shareLinkId = props.shareLinkId || null;
+    const { appContainer, pageContainer } = props;
+    const { pageId, shareLinkId } = pageContainer.state;
 
     if (revision.body) {
       return;
     }
 
-    appContainer.apiGet('/revisions.get', { page_id: props.pageId, revision_id: revision._id, share_link_id: shareLinkId })
+    appContainer.apiGet('/revisions.get', { page_id: pageId, revision_id: revision._id, share_link_id: shareLinkId })
       .then((res) => {
         if (res.ok) {
           this.setState({
@@ -92,7 +90,7 @@ function PageHistory(props) {
       }
     });
 
-    setRevisions(['huga']);
+    setRevisions(rev);
     setDiffOpened(diffOpened);
 
     // load 0, and last default
@@ -135,11 +133,11 @@ function PageHistory(props) {
     fetchPageRevisionBody(getPreviousRevision(revision));
   }
 
-
-  if (dummyValue === revisions) {
+  if (isLoaded) {
     throw new Promise(async() => {
       try {
         await retrieveRevisions();
+        isLoaded = true;
       }
       catch (err) {
         toastError(err);
@@ -177,8 +175,6 @@ PageHistory.propTypes = {
 
   t: PropTypes.func.isRequired, // i18next
 
-  shareLinkId: PropTypes.string,
-  pageId: PropTypes.string,
 };
 
 const PageHistoryWrapper2 = withTranslation()(PageHistoryWrapper);
