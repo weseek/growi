@@ -115,15 +115,15 @@ class PageHistory extends React.Component {
   }
 
   fetchPageRevisionBody(revision) {
-    const { appContainer } = this.props;
-    const shareLinkId = this.props.shareLinkId || null;
+    const { appContainer, pageContainer } = this.props;
+    const { shareLinkId, pageId } = pageContainer.state;
 
     if (revision.body) {
       return;
     }
 
     appContainer.apiGet('/revisions.get',
-      { page_id: this.props.pageId, revision_id: revision._id, share_link_id: shareLinkId })
+      { page_id: pageId, revision_id: revision._id, share_link_id: shareLinkId })
       .then((res) => {
         if (res.ok) {
           this.setState({
