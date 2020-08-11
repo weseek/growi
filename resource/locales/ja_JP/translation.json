@@ -723,6 +723,11 @@
     "Registration successful": "登録完了",
     "Setup": "セットアップ"
   },
+  "export_bulk": {
+    "failed_to_export": "ページのエクスポートに失敗しました",
+    "export_page_markdown": "マークダウン形式でページをエクスポート",
+    "export_page_pdf": "PDF形式でページをエクスポート"
+  },
   "message": {
     "successfully_connected": "接続に成功しました!",
     "fail_to_save_access_token": "アクセストークンの保存に失敗しました、再度お試しください。",
