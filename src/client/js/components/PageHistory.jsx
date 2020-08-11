@@ -7,6 +7,7 @@ import { withUnstatedContainers } from './UnstatedUtils';
 
 import PageRevisionList from './PageHistory/PageRevisionList';
 import AppContainer from '../services/AppContainer';
+import PageContainer from '../services/PageContainer';
 
 const logger = loggerFactory('growi:PageHistory');
 class PageHistory extends React.Component {
@@ -28,8 +29,8 @@ class PageHistory extends React.Component {
   }
 
   async componentWillMount() {
-    const { appContainer, pageId } = this.props;
-    const shareLinkId = this.props.shareLinkId || null;
+    const { appContainer, pageContainer } = this.props;
+    const { shareLinkId, pageId } = pageContainer.state;
 
     if (!pageId) {
       return;
@@ -171,16 +172,15 @@ class PageHistory extends React.Component {
 
 }
 
-const PageHistoryWrapper = withUnstatedContainers(PageHistory, [AppContainer]);
+const PageHistoryWrapper = withUnstatedContainers(PageHistory, [AppContainer, PageContainer]);
 
 
 PageHistory.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   t: PropTypes.func.isRequired, // i18next
 
-  shareLinkId: PropTypes.string,
-  pageId: PropTypes.string,
 };
 
 export default withTranslation()(PageHistoryWrapper);
