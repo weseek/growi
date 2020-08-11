@@ -7,6 +7,7 @@
 ## v4.1.2
 
 * Fix: Uploaded images do not displayed
+    * Introduced by v4.1.1
 
 ## v4.1.1
 
