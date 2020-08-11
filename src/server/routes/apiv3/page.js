@@ -126,6 +126,7 @@ module.exports = (crowi) => {
       body('bool').isBoolean(),
     ],
     export: [
+      query('format').isString().isIn(['md', 'pdf']),
       query('revisionId').isString(),
     ],
   };
