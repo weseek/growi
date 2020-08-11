@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { UncontrolledTooltip } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
+import urljoin from 'url-join';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 import AppContainer from '../../services/AppContainer';
@@ -26,7 +27,11 @@ const PageShareManagement = (props) => {
 
   async function exportPageHandler() {
     const { pageId, revisionId } = pageContainer.state;
-    window.location.href = `/_api/v3/page/export/${pageId}?_csrf=${appContainer.csrfToken}&format=md&revisionId=${revisionId}`;
+    const url = new URL(urljoin(window.location.origin, '_api/v3/page/export', pageId));
+    url.searchParams.append('_csrf', appContainer.csrfToken);
+    url.searchParams.append('format', 'md');
+    url.searchParams.append('revisionId', revisionId);
+    window.location.href = url.href;
   }
 
   function renderModals() {
