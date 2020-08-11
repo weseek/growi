@@ -38,7 +38,6 @@ module.exports = (crowi) => {
    *            schema:
    *              type: string
    */
-
   router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
 
     try {
