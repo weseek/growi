@@ -412,7 +412,7 @@ module.exports = (crowi) => {
   router.post('/duplicate', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
     const { pageId } = req.body;
 
-    let newPagePath = pathUtils.normalizePath(req.body.pageNameInput);
+    const newPagePath = pathUtils.normalizePath(req.body.pageNameInput);
 
     // check page existence
     const isExist = (await Page.count({ path: newPagePath })) > 0;
@@ -430,9 +430,9 @@ module.exports = (crowi) => {
     }
 
     // check whether path starts slash
-    newPagePath = pathUtils.addHeadingSlash(newPagePath);
+    // newPagePath = pathUtils.addHeadingSlash(newPagePath);
 
-    // population
+    // populate
     await page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate();
 
     // create option
