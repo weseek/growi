@@ -128,8 +128,17 @@ module.exports = (crowi) => {
       body('overwriteScopesOfDescendants').if(value => value != null).isBoolean().withMessage('overwriteScopesOfDescendants must be boolean'),
       body('isSlackEnabled').if(value => value != null).isBoolean().withMessage('isSlackEnabled must be boolean'),
       body('slackChannels').if(value => value != null).isString().withMessage('slackChannels must be string'),
-      body('socketClientId').if(value => value != null).isInt().withMessage('socketClientId must be string'),
+      body('socketClientId').if(value => value != null).isInt().withMessage('socketClientId must be int'),
       body('pageTags').if(value => value != null).isArray().withMessage('pageTags must be array'),
+    ],
+    renamePage: [
+      body('pageId').exists().withMessage('pageId is required'),
+      body('revisionId').exists().withMessage('revisionId is required'),
+      body('newPagePath').exists().withMessage('newPagePath is required'),
+      body('isRenameRedirect').if(value => value != null).isBoolean().withMessage('isRenameRedirect must be boolean'),
+      body('isRemainMetadata').if(value => value != null).isBoolean().withMessage('isRemainMetadata must be boolean'),
+      body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
+      body('socketClientId').if(value => value != null).isInt().withMessage('socketClientId must be int'),
     ],
   };
 
@@ -322,14 +331,14 @@ module.exports = (crowi) => {
    *          409:
    *            description: page path is already existed
    */
-  router.put('/rename', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
+  router.put('/rename', accessTokenParser, loginRequiredStrictly, csrf, validator.renamePage, apiV3FormValidator, async(req, res) => {
     const { pageId, isRecursively, revisionId } = req.body;
 
     let newPagePath = pathUtils.normalizePath(req.body.newPagePath);
 
     const options = {
       createRedirectPage: req.body.isRenameRedirect,
-      updateMetadata: req.body.isRemainMetadata,
+      updateMetadata: !req.body.isRemainMetadata,
       socketClientId: +req.body.socketClientId || undefined,
     };
 
