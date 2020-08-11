@@ -115,8 +115,8 @@ Crowi.prototype.init = async function() {
     this.setUpCustomize(),
     this.setUpRestQiitaAPI(),
     this.setupUserGroup(),
-  //   this.setupExport(),
-  //   this.setupImport(),
+    this.setupExport(),
+    this.setupImport(),
   //   this.setupPageService(),
   //   this.setupSyncPageStatusService(),
   ]);
