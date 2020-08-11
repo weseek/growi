@@ -13,10 +13,12 @@ export default class AdminLocalSecurityContainer extends Container {
     super();
 
     this.appContainer = appContainer;
+    this.dummyRegistrationMode = 0;
 
     this.state = {
       retrieveError: null,
-      registrationMode: 'Open',
+      // set dummy value tile for using suspense
+      registrationMode: this.dummyRegistrationMode,
       registrationWhiteList: [],
       useOnlyEnvVars: false,
     };
