@@ -127,41 +127,41 @@ Crowi.prototype.init = async function() {
   ]);
 };
 
-// Crowi.prototype.initForTest = async function() {
-//   await this.setupModels();
-//   await this.setupConfigManager();
+Crowi.prototype.initForTest = async function() {
+  await this.setupModels();
+  await this.setupConfigManager();
 
-//   // // customizeService depends on AppService and XssService
-//   // // passportService depends on appService
-//   // // slack depends on setUpSlacklNotification
-//   await Promise.all([
-//     this.setUpApp(),
-//     // this.setUpXss(),
-//     // this.setUpSlacklNotification(),
-//     // this.setUpGrowiBridge(),
-//   ]);
+  // // customizeService depends on AppService and XssService
+  // // passportService depends on appService
+  // // slack depends on setUpSlacklNotification
+  await Promise.all([
+    this.setUpApp(),
+    // this.setUpXss(),
+    // this.setUpSlacklNotification(),
+    // this.setUpGrowiBridge(),
+  ]);
 
-//   await Promise.all([
-//     // this.scanRuntimeVersions(),
-//     this.setupPassport(),
-//     // this.setupSearcher(),
-//     // this.setupMailer(),
-//     // this.setupSlack(),
-//     // this.setupCsrf(),
-//     // this.setUpFileUpload(),
-//     this.setUpAcl(),
-//     // this.setUpCustomize(),
-//     // this.setUpRestQiitaAPI(),
-//     // this.setupUserGroup(),
-//     // this.setupExport(),
-//     // this.setupImport(),
-//   ]);
+  await Promise.all([
+    // this.scanRuntimeVersions(),
+    this.setupPassport(),
+    // this.setupSearcher(),
+    // this.setupMailer(),
+    // this.setupSlack(),
+    // this.setupCsrf(),
+    // this.setUpFileUpload(),
+    this.setUpAcl(),
+    // this.setUpCustomize(),
+    // this.setUpRestQiitaAPI(),
+    // this.setupUserGroup(),
+    // this.setupExport(),
+    // this.setupImport(),
+  ]);
 
-//   // globalNotification depends on slack and mailer
-//   // await Promise.all([
-//   //   this.setUpGlobalNotification(),
-//   // ]);
-// };
+  // globalNotification depends on slack and mailer
+  // await Promise.all([
+  //   this.setUpGlobalNotification(),
+  // ]);
+};
 
 Crowi.prototype.isPageId = function(pageId) {
   if (!pageId) {
