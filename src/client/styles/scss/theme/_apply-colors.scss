@@ -251,7 +251,7 @@ pre:not(.hljs):not(.CodeMirror-line) {
   .table-top-icon {
     fill: $color-link;
   }
-  .btn.btn-seen-user-lists {
+  .btn.btn-seen-user-list {
     color: $color-seen-user;
     &:active {
       color: $color-seen-user;
@@ -452,4 +452,15 @@ mark.rbt-highlight-text {
  */
 .bg-box {
   background-color: $bgcolor-global;
+}
+
+// aaaaaaaaaaaaaaaaaa
+.top-of-table-contents {
+  .icon-button-box {
+    border-color: $bordercolor-nav-tabs;
+  }
+
+  .seen-user-popover {
+    background-color: red;
+  }
 }

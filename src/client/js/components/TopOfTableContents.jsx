@@ -52,24 +52,27 @@ const TopOfTableContents = (props) => {
   return (
     <>
       <div className="top-of-table-contents d-flex align-items-center pb-1 ">
-        <button type="button" className="bg-transparent border-0" onClick={() => openPageAccessoriesModal('pageList')}>
-          <PageListIcon />
-        </button>
+        <div className="icon-button-box pr-2 mr-2">
 
-        <button type="button" className="bg-transparent border-0" onClick={() => openPageAccessoriesModal('timeLine')}>
-          <TimeLineIcon />
-        </button>
+          <button type="button" className="bg-transparent border-0" onClick={() => openPageAccessoriesModal('pageList')}>
+            <PageListIcon />
+          </button>
 
-        <button type="button" className="bg-transparent border-0" onClick={() => openPageAccessoriesModal('recentChanges')}>
-          <RecentChangesIcon />
-        </button>
+          <button type="button" className="bg-transparent border-0" onClick={() => openPageAccessoriesModal('timeLine')}>
+            <TimeLineIcon />
+          </button>
 
-        <button type="button" className="bg-transparent border-0" onClick={() => openPageAccessoriesModal('attachment')}>
-          <AttachmentIcon />
-        </button>
-        {/* [TODO: setting Footprints' icon by GW-3308] */}
+          <button type="button" className="bg-transparent border-0" onClick={() => openPageAccessoriesModal('recentChanges')}>
+            <RecentChangesIcon />
+          </button>
+
+          <button type="button" className="bg-transparent border-0 " onClick={() => openPageAccessoriesModal('attachment')}>
+            <AttachmentIcon />
+          </button>
+
+        </div>
         <div
-          className="justify-content-end"
+          className=""
           id="seen-user-list"
           data-user-ids-str="{{ page.seenUsers|slice(-15)|default([])|reverse|join(',') }}"
           data-sum-of-seen-users="{{ page.seenUsers.length|default(0) }}"

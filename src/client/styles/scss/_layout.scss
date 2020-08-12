@@ -142,6 +142,7 @@ body {
   }
 }
 
+// seirisitenai
 .grw-page-accessories-modal {
   .table-top-icon {
     width: 20px;
@@ -155,12 +156,22 @@ body {
     width: 16px;
     height: 16px;
   }
+  .seen-user-count {
+    font-size: 12px;
+    font-weight: bolder;
+  }
 }
 
-.btn-seen-user-lists {
+.btn-seen-user-list {
   white-space: nowrap;
 }
 
 .seen-user-popover {
   max-width: 200px;
+}
+
+.top-of-table-contents {
+  .icon-button-box {
+    border-right: 1px solid;
+  }
 }
