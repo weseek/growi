@@ -15,7 +15,7 @@ const logger = loggerFactory('growi:PageHistory');
 let isLoaded = false;
 
 // TODO GW-3485 HOC
-function AppSettingsPage(props) {
+function RenderPageHistoryWrapperWithSuspense(props) {
   return (
     <Suspense
       fallback={(
@@ -71,4 +71,4 @@ PageHistory.propTypes = {
   pageHistoryContainer: PropTypes.instanceOf(PageHistroyContainer).isRequired,
 };
 
-export default AppSettingsPage;
+export default RenderPageHistoryWrapperWithSuspense;
