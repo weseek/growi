@@ -153,7 +153,7 @@ class MailSetting extends React.Component {
                 {t('Cancel')}
               </button>
               <button type="button" className="btn btn-danger" onClick={this.initialize}>
-                {t('Initialize')}
+                {t('admin:app_setting.Initialize')}
               </button>
             </div>
           </ModalBody>
