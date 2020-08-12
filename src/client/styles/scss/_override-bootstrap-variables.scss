@@ -12,6 +12,18 @@ $warning: #ffa32b !default;
 $danger: #ff0a54 !default;
 $light: #e4e7ea !default;
 $dark: #343a40 !default;
+$gray-50: lighten($light, 7%) !default;
+$gray-100: lighten($light, 4%) !default;
+$gray-200: $light !default;
+$gray-300: darken($light, 5%) !default;
+$gray-400: darken($light, 20%) !default;
+$gray-500: darken($light, 30%) !default;
+$gray-600: lighten($dark, 10%) !default;
+$gray-700: lighten($dark, 5%) !default;
+$gray-800: $dark !default;
+$gray-900: darken($dark, 5%) !default;
+$grays: ("50": $gray-50) !default;
+$red: #ff0a54 !default;
 
 //== Typography
 //
@@ -67,7 +79,7 @@ $alert-color-level: -10;
 //== Progress bar
 $progress-height: 4px;
 $progress-border-radius: $border-radius-sm;
-$progress-bg: #f0f0f0;
+$progress-bg: $gray-100;
 $progress-box-shadow: none;
 
 //== Code

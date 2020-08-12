@@ -16,7 +16,7 @@ module.exports = {
   'growi:routes:login-passport': 'debug',
   'growi:middleware:safe-redirect': 'debug',
   'growi:service:PassportService': 'debug',
-  'growi:service:config-pubsub:*': 'debug',
+  'growi:service:s2s-messaging:*': 'debug',
   // 'growi:service:ConfigManager': 'debug',
   // 'growi:service:mail': 'debug',
   'growi:lib:search': 'debug',

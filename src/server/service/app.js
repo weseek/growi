@@ -2,27 +2,27 @@ const logger = require('@alias/logger')('growi:service:AppService'); // eslint-d
 const { pathUtils } = require('growi-commons');
 
 
-const ConfigPubsubMessage = require('../models/vo/config-pubsub-message');
-const ConfigPubsubMessageHandlable = require('./config-pubsub/handlable');
+const S2sMessage = require('../models/vo/s2s-message');
+const S2sMessageHandlable = require('./s2s-messaging/handlable');
 
 /**
  * the service class of AppService
  */
-class AppService extends ConfigPubsubMessageHandlable {
+class AppService extends S2sMessageHandlable {
 
   constructor(crowi) {
     super();
 
     this.crowi = crowi;
     this.configManager = crowi.configManager;
-    this.configPubsub = crowi.configPubsub;
+    this.s2sMessagingService = crowi.s2sMessagingService;
   }
 
   /**
    * @inheritdoc
    */
-  shouldHandleConfigPubsubMessage(configPubsubMessage) {
-    const { eventName } = configPubsubMessage;
+  shouldHandleS2sMessage(s2sMessage) {
+    const { eventName } = s2sMessage;
     if (eventName !== 'systemInstalled') {
       return false;
     }
@@ -35,10 +35,10 @@ class AppService extends ConfigPubsubMessageHandlable {
   /**
    * @inheritdoc
    */
-  async handleConfigPubsubMessage(configPubsubMessage) {
+  async handleS2sMessage(s2sMessage) {
     logger.info('Invoke post installation process by pubsub notification');
 
-    const { crowi, configManager, configPubsub } = this;
+    const { crowi, configManager, s2sMessagingService } = this;
 
     // load config and setup
     await configManager.loadConfigs();
@@ -48,26 +48,27 @@ class AppService extends ConfigPubsubMessageHandlable {
       crowi.setupAfterInstall();
 
       // remove message handler
-      configPubsub.removeMessageHandler(this);
+      s2sMessagingService.removeMessageHandler(this);
     }
   }
 
   async publishPostInstallationMessage() {
-    const { configPubsub } = this;
+    const { s2sMessagingService } = this;
 
-    if (configPubsub != null) {
-      const configPubsubMessage = new ConfigPubsubMessage('systemInstalled');
+    if (s2sMessagingService != null) {
+      const s2sMessage = new S2sMessage('systemInstalled');
 
       try {
-        await configPubsub.publish(configPubsubMessage);
+        await s2sMessagingService.publish(s2sMessage);
       }
       catch (e) {
-        logger.error('Failed to publish post installation message with configPubsub: ', e.message);
+        logger.error('Failed to publish post installation message with S2sMessagingService: ', e.message);
       }
+
+      // remove message handler
+      s2sMessagingService.removeMessageHandler(this);
     }
 
-    // remove message handler
-    configPubsub.removeMessageHandler(this);
   }
 
   getAppTitle() {
