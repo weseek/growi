@@ -31,11 +31,11 @@ export default class PageAccessoriesContainer extends Container {
   }
 
 
-  openPageAccessoriesModal() {
+  openPageAccessoriesModal(activeTab) {
     this.setState({
       isPageAccessoriesModalShown: true,
     });
-
+    this.switchActiveTab(activeTab);
   }
 
   closePageAccessoriesModal() {
