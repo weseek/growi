@@ -76,8 +76,7 @@ const PageAccessoriesModal = (props) => {
             <TabPane tabId="timeline"></TabPane>
             <TabPane tabId="recent-changes"></TabPane>
             <TabPane tabId="attachment" className="p-4">
-              {/* {pageAccessoriesContainer.activeComponents.has('attachment') && <PageAttachment /> } */}
-              <PageAttachment />
+              {pageAccessoriesContainer.activeComponents.has('attachment') && <PageAttachment /> }
             </TabPane>
           </TabContent>
         </ModalBody>
