@@ -16,42 +16,6 @@ import { withUnstatedContainers } from './UnstatedUtils';
 
 const TopOfTableContents = (props) => {
 
-  // const [isPageAccessoriesModalShown, setIsPageAccessoriesModalShown] = useState(false);
-  // const [activeTab, setActiveTab] = useState('');
-  // Prevent unnecessary rendering
-  // const [activeComponents, setActiveComponents] = useState(new Set(['']));
-
-  // function openPageAccessoriesModal(activeTab) {
-  //   setIsPageAccessoriesModalShown(true);
-  //   setActiveTab(activeTab);
-  //   activeComponents.add(activeTab);
-  //   setActiveComponents(activeComponents);
-  // }
-
-  // function switchActiveTab(clickedTab) {
-  //   activeComponents.add(clickedTab);
-  //   setActiveComponents(activeComponents);
-  //   setActiveTab(clickedTab);
-  // }
-
-  // function closePageAccessoriesModal() {
-  //   setIsPageAccessoriesModalShown(false);
-  // }
-
-  function renderModal() {
-    return (
-      <>
-        <PageAccessoriesModal
-          isOpen={isPageAccessoriesModalShown}
-          onClose={closePageAccessoriesModal}
-          activeTab={activeTab}
-          onSwitch={switchActiveTab}
-          activeComponents={activeComponents}
-        />
-      </>
-    );
-  }
-
   return (
     <>
       <div className="top-of-table-contents d-flex align-items-end pb-1">
@@ -78,7 +42,6 @@ const TopOfTableContents = (props) => {
         >
         </div>
       </div>
-      {renderModal()}
     </>
   );
 };
