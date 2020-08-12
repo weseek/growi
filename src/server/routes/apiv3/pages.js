@@ -144,24 +144,24 @@ module.exports = (crowi) => {
 
   async function pageCreateAction(argument) {
     const {
-      path,
-      body,
-      user,
-      page,
-      options,
+      path, body, user, options,
     } = argument;
 
     const createdPage = Page.create(path, body, user, options);
 
+    return createdPage;
+  }
+
+  async function saveTagAction(argument) {
+    const { createdPage, page } = argument;
+
     const originTags = await page.findRelatedTagsById();
-    let savedTags;
 
     if (originTags != null) {
       await PageTagRelation.updatePageTags(createdPage.id, originTags);
-      savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
+      const savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
+      return savedTags;
     }
-    const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
-    return result;
   }
 
   /**
@@ -221,31 +221,23 @@ module.exports = (crowi) => {
       options.grantUserGroupId = grantUserGroupId;
     }
 
-    const result = await pageCreateAction({
-      path,
-      body,
-      user: req.user,
-      options,
-      pageTags,
+    const createdPage = await pageCreateAction({
+      path, body, user: req.user, options,
     });
 
-    // let savedTags;
-    // if (pageTags != null) {
-    //   await PageTagRelation.updatePageTags(createdPage.id, pageTags);
-    //   savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
-    // }
+    const savedTags = await saveTagAction({ page: pageTags, createdPage });
 
-    // const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
+    const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
 
     // update scopes for descendants
     if (overwriteScopesOfDescendants) {
-      Page.applyScopesToDescendantsAsyncronously(result.page, req.user);
+      Page.applyScopesToDescendantsAsyncronously(result.createdPage, req.user);
     }
 
     // global notification
     if (globalNotificationService != null) {
       try {
-        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, result.page, req.user);
+        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, result.createdPage, req.user);
       }
       catch (err) {
         logger.error('Create grobal notification failed', err);
@@ -255,7 +247,7 @@ module.exports = (crowi) => {
     // user notification
     if (isSlackEnabled && userNotificationService != null) {
       try {
-        const results = await userNotificationService.fire(result.page, req.user, slackChannels, 'create', false);
+        const results = await userNotificationService.fire(result.createdPage, req.user, slackChannels, 'create', false);
         results.forEach((result) => {
           if (result.status === 'rejected') {
             logger.error('Create user notification failed', result.reason);
@@ -511,32 +503,24 @@ module.exports = (crowi) => {
     options.grantUserGroupId = page.grantedGroup;
     options.grantedUsers = page.grantedUsers;
 
-    const result = await pageCreateAction({
-      path: newPagePath,
-      body: page.revision.body,
-      page,
-      options,
+    const createdPage = await pageCreateAction({
+      path: newPagePath, user: req.user, body: page.revision.body, options,
     });
 
-    // const originTags = await page.findRelatedTagsById();
-    // let savedTags;
+    const savedTags = await saveTagAction({ page, createdPage });
 
-    // if (originTags != null) {
-    //   await PageTagRelation.updatePageTags(createdPage.id, originTags);
-    //   savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
-    // }
+    const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
 
     // global notification
     if (globalNotificationService != null) {
       try {
-        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, result.page, req.user);
+        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, result.createdPage, req.user);
       }
       catch (err) {
         logger.error('Create grobal notification failed', err);
       }
     }
 
-    // const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
     return res.apiv3(result);
   });
 
