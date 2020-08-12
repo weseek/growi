@@ -143,10 +143,85 @@ export default class GridEditModal extends React.Component {
     return output;
   }
 
+  renderPreview() {
+    if (this.state.responsiveSize === BootstrapGrid.ResponsiveSize.MD_SIZE) {
+      return (
+        <>
+          <div className="col-6">
+            <label className="d-block"><i className="pr-2 icon-screen-desktop"></i>Desktop</label>
+            <div className="desktop-preview d-block">
+              {this.renderNoBreakPreview()}
+            </div>
+          </div>
+          <div className="col-3">
+            <label className="d-block"><i className="pr-2 icon-screen-tablet"></i>Tablet</label>
+            <div className="tablet-preview d-block">
+              {this.renderBreakPreview()}
+            </div>
+          </div>
+          <div className="col-3">
+            <label className="d-block"><i className="pr-2 icon-screen-smartphone"></i>Mobile</label>
+            <div className="mobile-preview d-block">
+              {this.renderBreakPreview()}
+            </div>
+          </div>
+        </>
+      );
+    }
+    if (this.state.responsiveSize === BootstrapGrid.ResponsiveSize.SM_SIZE) {
+      return (
+        <>
+          <div className="col-6">
+            <label className="d-block"><i className="pr-2 icon-screen-desktop"></i>Desktop</label>
+            <div className="desktop-preview d-block">
+              {this.renderNoBreakPreview()}
+            </div>
+          </div>
+          <div className="col-3">
+            <label className="d-block"><i className="pr-2 icon-screen-tablet"></i>Tablet</label>
+            <div className="tablet-preview d-block">
+              {this.renderNoBreakPreview()}
+            </div>
+          </div>
+          <div className="col-3">
+            <label className="d-block"><i className="pr-2 icon-screen-smartphone"></i>Mobile</label>
+            <div className="mobile-preview d-block">
+              {this.renderBreakPreview()}
+            </div>
+          </div>
+        </>
+      );
+    }
+    if (this.state.responsiveSize === BootstrapGrid.ResponsiveSize.XS_SIZE) {
+      return (
+        <>
+          <div className="col-6">
+            <label className="d-block"><i className="pr-2 icon-screen-desktop"></i>Desktop</label>
+            <div className="desktop-preview d-block">
+              {this.renderNoBreakPreview()}
+            </div>
+          </div>
+          <div className="col-3">
+            <label className="d-block"><i className="pr-2 icon-screen-tablet"></i>Tablet</label>
+            <div className="tablet-preview d-block">
+              {this.renderNoBreakPreview()}
+            </div>
+          </div>
+          <div className="col-3">
+            <label className="d-block"><i className="pr-2 icon-screen-smartphone"></i>Mobile</label>
+            <div className="mobile-preview d-block">
+              {this.renderNoBreakPreview()}
+            </div>
+          </div>
+        </>
+      );
+    }
+  }
+
   renderNoBreakPreview() {
     const { colsRatios } = this.state;
     const convertedHTML = colsRatios.map((colsRatios) => {
-      const className = `bg-info col-${colsRatios} border`;
+      const className = `col-${colsRatios} border`;
       return (
         <div className={className}></div>
       );
@@ -159,7 +234,7 @@ export default class GridEditModal extends React.Component {
   renderBreakPreview() {
     const { colsRatios } = this.state;
     const convertedHTML = colsRatios.map(() => {
-      const className = 'bg-info col-12 border';
+      const className = 'col-12 border';
       return (
         <div className={className}></div>
       );
@@ -217,24 +292,7 @@ export default class GridEditModal extends React.Component {
             </div>
             <div className="row">
               <h1 className="pl-3 w-100">Preview</h1>
-              <div className="col-6">
-                <label className="d-block"><i className="pr-2 icon-screen-desktop"></i>Desktop</label>
-                <div className="desktop-preview d-block">
-                  {this.renderNoBreakPreview()}
-                </div>
-              </div>
-              <div className="col-3">
-                <label className="d-block"><i className="pr-2 icon-screen-tablet"></i>Tablet</label>
-                <div className="tablet-preview d-block">
-                  {this.renderNoBreakPreview()}
-                </div>
-              </div>
-              <div className="col-3">
-                <label className="d-block"><i className="pr-2 icon-screen-smartphone"></i>Mobile</label>
-                <div className="mobile-preview d-block">
-                  {this.renderNoBreakPreview()}
-                </div>
-              </div>
+              {this.renderPreview()}
             </div>
           </div>
         </ModalBody>

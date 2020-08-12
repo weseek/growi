@@ -329,20 +329,35 @@ body.on-edit {
   .desktop-preview,
   .tablet-preview,
   .mobile-preview {
-    padding: 5px;
     .row {
       height: 100%;
+      padding: 5px;
     }
   }
   .desktop-preview {
     height: 400px;
+    .row {
+      div {
+        background-color: $info;
+      }
+    }
   }
   .tablet-preview {
     height: 380px;
+    .row {
+      div {
+        background-color: $purple;
+      }
+    }
   }
   .mobile-preview {
-    width: 90%;
-    height: 300px;
+    width: 75%;
+    height: 280px;
+    .row {
+      div {
+        background-color: $pink;
+      }
+    }
   }
 
   .grid-division-menu {
