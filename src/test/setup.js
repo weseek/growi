@@ -1,3 +1,10 @@
+/** **********************************************************
+ *                           Caution
+ *
+ * Module aliases by compilerOptions.paths in tsconfig.json
+ * are NOT available in setup scripts
+ *********************************************************** */
+
 const mongoose = require('mongoose');
 
 const { getMongoUri, mongoOptions } = require('~/utils/mongoose-utils');
