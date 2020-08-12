@@ -135,6 +135,7 @@ const PageDuplicateModal = (props) => {
           <div>
             <ul className="duplicate-name">
               {isDuplicateRecursively && subordinatedPaths.map((duplicatedNewPath) => {
+                  // ToDo: The "true" statement below will be modified by task GW3503
                   if (true) {
                     return <li className="duplicate-exist" key={duplicatedNewPath}>{duplicatedNewPath}: Same page already exists</li>;
                   }
