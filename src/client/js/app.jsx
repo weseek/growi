@@ -52,7 +52,7 @@ const socketIoContainer = appContainer.getContainer('SocketIoContainer');
 // create unstated container instance
 const navigationContainer = new NavigationContainer(appContainer);
 const pageContainer = new PageContainer(appContainer);
-const pageHistoryContainer = new PageHistoryContainer(appContainer);
+const pageHistoryContainer = new PageHistoryContainer(appContainer, pageContainer);
 const commentContainer = new CommentContainer(appContainer);
 const editorContainer = new EditorContainer(appContainer, defaultEditorOptions, defaultPreviewOptions);
 const tagContainer = new TagContainer(appContainer);

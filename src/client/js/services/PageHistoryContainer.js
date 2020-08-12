@@ -1,31 +1,29 @@
 import { Container } from 'unstated';
 
-import loggerFactory from '@alias/logger';
-
-// eslint-disable-next-line no-unused-vars
-const logger = loggerFactory('growi:services:PageHistoryContainer');
-
-
 /**
  * Service container for personal settings page (PageHistory.jsx)
  * @extends {Container} unstated Container
  */
 export default class PageHistoryContainer extends Container {
 
-  constructor(appContainer) {
+  constructor(appContainer, pageContainer) {
     super();
 
     this.appContainer = appContainer;
+    this.pageContainer = pageContainer;
 
     this.state = {
       retrieveError: null,
-      isLoaded: false,
       hoge: 'huga',
 
       revisions: [],
       diffOpened: null,
     };
 
+    this.retrieveRevisions = this.retrieveRevisions.bind(this);
+    this.onDiffOpenClicked = this.onDiffOpenClicked.bind(this);
+    this.getPreviousRevision = this.getPreviousRevision.bind(this);
+    this.fetchPageRevisionBody = this.fetchPageRevisionBody.bind(this);
   }
 
   /**
@@ -35,7 +33,8 @@ export default class PageHistoryContainer extends Container {
     return 'PageHistoryContainer';
   }
 
-  async retrieveRevisions({ pageId, shareLinkId }) {
+  async retrieveRevisions() {
+    const { pageId, shareLinkId } = this.pageContainer.state;
 
     if (!pageId) {
       return;
@@ -62,20 +61,76 @@ export default class PageHistoryContainer extends Container {
 
     this.setState({ revisions: rev });
     this.setState({ diffOpened });
-    this.setState({ isLoaded: true });
 
     // load 0, and last default
-    // if (rev[0]) {
-    //   fetchPageRevisionBody(rev[0]);
-    // }
-    // if (rev[1]) {
-    //   fetchPageRevisionBody(rev[1]);
-    // }
-    // if (lastId !== 0 && lastId !== 1 && rev[lastId]) {
-    //   fetchPageRevisionBody(rev[lastId]);
-    // }
+    if (rev[0]) {
+      this.fetchPageRevisionBody(rev[0]);
+    }
+    if (rev[1]) {
+      this.fetchPageRevisionBody(rev[1]);
+    }
+    if (lastId !== 0 && lastId !== 1 && rev[lastId]) {
+      this.fetchPageRevisionBody(rev[lastId]);
+    }
 
     return;
   }
+
+  onDiffOpenClicked(revision) {
+    const { diffOpened } = this.state;
+    const revisionId = revision._id;
+
+    diffOpened[revisionId] = !(diffOpened[revisionId]);
+    this.setState(diffOpened);
+
+    this.fetchPageRevisionBody(revision);
+    this.fetchPageRevisionBody(this.getPreviousRevision(revision));
+  }
+
+  getPreviousRevision(currentRevision) {
+    let cursor = null;
+    for (const revision of this.state.revisions) {
+      // comparing ObjectId
+      // eslint-disable-next-line eqeqeq
+      if (cursor && cursor._id == currentRevision._id) {
+        cursor = revision;
+        break;
+      }
+
+      cursor = revision;
+    }
+
+    return cursor;
+  }
+
+  fetchPageRevisionBody(revision) {
+    const { pageId, shareLinkId } = this.pageContainer.state;
+
+    if (revision.body) {
+      return;
+    }
+
+    // TODO apiV3
+    this.appContainer.apiGet('/revisions.get', { page_id: pageId, revision_id: revision._id, share_link_id: shareLinkId })
+      .then((res) => {
+        if (res.ok) {
+          this.setState({
+            revisions: this.state.revisions.map((rev) => {
+              // comparing ObjectId
+              // eslint-disable-next-line eqeqeq
+              if (rev._id == res.revision._id) {
+                return res.revision;
+              }
+
+              return rev;
+            }),
+          });
+        }
+      })
+      .catch((err) => {
+
+      });
+  }
+
 
 }

@@ -66,7 +66,6 @@ class PageRevisionList extends React.Component {
   render() {
     const { t } = this.props;
 
-    console.log(this.props);
     const revisions = this.props.revisions;
     const revisionCount = this.props.revisions.length;
 
