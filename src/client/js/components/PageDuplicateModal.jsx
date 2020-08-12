@@ -30,6 +30,7 @@ const PageDuplicateModal = (props) => {
   const [getSubordinatedError, setGetSuborinatedError] = useState(null);
 
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
+  const [isDuplicateRecursivelyAdmit, setIsDuplicateRecursivelyAdmit] = useState(true);
 
   /**
    * change pageNameInput for PagePathAutoComplete
@@ -49,6 +50,10 @@ const PageDuplicateModal = (props) => {
 
   function changeIsDuplicateRecursivelyHandler() {
     setIsDuplicateRecursively(!isDuplicateRecursively);
+  }
+
+  function changeIsDuplicateRecursivelyAdmitHandler() {
+    setIsDuplicateRecursivelyAdmit(!isDuplicateRecursivelyAdmit);
   }
 
   const getSubordinatedList = useCallback(async() => {
@@ -132,17 +137,31 @@ const PageDuplicateModal = (props) => {
           <label className="custom-control-label" htmlFor="cbDuplicateRecursively">
             { t('modal_duplicate.label.Duplicate with child') }
           </label>
+
+          {isDuplicateRecursively && (
           <div>
+            <input
+              className="custom-control-input"
+              name="recursivelyAdmit"
+              id="cbDuplicateRecursivelyAdmit"
+              type="checkbox"
+              checked={isDuplicateRecursivelyAdmit}
+              onChange={changeIsDuplicateRecursivelyAdmitHandler}
+            />
+            <label className="custom-control-label" htmlFor="cbDuplicateRecursivelyAdmit">
+              Duplicate apart from the pages that already exists
+            </label>
             <ul>
-              {isDuplicateRecursively && subordinatedPaths.map(duplicatedNewPath => <li key={duplicatedNewPath}>{duplicatedNewPath}</li>)}
+              {subordinatedPaths.map(duplicatedNewPath => <li key={duplicatedNewPath}>{duplicatedNewPath}</li>)}
             </ul>
           </div>
+          )}
           <div> {getSubordinatedError} </div>
         </div>
       </ModalBody>
       <ModalFooter>
         <ApiErrorMessageList errs={errs} targetPath={pageNameInput} />
-        <button type="button" className="btn btn-primary" onClick={duplicate}>Duplicate page</button>
+        <button type="button" className="btn btn-primary" onClick={duplicate} disabled={isDuplicateRecursively && !isDuplicateRecursivelyAdmit}>Duplicate page</button>
       </ModalFooter>
     </Modal>
   );
