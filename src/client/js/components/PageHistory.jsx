@@ -6,8 +6,11 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import { toastError } from '../util/apiNotification';
 
 import PageRevisionList from './PageHistory/PageRevisionList';
+
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
+import PageHistroyContainer from '../services/PageHistoryContainer';
+
 import fetchProfileData from './FakeApi';
 
 const resource = fetchProfileData();
@@ -31,6 +34,8 @@ function AppSettingsPage(props) {
   );
 }
 function PageHistory(props) {
+  console.log(props);
+  console.log(props.pageHistoryContainer.state.hoge);
 
   const [errorMessage, setErrorMessage] = useState(null);
   const [revisions, setRevisions] = useState([]);
@@ -159,12 +164,13 @@ function PageHistory(props) {
 
 }
 
-const RenderPageHistoryWrapper = withUnstatedContainers(PageHistory, [AppContainer, PageContainer]);
+const RenderPageHistoryWrapper = withUnstatedContainers(PageHistory, [AppContainer, PageContainer, PageHistroyContainer]);
 
 
 PageHistory.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  pageHistoryContainer: PropTypes.instanceOf(PageHistroyContainer).isRequired,
 };
 
 export default AppSettingsPage;
