@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Modal, ModalBody, Nav, NavItem, NavLink, TabContent,
+  Modal, ModalBody, Nav, NavItem, NavLink, TabContent, TabPane,
 } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
@@ -13,23 +13,19 @@ import RecentChangesIcon from './Icons/RecentChangesIcon';
 import AttachmentIcon from './Icons/AttachmentIcon';
 
 import { withUnstatedContainers } from './UnstatedUtils';
-import PageContainer from '../services/PageContainer';
+import PageAccessoriesContainer from '../services/PageAccessoriesContainer';
+import PageAttachment from './PageAttachment';
 
 const PageAccessoriesModal = (props) => {
-  const { t } = props;
+  const { t, pageAccessoriesContainer } = props;
+  const { switchActiveTab } = pageAccessoriesContainer;
+  const { activeTab } = pageAccessoriesContainer.state;
 
   function closeModalHandler() {
     if (props.onClose == null) {
       return;
     }
     props.onClose();
-  }
-
-  function switchTabHandler(clickedTab) {
-    if (props.onSwitch == null) {
-      return;
-    }
-    props.onSwitch(clickedTab);
   }
 
   return (
@@ -42,40 +38,46 @@ const PageAccessoriesModal = (props) => {
       >
         <ModalBody>
           <Nav className="nav-title border-bottom">
-            <NavItem className={`nav-link ${props.activeTab === 'pageList' && 'active'}`}>
+            <NavItem type="button" className={`nav-link ${activeTab === 'pagelist' && 'active active-border'}`}>
               <NavLink
-                onClick={() => { switchTabHandler('pageList') }}
+                onClick={() => { switchActiveTab('pagelist') }}
               >
                 <PageListIcon />
                 { t('page_list') }
               </NavLink>
             </NavItem>
-            <NavItem className={`nav-link ${props.activeTab === 'timeLine' && 'active'}`}>
+            <NavItem type="button" className={`nav-link ${activeTab === 'timeline' && 'active active-border'}`}>
               <NavLink
-                onClick={() => { switchTabHandler('timeLine') }}
+                onClick={() => { switchActiveTab('timeline') }}
               >
                 <TimeLineIcon />
                 { t('Timeline View') }
               </NavLink>
             </NavItem>
-            <NavItem className={`nav-link ${props.activeTab === 'recentChanges' && 'active'}`}>
+            <NavItem type="button" className={`nav-link ${activeTab === 'recent-changes' && 'active active-border'}`}>
               <NavLink
-                onClick={() => { switchTabHandler('recentChanges') }}
+                onClick={() => { switchActiveTab('recent-changes') }}
               >
                 <RecentChangesIcon />
                 { t('History') }
               </NavLink>
             </NavItem>
-            <NavItem className={`nav-link ${props.activeTab === 'attachment' && 'active'}`}>
+            <NavItem type="button" className={`nav-link ${activeTab === 'attachment' && 'active active-border'}`}>
               <NavLink
-                onClick={() => { switchTabHandler('attachment') }}
+                onClick={() => { switchActiveTab('attachment') }}
               >
                 <AttachmentIcon />
                 { t('attachment_data') }
               </NavLink>
             </NavItem>
           </Nav>
-          <TabContent>
+          <TabContent activeTab={activeTab}>
+            <TabPane tabId="pagelist"></TabPane>
+            <TabPane tabId="timeline"></TabPane>
+            <TabPane tabId="recent-changes"></TabPane>
+            <TabPane tabId="attachment" className="p-4">
+              {pageAccessoriesContainer.state.activeComponents.has('attachment') && <PageAttachment /> }
+            </TabPane>
           </TabContent>
         </ModalBody>
       </Modal>
@@ -87,17 +89,16 @@ const PageAccessoriesModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageAccessoriesModalWrapper = withUnstatedContainers(PageAccessoriesModal, [PageContainer]);
+const PageAccessoriesModalWrapper = withUnstatedContainers(PageAccessoriesModal, [PageAccessoriesContainer]);
 
 
 PageAccessoriesModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  // pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  pageAccessoriesContainer: PropTypes.instanceOf(PageAccessoriesContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
-  activeTab: PropTypes.string.isRequired,
-  onSwitch: PropTypes.func,
 };
 
 export default withTranslation()(PageAccessoriesModalWrapper);
