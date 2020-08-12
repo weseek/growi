@@ -18,7 +18,7 @@ const resource = fetchProfileData();
 const logger = loggerFactory('growi:PageHistory');
 
 // set dummy value tile for using suspense
-const isLoaded = false;
+let isLoaded = false;
 
 function AppSettingsPage(props) {
   return (
@@ -34,15 +34,22 @@ function AppSettingsPage(props) {
   );
 }
 function PageHistory(props) {
-  console.log(props);
-  console.log(props.pageHistoryContainer.state.hoge);
-
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [revisions, setRevisions] = useState([]);
-  const [diffOpened, setDiffOpened] = useState(null);
-
-  const { appContainer, pageContainer } = props;
+  const { pageContainer, pageHistoryContainer } = props;
   const { shareLinkId, pageId } = pageContainer.state;
+
+  if (!isLoaded) {
+    throw new Promise(async() => {
+      try {
+        await props.pageHistoryContainer.retrieveRevisions({ pageId, shareLinkId });
+      }
+      catch (err) {
+        toastError(err);
+        pageHistoryContainer.setState({ retrieveError: err.message });
+        logger.error(err);
+      }
+      isLoaded = true;
+    });
+  }
 
   function fetchPageRevisionBody(revision) {
     const { appContainer, pageContainer } = props;
@@ -73,91 +80,44 @@ function PageHistory(props) {
       });
   }
 
-  async function retrieveRevisions() {
-    const { appContainer, pageContainer } = props;
-    const { shareLinkId, pageId } = pageContainer.state;
+  // function getPreviousRevision(currentRevision) {
+  //   let cursor = null;
+  //   for (const revision of revisions) {
+  //     // comparing ObjectId
+  //     // eslint-disable-next-line eqeqeq
+  //     if (cursor && cursor._id == currentRevision._id) {
+  //       cursor = revision;
+  //       break;
+  //     }
 
-    if (!pageId) {
-      return;
-    }
+  //     cursor = revision;
+  //   }
 
-    const res = await appContainer.apiv3Get('/revisions/list', { pageId, share_link_id: shareLinkId });
-    const rev = res.data.revisions;
-    const diffOpened = {};
-    const lastId = rev.length - 1;
+  //   return cursor;
+  // }
 
-    res.data.revisions.forEach((revision, i) => {
-      const user = revision.author;
-      if (user) {
-        rev[i].author = user;
-      }
+  // function onDiffOpenClicked(revision) {
+  //   const revisionId = revision._id;
 
-      if (i === 0 || i === lastId) {
-        diffOpened[revision._id] = true;
-      }
-      else {
-        diffOpened[revision._id] = false;
-      }
-    });
+  //   diffOpened[revisionId] = !(diffOpened[revisionId]);
+  //   setDiffOpened(diffOpened);
 
-    setRevisions(rev);
-    setDiffOpened(diffOpened);
-
-    // load 0, and last default
-    if (rev[0]) {
-      fetchPageRevisionBody(rev[0]);
-    }
-    if (rev[1]) {
-      fetchPageRevisionBody(rev[1]);
-    }
-    if (lastId !== 0 && lastId !== 1 && rev[lastId]) {
-      fetchPageRevisionBody(rev[lastId]);
-    }
-
-    return;
-  }
-
-  function getPreviousRevision(currentRevision) {
-    let cursor = null;
-    for (const revision of revisions) {
-      // comparing ObjectId
-      // eslint-disable-next-line eqeqeq
-      if (cursor && cursor._id == currentRevision._id) {
-        cursor = revision;
-        break;
-      }
-
-      cursor = revision;
-    }
-
-    return cursor;
-  }
-
-  function onDiffOpenClicked(revision) {
-    const revisionId = revision._id;
-
-    diffOpened[revisionId] = !(diffOpened[revisionId]);
-    setDiffOpened(diffOpened);
-
-    fetchPageRevisionBody(revision);
-    fetchPageRevisionBody(getPreviousRevision(revision));
-  }
-
-  const res = resource.read(appContainer.apiv3Get('/revisions/list', { pageId, share_link_id: shareLinkId }));
-  console.log(res);
+  //   fetchPageRevisionBody(revision);
+  //   fetchPageRevisionBody(getPreviousRevision(revision));
+  // }
 
   return (
     <div className="mt-4">
-      {errorMessage && (
+      {pageHistoryContainer.state.errorMessage && (
       <div className="my-5">
-        <div className="text-danger">{errorMessage}</div>
+        <div className="text-danger">{pageHistoryContainer.state.errorMessage}</div>
       </div>
         ) }
       <PageRevisionList
-        revisions={revisions}
-        diffOpened={diffOpened}
-        getPreviousRevision={getPreviousRevision}
-        onDiffOpenClicked={onDiffOpenClicked}
+        revisions={pageHistoryContainer.state.revisions}
+        diffOpened={pageHistoryContainer.state.diffOpened}
+        getPreviousRevision={pageHistoryContainer.getPreviousRevision}
+        onDiffOpenClicked={pageHistoryContainer.onDiffOpenClicked}
       />
     </div>
   );
