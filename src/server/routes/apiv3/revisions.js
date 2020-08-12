@@ -4,7 +4,7 @@ const logger = loggerFactory('growi:routes:apiv3:pages');
 
 const express = require('express');
 
-const { query } = require('express-validator/check');
+const { query, param } = require('express-validator/check');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const router = express.Router();
@@ -23,11 +23,16 @@ module.exports = (crowi) => {
   const {
     Revision,
     Page,
+    User,
   } = crowi.models;
 
   const validator = {
     retrieveRevisions: [
-      query('pageId').exists().withMessage('pageId is required'),
+      query('pageId').isMongoId().withMessage('pageId is required'),
+    ],
+    retrieveRevisionById: [
+      query('pageId').isMongoId().withMessage('pageId is required'),
+      param('id').isMongoId().withMessage('id is required'),
     ],
   };
 
@@ -67,6 +72,28 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in getting revisions by poge id';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'faild-to-find-revisions'), 500);
+    }
+
+  });
+
+  router.get('/:id', accessTokenParser, loginRequired, validator.retrieveRevisionById, apiV3FormValidator, async(req, res) => {
+    const revisionId = req.params.id;
+    const { pageId } = req.query;
+    const { isSharedPage } = req;
+
+    // check whether accessible
+    if (!isSharedPage && !(await Page.isAccessiblePageByViewer(pageId, req.user))) {
+      return res.apiv3Err(new ErrorV3('Current user is not accessible to this page.', 'forbidden-page'), 403);
+    }
+
+    try {
+      const revision = await Revision.findById(revisionId).populate('author', User.USER_PUBLIC_FIELDS);
+      return res.apiv3({ revision });
+    }
+    catch (err) {
+      const msg = 'Error occurred in getting revision data by id';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'faild-to-find-revision'), 500);
     }
 
   });
