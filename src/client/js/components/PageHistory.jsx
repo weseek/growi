@@ -12,13 +12,11 @@ import PageHistroyContainer from '../services/PageHistoryContainer';
 
 const logger = loggerFactory('growi:PageHistory');
 
-// for using suspense
-let isLoaded = false;
 
 function PageHistory(props) {
   const { pageHistoryContainer } = props;
 
-  if (!isLoaded) {
+  if (pageHistoryContainer.state.revisions === pageHistoryContainer.dummyRevisions) {
     throw new Promise(async() => {
       try {
         await props.pageHistoryContainer.retrieveRevisions();
@@ -27,9 +25,6 @@ function PageHistory(props) {
         toastError(err);
         pageHistoryContainer.setState({ retrieveError: err.message });
         logger.error(err);
-      }
-      finally {
-        isLoaded = true;
       }
     });
   }

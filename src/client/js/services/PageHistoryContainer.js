@@ -12,10 +12,13 @@ export default class PageHistoryContainer extends Container {
     this.appContainer = appContainer;
     this.pageContainer = pageContainer;
 
+    this.dummyRevisions = 0;
+
     this.state = {
       retrieveError: null,
 
-      revisions: [],
+      // set dummy rivisions for using suspense
+      revisions: this.dummyRevisions,
       diffOpened: null,
     };
 
