@@ -76,6 +76,25 @@ module.exports = (crowi) => {
 
   });
 
+  /**
+   * @swagger
+   *
+   *    /revisions/list:
+   *      get:
+   *        tags: [Revisions]
+   *        description: Get one revision by id
+   *        parameters:
+   *          - in: query
+   *            name: pageId
+   *            required: true
+   *            schema:
+   *              type: string
+   *              description:  page id
+   *        responses:
+   *          200:
+   *            description: Return revision
+   *
+   */
   router.get('/:id', certifySharedPage, accessTokenParser, loginRequired, validator.retrieveRevisionById, apiV3FormValidator, async(req, res) => {
     const revisionId = req.params.id;
     const { pageId } = req.query;
