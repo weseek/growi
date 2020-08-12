@@ -142,17 +142,17 @@ module.exports = (crowi) => {
     ],
   };
 
-  async function pageCreateAction(argument) {
+  async function pageCreateAction(pageCreateArgs) {
     const {
       path, body, user, options,
-    } = argument;
+    } = pageCreateArgs;
 
     const createdPage = Page.create(path, body, user, options);
     return createdPage;
   }
 
-  async function saveTagsAction(argument) {
-    const { createdPage, pageTags } = argument;
+  async function saveTagsAction(saveTagsArgs) {
+    const { createdPage, pageTags } = saveTagsArgs;
 
     if (pageTags != null) {
       await PageTagRelation.updatePageTags(createdPage.id, pageTags);
