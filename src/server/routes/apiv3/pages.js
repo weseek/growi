@@ -239,13 +239,13 @@ module.exports = (crowi) => {
 
     // update scopes for descendants
     if (overwriteScopesOfDescendants) {
-      Page.applyScopesToDescendantsAsyncronously(result.createdPage, req.user);
+      Page.applyScopesToDescendantsAsyncronously(result.page, req.user);
     }
 
     // global notification
     if (globalNotificationService != null) {
       try {
-        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, result.createdPage, req.user);
+        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, result.page, req.user);
       }
       catch (err) {
         logger.error('Create grobal notification failed', err);
@@ -255,7 +255,7 @@ module.exports = (crowi) => {
     // user notification
     if (isSlackEnabled && userNotificationService != null) {
       try {
-        const results = await userNotificationService.fire(result.createdPage, req.user, slackChannels, 'create', false);
+        const results = await userNotificationService.fire(result.page, req.user, slackChannels, 'create', false);
         results.forEach((result) => {
           if (result.status === 'rejected') {
             logger.error('Create user notification failed', result.reason);
@@ -529,7 +529,7 @@ module.exports = (crowi) => {
     // global notification
     if (globalNotificationService != null) {
       try {
-        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, result.createdPage, req.user);
+        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, result.page, req.user);
       }
       catch (err) {
         logger.error('Create grobal notification failed', err);
