@@ -1,6 +1,11 @@
+/* eslint-disable import/prefer-default-export */
 import React, { Suspense } from 'react';
 
-function withSuspense(Component) {
+/**
+ * If you throw a Promise in the component, it will display a sppiner
+ * @param {object} Component A React.Component or functional component
+ */
+export function withLoadingSppiner(Component) {
   return (props => (
     // wrap with <Suspense></Suspense>
     <Suspense
@@ -14,5 +19,3 @@ function withSuspense(Component) {
     </Suspense>
   ));
 }
-
-export default withSuspense;

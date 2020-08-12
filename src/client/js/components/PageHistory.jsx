@@ -5,7 +5,7 @@ import loggerFactory from '@alias/logger';
 import { withUnstatedContainers } from './UnstatedUtils';
 import { toastError } from '../util/apiNotification';
 
-import withSuspense from './withSuspense';
+import { withLoadingSppiner } from './SuspenseUtils';
 import PageRevisionList from './PageHistory/PageRevisionList';
 
 import PageHistroyContainer from '../services/PageHistoryContainer';
@@ -52,8 +52,7 @@ function PageHistory(props) {
 
 }
 
-const RenderPageHistoryWithSuspense = withSuspense(PageHistory);
-const RenderPageHistoryWrapper = withUnstatedContainers(RenderPageHistoryWithSuspense, [PageHistroyContainer]);
+const RenderPageHistoryWrapper = withUnstatedContainers(withLoadingSppiner(PageHistory), [PageHistroyContainer]);
 
 PageHistory.propTypes = {
   pageHistoryContainer: PropTypes.instanceOf(PageHistroyContainer).isRequired,
