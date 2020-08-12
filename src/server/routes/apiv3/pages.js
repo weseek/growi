@@ -152,12 +152,10 @@ module.exports = (crowi) => {
   async function saveTagsAction({ createdPage, pageTags }) {
     if (pageTags != null) {
       await PageTagRelation.updatePageTags(createdPage.id, pageTags);
-      const savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
-      return savedTags;
+      return PageTagRelation.listTagNamesByPage(createdPage.id);
     }
 
-    const savedTags = [];
-    return savedTags;
+    return [];
   }
 
   /**
