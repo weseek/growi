@@ -148,11 +148,10 @@ module.exports = (crowi) => {
     } = argument;
 
     const createdPage = Page.create(path, body, user, options);
-
     return createdPage;
   }
 
-  async function saveTagAction(argument) {
+  async function saveTagsAction(argument) {
     const { createdPage, pageTags } = argument;
 
     if (pageTags != null) {
@@ -223,7 +222,7 @@ module.exports = (crowi) => {
       path, body, user: req.user, options,
     });
 
-    const savedTags = await saveTagAction({ createdPage, pageTags });
+    const savedTags = await saveTagsAction({ createdPage, pageTags });
 
     const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
 
@@ -504,11 +503,8 @@ module.exports = (crowi) => {
     const createdPage = await pageCreateAction({
       path: newPagePath, user: req.user, body: page.revision.body, options,
     });
-
     const originTags = await page.findRelatedTagsById();
-
-    const savedTags = await saveTagAction({ page, createdPage, pageTags: originTags });
-
+    const savedTags = await saveTagsAction({ page, createdPage, pageTags: originTags });
     const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
 
     // global notification
