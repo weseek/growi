@@ -153,12 +153,10 @@ module.exports = (crowi) => {
   }
 
   async function saveTagAction(argument) {
-    const { createdPage, page } = argument;
+    const { createdPage, pageTags } = argument;
 
-    const originTags = await page.findRelatedTagsById();
-
-    if (originTags != null) {
-      await PageTagRelation.updatePageTags(createdPage.id, originTags);
+    if (pageTags != null) {
+      await PageTagRelation.updatePageTags(createdPage.id, pageTags);
       const savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
       return savedTags;
     }
@@ -225,7 +223,7 @@ module.exports = (crowi) => {
       path, body, user: req.user, options,
     });
 
-    const savedTags = await saveTagAction({ page: pageTags, createdPage });
+    const savedTags = await saveTagAction({ createdPage, pageTags });
 
     const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
 
@@ -507,7 +505,9 @@ module.exports = (crowi) => {
       path: newPagePath, user: req.user, body: page.revision.body, options,
     });
 
-    const savedTags = await saveTagAction({ page, createdPage });
+    const originTags = await page.findRelatedTagsById();
+
+    const savedTags = await saveTagAction({ page, createdPage, pageTags: originTags });
 
     const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
 
