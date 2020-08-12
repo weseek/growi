@@ -1,16 +1,17 @@
 /* eslint-disable no-use-before-define */
+import loggerFactory from '~/utils/logger';
 import { listLocaleIds } from '~/utils/locale-utils';
 
-const debug = require('debug')('growi:models:user');
-const logger = require('@alias/logger')('growi:models:user');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const path = require('path');
 const uniqueValidator = require('mongoose-unique-validator');
 const md5 = require('md5');
+const crypto = require('crypto');
+
+const logger = loggerFactory('growi:models:user');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
-const crypto = require('crypto');
 
 
 module.exports = function(crowi) {
@@ -200,10 +201,8 @@ module.exports = function(crowi) {
   };
 
   userSchema.methods.updateApiToken = async function() {
-    const self = this;
-
-    self.apiToken = generateApiToken(this);
-    const userData = await self.save();
+    this.apiToken = generateApiToken(this);
+    const userData = await this.save();
     return userData;
   };
 
@@ -277,13 +276,13 @@ module.exports = function(crowi) {
   };
 
   userSchema.methods.removeFromAdmin = async function() {
-    debug('Remove from admin', this);
+    logger.debug('Remove from admin', this);
     this.admin = 0;
     return this.save();
   };
 
   userSchema.methods.makeAdmin = async function() {
-    debug('Admin', this);
+    logger.debug('Admin', this);
     this.admin = 1;
     return this.save();
   };
@@ -294,14 +293,14 @@ module.exports = function(crowi) {
   };
 
   userSchema.methods.statusActivate = async function() {
-    debug('Activate User', this);
+    logger.debug('Activate User', this);
     this.status = STATUS_ACTIVE;
     const userData = await this.save();
     return userEvent.emit('activated', userData);
   };
 
   userSchema.methods.statusSuspend = async function() {
-    debug('Suspend User', this);
+    logger.debug('Suspend User', this);
     this.status = STATUS_SUSPENDED;
     if (this.email === undefined || this.email === null) { // migrate old data
       this.email = '-';
@@ -316,7 +315,7 @@ module.exports = function(crowi) {
   };
 
   userSchema.methods.statusDelete = async function() {
-    debug('Delete User', this);
+    logger.debug('Delete User', this);
 
     const now = new Date();
     const deletedLabel = `deleted_at_${now.getTime()}`;
@@ -626,7 +625,7 @@ module.exports = function(crowi) {
         });
       }
       catch (err) {
-        return debug('fail to send email: ', err);
+        return logger.debug('fail to send email: ', err);
       }
     }));
 
@@ -636,7 +635,7 @@ module.exports = function(crowi) {
     validateCrowi();
 
     if (!Array.isArray(emailList)) {
-      debug('emailList is not array');
+      logger.debug('emailList is not array');
     }
 
     const afterWorkEmailList = await this.createUsersByEmailList(emailList);

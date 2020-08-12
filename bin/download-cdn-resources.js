@@ -3,9 +3,9 @@
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
-require('module-alias/register');
+import loggerFactory from '~/utils/logger';
 
-const logger = require('@alias/logger')('growi:bin:download-cdn-resources');
+const logger = loggerFactory('growi:bin:download-cdn-resources');
 
 const { envUtils } = require('growi-commons');
 
@@ -19,8 +19,8 @@ if (!noCdn) {
 
 logger.info('This is NO_CDN mode. Start to download resources.');
 
-const CdnResourcesDownloader = require('@commons/service/cdn-resources-downloader');
-const CdnResourcesService = require('@commons/service/cdn-resources-service');
+const CdnResourcesDownloader = require('~/service/cdn-resources-downloader');
+const CdnResourcesService = require('~/service/cdn-resources-service');
 
 const downloader = new CdnResourcesDownloader();
 const service = new CdnResourcesService();

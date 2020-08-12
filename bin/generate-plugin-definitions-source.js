@@ -3,24 +3,25 @@
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
-require('module-alias/register');
-const logger = require('@alias/logger')('growi:bin:generate-plugin-definitions-source');
+import loggerFactory from '~/utils/logger';
+import { projectRoot, resolveFromRoot } from '~/utils/project-dir-utils';
+
+const logger = loggerFactory('growi:bin:generate-plugin-definitions-source');
 
 const fs = require('graceful-fs');
 const normalize = require('normalize-path');
 const swig = require('swig-templates');
 
-const helpers = require('@commons/util/helpers');
-const PluginUtils = require('@server/plugins/plugin-utils');
+const PluginUtils = require('~/server/plugins/plugin-utils');
 
 const pluginUtils = new PluginUtils();
 
-const TEMPLATE = helpers.root('bin/templates/plugin-definitions.js.swig');
-const OUT = helpers.root('tmp/plugins/plugin-definitions.js');
+const TEMPLATE = resolveFromRoot('bin/templates/plugin-definitions.js.swig');
+const OUT = resolveFromRoot('tmp/plugins/plugin-definitions.js');
 
 
 // list plugin names
-let pluginNames = pluginUtils.listPluginNames(helpers.root());
+let pluginNames = pluginUtils.listPluginNames(projectRoot);
 logger.info('Detected plugins: ', pluginNames);
 
 // add from PLUGIN_NAMES_TOBE_LOADED when development

@@ -1,9 +1,12 @@
 // disable no-return-await for model functions
 /* eslint-disable no-return-await */
+import loggerFactory from '~/utils/logger';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const logger = loggerFactory('growi:models:revision');
 
 module.exports = function(crowi) {
-  // eslint-disable-next-line no-unused-vars
-  const logger = require('@alias/logger')('growi:models:revision');
+
 
   const mongoose = require('mongoose');
 

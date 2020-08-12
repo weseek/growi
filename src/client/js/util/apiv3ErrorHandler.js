@@ -3,7 +3,9 @@
 
 import toArrayIfNot from '../../../lib/util/toArrayIfNot';
 
-const logger = require('@alias/logger')('growi:apiv3');
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:apiv3');
 
 const apiv3ErrorHandler = (_err, header = 'Error') => {
   // extract api errors from general 400 err

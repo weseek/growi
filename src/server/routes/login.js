@@ -1,11 +1,14 @@
 // disable all of linting
 // because this file is a deprecated legacy of Crowi
 
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:routes:login');
+
 /* eslint-disable */
 
 module.exports = function(crowi, app) {
-  const debug = require('debug')('growi:routes:login');
-  const logger = require('@alias/logger')('growi:routes:login');
+
   const path = require('path');
   const User = crowi.model('User');
   const { configManager, appService, aclService, mailService } = crowi;
@@ -72,7 +75,7 @@ module.exports = function(crowi, app) {
 
   actions.login = function(req, res) {
     if (req.form) {
-      debug(req.form.errors);
+      logger.debug(req.form.errors);
     }
 
     return res.render('login', {});
@@ -114,7 +117,7 @@ module.exports = function(crowi, app) {
           }
         }
         if (isError) {
-          debug('isError user register error', errOn);
+          logger.debug('isError user register error', errOn);
           return res.redirect('/register');
         }
 
@@ -144,7 +147,7 @@ module.exports = function(crowi, app) {
       });
     }
     else { // method GET of form is not valid
-      debug('session is', req.session);
+      logger.debug('session is', req.session);
       const isRegistering = true;
       return res.render('login', { isRegistering });
     }
@@ -208,7 +211,7 @@ module.exports = function(crowi, app) {
       }
       else {
         req.flash('warningMessage', req.t('message.unable_to_use_this_user'));
-        debug('username', username);
+        logger.debug('username', username);
         return res.render('invited');
       }
     }

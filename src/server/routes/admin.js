@@ -1,7 +1,15 @@
 /* eslint-disable no-use-before-define */
+import loggerFactory from '~/utils/logger';
+
+const recommendedWhitelist = require('~/service/xss/recommended-whitelist');
+
+const ApiResponse = require('../util/apiResponse');
+
+const logger = loggerFactory('growi:routes:admin');
+
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:admin');
-  const logger = require('@alias/logger')('growi:routes:admin');
+
 
   const models = crowi.models;
   const UserGroup = models.UserGroup;
@@ -15,8 +23,6 @@ module.exports = function(crowi, app) {
     exportService,
   } = crowi;
 
-  const recommendedWhitelist = require('@commons/service/xss/recommended-whitelist');
-  const ApiResponse = require('../util/apiResponse');
   const importer = require('../util/importer')(crowi);
 
   const MAX_PAGE_LIST = 50;

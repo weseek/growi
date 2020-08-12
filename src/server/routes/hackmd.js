@@ -1,12 +1,15 @@
 /* eslint-disable no-use-before-define */
 
-const logger = require('@alias/logger')('growi:routes:hackmd');
+import loggerFactory from '~/utils/logger';
+
 const path = require('path');
 const fs = require('graceful-fs');
 const swig = require('swig-templates');
 const axios = require('axios');
 
 const ApiResponse = require('../util/apiResponse');
+
+const logger = loggerFactory('growi:routes:hackmd');
 
 /**
  * @swagger

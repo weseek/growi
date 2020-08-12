@@ -1,3 +1,7 @@
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:routes:revision');
+
 /**
  * @swagger
  *  tags:
@@ -45,7 +49,6 @@
  */
 
 module.exports = function(crowi, app) {
-  const logger = require('@alias/logger')('growi:routes:revision');
   const Page = crowi.model('Page');
   const Revision = crowi.model('Revision');
   const User = crowi.model('User');

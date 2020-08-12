@@ -1,8 +1,11 @@
 /* eslint-disable no-use-before-define */
 
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:routes:login-passport');
+
 module.exports = function(crowi, app) {
-  const debug = require('debug')('growi:routes:login-passport');
-  const logger = require('@alias/logger')('growi:routes:login-passport');
+
   const passport = require('passport');
   const ExternalAccount = crowi.model('ExternalAccount');
   const passportService = crowi.passportService;
@@ -18,7 +21,7 @@ module.exports = function(crowi, app) {
     user.updateLastLoginAt(new Date(), (err, userData) => {
       if (err) {
         logger.error(`updateLastLoginAt dumps error: ${err}`);
-        debug(`updateLastLoginAt dumps error: ${err}`);
+        logger.debug(`updateLastLoginAt dumps error: ${err}`);
       }
     });
 
@@ -71,12 +74,12 @@ module.exports = function(crowi, app) {
    */
   const loginWithLdap = async(req, res, next) => {
     if (!passportService.isLdapStrategySetup) {
-      debug('LdapStrategy has not been set up');
+      logger.debug('LdapStrategy has not been set up');
       return next();
     }
 
     if (!req.form.isValid) {
-      debug('invalid form');
+      logger.debug('invalid form');
       return res.render('login', {
       });
     }
@@ -89,7 +92,7 @@ module.exports = function(crowi, app) {
       ldapAccountInfo = await promisifiedPassportAuthentication(strategyName, req, res);
     }
     catch (err) {
-      debug(err.message);
+      logger.debug(err.message);
       return next();
     }
 
@@ -126,7 +129,7 @@ module.exports = function(crowi, app) {
 
     // login
     await req.logIn(user, (err) => {
-      if (err) { debug(err.message); return next() }
+      if (err) { logger.debug(err.message); return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
@@ -139,7 +142,7 @@ module.exports = function(crowi, app) {
    */
   const testLdapCredentials = (req, res) => {
     if (!passportService.isLdapStrategySetup) {
-      debug('LdapStrategy has not been set up');
+      logger.debug('LdapStrategy has not been set up');
       return res.json(ApiResponse.success({
         status: 'warning',
         message: req.t('message.strategy_has_not_been_set_up', { strategy: 'LdapStrategy' }),
@@ -195,7 +198,7 @@ module.exports = function(crowi, app) {
    */
   const loginWithLocal = (req, res, next) => {
     if (!passportService.isLocalStrategySetup) {
-      debug('LocalStrategy has not been set up');
+      logger.debug('LocalStrategy has not been set up');
       req.flash('warningMessage', req.t('message.strategy_has_not_been_set_up', { strategy: 'LocalStrategy' }));
       return next();
     }
@@ -206,9 +209,9 @@ module.exports = function(crowi, app) {
     }
 
     passport.authenticate('local', (err, user, info) => {
-      debug('--- authenticate with LocalStrategy ---');
-      debug('user', user);
-      debug('info', info);
+      logger.debug('--- authenticate with LocalStrategy ---');
+      logger.debug('user', user);
+      logger.debug('info', info);
 
       if (err) { // DB Error
         logger.error('Database Server Error: ', err);
@@ -217,7 +220,7 @@ module.exports = function(crowi, app) {
       }
       if (!user) { return next() }
       req.logIn(user, (err) => {
-        if (err) { debug(err.message); return next() }
+        if (err) { logger.debug(err.message); return next() }
 
         return loginSuccessHandler(req, res, user);
       });
@@ -226,7 +229,7 @@ module.exports = function(crowi, app) {
 
   const loginWithGoogle = function(req, res, next) {
     if (!passportService.isGoogleStrategySetup) {
-      debug('GoogleStrategy has not been set up');
+      logger.debug('GoogleStrategy has not been set up');
       req.flash('warningMessage', req.t('message.strategy_has_not_been_set_up', { strategy: 'GoogleStrategy' }));
       return next();
     }
@@ -288,14 +291,14 @@ module.exports = function(crowi, app) {
 
     // login
     req.logIn(user, (err) => {
-      if (err) { debug(err.message); return next() }
+      if (err) { logger.debug(err.message); return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
 
   const loginWithGitHub = function(req, res, next) {
     if (!passportService.isGitHubStrategySetup) {
-      debug('GitHubStrategy has not been set up');
+      logger.debug('GitHubStrategy has not been set up');
       req.flash('warningMessage', req.t('message.strategy_has_not_been_set_up', { strategy: 'GitHubStrategy' }));
       return next();
     }
@@ -330,14 +333,14 @@ module.exports = function(crowi, app) {
 
     // login
     req.logIn(user, (err) => {
-      if (err) { debug(err.message); return next() }
+      if (err) { logger.debug(err.message); return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
 
   const loginWithTwitter = function(req, res, next) {
     if (!passportService.isTwitterStrategySetup) {
-      debug('TwitterStrategy has not been set up');
+      logger.debug('TwitterStrategy has not been set up');
       req.flash('warningMessage', req.t('message.strategy_has_not_been_set_up', { strategy: 'TwitterStrategy' }));
       return next();
     }
@@ -372,14 +375,14 @@ module.exports = function(crowi, app) {
 
     // login
     req.logIn(user, (err) => {
-      if (err) { debug(err.message); return next() }
+      if (err) { logger.debug(err.message); return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
 
   const loginWithOidc = function(req, res, next) {
     if (!passportService.isOidcStrategySetup) {
-      debug('OidcStrategy has not been set up');
+      logger.debug('OidcStrategy has not been set up');
       req.flash('warningMessage', req.t('message.strategy_has_not_been_set_up', { strategy: 'OidcStrategy' }));
       return next();
     }
@@ -400,7 +403,7 @@ module.exports = function(crowi, app) {
       response = await promisifiedPassportAuthentication(strategyName, req, res);
     }
     catch (err) {
-      debug(err);
+      logger.debug(err);
       return loginFailureHandler(req, res);
     }
 
@@ -410,7 +413,7 @@ module.exports = function(crowi, app) {
       name: response[attrMapName],
       email: response[attrMapMail],
     };
-    debug('mapping response to userInfo', userInfo, response, attrMapId, attrMapUserName, attrMapMail);
+    logger.debug('mapping response to userInfo', userInfo, response, attrMapId, attrMapUserName, attrMapMail);
 
     const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
     if (!externalAccount) {
@@ -420,14 +423,14 @@ module.exports = function(crowi, app) {
     // login
     const user = await externalAccount.getPopulatedUser();
     req.logIn(user, (err) => {
-      if (err) { debug(err.message); return next() }
+      if (err) { logger.debug(err.message); return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
 
   const loginWithSaml = function(req, res, next) {
     if (!passportService.isSamlStrategySetup) {
-      debug('SamlStrategy has not been set up');
+      logger.debug('SamlStrategy has not been set up');
       req.flash('warningMessage', req.t('message.strategy_has_not_been_set_up', { strategy: 'SamlStrategy' }));
       return next();
     }
@@ -495,7 +498,7 @@ module.exports = function(crowi, app) {
    */
   const loginWithBasic = async(req, res, next) => {
     if (!passportService.isBasicStrategySetup) {
-      debug('BasicStrategy has not been set up');
+      logger.debug('BasicStrategy has not been set up');
       req.flash('warningMessage', req.t('message.strategy_has_not_been_set_up', { strategy: 'Basic' }));
       return next();
     }
@@ -524,7 +527,7 @@ module.exports = function(crowi, app) {
 
     const user = await externalAccount.getPopulatedUser();
     await req.logIn(user, (err) => {
-      if (err) { debug(err.message); return next() }
+      if (err) { logger.debug(err.message); return next() }
       return loginSuccessHandler(req, res, user);
     });
   };
@@ -579,7 +582,7 @@ module.exports = function(crowi, app) {
       if (err.name === 'DuplicatedUsernameException') {
         if (isSameEmailTreatedAsIdenticalUser || isSameUsernameTreatedAsIdenticalUser) {
           // associate to existing user
-          debug(`ExternalAccount '${userInfo.username}' will be created and bound to the exisiting User account`);
+          logger.debug(`ExternalAccount '${userInfo.username}' will be created and bound to the exisiting User account`);
           return ExternalAccount.associate(providerId, userInfo.id, err.user);
         }
 

@@ -1,3 +1,10 @@
+import loggerFactory from '~/utils/logger';
+
+const swig = require('swig-templates');
+const { pathUtils } = require('growi-commons');
+
+const logger = loggerFactory('growi:routes:page');
+
 /**
  * @swagger
  *  tags:
@@ -130,12 +137,6 @@
 
 /* eslint-disable no-use-before-define */
 module.exports = function(crowi, app) {
-  const debug = require('debug')('growi:routes:page');
-  const logger = require('@alias/logger')('growi:routes:page');
-  const swig = require('swig-templates');
-
-  const pathUtils = require('growi-commons').pathUtils;
-
   const Page = crowi.model('Page');
   const User = crowi.model('User');
   const Bookmark = crowi.model('Bookmark');
@@ -343,7 +344,7 @@ module.exports = function(crowi, app) {
       return next();
     }
     if (page.redirectTo) {
-      debug(`Redirect to '${page.redirectTo}'`);
+      logger.debug(`Redirect to '${page.redirectTo}'`);
       return res.redirect(`${encodeURI(page.redirectTo)}?redirectFrom=${encodeURIComponent(path)}`);
     }
 
@@ -1161,7 +1162,7 @@ module.exports = function(crowi, app) {
       }
     }
     catch (err) {
-      debug('Seen user update error', err);
+      logger.debug('Seen user update error', err);
       return res.json(ApiResponse.error(err));
     }
 
@@ -1222,12 +1223,12 @@ module.exports = function(crowi, app) {
         data = data.map((e) => {
           return e.channel;
         });
-        debug('Found updatePost data', data);
+        logger.debug('Found updatePost data', data);
         const result = { updatePost: data };
         return res.json(ApiResponse.success(result));
       })
       .catch((err) => {
-        debug('Error occured while get setting', err);
+        logger.debug('Error occured while get setting', err);
         return res.json(ApiResponse.error({}));
       });
   };
@@ -1258,7 +1259,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
     }
 
-    debug('Delete page', page._id, page.path);
+    logger.debug('Delete page', page._id, page.path);
 
     try {
       if (isCompletely) {
@@ -1290,7 +1291,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Failed to delete page.', err.message));
     }
 
-    debug('Page deleted', page.path);
+    logger.debug('Page deleted', page.path);
     const result = {};
     result.page = page; // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
 

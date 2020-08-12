@@ -1,11 +1,12 @@
 /* eslint-disable no-use-before-define */
 
-
-const logger = require('@alias/logger')('growi:routes:attachment');
+import loggerFactory from '~/utils/logger';
 
 const fs = require('fs');
 
 const ApiResponse = require('../util/apiResponse');
+
+const logger = loggerFactory('growi:routes:attachment');
 
 /**
  * @swagger

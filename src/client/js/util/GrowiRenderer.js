@@ -18,7 +18,9 @@ import DrawioViewerConfigurer from './markdown-it/drawio-viewer';
 import TableWithHandsontableButtonConfigurer from './markdown-it/table-with-handsontable-button';
 import HeaderWithEditLinkConfigurer from './markdown-it/header-with-edit-link';
 
-const logger = require('@alias/logger')('growi:util:GrowiRenderer');
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:util:GrowiRenderer');
 
 export default class GrowiRenderer {
 

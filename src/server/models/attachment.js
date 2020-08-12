@@ -1,12 +1,15 @@
 // disable no-return-await for model functions
 /* eslint-disable no-return-await */
 
-// eslint-disable-next-line no-unused-vars
-const logger = require('@alias/logger')('growi:models:attachment');
+import loggerFactory from '~/utils/logger';
+
 const path = require('path');
 
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const logger = loggerFactory('growi:models:attachment');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
