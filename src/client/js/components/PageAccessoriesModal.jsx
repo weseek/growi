@@ -33,6 +33,19 @@ const PageAccessoriesModal = (props) => {
     props.onSwitch(clickedTab);
   }
 
+  function renderModal() {
+    return (
+      <>
+        <PageAccessoriesModal
+          isOpen={pageAccessoriesContainer.isPageAccessoriesModalShown}
+          onClose={pageAccessoriesContainer.closePageAccessoriesModal}
+          activeTab={pageAccessoriesContainer.activeTab}
+          onSwitch={pageAccessoriesContainer.switchActiveTab}
+        />
+      </>
+    );
+  }
+
   return (
     <React.Fragment>
       <Modal
@@ -90,6 +103,7 @@ const PageAccessoriesModal = (props) => {
           </TabContent>
         </ModalBody>
       </Modal>
+      {renderModal()}
     </React.Fragment>
   );
 };
