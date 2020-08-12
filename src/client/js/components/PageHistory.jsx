@@ -1,10 +1,11 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 import { toastError } from '../util/apiNotification';
 
+import withSuspense from './withSuspense';
 import PageRevisionList from './PageHistory/PageRevisionList';
 
 import PageHistroyContainer from '../services/PageHistoryContainer';
@@ -14,20 +15,6 @@ const logger = loggerFactory('growi:PageHistory');
 // for using suspense
 let isLoaded = false;
 
-// TODO GW-3485 HOC
-function RenderPageHistoryWrapperWithSuspense(props) {
-  return (
-    <Suspense
-      fallback={(
-        <div className="my-5 text-center">
-          <i className="fa fa-lg fa-spinner fa-pulse mx-auto text-muted"></i>
-        </div>
-      )}
-    >
-      <RenderPageHistoryWrapper props={props} />
-    </Suspense>
-  );
-}
 function PageHistory(props) {
   const { pageHistoryContainer } = props;
 
@@ -65,10 +52,11 @@ function PageHistory(props) {
 
 }
 
-const RenderPageHistoryWrapper = withUnstatedContainers(PageHistory, [PageHistroyContainer]);
+const RenderPageHistoryWithSuspense = withSuspense(PageHistory);
+const RenderPageHistoryWrapper = withUnstatedContainers(RenderPageHistoryWithSuspense, [PageHistroyContainer]);
 
 PageHistory.propTypes = {
   pageHistoryContainer: PropTypes.instanceOf(PageHistroyContainer).isRequired,
 };
 
-export default RenderPageHistoryWrapperWithSuspense;
+export default RenderPageHistoryWrapper;
