@@ -11,9 +11,10 @@ import PageHistroyContainer from '../services/PageHistoryContainer';
 
 const logger = loggerFactory('growi:PageHistory');
 
-// set dummy value tile for using suspense
+// for using suspense
 let isLoaded = false;
 
+// TODO GW-3485 HOC
 function AppSettingsPage(props) {
   return (
     <Suspense

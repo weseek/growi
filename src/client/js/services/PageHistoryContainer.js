@@ -14,7 +14,6 @@ export default class PageHistoryContainer extends Container {
 
     this.state = {
       retrieveError: null,
-      hoge: 'huga',
 
       revisions: [],
       diffOpened: null,
@@ -110,7 +109,7 @@ export default class PageHistoryContainer extends Container {
       return;
     }
 
-    // TODO apiV3
+    // TODO GW-3487 apiV3
     this.appContainer.apiGet('/revisions.get', { page_id: pageId, revision_id: revision._id, share_link_id: shareLinkId })
       .then((res) => {
         if (res.ok) {
