@@ -28,13 +28,13 @@ module.exports = function(crowi, app) {
   const tag = require('./tag')(crowi, app);
   const revision = require('./revision')(crowi, app);
   const search = require('./search')(crowi, app);
-  const hackmd = require('./hackmd')(crowi, app);
+  // const hackmd = require('./hackmd')(crowi, app);
 
   const isInstalled = crowi.configManager.getConfig('crowi', 'app:installed');
 
   /* eslint-disable max-len, comma-spacing, no-multi-spaces */
 
-  app.get('/'                        , applicationInstalled, loginRequired , page.showTopPage);
+  // app.get('/'                        , applicationInstalled, loginRequired , page.showTopPage);
 
   // API v3
   app.use('/api-docs', require('./apiv3/docs')(crowi));
@@ -169,19 +169,19 @@ module.exports = function(crowi, app) {
   app.get('/_api/revisions.get'       , certifySharedPage , accessTokenParser , loginRequired , revision.api.get);
   app.get('/_api/revisions.ids'       , certifySharedPage , accessTokenParser , loginRequired , revision.api.ids);
 
-  app.get('/trash$'                   , loginRequired , page.trashPageShowWrapper);
-  app.get('/trash/$'                  , loginRequired , page.trashPageListShowWrapper);
-  app.get('/trash/*/$'                , loginRequired , page.deletedPageListShowWrapper);
+  // app.get('/trash$'                   , loginRequired , page.trashPageShowWrapper);
+  // app.get('/trash/$'                  , loginRequired , page.trashPageListShowWrapper);
+  // app.get('/trash/*/$'                , loginRequired , page.deletedPageListShowWrapper);
 
-  app.get('/_hackmd/load-agent'          , hackmd.loadAgent);
-  app.get('/_hackmd/load-styles'         , hackmd.loadStyles);
-  app.post('/_api/hackmd.integrate'      , accessTokenParser , loginRequiredStrictly , csrf, hackmd.validateForApi, hackmd.integrate);
-  app.post('/_api/hackmd.discard'        , accessTokenParser , loginRequiredStrictly , csrf, hackmd.validateForApi, hackmd.discard);
-  app.post('/_api/hackmd.saveOnHackmd'   , accessTokenParser , loginRequiredStrictly , csrf, hackmd.validateForApi, hackmd.saveOnHackmd);
+  // app.get('/_hackmd/load-agent'          , hackmd.loadAgent);
+  // app.get('/_hackmd/load-styles'         , hackmd.loadStyles);
+  // app.post('/_api/hackmd.integrate'      , accessTokenParser , loginRequiredStrictly , csrf, hackmd.validateForApi, hackmd.integrate);
+  // app.post('/_api/hackmd.discard'        , accessTokenParser , loginRequiredStrictly , csrf, hackmd.validateForApi, hackmd.discard);
+  // app.post('/_api/hackmd.saveOnHackmd'   , accessTokenParser , loginRequiredStrictly , csrf, hackmd.validateForApi, hackmd.saveOnHackmd);
 
-  app.get('/share/:linkId', page.showSharedPage);
+  // app.get('/share/:linkId', page.showSharedPage);
 
-  app.get('/*/$'                   , loginRequired , page.showPageWithEndOfSlash, page.notFound);
-  app.get('/*'                     , loginRequired , page.showPage, page.notFound);
+  // app.get('/*/$'                   , loginRequired , page.showPageWithEndOfSlash, page.notFound);
+  // app.get('/*'                     , loginRequired , page.showPage, page.notFound);
 
 };

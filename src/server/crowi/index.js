@@ -459,10 +459,10 @@ Crowi.prototype.buildServer = async function() {
  * !! this must be at last because it includes '/*' route !!
  */
 Crowi.prototype.setupRoutesAtLast = function() {
-  // require('../routes')(this, this.express);
+  require('../routes')(this, this.express);
 
   const handle = this.nextApp.getRequestHandler();
-  this.express.all('*', (req, res) => {
+  this.express.get('/*', (req, res) => {
     return handle(req, res);
   });
 };
