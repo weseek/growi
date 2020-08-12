@@ -7473,11 +7473,6 @@ highlight.js@10.0.2:
   resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-10.0.2.tgz#d2c732544f8f68bceaf0cefb4b0575bce8eddbee"
   integrity sha512-2gMT2MHU6/2OjAlnaOE2LFdr9dwviDN3Q2lSw7Ois3/5uTtahbgYTkr4EPoY828ps+2eQWiixPTF8+phU6Ofkg==
 
-hjson@^3.2.1:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/hjson/-/hjson-3.2.1.tgz#20de41dc87fc9a10d1557d0230b0e02afb1b09ac"
-  integrity sha512-OhhrFMeC7dVuA1xvxuXGTv/yTdhTvbe8hz+3LgVNsfi9+vgz0sF/RrkuX8eegpKaMc9cwYwydImBH6iePoJtdQ==
-
 hmac-drbg@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/hmac-drbg/-/hmac-drbg-1.0.1.tgz#d2745701025a6c775a6c545793ed502fc0c649a1"
