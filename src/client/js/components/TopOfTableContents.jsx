@@ -72,7 +72,6 @@ const TopOfTableContents = (props) => {
 
         </div>
         <div
-          className=""
           id="seen-user-list"
           data-user-ids-str="{{ page.seenUsers|slice(-15)|default([])|reverse|join(',') }}"
           data-sum-of-seen-users="{{ page.seenUsers.length|default(0) }}"
