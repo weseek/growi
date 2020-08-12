@@ -5,7 +5,7 @@ import { Container } from 'unstated';
  * @extends {Container} unstated Container
  */
 
-export default class PafeAccessoriesContainer extends Container {
+export default class PageAccessoriesContainer extends Container {
 
   constructor(appContainer) {
     super();
@@ -18,9 +18,36 @@ export default class PafeAccessoriesContainer extends Container {
       // Prevent unnecessary rendering
       activeComponents: new Set(['']),
     };
+    this.openPageAccessoriesModal = this.openPageAccessoriesModal.bind(this);
+    this.closePageAccessoriesModal = this.closePageAccessoriesModal.bind(this);
+    this.switchActiveTab = this.switchActiveTab.bind(this);
+  }
 
-    // this.openPageCreateModal = this.openPageCreateModal.bind(this);
-    // this.closePageCreateModal = this.closePageCreateModal.bind(this);
+  /**
+   * Workaround for the mangling in production build to break constructor.name
+   */
+  static getClassName() {
+    return 'PageAccessoriesContainer';
+  }
+
+
+  openPageAccessoriesModal() {
+    this.setState({
+      isPageAccessoriesModalShown: true,
+    });
+
+  }
+
+  closePageAccessoriesModal() {
+    this.setState({
+      isPageAccessoriesModalShown: false,
+    });
+  }
+
+  switchActiveTab(activeTab) {
+    this.setState({
+      activeTab, activeComponents: this.state.activeComponents.add(activeTab),
+    });
   }
 
 }
