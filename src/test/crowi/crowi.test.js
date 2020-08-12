@@ -5,7 +5,7 @@ describe('Test for Crowi application context', () => {
   describe('construction', () => {
     test('initialize crowi context', async() => {
       const crowi = await getInstance();
-      expect(crowi.version).toBe(require('@root/package.json').version);
+      expect(crowi.version).toBe(require('^/package.json').version);
       expect(typeof crowi.env).toBe('object');
     });
 

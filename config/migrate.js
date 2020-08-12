@@ -5,11 +5,9 @@
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
 
-require('module-alias/register');
-
 const { URL } = require('url');
 
-const { getMongoUri } = require('@commons/util/mongoose-utils');
+const { getMongoUri } = require('~/utils/mongoose-utils');
 
 const mongoUri = getMongoUri();
 

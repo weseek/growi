@@ -2,7 +2,7 @@ import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 
-import locales from '@root/resource/locales';
+import locales from '^/resource/locales';
 
 // extract metadata list from 'resource/locales/${locale}/meta.json'
 export const localeMetadatas = Object.values(locales).map(locale => locale.meta);

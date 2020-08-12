@@ -9,8 +9,8 @@ describe('loginRequired', () => {
 
   beforeEach(async(done) => {
     crowi = await getInstance();
-    loginRequiredStrictly = require('@server/middlewares/login-required')(crowi);
-    loginRequired = require('@server/middlewares/login-required')(crowi, true);
+    loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
+    loginRequired = require('~/server/middlewares/login-required')(crowi, true);
     done();
   });
 

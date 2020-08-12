@@ -7,7 +7,7 @@ import * as codemirror from 'codemirror';
 import { Button } from 'reactstrap';
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
 
-import InterceptorManager from '@commons/service/interceptor-manager';
+import InterceptorManager from '~/service/interceptor-manager';
 
 import AbstractEditor from './AbstractEditor';
 import SimpleCheatsheet from './SimpleCheatsheet';

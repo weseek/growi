@@ -3,7 +3,7 @@ import { Container } from 'unstated';
 import axios from 'axios';
 import urljoin from 'url-join';
 
-import InterceptorManager from '@commons/service/interceptor-manager';
+import InterceptorManager from '~/service/interceptor-manager';
 
 import emojiStrategy from '../util/emojione/emoji_strategy_shrinked.json';
 import GrowiRenderer from '../util/GrowiRenderer';

@@ -1,4 +1,4 @@
-const SearchboxDelegator = require('@server/service/search-delegator/searchbox');
+const SearchboxDelegator = require('~/server/service/search-delegator/searchbox');
 
 describe('SearchboxDelegator test', () => {
 

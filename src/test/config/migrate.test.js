@@ -15,7 +15,7 @@ describe('config/migrate.js', () => {
     test(`when 'MONGO_URI' is '${MONGO_URI}`, () => {
 
       // mock for mongoose-utils
-      jest.doMock('@commons/util/mongoose-utils', () => {
+      jest.doMock('~/utils/mongoose-utils', () => {
         return {
           getMongoUri: () => {
             return MONGO_URI;
@@ -23,9 +23,9 @@ describe('config/migrate.js', () => {
         };
       });
 
-      const { mongoUri, mongodb } = require('@root/config/migrate');
+      const { mongoUri, mongodb } = require('^/config/migrate');
 
-      jest.dontMock('@commons/util/mongoose-utils');
+      jest.dontMock('~/utils/mongoose-utils');
 
       expect(mongoUri).toBe(MONGO_URI);
       expect(mongodb.url).toBe(expectedUrl);

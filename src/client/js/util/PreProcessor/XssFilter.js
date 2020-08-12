@@ -1,5 +1,5 @@
-import Xss from '@commons/service/xss';
-import XssOption from '@commons/service/xss/xssOption';
+import Xss from '~/service/xss';
+import XssOption from '~/service/xss/xssOption';
 
 export default class XssFilter {
 

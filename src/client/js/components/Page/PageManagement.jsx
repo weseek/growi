@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { UncontrolledTooltip } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
 
-import { isTopPage } from '@commons/util/path-utils';
+import { isTopPage } from '~/utils/path-utils';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';

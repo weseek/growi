@@ -5,9 +5,9 @@ import { withTranslation } from 'react-i18next';
 
 import loggerFactory from '@alias/logger';
 
-import DevidedPagePath from '@commons/models/devided-page-path';
-import LinkedPagePath from '@commons/models/linked-page-path';
-import PagePathHierarchicalLink from '@commons/components/PagePathHierarchicalLink';
+import DevidedPagePath from '~/models/devided-page-path';
+import LinkedPagePath from '~/models/linked-page-path';
+import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';

@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { userPageRoot } from '@commons/util/path-utils';
-
 import { UncontrolledTooltip } from 'reactstrap';
+import { userPageRoot } from '~/utils/path-utils';
+
 
 const DEFAULT_IMAGE = '/images/icons/user.svg';
 

@@ -12,7 +12,7 @@ const {
 } = require('stream');
 const streamToPromise = require('stream-to-promise');
 
-const { createBatchStream } = require('@server/util/batch-stream');
+const { createBatchStream } = require('~/server/util/batch-stream');
 
 const DEFAULT_OFFSET = 0;
 const DEFAULT_LIMIT = 50;
@@ -267,7 +267,7 @@ class ElasticsearchDelegator {
   }
 
   async createIndex(index) {
-    const body = require('@root/resource/search/mappings.json');
+    const body = require('^/resource/search/mappings.json');
     return this.client.indices.create({ index, body });
   }
 

@@ -8,8 +8,8 @@ import { withTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 import urljoin from 'url-join';
 
-import { userPageRoot } from '@commons/util/path-utils';
 import { pathUtils } from 'growi-commons';
+import { userPageRoot } from '~/utils/path-utils';
 
 import AppContainer from '../services/AppContainer';
 import NavigationContainer from '../services/NavigationContainer';

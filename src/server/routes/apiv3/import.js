@@ -7,7 +7,7 @@ const multer = require('multer');
 
 const express = require('express');
 
-const GrowiArchiveImportOption = require('@commons/models/admin/growi-archive-import-option');
+const GrowiArchiveImportOption = require('~/models/admin/growi-archive-import-option');
 
 
 const router = express.Router();

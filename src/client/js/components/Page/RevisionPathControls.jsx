@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import { isTrashPage } from '@commons/util/path-utils';
+import { isTrashPage } from '~/utils/path-utils';
 
 import CopyDropdown from './CopyDropdown';
 

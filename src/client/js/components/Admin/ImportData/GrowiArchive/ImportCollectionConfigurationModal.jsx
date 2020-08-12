@@ -10,7 +10,7 @@ import {
   ModalFooter,
 } from 'reactstrap';
 
-import GrowiArchiveImportOption from '@commons/models/admin/growi-archive-import-option';
+import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
 
 import { withUnstatedContainers } from '../../../UnstatedUtils';
 import AppContainer from '../../../../services/AppContainer';

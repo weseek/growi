@@ -20,7 +20,7 @@ module.exports = (crowi) => {
   }
 
   const swaggerJSDoc = require('swagger-jsdoc');
-  const swaggerDefinition = require('@root/config/swagger-definition');
+  const swaggerDefinition = require('^/config/swagger-definition');
 
   // generate swagger spec
   const options = {

@@ -1,10 +1,8 @@
-require('module-alias/register');
-
 const repl = require('repl');
 const fs = require('fs');
 const path = require('path');
 const mongoose = require('mongoose');
-const { getMongoUri, mongoOptions } = require('@commons/util/mongoose-utils');
+const { getMongoUri, mongoOptions } = require('~/utils/mongoose-utils');
 
 const models = require('./models');
 

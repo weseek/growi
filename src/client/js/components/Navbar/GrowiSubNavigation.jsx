@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import { isTrashPage } from '@commons/util/path-utils';
 
-import DevidedPagePath from '@commons/models/devided-page-path';
-import LinkedPagePath from '@commons/models/linked-page-path';
-import PagePathHierarchicalLink from '@commons/components/PagePathHierarchicalLink';
+import DevidedPagePath from '~/models/devided-page-path';
+import LinkedPagePath from '~/models/linked-page-path';
+import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
+import { isTrashPage } from '~/utils/path-utils';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';

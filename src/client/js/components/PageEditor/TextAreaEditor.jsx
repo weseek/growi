@@ -1,9 +1,9 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
 
-import InterceptorManager from '@commons/service/interceptor-manager';
-
 import { Input } from 'reactstrap';
+import InterceptorManager from '~/service/interceptor-manager';
+
 
 import AbstractEditor from './AbstractEditor';
 

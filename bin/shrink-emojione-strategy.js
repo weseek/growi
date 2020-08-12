@@ -3,16 +3,14 @@
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
-require('module-alias/register');
+import { resolveFromRoot } from '~/utils/project-dir-utils';
 
 const fs = require('graceful-fs');
-
-const helpers = require('@commons/util/helpers');
 
 const emojiStrategy = require('emojione/emoji_strategy.json');
 const markdownItEmojiFull = require('markdown-it-emoji/lib/data/full.json');
 
-const OUT = helpers.root('tmp/emoji_strategy_shrinked.json');
+const OUT = resolveFromRoot('tmp/emoji_strategy_shrinked.json');
 
 const shrinkedMap = {};
 Object.keys(emojiStrategy).forEach((unicode) => {

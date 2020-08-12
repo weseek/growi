@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import GrowiArchiveImportOption from '@commons/models/admin/growi-archive-import-option';
-import ImportOptionForPages from '@commons/models/admin/import-option-for-pages';
-import ImportOptionForRevisions from '@commons/models/admin/import-option-for-revisions';
+import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
+import ImportOptionForPages from '~/models/admin/import-option-for-pages';
+import ImportOptionForRevisions from '~/models/admin/import-option-for-revisions';
 
 import { withUnstatedContainers } from '../../../UnstatedUtils';
 import AppContainer from '../../../../services/AppContainer';
