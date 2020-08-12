@@ -16,27 +16,27 @@ import { withUnstatedContainers } from './UnstatedUtils';
 
 const TopOfTableContents = (props) => {
 
-  const [isPageAccessoriesModalShown, setIsPageAccessoriesModalShown] = useState(false);
-  const [activeTab, setActiveTab] = useState('');
+  // const [isPageAccessoriesModalShown, setIsPageAccessoriesModalShown] = useState(false);
+  // const [activeTab, setActiveTab] = useState('');
   // Prevent unnecessary rendering
-  const [activeComponents, setActiveComponents] = useState(new Set(['']));
+  // const [activeComponents, setActiveComponents] = useState(new Set(['']));
 
-  function openPageAccessoriesModal(activeTab) {
-    setIsPageAccessoriesModalShown(true);
-    setActiveTab(activeTab);
-    activeComponents.add(activeTab);
-    setActiveComponents(activeComponents);
-  }
+  // function openPageAccessoriesModal(activeTab) {
+  //   setIsPageAccessoriesModalShown(true);
+  //   setActiveTab(activeTab);
+  //   activeComponents.add(activeTab);
+  //   setActiveComponents(activeComponents);
+  // }
 
-  function switchActiveTab(clickedTab) {
-    activeComponents.add(clickedTab);
-    setActiveComponents(activeComponents);
-    setActiveTab(clickedTab);
-  }
+  // function switchActiveTab(clickedTab) {
+  //   activeComponents.add(clickedTab);
+  //   setActiveComponents(activeComponents);
+  //   setActiveTab(clickedTab);
+  // }
 
-  function closePageAccessoriesModal() {
-    setIsPageAccessoriesModalShown(false);
-  }
+  // function closePageAccessoriesModal() {
+  //   setIsPageAccessoriesModalShown(false);
+  // }
 
   function renderModal() {
     return (
