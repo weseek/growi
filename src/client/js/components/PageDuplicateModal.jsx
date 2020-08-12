@@ -133,8 +133,14 @@ const PageDuplicateModal = (props) => {
             { t('modal_duplicate.label.Duplicate with child') }
           </label>
           <div>
-            <ul>
-              {isDuplicateRecursively && subordinatedPaths.map(duplicatedNewPath => <li key={duplicatedNewPath}>{duplicatedNewPath}</li>)}
+            <ul className="duplicate-name">
+              {isDuplicateRecursively && subordinatedPaths.map((duplicatedNewPath) => {
+                  if (true) {
+                    return <li className="duplicate-exist" key={duplicatedNewPath}>{duplicatedNewPath}: Same page already exists</li>;
+                  }
+                  return <li key={duplicatedNewPath}>{duplicatedNewPath}</li>;
+                })
+              }
             </ul>
           </div>
           <div> {getSubordinatedError} </div>
