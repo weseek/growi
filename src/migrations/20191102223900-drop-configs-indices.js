@@ -1,8 +1,9 @@
-require('module-alias/register');
-const logger = require('@alias/logger')('growi:migrate:drop-configs-indices');
+import mongoose from 'mongoose';
 
-const mongoose = require('mongoose');
-const config = require('@root/config/migrate');
+import config from '^/config/migrate';
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:migrate:drop-configs-indices');
 
 async function dropIndexIfExists(collection, indexName) {
   if (await collection.indexExists(indexName)) {

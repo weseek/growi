@@ -1,17 +1,18 @@
-require('module-alias/register');
-const logger = require('@alias/logger')('growi:migrate:adjust-pages-path');
+import mongoose from 'mongoose';
+import { pathUtils } from 'growi-commons';
 
-const mongoose = require('mongoose');
-const config = require('@root/config/migrate');
+import config from '^/config/migrate';
+import loggerFactory from '~/utils/logger';
 
-const pathUtils = require('growi-commons').pathUtils;
+const logger = loggerFactory('growi:migrate:adjust-pages-path');
+
 
 module.exports = {
   async up(db) {
     logger.info('Apply migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const Page = require('@server/models/page')();
+    const Page = require('~/server/models/page')();
 
     // retrieve target data
     const pages = await Page.find({ path: /^(?!\/)/ });

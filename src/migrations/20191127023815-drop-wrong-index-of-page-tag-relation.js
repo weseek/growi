@@ -1,8 +1,9 @@
-require('module-alias/register');
-const logger = require('@alias/logger')('growi:migrate:drop-wrong-index-of-page-tag-relation');
+import mongoose from 'mongoose';
 
-const mongoose = require('mongoose');
-const config = require('@root/config/migrate');
+import config from '^/config/migrate';
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:migrate:drop-wrong-index-of-page-tag-relation');
 
 async function dropIndexIfExists(db, collectionName, indexName) {
   // check existence of the collection

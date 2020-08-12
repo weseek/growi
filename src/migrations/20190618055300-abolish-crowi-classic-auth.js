@@ -1,17 +1,17 @@
-const logger = require('@alias/logger')('growi:migrate:abolish-crowi-classic-auth');
+import mongoose from 'mongoose';
 
-const mongoose = require('mongoose');
-const config = require('@root/config/migrate');
+import config from '^/config/migrate';
+import loggerFactory from '~/utils/logger';
+import { getModelSafely } from '~/utils/mongoose-utils';
 
-const { getModelSafely } = require('@commons/util/mongoose-utils');
-
+const logger = loggerFactory('growi:migrate:abolish-crowi-classic-auth');
 
 module.exports = {
   async up(db, next) {
     logger.info('Start migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const Config = getModelSafely('Config') || require('@server/models/config')();
+    const Config = getModelSafely('Config') || require('~/server/models/config')();
 
     // enable passport and delete configs for crowi classic auth
     await Promise.all([

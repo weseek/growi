@@ -1,10 +1,10 @@
-const logger = require('@alias/logger')('growi:migrate:abolish-page-group-relation');
+import mongoose from 'mongoose';
 
-const mongoose = require('mongoose');
-const config = require('@root/config/migrate');
+import config from '^/config/migrate';
+import loggerFactory from '~/utils/logger';
+import { getModelSafely } from '~/utils/mongoose-utils';
 
-const { getModelSafely } = require('@commons/util/mongoose-utils');
-
+const logger = loggerFactory('growi:migrate:abolish-page-group-relation');
 
 async function isCollectionExists(db, collectionName) {
   const collections = await db.listCollections({ name: collectionName }).toArray();
@@ -38,8 +38,8 @@ module.exports = {
       return;
     }
 
-    const Page = getModelSafely('Page') || require('@server/models/page')();
-    const UserGroup = getModelSafely('UserGroup') || require('@server/models/user-group')();
+    const Page = getModelSafely('Page') || require('~/server/models/page')();
+    const UserGroup = getModelSafely('UserGroup') || require('~/server/models/user-group')();
 
     // retrieve all documents from 'pagegrouprelations'
     const relations = await db.collection('pagegrouprelations').find().toArray();
@@ -75,8 +75,8 @@ module.exports = {
     logger.info('Rollback migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const Page = getModelSafely('Page') || require('@server/models/page')();
-    const UserGroup = getModelSafely('UserGroup') || require('@server/models/user-group')();
+    const Page = getModelSafely('Page') || require('~/server/models/page')();
+    const UserGroup = getModelSafely('UserGroup') || require('~/server/models/user-group')();
 
     // retrieve all Page documents which granted by UserGroup
     const relatedPages = await Page.find({ grant: Page.GRANT_USER_GROUP });

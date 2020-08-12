@@ -1,11 +1,10 @@
+import mongoose from 'mongoose';
 
+import config from '^/config/migrate';
+import loggerFactory from '~/utils/logger';
+import { getModelSafely } from '~/utils/mongoose-utils';
 
-const logger = require('@alias/logger')('growi:migrate:init-serverurl');
-
-const mongoose = require('mongoose');
-const config = require('@root/config/migrate');
-
-const { getModelSafely } = require('@commons/util/mongoose-utils');
+const logger = loggerFactory('growi:migrate:init-serverurl');
 
 /**
  * check all values of the array are equal
@@ -23,7 +22,7 @@ module.exports = {
     logger.info('Apply migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const Config = getModelSafely('Config') || require('@server/models/config')();
+    const Config = getModelSafely('Config') || require('~/server/models/config')();
 
     // find 'app:siteUrl'
     const siteUrlConfig = await Config.findOne({
@@ -82,7 +81,7 @@ module.exports = {
     logger.info('Rollback migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const Config = getModelSafely('Config') || require('@server/models/config')();
+    const Config = getModelSafely('Config') || require('~/server/models/config')();
 
     // remote 'app:siteUrl'
     await Config.findOneAndDelete({
