@@ -76,7 +76,7 @@ module.exports = (crowi) => {
 
   });
 
-  router.get('/:id', accessTokenParser, loginRequired, validator.retrieveRevisionById, apiV3FormValidator, async(req, res) => {
+  router.get('/:id', certifySharedPage, accessTokenParser, loginRequired, validator.retrieveRevisionById, apiV3FormValidator, async(req, res) => {
     const revisionId = req.params.id;
     const { pageId } = req.query;
     const { isSharedPage } = req;
