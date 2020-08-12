@@ -142,23 +142,22 @@ module.exports = (crowi) => {
     ],
   };
 
-  async function pageCreateAction(pageCreateArgs) {
-    const {
-      path, body, user, options,
-    } = pageCreateArgs;
-
+  async function createPageAction({
+    path, body, user, options,
+  }) {
     const createdPage = Page.create(path, body, user, options);
     return createdPage;
   }
 
-  async function saveTagsAction(saveTagsArgs) {
-    const { createdPage, pageTags } = saveTagsArgs;
-
+  async function saveTagsAction({ createdPage, pageTags }) {
     if (pageTags != null) {
       await PageTagRelation.updatePageTags(createdPage.id, pageTags);
       const savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
       return savedTags;
     }
+
+    const savedTags = [];
+    return savedTags;
   }
 
   /**
@@ -218,7 +217,7 @@ module.exports = (crowi) => {
       options.grantUserGroupId = grantUserGroupId;
     }
 
-    const createdPage = await pageCreateAction({
+    const createdPage = await createPageAction({
       path, body, user: req.user, options,
     });
 
@@ -500,7 +499,7 @@ module.exports = (crowi) => {
     options.grantUserGroupId = page.grantedGroup;
     options.grantedUsers = page.grantedUsers;
 
-    const createdPage = await pageCreateAction({
+    const createdPage = await createPageAction({
       path: newPagePath, user: req.user, body: page.revision.body, options,
     });
     const originTags = await page.findRelatedTagsById();
