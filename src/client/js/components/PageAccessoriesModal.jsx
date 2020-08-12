@@ -41,7 +41,6 @@ const PageAccessoriesModal = (props) => {
             <NavItem className={`nav-link ${activeTab === 'pagelist' && 'active active-border'}`}>
               <NavLink
                 onClick={() => { switchActiveTab('pagelist') }}
-                href="#pagelist"
               >
                 <PageListIcon />
                 { t('page_list') }
@@ -50,7 +49,6 @@ const PageAccessoriesModal = (props) => {
             <NavItem className={`nav-link ${activeTab === 'timeline' && 'active active-border'}`}>
               <NavLink
                 onClick={() => { switchActiveTab('timeline') }}
-                href="#timeline"
               >
                 <TimeLineIcon />
                 { t('Timeline View') }
@@ -59,7 +57,6 @@ const PageAccessoriesModal = (props) => {
             <NavItem className={`nav-link ${activeTab === 'recent-changes' && 'active active-border'}`}>
               <NavLink
                 onClick={() => { switchActiveTab('recent-changes') }}
-                href="#recent-changes"
               >
                 <RecentChangesIcon />
                 { t('History') }
@@ -68,7 +65,6 @@ const PageAccessoriesModal = (props) => {
             <NavItem className={`nav-link ${activeTab === 'attachment' && 'active active-border'}`}>
               <NavLink
                 onClick={() => { switchActiveTab('attachment') }}
-                href="#attachment"
               >
                 <AttachmentIcon />
                 { t('attachment_data') }
