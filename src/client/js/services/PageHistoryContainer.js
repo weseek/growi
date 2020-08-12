@@ -19,7 +19,7 @@ export default class PageHistoryContainer extends Container {
 
       // set dummy rivisions for using suspense
       revisions: this.dummyRevisions,
-      diffOpened: null,
+      diffOpened: {},
     };
 
     this.retrieveRevisions = this.retrieveRevisions.bind(this);
