@@ -469,7 +469,7 @@ module.exports = (crowi) => {
    *            description: Internal server error.
    */
   router.post('/duplicate', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
-    const { pageId } = req.body;
+    const { pageId, isDuplicateRecursively } = req.body;
 
     const newPagePath = pathUtils.normalizePath(req.body.pageNameInput);
 
