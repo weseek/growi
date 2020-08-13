@@ -23,7 +23,7 @@ function PageHistory(props) {
       }
       catch (err) {
         toastError(err);
-        pageHistoryContainer.setState({ retrieveError: err.message });
+        pageHistoryContainer.setState({ errorMessage: err.message });
         logger.error(err);
       }
     });
