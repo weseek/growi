@@ -28,7 +28,6 @@ const PageShareManagement = (props) => {
   async function exportPageHandler(format) {
     const { pageId, revisionId } = pageContainer.state;
     const url = new URL(urljoin(window.location.origin, '_api/v3/page/export', pageId));
-    url.searchParams.append('_csrf', appContainer.csrfToken);
     url.searchParams.append('format', format);
     url.searchParams.append('revisionId', revisionId);
     window.location.href = url.href;
