@@ -79,7 +79,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /revisions/list:
+   *    /revisions/{id}:
    *      get:
    *        tags: [Revisions]
    *        description: Get one revision by id
@@ -87,9 +87,15 @@ module.exports = (crowi) => {
    *          - in: query
    *            name: pageId
    *            required: true
+   *            description: page id
    *            schema:
    *              type: string
-   *              description:  page id
+   *          - in: path
+   *            name: id
+   *            required: true
+   *            description: revision id
+   *            schema:
+   *              type: string
    *        responses:
    *          200:
    *            description: Return revision
