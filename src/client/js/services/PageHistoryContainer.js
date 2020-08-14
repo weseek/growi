@@ -1,5 +1,11 @@
 import { Container } from 'unstated';
 
+import loggerFactory from '@alias/logger';
+
+import { toastError } from '../util/apiNotification';
+
+const logger = loggerFactory('growi:PageHistoryContainer');
+
 /**
  * Service container for personal settings page (PageHistory.jsx)
  * @extends {Container} unstated Container
@@ -15,7 +21,7 @@ export default class PageHistoryContainer extends Container {
     this.dummyRevisions = 0;
 
     this.state = {
-      retrieveError: null,
+      errorMessage: null,
 
       // set dummy rivisions for using suspense
       revisions: this.dummyRevisions,
@@ -105,33 +111,36 @@ export default class PageHistoryContainer extends Container {
     return cursor;
   }
 
-  fetchPageRevisionBody(revision) {
+  /**
+   * fetch page revision body by revision in argument
+   * @param {object} revision
+   */
+  async fetchPageRevisionBody(revision) {
     const { pageId, shareLinkId } = this.pageContainer.state;
 
     if (revision.body) {
       return;
     }
 
-    // TODO GW-3487 apiV3
-    this.appContainer.apiGet('/revisions.get', { page_id: pageId, revision_id: revision._id, share_link_id: shareLinkId })
-      .then((res) => {
-        if (res.ok) {
-          this.setState({
-            revisions: this.state.revisions.map((rev) => {
-              // comparing ObjectId
-              // eslint-disable-next-line eqeqeq
-              if (rev._id == res.revision._id) {
-                return res.revision;
-              }
+    try {
+      const res = await this.appContainer.apiv3Get(`/revisions/${revision._id}`, { pageId, share_link_id: shareLinkId });
+      this.setState({
+        revisions: this.state.revisions.map((rev) => {
+          // comparing ObjectId
+          // eslint-disable-next-line eqeqeq
+          if (rev._id == res.data.revision._id) {
+            return res.data.revision;
+          }
 
-              return rev;
-            }),
-          });
-        }
-      })
-      .catch((err) => {
-
+          return rev;
+        }),
       });
+    }
+    catch (err) {
+      toastError(err);
+      this.setState({ errorMessage: err.message });
+      logger.error(err);
+    }
   }
 
 
