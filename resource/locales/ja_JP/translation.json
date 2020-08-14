@@ -442,6 +442,10 @@
     "someone_editing": "このページは、HackMD で編集されています。",
     "this_page_has_draft": "このページは、HackMD のドラフトがあります。"
   },
+  "slack_notification": {
+    "popover_title": "Slack 通知",
+    "popover_desc": "チャンネル名を入れてください。カンマ区切りのリストを入力することで複数のチャンネルに通知することができます。"
+  },
   "search_result": {
     "result_meta": "{{total}}件のページが見つかりました。検索ワード: \"{{keyword}}\"",
     "deletion_mode_btn_lavel": "ページを指定して削除",
@@ -722,6 +726,11 @@
     "Sign in error": "ログインエラー",
     "Registration successful": "登録完了",
     "Setup": "セットアップ"
+  },
+  "export_bulk": {
+    "failed_to_export": "ページのエクスポートに失敗しました",
+    "export_page_markdown": "マークダウン形式でページをエクスポート",
+    "export_page_pdf": "PDF形式でページをエクスポート"
   },
   "message": {
     "successfully_connected": "接続に成功しました!",
