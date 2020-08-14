@@ -39,32 +39,33 @@ class SlackNotification extends React.Component {
     const { t } = this.props;
 
     return (
-      <div className="input-group input-group-sm input-group-slack extended-setting">
-        <label className="input-group-addon bg-light">
-          <img id="slack-mark-white" alt="slack-mark" src="/images/icons/slack/mark-monochrome_white.svg" width="18" height="18" />
-          <img id="slack-mark-black" alt="slack-mark" src="/images/icons/slack/mark-monochrome_black.svg" width="18" height="18" />
+      <div className="grw-slack-notification">
+        <div className="input-group input-group-sm extended-setting">
+          <label className="input-group-addon bg-light">
+            <img id="slack-mark-white" alt="slack-mark" src="/images/icons/slack/mark-monochrome_white.svg" width="18" height="18" />
+            <img id="slack-mark-black" alt="slack-mark" src="/images/icons/slack/mark-monochrome_black.svg" width="18" height="18" />
 
+            <input
+              type="checkbox"
+              value="1"
+              checked={this.props.isSlackEnabled}
+              onChange={this.updateCheckboxHandler}
+            />
+
+          </label>
           <input
-            type="checkbox"
-            value="1"
-            checked={this.props.isSlackEnabled}
-            onChange={this.updateCheckboxHandler}
-          />
-
-        </label>
-        <input
-          className="form-control"
-          type="text"
-          value={this.props.slackChannels}
-          placeholder="slack channel name"
-          data-toggle="popover"
+            className="form-control"
+            type="text"
+            value={this.props.slackChannels}
+            placeholder="Input channels"
+            data-toggle="popover"
             title={t('slack_notification.popover_title')}
             data-content={t('slack_notification.popover_desc')}
-          data-trigger="focus"
-          data-placement="top"
-          onChange={this.updateSlackChannelsHandler}
-        />
-      </div>
+            data-trigger="focus"
+            data-placement="top"
+            onChange={this.updateSlackChannelsHandler}
+          />
+        </div>
       </div>
     );
   }
