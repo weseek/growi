@@ -463,6 +463,7 @@ Crowi.prototype.setupRoutesAtLast = function() {
 
   const handle = this.nextApp.getRequestHandler();
   this.express.get('/*', (req, res) => {
+    req.crowi = this;
     return handle(req, res);
   });
 };
