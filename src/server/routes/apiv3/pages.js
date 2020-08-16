@@ -132,9 +132,9 @@ module.exports = (crowi) => {
       body('pageTags').if(value => value != null).isArray().withMessage('pageTags must be array'),
     ],
     renamePage: [
-      body('pageId').exists().withMessage('pageId is required'),
-      body('revisionId').exists().withMessage('revisionId is required'),
-      body('newPagePath').exists().withMessage('newPagePath is required'),
+      body('pageId').isMongoId().withMessage('pageId is required'),
+      body('revisionId').isMongoId().withMessage('revisionId is required'),
+      body('newPagePath').isLength({ min: 1 }).withMessage('newPagePath is required'),
       body('isRenameRedirect').if(value => value != null).isBoolean().withMessage('isRenameRedirect must be boolean'),
       body('isRemainMetadata').if(value => value != null).isBoolean().withMessage('isRemainMetadata must be boolean'),
       body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
@@ -142,8 +142,9 @@ module.exports = (crowi) => {
     ],
 
     duplicatePage: [
-      body('pageId').exists().withMessage('pageId is required'),
-      body('pageNameInput').exists().withMessage('pageNameInput is required'),
+      body('pageId').isMongoId().withMessage('pageId is required'),
+      body('pageNameInput').trim().isEmpty({ ignore_whitespace: true }).isLength({ min: 1 })
+        .withMessage('pageNameInput is required'),
     ],
   };
 
@@ -473,7 +474,7 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.post('/duplicate', accessTokenParser, loginRequiredStrictly, csrf, validator.duplicatePage, async(req, res) => {
+  router.post('/duplicate', accessTokenParser, loginRequiredStrictly, csrf, validator.duplicatePage, apiV3FormValidator, async(req, res) => {
     const { pageId } = req.body;
 
     const newPagePath = pathUtils.normalizePath(req.body.pageNameInput);
@@ -501,6 +502,7 @@ module.exports = (crowi) => {
     options.grant = page.grant;
     options.grantUserGroupId = page.grantedGroup;
     options.grantedUsers = page.grantedUsers;
+
 
     const createdPage = await createPageAction({
       path: newPagePath, user: req.user, body: page.revision.body, options,
