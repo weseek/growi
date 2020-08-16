@@ -16,6 +16,7 @@
 /build
 
 # dist
+/dist/
 /report/
 /public/uploads
 /tmp/
