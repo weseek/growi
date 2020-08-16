@@ -143,8 +143,7 @@ module.exports = (crowi) => {
 
     duplicatePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
-      body('pageNameInput').trim().isEmpty({ ignore_whitespace: true }).isLength({ min: 1 })
-        .withMessage('pageNameInput is required'),
+      body('pageNameInput').trim().isLength({ min: 1 }).withMessage('pageNameInput is required'),
     ],
   };
 
