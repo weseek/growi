@@ -140,6 +140,12 @@ module.exports = (crowi) => {
       body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
       body('socketClientId').if(value => value != null).isInt().withMessage('socketClientId must be int'),
     ],
+
+    duplicatePage: [
+      body('pageId').exists().withMessage('pageId is required'),
+      body('newPagePath').exists().withMessage('newPagePath is required'),
+
+    ],
   };
 
   async function createPageAction({
@@ -468,7 +474,7 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.post('/duplicate', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
+  router.post('/duplicate', accessTokenParser, loginRequiredStrictly, csrf, validator.duplicatePage, async(req, res) => {
     const { pageId } = req.body;
 
     const newPagePath = pathUtils.normalizePath(req.body.pageNameInput);
