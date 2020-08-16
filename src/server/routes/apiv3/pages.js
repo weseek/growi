@@ -143,8 +143,7 @@ module.exports = (crowi) => {
 
     duplicatePage: [
       body('pageId').exists().withMessage('pageId is required'),
-      body('newPagePath').exists().withMessage('newPagePath is required'),
-
+      body('pageNameInput').exists().withMessage('pageNameInput is required'),
     ],
   };
 
