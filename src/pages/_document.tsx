@@ -3,7 +3,10 @@ import Document, {
   Html, Head, Main, NextScript,
 } from 'next/document';
 
+import fs from 'fs';
 import path from 'path';
+
+import { resolveFromRoot } from '~/utils/project-dir-utils';
 
 interface GrowiDocumentProps {
   bootJsPath: string;
@@ -11,14 +14,17 @@ interface GrowiDocumentProps {
 }
 declare type GrowiDocumentInitialProps = DocumentInitialProps & GrowiDocumentProps;
 
-class GrowiDocument extends Document<GrowiDocumentProps> {
+async function importCustomManifest(): Promise<any> {
+  const customManifestStr: string = await fs.readFileSync(resolveFromRoot('.next/custom-manifest.json'), 'utf-8');
+  return JSON.parse(customManifestStr);
+}
 
-  static i = 0;
+class GrowiDocument extends Document<GrowiDocumentProps> {
 
   static async getInitialProps(ctx: DocumentContext): Promise<GrowiDocumentInitialProps> {
     const initialProps: DocumentInitialProps = await Document.getInitialProps(ctx);
 
-    const customManifest: any = await import('^/.next/custom-manifest.json');
+    const customManifest: any = await importCustomManifest();
     const bootJsPath = path.join('/_next', customManifest['boot.js']);
 
     const { configManager } = ctx.req?.crowi;
