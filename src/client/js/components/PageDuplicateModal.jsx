@@ -31,7 +31,7 @@ const PageDuplicateModal = (props) => {
   const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
   const [isExist, setIsExist] = useState(false);
 
-  const existPaths = ['/test146'];
+  const dummyExistPaths = ['/test146'];
 
   /**
    * change pageNameInput for PagePathAutoComplete
@@ -62,21 +62,15 @@ const PageDuplicateModal = (props) => {
   }
 
   function checkExistPath() {
-    let existFlag = false;
-    const subordinatedPath = [];
-    subordinatedPath.push(subordinatedPaths.map((duplicatedNewPath) => {
-      const existPath = existPaths.includes(duplicatedNewPath); // existPaths is dummy data
-      let result;
+    const existPaths = [];
+    subordinatedPaths.map((duplicatedNewPath) => {
+      const existPath = dummyExistPaths.includes(duplicatedNewPath); // dummyExistPaths is dummy data
       if (existPath) {
-        result = <li className="duplicate-exist" key={duplicatedNewPath}>{duplicatedNewPath}: Same page already exists</li>;
-        existFlag = true;
+        changeIsExistHandler();
+        existPaths.push(duplicatedNewPath);
       }
-      else {
-        result = <li key={duplicatedNewPath}>{duplicatedNewPath}</li>;
-      }
-      return result;
-    }));
-    return subordinatedPath;
+    });
+    return existPaths;
   }
 
   const getSubordinatedList = useCallback(async() => {
@@ -177,7 +171,17 @@ const PageDuplicateModal = (props) => {
           </ul>
           <div>
             <ul className="duplicate-name">
-              {isDuplicateRecursively && checkExistPath()}
+              {isDuplicateRecursively && subordinatedPaths.map((duplicatedNewPath) => {
+                const existPath = existPaths.includes(duplicatedNewPath);
+                let result;
+                if (existPath) {
+                  result = <li className="text-danger">{duplicatedNewPath} (exist)</li>;
+                }
+                else {
+                  result = <li>{duplicatedNewPath}</li>;
+                }
+                return result;
+              })}
             </ul>
           </div>
           <div> {getSubordinatedError} </div>
