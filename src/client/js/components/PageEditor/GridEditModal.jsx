@@ -112,12 +112,12 @@ export default class GridEditModal extends React.Component {
         <ModalBody>
           <div className="container">
             <div className="row">
-              <div className="col-md-3">
+              <div className="col-lg-3 mb-3">
                 <div className="mr-3 d-inline">
                   <label htmlFor="gridPattern">Grid Pattern :</label>
                 </div>
                 <button
-                  className="btn btn-outline-secondary dropdown-toggle text-right col-12 col-md-auto"
+                  className="btn btn-outline-secondary dropdown-toggle text-md-right col-6 col-md-auto"
                   type="button"
                   id="dropdownMenuButton"
                   data-toggle="dropdown"
@@ -130,12 +130,12 @@ export default class GridEditModal extends React.Component {
                   {this.gridDivisionMenu()}
                 </div>
               </div>
-              <div className="col-md-3 text-md-right pr-0">
+              <div className="col-lg-3 text-lg-right pr-0">
                 <label className="pr-3">Break point by display size :</label>
               </div>
-              <div className="col-md-3 text-left pl-md-0">
+              <div className="col-lg-3 text-left pl-lg-0">
                 <div className="form-group inline-block">
-                  <div>
+                  <div className="text-nowrap">
                     {/* TODO unite radio button style with that of AppSetting.jsx by GW-3342 */}
                     <input
                       type="radio"
@@ -180,15 +180,15 @@ export default class GridEditModal extends React.Component {
             </div>
             <div className="row">
               <h1 className="pl-3 w-100">Preview</h1>
-              <div className="col-md-6">
+              <div className="col-lg-6">
                 <label className="d-block pt-2"><i className="pr-2 icon-screen-desktop"></i>Desktop</label>
                 <div className="desktop-preview border d-block"></div>
               </div>
-              <div className="col-md-3">
+              <div className="col-lg-3">
                 <label className="d-block pt-2"><i className="pr-2 icon-screen-tablet"></i>Tablet</label>
                 <div className="tablet-preview border d-block"></div>
               </div>
-              <div className="col-md-3">
+              <div className="col-lg-3">
                 <label className="d-block pt-2"><i className="pr-2 icon-screen-smartphone"></i>Mobile</label>
                 <div className="mobile-preview border d-block"></div>
               </div>
