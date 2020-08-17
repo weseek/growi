@@ -443,6 +443,10 @@
     "someone_editing": "Someone editing this page on HackMD",
     "this_page_has_draft": "This page has a draft on HackMD"
   },
+  "slack_notification": {
+    "popover_title": "Slack Notification",
+    "popover_desc": "Input channel name. You can notify multiple channels by entering a comma-separated list."
+  },
   "search_result": {
     "result_meta": "Found \"{{keyword}}\" in {{total}}.",
     "deletion_mode_btn_lavel": "Select and delete page",
@@ -732,6 +736,11 @@
     "Sign in error": "Login error",
     "Registration successful": "Registration successful",
     "Setup": "Setup"
+  },
+  "export_bulk": {
+    "failed_to_export": "Failed to export",
+    "export_page_markdown": "Export page as Markdown",
+    "export_page_pdf": "Export page as PDF"
   },
   "message": {
     "successfully_connected": "Successfully Connected!",

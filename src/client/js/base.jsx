@@ -46,10 +46,10 @@ const componentMappings = {
 
   'grw-sidebar-wrapper': <Sidebar />,
 
-  'share-link-alert': <ShareLinkAlert />,
   'grw-fab-container': <Fab />,
   'grw-hotkeys-manager': <HotkeysManager />,
 
+  'share-link-alert': <ShareLinkAlert />,
 };
 
 export { appContainer, componentMappings };

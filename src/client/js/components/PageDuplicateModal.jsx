@@ -6,7 +6,6 @@ import {
 } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
-
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import AppContainer from '../services/AppContainer';
@@ -28,7 +27,6 @@ const PageDuplicateModal = (props) => {
 
   const [subordinatedPaths, setSubordinatedPaths] = useState([]);
   const [getSubordinatedError, setGetSuborinatedError] = useState(null);
-
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
   const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
 
@@ -95,8 +93,8 @@ const PageDuplicateModal = (props) => {
     setErrs(null);
 
     try {
-      const res = await appContainer.apiPost('/pages.duplicate', { page_id: pageId, new_path: pageNameInput });
-      const { page } = res;
+      const res = await appContainer.apiv3Post('/pages/duplicate', { pageId, pageNameInput });
+      const { page } = res.data;
       window.location.href = encodeURI(`${page.path}?duplicated=${path}`);
     }
     catch (err) {
@@ -172,8 +170,15 @@ const PageDuplicateModal = (props) => {
             </label>
           </ul>
           <div>
-            <ul>
-              {isDuplicateRecursively && checkExistPath()}
+            <ul className="duplicate-name">
+              {isDuplicateRecursively && subordinatedPaths.map((duplicatedNewPath) => {
+                  // ToDo: The "true" statement below will be modified by task GW3503
+                  if (true) {
+                    return <li className="duplicate-exist" key={duplicatedNewPath}>{duplicatedNewPath}: Same page already exists</li>;
+                  }
+                  return <li key={duplicatedNewPath}>{duplicatedNewPath}</li>;
+                })
+              }
             </ul>
           </div>
           <div> {getSubordinatedError} </div>
