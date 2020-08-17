@@ -273,15 +273,10 @@ export default class AdminAppContainer extends Container {
    * @return {Array} Appearance
    */
   async initializeMailSettingHandler() {
-    const { data } = await this.appContainer.apiv3.delete('/app-settings/mail-setting', {});
-    // convert values to '' if value is null for overwriting values of inputs with refs
-    const mailSettingParams = {
-      fromAddress: data.mailSettingParams.fromAddress || '',
-      smtpHost: data.mailSettingParams.smtpHost || '',
-      smtpPort: data.mailSettingParams.smtpPort || '',
-      smtpUser: data.mailSettingParams.smtpUser || '',
-      smtpPassword: data.mailSettingParams.smtpPassword || '',
-    };
+    const response = await this.appContainer.apiv3.delete('/app-settings/mail-setting', {});
+    const {
+      mailSettingParams,
+    } = response.data;
     this.setState(mailSettingParams);
     return mailSettingParams;
   }
