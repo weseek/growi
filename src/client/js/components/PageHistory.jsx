@@ -53,7 +53,7 @@ function PageHistory(props) {
 
   function pager() {
     return (
-      <div className="pull-right my-3">
+      <div className="my-3">
         <PaginationWrapper
           activePage={pageHistoryContainer.state.activePage}
           changePage={handlePage}
