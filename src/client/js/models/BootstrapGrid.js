@@ -23,7 +23,9 @@ export default class BootstrapGrid {
   }
 
   static validateResponsiveSize(responsiveSize) {
-    if (responsiveSize === this.ResponsiveSize.XS_SIZE || responsiveSize === this.ResponsiveSize.SM_SIZE || responsiveSize === this.ResponsiveSize.MD_SIZE) {
+    if (responsiveSize === this.ResponsiveSize.XS_SIZE
+      || responsiveSize === this.ResponsiveSize.SM_SIZE
+      || responsiveSize === this.ResponsiveSize.MD_SIZE) {
       return responsiveSize;
     }
     throw new Error('Incorrect responsive size');
