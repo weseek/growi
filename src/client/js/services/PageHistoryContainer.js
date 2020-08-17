@@ -26,6 +26,10 @@ export default class PageHistoryContainer extends Container {
       // set dummy rivisions for using suspense
       revisions: this.dummyRevisions,
       diffOpened: {},
+
+      totalRevisions: 0,
+      activePage: 1,
+      pagingLimit: Infinity,
     };
 
     this.retrieveRevisions = this.retrieveRevisions.bind(this);
@@ -41,9 +45,13 @@ export default class PageHistoryContainer extends Container {
     return 'PageHistoryContainer';
   }
 
-  async retrieveRevisions() {
+  /**
+   * syncRevisions of selectedPage
+   * @param {number} selectedPage
+   */
+  async retrieveRevisions(selectedPage) {
     const { pageId, shareLinkId } = this.pageContainer.state;
-
+    console.log(selectedPage);
     if (!pageId) {
       return;
     }
