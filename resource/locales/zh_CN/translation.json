@@ -412,7 +412,11 @@
 		"not_initialized": "HackmdEditor component has not initialized",
 		"someone_editing": "Someone editing this page on HackMD",
 		"this_page_has_draft": "This page has a draft on HackMD"
-	},
+  },
+  "slack_notification": {
+    "popover_title": "Slack Notification",
+    "popover_desc": "Input channel name. You can notify multiple channels by entering a comma-separated list."
+  },
   "security_settings": "安全设置",
   "share_links": {
     "Shere this page link to public": "Shere this page link to public",
