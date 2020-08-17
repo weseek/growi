@@ -112,7 +112,7 @@ export default class GridEditModal extends React.Component {
         <ModalBody>
           <div className="container">
             <div className="row">
-              <div className="col-3">
+              <div className="col-md-3">
                 <div className="mr-3 d-inline">
                   <label htmlFor="gridPattern">Grid Pattern :</label>
                 </div>
@@ -130,10 +130,10 @@ export default class GridEditModal extends React.Component {
                   {this.gridDivisionMenu()}
                 </div>
               </div>
-              <div className="col-3 text-right pr-0">
+              <div className="col-md-3 text-md-right pr-0">
                 <label className="pr-3">Break point by display size :</label>
               </div>
-              <div className="col-3 text-left pl-0">
+              <div className="col-md-3 text-left pl-0">
                 <div className="form-group inline-block">
                   <div>
                     {/* TODO unite radio button style with that of AppSetting.jsx by GW-3342 */}
