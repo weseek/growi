@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -6,6 +6,8 @@ import {
 } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
+import AppContainer from '../services/AppContainer';
+import PageContainer from '../services/PageContainer';
 
 import PageListIcon from './Icons/PageListIcon';
 import TimeLineIcon from './Icons/TimeLineIcon';
@@ -18,15 +20,29 @@ import PageAttachment from './PageAttachment';
 import Page from './PageList/Page';
 
 const PageAccessoriesModal = (props) => {
-  const { t, pageAccessoriesContainer } = props;
+  const {
+    t, pageAccessoriesContainer, pageContainer, appContainer,
+  } = props;
+  const { path } = pageContainer;
   const { switchActiveTab } = pageAccessoriesContainer;
   const { activeTab } = pageAccessoriesContainer.state;
+  const [pages, setPages] = useState([]);
 
   function closeModalHandler() {
     if (props.onClose == null) {
       return;
     }
     props.onClose();
+  }
+
+  async function getPagesList() {
+    const res = await appContainer.apiv3Get('/pages/list', { path });
+    setPages(res);
+    // return pages.map(pages => (
+    //   <li key={pages._id}>
+    //     <Page page={pages} />
+    //   </li>
+    // ));
   }
 
   return (
@@ -74,7 +90,7 @@ const PageAccessoriesModal = (props) => {
           </Nav>
           <TabContent activeTab={activeTab}>
             <TabPane tabId="pagelist">
-              {pageAccessoriesContainer.state.activeComponents.has('pagelist') && <Page />}
+              {pageAccessoriesContainer.state.activeComponents.has('pagelist') && getPagesList() }
             </TabPane>
             <TabPane tabId="timeline"></TabPane>
             <TabPane tabId="recent-changes"></TabPane>
@@ -92,14 +108,16 @@ const PageAccessoriesModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageAccessoriesModalWrapper = withUnstatedContainers(PageAccessoriesModal, [PageAccessoriesContainer]);
+const PageAccessoriesModalWrapper = withUnstatedContainers(PageAccessoriesModal, [PageAccessoriesContainer], [AppContainer], [PageContainer]);
 
 
 PageAccessoriesModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   // pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   pageAccessoriesContainer: PropTypes.instanceOf(PageAccessoriesContainer).isRequired,
-
+  appContainer: PropTypes.instanceOf(AppContainer),
+  pageContainer: PropTypes.instanceOf(PageContainer),
+  path: PropTypes,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
 };
