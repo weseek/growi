@@ -9,6 +9,8 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const router = express.Router();
 
+const PAGE_ITEMS = 30;
+
 /**
  * @swagger
  *  tags:
@@ -58,6 +60,8 @@ module.exports = (crowi) => {
     const { pageId } = req.query;
     const { isSharedPage } = req;
 
+    const selectedPage = parseInt(req.query.selectedPage) || 1;
+
     // check whether accessible
     if (!isSharedPage && !(await Page.isAccessiblePageByViewer(pageId, req.user))) {
       return res.apiv3Err(new ErrorV3('Current user is not accessible to this page.', 'forbidden-page'), 403);
@@ -65,8 +69,20 @@ module.exports = (crowi) => {
 
     try {
       const page = await Page.findOne({ _id: pageId });
-      const revisions = await Revision.findRevisionIdList(page.path);
-      return res.apiv3({ revisions });
+
+      const paginateResult = await Revision.paginate(
+        { path: page.path },
+        {
+          page: selectedPage,
+          limit: PAGE_ITEMS,
+          populate: {
+            path: 'author',
+            select: User.USER_PUBLIC_FIELDS,
+          },
+        },
+      );
+
+      return res.apiv3(paginateResult);
     }
     catch (err) {
       const msg = 'Error occurred in getting revisions by poge id';

@@ -17,8 +17,16 @@ const logger = loggerFactory('growi:PageHistory');
 function PageHistory(props) {
   const { pageHistoryContainer } = props;
 
+  if (pageHistoryContainer.state.errorMessage) {
+    return (
+      <div className="my-5">
+        <div className="text-danger">{pageHistoryContainer.state.errorMessage}</div>
+      </div>
+    );
+  }
+
   if (pageHistoryContainer.state.revisions === pageHistoryContainer.dummyRevisions) {
-    throw new Promise(async() => {
+    throw new Promise(async(resolve, reject) => {
       try {
         await props.pageHistoryContainer.retrieveRevisions(1);
       }
@@ -26,6 +34,7 @@ function PageHistory(props) {
         toastError(err);
         pageHistoryContainer.setState({ errorMessage: err.message });
         logger.error(err);
+        throw new Error();
       }
     });
   }
@@ -48,7 +57,7 @@ function PageHistory(props) {
         <PaginationWrapper
           activePage={pageHistoryContainer.state.activePage}
           changePage={handlePage}
-          totalItemsCount={pageHistoryContainer.state.totalRevisions}
+          totalItemsCount={pageHistoryContainer.state.totalPages}
           pagingLimit={pageHistoryContainer.state.pagingLimit}
         />
       </div>
@@ -58,12 +67,6 @@ function PageHistory(props) {
 
   return (
     <div className="mt-4">
-      {pageHistoryContainer.state.errorMessage && (
-      <div className="my-5">
-        <div className="text-danger">{pageHistoryContainer.state.errorMessage}</div>
-      </div>
-        ) }
-
       {pager()}
       <PageRevisionList
         revisions={pageHistoryContainer.state.revisions}
