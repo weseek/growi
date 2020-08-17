@@ -116,20 +116,18 @@ export default class GridEditModal extends React.Component {
                 <div className="mr-3 d-inline">
                   <label htmlFor="gridPattern">Grid Pattern :</label>
                 </div>
-                <div>
-                  <button
-                    className="btn btn-outline-secondary dropdown-toggle w-100"
-                    type="button"
-                    id="dropdownMenuButton"
-                    data-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                  >
-                    {this.showGridPattern()}
-                  </button>
-                  <div className="dropdown-menu grid-division-menu" aria-labelledby="dropdownMenuButton">
-                    {this.gridDivisionMenu()}
-                  </div>
+                <button
+                  className="btn btn-outline-secondary dropdown-toggle btn-block"
+                  type="button"
+                  id="dropdownMenuButton"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  {this.showGridPattern()}
+                </button>
+                <div className="dropdown-menu grid-division-menu" aria-labelledby="dropdownMenuButton">
+                  {this.gridDivisionMenu()}
                 </div>
               </div>
               <div className="col-lg-6 pr-0 mb-2">
