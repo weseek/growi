@@ -29,6 +29,7 @@ const PageDuplicateModal = (props) => {
   const [getSubordinatedError, setGetSuborinatedError] = useState(null);
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
   const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
+  const [isExist, setIsExist] = useState(false);
 
   const existPaths = ['/test146'];
 
@@ -56,9 +57,14 @@ const PageDuplicateModal = (props) => {
     setIsDuplicateRecursivelyWithoutExistPath(!isDuplicateRecursivelyWithoutExistPath);
   }
 
+  function changeIsExistHandler() {
+    setIsExist(true);
+  }
+
   function checkExistPath() {
     let existFlag = false;
-    return subordinatedPaths.map((duplicatedNewPath) => {
+    const subordinatedPath = [];
+    subordinatedPath.push(subordinatedPaths.map((duplicatedNewPath) => {
       const existPath = existPaths.includes(duplicatedNewPath); // existPaths is dummy data
       let result;
       if (existPath) {
@@ -69,7 +75,8 @@ const PageDuplicateModal = (props) => {
         result = <li key={duplicatedNewPath}>{duplicatedNewPath}</li>;
       }
       return result;
-    });
+    }));
+    return subordinatedPath;
   }
 
   const getSubordinatedList = useCallback(async() => {
