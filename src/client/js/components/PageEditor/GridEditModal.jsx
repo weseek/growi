@@ -181,15 +181,15 @@ export default class GridEditModal extends React.Component {
             <div className="row">
               <h1 className="pl-3 w-100">Preview</h1>
               <div className="col-lg-6">
-                <label className="d-block pt-2"><i className="pr-2 icon-screen-desktop"></i>Desktop</label>
+                <label className="d-block mt-2"><i className="pr-2 icon-screen-desktop"></i>Desktop</label>
                 <div className="desktop-preview border d-block"></div>
               </div>
               <div className="col-6 col-lg-3">
-                <label className="d-block pt-2"><i className="pr-2 icon-screen-tablet"></i>Tablet</label>
+                <label className="d-block mt-2"><i className="pr-2 icon-screen-tablet"></i>Tablet</label>
                 <div className="tablet-preview border d-block"></div>
               </div>
               <div className="col-6 col-lg-3">
-                <label className="d-block pt-2"><i className="pr-2 icon-screen-smartphone"></i>Mobile</label>
+                <label className="d-block mt-2"><i className="pr-2 icon-screen-smartphone"></i>Mobile</label>
                 <div className="mobile-preview border d-block"></div>
               </div>
             </div>
