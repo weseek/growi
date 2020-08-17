@@ -9,6 +9,16 @@ const additionalWebpackEntries = {
 
 module.exports = {
   poweredByHeader: false,
+
+  // Runtime Configuration
+  // see: https://nextjs.org/docs/api-reference/next.config.js/runtime-configuration
+  serverRuntimeConfig: {
+    // Will only be available on the server side
+  },
+  publicRuntimeConfig: {
+    // Will be available on both server and client
+  },
+
   webpack(config) {
 
     // configure additional entries
