@@ -35,6 +35,7 @@ class LinkEditModal extends React.PureComponent {
       linkerType: Linker.types.markdownLink,
       markdown: '',
       permalink: '',
+      linkText: '',
     };
 
     this.isApplyPukiwikiLikeLinkerPlugin = window.growiRenderer.preProcessors.some(process => process.constructor.name === 'PukiwikiLikeLinker');
@@ -54,6 +55,7 @@ class LinkEditModal extends React.PureComponent {
     this.getRootPath = this.getRootPath.bind(this);
 
     this.getPreviewDebounced = debounce(200, this.getPreview.bind(this));
+    this.getLinkTextPreviewDebounced = debounce(200, this.getLinkTextPreview.bind(this));
   }
 
   componentDidUpdate(prevState) {
@@ -62,6 +64,7 @@ class LinkEditModal extends React.PureComponent {
     if (linkInputValue !== prevLinkInputValue) {
       this.getPreviewDebounced(linkInputValue);
     }
+    this.getLinkTextPreviewDebounced();
   }
 
   // defaultMarkdownLink is an instance of Linker
@@ -162,6 +165,12 @@ class LinkEditModal extends React.PureComponent {
     this.setState({ markdown, permalink });
   }
 
+  getLinkTextPreview() {
+    const linker = this.generateLink();
+    const linkText = linker.generateMarkdownText();
+    this.setState({ linkText });
+  }
+
   handleChangeTypeahead(selected) {
     const page = selected[0];
     if (page != null) {
@@ -191,10 +200,8 @@ class LinkEditModal extends React.PureComponent {
   }
 
   save() {
-    const output = this.generateLink();
-
     if (this.props.onSave != null) {
-      this.props.onSave(output);
+      this.props.onSave(this.state.linkText);
     }
 
     this.hide();
