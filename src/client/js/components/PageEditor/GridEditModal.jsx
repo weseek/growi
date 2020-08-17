@@ -113,9 +113,7 @@ export default class GridEditModal extends React.Component {
           <div className="container">
             <div className="row">
               <div className="col-lg-6 mb-3">
-                <div className="mr-3 d-inline">
-                  <label htmlFor="gridPattern">Grid Pattern :</label>
-                </div>
+                <label htmlFor="gridPattern">Grid Pattern :</label>
                 <button
                   className="btn btn-outline-secondary dropdown-toggle btn-block"
                   type="button"
