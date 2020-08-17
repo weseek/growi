@@ -21,6 +21,12 @@ class MailSetting extends React.Component {
       isInitializeValueModalOpen: false,
     };
 
+    this.emailInput = React.createRef();
+    this.hostInput = React.createRef();
+    this.portInput = React.createRef();
+    this.userInput = React.createRef();
+    this.passwordInput = React.createRef();
+
     this.openInitializeValueModal = this.openInitializeValueModal.bind(this);
     this.closeInitializeValueModal = this.closeInitializeValueModal.bind(this);
     this.submitHandler = this.submitHandler.bind(this);
@@ -52,9 +58,14 @@ class MailSetting extends React.Component {
     const { t, adminAppContainer } = this.props;
 
     try {
-      await adminAppContainer.initializeMailSettingHandler();
+      const mailSettingParams = await adminAppContainer.initializeMailSettingHandler();
       toastSuccess(t('toaster.initialize_successed', { target: t('admin:app_setting.mail_settings') }));
-      window.location.reload();
+      this.emailInput.current.value = mailSettingParams.fromAddress;
+      this.hostInput.current.value = mailSettingParams.smtpHost;
+      this.portInput.current.value = mailSettingParams.smtpPort;
+      this.userInput.current.value = mailSettingParams.smtpUser;
+      this.passwordInput.current.value = mailSettingParams.smtpPassword;
+      this.closeInitializeValueModal();
     }
     catch (err) {
       toastError(err);
@@ -74,6 +85,7 @@ class MailSetting extends React.Component {
             <input
               className="form-control"
               type="text"
+              ref={this.emailInput}
               placeholder={`${t('eg')} mail@growi.org`}
               defaultValue={adminAppContainer.state.fromAddress || ''}
               onChange={(e) => { adminAppContainer.changeFromAddress(e.target.value) }}
@@ -88,6 +100,7 @@ class MailSetting extends React.Component {
             <input
               className="form-control"
               type="text"
+              ref={this.hostInput}
               defaultValue={adminAppContainer.state.smtpHost || ''}
               onChange={(e) => { adminAppContainer.changeSmtpHost(e.target.value) }}
             />
@@ -96,6 +109,7 @@ class MailSetting extends React.Component {
             <label>{t('admin:app_setting.port')}</label>
             <input
               className="form-control"
+              ref={this.portInput}
               defaultValue={adminAppContainer.state.smtpPort || ''}
               onChange={(e) => { adminAppContainer.changeSmtpPort(e.target.value) }}
             />
@@ -108,6 +122,7 @@ class MailSetting extends React.Component {
             <input
               className="form-control"
               type="text"
+              ref={this.userInput}
               defaultValue={adminAppContainer.state.smtpUser || ''}
               onChange={(e) => { adminAppContainer.changeSmtpUser(e.target.value) }}
             />
@@ -117,6 +132,7 @@ class MailSetting extends React.Component {
             <input
               className="form-control"
               type="password"
+              ref={this.passwordInput}
               defaultValue={adminAppContainer.state.smtpPassword || ''}
               onChange={(e) => { adminAppContainer.changeSmtpPassword(e.target.value) }}
             />
