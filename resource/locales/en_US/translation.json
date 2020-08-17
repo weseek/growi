@@ -442,6 +442,10 @@
     "someone_editing": "Someone editing this page on HackMD",
     "this_page_has_draft": "This page has a draft on HackMD"
   },
+  "slack_notification": {
+    "popover_title": "Slack Notification",
+    "popover_desc": "Input channel name. You can notify multiple channels by entering a comma-separated list."
+  },
   "search_result": {
     "result_meta": "Found \"{{keyword}}\" in {{total}}.",
     "deletion_mode_btn_lavel": "Select and delete page",
