@@ -116,23 +116,25 @@ export default class GridEditModal extends React.Component {
                 <div className="mr-3 d-inline">
                   <label htmlFor="gridPattern">Grid Pattern :</label>
                 </div>
-                <button
-                  className="btn btn-outline-secondary dropdown-toggle text-md-right col-3 col-md-auto"
-                  type="button"
-                  id="dropdownMenuButton"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  {this.showGridPattern()}
-                </button>
-                <div className="dropdown-menu grid-division-menu" aria-labelledby="dropdownMenuButton">
-                  {this.gridDivisionMenu()}
+                <div>
+                  <button
+                    className="btn btn-outline-secondary dropdown-toggle w-100"
+                    type="button"
+                    id="dropdownMenuButton"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    {this.showGridPattern()}
+                  </button>
+                  <div className="dropdown-menu grid-division-menu" aria-labelledby="dropdownMenuButton">
+                    {this.gridDivisionMenu()}
+                  </div>
                 </div>
               </div>
               <div className="col-lg-6 pr-0 mb-2">
                 <label className="pr-3 text-nowrap">Break point by display size :</label>
-                <div className="col-lg-6 text-left pl-lg-0">
+                <div className="col-lg-6 text-left pl-0">
                   <div className="form-group inline-block">
                     <div className="text-nowrap">
                       {/* TODO unite radio button style with that of AppSetting.jsx by GW-3342 */}
