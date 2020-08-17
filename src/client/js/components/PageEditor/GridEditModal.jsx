@@ -112,7 +112,7 @@ export default class GridEditModal extends React.Component {
         <ModalBody>
           <div className="container">
             <div className="row">
-              <div className="col-lg-3 mb-3">
+              <div className="col-lg-6 mb-3">
                 <div className="mr-3 d-inline">
                   <label htmlFor="gridPattern">Grid Pattern :</label>
                 </div>
@@ -130,50 +130,50 @@ export default class GridEditModal extends React.Component {
                   {this.gridDivisionMenu()}
                 </div>
               </div>
-              <div className="col-lg-3 text-lg-right pr-0 mb-2">
+              <div className="col-lg-6 pr-0 mb-2">
                 <label className="pr-3 text-nowrap">Break point by display size :</label>
-              </div>
-              <div className="col-lg-3 text-left pl-lg-0">
-                <div className="form-group inline-block">
-                  <div className="text-nowrap">
-                    {/* TODO unite radio button style with that of AppSetting.jsx by GW-3342 */}
-                    <input
-                      type="radio"
-                      id={BootstrapGrid.ResponsiveSize.XS_SIZE}
-                      name="responsiveSize"
-                      value={BootstrapGrid.ResponsiveSize.XS_SIZE}
-                      onChange={(e) => { this.checkResposiveSize(e.target.value) }}
-                      checked={this.state.responsiveSize === BootstrapGrid.ResponsiveSize.XS_SIZE}
-                    />
-                    <label htmlFor={BootstrapGrid.ResponsiveSize.XS_SIZE}>
-                      <i className="pl-2 pr-1 icon-screen-smartphone"></i> Mobile / No break point
-                    </label>
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      id={BootstrapGrid.ResponsiveSize.SM_SIZE}
-                      name="responsiveSize"
-                      value={BootstrapGrid.ResponsiveSize.SM_SIZE}
-                      onChange={(e) => { this.checkResposiveSize(e.target.value) }}
-                      checked={this.state.responsiveSize === BootstrapGrid.ResponsiveSize.SM_SIZE}
-                    />
-                    <label htmlFor={BootstrapGrid.ResponsiveSize.SM_SIZE}>
-                      <i className="pl-2 pr-1 icon-screen-tablet"></i> Tablet
-                    </label>
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      id={BootstrapGrid.ResponsiveSize.MD_SIZE}
-                      name="responsiveSize"
-                      value={BootstrapGrid.ResponsiveSize.MD_SIZE}
-                      onChange={(e) => { this.checkResposiveSize(e.target.value) }}
-                      checked={this.state.responsiveSize === BootstrapGrid.ResponsiveSize.MD_SIZE}
-                    />
-                    <label htmlFor={BootstrapGrid.ResponsiveSize.MD_SIZE}>
-                      <i className="pl-2 pr-1 icon-screen-desktop"></i> Desktop
-                    </label>
+                <div className="col-lg-6 text-left pl-lg-0">
+                  <div className="form-group inline-block">
+                    <div className="text-nowrap">
+                      {/* TODO unite radio button style with that of AppSetting.jsx by GW-3342 */}
+                      <input
+                        type="radio"
+                        id={BootstrapGrid.ResponsiveSize.XS_SIZE}
+                        name="responsiveSize"
+                        value={BootstrapGrid.ResponsiveSize.XS_SIZE}
+                        onChange={(e) => { this.checkResposiveSize(e.target.value) }}
+                        checked={this.state.responsiveSize === BootstrapGrid.ResponsiveSize.XS_SIZE}
+                      />
+                      <label htmlFor={BootstrapGrid.ResponsiveSize.XS_SIZE}>
+                        <i className="pl-2 pr-1 icon-screen-smartphone"></i> Mobile / No break point
+                      </label>
+                    </div>
+                    <div>
+                      <input
+                        type="radio"
+                        id={BootstrapGrid.ResponsiveSize.SM_SIZE}
+                        name="responsiveSize"
+                        value={BootstrapGrid.ResponsiveSize.SM_SIZE}
+                        onChange={(e) => { this.checkResposiveSize(e.target.value) }}
+                        checked={this.state.responsiveSize === BootstrapGrid.ResponsiveSize.SM_SIZE}
+                      />
+                      <label htmlFor={BootstrapGrid.ResponsiveSize.SM_SIZE}>
+                        <i className="pl-2 pr-1 icon-screen-tablet"></i> Tablet
+                      </label>
+                    </div>
+                    <div>
+                      <input
+                        type="radio"
+                        id={BootstrapGrid.ResponsiveSize.MD_SIZE}
+                        name="responsiveSize"
+                        value={BootstrapGrid.ResponsiveSize.MD_SIZE}
+                        onChange={(e) => { this.checkResposiveSize(e.target.value) }}
+                        checked={this.state.responsiveSize === BootstrapGrid.ResponsiveSize.MD_SIZE}
+                      />
+                      <label htmlFor={BootstrapGrid.ResponsiveSize.MD_SIZE}>
+                        <i className="pl-2 pr-1 icon-screen-desktop"></i> Desktop
+                      </label>
+                    </div>
                   </div>
                 </div>
               </div>
