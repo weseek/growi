@@ -31,6 +31,7 @@ module.exports = (crowi) => {
   const validator = {
     retrieveRevisions: [
       query('pageId').isMongoId().withMessage('pageId is required'),
+      query('selectedPage').isInt({ min: 0 }).withMessage('selectedPage must be int'),
     ],
     retrieveRevisionById: [
       query('pageId').isMongoId().withMessage('pageId is required'),
