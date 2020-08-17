@@ -40,7 +40,7 @@ function SecurityManagementWithContainerWithSuspense(props) {
         </div>
       )}
     >
-      <SecurityManagementWithUnstatedContainer />
+      <SecurityManagementWithUnstatedContainer {...props} />
     </Suspense>
   );
 }
