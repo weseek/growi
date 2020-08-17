@@ -26,7 +26,7 @@ function PageHistory(props) {
   }
 
   if (pageHistoryContainer.state.revisions === pageHistoryContainer.dummyRevisions) {
-    throw new Promise(async(resolve, reject) => {
+    throw new Promise(async() => {
       try {
         await props.pageHistoryContainer.retrieveRevisions(1);
       }
@@ -34,7 +34,6 @@ function PageHistory(props) {
         toastError(err);
         pageHistoryContainer.setState({ errorMessage: err.message });
         logger.error(err);
-        throw new Error();
       }
     });
   }
