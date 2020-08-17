@@ -189,7 +189,6 @@ class SecurityManagementContents extends React.Component {
 SecurityManagementContents.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  csrf: PropTypes.string,
 };
 
 const SecurityManagementContentsWrapper = withUnstatedContainers(SecurityManagementContents, [AppContainer]);
