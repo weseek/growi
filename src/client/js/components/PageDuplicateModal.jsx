@@ -149,8 +149,15 @@ const PageDuplicateModal = (props) => {
             <label className="custom-control-label" htmlFor="cbDuplicateRecursivelyAdmit">
               Duplicate apart from the pages that already exists
             </label>
-            <ul>
-              {subordinatedPaths.map(duplicatedNewPath => <li key={duplicatedNewPath}>{duplicatedNewPath}</li>)}
+            <ul className="duplicate-name">
+              {isDuplicateRecursively && subordinatedPaths.map((duplicatedNewPath) => {
+                  // ToDo: The "true" statement below will be modified by task GW3503
+                  if (true) {
+                    return <li className="duplicate-exist" key={duplicatedNewPath}>{duplicatedNewPath}: Same page already exists</li>;
+                  }
+                  return <li key={duplicatedNewPath}>{duplicatedNewPath}</li>;
+                })
+              }
             </ul>
           </div>
           )}
