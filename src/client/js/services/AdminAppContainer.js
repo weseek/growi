@@ -17,6 +17,7 @@ export default class AdminAppContainer extends Container {
 
     this.appContainer = appContainer;
     this.dummyTitle = 0;
+    this.dummyTitleForError = 1;
 
     this.state = {
       retrieveError: null,
@@ -75,36 +76,29 @@ export default class AdminAppContainer extends Container {
    * retrieve app sttings data
    */
   async retrieveAppSettingsData() {
-    try {
-      const response = await this.appContainer.apiv3.get('/app-settings/');
-      const { appSettingsParams } = response.data;
+    const response = await this.appContainer.apiv3.get('/app-settings/');
+    const { appSettingsParams } = response.data;
 
-      this.setState({
-        title: appSettingsParams.title,
-        confidential: appSettingsParams.confidential,
-        globalLang: appSettingsParams.globalLang,
-        fileUpload: appSettingsParams.fileUpload,
-        siteUrl: appSettingsParams.siteUrl,
-        envSiteUrl: appSettingsParams.envSiteUrl,
-        isSetSiteUrl: !!appSettingsParams.siteUrl,
-        fromAddress: appSettingsParams.fromAddress,
-        smtpHost: appSettingsParams.smtpHost,
-        smtpPort: appSettingsParams.smtpPort,
-        smtpUser: appSettingsParams.smtpUser,
-        smtpPassword: appSettingsParams.smtpPassword,
-        region: appSettingsParams.region,
-        customEndpoint: appSettingsParams.customEndpoint,
-        bucket: appSettingsParams.bucket,
-        accessKeyId: appSettingsParams.accessKeyId,
-        secretAccessKey: appSettingsParams.secretAccessKey,
-        isEnabledPlugins: appSettingsParams.isEnabledPlugins,
-      });
-
-    }
-    catch (err) {
-      logger.error(err);
-      toastError(new Error('Failed to fetch data'));
-    }
+    this.setState({
+      title: appSettingsParams.title,
+      confidential: appSettingsParams.confidential,
+      globalLang: appSettingsParams.globalLang,
+      fileUpload: appSettingsParams.fileUpload,
+      siteUrl: appSettingsParams.siteUrl,
+      envSiteUrl: appSettingsParams.envSiteUrl,
+      isSetSiteUrl: !!appSettingsParams.siteUrl,
+      fromAddress: appSettingsParams.fromAddress,
+      smtpHost: appSettingsParams.smtpHost,
+      smtpPort: appSettingsParams.smtpPort,
+      smtpUser: appSettingsParams.smtpUser,
+      smtpPassword: appSettingsParams.smtpPassword,
+      region: appSettingsParams.region,
+      customEndpoint: appSettingsParams.customEndpoint,
+      bucket: appSettingsParams.bucket,
+      accessKeyId: appSettingsParams.accessKeyId,
+      secretAccessKey: appSettingsParams.secretAccessKey,
+      isEnabledPlugins: appSettingsParams.isEnabledPlugins,
+    });
   }
 
   /**
