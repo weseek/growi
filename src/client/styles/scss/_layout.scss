@@ -20,11 +20,9 @@ body {
 }
 
 .grw-page-accessories-modal {
-  .grw-table-top-icons {
-    .svg.g {
-      width: 20px;
-      height: 20px;
-    }
+  .grw-modal-head-icons {
+    width: 20px;
+    height: 20px;
   }
 }
 
@@ -151,13 +149,14 @@ body {
   }
 }
 
+.grw-table-top-icons {
+  width: 16px;
+  height: 16px;
+}
+
 .top-of-table-contents {
   flex-wrap: wrap;
 
-  .grw-table-top-icons {
-    width: 16px;
-    height: 16px;
-  }
   .seen-user-count {
     font-size: 12px;
     font-weight: bolder;

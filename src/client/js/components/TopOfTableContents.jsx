@@ -55,19 +55,27 @@ const TopOfTableContents = (props) => {
         <div className="icon-button-box pr-2 mr-2">
 
           <button type="button" className="bg-transparent border-0" onClick={() => openPageAccessoriesModal('pageList')}>
-            <PageListIcon />
+            <div className="grw-table-top-icons ">
+              <PageListIcon />
+            </div>
           </button>
 
-          <button type="button" className="grw-table-top-icons bg-transparent border-0" onClick={() => openPageAccessoriesModal('timeLine')}>
-            <TimeLineIcon />
+          <button type="button" className="bg-transparent border-0" onClick={() => openPageAccessoriesModal('timeLine')}>
+            <div className="grw-table-top-icons ">
+              <TimeLineIcon />
+            </div>
           </button>
 
-          <button type="button" className="grw-table-top-icons bg-transparent border-0" onClick={() => openPageAccessoriesModal('recentChanges')}>
-            <RecentChangesIcon />
+          <button type="button" className="bg-transparent border-0" onClick={() => openPageAccessoriesModal('recentChanges')}>
+            <div className="grw-table-top-icons ">
+              <RecentChangesIcon />
+            </div>
           </button>
 
-          <button type="button" className="grw-table-top-icons bg-transparent border-0 " onClick={() => openPageAccessoriesModal('attachment')}>
-            <AttachmentIcon />
+          <button type="button" className="bg-transparent border-0 " onClick={() => openPageAccessoriesModal('attachment')}>
+            <div className="grw-table-top-icons ">
+              <AttachmentIcon />
+            </div>
           </button>
 
         </div>
