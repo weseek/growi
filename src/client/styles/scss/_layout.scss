@@ -20,9 +20,11 @@ body {
 }
 
 .grw-page-accessories-modal {
-  .table-top-icon {
-    width: 20px;
-    height: 20px;
+  .grw-table-top-icons {
+    .svg.g {
+      width: 20px;
+      height: 20px;
+    }
   }
 }
 
@@ -152,7 +154,7 @@ body {
 .top-of-table-contents {
   flex-wrap: wrap;
 
-  .table-top-icon {
+  .grw-table-top-icons {
     width: 16px;
     height: 16px;
   }
