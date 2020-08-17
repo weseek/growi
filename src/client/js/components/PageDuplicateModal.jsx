@@ -59,18 +59,17 @@ const PageDuplicateModal = (props) => {
   function checkExistPath() {
     let existFlag = false;
     return subordinatedPaths.map((duplicatedNewPath) => {
-        const existPath = existPaths.includes(duplicatedNewPath); // existPaths is dummy data
-        let result;
-        if (existPath) {
-          result = <li className="text-danger">{duplicatedNewPath} (exist)</li>;
-          existFlag = true;
-        }
-        else {
-          result = <li>{duplicatedNewPath}</li>;
-        }
-        return result;
-      })
-    );
+      const existPath = existPaths.includes(duplicatedNewPath); // existPaths is dummy data
+      let result;
+      if (existPath) {
+        result = <li className="duplicate-exist" key={duplicatedNewPath}>{duplicatedNewPath}: Same page already exists</li>;
+        existFlag = true;
+      }
+      else {
+        result = <li key={duplicatedNewPath}>{duplicatedNewPath}</li>;
+      }
+      return result;
+    });
   }
 
   const getSubordinatedList = useCallback(async() => {
@@ -171,14 +170,7 @@ const PageDuplicateModal = (props) => {
           </ul>
           <div>
             <ul className="duplicate-name">
-              {isDuplicateRecursively && subordinatedPaths.map((duplicatedNewPath) => {
-                  // ToDo: The "true" statement below will be modified by task GW3503
-                  if (true) {
-                    return <li className="duplicate-exist" key={duplicatedNewPath}>{duplicatedNewPath}: Same page already exists</li>;
-                  }
-                  return <li key={duplicatedNewPath}>{duplicatedNewPath}</li>;
-                })
-              }
+              {isDuplicateRecursively && checkExistPath()}
             </ul>
           </div>
           <div> {getSubordinatedError} </div>
