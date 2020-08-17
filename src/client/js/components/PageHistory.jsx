@@ -75,7 +75,6 @@ function PageHistory(props) {
         onDiffOpenClicked={pageHistoryContainer.onDiffOpenClicked}
       />
       {pager()}
-
     </div>
   );
 
