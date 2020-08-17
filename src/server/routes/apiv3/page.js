@@ -198,7 +198,7 @@ module.exports = (crowi) => {
   *          200:
   *            description: Return page's markdown
   */
-  router.get('/export/:pageId', validator.export, async(req, res) => {
+  router.get('/export/:pageId', loginRequired, validator.export, async(req, res) => {
     const { pageId } = req.params;
     const { format, revisionId = null } = req.query;
     let revision;

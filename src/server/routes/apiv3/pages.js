@@ -142,6 +142,22 @@ module.exports = (crowi) => {
     ],
   };
 
+  async function createPageAction({
+    path, body, user, options,
+  }) {
+    const createdPage = Page.create(path, body, user, options);
+    return createdPage;
+  }
+
+  async function saveTagsAction({ createdPage, pageTags }) {
+    if (pageTags != null) {
+      await PageTagRelation.updatePageTags(createdPage.id, pageTags);
+      return PageTagRelation.listTagNamesByPage(createdPage.id);
+    }
+
+    return [];
+  }
+
   /**
    * @swagger
    *
@@ -181,6 +197,7 @@ module.exports = (crowi) => {
     const {
       body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, socketClientId, pageTags,
     } = req.body;
+
     let { path } = req.body;
 
     // check whether path starts slash
@@ -198,13 +215,11 @@ module.exports = (crowi) => {
       options.grantUserGroupId = grantUserGroupId;
     }
 
-    const createdPage = await Page.create(path, body, req.user, options);
+    const createdPage = await createPageAction({
+      path, body, user: req.user, options,
+    });
 
-    let savedTags;
-    if (pageTags != null) {
-      await PageTagRelation.updatePageTags(createdPage.id, pageTags);
-      savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
-    }
+    const savedTags = await saveTagsAction({ createdPage, pageTags });
 
     const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
 
@@ -453,8 +468,54 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  // TODO write duplicate(GW-3316)
+  router.post('/duplicate', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
+    const { pageId } = req.body;
 
+    const newPagePath = pathUtils.normalizePath(req.body.pageNameInput);
+
+    // check page existence
+    const isExist = (await Page.count({ path: newPagePath })) > 0;
+    if (isExist) {
+      return res.apiv3Err(new ErrorV3(`Page exists '${newPagePath})'`, 'already_exists'), 409);
+    }
+
+    const page = await Page.findByIdAndViewer(pageId, req.user);
+
+    // null check
+    if (page == null) {
+      res.code = 'Page is not found';
+      logger.error('Failed to find the pages');
+      return res.apiv3Err(new ErrorV3('Not Founded the page', 'notfound_or_forbidden'), 404);
+    }
+
+    // populate
+    await page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate();
+
+    // create option
+    const options = { page };
+    options.grant = page.grant;
+    options.grantUserGroupId = page.grantedGroup;
+    options.grantedUsers = page.grantedUsers;
+
+    const createdPage = await createPageAction({
+      path: newPagePath, user: req.user, body: page.revision.body, options,
+    });
+    const originTags = await page.findRelatedTagsById();
+    const savedTags = await saveTagsAction({ page, createdPage, pageTags: originTags });
+    const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
+
+    // global notification
+    if (globalNotificationService != null) {
+      try {
+        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, req.user);
+      }
+      catch (err) {
+        logger.error('Create grobal notification failed', err);
+      }
+    }
+
+    return res.apiv3(result);
+  });
 
   router.get('/subordinated-list', accessTokenParser, loginRequired, async(req, res) => {
     const { path } = req.query;
