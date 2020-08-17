@@ -67,35 +67,47 @@ class LinkEditModal extends React.PureComponent {
   // defaultMarkdownLink is an instance of Linker
   show(defaultMarkdownLink = null) {
     // if defaultMarkdownLink is null, set default value in inputs.
-    const { label = '' } = defaultMarkdownLink;
-    let { link = '', type = Linker.types.markdownLink } = defaultMarkdownLink;
+    const { label = '', link = '' } = defaultMarkdownLink;
+    let { type = Linker.types.markdownLink } = defaultMarkdownLink;
 
     // if type of defaultMarkdownLink is pukiwikiLink when pukiwikiLikeLinker plugin is disable, change type(not change label and link)
     if (type === Linker.types.pukiwikiLink && !this.isApplyPukiwikiLikeLinkerPlugin) {
       type = Linker.types.markdownLink;
     }
 
-    let isUseRelativePath = false;
-
-    const url = new URL(link, 'http://example.com');
-    if (url.origin === window.location.origin) {
-      link = decodeURI(url.pathname);
-    }
-    else if (url.origin === 'http://example.com' && !link.startsWith('/') && link !== '') {
-      isUseRelativePath = true;
-      const rootPath = this.getRootPath(type);
-      link = path.resolve(rootPath, link);
-    }
+    this.parseLinkAndSetState(link, type);
 
     this.setState({
       show: true,
       labelInputValue: label,
-      linkInputValue: link,
       isUsePermanentLink: false,
       permalink: '',
       linkerType: type,
+    });
+  }
+
+  parseLinkAndSetState(link, type) {
+    const url = new URL(link, 'http://example.com');
+    let isUseRelativePath = false;
+    let reshapedLink = link;
+
+    reshapedLink = this.checkIsPageUrlAndConvertToPath(reshapedLink, url);
+
+    if (url.origin === 'http://example.com' && !reshapedLink.startsWith('/') && reshapedLink !== '') {
+      isUseRelativePath = true;
+      const rootPath = this.getRootPath(type);
+      reshapedLink = path.resolve(rootPath, reshapedLink);
+    }
+
+    this.setState({
+      linkInputValue: reshapedLink,
       isUseRelativePath,
     });
+  }
+
+  // return path name of link if link is this growi page url, else return original link.
+  checkIsPageUrlAndConvertToPath(link, url) {
+    return url.origin === window.location.origin ? decodeURI(url.pathname) : link;
   }
 
   cancel() {
