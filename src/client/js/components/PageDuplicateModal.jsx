@@ -166,7 +166,14 @@ const PageDuplicateModal = (props) => {
       </ModalBody>
       <ModalFooter>
         <ApiErrorMessageList errs={errs} targetPath={pageNameInput} />
-        <button type="button" className="btn btn-primary" onClick={duplicate} disabled={isDuplicateRecursively && !isDuplicateRecursivelyAdmit}>Duplicate page</button>
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={duplicate}
+          disabled={isDuplicateRecursively && !isDuplicateRecursivelyAdmit}
+        >
+          Duplicate page
+        </button>
       </ModalFooter>
     </Modal>
   );
