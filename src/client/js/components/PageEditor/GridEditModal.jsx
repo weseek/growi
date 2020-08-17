@@ -117,7 +117,7 @@ export default class GridEditModal extends React.Component {
                   <label htmlFor="gridPattern">Grid Pattern :</label>
                 </div>
                 <button
-                  className="btn btn-outline-secondary dropdown-toggle text-md-right col-6 col-md-auto"
+                  className="btn btn-outline-secondary dropdown-toggle text-md-right col-3 col-md-auto"
                   type="button"
                   id="dropdownMenuButton"
                   data-toggle="dropdown"
@@ -130,8 +130,8 @@ export default class GridEditModal extends React.Component {
                   {this.gridDivisionMenu()}
                 </div>
               </div>
-              <div className="col-lg-3 text-lg-right pr-0">
-                <label className="pr-3">Break point by display size :</label>
+              <div className="col-lg-3 text-lg-right pr-0 mb-2">
+                <label className="pr-3 text-nowrap">Break point by display size :</label>
               </div>
               <div className="col-lg-3 text-left pl-lg-0">
                 <div className="form-group inline-block">
