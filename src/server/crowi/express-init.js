@@ -56,25 +56,25 @@ module.exports = function(crowi, app) {
     const now = new Date();
     // for datez
 
-    // const Page = crowi.model('Page');
-    // const User = crowi.model('User');
-    // const Config = crowi.model('Config');
-    // app.set('tzoffset', crowi.appService.getTzoffset());
+    const Page = crowi.model('Page');
+    const User = crowi.model('User');
+    const Config = crowi.model('Config');
+    app.set('tzoffset', crowi.appService.getTzoffset());
 
     req.csrfToken = null;
 
     res.locals.req = req;
-    // res.locals.baseUrl = crowi.appService.getSiteUrl();
+    res.locals.baseUrl = crowi.appService.getSiteUrl();
     res.locals.env = env;
     res.locals.now = now;
     res.locals.consts = {
-      // pageGrants: Page.getGrantLabels(),
-      // userStatus: User.getUserStatusLabels(),
+      pageGrants: Page.getGrantLabels(),
+      userStatus: User.getUserStatusLabels(),
       language:   listLocaleIds(),
-      // restrictGuestMode: crowi.aclService.getRestrictGuestModeLabels(),
-      // registrationMode: crowi.aclService.getRegistrationModeLabels(),
+      restrictGuestMode: crowi.aclService.getRestrictGuestModeLabels(),
+      registrationMode: crowi.aclService.getRegistrationModeLabels(),
     };
-    // res.locals.local_config = Config.getLocalconfig(); // config for browser context
+    res.locals.local_config = Config.getLocalconfig(); // config for browser context
 
     next();
   });
@@ -119,10 +119,10 @@ module.exports = function(crowi, app) {
   app.use(injectCurrentuserToLocalvars);
   app.use(autoReconnectToS2sMsgServer);
 
-  // const middlewares = require('../util/middlewares')(crowi, app);
-  // app.use(middlewares.swigFilters(swig));
-  // app.use(middlewares.swigFunctions());
-  // app.use(middlewares.csrfKeyGenerator());
+  const middlewares = require('../util/middlewares')(crowi, app);
+  app.use(middlewares.swigFilters(swig));
+  app.use(middlewares.swigFunctions());
+  app.use(middlewares.csrfKeyGenerator());
 
   app.use(i18nMiddleware.handle(i18next));
 };
