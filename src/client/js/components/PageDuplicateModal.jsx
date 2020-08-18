@@ -62,26 +62,15 @@ const PageDuplicateModal = (props) => {
     setIsExist(true);
   }
 
-  function checkExistPath() {
-    subordinatedPaths.map((duplicatedNewPath) => {
-      const existPath = dummyExistPaths.includes(duplicatedNewPath); // dummyExistPaths is dummy data
-      if (existPath) {
-        changeIsExistHandler();
-        setExistPaths(existPaths.push(duplicatedNewPath));
-      }
-    });
-    return existPaths;
-  }
-
   function createSubordinatedList() {
     return subordinatedPaths.map((duplicatedNewPath) => {
-      const existPath = existPaths.includes(duplicatedNewPath);
+      const isExistPath = dummyExistPaths.includes(duplicatedNewPath);
       let result;
-      if (existPath) {
-        result = <li className="text-danger">{duplicatedNewPath} (exist)</li>;
+      if (isExistPath) {
+        result = <li className="duplicate-exist" key={duplicatedNewPath}> {duplicatedNewPath}: { t('modal_duplicate.label.Same page already exists') } </li>;
       }
       else {
-        result = <li>{duplicatedNewPath}</li>;
+        result = <li key={duplicatedNewPath}>{duplicatedNewPath}</li>;
       }
       return result;
     });
@@ -102,6 +91,22 @@ const PageDuplicateModal = (props) => {
       getSubordinatedList();
     }
   }, [props.isOpen, getSubordinatedList]);
+
+  const checkExistPath = useCallback(() => {
+    subordinatedPaths.map((duplicatedNewPath) => {
+      const existPath = dummyExistPaths.includes(duplicatedNewPath); // dummyExistPaths is dummy data
+      if (existPath) {
+        changeIsExistHandler();
+      }
+      return;
+    });
+  }, [dummyExistPaths, subordinatedPaths]);
+
+  useEffect(() => {
+    if (props.isOpen) {
+      checkExistPath();
+    }
+  }, [props.isOpen, checkExistPath]);
 
   async function duplicate() {
     setErrs(null);
