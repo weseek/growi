@@ -3,8 +3,13 @@
 const { execSync } = require('child_process');
 
 const EXCLUDE_TERM_DAYS = 14;
+const EXCLUDE_PATTERNS = [
+  /feat\/custom-sidebar-2$/,
+  // https://regex101.com/r/Lnx7Pz/2
+  /dev\/[\d.x]*$/,
+];
 
-class BranchInfo {
+class BranchSummary {
 
   constructor(line) {
     const splitted = line.split('\t'); // split with '%09'
@@ -23,7 +28,7 @@ function getExcludeTermDate() {
   return date;
 }
 
-async function main() {
+function getBranchSummaries() {
   // exec git for-each-ref
   const out = execSync(`\
     git for-each-ref refs/remotes \
@@ -32,15 +37,26 @@ async function main() {
   `).toString();
 
   // parse
-  const data = out
+  const branchSummaries = out
     .split('\n')
     .filter(v => v !== '') // trim empty string
-    .map((line) => {
-      return new BranchInfo(line);
-    })
+    .map(line => new BranchSummary(line))
+    .filter((branchInfo) => { // exclude branches that matches to patterns
+      return !EXCLUDE_PATTERNS.some(pattern => pattern.test(branchInfo.refName));
+    });
+
+  return branchSummaries;
+}
+
+async function main() {
+  const args = process.argv.slice(2);
+
+  const branchSummaries = getBranchSummaries();
+
+  const outdated = branchSummaries
     .filter(branchInfo => branchInfo.authorDate < getExcludeTermDate()); // exclude data within EXCLUDE_TERM_DAYS
 
-  console.log(data);
+  console.log(outdated);
 }
 
 main();
