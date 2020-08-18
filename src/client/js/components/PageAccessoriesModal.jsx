@@ -93,7 +93,7 @@ const PageAccessoriesModal = (props) => {
         className="grw-page-accessories-modal"
       >
         <ModalBody>
-          <Nav className="nav-title border-bottom" id="nav_slide_click">
+          <Nav className="nav-title" id="nav_slide_click">
             <NavItem type="button" className={`nav-link ${activeTab === 'pagelist' && 'active'}`}>
               <NavLink
                 onClick={() => { switchActiveTab('pagelist') }}
