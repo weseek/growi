@@ -29,7 +29,7 @@ function PageHistory(props) {
     }
   }, [props.pageHistoryContainer]);
 
-  if (pageHistoryContainer.state.errorMessage) {
+  if (pageHistoryContainer.state.errorMessage != null) {
     return (
       <div className="my-5">
         <div className="text-danger">{pageHistoryContainer.state.errorMessage}</div>
