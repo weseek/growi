@@ -441,14 +441,14 @@ module.exports = function(crowi) {
     if (username == null) {
       return Promise.resolve(null);
     }
-    return this.findOne({ username });
+    return this.findOne({ username }).select(this.USER_PUBLIC_FIELDS);
   };
 
   userSchema.statics.findUserByApiToken = function(apiToken) {
     if (apiToken == null) {
       return Promise.resolve(null);
     }
-    return this.findOne({ apiToken });
+    return this.findOne({ apiToken }).select(this.USER_PUBLIC_FIELDS);
   };
 
   userSchema.statics.findUserByGoogleId = function(googleId, callback) {
