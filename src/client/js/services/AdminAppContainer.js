@@ -1,11 +1,5 @@
 import { Container } from 'unstated';
 
-import loggerFactory from '@alias/logger';
-
-import { toastError } from '../util/apiNotification';
-
-const logger = loggerFactory('growi:appSettings');
-
 /**
  * Service container for admin app setting page (AppSettings.jsx)
  * @extends {Container} unstated Container
@@ -17,10 +11,8 @@ export default class AdminAppContainer extends Container {
 
     this.appContainer = appContainer;
     this.dummyTitle = 0;
-    this.dummyTitleForError = 1;
 
     this.state = {
-      retrieveError: null,
       // set dummy value tile for using suspense
       title: this.dummyTitle,
       confidential: '',
