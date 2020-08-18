@@ -41,6 +41,7 @@ class PasswordSettings extends React.Component {
     }
     catch (err) {
       toastError(err);
+      this.setState({ retrieveError: err });
     }
 
   }
