@@ -15,6 +15,7 @@ import AttachmentIcon from './Icons/AttachmentIcon';
 import { withUnstatedContainers } from './UnstatedUtils';
 import PageAccessoriesContainer from '../services/PageAccessoriesContainer';
 import PageAttachment from './PageAttachment';
+import PageTimeline from './PageTimeline';
 
 const PageAccessoriesModal = (props) => {
   const { t, pageAccessoriesContainer } = props;
@@ -73,7 +74,9 @@ const PageAccessoriesModal = (props) => {
           </Nav>
           <TabContent activeTab={activeTab}>
             <TabPane tabId="pagelist"></TabPane>
-            <TabPane tabId="timeline"></TabPane>
+            <TabPane tabId="timeline" className="p-4">
+              {pageAccessoriesContainer.state.activeComponents.has('timeline') && <PageTimeline /> }
+            </TabPane>
             <TabPane tabId="recent-changes"></TabPane>
             <TabPane tabId="attachment" className="p-4">
               {pageAccessoriesContainer.state.activeComponents.has('attachment') && <PageAttachment /> }
