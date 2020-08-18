@@ -6,6 +6,12 @@ import {
 import geu from './GridEditorUtil';
 import BootstrapGrid from '../../models/BootstrapGrid';
 
+const resSizes = BootstrapGrid.ResponsiveSize;
+const resSizeObj = {
+  [resSizes.XS_SIZE]: { iconClass: 'icon-screen-smartphone', displayText: 'Smartphone / No Break' },
+  [resSizes.SM_SIZE]: { iconClass: 'icon-screen-tablet', displayText: 'Tablet' },
+  [resSizes.MD_SIZE]: { iconClass: 'icon-screen-desktop', displayText: 'Desktop' },
+};
 export default class GridEditModal extends React.Component {
 
   constructor(props) {
@@ -78,18 +84,8 @@ export default class GridEditModal extends React.Component {
     return colsRatios.join(' - ');
   }
 
-  responsiveSizeObject() {
-    const resSizes = BootstrapGrid.ResponsiveSize;
-    const resSizeObj = {
-      [resSizes.XS_SIZE]: { iconClass: 'icon-screen-smartphone', displayText: 'Smartphone / No Break' },
-      [resSizes.SM_SIZE]: { iconClass: 'icon-screen-tablet', displayText: 'Tablet' },
-      [resSizes.MD_SIZE]: { iconClass: 'icon-screen-desktop', displayText: 'Desktop' },
-    };
-    return resSizeObj;
-  }
-
   renderSelectedBreakPoint() {
-    const output = Object.entries(this.responsiveSizeObject()).map((responsiveSizeForMap) => {
+    const output = Object.entries(resSizeObj).map((responsiveSizeForMap) => {
       return (this.state.responsiveSize === responsiveSizeForMap[0]
         && (
         <span>
@@ -131,7 +127,7 @@ export default class GridEditModal extends React.Component {
   }
 
   renderBreakPointMenu() {
-    const output = Object.entries(this.responsiveSizeObject()).map((responsiveSizeForMap) => {
+    const output = Object.entries(resSizeObj).map((responsiveSizeForMap) => {
       return (
         <button className="dropdown-item" type="button" onClick={() => { this.checkResposiveSize(responsiveSizeForMap[0]) }}>
           <i className={`pl-2 pr-1 ${responsiveSizeForMap[1].iconClass}`}></i> {responsiveSizeForMap[1].displayText}
