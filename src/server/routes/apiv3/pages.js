@@ -4,6 +4,7 @@ const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line
 
 const express = require('express');
 const pathUtils = require('growi-commons').pathUtils;
+const escapeStringRegexp = require('escape-string-regexp');
 
 const { body } = require('express-validator/check');
 const ErrorV3 = require('../../models/vo/error-apiv3');
@@ -438,6 +439,77 @@ module.exports = (crowi) => {
     }
   });
 
+  async function duplicatePage(page, newPagePath, user) {
+    // populate
+    await page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate();
+
+    // create option
+    const options = { page };
+    options.grant = page.grant;
+    options.grantUserGroupId = page.grantedGroup;
+    options.grantedUsers = page.grantedUsers;
+
+    const createdPage = await createPageAction({
+      path: newPagePath, user, body: page.revision.body, options,
+    });
+
+    const originTags = await page.findRelatedTagsById();
+    const savedTags = await saveTagsAction({ page, createdPage, pageTags: originTags });
+
+    // global notification
+    if (globalNotificationService != null) {
+      try {
+        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, user);
+      }
+      catch (err) {
+        logger.error('Create grobal notification failed', err);
+      }
+    }
+
+    return { page: pageService.serializeToObj(createdPage), tags: savedTags };
+  }
+
+  async function duplicatePageRecursively(page, newPagePath, user) {
+    const newPagePathPrefix = newPagePath;
+    const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
+
+    const pages = await Page.findManageableListWithDescendants(page, user);
+    const promise = pages.map(async(page) => {
+      const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
+
+      // populate
+      await page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate();
+
+      // create option
+      const options = { page };
+      options.grant = page.grant;
+      options.grantUserGroupId = page.grantedGroup;
+      options.grantedUsers = page.grantedUsers;
+
+      const createdPage = await createPageAction({
+        path: newPagePath, user, body: page.revision.body, options,
+      });
+
+      const originTags = await page.findRelatedTagsById();
+      const savedTags = await saveTagsAction({ page, createdPage, pageTags: originTags });
+
+      // global notification
+      if (globalNotificationService != null) {
+        try {
+          await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, user);
+        }
+        catch (err) {
+          logger.error('Create grobal notification failed', err);
+        }
+      }
+
+      return { page: pageService.serializeToObj(createdPage), tags: savedTags };
+    });
+
+    return Promise.allSettled(promise);
+  }
+
+
   /**
    * @swagger
    *
@@ -474,7 +546,7 @@ module.exports = (crowi) => {
    *            description: Internal server error.
    */
   router.post('/duplicate', accessTokenParser, loginRequiredStrictly, csrf, validator.duplicatePage, apiV3FormValidator, async(req, res) => {
-    const { pageId } = req.body;
+    const { pageId, isDuplicateRecursively } = req.body;
 
     const newPagePath = pathUtils.normalizePath(req.body.pageNameInput);
 
@@ -493,35 +565,18 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('Not Founded the page', 'notfound_or_forbidden'), 404);
     }
 
-    // populate
-    await page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate();
+    let result;
 
-    // create option
-    const options = { page };
-    options.grant = page.grant;
-    options.grantUserGroupId = page.grantedGroup;
-    options.grantedUsers = page.grantedUsers;
-
-
-    const createdPage = await createPageAction({
-      path: newPagePath, user: req.user, body: page.revision.body, options,
-    });
-    const originTags = await page.findRelatedTagsById();
-    const savedTags = await saveTagsAction({ page, createdPage, pageTags: originTags });
-    const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
-
-    // global notification
-    if (globalNotificationService != null) {
-      try {
-        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, req.user);
-      }
-      catch (err) {
-        logger.error('Create grobal notification failed', err);
-      }
+    if (isDuplicateRecursively) {
+      result = await duplicatePageRecursively(page, newPagePath, req.user);
+    }
+    else {
+      result = await duplicatePage(page, newPagePath, req.user);
     }
 
-    return res.apiv3(result);
+    return res.apiv3({ result });
   });
+
 
   router.get('/subordinated-list', accessTokenParser, loginRequired, async(req, res) => {
     const { path } = req.query;
