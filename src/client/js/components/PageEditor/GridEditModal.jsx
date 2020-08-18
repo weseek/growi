@@ -6,6 +6,12 @@ import {
 import geu from './GridEditorUtil';
 import BootstrapGrid from '../../models/BootstrapGrid';
 
+const resSizes = BootstrapGrid.ResponsiveSize;
+const resSizeObj = {
+  [resSizes.XS_SIZE]: { iconClass: 'icon-screen-smartphone', displayText: 'Smartphone / No Break' },
+  [resSizes.SM_SIZE]: { iconClass: 'icon-screen-tablet', displayText: 'Tablet' },
+  [resSizes.MD_SIZE]: { iconClass: 'icon-screen-desktop', displayText: 'Desktop' },
+};
 export default class GridEditModal extends React.Component {
 
   constructor(props) {
@@ -18,13 +24,15 @@ export default class GridEditModal extends React.Component {
       gridHtml: '',
     };
 
+    this.checkResposiveSize = this.checkResposiveSize.bind(this);
+    this.checkColsRatios = this.checkColsRatios.bind(this);
     this.init = this.init.bind(this);
     this.show = this.show.bind(this);
     this.hide = this.hide.bind(this);
     this.cancel = this.cancel.bind(this);
     this.pasteCodedGrid = this.pasteCodedGrid.bind(this);
-    this.showGridPattern = this.showGridPattern.bind(this);
-    this.checkResposiveSize = this.checkResposiveSize.bind(this);
+    this.renderSelectedGridPattern = this.renderSelectedGridPattern.bind(this);
+    this.renderSelectedBreakPoint = this.renderSelectedBreakPoint.bind(this);
   }
 
   async checkResposiveSize(rs) {
@@ -33,11 +41,6 @@ export default class GridEditModal extends React.Component {
 
   async checkColsRatios(cr) {
     await this.setState({ colsRatios: cr });
-  }
-
-  showGridPattern() {
-    const colsRatios = this.state.colsRatios;
-    return colsRatios.join(' - ');
   }
 
   init(gridHtml) {
@@ -62,8 +65,8 @@ export default class GridEditModal extends React.Component {
   }
 
   pasteCodedGrid() {
-    // dummy data
-    const convertedHTML = geu.convertRatiosAndSizeToHTML([1, 5, 6], 'sm');
+    const { colsRatios, responsiveSize } = this.state;
+    const convertedHTML = geu.convertRatiosAndSizeToHTML(colsRatios, responsiveSize);
     const pastedGridData = `::: editable-row\n<div class="container">\n\t<div class="row">\n${convertedHTML}\n\t</div>\n</div>\n:::`;
     // display converted html on console
     console.log(convertedHTML);
@@ -74,7 +77,25 @@ export default class GridEditModal extends React.Component {
     this.cancel();
   }
 
-  gridDivisionMenu() {
+  renderSelectedGridPattern() {
+    const colsRatios = this.state.colsRatios;
+    return colsRatios.join(' - ');
+  }
+
+  renderSelectedBreakPoint() {
+    const output = Object.entries(resSizeObj).map((responsiveSizeForMap) => {
+      return (this.state.responsiveSize === responsiveSizeForMap[0]
+        && (
+        <span>
+          <i className={`pr-1 ${responsiveSizeForMap[1].iconClass}`}> {responsiveSizeForMap[1].displayText}</i>
+        </span>
+        )
+      );
+    });
+    return output;
+  }
+
+  renderGridDivisionMenu() {
     const gridDivisions = geu.mappingAllGridDivisionPatterns;
     return (
       <div className="container">
@@ -103,6 +124,17 @@ export default class GridEditModal extends React.Component {
     );
   }
 
+  renderBreakPointMenu() {
+    const output = Object.entries(resSizeObj).map((responsiveSizeForMap) => {
+      return (
+        <button className="dropdown-item" type="button" onClick={() => { this.checkResposiveSize(responsiveSizeForMap[0]) }}>
+          <i className={`pl-2 pr-1 ${responsiveSizeForMap[1].iconClass}`}></i> {responsiveSizeForMap[1].displayText}
+        </button>
+      );
+    });
+    return output;
+  }
+
   render() {
     return (
       <Modal isOpen={this.state.show} toggle={this.cancel} size="xl" className="grw-grid-edit-modal">
@@ -122,53 +154,28 @@ export default class GridEditModal extends React.Component {
                   aria-haspopup="true"
                   aria-expanded="false"
                 >
-                  {this.showGridPattern()}
+                  {this.renderSelectedGridPattern()}
                 </button>
                 <div className="dropdown-menu grid-division-menu" aria-labelledby="dropdownMenuButton">
-                  {this.gridDivisionMenu()}
+                  {this.renderGridDivisionMenu()}
                 </div>
               </div>
-              <div className="col-lg-6 mb-2">
-                <label className="pr-3">Break point by display size :</label>
-                <div className="form-group inline-block">
-                  {/* TODO unite radio button style with that of AppSetting.jsx by GW-3342 */}
-                  <input
-                    type="radio"
-                    id={BootstrapGrid.ResponsiveSize.XS_SIZE}
-                    name="responsiveSize"
-                    value={BootstrapGrid.ResponsiveSize.XS_SIZE}
-                    onChange={(e) => { this.checkResposiveSize(e.target.value) }}
-                    checked={this.state.responsiveSize === BootstrapGrid.ResponsiveSize.XS_SIZE}
-                  />
-                  <label htmlFor={BootstrapGrid.ResponsiveSize.XS_SIZE}>
-                    <i className="pl-2 pr-1 icon-screen-smartphone"></i> Mobile / No break point
-                  </label>
-                  <div>
-                    <input
-                      type="radio"
-                      id={BootstrapGrid.ResponsiveSize.SM_SIZE}
-                      name="responsiveSize"
-                      value={BootstrapGrid.ResponsiveSize.SM_SIZE}
-                      onChange={(e) => { this.checkResposiveSize(e.target.value) }}
-                      checked={this.state.responsiveSize === BootstrapGrid.ResponsiveSize.SM_SIZE}
-                    />
-                    <label htmlFor={BootstrapGrid.ResponsiveSize.SM_SIZE}>
-                      <i className="pl-2 pr-1 icon-screen-tablet"></i> Tablet
-                    </label>
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      id={BootstrapGrid.ResponsiveSize.MD_SIZE}
-                      name="responsiveSize"
-                      value={BootstrapGrid.ResponsiveSize.MD_SIZE}
-                      onChange={(e) => { this.checkResposiveSize(e.target.value) }}
-                      checked={this.state.responsiveSize === BootstrapGrid.ResponsiveSize.MD_SIZE}
-                    />
-                    <label htmlFor={BootstrapGrid.ResponsiveSize.MD_SIZE}>
-                      <i className="pl-2 pr-1 icon-screen-desktop"></i> Desktop
-                    </label>
-                  </div>
+              <div className="col-lg-6">
+                <div className="mr-3 d-inline">
+                  <label htmlFor="breakPoint">Break point by display size :</label>
+                </div>
+                <div
+                  className="btn btn-outline-secondary btn-block dropdown-toggle"
+                  type="button"
+                  id="dropdownMenuButton"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  {this.renderSelectedBreakPoint()}
+                </div>
+                <div className="dropdown-menu break-point-menu" aria-labelledby="dropdownMenuButton">
+                  {this.renderBreakPointMenu()}
                 </div>
               </div>
             </div>
