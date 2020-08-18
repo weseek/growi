@@ -28,5 +28,6 @@ jobs:
       env:
         INCOMING_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       with:
+        channel: dev
         text: There is some *inactive* branches on remote.
         attachments: ${{ steps.list-branches.outputs.SLACK_ATTACHMENTS_INACTIVE }}
