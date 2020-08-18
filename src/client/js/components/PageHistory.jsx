@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
@@ -11,11 +11,23 @@ import PageRevisionList from './PageHistory/PageRevisionList';
 import PageHistroyContainer from '../services/PageHistoryContainer';
 import PaginationWrapper from './PaginationWrapper';
 
+
 const logger = loggerFactory('growi:PageHistory');
 
 
 function PageHistory(props) {
   const { pageHistoryContainer } = props;
+
+  const handlePage = useCallback(async(selectedPage) => {
+    try {
+      await props.pageHistoryContainer.retrieveRevisions(selectedPage);
+    }
+    catch (err) {
+      toastError(err);
+      props.pageHistoryContainer.setState({ errorMessage: err.message });
+      logger.error(err);
+    }
+  }, [props.pageHistoryContainer]);
 
   if (pageHistoryContainer.state.errorMessage) {
     return (
@@ -36,17 +48,6 @@ function PageHistory(props) {
         logger.error(err);
       }
     });
-  }
-
-  async function handlePage(selectedPage) {
-    try {
-      await props.pageHistoryContainer.retrieveRevisions(selectedPage);
-    }
-    catch (err) {
-      toastError(err);
-      pageHistoryContainer.setState({ errorMessage: err.message });
-      logger.error(err);
-    }
   }
 
 
