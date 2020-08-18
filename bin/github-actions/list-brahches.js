@@ -1,5 +1,14 @@
 /* eslint-disable no-console */
 
+/*
+ * USAGE:
+ *  node list-branches [OPTION]
+ *
+ * OPTIONS:
+ *  --disused : Return disused branches (default)
+ *  --illegal : Return illegal named branches
+ */
+
 const { execSync } = require('child_process');
 
 const EXCLUDE_TERM_DAYS = 14;
