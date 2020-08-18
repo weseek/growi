@@ -10,18 +10,20 @@
  */
 
 const { execSync } = require('child_process');
+const url = require('url');
 
 const EXCLUDE_TERM_DAYS = 14;
 const EXCLUDE_PATTERNS = [
-  /feat\/custom-sidebar-2$/,
-  // https://regex101.com/r/Lnx7Pz/2
-  /dev\/[\d.x]*$/,
+  /^feat\/custom-sidebar-2$/,
+  // https://regex101.com/r/Lnx7Pz/3
+  /^dev\/[\d.x]*$/,
 ];
 const LEGAL_PATTERNS = [
-  /^origin\/master$/,
-  // https://regex101.com/r/p9xswM/3
-  /^origin\/(dev|feat|imprv|support|fix|rc|release|tmp)\/.+$/,
+  /^master$/,
+  // https://regex101.com/r/p9xswM/4
+  /^(dev|feat|imprv|support|fix|rc|release|tmp)\/.+$/,
 ];
+const GITHUB_REPOS_URI = 'https://github.com/weseek/growi/';
 
 class BranchSummary {
 
@@ -30,8 +32,10 @@ class BranchSummary {
 
     this.authorDate = new Date(splitted[0].trim());
     this.authorName = splitted[1].trim();
-    this.refName = splitted[2].trim();
+    this.branchName = splitted[2].trim().replace(/^origin\//, '');
     this.subject = splitted[3].trim();
+
+    this.githubLink = url.resolve(GITHUB_REPOS_URI, `commits/${this.branchName}`);
   }
 
 }
@@ -56,7 +60,7 @@ function getBranchSummaries() {
     .filter(v => v !== '') // trim empty string
     .map(line => new BranchSummary(line))
     .filter((summary) => { // exclude branches that matches to patterns
-      return !EXCLUDE_PATTERNS.some(pattern => pattern.test(summary.refName));
+      return !EXCLUDE_PATTERNS.some(pattern => pattern.test(summary.branchName));
     });
 
   return summaries;
@@ -71,7 +75,7 @@ async function main(mode) {
     case 'illegal':
       filteredSummaries = summaries
         .filter((summary) => { // exclude branches that matches to patterns
-          return !LEGAL_PATTERNS.some(pattern => pattern.test(summary.refName));
+          return !LEGAL_PATTERNS.some(pattern => pattern.test(summary.branchName));
         });
       break;
     default: {
