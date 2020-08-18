@@ -128,7 +128,7 @@ export default class GridEditModal extends React.Component {
     const output = Object.entries(resSizeObj).map((responsiveSizeForMap) => {
       return (
         <button className="dropdown-item" type="button" onClick={() => { this.checkResposiveSize(responsiveSizeForMap[0]) }}>
-          <i className={`pl-2 pr-1 ${responsiveSizeForMap[1].iconClass}`}></i> {responsiveSizeForMap[1].displayText}
+          <i className={`${responsiveSizeForMap[1].iconClass}`}></i> {responsiveSizeForMap[1].displayText}
         </button>
       );
     });
