@@ -65,11 +65,11 @@ function getBranchSummaries() {
 }
 
 function getGitHubCommitsUrl(branchName) {
-  return url.resolve(GITHUB_REPOS_URI, `commits/${this.branchName}`);
+  return url.resolve(GITHUB_REPOS_URI, `commits/${branchName}`);
 }
 
 function getGitHubComparingUrl(branchName) {
-  return url.resolve(GITHUB_REPOS_URI, `compare/${this.branchName}`);
+  return url.resolve(GITHUB_REPOS_URI, `compare/${branchName}`);
 }
 
 /**
