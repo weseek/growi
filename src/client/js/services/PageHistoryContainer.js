@@ -61,7 +61,7 @@ export default class PageHistoryContainer extends Container {
     // set Pagination state
     this.setState({
       activePage: selectedPage,
-      totalPages: res.data.totalPages,
+      totalPages: res.data.totalDocs,
       pagingLimit: res.data.limit,
     });
 

@@ -76,14 +76,13 @@ module.exports = (crowi) => {
         {
           page: selectedPage,
           limit: PAGE_ITEMS,
-          desc: -1,
+          sort: { createdAt: -1 },
           populate: {
             path: 'author',
             select: User.USER_PUBLIC_FIELDS,
           },
         },
       );
-      // console.log(paginateResult.docs);
 
       return res.apiv3(paginateResult);
     }
