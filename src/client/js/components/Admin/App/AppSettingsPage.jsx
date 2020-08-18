@@ -25,18 +25,26 @@ function AppSettingsPageWithContainerWithSuspense(props) {
   );
 }
 
+let retrieveError = null;
 function AppSettingsPage(props) {
   if (props.adminAppContainer.state.title === props.adminAppContainer.dummyTitle) {
-    throw new Promise(async() => {
+    throw (async() => {
       try {
         await props.adminAppContainer.retrieveAppSettingsData();
       }
       catch (err) {
         toastError(err);
-        props.adminAppContainer.setState({ retrieveError: err.message });
         logger.error(err);
+        props.adminAppContainer.setState({
+          title: props.adminAppContainer.dummyTitleForError,
+        });
+        retrieveError = err;
       }
-    });
+    })();
+  }
+
+  if (props.adminAppContainer.state.title === props.adminAppContainer.dummyTitleForError) {
+    throw new Error(retrieveError[0].message);
   }
 
   return <AppSettingsPageContents />;
