@@ -26,7 +26,7 @@ jobs:
     - name: Slack Notification for inactive branches
       uses: tokorom/action-slack-incoming-webhook@master
       env:
-        INCOMING_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        INCOMING_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL_FOR_DEV }}
       with:
         channel: dev
         text: There is some *inactive* branches on remote.
