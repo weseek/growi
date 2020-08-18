@@ -30,6 +30,7 @@ const PageRenameModal = (props) => {
   const [isRenameRedirect, SetIsRenameRedirect] = useState(false);
   const [isRenameMetadata, SetIsRenameMetadata] = useState(false);
   const [subordinatedPaths, setSubordinatedPaths] = useState([]);
+  const [getSubordinatedError, setGetSuborinatedError] = useState(null);
 
   const getSubordinatedList = useCallback(async() => {
     try {
@@ -168,6 +169,7 @@ const PageRenameModal = (props) => {
             <p className="form-text text-muted mt-0">{ t('modal_rename.help.metadata') }</p>
           </label>
         </div>
+        <div> {getSubordinatedError} </div>
       </ModalBody>
       <ModalFooter>
         <ApiErrorMessageList errs={errs} targetPath={pageNameInput} />
