@@ -87,26 +87,26 @@ const PersonalDropdown = (props) => {
   /* eslint-disable react/prop-types */
   const DrawerIcon = props => (
     <>
-      <div id={props.id} className="px-2 sidebar-mode-icon"><SidebarDrawerIcon /></div>
+      <div id={props.id} className="px-2"><SidebarDrawerIcon /></div>
       <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Drawer</UncontrolledTooltip>
     </>
   );
   const DockIcon = props => (
     <>
-      <div id={props.id} className="px-2 sidebar-mode-icon"><SidebarDockIcon /></div>
+      <div id={props.id} className="px-2"><SidebarDockIcon /></div>
       <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Dock</UncontrolledTooltip>
     </>
   );
 
   const LightIcon = props => (
     <>
-      <div id={props.id} className={`px-2 lightmode-icon ${useOsSettings ? 'use-os-settings' : ''}`}><SunIcon /></div>
+      <div id={props.id} className={`px-2 ${useOsSettings ? 'use-os-settings' : ''}`}><SunIcon /></div>
       <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Light</UncontrolledTooltip>
     </>
   );
   const DarkIcon = props => (
     <>
-      <div id={props.id} className={`px-2 darkmode-icon ${useOsSettings ? 'use-os-settings' : ''}`}><MoonIcon /></div>
+      <div id={props.id} className={`px-2 ${useOsSettings ? 'use-os-settings' : ''}`}><MoonIcon /></div>
       <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Dark</UncontrolledTooltip>
     </>
   );
@@ -122,7 +122,7 @@ const PersonalDropdown = (props) => {
       </a>
 
       {/* Menu */}
-      <div className="dropdown-menu dropdown-menu-right">
+      <div className="dropdown-menu dropdown-menu-right personal-dropdown-icons">
 
         <div className="px-4 pt-3 pb-2 text-center">
           <UserPicture user={user} size="lg" noLink noTooltip />

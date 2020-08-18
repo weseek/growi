@@ -3,8 +3,6 @@ import React from 'react';
 const SidebarDockIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="18"
-    height="18"
     viewBox="0 0 23 23"
   >
     <rect width="23" height="23" fillOpacity="0" />

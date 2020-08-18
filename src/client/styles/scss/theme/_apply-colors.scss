@@ -80,15 +80,11 @@ pre:not(.hljs):not(.CodeMirror-line) {
 }
 
 .grw-personal-dropdown {
-  .lightmode-icon,
-  .darkmode-icon,
-  .sidebar-mode-icon {
+  .personal-dropdown-icons {
     fill: $color-global;
-  }
-
-  .lightmode-icon.use-os-settings,
-  .darkmode-icon.use-os-settings {
-    fill: $secondary;
+    .use-os-settings {
+      fill: $secondary;
+    }
   }
 }
 
