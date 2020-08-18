@@ -145,6 +145,7 @@ module.exports = (crowi) => {
     duplicatePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
       body('pageNameInput').trim().isLength({ min: 1 }).withMessage('pageNameInput is required'),
+      body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
     ],
   };
 
@@ -502,6 +503,9 @@ module.exports = (crowi) => {
    *                    $ref: '#/components/schemas/Page/properties/_id'
    *                  pageNameInput:
    *                    $ref: '#/components/schemas/Page/properties/path'
+   *                  isRecursively:
+   *                    type: boolean
+   *                    description: whether duplicate page with descendants
    *                required:
    *                  - pageId
    *        responses:
@@ -520,7 +524,7 @@ module.exports = (crowi) => {
    *            description: Internal server error.
    */
   router.post('/duplicate', accessTokenParser, loginRequiredStrictly, csrf, validator.duplicatePage, apiV3FormValidator, async(req, res) => {
-    const { pageId, isDuplicateRecursively } = req.body;
+    const { pageId, isRecursively } = req.body;
 
     const newPagePath = pathUtils.normalizePath(req.body.pageNameInput);
 
@@ -541,7 +545,7 @@ module.exports = (crowi) => {
 
     let result;
 
-    if (isDuplicateRecursively) {
+    if (isRecursively) {
       result = await duplicatePageRecursively(page, newPagePath, req.user);
     }
     else {
