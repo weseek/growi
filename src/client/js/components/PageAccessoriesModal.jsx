@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -17,16 +17,13 @@ import AttachmentIcon from './Icons/AttachmentIcon';
 import { withUnstatedContainers } from './UnstatedUtils';
 import PageAccessoriesContainer from '../services/PageAccessoriesContainer';
 import PageAttachment from './PageAttachment';
-import Page from './PageList/Page';
+import PageList from './PageList';
+
 
 const PageAccessoriesModal = (props) => {
-  const {
-    t, pageAccessoriesContainer, pageContainer, appContainer,
-  } = props;
-  const { path } = pageContainer;
+  const { t, pageAccessoriesContainer } = props;
   const { switchActiveTab } = pageAccessoriesContainer;
   const { activeTab } = pageAccessoriesContainer.state;
-  const [pages, setPages] = useState([]);
 
   function closeModalHandler() {
     if (props.onClose == null) {
@@ -35,15 +32,6 @@ const PageAccessoriesModal = (props) => {
     props.onClose();
   }
 
-  async function getPagesList() {
-    const res = await appContainer.apiv3Get('/pages/list', { path });
-    setPages(res);
-    // return pages.map(pages => (
-    //   <li key={pages._id}>
-    //     <Page page={pages} />
-    //   </li>
-    // ));
-  }
 
   return (
     <React.Fragment>
@@ -90,7 +78,7 @@ const PageAccessoriesModal = (props) => {
           </Nav>
           <TabContent activeTab={activeTab}>
             <TabPane tabId="pagelist">
-              {pageAccessoriesContainer.state.activeComponents.has('pagelist') && getPagesList() }
+              {pageAccessoriesContainer.state.activeComponents.has('pagelist') && <PageList isOpen={props.isOpen} />}
             </TabPane>
             <TabPane tabId="timeline"></TabPane>
             <TabPane tabId="recent-changes"></TabPane>
@@ -108,7 +96,7 @@ const PageAccessoriesModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageAccessoriesModalWrapper = withUnstatedContainers(PageAccessoriesModal, [PageAccessoriesContainer], [AppContainer], [PageContainer]);
+const PageAccessoriesModalWrapper = withUnstatedContainers(PageAccessoriesModal, [PageAccessoriesContainer], [AppContainer]);
 
 
 PageAccessoriesModal.propTypes = {
