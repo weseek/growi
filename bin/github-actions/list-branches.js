@@ -68,8 +68,10 @@ function getGitHubCommitsUrl(branchName) {
   return url.resolve(GITHUB_REPOS_URI, `commits/${branchName}`);
 }
 
-function getGitHubComparingUrl(branchName) {
-  return url.resolve(GITHUB_REPOS_URI, `compare/${branchName}`);
+function getGitHubComparingLink(branchName) {
+  const label = `master <- ${branchName}`;
+  const link = url.resolve(GITHUB_REPOS_URI, `compare/${branchName}`);
+  return `<${link}|${label}>`;
 }
 
 /**
@@ -93,22 +95,22 @@ function printSlackAttachments(mode, summaries) {
       title_link: getGitHubCommitsUrl(branchName),
       fields: [
         {
-          title: 'Author',
-          value: authorName,
-          short: true,
-        },
-        {
           title: 'Author Date',
           value: authorDate,
           short: true,
         },
         {
-          title: 'Comparing URL',
-          value: getGitHubComparingUrl(branchName),
+          title: 'Author',
+          value: authorName,
+          short: true,
         },
         {
           title: 'Last Commit Subject',
           value: subject,
+        },
+        {
+          title: 'Comparing Link',
+          value: getGitHubComparingLink(branchName),
         },
       ],
     };
