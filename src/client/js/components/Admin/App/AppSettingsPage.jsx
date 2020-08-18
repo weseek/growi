@@ -4,6 +4,7 @@ import loggerFactory from '@alias/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
+import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
 
 import AdminAppContainer from '../../../services/AdminAppContainer';
 
@@ -25,7 +26,7 @@ function AppSettingsPageWithContainerWithSuspense(props) {
   );
 }
 
-let retrieveError = null;
+let retrieveErrors = null;
 function AppSettingsPage(props) {
   if (props.adminAppContainer.state.title === props.adminAppContainer.dummyTitle) {
     throw (async() => {
@@ -33,18 +34,19 @@ function AppSettingsPage(props) {
         await props.adminAppContainer.retrieveAppSettingsData();
       }
       catch (err) {
-        toastError(err);
-        logger.error(err);
+        const errs = toArrayIfNot(err);
+        toastError(errs);
+        logger.error(errs);
         props.adminAppContainer.setState({
           title: props.adminAppContainer.dummyTitleForError,
         });
-        retrieveError = err;
+        retrieveErrors = errs;
       }
     })();
   }
 
   if (props.adminAppContainer.state.title === props.adminAppContainer.dummyTitleForError) {
-    throw new Error(retrieveError[0].message);
+    throw new Error(`${retrieveErrors.length} errors occured`);
   }
 
   return <AppSettingsPageContents />;
