@@ -436,6 +436,13 @@ module.exports = function(crowi) {
     });
   };
 
+  userSchema.statics.isPasswordSetById = async function(userId) {
+    if (userId == null) {
+      return Promise.resolve(null);
+    }
+    const user = await this.findOne({ _id: userId });
+    return (user.password != null);
+  };
 
   userSchema.statics.findUserByUsername = function(username) {
     if (username == null) {

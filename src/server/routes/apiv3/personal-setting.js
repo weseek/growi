@@ -130,6 +130,30 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
+   *    /personal-setting/is-password-set:
+   *      get:
+   *        tags: [PersonalSetting]
+   *        operationId: getPersonalSetting
+   *        summary: /personal-setting
+   *        description: Get whether a password has been set
+   *        responses:
+   *          200:
+   *            description: Whether a password has been set
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    isPasswordSet:
+   *                      type: boolean
+   */
+  router.get('/is-password-set', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+    const isPasswordSet = await User.isPasswordSetById(req.user._id);
+    return res.apiv3({ isPasswordSet });
+  });
+
+  /**
+   * @swagger
+   *
    *    /personal-setting:
    *      put:
    *        tags: [PersonalSetting]
