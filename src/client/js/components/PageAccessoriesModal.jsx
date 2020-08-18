@@ -37,8 +37,8 @@ const PageAccessoriesModal = (props) => {
         className="grw-page-accessories-modal"
       >
         <ModalBody>
-          <Nav className="nav-title border-bottom">
-            <NavItem type="button" className={`nav-link ${activeTab === 'pagelist' && 'active active-border'}`}>
+          <Nav className="nav-title border-bottom" id="nav_slide_click">
+            <NavItem type="button" className={`nav-link ${activeTab === 'pagelist' && 'active'}`}>
               <NavLink
                 onClick={() => { switchActiveTab('pagelist') }}
               >
@@ -46,7 +46,7 @@ const PageAccessoriesModal = (props) => {
                 { t('page_list') }
               </NavLink>
             </NavItem>
-            <NavItem type="button" className={`nav-link ${activeTab === 'timeline' && 'active active-border'}`}>
+            <NavItem type="button" className={`nav-link ${activeTab === 'timeline' && 'active'}`}>
               <NavLink
                 onClick={() => { switchActiveTab('timeline') }}
               >
@@ -54,7 +54,7 @@ const PageAccessoriesModal = (props) => {
                 { t('Timeline View') }
               </NavLink>
             </NavItem>
-            <NavItem type="button" className={`nav-link ${activeTab === 'recent-changes' && 'active active-border'}`}>
+            <NavItem type="button" className={`nav-link ${activeTab === 'recent-changes' && 'active'}`}>
               <NavLink
                 onClick={() => { switchActiveTab('recent-changes') }}
               >
@@ -62,7 +62,7 @@ const PageAccessoriesModal = (props) => {
                 { t('History') }
               </NavLink>
             </NavItem>
-            <NavItem type="button" className={`nav-link ${activeTab === 'attachment' && 'active active-border'}`}>
+            <NavItem type="button" className={`nav-link ${activeTab === 'attachment' && 'active'}`}>
               <NavLink
                 onClick={() => { switchActiveTab('attachment') }}
               >
