@@ -52,30 +52,22 @@ const TopOfTableContents = (props) => {
   return (
     <>
       <div className="top-of-table-contents d-flex align-items-center pb-1 ">
-        <div className="icon-button-box pr-2 mr-2">
+        <div className=" pr-2 mr-2 grw-table-top-icons">
 
-          <button type="button" className="bg-transparent border-0" onClick={() => openPageAccessoriesModal('pageList')}>
-            <div className="grw-table-top-icons ">
-              <PageListIcon />
-            </div>
+          <button type="button" className="bg-transparent border-0 " onClick={() => openPageAccessoriesModal('pageList')}>
+            <PageListIcon />
           </button>
 
           <button type="button" className="bg-transparent border-0" onClick={() => openPageAccessoriesModal('timeLine')}>
-            <div className="grw-table-top-icons ">
-              <TimeLineIcon />
-            </div>
+            <TimeLineIcon />
           </button>
 
           <button type="button" className="bg-transparent border-0" onClick={() => openPageAccessoriesModal('recentChanges')}>
-            <div className="grw-table-top-icons ">
-              <RecentChangesIcon />
-            </div>
+            <RecentChangesIcon />
           </button>
 
           <button type="button" className="bg-transparent border-0 " onClick={() => openPageAccessoriesModal('attachment')}>
-            <div className="grw-table-top-icons ">
-              <AttachmentIcon />
-            </div>
+            <AttachmentIcon />
           </button>
 
         </div>

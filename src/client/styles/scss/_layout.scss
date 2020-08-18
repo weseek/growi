@@ -142,19 +142,21 @@ body {
   }
 }
 
-.grw-table-top-icons {
-  width: 16px;
-  height: 16px;
-}
-
 .top-of-table-contents {
   flex-wrap: wrap;
+
+  .grw-table-top-icons {
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
 
   .seen-user-count {
     font-size: 12px;
     font-weight: bolder;
   }
-  .icon-button-box {
+  .grw-table-top-icons {
     border-right: 1px solid;
   }
   .btn-seen-user-list {
