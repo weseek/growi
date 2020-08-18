@@ -6,7 +6,7 @@ import StickyEvents from 'sticky-events';
 
 import NavigationContainer from '../services/NavigationContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
-import EditNewPageIcon from './Icons/EditNewPageIcon';
+import NewPageIcon from './Icons/NewPageIcon';
 import ReturnTopIcon from './Icons/ReturnTopIcon';
 
 const logger = loggerFactory('growi:cli:Fab');
@@ -48,7 +48,7 @@ const Fab = (props) => {
           className="btn btn-lg btn-create-page btn-primary rounded-circle p-0 waves-effect waves-light"
           onClick={navigationContainer.openPageCreateModal}
         >
-          <EditNewPageIcon />
+          <NewPageIcon />
         </button>
       </div>
       <div className={`rounded-circle position-absolute ${animateClasses}`} style={{ bottom: 0, right: 0 }}>

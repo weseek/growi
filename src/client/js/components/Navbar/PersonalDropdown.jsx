@@ -22,8 +22,8 @@ import UserPicture from '../User/UserPicture';
 
 import SidebarDrawerIcon from '../Icons/SidebarDrawerIcon';
 import SidebarDockIcon from '../Icons/SidebarDockIcon';
-import DarkModeIcon from '../Icons/DarkModeIcon';
-import LightModeIcon from '../Icons/LightModeIcon';
+import MoonIcon from '../Icons/MoonIcon';
+import SunIcon from '../Icons/SunIcon';
 
 
 const PersonalDropdown = (props) => {
@@ -100,13 +100,13 @@ const PersonalDropdown = (props) => {
 
   const LightIcon = props => (
     <>
-      <div id={props.id} className={`px-2 lightmode-icon ${useOsSettings ? 'use-os-settings' : ''}`}><LightModeIcon /></div>
+      <div id={props.id} className={`px-2 lightmode-icon ${useOsSettings ? 'use-os-settings' : ''}`}><SunIcon /></div>
       <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Light</UncontrolledTooltip>
     </>
   );
   const DarkIcon = props => (
     <>
-      <div id={props.id} className={`px-2 darkmode-icon ${useOsSettings ? 'use-os-settings' : ''}`}><DarkModeIcon /></div>
+      <div id={props.id} className={`px-2 darkmode-icon ${useOsSettings ? 'use-os-settings' : ''}`}><MoonIcon /></div>
       <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Dark</UncontrolledTooltip>
     </>
   );

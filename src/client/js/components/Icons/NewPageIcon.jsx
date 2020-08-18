@@ -1,6 +1,6 @@
 import React from 'react';
 
-const EditNewPageIcon = () => (
+const NewPageIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="27"
@@ -25,4 +25,4 @@ const EditNewPageIcon = () => (
 );
 
 
-export default EditNewPageIcon;
+export default NewPageIcon;

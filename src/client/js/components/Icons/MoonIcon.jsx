@@ -1,6 +1,6 @@
 import React from 'react';
 
-const DarkModeIcon = () => (
+const MoonIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="18"
@@ -19,4 +19,4 @@ const DarkModeIcon = () => (
 );
 
 
-export default DarkModeIcon;
+export default MoonIcon;
