@@ -5,7 +5,7 @@
  *  node list-branches [OPTION]
  *
  * OPTIONS:
- *  --disused : Return disused branches (default)
+ *  --inactive : Return inactive branches (default)
  *  --illegal : Return illegal named branches
  */
 
@@ -144,7 +144,7 @@ async function main(mode) {
 
 const args = process.argv.slice(2);
 
-let mode = 'disused';
+let mode = 'inactive';
 if (args.length > 0 && args[0] === '--illegal') {
   mode = 'illegal';
 }
