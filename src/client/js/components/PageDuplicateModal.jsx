@@ -69,9 +69,8 @@ const PageDuplicateModal = (props) => {
     setErrs(null);
 
     try {
-      const res = await appContainer.apiv3Post('/pages/duplicate', { pageId, pageNameInput });
-      const { page } = res.data;
-      window.location.href = encodeURI(`${page.path}?duplicated=${path}`);
+      await appContainer.apiv3Post('/pages/duplicate', { pageId, pageNameInput, isDuplicateRecursively });
+      window.location.href = encodeURI(`${pageNameInput}?duplicated=${path}`);
     }
     catch (err) {
       setErrs(err);
