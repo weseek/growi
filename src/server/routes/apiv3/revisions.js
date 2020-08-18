@@ -9,15 +9,17 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const router = express.Router();
 
+const PAGE_ITEMS = 30;
+
 /**
  * @swagger
  *  tags:
  *    name: Revisions
  */
 module.exports = (crowi) => {
-  const certifySharedPage = require('../../middlewares/certify-shared-file')(crowi);
+  const certifySharedPage = require('../../middlewares/certify-shared-page')(crowi);
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
-  const loginRequired = require('../../middlewares/login-required')(crowi);
+  const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const {
@@ -28,10 +30,11 @@ module.exports = (crowi) => {
 
   const validator = {
     retrieveRevisions: [
-      query('pageId').isMongoId().withMessage('pageId is required'),
+      query('page_id').isMongoId().withMessage('pageId is required'),
+      query('selectedPage').isInt({ min: 0 }).withMessage('selectedPage must be int'),
     ],
     retrieveRevisionById: [
-      query('pageId').isMongoId().withMessage('pageId is required'),
+      query('page_id').isMongoId().withMessage('pageId is required'),
       param('id').isMongoId().withMessage('id is required'),
     ],
   };
@@ -55,8 +58,10 @@ module.exports = (crowi) => {
    *
    */
   router.get('/list', certifySharedPage, accessTokenParser, loginRequired, validator.retrieveRevisions, apiV3FormValidator, async(req, res) => {
-    const { pageId } = req.query;
+    const pageId = req.query.page_id;
     const { isSharedPage } = req;
+
+    const selectedPage = parseInt(req.query.selectedPage) || 1;
 
     // check whether accessible
     if (!isSharedPage && !(await Page.isAccessiblePageByViewer(pageId, req.user))) {
@@ -65,8 +70,21 @@ module.exports = (crowi) => {
 
     try {
       const page = await Page.findOne({ _id: pageId });
-      const revisions = await Revision.findRevisionIdList(page.path);
-      return res.apiv3({ revisions });
+
+      const paginateResult = await Revision.paginate(
+        { path: page.path },
+        {
+          page: selectedPage,
+          limit: PAGE_ITEMS,
+          sort: { createdAt: -1 },
+          populate: {
+            path: 'author',
+            select: User.USER_PUBLIC_FIELDS,
+          },
+        },
+      );
+
+      return res.apiv3(paginateResult);
     }
     catch (err) {
       const msg = 'Error occurred in getting revisions by poge id';
@@ -103,7 +121,7 @@ module.exports = (crowi) => {
    */
   router.get('/:id', certifySharedPage, accessTokenParser, loginRequired, validator.retrieveRevisionById, apiV3FormValidator, async(req, res) => {
     const revisionId = req.params.id;
-    const { pageId } = req.query;
+    const pageId = req.query.page_id;
     const { isSharedPage } = req;
 
     // check whether accessible

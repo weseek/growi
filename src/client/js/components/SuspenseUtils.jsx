@@ -15,7 +15,7 @@ export function withLoadingSppiner(Component) {
         </div>
       )}
     >
-      <Component {...props} />;
+      <Component {...props} />
     </Suspense>
   ));
 }

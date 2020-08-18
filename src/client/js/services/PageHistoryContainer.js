@@ -26,6 +26,10 @@ export default class PageHistoryContainer extends Container {
       // set dummy rivisions for using suspense
       revisions: this.dummyRevisions,
       diffOpened: {},
+
+      totalPages: 0,
+      activePage: 1,
+      pagingLimit: Infinity,
     };
 
     this.retrieveRevisions = this.retrieveRevisions.bind(this);
@@ -41,19 +45,30 @@ export default class PageHistoryContainer extends Container {
     return 'PageHistoryContainer';
   }
 
-  async retrieveRevisions() {
+  /**
+   * syncRevisions of selectedPage
+   * @param {number} selectedPage
+   */
+  async retrieveRevisions(selectedPage) {
     const { pageId, shareLinkId } = this.pageContainer.state;
-
     if (!pageId) {
       return;
     }
 
-    const res = await this.appContainer.apiv3Get('/revisions/list', { pageId, share_link_id: shareLinkId });
-    const rev = res.data.revisions;
+    const res = await this.appContainer.apiv3Get('/revisions/list', { page_id: pageId, share_link_id: shareLinkId, selectedPage });
+    const rev = res.data.docs;
+
+    // set Pagination state
+    this.setState({
+      activePage: selectedPage,
+      totalPages: res.data.totalDocs,
+      pagingLimit: res.data.limit,
+    });
+
     const diffOpened = {};
     const lastId = rev.length - 1;
 
-    res.data.revisions.forEach((revision, i) => {
+    res.data.docs.forEach((revision, i) => {
       const user = revision.author;
       if (user) {
         rev[i].author = user;
@@ -123,7 +138,7 @@ export default class PageHistoryContainer extends Container {
     }
 
     try {
-      const res = await this.appContainer.apiv3Get(`/revisions/${revision._id}`, { pageId, share_link_id: shareLinkId });
+      const res = await this.appContainer.apiv3Get(`/revisions/${revision._id}`, { page_id: pageId, share_link_id: shareLinkId });
       this.setState({
         revisions: this.state.revisions.map((rev) => {
           // comparing ObjectId
