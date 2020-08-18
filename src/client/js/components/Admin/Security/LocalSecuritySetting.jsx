@@ -13,15 +13,19 @@ function LocalSecuritySetting(props) {
 
   const { adminLocalSecurityContainer } = props;
   if (adminLocalSecurityContainer.state.registrationMode === adminLocalSecurityContainer.dummyRegistrationMode) {
-    throw new Promise(async() => {
+    throw (async() => {
       try {
         await adminLocalSecurityContainer.retrieveSecurityData();
       }
       catch (err) {
         toastError(err);
-        adminLocalSecurityContainer.setState({ retrieveError: err.message });
+        adminLocalSecurityContainer.setState({ registrationMode: adminLocalSecurityContainer.dummyRegistrationModeForError, retrieveError: err[0].message });
       }
-    });
+    })();
+  }
+
+  if (adminLocalSecurityContainer.state.registrationMode === adminLocalSecurityContainer.dummyRegistrationModeForError) {
+    throw new Error(adminLocalSecurityContainer.state.retrieveError);
   }
 
   return <LocalSecuritySettingContents />;

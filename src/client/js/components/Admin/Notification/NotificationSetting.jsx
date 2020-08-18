@@ -29,16 +29,20 @@ function NotificationSettingWithContainerWithSuspense(props) {
 function NotificationSetting(props) {
   const { adminNotificationContainer } = props;
   if (adminNotificationContainer.state.webhookUrl === adminNotificationContainer.dummyWebhookUrl) {
-    throw new Promise(async() => {
+    throw (async() => {
       try {
         await adminNotificationContainer.retrieveNotificationData();
       }
       catch (err) {
         toastError(err);
-        adminNotificationContainer.setState({ retrieveError: err });
+        adminNotificationContainer.setState({ webhookUrl: adminNotificationContainer.dummyWebhookUrlForError, retrieveError: err[0].message });
         logger.error(err);
       }
-    });
+    })();
+  }
+
+  if (adminNotificationContainer.state.webhookUrl === adminNotificationContainer.dummyWebhookUrlForError) {
+    throw new Error(adminNotificationContainer.state.retrieveError);
   }
 
   return <NotificationSettingContents />;

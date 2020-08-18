@@ -18,6 +18,7 @@ export default class AdminGitHubSecurityContainer extends Container {
 
     this.appContainer = appContainer;
     this.dummyGithubClientId = 0;
+    this.dummyGithubClientIdForError = 1;
 
     this.state = {
       retrieveError: null,

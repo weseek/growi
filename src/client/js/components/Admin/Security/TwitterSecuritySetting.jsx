@@ -13,14 +13,22 @@ function TwitterSecurityManagement(props) {
 
   const { adminTwitterSecurityContainer } = props;
   if (adminTwitterSecurityContainer.state.twitterConsumerKey === adminTwitterSecurityContainer.dummyTwitterConsumerKey) {
-    throw new Promise(async() => {
+    throw (async() => {
       try {
         await adminTwitterSecurityContainer.retrieveSecurityData();
       }
       catch (err) {
         toastError(err);
+        adminTwitterSecurityContainer.setState({
+          twitterConsumerKey: adminTwitterSecurityContainer.dummyTwitterConsumerKeyForError,
+          retrieveError: err[0].message,
+        });
       }
-    });
+    })();
+  }
+
+  if (adminTwitterSecurityContainer.state.twitterConsumerKey === adminTwitterSecurityContainer.dummyTwitterConsumerKeyForError) {
+    throw new Error(adminTwitterSecurityContainer.state.retrieveError);
   }
 
   return <TwitterSecuritySettingContents />;

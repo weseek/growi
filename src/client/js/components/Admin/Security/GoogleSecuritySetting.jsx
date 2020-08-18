@@ -12,15 +12,19 @@ function GoogleSecurityManagement(props) {
 
   const { adminGoogleSecurityContainer } = props;
   if (adminGoogleSecurityContainer.state.googleClientId === adminGoogleSecurityContainer.dummyGoogleClientId) {
-    throw new Promise(async() => {
+    throw (async() => {
       try {
         await adminGoogleSecurityContainer.retrieveSecurityData();
       }
       catch (err) {
         toastError(err);
-        adminGoogleSecurityContainer.setState({ retrieveError: err.message });
+        adminGoogleSecurityContainer.setState({ googleClientId: adminGoogleSecurityContainer.dummyGoogleClientIdForError, retrieveError: err[0].message });
       }
-    });
+    })();
+  }
+
+  if (adminGoogleSecurityContainer.state.googleClientId === adminGoogleSecurityContainer.dummyGoogleClientIdForError) {
+    throw new Error(adminGoogleSecurityContainer.state.retrieveError);
   }
 
   return <GoogleSecurityManagementContents />;

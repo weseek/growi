@@ -12,15 +12,19 @@ function LdapSecuritySetting(props) {
 
   const { adminLdapSecurityContainer } = props;
   if (adminLdapSecurityContainer.state.serverUrl === adminLdapSecurityContainer.dummyServerUrl) {
-    throw new Promise(async() => {
+    throw (async() => {
       try {
         await adminLdapSecurityContainer.retrieveSecurityData();
       }
       catch (err) {
         toastError(err);
-        adminLdapSecurityContainer.setState({ retrieveError: err.message });
+        adminLdapSecurityContainer.setState({ serverUrl: adminLdapSecurityContainer.dummyServerUrlForError, retrieveError: err[0].message });
       }
-    });
+    })();
+  }
+
+  if (adminLdapSecurityContainer.state.serverUrl === adminLdapSecurityContainer.dummyServerUrlForError) {
+    throw new Error(adminLdapSecurityContainer.state.retrieveError);
   }
 
   return <LdapSecuritySettingContents />;

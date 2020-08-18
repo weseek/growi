@@ -36,16 +36,20 @@ function Customize(props) {
   const { adminCustomizeContainer } = props;
 
   if (adminCustomizeContainer.state.currentTheme === adminCustomizeContainer.dummyCurrentTheme) {
-    throw new Promise(async() => {
+    throw (async() => {
       try {
         await adminCustomizeContainer.retrieveCustomizeData();
       }
       catch (err) {
         toastError(err);
-        adminCustomizeContainer.setState({ retrieveError: err.message });
+        adminCustomizeContainer.setState({ currentTheme: adminCustomizeContainer.dummyCurrentThemeForError, retrieveError: err[0].message });
         logger.error(err);
       }
-    });
+    })();
+  }
+
+  if (adminCustomizeContainer.state.currentTheme === adminCustomizeContainer.dummyCurrentThemeForError) {
+    throw new Error(adminCustomizeContainer.state.retrieveError);
   }
 
   return (

@@ -13,15 +13,19 @@ function SamlSecurityManagement(props) {
 
   const { adminSamlSecurityContainer } = props;
   if (adminSamlSecurityContainer.state.samlEntryPoint === adminSamlSecurityContainer.dummySamlEntryPoint) {
-    throw new Promise(async() => {
+    throw (async() => {
       try {
         await adminSamlSecurityContainer.retrieveSecurityData();
       }
       catch (err) {
         toastError(err);
-        adminSamlSecurityContainer.setState({ retrieveError: err.message });
+        adminSamlSecurityContainer.setState({ samlEntryPoint: adminSamlSecurityContainer.dummySamlEntryPointForError, retrieveError: err[0].message });
       }
-    });
+    })();
+  }
+
+  if (adminSamlSecurityContainer.state.samlEntryPoint === adminSamlSecurityContainer.dummySamlEntryPointForError) {
+    throw new Error(adminSamlSecurityContainer.state.retrieveError);
   }
 
   return <SamlSecuritySettingContents />;

@@ -29,16 +29,20 @@ function ImportDataPage(props) {
   const { adminImportContainer } = props;
 
   if (adminImportContainer.state.esaTeamName === adminImportContainer.dummyEsaTeamName) {
-    throw new Promise(async() => {
+    throw (async() => {
       try {
-        await props.adminImportContainer.retrieveImportSettingsData();
+        await adminImportContainer.retrieveImportSettingsData();
       }
       catch (err) {
         toastError(err);
-        props.adminImportContainer.setState({ retrieveError: err.message });
+        adminImportContainer.setState({ esaTeamName: adminImportContainer.dummyEsaTeamNameForError, retrieveError: err[0].message });
         logger.error(err);
       }
-    });
+    })();
+  }
+
+  if (adminImportContainer.state.esaTeamName === adminImportContainer.dummyEsaTeamNameForError) {
+    throw new Error(adminImportContainer.state.retrieveError);
   }
 
   return <ImportDataPageContents />;

@@ -34,7 +34,10 @@ function AppSettingsPage(props) {
       catch (err) {
         toastError(err);
         logger.error(err);
-        props.adminAppContainer.setState({ title: props.adminAppContainer.dummyTitleForError, retrieveError: err[0].message });
+        props.adminAppContainer.setState({
+          title: props.adminAppContainer.dummyTitleForError,
+          retrieveError: err[0].message,
+        });
       }
     })();
   }

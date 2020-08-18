@@ -13,6 +13,7 @@ export default class AdminAppContainer extends Container {
     this.dummyTitle = 0;
 
     this.state = {
+      retrieveError: null,
       // set dummy value tile for using suspense
       title: this.dummyTitle,
       confidential: '',

@@ -13,14 +13,19 @@ function OidcSecurityManagement(props) {
 
   const { adminOidcSecurityContainer } = props;
   if (adminOidcSecurityContainer.state.oidcProviderName === adminOidcSecurityContainer.dummyOidcProviderName) {
-    throw new Promise(async() => {
+    throw (async() => {
       try {
         await adminOidcSecurityContainer.retrieveSecurityData();
       }
       catch (err) {
         toastError(err);
+        adminOidcSecurityContainer.setState({ oidcProviderName: adminOidcSecurityContainer.dummyOidcProviderNameForError, retrieveError: err[0].message });
       }
-    });
+    })();
+  }
+
+  if (adminOidcSecurityContainer.state.oidcProviderName === adminOidcSecurityContainer.dummyOidcProviderNameForError) {
+    throw new Error(adminOidcSecurityContainer.state.retrieveError);
   }
 
   return <OidcSecurityManagementContents />;

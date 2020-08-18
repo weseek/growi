@@ -11,15 +11,22 @@ function SecurityManagement(props) {
   const { adminGeneralSecurityContainer } = props;
 
   if (adminGeneralSecurityContainer.state.currentRestrictGuestMode === adminGeneralSecurityContainer.dummyCurrentRestrictGuestMode) {
-    throw new Promise(async() => {
+    throw (async() => {
       try {
         await adminGeneralSecurityContainer.retrieveSecurityData();
       }
       catch (err) {
         toastError(err);
-        adminGeneralSecurityContainer.setState({ retrieveError: err.message });
+        adminGeneralSecurityContainer.setState({
+          currentRestrictGuestMode: adminGeneralSecurityContainer.dummyCurrentRestrictGuestModeForError,
+          retrieveError: err.message,
+        });
       }
-    });
+    })();
+  }
+
+  if (adminGeneralSecurityContainer.state.currentRestrictGuestMode === adminGeneralSecurityContainer.dummyCurrentRestrictGuestModeForError) {
+    throw new Error(adminGeneralSecurityContainer.state.retrieveError);
   }
 
   return <SecurityManagementContents />;

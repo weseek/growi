@@ -13,15 +13,19 @@ function GitHubSecurityManagement(props) {
 
   const { adminGitHubSecurityContainer } = props;
   if (adminGitHubSecurityContainer.state.githubClientId === adminGitHubSecurityContainer.dummyGithubClientId) {
-    throw new Promise(async() => {
+    throw (async() => {
       try {
         await adminGitHubSecurityContainer.retrieveSecurityData();
       }
       catch (err) {
         toastError(err);
-        adminGitHubSecurityContainer.setState({ retrieveError: err });
+        adminGitHubSecurityContainer.setState({ githubClientId: adminGitHubSecurityContainer.dummyGithubClientIdForError, retrieveError: err });
       }
-    });
+    })();
+  }
+
+  if (adminGitHubSecurityContainer.state.githubClientId === adminGitHubSecurityContainer.dummyGithubClientIdForError) {
+    throw new Error(adminGitHubSecurityContainer.state.retrieveError);
   }
 
   return <GitHubSecuritySettingContents />;

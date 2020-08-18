@@ -1,11 +1,5 @@
 import { Container } from 'unstated';
 
-import loggerFactory from '@alias/logger';
-
-import { toastError } from '../util/apiNotification';
-
-const logger = loggerFactory('growi:services:AdminNotificationContainer');
-
 /**
  * Service container for admin Notification setting page (NotificationSetting.jsx)
  * @extends {Container} unstated Container
@@ -17,6 +11,7 @@ export default class AdminNotificationContainer extends Container {
 
     this.appContainer = appContainer;
     this.dummyWebhookUrl = 0;
+    this.dummyWebhookUrlForError = 1;
 
     this.state = {
       retrieveError: null,
@@ -43,25 +38,18 @@ export default class AdminNotificationContainer extends Container {
    * Retrieve notificationData
    */
   async retrieveNotificationData() {
-    try {
-      const response = await this.appContainer.apiv3.get('/notification-setting/');
-      const { notificationParams } = response.data;
+    const response = await this.appContainer.apiv3.get('/notification-setting/');
+    const { notificationParams } = response.data;
 
-      this.setState({
-        webhookUrl: notificationParams.webhookUrl,
-        isIncomingWebhookPrioritized: notificationParams.isIncomingWebhookPrioritized,
-        slackToken: notificationParams.slackToken,
-        userNotifications: notificationParams.userNotifications,
-        isNotificationForOwnerPageEnabled: notificationParams.isNotificationForOwnerPageEnabled,
-        isNotificationForGroupPageEnabled: notificationParams.isNotificationForGroupPageEnabled,
-        globalNotifications: notificationParams.globalNotifications,
-      });
-
-    }
-    catch (err) {
-      logger.error(err);
-      toastError(new Error('Failed to fetch data'));
-    }
+    this.setState({
+      webhookUrl: notificationParams.webhookUrl,
+      isIncomingWebhookPrioritized: notificationParams.isIncomingWebhookPrioritized,
+      slackToken: notificationParams.slackToken,
+      userNotifications: notificationParams.userNotifications,
+      isNotificationForOwnerPageEnabled: notificationParams.isNotificationForOwnerPageEnabled,
+      isNotificationForGroupPageEnabled: notificationParams.isNotificationForGroupPageEnabled,
+      globalNotifications: notificationParams.globalNotifications,
+    });
   }
 
   /**

@@ -14,6 +14,7 @@ export default class AdminGeneralSecurityContainer extends Container {
 
     this.appContainer = appContainer;
     this.dummyCurrentRestrictGuestMode = 0;
+    this.dummyCurrentRestrictGuestModeForError = 1;
 
     this.state = {
       retrieveError: null,

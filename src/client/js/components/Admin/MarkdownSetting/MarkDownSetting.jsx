@@ -29,16 +29,20 @@ function MarkdownSetting(props) {
   const { adminMarkDownContainer } = props;
 
   if (adminMarkDownContainer.state.isEnabledLinebreaks === adminMarkDownContainer.dummyIsEnabledLinebreaks) {
-    throw new Promise(async() => {
+    throw (async() => {
       try {
         await adminMarkDownContainer.retrieveMarkdownData();
       }
       catch (err) {
         toastError(err);
-        adminMarkDownContainer.setState({ retrieveError: err.message });
+        adminMarkDownContainer.setState({ isEnabledLinebreaks: adminMarkDownContainer.dummyIsEnabledLinebreaksForError, retrieveError: err[0].message });
         logger.error(err);
       }
-    });
+    })();
+  }
+
+  if (adminMarkDownContainer.state.isEnabledLinebreaks === adminMarkDownContainer.dummyIsEnabledLinebreaksForError) {
+    throw new Error(adminMarkDownContainer.state.retrieveError);
   }
 
   return <MarkDownSettingContents />;
