@@ -30,9 +30,8 @@ const PageDuplicateModal = (props) => {
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
   const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
   const [isExist, setIsExist] = useState(false);
-  const [existPaths, setExistPaths] = useState([]);
 
-  const dummyExistPaths = ['/test146'];
+  const dummyExistPaths = ['/test146/test147'];
 
   /**
    * change pageNameInput for PagePathAutoComplete
@@ -190,17 +189,7 @@ const PageDuplicateModal = (props) => {
           </ul>
           <div>
             <ul className="duplicate-name">
-              {isDuplicateRecursively && subordinatedPaths.map((duplicatedNewPath) => {
-                const existPath = existPaths.includes(duplicatedNewPath);
-                let result;
-                if (existPath) {
-                  result = <li className="text-danger">{duplicatedNewPath} (exist)</li>;
-                }
-                else {
-                  result = <li>{duplicatedNewPath}</li>;
-                }
-                return result;
-              })}
+              {isDuplicateRecursively && createSubordinatedList()}
             </ul>
           </div>
           <div> {getSubordinatedError} </div>
