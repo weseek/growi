@@ -11,6 +11,7 @@ export default class AdminAppContainer extends Container {
 
     this.appContainer = appContainer;
     this.dummyTitle = 0;
+    this.dummyTitleForError = 1;
 
     this.state = {
       retrieveError: null,
