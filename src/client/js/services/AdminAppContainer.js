@@ -278,6 +278,7 @@ export default class AdminAppContainer extends Container {
       mailSettingParams,
     } = response.data;
     this.setState(mailSettingParams);
+    return mailSettingParams;
   }
 
   /**
