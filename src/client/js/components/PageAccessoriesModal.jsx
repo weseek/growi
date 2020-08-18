@@ -48,11 +48,13 @@ const PageAccessoriesModal = (props) => {
   function navSlider(menu, callback) {
     const menuWidth = menu.offsetWidth;
     // We only want the <li> </li> tags
-    const menu1 = menu.getElementsByTagName('li');
+    const navTabs = document.querySelectorAll('li.nav-link');
+    console.log(navTabs);
+
     if (menu.length > 0) {
       const marginLeft = [];
       // Loop through nav children i.e li
-      [].forEach.call(menu1, (el, index) => {
+      [].forEach.call(navTabs, (el, index) => {
         // Dynamic width/margin calculation for hr
         const width = getPercentage(el.offsetWidth, menuWidth);
         let tempMarginLeft = 0;
