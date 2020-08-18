@@ -34,8 +34,6 @@ class BranchSummary {
     this.authorName = splitted[1].trim();
     this.branchName = splitted[2].trim().replace(/^origin\//, '');
     this.subject = splitted[3].trim();
-
-    this.githubLink = url.resolve(GITHUB_REPOS_URI, `commits/${this.branchName}`);
   }
 
 }
@@ -66,6 +64,59 @@ function getBranchSummaries() {
   return summaries;
 }
 
+function getGitHubCommitsUrl(branchName) {
+  return url.resolve(GITHUB_REPOS_URI, `commits/${this.branchName}`);
+}
+
+function getGitHubComparingUrl(branchName) {
+  return url.resolve(GITHUB_REPOS_URI, `compare/${this.branchName}`);
+}
+
+/**
+ * @see https://api.slack.com/messaging/composing/layouts#building-attachments
+ * @see https://github.com/marketplace/actions/slack-incoming-webhook
+ *
+ * @param {string} mode
+ * @param {BranchSummary} summaries
+ */
+function printSlackAttachments(mode, summaries) {
+  const color = (mode === 'illegal') ? 'warning' : '#999999';
+
+  const attachments = summaries.map((summary) => {
+    const {
+      authorName, authorDate, branchName, subject,
+    } = summary;
+
+    return {
+      color,
+      title: branchName,
+      title_link: getGitHubCommitsUrl(branchName),
+      fields: [
+        {
+          title: 'Author',
+          value: authorName,
+          short: true,
+        },
+        {
+          title: 'Author Date',
+          value: authorDate,
+          short: true,
+        },
+        {
+          title: 'Comparing URL',
+          value: getGitHubComparingUrl(branchName),
+        },
+        {
+          title: 'Last Commit Subject',
+          value: subject,
+        },
+      ],
+    };
+  });
+
+  console.log(JSON.stringify(attachments));
+}
+
 async function main(mode) {
   const summaries = getBranchSummaries();
 
@@ -88,7 +139,7 @@ async function main(mode) {
     }
   }
 
-  console.log(filteredSummaries);
+  printSlackAttachments(mode, filteredSummaries);
 }
 
 const args = process.argv.slice(2);
