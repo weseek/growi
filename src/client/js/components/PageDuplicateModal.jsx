@@ -31,7 +31,7 @@ const PageDuplicateModal = (props) => {
   const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
   const [isExist, setIsExist] = useState(false);
 
-  const dummyExistPaths = ['/test146/test147'];
+  const dummyExistPaths = ['/test146/test147']; // dummyExistPaths is dummy data,deleate after merging GW-3231
 
   /**
    * change pageNameInput for PagePathAutoComplete
@@ -93,7 +93,7 @@ const PageDuplicateModal = (props) => {
 
   const checkExistPath = useCallback(() => {
     subordinatedPaths.map((duplicatedNewPath) => {
-      const existPath = dummyExistPaths.includes(duplicatedNewPath); // dummyExistPaths is dummy data
+      const existPath = dummyExistPaths.includes(duplicatedNewPath);
       if (existPath) {
         changeIsExistHandler();
       }
@@ -161,39 +161,39 @@ const PageDuplicateModal = (props) => {
           </div>
         </div>
         <div className="custom-control custom-checkbox custom-checkbox-warning">
-          <ul>
-            <input
-              className="custom-control-input"
-              name="recursively"
-              id="cbDuplicateRecursively"
-              type="checkbox"
-              checked={isDuplicateRecursively}
-              onChange={changeIsDuplicateRecursivelyHandler}
-            />
-            <label className="custom-control-label" htmlFor="cbDuplicateRecursively">
-              { t('modal_duplicate.label.Duplicate with child') }
-            </label>
-          </ul>
-          <ul>
-            <input
-              className="custom-control-input"
-              name="withoutExistRecursively"
-              id="cbDuplicatewithoutExistRecursively"
-              type="checkbox"
-              checked={isDuplicateRecursivelyWithoutExistPath}
-              onChange={changeIsDuplicateRecursivelyWithoutExistPathHandler}
-            />
-            <label className="custom-control-label" htmlFor="cbDuplicatewithoutExistRecursively">
-              { t('modal_duplicate.label.Duplicate without exist path') }
-            </label>
-          </ul>
-          <div>
-            <ul className="duplicate-name">
-              {isDuplicateRecursively && createSubordinatedList()}
-            </ul>
-          </div>
-          <div> {getSubordinatedError} </div>
+          <input
+            className="custom-control-input"
+            name="recursively"
+            id="cbDuplicateRecursively"
+            type="checkbox"
+            checked={isDuplicateRecursively}
+            onChange={changeIsDuplicateRecursivelyHandler}
+          />
+          <label className="custom-control-label" htmlFor="cbDuplicateRecursively">
+            { t('modal_duplicate.label.Duplicate with child') }
+          </label>
         </div>
+
+        <div className="custom-control custom-checkbox custom-checkbox-warning" style={{ display: isExist && isDuplicateRecursively ? '' : 'none' }}>
+          <input
+            className="custom-control-input"
+            name="withoutExistRecursively"
+            id="cbDuplicatewithoutExistRecursively"
+            type="checkbox"
+            checked={isDuplicateRecursivelyWithoutExistPath}
+            onChange={changeIsDuplicateRecursivelyWithoutExistPathHandler}
+          />
+          <label className="custom-control-label" htmlFor="cbDuplicatewithoutExistRecursively">
+            { t('modal_duplicate.label.Duplicate without exist path') }
+          </label>
+        </div>
+
+        <div>
+          <ul className="duplicate-name">
+            {isDuplicateRecursively && createSubordinatedList()}
+          </ul>
+        </div>
+        <div> {getSubordinatedError} </div>
       </ModalBody>
       <ModalFooter>
         <ApiErrorMessageList errs={errs} targetPath={pageNameInput} />
