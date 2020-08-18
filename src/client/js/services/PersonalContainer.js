@@ -29,7 +29,6 @@ export default class PersonalContainer extends Container {
       isUploadedPicture: false,
       uploadedPictureSrc: this.getUploadedPictureSrc(this.appContainer.currentUser),
       externalAccounts: [],
-      isPasswordSet: false,
       apiToken: '',
     };
 
