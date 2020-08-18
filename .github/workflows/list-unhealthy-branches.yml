@@ -25,10 +25,18 @@ jobs:
         echo ::set-output name=SLACK_ATTACHMENTS_INACTIVE::$(node bin/github-actions/list-branches --inactive)
         echo ::set-output name=SLACK_ATTACHMENTS_ILLEGAL::$(node bin/github-actions/list-branches --illegal)
 
+    - name: Slack Notification for illegal named branches
+      uses: tokorom/action-slack-incoming-webhook@master
+      env:
+        INCOMING_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL_FOR_DEV }}
+      with:
+        text: There is some *illegal named branches* on GitHub.
+        attachments: ${{ steps.list-branches.outputs.SLACK_ATTACHMENTS_ILLEGAL }}
+
     - name: Slack Notification for inactive branches
       uses: tokorom/action-slack-incoming-webhook@master
       env:
         INCOMING_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL_FOR_DEV }}
       with:
-        text: There is some *inactive* branches on remote.
+        text: There is some *inactive branches* on GitHub.
         attachments: ${{ steps.list-branches.outputs.SLACK_ATTACHMENTS_INACTIVE }}
