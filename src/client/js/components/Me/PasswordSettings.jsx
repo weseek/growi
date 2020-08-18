@@ -3,7 +3,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-
 import { toastSuccess, toastError } from '../../util/apiNotification';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
@@ -81,6 +80,10 @@ class PasswordSettings extends React.Component {
     const { newPassword, newPasswordConfirm } = this.state;
     const isIncorrectConfirmPassword = (newPassword !== newPasswordConfirm);
 
+    if (this.state.retrieveError != null) {
+      throw new Error(this.state.retrieveError.message);
+    }
+
     return (
       <React.Fragment>
         { (!this.state.isPasswordSet) && (
@@ -140,7 +143,7 @@ class PasswordSettings extends React.Component {
               type="button"
               className="btn btn-primary"
               onClick={this.onClickSubmit}
-              disabled={this.state.retrieveError != null || isIncorrectConfirmPassword}
+              disabled={isIncorrectConfirmPassword}
             >
               {t('Update')}
             </button>
