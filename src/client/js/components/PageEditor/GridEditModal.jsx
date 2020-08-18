@@ -128,7 +128,7 @@ export default class GridEditModal extends React.Component {
     const output = Object.entries(resSizeObj).map((responsiveSizeForMap) => {
       return (
         <button className="dropdown-item" type="button" onClick={() => { this.checkResposiveSize(responsiveSizeForMap[0]) }}>
-          <i className={`pl-2 pr-1 ${responsiveSizeForMap[1].iconClass}`}></i> {responsiveSizeForMap[1].displayText}
+          <i className={`${responsiveSizeForMap[1].iconClass}`}></i> {responsiveSizeForMap[1].displayText}
         </button>
       );
     });
@@ -144,12 +144,10 @@ export default class GridEditModal extends React.Component {
         <ModalBody>
           <div className="container">
             <div className="row">
-              <div className="col-6">
-                <div className="mr-3 d-inline">
-                  <label htmlFor="gridPattern">Grid Pattern :</label>
-                </div>
+              <div className="col-lg-6 mb-3">
+                <label htmlFor="gridPattern">Grid Pattern :</label>
                 <button
-                  className="btn btn-outline-secondary dropdown-toggle text-right col-12 col-md-auto"
+                  className="btn btn-outline-secondary dropdown-toggle btn-block"
                   type="button"
                   id="dropdownMenuButton"
                   data-toggle="dropdown"
@@ -162,12 +160,12 @@ export default class GridEditModal extends React.Component {
                   {this.renderGridDivisionMenu()}
                 </div>
               </div>
-              <div className="col-6">
+              <div className="col-lg-6">
                 <div className="mr-3 d-inline">
                   <label htmlFor="breakPoint">Break point by display size :</label>
                 </div>
                 <div
-                  className="btn btn-outline-secondary dropdown-toggle text-right col-12 col-md-auto"
+                  className="btn btn-outline-secondary btn-block dropdown-toggle"
                   type="button"
                   id="dropdownMenuButton"
                   data-toggle="dropdown"
@@ -183,16 +181,16 @@ export default class GridEditModal extends React.Component {
             </div>
             <div className="row">
               <h1 className="pl-3 w-100">Preview</h1>
-              <div className="col-6">
-                <label className="d-block"><i className="pr-2 icon-screen-desktop"></i>Desktop</label>
+              <div className="col-lg-6">
+                <label className="d-block mt-2"><i className="pr-2 icon-screen-desktop"></i>Desktop</label>
                 <div className="desktop-preview border d-block"></div>
               </div>
-              <div className="col-3">
-                <label className="d-block"><i className="pr-2 icon-screen-tablet"></i>Tablet</label>
+              <div className="col-6 col-lg-3">
+                <label className="d-block mt-2"><i className="pr-2 icon-screen-tablet"></i>Tablet</label>
                 <div className="tablet-preview border d-block"></div>
               </div>
-              <div className="col-3">
-                <label className="d-block"><i className="pr-2 icon-screen-smartphone"></i>Mobile</label>
+              <div className="col-6 col-lg-3">
+                <label className="d-block mt-2"><i className="pr-2 icon-screen-smartphone"></i>Mobile</label>
                 <div className="mobile-preview border d-block"></div>
               </div>
             </div>
