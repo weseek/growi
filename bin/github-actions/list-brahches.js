@@ -17,6 +17,11 @@ const EXCLUDE_PATTERNS = [
   // https://regex101.com/r/Lnx7Pz/2
   /dev\/[\d.x]*$/,
 ];
+const LEGAL_PATTERNS = [
+  /^origin\/master$/,
+  // https://regex101.com/r/p9xswM/3
+  /^origin\/(dev|feat|imprv|support|fix|rc|release|tmp)\/.+$/,
+];
 
 class BranchSummary {
 
@@ -46,26 +51,47 @@ function getBranchSummaries() {
   `).toString();
 
   // parse
-  const branchSummaries = out
+  const summaries = out
     .split('\n')
     .filter(v => v !== '') // trim empty string
     .map(line => new BranchSummary(line))
-    .filter((branchInfo) => { // exclude branches that matches to patterns
-      return !EXCLUDE_PATTERNS.some(pattern => pattern.test(branchInfo.refName));
+    .filter((summary) => { // exclude branches that matches to patterns
+      return !EXCLUDE_PATTERNS.some(pattern => pattern.test(summary.refName));
     });
 
-  return branchSummaries;
+  return summaries;
 }
 
-async function main() {
-  const args = process.argv.slice(2);
+async function main(mode) {
+  const summaries = getBranchSummaries();
 
-  const branchSummaries = getBranchSummaries();
+  let filteredSummaries;
 
-  const outdated = branchSummaries
-    .filter(branchInfo => branchInfo.authorDate < getExcludeTermDate()); // exclude data within EXCLUDE_TERM_DAYS
+  switch (mode) {
+    case 'illegal':
+      filteredSummaries = summaries
+        .filter((summary) => { // exclude branches that matches to patterns
+          return !LEGAL_PATTERNS.some(pattern => pattern.test(summary.refName));
+        });
+      break;
+    default: {
+      const excludeTermDate = getExcludeTermDate();
+      filteredSummaries = summaries
+        .filter((summary) => {
+          return summary.authorDate < excludeTermDate;
+        });
+      break;
+    }
+  }
 
-  console.log(outdated);
+  console.log(filteredSummaries);
 }
 
-main();
+const args = process.argv.slice(2);
+
+let mode = 'disused';
+if (args.length > 0 && args[0] === '--illegal') {
+  mode = 'illegal';
+}
+
+main(mode);
