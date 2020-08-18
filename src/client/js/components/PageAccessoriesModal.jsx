@@ -28,6 +28,60 @@ const PageAccessoriesModal = (props) => {
     props.onClose();
   }
 
+  const menu = document.getElementsByClassName('nav'); // 上部に持ってきた
+  // Values are set.
+
+  // Might make this dynamic for px, %, pt, em
+  function getPercentage(min, max) {
+    return min / max * 100;
+  }
+
+  // Not using reduce, because IE8 doesn't supprt it
+  function getArraySum(arr) {
+    let sum = 0;
+    [].forEach.call(arr, (el, index) => {
+      sum += el;
+    });
+    return sum;
+  }
+
+  function navSlider(menu, callback) {
+    const menuWidth = menu.offsetWidth;
+    // We only want the <li> </li> tags
+    const menu1 = menu.getElementsByTagName('li');
+    if (menu.length > 0) {
+      const marginLeft = [];
+      // Loop through nav children i.e li
+      [].forEach.call(menu1, (el, index) => {
+        // Dynamic width/margin calculation for hr
+        const width = getPercentage(el.offsetWidth, menuWidth);
+        let tempMarginLeft = 0;
+        // We don't want to modify first elements positioning
+        if (index !== 0) {
+          tempMarginLeft = getArraySum(marginLeft);
+        }
+        // Set mouse event  hover/click
+        callback(el, width, tempMarginLeft);
+        /* We store it in array because the later accumulated value is used for positioning */
+        marginLeft.push(width);
+      });
+    }
+  }
+
+  if (menu) {
+    // CLICK
+    const menuSliderClick = document.getElementById('nav_slide_click');
+    if (menuSliderClick) {
+      navSlider(menu[1], (el, width, tempMarginLeft) => {
+        el.onclick = () => {
+          menuSliderClick.style.width = `${width}%`;
+          menuSliderClick.style.marginLeft = `${tempMarginLeft}%`;
+        };
+      });
+    }
+  } // endif
+
+
   return (
     <React.Fragment>
       <Modal
