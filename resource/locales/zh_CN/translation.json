@@ -269,7 +269,8 @@
 	"modal_rename": {
 		"label": {
 			"Move/Rename page": "页面 移动/重命名",
-			"New page name": "新建页面名称",
+      "New page name": "新建页面名称",
+      "Fail to get subordinated pages": "Fail to get subordinated pages",
 			"Current page name": "当前页面名称",
 			"Recursively": "递归地",
 			"Do not update metadata": "不更新元数据",

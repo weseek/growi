@@ -297,6 +297,7 @@
     "label": {
       "Move/Rename page": "ページを移動/名前変更する",
       "New page name": "移動先のページ名",
+      "Fail to get subordinated pages": "配下ページの取得に失敗しました",
       "Current page name": "現在のページ名",
       "Recursively": "再帰的に移動/名前変更",
       "Do not update metadata": "メタデータを更新しない",

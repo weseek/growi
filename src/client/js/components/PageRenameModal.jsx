@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -29,6 +29,23 @@ const PageRenameModal = (props) => {
   const [isRenameRecursively, SetIsRenameRecursively] = useState(true);
   const [isRenameRedirect, SetIsRenameRedirect] = useState(false);
   const [isRenameMetadata, SetIsRenameMetadata] = useState(false);
+  const [subordinatedPaths, setSubordinatedPaths] = useState([]);
+
+  const getSubordinatedList = useCallback(async() => {
+    try {
+      const res = await appContainer.apiv3Get('/pages/subordinated-list', { path });
+      setSubordinatedPaths(res.data.resultPaths);
+    }
+    catch (err) {
+      setGetSuborinatedError(t('modal_rename.label.Fail to get subordinated pages'));
+    }
+  }, [appContainer, path, t]);
+
+  useEffect(() => {
+    if (props.isOpen) {
+      getSubordinatedList();
+    }
+  }, [props.isOpen, getSubordinatedList]);
 
   function changeIsRenameRecursivelyHandler() {
     SetIsRenameRecursively(!isRenameRecursively);
@@ -115,6 +132,11 @@ const PageRenameModal = (props) => {
             { t('modal_rename.label.Recursively') }
             <p className="form-text text-muted mt-0">{ t('modal_rename.help.recursive') }</p>
           </label>
+          <div>
+            {isRenameRecursively
+              && subordinatedPaths.map(renamedNewPath => <li key={renamedNewPath}>{renamedNewPath}</li>)
+            }
+          </div>
         </div>
 
         <div className="custom-control custom-checkbox custom-checkbox-success">
