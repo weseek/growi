@@ -78,7 +78,7 @@ const PageAccessoriesModal = (props) => {
           </Nav>
           <TabContent activeTab={activeTab}>
             <TabPane tabId="pagelist">
-              {pageAccessoriesContainer.state.activeComponents.has('pagelist') && <PageList isOpen={props.isOpen} />}
+              {pageAccessoriesContainer.state.activeComponents.has('pagelist') && <PageList />}
             </TabPane>
             <TabPane tabId="timeline"></TabPane>
             <TabPane tabId="recent-changes"></TabPane>
@@ -105,7 +105,6 @@ PageAccessoriesModal.propTypes = {
   pageAccessoriesContainer: PropTypes.instanceOf(PageAccessoriesContainer).isRequired,
   appContainer: PropTypes.instanceOf(AppContainer),
   pageContainer: PropTypes.instanceOf(PageContainer),
-  path: PropTypes,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
 };

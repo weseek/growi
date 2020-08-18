@@ -13,17 +13,20 @@ const PageList = (props) => {
 
   const [page, setPage] = useState({});
 
-  function getPageList() {
-    const res = appContainer.apiv3Get('/pages/list', path);
-    setPage(res);
+  async function getPageList() {
+    console.log('hoge');
+    // const res = await appContainer.apiv3Get('/pages/list', path);
+    // setPage(res);
   }
 
-  // useEffect(() => {
-  //   getPageList();
-  // }, [props.isOpen]);
+  useEffect(() => {
+    getPageList();
+  }, []);
+
 
   return (
-    <Page page={page} />
+    <span>hoge</span>
+  // <Page page={page} />
   );
 };
 
@@ -33,7 +36,6 @@ const PageListWrapper = withUnstatedContainers(PageList, [AppContainer, PageCont
 PageList.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer),
   pageContainer: PropTypes.instanceOf(PageContainer),
-  isOpen: PropTypes,
 };
 
 export default PageListWrapper;
