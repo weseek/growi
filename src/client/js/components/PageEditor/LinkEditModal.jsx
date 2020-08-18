@@ -67,30 +67,61 @@ class LinkEditModal extends React.PureComponent {
   // defaultMarkdownLink is an instance of Linker
   show(defaultMarkdownLink = null) {
     // if defaultMarkdownLink is null, set default value in inputs.
-    const { label = '' } = defaultMarkdownLink;
-    let { link = '', type = Linker.types.markdownLink } = defaultMarkdownLink;
+    const { label = '', link = '' } = defaultMarkdownLink;
+    let { type = Linker.types.markdownLink } = defaultMarkdownLink;
 
     // if type of defaultMarkdownLink is pukiwikiLink when pukiwikiLikeLinker plugin is disable, change type(not change label and link)
     if (type === Linker.types.pukiwikiLink && !this.isApplyPukiwikiLikeLinkerPlugin) {
       type = Linker.types.markdownLink;
     }
 
-    const url = new URL(link, 'http://example.com');
-    const isUseRelativePath = url.origin === 'http://example.com' && !link.startsWith('/') && link !== '';
-    if (isUseRelativePath) {
-      const rootPath = this.getRootPath(type);
-      link = path.resolve(rootPath, link);
-    }
+    this.parseLinkAndSetState(link, type);
 
     this.setState({
       show: true,
       labelInputValue: label,
-      linkInputValue: link,
       isUsePermanentLink: false,
       permalink: '',
       linkerType: type,
+    });
+  }
+
+  // parse link, link is ...
+  // case-1. url of this growi's page (ex. 'http://localhost:3000/hoge/fuga')
+  // case-2. absolute path of this growi's page (ex. '/hoge/fuga')
+  // case-3. relative path of this growi's page (ex. '../fuga', 'hoge')
+  // case-4. external link (ex. 'https://growi.org')
+  // case-5. the others (ex. '')
+  parseLinkAndSetState(link, type) {
+    // create url from link, add dummy origin if link is not valid url.
+    // ex-1. link = 'https://growi.org/' -> url = 'https://growi.org/' (case-1,4)
+    // ex-2. link = 'hoge' -> url = 'http://example.com/hoge' (case-2,3,5)
+    const url = new URL(link, 'http://example.com');
+    const isUrl = url.origin !== 'http://example.com';
+
+    let isUseRelativePath = false;
+    let reshapedLink = link;
+
+    // if case-1, reshapedLink becomes page path
+    reshapedLink = this.convertUrlToPathIfPageUrl(reshapedLink, url);
+
+    // case-3
+    if (!isUrl && !reshapedLink.startsWith('/') && reshapedLink !== '') {
+      isUseRelativePath = true;
+      const rootPath = this.getRootPath(type);
+      reshapedLink = path.resolve(rootPath, reshapedLink);
+    }
+
+    this.setState({
+      linkInputValue: reshapedLink,
       isUseRelativePath,
     });
+  }
+
+  // return path name of link if link is this growi page url, else return original link.
+  convertUrlToPathIfPageUrl(link, url) {
+    // when link is this growi's page url, url.origin === window.location.origin and return path name
+    return url.origin === window.location.origin ? decodeURI(url.pathname) : link;
   }
 
   cancel() {
@@ -124,9 +155,7 @@ class LinkEditModal extends React.PureComponent {
   renderPreview() {
     return (
       <div className="linkedit-preview">
-        <Preview
-          markdown={this.state.markdown}
-        />
+        <Preview markdown={this.state.markdown} />
       </div>
     );
   }
@@ -185,12 +214,7 @@ class LinkEditModal extends React.PureComponent {
 
   generateLink() {
     const {
-      linkInputValue,
-      labelInputValue,
-      linkerType,
-      isUseRelativePath,
-      isUsePermanentLink,
-      permalink,
+      linkInputValue, labelInputValue, linkerType, isUseRelativePath, isUsePermanentLink, permalink,
     } = this.state;
 
     let reshapedLink = linkInputValue;
@@ -199,13 +223,7 @@ class LinkEditModal extends React.PureComponent {
       reshapedLink = rootPath === linkInputValue ? '.' : path.relative(rootPath, linkInputValue);
     }
 
-    return new Linker(
-      linkerType,
-      labelInputValue,
-      reshapedLink,
-      isUsePermanentLink,
-      permalink,
-    );
+    return new Linker(linkerType, labelInputValue, reshapedLink, isUsePermanentLink, permalink);
   }
 
   getRootPath(type) {
@@ -240,9 +258,7 @@ class LinkEditModal extends React.PureComponent {
                 </div>
               </form>
 
-              <div className="d-block d-lg-none mb-3 overflow-auto">
-                {this.renderPreview()}
-              </div>
+              <div className="d-block d-lg-none mb-3 overflow-auto">{this.renderPreview()}</div>
 
               <div className="card">
                 <div className="card-body">
@@ -320,9 +336,7 @@ class LinkEditModal extends React.PureComponent {
               </div>
             </div>
 
-            <div className="col d-none d-lg-block pr-0 mr-3 overflow-auto">
-              {this.renderPreview()}
-            </div>
+            <div className="col d-none d-lg-block pr-0 mr-3 overflow-auto">{this.renderPreview()}</div>
           </div>
         </ModalBody>
         <ModalFooter>
