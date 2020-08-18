@@ -474,36 +474,10 @@ module.exports = (crowi) => {
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
 
     const pages = await Page.findManageableListWithDescendants(page, user);
+
     const promise = pages.map(async(page) => {
       const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
-
-      // populate
-      await page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate();
-
-      // create option
-      const options = { page };
-      options.grant = page.grant;
-      options.grantUserGroupId = page.grantedGroup;
-      options.grantedUsers = page.grantedUsers;
-
-      const createdPage = await createPageAction({
-        path: newPagePath, user, body: page.revision.body, options,
-      });
-
-      const originTags = await page.findRelatedTagsById();
-      const savedTags = await saveTagsAction({ page, createdPage, pageTags: originTags });
-
-      // global notification
-      if (globalNotificationService != null) {
-        try {
-          await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, user);
-        }
-        catch (err) {
-          logger.error('Create grobal notification failed', err);
-        }
-      }
-
-      return { page: pageService.serializeToObj(createdPage), tags: savedTags };
+      return duplicatePage(page, newPagePath, user);
     });
 
     return Promise.allSettled(promise);
