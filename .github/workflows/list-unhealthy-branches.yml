@@ -20,6 +20,8 @@ jobs:
     - name: List branches
       id: list-branches
       run: |
+        node bin/github-actions/list-branches --inactive
+
         echo ::set-output name=SLACK_ATTACHMENTS_INACTIVE::$(node bin/github-actions/list-branches --inactive)
         echo ::set-output name=SLACK_ATTACHMENTS_ILLEGAL::$(node bin/github-actions/list-branches --illegal)
 
