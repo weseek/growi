@@ -133,7 +133,7 @@ module.exports = (crowi) => {
    *    /personal-setting/is-password-set:
    *      get:
    *        tags: [PersonalSetting]
-   *        operationId: getPersonalSetting
+   *        operationId: getIsPasswordSet
    *        summary: /personal-setting
    *        description: Get whether a password has been set
    *        responses:
