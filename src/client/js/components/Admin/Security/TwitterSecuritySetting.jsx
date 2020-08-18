@@ -9,8 +9,8 @@ import AdminTwitterSecurityContainer from '../../../services/AdminTwitterSecurit
 
 import TwitterSecuritySettingContents from './TwitterSecuritySettingContents';
 
+let retrieveError = null;
 function TwitterSecurityManagement(props) {
-
   const { adminTwitterSecurityContainer } = props;
   if (adminTwitterSecurityContainer.state.twitterConsumerKey === adminTwitterSecurityContainer.dummyTwitterConsumerKey) {
     throw (async() => {
@@ -21,14 +21,14 @@ function TwitterSecurityManagement(props) {
         toastError(err);
         adminTwitterSecurityContainer.setState({
           twitterConsumerKey: adminTwitterSecurityContainer.dummyTwitterConsumerKeyForError,
-          retrieveError: err[0].message,
         });
+        retrieveError = err;
       }
     })();
   }
 
   if (adminTwitterSecurityContainer.state.twitterConsumerKey === adminTwitterSecurityContainer.dummyTwitterConsumerKeyForError) {
-    throw new Error(adminTwitterSecurityContainer.state.retrieveError);
+    throw new Error(retrieveError[0].message);
   }
 
   return <TwitterSecuritySettingContents />;

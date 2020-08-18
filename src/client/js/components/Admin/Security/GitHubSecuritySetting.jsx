@@ -9,8 +9,8 @@ import AdminGitHubSecurityContainer from '../../../services/AdminGitHubSecurityC
 
 import GitHubSecuritySettingContents from './GitHubSecuritySettingContents';
 
+let retrieveError = null;
 function GitHubSecurityManagement(props) {
-
   const { adminGitHubSecurityContainer } = props;
   if (adminGitHubSecurityContainer.state.githubClientId === adminGitHubSecurityContainer.dummyGithubClientId) {
     throw (async() => {
@@ -19,13 +19,14 @@ function GitHubSecurityManagement(props) {
       }
       catch (err) {
         toastError(err);
-        adminGitHubSecurityContainer.setState({ githubClientId: adminGitHubSecurityContainer.dummyGithubClientIdForError, retrieveError: err });
+        retrieveError = err;
+        adminGitHubSecurityContainer.setState({ githubClientId: adminGitHubSecurityContainer.dummyGithubClientIdForError });
       }
     })();
   }
 
   if (adminGitHubSecurityContainer.state.githubClientId === adminGitHubSecurityContainer.dummyGithubClientIdForError) {
-    throw new Error(adminGitHubSecurityContainer.state.retrieveError);
+    throw new Error(retrieveError[0].message);
   }
 
   return <GitHubSecuritySettingContents />;

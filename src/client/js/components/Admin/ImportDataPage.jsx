@@ -25,6 +25,7 @@ function ImportDataPageWithContainerWithSuspense(props) {
   );
 }
 
+let retrieveError = null;
 function ImportDataPage(props) {
   const { adminImportContainer } = props;
 
@@ -35,14 +36,15 @@ function ImportDataPage(props) {
       }
       catch (err) {
         toastError(err);
-        adminImportContainer.setState({ esaTeamName: adminImportContainer.dummyEsaTeamNameForError, retrieveError: err[0].message });
+        adminImportContainer.setState({ esaTeamName: adminImportContainer.dummyEsaTeamNameForError });
+        retrieveError = err;
         logger.error(err);
       }
     })();
   }
 
   if (adminImportContainer.state.esaTeamName === adminImportContainer.dummyEsaTeamNameForError) {
-    throw new Error(adminImportContainer.state.retrieveError);
+    throw new Error(retrieveError[0].message);
   }
 
   return <ImportDataPageContents />;

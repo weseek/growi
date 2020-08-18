@@ -25,6 +25,7 @@ function MarkdownSettingWithContainerWithSuspense(props) {
   );
 }
 
+let retrieveError = null;
 function MarkdownSetting(props) {
   const { adminMarkDownContainer } = props;
 
@@ -35,14 +36,15 @@ function MarkdownSetting(props) {
       }
       catch (err) {
         toastError(err);
-        adminMarkDownContainer.setState({ isEnabledLinebreaks: adminMarkDownContainer.dummyIsEnabledLinebreaksForError, retrieveError: err[0].message });
+        adminMarkDownContainer.setState({ isEnabledLinebreaks: adminMarkDownContainer.dummyIsEnabledLinebreaksForError });
+        retrieveError = err;
         logger.error(err);
       }
     })();
   }
 
   if (adminMarkDownContainer.state.isEnabledLinebreaks === adminMarkDownContainer.dummyIsEnabledLinebreaksForError) {
-    throw new Error(adminMarkDownContainer.state.retrieveError);
+    throw new Error(retrieveError[0].message);
   }
 
   return <MarkDownSettingContents />;

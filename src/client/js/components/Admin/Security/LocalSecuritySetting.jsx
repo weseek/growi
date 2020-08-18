@@ -9,8 +9,8 @@ import AdminLocalSecurityContainer from '../../../services/AdminLocalSecurityCon
 
 import LocalSecuritySettingContents from './LocalSecuritySettingContents';
 
+let retrieveError = null;
 function LocalSecuritySetting(props) {
-
   const { adminLocalSecurityContainer } = props;
   if (adminLocalSecurityContainer.state.registrationMode === adminLocalSecurityContainer.dummyRegistrationMode) {
     throw (async() => {
@@ -19,13 +19,14 @@ function LocalSecuritySetting(props) {
       }
       catch (err) {
         toastError(err);
-        adminLocalSecurityContainer.setState({ registrationMode: adminLocalSecurityContainer.dummyRegistrationModeForError, retrieveError: err[0].message });
+        retrieveError = err;
+        adminLocalSecurityContainer.setState({ registrationMode: adminLocalSecurityContainer.dummyRegistrationModeForError });
       }
     })();
   }
 
   if (adminLocalSecurityContainer.state.registrationMode === adminLocalSecurityContainer.dummyRegistrationModeForError) {
-    throw new Error(adminLocalSecurityContainer.state.retrieveError);
+    throw new Error(retrieveError[0].message);
   }
 
   return <LocalSecuritySettingContents />;

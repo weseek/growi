@@ -32,6 +32,7 @@ function CustomizePageWithContainerWithSusupense(props) {
   );
 }
 
+let retrieveError = null;
 function Customize(props) {
   const { adminCustomizeContainer } = props;
 
@@ -42,14 +43,15 @@ function Customize(props) {
       }
       catch (err) {
         toastError(err);
-        adminCustomizeContainer.setState({ currentTheme: adminCustomizeContainer.dummyCurrentThemeForError, retrieveError: err[0].message });
+        adminCustomizeContainer.setState({ currentTheme: adminCustomizeContainer.dummyCurrentThemeForError });
+        retrieveError = err;
         logger.error(err);
       }
     })();
   }
 
   if (adminCustomizeContainer.state.currentTheme === adminCustomizeContainer.dummyCurrentThemeForError) {
-    throw new Error(adminCustomizeContainer.state.retrieveError);
+    throw new Error(retrieveError[0].message);
   }
 
   return (

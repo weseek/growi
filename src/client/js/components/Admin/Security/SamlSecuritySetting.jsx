@@ -9,8 +9,8 @@ import AdminSamlSecurityContainer from '../../../services/AdminSamlSecurityConta
 
 import SamlSecuritySettingContents from './SamlSecuritySettingContents';
 
+let retrieveError = null;
 function SamlSecurityManagement(props) {
-
   const { adminSamlSecurityContainer } = props;
   if (adminSamlSecurityContainer.state.samlEntryPoint === adminSamlSecurityContainer.dummySamlEntryPoint) {
     throw (async() => {
@@ -19,13 +19,14 @@ function SamlSecurityManagement(props) {
       }
       catch (err) {
         toastError(err);
-        adminSamlSecurityContainer.setState({ samlEntryPoint: adminSamlSecurityContainer.dummySamlEntryPointForError, retrieveError: err[0].message });
+        retrieveError = err;
+        adminSamlSecurityContainer.setState({ samlEntryPoint: adminSamlSecurityContainer.dummySamlEntryPointForError });
       }
     })();
   }
 
   if (adminSamlSecurityContainer.state.samlEntryPoint === adminSamlSecurityContainer.dummySamlEntryPointForError) {
-    throw new Error(adminSamlSecurityContainer.state.retrieveError);
+    throw new Error(retrieveError[0].message);
   }
 
   return <SamlSecuritySettingContents />;

@@ -8,8 +8,8 @@ import AdminLdapSecurityContainer from '../../../services/AdminLdapSecurityConta
 
 import LdapSecuritySettingContents from './LdapSecuritySettingContents';
 
+let retrieveError = null;
 function LdapSecuritySetting(props) {
-
   const { adminLdapSecurityContainer } = props;
   if (adminLdapSecurityContainer.state.serverUrl === adminLdapSecurityContainer.dummyServerUrl) {
     throw (async() => {
@@ -18,13 +18,14 @@ function LdapSecuritySetting(props) {
       }
       catch (err) {
         toastError(err);
-        adminLdapSecurityContainer.setState({ serverUrl: adminLdapSecurityContainer.dummyServerUrlForError, retrieveError: err[0].message });
+        retrieveError = err;
+        adminLdapSecurityContainer.setState({ serverUrl: adminLdapSecurityContainer.dummyServerUrlForError });
       }
     })();
   }
 
   if (adminLdapSecurityContainer.state.serverUrl === adminLdapSecurityContainer.dummyServerUrlForError) {
-    throw new Error(adminLdapSecurityContainer.state.retrieveError);
+    throw new Error(retrieveError[0].message);
   }
 
   return <LdapSecuritySettingContents />;

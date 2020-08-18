@@ -9,6 +9,7 @@ import AdminBasicSecurityContainer from '../../../services/AdminBasicSecurityCon
 
 import BasicSecurityManagementContents from './BasicSecuritySettingContents';
 
+let retrieveError = null;
 function BasicSecurityManagement(props) {
   const { adminBasicSecurityContainer } = props;
   if (adminBasicSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser === adminBasicSecurityContainer.dummyIsSameUsernameTreatedAsIdenticalUser) {
@@ -19,8 +20,8 @@ function BasicSecurityManagement(props) {
       catch (err) {
         adminBasicSecurityContainer.setState({
           isSameUsernameTreatedAsIdenticalUser: adminBasicSecurityContainer.dummyIsSameUsernameTreatedAsIdenticalUser,
-          retrieveError: err.message,
         });
+        retrieveError = err;
         toastError(err);
       }
     })();
@@ -29,7 +30,7 @@ function BasicSecurityManagement(props) {
   if (
     adminBasicSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser === adminBasicSecurityContainer.dummyIsSameUsernameTreatedAsIdenticalUserForError
   ) {
-    throw new Error(adminBasicSecurityContainer.state.retrieveError);
+    throw new Error(retrieveError[0].message);
   }
 
   return <BasicSecurityManagementContents />;

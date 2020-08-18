@@ -6,8 +6,8 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 import SecurityManagementContents from './SecurityManagementContents';
 
+let retrieveError = null;
 function SecurityManagement(props) {
-
   const { adminGeneralSecurityContainer } = props;
 
   if (adminGeneralSecurityContainer.state.currentRestrictGuestMode === adminGeneralSecurityContainer.dummyCurrentRestrictGuestMode) {
@@ -17,16 +17,16 @@ function SecurityManagement(props) {
       }
       catch (err) {
         toastError(err);
+        retrieveError = err;
         adminGeneralSecurityContainer.setState({
           currentRestrictGuestMode: adminGeneralSecurityContainer.dummyCurrentRestrictGuestModeForError,
-          retrieveError: err.message,
         });
       }
     })();
   }
 
   if (adminGeneralSecurityContainer.state.currentRestrictGuestMode === adminGeneralSecurityContainer.dummyCurrentRestrictGuestModeForError) {
-    throw new Error(adminGeneralSecurityContainer.state.retrieveError);
+    throw new Error(retrieveError[0].message);
   }
 
   return <SecurityManagementContents />;

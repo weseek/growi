@@ -9,8 +9,8 @@ import AdminOidcSecurityContainer from '../../../services/AdminOidcSecurityConta
 
 import OidcSecurityManagementContents from './OidcSecuritySettingContents';
 
+let retrieveError = null;
 function OidcSecurityManagement(props) {
-
   const { adminOidcSecurityContainer } = props;
   if (adminOidcSecurityContainer.state.oidcProviderName === adminOidcSecurityContainer.dummyOidcProviderName) {
     throw (async() => {
@@ -19,13 +19,14 @@ function OidcSecurityManagement(props) {
       }
       catch (err) {
         toastError(err);
-        adminOidcSecurityContainer.setState({ oidcProviderName: adminOidcSecurityContainer.dummyOidcProviderNameForError, retrieveError: err[0].message });
+        retrieveError = err;
+        adminOidcSecurityContainer.setState({ oidcProviderName: adminOidcSecurityContainer.dummyOidcProviderNameForError });
       }
     })();
   }
 
   if (adminOidcSecurityContainer.state.oidcProviderName === adminOidcSecurityContainer.dummyOidcProviderNameForError) {
-    throw new Error(adminOidcSecurityContainer.state.retrieveError);
+    throw new Error(retrieveError[0].message);
   }
 
   return <OidcSecurityManagementContents />;

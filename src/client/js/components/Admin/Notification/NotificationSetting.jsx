@@ -26,6 +26,7 @@ function NotificationSettingWithContainerWithSuspense(props) {
   );
 }
 
+let retrieveError = null;
 function NotificationSetting(props) {
   const { adminNotificationContainer } = props;
   if (adminNotificationContainer.state.webhookUrl === adminNotificationContainer.dummyWebhookUrl) {
@@ -35,14 +36,15 @@ function NotificationSetting(props) {
       }
       catch (err) {
         toastError(err);
-        adminNotificationContainer.setState({ webhookUrl: adminNotificationContainer.dummyWebhookUrlForError, retrieveError: err[0].message });
+        adminNotificationContainer.setState({ webhookUrl: adminNotificationContainer.dummyWebhookUrlForError });
+        retrieveError = err;
         logger.error(err);
       }
     })();
   }
 
   if (adminNotificationContainer.state.webhookUrl === adminNotificationContainer.dummyWebhookUrlForError) {
-    throw new Error(adminNotificationContainer.state.retrieveError);
+    throw new Error(retrieveError[0].message);
   }
 
   return <NotificationSettingContents />;

@@ -8,8 +8,8 @@ import { toastError } from '../../../util/apiNotification';
 import AdminGoogleSecurityContainer from '../../../services/AdminGoogleSecurityContainer';
 import GoogleSecurityManagementContents from './GoogleSecuritySettingContents';
 
+let retrieveError = null;
 function GoogleSecurityManagement(props) {
-
   const { adminGoogleSecurityContainer } = props;
   if (adminGoogleSecurityContainer.state.googleClientId === adminGoogleSecurityContainer.dummyGoogleClientId) {
     throw (async() => {
@@ -18,13 +18,14 @@ function GoogleSecurityManagement(props) {
       }
       catch (err) {
         toastError(err);
-        adminGoogleSecurityContainer.setState({ googleClientId: adminGoogleSecurityContainer.dummyGoogleClientIdForError, retrieveError: err[0].message });
+        retrieveError = err;
+        adminGoogleSecurityContainer.setState({ googleClientId: adminGoogleSecurityContainer.dummyGoogleClientIdForError });
       }
     })();
   }
 
   if (adminGoogleSecurityContainer.state.googleClientId === adminGoogleSecurityContainer.dummyGoogleClientIdForError) {
-    throw new Error(adminGoogleSecurityContainer.state.retrieveError);
+    throw new Error(retrieveError[0].message);
   }
 
   return <GoogleSecurityManagementContents />;
