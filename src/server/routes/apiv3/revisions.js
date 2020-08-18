@@ -58,30 +58,32 @@ module.exports = (crowi) => {
    *
    */
   router.get('/list', certifySharedPage, accessTokenParser, loginRequired, validator.retrieveRevisions, apiV3FormValidator, async(req, res) => {
-    const { page_id } = req.query;
+    const pageId = req.query.page_id;
     const { isSharedPage } = req;
 
     const selectedPage = parseInt(req.query.selectedPage) || 1;
 
     // check whether accessible
-    if (!isSharedPage && !(await Page.isAccessiblePageByViewer(page_id, req.user))) {
+    if (!isSharedPage && !(await Page.isAccessiblePageByViewer(pageId, req.user))) {
       return res.apiv3Err(new ErrorV3('Current user is not accessible to this page.', 'forbidden-page'), 403);
     }
 
     try {
-      const page = await Page.findOne({ _id: page_id });
+      const page = await Page.findOne({ _id: pageId });
 
       const paginateResult = await Revision.paginate(
         { path: page.path },
         {
           page: selectedPage,
           limit: PAGE_ITEMS,
+          desc: -1,
           populate: {
             path: 'author',
             select: User.USER_PUBLIC_FIELDS,
           },
         },
       );
+      // console.log(paginateResult.docs);
 
       return res.apiv3(paginateResult);
     }
@@ -120,11 +122,11 @@ module.exports = (crowi) => {
    */
   router.get('/:id', certifySharedPage, accessTokenParser, loginRequired, validator.retrieveRevisionById, apiV3FormValidator, async(req, res) => {
     const revisionId = req.params.id;
-    const { page_id } = req.query;
+    const pageId = req.query.page_id;
     const { isSharedPage } = req;
 
     // check whether accessible
-    if (!isSharedPage && !(await Page.isAccessiblePageByViewer(page_id, req.user))) {
+    if (!isSharedPage && !(await Page.isAccessiblePageByViewer(pageId, req.user))) {
       return res.apiv3Err(new ErrorV3('Current user is not accessible to this page.', 'forbidden-page'), 403);
     }
 
