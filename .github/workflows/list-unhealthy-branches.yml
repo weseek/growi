@@ -20,8 +20,6 @@ jobs:
     - name: List branches
       id: list-branches
       run: |
-        node bin/github-actions/list-branches --inactive
-
         echo ::set-output name=SLACK_ATTACHMENTS_INACTIVE::$(node bin/github-actions/list-branches --inactive)
         echo ::set-output name=SLACK_ATTACHMENTS_ILLEGAL::$(node bin/github-actions/list-branches --illegal)
 
@@ -30,6 +28,5 @@ jobs:
       env:
         INCOMING_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL_FOR_DEV }}
       with:
-        channel: dev
         text: There is some *inactive* branches on remote.
         attachments: ${{ steps.list-branches.outputs.SLACK_ATTACHMENTS_INACTIVE }}
