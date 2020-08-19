@@ -69,7 +69,7 @@ function getGitHubCommitsUrl(branchName) {
 }
 
 function getGitHubComparingLink(branchName) {
-  const label = `master <- ${branchName}`;
+  const label = `master &lt;- ${branchName}`;
   const link = url.resolve(GITHUB_REPOS_URI, `compare/${branchName}`);
   return `<${link}|${label}>`;
 }
