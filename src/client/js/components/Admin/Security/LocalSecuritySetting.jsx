@@ -4,12 +4,13 @@ import PropTypes from 'prop-types';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
+import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
 
 import AdminLocalSecurityContainer from '../../../services/AdminLocalSecurityContainer';
 
 import LocalSecuritySettingContents from './LocalSecuritySettingContents';
 
-let retrieveError = null;
+let retrieveErrors = null;
 function LocalSecuritySetting(props) {
   const { adminLocalSecurityContainer } = props;
   if (adminLocalSecurityContainer.state.registrationMode === adminLocalSecurityContainer.dummyRegistrationMode) {
@@ -18,15 +19,16 @@ function LocalSecuritySetting(props) {
         await adminLocalSecurityContainer.retrieveSecurityData();
       }
       catch (err) {
-        toastError(err);
-        retrieveError = err;
+        const errs = toArrayIfNot(err);
+        toastError(errs);
+        retrieveErrors = errs;
         adminLocalSecurityContainer.setState({ registrationMode: adminLocalSecurityContainer.dummyRegistrationModeForError });
       }
     })();
   }
 
   if (adminLocalSecurityContainer.state.registrationMode === adminLocalSecurityContainer.dummyRegistrationModeForError) {
-    throw new Error(retrieveError[0].message);
+    throw new Error(`${retrieveErrors.length} errors occured`);
   }
 
   return <LocalSecuritySettingContents />;

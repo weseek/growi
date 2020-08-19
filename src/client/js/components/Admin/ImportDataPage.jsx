@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
+import toArrayIfNot from '../../../../lib/util/toArrayIfNot';
 
 import AdminImportContainer from '../../services/AdminImportContainer';
 import { toastError } from '../../util/apiNotification';
@@ -25,7 +26,7 @@ function ImportDataPageWithContainerWithSuspense(props) {
   );
 }
 
-let retrieveError = null;
+let retrieveErrors = null;
 function ImportDataPage(props) {
   const { adminImportContainer } = props;
 
@@ -35,16 +36,17 @@ function ImportDataPage(props) {
         await adminImportContainer.retrieveImportSettingsData();
       }
       catch (err) {
-        toastError(err);
+        const errs = toArrayIfNot(err);
+        toastError(errs);
+        logger.error(errs);
+        retrieveErrors = errs;
         adminImportContainer.setState({ esaTeamName: adminImportContainer.dummyEsaTeamNameForError });
-        retrieveError = err;
-        logger.error(err);
       }
     })();
   }
 
   if (adminImportContainer.state.esaTeamName === adminImportContainer.dummyEsaTeamNameForError) {
-    throw new Error(retrieveError[0].message);
+    throw new Error(`${retrieveErrors.length} errors occured`);
   }
 
   return <ImportDataPageContents />;

@@ -7,6 +7,7 @@ import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
+import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
 
 import CustomizeLayoutSetting from './CustomizeLayoutSetting';
 import CustomizeFunctionSetting from './CustomizeFunctionSetting';
@@ -32,7 +33,7 @@ function CustomizePageWithContainerWithSusupense(props) {
   );
 }
 
-let retrieveError = null;
+let retrieveErrors = null;
 function Customize(props) {
   const { adminCustomizeContainer } = props;
 
@@ -42,16 +43,17 @@ function Customize(props) {
         await adminCustomizeContainer.retrieveCustomizeData();
       }
       catch (err) {
-        toastError(err);
+        const errs = toArrayIfNot(err);
+        toastError(errs);
+        logger.error(errs);
+        retrieveErrors = errs;
         adminCustomizeContainer.setState({ currentTheme: adminCustomizeContainer.dummyCurrentThemeForError });
-        retrieveError = err;
-        logger.error(err);
       }
     })();
   }
 
   if (adminCustomizeContainer.state.currentTheme === adminCustomizeContainer.dummyCurrentThemeForError) {
-    throw new Error(retrieveError[0].message);
+    throw new Error(`${retrieveErrors.length} errors occured`);
   }
 
   return (

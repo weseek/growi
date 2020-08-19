@@ -5,6 +5,7 @@ import loggerFactory from '@alias/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
+import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
 
 import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
 
@@ -26,7 +27,7 @@ function NotificationSettingWithContainerWithSuspense(props) {
   );
 }
 
-let retrieveError = null;
+let retrieveErrors = null;
 function NotificationSetting(props) {
   const { adminNotificationContainer } = props;
   if (adminNotificationContainer.state.webhookUrl === adminNotificationContainer.dummyWebhookUrl) {
@@ -35,16 +36,17 @@ function NotificationSetting(props) {
         await adminNotificationContainer.retrieveNotificationData();
       }
       catch (err) {
-        toastError(err);
+        const errs = toArrayIfNot(err);
+        toastError(errs);
+        logger.error(errs);
+        retrieveErrors = errs;
         adminNotificationContainer.setState({ webhookUrl: adminNotificationContainer.dummyWebhookUrlForError });
-        retrieveError = err;
-        logger.error(err);
       }
     })();
   }
 
   if (adminNotificationContainer.state.webhookUrl === adminNotificationContainer.dummyWebhookUrlForError) {
-    throw new Error(retrieveError[0].message);
+    throw new Error(`${retrieveErrors.length} errors occured`);
   }
 
   return <NotificationSettingContents />;

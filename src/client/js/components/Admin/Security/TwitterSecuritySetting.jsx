@@ -4,12 +4,13 @@ import PropTypes from 'prop-types';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
+import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
 
 import AdminTwitterSecurityContainer from '../../../services/AdminTwitterSecurityContainer';
 
 import TwitterSecuritySettingContents from './TwitterSecuritySettingContents';
 
-let retrieveError = null;
+let retrieveErrors = null;
 function TwitterSecurityManagement(props) {
   const { adminTwitterSecurityContainer } = props;
   if (adminTwitterSecurityContainer.state.twitterConsumerKey === adminTwitterSecurityContainer.dummyTwitterConsumerKey) {
@@ -18,17 +19,18 @@ function TwitterSecurityManagement(props) {
         await adminTwitterSecurityContainer.retrieveSecurityData();
       }
       catch (err) {
-        toastError(err);
+        const errs = toArrayIfNot(err);
+        toastError(errs);
+        retrieveErrors = errs;
         adminTwitterSecurityContainer.setState({
           twitterConsumerKey: adminTwitterSecurityContainer.dummyTwitterConsumerKeyForError,
         });
-        retrieveError = err;
       }
     })();
   }
 
   if (adminTwitterSecurityContainer.state.twitterConsumerKey === adminTwitterSecurityContainer.dummyTwitterConsumerKeyForError) {
-    throw new Error(retrieveError[0].message);
+    throw new Error(`${retrieveErrors.length} errors occured`);
   }
 
   return <TwitterSecuritySettingContents />;

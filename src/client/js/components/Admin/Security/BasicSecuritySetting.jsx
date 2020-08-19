@@ -4,12 +4,13 @@ import PropTypes from 'prop-types';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
+import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
 
 import AdminBasicSecurityContainer from '../../../services/AdminBasicSecurityContainer';
 
 import BasicSecurityManagementContents from './BasicSecuritySettingContents';
 
-let retrieveError = null;
+let retrieveErrors = null;
 function BasicSecurityManagement(props) {
   const { adminBasicSecurityContainer } = props;
   if (adminBasicSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser === adminBasicSecurityContainer.dummyIsSameUsernameTreatedAsIdenticalUser) {
@@ -18,11 +19,13 @@ function BasicSecurityManagement(props) {
         await adminBasicSecurityContainer.retrieveSecurityData();
       }
       catch (err) {
+        const errs = toArrayIfNot(err);
+        toastError(errs);
+        retrieveErrors = errs;
         adminBasicSecurityContainer.setState({
           isSameUsernameTreatedAsIdenticalUser: adminBasicSecurityContainer.dummyIsSameUsernameTreatedAsIdenticalUser,
         });
-        retrieveError = err;
-        toastError(err);
+
       }
     })();
   }
@@ -30,7 +33,7 @@ function BasicSecurityManagement(props) {
   if (
     adminBasicSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser === adminBasicSecurityContainer.dummyIsSameUsernameTreatedAsIdenticalUserForError
   ) {
-    throw new Error(retrieveError[0].message);
+    throw new Error(`${retrieveErrors.length} errors occured`);
   }
 
   return <BasicSecurityManagementContents />;

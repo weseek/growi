@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
+import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
 
 import AdminLdapSecurityContainer from '../../../services/AdminLdapSecurityContainer';
 
 import LdapSecuritySettingContents from './LdapSecuritySettingContents';
 
-let retrieveError = null;
+let retrieveErrors = null;
 function LdapSecuritySetting(props) {
   const { adminLdapSecurityContainer } = props;
   if (adminLdapSecurityContainer.state.serverUrl === adminLdapSecurityContainer.dummyServerUrl) {
@@ -17,15 +18,16 @@ function LdapSecuritySetting(props) {
         await adminLdapSecurityContainer.retrieveSecurityData();
       }
       catch (err) {
-        toastError(err);
-        retrieveError = err;
+        const errs = toArrayIfNot(err);
+        toastError(errs);
+        retrieveErrors = errs;
         adminLdapSecurityContainer.setState({ serverUrl: adminLdapSecurityContainer.dummyServerUrlForError });
       }
     })();
   }
 
   if (adminLdapSecurityContainer.state.serverUrl === adminLdapSecurityContainer.dummyServerUrlForError) {
-    throw new Error(retrieveError[0].message);
+    throw new Error(`${retrieveErrors.length} errors occured`);
   }
 
   return <LdapSecuritySettingContents />;
