@@ -207,7 +207,7 @@ const PersonalDropdown = (props) => {
           </div>
           <div className="form-row justify-content-center">
             <div className="form-group col-auto mb-0 d-flex align-items-center">
-              <LightIcon />
+              <LightIcon id="icon-prefer-light" />
               <div className="custom-control custom-switch custom-checkbox-secondary ml-2">
                 <input
                   id="swUserPreference"
@@ -219,7 +219,7 @@ const PersonalDropdown = (props) => {
                 />
                 <label className="custom-control-label" htmlFor="swUserPreference"></label>
               </div>
-              <DarkIcon />
+              <DarkIcon id="icon-prefer-dark" />
             </div>
           </div>
         </form>
