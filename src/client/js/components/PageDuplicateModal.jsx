@@ -40,7 +40,7 @@ const PageDuplicateModal = (props) => {
     // <li className="duplicate-exist" key={value}> {value}: { t('modal_duplicate.label.Same page already exists') } </li>; )
     // setIsDuplicateExist(duplicatedList);
 
-    // for now we use dummy path
+    // ToDo: for now we use dummy path
     setIsDuplicateExist(['/test146/test147', value]);
   }
 
