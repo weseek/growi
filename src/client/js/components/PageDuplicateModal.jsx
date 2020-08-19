@@ -58,6 +58,7 @@ const PageDuplicateModal = (props) => {
    * @param {string} value
    */
   function inputChangeHandler(value) {
+    createSubordinatedList(value);
     setPageNameInput(value);
   }
 
