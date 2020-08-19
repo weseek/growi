@@ -133,7 +133,7 @@ const PageRenameModal = (props) => {
             { t('modal_rename.label.Recursively') }
             <p className="form-text text-muted mt-0">{ t('modal_rename.help.recursive') }</p>
           </label>
-          <div>
+          <div className="rename-new-path-content">
             {isRenameRecursively
               && subordinatedPaths.map(renamedNewPath => <li key={renamedNewPath}>{renamedNewPath}</li>)
             }

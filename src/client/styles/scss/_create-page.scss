@@ -12,4 +12,9 @@
   .create-page-under-tree-label code {
     font-family: $font-family-monospace-not-strictly;
   }
+
+  .rename-new-path-content {
+    height: 50px;
+    overflow: scroll;
+  }
 }
