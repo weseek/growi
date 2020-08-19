@@ -14,7 +14,10 @@
   }
 
   .rename-new-path-content {
-    height: 50px;
+    height: 100px;
+    padding: 4px;
+    margin-bottom: 8px;
     overflow: scroll;
+    border: 1px solid #000;
   }
 }

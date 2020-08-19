@@ -31,6 +31,21 @@ const PageRenameModal = (props) => {
   const [isRenameMetadata, SetIsRenameMetadata] = useState(false);
   const [subordinatedPaths, setSubordinatedPaths] = useState([]);
   const [getSubordinatedError, setGetSuborinatedError] = useState(null);
+  const [isDuplicateExistList, setIsDuplicateExistList] = useState([]);
+
+
+  function createSubordinatedList(value) {
+
+    // ToDo: get the duplicated list from sever
+    // below is psuedo code
+    // let duplicatedList = get.apiv3......
+    // duplicatedList = duplicatedList.map((value) =>
+    // <li className="duplicate-exist" key={value}> {value}: { t('modal_duplicate.label.Same page already exists') } </li>; )
+    // setIsDuplicateExist(duplicatedList);
+
+    // ToDo: for now we use dummy path
+    setIsDuplicateExist(['/test146/test147', value]);
+  }
 
   const getSubordinatedList = useCallback(async() => {
     try {
@@ -65,6 +80,7 @@ const PageRenameModal = (props) => {
    * @param {string} value
    */
   function inputChangeHandler(value) {
+    createSubordinatedList(value);
     setPageNameInput(value);
   }
 
@@ -133,10 +149,20 @@ const PageRenameModal = (props) => {
             { t('modal_rename.label.Recursively') }
             <p className="form-text text-muted mt-0">{ t('modal_rename.help.recursive') }</p>
           </label>
-          <div className="rename-new-path-content">
-            {isRenameRecursively
-              && subordinatedPaths.map(renamedNewPath => <li key={renamedNewPath}>{renamedNewPath}</li>)
-            }
+          <div className="rename-new-path">
+            <input
+              className="custom-control-input"
+              name="recursively"
+              id="cbRenameRecursively"
+              type="checkbox"
+              checked={isRenameRecursively}
+              onChange={changeIsRenameRecursivelyHandler}
+            />
+            <div className="rename-new-path-content">
+              {isRenameRecursively
+                && subordinatedPaths.map(renamedNewPath => <li key={renamedNewPath}>{renamedNewPath}</li>)
+              }
+            </div>
           </div>
         </div>
 
