@@ -1,9 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {
-  Modal, ModalBody, Nav, NavItem, NavLink, TabContent, TabPane,
-} from 'reactstrap';
+import { Modal, ModalBody, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
 
@@ -16,7 +14,7 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import PageAccessoriesContainer from '../services/PageAccessoriesContainer';
 import PageAttachment from './PageAttachment';
 
-const PageAccessoriesModal = (props) => {
+const PageAccessoriesModal = props => {
   const { t, pageAccessoriesContainer } = props;
   const { switchActiveTab } = pageAccessoriesContainer;
   const { activeTab } = pageAccessoriesContainer.state;
@@ -30,53 +28,56 @@ const PageAccessoriesModal = (props) => {
 
   return (
     <React.Fragment>
-      <Modal
-        size="lg"
-        isOpen={props.isOpen}
-        toggle={closeModalHandler}
-        className="grw-page-accessories-modal"
-      >
+      <Modal size="lg" isOpen={props.isOpen} toggle={closeModalHandler} className="grw-page-accessories-modal">
         <ModalBody>
           <Nav className="nav-title border-bottom">
             <NavItem type="button" className={`nav-link ${activeTab === 'pagelist' && 'active active-border'}`}>
               <NavLink
-                onClick={() => { switchActiveTab('pagelist') }}
+                onClick={() => {
+                  switchActiveTab('pagelist');
+                }}
               >
                 <PageListIcon />
-                { t('page_list') }
+                {t('page_list')}
               </NavLink>
             </NavItem>
             <NavItem type="button" className={`nav-link ${activeTab === 'timeline' && 'active active-border'}`}>
               <NavLink
-                onClick={() => { switchActiveTab('timeline') }}
+                onClick={() => {
+                  switchActiveTab('timeline');
+                }}
               >
                 <TimeLineIcon />
-                { t('Timeline View') }
+                {t('Timeline View')}
               </NavLink>
             </NavItem>
             <NavItem type="button" className={`nav-link ${activeTab === 'recent-changes' && 'active active-border'}`}>
               <NavLink
-                onClick={() => { switchActiveTab('recent-changes') }}
+                onClick={() => {
+                  switchActiveTab('recent-changes');
+                }}
               >
                 <RecentChangesIcon />
-                { t('History') }
+                {t('History')}
               </NavLink>
             </NavItem>
             <NavItem type="button" className={`nav-link ${activeTab === 'attachment' && 'active active-border'}`}>
               <NavLink
-                onClick={() => { switchActiveTab('attachment') }}
+                onClick={() => {
+                  switchActiveTab('attachment');
+                }}
               >
                 <AttachmentIcon />
-                { t('attachment_data') }
+                {t('attachment_data')}
               </NavLink>
             </NavItem>
           </Nav>
           <TabContent activeTab={activeTab}>
             <TabPane tabId="pagelist"></TabPane>
             <TabPane tabId="timeline"></TabPane>
-            <TabPane tabId="recent-changes"></TabPane>
+            <TabPane tabId="recent-changes">testing</TabPane>
             <TabPane tabId="attachment" className="p-4">
-              {pageAccessoriesContainer.state.activeComponents.has('attachment') && <PageAttachment /> }
+              {pageAccessoriesContainer.state.activeComponents.has('attachment') && <PageAttachment />}
             </TabPane>
           </TabContent>
         </ModalBody>
@@ -85,12 +86,10 @@ const PageAccessoriesModal = (props) => {
   );
 };
 
-
 /**
  * Wrapper component for using unstated
  */
 const PageAccessoriesModalWrapper = withUnstatedContainers(PageAccessoriesModal, [PageAccessoriesContainer]);
-
 
 PageAccessoriesModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
