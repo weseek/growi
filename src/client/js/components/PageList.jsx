@@ -28,7 +28,7 @@ const PageList = (props) => {
   }
 
   return pages.map(page => (
-    <li key={`list-view:${page._id}`}>
+    <li key={page._id}>
       <Page page={page} />
     </li>
   ));
