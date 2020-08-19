@@ -6,22 +6,29 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
 
 import AdminSamlSecurityContainer from '../../../services/AdminSamlSecurityContainer';
+import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
 
 import SamlSecuritySettingContents from './SamlSecuritySettingContents';
 
+let retrieveErrors = null;
 function SamlSecurityManagement(props) {
-
   const { adminSamlSecurityContainer } = props;
   if (adminSamlSecurityContainer.state.samlEntryPoint === adminSamlSecurityContainer.dummySamlEntryPoint) {
-    throw new Promise(async() => {
+    throw (async() => {
       try {
         await adminSamlSecurityContainer.retrieveSecurityData();
       }
       catch (err) {
-        toastError(err);
-        adminSamlSecurityContainer.setState({ retrieveError: err.message });
+        const errs = toArrayIfNot(err);
+        toastError(errs);
+        retrieveErrors = errs;
+        adminSamlSecurityContainer.setState({ samlEntryPoint: adminSamlSecurityContainer.dummySamlEntryPointForError });
       }
-    });
+    })();
+  }
+
+  if (adminSamlSecurityContainer.state.samlEntryPoint === adminSamlSecurityContainer.dummySamlEntryPointForError) {
+    throw new Error(`${retrieveErrors.length} errors occured`);
   }
 
   return <SamlSecuritySettingContents />;

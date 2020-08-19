@@ -18,6 +18,7 @@ export default class AdminGoogleSecurityContainer extends Container {
 
     this.appContainer = appContainer;
     this.dummyGoogleClientId = 0;
+    this.dummyGoogleClientIdForError = 1;
 
     this.state = {
       retrieveError: null,

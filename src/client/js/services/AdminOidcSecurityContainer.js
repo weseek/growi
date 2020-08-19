@@ -18,6 +18,7 @@ export default class AdminOidcSecurityContainer extends Container {
 
     this.appContainer = appContainer;
     this.dummyOidcProviderName = 0;
+    this.dummyOidcProviderNameForError = 1;
 
     this.state = {
       retrieveError: null,

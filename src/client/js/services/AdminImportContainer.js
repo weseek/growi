@@ -17,6 +17,7 @@ export default class AdminImportContainer extends Container {
 
     this.appContainer = appContainer;
     this.dummyEsaTeamName = 0;
+    this.dummyEsaTeamNameForError = 1;
 
     this.state = {
       retrieveError: null,
@@ -47,23 +48,17 @@ export default class AdminImportContainer extends Container {
    * retrieve app sttings data
    */
   async retrieveImportSettingsData() {
-    try {
-      const response = await this.appContainer.apiv3.get('/import/');
-      const {
-        importSettingsParams,
-      } = response.data;
+    const response = await this.appContainer.apiv3.get('/import/');
+    const {
+      importSettingsParams,
+    } = response.data;
 
-      this.setState({
-        esaTeamName: importSettingsParams.esaTeamName,
-        esaAccessToken: importSettingsParams.esaAccessToken,
-        qiitaTeamName: importSettingsParams.qiitaTeamName,
-        qiitaAccessToken: importSettingsParams.qiitaAccessToken,
-      });
-    }
-    catch (err) {
-      logger.error(err);
-      toastError(new Error('Failed to fetch data'));
-    }
+    this.setState({
+      esaTeamName: importSettingsParams.esaTeamName,
+      esaAccessToken: importSettingsParams.esaAccessToken,
+      qiitaTeamName: importSettingsParams.qiitaTeamName,
+      qiitaAccessToken: importSettingsParams.qiitaAccessToken,
+    });
   }
 
   handleInputValue(event) {

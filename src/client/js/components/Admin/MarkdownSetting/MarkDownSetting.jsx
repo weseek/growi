@@ -5,6 +5,7 @@ import loggerFactory from '@alias/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
+import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
 
 import MarkDownSettingContents from './MarkDownSettingContents';
 import AdminMarkDownContainer from '../../../services/AdminMarkDownContainer';
@@ -25,20 +26,27 @@ function MarkdownSettingWithContainerWithSuspense(props) {
   );
 }
 
+let retrieveErrors = null;
 function MarkdownSetting(props) {
   const { adminMarkDownContainer } = props;
 
   if (adminMarkDownContainer.state.isEnabledLinebreaks === adminMarkDownContainer.dummyIsEnabledLinebreaks) {
-    throw new Promise(async() => {
+    throw (async() => {
       try {
         await adminMarkDownContainer.retrieveMarkdownData();
       }
       catch (err) {
-        toastError(err);
-        adminMarkDownContainer.setState({ retrieveError: err.message });
-        logger.error(err);
+        const errs = toArrayIfNot(err);
+        toastError(errs);
+        logger.error(errs);
+        retrieveErrors = errs;
+        adminMarkDownContainer.setState({ isEnabledLinebreaks: adminMarkDownContainer.dummyIsEnabledLinebreaksForError });
       }
-    });
+    })();
+  }
+
+  if (adminMarkDownContainer.state.isEnabledLinebreaks === adminMarkDownContainer.dummyIsEnabledLinebreaksForError) {
+    throw new Error(`${retrieveErrors.length} errors occured`);
   }
 
   return <MarkDownSettingContents />;

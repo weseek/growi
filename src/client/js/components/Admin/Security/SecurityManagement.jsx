@@ -3,23 +3,32 @@ import PropTypes from 'prop-types';
 import { toastError } from '../../../util/apiNotification';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
+import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 import SecurityManagementContents from './SecurityManagementContents';
 
+let retrieveErrors = null;
 function SecurityManagement(props) {
-
   const { adminGeneralSecurityContainer } = props;
 
   if (adminGeneralSecurityContainer.state.currentRestrictGuestMode === adminGeneralSecurityContainer.dummyCurrentRestrictGuestMode) {
-    throw new Promise(async() => {
+    throw (async() => {
       try {
         await adminGeneralSecurityContainer.retrieveSecurityData();
       }
       catch (err) {
-        toastError(err);
-        adminGeneralSecurityContainer.setState({ retrieveError: err.message });
+        const errs = toArrayIfNot(err);
+        toastError(errs);
+        retrieveErrors = errs;
+        adminGeneralSecurityContainer.setState({
+          currentRestrictGuestMode: adminGeneralSecurityContainer.dummyCurrentRestrictGuestModeForError,
+        });
       }
-    });
+    })();
+  }
+
+  if (adminGeneralSecurityContainer.state.currentRestrictGuestMode === adminGeneralSecurityContainer.dummyCurrentRestrictGuestModeForError) {
+    throw new Error(`${retrieveErrors.length} errors occured`);
   }
 
   return <SecurityManagementContents />;

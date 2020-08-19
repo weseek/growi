@@ -18,6 +18,7 @@ export default class AdminCustomizeContainer extends Container {
 
     this.appContainer = appContainer;
     this.dummyCurrentTheme = 0;
+    this.dummyCurrentThemeForError = 1;
 
     this.state = {
       retrieveError: null,

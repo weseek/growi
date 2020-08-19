@@ -16,6 +16,7 @@ export default class AdminBasicSecurityContainer extends Container {
 
     this.appContainer = appContainer;
     this.dummyIsSameUsernameTreatedAsIdenticalUser = 0;
+    this.dummyIsSameUsernameTreatedAsIdenticalUserForError = 1;
 
     this.state = {
       retrieveError: null,

@@ -16,6 +16,7 @@ export default class AdminLdapSecurityContainer extends Container {
 
     this.appContainer = appContainer;
     this.dummyServerUrl = 0;
+    this.dummyServerUrlForError = 1;
 
     this.state = {
       retrieveError: null,

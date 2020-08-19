@@ -14,6 +14,7 @@ export default class AdminLocalSecurityContainer extends Container {
 
     this.appContainer = appContainer;
     this.dummyRegistrationMode = 0;
+    this.dummyRegistrationModeForError = 1;
 
     this.state = {
       retrieveError: null,

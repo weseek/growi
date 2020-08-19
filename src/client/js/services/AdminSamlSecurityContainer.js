@@ -19,6 +19,7 @@ export default class AdminSamlSecurityContainer extends Container {
 
     this.appContainer = appContainer;
     this.dummySamlEntryPoint = 0;
+    this.dummySamlEntryPointForError = 1;
 
     this.state = {
       retrieveError: null,
