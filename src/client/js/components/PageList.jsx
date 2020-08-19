@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import Page from './PageList/Page';
@@ -11,23 +11,29 @@ const PageList = (props) => {
   const { appContainer, pageContainer } = props;
   const { path } = pageContainer.state;
 
-  const [page, setPage] = useState({});
+  const [pages, setPages] = useState(null);
 
-  async function getPageList() {
-    console.log('hoge');
-    // const res = await appContainer.apiv3Get('/pages/list', path);
-    // setPage(res);
-  }
+  const getPageList = useCallback(async() => {
+    const res = await appContainer.apiv3Get('/pages/list', { path });
+    setPages(res.data.pages);
+  }, [appContainer, path]);
 
   useEffect(() => {
     getPageList();
-  }, []);
+  }, [getPageList]);
 
 
-  return (
-    <span>hoge</span>
-  // <Page page={page} />
-  );
+  if (pages == null) {
+    return null;
+  }
+
+  return pages.map(page => (
+    <li key={`list-view:${page._id}`}>
+      <Page page={page} />
+    </li>
+  ));
+
+
 };
 
 const PageListWrapper = withUnstatedContainers(PageList, [AppContainer, PageContainer]);
