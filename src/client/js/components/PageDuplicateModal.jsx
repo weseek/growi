@@ -28,7 +28,7 @@ const PageDuplicateModal = (props) => {
   const [getSubordinatedError] = useState(null);
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
   const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
-  const [isDuplicateExist, setIsDuplicateExist] = useState([]);
+  const [isDuplicateExistList, setIsDuplicateExistList] = useState([]);
 
 
   function createSubordinatedList(value) {
@@ -41,7 +41,7 @@ const PageDuplicateModal = (props) => {
     // setIsDuplicateExist(duplicatedList);
 
     // ToDo: for now we use dummy path
-    setIsDuplicateExist(['/test146/test147', value]);
+    setIsDuplicateExistList(['/test146/test147', value]);
   }
 
   /**
@@ -139,7 +139,7 @@ const PageDuplicateModal = (props) => {
 
         <div
           className="custom-control custom-checkbox custom-checkbox-warning"
-          style={{ display: (isDuplicateExist.length !== 0) && isDuplicateRecursively ? '' : 'none' }}
+          style={{ display: (isDuplicateExistList.length !== 0) && isDuplicateRecursively ? '' : 'none' }}
         >
           <input
             className="custom-control-input"
@@ -156,7 +156,7 @@ const PageDuplicateModal = (props) => {
 
         <div>
           <ul className="duplicate-name">
-            {isDuplicateRecursively && isDuplicateExist.length !== 0 && isDuplicateExist}
+            {isDuplicateRecursively && isDuplicateExistList.length !== 0 && isDuplicateExistList}
           </ul>
         </div>
         <div> {getSubordinatedError} </div>
