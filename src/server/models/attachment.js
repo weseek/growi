@@ -42,8 +42,7 @@ module.exports = function(crowi) {
   attachmentSchema.set('toJSON', { virtuals: true });
 
 
-  attachmentSchema.statics.create = async function(pageId, user, fileStream, originalName, fileFormat, fileSize) {
-    const fileUploader = require('../service/file-uploader')(crowi);
+  attachmentSchema.statics.createWithoutSave = function(pageId, user, fileStream, originalName, fileFormat, fileSize) {
     const Attachment = this;
 
     const extname = path.extname(originalName);
@@ -52,7 +51,7 @@ module.exports = function(crowi) {
       fileName = `${fileName}${extname}`;
     }
 
-    let attachment = new Attachment();
+    const attachment = new Attachment();
     attachment.page = pageId;
     attachment.creator = user._id;
     attachment.originalName = originalName;
@@ -60,11 +59,6 @@ module.exports = function(crowi) {
     attachment.fileFormat = fileFormat;
     attachment.fileSize = fileSize;
     attachment.createdAt = Date.now();
-
-    // upload file
-    await fileUploader.uploadFile(fileStream, attachment);
-    // save attachment
-    attachment = await attachment.save();
 
     return attachment;
   };

@@ -235,6 +235,8 @@ module.exports = function(crowi, app) {
   }
 
   async function createAttachment(file, user, pageId = null) {
+    const fileUploader = require('../service/file-uploader')(crowi);
+
     // check limit
     const res = await fileUploader.checkLimit(file.size);
     if (!res.isUploadable) {
@@ -248,7 +250,9 @@ module.exports = function(crowi, app) {
     // create an Attachment document and upload file
     let attachment;
     try {
-      attachment = await Attachment.create(pageId, user, fileStream, file.originalname, file.mimetype, file.size);
+      attachment = Attachment.createWithoutSave(pageId, user, fileStream, file.originalname, file.mimetype, file.size);
+      await fileUploader.uploadFile(fileStream, attachment);
+      await attachment.save();
     }
     catch (err) {
       // delete temporary file
