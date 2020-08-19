@@ -25,7 +25,6 @@ const PageDuplicateModal = (props) => {
 
   const [errs, setErrs] = useState(null);
 
-  const [subordinatedPaths, setSubordinatedPaths] = useState([]);
   const [getSubordinatedError, setGetSuborinatedError] = useState(null);
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
   const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
@@ -73,21 +72,6 @@ const PageDuplicateModal = (props) => {
     setIsDuplicateExist(['/test146/test147', value]);
   }
 
-  const getSubordinatedList = useCallback(async() => {
-    try {
-      const res = await appContainer.apiv3Get('/pages/subordinated-list', { path });
-      setSubordinatedPaths(res.data.resultPaths);
-    }
-    catch (err) {
-      setGetSuborinatedError(t('modal_duplicate.label.Fail to get subordinated pages'));
-    }
-  }, [appContainer, path, t]);
-
-  useEffect(() => {
-    if (props.isOpen) {
-      getSubordinatedList();
-    }
-  }, [props.isOpen, getSubordinatedList]);
 
   async function duplicate() {
     setErrs(null);
@@ -156,7 +140,10 @@ const PageDuplicateModal = (props) => {
           </label>
         </div>
 
-        <div className="custom-control custom-checkbox custom-checkbox-warning" style={{ display: (isDuplicateExist.length != 0) && isDuplicateRecursively ? '' : 'none' }}>
+        <div
+          className="custom-control custom-checkbox custom-checkbox-warning"
+          style={{ display: (isDuplicateExist.length !== 0) && isDuplicateRecursively ? '' : 'none' }}
+        >
           <input
             className="custom-control-input"
             name="withoutExistRecursively"
@@ -172,7 +159,7 @@ const PageDuplicateModal = (props) => {
 
         <div>
           <ul className="duplicate-name">
-            {isDuplicateRecursively && isDuplicateExist.length != 0 && isDuplicateExist}
+            {isDuplicateRecursively && isDuplicateExist.length !== 0 && isDuplicateExist}
           </ul>
         </div>
         <div> {getSubordinatedError} </div>
