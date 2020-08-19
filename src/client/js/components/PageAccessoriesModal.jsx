@@ -6,8 +6,6 @@ import {
 } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
-import AppContainer from '../services/AppContainer';
-import PageContainer from '../services/PageContainer';
 
 import PageListIcon from './Icons/PageListIcon';
 import TimeLineIcon from './Icons/TimeLineIcon';
@@ -96,15 +94,13 @@ const PageAccessoriesModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageAccessoriesModalWrapper = withUnstatedContainers(PageAccessoriesModal, [PageAccessoriesContainer], [AppContainer]);
+const PageAccessoriesModalWrapper = withUnstatedContainers(PageAccessoriesModal, [PageAccessoriesContainer]);
 
 
 PageAccessoriesModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   // pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   pageAccessoriesContainer: PropTypes.instanceOf(PageAccessoriesContainer).isRequired,
-  appContainer: PropTypes.instanceOf(AppContainer),
-  pageContainer: PropTypes.instanceOf(PageContainer),
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
 };
