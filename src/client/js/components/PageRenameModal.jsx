@@ -32,6 +32,7 @@ const PageRenameModal = (props) => {
   const [subordinatedPaths, setSubordinatedPaths] = useState([]);
   const [getSubordinatedError, setGetSuborinatedError] = useState(null);
   const [isDuplicateExistList, setIsDuplicateExistList] = useState([]);
+  const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
 
 
   function createSubordinatedList(value) {
@@ -44,7 +45,7 @@ const PageRenameModal = (props) => {
     // setIsDuplicateExist(duplicatedList);
 
     // ToDo: for now we use dummy path
-    setIsDuplicateExist(['/test146/test147', value]);
+    setIsDuplicateExistList(['/test146/test147', value]);
   }
 
   const getSubordinatedList = useCallback(async() => {
@@ -65,6 +66,10 @@ const PageRenameModal = (props) => {
 
   function changeIsRenameRecursivelyHandler() {
     SetIsRenameRecursively(!isRenameRecursively);
+  }
+
+  function changeIsDuplicateRecursivelyWithoutExistPathHandler() {
+    setIsDuplicateRecursivelyWithoutExistPath(!isDuplicateRecursivelyWithoutExistPath);
   }
 
   function changeIsRenameRedirectHandler() {
@@ -149,20 +154,26 @@ const PageRenameModal = (props) => {
             { t('modal_rename.label.Recursively') }
             <p className="form-text text-muted mt-0">{ t('modal_rename.help.recursive') }</p>
           </label>
-          <div className="rename-new-path">
+          <div
+            className="custom-control custom-checkbox custom-checkbox-warning"
+            style={{ display: (isDuplicateExistList.length !== 0) && isRenameRecursively ? '' : 'none' }}
+          >
             <input
               className="custom-control-input"
-              name="recursively"
-              id="cbRenameRecursively"
+              name="withoutExistRecursively"
+              id="cbDuplicatewithoutExistRecursively"
               type="checkbox"
-              checked={isRenameRecursively}
-              onChange={changeIsRenameRecursivelyHandler}
+              checked={isDuplicateRecursivelyWithoutExistPath}
+              onChange={changeIsDuplicateRecursivelyWithoutExistPathHandler}
             />
-            <div className="rename-new-path-content">
-              {isRenameRecursively
-                && subordinatedPaths.map(renamedNewPath => <li key={renamedNewPath}>{renamedNewPath}</li>)
-              }
-            </div>
+            <label className="custom-control-label" htmlFor="cbDuplicatewithoutExistRecursively">
+              { t('modal_duplicate.label.Duplicate without exist path') }
+            </label>
+          </div>
+          <div className="rename-new-path-content">
+            <ul>
+              {isRenameRecursively && isDuplicateExistList.length !== 0 && isDuplicateExistList}
+            </ul>
           </div>
         </div>
 
