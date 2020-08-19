@@ -147,8 +147,18 @@ module.exports = (crowi) => {
    *                      type: boolean
    */
   router.get('/is-password-set', accessTokenParser, loginRequiredStrictly, async(req, res) => {
-    const isPasswordSet = await User.isPasswordSetById(req.user._id);
-    return res.apiv3({ isPasswordSet });
+    const { _id } = req.user;
+
+    try {
+      const user = await User.findOne({ _id });
+      const isPasswordSet = user.isPasswordSet();
+      return res.apiv3({ isPasswordSet });
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('update-personal-settings-failed');
+    }
+
   });
 
   /**
