@@ -17,7 +17,6 @@ import PageAccessoriesContainer from '../services/PageAccessoriesContainer';
 import PageAttachment from './PageAttachment';
 import PageList from './PageList';
 
-
 const PageAccessoriesModal = (props) => {
   const { t, pageAccessoriesContainer } = props;
   const { switchActiveTab } = pageAccessoriesContainer;
@@ -29,7 +28,6 @@ const PageAccessoriesModal = (props) => {
     }
     props.onClose();
   }
-
 
   return (
     <React.Fragment>
