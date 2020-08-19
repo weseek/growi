@@ -29,15 +29,14 @@ const PageDuplicateModal = (props) => {
   const [getSubordinatedError, setGetSuborinatedError] = useState(null);
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
   const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
-  const [isExist, setIsExist] = useState(false);
-
-  const dummyExistPaths = ['/test146/test147']; // dummyExistPaths is dummy data,deleate after merging GW-3231
+  const [isDuplicateExist, setIsDuplicateExist] = useState([]);
 
   /**
    * change pageNameInput for PagePathAutoComplete
    * @param {string} value
    */
   function ppacInputChangeHandler(value) {
+    createSubordinatedList();
     setPageNameInput(value);
   }
 
@@ -57,22 +56,21 @@ const PageDuplicateModal = (props) => {
     setIsDuplicateRecursivelyWithoutExistPath(!isDuplicateRecursivelyWithoutExistPath);
   }
 
-  function changeIsExistHandler() {
-    setIsExist(true);
-  }
+  //   function changeIsExistHandler() {
+  //     setIsExist(true);
+  //   }
 
   function createSubordinatedList() {
-    return subordinatedPaths.map((duplicatedNewPath) => {
-      const isExistPath = dummyExistPaths.includes(duplicatedNewPath);
-      let result;
-      if (isExistPath) {
-        result = <li className="duplicate-exist" key={duplicatedNewPath}> {duplicatedNewPath}: { t('modal_duplicate.label.Same page already exists') } </li>;
-      }
-      else {
-        result = <li key={duplicatedNewPath}>{duplicatedNewPath}</li>;
-      }
-      return result;
-    });
+
+    // ToDo: get the duplicated list from sever
+    // below is psuedo code
+    // let duplicatedList = get.apiv3......
+    // duplicatedList = duplicatedList.map((value) =>
+    // <li className="duplicate-exist" key={value}> {value}: { t('modal_duplicate.label.Same page already exists') } </li>; )
+    // setIsDuplicateExist(duplicatedList);
+
+    // for now we use dummy path
+    setIsDuplicateExist(['/test146/test147']);
   }
 
   const getSubordinatedList = useCallback(async() => {
@@ -90,22 +88,6 @@ const PageDuplicateModal = (props) => {
       getSubordinatedList();
     }
   }, [props.isOpen, getSubordinatedList]);
-
-  const checkExistPath = useCallback(() => {
-    subordinatedPaths.map((duplicatedNewPath) => {
-      const existPath = dummyExistPaths.includes(duplicatedNewPath);
-      if (existPath) {
-        changeIsExistHandler();
-      }
-      return;
-    });
-  }, [dummyExistPaths, subordinatedPaths]);
-
-  useEffect(() => {
-    if (props.isOpen) {
-      checkExistPath();
-    }
-  }, [props.isOpen, checkExistPath]);
 
   async function duplicate() {
     setErrs(null);
@@ -174,7 +156,7 @@ const PageDuplicateModal = (props) => {
           </label>
         </div>
 
-        <div className="custom-control custom-checkbox custom-checkbox-warning" style={{ display: isExist && isDuplicateRecursively ? '' : 'none' }}>
+        <div className="custom-control custom-checkbox custom-checkbox-warning" style={{ display: (isDuplicateExist.length != 0) && isDuplicateRecursively ? '' : 'none' }}>
           <input
             className="custom-control-input"
             name="withoutExistRecursively"
@@ -190,7 +172,7 @@ const PageDuplicateModal = (props) => {
 
         <div>
           <ul className="duplicate-name">
-            {isDuplicateRecursively && createSubordinatedList()}
+            {isDuplicateRecursively && isDuplicateExist.length != 0 && isDuplicateExist}
           </ul>
         </div>
         <div> {getSubordinatedError} </div>
