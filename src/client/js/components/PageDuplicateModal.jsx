@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -25,10 +25,24 @@ const PageDuplicateModal = (props) => {
 
   const [errs, setErrs] = useState(null);
 
-  const [getSubordinatedError, setGetSuborinatedError] = useState(null);
+  const [getSubordinatedError] = useState(null);
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
   const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
   const [isDuplicateExist, setIsDuplicateExist] = useState([]);
+
+
+  function createSubordinatedList(value) {
+
+    // ToDo: get the duplicated list from sever
+    // below is psuedo code
+    // let duplicatedList = get.apiv3......
+    // duplicatedList = duplicatedList.map((value) =>
+    // <li className="duplicate-exist" key={value}> {value}: { t('modal_duplicate.label.Same page already exists') } </li>; )
+    // setIsDuplicateExist(duplicatedList);
+
+    // for now we use dummy path
+    setIsDuplicateExist(['/test146/test147', value]);
+  }
 
   /**
    * change pageNameInput for PagePathAutoComplete
@@ -58,19 +72,6 @@ const PageDuplicateModal = (props) => {
   //   function changeIsExistHandler() {
   //     setIsExist(true);
   //   }
-
-  function createSubordinatedList(value) {
-
-    // ToDo: get the duplicated list from sever
-    // below is psuedo code
-    // let duplicatedList = get.apiv3......
-    // duplicatedList = duplicatedList.map((value) =>
-    // <li className="duplicate-exist" key={value}> {value}: { t('modal_duplicate.label.Same page already exists') } </li>; )
-    // setIsDuplicateExist(duplicatedList);
-
-    // for now we use dummy path
-    setIsDuplicateExist(['/test146/test147', value]);
-  }
 
 
   async function duplicate() {
