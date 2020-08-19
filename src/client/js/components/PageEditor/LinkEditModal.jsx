@@ -80,8 +80,6 @@ class LinkEditModal extends React.PureComponent {
     this.setState({
       show: true,
       labelInputValue: label,
-      isUsePermanentLink: false,
-      permalink: '',
       linkerType: type,
     });
   }
@@ -223,7 +221,11 @@ class LinkEditModal extends React.PureComponent {
       reshapedLink = rootPath === linkInputValue ? '.' : path.relative(rootPath, linkInputValue);
     }
 
-    return new Linker(linkerType, labelInputValue, reshapedLink, isUsePermanentLink, permalink);
+    if (isUsePermanentLink && permalink != null) {
+      reshapedLink = this.permalink;
+    }
+
+    return new Linker(linkerType, labelInputValue, reshapedLink);
   }
 
   getRootPath(type) {
