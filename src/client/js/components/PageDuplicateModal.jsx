@@ -36,7 +36,7 @@ const PageDuplicateModal = (props) => {
    * @param {string} value
    */
   function ppacInputChangeHandler(value) {
-    createSubordinatedList();
+    createSubordinatedList(value);
     setPageNameInput(value);
   }
 
@@ -60,7 +60,7 @@ const PageDuplicateModal = (props) => {
   //     setIsExist(true);
   //   }
 
-  function createSubordinatedList() {
+  function createSubordinatedList(value) {
 
     // ToDo: get the duplicated list from sever
     // below is psuedo code
@@ -70,7 +70,7 @@ const PageDuplicateModal = (props) => {
     // setIsDuplicateExist(duplicatedList);
 
     // for now we use dummy path
-    setIsDuplicateExist(['/test146/test147']);
+    setIsDuplicateExist(['/test146/test147', value]);
   }
 
   const getSubordinatedList = useCallback(async() => {
