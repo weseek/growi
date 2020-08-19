@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -29,8 +29,7 @@ const PageRenameModal = (props) => {
   const [isRenameRecursively, SetIsRenameRecursively] = useState(true);
   const [isRenameRedirect, SetIsRenameRedirect] = useState(false);
   const [isRenameMetadata, SetIsRenameMetadata] = useState(false);
-  const [subordinatedPaths, setSubordinatedPaths] = useState([]);
-  const [getSubordinatedError, setGetSuborinatedError] = useState(null);
+  const [getSubordinatedError] = useState(null);
   const [isDuplicateExistList, setIsDuplicateExistList] = useState([]);
   const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
 
@@ -48,21 +47,6 @@ const PageRenameModal = (props) => {
     setIsDuplicateExistList(['/test146/test147', value]);
   }
 
-  const getSubordinatedList = useCallback(async() => {
-    try {
-      const res = await appContainer.apiv3Get('/pages/subordinated-list', { path });
-      setSubordinatedPaths(res.data.resultPaths);
-    }
-    catch (err) {
-      setGetSuborinatedError(t('modal_rename.label.Fail to get subordinated pages'));
-    }
-  }, [appContainer, path, t]);
-
-  useEffect(() => {
-    if (props.isOpen) {
-      getSubordinatedList();
-    }
-  }, [props.isOpen, getSubordinatedList]);
 
   function changeIsRenameRecursivelyHandler() {
     SetIsRenameRecursively(!isRenameRecursively);
