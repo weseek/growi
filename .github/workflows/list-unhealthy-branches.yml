@@ -1,9 +1,8 @@
 name: List Unhealthy Branches
 
 on:
-  push:
-    branches:
-      - support/list-unhealthy-branches
+  schedule:
+    - cron: '0 16 * * wed'
 
 jobs:
   list:
