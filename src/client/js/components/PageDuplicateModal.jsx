@@ -70,11 +70,6 @@ const PageDuplicateModal = (props) => {
     setIsDuplicateRecursivelyWithoutExistPath(!isDuplicateRecursivelyWithoutExistPath);
   }
 
-  //   function changeIsExistHandler() {
-  //     setIsExist(true);
-  //   }
-
-
   async function duplicate() {
     setErrs(null);
 
