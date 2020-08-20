@@ -63,4 +63,5 @@ module.exports = function(crowi) {
     return attachment;
   };
 
+  return mongoose.model('Attachment', attachmentSchema);
 };
