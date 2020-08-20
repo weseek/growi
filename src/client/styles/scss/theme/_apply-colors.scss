@@ -273,7 +273,10 @@ pre:not(.hljs):not(.CodeMirror-line) {
   .nav-title {
     color: $color-link;
   }
-  .grw-modal-head-icons {
+  .grw-pagelist-icon,
+  .grw-timeline-icon,
+  .grw-recentchanges-icon,
+  .grw-attachment-icon {
     fill: $color-link;
   }
   .active {
