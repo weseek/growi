@@ -1,6 +1,9 @@
 name: List Unhealthy Branches
 
 on:
+  push:
+    branches:
+      - tmp/test-list-unhealthy-branches
   schedule:
     - cron: '0 6 * * wed'
 
@@ -30,18 +33,28 @@ jobs:
 
     - name: Slack Notification for illegal named branches
       if: steps.list-branches.outputs.SLACK_ATTACHMENTS_LENGTH_ILLEGAL > 0
-      uses: tokorom/action-slack-incoming-webhook@master
+      uses: sonots/slack-notice-action@v3
       env:
-        INCOMING_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL_FOR_DEV }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       with:
-        text: There is some *illegal named branches* on GitHub.
-        attachments: ${{ steps.list-branches.outputs.SLACK_ATTACHMENTS_ILLEGAL }}
+        status: custom
+        payload: |
+          {
+            text: '@channel There is some *illegal named branches* on GitHub.',
+            channel: '#ci',
+            attachments: ${{ steps.list-branches.outputs.SLACK_ATTACHMENTS_ILLEGAL }}
+          }
 
     - name: Slack Notification for inactive branches
       if: steps.list-branches.outputs.SLACK_ATTACHMENTS_LENGTH_INACTIVE > 0
-      uses: tokorom/action-slack-incoming-webhook@master
+      uses: sonots/slack-notice-action@v3
       env:
-        INCOMING_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL_FOR_DEV }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       with:
-        text: There is some *inactive branches* on GitHub.
-        attachments: ${{ steps.list-branches.outputs.SLACK_ATTACHMENTS_INACTIVE }}
+        status: custom
+        payload: |
+          {
+            text: '@channel There is some *illegal named branches* on GitHub.',
+            channel: '#ci',
+            attachments: ${{ steps.list-branches.outputs.SLACK_ATTACHMENTS_INACTIVE }}
+          }
