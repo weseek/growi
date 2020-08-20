@@ -12,10 +12,12 @@ const PageList = (props) => {
   const { path } = pageContainer.state;
 
   const [pages, setPages] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getPageList = useCallback(async() => {
     const res = await appContainer.apiv3Get('/pages/list', { path });
     setPages(res.data.pages);
+    setIsLoading(true);
   }, [appContainer, path]);
 
   useEffect(() => {
@@ -23,8 +25,14 @@ const PageList = (props) => {
   }, [getPageList]);
 
 
-  if (pages == null) {
-    return null;
+  if (isLoading === false) {
+    return (
+      <div className="wiki">
+        <div className="text-muted text-center">
+          <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+        </div>
+      </div>
+    );
   }
 
   return pages.map(page => (
