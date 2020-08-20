@@ -28,6 +28,7 @@ class PageService {
     // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
     const Bookmark = this.crowi.model('Bookmark');
     const Comment = this.crowi.model('Comment');
+    const Page = this.crowi.model('Page');
     const PageTagRelation = this.crowi.model('PageTagRelation');
     const ShareLink = this.crowi.model('ShareLink');
     const Revision = this.crowi.model('Revision');
@@ -38,9 +39,9 @@ class PageService {
       PageTagRelation.remove({ relatedPage: pageId }),
       ShareLink.remove({ relatedPage: pageId }),
       Revision.removeRevisionsByPath(pagePath),
+      Page.findByIdAndRemove(pageId),
+      Page.removeRedirectOriginPageByPath(pagePath),
       this.removeAllAttachments(pageId),
-      this.findByIdAndRemove(pageId),
-      this.removeRedirectOriginPageByPath(pagePath),
     ]);
   }
 
