@@ -382,7 +382,7 @@ module.exports = function(crowi) {
     option = option || {};
 
     const sort = option.sort || { createdAt: -1 };
-    const fields = option.fields || USER_PUBLIC_FIELDS;
+    const fields = option.fields || {};
 
     let status = option.status || [STATUS_ACTIVE, STATUS_SUSPENDED];
     if (!Array.isArray(status)) {
@@ -401,7 +401,7 @@ module.exports = function(crowi) {
 
     const sort = option.sort || { createdAt: -1 };
     const status = option.status || STATUS_ACTIVE;
-    const fields = option.fields || USER_PUBLIC_FIELDS;
+    const fields = option.fields || {};
 
     return this.find({ _id: { $in: ids }, status })
       .select(fields)
@@ -418,7 +418,7 @@ module.exports = function(crowi) {
     const User = this;
 
     return new Promise((resolve, reject) => {
-      const query = User.find({ email: emailPartRegExp }, USER_PUBLIC_FIELDS);
+      const query = User.find({ email: emailPartRegExp });
 
       if (status) {
         query.and({ status });
