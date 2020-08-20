@@ -4,6 +4,9 @@ import PropTypes from 'prop-types';
 import Page from './PageList/Page';
 import { withUnstatedContainers } from './UnstatedUtils';
 
+import { withLoadingSppiner } from './SuspenseUtils';
+
+
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 
@@ -12,28 +15,35 @@ const PageList = (props) => {
   const { path } = pageContainer.state;
 
   const [pages, setPages] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  // const [spinnerError, setSpinnerError] = useState(null);
 
   const getPageList = useCallback(async() => {
     const res = await appContainer.apiv3Get('/pages/list', { path });
     setPages(res.data.pages);
-    setIsLoading(true);
   }, [appContainer, path]);
 
   useEffect(() => {
     getPageList();
   }, [getPageList]);
 
-
-  if (isLoading === false) {
-    return (
-      <div className="wiki">
-        <div className="text-muted text-center">
-          <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
-        </div>
-      </div>
-    );
+  if (pages == null) {
+    // throw (async() => {
+    //   try {
+    //     await hoge;
+    //   }
+    //   catch (err) {
+    //     setSpinnerError('hoge');
+    //     return spinnerError;
+    //   }
+    // });
+    throw new Promise(async() => {
+      try { await [hoge] }
+      catch (err) {
+        console.log('hoge');
+      }
+    });
   }
+
 
   return pages.map(page => (
     <li key={page._id}>
@@ -44,7 +54,7 @@ const PageList = (props) => {
 
 };
 
-const PageListWrapper = withUnstatedContainers(PageList, [AppContainer, PageContainer]);
+const PageListWrapper = withUnstatedContainers(withLoadingSppiner(PageList), [AppContainer, PageContainer]);
 
 
 PageList.propTypes = {
