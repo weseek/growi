@@ -130,10 +130,10 @@ module.exports = function(crowi, app) {
 
     let userFetcher;
     if (!userIds || userIds.split(',').length <= 0) {
-      userFetcher = User.findAllUsers(User.USER_PUBLIC_FIELDS);
+      userFetcher = User.findAllUsers();
     }
     else {
-      userFetcher = User.findUsersByIds(userIds.split(','), User.USER_PUBLIC_FIELDS);
+      userFetcher = User.findUsersByIds(userIds.split(','));
     }
 
     const data = {};
