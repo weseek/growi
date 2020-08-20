@@ -13,6 +13,9 @@ import AttachmentIcon from './Icons/AttachmentIcon';
 import { withUnstatedContainers } from './UnstatedUtils';
 import PageAccessoriesContainer from '../services/PageAccessoriesContainer';
 import PageAttachment from './PageAttachment';
+import PageHistory from './PageHistory';
+import { appContainer } from '../base';
+import PageContainer from '../services/PageContainer';
 
 const PageAccessoriesModal = props => {
   const { t, pageAccessoriesContainer } = props;
@@ -75,7 +78,11 @@ const PageAccessoriesModal = props => {
           <TabContent activeTab={activeTab}>
             <TabPane tabId="pagelist"></TabPane>
             <TabPane tabId="timeline"></TabPane>
-            <TabPane tabId="recent-changes">testing</TabPane>
+            <TabPane tabId="recent-changes">
+              <div style={{ overflowX: 'auto' }}>
+                <PageHistory pageId={props.pageContainer.state.pageId} crowi={appContainer} />
+              </div>
+            </TabPane>
             <TabPane tabId="attachment" className="p-4">
               {pageAccessoriesContainer.state.activeComponents.has('attachment') && <PageAttachment />}
             </TabPane>
@@ -89,11 +96,11 @@ const PageAccessoriesModal = props => {
 /**
  * Wrapper component for using unstated
  */
-const PageAccessoriesModalWrapper = withUnstatedContainers(PageAccessoriesModal, [PageAccessoriesContainer]);
+const PageAccessoriesModalWrapper = withUnstatedContainers(PageAccessoriesModal, [PageAccessoriesContainer, PageContainer]);
 
 PageAccessoriesModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
-  // pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   pageAccessoriesContainer: PropTypes.instanceOf(PageAccessoriesContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
