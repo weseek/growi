@@ -7,6 +7,8 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 
+import PaginationWrapper from '../PaginationWrapper';
+
 const PageList = (props) => {
   const { appContainer, pageContainer } = props;
   const { path } = pageContainer.state;
