@@ -1,34 +1,25 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import Page from './PageList/Page';
 import { withUnstatedContainers } from './UnstatedUtils';
-import { toastError } from '../util/apiNotification';
-
-import { withLoadingSppiner } from './SuspenseUtils';
 
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 
-// let retrieveError = null;
-const pageDummyData = 0;
-const pageDummyDataError = 1;
-let pages = pageDummyData;
 
 const PageList = (props) => {
   const { appContainer, pageContainer } = props;
   const { path } = pageContainer.state;
+  const [pages, setPages] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // const [pages, setPages] = useState(pageDummyData);
-  // const [spinnerError, setSpinnerError] = useState(null);
-
-  if (pages === pageDummyDataError) {
-    throw new Error('hoge');
-  }
 
   const getPageList = useCallback(async() => {
     const res = await appContainer.apiv3Get('/pages/list', { path });
-    pages = res.data.pages;
+
+    setPages(res.data.pages);
+    setIsLoading(true);
   }, [appContainer, path]);
 
   useEffect(() => {
@@ -36,16 +27,14 @@ const PageList = (props) => {
   }, [getPageList]);
 
 
-  if (pages === pageDummyData) {
-    throw (async() => {
-      try {
-        await getPageList();
-      }
-      catch (err) {
-        pages = 1;
-        toastError(err);
-      }
-    })();
+  if (isLoading === false) {
+    return (
+      <div className="wiki">
+        <div className="text-muted test-center">
+          <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+        </div>
+      </div>
+    );
   }
 
   return pages.map(page => (
@@ -53,11 +42,9 @@ const PageList = (props) => {
       <Page page={page} />
     </li>
   ));
-
-
 };
 
-const PageListWrapper = withUnstatedContainers(withLoadingSppiner(PageList), [AppContainer, PageContainer]);
+const PageListWrapper = withUnstatedContainers(PageList, [AppContainer, PageContainer]);
 
 
 PageList.propTypes = {
