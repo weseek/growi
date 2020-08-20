@@ -129,7 +129,7 @@ module.exports = function(crowi, app) {
   const Attachment = crowi.model('Attachment');
   const User = crowi.model('User');
   const Page = crowi.model('Page');
-  const { fileUploadeService, attachmentService } = crowi;
+  const { fileUploadService, attachmentService } = crowi;
 
 
   /**
@@ -191,13 +191,13 @@ module.exports = function(crowi, app) {
       return res.sendStatus(304);
     }
 
-    if (fileUploadeService.canRespond()) {
-      return fileUploadeService.respond(res, attachment);
+    if (fileUploadService.canRespond()) {
+      return fileUploadService.respond(res, attachment);
     }
 
     let fileStream;
     try {
-      fileStream = await fileUploadeService.findDeliveryFile(attachment);
+      fileStream = await fileUploadService.findDeliveryFile(attachment);
     }
     catch (e) {
       logger.error(e);
@@ -233,12 +233,12 @@ module.exports = function(crowi, app) {
   }
 
   async function removeAttachment(attachmentId) {
-    const fileUploadeService = crowi;
+    const fileUploadService = crowi;
 
     // retrieve data from DB to get a completely populated instance
     const attachment = await Attachment.findById(attachmentId);
 
-    await fileUploadeService.deleteFile(attachment);
+    await fileUploadService.deleteFile(attachment);
 
     return attachment.remove();
   }
@@ -392,7 +392,7 @@ module.exports = function(crowi, app) {
    */
   api.limit = async function(req, res) {
     const fileSize = Number(req.query.fileSize);
-    return res.json(ApiResponse.success(await fileUploadeService.checkLimit(fileSize)));
+    return res.json(ApiResponse.success(await fileUploadService.checkLimit(fileSize)));
   };
 
   /**
