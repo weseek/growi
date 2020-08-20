@@ -42,7 +42,7 @@ const PageAccessoriesModal = (props) => {
       >
         <ModalBody>
           <Nav className="nav-title border-bottom">
-            <NavItem className={`nav-link grw-pagelist-icon ${props.activeTab === 'pageList' && 'active'}`}>
+            <NavItem className={`nav-link grw-page-list-icon ${props.activeTab === 'pageList' && 'active'}`}>
               <NavLink
                 onClick={() => { switchTabHandler('pageList') }}
               >
@@ -50,7 +50,7 @@ const PageAccessoriesModal = (props) => {
                 { t('page_list') }
               </NavLink>
             </NavItem>
-            <NavItem className={`nav-link grw-timeline-icon ${props.activeTab === 'timeLine' && 'active'}`}>
+            <NavItem className={`nav-link grw-time-line-icon ${props.activeTab === 'timeLine' && 'active'}`}>
               <NavLink
                 onClick={() => { switchTabHandler('timeLine') }}
               >
@@ -58,7 +58,7 @@ const PageAccessoriesModal = (props) => {
                 { t('Timeline View') }
               </NavLink>
             </NavItem>
-            <NavItem className={`nav-link grw-recentchanges-icon ${props.activeTab === 'recentChanges' && 'active'}`}>
+            <NavItem className={`nav-link grw-recent-changes-icon ${props.activeTab === 'recentChanges' && 'active'}`}>
               <NavLink
                 onClick={() => { switchTabHandler('recentChanges') }}
               >

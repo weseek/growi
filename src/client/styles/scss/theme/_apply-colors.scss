@@ -249,10 +249,10 @@ pre:not(.hljs):not(.CodeMirror-line) {
 .top-of-table-contents {
   border-color: $bordercolor-nav-tabs;
 
-  .grw-pagelist-icon,
-  .grw-timeline-icon,
-  .grw-recentchanges-icon,
-  .grw-attachment-icon {
+  .btn-page-list-icon,
+  .btn-time-line-icon,
+  .btn-recent-changes-icon,
+  .btn-attachment-icon {
     fill: $color-link;
   }
   .btn-seen-user-list {
@@ -277,9 +277,9 @@ pre:not(.hljs):not(.CodeMirror-line) {
   .nav-title {
     color: $color-link;
   }
-  .grw-pagelist-icon,
-  .grw-timeline-icon,
-  .grw-recentchanges-icon,
+  .grw-page-list-icon,
+  .grw-time-line-icon,
+  .grw-recent-changes-icon,
   .grw-attachment-icon {
     fill: $color-link;
   }

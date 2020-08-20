@@ -53,19 +53,19 @@ const TopOfTableContents = (props) => {
     <>
       <div className="top-of-table-contents d-flex align-items-center pb-1 ">
 
-        <button type="button" className="bg-transparent border-0 grw-pagelist-icon" onClick={() => openPageAccessoriesModal('pageList')}>
+        <button type="button" className="bg-transparent border-0 btn-page-list-icon" onClick={() => openPageAccessoriesModal('pageList')}>
           <PageListIcon />
         </button>
 
-        <button type="button" className="bg-transparent border-0 grw-timeline-icon" onClick={() => openPageAccessoriesModal('timeLine')}>
+        <button type="button" className="bg-transparent border-0 btn-time-line-icon" onClick={() => openPageAccessoriesModal('timeLine')}>
           <TimeLineIcon />
         </button>
 
-        <button type="button" className="bg-transparent border-0 grw-recentchanges-icon" onClick={() => openPageAccessoriesModal('recentChanges')}>
+        <button type="button" className="bg-transparent border-0 btn-recent-changes-icon" onClick={() => openPageAccessoriesModal('recentChanges')}>
           <RecentChangesIcon />
         </button>
 
-        <button type="button" className="bg-transparent border-0 grw-attachment-icon" onClick={() => openPageAccessoriesModal('attachment')}>
+        <button type="button" className="bg-transparent border-0 btn-attachment-icon" onClick={() => openPageAccessoriesModal('attachment')}>
           <AttachmentIcon />
         </button>
 
