@@ -20,8 +20,8 @@ const SeenUserList = (props) => {
   const toggle = () => setPopoverOpen(!popoverOpen);
   const { pageContainer } = props;
   return (
-    <div>
-      <Button id="SeenUserPopover" type="button" className="btn btn-seen-user-list border-0 px-2 py-0 bg-transparent">
+    <div className="btn-seen-user-list pl-2 ml-2">
+      <Button id="SeenUserPopover" type="button" className="btn border-0 px-2 py-0 bg-transparent">
         <span className="mr-1 footstamp-icon"><FootstampIcon /></span>
         <span className="seen-user-count">{pageContainer.state.countOfSeenUsers}</span>
       </Button>

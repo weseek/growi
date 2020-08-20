@@ -145,7 +145,10 @@ body {
 .top-of-table-contents {
   flex-wrap: wrap;
 
-  .grw-table-top-icons {
+  .grw-pagelist-icon,
+  .grw-timeline-icon,
+  .grw-recentchanges-icon,
+  .grw-attachment-icon {
     svg {
       width: 16px;
       height: 16px;
@@ -156,11 +159,11 @@ body {
     font-size: 12px;
     font-weight: bolder;
   }
-  .grw-table-top-icons {
-    border-right: 1px solid;
-  }
   .btn-seen-user-list {
-    white-space: nowrap;
+    border-left: 1px solid;
+    .btn {
+      white-space: nowrap;
+    }
   }
 
   .seen-user-popover {

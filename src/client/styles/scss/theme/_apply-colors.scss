@@ -248,23 +248,27 @@ pre:not(.hljs):not(.CodeMirror-line) {
 
 .top-of-table-contents {
   border-color: $bordercolor-nav-tabs;
-  .grw-table-top-icons {
-    border-color: $bordercolor-nav-tabs;
-  }
-  .grw-table-top-icons {
+
+  .grw-pagelist-icon,
+  .grw-timeline-icon,
+  .grw-recentchanges-icon,
+  .grw-attachment-icon {
     fill: $color-link;
   }
-  .btn.btn-seen-user-list {
-    color: $color-seen-user;
-    &:active {
+  .btn-seen-user-list {
+    border-color: $bordercolor-nav-tabs;
+    .btn {
       color: $color-seen-user;
-    }
-    &:focus {
-      outline: none;
-      box-shadow: none;
-    }
-    .footstamp-icon {
-      fill: $color-seen-user;
+      &:active {
+        color: $color-seen-user;
+      }
+      &:focus {
+        outline: none;
+        box-shadow: none;
+      }
+      .footstamp-icon {
+        fill: $color-seen-user;
+      }
     }
   }
 }
