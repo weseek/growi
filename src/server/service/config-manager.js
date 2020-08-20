@@ -1,7 +1,9 @@
 const logger = require('@alias/logger')('growi:service:ConfigManager');
 
-const ConfigPubsubMessage = require('../models/vo/config-pubsub-message');
-const ConfigPubsubMessageHandlable = require('./config-pubsub/handlable');
+const parseISO = require('date-fns/parseISO');
+
+const S2sMessage = require('../models/vo/s2s-message');
+const S2sMessageHandlable = require('./s2s-messaging/handlable');
 
 const ConfigLoader = require('./config-loader');
 
@@ -22,7 +24,7 @@ const KEYS_FOR_SAML_USE_ONLY_ENV_OPTION = [
   'security:passport-saml:ABLCRule',
 ];
 
-class ConfigManager extends ConfigPubsubMessageHandlable {
+class ConfigManager extends S2sMessageHandlable {
 
   constructor(configModel) {
     super();
@@ -50,11 +52,11 @@ class ConfigManager extends ConfigPubsubMessageHandlable {
   }
 
   /**
-   * Set ConfigPubsubDelegator instance
-   * @param {ConfigPubsubDelegator} configPubsub
+   * Set S2sMessagingServiceDelegator instance
+   * @param {S2sMessagingServiceDelegator} s2sMessagingService
    */
-  async setPubsub(configPubsub) {
-    this.configPubsub = configPubsub;
+  async setS2sMessagingService(s2sMessagingService) {
+    this.s2sMessagingService = s2sMessagingService;
   }
 
   /**
@@ -180,7 +182,7 @@ class ConfigManager extends ConfigPubsubMessageHandlable {
    *  );
    * ```
    */
-  async updateConfigsInTheSameNamespace(namespace, configs, withoutPublishingConfigPubsubMessage) {
+  async updateConfigsInTheSameNamespace(namespace, configs, withoutPublishingS2sMessage) {
     const queries = [];
     for (const key of Object.keys(configs)) {
       queries.push({
@@ -196,7 +198,7 @@ class ConfigManager extends ConfigPubsubMessageHandlable {
     await this.loadConfigs();
 
     // publish updated date after reloading
-    if (this.configPubsub != null && !withoutPublishingConfigPubsubMessage) {
+    if (this.s2sMessagingService != null && !withoutPublishingS2sMessage) {
       this.publishUpdateMessage();
     }
   }
@@ -309,32 +311,32 @@ class ConfigManager extends ConfigPubsubMessageHandlable {
   }
 
   async publishUpdateMessage() {
-    const configPubsubMessage = new ConfigPubsubMessage('configUpdated', { updatedAt: new Date() });
+    const s2sMessage = new S2sMessage('configUpdated', { updatedAt: new Date() });
 
     try {
-      await this.configPubsub.publish(configPubsubMessage);
+      await this.s2sMessagingService.publish(s2sMessage);
     }
     catch (e) {
-      logger.error('Failed to publish update message with configPubsub: ', e.message);
+      logger.error('Failed to publish update message with S2sMessagingService: ', e.message);
     }
   }
 
   /**
    * @inheritdoc
    */
-  shouldHandleConfigPubsubMessage(configPubsubMessage) {
-    const { eventName, updatedAt } = configPubsubMessage;
+  shouldHandleS2sMessage(s2sMessage) {
+    const { eventName, updatedAt } = s2sMessage;
     if (eventName !== 'configUpdated' || updatedAt == null) {
       return false;
     }
 
-    return this.lastLoadedAt == null || this.lastLoadedAt < new Date(configPubsubMessage.updatedAt);
+    return this.lastLoadedAt == null || this.lastLoadedAt < parseISO(s2sMessage.updatedAt);
   }
 
   /**
    * @inheritdoc
    */
-  async handleConfigPubsubMessage(configPubsubMessage) {
+  async handleS2sMessage(s2sMessage) {
     logger.info('Reload configs by pubsub notification');
     return this.loadConfigs();
   }

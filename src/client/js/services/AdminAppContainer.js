@@ -16,10 +16,12 @@ export default class AdminAppContainer extends Container {
     super();
 
     this.appContainer = appContainer;
+    this.dummyTitle = 0;
 
     this.state = {
       retrieveError: null,
-      title: '',
+      // set dummy value tile for using suspense
+      title: this.dummyTitle,
       confidential: '',
       globalLang: '',
       fileUpload: '',
@@ -262,6 +264,20 @@ export default class AdminAppContainer extends Container {
       smtpPassword: this.state.smtpPassword,
     });
     const { mailSettingParams } = response.data;
+    return mailSettingParams;
+  }
+
+  /**
+   * Initialize mail setting
+   * @memberOf AdminAppContainer
+   * @return {Array} Appearance
+   */
+  async initializeMailSettingHandler() {
+    const response = await this.appContainer.apiv3.delete('/app-settings/mail-setting', {});
+    const {
+      mailSettingParams,
+    } = response.data;
+    this.setState(mailSettingParams);
     return mailSettingParams;
   }
 

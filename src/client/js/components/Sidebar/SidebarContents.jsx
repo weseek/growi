@@ -10,8 +10,11 @@ import RecentChanges from './RecentChanges';
 import CustomSidebar from './CustomSidebar';
 
 const SidebarContents = (props) => {
+  const { navigationContainer, isSharedUser } = props;
 
-  const { navigationContainer } = props;
+  if (isSharedUser) {
+    return null;
+  }
 
   let Contents;
   switch (navigationContainer.state.sidebarContentsId) {
@@ -30,6 +33,12 @@ const SidebarContents = (props) => {
 
 SidebarContents.propTypes = {
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
+
+  isSharedUser: PropTypes.bool,
+};
+
+SidebarContents.defaultProps = {
+  isSharedUser: false,
 };
 
 /**

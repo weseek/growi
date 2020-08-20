@@ -40,11 +40,6 @@ module.exports = function(crowi, app) {
   let agentScriptContentTpl;
   let stylesScriptContentTpl;
 
-  // init 'saveOnHackmd' event
-  pageEvent.on('saveOnHackmd', (page) => {
-    crowi.getIo().sockets.emit('page:editingWithHackmd', { page });
-  });
-
   /**
    * GET /_hackmd/load-agent
    *
