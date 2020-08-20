@@ -233,7 +233,7 @@ module.exports = function(crowi, app) {
   }
 
   async function removeAttachment(attachmentId) {
-    const fileUploadService = crowi;
+    const { fileUploadService } = crowi;
 
     // retrieve data from DB to get a completely populated instance
     const attachment = await Attachment.findById(attachmentId);
