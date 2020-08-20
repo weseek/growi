@@ -1,9 +1,6 @@
 name: List Unhealthy Branches
 
 on:
-  push:
-    branches:
-      - tmp/test-list-unhealthy-branches
   schedule:
     - cron: '0 6 * * wed'
 
