@@ -1,92 +1,54 @@
-import React, { Fragment } from 'react';
-import { withTranslation } from 'react-i18next';
+import React, { Suspense } from 'react';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
 
-import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
 
-import AppSetting from './AppSetting';
-import SiteUrlSetting from './SiteUrlSetting';
-import MailSetting from './MailSetting';
-import AwsSetting from './AwsSetting';
-import PluginSetting from './PluginSetting';
+import AppSettingsPageContents from './AppSettingsPageContents';
 
 const logger = loggerFactory('growi:appSettings');
 
-class AppSettingsPage extends React.Component {
-
-  async componentDidMount() {
-    const { adminAppContainer } = this.props;
-
-    try {
-      await adminAppContainer.retrieveAppSettingsData();
-    }
-    catch (err) {
-      toastError(err);
-      adminAppContainer.setState({ retrieveError: err.message });
-      logger.error(err);
-    }
-  }
-
-  render() {
-    const { t } = this.props;
-
-    return (
-      <Fragment>
+function AppSettingsPage(props) {
+  return (
+    <Suspense
+      fallback={(
         <div className="row">
-          <div className="col-lg-12">
-            <h2 className="admin-setting-header">{t('App Settings')}</h2>
-            <AppSetting />
-          </div>
+          <i className="fa fa-5x fa-spinner fa-pulse mx-auto text-muted"></i>
         </div>
-
-        <div className="row mt-5">
-          <div className="col-lg-12">
-            <h2 className="admin-setting-header">{t('Site URL settings')}</h2>
-            <SiteUrlSetting />
-          </div>
-        </div>
-
-        <div className="row mt-5">
-          <div className="col-lg-12">
-            <h2 className="admin-setting-header">{t('admin:app_setting.mail_settings')}</h2>
-            <MailSetting />
-          </div>
-        </div>
-
-        <div className="row mt-5">
-          <div className="col-lg-12">
-            <h2 className="admin-setting-header">{t('admin:app_setting.aws_settings')}</h2>
-            <AwsSetting />
-          </div>
-        </div>
-
-        <div className="row mt-5">
-          <div className="col-lg-12">
-            <h2 className="admin-setting-header">{t('admin:app_setting.plugin_settings')}</h2>
-            <PluginSetting />
-          </div>
-        </div>
-      </Fragment>
-    );
-  }
-
+)}
+    >
+      <RenderAppSettingsPageWrapper />
+    </Suspense>
+  );
 }
 
-AppSettingsPage.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+function RenderAppSettingsPage(props) {
+  if (props.adminAppContainer.state.title === props.adminAppContainer.dummyTitle) {
+    throw new Promise(async() => {
+      try {
+        await props.adminAppContainer.retrieveAppSettingsData();
+      }
+      catch (err) {
+        toastError(err);
+        props.adminAppContainer.setState({ retrieveError: err.message });
+        logger.error(err);
+      }
+    });
+  }
+
+  return <AppSettingsPageContents />;
+}
+
+RenderAppSettingsPage.propTypes = {
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 
 /**
  * Wrapper component for using unstated
  */
-const AppSettingsPageWrapper = withUnstatedContainers(AppSettingsPage, [AppContainer, AdminAppContainer]);
+const RenderAppSettingsPageWrapper = withUnstatedContainers(RenderAppSettingsPage, [AdminAppContainer]);
 
-
-export default withTranslation()(AppSettingsPageWrapper);
+export default AppSettingsPage;
