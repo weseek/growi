@@ -84,10 +84,7 @@ module.exports = (crowi) => {
   });
 
   router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
-
-    // path は一時的なものです。クライアントを実装した際に渡します。GW-3297 or 3298
-    const path = '/hoge';
-
+    const { path } = req.query;
     try {
       const result = await Page.findListWithDescendants(path, req.user);
       return res.apiv3(result);
