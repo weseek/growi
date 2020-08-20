@@ -87,26 +87,26 @@ const PersonalDropdown = (props) => {
   /* eslint-disable react/prop-types */
   const DrawerIcon = props => (
     <>
-      <div id={props.id} className="px-2"><SidebarDrawerIcon /></div>
+      <div id={props.id} className="px-2 grw-drawer-icon"><SidebarDrawerIcon /></div>
       <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Drawer</UncontrolledTooltip>
     </>
   );
   const DockIcon = props => (
     <>
-      <div id={props.id} className="px-2"><SidebarDockIcon /></div>
+      <div id={props.id} className="px-2 grw-dock-icon"><SidebarDockIcon /></div>
       <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Dock</UncontrolledTooltip>
     </>
   );
 
   const LightIcon = props => (
     <>
-      <div id={props.id} className={`px-2 ${useOsSettings ? 'use-os-settings' : ''}`}><SunIcon /></div>
+      <div id={props.id} className={`px-2 grw-light-icon ${useOsSettings ? 'grw-light-icon-muted' : ''}`}><SunIcon /></div>
       <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Light</UncontrolledTooltip>
     </>
   );
   const DarkIcon = props => (
     <>
-      <div id={props.id} className={`px-2 ${useOsSettings ? 'use-os-settings' : ''}`}><MoonIcon /></div>
+      <div id={props.id} className={`px-2 grw-dark-icon ${useOsSettings ? 'grw-dark-icon-muted' : ''}`}><MoonIcon /></div>
       <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Dark</UncontrolledTooltip>
     </>
   );
@@ -122,7 +122,7 @@ const PersonalDropdown = (props) => {
       </a>
 
       {/* Menu */}
-      <div className="dropdown-menu dropdown-menu-right personal-dropdown-icons">
+      <div className="dropdown-menu dropdown-menu-right">
 
         <div className="px-4 pt-3 pb-2 text-center">
           <UserPicture user={user} size="lg" noLink noTooltip />
@@ -152,7 +152,7 @@ const PersonalDropdown = (props) => {
         <form className="px-4">
           <div className="form-row justify-content-center">
             <div className="form-group col-auto mb-0 d-flex align-items-center">
-              <DrawerIcon id="icon-prefer-drawer" />
+              <DrawerIcon id="icon-prefer-drawer" className="grw-drawer-icon" />
               <div className="custom-control custom-switch custom-checkbox-secondary ml-2">
                 <input
                   id="swSidebarMode"

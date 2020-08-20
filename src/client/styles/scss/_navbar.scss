@@ -53,6 +53,15 @@
     .grw-email-sm {
       font-size: 0.75em;
     }
+    .grw-dock-icon,
+    .grw-drawer-icon,
+    .grw-light-icon,
+    .grw-dark-icon {
+      svg {
+        width: 18px;
+        height: 18px;
+      }
+    }
   }
 }
 
