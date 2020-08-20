@@ -3,8 +3,6 @@
 
 const logger = require('@alias/logger')('growi:routes:attachment');
 
-const fs = require('fs');
-
 const ApiResponse = require('../util/apiResponse');
 
 /**
@@ -131,7 +129,7 @@ module.exports = function(crowi, app) {
   const Attachment = crowi.model('Attachment');
   const User = crowi.model('User');
   const Page = crowi.model('Page');
-  const fileUploader = require('../service/file-uploader')(crowi, app);
+  const { fileUploadeService, attachmentService } = crowi;
 
 
   /**
@@ -193,13 +191,13 @@ module.exports = function(crowi, app) {
       return res.sendStatus(304);
     }
 
-    if (fileUploader.canRespond()) {
-      return fileUploader.respond(res, attachment);
+    if (fileUploadeService.canRespond()) {
+      return fileUploadeService.respond(res, attachment);
     }
 
     let fileStream;
     try {
-      fileStream = await fileUploader.findDeliveryFile(attachment);
+      fileStream = await fileUploadeService.findDeliveryFile(attachment);
     }
     catch (e) {
       logger.error(e);
@@ -234,35 +232,16 @@ module.exports = function(crowi, app) {
     }
   }
 
-  async function createAttachment(file, user, pageId = null) {
-    const fileUploader = require('../service/file-uploader')(crowi);
+  async function removeAttachment(attachmentId) {
+    const fileUploadeService = crowi;
 
-    // check limit
-    const res = await fileUploader.checkLimit(file.size);
-    if (!res.isUploadable) {
-      throw new Error(res.errorMessage);
-    }
+    // retrieve data from DB to get a completely populated instance
+    const attachment = await Attachment.findById(attachmentId);
 
-    const fileStream = fs.createReadStream(file.path, {
-      flags: 'r', encoding: null, fd: null, mode: '0666', autoClose: true,
-    });
+    await fileUploadeService.deleteFile(attachment);
 
-    // create an Attachment document and upload file
-    let attachment;
-    try {
-      attachment = Attachment.createWithoutSave(pageId, user, fileStream, file.originalname, file.mimetype, file.size);
-      await fileUploader.uploadFile(fileStream, attachment);
-      await attachment.save();
-    }
-    catch (err) {
-      // delete temporary file
-      fs.unlink(file.path, (err) => { if (err) { logger.error('Error while deleting tmp file.') } });
-      throw err;
-    }
-
-    return attachment;
+    return attachment.remove();
   }
-
 
   const actions = {};
   const api = {};
@@ -413,7 +392,7 @@ module.exports = function(crowi, app) {
    */
   api.limit = async function(req, res) {
     const fileSize = Number(req.query.fileSize);
-    return res.json(ApiResponse.success(await fileUploader.checkLimit(fileSize)));
+    return res.json(ApiResponse.success(await fileUploadeService.checkLimit(fileSize)));
   };
 
   /**
@@ -526,7 +505,7 @@ module.exports = function(crowi, app) {
 
     let attachment;
     try {
-      attachment = await createAttachment(file, req.user, pageId);
+      attachment = await attachmentService.createAttachment(file, req.user, pageId);
     }
     catch (err) {
       logger.error(err);
@@ -622,7 +601,7 @@ module.exports = function(crowi, app) {
     let attachment;
     try {
       req.user.deleteImage();
-      attachment = await createAttachment(file, req.user);
+      attachment = await attachmentService.createAttachment(file, req.user);
       await req.user.updateImage(attachment);
     }
     catch (err) {
@@ -691,7 +670,7 @@ module.exports = function(crowi, app) {
     }
 
     try {
-      await Attachment.removeWithSubstanceById(id);
+      await removeAttachment(attachment);
     }
     catch (err) {
       logger.error(err);

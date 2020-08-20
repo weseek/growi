@@ -63,23 +63,4 @@ module.exports = function(crowi) {
     return attachment;
   };
 
-  attachmentSchema.statics.removeAttachmentsByPageId = async function(pageId) {
-    const attachments = await this.find({ page: pageId });
-
-    const promises = attachments.map(async(attachment) => {
-      return this.removeWithSubstanceById(attachment._id);
-    });
-
-    return Promise.all(promises);
-  };
-
-  attachmentSchema.statics.removeWithSubstanceById = async function(id) {
-    const fileUploader = require('../service/file-uploader')(crowi);
-    // retrieve data from DB to get a completely populated instance
-    const attachment = await this.findById(id);
-    await fileUploader.deleteFile(attachment);
-    return await attachment.remove();
-  };
-
-  return mongoose.model('Attachment', attachmentSchema);
 };
