@@ -2,7 +2,7 @@ name: List Unhealthy Branches
 
 on:
   schedule:
-    - cron: '0 16 * * wed'
+    - cron: '0 6 * * wed'
 
 jobs:
   list:
