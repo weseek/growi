@@ -16,6 +16,7 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import PageAccessoriesContainer from '../services/PageAccessoriesContainer';
 import PageAttachment from './PageAttachment';
 import PageTimeline from './PageTimeline';
+import PageList from './PageList';
 
 const PageAccessoriesModal = (props) => {
   const { t, pageAccessoriesContainer } = props;
@@ -73,7 +74,10 @@ const PageAccessoriesModal = (props) => {
             </NavItem>
           </Nav>
           <TabContent activeTab={activeTab}>
-            <TabPane tabId="pagelist"></TabPane>
+
+            <TabPane tabId="pagelist">
+              {pageAccessoriesContainer.state.activeComponents.has('pagelist') && <PageList />}
+            </TabPane>
             <TabPane tabId="timeline" className="p-4">
               {pageAccessoriesContainer.state.activeComponents.has('timeline') && <PageTimeline /> }
             </TabPane>
@@ -99,7 +103,6 @@ PageAccessoriesModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   // pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   pageAccessoriesContainer: PropTypes.instanceOf(PageAccessoriesContainer).isRequired,
-
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
 };
