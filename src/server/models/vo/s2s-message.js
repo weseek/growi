@@ -1,4 +1,7 @@
-class ConfigPubsubMessage {
+/**
+ * Server-to-server message VO
+ */
+class S2sMessage {
 
   constructor(eventName, body = {}) {
     this.eventName = eventName;
@@ -18,9 +21,9 @@ class ConfigPubsubMessage {
       throw new Error('message body must contain \'eventName\'');
     }
 
-    return new ConfigPubsubMessage(body.eventName, body);
+    return new S2sMessage(body.eventName, body);
   }
 
 }
 
-module.exports = ConfigPubsubMessage;
+module.exports = S2sMessage;

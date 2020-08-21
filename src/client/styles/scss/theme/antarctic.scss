@@ -49,8 +49,8 @@ html[dark] {
 
   // Background colors
   $bgcolor-global: $themelight;
-  $bgcolor-inline-code: #f0f0f0; //optional
-  $bgcolor-card: #f5f5f5;
+  $bgcolor-inline-code: $gray-100; //optional
+  $bgcolor-card: $gray-50;
 
   // Font colors
   $color-global: black;
@@ -81,7 +81,7 @@ html[dark] {
 
   // Sidebar
   $bgcolor-sidebar: $themecolor;
-  $bgcolor-sidebar-nav-item-active: rgba(#000000, 0.37); // optional
+  $bgcolor-sidebar-nav-item-active: rgba(black, 0.37); // optional
   $text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
   // Sidebar resize button
   $color-resize-button: $color-reversal;
@@ -98,7 +98,7 @@ html[dark] {
   $color-editor-icons: $color-global;
 
   // Border colors
-  $border-color-theme: #ccc; // former: `$navbar-border: #ccc;`
+  $border-color-theme: $gray-300; // former: `$navbar-border: $gray-300;`
   $bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
@@ -151,7 +151,7 @@ html[dark] {
 
 //   // Font colors
 //   $color-global: #eeeeee;
-//   $color-reversal: #333333;
+//   $color-reversal: $gray-900;
 //   // $color-header: desaturate($primary, 20%);
 //   $color-link: $primary;
 //   $color-link-hover: lighten($color-link, 10%);
@@ -169,13 +169,13 @@ html[dark] {
 
 //   // Logo colors
 //   $bgcolor-logo: $bgcolor-navbar;
-//   $fillcolor-logo-mark: #444;
+//   $fillcolor-logo-mark: $gray-700;
 
 //   // Icon colors
 //   $color-editor-icons: darken($accentcolor, 15%);
 
 //   // Border colors
-//   $border-color-theme: black; // former: `$navbar-border: #ccc;`
+//   $border-color-theme: black; // former: `$navbar-border: $gray-300;`
 
 //   // Dropdown colors
 //   $bgcolor-dropdown-link-active: $primary;

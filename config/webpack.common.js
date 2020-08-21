@@ -8,7 +8,7 @@ const webpack = require('webpack');
  */
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
+
 const helpers = require('../src/lib/util/helpers');
 
 /*
@@ -96,10 +96,6 @@ module.exports = (options) => {
             basenameAsNamespace: true,
           },
         },
-        { // see https://github.com/abpetkov/switchery/issues/120
-          test: /switchery\.js$/,
-          loader: 'imports-loader?module=>false,exports=>false,define=>false,this=>window',
-        },
         /*
          * File loader for supporting images, for example, in CSS files.
          */
@@ -126,14 +122,6 @@ module.exports = (options) => {
       // ignore
       new webpack.IgnorePlugin(/^\.\/lib\/deflate\.js/, /markdown-it-plantuml/),
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-
-      new HardSourceWebpackPlugin(),
-      new HardSourceWebpackPlugin.ExcludeModulePlugin([
-        {
-          // see https://github.com/mzgoddard/hard-source-webpack-plugin/blob/master/README.md#excludemoduleplugin
-          test: /mini-css-extract-plugin[\\/]dist[\\/]loader/,
-        },
-      ]),
 
       new LodashModuleReplacementPlugin({
         flattening: true,

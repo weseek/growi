@@ -13,13 +13,13 @@ const SamlStrategy = require('passport-saml').Strategy;
 const OIDCIssuer = require('openid-client').Issuer;
 const BasicStrategy = require('passport-http').BasicStrategy;
 
-const ConfigPubsubMessage = require('../models/vo/config-pubsub-message');
-const ConfigPubsubMessageHandlable = require('./config-pubsub/handlable');
+const S2sMessage = require('../models/vo/s2s-message');
+const S2sMessageHandlable = require('./s2s-messaging/handlable');
 
 /**
  * the service class of Passport
  */
-class PassportService extends ConfigPubsubMessageHandlable {
+class PassportService extends S2sMessageHandlable {
 
   // see '/lib/form/login.js'
   static get USERNAME_FIELD() { return 'loginForm[username]' }
@@ -129,21 +129,21 @@ class PassportService extends ConfigPubsubMessageHandlable {
   /**
    * @inheritdoc
    */
-  shouldHandleConfigPubsubMessage(configPubsubMessage) {
-    const { eventName, updatedAt, strategyId } = configPubsubMessage;
+  shouldHandleS2sMessage(s2sMessage) {
+    const { eventName, updatedAt, strategyId } = s2sMessage;
     if (eventName !== 'passportServiceUpdated' || updatedAt == null || strategyId == null) {
       return false;
     }
 
-    return this.lastLoadedAt == null || this.lastLoadedAt < new Date(configPubsubMessage.updatedAt);
+    return this.lastLoadedAt == null || this.lastLoadedAt < new Date(s2sMessage.updatedAt);
   }
 
   /**
    * @inheritdoc
    */
-  async handleConfigPubsubMessage(configPubsubMessage) {
+  async handleS2sMessage(s2sMessage) {
     const { configManager } = this.crowi;
-    const { strategyId } = configPubsubMessage;
+    const { strategyId } = s2sMessage;
 
     logger.info('Reset strategy by pubsub notification');
     await configManager.loadConfigs();
@@ -151,19 +151,19 @@ class PassportService extends ConfigPubsubMessageHandlable {
   }
 
   async publishUpdatedMessage(strategyId) {
-    const { configPubsub } = this.crowi;
+    const { s2sMessagingService } = this.crowi;
 
-    if (configPubsub != null) {
-      const configPubsubMessage = new ConfigPubsubMessage('passportStrategyReloaded', {
+    if (s2sMessagingService != null) {
+      const s2sMessage = new S2sMessage('passportStrategyReloaded', {
         updatedAt: new Date(),
         strategyId,
       });
 
       try {
-        await configPubsub.publish(configPubsubMessage);
+        await s2sMessagingService.publish(s2sMessage);
       }
       catch (e) {
-        logger.error('Failed to publish update message with configPubsub: ', e.message);
+        logger.error('Failed to publish update message with S2sMessagingService: ', e.message);
       }
     }
   }

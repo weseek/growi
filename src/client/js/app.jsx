@@ -19,6 +19,7 @@ import PageComments from './components/PageComments';
 import PageTimeline from './components/PageTimeline';
 import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
 import PageManagement from './components/Page/PageManagement';
+import PageShareManagement from './components/Page/PageShareManagement';
 import TrashPageAlert from './components/Page/TrashPageAlert';
 import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
@@ -31,6 +32,7 @@ import TableOfContents from './components/TableOfContents';
 import PersonalSettings from './components/Me/PersonalSettings';
 import NavigationContainer from './services/NavigationContainer';
 import PageContainer from './services/PageContainer';
+import PageHistoryContainer from './services/PageHistoryContainer';
 import CommentContainer from './services/CommentContainer';
 import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
@@ -45,17 +47,18 @@ const logger = loggerFactory('growi:cli:app');
 appContainer.initContents();
 
 const { i18n } = appContainer;
-const websocketContainer = appContainer.getContainer('WebsocketContainer');
+const socketIoContainer = appContainer.getContainer('SocketIoContainer');
 
 // create unstated container instance
 const navigationContainer = new NavigationContainer(appContainer);
 const pageContainer = new PageContainer(appContainer);
+const pageHistoryContainer = new PageHistoryContainer(appContainer, pageContainer);
 const commentContainer = new CommentContainer(appContainer);
 const editorContainer = new EditorContainer(appContainer, defaultEditorOptions, defaultPreviewOptions);
 const tagContainer = new TagContainer(appContainer);
 const personalContainer = new PersonalContainer(appContainer);
 const injectableContainers = [
-  appContainer, websocketContainer, navigationContainer, pageContainer, commentContainer, editorContainer, tagContainer, personalContainer,
+  appContainer, socketIoContainer, navigationContainer, pageContainer, pageHistoryContainer, commentContainer, editorContainer, tagContainer, personalContainer,
 ];
 
 logger.info('unstated containers have been initialized');
@@ -87,6 +90,7 @@ if (pageContainer.state.pageId != null) {
     'page-comment-write': <CommentEditorLazyRenderer />,
     'page-attachment': <PageAttachment />,
     'page-management': <PageManagement />,
+    'page-share-management': <PageShareManagement />,
 
     'revision-toc': <TableOfContents />,
     'seen-user-list': <SeenUserList />,
@@ -139,7 +143,9 @@ $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', () => {
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
       <ErrorBoundary>
-        <PageHistory pageId={pageContainer.state.pageId} crowi={appContainer} />
+        <Provider inject={injectableContainers}>
+          <PageHistory />
+        </Provider>
       </ErrorBoundary>
     </I18nextProvider>, document.getElementById('revision-history'),
   );
