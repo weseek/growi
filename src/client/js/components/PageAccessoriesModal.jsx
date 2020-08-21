@@ -55,10 +55,10 @@ const PageAccessoriesModal = (props) => {
                 {t('Timeline View')}
               </NavLink>
             </NavItem>
-            <NavItem type="button" className={`nav-link ${activeTab === 'recent-changes' && 'active active-border'}`}>
+            <NavItem type="button" className={`nav-link ${activeTab === 'page-history' && 'active active-border'}`}>
               <NavLink
                 onClick={() => {
-                  switchActiveTab('recent-changes');
+                  switchActiveTab('page-history');
                 }}
               >
                 <RecentChangesIcon />
@@ -81,9 +81,9 @@ const PageAccessoriesModal = (props) => {
               {pageAccessoriesContainer.state.activeComponents.has('pagelist') && <PageList />}
             </TabPane>
             <TabPane tabId="timeline"></TabPane>
-            <TabPane tabId="recent-changes">
+            <TabPane tabId="page-history">
               <div className="overflow-auto">
-                {pageAccessoriesContainer.state.activeComponents.has('recent-changes') && <PageHistory /> }
+                {pageAccessoriesContainer.state.activeComponents.has('page-history') && <PageHistory /> }
               </div>
             </TabPane>
             <TabPane tabId="attachment" className="p-4">
