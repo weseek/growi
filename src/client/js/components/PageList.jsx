@@ -7,7 +7,7 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 
-// import PaginationWrapper from '../PaginationWrapper';
+import PaginationWrapper from './PaginationWrapper';
 
 
 const PageList = (props) => {
@@ -18,7 +18,7 @@ const PageList = (props) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [totalItemsCount, setTotalItemsCount] = useState(0);
-  const [activePage, setActivePage] = useState(null);
+  const [activePage, setActivePage] = useState(1);
   const [paginationNumbers, setPaginationNumbers] = useState({});
   const [limit, setLimit] = useState(Infinity);
 
@@ -48,6 +48,10 @@ const PageList = (props) => {
       <Page page={page} />
     </li>
   ));
+
+  const handlePage = 'handlePage';
+  const totalPages = 'totalPages';
+  const pagingLimit = 'pagingLimit';
 
   return (
     <div className="page-list-container-create">
