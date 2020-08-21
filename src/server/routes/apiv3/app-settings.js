@@ -298,7 +298,12 @@ module.exports = (crowi) => {
    * validate mail setting send test mail
    */
   async function validateMailSetting(req) {
-    const { mailService } = crowi;
+    const { configManager, mailService } = crowi;
+    const fromAddress = configManager.getConfig('crowi', 'mail:from');
+    if (fromAddress == null) {
+      throw Error('fromAddress is not setup');
+    }
+
     const option = {
       host: req.body.smtpHost,
       port: req.body.smtpPort,
@@ -317,7 +322,7 @@ module.exports = (crowi) => {
     debug('mailer setup for validate SMTP setting', smtpClient);
 
     const mailOptions = {
-      from: req.body.fromAddress,
+      from: fromAddress,
       to: req.user.email,
       subject: 'Wiki管理設定のアップデートによるメール通知',
       text: 'このメールは、WikiのSMTP設定のアップデートにより送信されています。',
@@ -339,7 +344,6 @@ module.exports = (crowi) => {
     mailService.publishUpdatedMessage();
 
     return {
-      fromAddress: configManager.getConfig('crowi', 'mail:from'),
       smtpHost: configManager.getConfig('crowi', 'mail:smtpHost'),
       smtpPort: configManager.getConfig('crowi', 'mail:smtpPort'),
       smtpUser: configManager.getConfig('crowi', 'mail:smtpUser'),
@@ -421,7 +425,6 @@ module.exports = (crowi) => {
 
 
     const requestMailSettingParams = {
-      'mail:from': req.body.fromAddress,
       'mail:smtpHost': req.body.smtpHost,
       'mail:smtpPort': req.body.smtpPort,
       'mail:smtpUser': req.body.smtpUser,
@@ -464,7 +467,6 @@ module.exports = (crowi) => {
    */
   router.delete('/mail-setting', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const requestMailSettingParams = {
-      'mail:from': null,
       'mail:smtpHost': null,
       'mail:smtpPort': null,
       'mail:smtpUser': null,
