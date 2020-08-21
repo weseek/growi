@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Modal, ModalBody, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
+import {
+  Modal, ModalBody, Nav, NavItem, NavLink, TabContent, TabPane,
+} from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
 
@@ -17,7 +19,7 @@ import PageHistory from './PageHistory';
 import { appContainer } from '../base';
 import PageContainer from '../services/PageContainer';
 
-const PageAccessoriesModal = props => {
+const PageAccessoriesModal = (props) => {
   const { t, pageAccessoriesContainer } = props;
   const { switchActiveTab } = pageAccessoriesContainer;
   const { activeTab } = pageAccessoriesContainer.state;
