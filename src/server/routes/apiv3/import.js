@@ -60,7 +60,7 @@ const generateOverwriteParams = (collectionName, req, options) => {
 };
 
 module.exports = (crowi) => {
-  const { growiBridgeService, importService } = crowi;
+  const { growiBridgeService, importService, socketIoService } = crowi;
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
@@ -70,13 +70,13 @@ module.exports = (crowi) => {
 
   // setup event
   this.adminEvent.on('onProgressForImport', (data) => {
-    crowi.getIo().sockets.emit('admin:onProgressForImport', data);
+    socketIoService.getAdminSocket().emit('admin:onProgressForImport', data);
   });
   this.adminEvent.on('onTerminateForImport', (data) => {
-    crowi.getIo().sockets.emit('admin:onTerminateForImport', data);
+    socketIoService.getAdminSocket().emit('admin:onTerminateForImport', data);
   });
   this.adminEvent.on('onErrorForImport', (data) => {
-    crowi.getIo().sockets.emit('admin:onErrorForImport', data);
+    socketIoService.getAdminSocket().emit('admin:onErrorForImport', data);
   });
 
   const uploads = multer({
@@ -97,6 +97,42 @@ module.exports = (crowi) => {
     },
   });
 
+  /**
+   * @swagger
+   *
+   *  /import:
+   *    get:
+   *      tags: [Import]
+   *      operationId: getImportSettingsParams
+   *      summary: /import
+   *      description: Get import settings params
+   *      responses:
+   *        200:
+   *          description: import settings params
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  importSettingsParams:
+   *                    type: object
+   *                    description: import settings params
+   */
+  router.get('/', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+    try {
+      const importSettingsParams = {
+        esaTeamName: await crowi.configManager.getConfig('crowi', 'importer:esa:team_name'),
+        esaAccessToken: await crowi.configManager.getConfig('crowi', 'importer:esa:access_token'),
+        qiitaTeamName: await crowi.configManager.getConfig('crowi', 'importer:qiita:team_name'),
+        qiitaAccessToken: await crowi.configManager.getConfig('crowi', 'importer:qiita:access_token'),
+      };
+      return res.apiv3({
+        importSettingsParams,
+      });
+    }
+    catch (err) {
+      return res.apiv3Err(err, 500);
+    }
+  });
 
   /**
    * @swagger

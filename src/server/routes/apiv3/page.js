@@ -3,11 +3,11 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
-const { body } = require('express-validator');
+const { body, query } = require('express-validator');
 
 const router = express.Router();
 
-// const ErrorV3 = require('../../models/vo/error-apiv3');
+const ErrorV3 = require('../../models/vo/error-apiv3');
 
 /**
  * @swagger
@@ -118,11 +118,16 @@ module.exports = (crowi) => {
 
   const globalNotificationService = crowi.getGlobalNotificationService();
   const { Page, GlobalNotificationSetting } = crowi.models;
+  const { exportService } = crowi;
 
   const validator = {
     likes: [
       body('pageId').isString(),
       body('bool').isBoolean(),
+    ],
+    export: [
+      query('format').isString().isIn(['md', 'pdf']),
+      query('revisionId').isString(),
     ],
   };
 
@@ -180,6 +185,63 @@ module.exports = (crowi) => {
     const result = { page };
     result.seenUser = page.seenUsers;
     return res.apiv3({ result });
+  });
+
+  /**
+  * @swagger
+  *
+  *    /pages/export:
+  *      get:
+  *        tags: [Export]
+  *        description: return page's markdown
+  *        responses:
+  *          200:
+  *            description: Return page's markdown
+  */
+  router.get('/export/:pageId', loginRequired, validator.export, async(req, res) => {
+    const { pageId } = req.params;
+    const { format, revisionId = null } = req.query;
+    let revision;
+
+    try {
+      const Page = crowi.model('Page');
+      const page = await Page.findByIdAndViewer(pageId, req.user);
+
+      if (page == null) {
+        const isPageExist = await Page.count({ _id: pageId }) > 0;
+        if (isPageExist) {
+          // This page exists but req.user has not read permission
+          return res.apiv3Err(new ErrorV3(`Haven't the right to see the page ${pageId}.`), 403);
+        }
+        return res.apiv3Err(new ErrorV3(`Page ${pageId} is not exist.`), 404);
+      }
+
+      const revisionIdForFind = revisionId || page.revision;
+
+      const Revision = crowi.model('Revision');
+      revision = await Revision.findById(revisionIdForFind);
+    }
+    catch (err) {
+      logger.error('Failed to get page data', err);
+      return res.apiv3Err(err, 500);
+    }
+
+    const fileName = revision.id;
+    let stream;
+
+    try {
+      stream = exportService.getReadStreamFromRevision(revision, format);
+    }
+    catch (err) {
+      logger.error('Failed to create readStream', err);
+      return res.apiv3Err(err, 500);
+    }
+
+    res.set({
+      'Content-Disposition': `attachment;filename*=UTF-8''${fileName}.${format}`,
+    });
+
+    return stream.pipe(res);
   });
 
   return router;

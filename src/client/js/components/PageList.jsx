@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import Page from './PageList/Page';
@@ -13,7 +13,6 @@ import PaginationWrapper from './PaginationWrapper';
 const PageList = (props) => {
   const { appContainer, pageContainer } = props;
   const { path } = pageContainer.state;
-
   const [pages, setPages] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -24,6 +23,7 @@ const PageList = (props) => {
 
   const getPageList = useCallback(async() => {
     const res = await appContainer.apiv3Get('/pages/list', { path });
+
     setPages(res.data.pages);
     setIsLoading(true);
   }, [appContainer, path]);
@@ -36,7 +36,7 @@ const PageList = (props) => {
   if (isLoading === false) {
     return (
       <div className="wiki">
-        <div className="text-muted text-center">
+        <div className="text-muted test-center">
           <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
         </div>
       </div>

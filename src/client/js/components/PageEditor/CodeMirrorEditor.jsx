@@ -16,8 +16,10 @@ import pasteHelper from './PasteHelper';
 import EmojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
 import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
 import MarkdownTableInterceptor from './MarkdownTableInterceptor';
+import mlu from './MarkdownLinkUtil';
 import mtu from './MarkdownTableUtil';
 import mdu from './MarkdownDrawioUtil';
+import LinkEditModal from './LinkEditModal';
 import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
 import DrawioModal from './DrawioModal';
@@ -54,6 +56,9 @@ require('../../util/codemirror/autorefresh.ext');
 
 
 const MARKDOWN_TABLE_ACTIVATED_CLASS = 'markdown-table-activated';
+// TODO: activate by GW-3443
+// const MARKDOWN_LINK_ACTIVATED_CLASS = 'markdown-link-activated';
+const MARKDOWN_LINK_ACTIVATED_CLASS = '';
 
 export default class CodeMirrorEditor extends AbstractEditor {
 
@@ -71,6 +76,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       additionalClassSet: new Set(),
     };
 
+    this.linkEditModal = React.createRef();
     this.handsontableModal = React.createRef();
     this.drawioModal = React.createRef();
 
@@ -98,6 +104,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.renderCheatsheetModalButton = this.renderCheatsheetModalButton.bind(this);
 
     this.makeHeaderHandler = this.makeHeaderHandler.bind(this);
+    this.showLinkEditHandler = this.showLinkEditHandler.bind(this);
     this.showHandsonTableHandler = this.showHandsonTableHandler.bind(this);
     this.showDrawioHandler = this.showDrawioHandler.bind(this);
   }
@@ -462,8 +469,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
   cursorHandler(editor, event) {
     const { additionalClassSet } = this.state;
     const hasCustomClass = additionalClassSet.has(MARKDOWN_TABLE_ACTIVATED_CLASS);
+    const hasLinkClass = additionalClassSet.has(MARKDOWN_LINK_ACTIVATED_CLASS);
 
     const isInTable = mtu.isInTable(editor);
+    const isInLink = mlu.isInLink(editor);
 
     if (!hasCustomClass && isInTable) {
       additionalClassSet.add(MARKDOWN_TABLE_ACTIVATED_CLASS);
@@ -472,6 +481,16 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     if (hasCustomClass && !isInTable) {
       additionalClassSet.delete(MARKDOWN_TABLE_ACTIVATED_CLASS);
+      this.setState({ additionalClassSet });
+    }
+
+    if (!hasLinkClass && isInLink) {
+      additionalClassSet.add(MARKDOWN_LINK_ACTIVATED_CLASS);
+      this.setState({ additionalClassSet });
+    }
+
+    if (hasLinkClass && !isInLink) {
+      additionalClassSet.delete(MARKDOWN_LINK_ACTIVATED_CLASS);
       this.setState({ additionalClassSet });
     }
   }
@@ -649,6 +668,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
     cm.focus();
   }
 
+  showLinkEditHandler() {
+    this.linkEditModal.current.show(mlu.getMarkdownLink(this.getCodeMirror()));
+  }
+
   showHandsonTableHandler() {
     this.handsontableModal.current.show(mtu.getMarkdownTable(this.getCodeMirror()));
   }
@@ -745,6 +768,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
         color={null}
         size="sm"
         title="Link"
+        // TODO: activate by GW-3443
+        // onClick={this.showLinkEditHandler}
         onClick={this.createReplaceSelectionHandler('[', ']()')}
       >
         <EditorIcon icon="Link" />
@@ -849,6 +874,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
         { this.renderCheatsheetOverlay() }
 
+        <LinkEditModal
+          ref={this.linkEditModal}
+          onSave={(link) => { return mlu.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), link) }}
+        />
         <HandsontableModal
           ref={this.handsontableModal}
           onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }}

@@ -17,10 +17,13 @@ export default class AdminCustomizeContainer extends Container {
     super();
 
     this.appContainer = appContainer;
+    this.dummyCurrentTheme = 0;
+    this.dummyCurrentThemeForError = 1;
 
     this.state = {
       retrieveError: null,
-      currentTheme: '',
+      // set dummy value tile for using suspense
+      currentTheme: this.dummyCurrentTheme,
       currentLayout: '',
       isEnabledTimeline: false,
       isSavedStatesOfTabChanges: false,

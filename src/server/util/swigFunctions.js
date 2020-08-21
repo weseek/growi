@@ -12,7 +12,6 @@ module.exports = function(crowi, req, locals) {
     passportService,
     appService,
     aclService,
-    fileUploadService,
     customizeService,
   } = crowi;
   debug('initializing swigFunctions');
@@ -69,7 +68,6 @@ module.exports = function(crowi, req, locals) {
    */
   locals.appService = appService;
   locals.aclService = aclService;
-  locals.fileUploadService = fileUploadService;
   locals.customizeService = customizeService;
   locals.passportService = passportService;
   locals.pathUtils = pathUtils;
