@@ -425,7 +425,7 @@
     "open_sandbox": "Open Sandbox"
   },
   "hackmd": {
-    "hackmd": "HackMD",
+    "hack_md": "HackMD",
     "not_set_up": "HackMD is not set up.",
     "start_to_edit": "Start to edit with HackMD",
     "clone_page_content": "Click to clone page content and start to edit.",

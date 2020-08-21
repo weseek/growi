@@ -199,7 +199,7 @@ const GrowiSubNavigation = (props) => {
               </button>
               <button type="button" className="btn btn-outline-primary">
                 <i className="fa fa-fw fa-file-text-o" />
-                { t('hackmd') }
+                { t('hackmd.hack_md') }
               </button>
             </div>
           </div>
