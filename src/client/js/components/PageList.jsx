@@ -17,6 +17,11 @@ const PageList = (props) => {
   const [pages, setPages] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  const [totalItemsCount, setTotalItemsCount] = useState(0);
+  const [activePage, setActivePage] = useState(null);
+  const [paginationNumbers, setPaginationNumbers] = useState({});
+  const [limit, setLimit] = useState(Infinity);
+
   const getPageList = useCallback(async() => {
     const res = await appContainer.apiv3Get('/pages/list', { path });
     setPages(res.data.pages);
