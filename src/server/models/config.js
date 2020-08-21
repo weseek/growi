@@ -98,6 +98,9 @@ module.exports = function(crowi) {
       'mail:smtpUser'     : undefined,
       'mail:smtpPassword' : undefined,
 
+      'mail:sesAccessKeyId' : undefined,
+      'mail:sesSecretAccessKey' : undefined,
+
       'plugin:isEnabledPlugins' : true,
 
       'customize:css' : undefined,

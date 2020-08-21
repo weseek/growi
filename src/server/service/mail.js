@@ -75,7 +75,7 @@ class MailService extends S2sMessageHandlable {
       this.mailer = this.createSMTPClient();
     }
     // Priority 2. SES
-    else if (configManager.getConfig('crowi', 'aws:accessKeyId') && configManager.getConfig('crowi', 'aws:secretAccessKey')) {
+    else if (configManager.getConfig('crowi', 'mail:sesAccessKeyId') && configManager.getConfig('crowi', 'mail:sesSecretAccessKey')) {
       this.mailer = this.createSESClient();
     }
     else {
@@ -121,8 +121,8 @@ class MailService extends S2sMessageHandlable {
 
     if (!option) {
       option = { // eslint-disable-line no-param-reassign
-        accessKeyId: configManager.getConfig('crowi', 'aws:accessKeyId'),
-        secretAccessKey: configManager.getConfig('crowi', 'aws:secretAccessKey'),
+        accessKeyId: configManager.getConfig('crowi', 'mail:sesAccessKeyId'),
+        secretAccessKey: configManager.getConfig('crowi', 'mail:sesSecretAccessKey'),
       };
     }
 
