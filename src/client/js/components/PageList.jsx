@@ -7,7 +7,7 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 
-import PaginationWrapper from '../PaginationWrapper';
+// import PaginationWrapper from '../PaginationWrapper';
 
 
 const PageList = (props) => {
@@ -55,10 +55,10 @@ const PageList = (props) => {
         {pageList}
       </ul>
       <PaginationWrapper
-        activePage={this.state.activePage}
-        changePage={this.handlePage}
-        totalItemsCount={this.state.totalPages}
-        pagingLimit={this.state.pagingLimit}
+        activePage={activePage}
+        changePage={handlePage}
+        totalItemsCount={totalPages}
+        pagingLimit={pagingLimit}
       />
     </div>
   );
