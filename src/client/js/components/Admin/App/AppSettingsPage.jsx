@@ -4,6 +4,7 @@ import loggerFactory from '@alias/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
+import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
 
 import AdminAppContainer from '../../../services/AdminAppContainer';
 
@@ -11,44 +12,53 @@ import AppSettingsPageContents from './AppSettingsPageContents';
 
 const logger = loggerFactory('growi:appSettings');
 
-function AppSettingsPage(props) {
+function AppSettingsPageWithContainerWithSuspense(props) {
   return (
     <Suspense
       fallback={(
         <div className="row">
           <i className="fa fa-5x fa-spinner fa-pulse mx-auto text-muted"></i>
         </div>
-)}
+      )}
     >
-      <RenderAppSettingsPageWrapper />
+      <AppSettingsPageWithUnstatedContainer />
     </Suspense>
   );
 }
 
-function RenderAppSettingsPage(props) {
+let retrieveErrors = null;
+function AppSettingsPage(props) {
   if (props.adminAppContainer.state.title === props.adminAppContainer.dummyTitle) {
-    throw new Promise(async() => {
+    throw (async() => {
       try {
         await props.adminAppContainer.retrieveAppSettingsData();
       }
       catch (err) {
-        toastError(err);
-        props.adminAppContainer.setState({ retrieveError: err.message });
-        logger.error(err);
+        const errs = toArrayIfNot(err);
+        toastError(errs);
+        logger.error(errs);
+        props.adminAppContainer.setState({
+          title: props.adminAppContainer.dummyTitleForError,
+        });
+        retrieveErrors = errs;
       }
-    });
+    })();
+  }
+
+  if (props.adminAppContainer.state.title === props.adminAppContainer.dummyTitleForError) {
+    throw new Error(`${retrieveErrors.length} errors occured`);
   }
 
   return <AppSettingsPageContents />;
 }
 
-RenderAppSettingsPage.propTypes = {
+AppSettingsPage.propTypes = {
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 
 /**
  * Wrapper component for using unstated
  */
-const RenderAppSettingsPageWrapper = withUnstatedContainers(RenderAppSettingsPage, [AdminAppContainer]);
+const AppSettingsPageWithUnstatedContainer = withUnstatedContainers(AppSettingsPage, [AdminAppContainer]);
 
-export default AppSettingsPage;
+export default AppSettingsPageWithContainerWithSuspense;
