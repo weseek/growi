@@ -191,7 +191,7 @@ const GrowiSubNavigation = (props) => {
             <div className="btn-group" role="group" aria-label="three-stranded-button">
               <button type="button" className="btn btn-outline-primary">
                 <i className="icon-control-play icon-fw" />
-                { t('View') }
+                { t('view') }
               </button>
               <button type="button" className="btn btn-outline-primary">
                 <i className="icon-note icon-fw" />
@@ -199,7 +199,7 @@ const GrowiSubNavigation = (props) => {
               </button>
               <button type="button" className="btn btn-outline-primary">
                 <i className="fa fa-fw fa-file-text-o" />
-                { t('HackMD') }
+                { t('hackmd') }
               </button>
             </div>
           </div>
