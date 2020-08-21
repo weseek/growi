@@ -166,9 +166,7 @@ class ExportService {
     const collection = mongoose.connection.collection(collectionName);
 
     const nativeCursor = collection.find();
-    const readStream = nativeCursor
-      .lean()
-      .stream({ transform: JSON.stringify });
+    const readStream = nativeCursor.stream({ transform: JSON.stringify });
 
     // get TransformStream
     const transformStream = this.generateTransformStream();
