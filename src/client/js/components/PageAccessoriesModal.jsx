@@ -16,6 +16,7 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import PageAccessoriesContainer from '../services/PageAccessoriesContainer';
 import PageAttachment from './PageAttachment';
 import PageList from './PageList';
+import PageHistory from './PageHistory';
 
 const PageAccessoriesModal = (props) => {
   const { t, pageAccessoriesContainer } = props;
