@@ -9,6 +9,7 @@ import PageContainer from '../services/PageContainer';
 
 import PaginationWrapper from '../PaginationWrapper';
 
+
 const PageList = (props) => {
   const { appContainer, pageContainer } = props;
   const { path } = pageContainer.state;
@@ -37,11 +38,25 @@ const PageList = (props) => {
     );
   }
 
-  return pages.map(page => (
+  const pageList = pages.map(page => (
     <li key={page._id}>
       <Page page={page} />
     </li>
   ));
+
+  return (
+    <div className="page-list-container-create">
+      <ul className="page-list-ul page-list-ul-flat mb-3">
+        {pageList}
+      </ul>
+      <PaginationWrapper
+        activePage={this.state.activePage}
+        changePage={this.handlePage}
+        totalItemsCount={this.state.totalPages}
+        pagingLimit={this.state.pagingLimit}
+      />
+    </div>
+  );
 
 
 };
