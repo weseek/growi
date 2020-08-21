@@ -51,10 +51,16 @@ class ExportService {
    */
   async getStatus() {
     const zipFiles = fs.readdirSync(this.baseDir).filter((file) => { return path.extname(file) === '.zip' });
-    const zipFileStats = await Promise.all(zipFiles.map((file) => {
+
+    // sequencial read
+    const zipFileStats = [];
+    const parseZipFilePromises = zipFiles.map((file) => {
       const zipFile = this.getFile(file);
       return this.growiBridgeService.parseZipFile(zipFile);
-    }));
+    });
+    for await (const stat of parseZipFilePromises) {
+      zipFileStats.push(stat);
+    }
 
     // filter null object (broken zip)
     const filtered = zipFileStats.filter(element => element != null);
