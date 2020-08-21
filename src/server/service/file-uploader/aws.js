@@ -49,6 +49,23 @@ module.exports = function(crowi) {
     return filePath;
   }
 
+  async function isFileExists(s3, params) {
+    // check file exists
+    try {
+      await s3.headObject(params).promise();
+    }
+    catch (err) {
+      if (err != null && err.code === 'NotFound') {
+        return false;
+      }
+
+      // error except for 'NotFound
+      throw err;
+    }
+
+    return true;
+  }
+
   lib.isValidUploadSettings = function() {
     return this.configManager.getConfig('crowi', 'aws:accessKeyId') != null
       && this.configManager.getConfig('crowi', 'aws:secretAccessKey') != null
@@ -74,7 +91,12 @@ module.exports = function(crowi) {
       Key: filePath,
     };
 
-    // TODO: ensure not to throw error even when the file does not exist
+    // check file exists
+    const isExists = await isFileExists(s3, params);
+    if (!isExists) {
+      logger.warn(`Any object that relate to the Attachment (${filePath}) does not exist in AWS S3`);
+      return;
+    }
 
     return s3.deleteObject(params).promise();
   };
@@ -108,12 +130,19 @@ module.exports = function(crowi) {
     const awsConfig = getAwsConfig();
     const filePath = getFilePathOnStorage(attachment);
 
+    const params = {
+      Bucket: awsConfig.bucket,
+      Key: filePath,
+    };
+
+    // check file exists
+    const isExists = await isFileExists(s3, params);
+    if (!isExists) {
+      throw new Error(`Any object that relate to the Attachment (${filePath}) does not exist in AWS S3`);
+    }
+
     let stream;
     try {
-      const params = {
-        Bucket: awsConfig.bucket,
-        Key: filePath,
-      };
       stream = s3.getObject(params).createReadStream();
     }
     catch (err) {

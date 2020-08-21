@@ -207,21 +207,23 @@ module.exports = function(crowi) {
     return userData;
   };
 
+  // TODO: create UserService and transplant this method because image uploading depends on AttachmentService
   userSchema.methods.updateImage = async function(attachment) {
     this.imageAttachment = attachment;
     await this.updateImageUrlCached();
     return this.save();
   };
 
+  // TODO: create UserService and transplant this method because image deletion depends on AttachmentService
   userSchema.methods.deleteImage = async function() {
     validateCrowi();
-    const Attachment = crowi.model('Attachment');
 
     // the 'image' field became DEPRECATED in v3.3.8
     this.image = undefined;
 
     if (this.imageAttachment != null) {
-      Attachment.removeWithSubstanceById(this.imageAttachment._id);
+      const { attachmentService } = crowi;
+      attachmentService.removeAttachment(this.imageAttachment._id);
     }
 
     this.imageAttachment = undefined;
