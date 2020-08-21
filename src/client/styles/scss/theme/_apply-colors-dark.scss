@@ -201,6 +201,15 @@ ul.pagination {
  */
 .grw-subnav {
   background-color: $bgcolor-subnav;
+
+  .three-stranded-button {
+    .btn-outline-primary {
+      &:hover,
+      &:active {
+        color: $bgcolor-subnav;
+      }
+    }
+  }
 }
 
 .grw-subnav-fixed-container .grw-subnav {
