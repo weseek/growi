@@ -412,30 +412,6 @@ module.exports = function(crowi) {
     return this.find({ admin: true });
   };
 
-  userSchema.statics.findUsersByPartOfEmail = function(emailPart, options) {
-    const status = options.status || null;
-    const emailPartRegExp = new RegExp(emailPart.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'));
-    const User = this;
-
-    return new Promise((resolve, reject) => {
-      const query = User.find({ email: emailPartRegExp });
-
-      if (status) {
-        query.and({ status });
-      }
-
-      query
-        .limit(PAGE_ITEMS + 1)
-        .exec((err, userData) => {
-          if (err) {
-            return reject(err);
-          }
-
-          return resolve(userData);
-        });
-    });
-  };
-
   userSchema.statics.findUserByUsername = function(username) {
     if (username == null) {
       return Promise.resolve(null);
