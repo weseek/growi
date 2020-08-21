@@ -55,7 +55,7 @@ export default class PageHistoryContainer extends Container {
       return;
     }
 
-    const res = await this.appContainer.apiv3Get('/revisions/list', { page_id: pageId, share_link_id: shareLinkId, selectedPage });
+    const res = await this.appContainer.apiv3Get('/revisions/list', { pageId, share_link_id: shareLinkId, selectedPage });
     const rev = res.data.docs;
 
     // set Pagination state
@@ -138,7 +138,7 @@ export default class PageHistoryContainer extends Container {
     }
 
     try {
-      const res = await this.appContainer.apiv3Get(`/revisions/${revision._id}`, { page_id: pageId, share_link_id: shareLinkId });
+      const res = await this.appContainer.apiv3Get(`/revisions/${revision._id}`, { pageId, share_link_id: shareLinkId });
       this.setState({
         revisions: this.state.revisions.map((rev) => {
           // comparing ObjectId
