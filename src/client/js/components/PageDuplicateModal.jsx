@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -13,6 +13,7 @@ import PageContainer from '../services/PageContainer';
 import PagePathAutoComplete from './PagePathAutoComplete';
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
+
 const PageDuplicateModal = (props) => {
   const { t, appContainer, pageContainer } = props;
 
@@ -25,13 +26,17 @@ const PageDuplicateModal = (props) => {
 
   const [errs, setErrs] = useState(null);
 
-  const [getSubordinatedError] = useState(null);
+  // ToDo: subordinatedPaths is not used yet so commented. Will use when all the child of { path } is needed.
+  // const [subordinatedPaths, setSubordinatedPaths] = useState([]);
+  // for now we use the code below.
+  const [setSubordinatedPaths] = useState([]);
+  const [getSubordinatedError, setGetSuborinatedError] = useState(null);
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
   const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
   const [isDuplicateExistList, setIsDuplicateExistList] = useState([]);
 
 
-  function createSubordinatedList(value) {
+  function getSubordinatedDuplicateList(value) {
 
     // ToDo: get the duplicated list from sever
     // below is psuedo code
@@ -49,7 +54,7 @@ const PageDuplicateModal = (props) => {
    * @param {string} value
    */
   function ppacInputChangeHandler(value) {
-    createSubordinatedList(value);
+    getSubordinatedDuplicateList(value);
     setPageNameInput(value);
   }
 
@@ -58,13 +63,29 @@ const PageDuplicateModal = (props) => {
    * @param {string} value
    */
   function inputChangeHandler(value) {
-    createSubordinatedList(value);
+    getSubordinatedDuplicateList(value);
     setPageNameInput(value);
   }
 
   function changeIsDuplicateRecursivelyHandler() {
     setIsDuplicateRecursively(!isDuplicateRecursively);
   }
+
+  const getSubordinatedList = useCallback(async() => {
+    try {
+      const res = await appContainer.apiv3Get('/pages/subordinated-list', { path });
+      setSubordinatedPaths(res.data.resultPaths);
+    }
+    catch (err) {
+      setGetSuborinatedError(t('modal_duplicate.label.Fail to get subordinated pages'));
+    }
+  }, [appContainer, path, t]);
+
+  useEffect(() => {
+    if (props.isOpen) {
+      getSubordinatedList();
+    }
+  }, [props.isOpen, getSubordinatedList]);
 
   function changeIsDuplicateRecursivelyWithoutExistPathHandler() {
     setIsDuplicateRecursivelyWithoutExistPath(!isDuplicateRecursivelyWithoutExistPath);
