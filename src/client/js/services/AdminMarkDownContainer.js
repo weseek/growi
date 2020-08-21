@@ -1,11 +1,5 @@
 import { Container } from 'unstated';
 
-import loggerFactory from '@alias/logger';
-
-import { toastError } from '../util/apiNotification';
-
-const logger = loggerFactory('growi:services:AdminMarkdownContainer');
-
 /**
  * Service container for admin markdown setting page (MarkDownSetting.jsx)
  * @extends {Container} unstated Container
@@ -16,10 +10,13 @@ export default class AdminMarkDownContainer extends Container {
     super();
 
     this.appContainer = appContainer;
+    this.dummyIsEnabledLinebreaks = 0;
+    this.dummyIsEnabledLinebreaksForError = 1;
 
     this.state = {
       retrieveError: null,
-      isEnabledLinebreaks: false,
+      // set dummy value tile for using suspense
+      isEnabledLinebreaks: this.dummyIsEnabledLinebreaks,
       isEnabledLinebreaksInComments: false,
       pageBreakSeparator: 1,
       pageBreakCustomSeparator: '',
@@ -43,26 +40,19 @@ export default class AdminMarkDownContainer extends Container {
    * retrieve markdown data
    */
   async retrieveMarkdownData() {
-    try {
-      const response = await this.appContainer.apiv3.get('/markdown-setting/');
-      const { markdownParams } = response.data;
+    const response = await this.appContainer.apiv3.get('/markdown-setting/');
+    const { markdownParams } = response.data;
 
-      this.setState({
-        isEnabledLinebreaks: markdownParams.isEnabledLinebreaks,
-        isEnabledLinebreaksInComments: markdownParams.isEnabledLinebreaksInComments,
-        pageBreakSeparator: markdownParams.pageBreakSeparator,
-        pageBreakCustomSeparator: markdownParams.pageBreakCustomSeparator || '',
-        isEnabledXss: markdownParams.isEnabledXss,
-        xssOption: markdownParams.xssOption,
-        tagWhiteList: markdownParams.tagWhiteList || '',
-        attrWhiteList: markdownParams.attrWhiteList || '',
-      });
-
-    }
-    catch (err) {
-      logger.error(err);
-      toastError(new Error('Failed to fetch data'));
-    }
+    this.setState({
+      isEnabledLinebreaks: markdownParams.isEnabledLinebreaks,
+      isEnabledLinebreaksInComments: markdownParams.isEnabledLinebreaksInComments,
+      pageBreakSeparator: markdownParams.pageBreakSeparator,
+      pageBreakCustomSeparator: markdownParams.pageBreakCustomSeparator || '',
+      isEnabledXss: markdownParams.isEnabledXss,
+      xssOption: markdownParams.xssOption,
+      tagWhiteList: markdownParams.tagWhiteList || '',
+      attrWhiteList: markdownParams.attrWhiteList || '',
+    });
   }
 
   /**

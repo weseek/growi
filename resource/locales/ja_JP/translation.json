@@ -329,7 +329,9 @@
       "New page name": "複製後のページ名",
       "Fail to get subordinated pages": "配下ページの取得に失敗しました",
       "Current page name": "現在のページ名",
-      "Duplicate with child": "配下のページも一緒に複製する"
+      "Duplicate with child": "配下のページも一緒に複製する",
+      "Duplicate without exist path": "存在するパス以外を複製する",
+      "Same page already exists": "同じページがすでに存在します"
     }
   },
   "modal_putback": {
