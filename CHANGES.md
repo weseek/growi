@@ -4,6 +4,7 @@
 
 * Feature: Create/edit linker with GUI
 * Improvement: Paging page histories
+* Improvement: Avoid usint `cursor.snapshot()` in preparation for MongoDB version upgrade
 * Fix: To be able to delete attachment metadata even when the actual data does not exist
 * Fix: Limit the attrubutes of user data for `/_api/v3/users`
 * Upgrade libs

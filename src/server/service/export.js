@@ -167,7 +167,7 @@ class ExportService {
 
     const nativeCursor = collection.find();
     const readStream = nativeCursor
-      .snapshot()
+      .lean()
       .stream({ transform: JSON.stringify });
 
     // get TransformStream
