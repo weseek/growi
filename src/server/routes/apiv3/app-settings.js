@@ -50,13 +50,17 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *          envSiteUrl:
  *            type: string
  *            description: environment variable 'APP_SITE_URL'
- *      MailSettingParams:
+ *      FromAddress:
  *        description: MailSettingParams
  *        type: object
  *        properties:
  *          fromAddress:
  *            type: string
  *            description: e-mail address used as from address of mail which sent from GROWI app
+ *      MailSettingParams:
+ *        description: MailSettingParams
+ *        type: object
+ *        properties:
  *          smtpHost:
  *            type: string
  *            description: host name of client's smtp server
@@ -115,8 +119,10 @@ module.exports = (crowi) => {
     siteUrlSetting: [
       body('siteUrl').trim().matches(/^(https?:\/\/[^/]+|)$/).isURL({ require_tld: false }),
     ],
-    mailSetting: [
+    fromAddress: [
       body('fromAddress').trim().isEmail(),
+    ],
+    mailSetting: [
       body('smtpHost').trim(),
       body('smtpPort').trim().isPort(),
       body('smtpUser').trim(),
@@ -340,6 +346,44 @@ module.exports = (crowi) => {
       smtpPassword: configManager.getConfig('crowi', 'mail:smtpPassword'),
     };
   };
+
+  /**
+   * @swagger
+   *
+   *    /app-settings/from-address:
+   *      put:
+   *        tags: [AppSettings]
+   *        operationId: updateAppSettingFromAddress
+   *        summary: /app-settings/from-address
+   *        description: Update from address
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/FromAddress'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update from adress
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/FromAddress'
+   */
+  router.put('/from-address', loginRequiredStrictly, adminRequired, csrf, validator.fromAddress, apiV3FormValidator, async(req, res) => {
+
+    try {
+      const mailSettingParams = await updateMailSettinConfig({ 'mail:from': req.body.fromAddress });
+
+      return res.apiv3({ mailSettingParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating from adress';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-from-adress-failed'));
+    }
+
+  });
 
   /**
    * @swagger

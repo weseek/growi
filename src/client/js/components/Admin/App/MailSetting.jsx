@@ -29,6 +29,7 @@ class MailSetting extends React.Component {
 
     this.openInitializeValueModal = this.openInitializeValueModal.bind(this);
     this.closeInitializeValueModal = this.closeInitializeValueModal.bind(this);
+    this.submitFromAdressHandler = this.submitFromAdressHandler.bind(this);
     this.submitHandler = this.submitHandler.bind(this);
     this.initialize = this.initialize.bind(this);
   }
@@ -54,12 +55,25 @@ class MailSetting extends React.Component {
     }
   }
 
+  async submitFromAdressHandler() {
+    const { t, adminAppContainer } = this.props;
+
+    try {
+      await adminAppContainer.updateFromAdressHandler();
+      toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.mail_settings') }));
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+  }
+
   async initialize() {
     const { t, adminAppContainer } = this.props;
 
     try {
       const mailSettingParams = await adminAppContainer.initializeMailSettingHandler();
-      toastSuccess(t('toaster.initialize_successed', { target: t('admin:app_setting.mail_settings') }));
+      toastSuccess(t('toaster.initialize_successed', { target: t('admin:app_setting.from_e-mail_address') }));
       // convert values to '' if value is null for overwriting values of inputs with refs
       this.emailInput.current.value = mailSettingParams.fromAddress || '';
       this.hostInput.current.value = mailSettingParams.smtpHost || '';
@@ -93,6 +107,13 @@ class MailSetting extends React.Component {
             />
           </div>
         </div>
+        <div className="row my-3">
+          <div className="mx-auto">
+            <button type="button" className="btn btn-primary" onClick={this.submitFromAdressHandler}>{ t('Update') }</button>
+          </div>
+        </div>
+
+        <div className="alert alert-warning">AWSの設定が有効のため、SMTPでの送信は行われません</div>
 
         <div className="row form-group mb-5">
           <label className="col-md-3 col-form-label text-left">{t('admin:app_setting.smtp_settings')}</label>
