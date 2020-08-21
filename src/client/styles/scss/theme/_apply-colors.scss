@@ -327,6 +327,24 @@ body.on-edit {
     .page-editor-footer {
       border-top-color: $border-color-theme;
     }
+    .grw-slack-notification {
+      background-color: white;
+      border-color: $bordercolor-nav-tabs;
+      $color-slack: #4b144c;
+      .custom-control-label {
+        &::before {
+          background-color: lighten($color-slack, 60%);
+        }
+        &::after {
+          background-color: white;
+        }
+      }
+      .custom-control-input:checked ~ .custom-control-label {
+        &::before {
+          background-color: $gray-400;
+        }
+      }
+    }
   }
 
   .grw-editor-navbar-bottom {

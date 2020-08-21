@@ -123,6 +123,54 @@ body.on-edit {
     height: $grw-editor-navbar-bottom-height;
 
     .grw-slack-notification {
+      white-space: nowrap !important;
+      //kokokara-test
+      border-style: solid;
+      border-width: 1px;
+      border-radius: 16px;
+
+      .input-group-addon {
+        padding: 0px !important;
+        border-radius: 16px 0px 0px 16px;
+      }
+      .custom-switch {
+        padding-left: $custom-switch-width + $custom-control-gutter;
+      }
+      //   .custom-control-label {
+      //     &::before {
+      //       // stylelint-disable-next-line property-blacklist
+      //       vertical-align: middle;
+      //       // width: 44px;
+      //       // height: $input-height;
+
+      //       border-color: transparent;
+      //       border-radius: 35px 0px 0px 35px;
+      //     }
+
+      //     &::after {
+      //       // stylelint-disable-next-line property-blacklist
+      //       // width: 20px;
+      //       // height: 20px;
+      //       // border-radius: 10px;
+      //     }
+      //   }
+
+      //   .custom-control-input:checked ~ .custom-control-label {
+      //     &::after {
+      //       width: 20px;
+      //       height: 20px;
+      //       transform: translateX(20px);
+      //     }
+      //   }
+
+      //   .custom-control-input:disabled {
+      //     &:checked ~ .custom-control-label::before {
+      //       background-color: pink;
+      //     }
+      //   }
+      // }
+      //kokomade
+
       .input-group-addon {
         padding: 2px 8px;
         line-height: 1em;
@@ -131,8 +179,10 @@ body.on-edit {
           vertical-align: middle;
         }
       }
+
       .form-control {
         width: 80px;
+        border: transparent;
         @include media-breakpoint-up(sm) {
           width: 130px;
         }
