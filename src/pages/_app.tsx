@@ -1,4 +1,7 @@
 import App, { AppProps, AppContext } from 'next/app';
+
+import nextI18Next from '~/i18n';
+
 import '../styles/styles.scss';
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -13,4 +16,4 @@ GrowiApp.getInitialProps = async(appContext: AppContext) => {
   return { ...appProps };
 };
 
-export default GrowiApp;
+export default nextI18Next.appWithTranslation(GrowiApp);
