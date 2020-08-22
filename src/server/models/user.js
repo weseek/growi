@@ -1,6 +1,6 @@
 /* eslint-disable no-use-before-define */
 import loggerFactory from '~/utils/logger';
-import { listLocaleIds } from '~/utils/locale-utils';
+import { config as i18nConfig } from '~/i18n';
 
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
@@ -54,7 +54,7 @@ module.exports = function(crowi) {
     apiToken: { type: String, index: true },
     lang: {
       type: String,
-      enum: listLocaleIds(),
+      enum: i18nConfig.allLanguages,
       default: 'en_US',
     },
     status: {

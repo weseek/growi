@@ -1,7 +1,6 @@
 import { nextI18NextMiddleware } from 'next-i18next/dist/commonjs/middlewares';
 
 import nextI18next from '~/i18n';
-import { listLocaleIds } from '~/utils/locale-utils';
 
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:crowi:express-init');
@@ -62,7 +61,6 @@ module.exports = function(crowi, app) {
     // for datez
 
     const Page = crowi.model('Page');
-    const User = crowi.model('User');
     const Config = crowi.model('Config');
     app.set('tzoffset', crowi.appService.getTzoffset());
 
@@ -74,10 +72,6 @@ module.exports = function(crowi, app) {
     res.locals.now = now;
     res.locals.consts = {
       pageGrants: Page.getGrantLabels(),
-      userStatus: User.getUserStatusLabels(),
-      language:   listLocaleIds(),
-      restrictGuestMode: crowi.aclService.getRestrictGuestModeLabels(),
-      registrationMode: crowi.aclService.getRegistrationModeLabels(),
     };
     res.locals.local_config = Config.getLocalconfig(); // config for browser context
 

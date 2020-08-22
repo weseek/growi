@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import loggerFactory from '~/utils/logger';
-import { listLocaleIds } from '~/utils/locale-utils';
+import { config as i18nConfig } from '~/i18n';
+
 
 const logger = loggerFactory('growi:routes:apiv3:personal-setting');
 
@@ -75,7 +76,7 @@ module.exports = (crowi) => {
     personal: [
       body('name').isString().not().isEmpty(),
       body('email').isEmail(),
-      body('lang').isString().isIn(listLocaleIds()),
+      body('lang').isString().isIn(i18nConfig.allLanguages),
       body('isEmailPublished').isBoolean(),
     ],
     imageType: [

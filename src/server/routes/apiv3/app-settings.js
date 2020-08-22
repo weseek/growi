@@ -1,5 +1,5 @@
 import loggerFactory from '~/utils/logger';
-import { listLocaleIds } from '~/utils/locale-utils';
+import { config as i18nConfig } from '~/i18n';
 
 const logger = loggerFactory('growi:routes:apiv3:app-settings');
 
@@ -109,7 +109,7 @@ module.exports = (crowi) => {
     appSetting: [
       body('title').trim(),
       body('confidential'),
-      body('globalLang').isIn(listLocaleIds()),
+      body('globalLang').isIn(i18nConfig.allLanguages),
       body('fileUpload').isBoolean(),
     ],
     siteUrlSetting: [
