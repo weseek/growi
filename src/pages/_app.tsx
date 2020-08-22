@@ -1,6 +1,6 @@
 import App, { AppProps, AppContext } from 'next/app';
 
-import nextI18Next from '~/i18n';
+import { appWithTranslation } from '~/i18n';
 
 import '../styles/styles.scss';
 
@@ -16,4 +16,4 @@ GrowiApp.getInitialProps = async(appContext: AppContext) => {
   return { ...appProps };
 };
 
-export default nextI18Next.appWithTranslation(GrowiApp);
+export default appWithTranslation(GrowiApp);
