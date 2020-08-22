@@ -1,10 +1,12 @@
 import Link from 'next/link';
 
+import { NextPage } from 'next';
+
 import nextI18Next from '~/i18n';
 
 import Layout from '../components/Layout';
 
-const IndexPage = () => {
+const IndexPage: NextPage = () => {
   const { t } = nextI18Next.useTranslation();
 
   return (
@@ -26,4 +28,4 @@ IndexPage.getInitialProps = async() => ({
   namespacesRequired: ['translation'],
 });
 
-export default nextI18Next.withTranslation()(IndexPage);
+export default IndexPage;
