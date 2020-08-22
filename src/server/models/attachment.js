@@ -45,8 +45,7 @@ module.exports = function(crowi) {
   attachmentSchema.set('toJSON', { virtuals: true });
 
 
-  attachmentSchema.statics.create = async function(pageId, user, fileStream, originalName, fileFormat, fileSize) {
-    const fileUploader = require('../service/file-uploader')(crowi);
+  attachmentSchema.statics.createWithoutSave = function(pageId, user, fileStream, originalName, fileFormat, fileSize) {
     const Attachment = this;
 
     const extname = path.extname(originalName);
@@ -55,7 +54,7 @@ module.exports = function(crowi) {
       fileName = `${fileName}${extname}`;
     }
 
-    let attachment = new Attachment();
+    const attachment = new Attachment();
     attachment.page = pageId;
     attachment.creator = user._id;
     attachment.originalName = originalName;
@@ -64,30 +63,7 @@ module.exports = function(crowi) {
     attachment.fileSize = fileSize;
     attachment.createdAt = Date.now();
 
-    // upload file
-    await fileUploader.uploadFile(fileStream, attachment);
-    // save attachment
-    attachment = await attachment.save();
-
     return attachment;
-  };
-
-  attachmentSchema.statics.removeAttachmentsByPageId = async function(pageId) {
-    const attachments = await this.find({ page: pageId });
-
-    const promises = attachments.map(async(attachment) => {
-      return this.removeWithSubstanceById(attachment._id);
-    });
-
-    return Promise.all(promises);
-  };
-
-  attachmentSchema.statics.removeWithSubstanceById = async function(id) {
-    const fileUploader = require('../service/file-uploader')(crowi);
-    // retrieve data from DB to get a completely populated instance
-    const attachment = await this.findById(id);
-    await fileUploader.deleteFile(attachment);
-    return await attachment.remove();
   };
 
   return mongoose.model('Attachment', attachmentSchema);

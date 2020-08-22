@@ -10,7 +10,6 @@ module.exports = function(crowi, app) {
   const loginRequiredStrictly = require('../middlewares/login-required')(crowi);
   const loginRequired = require('../middlewares/login-required')(crowi, true);
   const adminRequired = require('../middlewares/admin-required')(crowi);
-  const certifySharedPage = require('../middlewares/certify-shared-page')(crowi);
   const certifySharedFile = require('../middlewares/certify-shared-file')(crowi);
   const csrf = require('../middlewares/csrf')(crowi);
 
@@ -26,7 +25,6 @@ module.exports = function(crowi, app) {
   const attachment = require('./attachment')(crowi, app);
   const comment = require('./comment')(crowi, app);
   const tag = require('./tag')(crowi, app);
-  const revision = require('./revision')(crowi, app);
   const search = require('./search')(crowi, app);
   // const hackmd = require('./hackmd')(crowi, app);
 
@@ -91,7 +89,6 @@ module.exports = function(crowi, app) {
   app.get('/admin/notification'              , loginRequiredStrictly , adminRequired , admin.notification.index);
   app.get('/admin/notification/slackAuth'    , loginRequiredStrictly , adminRequired , admin.notification.slackAuth);
   app.get('/admin/notification/slackSetting/disconnect', loginRequiredStrictly , adminRequired , admin.notification.disconnectFromSlack);
-  app.get('/_api/admin/users.search'         , loginRequiredStrictly , adminRequired , admin.api.usersSearch);
   app.get('/admin/global-notification/new'   , loginRequiredStrictly , adminRequired , admin.globalNotification.detail);
   app.get('/admin/global-notification/:id'   , loginRequiredStrictly , adminRequired , admin.globalNotification.detail);
 
@@ -165,9 +162,6 @@ module.exports = function(crowi, app) {
   app.post('/_api/attachments.remove'               , accessTokenParser , loginRequiredStrictly , csrf, attachment.api.remove);
   app.post('/_api/attachments.removeProfileImage'   , accessTokenParser , loginRequiredStrictly , csrf, attachment.api.removeProfileImage);
   app.get('/_api/attachments.limit'   , accessTokenParser , loginRequiredStrictly, attachment.api.limit);
-
-  app.get('/_api/revisions.get'       , certifySharedPage , accessTokenParser , loginRequired , revision.api.get);
-  app.get('/_api/revisions.ids'       , certifySharedPage , accessTokenParser , loginRequired , revision.api.ids);
 
   // app.get('/trash$'                   , loginRequired , page.trashPageShowWrapper);
   // app.get('/trash/$'                  , loginRequired , page.trashPageListShowWrapper);

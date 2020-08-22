@@ -3,6 +3,12 @@
 ## v4.1.3-RC
 
 * Feature: Create/edit linker with GUI
+* Improvement: Paging page histories
+* Fix: To be able to delete attachment metadata even when the actual data does not exist
+* Fix: Limit the attrubutes of user data for `/_api/v3/users`
+* Upgrade libs
+    * optimize-css-assets-webpack-plugin
+    * terser-webpack-plugin
 
 ## v4.1.2
 

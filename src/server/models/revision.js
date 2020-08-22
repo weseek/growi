@@ -9,6 +9,7 @@ module.exports = function(crowi) {
 
 
   const mongoose = require('mongoose');
+  const mongoosePaginate = require('mongoose-paginate-v2');
 
   const ObjectId = mongoose.Schema.Types.ObjectId;
   const revisionSchema = new mongoose.Schema({
@@ -27,6 +28,7 @@ module.exports = function(crowi) {
     createdAt: { type: Date, default: Date.now },
     hasDiffToPrev: { type: Boolean },
   });
+  revisionSchema.plugin(mongoosePaginate);
 
   /*
    * preparation for https://github.com/weseek/growi/issues/216

@@ -111,6 +111,7 @@ Crowi.prototype.init = async function() {
     this.setupSlack(),
     this.setupCsrf(),
     this.setUpFileUpload(),
+    this.setupAttachmentService(),
     this.setUpAcl(),
     this.setUpCustomize(),
     this.setUpRestQiitaAPI(),
@@ -149,6 +150,7 @@ Crowi.prototype.initForTest = async function() {
     // this.setupSlack(),
     // this.setupCsrf(),
     // this.setUpFileUpload(),
+    // this.setupAttachmentService(),
     this.setUpAcl(),
     // this.setUpCustomize(),
     // this.setUpRestQiitaAPI(),
@@ -564,6 +566,16 @@ Crowi.prototype.setUpApp = async function() {
 Crowi.prototype.setUpFileUpload = async function() {
   if (this.fileUploadService == null) {
     this.fileUploadService = require('../service/file-uploader')(this);
+  }
+};
+
+/**
+ * setup AttachmentService
+ */
+Crowi.prototype.setupAttachmentService = async function() {
+  const AttachmentService = require('../service/attachment');
+  if (this.attachmentService == null) {
+    this.attachmentService = new AttachmentService(this);
   }
 };
 

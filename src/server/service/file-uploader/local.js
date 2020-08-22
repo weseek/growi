@@ -44,6 +44,7 @@ module.exports = function(crowi) {
     }
     catch (err) {
       logger.warn(`Any AttachmentFile which path is '${filePath}' does not exist in local fs`);
+      return;
     }
 
     return fs.unlinkSync(filePath);
