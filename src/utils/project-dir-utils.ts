@@ -3,7 +3,8 @@
 import fs from 'fs';
 import path from 'path';
 
-const isCurrentDirRoot = fs.existsSync('./next.config.js');
+const isServer = typeof window === 'undefined';
+const isCurrentDirRoot = isServer && fs.existsSync('./next.config.js');
 
 export const projectRoot = isCurrentDirRoot
   ? process.cwd()
