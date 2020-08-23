@@ -3,7 +3,7 @@
     /* Basic Options */
     "target": "esnext",
     "module": "esnext",
-    "lib": ["dom", "es2017"],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "skipLibCheck": true,
     "allowJs": true,
     "jsx": "preserve",
