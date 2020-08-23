@@ -11,6 +11,14 @@ const nextI18Next = new NextI18Next({
   // detection: {
   //   order: ['cookie', 'header', 'querystring'],
   // },
+  // // react i18next special options (optional)
+  // react: {
+  //   wait: false,
+  //   withRef: true,
+  //   bindI18n: 'languageChanged loaded',
+  //   bindStore: 'added removed',
+  //   nsMode: 'default',
+  // },
 });
 
 export default nextI18Next;

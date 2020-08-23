@@ -16,43 +16,13 @@ module.exports = function(crowi, app) {
   const swig = require('swig-templates');
   const webpackAssets = require('express-webpack-assets');
 
-  // const i18next = require('i18next');
-  // const i18nFsBackend = require('i18next-node-fs-backend');
-  // const i18nSprintf = require('i18next-sprintf-postprocessor');
-  // const i18nMiddleware = require('i18next-express-middleware');
-
   const registerSafeRedirect = require('../middlewares/safe-redirect')();
   const injectCurrentuserToLocalvars = require('../middlewares/inject-currentuser-to-localvars')();
   const autoReconnectToS2sMsgServer = require('../middlewares/auto-reconnect-to-s2s-msg-server')(crowi);
 
   const avoidSessionRoutes = require('../routes/avoid-session-routes');
-  const i18nUserSettingDetector = require('../util/i18nUserSettingDetector');
 
   const env = crowi.node_env;
-
-  // const lngDetector = new i18nMiddleware.LanguageDetector();
-  // lngDetector.addDetector(i18nUserSettingDetector);
-
-
-  // i18next
-  //   .use(lngDetector)
-  //   .use(i18nFsBackend)
-  //   .use(i18nSprintf)
-  //   .init({
-  //     // debug: true,
-  //     fallbackLng: ['en_US'],
-  //     whitelist: listLocaleIds(),
-  //     backend: {
-  //       loadPath: `${crowi.localeDir}{{lng}}/translation.json`,
-  //     },
-  //     detection: {
-  //       order: ['userSettingDetector', 'header', 'navigator'],
-  //     },
-  //     overloadTranslationOptionHandler: i18nSprintf.overloadTranslationOptionHandler,
-
-  //     // change nsSeparator from ':' to '::' because ':' is used in config keys and these are used in i18n keys
-  //     nsSeparator: '::',
-  //   });
 
   app.use(helmet());
 
