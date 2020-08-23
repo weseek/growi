@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
@@ -8,24 +8,24 @@ import NavigationContainer from '../../services/NavigationContainer';
 
 const ThreeStrandedButton = (props) => {
 
-  const { navigationContainer } = props;
-
-  const clickHandler = useCallback(() => {
-    navigationContainer.toggleDrawer();
-  }, [navigationContainer]);
-
-  const iconClass = props.iconClass || 'icon-menu';
+  // const { t, navigationContainer } = props;
+  const { t } = props;
 
   return (
-    <button
-      className="grw-drawer-toggler btn btn-secondary btn-xl"
-      type="button"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-      onClick={clickHandler}
-    >
-      <i className={iconClass}></i>
-    </button>
+    <div className="btn-group three-stranded-button" role="group " aria-label="three-stranded-button">
+      <button type="button" className="btn btn-outline-primary view-button">
+        <i className="icon-control-play icon-fw" />
+        { t('view') }
+      </button>
+      <button type="button" className="btn btn-outline-primary edit-button">
+        <i className="icon-note icon-fw" />
+        { t('Edit') }
+      </button>
+      <button type="button" className="btn btn-outline-primary hackmd-button">
+        <i className="fa fa-fw fa-file-text-o" />
+        { t('hackmd.hack_md') }
+      </button>
+    </div>
   );
 
 };
@@ -39,8 +39,6 @@ const ThreeStrandedButtonWrapper = withUnstatedContainers(ThreeStrandedButton, [
 ThreeStrandedButton.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
-
-  iconClass: PropTypes.string,
 };
 
 export default withTranslation()(ThreeStrandedButtonWrapper);

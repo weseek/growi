@@ -18,6 +18,7 @@ import RevisionPathControls from '../Page/RevisionPathControls';
 import TagLabels from '../Page/TagLabels';
 import LikeButton from '../LikeButton';
 import BookmarkButton from '../BookmarkButton';
+import ThreeStrandedButton from './ThreeStrandedButton';
 
 import PageCreator from './PageCreator';
 import RevisionAuthor from './RevisionAuthor';
@@ -188,20 +189,7 @@ const GrowiSubNavigation = (props) => {
             { !isPageInTrash && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
           </div>
           <div className="mt-2">
-            <div className="btn-group three-stranded-button" role="group " aria-label="three-stranded-button">
-              <button type="button" className="btn btn-outline-primary view-button">
-                <i className="icon-control-play icon-fw" />
-                { t('view') }
-              </button>
-              <button type="button" className="btn btn-outline-primary edit-button">
-                <i className="icon-note icon-fw" />
-                { t('Edit') }
-              </button>
-              <button type="button" className="btn btn-outline-primary hackmd-button">
-                <i className="fa fa-fw fa-file-text-o" />
-                { t('hackmd.hack_md') }
-              </button>
-            </div>
+            <ThreeStrandedButton />
           </div>
         </div>
 
