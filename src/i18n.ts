@@ -1,33 +1,15 @@
 import path from 'path';
 import NextI18Next from 'next-i18next';
 
-// setup LanguageDetector for server
-/* eslint-disable @typescript-eslint/no-unused-vars */
-// const userSettingDetector = {
-//   name: 'userSettingDetector',
-//   lookup(req: any, res: any, options: any) {
-//     console.log(req);
-
-//     if (req?.user == null) {
-//       return null;
-//     }
-//     return req.user.lang || null;
-//   },
-//   cacheUserlanguage(req: any, res: any, lng: string, options: any) {
-//     // nothing to do
-//   },
-// };
-/* eslint-enable @typescript-eslint/no-unused-vars */
-
 const nextI18Next = new NextI18Next({
   defaultLanguage: 'en_US',
   otherLanguages: ['ja_JP', 'zh_CN'],
   defaultNS: 'translation',
   localePath: path.resolve('./resource/locales'),
   shallowRender: true,
-  // customDetectors: [userSettingDetector],
+  // TODO: GW-3581
   // detection: {
-  //   order: ['userSettingDetector', 'cookie', 'header', 'querystring'],
+  //   order: ['cookie', 'header', 'querystring'],
   // },
 });
 
