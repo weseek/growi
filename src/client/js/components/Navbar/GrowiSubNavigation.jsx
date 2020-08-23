@@ -127,7 +127,7 @@ const PageReactionButtons = ({ appContainer, pageContainer }) => {
 
 const GrowiSubNavigation = (props) => {
   const {
-    t, appContainer, navigationContainer, pageContainer, isCompactMode,
+    appContainer, navigationContainer, pageContainer, isCompactMode,
   } = props;
   const { isDrawerMode } = navigationContainer.state;
   const {
