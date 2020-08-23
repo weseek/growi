@@ -20,6 +20,15 @@
   }
 }
 
+.btn.three-stranded-button {
+  @include button-outline-variant($primary, $primary, lighten($secondary, 45%), $primary);
+  &:not(:disabled):not(.disabled):active,
+  &:not(:disabled):not(.disabled).active {
+    color: whitesmoke;
+    background-color: $primary;
+  }
+}
+
 .btn-copy,
 .btn-edit {
   opacity: 0.3;
