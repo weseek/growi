@@ -94,5 +94,4 @@ module.exports = function(crowi, app) {
   app.use(middlewares.csrfKeyGenerator());
 
   app.use(nextI18NextMiddleware(nextI18next));
-  // app.use(i18nMiddleware.handle(i18next));
 };
