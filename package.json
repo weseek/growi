@@ -269,7 +269,7 @@
     "throttle-debounce": "^2.0.0",
     "toastr": "^2.1.2",
     "ts-jest": "^26.1.4",
-    "ts-node-dev": "^1.0.0-pre.60",
+    "ts-node-dev": "1.0.0-pre.59",
     "typescript": "^4.0.2",
     "unstated": "^2.1.1",
     "webpack": "^4.39.3",
