@@ -50,7 +50,7 @@ class ExportService {
    * @return {object} info for zip files and whether currentProgressingStatus exists
    */
   async getStatus() {
-    const zipFiles = fs.readdirSync(this.baseDir).filter((file) => { return path.extname(file) === '.zip' });
+    const zipFiles = fs.readdirSync(this.baseDir).filter(file => path.extname(file) === '.zip');
 
     // sequencial read
     const zipFileStats = [];
