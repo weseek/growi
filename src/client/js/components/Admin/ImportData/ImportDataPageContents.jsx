@@ -189,7 +189,7 @@ class ImportDataPageContents extends React.Component {
                   className="form-control"
                   type="password"
                   name="qiitaAccessToken"
-                  value={adminImportContainer.stateqiitaAccessToken}
+                  value={adminImportContainer.state.qiitaAccessToken}
                   onChange={adminImportContainer.handleInputValue}
                 />
               </div>
