@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
@@ -9,6 +9,7 @@ import {
 } from 'reactstrap';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { withLoadingSppiner } from '../../SuspenseUtils';
 
 
 import AppContainer from '../../../services/AppContainer';
@@ -19,6 +20,11 @@ const logger = loggerFactory('growi:smtpSettings');
 
 function SmtpSetting(props) {
   const { adminAppContainer, t } = props;
+
+  const hostInput = useRef();
+  const portInput = useRef();
+  const userInput = useRef();
+  const passwordInput = useRef();
 
   const [isInitializeValueModalOpen, setIsInitializeValueModalOpen] = useState(false);
 
@@ -51,10 +57,10 @@ function SmtpSetting(props) {
       const mailSettingParams = await adminAppContainer.initializeMailSettingHandler();
       toastSuccess(t('toaster.initialize_successed', { target: t('admin:app_setting.smtp_settings') }));
       // convert values to '' if value is null for overwriting values of inputs with refs
-      // this.hostInput.current.value = mailSettingParams.smtpHost || '';
-      // this.portInput.current.value = mailSettingParams.smtpPort || '';
-      // this.userInput.current.value = mailSettingParams.smtpUser || '';
-      // this.passwordInput.current.value = mailSettingParams.smtpPassword || '';
+      hostInput.current.value = mailSettingParams.smtpHost || '';
+      portInput.current.value = mailSettingParams.smtpPort || '';
+      userInput.current.value = mailSettingParams.smtpUser || '';
+      passwordInput.current.value = mailSettingParams.smtpPassword || '';
       closeInitializeValueModal();
     }
     catch (err) {
@@ -74,7 +80,7 @@ function SmtpSetting(props) {
             <input
               className="form-control"
               type="text"
-              // ref={this.hostInput}
+              ref={hostInput}
               defaultValue={adminAppContainer.state.smtpHost || ''}
               onChange={(e) => { adminAppContainer.changeSmtpHost(e.target.value) }}
             />
@@ -83,7 +89,7 @@ function SmtpSetting(props) {
             <label>{t('admin:app_setting.port')}</label>
             <input
               className="form-control"
-              // ref={this.portInput}
+              ref={portInput}
               defaultValue={adminAppContainer.state.smtpPort || ''}
               onChange={(e) => { adminAppContainer.changeSmtpPort(e.target.value) }}
             />
@@ -96,7 +102,7 @@ function SmtpSetting(props) {
             <input
               className="form-control"
               type="text"
-              // ref={this.userInput}
+              ref={userInput}
               defaultValue={adminAppContainer.state.smtpUser || ''}
               onChange={(e) => { adminAppContainer.changeSmtpUser(e.target.value) }}
             />
@@ -106,7 +112,7 @@ function SmtpSetting(props) {
             <input
               className="form-control"
               type="password"
-              // ref={this.passwordInput}
+              ref={passwordInput}
               defaultValue={adminAppContainer.state.smtpPassword || ''}
               onChange={(e) => { adminAppContainer.changeSmtpPassword(e.target.value) }}
             />
@@ -159,7 +165,7 @@ function SmtpSetting(props) {
 /**
  * Wrapper component for using unstated
  */
-const SmtpSettingWrapper = withUnstatedContainers(SmtpSetting, [AppContainer, AdminAppContainer]);
+const SmtpSettingWrapper = withUnstatedContainers(withLoadingSppiner(SmtpSetting), [AppContainer, AdminAppContainer]);
 
 SmtpSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
