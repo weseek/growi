@@ -12,16 +12,16 @@ const ThreeStrandedButton = (props) => {
   const { t } = props;
 
   return (
-    <div className="btn-group" role="group " aria-label="three-stranded-button">
-      <button type="button" className="btn three-stranded-button view-button">
+    <div className="btn-group three-stranded-button" role="group " aria-label="three-stranded-button">
+      <button type="button" className="btn btn-outline-primary view-button">
         <i className="icon-control-play icon-fw" />
         { t('view') }
       </button>
-      <button type="button" className="btn three-stranded-button edit-button">
+      <button type="button" className="btn btn-outline-primary edit-button">
         <i className="icon-note icon-fw" />
         { t('Edit') }
       </button>
-      <button type="button" className="btn three-stranded-button hackmd-button">
+      <button type="button" className="btn btn-outline-primary hackmd-button">
         <i className="fa fa-fw fa-file-text-o" />
         { t('hackmd.hack_md') }
       </button>

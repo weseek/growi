@@ -203,6 +203,35 @@ ul.pagination {
   background-color: $bgcolor-subnav;
 }
 
+// .three-stranded-button {
+//   .btn-outline-primary {
+//     &:hover {
+//       color: $bgcolor-subnav;
+//     }
+//     &:active {
+//       // color: $bgcolor-subnav;
+//       color: $red;
+//     }
+//   }
+// }
+
+.three-stranded-button {
+  .btn-outline-primary {
+    &:hover,
+    &.active,
+    &:active {
+      // color: $bgcolor-subnav;
+      color: red;
+    }
+  }
+}
+
+.btn-outline-primary {
+  &:active {
+    color: yellow;
+  }
+}
+
 .grw-subnav-fixed-container .grw-subnav {
   background-color: rgba($bgcolor-subnav, 0.85);
 }
