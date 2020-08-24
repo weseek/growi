@@ -226,15 +226,12 @@ module.exports = function(crowi, app) {
         'Content-Disposition': `attachment;filename*=UTF-8''${encodeURIComponent(attachment.originalName)}`,
       });
     }
-    // prevent xss
-    else if (attachment.fileFormat === 'image/svg+xml') {
-      res.set({
-        'Content-Security-Policy': "connect-src 'none';",
-      });
-    }
     // reference
     else {
-      res.set('Content-Type', attachment.fileFormat);
+      res.set({
+        'Content-Type': attachment.fileFormat,
+        'Content-Security-Policy': "script-src 'unsafe-hashes'",
+      });
     }
   }
 
