@@ -128,10 +128,16 @@ class ImportService {
    */
   async getStatus() {
     const zipFiles = fs.readdirSync(this.baseDir).filter(file => path.extname(file) === '.zip');
-    const zipFileStats = await Promise.all(zipFiles.map((file) => {
+
+    // sequencial read
+    const zipFileStats = [];
+    const parseZipFilePromises = zipFiles.map((file) => {
       const zipFile = this.getFile(file);
       return this.growiBridgeService.parseZipFile(zipFile);
-    }));
+    });
+    for await (const stat of parseZipFilePromises) {
+      zipFileStats.push(stat);
+    }
 
     // filter null object (broken zip)
     const filtered = zipFileStats
@@ -159,22 +165,22 @@ class ImportService {
     this.currentProgressingStatus = new CollectionProgressingStatus(collections);
 
     try {
-      const promises = collections.map((collectionName) => {
-        const importSettings = importSettingsMap[collectionName];
-        return this.importCollection(collectionName, importSettings);
-      });
+    const promises = collections.map((collectionName) => {
+      const importSettings = importSettingsMap[collectionName];
+      return this.importCollection(collectionName, importSettings);
+    });
       await Promise.all(promises);
-    }
-    // catch ImportingCollectionError
-    catch (err) {
-      const { collectionProgress } = err;
-      logger.error(`failed to import to ${collectionProgress.collectionName}`, err);
-      this.emitProgressEvent(collectionProgress, { message: err.message });
-    }
+      }
+      // catch ImportingCollectionError
+      catch (err) {
+        const { collectionProgress } = err;
+        logger.error(`failed to import to ${collectionProgress.collectionName}`, err);
+        this.emitProgressEvent(collectionProgress, { message: err.message });
+      }
     finally {
-      this.currentProgressingStatus = null;
-      this.emitTerminateEvent();
-    }
+    this.currentProgressingStatus = null;
+    this.emitTerminateEvent();
+  }
   }
 
   /**
