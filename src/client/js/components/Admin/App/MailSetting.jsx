@@ -12,6 +12,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
 import SmtpSetting from './SmtpSetting';
+import SesSetting from './SesSetting';
 
 const logger = loggerFactory('growi:mailSettings');
 
@@ -104,7 +105,7 @@ class MailSetting extends React.Component {
             {activeComponents.has('smtp-setting') && <SmtpSetting />}
           </TabPane>
           <TabPane tabId="ses-setting">
-            {activeComponents.has('ses-setting') && <p>TBD</p>}
+            {activeComponents.has('ses-setting') && <SesSetting />}
           </TabPane>
         </TabContent>
       </React.Fragment>
