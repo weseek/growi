@@ -129,7 +129,7 @@ class ImportService {
   async getStatus() {
     const zipFiles = fs.readdirSync(this.baseDir).filter(file => path.extname(file) === '.zip');
 
-    // sequencial read
+    // process serially so as not to waste memory
     const zipFileStats = [];
     const parseZipFilePromises = zipFiles.map((file) => {
       const zipFile = this.getFile(file);
@@ -164,7 +164,7 @@ class ImportService {
     // init status object
     this.currentProgressingStatus = new CollectionProgressingStatus(collections);
 
-    // sequencial import
+    // process serially so as not to waste memory
     const promises = collections.map((collectionName) => {
       const importSettings = importSettingsMap[collectionName];
       return this.importCollection(collectionName, importSettings);

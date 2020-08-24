@@ -52,7 +52,7 @@ class ExportService {
   async getStatus() {
     const zipFiles = fs.readdirSync(this.baseDir).filter(file => path.extname(file) === '.zip');
 
-    // sequencial read
+    // process serially so as not to waste memory
     const zipFileStats = [];
     const parseZipFilePromises = zipFiles.map((file) => {
       const zipFile = this.getFile(file);
@@ -205,7 +205,7 @@ class ExportService {
   async exportCollectionsToZippedJson(collections) {
     const metaJson = await this.createMetaJson();
 
-    // sequencial read
+    // process serially so as not to waste memory
     const jsonFiles = [];
     const jsonFilesPromises = collections.map(collectionName => this.exportCollectionToJson(collectionName));
     for await (const jsonFile of jsonFilesPromises) {
