@@ -73,9 +73,8 @@ class MailSetting extends React.Component {
 
     try {
       const mailSettingParams = await adminAppContainer.initializeMailSettingHandler();
-      toastSuccess(t('toaster.initialize_successed', { target: t('admin:app_setting.from_e-mail_address') }));
+      toastSuccess(t('toaster.initialize_successed', { target: t('admin:app_setting.smtp_settings') }));
       // convert values to '' if value is null for overwriting values of inputs with refs
-      this.emailInput.current.value = mailSettingParams.fromAddress || '';
       this.hostInput.current.value = mailSettingParams.smtpHost || '';
       this.portInput.current.value = mailSettingParams.smtpPort || '';
       this.userInput.current.value = mailSettingParams.smtpUser || '';
