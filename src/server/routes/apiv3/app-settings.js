@@ -120,7 +120,7 @@ module.exports = (crowi) => {
       body('siteUrl').trim().matches(/^(https?:\/\/[^/]+|)$/).isURL({ require_tld: false }),
     ],
     fromAddress: [
-      body('fromAddress').trim().isEmail(),
+      body('fromAddress').trim().if(value => value !== '').isEmail(),
     ],
     mailSetting: [
       body('smtpHost').trim(),
