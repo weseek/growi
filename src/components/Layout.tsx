@@ -1,13 +1,20 @@
-import React, { ReactNode } from 'react'
-import Link from 'next/link'
-import Head from 'next/head'
+import React, { ReactNode } from 'react';
+import Link from 'next/link';
+import Head from 'next/head';
+
+import { withUnstatedContainers } from '~/client/js/components/UnstatedUtils';
+// import AppContainer from '~/client/js/services/AppContainer';
+import CounterContainer from '~/client/js/services/CounterContainer';
 
 type Props = {
+  // appContainer: AppContainer,
+  counterContainer: CounterContainer,
+
+  title: string
   children?: ReactNode
-  title?: string
 }
 
-const Layout = ({ children, title = 'This is the default title' }: Props) => (
+const Layout = ({ counterContainer, children, title }: Props) => (
   <div>
     <Head>
       <title>{title}</title>
@@ -34,8 +41,10 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => (
     <footer>
       <hr />
       <span>I'm here to stay (Footer)</span>
+      <hr />
+      <span>{counterContainer.state.count}</span>
     </footer>
   </div>
-)
+);
 
-export default Layout
+export default withUnstatedContainers(Layout, [CounterContainer]);
