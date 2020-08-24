@@ -35,37 +35,6 @@ label.custom-control-label {
 
 //slack
 
-// .custom-switch.custom-switch-slack {
-//   $custom-control-indicator-size-slack: $custom-control-indicator-size * 1.5;
-//   $custom-switch-width-slack: $custom-control-indicator-size-slack * 1.75;
-//   $custom-control-gutter-slack: $custom-control-gutter * 1.5;
-//   $custom-control-indicator-size-slack: $custom-control-indicator-size * 1.5;
-//   $custom-switch-indicator-size-slack: subtract($custom-control-indicator-size-slack, $custom-control-indicator-border-width * 4);
-
-//   padding-left: $custom-switch-width-slack + $custom-control-gutter-slack;
-
-//   .custom-control-label {
-//     &::before {
-//       left: -($custom-switch-width-slack + $custom-control-gutter-slack);
-//       width: $custom-switch-width-slack;
-//       height: $custom-control-indicator-size-slack;
-//     }
-
-//     &::after {
-//       top: add(($font-size-base * $line-height-base - $custom-control-indicator-size) / 2, $custom-control-indicator-border-width * 2);
-//       left: add(-($custom-switch-width-slack + $custom-control-gutter-slack), $custom-control-indicator-border-width * 2);
-//       width: $custom-switch-indicator-size-slack;
-//       height: $custom-switch-indicator-size-slack;
-//     }
-//   }
-
-//   .custom-control-input:checked ~ .custom-control-label {
-//     &::after {
-//       transform: translateX($custom-switch-width-slack - $custom-control-indicator-size-slack);
-//     }
-//   }
-// }
-
 .grw-slack-notification {
   $custom-control-indicator-size-slack: 2rem; //size shitei
 

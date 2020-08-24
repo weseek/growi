@@ -123,7 +123,6 @@ body.on-edit {
     height: $grw-editor-navbar-bottom-height;
 
     .grw-slack-notification {
-      white-space: nowrap !important;
       border-style: solid;
       border-width: 1px;
       border-radius: 16px;
@@ -135,12 +134,12 @@ body.on-edit {
 
       .custom-control-label {
         &::after {
-          background-image: url(/images/icons/editor/slack-logo-on.svg);
+          background-image: url(/images/icons/slack/slack-logo-on.svg);
         }
       }
       .custom-control-input:checked ~ .custom-control-label {
         &::after {
-          background-image: url(/images/icons/editor/slack-logo-off.svg);
+          background-image: url(/images/icons/slack/slack-logo-off.svg);
         }
       }
 

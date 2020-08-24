@@ -39,22 +39,19 @@ class SlackNotification extends React.Component {
     const { t } = this.props;
 
     return (
-      <div className="form-group grw-slack-notification">
+      <div className="grw-slack-notification">
         <div className="input-group input-group-sm extended-setting">
           <label className="input-group-addon">
-            {/* <img id="slack-mark-white" alt="slack-mark" src="/images/icons/slack/mark-monochrome_white.svg" width="18" height="18" />
-                <img id="slack-mark-black" alt="slack-mark" src="/images/icons/slack/mark-monochrome_black.svg" width="18" height="18" /> */}
 
-            {/* <input
-                  type="checkbox"
-                  value="1"
-                  checked={this.props.isSlackEnabled}
-                  onChange={this.updateCheckboxHandler}
-                /> */}
             <div className="custom-control custom-switch ">
-              <input type="checkbox" className="custom-control-input border-0" id="slackSwitch" />
+              <input
+                type="checkbox"
+                className="custom-control-input border-0"
+                id="slackSwitch"
+                checked={this.props.isSlackEnabled}
+                onChange={this.updateCheckboxHandler}
+              />
               <label className="custom-control-label" htmlFor="slackSwitch">
-                {/* <i className="fab fa-slack text-danger"></i> */}
               </label>
             </div>
           </label>
