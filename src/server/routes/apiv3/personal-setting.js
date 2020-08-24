@@ -123,8 +123,52 @@ module.exports = (crowi) => {
    *                      description: personal params
    */
   router.get('/', accessTokenParser, loginRequiredStrictly, async(req, res) => {
-    const currentUser = await User.findUserByUsername(req.user.username);
-    return res.apiv3({ currentUser });
+    const { username } = req.user;
+
+    try {
+      const user = await User.findUserByUsername(username);
+      const currentUser = user.toObject();
+      return res.apiv3({ currentUser });
+
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('update-personal-settings-failed');
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /personal-setting/is-password-set:
+   *      get:
+   *        tags: [PersonalSetting]
+   *        operationId: getIsPasswordSet
+   *        summary: /personal-setting
+   *        description: Get whether a password has been set
+   *        responses:
+   *          200:
+   *            description: Whether a password has been set
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    isPasswordSet:
+   *                      type: boolean
+   */
+  router.get('/is-password-set', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+    const { username } = req.user;
+
+    try {
+      const user = await User.findUserByUsername(username);
+      const isPasswordSet = user.isPasswordSet();
+      return res.apiv3({ isPasswordSet });
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('fail-to-get-whether-password-is-set');
+    }
+
   });
 
   /**
