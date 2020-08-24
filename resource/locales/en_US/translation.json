@@ -711,24 +711,6 @@
     "rebuild_description_1": "Click the button to rebuild index and add all page datas.",
     "rebuild_description_2": "This may take a while."
   },
-  "export_management": {
-    "exporting_collection_list": "Exporting Collection List",
-    "exported_data_list": "Exported Archive Data List",
-    "export_collections": "Export Collections",
-    "check_all": "Check All",
-    "uncheck_all": "Uncheck All",
-    "desc_password_seed": "<p>DO NOT FORGET to set current <code>PASSWORD_SEED</code> to your new GROWI system when restoring user data, or users will NOT be able to login with their password.</p><strong>HINT:</strong><p>The current <code>PASSWORD_SEED</code> will be stored in <code>meta.json</code> in exported ZIP.</p>",
-    "create_new_archive_data": "Create New Archive Data",
-    "export": "Export",
-    "cancel": "Cancel",
-    "file": "File",
-    "growi_version": "Growi Version",
-    "collections": "Collections",
-    "exported_at": "Exported At",
-    "export_menu": "Export Menu",
-    "download": "Download",
-    "delete": "Delete"
-  },
   "login": {
     "Sign in error": "Login error",
     "Registration successful": "Registration successful",
