@@ -334,6 +334,7 @@ body.on-edit {
       .custom-control-label {
         &::before {
           background-color: lighten($color-slack, 60%);
+          border-color: transparent;
         }
         &::after {
           background-color: white;
