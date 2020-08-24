@@ -756,5 +756,9 @@
 		"complete_to_install1": "完成安装GROWI！请以管理员帐户登录。",
 		"complete_to_install2": "完成安装GROWI！请先检查此页上的每个设置。",
 		"failed_to_create_admin_user": "无法创建管理用户。{{errMessage}"
-	}
+  },
+  "validation":{
+    "aws_region": "关于地区，请输入AWS地区名，例如：ap-east-1",
+    "aws_custom_endpoint": "关于自定义端点，请指定以http(s)://开头的URL，链接末尾不需要添加“/”"
+  }
 }
