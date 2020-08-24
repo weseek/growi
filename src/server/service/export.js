@@ -205,8 +205,12 @@ class ExportService {
   async exportCollectionsToZippedJson(collections) {
     const metaJson = await this.createMetaJson();
 
-    const promises = collections.map(collectionName => this.exportCollectionToJson(collectionName));
-    const jsonFiles = await Promise.all(promises);
+    // sequencial read
+    const jsonFiles = [];
+    const jsonFilesPromises = collections.map(collectionName => this.exportCollectionToJson(collectionName));
+    for await (const jsonFile of jsonFilesPromises) {
+      jsonFiles.push(jsonFile);
+    }
 
     // send terminate event
     this.emitStartZippingEvent();
