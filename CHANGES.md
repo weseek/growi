@@ -4,9 +4,13 @@
 
 * Feature: Create/edit linker with GUI
 * Improvement: Paging page histories
-* Improvement: Avoid usint `cursor.snapshot()` in preparation for MongoDB version upgrade
+* Improvement: Avoid using `cursor.snapshot()` in preparation for MongoDB version upgrade
+* Improvement: Allow to save "From e-mail address" only in App Settings
+* Improvement: Allow to empty "From e-mail address" in App Settings
+* Improvement: Export/Import archive data serially so as not to waste memory
 * Fix: To be able to delete attachment metadata even when the actual data does not exist
 * Fix: Limit the attrubutes of user data for `/_api/v3/users`
+* Fix: Prevent XSS with SVG
 * Upgrade libs
     * optimize-css-assets-webpack-plugin
     * terser-webpack-plugin
