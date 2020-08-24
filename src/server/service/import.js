@@ -164,12 +164,14 @@ class ImportService {
     // init status object
     this.currentProgressingStatus = new CollectionProgressingStatus(collections);
 
-    try {
+    // sequencial import
     const promises = collections.map((collectionName) => {
       const importSettings = importSettingsMap[collectionName];
       return this.importCollection(collectionName, importSettings);
     });
-      await Promise.all(promises);
+    for await (const promise of promises) {
+      try {
+        await promise;
       }
       // catch ImportingCollectionError
       catch (err) {
@@ -177,10 +179,10 @@ class ImportService {
         logger.error(`failed to import to ${collectionProgress.collectionName}`, err);
         this.emitProgressEvent(collectionProgress, { message: err.message });
       }
-    finally {
+    }
+
     this.currentProgressingStatus = null;
     this.emitTerminateEvent();
-  }
   }
 
   /**
