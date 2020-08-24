@@ -1,9 +1,10 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
 import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
+import { withLoadingSppiner } from '../../SuspenseUtils';
 
 import AdminLdapSecurityContainer from '../../../services/AdminLdapSecurityContainer';
 
@@ -37,23 +38,8 @@ LdapSecuritySetting.propTypes = {
   adminLdapSecurityContainer: PropTypes.instanceOf(AdminLdapSecurityContainer).isRequired,
 };
 
-const LdapSecuritySettingWithUnstatedContainer = withUnstatedContainers(LdapSecuritySetting, [
+const LdapSecuritySettingWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(LdapSecuritySetting), [
   AdminLdapSecurityContainer,
 ]);
 
-function LdapSecuritySettingWithContainerWithSuspense(props) {
-  return (
-    <Suspense
-      fallback={(
-        <div className="row">
-          <i className="fa fa-5x fa-spinner fa-pulse mx-auto text-muted"></i>
-        </div>
-      )}
-    >
-      <LdapSecuritySettingWithUnstatedContainer />
-    </Suspense>
-  );
-}
-
-
-export default LdapSecuritySettingWithContainerWithSuspense;
+export default LdapSecuritySettingWithUnstatedContainer;
