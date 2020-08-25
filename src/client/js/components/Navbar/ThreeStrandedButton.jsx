@@ -1,14 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import { withTranslation } from 'react-i18next';
-
-import { withUnstatedContainers } from '../UnstatedUtils';
-import NavigationContainer from '../../services/NavigationContainer';
 
 const ThreeStrandedButton = (props) => {
 
-  // const { t, navigationContainer } = props;
   const { t } = props;
 
   return (
@@ -30,15 +25,8 @@ const ThreeStrandedButton = (props) => {
 
 };
 
-/**
- * Wrapper component for using unstated
- */
-const ThreeStrandedButtonWrapper = withUnstatedContainers(ThreeStrandedButton, [NavigationContainer]);
-
-
 ThreeStrandedButton.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 
-export default withTranslation()(ThreeStrandedButtonWrapper);
+export default withTranslation()(ThreeStrandedButton);
