@@ -131,13 +131,13 @@ body.on-edit {
 
       .custom-control-label {
         &::after {
-          background-image: url(/images/icons/slack/slack-logo-on.svg);
+          background-image: url(/images/icons/slack/slack-logo-off.svg);
           background-size: 15px;
         }
       }
       .custom-control-input:checked ~ .custom-control-label {
         &::after {
-          background-image: url(/images/icons/slack/slack-logo-off.svg);
+          background-image: url(/images/icons/slack/slack-logo-on.svg);
         }
       }
 

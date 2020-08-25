@@ -329,11 +329,11 @@ body.on-edit {
     }
     .grw-slack-notification {
       background-color: white;
-      border-color: $bordercolor-nav-tabs;
+      border-color: $gray-200;
       $color-slack: #4b144c;
       .custom-control-label {
         &::before {
-          background-color: lighten($color-slack, 60%);
+          background-color: $gray-200;
           border-color: transparent;
         }
         &::after {
@@ -342,7 +342,7 @@ body.on-edit {
       }
       .custom-control-input:checked ~ .custom-control-label {
         &::before {
-          background-color: $gray-400;
+          background-color: lighten($color-slack, 60%);
         }
       }
     }
