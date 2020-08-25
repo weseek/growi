@@ -121,20 +121,22 @@ body.on-edit {
 
   .grw-editor-navbar-bottom {
     height: $grw-editor-navbar-bottom-height;
-
+    //slack redesign area
     .grw-slack-notification {
+      $custom-select-height-slack: 2rem;
       border-style: solid;
       border-width: 1px;
-      border-radius: 16px;
+      border-radius: $input-height-sm/2 0 0 $input-height-sm/2;
 
       .input-group-addon {
         padding: 0px !important;
-        border-radius: 16px 0px 0px 16px;
+        border-radius: 2px;
       }
 
       .custom-control-label {
         &::after {
           background-image: url(/images/icons/slack/slack-logo-on.svg);
+          background-size: 15px;
         }
       }
       .custom-control-input:checked ~ .custom-control-label {
@@ -151,7 +153,7 @@ body.on-edit {
           vertical-align: middle;
         }
       }
-
+      //slack redesign area end
       .form-control {
         width: 80px;
         border: transparent;

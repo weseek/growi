@@ -42,7 +42,7 @@ class SlackNotification extends React.Component {
       <div className="grw-slack-notification">
         <div className="input-group input-group-sm extended-setting">
           <label className="input-group-addon">
-
+            {/* slack redesign area */}
             <div className="custom-control custom-switch ">
               <input
                 type="checkbox"
@@ -54,22 +54,22 @@ class SlackNotification extends React.Component {
               <label className="custom-control-label" htmlFor="slackSwitch">
               </label>
             </div>
-          </label>
-          <div>
-            <input
-              className="form-control"
-              type="text"
-              value={this.props.slackChannels}
-              placeholder="Input channels"
-              data-toggle="popover"
-              title={t('slack_notification.popover_title')}
-              data-content={t('slack_notification.popover_desc')}
-              data-trigger="focus"
-              data-placement="top"
-              onChange={this.updateSlackChannelsHandler}
-            />
+            {/* slack redesign area end */}
 
-          </div>
+          </label>
+          <input
+            className="form-control"
+            type="text"
+            value={this.props.slackChannels}
+            placeholder="Input channels"
+            data-toggle="popover"
+            title={t('slack_notification.popover_title')}
+            data-content={t('slack_notification.popover_desc')}
+            data-trigger="focus"
+            data-placement="top"
+            onChange={this.updateSlackChannelsHandler}
+          />
+
         </div>
       </div>
     );

@@ -33,10 +33,10 @@ label.custom-control-label {
   }
 }
 
-//slack
+//slack btn
 
 .grw-slack-notification {
-  $custom-control-indicator-size-slack: 2rem; //size shitei
+  $custom-control-indicator-size-slack: 1.8rem; //size shitei
 
   //from _variables.scss of bs4
   $custom-switch-width: $custom-control-indicator-size-slack * 1.75;
