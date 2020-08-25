@@ -7,7 +7,7 @@ const ThreeStrandedButton = (props) => {
   const { t } = props;
 
   return (
-    <div className="btn-group three-stranded-button" role="group " aria-label="three-stranded-button">
+    <div className="btn-group grw-three-stranded-button" role="group " aria-label="three-stranded-button">
       <button type="button" className="btn btn-outline-primary view-button">
         <i className="icon-control-play icon-fw" />
         { t('view') }
