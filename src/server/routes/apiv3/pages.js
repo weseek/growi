@@ -11,6 +11,8 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const router = express.Router();
 
+const LIMIT_FOR_LIST = 10;
+
 /**
  * @swagger
  *  tags:
@@ -558,10 +560,11 @@ module.exports = (crowi) => {
 
   router.get('/subordinated-list', accessTokenParser, loginRequired, async(req, res) => {
     const { path } = req.query;
+    const limit = parseInt(req.query.limit) || LIMIT_FOR_LIST;
 
     try {
       const pageData = await Page.findByPath(path);
-      const result = await Page.findManageableListWithDescendants(pageData, req.user);
+      const result = await Page.findManageableListWithDescendants(pageData, req.user, { limit });
 
       return res.apiv3({ subordinatedPaths: result });
     }
