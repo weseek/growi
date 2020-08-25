@@ -31,19 +31,35 @@ const TopOfTableContents = (props) => {
   return (
     <>
       <div className="top-of-table-contents d-flex align-items-end pb-1">
-        <button type="button" className="bg-transparent border-0 btn-page-list-icon" onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('pagelist')}>
+        <button
+          type="button"
+          className="bg-transparent border-0 btn-page-list-icon"
+          onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('pagelist')}
+        >
           <PageListIcon />
         </button>
 
-        <button type="button" className="bg-transparent border-0 btn-time-line-icon" onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('timeline')}>
+        <button
+          type="button"
+          className="bg-transparent border-0 btn-time-line-icon"
+          onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('timeline')}
+        >
           <TimeLineIcon />
         </button>
 
-        <button type="button" className="bg-transparent border-0 btn-recent-changes-icon" onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('page-history')}>
+        <button
+          type="button"
+          className="bg-transparent border-0 btn-recent-changes-icon"
+          onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('page-history')}
+        >
           <RecentChangesIcon />
         </button>
 
-        <button type="button" className="bg-transparent border-0 btn-attachment-icon" onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('attachment')}>
+        <button
+          type="button"
+          className="bg-transparent border-0 btn-attachment-icon"
+          onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('attachment')}
+        >
           <AttachmentIcon />
         </button>
 
