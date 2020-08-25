@@ -39,7 +39,7 @@ const TopOfTableContents = (props) => {
           <TimeLineIcon />
         </button>
 
-        <button type="button" className="bg-transparent border-0" onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('recent-changes')}>
+        <button type="button" className="bg-transparent border-0" onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('page-history')}>
           <RecentChangesIcon />
         </button>
 
