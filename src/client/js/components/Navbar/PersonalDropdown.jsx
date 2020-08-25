@@ -131,6 +131,7 @@ const PersonalDropdown = (props) => {
 
         <div className="dropdown-divider"></div>
 
+        {/* Sidebar Mode */}
         <h6 className="dropdown-header">{t('personal_dropdown.sidebar_mode')}</h6>
         <form className="px-4">
           <div className="form-row justify-content-center">
@@ -154,11 +155,13 @@ const PersonalDropdown = (props) => {
             </div>
           </div>
         </form>
+
+        {/* Sidebar Mode on Editor */}
         <h6 className="dropdown-header">{t('personal_dropdown.sidebar_mode_editor')}</h6>
         <form className="px-4">
           <div className="form-row justify-content-center">
             <div className="form-group col-auto mb-0 d-flex align-items-center">
-              <IconWithTooltip id="iwt-sidebar-editor-drawer" label="Light">
+              <IconWithTooltip id="iwt-sidebar-editor-drawer" label="Drawer">
                 <SidebarDrawerIcon />
               </IconWithTooltip>
               <div className="custom-control custom-switch custom-checkbox-secondary ml-2">
@@ -171,7 +174,7 @@ const PersonalDropdown = (props) => {
                 />
                 <label className="custom-control-label" htmlFor="swSidebarModeOnEditor"></label>
               </div>
-              <IconWithTooltip id="iwt-sidebar-editor-dock" label="Dark">
+              <IconWithTooltip id="iwt-sidebar-editor-dock" label="Dock">
                 <SidebarDockIcon />
               </IconWithTooltip>
             </div>
@@ -180,6 +183,7 @@ const PersonalDropdown = (props) => {
 
         <div className="dropdown-divider"></div>
 
+        {/* Color Mode */}
         <h6 className="dropdown-header">{t('personal_dropdown.color_mode')}</h6>
         <form className="px-4">
           <div className="form-row">
@@ -212,7 +216,7 @@ const PersonalDropdown = (props) => {
                 />
                 <label className="custom-control-label" htmlFor="swUserPreference"></label>
               </div>
-              <IconWithTooltip id="iwt-dark" label="Light" additionalClasses={useOsSettings ? 'grw-icon-container-muted' : ''}>
+              <IconWithTooltip id="iwt-dark" label="Dark" additionalClasses={useOsSettings ? 'grw-icon-container-muted' : ''}>
                 <MoonIcon />
               </IconWithTooltip>
             </div>
