@@ -28,6 +28,8 @@ export default class AdminAppContainer extends Container {
       smtpPort: '',
       smtpUser: '',
       smtpPassword: '',
+      sesAccessKeyId: '',
+      sesSecretAccessKey: '',
       region: '',
       customEndpoint: '',
       bucket: '',
@@ -70,6 +72,8 @@ export default class AdminAppContainer extends Container {
       smtpPort: appSettingsParams.smtpPort,
       smtpUser: appSettingsParams.smtpUser,
       smtpPassword: appSettingsParams.smtpPassword,
+      sesAccessKeyId: appSettingsParams.sesAccessKeyId,
+      sesSecretAccessKey: appSettingsParams.sesSecretAccessKey,
       region: appSettingsParams.region,
       customEndpoint: appSettingsParams.customEndpoint,
       bucket: appSettingsParams.bucket,
@@ -148,6 +152,20 @@ export default class AdminAppContainer extends Container {
    */
   changeSmtpPassword(smtpPassword) {
     this.setState({ smtpPassword });
+  }
+
+  /**
+   * Change sesAccessKeyId
+   */
+  changeSesAccessKeyId(sesAccessKeyId) {
+    this.setState({ sesAccessKeyId });
+  }
+
+  /**
+   * Change sesSecretAccessKey
+   */
+  changeSesSecretAccessKey(sesSecretAccessKey) {
+    this.setState({ sesSecretAccessKey });
   }
 
   /**
