@@ -13,6 +13,7 @@ import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 import PagePathAutoComplete from './PagePathAutoComplete';
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
+import ComparePathsTable from './ComparePathsTable';
 
 
 const PageDuplicateModal = (props) => {
@@ -27,7 +28,7 @@ const PageDuplicateModal = (props) => {
 
   const [errs, setErrs] = useState(null);
 
-  const [subordinatedPaths, setSubordinatedPaths] = useState([]);
+  const [subordinatedPages, setSubordinatedPages] = useState([]);
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(false);
   const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(false);
 
@@ -69,7 +70,7 @@ const PageDuplicateModal = (props) => {
     try {
       const res = await appContainer.apiv3Get('/pages/subordinated-list', { path });
       const { subordinatedPaths } = res.data;
-      setSubordinatedPaths(subordinatedPaths);
+      setSubordinatedPages(subordinatedPaths);
     }
     catch (err) {
       setErrs(err);
@@ -139,7 +140,7 @@ const PageDuplicateModal = (props) => {
             </div>
           </div>
         </div>
-        <div className="custom-control custom-checkbox custom-checkbox-warning">
+        <div className="custom-control custom-checkbox custom-checkbox-warning mb-3">
           <input
             className="custom-control-input"
             name="recursively"
@@ -152,20 +153,7 @@ const PageDuplicateModal = (props) => {
             { t('modal_duplicate.label.Duplicate with child') }
           </label>
         </div>
-
-        <div>
-          <ul className="duplicate-name">
-            {subordinatedPaths.map((subordinatedPath) => {
-              return (
-                <li key={subordinatedPath._id}>
-                  <a href={subordinatedPath.path}>
-                    {subordinatedPath.path}
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+        {isDuplicateRecursively && <ComparePathsTable subordinatedPages={subordinatedPages} />}
 
         {isDuplicateRecursively && (
           <div className="custom-control custom-checkbox custom-checkbox-warning">
