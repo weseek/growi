@@ -78,16 +78,25 @@ jobs:
       run: |
         echo ${{ secrets. DOCKER_REGISTRY_PASSWORD }} | docker login --username wsmoogle --password-stdin
 
+    - name: Cache Docker layers
+      uses: actions/cache@v2
+      id: cache
+      with:
+        path: /tmp/.buildx-cache
+        key: ${{ runner.OS }}-buildx-${{ hashFiles('**/yarn.lock') }}-${{ matrix.flavor }}
+        restore-keys: |
+          ${{ runner.OS }}-buildx-${{ hashFiles('**/yarn.lock') }}-
+          ${{ runner.OS }}-buildx-
+
     - name: Build Docker Image
       run: |
-        CACHE_REF=weseek/growi-cache:4${{ env.SUFFIX }}
         docker buildx build \
+          --cache-from "type=local,src=/tmp/.buildx-cache" \
+          --cache-to "type=local,dest=/tmp/.buildx-cache" \
           --tag growi${{ env.SUFFIX }} \
           --build-arg flavor=${{ matrix.flavor }} \
           --platform linux/amd64 \
           --load \
-          --cache-from=type=registry,ref=$CACHE_REF \
-          --cache-to=type=registry,ref=$CACHE_REF,mode=max \
           --file ./docker/Dockerfile .
 
     - name: Docker Tags by SemVer
