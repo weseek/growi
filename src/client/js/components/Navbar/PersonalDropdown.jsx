@@ -85,32 +85,15 @@ const PersonalDropdown = (props) => {
   } = navigationContainer.state;
 
   /* eslint-disable react/prop-types */
-  const DrawerIcon = props => (
+  const IconWithTooltip = ({
+    id, label, children, additionalClasses,
+  }) => (
     <>
-      <div id={props.id} className="px-2 grw-drawer-icon"><SidebarDrawerIcon /></div>
-      <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Drawer</UncontrolledTooltip>
+      <div id={id} className={`px-2 grw-icon-container ${additionalClasses != null ? additionalClasses : ''}`}>{children}</div>
+      <UncontrolledTooltip placement="bottom" fade={false} target={id}>{label}</UncontrolledTooltip>
     </>
   );
-  const DockIcon = props => (
-    <>
-      <div id={props.id} className="px-2 grw-dock-icon"><SidebarDockIcon /></div>
-      <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Dock</UncontrolledTooltip>
-    </>
-  );
-
-  const LightIcon = props => (
-    <>
-      <div id={props.id} className={`px-2 grw-light-icon ${useOsSettings ? 'grw-light-icon-muted' : ''}`}><SunIcon /></div>
-      <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Light</UncontrolledTooltip>
-    </>
-  );
-  const DarkIcon = props => (
-    <>
-      <div id={props.id} className={`px-2 grw-dark-icon ${useOsSettings ? 'grw-dark-icon-muted' : ''}`}><MoonIcon /></div>
-      <UncontrolledTooltip placement="bottom" fade={false} target={props.id}>Dark</UncontrolledTooltip>
-    </>
-  );
-
+  /* eslint-enable react/prop-types */
 
   return (
     <>
@@ -152,7 +135,9 @@ const PersonalDropdown = (props) => {
         <form className="px-4">
           <div className="form-row justify-content-center">
             <div className="form-group col-auto mb-0 d-flex align-items-center">
-              <DrawerIcon id="icon-prefer-drawer" />
+              <IconWithTooltip id="iwt-sidebar-drawer" label="Drawer">
+                <SidebarDrawerIcon />
+              </IconWithTooltip>
               <div className="custom-control custom-switch custom-checkbox-secondary ml-2">
                 <input
                   id="swSidebarMode"
@@ -163,7 +148,9 @@ const PersonalDropdown = (props) => {
                 />
                 <label className="custom-control-label" htmlFor="swSidebarMode"></label>
               </div>
-              <DockIcon id="icon-prefer-dock" />
+              <IconWithTooltip id="iwt-sidebar-dock" label="Dock">
+                <SidebarDockIcon />
+              </IconWithTooltip>
             </div>
           </div>
         </form>
@@ -171,7 +158,9 @@ const PersonalDropdown = (props) => {
         <form className="px-4">
           <div className="form-row justify-content-center">
             <div className="form-group col-auto mb-0 d-flex align-items-center">
-              <DrawerIcon id="icon-prefer-drawer-on-edit" />
+              <IconWithTooltip id="iwt-sidebar-editor-drawer" label="Light">
+                <SidebarDrawerIcon />
+              </IconWithTooltip>
               <div className="custom-control custom-switch custom-checkbox-secondary ml-2">
                 <input
                   id="swSidebarModeOnEditor"
@@ -182,7 +171,9 @@ const PersonalDropdown = (props) => {
                 />
                 <label className="custom-control-label" htmlFor="swSidebarModeOnEditor"></label>
               </div>
-              <DockIcon id="icon-prefer-dock-on-edit" />
+              <IconWithTooltip id="iwt-sidebar-editor-dock" label="Dark">
+                <SidebarDockIcon />
+              </IconWithTooltip>
             </div>
           </div>
         </form>
@@ -207,7 +198,9 @@ const PersonalDropdown = (props) => {
           </div>
           <div className="form-row justify-content-center">
             <div className="form-group col-auto mb-0 d-flex align-items-center">
-              <LightIcon id="icon-prefer-light" />
+              <IconWithTooltip id="iwt-light" label="Light" additionalClasses={useOsSettings ? 'grw-icon-container-muted' : ''}>
+                <SunIcon />
+              </IconWithTooltip>
               <div className="custom-control custom-switch custom-checkbox-secondary ml-2">
                 <input
                   id="swUserPreference"
@@ -219,7 +212,9 @@ const PersonalDropdown = (props) => {
                 />
                 <label className="custom-control-label" htmlFor="swUserPreference"></label>
               </div>
-              <DarkIcon id="icon-prefer-dark" />
+              <IconWithTooltip id="iwt-dark" label="Light" additionalClasses={useOsSettings ? 'grw-icon-container-muted' : ''}>
+                <MoonIcon />
+              </IconWithTooltip>
             </div>
           </div>
         </form>
