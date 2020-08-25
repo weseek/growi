@@ -136,7 +136,7 @@ $table-hover-bg: $bgcolor-table-hover;
   .btn-outline-primary {
     &:hover {
       color: $primary;
-      background-color: lighten($secondary, 45%);
+      background-color: $gray-200;
     }
   }
 }
