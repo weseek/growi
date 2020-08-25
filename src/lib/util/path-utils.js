@@ -59,7 +59,7 @@ const userPageRoot = (user) => {
  */
 const convertToNewAffiliationPath = (oldPath, newPath, childPath) => {
   const pathRegExp = new RegExp(`^${escapeStringRegexp(oldPath)}`, 'i');
-  return `/${childPath.replace(pathRegExp, newPath)}`;
+  return childPath.replace(pathRegExp, newPath);
 };
 
 module.exports = {

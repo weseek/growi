@@ -8,11 +8,8 @@ import PageContainer from '../services/PageContainer';
 import { convertToNewAffiliationPath } from '../../../lib/util/path-utils';
 
 function ComparePathsTable(props) {
-  const { subordinatedPages, pageContainer } = props;
+  const { subordinatedPages, pageContainer, newPagePath } = props;
   const { path } = pageContainer.state;
-
-  // Dummy
-  const newPagePath = 'huga';
 
   return (
     <table className="table table-bordered">
@@ -65,6 +62,7 @@ ComparePathsTable.propTypes = {
 
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   subordinatedPages: PropTypes.array.isRequired,
+  newPagePath: PropTypes.string.isRequired,
 };
 
 
