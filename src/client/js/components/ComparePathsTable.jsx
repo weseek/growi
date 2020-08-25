@@ -19,8 +19,8 @@ function ComparePathsTable(props) {
       <tbody>
         <tr>
           {/* TODO i18n */}
-          <th>元のパス</th>
-          <th>新しいパス</th>
+          <th className="w-50">元のパス</th>
+          <th className="w-50">新しいパス</th>
         </tr>
         <tr>
           <td>
@@ -39,14 +39,14 @@ function ComparePathsTable(props) {
           <td>
             <ul className="list-unstyled">
               {subordinatedPages.map((subordinatedPage) => {
-              const pathRegExp = new RegExp(`^${escapeStringRegexp(path)}`, 'i');
-              const newPagePath = subordinatedPage.path.replace(pathRegExp, newPagePathPrefix);
-              return (
-                <li key={subordinatedPage._id}>
-                  /{newPagePath}
-                </li>
-              );
-            })}
+                const pathRegExp = new RegExp(`^${escapeStringRegexp(path)}`, 'i');
+                const newPagePath = subordinatedPage.path.replace(pathRegExp, newPagePathPrefix);
+                return (
+                  <li key={subordinatedPage._id}>
+                    /{newPagePath}
+                  </li>
+                );
+              })}
             </ul>
           </td>
         </tr>
