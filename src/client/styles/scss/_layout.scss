@@ -32,30 +32,6 @@ body {
   margin-top: 1rem;
 }
 
-.revision-toc {
-  // to get on the Attachment row
-  z-index: 1;
-  overflow: hidden;
-  font-size: 0.9em;
-
-  .revision-toc-content {
-    padding: 10px;
-
-    > ul {
-      padding-left: 0;
-      ul {
-        padding-left: 1em;
-      }
-    }
-
-    // first level of li
-    > ul > li {
-      padding: 5px;
-      margin: 4px 4px 4px 17px;
-    }
-  }
-}
-
 .grw-fab {
   position: fixed;
   right: 1.5rem;
@@ -139,34 +115,5 @@ body {
 
   > span {
     margin-left: 0.5em;
-  }
-}
-
-.top-of-table-contents {
-  flex-wrap: wrap;
-
-  .btn-page-list-icon,
-  .btn-time-line-icon,
-  .btn-recent-changes-icon,
-  .btn-attachment-icon {
-    svg {
-      width: 16px;
-      height: 16px;
-    }
-  }
-
-  .seen-user-count {
-    font-size: 12px;
-    font-weight: bolder;
-  }
-  .btn-seen-user-list {
-    border-left: 1px solid;
-    .btn {
-      white-space: nowrap;
-    }
-  }
-
-  .seen-user-popover {
-    max-width: 200px;
   }
 }

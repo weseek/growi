@@ -33,7 +33,7 @@ const TopOfTableContents = (props) => {
       <div className="top-of-table-contents d-flex align-items-end pb-1">
         <button
           type="button"
-          className="bg-transparent border-0 btn-page-list-icon"
+          className="btn btn-link grw-btn-top-of-table"
           onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('pagelist')}
         >
           <PageListIcon />
@@ -41,7 +41,7 @@ const TopOfTableContents = (props) => {
 
         <button
           type="button"
-          className="bg-transparent border-0 btn-time-line-icon"
+          className="btn btn-link grw-btn-top-of-table"
           onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('timeline')}
         >
           <TimeLineIcon />
@@ -49,7 +49,7 @@ const TopOfTableContents = (props) => {
 
         <button
           type="button"
-          className="bg-transparent border-0 btn-recent-changes-icon"
+          className="btn btn-link grw-btn-top-of-table"
           onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('page-history')}
         >
           <RecentChangesIcon />
@@ -57,7 +57,7 @@ const TopOfTableContents = (props) => {
 
         <button
           type="button"
-          className="bg-transparent border-0 btn-attachment-icon"
+          className="btn btn-link grw-btn-top-of-table"
           onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('attachment')}
         >
           <AttachmentIcon />
