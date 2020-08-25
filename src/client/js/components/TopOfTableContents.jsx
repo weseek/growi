@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import PageContainer from '../services/PageContainer';
+import PageAccessoriesContainer from '../services/PageAccessoriesContainer';
 
 import PageListIcon from './Icons/PageListIcon';
 import TimeLineIcon from './Icons/TimeLineIcon';
@@ -15,35 +15,14 @@ import PageAccessoriesModal from './PageAccessoriesModal';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 const TopOfTableContents = (props) => {
-
-  const [isPageAccessoriesModalShown, setIsPageAccessoriesModalShown] = useState(false);
-  const [activeTab, setActiveTab] = useState('');
-  // Prevent unnecessary rendering
-  const [activeComponents, setActiveComponents] = useState(new Set(['']));
-
-  function openPageAccessoriesModal(activeTab) {
-    setIsPageAccessoriesModalShown(true);
-    setActiveTab(activeTab);
-  }
-
-  function switchActiveTab(clickedTab) {
-    activeComponents.add(clickedTab);
-    setActiveComponents(activeComponents);
-    setActiveTab(clickedTab);
-  }
-
-  function closePageAccessoriesModal() {
-    setIsPageAccessoriesModalShown(false);
-  }
+  const { pageAccessoriesContainer } = props;
 
   function renderModal() {
     return (
       <>
         <PageAccessoriesModal
-          isOpen={isPageAccessoriesModalShown}
-          onClose={closePageAccessoriesModal}
-          activeTab={activeTab}
-          onSwitch={switchActiveTab}
+          isOpen={pageAccessoriesContainer.state.isPageAccessoriesModalShown}
+          onClose={pageAccessoriesContainer.closePageAccessoriesModal}
         />
       </>
     );
@@ -51,21 +30,20 @@ const TopOfTableContents = (props) => {
 
   return (
     <>
-      <div className="top-of-table-contents d-flex align-items-center pb-1 ">
-
-        <button type="button" className="bg-transparent border-0 btn-page-list-icon" onClick={() => openPageAccessoriesModal('pageList')}>
+      <div className="top-of-table-contents d-flex align-items-end pb-1">
+        <button type="button" className="bg-transparent border-0 btn-page-list-icon" onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('pagelist')}>
           <PageListIcon />
         </button>
 
-        <button type="button" className="bg-transparent border-0 btn-time-line-icon" onClick={() => openPageAccessoriesModal('timeLine')}>
+        <button type="button" className="bg-transparent border-0 btn-time-line-icon" onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('timeline')}>
           <TimeLineIcon />
         </button>
 
-        <button type="button" className="bg-transparent border-0 btn-recent-changes-icon" onClick={() => openPageAccessoriesModal('recentChanges')}>
+        <button type="button" className="bg-transparent border-0 btn-recent-changes-icon" onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('page-history')}>
           <RecentChangesIcon />
         </button>
 
-        <button type="button" className="bg-transparent border-0 btn-attachment-icon" onClick={() => openPageAccessoriesModal('attachment')}>
+        <button type="button" className="bg-transparent border-0 btn-attachment-icon" onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('attachment')}>
           <AttachmentIcon />
         </button>
 
@@ -83,10 +61,10 @@ const TopOfTableContents = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const TopOfTableContentsWrapper = withUnstatedContainers(TopOfTableContents, [PageContainer]);
+const TopOfTableContentsWrapper = withUnstatedContainers(TopOfTableContents, [PageAccessoriesContainer]);
 
 TopOfTableContents.propTypes = {
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  pageAccessoriesContainer: PropTypes.instanceOf(PageAccessoriesContainer).isRequired,
 };
 
 export default withTranslation()(TopOfTableContentsWrapper);

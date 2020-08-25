@@ -1,11 +1,5 @@
 import { Container } from 'unstated';
 
-import loggerFactory from '@alias/logger';
-
-import { toastError } from '../util/apiNotification';
-
-const logger = loggerFactory('growi:appSettings');
-
 /**
  * Service container for admin app setting page (AppSettings.jsx)
  * @extends {Container} unstated Container
@@ -16,10 +10,13 @@ export default class AdminAppContainer extends Container {
     super();
 
     this.appContainer = appContainer;
+    this.dummyTitle = 0;
+    this.dummyTitleForError = 1;
 
     this.state = {
       retrieveError: null,
-      title: '',
+      // set dummy value tile for using suspense
+      title: this.dummyTitle,
       confidential: '',
       globalLang: '',
       fileUpload: '',
@@ -73,36 +70,29 @@ export default class AdminAppContainer extends Container {
    * retrieve app sttings data
    */
   async retrieveAppSettingsData() {
-    try {
-      const response = await this.appContainer.apiv3.get('/app-settings/');
-      const { appSettingsParams } = response.data;
+    const response = await this.appContainer.apiv3.get('/app-settings/');
+    const { appSettingsParams } = response.data;
 
-      this.setState({
-        title: appSettingsParams.title,
-        confidential: appSettingsParams.confidential,
-        globalLang: appSettingsParams.globalLang,
-        fileUpload: appSettingsParams.fileUpload,
-        siteUrl: appSettingsParams.siteUrl,
-        envSiteUrl: appSettingsParams.envSiteUrl,
-        isSetSiteUrl: !!appSettingsParams.siteUrl,
-        fromAddress: appSettingsParams.fromAddress,
-        smtpHost: appSettingsParams.smtpHost,
-        smtpPort: appSettingsParams.smtpPort,
-        smtpUser: appSettingsParams.smtpUser,
-        smtpPassword: appSettingsParams.smtpPassword,
-        region: appSettingsParams.region,
-        customEndpoint: appSettingsParams.customEndpoint,
-        bucket: appSettingsParams.bucket,
-        accessKeyId: appSettingsParams.accessKeyId,
-        secretAccessKey: appSettingsParams.secretAccessKey,
-        isEnabledPlugins: appSettingsParams.isEnabledPlugins,
-      });
-
-    }
-    catch (err) {
-      logger.error(err);
-      toastError(new Error('Failed to fetch data'));
-    }
+    this.setState({
+      title: appSettingsParams.title,
+      confidential: appSettingsParams.confidential,
+      globalLang: appSettingsParams.globalLang,
+      fileUpload: appSettingsParams.fileUpload,
+      siteUrl: appSettingsParams.siteUrl,
+      envSiteUrl: appSettingsParams.envSiteUrl,
+      isSetSiteUrl: !!appSettingsParams.siteUrl,
+      fromAddress: appSettingsParams.fromAddress,
+      smtpHost: appSettingsParams.smtpHost,
+      smtpPort: appSettingsParams.smtpPort,
+      smtpUser: appSettingsParams.smtpUser,
+      smtpPassword: appSettingsParams.smtpPassword,
+      region: appSettingsParams.region,
+      customEndpoint: appSettingsParams.customEndpoint,
+      bucket: appSettingsParams.bucket,
+      accessKeyId: appSettingsParams.accessKeyId,
+      secretAccessKey: appSettingsParams.secretAccessKey,
+      isEnabledPlugins: appSettingsParams.isEnabledPlugins,
+    });
   }
 
   /**
@@ -262,6 +252,20 @@ export default class AdminAppContainer extends Container {
       smtpPassword: this.state.smtpPassword,
     });
     const { mailSettingParams } = response.data;
+    return mailSettingParams;
+  }
+
+  /**
+   * Initialize mail setting
+   * @memberOf AdminAppContainer
+   * @return {Array} Appearance
+   */
+  async initializeMailSettingHandler() {
+    const response = await this.appContainer.apiv3.delete('/app-settings/mail-setting', {});
+    const {
+      mailSettingParams,
+    } = response.data;
+    this.setState(mailSettingParams);
     return mailSettingParams;
   }
 
