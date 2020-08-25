@@ -2,17 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
-import escapeStringRegexp from 'escape-string-regexp';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import PageContainer from '../services/PageContainer';
+import { convertToNewAffiliationPath } from '../../../lib/util/path-utils';
 
 function ComparePathsTable(props) {
   const { subordinatedPages, pageContainer } = props;
   const { path } = pageContainer.state;
 
   // Dummy
-  const newPagePathPrefix = 'huga';
+  const newPagePath = 'huga';
 
   return (
     <table className="table table-bordered">
@@ -39,11 +39,10 @@ function ComparePathsTable(props) {
           <td>
             <ul className="list-unstyled">
               {subordinatedPages.map((subordinatedPage) => {
-                const pathRegExp = new RegExp(`^${escapeStringRegexp(path)}`, 'i');
-                const newPagePath = subordinatedPage.path.replace(pathRegExp, newPagePathPrefix);
+                const convertedPath = convertToNewAffiliationPath(path, newPagePath, subordinatedPage.path);
                 return (
                   <li key={subordinatedPage._id}>
-                    /{newPagePath}
+                    {convertedPath}
                   </li>
                 );
               })}
