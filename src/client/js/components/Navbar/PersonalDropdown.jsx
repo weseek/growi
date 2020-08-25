@@ -152,7 +152,7 @@ const PersonalDropdown = (props) => {
         <form className="px-4">
           <div className="form-row justify-content-center">
             <div className="form-group col-auto mb-0 d-flex align-items-center">
-              <DrawerIcon id="icon-prefer-drawer" className="grw-drawer-icon" />
+              <DrawerIcon id="icon-prefer-drawer" />
               <div className="custom-control custom-switch custom-checkbox-secondary ml-2">
                 <input
                   id="swSidebarMode"
