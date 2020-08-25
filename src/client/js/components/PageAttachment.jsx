@@ -7,8 +7,6 @@ import DeleteAttachmentModal from './PageAttachment/DeleteAttachmentModal';
 import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
-import PageAccessoriesContainer from '../services/PageAccessoriesContainer';
-import PaginationWrapper from './PaginationWrapper';
 
 class PageAttachment extends React.Component {
 
@@ -123,29 +121,9 @@ class PageAttachment extends React.Component {
       );
     }
 
-    function pager() {
-      return (
-        <div className="my-3">
-          {/* <PaginationWrapper
-            activePage={pageHistoryContainer.state.activePage}
-            changePage={handlePage}
-            totalItemsCount={pageHistoryContainer.state.totalPages}
-            pagingLimit={pageHistoryContainer.state.pagingLimit}
-          /> */}
-          {/* <PaginationWrapper
-            activePage={pageAccessoriesContainer.state.activePage}
-            changePage={handlePage}
-            totalItemsCount={pageAccessoriesContainer.state.totalPages}
-            pagingLimit={pageAccessoriesContainer.state.pagingLimit}
-          /> */}
-        </div>
-      );
-    }
-
 
     return (
       <div>
-        {pager()}
         <PageAttachmentList
           attachments={this.state.attachments}
           inUse={this.state.inUse}
@@ -154,7 +132,6 @@ class PageAttachment extends React.Component {
         />
 
         {deleteAttachmentModal}
-        {pager()}
       </div>
     );
   }
@@ -164,13 +141,12 @@ class PageAttachment extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const PageAttachmentWrapper = withUnstatedContainers(PageAttachment, [AppContainer, PageContainer, PageAccessoriesContainer]);
+const PageAttachmentWrapper = withUnstatedContainers(PageAttachment, [AppContainer, PageContainer]);
 
 
 PageAttachment.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  pageAccessoriesContainer: PropTypes.instanceOf(PageAccessoriesContainer).isRequired,
 };
 
 export default PageAttachmentWrapper;
