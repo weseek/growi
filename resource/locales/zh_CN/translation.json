@@ -136,7 +136,9 @@
 	"Sign out": "退出",
 	"Disassociate": "解除关联",
 	"Recent Created": "最新创建",
-	"Recent Changes": "最新修改",
+  "Recent Changes": "最新修改",
+  "original_path":"Original path",
+  "new_path":"New path",
 	"form_validation": {
 		"error_message": "有些值不正确",
 		"required": "%s 是必需的",

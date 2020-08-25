@@ -137,6 +137,8 @@
   "Sidebar mode on Editor": "サイドバーモード(編集時)",
   "Recent Created": "最新の作成",
   "Recent Changes": "最新の変更",
+  "original_path":"元のパス",
+  "new_path":"新しいパス",
   "personal_dropdown": {
     "home": "ホーム",
     "settings": "設定",

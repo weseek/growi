@@ -8,16 +8,17 @@ import PageContainer from '../services/PageContainer';
 import { convertToNewAffiliationPath } from '../../../lib/util/path-utils';
 
 function ComparePathsTable(props) {
-  const { subordinatedPages, pageContainer, newPagePath } = props;
+  const {
+    subordinatedPages, pageContainer, newPagePath, t,
+  } = props;
   const { path } = pageContainer.state;
 
   return (
     <table className="table table-bordered">
       <tbody>
         <tr>
-          {/* TODO i18n */}
-          <th className="w-50">元のパス</th>
-          <th className="w-50">新しいパス</th>
+          <th className="w-50">{t('original_path')}</th>
+          <th className="w-50">{t('new_path')}</th>
         </tr>
         <tr>
           <td>
