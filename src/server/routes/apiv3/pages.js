@@ -89,18 +89,10 @@ module.exports = (crowi) => {
   router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
     const { path } = req.query;
     try {
-      const result = await Page.findListWithDescendants(path, req.user);
+      const result = await Page.findListWithDescendants(path, req.user, { limit: 8, offset: 0 });
+      console.log(result);
 
-      const paginateResult = await Page.paginate(
-        {},
-        {
-          page: result,
-          limit: PAGE_ITEMS,
-          sort: { createdAt: -1 },
-        },
-      );
-      console.log(paginateResult);
-      return res.apiv3(paginateResult);
+      return res.apiv3(result);
     }
     catch (err) {
       logger.error('Failed to get Descendants Pages', err);

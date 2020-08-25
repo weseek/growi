@@ -18,15 +18,18 @@ const PageList = (props) => {
 
   const [totalItemsCount, setTotalItemsCount] = useState(0);
   const [activePage, setActivePage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const [paginationNumbers, setPaginationNumbers] = useState({});
   const [limit, setLimit] = useState(Infinity);
 
   const getPageList = useCallback(async() => {
-    const res = await appContainer.apiv3Get('/pages/list', { path });
+    const res = await appContainer.apiv3Get('/pages/list', { path, limit });
 
     setPages(res.data.pages);
     setIsLoading(true);
-  }, [appContainer, path]);
+    setLimit(limit);
+    setTotalPages(res.totalCount);
+  }, [appContainer, path, limit]);
 
   useEffect(() => {
     getPageList();
@@ -50,8 +53,6 @@ const PageList = (props) => {
   ));
 
   const handlePage = 'handlePage';
-  const totalPages = 'totalPages';
-  const pagingLimit = 'pagingLimit';
 
   return (
     <div className="page-list-container-create">
@@ -62,7 +63,7 @@ const PageList = (props) => {
         activePage={activePage}
         changePage={handlePage}
         totalItemsCount={totalPages}
-        pagingLimit={pagingLimit}
+        pagingLimit={limit}
       />
     </div>
   );
