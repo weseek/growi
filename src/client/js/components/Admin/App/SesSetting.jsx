@@ -34,44 +34,36 @@ function SmtpSetting(props) {
   return (
     <React.Fragment>
       <div id="mail-smtp" className="tab-pane active mt-5">
-        <div className="row form-group mb-5">
-          <label className="col-md-3 col-form-label text-left">{t('admin:app_setting.smtp_settings')}</label>
-          <div className="col-md-4">
-            <label>{t('admin:app_setting.host')}</label>
+        <label className="col-md-3 col-form-label text-left mb-3">SES設定</label>
+
+        <div className="row form-group">
+          <label className="text-left text-md-right col-md-3 col-form-label">
+            Access key ID
+          </label>
+          <div className="col-md-6">
             <input
               className="form-control"
               type="text"
-              defaultValue={adminAppContainer.state.smtpHost || ''}
-              onChange={(e) => { adminAppContainer.changeSmtpHost(e.target.value) }}
-            />
-          </div>
-          <div className="col-md-2">
-            <label>{t('admin:app_setting.port')}</label>
-            <input
-              className="form-control"
-              defaultValue={adminAppContainer.state.smtpPort || ''}
-              onChange={(e) => { adminAppContainer.changeSmtpPort(e.target.value) }}
+              defaultValue={adminAppContainer.state.sesAccessKeyId || ''}
+              onChange={(e) => {
+                adminAppContainer.changeSesAccessKeyId(e.target.value);
+              }}
             />
           </div>
         </div>
 
-        <div className="row form-group mb-5">
-          <div className="col-md-3 offset-md-3">
-            <label>{t('admin:app_setting.user')}</label>
+        <div className="row form-group">
+          <label className="text-left text-md-right col-md-3 col-form-label">
+            Secret access key
+          </label>
+          <div className="col-md-6">
             <input
               className="form-control"
               type="text"
-              defaultValue={adminAppContainer.state.smtpUser || ''}
-              onChange={(e) => { adminAppContainer.changeSmtpUser(e.target.value) }}
-            />
-          </div>
-          <div className="col-md-3">
-            <label>{t('Password')}</label>
-            <input
-              className="form-control"
-              type="password"
-              defaultValue={adminAppContainer.state.smtpPassword || ''}
-              onChange={(e) => { adminAppContainer.changeSmtpPassword(e.target.value) }}
+              defaultValue={adminAppContainer.state.sesSecretAccessKey || ''}
+              onChange={(e) => {
+                adminAppContainer.changeSesSecretAccessKey(e.target.value);
+              }}
             />
           </div>
         </div>
