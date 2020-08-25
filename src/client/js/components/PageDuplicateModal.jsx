@@ -7,6 +7,7 @@ import {
 
 import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from './UnstatedUtils';
+import { toastError } from '../util/apiNotification';
 
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
@@ -26,15 +27,9 @@ const PageDuplicateModal = (props) => {
 
   const [errs, setErrs] = useState(null);
 
-  // ToDo: subordinatedPaths is not used yet so commented. Will use when all the child of { path } is needed.
-  // const [subordinatedPaths, setSubordinatedPaths] = useState([]);
-  // for now we use the code below.
-  const [setSubordinatedPaths] = useState([]);
-  const [getSubordinatedError, setGetSuborinatedError] = useState(null);
-  const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
-  const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
-  const [isDuplicateExistList, setIsDuplicateExistList] = useState([]);
-
+  const [subordinatedPaths, setSubordinatedPaths] = useState([]);
+  const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(false);
+  const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(false);
 
   function getSubordinatedDuplicateList(value) {
 
@@ -46,7 +41,6 @@ const PageDuplicateModal = (props) => {
     // setIsDuplicateExist(duplicatedList);
 
     // ToDo: for now we use dummy path
-    setIsDuplicateExistList(['/test146/test147', value]);
   }
 
   /**
@@ -74,10 +68,12 @@ const PageDuplicateModal = (props) => {
   const getSubordinatedList = useCallback(async() => {
     try {
       const res = await appContainer.apiv3Get('/pages/subordinated-list', { path });
-      setSubordinatedPaths(res.data.resultPaths);
+      const { subordinatedPaths } = res.data;
+      setSubordinatedPaths(subordinatedPaths);
     }
     catch (err) {
-      setGetSuborinatedError(t('modal_duplicate.label.Fail to get subordinated pages'));
+      setErrs(err);
+      toastError(t('modal_duplicate.label.Fail to get subordinated pages'));
     }
   }, [appContainer, path, t]);
 
@@ -157,29 +153,35 @@ const PageDuplicateModal = (props) => {
           </label>
         </div>
 
-        <div
-          className="custom-control custom-checkbox custom-checkbox-warning"
-          style={{ display: (isDuplicateExistList.length !== 0) && isDuplicateRecursively ? '' : 'none' }}
-        >
-          <input
-            className="custom-control-input"
-            name="withoutExistRecursively"
-            id="cbDuplicatewithoutExistRecursively"
-            type="checkbox"
-            checked={isDuplicateRecursivelyWithoutExistPath}
-            onChange={changeIsDuplicateRecursivelyWithoutExistPathHandler}
-          />
-          <label className="custom-control-label" htmlFor="cbDuplicatewithoutExistRecursively">
-            { t('modal_duplicate.label.Duplicate without exist path') }
-          </label>
-        </div>
-
         <div>
           <ul className="duplicate-name">
-            {isDuplicateRecursively && isDuplicateExistList.length !== 0 && isDuplicateExistList}
+            {subordinatedPaths.map((subordinatedPath) => {
+              return (
+                <li key={subordinatedPath._id}>
+                  <a href={subordinatedPath.path}>
+                    {subordinatedPath.path}
+                  </a>
+                </li>
+              );
+            })}
           </ul>
         </div>
-        <div> {getSubordinatedError} </div>
+
+        {isDuplicateRecursively && (
+          <div className="custom-control custom-checkbox custom-checkbox-warning">
+            <input
+              className="custom-control-input"
+              name="withoutExistRecursively"
+              id="cbDuplicatewithoutExistRecursively"
+              type="checkbox"
+              checked={isDuplicateRecursivelyWithoutExistPath}
+              onChange={changeIsDuplicateRecursivelyWithoutExistPathHandler}
+            />
+            <label className="custom-control-label" htmlFor="cbDuplicatewithoutExistRecursively">
+              { t('modal_duplicate.label.Duplicate without exist path') }
+            </label>
+          </div>
+        )}
       </ModalBody>
       <ModalFooter>
         <ApiErrorMessageList errs={errs} targetPath={pageNameInput} />
