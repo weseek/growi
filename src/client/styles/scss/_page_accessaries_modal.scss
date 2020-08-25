@@ -1,12 +1,7 @@
 .grw-page-accessories-modal {
-  .grw-page-list-icon,
-  .grw-time-line-icon,
-  .grw-recent-changes-icon,
-  .grw-attachment-icon {
-    svg {
-      width: 20px;
-      height: 20px;
-      margin-right: 5px;
-    }
+  .nav-link svg {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
   }
 }

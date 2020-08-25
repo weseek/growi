@@ -249,14 +249,12 @@ pre:not(.hljs):not(.CodeMirror-line) {
 .top-of-table-contents {
   border-color: $bordercolor-nav-tabs;
 
-  .btn-page-list-icon,
-  .btn-time-line-icon,
-  .btn-recent-changes-icon,
-  .btn-attachment-icon {
+  .grw-btn-top-of-table {
     fill: $color-link;
   }
-  .btn-seen-user-list {
+  .grw-seen-user-list {
     border-color: $bordercolor-nav-tabs;
+
     .btn {
       color: $color-seen-user;
       &:active {
@@ -277,10 +275,7 @@ pre:not(.hljs):not(.CodeMirror-line) {
   .nav-title {
     color: $color-link;
   }
-  .grw-page-list-icon,
-  .grw-time-line-icon,
-  .grw-recent-changes-icon,
-  .grw-attachment-icon {
+  .nav-link svg {
     fill: $color-link;
   }
   .active-border {

@@ -35,7 +35,7 @@ const PageAccessoriesModal = (props) => {
       <Modal size="lg" isOpen={props.isOpen} toggle={closeModalHandler} className="grw-page-accessories-modal">
         <ModalBody>
           <Nav className="nav-title border-bottom">
-            <NavItem type="button" className={`nav-link grw-page-list-icon ${activeTab === 'pagelist' && 'active active-border'}`}>
+            <NavItem type="button" className={`nav-link ${activeTab === 'pagelist' && 'active active-border'}`}>
               <NavLink
                 onClick={() => {
                   switchActiveTab('pagelist');
@@ -45,7 +45,7 @@ const PageAccessoriesModal = (props) => {
                 {t('page_list')}
               </NavLink>
             </NavItem>
-            <NavItem type="button" className={`nav-link grw-time-line-icon ${activeTab === 'timeline' && 'active active-border'}`}>
+            <NavItem type="button" className={`nav-link ${activeTab === 'timeline' && 'active active-border'}`}>
               <NavLink
                 onClick={() => {
                   switchActiveTab('timeline');
@@ -55,7 +55,7 @@ const PageAccessoriesModal = (props) => {
                 {t('Timeline View')}
               </NavLink>
             </NavItem>
-            <NavItem type="button" className={`nav-link grw-recent-changes-icon ${activeTab === 'page-history' && 'active active-border'}`}>
+            <NavItem type="button" className={`nav-link ${activeTab === 'page-history' && 'active active-border'}`}>
               <NavLink
                 onClick={() => {
                   switchActiveTab('page-history');
@@ -65,7 +65,7 @@ const PageAccessoriesModal = (props) => {
                 {t('History')}
               </NavLink>
             </NavItem>
-            <NavItem type="button" className={`nav-link grw-attachment-icon ${activeTab === 'attachment' && 'active active-border'}`}>
+            <NavItem type="button" className={`nav-link ${activeTab === 'attachment' && 'active active-border'}`}>
               <NavLink
                 onClick={() => {
                   switchActiveTab('attachment');
