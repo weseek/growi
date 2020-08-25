@@ -40,9 +40,8 @@ class SlackNotification extends React.Component {
 
     return (
       <div className="grw-slack-notification">
-        <div className="input-group input-group-sm extended-setting">
+        <div className="input-group  extended-setting">
           <label className="input-group-addon">
-            {/* slack redesign area */}
             <div className="custom-control custom-switch ">
               <input
                 type="checkbox"
@@ -54,7 +53,6 @@ class SlackNotification extends React.Component {
               <label className="custom-control-label" htmlFor="slackSwitch">
               </label>
             </div>
-            {/* slack redesign area end */}
 
           </label>
           <input

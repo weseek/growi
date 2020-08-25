@@ -33,62 +33,41 @@ label.custom-control-label {
   }
 }
 
-//slack btn
+//lg
 
 .grw-slack-notification {
-  $custom-control-indicator-size-slack: 1.8rem; //size shitei
-
-  //from _variables.scss of bs4
-  $custom-switch-width: $custom-control-indicator-size-slack * 1.75;
-  $custom-switch-indicator-border-radius: $custom-control-indicator-size-slack / 2;
-  $custom-switch-indicator-size: subtract($custom-control-indicator-size-slack, $custom-control-indicator-border-width * 4);
-
-  //base class from _custom-forms.scss of bs4
-  .custom-control {
-    padding-left: $custom-control-gutter + $custom-control-indicator-size-slack;
-  }
-  .custom-control-input {
-    width: $custom-control-indicator-size-slack;
-    height: ($font-size-base * $line-height-base + $custom-control-indicator-size-slack) / 2 !important;
-  }
-  //base end
-
   .custom-switch {
-    padding-left: $custom-switch-width + $custom-control-gutter;
+    $custom-control-indicator-size-lg: $custom-control-indicator-size * 1.5;
+    $custom-switch-width-lg: $custom-control-indicator-size-lg * 1.75;
+    $custom-control-gutter-lg: $custom-control-gutter * 1.5;
+    $custom-control-indicator-size-lg: $custom-control-indicator-size * 1.5;
+    $custom-switch-indicator-size-lg: subtract($custom-control-indicator-size-lg, $custom-control-indicator-border-width * 4);
 
+    padding-left: $custom-switch-width-lg + $custom-control-gutter-lg;
+
+    line-height: $custom-control-indicator-size-lg;
     .custom-control-label {
       &::before {
-        top: ($font-size-base * $line-height-base - $custom-control-indicator-size-slack) / 2;
-        left: -($custom-switch-width + $custom-control-gutter);
-        width: $custom-switch-width;
-        height: $custom-control-indicator-size-slack;
-        pointer-events: all;
-        // stylelint-disable-next-line property-blacklist
-        border-radius: $custom-switch-indicator-border-radius;
+        top: ($font-size-base * $line-height-base - $custom-control-indicator-size-lg) / 2;
+
+        left: -($custom-switch-width-lg + $custom-control-gutter-lg);
+        width: $custom-switch-width-lg;
+        height: $custom-control-indicator-size-lg;
+        border-radius: $custom-control-indicator-size-lg/2;
       }
 
       &::after {
-        top: add(($font-size-base * $line-height-base - $custom-control-indicator-size-slack) / 2, $custom-control-indicator-border-width * 2);
-        left: add(-($custom-switch-width + $custom-control-gutter), $custom-control-indicator-border-width * 2);
-        width: $custom-switch-indicator-size;
-        height: $custom-switch-indicator-size;
-        background-color: $custom-control-indicator-border-color;
-        // stylelint-disable-next-line property-blacklist
-        border-radius: $custom-switch-indicator-border-radius;
-        @include transition(transform 0.15s ease-in-out, $custom-forms-transition);
+        top: add(($font-size-base * $line-height-base - $custom-control-indicator-size-lg) / 2, $custom-control-indicator-border-width * 2);
+        left: add(-($custom-switch-width-lg + $custom-control-gutter-lg), $custom-control-indicator-border-width * 2);
+        width: $custom-switch-indicator-size-lg;
+        height: $custom-switch-indicator-size-lg;
+        border-radius: $custom-control-indicator-size-lg/2;
       }
     }
 
     .custom-control-input:checked ~ .custom-control-label {
       &::after {
-        background-color: $custom-control-indicator-bg;
-        transform: translateX($custom-switch-width - $custom-control-indicator-size-slack);
-      }
-    }
-
-    .custom-control-input:disabled {
-      &:checked ~ .custom-control-label::before {
-        background-color: $custom-control-indicator-checked-disabled-bg;
+        transform: translateX($custom-switch-width-lg - $custom-control-indicator-size-lg);
       }
     }
   }
