@@ -29,6 +29,7 @@ class MailSetting extends React.Component {
 
     this.openInitializeValueModal = this.openInitializeValueModal.bind(this);
     this.closeInitializeValueModal = this.closeInitializeValueModal.bind(this);
+    this.submitFromAdressHandler = this.submitFromAdressHandler.bind(this);
     this.submitHandler = this.submitHandler.bind(this);
     this.initialize = this.initialize.bind(this);
   }
@@ -54,14 +55,26 @@ class MailSetting extends React.Component {
     }
   }
 
+  async submitFromAdressHandler() {
+    const { t, adminAppContainer } = this.props;
+
+    try {
+      await adminAppContainer.updateFromAdressHandler();
+      toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.mail_settings') }));
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+  }
+
   async initialize() {
     const { t, adminAppContainer } = this.props;
 
     try {
       const mailSettingParams = await adminAppContainer.initializeMailSettingHandler();
-      toastSuccess(t('toaster.initialize_successed', { target: t('admin:app_setting.mail_settings') }));
+      toastSuccess(t('toaster.initialize_successed', { target: t('admin:app_setting.smtp_settings') }));
       // convert values to '' if value is null for overwriting values of inputs with refs
-      this.emailInput.current.value = mailSettingParams.fromAddress || '';
       this.hostInput.current.value = mailSettingParams.smtpHost || '';
       this.portInput.current.value = mailSettingParams.smtpPort || '';
       this.userInput.current.value = mailSettingParams.smtpUser || '';
@@ -93,70 +106,78 @@ class MailSetting extends React.Component {
             />
           </div>
         </div>
-
-        <div className="row form-group mb-5">
-          <label className="col-md-3 col-form-label text-left">{t('admin:app_setting.smtp_settings')}</label>
-          <div className="col-md-4">
-            <label>{t('admin:app_setting.host')}</label>
-            <input
-              className="form-control"
-              type="text"
-              ref={this.hostInput}
-              defaultValue={adminAppContainer.state.smtpHost || ''}
-              onChange={(e) => { adminAppContainer.changeSmtpHost(e.target.value) }}
-            />
-          </div>
-          <div className="col-md-2">
-            <label>{t('admin:app_setting.port')}</label>
-            <input
-              className="form-control"
-              ref={this.portInput}
-              defaultValue={adminAppContainer.state.smtpPort || ''}
-              onChange={(e) => { adminAppContainer.changeSmtpPort(e.target.value) }}
-            />
-          </div>
-        </div>
-
-        <div className="row form-group mb-5">
-          <div className="col-md-3 offset-md-3">
-            <label>{t('admin:app_setting.user')}</label>
-            <input
-              className="form-control"
-              type="text"
-              ref={this.userInput}
-              defaultValue={adminAppContainer.state.smtpUser || ''}
-              onChange={(e) => { adminAppContainer.changeSmtpUser(e.target.value) }}
-            />
-          </div>
-          <div className="col-md-3">
-            <label>{t('Password')}</label>
-            <input
-              className="form-control"
-              type="password"
-              ref={this.passwordInput}
-              defaultValue={adminAppContainer.state.smtpPassword || ''}
-              onChange={(e) => { adminAppContainer.changeSmtpPassword(e.target.value) }}
-            />
-          </div>
-        </div>
-
         <div className="row my-3">
-          <div className="offset-5">
-            <button type="button" className="btn btn-primary" onClick={this.submitHandler} disabled={adminAppContainer.state.retrieveError != null}>
-              { t('Update') }
-            </button>
-          </div>
-          <div className="offset-1">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={this.openInitializeValueModal}
-              disabled={adminAppContainer.state.retrieveError != null}
-            >
-              {t('admin:app_setting.initialize_mail_settings')}
-            </button>
+          <div className="mx-auto">
+            <button type="button" className="btn btn-primary" onClick={this.submitFromAdressHandler}>{ t('Update') }</button>
           </div>
         </div>
+        <div id="mail-smtp" className="tab-pane active mt-5">
+          <div className="row form-group mb-5">
+            <label className="col-md-3 col-form-label text-left">{t('admin:app_setting.smtp_settings')}</label>
+            <div className="col-md-4">
+              <label>{t('admin:app_setting.host')}</label>
+              <input
+                className="form-control"
+                type="text"
+                ref={this.hostInput}
+                defaultValue={adminAppContainer.state.smtpHost || ''}
+                onChange={(e) => { adminAppContainer.changeSmtpHost(e.target.value) }}
+              />
+            </div>
+            <div className="col-md-2">
+              <label>{t('admin:app_setting.port')}</label>
+              <input
+                className="form-control"
+                ref={this.portInput}
+                defaultValue={adminAppContainer.state.smtpPort || ''}
+                onChange={(e) => { adminAppContainer.changeSmtpPort(e.target.value) }}
+              />
+            </div>
+          </div>
+
+          <div className="row form-group mb-5">
+            <div className="col-md-3 offset-md-3">
+              <label>{t('admin:app_setting.user')}</label>
+              <input
+                className="form-control"
+                type="text"
+                ref={this.userInput}
+                defaultValue={adminAppContainer.state.smtpUser || ''}
+                onChange={(e) => { adminAppContainer.changeSmtpUser(e.target.value) }}
+              />
+            </div>
+            <div className="col-md-3">
+              <label>{t('Password')}</label>
+              <input
+                className="form-control"
+                type="password"
+                ref={this.passwordInput}
+                defaultValue={adminAppContainer.state.smtpPassword || ''}
+                onChange={(e) => { adminAppContainer.changeSmtpPassword(e.target.value) }}
+              />
+            </div>
+          </div>
+
+          <div className="row my-3">
+            <div className="offset-5">
+              <button type="button" className="btn btn-primary" onClick={this.submitHandler} disabled={adminAppContainer.state.retrieveError != null}>
+                { t('Update') }
+              </button>
+            </div>
+            <div className="offset-1">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={this.openInitializeValueModal}
+                disabled={adminAppContainer.state.retrieveError != null}
+              >
+                {t('admin:app_setting.initialize_mail_settings')}
+              </button>
+            </div>
+          </div>
+        </div>
+
+
         <Modal isOpen={this.state.isInitializeValueModalOpen} toggle={this.closeInitializeValueModal} className="initialize-mail-settings">
           <ModalHeader tag="h4" toggle={this.closeInitializeValueModal} className="bg-danger text-light">
             {t('admin:app_setting.initialize_mail_modal_header')}

@@ -229,7 +229,10 @@ module.exports = function(crowi, app) {
     }
     // reference
     else {
-      res.set('Content-Type', attachment.fileFormat);
+      res.set({
+        'Content-Type': attachment.fileFormat,
+        'Content-Security-Policy': "script-src 'unsafe-hashes'",
+      });
     }
   }
 

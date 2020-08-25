@@ -1,5 +1,5 @@
 /* eslint-disable react/no-danger */
-import React, { Suspense } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -7,6 +7,7 @@ import { toastError } from '../../../util/apiNotification';
 
 import AdminSamlSecurityContainer from '../../../services/AdminSamlSecurityContainer';
 import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
+import { withLoadingSppiner } from '../../SuspenseUtils';
 
 import SamlSecuritySettingContents from './SamlSecuritySettingContents';
 
@@ -38,22 +39,8 @@ SamlSecurityManagement.propTypes = {
   adminSamlSecurityContainer: PropTypes.instanceOf(AdminSamlSecurityContainer).isRequired,
 };
 
-const SamlSecurityManagementWithUnstatedContainer = withUnstatedContainers(SamlSecurityManagement, [
+const SamlSecurityManagementWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(SamlSecurityManagement), [
   AdminSamlSecurityContainer,
 ]);
 
-function SamlSecurityManagementWithContainerWithSuspense(props) {
-  return (
-    <Suspense
-      fallback={(
-        <div className="row">
-          <i className="fa fa-5x fa-spinner fa-pulse mx-auto text-muted"></i>
-        </div>
-      )}
-    >
-      <SamlSecurityManagementWithUnstatedContainer />
-    </Suspense>
-  );
-}
-
-export default SamlSecurityManagementWithContainerWithSuspense;
+export default SamlSecurityManagementWithUnstatedContainer;
