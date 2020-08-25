@@ -1,10 +1,11 @@
 /* eslint-disable react/no-danger */
-import React, { Suspense } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
 import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
+import { withLoadingSppiner } from '../../SuspenseUtils';
 
 import AdminOidcSecurityContainer from '../../../services/AdminOidcSecurityContainer';
 
@@ -38,22 +39,8 @@ OidcSecurityManagement.propTypes = {
   adminOidcSecurityContainer: PropTypes.instanceOf(AdminOidcSecurityContainer).isRequired,
 };
 
-const OidcSecurityManagementWithUnstatedContainer = withUnstatedContainers(OidcSecurityManagement, [
+const OidcSecurityManagementWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(OidcSecurityManagement), [
   AdminOidcSecurityContainer,
 ]);
 
-function OidcSecurityManagementWithContainerWithSuspense(props) {
-  return (
-    <Suspense
-      fallback={(
-        <div className="row">
-          <i className="fa fa-5x fa-spinner fa-pulse mx-auto text-muted"></i>
-        </div>
-      )}
-    >
-      <OidcSecurityManagementWithUnstatedContainer />
-    </Suspense>
-  );
-}
-
-export default OidcSecurityManagementWithContainerWithSuspense;
+export default OidcSecurityManagementWithUnstatedContainer;

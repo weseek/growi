@@ -239,6 +239,19 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
+   * Update from adress
+   * @memberOf AdminAppContainer
+   * @return {Array} Appearance
+   */
+  async updateFromAdressHandler() {
+    const response = await this.appContainer.apiv3.put('/app-settings/from-address', {
+      fromAddress: this.state.fromAddress,
+    });
+    const { mailSettingParams } = response.data;
+    return mailSettingParams;
+  }
+
+  /**
    * Update mail setting
    * @memberOf AdminAppContainer
    * @return {Array} Appearance

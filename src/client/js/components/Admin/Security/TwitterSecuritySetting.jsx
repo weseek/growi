@@ -1,10 +1,11 @@
 /* eslint-disable react/no-danger */
-import React, { Suspense } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
 import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
+import { withLoadingSppiner } from '../../SuspenseUtils';
 
 import AdminTwitterSecurityContainer from '../../../services/AdminTwitterSecurityContainer';
 
@@ -40,22 +41,8 @@ TwitterSecurityManagement.propTypes = {
   adminTwitterSecurityContainer: PropTypes.instanceOf(AdminTwitterSecurityContainer).isRequired,
 };
 
-const TwitterSecurityManagementWithUnstatedContainer = withUnstatedContainers(TwitterSecurityManagement, [
+const TwitterSecurityManagementWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(TwitterSecurityManagement), [
   AdminTwitterSecurityContainer,
 ]);
 
-function TwitterSecurityManagementWithContainerWithSuspense(props) {
-  return (
-    <Suspense
-      fallback={(
-        <div className="row">
-          <i className="fa fa-5x fa-spinner fa-pulse mx-auto text-muted"></i>
-        </div>
-      )}
-    >
-      <TwitterSecurityManagementWithUnstatedContainer />
-    </Suspense>
-  );
-}
-
-export default TwitterSecurityManagementWithContainerWithSuspense;
+export default TwitterSecurityManagementWithUnstatedContainer;
