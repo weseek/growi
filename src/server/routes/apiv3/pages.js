@@ -7,6 +7,9 @@ const express = require('express');
 
 const router = express.Router();
 
+const PAGE_ITEMS = 5;
+
+
 /**
  * @swagger
  *  tags:
@@ -87,7 +90,17 @@ module.exports = (crowi) => {
     const { path } = req.query;
     try {
       const result = await Page.findListWithDescendants(path, req.user);
-      return res.apiv3(result);
+
+      const paginateResult = await Page.paginate(
+        {},
+        {
+          page: result,
+          limit: PAGE_ITEMS,
+          sort: { createdAt: -1 },
+        },
+      );
+      console.log(paginateResult);
+      return res.apiv3(paginateResult);
     }
     catch (err) {
       logger.error('Failed to get Descendants Pages', err);
