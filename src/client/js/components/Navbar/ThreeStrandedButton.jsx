@@ -6,9 +6,9 @@ const ThreeStrandedButton = (props) => {
 
   const { t } = props;
 
-  function threeStrandedButtonClickedHandler(clickedButton) {
+  function threeStrandedButtonClickedHandler(viewType) {
     if (props.onThreeStrandedButtonClicked != null) {
-      props.onThreeStrandedButtonClicked(clickedButton);
+      props.onThreeStrandedButtonClicked(viewType);
     }
   }
 
