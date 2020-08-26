@@ -260,11 +260,24 @@ export default class AdminAppContainer extends Container {
    */
   async updateMailSettingHandler() {
     const response = await this.appContainer.apiv3.put('/app-settings/mail-setting', {
-      fromAddress: this.state.fromAddress,
       smtpHost: this.state.smtpHost,
       smtpPort: this.state.smtpPort,
       smtpUser: this.state.smtpUser,
       smtpPassword: this.state.smtpPassword,
+    });
+    const { mailSettingParams } = response.data;
+    return mailSettingParams;
+  }
+
+  /**
+   * Update ses setting
+   * @memberOf AdminAppContainer
+   * @return {Array} Appearance
+   */
+  async updateSesSettingHandler() {
+    const response = await this.appContainer.apiv3.put('/app-settings/ses-setting', {
+      sesAccessKeyId: this.state.sesAccessKeyId,
+      sesSecretAccessKey: this.state.sesSecretAccessKey,
     });
     const { mailSettingParams } = response.data;
     return mailSettingParams;
