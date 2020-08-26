@@ -18,6 +18,8 @@ export default class AdminSamlSecurityContainer extends Container {
     super();
 
     this.appContainer = appContainer;
+    this.dummySamlEntryPoint = 0;
+    this.dummySamlEntryPointForError = 1;
 
     this.state = {
       retrieveError: null,
@@ -25,7 +27,8 @@ export default class AdminSamlSecurityContainer extends Container {
       useOnlyEnvVars: false,
       callbackUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/saml/callback'),
       missingMandatoryConfigKeys: [],
-      samlEntryPoint: '',
+      // set dummy value tile for using suspense
+      samlEntryPoint: this.dummySamlEntryPoint,
       samlIssuer: '',
       samlCert: '',
       samlAttrMapId: '',
@@ -36,6 +39,15 @@ export default class AdminSamlSecurityContainer extends Container {
       isSameUsernameTreatedAsIdenticalUser: false,
       isSameEmailTreatedAsIdenticalUser: false,
       samlABLCRule: '',
+      envEntryPoint: '',
+      envIssuer: '',
+      envCert: '',
+      envAttrMapId: '',
+      envAttrMapUsername: '',
+      envAttrMapMail: '',
+      envAttrMapFirstName: '',
+      envAttrMapLastName: '',
+      envABLCRule: '',
     };
 
   }
@@ -61,8 +73,16 @@ export default class AdminSamlSecurityContainer extends Container {
         isSameUsernameTreatedAsIdenticalUser: samlAuth.isSameUsernameTreatedAsIdenticalUser,
         isSameEmailTreatedAsIdenticalUser: samlAuth.isSameEmailTreatedAsIdenticalUser,
         samlABLCRule: samlAuth.samlABLCRule,
+        envEntryPoint: samlAuth.samlEnvVarEntryPoint,
+        envIssuer: samlAuth.samlEnvVarIssuer,
+        envCert: samlAuth.samlEnvVarCert,
+        envAttrMapId: samlAuth.samlEnvVarAttrMapId,
+        envAttrMapUsername: samlAuth.samlEnvVarAttrMapUsername,
+        envAttrMapMail: samlAuth.samlEnvVarAttrMapMail,
+        envAttrMapFirstName: samlAuth.samlEnvVarAttrMapFirstName,
+        envAttrMapLastName: samlAuth.samlEnvVarAttrMapLastName,
+        envABLCRule: samlAuth.samlEnvVarABLCRule,
       });
-      return samlAuth;
     }
     catch (err) {
       this.setState({ retrieveError: err });

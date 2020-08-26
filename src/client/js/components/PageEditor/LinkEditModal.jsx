@@ -58,7 +58,7 @@ class LinkEditModal extends React.PureComponent {
     this.getLinkTextPreviewDebounced = debounce(200, this.getLinkTextPreview.bind(this));
   }
 
-  componentDidUpdate(prevState) {
+  componentDidUpdate(prevProps, prevState) {
     const { linkInputValue: prevLinkInputValue } = prevState;
     const { linkInputValue } = this.state;
     if (linkInputValue !== prevLinkInputValue) {
@@ -89,14 +89,27 @@ class LinkEditModal extends React.PureComponent {
     });
   }
 
+  // parse link, link is ...
+  // case-1. url of this growi's page (ex. 'http://localhost:3000/hoge/fuga')
+  // case-2. absolute path of this growi's page (ex. '/hoge/fuga')
+  // case-3. relative path of this growi's page (ex. '../fuga', 'hoge')
+  // case-4. external link (ex. 'https://growi.org')
+  // case-5. the others (ex. '')
   parseLinkAndSetState(link, type) {
+    // create url from link, add dummy origin if link is not valid url.
+    // ex-1. link = 'https://growi.org/' -> url = 'https://growi.org/' (case-1,4)
+    // ex-2. link = 'hoge' -> url = 'http://example.com/hoge' (case-2,3,5)
     const url = new URL(link, 'http://example.com');
+    const isUrl = url.origin !== 'http://example.com';
+
     let isUseRelativePath = false;
     let reshapedLink = link;
 
-    reshapedLink = this.checkIsPageUrlAndConvertToPath(reshapedLink, url);
+    // if case-1, reshapedLink becomes page path
+    reshapedLink = this.convertUrlToPathIfPageUrl(reshapedLink, url);
 
-    if (url.origin === 'http://example.com' && !reshapedLink.startsWith('/') && reshapedLink !== '') {
+    // case-3
+    if (!isUrl && !reshapedLink.startsWith('/') && reshapedLink !== '') {
       isUseRelativePath = true;
       const rootPath = this.getRootPath(type);
       reshapedLink = path.resolve(rootPath, reshapedLink);
@@ -109,7 +122,8 @@ class LinkEditModal extends React.PureComponent {
   }
 
   // return path name of link if link is this growi page url, else return original link.
-  checkIsPageUrlAndConvertToPath(link, url) {
+  convertUrlToPathIfPageUrl(link, url) {
+    // when link is this growi's page url, url.origin === window.location.origin and return path name
     return url.origin === window.location.origin ? decodeURI(url.pathname) : link;
   }
 
@@ -144,9 +158,7 @@ class LinkEditModal extends React.PureComponent {
   renderPreview() {
     return (
       <div className="linkedit-preview">
-        <Preview
-          markdown={this.state.markdown}
-        />
+        <Preview markdown={this.state.markdown} />
       </div>
     );
   }
@@ -209,12 +221,7 @@ class LinkEditModal extends React.PureComponent {
 
   generateLink() {
     const {
-      linkInputValue,
-      labelInputValue,
-      linkerType,
-      isUseRelativePath,
-      isUsePermanentLink,
-      permalink,
+      linkInputValue, labelInputValue, linkerType, isUseRelativePath, isUsePermanentLink, permalink,
     } = this.state;
 
     let reshapedLink = linkInputValue;
@@ -223,13 +230,7 @@ class LinkEditModal extends React.PureComponent {
       reshapedLink = rootPath === linkInputValue ? '.' : path.relative(rootPath, linkInputValue);
     }
 
-    return new Linker(
-      linkerType,
-      labelInputValue,
-      reshapedLink,
-      isUsePermanentLink,
-      permalink,
-    );
+    return new Linker(linkerType, labelInputValue, reshapedLink, isUsePermanentLink, permalink);
   }
 
   getRootPath(type) {
@@ -264,9 +265,7 @@ class LinkEditModal extends React.PureComponent {
                 </div>
               </form>
 
-              <div className="d-block d-lg-none mb-3 overflow-auto">
-                {this.renderPreview()}
-              </div>
+              <div className="d-block d-lg-none mb-3 overflow-auto">{this.renderPreview()}</div>
 
               <div className="card">
                 <div className="card-body">
@@ -344,9 +343,7 @@ class LinkEditModal extends React.PureComponent {
               </div>
             </div>
 
-            <div className="col d-none d-lg-block pr-0 mr-3 overflow-auto">
-              {this.renderPreview()}
-            </div>
+            <div className="col d-none d-lg-block pr-0 mr-3 overflow-auto">{this.renderPreview()}</div>
           </div>
         </ModalBody>
         <ModalFooter>

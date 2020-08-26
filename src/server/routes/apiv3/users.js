@@ -119,7 +119,7 @@ module.exports = (crowi) => {
    *            description: page number
    *            schema:
    *              type: number
-   *          - name:  selectedStatusList
+   *          - name: selectedStatusList
    *            in: query
    *            description: status list
    *            schema:
@@ -184,6 +184,7 @@ module.exports = (crowi) => {
           sort: sortOutput,
           page,
           limit: PAGE_ITEMS,
+          select: User.USER_PUBLIC_FIELDS,
         },
       );
       return res.apiv3({ paginateResult });
