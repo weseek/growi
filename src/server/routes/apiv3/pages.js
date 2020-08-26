@@ -89,8 +89,7 @@ module.exports = (crowi) => {
   router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
     const { path } = req.query;
     try {
-      const result = await Page.findListWithDescendants(path, req.user, { limit: 8, offset: 0 });
-      console.log(result);
+      const result = await Page.findListWithDescendants(path, req.user, { limit:, offset});
 
       return res.apiv3(result);
     }
