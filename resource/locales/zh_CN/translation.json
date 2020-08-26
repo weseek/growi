@@ -1,5 +1,6 @@
 {
-	"Help": "帮助",
+  "Help": "帮助",
+  "view": "View",
 	"Edit": "编辑",
 	"Delete": "删除",
 	"delete_all": "删除所有",
@@ -395,6 +396,7 @@
 		"open_sandbox": "开放式沙箱"
 	},
 	"hackmd": {
+    "hack_md": "HackMD",
 		"not_set_up": "HackMD is not set up.",
 		"start_to_edit": "Start to edit with HackMD",
 		"clone_page_content": "Click to clone page content and start to edit.",
