@@ -1,17 +1,13 @@
 export default class Linker {
 
   constructor(
-      type,
-      label,
-      link,
-      isUsePermanentLink = false,
-      permalink = '',
+      type = this.types.markdownLink,
+      label = '',
+      link = '',
   ) {
     this.type = type;
     this.label = label;
     this.link = link;
-    this.isUsePermanentLink = isUsePermanentLink;
-    this.permalink = permalink;
 
     this.generateMarkdownText = this.generateMarkdownText.bind(this);
   }
@@ -72,15 +68,10 @@ export default class Linker {
       link = label;
     }
 
-    const isUsePermanentLink = false;
-    const permalink = '';
-
     return new Linker(
       type,
       label,
       link,
-      isUsePermanentLink,
-      permalink,
     );
   }
 

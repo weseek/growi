@@ -11,6 +11,7 @@ import {
 import { debounce } from 'throttle-debounce';
 
 import path from 'path';
+import validator from 'validator';
 import Preview from './Preview';
 
 import AppContainer from '../../services/AppContainer';
@@ -165,17 +166,23 @@ class LinkEditModal extends React.PureComponent {
   }
 
   async getPreview(path) {
-    let markdown = '';
-    let permalink = '';
-    try {
-      const res = await this.props.appContainer.apiGet('/pages.get', { path });
-      markdown = res.page.revision.body;
-      permalink = `${window.location.origin}/${res.page.id}`;
+    if (path.startsWith('/')) {
+      const isPermanentLink = validator.isMongoId(path.slice(1));
+      const pageId = isPermanentLink ? path.slice(1) : null;
+
+      let markdown = '';
+      let permalink = '';
+      try {
+        const { page } = await this.props.appContainer.apiGet('/pages.get', { path, page_id: pageId });
+        markdown = page.revision.body;
+        // create permanent link only if path isn't permanent link because checkbox for isUsePermanentLink is disabled when permalink is ''.
+        permalink = !isPermanentLink ? `${window.location.origin}/${page.id}` : '';
+      }
+      catch (err) {
+        markdown = `<div class="alert alert-warning" role="alert"><strong>${err.message}</strong></div>`;
+      }
+      this.setState({ markdown, permalink });
     }
-    catch (err) {
-      markdown = `<div class="alert alert-warning" role="alert"><strong>${err.message}</strong></div>`;
-    }
-    this.setState({ markdown, permalink });
   }
 
   getLinkTextPreview() {
@@ -245,7 +252,11 @@ class LinkEditModal extends React.PureComponent {
       reshapedLink = rootPath === linkInputValue ? '.' : path.relative(rootPath, linkInputValue);
     }
 
-    return new Linker(linkerType, labelInputValue, reshapedLink, isUsePermanentLink, permalink);
+    if (isUsePermanentLink && permalink != null) {
+      reshapedLink = permalink;
+    }
+
+    return new Linker(linkerType, labelInputValue, reshapedLink);
   }
 
   getRootPath(type) {
