@@ -16,25 +16,26 @@ const PageList = (props) => {
   const [pages, setPages] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [totalItemsCount, setTotalItemsCount] = useState(0);
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [paginationNumbers, setPaginationNumbers] = useState({});
-  const [limit, setLimit] = useState(Infinity);
+  const [limit, setLimit] = useState(null);
   const [offset, setOffset] = useState(0);
 
-  function createdPageList(selectPageNumber) {
+  function setPaginateOptionHandler(selectedPageNumber) {
+    setActivePage(selectedPageNumber);
     setLimit(appContainer.getConfig().recentCreatedLimit);
-    setOffset((selectPageNumber - 1) * limit)
-    const getPageList = useCallback(async() => {
-    const res = await appContainer.apiv3Get('/pages/list', { path, limit });
-
-      setPages(res.data.pages);
-      setIsLoading(true);
-      setLimit(limit);
-      setTotalPages(res.totalCount);
-    }, [appContainer, path, limit]);
+    setOffset((selectedPageNumber - 1) * limit);
   }
+
+  const getPageList = useCallback(async() => {
+    const res = await appContainer.apiv3Get('/pages/list', { path, limit, offset });
+
+    setPages(res.data.pages);
+    setIsLoading(true);
+    setTotalPages(res.data.totalCount);
+    setLimit(res.data.limit);
+    setOffset(res.data.offset);
+  }, [appContainer, path, limit, offset]);
 
   useEffect(() => {
     getPageList();
@@ -57,17 +58,15 @@ const PageList = (props) => {
     </li>
   ));
 
-  const handlePage = 'handlePage';
-
   return (
     <div className="page-list-container-create">
       <ul className="page-list-ul page-list-ul-flat mb-3">
         {pageList}
       </ul>
       <PaginationWrapper
-        activePage={3}
-        changePage={handlePage}
-        totalItemsCount={}
+        activePage={activePage}
+        changePage={setPaginateOptionHandler}
+        totalItemsCount={totalPages}
         pagingLimit={limit}
       />
     </div>
