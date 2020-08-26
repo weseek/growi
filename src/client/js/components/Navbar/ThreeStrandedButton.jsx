@@ -6,6 +6,12 @@ const ThreeStrandedButton = (props) => {
 
   const { t } = props;
 
+  function threeStrandedButtonClickedHandler() {
+    if (props.onThreeStrandedButtonClicked != null) {
+      props.onThreeStrandedButtonClicked();
+    }
+  }
+
   return (
     <div className="btn-group grw-three-stranded-button" role="group " aria-label="three-stranded-button">
       <button type="button" className="btn btn-outline-primary view-button">
@@ -27,6 +33,7 @@ const ThreeStrandedButton = (props) => {
 
 ThreeStrandedButton.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
+  onThreeStrandedButtonClicked: PropTypes.func,
 };
 
 export default withTranslation()(ThreeStrandedButton);
