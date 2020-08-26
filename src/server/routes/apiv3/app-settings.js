@@ -433,7 +433,7 @@ module.exports = (crowi) => {
       await validateMailSetting(req);
     }
     catch (err) {
-      const msg = 'SMTPを利用したテストメール送信に失敗しました。設定をみなおしてください。';
+      const msg = req.t('validation.failed_to_send_a_test_email');
       logger.error('Error', err);
       debug('Error validate mail setting: ', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-mailSetting-failed'));
