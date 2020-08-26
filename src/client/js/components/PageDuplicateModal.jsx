@@ -22,7 +22,7 @@ const PageDuplicateModal = (props) => {
   const { pageId, path } = pageContainer.state;
   const { crowi } = appContainer.config;
 
-  const [pageNameInput, setPageNameInput] = useState(path);
+  const [pageNameInput, setPageNameInput] = useState(`${path}_copy`);
   const [errorCode, setErrorCode] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
 
@@ -84,7 +84,7 @@ const PageDuplicateModal = (props) => {
               {isReachable
               ? (
                 <PagePathAutoComplete
-                  initializedPath={path}
+                  initializedPath={pageNameInput}
                   onSubmit={ppacSubmitHandler}
                   onInputChange={ppacInputChangeHandler}
                 />
