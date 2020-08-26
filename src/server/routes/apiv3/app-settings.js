@@ -73,7 +73,7 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *          smtpPassword:
  *            type: string
  *            description: password of client's smtp server
- *      sesSettingParams:
+ *      SesSettingParams:
  *        description: SesSettingParams
  *        type: object
  *        properties:
