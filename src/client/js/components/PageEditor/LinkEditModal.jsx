@@ -36,6 +36,7 @@ class LinkEditModal extends React.PureComponent {
       markdown: '',
       permalink: '',
       linkText: '',
+      linkDom: <a></a>,
     };
 
     this.isApplyPukiwikiLikeLinkerPlugin = window.growiRenderer.preProcessors.some(process => process.constructor.name === 'PukiwikiLikeLinker');
@@ -179,8 +180,22 @@ class LinkEditModal extends React.PureComponent {
 
   getLinkTextPreview() {
     const linker = this.generateLink();
+
+    if (this.isUsePermanentLink && this.permalink != null) {
+      linker.link = this.permalink;
+    }
+
+    if (linker.label === '') {
+      linker.label = linker.link;
+    }
+
     const linkText = linker.generateMarkdownText();
-    this.setState({ linkText });
+    const linkDom = this.generateLinkDom(linker);
+    this.setState({ linkText, linkDom });
+  }
+
+  generateLinkDom(linker) {
+    return <a href={linker.link}>{linker.label}</a>;
   }
 
   handleChangeTypeahead(selected) {
@@ -341,6 +356,8 @@ class LinkEditModal extends React.PureComponent {
                   </form>
                 </div>
               </div>
+              {/* TODO GW-3448 fix layout */}
+              {this.state.linkDom}
             </div>
 
             <div className="col d-none d-lg-block pr-0 mr-3 overflow-auto">{this.renderPreview()}</div>

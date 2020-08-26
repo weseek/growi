@@ -30,25 +30,15 @@ export default class Linker {
   }
 
   generateMarkdownText() {
-    let reshapedLink = this.link;
-
-    if (this.isUsePermanentLink && this.permalink != null) {
-      reshapedLink = this.permalink;
-    }
-
-    if (this.label === '') {
-      this.label = reshapedLink;
-    }
-
     if (this.type === Linker.types.pukiwikiLink) {
-      if (this.label === reshapedLink) return `[[${reshapedLink}]]`;
-      return `[[${this.label}>${reshapedLink}]]`;
+      if (this.label === this.link) return `[[${this.link}]]`;
+      return `[[${this.label}>${this.link}]]`;
     }
     if (this.type === Linker.types.growiLink) {
-      return `[${reshapedLink}]`;
+      return `[${this.link}]`;
     }
     if (this.type === Linker.types.markdownLink) {
-      return `[${this.label}](${reshapedLink})`;
+      return `[${this.label}](${this.link})`;
     }
   }
 
