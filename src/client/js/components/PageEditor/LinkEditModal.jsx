@@ -81,8 +81,9 @@ class LinkEditModal extends React.PureComponent {
     this.setState({
       show: true,
       labelInputValue: label,
-      linkerType: type,
       isUsePermanentLink: false,
+      permalink: '',
+      linkerType: type,
     });
   }
 
