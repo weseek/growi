@@ -2,13 +2,12 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { UncontrolledTooltip } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
+import urljoin from 'url-join';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 import OutsideShareLinkModal from '../OutsideShareLinkModal';
-
-import { toastError } from '../../util/apiNotification';
 
 import ArchiveCreateModal from '../ArchiveCreateModal';
 
@@ -34,17 +33,6 @@ const PageShareManagement = (props) => {
     setIsOutsideShareLinkModalShown(false);
   }
 
-  async function getMarkdown() {
-    const { revisionId } = pageContainer.state;
-    try {
-      const res = await appContainer.apiv3Get('/page/export', { revisionId });
-      return res.data.markdown;
-    }
-    catch (err) {
-      toastError(Error(t('export_bulk.failed_to_export')));
-    }
-  }
-
   async function getArchivePageData() {
     try {
       const res = await appContainer.apiv3Get('page/count-children-pages', { pageId });
@@ -55,13 +43,12 @@ const PageShareManagement = (props) => {
     }
   }
 
-  function exportPage(exportPageFile) {
-    // TODO implement
-  }
-
-  async function exportPageHundler(type) {
-    const markdown = await getMarkdown();
-    await exportPage(markdown, type);
+  async function exportPageHandler(format) {
+    const { pageId, revisionId } = pageContainer.state;
+    const url = new URL(urljoin(window.location.origin, '_api/v3/page/export', pageId));
+    url.searchParams.append('format', format);
+    url.searchParams.append('revisionId', revisionId);
+    window.location.href = url.href;
   }
 
   function openArchiveModalHandler() {
@@ -138,25 +125,9 @@ const PageShareManagement = (props) => {
           <i className="icon-fw icon-link"></i>{t('share_links.Shere this page link to public')}
           <span className="ml-2 badge badge-info badge-pill">{pageContainer.state.shareLinksNumber}</span>
         </button>
-        <button
-          type="button"
-          className="dropdown-item"
-          onClick={() => {
-            exportPageHundler('markdown');
-          }}
-        >
+        <button type="button" className="dropdown-item" onClick={() => { exportPageHandler('md') }}>
           <span>{t('export_bulk.export_page_markdown')}</span>
         </button>
-        <button
-          type="button"
-          className="dropdown-item"
-          onClick={() => {
-            exportPageHundler('pdf');
-          }}
-        >
-          <span>{t('export_bulk.export_page_pdf')}</span>
-        </button>
-
         <button className="dropdown-item" type="button" onClick={openArchiveModalHandler}>
           <i className="icon-fw"></i>{t('Create Archive Page')}
         </button>
