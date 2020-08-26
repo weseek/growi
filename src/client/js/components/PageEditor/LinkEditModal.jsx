@@ -56,7 +56,7 @@ class LinkEditModal extends React.PureComponent {
     this.getPreviewDebounced = debounce(200, this.getPreview.bind(this));
   }
 
-  componentDidUpdate(prevState) {
+  componentDidUpdate(prevProps, prevState) {
     const { linkInputValue: prevLinkInputValue } = prevState;
     const { linkInputValue } = this.state;
     if (linkInputValue !== prevLinkInputValue) {

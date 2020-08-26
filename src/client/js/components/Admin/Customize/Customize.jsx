@@ -1,13 +1,14 @@
 
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
-import AppContainer from '../../../services/AppContainer';
+import loggerFactory from '@alias/logger';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
+import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
+import { withLoadingSppiner } from '../../SuspenseUtils';
 
 import CustomizeLayoutSetting from './CustomizeLayoutSetting';
 import CustomizeFunctionSetting from './CustomizeFunctionSetting';
@@ -17,70 +18,62 @@ import CustomizeScriptSetting from './CustomizeScriptSetting';
 import CustomizeHeaderSetting from './CustomizeHeaderSetting';
 import CustomizeTitle from './CustomizeTitle';
 
-class Customize extends React.Component {
+const logger = loggerFactory('growi:services:AdminCustomizePage');
 
-  constructor(props) {
-    super(props);
+let retrieveErrors = null;
+function Customize(props) {
+  const { adminCustomizeContainer } = props;
 
-    this.state = {
-      isRetrieving: true,
-    };
-
+  if (adminCustomizeContainer.state.currentTheme === adminCustomizeContainer.dummyCurrentTheme) {
+    throw (async() => {
+      try {
+        await adminCustomizeContainer.retrieveCustomizeData();
+      }
+      catch (err) {
+        const errs = toArrayIfNot(err);
+        toastError(errs);
+        logger.error(errs);
+        retrieveErrors = errs;
+        adminCustomizeContainer.setState({ currentTheme: adminCustomizeContainer.dummyCurrentThemeForError });
+      }
+    })();
   }
 
-  async componentDidMount() {
-    const { adminCustomizeContainer } = this.props;
-
-    try {
-      await adminCustomizeContainer.retrieveCustomizeData();
-      this.setState({ isRetrieving: false });
-    }
-    catch (err) {
-      toastError(err);
-    }
-
+  if (adminCustomizeContainer.state.currentTheme === adminCustomizeContainer.dummyCurrentThemeForError) {
+    throw new Error(`${retrieveErrors.length} errors occured`);
   }
 
-  render() {
-    if (this.state.isRetrieving) {
-      return null;
-    }
-
-    return (
-      <Fragment>
-        <div className="mb-5">
-          <CustomizeLayoutSetting />
-        </div>
-        <div className="mb-5">
-          <CustomizeFunctionSetting />
-        </div>
-        <div className="mb-5">
-          <CustomizeHighlightSetting />
-        </div>
-        <div className="mb-5">
-          <CustomizeTitle />
-        </div>
-        <div className="mb-5">
-          <CustomizeHeaderSetting />
-        </div>
-        <div className="mb-5">
-          <CustomizeCssSetting />
-        </div>
-        <div className="mb-5">
-          <CustomizeScriptSetting />
-        </div>
-      </Fragment>
-    );
-  }
-
+  return (
+    <Fragment>
+      <div className="mb-5">
+        <CustomizeLayoutSetting />
+      </div>
+      <div className="mb-5">
+        <CustomizeFunctionSetting />
+      </div>
+      <div className="mb-5">
+        <CustomizeHighlightSetting />
+      </div>
+      <div className="mb-5">
+        <CustomizeTitle />
+      </div>
+      <div className="mb-5">
+        <CustomizeHeaderSetting />
+      </div>
+      <div className="mb-5">
+        <CustomizeCssSetting />
+      </div>
+      <div className="mb-5">
+        <CustomizeScriptSetting />
+      </div>
+    </Fragment>
+  );
 }
 
-const CustomizeWrapper = withUnstatedContainers(Customize, [AppContainer, AdminCustomizeContainer]);
+const CustomizePageWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(Customize), [AdminCustomizeContainer]);
 
 Customize.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
 };
 
-export default withTranslation()(CustomizeWrapper);
+export default CustomizePageWithUnstatedContainer;
