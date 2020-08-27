@@ -53,8 +53,8 @@ const PageDuplicateModal = (props) => {
    */
   function ppacInputChangeHandler(value) {
     getSubordinatedDuplicateList(value);
-    // setErrorCode(null);
-    // setErrorMessage(null);
+    setErrorCode(null);
+    setErrorMessage(null);
     setPageNameInput(value);
   }
 
@@ -64,8 +64,8 @@ const PageDuplicateModal = (props) => {
    */
   function inputChangeHandler(value) {
     getSubordinatedDuplicateList(value);
-    // setErrorCode(null);
-    // setErrorMessage(null);
+    setErrorCode(null);
+    setErrorMessage(null);
     setPageNameInput(value);
   }
 
