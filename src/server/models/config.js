@@ -105,6 +105,7 @@ module.exports = function(crowi) {
       'customize:title' : undefined,
       'customize:highlightJsStyle' : 'github',
       'customize:highlightJsStyleBorder' : false,
+      'customize:layout' : 'growi',
       'customize:theme' : 'default',
       'customize:isEnabledTimeline' : true,
       'customize:isSavedStatesOfTabChanges' : true,
