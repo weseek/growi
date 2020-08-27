@@ -561,12 +561,9 @@ module.exports = (crowi) => {
 
     try {
       const pageData = await Page.findByPath(path);
-
       const result = await Page.findManageableListWithDescendants(pageData, req.user);
 
-      const resultPaths = result.map(element => element.path);
-
-      return res.apiv3({ resultPaths });
+      return res.apiv3({ subordinatedPaths: result });
     }
     catch (err) {
       return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);

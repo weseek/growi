@@ -70,6 +70,7 @@ const PageRenameModal = (props) => {
    */
   function inputChangeHandler(value) {
     createSubordinatedList(value);
+    setErrs(null);
     setPageNameInput(value);
   }
 

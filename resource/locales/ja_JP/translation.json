@@ -137,6 +137,8 @@
   "Sidebar mode on Editor": "サイドバーモード(編集時)",
   "Recent Created": "最新の作成",
   "Recent Changes": "最新の変更",
+  "original_path":"元のパス",
+  "new_path":"新しいパス",
   "personal_dropdown": {
     "home": "ホーム",
     "settings": "設定",
@@ -709,24 +711,6 @@
     "rebuild_description_1": "全てのページのインデックスを削除し、作り直します。",
     "rebuild_description_2": "この作業には数秒かかります。"
   },
-  "export_management": {
-    "exporting_collection_list": "エクスポート中のコレクション",
-    "exported_data_list": "エクスポートされたアーカイブリスト",
-    "export_collections": "コレクションのエクスポート",
-    "check_all": "全てにチェックを付ける",
-    "uncheck_all": "全てからチェックを外す",
-    "desc_password_seed": "<p>ユーザーデータをバックアップ/リストアする場合、現在の <code>PASSWORD_SEED</code> を新しい GROWI システムにセットすることを忘れないでください。さもなくば、ユーザーがパスワードでログインできなくなります。</p><strong>ヒント:</strong><p>現在の <code>PASSWORD_SEED</code> は、エクスポートされる ZIP 中の <code>meta.json</code> に保存されます。</p>",
-    "create_new_archive_data": "アーカイブデータの新規作成",
-    "export": "エクスポート",
-    "cancel": "キャンセル",
-    "file": "ファイル名",
-    "growi_version": "Growi バージョン",
-    "collections": "コレクション",
-    "exported_at": "エクスポートされた時間",
-    "export_menu": "エクスポートメニュー",
-    "download": "ダウンロード",
-    "delete": "削除"
-  },
   "login": {
     "Sign in error": "ログインエラー",
     "Registration successful": "登録完了",
@@ -760,5 +744,9 @@
     "complete_to_install1":"GROWI のインストールが完了しました！管理者アカウントでログインしてください。",
     "complete_to_install2":"GROWI のインストールが完了しました！はじめに、このページで各種設定を確認してください。",
     "failed_to_create_admin_user":"管理ユーザーの作成に失敗しました。{{errMessage}}"
+  },
+  "validation":{
+    "aws_region": "リージョンには、AWSリージョン名を入力してください。例: ap-northeast-1",
+    "aws_custom_endpoint": "カスタムエンドポイントは、http(s)://で始まるURLを指定してください。また、末尾の/は不要です。"
   }
 }
