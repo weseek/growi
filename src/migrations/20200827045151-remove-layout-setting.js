@@ -40,21 +40,33 @@ module.exports = {
 
     const Config = getModelSafely('Config') || require('@server/models/config')();
 
+    const theme = await Config.findOne({ key: 'customize:theme' });
+    const insertLayoutType = (theme.value === '"kibela"') ? 'kibela' : 'growi';
+
     const insertConfig = new Config({
       ns: 'crowi',
       key: 'customize:layout',
-      value: JSON.stringify('kibela'),
+      value: JSON.stringify(insertLayoutType),
     });
 
-    await Promise.all([
+    const promise = [
       insertConfig.save(),
-
       Config.update(
         { key: 'customize:theme', value: JSON.stringify('kibela') },
         { value: JSON.stringify('default') },
       ),
-    ]);
+    ];
+
+    await Promise.all(promise);
 
     logger.info('Migration has been successfully rollbacked');
   },
 };
+
+// {
+//   "_id" : ObjectId("5f4747ea4060d22072d3b188"),
+//   "ns" : "crowi",
+//   "key" : "customize:layout",
+//   "value" : "\"kibela\"",
+//   "__v" : 0
+// }
