@@ -134,6 +134,8 @@
   "Disassociate": "Disassociate",
   "Recent Created": "Recent Created",
   "Recent Changes": "Recent Changes",
+  "original_path":"Original path",
+  "new_path":"New path",
   "personal_dropdown": {
     "home": "Home",
     "settings": "Settings",
