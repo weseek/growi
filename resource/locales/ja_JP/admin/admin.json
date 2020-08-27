@@ -89,19 +89,7 @@
     }
   },
   "customize_setting": {
-    "recommended": "おすすめ",
-    "layout": "レイアウト",
     "theme": "テーマ",
-    "layout_desc": {
-      "growi_title": "シンプル・明瞭",
-      "growi_text1": "全画面レイアウトで、余白は少なくなります。",
-      "growi_text2": "コメントはページの下部に表示されます。",
-      "growi_text3": "ページ情報は下部に表示されます。",
-      "kibela_title": "閲覧重視の構造",
-      "kibela_text1": "コンテンツが中心に表示されます。",
-      "kibela_text2": "コメントはページの下部に表示されます。",
-      "kibela_text3": "ページ情報は下部に表示されます。"
-    },
     "theme_desc" : {
       "light_and_dark": "Light/Dark モード選択あり",
       "unique": "モード選択なし"

@@ -89,23 +89,7 @@
 		}
 	},
 	"customize_setting": {
-		"recommended": "推荐",
-		"layout": "布局",
 		"theme": "主体",
-		"layout_desc": {
-			"growi_title": "简约",
-			"growi_text1": "全屏布局 窄边距/填充",
-			"growi_text2": "页面底部显示和发布评论",
-			"growi_text3": "附目录",
-			"kibela_title": "清晰",
-			"kibela_text1": "内容居中对齐",
-			"kibela_text2": "在页面底部显示和发布评论",
-			"kibela_text3": "附目录",
-			"crowi_title": "分栏",
-			"crowi_text1": "可折叠边栏",
-			"crowi_text2": "在侧边栏中显示和发布评论",
-			"crowi_text3": "可折叠目录"
-		},
 		"behavior": "行为",
 		"behavior_desc": {
 			"growi_text1": "<code>/page</code> and <code>/page/</code> 都显示同一页。",

@@ -7,7 +7,6 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 
-import CustomizeLayoutOptions from './CustomizeLayoutOptions';
 import CustomizeThemeOptions from './CustomizeThemeOptions';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
@@ -25,7 +24,7 @@ class CustomizeLayoutSetting extends React.Component {
 
     try {
       await adminCustomizeContainer.updateCustomizeLayoutAndTheme();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.layout') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.theme') }));
     }
     catch (err) {
       toastError(err);
@@ -48,12 +47,6 @@ class CustomizeLayoutSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <div className="row">
-          <div className="col-12">
-            <h2 className="admin-setting-header">{t('admin:customize_setting.layout')}</h2>
-            <CustomizeLayoutOptions />
-          </div>
-        </div>
         <div className="row">
           <div className="col-12">
             <h2 className="admin-setting-header">{t('admin:customize_setting.theme')}</h2>
