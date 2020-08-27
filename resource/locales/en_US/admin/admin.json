@@ -89,19 +89,7 @@
     }
   },
   "customize_setting": {
-    "recommended": "Recommended",
-    "layout": "Layout",
     "theme": "Theme",
-    "layout_desc": {
-      "growi_title": "Simple and clear",
-      "growi_text1": "Full screen layout and thin margins/paddings",
-      "growi_text2": "Show and post comments at the bottom of the page",
-      "growi_text3": "Affix table-of-contents",
-      "kibela_title": "Easy viewing structure",
-      "kibela_text1": "Center aligned contents",
-      "kibela_text2": "Show and post comments at the bottom of the page",
-      "kibela_text3": "Affix Table-of-contents"
-    },
     "theme_desc": {
       "light_and_dark": "Light and dark modes",
       "unique": "Only one mode"

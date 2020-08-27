@@ -7,12 +7,11 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 
-import CustomizeLayoutOptions from './CustomizeLayoutOptions';
 import CustomizeThemeOptions from './CustomizeThemeOptions';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
-class CustomizeLayoutSetting extends React.Component {
+class CustomizeThemeSetting extends React.Component {
 
   constructor(props) {
     super(props);
@@ -24,8 +23,8 @@ class CustomizeLayoutSetting extends React.Component {
     const { t, adminCustomizeContainer } = this.props;
 
     try {
-      await adminCustomizeContainer.updateCustomizeLayoutAndTheme();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.layout') }));
+      await adminCustomizeContainer.updateCustomizeTheme();
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.theme') }));
     }
     catch (err) {
       toastError(err);
@@ -50,12 +49,6 @@ class CustomizeLayoutSetting extends React.Component {
       <React.Fragment>
         <div className="row">
           <div className="col-12">
-            <h2 className="admin-setting-header">{t('admin:customize_setting.layout')}</h2>
-            <CustomizeLayoutOptions />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-12">
             <h2 className="admin-setting-header">{t('admin:customize_setting.theme')}</h2>
             {this.renderDevAlert()}
             <CustomizeThemeOptions />
@@ -68,12 +61,12 @@ class CustomizeLayoutSetting extends React.Component {
 
 }
 
-const CustomizeLayoutSettingWrapper = withUnstatedContainers(CustomizeLayoutSetting, [AppContainer, AdminCustomizeContainer]);
+const CustomizeThemeSettingWrapper = withUnstatedContainers(CustomizeThemeSetting, [AppContainer, AdminCustomizeContainer]);
 
-CustomizeLayoutSetting.propTypes = {
+CustomizeThemeSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
 };
 
-export default withTranslation()(CustomizeLayoutSettingWrapper);
+export default withTranslation()(CustomizeThemeSettingWrapper);
