@@ -14,7 +14,6 @@ import PageContainer from '../services/PageContainer';
 import PagePathAutoComplete from './PagePathAutoComplete';
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 import ComparePathsTable from './ComparePathsTable';
-import CompareDuplicatePathsTable from './CompareDuplicatePathsTabel';
 
 
 const PageDuplicateModal = (props) => {
@@ -71,10 +70,6 @@ const PageDuplicateModal = (props) => {
 
   function changeIsDuplicateRecursivelyHandler() {
     setIsDuplicateRecursively(!isDuplicateRecursively);
-  }
-
-  function changeIsDuplicateRecursivelyAdmitHandler() {
-    setIsDuplicateRecursivelyAdmit(!isDuplicateRecursivelyAdmit);
   }
 
   const getSubordinatedList = useCallback(async() => {
