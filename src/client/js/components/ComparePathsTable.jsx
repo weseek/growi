@@ -26,12 +26,12 @@ function ComparePathsTable(props) {
           const convertedPath = convertToNewAffiliationPath(path, newPagePath, subordinatedPage.path);
           return (
             <tr key={subordinatedPage._id}>
-              <td>
+              <td className="text-break">
                 <a href={subordinatedPage.path}>
                   {subordinatedPage.path}
                 </a>
               </td>
-              <td>
+              <td className="text-break">
                 {convertedPath}
               </td>
             </tr>
