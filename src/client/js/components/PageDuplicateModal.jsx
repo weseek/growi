@@ -14,6 +14,7 @@ import PageContainer from '../services/PageContainer';
 import PagePathAutoComplete from './PagePathAutoComplete';
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 import ComparePathsTable from './ComparePathsTable';
+import CompareDuplicatePathsTable from './CompareDuplicatePathsTabel';
 
 
 const PageDuplicateModal = (props) => {
@@ -31,6 +32,7 @@ const PageDuplicateModal = (props) => {
   const [subordinatedPages, setSubordinatedPages] = useState([]);
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(false);
   const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(false);
+  const [isDuplicateRecursivelyExist] = useState(false);
 
   function getSubordinatedDuplicateList(value) {
 
@@ -42,6 +44,7 @@ const PageDuplicateModal = (props) => {
     // setIsDuplicateExist(duplicatedList);
 
     // ToDo: for now we use dummy path
+    return [];
   }
 
   /**
@@ -50,8 +53,8 @@ const PageDuplicateModal = (props) => {
    */
   function ppacInputChangeHandler(value) {
     getSubordinatedDuplicateList(value);
-    setErrorCode(null);
-    setErrorMessage(null);
+    // setErrorCode(null);
+    // setErrorMessage(null);
     setPageNameInput(value);
   }
 
@@ -61,8 +64,8 @@ const PageDuplicateModal = (props) => {
    */
   function inputChangeHandler(value) {
     getSubordinatedDuplicateList(value);
-    setErrorCode(null);
-    setErrorMessage(null);
+    // setErrorCode(null);
+    // setErrorMessage(null);
     setPageNameInput(value);
   }
 
@@ -185,7 +188,7 @@ const PageDuplicateModal = (props) => {
           type="button"
           className="btn btn-primary"
           onClick={duplicate}
-          disabled={isDuplicateRecursively && !isDuplicateRecursivelyAdmit}
+          disabled={(isDuplicateRecursively && isDuplicateRecursivelyExist && !isDuplicateRecursivelyWithoutExistPath) || (path === pageNameInput)}
         >
           Duplicate page
         </button>
