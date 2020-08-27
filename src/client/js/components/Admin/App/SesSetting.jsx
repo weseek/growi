@@ -34,7 +34,7 @@ function SmtpSetting(props) {
   return (
     <React.Fragment>
       <div id="mail-smtp" className="tab-pane active mt-5">
-        <label className="col-md-3 col-form-label text-left mb-3">SES設定</label>
+        <label className="col-md-3 col-form-label text-left mb-3">SES {t('settings')}</label>
 
         <div className="row form-group">
           <label className="text-left text-md-right col-md-3 col-form-label">
