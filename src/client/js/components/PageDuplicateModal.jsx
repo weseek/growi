@@ -183,7 +183,7 @@ const PageDuplicateModal = (props) => {
           onClick={duplicate}
           disabled={(isDuplicateRecursively && isDuplicateRecursivelyExist && !isDuplicateRecursivelyWithoutExistPath) || (path === pageNameInput)}
         >
-          Duplicate page
+          { t('modal_duplicate.label.Duplicate page') }
         </button>
       </ModalFooter>
     </Modal>
