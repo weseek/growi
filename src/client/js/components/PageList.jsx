@@ -18,12 +18,11 @@ const PageList = (props) => {
 
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [limit, setLimit] = useState(null);
+  const [limit, setLimit] = useState(appContainer.getConfig().recentCreatedLimit);
   const [offset, setOffset] = useState(0);
 
   function setPaginateOptionHandler(selectedPageNumber) {
     setActivePage(selectedPageNumber);
-    setLimit(appContainer.getConfig().recentCreatedLimit);
     setOffset((selectedPageNumber - 1) * limit);
   }
 
