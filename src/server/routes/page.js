@@ -147,7 +147,7 @@ module.exports = function(crowi, app) {
   const ApiResponse = require('../util/apiResponse');
   const getToday = require('../util/getToday');
 
-  const { slackNotificationService, configManager } = crowi;
+  const { slackNotificationService } = crowi;
   const interceptorManager = crowi.getInterceptorManager();
   const globalNotificationService = crowi.getGlobalNotificationService();
   const pageService = crowi.pageService;
