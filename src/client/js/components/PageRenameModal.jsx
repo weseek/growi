@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -12,6 +12,7 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
+import ComparePathsTable from './ComparePathsTable';
 
 const PageRenameModal = (props) => {
   const {
@@ -26,6 +27,7 @@ const PageRenameModal = (props) => {
 
   const [errs, setErrs] = useState(null);
 
+  const [subordinatedPages, setSubordinatedPages] = useState([]);
   const [isRenameRecursively, SetIsRenameRecursively] = useState(true);
   const [isRenameRedirect, SetIsRenameRedirect] = useState(false);
   const [isRenameMetadata, SetIsRenameMetadata] = useState(false);
@@ -63,6 +65,24 @@ const PageRenameModal = (props) => {
   function changeIsRenameMetadataHandler() {
     SetIsRenameMetadata(!isRenameMetadata);
   }
+
+  const getSubordinatedList = useCallback(async() => {
+    try {
+      const res = await appContainer.apiv3Get('/pages/subordinated-list', { path });
+      const { subordinatedPaths } = res.data;
+      setSubordinatedPages(subordinatedPaths);
+    }
+    catch (err) {
+      setErrs(err);
+      toastError(t('modal_duplicate.label.Fail to get subordinated pages'));
+    }
+  }, [appContainer, path, t]);
+
+  useEffect(() => {
+    if (props.isOpen) {
+      getSubordinatedList();
+    }
+  }, [props.isOpen, getSubordinatedList]);
 
   /**
    * change pageNameInput
@@ -155,11 +175,7 @@ const PageRenameModal = (props) => {
               { t('modal_duplicate.label.Duplicate without exist path') }
             </label>
           </div>
-          <div className="rename-new-path-content">
-            <ul>
-              {isRenameRecursively && isDuplicateExistList.length !== 0 && isDuplicateExistList}
-            </ul>
-          </div>
+          {isRenameRecursively && <ComparePathsTable subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
         </div>
 
         <div className="custom-control custom-checkbox custom-checkbox-success">

@@ -14,7 +14,7 @@ function ComparePathsTable(props) {
   const { path } = pageContainer.state;
 
   return (
-    <table className="table table-bordered">
+    <table className="table table-bordered compare-page-tabel">
       <thead>
         <tr>
           <th className="w-50">{t('original_path')}</th>

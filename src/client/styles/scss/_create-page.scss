@@ -13,11 +13,28 @@
     font-family: $font-family-monospace-not-strictly;
   }
 
-  .rename-new-path-content {
-    height: 100px;
-    padding: 4px;
-    margin-bottom: 8px;
-    overflow: scroll;
-    border: 1px solid #000;
+  .compare-page-tabel {
+    width: 100%;
+  }
+
+  .compare-page-tabel tbody {
+    width: 100%;
+    height: 200px;
+    overflow-y: auto;
+  }
+
+  .compare-page-tabel thead,
+  tbody,
+  tr,
+  td,
+  th {
+    display: block;
+  }
+  .compare-page-tabel tbody td {
+    float: left;
+  }
+
+  .compare-page-tabel thead tr th {
+    float: left;
   }
 }
