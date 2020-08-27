@@ -141,7 +141,7 @@
     "settings": "Settings",
     "color_mode": "Color mode",
     "sidebar_mode": "Sidebar mode",
-    "sidebar_mode_editor": "Sidebar mode on Editor",
+    "sidebar_mode_editor": "Sidebar mode on editor",
     "use_os_settings": "Use OS settings"
   },
   "form_validation": {
