@@ -83,7 +83,7 @@ const PageAccessoriesModal = (props) => {
               {pageAccessoriesContainer.state.activeComponents.has('pagelist') && <PageList />}
             </TabPane>
             <TabPane tabId="timeline" className="p-4">
-              {pageAccessoriesContainer.state.activeComponents.has('timeline') && <PageTimeline /> }
+              {pageAccessoriesContainer.state.activeComponents.has('timeline') && <PageTimeline pages={JSON.parse(document.getElementById('page-timeline-data').text)} /> }
             </TabPane>
             <TabPane tabId="recent-changes"></TabPane>
             <TabPane tabId="page-history">
