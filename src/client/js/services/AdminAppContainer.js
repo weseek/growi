@@ -28,6 +28,8 @@ export default class AdminAppContainer extends Container {
       smtpPort: '',
       smtpUser: '',
       smtpPassword: '',
+      sesAccessKeyId: '',
+      sesSecretAccessKey: '',
       region: '',
       customEndpoint: '',
       bucket: '',
@@ -36,22 +38,6 @@ export default class AdminAppContainer extends Container {
       isEnabledPlugins: true,
     };
 
-    this.changeTitle = this.changeTitle.bind(this);
-    this.changeConfidential = this.changeConfidential.bind(this);
-    this.changeGlobalLang = this.changeGlobalLang.bind(this);
-    this.changeFileUpload = this.changeFileUpload.bind(this);
-    this.changeSiteUrl = this.changeSiteUrl.bind(this);
-    this.changeFromAddress = this.changeFromAddress.bind(this);
-    this.changeSmtpHost = this.changeSmtpHost.bind(this);
-    this.changeSmtpPort = this.changeSmtpPort.bind(this);
-    this.changeSmtpUser = this.changeSmtpUser.bind(this);
-    this.changeSmtpPassword = this.changeSmtpPassword.bind(this);
-    this.changeRegion = this.changeRegion.bind(this);
-    this.changeCustomEndpoint = this.changeCustomEndpoint.bind(this);
-    this.changeBucket = this.changeBucket.bind(this);
-    this.changeAccessKeyId = this.changeAccessKeyId.bind(this);
-    this.changeSecretAccessKey = this.changeSecretAccessKey.bind(this);
-    this.changeIsEnabledPlugins = this.changeIsEnabledPlugins.bind(this);
     this.updateAppSettingHandler = this.updateAppSettingHandler.bind(this);
     this.updateSiteUrlSettingHandler = this.updateSiteUrlSettingHandler.bind(this);
     this.updateMailSettingHandler = this.updateMailSettingHandler.bind(this);
@@ -86,6 +72,8 @@ export default class AdminAppContainer extends Container {
       smtpPort: appSettingsParams.smtpPort,
       smtpUser: appSettingsParams.smtpUser,
       smtpPassword: appSettingsParams.smtpPassword,
+      sesAccessKeyId: appSettingsParams.sesAccessKeyId,
+      sesSecretAccessKey: appSettingsParams.sesSecretAccessKey,
       region: appSettingsParams.region,
       customEndpoint: appSettingsParams.customEndpoint,
       bucket: appSettingsParams.bucket,
@@ -164,6 +152,20 @@ export default class AdminAppContainer extends Container {
    */
   changeSmtpPassword(smtpPassword) {
     this.setState({ smtpPassword });
+  }
+
+  /**
+   * Change sesAccessKeyId
+   */
+  changeSesAccessKeyId(sesAccessKeyId) {
+    this.setState({ sesAccessKeyId });
+  }
+
+  /**
+   * Change sesSecretAccessKey
+   */
+  changeSesSecretAccessKey(sesSecretAccessKey) {
+    this.setState({ sesSecretAccessKey });
   }
 
   /**
