@@ -13,7 +13,7 @@ module.exports = {
 
     const Config = getModelSafely('Config') || require('@server/models/config')();
 
-    const layoutType = await Config.findOneAndDelete({ key: 'customize:layout' });
+    const layoutType = await Config.findOne({ key: 'customize:layout' });
 
     const promise = [
       // remove layout
