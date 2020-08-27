@@ -15,6 +15,7 @@ import PagePathAutoComplete from './PagePathAutoComplete';
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 import ComparePathsTable from './ComparePathsTable';
 
+const LIMIT_FOR_LIST = 10;
 
 const PageDuplicateModal = (props) => {
   const { t, appContainer, pageContainer } = props;
@@ -72,7 +73,7 @@ const PageDuplicateModal = (props) => {
 
   const getSubordinatedList = useCallback(async() => {
     try {
-      const res = await appContainer.apiv3Get('/pages/subordinated-list', { path });
+      const res = await appContainer.apiv3Get('/pages/subordinated-list', { path, limit: LIMIT_FOR_LIST });
       const { subordinatedPaths } = res.data;
       setSubordinatedPages(subordinatedPaths);
     }

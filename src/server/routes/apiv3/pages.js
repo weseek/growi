@@ -11,6 +11,8 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const router = express.Router();
 
+const LIMIT_FOR_LIST = 10;
+
 /**
  * @swagger
  *  tags:
@@ -555,13 +557,46 @@ module.exports = (crowi) => {
     return res.apiv3({ result });
   });
 
-
+  /**
+   * @swagger
+   *
+   *
+   *    /pages/subordinated-list:
+   *      get:
+   *        tags: [Pages]
+   *        operationId: subordinatedList
+   *        description: Get subordinated pages
+   *        parameters:
+   *          - name: path
+   *            in: query
+   *            description: Parent path of search
+   *            schema:
+   *              type: string
+   *          - name: limit
+   *            in: query
+   *            description: Limit of acquisitions
+   *            schema:
+   *              type: number
+   *        responses:
+   *          200:
+   *            description: Succeeded to retrieve pages.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    subordinatedPaths:
+   *                      type: object
+   *                      description: descendants page
+   *          500:
+   *            description: Internal server error.
+   */
   router.get('/subordinated-list', accessTokenParser, loginRequired, async(req, res) => {
     const { path } = req.query;
+    const limit = parseInt(req.query.limit) || LIMIT_FOR_LIST;
 
     try {
       const pageData = await Page.findByPath(path);
-      const result = await Page.findManageableListWithDescendants(pageData, req.user);
+      const result = await Page.findManageableListWithDescendants(pageData, req.user, { limit });
 
       return res.apiv3({ subordinatedPaths: result });
     }
