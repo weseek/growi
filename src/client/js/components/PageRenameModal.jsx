@@ -47,8 +47,7 @@ const PageRenameModal = (props) => {
    * @param {string} value
    */
   function inputChangeHandler(value) {
-    setErrorCode(null);
-    setErrorMessage(null);
+    setErrs(null);
     setPageNameInput(value);
   }
 
