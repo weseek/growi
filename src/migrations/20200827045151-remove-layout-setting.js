@@ -15,6 +15,10 @@ module.exports = {
 
     const layoutType = await Config.findOne({ key: 'customize:layout' });
 
+    if (layoutType == null) {
+      return;
+    }
+
     const promise = [
       // remove layout
       Config.findOneAndDelete({ key: 'customize:layout' }),
