@@ -38,6 +38,16 @@ module.exports = function(crowi) {
     return filePath;
   }
 
+  /**
+   * check file existence
+   * @param {File} file https://googleapis.dev/nodejs/storage/latest/File.html
+   */
+  async function isFileExists(file) {
+    // check file exists
+    const res = await file.exists();
+    return res[0];
+  }
+
   lib.isValidUploadSettings = function() {
     return this.configManager.getConfig('crowi', 'gcs:apiKeyJsonPath') != null
       && this.configManager.getConfig('crowi', 'gcs:bucket') != null;
@@ -51,10 +61,16 @@ module.exports = function(crowi) {
   lib.deleteFileByFilePath = async function(filePath) {
     const gcs = getGcsInstance(this.getIsUploadable());
     const myBucket = gcs.bucket(getGcsBucket());
+    const file = myBucket.file(filePath);
 
-    // TODO: ensure not to throw error even when the file does not exist
+    // check file exists
+    const isExists = await isFileExists(file);
+    if (!isExists) {
+      logger.warn(`Any object that relate to the Attachment (${filePath}) does not exist in GCS`);
+      return;
+    }
 
-    return myBucket.file(filePath).delete();
+    return file.delete();
   };
 
   lib.uploadFile = function(fileStream, attachment) {
@@ -80,10 +96,17 @@ module.exports = function(crowi) {
     const gcs = getGcsInstance(this.getIsUploadable());
     const myBucket = gcs.bucket(getGcsBucket());
     const filePath = getFilePathOnStorage(attachment);
+    const file = myBucket.file(filePath);
+
+    // check file exists
+    const isExists = await isFileExists(file);
+    if (!isExists) {
+      throw new Error(`Any object that relate to the Attachment (${filePath}) does not exist in GCS`);
+    }
 
     let stream;
     try {
-      stream = myBucket.file(filePath).createReadStream();
+      stream = file.createReadStream();
     }
     catch (err) {
       logger.error(err);

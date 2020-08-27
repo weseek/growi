@@ -17,6 +17,7 @@ import PageAccessoriesContainer from '../services/PageAccessoriesContainer';
 import PageAttachment from './PageAttachment';
 import PageTimeline from './PageTimeline';
 import PageList from './PageList';
+import PageHistory from './PageHistory';
 
 const PageAccessoriesModal = (props) => {
   const { t, pageAccessoriesContainer } = props;
@@ -32,44 +33,47 @@ const PageAccessoriesModal = (props) => {
 
   return (
     <React.Fragment>
-      <Modal
-        size="lg"
-        isOpen={props.isOpen}
-        toggle={closeModalHandler}
-        className="grw-page-accessories-modal"
-      >
+      <Modal size="lg" isOpen={props.isOpen} toggle={closeModalHandler} className="grw-page-accessories-modal">
         <ModalBody>
           <Nav className="nav-title border-bottom">
             <NavItem type="button" className={`nav-link ${activeTab === 'pagelist' && 'active active-border'}`}>
               <NavLink
-                onClick={() => { switchActiveTab('pagelist') }}
+                onClick={() => {
+                  switchActiveTab('pagelist');
+                }}
               >
                 <PageListIcon />
-                { t('page_list') }
+                {t('page_list')}
               </NavLink>
             </NavItem>
             <NavItem type="button" className={`nav-link ${activeTab === 'timeline' && 'active active-border'}`}>
               <NavLink
-                onClick={() => { switchActiveTab('timeline') }}
+                onClick={() => {
+                  switchActiveTab('timeline');
+                }}
               >
                 <TimeLineIcon />
-                { t('Timeline View') }
+                {t('Timeline View')}
               </NavLink>
             </NavItem>
-            <NavItem type="button" className={`nav-link ${activeTab === 'recent-changes' && 'active active-border'}`}>
+            <NavItem type="button" className={`nav-link ${activeTab === 'page-history' && 'active active-border'}`}>
               <NavLink
-                onClick={() => { switchActiveTab('recent-changes') }}
+                onClick={() => {
+                  switchActiveTab('page-history');
+                }}
               >
                 <RecentChangesIcon />
-                { t('History') }
+                {t('History')}
               </NavLink>
             </NavItem>
             <NavItem type="button" className={`nav-link ${activeTab === 'attachment' && 'active active-border'}`}>
               <NavLink
-                onClick={() => { switchActiveTab('attachment') }}
+                onClick={() => {
+                  switchActiveTab('attachment');
+                }}
               >
                 <AttachmentIcon />
-                { t('attachment_data') }
+                {t('attachment_data')}
               </NavLink>
             </NavItem>
           </Nav>
@@ -82,8 +86,13 @@ const PageAccessoriesModal = (props) => {
               {pageAccessoriesContainer.state.activeComponents.has('timeline') && <PageTimeline /> }
             </TabPane>
             <TabPane tabId="recent-changes"></TabPane>
+            <TabPane tabId="page-history">
+              <div className="overflow-auto">
+                {pageAccessoriesContainer.state.activeComponents.has('page-history') && <PageHistory /> }
+              </div>
+            </TabPane>
             <TabPane tabId="attachment" className="p-4">
-              {pageAccessoriesContainer.state.activeComponents.has('attachment') && <PageAttachment /> }
+              {pageAccessoriesContainer.state.activeComponents.has('attachment') && <PageAttachment />}
             </TabPane>
           </TabContent>
         </ModalBody>
@@ -92,12 +101,10 @@ const PageAccessoriesModal = (props) => {
   );
 };
 
-
 /**
  * Wrapper component for using unstated
  */
 const PageAccessoriesModalWrapper = withUnstatedContainers(PageAccessoriesModal, [PageAccessoriesContainer]);
-
 
 PageAccessoriesModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next

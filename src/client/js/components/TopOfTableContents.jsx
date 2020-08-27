@@ -31,22 +31,38 @@ const TopOfTableContents = (props) => {
   return (
     <>
       <div className="top-of-table-contents d-flex align-items-end pb-1">
-        <button type="button" className="bg-transparent border-0" onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('pagelist')}>
+        <button
+          type="button"
+          className="btn btn-link grw-btn-top-of-table"
+          onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('pagelist')}
+        >
           <PageListIcon />
         </button>
 
-        <button type="button" className="bg-transparent border-0 active" onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('timeline')}>
+        <button
+          type="button"
+          className="btn btn-link grw-btn-top-of-table"
+          onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('timeline')}
+        >
           <TimeLineIcon />
         </button>
 
-        <button type="button" className="bg-transparent border-0" onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('recent-changes')}>
+        <button
+          type="button"
+          className="btn btn-link grw-btn-top-of-table"
+          onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('page-history')}
+        >
           <RecentChangesIcon />
         </button>
 
-        <button type="button" className="bg-transparent border-0" onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('attachment')}>
+        <button
+          type="button"
+          className="btn btn-link grw-btn-top-of-table"
+          onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('attachment')}
+        >
           <AttachmentIcon />
         </button>
-        {/* [TODO: setting Footprints' icon by GW-3308] */}
+
         <div
           id="seen-user-list"
           data-user-ids-str="{{ page.seenUsers|slice(-15)|default([])|reverse|join(',') }}"
