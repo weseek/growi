@@ -15,38 +15,28 @@ function ComparePathsTable(props) {
 
   return (
     <table className="table table-bordered">
-      <tbody>
+      <thead>
         <tr>
           <th className="w-50">{t('original_path')}</th>
           <th className="w-50">{t('new_path')}</th>
         </tr>
-        <tr>
-          <td>
-            <ul className="list-unstyled">
-              {subordinatedPages.map((subordinatedPage) => {
-              return (
-                <li key={subordinatedPage._id}>
-                  <a href={subordinatedPage.path}>
-                    {subordinatedPage.path}
-                  </a>
-                </li>
-              );
-            })}
-            </ul>
-          </td>
-          <td>
-            <ul className="list-unstyled">
-              {subordinatedPages.map((subordinatedPage) => {
-                const convertedPath = convertToNewAffiliationPath(path, newPagePath, subordinatedPage.path);
-                return (
-                  <li key={subordinatedPage._id}>
-                    {convertedPath}
-                  </li>
-                );
-              })}
-            </ul>
-          </td>
-        </tr>
+      </thead>
+      <tbody>
+        {subordinatedPages.map((subordinatedPage) => {
+          const convertedPath = convertToNewAffiliationPath(path, newPagePath, subordinatedPage.path);
+          return (
+            <tr key={subordinatedPage._id}>
+              <td>
+                <a href={subordinatedPage.path}>
+                  {subordinatedPage.path}
+                </a>
+              </td>
+              <td>
+                {convertedPath}
+              </td>
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );
