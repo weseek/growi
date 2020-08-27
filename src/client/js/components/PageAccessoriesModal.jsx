@@ -88,7 +88,6 @@ const PageAccessoriesModal = (props) => {
                 && <PageTimeline pages={JSON.parse(document.getElementById('page-timeline-data').text)} />
               }
             </TabPane>
-            <TabPane tabId="recent-changes"></TabPane>
             <TabPane tabId="page-history">
               <div className="overflow-auto">
                 {pageAccessoriesContainer.state.activeComponents.has('page-history') && <PageHistory /> }
