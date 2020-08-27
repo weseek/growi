@@ -66,11 +66,3 @@ module.exports = {
     logger.info('Migration has been successfully rollbacked');
   },
 };
-
-// {
-//   "_id" : ObjectId("5f4747ea4060d22072d3b188"),
-//   "ns" : "crowi",
-//   "key" : "customize:layout",
-//   "value" : "\"kibela\"",
-//   "__v" : 0
-// }
