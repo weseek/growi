@@ -32,6 +32,7 @@ const PageDuplicateModal = (props) => {
   const [subordinatedPages, setSubordinatedPages] = useState([]);
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(false);
   const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(false);
+  const [isDuplicateRecursivelyExist] = useState(false);
 
   function getSubordinatedDuplicateList(value) {
 
@@ -43,6 +44,7 @@ const PageDuplicateModal = (props) => {
     // setIsDuplicateExist(duplicatedList);
 
     // ToDo: for now we use dummy path
+    return [];
   }
 
   /**
@@ -51,8 +53,7 @@ const PageDuplicateModal = (props) => {
    */
   function ppacInputChangeHandler(value) {
     getSubordinatedDuplicateList(value);
-    setErrorCode(null);
-    setErrorMessage(null);
+    setErrs(null);
     setPageNameInput(value);
   }
 
@@ -62,8 +63,7 @@ const PageDuplicateModal = (props) => {
    */
   function inputChangeHandler(value) {
     getSubordinatedDuplicateList(value);
-    setErrorCode(null);
-    setErrorMessage(null);
+    setErrs(null);
     setPageNameInput(value);
   }
 
@@ -178,7 +178,14 @@ const PageDuplicateModal = (props) => {
       </ModalBody>
       <ModalFooter>
         <ApiErrorMessageList errs={errs} targetPath={pageNameInput} />
-        <button type="button" className="btn btn-primary" onClick={duplicate}>Duplicate page</button>
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={duplicate}
+          disabled={(isDuplicateRecursively && isDuplicateRecursivelyExist && !isDuplicateRecursivelyWithoutExistPath) || (path === pageNameInput)}
+        >
+          { t('modal_duplicate.label.Duplicate page') }
+        </button>
       </ModalFooter>
     </Modal>
   );
