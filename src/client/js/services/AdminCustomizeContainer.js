@@ -24,7 +24,6 @@ export default class AdminCustomizeContainer extends Container {
       retrieveError: null,
       // set dummy value tile for using suspense
       currentTheme: this.dummyCurrentTheme,
-      currentLayout: '',
       isEnabledTimeline: false,
       isSavedStatesOfTabChanges: false,
       isEnabledAttachTitleHeader: false,
@@ -72,7 +71,6 @@ export default class AdminCustomizeContainer extends Container {
 
       this.setState({
         currentTheme: customizeParams.themeType,
-        currentLayout: customizeParams.layoutType,
         isEnabledTimeline: customizeParams.isEnabledTimeline,
         isSavedStatesOfTabChanges: customizeParams.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: customizeParams.isEnabledAttachTitleHeader,
@@ -95,13 +93,6 @@ export default class AdminCustomizeContainer extends Container {
       logger.error(err);
       throw new Error('Failed to fetch data');
     }
-  }
-
-  /**
-   * Switch layoutType
-   */
-  switchLayoutType(lauoutName) {
-    this.setState({ currentLayout: lauoutName });
   }
 
   /**
@@ -239,18 +230,16 @@ export default class AdminCustomizeContainer extends Container {
   }
 
   /**
-   * Update layout
+   * Update theme
    * @memberOf AdminCustomizeContainer
    */
   async updateCustomizeLayoutAndTheme() {
     try {
-      const response = await this.appContainer.apiv3.put('/customize-setting/layout-theme', {
-        layoutType: this.state.currentLayout,
+      const response = await this.appContainer.apiv3.put('/customize-setting/theme', {
         themeType: this.state.currentTheme,
       });
       const { customizedParams } = response.data;
       this.setState({
-        layoutType: customizedParams.layoutType,
         themeType: customizedParams.themeType,
       });
     }
