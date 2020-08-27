@@ -1,10 +1,11 @@
 /* eslint-disable react/no-danger */
-import React, { Suspense } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
 import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
+import { withLoadingSppiner } from '../../SuspenseUtils';
 
 import AdminGitHubSecurityContainer from '../../../services/AdminGitHubSecurityContainer';
 
@@ -39,22 +40,8 @@ GitHubSecurityManagement.propTypes = {
   adminGitHubSecurityContainer: PropTypes.instanceOf(AdminGitHubSecurityContainer).isRequired,
 };
 
-const GitHubSecurityManagementWithUnstatedContainer = withUnstatedContainers(GitHubSecurityManagement, [
+const GitHubSecurityManagementWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(GitHubSecurityManagement), [
   AdminGitHubSecurityContainer,
 ]);
 
-function GitHubSecurityManagementWithContainerWithSuspense(props) {
-  return (
-    <Suspense
-      fallback={(
-        <div className="row">
-          <i className="fa fa-5x fa-spinner fa-pulse mx-auto text-muted"></i>
-        </div>
-      )}
-    >
-      <GitHubSecurityManagementWithUnstatedContainer />
-    </Suspense>
-  );
-}
-
-export default GitHubSecurityManagementWithContainerWithSuspense;
+export default GitHubSecurityManagementWithUnstatedContainer;
