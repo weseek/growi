@@ -22,7 +22,7 @@ function SmtpSetting(props) {
     const { t } = props;
 
     try {
-      console.log('huge');
+      // TODO GW-3627 update ses setting
       toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.mail_settings') }));
     }
     catch (err) {
