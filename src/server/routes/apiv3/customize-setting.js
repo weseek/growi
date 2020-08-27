@@ -168,12 +168,12 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /customize-setting/layout-theme/asset-path:
+   *    /customize-setting/theme/asset-path:
    *      put:
    *        tags: [CustomizeSetting]
-   *        operationId: getLayoutThemeAssetPath
-   *        summary: /customize-setting/layout-theme/asset-path
-   *        description: Get layout theme asset path
+   *        operationId: getThemeAssetPath
+   *        summary: /customize-setting/theme/asset-path
+   *        description: Get theme asset path
    *        parameters:
    *          - name: themeName
    *            in: query
@@ -182,7 +182,7 @@ module.exports = (crowi) => {
    *              type: string
    *        responses:
    *          200:
-   *            description: Succeeded to update layout and theme
+   *            description: Succeeded to get theme asset path
    *            content:
    *              application/json:
    *                schema:
@@ -190,8 +190,8 @@ module.exports = (crowi) => {
    *                    assetPath:
    *                      type: string
    */
-  router.get('/layout-theme/asset-path', loginRequiredStrictly, adminRequired, validator.themeAssetPath, apiV3FormValidator, async(req, res) => {
-    const themeName = req.query.themeName;
+  router.get('/theme/asset-path', loginRequiredStrictly, adminRequired, validator.themeAssetPath, apiV3FormValidator, async(req, res) => {
+    const { themeName } = req.query;
 
     const webpackAssetKey = `styles/theme-${themeName}.css`;
     const assetPath = res.locals.webpack_asset(webpackAssetKey);
