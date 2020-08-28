@@ -18,18 +18,23 @@ module.exports = {
       Config.findOne({ key: 'aws:secretAccessKey' }),
     ]);
 
-    const promise = [
-      Config.create({
+    const promise = [];
+
+    if (accessKeyId != null) {
+      promise.push(Config.create({
         key: 'mail:sesAccessKeyId',
         ns: 'crowi',
         value: accessKeyId.value,
-      }),
-      Config.create({
+      }));
+    }
+
+    if (secretAccessKey != null) {
+      promise.push(Config.create({
         key: 'mail:sesSecretAccessKey',
         ns: 'crowi',
         value: secretAccessKey.value,
-      }),
-    ];
+      }));
+    }
 
     await Promise.all(promise);
 
