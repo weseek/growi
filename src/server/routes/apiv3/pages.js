@@ -86,7 +86,7 @@ module.exports = (crowi) => {
 
   router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
     const { path } = req.query;
-    const limit = +req.query.limit || 50;
+    const limit = +req.query.limit || 30;
     const offset = +req.query.offset || 0;
     const queryOptions = { offset, limit };
 
