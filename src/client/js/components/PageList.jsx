@@ -7,6 +7,8 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 
+import PaginationWrapper from './PaginationWrapper';
+
 
 const PageList = (props) => {
   const { appContainer, pageContainer } = props;
@@ -14,17 +16,29 @@ const PageList = (props) => {
   const [pages, setPages] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  const [activePage, setActivePage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [limit, setLimit] = useState(appContainer.getConfig().recentCreatedLimit);
+  const [offset, setOffset] = useState(0);
 
-  const getPageList = useCallback(async() => {
-    const res = await appContainer.apiv3Get('/pages/list', { path });
+  function setPageNumber(selectedPageNumber) {
+    setActivePage(selectedPageNumber);
+    setOffset((selectedPageNumber - 1) * limit);
+  }
+
+  const updatePageList = useCallback(async() => {
+    const res = await appContainer.apiv3Get('/pages/list', { path, limit, offset });
 
     setPages(res.data.pages);
     setIsLoading(true);
-  }, [appContainer, path]);
+    setTotalPages(res.data.totalCount);
+    setLimit(res.data.limit);
+    setOffset(res.data.offset);
+  }, [appContainer, path, limit, offset]);
 
   useEffect(() => {
-    getPageList();
-  }, [getPageList]);
+    updatePageList();
+  }, [updatePageList]);
 
 
   if (isLoading === false) {
@@ -37,11 +51,27 @@ const PageList = (props) => {
     );
   }
 
-  return pages.map(page => (
+  const pageList = pages.map(page => (
     <li key={page._id}>
       <Page page={page} />
     </li>
   ));
+
+  return (
+    <div className="page-list-container-create">
+      <ul className="page-list-ul page-list-ul-flat mb-3">
+        {pageList}
+      </ul>
+      <PaginationWrapper
+        activePage={activePage}
+        changePage={setPageNumber}
+        totalItemsCount={totalPages}
+        pagingLimit={limit}
+      />
+    </div>
+  );
+
+
 };
 
 const PageListWrapper = withUnstatedContainers(PageList, [AppContainer, PageContainer]);

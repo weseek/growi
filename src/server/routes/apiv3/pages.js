@@ -7,6 +7,7 @@ const express = require('express');
 
 const router = express.Router();
 
+
 /**
  * @swagger
  *  tags:
@@ -85,8 +86,13 @@ module.exports = (crowi) => {
 
   router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
     const { path } = req.query;
+    const limit = +req.query.limit || 30;
+    const offset = +req.query.offset || 0;
+    const queryOptions = { offset, limit };
+
     try {
-      const result = await Page.findListWithDescendants(path, req.user);
+      const result = await Page.findListWithDescendants(path, req.user, queryOptions);
+
       return res.apiv3(result);
     }
     catch (err) {
