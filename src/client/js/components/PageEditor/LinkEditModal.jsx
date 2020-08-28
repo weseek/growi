@@ -170,7 +170,7 @@ class LinkEditModal extends React.PureComponent {
     let permalink = '';
 
     if (path.startsWith('/')) {
-      const pathWithoutFragment = path.split('#')[0];
+      const pathWithoutFragment = new URL(path, 'http://dummy').pathname;
       const isPermanentLink = validator.isMongoId(pathWithoutFragment.slice(1));
       const pageId = isPermanentLink ? pathWithoutFragment.slice(1) : null;
 
