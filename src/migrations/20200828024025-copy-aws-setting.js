@@ -20,7 +20,7 @@ module.exports = {
 
     const request = [];
 
-    if (accessKeyId?.value != null) {
+    if (accessKeyId != null && accessKeyId.value != null) {
       request.push({
         insertOne: {
           document: {
@@ -32,7 +32,7 @@ module.exports = {
       });
     }
 
-    if (secretAccessKey?.value != null) {
+    if (secretAccessKey != null && secretAccessKey.value != null) {
       request.push({
         insertOne: {
           document: {
