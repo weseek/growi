@@ -35,6 +35,7 @@ class LinkEditModal extends React.PureComponent {
       linkerType: Linker.types.markdownLink,
       markdown: '',
       permalink: '',
+      linkText: '',
     };
 
     this.isApplyPukiwikiLikeLinkerPlugin = window.growiRenderer.preProcessors.some(process => process.constructor.name === 'PukiwikiLikeLinker');
@@ -53,15 +54,17 @@ class LinkEditModal extends React.PureComponent {
     this.renderPreview = this.renderPreview.bind(this);
     this.getRootPath = this.getRootPath.bind(this);
 
-    this.getPreviewDebounced = debounce(200, this.getPreview.bind(this));
+    this.generateAndSetPreviewDebounced = debounce(200, this.generateAndSetPreview.bind(this));
+    this.generateAndSetLinkTextPreviewDebounced = debounce(200, this.generateAndSetLinkTextPreview.bind(this));
   }
 
   componentDidUpdate(prevProps, prevState) {
     const { linkInputValue: prevLinkInputValue } = prevState;
     const { linkInputValue } = this.state;
     if (linkInputValue !== prevLinkInputValue) {
-      this.getPreviewDebounced(linkInputValue);
+      this.generateAndSetPreviewDebounced(linkInputValue);
     }
+    this.generateAndSetLinkTextPreviewDebounced();
   }
 
   // defaultMarkdownLink is an instance of Linker
@@ -160,7 +163,7 @@ class LinkEditModal extends React.PureComponent {
     );
   }
 
-  async getPreview(path) {
+  async generateAndSetPreview(path) {
     let markdown = '';
     let permalink = '';
     try {
@@ -172,6 +175,12 @@ class LinkEditModal extends React.PureComponent {
       markdown = `<div class="alert alert-warning" role="alert"><strong>${err.message}</strong></div>`;
     }
     this.setState({ markdown, permalink });
+  }
+
+  generateAndSetLinkTextPreview() {
+    const linker = this.generateLink();
+    const linkText = linker.generateMarkdownText();
+    this.setState({ linkText });
   }
 
   handleChangeTypeahead(selected) {
@@ -203,10 +212,8 @@ class LinkEditModal extends React.PureComponent {
   }
 
   save() {
-    const output = this.generateLink();
-
     if (this.props.onSave != null) {
-      this.props.onSave(output);
+      this.props.onSave(this.state.linkText);
     }
 
     this.hide();
