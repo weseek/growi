@@ -18,25 +18,33 @@ module.exports = {
       Config.findOne({ key: 'aws:secretAccessKey' }),
     ]);
 
-    const promise = [];
+    const request = [];
 
-    if (accessKeyId != null) {
-      promise.push(Config.create({
-        key: 'mail:sesAccessKeyId',
-        ns: 'crowi',
-        value: accessKeyId.value,
-      }));
+    if (accessKeyId?.value != null) {
+      request.push({
+        insertOne: {
+          document: {
+            key: 'mail:sesAccessKeyId',
+            ns: 'crowi',
+            value: accessKeyId.value,
+          },
+        },
+      });
     }
 
-    if (secretAccessKey != null) {
-      promise.push(Config.create({
-        key: 'mail:sesSecretAccessKey',
-        ns: 'crowi',
-        value: secretAccessKey.value,
-      }));
+    if (secretAccessKey?.value != null) {
+      request.push({
+        insertOne: {
+          document: {
+            key: 'mail:sesSecretAccessKey',
+            ns: 'crowi',
+            value: secretAccessKey.value,
+          },
+        },
+      });
     }
 
-    await Promise.all(promise);
+    await Config.bulkWrite(request);
 
     logger.info('Migration has successfully applied');
   },
