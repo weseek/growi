@@ -139,14 +139,14 @@ module.exports = (crowi) => {
       body('smtpPassword').trim(),
     ],
     sesSetting: [
-      body('sesAccessKeyId').trim(),
+      body('sesAccessKeyId').trim().if(value => value !== '').matches(/^[\da-zA-Z]+$/),
       body('sesSecretAccessKey').trim(),
     ],
     awsSetting: [
       body('region').trim().matches(/^[a-z]+-[a-z]+-\d+$/).withMessage((value, { req }) => req.t('validation.aws_region')),
       body('customEndpoint').trim().matches(/^(https?:\/\/[^/]+|)$/).withMessage((value, { req }) => req.t('validation.aws_custom_endpoint')),
       body('bucket').trim(),
-      body('accessKeyId').trim().matches(/^[\da-zA-Z]+$/),
+      body('accessKeyId').trim().if(value => value !== '').matches(/^[\da-zA-Z]+$/),
       body('secretAccessKey').trim(),
     ],
     pluginSetting: [
