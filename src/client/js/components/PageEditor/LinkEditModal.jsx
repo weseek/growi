@@ -165,13 +165,13 @@ class LinkEditModal extends React.PureComponent {
   }
 
   async generateAndSetPreview(path) {
+    let markdown = '';
+    let permalink = '';
 
     if (path.startsWith('/')) {
       const isPermanentLink = validator.isMongoId(path.slice(1));
       const pageId = isPermanentLink ? path.slice(1) : null;
 
-      let markdown = '';
-      let permalink = '';
       try {
         const { page } = await this.props.appContainer.apiGet('/pages.get', { path, page_id: pageId });
         markdown = page.revision.body;
@@ -185,6 +185,7 @@ class LinkEditModal extends React.PureComponent {
     else {
       markdown = '<div class="alert alert-success" role="alert">Page preview here.</div>';
     }
+    this.setState({ markdown, permalink });
   }
 
   generateAndSetLinkTextPreview() {
