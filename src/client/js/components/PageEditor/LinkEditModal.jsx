@@ -11,6 +11,7 @@ import {
 import { debounce } from 'throttle-debounce';
 
 import path from 'path';
+import validator from 'validator';
 import Preview from './Preview';
 
 import AppContainer from '../../services/AppContainer';
@@ -166,13 +167,23 @@ class LinkEditModal extends React.PureComponent {
   async generateAndSetPreview(path) {
     let markdown = '';
     let permalink = '';
-    try {
-      const res = await this.props.appContainer.apiGet('/pages.get', { path });
-      markdown = res.page.revision.body;
-      permalink = `${window.location.origin}/${res.page.id}`;
+
+    if (path.startsWith('/')) {
+      const isPermanentLink = validator.isMongoId(path.slice(1));
+      const pageId = isPermanentLink ? path.slice(1) : null;
+
+      try {
+        const { page } = await this.props.appContainer.apiGet('/pages.get', { path, page_id: pageId });
+        markdown = page.revision.body;
+        // create permanent link only if path isn't permanent link because checkbox for isUsePermanentLink is disabled when permalink is ''.
+        permalink = !isPermanentLink ? `${window.location.origin}/${page.id}` : '';
+      }
+      catch (err) {
+        markdown = `<div class="alert alert-warning" role="alert"><strong>${err.message}</strong></div>`;
+      }
     }
-    catch (err) {
-      markdown = `<div class="alert alert-warning" role="alert"><strong>${err.message}</strong></div>`;
+    else {
+      markdown = '<div class="alert alert-success" role="alert">Page preview here.</div>';
     }
     this.setState({ markdown, permalink });
   }
@@ -361,6 +372,7 @@ class LinkEditModal extends React.PureComponent {
 }
 
 LinkEditModal.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   onSave: PropTypes.func,
