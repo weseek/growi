@@ -15,6 +15,7 @@ import PagePathAutoComplete from './PagePathAutoComplete';
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 import ComparePathsTable from './ComparePathsTable';
 
+const LIMIT_FOR_LIST = 10;
 
 const PageDuplicateModal = (props) => {
   const { t, appContainer, pageContainer } = props;
@@ -31,6 +32,7 @@ const PageDuplicateModal = (props) => {
   const [subordinatedPages, setSubordinatedPages] = useState([]);
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(false);
   const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(false);
+  const [isDuplicateRecursivelyExist] = useState(false);
 
   function getSubordinatedDuplicateList(value) {
 
@@ -42,6 +44,7 @@ const PageDuplicateModal = (props) => {
     // setIsDuplicateExist(duplicatedList);
 
     // ToDo: for now we use dummy path
+    return [];
   }
 
   /**
@@ -70,7 +73,7 @@ const PageDuplicateModal = (props) => {
 
   const getSubordinatedList = useCallback(async() => {
     try {
-      const res = await appContainer.apiv3Get('/pages/subordinated-list', { path });
+      const res = await appContainer.apiv3Get('/pages/subordinated-list', { path, limit: LIMIT_FOR_LIST });
       const { subordinatedPaths } = res.data;
       setSubordinatedPages(subordinatedPaths);
     }
@@ -175,7 +178,14 @@ const PageDuplicateModal = (props) => {
       </ModalBody>
       <ModalFooter>
         <ApiErrorMessageList errs={errs} targetPath={pageNameInput} />
-        <button type="button" className="btn btn-primary" onClick={duplicate}>Duplicate page</button>
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={duplicate}
+          disabled={(isDuplicateRecursively && isDuplicateRecursivelyExist && !isDuplicateRecursivelyWithoutExistPath) || (path === pageNameInput)}
+        >
+          { t('modal_duplicate.label.Duplicate page') }
+        </button>
       </ModalFooter>
     </Modal>
   );

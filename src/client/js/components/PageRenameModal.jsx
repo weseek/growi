@@ -32,22 +32,7 @@ const PageRenameModal = (props) => {
   const [isRenameRedirect, SetIsRenameRedirect] = useState(false);
   const [isRenameMetadata, SetIsRenameMetadata] = useState(false);
   const [getSubordinatedError] = useState(null);
-  const [isDuplicateExistList, setIsDuplicateExistList] = useState([]);
   const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
-
-
-  function createSubordinatedList(value) {
-
-    // ToDo: get the duplicated list from sever
-    // below is psuedo code
-    // let duplicatedList = get.apiv3......
-    // duplicatedList = duplicatedList.map((value) =>
-    // <li className="duplicate-exist" key={value}> {value}: { t('modal_duplicate.label.Same page already exists') } </li>; )
-    // setIsDuplicateExist(duplicatedList);
-
-    // ToDo: for now we use dummy path
-    setIsDuplicateExistList(['/test146/test147', value]);
-  }
 
 
   function changeIsRenameRecursivelyHandler() {
@@ -89,7 +74,6 @@ const PageRenameModal = (props) => {
    * @param {string} value
    */
   function inputChangeHandler(value) {
-    createSubordinatedList(value);
     setErrs(null);
     setPageNameInput(value);
   }
@@ -161,7 +145,7 @@ const PageRenameModal = (props) => {
           </label>
           <div
             className="custom-control custom-checkbox custom-checkbox-warning"
-            style={{ display: (isDuplicateExistList.length !== 0) && isRenameRecursively ? '' : 'none' }}
+            style={{ display: isRenameRecursively ? '' : 'none' }}
           >
             <input
               className="custom-control-input"
