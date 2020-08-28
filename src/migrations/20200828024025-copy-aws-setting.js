@@ -20,28 +20,32 @@ module.exports = {
 
     const request = [];
 
-    if (accessKeyId != null && accessKeyId.value != null) {
-      request.push({
-        insertOne: {
-          document: {
-            key: 'mail:sesAccessKeyId',
-            ns: 'crowi',
-            value: accessKeyId.value,
+    if (accessKeyId != null) {
+      if (accessKeyId.value != null) {
+        request.push({
+          insertOne: {
+            document: {
+              key: 'mail:sesAccessKeyId',
+              ns: 'crowi',
+              value: accessKeyId.value,
+            },
           },
-        },
-      });
+        });
+      }
     }
 
-    if (secretAccessKey != null && secretAccessKey.value != null) {
-      request.push({
-        insertOne: {
-          document: {
-            key: 'mail:sesSecretAccessKey',
-            ns: 'crowi',
-            value: secretAccessKey.value,
+    if (secretAccessKey != null) {
+      if (secretAccessKey.value != null) {
+        request.push({
+          insertOne: {
+            document: {
+              key: 'mail:sesSecretAccessKey',
+              ns: 'crowi',
+              value: secretAccessKey.value,
+            },
           },
-        },
-      });
+        });
+      }
     }
 
     await Config.bulkWrite(request);
