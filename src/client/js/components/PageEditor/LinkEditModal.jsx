@@ -165,6 +165,7 @@ class LinkEditModal extends React.PureComponent {
   }
 
   async generateAndSetPreview(path) {
+
     if (path.startsWith('/')) {
       const isPermanentLink = validator.isMongoId(path.slice(1));
       const pageId = isPermanentLink ? path.slice(1) : null;
@@ -180,7 +181,9 @@ class LinkEditModal extends React.PureComponent {
       catch (err) {
         markdown = `<div class="alert alert-warning" role="alert"><strong>${err.message}</strong></div>`;
       }
-      this.setState({ markdown, permalink });
+    }
+    else {
+      markdown = '<div class="alert alert-success" role="alert">Page preview here.</div>';
     }
   }
 
@@ -372,6 +375,7 @@ class LinkEditModal extends React.PureComponent {
 }
 
 LinkEditModal.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   onSave: PropTypes.func,
