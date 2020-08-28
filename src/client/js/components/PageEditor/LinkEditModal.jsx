@@ -283,8 +283,10 @@ class LinkEditModal extends React.PureComponent {
             <div className="col-12 col-lg-6">
               <form className="form-group">
                 <div className="form-gorup my-3">
-                  <label htmlFor="linkInput">Link</label>
-                  <div className="input-group">
+                  <div className="input-group flex-nowrap">
+                    <div className="input-group-prepend">
+                      <span className="input-group-text">link</span>
+                    </div>
                     <SearchTypeahead
                       onChange={this.handleChangeTypeahead}
                       onInputChange={this.handleChangeLinkInput}
@@ -292,57 +294,35 @@ class LinkEditModal extends React.PureComponent {
                       placeholder="Input page path or URL"
                       keywordOnInit={this.state.linkInputValue}
                     />
+                    <div className="input-group-prepend">
+                      <button type="button" className="btn btn-info">
+                        pre
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div className="form-gorup my-3">
+                  <div className="input-group flex-nowrap">
+                    <div className="input-group-prepend">
+                      <span className="input-group-text">label</span>
+                    </div>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="label"
+                      value={this.state.labelInputValue}
+                      onChange={e => this.handleChangeLabelInput(e.target.value)}
+                      disabled={this.state.linkerType === Linker.types.growiLink}
+                    />
                   </div>
                 </div>
               </form>
-
-              <div className="d-block d-lg-none mb-3 overflow-auto">{this.renderPreview()}</div>
-
               <div className="card">
                 <div className="card-body">
-                  <form className="form-group">
-                    <div className="form-group btn-group d-flex" role="group" aria-label="type">
-                      <button
-                        type="button"
-                        name={Linker.types.markdownLink}
-                        className={`btn btn-outline-secondary col ${this.state.linkerType === Linker.types.markdownLink && 'active'}`}
-                        onClick={e => this.handleSelecteLinkerType(e.target.name)}
-                      >
-                        Markdown
-                      </button>
-                      <button
-                        type="button"
-                        name={Linker.types.growiLink}
-                        className={`btn btn-outline-secondary col ${this.state.linkerType === Linker.types.growiLink && 'active'}`}
-                        onClick={e => this.handleSelecteLinkerType(e.target.name)}
-                      >
-                        Growi Original
-                      </button>
-                      {this.isApplyPukiwikiLikeLinkerPlugin && (
-                        <button
-                          type="button"
-                          name={Linker.types.pukiwikiLink}
-                          className={`btn btn-outline-secondary col ${this.state.linkerType === Linker.types.pukiwikiLink && 'active'}`}
-                          onClick={e => this.handleSelecteLinkerType(e.target.name)}
-                        >
-                          Pukiwiki
-                        </button>
-                      )}
-                    </div>
-
-                    <div className="form-group">
-                      <label htmlFor="label">Label</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="label"
-                        value={this.state.labelInputValue}
-                        onChange={e => this.handleChangeLabelInput(e.target.value)}
-                        disabled={this.state.linkerType === Linker.types.growiLink}
-                      />
-                    </div>
-                    <div className="form-inline">
-                      <div className="custom-control custom-checkbox custom-checkbox-info">
+                  <form className="form-group mb-0">
+                    <div className="form-group row">
+                      <label className="col-sm-3">Path format</label>
+                      <div className="custom-control custom-checkbox custom-checkbox-info custom-control-inline">
                         <input
                           className="custom-control-input"
                           id="relativePath"
@@ -354,9 +334,7 @@ class LinkEditModal extends React.PureComponent {
                           Use relative path
                         </label>
                       </div>
-                    </div>
-                    <div className="form-inline">
-                      <div className="custom-control custom-checkbox custom-checkbox-info">
+                      <div className="custom-control custom-checkbox custom-checkbox-info custom-control-inline">
                         <input
                           className="custom-control-input"
                           id="permanentLink"
@@ -366,6 +344,45 @@ class LinkEditModal extends React.PureComponent {
                         />
                         <label className="custom-control-label" htmlFor="permanentLink" onClick={this.toggleIsUsePamanentLink}>
                           Use permanent link
+                        </label>
+                      </div>
+                    </div>
+                    <div className="form-group row mb-0">
+                      <label className="col-sm-3">Notation</label>
+                      <div className="custom-control custom-radio custom-control-inline">
+                        <input
+                          type="radio"
+                          className="custom-control-input"
+                          id="markdownType"
+                          name={Linker.types.markdownLink}
+                          checked={this.state.linkerType === Linker.types.markdownLink}
+                        />
+                        <label className="custom-control-label" htmlFor="markdownType" onClick={e => this.handleSelecteLinkerType(e.target.name)}>
+                          Markdown
+                        </label>
+                      </div>
+                      <div className="custom-control custom-radio custom-control-inline">
+                        <input
+                          type="radio"
+                          className="custom-control-input"
+                          id="growiType"
+                          name={Linker.types.growiLink}
+                          checked={this.state.linkerType === Linker.types.growiLink}
+                        />
+                        <label className="custom-control-label" htmlFor="growiType" onClick={e => this.handleSelecteLinkerType(e.target.name)}>
+                          Growi original
+                        </label>
+                      </div>
+                      <div className="custom-control custom-radio custom-control-inline">
+                        <input
+                          type="radio"
+                          className="custom-control-input"
+                          id="pukiwikiType"
+                          name={Linker.types.pukiwikiLink}
+                          checked={this.state.linkerType === Linker.types.pukiwikiLink}
+                        />
+                        <label className="custom-control-label" htmlFor="pukiwikiType" onClick={e => this.handleSelecteLinkerType(e.target.name)}>
+                          Pukiwiki
                         </label>
                       </div>
                     </div>
