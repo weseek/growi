@@ -25,9 +25,6 @@ module.exports = function(crowi) {
     config['customize:layout'] = 'growi';
     config['customize:isSavedStatesOfTabChanges'] = false;
 
-    config['mail:sesAccessKeyId'] = undefined;
-    config['mail:sesSecretAccessKey'] = undefined;
-
     return config;
   }
 
