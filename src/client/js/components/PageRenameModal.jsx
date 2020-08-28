@@ -8,6 +8,7 @@ import {
 import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from './UnstatedUtils';
+import { toastError } from '../util/apiNotification';
 
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
@@ -59,6 +60,7 @@ const PageRenameModal = (props) => {
     }
     catch (err) {
       setErrs(err);
+      toastError(t('modal_duplicate.label.Fail to get subordinated pages'));
     }
   }, [appContainer, path, t]);
 
