@@ -202,11 +202,11 @@ class LinkEditModal extends React.PureComponent {
     }
 
     const linkText = linker.generateMarkdownText();
-    const linkDom = this.generateLinkDom(linker);
+    const linkDom = this.getLinkDom(linker);
     this.setState({ linkText, linkDom });
   }
 
-  generateLinkDom(linker) {
+  getLinkDom(linker) {
     return <a href={linker.link}>{linker.label}</a>;
   }
 
