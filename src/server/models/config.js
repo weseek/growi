@@ -26,7 +26,7 @@ module.exports = function(crowi) {
     config['customize:isSavedStatesOfTabChanges'] = false;
 
     config['mail:sesAccessKeyId'] = undefined;
-    config['mail:sesSecretAccessKey']= undefined;
+    config['mail:sesSecretAccessKey'] = undefined;
 
     return config;
   }
