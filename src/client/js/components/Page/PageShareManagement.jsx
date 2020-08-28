@@ -51,6 +51,8 @@ const PageShareManagement = (props) => {
     window.location.href = url.href;
   }
 
+  // TODO GW-2746 create api to bulk export pages
+  // eslint-disable-next-line no-unused-vars
   function openArchiveModalHandler() {
     setIsArchiveCreateModalShown(true);
     getArchivePageData();
@@ -128,9 +130,10 @@ const PageShareManagement = (props) => {
         <button type="button" className="dropdown-item" onClick={() => { exportPageHandler('md') }}>
           <span>{t('export_bulk.export_page_markdown')}</span>
         </button>
-        <button className="dropdown-item" type="button" onClick={openArchiveModalHandler}>
+        {/* TODO GW-2746 create api to bulk export pages */}
+        {/* <button className="dropdown-item" type="button" onClick={openArchiveModalHandler}>
           <i className="icon-fw"></i>{t('Create Archive Page')}
-        </button>
+        </button> */}
       </div>
       {renderModals()}
     </>
