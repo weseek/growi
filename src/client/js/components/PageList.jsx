@@ -21,12 +21,12 @@ const PageList = (props) => {
   const [limit, setLimit] = useState(appContainer.getConfig().recentCreatedLimit);
   const [offset, setOffset] = useState(0);
 
-  function setPaginateOptionHandler(selectedPageNumber) {
+  function setPageNumber(selectedPageNumber) {
     setActivePage(selectedPageNumber);
     setOffset((selectedPageNumber - 1) * limit);
   }
 
-  const getPageList = useCallback(async() => {
+  const updatePageList = useCallback(async() => {
     const res = await appContainer.apiv3Get('/pages/list', { path, limit, offset });
 
     setPages(res.data.pages);
@@ -37,8 +37,8 @@ const PageList = (props) => {
   }, [appContainer, path, limit, offset]);
 
   useEffect(() => {
-    getPageList();
-  }, [getPageList]);
+    updatePageList();
+  }, [updatePageList]);
 
 
   if (isLoading === false) {
@@ -64,7 +64,7 @@ const PageList = (props) => {
       </ul>
       <PaginationWrapper
         activePage={activePage}
-        changePage={setPaginateOptionHandler}
+        changePage={setPageNumber}
         totalItemsCount={totalPages}
         pagingLimit={limit}
       />
