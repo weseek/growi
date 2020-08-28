@@ -56,17 +56,17 @@ class LinkEditModal extends React.PureComponent {
     this.renderPreview = this.renderPreview.bind(this);
     this.getRootPath = this.getRootPath.bind(this);
 
-    this.getPreviewDebounced = debounce(200, this.getPreview.bind(this));
-    this.getLinkTextPreviewDebounced = debounce(200, this.getLinkTextPreview.bind(this));
+    this.generateAndSetPreviewDebounced = debounce(200, this.generateAndSetPreview.bind(this));
+    this.generateAndSetLinkTextPreviewDebounced = debounce(200, this.generateAndSetLinkTextPreview.bind(this));
   }
 
   componentDidUpdate(prevProps, prevState) {
     const { linkInputValue: prevLinkInputValue } = prevState;
     const { linkInputValue } = this.state;
     if (linkInputValue !== prevLinkInputValue) {
-      this.getPreviewDebounced(linkInputValue);
+      this.generateAndSetPreviewDebounced(linkInputValue);
     }
-    this.getLinkTextPreviewDebounced();
+    this.generateAndSetLinkTextPreviewDebounced();
   }
 
   // defaultMarkdownLink is an instance of Linker
@@ -165,15 +165,17 @@ class LinkEditModal extends React.PureComponent {
     );
   }
 
-  async getPreview(path) {
-    if (path.startsWith('/')) {
-      const isPermanentLink = validator.isMongoId(path.slice(1));
-      const pageId = isPermanentLink ? path.slice(1) : null;
+  async generateAndSetPreview(path) {
+    let markdown = '';
+    let permalink = '';
 
-      let markdown = '';
-      let permalink = '';
+    if (path.startsWith('/')) {
+      const pathWithoutFragment = path.split('#')[0];
+      const isPermanentLink = validator.isMongoId(pathWithoutFragment.slice(1));
+      const pageId = isPermanentLink ? pathWithoutFragment.slice(1) : null;
+
       try {
-        const { page } = await this.props.appContainer.apiGet('/pages.get', { path, page_id: pageId });
+        const { page } = await this.props.appContainer.apiGet('/pages.get', { path: pathWithoutFragment, page_id: pageId });
         markdown = page.revision.body;
         // create permanent link only if path isn't permanent link because checkbox for isUsePermanentLink is disabled when permalink is ''.
         permalink = !isPermanentLink ? `${window.location.origin}/${page.id}` : '';
@@ -181,11 +183,14 @@ class LinkEditModal extends React.PureComponent {
       catch (err) {
         markdown = `<div class="alert alert-warning" role="alert"><strong>${err.message}</strong></div>`;
       }
-      this.setState({ markdown, permalink });
     }
+    else {
+      markdown = '<div class="alert alert-success" role="alert">Page preview here.</div>';
+    }
+    this.setState({ markdown, permalink });
   }
 
-  getLinkTextPreview() {
+  generateAndSetLinkTextPreview() {
     const linker = this.generateLink();
 
     if (this.isUsePermanentLink && this.permalink != null) {
@@ -389,6 +394,7 @@ class LinkEditModal extends React.PureComponent {
 }
 
 LinkEditModal.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   onSave: PropTypes.func,
