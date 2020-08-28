@@ -373,7 +373,7 @@ class LinkEditModal extends React.PureComponent {
                 </div>
               </div>
               {/* TODO GW-3448 fix layout */}
-              {this.state.linkDom}
+              {this.state.linkText} &gt; {this.state.linkDom}
             </div>
 
             <div className="col d-none d-lg-block pr-0 mr-3 overflow-auto">{this.renderPreview()}</div>
