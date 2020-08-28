@@ -48,7 +48,9 @@ module.exports = {
       }
     }
 
-    await Config.bulkWrite(request);
+    if (request.length > 0) {
+      await Config.bulkWrite(request);
+    }
 
     logger.info('Migration has successfully applied');
   },
