@@ -169,11 +169,12 @@ class LinkEditModal extends React.PureComponent {
     let permalink = '';
 
     if (path.startsWith('/')) {
-      const isPermanentLink = validator.isMongoId(path.slice(1));
-      const pageId = isPermanentLink ? path.slice(1) : null;
+      const pathWithoutFragment = new URL(path, 'http://dummy').pathname;
+      const isPermanentLink = validator.isMongoId(pathWithoutFragment.slice(1));
+      const pageId = isPermanentLink ? pathWithoutFragment.slice(1) : null;
 
       try {
-        const { page } = await this.props.appContainer.apiGet('/pages.get', { path, page_id: pageId });
+        const { page } = await this.props.appContainer.apiGet('/pages.get', { path: pathWithoutFragment, page_id: pageId });
         markdown = page.revision.body;
         // create permanent link only if path isn't permanent link because checkbox for isUsePermanentLink is disabled when permalink is ''.
         permalink = !isPermanentLink ? `${window.location.origin}/${page.id}` : '';
@@ -241,7 +242,11 @@ class LinkEditModal extends React.PureComponent {
       reshapedLink = rootPath === linkInputValue ? '.' : path.relative(rootPath, linkInputValue);
     }
 
-    return new Linker(linkerType, labelInputValue, reshapedLink, isUsePermanentLink, permalink);
+    if (isUsePermanentLink && permalink != null) {
+      reshapedLink = permalink;
+    }
+
+    return new Linker(linkerType, labelInputValue, reshapedLink);
   }
 
   getRootPath(type) {
