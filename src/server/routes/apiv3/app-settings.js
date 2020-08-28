@@ -73,6 +73,16 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *          smtpPassword:
  *            type: string
  *            description: password of client's smtp server
+ *      SesSettingParams:
+ *        description: SesSettingParams
+ *        type: object
+ *        properties:
+ *          accessKeyId:
+ *            type: string
+ *            description: accesskey id for authentification of AWS
+ *          secretAccessKey:
+ *            type: string
+ *            description: secret key for authentification of AWS
  *      AwsSettingParams:
  *        description: AwsSettingParams
  *        type: object
@@ -128,11 +138,15 @@ module.exports = (crowi) => {
       body('smtpUser').trim(),
       body('smtpPassword').trim(),
     ],
+    sesSetting: [
+      body('sesAccessKeyId').trim().if(value => value !== '').matches(/^[\da-zA-Z]+$/),
+      body('sesSecretAccessKey').trim(),
+    ],
     awsSetting: [
       body('region').trim().matches(/^[a-z]+-[a-z]+-\d+$/).withMessage((value, { req }) => req.t('validation.aws_region')),
       body('customEndpoint').trim().matches(/^(https?:\/\/[^/]+|)$/).withMessage((value, { req }) => req.t('validation.aws_custom_endpoint')),
       body('bucket').trim(),
-      body('accessKeyId').trim().matches(/^[\da-zA-Z]+$/),
+      body('accessKeyId').trim().if(value => value !== '').matches(/^[\da-zA-Z]+$/),
       body('secretAccessKey').trim(),
     ],
     pluginSetting: [
@@ -173,6 +187,8 @@ module.exports = (crowi) => {
       smtpPort: crowi.configManager.getConfig('crowi', 'mail:smtpPort'),
       smtpUser: crowi.configManager.getConfig('crowi', 'mail:smtpUser'),
       smtpPassword: crowi.configManager.getConfig('crowi', 'mail:smtpPassword'),
+      sesAccessKeyId: crowi.configManager.getConfig('crowi', 'mail:sesAccessKeyId'),
+      sesSecretAccessKey: crowi.configManager.getConfig('crowi', 'mail:sesSecretAccessKey'),
       region: crowi.configManager.getConfig('crowi', 'aws:region'),
       customEndpoint: crowi.configManager.getConfig('crowi', 'aws:customEndpoint'),
       bucket: crowi.configManager.getConfig('crowi', 'aws:bucket'),
@@ -439,6 +455,47 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating mail setting';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-mailSetting-failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /app-settings/ses-setting:
+   *      put:
+   *        tags: [AppSettings]
+   *        operationId: updateAppSettingSesSetting
+   *        summary: /app-settings/ses-setting
+   *        description: Update ses setting
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/SesSettingParams'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update ses setting
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/SesSettingParams'
+   */
+  router.put('/ses-setting', loginRequiredStrictly, adminRequired, csrf, validator.sesSetting, apiV3FormValidator, async(req, res) => {
+
+    const requestSesSettingParams = {
+      'mail:sesAccessKeyId': req.body.sesAccessKeyId,
+      'mail:sesSecretAccessKey': req.body.sesSecretAccessKey,
+    };
+
+    try {
+      const mailSettingParams = await updateMailSettinConfig(requestSesSettingParams);
+      return res.apiv3({ mailSettingParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating ses setting';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-ses-setting-failed'));
     }
   });
 
