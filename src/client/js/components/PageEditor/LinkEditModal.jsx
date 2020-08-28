@@ -55,17 +55,17 @@ class LinkEditModal extends React.PureComponent {
     this.renderPreview = this.renderPreview.bind(this);
     this.getRootPath = this.getRootPath.bind(this);
 
-    this.getPreviewDebounced = debounce(200, this.getPreview.bind(this));
-    this.getLinkTextPreviewDebounced = debounce(200, this.getLinkTextPreview.bind(this));
+    this.generateAndSetPreviewDebounced = debounce(200, this.generateAndSetPreview.bind(this));
+    this.generateAndSetLinkTextPreviewDebounced = debounce(200, this.generateAndSetLinkTextPreview.bind(this));
   }
 
   componentDidUpdate(prevProps, prevState) {
     const { linkInputValue: prevLinkInputValue } = prevState;
     const { linkInputValue } = this.state;
     if (linkInputValue !== prevLinkInputValue) {
-      this.getPreviewDebounced(linkInputValue);
+      this.generateAndSetPreviewDebounced(linkInputValue);
     }
-    this.getLinkTextPreviewDebounced();
+    this.generateAndSetLinkTextPreviewDebounced();
   }
 
   // defaultMarkdownLink is an instance of Linker
@@ -164,7 +164,7 @@ class LinkEditModal extends React.PureComponent {
     );
   }
 
-  async getPreview(path) {
+  async generateAndSetPreview(path) {
     if (path.startsWith('/')) {
       const isPermanentLink = validator.isMongoId(path.slice(1));
       const pageId = isPermanentLink ? path.slice(1) : null;
@@ -184,7 +184,7 @@ class LinkEditModal extends React.PureComponent {
     }
   }
 
-  getLinkTextPreview() {
+  generateAndSetLinkTextPreview() {
     const linker = this.generateLink();
     const linkText = linker.generateMarkdownText();
     this.setState({ linkText });
