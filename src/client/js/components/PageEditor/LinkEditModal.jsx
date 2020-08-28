@@ -169,11 +169,12 @@ class LinkEditModal extends React.PureComponent {
     let permalink = '';
 
     if (path.startsWith('/')) {
-      const isPermanentLink = validator.isMongoId(path.slice(1));
-      const pageId = isPermanentLink ? path.slice(1) : null;
+      const pathWithoutFragment = path.split('#')[0];
+      const isPermanentLink = validator.isMongoId(pathWithoutFragment.slice(1));
+      const pageId = isPermanentLink ? pathWithoutFragment.slice(1) : null;
 
       try {
-        const { page } = await this.props.appContainer.apiGet('/pages.get', { path, page_id: pageId });
+        const { page } = await this.props.appContainer.apiGet('/pages.get', { path: pathWithoutFragment, page_id: pageId });
         markdown = page.revision.body;
         // create permanent link only if path isn't permanent link because checkbox for isUsePermanentLink is disabled when permalink is ''.
         permalink = !isPermanentLink ? `${window.location.origin}/${page.id}` : '';
