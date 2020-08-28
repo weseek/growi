@@ -59,7 +59,6 @@ const PageRenameModal = (props) => {
     }
     catch (err) {
       setErrs(err);
-      toastError(t('modal_duplicate.label.Fail to get subordinated pages'));
     }
   }, [appContainer, path, t]);
 
