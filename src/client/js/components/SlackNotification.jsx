@@ -42,7 +42,7 @@ class SlackNotification extends React.Component {
       <div className="grw-slack-notification">
         <div className="input-group  extended-setting">
           <label className="input-group-addon">
-            <div className="custom-control custom-switch ">
+            <div className="custom-control custom-switch custom-switch-lg">
               <input
                 type="checkbox"
                 className="custom-control-input border-0"
