@@ -15,18 +15,7 @@
 
   .grw-compare-page-table {
     tbody {
-      display: block;
       max-height: 200px;
-      overflow-y: auto;
-    }
-
-    td,
-    th {
-      width: 50%;
-    }
-
-    tr {
-      display: flex;
     }
   }
 }
