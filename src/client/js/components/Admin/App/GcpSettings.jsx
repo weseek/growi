@@ -67,6 +67,7 @@ class GcpSetting extends React.Component {
                   type="text"
                   value={adminAppContainer.state.envGcsApiKeyJsonPath || ''}
                   readOnly
+                  tabIndex="-1"
                 />
                 <p className="form-text text-muted">
                   {/* eslint-disable-next-line react/no-danger */}
@@ -91,6 +92,7 @@ class GcpSetting extends React.Component {
                   type="text"
                   value={adminAppContainer.state.envGcsBucket || ''}
                   readOnly
+                  tabIndex="-1"
                 />
                 <p className="form-text text-muted">
                   {/* eslint-disable-next-line react/no-danger */}
@@ -115,6 +117,7 @@ class GcpSetting extends React.Component {
                   type="text"
                   value={adminAppContainer.state.envGcsUploadNamespace || ''}
                   readOnly
+                  tabIndex="-1"
                 />
                 <p className="form-text text-muted">
                   {/* eslint-disable-next-line react/no-danger */}
