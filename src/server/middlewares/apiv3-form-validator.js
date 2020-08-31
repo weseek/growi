@@ -1,6 +1,7 @@
 import loggerFactory from '~/utils/logger';
 
-const { validationResult } = require('express-validator/check');
+const { validationResult } = require('express-validator');
+
 const ErrorV3 = require('../models/vo/error-apiv3');
 
 const logger = loggerFactory('growi:middlewares:ApiV3FormValidator');

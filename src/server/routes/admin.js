@@ -28,7 +28,7 @@ module.exports = function(crowi, app) {
   const MAX_PAGE_LIST = 50;
   const actions = {};
 
-  const { check } = require('express-validator/check');
+  const { check } = require('express-validator');
 
   const api = {};
 
