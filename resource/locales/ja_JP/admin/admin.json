@@ -38,6 +38,7 @@
     "initialize_mail_settings": "設定を初期化",
     "initialize_mail_modal_header": "メール設定の初期化",
     "confirm_to_initialize_mail_settings": "一度初期化した設定は戻せません。本当に初期化しますか？",
+    "file_upload_settings":"ファイルアップロード設定",
     "gcp_settings": "GCP設定",
     "aws_settings": "AWS設定",
     "aws_access": "AWS にアクセスするための設定を行います。AWS の設定を完了させると、ファイルアップロード機能、プロフィール写真機能などが有効になります。",
