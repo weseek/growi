@@ -17,6 +17,9 @@ module.exports = {
   rootDir: '../',
   roots: ['<rootDir>/src'],
 
+  globalSetup: '<rootDir>/src/test/global-setup.js',
+  globalTeardown: '<rootDir>/src/test/global-teardown.js',
+
   projects: [
     {
       displayName: 'server',
@@ -26,14 +29,11 @@ module.exports = {
       rootDir: '.',
       roots: ['<rootDir>/src'],
       testEnvironment: 'node',
-      globalSetup: '<rootDir>/src/test/global-setup.js',
-      globalTeardown: '<rootDir>/src/test/global-teardown.js',
       setupFilesAfterEnv: ['<rootDir>/src/test/setup.js'],
       testMatch: ['<rootDir>/src/test/**/*.test.ts', '<rootDir>/src/test/**/*.test.js'],
       // Automatically clear mock calls and instances between every test
       clearMocks: true,
       moduleNameMapper: MODULE_NAME_MAPPING,
-
     },
     // {
     //   displayName: 'client',

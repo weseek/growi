@@ -18,7 +18,7 @@ if (process.env.NODE_ENV !== 'test') {
 
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { getInstance } = require('./setup-crowi');
+// const { getInstance } = require('./setup-crowi');
 
 module.exports = async() => {
   await mongoose.connect(getMongoUri(), mongoOptions);
@@ -27,9 +27,9 @@ module.exports = async() => {
   await mongoose.connection.dropDatabase();
 
   // init DB
-  const crowi = await getInstance();
-  const appService = crowi.appService;
-  await appService.initDB();
+  // const crowi = await getInstance();
+  // const appService = crowi.appService;
+  // await appService.initDB();
 
   await mongoose.disconnect();
 };
