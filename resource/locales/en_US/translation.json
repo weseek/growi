@@ -297,6 +297,7 @@
     "label": {
       "Move/Rename page": "Move/Rename page",
       "New page name": "New page name",
+      "Fail to get subordinated pages": "Fail to get subordinated pages",
       "Current page name": "Current page name",
       "Recursively": "Recursively",
       "Do not update metadata": "Do not update metadata",

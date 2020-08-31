@@ -14,24 +14,24 @@ function ComparePathsTable(props) {
   const { path } = pageContainer.state;
 
   return (
-    <table className="table table-bordered">
+    <table className="table table-bordered grw-compare-page-table">
       <thead>
-        <tr>
+        <tr className="d-flex">
           <th className="w-50">{t('original_path')}</th>
           <th className="w-50">{t('new_path')}</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody className="overflow-auto d-block">
         {subordinatedPages.map((subordinatedPage) => {
           const convertedPath = convertToNewAffiliationPath(path, newPagePath, subordinatedPage.path);
           return (
-            <tr key={subordinatedPage._id}>
-              <td className="text-break">
+            <tr key={subordinatedPage._id} className="d-flex">
+              <td className="text-break w-50">
                 <a href={subordinatedPage.path}>
                   {subordinatedPage.path}
                 </a>
               </td>
-              <td className="text-break">
+              <td className="text-break w-50">
                 {convertedPath}
               </td>
             </tr>
