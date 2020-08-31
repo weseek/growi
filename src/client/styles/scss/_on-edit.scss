@@ -119,6 +119,11 @@ body.on-edit {
     line-height: 1em;
   }
 
+  .grw-slack-notification {
+    background-color: white;
+    border-color: $gray-200;
+  }
+
   .grw-editor-navbar-bottom {
     height: $grw-editor-navbar-bottom-height;
 

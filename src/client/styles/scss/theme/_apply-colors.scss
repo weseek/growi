@@ -328,8 +328,6 @@ body.on-edit {
       border-top-color: $border-color-theme;
     }
     .grw-slack-notification {
-      background-color: white;
-      border-color: $gray-200;
       $color-slack: #4b144c;
       .custom-control-label {
         &::before {
