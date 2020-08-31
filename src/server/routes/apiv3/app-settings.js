@@ -57,6 +57,9 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *          fromAddress:
  *            type: string
  *            description: e-mail address used as from address of mail which sent from GROWI app
+ *          transmissionMethod:
+ *            type: string
+ *            description: transmission method
  *      SmtpSettingParams:
  *        description: SmtpSettingParams
  *        type: object
@@ -131,6 +134,7 @@ module.exports = (crowi) => {
     ],
     mailSetting: [
       body('fromAddress').trim().if(value => value !== '').isEmail(),
+      body('transmissionMethod').isIn(['smtp', 'ses']),
     ],
     smtpSetting: [
       body('smtpHost').trim(),
@@ -183,6 +187,7 @@ module.exports = (crowi) => {
       siteUrl: crowi.configManager.getConfig('crowi', 'app:siteUrl'),
       envSiteUrl: crowi.configManager.getConfigFromEnvVars('crowi', 'app:siteUrl'),
       fromAddress: crowi.configManager.getConfig('crowi', 'mail:from'),
+      transmissionMethod: crowi.configManager.getConfig('crowi', 'mail:transmissionMethod'),
       smtpHost: crowi.configManager.getConfig('crowi', 'mail:smtpHost'),
       smtpPort: crowi.configManager.getConfig('crowi', 'mail:smtpPort'),
       smtpUser: crowi.configManager.getConfig('crowi', 'mail:smtpUser'),
@@ -392,8 +397,13 @@ module.exports = (crowi) => {
    */
   router.put('/mail-setting', loginRequiredStrictly, adminRequired, csrf, validator.mailSetting, apiV3FormValidator, async(req, res) => {
 
+    const requestSesSettingParams = {
+      'mail:from': req.body.fromAddress,
+      'mail:transmissionMethod': req.body.transmissionMethod,
+    };
+
     try {
-      const mailSettingParams = await updateMailSettinConfig({ 'mail:from': req.body.fromAddress });
+      const mailSettingParams = await updateMailSettinConfig(requestSesSettingParams);
 
       return res.apiv3({ mailSettingParams });
     }

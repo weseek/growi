@@ -64,6 +64,7 @@ export default class AdminAppContainer extends Container {
       envSiteUrl: appSettingsParams.envSiteUrl,
       isSetSiteUrl: !!appSettingsParams.siteUrl,
       fromAddress: appSettingsParams.fromAddress,
+      transmissionMethod: appSettingsParams.transmissionMethod,
       smtpHost: appSettingsParams.smtpHost,
       smtpPort: appSettingsParams.smtpPort,
       smtpUser: appSettingsParams.smtpUser,
@@ -251,6 +252,7 @@ export default class AdminAppContainer extends Container {
   async updateMailSettingHandler() {
     const response = await this.appContainer.apiv3.put('/app-settings/mail-setting', {
       fromAddress: this.state.fromAddress,
+      transmissionMethod: this.state.transmissionMethod,
     });
     const { mailSettingParams } = response.data;
     return mailSettingParams;
