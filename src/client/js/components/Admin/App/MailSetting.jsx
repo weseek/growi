@@ -102,8 +102,7 @@ class MailSetting extends React.Component {
           <label
             className="text-left text-md-right col-md-3 col-form-label"
           >
-            {/* TODO */}
-            送信方法
+            {t('admin:app_setting.transmission_method')}
           </label>
           <div className="col-md-6">
             {transmissionMethodsSettings}
