@@ -6,6 +6,35 @@ $themelight: #f4f5f6;
 $subthemecolor: rgb(88, 130, 250);
 $lightthemecolor: rgba(181, 203, 247, 0.61);
 
+.growi:not(.on-edit):not(.admin-page):not(.user-settings-page) {
+  // layout
+  header,
+  #main {
+    max-width: 1024px;
+    margin: auto;
+  }
+  header {
+    margin-top: 30px;
+    margin-bottom: 42px;
+    background-color: $gray-100;
+  }
+}
+
+.grw-subnav {
+  padding: 20px 30px;
+  border-radius: 0.35em;
+}
+
+.grw-page-content-container {
+  padding-top: 10px;
+  background-color: #fff;
+  border-radius: 0.35em;
+}
+
+.page-attachments-row {
+  margin-top: 30px;
+}
+
 // Light Mode
 html[light],
 html[dark] {
