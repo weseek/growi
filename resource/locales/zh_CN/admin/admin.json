@@ -41,7 +41,7 @@
     "file_upload_settings":"File Upload Settings",
     "gcp_settings": "GCP设置",
     "aws_settings": "AWS设置",
-		"aws_access": "这是用于AWS设置的。如果您完成了AWS设置，文件上传功能，个人资料图片功能等将被启用。",
+    "file_upload": "This is for uploading file settings. If you complete file upload settings, file upload function, profile picture function etc will be enabled.",
 		"no_smtp_setting": "如果您没有SMTP设置，电子邮件将通过SES发送。您需要从电子邮件地址和生产设置进行验证。",
 		"change_setting": "注意：如果你更改此设置未完成，您将无法访问迄今为止上传的文件。",
 		"region": "Region",

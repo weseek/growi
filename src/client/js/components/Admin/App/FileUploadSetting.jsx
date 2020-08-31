@@ -41,7 +41,7 @@ class FileUploadSetting extends React.Component {
     return (
       <React.Fragment>
         <p className="card well my-3">
-          {t('admin:app_setting.aws_access')}
+          {t('admin:app_setting.file_upload')}
           <br />
           {t('admin:app_setting.no_smtp_setting')}
           <br />
