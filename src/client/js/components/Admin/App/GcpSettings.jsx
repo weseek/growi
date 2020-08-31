@@ -22,10 +22,10 @@ class GcpSetting extends React.Component {
   }
 
   async submitHandler() {
-    const { t } = this.props;
+    const { t, adminAppContainer } = this.props;
 
     try {
-      // TODO create api
+      await adminAppContainer.updateGcpSettingHandler();
       toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.gcp_settings') }));
     }
     catch (err) {
@@ -58,7 +58,7 @@ class GcpSetting extends React.Component {
                   type="text"
                   name="gcsApiKeyJsonPath"
                   defaultValue={adminAppContainer.state.gcsApiKeyJsonPath}
-                  onChange={e => adminAppContainer.changeSamlEntryPoint(e.target.value)}
+                  onChange={e => adminAppContainer.changeGcsApiKeyJsonPath(e.target.value)}
                 />
               </td>
               <td>
@@ -82,7 +82,7 @@ class GcpSetting extends React.Component {
                   type="text"
                   name="gcsBucket"
                   defaultValue={adminAppContainer.state.gcsBucket}
-                  onChange={e => adminAppContainer.changeSamlEntryPoint(e.target.value)}
+                  onChange={e => adminAppContainer.changeGcsBucket(e.target.value)}
                 />
               </td>
               <td>
@@ -106,7 +106,7 @@ class GcpSetting extends React.Component {
                   type="text"
                   name="gcsUploadNamespace"
                   defaultValue={adminAppContainer.state.gcsUploadNamespace}
-                  onChange={e => adminAppContainer.changeSamlEntryPoint(e.target.value)}
+                  onChange={e => adminAppContainer.changeGcsUploadNamespace(e.target.value)}
                 />
               </td>
               <td>

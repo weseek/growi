@@ -214,6 +214,27 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
+   * Change gcsApiKeyJsonPath
+   */
+  changeGcsApiKeyJsonPath(gcsApiKeyJsonPath) {
+    this.setState({ gcsApiKeyJsonPath });
+  }
+
+  /**
+   * Change gcsBucket
+   */
+  changeGcsBucket(gcsBucket) {
+    this.setState({ gcsBucket });
+  }
+
+  /**
+   * Change gcsUploadNamespace
+   */
+  changeGcsUploadNamespace(gcsUploadNamespace) {
+    this.setState({ gcsUploadNamespace });
+  }
+
+  /**
    * Change secret key
    */
   changeIsEnabledPlugins(isEnabledPlugins) {
@@ -309,6 +330,16 @@ export default class AdminAppContainer extends Container {
     });
     const { awsSettingParams } = response.data;
     return awsSettingParams;
+  }
+
+  /**
+   * Update GCP setting
+   * @memberOf AdminAppContainer
+   * @return {Array} Appearance
+   */
+  async updateGcpSettingHandler() {
+    // TODO GW-3660 cteaye api
+    return;
   }
 
   /**
