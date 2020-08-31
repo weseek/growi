@@ -1,0 +1,186 @@
+body.kibela {
+  .growi:not(.login-page) {
+    .icon-link,
+    .CodeMirror-hint-active,
+    .grw-nav-main-left-tab,
+    .tav-pane,
+    .active {
+      color: $subthemecolor;
+    }
+
+    .bg-white {
+      background: #fefffe !important;
+    }
+
+    .bg-primary {
+      background-color: $primary !important;
+    }
+
+    .grw-subnav {
+      background-color: rgba(lighten($bgcolor-global, 50%), 1);
+    }
+
+    .grw-subnav-fixed-container .grw-subnav {
+      background-color: rgba(lighten($bgcolor-global, 50%), 0.85);
+    }
+
+    /* page wrapper */
+    #page-wrapper {
+      background-color: $bgcolor-global;
+    }
+
+    .search-input-group,
+    .search-typeahead {
+      .btn {
+        background-color: transparent;
+      }
+    }
+
+    .btn-open-dropzone {
+      background: $themelight;
+    }
+
+    /* page list */
+    .page-list {
+      background: white;
+    }
+
+    .page-attachments-row {
+      background-color: #e5ecf1;
+    }
+
+    /* round */
+    .round-corner-top {
+      border-top: solid 0.4em $thickborder;
+    }
+
+    /* admin navigation */
+    .admin-navigation {
+      .list-group-item {
+        background-color: transparent;
+
+        &:hover {
+          background: $gray-100;
+        }
+      }
+
+      .list-group-item.active {
+        color: white;
+        background: $bgcolor-navbar-active;
+      }
+    }
+
+    /* search page */
+    .search-result-list,
+    .page-list-li {
+      background: $themelight;
+    }
+
+    /* Tabs */
+    .nav.nav-tabs {
+      > .nav-item {
+        color: $color-link;
+        background: transparent;
+
+        &:hover,
+        &:focus {
+          > .nav-link {
+            color: $color-link-hover;
+          }
+        }
+
+        > .nav-link {
+          color: $color-link;
+        }
+
+        > .nav-link.active {
+          background: transparent !important;
+          border-bottom: solid 2.7px $thickborder;
+        }
+      }
+    }
+
+    /* wiki */
+    .wiki {
+      h1 {
+        border-bottom: solid 2px $thickborder !important;
+      }
+
+      h2 {
+        border-color: solid 1px $thickborder;
+      }
+
+      // change color of highlighted header in wiki (default: orange)
+      .code-line.revision-head.highlighted {
+        color: $themelight;
+        background-color: lighten($bgcolor-theme, 20%);
+
+        .icon-note,
+        .icon-link {
+          color: $themelight;
+        }
+      }
+    }
+
+    /* Modal */
+    .modal-title {
+      color: white; // override header colors
+    }
+    .modal-content {
+      background-color: $themelight;
+    }
+
+    /* Inline Code */
+    :not(.hljs) > code:not(.hljs) {
+      color: $color-inline-code;
+      background-color: $bgcolor-inline-code;
+      border: solid 1px $bordercolor-inline-code;
+      border-radius: 0.35em;
+    }
+
+    /* button */
+    .btn-primary {
+      background: $primary;
+      border: 1px solid $primary;
+    }
+
+    /* edit */
+    .CodeMirror {
+      border: solid 1.2px #d8d8d8;
+      border-top: solid 0.3em $thickborder !important;
+    }
+
+    &.on-edit {
+      .page-editor-preview-container {
+        background: white !important;
+      }
+    }
+
+    /* navbar */
+    .grw-navbar {
+      .nav-item > .nav-link {
+        &:hover {
+          color: $color-link-nabvar-hover;
+        }
+        &:focus {
+          color: $color-link-nabvar;
+        }
+      }
+      #personal-dropdown {
+        a.nav-link {
+          color: $color-global;
+        }
+      }
+    }
+
+    /* h */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: $color-header;
+    }
+  }
+}
