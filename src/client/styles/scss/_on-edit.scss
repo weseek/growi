@@ -120,8 +120,25 @@ body.on-edit {
   }
 
   .grw-slack-notification {
+    $input-height-slack: 1.8rem;
     background-color: white;
     border-color: $gray-200;
+
+    border-style: solid;
+    border-width: 1px;
+    border-radius: $input-height-slack/2 2px 2px $input-height-slack/2;
+
+    .form-control {
+      width: 80px;
+      height: $input-height-slack;
+      border: transparent;
+      @include media-breakpoint-up(sm) {
+        width: 130px;
+      }
+      @include media-breakpoint-up(md) {
+        width: 180px;
+      }
+    }
   }
 
   .grw-editor-navbar-bottom {
