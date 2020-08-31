@@ -5,15 +5,19 @@
  * are NOT available in setup scripts
  *********************************************************** */
 
+import 'tsconfig-paths/register';
+
+import mongoose from 'mongoose';
+
+import { getMongoUri, mongoOptions } from '~/utils/mongoose-utils';
+
 // check env
 if (process.env.NODE_ENV !== 'test') {
   throw new Error('\'process.env.NODE_ENV\' must be \'test\'');
 }
 
-const mongoose = require('mongoose');
 
-const { getMongoUri, mongoOptions } = require('../utils/mongoose-utils');
-
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { getInstance } = require('./setup-crowi');
 
 module.exports = async() => {
