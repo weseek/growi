@@ -41,8 +41,8 @@ function SmtpSetting(props) {
     const { t, adminAppContainer } = props;
 
     try {
-      await adminAppContainer.updateMailSettingHandler();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.mail_settings') }));
+      await adminAppContainer.updateSmtpSettingHandler();
+      toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.smtp_settings') }));
     }
     catch (err) {
       toastError(err);
@@ -54,7 +54,7 @@ function SmtpSetting(props) {
     const { t, adminAppContainer } = props;
 
     try {
-      const mailSettingParams = await adminAppContainer.initializeMailSettingHandler();
+      const mailSettingParams = await adminAppContainer.initializeSmtpSettingHandler();
       toastSuccess(t('toaster.initialize_successed', { target: t('admin:app_setting.smtp_settings') }));
       // convert values to '' if value is null for overwriting values of inputs with refs
       hostInput.current.value = mailSettingParams.smtpHost || '';
