@@ -135,6 +135,7 @@ module.exports = function(crowi, app) {
   app.get('/_api/users.list'          , accessTokenParser , loginRequired , user.api.list);
   app.get('/_api/pages.list'          , accessTokenParser , loginRequired , page.api.list);
   app.get('/_api/pages.recentCreated' , accessTokenParser , loginRequired , page.api.recentCreated);
+  app.post('/_api/pages.create'       , accessTokenParser , loginRequiredStrictly , csrf, page.api.create);
   app.post('/_api/pages.update'       , accessTokenParser , loginRequiredStrictly , csrf, page.api.update);
   app.get('/_api/pages.get'           , accessTokenParser , loginRequired , page.api.get);
   app.get('/_api/pages.exist'         , accessTokenParser , loginRequired , page.api.exist);
@@ -142,6 +143,7 @@ module.exports = function(crowi, app) {
   app.get('/_api/pages.getPageTag'    , accessTokenParser , loginRequired , page.api.getPageTag);
   // allow posting to guests because the client doesn't know whether the user logged in
   app.post('/_api/pages.seen'         , accessTokenParser , loginRequired , page.api.seen);
+  app.post('/_api/pages.rename'       , accessTokenParser , loginRequiredStrictly , csrf, page.api.rename);
   app.post('/_api/pages.remove'       , loginRequiredStrictly , csrf, page.api.remove); // (Avoid from API Token)
   app.post('/_api/pages.revertRemove' , loginRequiredStrictly , csrf, page.api.revertRemove); // (Avoid from API Token)
   app.post('/_api/pages.unlink'       , loginRequiredStrictly , csrf, page.api.unlink); // (Avoid from API Token)

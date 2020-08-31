@@ -325,10 +325,11 @@ export default class PageContainer extends Container {
       body: markdown,
     });
 
-    const res = await this.appContainer.apiv3Post('/pages/', params);
-    const { page, tags } = res.data;
-
-    return { page, tags };
+    const res = await this.appContainer.apiPost('/pages.create', params);
+    if (!res.ok) {
+      throw new Error(res.error);
+    }
+    return { page: res.page, tags: res.tags };
   }
 
   async updatePage(pageId, revisionId, markdown, tmpParams) {
@@ -379,17 +380,19 @@ export default class PageContainer extends Container {
     });
   }
 
-  rename(newPagePath, isRecursively, isRenameRedirect, isRemainMetadata) {
+  rename(pageNameInput, isRenameRecursively, isRenameRedirect, isRenameMetadata) {
     const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
-    const { pageId, revisionId } = this.state;
+    const isRecursively = isRenameRecursively ? true : null;
+    const isRedirect = isRenameRedirect ? true : null;
+    const isRemain = isRenameMetadata ? true : null;
 
-    return this.appContainer.apiv3Put('/pages/rename', {
-      revisionId,
-      pageId,
-      isRecursively,
-      isRenameRedirect,
-      isRemainMetadata,
-      newPagePath,
+    return this.appContainer.apiPost('/pages.rename', {
+      recursively: isRecursively,
+      page_id: this.state.pageId,
+      revision_id: this.state.revisionId,
+      new_path: pageNameInput,
+      create_redirect: isRedirect,
+      remain_metadata: isRemain,
       socketClientId: socketIoContainer.getSocketClientId(),
     });
   }

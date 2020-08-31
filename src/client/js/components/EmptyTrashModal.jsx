@@ -9,24 +9,25 @@ import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import AppContainer from '../services/AppContainer';
-import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
+import ApiErrorMessage from './PageManagement/ApiErrorMessage';
 
 const EmptyTrashModal = (props) => {
   const {
     t, isOpen, onClose, appContainer,
   } = props;
-
-  const [errs, setErrs] = useState(null);
+  const [errorCode, setErrorCode] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   async function emptyTrash() {
-    setErrs(null);
-
+    setErrorCode(null);
+    setErrorMessage(null);
     try {
       await appContainer.apiv3Delete('/pages/empty-trash');
       window.location.reload();
     }
     catch (err) {
-      setErrs(err);
+      setErrorCode(err.code);
+      setErrorMessage(err.message);
     }
   }
 
@@ -43,7 +44,7 @@ const EmptyTrashModal = (props) => {
         { t('modal_empty.notice')}
       </ModalBody>
       <ModalFooter>
-        <ApiErrorMessageList errs={errs} />
+        <ApiErrorMessage errorCode={errorCode} errorMessage={errorMessage} />
         <button type="button" className="btn btn-danger" onClick={emptyButtonHandler}>
           <i className="icon-trash mr-2" aria-hidden="true"></i> Empty
         </button>

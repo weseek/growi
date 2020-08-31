@@ -4,13 +4,13 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const addCustomFunctionToResponse = (express, crowi) => {
 
-  express.response.apiv3 = function(obj = {}, status = 200) { // not arrow function
+  express.response.apiv3 = function(obj = {}) { // not arrow function
     // obj must be object
     if (typeof obj !== 'object' || obj instanceof Array) {
       throw new Error('invalid value supplied to res.apiv3');
     }
 
-    this.status(status).json({ data: obj });
+    this.json({ data: obj });
   };
 
   express.response.apiv3Err = function(_err, status = 400, info) { // not arrow function

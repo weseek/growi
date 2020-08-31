@@ -266,11 +266,6 @@
     "@alias/logger": "src/lib/service/logger",
     "debug": "src/lib/service/logger/alias-for-debug"
   },
-  "jest": {
-    "moduleNameMapper": {
-      "@commons/(.*)": "<rootDir>/src/lib/$1"
-    }
-  },
   "engines": {
     "node": "^12 || ^14",
     "npm": ">=6.11.3 <7",
