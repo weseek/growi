@@ -338,7 +338,7 @@ export default class AdminAppContainer extends Container {
    * @return {Array} Appearance
    */
   async updateGcpSettingHandler() {
-    // TODO GW-3660 cteaye api
+    // TODO GW-3660 cteate api
     return;
   }
 
