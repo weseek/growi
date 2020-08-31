@@ -6,6 +6,7 @@ $themelight: #f4f5f6;
 $subthemecolor: rgb(88, 130, 250);
 $lightthemecolor: rgba(181, 203, 247, 0.61);
 
+// change width only for pages with articles
 .growi:not(.on-edit):not(.admin-page):not(.user-settings-page) {
   // layout
   header,
