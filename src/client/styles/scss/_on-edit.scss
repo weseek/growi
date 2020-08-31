@@ -122,44 +122,6 @@ body.on-edit {
   .grw-editor-navbar-bottom {
     height: $grw-editor-navbar-bottom-height;
 
-    .grw-slack-notification {
-      $input-height-slack: 1.8rem;
-
-      border-style: solid;
-      border-width: 1px;
-      border-radius: $input-height-slack/2 2px 2px $input-height-slack/2;
-
-      .custom-control-label {
-        &::after {
-          background-image: url(/images/icons/slack/slack-logo-off.svg);
-          background-size: 15px;
-        }
-      }
-      .custom-control-input:checked ~ .custom-control-label {
-        &::after {
-          background-image: url(/images/icons/slack/slack-logo-on.svg);
-        }
-      }
-
-      .input-group-addon {
-        input {
-          vertical-align: middle;
-        }
-      }
-
-      .form-control {
-        width: 80px;
-        height: $input-height-slack;
-        border: transparent;
-        @include media-breakpoint-up(sm) {
-          width: 130px;
-        }
-        @include media-breakpoint-up(md) {
-          width: 180px;
-        }
-      }
-    }
-
     .grw-grant-selector {
       @include media-breakpoint-down(sm) {
         .btn .label {
