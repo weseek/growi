@@ -53,7 +53,6 @@ class SlackNotification extends React.Component {
               <label className="custom-control-label" htmlFor="slackSwitch">
               </label>
             </div>
-
           </label>
           <input
             className="form-control"
@@ -67,7 +66,6 @@ class SlackNotification extends React.Component {
             data-placement="top"
             onChange={this.updateSlackChannelsHandler}
           />
-
         </div>
       </div>
     );
