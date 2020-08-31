@@ -39,11 +39,6 @@ export default class AdminAppContainer extends Container {
       isEnabledPlugins: true,
     };
 
-    this.updateAppSettingHandler = this.updateAppSettingHandler.bind(this);
-    this.updateSiteUrlSettingHandler = this.updateSiteUrlSettingHandler.bind(this);
-    this.updateMailSettingHandler = this.updateMailSettingHandler.bind(this);
-    this.updateAwsSettingHandler = this.updateAwsSettingHandler.bind(this);
-    this.updatePluginSettingHandler = this.updatePluginSettingHandler.bind(this);
   }
 
   /**
@@ -262,12 +257,12 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
-   * Update mail setting
+   * Update smtp setting
    * @memberOf AdminAppContainer
    * @return {Array} Appearance
    */
-  async updateMailSettingHandler() {
-    const response = await this.appContainer.apiv3.put('/app-settings/mail-setting', {
+  async updateSmtpSettingHandler() {
+    const response = await this.appContainer.apiv3.put('/app-settings/smtp-setting', {
       smtpHost: this.state.smtpHost,
       smtpPort: this.state.smtpPort,
       smtpUser: this.state.smtpUser,
@@ -292,12 +287,12 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
-   * Initialize mail setting
+   * Initialize smtp setting
    * @memberOf AdminAppContainer
    * @return {Array} Appearance
    */
-  async initializeMailSettingHandler() {
-    const response = await this.appContainer.apiv3.delete('/app-settings/mail-setting', {});
+  async initializeSmtpSettingHandler() {
+    const response = await this.appContainer.apiv3.delete('/app-settings/smtp-setting', {});
     const {
       mailSettingParams,
     } = response.data;

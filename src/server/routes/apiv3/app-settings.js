@@ -57,8 +57,8 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *          fromAddress:
  *            type: string
  *            description: e-mail address used as from address of mail which sent from GROWI app
- *      MailSettingParams:
- *        description: MailSettingParams
+ *      SmtpSettingParams:
+ *        description: SmtpSettingParams
  *        type: object
  *        properties:
  *          smtpHost:
@@ -132,7 +132,7 @@ module.exports = (crowi) => {
     fromAddress: [
       body('fromAddress').trim().if(value => value !== '').isEmail(),
     ],
-    mailSetting: [
+    smtpSetting: [
       body('smtpHost').trim(),
       body('smtpPort').trim().isPort(),
       body('smtpUser').trim(),
@@ -408,27 +408,27 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /app-settings/mail-setting:
+   *    /app-settings/smtp-setting:
    *      put:
    *        tags: [AppSettings]
-   *        operationId: updateAppSettingMailSetting
-   *        summary: /app-settings/mail-setting
-   *        description: Update mail setting
+   *        operationId: updateAppSettingSmtpSetting
+   *        summary: /app-settings/smtp-setting
+   *        description: Update smtp setting
    *        requestBody:
    *          required: true
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/MailSettingParams'
+   *                $ref: '#/components/schemas/SmtpSettingParams'
    *        responses:
    *          200:
-   *            description: Succeeded to update mail setting
+   *            description: Succeeded to update smtp setting
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/MailSettingParams'
+   *                  $ref: '#/components/schemas/SmtpSettingParams'
    */
-  router.put('/mail-setting', loginRequiredStrictly, adminRequired, csrf, validator.mailSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/smtp-setting', loginRequiredStrictly, adminRequired, csrf, validator.smtpSetting, apiV3FormValidator, async(req, res) => {
     try {
       await validateMailSetting(req);
     }
@@ -452,9 +452,9 @@ module.exports = (crowi) => {
       return res.apiv3({ mailSettingParams });
     }
     catch (err) {
-      const msg = 'Error occurred in updating mail setting';
+      const msg = 'Error occurred in updating smtp setting';
       logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-mailSetting-failed'));
+      return res.apiv3Err(new ErrorV3(msg, 'update-smtpSetting-failed'));
     }
   });
 
@@ -506,27 +506,21 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /app-settings/mail-setting:
+   *    /app-settings/smtp-setting:
    *      delete:
    *        tags: [AppSettings]
-   *        operationId: deleteAppSettingMailSetting
-   *        summary: /app-settings/mail-setting
-   *        description: delete mail setting
-   *        requestBody:
-   *          required: true
-   *          content:
-   *            application/json:
-   *              schema:
-   *                $ref: '#/components/schemas/MailSettingParams'
+   *        operationId: deleteAppSettingSmtpSetting
+   *        summary: /app-settings/smtp-setting
+   *        description: delete smtp setting
    *        responses:
    *          200:
-   *            description: Succeeded to delete mail setting
+   *            description: Succeeded to delete smtp setting
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/MailSettingParams'
+   *                  $ref: '#/components/schemas/SmtpSettingParams'
    */
-  router.delete('/mail-setting', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.delete('/smtp-setting', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const requestMailSettingParams = {
       'mail:smtpHost': null,
       'mail:smtpPort': null,
@@ -538,9 +532,9 @@ module.exports = (crowi) => {
       return res.apiv3({ mailSettingParams });
     }
     catch (err) {
-      const msg = 'Error occurred in initializing mail setting';
+      const msg = 'Error occurred in initializing stmp setting';
       logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'initialize-mailSetting-failed'));
+      return res.apiv3Err(new ErrorV3(msg, 'initialize-smtpSetting-failed'));
     }
   });
 
