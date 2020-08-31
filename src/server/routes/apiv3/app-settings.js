@@ -50,7 +50,7 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *          envSiteUrl:
  *            type: string
  *            description: environment variable 'APP_SITE_URL'
- *      FromAddress:
+ *      MailSetting:
  *        description: MailSettingParams
  *        type: object
  *        properties:
@@ -129,7 +129,7 @@ module.exports = (crowi) => {
     siteUrlSetting: [
       body('siteUrl').trim().matches(/^(https?:\/\/[^/]+|)$/).isURL({ require_tld: false }),
     ],
-    fromAddress: [
+    mailSetting: [
       body('fromAddress').trim().if(value => value !== '').isEmail(),
     ],
     smtpSetting: [
@@ -370,27 +370,27 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /app-settings/from-address:
+   *    /app-settings/mail-setting:
    *      put:
    *        tags: [AppSettings]
-   *        operationId: updateAppSettingFromAddress
-   *        summary: /app-settings/from-address
-   *        description: Update from address
+   *        operationId: updateAppSettingMailSetting
+   *        summary: /app-settings/mail-setting
+   *        description: Update mail setting
    *        requestBody:
    *          required: true
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/FromAddress'
+   *                $ref: '#/components/schemas/MailSetting'
    *        responses:
    *          200:
-   *            description: Succeeded to update from adress
+   *            description: Succeeded to update mail setting
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/FromAddress'
+   *                  $ref: '#/components/schemas/MailSetting'
    */
-  router.put('/from-address', loginRequiredStrictly, adminRequired, csrf, validator.fromAddress, apiV3FormValidator, async(req, res) => {
+  router.put('/mail-setting', loginRequiredStrictly, adminRequired, csrf, validator.mailSetting, apiV3FormValidator, async(req, res) => {
 
     try {
       const mailSettingParams = await updateMailSettinConfig({ 'mail:from': req.body.fromAddress });
