@@ -38,11 +38,6 @@ export default class AdminAppContainer extends Container {
       isEnabledPlugins: true,
     };
 
-    this.updateAppSettingHandler = this.updateAppSettingHandler.bind(this);
-    this.updateSiteUrlSettingHandler = this.updateSiteUrlSettingHandler.bind(this);
-    this.updateSmtpSettingHandler = this.updateSmtpSettingHandler.bind(this);
-    this.updateAwsSettingHandler = this.updateAwsSettingHandler.bind(this);
-    this.updatePluginSettingHandler = this.updatePluginSettingHandler.bind(this);
   }
 
   /**
