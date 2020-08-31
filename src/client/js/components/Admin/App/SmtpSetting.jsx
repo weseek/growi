@@ -73,10 +73,11 @@ function SmtpSetting(props) {
   return (
     <React.Fragment>
       <div id="mail-smtp" className="tab-pane active mt-5">
-        <div className="row form-group mb-5">
-          <label className="col-md-3 col-form-label text-left">{t('admin:app_setting.smtp_settings')}</label>
-          <div className="col-md-4">
-            <label>{t('admin:app_setting.host')}</label>
+        <div className="row form-group">
+          <label className="text-left text-md-right col-md-3 col-form-label">
+            {t('admin:app_setting.host')}
+          </label>
+          <div className="col-md-6">
             <input
               className="form-control"
               type="text"
@@ -85,8 +86,13 @@ function SmtpSetting(props) {
               onChange={(e) => { adminAppContainer.changeSmtpHost(e.target.value) }}
             />
           </div>
-          <div className="col-md-2">
-            <label>{t('admin:app_setting.port')}</label>
+        </div>
+
+        <div className="row form-group">
+          <label className="text-left text-md-right col-md-3 col-form-label">
+            {t('admin:app_setting.port')}
+          </label>
+          <div className="col-md-6">
             <input
               className="form-control"
               ref={portInput}
@@ -96,9 +102,11 @@ function SmtpSetting(props) {
           </div>
         </div>
 
-        <div className="row form-group mb-5">
-          <div className="col-md-3 offset-md-3">
-            <label>{t('admin:app_setting.user')}</label>
+        <div className="row form-group">
+          <label className="text-left text-md-right col-md-3 col-form-label">
+            {t('admin:app_setting.user')}
+          </label>
+          <div className="col-md-6">
             <input
               className="form-control"
               type="text"
@@ -107,8 +115,13 @@ function SmtpSetting(props) {
               onChange={(e) => { adminAppContainer.changeSmtpUser(e.target.value) }}
             />
           </div>
-          <div className="col-md-3">
-            <label>{t('Password')}</label>
+        </div>
+
+        <div className="row form-group">
+          <label className="text-left text-md-right col-md-3 col-form-label">
+            {t('Password')}
+          </label>
+          <div className="col-md-6">
             <input
               className="form-control"
               type="password"

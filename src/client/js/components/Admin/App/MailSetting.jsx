@@ -3,9 +3,6 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
 
-import {
-  TabContent, TabPane, Nav, NavItem, NavLink,
-} from 'reactstrap';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
@@ -22,13 +19,7 @@ class MailSetting extends React.Component {
     super(props);
 
     this.state = {
-      activeTab: 'smtp-setting',
-      // Prevent unnecessary rendering
-      activeComponents: new Set(['smtp-setting']),
-      transmissionMethods: {
-        smtp: 'SMTP',
-        ses: 'SES(AWS)',
-      },
+      transmissionMethods: ['smtp', 'ses'],
     };
 
     this.emailInput = React.createRef();
@@ -38,12 +29,6 @@ class MailSetting extends React.Component {
     this.passwordInput = React.createRef();
 
     this.submitFromAdressHandler = this.submitFromAdressHandler.bind(this);
-  }
-
-  toggleActiveTab(activeTab) {
-    this.setState({
-      activeTab, activeComponents: this.state.activeComponents.add(activeTab),
-    });
   }
 
   async submitFromAdressHandler() {
@@ -61,27 +46,6 @@ class MailSetting extends React.Component {
 
   render() {
     const { t, adminAppContainer } = this.props;
-    const { activeTab, activeComponents, transmissionMethods } = this.state;
-
-    const transmissionMethodsSettings = [];
-
-    for (const [key, value] of Object.entries(transmissionMethods)) {
-      transmissionMethodsSettings.push(
-        <div key={key} className="custom-control custom-radio custom-control-inline">
-          <input
-            type="radio"
-            className="custom-control-input"
-            name="transmission-method"
-            id={`transmission-nethod-radio-${key}`}
-            checked={adminAppContainer.state.transmissionMethod === key}
-            onChange={(e) => {
-              adminAppContainer.changeTransmissionMethod(key);
-            }}
-          />
-          <label className="custom-control-label" htmlFor={`transmission-nethod-radio-${key}`}>{value}</label>
-        </div>,
-      );
-    }
 
     return (
       <React.Fragment>
@@ -98,50 +62,33 @@ class MailSetting extends React.Component {
             />
           </div>
         </div>
+
         <div className="row form-group mb-5">
-          <label
-            className="text-left text-md-right col-md-3 col-form-label"
-          >
+          <label className="text-left text-md-right col-md-3 col-form-label">
             {t('admin:app_setting.transmission_method')}
           </label>
           <div className="col-md-6">
-            {transmissionMethodsSettings}
+            {this.state.transmissionMethods.map((method) => {
+              return (
+                <div key={method} className="custom-control custom-radio custom-control-inline">
+                  <input
+                    type="radio"
+                    className="custom-control-input"
+                    name="transmission-method"
+                    id={`transmission-nethod-radio-${method}`}
+                    checked={adminAppContainer.state.transmissionMethod === method}
+                    onChange={(e) => {
+                    adminAppContainer.changeTransmissionMethod(method);
+                  }}
+                  />
+                  <label className="custom-control-label" htmlFor={`transmission-nethod-radio-${method}`}>{method}</label>
+                </div>
+              );
+            })}
           </div>
         </div>
-        <div className="row my-3">
-          <div className="mx-auto">
-            <button type="button" className="btn btn-primary" onClick={this.submitFromAdressHandler}>{ t('Update') }</button>
-          </div>
-        </div>
-
-        <Nav tabs>
-          <NavItem>
-            <NavLink
-              className={`${activeTab === 'smtp-setting' && 'active'} `}
-              onClick={() => { this.toggleActiveTab('smtp-setting') }}
-              href="#smtp-setting"
-            >
-              SMTP
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
-              className={`${activeTab === 'ses-setting' && 'active'} `}
-              onClick={() => { this.toggleActiveTab('ses-setting') }}
-              href="#ses-setting"
-            >
-              SES(AWS)
-            </NavLink>
-          </NavItem>
-        </Nav>
-        <TabContent activeTab={activeTab}>
-          <TabPane tabId="smtp-setting">
-            {activeComponents.has('smtp-setting') && <SmtpSetting />}
-          </TabPane>
-          <TabPane tabId="ses-setting">
-            {activeComponents.has('ses-setting') && <SesSetting />}
-          </TabPane>
-        </TabContent>
+        {adminAppContainer.state.transmissionMethod === 'smtp' && <SmtpSetting />}
+        {adminAppContainer.state.transmissionMethod === 'ses' && <SesSetting />}
       </React.Fragment>
     );
   }
