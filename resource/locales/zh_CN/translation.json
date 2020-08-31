@@ -136,7 +136,9 @@
 	"Sign out": "退出",
 	"Disassociate": "解除关联",
 	"Recent Created": "最新创建",
-	"Recent Changes": "最新修改",
+  "Recent Changes": "最新修改",
+  "original_path":"Original path",
+  "new_path":"New path",
 	"form_validation": {
 		"error_message": "有些值不正确",
 		"required": "%s 是必需的",
@@ -269,7 +271,8 @@
 	"modal_rename": {
 		"label": {
 			"Move/Rename page": "页面 移动/重命名",
-			"New page name": "新建页面名称",
+      "New page name": "新建页面名称",
+      "Fail to get subordinated pages": "Fail to get subordinated pages",
 			"Current page name": "当前页面名称",
 			"Recursively": "递归地",
 			"Do not update metadata": "不更新元数据",
@@ -299,8 +302,12 @@
 	"modal_duplicate": {
 		"label": {
 			"Duplicate page": "Duplicate page",
-			"New page name": "New page name",
-			"Current page name": "Current page name"
+      "New page name": "New page name",
+      "Fail to get subordinated pages": "Fail to get subordinated pages",
+			"Current page name": "Current page name",
+      "Duplicate with child": "Duplicate with child",
+      "Duplicate without exist path": "Duplicate without exist path",
+      "Same page already exists": "Same page already exists"
 		}
 	},
 	"modal_putback": {

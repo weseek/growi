@@ -134,6 +134,8 @@
   "Disassociate": "Disassociate",
   "Recent Created": "Recent Created",
   "Recent Changes": "Recent Changes",
+  "original_path":"Original path",
+  "new_path":"New path",
   "personal_dropdown": {
     "home": "Home",
     "settings": "Settings",
@@ -295,6 +297,7 @@
     "label": {
       "Move/Rename page": "Move/Rename page",
       "New page name": "New page name",
+      "Fail to get subordinated pages": "Fail to get subordinated pages",
       "Current page name": "Current page name",
       "Recursively": "Recursively",
       "Do not update metadata": "Do not update metadata",
@@ -325,7 +328,11 @@
     "label": {
       "Duplicate page": "Duplicate page",
       "New page name": "New page name",
-      "Current page name": "Current page name"
+      "Fail to get subordinated pages": "Fail to get subordinated pages",
+      "Current page name": "Current page name",
+      "Duplicate with child": "Duplicate with child",
+      "Duplicate without exist path": "Duplicate without exist path",
+      "Same page already exists": "Same page already exists"
     }
   },
   "modal_putback": {

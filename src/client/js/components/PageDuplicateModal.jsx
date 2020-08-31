@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -6,13 +6,16 @@ import {
 } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
-
 import { withUnstatedContainers } from './UnstatedUtils';
+import { toastError } from '../util/apiNotification';
 
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 import PagePathAutoComplete from './PagePathAutoComplete';
-import ApiErrorMessage from './PageManagement/ApiErrorMessage';
+import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
+import ComparePathsTable from './ComparePathsTable';
+
+const LIMIT_FOR_LIST = 10;
 
 const PageDuplicateModal = (props) => {
   const { t, appContainer, pageContainer } = props;
@@ -23,16 +26,34 @@ const PageDuplicateModal = (props) => {
   const { crowi } = appContainer.config;
 
   const [pageNameInput, setPageNameInput] = useState(path);
-  const [errorCode, setErrorCode] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
+
+  const [errs, setErrs] = useState(null);
+
+  const [subordinatedPages, setSubordinatedPages] = useState([]);
+  const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(false);
+  const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(false);
+  const [isDuplicateRecursivelyExist] = useState(false);
+
+  function getSubordinatedDuplicateList(value) {
+
+    // ToDo: get the duplicated list from sever
+    // below is psuedo code
+    // let duplicatedList = get.apiv3......
+    // duplicatedList = duplicatedList.map((value) =>
+    // <li className="duplicate-exist" key={value}> {value}: { t('modal_duplicate.label.Same page already exists') } </li>; )
+    // setIsDuplicateExist(duplicatedList);
+
+    // ToDo: for now we use dummy path
+    return [];
+  }
 
   /**
    * change pageNameInput for PagePathAutoComplete
    * @param {string} value
    */
   function ppacInputChangeHandler(value) {
-    setErrorCode(null);
-    setErrorMessage(null);
+    getSubordinatedDuplicateList(value);
+    setErrs(null);
     setPageNameInput(value);
   }
 
@@ -41,22 +62,46 @@ const PageDuplicateModal = (props) => {
    * @param {string} value
    */
   function inputChangeHandler(value) {
-    setErrorCode(null);
-    setErrorMessage(null);
+    getSubordinatedDuplicateList(value);
+    setErrs(null);
     setPageNameInput(value);
   }
 
-  async function duplicate() {
+  function changeIsDuplicateRecursivelyHandler() {
+    setIsDuplicateRecursively(!isDuplicateRecursively);
+  }
+
+  const getSubordinatedList = useCallback(async() => {
     try {
-      setErrorCode(null);
-      setErrorMessage(null);
-      const res = await appContainer.apiPost('/pages.duplicate', { page_id: pageId, new_path: pageNameInput });
-      const { page } = res;
-      window.location.href = encodeURI(`${page.path}?duplicated=${path}`);
+      const res = await appContainer.apiv3Get('/pages/subordinated-list', { path, limit: LIMIT_FOR_LIST });
+      const { subordinatedPaths } = res.data;
+      setSubordinatedPages(subordinatedPaths);
     }
     catch (err) {
-      setErrorCode(err.code);
-      setErrorMessage(err.message);
+      setErrs(err);
+      toastError(t('modal_duplicate.label.Fail to get subordinated pages'));
+    }
+  }, [appContainer, path, t]);
+
+  useEffect(() => {
+    if (props.isOpen) {
+      getSubordinatedList();
+    }
+  }, [props.isOpen, getSubordinatedList]);
+
+  function changeIsDuplicateRecursivelyWithoutExistPathHandler() {
+    setIsDuplicateRecursivelyWithoutExistPath(!isDuplicateRecursivelyWithoutExistPath);
+  }
+
+  async function duplicate() {
+    setErrs(null);
+
+    try {
+      await appContainer.apiv3Post('/pages/duplicate', { pageId, pageNameInput, isDuplicateRecursively });
+      window.location.href = encodeURI(`${pageNameInput}?duplicated=${path}`);
+    }
+    catch (err) {
+      setErrs(err);
     }
   }
 
@@ -70,9 +115,8 @@ const PageDuplicateModal = (props) => {
         { t('modal_duplicate.label.Duplicate page') }
       </ModalHeader>
       <ModalBody>
-        <div className="form-group">
-          <label>{ t('modal_duplicate.label.Current page name') }</label><br />
-          <code>{ path }</code>
+        <div className="form-group"><label>{t('modal_duplicate.label.Current page name')}</label><br />
+          <code>{path}</code>
         </div>
         <div className="form-group">
           <label htmlFor="duplicatePageName">{ t('modal_duplicate.label.New page name') }</label><br />
@@ -101,13 +145,49 @@ const PageDuplicateModal = (props) => {
             </div>
           </div>
         </div>
+        <div className="custom-control custom-checkbox custom-checkbox-warning mb-3">
+          <input
+            className="custom-control-input"
+            name="recursively"
+            id="cbDuplicateRecursively"
+            type="checkbox"
+            checked={isDuplicateRecursively}
+            onChange={changeIsDuplicateRecursivelyHandler}
+          />
+          <label className="custom-control-label" htmlFor="cbDuplicateRecursively">
+            { t('modal_duplicate.label.Duplicate with child') }
+          </label>
+        </div>
+        {isDuplicateRecursively && <ComparePathsTable subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
+
+        {isDuplicateRecursively && (
+          <div className="custom-control custom-checkbox custom-checkbox-warning">
+            <input
+              className="custom-control-input"
+              name="withoutExistRecursively"
+              id="cbDuplicatewithoutExistRecursively"
+              type="checkbox"
+              checked={isDuplicateRecursivelyWithoutExistPath}
+              onChange={changeIsDuplicateRecursivelyWithoutExistPathHandler}
+            />
+            <label className="custom-control-label" htmlFor="cbDuplicatewithoutExistRecursively">
+              { t('modal_duplicate.label.Duplicate without exist path') }
+            </label>
+          </div>
+        )}
       </ModalBody>
       <ModalFooter>
-        <ApiErrorMessage errorCode={errorCode} errorMessage={errorMessage} targetPath={pageNameInput} />
-        <button type="button" className="btn btn-primary" onClick={duplicate}>Duplicate page</button>
+        <ApiErrorMessageList errs={errs} targetPath={pageNameInput} />
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={duplicate}
+          disabled={(isDuplicateRecursively && isDuplicateRecursivelyExist && !isDuplicateRecursivelyWithoutExistPath) || (path === pageNameInput)}
+        >
+          { t('modal_duplicate.label.Duplicate page') }
+        </button>
       </ModalFooter>
     </Modal>
-
   );
 };
 
