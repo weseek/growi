@@ -24,6 +24,7 @@ export default class AdminAppContainer extends Container {
       envSiteUrl: '',
       isSetSiteUrl: true,
       fromAddress: '',
+      transmissionMethod: '',
       smtpHost: '',
       smtpPort: '',
       smtpUser: '',
@@ -124,6 +125,13 @@ export default class AdminAppContainer extends Container {
    */
   changeFromAddress(fromAddress) {
     this.setState({ fromAddress });
+  }
+
+  /**
+   * Change from transmission method
+   */
+  changeTransmissionMethod(transmissionMethod) {
+    this.setState({ transmissionMethod });
   }
 
   /**

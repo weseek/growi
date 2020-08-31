@@ -25,6 +25,10 @@ class MailSetting extends React.Component {
       activeTab: 'smtp-setting',
       // Prevent unnecessary rendering
       activeComponents: new Set(['smtp-setting']),
+      transmissionMethods: {
+        smtp: 'SMTP',
+        ses: 'SES(AWS)',
+      },
     };
 
     this.emailInput = React.createRef();
@@ -57,12 +61,32 @@ class MailSetting extends React.Component {
 
   render() {
     const { t, adminAppContainer } = this.props;
-    const { activeTab, activeComponents } = this.state;
+    const { activeTab, activeComponents, transmissionMethods } = this.state;
+
+    const transmissionMethodsSettings = [];
+
+    for (const [key, value] of Object.entries(transmissionMethods)) {
+      transmissionMethodsSettings.push(
+        <div key={key} className="custom-control custom-radio custom-control-inline">
+          <input
+            type="radio"
+            className="custom-control-input"
+            name="transmission-method"
+            id={`transmission-nethod-radio-${key}`}
+            checked={adminAppContainer.state.transmissionMethod === key}
+            onChange={(e) => {
+              adminAppContainer.changeTransmissionMethod(key);
+            }}
+          />
+          <label className="custom-control-label" htmlFor={`transmission-nethod-radio-${key}`}>{value}</label>
+        </div>,
+      );
+    }
 
     return (
       <React.Fragment>
         <div className="row form-group mb-5">
-          <label className="col-md-3 col-form-label text-left">{t('admin:app_setting.from_e-mail_address')}</label>
+          <label className="col-md-3 col-form-label text-right">{t('admin:app_setting.from_e-mail_address')}</label>
           <div className="col-md-6">
             <input
               className="form-control"
@@ -72,6 +96,17 @@ class MailSetting extends React.Component {
               defaultValue={adminAppContainer.state.fromAddress || ''}
               onChange={(e) => { adminAppContainer.changeFromAddress(e.target.value) }}
             />
+          </div>
+        </div>
+        <div className="row form-group mb-5">
+          <label
+            className="text-left text-md-right col-md-3 col-form-label"
+          >
+            {/* TODO */}
+            送信方法
+          </label>
+          <div className="col-md-6">
+            {transmissionMethodsSettings}
           </div>
         </div>
         <div className="row my-3">

@@ -482,6 +482,10 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/SesSettingParams'
    */
   router.put('/ses-setting', loginRequiredStrictly, adminRequired, csrf, validator.sesSetting, apiV3FormValidator, async(req, res) => {
+    const { mailService } = crowi;
+
+    await mailService.initialize();
+    mailService.publishUpdatedMessage();
 
     const requestSesSettingParams = {
       'mail:sesAccessKeyId': req.body.sesAccessKeyId,
@@ -573,13 +577,10 @@ module.exports = (crowi) => {
     };
 
     try {
-      const { configManager, mailService } = crowi;
+      const { configManager } = crowi;
 
       // update config without publishing S2sMessage
       await configManager.updateConfigsInTheSameNamespace('crowi', requestAwsSettingParams, true);
-
-      await mailService.initialize();
-      mailService.publishUpdatedMessage();
 
       const awsSettingParams = {
         region: crowi.configManager.getConfig('crowi', 'aws:region'),
