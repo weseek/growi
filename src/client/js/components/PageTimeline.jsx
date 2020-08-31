@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import AppContainer from '../services/AppContainer';
+import PageContainer from '../services/PageContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import RevisionLoader from './Page/RevisionLoader';
@@ -30,13 +31,22 @@ class PageTimeline extends React.Component {
     if (!this.state.isEnabled) {
       return;
     }
-
-    const { appContainer } = this.props;
+    const { appContainer, pageContainer } = this.props;
 
     // initialize GrowiRenderer
     this.growiRenderer = appContainer.getRenderer('timeline');
-
-    this.initBsTab();
+    if (this.props.fromModal) {
+      const { path } = pageContainer.state;
+      appContainer.apiv3Get('/pages/list', { path })
+        .then((res) => {
+          this.setState({
+            pages: res.data.pages,
+          });
+        });
+    }
+    else {
+      this.initBsTab();
+    }
   }
 
   /**
@@ -114,12 +124,14 @@ class PageTimeline extends React.Component {
 PageTimeline.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   pages: PropTypes.arrayOf(PropTypes.object),
+  fromModal: PropTypes.bool,
 };
 
 /**
  * Wrapper component for using unstated
  */
-const PageTimelineWrapper = withUnstatedContainers(PageTimeline, [AppContainer]);
+const PageTimelineWrapper = withUnstatedContainers(PageTimeline, [AppContainer, PageContainer]);
 
 export default withTranslation()(PageTimelineWrapper);
