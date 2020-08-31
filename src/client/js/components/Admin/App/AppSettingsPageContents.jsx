@@ -47,19 +47,6 @@ class AppSettingsPageContents extends React.Component {
 
         <div className="row mt-5">
           <div className="col-lg-12">
-            <h2 className="admin-setting-header">{t('admin:app_setting.gcp_settings')}</h2>
-          </div>
-        </div>
-
-        <div className="row mt-5">
-          <div className="col-lg-12">
-            <h2 className="admin-setting-header">{t('admin:app_setting.aws_settings')}</h2>
-            <AwsSetting />
-          </div>
-        </div>
-
-        <div className="row mt-5">
-          <div className="col-lg-12">
             <h2 className="admin-setting-header">{t('admin:app_setting.plugin_settings')}</h2>
             <PluginSetting />
           </div>
