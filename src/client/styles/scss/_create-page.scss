@@ -13,11 +13,9 @@
     font-family: $font-family-monospace-not-strictly;
   }
 
-  .compare-page-table {
-    width: 100%;
-
+  .grw-compare-page-table {
     tbody {
-      width: 100%;
+      display: block;
       max-height: 200px;
       overflow-y: auto;
     }
@@ -25,13 +23,6 @@
     td,
     th {
       width: 50%;
-    }
-
-    tbody,
-    tr,
-    td,
-    th {
-      display: block;
     }
 
     tr {

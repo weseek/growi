@@ -32,7 +32,7 @@ const PageRenameModal = (props) => {
   const [isRenameRecursively, SetIsRenameRecursively] = useState(true);
   const [isRenameRedirect, SetIsRenameRedirect] = useState(false);
   const [isRenameMetadata, SetIsRenameMetadata] = useState(false);
-  const [getSubordinatedError] = useState(null);
+  const [subordinatedError] = useState(null);
   const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
 
 
@@ -52,7 +52,7 @@ const PageRenameModal = (props) => {
     SetIsRenameMetadata(!isRenameMetadata);
   }
 
-  const getSubordinatedList = useCallback(async() => {
+  const updateSubordinatedList = useCallback(async() => {
     try {
       const res = await appContainer.apiv3Get('/pages/subordinated-list', { path });
       const { subordinatedPaths } = res.data;
@@ -66,9 +66,9 @@ const PageRenameModal = (props) => {
 
   useEffect(() => {
     if (props.isOpen) {
-      getSubordinatedList();
+      updateSubordinatedList();
     }
-  }, [props.isOpen, getSubordinatedList]);
+  }, [props.isOpen, updateSubordinatedList]);
 
   /**
    * change pageNameInput
@@ -192,7 +192,7 @@ const PageRenameModal = (props) => {
             <p className="form-text text-muted mt-0">{ t('modal_rename.help.metadata') }</p>
           </label>
         </div>
-        <div> {getSubordinatedError} </div>
+        <div> {subordinatedError} </div>
       </ModalBody>
       <ModalFooter>
         <ApiErrorMessageList errs={errs} targetPath={pageNameInput} />
