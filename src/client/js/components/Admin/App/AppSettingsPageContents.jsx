@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import AppSetting from './AppSetting';
 import SiteUrlSetting from './SiteUrlSetting';
 import MailSetting from './MailSetting';
-import AwsSetting from './AwsSetting';
 import PluginSetting from './PluginSetting';
 import FileUploadSetting from './FileUploadSetting';
 
@@ -36,7 +35,6 @@ class AppSettingsPageContents extends React.Component {
             <MailSetting />
           </div>
         </div>
-
 
         <div className="row mt-5">
           <div className="col-lg-12">

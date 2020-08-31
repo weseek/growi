@@ -20,19 +20,31 @@ export default class AdminAppContainer extends Container {
       confidential: '',
       globalLang: '',
       fileUpload: '',
+
       siteUrl: '',
       envSiteUrl: '',
       isSetSiteUrl: true,
+
       fromAddress: '',
+
       smtpHost: '',
       smtpPort: '',
       smtpUser: '',
       smtpPassword: '',
+
+      gcsApiKeyJsonPath: '',
+      envGcsApiKeyJsonPath: '',
+      gcsBucket: '',
+      envGcsBucket: '',
+      gcsUploadNamespace: '',
+      envGcsUploadNamespace: '',
+
       region: '',
       customEndpoint: '',
       bucket: '',
       accessKeyId: '',
       secretAccessKey: '',
+
       isEnabledPlugins: true,
     };
 

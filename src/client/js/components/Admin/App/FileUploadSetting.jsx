@@ -11,6 +11,7 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
 import AwsSetting from './AwsSetting';
+import GcpSettings from './GcpSettings';
 
 // const logger = loggerFactory('growi:FileUploadSetting');
 
@@ -39,6 +40,17 @@ class FileUploadSetting extends React.Component {
 
     return (
       <React.Fragment>
+        <p className="card well my-3">
+          {t('admin:app_setting.aws_access')}
+          <br />
+          {t('admin:app_setting.no_smtp_setting')}
+          <br />
+          <br />
+          <span className="text-danger">
+            <i className="ti-unlink"></i>
+            {t('admin:app_setting.change_setting')}
+          </span>
+        </p>
         <Nav tabs>
           <NavItem>
             <NavLink
@@ -59,23 +71,12 @@ class FileUploadSetting extends React.Component {
             </NavLink>
           </NavItem>
         </Nav>
-        <TabContent activeTab={activeTab}>
-          <p className="card well my-3">
-            {t('admin:app_setting.aws_access')}
-            <br />
-            {t('admin:app_setting.no_smtp_setting')}
-            <br />
-            <br />
-            <span className="text-danger">
-              <i className="ti-unlink"></i>
-              {t('admin:app_setting.change_setting')}
-            </span>
-          </p>
+        <TabContent activeTab={activeTab} className="pt-3">
           <TabPane tabId="aws-setting">
             {activeComponents.has('aws-setting') && <AwsSetting />}
           </TabPane>
           <TabPane tabId="gcp-setting">
-            {activeComponents.has('gcp-setting') && <p>gcp</p>}
+            {activeComponents.has('gcp-setting') && <GcpSettings />}
           </TabPane>
         </TabContent>
       </React.Fragment>
