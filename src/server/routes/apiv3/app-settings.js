@@ -494,23 +494,25 @@ module.exports = (crowi) => {
   router.put('/ses-setting', loginRequiredStrictly, adminRequired, csrf, validator.sesSetting, apiV3FormValidator, async(req, res) => {
     const { mailService } = crowi;
 
-    await mailService.initialize();
-    mailService.publishUpdatedMessage();
-
     const requestSesSettingParams = {
       'mail:sesAccessKeyId': req.body.sesAccessKeyId,
       'mail:sesSecretAccessKey': req.body.sesSecretAccessKey,
     };
 
+    let mailSettingParams;
     try {
-      const mailSettingParams = await updateMailSettinConfig(requestSesSettingParams);
-      return res.apiv3({ mailSettingParams });
+      mailSettingParams = await updateMailSettinConfig(requestSesSettingParams);
     }
     catch (err) {
       const msg = 'Error occurred in updating ses setting';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-ses-setting-failed'));
     }
+
+    await mailService.initialize();
+    mailService.publishUpdatedMessage();
+
+    return res.apiv3({ mailSettingParams });
   });
 
   /**
