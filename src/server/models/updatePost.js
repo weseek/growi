@@ -57,11 +57,10 @@ module.exports = function(crowi) {
   };
 
   updatePostSchema.statics.findSettingsByPath = function(path) {
-    const UpdatePost = this;
-    const prefixes = UpdatePost.createPrefixesByPathPattern(path);
+    const prefixes = this.createPrefixesByPathPattern(path);
 
     return new Promise(((resolve, reject) => {
-      UpdatePost.find({
+      this.find({
         $or: [
           { patternPrefix: prefixes[0], patternPrefix2: prefixes[1] },
           { patternPrefix: '*', patternPrefix2: '*' },
@@ -76,7 +75,7 @@ module.exports = function(crowi) {
 
           // eslint-disable-next-line no-param-reassign
           settings = settings.filter((setting) => {
-            const patternRegex = UpdatePost.getRegExpByPattern(setting.pathPattern);
+            const patternRegex = this.getRegExpByPattern(setting.pathPattern);
             return patternRegex.test(path);
           });
 
@@ -86,13 +85,11 @@ module.exports = function(crowi) {
   };
 
   updatePostSchema.statics.findAll = function(offset) {
-    const UpdatePost = this;
     // eslint-disable-next-line no-param-reassign
     offset = offset || 0;
 
     return new Promise(((resolve, reject) => {
-      UpdatePost
-        .find()
+      this.find()
         .sort({ createdAt: 1 })
         .populate('creator')
         .exec((err, data) => {
@@ -110,15 +107,14 @@ module.exports = function(crowi) {
   };
 
   updatePostSchema.statics.create = function(pathPattern, channel, user) {
-    const UpdatePost = this;
     const provider = 'slack'; // now slack only
 
-    const prefixes = UpdatePost.createPrefixesByPathPattern(pathPattern);
-    const notif = new UpdatePost();
+    const prefixes = this.createPrefixesByPathPattern(pathPattern);
+    const notif = new this();
     notif.pathPattern = pathPattern;
     notif.patternPrefix = prefixes[0];
     notif.patternPrefix2 = prefixes[1];
-    notif.channel = UpdatePost.normalizeChannelName(channel);
+    notif.channel = this.normalizeChannelName(channel);
     notif.provider = provider;
     notif.creator = user;
     notif.createdAt = Date.now();
@@ -135,6 +131,7 @@ module.exports = function(crowi) {
   };
 
   updatePostSchema.statics.remove = function(id) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const UpdatePost = this;
 
     return new Promise(((resolve, reject) => {

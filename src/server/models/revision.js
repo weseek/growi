@@ -43,9 +43,6 @@ module.exports = function(crowi) {
   // });
 
   revisionSchema.statics.findRevisions = function(ids) {
-    const Revision = this;
-
-
     const User = crowi.model('User');
 
     if (!Array.isArray(ids)) {
@@ -53,8 +50,7 @@ module.exports = function(crowi) {
     }
 
     return new Promise(((resolve, reject) => {
-      Revision
-        .find({ _id: { $in: ids } })
+      this.find({ _id: { $in: ids } })
         .sort({ createdAt: -1 })
         .populate('author', User.USER_PUBLIC_FIELDS)
         .exec((err, revisions) => {
@@ -75,13 +71,10 @@ module.exports = function(crowi) {
   };
 
   revisionSchema.statics.findRevisionList = function(path, options) {
-    const Revision = this;
-
-
     const User = crowi.model('User');
 
     return new Promise(((resolve, reject) => {
-      Revision.find({ path })
+      this.find({ path })
         .sort({ createdAt: -1 })
         .populate('author', User.USER_PUBLIC_FIELDS)
         .exec((err, data) => {
@@ -95,10 +88,8 @@ module.exports = function(crowi) {
   };
 
   revisionSchema.statics.updateRevisionListByPath = function(path, updateData, options) {
-    const Revision = this;
-
     return new Promise(((resolve, reject) => {
-      Revision.update({ path }, { $set: updateData }, { multi: true }, (err, data) => {
+      this.update({ path }, { $set: updateData }, { multi: true }, (err, data) => {
         if (err) {
           return reject(err);
         }
@@ -109,8 +100,6 @@ module.exports = function(crowi) {
   };
 
   revisionSchema.statics.prepareRevision = function(pageData, body, previousBody, user, options) {
-    const Revision = this;
-
     if (!options) {
       // eslint-disable-next-line no-param-reassign
       options = {};
@@ -121,7 +110,7 @@ module.exports = function(crowi) {
       throw new Error('Error: user should have _id');
     }
 
-    const newRevision = new Revision();
+    const newRevision = new this();
     newRevision.path = pageData.path;
     newRevision.body = body;
     newRevision.format = format;
@@ -135,10 +124,8 @@ module.exports = function(crowi) {
   };
 
   revisionSchema.statics.removeRevisionsByPath = function(path) {
-    const Revision = this;
-
     return new Promise(((resolve, reject) => {
-      Revision.remove({ path }, (err, data) => {
+      this.remove({ path }, (err, data) => {
         if (err) {
           return reject(err);
         }

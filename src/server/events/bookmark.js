@@ -9,7 +9,7 @@ function BookmarkEvent(crowi) {
 }
 util.inherits(BookmarkEvent, events.EventEmitter);
 
-BookmarkEvent.prototype.onCreate = function(bookmark) {};
-BookmarkEvent.prototype.onDelete = function(bookmark) {};
+BookmarkEvent.prototype.onCreate = function(bookmark) { return };
+BookmarkEvent.prototype.onDelete = function(bookmark) { return };
 
 module.exports = BookmarkEvent;

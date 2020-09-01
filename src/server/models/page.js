@@ -350,12 +350,10 @@ module.exports = function(crowi) {
   };
 
   pageSchema.methods.like = function(userData) {
-    const self = this;
-
     return new Promise(((resolve, reject) => {
-      const added = self.liker.addToSet(userData._id);
+      const added = this.liker.addToSet(userData._id);
       if (added.length > 0) {
-        self.save((err, data) => {
+        this.save((err, data) => {
           if (err) {
             return reject(err);
           }
@@ -365,19 +363,17 @@ module.exports = function(crowi) {
       }
       else {
         logger.debug('liker not updated');
-        return reject(self);
+        return reject();
       }
     }));
   };
 
   pageSchema.methods.unlike = function(userData, callback) {
-    const self = this;
-
-    return new Promise(((resolve, reject) => {
-      const beforeCount = self.liker.length;
-      self.liker.pull(userData._id);
-      if (self.liker.length !== beforeCount) {
-        self.save((err, data) => {
+    return new Promise((resolve, reject) => {
+      const beforeCount = this.liker.length;
+      this.liker.pull(userData._id);
+      if (this.liker.length !== beforeCount) {
+        this.save((err, data) => {
           if (err) {
             return reject(err);
           }
@@ -386,9 +382,9 @@ module.exports = function(crowi) {
       }
       else {
         logger.debug('liker not updated');
-        return reject(self);
+        return reject();
       }
-    }));
+    });
   };
 
   pageSchema.methods.isSeenUser = function(userData) {
@@ -430,10 +426,9 @@ module.exports = function(crowi) {
   };
 
   pageSchema.methods.updateExtended = function(extended) {
-    const page = this;
-    page.extended = extended;
+    this.extended = extended;
     return new Promise(((resolve, reject) => {
-      return page.save((err, doc) => {
+      return this.save((err, doc) => {
         if (err) {
           return reject(err);
         }
@@ -489,11 +484,10 @@ module.exports = function(crowi) {
   pageSchema.statics.updateCommentCount = function(pageId) {
     validateCrowi();
 
-    const self = this;
     const Comment = crowi.model('Comment');
     return Comment.countCommentByPageId(pageId)
       .then((count) => {
-        self.update({ _id: pageId }, { commentCount: count }, {}, (err, data) => {
+        this.update({ _id: pageId }, { commentCount: count }, {}, (err, data) => {
           if (err) {
             logger.debug('Update commentCount Error', err);
             throw err;
@@ -996,7 +990,6 @@ module.exports = function(crowi) {
   pageSchema.statics.create = async function(path, body, user, options = {}) {
     validateCrowi();
 
-    const Page = this;
     const Revision = crowi.model('Revision');
     const format = options.format || 'markdown';
     const redirectTo = options.redirectTo || null;
@@ -1018,7 +1011,7 @@ module.exports = function(crowi) {
       throw new Error('Cannot create new page to existed path');
     }
 
-    const page = new Page();
+    const page = new this();
     page.path = path;
     page.creator = user;
     page.lastUpdateUser = user;
@@ -1241,7 +1234,6 @@ module.exports = function(crowi) {
   pageSchema.statics.rename = async function(pageData, newPagePath, user, options) {
     validateCrowi();
 
-    const Page = this;
     const Revision = crowi.model('Revision');
     const path = pageData.path;
     const createRedirectPage = options.createRedirectPage || false;
@@ -1264,7 +1256,7 @@ module.exports = function(crowi) {
 
     if (createRedirectPage) {
       const body = `redirect ${newPagePath}`;
-      await Page.create(path, body, user, { redirectTo: newPagePath });
+      await this.create(path, body, user, { redirectTo: newPagePath });
     }
 
     pageEvent.emit('delete', pageData, user, socketClientId);

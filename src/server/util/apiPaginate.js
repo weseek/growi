@@ -18,6 +18,7 @@ const parseIntValue = function(value, defaultValue, maxLimit) {
   return v <= maxLimit ? v : maxLimit;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 function ApiPaginate() {}
 
 ApiPaginate.parseOptionsForElasticSearch = function(params) {

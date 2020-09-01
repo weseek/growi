@@ -1,8 +1,10 @@
 // disable no-return-await for model functions
 /* eslint-disable no-return-await */
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:models:comment');
 
 module.exports = function(crowi) {
-  const debug = require('debug')('growi:models:comment');
   const mongoose = require('mongoose');
   const ObjectId = mongoose.Schema.Types.ObjectId;
 
@@ -19,10 +21,8 @@ module.exports = function(crowi) {
   });
 
   commentSchema.statics.create = function(pageId, creatorId, revisionId, comment, position, isMarkdown, replyTo) {
-    const Comment = this;
-
     return new Promise(((resolve, reject) => {
-      const newComment = new Comment();
+      const newComment = new this();
 
       newComment.page = pageId;
       newComment.creator = creatorId;
@@ -34,10 +34,10 @@ module.exports = function(crowi) {
 
       newComment.save((err, data) => {
         if (err) {
-          debug('Error on saving comment.', err);
+          logger.debug('Error on saving comment.', err);
           return reject(err);
         }
-        debug('Comment saved.', data);
+        logger.debug('Comment saved.', data);
         return resolve(data);
       });
     }));
@@ -52,10 +52,8 @@ module.exports = function(crowi) {
   };
 
   commentSchema.statics.countCommentByPageId = function(page) {
-    const self = this;
-
     return new Promise(((resolve, reject) => {
-      self.count({ page }, (err, data) => {
+      this.count({ page }, (err, data) => {
         if (err) {
           return reject(err);
         }
@@ -66,9 +64,7 @@ module.exports = function(crowi) {
   };
 
   commentSchema.statics.updateCommentsByPageId = function(comment, isMarkdown, commentId) {
-    const Comment = this;
-
-    return Comment.findOneAndUpdate(
+    return this.findOneAndUpdate(
       { _id: commentId },
       { $set: { comment, isMarkdown } },
     );
@@ -76,10 +72,8 @@ module.exports = function(crowi) {
   };
 
   commentSchema.statics.removeCommentsByPageId = function(pageId) {
-    const Comment = this;
-
     return new Promise(((resolve, reject) => {
-      Comment.remove({ page: pageId }, (err, done) => {
+      this.remove({ page: pageId }, (err, done) => {
         if (err) {
           return reject(err);
         }
@@ -105,9 +99,10 @@ module.exports = function(crowi) {
 
     Page.updateCommentCount(savedComment.page)
       .then((page) => {
-        debug('CommentCount Updated', page);
+        logger.debug('CommentCount Updated', page);
       })
-      .catch(() => {
+      .catch((err) => {
+        logger.debug('Page.updateCommentCount failed', err);
       });
   });
 

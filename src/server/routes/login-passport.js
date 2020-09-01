@@ -187,7 +187,7 @@ module.exports = function(crowi, app) {
           ldapAccountInfo: req.ldapAccountInfo,
         }));
       }
-    })(req, res, () => {});
+    })(req, res, () => { return });
   };
 
   /**

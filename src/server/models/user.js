@@ -468,11 +468,10 @@ module.exports = function(crowi) {
   };
 
   userSchema.statics.countListByStatus = async function(status) {
-    const User = this;
     const conditions = { status };
 
     // TODO count は非推奨。mongoose のバージョンアップ後に countDocuments に変更する。
-    return User.count(conditions);
+    return this.count(conditions);
   };
 
   userSchema.statics.isRegisterableUsername = async function(username) {
@@ -486,7 +485,6 @@ module.exports = function(crowi) {
   };
 
   userSchema.statics.isRegisterable = function(email, username, callback) {
-    const User = this;
     let emailUsable = true;
     let usernameUsable = true;
 
@@ -497,7 +495,7 @@ module.exports = function(crowi) {
       }
 
       // email check
-      User.findOne({ email }, (err, userData) => {
+      this.findOne({ email }, (err, userData) => {
         if (userData) {
           emailUsable = false;
         }
@@ -528,8 +526,7 @@ module.exports = function(crowi) {
   userSchema.statics.createUserByEmail = async function(email) {
     const configManager = crowi.configManager;
 
-    const User = this;
-    const newUser = new User();
+    const newUser = new this();
 
     /* eslint-disable newline-per-chained-call */
     const tmpUsername = `temp_${Math.random().toString(36).slice(-16)}`;
@@ -563,10 +560,8 @@ module.exports = function(crowi) {
   };
 
   userSchema.statics.createUsersByEmailList = async function(emailList) {
-    const User = this;
-
     // check exists and get list of try to create
-    const existingUserList = await User.find({ email: { $in: emailList }, userStatus: { $ne: STATUS_DELETED } });
+    const existingUserList = await this.find({ email: { $in: emailList }, userStatus: { $ne: STATUS_DELETED } });
     const existingEmailList = existingUserList.map((user) => { return user.email });
     const creationEmailList = emailList.filter((email) => { return existingEmailList.indexOf(email) === -1 });
 
@@ -625,11 +620,10 @@ module.exports = function(crowi) {
   };
 
   userSchema.statics.createUserByEmailAndPasswordAndStatus = async function(name, username, email, password, lang, status, callback) {
-    const User = this;
-    const newUser = new User();
+    const newUser = new this();
 
     // check user upper limit
-    const isUserCountExceedsUpperLimit = await User.isUserCountExceedsUpperLimit();
+    const isUserCountExceedsUpperLimit = await this.isUserCountExceedsUpperLimit();
     if (isUserCountExceedsUpperLimit) {
       const err = new UserUpperLimitException();
       return callback(err);
@@ -688,6 +682,7 @@ module.exports = function(crowi) {
    * @return {Promise<User>}
    */
   userSchema.statics.createUser = function(name, username, email, password, lang, status) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const User = this;
 
     return new Promise((resolve, reject) => {

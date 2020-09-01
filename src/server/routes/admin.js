@@ -98,9 +98,6 @@ module.exports = function(crowi, app) {
     return res.render('admin/app');
   };
 
-  actions.app.settingUpdate = function(req, res) {
-  };
-
   // app.get('/admin/security'                  , admin.security.index);
   actions.security = {};
   actions.security.index = function(req, res) {

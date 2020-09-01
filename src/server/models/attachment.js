@@ -46,15 +46,13 @@ module.exports = function(crowi) {
 
 
   attachmentSchema.statics.createWithoutSave = function(pageId, user, fileStream, originalName, fileFormat, fileSize) {
-    const Attachment = this;
-
     const extname = path.extname(originalName);
     let fileName = generateFileHash(originalName);
     if (extname.length > 1) { // ignore if empty or '.' only
       fileName = `${fileName}${extname}`;
     }
 
-    const attachment = new Attachment();
+    const attachment = new this();
     attachment.page = pageId;
     attachment.creator = user._id;
     attachment.originalName = originalName;

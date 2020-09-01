@@ -491,11 +491,10 @@ class ElasticsearchDelegator {
   }
 
   deletePages(pages) {
-    const self = this;
     const body = [];
 
     pages.map((page) => {
-      self.prepareBodyForDelete(body, page);
+      this.prepareBodyForDelete(body, page);
       return;
     });
 

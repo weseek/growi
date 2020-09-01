@@ -1,10 +1,13 @@
 /* eslint-disable no-return-await */
 
-const debug = require('debug')('growi:models:bookmark');
+import loggerFactory from '~/utils/logger';
+
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
+
+const logger = loggerFactory('growi:models:bookmark');
 
 module.exports = function(crowi) {
   const bookmarkEvent = crowi.event('bookmark');
@@ -42,10 +45,9 @@ module.exports = function(crowi) {
   };
 
   bookmarkSchema.statics.populatePage = async function(bookmarks) {
-    const Bookmark = this;
     const User = crowi.model('User');
 
-    return Bookmark.populate(bookmarks, {
+    return this.populate(bookmarks, {
       path: 'page',
       populate: {
         path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS,
@@ -55,10 +57,8 @@ module.exports = function(crowi) {
 
   // bookmark チェック用
   bookmarkSchema.statics.findByPageIdAndUserId = function(pageId, userId) {
-    const Bookmark = this;
-
     return new Promise(((resolve, reject) => {
-      return Bookmark.findOne({ page: pageId, user: userId }, (err, doc) => {
+      return this.findOne({ page: pageId, user: userId }, (err, doc) => {
         if (err) {
           return reject(err);
         }
@@ -76,18 +76,16 @@ module.exports = function(crowi) {
    * }
    */
   bookmarkSchema.statics.findByUser = function(user, option) {
-    const Bookmark = this;
     const requestUser = option.requestUser || null;
 
-    debug('Finding bookmark with requesting user:', requestUser);
+    logger.debug('Finding bookmark with requesting user:', requestUser);
 
     const limit = option.limit || 50;
     const offset = option.offset || 0;
     const populatePage = option.populatePage || false;
 
     return new Promise(((resolve, reject) => {
-      Bookmark
-        .find({ user: user._id })
+      this.find({ user: user._id })
         .sort({ createdAt: -1 })
         .skip(offset)
         .limit(limit)
@@ -106,9 +104,7 @@ module.exports = function(crowi) {
   };
 
   bookmarkSchema.statics.add = async function(page, user) {
-    const Bookmark = this;
-
-    const newBookmark = new Bookmark({ page, user, createdAt: Date.now() });
+    const newBookmark = new this({ page, user, createdAt: Date.now() });
 
     try {
       const bookmark = await newBookmark.save();
@@ -120,7 +116,7 @@ module.exports = function(crowi) {
         // duplicate key (dummy response of new object)
         return newBookmark;
       }
-      debug('Bookmark.save failed', err);
+      logger.debug('Bookmark.save failed', err);
       throw err;
     }
   };
@@ -131,29 +127,25 @@ module.exports = function(crowi) {
    * @param {string} pageId
    */
   bookmarkSchema.statics.removeBookmarksByPageId = async function(pageId) {
-    const Bookmark = this;
-
     try {
-      const data = await Bookmark.remove({ page: pageId });
+      const data = await this.remove({ page: pageId });
       bookmarkEvent.emit('delete', pageId);
       return data;
     }
     catch (err) {
-      debug('Bookmark.remove failed (removeBookmarkByPage)', err);
+      logger.debug('Bookmark.remove failed (removeBookmarkByPage)', err);
       throw err;
     }
   };
 
   bookmarkSchema.statics.removeBookmark = async function(pageId, user) {
-    const Bookmark = this;
-
     try {
-      const data = await Bookmark.findOneAndRemove({ page: pageId, user });
+      const data = await this.findOneAndRemove({ page: pageId, user });
       bookmarkEvent.emit('delete', pageId);
       return data;
     }
     catch (err) {
-      debug('Bookmark.findOneAndRemove failed', err);
+      logger.debug('Bookmark.findOneAndRemove failed', err);
       throw err;
     }
   };
