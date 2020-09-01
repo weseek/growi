@@ -70,12 +70,12 @@ class MailService extends S2sMessageHandlable {
       return;
     }
 
-    // Priority 1. SMTP
-    if (configManager.getConfig('crowi', 'mail:smtpHost') && configManager.getConfig('crowi', 'mail:smtpPort')) {
+    const transmissionMethod = configManager.getConfig('crowi', 'mail:transmissionMethod');
+
+    if (transmissionMethod === 'smtp') {
       this.mailer = this.createSMTPClient();
     }
-    // Priority 2. SES
-    else if (configManager.getConfig('crowi', 'mail:sesAccessKeyId') && configManager.getConfig('crowi', 'mail:sesSecretAccessKey')) {
+    else if (transmissionMethod === 'ses') {
       this.mailer = this.createSESClient();
     }
     else {
