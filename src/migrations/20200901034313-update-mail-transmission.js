@@ -19,7 +19,7 @@ module.exports = {
     });
 
     if (sesExist == null) {
-      return logger.info('Failed to migrate, document does not exist.');
+      return logger.info('Document does not exist, value of transmission method will be set smtp automatically.');
     }
     if (sesExist.value != null) {
       await Config.create({
