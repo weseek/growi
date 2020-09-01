@@ -6,11 +6,10 @@ const express = require('express');
 
 const router = express.Router();
 
-const { body, query, param } = require('express-validator');
+const { body, query } = require('express-validator');
 const { isEmail } = require('validator');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
-const loginRequired = require('../../middlewares/login-required');
 
 const PAGE_ITEMS = 50;
 
@@ -66,6 +65,7 @@ const validator = {};
  */
 
 module.exports = (crowi) => {
+  const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
@@ -197,10 +197,6 @@ module.exports = (crowi) => {
     }
   });
 
-  validator.userIdInParams = [
-    param('id').isMongoId(),
-  ];
-
   /**
    * @swagger
    *
@@ -228,7 +224,7 @@ module.exports = (crowi) => {
    *                    paginateResult:
    *                      $ref: '#/components/schemas/PaginateResult'
    */
-  router.get('/:id/recent', loginRequired, validator.userIdInParams, apiV3FormValidator, async(req, res) => {
+  router.get('/:id/recent', loginRequired, async(req, res) => {
     const { id } = req.params;
 
     let user;

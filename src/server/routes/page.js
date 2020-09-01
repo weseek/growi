@@ -1633,8 +1633,6 @@ module.exports = function(crowi, app) {
     try {
       const result = await Page.findListByCreator(page.creator, req.user, queryOptions);
 
-      console.log(result);
-
       return res.json(ApiResponse.success(result));
     }
     catch (err) {
