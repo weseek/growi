@@ -21,21 +21,14 @@ module.exports = {
     if (sesExist == null) {
       return logger.info('Document does not exist, value of transmission method will be set smtp automatically.');
     }
-    if (sesExist.value != null) {
-      await Config.create({
-        ns: 'crowi',
-        key: 'mail:transmissionMethod',
-        value: 'ses',
-      });
-    }
-    else {
-      await Config.create({
-        ns: 'crowi',
-        key: 'mail:transmissionMethod',
-        value: 'smtp',
-      });
-    }
-
+    const value = (
+      sesExist.value != null ? 'ses' : 'smtp'
+    );
+    await Config.create({
+      ns: 'crowi',
+      key: 'mail:transmissionMethod',
+      value,
+    });
     logger.info('Migration has successfully applied');
 
   },
