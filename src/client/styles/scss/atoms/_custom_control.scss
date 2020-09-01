@@ -71,13 +71,23 @@ label.custom-control-label {
 }
 
 .custom-switch.custom-switch-slack {
+  $color-slack: #4b144c;
+
   .custom-control-label {
+    &::before {
+      background-color: $gray-200;
+      border-color: transparent;
+    }
     &::after {
+      background-color: white;
       background-image: url(/images/icons/slack/slack-logo-off.svg);
       background-size: 15px;
     }
   }
   .custom-control-input:checked ~ .custom-control-label {
+    &::before {
+      background-color: lighten($color-slack, 60%);
+    }
     &::after {
       background-image: url(/images/icons/slack/slack-logo-on.svg);
     }
