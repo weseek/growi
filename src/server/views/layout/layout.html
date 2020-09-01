@@ -43,14 +43,10 @@
 
   <!-- styles -->
   {% include '../widget/headers/styles-for-app.html' %}
-  {% if 'kibela' === getConfig('crowi', 'customize:layout') %}
-    {% include '../widget/headers/styles-theme-kibela.html' %}
-  {% else %}
-    {% block theme_css_block %}
-      {% set themeName = getConfig('crowi', 'customize:theme') %}
-      {% include '../widget/headers/styles-theme.html' with {themeName: themeName} %}
-    {% endblock %}
-  {% endif %}
+  {% block theme_css_block %}
+    {% set themeName = getConfig('crowi', 'customize:theme') %}
+    {% include '../widget/headers/styles-theme.html' with {themeName: themeName} %}
+  {% endblock %}
 
   {{ cdnStyleTagsByGroup('basis') }}
   {{ cdnHighlightJsStyleTag(getConfig('crowi', 'customize:highlightJsStyle')) }}
@@ -65,8 +61,7 @@
 
 {% block html_body %}
 <body
-  class="{% block html_base_css %}{% endblock %}
-      {% if !getConfig('crowi', 'customize:layout') || 'crowi' === getConfig('crowi', 'customize:layout') %}crowi{% elseif !getConfig('crowi', 'customize:layout') || 'kibela' === getConfig('crowi', 'customize:layout') %}kibela{% else %}growi{% endif %}"
+  class="{% block html_base_css %}{% endblock %} growi"
   data-is-admin="{{ user.admin }}"
   data-plugin-enabled="{{ getConfig('crowi', 'plugin:isEnabledPlugins') }}"
   {% block html_base_attr %}{% endblock %}
