@@ -46,7 +46,7 @@ module.exports = {
 
     const Config = getModelSafely('Config') || require('@server/models/config')();
 
-    // remote 'app:siteUrl'
+    // remote 'mail:transmissionMethod'
     await Config.findOneAndDelete({
       ns: 'crowi',
       key: 'mail:transmissionMethod',
