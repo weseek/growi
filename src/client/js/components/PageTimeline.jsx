@@ -40,9 +40,9 @@ class PageTimeline extends React.Component {
     const limit = this.state.limit;
     const offset = (selectedPage - 1) * limit;
     const res = await appContainer.apiv3Get('/pages/list', { path, limit, offset });
+    const activePage = selectedPage;
     const totalPages = res.data.totalCount;
     const pages = res.data.pages;
-    const activePage = selectedPage;
     this.setState({
       activePage,
       totalPages,
