@@ -127,9 +127,8 @@ module.exports = (crowi) => {
 
     try {
       const user = await User.findUserByUsername(username);
-      const currentUser = user.toObject();
+      const currentUser = user.toObject({ isEmailInclude: true });
       return res.apiv3({ currentUser });
-
     }
     catch (err) {
       logger.error(err);
