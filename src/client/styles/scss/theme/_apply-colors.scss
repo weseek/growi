@@ -327,23 +327,25 @@ body.on-edit {
     .page-editor-footer {
       border-top-color: $border-color-theme;
     }
-    .grw-slack-notification {
-      $color-slack: #4b144c;
-      .custom-control-label {
-        &::before {
-          background-color: $gray-200;
-          border-color: transparent;
-        }
-        &::after {
-          background-color: white;
-        }
-      }
-      .custom-control-input:checked ~ .custom-control-label {
-        &::before {
-          background-color: lighten($color-slack, 60%);
-        }
-      }
-    }
+
+    // .grw-slack-notification {
+    //   background-color: transparent;
+    //   $color-slack: #4b144c;
+    //   .custom-control-label {
+    //     &::before {
+    //       background-color: $gray-200;
+    //       border-color: transparent;
+    //     }
+    //     &::after {
+    //       background-color: white;
+    //     }
+    //   }
+    //   .custom-control-input:checked ~ .custom-control-label {
+    //     &::before {
+    //       background-color: lighten($color-slack, 60%);
+    //     }
+    //   }
+    // }
   }
 
   .grw-editor-navbar-bottom {
