@@ -138,6 +138,42 @@ export default class GridEditModal extends React.Component {
   }
 
   renderPreview() {
+    const prevSize = BootstrapGrid.ResponsiveSize;
+    const prevSizeObj = {
+      [prevSize.MD_SIZE]: {
+        [prevSize.MD_SIZE]: {
+          iconClass: 'icon-screen-desktop', prevClass: 'desktop-preview', prevText: 'Desktop', prevRender: this.renderNoBreakPreview(),
+        },
+        [prevSize.SM_SIZE]: {
+          iconClass: 'icon-screen-tablet', prevClass: 'tablet-preview', prevText: 'Tablet', prevRender: this.renderBreakPreview(),
+        },
+        [prevSize.XS_SIZE]: {
+          iconClass: 'icon-screen-smartphone', prevClass: 'mobile-preview', prevText: 'Smartphone', prevRender: this.renderBreakPreview(),
+        },
+      },
+      [prevSize.SM_SIZE]: {
+        [prevSize.MD_SIZE]: {
+          iconClass: 'icon-screen-desktop', prevClass: 'desktop-preview', prevText: 'Desktop', prevRender: this.renderNoBreakPreview(),
+        },
+        [prevSize.SM_SIZE]: {
+          iconClass: 'icon-screen-tablet', prevClass: 'tablet-preview', prevText: 'Tablet', prevRender: this.renderNoBreakPreview(),
+        },
+        [prevSize.XS_SIZE]: {
+          iconClass: 'icon-screen-smartphone', prevClass: 'mobile-preview', prevText: 'Smartphone', prevRender: this.renderBreakPreview(),
+        },
+      },
+      [prevSize.MD_SIZE]: {
+        [prevSize.MD_SIZE]: {
+          iconClass: 'icon-screen-desktop', prevClass: 'desktop-preview', prevText: 'Desktop', prevRender: this.renderNoBreakPreview(),
+        },
+        [prevSize.SM_SIZE]: {
+          iconClass: 'icon-screen-tablet', prevClass: 'tablet-preview', prevText: 'Tablet', prevRender: this.renderNoBreakPreview(),
+        },
+        [prevSize.XS_SIZE]: {
+          iconClass: 'icon-screen-smartphone', prevClass: 'mobile-preview', prevText: 'Smartphone', prevRender: this.renderNoBreakPreview(),
+        },
+      },
+    };
     if (this.state.responsiveSize === BootstrapGrid.ResponsiveSize.MD_SIZE) {
       return (
         <>
