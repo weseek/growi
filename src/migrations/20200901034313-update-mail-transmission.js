@@ -13,29 +13,17 @@ module.exports = {
 
     const Config = getModelSafely('Config') || require('@server/models/config')();
 
-    await Config.create({
-      ns: 'crowi',
-      key: 'mail:transmissionMethod',
-      value: 'smtp',
-    });
-
-    /* const smtpExist = await Config.findOne({
-      ns: 'crowi',
-      key: 'mail:smtpUser',
-    });
-
     const sesExist = await Config.findOne({
       ns: 'crowi',
       key: 'mail:sesAccessKeyId',
     });
 
-    const requestColumn = {ns: 'crowi', key: 'mail:transmissionMethod'};
-
-    if (smtpExist != null) {
-      requestColumn.value = 'smpt';
-    }
-    else if (sesExist != null) {
-      requestColumn.value = 'ses';
+    if (sesExist.value != null) {
+      await Config.create({
+        ns: 'crowi',
+        key: 'mail:transmissionMethod',
+        value: 'ses',
+      });
     }
     else {
       await Config.create({
@@ -43,7 +31,7 @@ module.exports = {
         key: 'mail:transmissionMethod',
         value: 'smtp',
       });
-    } */
+    }
 
     logger.info('Migration has successfully applied');
   },
