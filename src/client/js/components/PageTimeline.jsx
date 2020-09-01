@@ -16,7 +16,7 @@ class PageTimeline extends React.Component {
     super(props);
 
     const { appContainer } = this.props;
-    this.updatePages = this.updatePages.bind(this);
+    this.showPages = this.showPages.bind(this);
     this.state = {
       isEnabled: appContainer.getConfig().isEnabledTimeline,
 
@@ -26,7 +26,7 @@ class PageTimeline extends React.Component {
 
   }
 
-  async updatePages() {
+  async showPages() {
     const { appContainer, pageContainer } = this.props;
     const { path } = pageContainer.state;
     const res = await appContainer.apiv3Get('/pages/list', { path });
@@ -43,7 +43,7 @@ class PageTimeline extends React.Component {
 
     // initialize GrowiRenderer
     this.growiRenderer = appContainer.getRenderer('timeline');
-    this.updatePages();
+    this.showPages();
   }
 
   render() {
