@@ -43,19 +43,15 @@ class RecentCreated extends React.Component {
     const res = await this.props.appContainer.apiv3Get(`/users/${pageContainer.state.creator._id}/recent`, {
       limit, offset,
     });
+    const { totalCount, pages } = res.data;
 
-    console.log(res);
-    // .then((res) => {
-    //   const totalPages = res.totalCount;
-    //   const pages = res.pages;
-    //   const activePage = selectPageNumber;
-    //   this.setState({
-    //     pages,
-    //     activePage,
-    //     totalPages,
-    //     pagingLimit: limit,
-    //   });
-    // });
+    this.setState({
+      pages,
+      activePage: selectPageNumber,
+      totalPages: totalCount,
+      pagingLimit: limit,
+    });
+
   }
 
   /**

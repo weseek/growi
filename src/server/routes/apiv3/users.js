@@ -234,7 +234,7 @@ module.exports = (crowi) => {
 
     try {
       const result = await Page.findListByCreator(user, req.user, queryOptions);
-      return res.apiv3({ result });
+      return res.apiv3(result);
     }
     catch (err) {
       const msg = 'Error occurred in retrieve recent created pages for user';
