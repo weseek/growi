@@ -6,3 +6,4 @@
 /src/client/js/util/reveal/plugins/markdown.js
 /src/linter-checker/**
 /tmp/**
+next-env.d.ts
