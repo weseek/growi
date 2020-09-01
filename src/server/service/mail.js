@@ -70,10 +70,8 @@ class MailService extends S2sMessageHandlable {
       return;
     }
 
-    if (configManager.getConfig('crowi', 'mail:smtpHost') && configManager.getConfig('crowi', 'mail:smtpPort')) {
       this.mailer = this.createSMTPClient();
     }
-    else if (configManager.getConfig('crowi', 'mail:sesAccessKeyId') && configManager.getConfig('crowi', 'mail:sesSecretAccessKey')) {
       this.mailer = this.createSESClient();
     }
     else {
