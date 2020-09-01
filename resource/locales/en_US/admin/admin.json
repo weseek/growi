@@ -32,7 +32,6 @@
     "host": "Host",
     "port": "Port",
     "user": "User",
-    "initialize_mail_settings": "initialize e-mail settings",
     "ses_settings":"SES settings",
     "aws_settings": "AWS settings",
     "aws_access": "This is for AWS settings. If you complete AWS settings, file upload function, profile picture function etc will be enabled.",

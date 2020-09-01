@@ -77,22 +77,13 @@ function SmtpSetting(props) {
         </div>
 
         <div className="row my-3">
-          <div className="offset-5">
+          <div className="mx-auto">
             <button type="button" className="btn btn-primary" onClick={submitHandler} disabled={adminAppContainer.state.retrieveError != null}>
               { t('Update') }
             </button>
           </div>
-          <div className="offset-1">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={openInitializeValueModal}
-              disabled={adminAppContainer.state.retrieveError != null}
-            >
-              {t('admin:app_setting.initialize_mail_settings')}
-            </button>
-          </div>
         </div>
+
       </div>
 
     </React.Fragment>
