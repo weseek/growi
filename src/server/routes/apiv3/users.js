@@ -212,16 +212,28 @@ module.exports = (crowi) => {
   // TODO validator
   router.get('/:id/recent', async(req, res) => {
     const { id } = req.params;
-    const user = await User.findById(id);
 
-    const limit = req.query.limit || 50;
-    const offset = req.query.offset || 0;
+    let user;
+
+    try {
+      user = await User.findById(id);
+    }
+    catch (err) {
+      const msg = 'Error occurred in find user';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'retrieve-recent-created-pages-failed'), 500);
+    }
+
+    if (user == null) {
+      return res.apiv3Err(new ErrorV3('find-user-is-not-found'));
+    }
+
+    const limit = parseInt(req.query.limit) || 50;
+    const offset = parseInt(req.query.offset) || 0;
     const queryOptions = { offset, limit };
 
     try {
       const result = await Page.findListByCreator(user, req.user, queryOptions);
-
-      console.log(result);
       return res.apiv3({ result });
     }
     catch (err) {
