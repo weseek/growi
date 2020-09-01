@@ -8,8 +8,10 @@ const router = express.Router();
 
 const { body, query } = require('express-validator');
 const { isEmail } = require('validator');
+const { isUserPage } = require('@commons/util/path-utils');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
+const loginRequired = require('../../middlewares/login-required');
 
 const PAGE_ITEMS = 50;
 
@@ -206,6 +208,28 @@ module.exports = (crowi) => {
       return array;
     }),
   ];
+
+  // TODO validator
+  router.get('/:id/recent', async(req, res) => {
+    const { id } = req.params;
+    const user = await User.findById(id);
+
+    const limit = req.query.limit || 50;
+    const offset = req.query.offset || 0;
+    const queryOptions = { offset, limit };
+
+    try {
+      const result = await Page.findListByCreator(user, req.user, queryOptions);
+
+      console.log(result);
+      return res.apiv3({ result });
+    }
+    catch (err) {
+      const msg = 'Error occurred in retrieve recent created pages for user';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'retrieve-recent-created-pages-failed'), 500);
+    }
+  });
 
   /**
    * @swagger
