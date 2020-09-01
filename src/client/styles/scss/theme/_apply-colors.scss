@@ -79,6 +79,15 @@ pre:not(.hljs):not(.CodeMirror-line) {
   color: $color-global;
 }
 
+.grw-personal-dropdown {
+  .grw-icon-container svg {
+    fill: $color-global;
+  }
+  .grw-icon-container-muted svg {
+    fill: $secondary;
+  }
+}
+
 .dropdown-item {
   color: $color-global;
   &:active,
@@ -441,4 +450,14 @@ mark.rbt-highlight-text {
  */
 .bg-box {
   background-color: $bgcolor-global;
+}
+
+.grw-fab {
+  .btn-create-page {
+    fill: color-yiq($primary);
+  }
+
+  .btn-scroll-to-top {
+    fill: $gray-900;
+  }
 }

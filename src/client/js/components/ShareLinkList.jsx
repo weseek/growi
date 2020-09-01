@@ -65,6 +65,9 @@ const ShareLinkList = (props) => {
   );
 };
 
+/**
+ * Wrapper component for using unstated
+ */
 const ShareLinkListWrapper = withUnstatedContainers(ShareLinkList, [AppContainer]);
 
 ShareLinkList.propTypes = {

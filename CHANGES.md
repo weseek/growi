@@ -1,14 +1,37 @@
 # CHANGES
 
-## v4.1.1-RC
+## v4.1.3-RC
+
+* Feature: Create/edit linker with GUI
+* Improvement: Paging page histories
+* Improvement: Avoid using `cursor.snapshot()` in preparation for MongoDB version upgrade
+* Improvement: Allow to save "From e-mail address" only in App Settings
+* Improvement: Allow to empty "From e-mail address" in App Settings
+* Improvement: Export/Import archive data serially so as not to waste memory
+* Fix: To be able to delete attachment metadata even when the actual data does not exist
+* Fix: Limit the attrubutes of user data for `/_api/v3/users`
+* Fix: Prevent XSS with SVG
+* Upgrade libs
+    * optimize-css-assets-webpack-plugin
+    * terser-webpack-plugin
+
+## v4.1.2
+
+* Fix: Uploaded images do not displayed
+    * Introduced by v4.1.1
+
+## v4.1.1
 
 * Feature: External share link
-* Feature: Create/edit linker with GUI
 * Improvement: Optimize some features that operate revision data
     * Page history
     * Renaming pages
     * Deleting pages
+* Fix: Cmd+c/v/... does not work on Mac
+    * Introduced by v4.1.0
 * Fix: "Append params" switch of CopyDropdown does not work when multiple CopyDropdown instance exists
+* Fix: "Append params" switch of CopyDropdown escapes spaces
+* Fix: Blockdiag does not be rendered
 * Fix: Access token parser
 
 ## v4.1.0

@@ -55,6 +55,15 @@ class CopyDropdown extends React.Component {
     return `${search}${hash}`;
   }
 
+  encodeSpaces(str) {
+    if (str == null) {
+      return null;
+    }
+
+    // Encode SPACE and IDEOGRAPHIC SPACE
+    return str.replace(/ /g, '%20').replace(/\u3000/g, '%E3%80%80');
+  }
+
   generatePagePathWithParams() {
     const { pagePath } = this.props;
     return decodeURI(`${pagePath}${this.uriParams}`);
@@ -62,7 +71,7 @@ class CopyDropdown extends React.Component {
 
   generatePagePathUrl() {
     const { origin } = window.location;
-    return `${origin}${this.generatePagePathWithParams()}`;
+    return `${origin}${this.encodeSpaces(this.generatePagePathWithParams())}`;
   }
 
   generatePermalink() {
@@ -75,7 +84,7 @@ class CopyDropdown extends React.Component {
       return decodeURI(`${origin}/share/${pageId}`);
     }
 
-    return decodeURI(`${origin}/${pageId}${this.uriParams}`);
+    return this.encodeSpaces(decodeURI(`${origin}/${pageId}${this.uriParams}`));
   }
 
   generateMarkdownLink() {

@@ -5,8 +5,8 @@ const logger = loggerFactory('growi:middleware:certify-shared-page');
 module.exports = (crowi) => {
 
   return async(req, res, next) => {
-    const pageId = req.query.page_id || req.body.page_id || null;
-    const shareLinkId = req.query.share_link_id || req.body.share_link_id || null;
+    const pageId = req.query.pageId || req.body.pageId || null;
+    const shareLinkId = req.query.shareLinkId || req.body.shareLinkId || null;
     if (pageId == null || shareLinkId == null) {
       return next();
     }
