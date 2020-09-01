@@ -28,26 +28,12 @@ function SmtpSetting(props) {
 
   const [isInitializeValueModalOpen, setIsInitializeValueModalOpen] = useState(false);
 
-  function openInitializeValueModal() {
-    setIsInitializeValueModalOpen(true);
-
-  }
+  // function openInitializeValueModal() {
+  //   setIsInitializeValueModalOpen(true);
+  // }
 
   function closeInitializeValueModal() {
     setIsInitializeValueModalOpen(false);
-  }
-
-  async function submitHandler() {
-    const { t, adminAppContainer } = props;
-
-    try {
-      await adminAppContainer.updateSmtpSettingHandler();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.smtp_settings') }));
-    }
-    catch (err) {
-      toastError(err);
-      logger.error(err);
-    }
   }
 
   async function initialize() {
@@ -129,24 +115,6 @@ function SmtpSetting(props) {
               defaultValue={adminAppContainer.state.smtpPassword || ''}
               onChange={(e) => { adminAppContainer.changeSmtpPassword(e.target.value) }}
             />
-          </div>
-        </div>
-
-        <div className="row my-3">
-          <div className="offset-5">
-            <button type="button" className="btn btn-primary" onClick={submitHandler} disabled={adminAppContainer.state.retrieveError != null}>
-              { t('Update') }
-            </button>
-          </div>
-          <div className="offset-1">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={openInitializeValueModal}
-              disabled={adminAppContainer.state.retrieveError != null}
-            >
-              {t('admin:app_setting.initialize_mail_settings')}
-            </button>
           </div>
         </div>
       </div>

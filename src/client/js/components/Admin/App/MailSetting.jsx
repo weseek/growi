@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
@@ -13,6 +14,18 @@ import SesSetting from './SesSetting';
 function MailSetting(props) {
   const { t, adminAppContainer } = props;
   const transmissionMethods = ['smtp', 'ses'];
+
+  async function submitHandler() {
+    const { t } = props;
+
+    try {
+      await adminAppContainer.updateMailSettingHandler();
+      toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.ses_settings') }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
 
   return (
     <React.Fragment>
@@ -53,8 +66,32 @@ function MailSetting(props) {
             })}
         </div>
       </div>
+
       {adminAppContainer.state.transmissionMethod === 'smtp' && <SmtpSetting />}
       {adminAppContainer.state.transmissionMethod === 'ses' && <SesSetting />}
+
+      <div className="row my-3">
+        <div className="offset-5">
+          <button type="button" className="btn btn-primary" onClick={submitHandler} disabled={adminAppContainer.state.retrieveError != null}>
+            { t('Update') }
+          </button>
+        </div>
+        {/* {adminAppContainer.state.transmissionMethod === 'smtp' &&
+        (
+          return (
+        <div className="offset-1">
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={openInitializeValueModal}
+            disabled={adminAppContainer.state.retrieveError != null}
+          >
+            {t('admin:app_setting.initialize_mail_settings')}
+          </button>
+        </div>
+        ))
+        } */}
+      </div>
     </React.Fragment>
   );
 

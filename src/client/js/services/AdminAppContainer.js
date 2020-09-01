@@ -249,13 +249,11 @@ export default class AdminAppContainer extends Container {
    * @memberOf AdminAppContainer
    * @return {Array} Appearance
    */
-  async updateMailSettingHandler() {
-    const response = await this.appContainer.apiv3.put('/app-settings/mail-setting', {
-      fromAddress: this.state.fromAddress,
-      transmissionMethod: this.state.transmissionMethod,
-    });
-    const { mailSettingParams } = response.data;
-    return mailSettingParams;
+  updateMailSettingHandler() {
+    if (this.state.transmissionMethod === 'smtp') {
+      return this.updateSmtpSettingHandler();
+    }
+    return this.updateSesSettingHandler();
   }
 
   /**
@@ -265,6 +263,8 @@ export default class AdminAppContainer extends Container {
    */
   async updateSmtpSettingHandler() {
     const response = await this.appContainer.apiv3.put('/app-settings/smtp-setting', {
+      fromAddress: this.state.fromAddress,
+      transmissionMethod: this.state.transmissionMethod,
       smtpHost: this.state.smtpHost,
       smtpPort: this.state.smtpPort,
       smtpUser: this.state.smtpUser,
@@ -281,6 +281,8 @@ export default class AdminAppContainer extends Container {
    */
   async updateSesSettingHandler() {
     const response = await this.appContainer.apiv3.put('/app-settings/ses-setting', {
+      fromAddress: this.state.fromAddress,
+      transmissionMethod: this.state.transmissionMethod,
       sesAccessKeyId: this.state.sesAccessKeyId,
       sesSecretAccessKey: this.state.sesSecretAccessKey,
     });
