@@ -8,7 +8,6 @@ const router = express.Router();
 
 const { body, query } = require('express-validator');
 const { isEmail } = require('validator');
-const { isUserPage } = require('@commons/util/path-utils');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 const loginRequired = require('../../middlewares/login-required');
@@ -209,8 +208,34 @@ module.exports = (crowi) => {
     }),
   ];
 
-  // TODO validator
-  router.get('/:id/recent', async(req, res) => {
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /users:
+   *      get:
+   *        tags: [Users]
+   *        operationId: listUsers
+   *        summary: /users
+   *        description: Select selected columns from users order by asc or desc
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            required: true
+   *            description: id of user
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: users are fetched
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    paginateResult:
+   *                      $ref: '#/components/schemas/PaginateResult'
+   */
+  router.get('/:id/recent', loginRequired, async(req, res) => {
     const { id } = req.params;
 
     let user;
