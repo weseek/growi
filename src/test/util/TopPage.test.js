@@ -1,4 +1,4 @@
-const { isTopPage } = require('../../lib/util/path-utils');
+import { isTopPage } from '~/utils/path-utils';
 
 
 describe('TopPage Path test', () => {
