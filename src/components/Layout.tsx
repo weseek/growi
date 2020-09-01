@@ -40,7 +40,7 @@ const Layout = ({ counterContainer, children, title }: Props) => (
     {children}
     <footer>
       <hr />
-      <span>I'm here to stay (Footer)</span>
+      <span>I&apos;m here to stay (Footer)</span>
       <hr />
       <span>{counterContainer.state.count}</span>
     </footer>
