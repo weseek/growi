@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import AppContainer from '../services/AppContainer';
+import PageContainer from '../services/PageContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import RevisionLoader from './Page/RevisionLoader';
@@ -15,10 +16,9 @@ class PageTimeline extends React.Component {
     super(props);
 
     const { appContainer } = this.props;
-
+    this.showPages = this.showPages.bind(this);
     this.state = {
       isEnabled: appContainer.getConfig().isEnabledTimeline,
-      isInitialized: false,
 
       // TODO: remove after when timeline is implemented with React and inject data with props
       pages: this.props.pages,
@@ -26,56 +26,24 @@ class PageTimeline extends React.Component {
 
   }
 
+  async showPages() {
+    const { appContainer, pageContainer } = this.props;
+    const { path } = pageContainer.state;
+    const res = await appContainer.apiv3Get('/pages/list', { path });
+    this.setState({
+      pages: res.data.pages,
+    });
+  }
+
   componentWillMount() {
     if (!this.state.isEnabled) {
       return;
     }
-
     const { appContainer } = this.props;
 
     // initialize GrowiRenderer
     this.growiRenderer = appContainer.getRenderer('timeline');
-
-    this.initBsTab();
-  }
-
-  /**
-   * initialize Bootstrap Tab event for 'shown.bs.tab'
-   * TODO: remove this method after implement with React
-   */
-  initBsTab() {
-    $('a[data-toggle="tab"][href="#view-timeline"]').on('shown.bs.tab', () => {
-      if (this.state.isInitialized) {
-        return;
-      }
-
-      const pageIdsElm = document.getElementById('page-timeline-data');
-
-      if (pageIdsElm == null || pageIdsElm.text.length === 0) {
-        return;
-      }
-
-      const pages = this.extractDataFromDom();
-
-      this.setState({
-        isInitialized: true,
-        pages,
-      });
-    });
-  }
-
-  /**
-   * extract page data from DOM
-   * TODO: remove this method after implement with React
-   */
-  extractDataFromDom() {
-    const pageIdsElm = document.getElementById('page-timeline-data');
-
-    if (pageIdsElm == null || pageIdsElm.text.length === 0) {
-      return null;
-    }
-
-    return JSON.parse(pageIdsElm.text);
+    this.showPages();
   }
 
   render() {
@@ -114,12 +82,13 @@ class PageTimeline extends React.Component {
 PageTimeline.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   pages: PropTypes.arrayOf(PropTypes.object),
 };
 
 /**
  * Wrapper component for using unstated
  */
-const PageTimelineWrapper = withUnstatedContainers(PageTimeline, [AppContainer]);
+const PageTimelineWrapper = withUnstatedContainers(PageTimeline, [AppContainer, PageContainer]);
 
 export default withTranslation()(PageTimelineWrapper);

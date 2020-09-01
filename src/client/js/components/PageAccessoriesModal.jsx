@@ -15,6 +15,7 @@ import AttachmentIcon from './Icons/AttachmentIcon';
 import { withUnstatedContainers } from './UnstatedUtils';
 import PageAccessoriesContainer from '../services/PageAccessoriesContainer';
 import PageAttachment from './PageAttachment';
+import PageTimeline from './PageTimeline';
 import PageList from './PageList';
 import PageHistory from './PageHistory';
 
@@ -77,10 +78,13 @@ const PageAccessoriesModal = (props) => {
             </NavItem>
           </Nav>
           <TabContent activeTab={activeTab}>
+
             <TabPane tabId="pagelist">
               {pageAccessoriesContainer.state.activeComponents.has('pagelist') && <PageList />}
             </TabPane>
-            <TabPane tabId="timeline"></TabPane>
+            <TabPane tabId="timeline" className="p-4">
+              {pageAccessoriesContainer.state.activeComponents.has('timeline') && <PageTimeline /> }
+            </TabPane>
             <TabPane tabId="page-history">
               <div className="overflow-auto">
                 {pageAccessoriesContainer.state.activeComponents.has('page-history') && <PageHistory /> }
