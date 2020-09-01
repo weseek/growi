@@ -8,9 +8,9 @@ import BootstrapGrid from '../../models/BootstrapGrid';
 
 const resSizes = BootstrapGrid.ResponsiveSize;
 const resSizeObj = {
-  [resSizes.XS_SIZE]: { iconClass: 'icon-screen-smartphone', displayText: 'Smartphone / No Break' },
-  [resSizes.SM_SIZE]: { iconClass: 'icon-screen-tablet', displayText: 'Tablet' },
-  [resSizes.MD_SIZE]: { iconClass: 'icon-screen-desktop', displayText: 'Desktop' },
+  [resSizes.XS_SIZE]: { iconClass: 'icon-screen-smartphone', prevClass: 'desktop-preview', displayText: 'Smartphone / No Break' },
+  [resSizes.SM_SIZE]: { iconClass: 'icon-screen-tablet', prevClass: 'tablet-preview', displayText: 'Tablet' },
+  [resSizes.MD_SIZE]: { iconClass: 'icon-screen-desktop', prevClass: 'mobile-preview', displayText: 'Desktop' },
 };
 export default class GridEditModal extends React.Component {
 
