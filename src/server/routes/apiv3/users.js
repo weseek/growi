@@ -65,6 +65,7 @@ const validator = {};
  */
 
 module.exports = (crowi) => {
+  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
@@ -224,7 +225,7 @@ module.exports = (crowi) => {
    *                    paginateResult:
    *                      $ref: '#/components/schemas/PaginateResult'
    */
-  router.get('/:id/recent', loginRequired, async(req, res) => {
+  router.get('/:id/recent', accessTokenParser, loginRequired, async(req, res) => {
     const { id } = req.params;
 
     let user;
