@@ -134,7 +134,7 @@ class UserInviteModal extends React.Component {
             <div className="my-1">
               <CopyToClipboard key={user.email} text={copyText} onCopy={this.showToaster}>
                 <li key={user.email} className="btn btn-outline-secondary">
-                Email: <strong className="mr-3">{user.email}</strong> Password: <strong>{user.password}</strong>
+                  Email: <strong className="mr-3">{user.email}</strong> Password: <strong>{user.password}</strong>
                 </li>
               </CopyToClipboard>
             </div>

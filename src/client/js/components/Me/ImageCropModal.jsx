@@ -95,13 +95,13 @@ class ImageCropModal extends React.Component {
         </ModalBody>
         <ModalFooter>
           <button type="button" className="btn btn-outline-danger rounded-pill mr-auto" onClick={this.reset}>
-              Reset
+            Reset
           </button>
           <button type="button" className="btn btn-outline-secondary rounded-pill mr-2" onClick={this.props.onModalClose}>
-                  Cancel
+            Cancel
           </button>
           <button type="button" className="btn btn-outline-primary rounded-pill" onClick={this.crop}>
-                  Crop
+            Crop
           </button>
         </ModalFooter>
       </Modal>

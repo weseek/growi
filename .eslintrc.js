@@ -21,7 +21,7 @@ module.exports = {
     'jest',
   ],
   rules: {
-    "@typescript-eslint/no-explicit-any": 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
     indent: [
       'error',
       2,

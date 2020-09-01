@@ -37,14 +37,14 @@ function TagEditModal(props) {
   return (
     <Modal isOpen={props.isOpen} toggle={closeModalHandler} id="edit-tag-modal">
       <ModalHeader tag="h4" toggle={closeModalHandler} className="bg-primary text-light">
-          Edit Tags
+        Edit Tags
       </ModalHeader>
       <ModalBody>
         <TagsInput tags={tags} onTagsUpdated={onTagsUpdatedByTagsInput} />
       </ModalBody>
       <ModalFooter>
         <Button color="primary" onClick={handleSubmit}>
-            Done
+          Done
         </Button>
       </ModalFooter>
     </Modal>

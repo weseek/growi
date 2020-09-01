@@ -286,13 +286,13 @@ class CommentEditor extends React.Component {
           <Nav tabs>
             <NavItem>
               <NavLink type="button" className={activeTab === 1 ? 'active' : ''} onClick={() => this.handleSelect(1)}>
-                    Write
+                Write
               </NavLink>
             </NavItem>
             { this.state.isMarkdown && (
             <NavItem>
               <NavLink type="button" className={activeTab === 2 ? 'active' : ''} onClick={() => this.handleSelect(2)}>
-                      Preview
+                Preview
               </NavLink>
             </NavItem>
                 ) }
