@@ -19,7 +19,7 @@ module.exports = function(crowi) {
   const STATUS_SUSPENDED = 3;
   const STATUS_DELETED = 4;
   const STATUS_INVITED = 5;
-  const USER_PUBLIC_FIELDS = '_id image isEmailPublished isGravatarEnabled googleId name username introduction'
+  const USER_PUBLIC_FIELDS = '_id image isEmailPublished isGravatarEnabled googleId name username email introduction'
   + ' status lang createdAt lastLoginAt admin imageUrlCached';
 
   const PAGE_ITEMS = 50;
