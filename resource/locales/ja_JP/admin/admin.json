@@ -37,6 +37,7 @@
     "initialize_mail_modal_header": "メール設定の初期化",
     "confirm_to_initialize_mail_settings": "一度初期化した設定は戻せません。本当に初期化しますか？",
     "ses_settings":"SES設定",
+    "test_connection": "接続テスト",
     "aws_settings": "AWS設定",
     "aws_access": "AWS にアクセスするための設定を行います。AWS の設定を完了させると、ファイルアップロード機能、プロフィール写真機能などが有効になります。",
     "change_setting": "この設定を途中で変更すると、これまでにアップロードしたファイル等へのアクセスができなくなりますのでご注意下さい。",
