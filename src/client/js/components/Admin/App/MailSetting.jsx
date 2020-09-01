@@ -27,18 +27,6 @@ function MailSetting(props) {
     }
   }
 
-  async function connectionTestHandler() {
-    const { t } = props;
-
-    try {
-      // TODO test function
-      toastSuccess(t('toaster.initialize_successed', { target: t('admin:app_setting.smtp_settings') }));
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }
-
   return (
     <React.Fragment>
       <div className="row form-group mb-5">
@@ -83,21 +71,9 @@ function MailSetting(props) {
       {adminAppContainer.state.transmissionMethod === 'ses' && <SesSetting />}
 
       <div className="row my-3">
-        <div className="offset-5">
-          <button type="button" className="btn btn-primary" onClick={submitHandler} disabled={adminAppContainer.state.retrieveError != null}>
-            { t('Update') }
-          </button>
-        </div>
-        <div className="offset-1">
-          <button
-            type="button"
-            className="btn btn-secondary"
-            onClick={connectionTestHandler}
-            disabled={adminAppContainer.state.retrieveError != null}
-          >
-            {t('admin:app_setting.test_connection')}
-          </button>
-        </div>
+        <button type="button" className="btn btn-primary mx-auto" onClick={submitHandler} disabled={adminAppContainer.state.retrieveError != null}>
+          { t('Update') }
+        </button>
       </div>
     </React.Fragment>
   );
