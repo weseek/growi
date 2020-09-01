@@ -27,6 +27,13 @@ class PageTimeline extends React.Component {
 
   }
 
+  async updatePages(path) {
+    const res = await appContainer.apiv3Get('/pages/list', { path });
+    this.setState({
+      pages: res.data.pages,
+    });
+  }
+
   componentWillMount() {
     if (!this.state.isEnabled) {
       return;
@@ -35,14 +42,9 @@ class PageTimeline extends React.Component {
 
     // initialize GrowiRenderer
     this.growiRenderer = appContainer.getRenderer('timeline');
-    if (this.props.fromModal) {
+    if (this.props.isModal) {
       const { path } = pageContainer.state;
-      appContainer.apiv3Get('/pages/list', { path })
-        .then((res) => {
-          this.setState({
-            pages: res.data.pages,
-          });
-        });
+      this.updatePages(path);
     }
     else {
       this.initBsTab();
@@ -126,7 +128,7 @@ PageTimeline.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   pages: PropTypes.arrayOf(PropTypes.object),
-  fromModal: PropTypes.bool,
+  isModal: PropTypes.bool,
 };
 
 /**

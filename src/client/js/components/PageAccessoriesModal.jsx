@@ -83,7 +83,7 @@ const PageAccessoriesModal = (props) => {
               {pageAccessoriesContainer.state.activeComponents.has('pagelist') && <PageList />}
             </TabPane>
             <TabPane tabId="timeline" className="p-4">
-              {pageAccessoriesContainer.state.activeComponents.has('timeline') && <PageTimeline fromModal /> }
+              {pageAccessoriesContainer.state.activeComponents.has('timeline') && <PageTimeline isModal /> }
             </TabPane>
             <TabPane tabId="page-history">
               <div className="overflow-auto">
