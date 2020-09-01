@@ -19,7 +19,7 @@ module.exports = {
     });
 
     if (sesExist == null) {
-      return logger.info('Failed to migrate');
+      return logger.info('Failed to migrate, document does not exist.');
     }
     if (sesExist.value != null) {
       await Config.create({
