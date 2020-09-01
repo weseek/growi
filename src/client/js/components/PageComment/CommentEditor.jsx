@@ -346,6 +346,8 @@ class CommentEditor extends React.Component {
             </label>
             <span className="flex-grow-1" />
             <span className="d-none d-sm-inline">{ this.state.errorMessage && errorMessage }</span>
+
+            {/* TODO コメント機能のとき、Slackボタンが適用しない問題は別タスクに回す。Dark Mode 対応を先行する。 */}
             { this.state.hasSlackConfig
               && (
               <div className="form-inline align-self-center mr-md-2">
