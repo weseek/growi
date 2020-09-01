@@ -201,7 +201,4 @@ export default class GrowiRenderer {
     return `<pre class="hljs ${noborder}">${citeTag}<code>${highlightCode}</code></pre>`;
   }
 
-  highlightCode(code, lang) {
-  }
-
 }

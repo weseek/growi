@@ -421,7 +421,6 @@ export default class PageContainer extends Container {
   }
 
   addWebSocketEventHandlers() {
-    const pageContainer = this;
     const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
     const socket = socketIoContainer.getSocket();
 
@@ -434,7 +433,7 @@ export default class PageContainer extends Container {
       logger.debug({ obj: data }, `websocket on 'page:create'`); // eslint-disable-line quotes
 
       // update PageStatusAlert
-      if (data.page.path === pageContainer.state.path) {
+      if (data.page.path === this.state.path) {
         this.setLatestRemotePageData(data.page, data.user);
       }
     });
@@ -447,12 +446,12 @@ export default class PageContainer extends Container {
 
       logger.debug({ obj: data }, `websocket on 'page:update'`); // eslint-disable-line quotes
 
-      if (data.page.path === pageContainer.state.path) {
+      if (data.page.path === this.state.path) {
         // update PageStatusAlert
-        pageContainer.setLatestRemotePageData(data.page, data.user);
+        this.setLatestRemotePageData(data.page, data.user);
         // update remote data
         const page = data.page;
-        pageContainer.setState({
+        this.setState({
           remoteRevisionId: page.revision._id,
           revisionIdHackmdSynced: page.revisionHackmdSynced,
           hasDraftOnHackmd: page.hasDraftOnHackmd,
