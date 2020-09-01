@@ -6,7 +6,7 @@ const express = require('express');
 
 const router = express.Router();
 
-const { body, query } = require('express-validator');
+const { body, query, param } = require('express-validator');
 const { isEmail } = require('validator');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
@@ -197,15 +197,8 @@ module.exports = (crowi) => {
     }
   });
 
-  validator.inviteEmail = [
-    // isEmail prevents line breaks, so use isString
-    body('shapedEmailList').custom((value) => {
-      const array = value.filter((value) => { return isEmail(value) });
-      if (array.length === 0) {
-        throw new Error('At least one valid email address is required');
-      }
-      return array;
-    }),
+  validator.userIdInParams = [
+    param('id').isMongoId(),
   ];
 
   /**
@@ -235,7 +228,7 @@ module.exports = (crowi) => {
    *                    paginateResult:
    *                      $ref: '#/components/schemas/PaginateResult'
    */
-  router.get('/:id/recent', loginRequired, async(req, res) => {
+  router.get('/:id/recent', loginRequired, validator.userIdInParams, apiV3FormValidator, async(req, res) => {
     const { id } = req.params;
 
     let user;
@@ -267,6 +260,17 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(msg, 'retrieve-recent-created-pages-failed'), 500);
     }
   });
+
+  validator.inviteEmail = [
+    // isEmail prevents line breaks, so use isString
+    body('shapedEmailList').custom((value) => {
+      const array = value.filter((value) => { return isEmail(value) });
+      if (array.length === 0) {
+        throw new Error('At least one valid email address is required');
+      }
+      return array;
+    }),
+  ];
 
   /**
    * @swagger
@@ -313,6 +317,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(err));
     }
   });
+
   /**
    * @swagger
    *
@@ -354,6 +359,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(err));
     }
   });
+
   /**
    * @swagger
    *
