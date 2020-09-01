@@ -8,7 +8,6 @@
   border-radius: $input-height-slack/2 2px 2px $input-height-slack/2;
 
   .form-control {
-    width: 80px;
     height: $input-height-slack;
     border: transparent;
     @include media-breakpoint-up(sm) {
@@ -19,6 +18,6 @@
     }
   }
 }
-
-// .grw-slack-notification-sm {
+//　TODO デザインの使用が確定して実装、本タスクのスコープ外
+// .grw-slack-notification-xd {
 // }

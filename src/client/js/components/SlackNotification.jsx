@@ -40,7 +40,7 @@ class SlackNotification extends React.Component {
 
     return (
       <div className="grw-slack-notification">
-        <div className="input-group  extended-setting">
+        <div className="input-group extended-setting">
           <label className="input-group-addon">
             <div className="custom-control custom-switch custom-switch-lg custom-switch-slack">
               <input
