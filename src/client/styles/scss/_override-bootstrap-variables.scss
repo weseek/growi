@@ -36,6 +36,9 @@ $font-family-base:        $font-family-sans-serif;
 $font-size-root: 14px;
 $line-height-base: 1.42857;
 
+$text-muted: $gray-500;
+$blockquote-small-color: $gray-500;
+
 //== Components
 //
 $border-radius:               .15rem;
@@ -43,16 +46,30 @@ $border-radius-sm:            .1rem;
 $border-radius-lg:            .25rem;
 $border-radius-xl:            .35rem;
 
+// Buttons
+//
+// For each of Bootstrap's buttons, define text, background, and border color.
+$btn-link-disabled-color: $gray-500;
 
 //== Forms
 //
+$input-border-color: $gray-300;
+
 $input-border-radius: $border-radius-sm;
 $input-border-radius-sm: $border-radius-sm;
 $input-border-radius-lg: $border-radius;
 
+$input-placeholder-color: $gray-500;
+
+$custom-control-indicator-border-color: $gray-400;
+$custom-control-label-disabled-color: $gray-500;
+$custom-select-disabled-color: $gray-500;
+$custom-range-thumb-disabled-bg: $gray-400;
+
 //== Navs
 $nav-link-padding-y: 0.75rem;
 $nav-link-padding-x: 1rem;
+$nav-link-disabled-color: $gray-500;
 
 //== Navbar
 $navbar-padding-y: 0;
@@ -61,10 +78,18 @@ $navbar-nav-link-padding-x: 1rem;
 
 //== Dropdowns
 $dropdown-border-radius: $border-radius-sm;
+$dropdown-link-disabled-color: $gray-500;
+$dropdown-header-color: $gray-500;
 
-//== card
+//== Pagination
+$pagination-disabled-color: $gray-500;
+
+//== Cards
 $card-spacer-y: 7px;
 $card-spacer-x: 15px;
+
+//== Toasts
+$toast-header-color: $gray-500;
 
 //== Modals
 $modal-content-border-width: 0;
@@ -79,8 +104,18 @@ $alert-color-level: -10;
 //== Progress bar
 $progress-height: 4px;
 $progress-border-radius: $border-radius-sm;
-$progress-bg: #f0f0f0;
+$progress-bg: $gray-100;
 $progress-box-shadow: none;
+
+//== List group
+$list-group-disabled-color: $gray-500;
+
+//==  Figures
+$figure-caption-color: $gray-500;
+
+//==  Breadcrumbs
+$breadcrumb-divider-color: $gray-500;
+$breadcrumb-active-color: $gray-500;
 
 //== Code
 $pre-color: dummyinvalildcolor; // disable pre color specification with invalid value

@@ -276,7 +276,8 @@
       "unlinked": "このページへのリダイレクトは削除されました。",
       "restricted": "このページの閲覧は制限されています",
       "stale": "このページは最終更新日から{{count}}年以上が経過しています。",
-      "expiration": "この共有パーマリンクの有効期限は <strong>{{expiredAt}}</strong> です。"
+      "expiration": "この共有パーマリンクの有効期限は <strong>{{expiredAt}}</strong> です。",
+      "no_deadline": "このページに有効期限は設定されていません。"
     }
   },
   "page_edit": {
@@ -440,6 +441,10 @@
     "not_initialized": "HackMD コンポーネントは初期化されていません",
     "someone_editing": "このページは、HackMD で編集されています。",
     "this_page_has_draft": "このページは、HackMD のドラフトがあります。"
+  },
+  "slack_notification": {
+    "popover_title": "Slack 通知",
+    "popover_desc": "チャンネル名を入れてください。カンマ区切りのリストを入力することで複数のチャンネルに通知することができます。"
   },
   "search_result": {
     "result_meta": "{{total}}件のページが見つかりました。検索ワード: \"{{keyword}}\"",
@@ -699,28 +704,15 @@
     "rebuild_description_1": "全てのページのインデックスを削除し、作り直します。",
     "rebuild_description_2": "この作業には数秒かかります。"
   },
-  "export_management": {
-    "exporting_collection_list": "エクスポート中のコレクション",
-    "exported_data_list": "エクスポートされたアーカイブリスト",
-    "export_collections": "コレクションのエクスポート",
-    "check_all": "全てにチェックを付ける",
-    "uncheck_all": "全てからチェックを外す",
-    "desc_password_seed": "<p>ユーザーデータをバックアップ/リストアする場合、現在の <code>PASSWORD_SEED</code> を新しい GROWI システムにセットすることを忘れないでください。さもなくば、ユーザーがパスワードでログインできなくなります。</p><strong>ヒント:</strong><p>現在の <code>PASSWORD_SEED</code> は、エクスポートされる ZIP 中の <code>meta.json</code> に保存されます。</p>",
-    "create_new_archive_data": "アーカイブデータの新規作成",
-    "export": "エクスポート",
-    "cancel": "キャンセル",
-    "file": "ファイル名",
-    "growi_version": "Growi バージョン",
-    "collections": "コレクション",
-    "exported_at": "エクスポートされた時間",
-    "export_menu": "エクスポートメニュー",
-    "download": "ダウンロード",
-    "delete": "削除"
-  },
   "login": {
     "Sign in error": "ログインエラー",
     "Registration successful": "登録完了",
     "Setup": "セットアップ"
+  },
+  "export_bulk": {
+    "failed_to_export": "ページのエクスポートに失敗しました",
+    "export_page_markdown": "マークダウン形式でページをエクスポート",
+    "export_page_pdf": "PDF形式でページをエクスポート"
   },
   "message": {
     "successfully_connected": "接続に成功しました!",
@@ -745,5 +737,10 @@
     "complete_to_install1":"GROWI のインストールが完了しました！管理者アカウントでログインしてください。",
     "complete_to_install2":"GROWI のインストールが完了しました！はじめに、このページで各種設定を確認してください。",
     "failed_to_create_admin_user":"管理ユーザーの作成に失敗しました。{{errMessage}}"
+  },
+  "validation":{
+    "aws_region": "リージョンには、AWSリージョン名を入力してください。例: ap-northeast-1",
+    "aws_custom_endpoint": "カスタムエンドポイントは、http(s)://で始まるURLを指定してください。また、末尾の/は不要です。",
+    "failed_to_send_a_test_email":"SMTPを利用したテストメール送信に失敗しました。設定をみなおしてください。"
   }
 }

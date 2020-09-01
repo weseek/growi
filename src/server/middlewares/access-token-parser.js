@@ -16,6 +16,12 @@ module.exports = (crowi) => {
     logger.debug('accessToken is', accessToken);
 
     const user = await User.findUserByApiToken(accessToken);
+
+    if (user == null) {
+      logger.debug('The access token is invalid');
+      return next();
+    }
+
     // transforming attributes
     // see User model
     req.user = user.toObject();
@@ -23,7 +29,7 @@ module.exports = (crowi) => {
 
     logger.debug('Access token parsed: skipCsrfVerify');
 
-    next();
+    return next();
   };
 
 };

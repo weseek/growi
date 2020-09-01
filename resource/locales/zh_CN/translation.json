@@ -249,7 +249,8 @@
 			"unlinked": "将网页重定向到此网页已被删除。",
 			"restricted": "访问此页受到限制",
 			"stale": "自上次更新以来，已超过{{count}年。",
-			"stale_plural": "自上次更新以来已过去{{count}年以上。"
+      "stale_plural": "自上次更新以来已过去{{count}年以上。",
+      "no_deadline": "This page has no expiration date"
 		}
 	},
 	"page_edit": {
@@ -409,7 +410,11 @@
 		"not_initialized": "HackmdEditor component has not initialized",
 		"someone_editing": "Someone editing this page on HackMD",
 		"this_page_has_draft": "This page has a draft on HackMD"
-	},
+  },
+  "slack_notification": {
+    "popover_title": "Slack Notification",
+    "popover_desc": "Input channel name. You can notify multiple channels by entering a comma-separated list."
+  },
   "security_settings": "安全设置",
   "share_links": {
     "Shere this page link to public": "Shere this page link to public",
@@ -688,24 +693,6 @@
 		"rebuild_description_1": "单击按钮以重新生成索引并添加所有页面数据。",
 		"rebuild_description_2": "这可能需要一段时间。"
 	},
-	"export_management": {
-		"exporting_collection_list": "正在导出集合列表",
-		"exported_data_list": "导出的存档数据列表",
-		"export_collections": "导出集合",
-		"check_all": "全部选中",
-		"uncheck_all": "全部取消选中",
-		"desc_password_seed": "还原用户数据时，不要忘记将当前的<code>密码种子设置到新的GROWI系统，否则用户将无法使用其密码登录。<br><br><strong>提示：</strong><br>当前的<code>密码种子将存储在<code>meta.json格式</code>在导出的zip压缩包中。",
-		"create_new_archive_data": "创建新的存档数据",
-		"export": "导出",
-		"cancel": "取消",
-		"file": "文件",
-		"growi_version": "Growi 版本号",
-		"collections": "收藏",
-		"exported_at": "导出在",
-		"export_menu": "导出菜单",
-		"download": "下载",
-		"delete": "删除"
-	},
 	"personal_dropdown": {
 		"home": "家",
 		"settings": "设置",
@@ -751,5 +738,10 @@
 		"complete_to_install1": "完成安装GROWI！请以管理员帐户登录。",
 		"complete_to_install2": "完成安装GROWI！请先检查此页上的每个设置。",
 		"failed_to_create_admin_user": "无法创建管理用户。{{errMessage}"
-	}
+  },
+  "validation":{
+    "aws_region": "关于地区，请输入AWS地区名，例如：ap-east-1",
+    "aws_custom_endpoint": "关于自定义端点，请指定以http(s)://开头的URL，链接末尾不需要添加“/”",
+    "failed_to_send_a_test_email":"SMTP方式测试邮件发送失败，请检查相关设定。"
+  }
 }
