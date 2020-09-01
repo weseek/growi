@@ -28,7 +28,8 @@ class PageTimeline extends React.Component {
   }
 
   async updatePages() {
-    const { path } = this.props.pageContainer.state;
+    const { pageContainer } = this.props;
+    const { path } = pageContainer.state;
     const res = await appContainer.apiv3Get('/pages/list', { path });
     this.setState({
       pages: res.data.pages,
