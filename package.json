@@ -36,7 +36,7 @@
     "clean:app": "rimraf -- public/js public/styles",
     "clean:report": "rimraf -- report",
     "clean": "npm-run-all -p clean:*",
-    "console": "env-cmd -f config/env.dev.js node --experimental-repl-await src/server/console.js",
+    "console": "env-cmd -f config/env.dev.js cross-env TS_NODE_PROJECT=tsconfig.server.json node --experimental-repl-await -r ts-node/register -r tsconfig-paths/register src/server/console.js",
     "heroku-postbuild": "sh bin/heroku/install-packages.sh && npm run build:prod",
     "lint:js:fix": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix",
     "lint:js": "eslint \"**/*.{js,jsx,ts,tsx}\"",
