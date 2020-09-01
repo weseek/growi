@@ -19,7 +19,6 @@ class PageTimeline extends React.Component {
     this.updatePages = this.updatePages.bind(this);
     this.state = {
       isEnabled: appContainer.getConfig().isEnabledTimeline,
-      isInitialized: false,
 
       // TODO: remove after when timeline is implemented with React and inject data with props
       pages: this.props.pages,
@@ -44,51 +43,7 @@ class PageTimeline extends React.Component {
 
     // initialize GrowiRenderer
     this.growiRenderer = appContainer.getRenderer('timeline');
-    if (this.props.isModal) {
-      this.updatePages();
-    }
-    else {
-      this.initBsTab();
-    }
-  }
-
-  /**
-   * initialize Bootstrap Tab event for 'shown.bs.tab'
-   * TODO: remove this method after implement with React
-   */
-  initBsTab() {
-    $('a[data-toggle="tab"][href="#view-timeline"]').on('shown.bs.tab', () => {
-      if (this.state.isInitialized) {
-        return;
-      }
-
-      const pageIdsElm = document.getElementById('page-timeline-data');
-
-      if (pageIdsElm == null || pageIdsElm.text.length === 0) {
-        return;
-      }
-
-      const pages = this.extractDataFromDom();
-
-      this.setState({
-        isInitialized: true,
-        pages,
-      });
-    });
-  }
-
-  /**
-   * extract page data from DOM
-   * TODO: remove this method after implement with React
-   */
-  extractDataFromDom() {
-    const pageIdsElm = document.getElementById('page-timeline-data');
-
-    if (pageIdsElm == null || pageIdsElm.text.length === 0) {
-      return null;
-    }
-
-    return JSON.parse(pageIdsElm.text);
+    this.updatePages();
   }
 
   render() {
@@ -129,7 +84,6 @@ PageTimeline.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   pages: PropTypes.arrayOf(PropTypes.object),
-  isModal: PropTypes.bool,
 };
 
 /**
