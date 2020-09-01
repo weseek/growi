@@ -1,17 +1,17 @@
-require('module-alias/register');
-const logger = require('@alias/logger')('growi:migrate:remove-layout-setting');
+import mongoose from 'mongoose';
 
-const mongoose = require('mongoose');
-const config = require('@root/config/migrate');
+import config from '^/config/migrate';
+import loggerFactory from '~/utils/logger';
+import { getModelSafely } from '~/utils/mongoose-utils';
 
-const { getModelSafely } = require('@commons/util/mongoose-utils');
+const logger = loggerFactory('growi:migrate:normalize-locale-id');
 
 module.exports = {
   async up(db, client) {
     logger.info('Apply migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const Config = getModelSafely('Config') || require('@server/models/config')();
+    const Config = getModelSafely('Config') || require('~/server/models/config')();
 
     const layoutType = await Config.findOne({ key: 'customize:layout' });
 
@@ -42,7 +42,7 @@ module.exports = {
     logger.info('Rollback migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const Config = getModelSafely('Config') || require('@server/models/config')();
+    const Config = getModelSafely('Config') || require('~/server/models/config')();
 
     const theme = await Config.findOne({ key: 'customize:theme' });
     const insertLayoutType = (theme.value === '"kibela"') ? 'kibela' : 'growi';
