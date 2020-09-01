@@ -18,6 +18,9 @@ module.exports = {
       key: 'mail:sesAccessKeyId',
     });
 
+    if (sesExist == null) {
+      return logger.info('Failed to migrate');
+    }
     if (sesExist.value != null) {
       await Config.create({
         ns: 'crowi',
@@ -34,6 +37,7 @@ module.exports = {
     }
 
     logger.info('Migration has successfully applied');
+
   },
 
   async down(db, client) {
