@@ -202,12 +202,11 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /users:
+   *    /{id}/recent:
    *      get:
    *        tags: [Users]
-   *        operationId: listUsers
-   *        summary: /users
-   *        description: Select selected columns from users order by asc or desc
+   *        operationId: recent created page of user id
+   *        summary: /usersIdReacent
    *        parameters:
    *          - name: id
    *            in: path
@@ -217,7 +216,7 @@ module.exports = (crowi) => {
    *              type: string
    *        responses:
    *          200:
-   *            description: users are fetched
+   *            description: users recent created pages are fetched
    *            content:
    *              application/json:
    *                schema:
