@@ -196,6 +196,9 @@ module.exports = (crowi) => {
       secretAccessKey: crowi.configManager.getConfig('crowi', 'aws:secretAccessKey'),
       isEnabledPlugins: crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins'),
     };
+
+    appSettingsParams.isMailerSetup = crowi.mailService.isMailerSetup;
+
     return res.apiv3({ appSettingsParams });
 
   });
