@@ -372,10 +372,13 @@ module.exports = (crowi) => {
 
     return {
       isMailerSetup: mailService.isMailerSetup,
+      fromAddress: configManager.getConfig('crowi', 'mail:from'),
       smtpHost: configManager.getConfig('crowi', 'mail:smtpHost'),
       smtpPort: configManager.getConfig('crowi', 'mail:smtpPort'),
       smtpUser: configManager.getConfig('crowi', 'mail:smtpUser'),
       smtpPassword: configManager.getConfig('crowi', 'mail:smtpPassword'),
+      sesAccessKeyId: configManager.getConfig('crowi', 'mail:sesAccessKeyId'),
+      sesSecretAccessKey: configManager.getConfig('crowi', 'mail:sesSecretAccessKey'),
     };
   };
 
