@@ -46,11 +46,11 @@ class SlackNotification extends React.Component {
               <input
                 type="checkbox"
                 className="custom-control-input border-0"
-                id="slackSwitch"
+                id={this.props.id}
                 checked={this.props.isSlackEnabled}
                 onChange={this.updateCheckboxHandler}
               />
-              <label className="custom-control-label" htmlFor="slackSwitch">
+              <label className="custom-control-label" htmlFor={this.props.id}>
               </label>
             </div>
           </label>
@@ -80,6 +80,7 @@ SlackNotification.propTypes = {
   slackChannels: PropTypes.string.isRequired,
   onEnabledFlagChange: PropTypes.func,
   onChannelChange: PropTypes.func,
+  id: PropTypes.string,
 };
 
 export default withTranslation()(SlackNotification);

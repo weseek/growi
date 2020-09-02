@@ -354,6 +354,7 @@ class CommentEditor extends React.Component {
                   slackChannels={commentContainer.state.slackChannels}
                   onEnabledFlagChange={this.onSlackEnabledFlagChange}
                   onChannelChange={this.onSlackChannelsChange}
+                  id="idForComment"
                 />
               </div>
               )
