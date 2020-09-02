@@ -61,7 +61,7 @@ class MailSetting extends React.Component {
 
     return (
       <React.Fragment>
-        {!adminAppContainer.state.isMailSetup && (
+        {!adminAppContainer.state.isMailerActive && (
           <p className="alert alert-danger"><i className="icon-exclamation"></i> {t('admin:app_setting.mailer_not_set_up')}</p>
         )}
         <div className="row form-group mb-5">

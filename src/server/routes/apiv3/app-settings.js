@@ -182,6 +182,7 @@ module.exports = (crowi) => {
       fileUpload: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
       siteUrl: crowi.configManager.getConfig('crowi', 'app:siteUrl'),
       envSiteUrl: crowi.configManager.getConfigFromEnvVars('crowi', 'app:siteUrl'),
+      isMailerActive: crowi.mailService.isMailerActive,
       fromAddress: crowi.configManager.getConfig('crowi', 'mail:from'),
       smtpHost: crowi.configManager.getConfig('crowi', 'mail:smtpHost'),
       smtpPort: crowi.configManager.getConfig('crowi', 'mail:smtpPort'),
@@ -197,10 +198,7 @@ module.exports = (crowi) => {
       isEnabledPlugins: crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins'),
     };
 
-    appSettingsParams.isMailerSetup = crowi.mailService.isMailerSetup;
-
     return res.apiv3({ appSettingsParams });
-
   });
 
 
@@ -374,7 +372,7 @@ module.exports = (crowi) => {
     mailService.publishUpdatedMessage();
 
     return {
-      isMailerSetup: mailService.isMailerSetup,
+      isMailerActive: mailService.isMailerActive,
       fromAddress: configManager.getConfig('crowi', 'mail:from'),
       smtpHost: configManager.getConfig('crowi', 'mail:smtpHost'),
       smtpPort: configManager.getConfig('crowi', 'mail:smtpPort'),

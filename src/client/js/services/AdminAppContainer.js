@@ -23,7 +23,7 @@ export default class AdminAppContainer extends Container {
       siteUrl: '',
       envSiteUrl: '',
       isSetSiteUrl: true,
-      isMailerSetup: false,
+      isMailerActive: false,
       fromAddress: '',
       smtpHost: '',
       smtpPort: '',
@@ -63,7 +63,7 @@ export default class AdminAppContainer extends Container {
       siteUrl: appSettingsParams.siteUrl,
       envSiteUrl: appSettingsParams.envSiteUrl,
       isSetSiteUrl: !!appSettingsParams.siteUrl,
-      isMailerSetup: appSettingsParams.isMailerSetup,
+      isMailerActive: appSettingsParams.isMailerActive,
       fromAddress: appSettingsParams.fromAddress,
       smtpHost: appSettingsParams.smtpHost,
       smtpPort: appSettingsParams.smtpPort,
@@ -263,6 +263,7 @@ export default class AdminAppContainer extends Container {
       smtpPassword: this.state.smtpPassword,
     });
     const { mailSettingParams } = response.data;
+    this.setState({ isMailerActive: mailSettingParams.isMailerActive });
     return mailSettingParams;
   }
 
@@ -277,6 +278,7 @@ export default class AdminAppContainer extends Container {
       sesSecretAccessKey: this.state.sesSecretAccessKey,
     });
     const { mailSettingParams } = response.data;
+    this.setState({ isMailerActive: mailSettingParams.isMailerActive });
     return mailSettingParams;
   }
 
