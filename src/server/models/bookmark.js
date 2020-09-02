@@ -98,7 +98,7 @@ module.exports = function(crowi) {
             return resolve(bookmarks);
           }
 
-          return Bookmark.populatePage(bookmarks, requestUser).then(resolve);
+          return this.populatePage(bookmarks, requestUser).then(resolve);
         });
     }));
   };
