@@ -9,7 +9,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
-const helpers = require('../src/lib/util/helpers');
+// const helpers = require('../src/lib/util/helpers');
 
 /**
  * Webpack Constants

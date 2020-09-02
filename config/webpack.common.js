@@ -9,7 +9,7 @@ const webpack = require('webpack');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
-const helpers = require('../src/lib/util/helpers');
+// const helpers = require('../src/lib/util/helpers');
 
 /*
  * Webpack configuration
