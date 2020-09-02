@@ -65,11 +65,10 @@ module.exports = function(crowi) {
   }, {
     toObject: {
       transform: (doc, ret, opt) => {
-        const isEmailInclude = opt.isEmailInclude || false;
         // omit password
         delete ret.password;
         // omit email
-        if (!doc.isEmailPublished && !isEmailInclude) {
+        if (!doc.isEmailPublished) {
           delete ret.email;
         }
         return ret;
