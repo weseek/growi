@@ -50,19 +50,6 @@ function SmtpSetting(props) {
     }
   }
 
-  async function sendTestEmailhandler() {
-    const { adminAppContainer } = props;
-    try {
-      await adminAppContainer.sendTestEmail();
-      toastSuccess('success to send test e-mail');
-    }
-    catch (err) {
-      toastError(err);
-      logger.error(err);
-    }
-  }
-
-
   async function initialize() {
     const { t, adminAppContainer } = props;
 
@@ -147,7 +134,6 @@ function SmtpSetting(props) {
             >
               {t('admin:app_setting.initialize_mail_settings')}
             </button>
-            <button type="button" className="btn btn-secondary" onClick={sendTestEmailhandler}>send test e-mail</button>
           </div>
         </div>
       </div>
