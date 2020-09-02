@@ -314,7 +314,7 @@ module.exports = (crowi) => {
   /**
    * validate mail setting send test mail
    */
-  async function sendTestEmail(destinationAddress) {
+  async function sendTestEmail(mailConfig) {
 
     const { configManager, mailService } = crowi;
 
@@ -351,12 +351,16 @@ module.exports = (crowi) => {
 
     const mailOptions = {
       from: fromAddress,
-      to: destinationAddress,
-      subject: 'Wiki管理設定のアップデートによるメール通知',
-      text: 'このメールは、WikiのSMTP設定のアップデートにより送信されています。',
+      ...mailConfig,
     };
 
-    await sendMailPromiseWrapper(smtpClient, mailOptions);
+    try {
+      await sendMailPromiseWrapper(smtpClient, mailOptions);
+    }
+    catch (err) {
+      mailService.isMailerActive = false;
+      return err;
+    }
   }
 
   const updateMailSettinConfig = async function(requestMailSettingParams) {
@@ -410,6 +414,14 @@ module.exports = (crowi) => {
 
     try {
       const mailSettingParams = await updateMailSettinConfig({ 'mail:from': req.body.fromAddress });
+
+      const mailConfig = {
+        to: req.user.email,
+        subject: 'Wiki管理設定のアップデートによるメール通知',
+        text: 'このメールは、WikiのSMTP設定のアップデートにより送信されています。',
+      };
+      await sendTestEmail(mailConfig);
+
       return res.apiv3({ mailSettingParams });
     }
     catch (err) {
@@ -453,6 +465,12 @@ module.exports = (crowi) => {
 
     try {
       const mailSettingParams = await updateMailSettinConfig(requestMailSettingParams);
+      const mailConfig = {
+        to: req.user.email,
+        subject: 'Wiki管理設定のアップデートによるメール通知',
+        text: 'このメールは、WikiのSMTP設定のアップデートにより送信されています。',
+      };
+      await sendTestEmail(mailConfig);
       return res.apiv3({ mailSettingParams });
     }
     catch (err) {
@@ -477,7 +495,12 @@ module.exports = (crowi) => {
    */
   router.get('/smtp-test', loginRequiredStrictly, adminRequired, async(req, res) => {
     try {
-      await sendTestEmail(req.user.email);
+      const mailConfig = {
+        to: req.user.email,
+        subject: 'Wiki管理設定のアップデートによるメール通知',
+        text: 'このメールは、WikiのSMTP設定のアップデートにより送信されています。',
+      };
+      await sendTestEmail(mailConfig);
       return res.apiv3({});
     }
     catch (err) {
