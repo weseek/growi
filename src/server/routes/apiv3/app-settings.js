@@ -382,49 +382,6 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /app-settings/mail-setting:
-   *      put:
-   *        tags: [AppSettings]
-   *        operationId: updateAppSettingMailSetting
-   *        summary: /app-settings/mail-setting
-   *        description: Update mail setting
-   *        requestBody:
-   *          required: true
-   *          content:
-   *            application/json:
-   *              schema:
-   *                $ref: '#/components/schemas/MailSetting'
-   *        responses:
-   *          200:
-   *            description: Succeeded to update mail setting
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  $ref: '#/components/schemas/MailSetting'
-   */
-  router.put('/mail-setting', loginRequiredStrictly, adminRequired, csrf, validator.mailSetting, apiV3FormValidator, async(req, res) => {
-
-    const requestSesSettingParams = {
-      'mail:from': req.body.fromAddress,
-      'mail:transmissionMethod': req.body.transmissionMethod,
-    };
-
-    try {
-      const mailSettingParams = await updateMailSettinConfig(requestSesSettingParams);
-
-      return res.apiv3({ mailSettingParams });
-    }
-    catch (err) {
-      const msg = 'Error occurred in updating from adress';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-from-adress-failed'));
-    }
-
-  });
-
-  /**
-   * @swagger
-   *
    *    /app-settings/smtp-setting:
    *      put:
    *        tags: [AppSettings]
@@ -447,6 +404,8 @@ module.exports = (crowi) => {
    */
   router.put('/smtp-setting', loginRequiredStrictly, adminRequired, csrf, validator.smtpSetting, apiV3FormValidator, async(req, res) => {
     const requestMailSettingParams = {
+      'mail:from': req.body.fromAddress,
+      'mail:transmissionMethod': req.body.transmissionMethod,
       'mail:smtpHost': req.body.smtpHost,
       'mail:smtpPort': req.body.smtpPort,
       'mail:smtpUser': req.body.smtpUser,
@@ -523,6 +482,8 @@ module.exports = (crowi) => {
     const { mailService } = crowi;
 
     const requestSesSettingParams = {
+      'mail:from': req.body.fromAddress,
+      'mail:transmissionMethod': req.body.transmissionMethod,
       'mail:sesAccessKeyId': req.body.sesAccessKeyId,
       'mail:sesSecretAccessKey': req.body.sesSecretAccessKey,
     };
