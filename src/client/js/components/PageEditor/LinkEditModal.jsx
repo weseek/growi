@@ -296,7 +296,7 @@ class LinkEditModal extends React.PureComponent {
                       keywordOnInit={this.state.linkInputValue}
                     />
                     <div className="input-group-append" onClick="">
-                      <span className="input-group-text"><PagePreviewIcon /></span>
+                      <button type="button" className="btn btn-success"><PagePreviewIcon /></button>
                     </div>
                   </div>
                 </div>
