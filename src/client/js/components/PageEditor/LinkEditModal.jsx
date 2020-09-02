@@ -13,6 +13,7 @@ import { debounce } from 'throttle-debounce';
 import path from 'path';
 import validator from 'validator';
 import Preview from './Preview';
+import PagePreviewIcon from '../Icons/PagePreviewIcon';
 
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
@@ -280,7 +281,7 @@ class LinkEditModal extends React.PureComponent {
 
         <ModalBody className="container">
           <div className="row">
-            <div className="col-12 col-lg-6">
+            <div className="col-12">
               <form className="form-group">
                 <div className="form-gorup my-3">
                   <div className="input-group flex-nowrap">
@@ -294,10 +295,8 @@ class LinkEditModal extends React.PureComponent {
                       placeholder="Input page path or URL"
                       keywordOnInit={this.state.linkInputValue}
                     />
-                    <div className="input-group-prepend">
-                      <button type="button" className="btn btn-info">
-                        pre
-                      </button>
+                    <div className="input-group-append" onClick="">
+                      <span className="input-group-text"><PagePreviewIcon /></span>
                     </div>
                   </div>
                 </div>
@@ -411,7 +410,6 @@ class LinkEditModal extends React.PureComponent {
 }
 
 LinkEditModal.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   onSave: PropTypes.func,
