@@ -31,6 +31,18 @@ function SmtpSetting(props) {
     }
   }
 
+  async function sendTestEmailHandler() {
+    const { adminAppContainer } = props;
+    try {
+      await adminAppContainer.sendTestEmail();
+      toastSuccess('Success to send test e-mail with smtp');
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+  }
+
   return (
     <React.Fragment>
       <div id="mail-smtp" className="tab-pane active mt-5">
@@ -80,6 +92,9 @@ function SmtpSetting(props) {
           <div className="mx-auto">
             <button type="button" className="btn btn-primary" onClick={submitHandler} disabled={adminAppContainer.state.retrieveError != null}>
               { t('Update') }
+            </button>
+            <button type="button" className="btn btn-primary" onClick={sendTestEmailHandler} disabled={adminAppContainer.state.retrieveError != null}>
+              send test
             </button>
           </div>
         </div>

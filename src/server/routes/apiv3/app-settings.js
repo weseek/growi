@@ -464,20 +464,14 @@ module.exports = (crowi) => {
    *    /app-settings/smtp-test:
    *      post:
    *        tags: [AppSettings]
-   *        operationId: posyAppSettingSmtpTast
+   *        operationId: getSmtpTest
    *        summary: /app-settings/smtp-setting
    *        description: Send test mail for smtp
-   *        requestBody:
-   *          required: true
-   *          content:
-   *            application/json:
-   *              schema:
-   *                $ref: '#/components/schemas/SmtpSettingParams'
    *        responses:
    *          200:
    *            description: Succeeded to send test mail for smtp
    */
-  router.post('/smtp-test', loginRequiredStrictly, adminRequired, csrf, validator.smtpSetting, apiV3FormValidator, async(req, res) => {
+  router.get('/smtp-test', loginRequiredStrictly, adminRequired, async(req, res) => {
     try {
       await sendTestEmail(req.user);
       return res.apiv3({});
