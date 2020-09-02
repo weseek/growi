@@ -35,7 +35,7 @@ function SmtpSetting(props) {
     const { adminAppContainer } = props;
     try {
       await adminAppContainer.sendTestEmail();
-      toastSuccess('Success to send test e-mail with smtp');
+      toastSuccess(t('admin:app_setting.success_to_send_test_email'));
     }
     catch (err) {
       toastError(err);
@@ -94,7 +94,7 @@ function SmtpSetting(props) {
               { t('Update') }
             </button>
             <button type="button" className="btn btn-secondary ml-4" onClick={sendTestEmailHandler}>
-              {t('admin:app_setting.send_test_mail')}
+              {t('admin:app_setting.send_test_email')}
             </button>
           </div>
         </div>
