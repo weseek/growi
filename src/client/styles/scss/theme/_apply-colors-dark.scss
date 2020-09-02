@@ -235,23 +235,24 @@ ul.pagination {
  */
 body.on-edit {
   .grw-editor-navbar-bottom {
+    background-color: $bgcolor-global;
     #slack-mark-black {
       display: none;
     }
-    .btn.btn-outline-secondary {
-      color: $light !important;
-      background-color: $bgcolor-global !important;
-      border-color: $secondary !important;
+    // .btn.btn-outline-secondary {
+    //   color: $light !important;
+    //   background-color: $bgcolor-global !important;
+    //   border-color: $secondary !important;
 
-      &:active,
-      &:focus,
-      &:hover {
-        background-color: lighten($bgcolor-global, 10%) !important;
-      }
-    }
-    .show .btn.btn-outline-secondary {
-      background-color: lighten($bgcolor-global, 10%) !important;
-    }
+    //   &:active,
+    //   &:focus,
+    //   &:hover {
+    //     background-color: lighten($bgcolor-global, 10%) !important;
+    //   }
+    // }
+    // .show .btn.btn-outline-secondary {
+    //   background-color: lighten($bgcolor-global, 10%) !important;
+    // }
   }
 }
 

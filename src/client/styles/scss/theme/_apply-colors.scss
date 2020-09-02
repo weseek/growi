@@ -342,21 +342,10 @@ body.on-edit {
   }
 
   .grw-editor-navbar-bottom {
-    background-color: darken($bgcolor-global, 2%);
+    background-color: $gray-50;
 
     .btn.btn-outline-secondary {
-      color: $secondary !important;
-      background-color: darken($bgcolor-global, 2%) !important;
-      border-color: $border-color !important;
-
-      &:active,
-      &:focus,
-      &:hover {
-        background-color: lighten($secondary, 50%) !important;
-      }
-    }
-    .show .btn.btn-outline-secondary {
-      background-color: lighten($secondary, 50%) !important;
+      border-color: $border-color;
     }
   }
 }
