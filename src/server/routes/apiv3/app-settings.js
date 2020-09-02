@@ -310,43 +310,6 @@ module.exports = (crowi) => {
     });
   }
 
-  /**
-   * validate mail setting send test mail
-   */
-  async function validateMailSetting(req) {
-    const { configManager, mailService } = crowi;
-    const fromAddress = configManager.getConfig('crowi', 'mail:from');
-    if (fromAddress == null) {
-      throw Error('fromAddress is not setup');
-    }
-
-    const option = {
-      host: req.body.smtpHost,
-      port: req.body.smtpPort,
-    };
-    if (req.body.smtpUser && req.body.smtpPassword) {
-      option.auth = {
-        user: req.body.smtpUser,
-        pass: req.body.smtpPassword,
-      };
-    }
-    if (option.port === 465) {
-      option.secure = true;
-    }
-
-    const smtpClient = mailService.createSMTPClient(option);
-    debug('mailer setup for validate SMTP setting', smtpClient);
-
-    const mailOptions = {
-      from: fromAddress,
-      to: req.user.email,
-      subject: 'Wiki管理設定のアップデートによるメール通知',
-      text: 'このメールは、WikiのSMTP設定のアップデートにより送信されています。',
-    };
-
-    await sendMailPromiseWrapper(smtpClient, mailOptions);
-  }
-
   const updateMailSettinConfig = async function(requestMailSettingParams) {
     const {
       configManager,
@@ -358,13 +321,6 @@ module.exports = (crowi) => {
 
     await mailService.initialize();
     mailService.publishUpdatedMessage();
-
-    return {
-      smtpHost: configManager.getConfig('crowi', 'mail:smtpHost'),
-      smtpPort: configManager.getConfig('crowi', 'mail:smtpPort'),
-      smtpUser: configManager.getConfig('crowi', 'mail:smtpUser'),
-      smtpPassword: configManager.getConfig('crowi', 'mail:smtpPassword'),
-    };
   };
 
   /**
@@ -491,11 +447,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /app-settings/send-test-mail:
+   *    /app-settings/send-test-email:
    *      get:
    *        tags: [AppSettings]
-   *        operationId: sendTestMail
-   *        summary: /app-settings/send-test-mail
+   *        operationId: sendTestEmail
+   *        summary: /app-settings/send-test-email
    *        description: send test e-mail
    *        responses:
    *          200:
@@ -505,10 +461,50 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/SmtpSettingParams'
    */
-  router.put('/send-test-mail', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/send-test-email', loginRequiredStrictly, adminRequired, async(req, res) => {
     try {
-      await validateMailSetting(req);
+      const {
+        configManager,
+        mailService,
+      } = crowi;
+
+      const fromAddress = configManager.getConfig('crowi', 'mail:from');
+      const smtpHost = configManager.getConfig('crowi', 'mail:smtpHost');
+      const smtpPort = configManager.getConfig('crowi', 'mail:smtpPort');
+      const smtpUser = configManager.getConfig('crowi', 'mail:smtpUser');
+      const smtpPassword = configManager.getConfig('crowi', 'mail:smtpPassword');
+
+      if (fromAddress == null) {
+        throw Error('fromAddress is not setup');
+      }
+
+      const option = {
+        host: smtpHost,
+        port: smtpPort,
+      };
+      if (smtpUser != null && smtpPassword != null) {
+        option.auth = {
+          user: smtpUser,
+          pass: smtpPassword,
+        };
+      }
+      if (option.port === 465) {
+        option.secure = true;
+      }
+
+      const smtpClient = mailService.createSMTPClient(option);
+      debug('mailer setup for validate SMTP setting', smtpClient);
+
+      const mailOptions = {
+        from: fromAddress,
+        to: req.user.email,
+        subject: 'Wiki管理設定のアップデートによるメール通知',
+        text: 'このメールは、WikiのSMTP設定のアップデートにより送信されています。',
+      };
+
+      await sendMailPromiseWrapper(smtpClient, mailOptions);
     }
+
     catch (err) {
       const msg = req.t('validation.failed_to_send_a_test_email');
       logger.error('Error', err);
