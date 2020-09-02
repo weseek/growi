@@ -19,12 +19,6 @@ class SearchForm extends React.Component {
     this.onChange = this.onChange.bind(this);
   }
 
-  componentDidMount() {
-  }
-
-  componentWillUnmount() {
-  }
-
   onSearchError(err) {
     this.setState({
       searchError: err,
@@ -146,7 +140,7 @@ SearchForm.propTypes = {
 };
 
 SearchForm.defaultProps = {
-  onInputChange: () => {},
+  onInputChange: () => { return },
 };
 
 export default SearchFormWrapper;

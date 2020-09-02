@@ -1,5 +1,6 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
+import loggerFactory from '@alias/logger';
 
 import { Input } from 'reactstrap';
 import InterceptorManager from '~/service/interceptor-manager';
@@ -12,11 +13,13 @@ import mlu from './MarkdownListUtil';
 
 import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const logger = loggerFactory('growi:PageEditor:TextAreaEditor');
+
 export default class TextAreaEditor extends AbstractEditor {
 
   constructor(props) {
     super(props);
-    this.logger = require('@alias/logger')('growi:PageEditor:TextAreaEditor');
 
     this.state = {
       value: this.props.value,

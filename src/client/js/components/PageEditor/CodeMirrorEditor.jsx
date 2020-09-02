@@ -7,7 +7,11 @@ import * as codemirror from 'codemirror';
 import { Button } from 'reactstrap';
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
 
+import * as loadScript from 'simple-load-script';
+import * as loadCssSync from 'load-css-file';
+
 import InterceptorManager from '~/service/interceptor-manager';
+import loggerFactory from '~/utils/logger';
 
 import AbstractEditor from './AbstractEditor';
 import SimpleCheatsheet from './SimpleCheatsheet';
@@ -24,8 +28,8 @@ import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
 import DrawioModal from './DrawioModal';
 
-const loadScript = require('simple-load-script');
-const loadCssSync = require('load-css-file');
+const logger = loggerFactory('growi:PageEditor:CodeMirrorEditor');
+
 // set save handler
 codemirror.commands.save = (instance) => {
   if (instance.codeMirrorEditor != null) {
@@ -64,7 +68,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
   constructor(props) {
     super(props);
-    this.logger = require('@alias/logger')('growi:PageEditor:CodeMirrorEditor');
 
     this.state = {
       value: this.props.value,
@@ -409,7 +412,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         let errorCount = 0;
         const timer = setInterval(() => {
           if (errorCount > 10) { // cancel over 3000ms
-            this.logger.error(`Timeout to load keyMap '${keymapMode}'`);
+            logger.error(`Timeout to load keyMap '${keymapMode}'`);
             clearInterval(timer);
           }
 
@@ -418,7 +421,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
             clearInterval(timer);
           }
           catch (e) {
-            this.logger.info(`keyMap '${keymapMode}' has not been initialized. retry..`);
+            logger.info(`keyMap '${keymapMode}' has not been initialized. retry..`);
 
             // continue if error occured
             errorCount++;

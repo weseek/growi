@@ -47,9 +47,6 @@ class SearchTypeahead extends React.Component {
     // this.typeahead.getInstance().focus();
   }
 
-  componentWillUnmount() {
-  }
-
   /**
    * Initialize keyword
    */
@@ -243,7 +240,7 @@ SearchTypeahead.defaultProps = {
   onChange:        noop,
   placeholder:     '',
   keywordOnInit:   '',
-  onInputChange: () => {},
+  onInputChange: () => { return },
 };
 
 export default SearchTypeaheadWrapper;

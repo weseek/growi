@@ -21,12 +21,14 @@ export default class AbstractEditor extends React.Component {
   }
 
   forceToFocus() {
+    throw new Error('this method should be impelemented in subclass');
   }
 
   /**
    * set new value
    */
   setValue(newValue) {
+    throw new Error('this method should be impelemented in subclass');
   }
 
   /**
@@ -34,6 +36,7 @@ export default class AbstractEditor extends React.Component {
    * @param {bool} bool
    */
   setGfmMode(bool) {
+    throw new Error('this method should be impelemented in subclass');
   }
 
   /**
@@ -41,6 +44,7 @@ export default class AbstractEditor extends React.Component {
    * @param {string} number
    */
   setCaretLine(line) {
+    throw new Error('this method should be impelemented in subclass');
   }
 
   /**
@@ -48,6 +52,7 @@ export default class AbstractEditor extends React.Component {
    * @param {number} line
    */
   setScrollTopByLine(line) {
+    throw new Error('this method should be impelemented in subclass');
   }
 
   /**
@@ -92,6 +97,7 @@ export default class AbstractEditor extends React.Component {
    * @param {string} text
    */
   insertText(text) {
+    throw new Error('this method should be impelemented in subclass');
   }
 
   /**

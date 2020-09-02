@@ -27,6 +27,7 @@ export default class HackmdEditor extends React.PureComponent {
   }
 
   async initHackmdWithPenpal() {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const _this = this; // for in methods scope
 
     const iframe = document.createElement('iframe');

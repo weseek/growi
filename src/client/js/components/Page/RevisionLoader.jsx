@@ -3,11 +3,16 @@ import PropTypes from 'prop-types';
 
 import { Waypoint } from 'react-waypoint';
 
+import loggerFactory from '~/utils/logger';
+
 import { withUnstatedContainers } from '../UnstatedUtils';
 import GrowiRenderer from '../../util/GrowiRenderer';
 import AppContainer from '../../services/AppContainer';
 
 import RevisionRenderer from './RevisionRenderer';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const logger = loggerFactory('growi:Page:RevisionLoader');
 
 /**
  * Load data from server and render RevisionBody component
@@ -16,7 +21,6 @@ class RevisionLoader extends React.Component {
 
   constructor(props) {
     super(props);
-    this.logger = require('@alias/logger')('growi:Page:RevisionLoader');
 
     this.state = {
       markdown: '',

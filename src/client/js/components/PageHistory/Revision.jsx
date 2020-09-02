@@ -13,9 +13,6 @@ export default class Revision extends React.Component {
     this._onDiffOpenClicked = this._onDiffOpenClicked.bind(this);
   }
 
-  componentDidMount() {
-  }
-
   _onDiffOpenClicked(e) {
     e.preventDefault();
     this.props.onDiffOpenClicked(this.props.revision);
