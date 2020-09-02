@@ -93,8 +93,8 @@ function SmtpSetting(props) {
             <button type="button" className="btn btn-primary" onClick={submitHandler} disabled={adminAppContainer.state.retrieveError != null}>
               { t('Update') }
             </button>
-            <button type="button" className="btn btn-primary" onClick={sendTestEmailHandler} disabled={adminAppContainer.state.retrieveError != null}>
-              send test
+            <button type="button" className="btn btn-secondary" onClick={sendTestEmailHandler}>
+              {t('admin:app_setting.send_test_mail')}
             </button>
           </div>
         </div>
