@@ -10,7 +10,8 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
-// const helpers = require('../src/lib/util/helpers');
+// eslint-disable-next-line import/no-unresolved
+const helpers = require('../src/lib/util/helpers');
 
 /**
  * Webpack Constants

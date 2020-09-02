@@ -2,7 +2,8 @@
  * @author: Yuki Takei <yuki@weseek.co.jp>
  */
 const webpack = require('webpack');
-// const helpers = require('../src/lib/util/helpers');
+// eslint-disable-next-line import/no-unresolved
+const helpers = require('../src/lib/util/helpers');
 
 
 module.exports = {

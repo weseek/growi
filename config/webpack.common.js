@@ -9,7 +9,8 @@ const webpack = require('webpack');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
-// const helpers = require('../src/lib/util/helpers');
+// eslint-disable-next-line import/no-unresolved
+const helpers = require('../src/lib/util/helpers');
 
 /*
  * Webpack configuration
