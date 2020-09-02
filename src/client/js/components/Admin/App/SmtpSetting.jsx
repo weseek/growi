@@ -1,12 +1,9 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
 
-import {
-  Modal, ModalHeader, ModalBody,
-} from 'reactstrap';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import { withLoadingSppiner } from '../../SuspenseUtils';
@@ -25,17 +22,6 @@ function SmtpSetting(props) {
   const portInput = useRef();
   const userInput = useRef();
   const passwordInput = useRef();
-
-  const [isInitializeValueModalOpen, setIsInitializeValueModalOpen] = useState(false);
-
-  function openInitializeValueModal() {
-    setIsInitializeValueModalOpen(true);
-
-  }
-
-  function closeInitializeValueModal() {
-    setIsInitializeValueModalOpen(false);
-  }
 
   async function submitHandler() {
     const { t, adminAppContainer } = props;
@@ -61,27 +47,6 @@ function SmtpSetting(props) {
       logger.error(err);
     }
   }
-
-
-  async function initialize() {
-    const { t, adminAppContainer } = props;
-
-    try {
-      const mailSettingParams = await adminAppContainer.initializeSmtpSettingHandler();
-      toastSuccess(t('toaster.initialize_successed', { target: t('admin:app_setting.smtp_settings') }));
-      // convert values to '' if value is null for overwriting values of inputs with refs
-      hostInput.current.value = mailSettingParams.smtpHost || '';
-      portInput.current.value = mailSettingParams.smtpPort || '';
-      userInput.current.value = mailSettingParams.smtpUser || '';
-      passwordInput.current.value = mailSettingParams.smtpPassword || '';
-      closeInitializeValueModal();
-    }
-    catch (err) {
-      toastError(err);
-      logger.error(err);
-    }
-  }
-
 
   return (
     <React.Fragment>
@@ -139,39 +104,10 @@ function SmtpSetting(props) {
             </button>
           </div>
           <div className="offset-1">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={openInitializeValueModal}
-              disabled={adminAppContainer.state.retrieveError != null}
-            >
-              {t('admin:app_setting.initialize_mail_settings')}
-            </button>
             <button type="button" className="btn btn-secondary" onClick={sendTestEmailhandler}>send test e-mail</button>
           </div>
         </div>
       </div>
-
-
-      <Modal isOpen={isInitializeValueModalOpen} toggle={closeInitializeValueModal} className="initialize-mail-settings">
-        <ModalHeader tag="h4" toggle={closeInitializeValueModal} className="bg-danger text-light">
-          {t('admin:app_setting.initialize_mail_modal_header')}
-        </ModalHeader>
-        <ModalBody>
-          <div className="text-center mb-4">
-            {t('admin:app_setting.confirm_to_initialize_mail_settings')}
-          </div>
-          <div className="text-center my-2">
-            <button type="button" className="btn btn-outline-secondary mr-4" onClick={closeInitializeValueModal}>
-              {t('Cancel')}
-            </button>
-            <button type="button" className="btn btn-danger" onClick={initialize}>
-              {t('Reset')}
-            </button>
-          </div>
-        </ModalBody>
-      </Modal>
-
     </React.Fragment>
   );
 }
