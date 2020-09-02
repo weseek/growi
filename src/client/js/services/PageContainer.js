@@ -468,8 +468,8 @@ export default class PageContainer extends Container {
       logger.debug({ obj: data }, `websocket on 'page:delete'`); // eslint-disable-line quotes
 
       // update PageStatusAlert
-      if (data.page.path === pageContainer.state.path) {
-        pageContainer.setLatestRemotePageData(data.page, data.user);
+      if (data.page.path === this.state.path) {
+        this.setLatestRemotePageData(data.page, data.user);
       }
     });
 
@@ -481,8 +481,8 @@ export default class PageContainer extends Container {
 
       logger.debug({ obj: data }, `websocket on 'page:editingWithHackmd'`); // eslint-disable-line quotes
 
-      if (data.page.path === pageContainer.state.path) {
-        pageContainer.setState({ isHackmdDraftUpdatingInRealtime: true });
+      if (data.page.path === this.state.path) {
+        this.setState({ isHackmdDraftUpdatingInRealtime: true });
       }
     });
 
