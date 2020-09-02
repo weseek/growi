@@ -429,6 +429,17 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/SmtpSettingParams'
    */
   router.put('/smtp-setting', loginRequiredStrictly, adminRequired, csrf, validator.smtpSetting, apiV3FormValidator, async(req, res) => {
+    try {
+      await validateMailSetting(req);
+    }
+    catch (err) {
+      const msg = req.t('validation.failed_to_send_a_test_email');
+      logger.error('Error', err);
+      debug('Error validate mail setting: ', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-mailSetting-failed'));
+    }
+
+
     const requestMailSettingParams = {
       'mail:smtpHost': req.body.smtpHost,
       'mail:smtpPort': req.body.smtpPort,
@@ -491,35 +502,6 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /app-settings/send-test-mail:
-   *      get:
-   *        tags: [AppSettings]
-   *        operationId: sendTestMail
-   *        summary: /app-settings/send-test-mail
-   *        description: send test e-mail
-   *        responses:
-   *          200:
-   *            description: Succeeded to send test e-mail
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  $ref: '#/components/schemas/SmtpSettingParams'
-   */
-  router.put('/send-test-mail', loginRequiredStrictly, adminRequired, async(req, res) => {
-    try {
-      await validateMailSetting(req);
-    }
-    catch (err) {
-      const msg = req.t('validation.failed_to_send_a_test_email');
-      logger.error('Error', err);
-      debug('Error validate mail setting: ', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-mailSetting-failed'));
-    }
-  });
-
-  /**
-   * @swagger
-   *
    *    /app-settings/smtp-setting:
    *      delete:
    *        tags: [AppSettings]
@@ -529,6 +511,10 @@ module.exports = (crowi) => {
    *        responses:
    *          200:
    *            description: Succeeded to delete smtp setting
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/SmtpSettingParams'
    */
   router.delete('/smtp-setting', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const requestMailSettingParams = {
