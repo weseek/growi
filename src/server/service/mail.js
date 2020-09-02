@@ -20,6 +20,11 @@ class MailService extends S2sMessageHandlable {
     this.mailConfig = {};
     this.mailer = {};
 
+    /**
+     * the flag whether mailer is set up successfully
+     */
+    this.isMailerSetup = false;
+
     this.initialize();
   }
 
@@ -65,18 +70,22 @@ class MailService extends S2sMessageHandlable {
   initialize() {
     const { appService, configManager } = this;
 
+    this.isMailerSetup = false;
+
     if (!configManager.getConfig('crowi', 'mail:from')) {
       this.mailer = null;
       return;
     }
 
-    // Priority 1. SMTP
-    if (configManager.getConfig('crowi', 'mail:smtpHost') && configManager.getConfig('crowi', 'mail:smtpPort')) {
+    const transmissionMethod = configManager.getConfig('crowi', 'mail:transmissionMethod');
+
+    if (transmissionMethod === 'smtp') {
       this.mailer = this.createSMTPClient();
+      this.isMailerSetup = true;
     }
-    // Priority 2. SES
-    else if (configManager.getConfig('crowi', 'mail:sesAccessKeyId') && configManager.getConfig('crowi', 'mail:sesSecretAccessKey')) {
+    else if (transmissionMethod === 'ses') {
       this.mailer = this.createSESClient();
+      this.isMailerSetup = true;
     }
     else {
       this.mailer = null;
@@ -113,6 +122,7 @@ class MailService extends S2sMessageHandlable {
     const client = nodemailer.createTransport(option);
 
     logger.debug('mailer set up for SMTP', client);
+
     return client;
   }
 
@@ -130,6 +140,7 @@ class MailService extends S2sMessageHandlable {
     const client = nodemailer.createTransport(ses(option));
 
     logger.debug('mailer set up for SES', client);
+
     return client;
   }
 

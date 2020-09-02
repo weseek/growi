@@ -138,7 +138,7 @@ module.exports = (crowi) => {
     ],
     smtpSetting: [
       body('smtpHost').trim(),
-      body('smtpPort').trim().isPort(),
+      body('smtpPort').trim().if(value => value !== '').isPort(),
       body('smtpUser').trim(),
       body('smtpPassword').trim(),
     ],
@@ -318,14 +318,14 @@ module.exports = (crowi) => {
   /**
    * validate mail setting send test mail
    */
-  async function validateMailSetting(req) {
-
-    // check passes if there is at least one blank
-    if (Object.values(req.body).some(value => value === '')) {
-      return;
-    }
+  async function sendTestEmail(req) {
 
     const { configManager, mailService } = crowi;
+
+    if (!mailService.isMailerSetup) {
+      throw Error('mailService is not setup');
+    }
+
     const fromAddress = configManager.getConfig('crowi', 'mail:from');
     if (fromAddress == null) {
       throw Error('fromAddress is not setup');
@@ -371,6 +371,7 @@ module.exports = (crowi) => {
     mailService.publishUpdatedMessage();
 
     return {
+      isMailerSetup: mailService.isMailerSetup,
       smtpHost: configManager.getConfig('crowi', 'mail:smtpHost'),
       smtpPort: configManager.getConfig('crowi', 'mail:smtpPort'),
       smtpUser: configManager.getConfig('crowi', 'mail:smtpUser'),
@@ -409,8 +410,7 @@ module.exports = (crowi) => {
     };
 
     try {
-      const mailSettingParams = await updateMailSettinConfig(requestSesSettingParams);
-
+      const mailSettingParams = await updateMailSettinConfig({ 'mail:from': req.body.fromAddress });
       return res.apiv3({ mailSettingParams });
     }
     catch (err) {
@@ -445,17 +445,6 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/SmtpSettingParams'
    */
   router.put('/smtp-setting', loginRequiredStrictly, adminRequired, csrf, validator.smtpSetting, apiV3FormValidator, async(req, res) => {
-    try {
-      await validateMailSetting(req);
-    }
-    catch (err) {
-      const msg = req.t('validation.failed_to_send_a_test_email');
-      logger.error('Error', err);
-      debug('Error validate mail setting: ', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-mailSetting-failed'));
-    }
-
-
     const requestMailSettingParams = {
       'mail:smtpHost': req.body.smtpHost,
       'mail:smtpPort': req.body.smtpPort,
@@ -471,6 +460,38 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating smtp setting';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-smtpSetting-failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /app-settings/smtp-test:
+   *      post:
+   *        tags: [AppSettings]
+   *        operationId: posyAppSettingSmtpTast
+   *        summary: /app-settings/smtp-setting
+   *        description: Send test mail for smtp
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/SmtpSettingParams'
+   *        responses:
+   *          200:
+   *            description: Succeeded to send test mail for smtp
+   */
+  router.post('/smtp-test', loginRequiredStrictly, adminRequired, csrf, validator.smtpSetting, apiV3FormValidator, async(req, res) => {
+    try {
+      await sendTestEmail(req);
+      return res.apiv3({});
+    }
+    catch (err) {
+      const msg = req.t('validation.failed_to_send_a_test_email');
+      logger.error('Error', err);
+      debug('Error validate mail setting: ', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-mailSetting-failed'));
     }
   });
 
