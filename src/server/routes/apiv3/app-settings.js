@@ -410,7 +410,8 @@ module.exports = (crowi) => {
     };
 
     try {
-      const mailSettingParams = await updateMailSettinConfig({ 'mail:from': req.body.fromAddress });
+      const mailSettingParams = await updateMailSettinConfig(requestSesSettingParams);
+
       return res.apiv3({ mailSettingParams });
     }
     catch (err) {
