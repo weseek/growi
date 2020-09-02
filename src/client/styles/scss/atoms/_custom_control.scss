@@ -71,6 +71,11 @@ label.custom-control-label {
 }
 
 .custom-switch.custom-switch-slack {
+  .custom-control-label {
+    &::after {
+      background-size: 15px;
+    }
+  }
   .input-group-addon {
     input {
       vertical-align: middle;

@@ -179,7 +179,6 @@ $table-hover-bg: $bgcolor-table-hover;
     &::after {
       background-color: white;
       background-image: url(/images/icons/slack/slack-logo-off.svg);
-      background-size: 15px;
     }
   }
   .custom-control-input:checked ~ .custom-control-label {

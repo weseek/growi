@@ -244,7 +244,6 @@ ul.pagination {
     &::after {
       background-color: darken($color-slack, 5%);
       background-image: url(/images/icons/slack/slack-logo-dark-off.svg);
-      background-size: 15px;
     }
   }
 
