@@ -140,7 +140,7 @@ SearchForm.propTypes = {
 };
 
 SearchForm.defaultProps = {
-  onInputChange: () => { return },
+  onInputChange: () => {},
 };
 
 export default SearchFormWrapper;

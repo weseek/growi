@@ -18,7 +18,7 @@ function RenderTagLabels(props) {
 
   // activate suspense
   if (tags == null) {
-    throw new Promise();
+    throw new Promise(() => {});
   }
 
   const isTagsEmpty = tags.length === 0;

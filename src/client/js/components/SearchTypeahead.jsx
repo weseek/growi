@@ -240,7 +240,7 @@ SearchTypeahead.defaultProps = {
   onChange:        noop,
   placeholder:     '',
   keywordOnInit:   '',
-  onInputChange: () => { return },
+  onInputChange: () => {},
 };
 
 export default SearchTypeaheadWrapper;

@@ -365,7 +365,7 @@ class ExportService {
 
     const Readable = require('stream').Readable;
     const readable = new Readable();
-    readable._read = () => { return };
+    readable._read = () => {};
     readable.push(data);
     readable.push(null);
 
