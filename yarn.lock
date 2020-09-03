@@ -2207,6 +2207,11 @@
     "@types/prop-types" "*"
     csstype "^3.0.2"
 
+"@types/replacestream@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@types/replacestream/-/replacestream-4.0.0.tgz#cd26cc8cbcd222b5222905cdfd13b7674290521e"
+  integrity sha512-Ek7AzrEXgy8BO/HySVAcP7GHTflsuiduR4P1AyJlE5MQhD2uX+vWvfwXSEBuDFD1VgGAaJFCNEI8fw7qpVgu5Q==
+
 "@types/serve-static@*":
   version "1.13.5"
   resolved "https://registry.yarnpkg.com/@types/serve-static/-/serve-static-1.13.5.tgz#3d25d941a18415d3ab092def846e135a08bbcf53"
@@ -2219,6 +2224,13 @@
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-1.0.1.tgz#0a851d3bd96498fa25c33ab7278ed3bd65f06c3e"
   integrity sha512-l42BggppR6zLmpfU6fq9HEa2oGPEI8yrSPL3GITjfRInppYFahObbIQOQK3UGxEnyQpltZLaPe75046NOZQikw==
+
+"@types/stream-to-promise@^2.2.1":
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/@types/stream-to-promise/-/stream-to-promise-2.2.1.tgz#565d7601adfc99a273b21f809c3316238689eb6f"
+  integrity sha512-KTa4AVEFG6o4YRIgqIuCbiC4+g5aeJ4FIYUYGHf7Ew9QlGr/5vc2cKbzT7Tf5z/iGPjiwWvMLtXZFJC8cWPhJg==
+  dependencies:
+    "@types/node" "*"
 
 "@types/strip-bom@^3.0.0":
   version "3.0.0"

@@ -1,37 +1,33 @@
+import path from 'path';
+import { URL } from 'url';
+import urljoin from 'url-join';
+import { Transform } from 'stream';
+import replaceStream from 'replacestream';
+
+import CdnResource from '~/models/cdn-resource';
+
 import loggerFactory from '~/utils/logger';
+import { downloadTo } from '~/utils/download';
 
-const axios = require('axios');
-const path = require('path');
-const { URL } = require('url');
-const urljoin = require('url-join');
-const fs = require('graceful-fs');
-const mkdirp = require('mkdirp');
-const replaceStream = require('replacestream');
-const streamToPromise = require('stream-to-promise');
+const logger = loggerFactory('growi:service:CdnResourcesDownloader');
 
-const CdnResource = require('~/models/cdn-resource');
-
-class CdnResourcesDownloader {
-
-  constructor() {
-    this.logger = loggerFactory('growi:service:CdnResourcesDownloader');
-  }
+export default class CdnResourcesDownloader {
 
   /**
    * Download script files from CDN
    * @param {CdnResource[]} cdnResources JavaScript resource data
    * @param {any} options
    */
-  async downloadScripts(cdnResources, options) {
-    this.logger.debug('Downloading scripts', cdnResources);
+  async downloadScripts(cdnResources, options): Promise<any> {
+    logger.debug('Downloading scripts', cdnResources);
 
     const opts = Object.assign({}, options);
     const ext = opts.ext || 'js';
 
     const promises = cdnResources.map((cdnResource) => {
-      this.logger.info(`Processing CdnResource '${cdnResource.name}'`);
+      logger.info(`Processing CdnResource '${cdnResource.name}'`);
 
-      return this.downloadAndWriteToFS(
+      return downloadTo(
         cdnResource.url,
         cdnResource.outDir,
         `${cdnResource.name}.${ext}`,
@@ -47,25 +43,25 @@ class CdnResourcesDownloader {
    * @param {CdnResource[]} cdnResources CSS resource data
    * @param {any} options
    */
-  async downloadStyles(cdnResources, options) {
-    this.logger.debug('Downloading styles', cdnResources);
+  async downloadStyles(cdnResources, options): Promise<any> {
+    logger.debug('Downloading styles', cdnResources);
 
     const opts = Object.assign({}, options);
     const ext = opts.ext || 'css';
 
     // styles
-    const assetsResourcesStore = [];
+    const assetsResourcesStore: CdnResource[] = [];
     const promisesForStyle = cdnResources.map((cdnResource) => {
-      this.logger.info(`Processing CdnResource '${cdnResource.name}'`);
+      logger.info(`Processing CdnResource '${cdnResource.name}'`);
 
-      let urlReplacer = null;
+      let urlReplacer: Transform|null = null;
 
       // generate replaceStream instance
       if (opts.replaceUrl != null) {
         urlReplacer = this.generateReplaceUrlInCssStream(cdnResource, assetsResourcesStore, opts.replaceUrl.webroot);
       }
 
-      return this.downloadAndWriteToFS(
+      return downloadTo(
         cdnResource.url,
         cdnResource.outDir,
         `${cdnResource.name}.${ext}`,
@@ -76,13 +72,13 @@ class CdnResourcesDownloader {
     // wait until all styles are downloaded
     await Promise.all(promisesForStyle);
 
-    this.logger.debug('Downloading assets', assetsResourcesStore);
+    logger.debug('Downloading assets', assetsResourcesStore);
 
     // assets in css
     const promisesForAssets = assetsResourcesStore.map((cdnResource) => {
-      this.logger.info(`Processing assts in css '${cdnResource.name}'`);
+      logger.info(`Processing assts in css '${cdnResource.name}'`);
 
-      return this.downloadAndWriteToFS(
+      return downloadTo(
         cdnResource.url,
         cdnResource.outDir,
         cdnResource.name,
@@ -103,7 +99,7 @@ class CdnResourcesDownloader {
    * @param {CdnResource[]} assetsResourcesStore An array to store CdnResource that is detected by 'url()' in CSS
    * @param {string} webroot
    */
-  generateReplaceUrlInCssStream(cdnResource, assetsResourcesStore, webroot) {
+  generateReplaceUrlInCssStream(cdnResource, assetsResourcesStore, webroot): Transform {
     return replaceStream(
       /url\((?!['"]?data:)["']?(.+?)["']?\)/g, // https://regex101.com/r/Sds38A/3
       (match, url) => {
@@ -113,7 +109,7 @@ class CdnResourcesDownloader {
           : new URL(url, cdnResource.url); // when url is relative
         const basename = path.basename(parsedUrl.pathname);
 
-        this.logger.debug(`${cdnResource.name} has ${parsedUrl.toString()}`);
+        logger.debug(`${cdnResource.name} has ${parsedUrl.toString()}`);
 
         // add assets metadata to download later
         assetsResourcesStore.push(
@@ -130,23 +126,4 @@ class CdnResourcesDownloader {
     );
   }
 
-  async downloadAndWriteToFS(url, outDir, fileName, replacestream) {
-    // get
-    const response = await axios.get(url, { responseType: 'stream' });
-    // mkdir -p
-    mkdirp.sync(outDir);
-
-    // replace and write
-    let stream = response.data;
-    if (replacestream != null) {
-      stream = stream.pipe(replacestream);
-    }
-    const file = path.join(outDir, fileName);
-    stream = stream.pipe(fs.createWriteStream(file));
-
-    return streamToPromise(stream);
-  }
-
 }
-
-module.exports = CdnResourcesDownloader;

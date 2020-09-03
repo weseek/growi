@@ -14,7 +14,7 @@ const cdnLocalStyleRoot = path.join(projectRoot, 'public/styles/cdn');
 const cdnLocalStyleWebRoot = '/styles/cdn';
 
 
-class CdnResourcesService {
+export default class CdnResourcesService {
 
   constructor() {
     this.logger = loggerFactory('growi:service:CdnResourcesService');
@@ -168,5 +168,3 @@ class CdnResourcesService {
   }
 
 }
-
-module.exports = CdnResourcesService;
