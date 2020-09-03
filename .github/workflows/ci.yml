@@ -188,6 +188,8 @@ jobs:
     - name: yarn dev:ci
       run: |
         yarn dev:ci
+      env:
+        MONGO_URI: mongodb://localhost:27017/growi
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
       if: failure()
