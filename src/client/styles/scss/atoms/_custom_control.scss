@@ -71,8 +71,6 @@ label.custom-control-label {
 }
 
 .custom-switch.custom-switch-slack {
-  $color-slack: #4b144c;
-
   .custom-control-label {
     &::before {
       background-color: $gray-200;

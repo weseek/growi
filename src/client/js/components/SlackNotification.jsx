@@ -80,7 +80,7 @@ SlackNotification.propTypes = {
   slackChannels: PropTypes.string.isRequired,
   onEnabledFlagChange: PropTypes.func,
   onChannelChange: PropTypes.func,
-  id: PropTypes.string,
+  id: PropTypes.string.isRequired,
 };
 
 export default withTranslation()(SlackNotification);
