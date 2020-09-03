@@ -119,7 +119,7 @@ class AppSetting extends React.Component<Props> {
                 id="cbFileUpload"
                 className="custom-control-input"
                 name="fileUpload"
-                checked={adminAppContainer.state.fileUpload}
+                checked={adminAppContainer.state.fileUpload != null}
                 onChange={(e) => {
                   adminAppContainer.changeFileUpload(e.target.checked);
                 }}
