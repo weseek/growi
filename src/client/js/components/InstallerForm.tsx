@@ -1,12 +1,22 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { WithTranslation } from 'next-i18next';
 
-import i18next from 'i18next';
-import { withTranslation } from 'react-i18next';
+import { i18n, config, withTranslation } from '~/i18n';
 
-import { localeMetadatas } from '../util/i18n';
+interface Props extends WithTranslation {
+  // for input value
+  userName?: string,
+  name?: string,
+  email?: string,
+  csrf?: string,
+}
 
-class InstallerForm extends React.Component {
+interface State {
+  isValidUserName: boolean,
+  selectedLang: any,
+}
+
+class InstallerForm extends React.Component<Props, State> {
 
   constructor(props) {
     super(props);
@@ -16,10 +26,6 @@ class InstallerForm extends React.Component {
       selectedLang: {},
     };
     // this.checkUserName = this.checkUserName.bind(this);
-  }
-
-  componentWillMount() {
-    this.changeLanguage(localeMetadatas[0]);
   }
 
   // checkUserName(event) {
@@ -34,24 +40,21 @@ class InstallerForm extends React.Component {
   //     .then((res) => { return this.setState({ isValidUserName: res.data.valid }) });
   // }
 
-  changeLanguage(meta) {
-    i18next.changeLanguage(meta.id);
-    this.setState({ selectedLang: meta });
-  }
-
   render() {
+    const { t } = this.props;
+
     const hasErrorClass = this.state.isValidUserName ? '' : ' has-error';
     const unavailableUserId = this.state.isValidUserName
       ? ''
-      : <span><i className="icon-fw icon-ban" />{ this.props.t('installer.unavaliable_user_id') }</span>;
+      : <span><i className="icon-fw icon-ban" />{ t('installer.unavaliable_user_id') }</span>;
 
     return (
       <div className={`login-dialog p-3 mx-auto${hasErrorClass}`}>
         <div className="row">
           <div className="col-md-12">
             <p className="alert alert-success">
-              <strong>{ this.props.t('installer.create_initial_account') }</strong><br />
-              <small>{ this.props.t('installer.initial_account_will_be_administrator_automatically') }</small>
+              <strong>{ t('installer.create_initial_account') }</strong><br />
+              <small>{ t('installer.initial_account_will_be_administrator_automatically') }</small>
             </p>
           </div>
         </div>
@@ -74,12 +77,12 @@ class InstallerForm extends React.Component {
                 </button>
                 <div className="dropdown-menu" aria-labelledby="dropdownLanguage">
                   {
-                  localeMetadatas.map(meta => (
-                    <button key={meta.id} className="dropdown-item" type="button" onClick={() => { this.changeLanguage(meta) }}>
-                      {meta.displayName}
-                    </button>
-                  ))
-                }
+                    config.allLanguages.map(lang => (
+                      <button key={lang} className="dropdown-item" type="button" onClick={() => { i18n.changeLanguage(lang) }}>
+                        {t('meta.display_name')}
+                      </button>
+                    ))
+                  }
                 </div>
               </div>
             </div>
@@ -91,7 +94,7 @@ class InstallerForm extends React.Component {
               <input
                 type="text"
                 className="form-control"
-                placeholder={this.props.t('User ID')}
+                placeholder={t('User ID')}
                 name="registerForm[username]"
                 defaultValue={this.props.userName}
                 // onBlur={this.checkUserName} // need not to check username before installation -- 2020.07.24 Yuki Takei
@@ -107,7 +110,7 @@ class InstallerForm extends React.Component {
               <input
                 type="text"
                 className="form-control"
-                placeholder={this.props.t('Name')}
+                placeholder={t('Name')}
                 name="registerForm[name]"
                 defaultValue={this.props.name}
                 required
@@ -121,7 +124,7 @@ class InstallerForm extends React.Component {
               <input
                 type="email"
                 className="form-control"
-                placeholder={this.props.t('Email')}
+                placeholder={t('Email')}
                 name="registerForm[email]"
                 defaultValue={this.props.email}
                 required
@@ -135,7 +138,7 @@ class InstallerForm extends React.Component {
               <input
                 type="password"
                 className="form-control"
-                placeholder={this.props.t('Password')}
+                placeholder={t('Password')}
                 name="registerForm[password]"
                 required
               />
@@ -147,7 +150,7 @@ class InstallerForm extends React.Component {
               <button type="submit" className="btn-fill btn btn-register" id="register">
                 <div className="eff"></div>
                 <span className="btn-label"><i className="icon-user-follow" /></span>
-                <span className="btn-label-text">{ this.props.t('Create') }</span>
+                <span className="btn-label-text">{ t('Create') }</span>
               </button>
             </div>
 
@@ -163,15 +166,5 @@ class InstallerForm extends React.Component {
   }
 
 }
-
-InstallerForm.propTypes = {
-  // i18next
-  t: PropTypes.func.isRequired,
-  // for input value
-  userName: PropTypes.string,
-  name: PropTypes.string,
-  email: PropTypes.string,
-  csrf: PropTypes.string,
-};
 
 export default withTranslation()(InstallerForm);

@@ -26,6 +26,7 @@ export default nextI18Next;
 export const Trans = nextI18Next.Trans;
 export const Link = nextI18Next.Link;
 export const Router = nextI18Next.Router;
+export const i18n = nextI18Next.i18n;
 export const config = nextI18Next.config;
 export const appWithTranslation = nextI18Next.appWithTranslation;
 export const withTranslation = nextI18Next.withTranslation;

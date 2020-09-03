@@ -1,4 +1,8 @@
 {
+  "meta": {
+    "display_name": "简体中文"
+  },
+
 	"Help": "帮助",
 	"Edit": "编辑",
 	"Delete": "删除",

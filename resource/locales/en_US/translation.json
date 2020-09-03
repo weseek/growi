@@ -1,4 +1,8 @@
 {
+  "meta": {
+    "display_name": "English"
+  },
+
   "Help": "Help",
   "Edit": "Edit",
   "Delete": "Delete",

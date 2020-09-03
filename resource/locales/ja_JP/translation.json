@@ -1,4 +1,8 @@
 {
+  "meta": {
+    "display_name": "日本語"
+  },
+
   "Help": "ヘルプ",
   "Edit": "編集",
   "Delete": "削除",

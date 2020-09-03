@@ -1,19 +1,22 @@
 
 import React, { Fragment } from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { WithTranslation } from 'next-i18next';
 
-import { localeMetadatas } from '../../util/i18n';
+import { config as nextI18NextConfig, withTranslation } from '~/i18n';
 
 import { toastSuccess, toastError } from '../../util/apiNotification';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 import PersonalContainer from '../../services/PersonalContainer';
 
-class BasicInfoSettings extends React.Component {
+interface Props extends WithTranslation {
+  personalContainer: PersonalContainer,
+}
 
-  constructor() {
-    super();
+class BasicInfoSettings extends React.Component<Props> {
+
+  constructor(props) {
+    super(props);
 
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
@@ -112,17 +115,17 @@ class BasicInfoSettings extends React.Component {
           <label className="text-left text-md-right col-md-3 col-form-label">{t('Language')}</label>
           <div className="col-md-6">
             {
-              localeMetadatas.map(meta => (
-                <div key={meta.id} className="custom-control custom-radio custom-control-inline">
+              nextI18NextConfig.allLanguages.map(lang => (
+                <div key={lang} className="custom-control custom-radio custom-control-inline">
                   <input
                     type="radio"
-                    id={`radioLang${meta.id}`}
+                    id={`radioLang${lang}`}
                     className="custom-control-input"
                     name="userForm[lang]"
-                    checked={personalContainer.state.lang === meta.id}
-                    onChange={() => { personalContainer.changeLang(meta.id) }}
+                    checked={personalContainer.state.lang === lang}
+                    onChange={() => { personalContainer.changeLang(lang) }}
                   />
-                  <label className="custom-control-label" htmlFor={`radioLang${meta.id}`}>{meta.displayName}</label>
+                  <label className="custom-control-label" htmlFor={`radioLang${lang}`}>{t('meta.display_name')}</label>
                 </div>
               ))
             }
@@ -143,11 +146,4 @@ class BasicInfoSettings extends React.Component {
 
 }
 
-const BasicInfoSettingsWrapper = withUnstatedContainers(BasicInfoSettings, [PersonalContainer]);
-
-BasicInfoSettings.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  personalContainer: PropTypes.instanceOf(PersonalContainer).isRequired,
-};
-
-export default withTranslation()(BasicInfoSettingsWrapper);
+export default withUnstatedContainers(withTranslation()(BasicInfoSettings), [PersonalContainer]);
