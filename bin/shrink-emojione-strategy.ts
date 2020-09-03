@@ -3,18 +3,19 @@
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import fs from 'graceful-fs';
 import markdownItEmojiFull from 'markdown-it-emoji/lib/data/full.json';
 
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
-const OUT = resolveFromRoot('tmp/emoji_strategy_shrinked.json');
+const OUT: string = resolveFromRoot('tmp/emoji_strategy_shrinked.json');
 const EMOJI_STRATEGY_URI = 'https://cdn.jsdelivr.net/npm/emojione@3.1.2/emoji_strategy.json';
 
 async function main() {
   // download emojione/emoji_strategy.json
-  const { data: emojiStrategy } = await axios.get(EMOJI_STRATEGY_URI);
+  const response: AxiosResponse = await axios.get(EMOJI_STRATEGY_URI);
+  const emojiStrategy = response.data;
 
   const shrinkedMap = {};
   Object.keys(emojiStrategy).forEach((unicode) => {
