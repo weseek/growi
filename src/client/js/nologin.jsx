@@ -1,16 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'unstated';
-import { I18nextProvider } from 'react-i18next';
-
-import { i18nFactory } from './util/i18n';
 
 import AppContainer from './services/AppContainer';
 
 import InstallerForm from './components/InstallerForm';
 import LoginForm from './components/LoginForm';
-
-const i18n = i18nFactory();
 
 // render InstallerForm
 const installerFormElem = document.getElementById('installer-form');
@@ -20,9 +15,7 @@ if (installerFormElem) {
   const email = installerFormElem.dataset.email;
   const csrf = installerFormElem.dataset.csrf;
   ReactDOM.render(
-    <I18nextProvider i18n={i18n}>
-      <InstallerForm userName={userName} name={name} email={email} csrf={csrf} />
-    </I18nextProvider>,
+    <InstallerForm userName={userName} name={name} email={email} csrf={csrf} />,
     installerFormElem,
   );
 }
@@ -59,21 +52,19 @@ if (loginFormElem) {
   };
 
   ReactDOM.render(
-    <I18nextProvider i18n={i18n}>
-      <Provider inject={[appContainer]}>
-        <LoginForm
-          username={username}
-          name={name}
-          email={email}
-          isRegistrationEnabled={isRegistrationEnabled}
-          registrationMode={registrationMode}
-          registrationWhiteList={registrationWhiteList}
-          isLocalStrategySetup={isLocalStrategySetup}
-          isLdapStrategySetup={isLdapStrategySetup}
-          objOfIsExternalAuthEnableds={objOfIsExternalAuthEnableds}
-        />
-      </Provider>
-    </I18nextProvider>,
+    <Provider inject={[appContainer]}>
+      <LoginForm
+        username={username}
+        name={name}
+        email={email}
+        isRegistrationEnabled={isRegistrationEnabled}
+        registrationMode={registrationMode}
+        registrationWhiteList={registrationWhiteList}
+        isLocalStrategySetup={isLocalStrategySetup}
+        isLdapStrategySetup={isLdapStrategySetup}
+        objOfIsExternalAuthEnableds={objOfIsExternalAuthEnableds}
+      />
+    </Provider>,
     loginFormElem,
   );
 }

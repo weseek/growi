@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'unstated';
-import { I18nextProvider } from 'react-i18next';
 
 import loggerFactory from '@alias/logger';
 
@@ -50,8 +49,6 @@ import { appContainer, componentMappings } from './base';
 const logger = loggerFactory('growi:admin');
 
 appContainer.initContents();
-
-const { i18n } = appContainer;
 
 // create unstated container instance
 const navigationContainer = new NavigationContainer(appContainer);
@@ -110,13 +107,11 @@ Object.keys(componentMappings).forEach((key) => {
   const elem = document.getElementById(key);
   if (elem) {
     ReactDOM.render(
-      <I18nextProvider i18n={i18n}>
-        <ErrorBoundary>
-          <Provider inject={injectableContainers}>
-            {componentMappings[key]}
-          </Provider>
-        </ErrorBoundary>
-      </I18nextProvider>,
+      <ErrorBoundary>
+        <Provider inject={injectableContainers}>
+          {componentMappings[key]}
+        </Provider>
+      </ErrorBoundary>,
       elem,
     );
   }
@@ -138,13 +133,11 @@ if (adminSecuritySettingElem != null) {
     adminOidcSecurityContainer, adminBasicSecurityContainer, adminGoogleSecurityContainer, adminGitHubSecurityContainer, adminTwitterSecurityContainer,
   ];
   ReactDOM.render(
-    <I18nextProvider i18n={i18n}>
-      <ErrorBoundary>
-        <Provider inject={[...injectableContainers, ...adminSecurityContainers]}>
-          <SecurityManagement />
-        </Provider>
-      </ErrorBoundary>
-    </I18nextProvider>,
+    <ErrorBoundary>
+      <Provider inject={[...injectableContainers, ...adminSecurityContainers]}>
+        <SecurityManagement />
+      </Provider>
+    </ErrorBoundary>,
     adminSecuritySettingElem,
   );
 }

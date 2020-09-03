@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'unstated';
-import { I18nextProvider } from 'react-i18next';
 
 import loggerFactory from '@alias/logger';
 
@@ -46,7 +45,6 @@ const logger = loggerFactory('growi:cli:app');
 
 appContainer.initContents();
 
-const { i18n } = appContainer;
 const socketIoContainer = appContainer.getContainer('SocketIoContainer');
 
 // create unstated container instance
@@ -126,13 +124,11 @@ Object.keys(componentMappings).forEach((key) => {
   const elem = document.getElementById(key);
   if (elem) {
     ReactDOM.render(
-      <I18nextProvider i18n={i18n}>
-        <ErrorBoundary>
-          <Provider inject={injectableContainers}>
-            {componentMappings[key]}
-          </Provider>
-        </ErrorBoundary>
-      </I18nextProvider>,
+      <ErrorBoundary>
+        <Provider inject={injectableContainers}>
+          {componentMappings[key]}
+        </Provider>
+      </ErrorBoundary>,
       elem,
     );
   }
@@ -141,13 +137,12 @@ Object.keys(componentMappings).forEach((key) => {
 // うわーもうー (commented by Crowi team -- 2018.03.23 Yuki Takei)
 $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', () => {
   ReactDOM.render(
-    <I18nextProvider i18n={i18n}>
-      <ErrorBoundary>
-        <Provider inject={injectableContainers}>
-          <PageHistory />
-        </Provider>
-      </ErrorBoundary>
-    </I18nextProvider>, document.getElementById('revision-history'),
+    <ErrorBoundary>
+      <Provider inject={injectableContainers}>
+        <PageHistory />
+      </Provider>
+    </ErrorBoundary>,
+    document.getElementById('revision-history'),
   );
 });
 

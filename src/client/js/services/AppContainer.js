@@ -14,7 +14,6 @@ import {
 } from '../util/color-scheme';
 import Apiv1ErrorHandler from '../util/apiv1ErrorHandler';
 
-import { i18nFactory } from '../util/i18n';
 import apiv3ErrorHandler from '../util/apiv3ErrorHandler';
 
 /**
@@ -51,7 +50,6 @@ export default class AppContainer extends Container {
     }
 
     const userLocaleId = this.currentUser?.lang;
-    this.i18n = i18nFactory(userLocaleId);
 
     this.containerInstances = {};
     this.componentInstances = {};
