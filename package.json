@@ -20,11 +20,13 @@
     "url": "https://github.com/weseek/growi/issues"
   },
   "scripts": {
+    "dev:ci": "yarn dev -- --ci",
     "dev": "ts-node-dev --project tsconfig.server.json -r tsconfig-paths/register --ignore-watch .next src/server/app.ts",
     "build": "next build && tsc --project tsconfig.server.json",
-    "start": "cross-env NODE_ENV=production node dist/index.js",
     "resource": "yarn ts-node bin/download-cdn-resources.ts",
     "ts-node": "ts-node --project tsconfig.server.json -r tsconfig-paths/register --",
+    "start:ci": "yarn start --ci",
+    "start": "cross-env NODE_ENV=production node dist/index.js",
 
     "build:api:jsdoc": "swagger-jsdoc -o tmp/swagger.json -d config/swagger-definition.js",
     "build:apiv3:jsdoc": "cross-env API_VERSION=3 npm run build:api:jsdoc -- \"src/server/routes/apiv3/**/*.js\" \"src/server/models/**/*.js\"",
@@ -56,7 +58,7 @@
     "prebuild:prod": "npm run clean && env-cmd -f config/env.prod.js npm run plugin:def && env-cmd -f config/env.prod.js npm run resource",
     "prelint:swagger2openapi": "npm run build:apiv3:jsdoc",
     "preserver:prod": "npm run migrate",
-    "prestart": "npm run build:prod",
+    "// prestart": "npm run build:prod",
     "i18n-json-merge:withTran": "rs-i18n -lan -- -t",
     "i18n-json-merge:noTran": "rs-i18n -lan --",
     "i18n-json-merge": "npm run i18n-json-merge:withTran --",

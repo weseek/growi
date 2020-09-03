@@ -124,7 +124,7 @@ jobs:
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
-  build-dev:
+  launch-dev:
     runs-on: ubuntu-latest
 
     strategy:
@@ -150,10 +150,10 @@ jobs:
         echo ::set-output name=Ymd::$(date '+%Y%m%d')
         echo ::set-output name=Ym::$(date '+%Y%m')
         echo ::set-output name=Y::$(date '+%Y')
-    - name: Cache/Restore node_modules/.cache/hard-source
+    - name: Cache/Restore .next
       uses: actions/cache@v1
       with:
-        path: node_modules/.cache
+        path: .next
         key: ${{ runner.OS }}-hard_source_webpack_dev-${{ matrix.node-version }}-${{ steps.date.outputs.YmdH }}
         restore-keys: |
           ${{ runner.os }}-hard_source_webpack_dev-${{ matrix.node-version }}-${{ steps.date.outputs.Ymd }}
@@ -180,10 +180,9 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
-    - name: yarn build:dev
+    - name: yarn dev:ci
       run: |
-        yarn build:dev
-
+        yarn dev:ci
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
       if: failure()
@@ -195,7 +194,7 @@ jobs:
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
-  build-prod:
+  launch-prod:
     runs-on: ubuntu-latest
 
     strategy:
@@ -243,9 +242,9 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
-    - name: yarn build:prod:analyze
+    - name: yarn build
       run: |
-        yarn build:prod:analyze
+        yarn build
     - name: yarn install --production
       run: |
         yarn install --production
@@ -258,9 +257,9 @@ jobs:
       uses: wbari/start-mongoDB@v0.2
       with:
         mongoDBVersion: 3.6
-    - name: yarn server:prod:ci
+    - name: yarn start:ci
       run: |
-        yarn server:prod:ci
+        yarn start:ci
       env:
         MONGO_URI: mongodb://localhost:27017/growi
 
