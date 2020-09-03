@@ -32,3 +32,57 @@ label.custom-control-label {
     }
   }
 }
+
+//lg
+.custom-switch.custom-switch-lg {
+  $custom-control-indicator-size-lg: $custom-control-indicator-size * 1.5;
+  $custom-switch-width-lg: $custom-control-indicator-size-lg * 1.75;
+  $custom-control-gutter-lg: $custom-control-gutter * 1.5;
+  $custom-control-indicator-size-lg: $custom-control-indicator-size * 1.5;
+  $custom-switch-indicator-size-lg: subtract($custom-control-indicator-size-lg, $custom-control-indicator-border-width * 4);
+
+  padding-left: $custom-switch-width-lg + $custom-control-gutter-lg;
+
+  line-height: $custom-control-indicator-size-lg;
+  .custom-control-label {
+    &::before {
+      top: ($font-size-base * $line-height-base - $custom-control-indicator-size-lg) / 2;
+
+      left: -($custom-switch-width-lg + $custom-control-gutter-lg);
+      width: $custom-switch-width-lg;
+      height: $custom-control-indicator-size-lg;
+      border-radius: $custom-control-indicator-size-lg/2;
+    }
+
+    &::after {
+      top: add(($font-size-base * $line-height-base - $custom-control-indicator-size-lg) / 2, $custom-control-indicator-border-width * 2);
+      left: add(-($custom-switch-width-lg + $custom-control-gutter-lg), $custom-control-indicator-border-width * 2);
+      width: $custom-switch-indicator-size-lg;
+      height: $custom-switch-indicator-size-lg;
+      border-radius: $custom-control-indicator-size-lg/2;
+    }
+  }
+
+  .custom-control-input:checked ~ .custom-control-label {
+    &::after {
+      transform: translateX($custom-switch-width-lg - $custom-control-indicator-size-lg);
+    }
+  }
+}
+
+.custom-switch.custom-switch-slack {
+  .custom-control-label {
+    &::before {
+      background-color: $gray-200;
+      border-color: transparent;
+    }
+    &::after {
+      background-size: 15px;
+    }
+  }
+  .input-group-addon {
+    input {
+      vertical-align: middle;
+    }
+  }
+}

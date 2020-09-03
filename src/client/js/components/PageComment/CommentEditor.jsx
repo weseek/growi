@@ -346,6 +346,7 @@ class CommentEditor extends React.Component {
             </label>
             <span className="flex-grow-1" />
             <span className="d-none d-sm-inline">{ this.state.errorMessage && errorMessage }</span>
+
             { this.state.hasSlackConfig
               && (
               <div className="form-inline align-self-center mr-md-2">
@@ -354,6 +355,7 @@ class CommentEditor extends React.Component {
                   slackChannels={commentContainer.state.slackChannels}
                   onEnabledFlagChange={this.onSlackEnabledFlagChange}
                   onChannelChange={this.onSlackChannelsChange}
+                  id="idForComment"
                 />
               </div>
               )
