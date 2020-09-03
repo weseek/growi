@@ -244,5 +244,17 @@ module.exports = (crowi) => {
     return stream.pipe(res);
   });
 
+  router.get('/likeCount', loginRequired, async(req, res) => {
+    const pageId = req.body;
+    try {
+      const page = await Page.countLikers(pageId);
+      return page;
+    }
+    catch (err) {
+      logger.error('error like count', err);
+      return res.apiv3Err(err, 500);
+    }
+  });
+
   return router;
 };
