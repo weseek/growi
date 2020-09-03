@@ -48,9 +48,10 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
-    - name: yarn lint
-      run: |
-        yarn lint
+
+    - run: yarn plugin:def
+
+    - run: yarn lint
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
@@ -180,6 +181,10 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
+    - name: Launch MongoDB
+      uses: wbari/start-mongoDB@v0.2
+      with:
+        mongoDBVersion: 3.6
     - name: yarn dev:ci
       run: |
         yarn dev:ci
