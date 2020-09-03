@@ -167,7 +167,8 @@ $table-hover-bg: $bgcolor-table-hover;
   }
 
   .input-group-text {
-    color: $secondary !important;
+    margin-right: 1px;
+    color: $secondary;
     border-color: $light;
   }
 }
