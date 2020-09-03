@@ -179,19 +179,19 @@ export default class GridEditModal extends React.Component {
         <>
           <div className="col-lg-6">
             <label className="d-block mt-2"><i className="pr-2 icon-screen-desktop"></i>Desktop</label>
-            <div className="desktop-preview border d-block">
+            <div className="desktop-preview d-block">
               {this.renderNoBreakPreview()}
             </div>
           </div>
           <div className="col-lg-3">
             <label className="d-block mt-2"><i className="pr-2 icon-screen-tablet"></i>Tablet</label>
-            <div className="tablet-preview border d-block">
+            <div className="tablet-preview d-block">
               {this.renderBreakPreview()}
             </div>
           </div>
           <div className="col-lg-3">
             <label className="d-block mt-2"><i className="pr-2 icon-screen-smartphone"></i>Mobile</label>
-            <div className="mobile-preview border d-block">
+            <div className="mobile-preview d-block">
               {this.renderBreakPreview()}
             </div>
           </div>
@@ -203,19 +203,19 @@ export default class GridEditModal extends React.Component {
         <>
           <div className="col-lg-6">
             <label className="d-block mt-2"><i className="pr-2 icon-screen-desktop"></i>Desktop</label>
-            <div className="desktop-preview border d-block">
+            <div className="desktop-preview d-block">
               {this.renderNoBreakPreview()}
             </div>
           </div>
           <div className="col-lg-3">
             <label className="d-block mt-2"><i className="pr-2 icon-screen-tablet"></i>Tablet</label>
-            <div className="tablet-preview border d-block">
+            <div className="tablet-preview d-block">
               {this.renderNoBreakPreview()}
             </div>
           </div>
           <div className="col-lg-3">
             <label className="d-block mt-2"><i className="pr-2 icon-screen-smartphone"></i>Mobile</label>
-            <div className="mobile-preview border d-block">
+            <div className="mobile-preview d-block">
               {this.renderBreakPreview()}
             </div>
           </div>
@@ -227,19 +227,19 @@ export default class GridEditModal extends React.Component {
         <>
           <div className="col-lg-6">
             <label className="d-block mt-2"><i className="pr-2 icon-screen-desktop"></i>Desktop</label>
-            <div className="desktop-preview border d-block">
+            <div className="desktop-preview d-block">
               {this.renderNoBreakPreview()}
             </div>
           </div>
           <div className="col-lg-3">
             <label className="d-block mt-2"><i className="pr-2 icon-screen-tablet"></i>Tablet</label>
-            <div className="tablet-preview border d-block">
+            <div className="tablet-preview d-block">
               {this.renderNoBreakPreview()}
             </div>
           </div>
           <div className="col-lg-3">
             <label className="d-block mt-2"><i className="pr-2 icon-screen-smartphone"></i>Mobile</label>
-            <div className="mobile-preview border d-block">
+            <div className="mobile-preview d-block">
               {this.renderNoBreakPreview()}
             </div>
           </div>
