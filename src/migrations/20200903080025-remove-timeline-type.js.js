@@ -28,7 +28,7 @@ module.exports = {
     const insertConfig = new Config({
       ns: 'crowi',
       key: 'customize:timeline',
-      value: JSON.stringify('growi'),
+      value: true,
     });
 
     await insertConfig.save();
