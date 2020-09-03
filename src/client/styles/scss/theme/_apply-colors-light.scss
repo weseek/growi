@@ -171,6 +171,10 @@ $table-hover-bg: $bgcolor-table-hover;
     color: $secondary;
     border-color: $light;
   }
+
+  .btn.btn-outline-secondary {
+    border-color: $border-color;
+  }
 }
 
 /*
