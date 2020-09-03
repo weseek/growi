@@ -3,28 +3,35 @@
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
+import axios from 'axios';
+import fs from 'graceful-fs';
+import markdownItEmojiFull from 'markdown-it-emoji/lib/data/full.json';
+
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
-const fs = require('graceful-fs');
-
-const emojiStrategy = require('emojione/emoji_strategy.json');
-const markdownItEmojiFull = require('markdown-it-emoji/lib/data/full.json');
-
 const OUT = resolveFromRoot('tmp/emoji_strategy_shrinked.json');
+const EMOJI_STRATEGY_URI = 'https://cdn.jsdelivr.net/npm/emojione@3.1.2/emoji_strategy.json';
 
-const shrinkedMap = {};
-Object.keys(emojiStrategy).forEach((unicode) => {
-  const data = emojiStrategy[unicode];
-  const shortname = data.shortname.replace(/:/g, '');
+async function main() {
+  // download emojione/emoji_strategy.json
+  const { data: emojiStrategy } = await axios.get(EMOJI_STRATEGY_URI);
 
-  // ignore if it isn't included in markdownItEmojiFull
-  if (markdownItEmojiFull[shortname] == null) {
-    return;
-  }
+  const shrinkedMap = {};
+  Object.keys(emojiStrategy).forEach((unicode) => {
+    const data = emojiStrategy[unicode];
+    const shortname = data.shortname.replace(/:/g, '');
 
-  // add
-  shrinkedMap[unicode] = data;
-});
+    // ignore if it isn't included in markdownItEmojiFull
+    if (markdownItEmojiFull[shortname] == null) {
+      return;
+    }
 
-// write
-fs.writeFileSync(OUT, JSON.stringify(shrinkedMap));
+    // add
+    shrinkedMap[unicode] = data;
+  });
+
+  // write
+  fs.writeFileSync(OUT, JSON.stringify(shrinkedMap));
+}
+
+main();

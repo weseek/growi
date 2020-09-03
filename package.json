@@ -23,6 +23,7 @@
     "dev": "ts-node-dev --project tsconfig.server.json -r tsconfig-paths/register --ignore-watch .next src/server/app.ts",
     "build": "next build && tsc --project tsconfig.server.json",
     "start": "cross-env NODE_ENV=production node dist/index.js",
+    "ts-node": "ts-node --project tsconfig.server.json -r tsconfig-paths/register --",
     "build:api:jsdoc": "swagger-jsdoc -o tmp/swagger.json -d config/swagger-definition.js",
     "build:apiv3:jsdoc": "cross-env API_VERSION=3 npm run build:api:jsdoc -- \"src/server/routes/apiv3/**/*.js\" \"src/server/models/**/*.js\"",
     "build:apiv1:jsdoc": "cross-env API_VERSION=1 npm run build:api:jsdoc -- \"src/server/*/*.js\" \"src/server/models/**/*.js\"",
