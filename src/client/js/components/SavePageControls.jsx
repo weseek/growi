@@ -92,6 +92,7 @@ class SavePageControls extends React.Component {
               slackChannels={editorContainer.state.slackChannels}
               onEnabledFlagChange={this.slackEnabledFlagChangedHandler}
               onChannelChange={this.slackChannelsChangedHandler}
+              id="idForSavePageControl"
             />
           </div>
           )
