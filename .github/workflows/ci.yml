@@ -104,6 +104,18 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
+    - name: Get Date
+      id: date
+      run: |
+        echo ::set-output name=Ymd::$(date '+%Y%m%d')
+        echo ::set-output name=Ym::$(date '+%Y%m')
+    - name: Cache/Restore /tmp/jest_rs
+      uses: actions/cache@v1
+      with:
+        path: /tmp/jest_rs
+        key: ${{ runner.OS }}-hard_source_webpack_dev-${{ matrix.node-version }}-${{ steps.date.outputs.Ymd }}
+        restore-keys: |
+          ${{ runner.os }}-hard_source_webpack_dev-${{ matrix.node-version }}-${{ steps.date.outputs.Ym }}
     - name: Launch MongoDB
       uses: wbari/start-mongoDB@v0.2
       with:
@@ -144,22 +156,6 @@ jobs:
       with:
         path: node_modules
         key: ${{ runner.OS }}-node_modules_dev-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-    - name: Get Date
-      id: date
-      run: |
-        echo ::set-output name=YmdH::$(date '+%Y%m%d%H')
-        echo ::set-output name=Ymd::$(date '+%Y%m%d')
-        echo ::set-output name=Ym::$(date '+%Y%m')
-        echo ::set-output name=Y::$(date '+%Y')
-    - name: Cache/Restore .next
-      uses: actions/cache@v1
-      with:
-        path: .next
-        key: ${{ runner.OS }}-hard_source_webpack_dev-${{ matrix.node-version }}-${{ steps.date.outputs.YmdH }}
-        restore-keys: |
-          ${{ runner.os }}-hard_source_webpack_dev-${{ matrix.node-version }}-${{ steps.date.outputs.Ymd }}
-          ${{ runner.os }}-hard_source_webpack_dev-${{ matrix.node-version }}-${{ steps.date.outputs.Ym }}
-          ${{ runner.os }}-hard_source_webpack_dev-${{ matrix.node-version }}-${{ steps.date.outputs.Y }}
     - name: Get yarn cache dir
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       id: cache-yarn
@@ -181,6 +177,22 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
+    - name: Get Date
+      id: date
+      run: |
+        echo ::set-output name=YmdH::$(date '+%Y%m%d%H')
+        echo ::set-output name=Ymd::$(date '+%Y%m%d')
+        echo ::set-output name=Ym::$(date '+%Y%m')
+        echo ::set-output name=Y::$(date '+%Y')
+    - name: Cache/Restore .next
+      uses: actions/cache@v1
+      with:
+        path: .next
+        key: ${{ runner.OS }}-next_dev-${{ matrix.node-version }}-${{ steps.date.outputs.YmdH }}
+        restore-keys: |
+          ${{ runner.os }}-next_dev-${{ matrix.node-version }}-${{ steps.date.outputs.Ymd }}
+          ${{ runner.os }}-next_dev-${{ matrix.node-version }}-${{ steps.date.outputs.Ym }}
+          ${{ runner.os }}-next_dev-${{ matrix.node-version }}-${{ steps.date.outputs.Y }}
     - name: Launch MongoDB
       uses: wbari/start-mongoDB@v0.2
       with:
