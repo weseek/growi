@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import PageAttachmentList from './PageAttachment/PageAttachmentList';
 import DeleteAttachmentModal from './PageAttachment/DeleteAttachmentModal';
+import PaginationWrapper from './PaginationWrapper';
 import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
@@ -13,12 +14,18 @@ class PageAttachment extends React.Component {
   constructor(props) {
     super(props);
 
+    const { appContainer } = this.props;
+    this.handlePage = this.handlePage.bind(this);
+
     this.state = {
       attachments: [],
       inUse: {},
       attachmentToDelete: null,
       deleting: false,
       deleteError: '',
+      activePage: 1,
+      totalPage: 0,
+      limit: appContainer.getConfig(),
     };
 
     this.onAttachmentDeleteClicked = this.onAttachmentDeleteClicked.bind(this);
@@ -132,6 +139,13 @@ class PageAttachment extends React.Component {
         />
 
         {deleteAttachmentModal}
+
+        <PaginationWrapper
+          activePage={this.state.activePage}
+          changePage={this.handlePage}
+          totalItemCount={this.state.totalPage}
+          pagingLimit={this.state.limit}
+        />
       </div>
     );
   }
