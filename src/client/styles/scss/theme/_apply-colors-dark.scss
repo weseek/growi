@@ -232,6 +232,32 @@ ul.pagination {
   }
 }
 
+.grw-slack-notification {
+  background-color: transparent;
+  $color-slack: #4b144c;
+
+  .custom-control-label {
+    &::before {
+      background-color: $secondary;
+      border-color: transparent;
+    }
+    &::after {
+      background-color: darken($color-slack, 5%);
+      background-image: url(/images/icons/slack/slack-logo-dark-off.svg);
+    }
+  }
+
+  .custom-control-input:checked ~ .custom-control-label {
+    &::before {
+      background-color: lighten($color-slack, 10%);
+    }
+    &::after {
+      background-color: darken($color-slack, 5%);
+      background-image: url(/images/icons/slack/slack-logo-dark-on.svg);
+    }
+  }
+}
+
 /*
  * GROWI HandsontableModal
  */
