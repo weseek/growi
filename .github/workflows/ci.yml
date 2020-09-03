@@ -113,9 +113,9 @@ jobs:
       uses: actions/cache@v1
       with:
         path: /tmp/jest_rs
-        key: ${{ runner.OS }}-hard_source_webpack_dev-${{ matrix.node-version }}-${{ steps.date.outputs.Ymd }}
+        key: ${{ runner.OS }}-jest-${{ matrix.node-version }}-${{ steps.date.outputs.Ymd }}
         restore-keys: |
-          ${{ runner.os }}-hard_source_webpack_dev-${{ matrix.node-version }}-${{ steps.date.outputs.Ym }}
+          ${{ runner.os }}-jest-${{ matrix.node-version }}-${{ steps.date.outputs.Ym }}
     - name: Launch MongoDB
       uses: wbari/start-mongoDB@v0.2
       with:
