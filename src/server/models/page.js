@@ -389,6 +389,14 @@ module.exports = function(crowi) {
     }));
   };
 
+  pageSchema.statics.countLikers = async function(pageId) {
+    const result = this.aggregate()
+      .match({ page: { $in: pageId } })
+      .group({ _id: '$page', count: { $sum: 1 } });
+
+    return result;
+  };
+
   pageSchema.methods.isSeenUser = function(userData) {
     return this.seenUsers.includes(userData._id);
   };
