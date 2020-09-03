@@ -136,6 +136,8 @@ export default class GridEditModal extends React.Component {
   }
 
   renderPreview() {
+
+    // TODO GW-3721 make objects and simplify all loops
     /* const prevSize = BootstrapGrid.ResponsiveSize;
     const prevSizeObj = {
       [prevSize.MD_SIZE]: {
