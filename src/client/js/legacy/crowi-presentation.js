@@ -1,6 +1,6 @@
 const Reveal = require('reveal.js');
 
-require('reveal.js/lib/js/head.min.js');
+// require('reveal.js/lib/js/head.min.js'); // reveal.js@3.5.0 does not have such a file -- 2020.09.03 Yuki Takei
 require('reveal.js/lib/js/html5shiv.js');
 
 if (!window) {
@@ -30,7 +30,7 @@ Reveal.initialize({
 });
 
 require.ensure([], () => {
-  require('reveal.js/lib/js/classList.js');
+  // require('reveal.js/lib/js/classList.js'); // reveal.js@3.5.0 does not have such a file -- 2020.09.03 Yuki Takei
   require('reveal.js/plugin/zoom-js/zoom.js');
   require('reveal.js/plugin/notes/notes.js');
   require('../util/reveal/plugins/growi-renderer.js');
