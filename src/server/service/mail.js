@@ -79,13 +79,12 @@ class MailService extends S2sMessageHandlable {
 
     const transmissionMethod = configManager.getConfig('crowi', 'mail:transmissionMethod');
 
-    if (transmissionMethod === 'smtp') {
+    if (true) {
+      // if (transmissionMethod === 'smtp') {
       this.mailer = this.createSMTPClient();
-      this.isMailerSetup = true;
     }
     else if (transmissionMethod === 'ses') {
       this.mailer = this.createSESClient();
-      this.isMailerSetup = true;
     }
     else {
       this.mailer = null;
@@ -102,9 +101,15 @@ class MailService extends S2sMessageHandlable {
 
     logger.debug('createSMTPClient option', option);
     if (!option) {
+      const host = configManager.getConfig('crowi', 'mail:smtpHost');
+      const port = configManager.getConfig('crowi', 'mail:smtpPort');
+      console.log(host);
+      if (host == null || port == null) {
+        return null;
+      }
       option = { // eslint-disable-line no-param-reassign
-        host: configManager.getConfig('crowi', 'mail:smtpHost'),
-        port: configManager.getConfig('crowi', 'mail:smtpPort'),
+        host,
+        port,
       };
 
       if (configManager.getConfig('crowi', 'mail:smtpUser') && configManager.getConfig('crowi', 'mail:smtpPassword')) {
@@ -123,6 +128,8 @@ class MailService extends S2sMessageHandlable {
 
     logger.debug('mailer set up for SMTP', client);
 
+    this.isMailerSetup = true;
+
     return client;
   }
 
@@ -130,9 +137,14 @@ class MailService extends S2sMessageHandlable {
     const { configManager } = this;
 
     if (!option) {
+      const accessKeyId = configManager.getConfig('crowi', 'mail:sesAccessKeyId');
+      const secretAccessKey = configManager.getConfig('crowi', 'mail:sesSecretAccessKey');
+      if (accessKeyId == null || secretAccessKey == null) {
+        return null;
+      }
       option = { // eslint-disable-line no-param-reassign
-        accessKeyId: configManager.getConfig('crowi', 'mail:sesAccessKeyId'),
-        secretAccessKey: configManager.getConfig('crowi', 'mail:sesSecretAccessKey'),
+        accessKeyId,
+        secretAccessKey,
       };
     }
 
@@ -140,6 +152,8 @@ class MailService extends S2sMessageHandlable {
     const client = nodemailer.createTransport(ses(option));
 
     logger.debug('mailer set up for SES', client);
+
+    this.isMailerSetup = true;
 
     return client;
   }
