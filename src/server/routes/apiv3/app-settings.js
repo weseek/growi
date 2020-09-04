@@ -182,7 +182,6 @@ module.exports = (crowi) => {
       fileUpload: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
       siteUrl: crowi.configManager.getConfig('crowi', 'app:siteUrl'),
       envSiteUrl: crowi.configManager.getConfigFromEnvVars('crowi', 'app:siteUrl'),
-      isMailerActive: crowi.mailService.isMialerActive,
       fromAddress: crowi.configManager.getConfig('crowi', 'mail:from'),
       smtpHost: crowi.configManager.getConfig('crowi', 'mail:smtpHost'),
       smtpPort: crowi.configManager.getConfig('crowi', 'mail:smtpPort'),
@@ -296,15 +295,31 @@ module.exports = (crowi) => {
   });
 
   /**
+   * send mail (Promise wrapper)
+   */
+  async function sendMailPromiseWrapper(smtpClient, options) {
+    return new Promise((resolve, reject) => {
+      smtpClient.sendMail(options, (err, res) => {
+        if (err) {
+          reject(err);
+        }
+        else {
+          resolve(res);
+        }
+      });
+    });
+  }
+
+  /**
    * validate mail setting send test mail
    */
   async function sendTestEmail(destinationAddress) {
 
     const { configManager, mailService } = crowi;
 
-    // if (!mailService.isMailerSetup) {
-    //   throw Error('mailService is not setup');
-    // }
+    if (!mailService.isMailerSetup) {
+      throw Error('mailService is not setup');
+    }
 
     const fromAddress = configManager.getConfig('crowi', 'mail:from');
     if (fromAddress == null) {
@@ -340,7 +355,7 @@ module.exports = (crowi) => {
       text: 'このメールは、WikiのSMTP設定のアップデートにより送信されています。',
     };
 
-    await crowi.mailService.sendMailPromiseWrapper(smtpClient, mailOptions);
+    await sendMailPromiseWrapper(smtpClient, mailOptions);
   }
 
   const updateMailSettinConfig = async function(requestMailSettingParams) {
@@ -356,7 +371,7 @@ module.exports = (crowi) => {
     mailService.publishUpdatedMessage();
 
     return {
-      isMailerActive: mailService.isMailerActive,
+      isMailerSetup: mailService.isMailerSetup,
       fromAddress: configManager.getConfig('crowi', 'mail:from'),
       smtpHost: configManager.getConfig('crowi', 'mail:smtpHost'),
       smtpPort: configManager.getConfig('crowi', 'mail:smtpPort'),
