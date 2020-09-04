@@ -79,8 +79,7 @@ class MailService extends S2sMessageHandlable {
 
     const transmissionMethod = configManager.getConfig('crowi', 'mail:transmissionMethod');
 
-    if (true) {
-      // if (transmissionMethod === 'smtp') {
+    if (transmissionMethod === 'smtp') {
       this.mailer = this.createSMTPClient();
     }
     else if (transmissionMethod === 'ses') {
