@@ -1,5 +1,5 @@
 
-import React, { Fragment, Suspense } from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
 import loggerFactory from '@alias/logger';
@@ -8,6 +8,7 @@ import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
 import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
+import { withLoadingSppiner } from '../../SuspenseUtils';
 
 import CustomizeLayoutSetting from './CustomizeLayoutSetting';
 import CustomizeFunctionSetting from './CustomizeFunctionSetting';
@@ -18,20 +19,6 @@ import CustomizeHeaderSetting from './CustomizeHeaderSetting';
 import CustomizeTitle from './CustomizeTitle';
 
 const logger = loggerFactory('growi:services:AdminCustomizePage');
-
-function CustomizePageWithContainerWithSusupense(props) {
-  return (
-    <Suspense
-      fallback={(
-        <div className="row">
-          <i className="fa fa-5x fa-spinner fa-pulse mx-auto text-muted"></i>
-        </div>
-      )}
-    >
-      <CustomizePageWithUnstatedContainer />
-    </Suspense>
-  );
-}
 
 let retrieveErrors = null;
 function Customize(props) {
@@ -83,10 +70,10 @@ function Customize(props) {
   );
 }
 
-const CustomizePageWithUnstatedContainer = withUnstatedContainers(Customize, [AdminCustomizeContainer]);
+const CustomizePageWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(Customize), [AdminCustomizeContainer]);
 
 Customize.propTypes = {
   adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
 };
 
-export default CustomizePageWithContainerWithSusupense;
+export default CustomizePageWithUnstatedContainer;

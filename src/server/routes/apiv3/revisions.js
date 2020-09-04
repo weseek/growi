@@ -4,7 +4,7 @@ const logger = loggerFactory('growi:routes:apiv3:pages');
 
 const express = require('express');
 
-const { query, param } = require('express-validator/check');
+const { query, param } = require('express-validator');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const router = express.Router();
