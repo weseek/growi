@@ -89,6 +89,10 @@ class MailService extends S2sMessageHandlable {
       this.mailer = null;
     }
 
+    if (this.mailer != null) {
+      this.isMailerSetup = true;
+    }
+
     this.mailConfig.from = configManager.getConfig('crowi', 'mail:from');
     this.mailConfig.subject = `${appService.getAppTitle()}からのメール`;
 
@@ -102,7 +106,7 @@ class MailService extends S2sMessageHandlable {
     if (!option) {
       const host = configManager.getConfig('crowi', 'mail:smtpHost');
       const port = configManager.getConfig('crowi', 'mail:smtpPort');
-      console.log(host);
+
       if (host == null || port == null) {
         return null;
       }
@@ -127,8 +131,6 @@ class MailService extends S2sMessageHandlable {
 
     logger.debug('mailer set up for SMTP', client);
 
-    this.isMailerSetup = true;
-
     return client;
   }
 
@@ -151,8 +153,6 @@ class MailService extends S2sMessageHandlable {
     const client = nodemailer.createTransport(ses(option));
 
     logger.debug('mailer set up for SES', client);
-
-    this.isMailerSetup = true;
 
     return client;
   }
