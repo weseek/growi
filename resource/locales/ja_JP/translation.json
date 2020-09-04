@@ -50,10 +50,14 @@
   "Presentation Mode": "プレゼンテーション",
   "Not available for guest": "ゲストユーザーは利用できません",
   "Create Archive Page": "アーカイブページの作成",
+  "Target page": "対象ページ",
   "File type": "ファイル形式",
   "Include Attachment File": "添付ファイルも含める",
   "Include Comment": "コメントも含める",
   "Include Subordinated Page": "配下ページも含める",
+  "All Subordinated Page": "全ての配下ページ",
+  "Specify Hierarchy": "階層の深さを指定",
+  "Submitted the request to create the archive": "アーカイブ作成のリクエストを正常に送信しました",
   "username": "ユーザー名",
   "Created": "作成日",
   "Last updated": "最終更新",
@@ -718,6 +722,7 @@
   },
   "export_bulk": {
     "failed_to_export": "ページのエクスポートに失敗しました",
+    "failed_to_count_pages": "ページ数の取得に失敗しました",
     "export_page_markdown": "マークダウン形式でページをエクスポート",
     "export_page_pdf": "PDF形式でページをエクスポート"
   },

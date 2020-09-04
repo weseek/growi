@@ -11,7 +11,7 @@ const { listLocaleIds } = require('@commons/util/locale-utils');
 
 const router = express.Router();
 
-const { body } = require('express-validator/check');
+const { body } = require('express-validator');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 /**
@@ -127,9 +127,13 @@ module.exports = (crowi) => {
 
     try {
       const user = await User.findUserByUsername(username);
-      const currentUser = user.toObject();
-      return res.apiv3({ currentUser });
 
+      // return email whether it's private
+      const { email } = user;
+      const currentUser = user.toObject();
+      currentUser.email = email;
+
+      return res.apiv3({ currentUser });
     }
     catch (err) {
       logger.error(err);

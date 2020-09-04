@@ -6,7 +6,7 @@ const express = require('express');
 
 const router = express.Router();
 
-const { body, query } = require('express-validator/check');
+const { body, query } = require('express-validator');
 const { isEmail } = require('validator');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
