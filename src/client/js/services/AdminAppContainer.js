@@ -287,7 +287,7 @@ export default class AdminAppContainer extends Container {
    * @memberOf AdminAppContainer
    */
   async sendTestEmail() {
-    await this.appContainer.apiv3.get('/app-settings/smtp-test');
+    return this.appContainer.apiv3.post('/app-settings/smtp-test');
   }
 
   /**
