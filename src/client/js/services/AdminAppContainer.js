@@ -25,6 +25,7 @@ export default class AdminAppContainer extends Container {
       isSetSiteUrl: true,
       isMailerSetup: false,
       fromAddress: '',
+      transmissionMethod: '',
       smtpHost: '',
       smtpPort: '',
       smtpUser: '',
@@ -65,6 +66,7 @@ export default class AdminAppContainer extends Container {
       isSetSiteUrl: !!appSettingsParams.siteUrl,
       isMailerSetup: appSettingsParams.isMailerSetup,
       fromAddress: appSettingsParams.fromAddress,
+      transmissionMethod: appSettingsParams.transmissionMethod,
       smtpHost: appSettingsParams.smtpHost,
       smtpPort: appSettingsParams.smtpPort,
       smtpUser: appSettingsParams.smtpUser,
@@ -121,6 +123,13 @@ export default class AdminAppContainer extends Container {
    */
   changeFromAddress(fromAddress) {
     this.setState({ fromAddress });
+  }
+
+  /**
+   * Change from transmission method
+   */
+  changeTransmissionMethod(transmissionMethod) {
+    this.setState({ transmissionMethod });
   }
 
   /**
@@ -238,16 +247,15 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
-   * Update from adress
+   * Update mail setting
    * @memberOf AdminAppContainer
    * @return {Array} Appearance
    */
-  async updateFromAdressHandler() {
-    const response = await this.appContainer.apiv3.put('/app-settings/from-address', {
-      fromAddress: this.state.fromAddress,
-    });
-    const { mailSettingParams } = response.data;
-    return mailSettingParams;
+  updateMailSettingHandler() {
+    if (this.state.transmissionMethod === 'smtp') {
+      return this.updateSmtpSetting();
+    }
+    return this.updateSesSetting();
   }
 
   /**
@@ -255,8 +263,10 @@ export default class AdminAppContainer extends Container {
    * @memberOf AdminAppContainer
    * @return {Array} Appearance
    */
-  async updateSmtpSettingHandler() {
+  async updateSmtpSetting() {
     const response = await this.appContainer.apiv3.put('/app-settings/smtp-setting', {
+      fromAddress: this.state.fromAddress,
+      transmissionMethod: this.state.transmissionMethod,
       smtpHost: this.state.smtpHost,
       smtpPort: this.state.smtpPort,
       smtpUser: this.state.smtpUser,
@@ -272,8 +282,10 @@ export default class AdminAppContainer extends Container {
    * @memberOf AdminAppContainer
    * @return {Array} Appearance
    */
-  async updateSesSettingHandler() {
+  async updateSesSetting() {
     const response = await this.appContainer.apiv3.put('/app-settings/ses-setting', {
+      fromAddress: this.state.fromAddress,
+      transmissionMethod: this.state.transmissionMethod,
       sesAccessKeyId: this.state.sesAccessKeyId,
       sesSecretAccessKey: this.state.sesSecretAccessKey,
     });
