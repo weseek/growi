@@ -17,13 +17,12 @@ class PageTimeline extends React.Component {
     super(props);
     this.showPages = this.showPages.bind(this);
     this.handlePage = this.handlePage.bind(this);
+    const { appContainer } = this.props;
     this.state = {
       activePage: 1,
       totalPages: 0,
       limit: appContainer.getConfig().recentCreatedLimit,
-      isEnabled: appContainer.getConfig().isEnabledTimeline,
-      // TODO: remove after when timeline is implemented with React and inject data with props
-      pages: this.props.pages,
+      pages: [],
     };
 
   }
