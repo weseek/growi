@@ -27,6 +27,7 @@
     "attach_enable": "You can attach files other than image files if you enable this option.",
     "update": "Update",
     "mail_settings": "E-mail Settings",
+    "mailer_is_invalid": "The current mail setting is invalid.",
     "from_e-mail_address": "From e-mail address",
     "send_test_email": "Send a test-email",
     "success_to_send_test_email": "Success to send a test-email",
