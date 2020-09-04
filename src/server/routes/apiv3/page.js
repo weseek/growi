@@ -252,7 +252,7 @@ module.exports = (crowi) => {
       return res.apiv3({ result });
     }
     catch (err) {
-      logger.error('error like count', err);
+      logger.error('Failed to get the number of likes', err);
       return res.apiv3Err(err, 500);
     }
   });
