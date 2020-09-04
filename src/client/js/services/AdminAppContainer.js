@@ -23,7 +23,7 @@ export default class AdminAppContainer extends Container {
       siteUrl: '',
       envSiteUrl: '',
       isSetSiteUrl: true,
-      isMailerActive: false,
+      isMailerSetup: false,
       fromAddress: '',
       smtpHost: '',
       smtpPort: '',
@@ -64,8 +64,8 @@ export default class AdminAppContainer extends Container {
       envSiteUrl: appSettingsParams.envSiteUrl,
       isSetSiteUrl: !!appSettingsParams.siteUrl,
       // GW-3714 manage mailer state
-      isMailerActive: true,
-      // isMailerActive: appSettingsParams.isMailerActive,
+      isMailerSetup: true,
+      // isMailerSetup: appSettingsParams.isMailerSetup,
       fromAddress: appSettingsParams.fromAddress,
       smtpHost: appSettingsParams.smtpHost,
       smtpPort: appSettingsParams.smtpPort,
@@ -266,8 +266,8 @@ export default class AdminAppContainer extends Container {
     });
     const { mailSettingParams } = response.data;
     // GW-3714 manage mailer state
-    this.setState({ isMailerActive: true });
-    // this.setState({ isMailerActive: mailSettingParams.isMailerActive });
+    this.setState({ isMailerSetup: true });
+    // this.setState({ isMailerSetup: mailSettingParams.isMailerSetup });
     return mailSettingParams;
   }
 
@@ -283,8 +283,8 @@ export default class AdminAppContainer extends Container {
     });
     const { mailSettingParams } = response.data;
     // GW-3714 manage mailer state
-    this.setState({ isMailerActive: true });
-    // this.setState({ isMailerActive: mailSettingParams.isMailerActive });
+    this.setState({ isMailerSetup: true });
+    // this.setState({ isMailerSetup: mailSettingParams.isMailerSetup });
     return mailSettingParams;
   }
 
