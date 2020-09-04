@@ -41,9 +41,9 @@ class RecentCreated extends React.Component {
     const offset = (selectPageNumber - 1) * limit;
 
     // pagesList get and pagination calculate
-    const res = await appContainer.apiv3Get(`/users/${creator._id}/recent`, { offset });
+    const res = await appContainer.apiv3Get(`/users/${creator._id}/recent`, { offset, limit });
     const { totalCount, pages } = res.data;
-
+    console.log(res.data);
     this.setState({
       pages,
       activePage: selectPageNumber,
