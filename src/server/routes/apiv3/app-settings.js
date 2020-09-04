@@ -467,14 +467,14 @@ module.exports = (crowi) => {
    *    /app-settings/smtp-test:
    *      post:
    *        tags: [AppSettings]
-   *        operationId: getSmtpTest
+   *        operationId: postSmtpTest
    *        summary: /app-settings/smtp-setting
    *        description: Send test mail for smtp
    *        responses:
    *          200:
    *            description: Succeeded to send test mail for smtp
    */
-  router.get('/smtp-test', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.post('/smtp-test', loginRequiredStrictly, adminRequired, async(req, res) => {
     try {
       await sendTestEmail(req.user.email);
       return res.apiv3({});
