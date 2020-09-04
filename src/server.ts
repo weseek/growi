@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import methodOverride from 'method-override';
 
 import loggerFactory from '~/utils/logger';
+import { SafeRedirectMiddleware } from './server/middlewares/safe-redirect';
 
 const rootDir = __dirname;
 const logger = loggerFactory('growi:Server');
@@ -30,12 +31,13 @@ export class Server {
    */
   public $beforeRoutesInit(): void | Promise<any> {
     this.app
-      .use(GlobalAcceptMimesMiddleware) // optional
+      .use(GlobalAcceptMimesMiddleware)
       .use(helmet())
       .use(cookieParser())
       .use(methodOverride())
       .use(express.json({ limit: '50mb' }))
-      .use(express.urlencoded({ extended: true, limit: '50mb' }));
+      .use(express.urlencoded({ extended: true, limit: '50mb' }))
+      .use(SafeRedirectMiddleware);
 
     const { raw: expressApp } = this.app;
     this.setupSession(expressApp);
