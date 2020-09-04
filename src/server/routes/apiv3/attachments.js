@@ -1,6 +1,6 @@
 const loggerFactory = require('@alias/logger');
 
-const logger = loggerFactory('growi:routes:apiv3:attachment'); // eslint-disable-line no-unused-vars
+const logger = loggerFactory('growi:routes:apiv3:attachments'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
 
@@ -23,7 +23,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /attachment/list:
+   *    /attachments/list:
    *      get:
    *        tags: [Attachment]
    *        description: Get attachment list
@@ -42,6 +42,7 @@ module.exports = (crowi) => {
 
     try {
       const pageId = req.query.pageId;
+
       // check whether accessible
       const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
       if (!isAccessible) {
@@ -50,7 +51,9 @@ module.exports = (crowi) => {
       }
 
       const attachments = await Attachment.find({ page: pageId });
+
       return res.apiv3({ attachments });
+
     }
     catch (err) {
       logger.error('Attachment not found', err);
