@@ -248,6 +248,14 @@ module.exports = (crowi) => {
 
     try {
       const result = await Page.findListByCreator(user, req.user, queryOptions);
+
+      // Delete unnecessary data about users
+      result.pages = result.pages.map((page) => {
+        const user = page.lastUpdateUser.toObject();
+        page.lastUpdateUser = user;
+        return page;
+      });
+
       return res.apiv3(result);
     }
     catch (err) {
