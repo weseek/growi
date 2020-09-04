@@ -245,10 +245,11 @@ module.exports = (crowi) => {
   });
 
   router.get('/likeCount', loginRequired, async(req, res) => {
-    const pageId = req.body;
+    const pageId = req.query._id;
     try {
-      const page = await Page.countLikers(pageId);
-      return page;
+      const page = await Page.findById(pageId);
+      const result = page.liker.length;
+      return res.apiv3({ result });
     }
     catch (err) {
       logger.error('error like count', err);
