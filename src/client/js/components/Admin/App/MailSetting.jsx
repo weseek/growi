@@ -1,116 +1,100 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import loggerFactory from '@alias/logger';
 
-import {
-  TabContent, TabPane, Nav, NavItem, NavLink,
-} from 'reactstrap';
-import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
 import SmtpSetting from './SmtpSetting';
 import SesSetting from './SesSetting';
 
-const logger = loggerFactory('growi:mailSettings');
 
-class MailSetting extends React.Component {
+function MailSetting(props) {
+  const { t, adminAppContainer } = props;
+  const transmissionMethods = ['smtp', 'ses'];
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      activeTab: 'smtp-setting',
-      // Prevent unnecessary rendering
-      activeComponents: new Set(['smtp-setting']),
-    };
-
-    this.emailInput = React.createRef();
-    this.hostInput = React.createRef();
-    this.portInput = React.createRef();
-    this.userInput = React.createRef();
-    this.passwordInput = React.createRef();
-
-    this.submitFromAdressHandler = this.submitFromAdressHandler.bind(this);
-  }
-
-  toggleActiveTab(activeTab) {
-    this.setState({
-      activeTab, activeComponents: this.state.activeComponents.add(activeTab),
-    });
-  }
-
-  async submitFromAdressHandler() {
-    const { t, adminAppContainer } = this.props;
+  async function submitHandler() {
+    const { t } = props;
 
     try {
-      await adminAppContainer.updateFromAdressHandler();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.mail_settings') }));
+      await adminAppContainer.updateMailSettingHandler();
+      toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.ses_settings') }));
     }
     catch (err) {
       toastError(err);
-      logger.error(err);
     }
   }
 
-  render() {
-    const { t, adminAppContainer } = this.props;
-    const { activeTab, activeComponents } = this.state;
-
-    return (
-      <React.Fragment>
-        <div className="row form-group mb-5">
-          <label className="col-md-3 col-form-label text-left">{t('admin:app_setting.from_e-mail_address')}</label>
-          <div className="col-md-6">
-            <input
-              className="form-control"
-              type="text"
-              ref={this.emailInput}
-              placeholder={`${t('eg')} mail@growi.org`}
-              defaultValue={adminAppContainer.state.fromAddress || ''}
-              onChange={(e) => { adminAppContainer.changeFromAddress(e.target.value) }}
-            />
-          </div>
-        </div>
-        <div className="row my-3">
-          <div className="mx-auto">
-            <button type="button" className="btn btn-primary" onClick={this.submitFromAdressHandler}>{ t('Update') }</button>
-          </div>
-        </div>
-
-        <Nav tabs>
-          <NavItem>
-            <NavLink
-              className={`${activeTab === 'smtp-setting' && 'active'} `}
-              onClick={() => { this.toggleActiveTab('smtp-setting') }}
-              href="#smtp-setting"
-            >
-              SMTP
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
-              className={`${activeTab === 'ses-setting' && 'active'} `}
-              onClick={() => { this.toggleActiveTab('ses-setting') }}
-              href="#ses-setting"
-            >
-              SES(AWS)
-            </NavLink>
-          </NavItem>
-        </Nav>
-        <TabContent activeTab={activeTab}>
-          <TabPane tabId="smtp-setting">
-            {activeComponents.has('smtp-setting') && <SmtpSetting />}
-          </TabPane>
-          <TabPane tabId="ses-setting">
-            {activeComponents.has('ses-setting') && <SesSetting />}
-          </TabPane>
-        </TabContent>
-      </React.Fragment>
-    );
+  async function sendTestEmailHandler() {
+    const { adminAppContainer } = props;
+    try {
+      await adminAppContainer.sendTestEmail();
+      toastSuccess(t('admin:app_setting.success_to_send_test_email'));
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
+
+  return (
+    <React.Fragment>
+      <div className="row form-group mb-5">
+        <label className="col-md-3 col-form-label text-right">{t('admin:app_setting.from_e-mail_address')}</label>
+        <div className="col-md-6">
+          <input
+            className="form-control"
+            type="text"
+            placeholder={`${t('eg')} mail@growi.org`}
+            defaultValue={adminAppContainer.state.fromAddress || ''}
+            onChange={(e) => { adminAppContainer.changeFromAddress(e.target.value) }}
+          />
+        </div>
+      </div>
+
+      <div className="row form-group mb-5">
+        <label className="text-left text-md-right col-md-3 col-form-label">
+          {t('admin:app_setting.transmission_method')}
+        </label>
+        <div className="col-md-6">
+          {transmissionMethods.map((method) => {
+              return (
+                <div key={method} className="custom-control custom-radio custom-control-inline">
+                  <input
+                    type="radio"
+                    className="custom-control-input"
+                    name="transmission-method"
+                    id={`transmission-nethod-radio-${method}`}
+                    checked={adminAppContainer.state.transmissionMethod === method}
+                    onChange={(e) => {
+                    adminAppContainer.changeTransmissionMethod(method);
+                  }}
+                  />
+                  <label className="custom-control-label" htmlFor={`transmission-nethod-radio-${method}`}>{t(`admin:app_setting.${method}_label`)}</label>
+                </div>
+              );
+            })}
+        </div>
+      </div>
+
+      {adminAppContainer.state.transmissionMethod === 'smtp' && <SmtpSetting />}
+      {adminAppContainer.state.transmissionMethod === 'ses' && <SesSetting />}
+
+      <div className="row my-3">
+        <div className="mx-auto">
+          <button type="button" className="btn btn-primary" onClick={submitHandler} disabled={adminAppContainer.state.retrieveError != null}>
+            { t('Update') }
+          </button>
+          {adminAppContainer.state.transmissionMethod === 'smtp' && (
+          <button type="button" className="btn btn-secondary ml-4" onClick={sendTestEmailHandler}>
+            {t('admin:app_setting.send_test_email')}
+          </button>
+          )}
+        </div>
+      </div>
+    </React.Fragment>
+  );
 
 }
 
