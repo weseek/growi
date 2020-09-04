@@ -63,6 +63,14 @@ const TopOfTableContents = (props) => {
           <AttachmentIcon />
         </button>
 
+        <button
+          type="button"
+          className="btn btn-link grw-btn-top-of-table"
+          onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('share-link')}
+        >
+          <i className="icon-share" />
+        </button>
+
         <div
           id="seen-user-list"
           data-user-ids-str="{{ page.seenUsers|slice(-15)|default([])|reverse|join(',') }}"

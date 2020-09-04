@@ -18,6 +18,7 @@ import PageAttachment from './PageAttachment';
 import PageTimeline from './PageTimeline';
 import PageList from './PageList';
 import PageHistory from './PageHistory';
+import ShareLink from './ShareLink/ShareLink';
 
 const PageAccessoriesModal = (props) => {
   const { t, pageAccessoriesContainer } = props;
@@ -33,7 +34,7 @@ const PageAccessoriesModal = (props) => {
 
   return (
     <React.Fragment>
-      <Modal size="lg" isOpen={props.isOpen} toggle={closeModalHandler} className="grw-page-accessories-modal">
+      <Modal size="xl" isOpen={props.isOpen} toggle={closeModalHandler} className="grw-page-accessories-modal">
         <ModalBody>
           <Nav className="nav-title border-bottom">
             <NavItem type="button" className={`nav-link ${activeTab === 'pagelist' && 'active active-border'}`}>
@@ -76,6 +77,16 @@ const PageAccessoriesModal = (props) => {
                 {t('attachment_data')}
               </NavLink>
             </NavItem>
+            <NavItem type="button" className={`nav-link ${activeTab === 'share-link' && 'active active-border'}`}>
+              <NavLink
+                onClick={() => {
+                  switchActiveTab('share-link');
+                }}
+              >
+                <AttachmentIcon />
+                {t('share_links.share_link_management')}
+              </NavLink>
+            </NavItem>
           </Nav>
           <TabContent activeTab={activeTab}>
 
@@ -92,6 +103,9 @@ const PageAccessoriesModal = (props) => {
             </TabPane>
             <TabPane tabId="attachment" className="p-4">
               {pageAccessoriesContainer.state.activeComponents.has('attachment') && <PageAttachment />}
+            </TabPane>
+            <TabPane tabId="share-link" className="p-4">
+              {pageAccessoriesContainer.state.activeComponents.has('share-link') && <ShareLink />}
             </TabPane>
           </TabContent>
         </ModalBody>
