@@ -46,6 +46,10 @@ body {
     font-size: 24px;
 
     box-shadow: 2px 3px 6px #0000005d;
+    svg {
+      width: 28px;
+      height: 28px;
+    }
   }
 
   .btn-scroll-to-top {
@@ -53,10 +57,9 @@ body {
     height: 40px;
 
     opacity: 0.4;
-
-    i {
-      display: inline-block;
-      transform: rotate(90deg);
+    svg {
+      width: 18px;
+      height: 18px;
     }
   }
 }

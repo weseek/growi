@@ -81,12 +81,24 @@ pre:not(.hljs):not(.CodeMirror-line) {
   color: $color-global;
 }
 
+.grw-personal-dropdown {
+  .grw-icon-container svg {
+    fill: $color-global;
+  }
+  .grw-icon-container-muted svg {
+    fill: $secondary;
+  }
+}
+
 .dropdown-item {
   color: $color-global;
-  &.active,
-  &:active {
+  &:active,
+  &.active {
     color: $color-dropdown-link-active;
     background-color: $bgcolor-dropdown-link-active;
+  }
+  &:hover {
+    background-color: $light;
   }
 }
 
@@ -361,7 +373,7 @@ body.on-edit {
   }
 
   .grw-editor-navbar-bottom {
-    background-color: darken($bgcolor-global, 2%);
+    background-color: $gray-50;
   }
 }
 
@@ -454,4 +466,14 @@ mark.rbt-highlight-text {
  */
 .bg-box {
   background-color: $bgcolor-global;
+}
+
+.grw-fab {
+  .btn-create-page {
+    fill: color-yiq($primary);
+  }
+
+  .btn-scroll-to-top {
+    fill: $gray-900;
+  }
 }
