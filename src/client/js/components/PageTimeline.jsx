@@ -15,9 +15,10 @@ class PageTimeline extends React.Component {
 
   constructor(props) {
     super(props);
+
+    const { appContainer } = this.props;
     this.showPages = this.showPages.bind(this);
     this.handlePage = this.handlePage.bind(this);
-    const { appContainer } = this.props;
     this.state = {
       activePage: 1,
       totalPages: 0,
