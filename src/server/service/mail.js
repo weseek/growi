@@ -21,9 +21,9 @@ class MailService extends S2sMessageHandlable {
     this.mailer = {};
 
     /**
-     * the flag whether mailer is set up successfully
+     * the flag whether mailer is valid
      */
-    this.isMailerSetup = false;
+    this.isMailerActive = false;
 
     this.initialize();
   }
@@ -70,8 +70,6 @@ class MailService extends S2sMessageHandlable {
   initialize() {
     const { appService, configManager } = this;
 
-    this.isMailerSetup = false;
-
     if (!configManager.getConfig('crowi', 'mail:from')) {
       this.mailer = null;
       return;
@@ -81,11 +79,9 @@ class MailService extends S2sMessageHandlable {
 
     if (transmissionMethod === 'smtp') {
       this.mailer = this.createSMTPClient();
-      this.isMailerSetup = true;
     }
     else if (transmissionMethod === 'ses') {
       this.mailer = this.createSESClient();
-      this.isMailerSetup = true;
     }
     else {
       this.mailer = null;
@@ -170,7 +166,26 @@ class MailService extends S2sMessageHandlable {
     );
 
     config.text = output;
-    return this.mailer.sendMail(this.setupMailConfig(config));
+    return this.sendMailPromiseWrapper(this.mailer, this.setupMailConfig(config));
+  }
+
+
+  /**
+   * send mail (Promise wrapper)
+   */
+  async sendMailPromiseWrapper(mailer, options) {
+    return new Promise((resolve, reject) => {
+      mailer.sendMail(options, (err, res) => {
+        if (err) {
+          this.isMailerActive = false;
+          reject(err);
+        }
+        else {
+          this.isMailerActive = true;
+          resolve(res);
+        }
+      });
+    });
   }
 
 }
