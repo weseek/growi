@@ -38,7 +38,6 @@ class LinkEditModal extends React.PureComponent {
       markdown: '',
       permalink: '',
       linkText: '',
-      linkDom: <a></a>,
     };
 
     this.isApplyPukiwikiLikeLinkerPlugin = window.growiRenderer.preProcessors.some(process => process.constructor.name === 'PukiwikiLikeLinker');
@@ -58,7 +57,6 @@ class LinkEditModal extends React.PureComponent {
     this.getRootPath = this.getRootPath.bind(this);
 
     this.generateAndSetPreviewDebounced = debounce(200, this.generateAndSetPreview.bind(this));
-    this.generateAndSetLinkTextPreviewDebounced = debounce(200, this.generateAndSetLinkTextPreview.bind(this));
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -67,7 +65,6 @@ class LinkEditModal extends React.PureComponent {
     if (linkInputValue !== prevLinkInputValue) {
       this.generateAndSetPreviewDebounced(linkInputValue);
     }
-    this.generateAndSetLinkTextPreviewDebounced();
   }
 
   // defaultMarkdownLink is an instance of Linker
@@ -191,7 +188,7 @@ class LinkEditModal extends React.PureComponent {
     this.setState({ markdown, permalink });
   }
 
-  generateAndSetLinkTextPreview() {
+  renderLinkPreview() {
     const linker = this.generateLink();
 
     if (this.isUsePermanentLink && this.permalink != null) {
@@ -203,12 +200,9 @@ class LinkEditModal extends React.PureComponent {
     }
 
     const linkText = linker.generateMarkdownText();
-    const linkDom = this.generateLinkDom(linker);
-    this.setState({ linkText, linkDom });
-  }
-
-  generateLinkDom(linker) {
-    return <a href={linker.link}>{linker.label}</a>;
+    return (
+      <div>{linkText} &gt; <a href={linker.link}>{linker.label}</a></div>
+    );
   }
 
   handleChangeTypeahead(selected) {
@@ -389,7 +383,7 @@ class LinkEditModal extends React.PureComponent {
                 </div>
               </div>
               {/* TODO GW-3448 fix layout */}
-              {this.state.linkText} &gt; {this.state.linkDom}
+              {this.renderLinkPreview()}
             </div>
 
             <div className="col d-none d-lg-block pr-0 mr-3 overflow-auto">{this.renderPreview()}</div>
