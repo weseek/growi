@@ -17,17 +17,15 @@ class PageAttachment extends React.Component {
     const { appContainer } = this.props;
     this.showPages = this.showPages.bind(this);
     this.handlePage = this.handlePage.bind(this);
-
     this.state = {
+      activePage: 1,
+      totalPages: 0,
+      limit: appContainer.getConfig().recentCreatedLimit,
       attachments: [],
       inUse: {},
       attachmentToDelete: null,
       deleting: false,
       deleteError: '',
-      activePage: 1,
-      totalPages: 0,
-      limit: appContainer.getConfig().recentCreatedLimit,
-
     };
 
     this.onAttachmentDeleteClicked = this.onAttachmentDeleteClicked.bind(this);
@@ -59,6 +57,8 @@ class PageAttachment extends React.Component {
           inUse,
         });
       });
+
+    this.showPages(1);
   }
 
   async handlePage(selectedPage) {
@@ -70,6 +70,7 @@ class PageAttachment extends React.Component {
     const { path } = pageContainer.state;
     const limit = this.state.limit;
     const offset = (selectedPage - 1) * limit;
+    // ここが違う。エンドポイントは attachment.js apiv3 だが、そこに pagination がないためこの機能が実装できない。先にそちらを行う。
     const res = await appContainer.apiv3Get('/pages/list', { path, limit, offset });
     const activePage = selectedPage;
     const totalPages = res.data.totalCount;
@@ -122,6 +123,7 @@ class PageAttachment extends React.Component {
   isUserLoggedIn() {
     return this.props.appContainer.currentUser != null;
   }
+
 
   render() {
     let deleteAttachmentModal = '';
