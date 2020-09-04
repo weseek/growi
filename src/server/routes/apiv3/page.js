@@ -244,7 +244,7 @@ module.exports = (crowi) => {
     return stream.pipe(res);
   });
 
-  router.get('/likeCount', loginRequired, async(req, res) => {
+  router.get('/Countlikes', loginRequired, async(req, res) => {
     const pageId = req.query._id;
     try {
       const page = await Page.findById(pageId);
