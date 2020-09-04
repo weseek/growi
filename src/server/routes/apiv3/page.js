@@ -129,6 +129,15 @@ module.exports = (crowi) => {
       query('format').isString().isIn(['md', 'pdf']),
       query('revisionId').isString(),
     ],
+    archive: [
+      body('rootPagePath').isString(),
+      body('isCommentDownload').isBoolean(),
+      body('isAttachmentFileDownload').isBoolean(),
+      body('isSubordinatedPageDownload').isBoolean(),
+      body('fileType').isString().isIn(['pdf', 'markdown']),
+      body('hierarchyType').isString().isIn(['allSubordinatedPage', 'decideHierarchy']),
+      body('hierarchyValue').isNumeric(),
+    ],
   };
 
   /**
@@ -243,6 +252,87 @@ module.exports = (crowi) => {
 
     return stream.pipe(res);
   });
+
+  // TODO GW-2746 bulk export pages
+  // /**
+  //  * @swagger
+  //  *
+  //  *    /page/archive:
+  //  *      post:
+  //  *        tags: [Page]
+  //  *        summary: /page/archive
+  //  *        description: create page archive
+  //  *        requestBody:
+  //  *          content:
+  //  *            application/json:
+  //  *              schema:
+  //  *                properties:
+  //  *                  rootPagePath:
+  //  *                    type: string
+  //  *                    description: path of the root page
+  //  *                  isCommentDownload:
+  //  *                    type: boolean
+  //  *                    description: whether archive data contains comments
+  //  *                  isAttachmentFileDownload:
+  //  *                    type: boolean
+  //  *                    description: whether archive data contains attachments
+  //  *                  isSubordinatedPageDownload:
+  //  *                    type: boolean
+  //  *                    description: whether archive data children pages
+  //  *                  fileType:
+  //  *                    type: string
+  //  *                    description: file type of archive data(.md, .pdf)
+  //  *                  hierarchyType:
+  //  *                    type: string
+  //  *                    description: method of select children pages archive data contains('allSubordinatedPage', 'decideHierarchy')
+  //  *                  hierarchyValue:
+  //  *                    type: number
+  //  *                    description: depth of hierarchy(use when hierarchyType is 'decideHierarchy')
+  //  *        responses:
+  //  *          200:
+  //  *            description: create page archive
+  //  *            content:
+  //  *              application/json:
+  //  *                schema:
+  //  *                  $ref: '#/components/schemas/Page'
+  //  */
+  // router.post('/archive', accessTokenParser, loginRequired, csrf, validator.archive, apiV3FormValidator, async(req, res) => {
+  //   const PageArchive = crowi.model('PageArchive');
+
+  //   const {
+  //     rootPagePath,
+  //     isCommentDownload,
+  //     isAttachmentFileDownload,
+  //     fileType,
+  //   } = req.body;
+  //   const owner = req.user._id;
+
+  //   const numOfPages = 1; // TODO 最終的にzipファイルに取り込むページ数を入れる
+
+  //   const createdPageArchive = PageArchive.create({
+  //     owner,
+  //     fileType,
+  //     rootPagePath,
+  //     numOfPages,
+  //     hasComment: isCommentDownload,
+  //     hasAttachment: isAttachmentFileDownload,
+  //   });
+
+  //   console.log(createdPageArchive);
+  //   return res.apiv3({ });
+
+  // });
+
+  // router.get('/count-children-pages', accessTokenParser, loginRequired, async(req, res) => {
+
+  //   // TO DO implement correct number at another task
+
+  //   const { pageId } = req.query;
+  //   console.log(pageId);
+
+  //   const dummy = 6;
+  //   return res.apiv3({ dummy });
+  // });
 
   return router;
 };
