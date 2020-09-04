@@ -67,6 +67,11 @@ const PageManagement = (props) => {
         <button className="dropdown-item" type="button" onClick={openPageDuplicateModalHandler}>
           <i className="icon-fw icon-docs"></i> { t('Duplicate') }
         </button>
+        <button className="dropdown-item" type="button">
+          <a href="?presentation=1" className="toggle-presentation d-inline-block w-100 text-dark text-decoration-none">
+            <i className="icon-film icon-fw"></i><span className="d-none d-sm-inline">{ t('Presentation Mode') }</span>
+          </a>
+        </button>
         <div className="dropdown-divider"></div>
       </>
     );
