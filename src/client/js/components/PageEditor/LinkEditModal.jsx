@@ -56,7 +56,6 @@ class LinkEditModal extends React.PureComponent {
     this.getRootPath = this.getRootPath.bind(this);
 
     this.generateAndSetPreviewDebounced = debounce(200, this.generateAndSetPreview.bind(this));
-    this.generateAndSetLinkTextPreviewDebounced = debounce(200, this.generateAndSetLinkTextPreview.bind(this));
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -65,7 +64,6 @@ class LinkEditModal extends React.PureComponent {
     if (linkInputValue !== prevLinkInputValue) {
       this.generateAndSetPreviewDebounced(linkInputValue);
     }
-    this.generateAndSetLinkTextPreviewDebounced();
   }
 
   // defaultMarkdownLink is an instance of Linker
@@ -189,10 +187,21 @@ class LinkEditModal extends React.PureComponent {
     this.setState({ markdown, permalink });
   }
 
-  generateAndSetLinkTextPreview() {
+  renderLinkPreview() {
     const linker = this.generateLink();
+
+    if (this.isUsePermanentLink && this.permalink != null) {
+      linker.link = this.permalink;
+    }
+
+    if (linker.label === '') {
+      linker.label = linker.link;
+    }
+
     const linkText = linker.generateMarkdownText();
-    this.setState({ linkText });
+    return (
+      <div>{linkText} &gt; <a href={linker.link}>{linker.label}</a></div>
+    );
   }
 
   handleChangeTypeahead(selected) {
@@ -357,6 +366,8 @@ class LinkEditModal extends React.PureComponent {
                   </form>
                 </div>
               </div>
+              {/* TODO GW-3448 fix layout */}
+              {this.renderLinkPreview()}
             </div>
 
             <div className="col d-none d-lg-block pr-0 mr-3 overflow-auto">{this.renderPreview()}</div>
