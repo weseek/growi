@@ -28,6 +28,8 @@
     "update": "Update",
     "mail_settings": "E-mail Settings",
     "from_e-mail_address": "From e-mail address",
+    "send_test_email": "Send a test-email",
+    "success_to_send_test_email": "Success to send a test-email",
     "smtp_settings": "SMTP settings",
     "host": "Host",
     "port": "Port",
