@@ -15,6 +15,7 @@ class PageAttachment extends React.Component {
     super(props);
 
     const { appContainer } = this.props;
+    this.showPages = this.showPages.bind(this);
     this.handlePage = this.handlePage.bind(this);
 
     this.state = {
@@ -24,13 +25,18 @@ class PageAttachment extends React.Component {
       deleting: false,
       deleteError: '',
       activePage: 1,
-      totalPage: 0,
-      limit: appContainer.getConfig(),
+      totalPages: 0,
+      limit: appContainer.getConfig().recentCreatedLimit,
+
     };
 
     this.onAttachmentDeleteClicked = this.onAttachmentDeleteClicked.bind(this);
     this.onAttachmentDeleteClickedConfirm = this.onAttachmentDeleteClickedConfirm.bind(this);
   }
+
+  // componentWillMount() {
+  //   this.showPages(1);
+  // }
 
   componentDidMount() {
     const { pageId } = this.props.pageContainer.state;
@@ -53,6 +59,24 @@ class PageAttachment extends React.Component {
           inUse,
         });
       });
+  }
+
+  async handlePage(selectedPage) {
+    await this.showPages(selectedPage);
+  }
+
+  async showPages(selectedPage) {
+    const { appContainer, pageContainer } = this.props;
+    const { path } = pageContainer.state;
+    const limit = this.state.limit;
+    const offset = (selectedPage - 1) * limit;
+    const res = await appContainer.apiv3Get('/pages/list', { path, limit, offset });
+    const activePage = selectedPage;
+    const totalPages = res.data.totalCount;
+    this.setState({
+      activePage,
+      totalPages,
+    });
   }
 
   checkIfFileInUse(attachment) {
@@ -143,7 +167,7 @@ class PageAttachment extends React.Component {
         <PaginationWrapper
           activePage={this.state.activePage}
           changePage={this.handlePage}
-          totalItemCount={this.state.totalPage}
+          totalItemCount={this.state.totalPages}
           pagingLimit={this.state.limit}
         />
       </div>
