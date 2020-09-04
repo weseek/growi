@@ -138,6 +138,14 @@ $table-hover-bg: $bgcolor-table-hover;
       color: $primary;
       background-color: $gray-200;
     }
+    /* &:focus {
+      color: white;
+      background-color: $primary;
+    } */
+    &:active {
+      color: white;
+      background-color: $primary;
+    }
   }
 }
 
