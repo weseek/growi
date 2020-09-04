@@ -1,30 +1,17 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
 import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
+import { withLoadingSppiner } from '../../SuspenseUtils';
 
 import AdminAppContainer from '../../../services/AdminAppContainer';
 
 import AppSettingsPageContents from './AppSettingsPageContents';
 
 const logger = loggerFactory('growi:appSettings');
-
-function AppSettingsPageWithContainerWithSuspense(props) {
-  return (
-    <Suspense
-      fallback={(
-        <div className="row">
-          <i className="fa fa-5x fa-spinner fa-pulse mx-auto text-muted"></i>
-        </div>
-      )}
-    >
-      <AppSettingsPageWithUnstatedContainer />
-    </Suspense>
-  );
-}
 
 let retrieveErrors = null;
 function AppSettingsPage(props) {
@@ -59,6 +46,6 @@ AppSettingsPage.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const AppSettingsPageWithUnstatedContainer = withUnstatedContainers(AppSettingsPage, [AdminAppContainer]);
+const AppSettingsPageWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(AppSettingsPage), [AdminAppContainer]);
 
-export default AppSettingsPageWithContainerWithSuspense;
+export default AppSettingsPageWithUnstatedContainer;
