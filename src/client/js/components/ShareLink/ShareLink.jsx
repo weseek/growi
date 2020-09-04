@@ -8,7 +8,7 @@ import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 
 import ShareLinkList from '../ShareLinkList';
-import ShareLinkForm from '../ShareLinkForm';
+import ShareLinkForm from './ShareLinkForm';
 
 import { toastSuccess, toastError } from '../../util/apiNotification';
 

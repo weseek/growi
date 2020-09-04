@@ -7,7 +7,6 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
-import OutsideShareLinkModal from '../OutsideShareLinkModal';
 
 // TODO GW-2746 bulk export pages
 // import ArchiveCreateModal from '../ArchiveCreateModal';
@@ -20,20 +19,11 @@ const PageShareManagement = (props) => {
   const { path, pageId } = pageContainer.state;
   const { currentUser } = appContainer;
 
-  const [isOutsideShareLinkModalShown, setIsOutsideShareLinkModalShown] = useState(false);
 
   // TODO GW-2746 bulk export pages
   // const [isArchiveCreateModalShown, setIsArchiveCreateModalShown] = useState(false);
   // const [totalPages, setTotalPages] = useState(null);
   // const [errorMessage, setErrorMessage] = useState(null);
-
-  function openOutsideShareLinkModalHandler() {
-    setIsOutsideShareLinkModalShown(true);
-  }
-
-  function closeOutsideShareLinkModalHandler() {
-    setIsOutsideShareLinkModalShown(false);
-  }
 
   // TODO GW-2746 bulk export pages
   // async function getArchivePageData() {
@@ -73,11 +63,6 @@ const PageShareManagement = (props) => {
 
     return (
       <>
-        <OutsideShareLinkModal
-          isOpen={isOutsideShareLinkModalShown}
-          onClose={closeOutsideShareLinkModalHandler}
-        />
-
         {/* TODO GW-2746 bulk export pages */}
         {/* <ArchiveCreateModal
           isOpen={isArchiveCreateModalShown}
@@ -126,10 +111,6 @@ const PageShareManagement = (props) => {
     <>
       {currentUser == null ? renderGuestUser() : renderCurrentUser()}
       <div className="dropdown-menu dropdown-menu-right">
-        <button className="dropdown-item" type="button" onClick={openOutsideShareLinkModalHandler}>
-          <i className="icon-fw icon-link"></i>{t('share_links.Shere this page link to public')}
-          <span className="ml-2 badge badge-info badge-pill">{pageContainer.state.shareLinksNumber}</span>
-        </button>
         <button type="button" className="dropdown-item" onClick={() => { exportPageHandler('md') }}>
           <span>{t('export_bulk.export_page_markdown')}</span>
         </button>
