@@ -251,9 +251,9 @@ export default class AdminAppContainer extends Container {
    */
   updateMailSettingHandler() {
     if (this.state.transmissionMethod === 'smtp') {
-      return this.updateSmtpSettingHandler();
+      return this.updateSmtpSetting();
     }
-    return this.updateSesSettingHandler();
+    return this.updateSesSetting();
   }
 
   /**
@@ -261,7 +261,7 @@ export default class AdminAppContainer extends Container {
    * @memberOf AdminAppContainer
    * @return {Array} Appearance
    */
-  async updateSmtpSettingHandler() {
+  async updateSmtpSetting() {
     const response = await this.appContainer.apiv3.put('/app-settings/smtp-setting', {
       fromAddress: this.state.fromAddress,
       transmissionMethod: this.state.transmissionMethod,
@@ -279,7 +279,7 @@ export default class AdminAppContainer extends Container {
    * @memberOf AdminAppContainer
    * @return {Array} Appearance
    */
-  async updateSesSettingHandler() {
+  async updateSesSetting() {
     const response = await this.appContainer.apiv3.put('/app-settings/ses-setting', {
       fromAddress: this.state.fromAddress,
       transmissionMethod: this.state.transmissionMethod,
