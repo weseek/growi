@@ -9,6 +9,7 @@ import PageListIcon from './Icons/PageListIcon';
 import TimeLineIcon from './Icons/TimeLineIcon';
 import RecentChangesIcon from './Icons/RecentChangesIcon';
 import AttachmentIcon from './Icons/AttachmentIcon';
+import ShareLinkIcon from './Icons/ShareLinkIcon';
 
 import PageAccessoriesModal from './PageAccessoriesModal';
 
@@ -68,7 +69,7 @@ const TopOfTableContents = (props) => {
           className="btn btn-link grw-btn-top-of-table"
           onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('share-link')}
         >
-          <i className="icon-share" />
+          <ShareLinkIcon />
         </button>
 
         <div

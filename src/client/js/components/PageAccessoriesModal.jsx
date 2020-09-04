@@ -11,6 +11,7 @@ import PageListIcon from './Icons/PageListIcon';
 import TimeLineIcon from './Icons/TimeLineIcon';
 import RecentChangesIcon from './Icons/RecentChangesIcon';
 import AttachmentIcon from './Icons/AttachmentIcon';
+import ShareLinkIcon from './Icons/ShareLinkIcon';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 import PageAccessoriesContainer from '../services/PageAccessoriesContainer';
@@ -83,7 +84,7 @@ const PageAccessoriesModal = (props) => {
                   switchActiveTab('share-link');
                 }}
               >
-                <AttachmentIcon />
+                <ShareLinkIcon />
                 {t('share_links.share_link_management')}
               </NavLink>
             </NavItem>
