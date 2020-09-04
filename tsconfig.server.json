@@ -3,7 +3,10 @@
   "compilerOptions": {
     "module": "commonjs",
     "outDir": "dist",
-    "noEmit": false
-  },
-  "include": ["src/server"]
+    "noEmit": false,
+
+    /* Experimental Options */
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  }
 }

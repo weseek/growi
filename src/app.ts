@@ -1,7 +1,11 @@
 import Logger from 'bunyan';
 
+import { PlatformExpress } from '@tsed/platform-express';
+
 import loggerFactory from '~/utils/logger';
 import { hasProcessFlag } from '~/utils/process-utils';
+
+import { Server } from './server';
 
 const logger: Logger = loggerFactory('growi');
 
@@ -20,15 +24,20 @@ process.on('unhandledRejection', (reason, p) => {
 async function main() {
   try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const Crowi = require('./crowi');
-    const growi = new Crowi();
-    const server = await growi.start();
+    // const Crowi = require('./crowi');
+    // const growi = new Crowi();
+    // const server = await growi.start();
+
+    const platform = await PlatformExpress.bootstrap(Server);
+    await platform.listen();
 
     if (hasProcessFlag('ci')) {
       logger.info('"--ci" flag is detected. Exit process.');
-      server.close(() => {
-        process.exit();
-      });
+
+      // TODO: close express server
+      // server.close(() => {
+      process.exit();
+      // });
     }
   }
   catch (err) {
