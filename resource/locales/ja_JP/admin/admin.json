@@ -31,6 +31,8 @@
     "transmission_method":"送信方法",
     "smtp_label":"SMTP",
     "ses_label":"SES(AWS)",
+    "send_test_email": "テストメールを送信",
+    "success_to_send_test_email": "テストメールを送信しました。",
     "smtp_settings": "SMTP設定",
     "host": "ホスト",
     "port": "ポート",

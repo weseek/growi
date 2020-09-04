@@ -27,6 +27,17 @@ function MailSetting(props) {
     }
   }
 
+  async function sendTestEmailHandler() {
+    const { adminAppContainer } = props;
+    try {
+      await adminAppContainer.sendTestEmail();
+      toastSuccess(t('admin:app_setting.success_to_send_test_email'));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
+
   return (
     <React.Fragment>
       <div className="row form-group mb-5">
@@ -71,9 +82,16 @@ function MailSetting(props) {
       {adminAppContainer.state.transmissionMethod === 'ses' && <SesSetting />}
 
       <div className="row my-3">
-        <button type="button" className="btn btn-primary mx-auto" onClick={submitHandler} disabled={adminAppContainer.state.retrieveError != null}>
-          { t('Update') }
-        </button>
+        <div className="mx-auto">
+          <button type="button" className="btn btn-primary" onClick={submitHandler} disabled={adminAppContainer.state.retrieveError != null}>
+            { t('Update') }
+          </button>
+          {adminAppContainer.state.transmissionMethod === 'smtp' && (
+          <button type="button" className="btn btn-secondary ml-4" onClick={sendTestEmailHandler}>
+            {t('admin:app_setting.send_test_email')}
+          </button>
+          )}
+        </div>
       </div>
     </React.Fragment>
   );
