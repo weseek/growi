@@ -81,14 +81,16 @@ class MailService extends S2sMessageHandlable {
 
     if (transmissionMethod === 'smtp') {
       this.mailer = this.createSMTPClient();
-      this.isMailerSetup = true;
     }
     else if (transmissionMethod === 'ses') {
       this.mailer = this.createSESClient();
-      this.isMailerSetup = true;
     }
     else {
       this.mailer = null;
+    }
+
+    if (this.mailer != null) {
+      this.isMailerSetup = true;
     }
 
     this.mailConfig.from = configManager.getConfig('crowi', 'mail:from');
@@ -102,9 +104,15 @@ class MailService extends S2sMessageHandlable {
 
     logger.debug('createSMTPClient option', option);
     if (!option) {
+      const host = configManager.getConfig('crowi', 'mail:smtpHost');
+      const port = configManager.getConfig('crowi', 'mail:smtpPort');
+
+      if (host == null || port == null) {
+        return null;
+      }
       option = { // eslint-disable-line no-param-reassign
-        host: configManager.getConfig('crowi', 'mail:smtpHost'),
-        port: configManager.getConfig('crowi', 'mail:smtpPort'),
+        host,
+        port,
       };
 
       if (configManager.getConfig('crowi', 'mail:smtpUser') && configManager.getConfig('crowi', 'mail:smtpPassword')) {
@@ -130,9 +138,14 @@ class MailService extends S2sMessageHandlable {
     const { configManager } = this;
 
     if (!option) {
+      const accessKeyId = configManager.getConfig('crowi', 'mail:sesAccessKeyId');
+      const secretAccessKey = configManager.getConfig('crowi', 'mail:sesSecretAccessKey');
+      if (accessKeyId == null || secretAccessKey == null) {
+        return null;
+      }
       option = { // eslint-disable-line no-param-reassign
-        accessKeyId: configManager.getConfig('crowi', 'mail:sesAccessKeyId'),
-        secretAccessKey: configManager.getConfig('crowi', 'mail:sesSecretAccessKey'),
+        accessKeyId,
+        secretAccessKey,
       };
     }
 

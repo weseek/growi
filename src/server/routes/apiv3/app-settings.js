@@ -186,6 +186,7 @@ module.exports = (crowi) => {
       fileUpload: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
       siteUrl: crowi.configManager.getConfig('crowi', 'app:siteUrl'),
       envSiteUrl: crowi.configManager.getConfigFromEnvVars('crowi', 'app:siteUrl'),
+      isMailerSetup: crowi.mailService.isMailerSetup,
       fromAddress: crowi.configManager.getConfig('crowi', 'mail:from'),
       transmissionMethod: crowi.configManager.getConfig('crowi', 'mail:transmissionMethod'),
       smtpHost: crowi.configManager.getConfig('crowi', 'mail:smtpHost'),
