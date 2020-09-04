@@ -63,7 +63,7 @@ export default class AdminAppContainer extends Container {
       siteUrl: appSettingsParams.siteUrl,
       envSiteUrl: appSettingsParams.envSiteUrl,
       isSetSiteUrl: !!appSettingsParams.siteUrl,
-      // GW-3714 manage mailer status on server
+      // GW-3714 manage mailer state
       isMailerActive: true,
       // isMailerActive: appSettingsParams.isMailerActive,
       fromAddress: appSettingsParams.fromAddress,
@@ -265,7 +265,9 @@ export default class AdminAppContainer extends Container {
       smtpPassword: this.state.smtpPassword,
     });
     const { mailSettingParams } = response.data;
-    this.setState({ isMailerActive: mailSettingParams.isMailerActive });
+    // GW-3714 manage mailer state
+    this.setState({ isMailerActive: true });
+    // this.setState({ isMailerActive: mailSettingParams.isMailerActive });
     return mailSettingParams;
   }
 
@@ -280,7 +282,9 @@ export default class AdminAppContainer extends Container {
       sesSecretAccessKey: this.state.sesSecretAccessKey,
     });
     const { mailSettingParams } = response.data;
-    this.setState({ isMailerActive: mailSettingParams.isMailerActive });
+    // GW-3714 manage mailer state
+    this.setState({ isMailerActive: true });
+    // this.setState({ isMailerActive: mailSettingParams.isMailerActive });
     return mailSettingParams;
   }
 
