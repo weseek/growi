@@ -63,7 +63,9 @@ export default class AdminAppContainer extends Container {
       siteUrl: appSettingsParams.siteUrl,
       envSiteUrl: appSettingsParams.envSiteUrl,
       isSetSiteUrl: !!appSettingsParams.siteUrl,
-      isMailerActive: appSettingsParams.isMailerActive,
+      // GW-3714 manage mailer status on server
+      isMailerActive: true,
+      // isMailerActive: appSettingsParams.isMailerActive,
       fromAddress: appSettingsParams.fromAddress,
       smtpHost: appSettingsParams.smtpHost,
       smtpPort: appSettingsParams.smtpPort,

@@ -182,7 +182,6 @@ module.exports = (crowi) => {
       fileUpload: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
       siteUrl: crowi.configManager.getConfig('crowi', 'app:siteUrl'),
       envSiteUrl: crowi.configManager.getConfigFromEnvVars('crowi', 'app:siteUrl'),
-      isMailerActive: crowi.mailService.isMailerActive,
       fromAddress: crowi.configManager.getConfig('crowi', 'mail:from'),
       smtpHost: crowi.configManager.getConfig('crowi', 'mail:smtpHost'),
       smtpPort: crowi.configManager.getConfig('crowi', 'mail:smtpPort'),
@@ -197,8 +196,8 @@ module.exports = (crowi) => {
       secretAccessKey: crowi.configManager.getConfig('crowi', 'aws:secretAccessKey'),
       isEnabledPlugins: crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins'),
     };
-
     return res.apiv3({ appSettingsParams });
+
   });
 
 
@@ -314,7 +313,7 @@ module.exports = (crowi) => {
   /**
    * validate mail setting send test mail
    */
-  async function sendTestEmail(mailConfig) {
+  async function sendTestEmail(destinationAddress) {
 
     const { configManager, mailService } = crowi;
 
@@ -351,16 +350,12 @@ module.exports = (crowi) => {
 
     const mailOptions = {
       from: fromAddress,
-      ...mailConfig,
+      to: destinationAddress,
+      subject: 'Wiki管理設定のアップデートによるメール通知',
+      text: 'このメールは、WikiのSMTP設定のアップデートにより送信されています。',
     };
 
-    try {
-      await sendMailPromiseWrapper(smtpClient, mailOptions);
-    }
-    catch (err) {
-      mailService.isMailerActive = false;
-      return err;
-    }
+    await sendMailPromiseWrapper(smtpClient, mailOptions);
   }
 
   const updateMailSettinConfig = async function(requestMailSettingParams) {
@@ -376,7 +371,7 @@ module.exports = (crowi) => {
     mailService.publishUpdatedMessage();
 
     return {
-      isMailerActive: mailService.isMailerActive,
+      isMailerSetup: mailService.isMailerSetup,
       fromAddress: configManager.getConfig('crowi', 'mail:from'),
       smtpHost: configManager.getConfig('crowi', 'mail:smtpHost'),
       smtpPort: configManager.getConfig('crowi', 'mail:smtpPort'),
@@ -414,14 +409,6 @@ module.exports = (crowi) => {
 
     try {
       const mailSettingParams = await updateMailSettinConfig({ 'mail:from': req.body.fromAddress });
-
-      const mailConfig = {
-        to: req.user.email,
-        subject: 'Wiki管理設定のアップデートによるメール通知',
-        text: 'このメールは、WikiのSMTP設定のアップデートにより送信されています。',
-      };
-      await sendTestEmail(mailConfig);
-
       return res.apiv3({ mailSettingParams });
     }
     catch (err) {
@@ -465,12 +452,6 @@ module.exports = (crowi) => {
 
     try {
       const mailSettingParams = await updateMailSettinConfig(requestMailSettingParams);
-      const mailConfig = {
-        to: req.user.email,
-        subject: 'Wiki管理設定のアップデートによるメール通知',
-        text: 'このメールは、WikiのSMTP設定のアップデートにより送信されています。',
-      };
-      await sendTestEmail(mailConfig);
       return res.apiv3({ mailSettingParams });
     }
     catch (err) {
