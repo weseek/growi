@@ -41,8 +41,7 @@ module.exports = (crowi) => {
   router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
 
     try {
-      const pageId = req.query.page;
-
+      const pageId = req.query.pageId;
       // check whether accessible
       const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
       if (!isAccessible) {
