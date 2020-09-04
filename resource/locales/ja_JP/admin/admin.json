@@ -29,6 +29,8 @@
     "mail_settings": "メールの設定",
     "from_e-mail_address": "Fromアドレス",
     "transmission_method":"送信方法",
+    "smtp_label":"SMTP",
+    "ses_label":"SES(AWS)",
     "smtp_settings": "SMTP設定",
     "host": "ホスト",
     "port": "ポート",

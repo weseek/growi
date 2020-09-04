@@ -60,7 +60,7 @@ function MailSetting(props) {
                     adminAppContainer.changeTransmissionMethod(method);
                   }}
                   />
-                  <label className="custom-control-label" htmlFor={`transmission-nethod-radio-${method}`}>{method}</label>
+                  <label className="custom-control-label" htmlFor={`transmission-nethod-radio-${method}`}>{t(`admin:app_setting.${method}_label`)}</label>
                 </div>
               );
             })}

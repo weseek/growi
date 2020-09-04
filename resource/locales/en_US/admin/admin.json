@@ -29,6 +29,8 @@
     "mail_settings": "E-mail Settings",
     "from_e-mail_address": "From e-mail address",
     "transmission_method":"Transmission Method",
+    "smtp_label":"SMTP",
+    "ses_label":"SES(AWS)",
     "smtp_settings": "SMTP settings",
     "host": "Host",
     "port": "Port",
