@@ -476,12 +476,7 @@ module.exports = (crowi) => {
    */
   router.post('/smtp-test', loginRequiredStrictly, adminRequired, async(req, res) => {
     try {
-      const mailConfig = {
-        to: req.user.email,
-        subject: 'Wiki管理設定のアップデートによるメール通知',
-        text: 'このメールは、WikiのSMTP設定のアップデートにより送信されています。',
-      };
-      await sendTestEmail(mailConfig);
+      await sendTestEmail(req.user.email);
       return res.apiv3({});
     }
     catch (err) {
