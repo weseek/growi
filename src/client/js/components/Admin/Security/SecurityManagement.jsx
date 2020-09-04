@@ -1,9 +1,11 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { toastError } from '../../../util/apiNotification';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
+import { withLoadingSppiner } from '../../SuspenseUtils';
+
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 import SecurityManagementContents from './SecurityManagementContents';
 
@@ -38,20 +40,6 @@ SecurityManagement.propTypes = {
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
 };
 
-const SecurityManagementWithUnstatedContainer = withUnstatedContainers(SecurityManagement, [AdminGeneralSecurityContainer]);
+const SecurityManagementWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(SecurityManagement), [AdminGeneralSecurityContainer]);
 
-function SecurityManagementWithContainerWithSuspense(props) {
-  return (
-    <Suspense
-      fallback={(
-        <div className="row">
-          <i className="fa fa-5x fa-spinner fa-pulse mx-auto text-muted"></i>
-        </div>
-      )}
-    >
-      <SecurityManagementWithUnstatedContainer {...props} />
-    </Suspense>
-  );
-}
-
-export default SecurityManagementWithContainerWithSuspense;
+export default SecurityManagementWithUnstatedContainer;

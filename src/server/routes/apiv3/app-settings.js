@@ -10,7 +10,7 @@ const { listLocaleIds } = require('@commons/util/locale-utils');
 
 const router = express.Router();
 
-const { body } = require('express-validator/check');
+const { body } = require('express-validator');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 /**
@@ -50,13 +50,17 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *          envSiteUrl:
  *            type: string
  *            description: environment variable 'APP_SITE_URL'
- *      MailSettingParams:
+ *      FromAddress:
  *        description: MailSettingParams
  *        type: object
  *        properties:
  *          fromAddress:
  *            type: string
  *            description: e-mail address used as from address of mail which sent from GROWI app
+ *      MailSettingParams:
+ *        description: MailSettingParams
+ *        type: object
+ *        properties:
  *          smtpHost:
  *            type: string
  *            description: host name of client's smtp server
@@ -115,16 +119,18 @@ module.exports = (crowi) => {
     siteUrlSetting: [
       body('siteUrl').trim().matches(/^(https?:\/\/[^/]+|)$/).isURL({ require_tld: false }),
     ],
+    fromAddress: [
+      body('fromAddress').trim().if(value => value !== '').isEmail(),
+    ],
     mailSetting: [
-      body('fromAddress').trim().isEmail(),
       body('smtpHost').trim(),
       body('smtpPort').trim().isPort(),
       body('smtpUser').trim(),
       body('smtpPassword').trim(),
     ],
     awsSetting: [
-      body('region').trim().matches(/^[a-z]+-[a-z]+-\d+$/).withMessage('リージョンには、AWSリージョン名を入力してください。 例: ap-northeast-1'),
-      body('customEndpoint').trim().matches(/^(https?:\/\/[^/]+|)$/).withMessage('カスタムエンドポイントは、http(s)://で始まるURLを指定してください。また、末尾の/は不要です。'),
+      body('region').trim().matches(/^[a-z]+-[a-z]+-\d+$/).withMessage((value, { req }) => req.t('validation.aws_region')),
+      body('customEndpoint').trim().matches(/^(https?:\/\/[^/]+|)$/).withMessage((value, { req }) => req.t('validation.aws_custom_endpoint')),
       body('bucket').trim(),
       body('accessKeyId').trim().matches(/^[\da-zA-Z]+$/),
       body('secretAccessKey').trim(),
@@ -292,7 +298,12 @@ module.exports = (crowi) => {
    * validate mail setting send test mail
    */
   async function validateMailSetting(req) {
-    const { mailService } = crowi;
+    const { configManager, mailService } = crowi;
+    const fromAddress = configManager.getConfig('crowi', 'mail:from');
+    if (fromAddress == null) {
+      throw Error('fromAddress is not setup');
+    }
+
     const option = {
       host: req.body.smtpHost,
       port: req.body.smtpPort,
@@ -311,7 +322,7 @@ module.exports = (crowi) => {
     debug('mailer setup for validate SMTP setting', smtpClient);
 
     const mailOptions = {
-      from: req.body.fromAddress,
+      from: fromAddress,
       to: req.user.email,
       subject: 'Wiki管理設定のアップデートによるメール通知',
       text: 'このメールは、WikiのSMTP設定のアップデートにより送信されています。',
@@ -333,13 +344,50 @@ module.exports = (crowi) => {
     mailService.publishUpdatedMessage();
 
     return {
-      fromAddress: configManager.getConfig('crowi', 'mail:from'),
       smtpHost: configManager.getConfig('crowi', 'mail:smtpHost'),
       smtpPort: configManager.getConfig('crowi', 'mail:smtpPort'),
       smtpUser: configManager.getConfig('crowi', 'mail:smtpUser'),
       smtpPassword: configManager.getConfig('crowi', 'mail:smtpPassword'),
     };
   };
+
+  /**
+   * @swagger
+   *
+   *    /app-settings/from-address:
+   *      put:
+   *        tags: [AppSettings]
+   *        operationId: updateAppSettingFromAddress
+   *        summary: /app-settings/from-address
+   *        description: Update from address
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/FromAddress'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update from adress
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/FromAddress'
+   */
+  router.put('/from-address', loginRequiredStrictly, adminRequired, csrf, validator.fromAddress, apiV3FormValidator, async(req, res) => {
+
+    try {
+      const mailSettingParams = await updateMailSettinConfig({ 'mail:from': req.body.fromAddress });
+
+      return res.apiv3({ mailSettingParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating from adress';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-from-adress-failed'));
+    }
+
+  });
 
   /**
    * @swagger
@@ -377,7 +425,6 @@ module.exports = (crowi) => {
 
 
     const requestMailSettingParams = {
-      'mail:from': req.body.fromAddress,
       'mail:smtpHost': req.body.smtpHost,
       'mail:smtpPort': req.body.smtpPort,
       'mail:smtpUser': req.body.smtpUser,
@@ -420,7 +467,6 @@ module.exports = (crowi) => {
    */
   router.delete('/mail-setting', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const requestMailSettingParams = {
-      'mail:from': null,
       'mail:smtpHost': null,
       'mail:smtpPort': null,
       'mail:smtpUser': null,
