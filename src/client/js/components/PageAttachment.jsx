@@ -32,9 +32,9 @@ class PageAttachment extends React.Component {
       return;
     }
 
-    this.props.appContainer.apiGet('/attachments.list', { page_id: pageId })
+    this.props.appContainer.apiv3Get('/attachments/list', { pageId })
       .then((res) => {
-        const attachments = res.attachments;
+        const attachments = res.data.attachments;
         const inUse = {};
 
         for (const attachment of attachments) {
