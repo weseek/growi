@@ -23,7 +23,7 @@ export default class AdminAppContainer extends Container {
       siteUrl: '',
       envSiteUrl: '',
       isSetSiteUrl: true,
-      isMailerActive: false,
+      isMailerSetup: false,
       fromAddress: '',
       smtpHost: '',
       smtpPort: '',
@@ -63,7 +63,7 @@ export default class AdminAppContainer extends Container {
       siteUrl: appSettingsParams.siteUrl,
       envSiteUrl: appSettingsParams.envSiteUrl,
       isSetSiteUrl: !!appSettingsParams.siteUrl,
-      isMailerActive: appSettingsParams.isMailerActive,
+      isMailerSetup: appSettingsParams.isMailerSetup,
       fromAddress: appSettingsParams.fromAddress,
       smtpHost: appSettingsParams.smtpHost,
       smtpPort: appSettingsParams.smtpPort,
@@ -263,7 +263,7 @@ export default class AdminAppContainer extends Container {
       smtpPassword: this.state.smtpPassword,
     });
     const { mailSettingParams } = response.data;
-    this.setState({ isMailerActive: mailSettingParams.isMailerActive });
+    this.setState({ isMailerSetup: mailSettingParams.isMailerSetup });
     return mailSettingParams;
   }
 
@@ -278,7 +278,7 @@ export default class AdminAppContainer extends Container {
       sesSecretAccessKey: this.state.sesSecretAccessKey,
     });
     const { mailSettingParams } = response.data;
-    this.setState({ isMailerActive: mailSettingParams.isMailerActive });
+    this.setState({ isMailerSetup: mailSettingParams.isMailerSetup });
     return mailSettingParams;
   }
 
@@ -287,9 +287,7 @@ export default class AdminAppContainer extends Container {
    * @memberOf AdminAppContainer
    */
   async sendTestEmail() {
-    const response = await this.appContainer.apiv3.post('/app-settings/smtp-test');
-    this.setState({ isMailerActive: response.data.isMailerActive });
-    return response.data;
+    return this.appContainer.apiv3.post('/app-settings/smtp-test');
   }
 
   /**
