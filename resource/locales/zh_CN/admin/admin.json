@@ -27,6 +27,7 @@
 		"attach_enable": "如果启用此选项，则可以附加图像文件以外的文件。",
 		"update": "更新",
 		"mail_settings": "邮件设置",
+    "mailer_is_not_set_up": "E-mail setting is not set up.",
     "transmission_method":"Transmission Method",
     "smtp_label":"SMTP",
     "ses_label":"SES(AWS)",

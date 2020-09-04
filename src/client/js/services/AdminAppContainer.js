@@ -23,6 +23,7 @@ export default class AdminAppContainer extends Container {
       siteUrl: '',
       envSiteUrl: '',
       isSetSiteUrl: true,
+      isMailerSetup: false,
       fromAddress: '',
       transmissionMethod: '',
       smtpHost: '',
@@ -63,6 +64,9 @@ export default class AdminAppContainer extends Container {
       siteUrl: appSettingsParams.siteUrl,
       envSiteUrl: appSettingsParams.envSiteUrl,
       isSetSiteUrl: !!appSettingsParams.siteUrl,
+      // GW-3714 manage mailer state
+      isMailerSetup: true,
+      // isMailerSetup: appSettingsParams.isMailerSetup,
       fromAddress: appSettingsParams.fromAddress,
       transmissionMethod: appSettingsParams.transmissionMethod,
       smtpHost: appSettingsParams.smtpHost,
@@ -271,6 +275,9 @@ export default class AdminAppContainer extends Container {
       smtpPassword: this.state.smtpPassword,
     });
     const { mailSettingParams } = response.data;
+    // GW-3714 manage mailer state
+    this.setState({ isMailerSetup: true });
+    // this.setState({ isMailerSetup: mailSettingParams.isMailerSetup });
     return mailSettingParams;
   }
 
@@ -287,6 +294,9 @@ export default class AdminAppContainer extends Container {
       sesSecretAccessKey: this.state.sesSecretAccessKey,
     });
     const { mailSettingParams } = response.data;
+    // GW-3714 manage mailer state
+    this.setState({ isMailerSetup: true });
+    // this.setState({ isMailerSetup: mailSettingParams.isMailerSetup });
     return mailSettingParams;
   }
 

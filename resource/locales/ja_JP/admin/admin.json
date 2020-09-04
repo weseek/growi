@@ -27,6 +27,7 @@
     "attach_enable": "許可をしている場合、画像以外のファイルをページに添付可能になります。",
     "update": "更新",
     "mail_settings": "メールの設定",
+    "mailer_is_not_set_up": "メール設定がセットアップされていません。",
     "from_e-mail_address": "Fromアドレス",
     "transmission_method":"送信方法",
     "smtp_label":"SMTP",
