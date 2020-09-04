@@ -19,10 +19,14 @@ $theme-colors: map-merge($theme-colors, $colors);
     @include button-variant($value, $value);
   }
 }
-
 @each $color, $value in $theme-colors {
   .btn-outline-#{$color} {
-    @include button-outline-variant($value);
+    @include button-outline-variant($value, $color-hover: $value, $active-background: rgba($value, 0.1), $active-border: $value);
+    &:not(:disabled):not(.disabled):active,
+    &:not(:disabled):not(.disabled).active,
+    .show > &.dropdown-toggle {
+      color: $value;
+    }
   }
 }
 
