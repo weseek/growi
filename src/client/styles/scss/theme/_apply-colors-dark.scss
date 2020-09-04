@@ -51,8 +51,8 @@ textarea.form-control {
 }
 
 .input-group > .input-group-prepend > .input-group-text {
-  color: color-yiq(theme-color('dark'));
-  background-color: theme-color('dark');
+  color: theme-color('light');
+  background-color: theme-color('secondary');
   border: 1px solid theme-color('secondary');
   border-right: none;
 }
@@ -62,6 +62,13 @@ textarea.form-control {
  */
 .dropdown-menu {
   background-color: $bgcolor-global;
+}
+
+.dropdown-item {
+  &:hover {
+    color: $light;
+    background-color: lighten($bgcolor-global, 15%);
+  }
 }
 
 /*
@@ -235,9 +242,12 @@ ul.pagination {
 /*
  * GROWI on-edit
  */
-.grw-editor-navbar-bottom {
-  #slack-mark-black {
-    display: none;
+body.on-edit {
+  .grw-editor-navbar-bottom {
+    background-color: $bgcolor-global;
+    #slack-mark-black {
+      display: none;
+    }
   }
 }
 
