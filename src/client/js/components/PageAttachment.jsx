@@ -13,12 +13,15 @@ class PageAttachment extends React.Component {
   constructor(props) {
     super(props);
 
+    const { appContainer } = this.props;
     this.state = {
       attachments: [],
       inUse: {},
       attachmentToDelete: null,
       deleting: false,
       deleteError: '',
+      limit: appContainer.getConfig().recentCreatedLimit,
+      offset: 0,
     };
 
     this.onAttachmentDeleteClicked = this.onAttachmentDeleteClicked.bind(this);
@@ -27,12 +30,13 @@ class PageAttachment extends React.Component {
 
   async componentDidMount() {
     const { pageId } = this.props.pageContainer.state;
+    const { limit, offset } = this.state;
 
     if (!pageId) {
       return;
     }
 
-    await this.props.appContainer.apiv3Get('/attachments/list', { pageId })
+    await this.props.appContainer.apiv3Get('/attachments/list', { pageId, limit, offset })
       .then((res) => {
         const attachments = res.data.attachments;
         const inUse = {};

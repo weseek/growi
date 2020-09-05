@@ -39,6 +39,9 @@ module.exports = (crowi) => {
    *              type: string
    */
   router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
+    const limit = +req.query.limit || 30;
+    const offset = +req.query.offset || 0;
+    const queryOptions = { offset, limit };
 
     try {
       const pageId = req.query.pageId;
@@ -51,6 +54,9 @@ module.exports = (crowi) => {
       }
 
       const attachments = await Attachment.find({ page: pageId });
+      const pagination = await Page.paginate({}, { queryOptions });
+
+      console.log(pagination);
 
       return res.apiv3({ attachments });
 
