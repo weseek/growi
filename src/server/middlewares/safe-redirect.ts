@@ -5,13 +5,14 @@
 import {
   Middleware, Req, Res, Next,
 } from '@tsed/common';
+import { Request, Response, NextFunction } from 'express';
 
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:middleware:safe-redirect');
 
 
-export interface ResWithSafeRedirect extends Res {
+export interface ResponseWithSafeRedirect extends Response {
   safeRedirect(url: string): void;
 }
 
@@ -24,7 +25,7 @@ export class SafeRedirectMiddleware {
     SafeRedirectMiddleware.whitelistOfHosts = whitelistOfHosts;
   }
 
-  use(@Req() req: Req, @Res() res: ResWithSafeRedirect, @Next() next: Next): void {
+  use(@Req() req: Request, @Res() res: ResponseWithSafeRedirect, @Next() next: NextFunction): void {
     const { whitelistOfHosts } = SafeRedirectMiddleware;
 
     // extend res object
