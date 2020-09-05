@@ -109,7 +109,7 @@ const PageAccessoriesModal = (props) => {
     <React.Fragment>
       <Modal size="xl" isOpen={props.isOpen} toggle={closeModalHandler} className="grw-page-accessories-modal">
         <ModalBody>
-          <Nav className="nav-title" id="nav_slide_click">
+          <Nav className="nav-title">
             <NavItem type="button" className={`nav-link ${activeTab === 'pagelist' && 'active'}`}>
               <NavLink
                 onClick={() => {
@@ -161,6 +161,7 @@ const PageAccessoriesModal = (props) => {
               </NavLink>
             </NavItem>
           </Nav>
+          <hr id="nav_slide_click" className="my-0"></hr>
           <TabContent activeTab={activeTab}>
 
             <TabPane tabId="pagelist">
