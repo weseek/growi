@@ -34,7 +34,7 @@ const PageAccessoriesModal = (props) => {
   }
 
   const menu = document.getElementsByClassName('nav'); // 上部に持ってきた
-  const navTitle = document.getElementById('nav-title');
+  const navId = document.getElementById('nav_slide_click');
   // Values are set.
 
   // Might make this dynamic for px, %, pt, em
@@ -56,8 +56,10 @@ const PageAccessoriesModal = (props) => {
   function navSlider(menu, callback) { // ok
     const arrayMenu1 = Array.from(menu);
     const menuWidth = arrayMenu1.offsetWidth; // not ok
-    console.log(`menu = ${menu}, menu.offsetWidth = ${menu.offsetWidth} `);
-    console.log(`arrayMenu1 = ${arrayMenu1}, arrayMenu1.offsetWidth = ${arrayMenu1.offsetWidth} `);
+
+    // console.log(`menu = ${menu}, menu.offsetWidth = ${menu.offsetWidth} `);
+    // console.log(`arrayMenu1 = ${arrayMenu1}, arrayMenu1.offsetWidth = ${arrayMenu1.offsetWidth} `);
+
     // We only want the <li> </li> tags
     const navTabs = document.querySelectorAll('li.nav-link');
 
@@ -65,10 +67,10 @@ const PageAccessoriesModal = (props) => {
       const marginLeft = [];
       // Loop through nav children i.e li
       [].forEach.call(navTabs, (el, index) => {
-        console.log(`navTabs = ${navTabs}, el.offsetWidth = ${el.offsetWidth}, menuWidth = ${menuWidth}`); // menuWidthはundefined
+      // [].forEach.call(menu, (el, index) => {
+        console.log(`menu = ${menu} navTabs = ${navTabs}, el.offsetWidth = ${el.offsetWidth}, menuWidth = ${menuWidth}`); // menuWidthはundefined
         // Dynamic width/margin calculation for hr
-        const width = getPercentage(el.offsetWidth, 1200);
-        console.log(`width = ${width}`);
+        const width = getPercentage(el.offsetWidth, navId.offsetWidth);
         let tempMarginLeft = 0;
         // We don't want to modify first elements positioning
         if (index !== 0) {
@@ -96,6 +98,7 @@ const PageAccessoriesModal = (props) => {
           console.log('el がクリックされた'); // ok
           menuSliderClick.style.width = `${width}%`;
           menuSliderClick.style.marginLeft = `${tempMarginLeft}%`;
+          console.log(`width2 = ${width},tempMarginLeft2 = ${tempMarginLeft}`);
         };
       });
     }
