@@ -34,12 +34,13 @@ const PageAccessoriesModal = (props) => {
   }
 
   const menu = document.getElementsByClassName('nav'); // 上部に持ってきた
+  const navTitle = document.getElementById('nav-title');
   // Values are set.
 
   // Might make this dynamic for px, %, pt, em
   function getPercentage(min, max) {
     console.log(`min is ${min}`);
-    console.log(`max is ${min}`);
+    console.log(`max is ${max}`);
 
     return min / max * 100;
   }
@@ -56,7 +57,8 @@ const PageAccessoriesModal = (props) => {
   function navSlider(menu, callback) { // ok
     const arrayMenu1 = Array.from(menu);
     const menuWidth = arrayMenu1.offsetWidth; // not ok
-    console.log(`arrayMenu1 = ${arrayMenu1}, menu.offsetWidth =${menu.offsetWidth}, menuWidth = ${menuWidth} `);
+    console.log(`menu = ${menu}, menuWidth = ${menu.offsetWidth} `);
+    console.log(`arrayMenu1 = ${arrayMenu1}, menuWidth = ${menuWidth} `);
     // We only want the <li> </li> tags
     const navTabs = document.querySelectorAll('li.nav-link');
 
@@ -64,10 +66,12 @@ const PageAccessoriesModal = (props) => {
       const marginLeft = [];
       // Loop through nav children i.e li
       [].forEach.call(navTabs, (el, index) => {
-        console.log(navTabs);
+        console.log(`navTabs = ${navTabs}`);
+        console.log(`el.offsetWidth = ${el.offsetWidth}`);
+        console.log(`menuWidth = ${menuWidth}`); // undefined
         // Dynamic width/margin calculation for hr
-        const width = getPercentage(el.offsetWidth, menuWidth);
-        console.log(width);
+        const width = getPercentage(el.offsetWidth, 1200);
+        console.log(`width = ${width}`);
         let tempMarginLeft = 0;
         // We don't want to modify first elements positioning
         if (index !== 0) {
@@ -93,12 +97,12 @@ const PageAccessoriesModal = (props) => {
 
       navSlider(arrayMenu, (el, width, tempMarginLeft) => {
         console.log('navSlider functionが実行されようとしている');
+        console.log(`width = ${width}`); // not ok
+        console.log(`tempMarginLeft = ${tempMarginLeft}`);
         el.onclick = () => {
-          console.log('el がクリックされた');
+          console.log('el がクリックされた'); // ok
           menuSliderClick.style.width = `${width}%`;
           menuSliderClick.style.marginLeft = `${tempMarginLeft}%`;
-          console.log(`width = ${width}`);
-          console.log(`tempMarginLeft = ${tempMarginLeft}`);
         };
       });
       // ↑二個目の引数は、新たに関数を作成し、それを呼び出す必要がありそう(onCkickした時の挙動で)
