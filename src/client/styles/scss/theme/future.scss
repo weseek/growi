@@ -14,7 +14,7 @@ html[dark] {
 
   // Font colors
   $color-global: #95abba;
-  $color-reversal: #222;
+  $color-reversal: $gray-900;
   $color-header: #95abba;
   $color-link: $accentcolor;
   $color-link-hover: lighten($color-link, 20%);

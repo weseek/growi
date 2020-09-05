@@ -11,7 +11,7 @@ module.exports = {
   HACKMD_URI: 'http://localhost:3010',
   HACKMD_URI_FOR_SERVER: 'http://hackmd:3000',
   // DRAWIO_URI: 'http://localhost:8080/?offline=1&https=0',
-  // CONFIG_PUBSUB_SERVER_TYPE: 'nchan',
+  // S2SMSG_PUBSUB_SERVER_TYPE: 'nchan',
   PLUGIN_NAMES_TOBE_LOADED: [
     // 'growi-plugin-lsx',
     // 'growi-plugin-pukiwiki-like-linker',

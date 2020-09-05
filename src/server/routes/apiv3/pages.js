@@ -7,6 +7,7 @@ const express = require('express');
 
 const router = express.Router();
 
+
 /**
  * @swagger
  *  tags:
@@ -84,12 +85,14 @@ module.exports = (crowi) => {
   });
 
   router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
-
-    // path は一時的なものです。クライアントを実装した際に渡します。GW-3297 or 3298
-    const path = '/hoge';
+    const { path } = req.query;
+    const limit = +req.query.limit || 30;
+    const offset = +req.query.offset || 0;
+    const queryOptions = { offset, limit };
 
     try {
-      const result = await Page.findListWithDescendants(path, req.user);
+      const result = await Page.findListWithDescendants(path, req.user, queryOptions);
+
       return res.apiv3(result);
     }
     catch (err) {

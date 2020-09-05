@@ -8,7 +8,11 @@ const router = express.Router();
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
-// TODO: add swagger by GW3441
+/**
+ * @swagger
+ *  tags:
+ *    name: Attachment
+ */
 
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
@@ -16,6 +20,24 @@ module.exports = (crowi) => {
   const Page = crowi.model('Page');
   const Attachment = crowi.model('Attachment');
 
+  /**
+   * @swagger
+   *
+   *    /attachment/list:
+   *      get:
+   *        tags: [Attachment]
+   *        description: Get attachment list
+   *        responses:
+   *          200:
+   *            description: Return attachment list
+   *        parameters:
+   *          - name: page_id
+   *            in: query
+   *            required: true
+   *            description: page id
+   *            schema:
+   *              type: string
+   */
   router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
 
     try {

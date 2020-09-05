@@ -10,6 +10,7 @@ module.exports = function(crowi, app) {
   const loginRequiredStrictly = require('../middlewares/login-required')(crowi);
   const loginRequired = require('../middlewares/login-required')(crowi, true);
   const adminRequired = require('../middlewares/admin-required')(crowi);
+  const certifySharedFile = require('../middlewares/certify-shared-file')(crowi);
   const csrf = require('../middlewares/csrf')(crowi);
 
   const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
@@ -24,7 +25,6 @@ module.exports = function(crowi, app) {
   const attachment = require('./attachment')(crowi, app);
   const comment = require('./comment')(crowi, app);
   const tag = require('./tag')(crowi, app);
-  const revision = require('./revision')(crowi, app);
   const search = require('./search')(crowi, app);
   const hackmd = require('./hackmd')(crowi, app);
 
@@ -89,7 +89,6 @@ module.exports = function(crowi, app) {
   app.get('/admin/notification'              , loginRequiredStrictly , adminRequired , admin.notification.index);
   app.get('/admin/notification/slackAuth'    , loginRequiredStrictly , adminRequired , admin.notification.slackAuth);
   app.get('/admin/notification/slackSetting/disconnect', loginRequiredStrictly , adminRequired , admin.notification.disconnectFromSlack);
-  app.get('/_api/admin/users.search'         , loginRequiredStrictly , adminRequired , admin.api.usersSearch);
   app.get('/admin/global-notification/new'   , loginRequiredStrictly , adminRequired , admin.globalNotification.detail);
   app.get('/admin/global-notification/:id'   , loginRequiredStrictly , adminRequired , admin.globalNotification.detail);
 
@@ -120,7 +119,7 @@ module.exports = function(crowi, app) {
 
   app.get('/:id([0-9a-z]{24})'       , loginRequired , page.redirector);
   app.get('/_r/:id([0-9a-z]{24})'    , loginRequired , page.redirector); // alias
-  app.get('/attachment/:id([0-9a-z]{24})'  , loginRequired, attachment.api.get);
+  app.get('/attachment/:id([0-9a-z]{24})' , certifySharedFile , loginRequired, attachment.api.get);
   app.get('/attachment/profile/:id([0-9a-z]{24})' , loginRequired, attachment.api.get);
   app.get('/attachment/:pageId/:fileName', loginRequired, attachment.api.obsoletedGetForMongoDB); // DEPRECATED: remains for backward compatibility for v3.3.x or below
   app.get('/download/:id([0-9a-z]{24})'    , loginRequired, attachment.api.download);
@@ -164,10 +163,6 @@ module.exports = function(crowi, app) {
   app.post('/_api/attachments.removeProfileImage'   , accessTokenParser , loginRequiredStrictly , csrf, attachment.api.removeProfileImage);
   app.get('/_api/attachments.limit'   , accessTokenParser , loginRequiredStrictly, attachment.api.limit);
 
-  app.get('/_api/revisions.get'       , accessTokenParser , loginRequired , revision.api.get);
-  app.get('/_api/revisions.ids'       , accessTokenParser , loginRequired , revision.api.ids);
-  app.get('/_api/revisions.list'      , accessTokenParser , loginRequired , revision.api.list);
-
   app.get('/trash$'                   , loginRequired , page.trashPageShowWrapper);
   app.get('/trash/$'                  , loginRequired , page.trashPageListShowWrapper);
   app.get('/trash/*/$'                , loginRequired , page.deletedPageListShowWrapper);
@@ -177,6 +172,8 @@ module.exports = function(crowi, app) {
   app.post('/_api/hackmd.integrate'      , accessTokenParser , loginRequiredStrictly , csrf, hackmd.validateForApi, hackmd.integrate);
   app.post('/_api/hackmd.discard'        , accessTokenParser , loginRequiredStrictly , csrf, hackmd.validateForApi, hackmd.discard);
   app.post('/_api/hackmd.saveOnHackmd'   , accessTokenParser , loginRequiredStrictly , csrf, hackmd.validateForApi, hackmd.saveOnHackmd);
+
+  app.get('/share/:linkId', page.showSharedPage);
 
   app.get('/*/$'                   , loginRequired , page.showPageWithEndOfSlash, page.notFound);
   app.get('/*'                     , loginRequired , page.showPage, page.notFound);

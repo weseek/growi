@@ -3,20 +3,20 @@ const logger = require('@alias/logger')('growi:service:CustomizeService');
 
 const DevidedPagePath = require('@commons/models/devided-page-path');
 
-const ConfigPubsubMessage = require('../models/vo/config-pubsub-message');
-const ConfigPubsubMessageHandlable = require('./config-pubsub/handlable');
+const S2sMessage = require('../models/vo/s2s-message');
+const S2sMessageHandlable = require('./s2s-messaging/handlable');
 
 
 /**
  * the service class of CustomizeService
  */
-class CustomizeService extends ConfigPubsubMessageHandlable {
+class CustomizeService extends S2sMessageHandlable {
 
   constructor(crowi) {
     super();
 
     this.configManager = crowi.configManager;
-    this.configPubsub = crowi.configPubsub;
+    this.s2sMessagingService = crowi.s2sMessagingService;
     this.appService = crowi.appService;
     this.xssService = crowi.xssService;
 
@@ -26,19 +26,19 @@ class CustomizeService extends ConfigPubsubMessageHandlable {
   /**
    * @inheritdoc
    */
-  shouldHandleConfigPubsubMessage(configPubsubMessage) {
-    const { eventName, updatedAt } = configPubsubMessage;
+  shouldHandleS2sMessage(s2sMessage) {
+    const { eventName, updatedAt } = s2sMessage;
     if (eventName !== 'customizeServiceUpdated' || updatedAt == null) {
       return false;
     }
 
-    return this.lastLoadedAt == null || this.lastLoadedAt < new Date(configPubsubMessage.updatedAt);
+    return this.lastLoadedAt == null || this.lastLoadedAt < new Date(s2sMessage.updatedAt);
   }
 
   /**
    * @inheritdoc
    */
-  async handleConfigPubsubMessage(configPubsubMessage) {
+  async handleS2sMessage(s2sMessage) {
     const { configManager } = this;
 
     logger.info('Reset customized value by pubsub notification');
@@ -48,16 +48,16 @@ class CustomizeService extends ConfigPubsubMessageHandlable {
   }
 
   async publishUpdatedMessage() {
-    const { configPubsub } = this;
+    const { s2sMessagingService } = this;
 
-    if (configPubsub != null) {
-      const configPubsubMessage = new ConfigPubsubMessage('customizeServiceUpdated', { updatedAt: new Date() });
+    if (s2sMessagingService != null) {
+      const s2sMessage = new S2sMessage('customizeServiceUpdated', { updatedAt: new Date() });
 
       try {
-        await configPubsub.publish(configPubsubMessage);
+        await s2sMessagingService.publish(s2sMessage);
       }
       catch (e) {
-        logger.error('Failed to publish update message with configPubsub: ', e.message);
+        logger.error('Failed to publish update message with S2sMessagingService: ', e.message);
       }
     }
   }

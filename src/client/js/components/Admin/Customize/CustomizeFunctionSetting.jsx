@@ -62,23 +62,6 @@ class CustomizeFunctionSetting extends React.Component {
             <div className="form-group row">
               <div className="offset-md-3 col-md-6 text-left">
                 <CustomizeFunctionOption
-                  optionId="isEnabledTimeline"
-                  label={t('admin:customize_setting.function_options.timeline')}
-                  isChecked={adminCustomizeContainer.state.isEnabledTimeline}
-                  onChecked={() => { adminCustomizeContainer.switchEnableTimeline() }}
-                >
-                  <p className="form-text text-muted">
-                    {t('admin:customize_setting.function_options.timeline_desc1')}<br />
-                    {t('admin:customize_setting.function_options.timeline_desc2')}<br />
-                    {t('admin:customize_setting.function_options.timeline_desc3')}
-                  </p>
-                </CustomizeFunctionOption>
-              </div>
-            </div>
-
-            <div className="form-group row">
-              <div className="offset-md-3 col-md-6 text-left">
-                <CustomizeFunctionOption
                   optionId="isSavedStatesOfTabChanges"
                   label={t('admin:customize_setting.function_options.tab_switch')}
                   isChecked={adminCustomizeContainer.state.isSavedStatesOfTabChanges}

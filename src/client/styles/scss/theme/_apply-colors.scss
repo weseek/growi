@@ -3,18 +3,19 @@
 //
 
 // determine optional variables
-$border-image-navbar: linear-gradient(to right, #ccc 0%, #ccc 100%) !default;
+$border-image-navbar: linear-gradient(to right, $gray-300 0%, $gray-300 100%) !default;
 $bgcolor-search-top-dropdown: $secondary !default;
 $bgcolor-sidebar-nav-item-active: darken($bgcolor-sidebar, 10%) !default;
 $text-shadow-sidebar-nav-item-active: 1px 1px 2px $primary !default;
-$bgcolor-inline-code: #f0f0f0 !default;
-$color-inline-code: #c7254e !default;
-$bordercolor-inline-code: #ccc8c8 !default;
-$bordercolor-nav-tabs: #dee2e6 !default;
-$bordercolor-nav-tabs-hover: #e9ecef #e9ecef $bordercolor-nav-tabs !default;
-$color-nav-tabs-link-active: #495057 !default;
+$bgcolor-inline-code: $gray-100 !default;
+$color-inline-code: darken($red, 15%) !default;
+$bordercolor-inline-code: $gray-400 !default;
+$bordercolor-nav-tabs: $gray-300 !default;
+$bordercolor-nav-tabs-hover: $gray-200 $gray-200 $bordercolor-nav-tabs !default;
+$color-nav-tabs-link-active: $gray-600 !default;
 $bordercolor-nav-tabs-active: $bordercolor-nav-tabs $bordercolor-nav-tabs $bgcolor-global !default;
-$color-seen-user: #549c79;
+$bordercolor-toc: $bordercolor-nav-tabs !default;
+$color-seen-user: #549c79 !default;
 
 // override bootstrap variables
 $body-bg: $bgcolor-global;
@@ -80,12 +81,24 @@ pre:not(.hljs):not(.CodeMirror-line) {
   color: $color-global;
 }
 
+.grw-personal-dropdown {
+  .grw-icon-container svg {
+    fill: $color-global;
+  }
+  .grw-icon-container-muted svg {
+    fill: $secondary;
+  }
+}
+
 .dropdown-item {
   color: $color-global;
-  &.active,
-  &:active {
+  &:active,
+  &.active {
     color: $color-dropdown-link-active;
     background-color: $bgcolor-dropdown-link-active;
+  }
+  &:hover {
+    background-color: $light;
   }
 }
 
@@ -247,21 +260,22 @@ pre:not(.hljs):not(.CodeMirror-line) {
 }
 
 .top-of-table-contents {
-  border-color: $bordercolor-nav-tabs;
-  .table-top-icon {
+  border-color: $bordercolor-toc;
+
+  .grw-btn-top-of-table {
     fill: $color-link;
   }
-  .btn.btn-seen-user-lists {
-    color: $color-seen-user;
-    &:active {
+  .grw-seen-user-list {
+    border-color: $bordercolor-toc;
+
+    .btn {
       color: $color-seen-user;
-    }
-    &:focus {
-      outline: none;
-      box-shadow: none;
-    }
-    .footstamp-icon {
-      fill: $color-seen-user;
+      &:active {
+        color: $color-seen-user;
+      }
+      .footstamp-icon {
+        fill: $color-seen-user;
+      }
     }
   }
 }
@@ -270,7 +284,7 @@ pre:not(.hljs):not(.CodeMirror-line) {
   .nav-title {
     color: $color-link;
   }
-  .table-top-icon {
+  .nav-link svg {
     fill: $color-link;
   }
   .active-border {
@@ -293,7 +307,7 @@ pre:not(.hljs):not(.CodeMirror-line) {
  */
 .admin-page {
   span.slider {
-    background-color: #ccc;
+    background-color: $gray-300;
 
     &:before {
       background-color: white;
@@ -359,7 +373,7 @@ body.on-edit {
   }
 
   .grw-editor-navbar-bottom {
-    background-color: darken($bgcolor-global, 2%);
+    background-color: $gray-50;
   }
 }
 
@@ -452,4 +466,14 @@ mark.rbt-highlight-text {
  */
 .bg-box {
   background-color: $bgcolor-global;
+}
+
+.grw-fab {
+  .btn-create-page {
+    fill: color-yiq($primary);
+  }
+
+  .btn-scroll-to-top {
+    fill: $gray-900;
+  }
 }
