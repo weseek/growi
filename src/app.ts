@@ -33,11 +33,7 @@ async function main() {
 
     if (hasProcessFlag('ci')) {
       logger.info('"--ci" flag is detected. Exit process.');
-
-      // TODO: close express server
-      // server.close(() => {
       process.exit();
-      // });
     }
   }
   catch (err) {
