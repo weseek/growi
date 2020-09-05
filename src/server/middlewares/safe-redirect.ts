@@ -18,9 +18,15 @@ export interface ResWithSafeRedirect extends Res {
 @Middleware()
 export class SafeRedirectMiddleware {
 
-  whitelistOfHosts: string[] = [];
+  static whitelistOfHosts: string[] = [];
+
+  static setWhitelistOfHosts(whitelistOfHosts: string[]): void {
+    SafeRedirectMiddleware.whitelistOfHosts = whitelistOfHosts;
+  }
 
   use(@Req() req: Req, @Res() res: ResWithSafeRedirect, @Next() next: Next): void {
+    const { whitelistOfHosts } = SafeRedirectMiddleware;
+
     // extend res object
     res.safeRedirect = (redirectTo) => {
       if (redirectTo == null) {
@@ -39,10 +45,10 @@ export class SafeRedirectMiddleware {
         // check whitelisted redirect
         const isWhitelisted = this.isInWhitelist(redirectTo);
         if (isWhitelisted) {
-          logger.debug(`Requested redirect URL (${redirectTo}) is in whitelist.`, `whitelist=${this.whitelistOfHosts}`);
+          logger.debug(`Requested redirect URL (${redirectTo}) is in whitelist.`, `whitelist=${whitelistOfHosts}`);
           return res.redirect(redirectTo);
         }
-        logger.debug(`Requested redirect URL (${redirectTo}) is NOT in whitelist.`, `whitelist=${this.whitelistOfHosts}`);
+        logger.debug(`Requested redirect URL (${redirectTo}) is NOT in whitelist.`, `whitelist=${whitelistOfHosts}`);
       }
       catch (err) {
         logger.warn(`Requested redirect URL (${redirectTo}) is invalid.`, err);
@@ -61,7 +67,7 @@ export class SafeRedirectMiddleware {
    * @param redirectToFqdn
    */
   private isInWhitelist(redirectToFqdn): boolean {
-    const { whitelistOfHosts } = this;
+    const { whitelistOfHosts } = SafeRedirectMiddleware;
 
     if (whitelistOfHosts == null || whitelistOfHosts.length === 0) {
       return false;
