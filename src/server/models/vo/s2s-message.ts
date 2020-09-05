@@ -1,20 +1,26 @@
 /**
  * Server-to-server message VO
  */
-class S2sMessage {
+export default class S2sMessage {
 
-  constructor(eventName, body = {}) {
+  eventName: string;
+
+  publisherUid: number;
+
+  constructor(eventName: string, body = {}) {
     this.eventName = eventName;
+    this.publisherUid = 0;
+
     for (const [key, value] of Object.entries(body)) {
       this[key] = value;
     }
   }
 
-  setPublisherUid(uid) {
+  setPublisherUid(uid: number): void {
     this.publisherUid = uid;
   }
 
-  static parse(messageString) {
+  static parse(messageString: string): S2sMessage {
     const body = JSON.parse(messageString);
 
     if (body.eventName == null) {
@@ -25,5 +31,3 @@ class S2sMessage {
   }
 
 }
-
-module.exports = S2sMessage;
