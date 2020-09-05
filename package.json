@@ -111,7 +111,7 @@
     "express-webpack-assets": "^0.1.0",
     "graceful-fs": "^4.1.11",
     "growi-commons": "^5.0.3",
-    "helmet": "^3.13.0",
+    "helmet": "^4.1.0",
     "is-iso-date": "^0.0.1",
     "lucene-query-parser": "^1.2.0",
     "md5": "^2.2.1",

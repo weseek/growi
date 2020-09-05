@@ -1,10 +1,14 @@
 import { Configuration, Inject, PlatformApplication } from '@tsed/common';
 import { GlobalAcceptMimesMiddleware } from '@tsed/platform-express';
 import express from 'express';
+import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import methodOverride from 'method-override';
 
+import loggerFactory from '~/utils/logger';
+
 const rootDir = __dirname;
+const logger = loggerFactory('growi:Server');
 
 @Configuration({
   rootDir,
@@ -27,12 +31,18 @@ export class Server {
   public $beforeRoutesInit(): void | Promise<any> {
     this.app
       .use(GlobalAcceptMimesMiddleware) // optional
+      .use(helmet())
       .use(cookieParser())
       .use(methodOverride())
-      .use(express.json())
-      .use(express.urlencoded({
-        extended: true,
-      }));
+      .use(express.json({ limit: '50mb' }))
+      .use(express.urlencoded({ extended: true, limit: '50mb' }));
+
+    const { raw: expressApp } = this.app;
+    this.setupSession(expressApp);
+  }
+
+  private setupSession(app: Express.Application): void {
+    logger.info('Setup session');
   }
 
 }
