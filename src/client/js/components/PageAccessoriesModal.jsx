@@ -49,8 +49,9 @@ const PageAccessoriesModal = (props) => {
   }
 
   function navSlider(menu, callback) { // ok
-    const menuWidth = menu.offsetWidth; // not ok
-    console.log(`menu = ${menu}, menu.offsetWidth =${menu.offsetWidth}, menuWidth = ${menuWidth} `);
+    const arrayMenu1 = Array.from(menu);
+    const menuWidth = arrayMenu1.offsetWidth; // not ok
+    console.log(`arrayMenu1 = ${arrayMenu1}, menu.offsetWidth =${menu.offsetWidth}, menuWidth = ${menuWidth} `);
     // We only want the <li> </li> tags
     const navTabs = document.querySelectorAll('li.nav-link');
 
@@ -80,15 +81,14 @@ const PageAccessoriesModal = (props) => {
     const menuSliderClick = document.getElementById('nav_slide_click');
     console.log('menu clicked');
     if (menuSliderClick) {
-      console.log('これはif文の中');
       console.log(`menu = ${menu}`);
       const arrayMenu = Array.from(menu); // 変換してみた
-      // console.log(`arrayMenu = ${arrayMenu}, el = ${el}, width = ${width}, tempMarginLeft = ${tempMarginLeft} `);
+      console.log(`arrayMenu = ${arrayMenu}`);
+      console.log(`arrayMenu.length = ${arrayMenu.length}`);
 
-      // ↓ここをどうにかする必要がある
-      navSlider(arrayMenu[1], (el, width, tempMarginLeft) => {
+      navSlider(arrayMenu, (el, width, tempMarginLeft) => {
         console.log('navSlider functionが実行されようとしている');
-        el.onclick = () => { // このonClickは使えるのか?
+        el.onclick = () => {
           console.log('el がクリックされた');
           menuSliderClick.style.width = `${width}%`;
           menuSliderClick.style.marginLeft = `${tempMarginLeft}%`;
