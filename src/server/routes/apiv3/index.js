@@ -44,7 +44,7 @@ module.exports = (crowi) => {
   router.use('/share-links', require('./share-links')(crowi));
 
   router.use('/bookmarks', require('./bookmarks')(crowi));
-  router.use('/attachments', require('./attachments')(crowi));
+  router.use('/attachment', require('./attachment')(crowi));
 
   return router;
 };
