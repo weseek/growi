@@ -6,12 +6,12 @@ import dateFnsFormat from 'date-fns/format';
 import parse from 'date-fns/parse';
 
 import { isInteger } from 'core-js/fn/number';
-import { withUnstatedContainers } from './UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
-import { toastSuccess, toastError } from '../util/apiNotification';
+import { toastSuccess, toastError } from '../../util/apiNotification';
 
-import AppContainer from '../services/AppContainer';
-import PageContainer from '../services/PageContainer';
+import AppContainer from '../../services/AppContainer';
+import PageContainer from '../../services/PageContainer';
 
 class ShareLinkForm extends React.Component {
 

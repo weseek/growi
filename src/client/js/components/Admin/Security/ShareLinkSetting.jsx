@@ -11,7 +11,7 @@ import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 
 import DeleteAllShareLinksModal from './DeleteAllShareLinksModal';
-import ShareLinkList from '../../ShareLinkList';
+import ShareLinkList from '../../ShareLink/ShareLinkList';
 
 class ShareLinkSetting extends React.Component {
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { UncontrolledTooltip } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
+import urljoin from 'url-join';
 
 import { isTopPage } from '@commons/util/path-utils';
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -58,6 +59,36 @@ const PageManagement = (props) => {
   }
 
 
+  // TODO GW-2746 bulk export pages
+  // async function getArchivePageData() {
+  //   try {
+  //     const res = await appContainer.apiv3Get('page/count-children-pages', { pageId });
+  //     setTotalPages(res.data.dummy);
+  //   }
+  //   catch (err) {
+  //     setErrorMessage(t('export_bulk.failed_to_count_pages'));
+  //   }
+  // }
+
+  async function exportPageHandler(format) {
+    const { pageId, revisionId } = pageContainer.state;
+    const url = new URL(urljoin(window.location.origin, '_api/v3/page/export', pageId));
+    url.searchParams.append('format', format);
+    url.searchParams.append('revisionId', revisionId);
+    window.location.href = url.href;
+  }
+
+  // TODO GW-2746 create api to bulk export pages
+  // function openArchiveModalHandler() {
+  //   setIsArchiveCreateModalShown(true);
+  //   getArchivePageData();
+  // }
+
+  // TODO GW-2746 create api to bulk export pages
+  // function closeArchiveCreateModalHandler() {
+  //   setIsArchiveCreateModalShown(false);
+  // }
+
   function renderDropdownItemForNotTopPage() {
     return (
       <>
@@ -67,6 +98,13 @@ const PageManagement = (props) => {
         <button className="dropdown-item" type="button" onClick={openPageDuplicateModalHandler}>
           <i className="icon-fw icon-docs"></i> { t('Duplicate') }
         </button>
+        <button type="button" className="dropdown-item" onClick={() => { exportPageHandler('md') }}>
+          <i className="icon-fw icon-cloud-download"></i>{t('export_bulk.export_page_markdown')}
+        </button>
+        {/* TODO GW-2746 create api to bulk export pages */}
+        {/* <button className="dropdown-item" type="button" onClick={openArchiveModalHandler}>
+          <i className="icon-fw"></i>{t('Create Archive Page')}
+        </button> */}
         <div className="dropdown-divider"></div>
       </>
     );

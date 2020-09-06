@@ -32,51 +32,24 @@ class PageAttachment extends React.Component {
     this.onAttachmentDeleteClickedConfirm = this.onAttachmentDeleteClickedConfirm.bind(this);
   }
 
-  // componentWillMount() {
-  //   this.showPages(1);
-  // }
-
-  componentDidMount() {
+  async componentDidMount() {
     const { pageId } = this.props.pageContainer.state;
 
     if (!pageId) {
       return;
     }
 
-    this.props.appContainer.apiGet('/attachments.list', { page_id: pageId })
-      .then((res) => {
-        const attachments = res.attachments;
-        const inUse = {};
+    const res = await this.props.appContainer.apiv3Get('/attachment/list', { pageId });
+    const attachments = res.data.result.attachments;
+    const inUse = {};
 
-        for (const attachment of attachments) {
-          inUse[attachment._id] = this.checkIfFileInUse(attachment);
-        }
+    for (const attachment of attachments) {
+      inUse[attachment._id] = this.checkIfFileInUse(attachment);
+    }
 
-        this.setState({
-          attachments,
-          inUse,
-        });
-      });
-
-    this.showPages(1);
-  }
-
-  async handlePage(selectedPage) {
-    await this.showPages(selectedPage);
-  }
-
-  async showPages(selectedPage) {
-    const { appContainer, pageContainer } = this.props;
-    const { path } = pageContainer.state;
-    const limit = this.state.limit;
-    const offset = (selectedPage - 1) * limit;
-    // ここが違う。エンドポイントは attachment.js apiv3 だが、そこに pagination がないためこの機能が実装できない。先にそちらを行う。
-    const res = await appContainer.apiv3Get('/pages/list', { path, limit, offset });
-    const activePage = selectedPage;
-    const totalPages = res.data.totalCount;
     this.setState({
-      activePage,
-      totalPages,
+      attachments,
+      inUse,
     });
   }
 

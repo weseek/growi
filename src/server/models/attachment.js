@@ -7,6 +7,7 @@ const path = require('path');
 
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
@@ -29,6 +30,7 @@ module.exports = function(crowi) {
     createdAt: { type: Date, default: Date.now },
   });
   attachmentSchema.plugin(uniqueValidator);
+  attachmentSchema.plugin(mongoosePaginate);
 
   attachmentSchema.virtual('filePathProxied').get(function() {
     return `/attachment/${this._id}`;
@@ -61,6 +63,15 @@ module.exports = function(crowi) {
     attachment.createdAt = Date.now();
 
     return attachment;
+  };
+
+  attachmentSchema.static.paginateAttachments = function() {
+    const query = {};
+    const options = Object.assign({ populate: 'user' });
+    if (options.page == null) {
+      options.page = 1;
+    }
+    return this.paginate(query, options);
   };
 
   return mongoose.model('Attachment', attachmentSchema);
