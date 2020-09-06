@@ -23,7 +23,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /attachments/list:
+   *    /attachment/list:
    *      get:
    *        tags: [Attachment]
    *        description: Get attachment list
