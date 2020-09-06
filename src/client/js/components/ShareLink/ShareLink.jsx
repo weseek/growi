@@ -1,23 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {
-  Modal, ModalHeader, ModalBody,
-} from 'reactstrap';
-
 import { withTranslation } from 'react-i18next';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
-import { withUnstatedContainers } from './UnstatedUtils';
-
-import AppContainer from '../services/AppContainer';
-import PageContainer from '../services/PageContainer';
+import AppContainer from '../../services/AppContainer';
+import PageContainer from '../../services/PageContainer';
 
 import ShareLinkList from './ShareLinkList';
 import ShareLinkForm from './ShareLinkForm';
 
-import { toastSuccess, toastError } from '../util/apiNotification';
+import { toastSuccess, toastError } from '../../util/apiNotification';
 
-class OutsideShareLinkModal extends React.Component {
+class ShareLink extends React.Component {
 
   constructor() {
     super();
@@ -90,33 +85,27 @@ class OutsideShareLinkModal extends React.Component {
     const { t } = this.props;
 
     return (
-      <Modal size="xl" isOpen={this.props.isOpen} toggle={this.props.onClose}>
-        <ModalHeader tag="h4" toggle={this.props.onClose} className="bg-primary text-light">{t('share_links.Shere this page link to public')}
-        </ModalHeader>
-        <ModalBody>
-          <div className="container">
-            <h3 className="grw-modal-head  d-flex  pb-2">
-              { t('share_links.share_link_list') }
-              <button className="btn btn-danger ml-auto " type="button" onClick={this.deleteAllLinksButtonHandler}>{t('delete_all')}</button>
-            </h3>
+      <div className="container">
+        <h3 className="grw-modal-head  d-flex  pb-2">
+          { t('share_links.share_link_list') }
+          <button className="btn btn-danger ml-auto " type="button" onClick={this.deleteAllLinksButtonHandler}>{t('delete_all')}</button>
+        </h3>
 
-            <div>
-              <ShareLinkList
-                shareLinks={this.state.shareLinks}
-                onClickDeleteButton={this.deleteLinkById}
-              />
-              <button
-                className="btn btn-outline-secondary d-block mx-auto px-5 mb-3"
-                type="button"
-                onClick={this.toggleShareLinkFormHandler}
-              >
-                {this.state.isOpenShareLinkForm ? t('Close') : t('New')}
-              </button>
-              {this.state.isOpenShareLinkForm && <ShareLinkForm onCloseForm={this.toggleShareLinkFormHandler} />}
-            </div>
-          </div>
-        </ModalBody>
-      </Modal>
+        <div>
+          <ShareLinkList
+            shareLinks={this.state.shareLinks}
+            onClickDeleteButton={this.deleteLinkById}
+          />
+          <button
+            className="btn btn-outline-secondary d-block mx-auto px-5 mb-3"
+            type="button"
+            onClick={this.toggleShareLinkFormHandler}
+          >
+            {this.state.isOpenShareLinkForm ? t('Close') : t('New')}
+          </button>
+          {this.state.isOpenShareLinkForm && <ShareLinkForm onCloseForm={this.toggleShareLinkFormHandler} />}
+        </div>
+      </div>
     );
   }
 
@@ -125,9 +114,9 @@ class OutsideShareLinkModal extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const ModalControlWrapper = withUnstatedContainers(OutsideShareLinkModal, [AppContainer, PageContainer]);
+const ShareLinkWrapper = withUnstatedContainers(ShareLink, [AppContainer, PageContainer]);
 
-OutsideShareLinkModal.propTypes = {
+ShareLink.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
@@ -136,4 +125,4 @@ OutsideShareLinkModal.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-export default withTranslation()(ModalControlWrapper);
+export default withTranslation()(ShareLinkWrapper);
