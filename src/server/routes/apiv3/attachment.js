@@ -39,10 +39,12 @@ module.exports = (crowi) => {
    *              type: string
    */
   router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
+    const offset = +req.query.offset || 0;
+    const limit = +req.query.limit || 30;
+    const queryOptions = { offset, limit };
 
     try {
       const pageId = req.query.pageId;
-
       // check whether accessible
       const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
       if (!isAccessible) {
@@ -50,9 +52,12 @@ module.exports = (crowi) => {
         return res.apiv3Err(new ErrorV3(msg, 'attachment-list-failed'), 403);
       }
 
-      const attachments = await Attachment.find({ page: pageId });
+      const paginateResult = await Attachment.paginate(
+        { page: pageId },
+        queryOptions,
+      );
 
-      return res.apiv3({ attachments });
+      return res.apiv3({ paginateResult });
 
     }
     catch (err) {
