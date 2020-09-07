@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
-import PageContainer from '../../services/PageContainer';
 
 import PaginationWrapper from '../PaginationWrapper';
 
@@ -34,14 +33,13 @@ class RecentCreated extends React.Component {
   }
 
   async getRecentCreatedList(selectPageNumber) {
-    const { appContainer, pageContainer } = this.props;
-    const { creator } = pageContainer.state;
+    const { appContainer, userId } = this.props;
 
     const limit = appContainer.getConfig().recentCreatedLimit;
     const offset = (selectPageNumber - 1) * limit;
 
     // pagesList get and pagination calculate
-    const res = await appContainer.apiv3Get(`/users/${creator._id}/recent`, { offset, limit });
+    const res = await appContainer.apiv3Get(`/users/${userId}/recent`, { offset, limit });
     const { totalCount, pages } = res.data;
 
     this.setState({
@@ -90,11 +88,12 @@ class RecentCreated extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const RecentCreatedWrapper = withUnstatedContainers(RecentCreated, [AppContainer, PageContainer]);
+const RecentCreatedWrapper = withUnstatedContainers(RecentCreated, [AppContainer]);
 
 RecentCreated.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+
+  userId: PropTypes.string.isRequired,
 };
 
 export default RecentCreatedWrapper;
