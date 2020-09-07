@@ -27,11 +27,11 @@ class GrowiDocument extends Document<GrowiDocumentProps> {
     const customManifest: any = await importCustomManifest();
     const bootJsPath = path.join('/_next', customManifest['boot.js']);
 
-    const { configManager } = ctx.req?.crowi;
+    // const { configManager } = ctx.req?.crowi;
 
-    const layout = configManager.getConfig('crowi', 'customize:layout');
+    // const layout = configManager.getConfig('crowi', 'customize:layout');
 
-    return { ...initialProps, bootJsPath, layout };
+    return { ...initialProps, bootJsPath, layout: 'growi' };
   }
 
   render(): JSX.Element {

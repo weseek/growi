@@ -1,7 +1,9 @@
 import {
-  Configuration, Inject, PlatformApplication, Value,
+  Configuration, Inject, PlatformApplication, Value, PlatformRouter,
 } from '@tsed/common';
 import { GlobalAcceptMimesMiddleware } from '@tsed/platform-express';
+
+import next from 'next';
 
 import express from 'express';
 import helmet from 'helmet';
@@ -13,6 +15,8 @@ import mongoose from 'mongoose';
 import loggerFactory from '~/utils/logger';
 import { SafeRedirectMiddleware } from './server/middlewares/safe-redirect';
 import { getMongoUri, mongoOptions } from './server/util/mongoose-utils';
+
+import { NextCtrl } from './controllers/next';
 
 const rootDir = __dirname;
 const logger = loggerFactory('growi:Server');
@@ -28,6 +32,11 @@ const logger = loggerFactory('growi:Server');
     '${rootDir}/server/service/**/*.ts',
     /* eslint-enable no-template-curly-in-string */
   ],
+  mount: {
+    '/': [
+      NextCtrl,
+    ],
+  },
   mongoose: [ // @tsed/mongoose format configuration
     {
       id: 'default',
@@ -62,7 +71,7 @@ export class Server {
   public $beforeRoutesInit(): void | Promise<any> {
     this.app
       .use(GlobalAcceptMimesMiddleware)
-      .use(helmet())
+      // .use(helmet())
       .use(cookieParser())
       .use(methodOverride())
       .use(express.json({ limit: '50mb' }))
@@ -76,5 +85,24 @@ export class Server {
   private setupSession(app: Express.Application): void {
     logger.info('Setup session');
   }
+
+  // public async $afterRoutesInit(): Promise<void> {
+  //   const { raw: expressApp } = this.app;
+  //   await this.setupNextApp(expressApp);
+  // }
+
+  // private async setupNextApp(expressApp: Express.Application): Promise<void> {
+  //   const dev = process.env.NODE_ENV !== 'production';
+  //   const nextApp = next({ dev });
+
+  //   await nextApp.prepare();
+
+  //   const handle = nextApp.getRequestHandler();
+
+  //   this.router.get('/*', (req, res) => {
+  //     // req.crowi = this;
+  //     return handle(req, res);
+  //   });
+  // }
 
 }
