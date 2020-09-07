@@ -5,7 +5,7 @@ import loggerFactory from '~/utils/logger';
 
 import ConfigModel from '../models/config';
 import S2sMessage from '../models/vo/s2s-message';
-import S2sMessageHandlable from './s2s-messaging/handlable';
+import { S2sMessageHandlable } from './s2s-messaging/handlable';
 import ConfigLoader, { ConfigObject } from './config-loader';
 import { S2sMessagingService } from './s2s-messaging/base';
 

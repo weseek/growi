@@ -1,11 +1,11 @@
 import { envUtils } from 'growi-commons';
 import { Service } from '@tsed/di';
 
-import ConfigModel, {
-  Config, defaultCrowiConfigs, defaultMarkdownConfigs, defaultNotificationConfigs,
-} from '~/server/models/config';
 import loggerFactory from '~/utils/logger';
 
+import ConfigModel, {
+  Config, defaultCrowiConfigs, defaultMarkdownConfigs, defaultNotificationConfigs,
+} from '../models/config';
 import isSecurityEnv from '../../lib/util/isSecurityEnv';
 
 const logger = loggerFactory('growi:service:ConfigLoader');
