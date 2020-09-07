@@ -45,7 +45,6 @@ module.exports = (crowi) => {
 
     try {
       const pageId = req.query.pageId;
-
       // check whether accessible
       const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
       if (!isAccessible) {
@@ -54,7 +53,10 @@ module.exports = (crowi) => {
       }
 
       const attachments = await Attachment.find({ page: pageId });
-      const pagination = await Attachment.paginate({ page: pageId }, { queryOptions });
+      const pagination = await Attachment.paginate(
+        { page: pageId },
+        queryOptions,
+      );
 
       const result = { attachments, pagination };
       return res.apiv3({ result });
