@@ -39,8 +39,8 @@ class PageAttachment extends React.Component {
 
   async showPage(selectedPage) {
     const { appContainer, pageContainer } = this.props;
-    const { pageId } = pageContainer;
-    const { limit } = this.state.limit;
+    const { pageId } = pageContainer.state;
+    const { limit } = this.state;
     const offset = (selectedPage - 1) * limit;
     const res = await appContainer.apiv3Get('/attachment/list', { pageId, limit, offset });
     const pagination = res.data.result.pagination;
@@ -55,17 +55,20 @@ class PageAttachment extends React.Component {
 
   async componentDidMount() {
 
+    this.showPage();
+
     const { appContainer } = this.props;
-    const { pageId } = this.props.pageContainer;
+    const { pageId } = this.props.pageContainer.state;
     const { limit } = this.state.limit;
     const offset = 0;
 
     if (!pageId) { return }
+
     const inUse = {};
     const res = await appContainer.apiv3Get('/attachment/list', { pageId, limit, offset });
     const attachments = res.data.result.attachments;
+    console.log(this.state.totalPages);
 
-    console.log('hoge');
 
     for (const attachment of attachments) {
       inUse[attachment._id] = this.checkIfFileInUse(attachment);
@@ -75,7 +78,6 @@ class PageAttachment extends React.Component {
       inUse,
     });
 
-    this.showPage();
   }
 
   checkIfFileInUse(attachment) {
