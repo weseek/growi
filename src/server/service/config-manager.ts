@@ -29,7 +29,7 @@ const KEYS_FOR_SAML_USE_ONLY_ENV_OPTION = [
 ];
 
 @Service()
-class ConfigManager implements S2sMessageHandlable {
+export default class ConfigManager implements S2sMessageHandlable {
 
   // @Inject()
   // private configLoader!: ConfigLoader;
@@ -350,5 +350,3 @@ class ConfigManager implements S2sMessageHandlable {
   }
 
 }
-
-module.exports = ConfigManager;
