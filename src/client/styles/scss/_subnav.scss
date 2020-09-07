@@ -40,10 +40,10 @@
   }
 
   .total-likes {
-    width: 15px;
-    height: 30px;
-    padding: 0.4em 0 0.1em 0.2em;
-    font-size: 18px;
+    width: 8px;
+    height: 16px;
+    padding: 0.5em 0 0 0;
+    font-size: 16px;
   }
 
   ul.authors {
@@ -92,10 +92,9 @@
     }
 
     .total-likes {
-      width: 20px;
-      height: 30px;
-      padding: 0.5em 0 0 0.3em;
-      font-size: 12px !important;
+      width: 6px;
+      height: 12px;
+      font-size: 12px;
     }
   }
 }
