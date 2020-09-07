@@ -22,7 +22,7 @@ module.exports = function(crowi, app) {
   const MAX_PAGE_LIST = 50;
   const actions = {};
 
-  const { check } = require('express-validator/check');
+  const { check } = require('express-validator');
 
   const api = {};
 
@@ -336,23 +336,6 @@ module.exports = function(crowi, app) {
   };
 
   actions.api = {};
-
-  // app.get('/_api/admin/users.search' , admin.api.userSearch);
-  actions.api.usersSearch = function(req, res) {
-    const User = crowi.model('User');
-    const email = req.query.email;
-
-    User.findUsersByPartOfEmail(email, {})
-      .then((users) => {
-        const result = {
-          data: users,
-        };
-        return res.json(ApiResponse.success(result));
-      })
-      .catch((err) => {
-        return res.json(ApiResponse.error());
-      });
-  };
 
   /**
    * save esa settings, update config cache, and response json

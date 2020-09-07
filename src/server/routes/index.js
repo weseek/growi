@@ -89,7 +89,6 @@ module.exports = function(crowi, app) {
   app.get('/admin/notification'              , loginRequiredStrictly , adminRequired , admin.notification.index);
   app.get('/admin/notification/slackAuth'    , loginRequiredStrictly , adminRequired , admin.notification.slackAuth);
   app.get('/admin/notification/slackSetting/disconnect', loginRequiredStrictly , adminRequired , admin.notification.disconnectFromSlack);
-  app.get('/_api/admin/users.search'         , loginRequiredStrictly , adminRequired , admin.api.usersSearch);
   app.get('/admin/global-notification/new'   , loginRequiredStrictly , adminRequired , admin.globalNotification.detail);
   app.get('/admin/global-notification/:id'   , loginRequiredStrictly , adminRequired , admin.globalNotification.detail);
 
@@ -135,7 +134,6 @@ module.exports = function(crowi, app) {
   // HTTP RPC Styled API (に徐々に移行していいこうと思う)
   app.get('/_api/users.list'          , accessTokenParser , loginRequired , user.api.list);
   app.get('/_api/pages.list'          , accessTokenParser , loginRequired , page.api.list);
-  app.get('/_api/pages.recentCreated' , accessTokenParser , loginRequired , page.api.recentCreated);
   app.post('/_api/pages.create'       , accessTokenParser , loginRequiredStrictly , csrf, page.api.create);
   app.post('/_api/pages.update'       , accessTokenParser , loginRequiredStrictly , csrf, page.api.update);
   app.get('/_api/pages.get'           , accessTokenParser , loginRequired , page.api.get);
