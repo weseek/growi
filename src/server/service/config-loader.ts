@@ -1,14 +1,34 @@
+import { envUtils } from 'growi-commons';
+import { Service } from '@tsed/di';
+
+import ConfigModel, {
+  Config, defaultCrowiConfigs, defaultMarkdownConfigs, defaultNotificationConfigs,
+} from '~/server/models/config';
 import loggerFactory from '~/utils/logger';
 
-const { envUtils } = require('growi-commons');
-const isSecurityEnv = require('../../lib/util/isSecurityEnv');
+import isSecurityEnv from '../../lib/util/isSecurityEnv';
 
 const logger = loggerFactory('growi:service:ConfigLoader');
 
-const TYPES = {
-  NUMBER:  { parse: (v) => { return parseInt(v, 10) } },
-  STRING:  { parse: (v) => { return v } },
-  BOOLEAN: { parse: (v) => { return envUtils.toBoolean(v) } },
+enum ValueType { NUMBER, STRING, BOOLEAN }
+
+interface ValueParser<T> {
+  parse(value: string): T;
+}
+
+interface EnvConfig {
+  ns: string,
+  key: string,
+  type: ValueType,
+  default?: number | string | boolean | null,
+}
+
+type ValueTypeToParserMap<R> = {[key in keyof typeof ValueType]: ValueParser<R> };
+
+const valueTypeToParserMap: ValueTypeToParserMap<number | string | boolean> = {
+  NUMBER:  { parse: (v: string) => { return parseInt(v, 10) } },
+  STRING:  { parse: (v: string) => { return v } },
+  BOOLEAN: { parse: (v: string) => { return envUtils.toBoolean(v) } },
 };
 
 /**
@@ -24,7 +44,7 @@ const TYPES = {
  *  The commented out item has not yet entered the migration work.
  *  So, parameters of these are under consideration.
  */
-const ENV_VAR_NAME_TO_CONFIG_INFO = {
+const ENV_VAR_NAME_TO_CONFIG_INFO: { [type: string]: EnvConfig } = {
   // FILE_UPLOAD: {
   //   ns:      ,
   //   key:     ,
@@ -112,103 +132,103 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
   DRAWIO_URI: {
     ns:      'crowi',
     key:     'app:drawioUri',
-    type:    TYPES.STRING,
+    type:    ValueType.STRING,
     default: null,
   },
   NCHAN_URI: {
     ns:      'crowi',
     key:     'app:nchanUri',
-    type:    TYPES.STRING,
+    type:    ValueType.STRING,
     default: null,
   },
   APP_SITE_URL: {
     ns:      'crowi',
     key:     'app:siteUrl',
-    type:    TYPES.STRING,
+    type:    ValueType.STRING,
     default: null,
   },
   PUBLISH_OPEN_API: {
     ns:      'crowi',
     key:     'app:publishOpenAPI',
-    type:    TYPES.BOOLEAN,
+    type:    ValueType.BOOLEAN,
     default: false,
   },
   S2SMSG_PUBSUB_SERVER_TYPE: {
     ns:      'crowi',
     key:     's2sMessagingPubsub:serverType',
-    type:    TYPES.STRING,
+    type:    ValueType.STRING,
     default: null,
   },
   S2SMSG_PUBSUB_NCHAN_PUBLISH_PATH: {
     ns:      'crowi',
     key:     's2sMessagingPubsub:nchan:publishPath',
-    type:    TYPES.STRING,
+    type:    ValueType.STRING,
     default: '/pubsub',
   },
   S2SMSG_PUBSUB_NCHAN_SUBSCRIBE_PATH: {
     ns:      'crowi',
     key:     's2sMessagingPubsub:nchan:subscribePath',
-    type:    TYPES.STRING,
+    type:    ValueType.STRING,
     default: '/pubsub',
   },
   S2SMSG_PUBSUB_NCHAN_CHANNEL_ID: {
     ns:      'crowi',
     key:     's2sMessagingPubsub:nchan:channelId',
-    type:    TYPES.STRING,
+    type:    ValueType.STRING,
     default: null,
   },
   MAX_FILE_SIZE: {
     ns:      'crowi',
     key:     'app:maxFileSize',
-    type:    TYPES.NUMBER,
+    type:    ValueType.NUMBER,
     default: Infinity,
   },
   FILE_UPLOAD_TOTAL_LIMIT: {
     ns:      'crowi',
     key:     'app:fileUploadTotalLimit',
-    type:    TYPES.NUMBER,
+    type:    ValueType.NUMBER,
     default: Infinity,
   },
   FILE_UPLOAD_DISABLED: {
     ns:      'crowi',
     key:     'app:fileUploadDisabled',
-    type:    TYPES.BOOLEAN,
+    type:    ValueType.BOOLEAN,
     default: false,
   },
   FILE_UPLOAD_LOCAL_USE_INTERNAL_REDIRECT: {
     ns:      'crowi',
     key:     'fileUpload:local:useInternalRedirect',
-    type:    TYPES.BOOLEAN,
+    type:    ValueType.BOOLEAN,
     default: false,
   },
   FILE_UPLOAD_LOCAL_INTERNAL_REDIRECT_PATH: {
     ns:      'crowi',
     key:     'fileUpload:local:internalRedirectPath',
-    type:    TYPES.STRING,
+    type:    ValueType.STRING,
     default: '/growi-internal/',
   },
   ELASTICSEARCH_URI: {
     ns:      'crowi',
     key:     'app:elasticsearchUri',
-    type:    TYPES.STRING,
+    type:    ValueType.STRING,
     default: null,
   },
   ELASTICSEARCH_REQUEST_TIMEOUT: {
     ns:      'crowi',
     key:     'app:elasticsearchRequestTimeout',
-    type:    TYPES.NUMBER,
+    type:    ValueType.NUMBER,
     default: 8000, // msec
   },
   SEARCHBOX_SSL_URL: {
     ns:      'crowi',
     key:     'app:searchboxSslUrl',
-    type:    TYPES.STRING,
+    type:    ValueType.STRING,
     default: null,
   },
   MONGO_GRIDFS_TOTAL_LIMIT: {
     ns:      'crowi',
     key:     'gridfs:totalLimit',
-    type:    TYPES.NUMBER,
+    type:    ValueType.NUMBER,
     default: null, // set null in default for backward compatibility
     //                cz: Newer system respects FILE_UPLOAD_TOTAL_LIMIT.
     //                    If the default value of MONGO_GRIDFS_TOTAL_LIMIT is Infinity,
@@ -217,137 +237,139 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
   FORCE_WIKI_MODE: {
     ns:      'crowi',
     key:     'security:wikiMode',
-    type:    TYPES.STRING,
+    type:    ValueType.STRING,
     default: undefined,
   },
   USER_UPPER_LIMIT: {
     ns:      'crowi',
     key:     'security:userUpperLimit',
-    type:    TYPES.NUMBER,
+    type:    ValueType.NUMBER,
     default: Infinity,
   },
   LOCAL_STRATEGY_ENABLED: {
     ns:      'crowi',
     key:     'security:passport-local:isEnabled',
-    type:    TYPES.BOOLEAN,
+    type:    ValueType.BOOLEAN,
     default: true,
   },
   LOCAL_STRATEGY_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: {
     ns:      'crowi',
     key:     'security:passport-local:useOnlyEnvVarsForSomeOptions',
-    type:    TYPES.BOOLEAN,
+    type:    ValueType.BOOLEAN,
     default: false,
   },
   SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: {
     ns:      'crowi',
     key:     'security:passport-saml:useOnlyEnvVarsForSomeOptions',
-    type:    TYPES.BOOLEAN,
+    type:    ValueType.BOOLEAN,
     default: false,
   },
   SAML_ENABLED: {
     ns:      'crowi',
     key:     'security:passport-saml:isEnabled',
-    type:    TYPES.BOOLEAN,
+    type:    ValueType.BOOLEAN,
     default: null,
   },
   SAML_ENTRY_POINT: {
     ns:      'crowi',
     key:     'security:passport-saml:entryPoint',
-    type:    TYPES.STRING,
+    type:    ValueType.STRING,
     default: null,
   },
   SAML_CALLBACK_URI: {
     ns:      'crowi',
     key:     'security:passport-saml:callbackUrl',
-    type:    TYPES.STRING,
+    type:    ValueType.STRING,
     default: null,
   },
   SAML_ISSUER: {
     ns:      'crowi',
     key:     'security:passport-saml:issuer',
-    type:    TYPES.STRING,
+    type:    ValueType.STRING,
     default: null,
   },
   SAML_ATTR_MAPPING_ID: {
     ns:      'crowi',
     key:     'security:passport-saml:attrMapId',
-    type:    TYPES.STRING,
+    type:    ValueType.STRING,
     default: null,
   },
   SAML_ATTR_MAPPING_USERNAME: {
     ns:      'crowi',
     key:     'security:passport-saml:attrMapUsername',
-    type:    TYPES.STRING,
+    type:    ValueType.STRING,
     default: null,
   },
   SAML_ATTR_MAPPING_MAIL: {
     ns:      'crowi',
     key:     'security:passport-saml:attrMapMail',
-    type:    TYPES.STRING,
+    type:    ValueType.STRING,
     default: null,
   },
   SAML_ATTR_MAPPING_FIRST_NAME: {
     ns:      'crowi',
     key:     'security:passport-saml:attrMapFirstName',
-    type:    TYPES.STRING,
+    type:    ValueType.STRING,
     default: null,
   },
   SAML_ATTR_MAPPING_LAST_NAME: {
     ns:      'crowi',
     key:     'security:passport-saml:attrMapLastName',
-    type:    TYPES.STRING,
+    type:    ValueType.STRING,
     default: null,
   },
   SAML_CERT: {
     ns:      'crowi',
     key:     'security:passport-saml:cert',
-    type:    TYPES.STRING,
+    type:    ValueType.STRING,
     default: null,
   },
   SAML_ABLC_RULE: {
     ns:      'crowi',
     key:     'security:passport-saml:ABLCRule',
-    type:    TYPES.STRING,
+    type:    ValueType.STRING,
     default: null,
   },
   GCS_API_KEY_JSON_PATH: {
     ns:      'crowi',
     key:     'gcs:apiKeyJsonPath',
-    type:    TYPES.STRING,
+    type:    ValueType.STRING,
     default: null,
   },
   GCS_BUCKET: {
     ns:      'crowi',
     key:     'gcs:bucket',
-    type:    TYPES.STRING,
+    type:    ValueType.STRING,
     default: null,
   },
   GCS_UPLOAD_NAMESPACE: {
     ns:      'crowi',
     key:     'gcs:uploadNamespace',
-    type:    TYPES.STRING,
+    type:    ValueType.STRING,
     default: null,
   },
 };
 
-class ConfigLoader {
+export interface ConfigObject extends Record<string, any> {
+  fromDB: any,
+  fromEnvVars: any,
+}
 
-  constructor(configModel) {
-    this.configModel = configModel;
-  }
+@Service()
+export default class ConfigLoader {
 
   /**
    * return a config object
    */
-  async load() {
-    const configFromDB = await this.loadFromDB();
-    const configFromEnvVars = this.loadFromEnvVars();
+  async load(): Promise<ConfigObject> {
+    const configFromDB: any = await this.loadFromDB();
+    const configFromEnvVars: any = this.loadFromEnvVars();
 
     // merge defaults per ns
     const mergedConfigFromDB = {
-      crowi: Object.assign(this.configModel.getDefaultCrowiConfigsObject(), configFromDB.crowi),
-      markdown: Object.assign(this.configModel.getDefaultMarkdownConfigsObject(), configFromDB.markdown),
-      notification: Object.assign(this.configModel.getDefaultNotificationConfigsObject(), configFromDB.notification),
+      crowi: Object.assign(defaultCrowiConfigs, configFromDB.crowi),
+      markdown: Object.assign(defaultMarkdownConfigs, configFromDB.markdown),
+      notification: Object.assign(defaultNotificationConfigs, configFromDB.notification),
     };
 
     // In getConfig API, only null is used as a value to indicate that a config is not set.
@@ -369,9 +391,9 @@ class ConfigLoader {
     };
   }
 
-  async loadFromDB() {
+  async loadFromDB(): Promise<any> {
     const config = {};
-    const docs = await this.configModel.find().exec();
+    const docs: Config[] = await ConfigModel.find().exec();
 
     for (const doc of docs) {
       if (!config[doc.ns]) {
@@ -385,7 +407,7 @@ class ConfigLoader {
     return config;
   }
 
-  loadFromEnvVars() {
+  loadFromEnvVars(): any {
     const config = {};
     for (const ENV_VAR_NAME of Object.keys(ENV_VAR_NAME_TO_CONFIG_INFO)) {
       const configInfo = ENV_VAR_NAME_TO_CONFIG_INFO[ENV_VAR_NAME];
@@ -397,7 +419,8 @@ class ConfigLoader {
         config[configInfo.ns][configInfo.key] = configInfo.default;
       }
       else {
-        config[configInfo.ns][configInfo.key] = configInfo.type.parse(process.env[ENV_VAR_NAME]);
+        const parser: ValueParser<number | string | boolean> = valueTypeToParserMap[configInfo.type];
+        config[configInfo.ns][configInfo.key] = parser.parse(process.env[ENV_VAR_NAME] as string);
       }
     }
 
@@ -411,7 +434,7 @@ class ConfigLoader {
    *
    * **use this only admin home page.**
    */
-  static getEnvVarsForDisplay(avoidSecurity = false) {
+  static getEnvVarsForDisplay(avoidSecurity = false): any {
     const config = {};
     for (const ENV_VAR_NAME of Object.keys(ENV_VAR_NAME_TO_CONFIG_INFO)) {
       const configInfo = ENV_VAR_NAME_TO_CONFIG_INFO[ENV_VAR_NAME];
@@ -421,7 +444,8 @@ class ConfigLoader {
       if (isSecurityEnv(configInfo.key) && avoidSecurity) {
         continue;
       }
-      config[ENV_VAR_NAME] = configInfo.type.parse(process.env[ENV_VAR_NAME]);
+      const parser: ValueParser<number | string | boolean> = valueTypeToParserMap[configInfo.type];
+      config[ENV_VAR_NAME] = parser.parse(process.env[ENV_VAR_NAME] as string);
     }
 
     logger.debug('ConfigLoader#getEnvVarsForDisplay', config);
@@ -429,5 +453,3 @@ class ConfigLoader {
   }
 
 }
-
-module.exports = ConfigLoader;
