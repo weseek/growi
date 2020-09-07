@@ -14,12 +14,10 @@ class PageAttachment extends React.Component {
   constructor(props) {
     super(props);
 
-    const { appContainer } = this.props;
-
     this.state = {
       activePage: 1,
       totalPages: 0,
-      limit: appContainer.getConfig().recentCreatedLimit,
+      limit: 10,
       attachments: [],
       inUse: {},
       attachmentToDelete: null,
@@ -27,47 +25,43 @@ class PageAttachment extends React.Component {
       deleteError: '',
     };
     this.handlePage = this.handlePage.bind(this);
-    this.showPage = this.showPage.bind(this);
-
+    this.showPages = this.showPages.bind(this);
     this.onAttachmentDeleteClicked = this.onAttachmentDeleteClicked.bind(this);
     this.onAttachmentDeleteClickedConfirm = this.onAttachmentDeleteClickedConfirm.bind(this);
   }
 
   async handlePage(selectedPage) {
-    await this.showPage(selectedPage);
+    await this.showPages(selectedPage);
   }
 
-  async showPage(selectedPage) {
+  async showPages(selectedPage) {
     const { appContainer, pageContainer } = this.props;
     const { pageId } = pageContainer.state;
     const { limit } = this.state;
-    const offset = (selectedPage - 1) * limit;
+    const offset = (selectedPage - 1) * limit || 0;
     const res = await appContainer.apiv3Get('/attachment/list', { pageId, limit, offset });
     const pagination = res.data.result.pagination;
-
-    this.setState({
+    await this.setState({
       activePage: selectedPage,
       totalPages: pagination.totalPages,
       limit: pagination.limit,
     });
   }
 
+  componentWillMount() {
+    this.showPages(1);
+  }
 
   async componentDidMount() {
 
-    this.showPage();
-
     const { appContainer } = this.props;
     const { pageId } = this.props.pageContainer.state;
-    const { limit } = this.state.limit;
-    const offset = 0;
 
     if (!pageId) { return }
 
     const inUse = {};
-    const res = await appContainer.apiv3Get('/attachment/list', { pageId, limit, offset });
+    const res = await appContainer.apiv3Get('/attachment/list', { pageId });
     const attachments = res.data.result.attachments;
-    console.log(this.state.totalPages);
 
 
     for (const attachment of attachments) {
@@ -77,7 +71,6 @@ class PageAttachment extends React.Component {
       attachments,
       inUse,
     });
-
   }
 
   checkIfFileInUse(attachment) {
