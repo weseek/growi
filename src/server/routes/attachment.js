@@ -127,7 +127,6 @@ const ApiResponse = require('../util/apiResponse');
 
 module.exports = function(crowi, app) {
   const Attachment = crowi.model('Attachment');
-  // const User = crowi.model('User');
   const Page = crowi.model('Page');
   const { fileUploadService, attachmentService } = crowi;
 
