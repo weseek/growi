@@ -16,6 +16,12 @@ const logger = loggerFactory('growi:Server');
   port: process.env.PORT || 3000,
   httpsPort: false,
   acceptMimes: ['application/json'],
+  componentsScan: [
+    /* eslint-disable no-template-curly-in-string */
+    '${rootDir}/server/middlewares/**/*.ts',
+    '${rootDir}/server/service/**/*.ts',
+    /* eslint-enable no-template-curly-in-string */
+  ],
 })
 export class Server {
 
