@@ -39,6 +39,13 @@
     font-size: 20px;
   }
 
+  .total-likes {
+    width: 15px;
+    height: 30px;
+    padding: 0.4em 0 0.1em 0.2em;
+    font-size: 18px;
+  }
+
   ul.authors {
     padding: 0.7em 0 0.7em 1.5em;
     margin-bottom: 0;
@@ -82,6 +89,13 @@
       width: 30px;
       height: 30px;
       font-size: 15px !important;
+    }
+
+    .total-likes {
+      width: 20px;
+      height: 30px;
+      padding: 0.5em 0 0 0.3em;
+      font-size: 12px !important;
     }
   }
 }
