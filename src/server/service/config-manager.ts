@@ -31,11 +31,10 @@ const KEYS_FOR_SAML_USE_ONLY_ENV_OPTION = [
 @Service()
 class ConfigManager implements S2sMessageHandlable {
 
-  @Inject()
-  private configLoader!: ConfigLoader;
+  // @Inject()
+  // private configLoader!: ConfigLoader;
 
-  @Inject()
-  private s2sMessagingService!: S2sMessagingService;
+  private s2sMessagingService?: S2sMessagingService;
 
   private configObject: ConfigObject = { fromDB: null, fromEnvVars: null };
 
@@ -43,7 +42,7 @@ class ConfigManager implements S2sMessageHandlable {
 
   private lastLoadedAt?: Date;
 
-  constructor() {
+  constructor(@Inject(ConfigLoader) private configLoader: ConfigLoader) {
     this.loadConfigs();
   }
 
@@ -323,7 +322,7 @@ class ConfigManager implements S2sMessageHandlable {
     const s2sMessage = new S2sMessage('configUpdated', { updatedAt: new Date() });
 
     try {
-      await this.s2sMessagingService.publish(s2sMessage);
+      await this.s2sMessagingService?.publish(s2sMessage);
     }
     catch (e) {
       logger.error('Failed to publish update message with S2sMessagingService: ', e.message);
