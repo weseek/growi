@@ -25,27 +25,25 @@ class PageAttachment extends React.Component {
     this.onAttachmentDeleteClickedConfirm = this.onAttachmentDeleteClickedConfirm.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { pageId } = this.props.pageContainer.state;
 
     if (!pageId) {
       return;
     }
 
-    this.props.appContainer.apiGet('/attachments.list', { page_id: pageId })
-      .then((res) => {
-        const attachments = res.attachments;
-        const inUse = {};
+    const res = await this.props.appContainer.apiv3Get('/attachment/list', { pageId });
+    const attachments = res.data.attachments;
+    const inUse = {};
 
-        for (const attachment of attachments) {
-          inUse[attachment._id] = this.checkIfFileInUse(attachment);
-        }
+    for (const attachment of attachments) {
+      inUse[attachment._id] = this.checkIfFileInUse(attachment);
+    }
 
-        this.setState({
-          attachments,
-          inUse,
-        });
-      });
+    this.setState({
+      attachments,
+      inUse,
+    });
   }
 
   checkIfFileInUse(attachment) {

@@ -41,7 +41,7 @@ module.exports = (crowi) => {
   router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
 
     try {
-      const pageId = req.query.page;
+      const pageId = req.query.pageId;
 
       // check whether accessible
       const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
@@ -51,7 +51,9 @@ module.exports = (crowi) => {
       }
 
       const attachments = await Attachment.find({ page: pageId });
+
       return res.apiv3({ attachments });
+
     }
     catch (err) {
       logger.error('Attachment not found', err);
