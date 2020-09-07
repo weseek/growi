@@ -65,6 +65,8 @@ const validator = {};
  */
 
 module.exports = (crowi) => {
+  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
+  const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
@@ -196,6 +198,73 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /{id}/recent:
+   *      get:
+   *        tags: [Users]
+   *        operationId: recent created page of user id
+   *        summary: /usersIdReacent
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            required: true
+   *            description: id of user
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: users recent created pages are fetched
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    paginateResult:
+   *                      $ref: '#/components/schemas/PaginateResult'
+   */
+  router.get('/:id/recent', accessTokenParser, loginRequired, async(req, res) => {
+    const { id } = req.params;
+
+    let user;
+
+    try {
+      user = await User.findById(id);
+    }
+    catch (err) {
+      const msg = 'Error occurred in find user';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'retrieve-recent-created-pages-failed'), 500);
+    }
+
+    if (user == null) {
+      return res.apiv3Err(new ErrorV3('find-user-is-not-found'));
+    }
+
+    const limit = parseInt(req.query.limit) || 50;
+    const offset = parseInt(req.query.offset) || 0;
+    const queryOptions = { offset, limit };
+
+    try {
+      const result = await Page.findListByCreator(user, req.user, queryOptions);
+
+      // Delete unnecessary data about users
+      result.pages = result.pages.map((page) => {
+        const user = page.lastUpdateUser.toObject();
+        page.lastUpdateUser = user;
+        return page;
+      });
+
+      return res.apiv3(result);
+    }
+    catch (err) {
+      const msg = 'Error occurred in retrieve recent created pages for user';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'retrieve-recent-created-pages-failed'), 500);
+    }
+  });
+
   validator.inviteEmail = [
     // isEmail prevents line breaks, so use isString
     body('shapedEmailList').custom((value) => {
@@ -252,6 +321,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(err));
     }
   });
+
   /**
    * @swagger
    *
@@ -293,6 +363,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(err));
     }
   });
+
   /**
    * @swagger
    *
