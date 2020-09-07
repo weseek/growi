@@ -15,7 +15,7 @@ class PageAttachment extends React.Component {
     super(props);
 
     const { appContainer } = this.props;
-    this.handlePage = this.handlePage.bind(this);
+
     this.state = {
       activePage: 1,
       totalPages: 0,
@@ -26,47 +26,56 @@ class PageAttachment extends React.Component {
       deleting: false,
       deleteError: '',
     };
+    this.handlePage = this.handlePage.bind(this);
+    this.showPage = this.showPage.bind(this);
 
     this.onAttachmentDeleteClicked = this.onAttachmentDeleteClicked.bind(this);
     this.onAttachmentDeleteClickedConfirm = this.onAttachmentDeleteClickedConfirm.bind(this);
   }
 
   async handlePage(selectedPage) {
-    await this.showPages(selectedPage);
+    await this.showPage(selectedPage);
   }
 
-  async showPages(selectedPage) {
-    const { pageId } = this.props.pageContainer.state;
-
-    if (!pageId) {
-      return;
-    }
-
-    const { limit } = this.props.appContainer.state;
+  async showPage(selectedPage) {
+    const { appContainer, pageContainer } = this.props;
+    const { pageId } = pageContainer;
+    const { limit } = this.state.limit;
     const offset = (selectedPage - 1) * limit;
-
-    const res = await this.props.appContainer.apiv3Get('/attachment/list', { pageId, limit, offset });
-
-    const attachments = res.data.result.attachments;
+    const res = await appContainer.apiv3Get('/attachment/list', { pageId, limit, offset });
     const pagination = res.data.result.pagination;
-    const inUse = {};
-
-    for (const attachment of attachments) {
-      inUse[attachment._id] = this.checkIfFileInUse(attachment);
-    }
 
     this.setState({
       activePage: selectedPage,
-      attachments,
-      inUse,
       totalPages: pagination.totalPages,
       limit: pagination.limit,
     });
   }
 
+
   async componentDidMount() {
-    this.showPages(0);
-    console.log(this.state.activePage);
+
+    const { appContainer } = this.props;
+    const { pageId } = this.props.pageContainer;
+    const { limit } = this.state.limit;
+    const offset = 0;
+
+    if (!pageId) { return }
+    const inUse = {};
+    const res = await appContainer.apiv3Get('/attachment/list', { pageId, limit, offset });
+    const attachments = res.data.result.attachments;
+
+    console.log('hoge');
+
+    for (const attachment of attachments) {
+      inUse[attachment._id] = this.checkIfFileInUse(attachment);
+    }
+    this.setState({
+      attachments,
+      inUse,
+    });
+
+    this.showPage();
   }
 
   checkIfFileInUse(attachment) {
