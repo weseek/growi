@@ -302,6 +302,7 @@ module.exports = function(crowi, app) {
     // populate
     page = await page.populateDataToMakePresentation(revisionId);
     addRendarVarsForPage(renderVars, page);
+    hideUserInformationOfRenderVars(renderVars);
     return res.render('page_presentation', renderVars);
   }
 
@@ -320,6 +321,7 @@ module.exports = function(crowi, app) {
     portalPage = await portalPage.populateDataToShowRevision();
 
     addRendarVarsForPage(renderVars, portalPage);
+    hideUserInformationOfRenderVars(renderVars);
     await addRenderVarsForSlack(renderVars, portalPage);
 
     const sharelinksNumber = await ShareLink.countDocuments({ relatedPage: portalPage._id });
@@ -364,6 +366,7 @@ module.exports = function(crowi, app) {
     // populate
     page = await page.populateDataToShowRevision();
     addRendarVarsForPage(renderVars, page);
+    hideUserInformationOfRenderVars(renderVars);
     addRendarVarsForScope(renderVars, page);
 
     await addRenderVarsForSlack(renderVars, page);
@@ -449,6 +452,7 @@ module.exports = function(crowi, app) {
 
       // populate
       addRendarVarsForPage(renderVars, page);
+      hideUserInformationOfRenderVars(renderVars);
       return res.render('page_presentation', renderVars);
     }
 
@@ -457,6 +461,7 @@ module.exports = function(crowi, app) {
     // populate
     page = await page.populateDataToShowRevision();
     addRendarVarsForPage(renderVars, page);
+    hideUserInformationOfRenderVars(renderVars);
     addRendarVarsForScope(renderVars, page);
 
     await interceptorManager.process('beforeRenderPage', req, res, renderVars);
