@@ -65,14 +65,6 @@ module.exports = function(crowi) {
     return attachment;
   };
 
-  attachmentSchema.static.paginateAttachments = function() {
-    const query = {};
-    const options = Object.assign({ populate: 'user' });
-    if (options.page == null) {
-      options.page = 1;
-    }
-    return this.paginate(query, options);
-  };
 
   return mongoose.model('Attachment', attachmentSchema);
 };

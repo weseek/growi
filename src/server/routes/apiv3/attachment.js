@@ -54,7 +54,7 @@ module.exports = (crowi) => {
       }
 
       const attachments = await Attachment.find({ page: pageId });
-      const pagination = await Attachment.paginate({}, { queryOptions });
+      const pagination = await Attachment.paginate({ page: pageId }, { queryOptions });
 
       const result = { attachments, pagination };
 
