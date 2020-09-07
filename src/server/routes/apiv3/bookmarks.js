@@ -153,5 +153,20 @@ module.exports = (crowi) => {
     return res.apiv3({ bookmark });
   });
 
+
+  router.get('/countBookmarks', accessTokenParser, loginRequired, async(req, res) => {
+    const { pageId } = req.query;
+
+    try {
+      const sumOfBookmarks = await Bookmark.countByPageId(pageId);
+      return res.apiv3({ sumOfBookmarks });
+    }
+    catch (err) {
+      logger.error('get-bookmarks-list-failed', err);
+      return res.apiv3Err(err, 500);
+    }
+  });
+
+
   return router;
 };
