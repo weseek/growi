@@ -1,18 +1,12 @@
-// TODO: make interface with TS
-
 /**
  * The interface to handle server-to-server message
  */
-class S2sMessageHandlable {
+interface S2sMessageHandlable {
 
-  shouldHandleS2sMessage(s2sMessage) {
-    throw new Error('implement this');
-  }
+  shouldHandleS2sMessage(s2sMessage): boolean;
 
-  async handleS2sMessage(s2sMessage) {
-    throw new Error('implement this');
-  }
+  handleS2sMessage(s2sMessage): Promise<void>;
 
 }
 
-module.exports = S2sMessageHandlable;
+export default S2sMessagingHandlable;
