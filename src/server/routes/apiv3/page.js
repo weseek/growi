@@ -244,18 +244,5 @@ module.exports = (crowi) => {
     return stream.pipe(res);
   });
 
-  router.get('/Countlikes', loginRequired, async(req, res) => {
-    const pageId = req.query._id;
-    try {
-      const page = await Page.findById(pageId);
-      const result = page.liker.length;
-      return res.apiv3({ result });
-    }
-    catch (err) {
-      logger.error('Failed to get the number of likes', err);
-      return res.apiv3Err(err, 500);
-    }
-  });
-
   return router;
 };
