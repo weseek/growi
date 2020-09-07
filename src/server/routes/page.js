@@ -228,6 +228,11 @@ module.exports = function(crowi, app) {
     renderVars.hasDraftOnHackmd = page.hasDraftOnHackmd;
   }
 
+  function hideUserInformationOfRenderVars(renderVars) {
+    renderVars.revision.author = renderVars.revision.author.toObject();
+    renderVars.page.creator = renderVars.page.creator.toObject();
+  }
+
   async function addRenderVarsForUserPage(renderVars, page, requestUser) {
     const userData = await User.findUserByUsername(User.getUsernameByPath(page.path));
 
