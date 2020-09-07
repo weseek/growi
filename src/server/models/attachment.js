@@ -65,9 +65,9 @@ module.exports = function(crowi) {
     return attachment;
   };
 
-  attachmentSchema.static.paginateAttachments = function() {
+  attachmentSchema.static.paginateAttachments = function(opts) {
     const query = {};
-    const options = Object.assign({ populate: 'user' });
+    const options = Object.assign({ populate: 'user', opts });
     if (options.page == null) {
       options.page = 1;
     }
