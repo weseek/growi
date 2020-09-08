@@ -1,10 +1,10 @@
 import {
   Controller, Get, Constant,
-  Req, Res, Request, Response,
+  Req, Res, Request, Response, Inject,
 } from '@tsed/common';
-import next from 'next';
-import Server from 'next/dist/next-server/server/next-server';
 import { Env } from '@tsed/core';
+
+import NextService from '../service/next';
 
 @Controller('/')
 export class NextCtrl {
@@ -12,22 +12,12 @@ export class NextCtrl {
   @Constant('env')
   private env!: Env;
 
-  private nextApp!: Server;
-
-  constructor() {
-    this.init();
-  }
-
-  async init(): Promise<void> {
-    const dev = process.env.NODE_ENV !== 'production';
-    this.nextApp = next({ dev });
-
-    return this.nextApp.prepare();
-  }
+  @Inject()
+  private nextService!: NextService;
 
   @Get('/*')
   get(@Req() req: Request, @Res() res: Response): Promise<void> {
-    const handle = this.nextApp.getRequestHandler();
+    const handle = this.nextService.app.getRequestHandler();
     return handle(req, res);
   }
 
@@ -42,7 +32,7 @@ export class NextCtrl {
       return res.status(403).send('webpack-hmr is enabled only when development');
     }
 
-    const handle = this.nextApp.getRequestHandler();
+    const handle = this.nextService.app.getRequestHandler();
     return handle(req, res);
   }
 
