@@ -23,7 +23,9 @@ class PageTimeline extends React.Component {
       activePage: 1,
       totalPages: 0,
       limit: appContainer.getConfig().recentCreatedLimit,
-      pages: [],
+
+      // TODO: remove after when timeline is implemented with React and inject data with props
+      pages: this.props.pages,
     };
 
   }
