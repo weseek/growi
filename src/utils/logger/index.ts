@@ -40,7 +40,7 @@ Object.keys(envLevelMap).forEach((envName) => { // ['INFO', 'DEBUG', ...].forEac
  * determine logger level
  * @param name Logger name
  */
-function determineLogLevel(name: string): LogLevel {
+export function determineLogLevel(name: string): LogLevel {
   if (isBrowser && isProd) {
     return 'error';
   }
@@ -74,4 +74,3 @@ const loggerFactory = function(name: string): bunyan {
 };
 
 export default loggerFactory;
-module.exports = loggerFactory; // backward compatibility for CommonJS

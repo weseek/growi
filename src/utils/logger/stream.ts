@@ -1,10 +1,9 @@
 import { Writable } from 'stream';
 
+import streamDev from './stream.dev';
+import streamProd from './stream.prod';
+
 const isProd = process.env.NODE_ENV === 'production';
 
-const streamForEnv: any = isProd
-  ? require('./stream.dev')
-  : require('./stream.prod');
-
-const stream: Writable = streamForEnv.default;
+const stream: Writable = isProd ? streamProd : streamDev;
 export default stream;

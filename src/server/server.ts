@@ -5,15 +5,14 @@ import {
 
 import express from 'express';
 import expressBunyanLoggerFactory from 'express-bunyan-logger';
-import bunyanFormat from 'bunyan-format';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import methodOverride from 'method-override';
 
 import mongoose from 'mongoose';
 
-import loggerFactory from '~/utils/logger';
-import stream from '~/utils/logger/stream';
+import loggerFactory, { determineLogLevel } from '~/utils/logger';
+import streamForExpressLogger from '~/utils/logger/stream';
 import { SafeRedirectMiddleware } from './middlewares/safe-redirect';
 import { getMongoUri, mongoOptions } from './util/mongoose-utils';
 
@@ -69,13 +68,6 @@ export class Server {
     return this.initMongoose();
   }
 
-  private initMongoose(): Promise<typeof mongoose> {
-    // initialize mongoose without @tsed/mongoose
-    //  because mongoose.model() does not work when using @tsed/mongoose
-    const { url, connectionOptions } = this.mongooseConfig[0];
-    return mongoose.connect(url, connectionOptions);
-  }
-
   /**
    * This method let you configure the express middleware required by your application to works.
    * @returns {Server}
@@ -94,19 +86,48 @@ export class Server {
     this.setupSession(expressApp);
   }
 
-  private setupLogger(app: Express.Application): void {
-    const level = loggerFactory('express').level();
 
-    app.use(expressBunyanLoggerFactory({
-      name: 'express',
-      streams: [{
-        level,
-        stream,
-      }],
-      excludes: ['*'],
-    }));
+  private initMongoose(): Promise<typeof mongoose> {
+    // initialize mongoose without @tsed/mongoose
+    //  because mongoose.model() does not work when using @tsed/mongoose
+    const { url, connectionOptions } = this.mongooseConfig[0];
+    return mongoose.connect(url, connectionOptions);
   }
 
+
+  /**
+   * Setup logger for requests
+   * @param app
+   */
+  private setupLogger(app: Express.Application): void {
+    const isProd = this.env === Env.PROD;
+
+    // use bunyan
+    if (isProd) {
+      const level = determineLogLevel('express');
+
+      app.use(expressBunyanLoggerFactory({
+        name: 'express',
+        streams: [{
+          level,
+          stream: streamForExpressLogger,
+        }],
+        excludes: ['*'],
+      }));
+    }
+    // use morgan
+    else {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const morgan = require('morgan');
+      app.use(morgan('dev'));
+    }
+  }
+
+
+  /**
+   * Setup session
+   * @param app
+   */
   private setupSession(app: Express.Application): void {
     logger.info('Setup session');
   }
