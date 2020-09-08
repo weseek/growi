@@ -13,10 +13,14 @@ export default class AdminGeneralSecurityContainer extends Container {
     super();
 
     this.appContainer = appContainer;
+    this.dummyCurrentRestrictGuestMode = 0;
+    this.dummyCurrentRestrictGuestModeForError = 1;
 
     this.state = {
+      retrieveError: null,
       wikiMode: '',
-      currentRestrictGuestMode: 'Deny',
+      // set dummy value tile for using suspense
+      currentRestrictGuestMode: this.dummyCurrentRestrictGuestMode,
       currentPageCompleteDeletionAuthority: 'adminOnly',
       isShowRestrictedByOwner: false,
       isShowRestrictedByGroup: false,

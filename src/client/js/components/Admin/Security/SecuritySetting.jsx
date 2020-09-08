@@ -14,22 +14,7 @@ class SecuritySetting extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      retrieveError: null,
-    };
     this.putSecuritySetting = this.putSecuritySetting.bind(this);
-  }
-
-  async componentDidMount() {
-    const { adminGeneralSecurityContainer } = this.props;
-
-    try {
-      await adminGeneralSecurityContainer.retrieveSecurityData();
-    }
-    catch (err) {
-      toastError(err);
-      this.setState({ retrieveError: err.message });
-    }
   }
 
   async putSecuritySetting() {
@@ -52,9 +37,9 @@ class SecuritySetting extends React.Component {
         <h2 className="alert-anchor border-bottom">
           {t('security_settings')}
         </h2>
-        {this.state.retrieveError != null && (
+        {adminGeneralSecurityContainer.retrieveError != null && (
         <div className="alert alert-danger">
-          <p>{t('Error occurred')} : {this.state.retrieveError}</p>
+          <p>{t('Error occurred')} : {adminGeneralSecurityContainer.retrieveError}</p>
         </div>
           )}
 
@@ -206,7 +191,7 @@ class SecuritySetting extends React.Component {
         </div>
         <div className="row my-3">
           <div className="text-center text-md-left offset-md-3 col-md-5">
-            <button type="button" className="btn btn-primary" disabled={this.state.retrieveError != null} onClick={this.putSecuritySetting}>
+            <button type="button" className="btn btn-primary" disabled={adminGeneralSecurityContainer.retrieveError != null} onClick={this.putSecuritySetting}>
               {t('Update')}
             </button>
           </div>
