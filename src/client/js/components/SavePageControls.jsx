@@ -28,6 +28,7 @@ class SavePageControls extends React.Component {
     const config = this.props.appContainer.getConfig();
     this.hasSlackConfig = config.hasSlackConfig;
     this.isAclEnabled = config.isAclEnabled;
+    this.slackOnly = false;
 
     this.slackEnabledFlagChangedHandler = this.slackEnabledFlagChangedHandler.bind(this);
     this.slackChannelsChangedHandler = this.slackChannelsChangedHandler.bind(this);
@@ -94,6 +95,7 @@ class SavePageControls extends React.Component {
               onChannelChange={this.slackChannelsChangedHandler}
               id="idForSavePageControl"
               smallScreen={this.props.isDeviceSmallerThanMd}
+              click={this.props.click}
             />
           </div>
           )
@@ -136,6 +138,7 @@ const SavePageControlsWrapper = withUnstatedContainers(SavePageControls, [AppCon
 
 SavePageControls.propTypes = {
   t: PropTypes.func.isRequired, // i18next
+  click: PropTypes.func.isRequired,
   isDeviceSmallerThanMd: PropTypes.bool.isRequired,
 
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,

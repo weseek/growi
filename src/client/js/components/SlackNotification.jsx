@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Collapse } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
 
 /**
@@ -20,7 +19,6 @@ class SlackNotification extends React.Component {
 
     this.updateCheckboxHandler = this.updateCheckboxHandler.bind(this);
     this.updateSlackChannelsHandler = this.updateSlackChannelsHandler.bind(this);
-    this.state = { isExpanded: false };
   }
 
   updateCheckboxHandler(event) {
@@ -74,9 +72,6 @@ class SlackNotification extends React.Component {
 
   }
 
-  setExpanded= (value) => {
-    this.setState({ isExpanded: value });
-  }
 
   /*
 Note to myself:
@@ -89,19 +84,10 @@ affect the rendering of the banner itself.
       <div className="grw-slack-notification">
         <button
           type="button"
-          onClick={() => this.setExpanded(!this.state.isExpanded)}
+          onClick={this.props.click}
         >
           <i className="icon-arrow-up"></i>
         </button>
-        <Collapse isOpen={this.state.isExpanded}>
-          <div className="px-2"> {/* set padding for border-top */}
-            <div className="navbar navbar-expand border-top px-0">
-              <form className="form-inline ml-auto">
-                {this.getSlackNormal()}
-              </form>
-            </div>
-          </div>
-        </Collapse>
       </div>
     );
   }
@@ -116,6 +102,7 @@ affect the rendering of the banner itself.
 
 SlackNotification.propTypes = {
   t: PropTypes.func.isRequired, // i18next
+  click: PropTypes.func.isRequired,
 
   smallScreen: PropTypes.bool.isRequired,
   isSlackEnabled: PropTypes.bool.isRequired,

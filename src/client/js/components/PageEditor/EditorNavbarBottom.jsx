@@ -14,6 +14,8 @@ const EditorNavbarBottom = (props) => {
 
   const [isExpanded, setExpanded] = useState(false);
 
+  const [isSlackExpanded, setSlackExpanded] = useState(false);
+
   const {
     navigationContainer,
   } = props;
@@ -45,13 +47,30 @@ const EditorNavbarBottom = (props) => {
 
   return (
     <div className={`${isCollapsedOptionsSelectorEnabled ? 'fixed-bottom' : ''} `}>
+      {/* Collapsed SlackNotification */}
+      { isSlackExpanded && (
+        <Collapse isOpen={isSlackExpanded}>
+          <div className="px-2"> {/* set padding for border-top */}
+            <div className={`navbar navbar-expand border-top px-0 ${additionalClasses.join(' ')}`}>
+              <form className="form-inline ml-auto">
+                <SavePageControls
+                  isDeviceSmallerThanMd={false}
+                />
+              </form>
+            </div>
+          </div>
+        </Collapse>
+        )}
       <div className={`navbar navbar-expand border-top px-2 ${additionalClasses.join(' ')}`}>
         <form className="form-inline">
           { isDrawerMode && renderDrawerButton() }
           { isOptionsSelectorEnabled && !isDeviceSmallerThanMd && <OptionsSelector /> }
         </form>
         <form className="form-inline ml-auto">
-          <SavePageControls isDeviceSmallerThanMd={isDeviceSmallerThanMd} />
+          <SavePageControls
+            isDeviceSmallerThanMd={isDeviceSmallerThanMd}
+            click={() => (setSlackExpanded(!isSlackExpanded))}
+          />
           { isCollapsedOptionsSelectorEnabled && renderExpandButton() }
         </form>
       </div>
