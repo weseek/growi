@@ -55,6 +55,7 @@ const EditorNavbarBottom = (props) => {
               <form className="form-inline ml-auto">
                 <SavePageControls
                   isDeviceSmallerThanMd={false}
+                  slackOnly
                 />
               </form>
             </div>
@@ -68,8 +69,9 @@ const EditorNavbarBottom = (props) => {
         </form>
         <form className="form-inline ml-auto">
           <SavePageControls
-            isDeviceSmallerThanMd={isDeviceSmallerThanMd}
+            smallScreen={isDeviceSmallerThanMd}
             click={() => (setSlackExpanded(!isSlackExpanded))}
+            slackOnly={false}
           />
           { isCollapsedOptionsSelectorEnabled && renderExpandButton() }
         </form>

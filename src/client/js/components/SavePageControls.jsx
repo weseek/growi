@@ -28,7 +28,6 @@ class SavePageControls extends React.Component {
     const config = this.props.appContainer.getConfig();
     this.hasSlackConfig = config.hasSlackConfig;
     this.isAclEnabled = config.isAclEnabled;
-    this.slackOnly = false;
 
     this.slackEnabledFlagChangedHandler = this.slackEnabledFlagChangedHandler.bind(this);
     this.slackChannelsChangedHandler = this.slackChannelsChangedHandler.bind(this);
@@ -77,43 +76,62 @@ class SavePageControls extends React.Component {
   }
 
   render() {
+
     const { t, pageContainer, editorContainer } = this.props;
 
     const isRootPage = pageContainer.state.path === '/';
     const labelSubmitButton = pageContainer.state.pageId == null ? t('Create') : t('Update');
     const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
 
+    if (this.props.slackOnly) {
+      return (
+        <div className="d-flex align-items-center form-inline">
+          {this.hasSlackConfig
+            && (
+              <div className="mr-2">
+                <SlackNotification
+                  isSlackEnabled={editorContainer.state.isSlackEnabled}
+                  slackChannels={editorContainer.state.slackChannels}
+                  onEnabledFlagChange={this.slackEnabledFlagChangedHandler}
+                  onChannelChange={this.slackChannelsChangedHandler}
+                />
+              </div>
+            )
+          }
+        </div>
+
+      );
+    }
     return (
       <div className="d-flex align-items-center form-inline">
         {this.hasSlackConfig
-          && (
-          <div className="mr-2">
-            <SlackNotification
-              isSlackEnabled={editorContainer.state.isSlackEnabled}
-              slackChannels={editorContainer.state.slackChannels}
-              onEnabledFlagChange={this.slackEnabledFlagChangedHandler}
-              onChannelChange={this.slackChannelsChangedHandler}
-              id="idForSavePageControl"
-              smallScreen={this.props.isDeviceSmallerThanMd}
-              click={this.props.click}
-            />
-          </div>
-          )
-        }
+            && (
+              <div className="mr-2">
+                <SlackNotification
+                  isSlackEnabled={editorContainer.state.isSlackEnabled}
+                  slackChannels={editorContainer.state.slackChannels}
+                  onEnabledFlagChange={this.slackEnabledFlagChangedHandler}
+                  onChannelChange={this.slackChannelsChangedHandler}
+                  click={this.props.click}
+                  smallScreen={this.props.smallScreen}
+                />
+              </div>
+            )
+          }
 
         {this.isAclEnabled
-          && (
-          <div className="mr-2">
-            <GrantSelector
-              disabled={isRootPage}
-              grant={editorContainer.state.grant}
-              grantGroupId={editorContainer.state.grantGroupId}
-              grantGroupName={editorContainer.state.grantGroupName}
-              onUpdateGrant={this.updateGrantHandler}
-            />
-          </div>
-          )
-        }
+            && (
+              <div className="mr-2">
+                <GrantSelector
+                  disabled={isRootPage}
+                  grant={editorContainer.state.grant}
+                  grantGroupId={editorContainer.state.grantGroupId}
+                  grantGroupName={editorContainer.state.grantGroupName}
+                  onUpdateGrant={this.updateGrantHandler}
+                />
+              </div>
+            )
+          }
 
         <UncontrolledButtonDropdown direction="up">
           <Button id="caret" color="primary" className="btn-submit" onClick={this.save}>{labelSubmitButton}</Button>
@@ -139,7 +157,8 @@ const SavePageControlsWrapper = withUnstatedContainers(SavePageControls, [AppCon
 SavePageControls.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   click: PropTypes.func.isRequired,
-  isDeviceSmallerThanMd: PropTypes.bool.isRequired,
+  slackOnly: PropTypes.bool.isRequired,
+  smallScreen: PropTypes.bool.isRequired,
 
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
