@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 import config from '^/config/migrate';
 import loggerFactory from '~/utils/logger';
-import { getModelSafely } from '~/utils/mongoose-utils';
+import { getModelSafely } from '~/server/util/mongoose-utils';
 
 const logger = loggerFactory('growi:migrate:update-theme-color-for-dark');
 

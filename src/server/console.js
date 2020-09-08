@@ -2,7 +2,7 @@ const repl = require('repl');
 const fs = require('fs');
 const path = require('path');
 const mongoose = require('mongoose');
-const { getMongoUri, mongoOptions } = require('~/utils/mongoose-utils');
+const { getMongoUri, mongoOptions } = require('~/server/util/mongoose-utils');
 
 const models = require('./models');
 

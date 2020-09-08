@@ -9,7 +9,7 @@ import 'tsconfig-paths/register';
 
 import mongoose from 'mongoose';
 
-import { getMongoUri, mongoOptions } from '~/utils/mongoose-utils';
+import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 
 // check env
 if (process.env.NODE_ENV !== 'test') {
