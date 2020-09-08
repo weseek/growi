@@ -48,14 +48,10 @@ describe('convertToNewAffiliationPath test', () => {
     }).toThrow();
   });
 
-  // test('New parent path is null', () => {
-  //   expect(() => {
-  //     convertToNewAffiliationPath('parent/', null, 'child');
-  //   }).toThrow();
-  // });
   test('New parent path is null', () => {
-    const result = convertToNewAffiliationPath('parent/', null, 'parent/child');
-    expect(result).toBe('nullchild');
+    expect(() => {
+      convertToNewAffiliationPath('parent/', null, 'child');
+    }).toThrow();
   });
 
   test('All pathes are null', () => {
