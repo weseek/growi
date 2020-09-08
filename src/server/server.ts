@@ -3,8 +3,6 @@ import {
   Configuration, Inject, PlatformApplication, Value,
 } from '@tsed/common';
 
-import next from 'next';
-
 import express from 'express';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
@@ -74,7 +72,7 @@ export class Server {
    */
   public $beforeRoutesInit(): void | Promise<any> {
     this.app
-      .use(helmet())
+      // .use(helmet())
       .use(cookieParser())
       .use(methodOverride())
       .use(express.json({ limit: '50mb' }))
