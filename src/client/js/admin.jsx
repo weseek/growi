@@ -31,6 +31,7 @@ import AdminCustomizeContainer from './services/AdminCustomizeContainer';
 import AdminUserGroupDetailContainer from './services/AdminUserGroupDetailContainer';
 import AdminUsersContainer from './services/AdminUsersContainer';
 import AdminAppContainer from './services/AdminAppContainer';
+import AdminImportContainer from './services/AdminImportContainer';
 import AdminMarkDownContainer from './services/AdminMarkDownContainer';
 import AdminExternalAccountsContainer from './services/AdminExternalAccountsContainer';
 import AdminGeneralSecurityContainer from './services/AdminGeneralSecurityContainer';
@@ -55,6 +56,7 @@ const { i18n } = appContainer;
 // create unstated container instance
 const navigationContainer = new NavigationContainer(appContainer);
 const adminAppContainer = new AdminAppContainer(appContainer);
+const adminImportContainer = new AdminImportContainer(appContainer);
 const adminSocketIoContainer = new AdminSocketIoContainer(appContainer);
 const adminHomeContainer = new AdminHomeContainer(appContainer);
 const adminCustomizeContainer = new AdminCustomizeContainer(appContainer);
@@ -67,6 +69,7 @@ const injectableContainers = [
   appContainer,
   navigationContainer,
   adminAppContainer,
+  adminImportContainer,
   adminSocketIoContainer,
   adminHomeContainer,
   adminCustomizeContainer,

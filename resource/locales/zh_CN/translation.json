@@ -51,7 +51,16 @@
 	"History": "历史",
 	"Presentation Mode": "演示文稿",
   "Not available for guest": "Not available for guest",
-	"username": "用户名",
+  "Create Archive Page": "Create Archive Page",
+  "File type": "File type",
+  "Target page": "Target page",
+  "Include Attachment File": "Include Attachment File",
+  "Include Comment": "Include Comment",
+  "Include Subordinated Page": "Include Subordinated Page",
+  "All Subordinated Page": "All Subordinated Page",
+  "Specify Hierarchy": "Specify Hierarchy",
+  "Submitted the request to create the archive": "Submitted the request to create the archive",
+  "username": "用户名",
 	"Created": "创建",
 	"Last updated": "上次更新",
   "Last_Login": "上次登录",
@@ -695,24 +704,6 @@
 		"rebuild_description_1": "单击按钮以重新生成索引并添加所有页面数据。",
 		"rebuild_description_2": "这可能需要一段时间。"
 	},
-	"export_management": {
-		"exporting_collection_list": "正在导出集合列表",
-		"exported_data_list": "导出的存档数据列表",
-		"export_collections": "导出集合",
-		"check_all": "全部选中",
-		"uncheck_all": "全部取消选中",
-		"desc_password_seed": "还原用户数据时，不要忘记将当前的<code>密码种子设置到新的GROWI系统，否则用户将无法使用其密码登录。<br><br><strong>提示：</strong><br>当前的<code>密码种子将存储在<code>meta.json格式</code>在导出的zip压缩包中。",
-		"create_new_archive_data": "创建新的存档数据",
-		"export": "导出",
-		"cancel": "取消",
-		"file": "文件",
-		"growi_version": "Growi 版本号",
-		"collections": "收藏",
-		"exported_at": "导出在",
-		"export_menu": "导出菜单",
-		"download": "下载",
-		"delete": "删除"
-	},
 	"personal_dropdown": {
 		"home": "家",
 		"settings": "设置",
@@ -735,6 +726,12 @@
 		"Registration successful": "注册成功",
 		"Setup": "安装程序"
 	},
+  "export_bulk": {
+    "failed_to_export": "Failed to export",
+    "failed_to_count_pages": "Failed to count pages",
+    "export_page_markdown": "Export page as Markdown",
+    "export_page_pdf": "Export page as PDF"
+  },
 	"message": {
 		"successfully_connected": "连接成功！",
 		"fail_to_save_access_token": "无法保存访问令牌。请再试一次。",
@@ -758,5 +755,9 @@
 		"complete_to_install1": "完成安装GROWI！请以管理员帐户登录。",
 		"complete_to_install2": "完成安装GROWI！请先检查此页上的每个设置。",
 		"failed_to_create_admin_user": "无法创建管理用户。{{errMessage}"
-	}
+  },
+  "validation":{
+    "aws_region": "关于地区，请输入AWS地区名，例如：ap-east-1",
+    "aws_custom_endpoint": "关于自定义端点，请指定以http(s)://开头的URL，链接末尾不需要添加“/”"
+  }
 }

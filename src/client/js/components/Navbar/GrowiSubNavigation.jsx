@@ -108,15 +108,20 @@ const UserInfo = ({ pageUser }) => {
 /* eslint-disable react/prop-types */
 const PageReactionButtons = ({ appContainer, pageContainer }) => {
 
-  const { pageId, isLiked, pageUser } = pageContainer.state;
+  const {
+    pageId, isLiked, pageUser, sumOfLikers,
+  } = pageContainer.state;
 
   return (
     <>
       {pageUser == null && (
-      <span className="mr-2">
+      <span>
         <LikeButton pageId={pageId} isLiked={isLiked} />
       </span>
       )}
+      <span className="mr-2 total-likes">
+        {sumOfLikers}
+      </span>
       <span className="mr-2">
         <BookmarkButton pageId={pageId} crowi={appContainer} />
       </span>
@@ -149,7 +154,7 @@ const GrowiSubNavigation = (props) => {
   }
 
   return (
-    <div className={`grw-subnav d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact' : ''}`}>
+    <div className={`grw-subnav d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
 
       {/* Left side */}
       <div className="d-flex">

@@ -9,13 +9,23 @@ import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 import OutsideShareLinkModal from '../OutsideShareLinkModal';
 
+// TODO GW-2746 bulk export pages
+// import ArchiveCreateModal from '../ArchiveCreateModal';
+
 const PageShareManagement = (props) => {
   const { t, appContainer, pageContainer } = props;
 
+  // TODO GW-2746 bulk export pages
+  // eslint-disable-next-line no-unused-vars
+  const { path, pageId } = pageContainer.state;
   const { currentUser } = appContainer;
 
   const [isOutsideShareLinkModalShown, setIsOutsideShareLinkModalShown] = useState(false);
 
+  // TODO GW-2746 bulk export pages
+  // const [isArchiveCreateModalShown, setIsArchiveCreateModalShown] = useState(false);
+  // const [totalPages, setTotalPages] = useState(null);
+  // const [errorMessage, setErrorMessage] = useState(null);
 
   function openOutsideShareLinkModalHandler() {
     setIsOutsideShareLinkModalShown(true);
@@ -25,6 +35,17 @@ const PageShareManagement = (props) => {
     setIsOutsideShareLinkModalShown(false);
   }
 
+  // TODO GW-2746 bulk export pages
+  // async function getArchivePageData() {
+  //   try {
+  //     const res = await appContainer.apiv3Get('page/count-children-pages', { pageId });
+  //     setTotalPages(res.data.dummy);
+  //   }
+  //   catch (err) {
+  //     setErrorMessage(t('export_bulk.failed_to_count_pages'));
+  //   }
+  // }
+
   async function exportPageHandler(format) {
     const { pageId, revisionId } = pageContainer.state;
     const url = new URL(urljoin(window.location.origin, '_api/v3/page/export', pageId));
@@ -32,6 +53,18 @@ const PageShareManagement = (props) => {
     url.searchParams.append('revisionId', revisionId);
     window.location.href = url.href;
   }
+
+  // TODO GW-2746 create api to bulk export pages
+  // function openArchiveModalHandler() {
+  //   setIsArchiveCreateModalShown(true);
+  //   getArchivePageData();
+  // }
+
+  // TODO GW-2746 create api to bulk export pages
+  // function closeArchiveCreateModalHandler() {
+  //   setIsArchiveCreateModalShown(false);
+  // }
+
 
   function renderModals() {
     if (currentUser == null) {
@@ -44,6 +77,15 @@ const PageShareManagement = (props) => {
           isOpen={isOutsideShareLinkModalShown}
           onClose={closeOutsideShareLinkModalHandler}
         />
+
+        {/* TODO GW-2746 bulk export pages */}
+        {/* <ArchiveCreateModal
+          isOpen={isArchiveCreateModalShown}
+          onClose={closeArchiveCreateModalHandler}
+          path={path}
+          errorMessage={errorMessage}
+          totalPages={totalPages}
+        /> */}
       </>
     );
   }
@@ -91,6 +133,10 @@ const PageShareManagement = (props) => {
         <button type="button" className="dropdown-item" onClick={() => { exportPageHandler('md') }}>
           <span>{t('export_bulk.export_page_markdown')}</span>
         </button>
+        {/* TODO GW-2746 create api to bulk export pages */}
+        {/* <button className="dropdown-item" type="button" onClick={openArchiveModalHandler}>
+          <i className="icon-fw"></i>{t('Create Archive Page')}
+        </button> */}
       </div>
       {renderModals()}
     </>
