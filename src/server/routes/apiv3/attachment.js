@@ -56,11 +56,8 @@ module.exports = (crowi) => {
         { page: pageId },
         queryOptions,
       );
-      console.log(paginateResult);
 
       return res.apiv3({ paginateResult });
-
-
     }
     catch (err) {
       logger.error('Attachment not found', err);
