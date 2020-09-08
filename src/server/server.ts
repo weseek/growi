@@ -1,7 +1,7 @@
+import { Env } from '@tsed/core';
 import {
-  Configuration, Inject, PlatformApplication, Value, PlatformRouter,
+  Configuration, Inject, PlatformApplication, Value,
 } from '@tsed/common';
-import { GlobalAcceptMimesMiddleware } from '@tsed/platform-express';
 
 import next from 'next';
 
@@ -13,23 +13,27 @@ import methodOverride from 'method-override';
 import mongoose from 'mongoose';
 
 import loggerFactory from '~/utils/logger';
-import { SafeRedirectMiddleware } from './server/middlewares/safe-redirect';
-import { getMongoUri, mongoOptions } from './server/util/mongoose-utils';
+import { SafeRedirectMiddleware } from './middlewares/safe-redirect';
+import { getMongoUri, mongoOptions } from './util/mongoose-utils';
 
 import { NextCtrl } from './controllers/next';
 
 const rootDir = __dirname;
 const logger = loggerFactory('growi:Server');
 
+const acceptMimes = process.env.NODE_ENV === Env.PROD
+  ? ['application/json']
+  : ['application/json', 'text/event-stream'];
+
 @Configuration({
   rootDir,
   port: process.env.PORT || 3000,
   httpsPort: false,
-  acceptMimes: ['application/json'],
+  acceptMimes,
   componentsScan: [
     /* eslint-disable no-template-curly-in-string */
-    '${rootDir}/server/middlewares/**/*.ts',
-    '${rootDir}/server/service/**/*.ts',
+    '${rootDir}/middlewares/**/*.ts',
+    '${rootDir}/service/**/*.ts',
     /* eslint-enable no-template-curly-in-string */
   ],
   mount: {
@@ -70,8 +74,7 @@ export class Server {
    */
   public $beforeRoutesInit(): void | Promise<any> {
     this.app
-      .use(GlobalAcceptMimesMiddleware)
-      // .use(helmet())
+      .use(helmet())
       .use(cookieParser())
       .use(methodOverride())
       .use(express.json({ limit: '50mb' }))

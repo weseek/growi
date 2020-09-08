@@ -21,7 +21,7 @@
   },
   "scripts": {
     "dev:ci": "yarn dev -- --ci",
-    "dev": "ts-node-dev --project tsconfig.server.json -r tsconfig-paths/register --ignore-watch .next src/app.ts",
+    "dev": "ts-node-dev --project tsconfig.server.json -r tsconfig-paths/register --ignore-watch .next src/server/app.ts",
     "build": "next build && tsc --project tsconfig.server.json",
     "plugin:def": "yarn ts-node bin/generate-plugin-definitions-source.ts",
     "resource": "yarn ts-node bin/download-cdn-resources.ts",
