@@ -3,10 +3,10 @@ import minimatch from 'minimatch';
 
 import { logger as configOfLogger } from '^/config';
 
+import stream from './stream';
+
 const isBrowser = typeof window !== 'undefined';
 const isProd = process.env.NODE_ENV === 'production';
-
-const stream = isProd ? require('./stream.prod') : require('./stream.dev');
 
 // logger store
 interface BunyanStore {

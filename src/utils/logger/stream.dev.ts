@@ -7,7 +7,7 @@ const isBrowser: boolean = typeof window !== 'undefined';
 function determineStream(): Writable {
   // browser settings
   if (isBrowser) {
-    return new ConsoleFormattedStream();
+    return new ConsoleFormattedStream() as Writable;
   }
 
   // node settings

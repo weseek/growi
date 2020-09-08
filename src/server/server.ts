@@ -13,6 +13,7 @@ import methodOverride from 'method-override';
 import mongoose from 'mongoose';
 
 import loggerFactory from '~/utils/logger';
+import stream from '~/utils/logger/stream';
 import { SafeRedirectMiddleware } from './middlewares/safe-redirect';
 import { getMongoUri, mongoOptions } from './util/mongoose-utils';
 
@@ -94,9 +95,6 @@ export class Server {
   }
 
   private setupLogger(app: Express.Application): void {
-    const isProd: boolean = this.env === Env.PROD;
-
-    const stream = isProd ? require('~/utils/logger/stream.prod') : require('~/utils/logger/stream.dev');
     const level = loggerFactory('express').level();
 
     app.use(expressBunyanLoggerFactory({
