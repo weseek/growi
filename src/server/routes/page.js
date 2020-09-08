@@ -233,7 +233,7 @@ module.exports = function(crowi, app) {
     const userData = await User.findUserByUsername(User.getUsernameByPath(page.path));
 
     if (userData != null) {
-      renderVars.pageUser = userData;
+      renderVars.pageUser = userData.toObject();
       renderVars.bookmarkList = await Bookmark.findByUser(userData, { limit: 10, populatePage: true, requestUser });
     }
   }
