@@ -54,10 +54,4 @@ describe('convertToNewAffiliationPath test', () => {
     }).toThrow();
   });
 
-  test('All pathes are null', () => {
-    expect(() => {
-      convertToNewAffiliationPath(null, null, null);
-    }).toThrow();
-  });
-
 });
