@@ -1,4 +1,4 @@
-import bunyan from 'bunyan'; // will be replaced to browser-bunyan on browser by webpack
+import bunyan, { LogLevel } from 'bunyan'; // will be replaced to browser-bunyan on browser by webpack
 import minimatch from 'minimatch';
 
 import { logger as configOfLogger } from '^/config';
@@ -36,17 +36,16 @@ Object.keys(envLevelMap).forEach((envName) => { // ['INFO', 'DEBUG', ...].forEac
   }
 });
 
-
 /**
  * determine logger level
- * @param {string} name Logger name
+ * @param name Logger name
  */
-function determineLoggerLevel(name: string) {
+function determineLogLevel(name: string): LogLevel {
   if (isBrowser && isProd) {
     return 'error';
   }
 
-  let level = configOfLogger.default;
+  let level: LogLevel = configOfLogger.default;
 
   /* eslint-disable array-callback-return, no-useless-return */
   // retrieve configured level
@@ -67,7 +66,7 @@ const loggerFactory = function(name: string): bunyan {
     loggers[name] = bunyan.createLogger({
       name,
       stream,
-      level: determineLoggerLevel(name),
+      level: determineLogLevel(name),
     });
   }
 

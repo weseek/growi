@@ -1,9 +1,11 @@
 import { Env } from '@tsed/core';
 import {
-  Configuration, Inject, PlatformApplication, Value,
+  Configuration, Inject, PlatformApplication, Value, Constant,
 } from '@tsed/common';
 
 import express from 'express';
+import expressBunyanLoggerFactory from 'express-bunyan-logger';
+import bunyanFormat from 'bunyan-format';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import methodOverride from 'method-override';
@@ -28,6 +30,10 @@ const acceptMimes = process.env.NODE_ENV === Env.PROD
   port: process.env.PORT || 3000,
   httpsPort: false,
   acceptMimes,
+  // disable RequestLogger of @tsed/logger
+  logger: {
+    logRequest: false,
+  },
   componentsScan: [
     /* eslint-disable no-template-curly-in-string */
     '${rootDir}/middlewares/**/*.ts',
@@ -50,10 +56,13 @@ const acceptMimes = process.env.NODE_ENV === Env.PROD
 export class Server {
 
   @Inject()
-  app!: PlatformApplication<Express.Application>;
+  private app!: PlatformApplication<Express.Application>;
+
+  @Constant('env')
+  private env!: Env;
 
   @Value('mongoose')
-  mongooseConfig!: any[];
+  private mongooseConfig!: any[];
 
   $beforeInit(): void | Promise<any> {
     return this.initMongoose();
@@ -80,7 +89,24 @@ export class Server {
       .use(SafeRedirectMiddleware);
 
     const { raw: expressApp } = this.app;
+    this.setupLogger(expressApp);
     this.setupSession(expressApp);
+  }
+
+  private setupLogger(app: Express.Application): void {
+    const isProd: boolean = this.env === Env.PROD;
+
+    const stream = isProd ? require('~/utils/logger/stream.prod') : require('~/utils/logger/stream.dev');
+    const level = loggerFactory('express').level();
+
+    app.use(expressBunyanLoggerFactory({
+      name: 'express',
+      streams: [{
+        level,
+        stream,
+      }],
+      excludes: ['*'],
+    }));
   }
 
   private setupSession(app: Express.Application): void {

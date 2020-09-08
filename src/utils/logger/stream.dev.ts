@@ -1,17 +1,17 @@
 import bunyanFormat from 'bunyan-format';
 import { ConsoleFormattedStream } from '@browser-bunyan/console-formatted-stream';
+import { Writable } from 'stream';
 
 const isBrowser: boolean = typeof window !== 'undefined';
 
-let stream;
+function determineStream(): Writable {
+  // browser settings
+  if (isBrowser) {
+    return new ConsoleFormattedStream();
+  }
 
-// browser settings
-if (isBrowser) {
-  stream = new ConsoleFormattedStream();
-}
-// node settings
-else {
-  stream = bunyanFormat({ outputMode: 'short' });
+  // node settings
+  return bunyanFormat({ outputMode: 'short' });
 }
 
-module.exports = stream;
+export default determineStream();
