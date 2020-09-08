@@ -5,6 +5,7 @@ const logger = loggerFactory('growi:routes:apiv3:attachment'); // eslint-disable
 const express = require('express');
 
 const router = express.Router();
+const { query } = require('express-validator');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -19,7 +20,14 @@ module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const Page = crowi.model('Page');
   const Attachment = crowi.model('Attachment');
+  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
+
+  const validator = {
+    retrieveAttachments: [
+      query,
+    ],
+  };
   /**
    * @swagger
    *
@@ -38,7 +46,7 @@ module.exports = (crowi) => {
    *            schema:
    *              type: string
    */
-  router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
+  router.get('/list', accessTokenParser, loginRequired, validator.retrieveAttachments, apiV3FormValidator, async(req, res) => {
     const offset = +req.query.offset || 0;
     const limit = +req.query.limit || 30;
     const queryOptions = { offset, limit };
