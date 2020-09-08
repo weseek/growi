@@ -760,6 +760,7 @@
   },
   "validation":{
     "aws_region": "关于地区，请输入AWS地区名，例如：ap-east-1",
-    "aws_custom_endpoint": "关于自定义端点，请指定以http(s)://开头的URL，链接末尾不需要添加“/”"
+    "aws_custom_endpoint": "关于自定义端点，请指定以http(s)://开头的URL，链接末尾不需要添加“/”",
+    "failed_to_send_a_test_email":"SMTP方式测试邮件发送失败，请检查相关设定。"
   }
 }
