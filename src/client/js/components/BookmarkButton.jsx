@@ -74,7 +74,7 @@ class BookmarkButton extends React.Component {
         >
           <i className="icon-star"></i>
         </button>
-        <div>
+        <div className="total-bookmarks">
           {this.state.sumOfBookmarks}
         </div>
       </div>
