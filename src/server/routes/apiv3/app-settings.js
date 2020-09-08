@@ -135,6 +135,11 @@ module.exports = (crowi) => {
       body('accessKeyId').trim().matches(/^[\da-zA-Z]+$/),
       body('secretAccessKey').trim(),
     ],
+    gcpSetting: [
+      body('gcsApiKeyJsonPath').trim(),
+      body('gcsBucket').trim(),
+      body('gcsUploadNamespace').trim(),
+    ],
     pluginSetting: [
       body('isEnabledPlugins').isBoolean(),
     ],
@@ -532,6 +537,57 @@ module.exports = (crowi) => {
         secretAccessKey: crowi.configManager.getConfig('crowi', 'aws:secretAccessKey'),
       };
       return res.apiv3({ awsSettingParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating aws setting';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-awsSetting-failed'));
+    }
+
+  });
+
+  /**
+   * @swagger
+   *
+   *    /app-settings/aws-setting:
+   *      put:
+   *        tags: [AppSettings]
+   *        operationId: updateAppSettingAwsSetting
+   *        summary: /app-settings/aws-setting
+   *        description: Update aws setting
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/AwsSettingParams'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update aws setting
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/AwsSettingParams'
+   */
+  router.put('/gcp-setting', loginRequiredStrictly, adminRequired, csrf, validator.gcpSetting, apiV3FormValidator, async(req, res) => {
+    const requestGcpSettingParams = {
+      'gcs:apiKeyJsonPath': req.body.gcsApiKeyJsonPath,
+      'gcs:bucket': req.body.gcsBucket,
+      'gcs:uploadNamespace': req.body.gcsUploadNamespace,
+    };
+
+    try {
+      const { configManager } = crowi;
+
+      // update config without publishing S2sMessage
+      await configManager.updateConfigsInTheSameNamespace('crowi', requestGcpSettingParams, true);
+
+      const gcpSettingParams = {
+        gcsApiKeyJsonPath: crowi.configManager.getConfig('crowi', 'gcs:apiKeyJsonPath'),
+        gcsBucket: crowi.configManager.getConfig('crowi', 'gcs:bucket'),
+        gcsUploadNamespace: crowi.configManager.getConfig('crowi', 'gcs:uploadNamespace'),
+      };
+      return res.apiv3({ gcpSettingParams });
     }
     catch (err) {
       const msg = 'Error occurred in updating aws setting';
