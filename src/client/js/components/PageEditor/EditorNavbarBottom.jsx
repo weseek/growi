@@ -51,7 +51,7 @@ const EditorNavbarBottom = (props) => {
           { isOptionsSelectorEnabled && !isDeviceSmallerThanMd && <OptionsSelector /> }
         </form>
         <form className="form-inline ml-auto">
-          <SavePageControls />
+          <SavePageControls isDeviceSmallerThanMd={isDeviceSmallerThanMd} />
           { isCollapsedOptionsSelectorEnabled && renderExpandButton() }
         </form>
       </div>
