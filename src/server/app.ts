@@ -23,11 +23,7 @@ process.on('unhandledRejection', (reason, p) => {
 
 async function main() {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    // const Crowi = require('./crowi');
-    // const growi = new Crowi();
-    // const server = await growi.start();
-
+    // initialize Ts.ED platform with Express
     const platform = await PlatformExpress.bootstrap(Server);
     await platform.listen();
 

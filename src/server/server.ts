@@ -87,23 +87,4 @@ export class Server {
     logger.info('Setup session');
   }
 
-  // public async $afterRoutesInit(): Promise<void> {
-  //   const { raw: expressApp } = this.app;
-  //   await this.setupNextApp(expressApp);
-  // }
-
-  // private async setupNextApp(expressApp: Express.Application): Promise<void> {
-  //   const dev = process.env.NODE_ENV !== 'production';
-  //   const nextApp = next({ dev });
-
-  //   await nextApp.prepare();
-
-  //   const handle = nextApp.getRequestHandler();
-
-  //   this.router.get('/*', (req, res) => {
-  //     // req.crowi = this;
-  //     return handle(req, res);
-  //   });
-  // }
-
 }
