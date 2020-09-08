@@ -92,6 +92,19 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *          secretAccessKey:
  *            type: string
  *            description: secret key for authentification of AWS
+ *      GcpSettingParams:
+ *        description: GcpSettingParams
+ *        type: object
+ *        properties:
+ *          gcsApiKeyJsonPath:
+ *            type: string
+ *            description: apiKeyJsonPath of gcp
+ *          gcsBucket:
+ *            type: string
+ *            description: bucket name of gcs
+ *          gcsUploadNamespace:
+ *            type: string
+ *            description: name space of gcs
  *      PluginSettingParams:
  *        description: PluginSettingParams
  *        type: object
@@ -549,25 +562,25 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /app-settings/aws-setting:
+   *    /app-settings/gcp-setting:
    *      put:
    *        tags: [AppSettings]
-   *        operationId: updateAppSettingAwsSetting
-   *        summary: /app-settings/aws-setting
-   *        description: Update aws setting
+   *        operationId: updateAppSettingGcpSetting
+   *        summary: /app-settings/gcp-setting
+   *        description: Update gcp setting
    *        requestBody:
    *          required: true
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/AwsSettingParams'
+   *                $ref: '#/components/schemas/GcpSettingParams'
    *        responses:
    *          200:
-   *            description: Succeeded to update aws setting
+   *            description: Succeeded to update gcp setting
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/AwsSettingParams'
+   *                  $ref: '#/components/schemas/GcpSettingParams'
    */
   router.put('/gcp-setting', loginRequiredStrictly, adminRequired, csrf, validator.gcpSetting, apiV3FormValidator, async(req, res) => {
     const requestGcpSettingParams = {
