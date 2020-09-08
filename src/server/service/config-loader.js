@@ -326,6 +326,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
+  IS_GCP_ENV_PRIORITIZED: {
+    ns:      'crowi',
+    key:     'gcs:isGcpEnvPrioritizes',
+    type:    TYPES.BOOLEAN,
+    default: false,
+  },
 };
 
 class ConfigLoader {
