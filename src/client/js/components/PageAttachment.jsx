@@ -25,54 +25,40 @@ class PageAttachment extends React.Component {
       deleteError: '',
     };
     this.handlePage = this.handlePage.bind(this);
-    this.showPages = this.showPages.bind(this);
     this.onAttachmentDeleteClicked = this.onAttachmentDeleteClicked.bind(this);
     this.onAttachmentDeleteClickedConfirm = this.onAttachmentDeleteClickedConfirm.bind(this);
   }
 
   async handlePage(selectedPage) {
-    await this.showPages(selectedPage);
-  }
-
-  async showPages(selectedPage) {
-    const { appContainer, pageContainer } = this.props;
-    const { pageId } = pageContainer.state;
-    const { limit } = this.state;
-    const offset = (selectedPage - 1) * limit || 0;
-    const res = await appContainer.apiv3Get('/attachment/list', { pageId, limit, offset });
-    const pagination = res.data.result.pagination;
-    await this.setState({
-      activePage: selectedPage,
-      totalPages: pagination.totalPages,
-      limit: pagination.limit,
-    });
-  }
-
-  componentWillMount() {
-    this.showPages(1);
-  }
-
-  async componentDidMount() {
-
-    const { appContainer } = this.props;
     const { pageId } = this.props.pageContainer.state;
 
     if (!pageId) { return }
 
     const limit = 10;
-    // offset値は、dummy data この後のタスクで実装
     const offset = 0;
-    const res = await this.props.appContainer.apiv3Get('/attachment/list', { pageId, limit, offset });
+    const res = await this.props.appContainer.apiv3Get('/attachment/list', {
+      pageId, limit, offset, selectedPage,
+    });
     const attachments = res.data.paginateResult.docs;
+    const pagination = res.data.paginateResult;
     const inUse = {};
 
     for (const attachment of attachments) {
       inUse[attachment._id] = this.checkIfFileInUse(attachment);
     }
+
     this.setState({
+      activePage: pagination.page,
+      totalPages: pagination.totalPages,
       attachments,
       inUse,
     });
+    console.log(this.state.activePage);
+  }
+
+
+  componentDidMount() {
+    this.handlePage();
   }
 
   checkIfFileInUse(attachment) {
