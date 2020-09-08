@@ -17,7 +17,6 @@ class PageAttachment extends React.Component {
     this.state = {
       activePage: 1,
       limit: 10,
-      offset: 0,
       totalAttachments: 0,
       attachments: [],
       inUse: {},
@@ -34,11 +33,11 @@ class PageAttachment extends React.Component {
 
   async handlePage(selectedPage) {
     const { pageId } = this.props.pageContainer.state;
-    const { limit, offset } = this.state;
+    const { limit } = this.state;
+    const offset = (selectedPage - 1) * limit;
+    const activePage = selectedPage;
 
     if (!pageId) { return }
-
-    this.setState({ offset: (selectedPage - 1) * limit });
 
     const res = await this.props.appContainer.apiv3Get('/attachment/list', {
       pageId, limit, offset,
@@ -53,7 +52,7 @@ class PageAttachment extends React.Component {
     }
 
     this.setState({
-      activePage: selectedPage,
+      activePage,
       totalAttachments,
       attachments,
       inUse,
@@ -61,7 +60,7 @@ class PageAttachment extends React.Component {
   }
 
 
-  async componentWillMount() {
+  async componentDidMount() {
     await this.handlePage(1);
   }
 
