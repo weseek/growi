@@ -22,11 +22,11 @@ describe('TopPage Path test', () => {
 
 
 describe('convertToNewAffiliationPath test', () => {
-  test('Child path does not converted normally', () => {
+  test('Child path is not converted normally', () => {
     const result = convertToNewAffiliationPath('parent/', 'parent2/', 'parent/child');
     expect(result).toBe('parent2/child');
   });
-  test('Parent path does not converted normally', () => {
+  test('Parent path is not converted normally', () => {
     const result = convertToNewAffiliationPath('parent/', 'parent3/', 'parent/child');
     expect(result === 'parent/child').toBe(false);
   });
