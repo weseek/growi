@@ -129,11 +129,11 @@ module.exports = (crowi) => {
       body('smtpPassword').trim(),
     ],
     awsSetting: [
-      body('region').trim().matches(/^[a-z]+-[a-z]+-\d+$/).withMessage((value, { req }) => req.t('validation.aws_region')),
-      body('customEndpoint').trim().matches(/^(https?:\/\/[^/]+|)$/).withMessage((value, { req }) => req.t('validation.aws_custom_endpoint')),
-      body('bucket').trim(),
-      body('accessKeyId').trim().matches(/^[\da-zA-Z]+$/),
-      body('secretAccessKey').trim(),
+      body('awsRegion').trim().matches(/^[a-z]+-[a-z]+-\d+$/).withMessage((value, { req }) => req.t('validation.aws_region')),
+      body('awsCustomEndpoint').trim().matches(/^(https?:\/\/[^/]+|)$/).withMessage((value, { req }) => req.t('validation.aws_custom_endpoint')),
+      body('awsBucket').trim(),
+      body('awsAccessKeyId').trim().matches(/^[\da-zA-Z]+$/),
+      body('awsSecretAccessKey').trim(),
     ],
     pluginSetting: [
       body('isEnabledPlugins').isBoolean(),
@@ -173,11 +173,11 @@ module.exports = (crowi) => {
       smtpPort: crowi.configManager.getConfig('crowi', 'mail:smtpPort'),
       smtpUser: crowi.configManager.getConfig('crowi', 'mail:smtpUser'),
       smtpPassword: crowi.configManager.getConfig('crowi', 'mail:smtpPassword'),
-      region: crowi.configManager.getConfig('crowi', 'aws:region'),
-      customEndpoint: crowi.configManager.getConfig('crowi', 'aws:customEndpoint'),
-      bucket: crowi.configManager.getConfig('crowi', 'aws:bucket'),
-      accessKeyId: crowi.configManager.getConfig('crowi', 'aws:accessKeyId'),
-      secretAccessKey: crowi.configManager.getConfig('crowi', 'aws:secretAccessKey'),
+      awsRegion: crowi.configManager.getConfig('crowi', 'aws:region'),
+      awsCustomEndpoint: crowi.configManager.getConfig('crowi', 'aws:customEndpoint'),
+      awsBucket: crowi.configManager.getConfig('crowi', 'aws:bucket'),
+      awsAccessKeyId: crowi.configManager.getConfig('crowi', 'aws:accessKeyId'),
+      awsSecretAccessKey: crowi.configManager.getConfig('crowi', 'aws:secretAccessKey'),
       isEnabledPlugins: crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins'),
     };
     return res.apiv3({ appSettingsParams });
@@ -508,11 +508,11 @@ module.exports = (crowi) => {
    */
   router.put('/aws-setting', loginRequiredStrictly, adminRequired, csrf, validator.awsSetting, apiV3FormValidator, async(req, res) => {
     const requestAwsSettingParams = {
-      'aws:region': req.body.region,
-      'aws:customEndpoint': req.body.customEndpoint,
-      'aws:bucket': req.body.bucket,
-      'aws:accessKeyId': req.body.accessKeyId,
-      'aws:secretAccessKey': req.body.secretAccessKey,
+      'aws:region': req.body.awsRegion,
+      'aws:customEndpoint': req.body.awsCustomEndpoint,
+      'aws:bucket': req.body.awsBucket,
+      'aws:accessKeyId': req.body.awsAccessKeyId,
+      'aws:secretAccessKey': req.body.awsSecretAccessKey,
     };
 
     try {
@@ -525,11 +525,11 @@ module.exports = (crowi) => {
       mailService.publishUpdatedMessage();
 
       const awsSettingParams = {
-        region: crowi.configManager.getConfig('crowi', 'aws:region'),
-        customEndpoint: crowi.configManager.getConfig('crowi', 'aws:customEndpoint'),
-        bucket: crowi.configManager.getConfig('crowi', 'aws:bucket'),
-        accessKeyId: crowi.configManager.getConfig('crowi', 'aws:accessKeyId'),
-        secretAccessKey: crowi.configManager.getConfig('crowi', 'aws:secretAccessKey'),
+        awsRegion: crowi.configManager.getConfig('crowi', 'aws:region'),
+        awsCustomEndpoint: crowi.configManager.getConfig('crowi', 'aws:customEndpoint'),
+        awsBucket: crowi.configManager.getConfig('crowi', 'aws:bucket'),
+        awsAccessKeyId: crowi.configManager.getConfig('crowi', 'aws:accessKeyId'),
+        awsSecretAccessKey: crowi.configManager.getConfig('crowi', 'aws:secretAccessKey'),
       };
       return res.apiv3({ awsSettingParams });
     }

@@ -58,9 +58,9 @@ class AwsSetting extends React.Component {
             <input
               className="form-control"
               placeholder={`${t('eg')} ap-northeast-1`}
-              defaultValue={adminAppContainer.state.region || ''}
+              defaultValue={adminAppContainer.state.awsRegion || ''}
               onChange={(e) => {
-                adminAppContainer.changeRegion(e.target.value);
+                adminAppContainer.changeAwsRegion(e.target.value);
               }}
             />
           </div>
@@ -75,9 +75,9 @@ class AwsSetting extends React.Component {
               className="form-control"
               type="text"
               placeholder={`${t('eg')} http://localhost:9000`}
-              defaultValue={adminAppContainer.state.customEndpoint || ''}
+              defaultValue={adminAppContainer.state.awsCustomEndpoint || ''}
               onChange={(e) => {
-                adminAppContainer.changeCustomEndpoint(e.target.value);
+                adminAppContainer.changeAwsCustomEndpoint(e.target.value);
               }}
             />
             <p className="form-text text-muted">{t('admin:app_setting.custom_endpoint_change')}</p>
@@ -93,9 +93,9 @@ class AwsSetting extends React.Component {
               className="form-control"
               type="text"
               placeholder={`${t('eg')} crowi`}
-              defaultValue={adminAppContainer.state.bucket || ''}
+              defaultValue={adminAppContainer.state.awsBucket || ''}
               onChange={(e) => {
-                adminAppContainer.changeBucket(e.target.value);
+                adminAppContainer.changeAwsBucket(e.target.value);
               }}
             />
           </div>
@@ -109,9 +109,9 @@ class AwsSetting extends React.Component {
             <input
               className="form-control"
               type="text"
-              defaultValue={adminAppContainer.state.accessKeyId || ''}
+              defaultValue={adminAppContainer.state.awsAccessKeyId || ''}
               onChange={(e) => {
-                adminAppContainer.changeAccessKeyId(e.target.value);
+                adminAppContainer.changeAwsAccessKeyId(e.target.value);
               }}
             />
           </div>
@@ -125,9 +125,9 @@ class AwsSetting extends React.Component {
             <input
               className="form-control"
               type="text"
-              defaultValue={adminAppContainer.state.secretAccessKey || ''}
+              defaultValue={adminAppContainer.state.awsSecretAccessKey || ''}
               onChange={(e) => {
-                adminAppContainer.changeSecretAccessKey(e.target.value);
+                adminAppContainer.changeAwsSecretAccessKey(e.target.value);
               }}
             />
           </div>

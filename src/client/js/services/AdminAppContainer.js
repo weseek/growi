@@ -28,30 +28,14 @@ export default class AdminAppContainer extends Container {
       smtpPort: '',
       smtpUser: '',
       smtpPassword: '',
-      region: '',
-      customEndpoint: '',
-      bucket: '',
-      accessKeyId: '',
-      secretAccessKey: '',
+      awsRegion: '',
+      awsCustomEndpoint: '',
+      awsBucket: '',
+      awsAccessKeyId: '',
+      awsSecretAccessKey: '',
       isEnabledPlugins: true,
     };
 
-    this.changeTitle = this.changeTitle.bind(this);
-    this.changeConfidential = this.changeConfidential.bind(this);
-    this.changeGlobalLang = this.changeGlobalLang.bind(this);
-    this.changeFileUpload = this.changeFileUpload.bind(this);
-    this.changeSiteUrl = this.changeSiteUrl.bind(this);
-    this.changeFromAddress = this.changeFromAddress.bind(this);
-    this.changeSmtpHost = this.changeSmtpHost.bind(this);
-    this.changeSmtpPort = this.changeSmtpPort.bind(this);
-    this.changeSmtpUser = this.changeSmtpUser.bind(this);
-    this.changeSmtpPassword = this.changeSmtpPassword.bind(this);
-    this.changeRegion = this.changeRegion.bind(this);
-    this.changeCustomEndpoint = this.changeCustomEndpoint.bind(this);
-    this.changeBucket = this.changeBucket.bind(this);
-    this.changeAccessKeyId = this.changeAccessKeyId.bind(this);
-    this.changeSecretAccessKey = this.changeSecretAccessKey.bind(this);
-    this.changeIsEnabledPlugins = this.changeIsEnabledPlugins.bind(this);
     this.updateAppSettingHandler = this.updateAppSettingHandler.bind(this);
     this.updateSiteUrlSettingHandler = this.updateSiteUrlSettingHandler.bind(this);
     this.updateMailSettingHandler = this.updateMailSettingHandler.bind(this);
@@ -86,11 +70,11 @@ export default class AdminAppContainer extends Container {
       smtpPort: appSettingsParams.smtpPort,
       smtpUser: appSettingsParams.smtpUser,
       smtpPassword: appSettingsParams.smtpPassword,
-      region: appSettingsParams.region,
-      customEndpoint: appSettingsParams.customEndpoint,
-      bucket: appSettingsParams.bucket,
-      accessKeyId: appSettingsParams.accessKeyId,
-      secretAccessKey: appSettingsParams.secretAccessKey,
+      awsRegion: appSettingsParams.awsRegion,
+      awsCustomEndpoint: appSettingsParams.awsCustomEndpoint,
+      awsBucket: appSettingsParams.awsBucket,
+      awsAccessKeyId: appSettingsParams.awsAccessKeyId,
+      awsSecretAccessKey: appSettingsParams.awsSecretAccessKey,
       isEnabledPlugins: appSettingsParams.isEnabledPlugins,
     });
   }
@@ -167,38 +151,38 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
-   * Change region
+   * Change awsRegion
    */
-  changeRegion(region) {
-    this.setState({ region });
+  changeAwsRegion(awsRegion) {
+    this.setState({ awsRegion });
   }
 
   /**
-   * Change custom endpoint
+   * Change awsCustomEndpoint
    */
-  changeCustomEndpoint(customEndpoint) {
-    this.setState({ customEndpoint });
+  changeAwsCustomEndpoint(awsCustomEndpoint) {
+    this.setState({ awsCustomEndpoint });
   }
 
   /**
-   * Change bucket name
+   * Change awsBucket name
    */
-  changeBucket(bucket) {
-    this.setState({ bucket });
+  changeAwsBucket(awsBucket) {
+    this.setState({ awsBucket });
   }
 
   /**
    * Change access key id
    */
-  changeAccessKeyId(accessKeyId) {
-    this.setState({ accessKeyId });
+  changeAwsAccessKeyId(awsAccessKeyId) {
+    this.setState({ awsAccessKeyId });
   }
 
   /**
    * Change secret access key
    */
-  changeSecretAccessKey(secretAccessKey) {
-    this.setState({ secretAccessKey });
+  changeAwsSecretAccessKey(awsSecretAccessKey) {
+    this.setState({ awsSecretAccessKey });
   }
 
   /**
@@ -289,11 +273,11 @@ export default class AdminAppContainer extends Container {
    */
   async updateAwsSettingHandler() {
     const response = await this.appContainer.apiv3.put('/app-settings/aws-setting', {
-      region: this.state.region,
-      customEndpoint: this.state.customEndpoint,
-      bucket: this.state.bucket,
-      accessKeyId: this.state.accessKeyId,
-      secretAccessKey: this.state.secretAccessKey,
+      awsRegion: this.state.awsRegion,
+      awsCustomEndpoint: this.state.awsCustomEndpoint,
+      awsBucket: this.state.awsBucket,
+      awsAccessKeyId: this.state.awsAccessKeyId,
+      awsSecretAccessKey: this.state.awsSecretAccessKey,
     });
     const { awsSettingParams } = response.data;
     return awsSettingParams;
