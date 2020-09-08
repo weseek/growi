@@ -58,6 +58,9 @@ const userPageRoot = (user) => {
  * @return {string}
  */
 const convertToNewAffiliationPath = (oldPath, newPath, childPath) => {
+  if (newPath === null) {
+    throw new Error('Please input the new page path');
+  }
   const pathRegExp = new RegExp(`^${escapeStringRegexp(oldPath)}`, 'i');
   return childPath.replace(pathRegExp, newPath);
 };
