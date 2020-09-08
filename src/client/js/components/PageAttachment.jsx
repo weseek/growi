@@ -16,31 +16,36 @@ class PageAttachment extends React.Component {
 
     this.state = {
       activePage: 1,
-      totalPages: 0,
       limit: 10,
+      offset: 0,
+      totalAttachments: 0,
       attachments: [],
       inUse: {},
       attachmentToDelete: null,
       deleting: false,
       deleteError: '',
     };
+
     this.handlePage = this.handlePage.bind(this);
     this.onAttachmentDeleteClicked = this.onAttachmentDeleteClicked.bind(this);
     this.onAttachmentDeleteClickedConfirm = this.onAttachmentDeleteClickedConfirm.bind(this);
   }
 
+
   async handlePage(selectedPage) {
     const { pageId } = this.props.pageContainer.state;
+    const { limit, offset } = this.state;
 
     if (!pageId) { return }
 
-    const limit = 10;
-    const offset = 0;
+    this.setState({ offset: (selectedPage - 1) * limit });
+
     const res = await this.props.appContainer.apiv3Get('/attachment/list', {
-      pageId, limit, offset, selectedPage,
+      pageId, limit, offset,
     });
     const attachments = res.data.paginateResult.docs;
-    const pagination = res.data.paginateResult;
+    const totalAttachments = res.data.paginateResult.totalDocs;
+
     const inUse = {};
 
     for (const attachment of attachments) {
@@ -48,17 +53,16 @@ class PageAttachment extends React.Component {
     }
 
     this.setState({
-      activePage: pagination.page,
-      totalPages: pagination.totalPages,
+      activePage: selectedPage,
+      totalAttachments,
       attachments,
       inUse,
     });
-    console.log(this.state.activePage);
   }
 
 
-  componentDidMount() {
-    this.handlePage();
+  async componentWillMount() {
+    await this.handlePage(1);
   }
 
   checkIfFileInUse(attachment) {
@@ -150,7 +154,7 @@ class PageAttachment extends React.Component {
         <PaginationWrapper
           activePage={this.state.activePage}
           changePage={this.handlePage}
-          totalItemCount={this.state.totalPages}
+          totalItemsCount={this.state.totalAttachments}
           pagingLimit={this.state.limit}
         />
       </div>

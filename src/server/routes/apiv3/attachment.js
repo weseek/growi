@@ -56,6 +56,7 @@ module.exports = (crowi) => {
         { page: pageId },
         queryOptions,
       );
+      console.log(paginateResult);
 
       return res.apiv3({ paginateResult });
 
