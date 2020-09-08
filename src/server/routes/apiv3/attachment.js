@@ -52,14 +52,12 @@ module.exports = (crowi) => {
         return res.apiv3Err(new ErrorV3(msg, 'attachment-list-failed'), 403);
       }
 
-      const attachments = await Attachment.find({ page: pageId });
-      const pagination = await Attachment.paginate(
+      const paginateResult = await Attachment.paginate(
         { page: pageId },
         queryOptions,
       );
 
-      const result = { attachments, pagination };
-      return res.apiv3({ result });
+      return res.apiv3({ paginateResult });
 
 
     }

@@ -59,10 +59,12 @@ class PageAttachment extends React.Component {
 
     if (!pageId) { return }
 
+    const limit = 10;
+    // offset値は、dummy data この後のタスクで実装
+    const offset = 0;
+    const res = await this.props.appContainer.apiv3Get('/attachment/list', { pageId, limit, offset });
+    const attachments = res.data.paginateResult.docs;
     const inUse = {};
-    const res = await appContainer.apiv3Get('/attachment/list', { pageId });
-    const attachments = res.data.result.attachments;
-
 
     for (const attachment of attachments) {
       inUse[attachment._id] = this.checkIfFileInUse(attachment);
