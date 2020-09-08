@@ -224,7 +224,7 @@ class ConfigManager extends S2sMessageHandlable {
         KEYS_FOR_SAML_USE_ONLY_ENV_OPTION.includes(key)
         && this.defaultSearch('crowi', 'security:passport-saml:useOnlyEnvVarsForSomeOptions')
       )
-      // gcp strategy
+      // gcp option
       || (
         KEYS_FOR_GCP_USE_ONLY_ENV_OPTION.includes(key)
         && this.searchOnlyFromEnvVarConfigs('crowi', 'gcs:isGcpEnvPrioritizes')
