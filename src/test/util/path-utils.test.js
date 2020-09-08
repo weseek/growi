@@ -42,4 +42,26 @@ describe('convertToNewAffiliationPath test', () => {
     }).toThrow();
   });
 
+  test('Old parent path is null', () => {
+    expect(() => {
+      convertToNewAffiliationPath(null, 'parent5/', 'child');
+    }).toThrow();
+  });
+
+  // test('New parent path is null', () => {
+  //   expect(() => {
+  //     convertToNewAffiliationPath('parent/', null, 'child');
+  //   }).toThrow();
+  // });
+  test('New parent path is null', () => {
+    const result = convertToNewAffiliationPath('parent/', null, 'parent/child');
+    expect(result).toBe('nullchild');
+  });
+
+  test('All pathes are null', () => {
+    expect(() => {
+      convertToNewAffiliationPath(null, null, null);
+    }).toThrow();
+  });
+
 });
