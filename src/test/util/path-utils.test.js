@@ -26,6 +26,7 @@ describe('convertToNewAffiliationPath test', () => {
     const result = convertToNewAffiliationPath('parent/', 'parent2/', 'parent/child');
     expect(result).toBe('parent2/child');
   });
+
   test('Parent path is not converted normally', () => {
     const result = convertToNewAffiliationPath('parent/', 'parent3/', 'parent/child');
     expect(result === 'parent/child').toBe(false);
@@ -53,5 +54,4 @@ describe('convertToNewAffiliationPath test', () => {
       convertToNewAffiliationPath('parent/', null, 'child');
     }).toThrow();
   });
-
 });
