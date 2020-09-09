@@ -49,13 +49,15 @@ const EditorNavbarBottom = (props) => {
     <div className={`${isCollapsedOptionsSelectorEnabled ? 'fixed-bottom' : ''} `}>
       {/* Collapsed SlackNotification */}
       { isSlackExpanded && (
-        <Collapse className="align-middle" isOpen={isSlackExpanded && isDeviceSmallerThanMd}>
-          <div className={`overflow-auto navbar border-top px-0 ${additionalClasses.join(' ')}`}>
-            <SavePageControls
-              isDeviceSmallerThanMd={false}
-              slackOnly
-            />
-          </div>
+        <Collapse isOpen={isSlackExpanded && isDeviceSmallerThanMd}>
+          <nav className={`navbar navbar-expand-lg border-top ${additionalClasses.join(' ')}`}>
+            <form className="form-inline mx-2 my-2 w-100">
+              <SavePageControls
+                isDeviceSmallerThanMd={false}
+                slackOnly
+              />
+            </form>
+          </nav>
         </Collapse>
         )}
       <div className={`navbar navbar-expand border-top px-2 ${additionalClasses.join(' ')}`}>
