@@ -17,7 +17,6 @@ class PageTimeline extends React.Component {
     super(props);
 
     const { appContainer } = this.props;
-    this.showPages = this.showPages.bind(this);
     this.handlePage = this.handlePage.bind(this);
     this.state = {
       activePage: 1,
@@ -30,17 +29,15 @@ class PageTimeline extends React.Component {
 
   }
 
-  async handlePage(selectedPage) {
-    await this.showPages(selectedPage);
-  }
 
-  async showPages(selectedPage) {
+  async handlePage(selectedPage) {
     const { appContainer, pageContainer } = this.props;
     const { path } = pageContainer.state;
     const limit = this.state.limit;
     const offset = (selectedPage - 1) * limit;
-    const res = await appContainer.apiv3Get('/pages/list', { path, limit, offset });
     const activePage = selectedPage;
+
+    const res = await appContainer.apiv3Get('/pages/list', { path, limit, offset });
     const totalPages = res.data.totalCount;
     const pages = res.data.pages;
     this.setState({
@@ -55,7 +52,8 @@ class PageTimeline extends React.Component {
 
     // initialize GrowiRenderer
     this.growiRenderer = appContainer.getRenderer('timeline');
-    this.showPages(1);
+    this.handlePage(1);
+
   }
 
   render() {
