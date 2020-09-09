@@ -12,26 +12,31 @@ const logger = loggerFactory('growi:pages:all');
 
 type Props = {
   page: any,
+  isForbidden: boolean,
 };
 
 const GrowiPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();
-  const page = JSON.parse(props.page);
+
+  let page: any;
+  let header: string;
+
+  if (props.page != null) {
+    page = JSON.parse(props.page);
+    header = page.path;
+  }
+  else {
+    header = props.isForbidden ? 'Forbidden' : 'Not found';
+  }
 
   return (
-    <Layout title="Home | Next.js + TypeScript Example">
-      <h1>Hello Next.js 👋</h1>
-      <p>
-        {t('Help')}
-      </p>
-      <p>
-        <Link href="/about">
-          <a>About</a>
-        </Link>
-      </p>
-      <p>
-        {page.revision.body}
-      </p>
+    <Layout title="GROWI">
+      <h1>{header}</h1>
+      { page && (
+        <p>
+          {page.revision.body}
+        </p>
+      ) }
     </Layout>
   );
 };
@@ -42,28 +47,39 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const PageModel = crowi.model('Page');
   const { pageService } = crowi;
 
-  const pagePath: string = req.path;
+  const { path, user } = req;
 
-  let page = await PageModel.findByPathAndViewer(pagePath, req.user);
+  // define props generator method
+  const getPageAndCreateProps = async(pagePath: string): Promise<Props> => {
+    const props: Props = {} as Props;
 
-  if (page == null) {
-    // check the page is forbidden or just does not exist.
-    const isForbidden = await PageModel.count({ path: pagePath }) > 0;
-    logger.warn('Page is forbidden', pagePath);
-  }
-  if (page.redirectTo) {
-    logger.debug(`Redirect to '${page.redirectTo}'`);
-    // return res.redirect(`${encodeURI(page.redirectTo)}?redirectFrom=${encodeURIComponent(path)}`);
-    return { props: {} };
-  }
+    const page = await PageModel.findByPathAndViewer(pagePath, user);
 
-  await page.populateDataToShowRevision();
-  page = pageService.serializeToObj(page);
+    if (page == null) {
+      // check the page is forbidden or just does not exist.
+      props.isForbidden = await PageModel.count({ path: pagePath }) > 0;
+      logger.warn(`Page is ${props.isForbidden ? 'forbidden' : 'not found'}`, pagePath);
+      return props;
+    }
+
+    // get props recursively
+    if (page.redirectTo) {
+      logger.debug(`Redirect to '${page.redirectTo}'`);
+      return getPageAndCreateProps(page.redirectTo);
+    }
+
+    await page.populateDataToShowRevision();
+    props.page = JSON.stringify(pageService.serializeToObj(page));
+
+    return props;
+  };
+
+  const props: Props = await getPageAndCreateProps(path);
 
   return {
     props: {
       namespacesRequired: ['translation'],
-      page: JSON.stringify(page),
+      ...props,
     },
   };
 };

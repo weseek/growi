@@ -23,7 +23,7 @@ const Layout = ({ counterContainer, children, title }: Props) => (
     </Head>
     <header>
       <nav>
-        <Link href="/">
+        <Link href="/[[...path]]" as="/" shallow>
           <a>Home</a>
         </Link>{' '}
         |{' '}
