@@ -7,7 +7,6 @@ module.exports = function(crowi, app) {
   const path = require('path');
   const express = require('express');
   const helmet = require('helmet');
-  const bodyParser = require('body-parser');
   const cookieParser = require('cookie-parser');
   const methodOverride = require('method-override');
   const passport = require('passport');
@@ -60,8 +59,8 @@ module.exports = function(crowi, app) {
   app.set('view engine', 'html');
   app.set('views', crowi.viewsDir);
   app.use(methodOverride());
-  app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
-  app.use(bodyParser.json({ limit: '50mb' }));
+  app.use(express.bodyParser.urlencoded({ extended: true, limit: '50mb' }));
+  app.use(express.bodyParser.json({ limit: '50mb' }));
   app.use(cookieParser());
 
   // configure express-session
