@@ -34,7 +34,7 @@ const PageAccessoriesModal = (props) => {
   }
 
   const menu = document.getElementsByClassName('nav'); // 上部に持ってきた
-  const navId = document.getElementById('nav_slide_click');
+  const navId = document.getElementById('nav-width');
   // Values are set.
 
   // Might make this dynamic for px, %, pt, em
@@ -109,7 +109,7 @@ const PageAccessoriesModal = (props) => {
     <React.Fragment>
       <Modal size="xl" isOpen={props.isOpen} toggle={closeModalHandler} className="grw-page-accessories-modal">
         <ModalBody>
-          <Nav className="nav-title">
+          <Nav className="nav-title" id="nav-width">
             <NavItem type="button" className={`nav-link ${activeTab === 'pagelist' && 'active'}`}>
               <NavLink
                 onClick={() => {
