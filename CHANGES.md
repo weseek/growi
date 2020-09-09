@@ -1,6 +1,12 @@
 # CHANGES
 
-## v4.1.3-RC
+## v4.1.4-RC
+
+* Feature: Independent S3 configuration and SES configuration for AWS
+* Fix: Author name does not displayed in page history
+* Fix: Hide unnecessary component when pringing
+
+## v4.1.3
 
 * Feature: Create/edit linker with GUI
 * Improvement: Paging page histories
