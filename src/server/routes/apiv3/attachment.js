@@ -51,7 +51,6 @@ module.exports = (crowi) => {
   router.get('/list', accessTokenParser, loginRequired, validator.retrieveAttachments, apiV3FormValidator, async(req, res) => {
     const offset = +req.query.offset || 0;
     const limit = +req.query.limit || 30;
-    const queryOptions = { offset, limit };
 
     try {
       const pageId = req.query.pageId;
@@ -64,7 +63,13 @@ module.exports = (crowi) => {
 
       const paginateResult = await Attachment.paginate(
         { page: pageId },
-        queryOptions,
+        {
+          limit,
+          offset,
+          populate: {
+            path: 'creator',
+          },
+        },
       );
 
       return res.apiv3({ paginateResult });
