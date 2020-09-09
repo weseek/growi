@@ -5,7 +5,8 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  ModalFooter,
+  Popover,
+  PopoverBody,
 } from 'reactstrap';
 
 import { debounce } from 'throttle-debounce';
@@ -38,6 +39,7 @@ class LinkEditModal extends React.PureComponent {
       markdown: '',
       permalink: '',
       linkText: '',
+      isPreviewOpen: false,
     };
 
     this.isApplyPukiwikiLikeLinkerPlugin = window.growiRenderer.preProcessors.some(process => process.constructor.name === 'PukiwikiLikeLinker');
@@ -55,7 +57,7 @@ class LinkEditModal extends React.PureComponent {
     this.generateLink = this.generateLink.bind(this);
     this.renderPreview = this.renderPreview.bind(this);
     this.getRootPath = this.getRootPath.bind(this);
-
+    this.toggleIsPreviewOpen = this.toggleIsPreviewOpen.bind(this);
     this.generateAndSetPreviewDebounced = debounce(200, this.generateAndSetPreview.bind(this));
   }
 
@@ -179,11 +181,11 @@ class LinkEditModal extends React.PureComponent {
         permalink = !isPermanentLink ? `${window.location.origin}/${page.id}` : '';
       }
       catch (err) {
-        markdown = `<div class="alert alert-warning" role="alert"><strong>${err.message}</strong></div>`;
+        markdown = `<div>${err.message}</div>`;
       }
     }
     else {
-      markdown = '<div class="alert alert-success" role="alert">Page preview here.</div>';
+      markdown = '<div>Page preview here.</div>';
     }
     this.setState({ markdown, permalink });
   }
@@ -201,7 +203,23 @@ class LinkEditModal extends React.PureComponent {
 
     const linkText = linker.generateMarkdownText();
     return (
-      <div>{linkText} &gt; <a href={linker.link}>{linker.label}</a></div>
+      <div className="d-flex justify-content-between mb-3">
+        <div className="card bg-light w-100 mb-0 p-1">
+          <p className="text-left text-muted mb-0">Markdown</p>
+          <p className="text-center text-truncate">{linkText}</p>
+        </div>
+        <div className="d-flex align-items-center">
+          <span className="lead mx-3">
+            <i className="fa fa-caret-right"></i>
+          </span>
+        </div>
+        <div className="card w-100 mb-0">
+          <p className="text-left text-muted mb-0 p-1">HTML</p>
+          <p className="text-center text-truncate">
+            <a href={linker.link}>{linker.label}</a>
+          </p>
+        </div>
+      </div>
     );
   }
 
@@ -266,9 +284,13 @@ class LinkEditModal extends React.PureComponent {
     return type === Linker.types.markdownLink ? path.dirname(pagePath) : pagePath;
   }
 
+  toggleIsPreviewOpen() {
+    this.setState({ isPreviewOpen: !this.state.isPreviewOpen });
+  }
+
   render() {
     return (
-      <Modal isOpen={this.state.show} toggle={this.cancel}>
+      <Modal isOpen={this.state.show} toggle={this.cancel} size="lg">
         <ModalHeader tag="h4" toggle={this.cancel} className="bg-primary text-light">
           Edit Links
         </ModalHeader>
@@ -276,7 +298,7 @@ class LinkEditModal extends React.PureComponent {
         <ModalBody className="container">
           <div className="row">
             <div className="col-12">
-              <h2>Set link and label</h2>
+              <h3 className="grw-modal-head">Set link and label</h3>
               <form className="form-group">
                 <div className="form-gorup my-3">
                   <div className="input-group flex-nowrap">
@@ -291,9 +313,14 @@ class LinkEditModal extends React.PureComponent {
                       keywordOnInit={this.state.linkInputValue}
                     />
                     <div className="input-group-append" onClick="">
-                      <button type="button" className="btn btn-info btn-page-preview">
+                      <button type="button" id="preview-btn" className="btn btn-info btn-page-preview">
                         <PagePreviewIcon />
                       </button>
+                      <Popover placement="right" isOpen={this.state.isPreviewOpen} target="preview-btn" toggle={this.toggleIsPreviewOpen}>
+                        <PopoverBody>
+                          <div className="overflow-auto">{this.renderPreview()}</div>
+                        </PopoverBody>
+                      </Popover>
                     </div>
                   </div>
                 </div>
@@ -385,29 +412,25 @@ class LinkEditModal extends React.PureComponent {
                   </form>
                 </div>
               </div>
-              {/* TODO GW-3448 fix layout */}
             </div>
           </div>
           <div className="row">
             <div className="col-12">
-              <h2>Set link and label</h2>
-              <div className="row">
-                <div className="col"></div>
-              </div>
+              <h3 className="grw-modal-head">Preview</h3>
               {this.renderLinkPreview()}
             </div>
-
-            <div className="col d-none d-lg-block pr-0 mr-3 overflow-auto">{this.renderPreview()}</div>
+          </div>
+          <div className="row">
+            <div className="col-12 text-center">
+              <button type="button" className="btn btn-sm btn-outline-secondary mx-1" onClick={this.hide}>
+                Cancel
+              </button>
+              <button type="submit" className="btn btn-sm btn-primary mx-1" onClick={this.save}>
+                Done
+              </button>
+            </div>
           </div>
         </ModalBody>
-        <ModalFooter>
-          <button type="button" className="btn btn-sm btn-outline-secondary" onClick={this.hide}>
-            Cancel
-          </button>
-          <button type="submit" className="btn btn-sm btn-primary" onClick={this.save}>
-            Done
-          </button>
-        </ModalFooter>
       </Modal>
     );
   }
