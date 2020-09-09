@@ -39,7 +39,7 @@ class SlackNotification extends React.Component {
     const { t } = this.props;
 
     return (
-      <div className="grw-slack-notification">
+      <div className="grw-slack-notification w-100">
         <div className="input-group extended-setting">
           <label className="input-group-addon">
             <div className="custom-control custom-switch custom-switch-lg custom-switch-slack">
@@ -83,9 +83,11 @@ affect the rendering of the banner itself.
     return (
       <div className="grw-slack-notification">
         <button
+          // className="grw-slack-notification-button"
           type="button"
           onClick={this.props.click}
         >
+          slacks
           <i className="icon-arrow-up"></i>
         </button>
       </div>

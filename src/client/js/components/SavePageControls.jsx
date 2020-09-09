@@ -83,23 +83,15 @@ class SavePageControls extends React.Component {
     const labelSubmitButton = pageContainer.state.pageId == null ? t('Create') : t('Update');
     const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
 
-    if (this.props.slackOnly) {
+    if (this.hasSlackConfig && this.props.slackOnly) {
       return (
-        <div className="d-flex align-items-center form-inline">
-          {this.hasSlackConfig
-            && (
-              <div className="mr-2">
-                <SlackNotification
-                  isSlackEnabled={editorContainer.state.isSlackEnabled}
-                  slackChannels={editorContainer.state.slackChannels}
-                  onEnabledFlagChange={this.slackEnabledFlagChangedHandler}
-                  onChannelChange={this.slackChannelsChangedHandler}
-                />
-              </div>
-            )
-          }
-        </div>
-
+        <SlackNotification
+          isSlackEnabled={editorContainer.state.isSlackEnabled}
+          slackChannels={editorContainer.state.slackChannels}
+          onEnabledFlagChange={this.slackEnabledFlagChangedHandler}
+          onChannelChange={this.slackChannelsChangedHandler}
+          id="idForSavePageControl"
+        />
       );
     }
     return (
@@ -114,6 +106,7 @@ class SavePageControls extends React.Component {
                   onChannelChange={this.slackChannelsChangedHandler}
                   click={this.props.click}
                   smallScreen={this.props.smallScreen}
+                  id="idForSavePageControl"
                 />
               </div>
             )
