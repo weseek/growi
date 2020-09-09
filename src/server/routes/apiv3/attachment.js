@@ -26,8 +26,8 @@ module.exports = (crowi) => {
   const validator = {
     retrieveAttachments: [
       query('pageId').isMongoId().withMessage('pageId is required'),
-      query('limit').isNumeric(),
-      query('offset').isNumeric(),
+      query('limit').isInt({ min: 0 }),
+      query('offset').isInt({ min: 0 }),
     ],
   };
   /**
