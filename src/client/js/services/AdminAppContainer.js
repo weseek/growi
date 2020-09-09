@@ -37,6 +37,9 @@ export default class AdminAppContainer extends Container {
       bucket: '',
       accessKeyId: '',
       secretAccessKey: '',
+      envGcsApiKeyJsonPath: '',
+      envGcsBucket: '',
+      envGcsUploadNamespace: '',
       isEnabledPlugins: true,
     };
 
@@ -78,6 +81,9 @@ export default class AdminAppContainer extends Container {
       bucket: appSettingsParams.bucket,
       accessKeyId: appSettingsParams.accessKeyId,
       secretAccessKey: appSettingsParams.secretAccessKey,
+      envGcsApiKeyJsonPath: appSettingsParams.envGcsApiKeyJsonPath,
+      envGcsBucket: appSettingsParams.envGcsBucket,
+      envGcsUploadNamespace: appSettingsParams.envGcsUploadNamespace,
       isEnabledPlugins: appSettingsParams.isEnabledPlugins,
     });
   }

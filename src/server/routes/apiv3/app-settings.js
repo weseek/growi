@@ -105,6 +105,19 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *          secretAccessKey:
  *            type: string
  *            description: secret key for authentification of AWS
+ *      FileUploadSettingParams:
+ *        description: FileUploadSettingParams
+ *        type: object
+ *        properties:
+ *          envGcsApiKeyJsonPath:
+ *            type: string
+ *            description: Path of the JSON file that contains service account key to authenticate to GCP API
+ *          envGcsBucket:
+ *            type: string
+ *            description: Name of the GCS bucket
+ *          envGcsUploadNamespace:
+ *            type: string
+ *            description: Directory name to create in the bucket
  *      PluginSettingParams:
  *        description: PluginSettingParams
  *        type: object
@@ -200,6 +213,9 @@ module.exports = (crowi) => {
       bucket: crowi.configManager.getConfig('crowi', 'aws:bucket'),
       accessKeyId: crowi.configManager.getConfig('crowi', 'aws:accessKeyId'),
       secretAccessKey: crowi.configManager.getConfig('crowi', 'aws:secretAccessKey'),
+      envGcsApiKeyJsonPath: crowi.configManager.getConfigFromEnvVars('crowi', 'gcs:apiKeyJsonPath'),
+      envGcsBucket: crowi.configManager.getConfigFromEnvVars('crowi', 'gcs:bucket'),
+      envGcsUploadNamespace: crowi.configManager.getConfigFromEnvVars('crowi', 'gcs:uploadNamespace'),
       isEnabledPlugins: crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins'),
     };
     return res.apiv3({ appSettingsParams });
