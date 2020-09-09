@@ -2,9 +2,10 @@
  * Redirect with prevention from Open Redirect
  *
  */
-import {
-  Middleware, Req, Res, Next,
-} from '@tsed/common';
+// for Ts.ED
+// import {
+//   Middleware, Req, Res, Next,
+// } from '@tsed/common';
 import { Request, Response, NextFunction } from 'express';
 
 import loggerFactory from '~/utils/logger';
@@ -12,12 +13,12 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:middleware:safe-redirect');
 
 
-export interface ResponseWithSafeRedirect extends Response {
+interface ResponseWithSafeRedirect extends Response {
   safeRedirect(url: string): void;
 }
 
-@Middleware()
-export class SafeRedirectMiddleware {
+// @Middleware()
+class SafeRedirectMiddleware {
 
   static whitelistOfHosts: string[] = [];
 
@@ -25,7 +26,9 @@ export class SafeRedirectMiddleware {
     SafeRedirectMiddleware.whitelistOfHosts = whitelistOfHosts;
   }
 
-  use(@Req() req: Request, @Res() res: ResponseWithSafeRedirect, @Next() next: NextFunction): void {
+  // for Ts.ED
+  // use(@Req() req: Request, @Res() res: ResponseWithSafeRedirect, @Next() next: NextFunction): void {
+  use(req: Request, res: ResponseWithSafeRedirect, next: NextFunction): void {
     const { whitelistOfHosts } = SafeRedirectMiddleware;
 
     // extend res object
@@ -79,3 +82,6 @@ export class SafeRedirectMiddleware {
   }
 
 }
+
+const middleware = new SafeRedirectMiddleware();
+export default middleware.use;

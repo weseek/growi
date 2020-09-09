@@ -2,6 +2,8 @@ import { nextI18NextMiddleware } from 'next-i18next/dist/commonjs/middlewares';
 
 import nextI18next from '~/i18n';
 
+import registerSafeRedirect from '../middlewares/safe-redirect';
+
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:crowi:express-init');
   const path = require('path');
@@ -15,7 +17,6 @@ module.exports = function(crowi, app) {
   const swig = require('swig-templates');
   const webpackAssets = require('express-webpack-assets');
 
-  const registerSafeRedirect = require('../middlewares/safe-redirect')();
   const injectCurrentuserToLocalvars = require('../middlewares/inject-currentuser-to-localvars')();
   const autoReconnectToS2sMsgServer = require('../middlewares/auto-reconnect-to-s2s-msg-server')(crowi);
 
@@ -59,8 +60,8 @@ module.exports = function(crowi, app) {
   app.set('view engine', 'html');
   app.set('views', crowi.viewsDir);
   app.use(methodOverride());
-  app.use(express.bodyParser.urlencoded({ extended: true, limit: '50mb' }));
-  app.use(express.bodyParser.json({ limit: '50mb' }));
+  app.use(express.json({ limit: '50mb' }));
+  app.use(express.urlencoded({ extended: true, limit: '50mb' }));
   app.use(cookieParser());
 
   // configure express-session
