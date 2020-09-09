@@ -68,6 +68,7 @@ module.exports = (crowi) => {
           offset,
           populate: {
             path: 'creator',
+            select: 'imageUrlCached',
           },
         },
       );
