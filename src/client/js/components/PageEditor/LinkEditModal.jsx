@@ -268,7 +268,7 @@ class LinkEditModal extends React.PureComponent {
 
   render() {
     return (
-      <Modal isOpen={this.state.show} toggle={this.cancel} size="lg">
+      <Modal isOpen={this.state.show} toggle={this.cancel}>
         <ModalHeader tag="h4" toggle={this.cancel} className="bg-primary text-light">
           Edit Links
         </ModalHeader>
@@ -347,10 +347,10 @@ class LinkEditModal extends React.PureComponent {
                           type="radio"
                           className="custom-control-input"
                           id="markdownType"
-                          name={Linker.types.markdownLink}
                           checked={this.state.linkerType === Linker.types.markdownLink}
+                          onClick={() => this.handleSelecteLinkerType(Linker.types.markdownLink)}
                         />
-                        <label className="custom-control-label" htmlFor="markdownType" onClick={e => this.handleSelecteLinkerType(e.target.name)}>
+                        <label className="custom-control-label" htmlFor="markdownType">
                           Markdown
                         </label>
                       </div>
@@ -359,10 +359,10 @@ class LinkEditModal extends React.PureComponent {
                           type="radio"
                           className="custom-control-input"
                           id="growiType"
-                          name={Linker.types.growiLink}
                           checked={this.state.linkerType === Linker.types.growiLink}
+                          onClick={() => this.handleSelecteLinkerType(Linker.types.growiLink)}
                         />
-                        <label className="custom-control-label" htmlFor="growiType" onClick={e => this.handleSelecteLinkerType(e.target.name)}>
+                        <label className="custom-control-label" htmlFor="growiType">
                           Growi original
                         </label>
                       </div>
@@ -371,10 +371,10 @@ class LinkEditModal extends React.PureComponent {
                           type="radio"
                           className="custom-control-input"
                           id="pukiwikiType"
-                          name={Linker.types.pukiwikiLink}
                           checked={this.state.linkerType === Linker.types.pukiwikiLink}
+                          onClick={() => this.handleSelecteLinkerType(Linker.types.pukiwikiLink)}
                         />
-                        <label className="custom-control-label" htmlFor="pukiwikiType" onClick={e => this.handleSelecteLinkerType(e.target.name)}>
+                        <label className="custom-control-label" htmlFor="pukiwikiType">
                           Pukiwiki
                         </label>
                       </div>
