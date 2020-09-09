@@ -5,7 +5,7 @@ const nextI18Next = new NextI18Next({
   defaultLanguage: 'en_US',
   otherLanguages: ['ja_JP', 'zh_CN'],
   defaultNS: 'translation',
-  localePath: path.resolve('./resource/locales'),
+  localePath: path.resolve('./public/static/locales'),
   shallowRender: true,
   // TODO: GW-3581
   // detection: {
