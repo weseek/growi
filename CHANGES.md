@@ -1,6 +1,18 @@
 # CHANGES
 
-## v4.1.3-RC
+## v4.1.6-RC
+
+* 
+
+## v4.1.5
+
+* Feature: Independent S3 configuration and SES configuration for AWS
+* Fix: Author name does not displayed in page history
+* Fix: Hide unnecessary component when pringing
+
+## v4.1.4 (Missing number)
+
+## v4.1.3
 
 * Feature: Create/edit linker with GUI
 * Improvement: Paging page histories
@@ -93,7 +105,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/41x.html>
 * Fix: Unable to create page with original path after emptying trash
 * I18n: Support zh-CN
 
-## v4.0.8  (Missing number)
+## v4.0.8 (Missing number)
 
 ## v4.0.7
 
