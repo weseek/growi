@@ -1,13 +1,14 @@
+import parseISO from 'date-fns/parseISO';
+
 import loggerFactory from '~/utils/logger';
 
+import ConfigModel from '../models/config';
+import S2sMessage from '../models/vo/s2s-message';
+import { S2sMessageHandlable } from './s2s-messaging/handlable';
+import ConfigLoader, { ConfigObject } from './config-loader';
+import { S2sMessagingService } from './s2s-messaging/base';
+
 const logger = loggerFactory('growi:service:ConfigManager');
-
-const parseISO = require('date-fns/parseISO');
-
-const S2sMessage = require('../models/vo/s2s-message');
-const S2sMessageHandlable = require('./s2s-messaging/handlable');
-
-const ConfigLoader = require('./config-loader');
 
 const KEYS_FOR_LOCAL_STRATEGY_USE_ONLY_ENV_OPTION = [
   'security:passport-local:isEnabled',
@@ -26,24 +27,26 @@ const KEYS_FOR_SAML_USE_ONLY_ENV_OPTION = [
   'security:passport-saml:ABLCRule',
 ];
 
-class ConfigManager extends S2sMessageHandlable {
+export default class ConfigManager implements S2sMessageHandlable {
 
-  constructor(configModel) {
-    super();
+  private configLoader: ConfigLoader = new ConfigLoader();
 
-    this.configModel = configModel;
-    this.configLoader = new ConfigLoader(this.configModel);
-    this.configObject = null;
-    this.configKeys = [];
-    this.lastLoadedAt = null;
+  private s2sMessagingService?: S2sMessagingService;
 
-    this.getConfig = this.getConfig.bind(this);
+  private configObject: ConfigObject = { fromDB: null, fromEnvVars: null };
+
+  private configKeys: any[] = [];
+
+  private lastLoadedAt?: Date;
+
+  constructor() {
+    this.loadConfigs();
   }
 
   /**
    * load configs from the database and the environment variables
    */
-  async loadConfigs() {
+  async loadConfigs(): Promise<void> {
     this.configObject = await this.configLoader.load();
     logger.debug('ConfigManager#loadConfigs', this.configObject);
 
@@ -55,9 +58,9 @@ class ConfigManager extends S2sMessageHandlable {
 
   /**
    * Set S2sMessagingServiceDelegator instance
-   * @param {S2sMessagingServiceDelegator} s2sMessagingService
+   * @param s2sMessagingService
    */
-  async setS2sMessagingService(s2sMessagingService) {
+  setS2sMessagingService(s2sMessagingService: S2sMessagingService): void {
     this.s2sMessagingService = s2sMessagingService;
   }
 
@@ -117,8 +120,8 @@ class ConfigManager extends S2sMessageHandlable {
   getConfigKeys() {
     // type: fromDB, fromEnvVars
     const types = Object.keys(this.configObject);
-    let namespaces = [];
-    let keys = [];
+    let namespaces: string[] = [];
+    let keys: string[] = [];
 
     for (const type of types) {
       if (this.configObject[type] != null) {
@@ -185,7 +188,7 @@ class ConfigManager extends S2sMessageHandlable {
    * ```
    */
   async updateConfigsInTheSameNamespace(namespace, configs, withoutPublishingS2sMessage) {
-    const queries = [];
+    const queries: any[] = [];
     for (const key of Object.keys(configs)) {
       queries.push({
         updateOne: {
@@ -195,7 +198,7 @@ class ConfigManager extends S2sMessageHandlable {
         },
       });
     }
-    await this.configModel.bulkWrite(queries);
+    await ConfigModel.bulkWrite(queries);
 
     await this.loadConfigs();
 
@@ -316,7 +319,7 @@ class ConfigManager extends S2sMessageHandlable {
     const s2sMessage = new S2sMessage('configUpdated', { updatedAt: new Date() });
 
     try {
-      await this.s2sMessagingService.publish(s2sMessage);
+      await this.s2sMessagingService?.publish(s2sMessage);
     }
     catch (e) {
       logger.error('Failed to publish update message with S2sMessagingService: ', e.message);
@@ -344,5 +347,3 @@ class ConfigManager extends S2sMessageHandlable {
   }
 
 }
-
-module.exports = ConfigManager;

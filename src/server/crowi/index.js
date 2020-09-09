@@ -14,6 +14,8 @@ import loggerFactory from '~/utils/logger';
 import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import { projectRoot } from '~/utils/project-dir-utils';
 
+import ConfigManager from '../service/config-manager';
+
 const logger = loggerFactory('growi:crowi');
 
 
@@ -264,8 +266,7 @@ Crowi.prototype.setupSessionConfig = async function() {
 };
 
 Crowi.prototype.setupConfigManager = async function() {
-  const ConfigManager = require('../service/config-manager');
-  this.configManager = new ConfigManager(this.model('Config'));
+  this.configManager = new ConfigManager();
   return this.configManager.loadConfigs();
 };
 

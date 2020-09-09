@@ -1,131 +1,137 @@
+import urljoin from 'url-join';
+import luceneQueryParser from 'lucene-query-parser';
+
+import passport from 'passport';
+import LdapStrategy from 'passport-ldapauth';
+import { Strategy as LocalStrategy } from 'passport-local';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import { Strategy as GitHubStrategy } from 'passport-github';
+import { Strategy as TwitterStrategy } from 'passport-twitter';
+import { Strategy as OidcStrategy, Issuer as OIDCIssuer } from 'openid-client';
+import { Strategy as SamlStrategy } from 'passport-saml';
+import { BasicStrategy } from 'passport-http';
+
+import { IncomingMessage } from 'http';
 import loggerFactory from '~/utils/logger';
+
+import S2sMessage from '../models/vo/s2s-message';
+import { S2sMessageHandlable } from './s2s-messaging/handlable';
 
 const logger = loggerFactory('growi:service:PassportService');
 
-const urljoin = require('url-join');
-const luceneQueryParser = require('lucene-query-parser');
 
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-const LdapStrategy = require('passport-ldapauth');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const GitHubStrategy = require('passport-github').Strategy;
-const TwitterStrategy = require('passport-twitter').Strategy;
-const OidcStrategy = require('openid-client').Strategy;
-const SamlStrategy = require('passport-saml').Strategy;
-const OIDCIssuer = require('openid-client').Issuer;
-const BasicStrategy = require('passport-http').BasicStrategy;
-
-const S2sMessage = require('../models/vo/s2s-message');
-const S2sMessageHandlable = require('./s2s-messaging/handlable');
+interface IncomingMessageWithLdapAccountInfo extends IncomingMessage {
+  ldapAccountInfo: any;
+}
 
 /**
  * the service class of Passport
  */
-class PassportService extends S2sMessageHandlable {
+class PassportService implements S2sMessageHandlable {
 
   // see '/lib/form/login.js'
   static get USERNAME_FIELD() { return 'loginForm[username]' }
 
   static get PASSWORD_FIELD() { return 'loginForm[password]' }
 
-  constructor(crowi) {
-    super();
+  crowi!: any;
 
+  lastLoadedAt?: Date;
+
+  /**
+   * the flag whether LocalStrategy is set up successfully
+   */
+  isLocalStrategySetup = false;
+
+  /**
+   * the flag whether LdapStrategy is set up successfully
+   */
+  isLdapStrategySetup = false;
+
+  /**
+   * the flag whether GoogleStrategy is set up successfully
+   */
+  isGoogleStrategySetup = false;
+
+  /**
+   * the flag whether GitHubStrategy is set up successfully
+   */
+  isGitHubStrategySetup = false;
+
+  /**
+   * the flag whether TwitterStrategy is set up successfully
+   */
+  isTwitterStrategySetup = false;
+
+  /**
+   * the flag whether OidcStrategy is set up successfully
+   */
+  isOidcStrategySetup = false;
+
+  /**
+   * the flag whether SamlStrategy is set up successfully
+   */
+  isSamlStrategySetup = false;
+
+  /**
+   * the flag whether BasicStrategy is set up successfully
+   */
+  isBasicStrategySetup = false;
+
+  /**
+   * the flag whether serializer/deserializer are set up successfully
+   */
+  isSerializerSetup = false;
+
+  /**
+   * the keys of mandatory configs for SAML
+   */
+  mandatoryConfigKeysForSaml = [
+    'security:passport-saml:entryPoint',
+    'security:passport-saml:issuer',
+    'security:passport-saml:cert',
+    'security:passport-saml:attrMapId',
+    'security:passport-saml:attrMapUsername',
+    'security:passport-saml:attrMapMail',
+  ];
+
+  setupFunction = {
+    local: {
+      setup: 'setupLocalStrategy',
+      reset: 'resetLocalStrategy',
+    },
+    ldap: {
+      setup: 'setupLdapStrategy',
+      reset: 'resetLdapStrategy',
+    },
+    saml: {
+      setup: 'setupSamlStrategy',
+      reset: 'resetSamlStrategy',
+    },
+    oidc: {
+      setup: 'setupOidcStrategy',
+      reset: 'resetOidcStrategy',
+    },
+    basic: {
+      setup: 'setupBasicStrategy',
+      reset: 'resetBasicStrategy',
+    },
+    google: {
+      setup: 'setupGoogleStrategy',
+      reset: 'resetGoogleStrategy',
+    },
+    github: {
+      setup: 'setupGitHubStrategy',
+      reset: 'resetGitHubStrategy',
+    },
+    twitter: {
+      setup: 'setupTwitterStrategy',
+      reset: 'resetTwitterStrategy',
+    },
+  };
+
+  constructor(crowi: any) {
     this.crowi = crowi;
-    this.lastLoadedAt = null;
-
-    /**
-     * the flag whether LocalStrategy is set up successfully
-     */
-    this.isLocalStrategySetup = false;
-
-    /**
-     * the flag whether LdapStrategy is set up successfully
-     */
-    this.isLdapStrategySetup = false;
-
-    /**
-     * the flag whether GoogleStrategy is set up successfully
-     */
-    this.isGoogleStrategySetup = false;
-
-    /**
-     * the flag whether GitHubStrategy is set up successfully
-     */
-    this.isGitHubStrategySetup = false;
-
-    /**
-     * the flag whether TwitterStrategy is set up successfully
-     */
-    this.isTwitterStrategySetup = false;
-
-    /**
-     * the flag whether OidcStrategy is set up successfully
-     */
-    this.isOidcStrategySetup = false;
-
-    /**
-     * the flag whether SamlStrategy is set up successfully
-     */
-    this.isSamlStrategySetup = false;
-
-    /**
-     * the flag whether BasicStrategy is set up successfully
-     */
-    this.isBasicStrategySetup = false;
-
-    /**
-     * the flag whether serializer/deserializer are set up successfully
-     */
-    this.isSerializerSetup = false;
-
-    /**
-     * the keys of mandatory configs for SAML
-     */
-    this.mandatoryConfigKeysForSaml = [
-      'security:passport-saml:entryPoint',
-      'security:passport-saml:issuer',
-      'security:passport-saml:cert',
-      'security:passport-saml:attrMapId',
-      'security:passport-saml:attrMapUsername',
-      'security:passport-saml:attrMapMail',
-    ];
-
-    this.setupFunction = {
-      local: {
-        setup: 'setupLocalStrategy',
-        reset: 'resetLocalStrategy',
-      },
-      ldap: {
-        setup: 'setupLdapStrategy',
-        reset: 'resetLdapStrategy',
-      },
-      saml: {
-        setup: 'setupSamlStrategy',
-        reset: 'resetSamlStrategy',
-      },
-      oidc: {
-        setup: 'setupOidcStrategy',
-        reset: 'resetOidcStrategy',
-      },
-      basic: {
-        setup: 'setupBasicStrategy',
-        reset: 'resetBasicStrategy',
-      },
-      google: {
-        setup: 'setupGoogleStrategy',
-        reset: 'resetGoogleStrategy',
-      },
-      github: {
-        setup: 'setupGitHubStrategy',
-        reset: 'resetGitHubStrategy',
-      },
-      twitter: {
-        setup: 'setupTwitterStrategy',
-        reset: 'resetTwitterStrategy',
-      },
-    };
   }
 
 
@@ -178,7 +184,7 @@ class PassportService extends S2sMessageHandlable {
    * @memberof PassportService
    */
   getSetupStrategies() {
-    const setupStrategies = [];
+    const setupStrategies: string[] = [];
 
     if (this.isLocalStrategySetup) { setupStrategies.push('local') }
     if (this.isLdapStrategySetup) { setupStrategies.push('ldap') }
@@ -311,7 +317,7 @@ class PassportService extends S2sMessageHandlable {
         logger.debug('LDAP authentication has succeeded', ldapAccountInfo);
 
         // store ldapAccountInfo to req
-        req.ldapAccountInfo = ldapAccountInfo;
+        (req as IncomingMessageWithLdapAccountInfo).ldapAccountInfo = ldapAccountInfo;
 
         done(null, ldapAccountInfo);
       }));
@@ -745,7 +751,7 @@ class PassportService extends S2sMessageHandlable {
    * return the keys of the configs mandatory for SAML whose value are empty.
    */
   getSamlMissingMandatoryConfigKeys() {
-    const missingRequireds = [];
+    const missingRequireds: string[] = [];
     for (const key of this.mandatoryConfigKeysForSaml) {
       if (this.crowi.configManager.getConfig('crowi', key) === null) {
         missingRequireds.push(key);
@@ -934,7 +940,7 @@ class PassportService extends S2sMessageHandlable {
     const User = this.crowi.model('User');
 
     passport.serializeUser((user, done) => {
-      done(null, user.id);
+      done(null, (user as any).id);
     });
     passport.deserializeUser(async(id, done) => {
       try {

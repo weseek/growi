@@ -1,32 +1,27 @@
+import path from 'path';
+import axios from 'axios';
+import WebSocket from 'ws';
+import ReconnectingWebSocket from 'reconnecting-websocket';
+
 import loggerFactory from '~/utils/logger';
+
+import S2sMessage from '../../models/vo/s2s-message';
+import { AbstractS2sMessagingService } from './base';
 
 const logger = loggerFactory('growi:service:s2s-messaging:nchan');
 
-const path = require('path');
-const axios = require('axios');
-const WebSocket = require('ws');
-const ReconnectingWebSocket = require('reconnecting-websocket');
 
-const S2sMessage = require('../../models/vo/s2s-message');
-const S2sMessagingServiceDelegator = require('./base');
+class NchanDelegator extends AbstractS2sMessagingService {
 
+  /**
+   * A list of S2sMessageHandlable instance
+   */
+  handlableToEventListenerMap: any = {};
 
-class NchanDelegator extends S2sMessagingServiceDelegator {
+  socket: any = null;
 
-  constructor(uri, publishPath, subscribePath, channelId) {
+  constructor(uri, private publishPath: string, private subscribePath: string, private channelId: any) {
     super(uri);
-
-    this.publishPath = publishPath;
-    this.subscribePath = subscribePath;
-
-    this.channelId = channelId;
-
-    /**
-     * A list of S2sMessageHandlable instance
-     */
-    this.handlableToEventListenerMap = {};
-
-    this.socket = null;
   }
 
   /**
@@ -61,7 +56,7 @@ class NchanDelegator extends S2sMessagingServiceDelegator {
   /**
    * @inheritdoc
    */
-  async publish(s2sMessage) {
+  async publish(s2sMessage: S2sMessage): Promise<void> {
     await super.publish(s2sMessage);
 
     const url = this.constructUrl(this.publishPath).toString();

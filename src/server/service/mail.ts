@@ -1,31 +1,36 @@
+import nodemailer from 'nodemailer';
+import swig from 'swig-templates';
+
 import loggerFactory from '~/utils/logger';
+
+import S2sMessage from '../models/vo/s2s-message';
+import { S2sMessageHandlable } from './s2s-messaging/handlable';
 
 const logger = loggerFactory('growi:service:mail');
 
-const nodemailer = require('nodemailer');
-const swig = require('swig-templates');
+class MailService implements S2sMessageHandlable {
 
+  appService!: any;
 
-const S2sMessage = require('../models/vo/s2s-message');
-const S2sMessageHandlable = require('./s2s-messaging/handlable');
+  configManager!: any;
 
+  s2sMessagingService!: any;
 
-class MailService extends S2sMessageHandlable {
+  mailConfig: any = {};
+
+  mailer: any = {};
+
+  lastLoadedAt?: Date;
+
+  /**
+   * the flag whether mailer is set up successfully
+   */
+  isMailerSetup = false;
 
   constructor(crowi) {
-    super();
-
     this.appService = crowi.appService;
     this.configManager = crowi.configManager;
     this.s2sMessagingService = crowi.s2sMessagingService;
-
-    this.mailConfig = {};
-    this.mailer = {};
-
-    /**
-     * the flag whether mailer is set up successfully
-     */
-    this.isMailerSetup = false;
 
     this.initialize();
   }
@@ -101,7 +106,7 @@ class MailService extends S2sMessageHandlable {
     logger.debug('mailer initialized');
   }
 
-  createSMTPClient(option) {
+  createSMTPClient(option?) {
     const { configManager } = this;
 
     logger.debug('createSMTPClient option', option);
@@ -136,7 +141,7 @@ class MailService extends S2sMessageHandlable {
     return client;
   }
 
-  createSESClient(option) {
+  createSESClient(option?) {
     const { configManager } = this;
 
     if (!option) {
@@ -151,6 +156,7 @@ class MailService extends S2sMessageHandlable {
       };
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const ses = require('nodemailer-ses-transport');
     const client = nodemailer.createTransport(ses(option));
 
@@ -162,7 +168,7 @@ class MailService extends S2sMessageHandlable {
   setupMailConfig(overrideConfig) {
     const c = overrideConfig;
 
-    let mc = {};
+    let mc: any = {};
     mc = this.mailConfig;
 
     mc.to = c.to;
