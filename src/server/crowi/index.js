@@ -11,7 +11,7 @@ import InterceptorManager from '~/service/interceptor-manager';
 import CdnResourcesService from '~/service/cdn-resources-service';
 import Xss from '~/service/xss';
 import loggerFactory from '~/utils/logger';
-import { getMongoUri, mongoOptions } from '~/utils/mongoose-utils';
+import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import { projectRoot } from '~/utils/project-dir-utils';
 
 const logger = loggerFactory('growi:crowi');

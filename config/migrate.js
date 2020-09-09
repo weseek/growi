@@ -7,7 +7,7 @@
 
 const { URL } = require('url');
 
-const { getMongoUri } = require('~/utils/mongoose-utils');
+const { getMongoUri } = require('~/server/util/mongoose-utils');
 
 const mongoUri = getMongoUri();
 
