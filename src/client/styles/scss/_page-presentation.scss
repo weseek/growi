@@ -1,10 +1,9 @@
-.fullscreen-layer1 {
-  z-index: 9999;
-  // attached !importatnt for updating from .modal-dialog class style
+.grw-presentation-page {
+  // attached !important for updating from .modal-dialog class style
   width: 90vw !important;
   max-width: unset !important;
 
-  .grw-presentation-page {
+  .presentation-body {
     height: 90vh;
     background: black;
 

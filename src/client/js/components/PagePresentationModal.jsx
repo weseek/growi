@@ -1,16 +1,23 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   Modal, ModalBody,
 } from 'reactstrap';
 
 const PagePresentationModal = (props) => {
   return (
-    <Modal isOpen={props.isOpen} toggle={props.onClose} className="fullscreen-layer1">
-      <ModalBody className="grw-presentation-page">
+    <Modal isOpen={props.isOpen} toggle={props.onClose} className="grw-presentation-page">
+      <ModalBody className="presentation-body">
         <iframe src={props.href} />
       </ModalBody>
     </Modal>
   );
 };
+PagePresentationModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  href: PropTypes.string.isRequired,
+};
+
 
 export default PagePresentationModal;
