@@ -33,7 +33,7 @@ class PageTimeline extends React.Component {
   async handlePage(selectedPage) {
     const { appContainer, pageContainer } = this.props;
     const { path } = pageContainer.state;
-    const limit = this.state.limit;
+    const { limit } = this.state;
     const offset = (selectedPage - 1) * limit;
 
     // if (!path) { return null }
@@ -55,8 +55,10 @@ class PageTimeline extends React.Component {
 
     // initialize GrowiRenderer
     this.growiRenderer = appContainer.getRenderer('timeline');
-    this.handlePage(1);
+  }
 
+  async componentDidMount() {
+    await this.handlePage(1);
   }
 
   render() {
