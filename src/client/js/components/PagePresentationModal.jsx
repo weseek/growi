@@ -6,7 +6,7 @@ import {
 
 const PagePresentationModal = (props) => {
   return (
-    <Modal isOpen={props.isOpen} toggle={props.onClose} className="grw-presentation-page">
+    <Modal isOpen={props.isOpen} toggle={props.onClose} className="grw-presentation-page" unmountOnClose={false}>
       <ModalBody className="presentation-body">
         <iframe src={props.href} />
       </ModalBody>
