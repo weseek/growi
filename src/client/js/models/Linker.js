@@ -1,7 +1,7 @@
 export default class Linker {
 
   constructor(
-      type = this.types.markdownLink,
+      type = Linker.types.markdownLink,
       label = '',
       link = '',
   ) {
