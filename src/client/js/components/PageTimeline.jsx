@@ -17,16 +17,16 @@ class PageTimeline extends React.Component {
     super(props);
 
     const { appContainer } = this.props;
-    this.handlePage = this.handlePage.bind(this);
     this.state = {
       activePage: 1,
-      totalPages: 0,
+      totalPageItems: 0,
       limit: appContainer.getConfig().recentCreatedLimit,
 
       // TODO: remove after when timeline is implemented with React and inject data with props
       pages: this.props.pages,
     };
 
+    this.handlePage = this.handlePage.bind(this);
   }
 
 
@@ -35,16 +35,19 @@ class PageTimeline extends React.Component {
     const { path } = pageContainer.state;
     const limit = this.state.limit;
     const offset = (selectedPage - 1) * limit;
+
+    // if (!path) { return null }
     const activePage = selectedPage;
 
     const res = await appContainer.apiv3Get('/pages/list', { path, limit, offset });
-    const totalPages = res.data.totalCount;
+    const totalPageItems = res.data.totalCount;
     const pages = res.data.pages;
     this.setState({
       activePage,
-      totalPages,
+      totalPageItems,
       pages,
     });
+    console.log(activePage);
   }
 
   componentWillMount() {
@@ -85,7 +88,7 @@ class PageTimeline extends React.Component {
         <PaginationWrapper
           activePage={this.state.activePage}
           changePage={this.handlePage}
-          totalItemsCount={this.state.totalPages}
+          totalItemsCount={this.state.totalPageItems}
           pagingLimit={this.state.limit}
         />
       </div>
