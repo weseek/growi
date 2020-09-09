@@ -51,10 +51,7 @@ const PageAccessoriesModal = (props) => {
     return sum;
   }
 
-  function navSlider(menu, callback) { // ok
-    const arrayMenu1 = Array.from(menu);
-    const menuWidth = arrayMenu1.offsetWidth; // not ok
-
+  function navSlider(menu, callback) {
     // We only want the <li> </li> tags
     const navTabs = document.querySelectorAll('li.nav-link');
 
@@ -80,7 +77,6 @@ const PageAccessoriesModal = (props) => {
   if (menu) {
     // CLICK
     const menuSliderClick = document.getElementById('nav_slide_click');
-    console.log('menu clicked');
     if (menuSliderClick) {
       const arrayMenu = Array.from(menu); // 変換してみた
 
