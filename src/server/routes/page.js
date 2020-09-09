@@ -219,10 +219,11 @@ module.exports = function(crowi, app) {
     }
   }
 
-  function addRendarVarsForPage(renderVars, page) {
+  function addRenderVarsForPage(renderVars, page) {
     renderVars.page = page;
+    renderVars.page.creator = renderVars.page.creator.toObject();
     renderVars.revision = page.revision;
-    renderVars.author = page.revision.author;
+    renderVars.revision.author = renderVars.revision.author.toObject();
     renderVars.pageIdOnHackmd = page.pageIdOnHackmd;
     renderVars.revisionHackmdSynced = page.revisionHackmdSynced;
     renderVars.hasDraftOnHackmd = page.hasDraftOnHackmd;
@@ -232,12 +233,12 @@ module.exports = function(crowi, app) {
     const userData = await User.findUserByUsername(User.getUsernameByPath(page.path));
 
     if (userData != null) {
-      renderVars.pageUser = userData;
+      renderVars.pageUser = userData.toObject();
       renderVars.bookmarkList = await Bookmark.findByUser(userData, { limit: 10, populatePage: true, requestUser });
     }
   }
 
-  function addRendarVarsForScope(renderVars, page) {
+  function addRenderVarsForScope(renderVars, page) {
     renderVars.grant = page.grant;
     renderVars.grantedGroupId = page.grantedGroup ? page.grantedGroup.id : null;
     renderVars.grantedGroupName = page.grantedGroup ? page.grantedGroup.name : null;
@@ -297,7 +298,7 @@ module.exports = function(crowi, app) {
 
     // populate
     page = await page.populateDataToMakePresentation(revisionId);
-    addRendarVarsForPage(renderVars, page);
+    addRenderVarsForPage(renderVars, page);
     return res.render('page_presentation', renderVars);
   }
 
@@ -315,7 +316,7 @@ module.exports = function(crowi, app) {
     // populate
     portalPage = await portalPage.populateDataToShowRevision();
 
-    addRendarVarsForPage(renderVars, portalPage);
+    addRenderVarsForPage(renderVars, portalPage);
     await addRenderVarsForSlack(renderVars, portalPage);
 
     const sharelinksNumber = await ShareLink.countDocuments({ relatedPage: portalPage._id });
@@ -359,8 +360,8 @@ module.exports = function(crowi, app) {
 
     // populate
     page = await page.populateDataToShowRevision();
-    addRendarVarsForPage(renderVars, page);
-    addRendarVarsForScope(renderVars, page);
+    addRenderVarsForPage(renderVars, page);
+    addRenderVarsForScope(renderVars, page);
 
     await addRenderVarsForSlack(renderVars, page);
     await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
@@ -444,7 +445,7 @@ module.exports = function(crowi, app) {
       page = await page.populateDataToMakePresentation(revisionId);
 
       // populate
-      addRendarVarsForPage(renderVars, page);
+      addRenderVarsForPage(renderVars, page);
       return res.render('page_presentation', renderVars);
     }
 
@@ -452,8 +453,8 @@ module.exports = function(crowi, app) {
 
     // populate
     page = await page.populateDataToShowRevision();
-    addRendarVarsForPage(renderVars, page);
-    addRendarVarsForScope(renderVars, page);
+    addRenderVarsForPage(renderVars, page);
+    addRenderVarsForScope(renderVars, page);
 
     await interceptorManager.process('beforeRenderPage', req, res, renderVars);
     return res.render(view, renderVars);
@@ -522,7 +523,7 @@ module.exports = function(crowi, app) {
       const ancestor = await Page.findAncestorByPathAndViewer(path, req.user);
       if (ancestor != null) {
         await ancestor.populate('grantedGroup').execPopulate();
-        addRendarVarsForScope(renderVars, ancestor);
+        addRenderVarsForScope(renderVars, ancestor);
       }
     }
 
@@ -1561,83 +1562,6 @@ module.exports = function(crowi, app) {
 
     const result = { path };
     return res.json(ApiResponse.success(result));
-  };
-
-  /**
-   * @swagger
-   *
-   *    /pages.recentCreated:
-   *      get:
-   *        tags: [Pages]
-   *        operationId: getRecentCreatedPages
-   *        summary: /pages.recentCreated
-   *        description: Get recent created page list
-   *        parameters:
-   *          - in: query
-   *            name: page_id
-   *            required: true
-   *            schema:
-   *              $ref: '#/components/schemas/Page/properties/_id'
-   *          - in: query
-   *            name: offset
-   *            schema:
-   *              $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/offset'
-   *          - in: query
-   *            name: limit
-   *            schema:
-   *              $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/limit'
-   *        responses:
-   *          200:
-   *            description: Succeeded to get recent created page list.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    pages:
-   *                      type: array
-   *                      description: recent created page list
-   *                      items:
-   *                        $ref: '#/components/schemas/Page'
-   *                    totalCount:
-   *                      $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/total'
-   *                    offset:
-   *                      $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/offset'
-   *                    limit:
-   *                      $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/limit'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  api.recentCreated = async function(req, res) {
-    const pageId = req.query.page_id;
-
-    if (pageId == null) {
-      return res.json(ApiResponse.error('param \'pageId\' must not be null'));
-    }
-
-    const page = await Page.findById(pageId);
-    if (page == null) {
-      return res.json(ApiResponse.error(`Page (id='${pageId}') does not exist`));
-    }
-    if (!isUserPage(page.path)) {
-      return res.json(ApiResponse.error(`Page (id='${pageId}') is not a user home`));
-    }
-
-    const limit = +req.query.limit || 50;
-    const offset = +req.query.offset || 0;
-    const queryOptions = { offset, limit };
-
-    try {
-      const result = await Page.findListByCreator(page.creator, req.user, queryOptions);
-
-      return res.json(ApiResponse.success(result));
-    }
-    catch (err) {
-      return res.json(ApiResponse.error(err));
-    }
   };
 
   return actions;
