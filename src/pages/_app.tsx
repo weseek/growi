@@ -1,4 +1,4 @@
-import App, { AppProps, AppContext } from 'next/app';
+import { AppProps } from 'next/app';
 import { Provider } from 'unstated';
 
 import { appWithTranslation } from '~/i18n';
@@ -13,12 +13,5 @@ function GrowiApp({ Component, pageProps }: AppProps) {
     </Provider>
   );
 }
-
-GrowiApp.getInitialProps = async(appContext: AppContext) => {
-  // calls page's `getInitialProps` and fills `appProps.pageProps`
-  const appProps = await App.getInitialProps(appContext);
-
-  return { ...appProps };
-};
 
 export default appWithTranslation(GrowiApp);

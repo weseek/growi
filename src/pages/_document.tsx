@@ -10,7 +10,6 @@ import { resolveFromRoot } from '~/utils/project-dir-utils';
 
 interface GrowiDocumentProps {
   bootJsPath: string;
-  layout: string;
 }
 declare type GrowiDocumentInitialProps = DocumentInitialProps & GrowiDocumentProps;
 
@@ -27,23 +26,19 @@ class GrowiDocument extends Document<GrowiDocumentProps> {
     const customManifest: any = await importCustomManifest();
     const bootJsPath = path.join('/_next', customManifest['boot.js']);
 
-    const { configManager } = ctx.req?.crowi;
-
-    const layout = configManager.getConfig('crowi', 'customize:layout');
-
-    return { ...initialProps, bootJsPath, layout };
+    return { ...initialProps, bootJsPath };
   }
 
   render(): JSX.Element {
 
-    const { bootJsPath, layout } = this.props;
+    const { bootJsPath } = this.props;
 
     return (
       <Html>
         <Head>
           <script src={bootJsPath}></script>
         </Head>
-        <body className={layout}>
+        <body>
           <Main />
           <NextScript />
         </body>
