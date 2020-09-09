@@ -15,7 +15,6 @@ module.exports = (crowi) => {
   const restQiitaAPIService = crowi.getRestQiitaAPIService();
 
   const configManager = crowi.configManager;
-  const getConfig = configManager.getConfig;
 
   const importer = {};
   let esaClient = {};
@@ -25,8 +24,8 @@ module.exports = (crowi) => {
    */
   importer.initializeEsaClient = () => {
     esaClient = esa({
-      team:        getConfig('crowi', 'importer:esa:team_name'),
-      accessToken: getConfig('crowi', 'importer:esa:access_token'),
+      team:        configManager.getConfig('crowi', 'importer:esa:team_name'),
+      accessToken: configManager.getConfig('crowi', 'importer:esa:access_token'),
     });
     logger.debug('initialize esa importer');
   };
