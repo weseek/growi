@@ -1,6 +1,6 @@
 // TODO remove this setting after implemented all
 /* eslint-disable no-unused-vars */
-const loggerFactory = require('@alias/logger');
+import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:apiv3:share-links');
 

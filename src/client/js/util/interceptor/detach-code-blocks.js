@@ -1,5 +1,7 @@
 import { BasicInterceptor } from 'growi-commons';
 
+import loggerFactory from '~/utils/logger';
+
 class DetachCodeBlockUtil {
 
   static createReplaceStr(replaceId) {
@@ -15,7 +17,7 @@ export class DetachCodeBlockInterceptor extends BasicInterceptor {
 
   constructor(crowi) {
     super();
-    this.logger = require('@alias/logger')('growi:DetachCodeBlockInterceptor');
+    this.logger = loggerFactory('growi:interceptor:DetachCodeBlockInterceptor');
 
     this.crowi = crowi;
     this.crowiForJquery = crowi.getCrowiForJquery();
@@ -95,7 +97,7 @@ export class RestoreCodeBlockInterceptor extends BasicInterceptor {
 
   constructor(crowi) {
     super();
-    this.logger = require('@alias/logger')('growi:DetachCodeBlockInterceptor');
+    this.logger = loggerFactory('growi:interceptor:DetachCodeBlockInterceptor');
 
     this.crowi = crowi;
     this.crowiForJquery = crowi.getCrowiForJquery();

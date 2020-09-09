@@ -1,6 +1,8 @@
-const logger = require('@alias/logger')('growi:service:AttachmentService'); // eslint-disable-line no-unused-vars
+import fs from 'fs';
 
-const fs = require('fs');
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:service:AttachmentService'); // eslint-disable-line no-unused-vars
 
 
 /**

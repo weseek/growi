@@ -1,4 +1,4 @@
-const loggerFactory = require('@alias/logger');
+import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:middleware:access-token-parser');
 
