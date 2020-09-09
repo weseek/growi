@@ -12,6 +12,7 @@ import PageDeleteModal from '../PageDeleteModal';
 import PageRenameModal from '../PageRenameModal';
 import PageDuplicateModal from '../PageDuplicateModal';
 import CreateTemplateModal from '../CreateTemplateModal';
+import PagePresentationModal from '../PagePresentationModal';
 
 
 const PageManagement = (props) => {
@@ -25,6 +26,7 @@ const PageManagement = (props) => {
   const [isPageDuplicateModalShown, setIsPageDuplicateModalShown] = useState(false);
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
   const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);
+  const [isPagePresentationModalShown, setIsPagePresentationModalShown] = useState(false);
 
   function openPageRenameModalHandler() {
     setIsPageRenameModalShown(true);
@@ -56,6 +58,14 @@ const PageManagement = (props) => {
 
   function closePageDeleteModalHandler() {
     setIsPageDeleteModalShown(false);
+  }
+
+  function openPagePresentationModalHandler() {
+    setIsPagePresentationModalShown(true);
+  }
+
+  function closePagePresentationModalHandler() {
+    setIsPagePresentationModalShown(false);
   }
 
 
@@ -104,6 +114,9 @@ const PageManagement = (props) => {
         <button type="button" className="dropdown-item" onClick={() => { exportPageHandler('md') }}>
           <i className="icon-fw icon-cloud-download"></i>{t('export_bulk.export_page_markdown')}
         </button>
+        <button type="button" className="dropdown-item" onClick={openPagePresentationModalHandler}>
+          <i className="icon-fw icon-cloud-download"></i>presentation
+        </button>
         {/* TODO GW-2746 create api to bulk export pages */}
         {/* <button className="dropdown-item" type="button" onClick={openArchiveModalHandler}>
           <i className="icon-fw"></i>{t('Create Archive Page')}
@@ -149,6 +162,11 @@ const PageManagement = (props) => {
           onClose={closePageDeleteModalHandler}
           path={path}
           isAbleToDeleteCompletely={isAbleToDeleteCompletely}
+        />
+        <PagePresentationModal
+          isOpen={isPagePresentationModalShown}
+          onClose={closePagePresentationModalHandler}
+          href="?presentation=1"
         />
       </>
     );
