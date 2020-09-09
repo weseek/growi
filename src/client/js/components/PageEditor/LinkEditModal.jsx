@@ -276,6 +276,7 @@ class LinkEditModal extends React.PureComponent {
         <ModalBody className="container">
           <div className="row">
             <div className="col-12">
+              <h2>Set link and label</h2>
               <form className="form-group">
                 <div className="form-gorup my-3">
                   <div className="input-group flex-nowrap">
@@ -290,7 +291,9 @@ class LinkEditModal extends React.PureComponent {
                       keywordOnInit={this.state.linkInputValue}
                     />
                     <div className="input-group-append" onClick="">
-                      <button type="button" className="btn btn-info btn-page-preview"><PagePreviewIcon /></button>
+                      <button type="button" className="btn btn-info btn-page-preview">
+                        <PagePreviewIcon />
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -310,7 +313,7 @@ class LinkEditModal extends React.PureComponent {
                   </div>
                 </div>
               </form>
-              <div className="card">
+              <div className="card bg-light">
                 <div className="card-body">
                   <form className="form-group mb-0">
                     <div className="form-group row">
@@ -383,6 +386,14 @@ class LinkEditModal extends React.PureComponent {
                 </div>
               </div>
               {/* TODO GW-3448 fix layout */}
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-12">
+              <h2>Set link and label</h2>
+              <div className="row">
+                <div className="col"></div>
+              </div>
               {this.renderLinkPreview()}
             </div>
 
