@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -26,6 +26,8 @@ const PageAccessoriesModal = (props) => {
   const { switchActiveTab } = pageAccessoriesContainer;
   const { activeTab } = pageAccessoriesContainer.state;
 
+  const sliderEl = useRef(null);
+
   function closeModalHandler() {
     if (props.onClose == null) {
       return;
@@ -51,9 +53,9 @@ const PageAccessoriesModal = (props) => {
     return sum;
   }
 
-  function changeFlexibility(menuSliderClick, width, tempMarginLeft) {
-    menuSliderClick.style.width = `${width}%`;
-    menuSliderClick.style.marginLeft = `${tempMarginLeft}%`;
+  function changeFlexibility(width, tempMarginLeft) {
+    sliderEl.current.width = `${width}%`;
+    sliderEl.current.style.marginLeft = `${tempMarginLeft}%`;
   }
 
   function navSlider(menu, callback) {
@@ -89,7 +91,7 @@ const PageAccessoriesModal = (props) => {
 
       navSlider(arrayMenu, (el, width, tempMarginLeft) => {
         el.onclick = () => {
-          changeFlexibility(menuSliderClick, width, tempMarginLeft);
+          changeFlexibility(width, tempMarginLeft);
         };
       });
     }
@@ -152,7 +154,7 @@ const PageAccessoriesModal = (props) => {
               </NavLink>
             </NavItem>
           </Nav>
-          <hr id="nav_slide_click" className="my-0"></hr>
+          <hr ref={sliderEl} id="nav_slide_click" className="my-0" />
           <TabContent activeTab={activeTab}>
 
             <TabPane tabId="pagelist">
