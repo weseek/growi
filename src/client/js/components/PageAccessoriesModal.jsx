@@ -60,23 +60,25 @@ const PageAccessoriesModal = (props) => {
     // We only want the <li> </li> tags
     const navTabs = document.querySelectorAll('li.nav-link');
 
-    if (menu.length > 0) {
-      const marginLeft = [];
-      // Loop through nav children i.e li
-      [].forEach.call(navTabs, (el, index) => {
-        // Dynamic width/margin calculation for hr
-        const width = getPercentage(el.offsetWidth, navTitle.offsetWidth);
-        let tempMarginLeft = 0;
-        // We don't want to modify first elements positioning
-        if (index !== 0) {
-          tempMarginLeft = getArraySum(marginLeft);
-        }
-        // Set mouse event [click]
-        callback(el, width, tempMarginLeft);
-        /* We store it in array because the later accumulated value is used for positioning */
-        marginLeft.push(width);
-      });
+    if (menu.length === 0) {
+      return;
     }
+
+    const marginLeft = [];
+    // Loop through nav children i.e li
+    [].forEach.call(navTabs, (el, index) => {
+      // Dynamic width/margin calculation for hr
+      const width = getPercentage(el.offsetWidth, navTitle.offsetWidth);
+      let tempMarginLeft = 0;
+      // We don't want to modify first elements positioning
+      if (index !== 0) {
+        tempMarginLeft = getArraySum(marginLeft);
+      }
+      // Set mouse event [click]
+      callback(el, width, tempMarginLeft);
+      /* We store it in array because the later accumulated value is used for positioning */
+      marginLeft.push(width);
+    });
   }
 
   if (menu) {
