@@ -1,3 +1,5 @@
+const logger = require('@alias/logger')('growi:service:FileUploaderServise');
+
 const envToModuleMappings = {
   aws:     'aws',
   local:   'local',
@@ -13,6 +15,7 @@ class FileUploaderServise {
 
   constructor(crowi) {
 
+    this.crowi = crowi;
     this.appService = crowi.appService;
     this.configManager = crowi.configManager;
 
@@ -27,7 +30,8 @@ class FileUploaderServise {
   }
 
   initialize() {
-    console.log('setUP!');
+    logger.info('setUP!');
+    this.fileUploader = this.getUploader(this.crowi);
   }
 
   getUploader(crowi) {
