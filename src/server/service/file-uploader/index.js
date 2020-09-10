@@ -35,13 +35,13 @@ class FileUploaderServise {
   }
 
   getUploader(crowi) {
-    if (this.uploader == null) {
+    if (this.fileUploader == null) {
       const method = envToModuleMappings[process.env.FILE_UPLOAD] || 'aws';
       const modulePath = `./${method}`;
       this.uploader = require(modulePath)(crowi);
     }
 
-    return this.uploader;
+    return this.fileUploader;
   }
 
 }
