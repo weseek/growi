@@ -112,7 +112,6 @@ if (pageContainer.state.path != null) {
 if (appContainer.currentUser != null) {
   Object.assign(componentMappings, {
     'page-editor': <PageEditor />,
-    'page-editor-path-nav': <PagePathNavForEditor />,
     'page-editor-navbar-bottom-container': <EditorNavbarBottom />,
   });
   if (pageContainer.state.pageId != null) {
