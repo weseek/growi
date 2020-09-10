@@ -20,7 +20,7 @@ const ThreeStrandedButton = (props) => {
         onClick={(e) => {
           e.preventDefault();
           threeStrandedButtonClickedHandler('revision-body');
-          window.location.href = '#revision-body';
+          window.location.href = '#';
           }}
       >
         <i className="icon-control-play icon-fw" />
