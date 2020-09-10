@@ -9,7 +9,26 @@ const envToModuleMappings = {
   gcs:     'gcs',
 };
 
-class FileUploaderFactory {
+class FileUploaderServise {
+
+  constructor(crowi) {
+
+    this.appService = crowi.appService;
+    this.configManager = crowi.configManager;
+
+    this.fileUploader = {};
+
+    /**
+     * the flag whether fileUploader is set up successfully
+     */
+    this.isFileUploaderSetup = false;
+
+    this.initialize();
+  }
+
+  initialize() {
+    console.log('setUP!');
+  }
 
   getUploader(crowi) {
     if (this.uploader == null) {
@@ -23,8 +42,4 @@ class FileUploaderFactory {
 
 }
 
-const factory = new FileUploaderFactory();
-
-module.exports = (crowi) => {
-  return factory.getUploader(crowi);
-};
+module.exports = FileUploaderServise;
