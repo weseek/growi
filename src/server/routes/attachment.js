@@ -241,7 +241,7 @@ module.exports = function(crowi, app) {
     // retrieve data from DB to get a completely populated instance
     const attachment = await Attachment.findById(attachmentId);
 
-    await fileUploadService.deleteFile(attachment);
+    await fileUploadService.fileUploader.deleteFile(attachment);
 
     return attachment.remove();
   }
