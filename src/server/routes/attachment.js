@@ -191,13 +191,13 @@ module.exports = function(crowi, app) {
       return res.sendStatus(304);
     }
 
-    if (fileUploadService.canRespond()) {
-      return fileUploadService.respond(res, attachment);
+    if (fileUploadService.fileUploader.canRespond()) {
+      return fileUploadService.fileUploader.respond(res, attachment);
     }
 
     let fileStream;
     try {
-      fileStream = await fileUploadService.findDeliveryFile(attachment);
+      fileStream = await fileUploadService.fileUploader.findDeliveryFile(attachment);
     }
     catch (e) {
       logger.error(e);
@@ -395,7 +395,7 @@ module.exports = function(crowi, app) {
    */
   api.limit = async function(req, res) {
     const fileSize = Number(req.query.fileSize);
-    return res.json(ApiResponse.success(await fileUploadService.checkLimit(fileSize)));
+    return res.json(ApiResponse.success(await fileUploadService.fileUploader.checkLimit(fileSize)));
   };
 
   /**

@@ -29,7 +29,7 @@ class Gridfs extends Uploader {
     this.AttachmentFile.promisifiedUnlink = util.promisify(this.AttachmentFile.unlink).bind(this.AttachmentFile);
   }
 
-  getisValidUploadSettings() {
+  isValidUploadSettings() {
     return true;
   }
 

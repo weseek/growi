@@ -185,8 +185,8 @@ module.exports = function(crowi) {
         confidential: crowi.appService.getAppConfidential(),
       },
       upload: {
-        image: crowi.fileUploadService.getIsUploadable(),
-        file: crowi.fileUploadService.getFileUploadEnabled(),
+        image: crowi.fileUploadService.fileUploader.getIsUploadable(),
+        file: crowi.fileUploadService.fileUploader.getFileUploadEnabled(),
       },
       registrationWhiteList: crowi.configManager.getConfig('crowi', 'security:registrationWhiteList'),
       layoutType: crowi.configManager.getConfig('crowi', 'customize:layout'),
