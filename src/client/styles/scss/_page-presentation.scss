@@ -1,9 +1,7 @@
-.grw-presentation-page {
-  // attached !important for updating from .modal-dialog class style
-  width: 90vw !important;
-  max-width: unset !important;
+.grw-presentation-modal {
+  @include expand-modal-fullscreen(false, false);
 
-  .presentation-body {
+  .modal-body {
     height: 90vh;
     background: black;
 

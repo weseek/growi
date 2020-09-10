@@ -5,9 +5,17 @@ import {
 } from 'reactstrap';
 
 const PagePresentationModal = (props) => {
+
+  function closeModalHandler() {
+    if (props.onClose === null) {
+      return;
+    }
+    props.onClose();
+  }
+
   return (
-    <Modal isOpen={props.isOpen} toggle={props.onClose} className="grw-presentation-page" unmountOnClose={false}>
-      <ModalBody className="presentation-body">
+    <Modal isOpen={props.isOpen} toggle={closeModalHandler} className="grw-presentation-modal" unmountOnClose={false}>
+      <ModalBody className="modal-body">
         <iframe src={props.href} />
       </ModalBody>
     </Modal>
@@ -15,7 +23,7 @@ const PagePresentationModal = (props) => {
 };
 PagePresentationModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
+  onClose: PropTypes.func,
   href: PropTypes.string.isRequired,
 };
 
