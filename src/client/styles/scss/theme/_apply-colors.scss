@@ -287,7 +287,7 @@ pre:not(.hljs):not(.CodeMirror-line) {
   .nav-link svg {
     fill: $color-link;
   }
-  .active-border {
+  #nav_slide_click {
     border-bottom: 2px solid $color-link;
   }
 }

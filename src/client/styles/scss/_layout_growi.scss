@@ -28,16 +28,11 @@
     }
   }
 
-  // ~アニメーションのため追加~
-
   @media screen and (min-width: 768px) {
     #nav_slide_click {
-      border-bottom: 2px solid red;
-      // border: none;
       transition: 0.3s ease-in-out;
     }
   }
-  // ~アニメションのための追加終わり~
 
   .revision-toc {
     position: sticky;
