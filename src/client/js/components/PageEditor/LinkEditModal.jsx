@@ -204,7 +204,7 @@ class LinkEditModal extends React.PureComponent {
     const linkText = linker.generateMarkdownText();
     return (
       <div className="d-flex justify-content-between mb-3">
-        <div className="card bg-light w-100 mb-0 p-1">
+        <div className="card w-100 mb-0 p-1">
           <p className="text-left text-muted mb-0">Markdown</p>
           <p className="text-center text-truncate">{linkText}</p>
         </div>
@@ -302,7 +302,7 @@ class LinkEditModal extends React.PureComponent {
               <form className="form-group">
                 <div className="form-gorup my-3">
                   <div className="input-group flex-nowrap">
-                    <div className="input-group-prepend">
+                    <div className="input-group-prepend bg-light">
                       <span className="input-group-text">link</span>
                     </div>
                     <SearchTypeahead
@@ -312,7 +312,7 @@ class LinkEditModal extends React.PureComponent {
                       placeholder="Input page path or URL"
                       keywordOnInit={this.state.linkInputValue}
                     />
-                    <div className="input-group-append" onClick="">
+                    <div className="input-group-append">
                       <button type="button" id="preview-btn" className="btn btn-info btn-page-preview">
                         <PagePreviewIcon />
                       </button>
@@ -326,7 +326,7 @@ class LinkEditModal extends React.PureComponent {
                 </div>
                 <div className="form-gorup my-3">
                   <div className="input-group flex-nowrap">
-                    <div className="input-group-prepend">
+                    <div className="input-group-prepend bg-light">
                       <span className="input-group-text">label</span>
                     </div>
                     <input
@@ -340,7 +340,7 @@ class LinkEditModal extends React.PureComponent {
                   </div>
                 </div>
               </form>
-              <div className="card bg-light">
+              <div className="card">
                 <div className="card-body">
                   <form className="form-group mb-0">
                     <div className="form-group row">
@@ -351,9 +351,10 @@ class LinkEditModal extends React.PureComponent {
                           id="relativePath"
                           type="checkbox"
                           checked={this.state.isUseRelativePath}
+                          onChange={this.toggleIsUseRelativePath}
                           disabled={!this.state.linkInputValue.startsWith('/') || this.state.linkerType === Linker.types.growiLink}
                         />
-                        <label className="custom-control-label" htmlFor="relativePath" onClick={this.toggleIsUseRelativePath}>
+                        <label className="custom-control-label" htmlFor="relativePath">
                           Use relative path
                         </label>
                       </div>
@@ -363,9 +364,10 @@ class LinkEditModal extends React.PureComponent {
                           id="permanentLink"
                           type="checkbox"
                           checked={this.state.isUsePermanentLink}
+                          onChange={this.toggleIsUsePamanentLink}
                           disabled={this.state.permalink === '' || this.state.linkerType === Linker.types.growiLink}
                         />
-                        <label className="custom-control-label" htmlFor="permanentLink" onClick={this.toggleIsUsePamanentLink}>
+                        <label className="custom-control-label" htmlFor="permanentLink">
                           Use permanent link
                         </label>
                       </div>
@@ -377,8 +379,9 @@ class LinkEditModal extends React.PureComponent {
                           type="radio"
                           className="custom-control-input"
                           id="markdownType"
+                          value={Linker.types.markdownLink}
                           checked={this.state.linkerType === Linker.types.markdownLink}
-                          onClick={() => this.handleSelecteLinkerType(Linker.types.markdownLink)}
+                          onChange={e => this.handleSelecteLinkerType(e.target.value)}
                         />
                         <label className="custom-control-label" htmlFor="markdownType">
                           Markdown
@@ -389,8 +392,9 @@ class LinkEditModal extends React.PureComponent {
                           type="radio"
                           className="custom-control-input"
                           id="growiType"
+                          value={Linker.types.growiLink}
                           checked={this.state.linkerType === Linker.types.growiLink}
-                          onClick={() => this.handleSelecteLinkerType(Linker.types.growiLink)}
+                          onChange={e => this.handleSelecteLinkerType(e.target.value)}
                         />
                         <label className="custom-control-label" htmlFor="growiType">
                           Growi original
@@ -401,8 +405,9 @@ class LinkEditModal extends React.PureComponent {
                           type="radio"
                           className="custom-control-input"
                           id="pukiwikiType"
+                          value={Linker.types.pukiwikiLink}
                           checked={this.state.linkerType === Linker.types.pukiwikiLink}
-                          onClick={() => this.handleSelecteLinkerType(Linker.types.pukiwikiLink)}
+                          onChange={e => this.handleSelecteLinkerType(e.target.value)}
                         />
                         <label className="custom-control-label" htmlFor="pukiwikiType">
                           Pukiwiki
