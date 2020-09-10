@@ -60,6 +60,7 @@ const TableOfContents = (props) => {
         />
       </StickyStretchableScroller>
 
+      { props.isUser && (
       <div className="mt-3 d-flex justify-content-around">
         <a className="btn btn-outline-secondary btn-sm" href="#">
           <i className="mr-2 icon-star"></i>
@@ -69,8 +70,8 @@ const TableOfContents = (props) => {
           <i className="recently-created mr-2"><RecentlyCreatedIcon /></i>
           <span>Recently Created</span>
         </a>
-
       </div>
+      )}
     </>
   );
 
