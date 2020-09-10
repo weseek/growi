@@ -68,11 +68,16 @@ module.exports = (crowi) => {
           limit,
           offset,
           populate: {
-            path: 'author',
+            path: 'creator',
             select: User.USER_PUBLIC_FIELDS,
           },
         },
       );
+      paginateResult.docs = paginateResult.docs.map((doc) => {
+        const user = doc.creator.toObject();
+        doc.creator = user;
+        return doc;
+      });
 
       return res.apiv3({ paginateResult });
     }
