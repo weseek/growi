@@ -446,3 +446,17 @@ mark.rbt-highlight-text {
     fill: $gray-900;
   }
 }
+
+/*
+* Pagination
+*/
+ul.pagination {
+  li.page-item {
+    &.active {
+      button {
+        background-color: $primary;
+        border-color: $primary;
+      }
+    }
+  }
+}
