@@ -105,6 +105,19 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *          secretAccessKey:
  *            type: string
  *            description: secret key for authentification of AWS
+ *      GcpSettingParams:
+ *        description: GcpSettingParams
+ *        type: object
+ *        properties:
+ *          gcsApiKeyJsonPath:
+ *            type: string
+ *            description: apiKeyJsonPath of gcp
+ *          gcsBucket:
+ *            type: string
+ *            description: bucket name of gcs
+ *          gcsUploadNamespace:
+ *            type: string
+ *            description: name space of gcs
  *      PluginSettingParams:
  *        description: PluginSettingParams
  *        type: object
@@ -152,6 +165,11 @@ module.exports = (crowi) => {
       body('bucket').trim(),
       body('accessKeyId').trim().if(value => value !== '').matches(/^[\da-zA-Z]+$/),
       body('secretAccessKey').trim(),
+    ],
+    gcpSetting: [
+      body('gcsApiKeyJsonPath').trim(),
+      body('gcsBucket').trim(),
+      body('gcsUploadNamespace').trim(),
     ],
     pluginSetting: [
       body('isEnabledPlugins').isBoolean(),
@@ -540,10 +558,9 @@ module.exports = (crowi) => {
     };
 
     try {
-      const { configManager } = crowi;
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestAwsSettingParams);
 
-      // update config without publishing S2sMessage
-      await configManager.updateConfigsInTheSameNamespace('crowi', requestAwsSettingParams, true);
+      // TODO GW-3797 re-setup file uploader
 
       const awsSettingParams = {
         region: crowi.configManager.getConfig('crowi', 'aws:region'),
@@ -553,6 +570,56 @@ module.exports = (crowi) => {
         secretAccessKey: crowi.configManager.getConfig('crowi', 'aws:secretAccessKey'),
       };
       return res.apiv3({ awsSettingParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating aws setting';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-awsSetting-failed'));
+    }
+
+  });
+
+  /**
+   * @swagger
+   *
+   *    /app-settings/gcp-setting:
+   *      put:
+   *        tags: [AppSettings]
+   *        operationId: updateAppSettingGcpSetting
+   *        summary: /app-settings/gcp-setting
+   *        description: Update gcp setting
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/GcpSettingParams'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update gcp setting
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/GcpSettingParams'
+   */
+  router.put('/gcp-setting', loginRequiredStrictly, adminRequired, csrf, validator.gcpSetting, apiV3FormValidator, async(req, res) => {
+    const requestGcpSettingParams = {
+      'gcs:apiKeyJsonPath': req.body.gcsApiKeyJsonPath,
+      'gcs:bucket': req.body.gcsBucket,
+      'gcs:uploadNamespace': req.body.gcsUploadNamespace,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestGcpSettingParams);
+
+      // TODO GW-3797 re-setup file uploader
+
+      const gcpSettingParams = {
+        gcsApiKeyJsonPath: crowi.configManager.getConfig('crowi', 'gcs:apiKeyJsonPath'),
+        gcsBucket: crowi.configManager.getConfig('crowi', 'gcs:bucket'),
+        gcsUploadNamespace: crowi.configManager.getConfig('crowi', 'gcs:uploadNamespace'),
+      };
+      return res.apiv3({ gcpSettingParams });
     }
     catch (err) {
       const msg = 'Error occurred in updating aws setting';
