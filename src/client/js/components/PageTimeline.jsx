@@ -23,7 +23,7 @@ class PageTimeline extends React.Component {
       activePage: 1,
       totalPages: 0,
       limit: appContainer.getConfig().recentCreatedLimit,
-      isEnabled: appContainer.getConfig().isEnabledTimeline,
+
       // TODO: remove after when timeline is implemented with React and inject data with props
       pages: this.props.pages,
     };
@@ -51,9 +51,6 @@ class PageTimeline extends React.Component {
   }
 
   componentWillMount() {
-    if (!this.state.isEnabled) {
-      return;
-    }
     const { appContainer } = this.props;
 
     // initialize GrowiRenderer
@@ -62,10 +59,6 @@ class PageTimeline extends React.Component {
   }
 
   render() {
-    if (!this.state.isEnabled) {
-      return <React.Fragment></React.Fragment>;
-    }
-
     const { pages } = this.state;
 
     if (pages == null) {
