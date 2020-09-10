@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 import AppSetting from './AppSetting';
 import SiteUrlSetting from './SiteUrlSetting';
 import MailSetting from './MailSetting';
-import AwsSetting from './AwsSetting';
 import PluginSetting from './PluginSetting';
+import FileUploadSetting from './FileUploadSetting';
 
 class AppSettingsPageContents extends React.Component {
 
@@ -38,8 +38,8 @@ class AppSettingsPageContents extends React.Component {
 
         <div className="row mt-5">
           <div className="col-lg-12">
-            <h2 className="admin-setting-header">{t('admin:app_setting.aws_settings')}</h2>
-            <AwsSetting />
+            <h2 className="admin-setting-header">{t('admin:app_setting.file_upload_settings')}</h2>
+            <FileUploadSetting />
           </div>
         </div>
 
