@@ -93,11 +93,6 @@ ul.pagination {
     button.page-link {
       @extend .btn-dark;
     }
-    &.active {
-      button {
-        @extend .active;
-      }
-    }
   }
 }
 
