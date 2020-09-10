@@ -27,6 +27,9 @@ const TableOfContents = (props) => {
     const containerTop = containerElem.getBoundingClientRect().top;
 
     // window height - revisionToc top - .system-version - .grw-fab-container height
+    if (pageContainer.state.userHomePageNoToki) {
+      return window.innerHeight - containerTop - 20 - 155 - 40;
+    }
     return window.innerHeight - containerTop - 20 - 155;
   }, []);
 
