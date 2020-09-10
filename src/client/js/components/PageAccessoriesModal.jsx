@@ -33,7 +33,7 @@ const PageAccessoriesModal = (props) => {
     props.onClose();
   }
 
-  const menu = document.getElementsByClassName('nav'); // 上部に持ってきた
+  const menu = document.getElementsByClassName('nav');
   const navId = document.getElementById('nav-width');
   // Values are set.
 
