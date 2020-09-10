@@ -51,6 +51,11 @@ const PageAccessoriesModal = (props) => {
     return sum;
   }
 
+  function changeFlexibility(menuSliderClick, width, tempMarginLeft) {
+    menuSliderClick.style.width = `${width}%`;
+    menuSliderClick.style.marginLeft = `${tempMarginLeft}%`;
+  }
+
   function navSlider(menu, callback) {
     // We only want the <li> </li> tags
     const navTabs = document.querySelectorAll('li.nav-link');
@@ -82,8 +87,7 @@ const PageAccessoriesModal = (props) => {
 
       navSlider(arrayMenu, (el, width, tempMarginLeft) => {
         el.onclick = () => {
-          menuSliderClick.style.width = `${width}%`;
-          menuSliderClick.style.marginLeft = `${tempMarginLeft}%`;
+          changeFlexibility(menuSliderClick, width, tempMarginLeft);
         };
       });
     }
