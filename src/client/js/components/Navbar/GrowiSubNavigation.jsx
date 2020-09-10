@@ -83,7 +83,7 @@ const UserPagePathNav = ({ pageId, pagePath }) => {
 /* eslint-disable react/prop-types */
 const UserInfo = ({ pageUser }) => {
   return (
-    <div className="grw-users-info d-flex align-items-center d-edit-none">
+    <div className="grw-users-info d-flex align-items-center">
       <UserPicture user={pageUser} />
 
       <div className="users-meta">
@@ -200,7 +200,7 @@ const GrowiSubNavigation = (props) => {
 
         {/* Page Authors */}
         { (!isCompactMode && !isUserPage) && (
-          <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none">
+          <ul className="authors text-nowrap border-left d-none d-lg-block">
             { creator != null && (
               <li className="pb-1">
                 <PageCreator creator={creator} createdAt={createdAt} />
