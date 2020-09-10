@@ -11,6 +11,8 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import TopOfTableContents from './TopOfTableContents';
 import StickyStretchableScroller from './StickyStretchableScroller';
 
+import RecentlyCreatedIcon from './Icons/RecentlyCreatedIcon';
+
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:TableOfContents');
 
@@ -51,7 +53,7 @@ const TableOfContents = (props) => {
         <div
           id="revision-toc-content"
           className="revision-toc-content top-of-table-contents"
-        // eslint-disable-next-line react/no-danger
+         // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{
           __html: tocHtml,
         }}
@@ -59,14 +61,12 @@ const TableOfContents = (props) => {
       </StickyStretchableScroller>
 
       <div className="mt-3 d-flex justify-content-around">
-
         <a className="btn btn-outline-secondary btn-sm" href="#">
-          <i className="icon-star"></i>
+          <i className="mr-2 icon-star"></i>
           <span>Bookmarks</span>
         </a>
-
         <a className="btn btn-outline-secondary btn-sm" href="#">
-          <i className="icon-clock"></i>
+          <i className="recently-created mr-2"><RecentlyCreatedIcon /></i>
           <span>Recently Created</span>
         </a>
 
