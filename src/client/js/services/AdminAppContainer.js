@@ -35,6 +35,8 @@ export default class AdminAppContainer extends Container {
       sesAccessKeyId: '',
       sesSecretAccessKey: '',
 
+      fileUploadType: 'aws',
+
       gcsApiKeyJsonPath: '',
       envGcsApiKeyJsonPath: '',
       gcsBucket: '',
@@ -183,6 +185,13 @@ export default class AdminAppContainer extends Container {
    */
   changeSesSecretAccessKey(sesSecretAccessKey) {
     this.setState({ sesSecretAccessKey });
+  }
+
+  /**
+   * Change fileUploadType
+   */
+  changeFileUploadType(fileUploadType) {
+    this.setState({ fileUploadType });
   }
 
   /**
