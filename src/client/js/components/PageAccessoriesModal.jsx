@@ -78,7 +78,7 @@ const PageAccessoriesModal = (props) => {
     // CLICK
     const menuSliderClick = document.getElementById('nav_slide_click');
     if (menuSliderClick) {
-      const arrayMenu = Array.from(menu); // 変換してみた
+      const arrayMenu = Array.from(menu);
 
       navSlider(arrayMenu, (el, width, tempMarginLeft) => {
         el.onclick = () => {
