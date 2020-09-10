@@ -41,9 +41,6 @@ class AwsSetting extends React.Component {
         <p className="card well">
           {t('admin:app_setting.aws_access')}
           <br />
-          {t('admin:app_setting.no_smtp_setting')}
-          <br />
-          <br />
           <span className="text-danger">
             <i className="ti-unlink"></i>
             {t('admin:app_setting.change_setting')}
@@ -58,9 +55,9 @@ class AwsSetting extends React.Component {
             <input
               className="form-control"
               placeholder={`${t('eg')} ap-northeast-1`}
-              defaultValue={adminAppContainer.state.awsRegion || ''}
+              defaultValue={adminAppContainer.state.awsS3Region || ''}
               onChange={(e) => {
-                adminAppContainer.changeAwsRegion(e.target.value);
+                adminAppContainer.changeAwsS3Region(e.target.value);
               }}
             />
           </div>

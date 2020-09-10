@@ -23,12 +23,16 @@ export default class AdminAppContainer extends Container {
       siteUrl: '',
       envSiteUrl: '',
       isSetSiteUrl: true,
+      isMailerSetup: false,
       fromAddress: '',
+      transmissionMethod: '',
       smtpHost: '',
       smtpPort: '',
       smtpUser: '',
       smtpPassword: '',
-      awsRegion: '',
+      sesAccessKeyId: '',
+      sesSecretAccessKey: '',
+      awsS3Region: '',
       awsCustomEndpoint: '',
       awsBucket: '',
       awsAccessKeyId: '',
@@ -36,11 +40,6 @@ export default class AdminAppContainer extends Container {
       isEnabledPlugins: true,
     };
 
-    this.updateAppSettingHandler = this.updateAppSettingHandler.bind(this);
-    this.updateSiteUrlSettingHandler = this.updateSiteUrlSettingHandler.bind(this);
-    this.updateMailSettingHandler = this.updateMailSettingHandler.bind(this);
-    this.updateAwsSettingHandler = this.updateAwsSettingHandler.bind(this);
-    this.updatePluginSettingHandler = this.updatePluginSettingHandler.bind(this);
   }
 
   /**
@@ -65,12 +64,16 @@ export default class AdminAppContainer extends Container {
       siteUrl: appSettingsParams.siteUrl,
       envSiteUrl: appSettingsParams.envSiteUrl,
       isSetSiteUrl: !!appSettingsParams.siteUrl,
+      isMailerSetup: appSettingsParams.isMailerSetup,
       fromAddress: appSettingsParams.fromAddress,
+      transmissionMethod: appSettingsParams.transmissionMethod,
       smtpHost: appSettingsParams.smtpHost,
       smtpPort: appSettingsParams.smtpPort,
       smtpUser: appSettingsParams.smtpUser,
       smtpPassword: appSettingsParams.smtpPassword,
-      awsRegion: appSettingsParams.awsRegion,
+      sesAccessKeyId: appSettingsParams.sesAccessKeyId,
+      sesSecretAccessKey: appSettingsParams.sesSecretAccessKey,
+      awsS3Region: appSettingsParams.awsS3Region,
       awsCustomEndpoint: appSettingsParams.awsCustomEndpoint,
       awsBucket: appSettingsParams.awsBucket,
       awsAccessKeyId: appSettingsParams.awsAccessKeyId,
@@ -123,6 +126,13 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
+   * Change from transmission method
+   */
+  changeTransmissionMethod(transmissionMethod) {
+    this.setState({ transmissionMethod });
+  }
+
+  /**
    * Change smtp host
    */
   changeSmtpHost(smtpHost) {
@@ -151,10 +161,10 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
-   * Change awsRegion
+   * Change awsS3Region
    */
-  changeAwsRegion(awsRegion) {
-    this.setState({ awsRegion });
+  changeAwsS3Region(awsS3Region) {
+    this.setState({ awsS3Region });
   }
 
   /**
@@ -223,47 +233,59 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
-   * Update from adress
-   * @memberOf AdminAppContainer
-   * @return {Array} Appearance
-   */
-  async updateFromAdressHandler() {
-    const response = await this.appContainer.apiv3.put('/app-settings/from-address', {
-      fromAddress: this.state.fromAddress,
-    });
-    const { mailSettingParams } = response.data;
-    return mailSettingParams;
-  }
-
-  /**
    * Update mail setting
    * @memberOf AdminAppContainer
    * @return {Array} Appearance
    */
-  async updateMailSettingHandler() {
-    const response = await this.appContainer.apiv3.put('/app-settings/mail-setting', {
+  updateMailSettingHandler() {
+    if (this.state.transmissionMethod === 'smtp') {
+      return this.updateSmtpSetting();
+    }
+    return this.updateSesSetting();
+  }
+
+  /**
+   * Update smtp setting
+   * @memberOf AdminAppContainer
+   * @return {Array} Appearance
+   */
+  async updateSmtpSetting() {
+    const response = await this.appContainer.apiv3.put('/app-settings/smtp-setting', {
       fromAddress: this.state.fromAddress,
+      transmissionMethod: this.state.transmissionMethod,
       smtpHost: this.state.smtpHost,
       smtpPort: this.state.smtpPort,
       smtpUser: this.state.smtpUser,
       smtpPassword: this.state.smtpPassword,
     });
     const { mailSettingParams } = response.data;
+    this.setState({ isMailerSetup: mailSettingParams.isMailerSetup });
     return mailSettingParams;
   }
 
   /**
-   * Initialize mail setting
+   * Update ses setting
    * @memberOf AdminAppContainer
    * @return {Array} Appearance
    */
-  async initializeMailSettingHandler() {
-    const response = await this.appContainer.apiv3.delete('/app-settings/mail-setting', {});
-    const {
-      mailSettingParams,
-    } = response.data;
-    this.setState(mailSettingParams);
+  async updateSesSetting() {
+    const response = await this.appContainer.apiv3.put('/app-settings/ses-setting', {
+      fromAddress: this.state.fromAddress,
+      transmissionMethod: this.state.transmissionMethod,
+      sesAccessKeyId: this.state.sesAccessKeyId,
+      sesSecretAccessKey: this.state.sesSecretAccessKey,
+    });
+    const { mailSettingParams } = response.data;
+    this.setState({ isMailerSetup: mailSettingParams.isMailerSetup });
     return mailSettingParams;
+  }
+
+  /**
+   * send test e-mail
+   * @memberOf AdminAppContainer
+   */
+  async sendTestEmail() {
+    return this.appContainer.apiv3.post('/app-settings/smtp-test');
   }
 
   /**
@@ -273,7 +295,7 @@ export default class AdminAppContainer extends Container {
    */
   async updateAwsSettingHandler() {
     const response = await this.appContainer.apiv3.put('/app-settings/aws-setting', {
-      awsRegion: this.state.awsRegion,
+      awsS3Region: this.state.awsS3Region,
       awsCustomEndpoint: this.state.awsCustomEndpoint,
       awsBucket: this.state.awsBucket,
       awsAccessKeyId: this.state.awsAccessKeyId,
