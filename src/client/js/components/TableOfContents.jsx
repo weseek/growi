@@ -23,6 +23,8 @@ const logger = loggerFactory('growi:TableOfContents');
 const TableOfContents = (props) => {
 
   const { pageContainer, navigationContainer } = props;
+  const { pageUser } = pageContainer.state;
+  const isUserPage = pageUser != null;
 
   const calcViewHeight = useCallback(() => {
     // calculate absolute top of '#revision-toc' element
@@ -60,7 +62,7 @@ const TableOfContents = (props) => {
         />
       </StickyStretchableScroller>
 
-      { props.isUser && (
+      { isUserPage && (
       <div className="mt-3 d-flex justify-content-around">
         <a className="btn btn-outline-secondary btn-sm" href="#">
           <i className="mr-2 icon-star"></i>
