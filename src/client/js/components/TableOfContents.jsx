@@ -50,13 +50,27 @@ const TableOfContents = (props) => {
       >
         <div
           id="revision-toc-content"
-          className="revision-toc-content"
+          className="revision-toc-content top-of-table-contents"
         // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{
           __html: tocHtml,
         }}
         />
       </StickyStretchableScroller>
+
+      <div className="mt-3 d-flex justify-content-around">
+
+        <a className="btn btn-outline-secondary btn-sm" href="#">
+          <i className="icon-star"></i>
+          <span>Bookmarks</span>
+        </a>
+
+        <a className="btn btn-outline-secondary btn-sm" href="#">
+          <i className="icon-clock"></i>
+          <span>Recently Created</span>
+        </a>
+
+      </div>
     </>
   );
 
