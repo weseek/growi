@@ -35,8 +35,9 @@ class FileUploadSetting extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
+    const { t, adminAppContainer } = this.props;
     const { activeTab, activeComponents } = this.state;
+    const fileUploadTypes = ['aws', 'gcp'];
 
     return (
       <React.Fragment>
@@ -49,6 +50,33 @@ class FileUploadSetting extends React.Component {
             {t('admin:app_setting.change_setting')}
           </span>
         </p>
+
+        <div className="row form-group mb-5">
+          <label className="text-left text-md-right col-md-3 col-form-label">
+            {t('admin:app_setting.file_upload_method')}
+          </label>
+
+          <div className="col-md-6 py-2">
+            {fileUploadTypes.map((type) => {
+              return (
+                <div key={type} className="custom-control custom-radio custom-control-inline">
+                  <input
+                    type="radio"
+                    className="custom-control-input"
+                    name="transmission-method"
+                    id={`file-upload-nethod-radio-${type}`}
+                    checked={adminAppContainer.state.fileUploadType === type}
+                    onChange={(e) => {
+                      adminAppContainer.changeFileUploadType(type);
+                  }}
+                  />
+                  <label className="custom-control-label" htmlFor={`transmission-nethod-radio-${type}`}>{t(`admin:app_setting.${type}_label`)}</label>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
         <Nav tabs>
           <NavItem>
             <NavLink

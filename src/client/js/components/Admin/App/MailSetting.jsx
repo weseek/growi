@@ -62,7 +62,7 @@ function MailSetting(props) {
         <label className="text-left text-md-right col-md-3 col-form-label">
           {t('admin:app_setting.transmission_method')}
         </label>
-        <div className="col-md-6">
+        <div className="col-md-6 py-2">
           {transmissionMethods.map((method) => {
               return (
                 <div key={method} className="custom-control custom-radio custom-control-inline">
