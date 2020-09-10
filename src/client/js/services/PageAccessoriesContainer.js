@@ -48,7 +48,6 @@ export default class PageAccessoriesContainer extends Container {
     this.setState({
       activeTab, activeComponents: this.state.activeComponents.add(activeTab),
     });
-    // ここに何かしらつける?
   }
 
 }
