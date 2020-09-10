@@ -1,14 +1,35 @@
 const logger = require('@alias/logger')('growi:service:fileUploaderGridfs');
-// const mongoose = require('mongoose');
-// const util = require('util');
+const mongoose = require('mongoose');
+const { createModel } = require('mongoose-gridfs');
+const util = require('util');
 const Uploader = require('./uploader');
 
+const COLLECTION_NAME = 'attachmentFiles';
+
 class Gridfs extends Uploader {
+
 
   constructor(crowi) {
     super(crowi);
 
     logger.info('Gridfs is constructor');
+
+    this.initialize();
+  }
+
+  initialize() {
+    this.AttachmentFile = createModel({
+      modelName: COLLECTION_NAME,
+      bucketName: COLLECTION_NAME,
+      connection: mongoose.connection,
+    });
+    // get Collection instance of chunk
+    // const chunkCollection = mongoose.connection.collection(CHUNK_COLLECTION_NAME);
+
+    // create promisified method
+    this.AttachmentFile.promisifiedWrite = util.promisify(this.AttachmentFile.write).bind(this.AttachmentFile);
+    this.AttachmentFile.promisifiedUnlink = util.promisify(this.AttachmentFile.unlink).bind(this.AttachmentFile);
+
   }
 
 }
