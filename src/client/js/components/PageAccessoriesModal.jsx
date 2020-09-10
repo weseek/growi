@@ -34,7 +34,7 @@ const PageAccessoriesModal = (props) => {
   }
 
   const menu = document.getElementsByClassName('nav');
-  const navId = document.getElementById('nav-width');
+  const navTitle = document.getElementById('nav-title');
   // Values are set.
 
   // Might make this dynamic for px, %, pt, em
@@ -60,7 +60,7 @@ const PageAccessoriesModal = (props) => {
       // Loop through nav children i.e li
       [].forEach.call(navTabs, (el, index) => {
         // Dynamic width/margin calculation for hr
-        const width = getPercentage(el.offsetWidth, navId.offsetWidth);
+        const width = getPercentage(el.offsetWidth, navTitle.offsetWidth);
         let tempMarginLeft = 0;
         // We don't want to modify first elements positioning
         if (index !== 0) {
@@ -94,7 +94,7 @@ const PageAccessoriesModal = (props) => {
     <React.Fragment>
       <Modal size="xl" isOpen={props.isOpen} toggle={closeModalHandler} className="grw-page-accessories-modal">
         <ModalBody>
-          <Nav className="nav-title" id="nav-width">
+          <Nav className="nav-title" id="nav-title">
             <NavItem type="button" className={`nav-link ${activeTab === 'pagelist' && 'active'}`}>
               <NavLink
                 onClick={() => {
