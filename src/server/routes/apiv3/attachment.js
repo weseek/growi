@@ -19,6 +19,7 @@ module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const Page = crowi.model('Page');
+  const User = crowi.model('User');
   const Attachment = crowi.model('Attachment');
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
@@ -67,8 +68,8 @@ module.exports = (crowi) => {
           limit,
           offset,
           populate: {
-            path: 'creator',
-            select: 'imageUrlCached',
+            path: 'author',
+            select: User.USER_PUBLIC_FIELDS,
           },
         },
       );
