@@ -558,10 +558,9 @@ module.exports = (crowi) => {
     };
 
     try {
-      const { configManager } = crowi;
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestAwsSettingParams);
 
-      // update config without publishing S2sMessage
-      await configManager.updateConfigsInTheSameNamespace('crowi', requestAwsSettingParams, true);
+      // TODO GW-3797 re-setup file uploader
 
       const awsSettingParams = {
         region: crowi.configManager.getConfig('crowi', 'aws:region'),
@@ -611,10 +610,9 @@ module.exports = (crowi) => {
     };
 
     try {
-      const { configManager } = crowi;
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestGcpSettingParams);
 
-      // update config without publishing S2sMessage
-      await configManager.updateConfigsInTheSameNamespace('crowi', requestGcpSettingParams, true);
+      // TODO GW-3797 re-setup file uploader
 
       const gcpSettingParams = {
         gcsApiKeyJsonPath: crowi.configManager.getConfig('crowi', 'gcs:apiKeyJsonPath'),
