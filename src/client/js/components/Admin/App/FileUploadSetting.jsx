@@ -43,8 +43,6 @@ class FileUploadSetting extends React.Component {
         <p className="card well my-3">
           {t('admin:app_setting.file_upload')}
           <br />
-          {t('admin:app_setting.no_smtp_setting')}
-          <br />
           <br />
           <span className="text-danger">
             <i className="ti-unlink"></i>
