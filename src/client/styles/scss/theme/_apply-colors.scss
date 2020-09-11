@@ -262,29 +262,6 @@ pre:not(.hljs):not(.CodeMirror-line) {
 }
 
 /*
- * Link Edit Modal
- */
-.link-edit-modal {
-  .card-body.link-opts {
-    background-color: #f9fafb;
-    border-color: $gray-300;
-  }
-
-  .card.link-pre-markdown {
-    background-color: $gray-100;
-    border-color: $gray-200;
-  }
-
-  .input-group {
-    border-color: $gray-300;
-
-    .input-group-prepend {
-      background-color: #f9fafb;
-    }
-  }
-}
-
-/*
  * cards
  */
 .card.well {

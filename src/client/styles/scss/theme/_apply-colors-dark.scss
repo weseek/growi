@@ -243,6 +243,26 @@ body.on-edit {
 }
 
 /*
+ * Link Edit Modal
+ */
+.link-edit-modal {
+  .card.well,
+  input {
+    border-color: $secondary;
+  }
+  .card.bg-muted {
+    background-color: lighten($dark, 10%);
+    border-color: $secondary;
+  }
+  .input-group {
+    .input-group-text {
+      color: $light;
+      background-color: $secondary;
+    }
+  }
+}
+
+/*
  * GROWI HandsontableModal
  */
 .grw-hot-modal-navbar {

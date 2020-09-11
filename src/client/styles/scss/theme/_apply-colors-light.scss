@@ -178,6 +178,22 @@ $table-hover-bg: $bgcolor-table-hover;
 }
 
 /*
+ * Link Edit Modal
+ */
+.link-edit-modal {
+  .card.bg-muted {
+    background-color: darken($bgcolor-card, 5%);
+    border-color: $gray-200;
+  }
+  .input-group {
+    .input-group-text {
+      color: $secondary;
+      background-color: $light;
+    }
+  }
+}
+
+/*
  * GROWI HandsontableModal
  */
 .grw-hot-modal-navbar {
