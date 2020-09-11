@@ -76,7 +76,7 @@ const PageAccessoriesModal = (props) => {
 
   if (menu) {
     // CLICK
-    const menuSliderClick = document.getElementById('nav_slide_click');
+    const menuSliderClick = document.getElementById('grw-nav-slide-hr');
     if (menuSliderClick) {
       const arrayMenu = Array.from(menu);
 
@@ -146,7 +146,7 @@ const PageAccessoriesModal = (props) => {
               </NavLink>
             </NavItem>
           </Nav>
-          <hr id="nav_slide_click" className="my-0"></hr>
+          <hr id="grw-nav-slide-hr" className="my-0"></hr>
           <TabContent activeTab={activeTab}>
 
             <TabPane tabId="pagelist">
