@@ -3,7 +3,7 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:bookmarks'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
-const { body } = require('express-validator');
+const { body, query } = require('express-validator');
 
 const router = express.Router();
 
@@ -65,6 +65,9 @@ module.exports = (crowi) => {
     bookmarks: [
       body('pageId').isString(),
       body('bool').isBoolean(),
+    ],
+    CountBookmarks: [
+      query('pageId').isString(),
     ],
   };
 
@@ -154,8 +157,30 @@ module.exports = (crowi) => {
     return res.apiv3({ bookmark });
   });
 
+  /**
+   * @swagger
+   *
+   *    /count-bookmarks:
+   *      get:
+   *        tags: [Bookmarks]
+   *        summary: /bookmarks
+   *        description: Count bookmsrks
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/BookmarkParams'
+   *        responses:
+   *          200:
+   *            description: Succeeded to count bookmarks.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/Bookmark'
+   */
 
-  router.get('/countBookmarks', accessTokenParser, loginRequired, async(req, res) => {
+
+  router.get('/count-bookmarks', accessTokenParser, loginRequired, validator.CountBookmarks, apiV3FormValidator, async(req, res) => {
     const { pageId } = req.query;
 
     try {
