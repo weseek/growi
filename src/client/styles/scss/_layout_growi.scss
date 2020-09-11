@@ -5,9 +5,7 @@
     padding: 0;
   }
 
-  .liker-and-seenusers {
-    // adjusting position with negative margin
-    height: $grw-nav-main-tab-height;
+  .top-of-table-contents {
     line-height: 1.25;
     border-bottom: 1px solid transparent;
 
@@ -16,8 +14,12 @@
 
       .liker-user-count,
       .seen-user-count {
-        font-weight: bold;
+        font-size: 12px;
+        font-weight: bolder;
       }
+    }
+    .cls-1 {
+      isolation: isolate;
     }
   }
 
@@ -25,7 +27,7 @@
     position: sticky;
     // growisubnavigation + grw-navbar-boder
     top: calc(100px + 4px);
-    min-width: 100%;
+    min-width: 260px;
     margin-top: 5px;
 
     .revision-toc-content {
