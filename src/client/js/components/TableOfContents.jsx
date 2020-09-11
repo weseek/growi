@@ -69,7 +69,7 @@ const TableOfContents = (props) => {
           <span>Bookmarks</span>
         </a>
         <a className="btn btn-outline-secondary btn-sm" href="#">
-          <i className="recently-created mr-2"><RecentlyCreatedIcon /></i>
+          <i className="grw-icon-container-recently-created mr-2"><RecentlyCreatedIcon /></i>
           <span>Recently Created</span>
         </a>
       </div>
