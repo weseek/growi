@@ -73,10 +73,10 @@ module.exports = (crowi) => {
           },
         },
       );
-      paginateResult.docs = paginateResult.docs.map((doc) => {
-        const user = doc.creator.toObject();
-        doc.creator = user;
-        return doc;
+      paginateResult.docs.forEach((doc) => {
+        if (doc.creator != null && doc.creator instanceof User) {
+          doc.creator = doc.creator.toObject();
+        }
       });
 
       return res.apiv3({ paginateResult });
