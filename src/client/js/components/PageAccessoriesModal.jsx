@@ -139,7 +139,7 @@ const PageAccessoriesModal = (props) => {
               );
             })}
           </Nav>
-          <hr ref={sliderEl} id="nav_slide_click" className="my-0" />
+          <hr ref={sliderEl} className="my-0" />
           <TabContent activeTab={activeTab}>
             <TabPane tabId="pagelist">
               {pageAccessoriesContainer.state.activeComponents.has('pagelist') && <PageList />}
