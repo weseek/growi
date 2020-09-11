@@ -133,7 +133,6 @@ module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:page');
   const logger = require('@alias/logger')('growi:routes:page');
   const swig = require('swig-templates');
-  const mongodb = require('mongodb');
 
   const pathUtils = require('growi-commons').pathUtils;
 
@@ -222,17 +221,12 @@ module.exports = function(crowi, app) {
 
   function addRenderVarsForPage(renderVars, page) {
     renderVars.page = page;
+    renderVars.page.creator = renderVars.page.creator.toObject();
     renderVars.revision = page.revision;
+    renderVars.revision.author = renderVars.revision.author.toObject();
     renderVars.pageIdOnHackmd = page.pageIdOnHackmd;
     renderVars.revisionHackmdSynced = page.revisionHackmdSynced;
     renderVars.hasDraftOnHackmd = page.hasDraftOnHackmd;
-
-    if (!mongodb.ObjectID.isValid(renderVars.page.creator)) {
-      renderVars.page.creator = renderVars.page.creator.toObject();
-    }
-    if (!mongodb.ObjectID.isValid(renderVars.page.revision.author)) {
-      renderVars.revision.author = renderVars.revision.author.toObject();
-    }
   }
 
   function addRenderVarsForPresentation(renderVars, page) {
