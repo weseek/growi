@@ -382,7 +382,6 @@ body.on-edit {
         > li.nav-item > a.nav-link {
           color: inherit;
         }
-
         a {
           &.hover {
             background-color: darken($bgcolor-global, 4%);
@@ -451,11 +450,29 @@ mark.rbt-highlight-text {
 * Pagination
 */
 ul.pagination {
-  li.page-item {
-    &.active {
-      button {
+  li.page-item.disabled {
+    button.page-link {
+      color: $gray-300;
+    }
+  }
+  li.page-item.active {
+    button.page-link {
+      color: color-yiq($primary);
+      background-color: $primary;
+      &:hover {
+        color: color-yiq($primary);
         background-color: $primary;
-        border-color: $primary;
+      }
+    }
+  }
+  li.page-item {
+    border-color: $secondary;
+    button.page-link {
+      color: $primary;
+      &:hover,
+      &:active,
+      &:focus {
+        color: $primary;
       }
     }
   }
