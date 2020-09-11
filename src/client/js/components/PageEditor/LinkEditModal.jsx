@@ -204,7 +204,7 @@ class LinkEditModal extends React.PureComponent {
     const linkText = linker.generateMarkdownText();
     return (
       <div className="d-flex justify-content-between mb-3">
-        <div className="card w-100 mb-0 p-1">
+        <div className="card w-100 mb-0 p-1 link-pre-markdown">
           <p className="text-left text-muted mb-0">Markdown</p>
           <p className="text-center text-truncate">{linkText}</p>
         </div>
@@ -290,7 +290,7 @@ class LinkEditModal extends React.PureComponent {
 
   render() {
     return (
-      <Modal isOpen={this.state.show} toggle={this.cancel} size="lg">
+      <Modal className="link-edit-modal" isOpen={this.state.show} toggle={this.cancel} size="lg">
         <ModalHeader tag="h4" toggle={this.cancel} className="bg-primary text-light">
           Edit Links
         </ModalHeader>
@@ -341,7 +341,7 @@ class LinkEditModal extends React.PureComponent {
                 </div>
               </form>
               <div className="card">
-                <div className="card-body">
+                <div className="card-body link-opts">
                   <form className="form-group mb-0">
                     <div className="form-group row">
                       <label className="col-sm-3">Path format</label>

@@ -39,7 +39,7 @@ $nav-tabs-link-active-border-color: $bordercolor-nav-tabs-active;
 @import 'reboot-toastr-colors';
 
 :not(pre) {
-  > code {
+  >code {
     color: $color-inline-code;
     background-color: $bgcolor-inline-code;
     border-color: $bordercolor-inline-code;
@@ -56,8 +56,10 @@ pre:not(.hljs):not(.CodeMirror-line) {
 //
 
 // Alert link
-@each $color, $value in $theme-colors {
+@each $color,
+$value in $theme-colors {
   .alert.alert-#{$color} {
+
     a,
     a:hover {
       color: theme-color-level($color, $alert-color-level - 2);
@@ -83,6 +85,7 @@ pre:not(.hljs):not(.CodeMirror-line) {
   .grw-icon-container svg {
     fill: $color-global;
   }
+
   .grw-icon-container-muted svg {
     fill: $secondary;
   }
@@ -90,11 +93,13 @@ pre:not(.hljs):not(.CodeMirror-line) {
 
 .dropdown-item {
   color: $color-global;
+
   &:active,
   &.active {
     color: $color-dropdown-link-active;
     background-color: $bgcolor-dropdown-link-active;
   }
+
   &:hover {
     background-color: $light;
   }
@@ -128,6 +133,7 @@ pre:not(.hljs):not(.CodeMirror-line) {
 //
 
 .grw-logo {
+
   // set transition for fill
   svg * {
     transition: fill 0.8s ease-out;
@@ -152,7 +158,8 @@ pre:not(.hljs):not(.CodeMirror-line) {
 
 .grw-navbar {
   background: $bgcolor-navbar;
-  .nav-item > .nav-link {
+
+  .nav-item>.nav-link {
     color: $color-link-nabvar;
   }
 
@@ -176,6 +183,7 @@ pre:not(.hljs):not(.CodeMirror-line) {
 }
 
 .grw-sidebar {
+
   // override @atlaskit/navigation-next styles
   .ak-navigation-resize-button {
     $color-resize-button: $color-global !default;
@@ -189,13 +197,15 @@ pre:not(.hljs):not(.CodeMirror-line) {
       @include override-hexagon-color($color-resize-button-hover, $bgcolor-resize-button-hover);
     }
   }
+
   div[data-testid='GlobalNavigation'] {
-    > div {
+    >div {
       background-color: $bgcolor-sidebar;
     }
   }
+
   div[data-testid='ContextualNavigation'] {
-    > div {
+    >div {
       color: $color-sidebar-context;
       background-color: $bgcolor-sidebar-context;
     }
@@ -203,21 +213,21 @@ pre:not(.hljs):not(.CodeMirror-line) {
 
   .grw-sidebar-nav {
     .btn {
-      @include button-variant(
-        $bgcolor-sidebar,
+      @include button-variant($bgcolor-sidebar,
         $bgcolor-sidebar,
         darken($bgcolor-sidebar, 7.5%),
         darken($bgcolor-sidebar, 10%),
         $bgcolor-sidebar-nav-item-active,
-        $bgcolor-sidebar-nav-item-active
-      );
+        $bgcolor-sidebar-nav-item-active);
     }
   }
+
   .grw-sidebar-nav-primary-container {
     .btn.active {
       i {
         text-shadow: $text-shadow-sidebar-nav-item-active;
       }
+
       // fukidashi
       &:after {
         border-right-color: $bgcolor-sidebar-context;
@@ -239,9 +249,11 @@ pre:not(.hljs):not(.CodeMirror-line) {
 .modal {
   .modal-header {
     border-bottom-color: $border-color-theme;
+
     .close {
       color: $light;
       opacity: 0.5;
+
       &:hover {
         opacity: 0.9;
       }
@@ -272,6 +284,32 @@ pre:not(.hljs):not(.CodeMirror-line) {
 }
 
 /*
+ * Link Edit Modal
+ */
+.link-edit-modal {
+  .card-body.link-opts {
+    background-color: #F9FAFB;
+    border-color: $gray-300;
+  }
+
+  .card.link-pre-markdown {
+    background-color: $gray-100;
+    border-color: $gray-200;
+  }
+
+  .input-group {
+    border-color: $gray-300;
+
+    .input-group-prepend {
+      background-color: #F9FAFB;
+    }
+  }
+
+}
+
+
+
+/*
  * Form Slider
  */
 .admin-page {
@@ -283,11 +321,11 @@ pre:not(.hljs):not(.CodeMirror-line) {
     }
   }
 
-  input:checked + .slider {
+  input:checked+.slider {
     background-color: #007bff;
   }
 
-  input:focus + .slider {
+  input:focus+.slider {
     box-shadow: 0 0 1px #007bff;
   }
 }
@@ -363,7 +401,7 @@ body.on-edit {
     }
 
     .nav.nav-tabs {
-      > li > a.active {
+      >li>a.active {
         background: transparent;
         border-bottom: solid 1px darken($bgcolor-global, 4%);
         border-bottom-color: darken($bgcolor-global, 4%);
@@ -379,7 +417,7 @@ body.on-edit {
   .search-result-list {
     .page-list {
       .page-list-ul {
-        > li.nav-item > a.nav-link {
+        >li.nav-item>a.nav-link {
           color: inherit;
         }
 
@@ -387,6 +425,7 @@ body.on-edit {
           &.hover {
             background-color: darken($bgcolor-global, 4%);
           }
+
           &.active {
             background-color: darken($bgcolor-global, 8%);
             border-color: theme-color('primary');
@@ -422,6 +461,7 @@ mark.rbt-highlight-text {
       .theme-option-name {
         color: $color-global;
       }
+
       a {
         background-color: $color-theme-color-box;
         border-color: $color-theme-color-box;
