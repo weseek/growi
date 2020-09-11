@@ -235,6 +235,11 @@ module.exports = function(crowi, app) {
     }
   }
 
+  function addRenderVarsForPresentation(renderVars, page) {
+    renderVars.page = page;
+    renderVars.revision = page.revision;
+  }
+
   async function addRenderVarsForUserPage(renderVars, page, requestUser) {
     const userData = await User.findUserByUsername(User.getUsernameByPath(page.path));
 
@@ -292,7 +297,7 @@ module.exports = function(crowi, app) {
 
   async function showPageForPresentation(req, res, next) {
     const path = getPathFromRequest(req);
-    const revisionId = req.query.revision;
+    const { revisionId } = req.query;
 
     let page = await Page.findByPathAndViewer(path, req.user);
 
@@ -304,7 +309,11 @@ module.exports = function(crowi, app) {
 
     // populate
     page = await page.populateDataToMakePresentation(revisionId);
-    addRenderVarsForPage(renderVars, page);
+
+    if (page != null) {
+      addRenderVarsForPresentation(renderVars, page);
+    }
+
     return res.render('page_presentation', renderVars);
   }
 
