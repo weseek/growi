@@ -65,8 +65,6 @@ class BookmarkButton extends React.Component {
       <div className="d-flex">
         <button
           type="button"
-          href="#"
-          title="Bookmark"
           onClick={this.handleClick}
           className={`btn rounded-circle btn-bookmark border-0 d-edit-none
           ${`btn-${this.props.size}`}
