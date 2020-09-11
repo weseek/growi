@@ -483,7 +483,7 @@ mark.rbt-highlight-text {
 ul.pagination {
   li.page-item.disabled {
     button.page-link {
-      color: $gray-300;
+      color: $gray-400;
     }
   }
   li.page-item.active {
@@ -497,9 +497,9 @@ ul.pagination {
     }
   }
   li.page-item {
-    border-color: $secondary;
     button.page-link {
       color: $primary;
+      border-color: $secondary;
       &:hover,
       &:active,
       &:focus {
