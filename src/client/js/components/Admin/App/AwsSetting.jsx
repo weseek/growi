@@ -38,15 +38,6 @@ class AwsSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <p className="card well">
-          {t('admin:app_setting.aws_access')}
-          <br />
-          <span className="text-danger">
-            <i className="ti-unlink"></i>
-            {t('admin:app_setting.change_setting')}
-          </span>
-        </p>
-
         <div className="row form-group">
           <label className="text-left text-md-right col-md-3 col-form-label">
             {t('admin:app_setting.region')}
