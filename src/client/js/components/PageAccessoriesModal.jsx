@@ -55,6 +55,11 @@ const PageAccessoriesModal = (props) => {
   const { activeTab } = pageAccessoriesContainer.state;
 
   const sliderEl = useRef(null);
+  const navLinkEls = useRef([]);
+
+  navTabMapping.forEach((data, i) => {
+    navLinkEls.current[i] = React.createRef();
+  });
 
   function closeModalHandler() {
     if (props.onClose == null) {
@@ -64,8 +69,9 @@ const PageAccessoriesModal = (props) => {
   }
 
   const menu = document.getElementsByClassName('nav');
+  const arrayMenu = Array.from(menu);
+
   const navTitle = document.getElementById('nav-title');
-  // Values are set.
 
   // Might make this dynamic for px, %, pt, em
   function getPercentage(min, max) {
@@ -111,30 +117,21 @@ const PageAccessoriesModal = (props) => {
     });
   }
 
-  if (menu) {
-    // CLICK
-    const menuSliderClick = document.getElementById('nav_slide_click');
-    if (menuSliderClick) {
-      const arrayMenu = Array.from(menu);
-
-      navSlider(arrayMenu, (el, width, tempMarginLeft) => {
-        el.onclick = () => {
-          changeFlexibility(width, tempMarginLeft);
-        };
-      });
-    }
-  } // endif
-
+  navSlider(arrayMenu, (el, width, tempMarginLeft) => {
+    el.onclick = () => {
+      changeFlexibility(width, tempMarginLeft);
+    };
+  });
 
   return (
     <React.Fragment>
       <Modal size="xl" isOpen={props.isOpen} toggle={closeModalHandler} className="grw-page-accessories-modal">
         <ModalBody>
           <Nav className="nav-title" id="nav-title">
-            {navTabMapping.map((tab) => {
+            {navTabMapping.map((tab, index) => {
               return (
                 <NavItem key={tab.id} type="button" className={`nav-link ${activeTab === tab.id && 'active'}`}>
-                  <NavLink onClick={() => { switchActiveTab(tab.id) }}>
+                  <NavLink innerRef={navLinkEls.current[index]} onClick={() => { switchActiveTab(tab.id) }}>
                     {tab.icon}
                     {t(tab.i18n)}
                   </NavLink>
