@@ -160,11 +160,11 @@ module.exports = (crowi) => {
       body('sesSecretAccessKey').trim(),
     ],
     awsSetting: [
-      body('awsS3Region').trim().matches(/^[a-z]+-[a-z]+-\d+$/).withMessage((value, { req }) => req.t('validation.aws_region')),
-      body('awsCustomEndpoint').trim().matches(/^(https?:\/\/[^/]+|)$/).withMessage((value, { req }) => req.t('validation.aws_custom_endpoint')),
-      body('awsBucket').trim(),
-      body('awsAccessKeyId').trim().if(value => value !== '').matches(/^[\da-zA-Z]+$/),
-      body('awsSecretAccessKey').trim(),
+      body('s3Region').trim().matches(/^[a-z]+-[a-z]+-\d+$/).withMessage((value, { req }) => req.t('validation.aws_region')),
+      body('s3CustomEndpoint').trim().matches(/^(https?:\/\/[^/]+|)$/).withMessage((value, { req }) => req.t('validation.aws_custom_endpoint')),
+      body('s3Bucket').trim(),
+      body('s3AccessKeyId').trim().if(value => value !== '').matches(/^[\da-zA-Z]+$/),
+      body('s3SecretAccessKey').trim(),
     ],
     gcpSetting: [
       body('gcsApiKeyJsonPath').trim(),
@@ -213,11 +213,11 @@ module.exports = (crowi) => {
       smtpPassword: crowi.configManager.getConfig('crowi', 'mail:smtpPassword'),
       sesAccessKeyId: crowi.configManager.getConfig('crowi', 'mail:sesAccessKeyId'),
       sesSecretAccessKey: crowi.configManager.getConfig('crowi', 'mail:sesSecretAccessKey'),
-      awsS3Region: crowi.configManager.getConfig('crowi', 'aws:region'),
-      awsCustomEndpoint: crowi.configManager.getConfig('crowi', 'aws:customEndpoint'),
-      awsBucket: crowi.configManager.getConfig('crowi', 'aws:bucket'),
-      awsAccessKeyId: crowi.configManager.getConfig('crowi', 'aws:accessKeyId'),
-      awsSecretAccessKey: crowi.configManager.getConfig('crowi', 'aws:secretAccessKey'),
+      s3Region: crowi.configManager.getConfig('crowi', 'aws:region'),
+      s3CustomEndpoint: crowi.configManager.getConfig('crowi', 'aws:customEndpoint'),
+      s3Bucket: crowi.configManager.getConfig('crowi', 'aws:bucket'),
+      s3AccessKeyId: crowi.configManager.getConfig('crowi', 'aws:accessKeyId'),
+      s3SecretAccessKey: crowi.configManager.getConfig('crowi', 'aws:secretAccessKey'),
       isEnabledPlugins: crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins'),
     };
     return res.apiv3({ appSettingsParams });
@@ -550,11 +550,11 @@ module.exports = (crowi) => {
    */
   router.put('/aws-setting', loginRequiredStrictly, adminRequired, csrf, validator.awsSetting, apiV3FormValidator, async(req, res) => {
     const requestAwsSettingParams = {
-      'aws:region': req.body.awsS3Region,
-      'aws:customEndpoint': req.body.awsCustomEndpoint,
-      'aws:bucket': req.body.awsBucket,
-      'aws:accessKeyId': req.body.awsAccessKeyId,
-      'aws:secretAccessKey': req.body.awsSecretAccessKey,
+      'aws:region': req.body.s3Region,
+      'aws:customEndpoint': req.body.s3CustomEndpoint,
+      'aws:bucket': req.body.s3Bucket,
+      'aws:accessKeyId': req.body.s3AccessKeyId,
+      'aws:secretAccessKey': req.body.s3SecretAccessKey,
     };
 
     try {
@@ -563,11 +563,11 @@ module.exports = (crowi) => {
       // TODO GW-3797 re-setup file uploader
 
       const awsSettingParams = {
-        awsS3Region: crowi.configManager.getConfig('crowi', 'aws:region'),
-        awsCustomEndpoint: crowi.configManager.getConfig('crowi', 'aws:customEndpoint'),
-        awsBucket: crowi.configManager.getConfig('crowi', 'aws:bucket'),
-        awsAccessKeyId: crowi.configManager.getConfig('crowi', 'aws:accessKeyId'),
-        awsSecretAccessKey: crowi.configManager.getConfig('crowi', 'aws:secretAccessKey'),
+        s3Region: crowi.configManager.getConfig('crowi', 'aws:region'),
+        s3CustomEndpoint: crowi.configManager.getConfig('crowi', 'aws:customEndpoint'),
+        s3Bucket: crowi.configManager.getConfig('crowi', 'aws:bucket'),
+        s3AccessKeyId: crowi.configManager.getConfig('crowi', 'aws:accessKeyId'),
+        s3SecretAccessKey: crowi.configManager.getConfig('crowi', 'aws:secretAccessKey'),
       };
       return res.apiv3({ awsSettingParams });
     }

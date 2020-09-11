@@ -44,11 +44,11 @@ export default class AdminAppContainer extends Container {
       gcsUploadNamespace: '',
       envGcsUploadNamespace: '',
 
-      awsS3Region: '',
-      awsCustomEndpoint: '',
-      awsBucket: '',
-      awsAccessKeyId: '',
-      awsSecretAccessKey: '',
+      s3Region: '',
+      s3CustomEndpoint: '',
+      s3Bucket: '',
+      s3AccessKeyId: '',
+      s3SecretAccessKey: '',
 
       isEnabledPlugins: true,
     };
@@ -86,11 +86,11 @@ export default class AdminAppContainer extends Container {
       smtpPassword: appSettingsParams.smtpPassword,
       sesAccessKeyId: appSettingsParams.sesAccessKeyId,
       sesSecretAccessKey: appSettingsParams.sesSecretAccessKey,
-      awsS3Region: appSettingsParams.awsS3Region,
-      awsCustomEndpoint: appSettingsParams.awsCustomEndpoint,
-      awsBucket: appSettingsParams.awsBucket,
-      awsAccessKeyId: appSettingsParams.awsAccessKeyId,
-      awsSecretAccessKey: appSettingsParams.awsSecretAccessKey,
+      s3Region: appSettingsParams.s3Region,
+      s3CustomEndpoint: appSettingsParams.s3CustomEndpoint,
+      s3Bucket: appSettingsParams.s3Bucket,
+      s3AccessKeyId: appSettingsParams.s3AccessKeyId,
+      s3SecretAccessKey: appSettingsParams.s3SecretAccessKey,
       isEnabledPlugins: appSettingsParams.isEnabledPlugins,
     });
   }
@@ -174,17 +174,17 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
-   * Change awsS3Region
+   * Change s3Region
    */
-  changeAwsS3Region(awsS3Region) {
-    this.setState({ awsS3Region });
+  changeS3Region(s3Region) {
+    this.setState({ s3Region });
   }
 
   /**
-   * Change awsCustomEndpoint
+   * Change s3CustomEndpoint
    */
-  changeAwsCustomEndpoint(awsCustomEndpoint) {
-    this.setState({ awsCustomEndpoint });
+  changeS3CustomEndpoint(s3CustomEndpoint) {
+    this.setState({ s3CustomEndpoint });
   }
 
   /**
@@ -197,22 +197,22 @@ export default class AdminAppContainer extends Container {
   /**
    * Change region
    */
-  changeAwsBucket(awsBucket) {
-    this.setState({ awsBucket });
+  changeS3Bucket(s3Bucket) {
+    this.setState({ s3Bucket });
   }
 
   /**
    * Change access key id
    */
-  changeAwsAccessKeyId(awsAccessKeyId) {
-    this.setState({ awsAccessKeyId });
+  changeS3AccessKeyId(s3AccessKeyId) {
+    this.setState({ s3AccessKeyId });
   }
 
   /**
    * Change secret access key
    */
-  changeAwsSecretAccessKey(awsSecretAccessKey) {
-    this.setState({ awsSecretAccessKey });
+  changeS3SecretAccessKey(s3SecretAccessKey) {
+    this.setState({ s3SecretAccessKey });
   }
 
   /**
@@ -336,11 +336,11 @@ export default class AdminAppContainer extends Container {
    */
   async updateAwsSettingHandler() {
     const response = await this.appContainer.apiv3.put('/app-settings/aws-setting', {
-      awsS3Region: this.state.awsS3Region,
-      awsCustomEndpoint: this.state.awsCustomEndpoint,
-      awsBucket: this.state.awsBucket,
-      awsAccessKeyId: this.state.awsAccessKeyId,
-      awsSecretAccessKey: this.state.awsSecretAccessKey,
+      s3Region: this.state.s3Region,
+      s3CustomEndpoint: this.state.s3CustomEndpoint,
+      s3Bucket: this.state.s3Bucket,
+      s3AccessKeyId: this.state.s3AccessKeyId,
+      s3SecretAccessKey: this.state.s3SecretAccessKey,
     });
     const { awsSettingParams } = response.data;
     return awsSettingParams;

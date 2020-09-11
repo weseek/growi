@@ -25,7 +25,7 @@ class AwsSetting extends React.Component {
 
     try {
       await adminAppContainer.updateAwsSettingHandler();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.aws_settings') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.aws_label') }));
     }
     catch (err) {
       toastError(err);
@@ -46,9 +46,9 @@ class AwsSetting extends React.Component {
             <input
               className="form-control"
               placeholder={`${t('eg')} ap-northeast-1`}
-              defaultValue={adminAppContainer.state.awsS3Region || ''}
+              defaultValue={adminAppContainer.state.s3Region || ''}
               onChange={(e) => {
-                adminAppContainer.changeAwsS3Region(e.target.value);
+                adminAppContainer.changeS3Region(e.target.value);
               }}
             />
           </div>
@@ -63,9 +63,9 @@ class AwsSetting extends React.Component {
               className="form-control"
               type="text"
               placeholder={`${t('eg')} http://localhost:9000`}
-              defaultValue={adminAppContainer.state.awsCustomEndpoint || ''}
+              defaultValue={adminAppContainer.state.s3CustomEndpoint || ''}
               onChange={(e) => {
-                adminAppContainer.changeAwsCustomEndpoint(e.target.value);
+                adminAppContainer.changeS3CustomEndpoint(e.target.value);
               }}
             />
             <p className="form-text text-muted">{t('admin:app_setting.custom_endpoint_change')}</p>
@@ -81,9 +81,9 @@ class AwsSetting extends React.Component {
               className="form-control"
               type="text"
               placeholder={`${t('eg')} crowi`}
-              defaultValue={adminAppContainer.state.awsBucket || ''}
+              defaultValue={adminAppContainer.state.s3Bucket || ''}
               onChange={(e) => {
-                adminAppContainer.changeAwsBucket(e.target.value);
+                adminAppContainer.changeS3Bucket(e.target.value);
               }}
             />
           </div>
@@ -97,9 +97,9 @@ class AwsSetting extends React.Component {
             <input
               className="form-control"
               type="text"
-              defaultValue={adminAppContainer.state.awsAccessKeyId || ''}
+              defaultValue={adminAppContainer.state.s3AccessKeyId || ''}
               onChange={(e) => {
-                adminAppContainer.changeAwsAccessKeyId(e.target.value);
+                adminAppContainer.changeS3AccessKeyId(e.target.value);
               }}
             />
           </div>
@@ -113,9 +113,9 @@ class AwsSetting extends React.Component {
             <input
               className="form-control"
               type="text"
-              defaultValue={adminAppContainer.state.awsSecretAccessKey || ''}
+              defaultValue={adminAppContainer.state.s3SecretAccessKey || ''}
               onChange={(e) => {
-                adminAppContainer.changeAwsSecretAccessKey(e.target.value);
+                adminAppContainer.changeS3SecretAccessKey(e.target.value);
               }}
             />
           </div>
