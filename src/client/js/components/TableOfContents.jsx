@@ -32,6 +32,9 @@ const TableOfContents = (props) => {
     const containerTop = containerElem.getBoundingClientRect().top;
 
     // window height - revisionToc top - .system-version - .grw-fab-container height - top-of-table-contents height
+    if (isUserPage) {
+      return window.innerHeight - containerTop - 20 - 155 - 26 - 40;
+    }
     return window.innerHeight - containerTop - 20 - 155 - 26;
 
 
