@@ -20,26 +20,36 @@ export default class AdminAppContainer extends Container {
       confidential: '',
       globalLang: '',
       fileUpload: '',
+
       siteUrl: '',
       envSiteUrl: '',
       isSetSiteUrl: true,
       isMailerSetup: false,
       fromAddress: '',
       transmissionMethod: '',
+
       smtpHost: '',
       smtpPort: '',
       smtpUser: '',
       smtpPassword: '',
       sesAccessKeyId: '',
       sesSecretAccessKey: '',
+
+      fileUploadType: 'aws',
+
+      gcsApiKeyJsonPath: '',
+      envGcsApiKeyJsonPath: '',
+      gcsBucket: '',
+      envGcsBucket: '',
+      gcsUploadNamespace: '',
+      envGcsUploadNamespace: '',
+
       region: '',
       customEndpoint: '',
       bucket: '',
       accessKeyId: '',
       secretAccessKey: '',
-      envGcsApiKeyJsonPath: '',
-      envGcsBucket: '',
-      envGcsUploadNamespace: '',
+
       isEnabledPlugins: true,
     };
 
@@ -181,6 +191,13 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
+   * Change fileUploadType
+   */
+  changeFileUploadType(fileUploadType) {
+    this.setState({ fileUploadType });
+  }
+
+  /**
    * Change region
    */
   changeRegion(region) {
@@ -213,6 +230,27 @@ export default class AdminAppContainer extends Container {
    */
   changeSecretAccessKey(secretAccessKey) {
     this.setState({ secretAccessKey });
+  }
+
+  /**
+   * Change gcsApiKeyJsonPath
+   */
+  changeGcsApiKeyJsonPath(gcsApiKeyJsonPath) {
+    this.setState({ gcsApiKeyJsonPath });
+  }
+
+  /**
+   * Change gcsBucket
+   */
+  changeGcsBucket(gcsBucket) {
+    this.setState({ gcsBucket });
+  }
+
+  /**
+   * Change gcsUploadNamespace
+   */
+  changeGcsUploadNamespace(gcsUploadNamespace) {
+    this.setState({ gcsUploadNamespace });
   }
 
   /**
@@ -323,6 +361,16 @@ export default class AdminAppContainer extends Container {
     });
     const { awsSettingParams } = response.data;
     return awsSettingParams;
+  }
+
+  /**
+   * Update GCP setting
+   * @memberOf AdminAppContainer
+   * @return {Array} Appearance
+   */
+  async updateGcpSettingHandler() {
+    // TODO GW-3660 cteate api
+    return;
   }
 
   /**
