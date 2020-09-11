@@ -29,7 +29,7 @@ class BookmarkButton extends React.Component {
       if (response.data.bookmark != null) {
         this.setState({ isBookmarked: true });
       }
-      const result = await crowi.apiv3.get('/bookmarks/countBookmarks', { pageId });
+      const result = await crowi.apiv3.get('/bookmarks/count-bookmarks', { pageId });
       this.setState({ sumOfBookmarks: result.data.sumOfBookmarks });
     }
     catch (err) {
