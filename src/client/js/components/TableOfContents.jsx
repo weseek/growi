@@ -31,15 +31,11 @@ const TableOfContents = (props) => {
     const containerElem = document.querySelector('#revision-toc');
     const containerTop = containerElem.getBoundingClientRect().top;
 
-    // window height - revisionToc top - .system-version - .grw-fab-container height - top-of-table-contents height
+    // window height - revisionToc top - .system-version - .grw-fab-container height - top-of-table-contents height - userpage-btn height
     if (isUserPage) {
       return window.innerHeight - containerTop - 20 - 155 - 26 - 40;
     }
     return window.innerHeight - containerTop - 20 - 155 - 26;
-
-
-    // return window.innerHeight - containerTop - 20 - 155 - 26 - 40;
-
   }, []);
 
   const { tocHtml } = pageContainer.state;
