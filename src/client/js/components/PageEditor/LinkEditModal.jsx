@@ -29,6 +29,8 @@ class LinkEditModal extends React.PureComponent {
   constructor(props) {
     super(props);
 
+    this.defaultMessageInPreviewWindow = 'Page preview here.';
+
     this.state = {
       show: false,
       isUseRelativePath: false,
@@ -36,7 +38,7 @@ class LinkEditModal extends React.PureComponent {
       linkInputValue: '',
       labelInputValue: '',
       linkerType: Linker.types.markdownLink,
-      markdown: '',
+      markdown: this.defaultMessageInPreviewWindow,
       permalink: '',
       linkText: '',
       isPreviewOpen: false,
@@ -181,11 +183,11 @@ class LinkEditModal extends React.PureComponent {
         permalink = !isPermanentLink ? `${window.location.origin}/${page.id}` : '';
       }
       catch (err) {
-        markdown = `<div>${err.message}</div>`;
+        markdown = err.message;
       }
     }
     else {
-      markdown = '<div>Page preview here.</div>';
+      markdown = this.defaultMessageInPreviewWindow;
     }
     this.setState({ markdown, permalink });
   }
@@ -204,17 +206,17 @@ class LinkEditModal extends React.PureComponent {
     const linkText = linker.generateMarkdownText();
     return (
       <div className="d-flex justify-content-between mb-3">
-        <div className="card w-100 mb-0 p-1 bg-muted">
-          <p className="text-left text-muted mb-0">Markdown</p>
-          <p className="text-center text-truncate">{linkText}</p>
+        <div className="card w-100 bg-muted p-1 mb-0">
+          <p className="text-left text-muted mb-1 small">Markdown</p>
+          <p className="text-center text-truncate text-muted">{linkText}</p>
         </div>
         <div className="d-flex align-items-center">
           <span className="lead mx-3">
             <i className="fa fa-caret-right"></i>
           </span>
         </div>
-        <div className="card w-100 mb-0">
-          <p className="text-left text-muted mb-0 p-1">HTML</p>
+        <div className="card w-100 p-1 mb-0">
+          <p className="text-left text-muted mb-1 small">HTML</p>
           <p className="text-center text-truncate">
             <a href={linker.link}>{linker.label}</a>
           </p>
@@ -318,7 +320,7 @@ class LinkEditModal extends React.PureComponent {
                       </button>
                       <Popover placement="right" isOpen={this.state.isPreviewOpen} target="preview-btn" toggle={this.toggleIsPreviewOpen}>
                         <PopoverBody>
-                          <div className="overflow-auto">{this.renderPreview()}</div>
+                          {this.renderPreview()}
                         </PopoverBody>
                       </Popover>
                     </div>
