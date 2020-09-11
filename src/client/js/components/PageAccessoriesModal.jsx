@@ -21,6 +21,34 @@ import PageList from './PageList';
 import PageHistory from './PageHistory';
 import ShareLink from './ShareLink/ShareLink';
 
+const navTabMapping = [
+  {
+    icon: <PageListIcon />,
+    id: 'pagelist',
+    i18n: 'page_list',
+  },
+  {
+    icon: <TimeLineIcon />,
+    id: 'timeline',
+    i18n: 'Timeline View',
+  },
+  {
+    icon: <RecentChangesIcon />,
+    id: 'page-history',
+    i18n: 'History',
+  },
+  {
+    icon: <AttachmentIcon />,
+    id: 'attachment',
+    i18n: 'attachment_data',
+  },
+  {
+    icon: <ShareLinkIcon />,
+    id: 'share-link',
+    i18n: 'share_links.share_link_management',
+  },
+];
+
 const PageAccessoriesModal = (props) => {
   const { t, pageAccessoriesContainer } = props;
   const { switchActiveTab } = pageAccessoriesContainer;
@@ -103,60 +131,19 @@ const PageAccessoriesModal = (props) => {
       <Modal size="xl" isOpen={props.isOpen} toggle={closeModalHandler} className="grw-page-accessories-modal">
         <ModalBody>
           <Nav className="nav-title" id="nav-title">
-            <NavItem type="button" className={`nav-link ${activeTab === 'pagelist' && 'active'}`}>
-              <NavLink
-                onClick={() => {
-                  switchActiveTab('pagelist');
-                }}
-              >
-                <PageListIcon />
-                {t('page_list')}
-              </NavLink>
-            </NavItem>
-            <NavItem type="button" className={`nav-link ${activeTab === 'timeline' && 'active'}`}>
-              <NavLink
-                onClick={() => {
-                  switchActiveTab('timeline');
-                }}
-              >
-                <TimeLineIcon />
-                {t('Timeline View')}
-              </NavLink>
-            </NavItem>
-            <NavItem type="button" className={`nav-link ${activeTab === 'page-history' && 'active'}`}>
-              <NavLink
-                onClick={() => {
-                  switchActiveTab('page-history');
-                }}
-              >
-                <RecentChangesIcon />
-                {t('History')}
-              </NavLink>
-            </NavItem>
-            <NavItem type="button" className={`nav-link ${activeTab === 'attachment' && 'active'}`}>
-              <NavLink
-                onClick={() => {
-                  switchActiveTab('attachment');
-                }}
-              >
-                <AttachmentIcon />
-                {t('attachment_data')}
-              </NavLink>
-            </NavItem>
-            <NavItem type="button" className={`nav-link ${activeTab === 'share-link' && 'active'}`}>
-              <NavLink
-                onClick={() => {
-                  switchActiveTab('share-link');
-                }}
-              >
-                <ShareLinkIcon />
-                {t('share_links.share_link_management')}
-              </NavLink>
-            </NavItem>
+            {navTabMapping.map((tab) => {
+              return (
+                <NavItem key={tab.id} type="button" className={`nav-link ${activeTab === tab.id && 'active'}`}>
+                  <NavLink onClick={() => { switchActiveTab(tab.id) }}>
+                    {tab.icon}
+                    {t(tab.i18n)}
+                  </NavLink>
+                </NavItem>
+              );
+            })}
           </Nav>
           <hr ref={sliderEl} id="nav_slide_click" className="my-0" />
           <TabContent activeTab={activeTab}>
-
             <TabPane tabId="pagelist">
               {pageAccessoriesContainer.state.activeComponents.has('pagelist') && <PageList />}
             </TabPane>
