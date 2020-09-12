@@ -51,12 +51,10 @@ const EditorNavbarBottom = (props) => {
       { isSlackExpanded && (
         <Collapse isOpen={isSlackExpanded && isDeviceSmallerThanMd}>
           <nav className={`navbar navbar-expand-lg border-top ${additionalClasses.join(' ')}`}>
-            <form className="form-inline mx-2 my-2 w-100">
-              <SavePageControls
-                isDeviceSmallerThanMd={false}
-                slackOnly
-              />
-            </form>
+            <SavePageControls
+              isDeviceSmallerThanMd={false}
+              slackOnly
+            />
           </nav>
         </Collapse>
         )}

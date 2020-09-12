@@ -91,6 +91,7 @@ class SavePageControls extends React.Component {
           onEnabledFlagChange={this.slackEnabledFlagChangedHandler}
           onChannelChange={this.slackChannelsChangedHandler}
           id="idForSavePageControl"
+          slackOnly
         />
       );
     }
@@ -107,6 +108,7 @@ class SavePageControls extends React.Component {
                   click={this.props.click}
                   smallScreen={this.props.smallScreen}
                   id="idForSavePageControl"
+                  slackOnly={false}
                 />
               </div>
             )

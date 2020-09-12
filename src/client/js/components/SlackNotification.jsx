@@ -36,11 +36,11 @@ class SlackNotification extends React.Component {
   }
 
   getSlackNormal() {
-    const { t } = this.props;
+    const { t, slackOnly } = this.props;
 
     return (
       <div className="grw-slack-notification w-100">
-        <div className="input-group extended-setting">
+        <div Style="height: 24px" className="input-group extended-setting">
           <label className="input-group-addon">
             <div className="custom-control custom-switch custom-switch-lg custom-switch-slack">
               <input
@@ -50,12 +50,13 @@ class SlackNotification extends React.Component {
                 checked={this.props.isSlackEnabled}
                 onChange={this.updateCheckboxHandler}
               />
-              <label className="custom-control-label" htmlFor={this.props.id}>
+              <label className={`custom-control-label align-center ${slackOnly ? 'mt-1' : ''}`} htmlFor={this.props.id}>
               </label>
             </div>
           </label>
           <input
-            className="form-control"
+            Style="height: 24px"
+            className="form-control align-top"
             type="text"
             value={this.props.slackChannels}
             placeholder="Input channels"
@@ -105,6 +106,7 @@ affect the rendering of the banner itself.
 SlackNotification.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   click: PropTypes.func.isRequired,
+  slackOnly: PropTypes.bool.isRequired,
 
   smallScreen: PropTypes.bool.isRequired,
   isSlackEnabled: PropTypes.bool.isRequired,
