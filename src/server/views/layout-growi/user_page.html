@@ -50,6 +50,19 @@
   {% include 'widget/comments.html' %}
 
   {% if page %}
+    <div class="grw-recently-created">
+      <h1 class="recently-created-title border-bottom pb-2">
+        <i id="recent-created-icon"></i>
+        Recently Created
+      </h2>
+      <div class="user-created-list page-list" id="user-created-list">
+        <div class="page-list-container">
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if page %}
     {% include '../widget/page_attachments.html' %}
   {% endif %}
 {% endblock %}

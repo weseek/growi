@@ -23,6 +23,7 @@ import TrashPageAlert from './components/Page/TrashPageAlert';
 import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
 import RecentCreated from './components/RecentCreated/RecentCreated';
+import RecentlyCreatedIcon from './components/Icons/RecentlyCreatedIcon';
 import MyDraftList from './components/MyDraftList/MyDraftList';
 import SeenUserList from './components/User/SeenUserList';
 import LikerList from './components/User/LikerList';
@@ -95,6 +96,7 @@ if (pageContainer.state.pageId != null) {
     'liker-list': <LikerList />,
 
     'user-created-list': <RecentCreated />,
+    'recent-created-icon': <RecentlyCreatedIcon />,
     'user-draft-list': <MyDraftList />,
   });
 }

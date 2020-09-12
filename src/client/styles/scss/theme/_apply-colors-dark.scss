@@ -276,3 +276,14 @@ body.on-edit {
     background-color: $bgcolor-tags;
   }
 }
+
+/*
+ * GROWI user page
+ */
+.grw-recently-created {
+  .recently-created-title {
+    svg {
+      fill: $color-global;
+    }
+  }
+}
