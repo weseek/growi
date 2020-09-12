@@ -21,6 +21,17 @@ module.exports = {
 
   webpack(config) {
 
+    // See: https://webpack.js.org/configuration/node/
+    // This allows code originally written for the Node.js environment to run in other environments like the browser.
+    config.node = {
+      ...config.node,
+      fs: 'empty',
+    };
+
+    // See: https://webpack.js.org/configuration/externals/
+    // This provides a way of excluding dependencies from the output bundles
+    config.externals.push('dtrace-provider');
+
     // configure additional entries
     const orgEntry = config.entry;
     config.entry = () => {

@@ -14,7 +14,7 @@ import urljoin from 'url-join';
 // } from '../util/color-scheme';
 import Apiv1ErrorHandler from '../util/apiv1ErrorHandler';
 
-// import apiv3ErrorHandler from '../util/apiv3ErrorHandler';
+import apiv3ErrorHandler from '../util/apiv3ErrorHandler';
 
 type State = {
   preferDarkModeByMediaQuery: boolean,
@@ -68,12 +68,12 @@ export default class AppContainer extends Container<State> {
     this.apiRequest = this.apiRequest.bind(this);
 
     this.apiv3Root = '/_api/v3';
-    // this.apiv3 = {
-    //   get: this.apiv3Get.bind(this),
-    //   post: this.apiv3Post.bind(this),
-    //   put: this.apiv3Put.bind(this),
-    //   delete: this.apiv3Delete.bind(this),
-    // };
+    this.apiv3 = {
+      get: this.apiv3Get.bind(this),
+      post: this.apiv3Post.bind(this),
+      put: this.apiv3Put.bind(this),
+      delete: this.apiv3Delete.bind(this),
+    };
   }
 
   /**
@@ -341,43 +341,43 @@ export default class AppContainer extends Container<State> {
     throw new Error(res.data.error);
   }
 
-  // async apiv3Request(method, path, params) {
-  //   try {
-  //     const res = await axios[method](urljoin(this.apiv3Root, path), params);
-  //     return res.data;
-  //   }
-  //   catch (err) {
-  //     const errors = apiv3ErrorHandler(err);
-  //     throw errors;
-  //   }
-  // }
+  async apiv3Request(method, path, params) {
+    try {
+      const res = await axios[method](urljoin(this.apiv3Root, path), params);
+      return res.data;
+    }
+    catch (err) {
+      const errors = apiv3ErrorHandler(err);
+      throw errors;
+    }
+  }
 
-  // async apiv3Get(path, params) {
-  //   return this.apiv3Request('get', path, { params });
-  // }
+  async apiv3Get(path, params) {
+    return this.apiv3Request('get', path, { params });
+  }
 
-  // async apiv3Post(path, params = {}) {
-  //   if (!params._csrf) {
-  //     params._csrf = this.csrfToken;
-  //   }
+  async apiv3Post(path, params = {}) {
+    if (!params._csrf) {
+      params._csrf = this.csrfToken;
+    }
 
-  //   return this.apiv3Request('post', path, params);
-  // }
+    return this.apiv3Request('post', path, params);
+  }
 
-  // async apiv3Put(path, params = {}) {
-  //   if (!params._csrf) {
-  //     params._csrf = this.csrfToken;
-  //   }
+  async apiv3Put(path, params = {}) {
+    if (!params._csrf) {
+      params._csrf = this.csrfToken;
+    }
 
-  //   return this.apiv3Request('put', path, params);
-  // }
+    return this.apiv3Request('put', path, params);
+  }
 
-  // async apiv3Delete(path, params = {}) {
-  //   if (!params._csrf) {
-  //     params._csrf = this.csrfToken;
-  //   }
+  async apiv3Delete(path, params = {}) {
+    if (!params._csrf) {
+      params._csrf = this.csrfToken;
+    }
 
-  //   return this.apiv3Request('delete', path, { params });
-  // }
+    return this.apiv3Request('delete', path, { params });
+  }
 
 }
