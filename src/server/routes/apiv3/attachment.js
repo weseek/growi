@@ -19,6 +19,7 @@ module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const Page = crowi.model('Page');
+  const User = crowi.model('User');
   const Attachment = crowi.model('Attachment');
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
@@ -51,7 +52,6 @@ module.exports = (crowi) => {
   router.get('/list', accessTokenParser, loginRequired, validator.retrieveAttachments, apiV3FormValidator, async(req, res) => {
     const offset = +req.query.offset || 0;
     const limit = +req.query.limit || 30;
-    const queryOptions = { offset, limit };
 
     try {
       const pageId = req.query.pageId;
@@ -64,8 +64,20 @@ module.exports = (crowi) => {
 
       const paginateResult = await Attachment.paginate(
         { page: pageId },
-        queryOptions,
+        {
+          limit,
+          offset,
+          populate: {
+            path: 'creator',
+            select: User.USER_PUBLIC_FIELDS,
+          },
+        },
       );
+      paginateResult.docs.forEach((doc) => {
+        if (doc.creator != null && doc.creator instanceof User) {
+          doc.creator = doc.creator.toObject();
+        }
+      });
 
       return res.apiv3({ paginateResult });
     }
