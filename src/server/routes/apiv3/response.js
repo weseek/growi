@@ -1,4 +1,4 @@
-const toArrayIfNot = require('../../../lib/util/toArrayIfNot');
+import { toArrayIfNot } from '~/utils/array-utils';
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 

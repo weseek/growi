@@ -1,6 +1,6 @@
 // converts non-array item to array
 
-const toArrayIfNot = (item) => {
+export const toArrayIfNot = (item?: unknown): any[] => {
   if (item == null) {
     return [];
   }
@@ -11,5 +11,3 @@ const toArrayIfNot = (item) => {
 
   return [item];
 };
-
-module.exports = toArrayIfNot;

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
-import toArrayIfNot from '../../../../lib/util/toArrayIfNot';
+import { toArrayIfNot } from '~/utils/array-utils';
 import { withLoadingSppiner } from '../SuspenseUtils';
 
 import AdminImportContainer from '../../services/AdminImportContainer';

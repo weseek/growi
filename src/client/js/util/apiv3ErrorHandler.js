@@ -1,7 +1,7 @@
 // API v3 sends an array of errors in res.data.errors.
 // API v3 errors need to extracted from an error object in order to properly handle them.
 
-import toArrayIfNot from '../../../lib/util/toArrayIfNot';
+import { toArrayIfNot } from '~/utils/array-utils';
 
 import loggerFactory from '~/utils/logger';
 

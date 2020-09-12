@@ -6,7 +6,7 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
 
 import AdminSamlSecurityContainer from '../../../services/AdminSamlSecurityContainer';
-import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
+import { toArrayIfNot } from '~/utils/array-utils';
 import { withLoadingSppiner } from '../../SuspenseUtils';
 
 import SamlSecuritySettingContents from './SamlSecuritySettingContents';
