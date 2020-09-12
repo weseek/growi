@@ -1,0 +1,51 @@
+{% extends 'base/layout.html' %}
+
+
+{% block content_header %}
+  <h1 class="p-3">{{ page.path | preventXss }}</h1>
+{% endblock %}
+
+
+{% block content_main_before %}
+{% endblock %}
+{% block search %}
+{% endblock %}
+{% block head_warn_alert_siteurl_undefined %}
+{% endblock %}
+
+{% block content_main %}
+  <div
+    class="row"
+    id="is-shared-page"
+    data-share-link-expired-at="{% if sharelink.expiredAt %}{{ sharelink.expiredAt|datetz('Y/m/d H:i:s')}}{% endif %}"
+    data-share-link-created-at="{{ sharelink.createdAt|datetz('Y/m/d H:i:s')}}"
+  >
+    {% block content_page %}
+      <div class="col grw-page-content-container">
+        <div id="share-link-alert"></div>
+
+        {% include '../widget/page_content.html' %}
+        {# force remove #revision-toc from #content_main of parent #}
+        <script>
+          $('#revision-toc').remove();
+        </script>
+
+      </div>
+
+      {# relocate #revision-toc #}
+      <div class="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
+        <div id="revision-toc" class="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
+          <div id="revision-toc-content" class="revision-toc-content"></div>
+        </div>
+      </div>
+    {% endblock %}
+
+  </div>
+{% endblock %}
+
+
+{% block body_end %}
+  <div id="presentation-layer" class="fullscreen-layer">
+    <div id="presentation-container"></div>
+  </div>
+{% endblock %}
