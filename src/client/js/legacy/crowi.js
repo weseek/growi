@@ -197,29 +197,6 @@ $(() => {
         }
       });
     }
-
-    // presentation
-    let presentaionInitialized = false;
-
-
-    const $b = $('body');
-
-    $(document).on('click', '.toggle-presentation', function(e) {
-      const $a = $(this);
-
-      e.preventDefault();
-      $b.toggleClass('overlay-on');
-
-      if (!presentaionInitialized) {
-        presentaionInitialized = true;
-
-        $('<iframe />').attr({
-          src: $a.attr('href'),
-        }).appendTo($('#presentation-container'));
-      }
-    }).on('click', '.fullscreen-layer', () => {
-      $b.toggleClass('overlay-on');
-    });
   } // end if pageId
 
   // tab changing handling
