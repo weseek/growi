@@ -14,7 +14,6 @@ import EditorNavbarBottom from './components/PageEditor/EditorNavbarBottom';
 import { defaultEditorOptions, defaultPreviewOptions } from './components/PageEditor/OptionsSelector';
 import PageEditorByHackmd from './components/PageEditorByHackmd';
 import Page from './components/Page';
-import PageHistory from './components/PageHistory';
 import PageComments from './components/PageComments';
 import PageTimeline from './components/PageTimeline';
 import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
@@ -94,7 +93,7 @@ if (pageContainer.state.pageId != null) {
     'seen-user-list': <SeenUserList />,
     'liker-list': <LikerList />,
 
-    'user-created-list': <RecentCreated />,
+    'user-created-list': <RecentCreated userId={pageContainer.state.creator._id} />,
     'user-draft-list': <MyDraftList />,
   });
 }
@@ -134,19 +133,6 @@ Object.keys(componentMappings).forEach((key) => {
       elem,
     );
   }
-});
-
-// うわーもうー (commented by Crowi team -- 2018.03.23 Yuki Takei)
-$('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', () => {
-  ReactDOM.render(
-    <I18nextProvider i18n={i18n}>
-      <ErrorBoundary>
-        <Provider inject={injectableContainers}>
-          <PageHistory />
-        </Provider>
-      </ErrorBoundary>
-    </I18nextProvider>, document.getElementById('revision-history'),
-  );
 });
 
 // initialize scrollpos-styler

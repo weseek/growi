@@ -51,15 +51,15 @@
   "attachment_data": "Attachment Data",
 	"Presentation Mode": "演示文稿",
   "Not available for guest": "Not available for guest",
-  "Create Archive Page": "Create Archive Page",
-  "File type": "File type",
-  "Target page": "Target page",
-  "Include Attachment File": "Include Attachment File",
-  "Include Comment": "Include Comment",
-  "Include Subordinated Page": "Include Subordinated Page",
-  "All Subordinated Page": "All Subordinated Page",
-  "Specify Hierarchy": "Specify Hierarchy",
-  "Submitted the request to create the archive": "Submitted the request to create the archive",
+  "Create Archive Page": "创建归档页",
+  "File type": "文件类型",
+  "Target page": "目标页面",
+  "Include Attachment File": "包含附件",
+  "Include Comment": "包含评论",
+  "Include Subordinated Page": "包括子页面",
+  "All Subordinated Page": "所有子页面",
+  "Specify Hierarchy": "指定层级",
+  "Submitted the request to create the archive": "提交创建归档请求",
   "username": "用户名",
 	"Created": "创建",
 	"Last updated": "上次更新",
@@ -727,10 +727,10 @@
 		"Setup": "安装程序"
 	},
   "export_bulk": {
-    "failed_to_export": "Failed to export",
-    "failed_to_count_pages": "Failed to count pages",
-    "export_page_markdown": "Export page as Markdown",
-    "export_page_pdf": "Export page as PDF"
+    "failed_to_export": "导出失败",
+    "failed_to_count_pages": "页面计数失败",
+    "export_page_markdown": "以Markdown格式导出页面",
+    "export_page_pdf": "以PDF格式导出页面"
   },
 	"message": {
 		"successfully_connected": "连接成功！",
@@ -758,6 +758,7 @@
   },
   "validation":{
     "aws_region": "关于地区，请输入AWS地区名，例如：ap-east-1",
-    "aws_custom_endpoint": "关于自定义端点，请指定以http(s)://开头的URL，链接末尾不需要添加“/”"
+    "aws_custom_endpoint": "关于自定义端点，请指定以http(s)://开头的URL，链接末尾不需要添加“/”",
+    "failed_to_send_a_test_email":"SMTP方式测试邮件发送失败，请检查相关设定。"
   }
 }
