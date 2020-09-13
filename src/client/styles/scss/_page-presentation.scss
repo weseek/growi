@@ -2,7 +2,6 @@
   @include expand-modal-fullscreen(false, false);
 
   .modal-body {
-    height: 90vh;
     background: black;
 
     iframe {
