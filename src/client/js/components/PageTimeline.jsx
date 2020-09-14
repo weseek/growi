@@ -35,8 +35,6 @@ class PageTimeline extends React.Component {
     const { path } = pageContainer.state;
     const { limit } = this.state;
     const offset = (selectedPage - 1) * limit;
-
-    // if (!path) { return null }
     const activePage = selectedPage;
 
     const res = await appContainer.apiv3Get('/pages/list', { path, limit, offset });
@@ -47,18 +45,16 @@ class PageTimeline extends React.Component {
       totalPageItems,
       pages,
     });
-    console.log(activePage);
-  }
-
-  componentWillMount() {
-    const { appContainer } = this.props;
-
-    // initialize GrowiRenderer
-    this.growiRenderer = appContainer.getRenderer('timeline');
   }
 
   async componentDidMount() {
     await this.handlePage(1);
+  }
+
+  componentWillMount() {
+    const { appContainer } = this.props;
+    // initialize GrowiRenderer
+    this.growiRenderer = appContainer.getRenderer('timeline');
   }
 
   render() {
@@ -100,16 +96,16 @@ class PageTimeline extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+const PageTimelineWrapper = withUnstatedContainers(PageTimeline, [AppContainer, PageContainer]);
+
 PageTimeline.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   pages: PropTypes.arrayOf(PropTypes.object),
 };
-
-/**
- * Wrapper component for using unstated
- */
-const PageTimelineWrapper = withUnstatedContainers(PageTimeline, [AppContainer, PageContainer]);
 
 export default withTranslation()(PageTimelineWrapper);

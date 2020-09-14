@@ -90,8 +90,6 @@ module.exports = (crowi) => {
     const offset = +req.query.offset || 0;
     const queryOptions = { offset, limit };
 
-    console.log(limit);
-
     try {
       const result = await Page.findListWithDescendants(path, req.user, queryOptions);
       console.log(result);

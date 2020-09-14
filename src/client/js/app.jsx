@@ -19,7 +19,6 @@ import PageTimeline from './components/PageTimeline';
 import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
 import PageManagement from './components/Page/PageManagement';
 import TrashPageAlert from './components/Page/TrashPageAlert';
-import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
 import RecentCreated from './components/RecentCreated/RecentCreated';
 import MyDraftList from './components/MyDraftList/MyDraftList';
@@ -86,9 +85,7 @@ if (pageContainer.state.pageId != null) {
   Object.assign(componentMappings, {
     'page-comments-list': <PageComments />,
     'page-comment-write': <CommentEditorLazyRenderer />,
-    'page-attachment': <PageAttachment />,
     'page-management': <PageManagement />,
-
     'revision-toc': <TableOfContents />,
     'seen-user-list': <SeenUserList />,
     'liker-list': <LikerList />,
