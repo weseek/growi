@@ -6,7 +6,7 @@ import { withUnstatedContainers } from '~/client/js/components/UnstatedUtils';
 // import AppContainer from '~/client/js/services/AppContainer';
 import CounterContainer from '~/client/js/services/CounterContainer';
 
-import { useCurrentUser } from '~/stores/app';
+import { useCurrentUser } from '~/stores/context';
 
 type Props = {
   // appContainer: AppContainer,
