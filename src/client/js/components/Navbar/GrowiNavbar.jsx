@@ -72,7 +72,7 @@ class GrowiNavbar extends React.Component {
     // const { isDeviceSmallerThanMd } = navigationContainer.state;
 
     return (
-      <>
+      <nav className="navbar grw-navbar navbar-expand navbar-dark sticky-top mb-0 px-0">
 
         {/* Brand Logo  */}
         <div className="navbar-brand mr-0">
@@ -98,7 +98,7 @@ class GrowiNavbar extends React.Component {
             <GlobalSearch />
           </div>
         ) } */}
-      </>
+      </nav>
     );
   }
 

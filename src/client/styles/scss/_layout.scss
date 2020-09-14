@@ -90,7 +90,8 @@ body {
 
 // printable style
 @media print {
-  padding: 30px;
+  // TODO: https://youtrack.weseek.co.jp/issue/GW-3855
+  // padding: 30px;
 
   a:after {
     display: none !important;
