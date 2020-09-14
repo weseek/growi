@@ -9,7 +9,7 @@ import AppContainer from '../../services/AppContainer';
 
 import GrowiLogo from '../GrowiLogo';
 
-import PersonalDropdown from './PersonalDropdown';
+// import PersonalDropdown from './PersonalDropdown';
 import GlobalSearch from './GlobalSearch';
 
 class GrowiNavbar extends React.Component {
@@ -33,7 +33,7 @@ class GrowiNavbar extends React.Component {
         </li>
 
         <li className="grw-personal-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret">
-          <PersonalDropdown />
+          {/* <PersonalDropdown /> */}
         </li>
       </>
     );
@@ -55,8 +55,8 @@ class GrowiNavbar extends React.Component {
 
   render() {
     const { appContainer, navigationContainer } = this.props;
-    const { crowi, isSearchServiceConfigured } = appContainer.config;
-    const { isDeviceSmallerThanMd } = navigationContainer.state;
+    // const { crowi, isSearchServiceConfigured } = appContainer.config;
+    // const { isDeviceSmallerThanMd } = navigationContainer.state;
 
     return (
       <>
@@ -69,7 +69,7 @@ class GrowiNavbar extends React.Component {
         </div>
 
         <div className="grw-app-title d-none d-md-block">
-          {crowi.title}
+          {/* {crowi.title} */}
         </div>
 
 
@@ -78,13 +78,13 @@ class GrowiNavbar extends React.Component {
           {this.renderNavbarRight()}
         </ul>
 
-        {crowi.confidential != null && this.renderConfidential()}
+        {/* {crowi.confidential != null && this.renderConfidential()} */}
 
-        { isSearchServiceConfigured && !isDeviceSmallerThanMd && (
+        {/* { isSearchServiceConfigured && !isDeviceSmallerThanMd && (
           <div className="grw-global-search grw-global-search-top position-absolute">
             <GlobalSearch />
           </div>
-        ) }
+        ) } */}
       </>
     );
   }

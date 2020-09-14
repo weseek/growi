@@ -16,29 +16,32 @@ export default class NavigationContainer extends Container {
     this.appContainer = appContainer;
     this.appContainer.registerContainer(this);
 
-    const { localStorage } = window;
+    // const { localStorage } = window;
 
     this.state = {
-      editorMode: null,
+      // editorMode: null,
 
-      isDeviceSmallerThanMd: null,
-      preferDrawerModeByUser: localStorage.preferDrawerModeByUser === 'true',
-      preferDrawerModeOnEditByUser: // default: true
-        localStorage.preferDrawerModeOnEditByUser == null || localStorage.preferDrawerModeOnEditByUser === 'true',
-      isDrawerMode: null,
-      isDrawerOpened: false,
+      // isDeviceSmallerThanMd: null,
+      // preferDrawerModeByUser: localStorage.preferDrawerModeByUser === 'true',
+      // preferDrawerModeOnEditByUser: // default: true
+      //   localStorage.preferDrawerModeOnEditByUser == null || localStorage.preferDrawerModeOnEditByUser === 'true',
+      // isDrawerMode: null,
+      // isDrawerOpened: false,
 
-      sidebarContentsId: 'recent',
+      // sidebarContentsId: 'recent',
 
-      isScrollTop: true,
+      // isScrollTop: true,
 
-      isPageCreateModalShown: false,
+      // isPageCreateModalShown: false,
     };
 
     this.openPageCreateModal = this.openPageCreateModal.bind(this);
     this.closePageCreateModal = this.closePageCreateModal.bind(this);
-    this.initDeviceSize();
-    this.initScrollEvent();
+
+    if (process.browser) {
+      this.initDeviceSize();
+      this.initScrollEvent();
+    }
   }
 
   /**

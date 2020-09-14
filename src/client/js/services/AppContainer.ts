@@ -227,21 +227,21 @@ export default class AppContainer extends Container<State> {
    * @param {function} handler event handler for media query
    * @param {boolean} invokeOnInit invoke handler after the initialization if true
    */
-  // addBreakpointListener(breakpoint, handler, invokeOnInit = false) {
-  //   document.addEventListener('DOMContentLoaded', () => {
-  //     // get the value of '--breakpoint-*'
-  //     const breakpointPixel = parseInt(window.getComputedStyle(document.documentElement).getPropertyValue(`--breakpoint-${breakpoint}`), 10);
+  addBreakpointListener(breakpoint, handler, invokeOnInit = false) {
+    document.addEventListener('DOMContentLoaded', () => {
+      // get the value of '--breakpoint-*'
+      const breakpointPixel = parseInt(window.getComputedStyle(document.documentElement).getPropertyValue(`--breakpoint-${breakpoint}`), 10);
 
-  //     const mediaQuery = window.matchMedia(`(min-width: ${breakpointPixel}px)`);
+      const mediaQuery = window.matchMedia(`(min-width: ${breakpointPixel}px)`);
 
-  //     // add event listener
-  //     mediaQuery.addListener(handler);
-  //     // initialize
-  //     if (invokeOnInit) {
-  //       handler(mediaQuery);
-  //     }
-  //   });
-  // }
+      // add event listener
+      mediaQuery.addListener(handler);
+      // initialize
+      if (invokeOnInit) {
+        handler(mediaQuery);
+      }
+    });
+  }
 
   // getOriginRenderer() {
   //   return this.originRenderer;
