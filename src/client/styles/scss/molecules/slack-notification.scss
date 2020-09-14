@@ -1,5 +1,5 @@
 .grw-slack-notification {
-  $input-height-slack: 1.8rem;
+  $input-height-slack: 24px;
   border-color: $gray-200;
 
   border-style: solid;
@@ -15,6 +15,11 @@
     @include media-breakpoint-up(md) {
       width: 180px;
     }
+  }
+  // height settings for slack button's responsive design
+  // in the input element
+  .grw-navbar-bottom-slack {
+    height: 24px;
   }
 }
 //　TODO デザインの使用が確定して実装、本タスクのスコープ外
