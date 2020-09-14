@@ -8,10 +8,13 @@ import loggerFactory from '~/utils/logger';
 
 import Layout from '../components/Layout';
 
+import { useCurrentUser } from '../stores/context';
+
 const logger = loggerFactory('growi:pages:all');
 
 type Props = {
   page: any,
+  currentUser: any,
   isForbidden: boolean,
 };
 
@@ -28,6 +31,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   else {
     header = props.isForbidden ? 'Forbidden' : 'Not found';
   }
+
+  useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
 
   return (
     <Layout title="GROWI">
@@ -75,6 +80,10 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   };
 
   const props: Props = await getPageAndCreateProps(path);
+
+  if (user != null) {
+    props.currentUser = JSON.stringify(user.toObject());
+  }
 
   return {
     props: {

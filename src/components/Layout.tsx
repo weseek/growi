@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Head from 'next/head';
 
 import { withUnstatedContainers } from '~/client/js/components/UnstatedUtils';
+import GrowiNavbar from '~/client/js/components/Navbar/GrowiNavbar';
 // import AppContainer from '~/client/js/services/AppContainer';
 import CounterContainer from '~/client/js/services/CounterContainer';
 
@@ -18,15 +19,18 @@ type Props = {
 
 const Layout = ({ counterContainer, children, title }: Props) => {
 
-  const { data: currentUser } = useCurrentUser({ username: 'hoge' });
+  const { data: currentUser, error } = useCurrentUser();
 
   return (
-    <div>
+    <>
       <Head>
         <title>{title}</title>
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
+      <div className="wrapper">
+        <GrowiNavbar />
+      </div>
       <header>
         <nav>
           <Link href="/[[...path]]" as="/" shallow>
@@ -49,9 +53,9 @@ const Layout = ({ counterContainer, children, title }: Props) => {
         <span>I&apos;m here to stay (Footer)</span>
         <hr />
         <p>count: {counterContainer.state.count}</p>
-        <p>currentUser.username: {currentUser.username}</p>
+        <p>currentUser.username: {currentUser?.username}</p>
       </footer>
-    </div>
+    </>
   );
 };
 
