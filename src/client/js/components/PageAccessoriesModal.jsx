@@ -33,12 +33,69 @@ const PageAccessoriesModal = (props) => {
     props.onClose();
   }
 
+  const menu = document.getElementsByClassName('nav');
+  const navTitle = document.getElementById('nav-title');
+  // Values are set.
+
+  // Might make this dynamic for px, %, pt, em
+  function getPercentage(min, max) {
+    return min / max * 100;
+  }
+
+  // Not using reduce, because IE8 doesn't supprt it
+  function getArraySum(arr) {
+    let sum = 0;
+    [].forEach.call(arr, (el, index) => {
+      sum += el;
+    });
+    return sum;
+  }
+
+  function navSlider(menu, callback) {
+    // We only want the <li> </li> tags
+    const navTabs = document.querySelectorAll('li.nav-link');
+
+    if (menu.length > 0) {
+      const marginLeft = [];
+      // Loop through nav children i.e li
+      [].forEach.call(navTabs, (el, index) => {
+        // Dynamic width/margin calculation for hr
+        const width = getPercentage(el.offsetWidth, navTitle.offsetWidth);
+        let tempMarginLeft = 0;
+        // We don't want to modify first elements positioning
+        if (index !== 0) {
+          tempMarginLeft = getArraySum(marginLeft);
+        }
+        // Set mouse event [click]
+        callback(el, width, tempMarginLeft);
+        /* We store it in array because the later accumulated value is used for positioning */
+        marginLeft.push(width);
+      });
+    }
+  }
+
+  if (menu != null) {
+    // CLICK
+    const menuSliderClick = document.getElementById('grw-nav-slide-hr');
+    if (menuSliderClick != null) {
+      const arrayMenu = Array.from(menu);
+
+      navSlider(arrayMenu, (el, width, tempMarginLeft) => {
+        el.onclick = () => {
+          menuSliderClick.style.width = `${width}%`;
+          menuSliderClick.style.marginLeft = `${tempMarginLeft}%`;
+        };
+      });
+    }
+  } // endif
+
+
   return (
     <React.Fragment>
       <Modal size="xl" isOpen={props.isOpen} toggle={closeModalHandler} className="grw-page-accessories-modal">
         <ModalBody>
-          <Nav className="nav-title border-bottom">
-            <NavItem type="button" className={`nav-link ${activeTab === 'pagelist' && 'active active-border'}`}>
+          <Nav className="nav-title" id="nav-title">
+            <NavItem type="button" className={`nav-link ${activeTab === 'pagelist' && 'active'}`}>
               <NavLink
                 onClick={() => {
                   switchActiveTab('pagelist');
@@ -48,7 +105,7 @@ const PageAccessoriesModal = (props) => {
                 {t('page_list')}
               </NavLink>
             </NavItem>
-            <NavItem type="button" className={`nav-link ${activeTab === 'timeline' && 'active active-border'}`}>
+            <NavItem type="button" className={`nav-link ${activeTab === 'timeline' && 'active'}`}>
               <NavLink
                 onClick={() => {
                   switchActiveTab('timeline');
@@ -58,7 +115,7 @@ const PageAccessoriesModal = (props) => {
                 {t('Timeline View')}
               </NavLink>
             </NavItem>
-            <NavItem type="button" className={`nav-link ${activeTab === 'page-history' && 'active active-border'}`}>
+            <NavItem type="button" className={`nav-link ${activeTab === 'page-history' && 'active'}`}>
               <NavLink
                 onClick={() => {
                   switchActiveTab('page-history');
@@ -68,7 +125,7 @@ const PageAccessoriesModal = (props) => {
                 {t('History')}
               </NavLink>
             </NavItem>
-            <NavItem type="button" className={`nav-link ${activeTab === 'attachment' && 'active active-border'}`}>
+            <NavItem type="button" className={`nav-link ${activeTab === 'attachment' && 'active'}`}>
               <NavLink
                 onClick={() => {
                   switchActiveTab('attachment');
@@ -78,7 +135,7 @@ const PageAccessoriesModal = (props) => {
                 {t('attachment_data')}
               </NavLink>
             </NavItem>
-            <NavItem type="button" className={`nav-link ${activeTab === 'share-link' && 'active active-border'}`}>
+            <NavItem type="button" className={`nav-link ${activeTab === 'share-link' && 'active'}`}>
               <NavLink
                 onClick={() => {
                   switchActiveTab('share-link');
@@ -89,6 +146,7 @@ const PageAccessoriesModal = (props) => {
               </NavLink>
             </NavItem>
           </Nav>
+          <hr id="grw-nav-slide-hr" className="my-0"></hr>
           <TabContent activeTab={activeTab}>
 
             <TabPane tabId="pagelist">
