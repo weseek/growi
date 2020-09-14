@@ -74,10 +74,10 @@ const PageAccessoriesModal = (props) => {
     }
   }
 
-  if (menu) {
+  if (menu != null) {
     // CLICK
     const menuSliderClick = document.getElementById('grw-nav-slide-hr');
-    if (menuSliderClick) {
+    if (menuSliderClick != null) {
       const arrayMenu = Array.from(menu);
 
       navSlider(arrayMenu, (el, width, tempMarginLeft) => {
