@@ -39,18 +39,25 @@ const Fab = (props) => {
     };
   }, [stickyChangeHandler]);
 
+  function renderEditorIcon() {
+    return (
+      <>
+        <div className={`rounded-circle position-absolute ${animateClasses}`} style={{ bottom: '2.3rem', right: '4rem' }}>
+          <button
+            type="button"
+            className="btn btn-lg btn-create-page btn-primary rounded-circle p-0 waves-effect waves-light"
+            onClick={navigationContainer.openPageCreateModal}
+          >
+            <CreatePageIcon />
+          </button>
+        </div>
+      </>
+    );
+  }
 
   return (
     <div className="grw-fab d-none d-md-block">
-      <div className={`rounded-circle position-absolute ${animateClasses}`} style={{ bottom: '2.3rem', right: '4rem' }}>
-        <button
-          type="button"
-          className="btn btn-lg btn-create-page btn-primary rounded-circle p-0 waves-effect waves-light"
-          onClick={navigationContainer.openPageCreateModal}
-        >
-          <CreatePageIcon />
-        </button>
-      </div>
+      {renderEditorIcon()}
       <div className={`rounded-circle position-absolute ${animateClasses}`} style={{ bottom: 0, right: 0 }}>
         <button type="button" className="btn btn-light btn-scroll-to-top rounded-circle p-0" onClick={() => navigationContainer.smoothScrollIntoView()}>
           <ReturnTopIcon />
