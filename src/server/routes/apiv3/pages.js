@@ -92,7 +92,6 @@ module.exports = (crowi) => {
 
     try {
       const result = await Page.findListWithDescendants(path, req.user, queryOptions);
-      console.log(result);
       return res.apiv3(result);
     }
     catch (err) {
