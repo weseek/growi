@@ -117,7 +117,7 @@ module.exports = (crowi) => {
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const globalNotificationService = crowi.getGlobalNotificationService();
-  const { Page, GlobalNotificationSetting } = crowi.models;
+  const { Page, GlobalNotificationSetting, User } = crowi.models;
   const { exportService } = crowi;
 
   const validator = {
@@ -194,6 +194,20 @@ module.exports = (crowi) => {
     const result = { page };
     result.seenUser = page.seenUsers;
     return res.apiv3({ result });
+  });
+
+  router.get('/likeInfo', async(req, res) => {
+    const pageId = req.query._id;
+    const likeInfo = {};
+    try {
+      likeInfo.users = await Page.findById(pageId).populate('liker', User.USER_PUBLIC_FIELDS);
+      likeInfo.sumOfLikers = likeInfo.users.liker.length;
+
+      return res.apiv3({ likeInfo });
+    }
+    catch (err) {
+      logger.error('error like info', err);
+    }
   });
 
   /**
