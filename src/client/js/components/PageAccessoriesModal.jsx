@@ -89,7 +89,7 @@ const PageAccessoriesModal = (props) => {
               </NavLink>
             </NavItem>
           </Nav>
-          <TabContent activeTab={activeTab}>
+          <TabContent activeTab={activeTab} className="m-5">
 
             <TabPane tabId="pagelist">
               {pageAccessoriesContainer.state.activeComponents.has('pagelist') && <PageList />}
