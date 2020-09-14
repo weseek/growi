@@ -25,6 +25,10 @@ class PageTimeline extends React.Component {
       // TODO: remove after when timeline is implemented with React and inject data with props
       pages: this.props.pages,
     };
+    console.log('constructor');
+    console.log(this.state.activePage);
+    console.log(this.state.totalPageItems);
+    console.log(this.state.limit);
 
     this.handlePage = this.handlePage.bind(this);
   }
@@ -47,14 +51,14 @@ class PageTimeline extends React.Component {
     });
   }
 
-  async componentDidMount() {
-    await this.handlePage(1);
-  }
-
   async componentWillMount() {
     const { appContainer } = this.props;
     // initialize GrowiRenderer
     this.growiRenderer = appContainer.getRenderer('timeline');
+    await this.handlePage(1);
+  }
+
+  async componentDidMount() {
     await this.handlePage(1);
   }
 
