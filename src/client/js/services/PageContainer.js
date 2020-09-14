@@ -145,20 +145,10 @@ export default class PageContainer extends Container {
     }
 
 
-    const likerListElem = document.getElementById('liker-list');
-    if (likerListElem != null) {
-      const { userIdsStr, sumOfLikers } = likerListElem.dataset;
-      this.setState({ sumOfLikers });
-
-      if (userIdsStr === '') {
-        return;
-      }
-
-      const { users } = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr });
-      this.setState({ likerUsers: users });
-
-      this.checkAndUpdateImageUrlCached(users);
-    }
+    const likeInfo = await this.appContainer.apiv3Get('/page/likeInfo', { _id: this.state.pageId });
+    this.state.sumOfLikers = likeInfo.data.likeInfo.sumOfLikers;
+    this.state.likerUsers = likeInfo.data.likeInfo.users.liker;
+    this.checkAndUpdateImageUrlCached(this.state.likerUsers);
   }
 
   async checkAndUpdateImageUrlCached(users) {
