@@ -12,6 +12,7 @@ import PageDeleteModal from '../PageDeleteModal';
 import PageRenameModal from '../PageRenameModal';
 import PageDuplicateModal from '../PageDuplicateModal';
 import CreateTemplateModal from '../CreateTemplateModal';
+import PagePresentationModal from '../PagePresentationModal';
 import PresentationIcon from '../Icons/PresentationIcon';
 
 
@@ -26,6 +27,7 @@ const PageManagement = (props) => {
   const [isPageDuplicateModalShown, setIsPageDuplicateModalShown] = useState(false);
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
   const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);
+  const [isPagePresentationModalShown, setIsPagePresentationModalShown] = useState(false);
 
   function openPageRenameModalHandler() {
     setIsPageRenameModalShown(true);
@@ -57,6 +59,14 @@ const PageManagement = (props) => {
 
   function closePageDeleteModalHandler() {
     setIsPageDeleteModalShown(false);
+  }
+
+  function openPagePresentationModalHandler() {
+    setIsPagePresentationModalShown(true);
+  }
+
+  function closePagePresentationModalHandler() {
+    setIsPagePresentationModalShown(false);
   }
 
 
@@ -99,7 +109,7 @@ const PageManagement = (props) => {
         <button className="dropdown-item" type="button" onClick={openPageDuplicateModalHandler}>
           <i className="icon-fw icon-docs"></i> { t('Duplicate') }
         </button>
-        <button className="dropdown-item toggle-presentation" type="button" href="?presentation=1">
+        <button className="dropdown-item" type="button" onClick={openPagePresentationModalHandler}>
           <i className="icon-fw"><PresentationIcon /></i><span className="d-none d-sm-inline"> { t('Presentation Mode') }</span>
         </button>
         <button type="button" className="dropdown-item" onClick={() => { exportPageHandler('md') }}>
@@ -150,6 +160,11 @@ const PageManagement = (props) => {
           onClose={closePageDeleteModalHandler}
           path={path}
           isAbleToDeleteCompletely={isAbleToDeleteCompletely}
+        />
+        <PagePresentationModal
+          isOpen={isPagePresentationModalShown}
+          onClose={closePagePresentationModalHandler}
+          href="?presentation=1"
         />
       </>
     );
