@@ -47,20 +47,21 @@ class PageTimeline extends React.Component {
     });
   }
 
-  async componentWillMount() {
+  componentWillMount() {
     const { appContainer } = this.props;
     // initialize GrowiRenderer
     this.growiRenderer = appContainer.getRenderer('timeline');
-    await this.handlePage(1);
   }
 
   async componentDidMount() {
     await this.handlePage(1);
+    this.setState({
+      activePage: 1,
+    });
   }
 
   render() {
     const { pages } = this.state;
-
     if (pages == null) {
       return <React.Fragment></React.Fragment>;
     }
