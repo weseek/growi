@@ -24,6 +24,18 @@
   }
 
   .grw-page-accessories-modal {
+    .modal-body {
+      padding: 0rem;
+    }
+    .nav-title {
+      //li.button etc
+      li.nav-link {
+        padding: 0rem;
+        a.nav-link {
+          padding: 1rem 1.5rem;
+        }
+      }
+    }
     .table-top-icon {
       margin-right: 5px;
     }
