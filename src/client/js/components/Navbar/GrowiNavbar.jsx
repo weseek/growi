@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { withTranslation } from 'react-i18next';
-
 import { useTranslation } from '~/i18n';
 import {
   useAppTitle, useConfidential, useCurrentUser,
@@ -14,7 +12,7 @@ import AppContainer from '../../services/AppContainer';
 
 import GrowiLogo from '../GrowiLogo';
 
-// import PersonalDropdown from './PersonalDropdown';
+import PersonalDropdown from './PersonalDropdown';
 import GlobalSearch from './GlobalSearch';
 
 
@@ -60,7 +58,7 @@ const NavbarRight = (props) => {
       </li>
 
       <li className="grw-personal-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret">
-        {/* <PersonalDropdown /> */}
+        <PersonalDropdown />
       </li>
     </>
   );

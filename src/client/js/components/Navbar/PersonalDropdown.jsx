@@ -1,3 +1,4 @@
+import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
@@ -5,18 +6,12 @@ import { withTranslation } from 'react-i18next';
 
 import { UncontrolledTooltip } from 'reactstrap';
 
+import { useTranslation } from '~/i18n';
+import { useCurrentUser } from '~/stores/context';
+
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import NavigationContainer from '../../services/NavigationContainer';
-
-import {
-  isUserPreferenceExists,
-  isDarkMode as isDarkModeByUtil,
-  applyColorScheme,
-  removeUserPreference,
-  updateUserPreference,
-  updateUserPreferenceWithOsSettings,
-} from '../../util/color-scheme';
 
 import UserPicture from '../User/UserPicture';
 
@@ -26,13 +21,43 @@ import MoonIcon from '../Icons/MoonIcon';
 import SunIcon from '../Icons/SunIcon';
 
 
+const PersonalDropdownButton = () => {
+  const { data: user } = useCurrentUser();
+
+  return (
+    // remove .dropdown-toggle for hide caret
+    // See https://stackoverflow.com/a/44577512/13183572
+    <a className="px-md-2 nav-link waves-effect waves-light" data-toggle="dropdown">
+      <UserPicture user={user} noLink noTooltip /><span className="d-none d-lg-inline-block">&nbsp;{user.name}</span>
+    </a>
+  );
+};
+
+
 const PersonalDropdown = (props) => {
 
-  const { t, appContainer, navigationContainer } = props;
-  const user = appContainer.currentUser || {};
+  const { t } = useTranslation();
+  const { data: user } = useCurrentUser();
+
+  // dynamic import
+  const {
+    isUserPreferenceExists,
+    isDarkMode: isDarkModeByUtil,
+    applyColorScheme,
+    removeUserPreference,
+    updateUserPreference,
+    updateUserPreferenceWithOsSettings,
+  } = dynamic(() => import('../../util/color-scheme'), { ssr: false });
 
   const [useOsSettings, setOsSettings] = useState(!isUserPreferenceExists());
   const [isDarkMode, setIsDarkMode] = useState(isDarkModeByUtil());
+
+  // SSR
+  if (!process.browser) {
+    return <PersonalDropdownButton />;
+  }
+
+  const { appContainer, navigationContainer } = props;
 
   const logoutHandler = () => {
     const { interceptorManager } = appContainer;
@@ -97,12 +122,7 @@ const PersonalDropdown = (props) => {
 
   return (
     <>
-      {/* Button */}
-      {/* remove .dropdown-toggle for hide caret */}
-      {/* See https://stackoverflow.com/a/44577512/13183572 */}
-      <a className="px-md-2 nav-link waves-effect waves-light" data-toggle="dropdown">
-        <UserPicture user={user} noLink noTooltip /><span className="d-none d-lg-inline-block">&nbsp;{user.name}</span>
-      </a>
+      <PersonalDropdownButton />
 
       {/* Menu */}
       <div className="dropdown-menu dropdown-menu-right">
