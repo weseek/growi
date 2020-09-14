@@ -51,10 +51,11 @@ class PageTimeline extends React.Component {
     await this.handlePage(1);
   }
 
-  componentWillMount() {
+  async componentWillMount() {
     const { appContainer } = this.props;
     // initialize GrowiRenderer
     this.growiRenderer = appContainer.getRenderer('timeline');
+    await this.handlePage(1);
   }
 
   render() {
