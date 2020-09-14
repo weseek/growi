@@ -15,6 +15,8 @@ const logger = loggerFactory('growi:cli:Fab');
 const Fab = (props) => {
   const { navigationContainer, appContainer } = props;
   const { currentUser } = appContainer;
+  // see: https://regex101.com/r/1U1XBQ/1
+  const isAdminPage = window.location.pathname.match(/^\/admin(\/.*)*$/) != null;
 
   const [animateClasses, setAnimateClasses] = useState('invisible');
 
@@ -59,7 +61,7 @@ const Fab = (props) => {
 
   return (
     <div className="grw-fab d-none d-md-block">
-      {currentUser != null && renderPageCreateButton()}
+      {(currentUser != null && !isAdminPage) && renderPageCreateButton()}
       <div className={`rounded-circle position-absolute ${animateClasses}`} style={{ bottom: 0, right: 0 }}>
         <button type="button" className="btn btn-light btn-scroll-to-top rounded-circle p-0" onClick={() => navigationContainer.smoothScrollIntoView()}>
           <ReturnTopIcon />
