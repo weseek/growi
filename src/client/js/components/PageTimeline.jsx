@@ -25,10 +25,6 @@ class PageTimeline extends React.Component {
       // TODO: remove after when timeline is implemented with React and inject data with props
       pages: this.props.pages,
     };
-    console.log('constructor');
-    console.log(this.state.activePage);
-    console.log(this.state.totalPageItems);
-    console.log(this.state.limit);
 
     this.handlePage = this.handlePage.bind(this);
   }
