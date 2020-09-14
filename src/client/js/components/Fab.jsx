@@ -73,8 +73,8 @@ const Fab = (props) => {
 };
 
 Fab.propTypes = {
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 
-export default withUnstatedContainers(Fab, [NavigationContainer, AppContainer]);
+export default withUnstatedContainers(Fab, [AppContainer, NavigationContainer]);
