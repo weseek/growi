@@ -1,25 +1,33 @@
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
-import Link from 'next/link';
-
-import { useTranslation } from '~/i18n';
 
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import loggerFactory from '~/utils/logger';
 
 import Layout from '../components/Layout';
 
-import { useCurrentUser } from '../stores/context';
+import {
+  useCurrentUser, useAppTitle, useSiteUrl, useConfidential,
+} from '../stores/context';
 
 const logger = loggerFactory('growi:pages:all');
 
 type Props = {
-  page: any,
   currentUser: any,
+
+  page: any,
+
+  appTitle: string,
+  siteUrl: string,
+  confidential: string,
   isForbidden: boolean,
 };
 
 const GrowiPage: NextPage<Props> = (props: Props) => {
-  const { t } = useTranslation();
+
+  useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
+  useAppTitle(props.appTitle);
+  useSiteUrl(props.siteUrl);
+  useConfidential(props.confidential);
 
   let page: any;
   let header: string;
@@ -32,7 +40,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
     header = props.isForbidden ? 'Forbidden' : 'Not found';
   }
 
-  useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
 
   return (
     <Layout title="GROWI">
@@ -50,7 +57,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const PageModel = crowi.model('Page');
-  const { pageService } = crowi;
+  const { appService, pageService } = crowi;
 
   const { path, user } = req;
 
@@ -84,6 +91,10 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   if (user != null) {
     props.currentUser = JSON.stringify(user.toObject());
   }
+
+  props.appTitle = appService.getAppTitle();
+  props.siteUrl = appService.getSiteUrl();
+  props.confidential = appService.getAppConfidential();
 
   return {
     props: {

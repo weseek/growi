@@ -3,6 +3,10 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
+import {
+  useAppTitle, useSiteUrl, useConfidential,
+} from '~/stores/context';
+
 import { withUnstatedContainers } from '../UnstatedUtils';
 import NavigationContainer from '../../services/NavigationContainer';
 import AppContainer from '../../services/AppContainer';
@@ -11,6 +15,29 @@ import GrowiLogo from '../GrowiLogo';
 
 // import PersonalDropdown from './PersonalDropdown';
 import GlobalSearch from './GlobalSearch';
+
+
+const AppTilte = () => {
+  const { data } = useAppTitle();
+  return <>{data || 'GROWI'}</>;
+};
+
+const Confidential = () => {
+  const { data } = useConfidential();
+
+  if (data == null) {
+    return null;
+  }
+
+  return (
+    <li className="nav-item confidential text-light">
+      <i className="icon-info d-md-none" data-toggle="tooltip" title={data} />
+      <span className="d-none d-md-inline">
+        {data}
+      </span>
+    </li>
+  );
+};
 
 class GrowiNavbar extends React.Component {
 
@@ -39,20 +66,6 @@ class GrowiNavbar extends React.Component {
     );
   }
 
-  renderConfidential() {
-    const { appContainer } = this.props;
-    const { crowi } = appContainer.config;
-
-    return (
-      <li className="nav-item confidential text-light">
-        <i className="icon-info d-md-none" data-toggle="tooltip" title={crowi.confidential} />
-        <span className="d-none d-md-inline">
-          {crowi.confidential}
-        </span>
-      </li>
-    );
-  }
-
   render() {
     const { appContainer, navigationContainer } = this.props;
     // const { crowi, isSearchServiceConfigured } = appContainer.config;
@@ -69,16 +82,16 @@ class GrowiNavbar extends React.Component {
         </div>
 
         <div className="grw-app-title d-none d-md-block">
-          {/* {crowi.title} */}
+          <AppTilte />
         </div>
 
 
         {/* Navbar Right  */}
         <ul className="navbar-nav ml-auto">
-          {this.renderNavbarRight()}
+          {/* {this.renderNavbarRight()} */}
         </ul>
 
-        {/* {crowi.confidential != null && this.renderConfidential()} */}
+        <Confidential />
 
         {/* { isSearchServiceConfigured && !isDeviceSmallerThanMd && (
           <div className="grw-global-search grw-global-search-top position-absolute">
