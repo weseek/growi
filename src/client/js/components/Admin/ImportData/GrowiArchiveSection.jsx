@@ -99,6 +99,12 @@ class GrowiArchiveSection extends React.Component {
               onUpload={this.handleUpload}
             />
           )}
+
+        <div className="card well mb-0 small">
+          <ul>
+            <li>ユーザー名とメールアドレスが同じ場合、インポートすることができません。</li>
+          </ul>
+        </div>
       </Fragment>
     );
   }
