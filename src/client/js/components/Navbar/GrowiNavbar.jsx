@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
+import { useTranslation } from '~/i18n';
 import {
   useAppTitle, useConfidential, useCurrentUser,
 } from '~/stores/context';
@@ -40,7 +41,8 @@ const Confidential = () => {
 };
 
 const NavbarRight = (props) => {
-  const { t, navigationContainer } = props;
+  const { navigationContainer } = props;
+  const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
 
   // render login button
@@ -64,8 +66,6 @@ const NavbarRight = (props) => {
   );
 };
 NavbarRight.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
-
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 
@@ -108,17 +108,9 @@ const GrowiNavbar = (props) => {
 
 };
 
-/**
- * Wrapper component for using unstated
- */
-const GrowiNavbarWrapper = withUnstatedContainers(GrowiNavbar, [AppContainer, NavigationContainer]);
-
-
 GrowiNavbar.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
-
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 
-export default withTranslation()(GrowiNavbarWrapper);
+export default withUnstatedContainers(GrowiNavbar, [AppContainer, NavigationContainer]);
