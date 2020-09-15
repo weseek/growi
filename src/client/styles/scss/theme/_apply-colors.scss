@@ -118,6 +118,36 @@ pre:not(.hljs):not(.CodeMirror-line) {
   }
 }
 
+// Pagination
+ul.pagination {
+  li.page-item.disabled {
+    button.page-link {
+      color: $gray-400;
+    }
+  }
+  li.page-item.active {
+    button.page-link {
+      color: color-yiq($primary);
+      background-color: $primary;
+      &:hover {
+        color: color-yiq($primary);
+        background-color: $primary;
+      }
+    }
+  }
+  li.page-item {
+    button.page-link {
+      color: $primary;
+      border-color: $secondary;
+      &:hover,
+      &:active,
+      &:focus {
+        color: $primary;
+      }
+    }
+  }
+}
+
 //
 //== Apply to Handsontable
 //
@@ -474,37 +504,5 @@ mark.rbt-highlight-text {
 
   .btn-scroll-to-top {
     fill: $gray-900;
-  }
-}
-
-/*
-* Pagination
-*/
-ul.pagination {
-  li.page-item.disabled {
-    button.page-link {
-      color: $gray-400;
-    }
-  }
-  li.page-item.active {
-    button.page-link {
-      color: color-yiq($primary);
-      background-color: $primary;
-      &:hover {
-        color: color-yiq($primary);
-        background-color: $primary;
-      }
-    }
-  }
-  li.page-item {
-    button.page-link {
-      color: $primary;
-      border-color: $secondary;
-      &:hover,
-      &:active,
-      &:focus {
-        color: $primary;
-      }
-    }
   }
 }
