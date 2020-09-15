@@ -150,12 +150,15 @@ class PageAttachment extends React.Component {
 
         {deleteAttachmentModal}
 
-        <PaginationWrapper
-          activePage={this.state.activePage}
-          changePage={this.handlePage}
-          totalItemsCount={this.state.totalAttachments}
-          pagingLimit={this.state.limit}
-        />
+        <div className="d-flex justify-content-center">
+          <PaginationWrapper
+            activePage={this.state.activePage}
+            changePage={this.handlePage}
+            totalItemsCount={this.state.totalAttachments}
+            pagingLimit={this.state.limit}
+          />
+        </div>
+
       </div>
     );
   }

@@ -62,12 +62,16 @@ const PageList = (props) => {
       <ul className="page-list-ul page-list-ul-flat mb-3">
         {pageList}
       </ul>
-      <PaginationWrapper
-        activePage={activePage}
-        changePage={setPageNumber}
-        totalItemsCount={totalPages}
-        pagingLimit={limit}
-      />
+      <div
+        className="d-flex justify-content-center"
+      >
+        <PaginationWrapper
+          activePage={activePage}
+          changePage={setPageNumber}
+          totalItemsCount={totalPages}
+          pagingLimit={limit}
+        />
+      </div>
     </div>
   );
 

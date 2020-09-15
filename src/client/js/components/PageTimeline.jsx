@@ -85,12 +85,14 @@ class PageTimeline extends React.Component {
             </div>
           );
         }) }
-        <PaginationWrapper
-          activePage={this.state.activePage}
-          changePage={this.handlePage}
-          totalItemsCount={this.state.totalPageItems}
-          pagingLimit={this.state.limit}
-        />
+        <div className="d-flex justify-content-center">
+          <PaginationWrapper
+            activePage={this.state.activePage}
+            changePage={this.handlePage}
+            totalItemsCount={this.state.totalPageItems}
+            pagingLimit={this.state.limit}
+          />
+        </div>
       </div>
     );
 

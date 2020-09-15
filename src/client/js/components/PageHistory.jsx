@@ -53,7 +53,7 @@ function PageHistory(props) {
 
   function pager() {
     return (
-      <div className="my-3">
+      <div className="my-3 d-flex justify-content-center">
         <PaginationWrapper
           activePage={pageHistoryContainer.state.activePage}
           changePage={handlePage}
@@ -67,7 +67,6 @@ function PageHistory(props) {
 
   return (
     <div className="mt-4">
-      {pager()}
       <PageRevisionList
         revisions={pageHistoryContainer.state.revisions}
         diffOpened={pageHistoryContainer.state.diffOpened}
