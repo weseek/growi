@@ -46,6 +46,13 @@
     font-size: 16px;
   }
 
+  .total-bookmarks {
+    width: 8px;
+    height: 16px;
+    padding: 0.5em 0 0 0;
+    font-size: 16px;
+  }
+
   ul.authors {
     padding: 0.7em 0 0.7em 1.5em;
     margin-bottom: 0;
@@ -92,6 +99,12 @@
     }
 
     .total-likes {
+      width: 6px;
+      height: 12px;
+      font-size: 12px;
+    }
+
+    .total-bookmarks {
       width: 6px;
       height: 12px;
       font-size: 12px;
