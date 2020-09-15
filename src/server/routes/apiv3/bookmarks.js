@@ -96,9 +96,11 @@ module.exports = (crowi) => {
    */
   router.get('/', accessTokenParser, loginRequired, async(req, res) => {
     const { pageId } = req.query;
+    const bookmark = {};
 
     try {
-      const bookmark = await Bookmark.findByPageIdAndUserId(pageId, req.user);
+      bookmark.page = await Bookmark.findByPageIdAndUserId(pageId, req.user);
+      bookmark.sumOfBookmarks = await Bookmark.countByPageId(pageId);
       return res.apiv3({ bookmark });
     }
     catch (err) {
@@ -178,21 +180,6 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Bookmark'
    */
-
-
-  router.get('/count-bookmarks', accessTokenParser, loginRequired, validator.countBookmarks, apiV3FormValidator, async(req, res) => {
-    const { pageId } = req.query;
-
-    try {
-      const sumOfBookmarks = await Bookmark.countByPageId(pageId);
-      return res.apiv3({ sumOfBookmarks });
-    }
-    catch (err) {
-      logger.error('get-bookmarks-list-failed', err);
-      return res.apiv3Err(err, 500);
-    }
-  });
-
 
   return router;
 };
