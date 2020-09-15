@@ -123,6 +123,7 @@ const PageAccessoriesModal = (props) => {
     };
   });
 
+
   return (
     <React.Fragment>
       <Modal size="xl" isOpen={props.isOpen} toggle={closeModalHandler} className="grw-page-accessories-modal">
@@ -139,7 +140,7 @@ const PageAccessoriesModal = (props) => {
               );
             })}
           </Nav>
-          <hr ref={sliderEl} className="my-0" />
+          <hr ref={sliderEl} id="grw-nav-slide-hr" className="my-0" />
           <TabContent activeTab={activeTab}>
             <TabPane tabId="pagelist">
               {pageAccessoriesContainer.state.activeComponents.has('pagelist') && <PageList />}
