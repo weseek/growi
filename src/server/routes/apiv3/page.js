@@ -125,6 +125,10 @@ module.exports = (crowi) => {
       body('pageId').isString(),
       body('bool').isBoolean(),
     ],
+    likeInfo: [
+      query('_id').isMongoId(),
+      query('user._id').isMongoId(),
+    ],
     export: [
       query('format').isString().isIn(['md', 'pdf']),
       query('revisionId').isString(),
@@ -196,7 +200,7 @@ module.exports = (crowi) => {
     return res.apiv3({ result });
   });
 
-  router.get('/likeInfo', async(req, res) => {
+  router.get('/like-info', loginRequired, validator.likeInfo, async(req, res) => {
     const pageId = req.query._id;
     const userId = req.user._id;
     try {
