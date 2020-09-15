@@ -63,11 +63,11 @@ module.exports = (crowi) => {
 
   const validator = {
     bookmarks: [
-      body('pageId').isString(),
+      body('pageId').isMongoId(),
       body('bool').isBoolean(),
     ],
-    CountBookmarks: [
-      query('pageId').isString(),
+    countBookmarks: [
+      query('pageId').isMongoId(),
     ],
   };
 
@@ -180,7 +180,7 @@ module.exports = (crowi) => {
    */
 
 
-  router.get('/count-bookmarks', accessTokenParser, loginRequired, validator.CountBookmarks, apiV3FormValidator, async(req, res) => {
+  router.get('/count-bookmarks', accessTokenParser, loginRequired, validator.countBookmarks, apiV3FormValidator, async(req, res) => {
     const { pageId } = req.query;
 
     try {
