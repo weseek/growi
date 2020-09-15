@@ -202,6 +202,10 @@
       "test_connection": "Test connection to qiita:team"
     },
     "import": "Import",
+    "skip_username_and_email_when_overlapped": "Skip username and email using same username and email in new environment",
+    "prepare_new_account_for_migration":"Prepare new account for migration",
+    "archive_data_import_detail":"More Details? Ckick here.",
+    "admin_archive_data_import_guide_url":"https://docs.growi.org/en/admin-guide/management-cookbook/import.html",
     "page_skip": "Pages with a name that already exists on GROWI are not imported",
     "Directory_hierarchy_tag": "Directory hierarchy tag"
   },
