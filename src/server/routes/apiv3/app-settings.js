@@ -222,11 +222,11 @@ module.exports = (crowi) => {
       smtpPassword: crowi.configManager.getConfig('crowi', 'mail:smtpPassword'),
       sesAccessKeyId: crowi.configManager.getConfig('crowi', 'mail:sesAccessKeyId'),
       sesSecretAccessKey: crowi.configManager.getConfig('crowi', 'mail:sesSecretAccessKey'),
-      s3Region: crowi.configManager.getConfig('crowi', 'aws:region'),
-      s3CustomEndpoint: crowi.configManager.getConfig('crowi', 'aws:customEndpoint'),
-      s3Bucket: crowi.configManager.getConfig('crowi', 'aws:bucket'),
-      s3AccessKeyId: crowi.configManager.getConfig('crowi', 'aws:accessKeyId'),
-      s3SecretAccessKey: crowi.configManager.getConfig('crowi', 'aws:secretAccessKey'),
+      s3Region: crowi.configManager.getConfig('crowi', 'aws:s3Region'),
+      s3CustomEndpoint: crowi.configManager.getConfig('crowi', 'aws:s3CustomEndpoint'),
+      s3Bucket: crowi.configManager.getConfig('crowi', 'aws:s3Bucket'),
+      s3AccessKeyId: crowi.configManager.getConfig('crowi', 'aws:s3AccessKeyId'),
+      s3SecretAccessKey: crowi.configManager.getConfig('crowi', 'aws:s3SecretAccessKey'),
       envGcsApiKeyJsonPath: crowi.configManager.getConfigFromEnvVars('crowi', 'gcs:apiKeyJsonPath'),
       envGcsBucket: crowi.configManager.getConfigFromEnvVars('crowi', 'gcs:bucket'),
       envGcsUploadNamespace: crowi.configManager.getConfigFromEnvVars('crowi', 'gcs:uploadNamespace'),
@@ -562,11 +562,11 @@ module.exports = (crowi) => {
    */
   router.put('/aws-setting', loginRequiredStrictly, adminRequired, csrf, validator.awsSetting, apiV3FormValidator, async(req, res) => {
     const requestAwsSettingParams = {
-      'aws:region': req.body.s3Region,
-      'aws:customEndpoint': req.body.s3CustomEndpoint,
-      'aws:bucket': req.body.s3Bucket,
-      'aws:accessKeyId': req.body.s3AccessKeyId,
-      'aws:secretAccessKey': req.body.s3SecretAccessKey,
+      'aws:s3Region': req.body.s3Region,
+      'aws:s3CustomEndpoint': req.body.s3CustomEndpoint,
+      'aws:s3Bucket': req.body.s3Bucket,
+      'aws:s3AccessKeyId': req.body.s3AccessKeyId,
+      'aws:s3SecretAccessKey': req.body.s3SecretAccessKey,
     };
 
     try {
@@ -575,11 +575,11 @@ module.exports = (crowi) => {
       // TODO GW-3797 re-setup file uploader
 
       const awsSettingParams = {
-        s3Region: crowi.configManager.getConfig('crowi', 'aws:region'),
-        s3CustomEndpoint: crowi.configManager.getConfig('crowi', 'aws:customEndpoint'),
-        s3Bucket: crowi.configManager.getConfig('crowi', 'aws:bucket'),
-        s3AccessKeyId: crowi.configManager.getConfig('crowi', 'aws:accessKeyId'),
-        s3SecretAccessKey: crowi.configManager.getConfig('crowi', 'aws:secretAccessKey'),
+        s3Region: crowi.configManager.getConfig('crowi', 'aws:s3Region'),
+        s3CustomEndpoint: crowi.configManager.getConfig('crowi', 'aws:s3CustomEndpoint'),
+        s3Bucket: crowi.configManager.getConfig('crowi', 'aws:s3Bucket'),
+        s3AccessKeyId: crowi.configManager.getConfig('crowi', 'aws:s3AccessKeyId'),
+        s3SecretAccessKey: crowi.configManager.getConfig('crowi', 'aws:s3SecretAccessKey'),
       };
       return res.apiv3({ awsSettingParams });
     }
