@@ -48,7 +48,7 @@ export default class PageContainer extends Container {
       revisionAuthor: JSON.parse(mainContent.getAttribute('data-page-revision-author')),
       path,
       tocHtml: '',
-      isLiked: JSON.parse(mainContent.getAttribute('data-page-is-liked')),
+      isLiked: false,
       seenUsers: [],
       likerUsers: [],
       sumOfSeenUsers: 0,
@@ -144,9 +144,9 @@ export default class PageContainer extends Container {
       this.checkAndUpdateImageUrlCached(users);
     }
 
-
     const likeInfo = await this.appContainer.apiv3Get('/page/likeInfo', { _id: this.state.pageId });
     this.state.sumOfLikers = likeInfo.data.likeInfo.sumOfLikers;
+    console.log(this.state.sumOfLikers);
     this.state.likerUsers = likeInfo.data.likeInfo.users.liker;
     this.checkAndUpdateImageUrlCached(this.state.likerUsers);
   }
