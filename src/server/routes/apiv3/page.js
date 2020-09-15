@@ -125,6 +125,10 @@ module.exports = (crowi) => {
       body('pageId').isString(),
       body('bool').isBoolean(),
     ],
+    likeInfo: [
+      query('_id').isMongoId(),
+      query('user._id').isMongoId(),
+    ],
     export: [
       query('format').isString().isIn(['md', 'pdf']),
       query('revisionId').isString(),
@@ -196,17 +200,20 @@ module.exports = (crowi) => {
     return res.apiv3({ result });
   });
 
-  router.get('/likeInfo', async(req, res) => {
+  router.get('/like-info', loginRequired, validator.likeInfo, async(req, res) => {
     const pageId = req.query._id;
-    const likeInfo = {};
+    const userId = req.user._id;
     try {
-      likeInfo.users = await Page.findById(pageId).populate('liker', User.USER_PUBLIC_FIELDS);
-      likeInfo.sumOfLikers = likeInfo.users.liker.length;
+      const page = await Page.findById(pageId);
+      const users = await Page.findById(pageId).populate('liker', User.USER_PUBLIC_FIELDS);
+      const sumOfLikers = page.liker.length;
+      const isLiked = page.liker.includes(userId);
 
-      return res.apiv3({ likeInfo });
+      return res.apiv3({ users, sumOfLikers, isLiked });
     }
     catch (err) {
       logger.error('error like info', err);
+      return res.apiv3Err(err, 500);
     }
   });
 

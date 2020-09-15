@@ -48,7 +48,7 @@ export default class PageContainer extends Container {
       revisionAuthor: JSON.parse(mainContent.getAttribute('data-page-revision-author')),
       path,
       tocHtml: '',
-      isLiked: JSON.parse(mainContent.getAttribute('data-page-is-liked')),
+      isLiked: false,
       isBookmarked: false,
       seenUsers: [],
       likerUsers: [],
@@ -146,10 +146,12 @@ export default class PageContainer extends Container {
       this.checkAndUpdateImageUrlCached(users);
     }
 
-
-    const likeInfo = await this.appContainer.apiv3Get('/page/likeInfo', { _id: this.state.pageId });
-    this.state.sumOfLikers = likeInfo.data.likeInfo.sumOfLikers;
-    this.state.likerUsers = likeInfo.data.likeInfo.users.liker;
+    const like = await this.appContainer.apiv3Get('/page/like-info', { _id: this.state.pageId });
+    this.setState({
+      sumOfLikers: like.data.sumOfLikers,
+      likerUsers: like.data.users.liker,
+      isLiked: like.data.isLiked,
+    });
     this.checkAndUpdateImageUrlCached(this.state.likerUsers);
   }
 
