@@ -147,26 +147,28 @@ const PageAccessoriesModal = (props) => {
             </NavItem>
           </Nav>
           <hr id="grw-nav-slide-hr" className="my-0"></hr>
-          <TabContent activeTab={activeTab}>
+          <div className="page-list-container-create">
+            <TabContent activeTab={activeTab}>
 
-            <TabPane tabId="pagelist">
-              {pageAccessoriesContainer.state.activeComponents.has('pagelist') && <PageList />}
-            </TabPane>
-            <TabPane tabId="timeline" className="p-4">
-              {pageAccessoriesContainer.state.activeComponents.has('timeline') && <PageTimeline /> }
-            </TabPane>
-            <TabPane tabId="page-history">
-              <div className="overflow-auto">
-                {pageAccessoriesContainer.state.activeComponents.has('page-history') && <PageHistory /> }
-              </div>
-            </TabPane>
-            <TabPane tabId="attachment" className="p-4">
-              {pageAccessoriesContainer.state.activeComponents.has('attachment') && <PageAttachment />}
-            </TabPane>
-            <TabPane tabId="share-link" className="p-4">
-              {pageAccessoriesContainer.state.activeComponents.has('share-link') && <ShareLink />}
-            </TabPane>
-          </TabContent>
+              <TabPane tabId="pagelist">
+                {pageAccessoriesContainer.state.activeComponents.has('pagelist') && <PageList />}
+              </TabPane>
+              <TabPane tabId="timeline" className="p-4">
+                {pageAccessoriesContainer.state.activeComponents.has('timeline') && <PageTimeline /> }
+              </TabPane>
+              <TabPane tabId="page-history">
+                <div className="overflow-auto">
+                  {pageAccessoriesContainer.state.activeComponents.has('page-history') && <PageHistory /> }
+                </div>
+              </TabPane>
+              <TabPane tabId="attachment" className="p-4">
+                {pageAccessoriesContainer.state.activeComponents.has('attachment') && <PageAttachment />}
+              </TabPane>
+              <TabPane tabId="share-link" className="p-4">
+                {pageAccessoriesContainer.state.activeComponents.has('share-link') && <ShareLink />}
+              </TabPane>
+            </TabContent>
+          </div>
         </ModalBody>
       </Modal>
     </React.Fragment>
