@@ -144,10 +144,12 @@ export default class PageContainer extends Container {
       this.checkAndUpdateImageUrlCached(users);
     }
 
-    const like = await this.appContainer.apiv3Get('/page/likeInfo', { _id: this.state.pageId });
-    this.setState({ sumOfLikers: like.data.likeInfo.sumOfLikers });
-    this.setState({ likerUsers: like.data.likeInfo.users.liker });
-    this.setState({ isLiked: like.data.likeInfo.isLiked });
+    const like = await this.appContainer.apiv3Get('/page/like-info', { _id: this.state.pageId });
+    this.setState({
+      sumOfLikers: like.data.sumOfLikers,
+      likerUsers: like.data.users.liker,
+      isLiked: like.data.isLiked,
+    });
     this.checkAndUpdateImageUrlCached(this.state.likerUsers);
   }
 
