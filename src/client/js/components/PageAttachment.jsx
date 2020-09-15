@@ -158,7 +158,6 @@ class PageAttachment extends React.Component {
             pagingLimit={this.state.limit}
           />
         </div>
-
       </div>
     );
   }
