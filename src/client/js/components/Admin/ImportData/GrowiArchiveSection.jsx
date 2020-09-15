@@ -113,7 +113,6 @@ class GrowiArchiveSection extends React.Component {
               onUpload={this.handleUpload}
             />
           )}
-
       </Fragment>
     );
   }
