@@ -550,6 +550,11 @@ Crowi.prototype.setUpFileUpload = async function() {
   const FileUploadService = require('../service/file-uploader');
   if (this.fileUploadService == null) {
     this.fileUploadService = new FileUploadService(this);
+
+    // add as a message handler
+    if (this.s2sMessagingService != null) {
+      this.s2sMessagingService.addMessageHandler(this.fileUploadService);
+    }
   }
 };
 

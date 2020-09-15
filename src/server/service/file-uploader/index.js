@@ -1,6 +1,6 @@
 const logger = require('@alias/logger')('growi:service:FileUploaderServise');
 const Gridfs = require('./gridfs');
-const S2sMessagingServiceDelegator = require('./base');
+const S2sMessagingServiceDelegator = require('../s2s-messaging/base');
 
 const envToModuleMappings = {
   aws:     'aws',
