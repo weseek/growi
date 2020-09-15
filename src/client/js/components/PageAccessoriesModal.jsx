@@ -95,56 +95,61 @@ const PageAccessoriesModal = (props) => {
       <Modal size="xl" isOpen={props.isOpen} toggle={closeModalHandler} className="grw-page-accessories-modal">
         <ModalBody>
           <Nav className="nav-title" id="nav-title">
-            <NavItem type="button" className={`nav-link ${activeTab === 'pagelist' && 'active'}`}>
-              <NavLink
-                onClick={() => {
-                  switchActiveTab('pagelist');
-                }}
-              >
-                <PageListIcon />
-                {t('page_list')}
-              </NavLink>
-            </NavItem>
-            <NavItem type="button" className={`nav-link ${activeTab === 'timeline' && 'active'}`}>
-              <NavLink
-                onClick={() => {
-                  switchActiveTab('timeline');
-                }}
-              >
-                <TimeLineIcon />
-                {t('Timeline View')}
-              </NavLink>
-            </NavItem>
-            <NavItem type="button" className={`nav-link ${activeTab === 'page-history' && 'active'}`}>
-              <NavLink
-                onClick={() => {
-                  switchActiveTab('page-history');
-                }}
-              >
-                <RecentChangesIcon />
-                {t('History')}
-              </NavLink>
-            </NavItem>
-            <NavItem type="button" className={`nav-link ${activeTab === 'attachment' && 'active'}`}>
-              <NavLink
-                onClick={() => {
-                  switchActiveTab('attachment');
-                }}
-              >
-                <AttachmentIcon />
-                {t('attachment_data')}
-              </NavLink>
-            </NavItem>
-            <NavItem type="button" className={`nav-link ${activeTab === 'share-link' && 'active'}`}>
-              <NavLink
-                onClick={() => {
-                  switchActiveTab('share-link');
-                }}
-              >
-                <ShareLinkIcon />
-                {t('share_links.share_link_management')}
-              </NavLink>
-            </NavItem>
+            <div className="aaaaaaaaaa">
+              <NavItem type="button" className={`nav-link ${activeTab === 'pagelist' && 'active'}`}>
+                <NavLink
+                  onClick={() => {
+                    switchActiveTab('pagelist');
+                  }}
+                >
+                  <PageListIcon />
+                  {t('page_list')}
+                </NavLink>
+              </NavItem>
+              <NavItem type="button" className={`nav-link ${activeTab === 'timeline' && 'active'}`}>
+                <NavLink
+                  onClick={() => {
+                    switchActiveTab('timeline');
+                  }}
+                >
+                  <TimeLineIcon />
+                  {t('Timeline View')}
+                </NavLink>
+              </NavItem>
+              <NavItem type="button" className={`nav-link ${activeTab === 'page-history' && 'active'}`}>
+                <NavLink
+                  onClick={() => {
+                    switchActiveTab('page-history');
+                  }}
+                >
+                  <RecentChangesIcon />
+                  {t('History')}
+                </NavLink>
+              </NavItem>
+              <NavItem type="button" className={`nav-link ${activeTab === 'attachment' && 'active'}`}>
+                <NavLink
+                  onClick={() => {
+                    switchActiveTab('attachment');
+                  }}
+                >
+                  <AttachmentIcon />
+                  {t('attachment_data')}
+                </NavLink>
+              </NavItem>
+              <NavItem type="button" className={`nav-link ${activeTab === 'share-link' && 'active'}`}>
+                <NavLink
+                  onClick={() => {
+                    switchActiveTab('share-link');
+                  }}
+                >
+                  <ShareLinkIcon />
+                  {t('share_links.share_link_management')}
+                </NavLink>
+              </NavItem>
+            </div>
+            <button type="button" className="close " data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
           </Nav>
           <hr id="grw-nav-slide-hr" className="my-0"></hr>
           <div className="page-list-container-create">

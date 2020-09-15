@@ -1,4 +1,22 @@
 .grw-page-accessories-modal {
+  .nav-title {
+    flex-wrap: nowrap;
+    .aaaaaaaaaa {
+      li {
+        display: inline;
+      }
+      margin-right: auto;
+    }
+    //flex-wrap: wrap;
+    //position: relative;
+    .close {
+      //padding: 0rem 1.5rem;
+      //position: absolute;
+      // auto on the left force icon to the right even when there is no .modal-title
+      margin: auto 1.5rem;
+    }
+  }
+
   .nav-link svg {
     width: 20px;
     height: 20px;
