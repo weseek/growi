@@ -20,7 +20,12 @@ class LikeButton extends React.Component {
     const bool = !pageContainer.state.isLiked;
     try {
       await appContainer.apiv3.put('/page/likes', { pageId, bool });
-      pageContainer.setState({ sumOfLikers: pageContainer.state.sumOfLikers + 1 });
+      if (pageContainer.state.isLiked) {
+        pageContainer.setState({ sumOfLikers: pageContainer.state.sumOfLikers - 1 });
+      }
+      else {
+        pageContainer.setState({ sumOfLikers: pageContainer.state.sumOfLikers + 1 });
+      }
       pageContainer.setState({ isLiked: bool });
     }
     catch (err) {
