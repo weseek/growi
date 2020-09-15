@@ -16,7 +16,7 @@ class AttachmentService {
     const { fileUploadService } = this.crowi;
 
     // check limit
-    const res = await fileUploadService.fileUploader.checkLimit(file.size);
+    const res = await fileUploadService.checkLimit(file.size);
     if (!res.isUploadable) {
       throw new Error(res.errorMessage);
     }
@@ -31,7 +31,7 @@ class AttachmentService {
     let attachment;
     try {
       attachment = Attachment.createWithoutSave(pageId, user, fileStream, file.originalname, file.mimetype, file.size);
-      await fileUploadService.fileUploader.uploadFile(fileStream, attachment);
+      await fileUploadService.uploadFile(fileStream, attachment);
       await attachment.save();
     }
     catch (err) {
@@ -48,7 +48,7 @@ class AttachmentService {
     const { fileUploadService } = this.crowi;
 
     const attachment = await Attachment.findById(attachmentId);
-    await fileUploadService.fileUploader.deleteFile(attachment);
+    await fileUploadService.deleteFile(attachment);
 
     return attachment.remove();
   }
