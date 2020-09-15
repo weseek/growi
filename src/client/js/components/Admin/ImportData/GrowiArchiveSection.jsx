@@ -104,6 +104,14 @@ class GrowiArchiveSection extends React.Component {
           <ul>
             <li>{t('admin:importer_management.skip_username_and_email_when_overlapped')}</li>
             <li>{t('admin:importer_management.prepare_new_account_for_migration')}</li>
+            <li>
+              <a
+                href={`${t('admin:importer_management.admin_archive_data_import_guide_url')}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >{t('admin:importer_management.archive_data_import_detail')}
+              </a>
+            </li>
           </ul>
         </div>
       </Fragment>

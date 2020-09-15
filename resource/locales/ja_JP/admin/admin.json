@@ -222,6 +222,8 @@
     "import": "インポート",
     "skip_username_and_email_when_overlapped": "ユーザー名またはメールアドレスが同じ場合、その部分がスキップされます。",
     "prepare_new_account_for_migration":"移行用のアカウントを新環境で用意してください。",
+    "archive_data_import_detail":"詳細はこちらからご確認することができます。",
+    "admin_archive_data_import_guide_url":"https://docs.growi.org/ja/admin-guide/management-cookbook/import.html#growi-%E3%82%A2%E3%83%BC%E3%82%AB%E3%82%A4%E3%83%96%E3%83%87%E3%83%BC%E3%82%BF%E3%82%A4%E3%83%B3%E3%83%9D%E3%83%BC%E3%83%88",
     "page_skip": "既に GROWI 側に同名のページが存在する場合、そのページはスキップされます",
     "Directory_hierarchy_tag": "ディレクトリ階層タグ"
   },
