@@ -102,7 +102,7 @@ class GrowiArchiveSection extends React.Component {
 
         <div className="card well mb-0 small">
           <ul>
-            <li>ユーザー名とメールアドレスが同じ場合、インポートすることができません。</li>
+            <li>ユーザー名またはメールアドレスが新環境で存在する場合、新環境で一時的に変更してください。</li>
           </ul>
         </div>
       </Fragment>
