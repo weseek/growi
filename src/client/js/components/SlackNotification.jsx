@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
-
+import { Button } from 'reactstrap';
+import SlackLogo from './SlackLogo';
 /**
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
@@ -81,16 +82,14 @@ affect the rendering of the banner itself.
 */
   getSlackButton() {
     return (
-      <div className="grw-slack-notification">
-        <button
-          // className="grw-slack-notification-button"
-          type="button"
-          onClick={this.props.click}
-        >
-          slacks
-          <i className="icon-arrow-up"></i>
-        </button>
-      </div>
+      <Button
+        color="white"
+        className="border"
+        onClick={this.props.click}
+      >
+        <SlackLogo />
+        <span className="fa fa-caret-up ml-2" aria-aria-hidden="true"></span>
+      </Button>
     );
   }
 
