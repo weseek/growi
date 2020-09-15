@@ -98,35 +98,35 @@ class SavePageControls extends React.Component {
     return (
       <div className="d-flex align-items-center form-inline">
         {this.hasSlackConfig
-            && (
-            <div className="mr-2">
-              <SlackNotification
-                isSlackEnabled={editorContainer.state.isSlackEnabled}
-                slackChannels={editorContainer.state.slackChannels}
-                onEnabledFlagChange={this.slackEnabledFlagChangedHandler}
-                onChannelChange={this.slackChannelsChangedHandler}
-                click={this.props.click}
-                smallScreen={this.props.smallScreen}
-                id="idForSavePageControl"
-                slackOnly={false}
-              />
-            </div>
-            )
-          }
+          && (
+          <div className="mr-2">
+            <SlackNotification
+              isSlackEnabled={editorContainer.state.isSlackEnabled}
+              slackChannels={editorContainer.state.slackChannels}
+              onEnabledFlagChange={this.slackEnabledFlagChangedHandler}
+              onChannelChange={this.slackChannelsChangedHandler}
+              click={this.props.click}
+              smallScreen={this.props.smallScreen}
+              id="idForSavePageControl"
+              slackOnly={false}
+            />
+          </div>
+          )
+        }
 
         {this.isAclEnabled
-            && (
-            <div className="mr-2">
-              <GrantSelector
-                disabled={isRootPage}
-                grant={editorContainer.state.grant}
-                grantGroupId={editorContainer.state.grantGroupId}
-                grantGroupName={editorContainer.state.grantGroupName}
-                onUpdateGrant={this.updateGrantHandler}
-              />
-            </div>
-            )
-          }
+          && (
+          <div className="mr-2">
+            <GrantSelector
+              disabled={isRootPage}
+              grant={editorContainer.state.grant}
+              grantGroupId={editorContainer.state.grantGroupId}
+              grantGroupName={editorContainer.state.grantGroupName}
+              onUpdateGrant={this.updateGrantHandler}
+            />
+          </div>
+          )
+        }
 
         <UncontrolledButtonDropdown direction="up">
           <Button id="caret" color="primary" className="btn-submit" onClick={this.save}>{labelSubmitButton}</Button>
