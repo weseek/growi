@@ -102,7 +102,8 @@ class GrowiArchiveSection extends React.Component {
 
         <div className="card well mb-0 small">
           <ul>
-            <li>ユーザー名またはメールアドレスが新環境で存在する場合、新環境で一時的に変更してください。</li>
+            <li>{t('admin:importer_management.skip_username_and_email_when_overlapped')}</li>
+            <li>{t('admin:importer_management.prepare_new_account_for_migration')}</li>
           </ul>
         </div>
       </Fragment>
