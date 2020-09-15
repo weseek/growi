@@ -48,7 +48,7 @@ export default class PageContainer extends Container {
       revisionAuthor: JSON.parse(mainContent.getAttribute('data-page-revision-author')),
       path,
       tocHtml: '',
-      isLiked: JSON.parse(mainContent.getAttribute('data-page-is-liked')),
+      isLiked: false,
       seenUsers: [],
       likerUsers: [],
       sumOfSeenUsers: 0,
@@ -144,21 +144,13 @@ export default class PageContainer extends Container {
       this.checkAndUpdateImageUrlCached(users);
     }
 
-
-    const likerListElem = document.getElementById('liker-list');
-    if (likerListElem != null) {
-      const { userIdsStr, sumOfLikers } = likerListElem.dataset;
-      this.setState({ sumOfLikers });
-
-      if (userIdsStr === '') {
-        return;
-      }
-
-      const { users } = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr });
-      this.setState({ likerUsers: users });
-
-      this.checkAndUpdateImageUrlCached(users);
-    }
+    const like = await this.appContainer.apiv3Get('/page/like-info', { _id: this.state.pageId });
+    this.setState({
+      sumOfLikers: like.data.sumOfLikers,
+      likerUsers: like.data.users.liker,
+      isLiked: like.data.isLiked,
+    });
+    this.checkAndUpdateImageUrlCached(this.state.likerUsers);
   }
 
   async checkAndUpdateImageUrlCached(users) {

@@ -109,7 +109,7 @@ const UserInfo = ({ pageUser }) => {
 const PageReactionButtons = ({ appContainer, pageContainer }) => {
 
   const {
-    pageId, isLiked, pageUser, sumOfLikers,
+    pageId, isLiked, pageUser,
   } = pageContainer.state;
 
   return (
@@ -119,9 +119,6 @@ const PageReactionButtons = ({ appContainer, pageContainer }) => {
         <LikeButton pageId={pageId} isLiked={isLiked} />
       </span>
       )}
-      <span className="mr-2 total-likes">
-        {sumOfLikers}
-      </span>
       <span className="mr-2">
         <BookmarkButton pageId={pageId} crowi={appContainer} />
       </span>
