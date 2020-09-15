@@ -17,50 +17,51 @@ class PageTimeline extends React.Component {
     super(props);
 
     const { appContainer } = this.props;
-    this.showPages = this.showPages.bind(this);
-    this.handlePage = this.handlePage.bind(this);
     this.state = {
       activePage: 1,
-      totalPages: 0,
+      totalPageItems: 0,
       limit: appContainer.getConfig().recentCreatedLimit,
 
       // TODO: remove after when timeline is implemented with React and inject data with props
       pages: this.props.pages,
     };
 
+    this.handlePage = this.handlePage.bind(this);
   }
+
 
   async handlePage(selectedPage) {
-    await this.showPages(selectedPage);
-  }
-
-  async showPages(selectedPage) {
     const { appContainer, pageContainer } = this.props;
     const { path } = pageContainer.state;
-    const limit = this.state.limit;
+    const { limit } = this.state;
     const offset = (selectedPage - 1) * limit;
-    const res = await appContainer.apiv3Get('/pages/list', { path, limit, offset });
     const activePage = selectedPage;
-    const totalPages = res.data.totalCount;
+
+    const res = await appContainer.apiv3Get('/pages/list', { path, limit, offset });
+    const totalPageItems = res.data.totalCount;
     const pages = res.data.pages;
     this.setState({
       activePage,
-      totalPages,
+      totalPageItems,
       pages,
     });
   }
 
   componentWillMount() {
     const { appContainer } = this.props;
-
     // initialize GrowiRenderer
     this.growiRenderer = appContainer.getRenderer('timeline');
-    this.showPages(1);
+  }
+
+  async componentDidMount() {
+    await this.handlePage(1);
+    this.setState({
+      activePage: 1,
+    });
   }
 
   render() {
     const { pages } = this.state;
-
     if (pages == null) {
       return <React.Fragment></React.Fragment>;
     }
@@ -87,7 +88,7 @@ class PageTimeline extends React.Component {
         <PaginationWrapper
           activePage={this.state.activePage}
           changePage={this.handlePage}
-          totalItemsCount={this.state.totalPages}
+          totalItemsCount={this.state.totalPageItems}
           pagingLimit={this.state.limit}
         />
       </div>
@@ -97,16 +98,16 @@ class PageTimeline extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+const PageTimelineWrapper = withUnstatedContainers(PageTimeline, [AppContainer, PageContainer]);
+
 PageTimeline.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   pages: PropTypes.arrayOf(PropTypes.object),
 };
-
-/**
- * Wrapper component for using unstated
- */
-const PageTimelineWrapper = withUnstatedContainers(PageTimeline, [AppContainer, PageContainer]);
 
 export default withTranslation()(PageTimelineWrapper);
