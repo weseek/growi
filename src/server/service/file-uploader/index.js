@@ -1,5 +1,6 @@
 const logger = require('@alias/logger')('growi:service:FileUploaderServise');
 const Gridfs = require('./gridfs');
+const S2sMessagingServiceDelegator = require('./base');
 
 const envToModuleMappings = {
   aws:     'aws',
@@ -12,23 +13,7 @@ const envToModuleMappings = {
   gcs:     'gcs',
 };
 
-class FileUploaderServise {
-
-  constructor(crowi) {
-
-    this.crowi = crowi;
-    this.appService = crowi.appService;
-    this.configManager = crowi.configManager;
-
-    this.fileUploader = null;
-
-    /**
-     * the flag whether fileUploader is set up successfully
-     */
-    this.isFileUploaderSetup = false;
-
-    this.initialize();
-  }
+class FileUploadServiceFactory extends S2sMessagingServiceDelegator {
 
   async initialize() {
     this.isFileUploaderSetup = false;
@@ -52,6 +37,29 @@ class FileUploaderServise {
     logger.debug('fileUploader initialized');
   }
 
+  initializeUploader(crowi) {
+    const method = envToModuleMappings[process.env.FILE_UPLOAD] || 'aws';
+
+    const modulePath = `./${method}`;
+    this.uploader = require(modulePath)(crowi);
+
+    if (this.uploader == null) {
+      logger.warn('Failed to initialize uploader.');
+    }
+
+  }
+
+  getUploader(crowi) {
+    if (this.uploader == null) {
+      this.initializeDelegator(crowi);
+    }
+    return this.uploader;
+  }
+
 }
 
-module.exports = FileUploaderServise;
+const factory = new FileUploadServiceFactory();
+
+module.exports = (crowi) => {
+  return factory.getUploader(crowi);
+};
