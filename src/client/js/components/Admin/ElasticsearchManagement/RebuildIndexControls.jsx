@@ -58,7 +58,18 @@ class RebuildIndexControls extends React.Component {
       return null;
     }
 
-    const header = isRebuildingCompleted ? `Completed (${skip} skips)` : `Processing.. (${skip} skips)`;
+    function getCompletedLabel() {
+      if (skip === 0) {
+        return 'Completed';
+      }
+      return `Done (${skip} skips)`;
+    }
+
+    function getSkipLabel() {
+      return `Processing.. (${skip} skips)`;
+    }
+
+    const header = isRebuildingCompleted ? getCompletedLabel() : getSkipLabel();
 
     return (
       <ProgressBar
