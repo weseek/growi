@@ -91,6 +91,9 @@ export default class AdminAppContainer extends Container {
       s3Bucket: appSettingsParams.s3Bucket,
       s3AccessKeyId: appSettingsParams.s3AccessKeyId,
       s3SecretAccessKey: appSettingsParams.s3SecretAccessKey,
+      envGcsApiKeyJsonPath: appSettingsParams.envGcsApiKeyJsonPath,
+      envGcsBucket: appSettingsParams.envGcsBucket,
+      envGcsUploadNamespace: appSettingsParams.envGcsUploadNamespace,
       isEnabledPlugins: appSettingsParams.isEnabledPlugins,
     });
   }
