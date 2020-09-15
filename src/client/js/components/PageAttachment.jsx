@@ -150,7 +150,7 @@ class PageAttachment extends React.Component {
 
         {deleteAttachmentModal}
 
-        <div className="d-flex justify-content-center">
+        <div className="my-3 d-flex justify-content-center">
           <PaginationWrapper
             activePage={this.state.activePage}
             changePage={this.handlePage}
