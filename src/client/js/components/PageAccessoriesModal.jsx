@@ -97,8 +97,7 @@ const PageAccessoriesModal = (props) => {
 
     changeFlexibility(width, marginLeft);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab]);
+  }, [activeTab, widthAndOffsetValues]);
 
 
   return (
