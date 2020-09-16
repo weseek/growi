@@ -1,5 +1,5 @@
 import React, {
-  useRef, useEffect, useCallback,
+  useRef, useEffect, useCallback, useMemo,
 } from 'react';
 import PropTypes from 'prop-types';
 
@@ -83,26 +83,25 @@ const PageAccessoriesModal = (props) => {
     return min / max * 100;
   }
 
-  const fetchSize = useCallback(() => {
-    return [].map.call(navTabs, el => getPercentage(el.offsetWidth, navTitle.offsetWidth));
+  const widthAndOffsetValues = useMemo(() => {
+    let tempML = 0;
+    return [].map.call(navTabs, (el) => {
+      const width = getPercentage(el.offsetWidth, navTitle.offsetWidth);
+      const marginLeft = tempML;
+      tempML += width;
+      return { width, marginLeft };
+    });
   }, [navTabs, navTitle]);
 
   useEffect(() => {
-    const array = fetchSize();
-
     if (activeTab === '') {
       return;
     }
 
     const result = navTabMapping.find(({ id }) => id === activeTab);
-    const { index } = result;
+    const targetStyle = widthAndOffsetValues[result.index];
 
-    let marginLeft = 0;
-    for (let i = 0; i < index; i++) {
-      marginLeft += array[i];
-    }
-
-    changeFlexibility(array[index], marginLeft);
+    changeFlexibility(targetStyle.width, targetStyle.marginLeft);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
