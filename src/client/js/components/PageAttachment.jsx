@@ -1,6 +1,7 @@
 /* eslint-disable react/no-access-state-in-setstate */
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 
 import PageAttachmentList from './PageAttachment/PageAttachmentList';
 import DeleteAttachmentModal from './PageAttachment/DeleteAttachmentModal';
@@ -110,6 +111,13 @@ class PageAttachment extends React.Component {
 
 
   render() {
+
+    const { t } = this.props;
+    if (this.state.attachments.length === 0) {
+      return t('No attachments yet.');
+
+    }
+
     let deleteAttachmentModal = '';
     if (this.isUserLoggedIn()) {
       const attachmentToDelete = this.state.attachmentToDelete;
@@ -137,7 +145,6 @@ class PageAttachment extends React.Component {
         />
       );
     }
-
 
     return (
       <div>
@@ -171,8 +178,9 @@ const PageAttachmentWrapper = withUnstatedContainers(PageAttachment, [AppContain
 
 
 PageAttachment.propTypes = {
+  t: PropTypes.func.isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
-export default PageAttachmentWrapper;
+export default withTranslation()(PageAttachmentWrapper);
