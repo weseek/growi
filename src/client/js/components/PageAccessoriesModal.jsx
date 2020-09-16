@@ -54,13 +54,13 @@ const PageAccessoriesModal = (props) => {
   const { switchActiveTab } = pageAccessoriesContainer;
   const { activeTab } = pageAccessoriesContainer.state;
 
-  const sliderEl = useRef(null);
+  const menuSliderClick = document.getElementById('grw-nav-slide-hr');
   const navTitle = document.getElementById('nav-title');
   const navTabs = document.querySelectorAll('li.nav-link');
 
   function changeFlexibility(width, tempMarginLeft) {
-    sliderEl.current.width = `${width}%`;
-    sliderEl.current.style.marginLeft = `${tempMarginLeft}%`;
+    menuSliderClick.style.width = `${width}%`;
+    menuSliderClick.style.marginLeft = `${tempMarginLeft}%`;
   }
 
   function closeModalHandler() {
@@ -114,7 +114,7 @@ const PageAccessoriesModal = (props) => {
               );
             })}
           </Nav>
-          <hr ref={sliderEl} id="grw-nav-slide-hr" className="my-0" />
+          <hr id="grw-nav-slide-hr" className="my-0" />
           <TabContent activeTab={activeTab}>
             <TabPane tabId="pagelist">
               {pageAccessoriesContainer.state.activeComponents.has('pagelist') && <PageList />}
