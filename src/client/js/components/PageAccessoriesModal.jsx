@@ -1,4 +1,6 @@
-import React, { useRef } from 'react';
+import React, {
+  useRef, useEffect, useCallback,
+} from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -21,31 +23,37 @@ import PageList from './PageList';
 import PageHistory from './PageHistory';
 import ShareLink from './ShareLink/ShareLink';
 
+
 const navTabMapping = [
   {
     icon: <PageListIcon />,
     id: 'pagelist',
     i18n: 'page_list',
+    index: 0,
   },
   {
     icon: <TimeLineIcon />,
     id: 'timeline',
     i18n: 'Timeline View',
+    index: 1,
   },
   {
     icon: <RecentChangesIcon />,
     id: 'page-history',
     i18n: 'History',
+    index: 2,
   },
   {
     icon: <AttachmentIcon />,
     id: 'attachment',
     i18n: 'attachment_data',
+    index: 3,
   },
   {
     icon: <ShareLinkIcon />,
     id: 'share-link',
     i18n: 'share_links.share_link_management',
+    index: 4,
   },
 ];
 
@@ -68,23 +76,12 @@ const PageAccessoriesModal = (props) => {
     props.onClose();
   }
 
-  const menu = document.getElementsByClassName('nav');
-  const arrayMenu = Array.from(menu);
-
   const navTitle = document.getElementById('nav-title');
+  const navTabs = document.querySelectorAll('li.nav-link');
 
   // Might make this dynamic for px, %, pt, em
   function getPercentage(min, max) {
     return min / max * 100;
-  }
-
-  // Not using reduce, because IE8 doesn't supprt it
-  function getArraySum(arr) {
-    let sum = 0;
-    [].forEach.call(arr, (el, index) => {
-      sum += el;
-    });
-    return sum;
   }
 
   function changeFlexibility(width, tempMarginLeft) {
@@ -92,36 +89,35 @@ const PageAccessoriesModal = (props) => {
     sliderEl.current.style.marginLeft = `${tempMarginLeft}%`;
   }
 
-  function navSlider(menu, callback) {
-    // We only want the <li> </li> tags
-    const navTabs = document.querySelectorAll('li.nav-link');
+  const fetchSize = useCallback(() => {
+    return [].map.call(navTabs, (el) => {
+      const width = getPercentage(el.offsetWidth, navTitle.offsetWidth);
+      return width;
+    });
+  }, [navTabs, navTitle]);
 
-    if (menu.length === 0) {
+  useEffect(() => {
+    const array = fetchSize();
+
+    if (activeTab === '') {
       return;
     }
 
-    const marginLeft = [];
-    // Loop through nav children i.e li
-    [].forEach.call(navTabs, (el, index) => {
-      // Dynamic width/margin calculation for hr
-      const width = getPercentage(el.offsetWidth, navTitle.offsetWidth);
-      let tempMarginLeft = 0;
-      // We don't want to modify first elements positioning
-      if (index !== 0) {
-        tempMarginLeft = getArraySum(marginLeft);
-      }
-      // Set mouse event [click]
-      callback(el, width, tempMarginLeft);
-      /* We store it in array because the later accumulated value is used for positioning */
-      marginLeft.push(width);
-    });
-  }
 
-  navSlider(arrayMenu, (el, width, tempMarginLeft) => {
-    el.onclick = () => {
-      changeFlexibility(width, tempMarginLeft);
-    };
-  });
+    const result = navTabMapping.find(({ id }) => id === activeTab);
+    const { index } = result;
+
+
+    let marginLeft = 0;
+    for (let i = 0; i < index; i++) {
+      marginLeft += array[index];
+    }
+
+    console.log(marginLeft);
+    changeFlexibility(array[index], marginLeft);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
 
 
   return (
