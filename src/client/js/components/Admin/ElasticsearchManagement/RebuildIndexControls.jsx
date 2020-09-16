@@ -59,10 +59,8 @@ class RebuildIndexControls extends React.Component {
     }
 
     function getCompletedLabel() {
-      if (skip === 0) {
-        return 'Completed';
-      }
-      return `Done (${skip} skips)`;
+      const completedLabel = skip === 0 ? 'Completed' : `Done (${skip} skips)`;
+      return completedLabel;
     }
 
     function getSkipLabel() {
