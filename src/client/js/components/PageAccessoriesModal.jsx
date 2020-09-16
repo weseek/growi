@@ -155,9 +155,7 @@ const PageAccessoriesModal = (props) => {
               {pageAccessoriesContainer.state.activeComponents.has('timeline') && <PageTimeline /> }
             </TabPane>
             <TabPane tabId="page-history">
-              <div className="overflow-auto">
-                {pageAccessoriesContainer.state.activeComponents.has('page-history') && <PageHistory /> }
-              </div>
+              {pageAccessoriesContainer.state.activeComponents.has('page-history') && <PageHistory /> }
             </TabPane>
             <TabPane tabId="attachment" className="p-4">
               {pageAccessoriesContainer.state.activeComponents.has('attachment') && <PageAttachment />}

@@ -9,10 +9,9 @@
     max-width: 1140px;
     max-height: 595px;
   }
+}
 
-  // revision-history diff
-  .d2h-code-side-linenumber {
-    position: static;
-    display: table-cell;
-  }
+// revision-history diff
+.d2h-wrapper {
+  position: relative;
 }
