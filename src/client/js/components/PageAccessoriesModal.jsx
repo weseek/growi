@@ -60,9 +60,6 @@ const PageAccessoriesModal = (props) => {
   const [sliderWidth, setSliderWidth] = useState(null);
   const [sliderMarginLeft, setSliderMarginLeft] = useState(null);
 
-  const navTitle = document.getElementById('nav-title');
-  const navTabs = document.querySelectorAll('li.nav-link');
-
   function closeModalHandler() {
     if (props.onClose == null) {
       return;
@@ -75,24 +72,33 @@ const PageAccessoriesModal = (props) => {
     return min / max * 100;
   }
 
-  const getStyles = useMemo(() => {
+  useEffect(() => {
+    if (activeTab === '') {
+      return;
+    }
+
+    const navTitle = document.getElementById('nav-title');
+    const navTabs = document.querySelectorAll('li.nav-link');
+
+    if (navTitle == null || navTabs == null) {
+      return;
+    }
+
     let tempML = 0;
-    return [].map.call(navTabs, (el) => {
+
+    const styles = [].map.call(navTabs, (el) => {
       const width = getPercentage(el.offsetWidth, navTitle.offsetWidth);
       const marginLeft = tempML;
       tempML += width;
       return { width, marginLeft };
     });
-  }, [navTabs, navTitle]);
 
-  useEffect(() => {
-    if (activeTab === '') {
-      return;
-    }
-    const { width, marginLeft } = getStyles[navTabMapping[activeTab].index];
+    const { width, marginLeft } = styles[navTabMapping[activeTab].index];
+
     setSliderWidth(width);
     setSliderMarginLeft(marginLeft);
-  }, [activeTab, getStyles]);
+
+  }, [activeTab]);
 
 
   return (
