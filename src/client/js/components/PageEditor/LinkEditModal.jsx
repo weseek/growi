@@ -29,8 +29,6 @@ class LinkEditModal extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this.defaultMessageInPreviewWindow = 'Page preview here.';
-
     this.state = {
       show: false,
       isUseRelativePath: false,
@@ -38,7 +36,8 @@ class LinkEditModal extends React.PureComponent {
       linkInputValue: '',
       labelInputValue: '',
       linkerType: Linker.types.markdownLink,
-      markdown: this.defaultMessageInPreviewWindow,
+      markdown: '',
+      previewError: '',
       permalink: '',
       linkText: '',
       isPreviewOpen: false,
@@ -160,15 +159,22 @@ class LinkEditModal extends React.PureComponent {
   }
 
   renderPreview() {
-    return (
-      <div className="linkedit-preview">
-        <Preview markdown={this.state.markdown} />
-      </div>
-    );
+    if (this.state.markdown !== '') {
+      return (
+        <div className="linkedit-preview">
+          <Preview markdown={this.state.markdown} />
+        </div>
+      );
+    }
+    if (this.state.previewError !== '') {
+      return this.state.previewError;
+    }
+    return 'Page preview here.';
   }
 
   async generateAndSetPreview(path) {
     let markdown = '';
+    let previewError = '';
     let permalink = '';
 
     if (path.startsWith('/')) {
@@ -183,13 +189,10 @@ class LinkEditModal extends React.PureComponent {
         permalink = !isPermanentLink ? `${window.location.origin}/${page.id}` : '';
       }
       catch (err) {
-        markdown = err.message;
+        previewError = err.message;
       }
     }
-    else {
-      markdown = this.defaultMessageInPreviewWindow;
-    }
-    this.setState({ markdown, permalink });
+    this.setState({ markdown, previewError, permalink });
   }
 
   renderLinkPreview() {
