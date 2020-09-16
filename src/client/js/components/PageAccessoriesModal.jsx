@@ -63,11 +63,13 @@ const PageAccessoriesModal = (props) => {
   const { activeTab } = pageAccessoriesContainer.state;
 
   const sliderEl = useRef(null);
-  const navLinkEls = useRef([]);
+  const navTitle = document.getElementById('nav-title');
+  const navTabs = document.querySelectorAll('li.nav-link');
 
-  navTabMapping.forEach((data, i) => {
-    navLinkEls.current[i] = React.createRef();
-  });
+  function changeFlexibility(width, tempMarginLeft) {
+    sliderEl.current.width = `${width}%`;
+    sliderEl.current.style.marginLeft = `${tempMarginLeft}%`;
+  }
 
   function closeModalHandler() {
     if (props.onClose == null) {
@@ -76,17 +78,9 @@ const PageAccessoriesModal = (props) => {
     props.onClose();
   }
 
-  const navTitle = document.getElementById('nav-title');
-  const navTabs = document.querySelectorAll('li.nav-link');
-
   // Might make this dynamic for px, %, pt, em
   function getPercentage(min, max) {
     return min / max * 100;
-  }
-
-  function changeFlexibility(width, tempMarginLeft) {
-    sliderEl.current.width = `${width}%`;
-    sliderEl.current.style.marginLeft = `${tempMarginLeft}%`;
   }
 
   const fetchSize = useCallback(() => {
@@ -125,7 +119,7 @@ const PageAccessoriesModal = (props) => {
             {navTabMapping.map((tab, index) => {
               return (
                 <NavItem key={tab.id} type="button" className={`nav-link ${activeTab === tab.id && 'active'}`}>
-                  <NavLink innerRef={navLinkEls.current[index]} onClick={() => { switchActiveTab(tab.id) }}>
+                  <NavLink onClick={() => { switchActiveTab(tab.id) }}>
                     {tab.icon}
                     {t(tab.i18n)}
                   </NavLink>
