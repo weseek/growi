@@ -25,7 +25,7 @@ export default class AdminCustomizeContainer extends Container {
       isEnabledTimeline: false,
       isSavedStatesOfTabChanges: false,
       isEnabledAttachTitleHeader: false,
-      currentRecentCreatedLimit: 10,
+      pageListLimit: 10,
       isEnabledStaleNotification: false,
       isAllReplyShown: false,
       currentHighlightJsStyleId: '',
@@ -73,7 +73,7 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledTimeline: customizeParams.isEnabledTimeline,
         isSavedStatesOfTabChanges: customizeParams.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: customizeParams.isEnabledAttachTitleHeader,
-        currentRecentCreatedLimit: customizeParams.recentCreatedLimit,
+        pageListLimit: customizeParams.pageListLimit,
         isEnabledStaleNotification: customizeParams.isEnabledStaleNotification,
         isAllReplyShown: customizeParams.isAllReplyShown,
         currentHighlightJsStyleId: customizeParams.styleName,
@@ -139,10 +139,10 @@ export default class AdminCustomizeContainer extends Container {
   }
 
   /**
-   * Switch recentCreatedLimit
+   * Switch PageListCreatedLimit
    */
-  switchRecentCreatedLimit(value) {
-    this.setState({ currentRecentCreatedLimit: value });
+  switchPageListLimit(value) {
+    this.setState({ pageListLimit: value });
   }
 
   /**
@@ -267,7 +267,7 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledTimeline: this.state.isEnabledTimeline,
         isSavedStatesOfTabChanges: this.state.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: this.state.isEnabledAttachTitleHeader,
-        recentCreatedLimit: this.state.currentRecentCreatedLimit,
+        pageListLimit: this.state.pageListLimit,
         isEnabledStaleNotification: this.state.isEnabledStaleNotification,
         isAllReplyShown: this.state.isAllReplyShown,
       });
@@ -276,7 +276,7 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledTimeline: customizedParams.isEnabledTimeline,
         isSavedStatesOfTabChanges: customizedParams.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: customizedParams.isEnabledAttachTitleHeader,
-        recentCreatedLimit: customizedParams.currentRecentCreatedLimit,
+        pageListLimit: customizedParams.pageListLimit,
         isEnabledStaleNotification: customizedParams.isEnabledStaleNotification,
         isAllReplyShown: customizedParams.isAllReplyShown,
       });
