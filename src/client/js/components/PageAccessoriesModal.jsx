@@ -32,7 +32,7 @@ const navTabMapping = {
     i18n: 'Timeline View',
     index: 1,
   },
-  pageHistroy: {
+  pageHistory: {
     icon: <RecentChangesIcon />,
     i18n: 'History',
     index: 2,
@@ -75,7 +75,7 @@ const PageAccessoriesModal = (props) => {
     return min / max * 100;
   }
 
-  const widthAndOffsetValues = useMemo(() => {
+  const getStyles = useMemo(() => {
     let tempML = 0;
     return [].map.call(navTabs, (el) => {
       const width = getPercentage(el.offsetWidth, navTitle.offsetWidth);
@@ -89,9 +89,9 @@ const PageAccessoriesModal = (props) => {
     if (activeTab === '') {
       return;
     }
-    const { width, marginLeft } = widthAndOffsetValues[navTabMapping[activeTab].index];
+    const { width, marginLeft } = getStyles[navTabMapping[activeTab].index];
     changeFlexibility(width, marginLeft);
-  }, [activeTab, widthAndOffsetValues, changeFlexibility]);
+  }, [activeTab, getStyles, changeFlexibility]);
 
 
   return (
