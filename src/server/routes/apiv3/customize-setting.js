@@ -154,7 +154,7 @@ module.exports = (crowi) => {
       isEnabledTimeline: await crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
       isSavedStatesOfTabChanges: await crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
       isEnabledAttachTitleHeader: await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
-      pageListLimit: await crowi.configManager.getConfig('crowi', 'customize:showPageListNumber'),
+      pageListLimit: await crowi.configManager.getConfig('crowi', 'customize:showPageListLimitNumber'),
       isEnabledStaleNotification: await crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
       isAllReplyShown: await crowi.configManager.getConfig('crowi', 'customize:isAllReplyShown'),
       styleName: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyle'),
@@ -278,7 +278,7 @@ module.exports = (crowi) => {
       'customize:isEnabledTimeline': req.body.isEnabledTimeline,
       'customize:isSavedStatesOfTabChanges': req.body.isSavedStatesOfTabChanges,
       'customize:isEnabledAttachTitleHeader': req.body.isEnabledAttachTitleHeader,
-      'customize:showPageListNumber': req.body.pageListLimit,
+      'customize:showPageListLimitNumber': req.body.pageListLimit,
       'customize:isEnabledStaleNotification': req.body.isEnabledStaleNotification,
       'customize:isAllReplyShown': req.body.isAllReplyShown,
     };
@@ -289,7 +289,7 @@ module.exports = (crowi) => {
         isEnabledTimeline: await crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
         isSavedStatesOfTabChanges: await crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
         isEnabledAttachTitleHeader: await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
-        pageListLimit: await crowi.configManager.getConfig('crowi', 'customize:showPageListNumber'),
+        pageListLimit: await crowi.configManager.getConfig('crowi', 'customize:showPageListLimitNumber'),
         isEnabledStaleNotification: await crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
         isAllReplyShown: await crowi.configManager.getConfig('crowi', 'customize:isAllReplyShown'),
       };

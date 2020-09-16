@@ -139,7 +139,7 @@ export default class AdminCustomizeContainer extends Container {
   }
 
   /**
-   * Switch PageListCreatedLimit
+   * Switch pageListdLimit
    */
   switchPageListLimit(value) {
     this.setState({ pageListLimit: value });

@@ -111,7 +111,7 @@ module.exports = function(crowi) {
       'customize:isEnabledTimeline' : true,
       'customize:isSavedStatesOfTabChanges' : true,
       'customize:isEnabledAttachTitleHeader' : false,
-      'customize:showPageListNumber' : 10,
+      'customize:showPageListLimitNumber' : 10,
       'customize:isEnabledStaleNotification': false,
       'customize:isAllReplyShown': false,
 
@@ -218,7 +218,7 @@ module.exports = function(crowi) {
         MATHJAX: env.MATHJAX || null,
         NO_CDN: env.NO_CDN || null,
       },
-      pageListLimit: crowi.configManager.getConfig('crowi', 'customize:showPageListNumber'),
+      pageListLimit: crowi.configManager.getConfig('crowi', 'customize:showPageListLimitNumber'),
       isEnabledStaleNotification: crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
       isAclEnabled: crowi.aclService.isAclEnabled(),
       isSearchServiceConfigured: crowi.searchService.isConfigured,
