@@ -1,5 +1,5 @@
 import React, {
-  useRef, useEffect, useCallback, useMemo,
+  useRef, useEffect, useMemo,
 } from 'react';
 import PropTypes from 'prop-types';
 
