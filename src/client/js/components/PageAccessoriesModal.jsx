@@ -23,39 +23,33 @@ import PageList from './PageList';
 import PageHistory from './PageHistory';
 import ShareLink from './ShareLink/ShareLink';
 
-
-const navTabMapping = [
-  {
+const navTabMapping = {
+  pagelist: {
     icon: <PageListIcon />,
-    id: 'pagelist',
     i18n: 'page_list',
     index: 0,
   },
-  {
+  timeline:  {
     icon: <TimeLineIcon />,
-    id: 'timeline',
     i18n: 'Timeline View',
     index: 1,
   },
-  {
+  pageHistroy: {
     icon: <RecentChangesIcon />,
-    id: 'page-history',
     i18n: 'History',
     index: 2,
   },
-  {
+  attachment: {
     icon: <AttachmentIcon />,
-    id: 'attachment',
     i18n: 'attachment_data',
     index: 3,
   },
-  {
+  shareLink: {
     icon: <ShareLinkIcon />,
-    id: 'share-link',
     i18n: 'share_links.share_link_management',
     index: 4,
   },
-];
+};
 
 const PageAccessoriesModal = (props) => {
   const { t, pageAccessoriesContainer } = props;
@@ -98,7 +92,7 @@ const PageAccessoriesModal = (props) => {
       return;
     }
 
-    const result = navTabMapping.find(({ id }) => id === activeTab);
+    const result = navTabMapping[activeTab];
     const { width, marginLeft } = widthAndOffsetValues[result.index];
 
     changeFlexibility(width, marginLeft);
@@ -112,12 +106,12 @@ const PageAccessoriesModal = (props) => {
       <Modal size="xl" isOpen={props.isOpen} toggle={closeModalHandler} className="grw-page-accessories-modal">
         <ModalBody>
           <Nav className="nav-title" id="nav-title">
-            {navTabMapping.map((tab) => {
+            {Object.entries(navTabMapping).map(([key, value]) => {
               return (
-                <NavItem key={tab.id} type="button" className={`nav-link ${activeTab === tab.id && 'active'}`}>
-                  <NavLink onClick={() => { switchActiveTab(tab.id) }}>
-                    {tab.icon}
-                    {t(tab.i18n)}
+                <NavItem key={key} type="button" className={`nav-link ${activeTab === key && 'active'}`}>
+                  <NavLink onClick={() => { switchActiveTab(key) }}>
+                    {value.icon}
+                    {t(value.i18n)}
                   </NavLink>
                 </NavItem>
               );
@@ -131,16 +125,16 @@ const PageAccessoriesModal = (props) => {
             <TabPane tabId="timeline" className="p-4">
               {pageAccessoriesContainer.state.activeComponents.has('timeline') && <PageTimeline /> }
             </TabPane>
-            <TabPane tabId="page-history">
+            <TabPane tabId="pageHistory">
               <div className="overflow-auto">
-                {pageAccessoriesContainer.state.activeComponents.has('page-history') && <PageHistory /> }
+                {pageAccessoriesContainer.state.activeComponents.has('pageHistory') && <PageHistory /> }
               </div>
             </TabPane>
             <TabPane tabId="attachment" className="p-4">
               {pageAccessoriesContainer.state.activeComponents.has('attachment') && <PageAttachment />}
             </TabPane>
-            <TabPane tabId="share-link" className="p-4">
-              {pageAccessoriesContainer.state.activeComponents.has('share-link') && <ShareLink />}
+            <TabPane tabId="shareLink" className="p-4">
+              {pageAccessoriesContainer.state.activeComponents.has('shareLink') && <ShareLink />}
             </TabPane>
           </TabContent>
         </ModalBody>
