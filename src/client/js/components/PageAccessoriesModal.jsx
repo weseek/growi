@@ -1,4 +1,6 @@
-import React, { useEffect, useMemo, useCallback } from 'react';
+import React, {
+  useEffect, useMemo, useCallback, useState,
+} from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -20,6 +22,7 @@ import PageTimeline from './PageTimeline';
 import PageList from './PageList';
 import PageHistory from './PageHistory';
 import ShareLink from './ShareLink/ShareLink';
+
 
 const navTabMapping = {
   pagelist: {
@@ -54,14 +57,11 @@ const PageAccessoriesModal = (props) => {
   const { switchActiveTab } = pageAccessoriesContainer;
   const { activeTab } = pageAccessoriesContainer.state;
 
-  const menuSliderClick = document.getElementById('grw-nav-slide-hr');
+  const [sliderWidth, setSliderWidth] = useState(null);
+  const [sliderMarginLeft, setSliderMarginLeft] = useState(null);
+
   const navTitle = document.getElementById('nav-title');
   const navTabs = document.querySelectorAll('li.nav-link');
-
-  const changeFlexibility = useCallback((width, tempMarginLeft) => {
-    menuSliderClick.style.width = `${width}%`;
-    menuSliderClick.style.marginLeft = `${tempMarginLeft}%`;
-  }, [menuSliderClick]);
 
   function closeModalHandler() {
     if (props.onClose == null) {
@@ -90,8 +90,9 @@ const PageAccessoriesModal = (props) => {
       return;
     }
     const { width, marginLeft } = getStyles[navTabMapping[activeTab].index];
-    changeFlexibility(width, marginLeft);
-  }, [activeTab, getStyles, changeFlexibility]);
+    setSliderWidth(width);
+    setSliderMarginLeft(marginLeft);
+  }, [activeTab, getStyles]);
 
 
   return (
@@ -110,7 +111,7 @@ const PageAccessoriesModal = (props) => {
               );
             })}
           </Nav>
-          <hr id="grw-nav-slide-hr" className="my-0" />
+          <hr id="grw-nav-slide-hr" className="my-0" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
           <TabContent activeTab={activeTab}>
             <TabPane tabId="pagelist">
               {pageAccessoriesContainer.state.activeComponents.has('pagelist') && <PageList />}
