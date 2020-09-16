@@ -26,6 +26,7 @@ module.exports = function(crowi, app) {
   const comment = require('./comment')(crowi, app);
   const tag = require('./tag')(crowi, app);
   const search = require('./search')(crowi, app);
+  const next = require('./next')(crowi, app);
   // const hackmd = require('./hackmd')(crowi, app);
 
   const isInstalled = crowi.configManager.getConfig('crowi', 'app:installed');
@@ -176,5 +177,7 @@ module.exports = function(crowi, app) {
 
   // app.get('/*/$'                   , loginRequired , page.showPageWithEndOfSlash, page.notFound);
   // app.get('/*'                     , loginRequired , page.showPage, page.notFound);
+  app.get('/_next/*'                  , next.delegateToNext);
+  app.get('/*'                        , loginRequired , next.delegateToNext);
 
 };
