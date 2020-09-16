@@ -51,7 +51,7 @@ const TopOfTableContents = (props) => {
         <button
           type="button"
           className="btn btn-link grw-btn-top-of-table"
-          onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('page-history')}
+          onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('pageHistory')}
         >
           <RecentChangesIcon />
         </button>
@@ -67,7 +67,7 @@ const TopOfTableContents = (props) => {
         <button
           type="button"
           className="btn btn-link grw-btn-top-of-table"
-          onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('share-link')}
+          onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('shareLink')}
         >
           <ShareLinkIcon />
         </button>
