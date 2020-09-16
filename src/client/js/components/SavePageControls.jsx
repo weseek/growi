@@ -15,7 +15,6 @@ import AppContainer from '../services/AppContainer';
 import EditorContainer from '../services/EditorContainer';
 
 import { withUnstatedContainers } from './UnstatedUtils';
-import SlackNotification from './SlackNotification';
 import GrantSelector from './SavePageControls/GrantSelector';
 
 const logger = loggerFactory('growi:SavePageControls');
@@ -26,23 +25,12 @@ class SavePageControls extends React.Component {
     super(props);
 
     const config = this.props.appContainer.getConfig();
-    this.hasSlackConfig = config.hasSlackConfig;
     this.isAclEnabled = config.isAclEnabled;
 
-    this.slackEnabledFlagChangedHandler = this.slackEnabledFlagChangedHandler.bind(this);
-    this.slackChannelsChangedHandler = this.slackChannelsChangedHandler.bind(this);
     this.updateGrantHandler = this.updateGrantHandler.bind(this);
 
     this.save = this.save.bind(this);
     this.saveAndOverwriteScopesOfDescendants = this.saveAndOverwriteScopesOfDescendants.bind(this);
-  }
-
-  slackEnabledFlagChangedHandler(isSlackEnabled) {
-    this.props.editorContainer.setState({ isSlackEnabled });
-  }
-
-  slackChannelsChangedHandler(slackChannels) {
-    this.props.editorContainer.setState({ slackChannels });
   }
 
   updateGrantHandler(data) {
@@ -83,36 +71,8 @@ class SavePageControls extends React.Component {
     const labelSubmitButton = pageContainer.state.pageId == null ? t('Create') : t('Update');
     const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
 
-    if (this.hasSlackConfig && this.props.slackOnly) {
-      return (
-        <SlackNotification
-          isSlackEnabled={editorContainer.state.isSlackEnabled}
-          slackChannels={editorContainer.state.slackChannels}
-          onEnabledFlagChange={this.slackEnabledFlagChangedHandler}
-          onChannelChange={this.slackChannelsChangedHandler}
-          id="idForSavePageControl"
-          slackOnly
-        />
-      );
-    }
     return (
       <div className="d-flex align-items-center form-inline">
-        {this.hasSlackConfig
-          && (
-          <div className="mr-2">
-            <SlackNotification
-              isSlackEnabled={editorContainer.state.isSlackEnabled}
-              slackChannels={editorContainer.state.slackChannels}
-              onEnabledFlagChange={this.slackEnabledFlagChangedHandler}
-              onChannelChange={this.slackChannelsChangedHandler}
-              click={this.props.click}
-              smallScreen={this.props.smallScreen}
-              id="idForSavePageControl"
-              slackOnly={false}
-            />
-          </div>
-          )
-        }
 
         {this.isAclEnabled
           && (
@@ -151,9 +111,6 @@ const SavePageControlsWrapper = withUnstatedContainers(SavePageControls, [AppCon
 
 SavePageControls.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  click: PropTypes.func.isRequired,
-  slackOnly: PropTypes.bool.isRequired,
-  smallScreen: PropTypes.bool.isRequired,
 
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,

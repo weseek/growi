@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
-import { Button } from 'reactstrap';
-import SlackLogo from './SlackLogo';
 /**
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
@@ -36,8 +34,8 @@ class SlackNotification extends React.Component {
     }
   }
 
-  getSlackNormal() {
-    const { t, slackOnly } = this.props;
+  render() {
+    const { t } = this.props;
 
     return (
       <div className="grw-slack-notification w-100">
@@ -51,7 +49,7 @@ class SlackNotification extends React.Component {
                 checked={this.props.isSlackEnabled}
                 onChange={this.updateCheckboxHandler}
               />
-              <label className={`custom-control-label align-center ${slackOnly ? 'mt-1' : ''}`} htmlFor={this.props.id}>
+              <label className={`custom-control-label align-center ${this.props.popUp ? 'mt-1' : ''}`} htmlFor={this.props.id}>
               </label>
             </div>
           </label>
@@ -70,43 +68,14 @@ class SlackNotification extends React.Component {
         </div>
       </div>
     );
-
-  }
-
-
-  /*
-Note to myself:
-The collapse stuff worked, but it should be put in the EditorNavbarBottom level of rendering. The state should be
-lifted and button here would only be a trigger for the function at the parrent level. The passed down props would only
-affect the rendering of the banner itself.
-*/
-  getSlackButton() {
-    return (
-      <Button
-        color="white"
-        className="border"
-        onClick={this.props.click}
-      >
-        <SlackLogo />
-        <span className="fa fa-caret-up ml-2" aria-aria-hidden="true"></span>
-      </Button>
-    );
-  }
-
-  render() {
-    return (
-      this.props.smallScreen ? this.getSlackButton() : this.getSlackNormal()
-    );
   }
 
 }
 
 SlackNotification.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  click: PropTypes.func.isRequired,
-  slackOnly: PropTypes.bool.isRequired,
 
-  smallScreen: PropTypes.bool.isRequired,
+  popUp: PropTypes.bool.isRequired,
   isSlackEnabled: PropTypes.bool.isRequired,
   slackChannels: PropTypes.string.isRequired,
   onEnabledFlagChange: PropTypes.func,
