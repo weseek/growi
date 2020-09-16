@@ -147,7 +147,7 @@ const PageAccessoriesModal = (props) => {
             </NavItem>
           </Nav>
           <hr id="grw-nav-slide-hr" className="my-0"></hr>
-          <TabContent activeTab={activeTab} className="overflow-auto" style={{ maxHeight: '500px' }}>
+          <TabContent activeTab={activeTab} className="overflow-auto grw-tab-content-style">
             <TabPane tabId="pagelist">
               {pageAccessoriesContainer.state.activeComponents.has('pagelist') && <PageList />}
             </TabPane>
