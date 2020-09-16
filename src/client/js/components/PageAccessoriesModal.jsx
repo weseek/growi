@@ -84,10 +84,7 @@ const PageAccessoriesModal = (props) => {
   }
 
   const fetchSize = useCallback(() => {
-    return [].map.call(navTabs, (el) => {
-      const width = getPercentage(el.offsetWidth, navTitle.offsetWidth);
-      return width;
-    });
+    return [].map.call(navTabs, el => getPercentage(el.offsetWidth, navTitle.offsetWidth));
   }, [navTabs, navTitle]);
 
   useEffect(() => {
