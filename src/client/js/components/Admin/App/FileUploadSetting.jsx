@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
+import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 import AwsSetting from './AwsSetting';
 import GcpSettings from './GcpSettings';
@@ -15,6 +17,19 @@ function FileUploadSetting(props) {
   const { t, adminAppContainer } = props;
   const { fileUploadType } = adminAppContainer.state;
   const fileUploadTypes = ['aws', 'gcp'];
+
+  async function submitHandler() {
+    const { t } = props;
+
+    try {
+      // TODO
+      // await adminAppContainer.updateAwsSettingHandler();
+      toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.file_upload_settings') }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
 
   return (
     <React.Fragment>
@@ -56,6 +71,8 @@ function FileUploadSetting(props) {
 
       {fileUploadType === 'aws' && <AwsSetting />}
       {fileUploadType === 'gcp' && <GcpSettings />}
+
+      <AdminUpdateButtonRow onClick={submitHandler} disabled={adminAppContainer.state.retrieveError != null} />
 
     </React.Fragment>
   );
