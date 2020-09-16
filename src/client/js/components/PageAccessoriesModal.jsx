@@ -99,9 +99,9 @@ const PageAccessoriesModal = (props) => {
     }
 
     const result = navTabMapping.find(({ id }) => id === activeTab);
-    const targetStyle = widthAndOffsetValues[result.index];
+    const { width, marginLeft } = widthAndOffsetValues[result.index];
 
-    changeFlexibility(targetStyle.width, targetStyle.marginLeft);
+    changeFlexibility(width, marginLeft);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
@@ -112,7 +112,7 @@ const PageAccessoriesModal = (props) => {
       <Modal size="xl" isOpen={props.isOpen} toggle={closeModalHandler} className="grw-page-accessories-modal">
         <ModalBody>
           <Nav className="nav-title" id="nav-title">
-            {navTabMapping.map((tab, index) => {
+            {navTabMapping.map((tab) => {
               return (
                 <NavItem key={tab.id} type="button" className={`nav-link ${activeTab === tab.id && 'active'}`}>
                   <NavLink onClick={() => { switchActiveTab(tab.id) }}>
