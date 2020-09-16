@@ -103,17 +103,14 @@ const PageAccessoriesModal = (props) => {
       return;
     }
 
-
     const result = navTabMapping.find(({ id }) => id === activeTab);
     const { index } = result;
 
-
     let marginLeft = 0;
     for (let i = 0; i < index; i++) {
-      marginLeft += array[index];
+      marginLeft += array[i];
     }
 
-    console.log(marginLeft);
     changeFlexibility(array[index], marginLeft);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
