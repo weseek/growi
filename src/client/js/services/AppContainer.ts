@@ -8,17 +8,11 @@ import urljoin from 'url-join';
 // import emojiStrategy from '../util/emojione/emoji_strategy_shrinked.json';
 // import GrowiRenderer from '../util/GrowiRenderer';
 
-// import {
-//   mediaQueryListForDarkMode,
-//   applyColorScheme,
-// } from '../util/color-scheme';
 import Apiv1ErrorHandler from '../util/apiv1ErrorHandler';
 
 import apiv3ErrorHandler from '../util/apiv3ErrorHandler';
 
 type State = {
-  preferDarkModeByMediaQuery: boolean,
-
   // stetes for contents
   recentlyUpdatedPages: any[],
 }
@@ -33,8 +27,6 @@ export default class AppContainer extends Container<State> {
     super();
 
     this.state = {
-      preferDarkModeByMediaQuery: false,
-
       // stetes for contents
       recentlyUpdatedPages: [],
     };
@@ -84,7 +76,7 @@ export default class AppContainer extends Container<State> {
   }
 
   initApp(): void {
-    this.initMediaQueryForColorScheme();
+    // this.initMediaQueryForColorScheme();
 
     // this.injectToWindow();
   }
@@ -112,18 +104,6 @@ export default class AppContainer extends Container<State> {
 
   //   this.injectToWindow();
   // }
-
-  initMediaQueryForColorScheme(): void {
-    // const switchStateByMediaQuery = async(mql) => {
-    //   const preferDarkMode = mql.matches;
-    //   this.setState({ preferDarkModeByMediaQuery: preferDarkMode });
-
-    //   applyColorScheme();
-    // };
-
-    // // add event listener
-    // mediaQueryListForDarkMode.addListener(switchStateByMediaQuery);
-  }
 
   // initPlugins() {
   //   const growiPlugin = window.growiPlugin;

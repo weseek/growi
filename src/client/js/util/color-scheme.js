@@ -61,6 +61,9 @@ function updateUserPreferenceWithOsSettings() {
   localStorage.preferDarkModeByUser = mediaQueryListForDarkMode.matches;
 }
 
+// add event listener
+mediaQueryListForDarkMode.addEventListener('change', () => applyColorScheme());
+
 export {
   mediaQueryListForDarkMode,
   isUserPreferenceExists,
