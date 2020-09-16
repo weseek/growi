@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -58,10 +58,10 @@ const PageAccessoriesModal = (props) => {
   const navTitle = document.getElementById('nav-title');
   const navTabs = document.querySelectorAll('li.nav-link');
 
-  function changeFlexibility(width, tempMarginLeft) {
+  const changeFlexibility = useCallback((width, tempMarginLeft) => {
     menuSliderClick.style.width = `${width}%`;
     menuSliderClick.style.marginLeft = `${tempMarginLeft}%`;
-  }
+  }, [menuSliderClick]);
 
   function closeModalHandler() {
     if (props.onClose == null) {
@@ -89,13 +89,9 @@ const PageAccessoriesModal = (props) => {
     if (activeTab === '') {
       return;
     }
-
-    const result = navTabMapping[activeTab];
-    const { width, marginLeft } = widthAndOffsetValues[result.index];
-
+    const { width, marginLeft } = widthAndOffsetValues[navTabMapping[activeTab].index];
     changeFlexibility(width, marginLeft);
-
-  }, [activeTab, widthAndOffsetValues]);
+  }, [activeTab, widthAndOffsetValues, changeFlexibility]);
 
 
   return (
