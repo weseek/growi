@@ -32,7 +32,7 @@
 
     <div class="tab-pane user-bookmark-list page-list active" id="user-bookmark-list">
       {% if bookmarkList.length == 0 %}
-        No bookmarks yet.
+        {{t('No bookmarks yet')}}.
       {% else %}
         <div class="page-list-container">
           {% include 'page_list.html' with { pages: bookmarkList, pagePropertyName: 'page' } %}
