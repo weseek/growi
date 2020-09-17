@@ -13,7 +13,7 @@ const envToModuleMappings = {
   gcs:     'gcs',
 };
 
-class FileUploadServiceFactory extends S2sMessagingServiceDelegator {
+class FileUploadServiceFactory {
 
   async initialize() {
     this.isFileUploaderSetup = false;
@@ -51,7 +51,7 @@ class FileUploadServiceFactory extends S2sMessagingServiceDelegator {
 
   getUploader(crowi) {
     if (this.uploader == null) {
-      this.initializeDelegator(crowi);
+      this.initializeUploader(crowi);
     }
     return this.uploader;
   }
