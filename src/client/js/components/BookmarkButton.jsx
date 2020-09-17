@@ -19,6 +19,14 @@ class BookmarkButton extends React.Component {
 
     try {
       await crowi.apiv3.put('/bookmarks', { pageId, bool });
+
+      if (pageContainer.state.isBookmarked) {
+        pageContainer.setState({ sumOfBookmarks: pageContainer.state.sumOfBookmarks - 1 });
+      }
+      else {
+        pageContainer.setState({ sumOfBookmarks: pageContainer.state.sumOfBookmarks + 1 });
+      }
+
       pageContainer.setState({ isBookmarked: bool });
     }
     catch (err) {
