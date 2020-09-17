@@ -86,6 +86,8 @@ export default class AdminAppContainer extends Container {
       smtpPassword: appSettingsParams.smtpPassword,
       sesAccessKeyId: appSettingsParams.sesAccessKeyId,
       sesSecretAccessKey: appSettingsParams.sesSecretAccessKey,
+
+      fileUploadType: appSettingsParams.fileUploadType,
       s3Region: appSettingsParams.s3Region,
       s3CustomEndpoint: appSettingsParams.s3CustomEndpoint,
       s3Bucket: appSettingsParams.s3Bucket,
@@ -353,6 +355,7 @@ export default class AdminAppContainer extends Container {
    */
   async updateAwsSettingHandler() {
     const response = await this.appContainer.apiv3.put('/app-settings/aws-setting', {
+      fileUploadType: this.state.fileUploadType,
       s3Region: this.state.s3Region,
       s3CustomEndpoint: this.state.s3CustomEndpoint,
       s3Bucket: this.state.s3Bucket,
@@ -370,6 +373,7 @@ export default class AdminAppContainer extends Container {
    */
   async updateGcpSettingHandler() {
     const response = await this.appContainer.apiv3.put('/app-settings/gcp-setting', {
+      fileUploadType: this.state.fileUploadType,
       gcsApiKeyJsonPath: this.state.gcsApiKeyJsonPath,
       gcsBucket: this.state.gcsBucket,
       gcsUploadNamespace: this.state.gcsUploadNamespace,
