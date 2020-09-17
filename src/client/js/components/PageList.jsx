@@ -58,18 +58,16 @@ const PageList = (props) => {
   ));
 
   return (
-    <div className="page-list-container-create">
-      <ul className="page-list-ul page-list-ul-flat mb-3">
+    <div className="page-list-container-create d-flex flex-column align-items-center">
+      <ul className="page-list-ul page-list-ul-flat w-100">
         {pageList}
       </ul>
-      <div className="my-3 d-flex justify-content-center">
-        <PaginationWrapper
-          activePage={activePage}
-          changePage={setPageNumber}
-          totalItemsCount={totalPages}
-          pagingLimit={limit}
-        />
-      </div>
+      <PaginationWrapper
+        activePage={activePage}
+        changePage={setPageNumber}
+        totalItemsCount={totalPages}
+        pagingLimit={limit}
+      />
     </div>
   );
 

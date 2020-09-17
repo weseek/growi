@@ -67,8 +67,9 @@ class PageTimeline extends React.Component {
     }
 
     return (
-      <div>
-        { pages.map((page) => {
+      <div className="timeline-container-create d-flex flex-column align-items-center">
+        <div className="timeline-flat w-100">
+          { pages.map((page) => {
           return (
             <div className="timeline-body" key={`key-${page.id}`}>
               <div className="card card-timeline">
@@ -85,14 +86,13 @@ class PageTimeline extends React.Component {
             </div>
           );
         }) }
-        <div className="my-3 d-flex justify-content-center">
-          <PaginationWrapper
-            activePage={this.state.activePage}
-            changePage={this.handlePage}
-            totalItemsCount={this.state.totalPageItems}
-            pagingLimit={this.state.limit}
-          />
         </div>
+        <PaginationWrapper
+          activePage={this.state.activePage}
+          changePage={this.handlePage}
+          totalItemsCount={this.state.totalPageItems}
+          pagingLimit={this.state.limit}
+        />
       </div>
     );
 
