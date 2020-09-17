@@ -57,6 +57,10 @@ textarea.form-control {
   border-right: none;
 }
 
+.input-group input {
+  border-color: $secondary;
+}
+
 /*
  * Dropdown
  */
@@ -83,6 +87,15 @@ textarea.form-control {
  */
 .card:not([class*='bg-']) {
   @extend .bg-dark;
+}
+
+.card.well {
+  border-color: $secondary;
+}
+
+.card.bg-disabled {
+  background-color: lighten($dark, 10%);
+  border-color: $secondary;
 }
 
 /*
@@ -238,26 +251,6 @@ body.on-edit {
     background-color: $bgcolor-global;
     #slack-mark-black {
       display: none;
-    }
-  }
-}
-
-/*
- * Link Edit Modal
- */
-.link-edit-modal {
-  .card,
-  input {
-    border-color: $secondary;
-  }
-  .card.bg-muted {
-    background-color: lighten($dark, 10%);
-    border-color: $secondary;
-  }
-  .input-group {
-    .input-group-text {
-      color: $light;
-      background-color: $secondary;
     }
   }
 }
