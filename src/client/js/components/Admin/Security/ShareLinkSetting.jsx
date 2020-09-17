@@ -83,46 +83,48 @@ class ShareLinkSetting extends React.Component {
   render() {
     const { t, adminGeneralSecurityContainer } = this.props;
 
-    const pager = (
-      <div className="pull-right my-3">
+
+    function pager() {
+      if (adminGeneralSecurityContainer.state.shareLinks.length === 0) {
+        return null;
+      }
+      return (
         <PaginationWrapper
           activePage={adminGeneralSecurityContainer.state.shareLinksActivePage}
           changePage={this.getShareLinkList}
           totalItemsCount={adminGeneralSecurityContainer.state.totalshareLinks}
           pagingLimit={adminGeneralSecurityContainer.state.shareLinksPagingLimit}
+          align="right"
         />
-      </div>
-    );
+      );
+    }
 
-    const deleteAllButton = (
-      adminGeneralSecurityContainer.state.shareLinks.length > 0
-        ? (
+    return (
+      <Fragment>
+        <div className="mb-3">
           <button
             className="pull-right btn btn-danger"
+            disabled={adminGeneralSecurityContainer.state.shareLinks.length === 0}
             type="button"
             onClick={this.showDeleteConfirmModal}
           >
             {t('share_links.delete_all_share_links')}
           </button>
-        )
-        : (
-          <p className="pull-right mr-2">{t('share_links.No_share_links')}</p>
-        )
-    );
-
-    return (
-      <Fragment>
-        <div className="mb-3">
-          {deleteAllButton}
           <h2 className="alert-anchor border-bottom">{t('share_links.share_link_management')}</h2>
         </div>
-
         {pager}
-        <ShareLinkList
-          shareLinks={adminGeneralSecurityContainer.state.shareLinks}
-          onClickDeleteButton={this.deleteLinkById}
-          isAdmin
-        />
+
+        {(adminGeneralSecurityContainer.state.shareLinks.length !== 0) ? (
+          <ShareLinkList
+            shareLinks={adminGeneralSecurityContainer.state.shareLinks}
+            onClickDeleteButton={this.deleteLinkById}
+            isAdmin
+          />
+          )
+          : (<p className="text-center">{t('share_links.No_share_links')}</p>
+          )
+        }
+
 
         <DeleteAllShareLinksModal
           isOpen={this.state.isDeleteConfirmModalShown}
