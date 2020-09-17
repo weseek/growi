@@ -6,7 +6,7 @@
   }
 
   .grw-modal-body-style {
-    max-height: 80vh;
+    max-height: calc(100vh - 100px);
   }
 }
 
