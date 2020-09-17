@@ -102,7 +102,7 @@ const PageAccessoriesModal = (props) => {
   return (
     <React.Fragment>
       <Modal size="xl" isOpen={props.isOpen} toggle={closeModalHandler} className="grw-page-accessories-modal">
-        <ModalBody>
+        <ModalBody className="p-0">
           <Nav className="nav-title" id="nav-title">
             {Object.entries(navTabMapping).map(([key, value]) => {
               return (
@@ -114,14 +114,13 @@ const PageAccessoriesModal = (props) => {
                 </NavItem>
               );
             })}
-
             <Button
               close
               onClick={closeModalHandler}
             />
-
           </Nav>
           <hr id="grw-nav-slide-hr" className="my-0" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
+          <hr className="modal-split-hr m-0" />
           <TabContent activeTab={activeTab}>
             <TabPane tabId="pagelist">
               {pageAccessoriesContainer.state.activeComponents.has('pagelist') && <PageList />}

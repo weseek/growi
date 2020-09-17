@@ -4,15 +4,51 @@
 
     li {
       display: inline;
+
+      padding: 0rem;
+      a.nav-link {
+        padding: 1rem 1.5rem;
+      }
     }
     .close {
       margin: auto 1.5rem auto auto;
     }
   }
+  .table-top-icon {
+    margin-right: 5px;
+  }
 
+  #grw-nav-slide-hr {
+    border-top: 0rem;
+    border-bottom: 3px solid;
+    transition: 0.3s ease-in-out;
+  }
   .nav-link svg {
     width: 17px;
     height: 17px;
     margin-right: 5px;
   }
 }
+
+// .grw-page-accessories-modal {
+//   // .modal-body {
+//   //   padding: 0rem;
+//   // }
+//   .nav-title {
+
+//     li.nav-link {
+//       padding: 0rem;
+//       a.nav-link {
+//         padding: 1rem 1.5rem;
+//       }
+//     }
+//   }
+//   .table-top-icon {
+//     margin-right: 5px;
+//   }
+
+//   #grw-nav-slide-hr {
+//     border-top: 0rem;
+//     transition: 0.3s ease-in-out;
+//   }
+// }
