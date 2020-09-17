@@ -96,12 +96,11 @@ module.exports = (crowi) => {
    */
   router.get('/', accessTokenParser, loginRequired, validator.bookmarkInfo, async(req, res) => {
     const { pageId } = req.query;
-    const bookmark = {};
 
     try {
-      bookmark.page = await Bookmark.findByPageIdAndUserId(pageId, req.user);
-      bookmark.sumOfBookmarks = await Bookmark.countByPageId(pageId);
-      return res.apiv3({ bookmark });
+      const isBookmark = await Bookmark.findByPageIdAndUserId(pageId, req.user);
+      const sumOfBookmarks = await Bookmark.countByPageId(pageId);
+      return res.apiv3({ isBookmark, sumOfBookmarks });
     }
     catch (err) {
       logger.error('get-bookmark-failed', err);
