@@ -106,7 +106,7 @@ const PageAccessoriesModal = (props) => {
           <Nav className="nav-title" id="nav-title">
             {Object.entries(navTabMapping).map(([key, value]) => {
               return (
-                <NavItem key={key} type="button" className={`nav-link ${activeTab === key && 'active'}`}>
+                <NavItem key={key} type="button" className={`p-0 nav-link ${activeTab === key && 'active'}`}>
                   <NavLink onClick={() => { switchActiveTab(key) }}>
                     {value.icon}
                     {t(value.i18n)}
@@ -115,6 +115,7 @@ const PageAccessoriesModal = (props) => {
               );
             })}
             <Button
+              className="my-auto ml-auto mr-3"
               close
               onClick={closeModalHandler}
             />

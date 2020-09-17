@@ -3,21 +3,11 @@
     flex-wrap: nowrap;
 
     li {
-      display: inline;
-
-      padding: 0rem;
       a.nav-link {
         padding: 1rem 1.5rem;
       }
     }
-    .close {
-      margin: auto 1.5rem auto auto;
-    }
   }
-  .table-top-icon {
-    margin-right: 5px;
-  }
-
   #grw-nav-slide-hr {
     border-top: 0rem;
     border-bottom: 3px solid;
