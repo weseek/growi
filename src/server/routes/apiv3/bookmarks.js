@@ -66,7 +66,7 @@ module.exports = (crowi) => {
       body('pageId').isMongoId(),
       body('bool').isBoolean(),
     ],
-    countBookmarks: [
+    bookmarkInfo: [
       query('pageId').isMongoId(),
     ],
   };
@@ -94,7 +94,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Bookmark'
    */
-  router.get('/', accessTokenParser, loginRequired, async(req, res) => {
+  router.get('/', accessTokenParser, loginRequired, validator.bookmarkInfo, async(req, res) => {
     const { pageId } = req.query;
     const bookmark = {};
 
