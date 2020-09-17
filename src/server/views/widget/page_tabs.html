@@ -50,7 +50,7 @@
   <!-- presentation -->
   {% if not page.isTopPage() %}
     <li class="nav-item d-edit-none">
-      <a href="?presentation=1" class="nav-link toggle-presentation">
+      <a href="?presentation=1&revisionId={{revision.id}}" class="nav-link toggle-presentation">
         <i class="icon-film icon-fw"></i><span class="d-none d-sm-inline">{{ t('Presentation Mode') }}</span>
       </a>
     </li>
