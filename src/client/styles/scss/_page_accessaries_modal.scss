@@ -4,4 +4,14 @@
     height: 20px;
     margin-right: 5px;
   }
+
+  .grw-modal-body-style {
+    max-height: calc(100vh - 100px);
+  }
+}
+
+// revision-history
+// to stay d2h-code-side-line-number in the revision history diff area
+.d2h-wrapper {
+  position: relative;
 }
