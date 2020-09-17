@@ -321,7 +321,7 @@ class LinkEditModal extends React.PureComponent {
                       <button type="button" id="preview-btn" className="btn btn-info btn-page-preview">
                         <PagePreviewIcon />
                       </button>
-                      <Popover placement="right" isOpen={this.state.isPreviewOpen} target="preview-btn" toggle={this.toggleIsPreviewOpen}>
+                      <Popover trigger="focus" placement="right" isOpen={this.state.isPreviewOpen} target="preview-btn" toggle={this.toggleIsPreviewOpen}>
                         <PopoverBody>
                           {this.renderPreview()}
                         </PopoverBody>
