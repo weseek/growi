@@ -14,8 +14,8 @@ module.exports = {
     const Config = getModelSafely('Config') || require('@server/models/config')();
 
     await Config.findOneAndUpdate(
-      { key: 'customize:showRecentCreatedNumber' },
-      { key: 'customize:showPageListLimitNumber' },
+      { ns: 'crowi', key: 'customize:showRecentCreatedNumber' },
+      { ns: 'crowi', key: 'customize:showPageListLimitNumber' },
       { upsert: true },
     );
 
@@ -28,8 +28,8 @@ module.exports = {
     const Config = getModelSafely('Config') || require('@server/models/config')();
 
     await Config.findOneAndUpdate(
-      { key: 'customize:showPageListLimitNumber' },
-      { key: 'customize:showRecentCreatedNumber' },
+      { ns: 'crowi', key: 'customize:showPageListLimitNumber' },
+      { ns: 'crowi', key: 'customize:showRecentCreatedNumber' },
       { upsert: true },
     );
   },
