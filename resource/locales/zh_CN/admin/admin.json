@@ -45,6 +45,7 @@
     "file_upload_method":"File Upload Method",
     "gcp_label": "GCP",
     "aws_label": "AWS",
+		"fixed_by_env_var": "这是由env var<code>FILE_UPLOAD={{fileUploadType}}</code>修复的。",
     "file_upload": "This is for uploading file settings. If you complete file upload settings, file upload function, profile picture function etc will be enabled.",
     "ses_settings":"SES设置",
     "test_connection": "测试邮件服务器连接",

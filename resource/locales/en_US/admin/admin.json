@@ -43,6 +43,7 @@
     "confirm_to_initialize_mail_settings": "You can't restore to the current settings. Are you sure you want to initialize e-mail settings?",
     "file_upload_settings":"File Upload Settings",
     "file_upload_method":"File Upload Method",
+    "fixed_by_env_var": "This is fixed by the env var <code>FILE_UPLOAD={{fileUploadType}}</code>.",
     "gcp_label": "GCP",
     "aws_label": "AWS",
     "file_upload": "This is for uploading file settings. If you complete file upload settings, file upload function, profile picture function etc will be enabled.",
