@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -21,10 +21,42 @@ import PageList from './PageList';
 import PageHistory from './PageHistory';
 import ShareLink from './ShareLink/ShareLink';
 
+
+const navTabMapping = {
+  pagelist: {
+    icon: <PageListIcon />,
+    i18n: 'page_list',
+    index: 0,
+  },
+  timeline:  {
+    icon: <TimeLineIcon />,
+    i18n: 'Timeline View',
+    index: 1,
+  },
+  pageHistory: {
+    icon: <RecentChangesIcon />,
+    i18n: 'History',
+    index: 2,
+  },
+  attachment: {
+    icon: <AttachmentIcon />,
+    i18n: 'attachment_data',
+    index: 3,
+  },
+  shareLink: {
+    icon: <ShareLinkIcon />,
+    i18n: 'share_links.share_link_management',
+    index: 4,
+  },
+};
+
 const PageAccessoriesModal = (props) => {
   const { t, pageAccessoriesContainer } = props;
   const { switchActiveTab } = pageAccessoriesContainer;
   const { activeTab } = pageAccessoriesContainer.state;
+
+  const [sliderWidth, setSliderWidth] = useState(null);
+  const [sliderMarginLeft, setSliderMarginLeft] = useState(null);
 
   function closeModalHandler() {
     if (props.onClose == null) {
@@ -33,61 +65,38 @@ const PageAccessoriesModal = (props) => {
     props.onClose();
   }
 
-  const menu = document.getElementsByClassName('nav');
-  const navTitle = document.getElementById('nav-title');
-  // Values are set.
-
   // Might make this dynamic for px, %, pt, em
   function getPercentage(min, max) {
     return min / max * 100;
   }
 
-  // Not using reduce, because IE8 doesn't supprt it
-  function getArraySum(arr) {
-    let sum = 0;
-    [].forEach.call(arr, (el, index) => {
-      sum += el;
-    });
-    return sum;
-  }
+  useEffect(() => {
+    if (activeTab === '') {
+      return;
+    }
 
-  function navSlider(menu, callback) {
-    // We only want the <li> </li> tags
+    const navTitle = document.getElementById('nav-title');
     const navTabs = document.querySelectorAll('li.nav-link');
 
-    if (menu.length > 0) {
-      const marginLeft = [];
-      // Loop through nav children i.e li
-      [].forEach.call(navTabs, (el, index) => {
-        // Dynamic width/margin calculation for hr
-        const width = getPercentage(el.offsetWidth, navTitle.offsetWidth);
-        let tempMarginLeft = 0;
-        // We don't want to modify first elements positioning
-        if (index !== 0) {
-          tempMarginLeft = getArraySum(marginLeft);
-        }
-        // Set mouse event [click]
-        callback(el, width, tempMarginLeft);
-        /* We store it in array because the later accumulated value is used for positioning */
-        marginLeft.push(width);
-      });
+    if (navTitle == null || navTabs == null) {
+      return;
     }
-  }
 
-  if (menu != null) {
-    // CLICK
-    const menuSliderClick = document.getElementById('grw-nav-slide-hr');
-    if (menuSliderClick != null) {
-      const arrayMenu = Array.from(menu);
+    let tempML = 0;
 
-      navSlider(arrayMenu, (el, width, tempMarginLeft) => {
-        el.onclick = () => {
-          menuSliderClick.style.width = `${width}%`;
-          menuSliderClick.style.marginLeft = `${tempMarginLeft}%`;
-        };
-      });
-    }
-  } // endif
+    const styles = [].map.call(navTabs, (el) => {
+      const width = getPercentage(el.offsetWidth, navTitle.offsetWidth);
+      const marginLeft = tempML;
+      tempML += width;
+      return { width, marginLeft };
+    });
+
+    const { width, marginLeft } = styles[navTabMapping[activeTab].index];
+
+    setSliderWidth(width);
+    setSliderMarginLeft(marginLeft);
+
+  }, [activeTab]);
 
 
   return (
@@ -95,81 +104,41 @@ const PageAccessoriesModal = (props) => {
       <Modal size="xl" isOpen={props.isOpen} toggle={closeModalHandler} className="grw-page-accessories-modal">
         <ModalBody>
           <Nav className="nav-title" id="nav-title">
-            <NavItem type="button" className={`nav-link ${activeTab === 'pagelist' && 'active'}`}>
-              <NavLink
-                onClick={() => {
-                  switchActiveTab('pagelist');
-                }}
-              >
-                <PageListIcon />
-                {t('page_list')}
-              </NavLink>
-            </NavItem>
-            <NavItem type="button" className={`nav-link ${activeTab === 'timeline' && 'active'}`}>
-              <NavLink
-                onClick={() => {
-                  switchActiveTab('timeline');
-                }}
-              >
-                <TimeLineIcon />
-                {t('Timeline View')}
-              </NavLink>
-            </NavItem>
-            <NavItem type="button" className={`nav-link ${activeTab === 'page-history' && 'active'}`}>
-              <NavLink
-                onClick={() => {
-                  switchActiveTab('page-history');
-                }}
-              >
-                <RecentChangesIcon />
-                {t('History')}
-              </NavLink>
-            </NavItem>
-            <NavItem type="button" className={`nav-link ${activeTab === 'attachment' && 'active'}`}>
-              <NavLink
-                onClick={() => {
-                  switchActiveTab('attachment');
-                }}
-              >
-                <AttachmentIcon />
-                {t('attachment_data')}
-              </NavLink>
-            </NavItem>
-            <NavItem type="button" className={`nav-link ${activeTab === 'share-link' && 'active'}`}>
-              <NavLink
-                onClick={() => {
-                  switchActiveTab('share-link');
-                }}
-              >
-                <ShareLinkIcon />
-                {t('share_links.share_link_management')}
-              </NavLink>
-            </NavItem>
+            {Object.entries(navTabMapping).map(([key, value]) => {
+              return (
+                <NavItem key={key} type="button" className={`nav-link ${activeTab === key && 'active'}`}>
+                  <NavLink onClick={() => { switchActiveTab(key) }}>
+                    {value.icon}
+                    {t(value.i18n)}
+                  </NavLink>
+                </NavItem>
+              );
+            })}
 
             <Button
               close
               onClick={closeModalHandler}
             />
-          </Nav>
-          <hr id="grw-nav-slide-hr" className="my-0"></hr>
-          <TabContent activeTab={activeTab}>
 
+          </Nav>
+          <hr id="grw-nav-slide-hr" className="my-0" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
+          <TabContent activeTab={activeTab}>
             <TabPane tabId="pagelist">
               {pageAccessoriesContainer.state.activeComponents.has('pagelist') && <PageList />}
             </TabPane>
             <TabPane tabId="timeline" className="p-4">
               {pageAccessoriesContainer.state.activeComponents.has('timeline') && <PageTimeline /> }
             </TabPane>
-            <TabPane tabId="page-history">
+            <TabPane tabId="pageHistory">
               <div className="overflow-auto">
-                {pageAccessoriesContainer.state.activeComponents.has('page-history') && <PageHistory /> }
+                {pageAccessoriesContainer.state.activeComponents.has('pageHistory') && <PageHistory /> }
               </div>
             </TabPane>
             <TabPane tabId="attachment" className="p-4">
               {pageAccessoriesContainer.state.activeComponents.has('attachment') && <PageAttachment />}
             </TabPane>
-            <TabPane tabId="share-link" className="p-4">
-              {pageAccessoriesContainer.state.activeComponents.has('share-link') && <ShareLink />}
+            <TabPane tabId="shareLink" className="p-4">
+              {pageAccessoriesContainer.state.activeComponents.has('shareLink') && <ShareLink />}
             </TabPane>
           </TabContent>
         </ModalBody>

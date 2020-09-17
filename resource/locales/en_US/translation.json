@@ -47,6 +47,7 @@
   "Timeline View": "Timeline",
   "History": "History",
   "attachment_data": "Attachment Data",
+  "No attachments yet.": "No attachments yet.",
   "Presentation Mode": "Presentation",
   "Not available for guest": "Not available for guest",
   "Create Archive Page": "Create Archive Page",
@@ -138,6 +139,7 @@
   "Deleted Pages": "Deleted Pages",
   "Sign out": "Logout",
   "Disassociate": "Disassociate",
+  "No bookmarks yet": "No bookmarks yet",
   "Recent Created": "Recent Created",
   "Recent Changes": "Recent Changes",
   "personal_dropdown": {

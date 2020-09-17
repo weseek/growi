@@ -49,6 +49,7 @@
 	"Timeline View": "时间线",
   "History": "历史",
   "attachment_data": "Attachment Data",
+  "No attachments yet": "暂无附件",
 	"Presentation Mode": "演示文稿",
   "Not available for guest": "Not available for guest",
   "Create Archive Page": "创建归档页",
@@ -145,7 +146,8 @@
 	"List Drafts": "草稿",
 	"Deleted Pages": "已删除页",
 	"Sign out": "退出",
-	"Disassociate": "解除关联",
+  "Disassociate": "解除关联",
+  "No bookmarks yet": "暂无书签",
 	"Recent Created": "最新创建",
 	"Recent Changes": "最新修改",
 	"form_validation": {
