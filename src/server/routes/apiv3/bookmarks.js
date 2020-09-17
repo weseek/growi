@@ -58,7 +58,7 @@ module.exports = (crowi) => {
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
-  const { Page, Bookmark } = crowi.models;
+  const { Page, Bookmark, User } = crowi.models;
 
   const validator = {
     bookmarks: [
@@ -165,6 +165,11 @@ module.exports = (crowi) => {
           populate: {
             path: 'page',
             model: 'Page',
+            populate: {
+              path: 'lastUpdateUser',
+              model: 'User',
+              select: User.USER_PUBLIC_FIELDS,
+            },
           },
           page,
           limit,
