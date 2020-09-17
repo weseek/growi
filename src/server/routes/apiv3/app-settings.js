@@ -215,6 +215,7 @@ module.exports = (crowi) => {
       envSiteUrl: crowi.configManager.getConfigFromEnvVars('crowi', 'app:siteUrl'),
       isMailerSetup: crowi.mailService.isMailerSetup,
       fromAddress: crowi.configManager.getConfig('crowi', 'mail:from'),
+
       transmissionMethod: crowi.configManager.getConfig('crowi', 'mail:transmissionMethod'),
       smtpHost: crowi.configManager.getConfig('crowi', 'mail:smtpHost'),
       smtpPort: crowi.configManager.getConfig('crowi', 'mail:smtpPort'),
@@ -222,14 +223,20 @@ module.exports = (crowi) => {
       smtpPassword: crowi.configManager.getConfig('crowi', 'mail:smtpPassword'),
       sesAccessKeyId: crowi.configManager.getConfig('crowi', 'mail:sesAccessKeyId'),
       sesSecretAccessKey: crowi.configManager.getConfig('crowi', 'mail:sesSecretAccessKey'),
+
+      fileUploadType: crowi.configManager.getConfig('crowi', 'app:fileUploadType'),
       s3Region: crowi.configManager.getConfig('crowi', 'aws:s3Region'),
       s3CustomEndpoint: crowi.configManager.getConfig('crowi', 'aws:s3CustomEndpoint'),
       s3Bucket: crowi.configManager.getConfig('crowi', 'aws:s3Bucket'),
       s3AccessKeyId: crowi.configManager.getConfig('crowi', 'aws:s3AccessKeyId'),
       s3SecretAccessKey: crowi.configManager.getConfig('crowi', 'aws:s3SecretAccessKey'),
+      gcsApiKeyJsonPath: crowi.configManager.getConfig('crowi', 'gcs:apiKeyJsonPath'),
+      gcsBucket: crowi.configManager.getConfig('crowi', 'gcs:bucket'),
+      gcsUploadNamespace: crowi.configManager.getConfig('crowi', 'gcs:uploadNamespace'),
       envGcsApiKeyJsonPath: crowi.configManager.getConfigFromEnvVars('crowi', 'gcs:apiKeyJsonPath'),
       envGcsBucket: crowi.configManager.getConfigFromEnvVars('crowi', 'gcs:bucket'),
       envGcsUploadNamespace: crowi.configManager.getConfigFromEnvVars('crowi', 'gcs:uploadNamespace'),
+
       isEnabledPlugins: crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins'),
     };
     return res.apiv3({ appSettingsParams });
@@ -562,6 +569,7 @@ module.exports = (crowi) => {
    */
   router.put('/aws-setting', loginRequiredStrictly, adminRequired, csrf, validator.awsSetting, apiV3FormValidator, async(req, res) => {
     const requestAwsSettingParams = {
+      'app:fileUploadType': req.body.fileUploadType,
       'aws:s3Region': req.body.s3Region,
       'aws:s3CustomEndpoint': req.body.s3CustomEndpoint,
       'aws:s3Bucket': req.body.s3Bucket,
@@ -616,6 +624,7 @@ module.exports = (crowi) => {
    */
   router.put('/gcp-setting', loginRequiredStrictly, adminRequired, csrf, validator.gcpSetting, apiV3FormValidator, async(req, res) => {
     const requestGcpSettingParams = {
+      'app:fileUploadType': req.body.fileUploadType,
       'gcs:apiKeyJsonPath': req.body.gcsApiKeyJsonPath,
       'gcs:bucket': req.body.gcsBucket,
       'gcs:uploadNamespace': req.body.gcsUploadNamespace,

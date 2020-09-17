@@ -86,11 +86,16 @@ export default class AdminAppContainer extends Container {
       smtpPassword: appSettingsParams.smtpPassword,
       sesAccessKeyId: appSettingsParams.sesAccessKeyId,
       sesSecretAccessKey: appSettingsParams.sesSecretAccessKey,
+
+      fileUploadType: appSettingsParams.fileUploadType,
       s3Region: appSettingsParams.s3Region,
       s3CustomEndpoint: appSettingsParams.s3CustomEndpoint,
       s3Bucket: appSettingsParams.s3Bucket,
       s3AccessKeyId: appSettingsParams.s3AccessKeyId,
       s3SecretAccessKey: appSettingsParams.s3SecretAccessKey,
+      gcsApiKeyJsonPath: appSettingsParams.gcsApiKeyJsonPath,
+      gcsBucket: appSettingsParams.gcsBucket,
+      gcsUploadNamespace: appSettingsParams.gcsUploadNamespace,
       envGcsApiKeyJsonPath: appSettingsParams.envGcsApiKeyJsonPath,
       envGcsBucket: appSettingsParams.envGcsBucket,
       envGcsUploadNamespace: appSettingsParams.envGcsUploadNamespace,
@@ -333,12 +338,24 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
+   * Update file upload setting
+   * @memberOf AdminAppContainer
+   */
+  updateFileUploadSettingHandler() {
+    if (this.state.fileUploadType === 'aws') {
+      return this.updateAwsSettingHandler();
+    }
+    return this.updateGcpSettingHandler();
+  }
+
+  /**
    * Update AWS setting
    * @memberOf AdminAppContainer
    * @return {Array} Appearance
    */
   async updateAwsSettingHandler() {
     const response = await this.appContainer.apiv3.put('/app-settings/aws-setting', {
+      fileUploadType: this.state.fileUploadType,
       s3Region: this.state.s3Region,
       s3CustomEndpoint: this.state.s3CustomEndpoint,
       s3Bucket: this.state.s3Bucket,
@@ -355,8 +372,14 @@ export default class AdminAppContainer extends Container {
    * @return {Array} Appearance
    */
   async updateGcpSettingHandler() {
-    // TODO GW-3660 cteate api
-    return;
+    const response = await this.appContainer.apiv3.put('/app-settings/gcp-setting', {
+      fileUploadType: this.state.fileUploadType,
+      gcsApiKeyJsonPath: this.state.gcsApiKeyJsonPath,
+      gcsBucket: this.state.gcsBucket,
+      gcsUploadNamespace: this.state.gcsUploadNamespace,
+    });
+    const { awsSettingParams } = response.data;
+    return awsSettingParams;
   }
 
   /**
