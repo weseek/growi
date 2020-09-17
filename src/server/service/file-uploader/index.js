@@ -1,5 +1,4 @@
 const logger = require('@alias/logger')('growi:service:FileUploaderServise');
-const Gridfs = require('./gridfs');
 const S2sMessagingServiceDelegator = require('../s2s-messaging/base');
 
 const envToModuleMappings = {
@@ -14,28 +13,6 @@ const envToModuleMappings = {
 };
 
 class FileUploadServiceFactory extends S2sMessagingServiceDelegator {
-
-  async initialize() {
-    this.isFileUploaderSetup = false;
-
-    const method = envToModuleMappings[process.env.FILE_UPLOAD] || 'aws';
-
-    switch (method) {
-      case 'gridfs':
-        this.fileUploader = new Gridfs(this.crowi);
-        break;
-      // TODO others
-      default:
-        this.fileUploader = null;
-        break;
-    }
-
-    if (this.fileUploader != null) {
-      this.isFileUploaderSetup = true;
-    }
-
-    logger.debug('fileUploader initialized');
-  }
 
   initializeUploader(crowi) {
     const method = envToModuleMappings[process.env.FILE_UPLOAD] || 'aws';
