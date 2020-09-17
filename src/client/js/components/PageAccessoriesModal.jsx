@@ -102,7 +102,7 @@ const PageAccessoriesModal = (props) => {
   return (
     <React.Fragment>
       <Modal size="xl" isOpen={props.isOpen} toggle={closeModalHandler} className="grw-page-accessories-modal">
-        <ModalBody>
+        <ModalBody className="overflow-auto grw-tab-content-style">
           <Nav className="nav-title" id="nav-title">
             {Object.entries(navTabMapping).map(([key, value]) => {
               return (
