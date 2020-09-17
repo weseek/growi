@@ -23,12 +23,12 @@ const TYPES = {
  *  So, parameters of these are under consideration.
  */
 const ENV_VAR_NAME_TO_CONFIG_INFO = {
-  FILE_UPLOAD: {
-    ns:      'crowi',
-    key:     'app:fileUploadType',
-    type:    TYPES.STRING,
-    default: null,
-  },
+  // FILE_UPLOAD: {
+  //   ns:      'crowi',
+  //   key:     'app:fileUploadType',
+  //   type:    TYPES.STRING,
+  //   default: null,
+  // },
   // HACKMD_URI: {
   //   ns:      ,
   //   key:     ,
