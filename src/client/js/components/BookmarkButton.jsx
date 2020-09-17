@@ -13,27 +13,6 @@ class BookmarkButton extends React.Component {
     this.handleClick = this.handleClick.bind(this);
   }
 
-  async componentDidMount() {
-    const { pageId, crowi, pageContainer } = this.props;
-    // if guest user
-    if (!this.isUserLoggedIn()) {
-      // do nothing
-      return;
-    }
-
-    try {
-      const response = await crowi.apiv3.get('/bookmarks', { pageId });
-      if (response.data.bookmark.page != null) {
-        pageContainer.setState({ isBookmarked: true });
-        pageContainer.setState({ sumOfBookmarks: response.data.bookmark.sumOfBookmarks });
-      }
-    }
-    catch (err) {
-      toastError(err);
-    }
-
-  }
-
   async handleClick() {
     const { crowi, pageId, pageContainer } = this.props;
     const bool = !pageContainer.state.isBookmarked;
