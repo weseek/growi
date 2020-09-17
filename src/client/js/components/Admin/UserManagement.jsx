@@ -114,12 +114,13 @@ class UserManagement extends React.Component {
     const { t, adminUsersContainer } = this.props;
 
     const pager = (
-      <div className="pull-right my-3">
+      <div className="my-3">
         <PaginationWrapper
           activePage={adminUsersContainer.state.activePage}
           changePage={this.handlePage}
           totalItemsCount={adminUsersContainer.state.totalUsers}
           pagingLimit={adminUsersContainer.state.pagingLimit}
+          align="right"
         />
       </div>
     );
