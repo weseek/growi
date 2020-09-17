@@ -91,6 +91,9 @@ export default class AdminAppContainer extends Container {
       s3Bucket: appSettingsParams.s3Bucket,
       s3AccessKeyId: appSettingsParams.s3AccessKeyId,
       s3SecretAccessKey: appSettingsParams.s3SecretAccessKey,
+      gcsApiKeyJsonPath: appSettingsParams.gcsApiKeyJsonPath,
+      gcsBucket: appSettingsParams.gcsBucket,
+      gcsUploadNamespace: appSettingsParams.gcsUploadNamespace,
       envGcsApiKeyJsonPath: appSettingsParams.envGcsApiKeyJsonPath,
       envGcsBucket: appSettingsParams.envGcsBucket,
       envGcsUploadNamespace: appSettingsParams.envGcsUploadNamespace,
@@ -366,9 +369,13 @@ export default class AdminAppContainer extends Container {
    * @return {Array} Appearance
    */
   async updateGcpSettingHandler() {
-
-    // TODO GW-3660 cteate api
-    return;
+    const response = await this.appContainer.apiv3.put('/app-settings/gcp-setting', {
+      gcsApiKeyJsonPath: this.state.gcsApiKeyJsonPath,
+      gcsBucket: this.state.gcsBucket,
+      gcsUploadNamespace: this.state.gcsUploadNamespace,
+    });
+    const { awsSettingParams } = response.data;
+    return awsSettingParams;
   }
 
   /**
