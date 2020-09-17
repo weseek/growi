@@ -37,6 +37,7 @@ export default class AdminAppContainer extends Container {
 
       fileUploadType: '',
       envFileUploadType: '',
+      isFileUploadTypeForced: false,
 
       gcsApiKeyJsonPath: '',
       envGcsApiKeyJsonPath: '',
@@ -104,14 +105,21 @@ export default class AdminAppContainer extends Container {
       envGcsUploadNamespace: appSettingsParams.envGcsUploadNamespace,
       isEnabledPlugins: appSettingsParams.isEnabledPlugins,
     });
+
+    // check is file upload type forced
+    if (this.isFileUploadTypeForced(appSettingsParams.envFileUploadType)) {
+      this.setState({ fileUploadType: appSettingsParams.envFileUploadType });
+      this.setState({ isFileUploadTypeForced: true });
+    }
+
   }
 
   /**
    * get isFileUploadTypeForced
    * @return {bool} isWikiModeForced
    */
-  get isFileUploadTypeForced() {
-    return this.state.envFileUploadType === 'aws' || this.state.envFileUploadType === 'gcs';
+  isFileUploadTypeForced(envFileUploadType) {
+    return envFileUploadType === 'aws' || envFileUploadType === 'gcp' || envFileUploadType === 'gcs';
   }
 
   /**
