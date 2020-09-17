@@ -66,6 +66,7 @@ class ShareLinkSetting extends React.Component {
 
   async deleteLinkById(shareLinkId) {
     const { t, appContainer, adminGeneralSecurityContainer } = this.props;
+    const { shareLinksActivePage } = adminGeneralSecurityContainer.state;
 
     try {
       const res = await appContainer.apiv3Delete(`/share-links/${shareLinkId}`);
@@ -76,24 +77,26 @@ class ShareLinkSetting extends React.Component {
       toastError(err);
     }
 
-    this.getShareLinkList(adminGeneralSecurityContainer.state.shareLinksActivePage);
+    this.getShareLinkList(shareLinksActivePage);
   }
 
 
   render() {
     const { t, adminGeneralSecurityContainer } = this.props;
-
+    const {
+      shareLinks, shareLinksActivePage, totalshareLinks, shareLinksPagingLimit,
+    } = adminGeneralSecurityContainer.state;
 
     function pager() {
-      if (adminGeneralSecurityContainer.state.shareLinks.length === 0) {
+      if (shareLinks.length === 0) {
         return null;
       }
       return (
         <PaginationWrapper
-          activePage={adminGeneralSecurityContainer.state.shareLinksActivePage}
+          activePage={shareLinksActivePage}
           changePage={this.getShareLinkList}
-          totalItemsCount={adminGeneralSecurityContainer.state.totalshareLinks}
-          pagingLimit={adminGeneralSecurityContainer.state.shareLinksPagingLimit}
+          totalItemsCount={totalshareLinks}
+          pagingLimit={shareLinksPagingLimit}
           align="right"
         />
       );
@@ -104,7 +107,7 @@ class ShareLinkSetting extends React.Component {
         <div className="mb-3">
           <button
             className="pull-right btn btn-danger"
-            disabled={adminGeneralSecurityContainer.state.shareLinks.length === 0}
+            disabled={shareLinks.length === 0}
             type="button"
             onClick={this.showDeleteConfirmModal}
           >
@@ -114,9 +117,9 @@ class ShareLinkSetting extends React.Component {
         </div>
         {pager}
 
-        {(adminGeneralSecurityContainer.state.shareLinks.length !== 0) ? (
+        {(shareLinks.length !== 0) ? (
           <ShareLinkList
-            shareLinks={adminGeneralSecurityContainer.state.shareLinks}
+            shareLinks={shareLinks}
             onClickDeleteButton={this.deleteLinkById}
             isAdmin
           />
