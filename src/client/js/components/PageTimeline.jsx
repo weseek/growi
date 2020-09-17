@@ -67,8 +67,8 @@ class PageTimeline extends React.Component {
     }
 
     return (
-      <div className="timeline-container-create d-flex flex-column align-items-center">
-        <div className="timeline-flat w-100">
+      <div className="d-flex flex-column align-items-center">
+        <div className="w-100">
           { pages.map((page) => {
           return (
             <div className="timeline-body" key={`key-${page.id}`}>

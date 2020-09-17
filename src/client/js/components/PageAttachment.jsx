@@ -147,8 +147,8 @@ class PageAttachment extends React.Component {
     }
 
     return (
-      <div className="page-attachment-container-create d-flex flex-column align-items-center">
-        <div className="page-attachment-flat w-100">
+      <div className="d-flex flex-column align-items-center">
+        <div className="w-100">
           <PageAttachmentList
             attachments={this.state.attachments}
             inUse={this.state.inUse}
