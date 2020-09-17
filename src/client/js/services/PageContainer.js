@@ -152,6 +152,15 @@ export default class PageContainer extends Container {
       likerUsers: like.data.users.liker,
       isLiked: like.data.isLiked,
     });
+
+    const bookmark = await this.appContainer.apiv3Get('/bookmarks', { pageId: this.state.pageId });
+    if (bookmark.data.isBookmark != null) {
+      this.setState({
+        isBookmarked: true,
+        sumOfBookmarks: bookmark.data.sumOfBookmarks,
+      });
+    }
+
     this.checkAndUpdateImageUrlCached(this.state.likerUsers);
   }
 
