@@ -58,21 +58,20 @@ function PageHistory(props) {
         changePage={handlePage}
         totalItemsCount={pageHistoryContainer.state.totalPages}
         pagingLimit={pageHistoryContainer.state.pagingLimit}
+        align="center"
       />
     );
   }
 
 
   return (
-    <div className="d-flex flex-column align-items-center">
-      <div className="mt-4 w-100">
-        <PageRevisionList
-          revisions={pageHistoryContainer.state.revisions}
-          diffOpened={pageHistoryContainer.state.diffOpened}
-          getPreviousRevision={pageHistoryContainer.getPreviousRevision}
-          onDiffOpenClicked={pageHistoryContainer.onDiffOpenClicked}
-        />
-      </div>
+    <div className="mt-4">
+      <PageRevisionList
+        revisions={pageHistoryContainer.state.revisions}
+        diffOpened={pageHistoryContainer.state.diffOpened}
+        getPreviousRevision={pageHistoryContainer.getPreviousRevision}
+        onDiffOpenClicked={pageHistoryContainer.onDiffOpenClicked}
+      />
       {pager()}
     </div>
   );
