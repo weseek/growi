@@ -36,6 +36,7 @@ export default class AdminAppContainer extends Container {
       sesSecretAccessKey: '',
 
       fileUploadType: '',
+      envFileUploadType: '',
 
       gcsApiKeyJsonPath: '',
       envGcsApiKeyJsonPath: '',
@@ -88,6 +89,8 @@ export default class AdminAppContainer extends Container {
       sesSecretAccessKey: appSettingsParams.sesSecretAccessKey,
 
       fileUploadType: appSettingsParams.fileUploadType,
+      envFileUploadType: appSettingsParams.envFileUploadType,
+
       s3Region: appSettingsParams.s3Region,
       s3CustomEndpoint: appSettingsParams.s3CustomEndpoint,
       s3Bucket: appSettingsParams.s3Bucket,
@@ -101,6 +104,14 @@ export default class AdminAppContainer extends Container {
       envGcsUploadNamespace: appSettingsParams.envGcsUploadNamespace,
       isEnabledPlugins: appSettingsParams.isEnabledPlugins,
     });
+  }
+
+  /**
+   * get isFileUploadTypeForced
+   * @return {bool} isWikiModeForced
+   */
+  get isFileUploadTypeForced() {
+    return this.state.envFileUploadType === 'aws' || this.state.envFileUploadType === 'gcs';
   }
 
   /**

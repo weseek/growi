@@ -66,6 +66,7 @@ function FileUploadSetting(props) {
               );
             })}
         </div>
+        {adminAppContainer.isFileUploadTypeForced && <p>forced</p>}
       </div>
 
       {fileUploadType === 'aws' && <AwsSetting />}
