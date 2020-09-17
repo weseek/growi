@@ -24,10 +24,10 @@ const TYPES = {
  */
 const ENV_VAR_NAME_TO_CONFIG_INFO = {
   // FILE_UPLOAD: {
-  //   ns:      'crowi',
-  //   key:     'app:fileUploadType',
-  //   type:    TYPES.STRING,
-  //   default: null,
+  //   ns:      ,
+  //   key:     ,
+  //   type:    ,
+  //   default:
   // },
   // HACKMD_URI: {
   //   ns:      ,
@@ -325,12 +325,6 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     key:     'gcs:uploadNamespace',
     type:    TYPES.STRING,
     default: null,
-  },
-  IS_GCP_ENV_PRIORITIZED: {
-    ns:      'crowi',
-    key:     'gcs:isGcpEnvPrioritizes',
-    type:    TYPES.BOOLEAN,
-    default: false,
   },
 };
 
