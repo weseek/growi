@@ -333,6 +333,17 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
+   * Update file upload setting
+   * @memberOf AdminAppContainer
+   */
+  updateFileUploadSettingHandler() {
+    if (this.state.fileUploadType === 'aws') {
+      return this.updateAwsSettingHandler();
+    }
+    return this.updateGcpSettingHandler();
+  }
+
+  /**
    * Update AWS setting
    * @memberOf AdminAppContainer
    * @return {Array} Appearance
@@ -355,6 +366,7 @@ export default class AdminAppContainer extends Container {
    * @return {Array} Appearance
    */
   async updateGcpSettingHandler() {
+
     // TODO GW-3660 cteate api
     return;
   }

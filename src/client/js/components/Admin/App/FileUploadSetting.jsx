@@ -22,8 +22,7 @@ function FileUploadSetting(props) {
     const { t } = props;
 
     try {
-      // TODO
-      // await adminAppContainer.updateAwsSettingHandler();
+      await adminAppContainer.updateFileUploadSettingHandler();
       toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.file_upload_settings') }));
     }
     catch (err) {
