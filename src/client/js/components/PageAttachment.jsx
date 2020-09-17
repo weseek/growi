@@ -117,7 +117,7 @@ class PageAttachment extends React.Component {
 
     const { t } = this.props;
     if (this.state.attachments.length === 0) {
-      return `${t('No attachments yet')}.`;
+      return t('No_attachments_yet');
 
     }
 
