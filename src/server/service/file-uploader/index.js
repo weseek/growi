@@ -13,7 +13,7 @@ const envToModuleMappings = {
   gcs:     'gcs',
 };
 
-class FileUploadServiceFactory {
+class FileUploadServiceFactory extends S2sMessagingServiceDelegator {
 
   async initialize() {
     this.isFileUploaderSetup = false;
@@ -46,7 +46,6 @@ class FileUploadServiceFactory {
     if (this.uploader == null) {
       logger.warn('Failed to initialize uploader.');
     }
-
   }
 
   getUploader(crowi) {
@@ -58,8 +57,18 @@ class FileUploadServiceFactory {
 
 }
 
-const factory = new FileUploadServiceFactory();
 
 module.exports = (crowi) => {
+  const { configManager } = crowi;
+
+  const uri = configManager.getConfig('crowi', 'app:nchanUri');
+
+  // when nachan server URI is not set
+  if (uri == null) {
+    logger.warn('NCHAN_URI is not specified.');
+    return;
+  }
+
+  const factory = new FileUploadServiceFactory(uri);
   return factory.getUploader(crowi);
 };
