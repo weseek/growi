@@ -147,15 +147,13 @@ class PageAttachment extends React.Component {
     }
 
     return (
-      <div className="d-flex flex-column align-items-center">
-        <div className="w-100">
-          <PageAttachmentList
-            attachments={this.state.attachments}
-            inUse={this.state.inUse}
-            onAttachmentDeleteClicked={this.onAttachmentDeleteClicked}
-            isUserLoggedIn={this.isUserLoggedIn()}
-          />
-        </div>
+      <>
+        <PageAttachmentList
+          attachments={this.state.attachments}
+          inUse={this.state.inUse}
+          onAttachmentDeleteClicked={this.onAttachmentDeleteClicked}
+          isUserLoggedIn={this.isUserLoggedIn()}
+        />
 
         {deleteAttachmentModal}
 
@@ -164,8 +162,9 @@ class PageAttachment extends React.Component {
           changePage={this.handlePage}
           totalItemsCount={this.state.totalAttachments}
           pagingLimit={this.state.limit}
+          align="center"
         />
-      </div>
+      </>
     );
   }
 
