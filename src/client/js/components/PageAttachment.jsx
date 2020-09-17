@@ -63,6 +63,9 @@ class PageAttachment extends React.Component {
 
   async componentDidMount() {
     await this.handlePage(1);
+    this.setState({
+      activePage: 1,
+    });
   }
 
   checkIfFileInUse(attachment) {
