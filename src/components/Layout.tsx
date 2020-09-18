@@ -7,6 +7,7 @@ import GrowiNavbar from '~/client/js/components/Navbar/GrowiNavbar';
 // import AppContainer from '~/client/js/services/AppContainer';
 import CounterContainer from '~/client/js/services/CounterContainer';
 
+
 import { useCurrentUser } from '~/stores/context';
 
 type Props = {
@@ -19,7 +20,7 @@ type Props = {
 
 const Layout = ({ counterContainer, children, title }: Props) => {
 
-  const { data: currentUser, error } = useCurrentUser();
+  const { data: currentUser } = useCurrentUser();
 
   return (
     <>

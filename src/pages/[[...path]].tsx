@@ -1,4 +1,6 @@
-import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
+import {
+  NextPage, GetServerSideProps, GetServerSidePropsContext,
+} from 'next';
 
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import loggerFactory from '~/utils/logger';
