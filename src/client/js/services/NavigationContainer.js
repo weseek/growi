@@ -19,7 +19,7 @@ export default class NavigationContainer extends Container {
     const { localStorage } = window;
 
     this.state = {
-      editorMode: null,
+      editorMode: 'view',
 
       isDeviceSmallerThanMd: null,
       preferDrawerModeByUser: localStorage.preferDrawerModeByUser === 'true',

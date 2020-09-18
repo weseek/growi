@@ -153,6 +153,10 @@ const GrowiSubNavigation = (props) => {
     );
   }
 
+  function onThreeStrandedButtonClicked(viewType) {
+    navigationContainer.setEditorMode(viewType);
+  }
+
   return (
     <div className={`grw-subnav d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
 
@@ -194,7 +198,7 @@ const GrowiSubNavigation = (props) => {
             { !isPageInTrash && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
           </div>
           <div className="mt-2">
-            <ThreeStrandedButton />
+            <ThreeStrandedButton onThreeStrandedButtonClicked={onThreeStrandedButtonClicked} />
           </div>
         </div>
 
