@@ -83,18 +83,19 @@ class Draft extends React.Component {
   renderAccordionTitle(isExist) {
     const { isPanelExpanded } = this.state;
     const { t } = this.props;
-    const iconClass = isPanelExpanded ? 'caret-opened' : '';
+    const iconClass = isPanelExpanded ? 'fa-rotate-90' : '';
 
     return (
       <span>
-        <i className={`icon icon-arrow-up ${iconClass}`}></i>
-        <span className="mx-2" onClick={() => this.setState({ isPanelExpanded: !isPanelExpanded })}>
+
+        <span className="mr-2 draft-path" onClick={() => this.setState({ isPanelExpanded: !isPanelExpanded })}>
+          <i className={`fa fa-fw fa-angle-right mr-5 ${iconClass}`}></i>
           {this.props.path}
         </span>
-        { !isExist && (
+        { isExist && (
           <span className="badge badge-warning">{t('page exists')}</span>
         ) }
-        { isExist && (
+        { !isExist && (
           <span className="badge badge-info">draft</span>
         ) }
 

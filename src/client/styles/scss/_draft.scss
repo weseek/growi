@@ -1,12 +1,12 @@
 .draft-list-item {
-  .icon-arrow-up {
-    transition: 0.4s;
-    transform: rotate(-90deg);
+  // .icon-arrow-up {
+  //   transition: 0.4s;
+  //   transform: rotate(-90deg);
 
-    &.caret-opened {
-      transform: rotate(30deg);
-    }
-  }
+  //   &.caret-opened {
+  //     transform: rotate(30deg);
+  //   }
+  // }
   .panel-heading {
     .icon-container {
       a:hover {
@@ -27,6 +27,9 @@
   }
 
   .draft-copy {
+    cursor: pointer;
+  }
+  .draft-path {
     cursor: pointer;
   }
 }
