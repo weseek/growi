@@ -85,7 +85,7 @@ class ShareLink extends React.Component {
     const { t } = this.props;
 
     return (
-      <div className="container">
+      <div className="container p-0">
         <h3 className="grw-modal-head d-flex pb-2">
           { t('share_links.share_link_list') }
           <button className="btn btn-danger ml-auto " type="button" onClick={this.deleteAllLinksButtonHandler}>{t('delete_all')}</button>
