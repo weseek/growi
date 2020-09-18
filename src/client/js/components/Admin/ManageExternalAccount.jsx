@@ -36,15 +36,15 @@ class ManageExternalAccount extends React.Component {
     const { t, adminExternalAccountsContainer } = this.props;
 
     const pager = (
-      <div>
-        <PaginationWrapper
-          activePage={adminExternalAccountsContainer.state.activePage}
-          changePage={this.handleExternalAccountPage}
-          totalItemsCount={adminExternalAccountsContainer.state.totalAccounts}
-          pagingLimit={adminExternalAccountsContainer.state.pagingLimit}
-          align="right"
-        />
-      </div>
+
+      <PaginationWrapper
+        activePage={adminExternalAccountsContainer.state.activePage}
+        changePage={this.handleExternalAccountPage}
+        totalItemsCount={adminExternalAccountsContainer.state.totalAccounts}
+        pagingLimit={adminExternalAccountsContainer.state.pagingLimit}
+        align="right"
+      />
+
     );
     return (
       <Fragment>
