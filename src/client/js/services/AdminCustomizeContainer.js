@@ -26,6 +26,7 @@ export default class AdminCustomizeContainer extends Container {
       isSavedStatesOfTabChanges: false,
       isEnabledAttachTitleHeader: false,
       pageListLimitForUserPage: 10,
+      // TODO implement for pageListLimitForModal
       isEnabledStaleNotification: false,
       isAllReplyShown: false,
       currentHighlightJsStyleId: '',
@@ -74,6 +75,7 @@ export default class AdminCustomizeContainer extends Container {
         isSavedStatesOfTabChanges: customizeParams.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: customizeParams.isEnabledAttachTitleHeader,
         pageListLimitForUserPage: customizeParams.pageListLimitForUserPage,
+        // TODO implement for pageListLimitForModal
         isEnabledStaleNotification: customizeParams.isEnabledStaleNotification,
         isAllReplyShown: customizeParams.isAllReplyShown,
         currentHighlightJsStyleId: customizeParams.styleName,
@@ -139,11 +141,15 @@ export default class AdminCustomizeContainer extends Container {
   }
 
   /**
-   * Switch pageListdLimit
+   * Switch pageListdLimitForUserPage
    */
   switchPageListLimitForUserPage(value) {
     this.setState({ pageListLimitForUserPage: value });
   }
+
+  /**
+   * Switch pageListdLimitForModal
+   */
 
   /**
    * Switch enabledStaleNotification
@@ -268,6 +274,7 @@ export default class AdminCustomizeContainer extends Container {
         isSavedStatesOfTabChanges: this.state.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: this.state.isEnabledAttachTitleHeader,
         pageListLimitForUserPage: this.state.pageListLimitForUserPage,
+        // TODO implement for pageListLimitForModal
         isEnabledStaleNotification: this.state.isEnabledStaleNotification,
         isAllReplyShown: this.state.isAllReplyShown,
       });
@@ -277,6 +284,7 @@ export default class AdminCustomizeContainer extends Container {
         isSavedStatesOfTabChanges: customizedParams.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: customizedParams.isEnabledAttachTitleHeader,
         pageListLimitForUserPage: customizedParams.pageListLimitForUserPage,
+        // TODO implement for pageListLimitForModal
         isEnabledStaleNotification: customizedParams.isEnabledStaleNotification,
         isAllReplyShown: customizedParams.isAllReplyShown,
       });

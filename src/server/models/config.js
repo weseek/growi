@@ -219,6 +219,7 @@ module.exports = function(crowi) {
         NO_CDN: env.NO_CDN || null,
       },
       pageListLimitForUserPage: crowi.configManager.getConfig('crowi', 'customize:showPageListLimitNumberForUserPage'),
+      // TODO implement for pageListLimitForModal
       isEnabledStaleNotification: crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
       isAclEnabled: crowi.aclService.isAclEnabled(),
       isSearchServiceConfigured: crowi.searchService.isConfigured,

@@ -134,6 +134,8 @@ class CustomizeFunctionSetting extends React.Component {
               </div>
             </div>
 
+            {/* TODO Implemetn dropdown toggle for pageListLimitForModal (pageList pageTimelin pageHistory, pageAttachment, shareLink) */}
+
             <div className="form-group row">
               <div className="offset-md-3 col-md-6 text-left">
                 <CustomizeFunctionOption
