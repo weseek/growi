@@ -85,10 +85,11 @@ textarea.form-control {
 /*
  * Card
  */
-.card:not([class*='bg-']) {
+.card:not([class*='bg-']):not(.well) {
   @extend .bg-dark;
 }
 
+// [TODO] GW-3219
 .card.well {
   border-color: $secondary;
 }
