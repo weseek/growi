@@ -89,7 +89,7 @@ class Draft extends React.Component {
       <span>
 
         <span className="mr-2 draft-path" onClick={() => this.setState({ isPanelExpanded: !isPanelExpanded })}>
-          <i className={`fa fa-fw fa-angle-right mr-5 ${iconClass}`}></i>
+          <i className={`fa fa-fw fa-angle-right mr-2 ${iconClass}`}></i>
           {this.props.path}
         </span>
         { isExist && (
