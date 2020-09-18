@@ -214,15 +214,6 @@ ul.pagination {
   background-color: rgba($bgcolor-subnav, 0.85);
 }
 
-.grw-three-stranded-button {
-  .btn-outline-primary {
-    &:hover {
-      color: $primary;
-      background-color: $gray-700;
-    }
-  }
-}
-
 // Search drop down
 #search-typeahead-asynctypeahead {
   background-color: $bgcolor-global;

@@ -3,7 +3,7 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:bookmarks'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
-const { body, query } = require('express-validator');
+const { body } = require('express-validator');
 
 const router = express.Router();
 
@@ -54,8 +54,7 @@ const router = express.Router();
 
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
-  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
-  const loginRequired = require('../../middlewares/login-required')(crowi, true);
+  const loginRequired = require('../../middlewares/login-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
@@ -63,11 +62,8 @@ module.exports = (crowi) => {
 
   const validator = {
     bookmarks: [
-      body('pageId').isMongoId(),
+      body('pageId').isString(),
       body('bool').isBoolean(),
-    ],
-    countBookmarks: [
-      query('pageId').isMongoId(),
     ],
   };
 
@@ -130,7 +126,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Bookmark'
    */
-  router.put('/', accessTokenParser, loginRequiredStrictly, csrf, validator.bookmarks, apiV3FormValidator, async(req, res) => {
+  router.put('/', accessTokenParser, loginRequired, csrf, validator.bookmarks, apiV3FormValidator, async(req, res) => {
     const { pageId, bool } = req.body;
 
     let bookmark;
@@ -156,43 +152,6 @@ module.exports = (crowi) => {
 
     return res.apiv3({ bookmark });
   });
-
-  /**
-   * @swagger
-   *
-   *    /count-bookmarks:
-   *      get:
-   *        tags: [Bookmarks]
-   *        summary: /bookmarks
-   *        description: Count bookmsrks
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                $ref: '#/components/schemas/BookmarkParams'
-   *        responses:
-   *          200:
-   *            description: Succeeded to count bookmarks.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  $ref: '#/components/schemas/Bookmark'
-   */
-
-
-  router.get('/count-bookmarks', accessTokenParser, loginRequired, validator.countBookmarks, apiV3FormValidator, async(req, res) => {
-    const { pageId } = req.query;
-
-    try {
-      const sumOfBookmarks = await Bookmark.countByPageId(pageId);
-      return res.apiv3({ sumOfBookmarks });
-    }
-    catch (err) {
-      logger.error('get-bookmarks-list-failed', err);
-      return res.apiv3Err(err, 500);
-    }
-  });
-
 
   return router;
 };

@@ -10,7 +10,6 @@ class BookmarkButton extends React.Component {
 
     this.state = {
       isBookmarked: false,
-      sumOfBookmarks: 0,
     };
 
     this.handleClick = this.handleClick.bind(this);
@@ -29,8 +28,6 @@ class BookmarkButton extends React.Component {
       if (response.data.bookmark != null) {
         this.setState({ isBookmarked: true });
       }
-      const result = await crowi.apiv3.get('/bookmarks/count-bookmarks', { pageId });
-      this.setState({ sumOfBookmarks: result.data.sumOfBookmarks });
     }
     catch (err) {
       toastError(err);
@@ -62,20 +59,17 @@ class BookmarkButton extends React.Component {
     }
 
     return (
-      <div className="d-flex">
-        <button
-          type="button"
-          onClick={this.handleClick}
-          className={`btn rounded-circle btn-bookmark border-0 d-edit-none
+      <button
+        type="button"
+        href="#"
+        title="Bookmark"
+        onClick={this.handleClick}
+        className={`btn rounded-circle btn-bookmark border-0 d-edit-none
           ${`btn-${this.props.size}`}
           ${this.state.isBookmarked ? 'active' : ''}`}
-        >
-          <i className="icon-star"></i>
-        </button>
-        <div className="total-bookmarks">
-          {this.state.sumOfBookmarks}
-        </div>
-      </div>
+      >
+        <i className="icon-star"></i>
+      </button>
     );
   }
 
