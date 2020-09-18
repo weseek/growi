@@ -22,10 +22,19 @@
 /tmp/
 
 # dist (for GROWI v4.x and below)
+/public/*.chunk.js
+/public/*.chunk.js.LICENSE
+/public/*.bundle.js
+/public/manifest.json
+/public/dll
 /public/js
 /public/styles
-/public/*.bundle.js
-/public/*.json
+/src/*/__build__/
+/__build__/**
+/src/*/dist/
+/.awcache
+.webpack.json
+/compiled/
 
 # misc
 .DS_Store
