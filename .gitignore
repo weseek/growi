@@ -21,6 +21,12 @@
 /public/uploads
 /tmp/
 
+# dist (for GROWI v4.x and below)
+/public/js
+/public/styles
+/public/*.bundle.js
+/public/*.json
+
 # misc
 .DS_Store
 *.pem
