@@ -18,6 +18,7 @@ import RevisionPathControls from '../Page/RevisionPathControls';
 import TagLabels from '../Page/TagLabels';
 import LikeButton from '../LikeButton';
 import BookmarkButton from '../BookmarkButton';
+import ThreeStrandedButton from './ThreeStrandedButton';
 
 import PageCreator from './PageCreator';
 import RevisionAuthor from './RevisionAuthor';
@@ -107,15 +108,20 @@ const UserInfo = ({ pageUser }) => {
 /* eslint-disable react/prop-types */
 const PageReactionButtons = ({ appContainer, pageContainer }) => {
 
-  const { pageId, isLiked, pageUser } = pageContainer.state;
+  const {
+    pageId, isLiked, pageUser, sumOfLikers,
+  } = pageContainer.state;
 
   return (
     <>
       {pageUser == null && (
-      <span className="mr-2">
+      <span>
         <LikeButton pageId={pageId} isLiked={isLiked} />
       </span>
       )}
+      <span className="mr-2 total-likes">
+        {sumOfLikers}
+      </span>
       <span className="mr-2">
         <BookmarkButton pageId={pageId} crowi={appContainer} />
       </span>
@@ -186,14 +192,9 @@ const GrowiSubNavigation = (props) => {
         <div className="d-flex flex-column align-items-end justify-content-center">
           <div className="d-flex">
             { !isPageInTrash && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
-            <div className="mt-2">
-              {/* TODO: impl View / Edit / HackMD button group */}
-              {/* <div className="btn-group" role="group" aria-label="Basic example">
-              <button type="button" className="btn btn-outline-primary">Left</button>
-              <button type="button" className="btn btn-outline-primary">Middle</button>
-              <button type="button" className="btn btn-outline-primary">Right</button>
-            </div> */}
-            </div>
+          </div>
+          <div className="mt-2">
+            <ThreeStrandedButton />
           </div>
         </div>
 
