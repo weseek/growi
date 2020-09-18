@@ -102,7 +102,8 @@ const PageAccessoriesModal = (props) => {
   return (
     <React.Fragment>
       <Modal size="xl" isOpen={props.isOpen} toggle={closeModalHandler} className="grw-page-accessories-modal">
-        <ModalBody className="p-0">
+        {/* [TODO: insert a modal header and move nav tabs there  by gw-3890] */}
+        <ModalBody className="overflow-auto grw-modal-body-style p-0">
           <Nav className="nav-title" id="nav-title">
             {Object.entries(navTabMapping).map(([key, value]) => {
               return (

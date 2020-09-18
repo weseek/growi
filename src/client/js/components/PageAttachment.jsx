@@ -63,6 +63,9 @@ class PageAttachment extends React.Component {
 
   async componentDidMount() {
     await this.handlePage(1);
+    this.setState({
+      activePage: 1,
+    });
   }
 
   checkIfFileInUse(attachment) {
@@ -114,7 +117,7 @@ class PageAttachment extends React.Component {
 
     const { t } = this.props;
     if (this.state.attachments.length === 0) {
-      return t('No attachments yet.');
+      return t('No_attachments_yet');
 
     }
 
@@ -147,7 +150,7 @@ class PageAttachment extends React.Component {
     }
 
     return (
-      <div>
+      <>
         <PageAttachmentList
           attachments={this.state.attachments}
           inUse={this.state.inUse}
@@ -162,8 +165,9 @@ class PageAttachment extends React.Component {
           changePage={this.handlePage}
           totalItemsCount={this.state.totalAttachments}
           pagingLimit={this.state.limit}
+          align="center"
         />
-      </div>
+      </>
     );
   }
 
