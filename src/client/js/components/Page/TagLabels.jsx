@@ -57,8 +57,6 @@ class TagLabels extends React.Component {
 
       // update pageContainer.state
       pageContainer.setState({ tags });
-      editorContainer.setState({ tags });
-
       toastSuccess('updated tags successfully');
     }
     catch (err) {
