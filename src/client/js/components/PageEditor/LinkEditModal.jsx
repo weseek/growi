@@ -430,7 +430,7 @@ class LinkEditModal extends React.PureComponent {
           <div className="row">
             <div className="col-12">
               <h3 className="grw-modal-head">Set link and label</h3>
-
+              {this.renderLinkAndLabelForm()}
               {this.renderPathFormatForm()}
             </div>
           </div>
