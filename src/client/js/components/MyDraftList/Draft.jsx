@@ -87,7 +87,7 @@ class Draft extends React.Component {
 
     return (
       <span>
-        <i className={` icon icon-arrow-up ${iconClass}`}></i>
+        <i className={`icon icon-arrow-up ${iconClass}`}></i>
         <span className="mx-2" onClick={() => this.setState({ isPanelExpanded: !isPanelExpanded })}>
           {this.props.path}
         </span>

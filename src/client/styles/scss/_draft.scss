@@ -1,14 +1,13 @@
 .draft-list-item {
-  .panel-heading {
-    .caret {
-      transition: 0.4s;
-      transform: rotate(-90deg);
+  .icon-arrow-up {
+    transition: 0.4s;
+    transform: rotate(-90deg);
 
-      &.caret-opened {
-        transform: rotate(0deg);
-      }
+    &.caret-opened {
+      transform: rotate(30deg);
     }
-
+  }
+  .panel-heading {
     .icon-container {
       a:hover {
         text-decoration: unset;
