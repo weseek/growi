@@ -754,6 +754,7 @@
   },
   "validation":{
     "aws_region": "For the region, enter the AWS region name. ex):us-east-1",
-    "aws_custom_endpoint":"For the custom endpoint, specify the URL that starts with http(s)://. Also, the trailing slash is not required."
+    "aws_custom_endpoint":"For the custom endpoint, specify the URL that starts with http(s)://. Also, the trailing slash is not required.",
+    "failed_to_send_a_test_email":"Failed to send a test email using SMTP. Please check your settings."
   }
 }
