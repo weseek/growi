@@ -36,6 +36,8 @@ export default class AdminAppContainer extends Container {
       sesSecretAccessKey: '',
 
       fileUploadType: '',
+      envFileUploadType: '',
+      isFixedFileUploadByEnvVar: false,
 
       gcsApiKeyJsonPath: '',
       envGcsApiKeyJsonPath: '',
@@ -88,6 +90,8 @@ export default class AdminAppContainer extends Container {
       sesSecretAccessKey: appSettingsParams.sesSecretAccessKey,
 
       fileUploadType: appSettingsParams.fileUploadType,
+      envFileUploadType: appSettingsParams.envFileUploadType,
+
       s3Region: appSettingsParams.s3Region,
       s3CustomEndpoint: appSettingsParams.s3CustomEndpoint,
       s3Bucket: appSettingsParams.s3Bucket,
@@ -101,6 +105,21 @@ export default class AdminAppContainer extends Container {
       envGcsUploadNamespace: appSettingsParams.envGcsUploadNamespace,
       isEnabledPlugins: appSettingsParams.isEnabledPlugins,
     });
+
+    // check is file upload type forced
+    if (this.isFixedFileUploadByEnvVar(appSettingsParams.envFileUploadType)) {
+      this.setState({ fileUploadType: appSettingsParams.envFileUploadType });
+      this.setState({ isFixedFileUploadByEnvVar: true });
+    }
+
+  }
+
+  /**
+   * get isFixedFileUploadByEnvVar
+   * @return {bool} isFixedFileUploadByEnvVar
+   */
+  isFixedFileUploadByEnvVar(envFileUploadType) {
+    return envFileUploadType != null;
   }
 
   /**
