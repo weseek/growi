@@ -157,9 +157,9 @@ export default class PageContainer extends Container {
     if (bookmark.data.isBookmark != null) {
       this.setState({
         isBookmarked: true,
-        sumOfBookmarks: bookmark.data.sumOfBookmarks,
       });
     }
+    this.setState({ sumOfBookmarks: bookmark.data.sumOfBookmarks });
 
     this.checkAndUpdateImageUrlCached(this.state.likerUsers);
   }
