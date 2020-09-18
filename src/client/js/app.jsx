@@ -24,7 +24,6 @@ import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
 import RecentCreated from './components/RecentCreated/RecentCreated';
 import MyBookmarkList from './components/MyBookmarkList/MyBookmarkList';
-// import MyDraftList from './components/MyDraftList/MyDraftList';
 import SeenUserList from './components/User/SeenUserList';
 import LikerList from './components/User/LikerList';
 import TableOfContents from './components/TableOfContents';
@@ -95,7 +94,6 @@ if (pageContainer.state.pageId != null) {
 
     'user-bookmark-list': <MyBookmarkList />,
     'user-created-list': <RecentCreated />,
-    // 'user-draft-list': <MyDraftList />,
   });
 }
 if (pageContainer.state.path != null) {
