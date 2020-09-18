@@ -41,7 +41,6 @@ class MyBookmarkList extends React.Component {
     const { appContainer } = this.props;
 
     const userId = appContainer.currentUserId;
-    /* TODO #1 change variable name in models/config.js */
     /* TODO #2 change variable name in database keys */
     /* TODO #3 write migration */
     const limit = appContainer.getConfig().pageListLimitForUserPage;
