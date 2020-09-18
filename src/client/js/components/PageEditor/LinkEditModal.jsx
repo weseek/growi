@@ -295,47 +295,50 @@ class LinkEditModal extends React.PureComponent {
 
   renderLinkAndLabelForm() {
     return (
-      <form className="form-group">
-        <div className="form-gorup my-3">
-          <div className="input-group flex-nowrap">
-            <div className="input-group-prepend">
-              <span className="input-group-text">link</span>
-            </div>
-            <SearchTypeahead
-              onChange={this.handleChangeTypeahead}
-              onInputChange={this.handleChangeLinkInput}
-              inputName="link"
-              placeholder="Input page path or URL"
-              keywordOnInit={this.state.linkInputValue}
-            />
-            <div className="input-group-append">
-              <button type="button" id="preview-btn" className="btn btn-info btn-page-preview">
-                <PagePreviewIcon />
-              </button>
-              <Popover placement="right" isOpen={this.state.isPreviewOpen} target="preview-btn" toggle={this.toggleIsPreviewOpen}>
-                <PopoverBody>
-                  {this.renderPreview()}
-                </PopoverBody>
-              </Popover>
+      <>
+        <h3 className="grw-modal-head">Set link and label</h3>
+        <form className="form-group">
+          <div className="form-gorup my-3">
+            <div className="input-group flex-nowrap">
+              <div className="input-group-prepend">
+                <span className="input-group-text">link</span>
+              </div>
+              <SearchTypeahead
+                onChange={this.handleChangeTypeahead}
+                onInputChange={this.handleChangeLinkInput}
+                inputName="link"
+                placeholder="Input page path or URL"
+                keywordOnInit={this.state.linkInputValue}
+              />
+              <div className="input-group-append">
+                <button type="button" id="preview-btn" className="btn btn-info btn-page-preview">
+                  <PagePreviewIcon />
+                </button>
+                <Popover placement="right" isOpen={this.state.isPreviewOpen} target="preview-btn" toggle={this.toggleIsPreviewOpen}>
+                  <PopoverBody>
+                    {this.renderPreview()}
+                  </PopoverBody>
+                </Popover>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="form-gorup my-3">
-          <div className="input-group flex-nowrap">
-            <div className="input-group-prepend">
-              <span className="input-group-text">label</span>
+          <div className="form-gorup my-3">
+            <div className="input-group flex-nowrap">
+              <div className="input-group-prepend">
+                <span className="input-group-text">label</span>
+              </div>
+              <input
+                type="text"
+                className="form-control"
+                id="label"
+                value={this.state.labelInputValue}
+                onChange={e => this.handleChangeLabelInput(e.target.value)}
+                disabled={this.state.linkerType === Linker.types.growiLink}
+              />
             </div>
-            <input
-              type="text"
-              className="form-control"
-              id="label"
-              value={this.state.labelInputValue}
-              onChange={e => this.handleChangeLabelInput(e.target.value)}
-              disabled={this.state.linkerType === Linker.types.growiLink}
-            />
           </div>
-        </div>
-      </form>
+        </form>
+      </>
     );
   }
 
@@ -429,7 +432,6 @@ class LinkEditModal extends React.PureComponent {
         <ModalBody className="container">
           <div className="row">
             <div className="col-12">
-              <h3 className="grw-modal-head">Set link and label</h3>
               {this.renderLinkAndLabelForm()}
               {this.renderPathFormatForm()}
             </div>
