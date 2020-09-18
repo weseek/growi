@@ -82,20 +82,20 @@ class Draft extends React.Component {
 
   renderAccordionTitle(isExist) {
     const { isPanelExpanded } = this.state;
-
+    const { t } = this.props;
     const iconClass = isPanelExpanded ? 'caret-opened' : '';
 
     return (
       <span>
-        <i className={`caret ${iconClass}`}></i>
+        <i className={` icon icon-arrow-up ${iconClass}`}></i>
         <span className="mx-2" onClick={() => this.setState({ isPanelExpanded: !isPanelExpanded })}>
           {this.props.path}
         </span>
-        { isExist && (
-          <span>({this.props.t('page exists')})</span>
-        ) }
         { !isExist && (
-          <span className="badge badge-secondary">draft</span>
+          <span className="badge badge-warning">{t('page exists')}</span>
+        ) }
+        { isExist && (
+          <span className="badge badge-info">draft</span>
         ) }
 
         <a className="ml-2" href={this.props.path}><i className="icon icon-login"></i></a>
