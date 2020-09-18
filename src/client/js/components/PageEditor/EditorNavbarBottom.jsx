@@ -69,7 +69,7 @@ const EditorNavbarBottom = (props) => {
               slackChannels={props.editorContainer.state.slackChannels}
               onEnabledFlagChange={slackEnabledFlagChangedHandler}
               onChannelChange={slackChannelsChangedHandler}
-              id="idForSavePageControl"
+              id="idForSlackNotification"
               popUp
             />
           </nav>
@@ -100,16 +100,12 @@ const EditorNavbarBottom = (props) => {
                 slackChannels={props.editorContainer.state.slackChannels}
                 onEnabledFlagChange={slackEnabledFlagChangedHandler}
                 onChannelChange={slackChannelsChangedHandler}
-                id="idForSavePageControl"
+                id="idForSlackNotification"
                 popUp={false}
               />
             </div>
           ))}
-          <SavePageControls
-            smallScreen={isDeviceSmallerThanMd}
-            click={() => (setSlackExpanded(!isSlackExpanded))}
-            slackOnly={false}
-          />
+          <SavePageControls />
           { isCollapsedOptionsSelectorEnabled && renderExpandButton() }
         </form>
       </div>

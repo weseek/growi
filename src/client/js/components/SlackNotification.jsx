@@ -39,7 +39,7 @@ class SlackNotification extends React.Component {
 
     return (
       <div className="grw-slack-notification w-100">
-        <div className="grw-navbar-bottom-slack input-group extended-setting">
+        <div className="grw-input-group-slack-notification input-group extended-setting">
           <label className="input-group-addon">
             <div className="custom-control custom-switch custom-switch-lg custom-switch-slack">
               <input
@@ -54,7 +54,7 @@ class SlackNotification extends React.Component {
             </div>
           </label>
           <input
-            className="grw-navbar-bottom-slack form-control align-top"
+            className="grw-form-control-slack-notification form-control align-top"
             type="text"
             value={this.props.slackChannels}
             placeholder="Input channels"

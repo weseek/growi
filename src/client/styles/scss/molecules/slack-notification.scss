@@ -17,9 +17,12 @@
     }
   }
   // height settings for slack button's responsive design
-  // in the input element
-  .grw-navbar-bottom-slack {
-    height: 24px;
+  // in the input and form-control element
+  .grw-form-control-slack-notification {
+    height: $input-height-slack;
+  }
+  .grw-input-group-slack-notification {
+    height: $input-height-slack;
   }
 }
 //　TODO デザインの使用が確定して実装、本タスクのスコープ外
