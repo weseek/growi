@@ -112,11 +112,6 @@ TagLabels.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 
-  isEditorMode: PropTypes.bool,
-};
-
-TagLabels.defaultProps = {
-  isEditorMode: false,
 };
 
 export default withTranslation()(TagLabelsWrapper);
