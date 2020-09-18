@@ -89,7 +89,7 @@ textarea.form-control {
   @extend .bg-dark;
 }
 
-// [TODO] GW-3219
+// [TODO] GW-3219 modify common color of well in dark theme, then remove below css.
 .card.well {
   border-color: $secondary;
 }
