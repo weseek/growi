@@ -83,7 +83,7 @@ const UserPagePathNav = ({ pageId, pagePath }) => {
 /* eslint-disable react/prop-types */
 const UserInfo = ({ pageUser }) => {
   return (
-    <div className="grw-users-info d-flex align-items-center d-edit-none">
+    <div className="grw-users-info d-flex align-items-center">
       <UserPicture user={pageUser} />
 
       <div className="users-meta">
@@ -153,6 +153,10 @@ const GrowiSubNavigation = (props) => {
     );
   }
 
+  function onThreeStrandedButtonClicked(viewType) {
+    navigationContainer.setEditorMode(viewType);
+  }
+
   return (
     <div className={`grw-subnav d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
 
@@ -194,13 +198,13 @@ const GrowiSubNavigation = (props) => {
             { !isPageInTrash && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
           </div>
           <div className="mt-2">
-            <ThreeStrandedButton />
+            <ThreeStrandedButton onThreeStrandedButtonClicked={onThreeStrandedButtonClicked} />
           </div>
         </div>
 
         {/* Page Authors */}
         { (!isCompactMode && !isUserPage) && (
-          <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none">
+          <ul className="authors text-nowrap border-left d-none d-lg-block">
             { creator != null && (
               <li className="pb-1">
                 <PageCreator creator={creator} createdAt={createdAt} />

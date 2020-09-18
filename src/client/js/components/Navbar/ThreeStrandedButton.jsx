@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 const ThreeStrandedButton = (props) => {
-
   const { t } = props;
 
   function threeStrandedButtonClickedHandler(viewType) {
@@ -33,6 +32,7 @@ const ThreeStrandedButton = (props) => {
 
 ThreeStrandedButton.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
+
   onThreeStrandedButtonClicked: PropTypes.func,
 };
 

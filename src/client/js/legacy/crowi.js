@@ -222,6 +222,7 @@ $(() => {
     });
   } // end if pageId
 
+  // TODO clean code after GW-3605
   // tab changing handling
   $('a[href="#revision-body"]').on('show.bs.tab', () => {
     const navigationContainer = appContainer.getContainer('NavigationContainer');

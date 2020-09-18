@@ -9,7 +9,6 @@ import ErrorBoundary from './components/ErrorBoudary';
 import SearchPage from './components/SearchPage';
 import TagsList from './components/TagsList';
 import PageEditor from './components/PageEditor';
-import PagePathNavForEditor from './components/PageEditor/PagePathNavForEditor';
 import EditorNavbarBottom from './components/PageEditor/EditorNavbarBottom';
 import { defaultEditorOptions, defaultPreviewOptions } from './components/PageEditor/OptionsSelector';
 import PageEditorByHackmd from './components/PageEditorByHackmd';
@@ -112,7 +111,6 @@ if (pageContainer.state.path != null) {
 if (appContainer.currentUser != null) {
   Object.assign(componentMappings, {
     'page-editor': <PageEditor />,
-    'page-editor-path-nav': <PagePathNavForEditor />,
     'page-editor-navbar-bottom-container': <EditorNavbarBottom />,
   });
   if (pageContainer.state.pageId != null) {
