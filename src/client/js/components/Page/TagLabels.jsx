@@ -28,12 +28,11 @@ class TagLabels extends React.Component {
 
   /**
    * @return tags data
-   *   1. pageContainer.state.tags if isEditorMode is false
-   *   2. editorContainer.state.tags if isEditorMode is true
+   *   1. pageContainer.state.tags if pageId is not null
+   *   2. editorContainer.state.tags if pageId is null
    */
   getEditTargetData() {
-    const { isEditorMode } = this.props;
-    return (isEditorMode) ? this.props.editorContainer.state.tags : this.props.pageContainer.state.tags;
+    return (this.props.editorContainer.state.pageId != null) ? this.props.editorContainer.state.tags : this.props.pageContainer.state.tags;
   }
 
   openEditorModal() {
@@ -45,10 +44,10 @@ class TagLabels extends React.Component {
   }
 
   async tagsUpdatedHandler(tags) {
-    const { appContainer, editorContainer, isEditorMode } = this.props;
+    const { appContainer, editorContainer } = this.props;
 
-    // only update tags in editorContainer
-    if (isEditorMode) {
+    // only update tags in editorContainer when new page
+    if (editorContainer.state.pageId != null) {
       return editorContainer.setState({ tags });
     }
 
