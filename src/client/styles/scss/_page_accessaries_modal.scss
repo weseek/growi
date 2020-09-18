@@ -1,7 +1,21 @@
 .grw-page-accessories-modal {
+  .nav-title {
+    flex-wrap: nowrap;
+
+    li {
+      a.nav-link {
+        padding: 1rem 1.5rem;
+      }
+    }
+  }
+  .grw-nav-slide-hr {
+    border-top: 0rem;
+    border-bottom: 3px solid;
+    transition: 0.3s ease-in-out;
+  }
   .nav-link svg {
-    width: 20px;
-    height: 20px;
+    width: 17px;
+    height: 17px;
     margin-right: 5px;
   }
 

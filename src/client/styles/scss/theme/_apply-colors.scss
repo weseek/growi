@@ -287,8 +287,12 @@ pre:not(.hljs):not(.CodeMirror-line) {
   .nav-link svg {
     fill: $color-link;
   }
-  #grw-nav-slide-hr {
-    border-bottom: 2px solid $color-link;
+  .modal-split-hr {
+    background-color: $bordercolor-nav-tabs;
+  }
+
+  .grw-nav-slide-hr {
+    border-color: $color-link;
   }
 }
 
