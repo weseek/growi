@@ -136,7 +136,7 @@ export default class NavigationContainer extends Container {
     } = newState;
 
     // get preference on view or edit
-    const preferDrawerMode = editorMode != null ? preferDrawerModeOnEditByUser : preferDrawerModeByUser;
+    const preferDrawerMode = editorMode !== 'view' ? preferDrawerModeOnEditByUser : preferDrawerModeByUser;
 
     const isDrawerMode = isDeviceSmallerThanMd || preferDrawerMode;
     const isDrawerOpened = false; // close Drawer anyway
