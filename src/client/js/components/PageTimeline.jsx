@@ -90,6 +90,7 @@ class PageTimeline extends React.Component {
           changePage={this.handlePage}
           totalItemsCount={this.state.totalPageItems}
           pagingLimit={this.state.limit}
+          align="center"
         />
       </div>
     );

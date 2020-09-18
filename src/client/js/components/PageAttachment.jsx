@@ -150,7 +150,7 @@ class PageAttachment extends React.Component {
     }
 
     return (
-      <div>
+      <>
         <PageAttachmentList
           attachments={this.state.attachments}
           inUse={this.state.inUse}
@@ -165,8 +165,9 @@ class PageAttachment extends React.Component {
           changePage={this.handlePage}
           totalItemsCount={this.state.totalAttachments}
           pagingLimit={this.state.limit}
+          align="center"
         />
-      </div>
+      </>
     );
   }
 

@@ -53,21 +53,19 @@ function PageHistory(props) {
 
   function pager() {
     return (
-      <div className="my-3">
-        <PaginationWrapper
-          activePage={pageHistoryContainer.state.activePage}
-          changePage={handlePage}
-          totalItemsCount={pageHistoryContainer.state.totalPages}
-          pagingLimit={pageHistoryContainer.state.pagingLimit}
-        />
-      </div>
+      <PaginationWrapper
+        activePage={pageHistoryContainer.state.activePage}
+        changePage={handlePage}
+        totalItemsCount={pageHistoryContainer.state.totalPages}
+        pagingLimit={pageHistoryContainer.state.pagingLimit}
+        align="center"
+      />
     );
   }
 
 
   return (
     <div className="mt-4">
-      {pager()}
       <PageRevisionList
         revisions={pageHistoryContainer.state.revisions}
         diffOpened={pageHistoryContainer.state.diffOpened}
