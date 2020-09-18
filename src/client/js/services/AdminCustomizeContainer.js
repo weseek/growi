@@ -25,7 +25,7 @@ export default class AdminCustomizeContainer extends Container {
       isEnabledTimeline: false,
       isSavedStatesOfTabChanges: false,
       isEnabledAttachTitleHeader: false,
-      pageListLimit: 10,
+      pageListLimitForUserPage: 10,
       isEnabledStaleNotification: false,
       isAllReplyShown: false,
       currentHighlightJsStyleId: '',
@@ -73,7 +73,7 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledTimeline: customizeParams.isEnabledTimeline,
         isSavedStatesOfTabChanges: customizeParams.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: customizeParams.isEnabledAttachTitleHeader,
-        pageListLimit: customizeParams.pageListLimit,
+        pageListLimitForUserPage: customizeParams.pageListLimitForUserPage,
         isEnabledStaleNotification: customizeParams.isEnabledStaleNotification,
         isAllReplyShown: customizeParams.isAllReplyShown,
         currentHighlightJsStyleId: customizeParams.styleName,
@@ -141,8 +141,8 @@ export default class AdminCustomizeContainer extends Container {
   /**
    * Switch pageListdLimit
    */
-  switchPageListLimit(value) {
-    this.setState({ pageListLimit: value });
+  switchPageListLimitForUserPage(value) {
+    this.setState({ pageListLimitForUserPage: value });
   }
 
   /**
@@ -267,7 +267,7 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledTimeline: this.state.isEnabledTimeline,
         isSavedStatesOfTabChanges: this.state.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: this.state.isEnabledAttachTitleHeader,
-        pageListLimit: this.state.pageListLimit,
+        pageListLimitForUserPage: this.state.pageListLimitForUserPage,
         isEnabledStaleNotification: this.state.isEnabledStaleNotification,
         isAllReplyShown: this.state.isAllReplyShown,
       });
@@ -276,7 +276,7 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledTimeline: customizedParams.isEnabledTimeline,
         isSavedStatesOfTabChanges: customizedParams.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: customizedParams.isEnabledAttachTitleHeader,
-        pageListLimit: customizedParams.pageListLimit,
+        pageListLimitForUserPage: customizedParams.pageListLimitForUserPage,
         isEnabledStaleNotification: customizedParams.isEnabledStaleNotification,
         isAllReplyShown: customizedParams.isAllReplyShown,
       });

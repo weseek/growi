@@ -44,7 +44,7 @@ class MyBookmarkList extends React.Component {
     /* TODO #1 change variable name in models/config.js */
     /* TODO #2 change variable name in database keys */
     /* TODO #3 write migration */
-    const limit = appContainer.getConfig().pageListLimit;
+    const limit = appContainer.getConfig().pageListLimitForUserPage;
     const page = selectPageNumber;
     const params = { page, limit };
 

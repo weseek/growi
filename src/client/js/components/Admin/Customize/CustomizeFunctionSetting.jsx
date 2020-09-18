@@ -114,16 +114,16 @@ class CustomizeFunctionSetting extends React.Component {
                 </div>
                 <Dropdown isOpen={this.state.isDropdownOpen} toggle={this.onToggleDropdown}>
                   <DropdownToggle className="text-right col-6" caret>
-                    <span className="float-left">{adminCustomizeContainer.state.pageListLimit}</span>
+                    <span className="float-left">{adminCustomizeContainer.state.pageListLimitForUserPage}</span>
                   </DropdownToggle>
                   <DropdownMenu className="dropdown-menu" role="menu">
-                    <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimit(10) }}>
+                    <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitForUserPage(10) }}>
                       <a role="menuitem">10</a>
                     </DropdownItem>
-                    <DropdownItem key={30} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimit(30) }}>
+                    <DropdownItem key={30} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitForUserPage(30) }}>
                       <a role="menuitem">30</a>
                     </DropdownItem>
-                    <DropdownItem key={50} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimit(50) }}>
+                    <DropdownItem key={50} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitForUserPage(50) }}>
                       <a role="menuitem">50</a>
                     </DropdownItem>
                   </DropdownMenu>
