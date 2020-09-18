@@ -233,6 +233,11 @@ pre:not(.hljs):not(.CodeMirror-line) {
   fill: $color-editor-icons;
 }
 
+// page preview button in link form
+.btn-page-preview svg {
+  fill: white;
+}
+
 /*
  * Modal
  */

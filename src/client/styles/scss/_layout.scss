@@ -88,6 +88,12 @@ body {
   }
 }
 
+// page preview button in link form
+.btn-page-preview svg {
+  width: 18px;
+  height: 18px;
+}
+
 // printable style
 @media print {
   padding: 30px;
