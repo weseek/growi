@@ -121,7 +121,7 @@ const PageAccessoriesModal = (props) => {
               onClick={closeModalHandler}
             />
           </Nav>
-          <hr id="grw-nav-slide-hr" className="my-0" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
+          <hr id="grw-nav-slide-hr" className="my-0 grw-nav-slide-hr" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
           <hr className="modal-split-hr m-0" />
           <TabContent activeTab={activeTab}>
             <TabPane tabId="pagelist">
