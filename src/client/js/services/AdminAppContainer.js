@@ -119,7 +119,7 @@ export default class AdminAppContainer extends Container {
    * @return {bool} isFixedFileUploadByEnvVar
    */
   isFixedFileUploadByEnvVar(envFileUploadType) {
-    return envFileUploadType !== '';
+    return envFileUploadType != null;
   }
 
   /**
