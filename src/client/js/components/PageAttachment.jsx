@@ -12,7 +12,7 @@ class PageAttachment extends React.Component {
 
   constructor(props) {
     super(props);
-
+    // TODO add paging size (limit) for modal
     this.state = {
       attachments: [],
       inUse: {},

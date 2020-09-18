@@ -25,7 +25,8 @@ export default class AdminCustomizeContainer extends Container {
       isEnabledTimeline: false,
       isSavedStatesOfTabChanges: false,
       isEnabledAttachTitleHeader: false,
-      currentRecentCreatedLimit: 10,
+      pageListLimitForUserPage: 10,
+      // TODO implement for pageListLimitForModal
       isEnabledStaleNotification: false,
       isAllReplyShown: false,
       currentHighlightJsStyleId: '',
@@ -73,7 +74,8 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledTimeline: customizeParams.isEnabledTimeline,
         isSavedStatesOfTabChanges: customizeParams.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: customizeParams.isEnabledAttachTitleHeader,
-        currentRecentCreatedLimit: customizeParams.recentCreatedLimit,
+        pageListLimitForUserPage: customizeParams.pageListLimitForUserPage,
+        // TODO implement for pageListLimitForModal
         isEnabledStaleNotification: customizeParams.isEnabledStaleNotification,
         isAllReplyShown: customizeParams.isAllReplyShown,
         currentHighlightJsStyleId: customizeParams.styleName,
@@ -139,11 +141,15 @@ export default class AdminCustomizeContainer extends Container {
   }
 
   /**
-   * Switch recentCreatedLimit
+   * Switch pageListdLimitForUserPage
    */
-  switchRecentCreatedLimit(value) {
-    this.setState({ currentRecentCreatedLimit: value });
+  switchPageListLimitForUserPage(value) {
+    this.setState({ pageListLimitForUserPage: value });
   }
+
+  /**
+   * Switch pageListdLimitForModal
+   */
 
   /**
    * Switch enabledStaleNotification
@@ -267,7 +273,8 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledTimeline: this.state.isEnabledTimeline,
         isSavedStatesOfTabChanges: this.state.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: this.state.isEnabledAttachTitleHeader,
-        recentCreatedLimit: this.state.currentRecentCreatedLimit,
+        pageListLimitForUserPage: this.state.pageListLimitForUserPage,
+        // TODO implement for pageListLimitForModal
         isEnabledStaleNotification: this.state.isEnabledStaleNotification,
         isAllReplyShown: this.state.isAllReplyShown,
       });
@@ -276,7 +283,8 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledTimeline: customizedParams.isEnabledTimeline,
         isSavedStatesOfTabChanges: customizedParams.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: customizedParams.isEnabledAttachTitleHeader,
-        recentCreatedLimit: customizedParams.currentRecentCreatedLimit,
+        pageListLimitForUserPage: customizedParams.pageListLimitForUserPage,
+        // TODO implement for pageListLimitForModal
         isEnabledStaleNotification: customizedParams.isEnabledStaleNotification,
         isAllReplyShown: customizedParams.isAllReplyShown,
       });
