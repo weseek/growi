@@ -4,6 +4,8 @@ import Head from 'next/head';
 
 import { withUnstatedContainers } from '~/client/js/components/UnstatedUtils';
 import GrowiNavbar from '~/client/js/components/Navbar/GrowiNavbar';
+import GrowiNavbarBottom from '~/client/js/components/Navbar/GrowiNavbarBottom';
+
 // import AppContainer from '~/client/js/services/AppContainer';
 import CounterContainer from '~/client/js/services/CounterContainer';
 
@@ -31,7 +33,18 @@ const Layout = ({ counterContainer, children, title }: Props) => {
       </Head>
       <div className="wrapper">
         <GrowiNavbar />
+
+        <div className="page-wrapper d-flex d-print-block">
+          <div id="grw-sidebar-wrapper"></div>
+
+          <div className="flex-fill mw-0">
+            {children}
+          </div>
+        </div>
+
+        <GrowiNavbarBottom />
       </div>
+
       <header>
         <nav>
           <Link href="/[[...path]]" as="/" shallow>
@@ -48,7 +61,7 @@ const Layout = ({ counterContainer, children, title }: Props) => {
           | <a href="/api/users">Users API</a>
         </nav>
       </header>
-      {children}
+
       <footer>
         <hr />
         <span>I&apos;m here to stay (Footer)</span>

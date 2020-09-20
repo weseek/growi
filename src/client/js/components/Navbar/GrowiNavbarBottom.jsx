@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import NavigationContainer from '../../services/NavigationContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-import GlobalSearch from './GlobalSearch';
+// import GlobalSearch from './GlobalSearch';
 
 const GrowiNavbarBottom = (props) => {
 
@@ -24,7 +24,7 @@ const GrowiNavbarBottom = (props) => {
       { isDeviceSmallerThanMd && (
         <div id="grw-global-search-collapse" className="grw-global-search collapse bg-dark">
           <div className="p-3">
-            <GlobalSearch dropup />
+            {/* <GlobalSearch dropup /> */}
           </div>
         </div>
       ) }
