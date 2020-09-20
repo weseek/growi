@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-import { UncontrolledTooltip } from 'reactstrap';
+import { UncontrolledTooltip, DropdownMenu, DropdownItem } from 'reactstrap';
 
 import { useTranslation } from '~/i18n';
 import { useCurrentUser } from '~/stores/context';
@@ -102,7 +102,7 @@ const PersonalDropdownMenu = (props) => {
   } = navigationContainer.state;
 
   return (
-    <div className="dropdown-menu dropdown-menu-right">
+    <DropdownMenu right>
 
       <div className="px-4 pt-3 pb-2 text-center">
         <UserPicture user={user} size="lg" noLink noTooltip />
@@ -126,10 +126,10 @@ const PersonalDropdownMenu = (props) => {
         </div>
       </div>
 
-      <div className="dropdown-divider"></div>
+      <DropdownItem divider />
 
       {/* Sidebar Mode */}
-      <h6 className="dropdown-header">{t('personal_dropdown.sidebar_mode')}</h6>
+      <DropdownItem header>{t('personal_dropdown.sidebar_mode')}</DropdownItem>
       <form className="px-4">
         <div className="form-row justify-content-center">
           <div className="form-group col-auto mb-0 d-flex align-items-center">
@@ -154,7 +154,7 @@ const PersonalDropdownMenu = (props) => {
       </form>
 
       {/* Sidebar Mode on Editor */}
-      <h6 className="dropdown-header">{t('personal_dropdown.sidebar_mode_editor')}</h6>
+      <DropdownItem header>{t('personal_dropdown.sidebar_mode_editor')}</DropdownItem>
       <form className="px-4">
         <div className="form-row justify-content-center">
           <div className="form-group col-auto mb-0 d-flex align-items-center">
@@ -178,10 +178,10 @@ const PersonalDropdownMenu = (props) => {
         </div>
       </form>
 
-      <div className="dropdown-divider"></div>
+      <DropdownItem divider />
 
       {/* Color Mode */}
-      <h6 className="dropdown-header">{t('personal_dropdown.color_mode')}</h6>
+      <DropdownItem header>{t('personal_dropdown.color_mode')}</DropdownItem>
       <form className="px-4">
         <div className="form-row">
           <div className="form-group col-auto">
@@ -220,10 +220,10 @@ const PersonalDropdownMenu = (props) => {
         </div>
       </form>
 
-      <div className="dropdown-divider"></div>
+      <DropdownItem divider />
 
-      <button type="button" className="dropdown-item" onClick={logoutHandler}><i className="icon-fw icon-power"></i>{ t('Sign out') }</button>
-    </div>
+      <DropdownItem onClick={logoutHandler}><i className="icon-fw icon-power"></i>{ t('Sign out') }</DropdownItem>
+    </DropdownMenu>
   );
 
 };
