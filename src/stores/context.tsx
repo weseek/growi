@@ -1,11 +1,6 @@
-import useSWR, { mutate, responseInterface } from 'swr';
+import { responseInterface } from 'swr';
 
-const useStaticSWR = <Data, Error>(key: string, initialData?: Data): responseInterface<Data, Error> => {
-  if (initialData != null) {
-    mutate(key, initialData);
-  }
-  return useSWR(key);
-};
+import { useStaticSWR } from './use-static-swr';
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const useCurrentUser = (initialData?: any): responseInterface<any, any> => {
@@ -22,4 +17,12 @@ export const useSiteUrl = (initialData?: string): responseInterface<string, any>
 
 export const useConfidential = (initialData?: string): responseInterface<string, any> => {
   return useStaticSWR('confidential', initialData);
+};
+
+export const useSearchServiceConfigured = (initialData?: boolean): responseInterface<boolean, any> => {
+  return useStaticSWR('searchServiceConfigured', initialData);
+};
+
+export const useSearchServiceReachable = (initialData?: boolean): responseInterface<boolean, any> => {
+  return useStaticSWR('searchServiceReachable', initialData);
 };

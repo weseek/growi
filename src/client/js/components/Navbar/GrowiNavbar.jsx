@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { useTranslation } from '~/i18n';
 import {
-  useAppTitle, useConfidential, useCurrentUser,
+  useAppTitle, useConfidential, useCurrentUser, useSearchServiceConfigured,
 } from '~/stores/context';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -69,9 +69,10 @@ NavbarRight.propTypes = {
 
 
 const GrowiNavbar = (props) => {
+  const { navigationContainer } = props;
 
-  // const { crowi, isSearchServiceConfigured } = appContainer.config;
-  // const { isDeviceSmallerThanMd } = navigationContainer.state;
+  const { isSearchServiceConfigured } = useSearchServiceConfigured();
+  const { isDeviceSmallerThanMd } = navigationContainer.state;
 
   return (
 

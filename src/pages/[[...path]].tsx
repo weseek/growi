@@ -9,7 +9,9 @@ import Layout from '../components/Layout';
 
 import {
   useCurrentUser, useAppTitle, useSiteUrl, useConfidential,
+  useSearchServiceConfigured, useSearchServiceReachable,
 } from '../stores/context';
+
 
 const logger = loggerFactory('growi:pages:all');
 
@@ -22,6 +24,8 @@ type Props = {
   siteUrl: string,
   confidential: string,
   isForbidden: boolean,
+  isSearchServiceConfigured: boolean,
+  isSearchServiceReachable: boolean,
 };
 
 const GrowiPage: NextPage<Props> = (props: Props) => {
@@ -30,6 +34,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useAppTitle(props.appTitle);
   useSiteUrl(props.siteUrl);
   useConfidential(props.confidential);
+  useSearchServiceConfigured(props.isSearchServiceConfigured);
+  useSearchServiceReachable(props.isSearchServiceReachable);
 
   let page: any;
   let header: string;
@@ -59,7 +65,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const PageModel = crowi.model('Page');
-  const { appService, pageService } = crowi;
+  const { appService, pageService, searchService } = crowi;
 
   const { path, user } = req;
 
@@ -97,6 +103,8 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   props.appTitle = appService.getAppTitle();
   props.siteUrl = appService.getSiteUrl();
   props.confidential = appService.getAppConfidential();
+  props.isSearchServiceConfigured = searchService.isConfigured;
+  props.isSearchServiceReachable = searchService.isReachable;
 
   return {
     props: {
