@@ -5,6 +5,8 @@ import { appWithTranslation } from '~/i18n';
 import AppContainer from '~/client/js/services/AppContainer';
 
 import '../styles/styles.scss';
+import '~/client/styles/scss/theme/default.scss';
+
 import NavigationContainer from '~/client/js/services/NavigationContainer';
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
