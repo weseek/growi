@@ -74,6 +74,7 @@ const GrowiNavbar = (props) => {
   const { data: isSearchServiceConfigured } = useSearchServiceConfigured();
   const { isDeviceSmallerThanMd } = navigationContainer.state;
 
+  // dynamic import to skip rendering at SSR
   const GlobalSearch = dynamic(() => import('./GlobalSearch'), { ssr: false });
 
   return (

@@ -23,6 +23,7 @@ const PersonalDropdownButton = () => {
 
 
 const PersonalDropdown = () => {
+  // dynamic import to skip rendering at SSR
   const PersonalDropdownMenu = dynamic(() => import('./PersonalDropdownMenu'), { ssr: false });
 
   return (

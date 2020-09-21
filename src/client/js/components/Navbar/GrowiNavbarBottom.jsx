@@ -7,6 +7,7 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 
 const GrowiNavbarBottom = (props) => {
 
+  // dynamic import to skip rendering at SSR
   const GlobalSearch = dynamic(() => import('./GlobalSearch'), { ssr: false });
 
   const {
