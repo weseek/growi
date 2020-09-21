@@ -8,6 +8,5 @@ function envShortName() {
 }
 
 module.exports = {
-  env: require(`./env.${envShortName()}`),
   logger: require(`./logger/config.${envShortName()}`),
 };
