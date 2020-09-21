@@ -1,12 +1,13 @@
+import dynamic from 'next/dynamic';
 import React from 'react';
 import PropTypes from 'prop-types';
 
 import NavigationContainer from '../../services/NavigationContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-// import GlobalSearch from './GlobalSearch';
-
 const GrowiNavbarBottom = (props) => {
+
+  const GlobalSearch = dynamic(() => import('./GlobalSearch'), { ssr: false });
 
   const {
     navigationContainer,
@@ -24,7 +25,7 @@ const GrowiNavbarBottom = (props) => {
       { isDeviceSmallerThanMd && (
         <div id="grw-global-search-collapse" className="grw-global-search collapse bg-dark">
           <div className="p-3">
-            {/* <GlobalSearch dropup /> */}
+            <GlobalSearch dropup />
           </div>
         </div>
       ) }

@@ -1,3 +1,4 @@
+import dynamic from 'next/dynamic';
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -13,7 +14,6 @@ import AppContainer from '../../services/AppContainer';
 import GrowiLogo from '../GrowiLogo';
 
 import PersonalDropdown from './PersonalDropdown';
-import GlobalSearch from './GlobalSearch';
 
 
 const AppTilte = () => {
@@ -71,8 +71,10 @@ NavbarRight.propTypes = {
 const GrowiNavbar = (props) => {
   const { navigationContainer } = props;
 
-  const { isSearchServiceConfigured } = useSearchServiceConfigured();
+  const { data: isSearchServiceConfigured } = useSearchServiceConfigured();
   const { isDeviceSmallerThanMd } = navigationContainer.state;
+
+  const GlobalSearch = dynamic(() => import('./GlobalSearch'), { ssr: false });
 
   return (
 
@@ -97,11 +99,11 @@ const GrowiNavbar = (props) => {
 
       <Confidential />
 
-      {/* { isSearchServiceConfigured && !isDeviceSmallerThanMd && (
+      { isSearchServiceConfigured && !isDeviceSmallerThanMd && (
         <div className="grw-global-search grw-global-search-top position-absolute">
           <GlobalSearch />
         </div>
-      ) } */}
+      ) }
     </nav>
   );
 
