@@ -22,12 +22,14 @@ interface EnvConfig {
   default?: number | string | boolean | null,
 }
 
-type ValueTypeToParserMap<R> = {[key in keyof typeof ValueType]: ValueParser<R> };
+type EnumDictionary<T extends string | symbol | number, U> = {
+  [K in T]: U;
+};
 
-const valueTypeToParserMap: ValueTypeToParserMap<number | string | boolean> = {
-  NUMBER:  { parse: (v: string) => { return parseInt(v, 10) } },
-  STRING:  { parse: (v: string) => { return v } },
-  BOOLEAN: { parse: (v: string) => { return envUtils.toBoolean(v) } },
+const parserDictionary: EnumDictionary<ValueType, ValueParser<number | string | boolean>> = {
+  [ValueType.NUMBER]:  { parse: (v: string) => { return parseInt(v, 10) } },
+  [ValueType.STRING]:  { parse: (v: string) => { return v } },
+  [ValueType.BOOLEAN]: { parse: (v: string) => { return envUtils.toBoolean(v) } },
 };
 
 /**
@@ -417,7 +419,7 @@ export default class ConfigLoader {
         config[configInfo.ns][configInfo.key] = configInfo.default;
       }
       else {
-        const parser: ValueParser<number | string | boolean> = valueTypeToParserMap[configInfo.type];
+        const parser: ValueParser<number | string | boolean> = parserDictionary[configInfo.type];
         config[configInfo.ns][configInfo.key] = parser.parse(process.env[ENV_VAR_NAME] as string);
       }
     }
@@ -442,7 +444,7 @@ export default class ConfigLoader {
       if (isSecurityEnv(configInfo.key) && avoidSecurity) {
         continue;
       }
-      const parser: ValueParser<number | string | boolean> = valueTypeToParserMap[configInfo.type];
+      const parser: ValueParser<number | string | boolean> = parserDictionary[configInfo.type];
       config[ENV_VAR_NAME] = parser.parse(process.env[ENV_VAR_NAME] as string);
     }
 
