@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
-
 /**
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
@@ -39,8 +38,8 @@ class SlackNotification extends React.Component {
     const { t } = this.props;
 
     return (
-      <div className="grw-slack-notification">
-        <div className="input-group extended-setting">
+      <div className="grw-slack-notification w-100">
+        <div className="grw-input-group-slack-notification input-group extended-setting">
           <label className="input-group-addon">
             <div className="custom-control custom-switch custom-switch-lg custom-switch-slack">
               <input
@@ -50,12 +49,12 @@ class SlackNotification extends React.Component {
                 checked={this.props.isSlackEnabled}
                 onChange={this.updateCheckboxHandler}
               />
-              <label className="custom-control-label" htmlFor={this.props.id}>
+              <label className={`custom-control-label align-center ${this.props.popUp ? 'mt-1' : ''}`} htmlFor={this.props.id}>
               </label>
             </div>
           </label>
           <input
-            className="form-control"
+            className="grw-form-control-slack-notification form-control align-top"
             type="text"
             value={this.props.slackChannels}
             placeholder="Input channels"
@@ -76,6 +75,7 @@ class SlackNotification extends React.Component {
 SlackNotification.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
+  popUp: PropTypes.bool.isRequired,
   isSlackEnabled: PropTypes.bool.isRequired,
   slackChannels: PropTypes.string.isRequired,
   onEnabledFlagChange: PropTypes.func,
