@@ -8,12 +8,10 @@ import loggerFactory from '@alias/logger';
 import ErrorBoundary from './components/ErrorBoudary';
 import SearchPage from './components/SearchPage';
 import TagsList from './components/TagsList';
-import ViewEditHackmd from './components/Page/ViewEditHackmd';
-// import PageEditor from './components/PageEditor';
+import DisplaySwitcher from './components/Page/DisplaySwitcher';
 import EditorNavbarBottom from './components/PageEditor/EditorNavbarBottom';
 import { defaultEditorOptions, defaultPreviewOptions } from './components/PageEditor/OptionsSelector';
 import PageEditorByHackmd from './components/PageEditorByHackmd';
-// import Page from './components/Page';
 import PageHistory from './components/PageHistory';
 import PageComments from './components/PageComments';
 import PageTimeline from './components/PageTimeline';
@@ -103,7 +101,6 @@ if (pageContainer.state.pageId != null) {
 if (pageContainer.state.path != null) {
   Object.assign(componentMappings, {
     // eslint-disable-next-line quote-props
-
     'grw-subnav-container': <GrowiSubNavigation />,
     'grw-subnav-switcher-container': <GrowiSubNavigationSwitcher />,
   });
@@ -111,8 +108,7 @@ if (pageContainer.state.path != null) {
 // additional definitions if user is logged in
 if (appContainer.currentUser != null) {
   Object.assign(componentMappings, {
-    'view-edit-hackmd': <ViewEditHackmd />,
-    // 'page-editor': <PageEditor />,
+    'display-switcher': <DisplaySwitcher />,
     'page-editor-navbar-bottom-container': <EditorNavbarBottom />,
   });
   if (pageContainer.state.pageId != null) {
