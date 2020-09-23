@@ -13,7 +13,7 @@ import PageEditor from './components/PageEditor';
 import EditorNavbarBottom from './components/PageEditor/EditorNavbarBottom';
 import { defaultEditorOptions, defaultPreviewOptions } from './components/PageEditor/OptionsSelector';
 import PageEditorByHackmd from './components/PageEditorByHackmd';
-import Page from './components/Page';
+// import Page from './components/Page';
 import PageHistory from './components/PageHistory';
 import PageComments from './components/PageComments';
 import PageTimeline from './components/PageTimeline';
@@ -103,7 +103,7 @@ if (pageContainer.state.pageId != null) {
 if (pageContainer.state.path != null) {
   Object.assign(componentMappings, {
     // eslint-disable-next-line quote-props
-    'page': <Page />,
+
     'grw-subnav-container': <GrowiSubNavigation />,
     'grw-subnav-switcher-container': <GrowiSubNavigationSwitcher />,
   });
