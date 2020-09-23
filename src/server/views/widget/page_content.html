@@ -40,7 +40,6 @@
   {% include 'page_alerts.html' %}
 
 <div class="tab-content" id="display-switcher">
-  {% if page %}
   <script type="text/template" id="raw-text-original">{{ revision.body.toString() | encodeHTML }}</script>
   {% include '../_form.html' %}
 </div>
