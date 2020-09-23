@@ -69,7 +69,7 @@ const EditorNavbarBottom = (props) => {
               slackChannels={props.editorContainer.state.slackChannels}
               onEnabledFlagChange={slackEnabledFlagChangedHandler}
               onChannelChange={slackChannelsChangedHandler}
-              id="idForEditorNavbarBottom1"
+              id="idForEditorNavbarBottomForMobile"
               popUp
             />
           </nav>
@@ -100,7 +100,7 @@ const EditorNavbarBottom = (props) => {
                 slackChannels={props.editorContainer.state.slackChannels}
                 onEnabledFlagChange={slackEnabledFlagChangedHandler}
                 onChannelChange={slackChannelsChangedHandler}
-                id="idForEditorNavbarBottom2"
+                id="idForEditorNavbarBottom"
                 popUp={false}
               />
             </div>
