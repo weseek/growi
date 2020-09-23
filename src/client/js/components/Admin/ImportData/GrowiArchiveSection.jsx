@@ -86,7 +86,7 @@ class GrowiArchiveSection extends React.Component {
     console.log(`versionsNotMetinRenderDefferentVersionAlert=${isTheSameVersion}`);
     return (
       <div className="alert alert-warning mt-3">
-        {t('admin:importer_management.growi_settings.errors.versions_not_met')}
+        {t('admin:importer_management.growi_settings.errors.different_versions')}
       </div>
     );
   }
