@@ -28,7 +28,7 @@
   data-share-link-id="{% if sharelink %}{{ sharelink._id|json }}{% endif %}"
   >
 {% else %}
-<div id="content-main" class="content-main"
+   <div id="content-main" class="content-main"
   data-path="{{ encodeURI(path) }}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
   data-slack-channels="{{ slack|default('') }}"
@@ -39,10 +39,9 @@
 
   {% include 'page_alerts.html' %}
 
-<div class="tab-content" id="display-switcher">
-  {% if page %}
+  <div class="tab-content" id="display-switcher">
   <script type="text/template" id="raw-text-original">{{ revision.body.toString() | encodeHTML }}</script>
   {% include '../_form.html' %}
-</div>
+  </div>
 <div id="grw-page-status-alert-container"></div>
 </div>
