@@ -312,7 +312,7 @@ module.exports = (crowi) => {
 
       // validate with meta.json
       // importService.validate(data.meta);  元々これのみ
-      const versionErr = importService.validateVersionforUploading(data.meta);
+      const versionErr = importService.validateUploadedVersion(data.meta);
       if (versionErr !== null) {
         return res.apiv3({ data, versionErr }); // versionErrはobjではないので恐らくこの書き方は間違い
       }
