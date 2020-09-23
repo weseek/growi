@@ -176,6 +176,7 @@
 			"upload": "Upload",
 			"discard": "Discard uploaded data",
 			"errors": {
+        "versions_not_met": "the version of this growi and the growi that exported the data are not met",
 				"at_least_one": "Select one or more collections.",
 				"page_and_revision": "'Pages' and 'Revisions' must be imported both.",
 				"depends": "'{{target}}' must be selected when '{{condition}}' is selected."
