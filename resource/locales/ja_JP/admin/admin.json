@@ -178,7 +178,7 @@
       "upload": "アップロード",
       "discard": "アップロードしたデータを破棄する",
       "errors": {
-        "versions_not_met": "現在のGROWIとインポートしたデータのバージョンが違います",
+        "versions_not_met": "現在のGROWIとアップロードしたデータのバージョンが違います",
         "at_least_one": "コレクションが選択されていません",
         "page_and_revision": "'Pages' と 'Revisions' はセットでインポートする必要があります",
         "depends": "'{{condition}}' をインポートする場合は、'{{target}}' を一緒に選択する必要があります"
