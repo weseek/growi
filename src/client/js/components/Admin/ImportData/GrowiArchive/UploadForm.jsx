@@ -31,7 +31,7 @@ class UploadForm extends React.Component {
     formData.append('_csrf', this.props.appContainer.csrfToken);
     formData.append('file', this.inputRef.current.files[0]);
 
-    const { data } = await this.props.appContainer.apiv3Post('/import/upload', formData);
+    const { data } = await this.props.appContainer.apiv3Post('/import/upload', formData); // ここにアップロードしたデータが渡ってきている
     this.props.onUpload(data);
     // TODO: toastSuccess, toastError
   }

@@ -18,6 +18,7 @@ class GrowiArchiveSection extends React.Component {
     this.initialState = {
       fileName: null,
       innerFileStats: null,
+      isTheSameVersion: true,
     };
 
     this.state = this.initialState;
@@ -25,6 +26,7 @@ class GrowiArchiveSection extends React.Component {
     this.handleUpload = this.handleUpload.bind(this);
     this.discardData = this.discardData.bind(this);
     this.resetState = this.resetState.bind(this);
+    this.renderDefferentVersionAlert = this.renderDefferentVersionAlert.bind(this);
   }
 
   async componentWillMount() {
@@ -37,11 +39,15 @@ class GrowiArchiveSection extends React.Component {
     }
   }
 
-  handleUpload({ meta, fileName, innerFileStats }) {
+  handleUpload({
+    meta, fileName, innerFileStats, isTheSameVersion,
+  }) {
     this.setState({
       fileName,
       innerFileStats,
+      isTheSameVersion: false, // 仮
     });
+    console.log(`isTheSameVersion from handleUpload = ${isTheSameVersion}`);
   }
 
   async discardData() {
@@ -74,12 +80,25 @@ class GrowiArchiveSection extends React.Component {
     }
   }
 
+  renderDefferentVersionAlert() {
+    const { t } = this.props;
+    const { isTheSameVersion } = this.state;
+    console.log(`versionsNotMetinRenderDefferentVersionAlert=${isTheSameVersion}`);
+    return (
+      <div className="alert alert-warning mt-3">
+        {t('admin:importer_management.growi_settings.errors.versions_not_met')}
+      </div>
+    );
+  }
+
   resetState() {
     this.setState(this.initialState);
   }
 
   render() {
     const { t } = this.props;
+    const { isTheSameVersion } = this.state;
+    console.log(`isTheSameVersion=${isTheSameVersion}`);
 
     return (
       <Fragment>
@@ -87,6 +106,7 @@ class GrowiArchiveSection extends React.Component {
 
         {this.state.fileName != null ? (
           <div className="px-4">
+            {isTheSameVersion === false && this.renderDefferentVersionAlert()}
             <ImportForm
               fileName={this.state.fileName}
               innerFileStats={this.state.innerFileStats}
