@@ -97,7 +97,7 @@ class ShareLink extends React.Component {
             onClickDeleteButton={this.deleteLinkById}
           />
           <button
-            className="btn btn-outline-secondary d-block mx-auto px-5 mb-3"
+            className="btn btn-outline-secondary d-block mx-auto px-5"
             type="button"
             onClick={this.toggleShareLinkFormHandler}
           >
