@@ -44,6 +44,8 @@ class ImportForm extends React.Component {
       progressMap: [],
       errorsMap: [],
 
+      versionsNotMet: false,
+
       selectedCollections: new Set(),
 
       // store relations from collection name to file name
@@ -87,6 +89,7 @@ class ImportForm extends React.Component {
     this.showErrorsViewer = this.showErrorsViewer.bind(this);
     this.validate = this.validate.bind(this);
     this.import = this.import.bind(this);
+    this.renderDefferentVersionAlert = this.renderDefferentVersionAlert.bind(this);
   }
 
   get allCollectionNames() {
@@ -288,7 +291,7 @@ class ImportForm extends React.Component {
 
   async import() {
     const { appContainer, fileName, onPostImport } = this.props;
-    const { selectedCollections, optionsMap } = this.state;
+    const { selectedCollections, optionsMap, versionsNotMet } = this.state;
 
     // init progress data
     await this.setState({
@@ -303,6 +306,7 @@ class ImportForm extends React.Component {
         fileName,
         collections: Array.from(selectedCollections),
         optionsMap,
+        versionsNotMet,
       });
 
       if (onPostImport != null) {
@@ -313,6 +317,7 @@ class ImportForm extends React.Component {
     }
     catch (err) {
       toastError(err, 'Import request failed.');
+      this.setState({ versionsNotMet: true });
     }
   }
 
@@ -466,7 +471,7 @@ class ImportForm extends React.Component {
           </div>
         </form>
 
-        {this.renderDefferentVersionAlert()}
+        {this.state.versionsNotMet === false && this.renderDefferentVersionAlert()}
         <div className="card well small my-4">
           <ul>
             <li>{t('admin:importer_management.growi_settings.description_of_import_mode.about')}</li>
