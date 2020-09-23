@@ -39,28 +39,12 @@
 
   {% include 'page_alerts.html' %}
 
-  {% if page %}
-  <script type="text/template" id="raw-text-original">{{ revision.body.toString() | encodeHTML }}</script>
-
-  {# formatted text #}
-  <!-- <div class="tab-pane active" id="revision-body">
-    <div id="page" class="mt-4"></div>
-  </div> -->
-{% endif %}
 
   <div class="tab-content" id="view-edit-hackmd">
 
-    <!-- {% if !isTrashPage() %}
-      {# edit form #}
-      <div class="tab-pane" id="edit">
-        <div id="page-editor"></div>
-      </div>
-      <div class="tab-pane" id="hackmd">
-        <div id="page-editor-with-hackmd"></div>
-      </div> -->
+    {% if page %}
+      <script type="text/template" id="raw-text-original">{{ revision.body.toString() | encodeHTML }}</script>
       {% include '../_form.html' %}
-    <!-- {% endif %} -->
-
   </div>
 
   <div id="grw-page-status-alert-container"></div>
