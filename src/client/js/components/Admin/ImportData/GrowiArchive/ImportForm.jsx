@@ -89,7 +89,6 @@ class ImportForm extends React.Component {
     this.showErrorsViewer = this.showErrorsViewer.bind(this);
     this.validate = this.validate.bind(this);
     this.import = this.import.bind(this);
-    this.renderDefferentVersionAlert = this.renderDefferentVersionAlert.bind(this);
   }
 
   get allCollectionNames() {
@@ -440,15 +439,6 @@ class ImportForm extends React.Component {
     );
   }
 
-  renderDefferentVersionAlert() {
-    const { t } = this.props;
-    return (
-      <div className="alert alert-warning mt-3">
-        {t('admin:importer_management.growi_settings.errors.versions_not_met')}
-      </div>
-    );
-  }
-
   render() {
     const { t } = this.props;
     const {
@@ -470,8 +460,6 @@ class ImportForm extends React.Component {
             </button>
           </div>
         </form>
-
-        {this.state.versionsNotMet === false && this.renderDefferentVersionAlert()}
         <div className="card well small my-4">
           <ul>
             <li>{t('admin:importer_management.growi_settings.description_of_import_mode.about')}</li>
