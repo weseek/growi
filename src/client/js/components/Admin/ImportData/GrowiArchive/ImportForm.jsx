@@ -438,7 +438,7 @@ class ImportForm extends React.Component {
   renderDefferentVersionAlert() {
     const { t } = this.props;
     return (
-      <div className="alert alert-warning">
+      <div className="alert alert-warning mt-3">
         {t('admin:importer_management.growi_settings.errors.versions_not_met')}
       </div>
     );
