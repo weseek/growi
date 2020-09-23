@@ -9,8 +9,6 @@ import {
   PopoverBody,
 } from 'reactstrap';
 
-import { debounce } from 'throttle-debounce';
-
 import path from 'path';
 import validator from 'validator';
 import Preview from './Preview';
@@ -36,8 +34,6 @@ class LinkEditModal extends React.PureComponent {
       linkInputValue: '',
       labelInputValue: '',
       linkerType: Linker.types.markdownLink,
-      markdown: '',
-      previewError: '',
       permalink: '',
       linkText: '',
       isPreviewOpen: false,
@@ -59,15 +55,7 @@ class LinkEditModal extends React.PureComponent {
     this.renderPreview = this.renderPreview.bind(this);
     this.getRootPath = this.getRootPath.bind(this);
     this.toggleIsPreviewOpen = this.toggleIsPreviewOpen.bind(this);
-    this.generateAndSetPreviewDebounced = debounce(200, this.generateAndSetPreview.bind(this));
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const { linkInputValue: prevLinkInputValue } = prevState;
-    const { linkInputValue } = this.state;
-    if (linkInputValue !== prevLinkInputValue) {
-      this.generateAndSetPreviewDebounced(linkInputValue);
-    }
+    this.getPreview = this.getPreview.bind(this);
   }
 
   // defaultMarkdownLink is an instance of Linker
@@ -159,22 +147,19 @@ class LinkEditModal extends React.PureComponent {
   }
 
   renderPreview() {
-    if (this.state.markdown !== '') {
+    const markdown = this.getPreview(this.state.linkInputValue);
+    if (markdown !== '') {
       return (
         <div className="linkedit-preview">
           <Preview markdown={this.state.markdown} />
         </div>
       );
     }
-    if (this.state.previewError !== '') {
-      return this.state.previewError;
-    }
     return 'Page preview here.';
   }
 
-  async generateAndSetPreview(path) {
-    let markdown = '';
-    let previewError = '';
+  async getPreview(path) {
+    let result = '';
     let permalink = '';
 
     if (path.startsWith('/')) {
@@ -184,15 +169,16 @@ class LinkEditModal extends React.PureComponent {
 
       try {
         const { page } = await this.props.appContainer.apiGet('/pages.get', { path: pathWithoutFragment, page_id: pageId });
-        markdown = page.revision.body;
+        result = page.revision.body;
         // create permanent link only if path isn't permanent link because checkbox for isUsePermanentLink is disabled when permalink is ''.
         permalink = !isPermanentLink ? `${window.location.origin}/${page.id}` : '';
       }
       catch (err) {
-        previewError = err.message;
+        result = err.message;
       }
     }
-    this.setState({ markdown, previewError, permalink });
+    this.setState({ permalink });
+    return result;
   }
 
   renderLinkPreview() {
