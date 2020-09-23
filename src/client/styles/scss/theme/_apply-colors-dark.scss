@@ -262,12 +262,13 @@ body.on-edit {
 .popover {
   background-color: $bgcolor-global;
   border-color: $secondary;
+  .popover-header {
+    color: $white;
+    background-color: $secondary;
+    border-color: $secondary;
+  }
   .popover-body {
     color: inherit;
-  }
-  .arrow::after {
-    border-right-color: $secondary;
-    border-left-color: $secondary;
   }
 }
 
