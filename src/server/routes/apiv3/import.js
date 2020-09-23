@@ -243,7 +243,8 @@ module.exports = (crowi) => {
     catch (err) {
       logger.error(err);
       this.adminEvent.emit('onErrorForImport', { message: err.message });
-      return;
+      return res.apiv3Err(err);
+      // return;
     }
 
     // generate maps of ImportSettings to import
