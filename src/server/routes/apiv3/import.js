@@ -311,8 +311,11 @@ module.exports = (crowi) => {
       const data = await growiBridgeService.parseZipFile(zipFile);
 
       // validate with meta.json
-      importService.validate(data.meta);
-
+      // importService.validate(data.meta);  元々これのみ
+      const versionErr = importService.validateVersionforUploading(data.meta);
+      if (versionErr !== null) {
+        return res.apiv3({ data, versionErr }); // versionErrはobjではないので恐らくこの書き方は間違い
+      }
       return res.apiv3(data);
     }
     catch (err) {

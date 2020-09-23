@@ -479,7 +479,7 @@ class ImportService {
   // 追加
   validateVersionforUploading(meta) {
     if (meta.version !== this.crowi.version) {
-      const versionErr = new Error('the version of this growi and the growi that exported the data are not met');
+      const versionErr = new Error('the version of this growi and the growi that updated data are not met');
       return versionErr;
     }
   }
