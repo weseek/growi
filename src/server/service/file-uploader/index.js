@@ -14,6 +14,24 @@ const envToModuleMappings = {
 
 class FileUploadServiceFactory extends S2sMessagingServiceDelegator {
 
+  constructor(uri, publishPath, subscribePath, channelId) {
+    super(uri);
+
+    this.publishPath = publishPath;
+    this.subscribePath = subscribePath;
+
+    this.channelId = channelId;
+
+    /**
+     * A list of S2sMessageHandlable instance
+     */
+    this.handlableToEventListenerMap = {};
+
+    this.socket = null;
+
+    this.uploader = null;
+  }
+
   initializeUploader(crowi) {
     const method = envToModuleMappings[process.env.FILE_UPLOAD] || 'aws';
 
@@ -46,6 +64,10 @@ module.exports = (crowi) => {
     return;
   }
 
-  const factory = new FileUploadServiceFactory(uri);
+  const publishPath = configManager.getConfig('crowi', 's2sMessagingPubsub:nchan:publishPath');
+  const subscribePath = configManager.getConfig('crowi', 's2sMessagingPubsub:nchan:subscribePath');
+  const channelId = configManager.getConfig('crowi', 's2sMessagingPubsub:nchan:channelId');
+
+  const factory = new FileUploadServiceFactory(uri, publishPath, subscribePath, channelId);
   return factory.getUploader(crowi);
 };
