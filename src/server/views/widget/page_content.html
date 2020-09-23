@@ -39,12 +39,10 @@
 
   {% include 'page_alerts.html' %}
 
-
-  <div class="tab-content" id="view-edit-hackmd">
-    {% if page %}
-      <script type="text/template" id="raw-text-original">{{ revision.body.toString() | encodeHTML }}</script>
-      {% include '../_form.html' %}
-  </div>
-
-  <div id="grw-page-status-alert-container"></div>
+<div class="tab-content" id="view-edit-hackmd">
+  {% if page %}
+  <script type="text/template" id="raw-text-original">{{ revision.body.toString() | encodeHTML }}</script>
+  {% include '../_form.html' %}
+</div>
+<div id="grw-page-status-alert-container"></div>
 </div>
