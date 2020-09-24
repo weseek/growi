@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { withTranslation } from 'react-i18next';
+
 /**
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
@@ -10,7 +12,7 @@ import PropTypes from 'prop-types';
  * @extends {React.Component}
  */
 
-export default class SlackNotification extends React.Component {
+class SlackNotification extends React.Component {
 
   constructor(props) {
     super(props);
@@ -34,32 +36,36 @@ export default class SlackNotification extends React.Component {
   }
 
   render() {
+    const { t } = this.props;
+
     return (
-      <div className="input-group input-group-sm input-group-slack extended-setting">
-        <label className="input-group-addon bg-light">
-          <img id="slack-mark-white" alt="slack-mark" src="/images/icons/slack/mark-monochrome_white.svg" width="18" height="18" />
-          <img id="slack-mark-black" alt="slack-mark" src="/images/icons/slack/mark-monochrome_black.svg" width="18" height="18" />
+      <div className="grw-slack-notification">
+        <div className="input-group input-group-sm extended-setting">
+          <label className="input-group-addon bg-light">
+            <img id="slack-mark-white" alt="slack-mark" src="/images/icons/slack/mark-monochrome_white.svg" width="18" height="18" />
+            <img id="slack-mark-black" alt="slack-mark" src="/images/icons/slack/mark-monochrome_black.svg" width="18" height="18" />
 
+            <input
+              type="checkbox"
+              value="1"
+              checked={this.props.isSlackEnabled}
+              onChange={this.updateCheckboxHandler}
+            />
+
+          </label>
           <input
-            type="checkbox"
-            value="1"
-            checked={this.props.isSlackEnabled}
-            onChange={this.updateCheckboxHandler}
+            className="form-control"
+            type="text"
+            value={this.props.slackChannels}
+            placeholder="Input channels"
+            data-toggle="popover"
+            title={t('slack_notification.popover_title')}
+            data-content={t('slack_notification.popover_desc')}
+            data-trigger="focus"
+            data-placement="top"
+            onChange={this.updateSlackChannelsHandler}
           />
-
-        </label>
-        <input
-          className="form-control"
-          type="text"
-          value={this.props.slackChannels}
-          placeholder="slack channel name"
-          data-toggle="popover"
-          title="Slack通知"
-          data-content="通知するにはチェックを入れてください。カンマ区切りで複数チャンネルに通知することができます。"
-          data-trigger="focus"
-          data-placement="top"
-          onChange={this.updateSlackChannelsHandler}
-        />
+        </div>
       </div>
     );
   }
@@ -67,8 +73,12 @@ export default class SlackNotification extends React.Component {
 }
 
 SlackNotification.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+
   isSlackEnabled: PropTypes.bool.isRequired,
   slackChannels: PropTypes.string.isRequired,
   onEnabledFlagChange: PropTypes.func,
   onChannelChange: PropTypes.func,
 };
+
+export default withTranslation()(SlackNotification);

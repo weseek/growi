@@ -22,7 +22,7 @@
         background: rgba(200, 200, 200, 0.8);
 
         .overlay-content {
-          color: #444;
+          color: $gray-700;
         }
       }
     }
@@ -51,7 +51,7 @@
       // accepted
       &.dropzone-accepted:not(.dropzone-rejected) {
         .overlay.overlay-dropzone-active {
-          border: 4px dashed #ccc;
+          border: 4px dashed $gray-300;
 
           .overlay-content {
             // insert content
@@ -62,7 +62,7 @@
             }
 
             // style
-            color: #666;
+            color: $secondary;
             background: rgba(200, 200, 200, 0.8);
           }
         }
@@ -106,7 +106,7 @@
     padding-bottom: 3px;
     font-size: small;
     border: none;
-    border-top: 1px dotted #ccc;
+    border-top: 1px dotted $gray-300;
     border-bottom: none;
 
     &:active {

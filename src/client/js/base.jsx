@@ -6,8 +6,8 @@ import Xss from '@commons/service/xss';
 import GrowiNavbar from './components/Navbar/GrowiNavbar';
 import GrowiNavbarBottom from './components/Navbar/GrowiNavbarBottom';
 import Sidebar from './components/Sidebar';
+import ShareLinkAlert from './components/Page/ShareLinkAlert';
 import HotkeysManager from './components/Hotkeys/HotkeysManager';
-import Fab from './components/Fab';
 
 import AppContainer from './services/AppContainer';
 import SocketIoContainer from './services/SocketIoContainer';
@@ -47,7 +47,7 @@ const componentMappings = {
 
   'grw-hotkeys-manager': <HotkeysManager />,
 
-  'grw-fab-container': <Fab />,
+  'share-link-alert': <ShareLinkAlert />,
 };
 
 export { appContainer, componentMappings };

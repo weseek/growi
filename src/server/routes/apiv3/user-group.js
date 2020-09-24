@@ -6,8 +6,8 @@ const express = require('express');
 
 const router = express.Router();
 
-const { body, param, query } = require('express-validator/check');
-const { sanitizeQuery } = require('express-validator/filter');
+const { body, param, query } = require('express-validator');
+const { sanitizeQuery } = require('express-validator');
 
 const mongoose = require('mongoose');
 

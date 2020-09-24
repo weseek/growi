@@ -60,7 +60,7 @@ body.kibela {
         background-color: transparent;
 
         &:hover {
-          background: #eee;
+          background: $gray-100;
         }
       }
 
@@ -124,7 +124,7 @@ body.kibela {
 
     /* Modal */
     .modal-title {
-      color: #ffffff; // override header colors
+      color: white; // override header colors
     }
     .modal-content {
       background-color: $themelight;

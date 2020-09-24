@@ -19,6 +19,7 @@ import PageComments from './components/PageComments';
 import PageTimeline from './components/PageTimeline';
 import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
 import PageManagement from './components/Page/PageManagement';
+import PageShareManagement from './components/Page/PageShareManagement';
 import TrashPageAlert from './components/Page/TrashPageAlert';
 import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
@@ -28,10 +29,12 @@ import MyDraftList from './components/MyDraftList/MyDraftList';
 import SeenUserList from './components/User/SeenUserList';
 import LikerList from './components/User/LikerList';
 import TableOfContents from './components/TableOfContents';
+import Fab from './components/Fab';
 
 import PersonalSettings from './components/Me/PersonalSettings';
 import NavigationContainer from './services/NavigationContainer';
 import PageContainer from './services/PageContainer';
+import PageHistoryContainer from './services/PageHistoryContainer';
 import CommentContainer from './services/CommentContainer';
 import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
@@ -51,12 +54,13 @@ const socketIoContainer = appContainer.getContainer('SocketIoContainer');
 // create unstated container instance
 const navigationContainer = new NavigationContainer(appContainer);
 const pageContainer = new PageContainer(appContainer);
+const pageHistoryContainer = new PageHistoryContainer(appContainer, pageContainer);
 const commentContainer = new CommentContainer(appContainer);
 const editorContainer = new EditorContainer(appContainer, defaultEditorOptions, defaultPreviewOptions);
 const tagContainer = new TagContainer(appContainer);
 const personalContainer = new PersonalContainer(appContainer);
 const injectableContainers = [
-  appContainer, socketIoContainer, navigationContainer, pageContainer, commentContainer, editorContainer, tagContainer, personalContainer,
+  appContainer, socketIoContainer, navigationContainer, pageContainer, pageHistoryContainer, commentContainer, editorContainer, tagContainer, personalContainer,
 ];
 
 logger.info('unstated containers have been initialized');
@@ -79,6 +83,8 @@ Object.assign(componentMappings, {
   'page-timeline': <PageTimeline />,
 
   'personal-setting': <PersonalSettings crowi={personalContainer} />,
+
+  'grw-fab-container': <Fab />,
 });
 
 // additional definitions if data exists
@@ -88,6 +94,7 @@ if (pageContainer.state.pageId != null) {
     'page-comment-write': <CommentEditorLazyRenderer />,
     'page-attachment': <PageAttachment />,
     'page-management': <PageManagement />,
+    'page-share-management': <PageShareManagement />,
 
     'revision-toc': <TableOfContents />,
     'seen-user-list': <SeenUserList />,
@@ -141,7 +148,9 @@ $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', () => {
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
       <ErrorBoundary>
-        <PageHistory pageId={pageContainer.state.pageId} crowi={appContainer} />
+        <Provider inject={injectableContainers}>
+          <PageHistory />
+        </Provider>
       </ErrorBoundary>
     </I18nextProvider>, document.getElementById('revision-history'),
   );

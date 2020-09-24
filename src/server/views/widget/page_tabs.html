@@ -50,7 +50,7 @@
   <!-- presentation -->
   {% if not page.isTopPage() %}
     <li class="nav-item d-edit-none">
-      <a href="?presentation=1" class="nav-link toggle-presentation">
+      <a href="?presentation=1&revisionId={{revision.id}}" class="nav-link toggle-presentation">
         <i class="icon-film icon-fw"></i><span class="d-none d-sm-inline">{{ t('Presentation Mode') }}</span>
       </a>
     </li>
@@ -62,6 +62,11 @@
       <i class="icon-layers icon-fw"></i><span class="d-none d-md-inline">{{ t('History') }}</span>
     </a>
   </li>
+
+  <!-- Outside-share-link -->
+  {% if !isTrashPage() %}
+    <li id="page-share-management" class="nav-item dropdown d-edit-none"></li>
+  {% endif %}
 
   <!-- icon-options-vertical -->
   {% if !isTrashPage() %}
