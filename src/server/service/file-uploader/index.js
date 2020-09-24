@@ -25,6 +25,30 @@ class FileUploadServiceFactory extends S2sMessageHandlable {
     this.lastLoadedAt = null;
   }
 
+  /**
+   * @inheritdoc
+   */
+  shouldHandleS2sMessage(s2sMessage) {
+    const { eventName, updatedAt } = s2sMessage;
+    if (eventName !== 'fileUploadServiceUpdated' || updatedAt == null) {
+      return false;
+    }
+
+    return this.lastLoadedAt == null || this.lastLoadedAt < new Date(s2sMessage.updatedAt);
+  }
+
+  /**
+   * @inheritdoc
+   */
+  async handleS2sMessage(s2sMessage) {
+    const { configManager } = this;
+
+    logger.info('Reset fileupload service by pubsub notification');
+    await configManager.loadConfigs();
+    this.initCustomCss();
+    this.initCustomTitle();
+  }
+
   initializeUploader(crowi) {
     const method = envToModuleMappings[process.env.FILE_UPLOAD] || 'aws';
 
