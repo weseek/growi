@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Button, Modal, ModalBody, ModalHeader, Nav, NavItem, NavLink, TabContent, TabPane,
+  Modal, ModalBody, ModalHeader, Nav, NavItem, NavLink, TabContent, TabPane,
 } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
@@ -119,12 +119,11 @@ const PageAccessoriesModal = (props) => {
           <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
         </ModalHeader>
         <ModalBody className="overflow-auto grw-modal-body-style p-0">
-          {/* <hr className="modal-split-hr m-0" /> */}
-          <TabContent activeTab={activeTab}>
+          <TabContent activeTab={activeTab} className="p-5">
             <TabPane tabId="pagelist">
               {pageAccessoriesContainer.state.activeComponents.has('pagelist') && <PageList />}
             </TabPane>
-            <TabPane tabId="timeline" className="p-4">
+            <TabPane tabId="timeline">
               {pageAccessoriesContainer.state.activeComponents.has('timeline') && <PageTimeline /> }
             </TabPane>
             <TabPane tabId="pageHistory">
@@ -132,10 +131,10 @@ const PageAccessoriesModal = (props) => {
                 {pageAccessoriesContainer.state.activeComponents.has('pageHistory') && <PageHistory /> }
               </div>
             </TabPane>
-            <TabPane tabId="attachment" className="p-4">
+            <TabPane tabId="attachment">
               {pageAccessoriesContainer.state.activeComponents.has('attachment') && <PageAttachment />}
             </TabPane>
-            <TabPane tabId="shareLink" className="p-4">
+            <TabPane tabId="shareLink">
               {pageAccessoriesContainer.state.activeComponents.has('shareLink') && <ShareLink />}
             </TabPane>
           </TabContent>

@@ -65,7 +65,7 @@ function PageHistory(props) {
 
 
   return (
-    <div className="mt-4">
+    <div>
       <PageRevisionList
         revisions={pageHistoryContainer.state.revisions}
         diffOpened={pageHistoryContainer.state.diffOpened}
