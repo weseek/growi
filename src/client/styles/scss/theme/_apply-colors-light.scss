@@ -192,9 +192,19 @@ $table-hover-bg: $bgcolor-table-hover;
 }
 
 .grw-slack-notification-sm {
-  background-color: $light;
-  border-color: transparent;
   fill: purple;
+}
+
+.grw-slack-btn-sm {
+  background-color: white;
+}
+
+.grw-slack-btn-sm:hover {
+  background-color: white;
+}
+
+.grw-slack-btn-triangle {
+  color: gray;
 }
 
 /*
