@@ -124,92 +124,7 @@ class CustomizeFunctionSetting extends React.Component {
               </div>
             </div>
 
-            {/* User Page */}
-            <div className="form-group row">
-              <div className="offset-md-3 col-md-6 text-left">
-                <div className="my-0 w-100">
-                  <label>{t('admin:customize_setting.function_options.list_num_desc_in_user_page')}</label>
-                </div>
-                <Dropdown isOpen={this.state.isDropdownOpen} toggle={this.onToggleDropdown}>
-                  <DropdownToggle className="text-right col-6" caret>
-                    <span className="float-left">{adminCustomizeContainer.state.pageListLimitForUserPage}</span>
-                  </DropdownToggle>
-                  <DropdownMenu className="dropdown-menu" role="menu">
-                    <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitForUserPage(10) }}>
-                      <a role="menuitem">10</a>
-                    </DropdownItem>
-                    <DropdownItem key={30} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitForUserPage(30) }}>
-                      <a role="menuitem">30</a>
-                    </DropdownItem>
-                    <DropdownItem key={50} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitForUserPage(50) }}>
-                      <a role="menuitem">50</a>
-                    </DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
-                <p className="form-text text-muted">
-                  {t('admin:customize_setting.function_options.all_list_num_desc_in_user_page')}
-                </p>
-              </div>
-            </div>
-
-            {/* TODO Implemetn dropdown toggle for pageListLimitForModal (pageList pageTimelin pageHistory, pageAttachment, shareLink) */}
-            {/* NotFound / Trash Page */}
-            <div className="form-group row">
-              <div className="offset-md-3 col-md-6 text-left">
-                <div className="my-0 w-100">
-                  <label>{t('admin:customize_setting.function_options.list_num_desc_in_notfound_and_trash_pages')}</label>
-                </div>
-                <Dropdown isOpen={this.state.isDropdownOpen2} toggle={this.onToggleDropdown2}>
-                  <DropdownToggle className="text-right col-6" caret>
-                    <span className="float-left">{adminCustomizeContainer.state.pageListLimitForUserPage}</span>
-                  </DropdownToggle>
-                  <DropdownMenu className="dropdown-menu" role="menu">
-                    <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitForUserPage(10) }}>
-                      <a role="menuitem">10</a>
-                    </DropdownItem>
-                    <DropdownItem key={30} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitForUserPage(30) }}>
-                      <a role="menuitem">30</a>
-                    </DropdownItem>
-                    <DropdownItem key={50} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitForUserPage(50) }}>
-                      <a role="menuitem">50</a>
-                    </DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
-                <p className="form-text text-muted">
-                  {t('admin:customize_setting.function_options.all_list_num_desc_in_notfound_and_trash_pages')}
-                </p>
-              </div>
-            </div>
-
-            {/* Search / Draft Page */}
-            <div className="form-group row">
-              <div className="offset-md-3 col-md-6 text-left">
-                <div className="my-0 w-100">
-                  <label>{t('admin:customize_setting.function_options.list_num_desc_in_draft_and_search_pages')}</label>
-                </div>
-                <Dropdown isOpen={this.state.isDropdownOpen3} toggle={this.onToggleDropdown3}>
-                  <DropdownToggle className="text-right col-6" caret>
-                    <span className="float-left">{adminCustomizeContainer.state.pageListLimitForUserPage}</span>
-                  </DropdownToggle>
-                  <DropdownMenu className="dropdown-menu" role="menu">
-                    <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitForUserPage(10) }}>
-                      <a role="menuitem">10</a>
-                    </DropdownItem>
-                    <DropdownItem key={30} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitForUserPage(30) }}>
-                      <a role="menuitem">30</a>
-                    </DropdownItem>
-                    <DropdownItem key={50} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitForUserPage(50) }}>
-                      <a role="menuitem">50</a>
-                    </DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
-                <p className="form-text text-muted">
-                  {t('admin:customize_setting.function_options.all_list_num_desc_in_draft_and_search_pages')}
-                </p>
-              </div>
-            </div>
-
-            {/* Modal */}
+            {/* S: Modal */}
             <div className="form-group row">
               <div className="offset-md-3 col-md-6 text-left">
                 <div className="my-0 w-100">
@@ -220,19 +135,103 @@ class CustomizeFunctionSetting extends React.Component {
                     <span className="float-left">{adminCustomizeContainer.state.pageListLimitForUserPage}</span>
                   </DropdownToggle>
                   <DropdownMenu className="dropdown-menu" role="menu">
-                    <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitForUserPage(10) }}>
+                    <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchGroupSPageListLimitation(10) }}>
                       <a role="menuitem">10</a>
                     </DropdownItem>
-                    <DropdownItem key={30} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitForUserPage(30) }}>
+                    <DropdownItem key={30} role="presentation" onClick={() => { adminCustomizeContainer.switchGroupSPageListLimitation(30) }}>
                       <a role="menuitem">30</a>
                     </DropdownItem>
-                    <DropdownItem key={50} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitForUserPage(50) }}>
+                    <DropdownItem key={50} role="presentation" onClick={() => { adminCustomizeContainer.switchGroupSPageListLimitation(50) }}>
                       <a role="menuitem">50</a>
                     </DropdownItem>
                   </DropdownMenu>
                 </Dropdown>
                 <p className="form-text text-muted">
                   {t('admin:customize_setting.function_options.all_list_num_desc_in_page_contents_modal')}
+                </p>
+              </div>
+            </div>
+
+            {/* M: User Page */}
+            <div className="form-group row">
+              <div className="offset-md-3 col-md-6 text-left">
+                <div className="my-0 w-100">
+                  <label>{t('admin:customize_setting.function_options.list_num_desc_in_user_page')}</label>
+                </div>
+                <Dropdown isOpen={this.state.isDropdownOpen} toggle={this.onToggleDropdown}>
+                  <DropdownToggle className="text-right col-6" caret>
+                    <span className="float-left">{adminCustomizeContainer.state.pageListLimitForUserPage}</span>
+                  </DropdownToggle>
+                  <DropdownMenu className="dropdown-menu" role="menu">
+                    <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchGroupMPageListLimitation(10) }}>
+                      <a role="menuitem">10</a>
+                    </DropdownItem>
+                    <DropdownItem key={30} role="presentation" onClick={() => { adminCustomizeContainer.switchGroupMPageListLimitation(30) }}>
+                      <a role="menuitem">30</a>
+                    </DropdownItem>
+                    <DropdownItem key={50} role="presentation" onClick={() => { adminCustomizeContainer.switchGroupMPageListLimitation(50) }}>
+                      <a role="menuitem">50</a>
+                    </DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+                <p className="form-text text-muted">
+                  {t('admin:customize_setting.function_options.all_list_num_desc_in_user_page')}
+                </p>
+              </div>
+            </div>
+
+            {/* L: Search / Draft Pages */}
+            <div className="form-group row">
+              <div className="offset-md-3 col-md-6 text-left">
+                <div className="my-0 w-100">
+                  <label>{t('admin:customize_setting.function_options.list_num_desc_in_draft_and_search_pages')}</label>
+                </div>
+                <Dropdown isOpen={this.state.isDropdownOpen3} toggle={this.onToggleDropdown3}>
+                  <DropdownToggle className="text-right col-6" caret>
+                    <span className="float-left">{adminCustomizeContainer.state.pageListLimitForUserPage}</span>
+                  </DropdownToggle>
+                  <DropdownMenu className="dropdown-menu" role="menu">
+                    <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchGroupLPageListLimitation(10) }}>
+                      <a role="menuitem">10</a>
+                    </DropdownItem>
+                    <DropdownItem key={30} role="presentation" onClick={() => { adminCustomizeContainer.switchGroupLPageListLimitation(30) }}>
+                      <a role="menuitem">30</a>
+                    </DropdownItem>
+                    <DropdownItem key={50} role="presentation" onClick={() => { adminCustomizeContainer.switchGroupLPageListLimitation(50) }}>
+                      <a role="menuitem">50</a>
+                    </DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+                <p className="form-text text-muted">
+                  {t('admin:customize_setting.function_options.all_list_num_desc_in_draft_and_search_pages')}
+                </p>
+              </div>
+            </div>
+
+            {/* XL: NotFound / Trash Pages */}
+            <div className="form-group row">
+              <div className="offset-md-3 col-md-6 text-left">
+                <div className="my-0 w-100">
+                  <label>{t('admin:customize_setting.function_options.list_num_desc_in_notfound_and_trash_pages')}</label>
+                </div>
+                <Dropdown isOpen={this.state.isDropdownOpen2} toggle={this.onToggleDropdown2}>
+                  <DropdownToggle className="text-right col-6" caret>
+                    <span className="float-left">{adminCustomizeContainer.state.pageListLimitForNotFoundAndTrashPage}</span>
+                  </DropdownToggle>
+                  <DropdownMenu className="dropdown-menu" role="menu">
+                    <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchGroupXLPageListLimitation(10) }}>
+                      <a role="menuitem">10</a>
+                    </DropdownItem>
+                    <DropdownItem key={30} role="presentation" onClick={() => { adminCustomizeContainer.switchGroupXLPageListLimitation(30) }}>
+                      <a role="menuitem">30</a>
+                    </DropdownItem>
+                    <DropdownItem key={50} role="presentation" onClick={() => { adminCustomizeContainer.switchGroupXLPageListLimitation(50) }}>
+                      <a role="menuitem">50</a>
+                    </DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+                <p className="form-text text-muted">
+                  {t('admin:customize_setting.function_options.all_list_num_desc_in_notfound_and_trash_pages')}
                 </p>
               </div>
             </div>

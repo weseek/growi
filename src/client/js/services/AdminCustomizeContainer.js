@@ -140,16 +140,34 @@ export default class AdminCustomizeContainer extends Container {
     this.setState({ isEnabledAttachTitleHeader:  !this.state.isEnabledAttachTitleHeader });
   }
 
+
   /**
-   * Switch pageListdLimitForUserPage
+   * S: Switch pageListdLimitForPageContentsModal
    */
-  switchPageListLimitForUserPage(value) {
+  switchGroupSPageListLimitation(value) {
     this.setState({ pageListLimitForUserPage: value });
   }
 
   /**
-   * Switch pageListdLimitForModal
+   * M: Switch pageListdLimitForUserPage
    */
+  switchGroupMPageListLimitation(value) {
+    this.setState({ pageListLimitForUserPage: value });
+  }
+
+  /**
+   * L: Switch pageListdLimitForSearchAndDraftPages
+   */
+  switchGroupLPageListLimitation(value) {
+    this.setState({ pageListLimitForUserPage: value });
+  }
+
+  /**
+   * XL: Switch pageListdLimitForNotFoundAndTrashPages
+   */
+  switchGroupXLPageListLimitation(value) {
+    this.setState({ pageListLimitForNotFoundAndTrashPage: value });
+  }
 
   /**
    * Switch enabledStaleNotification
