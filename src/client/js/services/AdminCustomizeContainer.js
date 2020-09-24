@@ -27,6 +27,11 @@ export default class AdminCustomizeContainer extends Container {
       isEnabledAttachTitleHeader: false,
       pageListLimitForUserPage: 10,
       // TODO implement for pageListLimitForModal
+      pageLimitationS: 10,
+      pageLimitationM: 10,
+      pageLimitationL: 10,
+      pageLimitationXL: 10,
+
       isEnabledStaleNotification: false,
       isAllReplyShown: false,
       currentHighlightJsStyleId: '',
@@ -75,7 +80,13 @@ export default class AdminCustomizeContainer extends Container {
         isSavedStatesOfTabChanges: customizeParams.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: customizeParams.isEnabledAttachTitleHeader,
         pageListLimitForUserPage: customizeParams.pageListLimitForUserPage,
+
         // TODO implement for pageListLimitForModal
+        pageLimitationS: customizeParams.pageLimitationS,
+        // pageLimitationM: customizeParams.pageLimitationM,
+        pageLimitationL: customizeParams.pageLimitationL,
+        pageLimitationXL: customizeParams.pageLimitationXL,
+
         isEnabledStaleNotification: customizeParams.isEnabledStaleNotification,
         isAllReplyShown: customizeParams.isAllReplyShown,
         currentHighlightJsStyleId: customizeParams.styleName,
@@ -145,13 +156,14 @@ export default class AdminCustomizeContainer extends Container {
    * S: Switch pageListdLimitForPageContentsModal
    */
   switchGroupSPageListLimitation(value) {
-    this.setState({ pageListLimitForUserPage: value });
+    this.setState({ pageLimitationS: value });
   }
 
   /**
    * M: Switch pageListdLimitForUserPage
    */
   switchGroupMPageListLimitation(value) {
+    // this.setState({ pageListLimitForUserPage: value });
     this.setState({ pageListLimitForUserPage: value });
   }
 
@@ -159,14 +171,14 @@ export default class AdminCustomizeContainer extends Container {
    * L: Switch pageListdLimitForSearchAndDraftPages
    */
   switchGroupLPageListLimitation(value) {
-    this.setState({ pageListLimitForUserPage: value });
+    this.setState({ pageLimitationL: value });
   }
 
   /**
    * XL: Switch pageListdLimitForNotFoundAndTrashPages
    */
   switchGroupXLPageListLimitation(value) {
-    this.setState({ pageListLimitForNotFoundAndTrashPage: value });
+    this.setState({ pageLimitationXL: value });
   }
 
   /**
@@ -293,6 +305,8 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledAttachTitleHeader: this.state.isEnabledAttachTitleHeader,
         pageListLimitForUserPage: this.state.pageListLimitForUserPage,
         // TODO implement for pageListLimitForModal
+        switchPageListLimitForNotFoundAndTrashPages: this.state.switchPageListLimitForNotFoundAndTrashPages,
+
         isEnabledStaleNotification: this.state.isEnabledStaleNotification,
         isAllReplyShown: this.state.isAllReplyShown,
       });
@@ -303,6 +317,8 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledAttachTitleHeader: customizedParams.isEnabledAttachTitleHeader,
         pageListLimitForUserPage: customizedParams.pageListLimitForUserPage,
         // TODO implement for pageListLimitForModal
+        switchPageListLimitForNotFoundAndTrashPages: customizedParams.switchPageListLimitForNotFoundAndTrashPages,
+
         isEnabledStaleNotification: customizedParams.isEnabledStaleNotification,
         isAllReplyShown: customizedParams.isAllReplyShown,
       });

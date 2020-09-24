@@ -133,7 +133,7 @@ class CustomizeFunctionSetting extends React.Component {
                 </div>
                 <Dropdown isOpen={this.state.isDropdownOpenS} toggle={this.onToggleDropdownS}>
                   <DropdownToggle className="text-right col-6" caret>
-                    <span className="float-left">{adminCustomizeContainer.state.pageListLimitForUserPage}</span>
+                    <span className="float-left">{adminCustomizeContainer.state.pageLimitationS}</span>
                   </DropdownToggle>
                   <DropdownMenu className="dropdown-menu" role="menu">
                     <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchGroupSPageListLimitation(10) }}>
@@ -189,7 +189,7 @@ class CustomizeFunctionSetting extends React.Component {
                 </div>
                 <Dropdown isOpen={this.state.isDropdownOpenL} toggle={this.onToggleDropdownL}>
                   <DropdownToggle className="text-right col-6" caret>
-                    <span className="float-left">{adminCustomizeContainer.state.pageListLimitForUserPage}</span>
+                    <span className="float-left">{adminCustomizeContainer.state.pageLimitationL}</span>
                   </DropdownToggle>
                   <DropdownMenu className="dropdown-menu" role="menu">
                     <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchGroupLPageListLimitation(10) }}>
@@ -217,7 +217,7 @@ class CustomizeFunctionSetting extends React.Component {
                 </div>
                 <Dropdown isOpen={this.state.isDropdownOpenXL} toggle={this.onToggleDropdownXL}>
                   <DropdownToggle className="text-right col-6" caret>
-                    <span className="float-left">{adminCustomizeContainer.state.pageListLimitForNotFoundAndTrashPage}</span>
+                    <span className="float-left">{adminCustomizeContainer.state.pageLimitationXL}</span>
                   </DropdownToggle>
                   <DropdownMenu className="dropdown-menu" role="menu">
                     <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchGroupXLPageListLimitation(10) }}>
