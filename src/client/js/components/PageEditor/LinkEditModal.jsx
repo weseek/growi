@@ -11,7 +11,7 @@ import {
 
 import path from 'path';
 import validator from 'validator';
-import Preview from './Preview';
+import PreviewWithSuspense from './PreviewWithSuspense';
 import PagePreviewIcon from '../Icons/PagePreviewIcon';
 
 import AppContainer from '../../services/AppContainer';
@@ -34,9 +34,11 @@ class LinkEditModal extends React.PureComponent {
       linkInputValue: '',
       labelInputValue: '',
       linkerType: Linker.types.markdownLink,
+      markdown: '',
       permalink: '',
       linkText: '',
       isPreviewOpen: false,
+      previewError: '',
     };
 
     this.isApplyPukiwikiLikeLinkerPlugin = window.growiRenderer.preProcessors.some(process => process.constructor.name === 'PukiwikiLikeLinker');
@@ -52,10 +54,9 @@ class LinkEditModal extends React.PureComponent {
     this.toggleIsUsePamanentLink = this.toggleIsUsePamanentLink.bind(this);
     this.save = this.save.bind(this);
     this.generateLink = this.generateLink.bind(this);
-    this.renderPreview = this.renderPreview.bind(this);
     this.getRootPath = this.getRootPath.bind(this);
     this.toggleIsPreviewOpen = this.toggleIsPreviewOpen.bind(this);
-    this.getPreview = this.getPreview.bind(this);
+    this.setMarkdown = this.setMarkdown.bind(this);
   }
 
   // defaultMarkdownLink is an instance of Linker
@@ -146,21 +147,11 @@ class LinkEditModal extends React.PureComponent {
     this.setState({ isUsePermanentLink: !this.state.isUsePermanentLink, isUseRelativePath: false });
   }
 
-  renderPreview() {
-    const markdown = this.getPreview(this.state.linkInputValue);
-    if (markdown !== '') {
-      return (
-        <div className="linkedit-preview">
-          <Preview markdown={this.state.markdown} />
-        </div>
-      );
-    }
-    return 'Page preview here.';
-  }
-
-  async getPreview(path) {
-    let result = '';
+  async setMarkdown() {
+    const path = this.state.linkInputValue;
+    let markdown = '';
     let permalink = '';
+    let previewError = '';
 
     if (path.startsWith('/')) {
       const pathWithoutFragment = new URL(path, 'http://dummy').pathname;
@@ -169,16 +160,18 @@ class LinkEditModal extends React.PureComponent {
 
       try {
         const { page } = await this.props.appContainer.apiGet('/pages.get', { path: pathWithoutFragment, page_id: pageId });
-        result = page.revision.body;
+        markdown = page.revision.body;
         // create permanent link only if path isn't permanent link because checkbox for isUsePermanentLink is disabled when permalink is ''.
         permalink = !isPermanentLink ? `${window.location.origin}/${page.id}` : '';
       }
       catch (err) {
-        result = err.message;
+        previewError = err.message;
       }
     }
-    this.setState({ permalink });
-    return result;
+    else {
+      previewError = `'${path}' is not a GROWI page.`;
+    }
+    this.setState({ permalink, markdown, previewError });
   }
 
   renderLinkPreview() {
@@ -275,7 +268,10 @@ class LinkEditModal extends React.PureComponent {
     return type === Linker.types.markdownLink ? path.dirname(pagePath) : pagePath;
   }
 
-  toggleIsPreviewOpen() {
+  async toggleIsPreviewOpen() {
+    if (this.state.isPreviewOpen === false) {
+      this.setMarkdown();
+    }
     this.setState({ isPreviewOpen: !this.state.isPreviewOpen });
   }
 
@@ -302,7 +298,7 @@ class LinkEditModal extends React.PureComponent {
                 </button>
                 <Popover trigger="focus" placement="right" isOpen={this.state.isPreviewOpen} target="preview-btn" toggle={this.toggleIsPreviewOpen}>
                   <PopoverBody>
-                    {this.renderPreview()}
+                    <PreviewWithSuspense setMarkdown={this.setMarkdown} markdown={this.state.markdown} error={this.state.previewError} />
                   </PopoverBody>
                 </Popover>
               </div>
