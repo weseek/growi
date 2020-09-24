@@ -115,8 +115,19 @@
       "tab_switch_desc2": "無効化することで、ページ遷移のみを戻る/進む操作の対象にすることができます。",
       "attach_title_header": "新規ページ作成時の h1 セクション自動挿入",
       "attach_title_header_desc": "新規作成したページの1行目に、ページのパスを h1 セクションとして挿入します。",
+
       "list_num_desc_in_user_page": "ユーザーページに表示されるリスト数",
-      "all_list_num_desc_in_user_page": "ユーザーページにおける <Bookmarks> <Recently Created> <My Drafts> での、1ページの表示数を設定します。",
+      "all_list_num_desc_in_user_page": "ユーザーページにおける <Bookmarks> <Recently Created>での、1ページの表示数を設定します。",
+
+      "list_num_desc_in_notfound_and_trash_pages": "Not FoundページやTrashページに表示されるリスト数",
+      "all_list_num_desc_in_notfound_and_trash_pages": "記事エリアにおける<Not Found> <Trash>での、1ページの表示数を設定します。",
+
+      "list_num_desc_in_page_contents_modal": "ページコンテンツモーダルに表示されるリスト数",
+      "all_list_num_desc_in_page_contents_modal": "ページコンテンツモーダルにおける <Pagelist> <Timeline> <Page History> <Share Link>での、1ページの表示数を設定します。",
+
+      "list_num_desc_in_draft_and_search_pages": "検索ページやDraftページに表示されるリスト数",
+      "all_list_num_desc_in_draft_and_search_pages": "<Search> <My Drafts> での、1ページの表示数を設定します。",
+
       "stale_notification": "古いページに通知を表示する",
       "stale_notification_desc": "最後の更新から1年を超えるページへの通知を表示します。",
       "show_all_reply_comments": "返信コメントを全て表示する",
