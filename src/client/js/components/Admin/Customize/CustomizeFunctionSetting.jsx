@@ -106,7 +106,7 @@ class CustomizeFunctionSetting extends React.Component {
               </div>
             </div>
 
-            {/* ユーザーページ */}
+            {/* User Page */}
             <div className="form-group row">
               <div className="offset-md-3 col-md-6 text-left">
                 <div className="my-0 w-100">
@@ -135,7 +135,7 @@ class CustomizeFunctionSetting extends React.Component {
             </div>
 
             {/* TODO Implemetn dropdown toggle for pageListLimitForModal (pageList pageTimelin pageHistory, pageAttachment, shareLink) */}
-            {/* NotFound / Trash ページ */}
+            {/* NotFound / Trash Page */}
             <div className="form-group row">
               <div className="offset-md-3 col-md-6 text-left">
                 <div className="my-0 w-100">
@@ -163,7 +163,7 @@ class CustomizeFunctionSetting extends React.Component {
               </div>
             </div>
 
-            {/* 検索ページ / Draftページ */}
+            {/* Search / Draft Page */}
             <div className="form-group row">
               <div className="offset-md-3 col-md-6 text-left">
                 <div className="my-0 w-100">
@@ -191,7 +191,7 @@ class CustomizeFunctionSetting extends React.Component {
               </div>
             </div>
 
-            {/* モーダル */}
+            {/* Modal */}
             <div className="form-group row">
               <div className="offset-md-3 col-md-6 text-left">
                 <div className="my-0 w-100">
