@@ -9,7 +9,7 @@ import ErrorBoundary from './components/ErrorBoudary';
 import SearchPage from './components/SearchPage';
 import TagsList from './components/TagsList';
 import DisplaySwitcher from './components/Page/DisplaySwitcher';
-import EditorNavbarBottom from './components/PageEditor/EditorNavbarBottom';
+// import EditorNavbarBottom from './components/PageEditor/EditorNavbarBottom';
 import { defaultEditorOptions, defaultPreviewOptions } from './components/PageEditor/OptionsSelector';
 import PageEditorByHackmd from './components/PageEditorByHackmd';
 import Page from './components/Page';
@@ -111,7 +111,6 @@ if (pageContainer.state.path != null) {
 if (appContainer.currentUser != null) {
   Object.assign(componentMappings, {
     'display-switcher': <DisplaySwitcher />,
-    'page-editor-navbar-bottom-container': <EditorNavbarBottom />,
   });
   if (pageContainer.state.pageId != null) {
     Object.assign(componentMappings, {

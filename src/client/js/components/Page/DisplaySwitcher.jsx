@@ -2,9 +2,10 @@ import React from 'react';
 import propTypes from 'prop-types';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import NavigationContainer from '../../services/NavigationContainer';
-import Editor from '../PageEditor/Editor';
+import Editor from '../PageEditor';
 import Page from '../Page';
 import PageEditorByHackmd from '../PageEditorByHackmd';
+import EditorNavbarBottom from '../PageEditor/EditorNavbarBottom';
 
 
 const DisplaySwitcher = (props) => {
@@ -13,7 +14,12 @@ const DisplaySwitcher = (props) => {
   return (
     <div className="">
       {navigationContainer.state.editorMode === 'view' && <Page />}
-      {/* {navigationContainer.state.editorMode === 'edit' && <Editor />} */}
+      {navigationContainer.state.editorMode === 'edit' && (
+      <>
+        <Editor />
+        <EditorNavbarBottom />
+      </>
+        )}
       {navigationContainer.state.editorMode === 'hackmd' && <PageEditorByHackmd />}
     </div>
   );
