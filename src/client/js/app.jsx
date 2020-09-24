@@ -97,9 +97,9 @@ if (pageContainer.state.pageId != null) {
     'liker-list': <LikerList />,
     'user-info': <UserInfo />,
 
-    'user-created-list': <RecentCreated userId={pageContainer.state.creator._id} />,
     'user-created-list': <RecentCreated />,
     'recent-created-icon': <RecentlyCreatedIcon />,
+    'user-created-list': <RecentCreated userId={pageContainer.state.creator._id} />,
     'user-draft-list': <MyDraftList />,
   });
 }
