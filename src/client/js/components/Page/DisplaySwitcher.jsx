@@ -1,6 +1,7 @@
 import React from 'react';
 import propTypes from 'prop-types';
 import { withUnstatedContainers } from '../UnstatedUtils';
+// import PageContainer from '../../services/PageContainer';
 import NavigationContainer from '../../services/NavigationContainer';
 import Editor from '../PageEditor';
 import Page from '../Page';
@@ -9,16 +10,17 @@ import EditorNavbarBottom from '../PageEditor/EditorNavbarBottom';
 
 
 const DisplaySwitcher = (props) => {
-  const { navigationContainer } = props;
+  const { navigationContainer /* , pageContainer  */ } = props;
+  // const { page } = pageContainer;
 
   return (
-    <div className="">
-      {navigationContainer.state.editorMode === 'view' && <Page />}
+    <div>
+      {navigationContainer.state.editorMode === 'view' && <Page /* page={page} */ />}
       {navigationContainer.state.editorMode === 'edit' && (
-      <>
-        <Editor />
-        <EditorNavbarBottom />
-      </>
+        <>
+          <Editor />
+          <EditorNavbarBottom />
+        </>
         )}
       {navigationContainer.state.editorMode === 'hackmd' && <PageEditorByHackmd />}
     </div>
@@ -28,7 +30,8 @@ const DisplaySwitcher = (props) => {
 
 DisplaySwitcher.propTypes = {
   navigationContainer: propTypes.instanceOf(NavigationContainer).isRequired,
+  // pageContainer: propTypes.instanceOf(PageContainer).isRequired,
 };
 
 
-export default withUnstatedContainers(DisplaySwitcher, [NavigationContainer]);
+export default withUnstatedContainers(DisplaySwitcher, [/* PageContainer, */NavigationContainer]);

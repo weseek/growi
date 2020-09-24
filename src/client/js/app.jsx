@@ -11,7 +11,7 @@ import TagsList from './components/TagsList';
 import DisplaySwitcher from './components/Page/DisplaySwitcher';
 // import EditorNavbarBottom from './components/PageEditor/EditorNavbarBottom';
 import { defaultEditorOptions, defaultPreviewOptions } from './components/PageEditor/OptionsSelector';
-import PageEditorByHackmd from './components/PageEditorByHackmd';
+// import PageEditorByHackmd from './components/PageEditorByHackmd';
 import Page from './components/Page';
 import PageHistory from './components/PageHistory';
 import PageComments from './components/PageComments';
@@ -112,9 +112,10 @@ if (appContainer.currentUser != null) {
   Object.assign(componentMappings, {
     'display-switcher': <DisplaySwitcher />,
   });
+
   if (pageContainer.state.pageId != null) {
     Object.assign(componentMappings, {
-      'page-editor-with-hackmd': <PageEditorByHackmd />,
+      // 'page-editor-with-hackmd': <PageEditorByHackmd />,
     });
   }
 }
