@@ -86,8 +86,7 @@ const EditorNavbarBottom = (props) => {
           {/* Button or the normal Slack banner */}
           {hasSlackConfig && (isDeviceSmallerThanMd ? (
             <Button
-              color="white"
-              className="border mr-2"
+              className="grw-slack-notification-sm border mr-2"
               onClick={() => (setSlackExpanded(!isSlackExpanded))}
             >
               <SlackLogo />
