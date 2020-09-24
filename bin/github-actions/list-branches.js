@@ -17,6 +17,7 @@ const EXCLUDE_PATTERNS = [
   /^feat\/custom-sidebar-2$/,
   // https://regex101.com/r/Lnx7Pz/3
   /^dev\/[\d.x]*$/,
+  /^release\/.+$/,
 ];
 const LEGAL_PATTERNS = [
   /^master$/,

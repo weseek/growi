@@ -28,6 +28,7 @@ import MyDraftList from './components/MyDraftList/MyDraftList';
 import SeenUserList from './components/User/SeenUserList';
 import LikerList from './components/User/LikerList';
 import TableOfContents from './components/TableOfContents';
+import Fab from './components/Fab';
 
 import PersonalSettings from './components/Me/PersonalSettings';
 import NavigationContainer from './services/NavigationContainer';
@@ -81,6 +82,8 @@ Object.assign(componentMappings, {
   'page-timeline': <PageTimeline />,
 
   'personal-setting': <PersonalSettings crowi={personalContainer} />,
+
+  'grw-fab-container': <Fab />,
 });
 
 // additional definitions if data exists
