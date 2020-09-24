@@ -25,10 +25,10 @@ export default class AdminCustomizeContainer extends Container {
       isEnabledTimeline: false,
       isSavedStatesOfTabChanges: false,
       isEnabledAttachTitleHeader: false,
-      pageListLimitForUserPage: 10,
-      // TODO implement for pageListLimitForModal
+
       pageLimitationS: 10,
-      pageLimitationM: 10,
+      // [TODO: rename pageListLimitForUserPage to pageLimitationM by gw3920]
+      pageListLimitForUserPage: 10,
       pageLimitationL: 10,
       pageLimitationXL: 10,
 
