@@ -2,7 +2,10 @@
 
 ## v4.1.6-RC
 
-* 
+* Improvement: Hide Fab at admin pages
+* Fix: Presentation does not work
+* Fix: Update GrantSelector status when uploading a file to a new page
+* Fix: CopyDropdown origin refs draw.io host wrongly
 
 ## v4.1.5
 
