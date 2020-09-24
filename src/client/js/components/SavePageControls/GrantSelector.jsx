@@ -47,23 +47,10 @@ class GrantSelector extends React.Component {
     this.state = {
       userRelatedGroups: [],
       isSelectGroupModalShown: false,
-      grant: this.props.grant,
-      grantGroup: null,
     };
-    if (this.props.grantGroupId != null) {
-      this.state.grantGroup = {
-        _id: this.props.grantGroupId,
-        name: this.props.grantGroupName,
-      };
-    }
-
-    // retrieve xss library from window
-    this.xss = window.xss;
 
     this.showSelectGroupModal = this.showSelectGroupModal.bind(this);
     this.hideSelectGroupModal = this.hideSelectGroupModal.bind(this);
-
-    this.getGroupName = this.getGroupName.bind(this);
 
     this.changeGrantHandler = this.changeGrantHandler.bind(this);
     this.groupListItemClickHandler = this.groupListItemClickHandler.bind(this);
@@ -76,11 +63,6 @@ class GrantSelector extends React.Component {
 
   hideSelectGroupModal() {
     this.setState({ isSelectGroupModalShown: false });
-  }
-
-  getGroupName() {
-    const grantGroup = this.state.grantGroup;
-    return grantGroup ? this.xss.process(grantGroup.name) : '';
   }
 
   /**
@@ -109,16 +91,12 @@ class GrantSelector extends React.Component {
       return;
     }
 
-    this.setState({ grant, grantGroup: null });
-
     if (this.props.onUpdateGrant != null) {
       this.props.onUpdateGrant({ grant, grantGroupId: null, grantGroupName: null });
     }
   }
 
   groupListItemClickHandler(grantGroup) {
-    this.setState({ grant: 5, grantGroup });
-
     if (this.props.onUpdateGrant != null) {
       this.props.onUpdateGrant({ grant: 5, grantGroupId: grantGroup._id, grantGroupName: grantGroup.name });
     }
@@ -134,13 +112,13 @@ class GrantSelector extends React.Component {
    */
   renderGrantSelector() {
     const { t } = this.props;
-    const { grant: currentGrant, grantGroup } = this.state;
+    const { grant: currentGrant, grantGroupId } = this.props;
 
     let dropdownToggleBtnColor = null;
     let dropdownToggleLabelElm = null;
 
     const dropdownMenuElems = this.availableGrants.map((opt) => {
-      const label = (opt.grant === 5 && grantGroup != null)
+      const label = (opt.grant === 5 && grantGroupId != null)
         ? opt.reselectLabel // when grantGroup is selected
         : opt.label;
 
@@ -161,11 +139,11 @@ class GrantSelector extends React.Component {
     });
 
     // add specified group option
-    if (grantGroup != null) {
+    if (grantGroupId != null) {
       const labelElm = (
         <span>
           <i className="icon icon-fw icon-organization"></i>
-          <span className="label">{this.getGroupName()}</span>
+          <span className="label">{this.props.grantGroupName}</span>
         </span>
       );
 
