@@ -153,31 +153,31 @@ export default class AdminCustomizeContainer extends Container {
 
 
   /**
-   * S: Switch pageListdLimitForPageContentsModal
+   * S: Switch pageListLimitationS
    */
-  switchGroupSPageListLimitation(value) {
+  switchPageListLimitationS(value) {
     this.setState({ pageLimitationS: value });
   }
 
   /**
-   * M: Switch pageListdLimitForUserPage
+   * M: Switch pageListLimitationM
    */
-  switchGroupMPageListLimitation(value) {
-    // this.setState({ pageListLimitForUserPage: value });
+  // [TODO: rename pageListLimitForUserPage to pageLimitationM by gw3920]
+  switchPageListLimitationM(value) {
     this.setState({ pageListLimitForUserPage: value });
   }
 
   /**
-   * L: Switch pageListdLimitForSearchAndDraftPages
+   * L: Switch pageListLimitationL
    */
-  switchGroupLPageListLimitation(value) {
+  switchPageListLimitationL(value) {
     this.setState({ pageLimitationL: value });
   }
 
   /**
-   * XL: Switch pageListdLimitForNotFoundAndTrashPages
+   * XL: Switch pageListLimitationXL
    */
-  switchGroupXLPageListLimitation(value) {
+  switchPageListLimitationXL(value) {
     this.setState({ pageLimitationXL: value });
   }
 
@@ -303,10 +303,9 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledTimeline: this.state.isEnabledTimeline,
         isSavedStatesOfTabChanges: this.state.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: this.state.isEnabledAttachTitleHeader,
+
         pageListLimitForUserPage: this.state.pageListLimitForUserPage,
         // TODO implement for pageListLimitForModal
-        switchPageListLimitForNotFoundAndTrashPages: this.state.switchPageListLimitForNotFoundAndTrashPages,
-
         isEnabledStaleNotification: this.state.isEnabledStaleNotification,
         isAllReplyShown: this.state.isAllReplyShown,
       });
