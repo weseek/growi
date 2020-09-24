@@ -1,53 +1,47 @@
 const logger = require('@alias/logger')('growi:service:fileUploaderGridfs');
 const mongoose = require('mongoose');
-const { createModel } = require('mongoose-gridfs');
 const util = require('util');
-const Uploader = require('./uploader');
 
-const COLLECTION_NAME = 'attachmentFiles';
+module.exports = function(crowi) {
+  const Uploader = require('./uploader');
+  const lib = new Uploader(crowi);
+  const COLLECTION_NAME = 'attachmentFiles';
+  // const CHUNK_COLLECTION_NAME = `${COLLECTION_NAME}.chunks`;
 
-class Gridfs extends Uploader {
+  // instantiate mongoose-gridfs
+  const { createModel } = require('mongoose-gridfs');
+  const AttachmentFile = createModel({
+    modelName: COLLECTION_NAME,
+    bucketName: COLLECTION_NAME,
+    connection: mongoose.connection,
+  });
+  // get Collection instance of chunk
+  // const chunkCollection = mongoose.connection.collection(CHUNK_COLLECTION_NAME);
 
-  constructor(crowi) {
-    super(crowi);
+  // create promisified method
+  AttachmentFile.promisifiedWrite = util.promisify(AttachmentFile.write).bind(AttachmentFile);
+  AttachmentFile.promisifiedUnlink = util.promisify(AttachmentFile.unlink).bind(AttachmentFile);
 
-    this.initialize();
-  }
-
-  initialize() {
-    this.AttachmentFile = createModel({
-      modelName: COLLECTION_NAME,
-      bucketName: COLLECTION_NAME,
-      connection: mongoose.connection,
-    });
-    // get Collection instance of chunk
-    // const chunkCollection = mongoose.connection.collection(CHUNK_COLLECTION_NAME);
-
-    // create promisified method
-    this.AttachmentFile.promisifiedWrite = util.promisify(this.AttachmentFile.write).bind(this.AttachmentFile);
-    this.AttachmentFile.promisifiedUnlink = util.promisify(this.AttachmentFile.unlink).bind(this.AttachmentFile);
-  }
-
-  getisValidUploadSettings() {
+  lib.isValidUploadSettings = function() {
     return true;
-  }
+  };
 
-  async deleteFile(attachment) {
+  lib.deleteFile = async function(attachment) {
     let filenameValue = attachment.fileName;
 
     if (attachment.filePath != null) { // backward compatibility for v3.3.x or below
       filenameValue = attachment.filePath;
     }
 
-    const attachmentFile = await this.AttachmentFile.findOne({ filename: filenameValue });
+    const attachmentFile = await AttachmentFile.findOne({ filename: filenameValue });
 
     if (attachmentFile == null) {
       logger.warn(`Any AttachmentFile that relate to the Attachment (${attachment._id.toString()}) does not exist in GridFS`);
       return;
     }
 
-    return this.AttachmentFile.promisifiedUnlink({ _id: attachmentFile._id });
-  }
+    return AttachmentFile.promisifiedUnlink({ _id: attachmentFile._id });
+  };
 
   /**
    * get size of data uploaded files using (Promise wrapper)
@@ -74,27 +68,26 @@ class Gridfs extends Uploader {
    * - per-file size limit (specified by MAX_FILE_SIZE)
    * - mongodb(gridfs) size limit (specified by MONGO_GRIDFS_TOTAL_LIMIT)
    */
-  async checkLimit(uploadFileSize) {
-    const maxFileSize = this.crowi.configManager.getConfig('crowi', 'app:maxFileSize');
+  lib.checkLimit = async(uploadFileSize) => {
+    const maxFileSize = crowi.configManager.getConfig('crowi', 'app:maxFileSize');
 
     // Use app:fileUploadTotalLimit if gridfs:totalLimit is null (default for gridfs:totalLimitd is null)
-    const gridfsTotalLimit = this.crowi.configManager.getConfig('crowi', 'gridfs:totalLimit')
-      || this.crowi.configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
-    return this.doCheckLimit(uploadFileSize, maxFileSize, gridfsTotalLimit);
-  }
+    const gridfsTotalLimit = crowi.configManager.getConfig('crowi', 'gridfs:totalLimit')
+      || crowi.configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
+    return lib.doCheckLimit(uploadFileSize, maxFileSize, gridfsTotalLimit);
+  };
 
-  async uploadFile(fileStream, attachment) {
+  lib.uploadFile = async function(fileStream, attachment) {
     logger.debug(`File uploading: fileName=${attachment.fileName}`);
 
-    return this.AttachmentFile.promisifiedWrite(
+    return AttachmentFile.promisifiedWrite(
       {
         filename: attachment.fileName,
         contentType: attachment.fileFormat,
       },
       fileStream,
     );
-  }
-
+  };
 
   /**
    * Find data substance
@@ -102,23 +95,22 @@ class Gridfs extends Uploader {
    * @param {Attachment} attachment
    * @return {stream.Readable} readable stream
    */
-  async findDeliveryFile(attachment) {
+  lib.findDeliveryFile = async function(attachment) {
     let filenameValue = attachment.fileName;
 
     if (attachment.filePath != null) { // backward compatibility for v3.3.x or below
       filenameValue = attachment.filePath;
     }
 
-    const attachmentFile = await this.AttachmentFile.findOne({ filename: filenameValue });
+    const attachmentFile = await AttachmentFile.findOne({ filename: filenameValue });
 
     if (attachmentFile == null) {
       throw new Error(`Any AttachmentFile that relate to the Attachment (${attachment._id.toString()}) does not exist in GridFS`);
     }
 
     // return stream.Readable
-    return this.AttachmentFile.read({ _id: attachmentFile._id });
-  }
+    return AttachmentFile.read({ _id: attachmentFile._id });
+  };
 
-}
-
-module.exports = Gridfs;
+  return lib;
+};
