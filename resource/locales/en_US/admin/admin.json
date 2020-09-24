@@ -122,11 +122,11 @@
       "list_num_desc_in_notfound_and_trash_pages": "Number of 'Not found' and 'Trash' pages displayed",
       "all_list_num_desc_in_notfound_and_trash_pages": "Number of 'Not found' and 'Trash' pages displayed on article page",
 
-      "list_num_desc_in_page_contents_modal": "Number of page contents modal displayedページコンテンツモーダルに表示されるリスト数",
-      "all_list_num_desc_in_page_contents_modal": "Number of 'Pagelist', 'Timeline', 'Page History' and 'Share Link' pages displayed on page contents modal",
-
       "list_num_desc_in_draft_and_search_pages": "Number of 'Search' and 'Draft' pages displayed",
       "all_list_num_desc_in_draft_and_search_pages": "Number of 'Search' and 'Draft' pages displayed",
+
+      "list_num_desc_in_page_contents_modal": "Number of page contents modal displayed",
+      "all_list_num_desc_in_page_contents_modal": "Number of 'Pagelist', 'Timeline', 'Page History' and 'Share Link' pages displayed on page contents modal",
 
       "stale_notification": "Display notification on stale pages",
       "stale_notification_desc": "Displays the notification to pages more than 1 year since the last update.",
