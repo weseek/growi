@@ -7,6 +7,7 @@ const path = require('path');
 
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const logger = loggerFactory('growi:models:attachment');
@@ -32,6 +33,7 @@ module.exports = function(crowi) {
     createdAt: { type: Date, default: Date.now },
   });
   attachmentSchema.plugin(uniqueValidator);
+  attachmentSchema.plugin(mongoosePaginate);
 
   attachmentSchema.virtual('filePathProxied').get(function() {
     return `/attachment/${this._id}`;
@@ -63,6 +65,7 @@ module.exports = function(crowi) {
 
     return attachment;
   };
+
 
   return mongoose.model('Attachment', attachmentSchema);
 };

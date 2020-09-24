@@ -18,6 +18,7 @@ import RevisionPathControls from '../Page/RevisionPathControls';
 import TagLabels from '../Page/TagLabels';
 import LikeButton from '../LikeButton';
 import BookmarkButton from '../BookmarkButton';
+import ThreeStrandedButton from './ThreeStrandedButton';
 
 import PageCreator from './PageCreator';
 import RevisionAuthor from './RevisionAuthor';
@@ -186,14 +187,9 @@ const GrowiSubNavigation = (props) => {
         <div className="d-flex flex-column align-items-end justify-content-center">
           <div className="d-flex">
             { !isPageInTrash && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
-            <div className="mt-2">
-              {/* TODO: impl View / Edit / HackMD button group */}
-              {/* <div className="btn-group" role="group" aria-label="Basic example">
-              <button type="button" className="btn btn-outline-primary">Left</button>
-              <button type="button" className="btn btn-outline-primary">Middle</button>
-              <button type="button" className="btn btn-outline-primary">Right</button>
-            </div> */}
-            </div>
+          </div>
+          <div className="mt-2">
+            <ThreeStrandedButton />
           </div>
         </div>
 

@@ -5,12 +5,12 @@ import { withTranslation } from 'react-i18next';
 import { format as dateFnsFormat, parse as dateFnsParse } from 'date-fns';
 
 import { isInteger } from 'core-js/fn/number';
-import { withUnstatedContainers } from './UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
-import { toastSuccess, toastError } from '../util/apiNotification';
+import { toastSuccess, toastError } from '../../util/apiNotification';
 
-import AppContainer from '../services/AppContainer';
-import PageContainer from '../services/PageContainer';
+import AppContainer from '../../services/AppContainer';
+import PageContainer from '../../services/PageContainer';
 
 class ShareLinkForm extends React.Component {
 

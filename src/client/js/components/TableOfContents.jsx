@@ -8,6 +8,7 @@ import PageContainer from '../services/PageContainer';
 import NavigationContainer from '../services/NavigationContainer';
 
 import { withUnstatedContainers } from './UnstatedUtils';
+import TopOfTableContents from './TopOfTableContents';
 import StickyStretchableScroller from './StickyStretchableScroller';
 
 // eslint-disable-next-line no-unused-vars
@@ -26,8 +27,8 @@ const TableOfContents = (props) => {
     const containerElem = document.querySelector('#revision-toc');
     const containerTop = containerElem.getBoundingClientRect().top;
 
-    // window height - revisionToc top - .system-version - .grw-fab-container height
-    return window.innerHeight - containerTop - 20 - 155;
+    // window height - revisionToc top - .system-version - .grw-fab-container height - top-of-table-contents height
+    return window.innerHeight - containerTop - 20 - 155 - 26;
   }, []);
 
   const { tocHtml } = pageContainer.state;
@@ -41,7 +42,7 @@ const TableOfContents = (props) => {
 
   return (
     <>
-      {/* TODO GW-3253 add four contents */}
+      <TopOfTableContents />
       <StickyStretchableScroller
         contentsElemSelector=".revision-toc .markdownIt-TOC"
         stickyElemSelector="#revision-toc"
