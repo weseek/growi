@@ -39,36 +39,9 @@
 
   {% include 'page_alerts.html' %}
 
-  <div class="tab-content">
-
-    {% if page %}
-      <script type="text/template" id="raw-text-original">{{ revision.body.toString() | encodeHTML }}</script>
-
-      {# formatted text #}
-      <div class="tab-pane active" id="revision-body">
-        <div id="page" class="mt-4"></div>
-      </div>
-    {% endif %}
-
-    {% if !isTrashPage() %}
-      {# edit form #}
-      <div class="tab-pane" id="edit">
-        <div id="page-editor">{% if pageForm.body %}{{ pageForm.body }}{% endif %}</div>
-      </div>
-      <div class="tab-pane" id="hackmd">
-        <div id="page-editor-with-hackmd"></div>
-      </div>
-      {% include '../_form.html' %}
-    {% endif %}
-
-    {# raw revision history #}
-    {% if not page %}
-    {% else %}
-    <div class="tab-pane revision-history" id="revision-history">
-    </div>
-    {% endif %}
-
-  </div>
-
-  <div id="grw-page-status-alert-container"></div>
+<div class="tab-content" id="display-switcher">
+  <script type="text/template" id="raw-text-original">{{ revision.body.toString() | encodeHTML }}</script>
+  {% include '../_form.html' %}
+</div>
+<div id="grw-page-status-alert-container"></div>
 </div>
