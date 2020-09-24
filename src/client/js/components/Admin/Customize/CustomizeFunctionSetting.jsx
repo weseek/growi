@@ -22,6 +22,7 @@ class CustomizeFunctionSetting extends React.Component {
 
     this.state = {
       isDropdownOpenS: false, // S
+      // [TODO: rename isDropdownOpen to isDropdownOpenM by gw3920]
       isDropdownOpen: false, // M
       isDropdownOpenL: false, // L
       isDropdownOpenXL: false, // XL
@@ -38,6 +39,7 @@ class CustomizeFunctionSetting extends React.Component {
     this.setState({ isDropdownOpenS: !this.state.isDropdownOpenS });
   }
 
+  // [TODO: rename onToggleDropdown to onToggleDropdownM by gw3920]
   onToggleDropdown() {
     this.setState({ isDropdownOpen: !this.state.isDropdownOpen });
   }

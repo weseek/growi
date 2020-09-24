@@ -297,7 +297,6 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledTimeline: this.state.isEnabledTimeline,
         isSavedStatesOfTabChanges: this.state.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: this.state.isEnabledAttachTitleHeader,
-
         pageListLimitForUserPage: this.state.pageListLimitForUserPage,
         // TODO implement for pageListLimitForModal
         isEnabledStaleNotification: this.state.isEnabledStaleNotification,
