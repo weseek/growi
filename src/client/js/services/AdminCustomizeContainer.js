@@ -80,13 +80,7 @@ export default class AdminCustomizeContainer extends Container {
         isSavedStatesOfTabChanges: customizeParams.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: customizeParams.isEnabledAttachTitleHeader,
         pageListLimitForUserPage: customizeParams.pageListLimitForUserPage,
-
         // TODO implement for pageListLimitForModal
-        pageLimitationS: customizeParams.pageLimitationS,
-        // pageLimitationM: customizeParams.pageLimitationM,
-        pageLimitationL: customizeParams.pageLimitationL,
-        pageLimitationXL: customizeParams.pageLimitationXL,
-
         isEnabledStaleNotification: customizeParams.isEnabledStaleNotification,
         isAllReplyShown: customizeParams.isAllReplyShown,
         currentHighlightJsStyleId: customizeParams.styleName,
@@ -316,8 +310,6 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledAttachTitleHeader: customizedParams.isEnabledAttachTitleHeader,
         pageListLimitForUserPage: customizedParams.pageListLimitForUserPage,
         // TODO implement for pageListLimitForModal
-        switchPageListLimitForNotFoundAndTrashPages: customizedParams.switchPageListLimitForNotFoundAndTrashPages,
-
         isEnabledStaleNotification: customizedParams.isEnabledStaleNotification,
         isAllReplyShown: customizedParams.isAllReplyShown,
       });
