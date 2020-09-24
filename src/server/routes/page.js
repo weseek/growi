@@ -147,7 +147,7 @@ module.exports = function(crowi, app) {
   const ApiResponse = require('../util/apiResponse');
   const getToday = require('../util/getToday');
 
-  const { slackNotificationService } = crowi;
+  const { slackNotificationService, configManager } = crowi;
   const interceptorManager = crowi.getInterceptorManager();
   const globalNotificationService = crowi.getGlobalNotificationService();
   const pageService = crowi.pageService;
@@ -219,25 +219,31 @@ module.exports = function(crowi, app) {
     }
   }
 
-  function addRendarVarsForPage(renderVars, page) {
+  function addRenderVarsForPage(renderVars, page) {
     renderVars.page = page;
+    renderVars.page.creator = renderVars.page.creator.toObject();
     renderVars.revision = page.revision;
-    renderVars.author = page.revision.author;
+    renderVars.revision.author = renderVars.revision.author.toObject();
     renderVars.pageIdOnHackmd = page.pageIdOnHackmd;
     renderVars.revisionHackmdSynced = page.revisionHackmdSynced;
     renderVars.hasDraftOnHackmd = page.hasDraftOnHackmd;
+  }
+
+  function addRenderVarsForPresentation(renderVars, page) {
+    renderVars.page = page;
+    renderVars.revision = page.revision;
   }
 
   async function addRenderVarsForUserPage(renderVars, page, requestUser) {
     const userData = await User.findUserByUsername(User.getUsernameByPath(page.path));
 
     if (userData != null) {
-      renderVars.pageUser = userData;
+      renderVars.pageUser = userData.toObject();
       renderVars.bookmarkList = await Bookmark.findByUser(userData, { limit: 10, populatePage: true, requestUser });
     }
   }
 
-  function addRendarVarsForScope(renderVars, page) {
+  function addRenderVarsForScope(renderVars, page) {
     renderVars.grant = page.grant;
     renderVars.grantedGroupId = page.grantedGroup ? page.grantedGroup.id : null;
     renderVars.grantedGroupName = page.grantedGroup ? page.grantedGroup.name : null;
@@ -285,7 +291,7 @@ module.exports = function(crowi, app) {
 
   async function showPageForPresentation(req, res, next) {
     const path = getPathFromRequest(req);
-    const revisionId = req.query.revision;
+    const { revisionId } = req.query;
 
     let page = await Page.findByPathAndViewer(path, req.user);
 
@@ -297,15 +303,20 @@ module.exports = function(crowi, app) {
 
     // populate
     page = await page.populateDataToMakePresentation(revisionId);
-    addRendarVarsForPage(renderVars, page);
+
+    if (page != null) {
+      addRenderVarsForPresentation(renderVars, page);
+    }
+
     return res.render('page_presentation', renderVars);
   }
 
   async function showTopPage(req, res, next) {
     const portalPath = req.path;
     const revisionId = req.query.revision;
+    const layoutName = configManager.getConfig('crowi', 'customize:layout');
 
-    const view = 'layout-growi/page_list';
+    const view = `layout-${layoutName}/page_list`;
     const renderVars = { path: portalPath };
 
     let portalPage = await Page.findByPathAndViewer(portalPath, req.user);
@@ -314,7 +325,7 @@ module.exports = function(crowi, app) {
     // populate
     portalPage = await portalPage.populateDataToShowRevision();
 
-    addRendarVarsForPage(renderVars, portalPage);
+    addRenderVarsForPage(renderVars, portalPage);
     await addRenderVarsForSlack(renderVars, portalPage);
 
     const sharelinksNumber = await ShareLink.countDocuments({ relatedPage: portalPage._id });
@@ -332,6 +343,7 @@ module.exports = function(crowi, app) {
   async function showPageForGrowiBehavior(req, res, next) {
     const path = getPathFromRequest(req);
     const revisionId = req.query.revision;
+    const layoutName = configManager.getConfig('crowi', 'customize:layout');
 
     let page = await Page.findByPathAndViewer(path, req.user);
 
@@ -351,14 +363,14 @@ module.exports = function(crowi, app) {
     const offset = parseInt(req.query.offset) || 0;
     const renderVars = {};
 
-    let view = 'layout-growi/page';
+    let view = `layout-${layoutName}/page`;
 
     page.initLatestRevisionField(revisionId);
 
     // populate
     page = await page.populateDataToShowRevision();
-    addRendarVarsForPage(renderVars, page);
-    addRendarVarsForScope(renderVars, page);
+    addRenderVarsForPage(renderVars, page);
+    addRenderVarsForScope(renderVars, page);
 
     await addRenderVarsForSlack(renderVars, page);
     await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
@@ -368,7 +380,7 @@ module.exports = function(crowi, app) {
 
     if (isUserPage(page.path)) {
       // change template
-      view = 'layout-growi/user_page';
+      view = `layout-${layoutName}/user_page`;
       await addRenderVarsForUserPage(renderVars, page, req.user);
     }
 
@@ -415,13 +427,14 @@ module.exports = function(crowi, app) {
     const { linkId } = req.params;
     const revisionId = req.query.revision;
 
-    const view = 'layout-growi/shared_page';
+    const layoutName = configManager.getConfig('crowi', 'customize:layout');
+    const view = `layout-${layoutName}/shared_page`;
 
     const shareLink = await ShareLink.findOne({ _id: linkId }).populate('relatedPage');
 
     if (shareLink == null || shareLink.relatedPage == null) {
       // page or sharelink are not found
-      return res.render('layout-growi/not_found_shared_page');
+      return res.render(`layout-${layoutName}/not_found_shared_page`);
     }
 
     let page = shareLink.relatedPage;
@@ -429,7 +442,7 @@ module.exports = function(crowi, app) {
     // check if share link is expired
     if (shareLink.isExpired()) {
       // page is not found
-      return res.render('layout-growi/expired_shared_page');
+      return res.render(`layout-${layoutName}/expired_shared_page`);
     }
 
     const renderVars = {};
@@ -441,7 +454,7 @@ module.exports = function(crowi, app) {
       page = await page.populateDataToMakePresentation(revisionId);
 
       // populate
-      addRendarVarsForPage(renderVars, page);
+      addRenderVarsForPage(renderVars, page);
       return res.render('page_presentation', renderVars);
     }
 
@@ -449,8 +462,8 @@ module.exports = function(crowi, app) {
 
     // populate
     page = await page.populateDataToShowRevision();
-    addRendarVarsForPage(renderVars, page);
-    addRendarVarsForScope(renderVars, page);
+    addRenderVarsForPage(renderVars, page);
+    addRenderVarsForScope(renderVars, page);
 
     await interceptorManager.process('beforeRenderPage', req, res, renderVars);
     return res.render(view, renderVars);
@@ -490,18 +503,19 @@ module.exports = function(crowi, app) {
     const path = getPathFromRequest(req);
 
     const isCreatable = Page.isCreatableName(path);
+    const layoutName = configManager.getConfig('crowi', 'customize:layout');
 
     let view;
     const renderVars = { path };
 
     if (!isCreatable) {
-      view = 'layout-growi/not_creatable';
+      view = `layout-${layoutName}/not_creatable`;
     }
     else if (req.isForbidden) {
-      view = 'layout-growi/forbidden';
+      view = `layout-${layoutName}/forbidden`;
     }
     else {
-      view = 'layout-growi/not_found';
+      view = `layout-${layoutName}/not_found`;
 
       // retrieve templates
       if (req.user != null) {
@@ -518,7 +532,7 @@ module.exports = function(crowi, app) {
       const ancestor = await Page.findAncestorByPathAndViewer(path, req.user);
       if (ancestor != null) {
         await ancestor.populate('grantedGroup').execPopulate();
-        addRendarVarsForScope(renderVars, ancestor);
+        addRenderVarsForScope(renderVars, ancestor);
       }
     }
 
@@ -532,6 +546,7 @@ module.exports = function(crowi, app) {
   actions.deletedPageListShow = async function(req, res) {
     // normalizePath makes '/trash/' -> '/trash'
     const path = pathUtils.normalizePath(`/trash${getPathFromRequest(req)}`);
+    const layoutName = configManager.getConfig('crowi', 'customize:layout');
 
     const limit = 50;
     const offset = parseInt(req.query.offset) || 0;
@@ -556,7 +571,7 @@ module.exports = function(crowi, app) {
 
     renderVars.pager = generatePager(result.offset, result.limit, result.totalCount);
     renderVars.pages = result.pages;
-    res.render('layout-growi/page_list', renderVars);
+    res.render(`layout-${layoutName}/page_list`, renderVars);
   };
 
   /**
@@ -1556,83 +1571,6 @@ module.exports = function(crowi, app) {
 
     const result = { path };
     return res.json(ApiResponse.success(result));
-  };
-
-  /**
-   * @swagger
-   *
-   *    /pages.recentCreated:
-   *      get:
-   *        tags: [Pages]
-   *        operationId: getRecentCreatedPages
-   *        summary: /pages.recentCreated
-   *        description: Get recent created page list
-   *        parameters:
-   *          - in: query
-   *            name: page_id
-   *            required: true
-   *            schema:
-   *              $ref: '#/components/schemas/Page/properties/_id'
-   *          - in: query
-   *            name: offset
-   *            schema:
-   *              $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/offset'
-   *          - in: query
-   *            name: limit
-   *            schema:
-   *              $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/limit'
-   *        responses:
-   *          200:
-   *            description: Succeeded to get recent created page list.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    pages:
-   *                      type: array
-   *                      description: recent created page list
-   *                      items:
-   *                        $ref: '#/components/schemas/Page'
-   *                    totalCount:
-   *                      $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/total'
-   *                    offset:
-   *                      $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/offset'
-   *                    limit:
-   *                      $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/limit'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  api.recentCreated = async function(req, res) {
-    const pageId = req.query.page_id;
-
-    if (pageId == null) {
-      return res.json(ApiResponse.error('param \'pageId\' must not be null'));
-    }
-
-    const page = await Page.findById(pageId);
-    if (page == null) {
-      return res.json(ApiResponse.error(`Page (id='${pageId}') does not exist`));
-    }
-    if (!isUserPage(page.path)) {
-      return res.json(ApiResponse.error(`Page (id='${pageId}') is not a user home`));
-    }
-
-    const limit = +req.query.limit || 50;
-    const offset = +req.query.offset || 0;
-    const queryOptions = { offset, limit };
-
-    try {
-      const result = await Page.findListByCreator(page.creator, req.user, queryOptions);
-
-      return res.json(ApiResponse.success(result));
-    }
-    catch (err) {
-      return res.json(ApiResponse.error(err));
-    }
   };
 
   return actions;

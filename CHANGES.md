@@ -1,6 +1,34 @@
 # CHANGES
 
-## v4.1.3-RC
+## v4.2.0
+
+### BREAKING CHANGES
+
+* GROWI v4.2.x no longer support Kibela layout
+    * Kibela theme is newly added and the configuration will migrate to it automatically
+
+### Updates
+
+* Improvement: Basic layout of page
+* Support: Support MongoDB 4.0, 4.2 and 4.4
+
+
+## v4.1.6
+
+* Improvement: Hide Fab at admin pages
+* Fix: Presentation does not work
+* Fix: Update GrantSelector status when uploading a file to a new page
+* Fix: CopyDropdown origin refs draw.io host wrongly
+
+## v4.1.5
+
+* Feature: Independent S3 configuration and SES configuration for AWS
+* Fix: Author name does not displayed in page history
+* Fix: Hide unnecessary component when pringing
+
+## v4.1.4 (Missing number)
+
+## v4.1.3
 
 * Feature: Create/edit linker with GUI
 * Improvement: Paging page histories
@@ -93,7 +121,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/41x.html>
 * Fix: Unable to create page with original path after emptying trash
 * I18n: Support zh-CN
 
-## v4.0.8  (Missing number)
+## v4.0.8 (Missing number)
 
 ## v4.0.7
 

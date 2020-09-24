@@ -134,7 +134,6 @@ module.exports = function(crowi, app) {
   // HTTP RPC Styled API (に徐々に移行していいこうと思う)
   app.get('/_api/users.list'          , accessTokenParser , loginRequired , user.api.list);
   app.get('/_api/pages.list'          , accessTokenParser , loginRequired , page.api.list);
-  app.get('/_api/pages.recentCreated' , accessTokenParser , loginRequired , page.api.recentCreated);
   app.post('/_api/pages.create'       , accessTokenParser , loginRequiredStrictly , csrf, page.api.create);
   app.post('/_api/pages.update'       , accessTokenParser , loginRequiredStrictly , csrf, page.api.update);
   app.get('/_api/pages.get'           , accessTokenParser , loginRequired , page.api.get);
@@ -156,7 +155,6 @@ module.exports = function(crowi, app) {
   app.post('/_api/comments.add'       , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, comment.api.add);
   app.post('/_api/comments.update'    , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, comment.api.update);
   app.post('/_api/comments.remove'    , accessTokenParser , loginRequiredStrictly , csrf, comment.api.remove);
-  app.get('/_api/attachments.list'    , accessTokenParser , loginRequired , attachment.api.list);
   app.post('/_api/attachments.add'                  , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, attachment.api.add);
   app.post('/_api/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, attachment.api.uploadProfileImage);
   app.post('/_api/attachments.remove'               , accessTokenParser , loginRequiredStrictly , csrf, attachment.api.remove);
