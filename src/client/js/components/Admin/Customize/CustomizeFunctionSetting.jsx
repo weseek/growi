@@ -136,13 +136,13 @@ class CustomizeFunctionSetting extends React.Component {
                     <span className="float-left">{adminCustomizeContainer.state.pageLimitationS}</span>
                   </DropdownToggle>
                   <DropdownMenu className="dropdown-menu" role="menu">
-                    <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchGroupSPageListLimitation(10) }}>
+                    <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationS(10) }}>
                       <a role="menuitem">10</a>
                     </DropdownItem>
-                    <DropdownItem key={30} role="presentation" onClick={() => { adminCustomizeContainer.switchGroupSPageListLimitation(30) }}>
+                    <DropdownItem key={30} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationS(30) }}>
                       <a role="menuitem">30</a>
                     </DropdownItem>
-                    <DropdownItem key={50} role="presentation" onClick={() => { adminCustomizeContainer.switchGroupSPageListLimitation(50) }}>
+                    <DropdownItem key={50} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationS(50) }}>
                       <a role="menuitem">50</a>
                     </DropdownItem>
                   </DropdownMenu>
@@ -161,16 +161,17 @@ class CustomizeFunctionSetting extends React.Component {
                 </div>
                 <Dropdown isOpen={this.state.isDropdownOpen} toggle={this.onToggleDropdown}>
                   <DropdownToggle className="text-right col-6" caret>
+                    {/* [TODO: rename pageListLimitForUserPage to pageLimitationM by gw3920] */}
                     <span className="float-left">{adminCustomizeContainer.state.pageListLimitForUserPage}</span>
                   </DropdownToggle>
                   <DropdownMenu className="dropdown-menu" role="menu">
-                    <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchGroupMPageListLimitation(10) }}>
+                    <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationM(10) }}>
                       <a role="menuitem">10</a>
                     </DropdownItem>
-                    <DropdownItem key={30} role="presentation" onClick={() => { adminCustomizeContainer.switchGroupMPageListLimitation(30) }}>
+                    <DropdownItem key={30} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationM(30) }}>
                       <a role="menuitem">30</a>
                     </DropdownItem>
-                    <DropdownItem key={50} role="presentation" onClick={() => { adminCustomizeContainer.switchGroupMPageListLimitation(50) }}>
+                    <DropdownItem key={50} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationM(50) }}>
                       <a role="menuitem">50</a>
                     </DropdownItem>
                   </DropdownMenu>
@@ -192,13 +193,13 @@ class CustomizeFunctionSetting extends React.Component {
                     <span className="float-left">{adminCustomizeContainer.state.pageLimitationL}</span>
                   </DropdownToggle>
                   <DropdownMenu className="dropdown-menu" role="menu">
-                    <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchGroupLPageListLimitation(10) }}>
+                    <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationL(10) }}>
                       <a role="menuitem">10</a>
                     </DropdownItem>
-                    <DropdownItem key={30} role="presentation" onClick={() => { adminCustomizeContainer.switchGroupLPageListLimitation(30) }}>
+                    <DropdownItem key={30} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationL(30) }}>
                       <a role="menuitem">30</a>
                     </DropdownItem>
-                    <DropdownItem key={50} role="presentation" onClick={() => { adminCustomizeContainer.switchGroupLPageListLimitation(50) }}>
+                    <DropdownItem key={50} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationL(50) }}>
                       <a role="menuitem">50</a>
                     </DropdownItem>
                   </DropdownMenu>
@@ -220,13 +221,13 @@ class CustomizeFunctionSetting extends React.Component {
                     <span className="float-left">{adminCustomizeContainer.state.pageLimitationXL}</span>
                   </DropdownToggle>
                   <DropdownMenu className="dropdown-menu" role="menu">
-                    <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchGroupXLPageListLimitation(10) }}>
+                    <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationXL(10) }}>
                       <a role="menuitem">10</a>
                     </DropdownItem>
-                    <DropdownItem key={30} role="presentation" onClick={() => { adminCustomizeContainer.switchGroupXLPageListLimitation(30) }}>
+                    <DropdownItem key={30} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationXL(30) }}>
                       <a role="menuitem">30</a>
                     </DropdownItem>
-                    <DropdownItem key={50} role="presentation" onClick={() => { adminCustomizeContainer.switchGroupXLPageListLimitation(50) }}>
+                    <DropdownItem key={50} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationXL(50) }}>
                       <a role="menuitem">50</a>
                     </DropdownItem>
                   </DropdownMenu>
