@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Button, Modal, ModalBody, Nav, NavItem, NavLink, TabContent, TabPane,
+  Modal, ModalBody, ModalHeader, Nav, NavItem, NavLink, TabContent, TabPane,
 } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
@@ -103,7 +103,7 @@ const PageAccessoriesModal = (props) => {
     <React.Fragment>
       <Modal size="xl" isOpen={props.isOpen} toggle={closeModalHandler} className="grw-page-accessories-modal">
         {/* [TODO: insert a modal header and move nav tabs there  by gw-3890] */}
-        <ModalBody className="overflow-auto grw-modal-body-style p-0">
+        <ModalHeader className="p-0" toggle={closeModalHandler}>
           <Nav className="nav-title" id="nav-title">
             {Object.entries(navTabMapping).map(([key, value]) => {
               return (
@@ -115,14 +115,10 @@ const PageAccessoriesModal = (props) => {
                 </NavItem>
               );
             })}
-            <Button
-              className="my-auto ml-auto mr-3"
-              close
-              onClick={closeModalHandler}
-            />
           </Nav>
-          <hr className="my-0 grw-nav-slide-hr" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
-          <hr className="modal-split-hr m-0" />
+          <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
+        </ModalHeader>
+        <ModalBody className="overflow-auto grw-modal-body-style p-0">
           <TabContent activeTab={activeTab} className="p-5">
             <TabPane tabId="pagelist">
               {pageAccessoriesContainer.state.activeComponents.has('pagelist') && <PageList />}

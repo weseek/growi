@@ -284,6 +284,11 @@ pre:not(.hljs):not(.CodeMirror-line) {
   .nav-title {
     color: $color-link;
   }
+  .modal-header {
+    button.close {
+      color: $secondary;
+    }
+  }
   .nav-link svg {
     fill: $color-link;
   }

@@ -8,6 +8,12 @@
       }
     }
   }
+  .modal-header {
+    button.close {
+      margin: auto 0rem auto auto;
+    }
+  }
+
   .grw-nav-slide-hr {
     border-top: 0rem;
     border-bottom: 3px solid;
