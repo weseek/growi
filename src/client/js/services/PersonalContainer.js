@@ -29,7 +29,6 @@ export default class PersonalContainer extends Container {
       isUploadedPicture: false,
       uploadedPictureSrc: this.getUploadedPictureSrc(this.appContainer.currentUser),
       externalAccounts: [],
-      isPasswordSet: false,
       apiToken: '',
     };
 
@@ -55,7 +54,6 @@ export default class PersonalContainer extends Container {
         isEmailPublished: currentUser.isEmailPublished,
         lang: currentUser.lang,
         isGravatarEnabled: currentUser.isGravatarEnabled,
-        isPasswordSet: (currentUser.password != null),
         apiToken: currentUser.apiToken,
       });
     }

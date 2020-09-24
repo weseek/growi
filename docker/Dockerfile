@@ -12,20 +12,17 @@ LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
 ENV appDir /opt/growi
 
-COPY ./package.json ${appDir}/
-COPY ./yarn.lock ${appDir}/
 WORKDIR ${appDir}
+COPY ./package.json ./
+COPY ./yarn.lock ./
 
 # setup
 RUN yarn config set network-timeout 300000
-RUN --mount=type=cache,target=/usr/local/share/.cache/yarn \
-  yarn
+RUN yarn
 # install official plugins
-RUN --mount=type=cache,target=/usr/local/share/.cache/yarn \
-  yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs
+RUN yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs
 # install peerDependencies
-RUN --mount=type=cache,target=/usr/local/share/.cache/yarn \
-  yarn add -D react-images@1.0.0 react-motion
+RUN yarn add -D react-images@1.0.0 react-motion
 
 
 
@@ -35,8 +32,7 @@ RUN --mount=type=cache,target=/usr/local/share/.cache/yarn \
 FROM deps-resolver AS deps-resolver-prod
 
 # shrink dependencies for production
-RUN --mount=type=cache,target=/usr/local/share/.cache/yarn \
-  yarn install --production
+RUN yarn install --production
 
 
 
@@ -79,8 +75,7 @@ ENV appDir /opt/growi
 WORKDIR ${appDir}
 
 # build
-RUN --mount=type=cache,target=./node_modules/.cache \
-  yarn build:prod
+RUN yarn build:prod
 
 # remove except artifacts
 WORKDIR /tmp
@@ -92,14 +87,13 @@ WORKDIR ${appDir}
 ##
 ## release
 ##
-FROM node:12-alpine
+FROM node:14-alpine
 LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
 ENV appDir /opt/growi
 
 # install tini
-RUN --mount=type=cache,target=/var/cache/apk \
-  apk add tini su-exec
+RUN apk add tini su-exec
 
 COPY docker/docker-entrypoint.sh /
 RUN chmod 700 /docker-entrypoint.sh

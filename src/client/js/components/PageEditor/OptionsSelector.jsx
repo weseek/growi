@@ -247,9 +247,9 @@ class OptionsSelector extends React.Component {
   render() {
     return (
       <div className="d-flex flex-row">
-        <span className="ml-2">{this.renderThemeSelector()}</span>
-        <span className="ml-2">{this.renderKeymapModeSelector()}</span>
-        <span className="ml-2">{this.renderConfigurationDropdown()}</span>
+        <span className="ml-3">{this.renderThemeSelector()}</span>
+        <span className="ml-4">{this.renderKeymapModeSelector()}</span>
+        <span className="ml-4">{this.renderConfigurationDropdown()}</span>
       </div>
     );
   }
