@@ -21,34 +21,35 @@ class CustomizeFunctionSetting extends React.Component {
     super(props);
 
     this.state = {
-      isDropdownOpen: false,
-      isDropdownOpen2: false,
-      isDropdownOpen3: false,
-      isDropdownOpen4: false,
+      isDropdownOpenS: false, // S
+      isDropdownOpen: false, // M
+      isDropdownOpenL: false, // L
+      isDropdownOpenXL: false, // XL
     };
 
-    this.onToggleDropdown = this.onToggleDropdown.bind(this);
-    this.onToggleDropdown2 = this.onToggleDropdown2.bind(this);
-    this.onToggleDropdown3 = this.onToggleDropdown3.bind(this);
-    this.onToggleDropdown4 = this.onToggleDropdown4.bind(this);
+    this.onToggleDropdownS = this.onToggleDropdownS.bind(this); // S
+    this.onToggleDropdown = this.onToggleDropdown.bind(this); // M
+    this.onToggleDropdownL = this.onToggleDropdownL.bind(this); // L
+    this.onToggleDropdownXL = this.onToggleDropdownXL.bind(this); // XL
     this.onClickSubmit = this.onClickSubmit.bind(this);
+  }
+
+  onToggleDropdownS() {
+    this.setState({ isDropdownOpenS: !this.state.isDropdownOpenS });
   }
 
   onToggleDropdown() {
     this.setState({ isDropdownOpen: !this.state.isDropdownOpen });
   }
 
-  onToggleDropdown2() {
-    this.setState({ isDropdownOpen2: !this.state.isDropdownOpen2 });
+  onToggleDropdownL() {
+    this.setState({ isDropdownOpenL: !this.state.isDropdownOpenL });
   }
 
-  onToggleDropdown3() {
-    this.setState({ isDropdownOpen3: !this.state.isDropdownOpen3 });
+  onToggleDropdownXL() {
+    this.setState({ isDropdownOpenXL: !this.state.isDropdownOpenXL });
   }
 
-  onToggleDropdown4() {
-    this.setState({ isDropdownOpen4: !this.state.isDropdownOpen4 });
-  }
 
   async onClickSubmit() {
     const { t, adminCustomizeContainer } = this.props;
@@ -130,7 +131,7 @@ class CustomizeFunctionSetting extends React.Component {
                 <div className="my-0 w-100">
                   <label>{t('admin:customize_setting.function_options.list_num_desc_in_page_contents_modal')}</label>
                 </div>
-                <Dropdown isOpen={this.state.isDropdownOpen4} toggle={this.onToggleDropdown4}>
+                <Dropdown isOpen={this.state.isDropdownOpenS} toggle={this.onToggleDropdownS}>
                   <DropdownToggle className="text-right col-6" caret>
                     <span className="float-left">{adminCustomizeContainer.state.pageListLimitForUserPage}</span>
                   </DropdownToggle>
@@ -186,7 +187,7 @@ class CustomizeFunctionSetting extends React.Component {
                 <div className="my-0 w-100">
                   <label>{t('admin:customize_setting.function_options.list_num_desc_in_draft_and_search_pages')}</label>
                 </div>
-                <Dropdown isOpen={this.state.isDropdownOpen3} toggle={this.onToggleDropdown3}>
+                <Dropdown isOpen={this.state.isDropdownOpenL} toggle={this.onToggleDropdownL}>
                   <DropdownToggle className="text-right col-6" caret>
                     <span className="float-left">{adminCustomizeContainer.state.pageListLimitForUserPage}</span>
                   </DropdownToggle>
@@ -214,7 +215,7 @@ class CustomizeFunctionSetting extends React.Component {
                 <div className="my-0 w-100">
                   <label>{t('admin:customize_setting.function_options.list_num_desc_in_notfound_and_trash_pages')}</label>
                 </div>
-                <Dropdown isOpen={this.state.isDropdownOpen2} toggle={this.onToggleDropdown2}>
+                <Dropdown isOpen={this.state.isDropdownOpenXL} toggle={this.onToggleDropdownXL}>
                   <DropdownToggle className="text-right col-6" caret>
                     <span className="float-left">{adminCustomizeContainer.state.pageListLimitForNotFoundAndTrashPage}</span>
                   </DropdownToggle>
