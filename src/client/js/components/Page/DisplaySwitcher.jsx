@@ -15,7 +15,6 @@ const DisplaySwitcher = (props) => {
       {editorMode === 'hackmd' && 'hackmd'}
     </>
   );
-
 };
 
 DisplaySwitcher.propTypes = {
