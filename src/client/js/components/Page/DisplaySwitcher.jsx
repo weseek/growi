@@ -10,22 +10,21 @@ import EditorNavbarBottom from '../PageEditor/EditorNavbarBottom';
 
 
 const DisplaySwitcher = (props) => {
-  const { navigationContainer /* , pageContainer  */ } = props;
-  // const { page } = pageContainer;
+  const { navigationContainer /* ,pageContainer */ } = props;
+  const { editorMode } = navigationContainer.state;
 
   return (
-    <div>
-      {navigationContainer.state.editorMode === 'view' && <Page /* page={page} */ />}
-      {navigationContainer.state.editorMode === 'edit' && (
+    <>
+      {editorMode === 'view' && <Page />}
+      {editorMode === 'edit' && (
         <>
           <Editor />
           <EditorNavbarBottom />
         </>
-        )}
-      {navigationContainer.state.editorMode === 'hackmd' && <PageEditorByHackmd />}
-    </div>
+      )}
+      {editorMode === 'hackmd' && <PageEditorByHackmd />}
+    </>
   );
-
 };
 
 DisplaySwitcher.propTypes = {
