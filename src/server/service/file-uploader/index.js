@@ -1,5 +1,5 @@
 const logger = require('@alias/logger')('growi:service:FileUploaderServise');
-const S2sMessagingServiceDelegator = require('../s2s-messaging/base');
+const S2sMessageHandlable = require('../s2s-messaging/handlable');
 
 const envToModuleMappings = {
   aws:     'aws',
@@ -12,24 +12,17 @@ const envToModuleMappings = {
   gcs:     'gcs',
 };
 
-class FileUploadServiceFactory extends S2sMessagingServiceDelegator {
+class FileUploadServiceFactory extends S2sMessageHandlable {
 
-  constructor(uri, publishPath, subscribePath, channelId) {
-    super(uri);
+  constructor(crowi) {
+    super();
 
-    this.publishPath = publishPath;
-    this.subscribePath = subscribePath;
+    this.configManager = crowi.configManager;
+    this.s2sMessagingService = crowi.s2sMessagingService;
+    this.appService = crowi.appService;
+    this.xssService = crowi.xssService;
 
-    this.channelId = channelId;
-
-    /**
-     * A list of S2sMessageHandlable instance
-     */
-    this.handlableToEventListenerMap = {};
-
-    this.socket = null;
-
-    this.uploader = null;
+    this.lastLoadedAt = null;
   }
 
   initializeUploader(crowi) {
@@ -54,20 +47,6 @@ class FileUploadServiceFactory extends S2sMessagingServiceDelegator {
 
 
 module.exports = (crowi) => {
-  const { configManager } = crowi;
-
-  const uri = configManager.getConfig('crowi', 'app:nchanUri');
-
-  // when nachan server URI is not set
-  if (uri == null) {
-    logger.warn('NCHAN_URI is not specified.');
-    return;
-  }
-
-  const publishPath = configManager.getConfig('crowi', 's2sMessagingPubsub:nchan:publishPath');
-  const subscribePath = configManager.getConfig('crowi', 's2sMessagingPubsub:nchan:subscribePath');
-  const channelId = configManager.getConfig('crowi', 's2sMessagingPubsub:nchan:channelId');
-
-  const factory = new FileUploadServiceFactory(uri, publishPath, subscribePath, channelId);
+  const factory = new FileUploadServiceFactory(crowi);
   return factory.getUploader(crowi);
 };
