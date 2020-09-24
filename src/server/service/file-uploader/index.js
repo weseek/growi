@@ -1,4 +1,6 @@
 const logger = require('@alias/logger')('growi:service:FileUploaderServise');
+
+const S2sMessage = require('../../models/vo/s2s-message');
 const S2sMessageHandlable = require('../s2s-messaging/handlable');
 
 const envToModuleMappings = {
@@ -49,6 +51,21 @@ class FileUploadServiceFactory extends S2sMessageHandlable {
     this.initCustomTitle();
   }
 
+  async publishUpdatedMessage() {
+    const { s2sMessagingService } = this;
+
+    if (s2sMessagingService != null) {
+      const s2sMessage = new S2sMessage('customizeServiceUpdated', { updatedAt: new Date() });
+
+      try {
+        await s2sMessagingService.publish(s2sMessage);
+      }
+      catch (e) {
+        logger.error('Failed to publish update message with S2sMessagingService: ', e.message);
+      }
+    }
+  }
+
   initializeUploader(crowi) {
     const method = envToModuleMappings[process.env.FILE_UPLOAD] || 'aws';
 
@@ -71,6 +88,5 @@ class FileUploadServiceFactory extends S2sMessageHandlable {
 
 
 module.exports = (crowi) => {
-  const factory = new FileUploadServiceFactory(crowi);
-  return factory.getUploader(crowi);
+  return new FileUploadServiceFactory(crowi);
 };
