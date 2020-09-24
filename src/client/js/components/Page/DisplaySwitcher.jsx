@@ -6,12 +6,13 @@ import NavigationContainer from '../../services/NavigationContainer';
 
 const DisplaySwitcher = (props) => {
   const { navigationContainer } = props;
+  const { editorMode } = navigationContainer.state;
 
   return (
     <>
-      {navigationContainer.state.editorMode === 'view' && 'view'}
-      {navigationContainer.state.editorMode === 'edit' && 'edit'}
-      {navigationContainer.state.editorMode === 'hackmd' && 'hackmd'}
+      {editorMode === 'view' && 'view'}
+      {editorMode === 'edit' && 'edit'}
+      {editorMode === 'hackmd' && 'hackmd'}
     </>
   );
 
