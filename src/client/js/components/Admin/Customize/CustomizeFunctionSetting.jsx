@@ -131,7 +131,7 @@ class CustomizeFunctionSetting extends React.Component {
             <div className="form-group row">
               <div className="offset-md-3 col-md-6 text-left">
                 <div className="my-0 w-100">
-                  <label>{t('admin:customize_setting.function_options.list_num_desc_in_page_contents_modal')}</label>
+                  <label>{t('admin:customize_setting.function_options.list_num_s')}</label>
                 </div>
                 <Dropdown isOpen={this.state.isDropdownOpenS} toggle={this.onToggleDropdownS}>
                   <DropdownToggle className="text-right col-6" caret>
@@ -150,7 +150,7 @@ class CustomizeFunctionSetting extends React.Component {
                   </DropdownMenu>
                 </Dropdown>
                 <p className="form-text text-muted">
-                  {t('admin:customize_setting.function_options.all_list_num_desc_in_page_contents_modal')}
+                  {t('admin:customize_setting.function_options.list_num_desc_s')}
                 </p>
               </div>
             </div>
@@ -159,7 +159,7 @@ class CustomizeFunctionSetting extends React.Component {
             <div className="form-group row">
               <div className="offset-md-3 col-md-6 text-left">
                 <div className="my-0 w-100">
-                  <label>{t('admin:customize_setting.function_options.list_num_desc_in_user_page')}</label>
+                  <label>{t('admin:customize_setting.function_options.list_num_m')}</label>
                 </div>
                 <Dropdown isOpen={this.state.isDropdownOpen} toggle={this.onToggleDropdown}>
                   <DropdownToggle className="text-right col-6" caret>
@@ -179,7 +179,7 @@ class CustomizeFunctionSetting extends React.Component {
                   </DropdownMenu>
                 </Dropdown>
                 <p className="form-text text-muted">
-                  {t('admin:customize_setting.function_options.all_list_num_desc_in_user_page')}
+                  {t('admin:customize_setting.function_options.list_num_desc_m')}
                 </p>
               </div>
             </div>
@@ -188,7 +188,7 @@ class CustomizeFunctionSetting extends React.Component {
             <div className="form-group row">
               <div className="offset-md-3 col-md-6 text-left">
                 <div className="my-0 w-100">
-                  <label>{t('admin:customize_setting.function_options.list_num_desc_in_draft_and_search_pages')}</label>
+                  <label>{t('admin:customize_setting.function_options.list_num_l')}</label>
                 </div>
                 <Dropdown isOpen={this.state.isDropdownOpenL} toggle={this.onToggleDropdownL}>
                   <DropdownToggle className="text-right col-6" caret>
@@ -207,7 +207,7 @@ class CustomizeFunctionSetting extends React.Component {
                   </DropdownMenu>
                 </Dropdown>
                 <p className="form-text text-muted">
-                  {t('admin:customize_setting.function_options.all_list_num_desc_in_draft_and_search_pages')}
+                  {t('admin:customize_setting.function_options.list_num_desc_l')}
                 </p>
               </div>
             </div>
@@ -216,7 +216,7 @@ class CustomizeFunctionSetting extends React.Component {
             <div className="form-group row">
               <div className="offset-md-3 col-md-6 text-left">
                 <div className="my-0 w-100">
-                  <label>{t('admin:customize_setting.function_options.list_num_desc_in_notfound_and_trash_pages')}</label>
+                  <label>{t('admin:customize_setting.function_options.list_num_xl')}</label>
                 </div>
                 <Dropdown isOpen={this.state.isDropdownOpenXL} toggle={this.onToggleDropdownXL}>
                   <DropdownToggle className="text-right col-6" caret>
@@ -235,7 +235,7 @@ class CustomizeFunctionSetting extends React.Component {
                   </DropdownMenu>
                 </Dropdown>
                 <p className="form-text text-muted">
-                  {t('admin:customize_setting.function_options.all_list_num_desc_in_notfound_and_trash_pages')}
+                  {t('admin:customize_setting.function_options.list_num_desc_xl')}
                 </p>
               </div>
             </div>
