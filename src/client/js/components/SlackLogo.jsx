@@ -6,7 +6,6 @@ const SlackLogo = () => (
     viewBox="0 0 448 448"
     height="20"
     width="20"
-    fill="purple"
     className="grw-slack-notification-sm"
   >
     <path
