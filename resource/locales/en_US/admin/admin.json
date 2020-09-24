@@ -115,8 +115,19 @@
       "tab_switch_desc2": "By invalidating, you can make page transition as the only object for forward/back command of the browser.",
       "attach_title_header": "Add h1 section when create new page automatically",
       "attach_title_header_desc": "Add page path to the first line as h1 section when create new page",
+
       "list_num_desc_in_user_page": "Number of user page displayed",
       "all_list_num_desc_in_user_page": "Number of Bookmarks, recently created pages and drafts displayed on user page",
+
+      "list_num_desc_in_notfound_and_trash_pages": "Number of 'Not found' and 'Trash' pages displayed",
+      "all_list_num_desc_in_notfound_and_trash_pages": "Number of 'Not found' and 'Trash' pages displayed on article page",
+
+      "list_num_desc_in_page_contents_modal": "Number of page contents modal displayedページコンテンツモーダルに表示されるリスト数",
+      "all_list_num_desc_in_page_contents_modal": "Number of 'Pagelist', 'Timeline', 'Page History' and 'Share Link' pages displayed on page contents modal",
+
+      "list_num_desc_in_draft_and_search_pages": "Number of 'Search' and 'Draft' pages displayed",
+      "all_list_num_desc_in_draft_and_search_pages": "Number of 'Search' and 'Draft' pages displayed",
+
       "stale_notification": "Display notification on stale pages",
       "stale_notification_desc": "Displays the notification to pages more than 1 year since the last update.",
       "show_all_reply_comments": "Show all reply comments",
