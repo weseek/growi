@@ -10,11 +10,11 @@ module.exports = function(crowi) {
 
   function getAwsConfig() {
     return {
-      accessKeyId: configManager.getConfig('crowi', 'aws:accessKeyId'),
-      secretAccessKey: configManager.getConfig('crowi', 'aws:secretAccessKey'),
-      region: configManager.getConfig('crowi', 'aws:region'),
-      bucket: configManager.getConfig('crowi', 'aws:bucket'),
-      customEndpoint: configManager.getConfig('crowi', 'aws:customEndpoint'),
+      accessKeyId: configManager.getConfig('crowi', 'aws:s3AccessKeyId'),
+      secretAccessKey: configManager.getConfig('crowi', 'aws:s3SecretAccessKey'),
+      region: configManager.getConfig('crowi', 'aws:s3Region'),
+      bucket: configManager.getConfig('crowi', 'aws:s3Bucket'),
+      customEndpoint: configManager.getConfig('crowi', 'aws:s3CustomEndpoint'),
     };
   }
 
@@ -67,13 +67,13 @@ module.exports = function(crowi) {
   }
 
   lib.isValidUploadSettings = function() {
-    return this.configManager.getConfig('crowi', 'aws:accessKeyId') != null
-      && this.configManager.getConfig('crowi', 'aws:secretAccessKey') != null
+    return this.configManager.getConfig('crowi', 'aws:s3AccessKeyId') != null
+      && this.configManager.getConfig('crowi', 'aws:s3SecretAccessKey') != null
       && (
-        this.configManager.getConfig('crowi', 'aws:region') != null
-          || this.configManager.getConfig('crowi', 'aws:customEndpoint') != null
+        this.configManager.getConfig('crowi', 'aws:s3Region') != null
+          || this.configManager.getConfig('crowi', 'aws:s3CustomEndpoint') != null
       )
-      && this.configManager.getConfig('crowi', 'aws:bucket') != null;
+      && this.configManager.getConfig('crowi', 'aws:s3Bucket') != null;
   };
 
 
