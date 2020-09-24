@@ -32,30 +32,6 @@ body {
   margin-top: 1rem;
 }
 
-.revision-toc {
-  // to get on the Attachment row
-  z-index: 1;
-  overflow: hidden;
-  font-size: 0.9em;
-
-  .revision-toc-content {
-    padding: 10px;
-
-    > ul {
-      padding-left: 0;
-      ul {
-        padding-left: 1em;
-      }
-    }
-
-    // first level of li
-    > ul > li {
-      padding: 5px;
-      margin: 4px 4px 4px 17px;
-    }
-  }
-}
-
 .grw-fab {
   position: fixed;
   right: 1.5rem;

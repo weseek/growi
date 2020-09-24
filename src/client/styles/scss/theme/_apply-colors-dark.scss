@@ -93,11 +93,6 @@ ul.pagination {
     button.page-link {
       @extend .btn-dark;
     }
-    &.active {
-      button {
-        @extend .active;
-      }
-    }
   }
 }
 
@@ -274,5 +269,16 @@ body.on-edit {
   .grw-tag-label {
     color: $color-tags;
     background-color: $bgcolor-tags;
+  }
+}
+
+/*
+ * GROWI user page
+ */
+.grw-recently-created {
+  .recently-created-title {
+    svg {
+      fill: $color-global;
+    }
   }
 }

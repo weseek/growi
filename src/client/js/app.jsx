@@ -19,11 +19,11 @@ import PageComments from './components/PageComments';
 import PageTimeline from './components/PageTimeline';
 import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
 import PageManagement from './components/Page/PageManagement';
-import PageShareManagement from './components/Page/PageShareManagement';
 import TrashPageAlert from './components/Page/TrashPageAlert';
 import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
 import RecentCreated from './components/RecentCreated/RecentCreated';
+import RecentlyCreatedIcon from './components/Icons/RecentlyCreatedIcon';
 import MyDraftList from './components/MyDraftList/MyDraftList';
 import SeenUserList from './components/User/SeenUserList';
 import LikerList from './components/User/LikerList';
@@ -91,7 +91,6 @@ if (pageContainer.state.pageId != null) {
     'page-comment-write': <CommentEditorLazyRenderer />,
     'page-attachment': <PageAttachment />,
     'page-management': <PageManagement />,
-    'page-share-management': <PageShareManagement />,
 
     'revision-toc': <TableOfContents />,
     'seen-user-list': <SeenUserList />,
@@ -99,6 +98,8 @@ if (pageContainer.state.pageId != null) {
     'user-info': <UserInfo />,
 
     'user-created-list': <RecentCreated userId={pageContainer.state.creator._id} />,
+    'user-created-list': <RecentCreated />,
+    'recent-created-icon': <RecentlyCreatedIcon />,
     'user-draft-list': <MyDraftList />,
   });
 }

@@ -7,12 +7,14 @@ const express = require('express');
 
 const router = express.Router();
 
+
 /**
  * @swagger
  *  tags:
  *    name: Pages
  */
 module.exports = (crowi) => {
+  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
@@ -78,6 +80,23 @@ module.exports = (crowi) => {
     catch (err) {
       res.code = 'unknown';
       logger.error('Failed to delete trash pages', err);
+      return res.apiv3Err(err, 500);
+    }
+  });
+
+  router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
+    const { path } = req.query;
+    const limit = +req.query.limit || 30;
+    const offset = +req.query.offset || 0;
+    const queryOptions = { offset, limit };
+
+    try {
+      const result = await Page.findListWithDescendants(path, req.user, queryOptions);
+
+      return res.apiv3(result);
+    }
+    catch (err) {
+      logger.error('Failed to get Descendants Pages', err);
       return res.apiv3Err(err, 500);
     }
   });

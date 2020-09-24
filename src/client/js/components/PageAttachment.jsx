@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import PageAttachmentList from './PageAttachment/PageAttachmentList';
 import DeleteAttachmentModal from './PageAttachment/DeleteAttachmentModal';
+import PaginationWrapper from './PaginationWrapper';
 import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
@@ -14,6 +15,9 @@ class PageAttachment extends React.Component {
     super(props);
 
     this.state = {
+      activePage: 1,
+      limit: 10,
+      totalAttachments: 0,
       attachments: [],
       inUse: {},
       attachmentToDelete: null,
@@ -21,31 +25,43 @@ class PageAttachment extends React.Component {
       deleteError: '',
     };
 
+    this.handlePage = this.handlePage.bind(this);
     this.onAttachmentDeleteClicked = this.onAttachmentDeleteClicked.bind(this);
     this.onAttachmentDeleteClickedConfirm = this.onAttachmentDeleteClickedConfirm.bind(this);
   }
 
-  componentDidMount() {
-    const { pageId } = this.props.pageContainer.state;
 
-    if (!pageId) {
-      return;
+  async handlePage(selectedPage) {
+    const { pageId } = this.props.pageContainer.state;
+    const { limit } = this.state;
+    const offset = (selectedPage - 1) * limit;
+    const activePage = selectedPage;
+
+    if (!pageId) { return }
+
+    const res = await this.props.appContainer.apiv3Get('/attachment/list', {
+      pageId, limit, offset,
+    });
+    const attachments = res.data.paginateResult.docs;
+    const totalAttachments = res.data.paginateResult.totalDocs;
+
+    const inUse = {};
+
+    for (const attachment of attachments) {
+      inUse[attachment._id] = this.checkIfFileInUse(attachment);
     }
 
-    this.props.appContainer.apiGet('/attachments.list', { page_id: pageId })
-      .then((res) => {
-        const attachments = res.attachments;
-        const inUse = {};
+    this.setState({
+      activePage,
+      totalAttachments,
+      attachments,
+      inUse,
+    });
+  }
 
-        for (const attachment of attachments) {
-          inUse[attachment._id] = this.checkIfFileInUse(attachment);
-        }
 
-        this.setState({
-          attachments,
-          inUse,
-        });
-      });
+  async componentDidMount() {
+    await this.handlePage(1);
   }
 
   checkIfFileInUse(attachment) {
@@ -92,6 +108,7 @@ class PageAttachment extends React.Component {
     return this.props.appContainer.currentUser != null;
   }
 
+
   render() {
     let deleteAttachmentModal = '';
     if (this.isUserLoggedIn()) {
@@ -132,6 +149,13 @@ class PageAttachment extends React.Component {
         />
 
         {deleteAttachmentModal}
+
+        <PaginationWrapper
+          activePage={this.state.activePage}
+          changePage={this.handlePage}
+          totalItemsCount={this.state.totalAttachments}
+          pagingLimit={this.state.limit}
+        />
       </div>
     );
   }

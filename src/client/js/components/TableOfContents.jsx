@@ -8,7 +8,10 @@ import PageContainer from '../services/PageContainer';
 import NavigationContainer from '../services/NavigationContainer';
 
 import { withUnstatedContainers } from './UnstatedUtils';
+import TopOfTableContents from './TopOfTableContents';
 import StickyStretchableScroller from './StickyStretchableScroller';
+
+import RecentlyCreatedIcon from './Icons/RecentlyCreatedIcon';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:TableOfContents');
@@ -20,14 +23,19 @@ const logger = loggerFactory('growi:TableOfContents');
 const TableOfContents = (props) => {
 
   const { pageContainer, navigationContainer } = props;
+  const { pageUser } = pageContainer.state;
+  const isUserPage = pageUser != null;
 
   const calcViewHeight = useCallback(() => {
     // calculate absolute top of '#revision-toc' element
     const containerElem = document.querySelector('#revision-toc');
     const containerTop = containerElem.getBoundingClientRect().top;
 
-    // window height - revisionToc top - .system-version - .grw-fab-container height
-    return window.innerHeight - containerTop - 20 - 155;
+    // window height - revisionToc top - .system-version - .grw-fab-container height - top-of-table-contents height
+    if (isUserPage) {
+      return window.innerHeight - containerTop - 20 - 155 - 26 - 40;
+    }
+    return window.innerHeight - containerTop - 20 - 155 - 26;
   }, []);
 
   const { tocHtml } = pageContainer.state;
@@ -41,7 +49,7 @@ const TableOfContents = (props) => {
 
   return (
     <>
-      {/* TODO GW-3253 add four contents */}
+      <TopOfTableContents />
       <StickyStretchableScroller
         contentsElemSelector=".revision-toc .markdownIt-TOC"
         stickyElemSelector="#revision-toc"
@@ -49,13 +57,26 @@ const TableOfContents = (props) => {
       >
         <div
           id="revision-toc-content"
-          className="revision-toc-content"
-        // eslint-disable-next-line react/no-danger
+          className="revision-toc-content top-of-table-contents"
+         // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{
           __html: tocHtml,
         }}
         />
       </StickyStretchableScroller>
+
+      { isUserPage && (
+      <div className="mt-3 d-flex justify-content-around">
+        <a className="btn btn-outline-secondary btn-sm" href="#">
+          <i className="mr-2 icon-star"></i>
+          <span>Bookmarks</span>
+        </a>
+        <a className="btn btn-outline-secondary btn-sm" href="#">
+          <i className="grw-icon-container-recently-created mr-2"><RecentlyCreatedIcon /></i>
+          <span>Recently Created</span>
+        </a>
+      </div>
+      )}
     </>
   );
 
