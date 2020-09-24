@@ -11,7 +11,7 @@ class PageHistory extends React.Component {
 
   constructor(props) {
     super(props);
-
+    // TODO add paging size (limit) for modal
     this.state = {
       isLoaded: false,
       isLoading: false,

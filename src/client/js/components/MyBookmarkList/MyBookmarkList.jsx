@@ -41,7 +41,7 @@ class MyBookmarkList extends React.Component {
     const { appContainer } = this.props;
 
     const userId = appContainer.currentUserId;
-    const limit = appContainer.getConfig().recentCreatedLimit;
+    const limit = appContainer.getConfig().pageListLimitForUserPage;
     const page = selectPageNumber;
     const params = { page, limit };
 
