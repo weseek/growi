@@ -130,8 +130,19 @@
 			"tab_switch_desc2": "通过失效，您可以将页面转换作为浏览器的前向/后向命令的唯一对象。",
 			"attach_title_header": "自动创建新页面时添加h1节",
       "attach_title_header_desc": "创建新页面时，将页面路径作为h1节添加到第一行",
+
 	  	"list_num_desc_in_user_page": "Number of user page displayed",
       "all_list_num_desc_in_user_page": "Number of Bookmarks, recently created pages and drafts displayed on user page",
+
+      "list_num_desc_in_notfound_and_trash_pages": "Number of 'Not found' and 'Trash' pages displayed",
+      "all_list_num_desc_in_notfound_and_trash_pages": "Number of 'Not found' and 'Trash' pages displayed on article page",
+
+      "list_num_desc_in_page_contents_modal": "Number of page contents modal displayedページコンテンツモーダルに表示されるリスト数",
+      "all_list_num_desc_in_page_contents_modal": "Number of 'Pagelist', 'Timeline', 'Page History' and 'Share Link' pages displayed on page contents modal",
+
+      "list_num_desc_in_draft_and_search_pages": "Number of 'Search' and 'Draft' pages displayed",
+      "all_list_num_desc_in_draft_and_search_pages": "Number of 'Search' and 'Draft' pages displayed",
+
 			"stale_notification": "在过期页上显示通知",
 			"stale_notification_desc": "显示自上次更新以来超过1年的页面通知。",
 			"show_all_reply_comments": "显示所有回复评论",
