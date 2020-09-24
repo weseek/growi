@@ -22,14 +22,32 @@ class CustomizeFunctionSetting extends React.Component {
 
     this.state = {
       isDropdownOpen: false,
+      isDropdownOpen2: false,
+      isDropdownOpen3: false,
+      isDropdownOpen4: false,
     };
 
     this.onToggleDropdown = this.onToggleDropdown.bind(this);
+    this.onToggleDropdown2 = this.onToggleDropdown2.bind(this);
+    this.onToggleDropdown3 = this.onToggleDropdown3.bind(this);
+    this.onToggleDropdown4 = this.onToggleDropdown4.bind(this);
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
 
   onToggleDropdown() {
     this.setState({ isDropdownOpen: !this.state.isDropdownOpen });
+  }
+
+  onToggleDropdown2() {
+    this.setState({ isDropdownOpen2: !this.state.isDropdownOpen2 });
+  }
+
+  onToggleDropdown3() {
+    this.setState({ isDropdownOpen3: !this.state.isDropdownOpen3 });
+  }
+
+  onToggleDropdown4() {
+    this.setState({ isDropdownOpen4: !this.state.isDropdownOpen4 });
   }
 
   async onClickSubmit() {
@@ -141,7 +159,7 @@ class CustomizeFunctionSetting extends React.Component {
                 <div className="my-0 w-100">
                   <label>{t('admin:customize_setting.function_options.list_num_desc_in_notfound_and_trash_pages')}</label>
                 </div>
-                <Dropdown isOpen={this.state.isDropdownOpen} toggle={this.onToggleDropdown}>
+                <Dropdown isOpen={this.state.isDropdownOpen2} toggle={this.onToggleDropdown2}>
                   <DropdownToggle className="text-right col-6" caret>
                     <span className="float-left">{adminCustomizeContainer.state.pageListLimitForUserPage}</span>
                   </DropdownToggle>
@@ -169,7 +187,7 @@ class CustomizeFunctionSetting extends React.Component {
                 <div className="my-0 w-100">
                   <label>{t('admin:customize_setting.function_options.list_num_desc_in_draft_and_search_pages')}</label>
                 </div>
-                <Dropdown isOpen={this.state.isDropdownOpen} toggle={this.onToggleDropdown}>
+                <Dropdown isOpen={this.state.isDropdownOpen3} toggle={this.onToggleDropdown3}>
                   <DropdownToggle className="text-right col-6" caret>
                     <span className="float-left">{adminCustomizeContainer.state.pageListLimitForUserPage}</span>
                   </DropdownToggle>
@@ -197,7 +215,7 @@ class CustomizeFunctionSetting extends React.Component {
                 <div className="my-0 w-100">
                   <label>{t('admin:customize_setting.function_options.list_num_desc_in_page_contents_modal')}</label>
                 </div>
-                <Dropdown isOpen={this.state.isDropdownOpen} toggle={this.onToggleDropdown}>
+                <Dropdown isOpen={this.state.isDropdownOpen4} toggle={this.onToggleDropdown4}>
                   <DropdownToggle className="text-right col-6" caret>
                     <span className="float-left">{adminCustomizeContainer.state.pageListLimitForUserPage}</span>
                   </DropdownToggle>
