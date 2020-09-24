@@ -259,10 +259,15 @@ ul.pagination {
 }
 
 .grw-slack-notification-sm {
-  fill: #dd80de;
+  fill: #4b144c;
 }
 
 .grw-slack-btn-sm {
+  background-color: $secondary;
+}
+
+.grw-slack-btn-sm:focus {
+  background-color: $secondary;
 }
 
 .grw-slack-btn-triangle {
