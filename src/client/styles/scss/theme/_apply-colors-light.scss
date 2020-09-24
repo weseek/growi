@@ -189,7 +189,7 @@ $table-hover-bg: $bgcolor-table-hover;
 /*
  * card
  */
-.card.bg-disabled {
+.card.card-disabled {
   background-color: darken($bgcolor-card, 5%);
   border-color: $gray-200;
 }

@@ -85,7 +85,7 @@ textarea.form-control {
 /*
  * Card
  */
-.card:not([class*='bg-']):not(.well) {
+.card:not([class*='bg-']):not(.well):not(.card-disabled) {
   @extend .bg-dark;
 }
 
@@ -94,7 +94,7 @@ textarea.form-control {
   border-color: $secondary;
 }
 
-.card.bg-disabled {
+.card.card-disabled {
   background-color: lighten($dark, 10%);
   border-color: $secondary;
 }
