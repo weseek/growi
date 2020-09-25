@@ -1,8 +1,10 @@
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
+import Head from 'next/head';
 
 import { CrowiRequest } from '~/interfaces/crowi-request';
+import { getScriptTagByName } from '~/service/cdn-resources-loader';
 import loggerFactory from '~/utils/logger';
 
 import Layout from '../components/Layout';
@@ -50,14 +52,21 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
 
   return (
-    <Layout title="GROWI">
-      <h1>{header}</h1>
-      { page && (
-        <p>
-          {page.revision.body}
-        </p>
-      ) }
-    </Layout>
+    <>
+      <Head>
+        {getScriptTagByName('highlight-addons')}
+        {getScriptTagByName('drawio-viewer')}
+        {getScriptTagByName('mathjax')}
+      </Head>
+      <Layout title="GROWI">
+        <h1>{header}</h1>
+        { page && (
+          <p>
+            {page.revision.body}
+          </p>
+        ) }
+      </Layout>
+    </>
   );
 };
 
