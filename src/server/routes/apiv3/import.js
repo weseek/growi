@@ -311,12 +311,7 @@ module.exports = (crowi) => {
       const data = await growiBridgeService.parseZipFile(zipFile);
 
       // validate with meta.json
-      // importService.validate(data.meta);  元々これのみ
-      const versionErr = importService.validateUploadedVersion(data.meta);
-      if (versionErr !== null) {
-        return res.apiv3({ data, versionErr }); // versionErrはobjではないので恐らくこの書き方は間違い
-      }
-      return res.apiv3(data);
+      importService.validate(data.meta);
     }
     catch (err) {
       // TODO: use ApiV3Error
