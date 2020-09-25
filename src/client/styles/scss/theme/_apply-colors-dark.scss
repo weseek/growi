@@ -258,19 +258,23 @@ ul.pagination {
   }
 }
 
-.grw-slack-notification-sm {
+.grw-slack-logo svg {
   fill: #dd80de;
 }
 
-.grw-slack-btn-sm {
+.grw-btn-slack {
   background-color: black;
 }
 
-.grw-slack-btn-sm:focus {
+.grw-btn-slack:focus {
   background-color: black;
 }
 
-.grw-slack-btn-triangle {
+.grw-btn-slack:hover {
+  background-color: black;
+}
+
+.grw-btn-slack-triangle {
   color: $secondary;
 }
 
