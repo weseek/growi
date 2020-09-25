@@ -8,7 +8,6 @@ import mongoose from 'mongoose';
 import pkg from '^/package.json';
 
 import InterceptorManager from '~/service/interceptor-manager';
-import CdnResourcesService from '~/service/cdn-resources-service';
 import Xss from '~/service/xss';
 import loggerFactory from '~/utils/logger';
 import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
@@ -62,7 +61,6 @@ function Crowi() {
   this.socketIoService = null;
   this.pageService = null;
   this.syncPageStatusService = null;
-  this.cdnResourcesService = new CdnResourcesService();
   this.interceptorManager = new InterceptorManager();
   this.xss = new Xss();
 

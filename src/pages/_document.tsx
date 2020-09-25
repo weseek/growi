@@ -6,6 +6,7 @@ import Document, {
 import fs from 'fs';
 import path from 'path';
 
+import { getScriptTagsByGroup, getStyleTagsByGroup } from '~/service/cdn-resources-loader';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
 interface GrowiDocumentProps {
@@ -37,6 +38,8 @@ class GrowiDocument extends Document<GrowiDocumentProps> {
       <Html>
         <Head>
           <script src={bootJsPath}></script>
+          {getScriptTagsByGroup('basis')}
+          {getStyleTagsByGroup('basis')}
         </Head>
         <body>
           <Main />
