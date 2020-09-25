@@ -28,7 +28,6 @@ import LikerList from './components/User/LikerList';
 import TableOfContents from './components/TableOfContents';
 import Fab from './components/Fab';
 
-import MyDrafts from './components/Me/Drafts';
 import PersonalSettings from './components/Me/PersonalSettings';
 import NavigationContainer from './services/NavigationContainer';
 import PageContainer from './services/PageContainer';
@@ -82,7 +81,7 @@ Object.assign(componentMappings, {
 
   'personal-setting': <PersonalSettings crowi={personalContainer} />,
 
-  'my-drafts': <MyDrafts />,
+  'my-drafts': <MyDraftList />,
 
   'grw-fab-container': <Fab />,
 });
