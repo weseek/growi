@@ -35,10 +35,10 @@ class LinkEditModal extends React.PureComponent {
       labelInputValue: '',
       linkerType: Linker.types.markdownLink,
       markdown: '',
+      previewError: '',
       permalink: '',
       linkText: '',
       isPreviewOpen: false,
-      previewError: '',
     };
 
     this.isApplyPukiwikiLikeLinkerPlugin = window.growiRenderer.preProcessors.some(process => process.constructor.name === 'PukiwikiLikeLinker');
@@ -150,8 +150,8 @@ class LinkEditModal extends React.PureComponent {
   async setMarkdown() {
     const path = this.state.linkInputValue;
     let markdown = '';
-    let permalink = '';
     let previewError = '';
+    let permalink = '';
 
     if (path.startsWith('/')) {
       const pathWithoutFragment = new URL(path, 'http://dummy').pathname;
@@ -171,7 +171,7 @@ class LinkEditModal extends React.PureComponent {
     else {
       previewError = `'${path}' is not a GROWI page.`;
     }
-    this.setState({ permalink, markdown, previewError });
+    this.setState({ markdown, previewError, permalink });
   }
 
   renderLinkPreview() {
