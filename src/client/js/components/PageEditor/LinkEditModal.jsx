@@ -269,6 +269,7 @@ class LinkEditModal extends React.PureComponent {
   }
 
   async toggleIsPreviewOpen() {
+    // open popover
     if (this.state.isPreviewOpen === false) {
       this.setMarkdown();
     }
