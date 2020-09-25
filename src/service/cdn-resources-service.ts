@@ -5,20 +5,14 @@ import * as urljoin from 'url-join';
 
 import { envUtils } from 'growi-commons';
 
+import { cdnLocalScriptWebRoot, cdnLocalStyleWebRoot } from '^/config/cdn';
 import * as cdnManifests from '^/resource/cdn-manifests';
 
 import loggerFactory from '~/utils/logger';
-import { projectRoot } from '~/utils/project-dir-utils';
-import { CdnManifest, CdnManifestArgs, CdnResource } from '~/interfaces/cdn';
-import CdnResourcesDownloader from './cdn-resources-downloader';
+import { CdnManifest, CdnManifestArgs } from '~/interfaces/cdn';
 
 const logger = loggerFactory('growi:service:CdnResourcesService');
 
-
-const cdnLocalScriptRoot = path.join(projectRoot, 'public/js/cdn');
-const cdnLocalScriptWebRoot = '/js/cdn';
-const cdnLocalStyleRoot = path.join(projectRoot, 'public/styles/cdn');
-const cdnLocalStyleWebRoot = '/styles/cdn';
 
 export default class CdnResourcesService {
 
@@ -46,33 +40,6 @@ export default class CdnResourcesService {
       .filter((manifest) => { return manifest.name === name });
 
     return (manifests.length > 0) ? manifests[0] : null;
-  }
-
-  /**
-   * download all resources from CDN and write to FS
-   *
-   * !! This method should be invoked only by /bin/download-cdn-resources when build client !!
-   *
-   * @param cdnResourceDownloader
-   */
-  async downloadAndWriteAll(cdnResourceDownloader: CdnResourcesDownloader): Promise<any> {
-    const cdnScriptResources = cdnManifests.js.map((manifest: CdnManifest) => {
-      return { manifest, outDir: cdnLocalScriptRoot };
-    });
-    const cdnStyleResources = cdnManifests.style.map((manifest) => {
-      return { manifest, outDir: cdnLocalStyleRoot };
-    });
-
-    const dlStylesOptions = {
-      replaceUrl: {
-        webroot: cdnLocalStyleWebRoot,
-      },
-    };
-
-    return Promise.all([
-      cdnResourceDownloader.downloadScripts(cdnScriptResources),
-      cdnResourceDownloader.downloadStyles(cdnStyleResources, dlStylesOptions),
-    ]);
   }
 
   /**

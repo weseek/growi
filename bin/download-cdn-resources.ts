@@ -6,7 +6,6 @@
 import { envUtils } from 'growi-commons';
 
 import CdnResourcesDownloader from '~/service/cdn-resources-downloader';
-import CdnResourcesService from '~/service/cdn-resources-service';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:bin:download-cdn-resources');
@@ -23,9 +22,8 @@ logger.info('This is NO_CDN mode. Start to download resources.');
 
 
 const downloader = new CdnResourcesDownloader();
-const service = new CdnResourcesService();
 
-service.downloadAndWriteAll(downloader)
+downloader.downloadAndWriteAll()
   .then(() => {
     logger.info('Download is completed successfully');
   })

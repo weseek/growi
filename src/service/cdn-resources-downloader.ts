@@ -4,7 +4,10 @@ import urljoin from 'url-join';
 import { Transform } from 'stream';
 import replaceStream from 'replacestream';
 
-import { CdnResource } from '~/interfaces/cdn';
+import { cdnLocalScriptRoot, cdnLocalStyleRoot, cdnLocalStyleWebRoot } from '^/config/cdn';
+import * as cdnManifests from '^/resource/cdn-manifests';
+
+import { CdnResource, CdnManifest } from '~/interfaces/cdn';
 import loggerFactory from '~/utils/logger';
 import { downloadTo } from '~/utils/download';
 
@@ -12,12 +15,32 @@ const logger = loggerFactory('growi:service:CdnResourcesDownloader');
 
 export default class CdnResourcesDownloader {
 
+  async downloadAndWriteAll(): Promise<any> {
+    const cdnScriptResources: CdnResource[] = cdnManifests.js.map((manifest: CdnManifest) => {
+      return { manifest, outDir: cdnLocalScriptRoot };
+    });
+    const cdnStyleResources: CdnResource[] = cdnManifests.style.map((manifest) => {
+      return { manifest, outDir: cdnLocalStyleRoot };
+    });
+
+    const dlStylesOptions = {
+      replaceUrl: {
+        webroot: cdnLocalStyleWebRoot,
+      },
+    };
+
+    return Promise.all([
+      this.downloadScripts(cdnScriptResources),
+      this.downloadStyles(cdnStyleResources, dlStylesOptions),
+    ]);
+  }
+
   /**
    * Download script files from CDN
    * @param cdnResources JavaScript resource data
    * @param options
    */
-  async downloadScripts(cdnResources: CdnResource[], options?: any): Promise<any> {
+  private async downloadScripts(cdnResources: CdnResource[], options?: any): Promise<any> {
     logger.debug('Downloading scripts', cdnResources);
 
     const opts = Object.assign({}, options);
@@ -44,7 +67,7 @@ export default class CdnResourcesDownloader {
    * @param cdnResources CSS resource data
    * @param options
    */
-  async downloadStyles(cdnResources: CdnResource[], options?: any): Promise<any> {
+  private async downloadStyles(cdnResources: CdnResource[], options?: any): Promise<any> {
     logger.debug('Downloading styles', cdnResources);
 
     const opts = Object.assign({}, options);
@@ -104,7 +127,7 @@ export default class CdnResourcesDownloader {
    * @param assetsResourcesStore An array to store CdnResource that is detected by 'url()' in CSS
    * @param webroot
    */
-  generateReplaceUrlInCssStream(cdnResource: CdnResource, assetsResourcesStore: CdnResource[], webroot: string): Transform {
+  private generateReplaceUrlInCssStream(cdnResource: CdnResource, assetsResourcesStore: CdnResource[], webroot: string): Transform {
     return replaceStream(
       /url\((?!['"]?data:)["']?(.+?)["']?\)/g, // https://regex101.com/r/Sds38A/3
       (match, url) => {
