@@ -105,16 +105,16 @@ export function renderStyleTagsByGroup(group: string): JSX.Element[] {
     });
 }
 
-// getHighlightJsStyleTag(styleName) {
-//   let manifest = this.getStyleManifestByName('highlight-theme-github');
+export function renderHighlightJsStyleTag(styleName: string): JSX.Element {
+  let manifest: CdnManifest = getStyleManifestByName('highlight-theme-github') as CdnManifest;
 
-//   // replace style
-//   if (!this.noCdn) {
-//     const url = new URL(`${styleName}.css`, manifest.url); // resolve `${styleName}.css` from manifest.url
+  // replace style
+  if (!noCdn) {
+    const url = new URL(`${styleName}.css`, manifest?.url); // resolve `${styleName}.css` from manifest.url
 
-//     // clone manifest
-//     manifest = Object.assign(manifest, { url: url.toString() });
-//   }
+    // clone manifest
+    manifest = Object.assign(manifest, { url: url.toString() });
+  }
 
-//   return this.generateStyleTag(manifest);
-// }
+  return generateStyleTag(manifest);
+}

@@ -4,7 +4,7 @@ import {
 import Head from 'next/head';
 
 import { CrowiRequest } from '~/interfaces/crowi-request';
-import { renderScriptTagByName } from '~/service/cdn-resources-loader';
+import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
 import loggerFactory from '~/utils/logger';
 
 import Layout from '../components/Layout';
@@ -28,6 +28,7 @@ type Props = {
   isForbidden: boolean,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
+  highlightJsStyle: string,
 };
 
 const GrowiPage: NextPage<Props> = (props: Props) => {
@@ -54,9 +55,10 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   return (
     <>
       <Head>
-        {renderScriptTagByName('highlight-addons')}
         {renderScriptTagByName('drawio-viewer')}
         {renderScriptTagByName('mathjax')}
+        {renderScriptTagByName('highlight-addons')}
+        {renderHighlightJsStyleTag(props.highlightJsStyle)}
       </Head>
       <Layout title="GROWI">
         <h1>{header}</h1>
@@ -74,7 +76,9 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const PageModel = crowi.model('Page');
-  const { appService, pageService, searchService } = crowi;
+  const {
+    appService, pageService, searchService, configManager,
+  } = crowi;
 
   const { path, user } = req;
 
@@ -114,6 +118,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   props.confidential = appService.getAppConfidential();
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
+  props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
 
   return {
     props: {
