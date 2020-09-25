@@ -9,11 +9,9 @@ import {
   PopoverBody,
 } from 'reactstrap';
 
-import { debounce } from 'throttle-debounce';
-
 import path from 'path';
 import validator from 'validator';
-import Preview from './Preview';
+import PreviewWithSuspense from './PreviewWithSuspense';
 import PagePreviewIcon from '../Icons/PagePreviewIcon';
 
 import AppContainer from '../../services/AppContainer';
@@ -56,18 +54,9 @@ class LinkEditModal extends React.PureComponent {
     this.toggleIsUsePamanentLink = this.toggleIsUsePamanentLink.bind(this);
     this.save = this.save.bind(this);
     this.generateLink = this.generateLink.bind(this);
-    this.renderPreview = this.renderPreview.bind(this);
     this.getRootPath = this.getRootPath.bind(this);
     this.toggleIsPreviewOpen = this.toggleIsPreviewOpen.bind(this);
-    this.generateAndSetPreviewDebounced = debounce(200, this.generateAndSetPreview.bind(this));
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const { linkInputValue: prevLinkInputValue } = prevState;
-    const { linkInputValue } = this.state;
-    if (linkInputValue !== prevLinkInputValue) {
-      this.generateAndSetPreviewDebounced(linkInputValue);
-    }
+    this.setMarkdown = this.setMarkdown.bind(this);
   }
 
   // defaultMarkdownLink is an instance of Linker
@@ -158,21 +147,8 @@ class LinkEditModal extends React.PureComponent {
     this.setState({ isUsePermanentLink: !this.state.isUsePermanentLink, isUseRelativePath: false });
   }
 
-  renderPreview() {
-    if (this.state.markdown !== '') {
-      return (
-        <div className="linkedit-preview">
-          <Preview markdown={this.state.markdown} />
-        </div>
-      );
-    }
-    if (this.state.previewError !== '') {
-      return this.state.previewError;
-    }
-    return 'Page preview here.';
-  }
-
-  async generateAndSetPreview(path) {
+  async setMarkdown() {
+    const path = this.state.linkInputValue;
     let markdown = '';
     let previewError = '';
     let permalink = '';
@@ -191,6 +167,9 @@ class LinkEditModal extends React.PureComponent {
       catch (err) {
         previewError = err.message;
       }
+    }
+    else {
+      previewError = `'${path}' is not a GROWI page.`;
     }
     this.setState({ markdown, previewError, permalink });
   }
@@ -289,7 +268,11 @@ class LinkEditModal extends React.PureComponent {
     return type === Linker.types.markdownLink ? path.dirname(pagePath) : pagePath;
   }
 
-  toggleIsPreviewOpen() {
+  async toggleIsPreviewOpen() {
+    // open popover
+    if (this.state.isPreviewOpen === false) {
+      this.setMarkdown();
+    }
     this.setState({ isPreviewOpen: !this.state.isPreviewOpen });
   }
 
@@ -316,7 +299,7 @@ class LinkEditModal extends React.PureComponent {
                 </button>
                 <Popover trigger="focus" placement="right" isOpen={this.state.isPreviewOpen} target="preview-btn" toggle={this.toggleIsPreviewOpen}>
                   <PopoverBody>
-                    {this.renderPreview()}
+                    <PreviewWithSuspense setMarkdown={this.setMarkdown} markdown={this.state.markdown} error={this.state.previewError} />
                   </PopoverBody>
                 </Popover>
               </div>
