@@ -197,14 +197,11 @@ $table-hover-bg: $bgcolor-table-hover;
 
 .grw-btn-slack {
   background-color: white;
-}
 
-.grw-btn-slack:hover {
-  background-color: white;
-}
-
-.grw-btn-slack:focus {
-  background-color: white;
+  &:hover,
+  &:focus {
+    background-color: white;
+  }
 }
 
 .grw-btn-slack-triangle {

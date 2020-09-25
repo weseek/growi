@@ -264,14 +264,10 @@ ul.pagination {
 
 .grw-btn-slack {
   background-color: black;
-}
-
-.grw-btn-slack:focus {
-  background-color: black;
-}
-
-.grw-btn-slack:hover {
-  background-color: black;
+  &:focus,
+  &:hover {
+    background-color: black;
+  }
 }
 
 .grw-btn-slack-triangle {
