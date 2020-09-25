@@ -1,0 +1,13 @@
+.grw-presentation-modal {
+  @include expand-modal-fullscreen(false, false);
+
+  .modal-body {
+    background: black;
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+  }
+}
