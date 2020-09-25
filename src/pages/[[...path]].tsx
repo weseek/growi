@@ -4,7 +4,7 @@ import {
 import Head from 'next/head';
 
 import { CrowiRequest } from '~/interfaces/crowi-request';
-import { getScriptTagByName } from '~/service/cdn-resources-loader';
+import { renderScriptTagByName } from '~/service/cdn-resources-loader';
 import loggerFactory from '~/utils/logger';
 
 import Layout from '../components/Layout';
@@ -54,9 +54,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   return (
     <>
       <Head>
-        {getScriptTagByName('highlight-addons')}
-        {getScriptTagByName('drawio-viewer')}
-        {getScriptTagByName('mathjax')}
+        {renderScriptTagByName('highlight-addons')}
+        {renderScriptTagByName('drawio-viewer')}
+        {renderScriptTagByName('mathjax')}
       </Head>
       <Layout title="GROWI">
         <h1>{header}</h1>

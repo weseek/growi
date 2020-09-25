@@ -6,11 +6,7 @@ import { LinkHTMLAttributes, ScriptHTMLAttributes } from 'react';
 import { cdnLocalScriptWebRoot, cdnLocalStyleWebRoot } from '^/config/cdn';
 import * as cdnManifests from '^/resource/cdn-manifests';
 
-import loggerFactory from '~/utils/logger';
 import { CdnManifest, CdnManifestArgs } from '~/interfaces/cdn';
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const logger = loggerFactory('growi:service:CdnResourcesService');
 
 
 const noCdn: boolean = envUtils.toBoolean(process.env.NO_CDN);
@@ -73,7 +69,7 @@ function generateStyleTag(manifest: CdnManifest): JSX.Element {
 }
 
 
-export function getScriptTagByName(name: string): JSX.Element | null {
+export function renderScriptTagByName(name: string): JSX.Element | null {
   const manifest = getScriptManifestByName(name);
   if (manifest == null) {
     return null;
@@ -81,7 +77,7 @@ export function getScriptTagByName(name: string): JSX.Element | null {
   return generateScriptTag(manifest);
 }
 
-export function getScriptTagsByGroup(group: string): JSX.Element[] {
+export function renderScriptTagsByGroup(group: string): JSX.Element[] {
   return cdnManifests.js
     .filter((manifest) => {
       return manifest.groups != null && manifest.groups.includes(group);
@@ -91,7 +87,7 @@ export function getScriptTagsByGroup(group: string): JSX.Element[] {
     });
 }
 
-export function getStyleTagByName(name: string): JSX.Element | null {
+export function renderStyleTagByName(name: string): JSX.Element | null {
   const manifest = getStyleManifestByName(name);
   if (manifest == null) {
     return null;
@@ -99,7 +95,7 @@ export function getStyleTagByName(name: string): JSX.Element | null {
   return generateStyleTag(manifest);
 }
 
-export function getStyleTagsByGroup(group: string): JSX.Element[] {
+export function renderStyleTagsByGroup(group: string): JSX.Element[] {
   return cdnManifests.style
     .filter((manifest) => {
       return manifest.groups != null && manifest.groups.includes(group);
