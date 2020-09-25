@@ -1,8 +1,24 @@
 # CHANGES
 
-## v4.1.6-RC
+## v4.2.0
 
-* 
+### BREAKING CHANGES
+
+* GROWI v4.2.x no longer support Kibela layout
+    * Kibela theme is newly added and the configuration will migrate to it automatically
+
+### Updates
+
+* Improvement: Basic layout of page
+* Support: Support MongoDB 4.0, 4.2 and 4.4
+
+
+## v4.1.6
+
+* Improvement: Hide Fab at admin pages
+* Fix: Presentation does not work
+* Fix: Update GrantSelector status when uploading a file to a new page
+* Fix: CopyDropdown origin refs draw.io host wrongly
 
 ## v4.1.5
 
