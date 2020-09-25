@@ -1,4 +1,4 @@
-const loggerFactory = require('@alias/logger');
+import loggerFactory from '@alias/logger';
 
 const logger = loggerFactory('growi:routes:apiv3:attachment'); // eslint-disable-line no-unused-vars
 
