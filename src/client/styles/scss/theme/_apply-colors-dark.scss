@@ -258,6 +258,22 @@ ul.pagination {
   }
 }
 
+.grw-slack-logo svg {
+  fill: #dd80de;
+}
+
+.grw-btn-slack {
+  background-color: black;
+  &:focus,
+  &:hover {
+    background-color: black;
+  }
+}
+
+.grw-btn-slack-triangle {
+  color: $secondary;
+}
+
 /*
  * GROWI HandsontableModal
  */

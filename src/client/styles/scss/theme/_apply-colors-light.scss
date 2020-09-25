@@ -191,6 +191,23 @@ $table-hover-bg: $bgcolor-table-hover;
   }
 }
 
+.grw-slack-logo svg {
+  fill: #af30b0;
+}
+
+.grw-btn-slack {
+  background-color: white;
+
+  &:hover,
+  &:focus {
+    background-color: white;
+  }
+}
+
+.grw-btn-slack-triangle {
+  color: $secondary;
+}
+
 /*
  * GROWI HandsontableModal
  */
