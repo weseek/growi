@@ -476,14 +476,6 @@ class ImportService {
     // - import: throw err if there are pending migrations
   }
 
-  // 追加
-  validateUploadedVersion(meta) {
-    if (meta.version !== this.crowi.version) {
-      const versionErr = new Error('the version of this growi and the growi that updated data are not met');
-      return versionErr;
-    }
-  }
-
   /**
    * Delete all uploaded files
    */
