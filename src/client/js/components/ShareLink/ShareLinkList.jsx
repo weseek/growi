@@ -5,10 +5,10 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
 
-import { withUnstatedContainers } from './UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
-import AppContainer from '../services/AppContainer';
-import CopyDropdown from './Page/CopyDropdown';
+import AppContainer from '../../services/AppContainer';
+import CopyDropdown from '../Page/CopyDropdown';
 
 const ShareLinkList = (props) => {
 
