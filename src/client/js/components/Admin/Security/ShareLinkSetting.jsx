@@ -66,6 +66,7 @@ class ShareLinkSetting extends React.Component {
 
   async deleteLinkById(shareLinkId) {
     const { t, appContainer, adminGeneralSecurityContainer } = this.props;
+    const { shareLinksActivePage } = adminGeneralSecurityContainer.state;
 
     try {
       const res = await appContainer.apiv3Delete(`/share-links/${shareLinkId}`);
@@ -76,53 +77,57 @@ class ShareLinkSetting extends React.Component {
       toastError(err);
     }
 
-    this.getShareLinkList(adminGeneralSecurityContainer.state.shareLinksActivePage);
+    this.getShareLinkList(shareLinksActivePage);
   }
 
 
   render() {
     const { t, adminGeneralSecurityContainer } = this.props;
+    const {
+      shareLinks, shareLinksActivePage, totalshareLinks, shareLinksPagingLimit,
+    } = adminGeneralSecurityContainer.state;
 
-    const pager = (
-      <div className="pull-right my-3">
+    function pager() {
+      if (shareLinks.length === 0) {
+        return null;
+      }
+      return (
         <PaginationWrapper
-          activePage={adminGeneralSecurityContainer.state.shareLinksActivePage}
+          activePage={shareLinksActivePage}
           changePage={this.getShareLinkList}
-          totalItemsCount={adminGeneralSecurityContainer.state.totalshareLinks}
-          pagingLimit={adminGeneralSecurityContainer.state.shareLinksPagingLimit}
+          totalItemsCount={totalshareLinks}
+          pagingLimit={shareLinksPagingLimit}
+          align="right"
         />
-      </div>
-    );
+      );
+    }
 
-    const deleteAllButton = (
-      adminGeneralSecurityContainer.state.shareLinks.length > 0
-        ? (
+    return (
+      <Fragment>
+        <div className="mb-3">
           <button
             className="pull-right btn btn-danger"
+            disabled={shareLinks.length === 0}
             type="button"
             onClick={this.showDeleteConfirmModal}
           >
             {t('share_links.delete_all_share_links')}
           </button>
-        )
-        : (
-          <p className="pull-right mr-2">{t('share_links.No_share_links')}</p>
-        )
-    );
-
-    return (
-      <Fragment>
-        <div className="mb-3">
-          {deleteAllButton}
           <h2 className="alert-anchor border-bottom">{t('share_links.share_link_management')}</h2>
         </div>
-
         {pager}
-        <ShareLinkList
-          shareLinks={adminGeneralSecurityContainer.state.shareLinks}
-          onClickDeleteButton={this.deleteLinkById}
-          isAdmin
-        />
+
+        {(shareLinks.length !== 0) ? (
+          <ShareLinkList
+            shareLinks={shareLinks}
+            onClickDeleteButton={this.deleteLinkById}
+            isAdmin
+          />
+          )
+          : (<p className="text-center">{t('share_links.No_share_links')}</p>
+          )
+        }
+
 
         <DeleteAllShareLinksModal
           isOpen={this.state.isDeleteConfirmModalShown}
