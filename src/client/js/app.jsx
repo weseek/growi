@@ -95,7 +95,6 @@ if (pageContainer.state.pageId != null) {
     'revision-toc': <TableOfContents />,
     'seen-user-list': <SeenUserList />,
     'liker-list': <LikerList />,
-    'user-info': <UserInfo />,
 
     'recent-created-icon': <RecentlyCreatedIcon />,
     'user-created-list': <RecentCreated userId={pageContainer.state.creator._id} />,
@@ -108,6 +107,7 @@ if (pageContainer.state.path != null) {
     'page': <Page />,
     'grw-subnav-container': <GrowiSubNavigation />,
     'grw-subnav-switcher-container': <GrowiSubNavigationSwitcher />,
+    'user-info': <UserInfo />,
   });
 }
 // additional definitions if user is logged in
