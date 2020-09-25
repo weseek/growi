@@ -14,14 +14,10 @@ class BookmarkButton extends React.Component {
   }
 
   async handleClick() {
-    const { crowi, pageId, pageContainer } = this.props;
-    const bool = !pageContainer.state.isBookmarked;
+    const { pageContainer } = this.props;
 
     try {
-      await crowi.apiv3.put('/bookmarks', { pageId, bool });
-      pageContainer.setState({ isBookmarked: bool });
-
-      pageContainer.setBookmarkInfo();
+      pageContainer.updateBookmark();
     }
     catch (err) {
       toastError(err);
