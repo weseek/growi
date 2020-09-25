@@ -35,10 +35,6 @@ export default class NavigationContainer extends Container {
       isPageCreateModalShown: false,
     };
 
-    const editPage = document.querySelector('#edit');
-    if (editPage) {
-      return 'hoge';
-    }
 
     this.openPageCreateModal = this.openPageCreateModal.bind(this);
     this.closePageCreateModal = this.closePageCreateModal.bind(this);

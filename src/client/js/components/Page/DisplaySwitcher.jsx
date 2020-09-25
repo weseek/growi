@@ -1,7 +1,7 @@
 import React from 'react';
+import { TabContent, TabPane } from 'reactstrap';
 import propTypes from 'prop-types';
 import { withUnstatedContainers } from '../UnstatedUtils';
-import PageContainer from '../../services/PageContainer';
 import NavigationContainer from '../../services/NavigationContainer';
 import Editor from '../PageEditor';
 import Page from '../Page';
@@ -10,28 +10,34 @@ import EditorNavbarBottom from '../PageEditor/EditorNavbarBottom';
 
 
 const DisplaySwitcher = (props) => {
-  const { navigationContainer, pageContainer } = props;
-  const { page } = pageContainer;
+  const { navigationContainer } = props;
   const { editorMode } = navigationContainer.state;
+
 
   return (
     <>
-      {editorMode === 'view' && <Page />}
-      {editorMode === 'edit' && (
-        <>
-          <Editor />
-          <EditorNavbarBottom />
-        </>
-      )}
-      {editorMode === 'hackmd' && <PageEditorByHackmd />}
+      <TabContent activeTab={editorMode}>
+        <TabPane tabId="view">
+          <Page />
+        </TabPane>
+        <TabPane tabId="edit">
+          <>
+            <Editor />
+            <EditorNavbarBottom />
+          </>
+          )
+        </TabPane>
+        <TabPane tabId="hackmd">
+          <PageEditorByHackmd />
+        </TabPane>
+      </TabContent>
     </>
   );
 };
 
 DisplaySwitcher.propTypes = {
   navigationContainer: propTypes.instanceOf(NavigationContainer).isRequired,
-  pageContainer: propTypes.instanceOf(PageContainer).isRequired,
 };
 
 
-export default withUnstatedContainers(DisplaySwitcher, [PageContainer, NavigationContainer]);
+export default withUnstatedContainers(DisplaySwitcher, [NavigationContainer]);
