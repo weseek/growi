@@ -85,7 +85,7 @@ textarea.form-control {
 /*
  * Card
  */
-.card:not([class*='bg-']):not(.well) {
+.card:not([class*='bg-']):not(.well):not(.card-disabled) {
   @extend .bg-dark;
 }
 
@@ -94,7 +94,7 @@ textarea.form-control {
   border-color: $secondary;
 }
 
-.card.bg-disabled {
+.card.card-disabled {
   background-color: lighten($dark, 10%);
   border-color: $secondary;
 }
@@ -226,6 +226,15 @@ ul.pagination {
 
 .grw-subnav-fixed-container .grw-subnav {
   background-color: rgba($bgcolor-subnav, 0.85);
+}
+
+.grw-three-stranded-button {
+  .btn-outline-primary {
+    &:hover {
+      color: $primary;
+      background-color: $gray-700;
+    }
+  }
 }
 
 // Search drop down
