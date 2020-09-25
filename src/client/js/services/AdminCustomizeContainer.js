@@ -24,7 +24,6 @@ export default class AdminCustomizeContainer extends Container {
       retrieveError: null,
       // set dummy value tile for using suspense
       currentTheme: this.dummyCurrentTheme,
-      currentLayout: '',
       isEnabledTimeline: false,
       isSavedStatesOfTabChanges: false,
       isEnabledAttachTitleHeader: false,
@@ -73,7 +72,6 @@ export default class AdminCustomizeContainer extends Container {
 
       this.setState({
         currentTheme: customizeParams.themeType,
-        currentLayout: customizeParams.layoutType,
         isEnabledTimeline: customizeParams.isEnabledTimeline,
         isSavedStatesOfTabChanges: customizeParams.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: customizeParams.isEnabledAttachTitleHeader,
@@ -100,20 +98,9 @@ export default class AdminCustomizeContainer extends Container {
   }
 
   /**
-   * Switch layoutType
-   */
-  switchLayoutType(lauoutName) {
-    this.setState({ currentLayout: lauoutName });
-  }
-
-  /**
    * Switch themeType
    */
   switchThemeType(themeName) {
-    // can't choose theme when kibela
-    if (this.state.currentLayout === 'kibela') {
-      return;
-    }
     this.setState({ currentTheme: themeName });
 
     // preview if production
@@ -222,7 +209,7 @@ export default class AdminCustomizeContainer extends Container {
   async previewTheme(themeName) {
     try {
       // get theme asset path
-      const response = await this.appContainer.apiv3.get('/customize-setting/layout-theme/asset-path', { themeName });
+      const response = await this.appContainer.apiv3.get('/customize-setting/theme/asset-path', { themeName });
       const { assetPath } = response.data;
 
       const themeLink = document.getElementById('grw-theme-link');
@@ -245,18 +232,16 @@ export default class AdminCustomizeContainer extends Container {
   }
 
   /**
-   * Update layout
+   * Update theme
    * @memberOf AdminCustomizeContainer
    */
-  async updateCustomizeLayoutAndTheme() {
+  async updateCustomizeTheme() {
     try {
-      const response = await this.appContainer.apiv3.put('/customize-setting/layout-theme', {
-        layoutType: this.state.currentLayout,
+      const response = await this.appContainer.apiv3.put('/customize-setting/theme', {
         themeType: this.state.currentTheme,
       });
       const { customizedParams } = response.data;
       this.setState({
-        layoutType: customizedParams.layoutType,
         themeType: customizedParams.themeType,
       });
     }
