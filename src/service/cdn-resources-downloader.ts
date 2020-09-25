@@ -4,8 +4,7 @@ import urljoin from 'url-join';
 import { Transform } from 'stream';
 import replaceStream from 'replacestream';
 
-import CdnResource from '~/models/cdn-resource';
-
+import { CdnResource } from '~/interfaces/cdn';
 import loggerFactory from '~/utils/logger';
 import { downloadTo } from '~/utils/download';
 
@@ -15,22 +14,24 @@ export default class CdnResourcesDownloader {
 
   /**
    * Download script files from CDN
-   * @param {CdnResource[]} cdnResources JavaScript resource data
-   * @param {any} options
+   * @param cdnResources JavaScript resource data
+   * @param options
    */
-  async downloadScripts(cdnResources, options): Promise<any> {
+  async downloadScripts(cdnResources: CdnResource[], options?: any): Promise<any> {
     logger.debug('Downloading scripts', cdnResources);
 
     const opts = Object.assign({}, options);
     const ext = opts.ext || 'js';
 
     const promises = cdnResources.map((cdnResource) => {
-      logger.info(`Processing CdnResource '${cdnResource.name}'`);
+      const { manifest } = cdnResource;
+
+      logger.info(`Processing CdnResource '${manifest.name}'`);
 
       return downloadTo(
-        cdnResource.url,
+        manifest.url,
         cdnResource.outDir,
-        `${cdnResource.name}.${ext}`,
+        `${manifest.name}.${ext}`,
       );
     });
 
@@ -40,10 +41,10 @@ export default class CdnResourcesDownloader {
   /**
    * Download style sheet file from CDN
    *  Assets in CSS is also downloaded
-   * @param {CdnResource[]} cdnResources CSS resource data
-   * @param {any} options
+   * @param cdnResources CSS resource data
+   * @param options
    */
-  async downloadStyles(cdnResources, options): Promise<any> {
+  async downloadStyles(cdnResources: CdnResource[], options?: any): Promise<any> {
     logger.debug('Downloading styles', cdnResources);
 
     const opts = Object.assign({}, options);
@@ -52,7 +53,9 @@ export default class CdnResourcesDownloader {
     // styles
     const assetsResourcesStore: CdnResource[] = [];
     const promisesForStyle = cdnResources.map((cdnResource) => {
-      logger.info(`Processing CdnResource '${cdnResource.name}'`);
+      const { manifest } = cdnResource;
+
+      logger.info(`Processing CdnResource '${manifest.name}'`);
 
       let urlReplacer: Transform|null = null;
 
@@ -62,9 +65,9 @@ export default class CdnResourcesDownloader {
       }
 
       return downloadTo(
-        cdnResource.url,
+        manifest.url,
         cdnResource.outDir,
-        `${cdnResource.name}.${ext}`,
+        `${manifest.name}.${ext}`,
         urlReplacer,
       );
     });
@@ -76,12 +79,14 @@ export default class CdnResourcesDownloader {
 
     // assets in css
     const promisesForAssets = assetsResourcesStore.map((cdnResource) => {
-      logger.info(`Processing assts in css '${cdnResource.name}'`);
+      const { manifest } = cdnResource;
+
+      logger.info(`Processing assts in css '${manifest.name}'`);
 
       return downloadTo(
-        cdnResource.url,
+        manifest.url,
         cdnResource.outDir,
-        cdnResource.name,
+        manifest.name,
       );
     });
 
@@ -95,32 +100,33 @@ export default class CdnResourcesDownloader {
    *  Before  : url(../images/logo.svg)
    *  After   : url(/path/to/webroot/${cdnResources.name}/logo.svg)
    *
-   * @param {CdnResource[]} cdnResource CSS resource data
-   * @param {CdnResource[]} assetsResourcesStore An array to store CdnResource that is detected by 'url()' in CSS
-   * @param {string} webroot
+   * @param cdnResource CSS resource data
+   * @param assetsResourcesStore An array to store CdnResource that is detected by 'url()' in CSS
+   * @param webroot
    */
-  generateReplaceUrlInCssStream(cdnResource, assetsResourcesStore, webroot): Transform {
+  generateReplaceUrlInCssStream(cdnResource: CdnResource, assetsResourcesStore: CdnResource[], webroot: string): Transform {
     return replaceStream(
       /url\((?!['"]?data:)["']?(.+?)["']?\)/g, // https://regex101.com/r/Sds38A/3
       (match, url) => {
         // generate URL Object
         const parsedUrl = url.startsWith('http')
           ? new URL(url) // when url is fqcn
-          : new URL(url, cdnResource.url); // when url is relative
+          : new URL(url, cdnResource.manifest.url); // when url is relative
         const basename = path.basename(parsedUrl.pathname);
 
-        logger.debug(`${cdnResource.name} has ${parsedUrl.toString()}`);
+        logger.debug(`${cdnResource.manifest.name} has ${parsedUrl.toString()}`);
 
         // add assets metadata to download later
-        assetsResourcesStore.push(
-          new CdnResource(
-            basename,
-            parsedUrl.toString(),
-            path.join(cdnResource.outDir, cdnResource.name),
-          ),
-        );
+        const replacedCdnResource = {
+          manifest: {
+            name: basename,
+            url: parsedUrl.toString(),
+          },
+          outDir: path.join(cdnResource.outDir, cdnResource.manifest.name),
+        };
+        assetsResourcesStore.push(replacedCdnResource);
 
-        const replaceUrl = urljoin(webroot, cdnResource.name, basename);
+        const replaceUrl = urljoin(webroot, cdnResource.manifest.name, basename);
         return `url(${replaceUrl})`;
       },
     );

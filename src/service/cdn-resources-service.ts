@@ -1,24 +1,28 @@
 import path from 'path';
 
+import { URL } from 'url';
+import * as urljoin from 'url-join';
+
+import { envUtils } from 'growi-commons';
+
+import * as cdnManifests from '^/resource/cdn-manifests';
+
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
+import { CdnManifest, CdnManifestArgs, CdnResource } from '~/interfaces/cdn';
+import CdnResourcesDownloader from './cdn-resources-downloader';
 
-const { URL } = require('url');
-const urljoin = require('url-join');
+const logger = loggerFactory('growi:service:CdnResourcesService');
 
-const { envUtils } = require('growi-commons');
 
 const cdnLocalScriptRoot = path.join(projectRoot, 'public/js/cdn');
 const cdnLocalScriptWebRoot = '/js/cdn';
 const cdnLocalStyleRoot = path.join(projectRoot, 'public/styles/cdn');
 const cdnLocalStyleWebRoot = '/styles/cdn';
 
-
 export default class CdnResourcesService {
 
   constructor() {
-    this.logger = loggerFactory('growi:service:CdnResourcesService');
-
     this.loadManifests();
   }
 
@@ -27,19 +31,18 @@ export default class CdnResourcesService {
   }
 
   loadManifests() {
-    this.cdnManifests = require('^/resource/cdn-manifests');
-    this.logger.debug('manifest data loaded : ', this.cdnManifests);
+    logger.debug('manifest data loaded : ', cdnManifests);
   }
 
-  getScriptManifestByName(name) {
-    const manifests = this.cdnManifests.js
+  getScriptManifestByName(name: string): CdnManifest | null {
+    const manifests = cdnManifests.js
       .filter((manifest) => { return manifest.name === name });
 
     return (manifests.length > 0) ? manifests[0] : null;
   }
 
-  getStyleManifestByName(name) {
-    const manifests = this.cdnManifests.style
+  getStyleManifestByName(name: string): CdnManifest | null {
+    const manifests = cdnManifests.style
       .filter((manifest) => { return manifest.name === name });
 
     return (manifests.length > 0) ? manifests[0] : null;
@@ -50,16 +53,14 @@ export default class CdnResourcesService {
    *
    * !! This method should be invoked only by /bin/download-cdn-resources when build client !!
    *
-   * @param {CdnResourceDownloader} cdnResourceDownloader
+   * @param cdnResourceDownloader
    */
-  async downloadAndWriteAll(cdnResourceDownloader) {
-    const CdnResource = require('~/models/cdn-resource');
-
-    const cdnScriptResources = this.cdnManifests.js.map((manifest) => {
-      return new CdnResource(manifest.name, manifest.url, cdnLocalScriptRoot);
+  async downloadAndWriteAll(cdnResourceDownloader: CdnResourcesDownloader): Promise<any> {
+    const cdnScriptResources = cdnManifests.js.map((manifest: CdnManifest) => {
+      return { manifest, outDir: cdnLocalScriptRoot };
     });
-    const cdnStyleResources = this.cdnManifests.style.map((manifest) => {
-      return new CdnResource(manifest.name, manifest.url, cdnLocalStyleRoot);
+    const cdnStyleResources = cdnManifests.style.map((manifest) => {
+      return { manifest, outDir: cdnLocalStyleRoot };
     });
 
     const dlStylesOptions = {
@@ -77,11 +78,11 @@ export default class CdnResourcesService {
   /**
    * Generate script tag string
    *
-   * @param {Object} manifest
+   * @param manifest
    */
-  generateScriptTag(manifest) {
-    const attrs = [];
-    const args = manifest.args || {};
+  generateScriptTag(manifest: CdnManifest) {
+    const attrs: string[] = [];
+    const args: CdnManifestArgs = manifest.args || {};
 
     if (args.async) {
       attrs.push('async');
@@ -104,7 +105,7 @@ export default class CdnResourcesService {
   }
 
   getScriptTagsByGroup(group) {
-    return this.cdnManifests.js
+    return cdnManifests.js
       .filter((manifest) => {
         return manifest.groups != null && manifest.groups.includes(group);
       })
@@ -144,7 +145,7 @@ export default class CdnResourcesService {
   }
 
   getStyleTagsByGroup(group) {
-    return this.cdnManifests.style
+    return cdnManifests.style
       .filter((manifest) => {
         return manifest.groups != null && manifest.groups.includes(group);
       })
