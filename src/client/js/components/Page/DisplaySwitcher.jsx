@@ -17,12 +17,14 @@ const DisplaySwitcher = (props) => {
   return (
     <>
       {editorMode === 'view' && <Page />}
-      {editorMode === 'edit' && (
+      <div id="edit">
+        {editorMode === 'edit' && (
         <>
           <Editor />
           <EditorNavbarBottom />
         </>
       )}
+      </div>
       {editorMode === 'hackmd' && <PageEditorByHackmd />}
     </>
   );
