@@ -153,16 +153,25 @@ export default class PageContainer extends Container {
       isLiked: like.data.isLiked,
     });
 
-    this.setBookmarkInfo();
+    this.retrieveBookmarkInfo();
     this.checkAndUpdateImageUrlCached(this.state.likerUsers);
   }
 
-  async setBookmarkInfo() {
+  async retrieveBookmarkInfo() {
     const response = await this.appContainer.apiv3Get('/bookmarks', { pageId: this.state.pageId });
-    if (response.data.isBookmark != null) {
+    if (response.data.isBookmarked != null) {
       this.setState({ isBookmarked: true });
     }
+    else {
+      this.setState({ isBookmarked: false });
+    }
     this.setState({ sumOfBookmarks: response.data.sumOfBookmarks });
+  }
+
+  async updateBookmark() {
+    const bool = !this.state.isBookmarked;
+    await this.appContainer.apiv3Put('/bookmarks', { pageId: this.state.pageId, bool });
+    this.retrieveBookmarkInfo();
   }
 
   async checkAndUpdateImageUrlCached(users) {
