@@ -12,12 +12,12 @@ html[light] {
 
   // Background colors
   $bgcolor-global: $themelight;
-  $bgcolor-inline-code: #f0f0f0; //optional
+  $bgcolor-inline-code: $gray-100; //optional
   $bgcolor-card: darken($themelight, 5%);
 
   // Font colors
   $color-global: $themecolor;
-  $color-reversal: #eee;
+  $color-reversal: $gray-100;
   $color-link: lighten($primary, 5%);
   $color-link-hover: lighten($color-link, 12%);
   $color-link-wiki: lighten($primary, 20%);
@@ -62,7 +62,7 @@ html[light] {
   $color-editor-icons: $color-global;
 
   // Border colors
-  $border-color-theme: #ccc;
+  $border-color-theme: $gray-300;
   $bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
@@ -108,7 +108,7 @@ html[dark] {
 
   // Font colors
   $color-global: #d3d4d4;
-  $color-reversal: #eee;
+  $color-reversal: $gray-100;
   $color-link: #97d1f0;
   $color-link-hover: darken($color-link, 12%);
   $color-link-wiki: lighten($primary, 20%);

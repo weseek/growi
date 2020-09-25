@@ -44,12 +44,14 @@ const HotkeysDetector = (props) => {
    * evaluate the key user pressed and trigger onDetected
    */
   const checkHandler = useCallback((event) => {
-    event.preventDefault();
-
     const eventKey = getKeyExpression(event);
 
     hotkeyStrokes.forEach((hotkeyStroke) => {
+      // if any stroke is completed
       if (hotkeyStroke.evaluate(eventKey)) {
+        // cancel the key event
+        event.preventDefault();
+        // invoke detected handler
         onDetected(hotkeyStroke.stroke);
       }
     });

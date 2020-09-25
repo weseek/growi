@@ -20,7 +20,7 @@ module.exports = function(crowi) {
   const STATUS_DELETED = 4;
   const STATUS_INVITED = 5;
   const USER_PUBLIC_FIELDS = '_id image isEmailPublished isGravatarEnabled googleId name username email introduction'
-  + 'status lang createdAt lastLoginAt admin imageUrlCached';
+  + ' status lang createdAt lastLoginAt admin imageUrlCached';
 
   const PAGE_ITEMS = 50;
 
@@ -207,21 +207,23 @@ module.exports = function(crowi) {
     return userData;
   };
 
+  // TODO: create UserService and transplant this method because image uploading depends on AttachmentService
   userSchema.methods.updateImage = async function(attachment) {
     this.imageAttachment = attachment;
     await this.updateImageUrlCached();
     return this.save();
   };
 
+  // TODO: create UserService and transplant this method because image deletion depends on AttachmentService
   userSchema.methods.deleteImage = async function() {
     validateCrowi();
-    const Attachment = crowi.model('Attachment');
 
     // the 'image' field became DEPRECATED in v3.3.8
     this.image = undefined;
 
     if (this.imageAttachment != null) {
-      Attachment.removeWithSubstanceById(this.imageAttachment._id);
+      const { attachmentService } = crowi;
+      attachmentService.removeAttachment(this.imageAttachment._id);
     }
 
     this.imageAttachment = undefined;
@@ -382,7 +384,7 @@ module.exports = function(crowi) {
     option = option || {};
 
     const sort = option.sort || { createdAt: -1 };
-    const fields = option.fields || USER_PUBLIC_FIELDS;
+    const fields = option.fields || {};
 
     let status = option.status || [STATUS_ACTIVE, STATUS_SUSPENDED];
     if (!Array.isArray(status)) {
@@ -401,7 +403,7 @@ module.exports = function(crowi) {
 
     const sort = option.sort || { createdAt: -1 };
     const status = option.status || STATUS_ACTIVE;
-    const fields = option.fields || USER_PUBLIC_FIELDS;
+    const fields = option.fields || {};
 
     return this.find({ _id: { $in: ids }, status })
       .select(fields)
@@ -411,31 +413,6 @@ module.exports = function(crowi) {
   userSchema.statics.findAdmins = async function() {
     return this.find({ admin: true });
   };
-
-  userSchema.statics.findUsersByPartOfEmail = function(emailPart, options) {
-    const status = options.status || null;
-    const emailPartRegExp = new RegExp(emailPart.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'));
-    const User = this;
-
-    return new Promise((resolve, reject) => {
-      const query = User.find({ email: emailPartRegExp }, USER_PUBLIC_FIELDS);
-
-      if (status) {
-        query.and({ status });
-      }
-
-      query
-        .limit(PAGE_ITEMS + 1)
-        .exec((err, userData) => {
-          if (err) {
-            return reject(err);
-          }
-
-          return resolve(userData);
-        });
-    });
-  };
-
 
   userSchema.statics.findUserByUsername = function(username) {
     if (username == null) {

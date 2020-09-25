@@ -1,8 +1,69 @@
 # CHANGES
 
-## v4.1.1-RC
+## v4.2.0
+
+### BREAKING CHANGES
+
+* GROWI v4.2.x no longer support Kibela layout
+    * Kibela theme is newly added and the configuration will migrate to it automatically
+
+### Updates
+
+* Improvement: Basic layout of page
+* Support: Support MongoDB 4.0, 4.2 and 4.4
+
+## v4.1.7
 
 * 
+
+## v4.1.6
+
+* Improvement: Hide Fab at admin pages
+* Fix: Presentation does not work
+* Fix: Update GrantSelector status when uploading a file to a new page
+* Fix: CopyDropdown origin refs draw.io host wrongly
+
+## v4.1.5
+
+* Feature: Independent S3 configuration and SES configuration for AWS
+* Fix: Author name does not displayed in page history
+* Fix: Hide unnecessary component when pringing
+
+## v4.1.4 (Missing number)
+
+## v4.1.3
+
+* Feature: Create/edit linker with GUI
+* Improvement: Paging page histories
+* Improvement: Avoid using `cursor.snapshot()` in preparation for MongoDB version upgrade
+* Improvement: Allow to save "From e-mail address" only in App Settings
+* Improvement: Allow to empty "From e-mail address" in App Settings
+* Improvement: Export/Import archive data serially so as not to waste memory
+* Fix: To be able to delete attachment metadata even when the actual data does not exist
+* Fix: Limit the attrubutes of user data for `/_api/v3/users`
+* Fix: Prevent XSS with SVG
+* Upgrade libs
+    * optimize-css-assets-webpack-plugin
+    * terser-webpack-plugin
+
+## v4.1.2
+
+* Fix: Uploaded images do not displayed
+    * Introduced by v4.1.1
+
+## v4.1.1
+
+* Feature: External share link
+* Improvement: Optimize some features that operate revision data
+    * Page history
+    * Renaming pages
+    * Deleting pages
+* Fix: Cmd+c/v/... does not work on Mac
+    * Introduced by v4.1.0
+* Fix: "Append params" switch of CopyDropdown does not work when multiple CopyDropdown instance exists
+* Fix: "Append params" switch of CopyDropdown escapes spaces
+* Fix: Blockdiag does not be rendered
+* Fix: Access token parser
 
 ## v4.1.0
 
@@ -63,7 +124,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/41x.html>
 * Fix: Unable to create page with original path after emptying trash
 * I18n: Support zh-CN
 
-## v4.0.8  (Missing number)
+## v4.0.8 (Missing number)
 
 ## v4.0.7
 

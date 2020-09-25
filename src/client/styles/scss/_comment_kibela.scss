@@ -14,7 +14,7 @@
       height: 0;
       content: '';
       border-top: 20px solid transparent;
-      border-right: 20px solid #e6e9ec;
+      border-right: 20px solid $gray-200;
       border-bottom: 20px solid transparent;
       border-left: 20px solid transparent;
       border-left-width: 0;
@@ -65,7 +65,7 @@
     .page-comment-main {
       @extend %comment-section;
       margin-left: 4.5em;
-      background: #e6e9ec;
+      background: $gray-200;
       border-radius: 0.35em;
     }
 

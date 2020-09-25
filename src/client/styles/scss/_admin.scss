@@ -28,7 +28,7 @@
 
     .ss-container img {
       padding: 0.5em;
-      background-color: #ddd;
+      background-color: $gray-300;
     }
 
     .table-user-list {
@@ -140,8 +140,8 @@
 
     // style
     .theme-option-container a {
-      background-color: #f5f5f5;
-      border: 1px solid #ccc;
+      background-color: $gray-50;
+      border: 1px solid $gray-300;
     }
     .theme-option-name {
       opacity: 0.3;

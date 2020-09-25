@@ -20,7 +20,7 @@ class ErrorViewer extends React.Component {
     }
 
     return (
-      <Modal isOpen={this.props.isOpen} toggle={this.props.onClose}>
+      <Modal isOpen={this.props.isOpen} toggle={this.props.onClose} size="lg">
         <ModalHeader tag="h4" toggle={this.props.onClose} className="bg-danger text-light">
           Errors
         </ModalHeader>

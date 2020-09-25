@@ -97,6 +97,42 @@ module.exports = (crowi) => {
     },
   });
 
+  /**
+   * @swagger
+   *
+   *  /import:
+   *    get:
+   *      tags: [Import]
+   *      operationId: getImportSettingsParams
+   *      summary: /import
+   *      description: Get import settings params
+   *      responses:
+   *        200:
+   *          description: import settings params
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  importSettingsParams:
+   *                    type: object
+   *                    description: import settings params
+   */
+  router.get('/', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+    try {
+      const importSettingsParams = {
+        esaTeamName: await crowi.configManager.getConfig('crowi', 'importer:esa:team_name'),
+        esaAccessToken: await crowi.configManager.getConfig('crowi', 'importer:esa:access_token'),
+        qiitaTeamName: await crowi.configManager.getConfig('crowi', 'importer:qiita:team_name'),
+        qiitaAccessToken: await crowi.configManager.getConfig('crowi', 'importer:qiita:access_token'),
+      };
+      return res.apiv3({
+        importSettingsParams,
+      });
+    }
+    catch (err) {
+      return res.apiv3Err(err, 500);
+    }
+  });
 
   /**
    * @swagger

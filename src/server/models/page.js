@@ -1130,6 +1130,7 @@ module.exports = function(crowi) {
     }));
   };
 
+  // TODO: transplant to service/page.js because page deletion affects various models data
   pageSchema.statics.revertDeletedPage = async function(page, user, options = {}) {
     const newPath = this.getRevertDeletedPageName(page.path);
 
@@ -1173,27 +1174,17 @@ module.exports = function(crowi) {
   /**
    * This is danger.
    */
+  // TODO: transplant to service/page.js because page deletion affects various models data
   pageSchema.statics.completelyDeletePage = async function(pageData, user, options = {}) {
     validateCrowi();
 
-    // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
-    const Bookmark = crowi.model('Bookmark');
-    const Attachment = crowi.model('Attachment');
-    const Comment = crowi.model('Comment');
-    const PageTagRelation = crowi.model('PageTagRelation');
-    const Revision = crowi.model('Revision');
-    const pageId = pageData._id;
+    const { _id, path } = pageData;
     const socketClientId = options.socketClientId || null;
 
-    debug('Completely delete', pageData.path);
+    logger.debug('Deleting completely', path);
 
-    await Bookmark.removeBookmarksByPageId(pageId);
-    await Attachment.removeAttachmentsByPageId(pageId);
-    await Comment.removeCommentsByPageId(pageId);
-    await PageTagRelation.remove({ relatedPage: pageId });
-    await Revision.removeRevisionsByPath(pageData.path);
-    await this.findByIdAndRemove(pageId);
-    await this.removeRedirectOriginPageByPath(pageData.path);
+    await crowi.pageService.deleteCompletely(_id, path);
+
     if (socketClientId != null) {
       pageEvent.emit('delete', pageData, user, socketClientId); // update as renamed page
     }
@@ -1203,6 +1194,7 @@ module.exports = function(crowi) {
   /**
    * Delete Bookmarks, Attachments, Revisions, Pages and emit delete
    */
+  // TODO: transplant to service/page.js because page deletion affects various models data
   pageSchema.statics.completelyDeletePageRecursively = async function(targetPage, user, options = {}) {
     const findOpts = { includeTrashed: true };
 
@@ -1299,6 +1291,7 @@ module.exports = function(crowi) {
     return targetPage;
   };
 
+  // TODO: transplant to service/page.js because page deletion affects various models data
   pageSchema.statics.handlePrivatePagesForDeletedGroup = async function(deletedGroup, action, transferToUserGroupId) {
     const Page = mongoose.model('Page');
 
