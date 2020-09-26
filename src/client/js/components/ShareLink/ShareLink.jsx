@@ -85,8 +85,8 @@ class ShareLink extends React.Component {
     const { t } = this.props;
 
     return (
-      <div className="container">
-        <h3 className="grw-modal-head  d-flex  pb-2">
+      <div className="container p-0">
+        <h3 className="grw-modal-head d-flex pb-2">
           { t('share_links.share_link_list') }
           <button className="btn btn-danger ml-auto " type="button" onClick={this.deleteAllLinksButtonHandler}>{t('delete_all')}</button>
         </h3>
@@ -97,7 +97,7 @@ class ShareLink extends React.Component {
             onClickDeleteButton={this.deleteLinkById}
           />
           <button
-            className="btn btn-outline-secondary d-block mx-auto px-5 mb-3"
+            className="btn btn-outline-secondary d-block mx-auto px-5"
             type="button"
             onClick={this.toggleShareLinkFormHandler}
           >
@@ -120,9 +120,6 @@ ShareLink.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(ShareLinkWrapper);

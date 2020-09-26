@@ -41,6 +41,7 @@ export default class PageAccessoriesContainer extends Container {
   closePageAccessoriesModal() {
     this.setState({
       isPageAccessoriesModalShown: false,
+      activeTab: '',
     });
   }
 

@@ -1,5 +1,6 @@
 {
-	"Help": "帮助",
+  "Help": "帮助",
+  "view": "View",
 	"Edit": "编辑",
 	"Delete": "删除",
 	"delete_all": "删除所有",
@@ -49,6 +50,7 @@
 	"Timeline View": "时间线",
   "History": "历史",
   "attachment_data": "Attachment Data",
+  "No_attachments_yet": "暂无附件",
 	"Presentation Mode": "演示文稿",
   "Not available for guest": "Not available for guest",
   "Create Archive Page": "创建归档页",
@@ -75,6 +77,7 @@
 	"Shrink versions that have no diffs": "收缩没有差异的版本",
 	"User ID": "用户ID",
 	"Home": "首页",
+	"My Drafts": "My Drafts",
 	"User Settings": "用户设置",
 	"User Information": "用户信息",
 	"Basic Info": "基础信息",
@@ -145,7 +148,8 @@
 	"List Drafts": "草稿",
 	"Deleted Pages": "已删除页",
 	"Sign out": "退出",
-	"Disassociate": "解除关联",
+  "Disassociate": "解除关联",
+  "No bookmarks yet": "暂无书签",
 	"Recent Created": "最新创建",
 	"Recent Changes": "最新修改",
 	"form_validation": {
@@ -406,6 +410,7 @@
 		"open_sandbox": "开放式沙箱"
 	},
 	"hackmd": {
+    "hack_md": "HackMD",
 		"not_set_up": "HackMD is not set up.",
 		"start_to_edit": "Start to edit with HackMD",
 		"clone_page_content": "Click to clone page content and start to edit.",

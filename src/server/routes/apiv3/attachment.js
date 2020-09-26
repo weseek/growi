@@ -5,6 +5,7 @@ const logger = loggerFactory('growi:routes:apiv3:attachment'); // eslint-disable
 const express = require('express');
 
 const router = express.Router();
+const { query } = require('express-validator');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -18,8 +19,18 @@ module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const Page = crowi.model('Page');
+  const User = crowi.model('User');
   const Attachment = crowi.model('Attachment');
+  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
+
+  const validator = {
+    retrieveAttachments: [
+      query('pageId').isMongoId().withMessage('pageId is required'),
+      query('limit').isInt({ min: 1 }),
+      query('offset').isInt({ min: 0 }),
+    ],
+  };
   /**
    * @swagger
    *
@@ -38,10 +49,9 @@ module.exports = (crowi) => {
    *            schema:
    *              type: string
    */
-  router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
+  router.get('/list', accessTokenParser, loginRequired, validator.retrieveAttachments, apiV3FormValidator, async(req, res) => {
     const offset = +req.query.offset || 0;
     const limit = +req.query.limit || 30;
-    const queryOptions = { offset, limit };
 
     try {
       const pageId = req.query.pageId;
@@ -54,8 +64,20 @@ module.exports = (crowi) => {
 
       const paginateResult = await Attachment.paginate(
         { page: pageId },
-        queryOptions,
+        {
+          limit,
+          offset,
+          populate: {
+            path: 'creator',
+            select: User.USER_PUBLIC_FIELDS,
+          },
+        },
       );
+      paginateResult.docs.forEach((doc) => {
+        if (doc.creator != null && doc.creator instanceof User) {
+          doc.creator = doc.creator.toObject();
+        }
+      });
 
       return res.apiv3({ paginateResult });
     }

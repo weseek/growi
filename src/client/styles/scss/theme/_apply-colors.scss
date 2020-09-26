@@ -265,6 +265,11 @@ ul.pagination {
   fill: $color-editor-icons;
 }
 
+// page preview button in link form
+.btn-page-preview svg {
+  fill: white;
+}
+
 /*
  * Modal
  */
@@ -314,11 +319,20 @@ ul.pagination {
   .nav-title {
     color: $color-link;
   }
+  .modal-header {
+    button.close {
+      color: $secondary;
+    }
+  }
   .nav-link svg {
     fill: $color-link;
   }
-  .active-border {
-    border-bottom: 2px solid $color-link;
+  .modal-split-hr {
+    background-color: $bordercolor-nav-tabs;
+  }
+
+  .grw-nav-slide-hr {
+    border-color: $color-link;
   }
 }
 

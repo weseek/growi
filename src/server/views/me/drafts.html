@@ -1,0 +1,17 @@
+{% extends '../layout-growi/base/layout.html' %}
+
+{% block html_title %}{{ customizeService.generateCustomTitleForFixedPageName(t('My Drafts')) }}{% endblock %}
+
+{% block content_header %}
+<h1 class="title">{{ t('My Drafts') }}</h1>
+{% endblock %}
+
+{% block content_main %}
+<div class="content-main" id="my-drafts"></div>
+{% endblock content_main %}
+
+{% block content_footer %}
+{% endblock content_footer %}
+
+{% block layout_footer %}
+{% endblock layout_footer %}
