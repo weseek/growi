@@ -39,11 +39,14 @@ module.exports = function(crowi, app) {
   app.use('/api-docs', require('./apiv3/docs')(crowi));
   app.use('/_api/v3', require('./apiv3')(crowi));
 
+  app.get('/_next/*'                      , next.delegateToNext);
+
   // installer
   if (!isInstalled) {
-    const installer = require('./installer')(crowi);
-    app.get('/installer'               , applicationNotInstalled , installer.index);
-    app.post('/installer'              , applicationNotInstalled , form.register , csrf, installer.install);
+    // const installer = require('./installer')(crowi);
+    // app.get('/installer'               , applicationNotInstalled , installer.index);
+    // app.post('/installer'              , applicationNotInstalled , form.register , csrf, installer.install);
+    app.get('/installer'                  , applicationNotInstalled, next.delegateToNext);
     return;
   }
 
@@ -176,7 +179,6 @@ module.exports = function(crowi, app) {
 
   // app.get('/*/$'                   , loginRequired , page.showPageWithEndOfSlash, page.notFound);
   // app.get('/*'                     , loginRequired , page.showPage, page.notFound);
-  app.get('/_next/*'                  , next.delegateToNext);
   app.get('/*'                        , loginRequired , next.delegateToNext);
 
 };
