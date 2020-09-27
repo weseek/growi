@@ -31,7 +31,17 @@ class UploadForm extends React.Component {
     formData.append('_csrf', this.props.appContainer.csrfToken);
     formData.append('file', this.inputRef.current.files[0]);
 
-    const { data } = await this.props.appContainer.apiv3Post('/import/upload', formData); // ここにアップロードしたデータが渡ってきている
+    try{
+      const { data } = await this.props.appContainer.apiv3Post('/import/upload', formData);
+    } catch(err) {
+      if(err[0].code === 'versions-are-not-met'){
+        console.log('エラーが出ました versions-are-not-met!!');
+      } else {
+        console.log(`普通のエラーが出ました`);
+      }
+    }
+
+
     this.props.onUpload(data);
     // TODO: toastSuccess, toastError
   }
