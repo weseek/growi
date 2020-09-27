@@ -5,15 +5,19 @@
     "tasks": [
         {
             "type": "npm",
-            "script": "build",
+            "script": "dev",
             "problemMatcher": [
-                "$eslint-compact"
+                "$tsc",
+                "$eslint-stylish"
             ]
         },
         {
-            "type": "npm",
-            "script": "server",
-            "problemMatcher": []
-        }
+          "type": "npm",
+          "script": "test",
+          "problemMatcher": [
+              "$tsc",
+              "$eslint-stylish"
+          ]
+      }
     ]
 }
