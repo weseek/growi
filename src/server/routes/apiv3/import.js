@@ -238,7 +238,7 @@ module.exports = (crowi) => {
      * validate with meta.json
      */
     try {
-      importService.validate(meta); //push test
+      importService.validate(meta);
     }
     catch (err) {
       logger.error(err);
