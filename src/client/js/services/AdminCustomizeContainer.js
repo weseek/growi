@@ -27,8 +27,13 @@ export default class AdminCustomizeContainer extends Container {
       isEnabledTimeline: false,
       isSavedStatesOfTabChanges: false,
       isEnabledAttachTitleHeader: false,
+
+      pageLimitationS: 10,
+      // [TODO: rename pageListLimitForUserPage to pageLimitationM by gw3920]
       pageListLimitForUserPage: 10,
-      // TODO implement for pageListLimitForModal
+      pageLimitationL: 10,
+      pageLimitationXL: 10,
+
       isEnabledStaleNotification: false,
       isAllReplyShown: false,
       currentHighlightJsStyleId: '',
@@ -130,16 +135,35 @@ export default class AdminCustomizeContainer extends Container {
     this.setState({ isEnabledAttachTitleHeader:  !this.state.isEnabledAttachTitleHeader });
   }
 
+
   /**
-   * Switch pageListdLimitForUserPage
+   * S: Switch pageListLimitationS
    */
-  switchPageListLimitForUserPage(value) {
+  switchPageListLimitationS(value) {
+    this.setState({ pageLimitationS: value });
+  }
+
+  /**
+   * M: Switch pageListLimitationM
+   */
+  // [TODO: rename pageListLimitForUserPage to pageLimitationM by gw3920]
+  switchPageListLimitationM(value) {
     this.setState({ pageListLimitForUserPage: value });
   }
 
   /**
-   * Switch pageListdLimitForModal
+   * L: Switch pageListLimitationL
    */
+  switchPageListLimitationL(value) {
+    this.setState({ pageLimitationL: value });
+  }
+
+  /**
+   * XL: Switch pageListLimitationXL
+   */
+  switchPageListLimitationXL(value) {
+    this.setState({ pageLimitationXL: value });
+  }
 
   /**
    * Switch enabledStaleNotification
