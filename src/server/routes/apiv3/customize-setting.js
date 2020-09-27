@@ -37,7 +37,7 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *            type: boolean
  *          isEnabledAttachTitleHeader:
  *            type: boolean
- *          pageListLimitForUserPage:
+ *          pageLimitationM:
  *            type: number
  *          isEnabledStaleNotification:
  *            type: boolean
@@ -100,7 +100,7 @@ module.exports = (crowi) => {
       body('isSavedStatesOfTabChanges').isBoolean(),
       body('isEnabledAttachTitleHeader').isBoolean(),
       // TODO implement for pageListLimitForModal
-      body('pageListLimitForUserPage').isInt().isInt({ min: 1, max: 1000 }),
+      body('pageLimitationM').isInt().isInt({ min: 1, max: 1000 }),
       body('isEnabledStaleNotification').isBoolean(),
       body('isAllReplyShown').isBoolean(),
     ],
@@ -152,7 +152,7 @@ module.exports = (crowi) => {
       isEnabledTimeline: await crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
       isSavedStatesOfTabChanges: await crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
       isEnabledAttachTitleHeader: await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
-      pageListLimitForUserPage: await crowi.configManager.getConfig('crowi', 'customize:showPageListLimitNumberForUserPage'),
+      pageLimitationM: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM'),
       // TODO implement for pageListLimitForModal
       isEnabledStaleNotification: await crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
       isAllReplyShown: await crowi.configManager.getConfig('crowi', 'customize:isAllReplyShown'),
@@ -276,7 +276,7 @@ module.exports = (crowi) => {
       'customize:isSavedStatesOfTabChanges': req.body.isSavedStatesOfTabChanges,
       'customize:isEnabledAttachTitleHeader': req.body.isEnabledAttachTitleHeader,
       // TODO implement for pageListLimitForModal
-      'customize:showPageListLimitForUserPage': req.body.pageListLimitForUserPage,
+      'customize:showPageLimitationM': req.body.pageLimitationM,
       'customize:isEnabledStaleNotification': req.body.isEnabledStaleNotification,
       'customize:isAllReplyShown': req.body.isAllReplyShown,
     };
@@ -288,7 +288,7 @@ module.exports = (crowi) => {
         isSavedStatesOfTabChanges: await crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
         isEnabledAttachTitleHeader: await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
         // TODO implement for pageListLimitForModal
-        pageListLimitForUserPage: await crowi.configManager.getConfig('crowi', 'customize:showPageListLimitNumberForUserPage'),
+        pageLimitationM: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM'),
         isEnabledStaleNotification: await crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
         isAllReplyShown: await crowi.configManager.getConfig('crowi', 'customize:isAllReplyShown'),
       };

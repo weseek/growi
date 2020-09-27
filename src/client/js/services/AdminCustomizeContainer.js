@@ -29,8 +29,7 @@ export default class AdminCustomizeContainer extends Container {
       isEnabledAttachTitleHeader: false,
 
       pageLimitationS: 10,
-      // [TODO: rename pageListLimitForUserPage to pageLimitationM by gw3920]
-      pageListLimitForUserPage: 10,
+      pageLimitationM: 10,
       pageLimitationL: 10,
       pageLimitationXL: 10,
 
@@ -80,7 +79,7 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledTimeline: customizeParams.isEnabledTimeline,
         isSavedStatesOfTabChanges: customizeParams.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: customizeParams.isEnabledAttachTitleHeader,
-        pageListLimitForUserPage: customizeParams.pageListLimitForUserPage,
+        pageLimitationM: customizeParams.pageLimitationM,
         // TODO implement for pageListLimitForModal
         isEnabledStaleNotification: customizeParams.isEnabledStaleNotification,
         isAllReplyShown: customizeParams.isAllReplyShown,
@@ -146,9 +145,8 @@ export default class AdminCustomizeContainer extends Container {
   /**
    * M: Switch pageListLimitationM
    */
-  // [TODO: rename pageListLimitForUserPage to pageLimitationM by gw3920]
   switchPageListLimitationM(value) {
-    this.setState({ pageListLimitForUserPage: value });
+    this.setState({ pageLimitationM: value });
   }
 
   /**
@@ -285,7 +283,7 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledTimeline: this.state.isEnabledTimeline,
         isSavedStatesOfTabChanges: this.state.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: this.state.isEnabledAttachTitleHeader,
-        pageListLimitForUserPage: this.state.pageListLimitForUserPage,
+        pageLimitationM: this.state.pageLimitationM,
         // TODO implement for pageListLimitForModal
         isEnabledStaleNotification: this.state.isEnabledStaleNotification,
         isAllReplyShown: this.state.isAllReplyShown,
@@ -295,7 +293,7 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledTimeline: customizedParams.isEnabledTimeline,
         isSavedStatesOfTabChanges: customizedParams.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: customizedParams.isEnabledAttachTitleHeader,
-        pageListLimitForUserPage: customizedParams.pageListLimitForUserPage,
+        pageLimitationM: customizedParams.pageLimitationM,
         // TODO implement for pageListLimitForModal
         isEnabledStaleNotification: customizedParams.isEnabledStaleNotification,
         isAllReplyShown: customizedParams.isAllReplyShown,

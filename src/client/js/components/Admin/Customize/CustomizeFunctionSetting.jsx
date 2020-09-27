@@ -144,8 +144,7 @@ class CustomizeFunctionSetting extends React.Component {
                 </div>
                 <Dropdown isOpen={this.state.isDropdownOpenM} toggle={this.onToggleDropdownM}>
                   <DropdownToggle className="text-right col-6" caret>
-                    {/* [TODO: rename pageListLimitForUserPage to pageLimitationM by gw3920] */}
-                    <span className="float-left">{adminCustomizeContainer.state.pageListLimitForUserPage}</span>
+                    <span className="float-left">{adminCustomizeContainer.state.pageLimitationM}</span>
                   </DropdownToggle>
                   <DropdownMenu className="dropdown-menu" role="menu">
                     <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationM(10) }}>
