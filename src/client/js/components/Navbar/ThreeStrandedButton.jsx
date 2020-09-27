@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { Nav, NavItem, NavLink } from 'reactstrap';
 
 const ThreeStrandedButton = (props) => {
   const { t } = props;
