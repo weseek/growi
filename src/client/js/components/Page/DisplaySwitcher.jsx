@@ -25,7 +25,6 @@ const DisplaySwitcher = (props) => {
             <Editor />
             <EditorNavbarBottom />
           </>
-          )
         </TabPane>
         <TabPane tabId="hackmd">
           <PageEditorByHackmd />
