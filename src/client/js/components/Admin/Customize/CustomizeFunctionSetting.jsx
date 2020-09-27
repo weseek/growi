@@ -28,7 +28,7 @@ class CustomizeFunctionSetting extends React.Component {
     };
 
     this.onToggleDropdownS = this.onToggleDropdownS.bind(this); // S
-    this.onToggleDropdown = this.onToggleDropdown.bind(this); // M
+    this.onToggleDropdownM = this.onToggleDropdownM.bind(this); // M
     this.onToggleDropdownL = this.onToggleDropdownL.bind(this); // L
     this.onToggleDropdownXL = this.onToggleDropdownXL.bind(this); // XL
     this.onClickSubmit = this.onClickSubmit.bind(this);
@@ -38,8 +38,7 @@ class CustomizeFunctionSetting extends React.Component {
     this.setState({ isDropdownOpenS: !this.state.isDropdownOpenS });
   }
 
-  // [TODO: rename onToggleDropdown to onToggleDropdownM by gw3920]
-  onToggleDropdown() {
+  onToggleDropdownM() {
     this.setState({ isDropdownOpenM: !this.state.isDropdownOpenM });
   }
 
@@ -143,7 +142,7 @@ class CustomizeFunctionSetting extends React.Component {
                 <div className="my-0 w-100">
                   <label>{t('admin:customize_setting.function_options.list_num_m')}</label>
                 </div>
-                <Dropdown isOpen={this.state.isDropdownOpenM} toggle={this.onToggleDropdown}>
+                <Dropdown isOpen={this.state.isDropdownOpenM} toggle={this.onToggleDropdownM}>
                   <DropdownToggle className="text-right col-6" caret>
                     {/* [TODO: rename pageListLimitForUserPage to pageLimitationM by gw3920] */}
                     <span className="float-left">{adminCustomizeContainer.state.pageListLimitForUserPage}</span>
