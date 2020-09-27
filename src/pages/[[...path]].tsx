@@ -6,6 +6,7 @@ import Head from 'next/head';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
 import loggerFactory from '~/utils/logger';
+import { CommonProps, getServerSideCommonProps } from '~/utils/nextjs-page-utils';
 
 import BasicLayout from '../components/BasicLayout';
 
@@ -17,7 +18,7 @@ import {
 
 const logger = loggerFactory('growi:pages:all');
 
-type Props = {
+type Props = CommonProps & {
   currentUser: any,
 
   page: any,
@@ -83,37 +84,34 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const { path, user } = req;
 
   // define props generator method
-  const getPageAndCreateProps = async(pagePath: string): Promise<Props> => {
-    const props: Props = {} as Props;
-
+  const injectPageInformation = async(props: Props, pagePath: string): Promise<void> => {
     const page = await PageModel.findByPathAndViewer(pagePath, user);
 
     if (page == null) {
       // check the page is forbidden or just does not exist.
       props.isForbidden = await PageModel.count({ path: pagePath }) > 0;
       logger.warn(`Page is ${props.isForbidden ? 'forbidden' : 'not found'}`, pagePath);
-      return props;
+      return;
     }
 
     // get props recursively
     if (page.redirectTo) {
       logger.debug(`Redirect to '${page.redirectTo}'`);
-      return getPageAndCreateProps(page.redirectTo);
+      return injectPageInformation(props, page.redirectTo);
     }
 
     await page.populateDataToShowRevision();
     props.page = JSON.stringify(pageService.serializeToObj(page));
-
-    return props;
   };
 
-  const props: Props = await getPageAndCreateProps(path);
+  const result = await getServerSideCommonProps(context);
+  const props: Props = result.props as Props;
+  await injectPageInformation(props, path);
 
   if (user != null) {
     props.currentUser = JSON.stringify(user.toObject());
   }
 
-  props.appTitle = appService.getAppTitle();
   props.siteUrl = appService.getSiteUrl();
   props.confidential = appService.getAppConfidential();
   props.isSearchServiceConfigured = searchService.isConfigured;
