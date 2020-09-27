@@ -7,7 +7,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
 import loggerFactory from '~/utils/logger';
 
-import Layout from '../components/Layout';
+import BasicLayout from '../components/BasicLayout';
 
 import {
   useCurrentUser, useAppTitle, useSiteUrl, useConfidential,
@@ -60,14 +60,14 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         {renderScriptTagByName('highlight-addons')}
         {renderHighlightJsStyleTag(props.highlightJsStyle)}
       </Head>
-      <Layout title="GROWI">
+      <BasicLayout title="GROWI">
         <h1>{header}</h1>
         { page && (
           <p>
             {page.revision.body}
           </p>
         ) }
-      </Layout>
+      </BasicLayout>
     </>
   );
 };
