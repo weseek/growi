@@ -3,8 +3,10 @@ import {
 } from 'next';
 import GrowiLogo from '~/client/js/components/Icons/GrowiLogo';
 
-import { CrowiRequest } from '~/interfaces/crowi-request';
+
+import { useTranslation } from '~/i18n';
 import loggerFactory from '~/utils/logger';
+import { CommonProps, getServerSideCommonProps, useCustomTitle } from '~/utils/nextjs-page-utils';
 
 import RawLayout from '../components/RawLayout';
 
@@ -16,14 +18,16 @@ import RawLayout from '../components/RawLayout';
 
 const logger = loggerFactory('growi:pages:installer');
 
-type Props = {
-  title: string,
+type Props = CommonProps & {
 };
 
 const InstallerPage: NextPage<Props> = (props: Props) => {
 
+  const { t } = useTranslation();
+  const title = useCustomTitle(props, t('installer.setup'));
+
   return (
-    <RawLayout title={props.title}>
+    <RawLayout title={title}>
       <div id="page-wrapper">
         <div className="main container-fluid">
 
@@ -65,16 +69,7 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const req: CrowiRequest = context.req as CrowiRequest;
-  const { crowi } = req;
-  const {
-    customizeService,
-  } = crowi;
-
-  const props: Props = {
-    // title: customizeService.generateCustomTitleForFixedPageName(t('installer.setup')),
-    title: customizeService.generateCustomTitleForFixedPageName('Setup'),
-  };
+  const { props } = await getServerSideCommonProps(context);
 
   return {
     props: {
