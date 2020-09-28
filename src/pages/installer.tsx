@@ -73,8 +73,8 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   return {
     props: {
-      namespacesRequired: ['translation'],
       ...props,
+      namespacesRequired: ['translation'], // TODO: override with installer namespace
     },
   };
 };

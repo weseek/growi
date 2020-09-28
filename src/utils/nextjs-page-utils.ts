@@ -4,6 +4,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 import DevidedPagePath from '~/models/devided-page-path';
 
 export type CommonProps = {
+  namespacesRequired: string[], // i18next
   appTitle: string,
   customTitleTemplate: string,
 }
@@ -18,6 +19,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
   } = crowi;
 
   const props: CommonProps = {
+    namespacesRequired: ['translation'],
     appTitle: appService.getAppTitle(),
     customTitleTemplate: customizeService.customTitleTemplate,
   };

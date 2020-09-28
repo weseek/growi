@@ -119,10 +119,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
 
   return {
-    props: {
-      namespacesRequired: ['translation'],
-      ...props,
-    },
+    props,
   };
 };
 
