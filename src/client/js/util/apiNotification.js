@@ -1,7 +1,7 @@
 // show API error/sucess toastr
 
 import * as toastr from 'toastr';
-import toArrayIfNot from '../../../lib/util/toArrayIfNot';
+import { toArrayIfNot } from '~/utils/array-utils';
 
 const toastrOption = {
   error: {
