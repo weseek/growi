@@ -17,8 +17,6 @@ const { ObjectId } = mongoose.Types;
 const { createBatchStream } = require('../util/batch-stream');
 const CollectionProgressingStatus = require('../models/vo/collection-progressing-status');
 
-// const ErrorV3 = require('../models/vo/error-apiv3');
-
 
 const BULK_IMPORT_SIZE = 100;
 
