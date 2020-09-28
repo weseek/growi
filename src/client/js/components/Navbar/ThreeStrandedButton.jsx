@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+
 const ThreeStrandedButton = (props) => {
   const { t } = props;
 
@@ -11,9 +12,12 @@ const ThreeStrandedButton = (props) => {
     }
   }
 
+
   return (
+
     <div className="btn-group grw-three-stranded-button" role="group " aria-label="three-stranded-button">
       <button
+        id="view"
         type="button"
         className="btn btn-outline-primary view-button"
         onClick={() => { threeStrandedButtonClickedHandler('view') }}
@@ -22,6 +26,7 @@ const ThreeStrandedButton = (props) => {
         { t('view') }
       </button>
       <button
+        id="edit"
         type="button"
         className="btn btn-outline-primary edit-button"
         onClick={() => { threeStrandedButtonClickedHandler('edit') }}
@@ -29,7 +34,9 @@ const ThreeStrandedButton = (props) => {
         <i className="icon-note icon-fw" />
         { t('Edit') }
       </button>
+
       <button
+        id="hackmd"
         type="button"
         className="btn btn-outline-primary hackmd-button"
         onClick={() => { threeStrandedButtonClickedHandler('hackmd') }}

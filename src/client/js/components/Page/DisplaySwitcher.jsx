@@ -13,6 +13,25 @@ const DisplaySwitcher = (props) => {
   const { navigationContainer } = props;
   const { editorMode } = navigationContainer.state;
 
+  $('#view').on('click', () => {
+    $('body').removeClass('on-edit');
+    $('body').removeClass('builtin-editor');
+    $('body').removeClass('hackmd');
+  });
+
+  $('#edit').on('click', () => {
+    $('body').addClass('on-edit');
+    $('body').addClass('builtin-editor');
+    $('body').removeClass('hackmd');
+  });
+
+  $('#hackmd').on('click', () => {
+    $('body').addClass('on-edit');
+    $('body').addClass('hackmd');
+    $('body').removeClass('builtin-editor');
+
+
+  });
 
   return (
     <>
@@ -20,14 +39,18 @@ const DisplaySwitcher = (props) => {
         <TabPane tabId="view">
           <Page />
         </TabPane>
+        {/* <div id="edit"> */}
         <TabPane tabId="edit">
           <>
             <Editor />
             <EditorNavbarBottom />
           </>
         </TabPane>
+        {/* </div> */}
         <TabPane tabId="hackmd">
           <PageEditorByHackmd />
+          <EditorNavbarBottom />
+
         </TabPane>
       </TabContent>
     </>
