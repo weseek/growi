@@ -39,18 +39,17 @@ const DisplaySwitcher = (props) => {
         <TabPane tabId="view">
           <Page />
         </TabPane>
-        {/* <div id="edit"> */}
         <TabPane tabId="edit">
-          <>
+          <div id="page-editor" className="page-editor-preview-container page-editor-preview-body">
             <Editor />
             <EditorNavbarBottom />
-          </>
+          </div>
         </TabPane>
-        {/* </div> */}
         <TabPane tabId="hackmd">
-          <PageEditorByHackmd />
-          <EditorNavbarBottom />
-
+          <div id="page-editor-with-hackmd" className="hackmd-preinit hackmd-error">
+            <PageEditorByHackmd />
+            <EditorNavbarBottom />
+          </div>
         </TabPane>
       </TabContent>
     </>
