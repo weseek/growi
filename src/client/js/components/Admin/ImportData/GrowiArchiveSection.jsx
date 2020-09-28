@@ -26,6 +26,7 @@ class GrowiArchiveSection extends React.Component {
     this.handleUpload = this.handleUpload.bind(this);
     this.discardData = this.discardData.bind(this);
     this.resetState = this.resetState.bind(this);
+    this.handleVersion = this.handleVersion.bind(this);
     this.renderDefferentVersionAlert = this.renderDefferentVersionAlert.bind(this);
   }
 
@@ -40,14 +41,11 @@ class GrowiArchiveSection extends React.Component {
   }
 
   handleUpload({
-    meta, fileName, innerFileStats, isTheSameVersion,
+    meta, fileName, innerFileStats,
   }) {
     this.setState({
       fileName,
-      innerFileStats,
-      isTheSameVersion: false, // 仮
     });
-    console.log(`isTheSameVersion from handleUpload = ${isTheSameVersion}`);
   }
 
   async discardData() {
@@ -80,10 +78,23 @@ class GrowiArchiveSection extends React.Component {
     }
   }
 
+
+  handleVersion(err){
+    console.log(`isTheSameVersionA = ${this.state.isTheSameVersion}`);
+
+    if(err === 'versions-are-not-met'){
+      this.setState({
+        isTheSameVersion: false
+      });
+      console.log(`isTheSameVersionB = ${this.state.isTheSameVersion}`);
+    }
+  }
+
   renderDefferentVersionAlert() {
     const { t } = this.props;
     const { isTheSameVersion } = this.state;
-    console.log(`versionsNotMetinRenderDefferentVersionAlert=${isTheSameVersion}`);
+
+    console.log(`isTheSameVersionD =${isTheSameVersion}`);
     return (
       <div className="alert alert-warning mt-3">
         {t('admin:importer_management.growi_settings.errors.different_versions')}
@@ -98,7 +109,7 @@ class GrowiArchiveSection extends React.Component {
   render() {
     const { t } = this.props;
     const { isTheSameVersion } = this.state;
-    console.log(`isTheSameVersion=${isTheSameVersion}`);
+    console.log(`isTheSameVersion XXX =${isTheSameVersion}`);
 
     return (
       <Fragment>
@@ -125,12 +136,13 @@ class GrowiArchiveSection extends React.Component {
               fileName={this.state.fileName}
               innerFileStats={this.state.innerFileStats}
               onDiscard={this.discardData}
-            />
+              />
           </div>
         )
-          : (
-            <UploadForm
+        : (
+          <UploadForm
               onUpload={this.handleUpload}
+              onVersion={this.handleVersion}
             />
           )}
       </Fragment>

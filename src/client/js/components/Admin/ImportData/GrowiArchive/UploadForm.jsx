@@ -36,8 +36,9 @@ class UploadForm extends React.Component {
     } catch(err) {
       if(err[0].code === 'versions-are-not-met'){
         console.log('エラーが出ました versions-are-not-met!!');
+        this.props.onVersion(err[0].code);
       } else {
-        console.log(`普通のエラーが出ました`);
+        console.log(`別のエラーが出ました`);
       }
     }
 
@@ -93,6 +94,8 @@ UploadForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   onUpload: PropTypes.func.isRequired,
+  isTheSameVersion: PropTypes.bool,
+  onVersion: PropTypes.func,
 };
 
 /**
