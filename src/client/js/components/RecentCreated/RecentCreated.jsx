@@ -36,7 +36,7 @@ class RecentCreated extends React.Component {
     const { appContainer, userId } = this.props;
 
     // const userId = appContainer.currentUserId;
-    const limit = appContainer.getConfig().pageListLimitForUserPage;
+    const limit = appContainer.getConfig().pageLimitationM;
     const offset = (selectPageNumber - 1) * limit;
 
     // pagesList get and pagination calculate
