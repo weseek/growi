@@ -14,8 +14,6 @@ import {
 import Apiv1ErrorHandler from '../util/apiv1ErrorHandler';
 
 type State = {
-  // stetes for contents
-  recentlyUpdatedPages: any[],
 }
 
 /**
@@ -67,11 +65,6 @@ export default class AppContainer extends Container<State> {
 
   constructor() {
     super();
-
-    this.state = {
-      // stetes for contents
-      recentlyUpdatedPages: [],
-    };
 
     // const body = document.querySelector('body');
 
@@ -294,11 +287,6 @@ export default class AppContainer extends Container<State> {
   //     window.localStorage.removeItem(key);
   //   });
   // }
-
-  async retrieveRecentlyUpdated() {
-    const { data } = await this.apiv3Get('/pages/recent');
-    this.setState({ recentlyUpdatedPages: data.pages });
-  }
 
   // launchHandsontableModal(componentKind, beginLineNumber, endLineNumber) {
   //   let targetComponent;
