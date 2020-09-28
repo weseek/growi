@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import loggerFactory from '@alias/logger';
+import loggerFactory from '~/utils/logger';
 
 import DevidedPagePath from '~/models/devided-page-path';
 import LinkedPagePath from '~/models/linked-page-path';
@@ -16,7 +16,8 @@ import { toastError } from '../../util/apiNotification';
 import FormattedDistanceDate from '../FormattedDistanceDate';
 import UserPicture from '../User/UserPicture';
 
-const logger = loggerFactory('growi:History');
+const logger = loggerFactory('growi:cli:RecentChanges');
+
 class RecentChanges extends React.Component {
 
   static propTypes = {
@@ -41,7 +42,8 @@ class RecentChanges extends React.Component {
       await appContainer.retrieveRecentlyUpdated();
     }
     catch (error) {
-      logger.error('failed to save', error);
+      // logger.error('failed to save', error);
+      console.log('failed to save', error);
       toastError(error, 'Error occurred in updating History');
     }
   }
