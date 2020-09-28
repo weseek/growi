@@ -134,13 +134,12 @@ class ImportService {
     const parseZipFilePromises = zipFiles.map((file) => {
       const zipFile = this.getFile(file);
       // return this.growiBridgeService.parseZipFile(zipFile);
-      const parsedZipfile =  this.growiBridgeService.parseZipFile(zipFile);
-      this.validate(parsedZipfile);
-      return parsedZipfile
+      return this.growiBridgeService.parseZipFile(zipFile);
     });
     for await (const stat of parseZipFilePromises) {
       zipFileStats.push(stat);
     }
+
 
     // filter null object (broken zip)
     const filtered = zipFileStats
@@ -150,8 +149,23 @@ class ImportService {
 
     const isImporting = this.currentProgressingStatus != null;
 
+    const zipFileStat = filtered.pop();
+    let isTheSameVersion = false;
+
+    if (zipFileStat != null) {
+      try {
+        this.validate(zipFileStat.meta);
+        isTheSameVersion = true;
+      } catch {
+        //isTheSameVersion = false;
+        // logger.warn
+      }
+    }
+
+
     return {
-      zipFileStat: filtered.pop(),
+      isTheSameVersion,
+      zipFileStat,
       isImporting,
       progressList: isImporting ? this.currentProgressingStatus.progressList : null,
     };

@@ -36,7 +36,9 @@ class GrowiArchiveSection extends React.Component {
 
     if (res.data.zipFileStat != null) {
       const { fileName, innerFileStats } = res.data.zipFileStat;
-      this.setState({ fileName, innerFileStats });
+      const { isTheSameVersion } = res.data;
+
+      this.setState({ fileName, innerFileStats, isTheSameVersion });
     }
   }
 
