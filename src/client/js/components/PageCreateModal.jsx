@@ -9,21 +9,22 @@ import { format } from 'date-fns';
 import urljoin from 'url-join';
 
 import { pathUtils } from 'growi-commons';
+import { useCurrentUser, useSearchServiceReachable } from '~/stores/context';
 import { userPageRoot } from '~/utils/path-utils';
 
-import AppContainer from '../services/AppContainer';
 import NavigationContainer from '../services/NavigationContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import PagePathAutoComplete from './PagePathAutoComplete';
 
 const PageCreateModal = (props) => {
-  const { t, appContainer, navigationContainer } = props;
+  const { t, navigationContainer } = props;
 
-  const config = appContainer.getConfig();
-  const isReachable = config.isSearchServiceReachable;
+  const { data: currentUser } = useCurrentUser();
+  const { data: isReachable } = useSearchServiceReachable();
+
   const pathname = decodeURI(window.location.pathname);
-  const userPageRootPath = userPageRoot(appContainer.currentUser);
+  const userPageRootPath = userPageRoot(currentUser);
   const parentPath = pathUtils.addTrailingSlash(pathname);
   const now = format(new Date(), 'yyyy/MM/dd');
 
@@ -261,12 +262,11 @@ const PageCreateModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const ModalControlWrapper = withUnstatedContainers(PageCreateModal, [AppContainer, NavigationContainer]);
+const ModalControlWrapper = withUnstatedContainers(PageCreateModal, [NavigationContainer]);
 
 
 PageCreateModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 
