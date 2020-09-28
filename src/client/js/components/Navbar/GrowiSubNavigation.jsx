@@ -147,7 +147,7 @@ const GrowiSubNavigation = (props) => {
   // Display only the RevisionPath
   if (isPageNotFound || isPageForbidden) {
     return (
-      <div className="grw-subnav d-flex align-items-center justify-content-between mt-5">
+      <div className="grw-subnav d-flex align-items-center justify-content-between">
         <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
       </div>
     );
