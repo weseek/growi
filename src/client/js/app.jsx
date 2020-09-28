@@ -8,7 +8,7 @@ import loggerFactory from '@alias/logger';
 import ErrorBoundary from './components/ErrorBoudary';
 import SearchPage from './components/SearchPage';
 import TagsList from './components/TagsList';
-// import PageEditor from './components/PageEditor';
+import PageEditor from './components/PageEditor';
 import DisplaySwitcher from './components/Page/DisplaySwitcher';
 import EditorNavbarBottom from './components/PageEditor/EditorNavbarBottom';
 import { defaultEditorOptions, defaultPreviewOptions } from './components/PageEditor/OptionsSelector';
@@ -111,7 +111,7 @@ if (pageContainer.state.path != null) {
 // additional definitions if user is logged in
 if (appContainer.currentUser != null) {
   Object.assign(componentMappings, {
-    // 'page-editor': <PageEditor />,
+    'page-editor': <PageEditor />,
     'display-switcher': <DisplaySwitcher />,
     'editor-navbar-bottom': <EditorNavbarBottom />,
 

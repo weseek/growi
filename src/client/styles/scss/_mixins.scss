@@ -37,8 +37,8 @@
       flex: 1;
       flex-direction: column;
 
-      #edit,
-      #hackmd {
+      .tab-pane#edit,
+      .tab-pane#hackmd {
         height: calc(100vh - #{$header-plus-footer} + 17px);
         min-height: calc(100vh - #{$header-plus-footer} + 17px); // for IE11
       }
