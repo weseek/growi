@@ -1,7 +1,10 @@
 import { Container } from 'unstated';
 
 import axios from 'axios';
-import urljoin from 'url-join';
+
+import {
+  apiv3Request, apiv3Get, apiv3Post, apiv3Put, apiv3Delete,
+} from '../util/apiv3-client';
 
 // import InterceptorManager from '~/service/interceptor-manager';
 
@@ -9,8 +12,6 @@ import urljoin from 'url-join';
 // import GrowiRenderer from '../util/GrowiRenderer';
 
 import Apiv1ErrorHandler from '../util/apiv1ErrorHandler';
-
-import apiv3ErrorHandler from '../util/apiv3ErrorHandler';
 
 type State = {
   // stetes for contents
@@ -22,6 +23,47 @@ type State = {
  * @extends {Container} unstated Container
  */
 export default class AppContainer extends Container<State> {
+
+  /**
+   * for backward-compatibility
+   * @deprecated
+   */
+  apiv3Request = apiv3Request;
+
+  /**
+   * for backward-compatibility
+   * @deprecated
+   */
+  apiv3Get = apiv3Get;
+
+  /**
+   * for backward-compatibility
+   * @deprecated
+   */
+  apiv3Post = apiv3Post;
+
+  /**
+   * for backward-compatibility
+   * @deprecated
+   */
+  apiv3Put = apiv3Put;
+
+  /**
+   * for backward-compatibility
+   * @deprecated
+   */
+  apiv3Delete = apiv3Delete;
+
+  /**
+   * for backward-compatibility
+   * @deprecated
+   */
+  apiv3 = {
+    get: apiv3Get.bind,
+    post: apiv3Post.bind,
+    put: apiv3Put.bind,
+    delete: apiv3Delete.bind,
+  };
 
   constructor() {
     super();
@@ -58,14 +100,6 @@ export default class AppContainer extends Container<State> {
     this.apiPost = this.apiPost.bind(this);
     this.apiDelete = this.apiDelete.bind(this);
     this.apiRequest = this.apiRequest.bind(this);
-
-    this.apiv3Root = '/_api/v3';
-    this.apiv3 = {
-      get: this.apiv3Get.bind(this),
-      post: this.apiv3Post.bind(this),
-      put: this.apiv3Put.bind(this),
-      delete: this.apiv3Delete.bind(this),
-    };
   }
 
   /**
@@ -319,45 +353,6 @@ export default class AppContainer extends Container<State> {
     }
 
     throw new Error(res.data.error);
-  }
-
-  async apiv3Request(method, path, params) {
-    try {
-      const res = await axios[method](urljoin(this.apiv3Root, path), params);
-      return res.data;
-    }
-    catch (err) {
-      const errors = apiv3ErrorHandler(err);
-      throw errors;
-    }
-  }
-
-  async apiv3Get(path, params) {
-    return this.apiv3Request('get', path, { params });
-  }
-
-  async apiv3Post(path, params = {}) {
-    if (!params._csrf) {
-      params._csrf = this.csrfToken;
-    }
-
-    return this.apiv3Request('post', path, params);
-  }
-
-  async apiv3Put(path, params = {}) {
-    if (!params._csrf) {
-      params._csrf = this.csrfToken;
-    }
-
-    return this.apiv3Request('put', path, params);
-  }
-
-  async apiv3Delete(path, params = {}) {
-    if (!params._csrf) {
-      params._csrf = this.csrfToken;
-    }
-
-    return this.apiv3Request('delete', path, { params });
   }
 
 }
