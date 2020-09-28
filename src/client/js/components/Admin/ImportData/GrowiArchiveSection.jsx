@@ -79,7 +79,7 @@ class GrowiArchiveSection extends React.Component {
   }
 
 
-  handleVersion(err){
+  handleVersion(err) {
     console.log(`isTheSameVersionA = ${this.state.isTheSameVersion}`);
 
     if(err === 'versions-are-not-met'){
