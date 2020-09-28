@@ -42,8 +42,7 @@ class RecentChanges extends React.Component {
       await appContainer.retrieveRecentlyUpdated();
     }
     catch (error) {
-      // logger.error('failed to save', error);
-      console.log('failed to save', error);
+      logger.error('failed to save', error);
       toastError(error, 'Error occurred in updating History');
     }
   }

@@ -1,4 +1,5 @@
-import bunyan, { LogLevel } from 'bunyan'; // will be replaced to browser-bunyan on browser by webpack
+import bunyan, { createLogger as createLoggerForServer, LogLevel } from 'bunyan';
+import { createLogger as createLoggerForBrowser } from 'browser-bunyan';
 import minimatch from 'minimatch';
 
 import { logger as configOfLogger } from '^/config';
@@ -61,9 +62,13 @@ export function determineLogLevel(name: string): LogLevel {
 }
 
 const loggerFactory = function(name: string): bunyan {
+  const createLogger = isBrowser
+    ? createLoggerForBrowser
+    : createLoggerForServer;
+
   // create logger instance if absent
   if (loggers[name] == null) {
-    loggers[name] = bunyan.createLogger({
+    loggers[name] = createLogger({
       name,
       stream,
       level: determineLogLevel(name),
