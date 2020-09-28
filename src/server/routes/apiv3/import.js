@@ -311,8 +311,6 @@ module.exports = (crowi) => {
       const data = await growiBridgeService.parseZipFile(zipFile);
     }
     catch (err) {
-      console.log('aaa');
-      const varidationErr = 'versions-are-not-met';
       // TODO: use ApiV3Error
       logger.error(err);
       return res.status(500).send({ status: 'ERROR' });
