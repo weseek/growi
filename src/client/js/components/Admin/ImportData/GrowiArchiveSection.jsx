@@ -18,7 +18,7 @@ class GrowiArchiveSection extends React.Component {
     this.initialState = {
       fileName: null,
       innerFileStats: null,
-      isTheSameVersion: true,
+      isTheSameVersion: null,
     };
 
     this.state = this.initialState;
@@ -84,7 +84,7 @@ class GrowiArchiveSection extends React.Component {
 
     if (err === 'versions-are-not-met') {
       this.setState({
-        isTheSameVersion: false
+        isTheSameVersion: false,
       });
       console.log(`isTheSameVersionB = ${this.state.isTheSameVersion}`);
     }
@@ -129,9 +129,9 @@ class GrowiArchiveSection extends React.Component {
           </ul>
         </div>
 
+        {isTheSameVersion === false && this.renderDefferentVersionAlert()}
         {this.state.fileName != null ? (
           <div className="px-4">
-            {isTheSameVersion === false && this.renderDefferentVersionAlert()}
             <ImportForm
               fileName={this.state.fileName}
               innerFileStats={this.state.innerFileStats}
