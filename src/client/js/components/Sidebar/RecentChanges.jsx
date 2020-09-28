@@ -31,9 +31,9 @@ class RecentChanges extends React.Component {
     this.reloadData = this.reloadData.bind(this);
   }
 
-  async componentDidMount() {
-    this.reloadData();
-  }
+  // async componentDidMount() {
+  //   this.reloadData();
+  // }
 
   async reloadData() {
     const { appContainer } = this.props;

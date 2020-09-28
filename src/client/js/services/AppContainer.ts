@@ -261,10 +261,10 @@ export default class AppContainer extends Container<State> {
   //   });
   // }
 
-  // async retrieveRecentlyUpdated() {
-  //   const { data } = await this.apiv3Get('/pages/recent');
-  //   this.setState({ recentlyUpdatedPages: data.pages });
-  // }
+  async retrieveRecentlyUpdated() {
+    const { data } = await this.apiv3Get('/pages/recent');
+    this.setState({ recentlyUpdatedPages: data.pages });
+  }
 
   // launchHandsontableModal(componentKind, beginLineNumber, endLineNumber) {
   //   let targetComponent;
