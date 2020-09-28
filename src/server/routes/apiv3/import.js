@@ -160,6 +160,12 @@ module.exports = (crowi) => {
       return res.apiv3(status);
     }
     catch (err) {
+      console.log(`errSSS = ${err}`);
+      if (err.message === 'the version of this growi and the growi that exported the data are not met') {
+        const varidationErr = 'versions-are-not-met!!!!';
+        console.log('versions-are-not-met!!!!');
+        return res.apiv3Err(new ErrorV3(err.message, varidationErr), 500);
+      }
       return res.apiv3Err(err, 500);
     }
   });

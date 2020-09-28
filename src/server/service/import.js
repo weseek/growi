@@ -133,7 +133,10 @@ class ImportService {
     const zipFileStats = [];
     const parseZipFilePromises = zipFiles.map((file) => {
       const zipFile = this.getFile(file);
-      return this.growiBridgeService.parseZipFile(zipFile);
+      // return this.growiBridgeService.parseZipFile(zipFile);
+      const parsedZipfile =  this.growiBridgeService.parseZipFile(zipFile);
+      this.validate(parsedZipfile);
+      return parsedZipfile
     });
     for await (const stat of parseZipFilePromises) {
       zipFileStats.push(stat);
