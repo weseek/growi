@@ -33,15 +33,14 @@ class UploadForm extends React.Component {
 
     try {
       const { data } = await this.props.appContainer.apiv3Post('/import/upload', formData);
+      // TODO: toastSuccess, toastError
+      this.props.onUpload(data);
     }
     catch (err) {
       if (err[0].code === 'versions-are-not-met') {
         console.log('エラーが出ました versions-are-not-met!!');
         this.props.onVersion(err[0].code);
       }
-    } finally {
-      this.props.onUpload(data);
-      // TODO: toastSuccess, toastError
     }
   }
 
