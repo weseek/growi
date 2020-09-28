@@ -31,20 +31,19 @@ class UploadForm extends React.Component {
     formData.append('_csrf', this.props.appContainer.csrfToken);
     formData.append('file', this.inputRef.current.files[0]);
 
-    try{
+    try {
       const { data } = await this.props.appContainer.apiv3Post('/import/upload', formData);
     } catch(err) {
-      if(err[0].code === 'versions-are-not-met'){
+      if (err[0].code === 'versions-are-not-met') {
         console.log('エラーが出ました versions-are-not-met!!');
         this.props.onVersion(err[0].code);
       } else {
         console.log(`別のエラーが出ました`);
       }
+    } finally {
+      this.props.onUpload(data);
+      // TODO: toastSuccess, toastError
     }
-
-
-    this.props.onUpload(data);
-    // TODO: toastSuccess, toastError
   }
 
   validateForm() {
