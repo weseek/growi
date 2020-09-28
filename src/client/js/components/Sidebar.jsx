@@ -1,3 +1,4 @@
+import dynamic from 'next/dynamic';
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -12,11 +13,7 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 import NavigationContainer from '../services/NavigationContainer';
 
-import DrawerToggler from './Navbar/DrawerToggler';
-
 import SidebarNav from './Sidebar/SidebarNav';
-import SidebarContents from './Sidebar/SidebarContents';
-import StickyStretchableScroller from './StickyStretchableScroller';
 
 const sidebarDefaultWidth = 320;
 
@@ -148,6 +145,10 @@ class Sidebar extends React.Component {
 
   renderSidebarContents = () => {
     const scrollTargetSelector = '#grw-sidebar-contents-scroll-target';
+
+    const StickyStretchableScroller = dynamic(() => import('./StickyStretchableScroller'), { ssr: false });
+    const DrawerToggler = dynamic(() => import('./Navbar/DrawerToggler'), { ssr: false });
+    const SidebarContents = dynamic(() => import('./Sidebar/SidebarContents'), { ssr: false });
 
     return (
       <>

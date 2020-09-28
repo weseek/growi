@@ -3,6 +3,7 @@ import React, { ReactNode } from 'react';
 
 import GrowiNavbar from '~/client/js/components/Navbar/GrowiNavbar';
 import GrowiNavbarBottom from '~/client/js/components/Navbar/GrowiNavbarBottom';
+import Sidebar from '~/client/js/components/Sidebar';
 
 import RawLayout from './RawLayout';
 
@@ -22,7 +23,7 @@ const BasicLayout = ({ children, title }: Props): JSX.Element => {
         <GrowiNavbar />
 
         <div className="page-wrapper d-flex d-print-block">
-          <div id="grw-sidebar-wrapper"></div>
+          <Sidebar />
 
           <div className="flex-fill mw-0">
             {children}
