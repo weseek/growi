@@ -82,21 +82,15 @@ class GrowiArchiveSection extends React.Component {
 
 
   handleVersion(err) {
-    console.log(`isTheSameVersionA = ${this.state.isTheSameVersion}`);
-
     if (err === 'versions-are-not-met') {
       this.setState({
         isTheSameVersion: false,
       });
-      console.log(`isTheSameVersionB = ${this.state.isTheSameVersion}`);
     }
   }
 
   renderDefferentVersionAlert() {
     const { t } = this.props;
-    const { isTheSameVersion } = this.state;
-
-    console.log(`isTheSameVersionD =${isTheSameVersion}`);
     return (
       <div className="alert alert-warning mt-3">
         {t('admin:importer_management.growi_settings.errors.different_versions')}
@@ -111,7 +105,6 @@ class GrowiArchiveSection extends React.Component {
   render() {
     const { t } = this.props;
     const { isTheSameVersion } = this.state;
-    console.log(`isTheSameVersion XXX =${isTheSameVersion}`);
 
     return (
       <Fragment>
