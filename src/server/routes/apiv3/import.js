@@ -306,7 +306,7 @@ module.exports = (crowi) => {
   router.post('/upload', uploads.single('file'), accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
     const { file } = req;
     const zipFile = importService.getFile(file.filename);
-    let data;
+    let data = null;
 
     try {
       data = await growiBridgeService.parseZipFile(zipFile);
