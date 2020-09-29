@@ -132,20 +132,20 @@ class GrowiArchiveSection extends React.Component {
         </div>
 
         {isTheSameVersion === false && this.renderDefferentVersionAlert()}
-        {this.state.fileName != null && isTheSameVersion === true ?  (
+        {this.state.fileName != null && isTheSameVersion === true ? (
           <div className="px-4">
             <ImportForm
               fileName={this.state.fileName}
               innerFileStats={this.state.innerFileStats}
               onDiscard={this.discardData}
-              />
+            />
           </div>
         )
         : (
           <UploadForm
-              onUpload={this.handleUpload}
-              onVersion={this.handleVersion}
-            />
+            onUpload={this.handleUpload}
+            onVersion={this.handleVersion}
+          />
           )}
       </Fragment>
     );
