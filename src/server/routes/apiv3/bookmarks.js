@@ -98,9 +98,9 @@ module.exports = (crowi) => {
     const { pageId } = req.query;
 
     try {
-      const isBookmarked = await Bookmark.findByPageIdAndUserId(pageId, req.user);
+      const bookmarks = await Bookmark.findByPageIdAndUserId(pageId, req.user);
       const sumOfBookmarks = await Bookmark.countByPageId(pageId);
-      return res.apiv3({ isBookmarked, sumOfBookmarks });
+      return res.apiv3({ bookmarks, sumOfBookmarks });
     }
     catch (err) {
       logger.error('get-bookmark-failed', err);
