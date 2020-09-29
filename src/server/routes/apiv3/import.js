@@ -306,9 +306,10 @@ module.exports = (crowi) => {
   router.post('/upload', uploads.single('file'), accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
     const { file } = req;
     const zipFile = importService.getFile(file.filename);
+    let data;
 
     try {
-      const data = await growiBridgeService.parseZipFile(zipFile);
+      data = await growiBridgeService.parseZipFile(zipFile);
     }
     catch (err) {
       // TODO: use ApiV3Error
@@ -318,8 +319,9 @@ module.exports = (crowi) => {
     try {
       // validate with meta.json
       importService.validate(data.meta);
-    } catch {
-      const msg = 'the version of this growi and the growi that exported the data are not met'
+    }
+    catch {
+      const msg = 'the version of this growi and the growi that exported the data are not met';
       const varidationErr = 'versions-are-not-met';
       return res.apiv3Err(new ErrorV3(msg, varidationErr), 500);
     }
