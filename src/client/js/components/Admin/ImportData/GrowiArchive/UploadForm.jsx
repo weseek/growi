@@ -38,7 +38,7 @@ class UploadForm extends React.Component {
     }
     catch (err) {
       if (err[0].code === 'versions-are-not-met') {
-        this.props.onVersion(err[0].code);
+        this.props.onCheckVersion(err[0].code);
       }
     }
   }
@@ -91,7 +91,7 @@ UploadForm.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   onUpload: PropTypes.func.isRequired,
   isTheSameVersion: PropTypes.bool,
-  onVersion: PropTypes.func,
+  onCheckVersion: PropTypes.func,
 };
 
 /**
