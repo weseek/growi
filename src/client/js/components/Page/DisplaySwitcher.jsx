@@ -13,44 +13,25 @@ const DisplaySwitcher = (props) => {
   const { navigationContainer } = props;
   const { editorMode } = navigationContainer.state;
 
-  $('#view').on('click', () => {
-    $('body').removeClass('on-edit');
-    $('body').removeClass('builtin-editor');
-    $('body').removeClass('hackmd');
-  });
-
-  $('#edit').on('click', () => {
-    $('body').addClass('on-edit');
-    $('body').addClass('builtin-editor');
-    $('body').removeClass('hackmd');
-  });
-
-  $('#hackmd').on('click', () => {
-    $('body').addClass('on-edit');
-    $('body').addClass('hackmd');
-    $('body').removeClass('builtin-editor');
-
-
-  });
-
   return (
-    <TabContent activeTab={editorMode}>
-      <TabPane tabId="view">
-        <Page />
-      </TabPane>
-      <TabPane tabId="edit">
-        <div id="page-editor" className="page-editor-preview-container page-editor-preview-body">
-          <Editor />
-          <EditorNavbarBottom />
-        </div>
-      </TabPane>
-      <TabPane tabId="hackmd">
-        <div id="page-editor-with-hackmd" className="hackmd-preinit hackmd-error">
-          <PageEditorByHackmd />
-          <EditorNavbarBottom />
-        </div>
-      </TabPane>
-    </TabContent>
+    <>
+      <TabContent activeTab={editorMode}>
+        <TabPane tabId="view">
+          <Page />
+        </TabPane>
+        <TabPane tabId="edit">
+          <div id="page-editor" className="page-editor-preview-container page-editor-preview-body">
+            <Editor />
+          </div>
+        </TabPane>
+        <TabPane tabId="hackmd">
+          <div className="hackmd-preinit hackmd-error">
+            <PageEditorByHackmd />
+          </div>
+        </TabPane>
+      </TabContent>
+      {/* <EditorNavbarBottom /> */}
+    </>
   );
 };
 

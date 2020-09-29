@@ -1,5 +1,5 @@
 {% if page %}
-<div id="content-main" class="content-main container col"
+<div id="content-main" class="content-main container"
   data-path="{{ encodeURI(page.path) }}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
   data-page-id="{% if page %}{{ page._id.toString() }}{% endif %}"
@@ -40,7 +40,7 @@
 {% endif %}
 
   {% include 'page_alerts.html' %}
-  <div class="tab-content" id="display-switcher">
+  <div id="display-switcher">
     <script type="text/template" id="raw-text-original">{{ revision.body.toString() | encodeHTML }}</script>
     {% include '../_form.html' %}
   </div>

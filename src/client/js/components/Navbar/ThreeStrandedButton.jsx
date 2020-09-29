@@ -11,10 +11,27 @@ const ThreeStrandedButton = (props) => {
     }
   }
 
+  $('#view').on('click', () => {
+    $('body').removeClass('on-edit');
+    $('body').removeClass('builtin-editor');
+    $('body').removeClass('hackmd');
+  });
+
+  $('#edit').on('click', () => {
+    $('body').addClass('on-edit');
+    $('body').addClass('builtin-editor');
+    $('body').removeClass('hackmd');
+  });
+
+  $('#hackmd').on('click', () => {
+    $('body').addClass('on-edit');
+    $('body').addClass('hackmd');
+    $('body').removeClass('builtin-editor');
+  });
+
   return (
     <div className="btn-group grw-three-stranded-button" role="group " aria-label="three-stranded-button">
       <button
-        id="view"
         type="button"
         className="btn btn-outline-primary view-button"
         onClick={() => { threeStrandedButtonClickedHandler('view') }}
@@ -23,7 +40,6 @@ const ThreeStrandedButton = (props) => {
         { t('view') }
       </button>
       <button
-        id="edit"
         type="button"
         className="btn btn-outline-primary edit-button"
         onClick={() => { threeStrandedButtonClickedHandler('edit') }}
@@ -33,7 +49,6 @@ const ThreeStrandedButton = (props) => {
       </button>
 
       <button
-        id="hackmd"
         type="button"
         className="btn btn-outline-primary hackmd-button"
         onClick={() => { threeStrandedButtonClickedHandler('hackmd') }}
