@@ -155,7 +155,6 @@ module.exports = function(crowi, app) {
   app.post('/_api/comments.add'       , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, comment.api.add);
   app.post('/_api/comments.update'    , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, comment.api.update);
   app.post('/_api/comments.remove'    , accessTokenParser , loginRequiredStrictly , csrf, comment.api.remove);
-  app.get('/_api/attachments.list'    , accessTokenParser , loginRequired , attachment.api.list);
   app.post('/_api/attachments.add'                  , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, attachment.api.add);
   app.post('/_api/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, attachment.api.uploadProfileImage);
   app.post('/_api/attachments.remove'               , accessTokenParser , loginRequiredStrictly , csrf, attachment.api.remove);
