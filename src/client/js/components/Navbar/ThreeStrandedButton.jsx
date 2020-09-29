@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-
 const ThreeStrandedButton = (props) => {
   const { t } = props;
 
@@ -12,9 +11,7 @@ const ThreeStrandedButton = (props) => {
     }
   }
 
-
   return (
-
     <div className="btn-group grw-three-stranded-button" role="group " aria-label="three-stranded-button">
       <button
         id="view"

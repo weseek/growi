@@ -8,11 +8,9 @@ import loggerFactory from '@alias/logger';
 import ErrorBoundary from './components/ErrorBoudary';
 import SearchPage from './components/SearchPage';
 import TagsList from './components/TagsList';
-import PageEditor from './components/PageEditor';
 import DisplaySwitcher from './components/Page/DisplaySwitcher';
 import EditorNavbarBottom from './components/PageEditor/EditorNavbarBottom';
 import { defaultEditorOptions, defaultPreviewOptions } from './components/PageEditor/OptionsSelector';
-// import PageEditorByHackmd from './components/PageEditorByHackmd';
 import Page from './components/Page';
 import PageComments from './components/PageComments';
 import PageTimeline from './components/PageTimeline';
@@ -108,17 +106,10 @@ if (pageContainer.state.path != null) {
 // additional definitions if user is logged in
 if (appContainer.currentUser != null) {
   Object.assign(componentMappings, {
-    'page-editor': <PageEditor />,
     'display-switcher': <DisplaySwitcher />,
     'editor-navbar-bottom': <EditorNavbarBottom />,
 
   });
-
-  // if (pageContainer.state.pageId != null) {
-  //   Object.assign(componentMappings, {
-  //     'page-editor-with-hackmd': <PageEditorByHackmd />,
-  //   });
-  // }
 }
 
 Object.keys(componentMappings).forEach((key) => {
