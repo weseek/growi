@@ -168,7 +168,7 @@ export default class PageContainer extends Container {
     this.setState({ sumOfBookmarks: response.data.sumOfBookmarks });
   }
 
-  async updateBookmark() {
+  async toggleBookmark() {
     const bool = !this.state.isBookmarked;
     await this.appContainer.apiv3Put('/bookmarks', { pageId: this.state.pageId, bool });
     this.retrieveBookmarkInfo();

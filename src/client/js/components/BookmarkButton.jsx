@@ -17,7 +17,7 @@ class BookmarkButton extends React.Component {
     const { pageContainer } = this.props;
 
     try {
-      pageContainer.updateBookmark();
+      pageContainer.toggleBookmark();
     }
     catch (err) {
       toastError(err);
