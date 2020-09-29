@@ -155,9 +155,9 @@ class ImportService {
         this.validate(zipFileStat.meta);
         isTheSameVersion = true;
       }
-      catch {
-        // isTheSameVersion = false;
-        // logger.warn
+      catch (err) {
+        isTheSameVersion = false;
+        logger.error('the versions are not met', err);
       }
     }
 
