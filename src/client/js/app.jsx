@@ -26,6 +26,7 @@ import MyDraftList from './components/MyDraftList/MyDraftList';
 import SeenUserList from './components/User/SeenUserList';
 import LikerList from './components/User/LikerList';
 import TableOfContents from './components/TableOfContents';
+import UserInfo from './components/User/UserInfo';
 import Fab from './components/Fab';
 
 import PersonalSettings from './components/Me/PersonalSettings';
@@ -105,6 +106,7 @@ if (pageContainer.state.path != null) {
     'page': <Page />,
     'grw-subnav-container': <GrowiSubNavigation />,
     'grw-subnav-switcher-container': <GrowiSubNavigationSwitcher />,
+    'user-info': <UserInfo />,
   });
 }
 // additional definitions if user is logged in
