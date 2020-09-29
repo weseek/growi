@@ -43,6 +43,14 @@ $table-hover-bg: $bgcolor-table-hover;
 }
 
 /*
+ * card
+ */
+.card.card-disabled {
+  background-color: darken($bgcolor-card, 5%);
+  border-color: $gray-200;
+}
+
+/*
  * GROWI Login form
  */
 .nologin {
@@ -183,6 +191,15 @@ $table-hover-bg: $bgcolor-table-hover;
 
   .btn.btn-outline-secondary {
     border-color: $border-color;
+  }
+}
+
+/*
+ * GROWI Link Edit Modal
+ */
+.link-edit-modal {
+  span i {
+    color: $gray-400;
   }
 }
 
