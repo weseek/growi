@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../../UnstatedUtils';
 import AppContainer from '../../../../services/AppContainer';
-// import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { toastError } from '../../../../util/apiNotification';
 
 class UploadForm extends React.Component {
 
@@ -39,6 +39,9 @@ class UploadForm extends React.Component {
     catch (err) {
       if (err[0].code === 'versions-are-not-met') {
         this.props.onVersionMismatch(err[0].code);
+      }
+      else {
+        toastError(err);
       }
     }
   }
