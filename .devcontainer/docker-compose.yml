@@ -37,7 +37,7 @@ services:
       - hackmd
 
   mongo:
-    image: mongo:3.6
+    image: mongo:4.4
     restart: unless-stopped
     ports:
       - 27017:27017
