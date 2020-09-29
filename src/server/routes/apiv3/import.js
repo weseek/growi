@@ -319,6 +319,7 @@ module.exports = (crowi) => {
     try {
       // validate with meta.json
       importService.validate(data.meta);
+      return res.apiv3(data);
     }
     catch {
       const msg = 'the version of this growi and the growi that exported the data are not met';

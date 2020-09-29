@@ -47,6 +47,8 @@ class GrowiArchiveSection extends React.Component {
   }) {
     this.setState({
       fileName,
+      innerFileStats,
+      isTheSameVersion: true,
     });
   }
 
