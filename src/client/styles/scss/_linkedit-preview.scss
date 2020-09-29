@@ -1,8 +1,16 @@
-.modal .modal-body .linkedit-preview {
-  height: 0;
-  padding-bottom: 50%;
-
+.linkedit-preview {
   .page-editor-preview-body {
-    overflow-y: unset;
+    max-height: 70vh;
+    padding-top: 0px;
+    margin: 0px -10px 0px -10px;
+    .wiki {
+      overflow-y: scroll;
+    }
   }
+}
+
+// page preview button
+.btn-page-preview svg {
+  width: 18px;
+  height: 18px;
 }
