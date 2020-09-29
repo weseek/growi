@@ -26,7 +26,7 @@ class GrowiArchiveSection extends React.Component {
     this.handleUpload = this.handleUpload.bind(this);
     this.discardData = this.discardData.bind(this);
     this.resetState = this.resetState.bind(this);
-    this.handleVersion = this.handleVersion.bind(this);
+    this.handleMismatchedVersions = this.handleMismatchedVersions.bind(this);
     this.renderDefferentVersionAlert = this.renderDefferentVersionAlert.bind(this);
   }
 
@@ -83,12 +83,11 @@ class GrowiArchiveSection extends React.Component {
   }
 
 
-  handleVersion(err) {
-    if (err === 'versions-are-not-met') {
-      this.setState({
-        isTheSameVersion: false,
-      });
-    }
+  handleMismatchedVersions(err) {
+    this.setState({
+      isTheSameVersion: false,
+    });
+
   }
 
   renderDefferentVersionAlert() {
@@ -139,7 +138,7 @@ class GrowiArchiveSection extends React.Component {
         : (
           <UploadForm
             onUpload={this.handleUpload}
-            onVersionMismatch={this.handleVersion}
+            onVersionMismatch={this.handleMismatchedVersions}
           />
           )}
       </Fragment>
