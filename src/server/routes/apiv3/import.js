@@ -28,7 +28,6 @@ const router = express.Router();
  *        description: ImportStatus
  *        type: object
  *        properties:
- *          isTheSameVersion:
  *          zipFileStat:
  *            type: object
  *            description: the property object
