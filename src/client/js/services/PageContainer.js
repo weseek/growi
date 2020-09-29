@@ -171,7 +171,7 @@ export default class PageContainer extends Container {
   async toggleBookmark() {
     const bool = !this.state.isBookmarked;
     await this.appContainer.apiv3Put('/bookmarks', { pageId: this.state.pageId, bool });
-    this.retrieveBookmarkInfo();
+    return this.retrieveBookmarkInfo();
   }
 
   async checkAndUpdateImageUrlCached(users) {
