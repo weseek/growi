@@ -133,13 +133,11 @@ class ImportService {
     const zipFileStats = [];
     const parseZipFilePromises = zipFiles.map((file) => {
       const zipFile = this.getFile(file);
-      // return this.growiBridgeService.parseZipFile(zipFile);
       return this.growiBridgeService.parseZipFile(zipFile);
     });
     for await (const stat of parseZipFilePromises) {
       zipFileStats.push(stat);
     }
-
 
     // filter null object (broken zip)
     const filtered = zipFileStats
