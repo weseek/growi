@@ -344,4 +344,4 @@ class GridEditModal extends React.Component {
 GridEditModal.propTypes = {
   onSave: PropTypes.func,
 };
-export default withTranslation()(GridEditModal);
+export default withTranslation('translation', { withRef: true })(GridEditModal);
