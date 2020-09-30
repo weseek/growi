@@ -37,8 +37,10 @@ class UploadForm extends React.Component {
       this.props.onUpload(data);
     }
     catch (err) {
-      if (err[0].code === 'versions-are-not-met' && this.props.onVersionMismatch !== null) {
-        this.props.onVersionMismatch(err[0].code);
+      if (err[0].code === 'versions-are-not-met') {
+        if (this.props.onVersionMismatch !== null) {
+          this.props.onVersionMismatch(err[0].code);
+        }
       }
       else {
         toastError(err);
