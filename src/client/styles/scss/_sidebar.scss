@@ -1,4 +1,4 @@
-.grw-sidebar {
+.grw-basic-layout {
   $sidebar-nav-button-height: 55px;
 
   %fukidashi-for-active {
@@ -17,10 +17,6 @@
       transform: translateY(-#{$sidebar-nav-button-height / 2});
     }
   }
-
-  // sticky
-  position: sticky;
-  top: $grw-navbar-border-width;
 
   .ak-navigation-resize-button {
     position: fixed;
@@ -55,7 +51,6 @@
   }
 
   // override @atlaskit/navigation-next styles
-  $navbar-total-height: $grw-navbar-height + $grw-navbar-border-width;
   div[data-layout-container='true'] {
     // css-teprsg
     > div:nth-of-type(2) {
@@ -145,7 +140,7 @@
     max-height: calc(100vh - #{$grw-navbar-border-width});
   }
   div[data-testid='Navigation'] {
-    position: unset;
+    position: sticky;
 
     top: $navbar-total-height;
   }
@@ -200,7 +195,7 @@
   }
 }
 
-.grw-sidebar {
+.grw-basic-layout {
   @include media-breakpoint-down(sm) {
     @include drawer();
   }
@@ -215,7 +210,7 @@
 }
 
 // supress transition
-.grw-sidebar {
+.grw-basic-layout {
   &.grw-sidebar-supress-transitions-to-drawer {
     div[data-testid='Navigation'] {
       transition: none !important;
