@@ -1,12 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-// import NavigationContainer from '../../services/NavigationContainer';
-// import { withUnstatedContainers } from '../UnstatedUtils';
 
 const ThreeStrandedButton = (props) => {
   const { t } = props;
-  // const { editorMode } = navigationContainer.state;
 
   function threeStrandedButtonClickedHandler(viewType) {
     if (props.onThreeStrandedButtonClicked != null) {
@@ -45,11 +42,8 @@ const ThreeStrandedButton = (props) => {
 
 };
 
-// const ThreeStrandedButtonWrapper = withUnstatedContainers(ThreeStrandedButton, [NavigationContainer]);
-
 ThreeStrandedButton.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
-  // navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
   onThreeStrandedButtonClicked: PropTypes.func,
 };
 
