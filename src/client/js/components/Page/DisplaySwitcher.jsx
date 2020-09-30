@@ -7,7 +7,6 @@ import Editor from '../PageEditor';
 import Page from '../Page';
 import PageEditorByHackmd from '../PageEditorByHackmd';
 import EditorNavbarBottom from '../PageEditor/EditorNavbarBottom';
-// import TableOfContents from '../TableOfContents';
 
 
 const DisplaySwitcher = (props) => {
@@ -27,7 +26,7 @@ const DisplaySwitcher = (props) => {
           <PageEditorByHackmd />
         </TabPane>
       </TabContent>
-      <EditorNavbarBottom />
+      {editorMode !== 'view' && <EditorNavbarBottom /> }
     </>
   );
 };
