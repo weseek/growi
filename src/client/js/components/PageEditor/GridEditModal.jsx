@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
+import { withTranslation } from 'react-i18next';
 import geu from './GridEditorUtil';
 import BootstrapGrid from '../../models/BootstrapGrid';
 
@@ -12,7 +13,7 @@ const resSizeObj = {
   [resSizes.SM_SIZE]: { iconClass: 'icon-screen-tablet', displayText: 'Tablet' },
   [resSizes.MD_SIZE]: { iconClass: 'icon-screen-desktop', displayText: 'Desktop' },
 };
-export default class GridEditModal extends React.Component {
+class GridEditModal extends React.Component {
 
   constructor(props) {
     super(props);
@@ -343,3 +344,4 @@ export default class GridEditModal extends React.Component {
 GridEditModal.propTypes = {
   onSave: PropTypes.func,
 };
+export default withTranslation()(GridEditModal);
