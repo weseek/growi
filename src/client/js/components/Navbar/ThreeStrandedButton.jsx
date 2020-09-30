@@ -1,33 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+// import NavigationContainer from '../../services/NavigationContainer';
+// import { withUnstatedContainers } from '../UnstatedUtils';
 
 const ThreeStrandedButton = (props) => {
   const { t } = props;
+  // const { editorMode } = navigationContainer.state;
 
   function threeStrandedButtonClickedHandler(viewType) {
     if (props.onThreeStrandedButtonClicked != null) {
       props.onThreeStrandedButtonClicked(viewType);
     }
   }
-
-  $('#view').on('click', () => {
-    $('body').removeClass('on-edit');
-    $('body').removeClass('builtin-editor');
-    $('body').removeClass('hackmd');
-  });
-
-  $('#edit').on('click', () => {
-    $('body').addClass('on-edit');
-    $('body').addClass('builtin-editor');
-    $('body').removeClass('hackmd');
-  });
-
-  $('#hackmd').on('click', () => {
-    $('body').addClass('on-edit');
-    $('body').addClass('hackmd');
-    $('body').removeClass('builtin-editor');
-  });
 
   return (
     <div className="btn-group grw-three-stranded-button" role="group " aria-label="three-stranded-button">
@@ -60,9 +45,11 @@ const ThreeStrandedButton = (props) => {
 
 };
 
+// const ThreeStrandedButtonWrapper = withUnstatedContainers(ThreeStrandedButton, [NavigationContainer]);
+
 ThreeStrandedButton.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
-
+  // navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
   onThreeStrandedButtonClicked: PropTypes.func,
 };
 

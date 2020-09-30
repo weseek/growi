@@ -86,6 +86,23 @@ export default class NavigationContainer extends Container {
 
   setEditorMode(editorMode) {
     this.setState({ editorMode });
+    if (editorMode === 'view') {
+      $('body').removeClass('on-edit');
+      $('body').removeClass('builtin-editor');
+      $('body').removeClass('hackmd');
+    }
+
+    if (editorMode === 'edit') {
+      $('body').addClass('on-edit');
+      $('body').addClass('builtin-editor');
+    }
+
+    if (editorMode === 'hackmd') {
+      $('body').addClass('on-edit');
+      $('body').addClass('hackmd');
+      $('body').removeClass('builtin-editor');
+    }
+
     this.updateDrawerMode({ ...this.state, editorMode }); // generate newest state object
   }
 
