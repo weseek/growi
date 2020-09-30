@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm, SubmitHandler, Validate } from 'react-hook-form';
 
 import { i18n, config, useTranslation } from '~/i18n';
+import { useCheckUsernameSWR } from '~/stores/register';
 
 type FormValues = {
   username: string,
@@ -25,18 +26,28 @@ const LanguageDropdownMenu = (): JSX.Element => {
 };
 
 const InstallerForm = (): JSX.Element => {
-
   const { t } = useTranslation();
-  const { handleSubmit, register, errors } = useForm();
+  const { handleSubmit, register, errors } = useForm({
+    mode: 'onBlur',
+  });
 
   const [isMounted, setIsMounted] = useState(false);
   const [isValidUserName, setIsValidUserName] = useState(true);
 
+  const { mutate } = useCheckUsernameSWR<any, any>();
+
   useEffect(() => setIsMounted(true), []);
+
+  const validateUsername: Validate = async(value) => {
+    const { data } = await mutate(value);
+    console.log('mutate data', data);
+    return false;
+  };
 
   const submitHandler: SubmitHandler<FormValues> = (data) => {
     console.log(data);
   };
+
 
   // checkUserName(event) {
   //   const axios = require('axios').create({
@@ -96,7 +107,10 @@ const InstallerForm = (): JSX.Element => {
               name="username"
               className="form-control"
               placeholder={t('User ID')}
-              ref={register({ required: true })}
+              ref={register({
+                required: true,
+                validate: async value => await validateUsername(value),
+              })}
             />
           </div>
           <p className="form-text">{ unavailableUserId }</p>
