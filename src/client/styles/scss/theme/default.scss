@@ -104,6 +104,7 @@ html[light] {
   @import 'apply-colors';
   @import 'apply-colors-light';
 
+  // Button
   .grw-three-stranded-button {
     .btn.btn-outline-primary {
       @include three-stranded-button($primary, lighten($primary, 65%), lighten($primary, 70%));
