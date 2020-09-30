@@ -230,6 +230,7 @@
   border-color: $borderColor;
   &:hover,
   &:active {
+    color: $textColor;
     background-color: $bgHoverColor;
     border-color: $borderColor;
   }
