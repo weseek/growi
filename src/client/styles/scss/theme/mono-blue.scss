@@ -88,6 +88,12 @@ html[light] {
       }
     }
   }
+  // Button
+  .grw-three-stranded-button {
+    .btn.btn-outline-primary {
+      @include three-stranded-button($primary, lighten($primary, 65%), lighten($primary, 70%));
+    }
+  }
 }
 
 html[dark] {
