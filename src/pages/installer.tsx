@@ -1,10 +1,12 @@
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
+
+import { i18n, config, useTranslation } from '~/i18n';
+
 import GrowiLogo from '~/client/js/components/Icons/GrowiLogo';
+import InstallerForm from '~/client/js/components/InstallerForm';
 
-
-import { useTranslation } from '~/i18n';
 import loggerFactory from '~/utils/logger';
 import { CommonProps, getServerSideCommonProps, useCustomTitle } from '~/utils/nextjs-page-utils';
 
@@ -25,6 +27,9 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
 
   const { t } = useTranslation();
   const title = useCustomTitle(props, t('installer.setup'));
+
+  // load all languages
+  i18n.loadLanguages(config.allLanguages);
 
   return (
     <RawLayout title={title}>
@@ -51,14 +56,15 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
               </div>
             </div>
             <div className="col-md-12">
-              <div
+              {/* <div
                 id="installer-form"
                 data-user-name="{{ req.body.registerForm.username }}"
                 data-name="{{ req.body.registerForm.name }}"
                 data-email="{{ req.body.registerForm.email }}"
                 data-csrf="{{ csrf() }}"
               >
-              </div>
+              </div> */}
+              <InstallerForm />
             </div>
           </div>
 
