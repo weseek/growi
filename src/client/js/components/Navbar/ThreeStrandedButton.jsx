@@ -47,7 +47,6 @@ const ThreeStrandedButton = (props) => {
         <i className="icon-note icon-fw" />
         { t('Edit') }
       </button>
-
       <button
         type="button"
         className="btn btn-outline-primary hackmd-button"

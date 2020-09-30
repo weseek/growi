@@ -7,6 +7,7 @@ import Editor from '../PageEditor';
 import Page from '../Page';
 import PageEditorByHackmd from '../PageEditorByHackmd';
 import EditorNavbarBottom from '../PageEditor/EditorNavbarBottom';
+// import TableOfContents from '../TableOfContents';
 
 
 const DisplaySwitcher = (props) => {
@@ -20,17 +21,13 @@ const DisplaySwitcher = (props) => {
           <Page />
         </TabPane>
         <TabPane tabId="edit">
-          <div id="page-editor" className="page-editor-preview-container page-editor-preview-body">
-            <Editor />
-          </div>
+          <Editor />
         </TabPane>
         <TabPane tabId="hackmd">
-          <div className="hackmd-preinit hackmd-error">
-            <PageEditorByHackmd />
-          </div>
+          <PageEditorByHackmd />
         </TabPane>
       </TabContent>
-      {/* <EditorNavbarBottom /> */}
+      <EditorNavbarBottom />
     </>
   );
 };

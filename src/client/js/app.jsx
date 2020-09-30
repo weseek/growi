@@ -106,8 +106,6 @@ if (pageContainer.state.path != null) {
 if (appContainer.currentUser != null) {
   Object.assign(componentMappings, {
     'display-switcher': <DisplaySwitcher />,
-    // 'editor-navbar-bottom': <EditorNavbarBottom />,
-
   });
 }
 
