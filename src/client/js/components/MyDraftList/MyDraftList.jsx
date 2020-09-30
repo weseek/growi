@@ -137,7 +137,7 @@ class MyDraftList extends React.Component {
 
     return (
       <div className="page-list-container-create ">
-        <h2>My Drafts</h2>
+        <h1>My Drafts</h1>
         <hr />
         { totalCount === 0
           && <span className="mt-2">No drafts yet.</span>
