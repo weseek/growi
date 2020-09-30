@@ -223,3 +223,14 @@
   transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
   transition-duration: 300ms;
 }
+
+@mixin three-stranded-button($textColor, $borderColor, $bgHoverColor, $bgColor: white) {
+  color: $textColor;
+  background-color: $bgColor;
+  border-color: $borderColor;
+  &:hover,
+  &:active {
+    background-color: $bgHoverColor;
+    border-color: $borderColor;
+  }
+}
