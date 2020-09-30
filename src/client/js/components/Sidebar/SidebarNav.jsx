@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { withTranslation } from 'react-i18next';
-
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import NavigationContainer from '../../services/NavigationContainer';
@@ -86,9 +84,4 @@ SidebarNav.propTypes = {
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 
-/**
- * Wrapper component for using unstated
- */
-const SidebarNavWrapper = withUnstatedContainers(SidebarNav, [AppContainer, NavigationContainer]);
-
-export default withTranslation()(SidebarNavWrapper);
+export default withUnstatedContainers(SidebarNav, [AppContainer, NavigationContainer]);
