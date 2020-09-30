@@ -162,8 +162,7 @@
       "@handsontable/react: v3 requires handsontable >= 7.0.0.",
       "handsontable: v7.0.0 or above is no loger MIT lisence."
     ],
-    "@atlaskit/drawer": "^5.3.7",
-    "@atlaskit/navigation-next": "^8.0.5",
+    "@atlaskit/navigation-next": "^9.0.7",
     "@babel/plugin-proposal-class-properties": "^7.10.4",
     "@babel/plugin-proposal-decorators": "^7.10.5",
     "@browser-bunyan/console-formatted-stream": "^1.5.3",
