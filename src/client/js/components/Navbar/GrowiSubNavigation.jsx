@@ -23,7 +23,6 @@ import ThreeStrandedButton from './ThreeStrandedButton';
 import PageCreator from './PageCreator';
 import RevisionAuthor from './RevisionAuthor';
 import DrawerToggler from './DrawerToggler';
-import UserPicture from '../User/UserPicture';
 
 
 // eslint-disable-next-line react/prop-types
@@ -62,47 +61,7 @@ const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
   );
 };
 
-// eslint-disable-next-line react/prop-types
-const UserPagePathNav = ({ pageId, pagePath }) => {
-  const linkedPagePath = new LinkedPagePath(pagePath);
-  const latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />;
 
-  return (
-    <div className="grw-page-path-nav">
-      <span className="d-flex align-items-center flex-wrap">
-        <h4 className="grw-user-page-path">{latterLink}</h4>
-        <RevisionPathControls
-          pageId={pageId}
-          pagePath={pagePath}
-        />
-      </span>
-    </div>
-  );
-};
-
-/* eslint-disable react/prop-types */
-const UserInfo = ({ pageUser }) => {
-  return (
-    <div className="grw-users-info d-flex align-items-center d-edit-none">
-      <UserPicture user={pageUser} />
-
-      <div className="users-meta">
-        <h1 className="user-page-name">
-          {pageUser.name}
-        </h1>
-        <div className="user-page-meta mt-1 mb-0">
-          <span className="user-page-username mr-2"><i className="icon-user mr-1"></i>{pageUser.username}</span>
-          <span className="user-page-email mr-2">
-            <i className="icon-envelope mr-1"></i>
-            {pageUser.isEmailPublished ? pageUser.email : '*****'}
-          </span>
-          {pageUser.introduction && <span className="user-page-introduction">{pageUser.introduction}</span>}
-        </div>
-      </div>
-
-    </div>
-  );
-};
 /* eslint-enable react/prop-types */
 
 /* eslint-disable react/prop-types */
@@ -165,18 +124,7 @@ const GrowiSubNavigation = (props) => {
               <TagLabels />
             </div>
           ) }
-
-          { isUserPage
-            ? (
-              <>
-                <UserPagePathNav pageId={pageId} pagePath={path} />
-                <UserInfo pageUser={pageUser} />
-              </>
-            )
-            : (
-              <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
-            )
-          }
+          <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
 
         </div>
       </div>

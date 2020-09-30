@@ -119,7 +119,7 @@ class DrawioModal extends React.PureComponent {
   get drawioURL() {
     const { config } = this.props.appContainer;
 
-    const drawioUri = config.env.DRAWIO_URI || 'https://www.draw.io/';
+    const drawioUri = config.env.DRAWIO_URI || 'https://embed.diagrams.net/';
     const url = new URL(drawioUri);
 
     // refs: https://desk.draw.io/support/solutions/articles/16000042546-what-url-parameters-are-supported-
