@@ -11,6 +11,10 @@ body:not(.on-edit) {
 body.on-edit {
   overflow-y: hidden !important;
 
+  .container {
+    max-width: 100%;
+  }
+
   .grw-navbar {
     position: fixed !important;
     width: 100vw;
