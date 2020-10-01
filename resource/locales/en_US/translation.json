@@ -660,7 +660,7 @@
     "how_to": {
       "header": "How to configure Incoming Webhooks?",
       "workspace": "(At Workspace) Add a hook",
-      "workspace_desc1": "Go to <a href='https: //slack.com/services/new/incoming-webhook'>Incoming Webhooks configuration page</a>.",
+      "workspace_desc1": "Go to <a href='https://slack.com/services/new/incoming-webhook'>Incoming Webhooks configuration page</a>.",
       "workspace_desc2": "Choose the default channel to post.",
       "workspace_desc3": "Add.",
       "at_growi": "(At GROWI admin page) Set Webhook URL",
