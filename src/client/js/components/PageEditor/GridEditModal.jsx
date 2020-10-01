@@ -276,10 +276,11 @@ class GridEditModal extends React.Component {
   }
 
   render() {
+    const { t } = this.props;
     return (
       <Modal isOpen={this.state.show} toggle={this.cancel} size="xl" className="grw-grid-edit-modal">
         <ModalHeader tag="h4" toggle={this.cancel} className="bg-primary text-light">
-          Create Bootstrap 4 Grid
+          {t('grid_edit.create_bootstrap_4_grid')}
         </ModalHeader>
         <ModalBody>
           <div className="container">
@@ -343,5 +344,6 @@ class GridEditModal extends React.Component {
 
 GridEditModal.propTypes = {
   onSave: PropTypes.func,
+  t: PropTypes.func.isRequired,
 };
 export default withTranslation('translation', { withRef: true })(GridEditModal);

@@ -753,6 +753,6 @@
 		"failed_to_create_admin_user": "无法创建管理用户。{{errMessage}"
 	},
   "grid_edit":{
-    "create_bootstrap_4_grid":"Create Bootstrap 4 Grid"
+    "create_bootstrap_4_grid":"创建Bootstrap 4网格"
   }
 }
