@@ -127,7 +127,6 @@ module.exports = (crowi) => {
     ],
     likeInfo: [
       query('_id').isMongoId(),
-      query('user._id').isMongoId(),
     ],
     export: [
       query('format').isString().isIn(['md', 'pdf']),

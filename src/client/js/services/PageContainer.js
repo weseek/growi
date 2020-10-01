@@ -49,10 +49,12 @@ export default class PageContainer extends Container {
       path,
       tocHtml: '',
       isLiked: false,
+      isBookmarked: false,
       seenUsers: [],
       likerUsers: [],
       sumOfSeenUsers: 0,
       sumOfLikers: 0,
+      sumOfBookmarks: 0,
       createdAt: mainContent.getAttribute('data-page-created-at'),
       creator: JSON.parse(mainContent.getAttribute('data-page-creator')),
       updatedAt: mainContent.getAttribute('data-page-updated-at'),
@@ -150,7 +152,26 @@ export default class PageContainer extends Container {
       likerUsers: like.data.users.liker,
       isLiked: like.data.isLiked,
     });
+
+    this.retrieveBookmarkInfo();
     this.checkAndUpdateImageUrlCached(this.state.likerUsers);
+  }
+
+  async retrieveBookmarkInfo() {
+    const response = await this.appContainer.apiv3Get('/bookmarks', { pageId: this.state.pageId });
+    if (response.data.bookmarks != null) {
+      this.setState({ isBookmarked: true });
+    }
+    else {
+      this.setState({ isBookmarked: false });
+    }
+    this.setState({ sumOfBookmarks: response.data.sumOfBookmarks });
+  }
+
+  async toggleBookmark() {
+    const bool = !this.state.isBookmarked;
+    await this.appContainer.apiv3Put('/bookmarks', { pageId: this.state.pageId, bool });
+    return this.retrieveBookmarkInfo();
   }
 
   async checkAndUpdateImageUrlCached(users) {
