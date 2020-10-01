@@ -82,6 +82,8 @@ Object.assign(componentMappings, {
 
   'personal-setting': <PersonalSettings crowi={personalContainer} />,
 
+  'my-drafts': <MyDraftList />,
+
   'grw-fab-container': <Fab />,
 });
 
