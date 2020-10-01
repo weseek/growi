@@ -3,6 +3,11 @@
 .growi {
   .content-main {
     padding: 0;
+    &.no-toc-content {
+      max-width: 960px;
+      margin-right: auto;
+      margin-left: auto;
+    }
   }
 
   .top-of-table-contents {
