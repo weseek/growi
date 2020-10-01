@@ -54,7 +54,7 @@ export default class Attachment extends React.Component {
       : '';
 
     return (
-      <li className="attachment">
+      <div className="attachment">
         <span className="mr-1 attachment-userpicture">
           <UserPicture user={attachment.creator} size="sm"></UserPicture>
         </span>
@@ -67,7 +67,7 @@ export default class Attachment extends React.Component {
 
         {btnDownload}
         {btnTrash}
-      </li>
+      </div>
     );
   }
 
