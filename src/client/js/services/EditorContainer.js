@@ -90,12 +90,10 @@ export default class EditorContainer extends Container {
       }
     }
 
-    if (this.state !== undefined) {
-      if (this.state.pageId == null) {
-        const draft = this.findDraft(this.state.path);
-        if (draft != null) {
-          this.state.markdown = draft;
-        }
+    if (this.state.pageId == null) {
+      const draft = this.findDraft(this.state.path);
+      if (draft != null) {
+        this.state.markdown = draft;
       }
     }
   }

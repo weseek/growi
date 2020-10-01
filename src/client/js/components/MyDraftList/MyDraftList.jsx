@@ -17,8 +17,6 @@ class MyDraftList extends React.Component {
   constructor(props) {
     super(props);
 
-    this.props.editorContainer.initDrafts();
-
     this.state = {
       drafts: [],
       currentDrafts: [],
