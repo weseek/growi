@@ -224,14 +224,14 @@
   transition-duration: 300ms;
 }
 
-@mixin three-stranded-button($textColor, $borderColor, $bgHoverColor, $bgColor: white) {
+@mixin three-stranded-button($textColor, $borderColor, $bgColorHoverAndActive, $bgColor: white) {
   color: $textColor;
   background-color: $bgColor;
   border-color: $borderColor;
   &:hover,
   &:active {
     color: $textColor;
-    background-color: $bgHoverColor;
+    background-color: $bgColorHoverAndActive;
     border-color: $borderColor;
   }
 }
