@@ -1,8 +1,9 @@
 .grw-subnav {
-  padding: 10px 15px;
+  min-height: $grw-subnav-min-height;
+  padding: 8px 15px;
 
   @include media-breakpoint-up(md) {
-    min-height: 115px;
+    min-height: $grw-subnav-min-height-md;
   }
 
   &:hover {
