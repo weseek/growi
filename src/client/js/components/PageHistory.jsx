@@ -14,7 +14,6 @@ import PaginationWrapper from './PaginationWrapper';
 
 const logger = loggerFactory('growi:PageHistory');
 
-// TODO add paging size (limit) for modal
 function PageHistory(props) {
   const { pageHistoryContainer } = props;
 

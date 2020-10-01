@@ -9,7 +9,6 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const router = express.Router();
 
-const PAGE_ITEMS = 30;
 
 /**
  * @swagger
@@ -115,7 +114,6 @@ module.exports = (crowi) => {
         { path: page.path },
         {
           page: selectedPage,
-          limit: PAGE_ITEMS,
           sort: { createdAt: -1 },
           populate: {
             path: 'author',

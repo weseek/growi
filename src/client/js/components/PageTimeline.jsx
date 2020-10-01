@@ -17,7 +17,6 @@ class PageTimeline extends React.Component {
     super(props);
 
     const { appContainer } = this.props;
-    // TODO add paging size (limit) for modal
     this.state = {
       activePage: 1,
       totalPageItems: 0,

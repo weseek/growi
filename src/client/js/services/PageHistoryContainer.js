@@ -16,6 +16,7 @@ export default class PageHistoryContainer extends Container {
     super();
 
     this.appContainer = appContainer;
+
     this.pageContainer = pageContainer;
 
     this.dummyRevisions = 0;
@@ -29,14 +30,16 @@ export default class PageHistoryContainer extends Container {
 
       totalPages: 0,
       activePage: 1,
-      pagingLimit: Infinity,
+      pagingLimit: this.appContainer.getConfig().pageLimitationS,
     };
+    console.log(this.state.pagingLimit);
 
     this.retrieveRevisions = this.retrieveRevisions.bind(this);
     this.onDiffOpenClicked = this.onDiffOpenClicked.bind(this);
     this.getPreviousRevision = this.getPreviousRevision.bind(this);
     this.fetchPageRevisionBody = this.fetchPageRevisionBody.bind(this);
   }
+
 
   /**
    * Workaround for the mangling in production build to break constructor.name
@@ -62,7 +65,6 @@ export default class PageHistoryContainer extends Container {
     this.setState({
       activePage: selectedPage,
       totalPages: res.data.totalDocs,
-      pagingLimit: res.data.limit,
     });
 
     const diffOpened = {};
