@@ -20,7 +20,7 @@ const DisplaySwitcher = (props) => {
           <Page />
         </TabPane>
         <TabPane tabId="edit">
-          <div id="page-editor" className="page-editor-preview-container page-editor-preview-body page-editor-editor-container">
+          <div id="page-editor">
             <Editor />
           </div>
         </TabPane>
