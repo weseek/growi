@@ -36,15 +36,12 @@ body.on-edit {
   }
 
   // calculate margin
-  $editor-margin-top: 95px //              .grw-subnav height
-    + $grw-navbar-border-width;
+  $editor-margin-top: $grw-navbar-border-width + $grw-subnav-max-height-on-edit;
   @include expand-editor($editor-margin-top);
 
   @include media-breakpoint-up(md) {
     // calculate margin
-    $editor-margin-top: 115px //              .grw-subnav height
-      + $grw-navbar-border-width;
-
+    $editor-margin-top: $grw-navbar-border-width + $grw-subnav-max-height-md-on-edit;
     @include expand-editor($editor-margin-top);
   }
 
