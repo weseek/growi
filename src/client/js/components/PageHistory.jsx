@@ -48,7 +48,7 @@ function PageHistory(props) {
       }
     });
   }
-
+  console.log(pageHistoryContainer.state.pagingLimit);
 
   function pager() {
     return (
