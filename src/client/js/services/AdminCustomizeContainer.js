@@ -79,8 +79,8 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledTimeline: customizeParams.isEnabledTimeline,
         isSavedStatesOfTabChanges: customizeParams.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: customizeParams.isEnabledAttachTitleHeader,
+        pageLimitationS: customizeParams.pageLimitationS,
         pageLimitationM: customizeParams.pageLimitationM,
-        // TODO implement for pageListLimitForModal
         isEnabledStaleNotification: customizeParams.isEnabledStaleNotification,
         isAllReplyShown: customizeParams.isAllReplyShown,
         currentHighlightJsStyleId: customizeParams.styleName,
@@ -283,8 +283,8 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledTimeline: this.state.isEnabledTimeline,
         isSavedStatesOfTabChanges: this.state.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: this.state.isEnabledAttachTitleHeader,
+        pageLimitationS: this.state.pageLimitationS,
         pageLimitationM: this.state.pageLimitationM,
-        // TODO implement for pageListLimitForModal
         isEnabledStaleNotification: this.state.isEnabledStaleNotification,
         isAllReplyShown: this.state.isAllReplyShown,
       });
@@ -293,8 +293,8 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledTimeline: customizedParams.isEnabledTimeline,
         isSavedStatesOfTabChanges: customizedParams.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: customizedParams.isEnabledAttachTitleHeader,
+        pageLimitationS: customizedParams.pageLimitationS,
         pageLimitationM: customizedParams.pageLimitationM,
-        // TODO implement for pageListLimitForModal
         isEnabledStaleNotification: customizedParams.isEnabledStaleNotification,
         isAllReplyShown: customizedParams.isAllReplyShown,
       });
