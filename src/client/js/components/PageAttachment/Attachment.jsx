@@ -54,19 +54,15 @@ export default class Attachment extends React.Component {
       : '';
 
     return (
-      <div className="attachment">
+      <div className="attachment mb-2">
         <span className="mr-1 attachment-userpicture">
           <UserPicture user={attachment.creator} size="sm"></UserPicture>
         </span>
-
-        <a href={attachment.filePathProxied}><i className={formatIcon}></i> {attachment.originalName}</a>
-
-        {fileType}
-
-        {fileInUse}
-
-        {btnDownload}
-        {btnTrash}
+        <a className="mr-2" href={attachment.filePathProxied}><i className={formatIcon}></i> {attachment.originalName}</a>
+        <span className="mr-2">{fileType}</span>
+        <span className="mr-2">{fileInUse}</span>
+        <span className="mr-2">{btnDownload}</span>
+        <span className="mr-2">{btnTrash}</span>
       </div>
     );
   }
