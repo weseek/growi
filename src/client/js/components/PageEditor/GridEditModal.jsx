@@ -9,9 +9,9 @@ import BootstrapGrid from '../../models/BootstrapGrid';
 
 const resSizes = BootstrapGrid.ResponsiveSize;
 const resSizeObj = {
-  [resSizes.XS_SIZE]: { iconClass: 'icon-screen-smartphone', displayText: 'Smartphone / No Break' },
-  [resSizes.SM_SIZE]: { iconClass: 'icon-screen-tablet', displayText: 'Tablet' },
-  [resSizes.MD_SIZE]: { iconClass: 'icon-screen-desktop', displayText: 'Desktop' },
+  [resSizes.XS_SIZE]: { iconClass: 'icon-screen-smartphone', displayText: 'grid_edit.smart_no' },
+  [resSizes.SM_SIZE]: { iconClass: 'icon-screen-tablet', displayText: 'tablet' },
+  [resSizes.MD_SIZE]: { iconClass: 'icon-screen-desktop', displayText: 'desktop' },
 };
 class GridEditModal extends React.Component {
 
@@ -84,11 +84,12 @@ class GridEditModal extends React.Component {
   }
 
   renderSelectedBreakPoint() {
+    const { t } = this.props;
     const output = Object.entries(resSizeObj).map((responsiveSizeForMap) => {
       return (this.state.responsiveSize === responsiveSizeForMap[0]
         && (
         <span>
-          <i className={`pr-1 ${responsiveSizeForMap[1].iconClass}`}> {responsiveSizeForMap[1].displayText}</i>
+          <i className={`pr-1 ${responsiveSizeForMap[1].iconClass}`}> {t(responsiveSizeForMap[1].displayText)}</i>
         </span>
         )
       );
@@ -98,13 +99,14 @@ class GridEditModal extends React.Component {
 
   renderGridDivisionMenu() {
     const gridDivisions = geu.mappingAllGridDivisionPatterns;
+    const { t } = this.props;
     return (
       <div className="container">
         <div className="row">
           {gridDivisions.map((gridDivion, i) => {
             return (
               <div className="col-md-4 text-center">
-                <h6 className="dropdown-header">{gridDivion.numberOfGridDivisions}分割</h6>
+                <h6 className="dropdown-header">{gridDivion.numberOfGridDivisions} {t('grid_edit.division')}</h6>
                 {gridDivion.mapping.map((gridOneDivision) => {
                   return (
                     <button className="dropdown-item" type="button" onClick={() => { this.checkColsRatios(gridOneDivision) }}>
@@ -126,10 +128,11 @@ class GridEditModal extends React.Component {
   }
 
   renderBreakPointMenu() {
+    const { t } = this.props;
     const output = Object.entries(resSizeObj).map((responsiveSizeForMap) => {
       return (
         <button className="dropdown-item" type="button" onClick={() => { this.checkResposiveSize(responsiveSizeForMap[0]) }}>
-          <i className={`${responsiveSizeForMap[1].iconClass}`}></i> {responsiveSizeForMap[1].displayText}
+          <i className={`${responsiveSizeForMap[1].iconClass}`}></i> {t(responsiveSizeForMap[1].displayText)}
         </button>
       );
     });
@@ -175,23 +178,24 @@ class GridEditModal extends React.Component {
         },
       },
     }; */
+    const { t } = this.props;
     if (this.state.responsiveSize === BootstrapGrid.ResponsiveSize.MD_SIZE) {
       return (
         <>
           <div className="col-lg-6">
-            <label className="d-block mt-2"><i className="pr-2 icon-screen-desktop"></i>Desktop</label>
+            <label className="d-block mt-2"><i className="pr-2 icon-screen-desktop"></i>{t('desktop')}</label>
             <div className="desktop-preview d-block">
               {this.renderNoBreakPreview()}
             </div>
           </div>
           <div className="col-lg-3">
-            <label className="d-block mt-2"><i className="pr-2 icon-screen-tablet"></i>Tablet</label>
+            <label className="d-block mt-2"><i className="pr-2 icon-screen-tablet"></i>{t('tablet')}</label>
             <div className="tablet-preview d-block">
               {this.renderBreakPreview()}
             </div>
           </div>
           <div className="col-lg-3">
-            <label className="d-block mt-2"><i className="pr-2 icon-screen-smartphone"></i>Mobile</label>
+            <label className="d-block mt-2"><i className="pr-2 icon-screen-smartphone"></i>{t('phone')}</label>
             <div className="mobile-preview d-block">
               {this.renderBreakPreview()}
             </div>
@@ -203,19 +207,19 @@ class GridEditModal extends React.Component {
       return (
         <>
           <div className="col-lg-6">
-            <label className="d-block mt-2"><i className="pr-2 icon-screen-desktop"></i>Desktop</label>
+            <label className="d-block mt-2"><i className="pr-2 icon-screen-desktop"></i>{t('desktop')}</label>
             <div className="desktop-preview d-block">
               {this.renderNoBreakPreview()}
             </div>
           </div>
           <div className="col-lg-3">
-            <label className="d-block mt-2"><i className="pr-2 icon-screen-tablet"></i>Tablet</label>
+            <label className="d-block mt-2"><i className="pr-2 icon-screen-tablet"></i>{t('tablet')}</label>
             <div className="tablet-preview d-block">
               {this.renderNoBreakPreview()}
             </div>
           </div>
           <div className="col-lg-3">
-            <label className="d-block mt-2"><i className="pr-2 icon-screen-smartphone"></i>Mobile</label>
+            <label className="d-block mt-2"><i className="pr-2 icon-screen-smartphone"></i>{t('phone')}</label>
             <div className="mobile-preview d-block">
               {this.renderBreakPreview()}
             </div>
@@ -227,19 +231,19 @@ class GridEditModal extends React.Component {
       return (
         <>
           <div className="col-lg-6">
-            <label className="d-block mt-2"><i className="pr-2 icon-screen-desktop"></i>Desktop</label>
+            <label className="d-block mt-2"><i className="pr-2 icon-screen-desktop"></i>{t('desktop')}</label>
             <div className="desktop-preview d-block">
               {this.renderNoBreakPreview()}
             </div>
           </div>
           <div className="col-lg-3">
-            <label className="d-block mt-2"><i className="pr-2 icon-screen-tablet"></i>Tablet</label>
+            <label className="d-block mt-2"><i className="pr-2 icon-screen-tablet"></i>{t('tablet')}</label>
             <div className="tablet-preview d-block">
               {this.renderNoBreakPreview()}
             </div>
           </div>
           <div className="col-lg-3">
-            <label className="d-block mt-2"><i className="pr-2 icon-screen-smartphone"></i>Mobile</label>
+            <label className="d-block mt-2"><i className="pr-2 icon-screen-smartphone"></i>{t('phone')}</label>
             <div className="mobile-preview d-block">
               {this.renderNoBreakPreview()}
             </div>
@@ -286,7 +290,7 @@ class GridEditModal extends React.Component {
           <div className="container">
             <div className="row">
               <div className="col-lg-6 mb-3">
-                <label htmlFor="gridPattern">Grid Pattern :</label>
+                <label htmlFor="gridPattern">{t('grid_edit.grid_pattern')}</label>
                 <button
                   className="btn btn-outline-secondary dropdown-toggle btn-block"
                   type="button"
@@ -303,7 +307,7 @@ class GridEditModal extends React.Component {
               </div>
               <div className="col-lg-6">
                 <div className="mr-3 d-inline">
-                  <label htmlFor="breakPoint">Break point by display size :</label>
+                  <label htmlFor="breakPoint">{t('grid_edit.break_point')}</label>
                 </div>
                 <div
                   className="btn btn-outline-secondary btn-block dropdown-toggle"
@@ -321,7 +325,7 @@ class GridEditModal extends React.Component {
               </div>
             </div>
             <div className="row">
-              <h1 className="pl-3 w-100">Preview</h1>
+              <h1 className="pl-3 w-100">{t('preview')}</h1>
               {this.renderPreview()}
             </div>
           </div>
