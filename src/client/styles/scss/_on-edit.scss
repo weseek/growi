@@ -22,10 +22,10 @@ body.on-edit {
 
   // restrict height of subnav
   .grw-subnav {
-    max-height: 95px;
+    max-height: $grw-subnav-max-height-on-edit;
 
     @include media-breakpoint-up(md) {
-      max-height: 115px;
+      max-height: $grw-subnav-max-height-md-on-edit;
     }
   }
 
