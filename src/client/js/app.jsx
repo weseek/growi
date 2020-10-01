@@ -99,7 +99,6 @@ if (pageContainer.state.pageId != null) {
 
     'recent-created-icon': <RecentlyCreatedIcon />,
     'user-created-list': <RecentCreated userId={pageContainer.state.creator._id} />,
-    'user-draft-list': <MyDraftList />,
   });
 }
 if (pageContainer.state.path != null) {
