@@ -57,6 +57,10 @@ textarea.form-control {
   border-right: none;
 }
 
+.input-group input {
+  border-color: $secondary;
+}
+
 /*
  * Dropdown
  */
@@ -81,8 +85,18 @@ textarea.form-control {
 /*
  * Card
  */
-.card:not([class*='bg-']) {
+.card:not([class*='bg-']):not(.well):not(.card-disabled) {
   @extend .bg-dark;
+}
+
+// [TODO] GW-3219 modify common color of well in dark theme, then remove below css.
+.card.well {
+  border-color: $secondary;
+}
+
+.card.card-disabled {
+  background-color: lighten($dark, 10%);
+  border-color: $secondary;
 }
 
 /*
@@ -248,6 +262,22 @@ body.on-edit {
     #slack-mark-black {
       display: none;
     }
+  }
+}
+
+/*
+ * Popover
+ */
+.popover {
+  background-color: $bgcolor-global;
+  border-color: $secondary;
+  .popover-header {
+    color: $white;
+    background-color: $secondary;
+    border-color: $secondary;
+  }
+  .popover-body {
+    color: inherit;
   }
 }
 

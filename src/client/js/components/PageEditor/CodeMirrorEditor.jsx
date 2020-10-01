@@ -876,7 +876,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
         <LinkEditModal
           ref={this.linkEditModal}
-          onSave={(link) => { return mlu.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), link) }}
+          onSave={(linkText) => { return mlu.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText) }}
         />
         <HandsontableModal
           ref={this.handsontableModal}
