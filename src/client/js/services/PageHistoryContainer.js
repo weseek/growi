@@ -16,9 +16,7 @@ export default class PageHistoryContainer extends Container {
     super();
 
     this.appContainer = appContainer;
-
     this.pageContainer = pageContainer;
-
     this.dummyRevisions = 0;
 
     this.state = {
@@ -38,7 +36,6 @@ export default class PageHistoryContainer extends Container {
     this.getPreviousRevision = this.getPreviousRevision.bind(this);
     this.fetchPageRevisionBody = this.fetchPageRevisionBody.bind(this);
   }
-
 
   /**
    * Workaround for the mangling in production build to break constructor.name
