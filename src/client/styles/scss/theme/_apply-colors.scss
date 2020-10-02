@@ -295,6 +295,10 @@ pre:not(.hljs):not(.CodeMirror-line) {
     }
   }
 
+  .modal-title {
+    position: relative;
+  }
+
   .nav-link {
     &:hover {
       background-color: rgba($link-color, 0.08);
@@ -308,6 +312,8 @@ pre:not(.hljs):not(.CodeMirror-line) {
   }
 
   .grw-nav-slide-hr {
+    position: absolute;
+    bottom: 0px;
     border-color: $color-link;
   }
 }
