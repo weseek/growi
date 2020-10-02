@@ -253,7 +253,7 @@ module.exports = (crowi) => {
     return stream.pipe(res);
   });
 
-  router.get('/overlap-path', async(req, res) => {
+  router.get('/overlapping-path', async(req, res) => {
     const { toPath } = req.query;
 
     try {
@@ -261,12 +261,12 @@ module.exports = (crowi) => {
         const page = Page.findByPath(path);
         return page;
       }));
-      const overlapPages = pages.filter(path => path != null);
-      const overlapPath = overlapPages.map(page => page.path);
-      return res.apiv3({ overlapPath });
+      const overlappingPages = pages.filter(path => path != null);
+      const overlappingPath = overlappingPages.map(page => page.path);
+      return res.apiv3({ overlappingPath });
     }
     catch (err) {
-      logger.error('Failed to get overlap path', err);
+      logger.error('Failed to get overlapping path', err);
       return res.apiv3Err(err, 500);
     }
 
