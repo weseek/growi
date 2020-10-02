@@ -1,6 +1,12 @@
 # CHANGES
 
-## v4.1.6-RC
+## v4.1.7-RC
+
+* Improvement: Fire global notification when a new page is created by uploading file
+* Fix: Change default `DRAWIO_URI` to embed.diagrams.net
+* Fix: An unhandled rejection occures when a user who does not send referer accesses
+
+## v4.1.6
 
 * Improvement: Hide Fab at admin pages
 * Fix: Presentation does not work
