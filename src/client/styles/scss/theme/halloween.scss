@@ -114,13 +114,6 @@ html[dark] {
     }
   }
 
-  // Dropdown icon
-  .grw-three-dots-btn:hover,
-  .grw-three-dots-btn:focus {
-    // Wrote !important to override bg-transparent styles
-    background-color: rgba($color-link, 0.15) !important;
-  }
-
   // Table
   .table {
     color: $color-global;

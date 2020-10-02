@@ -117,11 +117,4 @@ html[dark] {
       @include three-stranded-button($bgcolor-navbar, lighten($bgcolor-navbar, 65%), lighten($bgcolor-navbar, 70%));
     }
   }
-
-  // Dropdown icon
-  .grw-three-dots-btn:hover,
-  .grw-three-dots-btn:focus {
-    // Wrote !important to override bg-transparent styles
-    background-color: rgba($color-link, 0.15) !important;
-  }
 }

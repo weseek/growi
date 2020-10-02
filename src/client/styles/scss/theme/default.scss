@@ -110,13 +110,6 @@ html[light] {
       @include three-stranded-button($primary, lighten($primary, 65%), lighten($primary, 70%));
     }
   }
-
-  // Dropdown icon
-  .grw-three-dots-btn:hover,
-  .grw-three-dots-btn:focus {
-    // Wrote !important to override bg-transparent styles
-    background-color: rgba($color-link, 0.15) !important;
-  }
 }
 
 //== Dark Mode

@@ -94,13 +94,6 @@ html[light] {
       @include three-stranded-button($primary, lighten($primary, 65%), lighten($primary, 70%));
     }
   }
-
-  // Dropdown icon
-  .grw-three-dots-btn:hover,
-  .grw-three-dots-btn:focus {
-    // Wrote !important to override bg-transparent styles
-    background-color: rgba($color-link, 0.15) !important;
-  }
 }
 
 html[dark] {
@@ -208,12 +201,5 @@ html[dark] {
     .btn.btn-outline-primary {
       @include three-stranded-button(lighten($primary, 30%), $primary, darken($primary, 10%), darken($primary, 20%));
     }
-  }
-
-  // Dropdown icon
-  .grw-three-dots-btn:hover,
-  .grw-three-dots-btn:focus {
-    // Wrote !important to override bg-transparent styles
-    background-color: rgba($color-link, 0.15) !important;
   }
 }
