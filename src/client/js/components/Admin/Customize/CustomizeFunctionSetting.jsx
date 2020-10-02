@@ -15,33 +15,33 @@ import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import CustomizeFunctionOption from './CustomizeFunctionOption';
 
-const { adminCustomizeContainer } = this.props;
-const dropdownGroupMapping = {
-  S:  {
-    isDropdownOpen: this.state.isDropdownOpenS,
-    toggle: this.onToggleDropdownS,
-    pageLimitation: adminCustomizeContainer.state.pageLimitationS,
-    switchPageListLimitationS: adminCustomizeContainer.switchPageListLimitationS(),
-  },
-  M:  {
-    isDropdownOpen: this.state.isDropdownOpenM,
-    toggle: this.onToggleDropdownM,
-    pageLimitation: adminCustomizeContainer.state.pageLimitationM,
-    switchPageListLimitationS: adminCustomizeContainer.switchPageListLimitationM(),
-  },
-  L: {
-    isDropdownOpen: this.state.isDropdownOpenL,
-    toggle: this.onToggleDropdownL,
-    pageLimitation: adminCustomizeContainer.state.pageLimitationL,
-    switchPageListLimitationS: adminCustomizeContainer.switchPageListLimitationL(),
-  },
-  XL: {
-    isDropdownOpen: this.state.isDropdownOpenXL,
-    toggle: this.onToggleDropdownXL,
-    pageLimitation: adminCustomizeContainer.state.pageLimitationXL,
-    switchPageListLimitationS: adminCustomizeContainer.switchPageListLimitation(),
-  },
-};
+// const { adminCustomizeContainer } = this.props;
+// const dropdownGroupMapping = {
+//   S:  {
+//     isDropdownOpen: this.state.isDropdownOpenS,
+//     toggle: this.onToggleDropdownS,
+//     pageLimitation: adminCustomizeContainer.state.pageLimitationS,
+//     switchPageListLimitationS: adminCustomizeContainer.switchPageListLimitationS(),
+//   },
+//   M:  {
+//     isDropdownOpen: this.state.isDropdownOpenM,
+//     toggle: this.onToggleDropdownM,
+//     pageLimitation: adminCustomizeContainer.state.pageLimitationM,
+//     switchPageListLimitationS: adminCustomizeContainer.switchPageListLimitationM(),
+//   },
+//   L: {
+//     isDropdownOpen: this.state.isDropdownOpenL,
+//     toggle: this.onToggleDropdownL,
+//     pageLimitation: adminCustomizeContainer.state.pageLimitationL,
+//     switchPageListLimitationS: adminCustomizeContainer.switchPageListLimitationL(),
+//   },
+//   XL: {
+//     isDropdownOpen: this.state.isDropdownOpenXL,
+//     toggle: this.onToggleDropdownXL,
+//     pageLimitation: adminCustomizeContainer.state.pageLimitationXL,
+//     switchPageListLimitationS: adminCustomizeContainer.switchPageListLimitation(),
+//   },
+// };
 
 // dropdownOpenGroup, pageLimitationGroup, switchPageListLimitationGrpup
 // isDropdownOpenS, pageLimitationS, switchPageListLimitationS
@@ -96,49 +96,49 @@ class CustomizeFunctionSetting extends React.Component {
   }
 
 
-  renderDropButtons(dropdownOpenGroup, pageLimitationGroup, switchPageListLimitationGrpup) {
-    const { t, adminCustomizeContainer } = this.props;
-    return (
-      <div>
-        {Object.entries(dropdownGroupMapping).map(([key, value]) => {
-          return (
-            // <NavItem key={key} type="button" className={`p-0 nav-link ${activeTab === key && 'active'}`}>
-            //   <NavLink onClick={() => { switchActiveTab(key) }}>
-            //     {value.icon}
-            //     {t(value.i18n)}
-            //   </NavLink>
-            // </NavItem>
-            <div className="form-group row">
-              <div className="offset-md-3 col-md-6 text-left">
-                <div className="my-0 w-100">
-                  <label>{t('admin:customize_setting.function_options.list_num_s')}</label>
-                </div>
-                <Dropdown isOpen={this.state.dropdownOpenGroup} toggle={this.onToggleDropdownS}>
-                  <DropdownToggle className="text-right col-6" caret>
-                    <span className="float-left">{adminCustomizeContainer.state.pageLimitationGroup}</span>
-                  </DropdownToggle>
-                  <DropdownMenu className="dropdown-menu" role="menu">
-                    <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitation(10) }}>
-                      <a role="menuitem">10</a>
-                    </DropdownItem>
-                    <DropdownItem key={30} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitation(30) }}>
-                      <a role="menuitem">30</a>
-                    </DropdownItem>
-                    <DropdownItem key={50} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitation(50) }}>
-                      <a role="menuitem">50</a>
-                    </DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
-                <p className="form-text text-muted">
-                  {t('admin:customize_setting.function_options.list_num_desc_s')}
-                </p>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    );
-  }
+  // renderDropButtons(dropdownOpenGroup, pageLimitationGroup, switchPageListLimitationGrpup) {
+  //   const { t, adminCustomizeContainer } = this.props;
+  //   return (
+  //     <div>
+  //       {Object.entries(dropdownGroupMapping).map(([key, value]) => {
+  //         return (
+  //           // <NavItem key={key} type="button" className={`p-0 nav-link ${activeTab === key && 'active'}`}>
+  //           //   <NavLink onClick={() => { switchActiveTab(key) }}>
+  //           //     {value.icon}
+  //           //     {t(value.i18n)}
+  //           //   </NavLink>
+  //           // </NavItem>
+  //           <div className="form-group row">
+  //             <div className="offset-md-3 col-md-6 text-left">
+  //               <div className="my-0 w-100">
+  //                 <label>{t('admin:customize_setting.function_options.list_num_s')}</label>
+  //               </div>
+  //               <Dropdown isOpen={this.state.dropdownOpenGroup} toggle={this.onToggleDropdownS}>
+  //                 <DropdownToggle className="text-right col-6" caret>
+  //                   <span className="float-left">{adminCustomizeContainer.state.pageLimitationGroup}</span>
+  //                 </DropdownToggle>
+  //                 <DropdownMenu className="dropdown-menu" role="menu">
+  //                   <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitation(10) }}>
+  //                     <a role="menuitem">10</a>
+  //                   </DropdownItem>
+  //                   <DropdownItem key={30} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitation(30) }}>
+  //                     <a role="menuitem">30</a>
+  //                   </DropdownItem>
+  //                   <DropdownItem key={50} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitation(50) }}>
+  //                     <a role="menuitem">50</a>
+  //                   </DropdownItem>
+  //                 </DropdownMenu>
+  //               </Dropdown>
+  //               <p className="form-text text-muted">
+  //                 {t('admin:customize_setting.function_options.list_num_desc_s')}
+  //               </p>
+  //             </div>
+  //           </div>
+  //         );
+  //       })}
+  //     </div>
+  //   );
+  // }
 
   render() {
     const { t, adminCustomizeContainer } = this.props;
