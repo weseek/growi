@@ -25,6 +25,8 @@ import RevisionAuthor from './RevisionAuthor';
 import DrawerToggler from './DrawerToggler';
 import UserPicture from '../User/UserPicture';
 
+import PageManagement from '../Page/PageManagement';
+
 
 // eslint-disable-next-line react/prop-types
 const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
@@ -196,6 +198,7 @@ const GrowiSubNavigation = (props) => {
         <div className="d-flex flex-column align-items-end justify-content-center">
           <div className="d-flex">
             { !isPageInTrash && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
+            <PageManagement />
           </div>
           <div className="mt-2">
             <ThreeStrandedButton onThreeStrandedButtonClicked={onThreeStrandedButtonClicked} />

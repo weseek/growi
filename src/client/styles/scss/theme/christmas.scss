@@ -189,4 +189,11 @@ html[dark] {
       @include three-stranded-button(darken($subthemecolor, 15%), lighten($subthemecolor, 35%), lighten($subthemecolor, 45%));
     }
   }
+
+  // Dropdown icon
+  .grw-icon-btn:hover,
+  .grw-icon-btn:focus {
+    // Wrote !important to override bg-transparent styles
+    background-color: rgba($color-link, 0.15) !important;
+  }
 }

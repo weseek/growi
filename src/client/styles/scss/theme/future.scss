@@ -96,6 +96,13 @@ html[dark] {
     }
   }
 
+  // Dropdown icon
+  .grw-icon-btn:hover,
+  .grw-icon-btn:focus {
+    // Wrote !important to override bg-transparent styles
+    background-color: rgba($color-link, 0.15) !important;
+  }
+
   // headers
   @for $i from 1 through 6 {
     h#{$i} {
