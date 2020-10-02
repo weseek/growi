@@ -297,7 +297,7 @@ pre:not(.hljs):not(.CodeMirror-line) {
 
   .nav-link {
     &:hover {
-      background-color: rgba(orange, 0.25);
+      background-color: rgba($link-color, 0.08);
     }
   }
   .nav-link svg {
