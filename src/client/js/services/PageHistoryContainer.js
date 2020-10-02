@@ -55,8 +55,6 @@ export default class PageHistoryContainer extends Container {
     const { pageId, shareLinkId } = this.pageContainer.state;
     const { pagingLimit } = this.state;
 
-    console.log(pagingLimit);
-
     if (!pageId) {
       return;
     }
