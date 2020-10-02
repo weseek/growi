@@ -255,12 +255,8 @@ module.exports = (crowi) => {
 
   router.get('/overlap-path', async(req, res) => {
     const { toPath } = req.query;
-    const test = toPath.map(path => typeof (path));
-    console.log(test);
 
     try {
-      const overlapPath = Page.findByPath(toPath[0]);
-      // const overlapPath = toPath.map(path => Page.findByPath(path));
       return res.apiv3({ overlapPath });
     }
     catch (err) {
