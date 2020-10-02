@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "4.1.3-RC",
+  "version": "4.2.0-RC",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -265,11 +265,6 @@
     "@server": "src/server",
     "@alias/logger": "src/lib/service/logger",
     "debug": "src/lib/service/logger/alias-for-debug"
-  },
-  "jest": {
-    "moduleNameMapper": {
-      "@commons/(.*)": "<rootDir>/src/lib/$1"
-    }
   },
   "engines": {
     "node": "^12 || ^14",

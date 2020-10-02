@@ -1,5 +1,6 @@
 {
   "Help": "ヘルプ",
+  "view": "View",
   "Edit": "編集",
   "Delete": "削除",
   "delete_all": "全て削除",
@@ -45,8 +46,10 @@
   "Example": "例",
   "Taro Yamada": "山田 太郎",
   "List View": "リスト表示",
-  "Timeline View": "タイムライン表示",
+  "Timeline View": "タイムライン",
   "History": "更新履歴",
+  "attachment_data": "添付データ",
+  "No_attachments_yet": "No attachments yet.",
   "Presentation Mode": "プレゼンテーション",
   "Not available for guest": "ゲストユーザーは利用できません",
   "Create Archive Page": "アーカイブページの作成",
@@ -117,6 +120,7 @@
   "Specified users": "特定ユーザーのみ",
   "Only me": "自分のみ",
   "Only inside the group": "特定グループのみ",
+  "page_list": "ページリスト",
   "page_list_and_search_results": "ページリスト・検索結果",
   "scope_of_page_disclosure": "ページの公開範囲",
   "set_point": "設定値",
@@ -139,10 +143,9 @@
   "Color mode": "カラーモード",
   "Sidebar mode": "サイドバーモード",
   "Sidebar mode on Editor": "サイドバーモード(編集時)",
+  "No bookmarks yet": "No bookmarks yet",
   "Recent Created": "最新の作成",
   "Recent Changes": "最新の変更",
-  "original_path":"元のパス",
-  "new_path":"新しいパス",
   "personal_dropdown": {
     "home": "ホーム",
     "settings": "設定",
@@ -303,7 +306,6 @@
     "label": {
       "Move/Rename page": "ページを移動/名前変更する",
       "New page name": "移動先のページ名",
-      "Fail to get subordinated pages": "配下ページの取得に失敗しました",
       "Current page name": "現在のページ名",
       "Recursively": "再帰的に移動/名前変更",
       "Do not update metadata": "メタデータを更新しない",
@@ -334,11 +336,7 @@
     "label": {
       "Duplicate page": "ページを複製する",
       "New page name": "複製後のページ名",
-      "Fail to get subordinated pages": "配下ページの取得に失敗しました",
-      "Current page name": "現在のページ名",
-      "Duplicate with child": "配下のページも一緒に複製する",
-      "Duplicate without exist path": "存在するパス以外を複製する",
-      "Same page already exists": "同じページがすでに存在します"
+      "Current page name": "現在のページ名"
     }
   },
   "modal_putback": {
@@ -437,6 +435,7 @@
     "open_sandbox": "Sandbox を開く"
   },
   "hackmd":{
+    "hack_md": "HackMD",
     "not_set_up": "HackMD はセットアップされていません",
     "start_to_edit": "HackMD を開始する",
     "clone_page_content": "ページを複製して編集を開始します",
@@ -752,6 +751,7 @@
   },
   "validation":{
     "aws_region": "リージョンには、AWSリージョン名を入力してください。例: ap-northeast-1",
-    "aws_custom_endpoint": "カスタムエンドポイントは、http(s)://で始まるURLを指定してください。また、末尾の/は不要です。"
+    "aws_custom_endpoint": "カスタムエンドポイントは、http(s)://で始まるURLを指定してください。また、末尾の/は不要です。",
+    "failed_to_send_a_test_email":"SMTPを利用したテストメール送信に失敗しました。設定をみなおしてください。"
   }
 }

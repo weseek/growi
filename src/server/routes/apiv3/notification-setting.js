@@ -229,7 +229,7 @@ module.exports = (crowi) => {
         createdUser: await UpdatePost.create(pathPattern, channel, req.user),
         userNotifications: await UpdatePost.findAll(),
       };
-      return res.apiv3({ responseParams }, 201);
+      return res.apiv3({ responseParams });
     }
     catch (err) {
       const msg = 'Error occurred in updating user notification';
@@ -326,7 +326,7 @@ module.exports = (crowi) => {
 
     try {
       const createdNotification = await notification.save();
-      return res.apiv3({ createdNotification }, 201);
+      return res.apiv3({ createdNotification });
     }
     catch (err) {
       const msg = 'Error occurred in updating global notification';

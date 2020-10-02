@@ -7,6 +7,13 @@ module.exports = (crowi) => {
 
   return async(req, res, next) => {
     const { referer } = req.headers;
+
+    // Attachments cannot be viewed by clients who do not send referer.
+    // https://github.com/weseek/growi/issues/2819
+    if (referer == null) {
+      return next();
+    }
+
     const { path } = url.parse(referer);
 
     if (!path.startsWith('/share/')) {

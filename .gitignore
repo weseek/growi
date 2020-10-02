@@ -1,23 +1,27 @@
-# Logs
-logs
-*.log
-npm-debug.log.*
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# OS generated files #
-.DS_Store
-.Trash-*
-ehthumbs.db
-Thumbs.db
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
 
-# Node Files #
-/node_modules/
-/bower_components/
-npm-debug.log
-/npm-debug.log.*
-package-lock.json
+# testing
+/coverage
 
-# Dist #
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# dist
+/dist/
 /report/
+/public/uploads
+/tmp/
+
+# dist (for GROWI v4.x and below)
 /public/*.chunk.js
 /public/*.chunk.js.LICENSE
 /public/*.bundle.js
@@ -25,17 +29,30 @@ package-lock.json
 /public/dll
 /public/js
 /public/styles
-/public/uploads
 /src/*/__build__/
 /__build__/**
 /src/*/dist/
 /.awcache
 .webpack.json
 /compiled/
-/tmp/
 
-# Doc #
-/doc/
+# misc
+.DS_Store
+*.pem
+.Trash-*
+ehthumbs.db
+Thumbs.db
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # IDE, dev #
 .idea

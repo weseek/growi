@@ -116,7 +116,7 @@ module.exports = (crowi) => {
       const userGroupName = crowi.xss.process(name);
       const userGroup = await UserGroup.createGroupByName(userGroupName);
 
-      return res.apiv3({ userGroup }, 201);
+      return res.apiv3({ userGroup });
     }
     catch (err) {
       const msg = 'Error occurred in creating a user group';

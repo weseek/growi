@@ -10,7 +10,7 @@ import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from './UnstatedUtils';
 import PageContainer from '../services/PageContainer';
 
-import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
+import ApiErrorMessage from './PageManagement/ApiErrorMessage';
 
 const deleteIconAndKey = {
   completely: {
@@ -32,8 +32,8 @@ const PageDeleteModal = (props) => {
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
   const deleteMode = isDeleteCompletely ? 'completely' : 'temporary';
-
-  const [errs, setErrs] = useState(null);
+  const [errorCode, setErrorCode] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   function changeIsDeleteRecursivelyHandler() {
     setIsDeleteRecursively(!isDeleteRecursively);
@@ -47,7 +47,8 @@ const PageDeleteModal = (props) => {
   }
 
   async function deletePage() {
-    setErrs(null);
+    setErrorCode(null);
+    setErrorMessage(null);
 
     try {
       const response = await pageContainer.deletePage(isDeleteRecursively, isDeleteCompletely);
@@ -55,7 +56,8 @@ const PageDeleteModal = (props) => {
       window.location.href = encodeURI(trashPagePath);
     }
     catch (err) {
-      setErrs(err);
+      setErrorCode(err.code);
+      setErrorMessage(err.message);
     }
   }
 
@@ -122,7 +124,7 @@ const PageDeleteModal = (props) => {
         {!isDeleteCompletelyModal && renderDeleteCompletelyForm()}
       </ModalBody>
       <ModalFooter>
-        <ApiErrorMessageList errs={errs} />
+        <ApiErrorMessage errorCode={errorCode} errorMessage={errorMessage} />
         <button type="button" className={`btn btn-${deleteIconAndKey[deleteMode].color}`} onClick={deleteButtonHandler}>
           <i className={`icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
           { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }

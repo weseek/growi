@@ -107,7 +107,7 @@ module.exports = (crowi) => {
 
     try {
       const postedShareLink = await ShareLink.create({ relatedPage, expiredAt, description });
-      return res.apiv3(postedShareLink, 201);
+      return res.apiv3(postedShareLink);
     }
     catch (err) {
       const msg = 'Error occured in post share link';
