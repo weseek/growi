@@ -261,6 +261,8 @@ module.exports = (crowi) => {
         const page = Page.findByPath(path);
         return page;
       }));
+      const overlapPages = pages.filter(path => path != null);
+      const overlapPath = overlapPages.map(page => page.path);
       return res.apiv3({ overlapPath });
     }
     catch (err) {
