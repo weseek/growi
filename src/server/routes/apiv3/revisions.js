@@ -9,7 +9,6 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const router = express.Router();
 
-
 /**
  * @swagger
  *  tags:
@@ -98,6 +97,7 @@ module.exports = (crowi) => {
    */
   router.get('/list', certifySharedPage, accessTokenParser, loginRequired, validator.retrieveRevisions, apiV3FormValidator, async(req, res) => {
     const pageId = req.query.pageId;
+    const pagingLimit = req.query.pagingLimit;
     const { isSharedPage } = req;
 
     const selectedPage = parseInt(req.query.selectedPage) || 1;
@@ -114,6 +114,7 @@ module.exports = (crowi) => {
         { path: page.path },
         {
           page: selectedPage,
+          limit: pagingLimit,
           sort: { createdAt: -1 },
           populate: {
             path: 'author',

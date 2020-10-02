@@ -16,6 +16,7 @@ const logger = loggerFactory('growi:PageHistory');
 
 function PageHistory(props) {
   const { pageHistoryContainer } = props;
+  const { activePage, totalPages, pagingLimit } = pageHistoryContainer.state;
 
   const handlePage = useCallback(async(selectedPage) => {
     try {
@@ -48,15 +49,14 @@ function PageHistory(props) {
       }
     });
   }
-  console.log(pageHistoryContainer.state.pagingLimit);
 
   function pager() {
     return (
       <PaginationWrapper
-        activePage={pageHistoryContainer.state.activePage}
+        activePage={activePage}
         changePage={handlePage}
-        totalItemsCount={pageHistoryContainer.state.totalPages}
-        pagingLimit={pageHistoryContainer.state.pagingLimit}
+        totalItemsCount={totalPages}
+        pagingLimit={pagingLimit}
         align="center"
       />
     );
