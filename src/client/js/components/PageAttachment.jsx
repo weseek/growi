@@ -14,10 +14,11 @@ class PageAttachment extends React.Component {
 
   constructor(props) {
     super(props);
-    // TODO add paging size (limit) for modal
+
+    const { appContainer } = this.props;
     this.state = {
       activePage: 1,
-      limit: 10,
+      limit: appContainer.getConfig().pageLimitationS,
       totalAttachments: 0,
       attachments: [],
       inUse: {},
