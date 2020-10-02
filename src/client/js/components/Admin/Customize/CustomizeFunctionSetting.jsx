@@ -52,36 +52,24 @@ class CustomizeFunctionSetting extends React.Component {
     super(props);
 
     this.state = {
+      // isDropdownOpen: false, //
       isDropdownOpenS: false, // S
       isDropdownOpenM: false, // M
       isDropdownOpenL: false, // L
       isDropdownOpenXL: false, // XL
     };
 
-    this.onToggleDropdownS = this.onToggleDropdownS.bind(this); // S
-    this.onToggleDropdownM = this.onToggleDropdownM.bind(this); // M
-    this.onToggleDropdownL = this.onToggleDropdownL.bind(this); // L
-    this.onToggleDropdownXL = this.onToggleDropdownXL.bind(this); // XL
+    this.onToggleDropdown = this.onToggleDropdown.bind(this); //
+    // this.onToggleDropdownS = this.onToggleDropdownS.bind(this); // S
+    // this.onToggleDropdownM = this.onToggleDropdownM.bind(this); // M
+    // this.onToggleDropdownL = this.onToggleDropdownL.bind(this); // L
+    // this.onToggleDropdownXL = this.onToggleDropdownXL.bind(this); // XL
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
 
-
-  onToggleDropdownS() {
-    this.setState({ isDropdownOpenS: !this.state.isDropdownOpenS });
+  onToggleDropdown(size) {
+    this.setState({ [`isDropdownOpen${size}`]: !this.state[`isDropdownOpen${size}`] });
   }
-
-  onToggleDropdownM() {
-    this.setState({ isDropdownOpenM: !this.state.isDropdownOpenM });
-  }
-
-  onToggleDropdownL() {
-    this.setState({ isDropdownOpenL: !this.state.isDropdownOpenL });
-  }
-
-  onToggleDropdownXL() {
-    this.setState({ isDropdownOpenXL: !this.state.isDropdownOpenXL });
-  }
-
 
   async onClickSubmit() {
     const { t, adminCustomizeContainer } = this.props;
@@ -186,12 +174,12 @@ class CustomizeFunctionSetting extends React.Component {
             </div>
 
             {/* S: Modal */}
-            {/* <div className="form-group row">
+            <div className="form-group row">
               <div className="offset-md-3 col-md-6 text-left">
                 <div className="my-0 w-100">
                   <label>{t('admin:customize_setting.function_options.list_num_s')}</label>
                 </div>
-                <Dropdown isOpen={this.state.isDropdownOpenS} toggle={this.onToggleDropdownS}>
+                <Dropdown isOpen={this.state.isDropdownOpenS} toggle={() => this.onToggleDropdown('S')}>
                   <DropdownToggle className="text-right col-6" caret>
                     <span className="float-left">{adminCustomizeContainer.state.pageLimitationS}</span>
                   </DropdownToggle>
@@ -211,7 +199,7 @@ class CustomizeFunctionSetting extends React.Component {
                   {t('admin:customize_setting.function_options.list_num_desc_s')}
                 </p>
               </div>
-            </div> */}
+            </div>
 
             {/* M: User Page */}
             <div className="form-group row">
@@ -219,7 +207,7 @@ class CustomizeFunctionSetting extends React.Component {
                 <div className="my-0 w-100">
                   <label>{t('admin:customize_setting.function_options.list_num_m')}</label>
                 </div>
-                <Dropdown isOpen={this.state.isDropdownOpenM} toggle={this.onToggleDropdownM}>
+                <Dropdown isOpen={this.state.isDropdownOpenM} toggle={() => this.onToggleDropdown('M')}>
                   <DropdownToggle className="text-right col-6" caret>
                     <span className="float-left">{adminCustomizeContainer.state.pageLimitationM}</span>
                   </DropdownToggle>
@@ -247,7 +235,7 @@ class CustomizeFunctionSetting extends React.Component {
                 <div className="my-0 w-100">
                   <label>{t('admin:customize_setting.function_options.list_num_l')}</label>
                 </div>
-                <Dropdown isOpen={this.state.isDropdownOpenL} toggle={this.onToggleDropdownL}>
+                <Dropdown isOpen={this.state.isDropdownOpenL} toggle={() => this.onToggleDropdown('L')}>
                   <DropdownToggle className="text-right col-6" caret>
                     <span className="float-left">{adminCustomizeContainer.state.pageLimitationL}</span>
                   </DropdownToggle>
@@ -275,7 +263,7 @@ class CustomizeFunctionSetting extends React.Component {
                 <div className="my-0 w-100">
                   <label>{t('admin:customize_setting.function_options.list_num_xl')}</label>
                 </div>
-                <Dropdown isOpen={this.state.isDropdownOpenXL} toggle={this.onToggleDropdownXL}>
+                <Dropdown isOpen={this.state.isDropdownOpenXL} toggle={() => this.onToggleDropdown('XL')}>
                   <DropdownToggle className="text-right col-6" caret>
                     <span className="float-left">{adminCustomizeContainer.state.pageLimitationXL}</span>
                   </DropdownToggle>
