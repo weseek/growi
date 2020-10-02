@@ -119,8 +119,8 @@ html[dark] {
   }
 
   // Dropdown icon
-  .grw-icon-btn:hover,
-  .grw-icon-btn:focus {
+  .grw-three-dots-btn:hover,
+  .grw-three-dots-btn:focus {
     // Wrote !important to override bg-transparent styles
     background-color: rgba($color-link, 0.15) !important;
   }
