@@ -257,6 +257,10 @@ module.exports = (crowi) => {
     const { toPath } = req.query;
 
     try {
+      const pages = await Promise.all(toPath.map((path) => {
+        const page = Page.findByPath(path);
+        return page;
+      }));
       return res.apiv3({ overlapPath });
     }
     catch (err) {
