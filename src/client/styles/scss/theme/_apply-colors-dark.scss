@@ -72,7 +72,6 @@ textarea.form-control {
   &:hover {
     color: $light;
     background-color: lighten($bgcolor-global, 15%);
-    border: none;
   }
 }
 
