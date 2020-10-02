@@ -59,11 +59,7 @@ class CustomizeFunctionSetting extends React.Component {
       isDropdownOpenXL: false, // XL
     };
 
-    this.onToggleDropdown = this.onToggleDropdown.bind(this); //
-    // this.onToggleDropdownS = this.onToggleDropdownS.bind(this); // S
-    // this.onToggleDropdownM = this.onToggleDropdownM.bind(this); // M
-    // this.onToggleDropdownL = this.onToggleDropdownL.bind(this); // L
-    // this.onToggleDropdownXL = this.onToggleDropdownXL.bind(this); // XL
+    this.onToggleDropdown = this.onToggleDropdown.bind(this);
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
 
