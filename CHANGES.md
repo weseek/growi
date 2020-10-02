@@ -1,6 +1,6 @@
 # CHANGES
 
-## v4.2.0
+## v4.2.0-RC
 
 ### BREAKING CHANGES
 
@@ -12,6 +12,11 @@
 * Improvement: Basic layout of page
 * Support: Support MongoDB 4.0, 4.2 and 4.4
 
+## v4.1.7
+
+* Improvement: Fire global notification when a new page is created by uploading file
+* Fix: Change default `DRAWIO_URI` to embed.diagrams.net
+* Fix: An unhandled rejection occures when a user who does not send referer accesses
 
 ## v4.1.6
 
