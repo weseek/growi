@@ -108,15 +108,16 @@ html[light] {
 //== Dark Mode
 //
 html[dark] {
-  $primary: #db00c2;
+  $primary: #95beff;
+  $accent: #db00c2;
 
   // Background colors
-  $bgcolor-global: #131418;
+  $bgcolor-global: #242424;
   $bgcolor-inline-code: #1f1f22; //optional
   $bgcolor-card: darken($bgcolor-global, 5%);
 
   // Font colors
-  $color-global: #a8a8a8;
+  $color-global: $gray-300;
   $color-reversal: $gray-900;
   // $color-header: desaturate($primary, 20%);
   $color-link: #7b9ad5;
@@ -143,7 +144,7 @@ html[dark] {
 
   // Navbar
   $bgcolor-navbar: #2a2929;
-  $bgcolor-search-top-dropdown: $primary;
+  $bgcolor-search-top-dropdown: $accent;
   $border-image-navbar: linear-gradient(to right, #44bfe3 0%, #b04aff 50%, #ff1794 100%);
 
   // Logo colors
@@ -156,14 +157,14 @@ html[dark] {
   $text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
   // Sidebar resize button
   $color-resize-button: white;
-  $bgcolor-resize-button: $primary;
+  $bgcolor-resize-button: $accent;
   $color-resize-button-hover: white;
   $bgcolor-resize-button-hover: darken($bgcolor-resize-button, 5%);
   // Sidebar contents
-  $bgcolor-sidebar-context: #111d2f;
+  $bgcolor-sidebar-context: #1f232b;
   $color-sidebar-context: $color-global;
   // Sidebar list group
-  $bgcolor-sidebar-list-group: #1c2a3e; // optional
+  $bgcolor-sidebar-list-group: #2d3136; // optional
 
   // Subnavigation
   $bgcolor-subnav: lighten($bgcolor-global, 4%); // optional
