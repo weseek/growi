@@ -253,6 +253,23 @@ module.exports = (crowi) => {
     return stream.pipe(res);
   });
 
+  router.get('/overlap-path', async(req, res) => {
+    const { toPath } = req.query;
+    const test = toPath.map(path => typeof (path));
+    console.log(test);
+
+    try {
+      const overlapPath = Page.findByPath(toPath[0]);
+      // const overlapPath = toPath.map(path => Page.findByPath(path));
+      return res.apiv3({ overlapPath });
+    }
+    catch (err) {
+      logger.error('Failed to get overlap path', err);
+      return res.apiv3Err(err, 500);
+    }
+
+  });
+
   // TODO GW-2746 bulk export pages
   // /**
   //  * @swagger
