@@ -69,9 +69,20 @@
   cursor: not-allowed;
 }
 
+.view-button {
+  min-width: 74px;
+}
+
+.edit-button {
+  min-width: 71px;
+}
 // TODO: reactify and replace with `grw-not-available-for-guest`
 .edit-button.edit-button-disabled {
   cursor: not-allowed;
+}
+
+.hackmd-button {
+  min-width: 97px;
 }
 
 .grw-not-available-for-guest {
