@@ -20,7 +20,6 @@ import LikeButton from '../LikeButton';
 import BookmarkButton from '../BookmarkButton';
 
 import PageCreator from './PageCreator';
-import RevisionAuthor from './RevisionAuthor';
 import DrawerToggler from './DrawerToggler';
 import UserPicture from '../User/UserPicture';
 
@@ -202,12 +201,12 @@ const GrowiSubNavigation = (props) => {
           <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none">
             { creator != null && (
               <li className="pb-1">
-                <PageCreator creator={creator} createdAt={createdAt} />
+                <PageCreator user={creator} date={createdAt} />
               </li>
             ) }
             { revisionAuthor != null && (
               <li className="mt-1 pt-1 border-top">
-                <RevisionAuthor revisionAuthor={revisionAuthor} updatedAt={updatedAt} />
+                <PageCreator user={revisionAuthor} date={updatedAt} mode="update" />
               </li>
             ) }
           </ul>

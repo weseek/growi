@@ -5,31 +5,57 @@ import { userPageRoot } from '@commons/util/path-utils';
 
 import UserPicture from '../User/UserPicture';
 
+const LabelNormal = ({ mode, user, date }) => {
+  const infoLabel = mode === 'create'
+    ? 'Created by'
+    : 'Updated by';
+  const userLabel = user != null
+    ? <a href={userPageRoot(user)}>{user.name}</a>
+    : <i>Unknown</i>;
+
+  return (
+    <div>
+      <div>{infoLabel} {userLabel}</div>
+      <div className="text-muted text-date">{date}</div>
+    </div>
+  );
+};
+
+const LabelCompact = ({ mode, date }) => {
+  const infoLabel = mode === 'create'
+    ? 'Created at'
+    : 'Updated at';
+
+  return <div>{infoLabel} <span className="text-muted">{date}</span></div>;
+};
+
 const PageCreator = (props) => {
-  const { creator, createdAt, isCompactMode } = props;
-  const creatInfo = isCompactMode
-    ? (<div>Created at <span className="text-muted">{createdAt}</span></div>)
-    : (<div><div>Created by <a href={userPageRoot(creator)}>{creator.name}</a></div><div className="text-muted text-date">{createdAt}</div></div>);
+  const { user, isCompactMode } = props;
+
+  const Label = isCompactMode ? LabelCompact : LabelNormal;
   const pictureSize = isCompactMode ? 'xs' : 'sm';
 
   return (
     <div className="d-flex align-items-center">
       <div className="mr-2">
-        <UserPicture user={creator} size={pictureSize} />
+        <UserPicture user={user} size={pictureSize} />
       </div>
-      {creatInfo}
+      <Label {...props} />
     </div>
   );
 };
 
 PageCreator.propTypes = {
-
-  creator: PropTypes.object.isRequired,
-  createdAt: PropTypes.string.isRequired,
+  date: PropTypes.string.isRequired,
+  user: PropTypes.object,
+  mode: PropTypes.oneOf('create', 'update'),
   isCompactMode: PropTypes.bool,
 };
+LabelNormal.propTypes = PageCreator.propTypes;
+LabelCompact.propTypes = PageCreator.propTypes;
 
 PageCreator.defaultProps = {
+  mode: 'create',
   isCompactMode: false,
 };
 
