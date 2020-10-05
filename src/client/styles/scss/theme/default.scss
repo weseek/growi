@@ -108,7 +108,7 @@ html[light] {
 //== Dark Mode
 //
 html[dark] {
-  $primary: #95beff;
+  $primary: #7dabff;
   $accent: #db00c2;
 
   // Background colors
@@ -132,7 +132,7 @@ html[dark] {
   // $bgcolor-list: $bgcolor-global; // optional
   // $color-list-hover: $color-global; // optional
   // $bgcolor-list-hover: lighten($bgcolor-global, 3%); // optional
-  $color-list-active: white; // optional
+  // $color-list-active:white ; // optional
   // $bgcolor-list-active: $primary; // optional
 
   // Table colors
