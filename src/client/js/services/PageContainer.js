@@ -45,7 +45,6 @@ export default class PageContainer extends Container {
       pageId: mainContent.getAttribute('data-page-id'),
       revisionId,
       revisionCreatedAt: +mainContent.getAttribute('data-page-revision-created'),
-      revisionAuthor: JSON.parse(mainContent.getAttribute('data-page-revision-author')),
       path,
       tocHtml: '',
       isLiked: JSON.parse(mainContent.getAttribute('data-page-is-liked')),
@@ -54,7 +53,6 @@ export default class PageContainer extends Container {
       sumOfSeenUsers: 0,
       sumOfLikers: 0,
       createdAt: mainContent.getAttribute('data-page-created-at'),
-      creator: JSON.parse(mainContent.getAttribute('data-page-creator')),
       updatedAt: mainContent.getAttribute('data-page-updated-at'),
       isForbidden:  JSON.parse(mainContent.getAttribute('data-page-is-forbidden')),
       isDeleted:  JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
@@ -75,6 +73,20 @@ export default class PageContainer extends Container {
       hasDraftOnHackmd: !!mainContent.getAttribute('data-page-has-draft-on-hackmd'),
       isHackmdDraftUpdatingInRealtime: false,
     };
+
+    // parse creator and revisionAuthor
+    try {
+      this.state.revisionAuthor = JSON.parse(mainContent.getAttribute('data-page-revision-author'));
+    }
+    catch (e) {
+      logger.warn('The data of \'data-page-revision-author\' is invalid', e);
+    }
+    try {
+      this.state.creator = JSON.parse(mainContent.getAttribute('data-page-creator'));
+    }
+    catch (e) {
+      logger.warn('The data of \'data-page-creator\' is invalid', e);
+    }
 
     const { interceptorManager } = this.appContainer;
     interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(appContainer), 10); // process as soon as possible
