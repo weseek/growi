@@ -15,9 +15,8 @@
   }
 }
 
-@mixin expand-editor($editor-header-plus-footer, $navbar-height-adjustment: 0px) {
-  $navbar-height: $grw-navbar-border-width + $navbar-height-adjustment;
-  $header-plus-footer: $navbar-height + $editor-header-plus-footer + 2px; // add .main padding-top
+@mixin expand-editor($editor-margin-top) {
+  $header-plus-footer: $editor-margin-top + $grw-editor-navbar-bottom-height;
 
   $editor-margin: $header-plus-footer //
     + 25px //   add .btn-open-dropzone height
@@ -25,8 +24,7 @@
 
   .main {
     width: 100%;
-    height: calc(100vh - #{$navbar-height});
-    padding-top: 2px;
+    height: calc(100vh - #{$editor-margin-top});
     margin-top: 0px !important;
 
     &,
@@ -36,8 +34,7 @@
       flex: 1;
       flex-direction: column;
 
-      .tab-pane#edit,
-      .tab-pane#hackmd {
+      .tab-pane {
         height: calc(100vh - #{$header-plus-footer});
         min-height: calc(100vh - #{$header-plus-footer}); // for IE11
       }
@@ -222,4 +219,16 @@
 @mixin apply-navigation-transition() {
   transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
   transition-duration: 300ms;
+}
+
+@mixin three-stranded-button($textColor, $borderColor, $bgColorHoverAndActive, $bgColor: white) {
+  color: $textColor;
+  background-color: $bgColor;
+  border-color: $borderColor;
+  &:hover,
+  &:active {
+    color: $textColor;
+    background-color: $bgColorHoverAndActive;
+    border-color: $borderColor;
+  }
 }

@@ -127,10 +127,9 @@ const ApiResponse = require('../util/apiResponse');
 
 module.exports = function(crowi, app) {
   const Attachment = crowi.model('Attachment');
-  const User = crowi.model('User');
   const Page = crowi.model('Page');
-  const { fileUploadService, attachmentService } = crowi;
-
+  const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
+  const { fileUploadService, attachmentService, globalNotificationService } = crowi;
 
   /**
    * Check the user is accessible to the related page
@@ -295,63 +294,6 @@ module.exports = function(crowi, app) {
     return responseForAttachment(req, res, attachment);
   };
 
-  /**
-   * @swagger
-   *
-   *    /attachments.list:
-   *      get:
-   *        tags: [Attachments, CrowiCompatibles]
-   *        operationId: listAttachments
-   *        summary: /attachments.list
-   *        description: Get list of attachments in page
-   *        parameters:
-   *          - in: query
-   *            name: page_id
-   *            schema:
-   *              $ref: '#/components/schemas/Page/properties/_id'
-   *            required: true
-   *        responses:
-   *          200:
-   *            description: Succeeded to get list of attachments.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    attachments:
-   *                      type: array
-   *                      items:
-   *                        $ref: '#/components/schemas/Attachment'
-   *                      description: attachment list
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  /**
-   * @api {get} /attachments.list Get attachments of the page
-   * @apiName ListAttachments
-   * @apiGroup Attachment
-   *
-   * @apiParam {String} page_id
-   */
-  api.list = async function(req, res) {
-    const id = req.query.page_id || null;
-    if (!id) {
-      return res.json(ApiResponse.error('Parameters page_id is required.'));
-    }
-
-    let attachments = await Attachment.find({ page: id })
-      .sort({ updatedAt: 1 })
-      .populate({ path: 'creator', select: User.USER_PUBLIC_FIELDS });
-
-    attachments = attachments.map((attachment) => {
-      return attachment.toObject({ virtuals: true });
-    });
-
-    return res.json(ApiResponse.success({ attachments }));
-  };
 
   /**
    * @swagger
@@ -521,7 +463,17 @@ module.exports = function(crowi, app) {
       pageCreated,
     };
 
-    return res.json(ApiResponse.success(result));
+    res.json(ApiResponse.success(result));
+
+    if (pageCreated) {
+      // global notification
+      try {
+        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, page, req.user);
+      }
+      catch (err) {
+        logger.error('Create notification failed', err);
+      }
+    }
   };
 
   /**

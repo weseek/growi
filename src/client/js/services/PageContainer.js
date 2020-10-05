@@ -51,8 +51,9 @@ export default class PageContainer extends Container {
       isLiked: false,
       isBookmarked: false,
       seenUsers: [],
+      countOfSeenUsers: mainContent.getAttribute('data-page-count-of-seen-users'),
+
       likerUsers: [],
-      sumOfSeenUsers: 0,
       sumOfLikers: 0,
       sumOfBookmarks: 0,
       createdAt: mainContent.getAttribute('data-page-created-at'),
@@ -83,6 +84,7 @@ export default class PageContainer extends Container {
     interceptorManager.addInterceptor(new DrawioInterceptor(appContainer), 20);
     interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(appContainer), 900); // process as late as possible
 
+    this.retrieveSeenUsers();
     this.initStateMarkdown();
     this.initStateOthers();
 
@@ -129,23 +131,14 @@ export default class PageContainer extends Container {
     this.state.markdown = markdown;
   }
 
+  async retrieveSeenUsers() {
+    const { users } = await this.appContainer.apiGet('/users.list', { user_ids: this.state.seenUserIds });
+
+    this.setState({ seenUsers: users });
+    this.checkAndUpdateImageUrlCached(users);
+  }
+
   async initStateOthers() {
-
-    const seenUserListElem = document.getElementById('seen-user-list');
-    if (seenUserListElem != null) {
-      const { userIdsStr, sumOfSeenUsers } = seenUserListElem.dataset;
-      this.setState({ sumOfSeenUsers });
-
-      if (userIdsStr === '') {
-        return;
-      }
-
-      const { users } = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr });
-      this.setState({ seenUsers: users });
-
-      this.checkAndUpdateImageUrlCached(users);
-    }
-
     const like = await this.appContainer.apiv3Get('/page/like-info', { _id: this.state.pageId });
     this.setState({
       sumOfLikers: like.data.sumOfLikers,

@@ -40,7 +40,7 @@ class BookmarkButton extends React.Component {
         <button
           type="button"
           onClick={this.handleClick}
-          className={`btn rounded-circle btn-bookmark border-0 d-edit-none
+          className={`btn rounded-circle btn-bookmark border-0
           ${`btn-${this.props.size}`}
           ${pageContainer.state.isBookmarked ? 'active' : ''}`}
         >

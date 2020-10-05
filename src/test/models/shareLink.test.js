@@ -38,8 +38,14 @@ describe('ShareLink', () => {
       path: '/somePath',
       populateDataToShowRevision: () => {
         return {
-          revision: {},
-          creator: {},
+          revision: {
+            author: {
+              toObject: jest.fn(() => { return {} }),
+            },
+          },
+          creator: {
+            toObject: jest.fn(() => { return {} }),
+          },
         };
       },
       initLatestRevisionField: (revisionId) => {

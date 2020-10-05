@@ -1,5 +1,5 @@
 {% if page %}
-<div id="content-main" class="content-main"
+<div id="content-main" class="content-main container"
   data-path="{{ encodeURI(page.path) }}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
   data-page-id="{% if page %}{{ page._id.toString() }}{% endif %}"
@@ -24,6 +24,8 @@
   data-page-updated-at="{% if page %}{{ page.updatedAt|datetz('Y/m/d H:i:s') }}{% endif %}"
   data-page-has-children="{% if pages.length > 0 %}true{% else %}false{% endif %}"
   data-page-user="{% if pageUser %}{{ pageUser|json }}{% else %}null{% endif %}"
+  data-page-ids-of-seen-users="{{ page.seenUsers|slice(-15)|default([])|reverse|join(',') }}"
+  data-page-count-of-seen-users="{{ page.seenUsers.length|default(0) }}"
   data-share-links-number="{% if page %}{{ sharelinksNumber }}{% endif %}"
   data-share-link-id="{% if sharelink %}{{ sharelink._id|json }}{% endif %}"
   >
@@ -39,42 +41,11 @@
 
   {% include 'page_alerts.html' %}
 
-  {% if !getConfig('crowi', 'customize:layout') || 'kibela' === getConfig('crowi', 'customize:layout') %}
-    {% include 'page_tabs_kibela.html' %}
-  {% else %}
-    {% include 'page_tabs.html' %}
-  {% endif %}
-
-  <div class="tab-content">
-
-    {% if page %}
-      <script type="text/template" id="raw-text-original">{{ revision.body.toString() | encodeHTML }}</script>
-
-      {# formatted text #}
-      <div class="tab-pane active" id="revision-body">
-        <div id="page" class="mt-4"></div>
-      </div>
-    {% endif %}
-
-    {% if !isTrashPage() %}
-      {# edit form #}
-      <div class="tab-pane" id="edit">
-        <div id="page-editor">{% if pageForm.body %}{{ pageForm.body }}{% endif %}</div>
-      </div>
-      <div class="tab-pane" id="hackmd">
-        <div id="page-editor-with-hackmd"></div>
-      </div>
-      {% include '../_form.html' %}
-    {% endif %}
-
-    {# raw revision history #}
-    {% if not page %}
-    {% else %}
-    <div class="tab-pane revision-history" id="revision-history">
-    </div>
-    {% endif %}
-
-  </div>
-
-  <div id="grw-page-status-alert-container"></div>
+<div id="display-switcher">
+  <script type="text/template" id="raw-text-original">{{ revision.body.toString() | encodeHTML }}</script>
 </div>
+<div id="page-editor-navbar-bottom-container" class="d-none d-edit-block"></div>
+<div id="grw-page-status-alert-container"></div>
+
+</div>
+
