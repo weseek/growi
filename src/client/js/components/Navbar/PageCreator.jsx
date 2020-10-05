@@ -5,7 +5,9 @@ import { userPageRoot } from '@commons/util/path-utils';
 
 import UserPicture from '../User/UserPicture';
 
-const LabelNormal = ({ mode, user, date }) => {
+const PageCreator = (props) => {
+  const { mode, user, date } = props;
+
   const infoLabel = mode === 'create'
     ? 'Created by'
     : 'Updated by';
@@ -14,33 +16,14 @@ const LabelNormal = ({ mode, user, date }) => {
     : <i>Unknown</i>;
 
   return (
-    <div>
-      <div>{infoLabel} {userLabel}</div>
-      <div className="text-muted text-date">{date}</div>
-    </div>
-  );
-};
-
-const LabelCompact = ({ mode, date }) => {
-  const infoLabel = mode === 'create'
-    ? 'Created at'
-    : 'Updated at';
-
-  return <div>{infoLabel} <span className="text-muted">{date}</span></div>;
-};
-
-const PageCreator = (props) => {
-  const { user, isCompactMode } = props;
-
-  const Label = isCompactMode ? LabelCompact : LabelNormal;
-  const pictureSize = isCompactMode ? 'xs' : 'sm';
-
-  return (
     <div className="d-flex align-items-center">
       <div className="mr-2">
-        <UserPicture user={user} size={pictureSize} />
+        <UserPicture user={user} size="sm" />
       </div>
-      <Label {...props} />
+      <div>
+        <div>{infoLabel} {userLabel}</div>
+        <div className="text-muted text-date">{date}</div>
+      </div>
     </div>
   );
 };
@@ -48,15 +31,11 @@ const PageCreator = (props) => {
 PageCreator.propTypes = {
   date: PropTypes.string.isRequired,
   user: PropTypes.object,
-  mode: PropTypes.oneOf('create', 'update'),
-  isCompactMode: PropTypes.bool,
+  mode: PropTypes.oneOf(['create', 'update']),
 };
-LabelNormal.propTypes = PageCreator.propTypes;
-LabelCompact.propTypes = PageCreator.propTypes;
 
 PageCreator.defaultProps = {
   mode: 'create',
-  isCompactMode: false,
 };
 
 
