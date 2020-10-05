@@ -2,16 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import { Progress } from 'reactstrap';
+
 const LabeledProgressBar = (props) => {
 
   const {
-    header, currentCount, totalCount, isInProgress,
+    header, currentCount, totalCount, errorsCount, isInProgress,
   } = props;
 
-  const percentage = currentCount / totalCount * 100;
-  const isActive = (isInProgress != null)
-    ? isInProgress //                         apply props.isInProgress if set
-    : (currentCount !== totalCount); //       otherwise, set true when currentCount does not equal totalCount
+  const progressingColor = isInProgress ? 'info' : 'success';
 
   return (
     <>
@@ -19,14 +18,10 @@ const LabeledProgressBar = (props) => {
         {header}
         <div className="float-right">{currentCount} / {totalCount}</div>
       </h6>
-      <div className="progress">
-        <div
-          className={`progress-bar ${isActive ? 'bg-info progress-bar-striped active' : 'bg-success'}`}
-          style={{ width: `${percentage}%` }}
-        >
-          <span className="sr-only">{percentage.toFixed(0)}% Complete</span>
-        </div>
-      </div>
+      <Progress multi>
+        <Progress bar max={totalCount} color={progressingColor} striped={isInProgress} animated={isInProgress} value={currentCount} />
+        <Progress bar max={totalCount} color="danger" striped={isInProgress} animated={isInProgress} value={errorsCount} />
+      </Progress>
     </>
   );
 
@@ -36,6 +31,7 @@ LabeledProgressBar.propTypes = {
   header: PropTypes.string.isRequired,
   currentCount: PropTypes.number.isRequired,
   totalCount: PropTypes.number.isRequired,
+  errorsCount: PropTypes.number,
   isInProgress: PropTypes.bool,
 };
 

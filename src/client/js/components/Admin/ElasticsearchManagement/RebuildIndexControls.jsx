@@ -73,6 +73,7 @@ class RebuildIndexControls extends React.Component {
       <LabeledProgressBar
         header={header}
         currentCount={current}
+        errorsCount={skip}
         totalCount={total}
       />
     );
