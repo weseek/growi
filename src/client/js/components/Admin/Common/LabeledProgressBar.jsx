@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-class ProgressBar extends React.Component {
+class LabeledProgressBar extends React.Component {
 
 
   render() {
@@ -35,11 +35,11 @@ class ProgressBar extends React.Component {
 
 }
 
-ProgressBar.propTypes = {
+LabeledProgressBar.propTypes = {
   header: PropTypes.string.isRequired,
   currentCount: PropTypes.number.isRequired,
   totalCount: PropTypes.number.isRequired,
   isInProgress: PropTypes.bool,
 };
 
-export default withTranslation()(ProgressBar);
+export default withTranslation()(LabeledProgressBar);
