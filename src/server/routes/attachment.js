@@ -129,8 +129,8 @@ const logger = loggerFactory('growi:routes:attachment');
 module.exports = function(crowi, app) {
   const Attachment = crowi.model('Attachment');
   const Page = crowi.model('Page');
-  const { fileUploadService, attachmentService } = crowi;
-
+  const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
+  const { fileUploadService, attachmentService, globalNotificationService } = crowi;
 
   /**
    * Check the user is accessible to the related page
@@ -464,7 +464,17 @@ module.exports = function(crowi, app) {
       pageCreated,
     };
 
-    return res.json(ApiResponse.success(result));
+    res.json(ApiResponse.success(result));
+
+    if (pageCreated) {
+      // global notification
+      try {
+        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, page, req.user);
+      }
+      catch (err) {
+        logger.error('Create notification failed', err);
+      }
+    }
   };
 
   /**
