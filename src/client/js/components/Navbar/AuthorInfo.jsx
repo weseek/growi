@@ -5,7 +5,7 @@ import { userPageRoot } from '@commons/util/path-utils';
 
 import UserPicture from '../User/UserPicture';
 
-const PageCreator = (props) => {
+const AuthorInfo = (props) => {
   const { mode, user, date } = props;
 
   const infoLabel = mode === 'create'
@@ -28,15 +28,15 @@ const PageCreator = (props) => {
   );
 };
 
-PageCreator.propTypes = {
+AuthorInfo.propTypes = {
   date: PropTypes.string.isRequired,
   user: PropTypes.object,
   mode: PropTypes.oneOf(['create', 'update']),
 };
 
-PageCreator.defaultProps = {
+AuthorInfo.defaultProps = {
   mode: 'create',
 };
 
 
-export default PageCreator;
+export default AuthorInfo;
