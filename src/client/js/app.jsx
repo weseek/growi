@@ -14,14 +14,11 @@ import EditorNavbarBottom from './components/PageEditor/EditorNavbarBottom';
 import { defaultEditorOptions, defaultPreviewOptions } from './components/PageEditor/OptionsSelector';
 import PageEditorByHackmd from './components/PageEditorByHackmd';
 import Page from './components/Page';
-import PageHistory from './components/PageHistory';
 import PageComments from './components/PageComments';
 import PageTimeline from './components/PageTimeline';
 import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
 import PageManagement from './components/Page/PageManagement';
-import PageShareManagement from './components/Page/PageShareManagement';
 import TrashPageAlert from './components/Page/TrashPageAlert';
-import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
 import RecentCreated from './components/RecentCreated/RecentCreated';
 import MyDraftList from './components/MyDraftList/MyDraftList';
@@ -91,10 +88,7 @@ if (pageContainer.state.pageId != null) {
   Object.assign(componentMappings, {
     'page-comments-list': <PageComments />,
     'page-comment-write': <CommentEditorLazyRenderer />,
-    'page-attachment': <PageAttachment />,
     'page-management': <PageManagement />,
-    'page-share-management': <PageShareManagement />,
-
     'revision-toc': <TableOfContents />,
     'seen-user-list': <SeenUserList />,
     'liker-list': <LikerList />,
@@ -143,19 +137,6 @@ Object.keys(componentMappings).forEach((key) => {
       elem,
     );
   }
-});
-
-// うわーもうー (commented by Crowi team -- 2018.03.23 Yuki Takei)
-$('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', () => {
-  ReactDOM.render(
-    <I18nextProvider i18n={i18n}>
-      <ErrorBoundary>
-        <Provider inject={injectableContainers}>
-          <PageHistory />
-        </Provider>
-      </ErrorBoundary>
-    </I18nextProvider>, document.getElementById('revision-history'),
-  );
 });
 
 // initialize scrollpos-styler

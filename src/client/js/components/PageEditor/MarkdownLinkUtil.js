@@ -27,16 +27,15 @@ class MarkdownLinkUtil {
   }
 
   // replace link(link is an instance of Linker)
-  replaceFocusedMarkdownLinkWithEditor(editor, link) {
+  replaceFocusedMarkdownLinkWithEditor(editor, linkText) {
     const curPos = editor.getCursor();
-    const linkStr = link.generateMarkdownText();
     if (!this.isInLink(editor)) {
-      editor.getDoc().replaceSelection(linkStr);
+      editor.getDoc().replaceSelection(linkText);
     }
     else {
       const line = editor.getDoc().getLine(curPos.line);
       const { beginningOfLink, endOfLink } = Linker.getBeginningAndEndIndexOfLink(line, curPos.ch);
-      editor.getDoc().replaceRange(linkStr, { line: curPos.line, ch: beginningOfLink }, { line: curPos.line, ch: endOfLink });
+      editor.getDoc().replaceRange(linkText, { line: curPos.line, ch: beginningOfLink }, { line: curPos.line, ch: endOfLink });
     }
   }
 
