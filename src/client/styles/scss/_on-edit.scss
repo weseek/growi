@@ -29,6 +29,13 @@ body.on-edit {
     }
   }
 
+  //temp data
+  .grw-page-path-nav {
+    width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
   .page-wrapper {
     position: relative;
     top: $grw-navbar-border-width;
