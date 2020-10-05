@@ -2,7 +2,8 @@
 
 ## v4.1.8-RC
 
-* 
+* Improvement: Rebuilding progress bar colors for Full Text Search Management
+* Improvement: Support operations on page data with a null value for author
 
 ## v4.1.7
 
