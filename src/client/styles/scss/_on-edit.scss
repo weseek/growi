@@ -34,21 +34,22 @@ body.on-edit {
     display: flex;
     width: 700px;
     overflow: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
 
-    @include media-breakpoint-down(xs) {
-      width: 10px;
-    }
-    @include media-breakpoint-down(sm) {
-      width: 30px;
-    }
-    @include media-breakpoint-down(md) {
+    @include media-breakpoint-only(xs) {
       width: 100px;
     }
-    @include media-breakpoint-down(lg) {
-      width: 200px;
+    @include media-breakpoint-only(sm) {
+      width: 300px;
     }
-    @include media-breakpoint-down(xl) {
+    @include media-breakpoint-only(md) {
+      width: 420px;
+    }
+    @include media-breakpoint-only(lg) {
+      width: 490px;
+    }
+    @include media-breakpoint-only(xl) {
       width: 700px;
     }
   }
