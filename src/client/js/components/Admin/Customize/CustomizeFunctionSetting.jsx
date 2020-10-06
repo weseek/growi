@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import {
   Card, CardBody,
-  UncontrolledDropdown, Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
+  UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -52,25 +52,9 @@ class CustomizeFunctionSetting extends React.Component {
     super(props);
 
     this.state = {
-      // isDropdownOpenS: false, // S
-      // isDropdownOpenM: false, // M
-      // isDropdownOpenL: false, // L
-      // isDropdownOpenXL: false, // XL
-
-      isDropdownOpen: '',
     };
-
-    this.onToggleDropdown = this.onToggleDropdown.bind(this);
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
-
-  onToggleDropdown(size) {
-    this.setState({
-      // [`isDropdownOpen${size}`]: !this.state[`isDropdownOpen${size}`],
-      isDropdownOpen: size,
-    });
-  }
-  // isDropdownOpen: '',
 
   async onClickSubmit() {
     const { t, adminCustomizeContainer } = this.props;
