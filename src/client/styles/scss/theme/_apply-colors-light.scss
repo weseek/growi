@@ -36,6 +36,10 @@ $table-hover-bg: $bgcolor-table-hover;
   background-color: $bgcolor-global;
 }
 
+.form-control::placeholder {
+  color: darken($bgcolor-global, 20%);
+}
+
 .form-control[disabled],
 .form-control[readonly] {
   color: lighten($color-global, 10%);
