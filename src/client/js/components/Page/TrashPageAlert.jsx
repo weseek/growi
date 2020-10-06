@@ -15,7 +15,7 @@ import PageDeleteModal from '../PageDeleteModal';
 const TrashPageAlert = (props) => {
   const { t, appContainer, pageContainer } = props;
   const {
-    path, isDeleted, revisionAuthor, updatedAt, hasChildren, isAbleToDeleteCompletely,
+    path, isDeleted, lastUpdateUsername, updatedAt, hasChildren, isAbleToDeleteCompletely,
   } = pageContainer.state;
   const { currentUser } = appContainer;
   const [isEmptyTrashModalShown, setIsEmptyTrashModalShown] = useState(false);
@@ -111,7 +111,7 @@ const TrashPageAlert = (props) => {
       <div className="alert alert-warning py-3 px-4 d-flex align-items-center">
         <div>
           This page is in the trash <i className="icon-trash" aria-hidden="true"></i>.
-          {isDeleted && <span><br /><UserPicture user={revisionAuthor} /> Deleted by {revisionAuthor.name} at {updatedAt}</span>}
+          {isDeleted && <span><br /><UserPicture user={{ username: lastUpdateUsername }} /> Deleted by {lastUpdateUsername} at {updatedAt}</span>}
         </div>
         {(currentUser.admin && path === '/trash' && hasChildren) && renderEmptyButton()}
         {(isDeleted && currentUser != null) && renderTrashPageManagementButtons()}

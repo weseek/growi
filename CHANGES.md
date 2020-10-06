@@ -1,6 +1,11 @@
 # CHANGES
 
-## v4.1.7-RC
+## v4.1.8-RC
+
+* Improvement: Rebuilding progress bar colors for Full Text Search Management
+* Improvement: Support operations on page data with a null value for author
+
+## v4.1.7
 
 * Improvement: Fire global notification when a new page is created by uploading file
 * Fix: Change default `DRAWIO_URI` to embed.diagrams.net
