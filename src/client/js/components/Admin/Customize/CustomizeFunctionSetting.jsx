@@ -18,28 +18,20 @@ import CustomizeFunctionOption from './CustomizeFunctionOption';
 // const { adminCustomizeContainer } = this.props;
 // const dropdownGroupMapping = {
 //   S:  {
-//     isDropdownOpen: this.state.isDropdownOpenS,
-//     toggle: this.onToggleDropdownS,
 //     pageLimitation: adminCustomizeContainer.state.pageLimitationS,
-//     switchPageListLimitationS: adminCustomizeContainer.switchPageListLimitationS(),
+//     switchPageListLimitationS: adminCustomizeContainer.switchPageListLimitationS,
 //   },
 //   M:  {
-//     isDropdownOpen: this.state.isDropdownOpenM,
-//     toggle: this.onToggleDropdownM,
 //     pageLimitation: adminCustomizeContainer.state.pageLimitationM,
-//     switchPageListLimitationS: adminCustomizeContainer.switchPageListLimitationM(),
+//     switchPageListLimitationS: adminCustomizeContainer.switchPageListLimitationM,
 //   },
 //   L: {
-//     isDropdownOpen: this.state.isDropdownOpenL,
-//     toggle: this.onToggleDropdownL,
 //     pageLimitation: adminCustomizeContainer.state.pageLimitationL,
-//     switchPageListLimitationS: adminCustomizeContainer.switchPageListLimitationL(),
+//     switchPageListLimitationS: adminCustomizeContainer.switchPageListLimitationL,
 //   },
 //   XL: {
-//     isDropdownOpen: this.state.isDropdownOpenXL,
-//     toggle: this.onToggleDropdownXL,
 //     pageLimitation: adminCustomizeContainer.state.pageLimitationXL,
-//     switchPageListLimitationS: adminCustomizeContainer.switchPageListLimitation(),
+//     switchPageListLimitationS: adminCustomizeContainer.switchPageListLimitation,
 //   },
 // };
 
