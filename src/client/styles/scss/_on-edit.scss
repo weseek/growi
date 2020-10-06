@@ -51,6 +51,28 @@ body.on-edit {
       width: 800px;
     }
   }
+  .grw-page-path-nav h1 {
+    width: 800px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    @include media-breakpoint-only(xs) {
+      width: 100px;
+    }
+    @include media-breakpoint-only(sm) {
+      width: 300px;
+    }
+    @include media-breakpoint-only(md) {
+      width: 420px;
+    }
+    @include media-breakpoint-only(lg) {
+      width: 500px;
+    }
+    @include media-breakpoint-only(xl) {
+      width: 800px;
+    }
+  }
 
   .page-wrapper {
     position: relative;
