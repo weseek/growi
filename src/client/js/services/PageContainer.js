@@ -72,24 +72,24 @@ export default class PageContainer extends Container {
       // latest(on remote) information
       remoteRevisionId: revisionId,
       revisionIdHackmdSynced: mainContent.getAttribute('data-page-revision-id-hackmd-synced') || null,
-      lastUpdateUsername: undefined,
+      lastUpdateUsername: mainContent.getAttribute('data-page-last-update-username') || null,
       pageIdOnHackmd: mainContent.getAttribute('data-page-id-on-hackmd') || null,
       hasDraftOnHackmd: !!mainContent.getAttribute('data-page-has-draft-on-hackmd'),
       isHackmdDraftUpdatingInRealtime: false,
     };
 
-    // parse creator and revisionAuthor
-    try {
-      this.state.revisionAuthor = JSON.parse(mainContent.getAttribute('data-page-revision-author'));
-    }
-    catch (e) {
-      logger.warn('The data of \'data-page-revision-author\' is invalid', e);
-    }
+    // parse creator, lastUpdateUser and revisionAuthor
     try {
       this.state.creator = JSON.parse(mainContent.getAttribute('data-page-creator'));
     }
     catch (e) {
       logger.warn('The data of \'data-page-creator\' is invalid', e);
+    }
+    try {
+      this.state.revisionAuthor = JSON.parse(mainContent.getAttribute('data-page-revision-author'));
+    }
+    catch (e) {
+      logger.warn('The data of \'data-page-revision-author\' is invalid', e);
     }
 
     const { interceptorManager } = this.appContainer;
