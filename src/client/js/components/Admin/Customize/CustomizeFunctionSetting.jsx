@@ -118,19 +118,6 @@ class CustomizeFunctionSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <UncontrolledDropdown>
-          <DropdownToggle caret>
-          Dropdown
-          </DropdownToggle>
-          <DropdownMenu>
-            <DropdownItem header>Header</DropdownItem>
-            <DropdownItem disabled>Action</DropdownItem>
-            <DropdownItem>Another Action</DropdownItem>
-            <DropdownItem divider />
-            <DropdownItem>Another Action</DropdownItem>
-          </DropdownMenu>
-        </UncontrolledDropdown>
-
         <div className="row">
           <div className="col-12">
             <h2 className="admin-setting-header">{t('admin:customize_setting.function')}</h2>
