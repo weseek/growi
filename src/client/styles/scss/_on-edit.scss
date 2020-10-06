@@ -29,10 +29,8 @@ body.on-edit {
     }
   }
 
-  //temp data
-  .grw-page-path-nav h1 {
-    // display: flex;
-    width: 700px;
+  .grw-page-path-nav {
+    width: 800px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -47,10 +45,10 @@ body.on-edit {
       width: 420px;
     }
     @include media-breakpoint-only(lg) {
-      width: 490px;
+      width: 500px;
     }
     @include media-breakpoint-only(xl) {
-      width: 700px;
+      width: 800px;
     }
   }
 
