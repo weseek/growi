@@ -98,6 +98,7 @@ class ShareLinkSetting extends React.Component {
           totalItemsCount={totalshareLinks}
           pagingLimit={shareLinksPagingLimit}
           align="right"
+          size="sm"
         />
       );
     }

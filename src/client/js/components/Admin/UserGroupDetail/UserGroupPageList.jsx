@@ -64,6 +64,7 @@ class UserGroupPageList extends React.Component {
           changePage={this.handlePageChange}
           totalItemsCount={this.state.total}
           pagingLimit={this.state.pagingLimit}
+          size="sm"
         />
       </Fragment>
     );

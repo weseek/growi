@@ -43,6 +43,7 @@ class ManageExternalAccount extends React.Component {
         totalItemsCount={adminExternalAccountsContainer.state.totalAccounts}
         pagingLimit={adminExternalAccountsContainer.state.pagingLimit}
         align="right"
+        size="sm"
       />
 
     );
