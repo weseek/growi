@@ -16,6 +16,7 @@ import PageTimeline from './components/PageTimeline';
 import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
 import PageManagement from './components/Page/PageManagement';
 import TrashPageAlert from './components/Page/TrashPageAlert';
+import NotFoundAlert from './components/Page/NotFoundAlert';
 import PageStatusAlert from './components/PageStatusAlert';
 import RecentCreated from './components/RecentCreated/RecentCreated';
 import MyDraftList from './components/MyDraftList/MyDraftList';
@@ -72,6 +73,8 @@ Object.assign(componentMappings, {
   'grw-page-status-alert-container': <PageStatusAlert />,
 
   'trash-page-alert': <TrashPageAlert />,
+
+  'not-found-alert': <NotFoundAlert />,
 
   'page-timeline': <PageTimeline />,
 
