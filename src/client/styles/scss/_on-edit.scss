@@ -29,6 +29,22 @@ body.on-edit {
     }
   }
 
+  .grw-page-path-nav,
+  .grw-page-path-nav h1 {
+    width: calc(100vw - 300px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    @include media-breakpoint-up(md) {
+      width: calc(100vw - 350px);
+    }
+
+    @include media-breakpoint-up(lg) {
+      width: calc(100vw - 560px);
+    }
+  }
+
   .page-wrapper {
     position: relative;
     top: $grw-navbar-border-width;
