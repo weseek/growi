@@ -67,21 +67,6 @@ class CustomizeFunctionSetting extends React.Component {
       },
     };
 
-    const hello = {
-      S:  {
-        label: 'hello',
-        desc: 'World',
-      },
-      M:  {
-        label: 'k',
-        desc: 't',
-      },
-      L:  {
-        label: 'u',
-        desc: 'k',
-      },
-    };
-
     return (
       <React.Fragment>
         <div className="row">
@@ -124,8 +109,6 @@ class CustomizeFunctionSetting extends React.Component {
               </div>
             </div>
 
-
-            {/* { this.renderDropButtons() } */}
             {Object.entries(dropdownGroupMapping).map(([key, value]) => {
               return (
                 <div className="form-group row">
@@ -153,15 +136,6 @@ class CustomizeFunctionSetting extends React.Component {
                       {/* {t(value.desc)} */}
                     </p>
                   </div>
-                </div>
-              );
-            })}
-
-            {Object.entries(hello).map(([key, value]) => {
-              return (
-                <div>
-                  {value.label}
-                  {value.desc}
                 </div>
               );
             })}
