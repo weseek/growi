@@ -87,7 +87,7 @@ class ShareLinkSetting extends React.Component {
       shareLinks, shareLinksActivePage, totalshareLinks, shareLinksPagingLimit,
     } = adminGeneralSecurityContainer.state;
 
-    function pager() {
+    const pager = () => {
       if (shareLinks.length === 0) {
         return null;
       }
@@ -100,7 +100,7 @@ class ShareLinkSetting extends React.Component {
           align="right"
         />
       );
-    }
+    };
 
     return (
       <Fragment>
@@ -115,7 +115,7 @@ class ShareLinkSetting extends React.Component {
           </button>
           <h2 className="alert-anchor border-bottom">{t('share_links.share_link_management')}</h2>
         </div>
-        {pager}
+        {pager()}
 
         {(shareLinks.length !== 0) ? (
           <ShareLinkList
