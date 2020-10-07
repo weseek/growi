@@ -111,7 +111,7 @@ class CustomizeFunctionSetting extends React.Component {
 
             {Object.entries(dropdownGroupMapping).map(([key, value]) => {
               return (
-                <div className="form-group row">
+                <div className="form-group row" key={key}>
                   <div className="offset-md-3 col-md-6 text-left">
                     <div className="my-0 w-100">
                       <label>{t(value.label)}</label>
