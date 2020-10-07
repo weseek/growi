@@ -15,10 +15,6 @@ import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import CustomizeFunctionOption from './CustomizeFunctionOption';
 
-
-// dropdownOpenGroup, pageLimitationGroup, switchPageListLimitationGrpup
-// isDropdownOpenS, pageLimitationS, switchPageListLimitationS
-
 class CustomizeFunctionSetting extends React.Component {
 
   constructor(props) {
@@ -41,77 +37,36 @@ class CustomizeFunctionSetting extends React.Component {
     }
   }
 
-
-  // renderDropButtons() {
-  //   // const { adminCustomizeContainer, t } = this.props;
-  //   console.log('hi');
-
-  //   const dropdownGroupMapping = {
-  //     S:  {
-  //       label: 'admin:customize_setting.function_options.list_num_s',
-  //       // pageLimitation: adminCustomizeContainer.state.pageLimitationS,
-  //       // switchPageListLimitationS: adminCustomizeContainer.switchPageListLimitationS,
-  //       desc: 'admin:customize_setting.function_options.list_num_desc_s',
-  //     },
-  //     M:  {
-  //       label: 'admin:customize_setting.function_options.list_num_m',
-  //       // pageLimitation: adminCustomizeContainer.state.pageLimitationM,
-  //       // switchPageListLimitationS: adminCustomizeContainer.switchPageListLimitationM,
-  //       desc: 'admin:customize_setting.function_options.list_num_desc_m',
-  //     },
-  //     L: {
-  //       label: 'admin:customize_setting.function_options.list_num_l',
-  //       // pageLimitation: adminCustomizeContainer.state.pageLimitationL,
-  //       // switchPageListLimitationS: adminCustomizeContainer.switchPageListLimitationL,
-  //       desc: 'admin:customize_setting.function_options.list_num_desc_l',
-  //     },
-  //     XL: {
-  //       label: 'admin:customize_setting.function_options.list_num_xl',
-  //       // pageLimitation: adminCustomizeContainer.state.pageLimitationXL,
-  //       // switchPageListLimitationS: adminCustomizeContainer.switchPageListLimitation,
-  //       desc: 'admin:customize_setting.function_options.list_num_desc_xl',
-  //     },
-  //   };
-  // console.log('foo');
-
-
-  // Object.entries(dropdownGroupMapping).map(([key, value]) => {
-  //   return (
-  //     <div className="form-group row">
-  //       <div className="offset-md-3 col-md-6 text-left">
-  //         <div className="my-0 w-100">
-  //           {/* <label>{t(value.label)}</label> */}
-  //         </div>
-  //         <UncontrolledDropdown>
-  //           <DropdownToggle className="text-right col-6" caret>
-  //             <span className="float-left">{adminCustomizeContainer.state.pageLimitationS}</span>
-  //           </DropdownToggle>
-  //           <DropdownMenu className="dropdown-menu" role="menu">
-  //             <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationS(10) }}>
-  //               <a role="menuitem">10</a>
-  //             </DropdownItem>
-  //             <DropdownItem key={30} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationS(30) }}>
-  //               <a role="menuitem">30</a>
-  //             </DropdownItem>
-  //             <DropdownItem key={50} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationS(50) }}>
-  //               <a role="menuitem">50</a>
-  //             </DropdownItem>
-  //           </DropdownMenu>
-  //         </UncontrolledDropdown>
-  //         <p className="form-text text-muted">
-  //           {/* {t(value.desc)} */}
-  //         </p>
-  //       </div>
-  //     </div>
-  //   );
-  // });
-
-  //   console.log('fuga');
-
-  // }
-
   render() {
     const { t, adminCustomizeContainer } = this.props;
+
+    const dropdownGroupMapping = {
+      S:  {
+        label: 'admin:customize_setting.function_options.list_num_s',
+        // pageLimitation: adminCustomizeContainer.state.pageLimitationS,
+        // switchPageListLimitationS: adminCustomizeContainer.switchPageListLimitationS,
+        desc: 'admin:customize_setting.function_options.list_num_desc_s',
+      },
+      M:  {
+        label: 'admin:customize_setting.function_options.list_num_m',
+        // pageLimitation: adminCustomizeContainer.state.pageLimitationM,
+        // switchPageListLimitationS: adminCustomizeContainer.switchPageListLimitationM,
+        desc: 'admin:customize_setting.function_options.list_num_desc_m',
+      },
+      L: {
+        label: 'admin:customize_setting.function_options.list_num_l',
+        // pageLimitation: adminCustomizeContainer.state.pageLimitationL,
+        // switchPageListLimitationS: adminCustomizeContainer.switchPageListLimitationL,
+        desc: 'admin:customize_setting.function_options.list_num_desc_l',
+      },
+      XL: {
+        label: 'admin:customize_setting.function_options.list_num_xl',
+        // pageLimitation: adminCustomizeContainer.state.pageLimitationXL,
+        // switchPageListLimitationS: adminCustomizeContainer.switchPageListLimitation,
+        desc: 'admin:customize_setting.function_options.list_num_desc_xl',
+      },
+    };
+
     const hello = {
       S:  {
         label: 'hello',
@@ -171,6 +126,36 @@ class CustomizeFunctionSetting extends React.Component {
 
 
             {/* { this.renderDropButtons() } */}
+            {Object.entries(dropdownGroupMapping).map(([key, value]) => {
+              return (
+                <div className="form-group row">
+                  <div className="offset-md-3 col-md-6 text-left">
+                    <div className="my-0 w-100">
+                      {/* <label>{t(value.label)}</label> */}
+                    </div>
+                    <UncontrolledDropdown>
+                      <DropdownToggle className="text-right col-6" caret>
+                        <span className="float-left">{adminCustomizeContainer.state.pageLimitationS}</span>
+                      </DropdownToggle>
+                      <DropdownMenu className="dropdown-menu" role="menu">
+                        <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationS(10) }}>
+                          <a role="menuitem">10</a>
+                        </DropdownItem>
+                        <DropdownItem key={30} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationS(30) }}>
+                          <a role="menuitem">30</a>
+                        </DropdownItem>
+                        <DropdownItem key={50} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationS(50) }}>
+                          <a role="menuitem">50</a>
+                        </DropdownItem>
+                      </DropdownMenu>
+                    </UncontrolledDropdown>
+                    <p className="form-text text-muted">
+                      {/* {t(value.desc)} */}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
 
             {Object.entries(hello).map(([key, value]) => {
               return (
