@@ -77,7 +77,11 @@ class Comment extends React.PureComponent {
   }
 
   isCurrentUserEqualsToAuthor() {
-    return this.props.comment.creator.username === this.props.appContainer.currentUsername;
+    const { creator } = this.props.comment;
+    if (creator == null) {
+      return false;
+    }
+    return creator.username === this.props.appContainer.currentUsername;
   }
 
   isCurrentRevision() {
@@ -179,7 +183,7 @@ class Comment extends React.PureComponent {
             currentCommentId={commentId}
             commentBody={comment.comment}
             replyTo={undefined}
-            commentCreator={creator.username}
+            commentCreator={creator?.username}
             onCancelButtonClicked={() => this.setState({ isReEdit: false })}
             onCommentButtonClicked={() => this.setState({ isReEdit: false })}
           />
