@@ -495,6 +495,5 @@ mark.rbt-highlight-text {
 // Page Management Dropdown icon
 .grw-btn-page-management:hover,
 .grw-btn-page-management:focus {
-  // Wrote !important to override bg-transparent styles
-  background-color: rgba($color-link, 0.15) !important;
+  background-color: rgba($color-link, 0.15);
 }

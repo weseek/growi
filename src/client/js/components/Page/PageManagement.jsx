@@ -175,7 +175,7 @@ const PageManagement = (props) => {
       <>
         <button
           type="button"
-          className="btn-link nav-link bg-transparent dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management"
+          className="btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management"
           data-toggle="dropdown"
         >
           <i className="icon-options"></i>
