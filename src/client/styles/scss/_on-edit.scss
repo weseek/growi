@@ -31,13 +31,10 @@ body.on-edit {
 
   .grw-page-path-nav,
   .grw-page-path-nav h1 {
+    width: calc(100vw - 300px);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-
-    @include media-breakpoint-up(xs) {
-      width: calc(100vw - 300px);
-    }
 
     @include media-breakpoint-up(md) {
       width: calc(100vw - 350px);
