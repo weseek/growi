@@ -450,7 +450,8 @@
     "check_configuration": "<a href='https://docs.growi.org/ja/admin-guide/admin-cookbook/integrate-with-hackmd.html'>こちらのマニュアル</a>から設定を確認してください",
     "not_initialized": "HackMD コンポーネントは初期化されていません",
     "someone_editing": "このページは、HackMD で編集されています。",
-    "this_page_has_draft": "このページは、HackMD のドラフトがあります。"
+    "this_page_has_draft": "このページは、HackMD のドラフトがあります。",
+    "need_to_associate_with_growi_to_use_hackmd_refer_to_this": "HackMD を使用し同時多人数編集を行うには、HackMD と GROWI を連携する必要があります。こちらをご参照してください。"
   },
   "slack_notification": {
     "popover_title": "Slack 通知",

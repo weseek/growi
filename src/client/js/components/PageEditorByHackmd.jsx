@@ -243,7 +243,7 @@ class PageEditorByHackmd extends React.Component {
       content = (
         <div>
           <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> { t('hackmd.not_set_up')}</p>
-          <a href="https://docs.growi.org/ja/admin-guide/">GROWI Docs 管理者ガイド</a>
+          <a href="https://docs.growi.org/ja/admin-guide/admin-cookbook/integrate-with-hackmd.html">{t('hackmd.need_to_associate_with_growi_to_use_hackmd_refer_to_this')}</a>
         </div>
       );
     }
