@@ -114,7 +114,7 @@ class CustomizeFunctionSetting extends React.Component {
                 <div className="form-group row">
                   <div className="offset-md-3 col-md-6 text-left">
                     <div className="my-0 w-100">
-                      {/* <label>{t(value.label)}</label> */}
+                      <label>{t(value.label)}</label>
                     </div>
                     <UncontrolledDropdown>
                       <DropdownToggle className="text-right col-6" caret>
@@ -133,7 +133,7 @@ class CustomizeFunctionSetting extends React.Component {
                       </DropdownMenu>
                     </UncontrolledDropdown>
                     <p className="form-text text-muted">
-                      {/* {t(value.desc)} */}
+                      {t(value.desc)}
                     </p>
                   </div>
                 </div>
