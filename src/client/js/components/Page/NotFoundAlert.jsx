@@ -61,10 +61,8 @@ const NotFoundAlertWrapper = withUnstatedContainers(NotFoundAlert, [NavigationCo
 
 
 NotFoundAlert.propTypes = {
-  // t: PropTypes.func.isRequired, // i18next
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 
-// export default withTranslation()(TrashPageAlertWrapper);
 
 export default NotFoundAlertWrapper;
