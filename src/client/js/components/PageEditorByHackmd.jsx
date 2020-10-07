@@ -243,9 +243,8 @@ class PageEditorByHackmd extends React.Component {
       content = (
         <div>
           <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> { t('hackmd.not_set_up')}</p>
-          <span>
-            {t('hackmd.need_to_associate_with_growi_to_use_hackmd_refer_to_this')}
-          </span>
+          {/* eslint-disable-next-line react/no-danger */}
+          <p dangerouslySetInnerHTML={{ __html: t('hackmd.need_to_associate_with_growi_to_use_hackmd_refer_to_this') }} />
         </div>
       );
     }
