@@ -95,7 +95,7 @@ Development
 - Node.js v12.x or v14.x
 - npm 6.x
 - yarn
-- MongoDB 3.x
+- MongoDB 4.x (in GROWI v4.1.x or later, MongoDB 3.x)
 
 See [confirmed versions](https://docs.growi.org/en/dev/startup/dev-env.html#set-up-node-js-environment).
 
