@@ -491,3 +491,9 @@ mark.rbt-highlight-text {
     fill: $gray-900;
   }
 }
+
+// Page Management Dropdown icon
+.grw-btn-page-management:hover,
+.grw-btn-page-management:focus {
+  background-color: rgba($color-link, 0.15);
+}
