@@ -55,7 +55,12 @@ export default class AdminCustomizeContainer extends Container {
         'vs2015':           { name: '[Dark] Vs 2015',         border: false },
       },
       /* eslint-enable quote-props, no-multi-spaces */
+
     };
+    this.switchPageListLimitationS = this.switchPageListLimitationS.bind(this);
+    this.switchPageListLimitationM = this.switchPageListLimitationM.bind(this);
+    this.switchPageListLimitationL = this.switchPageListLimitationL.bind(this);
+    this.switchPageListLimitationXL = this.switchPageListLimitationXL.bind(this);
 
   }
 

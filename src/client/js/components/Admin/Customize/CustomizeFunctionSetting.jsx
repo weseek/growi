@@ -43,26 +43,26 @@ class CustomizeFunctionSetting extends React.Component {
     const dropdownGroupMapping = {
       S:  {
         label: 'admin:customize_setting.function_options.list_num_s',
-        // pageLimitation: adminCustomizeContainer.state.pageLimitationS,
-        // switchPageListLimitationS: adminCustomizeContainer.switchPageListLimitationS,
+        pageLimitation: adminCustomizeContainer.state.pageLimitationS,
+        switchPageListLimitation: adminCustomizeContainer.switchPageListLimitationS,
         desc: 'admin:customize_setting.function_options.list_num_desc_s',
       },
       M:  {
         label: 'admin:customize_setting.function_options.list_num_m',
-        // pageLimitation: adminCustomizeContainer.state.pageLimitationM,
-        // switchPageListLimitationS: adminCustomizeContainer.switchPageListLimitationM,
+        pageLimitation: adminCustomizeContainer.state.pageLimitationM,
+        switchPageListLimitation: adminCustomizeContainer.switchPageListLimitationM,
         desc: 'admin:customize_setting.function_options.list_num_desc_m',
       },
       L: {
         label: 'admin:customize_setting.function_options.list_num_l',
-        // pageLimitation: adminCustomizeContainer.state.pageLimitationL,
-        // switchPageListLimitationS: adminCustomizeContainer.switchPageListLimitationL,
+        pageLimitation: adminCustomizeContainer.state.pageLimitationL,
+        switchPageListLimitation: adminCustomizeContainer.switchPageListLimitationL,
         desc: 'admin:customize_setting.function_options.list_num_desc_l',
       },
       XL: {
         label: 'admin:customize_setting.function_options.list_num_xl',
-        // pageLimitation: adminCustomizeContainer.state.pageLimitationXL,
-        // switchPageListLimitationS: adminCustomizeContainer.switchPageListLimitation,
+        pageLimitation: adminCustomizeContainer.state.pageLimitationXL,
+        switchPageListLimitation: adminCustomizeContainer.switchPageListLimitationXL,
         desc: 'admin:customize_setting.function_options.list_num_desc_xl',
       },
     };
@@ -118,16 +118,16 @@ class CustomizeFunctionSetting extends React.Component {
                     </div>
                     <UncontrolledDropdown>
                       <DropdownToggle className="text-right col-6" caret>
-                        <span className="float-left">{adminCustomizeContainer.state.pageLimitationS}</span>
+                        <span className="float-left">{value.pageLimitation}</span>
                       </DropdownToggle>
                       <DropdownMenu className="dropdown-menu" role="menu">
-                        <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationS(10) }}>
+                        <DropdownItem key={10} role="presentation" onClick={() => { value.switchPageListLimitation(10) }}>
                           <a role="menuitem">10</a>
                         </DropdownItem>
-                        <DropdownItem key={30} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationS(30) }}>
+                        <DropdownItem key={30} role="presentation" onClick={() => { value.switchPageListLimitation(30) }}>
                           <a role="menuitem">30</a>
                         </DropdownItem>
-                        <DropdownItem key={50} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationS(50) }}>
+                        <DropdownItem key={50} role="presentation" onClick={() => { value.switchPageListLimitation(50) }}>
                           <a role="menuitem">50</a>
                         </DropdownItem>
                       </DropdownMenu>
