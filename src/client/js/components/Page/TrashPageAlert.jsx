@@ -118,31 +118,31 @@ const TrashPageAlert = (props) => {
       icon: <PageListIcon />,
       i18n: 'page_list',
       index: 0,
-      content: 'aaa',
+      tabContent: 'aaa',
     },
     timeline:  {
       icon: <TimeLineIcon />,
       i18n: 'Timeline View',
       index: 1,
-      content: 'bbb',
+      tabContent: 'bbb',
     },
     pageHistory: {
       icon: <RecentChangesIcon />,
       i18n: 'History',
       index: 2,
-      content: 'ccc',
+      tabContent: 'ccc',
     },
     attachment: {
       icon: <AttachmentIcon />,
       i18n: 'attachment_data',
       index: 3,
-      content: 'ddd',
+      tabContent: 'ddd',
     },
     shareLink: {
       icon: <ShareLinkIcon />,
       i18n: 'share_links.share_link_management',
       index: 4,
-      content: 'eee',
+      tabContent: 'eee',
     },
   };
 

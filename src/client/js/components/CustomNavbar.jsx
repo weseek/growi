@@ -73,7 +73,7 @@ const CustomNavbar = (props) => {
         {Object.entries(props.navTabMapping).map(([key, value]) => {
           return (
             <TabPane key={key} tabId={key}>
-              {value.content}
+              {value.tabContent}
             </TabPane>
           );
         })}
