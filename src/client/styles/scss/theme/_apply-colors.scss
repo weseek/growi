@@ -246,8 +246,11 @@ pre:not(.hljs):not(.CodeMirror-line) {
 .modal {
   .modal-header {
     border-bottom-color: $border-color-theme;
+    .modal-title {
+      color: color-yiq($primary);
+    }
     .close {
-      color: $light;
+      color: color-yiq($primary);
       opacity: 0.5;
       &:hover {
         opacity: 0.9;
@@ -294,6 +297,16 @@ pre:not(.hljs):not(.CodeMirror-line) {
       color: $secondary;
     }
   }
+
+  .modal-title {
+    position: relative;
+  }
+
+  .nav-link {
+    &:hover {
+      background-color: rgba($link-color, 0.08);
+    }
+  }
   .nav-link svg {
     fill: $color-link;
   }
@@ -302,6 +315,8 @@ pre:not(.hljs):not(.CodeMirror-line) {
   }
 
   .grw-nav-slide-hr {
+    position: absolute;
+    bottom: 0px;
     border-color: $color-link;
   }
 }
