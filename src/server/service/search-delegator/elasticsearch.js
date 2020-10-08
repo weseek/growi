@@ -51,7 +51,7 @@ class ElasticsearchDelegator {
   }
 
   shouldIndexed(page) {
-    return page.creator != null && page.revision != null && page.redirectTo == null;
+    return page.revision != null && page.redirectTo == null;
   }
 
   initClient() {
@@ -310,7 +310,7 @@ class ElasticsearchDelegator {
     let document = {
       path: page.path,
       body: page.revision.body,
-      username: page.creator.username,
+      username: page.creator?.username,
       comment_count: page.commentCount,
       bookmark_count: bookmarkCount,
       like_count: page.liker.length || 0,
