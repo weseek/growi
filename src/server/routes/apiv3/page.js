@@ -253,20 +253,22 @@ module.exports = (crowi) => {
     return stream.pipe(res);
   });
 
-  router.get('/overlapping-path', async(req, res) => {
-    const { toPath } = req.query;
+  router.get('/duplication-path', async(req, res) => {
+    const { path, toPaths } = req.query;
 
     try {
-      const pages = await Promise.all(toPath.map((path) => {
-        const page = Page.findByPath(path);
-        return page;
-      }));
-      const overlappingPages = pages.filter(path => path != null);
-      const overlappingPath = overlappingPages.map(page => page.path);
-      return res.apiv3({ overlappingPath });
+      const pageData = await Page.findByPath(path);
+      const descendantsPath = await Page.findManageableListWithDescendants(pageData, req.user);
+      console.log(req.user);
+      const duplicationPaths = descendantsPath.forEach((page) => {
+        if (toPaths.some(toPath => toPath === page.path)) {
+          duplicationPaths.push(page.path);
+        }
+      });
+      return res.apiv3({ duplicationPaths });
     }
     catch (err) {
-      logger.error('Failed to get overlapping path', err);
+      logger.error('Failed to get duplication path', err);
       return res.apiv3Err(err, 500);
     }
 
