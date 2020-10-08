@@ -82,8 +82,6 @@ class MyBookmarkList extends React.Component {
 
 
   render() {
-    console.log(this.state.pagingLimit);
-
     return (
       <div className="page-list-container-create">
         <ul className="page-list-ul page-list-ul-flat mb-3">

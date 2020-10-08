@@ -115,7 +115,6 @@ class PageAttachment extends React.Component {
 
 
   render() {
-
     const { t } = this.props;
     if (this.state.attachments.length === 0) {
       return t('No_attachments_yet');
@@ -149,8 +148,6 @@ class PageAttachment extends React.Component {
         />
       );
     }
-
-    console.log(this.state.limit);
 
     return (
       <>
