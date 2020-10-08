@@ -5,7 +5,7 @@ const NotFoundAlert = (props) => {
 
   function clickHandler(viewType) {
     if (props.onPageCreateClicked === null) {
-      return null;
+      return;
     }
     props.onPageCreateClicked(viewType);
   }
