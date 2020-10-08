@@ -497,3 +497,18 @@ mark.rbt-highlight-text {
 .grw-btn-page-management:focus {
   background-color: rgba($color-link, 0.15);
 }
+
+/*
+ * Not Found Alert
+ */
+
+.grw-not-found-alert {
+  .not-found-alert-text {
+    color: $info;
+  }
+  .create-page-btn {
+    color: white;
+    background-color: $info;
+  }
+  border: 1px solid $info;
+}

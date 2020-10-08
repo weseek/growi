@@ -13,16 +13,16 @@ const NotFoundAlert = (props) => {
   }
 
   return (
-    <div className="grw-not-found-alert border m-4 p-4">
+    <div className="grw-not-found-alert m-4 p-4">
       <div className="col-md-12">
-        <h2 className="text-muted not-found-text">
+        <h2 className="not-found-alert-text lead">
           <i className="icon-info" aria-hidden="true"></i>
           {/* Todo make the message supported by i18n GW4050 */ }
           このページは存在しません。新たに作成する必要があります。
         </h2>
         <button
           type="button"
-          className="m-2 p-2"
+          className="m-2 p-2 btn create-page-btn"
           onClick={() => { clickHandler('edit') }}
         >
           <i className="icon-note icon-fw" />
