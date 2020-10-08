@@ -115,13 +115,13 @@ const PageReactionButtons = ({ appContainer, pageContainer }) => {
   return (
     <>
       {pageUser == null && (
-      <span>
+      <div calssName="mr-2">
         <LikeButton pageId={pageId} isLiked={isLiked} />
-      </span>
+      </div>
       )}
-      <span className="mr-2">
+      <div className="mr-2">
         <BookmarkButton pageId={pageId} crowi={appContainer} />
-      </span>
+      </div>
     </>
   );
 };
