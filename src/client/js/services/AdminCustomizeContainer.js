@@ -30,8 +30,8 @@ export default class AdminCustomizeContainer extends Container {
 
       pageLimitationS: 10,
       pageLimitationM: 10,
-      pageLimitationL: 10,
-      pageLimitationXL: 10,
+      pageLimitationL: 20,
+      pageLimitationXL: 20,
 
       isEnabledStaleNotification: false,
       isAllReplyShown: false,
