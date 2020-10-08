@@ -46,28 +46,28 @@ class CustomizeFunctionSetting extends React.Component {
         pageLimitation: adminCustomizeContainer.state.pageLimitationS,
         switchPageListLimitation: adminCustomizeContainer.switchPageListLimitationS,
         desc: 'admin:customize_setting.function_options.list_num_desc_s',
-        dropdownMenu: [10, 30, 50],
+        dropdownMenu: [10, 20, 50, 100],
       },
       M:  {
         label: 'admin:customize_setting.function_options.list_num_m',
         pageLimitation: adminCustomizeContainer.state.pageLimitationM,
         switchPageListLimitation: adminCustomizeContainer.switchPageListLimitationM,
         desc: 'admin:customize_setting.function_options.list_num_desc_m',
-        dropdownMenu: [10, 30, 50],
+        dropdownMenu: [5, 10, 20, 50, 100],
       },
       L: {
         label: 'admin:customize_setting.function_options.list_num_l',
         pageLimitation: adminCustomizeContainer.state.pageLimitationL,
         switchPageListLimitation: adminCustomizeContainer.switchPageListLimitationL,
         desc: 'admin:customize_setting.function_options.list_num_desc_l',
-        dropdownMenu: [10, 30, 50],
+        dropdownMenu: [20, 50, 100, 200],
       },
       XL: {
         label: 'admin:customize_setting.function_options.list_num_xl',
         pageLimitation: adminCustomizeContainer.state.pageLimitationXL,
         switchPageListLimitation: adminCustomizeContainer.switchPageListLimitationXL,
         desc: 'admin:customize_setting.function_options.list_num_desc_xl',
-        dropdownMenu: [10, 30, 50],
+        dropdownMenu: [5, 10, 20, 50, 100],
       },
     };
 
