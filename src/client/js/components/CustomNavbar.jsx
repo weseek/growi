@@ -16,11 +16,11 @@ import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 import PageAccessoriesContainer from '../services/PageAccessoriesContainer';
-import PageAttachment from './PageAttachment';
-import PageTimeline from './PageTimeline';
+// import PageAttachment from './PageAttachment';
+// import PageTimeline from './PageTimeline';
 import PageList from './PageList';
-import PageHistory from './PageHistory';
-import ShareLink from './ShareLink/ShareLink';
+// import PageHistory from './PageHistory';
+// import ShareLink from './ShareLink/ShareLink';
 
 
 const navTabMapping = {
@@ -96,12 +96,44 @@ const CustomNavbar = (props) => {
 
   return (
     <React.Fragment>
+
       <Nav className="nav-title" id="nav-title">
         {Object.entries(navTabMapping).map(([key, value]) => {
               return (
                 <NavItem key={key} type="button" className={`p-0 nav-link ${activeTab === key && 'active'}`}>
                   <NavLink onClick={() => { switchActiveTab(key) }}>
-                    {/* {value.icon} */}
+                    {t(value.i18n)}
+                  </NavLink>
+                </NavItem>
+              );
+            })}
+      </Nav>
+      <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
+      <TabContent activeTab={activeTab} className="p-5">
+        <TabPane tabId="pagelist">
+          {pageAccessoriesContainer.state.activeComponents.has('pagelist') && <PageList />}
+        </TabPane>
+        {/* <TabPane tabId="timeline">
+          {pageAccessoriesContainer.state.activeComponents.has('timeline') && <PageTimeline /> }
+        </TabPane>
+        <TabPane tabId="pageHistory">
+          <div className="overflow-auto">
+            {pageAccessoriesContainer.state.activeComponents.has('pageHistory') && <PageHistory /> }
+          </div>
+        </TabPane>
+        <TabPane tabId="attachment">
+          {pageAccessoriesContainer.state.activeComponents.has('attachment') && <PageAttachment />}
+        </TabPane>
+        <TabPane tabId="shareLink">
+          {pageAccessoriesContainer.state.activeComponents.has('shareLink') && <ShareLink />}
+        </TabPane> */}
+      </TabContent>
+
+      {/* <Nav className="nav-title" id="nav-title">
+        {Object.entries(navTabMapping).map(([key, value]) => {
+              return (
+                <NavItem key={key} type="button" className={`p-0 nav-link ${activeTab === key && 'active'}`}>
+                  <NavLink onClick={() => { switchActiveTab(key) }}>
                     {t(value.i18n)}
                   </NavLink>
                 </NavItem>
@@ -127,7 +159,7 @@ const CustomNavbar = (props) => {
         <TabPane tabId="shareLink">
           {pageAccessoriesContainer.state.activeComponents.has('shareLink') && <ShareLink />}
         </TabPane>
-      </TabContent>
+      </TabContent> */}
     </React.Fragment>
   );
 };
