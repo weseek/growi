@@ -24,9 +24,6 @@ export default class PageAttachmentList extends React.Component {
 
     return (
       <div>
-        {(attachmentList.length !== 0)
-          && <h5><strong>Attachments</strong></h5>
-        }
         <ul className="pl-2">
           {attachmentList}
         </ul>
