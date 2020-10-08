@@ -16,13 +16,15 @@ class MyDraftList extends React.Component {
 
   constructor(props) {
     super(props);
+    const { appContainer } = this.props;
 
     this.state = {
       drafts: [],
       currentDrafts: [],
       activePage: 1,
       totalDrafts: 0,
-      pagingLimit: Infinity,
+      // [TODO: rename pageLimitationM to pageLimitationL]
+      pagingLimit: appContainer.getConfig().pageLimitationM || 30,
     };
 
     this.handlePage = this.handlePage.bind(this);
@@ -67,9 +69,7 @@ class MyDraftList extends React.Component {
   }
 
   getCurrentDrafts(selectPageNumber) {
-    const { appContainer } = this.props;
-    // [TODO: rename pageLimitationM to pageLimitationL]
-    const limit = appContainer.getConfig().pageLimitationM || 30;
+    const limit = this.state.pagingLimit;
 
     const totalDrafts = this.state.drafts.length;
     const activePage = selectPageNumber;
