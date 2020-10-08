@@ -19,8 +19,7 @@ import TagLabels from '../Page/TagLabels';
 import LikeButton from '../LikeButton';
 import BookmarkButton from '../BookmarkButton';
 
-import PageCreator from './PageCreator';
-import RevisionAuthor from './RevisionAuthor';
+import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
 import UserPicture from '../User/UserPicture';
 
@@ -200,16 +199,12 @@ const GrowiSubNavigation = (props) => {
         {/* Page Authors */}
         { (!isCompactMode && !isUserPage) && (
           <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none">
-            { creator != null && (
-              <li className="pb-1">
-                <PageCreator creator={creator} createdAt={createdAt} />
-              </li>
-            ) }
-            { revisionAuthor != null && (
-              <li className="mt-1 pt-1 border-top">
-                <RevisionAuthor revisionAuthor={revisionAuthor} updatedAt={updatedAt} />
-              </li>
-            ) }
+            <li className="pb-1">
+              <AuthorInfo user={creator} date={createdAt} />
+            </li>
+            <li className="mt-1 pt-1 border-top">
+              <AuthorInfo user={revisionAuthor} date={updatedAt} mode="update" />
+            </li>
           </ul>
         ) }
       </div>
