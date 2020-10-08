@@ -23,7 +23,9 @@ const BasicLayout = ({ children, title }: Props): JSX.Element => {
         <GrowiNavbar />
 
         <div className="page-wrapper d-flex d-print-block">
-          <Sidebar />
+          <div className="grw-sidebar-wrapper">
+            <Sidebar />
+          </div>
 
           <div className="flex-fill mw-0">
             {children}
