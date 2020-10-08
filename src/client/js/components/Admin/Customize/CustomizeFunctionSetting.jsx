@@ -46,24 +46,28 @@ class CustomizeFunctionSetting extends React.Component {
         pageLimitation: adminCustomizeContainer.state.pageLimitationS,
         switchPageListLimitation: adminCustomizeContainer.switchPageListLimitationS,
         desc: 'admin:customize_setting.function_options.list_num_desc_s',
+        dropdownMenu: [10, 30, 50],
       },
       M:  {
         label: 'admin:customize_setting.function_options.list_num_m',
         pageLimitation: adminCustomizeContainer.state.pageLimitationM,
         switchPageListLimitation: adminCustomizeContainer.switchPageListLimitationM,
         desc: 'admin:customize_setting.function_options.list_num_desc_m',
+        dropdownMenu: [10, 30, 50],
       },
       L: {
         label: 'admin:customize_setting.function_options.list_num_l',
         pageLimitation: adminCustomizeContainer.state.pageLimitationL,
         switchPageListLimitation: adminCustomizeContainer.switchPageListLimitationL,
         desc: 'admin:customize_setting.function_options.list_num_desc_l',
+        dropdownMenu: [10, 30, 50],
       },
       XL: {
         label: 'admin:customize_setting.function_options.list_num_xl',
         pageLimitation: adminCustomizeContainer.state.pageLimitationXL,
         switchPageListLimitation: adminCustomizeContainer.switchPageListLimitationXL,
         desc: 'admin:customize_setting.function_options.list_num_desc_xl',
+        dropdownMenu: [10, 30, 50],
       },
     };
 
@@ -121,15 +125,19 @@ class CustomizeFunctionSetting extends React.Component {
                         <span className="float-left">{value.pageLimitation}</span>
                       </DropdownToggle>
                       <DropdownMenu className="dropdown-menu" role="menu">
-                        <DropdownItem key={10} role="presentation" onClick={() => { value.switchPageListLimitation(10) }}>
-                          <a role="menuitem">10</a>
-                        </DropdownItem>
-                        <DropdownItem key={30} role="presentation" onClick={() => { value.switchPageListLimitation(30) }}>
+                        {value.dropdownMenu.map((v) => {
+                          return (
+                            <DropdownItem key={v} role="presentation" onClick={() => { value.switchPageListLimitation(v) }}>
+                              <a role="menuitem">{v}</a>
+                            </DropdownItem>
+                          );
+                        })}
+                        {/* <DropdownItem key={30} role="presentation" onClick={() => { value.switchPageListLimitation(30) }}>
                           <a role="menuitem">30</a>
                         </DropdownItem>
                         <DropdownItem key={50} role="presentation" onClick={() => { value.switchPageListLimitation(50) }}>
                           <a role="menuitem">50</a>
-                        </DropdownItem>
+                        </DropdownItem> */}
                       </DropdownMenu>
                     </UncontrolledDropdown>
                     <p className="form-text text-muted">
