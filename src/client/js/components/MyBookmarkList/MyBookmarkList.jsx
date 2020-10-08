@@ -39,7 +39,7 @@ class MyBookmarkList extends React.Component {
   }
 
   async getMyBookmarkList(selectPageNumber) {
-    const { appContainer } = this.state;
+    const { appContainer } = this.props;
     const userId = appContainer.currentUserId;
     const limit = this.state.pagingLimit;
     const page = selectPageNumber;
