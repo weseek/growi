@@ -4,12 +4,10 @@ import PropTypes from 'prop-types';
 const NotFoundAlert = (props) => {
 
   function clickHandler(viewType) {
-    if (props.onPageCreateClicked) {
-      props.onPageCreateClicked(viewType);
-    }
-    else {
+    if (props.onPageCreateClicked === null) {
       return null;
     }
+    props.onPageCreateClicked(viewType);
   }
 
   return (
