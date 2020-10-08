@@ -137,7 +137,7 @@ class PageAttachment extends React.Component {
       deleteAttachmentModal = (
         <DeleteAttachmentModal
           isOpen={showModal}
-          animation={false}
+          animation="false"
           toggle={deleteModalClose}
 
           attachmentToDelete={attachmentToDelete}

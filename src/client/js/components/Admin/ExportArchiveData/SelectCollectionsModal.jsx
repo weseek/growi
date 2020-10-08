@@ -219,8 +219,8 @@ class SelectCollectionsModal extends React.Component {
           </ModalBody>
 
           <ModalFooter>
-            <button type="button" className="btn btn-sm btn-outline-secondary" onClick={this.props.onClose}>{t('export_management.cancel')}</button>
-            <button type="submit" className="btn btn-sm btn-primary" disabled={!this.validateForm()}>{t('export_management.export')}</button>
+            <button type="button" className="btn btn-sm btn-outline-secondary" onClick={this.props.onClose}>{t('admin:export_management.cancel')}</button>
+            <button type="submit" className="btn btn-sm btn-primary" disabled={!this.validateForm()}>{t('admin:export_management.export')}</button>
           </ModalFooter>
         </form>
       </Modal>
