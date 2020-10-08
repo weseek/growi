@@ -78,7 +78,8 @@ export default class CommentContainer extends Container {
 
   async checkAndUpdateImageOfCommentAuthers(comments) {
     const noImageCacheUserIds = comments.filter((comment) => {
-      return comment.creator.imageUrlCached == null;
+      const { creator } = comment;
+      return creator != null && creator.imageUrlCached == null;
     }).map((comment) => {
       return comment.creator._id;
     });
