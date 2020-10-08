@@ -69,7 +69,7 @@ class MyDraftList extends React.Component {
   getCurrentDrafts(selectPageNumber) {
     const { appContainer } = this.props;
     // [TODO: rename pageLimitationM to pageLimitationL]
-    const limit = appContainer.getConfig().pageLimitationM;
+    const limit = appContainer.getConfig().pageLimitationM || 30;
 
     const totalDrafts = this.state.drafts.length;
     const activePage = selectPageNumber;
