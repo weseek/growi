@@ -152,6 +152,11 @@ module.exports = function(crowi, app) {
    * @param {Attachment} attachment
    */
   async function isDeletableByUser(user, attachment) {
+    // deletable if creator is null
+    if (attachment.creator == null) {
+      return true;
+    }
+
     const ownerId = attachment.creator._id || attachment.creator;
     if (attachment.page == null) { // when profile image
       return user.id === ownerId.toString();
