@@ -155,6 +155,7 @@ const TrashPageAlert = (props) => {
 
       <CustomNavbar
         navTabMapping={navTabMapping}
+        navContents={['aaa', ['bbb'], ['ccc'], ['ddd'], ['eee']]}
       />
     </>
   );
