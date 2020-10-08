@@ -95,6 +95,12 @@ if (pageContainer.state.pageId != null) {
 
     'user-bookmark-list': <MyBookmarkList />,
     'user-created-list': <RecentCreated />,
+    // 'user-draft-list': <MyDraftList />,
+  });
+}
+if (pageContainer.state.creator != null) {
+  Object.assign(componentMappings, {
+    'user-created-list': <RecentCreated userId={pageContainer.state.creator._id} />,
   });
 }
 if (pageContainer.state.path != null) {
