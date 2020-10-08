@@ -253,6 +253,25 @@ module.exports = (crowi) => {
     return stream.pipe(res);
   });
 
+  router.get('/overlapping-path', async(req, res) => {
+    const { toPath } = req.query;
+
+    try {
+      const pages = await Promise.all(toPath.map((path) => {
+        const page = Page.findByPath(path);
+        return page;
+      }));
+      const overlappingPages = pages.filter(path => path != null);
+      const overlappingPath = overlappingPages.map(page => page.path);
+      return res.apiv3({ overlappingPath });
+    }
+    catch (err) {
+      logger.error('Failed to get overlapping path', err);
+      return res.apiv3Err(err, 500);
+    }
+
+  });
+
   // TODO GW-2746 bulk export pages
   // /**
   //  * @swagger
