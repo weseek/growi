@@ -118,26 +118,31 @@ const TrashPageAlert = (props) => {
       icon: <PageListIcon />,
       i18n: 'page_list',
       index: 0,
+      content: 'aaa',
     },
     timeline:  {
       icon: <TimeLineIcon />,
       i18n: 'Timeline View',
       index: 1,
+      content: 'bbb',
     },
     pageHistory: {
       icon: <RecentChangesIcon />,
       i18n: 'History',
       index: 2,
+      content: 'ccc',
     },
     attachment: {
       icon: <AttachmentIcon />,
       i18n: 'attachment_data',
       index: 3,
+      content: 'ddd',
     },
     shareLink: {
       icon: <ShareLinkIcon />,
       i18n: 'share_links.share_link_management',
       index: 4,
+      content: 'eee',
     },
   };
 
@@ -155,7 +160,6 @@ const TrashPageAlert = (props) => {
 
       <CustomNavbar
         navTabMapping={navTabMapping}
-        navContents={['aaa', ['bbb'], ['ccc'], ['ddd'], ['eee']]}
       />
     </>
   );
