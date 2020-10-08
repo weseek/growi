@@ -74,7 +74,7 @@ Object.assign(componentMappings, {
 
   'trash-page-alert': <TrashPageAlert />,
 
-  'not-found-alert': <NotFoundAlert />,
+  'not-found-alert': <NotFoundAlert onPageCreateClicked={navigationContainer.setEditorMode} />,
 
   'page-timeline': <PageTimeline />,
 
