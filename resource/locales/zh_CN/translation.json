@@ -155,7 +155,11 @@
 		"error_message": "有些值不正确",
 		"required": "%s 是必需的",
 		"invalid_syntax": "%s的语法无效。"
-	},
+  },
+  "not_found_page": {
+    "Create Page": "Create Page",
+    "page_not_exist_alert": "This page does not exist. You will need to create a new page."
+  },
 	"installer": {
 		"setup": "安装",
 		"create_initial_account": "创建初始用户",

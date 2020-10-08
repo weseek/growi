@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 
 const NotFoundAlert = (props) => {
-
+  const { t } = props;
   function clickHandler(viewType) {
     if (props.onPageCreateClicked) {
       props.onPageCreateClicked(viewType);
@@ -17,8 +18,7 @@ const NotFoundAlert = (props) => {
       <div className="col-md-12">
         <h2 className="text-muted not-found-text">
           <i className="icon-info" aria-hidden="true"></i>
-          {/* Todo make the message supported by i18n GW4050 */ }
-          このページは存在しません。新たに作成する必要があります。
+          {t('not_found_page.page_not_exist_alert')}
         </h2>
         <button
           type="button"
@@ -26,8 +26,7 @@ const NotFoundAlert = (props) => {
           onClick={() => { clickHandler('edit') }}
         >
           <i className="icon-note icon-fw" />
-          {/* Todo make the message supported by i18n GW4050 */ }
-          ページを作成する
+          {t('not_found_page.Create Page')}
         </button>
       </div>
     </div>
@@ -36,8 +35,8 @@ const NotFoundAlert = (props) => {
 
 
 NotFoundAlert.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
   onPageCreateClicked: PropTypes.func,
 };
 
-
-export default NotFoundAlert;
+export default withTranslation()(NotFoundAlert);

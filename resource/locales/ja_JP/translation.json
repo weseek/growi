@@ -159,6 +159,10 @@
     "required": "%sに値を入力してください",
     "invalid_syntax": "%sの構文が不正です"
   },
+  "not_found_page": {
+    "Create Page": "ページを作成する",
+    "page_not_exist_alert": "このページは存在しません。新たに作成する必要があります。"
+  },
   "installer": {
     "setup": "セットアップ",
     "create_initial_account": "最初のアカウントの作成",
