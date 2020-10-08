@@ -18,7 +18,7 @@ class PageAttachment extends React.Component {
     const { appContainer } = this.props;
     this.state = {
       activePage: 1,
-      limit: appContainer.getConfig().pageLimitationS,
+      limit: appContainer.getConfig().pageLimitationS || 10,
       totalAttachments: 0,
       attachments: [],
       inUse: {},
@@ -149,6 +149,8 @@ class PageAttachment extends React.Component {
         />
       );
     }
+
+    console.log(this.state.limit);
 
     return (
       <>
