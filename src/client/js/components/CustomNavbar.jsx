@@ -8,11 +8,11 @@ import {
 import { withTranslation } from 'react-i18next';
 
 
-import PageListIcon from './Icons/PageListIcon';
-import TimeLineIcon from './Icons/TimeLineIcon';
-import RecentChangesIcon from './Icons/RecentChangesIcon';
-import AttachmentIcon from './Icons/AttachmentIcon';
-import ShareLinkIcon from './Icons/ShareLinkIcon';
+// import PageListIcon from './Icons/PageListIcon';
+// import TimeLineIcon from './Icons/TimeLineIcon';
+// import RecentChangesIcon from './Icons/RecentChangesIcon';
+// import AttachmentIcon from './Icons/AttachmentIcon';
+// import ShareLinkIcon from './Icons/ShareLinkIcon';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 import PageAccessoriesContainer from '../services/PageAccessoriesContainer';
@@ -25,27 +25,27 @@ import ShareLink from './ShareLink/ShareLink';
 
 const navTabMapping = {
   pagelist: {
-    icon: <PageListIcon />,
+    // icon: <PageListIcon />,
     i18n: 'page_list',
     index: 0,
   },
   timeline:  {
-    icon: <TimeLineIcon />,
+    // icon: <TimeLineIcon />,
     i18n: 'Timeline View',
     index: 1,
   },
   pageHistory: {
-    icon: <RecentChangesIcon />,
+    // icon: <RecentChangesIcon />,
     i18n: 'History',
     index: 2,
   },
   attachment: {
-    icon: <AttachmentIcon />,
+    // icon: <AttachmentIcon />,
     i18n: 'attachment_data',
     index: 3,
   },
   shareLink: {
-    icon: <ShareLinkIcon />,
+    // icon: <ShareLinkIcon />,
     i18n: 'share_links.share_link_management',
     index: 4,
   },
@@ -101,7 +101,7 @@ const CustomNavbar = (props) => {
               return (
                 <NavItem key={key} type="button" className={`p-0 nav-link ${activeTab === key && 'active'}`}>
                   <NavLink onClick={() => { switchActiveTab(key) }}>
-                    {value.icon}
+                    {/* {value.icon} */}
                     {t(value.i18n)}
                   </NavLink>
                 </NavItem>
