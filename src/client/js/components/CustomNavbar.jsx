@@ -141,6 +141,10 @@ CustomNavbar.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   // pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   pageAccessoriesContainer: PropTypes.instanceOf(PageAccessoriesContainer).isRequired,
+  i18n: PropTypes.array,
+  index: PropTypes.array,
+  icons: PropTypes.array,
+  contents: PropTypes.array,
 };
 
 export default withTranslation()(PageAccessoriesModalWrapper);
