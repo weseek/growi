@@ -18,12 +18,13 @@ class MyBookmarkList extends React.Component {
 
   constructor(props) {
     super(props);
+    const { appContainer } = this.props;
 
     this.state = {
       pages: [],
       activePage: 1,
       totalPages: 0,
-      pagingLimit: Infinity,
+      pagingLimit: appContainer.getConfig().pageLimitationM || 30,
     };
 
     this.handlePage = this.handlePage.bind(this);
@@ -38,12 +39,9 @@ class MyBookmarkList extends React.Component {
   }
 
   async getMyBookmarkList(selectPageNumber) {
-    const { appContainer } = this.props;
-
+    const { appContainer } = this.state;
     const userId = appContainer.currentUserId;
-    /* TODO #2 change variable name in database keys */
-    /* TODO #3 write migration */
-    const limit = appContainer.getConfig().pageLimitationM || 30;
+    const limit = this.state.pagingLimit;
     const page = selectPageNumber;
     const params = { page, limit };
 
@@ -84,6 +82,8 @@ class MyBookmarkList extends React.Component {
 
 
   render() {
+    console.log(this.state.pagingLimit);
+
     return (
       <div className="page-list-container-create">
         <ul className="page-list-ul page-list-ul-flat mb-3">
