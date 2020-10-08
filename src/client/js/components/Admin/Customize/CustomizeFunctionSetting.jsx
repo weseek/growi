@@ -125,10 +125,10 @@ class CustomizeFunctionSetting extends React.Component {
                         <span className="float-left">{value.pageLimitation}</span>
                       </DropdownToggle>
                       <DropdownMenu className="dropdown-menu" role="menu">
-                        {value.dropdownMenu.map((v) => {
+                        {value.dropdownMenu.map((num) => {
                           return (
-                            <DropdownItem key={v} role="presentation" onClick={() => { value.switchPageListLimitation(v) }}>
-                              <a role="menuitem">{v}</a>
+                            <DropdownItem key={num} role="presentation" onClick={() => { value.switchPageListLimitation(num) }}>
+                              <a role="menuitem">{num}</a>
                             </DropdownItem>
                           );
                         })}
