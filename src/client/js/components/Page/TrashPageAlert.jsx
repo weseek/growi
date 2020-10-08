@@ -11,6 +11,13 @@ import PutbackPageModal from '../PutbackPageModal';
 import EmptyTrashModal from '../EmptyTrashModal';
 import PageDeleteModal from '../PageDeleteModal';
 
+import CustomNavbar from '../CustomNavbar';
+import PageListIcon from '../Icons/PageListIcon';
+import TimeLineIcon from '../Icons/TimeLineIcon';
+import RecentChangesIcon from '../Icons/RecentChangesIcon';
+import AttachmentIcon from '../Icons/AttachmentIcon';
+import ShareLinkIcon from '../Icons/ShareLinkIcon';
+
 
 const TrashPageAlert = (props) => {
   const { t, appContainer, pageContainer } = props;
@@ -106,6 +113,34 @@ const TrashPageAlert = (props) => {
     );
   }
 
+  const navTabMapping = {
+    pagelist: {
+      icon: <PageListIcon />,
+      i18n: 'page_list',
+      index: 0,
+    },
+    timeline:  {
+      icon: <TimeLineIcon />,
+      i18n: 'Timeline View',
+      index: 1,
+    },
+    pageHistory: {
+      icon: <RecentChangesIcon />,
+      i18n: 'History',
+      index: 2,
+    },
+    attachment: {
+      icon: <AttachmentIcon />,
+      i18n: 'attachment_data',
+      index: 3,
+    },
+    shareLink: {
+      icon: <ShareLinkIcon />,
+      i18n: 'share_links.share_link_management',
+      index: 4,
+    },
+  };
+
   return (
     <>
       <div className="alert alert-warning py-3 px-4 d-flex align-items-center">
@@ -117,6 +152,10 @@ const TrashPageAlert = (props) => {
         {(isDeleted && currentUser != null) && renderTrashPageManagementButtons()}
       </div>
       {renderModals()}
+
+      <CustomNavbar
+        navTabMapping={navTabMapping}
+      />
     </>
   );
 };

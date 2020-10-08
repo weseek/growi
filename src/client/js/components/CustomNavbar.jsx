@@ -16,40 +16,11 @@ import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 import PageAccessoriesContainer from '../services/PageAccessoriesContainer';
-// import PageAttachment from './PageAttachment';
-// import PageTimeline from './PageTimeline';
+import PageAttachment from './PageAttachment';
+import PageTimeline from './PageTimeline';
 import PageList from './PageList';
-// import PageHistory from './PageHistory';
-// import ShareLink from './ShareLink/ShareLink';
-
-
-const navTabMapping = {
-  pagelist: {
-    // icon: <PageListIcon />,
-    i18n: 'page_list',
-    index: 0,
-  },
-  timeline:  {
-    // icon: <TimeLineIcon />,
-    i18n: 'Timeline View',
-    index: 1,
-  },
-  pageHistory: {
-    // icon: <RecentChangesIcon />,
-    i18n: 'History',
-    index: 2,
-  },
-  attachment: {
-    // icon: <AttachmentIcon />,
-    i18n: 'attachment_data',
-    index: 3,
-  },
-  shareLink: {
-    // icon: <ShareLinkIcon />,
-    i18n: 'share_links.share_link_management',
-    index: 4,
-  },
-};
+import PageHistory from './PageHistory';
+import ShareLink from './ShareLink/ShareLink';
 
 
 const CustomNavbar = (props) => {
@@ -86,7 +57,7 @@ const CustomNavbar = (props) => {
       return { width, marginLeft };
     });
 
-    const { width, marginLeft } = styles[navTabMapping[activeTab].index];
+    const { width, marginLeft } = styles[props.navTabMapping[activeTab].index];
 
     setSliderWidth(width);
     setSliderMarginLeft(marginLeft);
@@ -98,7 +69,7 @@ const CustomNavbar = (props) => {
     <React.Fragment>
 
       <Nav className="nav-title" id="nav-title">
-        {Object.entries(navTabMapping).map(([key, value]) => {
+        {Object.entries(props.navTabMapping).map(([key, value]) => {
               return (
                 <NavItem key={key} type="button" className={`p-0 nav-link ${activeTab === key && 'active'}`}>
                   <NavLink onClick={() => { switchActiveTab(key) }}>
@@ -113,7 +84,7 @@ const CustomNavbar = (props) => {
         <TabPane tabId="pagelist">
           {pageAccessoriesContainer.state.activeComponents.has('pagelist') && <PageList />}
         </TabPane>
-        {/* <TabPane tabId="timeline">
+        <TabPane tabId="timeline">
           {pageAccessoriesContainer.state.activeComponents.has('timeline') && <PageTimeline /> }
         </TabPane>
         <TabPane tabId="pageHistory">
@@ -126,7 +97,7 @@ const CustomNavbar = (props) => {
         </TabPane>
         <TabPane tabId="shareLink">
           {pageAccessoriesContainer.state.activeComponents.has('shareLink') && <ShareLink />}
-        </TabPane> */}
+        </TabPane>
       </TabContent>
 
       {/* <Nav className="nav-title" id="nav-title">
@@ -177,6 +148,7 @@ CustomNavbar.propTypes = {
   index: PropTypes.array,
   icons: PropTypes.array,
   contents: PropTypes.array,
+  navTabMapping: PropTypes.object,
 };
 
 export default withTranslation()(PageAccessoriesModalWrapper);
