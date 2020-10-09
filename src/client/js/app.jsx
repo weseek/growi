@@ -15,7 +15,6 @@ import PageComments from './components/PageComments';
 import PageTimeline from './components/PageTimeline';
 import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
 import PageManagement from './components/Page/PageManagement';
-import CustomNavbar from './components/CustomNavbar';
 import TrashPage from './components/TrashPage';
 import TrashPageAlert from './components/Page/TrashPageAlert';
 import NotFoundAlert from './components/Page/NotFoundAlert';
@@ -73,8 +72,6 @@ Object.assign(componentMappings, {
   'tags-page': <TagsList crowi={appContainer} />,
 
   'grw-page-status-alert-container': <PageStatusAlert />,
-
-  'custom-nav-bar': <CustomNavbar />,
 
   'trash-page-alert': <TrashPageAlert />,
 
