@@ -9,8 +9,6 @@ import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 import CustomNavbar from './CustomNavbar';
 
-// import PaginationWrapper from './PaginationWrapper';[TODO]
-
 const navTabMapping = {
   pagelist: {
     icon: <PageListIcon />,

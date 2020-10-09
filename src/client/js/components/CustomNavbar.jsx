@@ -89,7 +89,6 @@ const PageAccessoriesModalWrapper = withUnstatedContainers(CustomNavbar, [PageAc
 
 CustomNavbar.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
-  // pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   pageAccessoriesContainer: PropTypes.instanceOf(PageAccessoriesContainer).isRequired,
   navTabMapping: PropTypes.object,
 };
