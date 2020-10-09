@@ -18,6 +18,7 @@ import PageManagement from './components/Page/PageManagement';
 import CustomNavbar from './components/CustomNavbar';
 import TrashPage from './components/TrashPage';
 import TrashPageAlert from './components/Page/TrashPageAlert';
+import NotFoundAlert from './components/Page/NotFoundAlert';
 import PageStatusAlert from './components/PageStatusAlert';
 import RecentCreated from './components/RecentCreated/RecentCreated';
 import MyDraftList from './components/MyDraftList/MyDraftList';
@@ -78,6 +79,8 @@ Object.assign(componentMappings, {
   'trash-page-alert': <TrashPageAlert />,
 
   'trash-page': <TrashPage />,
+
+  'not-found-alert': <NotFoundAlert onPageCreateClicked={navigationContainer.setEditorMode} />,
 
   'page-timeline': <PageTimeline />,
 

@@ -448,7 +448,8 @@
     "check_configuration": "Check your configuration following <a href='https://docs.growi.org/guide/admin-cookbook/integrate-with-hackmd.html'>the manual</a>.",
     "not_initialized": "HackmdEditor component has not initialized",
     "someone_editing": "Someone editing this page on HackMD",
-    "this_page_has_draft": "This page has a draft on HackMD"
+    "this_page_has_draft": "This page has a draft on HackMD",
+    "need_to_associate_with_growi_to_use_hackmd_refer_to_this": "To use HackMD for simultaneous multi-person editing, need to associate HackMD with GROWI.Please refer to <a href='https://docs.growi.org/en/admin-guide/admin-cookbook/integrate-with-hackmd.html'>here</a>."
   },
   "slack_notification": {
     "popover_title": "Slack Notification",
