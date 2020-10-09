@@ -27,8 +27,8 @@ module.exports = (crowi) => {
   const validator = {
     retrieveAttachments: [
       query('pageId').isMongoId().withMessage('pageId is required'),
-      query('limit').isInt({ min: 1 }),
-      query('offset').isInt({ min: 0 }),
+      // query('pagingLimit').isInt({ min: 1 }).isInt({ max: 1000 }), // temp data
+      // query('offset').isInt({ min: 0 }),
     ],
   };
   /**
@@ -50,8 +50,7 @@ module.exports = (crowi) => {
    *              type: string
    */
   router.get('/list', accessTokenParser, loginRequired, validator.retrieveAttachments, apiV3FormValidator, async(req, res) => {
-    const offset = +req.query.offset || 0;
-    const limit = +req.query.limit || 30;
+    // const offset = +req.query.offset || 0;
 
     try {
       const pageId = req.query.pageId;
@@ -62,11 +61,13 @@ module.exports = (crowi) => {
         return res.apiv3Err(new ErrorV3(msg, 'attachment-list-failed'), 403);
       }
 
+      // directly get paging-size from db. not to delivery from client side.
+      const pageLimitationS = await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
       const paginateResult = await Attachment.paginate(
         { page: pageId },
         {
-          limit,
-          offset,
+          limit: pageLimitationS,
+          // offset,
           populate: {
             path: 'creator',
             select: User.USER_PUBLIC_FIELDS,
