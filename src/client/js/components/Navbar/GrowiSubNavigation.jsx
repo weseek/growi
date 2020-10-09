@@ -145,17 +145,18 @@ const GrowiSubNavigation = (props) => {
   const isUserPage = pageUser != null;
   const isPageInTrash = isTrashPage(path);
 
+  function onThreeStrandedButtonClicked(viewType) {
+    navigationContainer.setEditorMode(viewType);
+  }
+
   // Display only the RevisionPath
   if (isPageNotFound || isPageForbidden) {
     return (
       <div className="grw-subnav d-flex align-items-center justify-content-between">
         <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
+        <ThreeStrandedButton onThreeStrandedButtonClicked={onThreeStrandedButtonClicked} />
       </div>
     );
-  }
-
-  function onThreeStrandedButtonClicked(viewType) {
-    navigationContainer.setEditorMode(viewType);
   }
 
   return (
