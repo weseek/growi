@@ -5,12 +5,10 @@ import { withTranslation } from 'react-i18next';
 const NotFoundAlert = (props) => {
   const { t } = props;
   function clickHandler(viewType) {
-    if (props.onPageCreateClicked) {
-      props.onPageCreateClicked(viewType);
+    if (props.onPageCreateClicked === null) {
+      return;
     }
-    else {
-      return null;
-    }
+    props.onPageCreateClicked(viewType);
   }
 
   return (
