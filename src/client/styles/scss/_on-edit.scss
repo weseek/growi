@@ -29,27 +29,6 @@ body.on-edit {
     }
   }
 
-  .grw-subnav-left-side {
-    overflow: hidden;
-    .grw-path-nav-container {
-      overflow: hidden;
-      .grw-page-path-nav {
-        white-space: nowrap;
-
-        .grw-page-path-hierarchical-link {
-          display: inline-block;
-          width: 100%;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        h1 {
-          overflow: hidden;
-        }
-      }
-    }
-  }
-
   .page-wrapper {
     position: relative;
     top: $grw-navbar-border-width;
@@ -179,6 +158,27 @@ body.on-edit {
   /*********************
    * Navigation styles
    */
+  // ellipsis .grw-page-path-hierarchical-link
+  .grw-subnav-left-side {
+    overflow: hidden;
+    .grw-path-nav-container {
+      overflow: hidden;
+      .grw-page-path-nav {
+        white-space: nowrap;
+
+        .grw-page-path-hierarchical-link {
+          width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        h1 {
+          overflow: hidden;
+        }
+      }
+    }
+  }
+
   .nav:hover {
     .btn-copy,
     .btn-edit,
