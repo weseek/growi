@@ -15,7 +15,7 @@ const CustomNavbar = (props) => {
   const { t, pageAccessoriesContainer } = props;
   const { switchActiveTab } = pageAccessoriesContainer;
   const { activeTab } = pageAccessoriesContainer.state;
-
+  // [TODO: set default active tab by gw4079]
   const [sliderWidth, setSliderWidth] = useState(null);
   const [sliderMarginLeft, setSliderMarginLeft] = useState(null);
 
