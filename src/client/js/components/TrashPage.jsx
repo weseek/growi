@@ -23,7 +23,7 @@ const navTabMapping = {
 
 const TrashPage = () => {
   return (
-    <div className="grw-trash-page">
+    <div className="grw-trash-page mt-5">
       <CustomNavbar navTabMapping={navTabMapping} />
     </div>
   );
