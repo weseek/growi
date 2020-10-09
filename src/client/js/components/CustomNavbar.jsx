@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
+
 import {
   Nav, NavItem, NavLink, TabContent, TabPane,
 } from 'reactstrap';
@@ -8,13 +9,14 @@ import {
 import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from './UnstatedUtils';
-import PageAccessoriesContainer from '../services/PageAccessoriesContainer';
+
+import CustomNavbarContainer from '../services/CustomNavbarContainer';
 
 
 const CustomNavbar = (props) => {
-  const { t, pageAccessoriesContainer } = props;
-  const { switchActiveTab } = pageAccessoriesContainer;
-  const { activeTab } = pageAccessoriesContainer.state;
+  const { t, customNavbarContainer } = props;
+  const { switchActiveTab } = customNavbarContainer;
+  const { activeTab } = customNavbarContainer.state;
   // [TODO: set default active tab by gw4079]
   const [sliderWidth, setSliderWidth] = useState(null);
   const [sliderMarginLeft, setSliderMarginLeft] = useState(null);
@@ -30,8 +32,8 @@ const CustomNavbar = (props) => {
       return;
     }
 
-    const navTitle = document.getElementById('nav-title');
-    const navTabs = document.querySelectorAll('li.nav-link');
+    const navTitle = document.getElementById('nav-title2');
+    const navTabs = document.querySelectorAll('li.nav-link2');
 
     if (navTitle == null || navTabs == null) {
       return;
@@ -56,10 +58,10 @@ const CustomNavbar = (props) => {
 
   return (
     <React.Fragment>
-      <Nav className="nav-title" id="nav-title">
+      <Nav className="nav-title" id="nav-title2">
         {Object.entries(props.navTabMapping).map(([key, value]) => {
               return (
-                <NavItem key={key} type="button" className={`p-0 nav-link ${activeTab === key && 'active'}`}>
+                <NavItem key={key} type="button" className={`p-0 nav-link2 ${activeTab === key && 'active'}`}>
                   <NavLink onClick={() => { switchActiveTab(key) }}>
                     {value.icon}
                     {t(value.i18n)}
@@ -85,12 +87,12 @@ const CustomNavbar = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageAccessoriesModalWrapper = withUnstatedContainers(CustomNavbar, [PageAccessoriesContainer]);
+const CustomNavbarWrapper = withUnstatedContainers(CustomNavbar, [CustomNavbarContainer]);
 
 CustomNavbar.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
-  pageAccessoriesContainer: PropTypes.instanceOf(PageAccessoriesContainer).isRequired,
+  customNavbarContainer: PropTypes.instanceOf(CustomNavbarContainer).isRequired,
   navTabMapping: PropTypes.object,
 };
 
-export default withTranslation()(PageAccessoriesModalWrapper);
+export default withTranslation()(CustomNavbarWrapper);
