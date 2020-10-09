@@ -55,7 +55,6 @@ const CustomNavbar = (props) => {
 
   return (
     <React.Fragment>
-
       <Nav className="nav-title" id="nav-title">
         {Object.entries(props.navTabMapping).map(([key, value]) => {
               return (

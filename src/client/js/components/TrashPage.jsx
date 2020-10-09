@@ -30,7 +30,6 @@ const TrashPage = (props) => {
 
   return (
     <div className="grw-trash-page-list">
-      AAAA
       <CustomNavbar navTabMapping={navTabMapping} />
     </div>
   );
