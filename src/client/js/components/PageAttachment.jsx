@@ -34,14 +34,11 @@ class PageAttachment extends React.Component {
 
   async handlePage(selectedPage) {
     const { pageId } = this.props.pageContainer.state;
-    // const offset = (selectedPage - 1) * limit;
     const activePage = selectedPage;
 
     if (!pageId) { return }
 
-    const res = await this.props.appContainer.apiv3Get('/attachment/list', {
-      pageId, /* limit, offset, */
-    });
+    const res = await this.props.appContainer.apiv3Get('/attachment/list', { pageId });
     const attachments = res.data.paginateResult.docs;
     const totalAttachments = res.data.paginateResult.totalDocs;
     const pagingLimit = res.data.paginateResult.limit;
