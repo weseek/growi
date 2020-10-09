@@ -154,7 +154,7 @@ const GrowiSubNavigation = (props) => {
     return (
       <div className="grw-subnav d-flex align-items-center justify-content-between">
         <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
-        <ThreeStrandedButton onThreeStrandedButtonClicked={onThreeStrandedButtonClicked} />
+        {isPageNotFound && <ThreeStrandedButton onThreeStrandedButtonClicked={onThreeStrandedButtonClicked} />}
       </div>
     );
   }
