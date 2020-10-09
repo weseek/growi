@@ -156,6 +156,10 @@
     "required": "%s is required",
     "invalid_syntax": "The syntax of %s is invalid."
   },
+  "not_found_page": {
+    "Create Page": "Create Page",
+    "page_not_exist_alert": "This page does not exist. Please create a new page."
+  },
   "installer": {
     "setup": "Setup",
     "create_initial_account": "Create an initial account",
