@@ -10,11 +10,13 @@ import PageContainer from '../services/PageContainer';
 import CustomNavbar from './CustomNavbar';
 
 // import PaginationWrapper from './PaginationWrapper';[TODO]
+
 const navTabMapping = {
   pagelist: {
-    icon: '',
+    icon: <PageListIcon />,
     i18n: 'page_list',
-    tabContent: 'aaa',
+    // [TODO: show trash page list by gw4064]
+    tabContent: 'This is a page list of Trash pages',
     index: 0,
   },
   timeline:  {
@@ -25,9 +27,7 @@ const navTabMapping = {
   },
 };
 
-const TrashPage = (props) => {
-  const { t } = props;
-
+const TrashPage = () => {
   return (
     <div className="grw-trash-page-list">
       <CustomNavbar navTabMapping={navTabMapping} />

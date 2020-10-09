@@ -60,7 +60,7 @@ const CustomNavbar = (props) => {
               return (
                 <NavItem key={key} type="button" className={`p-0 nav-link ${activeTab === key && 'active'}`}>
                   <NavLink onClick={() => { switchActiveTab(key) }}>
-                    {/* {value.icon} */}
+                    {value.icon}
                     {t(value.i18n)}
                   </NavLink>
                 </NavItem>
