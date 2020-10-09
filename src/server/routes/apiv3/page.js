@@ -138,6 +138,9 @@ module.exports = (crowi) => {
       body('hierarchyType').isString().isIn(['allSubordinatedPage', 'decideHierarchy']),
       body('hierarchyValue').isNumeric(),
     ],
+    exist: [
+      query('path').isString(),
+    ],
   };
 
   /**
