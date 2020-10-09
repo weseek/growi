@@ -7,9 +7,23 @@ import { withUnstatedContainers } from './UnstatedUtils';
 
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
+import CustomNavbar from './CustomNavbar';
 
 // import PaginationWrapper from './PaginationWrapper';[TODO]
-
+const navTabMapping = {
+  pagelist: {
+    icon: '',
+    i18n: 'page_list',
+    tabContent: 'aaa',
+    index: 0,
+  },
+  timeline:  {
+    icon: '',
+    i18n: 'Timeline View',
+    tabContent: 'bbb',
+    index: 1,
+  },
+};
 
 const TrashPage = (props) => {
   const { t } = props;
@@ -17,6 +31,7 @@ const TrashPage = (props) => {
   return (
     <div className="grw-trash-page-list">
       AAAA
+      <CustomNavbar navTabMapping={navTabMapping} />
     </div>
   );
 };
