@@ -38,7 +38,7 @@ class PageAttachment extends React.Component {
 
     if (!pageId) { return }
 
-    const res = await this.props.appContainer.apiv3Get('/attachment/list', { pageId });
+    const res = await this.props.appContainer.apiv3Get('/attachment/list', { pageId, selectedPage });
     const attachments = res.data.paginateResult.docs;
     const totalAttachments = res.data.paginateResult.totalDocs;
     const pagingLimit = res.data.paginateResult.limit;

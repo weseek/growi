@@ -50,7 +50,7 @@ module.exports = (crowi) => {
    *              type: string
    */
   router.get('/list', accessTokenParser, loginRequired, validator.retrieveAttachments, apiV3FormValidator, async(req, res) => {
-    // const offset = +req.query.offset || 0;
+
 
     try {
       const pageId = req.query.pageId;
@@ -63,11 +63,13 @@ module.exports = (crowi) => {
 
       // directly get paging-size from db. not to delivery from client side.
       const pageLimitationS = await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
+      const selectedPage = req.query.selectedPage;
+      const offset = (selectedPage - 1) * pageLimitationS;
       const paginateResult = await Attachment.paginate(
         { page: pageId },
         {
           limit: pageLimitationS,
-          // offset,
+          offset,
           populate: {
             path: 'creator',
             select: User.USER_PUBLIC_FIELDS,
