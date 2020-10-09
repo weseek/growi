@@ -159,6 +159,7 @@ const PageDuplicateModal = (props) => {
           </label>
         </div>
         {isDuplicateRecursively && <ComparePathsTable subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
+        {isDuplicateRecursively && <ComparePathsTable subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
 
         {isDuplicateRecursively && (
           <div className="custom-control custom-checkbox custom-checkbox-warning">
