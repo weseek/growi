@@ -219,4 +219,17 @@ html[dark] {
 
   // Button
   // [TODO: appply colors to three stranded button]
+
+  /*
+  * Not Found Alert
+  */
+  .grw-not-found-alert {
+    .not-found-alert-text {
+      color: $accent;
+    }
+    .create-page-btn {
+      background-color: $accent;
+    }
+    border: 1px solid $accent;
+  }
 }
