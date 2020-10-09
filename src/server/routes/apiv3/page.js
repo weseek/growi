@@ -256,22 +256,26 @@ module.exports = (crowi) => {
     return stream.pipe(res);
   });
 
-  router.get('/duplication-path', async(req, res) => {
+  router.get('/exist-paths', loginRequired, validator.exist, async(req, res) => {
     const { path, toPaths } = req.query;
 
     try {
       const pageData = await Page.findByPath(path);
       const descendantsPath = await Page.findManageableListWithDescendants(pageData, req.user);
-      console.log(req.user);
-      const duplicationPaths = descendantsPath.forEach((page) => {
-        if (toPaths.some(toPath => toPath === page.path)) {
-          duplicationPaths.push(page.path);
+
+      const duplicationPaths = descendantsPath.map((page) => {
+        if (toPaths.includes(page.path)) {
+          return page.path;
         }
+        return null;
       });
-      return res.apiv3({ duplicationPaths });
+      const existPaths = duplicationPaths.filter(path => path !== null);
+
+      return res.apiv3({ existPaths });
+
     }
     catch (err) {
-      logger.error('Failed to get duplication path', err);
+      logger.error('Failed to get exist path', err);
       return res.apiv3Err(err, 500);
     }
 
