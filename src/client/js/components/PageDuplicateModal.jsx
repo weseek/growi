@@ -76,6 +76,10 @@ const PageDuplicateModal = (props) => {
       const res = await appContainer.apiv3Get('/pages/subordinated-list', { path, limit: LIMIT_FOR_LIST });
       const { subordinatedPaths } = res.data;
       setSubordinatedPages(subordinatedPaths);
+      const toPaths = ['/test1223/test', '/test1223/test12', 'test/1234556', 't', '/test1223/test/test3'];
+      const response = await appContainer.apiv3Get('/page/duplication-path', { path, toPaths });
+      const { paths } = response.data;
+      console.log(paths);
     }
     catch (err) {
       setErrs(err);
