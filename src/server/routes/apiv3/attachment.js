@@ -23,12 +23,10 @@ module.exports = (crowi) => {
   const Attachment = crowi.model('Attachment');
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
-
   const validator = {
     retrieveAttachments: [
       query('pageId').isMongoId().withMessage('pageId is required'),
-      // query('pagingLimit').isInt({ min: 1 }).isInt({ max: 1000 }), // temp data
-      // query('offset').isInt({ min: 0 }),
+      query('pageLimitationS').isInt({ max: 100 }),
     ],
   };
   /**
@@ -51,7 +49,6 @@ module.exports = (crowi) => {
    */
   router.get('/list', accessTokenParser, loginRequired, validator.retrieveAttachments, apiV3FormValidator, async(req, res) => {
 
-
     try {
       const pageId = req.query.pageId;
       // check whether accessible
@@ -62,7 +59,7 @@ module.exports = (crowi) => {
       }
 
       // directly get paging-size from db. not to delivery from client side.
-      const pageLimitationS = await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
+      const pageLimitationS = req.query.pageLimitationS || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
       const selectedPage = req.query.selectedPage;
       const offset = (selectedPage - 1) * pageLimitationS;
       const paginateResult = await Attachment.paginate(
