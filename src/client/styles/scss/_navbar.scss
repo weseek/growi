@@ -75,3 +75,11 @@
     bottom: -$grw-navbar-bottom-height;
   }
 }
+
+.grw-trash-page {
+  .nav-link svg {
+    width: 17px;
+    height: 17px;
+    margin-right: 5px;
+  }
+}

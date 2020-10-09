@@ -24,6 +24,7 @@ const CustomNavbar = (props) => {
     return min / max * 100;
   }
 
+  // [TODO: apply animation by gw4075]
   useEffect(() => {
     if (activeTab === '') {
       return;

@@ -16,20 +16,20 @@ const navTabMapping = {
     icon: <PageListIcon />,
     i18n: 'page_list',
     // [TODO: show trash page list by gw4064]
-    tabContent: 'This is a page list of Trash pages',
+    tabContent: 'Trash page list',
     index: 0,
   },
   timeline:  {
     icon: '',
     i18n: 'Timeline View',
-    tabContent: 'bbb',
+    tabContent: 'Timeline page list',
     index: 1,
   },
 };
 
 const TrashPage = () => {
   return (
-    <div className="grw-trash-page-list">
+    <div className="grw-trash-page">
       <CustomNavbar navTabMapping={navTabMapping} />
     </div>
   );
