@@ -15,11 +15,8 @@ import PageComments from './components/PageComments';
 import PageTimeline from './components/PageTimeline';
 import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
 import PageManagement from './components/Page/PageManagement';
-
 import CustomNavbar from './components/CustomNavbar';
 import TrashPage from './components/TrashPage';
-
-
 import TrashPageAlert from './components/Page/TrashPageAlert';
 import PageStatusAlert from './components/PageStatusAlert';
 import RecentCreated from './components/RecentCreated/RecentCreated';
@@ -79,6 +76,7 @@ Object.assign(componentMappings, {
   'custom-nav-bar': <CustomNavbar />,
 
   'trash-page-alert': <TrashPageAlert />,
+
   'trash-page': <TrashPage />,
 
   'page-timeline': <PageTimeline />,

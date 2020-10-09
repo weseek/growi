@@ -19,18 +19,6 @@ const navTabMapping = {
     tabContent: 'Trash page list',
     index: 0,
   },
-  tab2:  {
-    icon: '',
-    i18n: 'Nav tab 2',
-    tabContent: 'Nav contents 2',
-    index: 1,
-  },
-  tab3:  {
-    icon: '',
-    i18n: 'Nav tab 3',
-    tabContent: 'Nav contents 3',
-    index: 2,
-  },
 };
 
 const TrashPage = () => {
