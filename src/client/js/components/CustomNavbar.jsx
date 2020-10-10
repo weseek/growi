@@ -26,13 +26,16 @@ const CustomNavbar = (props) => {
     return min / max * 100;
   }
 
+
+  const navTitleId = `custom-navbar-${Math.random().toString(32).substring(2)}`;
+
   // [TODO: apply animation by gw4075]
   useEffect(() => {
     if (activeTab === '') {
       return;
     }
 
-    const navTitle = document.getElementById('nav-title2');
+    const navTitle = document.getElementById(navTitleId);
     const navTabs = document.querySelectorAll('li.nav-link2');
 
     if (navTitle == null || navTabs == null) {
@@ -58,7 +61,7 @@ const CustomNavbar = (props) => {
 
   return (
     <React.Fragment>
-      <Nav className="nav-title" id="nav-title2">
+      <Nav className="nav-title" id={navTitleId}>
         {Object.entries(props.navTabMapping).map(([key, value]) => {
               return (
                 <NavItem key={key} type="button" className={`p-0 nav-link2 ${activeTab === key && 'active'}`}>
