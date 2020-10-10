@@ -27,8 +27,8 @@ const CustomNavbar = (props) => {
   }
 
 
-  const navTitleId = `custom-navbar-${Math.random().toString(32).substring(2)}`;
-  const navTabId = `custom-navbar-${Math.random().toString(32).substring(2)}`;
+  const navTitleId = `custom-navtitle-${Math.random().toString(32).substring(2)}`;
+  const navTabId = `custom-navtab-${Math.random().toString(32).substring(2)}`;
 
   // [TODO: apply animation by gw4075]
   useEffect(() => {
