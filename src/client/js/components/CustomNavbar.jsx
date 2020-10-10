@@ -31,7 +31,6 @@ const CustomNavbar = (props) => {
   const navTitleId = `custom-navtitle-${random}`;
   const navTabId = `custom-navtab-${random}`;
 
-  // [TODO: apply animation by gw4075]
   useEffect(() => {
     if (activeTab === '') {
       return;
