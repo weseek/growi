@@ -18,23 +18,21 @@ const PageList = (props) => {
 
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [limit, setLimit] = useState(appContainer.getConfig().pageLimitationS || 10);
-  const [offset, setOffset] = useState(0);
+  const [limit, setLimit] = useState(Infinity);
 
   function setPageNumber(selectedPageNumber) {
     setActivePage(selectedPageNumber);
-    setOffset((selectedPageNumber - 1) * limit);
+    // setOffset((selectedPageNumber - 1) * limit);
   }
 
   const updatePageList = useCallback(async() => {
-    const res = await appContainer.apiv3Get('/pages/list', { path, limit, offset });
+    const res = await appContainer.apiv3Get('/pages/list', { path, activePage });
 
     setPages(res.data.pages);
     setIsLoading(true);
     setTotalPages(res.data.totalCount);
     setLimit(res.data.limit);
-    setOffset(res.data.offset);
-  }, [appContainer, path, limit, offset]);
+  }, [appContainer, path, activePage]);
 
   useEffect(() => {
     updatePageList();
