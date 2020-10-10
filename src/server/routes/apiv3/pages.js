@@ -100,7 +100,7 @@ module.exports = (crowi) => {
   });
 
   router.get('/list', accessTokenParser, loginRequired, validator.displayList, async(req, res) => {
-    const pageLimitationS = req.query.pageLimitationS || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
+    const pageLimitationS = parseInt(req.query.pageLimitationS) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
     const { path } = req.query;
     const selectedPage = req.query.activePage;
     const offset = (selectedPage - 1) * pageLimitationS;

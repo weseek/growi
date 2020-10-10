@@ -105,6 +105,18 @@ module.exports = (crowi) => {
     query('page').isInt({ min: 1 }),
   ];
 
+  validator.recentCreatedByUser = [
+    query('pageLimitationM').custom((value) => {
+      if (value === undefined) {
+        return 10;
+      }
+      if (value > 100) {
+        throw new Error('You should set less than 100 or not to set pageLimitationM.');
+      }
+      return value;
+    }),
+  ];
+
   /**
    * @swagger
    *
@@ -224,7 +236,7 @@ module.exports = (crowi) => {
    *                    paginateResult:
    *                      $ref: '#/components/schemas/PaginateResult'
    */
-  router.get('/:id/recent', accessTokenParser, loginRequired, async(req, res) => {
+  router.get('/:id/recent', accessTokenParser, loginRequired, validator.recentCreatedByUser, async(req, res) => {
     const { id } = req.params;
 
     let user;
@@ -242,9 +254,10 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('find-user-is-not-found'));
     }
 
-    const limit = parseInt(req.query.limit) || 50;
-    const offset = parseInt(req.query.offset) || 0;
-    const queryOptions = { offset, limit };
+    const pageLimitationM = parseInt(req.query.pageLimitationM) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM') || 30;
+    const selectPageNumber = req.query.selectPageNumber;
+    const offset = (selectPageNumber - 1) * pageLimitationM;
+    const queryOptions = { offset, limit: pageLimitationM };
 
     try {
       const result = await Page.findListByCreator(user, req.user, queryOptions);
