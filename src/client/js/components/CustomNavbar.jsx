@@ -26,9 +26,10 @@ const CustomNavbar = (props) => {
     return min / max * 100;
   }
 
+  const random = Math.random().toString(32).substring(2);
 
-  const navTitleId = `custom-navtitle-${Math.random().toString(32).substring(2)}`;
-  const navTabId = `custom-navtab-${Math.random().toString(32).substring(2)}`;
+  const navTitleId = `custom-navtitle-${random}`;
+  const navTabId = `custom-navtab-${random}`;
 
   // [TODO: apply animation by gw4075]
   useEffect(() => {
