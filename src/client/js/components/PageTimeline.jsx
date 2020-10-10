@@ -16,11 +16,10 @@ class PageTimeline extends React.Component {
   constructor(props) {
     super(props);
 
-    const { appContainer } = this.props;
     this.state = {
       activePage: 1,
       totalPageItems: 0,
-      limit: appContainer.getConfig().pageLimitationS || 10,
+      limit: Infinity,
 
       // TODO: remove after when timeline is implemented with React and inject data with props
       pages: this.props.pages,
@@ -33,17 +32,17 @@ class PageTimeline extends React.Component {
   async handlePage(selectedPage) {
     const { appContainer, pageContainer } = this.props;
     const { path } = pageContainer.state;
-    const { limit } = this.state;
-    const offset = (selectedPage - 1) * limit;
     const activePage = selectedPage;
 
-    const res = await appContainer.apiv3Get('/pages/list', { path, limit, offset });
+    const res = await appContainer.apiv3Get('/pages/list', { path, activePage });
     const totalPageItems = res.data.totalCount;
     const pages = res.data.pages;
+    const pagingLimit = res.data.limit;
     this.setState({
       activePage,
       totalPageItems,
       pages,
+      limit: pagingLimit,
     });
   }
 
