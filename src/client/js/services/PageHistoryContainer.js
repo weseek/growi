@@ -28,7 +28,7 @@ export default class PageHistoryContainer extends Container {
 
       totalPages: 0,
       activePage: 1,
-      pagingLimit: this.appContainer.getConfig().pageLimitationS || 10,
+      pagingLimit: Infinity,
     };
 
     this.retrieveRevisions = this.retrieveRevisions.bind(this);
@@ -50,21 +50,20 @@ export default class PageHistoryContainer extends Container {
    */
   async retrieveRevisions(selectedPage) {
     const { pageId, shareLinkId } = this.pageContainer.state;
-    const { pagingLimit } = this.state;
 
     if (!pageId) {
       return;
     }
 
     const res = await this.appContainer.apiv3Get('/revisions/list', {
-      pageId, shareLinkId, selectedPage, pagingLimit,
+      pageId, shareLinkId, selectedPage,
     });
     const rev = res.data.docs;
-
     // set Pagination state
     this.setState({
       activePage: selectedPage,
       totalPages: res.data.totalDocs,
+      pagingLimit: res.data.limit,
     });
 
     const diffOpened = {};

@@ -97,7 +97,7 @@ module.exports = (crowi) => {
    */
   router.get('/list', certifySharedPage, accessTokenParser, loginRequired, validator.retrieveRevisions, apiV3FormValidator, async(req, res) => {
     const pageId = req.query.pageId;
-    const pagingLimit = req.query.pagingLimit || 10;
+    const pageLimitationS = req.query.pageLimitationS || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
     const { isSharedPage } = req;
 
     const selectedPage = parseInt(req.query.selectedPage) || 1;
@@ -114,7 +114,7 @@ module.exports = (crowi) => {
         { path: page.path },
         {
           page: selectedPage,
-          limit: pagingLimit,
+          limit: pageLimitationS,
           sort: { createdAt: -1 },
           populate: {
             path: 'author',
