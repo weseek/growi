@@ -18,13 +18,12 @@ class MyBookmarkList extends React.Component {
 
   constructor(props) {
     super(props);
-    const { appContainer } = this.props;
 
     this.state = {
       pages: [],
       activePage: 1,
       totalPages: 0,
-      pagingLimit: appContainer.getConfig().pageLimitationM || 30,
+      pagingLimit: Infinity,
     };
 
     this.handlePage = this.handlePage.bind(this);
@@ -41,12 +40,10 @@ class MyBookmarkList extends React.Component {
   async getMyBookmarkList(selectPageNumber) {
     const { appContainer } = this.props;
     const userId = appContainer.currentUserId;
-    const limit = this.state.pagingLimit;
     const page = selectPageNumber;
-    const params = { page, limit };
 
     try {
-      const { data } = await this.props.appContainer.apiv3.get(`/bookmarks/${userId}`, params);
+      const { data } = await this.props.appContainer.apiv3.get(`/bookmarks/${userId}`, { page });
       if (data.paginationResult == null) {
         throw new Error('data must conclude \'paginateResult\' property.');
       }

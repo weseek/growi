@@ -39,7 +39,6 @@ class RecentCreated extends React.Component {
     // pagesList get and pagination calculate
     const res = await appContainer.apiv3Get(`/users/${userId}/recent`, { selectPageNumber });
     const { totalCount, pages, limit } = res.data;
-    console.log(res.data.limit);
 
     this.setState({
       pages,
