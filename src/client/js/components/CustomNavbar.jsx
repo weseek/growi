@@ -28,6 +28,7 @@ const CustomNavbar = (props) => {
 
 
   const navTitleId = `custom-navbar-${Math.random().toString(32).substring(2)}`;
+  const navTabId = `custom-navbar-${Math.random().toString(32).substring(2)}`;
 
   // [TODO: apply animation by gw4075]
   useEffect(() => {
@@ -36,7 +37,7 @@ const CustomNavbar = (props) => {
     }
 
     const navTitle = document.getElementById(navTitleId);
-    const navTabs = document.querySelectorAll('li.nav-link2');
+    const navTabs = document.querySelectorAll(`li.${navTabId}`);
 
     if (navTitle == null || navTabs == null) {
       return;
@@ -64,7 +65,7 @@ const CustomNavbar = (props) => {
       <Nav className="nav-title" id={navTitleId}>
         {Object.entries(props.navTabMapping).map(([key, value]) => {
               return (
-                <NavItem key={key} type="button" className={`p-0 nav-link2 ${activeTab === key && 'active'}`}>
+                <NavItem key={key} type="button" className={`p-0 ${navTabId} ${activeTab === key && 'active'}`}>
                   <NavLink onClick={() => { switchActiveTab(key) }}>
                     {value.icon}
                     {t(value.i18n)}
