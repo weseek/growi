@@ -8,7 +8,10 @@ const logger = loggerFactory('growi-plugin:attachment-refs:routes:refs');
 
 module.exports = (crowi) => {
   const express = crowi.require('express');
+  const mongoose = crowi.require('mongoose');
   const router = express.Router();
+
+  const ObjectId = mongoose.Types.ObjectId;
 
   const User = crowi.model('User');
   const Page = crowi.model('Page');
@@ -90,13 +93,16 @@ module.exports = (crowi) => {
       creatorPopulateOpt = User.IMAGE_POPULATION;
     }
 
+    // convert ObjectId
+    const orConditions = [{ originalName: fileNameOrId }];
+    if (ObjectId.isValid(fileNameOrId)) {
+      orConditions.push({ _id: ObjectId(fileNameOrId) });
+    }
+
     const attachment = await Attachment
       .findOne({
         page: page._id,
-        $or: [
-          { _id: fileNameOrId },
-          { originalName: fileNameOrId },
-        ],
+        $or: orConditions,
       })
       .populate({ path: 'creator', select: User.USER_PUBLIC_FIELDS, populate: creatorPopulateOpt });
 
