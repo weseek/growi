@@ -8,7 +8,6 @@ const router = express.Router();
 
 const { query } = require('express-validator');
 
-
 /**
  * @swagger
  *  tags:
