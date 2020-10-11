@@ -19,22 +19,12 @@ module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
+  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
+
 
   const Page = crowi.model('Page');
 
-  const validator = {
-    displayList: [
-      query('pageLimitationS').custom((value) => {
-        if (value === undefined) {
-          return 10;
-        }
-        if (value > 100) {
-          throw new Error('You should set less than 100 or not to set pageLimitationS.');
-        }
-        return value;
-      }),
-    ],
-  };
+  const validator = {};
 
   /**
    * @swagger
@@ -99,7 +89,19 @@ module.exports = (crowi) => {
     }
   });
 
-  router.get('/list', accessTokenParser, loginRequired, validator.displayList, async(req, res) => {
+  validator.displayList = [
+    query('pageLimitationS').custom((value) => {
+      if (value === undefined) {
+        return 10;
+      }
+      if (value > 100) {
+        throw new Error('You should set less than 100 or not to set pageLimitationS.');
+      }
+      return value;
+    }),
+  ];
+
+  router.get('/list', accessTokenParser, loginRequired, validator.displayList, apiV3FormValidator, async(req, res) => {
     const pageLimitationS = parseInt(req.query.pageLimitationS) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
     const { path } = req.query;
     const selectedPage = req.query.activePage;
