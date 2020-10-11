@@ -256,8 +256,39 @@ module.exports = (crowi) => {
     return stream.pipe(res);
   });
 
-  router.get('/exist-paths', loginRequired, validator.exist, async(req, res) => {
-    const { path, toPaths } = req.query;
+  /**
+   * @swagger
+   *
+   *    /page/exist-paths:
+   *      get:
+   *        tags: [Page]
+   *        summary: /page/exist-paths
+   *        description: Get already exist paths
+   *        operationId: getAlreadyExistPaths
+   *        parameters:
+   *          - name: newParentPath
+   *            in: query
+   *            description: New parent path of search
+   *            schema:
+   *              type: string
+   *          - name: toPaths
+   *            in: query
+   *            description: Paths to compare with DB
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: Succeeded to retrieve pages.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    existPaths:
+   *                      type: object
+   *                      description: Paths are already exist in DB
+   *          500:
+   *            description: Internal server error.
+   */
 
     try {
       const pageData = await Page.findByPath(path);
