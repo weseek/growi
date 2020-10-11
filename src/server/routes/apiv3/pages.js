@@ -1,11 +1,9 @@
 const loggerFactory = require('@alias/logger');
 
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
-
 const express = require('express');
 
 const router = express.Router();
-
 const { query } = require('express-validator');
 
 /**
