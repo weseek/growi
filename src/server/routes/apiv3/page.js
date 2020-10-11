@@ -290,6 +290,9 @@ module.exports = (crowi) => {
    *            description: Internal server error.
    */
 
+  router.get('/exist-paths', loginRequired, validator.exist, apiV3FormValidator, async(req, res) => {
+    const { newParentPath, toPaths } = req.query;
+
     try {
       const pageData = await Page.findByPath(path);
       const descendantsPath = await Page.findManageableListWithDescendants(pageData, req.user);
