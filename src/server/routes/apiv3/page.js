@@ -294,16 +294,15 @@ module.exports = (crowi) => {
     const { newParentPath, toPaths } = req.query;
 
     try {
-      const pageData = await Page.findByPath(path);
-      const descendantsPath = await Page.findManageableListWithDescendants(pageData, req.user);
+      const descendantsPages = await Page.findListByStartWith(newParentPath, req.user);
 
-      const duplicationPaths = descendantsPath.map((page) => {
+      const duplicationPaths = descendantsPages.pages.map((page) => {
         if (toPaths.includes(page.path)) {
           return page.path;
         }
         return null;
       });
-      const existPaths = duplicationPaths.filter(path => path !== null);
+      const existPaths = duplicationPaths.filter(path => path != null);
 
       return res.apiv3({ existPaths });
 
