@@ -40,10 +40,9 @@ class MyBookmarkList extends React.Component {
   async getMyBookmarkList(selectPageNumber) {
     const { appContainer } = this.props;
     const userId = appContainer.currentUserId;
-    const page = selectPageNumber;
 
     try {
-      const { data } = await this.props.appContainer.apiv3.get(`/bookmarks/${userId}`, { page });
+      const { data } = await this.props.appContainer.apiv3.get(`/bookmarks/${userId}`, { selectPageNumber });
       if (data.paginationResult == null) {
         throw new Error('data must conclude \'paginateResult\' property.');
       }

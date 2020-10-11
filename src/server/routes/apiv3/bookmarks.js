@@ -144,7 +144,7 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/Bookmark'
    */
   validator.myBookmarkList = [
-    query('page').isInt({ min: 1 }),
+    query('selectPageNumber').isInt({ min: 1 }),
     query('pageLimitationM').custom((value) => {
       if (value === undefined) {
         return 10;
@@ -158,7 +158,7 @@ module.exports = (crowi) => {
 
   router.get('/:userId', accessTokenParser, loginRequired, validator.myBookmarkList, apiV3FormValidator, async(req, res) => {
     const { userId } = req.params;
-    const page = req.query.page;
+    const selectPageNumber = req.query.selectPageNumber;
     const pageLimitationM = parseInt(req.query.pageLimitationM) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM') || 30;
 
     if (userId == null) {
@@ -182,7 +182,7 @@ module.exports = (crowi) => {
               select: User.USER_PUBLIC_FIELDS,
             },
           },
-          page,
+          page: selectPageNumber,
           limit: pageLimitationM,
         },
       );
