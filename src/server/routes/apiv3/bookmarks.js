@@ -145,6 +145,15 @@ module.exports = (crowi) => {
    */
   validator.myBookmarkList = [
     query('page').isInt({ min: 1 }),
+    query('pageLimitationM').custom((value) => {
+      if (value === undefined) {
+        return 10;
+      }
+      if (value > 100) {
+        throw new Error('You should set less than 100 or not to set pageLimitationM.');
+      }
+      return value;
+    }),
   ];
 
   router.get('/:userId', accessTokenParser, loginRequired, validator.myBookmarkList, apiV3FormValidator, async(req, res) => {
