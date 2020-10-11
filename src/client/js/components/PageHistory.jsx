@@ -54,7 +54,6 @@ function PageHistory(props) {
   }
 
   function pager() {
-
     return (
       <PaginationWrapper
         activePage={activePage}
@@ -74,7 +73,6 @@ function PageHistory(props) {
         getPreviousRevision={getPreviousRevision}
         onDiffOpenClicked={onDiffOpenClicked}
       />
-      {console.log(pagingLimit)}
       {pager()}
     </div>
   );

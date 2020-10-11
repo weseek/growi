@@ -111,8 +111,6 @@ module.exports = function(crowi) {
       'customize:isEnabledTimeline' : true,
       'customize:isSavedStatesOfTabChanges' : true,
       'customize:isEnabledAttachTitleHeader' : false,
-      // 'customize:showPageLimitationS' : 10,
-      // 'customize:showPageLimitationM' : 10,
       'customize:isEnabledStaleNotification': false,
       'customize:isAllReplyShown': false,
 
@@ -219,8 +217,6 @@ module.exports = function(crowi) {
         MATHJAX: env.MATHJAX || null,
         NO_CDN: env.NO_CDN || null,
       },
-      // pageLimitationS: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS'),
-      // pageLimitationM: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM'),
       isEnabledStaleNotification: crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
       isAclEnabled: crowi.aclService.isAclEnabled(),
       isSearchServiceConfigured: crowi.searchService.isConfigured,

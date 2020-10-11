@@ -22,7 +22,6 @@ const PageList = (props) => {
 
   function setPageNumber(selectedPageNumber) {
     setActivePage(selectedPageNumber);
-    // setOffset((selectedPageNumber - 1) * limit);
   }
 
   const updatePageList = useCallback(async() => {
