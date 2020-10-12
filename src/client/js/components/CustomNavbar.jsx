@@ -64,15 +64,15 @@ const CustomNavbar = (props) => {
     <React.Fragment>
       <Nav className="nav-title" id={navTitleId}>
         {Object.entries(props.navTabMapping).map(([key, value]) => {
-              return (
-                <NavItem key={key} type="button" className={`p-0 ${navTabId} ${activeTab === key && 'active'}`}>
-                  <NavLink onClick={() => { switchActiveTab(key) }}>
-                    {value.icon}
-                    {t(value.i18n)}
-                  </NavLink>
-                </NavItem>
-              );
-            })}
+          return (
+            <NavItem key={key} type="button" className={`p-0 ${navTabId} ${activeTab === key && 'active'}`}>
+              <NavLink onClick={() => { switchActiveTab(key) }}>
+                {value.icon}
+                {value.i18n}
+              </NavLink>
+            </NavItem>
+          );
+        })}
       </Nav>
       <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
       <TabContent activeTab={activeTab} className="p-5">
