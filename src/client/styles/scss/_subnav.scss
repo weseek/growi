@@ -35,47 +35,16 @@
 
   .btn-like,
   .btn-bookmark {
-    width: 40px;
+    width: 100%;
     height: 40px;
     font-size: 20px;
-  }
-
-  .btn-like-erea {
     border-radius: 5px;
-    @include button-outline-variant($secondary, lighten($info, 15%), rgba(lighten($info, 10%), 0.5), rgba(lighten($info, 10%), 0.5));
-    &:not(:disabled):not(.disabled):active,
-    &:not(:disabled):not(.disabled).active {
-      color: lighten($info, 15%);
-    }
-    &:not(:disabled):not(.disabled):not(:hover) {
-      background-color: transparent;
-    }
   }
 
-  .btn-bookmark-erea {
-    border-radius: 5px;
-    @include button-outline-variant($secondary, $warning, rgba(lighten($warning, 20%), 0.5), rgba(lighten($warning, 20%), 0.5));
-    &:not(:disabled):not(.disabled):active,
-    &:not(:disabled):not(.disabled).active {
-      color: $warning;
-    }
-    &:not(:disabled):not(.disabled):not(:hover) {
-      background-color: transparent;
-    }
-  }
-
-  .total-likes {
-    width: 8px;
-    height: 16px;
-    padding: 0.5em 0 0 0;
-    font-size: 16px;
-  }
-
+  .total-likes,
   .total-bookmarks {
-    width: 8px;
-    height: 16px;
-    padding: 0.5em 0 0 0;
-    font-size: 16px;
+    font-size: 17px;
+    font-weight: 600;
   }
 
   ul.authors {
@@ -118,9 +87,10 @@
     .btn-bookmark {
       @extend .btn-sm;
 
-      width: 30px;
+      width: 100%;
       height: 30px;
       font-size: 15px !important;
+      border-radius: 5px;
     }
 
     .total-likes {
