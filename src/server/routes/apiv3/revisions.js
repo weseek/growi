@@ -69,13 +69,13 @@ module.exports = (crowi) => {
   const validator = {
     retrieveRevisions: [
       query('pageId').isMongoId().withMessage('pageId is required'),
-      query('selectedPage').isInt({ min: 0 }).withMessage('selectedPage must be int'),
-      query('pageLimitationS').custom((value) => {
+      query('page').isInt({ min: 0 }).withMessage('page must be int'),
+      query('limit').custom((value) => {
         if (value == null) {
           return 10;
         }
         if (value > 100) {
-          throw new Error('You should set less than 100 or not to set pageLimitationS.');
+          throw new Error('You should set less than 100 or not to set limit.');
         }
         return value;
       }),
@@ -106,10 +106,10 @@ module.exports = (crowi) => {
    */
   router.get('/list', certifySharedPage, accessTokenParser, loginRequired, validator.retrieveRevisions, apiV3FormValidator, async(req, res) => {
     const pageId = req.query.pageId;
-    const pageLimitationS = req.query.pageLimitationS || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
+    const limit = req.query.limit || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
     const { isSharedPage } = req;
 
-    const selectedPage = parseInt(req.query.selectedPage) || 1;
+    const selectedPage = parseInt(req.query.page) || 1;
 
     // check whether accessible
     if (!isSharedPage && !(await Page.isAccessiblePageByViewer(pageId, req.user))) {
@@ -123,7 +123,7 @@ module.exports = (crowi) => {
         { path: page.path },
         {
           page: selectedPage,
-          limit: pageLimitationS,
+          limit,
           sort: { createdAt: -1 },
           populate: {
             path: 'author',
