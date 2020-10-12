@@ -159,12 +159,12 @@ module.exports = (crowi) => {
   router.get('/:userId', accessTokenParser, loginRequired, validator.myBookmarkList, apiV3FormValidator, async(req, res) => {
     const { userId } = req.params;
     const page = req.query.page;
-    const pageLimitationM = parseInt(req.query.limit) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM') || 30;
+    const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM') || 30;
 
     if (userId == null) {
       return res.apiv3Err('User id is not found or forbidden', 400);
     }
-    if (pageLimitationM == null) {
+    if (limit == null) {
       return res.apiv3Err('Could not catch page limit', 400);
     }
     try {
@@ -183,7 +183,7 @@ module.exports = (crowi) => {
             },
           },
           page,
-          limit: pageLimitationM,
+          limit,
         },
       );
       return res.apiv3({ paginationResult });
