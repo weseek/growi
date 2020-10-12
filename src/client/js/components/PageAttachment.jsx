@@ -18,7 +18,7 @@ class PageAttachment extends React.Component {
     this.state = {
       activePage: 1,
       totalAttachments: 0,
-      limit: Infinity,
+      limit: 10,
       attachments: [],
       inUse: {},
       attachmentToDelete: null,
@@ -34,11 +34,11 @@ class PageAttachment extends React.Component {
 
   async handlePage(selectedPage) {
     const { pageId } = this.props.pageContainer.state;
-    const activePage = selectedPage;
+    const page = selectedPage;
 
     if (!pageId) { return }
 
-    const res = await this.props.appContainer.apiv3Get('/attachment/list', { pageId, selectedPage });
+    const res = await this.props.appContainer.apiv3Get('/attachment/list', { pageId, page });
     const attachments = res.data.paginateResult.docs;
     const totalAttachments = res.data.paginateResult.totalDocs;
     const pagingLimit = res.data.paginateResult.limit;
@@ -49,7 +49,7 @@ class PageAttachment extends React.Component {
       inUse[attachment._id] = this.checkIfFileInUse(attachment);
     }
     this.setState({
-      activePage,
+      activePage: selectedPage,
       totalAttachments,
       limit: pagingLimit,
       attachments,
