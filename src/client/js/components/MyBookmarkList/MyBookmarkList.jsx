@@ -42,6 +42,8 @@ class MyBookmarkList extends React.Component {
     const userId = appContainer.currentUserId;
     const page = selectPageNumber;
 
+    // TODO implement temporarily paging number only this component (this paging size is pageLimitationL).
+
     try {
       const { data } = await this.props.appContainer.apiv3.get(`/bookmarks/${userId}`, { page });
       if (data.paginationResult == null) {
