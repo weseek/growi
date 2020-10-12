@@ -115,13 +115,13 @@ const PageReactionButtons = ({ appContainer, pageContainer }) => {
   return (
     <>
       {pageUser == null && (
-      <div calssName="mr-2">
+      <span>
         <LikeButton pageId={pageId} isLiked={isLiked} />
-      </div>
+      </span>
       )}
-      <div className="mr-2">
+      <span>
         <BookmarkButton pageId={pageId} crowi={appContainer} />
-      </div>
+      </span>
     </>
   );
 };
@@ -190,7 +190,7 @@ const GrowiSubNavigation = (props) => {
       {/* Right side */}
       <div className="d-flex">
 
-        <div className="d-flex flex-column align-items-end justify-content-center">
+        <div className="d-flex flex-column align-items-end">
           <div className="d-flex">
             { !isPageInTrash && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
           </div>
