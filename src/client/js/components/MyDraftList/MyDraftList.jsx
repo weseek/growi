@@ -68,6 +68,7 @@ class MyDraftList extends React.Component {
   }
 
   getCurrentDrafts(selectPageNumber) {
+    // TODO implement temporarily paging number only this component (this paging size is pageLimitationL).
     const limit = this.state.pagingLimit;
 
     const totalDrafts = this.state.drafts.length;
