@@ -18,7 +18,7 @@ class PageAttachment extends React.Component {
     this.state = {
       activePage: 1,
       totalAttachments: 0,
-      limit: 10,
+      limit: null,
       attachments: [],
       inUse: {},
       attachmentToDelete: null,
@@ -111,10 +111,10 @@ class PageAttachment extends React.Component {
 
 
   render() {
+    console.log(this.state.limit);
     const { t } = this.props;
     if (this.state.attachments.length === 0) {
       return t('No_attachments_yet');
-
     }
 
     let deleteAttachmentModal = '';

@@ -17,7 +17,7 @@ class PaginationWrapper extends React.Component {
       totalItemsCount: 0,
       activePage: 1,
       paginationNumbers: {},
-      limit: Infinity,
+      limit: this.props.pagingLimit || Infinity,
     };
 
     this.calculatePagination = this.calculatePagination.bind(this);
@@ -189,11 +189,13 @@ PaginationWrapper.propTypes = {
   activePage: PropTypes.number.isRequired,
   changePage: PropTypes.func.isRequired,
   totalItemsCount: PropTypes.number.isRequired,
-  pagingLimit: PropTypes.number.isRequired,
+  pagingLimit: PropTypes.number,
   align: PropTypes.string,
 };
 PaginationWrapper.defaultProps = {
   align: 'left',
+  pagingLimit: PropTypes.number,
+
 };
 
 export default withTranslation()(PaginationWrappered);
