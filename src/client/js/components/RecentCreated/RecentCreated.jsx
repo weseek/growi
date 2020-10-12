@@ -17,7 +17,7 @@ class RecentCreated extends React.Component {
       pages: [],
       activePage: 1,
       totalPages: 0,
-      pagingLimit: Infinity,
+      pagingLimit: 30,
     };
 
     this.handlePage = this.handlePage.bind(this);
