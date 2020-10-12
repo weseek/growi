@@ -86,28 +86,28 @@ class CustomizeFunctionSetting extends React.Component {
               desc="admin:customize_setting.function_options.list_num_desc_s"
               toggleLabel={adminCustomizeContainer.state.pageLimitationS}
               dropdownItemSize={[10, 20, 50, 100]}
-              dropdownItemOnClickHandler={adminCustomizeContainer.switchPageListLimitationS}
+              onChangeDropdownItem={adminCustomizeContainer.switchPageListLimitationS}
             />
             <PagingSizeUncontrolledDropdown
               label="admin:customize_setting.function_options.list_num_m"
               desc="admin:customize_setting.function_options.list_num_desc_m"
               toggleLabel={adminCustomizeContainer.state.pageLimitationM}
               dropdownItemSize={[5, 10, 20, 50, 100]}
-              dropdownItemOnClickHandler={adminCustomizeContainer.switchPageListLimitationM}
+              onChangeDropdownItem={adminCustomizeContainer.switchPageListLimitationM}
             />
             <PagingSizeUncontrolledDropdown
               label="admin:customize_setting.function_options.list_num_l"
               desc="admin:customize_setting.function_options.list_num_desc_l"
               toggleLabel={adminCustomizeContainer.state.pageLimitationL}
               dropdownItemSize={[20, 50, 100, 200]}
-              dropdownItemOnClickHandler={adminCustomizeContainer.switchPageListLimitationL}
+              onChangeDropdownItem={adminCustomizeContainer.switchPageListLimitationL}
             />
             <PagingSizeUncontrolledDropdown
               label="admin:customize_setting.function_options.list_num_xl"
               desc="admin:customize_setting.function_options.list_num_desc_xl"
               toggleLabel={adminCustomizeContainer.state.pageLimitationXL}
               dropdownItemSize={[5, 10, 20, 50, 100]}
-              dropdownItemOnClickHandler={adminCustomizeContainer.switchPageListLimitationXL}
+              onChangeDropdownItem={adminCustomizeContainer.switchPageListLimitationXL}
             />
 
             <div className="form-group row">

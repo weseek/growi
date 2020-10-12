@@ -11,6 +11,13 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 const PagingSizeUncontrolledDropdown = (props) => {
   const { t } = props;
 
+  function dropdownItemOnClickHandler(num) {
+    if (props.onChangeDropdownItem === null) {
+      return;
+    }
+    props.onChangeDropdownItem(num);
+  }
+
   return (
     <React.Fragment>
       <div className="form-group row">
@@ -25,7 +32,7 @@ const PagingSizeUncontrolledDropdown = (props) => {
             <DropdownMenu className="dropdown-menu" role="menu">
               {props.dropdownItemSize.map((num) => {
                     return (
-                      <DropdownItem key={num} role="presentation" onClick={() => { props.dropdownItemOnClickHandler(num) }}>
+                      <DropdownItem key={num} role="presentation" onClick={() => dropdownItemOnClickHandler(num)}>
                         <a role="menuitem">{num}</a>
                       </DropdownItem>
                     );
@@ -51,7 +58,7 @@ PagingSizeUncontrolledDropdown.propTypes = {
   toggleLabel: PropTypes.number,
   dropdownItemSize: PropTypes.array,
   desc: PropTypes.string,
-  dropdownItemOnClickHandler: PropTypes.func,
+  onChangeDropdownItem: PropTypes.func,
 };
 
 export default withTranslation()(PagingSizeUncontrolledDropdownWrapper);
