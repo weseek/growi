@@ -221,12 +221,17 @@ module.exports = function(crowi, app) {
 
   function addRenderVarsForPage(renderVars, page) {
     renderVars.page = page;
-    renderVars.page.creator = renderVars.page.creator.toObject();
     renderVars.revision = page.revision;
-    renderVars.revision.author = renderVars.revision.author.toObject();
     renderVars.pageIdOnHackmd = page.pageIdOnHackmd;
     renderVars.revisionHackmdSynced = page.revisionHackmdSynced;
     renderVars.hasDraftOnHackmd = page.hasDraftOnHackmd;
+
+    if (page.creator != null) {
+      renderVars.page.creator = renderVars.page.creator.toObject();
+    }
+    if (page.revision.author != null) {
+      renderVars.revision.author = renderVars.revision.author.toObject();
+    }
   }
 
   function addRenderVarsForPresentation(renderVars, page) {
