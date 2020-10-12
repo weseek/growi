@@ -11,7 +11,6 @@ import AppContainer from '../../../services/AppContainer';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import CustomizeFunctionOption from './CustomizeFunctionOption';
-
 import PagingSizeUncontrolledDropdown from './PagingSizeUncontrolledDropdown';
 
 class CustomizeFunctionSetting extends React.Component {
