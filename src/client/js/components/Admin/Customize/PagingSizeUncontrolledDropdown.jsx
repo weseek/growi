@@ -11,41 +11,8 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 const PagingSizeUncontrolledDropdown = (props) => {
   const { t } = props;
 
-  // const dropdownGroupMapping = {
-  //   S:  {
-  //     label: 'admin:customize_setting.function_options.list_num_s',
-  //     pageLimitation: adminCustomizeContainer.state.pageLimitationS,
-  //     switchPageListLimitation: adminCustomizeContainer.switchPageListLimitationS,
-  //     desc: 'admin:customize_setting.function_options.list_num_desc_s',
-  //     dropdownMenu: [10, 20, 50, 100],
-  //   },
-  //   M:  {
-  //     label: 'admin:customize_setting.function_options.list_num_m',
-  //     pageLimitation: adminCustomizeContainer.state.pageLimitationM,
-  //     switchPageListLimitation: adminCustomizeContainer.switchPageListLimitationM,
-  //     desc: 'admin:customize_setting.function_options.list_num_desc_m',
-  //     dropdownMenu: [5, 10, 20, 50, 100],
-  //   },
-  //   L: {
-  //     label: 'admin:customize_setting.function_options.list_num_l',
-  //     pageLimitation: adminCustomizeContainer.state.pageLimitationL,
-  //     switchPageListLimitation: adminCustomizeContainer.switchPageListLimitationL,
-  //     desc: 'admin:customize_setting.function_options.list_num_desc_l',
-  //     dropdownMenu: [20, 50, 100, 200],
-  //   },
-  //   XL: {
-  //     label: 'admin:customize_setting.function_options.list_num_xl',
-  //     pageLimitation: adminCustomizeContainer.state.pageLimitationXL,
-  //     switchPageListLimitation: adminCustomizeContainer.switchPageListLimitationXL,
-  //     desc: 'admin:customize_setting.function_options.list_num_desc_xl',
-  //     dropdownMenu: [5, 10, 20, 50, 100],
-  //   },
-  // };
-
   return (
     <React.Fragment>
-      {/* {Object.entries(dropdownGroupMapping).map(([key, value]) => {
-        return ( */}
       <div className="form-group row">
         <div className="offset-md-3 col-md-6 text-left">
           <div className="my-0 w-100">
@@ -70,8 +37,6 @@ const PagingSizeUncontrolledDropdown = (props) => {
           </p>
         </div>
       </div>
-      {/* );
-      })} */}
     </React.Fragment>
   );
 };
