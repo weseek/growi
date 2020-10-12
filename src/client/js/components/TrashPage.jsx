@@ -9,17 +9,20 @@ import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 import CustomNavbar from './CustomNavbar';
 
-const navTabMapping = {
-  pagelist: {
-    icon: <PageListIcon />,
-    i18n: 'page_list',
-    // [TODO: show trash page list by gw4064]
-    tabContent: 'Trash page list',
-    index: 0,
-  },
-};
 
-const TrashPage = () => {
+const TrashPage = (props) => {
+  const { t } = props;
+
+  const navTabMapping = {
+    pagelist: {
+      icon: <PageListIcon />,
+      i18n: t('page_list'),
+      // [TODO: show trash page list by gw4064]
+      tabContent: t('Trash page list'),
+      index: 0,
+    },
+  };
+
   return (
     <div className="grw-trash-page mt-5">
       <CustomNavbar navTabMapping={navTabMapping} />
