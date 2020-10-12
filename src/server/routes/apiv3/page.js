@@ -139,7 +139,7 @@ module.exports = (crowi) => {
       body('hierarchyValue').isNumeric(),
     ],
     exist: [
-      query('path').isString(),
+      query('newParentPath').isString(),
     ],
   };
 
