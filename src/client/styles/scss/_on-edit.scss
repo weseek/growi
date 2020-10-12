@@ -29,18 +29,24 @@ body.on-edit {
     }
   }
 
-  .grw-page-path-nav {
-    white-space: nowrap;
-
-    .grw-page-path-hierarchical-link {
-      display: inline-block;
-      width: 100%;
+  .grw-subnav-left-side {
+    overflow: hidden;
+    .grw-path-nav-container {
       overflow: hidden;
-      text-overflow: ellipsis;
-    }
+      .grw-page-path-nav {
+        white-space: nowrap;
 
-    h1 {
-      overflow: hidden;
+        .grw-page-path-hierarchical-link {
+          display: inline-block;
+          width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        h1 {
+          overflow: hidden;
+        }
+      }
     }
   }
 

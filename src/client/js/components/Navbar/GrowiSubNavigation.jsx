@@ -53,11 +53,13 @@ const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
       {formerLink}
       <span className="d-flex align-items-center">
         <h1 className="m-0">{latterLink}</h1>
-        <RevisionPathControls
-          pageId={pageId}
-          pagePath={pagePath}
-          isPageForbidden={isPageForbidden}
-        />
+        <div className="mx-2">
+          <RevisionPathControls
+            pageId={pageId}
+            pagePath={pagePath}
+            isPageForbidden={isPageForbidden}
+          />
+        </div>
       </span>
     </div>
   );
@@ -72,10 +74,12 @@ const UserPagePathNav = ({ pageId, pagePath }) => {
     <div className="grw-page-path-nav">
       <span className="d-flex align-items-center flex-wrap">
         <h4 className="grw-user-page-path">{latterLink}</h4>
-        <RevisionPathControls
-          pageId={pageId}
-          pagePath={pagePath}
-        />
+        <div className="mx-2">
+          <RevisionPathControls
+            pageId={pageId}
+            pagePath={pagePath}
+          />
+        </div>
       </span>
     </div>
   );
@@ -162,14 +166,14 @@ const GrowiSubNavigation = (props) => {
     <div className={`grw-subnav d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
 
       {/* Left side */}
-      <div className="d-flex overflow-hidden">
+      <div className="d-flex grw-subnav-left-side">
         { isDrawerMode && (
           <div className="d-none d-md-flex align-items-center border-right mr-3 pr-3">
             <DrawerToggler />
           </div>
         ) }
 
-        <div className="overflow-hidden">
+        <div className="grw-path-nav-container">
           { !isCompactMode && !isPageNotFound && !isPageForbidden && !isUserPage && (
             <div className="mb-2">
               <TagLabels />
