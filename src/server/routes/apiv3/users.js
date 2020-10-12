@@ -106,12 +106,12 @@ module.exports = (crowi) => {
   ];
 
   validator.recentCreatedByUser = [
-    query('pageLimitationM').custom((value) => {
+    query('limit').custom((value) => {
       if (value == null) {
         return 10;
       }
       if (value > 300) {
-        throw new Error('You should set less than 100 or not to set pageLimitationM.');
+        throw new Error('You should set less than 100 or not to set limit.');
       }
       return value;
     }),
@@ -254,10 +254,10 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('find-user-is-not-found'));
     }
 
-    const pageLimitationM = parseInt(req.query.pageLimitationM) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM') || 30;
-    const selectPageNumber = req.query.selectPageNumber;
-    const offset = (selectPageNumber - 1) * pageLimitationM;
-    const queryOptions = { offset, limit: pageLimitationM };
+    const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM') || 30;
+    const page = req.query.page;
+    const offset = (page - 1) * limit;
+    const queryOptions = { offset, limit };
 
     try {
       const result = await Page.findListByCreator(user, req.user, queryOptions);

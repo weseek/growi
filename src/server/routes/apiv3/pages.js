@@ -87,24 +87,24 @@ module.exports = (crowi) => {
   });
 
   validator.displayList = [
-    query('pageLimitationS').custom((value) => {
+    query('limit').custom((value) => {
       if (value == null) {
         return 10;
       }
       if (value > 100) {
-        throw new Error('You should set less than 100 or not to set pageLimitationS.');
+        throw new Error('You should set less than 100 or not to set limit.');
       }
       return value;
     }),
   ];
 
   router.get('/list', accessTokenParser, loginRequired, validator.displayList, apiV3FormValidator, async(req, res) => {
-    const pageLimitationS = parseInt(req.query.pageLimitationS) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
+    const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
     const { path } = req.query;
-    const selectedPage = req.query.activePage;
-    const offset = (selectedPage - 1) * pageLimitationS;
+    const page = req.query.page;
+    const offset = (page - 1) * limit;
 
-    const queryOptions = { offset, limit: pageLimitationS };
+    const queryOptions = { offset, limit };
 
     try {
       const result = await Page.findListWithDescendants(path, req.user, queryOptions);

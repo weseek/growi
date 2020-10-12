@@ -25,7 +25,8 @@ const PageList = (props) => {
   }
 
   const updatePageList = useCallback(async() => {
-    const res = await appContainer.apiv3Get('/pages/list', { path, activePage });
+    const page = activePage;
+    const res = await appContainer.apiv3Get('/pages/list', { path, page });
 
     setPages(res.data.pages);
     setIsLoading(true);
