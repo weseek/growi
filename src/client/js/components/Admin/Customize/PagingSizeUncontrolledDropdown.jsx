@@ -44,34 +44,34 @@ const PagingSizeUncontrolledDropdown = (props) => {
 
   return (
     <React.Fragment>
-      {Object.entries(dropdownGroupMapping).map(([key, value]) => {
-        return (
-          <div className="form-group row" key={key}>
-            <div className="offset-md-3 col-md-6 text-left">
-              <div className="my-0 w-100">
-                <label>{t(value.label)}</label>
-              </div>
-              <UncontrolledDropdown>
-                <DropdownToggle className="text-right col-6" caret>
-                  <span className="float-left">{value.pageLimitation}</span>
-                </DropdownToggle>
-                <DropdownMenu className="dropdown-menu" role="menu">
-                  {props.dropdownItemSize.map((num) => {
+      {/* {Object.entries(dropdownGroupMapping).map(([key, value]) => {
+        return ( */}
+      <div className="form-group row">
+        <div className="offset-md-3 col-md-6 text-left">
+          <div className="my-0 w-100">
+            <label>{t(props.label)}</label>
+          </div>
+          <UncontrolledDropdown>
+            <DropdownToggle className="text-right col-6" caret>
+              <span className="float-left">{props.toggleLabel}</span>
+            </DropdownToggle>
+            <DropdownMenu className="dropdown-menu" role="menu">
+              {props.dropdownItemSize.map((num) => {
                     return (
-                      <DropdownItem key={num} role="presentation" onClick={() => { value.switchPageListLimitation(num) }}>
+                      <DropdownItem key={num} role="presentation" onClick={() => { props.dropdownItemOnClickHandler(num) }}>
                         <a role="menuitem">{num}</a>
                       </DropdownItem>
                     );
                   })}
-                </DropdownMenu>
-              </UncontrolledDropdown>
-              <p className="form-text text-muted">
-                {t(value.desc)}
-              </p>
-            </div>
-          </div>
-        );
-      })}
+            </DropdownMenu>
+          </UncontrolledDropdown>
+          <p className="form-text text-muted">
+            {t(props.desc)}
+          </p>
+        </div>
+      </div>
+      {/* );
+      })} */}
     </React.Fragment>
   );
 };
@@ -82,8 +82,11 @@ const PagingSizeUncontrolledDropdownWrapper = withUnstatedContainers(PagingSizeU
 PagingSizeUncontrolledDropdown.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
-  // toggleLabel: PropTypes.func,
+  label: PropTypes.string,
+  toggleLabel: PropTypes.number,
   dropdownItemSize: PropTypes.array,
+  desc: PropTypes.string,
+  dropdownItemOnClickHandler: PropTypes.func,
 };
 
 export default withTranslation()(PagingSizeUncontrolledDropdownWrapper);

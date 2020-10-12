@@ -116,15 +116,18 @@ class CustomizeFunctionSetting extends React.Component {
             </div>
 
             <PagingSizeUncontrolledDropdown
-              // toggleLabel={pageLimitation}
+              label="admin:customize_setting.function_options.list_num_s"
+              toggleLabel={adminCustomizeContainer.state.pageLimitationS}
               dropdownItemSize={[10, 20, 50, 100]}
-              // dropdownItemOnClickHandler={adminCustomizeContainer.switchPageListLimitationL.bind(adminCustomizeContainer)}
+              desc="admin:customize_setting.function_options.list_num_desc_s"
+              dropdownItemOnClickHandler={() => adminCustomizeContainer.switchPageListLimitationS}
             />
-            <PagingSizeUncontrolledDropdown
-              // toggleLabel={pageLimitation}
+            {/* <PagingSizeUncontrolledDropdown
+              // toggleLabel={adminCustomizeContainer.state.pageLimitationM}
               dropdownItemSize={[5, 10, 20, 50, 100]}
-              // dropdownItemOnClickHandler={adminCustomizeContainer.switchPageListLimitationL.bind(adminCustomizeContainer)}
-            />
+              desc="admin:customize_setting.function_options.list_num_desc_m"
+              dropdownItemOnClickHandler={adminCustomizeContainer.switchPageListLimitationL.bind(adminCustomizeContainer)}
+            /> */}
 
             {/* {Object.entries(dropdownGroupMapping).map(([key, value]) => {
               return (
