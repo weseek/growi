@@ -36,20 +36,18 @@ class BookmarkButton extends React.Component {
     }
 
     return (
-      <div className={`d-flex btn-bookmark-erea ${pageContainer.state.isBookmarked ? 'active' : ''}`}>
-        <button
-          type="button"
-          onClick={this.handleClick}
-          className={`btn btn-bookmark border-0
+      <button
+        type="button"
+        onClick={this.handleClick}
+        className={`btn btn-bookmark border-0
           ${`btn-${this.props.size}`}
           ${pageContainer.state.isBookmarked ? 'active' : ''}`}
-        >
-          <i className="icon-star"></i>
-        </button>
-        <div className="total-bookmarks mr-2">
+      >
+        <i className="icon-star mr-3"></i>
+        <span className="total-bookmarks">
           {pageContainer.state.sumOfBookmarks}
-        </div>
-      </div>
+        </span>
+      </button>
     );
   }
 
