@@ -144,13 +144,13 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/Bookmark'
    */
   validator.myBookmarkList = [
-    query('selectPageNumber').isInt({ min: 1 }),
-    query('pageLimitationM').custom((value) => {
+    query('page').isInt({ min: 1 }),
+    query('limit').custom((value) => {
       if (value == null) {
         return 10;
       }
       if (value > 300) {
-        throw new Error('You should set less than 100 or not to set pageLimitationM.');
+        throw new Error('You should set less than 100 or not to set limit.');
       }
       return value;
     }),
@@ -158,8 +158,8 @@ module.exports = (crowi) => {
 
   router.get('/:userId', accessTokenParser, loginRequired, validator.myBookmarkList, apiV3FormValidator, async(req, res) => {
     const { userId } = req.params;
-    const selectPageNumber = req.query.selectPageNumber;
-    const pageLimitationM = parseInt(req.query.pageLimitationM) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM') || 30;
+    const page = req.query.page;
+    const pageLimitationM = parseInt(req.query.limit) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM') || 30;
 
     if (userId == null) {
       return res.apiv3Err('User id is not found or forbidden', 400);
@@ -182,7 +182,7 @@ module.exports = (crowi) => {
               select: User.USER_PUBLIC_FIELDS,
             },
           },
-          page: selectPageNumber,
+          page,
           limit: pageLimitationM,
         },
       );
