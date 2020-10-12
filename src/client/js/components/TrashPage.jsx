@@ -7,7 +7,7 @@ import { withUnstatedContainers } from './UnstatedUtils';
 
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
-import CustomNavbar from './CustomNavbar';
+import CustomNavigation from './CustomNavigation';
 
 
 const TrashPage = (props) => {
@@ -25,7 +25,7 @@ const TrashPage = (props) => {
 
   return (
     <div className="grw-trash-page mt-5">
-      <CustomNavbar navTabMapping={navTabMapping} />
+      <CustomNavigation navTabMapping={navTabMapping} />
     </div>
   );
 };

@@ -8,13 +8,13 @@ import {
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
-import CustomNavbarContainer from '../services/CustomNavbarContainer';
+import CustomNavigationContainer from '../services/CustomNavigationContainer';
 
 
-const CustomNavbar = (props) => {
-  const { customNavbarContainer } = props;
-  const { switchActiveTab } = customNavbarContainer;
-  const { activeTab } = customNavbarContainer.state;
+const CustomNavigation = (props) => {
+  const { customNavigationContainer } = props;
+  const { switchActiveTab } = customNavigationContainer;
+  const { activeTab } = customNavigationContainer.state;
   // [TODO: set default active tab by gw4079]
   const [sliderWidth, setSliderWidth] = useState(null);
   const [sliderMarginLeft, setSliderMarginLeft] = useState(null);
@@ -89,12 +89,11 @@ const CustomNavbar = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const CustomNavbarWrapper = withUnstatedContainers(CustomNavbar, [CustomNavbarContainer]);
+const CustomNavigationWrapper = withUnstatedContainers(CustomNavigation, [CustomNavigationContainer]);
 
-CustomNavbar.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
-  customNavbarContainer: PropTypes.instanceOf(CustomNavbarContainer).isRequired,
+CustomNavigation.propTypes = {
+  customNavigationContainer: PropTypes.instanceOf(CustomNavigationContainer).isRequired,
   navTabMapping: PropTypes.object,
 };
 
-export default CustomNavbarWrapper;
+export default CustomNavigationWrapper;

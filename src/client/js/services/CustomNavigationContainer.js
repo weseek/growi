@@ -5,7 +5,7 @@ import { Container } from 'unstated';
  * @extends {Container} unstated Container
  */
 
-export default class CustomNavbarContainer extends Container {
+export default class CustomNavigationContainer extends Container {
 
   constructor(appContainer) {
     super();
@@ -25,7 +25,7 @@ export default class CustomNavbarContainer extends Container {
    * Workaround for the mangling in production build to break constructor.name
    */
   static getClassName() {
-    return 'CustomNavbarContainer';
+    return 'CustomNavigationContainer';
   }
 
   switchActiveTab(activeTab) {
