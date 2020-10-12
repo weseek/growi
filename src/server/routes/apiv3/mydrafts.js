@@ -8,7 +8,7 @@ const { query } = require('express-validator');
 const router = express.Router();
 
 
-router.get('/mydrafts', async(req, res) => {
+router.get('/list', async(req, res) => {
   const pageLimitationM = parseInt(req.query.pageLimitationM) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM') || 30;
 
   return res.apiv3({ pageLimitationM });

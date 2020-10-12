@@ -67,20 +67,21 @@ class MyDraftList extends React.Component {
     this.setState({ drafts, totalDrafts: drafts.length });
   }
 
-  getCurrentDrafts(selectPageNumber) {
+  async getCurrentDrafts(selectPageNumber) {
     const limit = this.state.pagingLimit;
-
+    const res = await this.props.appContainer.apiv3Get('/mydrafts/list', limit);
+    const pageLimitationM = res.data.paginateResult.limit;
 
     const totalDrafts = this.state.drafts.length;
     const activePage = selectPageNumber;
 
-    const currentDrafts = this.state.drafts.slice((activePage - 1) * limit, activePage * limit);
+    const currentDrafts = this.state.drafts.slice((activePage - 1) * pageLimitationM, activePage * pageLimitationM);
 
     this.setState({
       currentDrafts,
       activePage,
       totalDrafts,
-      pagingLimit: limit,
+      pagingLimit: pageLimitationM,
     });
   }
 
