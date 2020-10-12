@@ -30,8 +30,8 @@ export default class AdminCustomizeContainer extends Container {
 
       pageLimitationS: 10,
       pageLimitationM: 10,
-      pageLimitationL: 10,
-      pageLimitationXL: 10,
+      pageLimitationL: 20,
+      pageLimitationXL: 20,
 
       isEnabledStaleNotification: false,
       isAllReplyShown: false,
@@ -56,6 +56,10 @@ export default class AdminCustomizeContainer extends Container {
       },
       /* eslint-enable quote-props, no-multi-spaces */
     };
+    this.switchPageListLimitationS = this.switchPageListLimitationS.bind(this);
+    this.switchPageListLimitationM = this.switchPageListLimitationM.bind(this);
+    this.switchPageListLimitationL = this.switchPageListLimitationL.bind(this);
+    this.switchPageListLimitationXL = this.switchPageListLimitationXL.bind(this);
 
   }
 
