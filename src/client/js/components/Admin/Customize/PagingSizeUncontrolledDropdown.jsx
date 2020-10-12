@@ -56,7 +56,7 @@ const PagingSizeUncontrolledDropdown = (props) => {
                   <span className="float-left">{value.pageLimitation}</span>
                 </DropdownToggle>
                 <DropdownMenu className="dropdown-menu" role="menu">
-                  {value.dropdownMenu.map((num) => {
+                  {props.dropdownItemSize.map((num) => {
                     return (
                       <DropdownItem key={num} role="presentation" onClick={() => { value.switchPageListLimitation(num) }}>
                         <a role="menuitem">{num}</a>
@@ -82,6 +82,8 @@ const PagingSizeUncontrolledDropdownWrapper = withUnstatedContainers(PagingSizeU
 PagingSizeUncontrolledDropdown.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
+  // toggleLabel: PropTypes.func,
+  dropdownItemSize: PropTypes.array,
 };
 
 export default withTranslation()(PagingSizeUncontrolledDropdownWrapper);
