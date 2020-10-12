@@ -139,15 +139,27 @@ export default class PageContainer extends Container {
   }
 
   async initStateOthers() {
+
+    this.retrieveLikeInfo();
+    this.retrieveBookmarkInfo();
+    this.checkAndUpdateImageUrlCached(this.state.likerUsers);
+  }
+
+  async retrieveLikeInfo() {
     const like = await this.appContainer.apiv3Get('/page/like-info', { _id: this.state.pageId });
     this.setState({
       sumOfLikers: like.data.sumOfLikers,
       likerUsers: like.data.users.liker,
       isLiked: like.data.isLiked,
     });
+  }
 
-    this.retrieveBookmarkInfo();
-    this.checkAndUpdateImageUrlCached(this.state.likerUsers);
+  async toggleLike() {
+    const bool = !this.state.isLiked;
+    await this.appContainer.apiv3Put('/page/likes', { pageId: this.state.pageId, bool });
+    this.setState({ isLiked: bool });
+
+    return this.retrieveLikeInfo();
   }
 
   async retrieveBookmarkInfo() {
