@@ -6,15 +6,13 @@ import {
   Nav, NavItem, NavLink, TabContent, TabPane,
 } from 'reactstrap';
 
-import { withTranslation } from 'react-i18next';
-
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import CustomNavbarContainer from '../services/CustomNavbarContainer';
 
 
 const CustomNavbar = (props) => {
-  const { t, customNavbarContainer } = props;
+  const { customNavbarContainer } = props;
   const { switchActiveTab } = customNavbarContainer;
   const { activeTab } = customNavbarContainer.state;
   // [TODO: set default active tab by gw4079]
@@ -99,4 +97,4 @@ CustomNavbar.propTypes = {
   navTabMapping: PropTypes.object,
 };
 
-export default withTranslation()(CustomNavbarWrapper);
+export default CustomNavbarWrapper;
