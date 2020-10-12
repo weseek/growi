@@ -81,29 +81,29 @@ class CustomizeFunctionSetting extends React.Component {
             </div>
 
             <PagingSizeUncontrolledDropdown
-              label="admin:customize_setting.function_options.list_num_s"
-              desc="admin:customize_setting.function_options.list_num_desc_s"
+              label={t('admin:customize_setting.function_options.list_num_s')}
+              desc={t('admin:customize_setting.function_options.list_num_desc_s')}
               toggleLabel={adminCustomizeContainer.state.pageLimitationS}
               dropdownItemSize={[10, 20, 50, 100]}
               onChangeDropdownItem={adminCustomizeContainer.switchPageListLimitationS}
             />
             <PagingSizeUncontrolledDropdown
-              label="admin:customize_setting.function_options.list_num_m"
-              desc="admin:customize_setting.function_options.list_num_desc_m"
+              label={t('admin:customize_setting.function_options.list_num_m')}
+              desc={t('admin:customize_setting.function_options.list_num_desc_m')}
               toggleLabel={adminCustomizeContainer.state.pageLimitationM}
               dropdownItemSize={[5, 10, 20, 50, 100]}
               onChangeDropdownItem={adminCustomizeContainer.switchPageListLimitationM}
             />
             <PagingSizeUncontrolledDropdown
-              label="admin:customize_setting.function_options.list_num_l"
-              desc="admin:customize_setting.function_options.list_num_desc_l"
+              label={t('admin:customize_setting.function_options.list_num_l')}
+              desc={t('admin:customize_setting.function_options.list_num_desc_l')}
               toggleLabel={adminCustomizeContainer.state.pageLimitationL}
               dropdownItemSize={[20, 50, 100, 200]}
               onChangeDropdownItem={adminCustomizeContainer.switchPageListLimitationL}
             />
             <PagingSizeUncontrolledDropdown
-              label="admin:customize_setting.function_options.list_num_xl"
-              desc="admin:customize_setting.function_options.list_num_desc_xl"
+              label={t('admin:customize_setting.function_options.list_num_xl')}
+              desc={t('admin:customize_setting.function_options.list_num_desc_xl')}
               toggleLabel={adminCustomizeContainer.state.pageLimitationXL}
               dropdownItemSize={[5, 10, 20, 50, 100]}
               onChangeDropdownItem={adminCustomizeContainer.switchPageListLimitationXL}

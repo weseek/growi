@@ -9,7 +9,6 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 
 
 const PagingSizeUncontrolledDropdown = (props) => {
-  const { t } = props;
 
   function dropdownItemOnClickHandler(num) {
     if (props.onChangeDropdownItem === null) {
@@ -23,7 +22,7 @@ const PagingSizeUncontrolledDropdown = (props) => {
       <div className="form-group row">
         <div className="offset-md-3 col-md-6 text-left">
           <div className="my-0 w-100">
-            <label>{t(props.label)}</label>
+            <label>{props.label}</label>
           </div>
           <UncontrolledDropdown>
             <DropdownToggle className="text-right col-6" caret>
@@ -31,16 +30,16 @@ const PagingSizeUncontrolledDropdown = (props) => {
             </DropdownToggle>
             <DropdownMenu className="dropdown-menu" role="menu">
               {props.dropdownItemSize.map((num) => {
-                    return (
-                      <DropdownItem key={num} role="presentation" onClick={() => dropdownItemOnClickHandler(num)}>
-                        <a role="menuitem">{num}</a>
-                      </DropdownItem>
-                    );
-                  })}
+                return (
+                  <DropdownItem key={num} role="presentation" onClick={() => dropdownItemOnClickHandler(num)}>
+                    <a role="menuitem">{num}</a>
+                  </DropdownItem>
+                );
+              })}
             </DropdownMenu>
           </UncontrolledDropdown>
           <p className="form-text text-muted">
-            {t(props.desc)}
+            {props.desc}
           </p>
         </div>
       </div>
