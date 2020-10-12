@@ -23,7 +23,7 @@ class MyBookmarkList extends React.Component {
       pages: [],
       activePage: 1,
       totalPages: 0,
-      pagingLimit: 30,
+      pagingLimit: null,
     };
 
     this.handlePage = this.handlePage.bind(this);

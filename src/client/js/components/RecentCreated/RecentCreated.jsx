@@ -17,7 +17,7 @@ class RecentCreated extends React.Component {
       pages: [],
       activePage: 1,
       totalPages: 0,
-      pagingLimit: 30,
+      pagingLimit: null,
     };
 
     this.handlePage = this.handlePage.bind(this);
@@ -32,18 +32,18 @@ class RecentCreated extends React.Component {
     await this.getRecentCreatedList(selectedPage);
   }
 
-  async getRecentCreatedList(selectPageNumber) {
+  async getRecentCreatedList(selectedPage) {
     const { appContainer, userId } = this.props;
-    const page = { selectPageNumber };
+    const page = selectedPage;
     // const userId = appContainer.currentUserId;
 
     // pagesList get and pagination calculate
-    const res = await appContainer.apiv3Get(`/users/${userId}/recent`, page);
+    const res = await appContainer.apiv3Get(`/users/${userId}/recent`, { page });
     const { totalCount, pages, limit } = res.data;
 
     this.setState({
       pages,
-      activePage: selectPageNumber,
+      activePage: selectedPage,
       totalPages: totalCount,
       pagingLimit: limit,
     });
@@ -66,6 +66,10 @@ class RecentCreated extends React.Component {
 
   render() {
     const pageList = this.generatePageList(this.state.pages);
+
+    console.log(this.state.activePage);
+    console.log(this.state.totalPages);
+    console.log(this.state.pagingLimit);
 
     return (
       <div className="page-list-container-create">

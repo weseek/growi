@@ -14,8 +14,8 @@ class PaginationWrapper extends React.Component {
     super(props);
 
     this.state = {
-      totalItemsCount: 0,
       activePage: 1,
+      totalItemsCount: 0,
       paginationNumbers: {},
       limit: this.props.pagingLimit || Infinity,
     };
