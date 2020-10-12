@@ -18,7 +18,7 @@ const PageList = (props) => {
 
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [limit, setLimit] = useState(Infinity);
+  const [limit, setLimit] = useState(10);
 
   function setPageNumber(selectedPageNumber) {
     setActivePage(selectedPageNumber);
