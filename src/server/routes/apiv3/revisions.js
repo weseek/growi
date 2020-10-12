@@ -71,7 +71,7 @@ module.exports = (crowi) => {
       query('pageId').isMongoId().withMessage('pageId is required'),
       query('selectedPage').isInt({ min: 0 }).withMessage('selectedPage must be int'),
       query('pageLimitationS').custom((value) => {
-        if (value === undefined) {
+        if (value == null) {
           return 10;
         }
         if (value > 100) {

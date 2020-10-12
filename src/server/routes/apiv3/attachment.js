@@ -27,7 +27,7 @@ module.exports = (crowi) => {
     retrieveAttachments: [
       query('pageId').isMongoId().withMessage('pageId is required'),
       query('pageLimitationS').custom((value) => {
-        if (value === undefined) {
+        if (value == null) {
           return 10;
         }
         if (value > 100) {

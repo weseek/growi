@@ -88,7 +88,7 @@ module.exports = (crowi) => {
 
   validator.displayList = [
     query('pageLimitationS').custom((value) => {
-      if (value === undefined) {
+      if (value == null) {
         return 10;
       }
       if (value > 100) {

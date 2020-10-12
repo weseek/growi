@@ -146,10 +146,10 @@ module.exports = (crowi) => {
   validator.myBookmarkList = [
     query('selectPageNumber').isInt({ min: 1 }),
     query('pageLimitationM').custom((value) => {
-      if (value === undefined) {
+      if (value == null) {
         return 10;
       }
-      if (value > 100) {
+      if (value > 300) {
         throw new Error('You should set less than 100 or not to set pageLimitationM.');
       }
       return value;
