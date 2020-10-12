@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import {
   Card, CardBody,
-  UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem,
+  // UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -14,6 +14,8 @@ import AppContainer from '../../../services/AppContainer';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import CustomizeFunctionOption from './CustomizeFunctionOption';
+
+import PagingSizeUncontrolledDropdown from './PagingSizeUncontrolledDropdown';
 
 class CustomizeFunctionSetting extends React.Component {
 
@@ -40,36 +42,36 @@ class CustomizeFunctionSetting extends React.Component {
   render() {
     const { t, adminCustomizeContainer } = this.props;
 
-    const dropdownGroupMapping = {
-      S:  {
-        label: 'admin:customize_setting.function_options.list_num_s',
-        pageLimitation: adminCustomizeContainer.state.pageLimitationS,
-        switchPageListLimitation: adminCustomizeContainer.switchPageListLimitationS,
-        desc: 'admin:customize_setting.function_options.list_num_desc_s',
-        dropdownMenu: [10, 20, 50, 100],
-      },
-      M:  {
-        label: 'admin:customize_setting.function_options.list_num_m',
-        pageLimitation: adminCustomizeContainer.state.pageLimitationM,
-        switchPageListLimitation: adminCustomizeContainer.switchPageListLimitationM,
-        desc: 'admin:customize_setting.function_options.list_num_desc_m',
-        dropdownMenu: [5, 10, 20, 50, 100],
-      },
-      L: {
-        label: 'admin:customize_setting.function_options.list_num_l',
-        pageLimitation: adminCustomizeContainer.state.pageLimitationL,
-        switchPageListLimitation: adminCustomizeContainer.switchPageListLimitationL,
-        desc: 'admin:customize_setting.function_options.list_num_desc_l',
-        dropdownMenu: [20, 50, 100, 200],
-      },
-      XL: {
-        label: 'admin:customize_setting.function_options.list_num_xl',
-        pageLimitation: adminCustomizeContainer.state.pageLimitationXL,
-        switchPageListLimitation: adminCustomizeContainer.switchPageListLimitationXL,
-        desc: 'admin:customize_setting.function_options.list_num_desc_xl',
-        dropdownMenu: [5, 10, 20, 50, 100],
-      },
-    };
+    // const dropdownGroupMapping = {
+    //   S:  {
+    //     label: 'admin:customize_setting.function_options.list_num_s',
+    //     pageLimitation: adminCustomizeContainer.state.pageLimitationS,
+    //     switchPageListLimitation: adminCustomizeContainer.switchPageListLimitationS,
+    //     desc: 'admin:customize_setting.function_options.list_num_desc_s',
+    //     dropdownMenu: [10, 20, 50, 100],
+    //   },
+    //   M:  {
+    //     label: 'admin:customize_setting.function_options.list_num_m',
+    //     pageLimitation: adminCustomizeContainer.state.pageLimitationM,
+    //     switchPageListLimitation: adminCustomizeContainer.switchPageListLimitationM,
+    //     desc: 'admin:customize_setting.function_options.list_num_desc_m',
+    //     dropdownMenu: [5, 10, 20, 50, 100],
+    //   },
+    //   L: {
+    //     label: 'admin:customize_setting.function_options.list_num_l',
+    //     pageLimitation: adminCustomizeContainer.state.pageLimitationL,
+    //     switchPageListLimitation: adminCustomizeContainer.switchPageListLimitationL,
+    //     desc: 'admin:customize_setting.function_options.list_num_desc_l',
+    //     dropdownMenu: [20, 50, 100, 200],
+    //   },
+    //   XL: {
+    //     label: 'admin:customize_setting.function_options.list_num_xl',
+    //     pageLimitation: adminCustomizeContainer.state.pageLimitationXL,
+    //     switchPageListLimitation: adminCustomizeContainer.switchPageListLimitationXL,
+    //     desc: 'admin:customize_setting.function_options.list_num_desc_xl',
+    //     dropdownMenu: [5, 10, 20, 50, 100],
+    //   },
+    // };
 
     return (
       <React.Fragment>
@@ -113,7 +115,9 @@ class CustomizeFunctionSetting extends React.Component {
               </div>
             </div>
 
-            {Object.entries(dropdownGroupMapping).map(([key, value]) => {
+            <PagingSizeUncontrolledDropdown />
+
+            {/* {Object.entries(dropdownGroupMapping).map(([key, value]) => {
               return (
                 <div className="form-group row" key={key}>
                   <div className="offset-md-3 col-md-6 text-left">
@@ -140,7 +144,7 @@ class CustomizeFunctionSetting extends React.Component {
                   </div>
                 </div>
               );
-            })}
+            })} */}
 
             <div className="form-group row">
               <div className="offset-md-3 col-md-6 text-left">
