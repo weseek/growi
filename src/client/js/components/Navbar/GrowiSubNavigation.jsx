@@ -200,7 +200,7 @@ const GrowiSubNavigation = (props) => {
         </div>
 
         {/* Page Authors */}
-        { (!isCompactMode && !isUserPage && !isPageNotFound) && (
+        { (!isCompactMode && !isUserPage && !isPageNotFound && !isPageForbidden) && (
           <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none">
             <li className="pb-1">
               <AuthorInfo user={creator} date={createdAt} />
