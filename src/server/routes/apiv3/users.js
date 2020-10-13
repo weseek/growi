@@ -106,7 +106,7 @@ module.exports = (crowi) => {
   ];
 
   validator.recentCreatedByUser = [
-    query('limit').if(value => value != null).isInt({ max: 100 }),
+    query('limit').if(value => value != null).isInt({ max: 100 }).withMessage('You should set less than 100 or not to set limit.'),
   ];
 
   /**

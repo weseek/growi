@@ -87,7 +87,7 @@ module.exports = (crowi) => {
   });
 
   validator.displayList = [
-    query('limit').if(value => value != null).isInt({ max: 100 }),
+    query('limit').if(value => value != null).isInt({ max: 100 }).withMessage('You should set less than 100 or not to set limit.'),
   ];
 
   router.get('/list', accessTokenParser, loginRequired, validator.displayList, apiV3FormValidator, async(req, res) => {
