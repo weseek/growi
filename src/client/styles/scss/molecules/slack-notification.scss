@@ -1,5 +1,5 @@
 .grw-slack-notification {
-  $input-height-slack: 24px;
+  $input-height-slack: $custom-control-indicator-size * 1.5;
   border-color: $gray-200;
 
   border-style: solid;
@@ -23,6 +23,18 @@
   }
   .grw-input-group-slack-notification {
     height: $input-height-slack;
+    label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0;
+    }
+  }
+
+  .custom-control-label {
+    &::before {
+      border: transparent;
+    }
   }
 }
 //　TODO デザインの使用が確定して実装、本タスクのスコープ外

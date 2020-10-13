@@ -49,12 +49,12 @@ class SlackNotification extends React.Component {
                 checked={this.props.isSlackEnabled}
                 onChange={this.updateCheckboxHandler}
               />
-              <label className={`custom-control-label align-center ${this.props.popUp ? 'mt-1' : ''}`} htmlFor={this.props.id}>
+              <label className="custom-control-label align-center" htmlFor={this.props.id}>
               </label>
             </div>
           </label>
           <input
-            className="grw-form-control-slack-notification form-control align-top"
+            className="grw-form-control-slack-notification form-control align-top pl-0"
             type="text"
             value={this.props.slackChannels}
             placeholder="Input channels"
