@@ -1,20 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-
-
 import {
   Nav, NavItem, NavLink, TabContent, TabPane,
 } from 'reactstrap';
 
-import { withUnstatedContainers } from './UnstatedUtils';
-
-import CustomNavigationContainer from '../services/CustomNavigationContainer';
-
 
 const CustomNavigation = (props) => {
-  // const { customNavigationContainer } = props;
-  // const { switchActiveTab } = customNavigationContainer;
-  // const { activeTab } = customNavigationContainer.state;
   const [activeTab, setActiveTab] = useState('');
   // const [activeComponents] = useState(new Set([]));
 
@@ -24,9 +15,6 @@ const CustomNavigation = (props) => {
 
   function switchActiveTab(activeTab) {
     setActiveTab(activeTab);
-    // setActiveTab({
-    //   activeTab,
-    // });
   }
 
   // Might make this dynamic for px, %, pt, em
@@ -59,7 +47,6 @@ const CustomNavigation = (props) => {
       tempML += width;
       return { width, marginLeft };
     });
-    console.log(`activeTab = ${activeTab}`);
     const { width, marginLeft } = styles[props.navTabMapping[activeTab].index];
 
     setSliderWidth(width);
@@ -96,14 +83,8 @@ const CustomNavigation = (props) => {
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
-const CustomNavigationWrapper = withUnstatedContainers(CustomNavigation, [CustomNavigationContainer]);
-
 CustomNavigation.propTypes = {
-  customNavigationContainer: PropTypes.instanceOf(CustomNavigationContainer).isRequired,
   navTabMapping: PropTypes.object,
 };
 
-export default CustomNavigationWrapper;
+export default CustomNavigation;
