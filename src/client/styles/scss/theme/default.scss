@@ -110,19 +110,6 @@ html[light] {
       @include three-stranded-button($primary, lighten($primary, 65%), lighten($primary, 70%));
     }
   }
-
-  /*
-  * Not Found Alert
-  */
-  .grw-not-found-alert {
-    .not-found-alert-text {
-      color: $accent;
-    }
-    .create-page-btn {
-      background-color: $accent;
-    }
-    border: 1px solid $accent;
-  }
 }
 
 //== Dark Mode
@@ -219,17 +206,4 @@ html[dark] {
 
   // Button
   // [TODO: appply colors to three stranded button]
-
-  /*
-  * Not Found Alert
-  */
-  .grw-not-found-alert {
-    .not-found-alert-text {
-      color: $accent;
-    }
-    .create-page-btn {
-      background-color: $accent;
-    }
-    border: 1px solid $accent;
-  }
 }

@@ -12,15 +12,15 @@ const NotFoundAlert = (props) => {
   }
 
   return (
-    <div className="grw-not-found-alert m-4 p-4">
-      <div className="col-md-12">
-        <h2 className="not-found-alert-text lead">
-          <i className="icon-info" aria-hidden="true"></i>
+    <div className="m-4 p-3 border border-info">
+      <div className="col-md-12 p-0">
+        <h2 className="text-info lead">
+          <i className="icon-info pr-2 font-weight-bold" aria-hidden="true"></i>
           {t('not_found_page.page_not_exist_alert')}
         </h2>
         <button
           type="button"
-          className="m-2 p-2 btn create-page-btn"
+          className="m-1 pl-3 pr-3 btn bg-info text-white"
           onClick={() => { clickHandler('edit') }}
         >
           <i className="icon-note icon-fw" />
