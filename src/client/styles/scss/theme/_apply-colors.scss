@@ -288,6 +288,18 @@ pre:not(.hljs):not(.CodeMirror-line) {
   }
 }
 
+.grw-trash-page {
+  .nav-title {
+    color: $color-link;
+  }
+  .nav-link svg {
+    fill: $color-link;
+  }
+  .grw-nav-slide-hr {
+    border-color: $color-link;
+  }
+}
+
 .grw-page-accessories-modal {
   .nav-title {
     color: $color-link;
