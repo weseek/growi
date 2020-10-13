@@ -20,18 +20,13 @@ const CustomNavigation = (props) => {
     return min / max * 100;
   }
 
-  const random = Math.random().toString(32).substring(2);
-
-  const grwNavBar = `grw-custom-navbar-${random}`;
-  const grwNavTab = `grw-custom-navtab-${random}`;
-
   useEffect(() => {
     if (activeTab === '') {
       return;
     }
 
-    const navBar = document.getElementById(grwNavBar);
-    const navTabs = document.querySelectorAll(`li.${grwNavTab}`);
+    const navBar = document.getElementById('grw-custom-navbar');
+    const navTabs = document.querySelectorAll('ul.grw-custom-navbar > li.grw-custom-navtab');
 
     if (navBar == null || navTabs == null) {
       return;
@@ -55,10 +50,10 @@ const CustomNavigation = (props) => {
 
   return (
     <React.Fragment>
-      <Nav className="nav-title" id={grwNavBar}>
+      <Nav className="nav-title grw-custom-navbar" id="grw-custom-navbar">
         {Object.entries(props.navTabMapping).map(([key, value]) => {
           return (
-            <NavItem key={key} type="button" className={`p-0 ${grwNavTab} ${activeTab === key && 'active'}`}>
+            <NavItem key={key} type="button" className={`p-0 grw-custom-navtab ${activeTab === key && 'active'}`}>
               <NavLink onClick={() => { switchActiveTab(key) }}>
                 {value.icon}
                 {value.i18n}
