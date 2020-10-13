@@ -67,10 +67,6 @@ class RecentCreated extends React.Component {
   render() {
     const pageList = this.generatePageList(this.state.pages);
 
-    console.log(this.state.activePage);
-    console.log(this.state.totalPages);
-    console.log(this.state.pagingLimit);
-
     return (
       <div className="page-list-container-create">
         <ul className="page-list-ul page-list-ul-flat mb-3">
