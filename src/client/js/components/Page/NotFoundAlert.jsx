@@ -12,7 +12,7 @@ const NotFoundAlert = (props) => {
   }
 
   return (
-    <div className="grw-not-found-alert m-4 p-3">
+    <div className="border border-info m-4 p-3">
       <div className="col-md-12 p-0">
         <h2 className="text-info lead">
           <i className="icon-info pr-2 font-weight-bold" aria-hidden="true"></i>
