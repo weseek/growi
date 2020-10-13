@@ -153,15 +153,6 @@ const GrowiSubNavigation = (props) => {
     navigationContainer.setEditorMode(viewType);
   }
 
-  // Display only the RevisionPath
-  if (isPageForbidden) {
-    return (
-      <div className="grw-subnav d-flex align-items-center justify-content-between">
-        <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
-      </div>
-    );
-  }
-
   return (
     <div className={`grw-subnav d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
 
@@ -200,8 +191,8 @@ const GrowiSubNavigation = (props) => {
 
         <div className="d-flex flex-column align-items-end justify-content-center">
           <div className="d-flex">
-            { !isPageInTrash && !isPageNotFound && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
-            { !isPageNotFound && <PageManagement /> }
+            { !isPageInTrash && !isPageNotFound && !isPageForbidden && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
+            { !isPageNotFound && !isPageForbidden && <PageManagement /> }
           </div>
           <div className="mt-2">
             <ThreeStrandedButton onThreeStrandedButtonClicked={onThreeStrandedButtonClicked} />
