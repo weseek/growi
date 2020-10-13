@@ -228,7 +228,7 @@ module.exports = (crowi) => {
    *                    paginateResult:
    *                      $ref: '#/components/schemas/PaginateResult'
    */
-  router.get('/:id/recent', accessTokenParser, loginRequired, validator.recentCreatedByUser, async(req, res) => {
+  router.get('/:id/recent', accessTokenParser, loginRequired, validator.recentCreatedByUser, apiV3FormValidator, async(req, res) => {
     const { id } = req.params;
 
     let user;
