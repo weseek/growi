@@ -23,6 +23,12 @@
   }
   .grw-input-group-slack-notification {
     height: $input-height-slack;
+    label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0;
+    }
   }
 
   .custom-control-label {
