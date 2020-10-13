@@ -51,13 +51,15 @@ const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
   return (
     <div className="grw-page-path-nav">
       {formerLink}
-      <span className="d-flex align-items-center flex-wrap">
+      <span className="d-flex align-items-center">
         <h1 className="m-0">{latterLink}</h1>
-        <RevisionPathControls
-          pageId={pageId}
-          pagePath={pagePath}
-          isPageForbidden={isPageForbidden}
-        />
+        <div className="mx-2">
+          <RevisionPathControls
+            pageId={pageId}
+            pagePath={pagePath}
+            isPageForbidden={isPageForbidden}
+          />
+        </div>
       </span>
     </div>
   );
@@ -72,10 +74,12 @@ const UserPagePathNav = ({ pageId, pagePath }) => {
     <div className="grw-page-path-nav">
       <span className="d-flex align-items-center flex-wrap">
         <h4 className="grw-user-page-path">{latterLink}</h4>
-        <RevisionPathControls
-          pageId={pageId}
-          pagePath={pagePath}
-        />
+        <div className="mx-2">
+          <RevisionPathControls
+            pageId={pageId}
+            pagePath={pagePath}
+          />
+        </div>
       </span>
     </div>
   );
@@ -145,15 +149,6 @@ const GrowiSubNavigation = (props) => {
   const isUserPage = pageUser != null;
   const isPageInTrash = isTrashPage(path);
 
-  // Display only the RevisionPath
-  if (isPageNotFound || isPageForbidden) {
-    return (
-      <div className="grw-subnav d-flex align-items-center justify-content-between">
-        <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
-      </div>
-    );
-  }
-
   function onThreeStrandedButtonClicked(viewType) {
     navigationContainer.setEditorMode(viewType);
   }
@@ -162,14 +157,14 @@ const GrowiSubNavigation = (props) => {
     <div className={`grw-subnav d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
 
       {/* Left side */}
-      <div className="d-flex">
+      <div className="d-flex grw-subnav-left-side">
         { isDrawerMode && (
           <div className="d-none d-md-flex align-items-center border-right mr-3 pr-3">
             <DrawerToggler />
           </div>
         ) }
 
-        <div>
+        <div className="grw-path-nav-container">
           { !isCompactMode && !isPageNotFound && !isPageForbidden && !isUserPage && (
             <div className="mb-2">
               <TagLabels />
@@ -196,8 +191,8 @@ const GrowiSubNavigation = (props) => {
 
         <div className="d-flex flex-column align-items-end justify-content-center">
           <div className="d-flex">
-            { !isPageInTrash && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
-            <PageManagement />
+            { !isPageInTrash && !isPageNotFound && !isPageForbidden && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
+            { !isPageNotFound && !isPageForbidden && <PageManagement /> }
           </div>
           <div className="mt-2">
             <ThreeStrandedButton onThreeStrandedButtonClicked={onThreeStrandedButtonClicked} />
@@ -205,7 +200,7 @@ const GrowiSubNavigation = (props) => {
         </div>
 
         {/* Page Authors */}
-        { (!isCompactMode && !isUserPage) && (
+        { (!isCompactMode && !isUserPage && !isPageNotFound && !isPageForbidden) && (
           <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none">
             <li className="pb-1">
               <AuthorInfo user={creator} date={createdAt} />

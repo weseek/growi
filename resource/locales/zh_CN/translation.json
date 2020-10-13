@@ -155,7 +155,11 @@
 		"error_message": "有些值不正确",
 		"required": "%s 是必需的",
 		"invalid_syntax": "%s的语法无效。"
-	},
+  },
+  "not_found_page": {
+    "Create Page": "创建页面",
+    "page_not_exist_alert": "该页面不存在，请创建一个新页面"
+  },
 	"installer": {
 		"setup": "安装",
 		"create_initial_account": "创建初始用户",
@@ -425,7 +429,7 @@
 		"not_initialized": "HackmdEditor component has not initialized",
 		"someone_editing": "Someone editing this page on HackMD",
     "this_page_has_draft": "This page has a draft on HackMD",
-    "need_to_associate_with_growi_to_use_hackmd_refer_to_this": "To use HackMD for simultaneous multi-person editing, need to associate HackMD with GROWI.Please refer to <a href='https://docs.growi.org/en/admin-guide/admin-cookbook/integrate-with-hackmd.html'>here</a>."
+    "need_to_associate_with_growi_to_use_hackmd_refer_to_this": "若要使用HackMD的多人同时编辑功能，请先关联HackMD和GROWI。详情请参考<a href='https://docs.growi.org/cn/admin-guide/admin-cookbook/integrate-with-hackmd.html'>这里</a>。"
   },
   "slack_notification": {
     "popover_title": "Slack Notification",
