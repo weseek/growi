@@ -7,8 +7,6 @@ import {
 
 const CustomNavigation = (props) => {
   const [activeTab, setActiveTab] = useState('');
-  // const [activeComponents] = useState(new Set([]));
-
   // [TODO: set default active tab by gw4079]
   const [sliderWidth, setSliderWidth] = useState(null);
   const [sliderMarginLeft, setSliderMarginLeft] = useState(null);
@@ -24,25 +22,25 @@ const CustomNavigation = (props) => {
 
   const random = Math.random().toString(32).substring(2);
 
-  const navTitleId = `custom-navtitle-${random}`;
-  const grwNavTab = `custom-navtab-${random}`;
+  const grwNavBar = `grw-custom-navbar-${random}`;
+  const grwNavTab = `grw-custom-navtab-${random}`;
 
   useEffect(() => {
     if (activeTab === '') {
       return;
     }
 
-    const navTitle = document.getElementById(navTitleId);
+    const navBar = document.getElementById(grwNavBar);
     const navTabs = document.querySelectorAll(`li.${grwNavTab}`);
 
-    if (navTitle == null || navTabs == null) {
+    if (navBar == null || navTabs == null) {
       return;
     }
 
     let tempML = 0;
 
     const styles = [].map.call(navTabs, (el) => {
-      const width = getPercentage(el.offsetWidth, navTitle.offsetWidth);
+      const width = getPercentage(el.offsetWidth, navBar.offsetWidth);
       const marginLeft = tempML;
       tempML += width;
       return { width, marginLeft };
@@ -57,7 +55,7 @@ const CustomNavigation = (props) => {
 
   return (
     <React.Fragment>
-      <Nav className="nav-title" id={navTitleId}>
+      <Nav className="nav-title" id={grwNavBar}>
         {Object.entries(props.navTabMapping).map(([key, value]) => {
           return (
             <NavItem key={key} type="button" className={`p-0 ${grwNavTab} ${activeTab === key && 'active'}`}>
