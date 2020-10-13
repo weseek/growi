@@ -12,12 +12,22 @@ import CustomNavigationContainer from '../services/CustomNavigationContainer';
 
 
 const CustomNavigation = (props) => {
-  const { customNavigationContainer } = props;
-  const { switchActiveTab } = customNavigationContainer;
-  const { activeTab } = customNavigationContainer.state;
+  // const { customNavigationContainer } = props;
+  // const { switchActiveTab } = customNavigationContainer;
+  // const { activeTab } = customNavigationContainer.state;
+  const [activeTab, setActiveTab] = useState('');
+  // const [activeComponents] = useState(new Set([]));
+
   // [TODO: set default active tab by gw4079]
   const [sliderWidth, setSliderWidth] = useState(null);
   const [sliderMarginLeft, setSliderMarginLeft] = useState(null);
+
+  function switchActiveTab(activeTab) {
+    setActiveTab(activeTab);
+    // setActiveTab({
+    //   activeTab,
+    // });
+  }
 
   // Might make this dynamic for px, %, pt, em
   function getPercentage(min, max) {
@@ -49,7 +59,7 @@ const CustomNavigation = (props) => {
       tempML += width;
       return { width, marginLeft };
     });
-
+    console.log(`activeTab = ${activeTab}`);
     const { width, marginLeft } = styles[props.navTabMapping[activeTab].index];
 
     setSliderWidth(width);
