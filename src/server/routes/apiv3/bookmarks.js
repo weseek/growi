@@ -145,15 +145,7 @@ module.exports = (crowi) => {
    */
   validator.myBookmarkList = [
     query('page').isInt({ min: 1 }),
-    query('limit').custom((value) => {
-      if (value == null) {
-        return 10;
-      }
-      if (value > 300) {
-        throw new Error('You should set less than 100 or not to set limit.');
-      }
-      return value;
-    }),
+    query('limit').if(value => value != null).isInt({ max: 100 }),
   ];
 
   router.get('/:userId', accessTokenParser, loginRequired, validator.myBookmarkList, apiV3FormValidator, async(req, res) => {

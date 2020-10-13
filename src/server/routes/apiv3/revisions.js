@@ -70,15 +70,8 @@ module.exports = (crowi) => {
     retrieveRevisions: [
       query('pageId').isMongoId().withMessage('pageId is required'),
       query('page').isInt({ min: 0 }).withMessage('page must be int'),
-      query('limit').custom((value) => {
-        if (value == null) {
-          return 10;
-        }
-        if (value > 100) {
-          throw new Error('You should set less than 100 or not to set limit.');
-        }
-        return value;
-      }),
+      query('limit').if(value => value != null).isInt({ max: 100 }),
+
     ],
     retrieveRevisionById: [
       query('pageId').isMongoId().withMessage('pageId is required'),
