@@ -77,12 +77,12 @@
 }
 
 .grw-trash-page {
+  ul {
+    list-style: none;
+  }
   .grw-nav-slide-hr {
     border-bottom: 2px solid;
     transition: 0.3s ease-in-out;
-  }
-  ul {
-    list-style: none;
   }
   .nav-link svg {
     width: 17px;
