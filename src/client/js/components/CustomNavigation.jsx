@@ -25,7 +25,7 @@ const CustomNavigation = (props) => {
   const random = Math.random().toString(32).substring(2);
 
   const navTitleId = `custom-navtitle-${random}`;
-  const navTabId = `custom-navtab-${random}`;
+  const grwNavTab = `custom-navtab-${random}`;
 
   useEffect(() => {
     if (activeTab === '') {
@@ -33,7 +33,7 @@ const CustomNavigation = (props) => {
     }
 
     const navTitle = document.getElementById(navTitleId);
-    const navTabs = document.querySelectorAll(`li.${navTabId}`);
+    const navTabs = document.querySelectorAll(`li.${grwNavTab}`);
 
     if (navTitle == null || navTabs == null) {
       return;
@@ -60,7 +60,7 @@ const CustomNavigation = (props) => {
       <Nav className="nav-title" id={navTitleId}>
         {Object.entries(props.navTabMapping).map(([key, value]) => {
           return (
-            <NavItem key={key} type="button" className={`p-0 ${navTabId} ${activeTab === key && 'active'}`}>
+            <NavItem key={key} type="button" className={`p-0 ${grwNavTab} ${activeTab === key && 'active'}`}>
               <NavLink onClick={() => { switchActiveTab(key) }}>
                 {value.icon}
                 {value.i18n}
