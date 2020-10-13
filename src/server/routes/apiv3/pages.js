@@ -88,7 +88,16 @@ module.exports = (crowi) => {
     const { path } = req.query;
     const limit = +req.query.limit || 30;
     const offset = +req.query.offset || 0;
-    const queryOptions = { offset, limit };
+
+    let includeTrashed;
+    if (path === '/trash') {
+      includeTrashed = true;
+    }
+    else {
+      includeTrashed = false;
+    }
+
+    const queryOptions = { offset, limit, includeTrashed };
 
     try {
       const result = await Page.findListWithDescendants(path, req.user, queryOptions);
