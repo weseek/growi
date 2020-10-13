@@ -149,15 +149,6 @@ const GrowiSubNavigation = (props) => {
   const isUserPage = pageUser != null;
   const isPageInTrash = isTrashPage(path);
 
-  // Display only the RevisionPath
-  if (isPageNotFound || isPageForbidden) {
-    return (
-      <div className="grw-subnav d-flex align-items-center justify-content-between">
-        <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
-      </div>
-    );
-  }
-
   function onThreeStrandedButtonClicked(viewType) {
     navigationContainer.setEditorMode(viewType);
   }
@@ -200,8 +191,8 @@ const GrowiSubNavigation = (props) => {
 
         <div className="d-flex flex-column align-items-end justify-content-center">
           <div className="d-flex">
-            { !isPageInTrash && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
-            <PageManagement />
+            { !isPageInTrash && !isPageNotFound && !isPageForbidden && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
+            { !isPageNotFound && !isPageForbidden && <PageManagement /> }
           </div>
           <div className="mt-2">
             <ThreeStrandedButton onThreeStrandedButtonClicked={onThreeStrandedButtonClicked} />
@@ -209,7 +200,7 @@ const GrowiSubNavigation = (props) => {
         </div>
 
         {/* Page Authors */}
-        { (!isCompactMode && !isUserPage) && (
+        { (!isCompactMode && !isUserPage && !isPageNotFound && !isPageForbidden) && (
           <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none">
             <li className="pb-1">
               <AuthorInfo user={creator} date={createdAt} />
