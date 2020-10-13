@@ -29,22 +29,6 @@ body.on-edit {
     }
   }
 
-  .grw-page-path-nav,
-  .grw-page-path-nav h1 {
-    width: calc(100vw - 300px);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-
-    @include media-breakpoint-up(md) {
-      width: calc(100vw - 350px);
-    }
-
-    @include media-breakpoint-up(lg) {
-      width: calc(100vw - 560px);
-    }
-  }
-
   .page-wrapper {
     position: relative;
     top: $grw-navbar-border-width;
@@ -174,6 +158,27 @@ body.on-edit {
   /*********************
    * Navigation styles
    */
+  // ellipsis .grw-page-path-hierarchical-link
+  .grw-subnav-left-side {
+    overflow: hidden;
+    .grw-path-nav-container {
+      overflow: hidden;
+      .grw-page-path-nav {
+        white-space: nowrap;
+
+        .grw-page-path-hierarchical-link {
+          width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        h1 {
+          overflow: hidden;
+        }
+      }
+    }
+  }
+
   .nav:hover {
     .btn-copy,
     .btn-edit,
