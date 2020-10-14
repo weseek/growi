@@ -218,7 +218,10 @@ module.exports = function(crowi) {
         MATHJAX: env.MATHJAX || null,
         NO_CDN: env.NO_CDN || null,
       },
+      pageLimitationS: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS'),
       pageLimitationM: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM'),
+      pageLimitationL: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationL'),
+      pageLimitationXL: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL'),
       // TODO implement for pageListLimitForModal
       isEnabledStaleNotification: crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
       isAclEnabled: crowi.aclService.isAclEnabled(),
