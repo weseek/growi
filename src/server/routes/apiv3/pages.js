@@ -89,15 +89,13 @@ module.exports = (crowi) => {
     const limit = +req.query.limit || 30;
     const offset = +req.query.offset || 0;
 
-    let includeTrashed;
-    if (path === '/trash') {
-      includeTrashed = true;
-    }
-    else {
-      includeTrashed = false;
-    }
+    const { isTrashPage } = require('@commons/util/path-utils');
 
-    const queryOptions = { offset, limit, includeTrashed };
+    const queryOptions = {
+      offset,
+      limit,
+      includeTrashed: isTrashPage,
+    };
 
     try {
       const result = await Page.findListWithDescendants(path, req.user, queryOptions);
