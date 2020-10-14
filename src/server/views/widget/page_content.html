@@ -17,7 +17,7 @@
   data-page-is-forbidden="{% if forbidden %}true{% else %}false{% endif %}"
   data-page-is-deleted="{% if page.isDeleted() %}true{% else %}false{% endif %}"
   data-page-is-deletable="{% if isDeletablePage() %}true{% else %}false{% endif %}"
-  data-page-disable-to-create="false"
+  data-page-is-creatable="false"
   data-page-is-able-to-delete-completely="{% if user.canDeleteCompletely(page.creator._id) %}true{% else %}false{% endif %}"
   data-slack-channels="{{ slack|default('') }}"
   data-page-created-at="{% if page %}{{ page.createdAt|datetz('Y/m/d H:i:s') }}{% endif %}"
