@@ -3,6 +3,9 @@ const expressSession = require('express-session');
 const passport = require('passport');
 const socketioSession = require('@kobalab/socket.io-session');
 
+const logger = require('@alias/logger')('growi:service:socket-io');
+
+
 /**
  * Serve socket.io for server-to-client messaging
  */
@@ -12,8 +15,6 @@ class SocketIoService {
     this.crowi = crowi;
     this.configManager = crowi.configManager;
 
-    this.connectionsCount = 0;
-    this.connectionsCountForAdmin = 0;
     this.connectionsCountForGuest = 0;
   }
 
@@ -35,6 +36,8 @@ class SocketIoService {
     this.setupLoginRequiredMiddleware();
     this.setupAdminRequiredMiddleware();
     this.setupCheckConnectionLimitsMiddleware();
+
+    this.setupCountConnectionEventHandler();
   }
 
   getDefaultSocket() {
@@ -67,8 +70,8 @@ class SocketIoService {
    * use loginRequired middleware
    */
   setupLoginRequiredMiddleware() {
-    const loginRequired = require('../middlewares/login-required')(this.crowi, true, (req, res) => {
-      throw new Error('Login is required to connect.');
+    const loginRequired = require('../middlewares/login-required')(this.crowi, true, (req, res, next) => {
+      next(new Error('Login is required to connect.'));
     });
 
     // convert Connect/Express middleware to Socket.io middleware
@@ -81,8 +84,8 @@ class SocketIoService {
    * use adminRequired middleware
    */
   setupAdminRequiredMiddleware() {
-    const adminRequired = require('../middlewares/admin-required')(this.crowi, (req, res) => {
-      throw new Error('Admin priviledge is required to connect.');
+    const adminRequired = require('../middlewares/admin-required')(this.crowi, (req, res, next) => {
+      next(new Error('Admin priviledge is required to connect.'));
     });
 
     // convert Connect/Express middleware to Socket.io middleware
@@ -95,7 +98,17 @@ class SocketIoService {
    * use checkConnectionLimits middleware
    */
   setupCheckConnectionLimitsMiddleware() {
+    this.io.use(this.checkConnectionLimitsForAdmin.bind(this));
+    this.io.use(this.checkConnectionLimitsForGuest.bind(this));
     this.io.use(this.checkConnectionLimits.bind(this));
+  }
+
+  setupCountConnectionEventHandler() {
+    this.io.on('connection', (socket) => {
+      if (socket.request.user == null) {
+        this.connectionsCountForGuest++;
+      }
+    });
   }
 
   async getClients(namespace) {
@@ -109,20 +122,58 @@ class SocketIoService {
     });
   }
 
+  async checkConnectionLimitsForAdmin(socket, next) {
+    const namespaceName = socket.nsp.name;
+
+    if (namespaceName === '/admin') {
+      const clients = await this.getClients(this.getAdminSocket());
+      const clientsCount = clients.length;
+
+      logger.debug('Current clients for \'/admin\':', clientsCount);
+
+      const limit = this.configManager.getConfig('crowi', 's2cMessagingPubsub:connectionsLimitForAdmin');
+      if (limit <= clientsCount) {
+        next(new Error('Current clients for \'/admin\' exceed the limit'));
+        return;
+      }
+    }
+
+    next();
+  }
+
+  async checkConnectionLimitsForGuest(socket, next) {
+
+    if (socket.request.user == null) {
+      const clientsCount = this.connectionsCountForGuest;
+
+      logger.debug('Current clients for guests:', clientsCount);
+
+      const limit = this.configManager.getConfig('crowi', 's2cMessagingPubsub:connectionsLimitForGuest');
+      if (limit <= clientsCount) {
+        next(new Error('Current clients for guests exceed the limit'));
+        return;
+      }
+    }
+
+    next();
+  }
+
   /**
    * @see https://socket.io/docs/server-api/#socket-client
    */
   async checkConnectionLimits(socket, next) {
-
     const clients = await this.getClients(this.getDefaultSocket());
-    const adminClients = await this.getClients(this.getAdminSocket());
+    const clientsCount = clients.length;
 
-    console.log('default', clients.length);
-    console.log('admin', adminClients.length);
-    console.log('user', socket.request.user);
+    logger.debug('Current clients for \'/\':', clientsCount);
+
+    const limit = this.configManager.getConfig('crowi', 's2cMessagingPubsub:connectionsLimit');
+    if (limit <= clientsCount) {
+      next(new Error('Current clients for \'/\' exceed the limit'));
+      return;
+    }
 
     next();
-    // next(new Error('Authentication error'));
   }
 
 }
