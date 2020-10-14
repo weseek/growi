@@ -6,7 +6,7 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import AdminSocketIoContainer from '../../../services/AdminSocketIoContainer';
 
-import ProgressBar from '../Common/ProgressBar';
+import LabeledProgressBar from '../Common/LabeledProgressBar';
 
 class RebuildIndexControls extends React.Component {
 
@@ -70,9 +70,10 @@ class RebuildIndexControls extends React.Component {
     const header = isRebuildingCompleted ? getCompletedLabel() : getSkipLabel();
 
     return (
-      <ProgressBar
+      <LabeledProgressBar
         header={header}
         currentCount={current}
+        errorsCount={skip}
         totalCount={total}
       />
     );
