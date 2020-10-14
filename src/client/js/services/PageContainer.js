@@ -70,7 +70,6 @@ export default class PageContainer extends Container {
       templateTagData: mainContent.getAttribute('data-template-tags') || null,
       shareLinksNumber:  mainContent.getAttribute('data-share-links-number'),
       shareLinkId: JSON.parse(mainContent.getAttribute('data-share-link-id') || null),
-      threeStrandedButton: mainContent.getAttribute('three-stranded-button'),
 
       // latest(on remote) information
       remoteRevisionId: revisionId,
