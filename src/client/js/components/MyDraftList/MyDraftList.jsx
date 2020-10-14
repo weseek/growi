@@ -67,9 +67,8 @@ class MyDraftList extends React.Component {
   }
 
   getCurrentDrafts(selectPageNumber) {
-    const { appContainer } = this.props;
 
-    const limit = appContainer.getConfig().recentCreatedLimit;
+    const limit = 50; // implement only this component.(this default value is 50 (pageLimitationL))
 
     const totalDrafts = this.state.drafts.length;
     const activePage = selectPageNumber;
@@ -161,6 +160,7 @@ class MyDraftList extends React.Component {
               changePage={this.handlePage}
               totalItemsCount={this.state.totalDrafts}
               pagingLimit={this.state.pagingLimit}
+              align="center"
             />
           </React.Fragment>
         ) }
