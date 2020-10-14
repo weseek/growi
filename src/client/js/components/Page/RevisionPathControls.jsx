@@ -25,7 +25,6 @@ const RevisionPathControls = (props) => {
       <CopyDropdown pagePath={pagePath} pageId={pageId} buttonStyle={buttonStyle} />
       { !isPageInTrash && !isPageForbidden && (
         <a href="#edit" className="d-edit-none text-muted btn btn-secondary bg-transparent btn-edit border-0" style={buttonStyle}>
-          <i className="icon-note" />
         </a>
       ) }
     </>
