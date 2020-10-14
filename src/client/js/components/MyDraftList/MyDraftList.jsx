@@ -160,6 +160,7 @@ class MyDraftList extends React.Component {
               changePage={this.handlePage}
               totalItemsCount={this.state.totalDrafts}
               pagingLimit={this.state.pagingLimit}
+              align="center"
             />
           </React.Fragment>
         ) }
