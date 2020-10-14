@@ -99,7 +99,6 @@ module.exports = (crowi) => {
       body('isEnabledTimeline').isBoolean(),
       body('isSavedStatesOfTabChanges').isBoolean(),
       body('isEnabledAttachTitleHeader').isBoolean(),
-      // TODO implement for pageListLimitForModal
       body('pageLimitationS').isInt().isInt({ min: 1, max: 1000 }),
       body('pageLimitationM').isInt().isInt({ min: 1, max: 1000 }),
       body('pageLimitationL').isInt().isInt({ min: 1, max: 1000 }),
@@ -159,7 +158,6 @@ module.exports = (crowi) => {
       pageLimitationM: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM'),
       pageLimitationL: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationL'),
       pageLimitationXL: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL'),
-      // TODO implement for pageListLimitForModal
       isEnabledStaleNotification: await crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
       isAllReplyShown: await crowi.configManager.getConfig('crowi', 'customize:isAllReplyShown'),
       styleName: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyle'),
@@ -281,7 +279,6 @@ module.exports = (crowi) => {
       'customize:isEnabledTimeline': req.body.isEnabledTimeline,
       'customize:isSavedStatesOfTabChanges': req.body.isSavedStatesOfTabChanges,
       'customize:isEnabledAttachTitleHeader': req.body.isEnabledAttachTitleHeader,
-      // TODO implement for pageListLimitForModal
       'customize:showPageLimitationS': req.body.pageLimitationS,
       'customize:showPageLimitationM': req.body.pageLimitationM,
       'customize:showPageLimitationL': req.body.pageLimitationL,
@@ -296,7 +293,6 @@ module.exports = (crowi) => {
         isEnabledTimeline: await crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
         isSavedStatesOfTabChanges: await crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
         isEnabledAttachTitleHeader: await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
-        // TODO implement for pageListLimitForModal
         pageLimitationS: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS'),
         pageLimitationM: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM'),
         pageLimitationL: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationL'),

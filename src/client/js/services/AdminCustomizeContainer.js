@@ -87,7 +87,6 @@ export default class AdminCustomizeContainer extends Container {
         pageLimitationM: customizeParams.pageLimitationM,
         pageLimitationL: customizeParams.pageLimitationL,
         pageLimitationXL: customizeParams.pageLimitationXL,
-        // TODO implement for pageListLimitForModal
         isEnabledStaleNotification: customizeParams.isEnabledStaleNotification,
         isAllReplyShown: customizeParams.isAllReplyShown,
         currentHighlightJsStyleId: customizeParams.styleName,
@@ -294,7 +293,6 @@ export default class AdminCustomizeContainer extends Container {
         pageLimitationM: this.state.pageLimitationM,
         pageLimitationL: this.state.pageLimitationL,
         pageLimitationXL: this.state.pageLimitationXL,
-        // TODO implement for pageListLimitForModal
         isEnabledStaleNotification: this.state.isEnabledStaleNotification,
         isAllReplyShown: this.state.isAllReplyShown,
       });
@@ -307,7 +305,6 @@ export default class AdminCustomizeContainer extends Container {
         pageLimitationM: customizedParams.pageLimitationM,
         pageLimitationL: customizedParams.pageLimitationL,
         pageLimitationXL: customizedParams.pageLimitationXL,
-        // TODO implement for pageListLimitForModal
         isEnabledStaleNotification: customizedParams.isEnabledStaleNotification,
         isAllReplyShown: customizedParams.isAllReplyShown,
       });
