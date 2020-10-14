@@ -39,6 +39,7 @@ export default class PageContainer extends Container {
 
     const revisionId = mainContent.getAttribute('data-page-revision-id');
     const path = decodeURI(mainContent.getAttribute('data-path'));
+
     this.state = {
       // local page data
       markdown: null, // will be initialized after initStateMarkdown()
@@ -61,6 +62,7 @@ export default class PageContainer extends Container {
       isForbidden:  JSON.parse(mainContent.getAttribute('data-page-is-forbidden')),
       isDeleted:  JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
       isDeletable:  JSON.parse(mainContent.getAttribute('data-page-is-deletable')),
+      isCreatablePage: mainContent.getAttribute('data-page-is-able-to-create'),
       isAbleToDeleteCompletely:  JSON.parse(mainContent.getAttribute('data-page-is-able-to-delete-completely')),
       pageUser: JSON.parse(mainContent.getAttribute('data-page-user')),
       tags: null,
@@ -68,6 +70,7 @@ export default class PageContainer extends Container {
       templateTagData: mainContent.getAttribute('data-template-tags') || null,
       shareLinksNumber:  mainContent.getAttribute('data-share-links-number'),
       shareLinkId: JSON.parse(mainContent.getAttribute('data-share-link-id') || null),
+      threeStrandedButton: mainContent.getAttribute('three-stranded-button'),
 
       // latest(on remote) information
       remoteRevisionId: revisionId,
