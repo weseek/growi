@@ -28,9 +28,9 @@ export default class AdminCustomizeContainer extends Container {
       isSavedStatesOfTabChanges: false,
       isEnabledAttachTitleHeader: false,
 
-      pageLimitationS: 10,
+      pageLimitationS: 20,
       pageLimitationM: 10,
-      pageLimitationL: 20,
+      pageLimitationL: 50,
       pageLimitationXL: 20,
 
       isEnabledStaleNotification: false,
@@ -83,8 +83,10 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledTimeline: customizeParams.isEnabledTimeline,
         isSavedStatesOfTabChanges: customizeParams.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: customizeParams.isEnabledAttachTitleHeader,
+        pageLimitationS: customizeParams.pageLimitationS,
         pageLimitationM: customizeParams.pageLimitationM,
-        // TODO implement for pageListLimitForModal
+        pageLimitationL: customizeParams.pageLimitationL,
+        pageLimitationXL: customizeParams.pageLimitationXL,
         isEnabledStaleNotification: customizeParams.isEnabledStaleNotification,
         isAllReplyShown: customizeParams.isAllReplyShown,
         currentHighlightJsStyleId: customizeParams.styleName,
@@ -287,8 +289,10 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledTimeline: this.state.isEnabledTimeline,
         isSavedStatesOfTabChanges: this.state.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: this.state.isEnabledAttachTitleHeader,
+        pageLimitationS: this.state.pageLimitationS,
         pageLimitationM: this.state.pageLimitationM,
-        // TODO implement for pageListLimitForModal
+        pageLimitationL: this.state.pageLimitationL,
+        pageLimitationXL: this.state.pageLimitationXL,
         isEnabledStaleNotification: this.state.isEnabledStaleNotification,
         isAllReplyShown: this.state.isAllReplyShown,
       });
@@ -297,8 +301,10 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledTimeline: customizedParams.isEnabledTimeline,
         isSavedStatesOfTabChanges: customizedParams.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: customizedParams.isEnabledAttachTitleHeader,
+        pageLimitationS: customizedParams.pageLimitationS,
         pageLimitationM: customizedParams.pageLimitationM,
-        // TODO implement for pageListLimitForModal
+        pageLimitationL: customizedParams.pageLimitationL,
+        pageLimitationXL: customizedParams.pageLimitationXL,
         isEnabledStaleNotification: customizedParams.isEnabledStaleNotification,
         isAllReplyShown: customizedParams.isAllReplyShown,
       });

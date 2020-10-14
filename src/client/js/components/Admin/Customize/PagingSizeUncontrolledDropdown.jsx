@@ -4,8 +4,6 @@ import { withTranslation } from 'react-i18next';
 import {
   UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
-import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
-import { withUnstatedContainers } from '../../UnstatedUtils';
 
 
 const PagingSizeUncontrolledDropdown = (props) => {
@@ -48,11 +46,8 @@ const PagingSizeUncontrolledDropdown = (props) => {
 };
 
 
-const PagingSizeUncontrolledDropdownWrapper = withUnstatedContainers(PagingSizeUncontrolledDropdown, [AdminCustomizeContainer]);
-
 PagingSizeUncontrolledDropdown.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
-  adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
   label: PropTypes.string,
   toggleLabel: PropTypes.number,
   dropdownItemSize: PropTypes.array,
@@ -60,4 +55,4 @@ PagingSizeUncontrolledDropdown.propTypes = {
   onChangeDropdownItem: PropTypes.func,
 };
 
-export default withTranslation()(PagingSizeUncontrolledDropdownWrapper);
+export default withTranslation()(PagingSizeUncontrolledDropdown);

@@ -218,8 +218,6 @@ module.exports = function(crowi) {
         MATHJAX: env.MATHJAX || null,
         NO_CDN: env.NO_CDN || null,
       },
-      pageLimitationM: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM'),
-      // TODO implement for pageListLimitForModal
       isEnabledStaleNotification: crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
       isAclEnabled: crowi.aclService.isAclEnabled(),
       isSearchServiceConfigured: crowi.searchService.isConfigured,
