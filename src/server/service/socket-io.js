@@ -29,6 +29,8 @@ class SocketIoService {
     // create namespace for admin
     this.adminNamespace = this.io.of('/admin');
 
+    // setup middlewares
+    // !!CAUTION!! -- ORDER IS IMPORTANT
     this.setupSessionMiddleware();
     this.setupLoginRequiredMiddleware();
     this.setupAdminRequiredMiddleware();
@@ -50,6 +52,10 @@ class SocketIoService {
     return this.adminNamespace;
   }
 
+  /**
+   * use passport session
+   * @see https://qiita.com/kobalab/items/083e507fb01159fe9774
+   */
   setupSessionMiddleware() {
     const sessionMiddleware = socketioSession(expressSession(this.crowi.sessionConfig), passport);
     this.io.use(sessionMiddleware.express_session);
@@ -57,6 +63,9 @@ class SocketIoService {
     this.io.use(sessionMiddleware.passport_session);
   }
 
+  /**
+   * use loginRequired middleware
+   */
   setupLoginRequiredMiddleware() {
     const loginRequired = require('../middlewares/login-required')(this.crowi, true, (req, res) => {
       throw new Error('Login is required to connect.');
@@ -68,6 +77,9 @@ class SocketIoService {
     });
   }
 
+  /**
+   * use adminRequired middleware
+   */
   setupAdminRequiredMiddleware() {
     const adminRequired = require('../middlewares/admin-required')(this.crowi, (req, res) => {
       throw new Error('Admin priviledge is required to connect.');
@@ -79,6 +91,9 @@ class SocketIoService {
     });
   }
 
+  /**
+   * use checkConnectionLimits middleware
+   */
   setupCheckConnectionLimitsMiddleware() {
     this.io.use(this.checkConnectionLimits.bind(this));
   }
