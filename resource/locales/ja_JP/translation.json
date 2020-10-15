@@ -444,7 +444,6 @@
   "hackmd":{
     "hack_md": "HackMD",
     "not_set_up": "HackMD はセットアップされていません",
-    "used_for_not_found": "存在しないページでHackMDを利用することはできません",
     "start_to_edit": "HackMD を開始する",
     "clone_page_content": "ページを複製して編集を開始します",
     "unsaved_draft": "HackMD のドラフトが保存されていません",
