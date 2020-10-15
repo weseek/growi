@@ -288,14 +288,14 @@ window.addEventListener('hashchange', (e) => {
   // hash on page
   if (window.location.hash) {
     if (window.location.hash === '#edit') {
-      $('a[data-toggle="tab"][href="#edit"]').tab('show');
+      $('a[href="#edit"]').tab('show');
     }
     else if (window.location.hash === '#hackmd') {
-      $('a[data-toggle="tab"][href="#hackmd"]').tab('show');
+      $('a[href="#hackmd"]').tab('show');
     }
   }
   else {
-    $('a[data-toggle="tab"][href="#revision-body"]').tab('show');
+    $('a[href="#revision-body"]').tab('show');
   }
 });
 
