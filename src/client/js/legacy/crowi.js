@@ -290,9 +290,6 @@ window.addEventListener('hashchange', (e) => {
     if (window.location.hash === '#edit') {
       $('a[href="#edit"]').tab('show');
     }
-    else if (window.location.hash === '#hackmd') {
-      $('a[href="#hackmd"]').tab('show');
-    }
   }
   else {
     $('a[href="#revision-body"]').tab('show');
