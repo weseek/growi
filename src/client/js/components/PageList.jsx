@@ -56,6 +56,13 @@ const PageList = (props) => {
       <Page page={page} />
     </li>
   ));
+  if (pageList.length === 0) {
+    return (
+      <div className="mt-2">
+        There are no pages under <strong>{ path }</strong>.
+      </div>
+    );
+  }
 
   return (
     <div className="page-list-container-create">
