@@ -199,34 +199,6 @@ $(() => {
     }
   } // end if pageId
 
-  // TODO clean code after GW-3605
-  // tab changing handling
-  $('a[href="#revision-body"]').on('show.bs.tab', () => {
-    const navigationContainer = appContainer.getContainer('NavigationContainer');
-    navigationContainer.setEditorMode(null);
-  });
-  $('a[href="#edit"]').on('show.bs.tab', () => {
-    const navigationContainer = appContainer.getContainer('NavigationContainer');
-    navigationContainer.setEditorMode('builtin');
-    $('body').addClass('on-edit');
-    $('body').addClass('builtin-editor');
-  });
-  $('a[href="#edit"]').on('hide.bs.tab', () => {
-    $('body').removeClass('on-edit');
-    $('body').removeClass('builtin-editor');
-  });
-  $('a[href="#hackmd"]').on('show.bs.tab', () => {
-    const navigationContainer = appContainer.getContainer('NavigationContainer');
-    navigationContainer.setEditorMode('hackmd');
-    $('body').addClass('on-edit');
-    $('body').addClass('hackmd');
-  });
-
-  $('a[href="#hackmd"]').on('hide.bs.tab', () => {
-    $('body').removeClass('on-edit');
-    $('body').removeClass('hackmd');
-  });
-
   // hash handling
   if (isSavedStatesOfTabChanges) {
     $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', () => {
