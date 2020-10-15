@@ -105,9 +105,27 @@ html[light] {
   @import 'apply-colors-light';
 
   // Button
-  .grw-three-stranded-button {
+  .btn-group.grw-three-stranded-button {
     .btn.btn-outline-primary {
       @include three-stranded-button($primary, lighten($primary, 65%), lighten($primary, 70%));
+      &::before {
+        border-color: lighten($primary, 65%);
+      }
+      &:hover {
+        &::after {
+          border-color: lighten($primary, 70%);
+        }
+      }
+      &:not(:first-child) {
+        margin-left: 0;
+        border-left: none;
+      }
+      &:not(:last-child) {
+        border-right: none;
+      }
+      &:focus {
+        box-shadow: none;
+      }
     }
   }
 }
@@ -205,10 +223,17 @@ html[dark] {
   @import 'apply-colors-dark';
 
   //Button
-  .grw-three-stranded-button {
+  .btn-group.grw-three-stranded-button {
     .btn.btn-outline-primary {
       @include three-stranded-button(lighten($primary, 30%), lighten($primary, 20%), $primary, darken($primary, 20%));
+      &::before {
+        border-color: $primary;
+      }
+      &:hover {
+        &::after {
+          border-color: darken($primary, 20%);
+        }
+      }
     }
   }
-
 }

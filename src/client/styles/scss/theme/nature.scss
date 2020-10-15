@@ -112,9 +112,17 @@ html[dark] {
   }
 
   // Button
-  .grw-three-stranded-button {
+  .btn-group.grw-three-stranded-button {
     .btn.btn-outline-primary {
       @include three-stranded-button($bgcolor-navbar, lighten($bgcolor-navbar, 65%), lighten($bgcolor-navbar, 70%));
+      &::before {
+        border-color: lighten($bgcolor-navbar, 65%);
+      }
+      &:hover {
+        &::after {
+          border-color: lighten($bgcolor-navbar, 70%);
+        }
+      }
     }
   }
 }

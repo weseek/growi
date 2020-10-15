@@ -18,7 +18,7 @@ const ThreeStrandedButton = (props) => {
         className="btn btn-outline-primary view-button"
         onClick={() => { threeStrandedButtonClickedHandler('view') }}
       >
-        <i className="icon-control-play icon-fw" />
+        <i className="grw-three-stranded-button-icon icon-control-play icon-fw" />
         { t('view') }
       </button>
       <button
@@ -26,7 +26,7 @@ const ThreeStrandedButton = (props) => {
         className="btn btn-outline-primary edit-button"
         onClick={() => { threeStrandedButtonClickedHandler('edit') }}
       >
-        <i className="icon-note icon-fw" />
+        <i className="grw-three-stranded-button-icon icon-note icon-fw" />
         { t('Edit') }
       </button>
       <button
@@ -34,7 +34,7 @@ const ThreeStrandedButton = (props) => {
         className="btn btn-outline-primary hackmd-button"
         onClick={() => { threeStrandedButtonClickedHandler('hackmd') }}
       >
-        <i className="fa fa-fw fa-file-text-o" />
+        <i className="grw-three-stranded-button-icon fa fa-fw fa-file-text-o" />
         { t('hackmd.hack_md') }
       </button>
     </div>

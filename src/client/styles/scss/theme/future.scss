@@ -90,9 +90,17 @@ html[dark] {
   @import 'apply-colors-dark';
 
   //Button
-  .grw-three-stranded-button {
+  .btn-group.grw-three-stranded-button {
     .btn.btn-outline-primary {
       @include three-stranded-button(lighten($primary, 10%), $primary, darken($primary, 10%), darken($primary, 20%));
+      &::before {
+        border-color: darken($primary, 10%);
+      }
+      &:hover {
+        &::after {
+          border-color: darken($primary, 20%);
+        }
+      }
     }
   }
 

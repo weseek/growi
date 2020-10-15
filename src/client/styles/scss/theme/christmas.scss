@@ -187,6 +187,14 @@ html[dark] {
   .grw-three-stranded-button {
     .btn.btn-outline-primary {
       @include three-stranded-button(darken($subthemecolor, 15%), lighten($subthemecolor, 35%), lighten($subthemecolor, 45%));
+      &::before {
+        border-color: lighten($subthemecolor, 35%);
+      }
+      &:hover {
+        &::after {
+          border-color: lighten($subthemecolor, 45%);
+        }
+      }
     }
   }
 }

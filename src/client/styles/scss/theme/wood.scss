@@ -162,9 +162,17 @@ html[dark] {
   }
 
   // Button
-  .grw-three-stranded-button {
+  .btn-group.grw-three-stranded-button {
     .btn.btn-outline-primary {
       @include three-stranded-button(darken($primary, 30%), lighten($primary, 15%), lighten($primary, 25%));
+      &::before {
+        border-color: lighten($primary, 15%);
+      }
+      &:hover {
+        &::after {
+          border-color: lighten($primary, 25%);
+        }
+      }
     }
   }
 }
