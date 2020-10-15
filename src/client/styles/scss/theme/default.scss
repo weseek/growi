@@ -204,6 +204,11 @@ html[dark] {
   @import 'apply-colors';
   @import 'apply-colors-dark';
 
-  // Button
-  // [TODO: appply colors to three stranded button]
+  //Button
+  .grw-three-stranded-button {
+    .btn.btn-outline-primary {
+      @include three-stranded-button(lighten($primary, 30%), lighten($primary, 20%), $primary, darken($primary, 20%));
+    }
+  }
+
 }
