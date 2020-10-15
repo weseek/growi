@@ -155,8 +155,6 @@ Crowi.highlightSelectedSection = function(hash) {
 };
 
 $(() => {
-  const appContainer = window.appContainer;
-
   const pageId = $('#content-main').data('page-id');
   // const revisionId = $('#content-main').data('page-revision-id');
   // const revisionCreatedAt = $('#content-main').data('page-revision-created');
