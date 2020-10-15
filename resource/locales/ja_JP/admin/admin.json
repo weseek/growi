@@ -115,7 +115,7 @@
       "list_num_desc_m": "ユーザーページにおける <Bookmarks> <Recently Created>での、1ページあたりの表示数を設定します。",
 
       "list_num_l": "検索ページやDraftページに表示されるリスト数",
-      "list_num_desc_l": "<Search> <My Drafts> での、1ページあたりの表示数を設定します。",
+      "list_num_desc_l": "<Search>での、1ページあたりの表示数を設定します。",
 
       "list_num_xl": "Not FoundページやTrashページに表示されるリスト数",
       "list_num_desc_xl": "記事エリアにおける<Not Found> <Trash>での、1ページあたりの表示数を設定します。",
