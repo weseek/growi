@@ -15,7 +15,7 @@ class SocketIoService {
     this.crowi = crowi;
     this.configManager = crowi.configManager;
 
-    this.connectionsCountForGuest = 0;
+    this.guestClients = new Set();
   }
 
   get isInitialized() {
@@ -37,7 +37,7 @@ class SocketIoService {
     this.setupAdminRequiredMiddleware();
     this.setupCheckConnectionLimitsMiddleware();
 
-    this.setupCountConnectionEventHandler();
+    this.setupStoreGuestIdEventHandler();
   }
 
   getDefaultSocket() {
@@ -103,10 +103,14 @@ class SocketIoService {
     this.io.use(this.checkConnectionLimits.bind(this));
   }
 
-  setupCountConnectionEventHandler() {
+  setupStoreGuestIdEventHandler() {
     this.io.on('connection', (socket) => {
       if (socket.request.user == null) {
-        this.connectionsCountForGuest++;
+        this.guestClients.add(socket.id);
+
+        socket.on('disconnect', () => {
+          this.guestClients.delete(socket.id);
+        });
       }
     });
   }
@@ -144,7 +148,7 @@ class SocketIoService {
   async checkConnectionLimitsForGuest(socket, next) {
 
     if (socket.request.user == null) {
-      const clientsCount = this.connectionsCountForGuest;
+      const clientsCount = this.guestClients.length;
 
       logger.debug('Current clients for guests:', clientsCount);
 
