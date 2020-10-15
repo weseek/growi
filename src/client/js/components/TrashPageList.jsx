@@ -6,7 +6,7 @@ import CustomNavigation from './CustomNavigation';
 import PageList from './PageList';
 
 
-const TrashPage = (props) => {
+const TrashPageList = (props) => {
   const { t } = props;
 
   const navTabMapping = {
@@ -25,8 +25,8 @@ const TrashPage = (props) => {
   );
 };
 
-TrashPage.propTypes = {
+TrashPageList.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
 };
 
-export default withTranslation()(TrashPage);
+export default withTranslation()(TrashPageList);
