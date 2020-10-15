@@ -88,7 +88,6 @@ module.exports = (crowi) => {
     const { path } = req.query;
     const limit = +req.query.limit || 30;
     const offset = +req.query.offset || 0;
-
     const { isTrashPage } = require('@commons/util/path-utils');
 
     const queryOptions = {
