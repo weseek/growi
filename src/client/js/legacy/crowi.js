@@ -152,15 +152,11 @@ Crowi.highlightSelectedSection = function(hash) {
 };
 
 $(() => {
-  const appContainer = window.appContainer;
-  const config = appContainer.getConfig();
-
   const pageId = $('#content-main').data('page-id');
   // const revisionId = $('#content-main').data('page-revision-id');
   // const revisionCreatedAt = $('#content-main').data('page-revision-created');
   // const currentUser = $('#content-main').data('current-user');
   const isSeen = $('#content-main').data('page-is-seen');
-  const isSavedStatesOfTabChanges = config.isSavedStatesOfTabChanges;
 
   $('[data-toggle="popover"]').popover();
   $('[data-toggle="tooltip"]').tooltip();
