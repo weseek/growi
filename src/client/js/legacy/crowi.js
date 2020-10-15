@@ -217,8 +217,8 @@ window.addEventListener('load', (e) => {
   if (window.location.hash) {
     const navigationContainer = appContainer.getContainer('NavigationContainer');
 
-    if ((window.location.hash === '#edit' || window.location.hash === '#edit-form') && $('.tab-pane#edit').length > 0) {
-      navigationContainer.setEditorMode('builtin');
+    if ((window.location.hash === '#edit' || window.location.hash === '#edit-form')) {
+      navigationContainer.setEditorMode('edit');
 
       $('a[data-toggle="tab"][href="#edit"]').tab('show');
       $('body').addClass('on-edit');
@@ -227,15 +227,12 @@ window.addEventListener('load', (e) => {
       // focus
       Crowi.setCaretLineAndFocusToEditor();
     }
-    else if (window.location.hash === '#hackmd' && $('.tab-pane#hackmd').length > 0) {
+    else if (window.location.hash === '#hackmd') {
       navigationContainer.setEditorMode('hackmd');
 
       $('a[data-toggle="tab"][href="#hackmd"]').tab('show');
       $('body').addClass('on-edit');
       $('body').addClass('hackmd');
-    }
-    else if (window.location.hash === '#revision-history' && $('.tab-pane#revision-history').length > 0) {
-      $('a[data-toggle="tab"][href="#revision-history"]').tab('show');
     }
   }
 });
@@ -295,9 +292,6 @@ window.addEventListener('hashchange', (e) => {
     }
     else if (window.location.hash === '#hackmd') {
       $('a[data-toggle="tab"][href="#hackmd"]').tab('show');
-    }
-    else if (window.location.hash === '#revision-history') {
-      $('a[data-toggle="tab"][href="#revision-history"]').tab('show');
     }
   }
   else {
