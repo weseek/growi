@@ -1,6 +1,10 @@
 # CHANGES
 
-## v4.1.8-RC
+## v4.1.9
+
+* Feature: Environment variables to set max connection size to deliver push messages to all clients
+
+## v4.1.8
 
 * Improvement: Rebuilding progress bar colors for Full Text Search Management
 * Improvement: Support operations on page data with a null value for author
