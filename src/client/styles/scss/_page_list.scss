@@ -52,8 +52,10 @@ body .page-list {
 }
 
 .page-list-container-create {
-  ul.page-list-ul {
-    list-style: none;
+  .page-list-ul {
+    > li {
+      list-style: none;
+    }
   }
 }
 
