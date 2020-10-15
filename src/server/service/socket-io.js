@@ -150,7 +150,7 @@ class SocketIoService {
   async checkConnectionLimitsForGuest(socket, next) {
 
     if (socket.request.user == null) {
-      const clientsCount = this.guestClients.length;
+      const clientsCount = this.guestClients.size;
 
       logger.debug('Current count of clients for guests:', clientsCount);
 
