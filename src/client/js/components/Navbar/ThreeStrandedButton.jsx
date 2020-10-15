@@ -51,4 +51,8 @@ ThreeStrandedButton.propTypes = {
   isBtnDisabled: PropTypes.bool,
 };
 
+ThreeStrandedButton.defaultProps = {
+  isBtnDisabled: false,
+};
+
 export default withTranslation()(ThreeStrandedButton);
