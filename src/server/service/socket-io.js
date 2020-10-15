@@ -98,9 +98,9 @@ class SocketIoService {
    * use checkConnectionLimits middleware
    */
   setupCheckConnectionLimitsMiddleware() {
-    this.io.use(this.checkConnectionLimitsForAdmin.bind(this));
-    this.io.use(this.checkConnectionLimitsForGuest.bind(this));
-    this.io.use(this.checkConnectionLimits.bind(this));
+    this.getAdminSocket().use(this.checkConnectionLimitsForAdmin.bind(this));
+    this.getDefaultSocket().use(this.checkConnectionLimitsForGuest.bind(this));
+    this.getDefaultSocket().use(this.checkConnectionLimits.bind(this));
   }
 
   setupStoreGuestIdEventHandler() {
