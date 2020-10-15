@@ -170,6 +170,12 @@ class SocketIoService {
    * @see https://socket.io/docs/server-api/#socket-client
    */
   async checkConnectionLimits(socket, next) {
+    // exclude admin
+    const namespaceName = socket.nsp.name;
+    if (namespaceName === '/admin') {
+      next();
+    }
+
     const clients = await this.getClients(this.getDefaultSocket());
     const clientsCount = clients.length;
 
