@@ -133,11 +133,13 @@ class SocketIoService {
       const clients = await this.getClients(this.getAdminSocket());
       const clientsCount = clients.length;
 
-      logger.debug('Current clients for \'/admin\':', clientsCount);
+      logger.debug('Current count of clients for \'/admin\':', clientsCount);
 
       const limit = this.configManager.getConfig('crowi', 's2cMessagingPubsub:connectionsLimitForAdmin');
       if (limit <= clientsCount) {
-        next(new Error('Current clients for \'/admin\' exceed the limit'));
+        const msg = `The connection was refused because the current count of clients for '/admin' is ${clientsCount} and exceeds the limit`;
+        logger.warn(msg);
+        next(new Error(msg));
         return;
       }
     }
@@ -150,11 +152,13 @@ class SocketIoService {
     if (socket.request.user == null) {
       const clientsCount = this.guestClients.length;
 
-      logger.debug('Current clients for guests:', clientsCount);
+      logger.debug('Current count of clients for guests:', clientsCount);
 
       const limit = this.configManager.getConfig('crowi', 's2cMessagingPubsub:connectionsLimitForGuest');
       if (limit <= clientsCount) {
-        next(new Error('Current clients for guests exceed the limit'));
+        const msg = `The connection was refused because the current count of clients for guests is ${clientsCount} and exceeds the limit`;
+        logger.warn(msg);
+        next(new Error(msg));
         return;
       }
     }
@@ -169,11 +173,13 @@ class SocketIoService {
     const clients = await this.getClients(this.getDefaultSocket());
     const clientsCount = clients.length;
 
-    logger.debug('Current clients for \'/\':', clientsCount);
+    logger.debug('Current count of clients for \'/\':', clientsCount);
 
     const limit = this.configManager.getConfig('crowi', 's2cMessagingPubsub:connectionsLimit');
     if (limit <= clientsCount) {
-      next(new Error('Current clients for \'/\' exceed the limit'));
+      const msg = `The connection was refused because the current count of clients for '/' is ${clientsCount} and exceeds the limit`;
+      logger.warn(msg);
+      next(new Error(msg));
       return;
     }
 
