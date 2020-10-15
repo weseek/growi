@@ -25,10 +25,6 @@
 
 
 {% block content_main_after %}
-  {% if isTrashPage() %}
-  <div id="trash-page"></div>
-  {% endif %}
-
   {% include 'widget/comments.html' %}
 
   {% if page %}
