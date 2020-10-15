@@ -197,6 +197,12 @@ $(() => {
       });
     }
   } // end if pageId
+
+  // TODO This triger action will be implemented by react component
+  // focus to editor when 'shown.bs.tab' event fired
+  $('a[href="#edit"]').on('shown.bs.tab', (e) => {
+    Crowi.setCaretLineAndFocusToEditor();
+  });
 });
 
 window.addEventListener('load', (e) => {
