@@ -229,6 +229,7 @@
   padding-right: 0;
   padding-left: 0;
   color: $textColor;
+  white-space: nowrap;
   background-color: $bgColor;
   border-color: $borderColor;
   &:not(:first-child) {
