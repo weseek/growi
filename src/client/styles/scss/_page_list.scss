@@ -51,6 +51,12 @@ body .page-list {
   }
 }
 
+.page-list-container-create {
+  ul.page-list-ul {
+    list-style: none;
+  }
+}
+
 .popular-page-high {
   font-size: 1.1em;
   font-weight: bold;
