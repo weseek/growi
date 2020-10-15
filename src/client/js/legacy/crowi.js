@@ -199,45 +199,6 @@ $(() => {
     }
   } // end if pageId
 
-  // hash handling
-  if (isSavedStatesOfTabChanges) {
-    $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', () => {
-      window.location.hash = '#revision-history';
-      window.history.replaceState('', 'History', '#revision-history');
-    });
-    $('a[data-toggle="tab"][href="#edit"]').on('show.bs.tab', () => {
-      window.location.hash = '#edit';
-      window.history.replaceState('', 'Edit', '#edit');
-    });
-    $('a[data-toggle="tab"][href="#hackmd"]').on('show.bs.tab', () => {
-      window.location.hash = '#hackmd';
-      window.history.replaceState('', 'HackMD', '#hackmd');
-    });
-    $('a[data-toggle="tab"][href="#revision-body"]').on('show.bs.tab', () => {
-      // couln't solve https://github.com/weseek/crowi-plus/issues/119 completely -- 2017.07.03 Yuki Takei
-      window.location.hash = '#';
-      window.history.replaceState('', '', window.location.href);
-    });
-  }
-  else {
-    $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', () => {
-      window.history.replaceState('', 'History', '#revision-history');
-    });
-    $('a[data-toggle="tab"][href="#edit"]').on('show.bs.tab', () => {
-      window.history.replaceState('', 'Edit', '#edit');
-    });
-    $('a[data-toggle="tab"][href="#hackmd"]').on('show.bs.tab', () => {
-      window.history.replaceState('', 'HackMD', '#hackmd');
-    });
-    $('a[data-toggle="tab"][href="#revision-body"]').on('show.bs.tab', () => {
-      window.history.replaceState('', '', window.location.href.replace(window.location.hash, ''));
-    });
-    // replace all href="#edit" link behaviors
-    $(document).on('click', 'a[href="#edit"]', () => {
-      window.location.replace('#edit');
-    });
-  }
-
   // focus to editor when 'shown.bs.tab' event fired
   $('a[href="#edit"]').on('shown.bs.tab', (e) => {
     Crowi.setCaretLineAndFocusToEditor();
