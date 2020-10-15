@@ -138,6 +138,9 @@ module.exports = (crowi) => {
       body('hierarchyType').isString().isIn(['allSubordinatedPage', 'decideHierarchy']),
       body('hierarchyValue').isNumeric(),
     ],
+    exist: [
+      query('newParentPath').isString(),
+    ],
   };
 
   /**
@@ -251,6 +254,63 @@ module.exports = (crowi) => {
     });
 
     return stream.pipe(res);
+  });
+
+  /**
+   * @swagger
+   *
+   *    /page/exist-paths:
+   *      get:
+   *        tags: [Page]
+   *        summary: /page/exist-paths
+   *        description: Get already exist paths
+   *        operationId: getAlreadyExistPaths
+   *        parameters:
+   *          - name: newParentPath
+   *            in: query
+   *            description: New parent path of search
+   *            schema:
+   *              type: string
+   *          - name: toPaths
+   *            in: query
+   *            description: Paths to compare with DB
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: Succeeded to retrieve pages.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    existPaths:
+   *                      type: object
+   *                      description: Paths are already exist in DB
+   *          500:
+   *            description: Internal server error.
+   */
+  router.get('/exist-paths', loginRequired, validator.exist, apiV3FormValidator, async(req, res) => {
+    const { newParentPath, toPaths } = req.query;
+
+    try {
+      const { pages } = await Page.findListByStartWith(newParentPath, req.user);
+
+      const duplicationPaths = pages.map((page) => {
+        if (toPaths.includes(page.path)) {
+          return page.path;
+        }
+        return null;
+      });
+      const existPaths = duplicationPaths.filter(path => path != null);
+
+      return res.apiv3({ existPaths });
+
+    }
+    catch (err) {
+      logger.error('Failed to get exist path', err);
+      return res.apiv3Err(err, 500);
+    }
+
   });
 
   // TODO GW-2746 bulk export pages
