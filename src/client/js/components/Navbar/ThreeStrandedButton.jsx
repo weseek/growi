@@ -16,7 +16,7 @@ const ThreeStrandedButton = (props) => {
     <div className="btn-group grw-three-stranded-button" role="group " aria-label="three-stranded-button">
       <button
         type="button"
-        className={`btn btn-outline-primary view-button ${btnActive == 'view' && 'active-btn'}`}
+        className={`btn btn-outline-primary view-button ${btnActive === 'view' && 'active-btn'}`}
         onClick={() => { threeStrandedButtonClickedHandler('view') }}
       >
         <i className="icon-control-play icon-fw" />
@@ -24,7 +24,7 @@ const ThreeStrandedButton = (props) => {
       </button>
       <button
         type="button"
-        className={`btn btn-outline-primary edit-button ${btnActive == 'edit' && 'active-btn'}`}
+        className={`btn btn-outline-primary edit-button ${btnActive === 'edit' && 'active-btn'}`}
         onClick={(e) => { threeStrandedButtonClickedHandler('edit') }}
       >
         <i className="icon-note icon-fw" />
@@ -32,7 +32,7 @@ const ThreeStrandedButton = (props) => {
       </button>
       <button
         type="button"
-        className={`btn btn-outline-primary hackmd-button ${btnActive == 'hackmd' && 'active-btn'}`}
+        className={`btn btn-outline-primary hackmd-button ${btnActive === 'hackmd' && 'active-btn'}`}
         onClick={() => { threeStrandedButtonClickedHandler('hackmd') }}
       >
         <i className="fa fa-fw fa-file-text-o" />
