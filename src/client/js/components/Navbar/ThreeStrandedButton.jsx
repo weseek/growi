@@ -20,7 +20,7 @@ const ThreeStrandedButton = (props) => {
         className="btn-group grw-three-stranded-button"
         role="group"
         aria-label="three-stranded-button"
-        id="test"
+        id="grw-three-stranded-button"
       >
         <button
           data-container="body"
@@ -57,7 +57,7 @@ const ThreeStrandedButton = (props) => {
           </span>
         </button>
       </div>
-      <UncontrolledTooltip placement="top" target="test" fade={false}>
+      <UncontrolledTooltip placement="top" target="grw-three-stranded-button" fade={false}>
         {t('Not available for guest')}
       </UncontrolledTooltip>
     </>
