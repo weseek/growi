@@ -12,7 +12,6 @@ const ThreeStrandedButton = (props) => {
     if (isBtnDisabled) {
       return;
     }
-
     if (props.onThreeStrandedButtonClicked != null) {
       props.onThreeStrandedButtonClicked(viewType);
     }
