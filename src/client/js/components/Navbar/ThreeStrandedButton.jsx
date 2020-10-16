@@ -7,7 +7,12 @@ const ThreeStrandedButton = (props) => {
   const { t, isBtnDisabled } = props;
 
   const [btnActive, setBtnActive] = useState('view');
+
   function threeStrandedButtonClickedHandler(viewType) {
+    if (isBtnDisabled) {
+      return;
+    }
+
     if (props.onThreeStrandedButtonClicked != null) {
       props.onThreeStrandedButtonClicked(viewType);
     }
@@ -23,43 +28,35 @@ const ThreeStrandedButton = (props) => {
         id="grw-three-stranded-button"
       >
         <button
-          data-container="body"
           type="button"
-          className={`btn btn-outline-primary view-button ${btnActive === 'view' && 'active'}`}
+          className={`btn btn-outline-primary view-button ${btnActive === 'view' && 'active'} ${isBtnDisabled && 'disabled'}`}
           onClick={() => { threeStrandedButtonClickedHandler('view') }}
-          disabled={isBtnDisabled}
         >
           <i className="icon-control-play icon-fw" />
-          <span>
-            { t('view') }
-          </span>
+          { t('view') }
         </button>
         <button
           type="button"
-          className={`btn btn-outline-primary edit-button ${btnActive === 'edit' && 'active'}`}
-          onClick={(e) => { threeStrandedButtonClickedHandler('edit') }}
-          disabled={isBtnDisabled}
+          className={`btn btn-outline-primary edit-button ${btnActive === 'edit' && 'active'} ${isBtnDisabled && 'disabled'}`}
+          onClick={() => { threeStrandedButtonClickedHandler('edit') }}
         >
           <i className="icon-note icon-fw" />
-          <span>
-            { t('Edit') }
-          </span>
+          { t('Edit') }
         </button>
         <button
           type="button"
-          className={`btn btn-outline-primary hackmd-button ${btnActive === 'hackmd' && 'active'}`}
+          className={`btn btn-outline-primary hackmd-button ${btnActive === 'hackmd' && 'active'} ${isBtnDisabled && 'disabled'}`}
           onClick={() => { threeStrandedButtonClickedHandler('hackmd') }}
-          disabled={isBtnDisabled}
         >
           <i className="fa fa-fw fa-file-text-o" />
-          <span>
-            { t('hackmd.hack_md') }
-          </span>
+          { t('hackmd.hack_md') }
         </button>
       </div>
-      <UncontrolledTooltip placement="top" target="grw-three-stranded-button" fade={false}>
-        {t('Not available for guest')}
-      </UncontrolledTooltip>
+      {isBtnDisabled && (
+        <UncontrolledTooltip placement="top" target="grw-three-stranded-button" fade={false}>
+          {t('Not available for guest')}
+        </UncontrolledTooltip>
+      )}
     </>
   );
 
