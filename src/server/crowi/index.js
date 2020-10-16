@@ -552,6 +552,8 @@ Crowi.prototype.setUpFileUpload = async function() {
     this.fileUploadServiceFactory = new FileUploadServiceFactory(this);
     this.fileUploadService = this.fileUploadServiceFactory.getUploader(this);
 
+    this.fileUploadMessageService = require('../service/file-uploader/s2sMessage')(this);
+
     // add as a message handler
     if (this.s2sMessagingService != null) {
       this.s2sMessagingService.addMessageHandler(this.fileUploadService);

@@ -3,7 +3,7 @@ const logger = require('@alias/logger')('growi:service:FileUploader');
 const S2sMessage = require('../../models/vo/s2s-message');
 const S2sMessageHandlable = require('../s2s-messaging/handlable');
 
-class S2sMessage extends S2sMessageHandlable {
+class FileUploaderS2sMessage extends S2sMessageHandlable {
 
   constructor(crowi) {
     super();
@@ -59,4 +59,4 @@ class S2sMessage extends S2sMessageHandlable {
 
 }
 
-module.exports = S2sMessage;
+module.exports = FileUploaderS2sMessage;

@@ -583,7 +583,7 @@ module.exports = (crowi) => {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestAwsSettingParams, true);
       crowi.fileUploadServiceFactory.initializeUploader(crowi);
       crowi.fileUploadService = crowi.fileUploadServiceFactory.getUploader(crowi);
-      crowi.fileUploadService.publishUpdatedMessage();
+      crowi.fileUploadMessageService.publishUpdatedMessage();
 
       const awsSettingParams = {
         s3Region: crowi.configManager.getConfig('crowi', 'aws:s3Region'),
@@ -637,7 +637,7 @@ module.exports = (crowi) => {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestGcpSettingParams, true);
       crowi.fileUploadServiceFactory.initializeUploader(crowi);
       crowi.fileUploadService = crowi.fileUploadServiceFactory.getUploader(crowi);
-      crowi.fileUploadService.publishUpdatedMessage();
+      crowi.fileUploadMessageService.publishUpdatedMessage();
 
       const gcpSettingParams = {
         gcsApiKeyJsonPath: crowi.configManager.getConfig('crowi', 'gcs:apiKeyJsonPath'),
