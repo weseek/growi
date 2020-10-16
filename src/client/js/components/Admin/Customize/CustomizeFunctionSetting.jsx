@@ -1,10 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import {
-  Card, CardBody,
-  Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
-} from 'reactstrap';
+import { Card, CardBody } from 'reactstrap';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
@@ -14,6 +11,7 @@ import AppContainer from '../../../services/AppContainer';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import CustomizeFunctionOption from './CustomizeFunctionOption';
+import PagingSizeUncontrolledDropdown from './PagingSizeUncontrolledDropdown';
 
 class CustomizeFunctionSetting extends React.Component {
 
@@ -21,35 +19,9 @@ class CustomizeFunctionSetting extends React.Component {
     super(props);
 
     this.state = {
-      isDropdownOpenS: false, // S
-      isDropdownOpenM: false, // M
-      isDropdownOpenL: false, // L
-      isDropdownOpenXL: false, // XL
     };
-
-    this.onToggleDropdownS = this.onToggleDropdownS.bind(this); // S
-    this.onToggleDropdownM = this.onToggleDropdownM.bind(this); // M
-    this.onToggleDropdownL = this.onToggleDropdownL.bind(this); // L
-    this.onToggleDropdownXL = this.onToggleDropdownXL.bind(this); // XL
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
-
-  onToggleDropdownS() {
-    this.setState({ isDropdownOpenS: !this.state.isDropdownOpenS });
-  }
-
-  onToggleDropdownM() {
-    this.setState({ isDropdownOpenM: !this.state.isDropdownOpenM });
-  }
-
-  onToggleDropdownL() {
-    this.setState({ isDropdownOpenL: !this.state.isDropdownOpenL });
-  }
-
-  onToggleDropdownXL() {
-    this.setState({ isDropdownOpenXL: !this.state.isDropdownOpenXL });
-  }
-
 
   async onClickSubmit() {
     const { t, adminCustomizeContainer } = this.props;
@@ -108,117 +80,34 @@ class CustomizeFunctionSetting extends React.Component {
               </div>
             </div>
 
-            {/* S: Modal */}
-            <div className="form-group row">
-              <div className="offset-md-3 col-md-6 text-left">
-                <div className="my-0 w-100">
-                  <label>{t('admin:customize_setting.function_options.list_num_s')}</label>
-                </div>
-                <Dropdown isOpen={this.state.isDropdownOpenS} toggle={this.onToggleDropdownS}>
-                  <DropdownToggle className="text-right col-6" caret>
-                    <span className="float-left">{adminCustomizeContainer.state.pageLimitationS}</span>
-                  </DropdownToggle>
-                  <DropdownMenu className="dropdown-menu" role="menu">
-                    <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationS(10) }}>
-                      <a role="menuitem">10</a>
-                    </DropdownItem>
-                    <DropdownItem key={30} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationS(30) }}>
-                      <a role="menuitem">30</a>
-                    </DropdownItem>
-                    <DropdownItem key={50} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationS(50) }}>
-                      <a role="menuitem">50</a>
-                    </DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
-                <p className="form-text text-muted">
-                  {t('admin:customize_setting.function_options.list_num_desc_s')}
-                </p>
-              </div>
-            </div>
-
-            {/* M: User Page */}
-            <div className="form-group row">
-              <div className="offset-md-3 col-md-6 text-left">
-                <div className="my-0 w-100">
-                  <label>{t('admin:customize_setting.function_options.list_num_m')}</label>
-                </div>
-                <Dropdown isOpen={this.state.isDropdownOpenM} toggle={this.onToggleDropdownM}>
-                  <DropdownToggle className="text-right col-6" caret>
-                    <span className="float-left">{adminCustomizeContainer.state.pageLimitationM}</span>
-                  </DropdownToggle>
-                  <DropdownMenu className="dropdown-menu" role="menu">
-                    <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationM(10) }}>
-                      <a role="menuitem">10</a>
-                    </DropdownItem>
-                    <DropdownItem key={30} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationM(30) }}>
-                      <a role="menuitem">30</a>
-                    </DropdownItem>
-                    <DropdownItem key={50} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationM(50) }}>
-                      <a role="menuitem">50</a>
-                    </DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
-                <p className="form-text text-muted">
-                  {t('admin:customize_setting.function_options.list_num_desc_m')}
-                </p>
-              </div>
-            </div>
-
-            {/* L: Search / Draft Pages */}
-            <div className="form-group row">
-              <div className="offset-md-3 col-md-6 text-left">
-                <div className="my-0 w-100">
-                  <label>{t('admin:customize_setting.function_options.list_num_l')}</label>
-                </div>
-                <Dropdown isOpen={this.state.isDropdownOpenL} toggle={this.onToggleDropdownL}>
-                  <DropdownToggle className="text-right col-6" caret>
-                    <span className="float-left">{adminCustomizeContainer.state.pageLimitationL}</span>
-                  </DropdownToggle>
-                  <DropdownMenu className="dropdown-menu" role="menu">
-                    <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationL(10) }}>
-                      <a role="menuitem">10</a>
-                    </DropdownItem>
-                    <DropdownItem key={30} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationL(30) }}>
-                      <a role="menuitem">30</a>
-                    </DropdownItem>
-                    <DropdownItem key={50} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationL(50) }}>
-                      <a role="menuitem">50</a>
-                    </DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
-                <p className="form-text text-muted">
-                  {t('admin:customize_setting.function_options.list_num_desc_l')}
-                </p>
-              </div>
-            </div>
-
-            {/* XL: NotFound / Trash Pages */}
-            <div className="form-group row">
-              <div className="offset-md-3 col-md-6 text-left">
-                <div className="my-0 w-100">
-                  <label>{t('admin:customize_setting.function_options.list_num_xl')}</label>
-                </div>
-                <Dropdown isOpen={this.state.isDropdownOpenXL} toggle={this.onToggleDropdownXL}>
-                  <DropdownToggle className="text-right col-6" caret>
-                    <span className="float-left">{adminCustomizeContainer.state.pageLimitationXL}</span>
-                  </DropdownToggle>
-                  <DropdownMenu className="dropdown-menu" role="menu">
-                    <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationXL(10) }}>
-                      <a role="menuitem">10</a>
-                    </DropdownItem>
-                    <DropdownItem key={30} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationXL(30) }}>
-                      <a role="menuitem">30</a>
-                    </DropdownItem>
-                    <DropdownItem key={50} role="presentation" onClick={() => { adminCustomizeContainer.switchPageListLimitationXL(50) }}>
-                      <a role="menuitem">50</a>
-                    </DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
-                <p className="form-text text-muted">
-                  {t('admin:customize_setting.function_options.list_num_desc_xl')}
-                </p>
-              </div>
-            </div>
+            <PagingSizeUncontrolledDropdown
+              label={t('admin:customize_setting.function_options.list_num_s')}
+              desc={t('admin:customize_setting.function_options.list_num_desc_s')}
+              toggleLabel={adminCustomizeContainer.state.pageLimitationS}
+              dropdownItemSize={[10, 20, 50, 100]}
+              onChangeDropdownItem={adminCustomizeContainer.switchPageListLimitationS}
+            />
+            <PagingSizeUncontrolledDropdown
+              label={t('admin:customize_setting.function_options.list_num_m')}
+              desc={t('admin:customize_setting.function_options.list_num_desc_m')}
+              toggleLabel={adminCustomizeContainer.state.pageLimitationM}
+              dropdownItemSize={[5, 10, 20, 50, 100]}
+              onChangeDropdownItem={adminCustomizeContainer.switchPageListLimitationM}
+            />
+            <PagingSizeUncontrolledDropdown
+              label={t('admin:customize_setting.function_options.list_num_l')}
+              desc={t('admin:customize_setting.function_options.list_num_desc_l')}
+              toggleLabel={adminCustomizeContainer.state.pageLimitationL}
+              dropdownItemSize={[20, 50, 100, 200]}
+              onChangeDropdownItem={adminCustomizeContainer.switchPageListLimitationL}
+            />
+            <PagingSizeUncontrolledDropdown
+              label={t('admin:customize_setting.function_options.list_num_xl')}
+              desc={t('admin:customize_setting.function_options.list_num_desc_xl')}
+              toggleLabel={adminCustomizeContainer.state.pageLimitationXL}
+              dropdownItemSize={[5, 10, 20, 50, 100]}
+              onChangeDropdownItem={adminCustomizeContainer.switchPageListLimitationXL}
+            />
 
             <div className="form-group row">
               <div className="offset-md-3 col-md-6 text-left">

@@ -28,10 +28,10 @@ export default class AdminCustomizeContainer extends Container {
       isSavedStatesOfTabChanges: false,
       isEnabledAttachTitleHeader: false,
 
-      pageLimitationS: 10,
+      pageLimitationS: 20,
       pageLimitationM: 10,
-      pageLimitationL: 10,
-      pageLimitationXL: 10,
+      pageLimitationL: 50,
+      pageLimitationXL: 20,
 
       isEnabledStaleNotification: false,
       isAllReplyShown: false,
@@ -56,6 +56,10 @@ export default class AdminCustomizeContainer extends Container {
       },
       /* eslint-enable quote-props, no-multi-spaces */
     };
+    this.switchPageListLimitationS = this.switchPageListLimitationS.bind(this);
+    this.switchPageListLimitationM = this.switchPageListLimitationM.bind(this);
+    this.switchPageListLimitationL = this.switchPageListLimitationL.bind(this);
+    this.switchPageListLimitationXL = this.switchPageListLimitationXL.bind(this);
 
   }
 
@@ -81,6 +85,11 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledAttachTitleHeader: customizeParams.isEnabledAttachTitleHeader,
         pageLimitationS: customizeParams.pageLimitationS,
         pageLimitationM: customizeParams.pageLimitationM,
+<<<<<<< HEAD
+=======
+        pageLimitationL: customizeParams.pageLimitationL,
+        pageLimitationXL: customizeParams.pageLimitationXL,
+>>>>>>> feat/display-BookMarkList-including-pagination-as-component
         isEnabledStaleNotification: customizeParams.isEnabledStaleNotification,
         isAllReplyShown: customizeParams.isAllReplyShown,
         currentHighlightJsStyleId: customizeParams.styleName,
@@ -285,6 +294,11 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledAttachTitleHeader: this.state.isEnabledAttachTitleHeader,
         pageLimitationS: this.state.pageLimitationS,
         pageLimitationM: this.state.pageLimitationM,
+<<<<<<< HEAD
+=======
+        pageLimitationL: this.state.pageLimitationL,
+        pageLimitationXL: this.state.pageLimitationXL,
+>>>>>>> feat/display-BookMarkList-including-pagination-as-component
         isEnabledStaleNotification: this.state.isEnabledStaleNotification,
         isAllReplyShown: this.state.isAllReplyShown,
       });
@@ -295,6 +309,11 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledAttachTitleHeader: customizedParams.isEnabledAttachTitleHeader,
         pageLimitationS: customizedParams.pageLimitationS,
         pageLimitationM: customizedParams.pageLimitationM,
+<<<<<<< HEAD
+=======
+        pageLimitationL: customizedParams.pageLimitationL,
+        pageLimitationXL: customizedParams.pageLimitationXL,
+>>>>>>> feat/display-BookMarkList-including-pagination-as-component
         isEnabledStaleNotification: customizedParams.isEnabledStaleNotification,
         isAllReplyShown: customizedParams.isAllReplyShown,
       });
