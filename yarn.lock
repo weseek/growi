@@ -1673,6 +1673,11 @@
   resolved "https://registry.yarnpkg.com/@kaishuu0123/markdown-it-fence/-/markdown-it-fence-1.0.1.tgz#1ba7886c0474cc31707acd195f7b9073406b743d"
   integrity sha512-gQZ0a3JcrCi1g+00D9CIbo2uPc6lnykqAsVaCbew8jsrdyF0f0cBngYgFKcTxW2vliT5I3K4lwD4DhM6hXeOjg==
 
+"@kobalab/socket.io-session@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@kobalab/socket.io-session/-/socket.io-session-1.0.3.tgz#87d55896bb48f57c57f26f0235bf53345a0a4615"
+  integrity sha512-pen2rqNuZUsR453EVM9owqDIbelFKa5gizyNM9hscphKrdPIYissNa9efddYSVBH24q7pknxS5kxbfSw/YYOMg==
+
 "@lykmapipo/common@>=0.34.2", "@lykmapipo/common@>=0.34.3":
   version "0.34.3"
   resolved "https://registry.yarnpkg.com/@lykmapipo/common/-/common-0.34.3.tgz#eb74fa4af14f2f1e59ddd42491f05ab69f96bd71"

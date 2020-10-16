@@ -155,6 +155,24 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
+  S2CMSG_PUBSUB_CONNECTIONS_LIMIT: {
+    ns:      'crowi',
+    key:     's2cMessagingPubsub:connectionsLimit',
+    type:    TYPES.NUMBER,
+    default: 5000,
+  },
+  S2CMSG_PUBSUB_CONNECTIONS_LIMIT_FOR_ADMIN: {
+    ns:      'crowi',
+    key:     's2cMessagingPubsub:connectionsLimitForAdmin',
+    type:    TYPES.NUMBER,
+    default: 100,
+  },
+  S2CMSG_PUBSUB_CONNECTIONS_LIMIT_FOR_GUEST: {
+    ns:      'crowi',
+    key:     's2cMessagingPubsub:connectionsLimitForGuest',
+    type:    TYPES.NUMBER,
+    default: 2000,
+  },
   MAX_FILE_SIZE: {
     ns:      'crowi',
     key:     'app:maxFileSize',
