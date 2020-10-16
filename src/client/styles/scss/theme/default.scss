@@ -210,5 +210,4 @@ html[dark] {
       @include three-stranded-button(lighten($primary, 30%), lighten($primary, 20%), $primary, darken($primary, 20%));
     }
   }
-
 }

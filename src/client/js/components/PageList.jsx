@@ -58,7 +58,7 @@ const PageList = (props) => {
   ));
 
   return (
-    <div className="page-list-container-create">
+    <div className="page-list">
       <ul className="page-list-ul page-list-ul-flat ml-n4">
         {pageList}
       </ul>
