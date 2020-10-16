@@ -59,7 +59,7 @@ const PageList = (props) => {
 
   return (
     <div className="page-list">
-      <ul className="page-list-ul page-list-ul-flat ml-n4">
+      <ul className="page-list-ul page-list-ul-flat">
         {pageList}
       </ul>
       <PaginationWrapper
