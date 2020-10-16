@@ -26,8 +26,8 @@ class FileUploadServiceFactory {
     }
   }
 
-  getUploader(crowi) {
-    if (this.uploader == null) {
+  getUploader(crowi, isForceUpdate) {
+    if (this.uploader == null || isForceUpdate) {
       this.initializeUploader(crowi);
     }
     return this.uploader;
@@ -35,4 +35,7 @@ class FileUploadServiceFactory {
 
 }
 
-module.exports = FileUploadServiceFactory;
+module.exports = (crowi, isForceUpdate) => {
+  const factory = new FileUploadServiceFactory(crowi);
+  return factory.getUploader(crowi, isForceUpdate);
+};
