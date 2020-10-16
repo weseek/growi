@@ -93,6 +93,9 @@ html[light] {
     .btn.btn-outline-primary {
       @include three-stranded-button($primary, lighten($primary, 65%), lighten($primary, 70%));
     }
+    .btn.btn-outline-primary.active {
+      background-color: lighten($primary, 70%);
+    }
   }
 }
 
@@ -200,6 +203,9 @@ html[dark] {
   .grw-three-stranded-button {
     .btn.btn-outline-primary {
       @include three-stranded-button(lighten($primary, 30%), $primary, darken($primary, 10%), darken($primary, 20%));
+    }
+    .btn.btn-outline-primary.active {
+      background-color: darken($primary, 10%);
     }
   }
 }
