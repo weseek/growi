@@ -276,14 +276,17 @@ window.addEventListener('hashchange', (e) => {
   Crowi.unhighlightSelectedSection(Crowi.findHashFromUrl(e.oldURL));
   Crowi.highlightSelectedSection(Crowi.findHashFromUrl(e.newURL));
   Crowi.modifyScrollTop();
+  const { appContainer } = window;
+  const navigationContainer = appContainer.getContainer('NavigationContainer');
+
 
   // hash on page
   if (window.location.hash) {
     if (window.location.hash === '#edit') {
-      $('a[href="#edit"]').tab('show');
+      navigationContainer.setEditorMode('edit');
     }
     else if (window.location.hash === '#hackmd') {
-      $('a[href="#hackmd"]').tab('show');
+      navigationContainer.setEditorMode('hackmd');
     }
   }
   else {
