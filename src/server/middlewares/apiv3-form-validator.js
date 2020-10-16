@@ -1,5 +1,5 @@
 const logger = require('@alias/logger')('growi:middlewares:ApiV3FormValidator');
-const { validationResult } = require('express-validator/check');
+const { validationResult } = require('express-validator');
 
 const ErrorV3 = require('../models/vo/error-apiv3');
 

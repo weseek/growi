@@ -122,6 +122,26 @@ body.on-edit {
   .grw-editor-navbar-bottom {
     height: $grw-editor-navbar-bottom-height;
 
+    .grw-slack-notification {
+      .input-group-addon {
+        padding: 2px 8px;
+        line-height: 1em;
+        img,
+        input {
+          vertical-align: middle;
+        }
+      }
+      .form-control {
+        width: 80px;
+        @include media-breakpoint-up(sm) {
+          width: 130px;
+        }
+        @include media-breakpoint-up(md) {
+          width: 180px;
+        }
+      }
+    }
+
     .grw-grant-selector {
       @include media-breakpoint-down(sm) {
         .btn .label {
@@ -311,13 +331,13 @@ body.on-edit {
 
 #tag-edit-button-tooltip {
   .tooltip-inner {
-    color: #000;
-    background-color: #fff;
-    border: 1px solid #ccc;
+    color: black;
+    background-color: white;
+    border: 1px solid $gray-300;
   }
 
   .tooltip-arrow {
-    border-bottom: 5px solid #ccc;
+    border-bottom: 5px solid $gray-300;
   }
 }
 

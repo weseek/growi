@@ -2,6 +2,10 @@ import { Container } from 'unstated';
 
 import io from 'socket.io-client';
 
+import loggerFactory from '@alias/logger';
+
+const logger = loggerFactory('growi:cli:SocketIoContainer');
+
 /**
  * Service container related to options for WebSocket
  * @extends {Container} unstated Container
@@ -20,6 +24,13 @@ export default class SocketIoContainer extends Container {
       transports: ['websocket'],
     });
     this.socketClientId = Math.floor(Math.random() * 100000);
+
+    this.socket.on('connect_error', (error) => {
+      logger.error(error);
+    });
+    this.socket.on('error', (error) => {
+      logger.error(error);
+    });
 
     this.state = {
     };

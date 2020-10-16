@@ -18,9 +18,9 @@ import RevisionPathControls from '../Page/RevisionPathControls';
 import TagLabels from '../Page/TagLabels';
 import LikeButton from '../LikeButton';
 import BookmarkButton from '../BookmarkButton';
+import ThreeStrandedButton from './ThreeStrandedButton';
 
-import PageCreator from './PageCreator';
-import RevisionAuthor from './RevisionAuthor';
+import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
 import UserPicture from '../User/UserPicture';
 
@@ -148,7 +148,7 @@ const GrowiSubNavigation = (props) => {
   }
 
   return (
-    <div className={`grw-subnav d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact' : ''}`}>
+    <div className={`grw-subnav d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
 
       {/* Left side */}
       <div className="d-flex">
@@ -186,30 +186,21 @@ const GrowiSubNavigation = (props) => {
         <div className="d-flex flex-column align-items-end justify-content-center">
           <div className="d-flex">
             { !isPageInTrash && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
-            <div className="mt-2">
-              {/* TODO: impl View / Edit / HackMD button group */}
-              {/* <div className="btn-group" role="group" aria-label="Basic example">
-              <button type="button" className="btn btn-outline-primary">Left</button>
-              <button type="button" className="btn btn-outline-primary">Middle</button>
-              <button type="button" className="btn btn-outline-primary">Right</button>
-            </div> */}
-            </div>
+          </div>
+          <div className="mt-2">
+            <ThreeStrandedButton />
           </div>
         </div>
 
         {/* Page Authors */}
         { (!isCompactMode && !isUserPage) && (
           <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none">
-            { creator != null && (
-              <li className="pb-1">
-                <PageCreator creator={creator} createdAt={createdAt} />
-              </li>
-            ) }
-            { revisionAuthor != null && (
-              <li className="mt-1 pt-1 border-top">
-                <RevisionAuthor revisionAuthor={revisionAuthor} updatedAt={updatedAt} />
-              </li>
-            ) }
+            <li className="pb-1">
+              <AuthorInfo user={creator} date={createdAt} />
+            </li>
+            <li className="mt-1 pt-1 border-top">
+              <AuthorInfo user={revisionAuthor} date={updatedAt} mode="update" />
+            </li>
           </ul>
         ) }
       </div>

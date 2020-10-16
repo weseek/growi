@@ -67,6 +67,7 @@ module.exports = require('./webpack.common')({
 
   ],
   optimization: {
+    minimize: true,
     minimizer: [
       new TerserPlugin({}),
       new OptimizeCSSAssetsPlugin({}),

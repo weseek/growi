@@ -40,22 +40,20 @@ class RevisionLoader extends React.Component {
       this.setState({ isLoading: true });
     }
 
-    const requestData = {
-      page_id: this.props.pageId,
-      revision_id: this.props.revisionId,
-    };
+    const { pageId, revisionId } = this.props;
+
 
     // load data with REST API
     try {
-      const res = await this.props.appContainer.apiGet('/revisions.get', requestData);
+      const res = await this.props.appContainer.apiv3Get(`/revisions/${revisionId}`, { pageId });
 
       this.setState({
-        markdown: res.revision.body,
+        markdown: res.data.revision.body,
         error: null,
       });
 
       if (this.props.onRevisionLoaded != null) {
-        this.props.onRevisionLoaded(res.revision);
+        this.props.onRevisionLoaded(res.data.revision);
       }
     }
     catch (error) {

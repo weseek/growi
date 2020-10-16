@@ -7,10 +7,17 @@ module.exports = (crowi) => {
 
   return async(req, res, next) => {
     const { referer } = req.headers;
+
+    // Attachments cannot be viewed by clients who do not send referer.
+    // https://github.com/weseek/growi/issues/2819
+    if (referer == null) {
+      return next();
+    }
+
     const { path } = url.parse(referer);
 
     if (!path.startsWith('/share/')) {
-      next();
+      return next();
     }
 
     const fileId = req.params.id || null;
@@ -21,14 +28,14 @@ module.exports = (crowi) => {
     const attachment = await Attachment.findOne({ _id: fileId });
 
     if (attachment == null) {
-      next();
+      return next();
     }
 
     const shareLinks = await ShareLink.find({ relatedPage: attachment.page });
 
     // If sharelinks don't exist, skip it
     if (shareLinks.length === 0) {
-      next();
+      return next();
     }
 
     // Is there a valid share link

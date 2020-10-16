@@ -138,8 +138,8 @@ class Sidebar extends React.Component {
   }
 
   calcViewHeight() {
-    const containerElem = document.querySelector('#grw-sidebar-content-container');
-    return window.innerHeight - containerElem.getBoundingClientRect().top;
+    const scrollTargetElem = document.querySelector('#grw-sidebar-contents-scroll-target');
+    return window.innerHeight - scrollTargetElem.getBoundingClientRect().top;
   }
 
   renderGlobalNavigation = () => (
@@ -147,8 +147,7 @@ class Sidebar extends React.Component {
   );
 
   renderSidebarContents = () => {
-    // const scrollTargetSelector = 'div[data-testid="ContextualNavigation"] div[role="group"]';
-    const scrollTargetSelector = '#grw-sidebar-content-container';
+    const scrollTargetSelector = '#grw-sidebar-contents-scroll-target';
 
     return (
       <>
@@ -158,10 +157,13 @@ class Sidebar extends React.Component {
           stickyElemSelector=".grw-sidebar"
           calcViewHeightFunc={this.calcViewHeight}
         />
-        <div id="grw-sidebar-content-container" className="grw-sidebar-content-container">
-          <SidebarContents
-            isSharedUser={this.props.appContainer.isSharedUser}
-          />
+
+        <div id="grw-sidebar-contents-scroll-target">
+          <div id="grw-sidebar-content-container">
+            <SidebarContents
+              isSharedUser={this.props.appContainer.isSharedUser}
+            />
+          </div>
         </div>
 
         <DrawerToggler iconClass="icon-arrow-left" />
