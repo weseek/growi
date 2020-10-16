@@ -220,19 +220,11 @@ window.addEventListener('load', (e) => {
     if ((window.location.hash === '#edit' || window.location.hash === '#edit-form')) {
       navigationContainer.setEditorMode('edit');
 
-      $('a[href="#edit"]').tab('show');
-      $('body').addClass('on-edit');
-      $('body').addClass('builtin-editor');
-
       // focus
       Crowi.setCaretLineAndFocusToEditor();
     }
     else if (window.location.hash === '#hackmd') {
       navigationContainer.setEditorMode('hackmd');
-
-      $('a[href="#hackmd"]').tab('show');
-      $('body').addClass('on-edit');
-      $('body').addClass('hackmd');
     }
   }
 });
