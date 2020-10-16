@@ -57,7 +57,7 @@ const ThreeStrandedButton = (props) => {
           </span>
         </button>
       </div>
-      <UncontrolledTooltip placement="top" target="test" delay={0} fade={false}>
+      <UncontrolledTooltip placement="top" target="test" fade={false}>
         {t('Not available for guest')}
       </UncontrolledTooltip>
     </>
