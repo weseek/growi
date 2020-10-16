@@ -7,6 +7,7 @@ import {
 
 import { withTranslation } from 'react-i18next';
 
+import { debounce } from 'throttle-debounce';
 import { withUnstatedContainers } from './UnstatedUtils';
 import { toastError } from '../util/apiNotification';
 
@@ -14,6 +15,9 @@ import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 import ComparePathsTable from './ComparePathsTable';
+import DuplicatedPathsTable from './DuplicatedPathsTable';
+
+import { convertToNewAffiliationPath } from '../../../lib/util/path-utils';
 
 const PageRenameModal = (props) => {
   const {
@@ -29,12 +33,12 @@ const PageRenameModal = (props) => {
   const [errs, setErrs] = useState(null);
 
   const [subordinatedPages, setSubordinatedPages] = useState([]);
+  const [existingPaths, setExistingPaths] = useState([]);
   const [isRenameRecursively, SetIsRenameRecursively] = useState(true);
   const [isRenameRedirect, SetIsRenameRedirect] = useState(false);
   const [isRenameMetadata, SetIsRenameMetadata] = useState(false);
   const [subordinatedError] = useState(null);
   const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
-
 
   function changeIsRenameRecursivelyHandler() {
     SetIsRenameRecursively(!isRenameRecursively);
@@ -51,6 +55,27 @@ const PageRenameModal = (props) => {
   function changeIsRenameMetadataHandler() {
     SetIsRenameMetadata(!isRenameMetadata);
   }
+
+  const checkExistPaths = useCallback(async(newParentPath) => {
+    try {
+      const toPaths = subordinatedPages.map((subordinatedPage) => {
+        return convertToNewAffiliationPath(path, newParentPath, subordinatedPage.path);
+      });
+      const res = await appContainer.apiv3Get('/page/exist-paths', { newParentPath: pageNameInput, toPaths });
+      const { existPaths } = res.data;
+      setExistingPaths(existPaths);
+    }
+    catch (err) {
+      setErrs(err);
+      toastError(t('modal_duplicate.label.Fail to get subordinated pages'));// change message
+    }
+  }, [appContainer, pageNameInput, path, subordinatedPages, t]);
+
+  const checkExistPathsDebounced = debounce(1000, checkExistPaths);
+
+  useEffect(() => {
+    checkExistPathsDebounced(pageNameInput);
+  }, [pageNameInput, checkExistPathsDebounced]);
 
   const updateSubordinatedList = useCallback(async() => {
     try {
@@ -161,6 +186,7 @@ const PageRenameModal = (props) => {
             </label>
           </div>
           {isRenameRecursively && <ComparePathsTable subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
+          {isRenameRecursively && existingPaths.length !== 0 && <DuplicatedPathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />}
         </div>
 
         <div className="custom-control custom-checkbox custom-checkbox-success">
