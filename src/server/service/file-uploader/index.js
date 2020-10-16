@@ -17,7 +17,7 @@ class FileUploadServiceFactory {
     // temporarily use envToModuleMappings [remove in GW-4136]
     const fileUplodeTypeInConfig = envToModuleMappings[crowi.configManager.getConfig('crowi', 'app:fileUploadType')];
 
-    const method = envToModuleMappings[process.env.FILE_UPLOAD] || fileUplodeTypeInConfig || 'ppp';
+    const method = envToModuleMappings[process.env.FILE_UPLOAD] || fileUplodeTypeInConfig || 'aws';
     const modulePath = `./${method}`;
     this.uploader = require(modulePath)(crowi);
 
