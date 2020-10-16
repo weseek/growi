@@ -220,7 +220,7 @@ window.addEventListener('load', (e) => {
     if ((window.location.hash === '#edit' || window.location.hash === '#edit-form')) {
       navigationContainer.setEditorMode('edit');
 
-      $('a[data-toggle="tab"][href="#edit"]').tab('show');
+      $('a[href="#edit"]').tab('show');
       $('body').addClass('on-edit');
       $('body').addClass('builtin-editor');
 
@@ -230,7 +230,7 @@ window.addEventListener('load', (e) => {
     else if (window.location.hash === '#hackmd') {
       navigationContainer.setEditorMode('hackmd');
 
-      $('a[data-toggle="tab"][href="#hackmd"]').tab('show');
+      $('a[href="#hackmd"]').tab('show');
       $('body').addClass('on-edit');
       $('body').addClass('hackmd');
     }
