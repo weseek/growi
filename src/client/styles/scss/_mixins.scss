@@ -226,7 +226,8 @@
   background-color: $bgColor;
   border-color: $borderColor;
   &:hover,
-  &:active {
+  &:active,
+  &.active {
     color: $textColor;
     background-color: $bgColorHoverAndActive;
     border-color: $borderColor;
