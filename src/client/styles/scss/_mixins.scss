@@ -221,6 +221,23 @@
   transition-duration: 300ms;
 }
 
+@mixin short-border-vertical($borderColor) {
+  position: relative;
+  &:not(:first-child) {
+    &::before {
+      position: absolute;
+      top: 12.5%;
+      left: 0;
+      z-index: 1;
+      width: 100%;
+      height: 75%;
+      margin-left: -1px;
+      content: '';
+      border-left: 1px solid $borderColor;
+    }
+  }
+}
+
 @mixin three-stranded-button($textColor, $borderColor, $bgColorHoverAndActive, $bgColor: white) {
   display: inline-flex;
   align-items: center;
@@ -232,21 +249,31 @@
   white-space: nowrap;
   background-color: $bgColor;
   border-color: $borderColor;
+
+  @include short-border-vertical($borderColor);
+
+  &.view-button,
+  &.edit-button {
+    .grw-three-stranded-button-icon {
+      margin-right: -0.25rem;
+    }
+  }
+  &.hackmd-button {
+    font-size: 12px;
+    letter-spacing: -0.6px;
+
+    .grw-three-stranded-button-icon {
+      margin-right: -0.1rem;
+    }
+  }
   &:not(:first-child) {
     margin-left: 0;
     border-left: none;
-    &::before {
-      position: absolute;
-      z-index: 2;
-      width: 100%;
-      height: 80%;
-      margin-left: -1px;
-      content: '';
-      border-left: 1px solid $borderColor;
-    }
     &::after {
       position: absolute;
-      z-index: 1;
+      top: 0;
+      left: 0;
+      z-index: 0;
       width: 100%;
       height: 100%;
       margin-left: -1px;
@@ -254,6 +281,9 @@
       border-left: 1px solid transparent;
       transition: border-color 0.15s ease-in-out;
     }
+  }
+  &:not(:last-child) {
+    border-right: none;
   }
   &:hover,
   &:active {
@@ -263,9 +293,6 @@
     &::after {
       border-color: $bgColorHoverAndActive;
     }
-  }
-  &:not(:last-child) {
-    border-right: none;
   }
   &:focus {
     box-shadow: none;

@@ -69,23 +69,6 @@
   cursor: not-allowed;
 }
 
-.btn-group.grw-three-stranded-button {
-  .view-button,
-  .edit-button {
-    .grw-three-stranded-button-icon {
-      margin-right: -0.25rem;
-    }
-  }
-
-  .hackmd-button {
-    font-size: 12px;
-    letter-spacing: -0.6px;
-
-    .grw-three-stranded-button-icon {
-      margin-right: -0.1rem;
-    }
-  }
-}
 // TODO: reactify and replace with `grw-not-available-for-guest`
 .edit-button.edit-button-disabled {
   cursor: not-allowed;
@@ -94,6 +77,10 @@
 .grw-not-available-for-guest {
   cursor: not-allowed !important;
 }
+
+// #seen-user-list {
+//   @include applyshort-border-vertical(red);
+// }
 
 /*
  * Helper Classes
