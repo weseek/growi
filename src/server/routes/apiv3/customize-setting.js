@@ -101,15 +101,10 @@ module.exports = (crowi) => {
       body('isEnabledTimeline').isBoolean(),
       body('isSavedStatesOfTabChanges').isBoolean(),
       body('isEnabledAttachTitleHeader').isBoolean(),
-<<<<<<< HEAD
-      body('pageLimitationS').isInt({ min: 1, max: 1000 }),
-      body('pageLimitationM').isInt({ min: 1, max: 1000 }),
-=======
       body('pageLimitationS').isInt().isInt({ min: 1, max: 1000 }),
       body('pageLimitationM').isInt().isInt({ min: 1, max: 1000 }),
       body('pageLimitationL').isInt().isInt({ min: 1, max: 1000 }),
       body('pageLimitationXL').isInt().isInt({ min: 1, max: 1000 }),
->>>>>>> feat/display-BookMarkList-including-pagination-as-component
       body('isEnabledStaleNotification').isBoolean(),
       body('isAllReplyShown').isBoolean(),
     ],

@@ -85,11 +85,8 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledAttachTitleHeader: customizeParams.isEnabledAttachTitleHeader,
         pageLimitationS: customizeParams.pageLimitationS,
         pageLimitationM: customizeParams.pageLimitationM,
-<<<<<<< HEAD
-=======
         pageLimitationL: customizeParams.pageLimitationL,
         pageLimitationXL: customizeParams.pageLimitationXL,
->>>>>>> feat/display-BookMarkList-including-pagination-as-component
         isEnabledStaleNotification: customizeParams.isEnabledStaleNotification,
         isAllReplyShown: customizeParams.isAllReplyShown,
         currentHighlightJsStyleId: customizeParams.styleName,
@@ -294,11 +291,8 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledAttachTitleHeader: this.state.isEnabledAttachTitleHeader,
         pageLimitationS: this.state.pageLimitationS,
         pageLimitationM: this.state.pageLimitationM,
-<<<<<<< HEAD
-=======
         pageLimitationL: this.state.pageLimitationL,
         pageLimitationXL: this.state.pageLimitationXL,
->>>>>>> feat/display-BookMarkList-including-pagination-as-component
         isEnabledStaleNotification: this.state.isEnabledStaleNotification,
         isAllReplyShown: this.state.isAllReplyShown,
       });
@@ -309,11 +303,8 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledAttachTitleHeader: customizedParams.isEnabledAttachTitleHeader,
         pageLimitationS: customizedParams.pageLimitationS,
         pageLimitationM: customizedParams.pageLimitationM,
-<<<<<<< HEAD
-=======
         pageLimitationL: customizedParams.pageLimitationL,
         pageLimitationXL: customizedParams.pageLimitationXL,
->>>>>>> feat/display-BookMarkList-including-pagination-as-component
         isEnabledStaleNotification: customizedParams.isEnabledStaleNotification,
         isAllReplyShown: customizedParams.isAllReplyShown,
       });
