@@ -112,10 +112,10 @@
       "list_num_desc_s": "Set number of list per page such as 'Pagelist', 'Timeline', 'Page History' and 'Share Link' pages",
 
       "list_num_m": "Number of list displayed on article pages included other contents",
-      "list_num_desc_m": "Set number of list per page such as 'Bookmarks', 'Recently created' and 'Drafts'",
+      "list_num_desc_m": "Set number of list per page such as 'Bookmarks' and 'Recently created' pages",
 
-      "list_num_l": "Number of list displayed on 'Search' and 'Draft' pages",
-      "list_num_desc_l": "Set number of list per page such as 'Search' and 'Draft' pages",
+      "list_num_l": "Number of list displayed on 'Search' pages",
+      "list_num_desc_l": "Set number of list per page such as 'Search' pages",
 
       "list_num_xl": "Number of list displayed on article pages",
       "list_num_desc_xl": "Set number of list per page such as 'Not found' and 'Trash' pages",

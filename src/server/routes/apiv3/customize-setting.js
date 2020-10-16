@@ -37,6 +37,8 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *            type: boolean
  *          isEnabledAttachTitleHeader:
  *            type: boolean
+ *          pageLimitationS:
+ *            type: number
  *          pageLimitationM:
  *            type: number
  *          isEnabledStaleNotification:

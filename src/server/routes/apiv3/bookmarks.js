@@ -145,11 +145,14 @@ module.exports = (crowi) => {
    */
   validator.myBookmarkList = [
     query('page').isInt({ min: 1 }),
+    query('limit').if(value => value != null).isInt({ max: 300 }).withMessage('You should set less than 300 or not to set limit.'),
   ];
 
   router.get('/:userId', accessTokenParser, loginRequired, validator.myBookmarkList, apiV3FormValidator, async(req, res) => {
     const { userId } = req.params;
-    const { page, limit } = req.query;
+    const page = req.query.page;
+    const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM') || 30;
+
     if (userId == null) {
       return res.apiv3Err('User id is not found or forbidden', 400);
     }
