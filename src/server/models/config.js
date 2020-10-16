@@ -111,7 +111,10 @@ module.exports = function(crowi) {
       'customize:isEnabledTimeline' : true,
       'customize:isSavedStatesOfTabChanges' : true,
       'customize:isEnabledAttachTitleHeader' : false,
+      'customize:showPageLimitationS' : 20,
       'customize:showPageLimitationM' : 10,
+      'customize:showPageLimitationL' : 50,
+      'customize:showPageLimitationXL' : 20,
       'customize:isEnabledStaleNotification': false,
       'customize:isAllReplyShown': false,
 
