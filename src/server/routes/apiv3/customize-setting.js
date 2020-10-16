@@ -158,11 +158,8 @@ module.exports = (crowi) => {
       isEnabledAttachTitleHeader: await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
       pageLimitationS: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS'),
       pageLimitationM: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM'),
-<<<<<<< HEAD
-=======
       pageLimitationL: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationL'),
       pageLimitationXL: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL'),
->>>>>>> feat/display-BookMarkList-including-pagination-as-component
       isEnabledStaleNotification: await crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
       isAllReplyShown: await crowi.configManager.getConfig('crowi', 'customize:isAllReplyShown'),
       styleName: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyle'),
