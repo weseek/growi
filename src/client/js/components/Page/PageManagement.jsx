@@ -194,7 +194,7 @@ const PageManagement = (props) => {
         >
           <i className="icon-options"></i>
         </button>
-        <UncontrolledTooltip placement="top" target="icon-options-guest-tltips">
+        <UncontrolledTooltip placement="top" target="icon-options-guest-tltips" fade={false}>
           {t('Not available for guest')}
         </UncontrolledTooltip>
       </>
