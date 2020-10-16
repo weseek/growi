@@ -581,6 +581,8 @@ module.exports = (crowi) => {
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestAwsSettingParams, true);
+      crowi.fileUploadServiceFactory.initializeUploader(crowi);
+      crowi.fileUploadService = crowi.fileUploadServiceFactory.getUploader(crowi);
       crowi.fileUploadService.publishUpdatedMessage();
 
       const awsSettingParams = {
@@ -633,6 +635,8 @@ module.exports = (crowi) => {
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestGcpSettingParams, true);
+      crowi.fileUploadServiceFactory.initializeUploader(crowi);
+      crowi.fileUploadService = crowi.fileUploadServiceFactory.getUploader(crowi);
       crowi.fileUploadService.publishUpdatedMessage();
 
       const gcpSettingParams = {
