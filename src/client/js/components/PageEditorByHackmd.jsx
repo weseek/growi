@@ -257,7 +257,7 @@ class PageEditorByHackmd extends React.Component {
         <div>
           <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> { t('hackmd.used_for_not_found')}</p>
           {/* eslint-disable-next-line react/no-danger */}
-          <p dangerouslySetInnerHTML={{ __html: t('hackmd.need_to_make_page') }} />
+          <p>{t('hackmd.need_to_make_page')}<a href="#edit">{t('hackmd.open_editor')}</a></p>
         </div>
       );
     }

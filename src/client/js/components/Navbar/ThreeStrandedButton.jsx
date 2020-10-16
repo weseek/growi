@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 const ThreeStrandedButton = (props) => {
-  const { t } = props;
-  const [btnActive, setBtnActive] = useState('view');
+  const { t, editorMode } = props;
+  const [btnActive, setBtnActive] = useState(editorMode);
   function threeStrandedButtonClickedHandler(viewType) {
     if (props.onThreeStrandedButtonClicked != null) {
       props.onThreeStrandedButtonClicked(viewType);
@@ -45,6 +45,7 @@ const ThreeStrandedButton = (props) => {
 
 ThreeStrandedButton.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
+  editorMode: PropTypes.string.isRequired,
   onThreeStrandedButtonClicked: PropTypes.func,
 };
 
