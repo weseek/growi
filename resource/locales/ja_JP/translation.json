@@ -163,6 +163,9 @@
     "Create Page": "ページを作成する",
     "page_not_exist_alert": "このページは存在しません。新たに作成する必要があります。"
   },
+  "custom_navigation": {
+    "no_page_list": "<a href='{{path}}'><strong>{{ path }}</strong></a>の配下にはページが存在しません。"
+  },
   "installer": {
     "setup": "セットアップ",
     "create_initial_account": "最初のアカウントの作成",

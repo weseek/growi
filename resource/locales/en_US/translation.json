@@ -160,6 +160,9 @@
     "Create Page": "Create Page",
     "page_not_exist_alert": "This page does not exist. Please create a new page."
   },
+  "custom_navigation": {
+    "no_page_list": "There are no pages under <a href='{{path}}'><strong>{{ path }}</strong></a>."
+  },
   "installer": {
     "setup": "Setup",
     "create_initial_account": "Create an initial account",
