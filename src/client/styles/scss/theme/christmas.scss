@@ -188,5 +188,8 @@ html[dark] {
     .btn.btn-outline-primary {
       @include three-stranded-button(darken($subthemecolor, 15%), lighten($subthemecolor, 35%), lighten($subthemecolor, 45%));
     }
+    .btn.btn-outline-primary.active {
+      background-color: lighten($subthemecolor, 45%);
+    }
   }
 }

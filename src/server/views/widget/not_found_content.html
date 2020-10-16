@@ -8,7 +8,7 @@
 
   <div id="display-switcher"></div>
   <div id="not-found-alert"></div>
-  {% include 'not_found_tabs.html' %}
+  <div id="not-found-page"></div>
 
   <div class="tab-content">
 
@@ -28,20 +28,6 @@
     {% endif %}
 
     {# TODO: should be removed and transplanted to PageContainer.initStateMarkdown ------ to here ------ #}
-
-
-
-    {# list view #}
-    <div class="pt-2 active tab-pane page-list-container" id="revision-body">
-      {% if pages.length == 0 %}
-        <div class="mt-2">
-          There are no pages under <strong>{{ path | preventXss }}</strong>.
-        </div>
-      {% endif  %}
-
-      {% include '../widget/page_list.html' with { pages: pages, pager: pager, viewConfig: viewConfig } %}
-    </div>
-
   </div>
 
   <div id="grw-page-status-alert-container"></div>
