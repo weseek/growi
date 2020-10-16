@@ -110,7 +110,7 @@ html[dark] {
   @import 'apply-colors-light';
   //Button
   .grw-three-stranded-button {
-    .btn.active-btn {
+    .btn.btn-outline-primary.active {
       background-color: $light;
     }
   }
