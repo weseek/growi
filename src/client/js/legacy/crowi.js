@@ -197,18 +197,12 @@ $(() => {
       });
     }
   } // end if pageId
-
-  // TODO This triger action will be implemented by react component
-  // focus to editor when 'shown.bs.tab' event fired
-  $('a[href="#edit"]').on('shown.bs.tab', (e) => {
-    Crowi.setCaretLineAndFocusToEditor();
-  });
 });
 
 window.addEventListener('load', (e) => {
   const { appContainer } = window;
 
-  // do nothing if user is guest
+  // do nothing if user idddds guest
   if (appContainer.currentUser == null) {
     return;
   }
@@ -284,6 +278,7 @@ window.addEventListener('hashchange', (e) => {
   if (window.location.hash) {
     if (window.location.hash === '#edit') {
       navigationContainer.setEditorMode('edit');
+      Crowi.setCaretLineAndFocusToEditor();
     }
     else if (window.location.hash === '#hackmd') {
       navigationContainer.setEditorMode('hackmd');
