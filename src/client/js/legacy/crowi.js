@@ -202,7 +202,7 @@ $(() => {
 window.addEventListener('load', (e) => {
   const { appContainer } = window;
 
-  // do nothing if user idddds guest
+  // do nothing if user is guest
   if (appContainer.currentUser == null) {
     return;
   }
@@ -211,7 +211,7 @@ window.addEventListener('load', (e) => {
   if (window.location.hash) {
     const navigationContainer = appContainer.getContainer('NavigationContainer');
 
-    if ((window.location.hash === '#edit' || window.location.hash === '#edit-form')) {
+    if (window.location.hash === '#edit') {
       navigationContainer.setEditorMode('edit');
 
       // focus
