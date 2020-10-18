@@ -284,9 +284,6 @@ window.addEventListener('hashchange', (e) => {
       navigationContainer.setEditorMode('hackmd');
     }
   }
-  else {
-    $('a[href="#revision-body"]').tab('show');
-  }
 });
 
 // adjust min-height of page for print temporarily
