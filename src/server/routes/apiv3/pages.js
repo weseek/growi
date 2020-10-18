@@ -90,13 +90,10 @@ module.exports = (crowi) => {
     const offset = +req.query.offset || 0;
     const { isTrashPage } = require('@commons/util/path-utils');
 
-    let includeTrashed;
+    let includeTrashed = false;
 
     if (isTrashPage(path)) {
       includeTrashed = true;
-    }
-    else {
-      includeTrashed = false;
     }
 
     const queryOptions = {
