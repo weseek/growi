@@ -234,6 +234,7 @@
       margin-left: -1px;
       content: '';
       border-left: 1px solid $borderColor;
+      transition: border-color 0.15s ease-in-out;
     }
   }
 }
@@ -251,6 +252,7 @@
   border-color: $borderColor;
 
   @include border-vertical('before', $borderColor, 70%, 1);
+  @include border-vertical('after', transparent, 100%, 0);
 
   &.view-button,
   &.edit-button {
@@ -269,7 +271,6 @@
   &:not(:first-child) {
     margin-left: 0;
     border-left: none;
-    @include border-vertical('after', $bgColor, 100%, 0);
   }
   &:not(:last-child) {
     border-right: none;
