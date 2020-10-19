@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, {
+  useState, useEffect, useCallback, useRef,
+} from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -56,26 +58,6 @@ const PageRenameModal = (props) => {
     SetIsRenameMetadata(!isRenameMetadata);
   }
 
-  const checkExistPaths = useCallback(async(newParentPath) => {
-    try {
-      const toPaths = subordinatedPages.map((subordinatedPage) => {
-        return convertToNewAffiliationPath(path, newParentPath, subordinatedPage.path);
-      });
-      const res = await appContainer.apiv3Get('/page/exist-paths', { newParentPath: pageNameInput, toPaths });
-      const { existPaths } = res.data;
-      setExistingPaths(existPaths);
-    }
-    catch (err) {
-      setErrs(err);
-      toastError(t('modal_duplicate.label.Fail to get subordinated pages'));// change message
-    }
-  }, [appContainer, pageNameInput, path, subordinatedPages, t]);
-
-  const checkExistPathsDebounced = debounce(1000, checkExistPaths);
-
-  useEffect(() => {
-    checkExistPathsDebounced(pageNameInput);
-  }, [pageNameInput, checkExistPathsDebounced]);
 
   const updateSubordinatedList = useCallback(async() => {
     try {
@@ -95,6 +77,36 @@ const PageRenameModal = (props) => {
     }
   }, [props.isOpen, updateSubordinatedList]);
 
+  const checkExistPaths = useCallback(async(subordinatedPages) => {
+    try {
+      console.log('newParentPath');
+      console.log(newParentPath);
+      console.log(subordinatedPages);
+      const newParentPath = '/test9';
+      const toPaths = subordinatedPages.map((subordinatedPage) => {
+        return convertToNewAffiliationPath(path, newParentPath, subordinatedPage.path);
+      });
+      console.log(toPaths);
+      console.log('apiたたいた');
+      const res = await appContainer.apiv3Get('/page/exist-paths', { newParentPath: pageNameInput, toPaths });
+      const { existPaths } = res.data;
+      setExistingPaths(existPaths);
+    }
+    catch (err) {
+      setErrs(err);
+      toastError(t('modal_duplicate.label.Fail to get subordinated pages'));// change message
+    }
+  }, [appContainer, pageNameInput, path, t]);
+
+  const checkExistPathsDebounce = debounce(1000, newParentPath => checkExistPaths(newParentPath));
+
+  useEffect(() => {
+    if (subordinatedPages.length !== 0) {
+      checkExistPathsDebounce(subordinatedPages);
+    }
+  }, [subordinatedPages, pageNameInput]);
+
+
   /**
    * change pageNameInput
    * @param {string} value
@@ -102,6 +114,7 @@ const PageRenameModal = (props) => {
   function inputChangeHandler(value) {
     setErrs(null);
     setPageNameInput(value);
+    console.log(pageNameInput);
   }
 
   async function rename() {
@@ -128,6 +141,7 @@ const PageRenameModal = (props) => {
       setErrs(err);
     }
   }
+  console.log(subordinatedPages);
 
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} className="grw-create-page">
