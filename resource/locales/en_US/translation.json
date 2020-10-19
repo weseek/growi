@@ -145,6 +145,7 @@
   "Recent Changes": "Recent Changes",
   "original_path":"Original path",
   "new_path":"New path",
+  "duplicated_path":"duplicated_path",
   "personal_dropdown": {
     "home": "Home",
     "settings": "Settings",
@@ -307,6 +308,7 @@
       "Move/Rename page": "Move/Rename page",
       "New page name": "New page name",
       "Fail to get subordinated pages": "Fail to get subordinated pages",
+      "Fail to get exist path": "Fail to get exist path",
       "Current page name": "Current page name",
       "Recursively": "Recursively",
       "Do not update metadata": "Do not update metadata",
