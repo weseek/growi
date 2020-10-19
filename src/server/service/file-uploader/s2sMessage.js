@@ -37,8 +37,7 @@ class FileUploaderS2sMessageHandle extends S2sMessageHandlable {
 
     logger.info('Reset fileupload service by pubsub notification');
     await configManager.loadConfigs();
-    this.initCustomCss();
-    this.initCustomTitle();
+    await this.crowi.setUpFileUpload(true);
   }
 
 
@@ -46,7 +45,7 @@ class FileUploaderS2sMessageHandle extends S2sMessageHandlable {
     const { s2sMessagingService } = this;
 
     if (s2sMessagingService != null) {
-      const s2sMessage = new S2sMessage('customizeServiceUpdated', { updatedAt: new Date() });
+      const s2sMessage = new S2sMessage('fileUploadServiceUpdated', { updatedAt: new Date() });
 
       try {
         await s2sMessagingService.publish(s2sMessage);
