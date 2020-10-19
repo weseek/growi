@@ -12,6 +12,7 @@
         <span class="d-none d-sm-inline">Recently Created</span>
       </a>
     </li>
+
     {% if user._id.toString() == pageUser._id.toString() %}
     <li class="nav-item">
       <a class="nav-link" href="/me" role="tab">
@@ -29,9 +30,9 @@
         {{t('No bookmarks yet')}}.
       {% else %}
         <div class="page-list-container">
-          {% include 'page_list.html' with { pages: bookmarkList, pagePropertyName: 'page' } %}
+          {# {% include 'page_list.html' with { pages: bookmarkList, pagePropertyName: 'page' } %} #}
         </div>
-      {% endif %}
+        {# {% endif %} #}
     </div>
   </div>
 </div>
