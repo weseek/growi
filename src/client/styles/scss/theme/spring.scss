@@ -98,9 +98,6 @@ html[dark] {
     .btn.btn-outline-primary {
       @include three-stranded-button(darken($primary, 50%), lighten($primary, 5%), lighten($primary, 10%));
     }
-    .btn.btn-outline-primary.active {
-      background-color: lighten($primary, 10%);
-    }
   }
 
   .growi:not(.login-page) {
