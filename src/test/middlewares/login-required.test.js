@@ -4,13 +4,17 @@ const { getInstance } = require('../setup-crowi');
 
 describe('loginRequired', () => {
   let crowi;
+  const fallbackMock = jest.fn().mockReturnValue('fallback');
+
   let loginRequiredStrictly;
   let loginRequired;
+  let loginRequiredWithFallback;
 
   beforeEach(async(done) => {
     crowi = await getInstance();
     loginRequiredStrictly = require('@server/middlewares/login-required')(crowi);
     loginRequired = require('@server/middlewares/login-required')(crowi, true);
+    loginRequiredWithFallback = require('@server/middlewares/login-required')(crowi, false, fallbackMock);
     done();
   });
 
@@ -33,6 +37,7 @@ describe('loginRequired', () => {
       const result = loginRequired(req, res, next);
 
       expect(isGuestAllowedToReadSpy).toHaveBeenCalledTimes(1);
+      expect(fallbackMock).not.toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
       expect(res.redirect).not.toHaveBeenCalled();
       expect(result).toBe('next');
@@ -46,6 +51,7 @@ describe('loginRequired', () => {
       const result = loginRequired(req, res, next);
 
       expect(isGuestAllowedToReadSpy).toHaveBeenCalled();
+      expect(fallbackMock).not.toHaveBeenCalled();
       expect(next).not.toHaveBeenCalled();
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith('/login');
@@ -63,6 +69,7 @@ describe('loginRequired', () => {
       const result = loginRequired(req, res, next);
 
       expect(isGuestAllowedToReadSpy).toHaveBeenCalled();
+      expect(fallbackMock).not.toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
       expect(res.redirect).not.toHaveBeenCalled();
       expect(result).toBe('next');
@@ -100,6 +107,7 @@ describe('loginRequired', () => {
 
       expect(isGuestAllowedToReadSpy).not.toHaveBeenCalled();
       expect(next).not.toHaveBeenCalled();
+      expect(fallbackMock).not.toHaveBeenCalled();
       expect(res.redirect).not.toHaveBeenCalled();
       expect(res.sendStatus).toHaveBeenCalledTimes(1);
       expect(res.sendStatus).toHaveBeenCalledWith(403);
@@ -113,6 +121,7 @@ describe('loginRequired', () => {
 
       expect(isGuestAllowedToReadSpy).not.toHaveBeenCalled();
       expect(next).not.toHaveBeenCalled();
+      expect(fallbackMock).not.toHaveBeenCalled();
       expect(res.sendStatus).not.toHaveBeenCalled();
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith('/login');
@@ -131,6 +140,7 @@ describe('loginRequired', () => {
       const result = loginRequiredStrictly(req, res, next);
 
       expect(isGuestAllowedToReadSpy).not.toHaveBeenCalled();
+      expect(fallbackMock).not.toHaveBeenCalled();
       expect(res.sendStatus).not.toHaveBeenCalled();
       expect(res.redirect).not.toHaveBeenCalled();
       expect(next).toHaveBeenCalledTimes(1);
@@ -154,6 +164,7 @@ describe('loginRequired', () => {
 
       expect(isGuestAllowedToReadSpy).not.toHaveBeenCalled();
       expect(next).not.toHaveBeenCalled();
+      expect(fallbackMock).not.toHaveBeenCalled();
       expect(res.sendStatus).not.toHaveBeenCalled();
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith(expectedPath);
@@ -175,6 +186,7 @@ describe('loginRequired', () => {
 
       expect(isGuestAllowedToReadSpy).not.toHaveBeenCalled();
       expect(next).not.toHaveBeenCalled();
+      expect(fallbackMock).not.toHaveBeenCalled();
       expect(res.sendStatus).not.toHaveBeenCalled();
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith('/login');
@@ -184,4 +196,55 @@ describe('loginRequired', () => {
 
   });
 
+  describe('specified fallback', () => {
+    // setup req/res/next
+    const req = {
+      originalUrl: 'original url 1',
+      session: null,
+    };
+    const res = {
+      redirect: jest.fn().mockReturnValue('redirect'),
+      sendStatus: jest.fn().mockReturnValue('sendStatus'),
+    };
+    const next = jest.fn().mockReturnValue('next');
+
+    let isGuestAllowedToReadSpy;
+
+    beforeEach(async(done) => {
+      // reset session object
+      req.session = {};
+      // spy for AclService.isGuestAllowedToRead
+      isGuestAllowedToReadSpy = jest.spyOn(crowi.aclService, 'isGuestAllowedToRead');
+      done();
+    });
+
+    test('invoke fallback when \'req.path\' starts with \'_api\'', () => {
+      req.path = '/_api/someapi';
+
+      const result = loginRequiredWithFallback(req, res, next);
+
+      expect(isGuestAllowedToReadSpy).not.toHaveBeenCalled();
+      expect(next).not.toHaveBeenCalled();
+      expect(res.redirect).not.toHaveBeenCalled();
+      expect(res.sendStatus).not.toHaveBeenCalled();
+      expect(fallbackMock).toHaveBeenCalledTimes(1);
+      expect(fallbackMock).toHaveBeenCalledWith(req, res);
+      expect(result).toBe('fallback');
+    });
+
+    test('invoke fallback when the user does not loggedin', () => {
+      req.path = '/path/that/requires/loggedin';
+
+      const result = loginRequiredWithFallback(req, res, next);
+
+      expect(isGuestAllowedToReadSpy).not.toHaveBeenCalled();
+      expect(next).not.toHaveBeenCalled();
+      expect(res.sendStatus).not.toHaveBeenCalled();
+      expect(res.redirect).not.toHaveBeenCalled();
+      expect(fallbackMock).toHaveBeenCalledTimes(1);
+      expect(fallbackMock).toHaveBeenCalledWith(req, res);
+      expect(result).toBe('fallback');
+    });
+
+  });
 });
