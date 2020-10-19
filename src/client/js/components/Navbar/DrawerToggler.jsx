@@ -1,8 +1,6 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 
-import { withTranslation } from 'react-i18next';
-
 import { withUnstatedContainers } from '../UnstatedUtils';
 import NavigationContainer from '../../services/NavigationContainer';
 
@@ -37,10 +35,9 @@ const DrawerTogglerWrapper = withUnstatedContainers(DrawerToggler, [NavigationCo
 
 
 DrawerToggler.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 
   iconClass: PropTypes.string,
 };
 
-export default withTranslation()(DrawerTogglerWrapper);
+export default DrawerTogglerWrapper;
