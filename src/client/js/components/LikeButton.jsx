@@ -36,19 +36,17 @@ class LikeButton extends React.Component {
     }
 
     return (
-      <div className="d-flex">
-        <button
-          type="button"
-          onClick={this.handleClick}
-          className={`btn rounded-circle btn-like border-0 d-edit-none
+      <button
+        type="button"
+        onClick={this.handleClick}
+        className={`btn btn-like border-0 d-edit-none
         ${pageContainer.state.isLiked ? 'active' : ''}`}
-        >
-          <i className="icon-like"></i>
-        </button>
-        <div className="total-likes">
+      >
+        <i className="icon-like mr-3"></i>
+        <span className="total-likes">
           {pageContainer.state.sumOfLikers}
-        </div>
-      </div>
+        </span>
+      </button>
     );
   }
 

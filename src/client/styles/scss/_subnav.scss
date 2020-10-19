@@ -35,23 +35,15 @@
 
   .btn-like,
   .btn-bookmark {
-    width: 40px;
     height: 40px;
     font-size: 20px;
+    border-radius: $border-radius-xl;
   }
 
-  .total-likes {
-    width: 8px;
-    height: 16px;
-    padding: 0.5em 0 0 0;
-    font-size: 16px;
-  }
-
+  .total-likes,
   .total-bookmarks {
-    width: 8px;
-    height: 16px;
-    padding: 0.5em 0 0 0;
-    font-size: 16px;
+    font-size: 17px;
+    font-weight: $font-weight-bold;
   }
 
   ul.authors {
@@ -94,19 +86,13 @@
     .btn-bookmark {
       @extend .btn-sm;
 
-      width: 30px;
       height: 30px;
       font-size: 15px !important;
+      border-radius: $border-radius-xl;
     }
 
-    .total-likes {
-      width: 6px;
-      height: 12px;
-      font-size: 12px;
-    }
-
+    .total-likes,
     .total-bookmarks {
-      width: 6px;
       height: 12px;
       font-size: 12px;
     }
