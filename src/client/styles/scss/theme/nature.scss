@@ -116,5 +116,8 @@ html[dark] {
     .btn.btn-outline-primary {
       @include three-stranded-button($bgcolor-navbar, lighten($bgcolor-navbar, 65%), lighten($bgcolor-navbar, 70%));
     }
+    .btn.btn-outline-primary.active {
+      background-color: lighten($bgcolor-navbar, 70%);
+    }
   }
 }

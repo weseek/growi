@@ -112,6 +112,9 @@ html[dark] {
     .btn.btn-outline-primary {
       @include three-stranded-button(lighten($primary, 35%), $primary, lighten($primary, 5%), darken($primary, 20%));
     }
+    .btn.btn-outline-primary.active {
+      background-color: lighten($primary, 5%);
+    }
   }
 
   // Table
