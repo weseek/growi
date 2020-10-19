@@ -25,7 +25,7 @@ function DuplicatedPathsTable(props) {
         {existingPaths.map((existPath) => {
           const convertedPath = convertToNewAffiliationPath(oldPagePath, path, existPath);
           return (
-            <tr className="d-flex">
+            <tr key={existPath} className="d-flex">
               <td className="text-break w-50">
                 <a href={convertedPath}>
                   {convertedPath}
