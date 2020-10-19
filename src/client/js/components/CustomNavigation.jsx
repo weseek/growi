@@ -8,8 +8,10 @@ import {
 const CustomNavigation = (props) => {
   const [activeTab, setActiveTab] = useState('');
   // [TODO: set default active tab by gw4079]
+
+  // const [defaultActiveTab, setDefaultActiveTab] = (null);
   const [sliderWidth, setSliderWidth] = useState(null);
-  const [sliderMarginLeft, setSliderMarginLeft] = useState(null);
+  const [sliderMarginLeft, setSliderMarginLeft] = useState(0);
 
   function switchActiveTab(activeTab) {
     setActiveTab(activeTab);
@@ -19,14 +21,19 @@ const CustomNavigation = (props) => {
   function getPercentage(min, max) {
     return min / max * 100;
   }
+  const navBar = document.getElementById('grw-custom-navbar');
+  const navTabs = document.querySelectorAll('ul.grw-custom-navbar > li.grw-custom-navtab');
+
 
   useEffect(() => {
     if (activeTab === '') {
       return;
     }
 
-    const navBar = document.getElementById('grw-custom-navbar');
-    const navTabs = document.querySelectorAll('ul.grw-custom-navbar > li.grw-custom-navtab');
+    const defaultActiveTab = navTabs[0];
+    const defaultActiveWidth = defaultActiveTab.offsetWidth;
+    console.log(defaultActiveWidth);
+
 
     if (navBar == null || navTabs == null) {
       return;
