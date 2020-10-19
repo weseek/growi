@@ -31,7 +31,7 @@ const ThreeStrandedButton = (props) => {
           className={`btn btn-outline-primary view-button ${btnActive === 'view' && 'active'} ${isBtnDisabled && 'disabled'}`}
           onClick={() => { threeStrandedButtonClickedHandler('view') }}
         >
-          <i className="icon-control-play icon-fw" />
+          <i className="icon-control-play icon-fw grw-three-stranded-button-icon" />
           { t('view') }
         </button>
         <button
@@ -39,7 +39,7 @@ const ThreeStrandedButton = (props) => {
           className={`btn btn-outline-primary edit-button ${btnActive === 'edit' && 'active'} ${isBtnDisabled && 'disabled'}`}
           onClick={() => { threeStrandedButtonClickedHandler('edit') }}
         >
-          <i className="icon-note icon-fw" />
+          <i className="icon-note icon-fw grw-three-stranded-button-icon" />
           { t('Edit') }
         </button>
         <button
@@ -47,7 +47,7 @@ const ThreeStrandedButton = (props) => {
           className={`btn btn-outline-primary hackmd-button ${btnActive === 'hackmd' && 'active'} ${isBtnDisabled && 'disabled'}`}
           onClick={() => { threeStrandedButtonClickedHandler('hackmd') }}
         >
-          <i className="fa fa-fw fa-file-text-o" />
+          <i className="fa fa-fw fa-file-text-o grw-three-stranded-button-icon" />
           { t('hackmd.hack_md') }
         </button>
       </div>
