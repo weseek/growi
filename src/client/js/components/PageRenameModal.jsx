@@ -58,7 +58,6 @@ const PageRenameModal = (props) => {
     SetIsRenameMetadata(!isRenameMetadata);
   }
 
-
   const updateSubordinatedList = useCallback(async() => {
     try {
       const res = await appContainer.apiv3Get('/pages/subordinated-list', { path });
@@ -77,12 +76,10 @@ const PageRenameModal = (props) => {
     }
   }, [props.isOpen, updateSubordinatedList]);
 
-  const checkExistPaths = useCallback(async(subordinatedPages) => {
+  const checkExistPaths = async(newParentPath, subordinatedPages) => {
     try {
-      console.log('newParentPath');
-      console.log(newParentPath);
       console.log(subordinatedPages);
-      const newParentPath = '/test9';
+      console.log(newParentPath);
       const toPaths = subordinatedPages.map((subordinatedPage) => {
         return convertToNewAffiliationPath(path, newParentPath, subordinatedPage.path);
       });
@@ -96,16 +93,12 @@ const PageRenameModal = (props) => {
       setErrs(err);
       toastError(t('modal_duplicate.label.Fail to get subordinated pages'));// change message
     }
-  }, [appContainer, pageNameInput, path, t]);
+  };
 
-  const checkExistPathsDebounce = debounce(1000, newParentPath => checkExistPaths(newParentPath));
-
-  useEffect(() => {
-    if (subordinatedPages.length !== 0) {
-      checkExistPathsDebounce(subordinatedPages);
-    }
-  }, [subordinatedPages, pageNameInput]);
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const checkExistPathsDebounce = useCallback(
+    debounce(1000, checkExistPaths), [],
+  );
 
   /**
    * change pageNameInput
@@ -114,7 +107,7 @@ const PageRenameModal = (props) => {
   function inputChangeHandler(value) {
     setErrs(null);
     setPageNameInput(value);
-    console.log(pageNameInput);
+    checkExistPathsDebounce(value, subordinatedPages);
   }
 
   async function rename() {
@@ -141,7 +134,6 @@ const PageRenameModal = (props) => {
       setErrs(err);
     }
   }
-  console.log(subordinatedPages);
 
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} className="grw-create-page">
