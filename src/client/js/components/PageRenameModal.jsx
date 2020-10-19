@@ -100,6 +100,10 @@ const PageRenameModal = (props) => {
     debounce(1000, checkExistPaths), [],
   );
 
+  useEffect(() => {
+    checkExistPathsDebounce(pageNameInput, subordinatedPages);
+  }, [pageNameInput, subordinatedPages, checkExistPathsDebounce]);
+
   /**
    * change pageNameInput
    * @param {string} value
@@ -107,7 +111,6 @@ const PageRenameModal = (props) => {
   function inputChangeHandler(value) {
     setErrs(null);
     setPageNameInput(value);
-    checkExistPathsDebounce(value, subordinatedPages);
   }
 
   async function rename() {
