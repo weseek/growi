@@ -221,8 +221,17 @@
   transition-duration: 300ms;
 }
 
-@mixin border-vertical($beforeOrAfter, $borderColor, $borderLength, $zIndex: initial) {
+@mixin border-vertical($beforeOrAfter, $borderColor, $borderLength, $zIndex: initial, $isBtnGroup: false) {
   position: relative;
+  @if $isBtnGroup {
+    &:not(:first-child) {
+      margin-left: 0;
+      border-left: none;
+    }
+    &:not(:last-child) {
+      border-right: none;
+    }
+  }
   &:not(:first-child) {
     &::#{$beforeOrAfter} {
       position: absolute;
@@ -251,8 +260,7 @@
   background-color: $bgColor;
   border-color: $borderColor;
 
-  @include border-vertical('before', $borderColor, 70%, 1);
-  @include border-vertical('after', transparent, 100%, 0);
+  @include border-vertical('before', $borderColor, 70%, 1, true);
 
   &.view-button,
   &.edit-button {
@@ -267,13 +275,6 @@
     .grw-three-stranded-button-icon {
       margin-right: -0.1rem;
     }
-  }
-  &:not(:first-child) {
-    margin-left: 0;
-    border-left: none;
-  }
-  &:not(:last-child) {
-    border-right: none;
   }
   &:hover,
   &:active {
