@@ -49,7 +49,7 @@ module.exports = function(crowi, app) {
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
   const ApiResponse = require('../util/apiResponse');
   const globalNotificationService = crowi.getGlobalNotificationService();
-  const { body } = require('express-validator/check');
+  const { body } = require('express-validator');
   const mongoose = require('mongoose');
   const ObjectId = mongoose.Types.ObjectId;
 
@@ -208,7 +208,7 @@ module.exports = function(crowi, app) {
    */
   api.add = async function(req, res) {
     const { commentForm, slackNotificationForm } = req.body;
-    const { validationResult } = require('express-validator/check');
+    const { validationResult } = require('express-validator');
 
     const errors = validationResult(req.body);
     if (!errors.isEmpty()) {

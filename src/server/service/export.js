@@ -50,11 +50,17 @@ class ExportService {
    * @return {object} info for zip files and whether currentProgressingStatus exists
    */
   async getStatus() {
-    const zipFiles = fs.readdirSync(this.baseDir).filter((file) => { return path.extname(file) === '.zip' });
-    const zipFileStats = await Promise.all(zipFiles.map((file) => {
+    const zipFiles = fs.readdirSync(this.baseDir).filter(file => path.extname(file) === '.zip');
+
+    // process serially so as not to waste memory
+    const zipFileStats = [];
+    const parseZipFilePromises = zipFiles.map((file) => {
       const zipFile = this.getFile(file);
       return this.growiBridgeService.parseZipFile(zipFile);
-    }));
+    });
+    for await (const stat of parseZipFilePromises) {
+      zipFileStats.push(stat);
+    }
 
     // filter null object (broken zip)
     const filtered = zipFileStats.filter(element => element != null);
@@ -166,9 +172,7 @@ class ExportService {
     const collection = mongoose.connection.collection(collectionName);
 
     const nativeCursor = collection.find();
-    const readStream = nativeCursor
-      .snapshot()
-      .stream({ transform: JSON.stringify });
+    const readStream = nativeCursor.stream({ transform: JSON.stringify });
 
     // get TransformStream
     const transformStream = this.generateTransformStream();
@@ -201,8 +205,12 @@ class ExportService {
   async exportCollectionsToZippedJson(collections) {
     const metaJson = await this.createMetaJson();
 
-    const promises = collections.map(collectionName => this.exportCollectionToJson(collectionName));
-    const jsonFiles = await Promise.all(promises);
+    // process serially so as not to waste memory
+    const jsonFiles = [];
+    const jsonFilesPromises = collections.map(collectionName => this.exportCollectionToJson(collectionName));
+    for await (const jsonFile of jsonFilesPromises) {
+      jsonFiles.push(jsonFile);
+    }
 
     // send terminate event
     this.emitStartZippingEvent();

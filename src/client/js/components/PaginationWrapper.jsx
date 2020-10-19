@@ -14,10 +14,10 @@ class PaginationWrapper extends React.Component {
     super(props);
 
     this.state = {
-      totalItemsCount: 0,
       activePage: 1,
+      totalItemsCount: 0,
       paginationNumbers: {},
-      limit: Infinity,
+      limit: this.props.pagingLimit || Infinity,
     };
 
     this.calculatePagination = this.calculatePagination.bind(this);
@@ -143,6 +143,20 @@ class PaginationWrapper extends React.Component {
 
   }
 
+  getListClassName() {
+    const listClassNames = [];
+
+    const { align } = this.props;
+    if (align === 'center') {
+      listClassNames.push('justify-content-center');
+    }
+    if (align === 'right') {
+      listClassNames.push('justify-content-end');
+    }
+
+    return listClassNames.join(' ');
+  }
+
   render() {
     const paginationItems = [];
 
@@ -159,7 +173,7 @@ class PaginationWrapper extends React.Component {
 
     return (
       <React.Fragment>
-        <Pagination size="sm">{paginationItems}</Pagination>
+        <Pagination size="sm" listClassName={this.getListClassName()}>{paginationItems}</Pagination>
       </React.Fragment>
     );
   }
@@ -175,7 +189,13 @@ PaginationWrapper.propTypes = {
   activePage: PropTypes.number.isRequired,
   changePage: PropTypes.func.isRequired,
   totalItemsCount: PropTypes.number.isRequired,
-  pagingLimit: PropTypes.number.isRequired,
+  pagingLimit: PropTypes.number,
+  align: PropTypes.string,
+};
+PaginationWrapper.defaultProps = {
+  align: 'left',
+  pagingLimit: PropTypes.number,
+
 };
 
 export default withTranslation()(PaginationWrappered);

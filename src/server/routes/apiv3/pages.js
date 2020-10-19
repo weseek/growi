@@ -1,11 +1,10 @@
 const loggerFactory = require('@alias/logger');
 
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
-
 const express = require('express');
 
-
 const router = express.Router();
+const { query } = require('express-validator');
 
 /**
  * @swagger
@@ -13,11 +12,16 @@ const router = express.Router();
  *    name: Pages
  */
 module.exports = (crowi) => {
+  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
+  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
+
 
   const Page = crowi.model('Page');
+
+  const validator = {};
 
   /**
    * @swagger
@@ -78,6 +82,28 @@ module.exports = (crowi) => {
     catch (err) {
       res.code = 'unknown';
       logger.error('Failed to delete trash pages', err);
+      return res.apiv3Err(err, 500);
+    }
+  });
+
+  validator.displayList = [
+    query('limit').if(value => value != null).isInt({ max: 100 }).withMessage('You should set less than 100 or not to set limit.'),
+  ];
+
+  router.get('/list', accessTokenParser, loginRequired, validator.displayList, apiV3FormValidator, async(req, res) => {
+    const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
+    const { path } = req.query;
+    const page = req.query.page;
+    const offset = (page - 1) * limit;
+
+    const queryOptions = { offset, limit };
+
+    try {
+      const result = await Page.findListWithDescendants(path, req.user, queryOptions);
+      return res.apiv3(result);
+    }
+    catch (err) {
+      logger.error('Failed to get Descendants Pages', err);
       return res.apiv3Err(err, 500);
     }
   });

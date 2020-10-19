@@ -3,8 +3,8 @@ $color-list: $color-global !default;
 $bgcolor-list: $bgcolor-global !default;
 $color-list-hover: $color-global !default;
 $bgcolor-list-hover: darken($bgcolor-global, 3%) !default;
-$color-list-active: $color-reversal !default;
 $bgcolor-list-active: $primary !default;
+$color-list-active: color-yiq($bgcolor-list-active) !default;
 $bgcolor-subnav: darken($bgcolor-global, 3%) !default;
 $color-table: $color-global !default;
 $bgcolor-table: null !default;
@@ -44,6 +44,14 @@ $table-hover-bg: $bgcolor-table-hover;
 .form-control[readonly] {
   color: lighten($color-global, 10%);
   background-color: darken($bgcolor-global, 5%);
+}
+
+/*
+ * card
+ */
+.card.card-disabled {
+  background-color: darken($bgcolor-card, 5%);
+  border-color: $gray-200;
 }
 
 /*
@@ -136,6 +144,15 @@ $table-hover-bg: $bgcolor-table-hover;
   background-color: rgba($bgcolor-subnav, 0.85);
 }
 
+.grw-three-stranded-button {
+  .btn-outline-primary {
+    &:hover {
+      color: $primary;
+      background-color: $gray-200;
+    }
+  }
+}
+
 .grw-drawer-toggler {
   @extend .btn-light;
   color: $gray-500;
@@ -168,6 +185,25 @@ $table-hover-bg: $bgcolor-table-hover;
 .grw-editor-navbar-bottom {
   #slack-mark-white {
     display: none;
+  }
+
+  .input-group-text {
+    margin-right: 1px;
+    color: $secondary;
+    border-color: $light;
+  }
+
+  .btn.btn-outline-secondary {
+    border-color: $border-color;
+  }
+}
+
+/*
+ * GROWI Link Edit Modal
+ */
+.link-edit-modal {
+  span i {
+    color: $gray-400;
   }
 }
 

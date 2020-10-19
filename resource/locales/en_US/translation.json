@@ -1,5 +1,6 @@
 {
   "Help": "Help",
+  "view": "View",
   "Edit": "Edit",
   "Delete": "Delete",
   "delete_all": "Delete all",
@@ -46,13 +47,19 @@
   "List View": "List",
   "Timeline View": "Timeline",
   "History": "History",
+  "attachment_data": "Attachment Data",
+  "No_attachments_yet": "No attachments yet.",
   "Presentation Mode": "Presentation",
   "Not available for guest": "Not available for guest",
   "Create Archive Page": "Create Archive Page",
   "File type": "File type",
+  "Target page": "Target page",
   "Include Attachment File": "Include Attachment File",
   "Include Comment": "Include Comment",
   "Include Subordinated Page": "Include Subordinated Page",
+  "All Subordinated Page": "All Subordinated Page",
+  "Specify Hierarchy": "Specify Hierarchy",
+  "Submitted the request to create the archive": "Submitted the request to create the archive",
   "username": "Username",
   "Created": "Created",
   "Last updated": "Updated",
@@ -113,6 +120,7 @@
   "Specified users only": "Specified users only",
   "Only me": "Only me",
   "Only inside the group": "Only inside the group",
+  "page_list": "Page List",
   "page_list_and_search_results": "Page list / Search results",
   "scope_of_page_disclosure": "Scope of page disclosure",
   "set_point": "Set point",
@@ -132,6 +140,7 @@
   "Deleted Pages": "Deleted Pages",
   "Sign out": "Logout",
   "Disassociate": "Disassociate",
+  "No bookmarks yet": "No bookmarks yet",
   "Recent Created": "Recent Created",
   "Recent Changes": "Recent Changes",
   "personal_dropdown": {
@@ -139,7 +148,7 @@
     "settings": "Settings",
     "color_mode": "Color mode",
     "sidebar_mode": "Sidebar mode",
-    "sidebar_mode_editor": "Sidebar mode on Editor",
+    "sidebar_mode_editor": "Sidebar mode on editor",
     "use_os_settings": "Use OS settings"
   },
   "form_validation": {
@@ -424,6 +433,7 @@
     "open_sandbox": "Open Sandbox"
   },
   "hackmd": {
+    "hack_md": "HackMD",
     "not_set_up": "HackMD is not set up.",
     "start_to_edit": "Start to edit with HackMD",
     "clone_page_content": "Click to clone page content and start to edit.",
@@ -650,7 +660,7 @@
     "how_to": {
       "header": "How to configure Incoming Webhooks?",
       "workspace": "(At Workspace) Add a hook",
-      "workspace_desc1": "Go to <a href='https: //slack.com/services/new/incoming-webhook'>Incoming Webhooks configuration page</a>.",
+      "workspace_desc1": "Go to <a href='https://slack.com/services/new/incoming-webhook'>Incoming Webhooks configuration page</a>.",
       "workspace_desc2": "Choose the default channel to post.",
       "workspace_desc3": "Add.",
       "at_growi": "(At GROWI admin page) Set Webhook URL",
@@ -711,24 +721,6 @@
     "rebuild_description_1": "Click the button to rebuild index and add all page datas.",
     "rebuild_description_2": "This may take a while."
   },
-  "export_management": {
-    "exporting_collection_list": "Exporting Collection List",
-    "exported_data_list": "Exported Archive Data List",
-    "export_collections": "Export Collections",
-    "check_all": "Check All",
-    "uncheck_all": "Uncheck All",
-    "desc_password_seed": "<p>DO NOT FORGET to set current <code>PASSWORD_SEED</code> to your new GROWI system when restoring user data, or users will NOT be able to login with their password.</p><strong>HINT:</strong><p>The current <code>PASSWORD_SEED</code> will be stored in <code>meta.json</code> in exported ZIP.</p>",
-    "create_new_archive_data": "Create New Archive Data",
-    "export": "Export",
-    "cancel": "Cancel",
-    "file": "File",
-    "growi_version": "Growi Version",
-    "collections": "Collections",
-    "exported_at": "Exported At",
-    "export_menu": "Export Menu",
-    "download": "Download",
-    "delete": "Delete"
-  },
   "login": {
     "Sign in error": "Login error",
     "Registration successful": "Registration successful",
@@ -736,6 +728,7 @@
   },
   "export_bulk": {
     "failed_to_export": "Failed to export",
+    "failed_to_count_pages": "Failed to count pages",
     "export_page_markdown": "Export page as Markdown",
     "export_page_pdf": "Export page as PDF"
   },
@@ -762,5 +755,10 @@
     "complete_to_install1":"Complete to Install GROWI ! Please login as admin account.",
     "complete_to_install2":"Complete to Install GROWI ! Please check each settings on this page first.",
     "failed_to_create_admin_user":"Failed to create admin user. {{errMessage}}"
+  },
+  "validation":{
+    "aws_region": "For the region, enter the AWS region name. ex):us-east-1",
+    "aws_custom_endpoint":"For the custom endpoint, specify the URL that starts with http(s)://. Also, the trailing slash is not required.",
+    "failed_to_send_a_test_email":"Failed to send a test email using SMTP. Please check your settings."
   }
 }

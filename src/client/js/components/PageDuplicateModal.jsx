@@ -31,6 +31,8 @@ const PageDuplicateModal = (props) => {
    * @param {string} value
    */
   function ppacInputChangeHandler(value) {
+    setErrorCode(null);
+    setErrorMessage(null);
     setPageNameInput(value);
   }
 
@@ -39,6 +41,8 @@ const PageDuplicateModal = (props) => {
    * @param {string} value
    */
   function inputChangeHandler(value) {
+    setErrorCode(null);
+    setErrorMessage(null);
     setPageNameInput(value);
   }
 

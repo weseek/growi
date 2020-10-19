@@ -12,13 +12,8 @@
         <span class="d-none d-sm-inline">Recently Created</span>
       </a>
     </li>
+
     {% if user._id.toString() == pageUser._id.toString() %}
-    <li class="nav-item">
-      <a class="nav-link" href="#user-draft-list" role="tab" data-toggle="tab">
-        <i class="icon-docs"></i>
-        <span class="d-none d-sm-inline">My Drafts</span>
-      </a>
-    </li>
     <li class="nav-item">
       <a class="nav-link" href="/me" role="tab">
         <i class="icon-wrench"></i>
@@ -32,12 +27,12 @@
 
     <div class="tab-pane user-bookmark-list page-list active" id="user-bookmark-list">
       {% if bookmarkList.length == 0 %}
-        No bookmarks yet.
+        {{t('No bookmarks yet')}}.
       {% else %}
         <div class="page-list-container">
-          {% include 'page_list.html' with { pages: bookmarkList, pagePropertyName: 'page' } %}
+          {# {% include 'page_list.html' with { pages: bookmarkList, pagePropertyName: 'page' } %} #}
         </div>
-      {% endif %}
+        {# {% endif %} #}
     </div>
 
     <div class="tab-pane user-created-list page-list" id="user-created-list">

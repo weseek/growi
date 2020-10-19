@@ -3,7 +3,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-
 import { toastSuccess, toastError } from '../../util/apiNotification';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
@@ -23,10 +22,26 @@ class PasswordSettings extends React.Component {
       oldPassword: '',
       newPassword: '',
       newPasswordConfirm: '',
+      isPasswordSet: false,
     };
 
     this.onClickSubmit = this.onClickSubmit.bind(this);
     this.onChangeOldPassword = this.onChangeOldPassword.bind(this);
+
+  }
+
+  async componentDidMount() {
+    const { appContainer } = this.props;
+
+    try {
+      const res = await appContainer.apiv3Get('/personal-setting/is-password-set');
+      const { isPasswordSet } = res.data;
+      this.setState({ isPasswordSet });
+    }
+    catch (err) {
+      toastError(err);
+      this.setState({ retrieveError: err });
+    }
 
   }
 
@@ -61,22 +76,26 @@ class PasswordSettings extends React.Component {
   }
 
   render() {
-    const { t, personalContainer } = this.props;
+    const { t } = this.props;
     const { newPassword, newPasswordConfirm } = this.state;
     const isIncorrectConfirmPassword = (newPassword !== newPasswordConfirm);
 
+    if (this.state.retrieveError != null) {
+      throw new Error(this.state.retrieveError.message);
+    }
+
     return (
       <React.Fragment>
-        { (!personalContainer.state.isPasswordSet) && (
+        { (!this.state.isPasswordSet) && (
           <div className="alert alert-warning">{ t('personal_settings.password_is_not_set') }</div>
         ) }
 
         <div className="container-fluid my-4">
-          {(personalContainer.state.isPasswordSet)
+          {(this.state.isPasswordSet)
             ? <h2 className="border-bottom">{t('personal_settings.update_password')}</h2>
           : <h2 className="border-bottom">{t('personal_settings.set_new_password')}</h2>}
         </div>
-        {(personalContainer.state.isPasswordSet)
+        {(this.state.isPasswordSet)
         && (
           <div className="row mb-3">
             <label htmlFor="oldPassword" className="col-md-3 text-md-right">{ t('personal_settings.current_password') }</label>
@@ -124,7 +143,7 @@ class PasswordSettings extends React.Component {
               type="button"
               className="btn btn-primary"
               onClick={this.onClickSubmit}
-              disabled={this.state.retrieveError != null || isIncorrectConfirmPassword}
+              disabled={isIncorrectConfirmPassword}
             >
               {t('Update')}
             </button>

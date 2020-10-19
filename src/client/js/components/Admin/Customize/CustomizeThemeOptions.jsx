@@ -38,6 +38,8 @@ class CustomizeThemeOptions extends React.Component {
       name: 'future',     bg: '#16282d', topbar: '#2a2929', sidebar: '#00b5b7', theme: '#00b5b7',
     }, {
       name: 'halloween',  bg: '#030003', topbar: '#aa4a04', sidebar: '#162b33', theme: '#e9af2b',
+    }, {
+      name: 'kibela',  bg: '#f4f5f6', topbar: '#1256a3', sidebar: '#5882fa', theme: '#b5cbf79c',
     }];
     /* eslint-enable no-multi-spaces */
 
