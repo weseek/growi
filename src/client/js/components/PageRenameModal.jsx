@@ -1,5 +1,5 @@
 import React, {
-  useState, useEffect, useCallback, useRef,
+  useState, useEffect, useCallback,
 } from 'react';
 import PropTypes from 'prop-types';
 
@@ -76,22 +76,19 @@ const PageRenameModal = (props) => {
     }
   }, [props.isOpen, updateSubordinatedList]);
 
+
   const checkExistPaths = async(newParentPath, subordinatedPages) => {
     try {
-      console.log(subordinatedPages);
-      console.log(newParentPath);
       const toPaths = subordinatedPages.map((subordinatedPage) => {
         return convertToNewAffiliationPath(path, newParentPath, subordinatedPage.path);
       });
-      console.log(toPaths);
-      console.log('apiたたいた');
       const res = await appContainer.apiv3Get('/page/exist-paths', { newParentPath: pageNameInput, toPaths });
       const { existPaths } = res.data;
       setExistingPaths(existPaths);
     }
     catch (err) {
       setErrs(err);
-      toastError(t('modal_duplicate.label.Fail to get subordinated pages'));// change message
+      toastError(t('modal_rename.label.Fail to get exist path'));
     }
   };
 
@@ -101,8 +98,10 @@ const PageRenameModal = (props) => {
   );
 
   useEffect(() => {
-    checkExistPathsDebounce(pageNameInput, subordinatedPages);
-  }, [pageNameInput, subordinatedPages, checkExistPathsDebounce]);
+    if (pageNameInput !== path) {
+      checkExistPathsDebounce(pageNameInput, subordinatedPages);
+    }
+  }, [pageNameInput, subordinatedPages, path, checkExistPathsDebounce]);
 
   /**
    * change pageNameInput
