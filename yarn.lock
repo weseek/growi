@@ -1680,10 +1680,20 @@
   resolved "https://registry.yarnpkg.com/@kaishuu0123/markdown-it-fence/-/markdown-it-fence-1.0.1.tgz#1ba7886c0474cc31707acd195f7b9073406b743d"
   integrity sha512-gQZ0a3JcrCi1g+00D9CIbo2uPc6lnykqAsVaCbew8jsrdyF0f0cBngYgFKcTxW2vliT5I3K4lwD4DhM6hXeOjg==
 
+"@kobalab/socket.io-session@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@kobalab/socket.io-session/-/socket.io-session-1.0.3.tgz#87d55896bb48f57c57f26f0235bf53345a0a4615"
+  integrity sha512-pen2rqNuZUsR453EVM9owqDIbelFKa5gizyNM9hscphKrdPIYissNa9efddYSVBH24q7pknxS5kxbfSw/YYOMg==
+
 "@lykmapipo/common@>=0.38.1", "@lykmapipo/common@>=0.38.2":
   version "0.38.2"
   resolved "https://registry.yarnpkg.com/@lykmapipo/common/-/common-0.38.2.tgz#8eb01c6795547b9d6e8eb5f585b8b39109e2f4de"
   integrity sha512-607OLng2hC29gR1Ih6SfhnctP3/klF8HUU6VZqTZmk81G9TF279mb6ajQQJTyukny2pFQuYgKS5QxC4LJvugTw==
+
+"@lykmapipo/common@>=0.34.2", "@lykmapipo/common@>=0.34.3":
+  version "0.34.3"
+  resolved "https://registry.yarnpkg.com/@lykmapipo/common/-/common-0.34.3.tgz#eb74fa4af14f2f1e59ddd42491f05ab69f96bd71"
+  integrity sha512-rdLJkeatlCWEZFXC142V/fLAuKHREJcfPSC7OAjpn4DEvANfmvCgwLl+gwLLwFsn8lwnBDGo+7Y6pwirw86FpA==
   dependencies:
     auto-parse ">=1.8.0"
     browser-or-node ">=1.3.0"

@@ -283,7 +283,7 @@ Crowi.prototype.setupS2sMessagingService = async function() {
 Crowi.prototype.setupSocketIoService = async function() {
   const SocketIoService = require('../service/socket-io');
   if (this.socketIoService == null) {
-    this.socketIoService = new SocketIoService();
+    this.socketIoService = new SocketIoService(this);
   }
 };
 

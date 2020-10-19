@@ -3,6 +3,7 @@
 import loggerFactory from '~/utils/logger';
 
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
@@ -21,6 +22,7 @@ module.exports = function(crowi) {
     createdAt: { type: Date, default: Date.now },
   });
   bookmarkSchema.index({ page: 1, user: 1 }, { unique: true });
+  bookmarkSchema.plugin(mongoosePaginate);
   bookmarkSchema.plugin(uniqueValidator);
 
   bookmarkSchema.statics.countByPageId = async function(pageId) {

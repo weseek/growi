@@ -6,8 +6,9 @@ const logger = loggerFactory('growi:middleware:login-required');
  * require login handler
  *
  * @param {boolean} isGuestAllowed whethere guest user is allowed (default false)
+ * @param {function} fallback fallback function which will be triggered when the check cannot be passed
  */
-module.exports = (crowi, isGuestAllowed = false) => {
+module.exports = (crowi, isGuestAllowed = false, fallback = null) => {
 
   return function(req, res, next) {
 
@@ -45,9 +46,15 @@ module.exports = (crowi, isGuestAllowed = false) => {
     // is api path
     const path = req.path || '';
     if (path.match(/^\/_api\/.+$/)) {
+      if (fallback != null) {
+        return fallback(req, res);
+      }
       return res.sendStatus(403);
     }
 
+    if (fallback != null) {
+      return fallback(req, res);
+    }
     req.session.redirectTo = req.originalUrl;
     return res.redirect('/login');
   };
