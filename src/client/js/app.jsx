@@ -23,6 +23,7 @@ import PageStatusAlert from './components/PageStatusAlert';
 import RecentCreated from './components/RecentCreated/RecentCreated';
 import RecentlyCreatedIcon from './components/Icons/RecentlyCreatedIcon';
 import MyDraftList from './components/MyDraftList/MyDraftList';
+import BookmarkIcon from './components/Icons/BookmarkIcon';
 import MyBookmarkList from './components/MyBookmarkList/MyBookmarkList';
 import SeenUserList from './components/User/SeenUserList';
 import LikerList from './components/User/LikerList';
@@ -100,6 +101,7 @@ if (pageContainer.state.pageId != null) {
 
     'recent-created-icon': <RecentlyCreatedIcon />,
     'user-created-list': <RecentCreated userId={pageContainer.state.creator._id} />,
+    'user-bookmark-icon': <BookmarkIcon />,
     'user-bookmark-list': <MyBookmarkList />,
     // 'user-draft-list': <MyDraftList />,
   });
