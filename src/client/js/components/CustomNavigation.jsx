@@ -6,7 +6,9 @@ import {
 
 
 const CustomNavigation = (props) => {
-  const [activeTab, setActiveTab] = useState('');
+  const [activeTab, setActiveTab] = useState(Object.keys(props.navTabMapping)[0]);
+  console.log(`1 ${activeTab}`);
+
   // [TODO: set default active tab by gw4079]
 
   // const [defaultActiveTab, setDefaultActiveTab] = (null);
@@ -26,20 +28,25 @@ const CustomNavigation = (props) => {
 
 
   useEffect(() => {
+    console.log(`2 ${activeTab}`);
     if (activeTab === '') {
       return;
     }
 
-    const defaultActiveTab = navTabs[0];
-    const defaultActiveWidth = defaultActiveTab.offsetWidth;
-    console.log(defaultActiveWidth);
-
+    // const defaultActiveTab = navTabs[0];
+    // const defaultActiveWidth = defaultActiveTab.offsetWidth;
+    // console.log(defaultActiveWidth);
+    console.log(`3 ${activeTab}`);
 
     if (navBar == null || navTabs == null) {
+      console.log(`${navBar},${navTabs}`);
       return;
     }
 
     let tempML = 0;
+
+    console.log(`4 ${activeTab}`);
+
 
     const styles = [].map.call(navTabs, (el) => {
       const width = getPercentage(el.offsetWidth, navBar.offsetWidth);
@@ -51,6 +58,8 @@ const CustomNavigation = (props) => {
 
     setSliderWidth(width);
     setSliderMarginLeft(marginLeft);
+    console.log(`5 ${activeTab}`);
+
 
   }, [activeTab]);
 
@@ -59,6 +68,7 @@ const CustomNavigation = (props) => {
     <React.Fragment>
       <Nav className="nav-title grw-custom-navbar" id="grw-custom-navbar">
         {Object.entries(props.navTabMapping).map(([key, value]) => {
+          console.log('return');
           return (
             <NavItem key={key} type="button" className={`p-0 grw-custom-navtab ${activeTab === key && 'active'}`}>
               <NavLink onClick={() => { switchActiveTab(key) }}>
