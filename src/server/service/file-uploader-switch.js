@@ -1,9 +1,9 @@
 const logger = require('@alias/logger')('growi:service:FileUploader');
 
-const S2sMessage = require('../../models/vo/s2s-message');
-const S2sMessageHandlable = require('../s2s-messaging/handlable');
+const S2sMessage = require('../models/vo/s2s-message');
+const S2sMessageHandlable = require('./s2s-messaging/handlable');
 
-class FileUploaderS2sMessageHandle extends S2sMessageHandlable {
+class fileUploaderSwitch extends S2sMessageHandlable {
 
   constructor(crowi) {
     super();
@@ -40,7 +40,6 @@ class FileUploaderS2sMessageHandle extends S2sMessageHandlable {
     await this.crowi.setUpFileUpload(true);
   }
 
-
   async publishUpdatedMessage() {
     const { s2sMessagingService } = this;
 
@@ -58,4 +57,4 @@ class FileUploaderS2sMessageHandle extends S2sMessageHandlable {
 
 }
 
-module.exports = FileUploaderS2sMessageHandle;
+module.exports = fileUploaderSwitch;
