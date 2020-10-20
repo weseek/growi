@@ -79,18 +79,12 @@ class MyBookmarkList extends React.Component {
 
   renderNoBookmarkList = () => {
     const { t } = this.props;
-    if (this.state.pages.length === 0) {
-      return (
-        <div>
-          {t('No bookmarks yet')}
-        </div>
-      );
-    }
+    return t('No bookmarks yet');
   }
 
   renderBookmarkList = () => {
     return (
-      <div className="page-list-container-create">
+      <>
         <ul className="page-list-ul page-list-ul-flat mb-3">
           {this.generatePageList(this.state.pages)}
         </ul>
@@ -100,27 +94,19 @@ class MyBookmarkList extends React.Component {
           totalItemsCount={this.state.totalPages}
           pagingLimit={this.state.pagingLimit}
         />
-      </div>
+      </>
     );
   }
 
 
   render() {
+    console.log(`pages = ${this.state.pages}`);
+    console.log(`activePage = ${this.state.activePage}`);
     return (
-      // <div className="page-list-container-create">
-      //   <ul className="page-list-ul page-list-ul-flat mb-3">
-      //     {this.generatePageList(this.state.pages)}
-      //   </ul>
-      //   <PaginationWrapper
-      //     activePage={this.state.activePage}
-      //     changePage={this.handlePage}
-      //     totalItemsCount={this.state.totalPages}
-      //     pagingLimit={this.state.pagingLimit}
-      //   />
-      // </div>
       <>
-        {this.renderNoBookmarkList()}
-        {this.renderBookmarkList()}
+        <div className="page-list-container-create">
+          {this.state.pages === 0 ? this.renderNoBookmarkList() : this.renderBookmarkList()}
+        </div>
       </>
     );
   }
