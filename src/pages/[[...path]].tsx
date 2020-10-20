@@ -62,12 +62,23 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         {renderHighlightJsStyleTag(props.highlightJsStyle)}
       </Head>
       <BasicLayout title="GROWI">
-        <h1>{header}</h1>
-        { page && (
-          <p>
-            {page.revision.body}
-          </p>
-        ) }
+        <div className="row">
+          <div className="col grw-page-content-container">
+            <div id="content-main" className="content-main">
+              <h1>{header}</h1>
+              { page && (
+                <p>
+                  {page.revision.body}
+                </p>
+              ) }
+            </div>
+          </div>
+          <div className="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
+            <div id="revision-toc" className="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
+              <div id="revision-toc-content" className="revision-toc-content"></div>
+            </div>
+          </div>
+        </div>
       </BasicLayout>
     </>
   );
