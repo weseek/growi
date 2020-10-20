@@ -92,7 +92,7 @@ module.exports = (crowi) => {
 
   router.get('/list', accessTokenParser, loginRequired, validator.displayList, apiV3FormValidator, async(req, res) => {
     const { isTrashPage } = require('@commons/util/path-utils');
-    
+
     const { path } = req.query;
     const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
     const page = req.query.page || 1;
