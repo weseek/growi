@@ -46,8 +46,6 @@ export default class NavigationContainer extends Container {
     this.openPageCreateModal = this.openPageCreateModal.bind(this);
     this.closePageCreateModal = this.closePageCreateModal.bind(this);
     this.setEditorMode = this.setEditorMode.bind(this);
-    this.initDeviceSize();
-    this.initScrollEvent();
   }
 
   /**
