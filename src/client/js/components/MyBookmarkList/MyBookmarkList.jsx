@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
+import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
@@ -77,10 +77,14 @@ class MyBookmarkList extends React.Component {
     ));
   }
 
+  renderNoBookmarkList() {
+    const { t } = this.props;
+    return t('No bookmarks yet');
+  }
 
-  render() {
+  renderBookmarkList() {
     return (
-      <div className="page-list-container-create">
+      <>
         <ul className="page-list-ul page-list-ul-flat mb-3">
           {this.generatePageList(this.state.pages)}
         </ul>
@@ -90,7 +94,20 @@ class MyBookmarkList extends React.Component {
           totalItemsCount={this.state.totalPages}
           pagingLimit={this.state.pagingLimit}
         />
-      </div>
+      </>
+    );
+  }
+
+
+  render() {
+    return (
+      <>
+        <div className="page-list-container-create">
+          {/* TODO show a message in case of that there is no bookmark in user pages by gw4156 */}
+          {/* {this.state.totalPages === 0 ? this.renderNoBookmarkList() : this.renderBookmarkList()} */}
+          {this.renderBookmarkList()}
+        </div>
+      </>
     );
   }
 
@@ -102,8 +119,9 @@ class MyBookmarkList extends React.Component {
 const MyBookmarkListWrapper = withUnstatedContainers(MyBookmarkList, [AppContainer, PageContainer]);
 
 MyBookmarkList.propTypes = {
+  t: PropTypes.func.isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
-export default MyBookmarkListWrapper;
+export default withTranslation()(MyBookmarkListWrapper);

@@ -16,13 +16,10 @@
     <div class="col grw-page-content-container">
 
       {#
-        # ensure to insert 'user_page_content' widget to here
-        #
         #   Because this block has content like 'Bookmarks' or 'Recent Created' whose height changes dynamically,
         #   setting of 'revision-toc' (affix) is hindered.
         #}
       <div class="mb-5 user-page-content-container d-edit-none d-print-none">
-        {% include '../widget/user_page_content.html' %}
       </div>
 
       {% block content_main_before %}
@@ -55,12 +52,23 @@
   {% include 'widget/comments.html' %}
 
   {% if page %}
-    <div class="grw-recently-created">
-      <h1 class="recently-created-title border-bottom pb-2">
+    <div class="grw-page-list-m">
+      <h1 class="grw-page-list-title-m border-bottom pb-2">
+        <i id="user-bookmark-icon"></i>
+        Bookmarks
+      </h2>
+      <div class="page-list" id="user-bookmark-list">
+        <div class="page-list-container">
+        </div>
+      </div>
+    </div>
+
+    <div class="grw-page-list-m">
+      <h1 class="grw-page-list-title-m border-bottom pb-2">
         <i id="recent-created-icon"></i>
         Recently Created
       </h2>
-      <div class="user-created-list page-list" id="user-created-list">
+      <div class="page-list" id="user-created-list">
         <div class="page-list-container">
         </div>
       </div>
