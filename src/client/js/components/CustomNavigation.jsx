@@ -26,40 +26,48 @@ const CustomNavigation = (props) => {
   const navBar = document.getElementById('grw-custom-navbar');
   const navTabs = document.querySelectorAll('ul.grw-custom-navbar > li.grw-custom-navtab');
 
-
+  const mounted = useRef(false);
   useEffect(() => {
     console.log(`2 ${activeTab}`);
     if (activeTab === '') {
       return;
     }
 
-    // const defaultActiveTab = navTabs[0];
-    // const defaultActiveWidth = defaultActiveTab.offsetWidth;
-    // console.log(defaultActiveWidth);
-    console.log(`3 ${activeTab}`);
+    if (mounted.current) {
+      // Update時の処理
+      console.log('Updated!');
+      const defaultActiveTab = navTabs[0];
+      const defaultActiveWidth = defaultActiveTab.offsetWidth;
+      console.log(defaultActiveWidth);
 
-    if (navBar == null || navTabs == null) {
-      console.log(`${navBar},${navTabs}`);
-      return;
+
+      if (navBar == null || navTabs == null) {
+        console.log(`${navBar},${navTabs}`);
+        return;
+      }
+
+      let tempML = 0;
+
+      const styles = [].map.call(navTabs, (el) => {
+        const width = getPercentage(el.offsetWidth, navBar.offsetWidth);
+        const marginLeft = tempML;
+        tempML += width;
+        return { width, marginLeft };
+      });
+      const { width, marginLeft } = styles[props.navTabMapping[activeTab].index];
+
+
+      setSliderWidth(width);
+      setSliderMarginLeft(marginLeft);
+    }
+    else {
+      // Mount時の処理
+      console.log('Mounted!');
+      mounted.current = true;
     }
 
-    let tempML = 0;
 
-    console.log(`4 ${activeTab}`);
-
-
-    const styles = [].map.call(navTabs, (el) => {
-      const width = getPercentage(el.offsetWidth, navBar.offsetWidth);
-      const marginLeft = tempML;
-      tempML += width;
-      return { width, marginLeft };
-    });
-    const { width, marginLeft } = styles[props.navTabMapping[activeTab].index];
-
-    setSliderWidth(width);
-    setSliderMarginLeft(marginLeft);
-    console.log(`5 ${activeTab}`);
-
+    console.log(`3 ${activeTab}`);
 
   }, [activeTab]);
 
