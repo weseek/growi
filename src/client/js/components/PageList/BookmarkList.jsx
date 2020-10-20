@@ -6,7 +6,6 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 
 
 import AppContainer from '../../services/AppContainer';
-import PageContainer from '../../services/PageContainer';
 import { toastError } from '../../util/apiNotification';
 
 import PaginationWrapper from '../PaginationWrapper';
@@ -77,37 +76,25 @@ class BookmarkList extends React.Component {
     ));
   }
 
-  renderNoBookmarkList() {
-    const { t } = this.props;
-    return t('No bookmarks yet');
-  }
-
-  renderBookmarkList() {
-    return (
-      <>
-        <ul className="page-list-ul page-list-ul-flat mb-3">
-          {this.generatePageList(this.state.pages)}
-        </ul>
-        <PaginationWrapper
-          activePage={this.state.activePage}
-          changePage={this.handlePage}
-          totalItemsCount={this.state.totalPages}
-          pagingLimit={this.state.pagingLimit}
-        />
-      </>
-    );
-  }
-
-
   render() {
+    const { t } = this.props;
+
     return (
-      <>
-        <div className="page-list-container-create">
-          {/* TODO show a message in case of that there is no bookmark in user pages by gw4156 */}
-          {/* {this.state.totalPages === 0 ? this.renderNoBookmarkList() : this.renderBookmarkList()} */}
-          {this.renderBookmarkList()}
-        </div>
-      </>
+      <div className="page-list-container-create">
+        {this.state.totalPages === 0 ? t('No bookmarks yet') : (
+          <>
+            <ul className="page-list-ul page-list-ul-flat mb-3">
+              {this.generatePageList(this.state.pages)}
+            </ul>
+            <PaginationWrapper
+              activePage={this.state.activePage}
+              changePage={this.handlePage}
+              totalItemsCount={this.state.totalPages}
+              pagingLimit={this.state.pagingLimit}
+            />
+          </>
+        )}
+      </div>
     );
   }
 
@@ -116,15 +103,13 @@ class BookmarkList extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const BookmarkListWrapper = withUnstatedContainers(BookmarkList, [AppContainer, PageContainer]);
+const BookmarkListWrapper = withUnstatedContainers(BookmarkList, [AppContainer]);
 
 BookmarkList.propTypes = {
   t: PropTypes.func.isRequired,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   userId: PropTypes.string.isRequired,
-
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
 export default withTranslation()(BookmarkListWrapper);
