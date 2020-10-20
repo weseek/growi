@@ -110,4 +110,11 @@ html[dark] {
       color: $color-link-hover !important;
     }
   }
+
+  // Button
+  .btn-group.grw-three-stranded-button {
+    .btn.btn-outline-primary {
+      @include three-stranded-button($bgcolor-navbar, lighten($bgcolor-navbar, 65%), lighten($bgcolor-navbar, 70%));
+    }
+  }
 }

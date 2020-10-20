@@ -175,10 +175,10 @@ const PageManagement = (props) => {
       <>
         <button
           type="button"
-          className="btn-link nav-link bg-transparent dropdown-toggle dropdown-toggle-no-caret"
+          className="btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management"
           data-toggle="dropdown"
         >
-          <i className="icon-options-vertical"></i>
+          <i className="icon-options"></i>
         </button>
       </>
     );
@@ -192,9 +192,9 @@ const PageManagement = (props) => {
           className="btn nav-link bg-transparent dropdown-toggle dropdown-toggle-no-caret disabled"
           id="icon-options-guest-tltips"
         >
-          <i className="icon-options-vertical"></i>
+          <i className="icon-options"></i>
         </button>
-        <UncontrolledTooltip placement="top" target="icon-options-guest-tltips">
+        <UncontrolledTooltip placement="top" target="icon-options-guest-tltips" fade={false}>
           {t('Not available for guest')}
         </UncontrolledTooltip>
       </>

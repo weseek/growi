@@ -91,12 +91,24 @@ module.exports = (crowi) => {
   ];
 
   router.get('/list', accessTokenParser, loginRequired, validator.displayList, apiV3FormValidator, async(req, res) => {
-    const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
+    const { isTrashPage } = require('@commons/util/path-utils');
+
     const { path } = req.query;
-    const page = req.query.page;
+    const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
+    const page = req.query.page || 1;
     const offset = (page - 1) * limit;
 
-    const queryOptions = { offset, limit };
+    let includeTrashed = false;
+
+    if (isTrashPage(path)) {
+      includeTrashed = true;
+    }
+
+    const queryOptions = {
+      offset,
+      limit,
+      includeTrashed,
+    };
 
     try {
       const result = await Page.findListWithDescendants(path, req.user, queryOptions);

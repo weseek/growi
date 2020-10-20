@@ -17,7 +17,7 @@ export default class NavigationContainer extends Container {
     this.appContainer.registerContainer(this);
 
     this.state = {
-      editorMode: null,
+      editorMode: 'view',
 
       isDeviceSmallerThanMd: null,
       isDrawerMode: null,
@@ -45,6 +45,9 @@ export default class NavigationContainer extends Container {
 
     this.openPageCreateModal = this.openPageCreateModal.bind(this);
     this.closePageCreateModal = this.closePageCreateModal.bind(this);
+    this.setEditorMode = this.setEditorMode.bind(this);
+    this.initDeviceSize();
+    this.initScrollEvent();
   }
 
   /**
@@ -92,6 +95,27 @@ export default class NavigationContainer extends Container {
 
   setEditorMode(editorMode) {
     this.setState({ editorMode });
+    if (editorMode === 'view') {
+      $('body').removeClass('on-edit');
+      $('body').removeClass('builtin-editor');
+      $('body').removeClass('hackmd');
+      window.history.replaceState(null, '', window.location.pathname);
+    }
+
+    if (editorMode === 'edit') {
+      $('body').addClass('on-edit');
+      $('body').addClass('builtin-editor');
+      window.location.hash = '#edit';
+    }
+
+    if (editorMode === 'hackmd') {
+      $('body').addClass('on-edit');
+      $('body').addClass('hackmd');
+      $('body').removeClass('builtin-editor');
+      window.location.hash = '#hackmd';
+
+    }
+
     this.updateDrawerMode({ ...this.state, editorMode }); // generate newest state object
   }
 
@@ -142,7 +166,7 @@ export default class NavigationContainer extends Container {
     } = newState;
 
     // get preference on view or edit
-    const preferDrawerMode = editorMode != null ? preferDrawerModeOnEditByUser : preferDrawerModeByUser;
+    const preferDrawerMode = editorMode !== 'view' ? preferDrawerModeOnEditByUser : preferDrawerModeByUser;
 
     const isDrawerMode = isDeviceSmallerThanMd || preferDrawerMode;
     const isDrawerOpened = false; // close Drawer anyway

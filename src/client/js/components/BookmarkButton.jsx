@@ -2,46 +2,22 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { toastError } from '../util/apiNotification';
+import { withUnstatedContainers } from './UnstatedUtils';
+import PageContainer from '../services/PageContainer';
 
 class BookmarkButton extends React.Component {
 
   constructor(props) {
     super(props);
 
-    this.state = {
-      isBookmarked: false,
-    };
-
     this.handleClick = this.handleClick.bind(this);
   }
 
-  async componentDidMount() {
-    const { pageId, crowi } = this.props;
-    // if guest user
-    if (!this.isUserLoggedIn()) {
-      // do nothing
-      return;
-    }
-
-    try {
-      const response = await crowi.apiv3.get('/bookmarks', { pageId });
-      if (response.data.bookmark != null) {
-        this.setState({ isBookmarked: true });
-      }
-    }
-    catch (err) {
-      toastError(err);
-    }
-
-  }
-
   async handleClick() {
-    const { crowi, pageId } = this.props;
-    const bool = !this.state.isBookmarked;
+    const { pageContainer } = this.props;
 
     try {
-      await crowi.apiv3.put('/bookmarks', { pageId, bool });
-      this.setState({ isBookmarked: bool });
+      pageContainer.toggleBookmark();
     }
     catch (err) {
       toastError(err);
@@ -53,6 +29,7 @@ class BookmarkButton extends React.Component {
   }
 
   render() {
+    const { pageContainer } = this.props;
     // if guest user
     if (!this.isUserLoggedIn()) {
       return <div></div>;
@@ -61,21 +38,26 @@ class BookmarkButton extends React.Component {
     return (
       <button
         type="button"
-        href="#"
-        title="Bookmark"
         onClick={this.handleClick}
-        className={`btn rounded-circle btn-bookmark border-0 d-edit-none
+        className={`btn btn-bookmark border-0
           ${`btn-${this.props.size}`}
-          ${this.state.isBookmarked ? 'active' : ''}`}
+          ${pageContainer.state.isBookmarked ? 'active' : ''}`}
       >
-        <i className="icon-star"></i>
+        <i className="icon-star mr-3"></i>
+        <span className="total-bookmarks">
+          {pageContainer.state.sumOfBookmarks}
+        </span>
       </button>
     );
   }
 
 }
 
+const BookmarkButtonWrapper = withUnstatedContainers(BookmarkButton, [PageContainer]);
+
 BookmarkButton.propTypes = {
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+
   pageId: PropTypes.string,
   crowi: PropTypes.object.isRequired,
   size: PropTypes.string,
@@ -85,4 +67,4 @@ BookmarkButton.defaultProps = {
   size: 'md',
 };
 
-export default BookmarkButton;
+export default BookmarkButtonWrapper;

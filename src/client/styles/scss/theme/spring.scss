@@ -93,6 +93,13 @@ html[dark] {
   @import 'apply-colors';
   @import 'apply-colors-light';
 
+  //Button
+  .btn-group.grw-three-stranded-button {
+    .btn.btn-outline-primary {
+      @include three-stranded-button(darken($primary, 50%), lighten($primary, 5%), lighten($primary, 10%));
+    }
+  }
+
   .growi:not(.login-page) {
     // add background-image
     #page-wrapper,

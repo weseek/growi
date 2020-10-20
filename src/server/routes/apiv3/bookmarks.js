@@ -54,7 +54,8 @@ const router = express.Router();
 
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
-  const loginRequired = require('../../middlewares/login-required')(crowi);
+  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
+  const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
@@ -62,8 +63,11 @@ module.exports = (crowi) => {
 
   const validator = {
     bookmarks: [
-      body('pageId').isString(),
+      body('pageId').isMongoId(),
       body('bool').isBoolean(),
+    ],
+    bookmarkInfo: [
+      query('pageId').isMongoId(),
     ],
   };
 
@@ -90,12 +94,13 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Bookmark'
    */
-  router.get('/', accessTokenParser, loginRequired, async(req, res) => {
+  router.get('/', accessTokenParser, loginRequired, validator.bookmarkInfo, async(req, res) => {
     const { pageId } = req.query;
 
     try {
-      const bookmark = await Bookmark.findByPageIdAndUserId(pageId, req.user);
-      return res.apiv3({ bookmark });
+      const bookmarks = await Bookmark.findByPageIdAndUserId(pageId, req.user);
+      const sumOfBookmarks = await Bookmark.countByPageId(pageId);
+      return res.apiv3({ bookmarks, sumOfBookmarks });
     }
     catch (err) {
       logger.error('get-bookmark-failed', err);
@@ -209,7 +214,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Bookmark'
    */
-  router.put('/', accessTokenParser, loginRequired, csrf, validator.bookmarks, apiV3FormValidator, async(req, res) => {
+  router.put('/', accessTokenParser, loginRequiredStrictly, csrf, validator.bookmarks, apiV3FormValidator, async(req, res) => {
     const { pageId, bool } = req.body;
 
     let bookmark;
@@ -235,6 +240,28 @@ module.exports = (crowi) => {
 
     return res.apiv3({ bookmark });
   });
+
+  /**
+   * @swagger
+   *
+   *    /count-bookmarks:
+   *      get:
+   *        tags: [Bookmarks]
+   *        summary: /bookmarks
+   *        description: Count bookmsrks
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/BookmarkParams'
+   *        responses:
+   *          200:
+   *            description: Succeeded to count bookmarks.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/Bookmark'
+   */
 
   return router;
 };
