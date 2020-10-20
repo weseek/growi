@@ -1302,6 +1302,13 @@ module.exports = function(crowi) {
     return targetPage;
   };
 
+  pageSchema.statics.findExisitPath = async function(paths) {
+    const queryBuilder = new PageQueryBuilder(this.find());
+    queryBuilder.addConditionToArrayExistPaths(paths);
+
+    return await queryBuilder.query.exec();
+  };
+
   // TODO: transplant to service/page.js because page deletion affects various models data
   pageSchema.statics.handlePrivatePagesForDeletedGroup = async function(deletedGroup, action, transferToUserGroupId) {
     const Page = mongoose.model('Page');
