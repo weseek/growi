@@ -58,7 +58,7 @@ export default class PageContainer extends Container {
       sumOfBookmarks: 0,
       createdAt: mainContent.getAttribute('data-page-created-at'),
       updatedAt: mainContent.getAttribute('data-page-updated-at'),
-      isForbidden:  JSON.parse(mainContent.getAttribute('data-page-is-forbidden')),
+      isForbidden: JSON.parse(mainContent.getAttribute('data-page-is-forbidden')),
       isDeleted:  JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
       isDeletable:  JSON.parse(mainContent.getAttribute('data-page-is-deletable')),
       isCreatable: JSON.parse(mainContent.getAttribute('data-page-is-creatable')),
@@ -78,6 +78,8 @@ export default class PageContainer extends Container {
       hasDraftOnHackmd: !!mainContent.getAttribute('data-page-has-draft-on-hackmd'),
       isHackmdDraftUpdatingInRealtime: false,
     };
+
+    console.log(this.state.isForbidden);
 
     // parse creator, lastUpdateUser and revisionAuthor
     try {

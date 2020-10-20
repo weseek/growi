@@ -88,6 +88,7 @@ Object.assign(componentMappings, {
 
   'grw-fab-container': <Fab />,
 });
+console.log(pageContainer.isForbidden);
 
 // additional definitions if data exists
 if (pageContainer.state.pageId != null) {

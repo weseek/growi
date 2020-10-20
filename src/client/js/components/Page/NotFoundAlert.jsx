@@ -11,6 +11,8 @@ const NotFoundAlert = (props) => {
     props.onPageCreateClicked(viewType);
   }
 
+  console.log(isForbidden);
+
   if (!isForbidden) {
     return null;
   }
@@ -39,7 +41,7 @@ const NotFoundAlert = (props) => {
 NotFoundAlert.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   onPageCreateClicked: PropTypes.func,
-  isForbidden: PropTypes.bool,
+  isForbidden: PropTypes.bool.isRequired,
 };
 
 export default withTranslation()(NotFoundAlert);
