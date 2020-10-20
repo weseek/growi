@@ -5,6 +5,7 @@ import { UncontrolledTooltip } from 'reactstrap';
 
 const ThreeStrandedButton = (props) => {
   const { t, isBtnDisabled } = props;
+
   const [btnActive, setBtnActive] = useState('view');
 
   function threeStrandedButtonClickedHandler(viewType) {
