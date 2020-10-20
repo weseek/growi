@@ -66,7 +66,7 @@ module.exports = (crowi) => {
       body('pageId').isMongoId(),
       body('bool').isBoolean(),
     ],
-    countBookmarks: [
+    bookmarkInfo: [
       query('pageId').isMongoId(),
     ],
   };
@@ -94,12 +94,13 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Bookmark'
    */
-  router.get('/', accessTokenParser, loginRequired, async(req, res) => {
+  router.get('/', accessTokenParser, loginRequired, validator.bookmarkInfo, async(req, res) => {
     const { pageId } = req.query;
 
     try {
-      const bookmark = await Bookmark.findByPageIdAndUserId(pageId, req.user);
-      return res.apiv3({ bookmark });
+      const bookmarks = await Bookmark.findByPageIdAndUserId(pageId, req.user);
+      const sumOfBookmarks = await Bookmark.countByPageId(pageId);
+      return res.apiv3({ bookmarks, sumOfBookmarks });
     }
     catch (err) {
       logger.error('get-bookmark-failed', err);
@@ -178,21 +179,6 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Bookmark'
    */
-
-
-  router.get('/count-bookmarks', accessTokenParser, loginRequired, validator.countBookmarks, apiV3FormValidator, async(req, res) => {
-    const { pageId } = req.query;
-
-    try {
-      const sumOfBookmarks = await Bookmark.countByPageId(pageId);
-      return res.apiv3({ sumOfBookmarks });
-    }
-    catch (err) {
-      logger.error('get-bookmarks-list-failed', err);
-      return res.apiv3Err(err, 500);
-    }
-  });
-
 
   return router;
 };
