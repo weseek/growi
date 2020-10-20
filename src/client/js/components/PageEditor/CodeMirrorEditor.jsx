@@ -13,6 +13,8 @@ import * as loadCssSync from 'load-css-file';
 import InterceptorManager from '~/service/interceptor-manager';
 import loggerFactory from '~/utils/logger';
 
+import '~/styles/modules/codemirror-editor.module.scss';
+
 import AbstractEditor from './AbstractEditor';
 import SimpleCheatsheet from './SimpleCheatsheet';
 
@@ -36,28 +38,6 @@ codemirror.commands.save = (instance) => {
     instance.codeMirrorEditor.dispatchSave();
   }
 };
-// set CodeMirror instance as 'CodeMirror' so that CDN addons can reference
-window.CodeMirror = require('codemirror');
-require('codemirror/addon/display/placeholder');
-require('codemirror/addon/edit/matchbrackets');
-require('codemirror/addon/edit/matchtags');
-require('codemirror/addon/edit/closetag');
-require('codemirror/addon/edit/continuelist');
-require('codemirror/addon/hint/show-hint');
-require('codemirror/addon/hint/show-hint.css');
-require('codemirror/addon/search/searchcursor');
-require('codemirror/addon/search/match-highlighter');
-require('codemirror/addon/selection/active-line');
-require('codemirror/addon/scroll/annotatescrollbar');
-require('codemirror/addon/fold/foldcode');
-require('codemirror/addon/fold/foldgutter');
-require('codemirror/addon/fold/foldgutter.css');
-require('codemirror/addon/fold/markdown-fold');
-require('codemirror/addon/fold/brace-fold');
-require('codemirror/addon/display/placeholder');
-require('codemirror/mode/gfm/gfm');
-require('../../util/codemirror/autorefresh.ext');
-
 
 const MARKDOWN_TABLE_ACTIVATED_CLASS = 'markdown-table-activated';
 // TODO: activate by GW-3443
@@ -135,6 +115,26 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   componentDidMount() {
+    // set CodeMirror instance as 'CodeMirror' so that CDN addons can reference
+    window.CodeMirror = require('codemirror');
+    require('codemirror/addon/display/placeholder');
+    require('codemirror/addon/edit/matchbrackets');
+    require('codemirror/addon/edit/matchtags');
+    require('codemirror/addon/edit/closetag');
+    require('codemirror/addon/edit/continuelist');
+    require('codemirror/addon/hint/show-hint');
+    require('codemirror/addon/search/searchcursor');
+    require('codemirror/addon/search/match-highlighter');
+    require('codemirror/addon/selection/active-line');
+    require('codemirror/addon/scroll/annotatescrollbar');
+    require('codemirror/addon/fold/foldcode');
+    require('codemirror/addon/fold/foldgutter');
+    require('codemirror/addon/fold/markdown-fold');
+    require('codemirror/addon/fold/brace-fold');
+    require('codemirror/addon/display/placeholder');
+    require('codemirror/mode/gfm/gfm');
+    require('../../util/codemirror/autorefresh.ext');
+
     // ensure to be able to resolve 'this' to use 'codemirror.commands.save'
     this.getCodeMirror().codeMirrorEditor = this;
 
