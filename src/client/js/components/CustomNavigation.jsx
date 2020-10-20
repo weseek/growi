@@ -63,7 +63,7 @@ const CustomNavigation = (props) => {
         })}
       </Nav>
       <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
-      <TabContent activeTab={activeTab} className="p-5">
+      <TabContent activeTab={activeTab} className="p-4">
         {Object.entries(props.navTabMapping).map(([key, value]) => {
           return (
             <TabPane key={key} tabId={key}>

@@ -15,7 +15,7 @@ import PageComments from './components/PageComments';
 import PageTimeline from './components/PageTimeline';
 import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
 import PageManagement from './components/Page/PageManagement';
-import TrashPage from './components/TrashPage';
+import TrashPageList from './components/TrashPageList';
 import TrashPageAlert from './components/Page/TrashPageAlert';
 import NotFoundPage from './components/NotFoundPage';
 import NotFoundAlert from './components/Page/NotFoundAlert';
@@ -76,7 +76,7 @@ Object.assign(componentMappings, {
 
   'trash-page-alert': <TrashPageAlert />,
 
-  'trash-page': <TrashPage />,
+  'trash-page-list': <TrashPageList />,
 
   'not-found-page': <NotFoundPage />,
 
