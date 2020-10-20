@@ -80,5 +80,8 @@
     {% if isTrashPage() %}
       <div id="trash-page-alert"></div>
     {% endif %}
+    {% if !page %}
+      <div id="not-found-alert"></div>
+    {% endif %}
   </div>
 </div>

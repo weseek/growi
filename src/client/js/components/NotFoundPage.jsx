@@ -7,7 +7,6 @@ import CustomNavigation from './CustomNavigation';
 import PageList from './PageList';
 import PageTimeline from './PageTimeline';
 
-
 const NotFoundPage = (props) => {
   const { t } = props;
 
@@ -27,7 +26,7 @@ const NotFoundPage = (props) => {
   };
 
   return (
-    <div className="grw-custom-navigation mt-5">
+    <div className="grw-custom-navigation mt-5 on-edit">
       <CustomNavigation navTabMapping={navTabMapping} />
     </div>
   );
