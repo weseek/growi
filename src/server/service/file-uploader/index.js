@@ -35,7 +35,7 @@ class FileUploadServiceFactory {
 
 }
 
-module.exports = (crowi, isForceUpdate) => {
+module.exports = (crowi, isForceUpdate = false) => {
   const factory = new FileUploadServiceFactory(crowi);
   return factory.getUploader(crowi, isForceUpdate);
 };
