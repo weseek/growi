@@ -268,14 +268,14 @@ module.exports = (crowi) => {
    *        description: Get already exist paths
    *        operationId: getAlreadyExistPaths
    *        parameters:
-   *          - name: newParentPath
+   *          - name: fromPath
    *            in: query
-   *            description: New parent path of search
+   *            description: old parent path
    *            schema:
    *              type: string
-   *          - name: toPaths
+   *          - name: toPath
    *            in: query
-   *            description: Paths to compare with DB
+   *            description: new parent path
    *            schema:
    *              type: string
    *        responses:
