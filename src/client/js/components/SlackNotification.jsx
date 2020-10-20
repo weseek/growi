@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
-
 /**
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
@@ -39,22 +38,23 @@ class SlackNotification extends React.Component {
     const { t } = this.props;
 
     return (
-      <div className="grw-slack-notification">
-        <div className="input-group input-group-sm extended-setting">
-          <label className="input-group-addon bg-light">
-            <img id="slack-mark-white" alt="slack-mark" src="/images/icons/slack/mark-monochrome_white.svg" width="18" height="18" />
-            <img id="slack-mark-black" alt="slack-mark" src="/images/icons/slack/mark-monochrome_black.svg" width="18" height="18" />
-
-            <input
-              type="checkbox"
-              value="1"
-              checked={this.props.isSlackEnabled}
-              onChange={this.updateCheckboxHandler}
-            />
-
+      <div className="grw-slack-notification w-100">
+        <div className="grw-input-group-slack-notification input-group extended-setting">
+          <label className="input-group-addon">
+            <div className="custom-control custom-switch custom-switch-lg custom-switch-slack">
+              <input
+                type="checkbox"
+                className="custom-control-input border-0"
+                id={this.props.id}
+                checked={this.props.isSlackEnabled}
+                onChange={this.updateCheckboxHandler}
+              />
+              <label className="custom-control-label align-center" htmlFor={this.props.id}>
+              </label>
+            </div>
           </label>
           <input
-            className="form-control"
+            className="grw-form-control-slack-notification form-control align-top pl-0"
             type="text"
             value={this.props.slackChannels}
             placeholder="Input channels"
@@ -75,10 +75,12 @@ class SlackNotification extends React.Component {
 SlackNotification.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
+  popUp: PropTypes.bool.isRequired,
   isSlackEnabled: PropTypes.bool.isRequired,
   slackChannels: PropTypes.string.isRequired,
   onEnabledFlagChange: PropTypes.func,
   onChannelChange: PropTypes.func,
+  id: PropTypes.string.isRequired,
 };
 
 export default withTranslation()(SlackNotification);
