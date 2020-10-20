@@ -14,8 +14,10 @@ const envToModuleMappings = {
 class FileUploadServiceFactory {
 
   initializeUploader(crowi) {
-    const method = envToModuleMappings[process.env.FILE_UPLOAD] || 'aws';
+    // temporarily use envToModuleMappings [remove this in GW-4136]
+    const fileUplodeTypeInConfig = envToModuleMappings[crowi.configManager.getConfig('crowi', 'app:fileUploadType')];
 
+    const method = envToModuleMappings[process.env.FILE_UPLOAD] || fileUplodeTypeInConfig || 'aws';
     const modulePath = `./${method}`;
     this.uploader = require(modulePath)(crowi);
 
@@ -24,8 +26,8 @@ class FileUploadServiceFactory {
     }
   }
 
-  getUploader(crowi) {
-    if (this.uploader == null) {
+  getUploader(crowi, isForceUpdate) {
+    if (this.uploader == null || isForceUpdate) {
       this.initializeUploader(crowi);
     }
     return this.uploader;
@@ -33,8 +35,7 @@ class FileUploadServiceFactory {
 
 }
 
-
-module.exports = (crowi) => {
+module.exports = (crowi, isForceUpdate) => {
   const factory = new FileUploadServiceFactory(crowi);
-  return factory.getUploader(crowi);
+  return factory.getUploader(crowi, isForceUpdate);
 };
