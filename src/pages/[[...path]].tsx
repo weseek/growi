@@ -10,6 +10,11 @@ import { CommonProps, getServerSideCommonProps } from '~/utils/nextjs-page-utils
 
 import BasicLayout from '../components/BasicLayout';
 
+// import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
+// import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
+// import DisplaySwitcher from '../client/js/components/Page/DisplaySwitcher';
+// import PageStatusAlert from '../client/js/components/PageStatusAlert';
+
 import {
   useCurrentUser, useAppTitle, useSiteUrl, useConfidential,
   useSearchServiceConfigured, useSearchServiceReachable,
@@ -42,16 +47,12 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useSearchServiceReachable(props.isSearchServiceReachable);
 
   let page: any;
-  let header: string;
 
   if (props.page != null) {
     page = JSON.parse(props.page);
-    header = page.path;
-  }
-  else {
-    header = props.isForbidden ? 'Forbidden' : 'Not found';
   }
 
+  const isUserPage = false; // TODO: switch with page path
 
   return (
     <>
@@ -62,23 +63,36 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         {renderHighlightJsStyleTag(props.highlightJsStyle)}
       </Head>
       <BasicLayout title="GROWI">
-        <div className="row">
-          <div className="col grw-page-content-container">
-            <div id="content-main" className="content-main">
-              <h1>{header}</h1>
-              { page && (
-                <p>
-                  {page.revision.body}
-                </p>
-              ) }
-            </div>
-          </div>
-          <div className="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
-            <div id="revision-toc" className="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
-              <div id="revision-toc-content" className="revision-toc-content"></div>
-            </div>
-          </div>
+        <header className="py-0">
+          {/* <GrowiSubNavigation /> */}
+        </header>
+        <div className="d-edit-none">
+          {/* <GrowiSubNavigationSwitcher /> */}
         </div>
+
+        <div id="grw-subnav-sticky-trigger" className="sticky-top"></div>
+        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
+
+        <div id="main" className={`main ${isUserPage && 'user-page'}`}>
+
+          <div className="row">
+            <div className="col grw-page-content-container">
+              <div id="content-main" className="content-main container">
+                {/* <DisplaySwitcher /> */}
+                <script type="text/template" id="raw-text-original">{page?.revision.body}</script>
+                <div id="page-editor-navbar-bottom-container" className="d-none d-edit-block"></div>
+                {/* <PageStatusAlert /> */}
+              </div>
+            </div>
+            <div className="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
+              <div id="revision-toc" className="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
+                <div id="revision-toc-content" className="revision-toc-content"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
       </BasicLayout>
     </>
   );

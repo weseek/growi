@@ -1,17 +1,21 @@
+import dynamic from 'next/dynamic';
 import React from 'react';
 import { TabContent, TabPane } from 'reactstrap';
 import propTypes from 'prop-types';
+
 import { withUnstatedContainers } from '../UnstatedUtils';
 import NavigationContainer from '../../services/NavigationContainer';
-import Editor from '../PageEditor';
 import Page from '../Page';
-import PageEditorByHackmd from '../PageEditorByHackmd';
-import EditorNavbarBottom from '../PageEditor/EditorNavbarBottom';
 
 
 const DisplaySwitcher = (props) => {
   const { navigationContainer } = props;
   const { editorMode } = navigationContainer.state;
+
+  // dynamic import to skip rendering at SSR
+  const PageEditor = dynamic(() => import('../PageEditor'), { ssr: false });
+  const PageEditorByHackmd = dynamic(() => import('../PageEditorByHackmd'), { ssr: false });
+  const EditorNavbarBottom = dynamic(() => import('../PageEditor/EditorNavbarBottom'), { ssr: false });
 
   return (
     <>
@@ -21,7 +25,7 @@ const DisplaySwitcher = (props) => {
         </TabPane>
         <TabPane tabId="edit">
           <div id="page-editor">
-            <Editor />
+            <PageEditor />
           </div>
         </TabPane>
         <TabPane tabId="hackmd">
