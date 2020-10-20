@@ -258,6 +258,17 @@ class PageQueryBuilder {
     return this;
   }
 
+  addConditionToArrayExistPaths(paths) {
+    this.query = this.query
+      .and({
+        path: {
+          $in: paths,
+        },
+      });
+
+    return this;
+  }
+
   populateDataToList(userPublicFields) {
     this.query = this.query
       .populate({
