@@ -4,8 +4,8 @@ import { withTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
 const ThreeStrandedButton = (props) => {
-  const { t, editorMode, isBtnDisabled } = props;
-  const [btnActive, setBtnActive] = useState(editorMode);
+  const { t, isBtnDisabled } = props;
+  const [btnActive, setBtnActive] = useState('view');
 
   function threeStrandedButtonClickedHandler(viewType) {
     if (isBtnDisabled) {
@@ -62,7 +62,6 @@ const ThreeStrandedButton = (props) => {
 
 ThreeStrandedButton.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
-  editorMode: PropTypes.string.isRequired,
   onThreeStrandedButtonClicked: PropTypes.func,
   isBtnDisabled: PropTypes.bool,
 };
