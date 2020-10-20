@@ -7,7 +7,6 @@ const { body, query } = require('express-validator');
 
 const router = express.Router();
 
-const { convertToNewAffiliationPath } = require('../../../lib/util/path-utils');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 /**
@@ -140,8 +139,7 @@ module.exports = (crowi) => {
       body('hierarchyValue').isNumeric(),
     ],
     exist: [
-      query('fromPath').isString(),
-      query('toPath').isString(),
+      query('newParentPath').isString(),
     ],
   };
 
@@ -292,20 +290,18 @@ module.exports = (crowi) => {
    *            description: Internal server error.
    */
   router.get('/exist-paths', loginRequired, validator.exist, apiV3FormValidator, async(req, res) => {
-    const { fromPath, toPath } = req.query;
+    const { newParentPath, toPaths } = req.query;
 
     try {
-      const fromPage = await Page.findByPath(fromPath);
-      const fromPageDescendants = await Page.findManageableListWithDescendants(fromPage, req.user);
+      const { pages } = await Page.findListByStartWith(newParentPath, req.user);
 
-      const fromPathDescendantsArray = fromPageDescendants.map((subordinatedPage) => {
-        return convertToNewAffiliationPath(fromPath, toPath, subordinatedPage.path);
+      const duplicationPaths = pages.map((page) => {
+        if (toPaths.includes(page.path)) {
+          return page.path;
+        }
+        return null;
       });
-
-      const toPageDescendants = await Page.findListByStartWith(toPath, req.user);
-      const toPathDescendantsArray = toPageDescendants.pages.map(page => page.path);
-
-      const existPaths = fromPathDescendantsArray.filter(i => toPathDescendantsArray.indexOf(i) !== -1);
+      const existPaths = duplicationPaths.filter(path => path != null);
 
       return res.apiv3({ existPaths });
 
