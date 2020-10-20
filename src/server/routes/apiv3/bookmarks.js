@@ -59,7 +59,7 @@ module.exports = (crowi) => {
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
-  const { Page, Bookmark } = crowi.models;
+  const { Page, Bookmark, User } = crowi.models;
 
   const validator = {
     bookmarks: [
@@ -101,6 +101,89 @@ module.exports = (crowi) => {
       const bookmarks = await Bookmark.findByPageIdAndUserId(pageId, req.user);
       const sumOfBookmarks = await Bookmark.countByPageId(pageId);
       return res.apiv3({ bookmarks, sumOfBookmarks });
+    }
+    catch (err) {
+      logger.error('get-bookmark-failed', err);
+      return res.apiv3Err(err, 500);
+    }
+  });
+
+  // select page from bookmark where userid = userid
+  /**
+   * @swagger
+   *
+   *    /bookmarks/{userId}:
+   *      get:
+   *        tags: [Bookmarks]
+   *        summary: /bookmarks/{userId}
+   *        description: Get my bookmarked status
+   *        operationId: getMyBookmarkedStatus
+   *        parameters:
+   *          - name: userId
+   *            in: path
+   *            required: true
+   *            description: user id
+   *            schema:
+   *              type: string
+   *          - name: page
+   *            in: query
+   *            description: selected page number
+   *            schema:
+   *              type: number
+   *          - name: limit
+   *            in: query
+   *            description: page item limit
+   *            schema:
+   *              type: number
+   *          - name: offset
+   *            in: query
+   *            description: page item offset
+   *            schema:
+   *              type: number
+   *        responses:
+   *          200:
+   *            description: Succeeded to get my bookmarked status.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/Bookmark'
+   */
+  validator.myBookmarkList = [
+    query('page').isInt({ min: 1 }),
+    query('limit').if(value => value != null).isInt({ max: 300 }).withMessage('You should set less than 300 or not to set limit.'),
+  ];
+
+  router.get('/:userId', accessTokenParser, loginRequired, validator.myBookmarkList, apiV3FormValidator, async(req, res) => {
+    const { userId } = req.params;
+    const page = req.query.page;
+    const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM') || 30;
+
+    if (userId == null) {
+      return res.apiv3Err('User id is not found or forbidden', 400);
+    }
+    if (limit == null) {
+      return res.apiv3Err('Could not catch page limit', 400);
+    }
+    try {
+      const paginationResult = await Bookmark.paginate(
+        {
+          user: { $in: userId },
+        },
+        {
+          populate: {
+            path: 'page',
+            model: 'Page',
+            populate: {
+              path: 'lastUpdateUser',
+              model: 'User',
+              select: User.USER_PUBLIC_FIELDS,
+            },
+          },
+          page,
+          limit,
+        },
+      );
+      return res.apiv3({ paginationResult });
     }
     catch (err) {
       logger.error('get-bookmark-failed', err);

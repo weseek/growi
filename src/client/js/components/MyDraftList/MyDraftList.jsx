@@ -22,6 +22,7 @@ class MyDraftList extends React.Component {
       currentDrafts: [],
       activePage: 1,
       totalDrafts: 0,
+      // [TODO: rename pageLimitationM to pageLimitationL]
       pagingLimit: Infinity,
     };
 
@@ -67,9 +68,8 @@ class MyDraftList extends React.Component {
   }
 
   getCurrentDrafts(selectPageNumber) {
-    const { appContainer } = this.props;
-
-    const limit = appContainer.getConfig().recentCreatedLimit;
+    // TODO implement temporarily paging number only this component (this paging size is pageLimitationL).
+    const limit = this.state.pagingLimit;
 
     const totalDrafts = this.state.drafts.length;
     const activePage = selectPageNumber;

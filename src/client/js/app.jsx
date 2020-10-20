@@ -21,7 +21,7 @@ import NotFoundPage from './components/NotFoundPage';
 import NotFoundAlert from './components/Page/NotFoundAlert';
 import PageStatusAlert from './components/PageStatusAlert';
 import RecentCreated from './components/RecentCreated/RecentCreated';
-import MyDraftList from './components/MyDraftList/MyDraftList';
+import MyBookmarkList from './components/MyBookmarkList/MyBookmarkList';
 import SeenUserList from './components/User/SeenUserList';
 import LikerList from './components/User/LikerList';
 import TableOfContents from './components/TableOfContents';
@@ -99,7 +99,9 @@ if (pageContainer.state.pageId != null) {
     'seen-user-list': <SeenUserList />,
     'liker-list': <LikerList />,
 
-    'user-draft-list': <MyDraftList />,
+    'user-bookmark-list': <MyBookmarkList />,
+    'user-created-list': <RecentCreated />,
+    // 'user-draft-list': <MyDraftList />,
   });
 }
 if (pageContainer.state.creator != null) {

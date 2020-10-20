@@ -521,4 +521,8 @@ export default class PageContainer extends Container {
 
   }
 
+  /* TODO GW-325 */
+  retrieveMyBookmarkList() {
+  }
+
 }
