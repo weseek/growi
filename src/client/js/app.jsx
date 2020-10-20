@@ -103,7 +103,6 @@ if (pageContainer.state.pageId != null) {
     'user-created-list': <RecentCreated userId={pageContainer.state.creator._id} />,
     'user-bookmark-icon': <BookmarkIcon />,
     'user-bookmark-list': <MyBookmarkList />,
-    // 'user-draft-list': <MyDraftList />,
   });
 }
 if (pageContainer.state.creator != null) {
