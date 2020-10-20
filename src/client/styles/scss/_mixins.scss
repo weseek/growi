@@ -277,7 +277,8 @@
     }
   }
   &:hover,
-  &:active {
+  &:active,
+  &.active {
     color: $textColor;
     background-color: $bgColorHoverAndActive;
     border-color: $borderColor;
@@ -285,7 +286,7 @@
       border-color: $bgColorHoverAndActive;
     }
   }
-  &:focus {
+  &:not(:disabled):not(.disabled):focus {
     box-shadow: none;
   }
 }
