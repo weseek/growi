@@ -2,7 +2,6 @@
 // 各アップローダーで共通のメソッドはここで定義する
 
 class Uploader {
-
   constructor(crowi) {
     this.crowi = crowi;
     this.configManager = crowi.configManager;
@@ -68,7 +67,6 @@ class Uploader {
   respond(res, attachment) {
     throw new Error('Implement this');
   }
-
 }
 
 module.exports = Uploader;

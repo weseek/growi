@@ -4,7 +4,6 @@ const S2sMessage = require('../../models/vo/s2s-message');
 const S2sMessageHandlable = require('../s2s-messaging/handlable');
 
 class FileUploaderS2sMessageHandle extends S2sMessageHandlable {
-
   constructor(crowi) {
     super();
 
@@ -48,13 +47,11 @@ class FileUploaderS2sMessageHandle extends S2sMessageHandlable {
 
       try {
         await s2sMessagingService.publish(s2sMessage);
-      }
-      catch (e) {
+      } catch (e) {
         logger.error('Failed to publish update message with S2sMessagingService: ', e.message);
       }
     }
   }
-
 }
 
 module.exports = FileUploaderS2sMessageHandle;
