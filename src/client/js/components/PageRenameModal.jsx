@@ -19,7 +19,6 @@ import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 import ComparePathsTable from './ComparePathsTable';
 import DuplicatedPathsTable from './DuplicatedPathsTable';
 
-import { convertToNewAffiliationPath } from '../../../lib/util/path-utils';
 
 const PageRenameModal = (props) => {
   const {
@@ -77,12 +76,9 @@ const PageRenameModal = (props) => {
   }, [props.isOpen, updateSubordinatedList]);
 
 
-  const checkExistPaths = async(newParentPath, subordinatedPages) => {
+  const checkExistPaths = async(newParentPath) => {
     try {
-      const toPaths = subordinatedPages.map((subordinatedPage) => {
-        return convertToNewAffiliationPath(path, newParentPath, subordinatedPage.path);
-      });
-      const res = await appContainer.apiv3Get('/page/exist-paths', { newParentPath: pageNameInput, toPaths });
+      const res = await appContainer.apiv3Get('/page/exist-paths', { fromPath: path, toPath: newParentPath });
       const { existPaths } = res.data;
       setExistingPaths(existPaths);
     }
