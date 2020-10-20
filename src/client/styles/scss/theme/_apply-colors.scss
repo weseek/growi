@@ -274,7 +274,7 @@ pre:not(.hljs):not(.CodeMirror-line) {
     fill: $color-link;
   }
   .grw-seen-user-list {
-    border-color: $bordercolor-toc;
+    @include border-vertical('before', $bordercolor-toc, 70%);
 
     .btn {
       color: $color-seen-user;

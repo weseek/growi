@@ -69,7 +69,7 @@ class RecentCreated extends React.Component {
     const pageList = this.generatePageList(this.state.pages);
 
     return (
-      <div className="page-list-container-create">
+      <div>
         <ul className="page-list-ul page-list-ul-flat mb-3">
           {pageList}
         </ul>

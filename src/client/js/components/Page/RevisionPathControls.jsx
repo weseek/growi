@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import { isTrashPage } from '@commons/util/path-utils';
-
 import CopyDropdown from './CopyDropdown';
 
 const RevisionPathControls = (props) => {
@@ -15,19 +13,13 @@ const RevisionPathControls = (props) => {
   };
 
   const {
-    pagePath, pageId, isPageForbidden,
+    pagePath, pageId,
   } = props;
 
-  const isPageInTrash = isTrashPage(pagePath);
 
   return (
     <>
       <CopyDropdown pagePath={pagePath} pageId={pageId} buttonStyle={buttonStyle} />
-      { !isPageInTrash && !isPageForbidden && (
-        <a href="#edit" className="d-edit-none text-muted btn btn-secondary bg-transparent btn-edit border-0" style={buttonStyle}>
-          <i className="icon-note" />
-        </a>
-      ) }
     </>
   );
 };

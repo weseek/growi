@@ -91,17 +91,21 @@ export default class NavigationContainer extends Container {
       $('body').removeClass('on-edit');
       $('body').removeClass('builtin-editor');
       $('body').removeClass('hackmd');
+      window.history.replaceState(null, '', window.location.pathname);
     }
 
     if (editorMode === 'edit') {
       $('body').addClass('on-edit');
       $('body').addClass('builtin-editor');
+      window.location.hash = '#edit';
     }
 
     if (editorMode === 'hackmd') {
       $('body').addClass('on-edit');
       $('body').addClass('hackmd');
       $('body').removeClass('builtin-editor');
+      window.location.hash = '#hackmd';
+
     }
 
     this.updateDrawerMode({ ...this.state, editorMode }); // generate newest state object
