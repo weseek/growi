@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
 const ThreeStrandedButton = (props) => {
-  const { t, isBtnDisabled } = props;
+  const { t, isBtnDisabled, editorMode } = props;
 
-  const [btnActive, setBtnActive] = useState('view');
 
   function threeStrandedButtonClickedHandler(viewType) {
     if (isBtnDisabled) {
@@ -15,7 +14,6 @@ const ThreeStrandedButton = (props) => {
     if (props.onThreeStrandedButtonClicked != null) {
       props.onThreeStrandedButtonClicked(viewType);
     }
-    setBtnActive(viewType);
   }
 
   return (
@@ -28,7 +26,7 @@ const ThreeStrandedButton = (props) => {
       >
         <button
           type="button"
-          className={`btn btn-outline-primary view-button ${btnActive === 'view' && 'active'} ${isBtnDisabled && 'disabled'}`}
+          className={`btn btn-outline-primary view-button ${editorMode === 'view' && 'active'} ${isBtnDisabled && 'disabled'}`}
           onClick={() => { threeStrandedButtonClickedHandler('view') }}
         >
           <i className="icon-control-play icon-fw grw-three-stranded-button-icon" />
@@ -36,7 +34,7 @@ const ThreeStrandedButton = (props) => {
         </button>
         <button
           type="button"
-          className={`btn btn-outline-primary edit-button ${btnActive === 'edit' && 'active'} ${isBtnDisabled && 'disabled'}`}
+          className={`btn btn-outline-primary edit-button ${editorMode === 'edit' && 'active'} ${isBtnDisabled && 'disabled'}`}
           onClick={() => { threeStrandedButtonClickedHandler('edit') }}
         >
           <i className="icon-note icon-fw grw-three-stranded-button-icon" />
@@ -44,7 +42,7 @@ const ThreeStrandedButton = (props) => {
         </button>
         <button
           type="button"
-          className={`btn btn-outline-primary hackmd-button ${btnActive === 'hackmd' && 'active'} ${isBtnDisabled && 'disabled'}`}
+          className={`btn btn-outline-primary hackmd-button ${editorMode === 'hackmd' && 'active'} ${isBtnDisabled && 'disabled'}`}
           onClick={() => { threeStrandedButtonClickedHandler('hackmd') }}
         >
           <i className="fa fa-fw fa-file-text-o grw-three-stranded-button-icon" />
@@ -65,6 +63,7 @@ ThreeStrandedButton.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   onThreeStrandedButtonClicked: PropTypes.func,
   isBtnDisabled: PropTypes.bool,
+  editorMode: PropTypes.string,
 };
 
 ThreeStrandedButton.defaultProps = {
