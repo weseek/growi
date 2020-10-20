@@ -83,10 +83,6 @@ class MyBookmarkList extends React.Component {
   }
 
   renderBookmarkList() {
-    console.log(`activePage2 = ${this.state.activePage}`);
-    console.log(`totalItemsCount = ${this.state.totalItemsCount}`);
-    console.log(`pagingLimit = ${this.state.pagingLimit}`);
-    console.log(`changePage = ${this.state.changePage}`);
     return (
       <>
         <ul className="page-list-ul page-list-ul-flat mb-3">
@@ -104,12 +100,12 @@ class MyBookmarkList extends React.Component {
 
 
   render() {
-    console.log(this.state.totalPages);
-    console.log(`activePage1 = ${this.state.activePage}`);
     return (
       <>
         <div className="page-list-container-create">
-          {this.state.totalPage === 0 ? this.renderNoBookmarkList() : this.renderBookmarkList()}
+          {/* TODO show a message in case of that there is no bookmark in user pages by gw4156 */}
+          {/* {this.state.totalPages === 0 ? this.renderNoBookmarkList() : this.renderBookmarkList()} */}
+          {this.renderBookmarkList()}
         </div>
       </>
     );
