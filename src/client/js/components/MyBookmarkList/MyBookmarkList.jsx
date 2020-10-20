@@ -109,7 +109,7 @@ class MyBookmarkList extends React.Component {
     return (
       <>
         <div className="page-list-container-create">
-          {this.state.totalPages === 0 ? this.renderNoBookmarkList() : this.renderBookmarkList()}
+          {this.state.totalPage === 0 ? this.renderNoBookmarkList() : this.renderBookmarkList()}
         </div>
       </>
     );
