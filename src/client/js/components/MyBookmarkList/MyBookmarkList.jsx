@@ -100,12 +100,10 @@ class MyBookmarkList extends React.Component {
 
 
   render() {
-    console.log(`pages = ${this.state.pages}`);
-    console.log(`activePage = ${this.state.activePage}`);
     return (
       <>
         <div className="page-list-container-create">
-          {this.state.pages === 0 ? this.renderNoBookmarkList() : this.renderBookmarkList()}
+          {this.state.totalPage === 0 ? this.renderNoBookmarkList() : this.renderBookmarkList()}
         </div>
       </>
     );
