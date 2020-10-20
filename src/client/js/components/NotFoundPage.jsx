@@ -6,13 +6,9 @@ import TimeLineIcon from './Icons/TimeLineIcon';
 import CustomNavigation from './CustomNavigation';
 import PageList from './PageList';
 import PageTimeline from './PageTimeline';
-import { withUnstatedContainers } from './UnstatedUtils';
-import NavigationContainer from '../services/NavigationContainer';
-
 
 const NotFoundPage = (props) => {
-  const { t, navigationContainer } = props;
-  const { editorMode } = navigationContainer.state;
+  const { t } = props;
 
   const navTabMapping = {
     pagelist: {
@@ -29,24 +25,15 @@ const NotFoundPage = (props) => {
     },
   };
 
-  if (editorMode === 'view') {
-    return (
-      <div className="grw-custom-navigation mt-5">
-        <CustomNavigation navTabMapping={navTabMapping} />
-      </div>
-    );
-  }
-  return null;
+  return (
+    <div className="grw-custom-navigation mt-5 on-edit">
+      <CustomNavigation navTabMapping={navTabMapping} />
+    </div>
+  );
 };
-
-/**
- * Wrapper component for using unstated
- */
-const NotFoundPageWrapper = withUnstatedContainers(NotFoundPage, [NavigationContainer]);
 
 NotFoundPage.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 
-export default withTranslation()(NotFoundPageWrapper);
+export default withTranslation()(NotFoundPage);
