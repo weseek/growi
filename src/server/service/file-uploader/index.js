@@ -14,7 +14,7 @@ const envToModuleMappings = {
 class FileUploadServiceFactory {
 
   initializeUploader(crowi) {
-    const method = envToModuleMappings[crowi.configManager.getConfig('crowi', 'app:fileUploadType')] || 'ppp';
+    const method = envToModuleMappings[crowi.configManager.getConfig('crowi', 'app:fileUploadType')] || 'aws';
     const modulePath = `./${method}`;
     this.uploader = require(modulePath)(crowi);
 
