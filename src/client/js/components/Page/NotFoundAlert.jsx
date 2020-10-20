@@ -3,12 +3,16 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 const NotFoundAlert = (props) => {
-  const { t } = props;
+  const { t, isForbidden } = props;
   function clickHandler(viewType) {
     if (props.onPageCreateClicked === null) {
       return;
     }
     props.onPageCreateClicked(viewType);
+  }
+
+  if (!isForbidden) {
+    return null;
   }
 
   return (
@@ -35,6 +39,7 @@ const NotFoundAlert = (props) => {
 NotFoundAlert.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   onPageCreateClicked: PropTypes.func,
+  isForbidden: PropTypes.bool,
 };
 
 export default withTranslation()(NotFoundAlert);
