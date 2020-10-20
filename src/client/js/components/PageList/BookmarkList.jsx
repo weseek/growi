@@ -11,10 +11,11 @@ import { toastError } from '../../util/apiNotification';
 
 import PaginationWrapper from '../PaginationWrapper';
 
-import Page from '../PageList/Page';
+import Page from './Page';
 
 const logger = loggerFactory('growi:MyBookmarkList');
-class MyBookmarkList extends React.Component {
+
+class BookmarkList extends React.Component {
 
   constructor(props) {
     super(props);
@@ -38,12 +39,11 @@ class MyBookmarkList extends React.Component {
   }
 
   async getMyBookmarkList(selectPageNumber) {
-    const { appContainer } = this.props;
-    const userId = appContainer.currentUserId;
+    const { appContainer, userId } = this.props;
     const page = selectPageNumber;
 
     try {
-      const { data } = await this.props.appContainer.apiv3.get(`/bookmarks/${userId}`, { page });
+      const { data } = await appContainer.apiv3.get(`/bookmarks/${userId}`, { page });
       if (data.paginationResult == null) {
         throw new Error('data must conclude \'paginateResult\' property.');
       }
@@ -116,12 +116,15 @@ class MyBookmarkList extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const MyBookmarkListWrapper = withUnstatedContainers(MyBookmarkList, [AppContainer, PageContainer]);
+const BookmarkListWrapper = withUnstatedContainers(BookmarkList, [AppContainer, PageContainer]);
 
-MyBookmarkList.propTypes = {
+BookmarkList.propTypes = {
   t: PropTypes.func.isRequired,
+
+  userId: PropTypes.string.isRequired,
+
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
-export default withTranslation()(MyBookmarkListWrapper);
+export default withTranslation()(BookmarkListWrapper);
