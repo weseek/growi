@@ -61,7 +61,7 @@ class PageTimeline extends React.Component {
 
   render() {
     const { pages } = this.state;
-    if (pages == null) {
+    if (pages == null || pages.length === 0) {
       return <React.Fragment></React.Fragment>;
     }
 

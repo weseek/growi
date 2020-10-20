@@ -8,17 +8,17 @@ import loggerFactory from '@alias/logger';
 import ErrorBoundary from './components/ErrorBoudary';
 import SearchPage from './components/SearchPage';
 import TagsList from './components/TagsList';
-import PageEditor from './components/PageEditor';
-import PagePathNavForEditor from './components/PageEditor/PagePathNavForEditor';
-import EditorNavbarBottom from './components/PageEditor/EditorNavbarBottom';
+import DisplaySwitcher from './components/Page/DisplaySwitcher';
 import { defaultEditorOptions, defaultPreviewOptions } from './components/PageEditor/OptionsSelector';
-import PageEditorByHackmd from './components/PageEditorByHackmd';
 import Page from './components/Page';
 import PageComments from './components/PageComments';
 import PageTimeline from './components/PageTimeline';
 import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
 import PageManagement from './components/Page/PageManagement';
+import TrashPageList from './components/TrashPageList';
 import TrashPageAlert from './components/Page/TrashPageAlert';
+import NotFoundPage from './components/NotFoundPage';
+import NotFoundAlert from './components/Page/NotFoundAlert';
 import PageStatusAlert from './components/PageStatusAlert';
 import RecentCreated from './components/RecentCreated/RecentCreated';
 import MyBookmarkList from './components/MyBookmarkList/MyBookmarkList';
@@ -76,6 +76,12 @@ Object.assign(componentMappings, {
 
   'trash-page-alert': <TrashPageAlert />,
 
+  'trash-page-list': <TrashPageList />,
+
+  'not-found-page': <NotFoundPage />,
+
+  'not-found-alert': <NotFoundAlert onPageCreateClicked={navigationContainer.setEditorMode} />,
+
   'page-timeline': <PageTimeline />,
 
   'personal-setting': <PersonalSettings crowi={personalContainer} />,
@@ -114,15 +120,8 @@ if (pageContainer.state.path != null) {
 // additional definitions if user is logged in
 if (appContainer.currentUser != null) {
   Object.assign(componentMappings, {
-    'page-editor': <PageEditor />,
-    'page-editor-path-nav': <PagePathNavForEditor />,
-    'page-editor-navbar-bottom-container': <EditorNavbarBottom />,
+    'display-switcher': <DisplaySwitcher />,
   });
-  if (pageContainer.state.pageId != null) {
-    Object.assign(componentMappings, {
-      'page-editor-with-hackmd': <PageEditorByHackmd />,
-    });
-  }
 }
 
 Object.keys(componentMappings).forEach((key) => {

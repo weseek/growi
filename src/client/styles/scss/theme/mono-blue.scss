@@ -88,6 +88,12 @@ html[light] {
       }
     }
   }
+  // Button
+  .btn-group.grw-three-stranded-button {
+    .btn.btn-outline-primary {
+      @include three-stranded-button($primary, lighten($primary, 65%), lighten($primary, 70%));
+    }
+  }
 }
 
 html[dark] {
@@ -188,5 +194,12 @@ html[dark] {
   // Table
   .table {
     color: white;
+  }
+
+  // Button
+  .btn-group.grw-three-stranded-button {
+    .btn.btn-outline-primary {
+      @include three-stranded-button(lighten($primary, 30%), $primary, darken($primary, 10%), darken($primary, 20%));
+    }
   }
 }

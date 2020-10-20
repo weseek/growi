@@ -68,7 +68,7 @@ class RecentCreated extends React.Component {
     const pageList = this.generatePageList(this.state.pages);
 
     return (
-      <div className="page-list-container-create">
+      <div>
         <ul className="page-list-ul page-list-ul-flat mb-3">
           {pageList}
         </ul>
@@ -77,6 +77,7 @@ class RecentCreated extends React.Component {
           changePage={this.handlePage}
           totalItemsCount={this.state.totalPages}
           pagingLimit={this.state.pagingLimit}
+          size="sm"
         />
       </div>
     );

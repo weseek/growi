@@ -134,7 +134,7 @@ class MyDraftList extends React.Component {
     const totalCount = this.state.totalDrafts;
 
     return (
-      <div className="page-list-container-create">
+      <div>
 
         { totalCount === 0
           && <span>No drafts yet.</span>
@@ -160,6 +160,7 @@ class MyDraftList extends React.Component {
               changePage={this.handlePage}
               totalItemsCount={this.state.totalDrafts}
               pagingLimit={this.state.pagingLimit}
+              size="sm"
             />
           </React.Fragment>
         ) }
