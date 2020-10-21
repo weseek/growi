@@ -80,7 +80,7 @@ Object.assign(componentMappings, {
 
   'not-found-page': <NotFoundPage />,
 
-  'not-found-alert': <NotFoundAlert onPageCreateClicked={navigationContainer.setEditorMode} isForbidden={pageContainer.isForbidden} />,
+  'not-found-alert': <NotFoundAlert onPageCreateClicked={navigationContainer.setEditorMode} isForbidden={pageContainer.state.isForbidden} />,
 
   'page-timeline': <PageTimeline />,
 
@@ -88,7 +88,6 @@ Object.assign(componentMappings, {
 
   'grw-fab-container': <Fab />,
 });
-console.log(pageContainer.isForbidden);
 
 // additional definitions if data exists
 if (pageContainer.state.pageId != null) {
