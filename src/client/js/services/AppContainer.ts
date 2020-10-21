@@ -1,7 +1,5 @@
 import { Container } from 'unstated';
 
-import axios from 'axios';
-
 import {
   apiv3Request, apiv3Get, apiv3Post, apiv3Put, apiv3Delete,
 } from '../util/apiv3-client';
@@ -10,8 +8,6 @@ import {
 
 // import emojiStrategy from '../util/emojione/emoji_strategy_shrinked.json';
 // import GrowiRenderer from '../util/GrowiRenderer';
-
-import Apiv1ErrorHandler from '../util/apiv1ErrorHandler';
 
 type State = {
 }
@@ -88,11 +84,6 @@ export default class AppContainer extends Container<State> {
     this.containerInstances = {};
     this.componentInstances = {};
     this.rendererInstances = {};
-
-    this.apiGet = this.apiGet.bind(this);
-    this.apiPost = this.apiPost.bind(this);
-    this.apiDelete = this.apiDelete.bind(this);
-    this.apiRequest = this.apiRequest.bind(this);
   }
 
   /**
@@ -307,40 +298,5 @@ export default class AppContainer extends Container<State> {
   //   }
   //   targetComponent.launchDrawioModal(beginLineNumber, endLineNumber);
   // }
-
-  async apiGet(path, params) {
-    return this.apiRequest('get', path, { params });
-  }
-
-  async apiPost(path, params) {
-    if (!params._csrf) {
-      params._csrf = this.csrfToken;
-    }
-
-    return this.apiRequest('post', path, params);
-  }
-
-  async apiDelete(path, params) {
-    if (!params._csrf) {
-      params._csrf = this.csrfToken;
-    }
-
-    return this.apiRequest('delete', path, { data: params });
-  }
-
-  async apiRequest(method, path, params) {
-    const res = await axios[method](`/_api${path}`, params);
-    if (res.data.ok) {
-      return res.data;
-    }
-
-    // Return error code if code is exist
-    if (res.data.code != null) {
-      const error = new Apiv1ErrorHandler(res.data.error, res.data.code);
-      throw error;
-    }
-
-    throw new Error(res.data.error);
-  }
 
 }
