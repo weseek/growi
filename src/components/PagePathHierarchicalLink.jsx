@@ -1,4 +1,4 @@
-import React from 'react';
+import Link from 'next/link';
 import PropTypes from 'prop-types';
 
 import urljoin from 'url-join';
@@ -58,7 +58,7 @@ const PagePathHierarchicalLink = (props) => {
         <span className="separator">/</span>
       ) }
 
-      <a className="page-segment" href={href}>{linkedPagePath.pathName}</a>
+      <Link className="page-segment" href={href}>{linkedPagePath.pathName}</Link>
     </RootElm>
   );
 };
