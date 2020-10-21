@@ -298,11 +298,11 @@ module.exports = (crowi) => {
       const fromPage = await Page.findByPath(fromPath);
       const fromPageDescendants = await Page.findManageableListWithDescendants(fromPage, req.user);
 
-      const fromPathDescendantsArray = fromPageDescendants.map((subordinatedPage) => {
+      const toPathDescendantsArray = fromPageDescendants.map((subordinatedPage) => {
         return convertToNewAffiliationPath(fromPath, toPath, subordinatedPage.path);
       });
 
-      const existPages = await Page.findExisitPath(fromPathDescendantsArray);
+      const existPages = await Page.findListByPathsArray(toPathDescendantsArray);
       const existPaths = existPages.map(page => page.path);
 
       return res.apiv3({ existPaths });

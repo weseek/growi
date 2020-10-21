@@ -258,7 +258,7 @@ class PageQueryBuilder {
     return this;
   }
 
-  addConditionToArrayExistPaths(paths) {
+  addConditionToListByPathsArray(paths) {
     this.query = this.query
       .and({
         path: {
@@ -1302,9 +1302,9 @@ module.exports = function(crowi) {
     return targetPage;
   };
 
-  pageSchema.statics.findExisitPath = async function(paths) {
+  pageSchema.statics.findListByPathsArray = async function(paths) {
     const queryBuilder = new PageQueryBuilder(this.find());
-    queryBuilder.addConditionToArrayExistPaths(paths);
+    queryBuilder.addConditionToListByPathsArray(paths);
 
     return await queryBuilder.query.exec();
   };
