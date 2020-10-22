@@ -11,9 +11,7 @@ const NotFoundAlert = (props) => {
     props.onPageCreateClicked(viewType);
   }
 
-  console.log(isForbidden);
-
-  if (!isForbidden) {
+  if (isForbidden) {
     return null;
   }
 
