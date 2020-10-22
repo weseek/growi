@@ -20,7 +20,7 @@ const logger = loggerFactory('growi:TableOfContents');
  */
 const TableOfContents = (props) => {
 
-  const { pageContainer, navigationContainer } = props;
+  const { pageContainer, navigationContainer, isGuestUserMode } = props;
 
   const calcViewHeight = useCallback(() => {
     // calculate absolute top of '#revision-toc' element
@@ -42,7 +42,7 @@ const TableOfContents = (props) => {
 
   return (
     <>
-      <TopOfTableContents />
+      <TopOfTableContents isGuestUserMode={isGuestUserMode} />
       <StickyStretchableScroller
         contentsElemSelector=".revision-toc .markdownIt-TOC"
         stickyElemSelector="#revision-toc"
@@ -70,6 +70,8 @@ const TableOfContentsWrapper = withUnstatedContainers(TableOfContents, [PageCont
 TableOfContents.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
+
+  isGuestUserMode: PropTypes.bool.isRequired,
 };
 
 export default withTranslation()(TableOfContentsWrapper);
