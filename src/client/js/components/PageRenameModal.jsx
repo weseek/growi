@@ -45,7 +45,7 @@ const PageRenameModal = (props) => {
     SetIsRenameRecursively(!isRenameRecursively);
   }
 
-  function changeIsDuplicateRecursivelyWithoutExistPathHandler() {
+  function changeIsRenameRecursivelyWithoutExistPathHandler() {
     setIsRenameRecursivelyWithoutExistPath(!isRenameRecursivelyWithoutExistPath);
   }
 
@@ -182,8 +182,8 @@ const PageRenameModal = (props) => {
               name="withoutExistRecursively"
               id="cbDuplicatewithoutExistRecursively"
               type="checkbox"
-              checked={isDuplicateRecursivelyWithoutExistPath}
-              onChange={changeIsDuplicateRecursivelyWithoutExistPathHandler}
+              checked={isRenameRecursivelyWithoutExistPath}
+              onChange={changeIsRenameRecursivelyWithoutExistPathHandler}
             />
             <label className="custom-control-label" htmlFor="cbDuplicatewithoutExistRecursively">
               { t('modal_duplicate.label.Duplicate without exist path') }
