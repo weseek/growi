@@ -173,6 +173,7 @@ const PageRenameModal = (props) => {
             { t('modal_rename.label.Recursively') }
             <p className="form-text text-muted mt-0">{ t('modal_rename.help.recursive') }</p>
           </label>
+          {existingPaths.length !== 0 && (
           <div
             className="custom-control custom-checkbox custom-checkbox-warning"
             style={{ display: isRenameRecursively ? '' : 'none' }}
@@ -189,6 +190,7 @@ const PageRenameModal = (props) => {
               { t('modal_rename.label.Rename without exist path') }
             </label>
           </div>
+)}
           {isRenameRecursively && <ComparePathsTable subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
           {isRenameRecursively && existingPaths.length !== 0 && <DuplicatedPathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />}
         </div>
