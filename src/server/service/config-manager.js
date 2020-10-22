@@ -28,7 +28,7 @@ const KEYS_FOR_FIEL_UPLOAD_USE_ONLY_ENV_OPTION = [
   'app:fileUploadType',
 ];
 
-const KEYS_FOR_GCP_USE_ONLY_ENV_OPTION = [
+const KEYS_FOR_GCS_USE_ONLY_ENV_OPTION = [
   'gcs:apiKeyJsonPath',
   'gcs:bucket',
   'gcs:uploadNamespace',
@@ -231,10 +231,10 @@ class ConfigManager extends S2sMessageHandlable {
       // file upload option
       // [TODO GW-4173] control with the env var gcs:isFileUploadEnvPrioritizes
       || KEYS_FOR_FIEL_UPLOAD_USE_ONLY_ENV_OPTION.includes(key)
-      // gcp option
+      // gcs option
       || (
-        KEYS_FOR_GCP_USE_ONLY_ENV_OPTION.includes(key)
-        && this.searchOnlyFromEnvVarConfigs('crowi', 'gcs:isGcpEnvPrioritizes')
+        KEYS_FOR_GCS_USE_ONLY_ENV_OPTION.includes(key)
+        && this.searchOnlyFromEnvVarConfigs('crowi', 'gcs:isGcsEnvPrioritizes')
       )
     ));
   }

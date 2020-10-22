@@ -364,7 +364,7 @@ export default class AdminAppContainer extends Container {
     if (this.state.fileUploadType === 'aws') {
       return this.updateAwsSettingHandler();
     }
-    return this.updateGcpSettingHandler();
+    return this.updateGcsSettingHandler();
   }
 
   /**
@@ -386,12 +386,12 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
-   * Update GCP setting
+   * Update GCS setting
    * @memberOf AdminAppContainer
    * @return {Array} Appearance
    */
-  async updateGcpSettingHandler() {
-    const response = await this.appContainer.apiv3.put('/app-settings/gcp-setting', {
+  async updateGcsSettingHandler() {
+    const response = await this.appContainer.apiv3.put('/app-settings/gcs-setting', {
       fileUploadType: this.state.fileUploadType,
       gcsApiKeyJsonPath: this.state.gcsApiKeyJsonPath,
       gcsBucket: this.state.gcsBucket,

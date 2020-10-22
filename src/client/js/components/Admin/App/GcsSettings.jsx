@@ -9,7 +9,7 @@ import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
 
 
-function GcpSetting(props) {
+function GcsSetting(props) {
   const { t, adminAppContainer } = props;
 
   return (
@@ -107,12 +107,12 @@ function GcpSetting(props) {
 /**
  * Wrapper component for using unstated
  */
-const GcpSettingWrapper = withUnstatedContainers(GcpSetting, [AppContainer, AdminAppContainer]);
+const GcsSettingWrapper = withUnstatedContainers(GcsSetting, [AppContainer, AdminAppContainer]);
 
-GcpSetting.propTypes = {
+GcsSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 
-export default withTranslation()(GcpSettingWrapper);
+export default withTranslation()(GcsSettingWrapper);
