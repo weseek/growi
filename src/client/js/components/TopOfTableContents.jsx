@@ -23,12 +23,10 @@ const TopOfTableContents = (props) => {
 
   function renderModal() {
     return (
-      <>
-        <PageAccessoriesModal
-          isOpen={pageAccessoriesContainer.state.isPageAccessoriesModalShown}
-          onClose={pageAccessoriesContainer.closePageAccessoriesModal}
-        />
-      </>
+      <PageAccessoriesModal
+        isOpen={pageAccessoriesContainer.state.isPageAccessoriesModalShown}
+        onClose={pageAccessoriesContainer.closePageAccessoriesModal}
+      />
     );
   }
 
