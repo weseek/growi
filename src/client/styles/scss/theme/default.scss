@@ -103,6 +103,13 @@ html[light] {
 
   @import 'apply-colors';
   @import 'apply-colors-light';
+
+  // Button
+  .btn-group.grw-three-stranded-button {
+    .btn.btn-outline-primary {
+      @include three-stranded-button($primary, lighten($primary, 65%), lighten($primary, 70%));
+    }
+  }
 }
 
 //== Dark Mode
@@ -196,4 +203,11 @@ html[dark] {
 
   @import 'apply-colors';
   @import 'apply-colors-dark';
+
+  //Button
+  .btn-group.grw-three-stranded-button {
+    .btn.btn-outline-primary {
+      @include three-stranded-button(lighten($primary, 30%), lighten($primary, 20%), $primary, darken($primary, 20%));
+    }
+  }
 }

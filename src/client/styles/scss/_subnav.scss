@@ -1,8 +1,9 @@
 .grw-subnav {
-  padding: 10px 15px;
+  min-height: $grw-subnav-min-height;
+  padding: 8px 15px;
 
   @include media-breakpoint-up(md) {
-    min-height: 115px;
+    min-height: $grw-subnav-min-height-md;
   }
 
   &:hover {
@@ -34,9 +35,15 @@
 
   .btn-like,
   .btn-bookmark {
-    width: 40px;
     height: 40px;
     font-size: 20px;
+    border-radius: $border-radius-xl;
+  }
+
+  .total-likes,
+  .total-bookmarks {
+    font-size: 17px;
+    font-weight: $font-weight-bold;
   }
 
   ul.authors {
@@ -79,9 +86,15 @@
     .btn-bookmark {
       @extend .btn-sm;
 
-      width: 30px;
       height: 30px;
       font-size: 15px !important;
+      border-radius: $border-radius-xl;
+    }
+
+    .total-likes,
+    .total-bookmarks {
+      height: 12px;
+      font-size: 12px;
     }
   }
 }
