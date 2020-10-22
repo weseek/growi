@@ -111,7 +111,7 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *        properties:
  *          gcsApiKeyJsonPath:
  *            type: string
- *            description: apiKeyJsonPath of gcs
+ *            description: apiKeyJsonPath of gcp
  *          gcsBucket:
  *            type: string
  *            description: bucket name of gcs
@@ -120,7 +120,7 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *            description: name space of gcs
  *          envGcsApiKeyJsonPath:
  *            type: string
- *            description: Path of the JSON file that contains service account key to authenticate to GCS API
+ *            description: Path of the JSON file that contains service account key to authenticate to GCP API
  *          envGcsBucket:
  *            type: string
  *            description: Name of the GCS bucket
