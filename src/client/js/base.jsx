@@ -12,6 +12,8 @@ import HotkeysManager from './components/Hotkeys/HotkeysManager';
 import AppContainer from './services/AppContainer';
 import SocketIoContainer from './services/SocketIoContainer';
 import PageCreateModal from './components/PageCreateModal';
+import DisplaySwitcher from './components/Page/DisplaySwitcher';
+
 
 const logger = loggerFactory('growi:cli:app');
 
@@ -48,6 +50,9 @@ const componentMappings = {
   'grw-hotkeys-manager': <HotkeysManager />,
 
   'share-link-alert': <ShareLinkAlert />,
+
+  'display-switcher': <DisplaySwitcher />,
+
 };
 
 export { appContainer, componentMappings };
