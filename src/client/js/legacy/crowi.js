@@ -15,6 +15,9 @@ window.Crowi = Crowi;
  * @param {number} line
  */
 Crowi.setCaretLineData = function(line) {
+  const { appContainer } = window;
+  const navigationContainer = appContainer.getContainer('NavigationContainer');
+  navigationContainer.setEditorMode('edit');
   const pageEditorDom = document.querySelector('#page-editor');
   pageEditorDom.setAttribute('data-caret-line', line);
 };
@@ -152,15 +155,11 @@ Crowi.highlightSelectedSection = function(hash) {
 };
 
 $(() => {
-  const appContainer = window.appContainer;
-  const config = appContainer.getConfig();
-
   const pageId = $('#content-main').data('page-id');
   // const revisionId = $('#content-main').data('page-revision-id');
   // const revisionCreatedAt = $('#content-main').data('page-revision-created');
   // const currentUser = $('#content-main').data('current-user');
   const isSeen = $('#content-main').data('page-is-seen');
-  const isSavedStatesOfTabChanges = config.isSavedStatesOfTabChanges;
 
   $('[data-toggle="popover"]').popover();
   $('[data-toggle="tooltip"]').tooltip();
@@ -198,77 +197,6 @@ $(() => {
       });
     }
   } // end if pageId
-
-  // tab changing handling
-  $('a[href="#revision-body"]').on('show.bs.tab', () => {
-    const navigationContainer = appContainer.getContainer('NavigationContainer');
-    navigationContainer.setEditorMode(null);
-  });
-  $('a[href="#edit"]').on('show.bs.tab', () => {
-    const navigationContainer = appContainer.getContainer('NavigationContainer');
-    navigationContainer.setEditorMode('builtin');
-    $('body').addClass('on-edit');
-    $('body').addClass('builtin-editor');
-  });
-  $('a[href="#edit"]').on('hide.bs.tab', () => {
-    $('body').removeClass('on-edit');
-    $('body').removeClass('builtin-editor');
-  });
-  $('a[href="#hackmd"]').on('show.bs.tab', () => {
-    const navigationContainer = appContainer.getContainer('NavigationContainer');
-    navigationContainer.setEditorMode('hackmd');
-    $('body').addClass('on-edit');
-    $('body').addClass('hackmd');
-  });
-
-  $('a[href="#hackmd"]').on('hide.bs.tab', () => {
-    $('body').removeClass('on-edit');
-    $('body').removeClass('hackmd');
-  });
-
-  // hash handling
-  if (isSavedStatesOfTabChanges) {
-    $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', () => {
-      window.location.hash = '#revision-history';
-      window.history.replaceState('', 'History', '#revision-history');
-    });
-    $('a[data-toggle="tab"][href="#edit"]').on('show.bs.tab', () => {
-      window.location.hash = '#edit';
-      window.history.replaceState('', 'Edit', '#edit');
-    });
-    $('a[data-toggle="tab"][href="#hackmd"]').on('show.bs.tab', () => {
-      window.location.hash = '#hackmd';
-      window.history.replaceState('', 'HackMD', '#hackmd');
-    });
-    $('a[data-toggle="tab"][href="#revision-body"]').on('show.bs.tab', () => {
-      // couln't solve https://github.com/weseek/crowi-plus/issues/119 completely -- 2017.07.03 Yuki Takei
-      window.location.hash = '#';
-      window.history.replaceState('', '', window.location.href);
-    });
-  }
-  else {
-    $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', () => {
-      window.history.replaceState('', 'History', '#revision-history');
-    });
-    $('a[data-toggle="tab"][href="#edit"]').on('show.bs.tab', () => {
-      window.history.replaceState('', 'Edit', '#edit');
-    });
-    $('a[data-toggle="tab"][href="#hackmd"]').on('show.bs.tab', () => {
-      window.history.replaceState('', 'HackMD', '#hackmd');
-    });
-    $('a[data-toggle="tab"][href="#revision-body"]').on('show.bs.tab', () => {
-      window.history.replaceState('', '', window.location.href.replace(window.location.hash, ''));
-    });
-    // replace all href="#edit" link behaviors
-    $(document).on('click', 'a[href="#edit"]', () => {
-      window.location.replace('#edit');
-    });
-  }
-
-  // focus to editor when 'shown.bs.tab' event fired
-  $('a[href="#edit"]').on('shown.bs.tab', (e) => {
-    Crowi.setCaretLineAndFocusToEditor();
-  });
 });
 
 window.addEventListener('load', (e) => {
@@ -283,25 +211,14 @@ window.addEventListener('load', (e) => {
   if (window.location.hash) {
     const navigationContainer = appContainer.getContainer('NavigationContainer');
 
-    if ((window.location.hash === '#edit' || window.location.hash === '#edit-form') && $('.tab-pane#edit').length > 0) {
-      navigationContainer.setEditorMode('builtin');
-
-      $('a[data-toggle="tab"][href="#edit"]').tab('show');
-      $('body').addClass('on-edit');
-      $('body').addClass('builtin-editor');
+    if (window.location.hash === '#edit') {
+      navigationContainer.setEditorMode('edit');
 
       // focus
       Crowi.setCaretLineAndFocusToEditor();
     }
-    else if (window.location.hash === '#hackmd' && $('.tab-pane#hackmd').length > 0) {
+    else if (window.location.hash === '#hackmd') {
       navigationContainer.setEditorMode('hackmd');
-
-      $('a[data-toggle="tab"][href="#hackmd"]').tab('show');
-      $('body').addClass('on-edit');
-      $('body').addClass('hackmd');
-    }
-    else if (window.location.hash === '#revision-history' && $('.tab-pane#revision-history').length > 0) {
-      $('a[data-toggle="tab"][href="#revision-history"]').tab('show');
     }
   }
 });
@@ -353,21 +270,19 @@ window.addEventListener('hashchange', (e) => {
   Crowi.unhighlightSelectedSection(Crowi.findHashFromUrl(e.oldURL));
   Crowi.highlightSelectedSection(Crowi.findHashFromUrl(e.newURL));
   Crowi.modifyScrollTop();
+  const { appContainer } = window;
+  const navigationContainer = appContainer.getContainer('NavigationContainer');
+
 
   // hash on page
   if (window.location.hash) {
     if (window.location.hash === '#edit') {
-      $('a[data-toggle="tab"][href="#edit"]').tab('show');
+      navigationContainer.setEditorMode('edit');
+      Crowi.setCaretLineAndFocusToEditor();
     }
     else if (window.location.hash === '#hackmd') {
-      $('a[data-toggle="tab"][href="#hackmd"]').tab('show');
+      navigationContainer.setEditorMode('hackmd');
     }
-    else if (window.location.hash === '#revision-history') {
-      $('a[data-toggle="tab"][href="#revision-history"]').tab('show');
-    }
-  }
-  else {
-    $('a[data-toggle="tab"][href="#revision-body"]').tab('show');
   }
 });
 

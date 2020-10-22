@@ -65,6 +65,9 @@ module.exports = (crowi) => {
       body('pageId').isString(),
       body('bool').isBoolean(),
     ],
+    bookmarkInfo: [
+      query('pageId').isMongoId(),
+    ],
   };
 
   /**
@@ -90,12 +93,13 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Bookmark'
    */
-  router.get('/', accessTokenParser, loginRequired, async(req, res) => {
+  router.get('/', accessTokenParser, loginRequired, validator.bookmarkInfo, async(req, res) => {
     const { pageId } = req.query;
 
     try {
-      const bookmark = await Bookmark.findByPageIdAndUserId(pageId, req.user);
-      return res.apiv3({ bookmark });
+      const bookmarks = await Bookmark.findByPageIdAndUserId(pageId, req.user);
+      const sumOfBookmarks = await Bookmark.countByPageId(pageId);
+      return res.apiv3({ bookmarks, sumOfBookmarks });
     }
     catch (err) {
       logger.error('get-bookmark-failed', err);
@@ -235,6 +239,28 @@ module.exports = (crowi) => {
 
     return res.apiv3({ bookmark });
   });
+
+  /**
+   * @swagger
+   *
+   *    /count-bookmarks:
+   *      get:
+   *        tags: [Bookmarks]
+   *        summary: /bookmarks
+   *        description: Count bookmsrks
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/BookmarkParams'
+   *        responses:
+   *          200:
+   *            description: Succeeded to count bookmarks.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/Bookmark'
+   */
 
   return router;
 };
