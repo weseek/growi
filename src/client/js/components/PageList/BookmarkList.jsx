@@ -92,7 +92,7 @@ const BookmarkList = (props) => {
             pagingLimit={pagingLimit}
           />
         </>
-        )}
+      )}
     </div>
   );
 
