@@ -32,7 +32,7 @@ const CustomNavigation = (props) => {
     }
 
     if (mounted.current) {
-      // Update時の処理
+      // Updated
       setDefaultActiveTab('');
       console.log('Updated!');
 
@@ -56,7 +56,7 @@ const CustomNavigation = (props) => {
       console.log(`sliderWidth = ${sliderWidth}`);
     }
     else {
-      // Mount時の処理
+      // Mounted
       mounted.current = true;
       console.log(`Mounted! ${activeTab}`);
       setDefaultActiveTab(activeTab);
