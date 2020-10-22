@@ -73,6 +73,7 @@ class RecentCreated extends React.Component {
           {pageList}
         </ul>
         <PaginationWrapper
+          align="center"
           activePage={this.state.activePage}
           changePage={this.handlePage}
           totalItemsCount={this.state.totalPages}
