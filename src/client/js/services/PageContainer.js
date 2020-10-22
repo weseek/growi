@@ -79,8 +79,6 @@ export default class PageContainer extends Container {
       isHackmdDraftUpdatingInRealtime: false,
     };
 
-    console.log(this.state.isForbidden);
-
     // parse creator, lastUpdateUser and revisionAuthor
     try {
       this.state.creator = JSON.parse(mainContent.getAttribute('data-page-creator'));
