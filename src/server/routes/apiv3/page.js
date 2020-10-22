@@ -7,6 +7,7 @@ const { body, query } = require('express-validator');
 
 const router = express.Router();
 
+const { convertToNewAffiliationPath } = require('../../../lib/util/path-utils');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 /**
@@ -139,7 +140,8 @@ module.exports = (crowi) => {
       body('hierarchyValue').isNumeric(),
     ],
     exist: [
-      query('newParentPath').isString(),
+      query('fromPath').isString(),
+      query('toPath').isString(),
     ],
   };
 
@@ -266,14 +268,14 @@ module.exports = (crowi) => {
    *        description: Get already exist paths
    *        operationId: getAlreadyExistPaths
    *        parameters:
-   *          - name: newParentPath
+   *          - name: fromPath
    *            in: query
-   *            description: New parent path of search
+   *            description: old parent path
    *            schema:
    *              type: string
-   *          - name: toPaths
+   *          - name: toPath
    *            in: query
-   *            description: Paths to compare with DB
+   *            description: new parent path
    *            schema:
    *              type: string
    *        responses:
@@ -290,18 +292,18 @@ module.exports = (crowi) => {
    *            description: Internal server error.
    */
   router.get('/exist-paths', loginRequired, validator.exist, apiV3FormValidator, async(req, res) => {
-    const { newParentPath, toPaths } = req.query;
+    const { fromPath, toPath } = req.query;
 
     try {
-      const { pages } = await Page.findListByStartWith(newParentPath, req.user);
+      const fromPage = await Page.findByPath(fromPath);
+      const fromPageDescendants = await Page.findManageableListWithDescendants(fromPage, req.user);
 
-      const duplicationPaths = pages.map((page) => {
-        if (toPaths.includes(page.path)) {
-          return page.path;
-        }
-        return null;
+      const toPathDescendantsArray = fromPageDescendants.map((subordinatedPage) => {
+        return convertToNewAffiliationPath(fromPath, toPath, subordinatedPage.path);
       });
-      const existPaths = duplicationPaths.filter(path => path != null);
+
+      const existPages = await Page.findListByPathsArray(toPathDescendantsArray);
+      const existPaths = existPages.map(page => page.path);
 
       return res.apiv3({ existPaths });
 

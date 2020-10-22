@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, {
+  useState, useEffect, useCallback,
+} from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -7,6 +9,7 @@ import {
 
 import { withTranslation } from 'react-i18next';
 
+import { debounce } from 'throttle-debounce';
 import { withUnstatedContainers } from './UnstatedUtils';
 import { toastError } from '../util/apiNotification';
 
@@ -14,6 +17,8 @@ import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 import ComparePathsTable from './ComparePathsTable';
+import DuplicatedPathsTable from './DuplicatedPathsTable';
+
 
 const PageRenameModal = (props) => {
   const {
@@ -29,12 +34,12 @@ const PageRenameModal = (props) => {
   const [errs, setErrs] = useState(null);
 
   const [subordinatedPages, setSubordinatedPages] = useState([]);
+  const [existingPaths, setExistingPaths] = useState([]);
   const [isRenameRecursively, SetIsRenameRecursively] = useState(true);
   const [isRenameRedirect, SetIsRenameRedirect] = useState(false);
   const [isRenameMetadata, SetIsRenameMetadata] = useState(false);
   const [subordinatedError] = useState(null);
   const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
-
 
   function changeIsRenameRecursivelyHandler() {
     SetIsRenameRecursively(!isRenameRecursively);
@@ -69,6 +74,30 @@ const PageRenameModal = (props) => {
       updateSubordinatedList();
     }
   }, [props.isOpen, updateSubordinatedList]);
+
+
+  const checkExistPaths = async(newParentPath) => {
+    try {
+      const res = await appContainer.apiv3Get('/page/exist-paths', { fromPath: path, toPath: newParentPath });
+      const { existPaths } = res.data;
+      setExistingPaths(existPaths);
+    }
+    catch (err) {
+      setErrs(err);
+      toastError(t('modal_rename.label.Fail to get exist path'));
+    }
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const checkExistPathsDebounce = useCallback(
+    debounce(1000, checkExistPaths), [],
+  );
+
+  useEffect(() => {
+    if (pageNameInput !== path) {
+      checkExistPathsDebounce(pageNameInput, subordinatedPages);
+    }
+  }, [pageNameInput, subordinatedPages, path, checkExistPathsDebounce]);
 
   /**
    * change pageNameInput
@@ -161,6 +190,7 @@ const PageRenameModal = (props) => {
             </label>
           </div>
           {isRenameRecursively && <ComparePathsTable subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
+          {isRenameRecursively && existingPaths.length !== 0 && <DuplicatedPathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />}
         </div>
 
         <div className="custom-control custom-checkbox custom-checkbox-success">
