@@ -24,6 +24,7 @@ const TopOfTableContents = (props) => {
   function renderModal() {
     return (
       <PageAccessoriesModal
+        isGuestUserMode={isGuestUserMode}
         isOpen={pageAccessoriesContainer.state.isPageAccessoriesModalShown}
         onClose={pageAccessoriesContainer.closePageAccessoriesModal}
       />

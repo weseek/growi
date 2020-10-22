@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Modal, ModalBody, ModalHeader, Nav, NavItem, NavLink, TabContent, TabPane,
+  Modal, ModalBody, ModalHeader, Nav, NavItem, NavLink, TabContent, TabPane, UncontrolledTooltip,
 } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
@@ -27,31 +27,36 @@ const navTabMapping = {
     icon: <PageListIcon />,
     i18n: 'page_list',
     index: 0,
+    isGuestNotAllowed: false,
   },
   timeline:  {
     icon: <TimeLineIcon />,
     i18n: 'Timeline View',
     index: 1,
+    isGuestNotAllowed: false,
   },
   pageHistory: {
     icon: <RecentChangesIcon />,
     i18n: 'History',
     index: 2,
+    isGuestNotAllowed: false,
   },
   attachment: {
     icon: <AttachmentIcon />,
     i18n: 'attachment_data',
     index: 3,
+    isGuestNotAllowed: false,
   },
   shareLink: {
     icon: <ShareLinkIcon />,
     i18n: 'share_links.share_link_management',
     index: 4,
+    isGuestNotAllowed: true,
   },
 };
 
 const PageAccessoriesModal = (props) => {
-  const { t, pageAccessoriesContainer } = props;
+  const { t, pageAccessoriesContainer, isGuestUserMode } = props;
   const { switchActiveTab } = pageAccessoriesContainer;
   const { activeTab } = pageAccessoriesContainer.state;
 
@@ -102,17 +107,24 @@ const PageAccessoriesModal = (props) => {
   return (
     <React.Fragment>
       <Modal size="xl" isOpen={props.isOpen} toggle={closeModalHandler} className="grw-page-accessories-modal">
-        {/* [TODO: insert a modal header and move nav tabs there  by gw-3890] */}
         <ModalHeader className="p-0" toggle={closeModalHandler}>
           <Nav className="nav-title" id="nav-title">
             {Object.entries(navTabMapping).map(([key, value]) => {
+              const isDisabledNavLink = (isGuestUserMode && value.isGuestNotAllowed);
               return (
-                <NavItem key={key} type="button" className={`p-0 nav-link ${activeTab === key && 'active'}`}>
-                  <NavLink onClick={() => { switchActiveTab(key) }}>
-                    {value.icon}
-                    {t(value.i18n)}
-                  </NavLink>
-                </NavItem>
+                <React.Fragment key={key}>
+                  <NavItem id={key} type="button" className={`p-0 nav-link ${activeTab === key && 'active'}`}>
+                    <NavLink disabled={isDisabledNavLink} onClick={() => { switchActiveTab(key) }}>
+                      {value.icon}
+                      {t(value.i18n)}
+                    </NavLink>
+                  </NavItem>
+                  {(isDisabledNavLink) && (
+                    <UncontrolledTooltip placement="top" target={key} fade={false}>
+                      {t('Not available for guest')}
+                    </UncontrolledTooltip>
+                  )}
+                </React.Fragment>
               );
             })}
           </Nav>
@@ -134,9 +146,11 @@ const PageAccessoriesModal = (props) => {
             <TabPane tabId="attachment">
               {pageAccessoriesContainer.state.activeComponents.has('attachment') && <PageAttachment />}
             </TabPane>
-            <TabPane tabId="shareLink">
-              {pageAccessoriesContainer.state.activeComponents.has('shareLink') && <ShareLink />}
-            </TabPane>
+            {!isGuestUserMode && (
+              <TabPane tabId="shareLink">
+                {pageAccessoriesContainer.state.activeComponents.has('shareLink') && <ShareLink />}
+              </TabPane>
+            )}
           </TabContent>
         </ModalBody>
       </Modal>
@@ -153,6 +167,7 @@ PageAccessoriesModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   // pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   pageAccessoriesContainer: PropTypes.instanceOf(PageAccessoriesContainer).isRequired,
+  isGuestUserMode: PropTypes.bool.isRequired,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
 };
