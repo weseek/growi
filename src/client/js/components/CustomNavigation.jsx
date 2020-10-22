@@ -82,9 +82,12 @@ const CustomNavigation = (props) => {
       <Nav className="nav-title grw-custom-navbar" id="grw-custom-navbar">
         {Object.entries(props.navTabMapping).map(([key, value]) => {
           console.log('return');
-          // console.log(`sliderWidth = ${sliderWidth}% & sliderMarginLeft = ${sliderMarginLeft}%`);
           return (
-            <NavItem key={key} type="button" className={`p-0 grw-custom-navtab ${activeTab === key && 'active'} ${defaultActiveTab === key && 'default-active-tab'}`}>
+            <NavItem
+              key={key}
+              type="button"
+              className={`p-0 grw-custom-navtab ${activeTab === key && 'active'} ${defaultActiveTab === key && 'default-active-tab'}`}
+            >
               <NavLink onClick={() => { switchActiveTab(key) }}>
                 {value.icon}
                 {value.i18n}
