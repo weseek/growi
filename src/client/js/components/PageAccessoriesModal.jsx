@@ -120,7 +120,7 @@ const PageAccessoriesModal = (props) => {
                     </NavLink>
                   </NavItem>
                   {(isDisabledNavLink) && (
-                    <UncontrolledTooltip placement="top" target={key} fade={false}>
+                    <UncontrolledTooltip placement="bottom" target={key} fade={false}>
                       {t('Not available for guest')}
                     </UncontrolledTooltip>
                   )}
