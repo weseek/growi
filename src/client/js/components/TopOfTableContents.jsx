@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { UncontrolledTooltip } from 'reactstrap';
-import AppContainer from '../services/AppContainer';
 import PageAccessoriesContainer from '../services/PageAccessoriesContainer';
 
 import PageListIcon from './Icons/PageListIcon';
@@ -18,8 +17,7 @@ import PageAccessoriesModal from './PageAccessoriesModal';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 const TopOfTableContents = (props) => {
-  const { t, appContainer, pageAccessoriesContainer } = props;
-  const isGuestUserMode = (appContainer.currentUser == null);
+  const { t, pageAccessoriesContainer, isGuestUserMode } = props;
 
   function renderModal() {
     return (
@@ -95,13 +93,14 @@ const TopOfTableContents = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const TopOfTableContentsWrapper = withUnstatedContainers(TopOfTableContents, [AppContainer, PageAccessoriesContainer]);
+const TopOfTableContentsWrapper = withUnstatedContainers(TopOfTableContents, [PageAccessoriesContainer]);
 
 TopOfTableContents.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
 
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageAccessoriesContainer: PropTypes.instanceOf(PageAccessoriesContainer).isRequired,
+
+  isGuestUserMode: PropTypes.bool.isRequired,
 };
 
 export default withTranslation()(TopOfTableContentsWrapper);
