@@ -27,7 +27,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     ns:      'crowi',
     key:     'app:fileUploadType',
     type:    TYPES.STRING,
-    default: null,
+    default: 'aws',
   },
   // HACKMD_URI: {
   //   ns:      ,
