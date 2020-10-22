@@ -147,8 +147,6 @@ const GrowiSubNavigation = (props) => {
   const isUserPage = pageUser != null;
   const isPageInTrash = isTrashPage(path);
 
-  console.log(isPageForbidden);
-
   function onThreeStrandedButtonClicked(viewType) {
     navigationContainer.setEditorMode(viewType);
   }
