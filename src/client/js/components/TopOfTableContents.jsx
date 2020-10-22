@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
+import { UncontrolledTooltip } from 'reactstrap';
+import AppContainer from '../services/AppContainer';
 import PageAccessoriesContainer from '../services/PageAccessoriesContainer';
 
 import PageListIcon from './Icons/PageListIcon';
@@ -16,7 +18,8 @@ import PageAccessoriesModal from './PageAccessoriesModal';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 const TopOfTableContents = (props) => {
-  const { pageAccessoriesContainer } = props;
+  const { t, appContainer, pageAccessoriesContainer } = props;
+  const isGuestUserMode = (appContainer.currentUser == null);
 
   function renderModal() {
     return (
@@ -64,14 +67,20 @@ const TopOfTableContents = (props) => {
           <AttachmentIcon />
         </button>
 
-        <button
-          type="button"
-          className="btn btn-link grw-btn-top-of-table"
-          onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('shareLink')}
-        >
-          <ShareLinkIcon />
-        </button>
-
+        <div id="shareLink-btn-wrapper-for-tooltip">
+          <button
+            type="button"
+            className={`btn btn-link grw-btn-top-of-table ${isGuestUserMode && 'disabled'}`}
+            onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('shareLink')}
+          >
+            <ShareLinkIcon />
+          </button>
+        </div>
+        {isGuestUserMode && (
+          <UncontrolledTooltip placement="top" target="shareLink-btn-wrapper-for-tooltip" fade={false}>
+            {t('Not available for guest')}
+          </UncontrolledTooltip>
+        )}
         <div
           id="seen-user-list"
           data-user-ids-str="{{ page.seenUsers|slice(-15)|default([])|reverse|join(',') }}"
@@ -87,9 +96,12 @@ const TopOfTableContents = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const TopOfTableContentsWrapper = withUnstatedContainers(TopOfTableContents, [PageAccessoriesContainer]);
+const TopOfTableContentsWrapper = withUnstatedContainers(TopOfTableContents, [AppContainer, PageAccessoriesContainer]);
 
 TopOfTableContents.propTypes = {
+  t: PropTypes.func.isRequired, //  i18next
+
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageAccessoriesContainer: PropTypes.instanceOf(PageAccessoriesContainer).isRequired,
 };
 
