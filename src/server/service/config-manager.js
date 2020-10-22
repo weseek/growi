@@ -24,15 +24,11 @@ const KEYS_FOR_SAML_USE_ONLY_ENV_OPTION = [
   'security:passport-saml:ABLCRule',
 ];
 
-<<<<<<< HEAD
 const KEYS_FOR_FIEL_UPLOAD_USE_ONLY_ENV_OPTION = [
   'app:fileUploadType',
 ];
 
-const KEYS_FOR_GCP_USE_ONLY_ENV_OPTION = [
-=======
 const KEYS_FOR_GCS_USE_ONLY_ENV_OPTION = [
->>>>>>> 0b168e6e8... change name in endpoint and config
   'gcs:apiKeyJsonPath',
   'gcs:bucket',
   'gcs:uploadNamespace',
