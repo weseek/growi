@@ -69,7 +69,7 @@ class RecentCreated extends React.Component {
 
     return (
       <div className="page-list-container-create">
-        <ul className="page-list-ul page-list-ul-flat mb-3">
+        <ul className="page-list-ul page-list-ul-flat mb-4">
           {pageList}
         </ul>
         <PaginationWrapper
