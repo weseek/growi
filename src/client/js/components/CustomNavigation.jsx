@@ -35,6 +35,7 @@ const CustomNavigation = (props) => {
 
     if (mounted.current) {
       // Update時の処理
+      setDefaultActiveTab('');
       console.log('Updated!');
       const defaultActiveTab = navTabs[0];
       const defaultActiveWidth = defaultActiveTab.offsetWidth;
@@ -56,7 +57,6 @@ const CustomNavigation = (props) => {
       });
       const { width, marginLeft } = styles[props.navTabMapping[activeTab].index];
 
-      setDefaultActiveTab('');
       setSliderWidth(width);
       setSliderMarginLeft(marginLeft);
     }
