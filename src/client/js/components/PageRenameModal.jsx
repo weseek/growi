@@ -39,14 +39,14 @@ const PageRenameModal = (props) => {
   const [isRenameRedirect, SetIsRenameRedirect] = useState(false);
   const [isRenameMetadata, SetIsRenameMetadata] = useState(false);
   const [subordinatedError] = useState(null);
-  const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
+  const [isRenameRecursivelyWithoutExistPath, setIsRenameRecursivelyWithoutExistPath] = useState(true);
 
   function changeIsRenameRecursivelyHandler() {
     SetIsRenameRecursively(!isRenameRecursively);
   }
 
-  function changeIsDuplicateRecursivelyWithoutExistPathHandler() {
-    setIsDuplicateRecursivelyWithoutExistPath(!isDuplicateRecursivelyWithoutExistPath);
+  function changeIsRenameRecursivelyWithoutExistPathHandler() {
+    setIsRenameRecursivelyWithoutExistPath(!isRenameRecursivelyWithoutExistPath);
   }
 
   function changeIsRenameRedirectHandler() {
@@ -65,7 +65,7 @@ const PageRenameModal = (props) => {
     }
     catch (err) {
       setErrs(err);
-      toastError(t('modal_duplicate.label.Fail to get subordinated pages'));
+      toastError(t('modal_rename.label.Fail to get subordinated pages'));
     }
   }, [appContainer, path, t]);
 
@@ -173,6 +173,7 @@ const PageRenameModal = (props) => {
             { t('modal_rename.label.Recursively') }
             <p className="form-text text-muted mt-0">{ t('modal_rename.help.recursive') }</p>
           </label>
+          {existingPaths.length !== 0 && (
           <div
             className="custom-control custom-checkbox custom-checkbox-warning"
             style={{ display: isRenameRecursively ? '' : 'none' }}
@@ -180,15 +181,16 @@ const PageRenameModal = (props) => {
             <input
               className="custom-control-input"
               name="withoutExistRecursively"
-              id="cbDuplicatewithoutExistRecursively"
+              id="cbRenamewithoutExistRecursively"
               type="checkbox"
-              checked={isDuplicateRecursivelyWithoutExistPath}
-              onChange={changeIsDuplicateRecursivelyWithoutExistPathHandler}
+              checked={isRenameRecursivelyWithoutExistPath}
+              onChange={changeIsRenameRecursivelyWithoutExistPathHandler}
             />
-            <label className="custom-control-label" htmlFor="cbDuplicatewithoutExistRecursively">
-              { t('modal_duplicate.label.Duplicate without exist path') }
+            <label className="custom-control-label" htmlFor="cbRenamewithoutExistRecursively">
+              { t('modal_rename.label.Rename without exist path') }
             </label>
           </div>
+)}
           {isRenameRecursively && <ComparePathsTable subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
           {isRenameRecursively && existingPaths.length !== 0 && <DuplicatedPathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />}
         </div>
@@ -226,7 +228,13 @@ const PageRenameModal = (props) => {
       </ModalBody>
       <ModalFooter>
         <ApiErrorMessageList errs={errs} targetPath={pageNameInput} />
-        <button type="button" className="btn btn-primary" onClick={rename}>Rename</button>
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={rename}
+          disabled={(isRenameRecursively && !isRenameRecursivelyWithoutExistPath && existingPaths.length !== 0)}
+        >Rename
+        </button>
       </ModalFooter>
     </Modal>
   );
