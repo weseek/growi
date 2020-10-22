@@ -229,8 +229,10 @@ class ConfigManager extends S2sMessageHandlable {
         && this.defaultSearch('crowi', 'security:passport-saml:useOnlyEnvVarsForSomeOptions')
       )
       // file upload option
-      || KEYS_FOR_FIEL_UPLOAD_USE_ONLY_ENV_OPTION.includes(key)
-        && this.defaultSearch('crowi', 'app:isFileUploadEnvPrioritized')
+      || (
+        KEYS_FOR_FIEL_UPLOAD_USE_ONLY_ENV_OPTION.includes(key)
+        && this.searchOnlyFromEnvVarConfigs('crowi', 'app:isFileUploadEnvPrioritized')
+      )
       // gcp option
       || (
         KEYS_FOR_GCP_USE_ONLY_ENV_OPTION.includes(key)
