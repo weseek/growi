@@ -112,6 +112,13 @@ html[dark] {
   @import 'apply-colors';
   @import 'apply-colors-light';
 
+  //Button
+  .btn-group.grw-three-stranded-button {
+    .btn.btn-outline-primary {
+      @include three-stranded-button(darken($primary, 10%), lighten($primary, 55%), lighten($primary, 60%));
+    }
+  }
+
   .table {
     background-color: $themelight;
   }

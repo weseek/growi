@@ -10,27 +10,7 @@
 <div id="content-main" class="content-main page-list"
   data-path="{{ encodeURI(path) }}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
-  >
+  data-page-is-creatable="true"
+  ></div>
 
-  <ul class="nav nav-tabs d-print-none" role="tablist">
-    <li class="nav-item grw-nav-main-left-tab active" role="presentation">
-      <a class="nav-link active" role="tab" href="#revision-body" data-toggle="tab">
-        <i class="icon-notebook"></i> List
-      </a>
-    </li>
-  </ul>
-
-  <div class="tab-content">
-    {# list view #}
-    <div class="pt-2 active tab-pane page-list-container" id="revision-body">
-      {% if pages.length == 0 %}
-        <div class="mt-2">
-          There are no pages under <strong>{{ path | preventXss }}</strong>.
-        </div>
-      {% endif  %}
-
-      {% include '../widget/page_list.html' with { pages: pages, pager: pager, viewConfig: viewConfig } %}
-    </div>
-
-  </div>
 </div>
