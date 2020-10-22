@@ -35,7 +35,6 @@ class RecentCreated extends React.Component {
   async getRecentCreatedList(selectedPage) {
     const { appContainer, userId } = this.props;
     const page = selectedPage;
-    // const userId = appContainer.currentUserId;
 
     // pagesList get and pagination calculate
     const res = await appContainer.apiv3Get(`/users/${userId}/recent`, { page });

@@ -14,7 +14,7 @@ const PageList = (props) => {
   const { appContainer, pageContainer } = props;
   const { path } = pageContainer.state;
   const [pages, setPages] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -29,7 +29,7 @@ const PageList = (props) => {
     const res = await appContainer.apiv3Get('/pages/list', { path, page });
 
     setPages(res.data.pages);
-    setIsLoading(true);
+    setIsLoading(false);
     setTotalPages(res.data.totalCount);
     setLimit(res.data.limit);
   }, [appContainer, path, activePage]);
@@ -39,7 +39,7 @@ const PageList = (props) => {
   }, [updatePageList]);
 
 
-  if (isLoading === false) {
+  if (isLoading) {
     return (
       <div className="wiki">
         <div className="text-muted test-center">
