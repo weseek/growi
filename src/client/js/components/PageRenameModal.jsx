@@ -39,14 +39,14 @@ const PageRenameModal = (props) => {
   const [isRenameRedirect, SetIsRenameRedirect] = useState(false);
   const [isRenameMetadata, SetIsRenameMetadata] = useState(false);
   const [subordinatedError] = useState(null);
-  const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
+  const [isRenameRecursivelyWithoutExistPath, setIsRenameRecursivelyWithoutExistPath] = useState(true);
 
   function changeIsRenameRecursivelyHandler() {
     SetIsRenameRecursively(!isRenameRecursively);
   }
 
   function changeIsDuplicateRecursivelyWithoutExistPathHandler() {
-    setIsDuplicateRecursivelyWithoutExistPath(!isDuplicateRecursivelyWithoutExistPath);
+    setIsRenameRecursivelyWithoutExistPath(!isRenameRecursivelyWithoutExistPath);
   }
 
   function changeIsRenameRedirectHandler() {
