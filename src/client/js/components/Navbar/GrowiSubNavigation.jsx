@@ -147,6 +147,8 @@ const GrowiSubNavigation = (props) => {
   const isUserPage = pageUser != null;
   const isPageInTrash = isTrashPage(path);
 
+  console.log(isPageForbidden);
+
   function onThreeStrandedButtonClicked(viewType) {
     navigationContainer.setEditorMode(viewType);
   }
@@ -193,7 +195,7 @@ const GrowiSubNavigation = (props) => {
             { !isPageNotFound && !isPageForbidden && <PageManagement /> }
           </div>
           <div className="mt-2">
-            { !isCreatable && !isPageInTrash
+            { !isCreatable && !isPageInTrash && !isPageForbidden
             && (
             <ThreeStrandedButton
               onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
