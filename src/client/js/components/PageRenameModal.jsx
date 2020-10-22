@@ -186,7 +186,7 @@ const PageRenameModal = (props) => {
               onChange={changeIsRenameRecursivelyWithoutExistPathHandler}
             />
             <label className="custom-control-label" htmlFor="cbDuplicatewithoutExistRecursively">
-              { t('modal_duplicate.label.Duplicate without exist path') }
+              { t('modal_rename.label.Rename without exist path') }
             </label>
           </div>
           {isRenameRecursively && <ComparePathsTable subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
