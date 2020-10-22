@@ -189,13 +189,12 @@ PaginationWrapper.propTypes = {
   activePage: PropTypes.number.isRequired,
   changePage: PropTypes.func.isRequired,
   totalItemsCount: PropTypes.number.isRequired,
-  pagingLimit: PropTypes.number,
+  pagingLimit: PropTypes.number.isRequired,
   align: PropTypes.string,
 };
+
 PaginationWrapper.defaultProps = {
   align: 'left',
-  pagingLimit: PropTypes.number,
-
 };
 
 export default withTranslation()(PaginationWrappered);
