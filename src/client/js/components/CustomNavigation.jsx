@@ -72,12 +72,10 @@ const CustomNavigation = (props) => {
   }, [activeTab]);
 
 
-  function grwNavSlideHr() {
+  function renderNavSlideHr() {
     if (defaultActiveTab === activeTab) {
       console.log(`defaultActiveTab = ${defaultActiveTab}`);
-      return (
-        <hr className="my-0 border-none" />
-      );
+      return;
     }
     return <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />;
   }
@@ -99,7 +97,7 @@ const CustomNavigation = (props) => {
           );
         })}
       </Nav>
-      {grwNavSlideHr()}
+      {renderNavSlideHr()}
       {/* <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} /> */}
       <TabContent activeTab={activeTab} className="p-4">
         {Object.entries(props.navTabMapping).map(([key, value]) => {
