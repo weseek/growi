@@ -230,7 +230,7 @@ const PageRenameModal = (props) => {
           type="button"
           className="btn btn-primary"
           onClick={rename}
-          disabled={(isRenameRecursively && isRenameRecursivelyWithoutExistPath && existingPaths.length !== 0)}
+          disabled={(isRenameRecursively && !isRenameRecursivelyWithoutExistPath && existingPaths.length !== 0)}
         >Rename
         </button>
       </ModalFooter>
