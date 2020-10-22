@@ -14,7 +14,7 @@
   data-page-grant-group-name="{{ grantedGroupName }}"
   data-page-is-liked="{% if user %}{{ page.isLiked(user) }}{% else %}false{% endif %}"
   data-page-is-seen="{% if page and page.isSeenUser(user) %}1{% else %}0{% endif %}"
-  data-page-is-forbidden="{% if forbidden %}true{% else %}false{% endif %}"
+  data-page-is-forbidden="false"
   data-page-is-deleted="{% if page.isDeleted() %}true{% else %}false{% endif %}"
   data-page-is-deletable="{% if isDeletablePage() %}true{% else %}false{% endif %}"
   data-page-is-creatable="false"
