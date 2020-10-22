@@ -53,6 +53,7 @@ const CustomNavigation = (props) => {
 
       setSliderWidth(width);
       setSliderMarginLeft(marginLeft);
+      console.log(`sliderWidth = ${sliderWidth}`);
     }
     else {
       // Mount時の処理
@@ -67,9 +68,11 @@ const CustomNavigation = (props) => {
 
   function renderNavSlideHr() {
     if (defaultActiveTab === activeTab) {
+      console.log('1st');
       console.log(`defaultActiveTab = ${defaultActiveTab}`);
       return;
     }
+    console.log('2nd');
     return <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />;
   }
 
