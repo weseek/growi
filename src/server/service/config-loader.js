@@ -29,7 +29,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: 'aws',
   },
-  IS_FILE_UPLOAD_ENV_PRIORITIZED: {
+  FILE_UPLOAD_PRIORITIZE_ENV_VAR: {
     ns:      'crowi',
     key:     'app:isFileUploadEnvPrioritized',
     type:    TYPES.BOOLEAN,
