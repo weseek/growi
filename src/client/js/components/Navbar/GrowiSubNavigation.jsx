@@ -1,3 +1,4 @@
+import dynamic from 'next/dynamic';
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -7,17 +8,17 @@ import { withTranslation } from 'react-i18next';
 import DevidedPagePath from '~/models/devided-page-path';
 import LinkedPagePath from '~/models/linked-page-path';
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
-import { isTrashPage } from '~/utils/path-utils';
+import { isTrashPage, isUserPage } from '~/utils/path-utils';
+import { useCurrentPageSWR } from '~/stores/page';
+import { useCurrentUser, useForbidden, useOwnerOfCurrentPage } from '~/stores/context';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import NavigationContainer from '../../services/NavigationContainer';
-import PageContainer from '../../services/PageContainer';
 
-import RevisionPathControls from '../Page/RevisionPathControls';
 import TagLabels from '../Page/TagLabels';
-import LikeButton from '../LikeButton';
-import BookmarkButton from '../BookmarkButton';
+// import LikeButton from '../LikeButton';
+// import BookmarkButton from '../BookmarkButton';
 import ThreeStrandedButton from './ThreeStrandedButton';
 
 import AuthorInfo from './AuthorInfo';
@@ -29,6 +30,9 @@ import PageManagement from '../Page/PageManagement';
 
 // eslint-disable-next-line react/prop-types
 const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
+
+  // dynamic import to skip rendering at SSR
+  const RevisionPathControls = dynamic(() => import('../Page/RevisionPathControls'), { ssr: false });
 
   const dPagePath = new DevidedPagePath(pagePath, false, true);
 
@@ -67,6 +71,10 @@ const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
 
 // eslint-disable-next-line react/prop-types
 const UserPagePathNav = ({ pageId, pagePath }) => {
+
+  // dynamic import to skip rendering at SSR
+  const RevisionPathControls = dynamic(() => import('../Page/RevisionPathControls'), { ssr: false });
+
   const linkedPagePath = new LinkedPagePath(pagePath);
   const latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />;
 
@@ -110,42 +118,54 @@ const UserInfo = ({ pageUser }) => {
 };
 /* eslint-enable react/prop-types */
 
+/*
+ * TODO: activate with GW-4210
+ */
 /* eslint-disable react/prop-types */
-const PageReactionButtons = ({ appContainer, pageContainer }) => {
+// const PageReactionButtons = ({ appContainer, pageContainer }) => {
 
-  const {
-    pageId, isLiked, pageUser,
-  } = pageContainer.state;
+//   const {
+//     pageId, isLiked, pageUser,
+//   } = pageContainer.state;
 
-  return (
-    <>
-      {pageUser == null && (
-      <span>
-        <LikeButton pageId={pageId} isLiked={isLiked} />
-      </span>
-      )}
-      <span>
-        <BookmarkButton pageId={pageId} crowi={appContainer} />
-      </span>
-    </>
-  );
-};
+//   return (
+//     <>
+//       {pageUser == null && (
+//       <span>
+//         <LikeButton pageId={pageId} isLiked={isLiked} />
+//       </span>
+//       )}
+//       <span>
+//         <BookmarkButton pageId={pageId} crowi={appContainer} />
+//       </span>
+//     </>
+//   );
+// };
 /* eslint-enable react/prop-types */
 
 const GrowiSubNavigation = (props) => {
+
+  const { data: currentUser } = useCurrentUser();
+  const { data: page } = useCurrentPageSWR();
+  const { data: pageOwner } = useOwnerOfCurrentPage();
+  const { data: isForbidden } = useForbidden();
+
   const {
-    appContainer, navigationContainer, pageContainer, isCompactMode,
+    navigationContainer, isCompactMode,
   } = props;
   const { isDrawerMode, editorMode } = navigationContainer.state;
+  // const {
+  //   pageId, path, createdAt, creator, updatedAt, revisionAuthor,
+  //   isForbidden: isPageForbidden, pageUser, isCreatable,
+  // } = pageContainer.state;
   const {
-    pageId, path, createdAt, creator, updatedAt, revisionAuthor,
-    isForbidden: isPageForbidden, pageUser, isCreatable,
-  } = pageContainer.state;
+    _id: pageId, path, creator, createdAt, updatedAt, revision,
+  } = page;
 
-  const { currentUser } = appContainer;
-  const isPageNotFound = pageId == null;
-  const isUserPage = pageUser != null;
+  const isPageNotFound = page == null;
   const isPageInTrash = isTrashPage(path);
+  const isPageUsersHome = isUserPage(path);
+  const isCreatable = false; // TODO: store in [[...path]].tsx
 
   function onThreeStrandedButtonClicked(viewType) {
     navigationContainer.setEditorMode(viewType);
@@ -158,26 +178,26 @@ const GrowiSubNavigation = (props) => {
       <div className="d-flex grw-subnav-left-side">
         { isDrawerMode && (
           <div className="d-none d-md-flex align-items-center border-right mr-3 pr-3">
-            <DrawerToggler />
+            {/* <DrawerToggler /> */}
           </div>
         ) }
 
         <div className="grw-path-nav-container">
-          { !isCompactMode && !isPageNotFound && !isPageForbidden && !isUserPage && (
+          { !isCompactMode && !isPageNotFound && !isForbidden && !isPageUsersHome && (
             <div className="mb-2">
               <TagLabels />
             </div>
           ) }
 
-          { isUserPage
+          { isPageUsersHome
             ? (
               <>
                 <UserPagePathNav pageId={pageId} pagePath={path} />
-                <UserInfo pageUser={pageUser} />
+                <UserInfo pageUser={pageOwner} />
               </>
             )
             : (
-              <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
+              <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isForbidden} />
             )
           }
 
@@ -189,29 +209,31 @@ const GrowiSubNavigation = (props) => {
 
         <div className="d-flex flex-column align-items-end">
           <div className="d-flex">
-            { !isPageInTrash && !isPageNotFound && !isPageForbidden && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
-            { !isPageNotFound && !isPageForbidden && <PageManagement /> }
+            {/* TODO: activate with GW-4210 */}
+            {/* { !isPageInTrash && !isPageNotFound && !isPageForbidden && (
+              <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} />
+            ) } */}
+            { !isPageNotFound && !isForbidden && <PageManagement /> }
           </div>
           <div className="mt-2">
-            { !isCreatable && !isPageInTrash
-            && (
-            <ThreeStrandedButton
-              onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
-              isBtnDisabled={currentUser == null}
-              editorMode={editorMode}
-            />
-)}
+            { !isCreatable && !isPageInTrash && (
+              <ThreeStrandedButton
+                onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
+                isBtnDisabled={currentUser == null}
+                editorMode={editorMode}
+              />
+            )}
           </div>
         </div>
 
         {/* Page Authors */}
-        { (!isCompactMode && !isUserPage && !isPageNotFound && !isPageForbidden) && (
+        { (!isCompactMode && !isPageUsersHome && !isPageNotFound && !isForbidden) && (
           <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none">
             <li className="pb-1">
               <AuthorInfo user={creator} date={createdAt} />
             </li>
             <li className="mt-1 pt-1 border-top">
-              <AuthorInfo user={revisionAuthor} date={updatedAt} mode="update" />
+              <AuthorInfo user={revision?.author} date={updatedAt} mode="update" />
             </li>
           </ul>
         ) }
@@ -225,14 +247,13 @@ const GrowiSubNavigation = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const GrowiSubNavigationWrapper = withUnstatedContainers(GrowiSubNavigation, [AppContainer, NavigationContainer, PageContainer]);
+const GrowiSubNavigationWrapper = withUnstatedContainers(GrowiSubNavigation, [AppContainer, NavigationContainer]);
 
 
 GrowiSubNavigation.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   isCompactMode: PropTypes.bool,
 };

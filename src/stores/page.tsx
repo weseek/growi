@@ -1,7 +1,9 @@
-import useSWR, { responseInterface } from 'swr';
+import useSWR, { mutate, responseInterface } from 'swr';
 import { ConfigInterface } from 'swr/dist/types';
 import { apiGet } from '~/client/js/util/apiv1-client';
 import { apiv3Get } from '~/client/js/util/apiv3-client';
+
+import { useCurrentPagePath } from './context';
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const usePageSWR = <Data, Error>(path, initialData?: any): responseInterface<Data, Error> => {
@@ -14,6 +16,17 @@ export const usePageSWR = <Data, Error>(path, initialData?: any): responseInterf
       revalidateOnReconnect: false,
     },
   );
+};
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const useCurrentPageSWR = <Data, Error>(initialData?: any): responseInterface<Data, Error> => {
+  const { data: currentPagePath } = useCurrentPagePath();
+
+  if (initialData != null) {
+    mutate(['/pages.get', currentPagePath], initialData, false);
+  }
+
+  return usePageSWR(currentPagePath);
 };
 
 export const useRecentlyUpdatedSWR = <Data, Error>(config?: ConfigInterface): responseInterface<Data, Error> => {

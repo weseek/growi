@@ -7,6 +7,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
 import loggerFactory from '~/utils/logger';
 import { CommonProps, getServerSideCommonProps } from '~/utils/nextjs-page-utils';
+import { isUserPage } from '~/utils/path-utils';
 
 import BasicLayout from '../components/BasicLayout';
 
@@ -16,11 +17,13 @@ import BasicLayout from '../components/BasicLayout';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
 
 import {
-  useCurrentUser, useCurrentPagePath, useAppTitle, useSiteUrl, useConfidential,
+  useCurrentUser, useCurrentPagePath, useOwnerOfCurrentPage,
+  useForbidden,
+  useAppTitle, useSiteUrl, useConfidential,
   useSearchServiceConfigured, useSearchServiceReachable,
 } from '../stores/context';
 import {
-  usePageSWR,
+  useCurrentPageSWR,
 } from '../stores/page';
 
 
@@ -30,6 +33,7 @@ type Props = CommonProps & {
   currentUser: any,
 
   page: any,
+  pageUser?: any,
 
   appTitle: string,
   siteUrl: string,
@@ -43,21 +47,20 @@ type Props = CommonProps & {
 const GrowiPage: NextPage<Props> = (props: Props) => {
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
+  useCurrentPagePath(props.currentPagePath);
+  useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
+  useForbidden(props.isForbidden);
   useAppTitle(props.appTitle);
   useSiteUrl(props.siteUrl);
   useConfidential(props.confidential);
   useSearchServiceConfigured(props.isSearchServiceConfigured);
   useSearchServiceReachable(props.isSearchServiceReachable);
 
-  const { data: currentPagePath } = useCurrentPagePath(props.currentPagePath);
-
   let page;
   if (props.page != null) {
     page = JSON.parse(props.page);
   }
-  usePageSWR(currentPagePath, page);
-
-  const isUserPage = false; // TODO: switch with page path
+  useCurrentPageSWR(page);
 
   return (
     <>
@@ -78,12 +81,13 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         <div id="grw-subnav-sticky-trigger" className="sticky-top"></div>
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
-        <div id="main" className={`main ${isUserPage && 'user-page'}`}>
+        <div id="main" className={`main ${isUserPage(props.currentPagePath) && 'user-page'}`}>
 
           <div className="row">
             <div className="col grw-page-content-container">
               <div id="content-main" className="content-main container">
                 {/* <DisplaySwitcher /> */}
+                <p>{page?.revision.body}</p>
                 <script type="text/template" id="raw-text-original">{page?.revision.body}</script>
                 <div id="page-editor-navbar-bottom-container" className="d-none d-edit-block"></div>
                 {/* <PageStatusAlert /> */}
@@ -103,41 +107,61 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
+async function injectPageInformation(context: GetServerSidePropsContext, props: Props, specifiedPagePath?: string): Promise<void> {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const PageModel = crowi.model('Page');
+  const { pageService } = crowi;
+
+  const { user } = req;
+
+  const pagePath = specifiedPagePath || props.currentPagePath;
+  const page = await PageModel.findByPathAndViewer(pagePath, user);
+
+  if (page == null) {
+    // check the page is forbidden or just does not exist.
+    props.isForbidden = await PageModel.count({ path: pagePath }) > 0;
+    logger.warn(`Page is ${props.isForbidden ? 'forbidden' : 'not found'}`, pagePath);
+    return;
+  }
+
+  // get props recursively
+  if (page.redirectTo) {
+    logger.debug(`Redirect to '${page.redirectTo}'`);
+    return injectPageInformation(context, props, page.redirectTo);
+  }
+
+  await page.populateDataToShowRevision();
+  props.page = JSON.stringify(pageService.serializeToObj(page));
+}
+
+async function injectPageUserInformation(context: GetServerSidePropsContext, props: Props): Promise<void> {
+  const req: CrowiRequest = context.req as CrowiRequest;
+  const { crowi } = req;
+  const UserModel = crowi.model('User');
+
+  if (isUserPage(props.currentPagePath)) {
+    const user = await UserModel.findUserByUsername(UserModel.getUsernameByPath(props.currentPagePath));
+
+    if (user != null) {
+      props.pageUser = JSON.stringify(user.toObject());
+    }
+  }
+}
+
+export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
+  const req: CrowiRequest = context.req as CrowiRequest;
+  const { crowi } = req;
   const {
-    appService, pageService, searchService, configManager,
+    appService, searchService, configManager,
   } = crowi;
 
   const { user } = req;
 
-  // define props generator method
-  const injectPageInformation = async(props: Props, specifiedPagePath?: string): Promise<void> => {
-    const pagePath = specifiedPagePath || props.currentPagePath;
-    const page = await PageModel.findByPathAndViewer(pagePath, user);
-
-    if (page == null) {
-      // check the page is forbidden or just does not exist.
-      props.isForbidden = await PageModel.count({ path: pagePath }) > 0;
-      logger.warn(`Page is ${props.isForbidden ? 'forbidden' : 'not found'}`, pagePath);
-      return;
-    }
-
-    // get props recursively
-    if (page.redirectTo) {
-      logger.debug(`Redirect to '${page.redirectTo}'`);
-      return injectPageInformation(props, page.redirectTo);
-    }
-
-    await page.populateDataToShowRevision();
-    props.page = JSON.stringify(pageService.serializeToObj(page));
-  };
-
   const result = await getServerSideCommonProps(context);
   const props: Props = result.props as Props;
-  await injectPageInformation(props);
+  await injectPageInformation(context, props);
+  await injectPageUserInformation(context, props);
 
   if (user != null) {
     props.currentUser = JSON.stringify(user.toObject());

@@ -11,6 +11,14 @@ export const useCurrentPagePath = (initialData?: string): responseInterface<stri
   return useStaticSWR('currentPagePath', initialData);
 };
 
+export const useOwnerOfCurrentPage = (initialData?: string): responseInterface<string, any> => {
+  return useStaticSWR('ownerOfCurrentPage', initialData);
+};
+
+export const useForbidden = (initialData?: boolean): responseInterface<boolean, any> => {
+  return useStaticSWR('isForbidden', initialData);
+};
+
 export const useAppTitle = (initialData?: string): responseInterface<string, any> => {
   return useStaticSWR('appTitle', initialData);
 };
