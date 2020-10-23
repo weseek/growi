@@ -39,6 +39,7 @@ export default class AdminAppContainer extends Container {
       envFileUploadType: '',
       isFixedFileUploadByEnvVar: false,
 
+      gcsUseOnlyEnvVars: false,
       gcsApiKeyJsonPath: '',
       envGcsApiKeyJsonPath: '',
       gcsBucket: '',
