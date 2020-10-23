@@ -91,7 +91,7 @@ export default class NavigationContainer extends Container {
   setEditorMode(editorMode) {
 
     if (this.appContainer.currentUser == null) {
-      logger.warn('Please login or signup.');
+      logger.warn('Please login or signup to edit the page or use hackmd.');
       return;
     }
 
