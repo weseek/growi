@@ -1,4 +1,7 @@
 import { Container } from 'unstated';
+import loggerFactory from '@alias/logger';
+
+const logger = loggerFactory('growi:services:NavigationContainer');
 
 /**
  * Service container related to options for Application
@@ -88,6 +91,7 @@ export default class NavigationContainer extends Container {
   setEditorMode(editorMode) {
 
     if (this.appContainer.currentUser == null) {
+      logger.warn('Please login or signup.');
       return;
     }
 
