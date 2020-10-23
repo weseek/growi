@@ -21,7 +21,7 @@ function GcsSetting(props) {
           dangerouslySetInnerHTML={{ __html: t('admin:app_setting.note_for_the_only_env_option', { env: 'IS_GCS_ENV_PRIORITIZED' }) }}
         />
       )}
-      <table className="table settings-table">
+      <table className={`table settings-table ${gcsUseOnlyEnvVars && 'use-only-env-vars'}`}>
         <colgroup>
           <col className="item-name" />
           <col className="from-db" />
