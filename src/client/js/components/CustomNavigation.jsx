@@ -7,7 +7,8 @@ import {
 
 const CustomNavigation = (props) => {
   const [activeTab, setActiveTab] = useState(Object.keys(props.navTabMapping)[0]);
-  const elm = useRef(null);
+  // const refs = useRef([React.createRef()]);
+  const refs = useRef([null]);
   console.log(`customNavigation ${activeTab}`);
 
   const [defaultActiveTab, setDefaultActiveTab] = useState('');
@@ -33,7 +34,10 @@ const CustomNavigation = (props) => {
     }
 
     // if (mounted.current) {
-    console.log(`elm = ${elm.current}`);
+    console.log(`ref = ${refs}`);
+    console.log(`refs.current[0] = ${refs.current[0]}`);
+
+    // console.log(`activeTab = ${elm2.current.offsetWidth}`);
     setDefaultActiveTab('');
     console.log('Updated!');
 
@@ -89,7 +93,7 @@ const CustomNavigation = (props) => {
               type="button"
               className={`p-0 grw-custom-navtab ${activeTab === key && 'active'} ${defaultActiveTab === key && 'default-active-tab'}`}
             >
-              <NavLink onClick={() => { switchActiveTab(key) }}>
+              <NavLink ref={refs.current[key]} onClick={() => { switchActiveTab(key) }}>
                 {value.icon}
                 {value.i18n}
               </NavLink>
@@ -98,7 +102,7 @@ const CustomNavigation = (props) => {
         })}
       </Nav>
       {/* {renderNavSlideHr()} */}
-      <hr ref={elm} className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
+      <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
       <TabContent activeTab={activeTab} className="p-4">
         {Object.entries(props.navTabMapping).map(([key, value]) => {
           return (
