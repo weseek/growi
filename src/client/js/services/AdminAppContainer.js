@@ -91,6 +91,7 @@ export default class AdminAppContainer extends Container {
 
       fileUploadType: appSettingsParams.fileUploadType,
       envFileUploadType: appSettingsParams.envFileUploadType,
+      isFileUploadEnvPrioritized: appSettingsParams.isFileUploadEnvPrioritized,
 
       s3Region: appSettingsParams.s3Region,
       s3CustomEndpoint: appSettingsParams.s3CustomEndpoint,
@@ -107,19 +108,11 @@ export default class AdminAppContainer extends Container {
     });
 
     // check is file upload type forced
-    if (this.isFixedFileUploadByEnvVar(appSettingsParams.envFileUploadType)) {
+    if (appSettingsParams.isFileUploadEnvPrioritized) {
       this.setState({ fileUploadType: appSettingsParams.envFileUploadType });
       this.setState({ isFixedFileUploadByEnvVar: true });
     }
 
-  }
-
-  /**
-   * get isFixedFileUploadByEnvVar
-   * @return {bool} isFixedFileUploadByEnvVar
-   */
-  isFixedFileUploadByEnvVar(envFileUploadType) {
-    return envFileUploadType != null;
   }
 
   /**
