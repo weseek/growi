@@ -18,7 +18,6 @@ function GcsSetting(props) {
       {gcsUseOnlyEnvVars && (
         <p
           className="alert alert-info"
-          // [TODO GW-4194] rename env var
           dangerouslySetInnerHTML={{ __html: t('admin:app_setting.note_for_the_only_env_option', { env: 'IS_GCS_ENV_PRIORITIZED' }) }}
         />
       )}
