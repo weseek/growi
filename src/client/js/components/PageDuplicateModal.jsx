@@ -49,7 +49,7 @@ const PageDuplicateModal = (props) => {
     }
   };
 
-  // eslint-disable-next-link react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const checkExistPathsDebounce = useCallback(
     debounce(1000, checkExistPaths), [],
   );
