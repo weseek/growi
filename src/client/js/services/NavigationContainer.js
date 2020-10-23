@@ -86,6 +86,11 @@ export default class NavigationContainer extends Container {
   }
 
   setEditorMode(editorMode) {
+
+    if (this.appContainer.currentUser == null) {
+      return;
+    }
+
     this.setState({ editorMode });
     if (editorMode === 'view') {
       $('body').removeClass('on-edit');
