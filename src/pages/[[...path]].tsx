@@ -19,6 +19,9 @@ import {
   useCurrentUser, useCurrentPagePath, useAppTitle, useSiteUrl, useConfidential,
   useSearchServiceConfigured, useSearchServiceReachable,
 } from '../stores/context';
+import {
+  usePageSWR,
+} from '../stores/page';
 
 
 const logger = loggerFactory('growi:pages:all');
@@ -52,6 +55,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   if (props.page != null) {
     page = JSON.parse(props.page);
   }
+  usePageSWR(currentPagePath, page);
 
   const isUserPage = false; // TODO: switch with page path
 
