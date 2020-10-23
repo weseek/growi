@@ -29,6 +29,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: 'aws',
   },
+  FILE_UPLOAD_PRIORITIZE_ENV_VAR: {
+    ns:      'crowi',
+    key:     'app:isFileUploadEnvPrioritized',
+    type:    TYPES.BOOLEAN,
+    default: false,
+  },
   // HACKMD_URI: {
   //   ns:      ,
   //   key:     ,
@@ -346,7 +352,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
   },
   IS_GCP_ENV_PRIORITIZED: {
     ns:      'crowi',
-    key:     'gcs:isGcpEnvPrioritizes',
+    key:     'gcs:isGcpEnvPrioritized',
     type:    TYPES.BOOLEAN,
     default: false,
   },
