@@ -115,11 +115,6 @@ if (pageContainer.state.path != null) {
     'page': <Page />,
     'grw-subnav-container': <GrowiSubNavigation />,
     'grw-subnav-switcher-container': <GrowiSubNavigationSwitcher />,
-  });
-}
-// additional definitions if user is logged in
-if (appContainer.currentUser != null) {
-  Object.assign(componentMappings, {
     'display-switcher': <DisplaySwitcher />,
   });
 }
