@@ -39,7 +39,7 @@
   }
 
   .admin-setting-header {
-    border-bottom: 1px solid #dee2e6;
+    border-bottom: 1px solid $border-color;
   }
 
   .admin-security {
@@ -141,7 +141,7 @@
     // style
     .theme-option-container a {
       background-color: $gray-50;
-      border: 1px solid $gray-300;
+      border: 1px solid $border-color;
     }
     .theme-option-name {
       opacity: 0.3;
