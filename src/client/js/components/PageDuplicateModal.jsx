@@ -6,6 +6,7 @@ import {
 } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
+import { debounce } from 'throttle-debounce';
 import { withUnstatedContainers } from './UnstatedUtils';
 import { toastError } from '../util/apiNotification';
 
@@ -14,6 +15,7 @@ import PageContainer from '../services/PageContainer';
 import PagePathAutoComplete from './PagePathAutoComplete';
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 import ComparePathsTable from './ComparePathsTable';
+import DuplicatePathsTable from './DuplicatedPathsTable';
 
 const LIMIT_FOR_LIST = 10;
 
@@ -33,26 +35,36 @@ const PageDuplicateModal = (props) => {
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(false);
   const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(false);
   const [isDuplicateRecursivelyExist] = useState(false);
+  const [existingPaths, setExistingPaths] = useState([]);
 
-  function getSubordinatedDuplicateList(value) {
+  const checkExistPaths = async(newParentPath) => {
+    try {
+      const res = await appContainer.apiv3Get('/page/exist-paths', { fromPath: path, toPath: newParentPath });
+      const { existPaths } = res.data;
+      setExistingPaths(existPaths);
+    }
+    catch (err) {
+      setErrs(err);
+      toastError(t('modal_rename.label.Fail to get exist path'));
+    }
+  };
 
-    // ToDo: get the duplicated list from sever
-    // below is psuedo code
-    // let duplicatedList = get.apiv3......
-    // duplicatedList = duplicatedList.map((value) =>
-    // <li className="duplicate-exist" key={value}> {value}: { t('modal_duplicate.label.Same page already exists') } </li>; )
-    // setIsDuplicateExist(duplicatedList);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const checkExistPathsDebounce = useCallback(
+    debounce(1000, checkExistPaths), [],
+  );
 
-    // ToDo: for now we use dummy path
-    return [];
-  }
+  useEffect(() => {
+    if (pageNameInput !== path) {
+      checkExistPathsDebounce(pageNameInput, subordinatedPages);
+    }
+  }, [pageNameInput, subordinatedPages, path, checkExistPathsDebounce]);
 
   /**
    * change pageNameInput for PagePathAutoComplete
    * @param {string} value
    */
   function ppacInputChangeHandler(value) {
-    getSubordinatedDuplicateList(value);
     setErrs(null);
     setPageNameInput(value);
   }
@@ -62,7 +74,6 @@ const PageDuplicateModal = (props) => {
    * @param {string} value
    */
   function inputChangeHandler(value) {
-    getSubordinatedDuplicateList(value);
     setErrs(null);
     setPageNameInput(value);
   }
@@ -159,6 +170,7 @@ const PageDuplicateModal = (props) => {
           </label>
         </div>
         {isDuplicateRecursively && <ComparePathsTable subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
+        {isDuplicateRecursively && existingPaths.length !== 0 && <DuplicatePathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />}
 
         {isDuplicateRecursively && (
           <div className="custom-control custom-checkbox custom-checkbox-warning">
