@@ -61,7 +61,7 @@
 		"enable": "启用",
 		"disable": "停用",
 		"use_env_var_if_empty": "如果数据库中的值为空，则环境变量的值 <cod>{{variable}}</code> 启用。",
-    "note_for_the_only_env_option": "The LOCAL authentication is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}/code> ."
+    "note_for_the_only_env_option": "The GCS settings is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> ."
   },
 	"markdown_setting": {
 		"lineBreak_header": "换行设置",
