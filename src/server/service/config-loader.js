@@ -350,9 +350,9 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
-  IS_GCP_ENV_PRIORITIZED: {
+  GCS_PRIORITIZES_ENV_VARS_FOR_SOME_OPTIONS: {
     ns:      'crowi',
-    key:     'gcs:isGcpEnvPrioritized',
+    key:     'gcs:isPrioritizesEnvVarsForSomeOptions',
     type:    TYPES.BOOLEAN,
     default: false,
   },
