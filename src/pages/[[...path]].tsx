@@ -16,7 +16,7 @@ import BasicLayout from '../components/BasicLayout';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
 
 import {
-  useCurrentUser, useAppTitle, useSiteUrl, useConfidential,
+  useCurrentUser, useCurrentPagePath, useAppTitle, useSiteUrl, useConfidential,
   useSearchServiceConfigured, useSearchServiceReachable,
 } from '../stores/context';
 
@@ -46,8 +46,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useSearchServiceConfigured(props.isSearchServiceConfigured);
   useSearchServiceReachable(props.isSearchServiceReachable);
 
-  let page: any;
+  const { data: currentPagePath } = useCurrentPagePath(props.currentPagePath);
 
+  let page;
   if (props.page != null) {
     page = JSON.parse(props.page);
   }
@@ -106,10 +107,11 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     appService, pageService, searchService, configManager,
   } = crowi;
 
-  const { path, user } = req;
+  const { user } = req;
 
   // define props generator method
-  const injectPageInformation = async(props: Props, pagePath: string): Promise<void> => {
+  const injectPageInformation = async(props: Props, specifiedPagePath?: string): Promise<void> => {
+    const pagePath = specifiedPagePath || props.currentPagePath;
     const page = await PageModel.findByPathAndViewer(pagePath, user);
 
     if (page == null) {
@@ -131,7 +133,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   const result = await getServerSideCommonProps(context);
   const props: Props = result.props as Props;
-  await injectPageInformation(props, path);
+  await injectPageInformation(props);
 
   if (user != null) {
     props.currentUser = JSON.stringify(user.toObject());

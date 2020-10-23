@@ -5,6 +5,7 @@ import DevidedPagePath from '~/models/devided-page-path';
 
 export type CommonProps = {
   namespacesRequired: string[], // i18next
+  currentPagePath: string,
   appTitle: string,
   customTitleTemplate: string,
 }
@@ -18,8 +19,12 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     appService, customizeService,
   } = crowi;
 
+  const url = new URL(context.resolvedUrl, 'http://example.com');
+  const currentPagePath = decodeURI(url.pathname);
+
   const props: CommonProps = {
     namespacesRequired: ['translation'],
+    currentPagePath,
     appTitle: appService.getAppTitle(),
     customTitleTemplate: customizeService.customTitleTemplate,
   };

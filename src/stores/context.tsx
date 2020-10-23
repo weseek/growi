@@ -7,6 +7,10 @@ export const useCurrentUser = (initialData?: any): responseInterface<any, any> =
   return useStaticSWR('currentUser', initialData);
 };
 
+export const useCurrentPagePath = (initialData?: string): responseInterface<string, any> => {
+  return useStaticSWR('currentPagePath', initialData);
+};
+
 export const useAppTitle = (initialData?: string): responseInterface<string, any> => {
   return useStaticSWR('appTitle', initialData);
 };
