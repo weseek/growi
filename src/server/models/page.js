@@ -258,6 +258,17 @@ class PageQueryBuilder {
     return this;
   }
 
+  addConditionToListByPathsArray(paths) {
+    this.query = this.query
+      .and({
+        path: {
+          $in: paths,
+        },
+      });
+
+    return this;
+  }
+
   populateDataToList(userPublicFields) {
     this.query = this.query
       .populate({
@@ -1289,6 +1300,13 @@ module.exports = function(crowi) {
     }));
     targetPage.path = newPagePathPrefix;
     return targetPage;
+  };
+
+  pageSchema.statics.findListByPathsArray = async function(paths) {
+    const queryBuilder = new PageQueryBuilder(this.find());
+    queryBuilder.addConditionToListByPathsArray(paths);
+
+    return await queryBuilder.query.exec();
   };
 
   // TODO: transplant to service/page.js because page deletion affects various models data

@@ -148,6 +148,7 @@
   "Recent Changes": "最新の変更",
   "original_path":"元のパス",
   "new_path":"新しいパス",
+  "duplicated_path":"重複したパス",
   "personal_dropdown": {
     "home": "ホーム",
     "settings": "設定",
@@ -309,6 +310,8 @@
       "Move/Rename page": "ページを移動/名前変更する",
       "New page name": "移動先のページ名",
       "Fail to get subordinated pages": "配下ページの取得に失敗しました",
+      "Fail to get exist path": "存在するパスの取得に失敗しました",
+      "Rename without exist path": "存在するパス以外を名前変更する",
       "Current page name": "現在のページ名",
       "Recursively": "再帰的に移動/名前変更",
       "Do not update metadata": "メタデータを更新しない",
