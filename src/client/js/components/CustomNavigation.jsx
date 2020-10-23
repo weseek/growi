@@ -76,10 +76,10 @@ const CustomNavigation = (props) => {
     return <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />;
   }
 
-
+  const elm = useRef(null);
   return (
     <React.Fragment>
-      <Nav className="nav-title grw-custom-navbar" id="grw-custom-navbar">
+      <Nav ref={elm} className="nav-title grw-custom-navbar" id="grw-custom-navbar">
         {Object.entries(props.navTabMapping).map(([key, value]) => {
           console.log('return');
           return (
