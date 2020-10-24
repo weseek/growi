@@ -35,6 +35,8 @@ const CustomNavigation = (props) => {
 
     // if (mounted.current) {
     console.log(`ref = ${refs}`);
+    const refsStringify = JSON.stringify(refs);
+    console.log(`refsStringify : ${refsStringify}`);
     console.log(`refs.current[0] = ${refs.current[0]}`);
 
     // console.log(`activeTab = ${elm2.current.offsetWidth}`);
