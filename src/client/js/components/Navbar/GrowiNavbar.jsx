@@ -76,9 +76,8 @@ class GrowiNavbar extends React.Component {
         {/* Navbar Right  */}
         <ul className="navbar-nav ml-auto">
           {this.renderNavbarRight()}
+          {crowi.confidential != null && this.renderConfidential()}
         </ul>
-
-        {crowi.confidential != null && this.renderConfidential()}
 
         { isSearchServiceConfigured && !isDeviceSmallerThanMd && (
           <div className="grw-global-search grw-global-search-top position-absolute">
