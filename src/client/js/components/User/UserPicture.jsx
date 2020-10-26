@@ -37,23 +37,25 @@ Img.propTypes = {
 };
 
 const RootElmWithoutLink = (props) => {
-  return <span {...props}>{props.children}</span>;
+  return <span id={props.id}>{props.children}</span>;
 };
 
 RootElmWithoutLink.propTypes = {
-  children: PropTypes.element,
+  children: PropTypes.element.isRequired,
+  id: PropTypes.string,
 };
 
 const RootElmWithLink = (props) => {
   const { user } = props;
   const href = userPageRoot(user);
 
-  return <a href={href} {...props}>{props.children}</a>;
+  return <a href={href} id={props.id}>{props.children}</a>;
 };
 
 RootElmWithLink.propTypes = {
+  children: PropTypes.element.isRequired,
+  id: PropTypes.string,
   user: PropTypes.object,
-  children: PropTypes.element,
 };
 
 
