@@ -668,7 +668,7 @@ module.exports = (crowi) => {
    *    /app-settings/file-upload-type:
    *      put:
    *        tags: [AppSettings]
-   *        operationId: updateAppSettingGcpSetting
+   *        operationId: updateAppSettingFileUploadType
    *        summary: /app-settings/file-upload-type
    *        description: Update fileUploadType
    *        requestBody:
@@ -676,14 +676,14 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/GcpSettingParams'
+   *                $ref: '#/components/schemas/FileUploadTypeParams'
    *        responses:
    *          200:
    *            description: Succeeded to update fileUploadType
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/GcpSettingParams'
+   *                  $ref: '#/components/schemas/FileUploadTypeParams'
    */
   router.put('/file-upload-type', loginRequiredStrictly, adminRequired, csrf, validator.fileUploadType, apiV3FormValidator, async(req, res) => {
     const requestParams = {
