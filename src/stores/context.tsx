@@ -19,6 +19,10 @@ export const useForbidden = (initialData?: boolean): responseInterface<boolean, 
   return useStaticSWR('isForbidden', initialData);
 };
 
+export const useIsAbleToDeleteCompletely = (initialData?: boolean): responseInterface<boolean, any> => {
+  return useStaticSWR('isAbleToDeleteCompletely', initialData);
+};
+
 export const useAppTitle = (initialData?: string): responseInterface<string, any> => {
   return useStaticSWR('appTitle', initialData);
 };

@@ -18,7 +18,7 @@ import BasicLayout from '../components/BasicLayout';
 
 import {
   useCurrentUser, useCurrentPagePath, useOwnerOfCurrentPage,
-  useForbidden,
+  useForbidden, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential,
   useSearchServiceConfigured, useSearchServiceReachable,
 } from '../stores/context';
@@ -39,6 +39,7 @@ type Props = CommonProps & {
   siteUrl: string,
   confidential: string,
   isForbidden: boolean,
+  isAbleToDeleteCompletely: boolean,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   highlightJsStyle: string,
@@ -50,6 +51,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentPagePath(props.currentPagePath);
   useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   useForbidden(props.isForbidden);
+  useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
   useAppTitle(props.appTitle);
   useSiteUrl(props.siteUrl);
   useConfidential(props.confidential);
@@ -165,6 +167,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   if (user != null) {
     props.currentUser = JSON.stringify(user.toObject());
+    props.isAbleToDeleteCompletely = user.canDeleteCompletely(props.page?.creator?._id);
   }
 
   props.siteUrl = appService.getSiteUrl();
