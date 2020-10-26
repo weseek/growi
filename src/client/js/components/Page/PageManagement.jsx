@@ -106,9 +106,10 @@ const PageManagement = (props) => {
         <button className="dropdown-item" type="button" onClick={openPageDuplicateModalHandler}>
           <i className="icon-fw icon-docs"></i> { t('Duplicate') }
         </button>
-        <button className="dropdown-item" type="button" onClick={openPagePresentationModalHandler}>
+        {/* TODO Presentation Mode is not function. So if it is really necessary, survey this cause and implement Presentation Mode in top page */}
+        {/* <button className="dropdown-item" type="button" onClick={openPagePresentationModalHandler}>
           <i className="icon-fw"><PresentationIcon /></i><span className="d-none d-sm-inline"> { t('Presentation Mode') }</span>
-        </button>
+        </button> */}
         <button type="button" className="dropdown-item" onClick={() => { exportPageHandler('md') }}>
           <i className="icon-fw icon-cloud-download"></i>{t('export_bulk.export_page_markdown')}
         </button>
