@@ -23,7 +23,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: Cache/Restore node_modules
       id: cache-dependencies
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: node_modules
         key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
@@ -33,7 +33,7 @@ jobs:
       run: echo "::set-output name=dir::$(yarn cache dir)"
     - name: Cache/Restore yarn cache
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: ${{ steps.cache-yarn.outputs.dir }}
         key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
@@ -78,7 +78,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: Cache/Restore node_modules
       id: cache-dependencies
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: node_modules
         key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
@@ -88,7 +88,7 @@ jobs:
       run: echo "::set-output name=dir::$(yarn cache dir)"
     - name: Cache/Restore yarn cache
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: ${{ steps.cache-yarn.outputs.dir }}
         key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
@@ -139,7 +139,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: Cache/Restore node_modules
       id: cache-dependencies
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: node_modules
         key: ${{ runner.OS }}-node_modules_dev-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
@@ -151,7 +151,7 @@ jobs:
         echo ::set-output name=Ym::$(date '+%Y%m')
         echo ::set-output name=Y::$(date '+%Y')
     - name: Cache/Restore node_modules/.cache/hard-source
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: node_modules/.cache
         key: ${{ runner.OS }}-hard_source_webpack_dev-${{ matrix.node-version }}-${{ steps.date.outputs.YmdH }}
@@ -165,7 +165,7 @@ jobs:
       run: echo "::set-output name=dir::$(yarn cache dir)"
     - name: Cache/Restore yarn cache
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: ${{ steps.cache-yarn.outputs.dir }}
         key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
@@ -216,7 +216,7 @@ jobs:
         echo ::set-output name=Ym::$(date '+%Y%m')
         echo ::set-output name=Y::$(date '+%Y')
     - name: Cache/Restore node_modules
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: node_modules
         key: ${{ runner.OS }}-node_modules_prod-${{ matrix.node-version }}-${{ steps.date.outputs.YmdH }}
@@ -228,7 +228,7 @@ jobs:
       id: cache-yarn
       run: echo "::set-output name=dir::$(yarn cache dir)"
     - name: Cache/Restore yarn cache
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: ${{ steps.cache-yarn.outputs.dir }}
         key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
@@ -265,7 +265,7 @@ jobs:
         MONGO_URI: mongodb://localhost:27017/growi
 
     - name: Upload report as artifact
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v2
       with:
         name: Report
         path: report
