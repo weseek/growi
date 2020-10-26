@@ -17,7 +17,7 @@ class RecentCreated extends React.Component {
       pages: [],
       activePage: 1,
       totalPages: 0,
-      pagingLimit: null,
+      pagingLimit: 10,
     };
 
     this.handlePage = this.handlePage.bind(this);
@@ -68,10 +68,11 @@ class RecentCreated extends React.Component {
 
     return (
       <div className="page-list-container-create">
-        <ul className="page-list-ul page-list-ul-flat mb-3">
+        <ul className="page-list-ul page-list-ul-flat">
           {pageList}
         </ul>
         <PaginationWrapper
+          align="center"
           activePage={this.state.activePage}
           changePage={this.handlePage}
           totalItemsCount={this.state.totalPages}

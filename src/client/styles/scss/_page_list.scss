@@ -9,7 +9,7 @@ body .page-list {
     margin: 0;
 
     > li {
-      margin: 0;
+      margin: 0.5rem;
       list-style: none;
 
       > a {
@@ -70,5 +70,15 @@ body .page-list {
   border: 1px solid $gray-300;
   > .card-header {
     background-color: $gray-300;
+  }
+}
+
+.grw-page-list-m {
+  .grw-page-list-title-m {
+    svg {
+      width: 35px;
+      height: 35px;
+      margin-bottom: 6px;
+    }
   }
 }
