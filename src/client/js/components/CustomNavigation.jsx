@@ -10,8 +10,9 @@ const CustomNavigation = (props) => {
   const refs = useRef([]);
 
   Object.keys(props.navTabMapping).forEach((_, i) => {
-    console.log(React.createRef());
     refs.current[i] = React.createRef();
+    // console.log(`refs.current[i] = ${refs.current[i]}`);
+    console.log(`JSON.stringify(refs) : ${JSON.stringify(refs.current[i])}`);
   });
   console.log(`customNavigation ${activeTab}`);
 
