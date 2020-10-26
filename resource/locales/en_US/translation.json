@@ -535,7 +535,7 @@
     "missing mandatory configs": "The following mandatory items are not set in either database nor environment variables.",
     "Local": {
       "name": "ID/Password",
-      "note for the only env option": "The LOCAL authentication is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}/code> .",
+      "note for the only env option": "The LOCAL authentication is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> .",
       "enable_local": "Enable ID/Password"
     },
     "ldap": {

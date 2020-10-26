@@ -44,8 +44,8 @@
     "file_upload_settings":"File Upload Settings",
     "file_upload_method":"File Upload Method",
     "fixed_by_env_var": "This is fixed by the env var <code>FILE_UPLOAD={{fileUploadType}}</code>.",
-    "gcp_label": "GCP",
-    "aws_label": "AWS",
+    "gcs_label": "GCP(GCS)",
+    "aws_label": "AWS(S3)",
     "file_upload": "This is for uploading file settings. If you complete file upload settings, file upload function, profile picture function etc will be enabled.",
     "ses_settings":"SES settings",
     "test_connection": "Test connection to mail",
@@ -59,7 +59,8 @@
     "load_plugins": "Load_plugins",
     "enable": "Enable",
     "disable": "Disable",
-    "use_env_var_if_empty": "If the value in the database is empty, the value of the environment variable <cod>{{variable}}</code> is used."
+    "use_env_var_if_empty": "If the value in the database is empty, the value of the environment variable <cod>{{variable}}</code> is used.",
+    "note_for_the_only_env_option": "The GCS Settings is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> ."
   },
   "markdown_setting": {
     "lineBreak_header": "Line break setting",

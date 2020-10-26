@@ -43,8 +43,8 @@
     "confirm_to_initialize_mail_settings": "当前设置将被清空且不可恢复。确认重置？",
     "file_upload_settings":"文件上传设置",
     "file_upload_method":"文件上传方法",
-    "gcp_label": "GCP",
-    "aws_label": "AWS",
+    "gcs_label": "GCP(GCS)",
+    "aws_label": "AWS(S3)",
 		"fixed_by_env_var": "这是由env var<code>FILE_UPLOAD={{fileUploadType}}</code>修复的。",
     "file_upload": "这是文件上传设定。完成了文件上传设定以后，文件上传功能、档案头像功能将会被开启。",
     "ses_settings":"SES设置",
@@ -60,8 +60,9 @@
 		"load_plugins": "加载插件",
 		"enable": "启用",
 		"disable": "停用",
-		"use_env_var_if_empty": "如果数据库中的值为空，则环境变量的值 <cod>{{variable}}</code> 启用。"
-	},
+		"use_env_var_if_empty": "如果数据库中的值为空，则环境变量的值 <cod>{{variable}}</code> 启用。",
+    "note_for_the_only_env_option": "The GCS settings is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> ."
+  },
 	"markdown_setting": {
 		"lineBreak_header": "换行设置",
 		"lineBreak_desc": "您可以更改换行设置。",
