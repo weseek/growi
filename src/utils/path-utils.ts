@@ -1,18 +1,16 @@
 /**
  * Whether path is the top page
- * @param {string} path
- * @returns {boolean}
+ * @param path
  */
-const isTopPage = (path) => {
+export const isTopPage = (path: string): boolean => {
   return path === '/';
 };
 
 /**
  * Whether path belongs to the trash page
- * @param {string} path
- * @returns {boolean}
+ * @param path
  */
-const isTrashPage = (path) => {
+export const isTrashPage = (path: string): boolean => {
   // https://regex101.com/r/BSDdRr/1
   if (path.match(/^\/trash(\/.*)?$/)) {
     return true;
@@ -23,10 +21,9 @@ const isTrashPage = (path) => {
 
 /**
  * Whether path belongs to the user page
- * @param {string} path
- * @returns {boolean}
+ * @param path
  */
-const isUserPage = (path) => {
+export const isUserPage = (path: string): boolean => {
   // https://regex101.com/r/SxPejV/1
   if (path.match(/^\/user(\/.*)?$/)) {
     return true;
@@ -37,19 +34,11 @@ const isUserPage = (path) => {
 
 /**
  * return user path
- * @param {Object} user
- * @return {string}
+ * @param user
  */
-const userPageRoot = (user) => {
+export const userPageRoot = (user: any): string => {
   if (!user || !user.username) {
     return '';
   }
   return `/user/${user.username}`;
-};
-
-module.exports = {
-  isTopPage,
-  isTrashPage,
-  isUserPage,
-  userPageRoot,
 };
