@@ -17,12 +17,11 @@ const logger = loggerFactory('growi:MyBookmarkList');
 const BookmarkList = (props) => {
   const { t, appContainer, userId } = props;
 
-  const [pages, setPages] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [pages, setPages] = useState([]);
 
   const [activePage, setActivePage] = useState(1);
   const [totalItemsCount, setTotalItemsCount] = useState(0);
-  const [pagingLimit, setPagingLimit] = useState(null);
+  const [pagingLimit, setPagingLimit] = useState(10);
 
   const setPageNumber = (selectedPageNumber) => {
     setActivePage(selectedPageNumber);
@@ -34,13 +33,10 @@ const BookmarkList = (props) => {
     try {
       const res = await appContainer.apiv3Get(`/bookmarks/${userId}`, { page });
       const { paginationResult } = res.data;
-      console.log(paginationResult);
 
       setPages(paginationResult.docs);
       setTotalItemsCount(paginationResult.totalDocs);
       setPagingLimit(paginationResult.limit);
-
-      setIsLoading(false);
     }
     catch (error) {
       logger.error('failed to fetch data', error);
@@ -51,16 +47,6 @@ const BookmarkList = (props) => {
   useEffect(() => {
     getMyBookmarkList();
   }, [getMyBookmarkList]);
-
-  if (isLoading) {
-    return (
-      <div className="wiki">
-        <div className="text-muted test-center">
-          <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
-        </div>
-      </div>
-    );
-  }
 
   /**
    * generate Elements of Page
@@ -74,13 +60,9 @@ const BookmarkList = (props) => {
     </li>
   ));
 
-  console.log(activePage);
-  console.log(totalItemsCount);
-  console.log(pagingLimit);
-
   return (
     <div className="page-list-container-create">
-      {totalItemsCount === 0 ? t('No bookmarks yet') : (
+      {pages.length === 0 ? t('No bookmarks yet') : (
         <>
           <ul className="page-list-ul page-list-ul-flat mb-3">
             {generatePageList}
