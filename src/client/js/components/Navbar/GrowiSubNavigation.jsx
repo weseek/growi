@@ -155,10 +155,6 @@ const GrowiSubNavigation = (props) => {
     navigationContainer, isCompactMode,
   } = props;
   const { isDrawerMode, editorMode } = navigationContainer.state;
-  // const {
-  //   pageId, path, createdAt, creator, updatedAt, revisionAuthor,
-  //   isForbidden: isPageForbidden, pageUser, isCreatable,
-  // } = pageContainer.state;
   const {
     _id: pageId, path, creator, createdAt, updatedAt, revision,
   } = page;
