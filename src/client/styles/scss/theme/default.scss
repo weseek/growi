@@ -90,7 +90,7 @@ html[light] {
   $color-editor-icons: $color-global;
 
   // Border colors
-  $border-color-theme: blue;
+  $border-color-theme: $gray-400;
   $bordercolor-inline-code: $gray-400; // optional
 
   // Dropdown colors
