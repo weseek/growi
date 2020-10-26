@@ -190,7 +190,7 @@ const GrowiSubNavigation = (props) => {
             </div>
           ) }
 
-          {/* { isPageUsersHome
+          { isPageUsersHome
             ? (
               <>
                 <UserPagePathNav pageId={pageId} pagePath={path} />
@@ -200,7 +200,7 @@ const GrowiSubNavigation = (props) => {
             : (
               <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isForbidden} />
             )
-          } */}
+          }
 
         </div>
       </div>
