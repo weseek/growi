@@ -7,8 +7,12 @@ import {
 
 const CustomNavigation = (props) => {
   const [activeTab, setActiveTab] = useState(Object.keys(props.navTabMapping)[0]);
-  // const refs = useRef([React.createRef()]);
-  const refs = useRef([null]);
+  const refs = useRef([]);
+
+  Object.keys(props.navTabMapping).forEach((_, i) => {
+    console.log(React.createRef());
+    refs.current[i] = React.createRef();
+  });
   console.log(`customNavigation ${activeTab}`);
 
   const [defaultActiveTab, setDefaultActiveTab] = useState('');
@@ -26,20 +30,17 @@ const CustomNavigation = (props) => {
   const navBar = document.getElementById('grw-custom-navbar');
   const navTabs = document.querySelectorAll('ul.grw-custom-navbar > li.grw-custom-navtab');
 
+  console.log(`JSON.stringify(refs) : ${JSON.stringify(refs)}`);
+  console.log(`refs.current[0] = ${refs.current[0]}`);
+
   // const mounted = useRef(false);
   useEffect(() => {
+    // console.log(`refs.current =${refs.current}`);
     console.log(`useEffecet ${activeTab}`);
     if (activeTab === '') {
       return;
     }
 
-    // if (mounted.current) {
-    console.log(`ref = ${refs}`);
-    const refsStringify = JSON.stringify(refs);
-    console.log(`refsStringify : ${refsStringify}`);
-    console.log(`refs.current[0] = ${refs.current[0]}`);
-
-    // console.log(`activeTab = ${elm2.current.offsetWidth}`);
     setDefaultActiveTab('');
     console.log('Updated!');
 
@@ -88,14 +89,16 @@ const CustomNavigation = (props) => {
     <React.Fragment>
       <Nav className="nav-title grw-custom-navbar" id="grw-custom-navbar">
         {Object.entries(props.navTabMapping).map(([key, value]) => {
-          console.log('return');
+          console.log(`key = ${key}, value = ${value.index}`);
+          // console.log(`refs.current[key] = ${refs.current[key]}`); // undefined
           return (
             <NavItem
+
               key={key}
               type="button"
               className={`p-0 grw-custom-navtab ${activeTab === key && 'active'} ${defaultActiveTab === key && 'default-active-tab'}`}
             >
-              <NavLink ref={refs.current[key]} onClick={() => { switchActiveTab(key) }}>
+              <NavLink key={key} ref={refs.current[key]} onClick={() => { switchActiveTab(key) }}>
                 {value.icon}
                 {value.i18n}
               </NavLink>
