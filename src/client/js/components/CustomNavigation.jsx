@@ -38,8 +38,6 @@ const CustomNavigation = (props) => {
       return;
     }
 
-    //   // setDefaultActiveTab('');
-
     if (navBar == null || navTabs == null) {
       console.log(`${navBar},${navTabs}`);
       setSliderWidth(5);
