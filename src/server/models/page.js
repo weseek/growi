@@ -5,7 +5,7 @@
 
 import loggerFactory from '~/utils/logger';
 import templateChecker from '~/utils/template-checker';
-import { isTopPage } from '~/utils/path-utils';
+import { isTopPage, isDeletablePage } from '~/utils/path-utils';
 
 const logger = loggerFactory('growi:models:page');
 
@@ -525,44 +525,12 @@ module.exports = function(crowi) {
     return path.replace('/trash', '');
   };
 
-  pageSchema.statics.isDeletableName = function(path) {
-    const notDeletable = [
-      /^\/user\/[^/]+$/, // user page
-    ];
-
-    for (let i = 0; i < notDeletable.length; i++) {
-      const pattern = notDeletable[i];
-      if (path.match(pattern)) {
-        return false;
-      }
-    }
-
-    return true;
+  pageSchema.statics.isDeletableName = function() {
+    logger.warn('THIS METHOD IS DEPRECATED. Use isDeletablePage method of path-utils instead.');
   };
 
-  pageSchema.statics.isCreatableName = function(name) {
-    const forbiddenPages = [
-      /\^|\$|\*|\+|#|%/,
-      /^\/-\/.*/,
-      /^\/_r\/.*/,
-      /^\/_apix?(\/.*)?/,
-      /^\/?https?:\/\/.+$/, // avoid miss in renaming
-      /\/{2,}/, // avoid miss in renaming
-      /\s+\/\s+/, // avoid miss in renaming
-      /.+\/edit$/,
-      /.+\.md$/,
-      /^\/(installer|register|login|logout|admin|me|files|trash|paste|comments|tags)(\/.*|$)/,
-    ];
-
-    let isCreatable = true;
-    forbiddenPages.forEach((page) => {
-      const pageNameReg = new RegExp(page);
-      if (name.match(pageNameReg)) {
-        isCreatable = false;
-      }
-    });
-
-    return isCreatable;
+  pageSchema.statics.isCreatableName = function() {
+    logger.warn('THIS METHOD IS DEPRECATED. Use isCreatablePage method of path-utils instead.');
   };
 
   pageSchema.statics.fixToCreatableName = function(path) {
@@ -1095,7 +1063,7 @@ module.exports = function(crowi) {
     }
 
     const socketClientId = options.socketClientId || null;
-    if (this.isDeletableName(pageData.path)) {
+    if (isDeletablePage(pageData.path)) {
 
       pageData.status = STATUS_DELETED;
       const updatedPageData = await this.rename(pageData, newPath, user, { socketClientId, createRedirectPage: true });

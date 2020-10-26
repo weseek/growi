@@ -32,6 +32,29 @@ export const isUserPage = (path: string): boolean => {
   return false;
 };
 
+const restrictedPatternsToDelete: Array<RegExp> = [
+  /^\/user\/[^/]+$/, // user page
+];
+export const isDeletablePage = (path: string): boolean => {
+  return !restrictedPatternsToDelete.some(pattern => path.match(pattern));
+};
+
+const restrictedPatternsToCreate: Array<RegExp> = [
+  /\^|\$|\*|\+|#|%/,
+  /^\/-\/.*/,
+  /^\/_r\/.*/,
+  /^\/_apix?(\/.*)?/,
+  /^\/?https?:\/\/.+$/, // avoid miss in renaming
+  /\/{2,}/, // avoid miss in renaming
+  /\s+\/\s+/, // avoid miss in renaming
+  /.+\/edit$/,
+  /.+\.md$/,
+  /^\/(installer|register|login|logout|admin|me|files|trash|paste|comments|tags)(\/.*|$)/,
+];
+export const isCreatablePage = (path: string): boolean => {
+  return !restrictedPatternsToCreate.some(pattern => path.match(pattern));
+};
+
 /**
  * return user path
  * @param user
