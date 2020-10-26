@@ -45,6 +45,8 @@
     "file_upload_method":"文件上传方法",
     "gcp_label": "GCP",
     "aws_label": "AWS",
+    "local_label": "Local",
+    "gridfs_label": "GridFS",
 		"fixed_by_env_var": "这是由env var<code>FILE_UPLOAD={{fileUploadType}}</code>修复的。",
     "file_upload": "这是文件上传设定。完成了文件上传设定以后，文件上传功能、档案头像功能将会被开启。",
     "ses_settings":"SES设置",

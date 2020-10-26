@@ -16,7 +16,7 @@ function FileUploadSetting(props) {
 
   const { t, adminAppContainer } = props;
   const { fileUploadType } = adminAppContainer.state;
-  const fileUploadTypes = ['aws', 'gcp'];
+  const fileUploadTypes = ['aws', 'gcp', 'local', 'gridfs'];
 
   async function submitHandler() {
     const { t } = props;
@@ -57,7 +57,6 @@ function FileUploadSetting(props) {
                     name="file-upload-type"
                     id={`file-upload-type-radio-${type}`}
                     checked={adminAppContainer.state.fileUploadType === type}
-                    disabled={adminAppContainer.state.isFixedFileUploadByEnvVar}
                     onChange={(e) => {
                     adminAppContainer.changeFileUploadType(type);
                   }}
@@ -67,14 +66,6 @@ function FileUploadSetting(props) {
               );
             })}
         </div>
-        {adminAppContainer.state.isFixedFileUploadByEnvVar && (
-          <p className="alert alert-warning mt-2 text-left offset-3 col-6">
-            <i className="icon-exclamation icon-fw">
-            </i><b>FIXED</b><br />
-            {/* eslint-disable-next-line react/no-danger */}
-            <b dangerouslySetInnerHTML={{ __html: t('admin:app_setting.fixed_by_env_var', { fileUploadType: adminAppContainer.state.envFileUploadType }) }} />
-          </p>
-        )}
       </div>
 
       {fileUploadType === 'aws' && <AwsSetting />}
