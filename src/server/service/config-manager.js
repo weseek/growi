@@ -235,7 +235,7 @@ class ConfigManager extends S2sMessageHandlable {
       )
       // gcs option
       || (
-        KEYS_FOR_GCP_USE_ONLY_ENV_OPTION.includes(key)
+        KEYS_FOR_GCS_USE_ONLY_ENV_OPTION.includes(key)
         && this.searchOnlyFromEnvVarConfigs('crowi', 'gcs:isPrioritizesEnvVarsForSomeOptions')
       )
     ));
