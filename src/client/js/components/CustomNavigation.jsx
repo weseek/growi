@@ -7,13 +7,13 @@ import {
 
 const CustomNavigation = (props) => {
   const [activeTab, setActiveTab] = useState(Object.keys(props.navTabMapping)[0]);
-  const refs = useRef([]);
+  const refs = {};
 
-  Object.keys(props.navTabMapping).forEach((_, i) => {
-    refs.current[i] = React.createRef();
-    // console.log(`refs.current[i] = ${refs.current[i]}`);
-    console.log(`JSON.stringify(refs) : ${JSON.stringify(refs.current[i])}`);
+  Object.keys(props.navTabMapping).forEach((key) => {
+    refs[key] = React.createRef();
+    console.log(`JSON.stringify(refs) : ${JSON.stringify(refs[activeTab])}`);
   });
+
   console.log(`customNavigation ${activeTab}`);
 
   const [defaultActiveTab, setDefaultActiveTab] = useState('');
@@ -32,18 +32,16 @@ const CustomNavigation = (props) => {
   const navTabs = document.querySelectorAll('ul.grw-custom-navbar > li.grw-custom-navtab');
 
   console.log(`JSON.stringify(refs) : ${JSON.stringify(refs)}`);
-  console.log(`refs.current[0] = ${refs.current[0]}`);
+  // console.log(`refs.current[0] = ${refs.current[0]}`);
 
   // const mounted = useRef(false);
   useEffect(() => {
-    // console.log(`refs.current =${refs.current}`);
     console.log(`useEffecet ${activeTab}`);
     if (activeTab === '') {
       return;
     }
 
     setDefaultActiveTab('');
-    console.log('Updated!');
 
     if (navBar == null || navTabs == null) {
       console.log(`${navBar},${navTabs}`);
@@ -99,7 +97,7 @@ const CustomNavigation = (props) => {
               type="button"
               className={`p-0 grw-custom-navtab ${activeTab === key && 'active'} ${defaultActiveTab === key && 'default-active-tab'}`}
             >
-              <NavLink key={key} ref={refs.current[key]} onClick={() => { switchActiveTab(key) }}>
+              <NavLink key={key} ref={refs[key]} onClick={() => { switchActiveTab(key) }}>
                 {value.icon}
                 {value.i18n}
               </NavLink>
