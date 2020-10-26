@@ -85,10 +85,11 @@ class MyBookmarkList extends React.Component {
   renderBookmarkList() {
     return (
       <>
-        <ul className="page-list-ul page-list-ul-flat mb-3">
+        <ul className="page-list-ul page-list-ul-flat">
           {this.generatePageList(this.state.pages)}
         </ul>
         <PaginationWrapper
+          align="center"
           activePage={this.state.activePage}
           changePage={this.handlePage}
           totalItemsCount={this.state.totalPages}
