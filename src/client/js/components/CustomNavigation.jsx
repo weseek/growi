@@ -29,8 +29,8 @@ const CustomNavigation = (props) => {
   const navBar = document.getElementById('grw-custom-navbar');
   const navTabs = document.querySelectorAll('ul.grw-custom-navbar > li.grw-custom-navtab');
 
-
-  console.log(`JSON.stringify(refs)2 : ${JSON.stringify(refs)}`);
+  const stringifyRefs = JSON.stringify(refs);
+  console.log(`stringifyRefs : ${stringifyRefs}`);
 
   useEffect(() => {
     console.log(`useEffecet ${activeTab}`);
