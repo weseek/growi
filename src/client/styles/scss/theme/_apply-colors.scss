@@ -304,7 +304,7 @@ ul.pagination {
     fill: $color-link;
   }
   .grw-seen-user-list {
-    border-color: $bordercolor-toc;
+    @include border-vertical('before', $bordercolor-toc, 70%);
 
     .btn {
       color: $color-seen-user;
@@ -315,6 +315,18 @@ ul.pagination {
         fill: $color-seen-user;
       }
     }
+  }
+}
+
+.grw-custom-navigation {
+  .nav-title {
+    color: $color-link;
+  }
+  .nav-link svg {
+    fill: $color-link;
+  }
+  .grw-nav-slide-hr {
+    border-color: $color-link;
   }
 }
 
@@ -534,4 +546,10 @@ mark.rbt-highlight-text {
   .btn-scroll-to-top {
     fill: $gray-900;
   }
+}
+
+// Page Management Dropdown icon
+.grw-btn-page-management:hover,
+.grw-btn-page-management:focus {
+  background-color: rgba($color-link, 0.15);
 }

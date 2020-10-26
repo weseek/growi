@@ -26,6 +26,9 @@
 
 
 {% block content_main_after %}
+  {% if isTrashPage() %}
+    <div id="trash-page-list"></div>
+  {% endif %}
   {% if page %}
     {% include '../widget/page_attachments.html' %}
   {% endif %}

@@ -15,9 +15,8 @@
   }
 }
 
-@mixin expand-editor($editor-header-plus-footer, $navbar-height-adjustment: 0px) {
-  $navbar-height: $grw-navbar-border-width + $navbar-height-adjustment;
-  $header-plus-footer: $navbar-height + $editor-header-plus-footer + 2px; // add .main padding-top
+@mixin expand-editor($editor-margin-top) {
+  $header-plus-footer: $editor-margin-top + $grw-editor-navbar-bottom-height;
 
   $editor-margin: $header-plus-footer //
     + 25px //   add .btn-open-dropzone height
@@ -25,8 +24,7 @@
 
   .main {
     width: 100%;
-    height: calc(100vh - #{$navbar-height});
-    padding-top: 2px;
+    height: calc(100vh - #{$editor-margin-top});
     margin-top: 0px !important;
 
     &,
@@ -36,8 +34,7 @@
       flex: 1;
       flex-direction: column;
 
-      .tab-pane#edit,
-      .tab-pane#hackmd {
+      .tab-pane {
         height: calc(100vh - #{$header-plus-footer});
         min-height: calc(100vh - #{$header-plus-footer}); // for IE11
       }
@@ -222,4 +219,74 @@
 @mixin apply-navigation-transition() {
   transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
   transition-duration: 300ms;
+}
+
+@mixin border-vertical($beforeOrAfter, $borderColor, $borderLength, $zIndex: initial, $isBtnGroup: false) {
+  position: relative;
+  @if $isBtnGroup {
+    &:not(:first-child) {
+      margin-left: 0;
+      border-left: none;
+    }
+    &:not(:last-child) {
+      border-right: none;
+    }
+  }
+  &:not(:first-child) {
+    &::#{$beforeOrAfter} {
+      position: absolute;
+      top: calc((100% - #{$borderLength}) / 2);
+      left: 0;
+      z-index: $zIndex;
+      width: 100%;
+      height: $borderLength;
+      margin-left: -0.5px;
+      content: '';
+      border-left: 1px solid $borderColor;
+      transition: border-color 0.15s ease-in-out;
+    }
+  }
+}
+
+@mixin three-stranded-button($textColor, $borderColor, $bgColorHoverAndActive, $bgColor: white) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 70px;
+  padding-right: 0;
+  padding-left: 0;
+  color: $textColor;
+  white-space: nowrap;
+  background-color: $bgColor;
+  border-color: $borderColor;
+
+  @include border-vertical('before', $borderColor, 70%, 1, true);
+
+  &.view-button,
+  &.edit-button {
+    .grw-three-stranded-button-icon {
+      margin-right: -0.25rem;
+    }
+  }
+  &.hackmd-button {
+    font-size: 12px;
+    letter-spacing: -0.6px;
+
+    .grw-three-stranded-button-icon {
+      margin-right: -0.1rem;
+    }
+  }
+  &:hover,
+  &:active,
+  &.active {
+    color: $textColor;
+    background-color: $bgColorHoverAndActive;
+    border-color: $borderColor;
+    &::after {
+      border-color: $bgColorHoverAndActive;
+    }
+  }
+  &:not(:disabled):not(.disabled):focus {
+    box-shadow: none;
+  }
 }

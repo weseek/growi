@@ -162,6 +162,7 @@ class MyDraftList extends React.Component {
               totalItemsCount={this.state.totalDrafts}
               pagingLimit={this.state.pagingLimit}
               align="center"
+              size="sm"
             />
           </React.Fragment>
         ) }

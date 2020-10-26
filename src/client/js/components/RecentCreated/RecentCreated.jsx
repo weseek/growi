@@ -78,6 +78,7 @@ class RecentCreated extends React.Component {
           changePage={this.handlePage}
           totalItemsCount={this.state.totalPages}
           pagingLimit={this.state.pagingLimit}
+          size="sm"
         />
       </div>
     );

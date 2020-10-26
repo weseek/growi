@@ -11,9 +11,22 @@ body:not(.on-edit) {
 body.on-edit {
   overflow-y: hidden !important;
 
+  .container {
+    max-width: 100%;
+  }
+
   .grw-navbar {
     position: fixed !important;
     width: 100vw;
+  }
+
+  // restrict height of subnav
+  .grw-subnav {
+    max-height: $grw-subnav-max-height-on-edit;
+
+    @include media-breakpoint-up(md) {
+      max-height: $grw-subnav-max-height-md-on-edit;
+    }
   }
 
   .page-wrapper {
@@ -23,11 +36,14 @@ body.on-edit {
   }
 
   // calculate margin
-  $editor-header-plus-footer: 42px //               .nav-tabs height
-    + 1px //                                        .page-editor-footer border-top
-    + $grw-editor-navbar-bottom-height !default; // .EditorNavbarBottom min-height
+  $editor-margin-top: $grw-navbar-border-width + $grw-subnav-max-height-on-edit;
+  @include expand-editor($editor-margin-top);
 
-  @include expand-editor($editor-header-plus-footer);
+  @include media-breakpoint-up(md) {
+    // calculate margin
+    $editor-margin-top: $grw-navbar-border-width + $grw-subnav-max-height-md-on-edit;
+    @include expand-editor($editor-margin-top);
+  }
 
   // for growi layout
   .main {
@@ -45,6 +61,11 @@ body.on-edit {
     @include media-breakpoint-up(sm) {
       display: block !important;
     }
+  }
+
+  // hide when Editor
+  .grw-custom-navigation {
+    display: none;
   }
 
   // hide unnecessary elements
@@ -82,65 +103,8 @@ body.on-edit {
     padding-bottom: 0;
   }
 
-  .row.grw-subnav {
-    $left-margin: $grw-nav-main-left-tab-width * 2 + 25px; // width of .grw-nav-main-left-tab x 2 + some margin
-    $right-margin: 128px + 94px + 46px; //                    width of all of grw-nav-main-right-tab
-
-    position: absolute;
-    left: $left-margin;
-    z-index: 7; // forward than .CodeMirror-vscrollbar
-    width: calc(100% - #{$left-margin} - #{$right-margin});
-    padding-top: 3px;
-    pointer-events: none; // disable pointer-events because it becomes an obstacle
-
-    background: none;
-
-    > .grw-subnav-container {
-      width: 100%; //   for crowi layout
-      padding: 0; //    for crowi layout
-      pointer-events: initial; // enable pointer-events
-    }
-  }
-
-  .grw-page-path-nav-for-edit {
-    position: absolute;
-
-    .grw-page-path-link {
-      font-size: 20px;
-      line-height: 1em;
-    }
-    .separator {
-      margin-right: 0.1em;
-      margin-left: 0.1em;
-    }
-  }
-
-  .tag-labels {
-    line-height: 1em;
-  }
-
   .grw-editor-navbar-bottom {
     height: $grw-editor-navbar-bottom-height;
-
-    .grw-slack-notification {
-      .input-group-addon {
-        padding: 2px 8px;
-        line-height: 1em;
-        img,
-        input {
-          vertical-align: middle;
-        }
-      }
-      .form-control {
-        width: 80px;
-        @include media-breakpoint-up(sm) {
-          width: 130px;
-        }
-        @include media-breakpoint-up(md) {
-          width: 180px;
-        }
-      }
-    }
 
     .grw-grant-selector {
       @include media-breakpoint-down(sm) {
@@ -179,6 +143,27 @@ body.on-edit {
   /*********************
    * Navigation styles
    */
+  // ellipsis .grw-page-path-hierarchical-link
+  .grw-subnav-left-side {
+    overflow: hidden;
+    .grw-path-nav-container {
+      overflow: hidden;
+      .grw-page-path-nav {
+        white-space: nowrap;
+
+        .grw-page-path-hierarchical-link {
+          width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        h1 {
+          overflow: hidden;
+        }
+      }
+    }
+  }
+
   .nav:hover {
     .btn-copy,
     .btn-edit,
