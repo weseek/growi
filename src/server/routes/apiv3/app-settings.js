@@ -105,8 +105,8 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *          secretAccessKey:
  *            type: string
  *            description: secret key for authentification of AWS
- *      GcpSettingParams:
- *        description: GcpSettingParams
+ *      GcsSettingParams:
+ *        description: GcsSettingParams
  *        type: object
  *        properties:
  *          gcsApiKeyJsonPath:
@@ -175,7 +175,7 @@ module.exports = (crowi) => {
       body('s3AccessKeyId').trim().if(value => value !== '').matches(/^[\da-zA-Z]+$/),
       body('s3SecretAccessKey').trim(),
     ],
-    gcpSetting: [
+    gcsSetting: [
       body('gcsApiKeyJsonPath').trim(),
       body('gcsBucket').trim(),
       body('gcsUploadNamespace').trim(),
@@ -233,6 +233,7 @@ module.exports = (crowi) => {
       s3Bucket: crowi.configManager.getConfig('crowi', 'aws:s3Bucket'),
       s3AccessKeyId: crowi.configManager.getConfig('crowi', 'aws:s3AccessKeyId'),
       s3SecretAccessKey: crowi.configManager.getConfig('crowi', 'aws:s3SecretAccessKey'),
+      gcsUseOnlyEnvVars: crowi.configManager.getConfig('crowi', 'gcs:isGcsEnvPrioritizes'),
       gcsApiKeyJsonPath: crowi.configManager.getConfig('crowi', 'gcs:apiKeyJsonPath'),
       gcsBucket: crowi.configManager.getConfig('crowi', 'gcs:bucket'),
       gcsUploadNamespace: crowi.configManager.getConfig('crowi', 'gcs:uploadNamespace'),
@@ -605,28 +606,28 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /app-settings/gcp-setting:
+   *    /app-settings/gcs-setting:
    *      put:
    *        tags: [AppSettings]
-   *        operationId: updateAppSettingGcpSetting
-   *        summary: /app-settings/gcp-setting
-   *        description: Update gcp setting
+   *        operationId: updateAppSettingGcsSetting
+   *        summary: /app-settings/gcs-setting
+   *        description: Update gcs setting
    *        requestBody:
    *          required: true
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/GcpSettingParams'
+   *                $ref: '#/components/schemas/GcsSettingParams'
    *        responses:
    *          200:
-   *            description: Succeeded to update gcp setting
+   *            description: Succeeded to update gcs setting
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/GcpSettingParams'
+   *                  $ref: '#/components/schemas/GcsSettingParams'
    */
-  router.put('/gcp-setting', loginRequiredStrictly, adminRequired, csrf, validator.gcpSetting, apiV3FormValidator, async(req, res) => {
-    const requestGcpSettingParams = {
+  router.put('/gcs-setting', loginRequiredStrictly, adminRequired, csrf, validator.gcsSetting, apiV3FormValidator, async(req, res) => {
+    const requestGcsSettingParams = {
       'app:fileUploadType': req.body.fileUploadType,
       'gcs:apiKeyJsonPath': req.body.gcsApiKeyJsonPath,
       'gcs:bucket': req.body.gcsBucket,
@@ -634,16 +635,16 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestGcpSettingParams, true);
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestGcsSettingParams, true);
       await crowi.setUpFileUpload(true);
       crowi.fileUploaderSwitchService.publishUpdatedMessage();
 
-      const gcpSettingParams = {
+      const gcsSettingParams = {
         gcsApiKeyJsonPath: crowi.configManager.getConfig('crowi', 'gcs:apiKeyJsonPath'),
         gcsBucket: crowi.configManager.getConfig('crowi', 'gcs:bucket'),
         gcsUploadNamespace: crowi.configManager.getConfig('crowi', 'gcs:uploadNamespace'),
       };
-      return res.apiv3({ gcpSettingParams });
+      return res.apiv3({ gcsSettingParams });
     }
     catch (err) {
       const msg = 'Error occurred in updating aws setting';
