@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Nav, NavItem, NavLink, TabContent, TabPane,
@@ -11,12 +11,11 @@ const CustomNavigation = (props) => {
 
   Object.keys(props.navTabMapping).forEach((key) => {
     refs[key] = React.createRef();
-    console.log(`JSON.stringify(refs) : ${JSON.stringify(refs[activeTab])}`);
   });
 
   console.log(`customNavigation ${activeTab}`);
 
-  const [defaultActiveTab, setDefaultActiveTab] = useState('');
+  // const [defaultActiveTab, setDefaultActiveTab] = useState('');
   const [sliderWidth, setSliderWidth] = useState(null);
   const [sliderMarginLeft, setSliderMarginLeft] = useState(0);
 
@@ -31,7 +30,10 @@ const CustomNavigation = (props) => {
   const navBar = document.getElementById('grw-custom-navbar');
   const navTabs = document.querySelectorAll('ul.grw-custom-navbar > li.grw-custom-navtab');
 
-  console.log(`JSON.stringify(refs) : ${JSON.stringify(refs)}`);
+  // const   = JSON.stringify(refs[0]);
+
+  console.log(`JSON.stringify(refs)2 : ${JSON.stringify(refs)}`);
+  // console.log(`refs : ${refs}`);
   // console.log(`refs.current[0] = ${refs.current[0]}`);
 
   // const mounted = useRef(false);
@@ -41,7 +43,7 @@ const CustomNavigation = (props) => {
       return;
     }
 
-    setDefaultActiveTab('');
+    // setDefaultActiveTab('');
 
     if (navBar == null || navTabs == null) {
       console.log(`${navBar},${navTabs}`);
@@ -95,7 +97,7 @@ const CustomNavigation = (props) => {
 
               key={key}
               type="button"
-              className={`p-0 grw-custom-navtab ${activeTab === key && 'active'} ${defaultActiveTab === key && 'default-active-tab'}`}
+              className={`p-0 grw-custom-navtab ${activeTab === key && 'active'}}`}
             >
               <NavLink key={key} ref={refs[key]} onClick={() => { switchActiveTab(key) }}>
                 {value.icon}
