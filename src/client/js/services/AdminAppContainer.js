@@ -39,6 +39,7 @@ export default class AdminAppContainer extends Container {
       envFileUploadType: '',
       isFixedFileUploadByEnvVar: false,
 
+      gcsUseOnlyEnvVars: false,
       gcsApiKeyJsonPath: '',
       envGcsApiKeyJsonPath: '',
       gcsBucket: '',
@@ -97,6 +98,7 @@ export default class AdminAppContainer extends Container {
       s3Bucket: appSettingsParams.s3Bucket,
       s3AccessKeyId: appSettingsParams.s3AccessKeyId,
       s3SecretAccessKey: appSettingsParams.s3SecretAccessKey,
+      gcsUseOnlyEnvVars: appSettingsParams.gcsUseOnlyEnvVars,
       gcsApiKeyJsonPath: appSettingsParams.gcsApiKeyJsonPath,
       gcsBucket: appSettingsParams.gcsBucket,
       gcsUploadNamespace: appSettingsParams.gcsUploadNamespace,
@@ -364,7 +366,7 @@ export default class AdminAppContainer extends Container {
     if (this.state.fileUploadType === 'aws') {
       return this.updateAwsSettingHandler();
     }
-    return this.updateGcpSettingHandler();
+    return this.updateGcsSettingHandler();
   }
 
   /**
@@ -386,12 +388,12 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
-   * Update GCP setting
+   * Update GCS setting
    * @memberOf AdminAppContainer
    * @return {Array} Appearance
    */
-  async updateGcpSettingHandler() {
-    const response = await this.appContainer.apiv3.put('/app-settings/gcp-setting', {
+  async updateGcsSettingHandler() {
+    const response = await this.appContainer.apiv3.put('/app-settings/gcs-setting', {
       fileUploadType: this.state.fileUploadType,
       gcsApiKeyJsonPath: this.state.gcsApiKeyJsonPath,
       gcsBucket: this.state.gcsBucket,
