@@ -50,7 +50,7 @@ $table-hover-bg: $bgcolor-table-hover;
  */
 .card.card-disabled {
   background-color: darken($bgcolor-card, 5%);
-  border-color: $gray-200;
+  border-color: $border-color;
 }
 
 /*
@@ -282,11 +282,15 @@ $table-hover-bg: $bgcolor-table-hover;
   }
 }
 
-.top-of-table-contents {
-  border-color: $border-color;
-
-  .grw-seen-user-list {
+.revision-toc {
+  .top-of-table-contents {
     border-color: $border-color;
+
+    .grw-seen-user-list {
+      &:before {
+        border-color: $border-color;
+      }
+    }
   }
 }
 

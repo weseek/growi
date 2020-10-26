@@ -56,7 +56,7 @@ $btn-link-disabled-color: $gray-500;
 
 //== Forms
 //
-$input-border-color: border-color;
+$input-border-color: $border-color;
 
 $input-border-radius: $border-radius-sm;
 $input-border-radius-sm: $border-radius-sm;
@@ -64,7 +64,7 @@ $input-border-radius-lg: $border-radius;
 
 $input-placeholder-color: $gray-500;
 
-$custom-control-indicator-border-color: border-color;
+$custom-control-indicator-border-color: $border-color;
 $custom-control-label-disabled-color: $gray-500;
 $custom-select-disabled-color: $gray-500;
 $custom-range-thumb-disabled-bg: $gray-400;
