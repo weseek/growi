@@ -524,3 +524,12 @@ mark.rbt-highlight-text {
 .grw-btn-page-management:focus {
   background-color: rgba($color-link, 0.15);
 }
+
+// override-codemirror elegant-theme
+
+.CodeMirror.cm-s-elegant {
+  .CodeMirror-gutters {
+    background-color: $gray-50;
+    border-right-color: $border-color;
+  }
+}

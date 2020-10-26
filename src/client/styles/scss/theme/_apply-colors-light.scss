@@ -293,12 +293,3 @@ $table-hover-bg: $bgcolor-table-hover;
     }
   }
 }
-
-// override-codemirror day-theme
-
-.CodeMirror {
-  .CodeMirror-gutters {
-    background-color: $gray-50;
-    border-right-color: $border-color;
-  }
-}
