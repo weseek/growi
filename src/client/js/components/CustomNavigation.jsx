@@ -15,7 +15,6 @@ const CustomNavigation = (props) => {
 
   console.log(`customNavigation ${activeTab}`);
 
-  // const [defaultActiveTab, setDefaultActiveTab] = useState('');
   const [sliderWidth, setSliderWidth] = useState(null);
   const [sliderMarginLeft, setSliderMarginLeft] = useState(0);
 
@@ -30,13 +29,9 @@ const CustomNavigation = (props) => {
   const navBar = document.getElementById('grw-custom-navbar');
   const navTabs = document.querySelectorAll('ul.grw-custom-navbar > li.grw-custom-navtab');
 
-  // const   = JSON.stringify(refs[0]);
 
   console.log(`JSON.stringify(refs)2 : ${JSON.stringify(refs)}`);
-  // console.log(`refs : ${refs}`);
-  // console.log(`refs.current[0] = ${refs.current[0]}`);
 
-  // const mounted = useRef(false);
   useEffect(() => {
     console.log(`useEffecet ${activeTab}`);
     if (activeTab === '') {
@@ -63,28 +58,9 @@ const CustomNavigation = (props) => {
     setSliderWidth(width);
     setSliderMarginLeft(marginLeft);
     console.log(`sliderWidth = ${sliderWidth}`);
-    // }
-    // else {
-    //   // Mounted
-    //   console.log(JSON.stringify(elm.current.getBoundingClientRect()));
-    //   mounted.current = true;
-    //   console.log(`Mounted! ${activeTab}`);
-    //   setDefaultActiveTab(activeTab);
-    //   setSliderWidth(activeTab.offsetWidth);
-    // }
 
   }, [activeTab]);
 
-
-  // function renderNavSlideHr() {
-  //   if (defaultActiveTab === activeTab) {
-  //     console.log('1st');
-  //     console.log(`defaultActiveTab = ${defaultActiveTab}`);
-  //     return;
-  //   }
-  //   console.log('2nd');
-  //   return <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />;
-  // }
 
   return (
     <React.Fragment>
