@@ -396,11 +396,11 @@ body.on-edit {
     background-color: darken($bgcolor-global, 2%);
 
     .page-editor-editor-container {
-      border-right-color: $border-color-theme;
+      border-right-color: $border-color;
 
       .navbar-editor {
         background-color: $bgcolor-global; // same color with active tab
-        border-bottom-color: $border-color-theme;
+        border-bottom-color: $border-color;
       }
     }
 
@@ -409,7 +409,7 @@ body.on-edit {
     }
 
     .page-editor-footer {
-      border-top-color: $border-color-theme;
+      border-top-color: $border-color;
     }
   }
 

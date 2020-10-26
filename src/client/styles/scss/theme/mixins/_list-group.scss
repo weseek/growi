@@ -3,6 +3,7 @@
     .list-group-item {
       color: $color;
       background-color: $bgcolor;
+      border-color: $border-color;
 
       &.list-group-item-action {
         &:hover {

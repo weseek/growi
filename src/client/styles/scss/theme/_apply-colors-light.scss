@@ -16,7 +16,6 @@ $color-tags: $gray-500 !default;
 $bgcolor-tags: $gray-200 !default;
 
 // override bootstrap variables
-$border-color: $gray-200;
 $table-color: $color-table;
 $table-bg: $bgcolor-table;
 $table-border-color: $border-color-table;
@@ -51,7 +50,7 @@ $table-hover-bg: $bgcolor-table-hover;
  */
 .card.card-disabled {
   background-color: darken($bgcolor-card, 5%);
-  border-color: $gray-200;
+  border-color: $border-color;
 }
 
 /*
@@ -280,5 +279,17 @@ $table-hover-bg: $bgcolor-table-hover;
   .grw-tag-label {
     color: $color-tags;
     background-color: $bgcolor-tags;
+  }
+}
+
+.revision-toc {
+  .top-of-table-contents {
+    border-color: $border-color;
+
+    .grw-seen-user-list {
+      &:before {
+        border-color: $border-color;
+      }
+    }
   }
 }

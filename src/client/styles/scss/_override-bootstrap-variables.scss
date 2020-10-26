@@ -25,6 +25,8 @@ $gray-900: darken($dark, 5%) !default;
 $grays: ("50": $gray-50) !default;
 $red: #ff0a54 !default;
 
+$border-color: $gray-300 !default;
+
 //== Typography
 //
 //## Font, line-height, and color for body text, headings, and more.
@@ -54,7 +56,7 @@ $btn-link-disabled-color: $gray-500;
 
 //== Forms
 //
-$input-border-color: $gray-300;
+$input-border-color: $border-color;
 
 $input-border-radius: $border-radius-sm;
 $input-border-radius-sm: $border-radius-sm;
