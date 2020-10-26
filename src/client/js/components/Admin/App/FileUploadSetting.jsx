@@ -57,9 +57,7 @@ function FileUploadSetting(props) {
                     name="file-upload-type"
                     id={`file-upload-type-radio-${type}`}
                     checked={adminAppContainer.state.fileUploadType === type}
-                    onChange={(e) => {
-                    adminAppContainer.changeFileUploadType(type);
-                  }}
+                    onChange={() => { adminAppContainer.changeFileUploadType(type) }}
                   />
                   <label className="custom-control-label" htmlFor={`file-upload-type-radio-${type}`}>{t(`admin:app_setting.${type}_label`)}</label>
                 </div>
