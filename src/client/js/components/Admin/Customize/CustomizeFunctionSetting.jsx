@@ -83,28 +83,28 @@ class CustomizeFunctionSetting extends React.Component {
             <PagingSizeUncontrolledDropdown
               label={t('admin:customize_setting.function_options.list_num_s')}
               desc={t('admin:customize_setting.function_options.list_num_desc_s')}
-              toggleLabel={adminCustomizeContainer.state.pageLimitationS}
+              toggleLabel={adminCustomizeContainer.state.pageLimitationS || 20}
               dropdownItemSize={[10, 20, 50, 100]}
               onChangeDropdownItem={adminCustomizeContainer.switchPageListLimitationS}
             />
             <PagingSizeUncontrolledDropdown
               label={t('admin:customize_setting.function_options.list_num_m')}
               desc={t('admin:customize_setting.function_options.list_num_desc_m')}
-              toggleLabel={adminCustomizeContainer.state.pageLimitationM}
+              toggleLabel={adminCustomizeContainer.state.pageLimitationM || 10}
               dropdownItemSize={[5, 10, 20, 50, 100]}
               onChangeDropdownItem={adminCustomizeContainer.switchPageListLimitationM}
             />
             <PagingSizeUncontrolledDropdown
               label={t('admin:customize_setting.function_options.list_num_l')}
               desc={t('admin:customize_setting.function_options.list_num_desc_l')}
-              toggleLabel={adminCustomizeContainer.state.pageLimitationL}
+              toggleLabel={adminCustomizeContainer.state.pageLimitationL || 50}
               dropdownItemSize={[20, 50, 100, 200]}
               onChangeDropdownItem={adminCustomizeContainer.switchPageListLimitationL}
             />
             <PagingSizeUncontrolledDropdown
               label={t('admin:customize_setting.function_options.list_num_xl')}
               desc={t('admin:customize_setting.function_options.list_num_desc_xl')}
-              toggleLabel={adminCustomizeContainer.state.pageLimitationXL}
+              toggleLabel={adminCustomizeContainer.state.pageLimitationXL || 20}
               dropdownItemSize={[5, 10, 20, 50, 100]}
               onChangeDropdownItem={adminCustomizeContainer.switchPageListLimitationXL}
             />
