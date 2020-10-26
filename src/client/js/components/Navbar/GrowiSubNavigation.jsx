@@ -19,7 +19,6 @@ import NavigationContainer from '../../services/NavigationContainer';
 import TagLabels from '../Page/TagLabels';
 // import LikeButton from '../LikeButton';
 // import BookmarkButton from '../BookmarkButton';
-import ThreeStrandedButton from './ThreeStrandedButton';
 
 import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
@@ -150,6 +149,7 @@ const GrowiSubNavigation = (props) => {
 
   // dynamic import to skip rendering at SSR
   const PageManagement = dynamic(() => import('../Page/PageManagement'), { ssr: false });
+  const ThreeStrandedButton = dynamic(() => import('./ThreeStrandedButton'), { ssr: false });
 
   const {
     navigationContainer, isCompactMode,
