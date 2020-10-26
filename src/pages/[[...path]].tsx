@@ -18,7 +18,7 @@ import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigatio
 
 import {
   useCurrentUser, useCurrentPagePath, useOwnerOfCurrentPage,
-  useForbidden, useIsAbleToDeleteCompletely,
+  useForbidden, useNotFound, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential,
   useSearchServiceConfigured, useSearchServiceReachable,
 } from '../stores/context';
@@ -39,6 +39,7 @@ type Props = CommonProps & {
   siteUrl: string,
   confidential: string,
   isForbidden: boolean,
+  isNotFound: boolean,
   isAbleToDeleteCompletely: boolean,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
@@ -51,6 +52,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentPagePath(props.currentPagePath);
   useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   useForbidden(props.isForbidden);
+  useNotFound(props.isNotFound);
   useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
   useAppTitle(props.appTitle);
   useSiteUrl(props.siteUrl);
@@ -123,6 +125,7 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
   if (page == null) {
     // check the page is forbidden or just does not exist.
     props.isForbidden = await PageModel.count({ path: pagePath }) > 0;
+    props.isNotFound = !props.isForbidden;
     logger.warn(`Page is ${props.isForbidden ? 'forbidden' : 'not found'}`, pagePath);
     return;
   }
