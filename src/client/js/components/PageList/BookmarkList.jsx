@@ -12,7 +12,7 @@ import PaginationWrapper from '../PaginationWrapper';
 
 import Page from './Page';
 
-const logger = loggerFactory('growi:MyBookmarkList');
+const logger = loggerFactory('growi:BookmarkList');
 
 const BookmarkList = (props) => {
   const { t, appContainer, userId } = props;
