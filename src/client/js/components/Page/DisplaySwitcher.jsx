@@ -13,9 +13,9 @@ const DisplaySwitcher = (props) => {
   const { editorMode } = navigationContainer.state;
 
   // dynamic import to skip rendering at SSR
-  const PageEditor = dynamic(() => import('../PageEditor'), { ssr: false });
-  const PageEditorByHackmd = dynamic(() => import('../PageEditorByHackmd'), { ssr: false });
-  const EditorNavbarBottom = dynamic(() => import('../PageEditor/EditorNavbarBottom'), { ssr: false });
+  // const PageEditor = dynamic(() => import('../PageEditor'), { ssr: false });
+  // const PageEditorByHackmd = dynamic(() => import('../PageEditorByHackmd'), { ssr: false });
+  // const EditorNavbarBottom = dynamic(() => import('../PageEditor/EditorNavbarBottom'), { ssr: false });
 
   return (
     <>
@@ -25,16 +25,16 @@ const DisplaySwitcher = (props) => {
         </TabPane>
         <TabPane tabId="edit">
           <div id="page-editor">
-            <PageEditor />
+            {/* <PageEditor /> */}
           </div>
         </TabPane>
         <TabPane tabId="hackmd">
           <div id="page-editor-with-hackmd">
-            <PageEditorByHackmd />
+            {/* <PageEditorByHackmd /> */}
           </div>
         </TabPane>
       </TabContent>
-      {editorMode !== 'view' && <EditorNavbarBottom /> }
+      {/* {editorMode !== 'view' && <EditorNavbarBottom /> } */}
     </>
   );
 };

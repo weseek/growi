@@ -13,7 +13,7 @@ import BasicLayout from '../components/BasicLayout';
 
 import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
 // import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
-// import DisplaySwitcher from '../client/js/components/Page/DisplaySwitcher';
+import DisplaySwitcher from '../client/js/components/Page/DisplaySwitcher';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
 
 import {
@@ -90,18 +90,17 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           <div className="row">
             <div className="col grw-page-content-container">
               <div id="content-main" className="content-main container">
-                {/* <DisplaySwitcher /> */}
-                <p>{page?.revision.body}</p>
-                <script type="text/template" id="raw-text-original">{page?.revision.body}</script>
+                <DisplaySwitcher />
                 <div id="page-editor-navbar-bottom-container" className="d-none d-edit-block"></div>
                 {/* <PageStatusAlert /> */}
               </div>
             </div>
-            <div className="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
+
+            {/* <div className="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
               <div id="revision-toc" className="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
                 <div id="revision-toc-content" className="revision-toc-content"></div>
               </div>
-            </div>
+            </div> */}
           </div>
 
         </div>
