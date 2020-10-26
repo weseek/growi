@@ -1,27 +1,30 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import { UncontrolledTooltip } from 'reactstrap';
-import { withTranslation } from 'react-i18next';
 import urljoin from 'url-join';
 
-import { isTopPage } from '~/utils/path-utils';
-import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '../../services/AppContainer';
-import PageContainer from '../../services/PageContainer';
+import { useTranslation } from '~/i18n';
+import { isTopPage, isDeletablePage } from '~/utils/path-utils';
+import { useCurrentPagePath, useCurrentUser, useIsAbleToDeleteCompletely } from '~/stores/context';
+
 import PageDeleteModal from '../PageDeleteModal';
 import PageRenameModal from '../PageRenameModal';
 import PageDuplicateModal from '../PageDuplicateModal';
 import CreateTemplateModal from '../CreateTemplateModal';
 import PagePresentationModal from '../PagePresentationModal';
 import PresentationIcon from '../Icons/PresentationIcon';
+import { useCurrentPageSWR } from '~/stores/page';
 
 
-const PageManagement = (props) => {
-  const { t, appContainer, pageContainer } = props;
-  const { path, isDeletable, isAbleToDeleteCompletely } = pageContainer.state;
+const PageManagement = () => {
+  const { t } = useTranslation();
+  const { data: currentUser } = useCurrentUser();
+  const { data: path } = useCurrentPagePath();
+  const { data: isAbleToDeleteCompletely } = useIsAbleToDeleteCompletely();
 
-  const { currentUser } = appContainer;
+  const { data: page } = useCurrentPageSWR();
+
   const isTopPagePath = isTopPage(path);
+  const isDeletable = isDeletablePage(path);
 
   const [isPageRenameModalShown, setIsPageRenameModalShown] = useState(false);
   const [isPageDuplicateModalShown, setIsPageDuplicateModalShown] = useState(false);
@@ -82,10 +85,9 @@ const PageManagement = (props) => {
   // }
 
   async function exportPageHandler(format) {
-    const { pageId, revisionId } = pageContainer.state;
-    const url = new URL(urljoin(window.location.origin, '_api/v3/page/export', pageId));
+    const url = new URL(urljoin(window.location.origin, '_api/v3/page/export', page._id));
     url.searchParams.append('format', format);
-    url.searchParams.append('revisionId', revisionId);
+    url.searchParams.append('revisionId', page.revision._id);
     window.location.href = url.href;
   }
 
@@ -142,30 +144,30 @@ const PageManagement = (props) => {
 
     return (
       <>
-        <PageRenameModal
+        {/* <PageRenameModal
           isOpen={isPageRenameModalShown}
           onClose={closePageRenameModalHandler}
           path={path}
-        />
-        <PageDuplicateModal
+        /> */}
+        {/* <PageDuplicateModal
           isOpen={isPageDuplicateModalShown}
           onClose={closePageDuplicateModalHandler}
-        />
-        <CreateTemplateModal
+        /> */}
+        {/* <CreateTemplateModal
           isOpen={isPageTemplateModalShown}
           onClose={closePageTemplateModalHandler}
-        />
-        <PageDeleteModal
+        /> */}
+        {/* <PageDeleteModal
           isOpen={isPageDeleteModalShown}
           onClose={closePageDeleteModalHandler}
           path={path}
           isAbleToDeleteCompletely={isAbleToDeleteCompletely}
-        />
-        <PagePresentationModal
+        /> */}
+        {/* <PagePresentationModal
           isOpen={isPagePresentationModalShown}
           onClose={closePagePresentationModalHandler}
           href="?presentation=1"
-        />
+        /> */}
       </>
     );
   }
@@ -217,16 +219,4 @@ const PageManagement = (props) => {
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
-const PageManagementWrapper = withUnstatedContainers(PageManagement, [AppContainer, PageContainer]);
-
-
-PageManagement.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-};
-
-export default withTranslation()(PageManagementWrapper);
+export default PageManagement;

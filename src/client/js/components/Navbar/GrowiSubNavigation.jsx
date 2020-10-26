@@ -8,7 +8,7 @@ import { withTranslation } from 'react-i18next';
 import DevidedPagePath from '~/models/devided-page-path';
 import LinkedPagePath from '~/models/linked-page-path';
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
-import { isTrashPage, isUserPage } from '~/utils/path-utils';
+import { isCreatablePage, isTrashPage, isUserPage } from '~/utils/path-utils';
 import { useCurrentPageSWR } from '~/stores/page';
 import { useCurrentUser, useForbidden, useOwnerOfCurrentPage } from '~/stores/context';
 
@@ -24,8 +24,6 @@ import ThreeStrandedButton from './ThreeStrandedButton';
 import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
 import UserPicture from '../User/UserPicture';
-
-import PageManagement from '../Page/PageManagement';
 
 
 // eslint-disable-next-line react/prop-types
@@ -150,6 +148,9 @@ const GrowiSubNavigation = (props) => {
   const { data: pageOwner } = useOwnerOfCurrentPage();
   const { data: isForbidden } = useForbidden();
 
+  // dynamic import to skip rendering at SSR
+  const PageManagement = dynamic(() => import('../Page/PageManagement'), { ssr: false });
+
   const {
     navigationContainer, isCompactMode,
   } = props;
@@ -165,7 +166,7 @@ const GrowiSubNavigation = (props) => {
   const isPageNotFound = page == null;
   const isPageInTrash = isTrashPage(path);
   const isPageUsersHome = isUserPage(path);
-  const isCreatable = false; // TODO: store in [[...path]].tsx
+  const isCreatable = isCreatablePage(path);
 
   function onThreeStrandedButtonClicked(viewType) {
     navigationContainer.setEditorMode(viewType);
@@ -185,11 +186,11 @@ const GrowiSubNavigation = (props) => {
         <div className="grw-path-nav-container">
           { !isCompactMode && !isPageNotFound && !isForbidden && !isPageUsersHome && (
             <div className="mb-2">
-              <TagLabels />
+              {/* <TagLabels /> */}
             </div>
           ) }
 
-          { isPageUsersHome
+          {/* { isPageUsersHome
             ? (
               <>
                 <UserPagePathNav pageId={pageId} pagePath={path} />
@@ -199,7 +200,7 @@ const GrowiSubNavigation = (props) => {
             : (
               <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isForbidden} />
             )
-          }
+          } */}
 
         </div>
       </div>
@@ -216,7 +217,7 @@ const GrowiSubNavigation = (props) => {
             { !isPageNotFound && !isForbidden && <PageManagement /> }
           </div>
           <div className="mt-2">
-            { !isCreatable && !isPageInTrash && (
+            { isCreatable && !isPageInTrash && (
               <ThreeStrandedButton
                 onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
                 isBtnDisabled={currentUser == null}
@@ -230,10 +231,10 @@ const GrowiSubNavigation = (props) => {
         { (!isCompactMode && !isPageUsersHome && !isPageNotFound && !isForbidden) && (
           <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none">
             <li className="pb-1">
-              <AuthorInfo user={creator} date={createdAt} />
+              {/* <AuthorInfo user={creator} date={createdAt} /> */}
             </li>
             <li className="mt-1 pt-1 border-top">
-              <AuthorInfo user={revision?.author} date={updatedAt} mode="update" />
+              {/* <AuthorInfo user={revision?.author} date={updatedAt} mode="update" /> */}
             </li>
           </ul>
         ) }
