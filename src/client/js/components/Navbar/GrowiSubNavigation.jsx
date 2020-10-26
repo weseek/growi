@@ -231,10 +231,10 @@ const GrowiSubNavigation = (props) => {
         { (!isCompactMode && !isPageUsersHome && !isPageNotFound && !isForbidden) && (
           <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none">
             <li className="pb-1">
-              {/* <AuthorInfo user={creator} date={createdAt} /> */}
+              <AuthorInfo user={creator} date={createdAt} />
             </li>
             <li className="mt-1 pt-1 border-top">
-              {/* <AuthorInfo user={revision?.author} date={updatedAt} mode="update" /> */}
+              <AuthorInfo user={revision?.author} date={updatedAt} mode="update" />
             </li>
           </ul>
         ) }
