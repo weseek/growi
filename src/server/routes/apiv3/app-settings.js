@@ -127,6 +127,13 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *          envGcsUploadNamespace:
  *            type: string
  *            description: Directory name to create in the bucket
+ *      FileUploadTypeParams:
+ *        description: FileUploadTypeParams
+ *        type: object
+ *        properties:
+ *          fileUploadType:
+ *            type: string
+ *            description: fileUploadType
  *      PluginSettingParams:
  *        description: PluginSettingParams
  *        type: object
@@ -179,6 +186,9 @@ module.exports = (crowi) => {
       body('gcsApiKeyJsonPath').trim(),
       body('gcsBucket').trim(),
       body('gcsUploadNamespace').trim(),
+    ],
+    fileUploadType: [
+      body('fileUploadType').isIn(['aws', 'gcp', 'local', 'gridfs']),
     ],
     pluginSetting: [
       body('isEnabledPlugins').isBoolean(),
@@ -648,6 +658,52 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating aws setting';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-awsSetting-failed'));
+    }
+
+  });
+
+  /**
+   * @swagger
+   *
+   *    /app-settings/file-upload-type:
+   *      put:
+   *        tags: [AppSettings]
+   *        operationId: updateAppSettingGcpSetting
+   *        summary: /app-settings/file-upload-type
+   *        description: Update fileUploadType
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/GcpSettingParams'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update fileUploadType
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/GcpSettingParams'
+   */
+  router.put('/file-upload-type', loginRequiredStrictly, adminRequired, csrf, validator.fileUploadType, apiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'app:fileUploadType': req.body.fileUploadType,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams, true);
+      await crowi.setUpFileUpload(true);
+      crowi.fileUploaderSwitchService.publishUpdatedMessage();
+
+      const responseParams = {
+        fileUploadType: crowi.configManager.getConfig('crowi', 'gcs:fileUploadType'),
+      };
+      return res.apiv3({ responseParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating fileUploadType';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-fileUploadType-failed'));
     }
 
   });

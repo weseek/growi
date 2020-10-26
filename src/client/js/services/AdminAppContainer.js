@@ -364,7 +364,11 @@ export default class AdminAppContainer extends Container {
     if (this.state.fileUploadType === 'aws') {
       return this.updateAwsSettingHandler();
     }
-    return this.updateGcpSettingHandler();
+    if (this.state.fileUploadType === 'gcp') {
+      return this.updateGcpSettingHandler();
+    }
+    // only update fileUploadType
+    return this.updateFileUploadTypeHandler();
   }
 
   /**
@@ -396,6 +400,19 @@ export default class AdminAppContainer extends Container {
       gcsApiKeyJsonPath: this.state.gcsApiKeyJsonPath,
       gcsBucket: this.state.gcsBucket,
       gcsUploadNamespace: this.state.gcsUploadNamespace,
+    });
+    const { awsSettingParams } = response.data;
+    return awsSettingParams;
+  }
+
+  /**
+   * Update file upload type
+   * @memberOf AdminAppContainer
+   * @return {Array} Appearance
+   */
+  async updateFileUploadTypeHandler() {
+    const response = await this.appContainer.apiv3.put('/app-settings/file-upload-type', {
+      fileUploadType: this.state.fileUploadType,
     });
     const { awsSettingParams } = response.data;
     return awsSettingParams;
