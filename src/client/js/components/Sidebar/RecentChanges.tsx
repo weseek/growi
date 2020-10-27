@@ -16,7 +16,11 @@ import UserPicture from '../User/UserPicture';
 const logger = loggerFactory('growi:cli:RecentChanges');
 
 
-const PageItem = ({ page }): JSX.Element => {
+type Props = {
+  page: any,
+}
+
+const PageItem = ({ page }: Props): JSX.Element => {
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
   const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);

@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-unresolved -- remove after apply Ts.ED
 import { PlatformTest } from '@tsed/common';
 import { SafeRedirectMiddleware } from '~/server/middlewares/safe-redirect';
 

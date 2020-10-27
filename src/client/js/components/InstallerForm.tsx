@@ -109,7 +109,7 @@ const InstallerForm = (): JSX.Element => {
               placeholder={t('User ID')}
               ref={register({
                 required: true,
-                validate: async value => await validateUsername(value),
+                validate: async value => validateUsername(value),
               })}
             />
           </div>
