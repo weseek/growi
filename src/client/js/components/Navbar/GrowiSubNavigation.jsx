@@ -145,7 +145,7 @@ const GrowiSubNavigation = (props) => {
   const { currentUser } = appContainer;
   const isPageNotFound = pageId == null;
   // Tags cannot be edited while the new page and editorMode is view
-  const isTagLabelHidden = (editorMode === 'view' && isPageNotFound);
+  const isTagLabelHidden = (editorMode !== 'edit' && isPageNotFound);
   const isUserPage = pageUser != null;
   const isPageInTrash = isTrashPage(path);
 
