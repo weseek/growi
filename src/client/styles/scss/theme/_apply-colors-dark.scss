@@ -16,7 +16,7 @@ $color-tags: #949494 !default;
 $bgcolor-tags: $dark !default;
 
 // override bootstrap variables
-$border-color: $gray-700;
+$border-color: $secondary;
 $table-dark-color: $color-table;
 $table-dark-bg: $bgcolor-table;
 $table-dark-border-color: $border-color-table;
@@ -37,6 +37,7 @@ select.form-control,
 textarea.form-control {
   color: lighten($color-global, 30%);
   background-color: darken($bgcolor-global, 5%);
+  border-color: $border-color;
   &:focus {
     background-color: $bgcolor-global;
   }
@@ -257,6 +258,15 @@ ul.pagination {
  * GROWI on-edit
  */
 body.on-edit {
+  .main {
+    .page-editor-editor-container {
+      border-right-color: $border-color;
+
+      .navbar-editor {
+        border-bottom-color: $border-color;
+      }
+    }
+  }
   .grw-editor-navbar-bottom {
     background-color: $bgcolor-global;
     #slack-mark-black {
@@ -355,5 +365,31 @@ body.on-edit {
   .grw-tag-label {
     color: $color-tags;
     background-color: $bgcolor-tags;
+  }
+}
+
+/*
+ * admin settings
+ */
+.admin-setting-header {
+  border-color: $border-color;
+}
+
+/*
+ * modal
+ */
+.grw-modal-head {
+  border-color: $border-color;
+}
+
+.revision-toc {
+  .top-of-table-contents {
+    border-color: $border-color;
+
+    .grw-seen-user-list {
+      &:before {
+        border-color: $border-color;
+      }
+    }
   }
 }
