@@ -28,11 +28,12 @@ class TagLabels extends React.Component {
 
   /**
    * @return tags data
-   *   1. pageContainer.state.tags if pageId is not null
-   *   2. editorContainer.state.tags if pageId is null
+   *   1. pageContainer.state.tags if editorMode is view
+   *   2. editorContainer.state.tags if editorMode is edit
    */
-  getEditTargetData() {
-    return (this.props.editorContainer.state.pageId != null) ? this.props.editorContainer.state.tags : this.props.pageContainer.state.tags;
+  getTagData() {
+    const { editorContainer, pageContainer, editorMode } = this.props;
+    return (editorMode === 'edit') ? editorContainer.state.tags : pageContainer.state.tags;
   }
 
   openEditorModal() {
@@ -44,11 +45,14 @@ class TagLabels extends React.Component {
   }
 
   async tagsUpdatedHandler(newTags) {
-    const { appContainer, editorContainer, pageContainer } = this.props;
+    const {
+      appContainer, editorContainer, pageContainer, editorMode,
+    } = this.props;
+
     const { pageId } = pageContainer.state;
 
-    // only update tags in editorContainer when new page
-    if (pageId == null) {
+    // It will not be reflected in the DB until the page is refreshed
+    if (editorMode === 'edit') {
       return editorContainer.setState({ tags: newTags });
     }
 
@@ -69,7 +73,7 @@ class TagLabels extends React.Component {
 
 
   render() {
-    const tags = this.getEditTargetData();
+    const tags = this.getTagData();
 
     return (
       <>
@@ -110,6 +114,7 @@ TagLabels.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 
+  editorMode: PropTypes.string.isRequired,
 };
 
 export default withTranslation()(TagLabelsWrapper);

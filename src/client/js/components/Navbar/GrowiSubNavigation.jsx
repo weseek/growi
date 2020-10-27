@@ -165,7 +165,7 @@ const GrowiSubNavigation = (props) => {
         <div className="grw-path-nav-container">
           { !isCompactMode && !isPageNotFound && !isPageForbidden && !isUserPage && (
             <div className="mb-2">
-              <TagLabels />
+              <TagLabels editorMode={editorMode} />
             </div>
           ) }
 
