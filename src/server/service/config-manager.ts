@@ -39,10 +39,6 @@ export default class ConfigManager implements S2sMessageHandlable {
 
   private lastLoadedAt?: Date;
 
-  constructor() {
-    this.loadConfigs();
-  }
-
   /**
    * load configs from the database and the environment variables
    */
