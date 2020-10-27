@@ -8,7 +8,7 @@ $bgcolor-list-active: $primary !default;
 $bgcolor-subnav: lighten($bgcolor-global, 3%) !default;
 $color-table: white !default;
 $bgcolor-table: #343a40 !default;
-$border-color-table: lighten($bgcolor-table, 7.5%) !default;
+$border-color-table: pink !default; //lighten($bgcolor-table, 7.5%)
 $color-table-hover: rgba(white, 0.075) !default;
 $bgcolor-table-hover: lighten($bgcolor-table, 7.5%) !default;
 $bgcolor-sidebar-list-group: $bgcolor-list !default;
@@ -59,7 +59,7 @@ textarea.form-control {
 }
 
 .input-group input {
-  border-color: $secondary;
+  border-color: blue; //$gray-600?500?
 }
 
 /*

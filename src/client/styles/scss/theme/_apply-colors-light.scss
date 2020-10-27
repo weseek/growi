@@ -8,7 +8,7 @@ $color-list-active: color-yiq($bgcolor-list-active) !default;
 $bgcolor-subnav: darken($bgcolor-global, 3%) !default;
 $color-table: $color-global !default;
 $bgcolor-table: null !default;
-$border-color-table: $gray-200 !default;
+$border-color-table: pink !default; //$gray-200
 $color-table-hover: $color-table !default;
 $bgcolor-table-hover: rgba(black, 0.075) !default;
 $bgcolor-sidebar-list-group: $bgcolor-list !default;
