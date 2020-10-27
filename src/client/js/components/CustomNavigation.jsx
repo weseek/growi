@@ -9,12 +9,12 @@ const CustomNavigation = (props) => {
   const [activeTab, setActiveTab] = useState(Object.keys(props.navTabMapping)[0]);
   const [sliderWidth, setSliderWidth] = useState(100);
   const [sliderMarginLeft, setSliderMarginLeft] = useState(0);
-  const refs = {};
+  const tabs = {};
   const nav = useRef();
   const hr = useRef();
 
   Object.keys(props.navTabMapping).forEach((key) => {
-    refs[key] = React.createRef();
+    tabs[key] = React.createRef();
   });
 
   console.log(`customNavigation ${activeTab}`);
@@ -37,9 +37,8 @@ const CustomNavigation = (props) => {
 
 
     console.log(`useEffecet ${activeTab}`);
-    console.log('reffff', refs);
-    console.log('refs.current', refs.current);
-    console.log('refs[activeTab].current', refs[activeTab].current);
+    console.log('reffff', tabs);
+    console.log('tabs[activeTab].current', tabs[activeTab].current);
     // console.log(`ref.current = ${nav.current}`);
     console.log('nav', nav);
     console.log('hr', hr);
@@ -84,7 +83,7 @@ const CustomNavigation = (props) => {
               type="button"
               className={`p-0 grw-custom-navtab ${activeTab === key && 'active'}}`}
             >
-              <NavLink key={key} ref={refs[key]} onClick={() => { switchActiveTab(key) }}>
+              <NavLink key={key} ref={tabs[key]} onClick={() => { switchActiveTab(key) }}>
                 {value.icon}
                 {value.i18n}
               </NavLink>
