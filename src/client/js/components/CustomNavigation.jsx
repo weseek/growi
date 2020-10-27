@@ -9,8 +9,8 @@ const CustomNavigation = (props) => {
   const [activeTab, setActiveTab] = useState(Object.keys(props.navTabMapping)[0]);
   const [sliderWidth, setSliderWidth] = useState(0);
   const [sliderMarginLeft, setSliderMarginLeft] = useState(0);
-  const tabs = {};
   const nav = useRef();
+  const tabs = {};
   const hr = useRef();
 
   Object.keys(props.navTabMapping).forEach((key) => {
@@ -34,13 +34,16 @@ const CustomNavigation = (props) => {
 
     const navBar = document.getElementById('grw-custom-navbar');
     const navTabs = document.querySelectorAll('ul.grw-custom-navbar > li.grw-custom-navtab');
+    // const navBar = nav;
+    // const navTabs = tabs;
 
     console.log(`useEffecet ${activeTab}`);
     console.log('reffff', tabs);
     console.log('tabs[activeTab].current', tabs[activeTab].current);
+    console.log('tabs[activeTab].current.offsetWidth', tabs[activeTab].current.offsetWidth);
     // console.log(`ref.current = ${nav.current}`);
     console.log('nav', nav);
-    console.log('hr', hr);
+    console.log('hr.current.offsetWidth', hr.current.offsetWidth);
 
     if (activeTab === '') {
       return;
