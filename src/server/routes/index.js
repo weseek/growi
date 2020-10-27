@@ -33,8 +33,6 @@ module.exports = function(crowi, app) {
 
   /* eslint-disable max-len, comma-spacing, no-multi-spaces */
 
-  // app.get('/'                        , applicationInstalled, loginRequired , page.showTopPage);
-
   // API v3
   app.use('/api-docs', require('./apiv3/docs')(crowi));
   app.use('/_api/v3', require('./apiv3')(crowi));
@@ -43,9 +41,8 @@ module.exports = function(crowi, app) {
 
   // installer
   if (!isInstalled) {
-    // const installer = require('./installer')(crowi);
-    // app.get('/installer'               , applicationNotInstalled , installer.index);
     // app.post('/installer'              , applicationNotInstalled , form.register , csrf, installer.install);
+    app.get('/'                           , applicationInstalled, next.delegateToNext);
     app.get('/installer'                  , applicationNotInstalled, next.delegateToNext);
     return;
   }
