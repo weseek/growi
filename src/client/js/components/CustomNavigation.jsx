@@ -9,7 +9,7 @@ const CustomNavigation = (props) => {
   const [activeTab, setActiveTab] = useState(Object.keys(props.navTabMapping)[0]);
   const [sliderWidth, setSliderWidth] = useState(0);
   const [sliderMarginLeft, setSliderMarginLeft] = useState(0);
-  const newNav = useRef();
+  const nav = useRef();
   const tabs = {};
   const hr = useRef();
 
@@ -29,6 +29,11 @@ const CustomNavigation = (props) => {
     return min / max * 100;
   }
 
+  function registerNavLink(key, elm) {
+    if (elm != null) {
+      tabs[key] = elm;
+    }
+  }
 
   useEffect(() => {
 
@@ -39,11 +44,11 @@ const CustomNavigation = (props) => {
 
     console.log(`useEffecet ${activeTab}`);
     console.log('reffff', tabs);
-    console.log('tabs[activeTab].current', tabs[activeTab].current);
-    console.log('tabs[activeTab].current.clientWidth', tabs[activeTab].current.clientWidth);
+    // console.log('tabs[activeTab].current.props.children', tabs[activeTab].current.props.children[1]);
+    // console.log('tabs[activeTab].current', tabs[activeTab].current);
     // console.log(`ref.current = ${nav.current}`);
-    console.log('newNav', newNav);
-    console.log('newNav.current.offsetWidth', newNav.current.offsetWidth);
+    console.log('nav', nav);
+    console.log('nav.current.offsetWidth', nav.current.offsetWidth);
     console.log('hr.current.offsetWidth', hr.current.offsetWidth);
 
     if (activeTab === '') {
@@ -76,7 +81,7 @@ const CustomNavigation = (props) => {
 
   return (
     <React.Fragment>
-      <div ref={newNav}>
+      <div ref={nav}>
         <Nav className="nav-title grw-custom-navbar" id="grw-custom-navbar">
           {Object.entries(props.navTabMapping).map(([key, value]) => {
             // console.log(`key = ${key}, value = ${value.index}`);
@@ -87,7 +92,7 @@ const CustomNavigation = (props) => {
                 type="button"
                 className={`p-0 grw-custom-navtab ${activeTab === key && 'active'}}`}
               >
-                <NavLink key={key} ref={tabs[key]} onClick={() => { switchActiveTab(key) }}>
+                <NavLink key={key} innerRef={elm => registerNavLink(key, elm)} onClick={() => { switchActiveTab(key) }}>
                   {value.icon}
                   {value.i18n}
                 </NavLink>
