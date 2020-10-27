@@ -38,6 +38,8 @@ const CustomNavigation = (props) => {
 
     console.log(`useEffecet ${activeTab}`);
     console.log('reffff', refs);
+    console.log('refs.current', refs.current);
+    console.log('refs[activeTab].current', refs[activeTab].current);
     // console.log(`ref.current = ${nav.current}`);
     console.log('nav', nav);
     console.log('hr', hr);
