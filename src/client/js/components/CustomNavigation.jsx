@@ -9,7 +9,7 @@ const CustomNavigation = (props) => {
   const [activeTab, setActiveTab] = useState(Object.keys(props.navTabMapping)[0]);
   const [sliderWidth, setSliderWidth] = useState(0);
   const [sliderMarginLeft, setSliderMarginLeft] = useState(0);
-  const nav = useRef();
+  const newNav = useRef();
   const tabs = {};
   const hr = useRef();
 
@@ -40,9 +40,10 @@ const CustomNavigation = (props) => {
     console.log(`useEffecet ${activeTab}`);
     console.log('reffff', tabs);
     console.log('tabs[activeTab].current', tabs[activeTab].current);
-    console.log('tabs[activeTab].current.offsetWidth', tabs[activeTab].current.offsetWidth);
+    console.log('tabs[activeTab].current.clientWidth', tabs[activeTab].current.clientWidth);
     // console.log(`ref.current = ${nav.current}`);
-    console.log('nav', nav);
+    console.log('newNav', newNav);
+    console.log('newNav.current.offsetWidth', newNav.current.offsetWidth);
     console.log('hr.current.offsetWidth', hr.current.offsetWidth);
 
     if (activeTab === '') {
@@ -75,36 +76,38 @@ const CustomNavigation = (props) => {
 
   return (
     <React.Fragment>
-      <Nav ref={nav} className="nav-title grw-custom-navbar" id="grw-custom-navbar">
-        {Object.entries(props.navTabMapping).map(([key, value]) => {
-          // console.log(`key = ${key}, value = ${value.index}`);
-          return (
-            <NavItem
+      <div ref={newNav}>
+        <Nav className="nav-title grw-custom-navbar" id="grw-custom-navbar">
+          {Object.entries(props.navTabMapping).map(([key, value]) => {
+            // console.log(`key = ${key}, value = ${value.index}`);
+            return (
+              <NavItem
 
-              key={key}
-              type="button"
-              className={`p-0 grw-custom-navtab ${activeTab === key && 'active'}}`}
-            >
-              <NavLink key={key} ref={tabs[key]} onClick={() => { switchActiveTab(key) }}>
-                {value.icon}
-                {value.i18n}
-              </NavLink>
-            </NavItem>
-          );
-        })}
-      </Nav>
-      {/* {renderNavSlideHr()} */}
-      <hr ref={hr} className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
-      {/* <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} /> */}
-      <TabContent activeTab={activeTab} className="p-4">
-        {Object.entries(props.navTabMapping).map(([key, value]) => {
-          return (
-            <TabPane key={key} tabId={key}>
-              {value.tabContent}
-            </TabPane>
-          );
-        })}
-      </TabContent>
+                key={key}
+                type="button"
+                className={`p-0 grw-custom-navtab ${activeTab === key && 'active'}}`}
+              >
+                <NavLink key={key} ref={tabs[key]} onClick={() => { switchActiveTab(key) }}>
+                  {value.icon}
+                  {value.i18n}
+                </NavLink>
+              </NavItem>
+            );
+          })}
+        </Nav>
+        {/* {renderNavSlideHr()} */}
+        <hr ref={hr} className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
+        {/* <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} /> */}
+        <TabContent activeTab={activeTab} className="p-4">
+          {Object.entries(props.navTabMapping).map(([key, value]) => {
+            return (
+              <TabPane key={key} tabId={key}>
+                {value.tabContent}
+              </TabPane>
+            );
+          })}
+        </TabContent>
+      </div>
     </React.Fragment>
   );
 };
