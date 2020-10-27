@@ -1,15 +1,18 @@
-import safeRedirectMiddleware, { setWhitelistOfHosts } from '~/server/middlewares/safe-redirect';
-
-/* eslint-disable arrow-body-style */
+import { PlatformTest } from '@tsed/common';
+import { SafeRedirectMiddleware } from '~/server/middlewares/safe-redirect';
 
 describe('SafeRedirectMiddleware', () => {
-  // setup whitelist
-  setWhitelistOfHosts([
-    'white1.example.com:8080',
-    'white2.example.com',
-  ]);
+
+  beforeEach(PlatformTest.create);
+  afterEach(PlatformTest.reset);
 
   describe('res.safeRedirect', () => {
+    // setup whitelist
+    SafeRedirectMiddleware.setWhitelistOfHosts([
+      'white1.example.com:8080',
+      'white2.example.com',
+    ]);
+
     // setup req/res/next
     const req = {
       protocol: 'http',
@@ -22,7 +25,9 @@ describe('SafeRedirectMiddleware', () => {
     const next = jest.fn();
 
     test('redirects to \'/\' because specified url causes open redirect vulnerability', () => {
-      safeRedirectMiddleware.use(req, res, next);
+      const middleware = PlatformTest.get(SafeRedirectMiddleware);
+
+      middleware.use(req, res, next);
 
       const result = res.safeRedirect('//evil.example.com');
 
@@ -35,7 +40,9 @@ describe('SafeRedirectMiddleware', () => {
     });
 
     test('redirects to \'/\' because specified host without port is not in whitelist', () => {
-      safeRedirectMiddleware.use(req, res, next);
+      const middleware = PlatformTest.get(SafeRedirectMiddleware);
+
+      middleware.use(req, res, next);
 
       const result = res.safeRedirect('http://white1.example.com/path/to/page');
 
@@ -48,7 +55,9 @@ describe('SafeRedirectMiddleware', () => {
     });
 
     test('redirects to the specified local url', () => {
-      safeRedirectMiddleware.use(req, res, next);
+      const middleware = PlatformTest.get(SafeRedirectMiddleware);
+
+      middleware.use(req, res, next);
 
       const result = res.safeRedirect('/path/to/page');
 
@@ -61,7 +70,9 @@ describe('SafeRedirectMiddleware', () => {
     });
 
     test('redirects to the specified local url (fqdn)', () => {
-      safeRedirectMiddleware.use(req, res, next);
+      const middleware = PlatformTest.get(SafeRedirectMiddleware);
+
+      middleware.use(req, res, next);
 
       const result = res.safeRedirect('http://example.com/path/to/page');
 
@@ -74,7 +85,9 @@ describe('SafeRedirectMiddleware', () => {
     });
 
     test('redirects to the specified whitelisted url (white1.example.com:8080)', () => {
-      safeRedirectMiddleware.use(req, res, next);
+      const middleware = PlatformTest.get(SafeRedirectMiddleware);
+
+      middleware.use(req, res, next);
 
       const result = res.safeRedirect('http://white1.example.com:8080/path/to/page');
 
@@ -87,7 +100,9 @@ describe('SafeRedirectMiddleware', () => {
     });
 
     test('redirects to the specified whitelisted url (white2.example.com:8080)', () => {
-      safeRedirectMiddleware.use(req, res, next);
+      const middleware = PlatformTest.get(SafeRedirectMiddleware);
+
+      middleware.use(req, res, next);
 
       const result = res.safeRedirect('http://white2.example.com:8080/path/to/page');
 

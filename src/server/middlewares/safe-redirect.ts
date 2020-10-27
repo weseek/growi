@@ -37,6 +37,8 @@ class SafeRedirectMiddleware {
         return res.redirect('/');
       }
 
+      console.log('this', this);
+
       try {
         // check inner redirect
         const redirectUrl = new URL(redirectTo, `${req.protocol}://${req.get('host')}`);
@@ -84,4 +86,6 @@ class SafeRedirectMiddleware {
 }
 
 const middleware = new SafeRedirectMiddleware();
-export default middleware.use;
+export default middleware;
+
+export const setWhitelistOfHosts = SafeRedirectMiddleware.setWhitelistOfHosts;

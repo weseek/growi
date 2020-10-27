@@ -2,7 +2,7 @@ import { nextI18NextMiddleware } from 'next-i18next/dist/commonjs/middlewares';
 
 import nextI18next from '~/i18n';
 
-import registerSafeRedirect from '../middlewares/safe-redirect';
+import safeRedirectMiddleware from '../middlewares/safe-redirect';
 
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:crowi:express-init');
@@ -83,7 +83,7 @@ module.exports = function(crowi, app) {
 
   app.use(flash());
 
-  app.use(registerSafeRedirect);
+  app.use(safeRedirectMiddleware.use);
   app.use(injectCurrentuserToLocalvars);
   app.use(autoReconnectToS2sMsgServer);
 
