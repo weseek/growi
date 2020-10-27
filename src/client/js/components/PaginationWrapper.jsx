@@ -170,7 +170,7 @@ class PaginationWrapper extends React.Component {
 
     return (
       <React.Fragment>
-        <Pagination size="sm" listClassName={this.getListClassName()}>{paginationItems}</Pagination>
+        <Pagination size={this.props.size} listClassName={this.getListClassName()}>{paginationItems}</Pagination>
       </React.Fragment>
     );
   }
@@ -185,10 +185,12 @@ PaginationWrapper.propTypes = {
   totalItemsCount: PropTypes.number.isRequired,
   pagingLimit: PropTypes.number.isRequired,
   align: PropTypes.string,
+  size: PropTypes.string,
 };
 
 PaginationWrapper.defaultProps = {
   align: 'left',
+  size: 'md',
 };
 
 export default withTranslation()(PaginationWrapper);

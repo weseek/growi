@@ -182,4 +182,11 @@ html[dark] {
   .grw-navbar {
     background-image: url('/images/themes/christmas/christmas-navbar.jpg');
   }
+
+  // Button
+  .grw-three-stranded-button {
+    .btn.btn-outline-primary {
+      @include three-stranded-button(darken($subthemecolor, 15%), lighten($subthemecolor, 35%), lighten($subthemecolor, 45%));
+    }
+  }
 }
