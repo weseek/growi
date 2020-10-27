@@ -12,9 +12,9 @@ describe('loginRequired', () => {
 
   beforeEach(async(done) => {
     crowi = await getInstance();
-    loginRequiredStrictly = require('@server/middlewares/login-required')(crowi);
-    loginRequired = require('@server/middlewares/login-required')(crowi, true);
-    loginRequiredWithFallback = require('@server/middlewares/login-required')(crowi, false, fallbackMock);
+    loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
+    loginRequired = require('~/server/middlewares/login-required')(crowi, true);
+    loginRequiredWithFallback = require('~/server/middlewares/login-required')(crowi, false, fallbackMock);
     done();
   });
 
