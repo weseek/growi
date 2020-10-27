@@ -7,7 +7,7 @@ import {
 
 const CustomNavigation = (props) => {
   const [activeTab, setActiveTab] = useState(Object.keys(props.navTabMapping)[0]);
-  const [sliderWidth, setSliderWidth] = useState(100);
+  const [sliderWidth, setSliderWidth] = useState(0);
   const [sliderMarginLeft, setSliderMarginLeft] = useState(0);
   const tabs = {};
   const nav = useRef();
@@ -30,11 +30,10 @@ const CustomNavigation = (props) => {
   }
 
 
-  const navTabs = document.querySelectorAll('ul.grw-custom-navbar > li.grw-custom-navtab');
-  const navBar = document.getElementById('grw-custom-navbar');
-
   useEffect(() => {
 
+    const navBar = document.getElementById('grw-custom-navbar');
+    const navTabs = document.querySelectorAll('ul.grw-custom-navbar > li.grw-custom-navtab');
 
     console.log(`useEffecet ${activeTab}`);
     console.log('reffff', tabs);
