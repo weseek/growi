@@ -74,7 +74,7 @@ const CustomNavigation = (props) => {
     <React.Fragment>
       <Nav ref={nav} className="nav-title grw-custom-navbar" id="grw-custom-navbar">
         {Object.entries(props.navTabMapping).map(([key, value]) => {
-          console.log(`key = ${key}, value = ${value.index}`);
+          // console.log(`key = ${key}, value = ${value.index}`);
           return (
             <NavItem
 
