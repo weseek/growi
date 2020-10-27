@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useForm, SubmitHandler, Validate } from 'react-hook-form';
 
 import { i18n, config, useTranslation } from '~/i18n';
-import { useCheckUsernameSWR } from '~/stores/register';
+import { apiv3Get } from '../util/apiv3-client';
 
 type FormValues = {
   username: string,
@@ -27,21 +27,17 @@ const LanguageDropdownMenu = (): JSX.Element => {
 
 const InstallerForm = (): JSX.Element => {
   const { t } = useTranslation();
-  const { handleSubmit, register, errors } = useForm({
-    mode: 'onBlur',
-  });
+  const { handleSubmit, register, errors } = useForm({ mode: 'onBlur' });
 
   const [isMounted, setIsMounted] = useState(false);
   const [isValidUserName, setIsValidUserName] = useState(true);
 
-  const { mutate } = useCheckUsernameSWR<any, any>();
-
   useEffect(() => setIsMounted(true), []);
 
   const validateUsername: Validate = async(value) => {
-    const { data } = await mutate(value);
-    console.log('mutate data', data);
-    return false;
+    const { data } = await apiv3Get('/users/exists', { username: value });
+    const isExists = data.exists;
+    return !isExists;
   };
 
   const submitHandler: SubmitHandler<FormValues> = (data) => {
