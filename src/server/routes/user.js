@@ -68,19 +68,20 @@ module.exports = function(crowi, app) {
   };
 
   api.checkUsername = function(req, res) {
-    const username = req.query.username;
+    throw new Error('DEPRECATED: Use /_api/v3/users/exists');
+    // const username = req.query.username;
 
-    User.findUserByUsername(username)
-      .then((userData) => {
-        if (userData) {
-          return res.json({ valid: false });
-        }
+    // User.findUserByUsername(username)
+    //   .then((userData) => {
+    //     if (userData) {
+    //       return res.json({ valid: false });
+    //     }
 
-        return res.json({ valid: true });
-      })
-      .catch((err) => {
-        return res.json({ valid: true });
-      });
+    //     return res.json({ valid: true });
+    //   })
+    //   .catch((err) => {
+    //     return res.json({ valid: true });
+    //   });
   };
 
   /**

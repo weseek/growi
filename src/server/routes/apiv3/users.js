@@ -109,6 +109,10 @@ module.exports = (crowi) => {
     query('limit').if(value => value != null).isInt({ max: 300 }).withMessage('You should set less than 300 or not to set limit.'),
   ];
 
+  validator.exists = [
+    query('username').isString().not().isEmpty(),
+  ];
+
   /**
    * @swagger
    *
@@ -280,6 +284,19 @@ module.exports = (crowi) => {
       return array;
     }),
   ];
+
+  router.get('/exists', validator.exists, apiV3FormValidator, async(req, res) => {
+    const { username } = req.params;
+
+    try {
+      const user = await User.findUserByUsername(username);
+      return res.apiv3({ exists: user != null });
+    }
+    catch (err) {
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(err));
+    }
+  });
 
   /**
    * @swagger
