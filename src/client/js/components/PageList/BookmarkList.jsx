@@ -73,6 +73,7 @@ const BookmarkList = (props) => {
             totalItemsCount={totalItemsCount}
             pagingLimit={pagingLimit}
             align="center"
+            size="sm"
           />
         </>
       )}
