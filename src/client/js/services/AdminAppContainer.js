@@ -110,7 +110,7 @@ export default class AdminAppContainer extends Container {
     });
 
     // if isFileUploadEnvPrioritized is true, get fileUploadType from only env var and make the forms fixed.
-    // and if env var 'FILE_UPLOAD' is not set, envFileUploadType is 'aws' that is default value of 'FILE_UPLOAD'.
+    // and if env var 'FILE_UPLOAD' is null, envFileUploadType is 'aws' that is default value of 'FILE_UPLOAD'.
     if (appSettingsParams.isFileUploadEnvPrioritized) {
       this.setState({ fileUploadType: appSettingsParams.envFileUploadType });
       this.setState({ isFixedFileUploadByEnvVar: true });
