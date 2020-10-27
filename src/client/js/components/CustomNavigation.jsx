@@ -11,7 +11,6 @@ const CustomNavigation = (props) => {
   const [sliderMarginLeft, setSliderMarginLeft] = useState(0);
   const nav = useRef();
   const tabs = {};
-  const hr = useRef();
 
   Object.keys(props.navTabMapping).forEach((key) => {
     tabs[key] = React.createRef();
@@ -49,7 +48,6 @@ const CustomNavigation = (props) => {
     // console.log(`ref.current = ${nav.current}`);
     console.log('nav', nav);
     console.log('nav.current.offsetWidth', nav.current.offsetWidth);
-    console.log('hr.current.offsetWidth', hr.current.offsetWidth);
 
     if (activeTab === '') {
       return;
@@ -101,7 +99,7 @@ const CustomNavigation = (props) => {
           })}
         </Nav>
         {/* {renderNavSlideHr()} */}
-        <hr ref={hr} className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
+        <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
         {/* <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} /> */}
         <TabContent activeTab={activeTab} className="p-4">
           {Object.entries(props.navTabMapping).map(([key, value]) => {
