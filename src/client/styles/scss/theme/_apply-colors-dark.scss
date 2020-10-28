@@ -369,6 +369,6 @@ body.on-edit {
  */
 .growi .main {
   .page-comments-row {
-    background: $gray-900;
+    background: darken($gray-900, 5%);
   }
 }
