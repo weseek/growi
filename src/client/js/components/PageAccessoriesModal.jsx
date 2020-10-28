@@ -73,6 +73,8 @@ const PageAccessoriesModal = (props) => {
           <CustomNav activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={switchActiveTab} />
         </ModalHeader>
         <ModalBody className="overflow-auto grw-modal-body-style p-0">
+          {/* Do not use CustomTabContent because of performance problem:
+              the 'navTabMapping[tabId].Content' for PageAccessoriesModal depends on activeComponents */}
           <TabContent activeTab={activeTab} className="p-5">
             <TabPane tabId="pagelist">
               {activeComponents.has('pagelist') && <PageList />}
