@@ -93,28 +93,41 @@ CustomNav.propTypes = {
   onNavSelected: PropTypes.func,
 };
 
+
+const CustomTabContent = (props) => {
+
+  const { activeTab, navTabMapping } = props;
+
+  return (
+    <TabContent activeTab={activeTab} className="p-4">
+      {Object.entries(navTabMapping).map(([key, value]) => {
+        return (
+          <TabPane key={key} tabId={key}>
+            {value.tabContent}
+          </TabPane>
+        );
+      })}
+    </TabContent>
+  );
+
+};
+
+CustomTabContent.propTypes = {
+  activeTab: PropTypes.string.isRequired,
+  navTabMapping: PropTypes.object.isRequired,
+};
+
+
 const CustomNavigation = (props) => {
   const { navTabMapping } = props;
   const [activeTab, setActiveTab] = useState(Object.keys(props.navTabMapping)[0]);
 
-  function switchActiveTab(activeTab) {
-    setActiveTab(activeTab);
-  }
-
   return (
     <React.Fragment>
 
-      <CustomNav activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={switchActiveTab} />
+      <CustomNav activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={setActiveTab} />
+      <CustomTabContent activeTab={activeTab} navTabMapping={navTabMapping} />
 
-      <TabContent activeTab={activeTab} className="p-4">
-        {Object.entries(props.navTabMapping).map(([key, value]) => {
-          return (
-            <TabPane key={key} tabId={key}>
-              {value.tabContent}
-            </TabPane>
-          );
-        })}
-      </TabContent>
     </React.Fragment>
   );
 };
