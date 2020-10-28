@@ -188,7 +188,7 @@ module.exports = (crowi) => {
       body('gcsUploadNamespace').trim(),
     ],
     fileUploadType: [
-      body('fileUploadType').isIn(['aws', 'gcp', 'local', 'gridfs']),
+      body('fileUploadType').isIn(['aws', 'gcs', 'local', 'gridfs']),
     ],
     pluginSetting: [
       body('isEnabledPlugins').isBoolean(),
