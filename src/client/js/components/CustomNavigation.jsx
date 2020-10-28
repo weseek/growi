@@ -1,32 +1,36 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, {
+  useEffect, useState, useRef, useMemo, useCallback,
+} from 'react';
 import PropTypes from 'prop-types';
 import {
   Nav, NavItem, NavLink, TabContent, TabPane,
 } from 'reactstrap';
 
 
-const CustomNav = (props) => {
+export const CustomNav = (props) => {
   const navContainer = useRef();
   const [sliderWidth, setSliderWidth] = useState(0);
   const [sliderMarginLeft, setSliderMarginLeft] = useState(0);
 
-  const { activeTab, navTabMapping } = props;
+  const { activeTab, navTabMapping, onNavSelected } = props;
 
-  const navTabs = {};
+  const navTabRefs = useMemo(() => {
+    const obj = {};
+    Object.keys(navTabMapping).forEach((key) => {
+      obj[key] = React.createRef();
+    });
+    return obj;
+  }, [navTabMapping]);
 
-  Object.keys(props.navTabMapping).forEach((key) => {
-    navTabs[key] = React.createRef();
-  });
-
-  function navSelectedHandler(key) {
-    if (props.onNavSelected != null) {
-      props.onNavSelected(key);
+  const navLinkClickHandler = useCallback((key) => {
+    if (onNavSelected != null) {
+      onNavSelected(key);
     }
-  }
+  }, [onNavSelected]);
 
   function registerNavLink(key, elm) {
     if (elm != null) {
-      navTabs[key] = elm;
+      navTabRefs[key] = elm;
     }
   }
 
@@ -35,19 +39,18 @@ const CustomNav = (props) => {
     return min / max * 100;
   }
 
-
   useEffect(() => {
     if (activeTab === '') {
       return;
     }
 
-    if (navContainer == null || navTabs == null) {
+    if (navContainer == null) {
       return;
     }
 
     let tempML = 0;
 
-    const styles = Object.entries(navTabs).map((el) => {
+    const styles = Object.entries(navTabRefs).map((el) => {
       const width = getPercentage(el[1].offsetWidth, navContainer.current.offsetWidth);
       const marginLeft = tempML;
       tempML += width;
@@ -58,21 +61,24 @@ const CustomNav = (props) => {
     setSliderWidth(width);
     setSliderMarginLeft(marginLeft);
 
-  }, [activeTab, navTabs, navTabMapping]);
+  }, [activeTab, navTabRefs, navTabMapping]);
 
   return (
     <>
       <div ref={navContainer}>
         <Nav className="nav-title grw-custom-navbar" id="grw-custom-navbar">
           {Object.entries(navTabMapping).map(([key, value]) => {
+
+            const isActive = activeTab === key;
+            const isLinkEnabled = value.isLinkEnabled != null ? value.isLinkEnabled(value) : true;
+
             return (
               <NavItem
-
                 key={key}
                 type="button"
-                className={`p-0 grw-custom-navtab ${activeTab === key && 'active'}}`}
+                className={`p-0 grw-custom-navtab ${isActive && 'active'}}`}
               >
-                <NavLink key={key} innerRef={elm => registerNavLink(key, elm)} onClick={() => { navSelectedHandler(key) }}>
+                <NavLink key={key} innerRef={elm => registerNavLink(key, elm)} disabled={!isLinkEnabled} onClick={() => navLinkClickHandler(key)}>
                   {value.icon}
                   {value.i18n}
                 </NavLink>
@@ -94,7 +100,7 @@ CustomNav.propTypes = {
 };
 
 
-const CustomTabContent = (props) => {
+export const CustomTabContent = (props) => {
 
   const { activeTab, navTabMapping, additionalClassNames } = props;
 
