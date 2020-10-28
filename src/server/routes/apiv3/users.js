@@ -152,7 +152,7 @@ module.exports = (crowi) => {
    *                      $ref: '#/components/schemas/PaginateResult'
    */
 
-  router.get('/', validator.statusList, apiV3FormValidator, async(req, res) => {
+  router.get('/', loginRequiredStrictly, validator.statusList, apiV3FormValidator, async(req, res) => {
 
     const page = parseInt(req.query.page) || 1;
     // status
