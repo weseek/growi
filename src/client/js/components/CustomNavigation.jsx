@@ -45,7 +45,7 @@ const CustomNavigation = (props) => {
     setSliderWidth(width);
     setSliderMarginLeft(marginLeft);
 
-  }, [activeTab]);
+  }, [activeTab, props]);
 
 
   return (
