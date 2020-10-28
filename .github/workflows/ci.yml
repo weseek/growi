@@ -266,7 +266,7 @@ jobs:
       run: |
         yarn server:prod:ci
       env:
-        MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_test
+        MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi-${{ matrix.node-version }}
 
     - name: Upload report as artifact
       uses: actions/upload-artifact@v2
