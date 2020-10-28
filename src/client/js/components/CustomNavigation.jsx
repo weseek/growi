@@ -36,18 +36,8 @@ const CustomNavigation = (props) => {
 
   useEffect(() => {
 
-    // const navBar = document.getElementById('grw-custom-navbar');
-    // const navTabs = document.querySelectorAll('ul.grw-custom-navbar > li.grw-custom-navtab');
     const navBar = nav;
     const navTabs = tabs;
-
-    console.log(`useEffecet ${activeTab}`);
-    console.log('reffff', tabs[activeTab].offsetWidth);
-    // console.log('tabs[activeTab].current.props.children', tabs[activeTab].current.props.children[1]);
-    // console.log('tabs[activeTab].current', tabs[activeTab].current);
-    // console.log(`ref.current = ${nav.current}`);
-    console.log('nav', nav);
-    console.log('nav.current.offsetWidth', nav.current.offsetWidth);
 
     if (activeTab === '') {
       return;
@@ -62,13 +52,6 @@ const CustomNavigation = (props) => {
 
 
     let tempML = 0;
-
-    // const styles = [].map.call(navTabs, (el) => {
-    //   const width = getPercentage(el.current.offsetWidth, navBar.current.offsetWidth);
-    //   const marginLeft = tempML;
-    //   tempML += width;
-    //   return { width, marginLeft };
-    // });
 
     const styles = Object.entries(navTabs).map((el) => {
       console.log('el[1]', el[1].offsetWidth);
@@ -92,7 +75,6 @@ const CustomNavigation = (props) => {
       <div ref={nav}>
         <Nav className="nav-title grw-custom-navbar" id="grw-custom-navbar">
           {Object.entries(props.navTabMapping).map(([key, value]) => {
-            // console.log(`key = ${key}, value = ${value.index}`);
             return (
               <NavItem
 
@@ -108,9 +90,7 @@ const CustomNavigation = (props) => {
             );
           })}
         </Nav>
-        {/* {renderNavSlideHr()} */}
         <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
-        {/* <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} /> */}
         <TabContent activeTab={activeTab} className="p-4">
           {Object.entries(props.navTabMapping).map(([key, value]) => {
             return (
