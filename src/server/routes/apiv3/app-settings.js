@@ -698,9 +698,9 @@ module.exports = (crowi) => {
       crowi.fileUploaderSwitchService.publishUpdatedMessage();
 
       const responseParams = {
-        fileUploadType: crowi.configManager.getConfig('crowi', 'gcs:fileUploadType'),
+        fileUploadType: crowi.configManager.getConfig('crowi', 'app:fileUploadType'),
       };
-      return res.apiv3({ responseParams });
+      return res.apiv3(responseParams);
     }
     catch (err) {
       const msg = 'Error occurred in updating fileUploadType';

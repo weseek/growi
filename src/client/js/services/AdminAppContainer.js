@@ -395,8 +395,8 @@ export default class AdminAppContainer extends Container {
     const response = await this.appContainer.apiv3.put('/app-settings/file-upload-type', {
       fileUploadType: this.state.fileUploadType,
     });
-    const { awsSettingParams } = response.data;
-    return awsSettingParams;
+    const { fileUploadType } = response.data;
+    return this.setState({ fileUploadType });
   }
 
   /**
