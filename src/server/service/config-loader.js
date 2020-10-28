@@ -23,12 +23,12 @@ const TYPES = {
  *  So, parameters of these are under consideration.
  */
 const ENV_VAR_NAME_TO_CONFIG_INFO = {
-  // FILE_UPLOAD: {
-  //   ns:      ,
-  //   key:     ,
-  //   type:    ,
-  //   default:
-  // },
+  FILE_UPLOAD: {
+    ns:      'crowi',
+    key:     'app:fileUploadType',
+    type:    TYPES.STRING,
+    default: 'aws',
+  },
   // HACKMD_URI: {
   //   ns:      ,
   //   key:     ,
@@ -343,6 +343,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     key:     'gcs:uploadNamespace',
     type:    TYPES.STRING,
     default: null,
+  },
+  IS_GCS_ENV_PRIORITIZED: {
+    ns:      'crowi',
+    key:     'gcs:isGcsEnvPrioritizes',
+    type:    TYPES.BOOLEAN,
+    default: false,
   },
 };
 

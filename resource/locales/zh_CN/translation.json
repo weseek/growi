@@ -1,6 +1,5 @@
 {
-  "Help": "帮助",
-  "view": "View",
+	"Help": "帮助",
 	"Edit": "编辑",
 	"Delete": "删除",
 	"delete_all": "删除所有",
@@ -420,7 +419,6 @@
 		"open_sandbox": "开放式沙箱"
 	},
 	"hackmd": {
-    "hack_md": "HackMD",
     "not_set_up": "HackMD is not set up.",
     "used_for_not_found": "Can not use HackMD to a page that does not exist.",
 		"start_to_edit": "Start to edit with HackMD",
@@ -528,7 +526,7 @@
 		"missing mandatory configs": "The following mandatory items are not set in either database nor environment variables.",
 		"Local": {
 			"name": "ID/Password",
-			"note for the only env option": "The LOCAL authentication is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}/code> .",
+			"note for the only env option": "The LOCAL authentication is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> .",
 			"enable_local": "Enable ID/Password"
 		},
 		"ldap": {

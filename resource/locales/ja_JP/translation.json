@@ -1,6 +1,5 @@
 {
   "Help": "ヘルプ",
-  "view": "View",
   "Edit": "編集",
   "Delete": "削除",
   "delete_all": "全て削除",
@@ -446,7 +445,6 @@
     "open_sandbox": "Sandbox を開く"
   },
   "hackmd":{
-    "hack_md": "HackMD",
     "not_set_up": "HackMD はセットアップされていません",
     "used_for_not_found": "HackMD は新しいページの作成には利用できません",
     "start_to_edit": "HackMD を開始する",
