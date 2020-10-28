@@ -265,7 +265,7 @@ jobs:
     - name: Get DB name
       id: getdbname
       run: |
-        echo ::set-output name=suffix::$(echo '12.x' | sed s/\\.//)
+        echo ::set-output name=suffix::$(echo '${{ matrix.node-version }}' | sed s/\\.//)
     - name: yarn server:prod:ci
       run: |
         yarn server:prod:ci
