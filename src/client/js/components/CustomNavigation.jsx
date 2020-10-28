@@ -16,8 +16,6 @@ const CustomNavigation = (props) => {
     tabs[key] = React.createRef();
   });
 
-  console.log(`customNavigation ${activeTab}`);
-
 
   function switchActiveTab(activeTab) {
     setActiveTab(activeTab);
@@ -45,7 +43,6 @@ const CustomNavigation = (props) => {
 
 
     if (navBar == null || navTabs == null) {
-      console.log(`${navBar},${navTabs}`);
       setSliderWidth(5);
       return;
     }
@@ -54,7 +51,6 @@ const CustomNavigation = (props) => {
     let tempML = 0;
 
     const styles = Object.entries(navTabs).map((el) => {
-      console.log('el[1]', el[1].offsetWidth);
       const width = getPercentage(el[1].offsetWidth, navBar.current.offsetWidth);
       const marginLeft = tempML;
       tempML += width;
@@ -66,7 +62,6 @@ const CustomNavigation = (props) => {
 
     setSliderWidth(width);
     setSliderMarginLeft(marginLeft);
-    console.log(`sliderWidth = ${sliderWidth}`);
 
   }, [activeTab]);
 
