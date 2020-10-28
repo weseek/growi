@@ -343,6 +343,12 @@ body.on-edit {
   }
 }
 
+.growi .main {
+  .page-comments-row {
+    background: $bgcolor-subnav;
+  }
+}
+
 /*
  * GROWI tags
  */
@@ -361,14 +367,5 @@ body.on-edit {
     svg {
       fill: $color-global;
     }
-  }
-}
-
-/*
- * GROWI comment form
- */
-.growi .main {
-  .page-comments-row {
-    background: darken($gray-900, 5%);
   }
 }

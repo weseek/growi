@@ -273,6 +273,12 @@ $table-hover-bg: $bgcolor-table-hover;
   }
 }
 
+.growi .main {
+  .page-comments-row {
+    background: $bgcolor-subnav;
+  }
+}
+
 /*
  * GROWI tags
  */
@@ -291,14 +297,5 @@ $table-hover-bg: $bgcolor-table-hover;
     svg {
       fill: $color-global;
     }
-  }
-}
-
-/*
- * GROWI comment form
- */
-.growi .main {
-  .page-comments-row {
-    background: lighten($gray-100, 3%);
   }
 }
