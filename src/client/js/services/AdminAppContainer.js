@@ -37,6 +37,7 @@ export default class AdminAppContainer extends Container {
 
       fileUploadType: '',
       envFileUploadType: '',
+      isFixedFileUploadByEnvVar: false,
 
       gcsApiKeyJsonPath: '',
       envGcsApiKeyJsonPath: '',
@@ -105,6 +106,19 @@ export default class AdminAppContainer extends Container {
       isEnabledPlugins: appSettingsParams.isEnabledPlugins,
     });
 
+    // check is file upload type forced
+    if (this.isFixedFileUploadByEnvVar(appSettingsParams.envFileUploadType)) {
+      this.setState({ fileUploadType: appSettingsParams.envFileUploadType });
+      this.setState({ isFixedFileUploadByEnvVar: true });
+    }
+  }
+
+  /**
+   * get isFixedFileUploadByEnvVar
+   * @return {bool} isFixedFileUploadByEnvVar
+   */
+  isFixedFileUploadByEnvVar(envFileUploadType) {
+    return envFileUploadType != null;
   }
 
   /**
