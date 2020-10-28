@@ -36,10 +36,10 @@ const CustomNavigation = (props) => {
 
   useEffect(() => {
 
-    const navBar = document.getElementById('grw-custom-navbar');
-    const navTabs = document.querySelectorAll('ul.grw-custom-navbar > li.grw-custom-navtab');
-    // const navBar = nav;
-    // const navTabs = tabs;
+    // const navBar = document.getElementById('grw-custom-navbar');
+    // const navTabs = document.querySelectorAll('ul.grw-custom-navbar > li.grw-custom-navtab');
+    const navBar = nav;
+    const navTabs = tabs;
 
     console.log(`useEffecet ${activeTab}`);
     console.log('reffff', tabs[activeTab].offsetWidth);
@@ -63,12 +63,22 @@ const CustomNavigation = (props) => {
 
     let tempML = 0;
 
-    const styles = [].map.call(navTabs, (el) => {
-      const width = getPercentage(el.offsetWidth, navBar.offsetWidth);
+    // const styles = [].map.call(navTabs, (el) => {
+    //   const width = getPercentage(el.current.offsetWidth, navBar.current.offsetWidth);
+    //   const marginLeft = tempML;
+    //   tempML += width;
+    //   return { width, marginLeft };
+    // });
+
+    const styles = Object.entries(navTabs).map((el) => {
+      console.log('el[1]', el[1].offsetWidth);
+      const width = getPercentage(el[1].offsetWidth, navBar.current.offsetWidth);
       const marginLeft = tempML;
       tempML += width;
       return { width, marginLeft };
     });
+
+
     const { width, marginLeft } = styles[props.navTabMapping[activeTab].index];
 
     setSliderWidth(width);
