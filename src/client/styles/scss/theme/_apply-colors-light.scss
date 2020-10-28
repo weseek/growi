@@ -299,6 +299,6 @@ $table-hover-bg: $bgcolor-table-hover;
  */
 .growi .main {
   .page-comments-row {
-    background: $gray-100;
+    background: lighten($gray-100, 3%);
   }
 }
