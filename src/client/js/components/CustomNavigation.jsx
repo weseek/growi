@@ -54,7 +54,7 @@ const CustomNavigation = (props) => {
     setSliderWidth(width);
     setSliderMarginLeft(marginLeft);
 
-  }, [activeTab, navTabMapping]);
+  }, [activeTab, navTabs, navTabMapping]);
 
   return (
     <React.Fragment>
