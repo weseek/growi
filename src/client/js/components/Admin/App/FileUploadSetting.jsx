@@ -42,7 +42,7 @@ function FileUploadSetting(props) {
         </span>
       </p>
 
-      <div className="row form-group mb-5">
+      <div className="row form-group mb-3">
         <label className="text-left text-md-right col-md-3 col-form-label">
           {t('admin:app_setting.file_upload_method')}
         </label>

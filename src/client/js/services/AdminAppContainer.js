@@ -342,21 +342,6 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
-   * Update file upload setting
-   * @memberOf AdminAppContainer
-   */
-  updateFileUploadSettingHandler() {
-    if (this.state.fileUploadType === 'aws') {
-      return this.updateAwsSettingHandler();
-    }
-    if (this.state.fileUploadType === 'gcp') {
-      return this.updateGcpSettingHandler();
-    }
-    // only update fileUploadType
-    return this.updateFileUploadTypeHandler();
-  }
-
-  /**
    * Update AWS setting
    * @memberOf AdminAppContainer
    * @return {Array} Appearance
