@@ -262,12 +262,15 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --production --depth=0
+    - name: Get DB name
+      id: getdbname
+      run: |
+        echo ::set-output name=suffix::$(echo '12.x' | sed s/\\.//)
     - name: yarn server:prod:ci
       run: |
         yarn server:prod:ci
       env:
-        MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi-${{ matrix.node-version }}
-
+        MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi-${{ steps.getdbname.outputs.suffix }}
     - name: Upload report as artifact
       uses: actions/upload-artifact@v2
       with:
