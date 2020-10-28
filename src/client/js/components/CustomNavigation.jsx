@@ -41,11 +41,9 @@ const CustomNavigation = (props) => {
       return;
     }
 
-
     if (navBar == null || navTabs == null) {
       return;
     }
-
 
     let tempML = 0;
 
