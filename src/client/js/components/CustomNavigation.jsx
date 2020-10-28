@@ -53,8 +53,6 @@ const CustomNavigation = (props) => {
       tempML += width;
       return { width, marginLeft };
     });
-
-
     const { width, marginLeft } = styles[props.navTabMapping[activeTab].index];
 
     setSliderWidth(width);
