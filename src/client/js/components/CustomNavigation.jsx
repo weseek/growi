@@ -71,6 +71,7 @@ export const CustomNav = (props) => {
 
             const isActive = activeTab === key;
             const isLinkEnabled = value.isLinkEnabled != null ? value.isLinkEnabled(value) : true;
+            const { Icon, i18n } = value;
 
             return (
               <NavItem
@@ -79,8 +80,7 @@ export const CustomNav = (props) => {
                 className={`p-0 grw-custom-navtab ${isActive && 'active'}}`}
               >
                 <NavLink key={key} innerRef={elm => registerNavLink(key, elm)} disabled={!isLinkEnabled} onClick={() => navLinkClickHandler(key)}>
-                  {value.icon}
-                  {value.i18n}
+                  <Icon /> {i18n}
                 </NavLink>
               </NavItem>
             );
@@ -107,9 +107,12 @@ export const CustomTabContent = (props) => {
   return (
     <TabContent activeTab={activeTab} className={additionalClassNames.join(' ')}>
       {Object.entries(navTabMapping).map(([key, value]) => {
+
+        const { Content } = value;
+
         return (
           <TabPane key={key} tabId={key}>
-            {value.tabContent}
+            <Content />
           </TabPane>
         );
       })}
