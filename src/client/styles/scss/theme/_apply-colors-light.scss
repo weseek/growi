@@ -206,6 +206,9 @@ $table-hover-bg: $bgcolor-table-hover;
   }
 }
 
+/*
+ * Slack
+ */
 .grw-slack-notification {
   background-color: white;
   $color-slack: #4b144c;
@@ -228,23 +231,22 @@ $table-hover-bg: $bgcolor-table-hover;
       background-image: url(/images/icons/slack/slack-logo-on.svg);
     }
   }
-}
-
-.grw-slack-logo svg {
-  fill: #af30b0;
-}
-
-.grw-btn-slack {
-  background-color: white;
-
-  &:hover,
-  &:focus {
-    background-color: white;
+  .grw-slack-logo svg {
+    fill: #af30b0;
   }
-}
 
-.grw-btn-slack-triangle {
-  color: $secondary;
+  .grw-btn-slack {
+    background-color: white;
+
+    &:hover,
+    &:focus {
+      background-color: white;
+    }
+  }
+
+  .grw-btn-slack-triangle {
+    color: $secondary;
+  }
 }
 
 /*
