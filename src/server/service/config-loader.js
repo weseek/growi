@@ -29,9 +29,9 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: 'aws',
   },
-  FILE_UPLOAD_PRIORITIZE_ENV_VAR: {
+  FILE_UPLOAD_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: {
     ns:      'crowi',
-    key:     'app:isFileUploadEnvPrioritized',
+    key:     'app:useOnlyEnvVarsForFileUploadType',
     type:    TYPES.BOOLEAN,
     default: false,
   },
@@ -350,9 +350,9 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
-  GCS_PRIORITIZES_ENV_VARS_FOR_SOME_OPTIONS: {
+  GCS_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: {
     ns:      'crowi',
-    key:     'gcs:isPrioritizesEnvVarsForSomeOptions',
+    key:     'gcs:useOnlyEnvVarsForSomeOptions',
     type:    TYPES.BOOLEAN,
     default: false,
   },

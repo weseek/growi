@@ -226,14 +226,14 @@ module.exports = (crowi) => {
 
       fileUploadType: crowi.configManager.getConfig('crowi', 'app:fileUploadType'),
       envFileUploadType: crowi.configManager.getConfigFromEnvVars('crowi', 'app:fileUploadType'),
-      isFileUploadEnvPrioritized: crowi.configManager.getConfigFromEnvVars('crowi', 'app:isFileUploadEnvPrioritized'),
+      useOnlyEnvVarsForFileUploadType: crowi.configManager.getConfigFromEnvVars('crowi', 'app:useOnlyEnvVarsForFileUploadType'),
 
       s3Region: crowi.configManager.getConfig('crowi', 'aws:s3Region'),
       s3CustomEndpoint: crowi.configManager.getConfig('crowi', 'aws:s3CustomEndpoint'),
       s3Bucket: crowi.configManager.getConfig('crowi', 'aws:s3Bucket'),
       s3AccessKeyId: crowi.configManager.getConfig('crowi', 'aws:s3AccessKeyId'),
       s3SecretAccessKey: crowi.configManager.getConfig('crowi', 'aws:s3SecretAccessKey'),
-      gcsUseOnlyEnvVars: crowi.configManager.getConfig('crowi', 'gcs:isPrioritizesEnvVarsForSomeOptions'),
+      gcsUseOnlyEnvVars: crowi.configManager.getConfig('crowi', 'gcs:useOnlyEnvVarsForSomeOptions'),
       gcsApiKeyJsonPath: crowi.configManager.getConfig('crowi', 'gcs:apiKeyJsonPath'),
       gcsBucket: crowi.configManager.getConfig('crowi', 'gcs:bucket'),
       gcsUploadNamespace: crowi.configManager.getConfig('crowi', 'gcs:uploadNamespace'),
