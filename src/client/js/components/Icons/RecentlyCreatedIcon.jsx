@@ -6,6 +6,7 @@ const RecentlyCreatedIcon = () => (
     width="20"
     height="20"
     viewBox="0 0 20 20"
+    fill="gray"
   >
 
     <g transform="translate(-921.906 192.966)">
@@ -14,6 +15,7 @@ const RecentlyCreatedIcon = () => (
         width="20"
         height="20"
         transform="translate(921.906 -192.966)"
+        color="white"
         fill="none"
       />
       <path
