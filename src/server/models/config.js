@@ -86,11 +86,11 @@ module.exports = function(crowi) {
       'security:passport-basic:isEnabled' : false,
       'security:passport-basic:isSameUsernameTreatedAsIdenticalUser': false,
 
-      'aws:bucket'          : 'growi',
-      'aws:region'          : 'ap-northeast-1',
-      'aws:accessKeyId'     : undefined,
-      'aws:secretAccessKey' : undefined,
-      'aws:customEndpoint'  : undefined,
+      'aws:s3Bucket'          : 'growi',
+      'aws:s3Region'          : 'ap-northeast-1',
+      'aws:s3AccessKeyId'     : undefined,
+      'aws:s3SecretAccessKey' : undefined,
+      'aws:s3CustomEndpoint'  : undefined,
 
       'mail:from'         : undefined,
       'mail:smtpHost'     : undefined,

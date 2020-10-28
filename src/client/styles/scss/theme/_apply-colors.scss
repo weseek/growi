@@ -449,6 +449,17 @@ body.on-edit {
 }
 
 /*
+ * GROWI comment
+ */
+.page-comment-meta .page-comment-revision svg {
+  fill: $color-link;
+
+  &:hover() {
+    fill: $color-link-hover;
+  }
+}
+
+/*
  * GROWI comment form
  */
 .growi .main {

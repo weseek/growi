@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
+import { UncontrolledTooltip } from 'reactstrap';
 import PageAccessoriesContainer from '../services/PageAccessoriesContainer';
 
 import PageListIcon from './Icons/PageListIcon';
 import TimeLineIcon from './Icons/TimeLineIcon';
-import RecentChangesIcon from './Icons/RecentChangesIcon';
+import HistoryIcon from './Icons/HistoryIcon';
 import AttachmentIcon from './Icons/AttachmentIcon';
 import ShareLinkIcon from './Icons/ShareLinkIcon';
 
@@ -16,16 +17,15 @@ import PageAccessoriesModal from './PageAccessoriesModal';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 const TopOfTableContents = (props) => {
-  const { pageAccessoriesContainer } = props;
+  const { t, pageAccessoriesContainer, isGuestUserMode } = props;
 
   function renderModal() {
     return (
-      <>
-        <PageAccessoriesModal
-          isOpen={pageAccessoriesContainer.state.isPageAccessoriesModalShown}
-          onClose={pageAccessoriesContainer.closePageAccessoriesModal}
-        />
-      </>
+      <PageAccessoriesModal
+        isGuestUserMode={isGuestUserMode}
+        isOpen={pageAccessoriesContainer.state.isPageAccessoriesModalShown}
+        onClose={pageAccessoriesContainer.closePageAccessoriesModal}
+      />
     );
   }
 
@@ -53,7 +53,7 @@ const TopOfTableContents = (props) => {
           className="btn btn-link grw-btn-top-of-table"
           onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('pageHistory')}
         >
-          <RecentChangesIcon />
+          <HistoryIcon />
         </button>
 
         <button
@@ -64,14 +64,20 @@ const TopOfTableContents = (props) => {
           <AttachmentIcon />
         </button>
 
-        <button
-          type="button"
-          className="btn btn-link grw-btn-top-of-table"
-          onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('shareLink')}
-        >
-          <ShareLinkIcon />
-        </button>
-
+        <div id="shareLink-btn-wrapper-for-tooltip">
+          <button
+            type="button"
+            className={`btn btn-link grw-btn-top-of-table ${isGuestUserMode && 'disabled'}`}
+            onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('shareLink')}
+          >
+            <ShareLinkIcon />
+          </button>
+        </div>
+        {isGuestUserMode && (
+          <UncontrolledTooltip placement="top" target="shareLink-btn-wrapper-for-tooltip" fade={false}>
+            {t('Not available for guest')}
+          </UncontrolledTooltip>
+        )}
         <div
           id="seen-user-list"
           data-user-ids-str="{{ page.seenUsers|slice(-15)|default([])|reverse|join(',') }}"
@@ -90,7 +96,11 @@ const TopOfTableContents = (props) => {
 const TopOfTableContentsWrapper = withUnstatedContainers(TopOfTableContents, [PageAccessoriesContainer]);
 
 TopOfTableContents.propTypes = {
+  t: PropTypes.func.isRequired, //  i18next
+
   pageAccessoriesContainer: PropTypes.instanceOf(PageAccessoriesContainer).isRequired,
+
+  isGuestUserMode: PropTypes.bool.isRequired,
 };
 
 export default withTranslation()(TopOfTableContentsWrapper);

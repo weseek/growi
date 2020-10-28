@@ -44,6 +44,12 @@ textarea.form-control {
   // border: 1px solid darken($border, 30%);
 }
 
+.grw-slack-notification {
+  .form-control {
+    background: $bgcolor-global;
+  }
+}
+
 .form-control[disabled],
 .form-control[readonly] {
   color: lighten($color-global, 10%);
