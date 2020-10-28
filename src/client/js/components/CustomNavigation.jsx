@@ -43,7 +43,6 @@ const CustomNavigation = (props) => {
 
 
     if (navBar == null || navTabs == null) {
-      setSliderWidth(5);
       return;
     }
 
