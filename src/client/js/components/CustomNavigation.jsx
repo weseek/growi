@@ -96,10 +96,10 @@ CustomNav.propTypes = {
 
 const CustomTabContent = (props) => {
 
-  const { activeTab, navTabMapping } = props;
+  const { activeTab, navTabMapping, additionalClassNames } = props;
 
   return (
-    <TabContent activeTab={activeTab} className="p-4">
+    <TabContent activeTab={activeTab} className={additionalClassNames.join(' ')}>
       {Object.entries(navTabMapping).map(([key, value]) => {
         return (
           <TabPane key={key} tabId={key}>
@@ -115,25 +115,34 @@ const CustomTabContent = (props) => {
 CustomTabContent.propTypes = {
   activeTab: PropTypes.string.isRequired,
   navTabMapping: PropTypes.object.isRequired,
+  additionalClassNames: PropTypes.arrayOf(PropTypes.string),
+};
+CustomTabContent.defaultProps = {
+  additionalClassNames: [],
 };
 
 
 const CustomNavigation = (props) => {
-  const { navTabMapping } = props;
-  const [activeTab, setActiveTab] = useState(Object.keys(props.navTabMapping)[0]);
+  const { navTabMapping, defaultTabIndex, tabContentClasses } = props;
+  const [activeTab, setActiveTab] = useState(Object.keys(props.navTabMapping)[defaultTabIndex || 0]);
 
   return (
     <React.Fragment>
 
       <CustomNav activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={setActiveTab} />
-      <CustomTabContent activeTab={activeTab} navTabMapping={navTabMapping} />
+      <CustomTabContent activeTab={activeTab} navTabMapping={navTabMapping} additionalClassNames={tabContentClasses} />
 
     </React.Fragment>
   );
 };
 
 CustomNavigation.propTypes = {
-  navTabMapping: PropTypes.object,
+  navTabMapping: PropTypes.object.isRequired,
+  defaultTabIndex: PropTypes.number,
+  tabContentClasses: PropTypes.arrayOf(PropTypes.string),
+};
+CustomNavigation.defaultProps = {
+  tabContentClasses: ['p-4'],
 };
 
 export default CustomNavigation;
