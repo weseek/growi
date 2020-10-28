@@ -11,6 +11,13 @@ body:not(.on-edit) {
 body.on-edit {
   overflow-y: hidden !important;
 
+  .tab-content {
+    height: 1155px;
+  }
+
+  .tab-pane {
+  }
+
   .container {
     max-width: 100%;
   }
