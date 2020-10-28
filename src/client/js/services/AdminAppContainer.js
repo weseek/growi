@@ -39,6 +39,7 @@ export default class AdminAppContainer extends Container {
       envFileUploadType: '',
       isFixedFileUploadByEnvVar: false,
 
+      gcsUseOnlyEnvVars: false,
       gcsApiKeyJsonPath: '',
       envGcsApiKeyJsonPath: '',
       gcsBucket: '',
@@ -91,12 +92,14 @@ export default class AdminAppContainer extends Container {
 
       fileUploadType: appSettingsParams.fileUploadType,
       envFileUploadType: appSettingsParams.envFileUploadType,
+      isFileUploadEnvPrioritized: appSettingsParams.isFileUploadEnvPrioritized,
 
       s3Region: appSettingsParams.s3Region,
       s3CustomEndpoint: appSettingsParams.s3CustomEndpoint,
       s3Bucket: appSettingsParams.s3Bucket,
       s3AccessKeyId: appSettingsParams.s3AccessKeyId,
       s3SecretAccessKey: appSettingsParams.s3SecretAccessKey,
+      gcsUseOnlyEnvVars: appSettingsParams.gcsUseOnlyEnvVars,
       gcsApiKeyJsonPath: appSettingsParams.gcsApiKeyJsonPath,
       gcsBucket: appSettingsParams.gcsBucket,
       gcsUploadNamespace: appSettingsParams.gcsUploadNamespace,
@@ -106,19 +109,12 @@ export default class AdminAppContainer extends Container {
       isEnabledPlugins: appSettingsParams.isEnabledPlugins,
     });
 
-    // check is file upload type forced
-    if (this.isFixedFileUploadByEnvVar(appSettingsParams.envFileUploadType)) {
+    // if isFileUploadEnvPrioritized is true, get fileUploadType from only env var and make the forms fixed.
+    // and if env var 'FILE_UPLOAD' is null, envFileUploadType is 'aws' that is default value of 'FILE_UPLOAD'.
+    if (appSettingsParams.isFileUploadEnvPrioritized) {
       this.setState({ fileUploadType: appSettingsParams.envFileUploadType });
       this.setState({ isFixedFileUploadByEnvVar: true });
     }
-  }
-
-  /**
-   * get isFixedFileUploadByEnvVar
-   * @return {bool} isFixedFileUploadByEnvVar
-   */
-  isFixedFileUploadByEnvVar(envFileUploadType) {
-    return envFileUploadType != null;
   }
 
   /**
@@ -374,12 +370,12 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
-   * Update GCP setting
+   * Update GCS setting
    * @memberOf AdminAppContainer
    * @return {Array} Appearance
    */
-  async updateGcpSettingHandler() {
-    const response = await this.appContainer.apiv3.put('/app-settings/gcp-setting', {
+  async updateGcsSettingHandler() {
+    const response = await this.appContainer.apiv3.put('/app-settings/gcs-setting', {
       fileUploadType: this.state.fileUploadType,
       gcsApiKeyJsonPath: this.state.gcsApiKeyJsonPath,
       gcsBucket: this.state.gcsBucket,

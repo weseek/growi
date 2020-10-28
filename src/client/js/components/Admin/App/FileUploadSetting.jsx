@@ -10,13 +10,13 @@ import AdminAppContainer from '../../../services/AdminAppContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 import AwsSetting from './AwsSetting';
-import GcpSettings from './GcpSettings';
+import GcsSettings from './GcsSettings';
 
 function FileUploadSetting(props) {
 
   const { t, adminAppContainer } = props;
   const { fileUploadType } = adminAppContainer.state;
-  const fileUploadTypes = ['aws', 'gcp', 'local', 'gridfs'];
+  const fileUploadTypes = ['aws', 'gcs', 'local', 'gridfs'];
 
   async function submitFileUploadTypeHandler() {
     const { t } = props;
@@ -78,7 +78,7 @@ function FileUploadSetting(props) {
       <AdminUpdateButtonRow onClick={submitFileUploadTypeHandler} disabled={adminAppContainer.state.retrieveError != null} />
 
       {fileUploadType === 'aws' && <AwsSetting />}
-      {fileUploadType === 'gcp' && <GcpSettings />}
+      {fileUploadType === 'gcs' && <GcsSettings />}
 
 
     </React.Fragment>
