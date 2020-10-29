@@ -15,13 +15,13 @@
 
 {% block content_main %}
   <div
-    class="grw-page-content d-flex"
+    class="d-flex justify-content-between"
     id="is-shared-page"
     data-share-link-expired-at="{% if sharelink.expiredAt %}{{ sharelink.expiredAt|datetz('Y/m/d H:i:s')}}{% endif %}"
     data-share-link-created-at="{{ sharelink.createdAt|datetz('Y/m/d H:i:s')}}"
   >
     {% block content_page %}
-      <div class="grw-page-content-container">
+      <div class="grw-page-content-container w-100">
         <div id="share-link-alert"></div>
 
         {% include '../widget/page_content.html' %}
