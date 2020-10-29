@@ -15,7 +15,7 @@ class PersonalSettings extends React.Component {
 
     return (
       <Fragment>
-        <div className="personal-settings">
+        <div className="personal-settings px-3 mt-3">
           <ul className="nav nav-tabs" role="tablist">
             <li className="nav-item">
               <a className="nav-link active" href="#user-settings" data-toggle="tab" role="tab">
