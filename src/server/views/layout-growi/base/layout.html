@@ -19,7 +19,7 @@
 <div id="grw-fav-sticky-trigger" class="sticky-top"></div>
 {% endblock %}
 
-<div id="main" class="main {% if page %}{{ css.grant(page) }}{% endif %} {% block main_css_class %}{% endblock %}">
+<div id="main" class="{% if page %}{{ css.grant(page) }}{% endif %} {% block main_css_class %}{% endblock %}">
   {% block content_main_before %}
   {% endblock %}
 
