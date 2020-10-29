@@ -191,7 +191,7 @@ const GrowiSubNavigation = (props) => {
             />
             )}
             { isUserPage && (
-              <ul className="authors text-nowrap d-none d-lg-block d-edit-none py-0">
+              <ul className="authors text-nowrap d-none d-lg-block d-edit-none py-0 pl-4 mb-0 ml-3">
                 <li className="pb-1">
                   <AuthorInfo user={creator} date={createdAt} />
                 </li>
@@ -202,7 +202,7 @@ const GrowiSubNavigation = (props) => {
 
         {/* Page Authors */}
         { (!isCompactMode && !isUserPage && !isPageNotFound && !isPageForbidden) && (
-          <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none">
+          <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3">
             <li className="pb-1">
               <AuthorInfo user={creator} date={createdAt} />
             </li>
