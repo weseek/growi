@@ -1,5 +1,6 @@
 {
   "Help": "Help",
+  "view": "View",
   "Edit": "Edit",
   "Delete": "Delete",
   "delete_all": "Delete all",
@@ -442,6 +443,7 @@
     "open_sandbox": "Open Sandbox"
   },
   "hackmd": {
+    "hack_md": "HackMD",
     "not_set_up": "HackMD is not set up.",
     "used_for_not_found": "Can not use HackMD to a page that does not exist.",
     "start_to_edit": "Start to edit with HackMD",

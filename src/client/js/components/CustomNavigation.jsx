@@ -6,6 +6,7 @@ import {
 
 
 const CustomNavigation = (props) => {
+  const { navTabMapping } = props;
   const [activeTab, setActiveTab] = useState(Object.keys(props.navTabMapping)[0]);
   const [sliderWidth, setSliderWidth] = useState(0);
   const [sliderMarginLeft, setSliderMarginLeft] = useState(0);
@@ -48,12 +49,12 @@ const CustomNavigation = (props) => {
       tempML += width;
       return { width, marginLeft };
     });
-    const { width, marginLeft } = styles[props.navTabMapping[activeTab].index];
+    const { width, marginLeft } = styles[navTabMapping[activeTab].index];
 
     setSliderWidth(width);
     setSliderMarginLeft(marginLeft);
 
-  }, [activeTab]);
+  }, [activeTab, navTabMapping]);
 
   return (
     <React.Fragment>
