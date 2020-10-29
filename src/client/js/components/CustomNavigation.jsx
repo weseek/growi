@@ -16,7 +16,6 @@ const CustomNavigation = (props) => {
     navTabs[key] = React.createRef();
   });
 
-
   function switchActiveTab(activeTab) {
     setActiveTab(activeTab);
   }
