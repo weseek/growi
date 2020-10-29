@@ -15,7 +15,7 @@
 
 {% block content_main %}
   <div
-    class="row px-3"
+    class="row"
     id="is-shared-page"
     data-share-link-expired-at="{% if sharelink.expiredAt %}{{ sharelink.expiredAt|datetz('Y/m/d H:i:s')}}{% endif %}"
     data-share-link-created-at="{{ sharelink.createdAt|datetz('Y/m/d H:i:s')}}"
