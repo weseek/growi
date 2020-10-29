@@ -15,7 +15,7 @@
 
 {% block content_main %}
   <div
-    class="grw-page-content"
+    class="grw-page-content d-flex"
     id="is-shared-page"
     data-share-link-expired-at="{% if sharelink.expiredAt %}{{ sharelink.expiredAt|datetz('Y/m/d H:i:s')}}{% endif %}"
     data-share-link-created-at="{{ sharelink.createdAt|datetz('Y/m/d H:i:s')}}"
