@@ -301,7 +301,7 @@
     }
   },
   "page_comment": {
-    "show_the_page_of_the_time": "Show the page of the time"
+    "display_the_page_when_posting_this_comment": "Display the page when posting this comment"
   },
   "page_api_error": {
     "notfound_or_forbidden": "Original page is not found or forbidden.",
