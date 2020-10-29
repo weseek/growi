@@ -128,7 +128,7 @@ const PageManagement = (props) => {
           <i className="icon-fw icon-docs"></i> { t('Duplicate') }
         </button>
         <button className="dropdown-item" type="button" onClick={openPagePresentationModalHandler}>
-          <i className="icon-fw"><PresentationIcon /></i><span className="d-none d-sm-inline"> { t('Presentation Mode') }</span>
+          <i className="icon-fw"><PresentationIcon /></i> { t('Presentation Mode') }
         </button>
         <button type="button" className="dropdown-item" onClick={() => { exportPageHandler('md') }}>
           <i className="icon-fw icon-cloud-download"></i>{t('export_bulk.export_page_markdown')}
