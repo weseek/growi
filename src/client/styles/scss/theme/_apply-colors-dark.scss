@@ -363,7 +363,3 @@ body.on-edit {
     }
   }
 }
-
-.grw-icon-container-recently-created {
-  @include button-svg-icon-variant($value, $value);
-}

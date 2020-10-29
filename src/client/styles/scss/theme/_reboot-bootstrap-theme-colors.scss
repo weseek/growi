@@ -1,5 +1,13 @@
 $theme-colors: map-merge($theme-colors, $colors);
 
+@mixin button-svg-icon-variant($color, $bordercolor) {
+  fill: $secondary;
+}
+
+@mixin button-outline-svg-icon-variant($value, $color-hover: $value) {
+  fill: $secondary;
+}
+
 @each $color, $value in $theme-colors {
   @include bg-variant('.bg-#{$color}', $value);
 }
