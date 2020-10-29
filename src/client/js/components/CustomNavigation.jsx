@@ -33,7 +33,6 @@ const CustomNavigation = (props) => {
   }
 
   useEffect(() => {
-
     if (activeTab === '') {
       return;
     }
