@@ -300,6 +300,9 @@
       "conflict": "Couldn't save the changes you made because someone else was editing this page. Please re-edit the affected section after reloading the page."
     }
   },
+  "page_comment": {
+    "show_the_page_of_the_time": "Show the page of the time"
+  },
   "page_api_error": {
     "notfound_or_forbidden": "Original page is not found or forbidden.",
     "already_exists": "New page is already exists.",
