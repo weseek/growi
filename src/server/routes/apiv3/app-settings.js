@@ -86,10 +86,13 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *          secretAccessKey:
  *            type: string
  *            description: secret key for authentification of AWS
- *      AwsSettingParams:
- *        description: AwsSettingParams
+ *      FileUploadSettingParams:
+ *        description: FileUploadTypeParams
  *        type: object
  *        properties:
+ *          fileUploadType:
+ *            type: string
+ *            description: fileUploadType
  *          region:
  *            type: string
  *            description: region of AWS S3
@@ -105,10 +108,6 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *          secretAccessKey:
  *            type: string
  *            description: secret key for authentification of AWS
- *      GcsSettingParams:
- *        description: GcsSettingParams
- *        type: object
- *        properties:
  *          gcsApiKeyJsonPath:
  *            type: string
  *            description: apiKeyJsonPath of gcp
@@ -127,13 +126,6 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *          envGcsUploadNamespace:
  *            type: string
  *            description: Directory name to create in the bucket
- *      FileUploadTypeParams:
- *        description: FileUploadTypeParams
- *        type: object
- *        properties:
- *          fileUploadType:
- *            type: string
- *            description: fileUploadType
  *      PluginSettingParams:
  *        description: PluginSettingParams
  *        type: object
@@ -570,9 +562,7 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/FileUploadTypeParams'
-   *                $ref: '#/components/schemas/GcsSettingParams'
-   *                $ref: '#/components/schemas/AwsSettingParams'
+   *                $ref: '#/components/schemas/FileUploadSettingParams'
    *        responses:
    *          200:
    *            description: Succeeded to update fileUploadSetting
@@ -580,8 +570,6 @@ module.exports = (crowi) => {
    *              application/json:
    *                schema:
    *                  $ref: '#/components/schemas/FileUploadTypeParams'
-   *                  $ref: '#/components/schemas/GcsSettingParams'
-   *                  $ref: '#/components/schemas/AwsSettingParams'
    */
   router.put('/file-upload-setting', loginRequiredStrictly, adminRequired, csrf, validator.fileUploadSetting, apiV3FormValidator, async(req, res) => {
     const { fileUploadType } = req.body;
