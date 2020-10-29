@@ -9,7 +9,7 @@ import { withTranslation } from 'react-i18next';
 
 import PageListIcon from './Icons/PageListIcon';
 import TimeLineIcon from './Icons/TimeLineIcon';
-import RecentChangesIcon from './Icons/RecentChangesIcon';
+import HistoryIcon from './Icons/HistoryIcon';
 import AttachmentIcon from './Icons/AttachmentIcon';
 import ShareLinkIcon from './Icons/ShareLinkIcon';
 
@@ -36,7 +36,7 @@ const navTabMapping = {
     isGuestNotAllowed: false,
   },
   pageHistory: {
-    icon: <RecentChangesIcon />,
+    icon: <HistoryIcon />,
     i18n: 'History',
     index: 2,
     isGuestNotAllowed: false,

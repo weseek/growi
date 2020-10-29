@@ -17,7 +17,7 @@ import UserPicture from '../User/UserPicture';
 import Username from '../User/Username';
 import CommentEditor from './CommentEditor';
 import CommentControl from './CommentControl';
-import RecentChangesIcon from '../Icons/RecentChangesIcon';
+import HistoryIcon from '../Icons/HistoryIcon';
 
 /**
  *
@@ -203,7 +203,7 @@ class Comment extends React.PureComponent {
                 )}
                 <span className="ml-2">
                   <a id={`page-comment-revision-${commentId}`} className="page-comment-revision" href={revHref}>
-                    <RecentChangesIcon />
+                    <HistoryIcon />
                   </a>
                   <UncontrolledTooltip placement="bottom" fade={false} target={`page-comment-revision-${commentId}`}>
                     {t('page_comment.display_the_page_when_posting_this_comment')}
