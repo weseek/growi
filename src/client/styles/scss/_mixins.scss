@@ -17,6 +17,7 @@
 
 @mixin expand-editor($editor-margin-top) {
   $header-plus-footer: $editor-margin-top + $grw-editor-navbar-bottom-height;
+  $header-plus-footer-not-site-url: $editor-margin-top + $grw-editor-navbar-bottom-height + 35px;
 
   $editor-margin: $header-plus-footer //
     + 25px //   add .btn-open-dropzone height
