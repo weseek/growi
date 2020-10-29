@@ -121,6 +121,7 @@ class UserManagement extends React.Component {
           totalItemsCount={adminUsersContainer.state.totalUsers}
           pagingLimit={adminUsersContainer.state.pagingLimit}
           align="right"
+          size="sm"
         />
       </div>
     );

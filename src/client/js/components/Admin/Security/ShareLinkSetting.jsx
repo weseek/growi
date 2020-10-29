@@ -25,6 +25,7 @@ const Pager = (props) => {
       totalItemsCount={props.totalLinks}
       pagingLimit={props.limit}
       align="right"
+      size="sm"
     />
   );
 };
@@ -110,7 +111,6 @@ class ShareLinkSetting extends React.Component {
     const {
       shareLinks, shareLinksActivePage, totalshareLinks, shareLinksPagingLimit,
     } = adminGeneralSecurityContainer.state;
-
 
     return (
       <Fragment>

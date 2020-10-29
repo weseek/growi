@@ -159,6 +159,13 @@
     "required": "%sに値を入力してください",
     "invalid_syntax": "%sの構文が不正です"
   },
+  "not_found_page": {
+    "Create Page": "ページを作成する",
+    "page_not_exist_alert": "このページは存在しません。新たに作成する必要があります。"
+  },
+  "custom_navigation": {
+    "no_page_list": "<a href='{{path}}'><strong>{{ path }}</strong></a>の配下にはページが存在しません。"
+  },
   "installer": {
     "setup": "セットアップ",
     "create_initial_account": "最初のアカウントの作成",
@@ -437,6 +444,7 @@
   "hackmd":{
     "hack_md": "HackMD",
     "not_set_up": "HackMD はセットアップされていません",
+    "used_for_not_found": "HackMD は新しいページの作成には利用できません",
     "start_to_edit": "HackMD を開始する",
     "clone_page_content": "ページを複製して編集を開始します",
     "unsaved_draft": "HackMD のドラフトが保存されていません",
@@ -450,7 +458,9 @@
     "check_configuration": "<a href='https://docs.growi.org/ja/admin-guide/admin-cookbook/integrate-with-hackmd.html'>こちらのマニュアル</a>から設定を確認してください",
     "not_initialized": "HackMD コンポーネントは初期化されていません",
     "someone_editing": "このページは、HackMD で編集されています。",
-    "this_page_has_draft": "このページは、HackMD のドラフトがあります。"
+    "this_page_has_draft": "このページは、HackMD のドラフトがあります。",
+    "need_to_associate_with_growi_to_use_hackmd_refer_to_this": "HackMD を利用して同時多人数編集を行うには、HackMD と GROWI を連携する必要があります。<a href='https://docs.growi.org/ja/admin-guide/admin-cookbook/integrate-with-hackmd.html'>こちら</a>を参照してください。",
+    "need_to_make_page": "HackMD を利用するためには、<a href='#edit'>ビルトインエディタ</a>で新しいページを作成してください。"
   },
   "slack_notification": {
     "popover_title": "Slack 通知",

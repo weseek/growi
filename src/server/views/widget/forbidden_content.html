@@ -22,7 +22,7 @@
 
   <ul class="nav nav-tabs d-print-none" role="tablist">
     <li class="nav-item grw-nav-main-left-tab">
-      <a class="nav-link active" role="tab" href="#revision-body" data-toggle="tab">
+      <a class="nav-link active">
         <i class="icon-notebook"></i> List
       </a>
     </li>
@@ -30,7 +30,7 @@
 
   <div class="tab-content">
     {# list view #}
-    <div class="pt-2 active tab-pane page-list-container" id="revision-body">
+    <div class="pt-2 active tab-pane page-list-container">
       {% if pages.length == 0 %}
         <div class="mt-2">
           There are no pages under <strong>{{ path | preventXss }}</strong>.

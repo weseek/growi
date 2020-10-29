@@ -28,10 +28,10 @@ export default class AdminCustomizeContainer extends Container {
       isSavedStatesOfTabChanges: false,
       isEnabledAttachTitleHeader: false,
 
-      pageLimitationS: 20,
-      pageLimitationM: 10,
-      pageLimitationL: 50,
-      pageLimitationXL: 20,
+      pageLimitationS: null,
+      pageLimitationM: null,
+      pageLimitationL: null,
+      pageLimitationXL: null,
 
       isEnabledStaleNotification: false,
       isAllReplyShown: false,

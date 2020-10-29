@@ -4,25 +4,20 @@ import PropTypes from 'prop-types';
 import { toastError } from '../util/apiNotification';
 import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
+import PageContainer from '../services/PageContainer';
 
 class LikeButton extends React.Component {
 
   constructor(props) {
     super(props);
 
-    this.state = {
-      isLiked: props.isLiked,
-    };
-
     this.handleClick = this.handleClick.bind(this);
   }
 
   async handleClick() {
-    const { appContainer, pageId } = this.props;
-    const bool = !this.state.isLiked;
+    const { pageContainer } = this.props;
     try {
-      await appContainer.apiv3.put('/page/likes', { pageId, bool });
-      this.setState({ isLiked: bool });
+      pageContainer.toggleLike();
     }
     catch (err) {
       toastError(err);
@@ -34,6 +29,7 @@ class LikeButton extends React.Component {
   }
 
   render() {
+    const { pageContainer } = this.props;
     // if guest user
     if (!this.isUserLoggedIn()) {
       return <div></div>;
@@ -43,10 +39,13 @@ class LikeButton extends React.Component {
       <button
         type="button"
         onClick={this.handleClick}
-        className={`btn rounded-circle btn-like border-0 d-edit-none
-        ${this.state.isLiked ? 'active' : ''}`}
+        className={`btn btn-like border-0 d-edit-none
+        ${pageContainer.state.isLiked ? 'active' : ''}`}
       >
-        <i className="icon-like"></i>
+        <i className="icon-like mr-3"></i>
+        <span className="total-likes">
+          {pageContainer.state.sumOfLikers}
+        </span>
       </button>
     );
   }
@@ -56,13 +55,12 @@ class LikeButton extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const LikeButtonWrapper = withUnstatedContainers(LikeButton, [AppContainer]);
+const LikeButtonWrapper = withUnstatedContainers(LikeButton, [AppContainer, PageContainer]);
 
 LikeButton.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
-  pageId: PropTypes.string,
-  isLiked: PropTypes.bool,
   size: PropTypes.string,
 };
 

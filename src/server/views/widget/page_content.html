@@ -1,5 +1,5 @@
 {% if page %}
-<div id="content-main" class="content-main"
+<div id="content-main" class="content-main container"
   data-path="{{ encodeURI(page.path) }}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
   data-page-id="{% if page %}{{ page._id.toString() }}{% endif %}"
@@ -17,6 +17,7 @@
   data-page-is-forbidden="{% if forbidden %}true{% else %}false{% endif %}"
   data-page-is-deleted="{% if page.isDeleted() %}true{% else %}false{% endif %}"
   data-page-is-deletable="{% if isDeletablePage() %}true{% else %}false{% endif %}"
+  data-page-is-creatable="false"
   data-page-is-able-to-delete-completely="{% if user.canDeleteCompletely(page.creator._id) %}true{% else %}false{% endif %}"
   data-slack-channels="{{ slack|default('') }}"
   data-page-created-at="{% if page %}{{ page.createdAt|datetz('Y/m/d H:i:s') }}{% endif %}"
@@ -42,38 +43,11 @@
 
   {% include 'page_alerts.html' %}
 
-  {% include 'page_tabs.html' %}
-
-  <div class="tab-content">
-
-    {% if page %}
-      <script type="text/template" id="raw-text-original">{{ revision.body.toString() | encodeHTML }}</script>
-
-      {# formatted text #}
-      <div class="tab-pane active" id="revision-body">
-        <div id="page" class="mt-4"></div>
-      </div>
-    {% endif %}
-
-    {% if !isTrashPage() %}
-      {# edit form #}
-      <div class="tab-pane" id="edit">
-        <div id="page-editor">{% if pageForm.body %}{{ pageForm.body }}{% endif %}</div>
-      </div>
-      <div class="tab-pane" id="hackmd">
-        <div id="page-editor-with-hackmd"></div>
-      </div>
-      {% include '../_form.html' %}
-    {% endif %}
-
-    {# raw revision history #}
-    {% if not page %}
-    {% else %}
-    <div class="tab-pane revision-history" id="revision-history">
-    </div>
-    {% endif %}
-
-  </div>
-
-  <div id="grw-page-status-alert-container"></div>
+<div id="display-switcher">
+  <script type="text/template" id="raw-text-original">{{ revision.body.toString() | encodeHTML }}</script>
 </div>
+<div id="page-editor-navbar-bottom-container" class="d-none d-edit-block"></div>
+<div id="grw-page-status-alert-container"></div>
+
+</div>
+
