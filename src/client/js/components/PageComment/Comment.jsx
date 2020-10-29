@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { withTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 
 import { UncontrolledTooltip } from 'reactstrap';
@@ -150,6 +151,7 @@ class Comment extends React.PureComponent {
   }
 
   render() {
+    const { t } = this.props;
     const comment = this.props.comment;
     const commentId = comment._id;
     const creator = comment.creator;
@@ -200,7 +202,16 @@ class Comment extends React.PureComponent {
                     <UncontrolledTooltip placement="bottom" fade={false} target={editedDateId}>{editedDateFormatted}</UncontrolledTooltip>
                   </>
                 ) }
-                <span className="ml-2"><a className="page-comment-revision" href={revHref}><RecentChangesIcon /></a></span>
+                <span className="ml-2">
+                  <a id={`page-comment-revision-${commentId}`} className="page-comment-revision" href={revHref}><RecentChangesIcon /></a>
+                  <UncontrolledTooltip
+                    placement="bottom"
+                    fade={false}
+                    target={`page-comment-revision-${commentId}`}
+                  >
+                    {t('page_comment.show_the_page_of_the_time')}
+                  </UncontrolledTooltip>
+                </span>
               </div>
               { this.checkPermissionToControlComment() && (
                 <CommentControl
@@ -225,6 +236,7 @@ class Comment extends React.PureComponent {
 const CommentWrapper = withUnstatedContainers(Comment, [AppContainer, PageContainer]);
 
 Comment.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
@@ -233,4 +245,4 @@ Comment.propTypes = {
   deleteBtnClicked: PropTypes.func.isRequired,
 };
 
-export default CommentWrapper;
+export default withTranslation()(CommentWrapper);
