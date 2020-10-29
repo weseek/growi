@@ -67,11 +67,11 @@ const TableOfContents = (props) => {
 
       { isUserPage && (
       <div className="mt-3 d-flex justify-content-around">
-        <a className="btn btn-outline-secondary btn-sm" href="#Bookmarks">
+        <a className="btn btn-outline-secondary btn-sm" href="#bookmarks-list">
           <i className="mr-2 icon-star"></i>
           <span>Bookmarks</span>
         </a>
-        <a className="btn btn-outline-secondary btn-sm" href="#RecentlyCreated">
+        <a className="btn btn-outline-secondary btn-sm" href="#recently-created-list">
           <i className="grw-icon-container-recently-created mr-2"><RecentlyCreatedIcon /></i>
           <span>Recently Created</span>
         </a>
