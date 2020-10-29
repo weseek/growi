@@ -11,9 +11,8 @@
     </div>
   </div>
 
-  <div class="row">
-
-    <div class="col-lg-9 grw-page-content-container">
+  <div class="grw-page-content d-flex">
+    <div class="grw-page-content-container">
 
       {#
         #   Because this block has content like 'Bookmarks' or 'Recent Created' whose height changes dynamically,
@@ -36,7 +35,7 @@
     </div> {# /.col- #}
 
     {# relocate #revision-toc #}
-    <div class="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
+    <div class="d-none d-lg-block revision-toc-container">
       <div id="revision-toc" class="revision-toc mt-3 sps sps--abv" data-sps-offset="116">
         <div id="revision-toc-content" class="revision-toc-content"></div>
       </div>
