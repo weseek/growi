@@ -170,7 +170,7 @@ class PageComments extends React.Component {
               className="btn-comment-reply"
               onClick={() => { return this.replyButtonClickedHandler(commentId) }}
             >
-              <i className="icon-fw icon-action-redo"></i> Reply
+              <i className="icon-fw icon-action-undo"></i> Reply
             </Button>
           </div>
         )}
