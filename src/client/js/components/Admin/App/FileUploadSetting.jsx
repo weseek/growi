@@ -18,11 +18,11 @@ function FileUploadSetting(props) {
   const { fileUploadType } = adminAppContainer.state;
   const fileUploadTypes = ['aws', 'gcs', 'local', 'gridfs'];
 
-  async function submitFileUploadTypeHandler() {
+  async function submitHandler() {
     const { t } = props;
 
     try {
-      await adminAppContainer.updateFileUploadTypeHandler();
+      await adminAppContainer.updateFileUploadSettingHandler();
       toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.file_upload_settings') }));
     }
     catch (err) {
@@ -75,11 +75,10 @@ function FileUploadSetting(props) {
         )}
       </div>
 
-      <AdminUpdateButtonRow onClick={submitFileUploadTypeHandler} disabled={adminAppContainer.state.retrieveError != null} />
-
       {fileUploadType === 'aws' && <AwsSetting />}
       {fileUploadType === 'gcs' && <GcsSettings />}
 
+      <AdminUpdateButtonRow onClick={submitHandler} disabled={adminAppContainer.state.retrieveError != null} />
 
     </React.Fragment>
   );

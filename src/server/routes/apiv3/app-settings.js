@@ -175,20 +175,18 @@ module.exports = (crowi) => {
       body('sesAccessKeyId').trim().if(value => value !== '').matches(/^[\da-zA-Z]+$/),
       body('sesSecretAccessKey').trim(),
     ],
-    awsSetting: [
-      body('s3Region').trim().matches(/^[a-z]+-[a-z]+-\d+$/).withMessage((value, { req }) => req.t('validation.aws_region')),
-      body('s3CustomEndpoint').trim().matches(/^(https?:\/\/[^/]+|)$/).withMessage((value, { req }) => req.t('validation.aws_custom_endpoint')),
-      body('s3Bucket').trim(),
-      body('s3AccessKeyId').trim().if(value => value !== '').matches(/^[\da-zA-Z]+$/),
-      body('s3SecretAccessKey').trim(),
-    ],
-    gcsSetting: [
+    fileUploadSetting: [
+      body('fileUploadType').isIn(['aws', 'gcs', 'local', 'gridfs']),
       body('gcsApiKeyJsonPath').trim(),
       body('gcsBucket').trim(),
       body('gcsUploadNamespace').trim(),
-    ],
-    fileUploadType: [
-      body('fileUploadType').isIn(['aws', 'gcs', 'local', 'gridfs']),
+      body('s3Region').trim().if(value => value !== '').matches(/^[a-z]+-[a-z]+-\d+$/)
+        .withMessage((value, { req }) => req.t('validation.aws_region')),
+      body('s3CustomEndpoint').trim().if(value => value !== '').matches(/^(https?:\/\/[^/]+|)$/)
+        .withMessage((value, { req }) => req.t('validation.aws_custom_endpoint')),
+      body('s3Bucket').trim(),
+      body('s3AccessKeyId').trim().if(value => value !== '').matches(/^[\da-zA-Z]+$/),
+      body('s3SecretAccessKey').trim(),
     ],
     pluginSetting: [
       body('isEnabledPlugins').isBoolean(),
@@ -561,136 +559,50 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /app-settings/aws-setting:
+   *    /app-settings/file-upload-settings:
    *      put:
    *        tags: [AppSettings]
-   *        operationId: updateAppSettingAwsSetting
-   *        summary: /app-settings/aws-setting
-   *        description: Update aws setting
-   *        requestBody:
-   *          required: true
-   *          content:
-   *            application/json:
-   *              schema:
-   *                $ref: '#/components/schemas/AwsSettingParams'
-   *        responses:
-   *          200:
-   *            description: Succeeded to update aws setting
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  $ref: '#/components/schemas/AwsSettingParams'
-   */
-  router.put('/aws-setting', loginRequiredStrictly, adminRequired, csrf, validator.awsSetting, apiV3FormValidator, async(req, res) => {
-    const requestAwsSettingParams = {
-      'app:fileUploadType': req.body.fileUploadType,
-      'aws:s3Region': req.body.s3Region,
-      'aws:s3CustomEndpoint': req.body.s3CustomEndpoint,
-      'aws:s3Bucket': req.body.s3Bucket,
-      'aws:s3AccessKeyId': req.body.s3AccessKeyId,
-      'aws:s3SecretAccessKey': req.body.s3SecretAccessKey,
-    };
-
-    try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestAwsSettingParams, true);
-      await crowi.setUpFileUpload(true);
-      crowi.fileUploaderSwitchService.publishUpdatedMessage();
-
-      const awsSettingParams = {
-        s3Region: crowi.configManager.getConfig('crowi', 'aws:s3Region'),
-        s3CustomEndpoint: crowi.configManager.getConfig('crowi', 'aws:s3CustomEndpoint'),
-        s3Bucket: crowi.configManager.getConfig('crowi', 'aws:s3Bucket'),
-        s3AccessKeyId: crowi.configManager.getConfig('crowi', 'aws:s3AccessKeyId'),
-        s3SecretAccessKey: crowi.configManager.getConfig('crowi', 'aws:s3SecretAccessKey'),
-      };
-      return res.apiv3({ awsSettingParams });
-    }
-    catch (err) {
-      const msg = 'Error occurred in updating aws setting';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-awsSetting-failed'));
-    }
-
-  });
-
-  /**
-   * @swagger
-   *
-   *    /app-settings/gcs-setting:
-   *      put:
-   *        tags: [AppSettings]
-   *        operationId: updateAppSettingGcsSetting
-   *        summary: /app-settings/gcs-setting
-   *        description: Update gcs setting
-   *        requestBody:
-   *          required: true
-   *          content:
-   *            application/json:
-   *              schema:
-   *                $ref: '#/components/schemas/GcsSettingParams'
-   *        responses:
-   *          200:
-   *            description: Succeeded to update gcs setting
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  $ref: '#/components/schemas/GcsSettingParams'
-   */
-  router.put('/gcs-setting', loginRequiredStrictly, adminRequired, csrf, validator.gcsSetting, apiV3FormValidator, async(req, res) => {
-    const requestGcsSettingParams = {
-      'app:fileUploadType': req.body.fileUploadType,
-      'gcs:apiKeyJsonPath': req.body.gcsApiKeyJsonPath,
-      'gcs:bucket': req.body.gcsBucket,
-      'gcs:uploadNamespace': req.body.gcsUploadNamespace,
-    };
-
-    try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestGcsSettingParams, true);
-      await crowi.setUpFileUpload(true);
-      crowi.fileUploaderSwitchService.publishUpdatedMessage();
-
-      const gcsSettingParams = {
-        gcsApiKeyJsonPath: crowi.configManager.getConfig('crowi', 'gcs:apiKeyJsonPath'),
-        gcsBucket: crowi.configManager.getConfig('crowi', 'gcs:bucket'),
-        gcsUploadNamespace: crowi.configManager.getConfig('crowi', 'gcs:uploadNamespace'),
-      };
-      return res.apiv3({ gcsSettingParams });
-    }
-    catch (err) {
-      const msg = 'Error occurred in updating aws setting';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-awsSetting-failed'));
-    }
-
-  });
-
-  /**
-   * @swagger
-   *
-   *    /app-settings/file-upload-type:
-   *      put:
-   *        tags: [AppSettings]
-   *        operationId: updateAppSettingFileUploadType
-   *        summary: /app-settings/file-upload-type
-   *        description: Update fileUploadType
+   *        operationId: updateAppSettingFileUploadSetting
+   *        summary: /app-settings/file-upload-setting
+   *        description: Update fileUploadSetting
    *        requestBody:
    *          required: true
    *          content:
    *            application/json:
    *              schema:
    *                $ref: '#/components/schemas/FileUploadTypeParams'
+   *                $ref: '#/components/schemas/GcsSettingParams'
+   *                $ref: '#/components/schemas/AwsSettingParams'
    *        responses:
    *          200:
-   *            description: Succeeded to update fileUploadType
+   *            description: Succeeded to update fileUploadSetting
    *            content:
    *              application/json:
    *                schema:
    *                  $ref: '#/components/schemas/FileUploadTypeParams'
+   *                  $ref: '#/components/schemas/GcsSettingParams'
+   *                  $ref: '#/components/schemas/AwsSettingParams'
    */
-  router.put('/file-upload-type', loginRequiredStrictly, adminRequired, csrf, validator.fileUploadType, apiV3FormValidator, async(req, res) => {
+  router.put('/file-upload-setting', loginRequiredStrictly, adminRequired, csrf, validator.fileUploadSetting, apiV3FormValidator, async(req, res) => {
+    const { fileUploadType } = req.body;
+
     const requestParams = {
-      'app:fileUploadType': req.body.fileUploadType,
+      'app:fileUploadType': fileUploadType,
     };
+
+    if (fileUploadType === 'gcs') {
+      requestParams['gcs:apiKeyJsonPath'] = req.body.gcsApiKeyJsonPath;
+      requestParams['gcs:bucket'] = req.body.gcsBucket;
+      requestParams['gcs:uploadNamespace'] = req.body.gcsUploadNamespace;
+    }
+
+    if (fileUploadType === 'aws') {
+      requestParams['aws:s3Region'] = req.body.s3Region;
+      requestParams['aws:s3CustomEndpoint'] = req.body.s3CustomEndpoint;
+      requestParams['aws:s3Bucket'] = req.body.s3Bucket;
+      requestParams['aws:s3AccessKeyId'] = req.body.s3AccessKeyId;
+      requestParams['aws:s3SecretAccessKey'] = req.body.s3SecretAccessKey;
+    }
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams, true);
@@ -700,7 +612,22 @@ module.exports = (crowi) => {
       const responseParams = {
         fileUploadType: crowi.configManager.getConfig('crowi', 'app:fileUploadType'),
       };
-      return res.apiv3(responseParams);
+
+      if (fileUploadType === 'gcs') {
+        responseParams.gcsApiKeyJsonPath = crowi.configManager.getConfig('crowi', 'gcs:apiKeyJsonPath');
+        responseParams.gcsBucket = crowi.configManager.getConfig('crowi', 'gcs:bucket');
+        responseParams.gcsUploadNamespace = crowi.configManager.getConfig('crowi', 'gcs:uploadNamespace');
+      }
+
+      if (fileUploadType === 'aws') {
+        responseParams.s3Region = crowi.configManager.getConfig('crowi', 'aws:s3Region');
+        responseParams.s3CustomEndpoint = crowi.configManager.getConfig('crowi', 'aws:s3CustomEndpoint');
+        responseParams.s3Bucket = crowi.configManager.getConfig('crowi', 'aws:s3Bucket');
+        responseParams.s3AccessKeyId = crowi.configManager.getConfig('crowi', 'aws:s3AccessKeyId');
+        responseParams.s3SecretAccessKey = crowi.configManager.getConfig('crowi', 'aws:s3SecretAccessKey');
+      }
+
+      return res.apiv3({ responseParams });
     }
     catch (err) {
       const msg = 'Error occurred in updating fileUploadType';

@@ -353,50 +353,34 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
-   * Update AWS setting
+   * Update updateFileUploadSettingHandler
    * @memberOf AdminAppContainer
    * @return {Array} Appearance
    */
-  async updateAwsSettingHandler() {
-    const response = await this.appContainer.apiv3.put('/app-settings/aws-setting', {
-      fileUploadType: this.state.fileUploadType,
-      s3Region: this.state.s3Region,
-      s3CustomEndpoint: this.state.s3CustomEndpoint,
-      s3Bucket: this.state.s3Bucket,
-      s3AccessKeyId: this.state.s3AccessKeyId,
-      s3SecretAccessKey: this.state.s3SecretAccessKey,
-    });
-    const { awsSettingParams } = response.data;
-    return awsSettingParams;
-  }
+  async updateFileUploadSettingHandler() {
+    const { fileUploadType } = this.state;
 
-  /**
-   * Update GCS setting
-   * @memberOf AdminAppContainer
-   * @return {Array} Appearance
-   */
-  async updateGcsSettingHandler() {
-    const response = await this.appContainer.apiv3.put('/app-settings/gcs-setting', {
-      fileUploadType: this.state.fileUploadType,
-      gcsApiKeyJsonPath: this.state.gcsApiKeyJsonPath,
-      gcsBucket: this.state.gcsBucket,
-      gcsUploadNamespace: this.state.gcsUploadNamespace,
-    });
-    const { awsSettingParams } = response.data;
-    return awsSettingParams;
-  }
+    const requestParams = {
+      fileUploadType,
+    };
 
-  /**
-   * Update file upload type
-   * @memberOf AdminAppContainer
-   * @return {Array} Appearance
-   */
-  async updateFileUploadTypeHandler() {
-    const response = await this.appContainer.apiv3.put('/app-settings/file-upload-type', {
-      fileUploadType: this.state.fileUploadType,
-    });
-    const { fileUploadType } = response.data;
-    return this.setState({ fileUploadType });
+    if (fileUploadType === 'gcs') {
+      requestParams.gcsApiKeyJsonPath = this.state.gcsApiKeyJsonPath;
+      requestParams.gcsBucket = this.state.gcsBucket;
+      requestParams.gcsUploadNamespace = this.state.gcsUploadNamespace;
+    }
+
+    if (fileUploadType === 'aws') {
+      requestParams.s3Region = this.state.s3Region;
+      requestParams.s3CustomEndpoint = this.state.s3CustomEndpoint;
+      requestParams.s3Bucket = this.state.s3Bucket;
+      requestParams.s3AccessKeyId = this.state.s3AccessKeyId;
+      requestParams.s3SecretAccessKey = this.state.s3SecretAccessKey;
+    }
+
+    const response = await this.appContainer.apiv3.put('/app-settings/file-upload-setting', requestParams);
+    const { responseParams } = response.data;
+    return this.setState(responseParams);
   }
 
   /**
