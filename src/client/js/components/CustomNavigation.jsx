@@ -6,6 +6,7 @@ import {
 
 
 const CustomNavigation = (props) => {
+  const { navTabMapping } = props;
   const [activeTab, setActiveTab] = useState('');
   // [TODO: set default active tab by gw4079]
   const [sliderWidth, setSliderWidth] = useState(null);
@@ -40,12 +41,12 @@ const CustomNavigation = (props) => {
       tempML += width;
       return { width, marginLeft };
     });
-    const { width, marginLeft } = styles[props.navTabMapping[activeTab].index];
+    const { width, marginLeft } = styles[navTabMapping[activeTab].index];
 
     setSliderWidth(width);
     setSliderMarginLeft(marginLeft);
 
-  }, [activeTab, props]);
+  }, [activeTab, navTabMapping]);
 
 
   return (
