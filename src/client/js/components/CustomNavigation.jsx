@@ -81,12 +81,12 @@ const CustomNavigation = (props) => {
       <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
       <TabContent activeTab={activeTab} className="p-4">
         {Object.entries(props.navTabMapping).map(([key, value]) => {
-            return (
-              <TabPane key={key} tabId={key}>
-                {value.tabContent}
-              </TabPane>
-            );
-          })}
+          return (
+            <TabPane key={key} tabId={key}>
+              {value.tabContent}
+            </TabPane>
+          );
+        })}
       </TabContent>
     </React.Fragment>
   );
