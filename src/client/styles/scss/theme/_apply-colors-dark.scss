@@ -365,7 +365,5 @@ body.on-edit {
 }
 
 .grw-icon-container-recently-created {
-  svg {
-    fill: $secondary;
-  }
+  @include button-svg-icon-variant($value, $value);
 }

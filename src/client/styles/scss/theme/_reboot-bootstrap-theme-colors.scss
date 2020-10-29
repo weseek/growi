@@ -17,11 +17,13 @@ $theme-colors: map-merge($theme-colors, $colors);
 @each $color, $value in $theme-colors {
   .btn-#{$color} {
     @include button-variant($value, $value);
+    @include button-svg-icon-variant($value, $value);
   }
 }
 @each $color, $value in $theme-colors {
   .btn-outline-#{$color} {
     @include button-outline-variant($value, $color-hover: $value, $active-background: rgba($value, 0.1), $active-border: $value);
+    @include button-outline-svg-icon-variant($value, $color-hover: $value);
     &:not(:disabled):not(.disabled):active,
     &:not(:disabled):not(.disabled).active,
     .show > &.dropdown-toggle {
