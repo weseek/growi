@@ -16,7 +16,7 @@ function FileUploadSetting(props) {
 
   const { t, adminAppContainer } = props;
   const { fileUploadType } = adminAppContainer.state;
-  const fileUploadTypes = ['aws', 'gcs', 'local', 'gridfs'];
+  const fileUploadTypes = ['aws', 'gcs', 'gridfs', 'local'];
 
   async function submitHandler() {
     const { t } = props;
