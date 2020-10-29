@@ -10,10 +10,10 @@ const CustomNavigation = (props) => {
   const [sliderWidth, setSliderWidth] = useState(0);
   const [sliderMarginLeft, setSliderMarginLeft] = useState(0);
   const navContainer = useRef();
-  const tabs = {};
+  const navTabs = {};
 
   Object.keys(props.navTabMapping).forEach((key) => {
-    tabs[key] = React.createRef();
+    navTabs[key] = React.createRef();
   });
 
 
@@ -28,14 +28,13 @@ const CustomNavigation = (props) => {
 
   function registerNavLink(key, elm) {
     if (elm != null) {
-      tabs[key] = elm;
+      navTabs[key] = elm;
     }
   }
 
   useEffect(() => {
 
     const navBar = navContainer;
-    const navTabs = tabs;
 
     if (activeTab === '') {
       return;
