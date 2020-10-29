@@ -195,12 +195,10 @@ class Comment extends React.PureComponent {
                 <a href={`#${commentId}`}>
                   <FormattedDistanceDate id={commentId} date={comment.createdAt} />
                 </a>
-                {isEdited && (
+                { isEdited && (
                   <>
                     <span id={editedDateId}>&nbsp;(edited)</span>
-                    <UncontrolledTooltip placement="bottom" fade={false} target={editedDateId}>
-                      {editedDateFormatted}
-                    </UncontrolledTooltip>
+                    <UncontrolledTooltip placement="bottom" fade={false} target={editedDateId}>{editedDateFormatted}</UncontrolledTooltip>
                   </>
                 )}
                 <span className="ml-2">
@@ -213,11 +211,15 @@ class Comment extends React.PureComponent {
                 </span>
               </div>
               {this.checkPermissionToControlComment() && (
-                <CommentControl onClickDeleteBtn={this.deleteBtnClickedHandler} onClickEditBtn={() => this.setState({ isReEdit: true })} />
-              )}
+                <CommentControl
+                  onClickDeleteBtn={this.deleteBtnClickedHandler}
+                  onClickEditBtn={() => this.setState({ isReEdit: true })}
+                />
+              ) }
             </div>
           </div>
-        )}
+        )
+      }
       </React.Fragment>
     );
   }
