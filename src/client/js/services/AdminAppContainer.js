@@ -355,7 +355,6 @@ export default class AdminAppContainer extends Container {
   /**
    * Update updateFileUploadSettingHandler
    * @memberOf AdminAppContainer
-   * @return {Array} Appearance
    */
   async updateFileUploadSettingHandler() {
     const { fileUploadType } = this.state;
