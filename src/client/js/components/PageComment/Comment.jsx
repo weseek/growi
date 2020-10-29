@@ -171,7 +171,6 @@ class Comment extends React.PureComponent {
 
     return (
       <React.Fragment>
-
         {this.state.isReEdit ? (
           <CommentEditor
             growiRenderer={this.props.growiRenderer}
@@ -196,34 +195,29 @@ class Comment extends React.PureComponent {
                 <a href={`#${commentId}`}>
                   <FormattedDistanceDate id={commentId} date={comment.createdAt} />
                 </a>
-                { isEdited && (
+                {isEdited && (
                   <>
                     <span id={editedDateId}>&nbsp;(edited)</span>
-                    <UncontrolledTooltip placement="bottom" fade={false} target={editedDateId}>{editedDateFormatted}</UncontrolledTooltip>
+                    <UncontrolledTooltip placement="bottom" fade={false} target={editedDateId}>
+                      {editedDateFormatted}
+                    </UncontrolledTooltip>
                   </>
-                ) }
+                )}
                 <span className="ml-2">
-                  <a id={`page-comment-revision-${commentId}`} className="page-comment-revision" href={revHref}><RecentChangesIcon /></a>
-                  <UncontrolledTooltip
-                    placement="bottom"
-                    fade={false}
-                    target={`page-comment-revision-${commentId}`}
-                  >
-                    {t('page_comment.show_the_page_of_the_time')}
+                  <a id={`page-comment-revision-${commentId}`} className="page-comment-revision" href={revHref}>
+                    <RecentChangesIcon />
+                  </a>
+                  <UncontrolledTooltip placement="bottom" fade={false} target={`page-comment-revision-${commentId}`}>
+                    {t('page_comment.display_the_page_when_posting_this_comment')}
                   </UncontrolledTooltip>
                 </span>
               </div>
-              { this.checkPermissionToControlComment() && (
-                <CommentControl
-                  onClickDeleteBtn={this.deleteBtnClickedHandler}
-                  onClickEditBtn={() => this.setState({ isReEdit: true })}
-                />
-              ) }
+              {this.checkPermissionToControlComment() && (
+                <CommentControl onClickDeleteBtn={this.deleteBtnClickedHandler} onClickEditBtn={() => this.setState({ isReEdit: true })} />
+              )}
             </div>
           </div>
-          )
-        }
-
+        )}
       </React.Fragment>
     );
   }
