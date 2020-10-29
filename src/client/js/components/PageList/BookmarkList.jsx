@@ -55,7 +55,7 @@ const BookmarkList = (props) => {
    *
    */
   const generatePageList = pages.map(page => (
-    <li key={`my-bookmarks:${page._id}`}>
+    <li key={`my-bookmarks:${page._id}`} className="mt-4">
       <Page page={page.page} />
     </li>
   ));
