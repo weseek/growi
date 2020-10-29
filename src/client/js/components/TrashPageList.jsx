@@ -11,9 +11,9 @@ const TrashPageList = (props) => {
 
   const navTabMapping = {
     pagelist: {
-      icon: <PageListIcon />,
+      Icon: PageListIcon,
+      Content: PageList,
       i18n: t('page_list'),
-      tabContent: <PageList />,
       index: 0,
     },
   };
