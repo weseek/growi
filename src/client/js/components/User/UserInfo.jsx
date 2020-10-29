@@ -12,7 +12,7 @@ const UserInfo = (props) => {
   const pageUser = pageContainer.state.pageUser;
 
   return (
-    <div className="grw-users-info d-flex align-items-center d-edit-none">
+    <div className="grw-users-info p-3 d-flex align-items-center d-edit-none">
       <UserPicture user={pageUser} />
 
       <div className="users-meta">
