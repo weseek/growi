@@ -231,12 +231,12 @@ class ConfigManager extends S2sMessageHandlable {
       // file upload option
       || (
         KEYS_FOR_FIEL_UPLOAD_USE_ONLY_ENV_OPTION.includes(key)
-        && this.searchOnlyFromEnvVarConfigs('crowi', 'app:isFileUploadEnvPrioritized')
+        && this.searchOnlyFromEnvVarConfigs('crowi', 'app:useOnlyEnvVarForFileUploadType')
       )
       // gcs option
       || (
         KEYS_FOR_GCS_USE_ONLY_ENV_OPTION.includes(key)
-        && this.searchOnlyFromEnvVarConfigs('crowi', 'gcs:isGcsEnvPrioritized')
+        && this.searchOnlyFromEnvVarConfigs('crowi', 'gcs:useOnlyEnvVarsForSomeOptions')
       )
     ));
   }
