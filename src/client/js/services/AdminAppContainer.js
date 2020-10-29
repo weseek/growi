@@ -92,7 +92,7 @@ export default class AdminAppContainer extends Container {
 
       fileUploadType: appSettingsParams.fileUploadType,
       envFileUploadType: appSettingsParams.envFileUploadType,
-      useOnlyEnvVarsForFileUploadType: appSettingsParams.useOnlyEnvVarsForFileUploadType,
+      useOnlyEnvVarForFileUploadType: appSettingsParams.useOnlyEnvVarForFileUploadType,
 
       s3Region: appSettingsParams.s3Region,
       s3CustomEndpoint: appSettingsParams.s3CustomEndpoint,
@@ -109,9 +109,9 @@ export default class AdminAppContainer extends Container {
       isEnabledPlugins: appSettingsParams.isEnabledPlugins,
     });
 
-    // if useOnlyEnvVarsForFileUploadType is true, get fileUploadType from only env var and make the forms fixed.
+    // if useOnlyEnvVarForFileUploadType is true, get fileUploadType from only env var and make the forms fixed.
     // and if env var 'FILE_UPLOAD' is null, envFileUploadType is 'aws' that is default value of 'FILE_UPLOAD'.
-    if (appSettingsParams.useOnlyEnvVarsForFileUploadType) {
+    if (appSettingsParams.useOnlyEnvVarForFileUploadType) {
       this.setState({ fileUploadType: appSettingsParams.envFileUploadType });
       this.setState({ isFixedFileUploadByEnvVar: true });
     }
