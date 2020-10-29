@@ -226,7 +226,7 @@ module.exports = (crowi) => {
 
       fileUploadType: crowi.configManager.getConfig('crowi', 'app:fileUploadType'),
       envFileUploadType: crowi.configManager.getConfigFromEnvVars('crowi', 'app:fileUploadType'),
-      useOnlyEnvVarForFileUploadType: crowi.configManager.getConfigFromEnvVars('crowi', 'app:useOnlyEnvVarForFileUploadType'),
+      useOnlyEnvVarForFileUploadType: crowi.configManager.getConfig('crowi', 'app:useOnlyEnvVarForFileUploadType'),
 
       s3Region: crowi.configManager.getConfig('crowi', 'aws:s3Region'),
       s3CustomEndpoint: crowi.configManager.getConfig('crowi', 'aws:s3CustomEndpoint'),
