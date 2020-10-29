@@ -182,13 +182,20 @@ const GrowiSubNavigation = (props) => {
             { !isPageInTrash && !isPageNotFound && !isPageForbidden && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
             { !isPageNotFound && !isPageForbidden && <PageManagement /> }
           </div>
-          <div className="mt-2">
+          <div className="mt-2 d-flex">
             { !isCreatable && !isPageInTrash && (
-              <ThreeStrandedButton
-                onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
-                isBtnDisabled={currentUser == null}
-                editorMode={editorMode}
-              />
+            <ThreeStrandedButton
+              onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
+              isBtnDisabled={currentUser == null}
+              editorMode={editorMode}
+            />
+            )}
+            { isUserPage && (
+              <ul className="authors text-nowrap d-none d-lg-block d-edit-none py-0">
+                <li className="pb-1">
+                  <AuthorInfo user={creator} date={createdAt} />
+                </li>
+              </ul>
             )}
           </div>
         </div>
