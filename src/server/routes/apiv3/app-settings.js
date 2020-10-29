@@ -569,7 +569,7 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/FileUploadTypeParams'
+   *                  $ref: '#/components/schemas/FileUploadSettingParams'
    */
   router.put('/file-upload-setting', loginRequiredStrictly, adminRequired, csrf, validator.fileUploadSetting, apiV3FormValidator, async(req, res) => {
     const { fileUploadType } = req.body;
