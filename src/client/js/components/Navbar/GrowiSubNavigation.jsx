@@ -183,14 +183,13 @@ const GrowiSubNavigation = (props) => {
             { !isPageNotFound && !isPageForbidden && <PageManagement /> }
           </div>
           <div className="mt-2">
-            { !isCreatable && !isPageInTrash
-            && (
-            <ThreeStrandedButton
-              onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
-              isBtnDisabled={currentUser == null}
-              editorMode={editorMode}
-            />
-)}
+            { !isCreatable && !isPageInTrash && (
+              <ThreeStrandedButton
+                onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
+                isBtnDisabled={currentUser == null}
+                editorMode={editorMode}
+              />
+            )}
           </div>
         </div>
 
