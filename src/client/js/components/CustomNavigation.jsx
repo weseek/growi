@@ -9,7 +9,7 @@ const CustomNavigation = (props) => {
   const [activeTab, setActiveTab] = useState(Object.keys(props.navTabMapping)[0]);
   const [sliderWidth, setSliderWidth] = useState(0);
   const [sliderMarginLeft, setSliderMarginLeft] = useState(0);
-  const navContainer = useRef();
+  const navBar = useRef();
   const navTabs = {};
 
   Object.keys(props.navTabMapping).forEach((key) => {
@@ -33,8 +33,6 @@ const CustomNavigation = (props) => {
   }
 
   useEffect(() => {
-
-    const navBar = navContainer;
 
     if (activeTab === '') {
       return;
@@ -61,7 +59,7 @@ const CustomNavigation = (props) => {
 
   return (
     <React.Fragment>
-      <div ref={navContainer}>
+      <div ref={navBar}>
         <Nav className="nav-title grw-custom-navbar" id="grw-custom-navbar">
           {Object.entries(props.navTabMapping).map(([key, value]) => {
             return (
@@ -79,17 +77,17 @@ const CustomNavigation = (props) => {
             );
           })}
         </Nav>
-        <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
-        <TabContent activeTab={activeTab} className="p-4">
-          {Object.entries(props.navTabMapping).map(([key, value]) => {
+      </div>
+      <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
+      <TabContent activeTab={activeTab} className="p-4">
+        {Object.entries(props.navTabMapping).map(([key, value]) => {
             return (
               <TabPane key={key} tabId={key}>
                 {value.tabContent}
               </TabPane>
             );
           })}
-        </TabContent>
-      </div>
+      </TabContent>
     </React.Fragment>
   );
 };
