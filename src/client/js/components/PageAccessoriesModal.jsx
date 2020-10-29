@@ -54,7 +54,7 @@ const PageAccessoriesModal = (props) => {
         Icon: ShareLinkIcon,
         i18n: t('share_links.share_link_management'),
         index: 4,
-        isLinkEnabled: v => isGuestUserMode,
+        isLinkEnabled: v => !isGuestUserMode,
       },
     };
   }, [t, isGuestUserMode]);
