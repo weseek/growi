@@ -16,6 +16,7 @@ import UserPicture from '../User/UserPicture';
 import Username from '../User/Username';
 import CommentEditor from './CommentEditor';
 import CommentControl from './CommentControl';
+import RecentChangesIcon from '../Icons/RecentChangesIcon';
 
 /**
  *
@@ -38,7 +39,6 @@ class Comment extends React.PureComponent {
     this.isCurrentUserIsAuthor = this.isCurrentUserEqualsToAuthor.bind(this);
     this.isCurrentRevision = this.isCurrentRevision.bind(this);
     this.getRootClassName = this.getRootClassName.bind(this);
-    this.getRevisionLabelClassName = this.getRevisionLabelClassName.bind(this);
     this.deleteBtnClickedHandler = this.deleteBtnClickedHandler.bind(this);
     this.renderText = this.renderText.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
@@ -109,11 +109,6 @@ class Comment extends React.PureComponent {
     return className;
   }
 
-  getRevisionLabelClassName() {
-    return `page-comment-revision badge ${
-      this.isCurrentRevision() ? 'badge-primary' : 'badge-secondary'}`;
-  }
-
   deleteBtnClickedHandler() {
     this.props.deleteBtnClicked(this.props.comment);
   }
@@ -166,8 +161,6 @@ class Comment extends React.PureComponent {
     const rootClassName = this.getRootClassName(comment);
     const commentBody = isMarkdown ? this.renderRevisionBody() : this.renderText(comment.comment);
     const revHref = `?revision=${comment.revision}`;
-    const revFirst8Letters = comment.revision.substr(-8);
-    const revisionLavelClassName = this.getRevisionLabelClassName();
 
     const editedDateId = `editedDate-${comment._id}`;
     const editedDateFormatted = isEdited
@@ -207,7 +200,7 @@ class Comment extends React.PureComponent {
                     <UncontrolledTooltip placement="bottom" fade={false} target={editedDateId}>{editedDateFormatted}</UncontrolledTooltip>
                   </>
                 ) }
-                <span className="ml-2"><a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a></span>
+                <span className="ml-2"><a className="page-comment-revision" href={revHref}><RecentChangesIcon /></a></span>
               </div>
               { this.checkPermissionToControlComment() && (
                 <CommentControl
