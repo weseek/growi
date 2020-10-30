@@ -99,9 +99,7 @@ module.exports = function(crowi) {
    */
   lib.canRespond = () => {
     // Check whether to use internal redirect of nginx or Apache.
-    return (
-      crowi.configManager.getConfig('crowi', 'app:fileUploadType') === 'local' && lib.configManager.getConfig('crowi', 'fileUpload:local:useInternalRedirect')
-    );
+    return lib.configManager.getConfig('crowi', 'fileUpload:local:useInternalRedirect');
   };
 
   /**
