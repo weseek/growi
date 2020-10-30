@@ -138,7 +138,6 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
 
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
-  const loginRequired = require('../../middlewares/login-required')(crowi);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
@@ -205,7 +204,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: app settings params
    */
-  router.get('/', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+  router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
     const appSettingsParams = {
       title: crowi.configManager.getConfig('crowi', 'app:title'),
       confidential: crowi.configManager.getConfig('crowi', 'app:confidential'),
