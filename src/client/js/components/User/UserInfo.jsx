@@ -1,15 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import PageContainer from '../../services/PageContainer';
-import { withUnstatedContainers } from '../UnstatedUtils';
-
 import UserPicture from './UserPicture';
 
 const UserInfo = (props) => {
-
-  const { pageContainer } = props;
-  const { pageUser } = pageContainer.state;
+  const { pageUser } = props;
 
   // do not display when the user does not exist
   if (pageUser == null) {
@@ -40,9 +35,7 @@ const UserInfo = (props) => {
 
 
 UserInfo.propTypes = {
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  pageUser: PropTypes.object,
 };
 
-const UserInfoWrapper = withUnstatedContainers(UserInfo, [PageContainer]);
-
-export default UserInfoWrapper;
+export default UserInfo;
