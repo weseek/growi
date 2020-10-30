@@ -2,16 +2,15 @@ $theme-colors: map-merge($theme-colors, $colors);
 
 @mixin button-svg-icon-variant($color, $bordercolor) {
   svg {
+    border-color: $bordercolor;
     fill: $color;
   }
-
   &.disabled,
   &:disabled {
     svg {
       fill: $color;
     }
   }
-
   &:not(:disabled):not(.disabled):active,
   &:not(:disabled):not(.disabled).active,
   .show > &.dropdown-toggle {
@@ -25,20 +24,17 @@ $theme-colors: map-merge($theme-colors, $colors);
   svg {
     fill: $value;
   }
-
   @include hover() {
     svg {
       fill: $value;
     }
   }
-
   &.disabled,
   &:disabled {
     svg {
       fill: $value;
     }
   }
-
   &:not(:disabled):not(.disabled):active,
   &:not(:disabled):not(.disabled).active,
   .show > &.dropdown-toggle {
