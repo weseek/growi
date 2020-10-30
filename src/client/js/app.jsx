@@ -21,10 +21,14 @@ import NotFoundPage from './components/NotFoundPage';
 import NotFoundAlert from './components/Page/NotFoundAlert';
 import PageStatusAlert from './components/PageStatusAlert';
 import RecentCreated from './components/RecentCreated/RecentCreated';
-import MyBookmarkList from './components/MyBookmarkList/MyBookmarkList';
+import RecentlyCreatedIcon from './components/Icons/RecentlyCreatedIcon';
+import MyDraftList from './components/MyDraftList/MyDraftList';
+import BookmarkIcon from './components/Icons/BookmarkIcon';
+import BookmarkList from './components/PageList/BookmarkList';
 import SeenUserList from './components/User/SeenUserList';
 import LikerList from './components/User/LikerList';
 import TableOfContents from './components/TableOfContents';
+import UserInfo from './components/User/UserInfo';
 import Fab from './components/Fab';
 
 import PersonalSettings from './components/Me/PersonalSettings';
@@ -90,6 +94,8 @@ Object.assign(componentMappings, {
 
   'personal-setting': <PersonalSettings crowi={personalContainer} />,
 
+  'my-drafts': <MyDraftList />,
+
   'grw-fab-container': <Fab />,
 });
 
@@ -103,9 +109,10 @@ if (pageContainer.state.pageId != null) {
     'seen-user-list': <SeenUserList />,
     'liker-list': <LikerList />,
 
-    'user-bookmark-list': <MyBookmarkList />,
-    'user-created-list': <RecentCreated />,
-    // 'user-draft-list': <MyDraftList />,
+    'recent-created-icon': <RecentlyCreatedIcon />,
+    'user-created-list': <RecentCreated userId={pageContainer.state.creator._id} />,
+    'user-bookmark-icon': <BookmarkIcon />,
+    'user-bookmark-list': <BookmarkList userId={pageContainer.state.creator._id} />,
   });
 }
 if (pageContainer.state.creator != null) {
@@ -119,6 +126,7 @@ if (pageContainer.state.path != null) {
     'page': <Page />,
     'grw-subnav-container': <GrowiSubNavigation />,
     'grw-subnav-switcher-container': <GrowiSubNavigationSwitcher />,
+    'user-info': <UserInfo />,
     'display-switcher': <DisplaySwitcher />,
   });
 }

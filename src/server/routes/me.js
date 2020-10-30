@@ -128,6 +128,11 @@ module.exports = function(crowi, app) {
       });
   };
 
+  actions.drafts = {};
+  actions.drafts.list = async function(req, res) {
+    return res.render('me/drafts');
+  };
+
   actions.updates = function(req, res) {
     res.render('me/update', {
     });
