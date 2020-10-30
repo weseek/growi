@@ -17,7 +17,9 @@ import PresentationIcon from '../Icons/PresentationIcon';
 
 
 const PageManagement = (props) => {
-  const { t, appContainer, pageContainer } = props;
+  const {
+    t, appContainer, pageContainer, isCompactMode,
+  } = props;
   const { path, isDeletable, isAbleToDeleteCompletely } = pageContainer.state;
 
   const { currentUser } = appContainer;
@@ -100,6 +102,24 @@ const PageManagement = (props) => {
   //   setIsArchiveCreateModalShown(false);
   // }
 
+  function renderDropdownItemForTopPage() {
+    return (
+      <>
+        <button className="dropdown-item" type="button" onClick={openPageDuplicateModalHandler}>
+          <i className="icon-fw icon-docs"></i> { t('Duplicate') }
+        </button>
+        {/* TODO Presentation Mode is not function. So if it is really necessary, survey this cause and implement Presentation Mode in top page */}
+        {/* <button className="dropdown-item" type="button" onClick={openPagePresentationModalHandler}>
+          <i className="icon-fw"><PresentationIcon /></i><span className="d-none d-sm-inline"> { t('Presentation Mode') }</span>
+        </button> */}
+        <button type="button" className="dropdown-item" onClick={() => { exportPageHandler('md') }}>
+          <i className="icon-fw icon-cloud-download"></i>{t('export_bulk.export_page_markdown')}
+        </button>
+        <div className="dropdown-divider"></div>
+      </>
+    );
+  }
+
   function renderDropdownItemForNotTopPage() {
     return (
       <>
@@ -110,7 +130,7 @@ const PageManagement = (props) => {
           <i className="icon-fw icon-docs"></i> { t('Duplicate') }
         </button>
         <button className="dropdown-item" type="button" onClick={openPagePresentationModalHandler}>
-          <i className="icon-fw"><PresentationIcon /></i><span className="d-none d-sm-inline"> { t('Presentation Mode') }</span>
+          <i className="icon-fw"><PresentationIcon /></i> { t('Presentation Mode') }
         </button>
         <button type="button" className="dropdown-item" onClick={() => { exportPageHandler('md') }}>
           <i className="icon-fw icon-cloud-download"></i>{t('export_bulk.export_page_markdown')}
@@ -175,7 +195,7 @@ const PageManagement = (props) => {
       <>
         <button
           type="button"
-          className="btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management"
+          className={`btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management ${isCompactMode && 'py-0'}`}
           data-toggle="dropdown"
         >
           <i className="icon-options"></i>
@@ -189,7 +209,7 @@ const PageManagement = (props) => {
       <>
         <button
           type="button"
-          className="btn nav-link bg-transparent dropdown-toggle dropdown-toggle-no-caret disabled"
+          className={`btn nav-link bg-transparent dropdown-toggle dropdown-toggle-no-caret disabled ${isCompactMode && 'py-0'}`}
           id="icon-options-guest-tltips"
         >
           <i className="icon-options"></i>
@@ -206,7 +226,7 @@ const PageManagement = (props) => {
     <>
       {currentUser == null ? renderDotsIconForGuestUser() : renderDotsIconForCurrentUser()}
       <div className="dropdown-menu dropdown-menu-right">
-        {!isTopPagePath && renderDropdownItemForNotTopPage()}
+        {isTopPagePath ? renderDropdownItemForTopPage() : renderDropdownItemForNotTopPage()}
         <button className="dropdown-item" type="button" onClick={openPageTemplateModalHandler}>
           <i className="icon-fw icon-magic-wand"></i> { t('template.option_label.create/edit') }
         </button>
@@ -227,6 +247,12 @@ PageManagement.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+
+  isCompactMode: PropTypes.bool,
+};
+
+PageManagement.defaultProps = {
+  isCompactMode: false,
 };
 
 export default withTranslation()(PageManagementWrapper);

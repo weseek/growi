@@ -36,6 +36,12 @@ $table-hover-bg: $bgcolor-table-hover;
   background-color: $bgcolor-global;
 }
 
+.grw-slack-notification {
+  .form-control {
+    background: white;
+  }
+}
+
 .form-control::placeholder {
   color: darken($bgcolor-global, 20%);
 }
@@ -273,6 +279,12 @@ $table-hover-bg: $bgcolor-table-hover;
   }
 }
 
+.growi .main {
+  .page-comments-row {
+    background: $bgcolor-subnav;
+  }
+}
+
 /*
  * GROWI tags
  */
@@ -280,5 +292,16 @@ $table-hover-bg: $bgcolor-table-hover;
   .grw-tag-label {
     color: $color-tags;
     background-color: $bgcolor-tags;
+  }
+}
+
+/*
+ * GROWI user page
+ */
+.grw-page-list-m {
+  .grw-page-list-title-m {
+    svg {
+      fill: $color-global;
+    }
   }
 }

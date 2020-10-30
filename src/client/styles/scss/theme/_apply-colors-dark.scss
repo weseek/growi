@@ -44,6 +44,12 @@ textarea.form-control {
   // border: 1px solid darken($border, 30%);
 }
 
+.grw-slack-notification {
+  .form-control {
+    background: $bgcolor-global;
+  }
+}
+
 .form-control[disabled],
 .form-control[readonly] {
   color: lighten($color-global, 10%);
@@ -106,11 +112,6 @@ ul.pagination {
   li.page-item {
     button.page-link {
       @extend .btn-dark;
-    }
-    &.active {
-      button {
-        @extend .active;
-      }
     }
   }
 }
@@ -348,6 +349,12 @@ body.on-edit {
   }
 }
 
+.growi .main {
+  .page-comments-row {
+    background: $bgcolor-subnav;
+  }
+}
+
 /*
  * GROWI tags
  */
@@ -355,5 +362,16 @@ body.on-edit {
   .grw-tag-label {
     color: $color-tags;
     background-color: $bgcolor-tags;
+  }
+}
+
+/*
+ * GROWI user page
+ */
+.grw-page-list-m {
+  .grw-page-list-title-m {
+    svg {
+      fill: $color-global;
+    }
   }
 }

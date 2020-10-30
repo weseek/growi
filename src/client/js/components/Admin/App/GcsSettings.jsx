@@ -18,6 +18,7 @@ function GcsSetting(props) {
       {gcsUseOnlyEnvVars && (
         <p
           className="alert alert-info"
+          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: t('admin:app_setting.note_for_the_only_env_option', { env: 'IS_GCS_ENV_PRIORITIZED' }) }}
         />
       )}
