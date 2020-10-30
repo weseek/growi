@@ -169,25 +169,30 @@ const PageDuplicateModal = (props) => {
             { t('modal_duplicate.label.Recursively') }
             <p className="form-text text-muted mt-0">{ t('modal_duplicate.help.recursive') }</p>
           </label>
-        </div>
-        {isDuplicateRecursively && <ComparePathsTable subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
-        {isDuplicateRecursively && existingPaths.length !== 0 && <DuplicatePathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />}
 
-        {isDuplicateRecursively && (
-          <div className="custom-control custom-checkbox custom-checkbox-warning">
-            <input
-              className="custom-control-input"
-              name="withoutExistRecursively"
-              id="cbDuplicatewithoutExistRecursively"
-              type="checkbox"
-              checked={isDuplicateRecursivelyWithoutExistPath}
-              onChange={changeIsDuplicateRecursivelyWithoutExistPathHandler}
-            />
-            <label className="custom-control-label" htmlFor="cbDuplicatewithoutExistRecursively">
-              { t('modal_duplicate.label.Duplicate without exist path') }
-            </label>
+          <div>
+            {isDuplicateRecursively && (
+            <div className="custom-control custom-checkbox custom-checkbox-warning">
+              <input
+                className="custom-control-input"
+                name="withoutExistRecursively"
+                id="cbDuplicatewithoutExistRecursively"
+                type="checkbox"
+                checked={isDuplicateRecursivelyWithoutExistPath}
+                onChange={changeIsDuplicateRecursivelyWithoutExistPathHandler}
+              />
+              <label className="custom-control-label" htmlFor="cbDuplicatewithoutExistRecursively">
+                { t('modal_duplicate.label.Duplicate without exist path') }
+              </label>
+            </div>
+            )}
           </div>
-        )}
+          <div>
+            {isDuplicateRecursively && <ComparePathsTable subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
+            {isDuplicateRecursively && existingPaths.length !== 0 && <DuplicatePathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />}
+          </div>
+        </div>
+
       </ModalBody>
       <ModalFooter>
         <ApiErrorMessageList errs={errs} targetPath={pageNameInput} />
