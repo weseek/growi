@@ -34,7 +34,6 @@ const PageDuplicateModal = (props) => {
   const [subordinatedPages, setSubordinatedPages] = useState([]);
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
   const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
-  const [isDuplicateRecursivelyExist] = useState(false);
   const [existingPaths, setExistingPaths] = useState([]);
 
   const checkExistPaths = async(newParentPath) => {
