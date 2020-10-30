@@ -8,7 +8,7 @@ import {
 import { withTranslation } from 'react-i18next';
 import PageListIcon from './Icons/PageListIcon';
 import TimeLineIcon from './Icons/TimeLineIcon';
-import RecentChangesIcon from './Icons/RecentChangesIcon';
+import HistoryIcon from './Icons/HistoryIcon';
 import AttachmentIcon from './Icons/AttachmentIcon';
 import ShareLinkIcon from './Icons/ShareLinkIcon';
 
@@ -41,7 +41,7 @@ const PageAccessoriesModal = (props) => {
         index: 1,
       },
       pageHistory: {
-        Icon: RecentChangesIcon,
+        Icon: HistoryIcon,
         i18n: t('History'),
         index: 2,
       },

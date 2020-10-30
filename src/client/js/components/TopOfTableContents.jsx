@@ -8,7 +8,7 @@ import PageAccessoriesContainer from '../services/PageAccessoriesContainer';
 
 import PageListIcon from './Icons/PageListIcon';
 import TimeLineIcon from './Icons/TimeLineIcon';
-import RecentChangesIcon from './Icons/RecentChangesIcon';
+import HistoryIcon from './Icons/HistoryIcon';
 import AttachmentIcon from './Icons/AttachmentIcon';
 import ShareLinkIcon from './Icons/ShareLinkIcon';
 
@@ -53,7 +53,7 @@ const TopOfTableContents = (props) => {
           className="btn btn-link grw-btn-top-of-table"
           onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('pageHistory')}
         >
-          <RecentChangesIcon />
+          <HistoryIcon />
         </button>
 
         <button
