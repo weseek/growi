@@ -70,6 +70,12 @@ jobs:
       matrix:
         node-version: [14.x]
 
+    services:
+      mongodb:
+        image: mongo:4.4
+        ports:
+        - 27017/tcp
+
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
@@ -103,15 +109,11 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
-    - name: Launch MongoDB
-      uses: wbari/start-mongoDB@v0.2
-      with:
-        mongoDBVersion: 3.6
     - name: yarn test
       run: |
         yarn test
       env:
-        MONGO_URI: mongodb://localhost:27017/growi_test
+        MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_test
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
@@ -202,6 +204,12 @@ jobs:
       matrix:
         node-version: [12.x, 14.x]
 
+    services:
+      mongodb:
+        image: mongo:4.4
+        ports:
+        - 27017/tcp
+
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
@@ -254,16 +262,15 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --production --depth=0
-    - name: Launch MongoDB
-      uses: wbari/start-mongoDB@v0.2
-      with:
-        mongoDBVersion: 3.6
+    - name: Get DB name
+      id: getdbname
+      run: |
+        echo ::set-output name=suffix::$(echo '${{ matrix.node-version }}' | sed s/\\.//)
     - name: yarn server:prod:ci
       run: |
         yarn server:prod:ci
       env:
-        MONGO_URI: mongodb://localhost:27017/growi
-
+        MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi-${{ steps.getdbname.outputs.suffix }}
     - name: Upload report as artifact
       uses: actions/upload-artifact@v2
       with:
