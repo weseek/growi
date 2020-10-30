@@ -9,7 +9,12 @@ import UserPicture from './UserPicture';
 const UserInfo = (props) => {
 
   const { pageContainer } = props;
-  const pageUser = pageContainer.state.pageUser;
+  const { pageUser } = pageContainer.state;
+
+  // do not display when the user does not exist
+  if (pageUser == null) {
+    return null;
+  }
 
   return (
     <div className="grw-users-info d-flex align-items-center d-edit-none">
