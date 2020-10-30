@@ -34,6 +34,36 @@ body {
   margin-top: 1rem;
 }
 
+.top-of-table-contents {
+  line-height: 1.25;
+  border-bottom: 1px solid transparent;
+
+  .user-list-content {
+    direction: rtl;
+
+    .liker-user-count,
+    .seen-user-count {
+      font-size: 12px;
+      font-weight: bolder;
+    }
+  }
+  .cls-1 {
+    isolation: isolate;
+  }
+}
+
+.revision-toc {
+  position: sticky;
+  // growisubnavigation + grw-navbar-boder
+  top: calc(100px + 4px);
+  width: 250px;
+  margin-top: 5px;
+
+  .revision-toc-content {
+    padding: 0;
+  }
+}
+
 .grw-fab {
   position: fixed;
   right: 1.5rem;
