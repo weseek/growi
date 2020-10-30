@@ -166,7 +166,8 @@ const PageDuplicateModal = (props) => {
             onChange={changeIsDuplicateRecursivelyHandler}
           />
           <label className="custom-control-label" htmlFor="cbDuplicateRecursively">
-            { t('modal_duplicate.label.Duplicate with child') }
+            { t('modal_duplicate.label.Recursively') }
+            <p className="form-text text-muted mt-0">{ t('modal_duplicate.help.recursive') }</p>
           </label>
         </div>
         {isDuplicateRecursively && <ComparePathsTable subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
