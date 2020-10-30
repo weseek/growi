@@ -109,14 +109,13 @@ if (pageContainer.state.pageId != null) {
     'liker-list': <LikerList />,
 
     'recent-created-icon': <RecentlyCreatedIcon />,
-    'user-created-list': <RecentCreated userId={pageContainer.state.creator._id} />,
     'user-bookmark-icon': <BookmarkIcon />,
-    'user-bookmark-list': <BookmarkList userId={pageContainer.state.creator._id} />,
   });
 }
 if (pageContainer.state.creator != null) {
   Object.assign(componentMappings, {
     'user-created-list': <RecentCreated userId={pageContainer.state.creator._id} />,
+    'user-bookmark-list': <BookmarkList userId={pageContainer.state.creator._id} />,
   });
 }
 if (pageContainer.state.path != null) {
