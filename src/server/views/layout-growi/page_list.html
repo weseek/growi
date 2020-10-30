@@ -7,16 +7,16 @@
 
 {% block content_main %}
   <div class="container">
-
     {% include '../widget/page_content.html' %}
-
   </div>
 {% endblock %}
 
 
 {% block content_main_after %}
   {% if isTrashPage() %}
-    <div id="trash-page-list"></div>
+    <div class="container">
+      <div id="trash-page-list"></div>
+    </div>
   {% endif %}
   {% if page %}
     {% include '../widget/page_attachments.html' %}
