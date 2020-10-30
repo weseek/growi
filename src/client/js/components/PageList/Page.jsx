@@ -12,7 +12,7 @@ export default class Page extends React.Component {
       page, noLink,
     } = this.props;
 
-    let pagePathElem = <PagePathLabel page={page} additionalClassNames={['mx-1']} />;
+    let pagePathElem = <PagePathLabel page={page} additionalClassNames={['mx-1', 'align-middle']} />;
     if (!noLink) {
       pagePathElem = <a className="text-break" href={page.path}>{pagePathElem}</a>;
     }
