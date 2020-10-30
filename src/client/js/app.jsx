@@ -80,7 +80,11 @@ Object.assign(componentMappings, {
 
   'not-found-page': <NotFoundPage />,
 
-  'not-found-alert': <NotFoundAlert onPageCreateClicked={navigationContainer.setEditorMode} />,
+  'not-found-alert': <NotFoundAlert
+    onPageCreateClicked={navigationContainer.setEditorMode}
+    isForbidden={pageContainer.state.isForbidden}
+    isNotCreatable={pageContainer.state.isNotCreatable}
+  />,
 
   'page-timeline': <PageTimeline />,
 
@@ -95,7 +99,7 @@ if (pageContainer.state.pageId != null) {
     'page-comments-list': <PageComments />,
     'page-comment-write': <CommentEditorLazyRenderer />,
     'page-management': <PageManagement />,
-    'revision-toc': <TableOfContents />,
+    'revision-toc': <TableOfContents isGuestUserMode={appContainer.currentUser == null} />,
     'seen-user-list': <SeenUserList />,
     'liker-list': <LikerList />,
 
@@ -115,11 +119,6 @@ if (pageContainer.state.path != null) {
     'page': <Page />,
     'grw-subnav-container': <GrowiSubNavigation />,
     'grw-subnav-switcher-container': <GrowiSubNavigationSwitcher />,
-  });
-}
-// additional definitions if user is logged in
-if (appContainer.currentUser != null) {
-  Object.assign(componentMappings, {
     'display-switcher': <DisplaySwitcher />,
   });
 }

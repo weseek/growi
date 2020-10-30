@@ -1,5 +1,6 @@
 {
   "Help": "Help",
+  "view": "View",
   "Edit": "Edit",
   "Delete": "Delete",
   "delete_all": "Delete all",
@@ -300,6 +301,9 @@
       "conflict": "Couldn't save the changes you made because someone else was editing this page. Please re-edit the affected section after reloading the page."
     }
   },
+  "page_comment": {
+    "display_the_page_when_posting_this_comment": "Display the page when posting this comment"
+  },
   "page_api_error": {
     "notfound_or_forbidden": "Original page is not found or forbidden.",
     "already_exists": "New page is already exists.",
@@ -439,6 +443,7 @@
     "open_sandbox": "Open Sandbox"
   },
   "hackmd": {
+    "hack_md": "HackMD",
     "not_set_up": "HackMD is not set up.",
     "used_for_not_found": "Can not use HackMD to a page that does not exist.",
     "start_to_edit": "Start to edit with HackMD",

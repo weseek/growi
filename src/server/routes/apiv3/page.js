@@ -112,7 +112,8 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  */
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
-  const loginRequired = require('../../middlewares/login-required')(crowi);
+  const loginRequired = require('../../middlewares/login-required')(crowi, true);
+  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
@@ -165,7 +166,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Page'
    */
-  router.put('/likes', accessTokenParser, loginRequired, csrf, validator.likes, apiV3FormValidator, async(req, res) => {
+  router.put('/likes', accessTokenParser, loginRequiredStrictly, csrf, validator.likes, apiV3FormValidator, async(req, res) => {
     const { pageId, bool } = req.body;
 
     let page;
@@ -227,7 +228,7 @@ module.exports = (crowi) => {
   *          200:
   *            description: Return page's markdown
   */
-  router.get('/export/:pageId', loginRequired, validator.export, async(req, res) => {
+  router.get('/export/:pageId', loginRequiredStrictly, validator.export, async(req, res) => {
     const { pageId } = req.params;
     const { format, revisionId = null } = req.query;
     let revision;
