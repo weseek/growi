@@ -126,7 +126,7 @@ if (pageContainer.state.path != null) {
     'page': <Page />,
     'grw-subnav-container': <GrowiSubNavigation />,
     'grw-subnav-switcher-container': <GrowiSubNavigationSwitcher />,
-    'user-info': <UserInfo pageUser={pageContainer.state.pageContainer} />,
+    'user-info': <UserInfo pageUser={pageContainer.state.pageUser} />,
     'display-switcher': <DisplaySwitcher />,
   });
 }
