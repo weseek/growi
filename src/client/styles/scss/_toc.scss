@@ -2,6 +2,8 @@
   flex-wrap: wrap;
 
   .grw-btn-top-of-table {
+    width: 35px;
+    height: 35px;
     svg {
       width: 16px;
       height: 16px;
@@ -30,7 +32,9 @@
 
   .revision-toc-content {
     padding: 10px;
-
+    li {
+      margin: 6px;
+    }
     > ul {
       padding-left: 0;
       ul {
@@ -41,7 +45,15 @@
     // first level of li
     > ul > li {
       padding: 5px;
-      margin: 4px 4px 4px 17px;
+      margin-right: 4px;
+      margin-left: 17px;
+    }
+  }
+
+  .grw-icon-container-recently-created {
+    svg {
+      width: 14px;
+      height: 14px;
     }
   }
 }

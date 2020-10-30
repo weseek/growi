@@ -71,7 +71,7 @@ class SidebarNav extends React.Component {
         </div>
         <div className="grw-sidebar-nav-secondary-container">
           {isAdmin && <SecondaryItem label="Admin" iconName="settings" href="/admin" />}
-          {isLoggedIn && <SecondaryItem label="Draft" iconName="file_copy" href={`/user/${currentUsername}#user-draft-list`} />}
+          {isLoggedIn && <SecondaryItem label="Draft" iconName="file_copy" href="/me/drafts" />}
           <SecondaryItem label="Help" iconName="help" href="https://docs.growi.org" isBlank />
           {isLoggedIn && <SecondaryItem label="Trash" iconName="delete" href="/trash" />}
         </div>

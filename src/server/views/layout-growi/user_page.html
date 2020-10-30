@@ -6,18 +6,19 @@
 {% endblock %}
 
 {% block content_main %}
-  <div class="row">
+  <div class="border-bottom pb-2">
+    <div class="user-info" id="user-info">
+    </div>
+  </div>
 
-    <div class="col grw-page-content-container">
+  <div class="d-flex justify-content-between">
+    <div class="grw-page-content-container flex-grow-1">
 
       {#
-        # ensure to insert 'user_page_content' widget to here
-        #
         #   Because this block has content like 'Bookmarks' or 'Recent Created' whose height changes dynamically,
         #   setting of 'revision-toc' (affix) is hindered.
         #}
       <div class="mb-5 user-page-content-container d-edit-none d-print-none">
-        {% include '../widget/user_page_content.html' %}
       </div>
 
       {% block content_main_before %}
@@ -34,7 +35,7 @@
     </div> {# /.col- #}
 
     {# relocate #revision-toc #}
-    <div class="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
+    <div class="d-none d-lg-block revision-toc-container">
       <div id="revision-toc" class="revision-toc mt-3 sps sps--abv" data-sps-offset="116">
         <div id="revision-toc-content" class="revision-toc-content"></div>
       </div>
@@ -48,6 +49,30 @@
 
 {% block content_main_after %}
   {% include 'widget/comments.html' %}
+
+  {% if page %}
+    <div class="grw-page-list-m my-5">
+      <h1 class="grw-page-list-title-m border-bottom pb-2 mb-3">
+        <i id="user-bookmark-icon"></i>
+        Bookmarks
+      </h1>
+      <div class="page-list" id="user-bookmark-list">
+        <div class="page-list-container">
+        </div>
+      </div>
+    </div>
+
+    <div class="grw-page-list-m my-5">
+      <h1 class="grw-page-list-title-m border-bottom pb-2 mb-3">
+        <i id="recent-created-icon"></i>
+        Recently Created
+      </h2>
+      <div class="page-list" id="user-created-list">
+        <div class="page-list-container">
+        </div>
+      </div>
+    </div>
+  {% endif %}
 
   {% if page %}
     {% include '../widget/page_attachments.html' %}
