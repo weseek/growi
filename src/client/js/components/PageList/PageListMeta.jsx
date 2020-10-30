@@ -36,7 +36,7 @@ export default class PageListMeta extends React.Component {
     }
 
     return (
-      <span className="page-list-meta align-middle">
+      <span className="page-list-meta">
         {topLabel}
         {templateLabel}
         {commentCount}
