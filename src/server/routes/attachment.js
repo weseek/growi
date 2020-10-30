@@ -286,7 +286,7 @@ module.exports = function(crowi, app) {
    * @apiParam {String} pageId, fileName
    */
   api.obsoletedGetForMongoDB = async function(req, res) {
-    if (process.env.FILE_UPLOAD !== 'mongodb') {
+    if (crowi.configManager.getConfig('crowi', 'app:fileUploadType') !== 'mongodb') {
       return res.status(400);
     }
 
