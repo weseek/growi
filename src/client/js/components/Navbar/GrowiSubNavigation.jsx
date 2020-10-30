@@ -172,7 +172,6 @@ const GrowiSubNavigation = (props) => {
             </div>
           ) }
           <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
-
         </div>
       </div>
 
@@ -182,7 +181,7 @@ const GrowiSubNavigation = (props) => {
         <div className="d-flex flex-column align-items-end">
           <div className="d-flex">
             { !isPageInTrash && !isPageNotFound && !isPageForbidden && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
-            { !isPageNotFound && !isPageForbidden && <PageManagement /> }
+            { !isPageNotFound && !isPageForbidden && <PageManagement isCompactMode={isCompactMode} /> }
           </div>
           <div className="mt-2">
             { !isCreatable && !isPageInTrash && !isPageForbidden && (
