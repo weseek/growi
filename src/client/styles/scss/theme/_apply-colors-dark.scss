@@ -22,9 +22,11 @@ $table-dark-bg: $bgcolor-table;
 $table-dark-border-color: $border-color-table;
 $table-dark-hover-color: $color-table-hover;
 $table-dark-hover-bg: $bgcolor-table-hover;
+$modal-header-border-color: $border-color;
 
 @import 'reboot-bootstrap-border-colors';
 @import 'reboot-bootstrap-tables';
+@import 'reboot-bootstrap-modal';
 
 // List Group
 @include override-list-group-item($color-list, $bgcolor-list, $color-list-hover, $bgcolor-list-hover, $color-list-active, $bgcolor-list-active);
@@ -353,13 +355,6 @@ ul.pagination {
  * admin settings
  */
 .admin-setting-header {
-  border-color: $border-color;
-}
-
-/*
- * modal
- */
-.grw-modal-head {
   border-color: $border-color;
 }
 
