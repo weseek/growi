@@ -4,6 +4,7 @@ import loggerFactory from '@alias/logger';
 
 import * as entities from 'entities';
 import * as toastr from 'toastr';
+import { isTrashPage } from '@commons/util/path-utils';
 import { toastError } from '../util/apiNotification';
 
 import {
@@ -58,6 +59,7 @@ export default class PageContainer extends Container {
       sumOfBookmarks: 0,
       createdAt: mainContent.getAttribute('data-page-created-at'),
       updatedAt: mainContent.getAttribute('data-page-updated-at'),
+      isTrashPage: isTrashPage(path),
       isForbidden: JSON.parse(mainContent.getAttribute('data-page-is-forbidden')),
       isDeleted:  JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
       isDeletable:  JSON.parse(mainContent.getAttribute('data-page-is-deletable')),
