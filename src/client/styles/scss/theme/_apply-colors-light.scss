@@ -36,6 +36,12 @@ $table-hover-bg: $bgcolor-table-hover;
   background-color: $bgcolor-global;
 }
 
+.grw-slack-notification {
+  .form-control {
+    background: white;
+  }
+}
+
 .form-control::placeholder {
   color: darken($bgcolor-global, 20%);
 }
@@ -270,6 +276,12 @@ $table-hover-bg: $bgcolor-table-hover;
 .comment-form {
   #slack-mark-white {
     display: none;
+  }
+}
+
+.growi .main {
+  .page-comments-row {
+    background: $bgcolor-subnav;
   }
 }
 

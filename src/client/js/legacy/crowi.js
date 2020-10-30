@@ -202,11 +202,6 @@ $(() => {
 window.addEventListener('load', (e) => {
   const { appContainer } = window;
 
-  // do nothing if user is guest
-  if (appContainer.currentUser == null) {
-    return;
-  }
-
   // hash on page
   if (window.location.hash) {
     const navigationContainer = appContainer.getContainer('NavigationContainer');

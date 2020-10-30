@@ -81,7 +81,7 @@ class AppSetting extends React.Component {
           >
             {t('admin:app_setting.default_language')}
           </label>
-          <div className="col-md-6">
+          <div className="col-md-6 py-2">
             {
               localeMetadatas.map(meta => (
                 <div key={meta.id} className="custom-control custom-radio custom-control-inline">

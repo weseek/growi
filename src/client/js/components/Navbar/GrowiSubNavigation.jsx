@@ -121,7 +121,7 @@ const PageReactionButtons = ({ appContainer, pageContainer }) => {
   return (
     <>
       {pageUser == null && (
-      <span>
+      <span className="mr-2">
         <LikeButton pageId={pageId} isLiked={isLiked} />
       </span>
       )}
@@ -145,6 +145,8 @@ const GrowiSubNavigation = (props) => {
 
   const { currentUser } = appContainer;
   const isPageNotFound = pageId == null;
+  // Tags cannot be edited while the new page and editorMode is view
+  const isTagLabelHidden = (editorMode !== 'edit' && isPageNotFound);
   const isUserPage = pageUser != null;
   const isPageInTrash = isTrashPage(path);
 
@@ -164,9 +166,9 @@ const GrowiSubNavigation = (props) => {
         ) }
 
         <div className="grw-path-nav-container">
-          { !isCompactMode && !isPageNotFound && !isPageForbidden && !isUserPage && (
+          { !isCompactMode && !isTagLabelHidden && !isPageForbidden && !isUserPage && (
             <div className="mb-2">
-              <TagLabels />
+              <TagLabels editorMode={editorMode} />
             </div>
           ) }
           <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
@@ -182,20 +184,13 @@ const GrowiSubNavigation = (props) => {
             { !isPageInTrash && !isPageNotFound && !isPageForbidden && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
             { !isPageNotFound && !isPageForbidden && <PageManagement /> }
           </div>
-          <div className="mt-2 d-flex">
-            { !isCreatable && !isPageInTrash && (
-            <ThreeStrandedButton
-              onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
-              isBtnDisabled={currentUser == null}
-              editorMode={editorMode}
-            />
-            )}
-            { isUserPage && (
-              <ul className="authors text-nowrap d-none d-lg-block d-edit-none py-0 pl-4 mb-0 ml-3">
-                <li className="pb-1">
-                  <AuthorInfo user={creator} date={createdAt} />
-                </li>
-              </ul>
+          <div className="mt-2">
+            { !isCreatable && !isPageInTrash && !isPageForbidden && (
+              <ThreeStrandedButton
+                onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
+                isBtnDisabled={currentUser == null}
+                editorMode={editorMode}
+              />
             )}
           </div>
         </div>
