@@ -75,7 +75,6 @@ const TableOfContents = (props) => {
           type="button"
           className="btn btn-outline-secondary btn-sm"
           href="#bookmarks-list"
-          onClick={() => navigationContainer.smoothScrollIntoview('bookmarks-list', 40)}
         >
 
           <i className="mr-2 icon-star"></i>
