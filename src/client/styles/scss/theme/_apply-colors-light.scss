@@ -283,15 +283,3 @@ $table-hover-bg: $bgcolor-table-hover;
     background-color: $bgcolor-tags;
   }
 }
-
-.revision-toc {
-  .top-of-table-contents {
-    border-color: $border-color;
-
-    .grw-seen-user-list {
-      &:before {
-        border-color: $border-color;
-      }
-    }
-  }
-}
