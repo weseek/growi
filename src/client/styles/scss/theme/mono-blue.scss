@@ -202,9 +202,4 @@ html[dark] {
       @include three-stranded-button(lighten($primary, 30%), $primary, darken($primary, 10%), darken($primary, 20%));
     }
   }
-  .grw-slack-notification {
-    .form-control {
-      background: $themedark;
-    }
-  }
 }
