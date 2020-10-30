@@ -17,7 +17,9 @@ import PresentationIcon from '../Icons/PresentationIcon';
 
 
 const PageManagement = (props) => {
-  const { t, appContainer, pageContainer } = props;
+  const {
+    t, appContainer, pageContainer, isCompactMode,
+  } = props;
   const { path, isDeletable, isAbleToDeleteCompletely } = pageContainer.state;
 
   const { currentUser } = appContainer;
@@ -193,7 +195,7 @@ const PageManagement = (props) => {
       <>
         <button
           type="button"
-          className="btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management"
+          className={`btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management ${isCompactMode && 'py-0'}`}
           data-toggle="dropdown"
         >
           <i className="icon-options"></i>
@@ -207,7 +209,7 @@ const PageManagement = (props) => {
       <>
         <button
           type="button"
-          className="btn nav-link bg-transparent dropdown-toggle dropdown-toggle-no-caret disabled"
+          className={`btn nav-link bg-transparent dropdown-toggle dropdown-toggle-no-caret disabled ${isCompactMode && 'py-0'}`}
           id="icon-options-guest-tltips"
         >
           <i className="icon-options"></i>
@@ -245,6 +247,12 @@ PageManagement.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+
+  isCompactMode: PropTypes.bool,
+};
+
+PageManagement.defaultProps = {
+  isCompactMode: false,
 };
 
 export default withTranslation()(PageManagementWrapper);
