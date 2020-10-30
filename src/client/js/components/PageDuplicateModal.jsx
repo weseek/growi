@@ -170,7 +170,7 @@ const PageDuplicateModal = (props) => {
           </label>
 
           <div>
-            {isDuplicateRecursively && (
+            {isDuplicateRecursively && existingPaths.length !== 0 && (
             <div className="custom-control custom-checkbox custom-checkbox-warning">
               <input
                 className="custom-control-input"
