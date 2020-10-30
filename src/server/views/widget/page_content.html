@@ -44,6 +44,10 @@
 <div class="flex-grow-1">
   {% include 'page_alerts.html' %}
 
+  {% if pageUser %}
+    <div class="user-info" id="user-info"></div>
+  {% endif %}
+
   <div id="display-switcher">
     <script type="text/template" id="raw-text-original">{{ revision.body.toString() | encodeHTML }}</script>
   </div>
