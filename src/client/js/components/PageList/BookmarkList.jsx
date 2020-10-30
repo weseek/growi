@@ -61,7 +61,7 @@ const BookmarkList = (props) => {
   ));
 
   return (
-    <div className="page-list-container-create">
+    <div className="bookmarks-list-container">
       {pages.length === 0 ? t('No bookmarks yet') : (
         <>
           <ul className="page-list-ul page-list-ul-flat mb-3">
