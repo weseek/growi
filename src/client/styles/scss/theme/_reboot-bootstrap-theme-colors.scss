@@ -1,8 +1,7 @@
 $theme-colors: map-merge($theme-colors, $colors);
 
-@mixin button-svg-icon-variant($color, $bordercolor) {
+@mixin button-svg-icon-variant($color) {
   svg {
-    border-color: $bordercolor;
     fill: $color;
   }
   &.disabled,
@@ -61,7 +60,7 @@ $theme-colors: map-merge($theme-colors, $colors);
 @each $color, $value in $theme-colors {
   .btn-#{$color} {
     @include button-variant($value, $value);
-    @include button-svg-icon-variant($value, $value);
+    @include button-svg-icon-variant($value);
   }
 }
 
