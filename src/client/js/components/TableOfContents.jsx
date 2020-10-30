@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
@@ -15,6 +15,7 @@ import RecentlyCreatedIcon from './Icons/RecentlyCreatedIcon';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:TableOfContents');
+const WIKI_HEADER_LINK = 120;
 
 /**
  * @author Yuki Takei <yuki@weseek.co.jp>
@@ -36,7 +37,7 @@ const TableOfContents = (props) => {
       return window.innerHeight - containerTop - 20 - 155 - 26 - 40;
     }
     return window.innerHeight - containerTop - 20 - 155 - 26;
-  }, []);
+  }, [isUserPage]);
 
   const { tocHtml } = pageContainer.state;
 
@@ -46,6 +47,10 @@ const TableOfContents = (props) => {
     const anchorsInToc = Array.from(tocDom.getElementsByTagName('a'));
     navigationContainer.addSmoothScrollEvent(anchorsInToc);
   }, [tocHtml, navigationContainer]);
+
+  // get element for smoothScroll
+  const getBookMarkListHeaderDom = useMemo(() => { return document.getElementById('bookmarks-list') }, []);
+  const getRecentlyCreatedListHeaderDom = useMemo(() => { return document.getElementById('recently-created-list') }, []);
 
   return (
     <>
@@ -67,14 +72,22 @@ const TableOfContents = (props) => {
 
       { isUserPage && (
       <div className="mt-3 d-flex justify-content-around">
-        <a className="btn btn-outline-secondary btn-sm" href="#">
+        <button
+          type="button"
+          className="btn btn-outline-secondary btn-sm"
+          onClick={() => navigationContainer.smoothScrollIntoView(getBookMarkListHeaderDom, WIKI_HEADER_LINK)}
+        >
           <i className="mr-2 icon-star"></i>
           <span>Bookmarks</span>
-        </a>
-        <a className="btn btn-outline-secondary btn-sm" href="#">
+        </button>
+        <button
+          type="button"
+          className="btn btn-outline-secondary btn-sm"
+          onClick={() => navigationContainer.smoothScrollIntoView(getRecentlyCreatedListHeaderDom, WIKI_HEADER_LINK)}
+        >
           <i className="grw-icon-container-recently-created mr-2"><RecentlyCreatedIcon /></i>
           <span>Recently Created</span>
-        </a>
+        </button>
       </div>
       )}
     </>
