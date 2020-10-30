@@ -90,9 +90,6 @@ $theme-colors: map-merge($theme-colors, $colors);
       color: $value;
     }
   }
-  .dropdown-item {
-    @include button-outline-svg-icon-variant($color-global, $color-hover: $color-global);
-  }
 }
 
 @each $theme-color, $color in $theme-colors {
