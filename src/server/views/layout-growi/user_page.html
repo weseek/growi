@@ -51,8 +51,8 @@
   {% include 'widget/comments.html' %}
 
   {% if page %}
-    <div class="grw-page-list-m mt-5 pb-5">
-      <h2 class="grw-page-list-title-m border-bottom pb-2 mb-3">
+    <div class="grw-page-list-m mt-5 pb-5 d-edit-none">
+      <h2 class="grw-page-list-title-m border-bottom pb-2 mb-3" id="bookmarks-list">
         <i id="user-bookmark-icon"></i>
         Bookmarks
       </h2>
@@ -62,8 +62,8 @@
       </div>
     </div>
 
-    <div class="grw-page-list-m mt-5 pb-5">
-      <h2 class="grw-page-list-title-m border-bottom pb-2 mb-3">
+    <div class="grw-page-list-m mt-5 pb-5 d-edit-none">
+      <h2 class="grw-page-list-title-m border-bottom pb-2 mb-3" id="recently-created-list">
         <i id="recent-created-icon"></i>
         Recently Created
       </h2>
