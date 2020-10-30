@@ -36,7 +36,7 @@ const TableOfContents = (props) => {
       return window.innerHeight - containerTop - 20 - 155 - 26 - 40;
     }
     return window.innerHeight - containerTop - 20 - 155 - 26;
-  }, []);
+  }, [isUserPage]);
 
   const { tocHtml } = pageContainer.state;
 

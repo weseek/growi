@@ -172,7 +172,6 @@ const GrowiSubNavigation = (props) => {
             </div>
           ) }
           <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
-
         </div>
       </div>
 
@@ -182,23 +181,22 @@ const GrowiSubNavigation = (props) => {
         <div className="d-flex flex-column align-items-end">
           <div className="d-flex">
             { !isPageInTrash && !isPageNotFound && !isPageForbidden && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
-            { !isPageNotFound && !isPageForbidden && <PageManagement /> }
+            { !isPageNotFound && !isPageForbidden && <PageManagement isCompactMode={isCompactMode} /> }
           </div>
           <div className="mt-2">
-            { !isCreatable && !isPageInTrash && !isPageForbidden
-            && (
-            <ThreeStrandedButton
-              onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
-              isBtnDisabled={currentUser == null}
-              editorMode={editorMode}
-            />
-)}
+            { !isCreatable && !isPageInTrash && !isPageForbidden && (
+              <ThreeStrandedButton
+                onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
+                isBtnDisabled={currentUser == null}
+                editorMode={editorMode}
+              />
+            )}
           </div>
         </div>
 
         {/* Page Authors */}
         { (!isCompactMode && !isUserPage && !isPageNotFound && !isPageForbidden) && (
-          <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none">
+          <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3">
             <li className="pb-1">
               <AuthorInfo user={creator} date={createdAt} />
             </li>
