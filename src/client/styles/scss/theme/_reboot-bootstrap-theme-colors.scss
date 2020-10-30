@@ -1,20 +1,36 @@
 $theme-colors: map-merge($theme-colors, $colors);
 
-@mixin button-svg-icon-variant($color) {
+@mixin button-svg-icon-variant($background, $hover-background: darken($background, 7.5%), $active-background: darken($background, 10%)) {
   svg {
-    fill: $color;
+    fill: color-yiq($background);
   }
+
+  @include hover() {
+    svg {
+      fill: color-yiq($hover-background);
+    }
+  }
+
+  &:focus,
+  &.focus {
+    svg {
+      fill: color-yiq($hover-background);
+    }
+  }
+
+  // Disabled comes first so active can properly restyle
   &.disabled,
   &:disabled {
     svg {
-      fill: $color;
+      color: color-yiq($background);
     }
   }
+
   &:not(:disabled):not(.disabled):active,
   &:not(:disabled):not(.disabled).active,
   .show > &.dropdown-toggle {
     svg {
-      fill: $color;
+      color: color-yiq($active-background);
     }
   }
 }
@@ -60,7 +76,7 @@ $theme-colors: map-merge($theme-colors, $colors);
 @each $color, $value in $theme-colors {
   .btn-#{$color} {
     @include button-variant($value, $value);
-    @include button-svg-icon-variant($value);
+    @include button-svg-icon-variant($value, $value);
   }
 }
 
