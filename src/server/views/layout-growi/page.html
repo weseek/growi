@@ -6,18 +6,18 @@
 
 
 {% block content_main %}
-  <div class="row">
+  <div class="d-flex justify-content-between">
 
-    <div class="col grw-page-content-container">
+    <div class="grw-page-content-container flex-grow-1">
 
       {% include '../widget/page_content.html' %}
 
     </div>
 
-    <div class="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
-        <div id="revision-toc" class="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
-          <div id="revision-toc-content" class="revision-toc-content"></div>
-        </div>
+    <div class="d-none d-lg-block revision-toc-container">
+      <div id="revision-toc" class="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
+        <div id="revision-toc-content" class="revision-toc-content"></div>
+      </div>
     </div>
 
   </div>
