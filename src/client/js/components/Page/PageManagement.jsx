@@ -129,10 +129,10 @@ const PageManagement = (props) => {
         <button className="dropdown-item" type="button" onClick={openPageDuplicateModalHandler}>
           <i className="icon-fw icon-docs"></i> { t('Duplicate') }
         </button>
-        <button className="dropdown-item" type="button" onClick={openPagePresentationModalHandler}>
+        <button className="dropdown-item btn-outline-text-gray-200" type="button" onClick={openPagePresentationModalHandler}>
           <i className="icon-fw"><PresentationIcon /></i> { t('Presentation Mode') }
         </button>
-        <button type="button" className="dropdown-item" onClick={() => { exportPageHandler('md') }}>
+        <button className="dropdown-item" type="button" onClick={() => { exportPageHandler('md') }}>
           <i className="icon-fw icon-cloud-download"></i>{t('export_bulk.export_page_markdown')}
         </button>
         {/* TODO GW-2746 create api to bulk export pages */}
