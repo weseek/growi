@@ -190,7 +190,7 @@ const PageRenameModal = (props) => {
               { t('modal_rename.label.Rename without exist path') }
             </label>
           </div>
-)}
+          )}
           {isRenameRecursively && <ComparePathsTable subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
           {isRenameRecursively && existingPaths.length !== 0 && <DuplicatedPathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />}
         </div>
