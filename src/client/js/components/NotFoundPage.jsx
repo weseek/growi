@@ -12,15 +12,15 @@ const NotFoundPage = (props) => {
 
   const navTabMapping = {
     pagelist: {
-      icon: <PageListIcon />,
+      Icon: PageListIcon,
+      Content: PageList,
       i18n: t('page_list'),
-      tabContent: <PageList />,
       index: 0,
     },
     timeLine: {
-      icon: <TimeLineIcon />,
+      Icon: TimeLineIcon,
+      Content: PageTimeline,
       i18n: t('Timeline View'),
-      tabContent: <PageTimeline />,
       index: 1,
     },
   };
