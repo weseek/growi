@@ -1,11 +1,11 @@
 $theme-colors: map-merge($theme-colors, $colors);
 
 @mixin button-svg-icon-variant($color, $bordercolor) {
-  fill: $secondary;
+  fill: $color;
 }
 
 @mixin button-outline-svg-icon-variant($value, $color-hover: $value) {
-  fill: $secondary;
+  fill: $value;
 }
 
 @each $color, $value in $theme-colors {
