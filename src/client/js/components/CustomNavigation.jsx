@@ -76,10 +76,9 @@ export const CustomNav = (props) => {
             return (
               <NavItem
                 key={key}
-                type="button"
-                className={`p-0 grw-custom-navtab ${isActive && 'active'}}`}
+                className={`p-0 grw-custom-navtab ${isActive && 'active'}`}
               >
-                <NavLink key={key} innerRef={elm => registerNavLink(key, elm)} disabled={!isLinkEnabled} onClick={() => navLinkClickHandler(key)}>
+                <NavLink type="button" key={key} innerRef={elm => registerNavLink(key, elm)} disabled={!isLinkEnabled} onClick={() => navLinkClickHandler(key)}>
                   <Icon /> {i18n}
                 </NavLink>
               </NavItem>
