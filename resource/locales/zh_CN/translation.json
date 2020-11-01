@@ -192,6 +192,7 @@
 		}
 	},
 	"page_me_apitoken": {
+    "api_token": "API Token",
 		"notice": {
 			"apitoken_issued": "API token 未发布。",
 			"update_token1": "您可以更新以生成新的API令牌。",

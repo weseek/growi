@@ -190,6 +190,7 @@
     }
   },
   "page_me_apitoken": {
+    "api_token": "API Token",
     "notice": {
       "apitoken_issued": "API token is not issued.",
       "update_token1": "You can update to generate a new API token.",

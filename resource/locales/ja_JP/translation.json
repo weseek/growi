@@ -193,6 +193,7 @@
     }
   },
   "page_me_apitoken": {
+    "api_token": "API Token",
     "notice": {
       "apitoken_issued": "API Token が設定されていません。",
       "update_token1": "API Token を更新すると、自動的に新しい Token が生成されます。",
