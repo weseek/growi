@@ -66,24 +66,24 @@ const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
 
 /* eslint-disable react/prop-types */
 // eslint-disable-next-line no-unused-vars
-const UserPagePathNav = ({ pageId, pagePath }) => {
-  const linkedPagePath = new LinkedPagePath(pagePath);
-  const latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />;
+// const UserPagePathNav = ({ pageId, pagePath }) => {
+//   const linkedPagePath = new LinkedPagePath(pagePath);
+//   const latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />;
 
-  return (
-    <div className="grw-page-path-nav">
-      <span className="d-flex align-items-center flex-wrap">
-        <h4 className="grw-user-page-path">{latterLink}</h4>
-        <div className="mx-2">
-          <RevisionPathControls
-            pageId={pageId}
-            pagePath={pagePath}
-          />
-        </div>
-      </span>
-    </div>
-  );
-};
+//   return (
+//     <div className="grw-page-path-nav">
+//       <span className="d-flex align-items-center flex-wrap">
+//         <h4 className="grw-user-page-path">{latterLink}</h4>
+//         <div className="mx-2">
+//           <RevisionPathControls
+//             pageId={pageId}
+//             pagePath={pagePath}
+//           />
+//         </div>
+//       </span>
+//     </div>
+//   );
+// };
 
 // eslint-disable-next-line no-unused-vars
 const UserInfo = ({ pageUser }) => {
