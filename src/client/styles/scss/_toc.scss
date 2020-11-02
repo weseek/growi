@@ -32,6 +32,7 @@
 
   .revision-toc-content {
     li {
+      margin: 6px;
     }
     > ul {
       padding-left: 0;
@@ -42,7 +43,7 @@
 
     // first level of li
     > ul > li {
-      padding-bottom: 1rem;
+      padding-bottom: 5px;
       padding-left: 5px;
       margin-right: 4px;
       margin-left: 17px;
