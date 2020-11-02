@@ -129,7 +129,7 @@ const PageManagement = (props) => {
         <button className="dropdown-item" type="button" onClick={openPageDuplicateModalHandler}>
           <i className="icon-fw icon-docs"></i> { t('Duplicate') }
         </button>
-        <button className="dropdown-item btn-outline-text-gray-200" type="button" onClick={openPagePresentationModalHandler}>
+        <button className="dropdown-item" type="button" onClick={openPagePresentationModalHandler}>
           <i className="icon-fw"><PresentationIcon /></i> { t('Presentation Mode') }
         </button>
         <button className="dropdown-item" type="button" onClick={() => { exportPageHandler('md') }}>
