@@ -86,8 +86,7 @@ Object.assign(componentMappings, {
 
   'not-found-alert': <NotFoundAlert
     onPageCreateClicked={navigationContainer.setEditorMode}
-    isForbidden={pageContainer.state.isForbidden}
-    isNotCreatable={pageContainer.state.isNotCreatable}
+    isHidden={pageContainer.state.isForbidden || pageContainer.state.isNotCreatable || pageContainer.state.isTrashPage}
   />,
 
   'page-timeline': <PageTimeline />,

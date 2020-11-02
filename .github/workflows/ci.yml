@@ -156,11 +156,11 @@ jobs:
       uses: actions/cache@v2
       with:
         path: node_modules/.cache
-        key: ${{ runner.OS }}-hard_source_webpack_dev-${{ matrix.node-version }}-${{ steps.date.outputs.YmdH }}
+        key: ${{ runner.OS }}-hard_source_webpack-${{ matrix.node-version }}-${{ steps.date.outputs.YmdH }}
         restore-keys: |
-          ${{ runner.os }}-hard_source_webpack_dev-${{ matrix.node-version }}-${{ steps.date.outputs.Ymd }}
-          ${{ runner.os }}-hard_source_webpack_dev-${{ matrix.node-version }}-${{ steps.date.outputs.Ym }}
-          ${{ runner.os }}-hard_source_webpack_dev-${{ matrix.node-version }}-${{ steps.date.outputs.Y }}
+          ${{ runner.os }}-hard_source_webpack-${{ matrix.node-version }}-${{ steps.date.outputs.Ymd }}
+          ${{ runner.os }}-hard_source_webpack-${{ matrix.node-version }}-${{ steps.date.outputs.Ym }}
+          ${{ runner.os }}-hard_source_webpack-${{ matrix.node-version }}-${{ steps.date.outputs.Y }}
     - name: Get yarn cache dir
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       id: cache-yarn

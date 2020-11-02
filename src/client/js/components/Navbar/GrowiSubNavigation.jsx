@@ -140,7 +140,7 @@ const GrowiSubNavigation = (props) => {
   const { isDrawerMode, editorMode } = navigationContainer.state;
   const {
     pageId, path, createdAt, creator, updatedAt, revisionAuthor,
-    isForbidden: isPageForbidden, pageUser, isCreatable,
+    isForbidden: isPageForbidden, pageUser, isNotCreatable,
   } = pageContainer.state;
 
   const { currentUser } = appContainer;
@@ -184,7 +184,7 @@ const GrowiSubNavigation = (props) => {
             { !isPageNotFound && !isPageForbidden && <PageManagement isCompactMode={isCompactMode} /> }
           </div>
           <div className="mt-2">
-            { !isCreatable && !isPageInTrash && !isPageForbidden && (
+            {!isNotCreatable && !isPageInTrash && !isPageForbidden && (
               <ThreeStrandedButton
                 onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
                 isBtnDisabled={currentUser == null}
