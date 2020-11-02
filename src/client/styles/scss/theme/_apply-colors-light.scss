@@ -283,3 +283,16 @@ $table-hover-bg: $bgcolor-table-hover;
     background-color: $bgcolor-tags;
   }
 }
+
+.revision-toc {
+  .top-of-table-contents {
+    border-color: $border-color;
+  }
+}
+
+/*
+ * modal
+ */
+.grw-modal-head {
+  border-color: $border-color;
+}
