@@ -86,29 +86,29 @@ const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
 // };
 
 // eslint-disable-next-line no-unused-vars
-const UserInfo = ({ pageUser }) => {
-  return (
-    <div className="grw-users-info d-flex align-items-center">
-      {/* eslint-disable-next-line react/jsx-no-undef */}
-      <UserPicture user={pageUser} />
+// const UserInfo = ({ pageUser }) => {
+//   return (
+//     <div className="grw-users-info d-flex align-items-center">
+//       {/* eslint-disable-next-line react/jsx-no-undef */}
+//       <UserPicture user={pageUser} />
 
-      <div className="users-meta">
-        <h1 className="user-page-name">
-          {pageUser.name}
-        </h1>
-        <div className="user-page-meta mt-1 mb-0">
-          <span className="user-page-username mr-2"><i className="icon-user mr-1"></i>{pageUser.username}</span>
-          <span className="user-page-email mr-2">
-            <i className="icon-envelope mr-1"></i>
-            {pageUser.isEmailPublished ? pageUser.email : '*****'}
-          </span>
-          {pageUser.introduction && <span className="user-page-introduction">{pageUser.introduction}</span>}
-        </div>
-      </div>
+//       <div className="users-meta">
+//         <h1 className="user-page-name">
+//           {pageUser.name}
+//         </h1>
+//         <div className="user-page-meta mt-1 mb-0">
+//           <span className="user-page-username mr-2"><i className="icon-user mr-1"></i>{pageUser.username}</span>
+//           <span className="user-page-email mr-2">
+//             <i className="icon-envelope mr-1"></i>
+//             {pageUser.isEmailPublished ? pageUser.email : '*****'}
+//           </span>
+//           {pageUser.introduction && <span className="user-page-introduction">{pageUser.introduction}</span>}
+//         </div>
+//       </div>
 
-    </div>
-  );
-};
+//     </div>
+//   );
+// };
 /* eslint-enable react/prop-types */
 
 /* eslint-disable react/prop-types */
