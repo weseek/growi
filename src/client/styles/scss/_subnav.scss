@@ -1,6 +1,7 @@
 .grw-subnav {
   min-height: $grw-subnav-min-height;
-  padding: 8px 15px;
+  padding-top: 8px;
+  padding-bottom: 8px;
 
   @include media-breakpoint-up(md) {
     min-height: $grw-subnav-min-height-md;
