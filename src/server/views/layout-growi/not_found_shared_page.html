@@ -1,13 +1,16 @@
 {% extends './shared_page.html' %}
 
-{% block content_header %}
+{% block html_title %}
+  {{ customizeService.generateCustomTitle('Page is not found') }}
 {% endblock %}
 
-{% block content_page %}
-  <div class="col-md-12">
-    <h2 class="text-muted">
-      <i class="icon-info" aria-hidden="true"></i>
+{% block content_main %}
+  <div class="container-lg">
+
+    <h2 class="text-muted mt-4">
+      <i class="icon-ban" aria-hidden="true"></i>
       Page is not found
     </h2>
+
   </div>
 {% endblock %}

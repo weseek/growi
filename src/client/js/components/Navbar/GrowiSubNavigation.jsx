@@ -96,7 +96,7 @@ const GrowiSubNavigation = (props) => {
   const { isDrawerMode, editorMode } = navigationContainer.state;
   const {
     pageId, path, createdAt, creator, updatedAt, revisionAuthor,
-    isForbidden: isPageForbidden, pageUser, isNotCreatable,
+    isForbidden: isPageForbidden, pageUser, isNotCreatable, shareLinkId,
   } = pageContainer.state;
 
   const { currentUser } = appContainer;
@@ -105,6 +105,7 @@ const GrowiSubNavigation = (props) => {
   const isTagLabelHidden = (editorMode !== 'edit' && isPageNotFound);
   const isUserPage = pageUser != null;
   const isPageInTrash = isTrashPage(path);
+  const isSharedPage = shareLinkId != null;
 
   function onThreeStrandedButtonClicked(viewType) {
     navigationContainer.setEditorMode(viewType);
@@ -122,7 +123,7 @@ const GrowiSubNavigation = (props) => {
         ) }
 
         <div className="grw-path-nav-container">
-          { !isCompactMode && !isTagLabelHidden && !isPageForbidden && !isUserPage && (
+          { !isCompactMode && !isTagLabelHidden && !isPageForbidden && !isUserPage && !isSharedPage && (
             <div className="mb-2">
               <TagLabels editorMode={editorMode} />
             </div>
