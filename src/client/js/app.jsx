@@ -15,6 +15,7 @@ import PageComments from './components/PageComments';
 import PageTimeline from './components/PageTimeline';
 import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
 import PageManagement from './components/Page/PageManagement';
+import ShareLinkAlert from './components/Page/ShareLinkAlert';
 import TrashPageList from './components/TrashPageList';
 import TrashPageAlert from './components/Page/TrashPageAlert';
 import NotFoundPage from './components/NotFoundPage';
@@ -28,6 +29,7 @@ import BookmarkList from './components/PageList/BookmarkList';
 import SeenUserList from './components/User/SeenUserList';
 import LikerList from './components/User/LikerList';
 import TableOfContents from './components/TableOfContents';
+import PageAccessories from './components/PageAccessories';
 import UserInfo from './components/User/UserInfo';
 import Fab from './components/Fab';
 
@@ -86,8 +88,7 @@ Object.assign(componentMappings, {
 
   'not-found-alert': <NotFoundAlert
     onPageCreateClicked={navigationContainer.setEditorMode}
-    isForbidden={pageContainer.state.isForbidden}
-    isNotCreatable={pageContainer.state.isNotCreatable}
+    isHidden={pageContainer.state.isForbidden || pageContainer.state.isNotCreatable || pageContainer.state.isTrashPage}
   />,
 
   'page-timeline': <PageTimeline />,
@@ -97,6 +98,8 @@ Object.assign(componentMappings, {
   'my-drafts': <MyDraftList />,
 
   'grw-fab-container': <Fab />,
+
+  'share-link-alert': <ShareLinkAlert />,
 });
 
 // additional definitions if data exists
@@ -105,19 +108,19 @@ if (pageContainer.state.pageId != null) {
     'page-comments-list': <PageComments />,
     'page-comment-write': <CommentEditorLazyRenderer />,
     'page-management': <PageManagement />,
-    'revision-toc': <TableOfContents isGuestUserMode={appContainer.currentUser == null} />,
+    'page-accessories': <PageAccessories isGuestUserMode={appContainer.currentUser == null} />,
+    'revision-toc': <TableOfContents />,
     'seen-user-list': <SeenUserList />,
     'liker-list': <LikerList />,
 
     'recent-created-icon': <RecentlyCreatedIcon />,
-    'user-created-list': <RecentCreated userId={pageContainer.state.creator._id} />,
     'user-bookmark-icon': <BookmarkIcon />,
-    'user-bookmark-list': <BookmarkList userId={pageContainer.state.creator._id} />,
   });
 }
 if (pageContainer.state.creator != null) {
   Object.assign(componentMappings, {
     'user-created-list': <RecentCreated userId={pageContainer.state.creator._id} />,
+    'user-bookmark-list': <BookmarkList userId={pageContainer.state.creator._id} />,
   });
 }
 if (pageContainer.state.path != null) {
