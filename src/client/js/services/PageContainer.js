@@ -156,6 +156,7 @@ export default class PageContainer extends Container {
   }
 
   async initStateOthers() {
+
     this.retrieveLikeInfo();
     this.retrieveBookmarkInfo();
     this.checkAndUpdateImageUrlCached(this.state.likerUsers);
