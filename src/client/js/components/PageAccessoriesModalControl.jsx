@@ -11,6 +11,7 @@ import TimeLineIcon from './Icons/TimeLineIcon';
 import HistoryIcon from './Icons/HistoryIcon';
 import AttachmentIcon from './Icons/AttachmentIcon';
 import ShareLinkIcon from './Icons/ShareLinkIcon';
+import SeenUserInfo from './User/SeenUserInfo';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
@@ -65,13 +66,7 @@ const PageAccessoriesModalControl = (props) => {
           {t('Not available for guest')}
         </UncontrolledTooltip>
       )}
-      <div
-        id="seen-user-list"
-        data-user-ids-str="{{ page.seenUsers|slice(-15)|default([])|reverse|join(',') }}"
-        data-sum-of-seen-users="{{ page.seenUsers.length|default(0) }}"
-        className="grw-seen-user-list"
-      >
-      </div>
+      <SeenUserInfo />
     </div>
   );
 };
