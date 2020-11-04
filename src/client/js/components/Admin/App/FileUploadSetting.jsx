@@ -16,7 +16,7 @@ function FileUploadSetting(props) {
 
   const { t, adminAppContainer } = props;
   const { fileUploadType } = adminAppContainer.state;
-  const fileUploadTypes = ['aws', 'gcs'];
+  const fileUploadTypes = ['aws', 'gcs', 'gridfs', 'local'];
 
   async function submitHandler() {
     const { t } = props;
@@ -42,7 +42,7 @@ function FileUploadSetting(props) {
         </span>
       </p>
 
-      <div className="row form-group mb-5">
+      <div className="row form-group mb-3">
         <label className="text-left text-md-right col-md-3 col-form-label">
           {t('admin:app_setting.file_upload_method')}
         </label>
@@ -58,9 +58,7 @@ function FileUploadSetting(props) {
                     id={`file-upload-type-radio-${type}`}
                     checked={adminAppContainer.state.fileUploadType === type}
                     disabled={adminAppContainer.state.isFixedFileUploadByEnvVar}
-                    onChange={(e) => {
-                    adminAppContainer.changeFileUploadType(type);
-                  }}
+                    onChange={() => { adminAppContainer.changeFileUploadType(type) }}
                   />
                   <label className="custom-control-label" htmlFor={`file-upload-type-radio-${type}`}>{t(`admin:app_setting.${type}_label`)}</label>
                 </div>
