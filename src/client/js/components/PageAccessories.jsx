@@ -14,7 +14,7 @@ const PageAccessories = (props) => {
 
   // not render only when this page is shared and user is not login.
   if (appContainer.isSharedUser && isGuestUserMode) {
-    return;
+    return null;
   }
 
   return (
