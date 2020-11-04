@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 function ExpandOrContractButton(props) {
@@ -8,17 +8,17 @@ function ExpandOrContractButton(props) {
     return isWindowExpanded ? 'icon-size-actual' : 'icon-size-fullscreen';
   }, [isWindowExpanded]);
 
-  const clickContractButtonHandler = useEffect(() => {
+  const clickContractButtonHandler = () => {
     if (contractWindow != null) {
       contractWindow();
     }
-  }, [contractWindow]);
+  };
 
-  const clickExpandButtonHandler = useEffect(() => {
+  const clickExpandButtonHandler = () => {
     if (expandWindow != null) {
       expandWindow();
     }
-  }, [expandWindow]);
+  };
 
   return (
     <button type="button" className="close" onClick={isWindowExpanded ? clickContractButtonHandler : clickExpandButtonHandler}>

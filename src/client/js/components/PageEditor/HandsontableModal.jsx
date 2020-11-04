@@ -13,6 +13,7 @@ import { debounce } from 'throttle-debounce';
 
 import MarkdownTableDataImportForm from './MarkdownTableDataImportForm';
 import MarkdownTable from '../../models/MarkdownTable';
+import ExpandOrContractButton from './ExpandOrContractButton';
 
 const DEFAULT_HOT_HEIGHT = 300;
 const MARKDOWNTABLE_TO_HANDSONTABLE_ALIGNMENT_SYMBOL_MAPPING = {
@@ -422,12 +423,15 @@ export default class HandsontableModal extends React.PureComponent {
 
     const dialogClassName = dialogClassNames.join(' ');
 
-    // eslint-disable-next-line no-unused-vars
     const buttons = (
       <span>
         {/* change order because of `float: right` by '.close' class */}
         {this.renderCloseButton()}
-        {this.renderExpandOrContractButton()}
+        <ExpandOrContractButton
+          isWindowExpanded={this.state.isWindowExpanded}
+          contractWindow={this.contractWindow}
+          expandWindow={this.expandWindow}
+        />
       </span>
     );
 
