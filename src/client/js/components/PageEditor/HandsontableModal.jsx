@@ -13,7 +13,7 @@ import { debounce } from 'throttle-debounce';
 
 import MarkdownTableDataImportForm from './MarkdownTableDataImportForm';
 import MarkdownTable from '../../models/MarkdownTable';
-import ExpandOrContractButton from './ExpandOrContractButton';
+import ExpandOrContractButton from '../ExpandOrContractButton';
 
 const DEFAULT_HOT_HEIGHT = 300;
 const MARKDOWNTABLE_TO_HANDSONTABLE_ALIGNMENT_SYMBOL_MAPPING = {
@@ -396,15 +396,6 @@ export default class HandsontableModal extends React.PureComponent {
       const height = this.hotTableContainer.getBoundingClientRect().height;
       this.setState({ handsontableHeight: height });
     }
-  }
-
-  renderExpandOrContractButton() {
-    const iconClassName = this.state.isWindowExpanded ? 'icon-size-actual' : 'icon-size-fullscreen';
-    return (
-      <button type="button" className="close" onClick={this.state.isWindowExpanded ? this.contractWindow : this.expandWindow}>
-        <i className={iconClassName} style={{ fontSize: '0.8em' }} aria-hidden="true"></i>
-      </button>
-    );
   }
 
   renderCloseButton() {
