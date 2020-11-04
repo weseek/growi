@@ -26,7 +26,6 @@ import RecentlyCreatedIcon from './components/Icons/RecentlyCreatedIcon';
 import MyDraftList from './components/MyDraftList/MyDraftList';
 import BookmarkIcon from './components/Icons/BookmarkIcon';
 import BookmarkList from './components/PageList/BookmarkList';
-import SeenUserList from './components/User/SeenUserList';
 import LikerList from './components/User/LikerList';
 import TableOfContents from './components/TableOfContents';
 import PageAccessories from './components/PageAccessories';
@@ -110,7 +109,6 @@ if (pageContainer.state.pageId != null) {
     'page-management': <PageManagement />,
     'page-accessories': appContainer.isSharedUser ? null : <PageAccessories isGuestUserMode={appContainer.currentUser == null} />,
     'revision-toc': <TableOfContents />,
-    'seen-user-list': <SeenUserList />,
     'liker-list': <LikerList />,
 
     'recent-created-icon': <RecentlyCreatedIcon />,
