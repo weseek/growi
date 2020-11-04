@@ -312,7 +312,7 @@ ul.pagination {
   .grw-btn-top-of-table {
     fill: $color-link;
   }
-  .grw-seen-user-list {
+  .grw-seen-user-info {
     @include border-vertical('before', $bordercolor-toc, 70%);
 
     .btn {
