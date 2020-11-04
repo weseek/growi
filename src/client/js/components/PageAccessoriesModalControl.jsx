@@ -11,6 +11,7 @@ import TimeLineIcon from './Icons/TimeLineIcon';
 import HistoryIcon from './Icons/HistoryIcon';
 import AttachmentIcon from './Icons/AttachmentIcon';
 import ShareLinkIcon from './Icons/ShareLinkIcon';
+import SeenUserInfo from './User/SeenUserInfo';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
@@ -18,10 +19,10 @@ const PageAccessoriesModalControl = (props) => {
   const { t, pageAccessoriesContainer, isGuestUserMode } = props;
 
   return (
-    <div className="top-of-table-contents d-flex align-items-end pb-1">
+    <div className="grw-page-accessories-control d-flex align-items-end pb-1">
       <button
         type="button"
-        className="btn btn-link grw-btn-top-of-table"
+        className="btn btn-link grw-btn-page-accessories"
         onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('pagelist')}
       >
         <PageListIcon />
@@ -29,7 +30,7 @@ const PageAccessoriesModalControl = (props) => {
 
       <button
         type="button"
-        className="btn btn-link grw-btn-top-of-table"
+        className="btn btn-link grw-btn-page-accessories"
         onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('timeline')}
       >
         <TimeLineIcon />
@@ -37,7 +38,7 @@ const PageAccessoriesModalControl = (props) => {
 
       <button
         type="button"
-        className="btn btn-link grw-btn-top-of-table"
+        className="btn btn-link grw-btn-page-accessories"
         onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('pageHistory')}
       >
         <HistoryIcon />
@@ -45,7 +46,7 @@ const PageAccessoriesModalControl = (props) => {
 
       <button
         type="button"
-        className="btn btn-link grw-btn-top-of-table"
+        className="btn btn-link grw-btn-page-accessories"
         onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('attachment')}
       >
         <AttachmentIcon />
@@ -54,7 +55,7 @@ const PageAccessoriesModalControl = (props) => {
       <div id="shareLink-btn-wrapper-for-tooltip">
         <button
           type="button"
-          className={`btn btn-link grw-btn-top-of-table ${isGuestUserMode && 'disabled'}`}
+          className={`btn btn-link grw-btn-page-accessories ${isGuestUserMode && 'disabled'}`}
           onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('shareLink')}
         >
           <ShareLinkIcon />
@@ -65,13 +66,7 @@ const PageAccessoriesModalControl = (props) => {
           {t('Not available for guest')}
         </UncontrolledTooltip>
       )}
-      <div
-        id="seen-user-list"
-        data-user-ids-str="{{ page.seenUsers|slice(-15)|default([])|reverse|join(',') }}"
-        data-sum-of-seen-users="{{ page.seenUsers.length|default(0) }}"
-        className="grw-seen-user-list ml-1 pl-1"
-      >
-      </div>
+      <SeenUserInfo />
     </div>
   );
 };

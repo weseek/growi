@@ -26,22 +26,22 @@ import RecentlyCreatedIcon from './components/Icons/RecentlyCreatedIcon';
 import MyDraftList from './components/MyDraftList/MyDraftList';
 import BookmarkIcon from './components/Icons/BookmarkIcon';
 import BookmarkList from './components/PageList/BookmarkList';
-import SeenUserList from './components/User/SeenUserList';
 import LikerList from './components/User/LikerList';
 import TableOfContents from './components/TableOfContents';
 import PageAccessories from './components/PageAccessories';
 import UserInfo from './components/User/UserInfo';
 import Fab from './components/Fab';
-
 import PersonalSettings from './components/Me/PersonalSettings';
+import UserContentsLinks from './components/UserContentsLinks';
+import GrowiSubNavigation from './components/Navbar/GrowiSubNavigation';
+import GrowiSubNavigationSwitcher from './components/Navbar/GrowiSubNavigationSwitcher';
+
 import NavigationContainer from './services/NavigationContainer';
 import PageContainer from './services/PageContainer';
 import PageHistoryContainer from './services/PageHistoryContainer';
 import CommentContainer from './services/CommentContainer';
 import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
-import GrowiSubNavigation from './components/Navbar/GrowiSubNavigation';
-import GrowiSubNavigationSwitcher from './components/Navbar/GrowiSubNavigationSwitcher';
 import PersonalContainer from './services/PersonalContainer';
 
 import { appContainer, componentMappings } from './base';
@@ -108,13 +108,13 @@ if (pageContainer.state.pageId != null) {
     'page-comments-list': <PageComments />,
     'page-comment-write': <CommentEditorLazyRenderer />,
     'page-management': <PageManagement />,
-    'page-accessories': <PageAccessories isGuestUserMode={appContainer.currentUser == null} />,
+    'page-accessories': <PageAccessories />,
     'revision-toc': <TableOfContents />,
-    'seen-user-list': <SeenUserList />,
     'liker-list': <LikerList />,
 
     'recent-created-icon': <RecentlyCreatedIcon />,
     'user-bookmark-icon': <BookmarkIcon />,
+    'grw-user-contents-links': <UserContentsLinks />,
   });
 }
 if (pageContainer.state.creator != null) {

@@ -50,8 +50,9 @@ const PageList = (props) => {
     );
   }
 
+  const liClasses = props.liClasses.join(' ');
   const pageList = pages.map(page => (
-    <li key={page._id} className="mb-3">
+    <li key={page._id} className={liClasses}>
       <Page page={page} />
     </li>
   ));
@@ -91,6 +92,11 @@ PageList.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer),
   pageContainer: PropTypes.instanceOf(PageContainer),
+
+  liClasses: PropTypes.arrayOf(PropTypes.string),
+};
+PageList.defaultProps = {
+  liClasses: ['mb-3'],
 };
 
 export default PageListTranslation;
