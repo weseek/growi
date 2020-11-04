@@ -30,6 +30,10 @@ body {
 
 .main {
   margin-top: 1rem;
+
+  @include media-breakpoint-up(md) {
+    margin-top: 3rem;
+  }
 }
 
 .top-of-table-contents {
