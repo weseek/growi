@@ -361,6 +361,10 @@ ul.pagination {
   .nav-link svg {
     fill: $color-link;
   }
+
+  .nav-link svg.disabled {
+    fill: #8e9ba7;
+  }
   .modal-split-hr {
     background-color: $bordercolor-nav-tabs;
   }
