@@ -52,7 +52,8 @@ export default class PageContainer extends Container {
       isLiked: false,
       isBookmarked: false,
       seenUsers: [],
-      countOfSeenUsers: 0,
+      seenUserIds: mainContent.getAttribute('data-page-ids-of-seen-users'),
+      countOfSeenUsers: mainContent.getAttribute('data-page-count-of-seen-users'),
 
       likerUsers: [],
       sumOfLikers: 0,
@@ -61,15 +62,15 @@ export default class PageContainer extends Container {
       updatedAt: mainContent.getAttribute('data-page-updated-at'),
       isTrashPage: isTrashPage(path),
       isForbidden: JSON.parse(mainContent.getAttribute('data-page-is-forbidden')),
-      isDeleted:  JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
-      isDeletable:  JSON.parse(mainContent.getAttribute('data-page-is-deletable')),
+      isDeleted: JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
+      isDeletable: JSON.parse(mainContent.getAttribute('data-page-is-deletable')),
       isNotCreatable: JSON.parse(mainContent.getAttribute('data-page-is-not-creatable')),
-      isAbleToDeleteCompletely:  JSON.parse(mainContent.getAttribute('data-page-is-able-to-delete-completely')),
+      isAbleToDeleteCompletely: JSON.parse(mainContent.getAttribute('data-page-is-able-to-delete-completely')),
       pageUser: JSON.parse(mainContent.getAttribute('data-page-user')),
       tags: null,
       hasChildren: JSON.parse(mainContent.getAttribute('data-page-has-children')),
       templateTagData: mainContent.getAttribute('data-template-tags') || null,
-      shareLinksNumber:  mainContent.getAttribute('data-share-links-number'),
+      shareLinksNumber: mainContent.getAttribute('data-share-links-number'),
       shareLinkId: JSON.parse(mainContent.getAttribute('data-share-link-id') || null),
 
       // latest(on remote) information
@@ -100,6 +101,7 @@ export default class PageContainer extends Container {
     interceptorManager.addInterceptor(new DrawioInterceptor(appContainer), 20);
     interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(appContainer), 900); // process as late as possible
 
+    this.retrieveSeenUsers();
     this.initStateMarkdown();
     this.initStateOthers();
 
@@ -147,16 +149,15 @@ export default class PageContainer extends Container {
   }
 
   async retrieveSeenUsers() {
-    const res = await this.appContainer.apiv3Get('/page/seen-user-info', { _id: this.state.pageId });
+    const { users } = await this.appContainer.apiGet('/users.list', { user_ids: this.state.seenUserIds });
 
-    this.setState({ seenUsers: res.users, sumOfBookmarks: res.numOfSeenUsers });
+    this.setState({ seenUsers: users });
+    this.checkAndUpdateImageUrlCached(users);
   }
 
   async initStateOthers() {
-    this.retrieveSeenUsers();
     this.retrieveLikeInfo();
     this.retrieveBookmarkInfo();
-    this.checkAndUpdateImageUrlCached(this.state.seenUsers);
     this.checkAndUpdateImageUrlCached(this.state.likerUsers);
   }
 
