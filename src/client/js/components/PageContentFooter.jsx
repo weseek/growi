@@ -1,23 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import AuthorInfo from './NavBar/AuthorInfo';
+
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 const PageContentFooter = (props) => {
+  const { pageContainer } = props;
+  const {
+    createdAt, creator, updatedAt, revisionAuthor,
+  } = pageContainer.state;
+
   return (
     <div className="page-attachments-row mt-5 py-4 d-edit-none d-print-none">
       <div className="container-lg">
         <p className="page-meta">
-          <p>Last revision posted at </p>
-          <p>Created at</p>
-          {/* <p>Last revision posted at {{ page.revision.createdAt|datetz('Y-m-d H:i:s') }} by <a href="/user/{{ page.revision.author.username }}"><
-            img src="{{ page.revision.author.imageUrlCached|default('/images/icons/user.svg') }}" class="picture picture-sm rounded-circle">
-            {{ page.revision.author.name }}</a></p>
-          <p>Created at {{ page.createdAt|datetz('Y-m-d H:i:s') }} by <a href="/user/{{ page.creator.username }}">
-            <img src="{{ page.creator.imageUrlCached|default('/images/icons/user.svg') }}" class="picture picture-sm rounded-circle">
-            {{ page.creator.name }}</a></p> */}
+          <AuthorInfo user={creator} date={createdAt} mode="create" locate="footer" />
+          <AuthorInfo user={revisionAuthor} date={updatedAt} mode="update" locate="footer" />
         </p>
       </div>
     </div>
