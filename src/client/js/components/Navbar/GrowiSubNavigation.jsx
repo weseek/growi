@@ -64,51 +64,7 @@ const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
   );
 };
 
-/* eslint-disable react/prop-types */
-// eslint-disable-next-line no-unused-vars
-const UserPagePathNav = ({ pageId, pagePath }) => {
-  const linkedPagePath = new LinkedPagePath(pagePath);
-  const latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />;
 
-  return (
-    <div className="grw-page-path-nav">
-      <span className="d-flex align-items-center flex-wrap">
-        <h4 className="grw-user-page-path">{latterLink}</h4>
-        <div className="mx-2">
-          <RevisionPathControls
-            pageId={pageId}
-            pagePath={pagePath}
-          />
-        </div>
-      </span>
-    </div>
-  );
-};
-
-// eslint-disable-next-line no-unused-vars
-const UserInfo = ({ pageUser }) => {
-  return (
-    <div className="grw-users-info d-flex align-items-center">
-      {/* eslint-disable-next-line react/jsx-no-undef */}
-      <UserPicture user={pageUser} />
-
-      <div className="users-meta">
-        <h1 className="user-page-name">
-          {pageUser.name}
-        </h1>
-        <div className="user-page-meta mt-1 mb-0">
-          <span className="user-page-username mr-2"><i className="icon-user mr-1"></i>{pageUser.username}</span>
-          <span className="user-page-email mr-2">
-            <i className="icon-envelope mr-1"></i>
-            {pageUser.isEmailPublished ? pageUser.email : '*****'}
-          </span>
-          {pageUser.introduction && <span className="user-page-introduction">{pageUser.introduction}</span>}
-        </div>
-      </div>
-
-    </div>
-  );
-};
 /* eslint-enable react/prop-types */
 
 /* eslint-disable react/prop-types */
@@ -140,7 +96,7 @@ const GrowiSubNavigation = (props) => {
   const { isDrawerMode, editorMode } = navigationContainer.state;
   const {
     pageId, path, createdAt, creator, updatedAt, revisionAuthor,
-    isForbidden: isPageForbidden, pageUser, isCreatable,
+    isForbidden: isPageForbidden, pageUser, isNotCreatable, shareLinkId,
   } = pageContainer.state;
 
   const { currentUser } = appContainer;
@@ -149,13 +105,14 @@ const GrowiSubNavigation = (props) => {
   const isTagLabelHidden = (editorMode !== 'edit' && isPageNotFound);
   const isUserPage = pageUser != null;
   const isPageInTrash = isTrashPage(path);
+  const isSharedPage = shareLinkId != null;
 
   function onThreeStrandedButtonClicked(viewType) {
     navigationContainer.setEditorMode(viewType);
   }
 
   return (
-    <div className={`grw-subnav d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
+    <div className={`grw-subnav container-fluid d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
 
       {/* Left side */}
       <div className="d-flex grw-subnav-left-side">
@@ -166,7 +123,7 @@ const GrowiSubNavigation = (props) => {
         ) }
 
         <div className="grw-path-nav-container">
-          { !isCompactMode && !isTagLabelHidden && !isPageForbidden && !isUserPage && (
+          { !isCompactMode && !isTagLabelHidden && !isPageForbidden && !isUserPage && !isSharedPage && (
             <div className="mb-2">
               <TagLabels editorMode={editorMode} />
             </div>
@@ -184,7 +141,7 @@ const GrowiSubNavigation = (props) => {
             { !isPageNotFound && !isPageForbidden && <PageManagement isCompactMode={isCompactMode} /> }
           </div>
           <div className="mt-2">
-            { !isCreatable && !isPageInTrash && !isPageForbidden && (
+            {!isNotCreatable && !isPageInTrash && !isPageForbidden && (
               <ThreeStrandedButton
                 onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
                 isBtnDisabled={currentUser == null}

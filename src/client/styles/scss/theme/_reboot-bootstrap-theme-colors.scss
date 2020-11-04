@@ -22,7 +22,7 @@ $theme-colors: map-merge($theme-colors, $colors);
   &.disabled,
   &:disabled {
     svg {
-      color: color-yiq($background);
+      fill: color-yiq($background);
     }
   }
 
@@ -30,7 +30,7 @@ $theme-colors: map-merge($theme-colors, $colors);
   &:not(:disabled):not(.disabled).active,
   .show > &.dropdown-toggle {
     svg {
-      color: color-yiq($active-background);
+      fill: color-yiq($active-background);
     }
   }
 }
