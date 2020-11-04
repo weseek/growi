@@ -23,7 +23,7 @@ const WIKI_HEADER_LINK = 120;
  */
 const TableOfContents = (props) => {
 
-  const { pageContainer, navigationContainer, isGuestUserMode } = props;
+  const { pageContainer, navigationContainer } = props;
   const { pageUser } = pageContainer.state;
   const isUserPage = pageUser != null;
 
@@ -54,7 +54,6 @@ const TableOfContents = (props) => {
 
   return (
     <>
-      <TopOfTableContents isGuestUserMode={isGuestUserMode} />
       <StickyStretchableScroller
         contentsElemSelector=".revision-toc .markdownIt-TOC"
         stickyElemSelector="#revision-toc"
@@ -103,8 +102,6 @@ const TableOfContentsWrapper = withUnstatedContainers(TableOfContents, [PageCont
 TableOfContents.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
-
-  isGuestUserMode: PropTypes.bool.isRequired,
 };
 
 export default withTranslation()(TableOfContentsWrapper);
