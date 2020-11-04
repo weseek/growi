@@ -72,6 +72,10 @@ const PageAccessoriesModal = (props) => {
     setIsWindowExpanded(true);
   };
 
+  const contractWindow = () => {
+    setIsWindowExpanded(false);
+  };
+
   const buttons = (
     <span>
       {/* change order because of `float: right` by '.close' class */}
@@ -80,13 +84,15 @@ const PageAccessoriesModal = (props) => {
       </button>
       <ExpandOrContractButton
         isWindowExpanded={isWindowExpanded}
+        expandWindow={expandWindow}
+        contractWindow={contractWindow}
       />
     </span>
   );
 
   return (
     <React.Fragment>
-      <Modal size="xl" isOpen={props.isOpen} toggle={closeModalHandler} className="grw-page-accessories-modal">
+      <Modal size="xl" isOpen={props.isOpen} toggle={closeModalHandler} className={`grw-page-accessories-modal ${isWindowExpanded && 'grw-modal-expanded'} `}>
         <ModalHeader className="p-0" toggle={closeModalHandler} close={buttons}>
           <CustomNav activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={switchActiveTab} />
         </ModalHeader>

@@ -407,12 +407,6 @@ export default class HandsontableModal extends React.PureComponent {
   }
 
   render() {
-    const dialogClassNames = ['handsontable-modal'];
-    if (this.state.isWindowExpanded) {
-      dialogClassNames.push('handsontable-modal-expanded');
-    }
-
-    const dialogClassName = dialogClassNames.join(' ');
 
     const buttons = (
       <span>
@@ -427,7 +421,7 @@ export default class HandsontableModal extends React.PureComponent {
     );
 
     return (
-      <Modal isOpen={this.state.show} toggle={this.cancel} size="lg" className={dialogClassName}>
+      <Modal isOpen={this.state.show} toggle={this.cancel} size="lg" className={`handsontable-modal ${this.state.isWindowExpanded && 'grw-modal-expanded'}`}>
         <ModalHeader tag="h4" toggle={this.cancel} close={buttons} className="bg-primary text-light">
           Edit Table
         </ModalHeader>
