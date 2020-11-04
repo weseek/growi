@@ -6,43 +6,11 @@
 {% endblock %}
 
 {% block content_main %}
+  <div class="container-lg">
 
-  <div class="d-flex justify-content-between">
-    <div class="grw-page-content-container flex-grow-1">
-
-      <div class="user-info" id="user-info">
-      </div>
-
-      {#
-        #   Because this block has content like 'Bookmarks' or 'Recent Created' whose height changes dynamically,
-        #   setting of 'revision-toc' (affix) is hindered.
-        #}
-      <div class="mb-5 user-page-content-container d-edit-none d-print-none">
-      </div>
-
-      {% block content_main_before %}
-        {% parent %}
-      {% endblock %}
-
-      {% include '../widget/page_content.html' %}
-
-      {# force remove #revision-toc from #content_main of parent #}
-      <script>
-        $('#revision-toc').remove();
-      </script>
-
-    </div> {# /.col- #}
-
-    {# relocate #revision-toc #}
-    <div class="d-none d-lg-block revision-toc-container">
-      <div id="revision-toc" class="revision-toc mt-3 sps sps--abv" data-sps-offset="116">
-        <div id="revision-toc-content" class="revision-toc-content"></div>
-      </div>
-    </div> {# /.col- #}
+    {% include '../widget/page_content.html' %}
 
   </div>
-
-
 {% endblock %}
 
 
@@ -50,26 +18,30 @@
   {% include 'widget/comments.html' %}
 
   {% if page %}
-    <div class="grw-page-list-m mt-5 pb-5 d-edit-none">
-      <h2 class="grw-page-list-title-m border-bottom pb-2 mb-3" id="bookmarks-list">
-        <i id="user-bookmark-icon"></i>
-        Bookmarks
-      </h2>
-      <div class="page-list" id="user-bookmark-list">
-        <div class="page-list-container">
-        </div>
-      </div>
-    </div>
+    <div class="container-lg">
 
-    <div class="grw-page-list-m mt-5 pb-5 d-edit-none">
-      <h2 class="grw-page-list-title-m border-bottom pb-2 mb-3" id="recently-created-list">
-        <i id="recent-created-icon"></i>
-        Recently Created
-      </h2>
-      <div class="page-list" id="user-created-list">
-        <div class="page-list-container">
+      <div class="grw-page-list-m mt-5 pb-5 d-edit-none">
+        <h2 class="grw-page-list-title-m border-bottom pb-2 mb-3" id="bookmarks-list">
+          <i id="user-bookmark-icon"></i>
+          Bookmarks
+        </h2>
+        <div class="page-list" id="user-bookmark-list">
+          <div class="page-list-container">
+          </div>
         </div>
       </div>
+
+      <div class="grw-page-list-m mt-5 pb-5 d-edit-none">
+        <h2 class="grw-page-list-title-m border-bottom pb-2 mb-3" id="recently-created-list">
+          <i id="recent-created-icon"></i>
+          Recently Created
+        </h2>
+        <div class="page-list" id="user-created-list">
+          <div class="page-list-container">
+          </div>
+        </div>
+      </div>
+
     </div>
   {% endif %}
 

@@ -1,5 +1,5 @@
 {% if page %}
-<div id="content-main" class="content-main container"
+<div id="content-main" class="content-main d-flex"
   data-path="{{ encodeURI(page.path) }}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
   data-page-id="{% if page %}{{ page._id.toString() }}{% endif %}"
@@ -32,7 +32,7 @@
   data-share-link-id="{% if sharelink %}{{ sharelink._id|json }}{% endif %}"
   >
 {% else %}
-<div id="content-main" class="content-main"
+<div id="content-main" class="content-main d-flex"
   data-path="{{ encodeURI(path) }}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
   data-slack-channels="{{ slack|default('') }}"
@@ -41,12 +41,25 @@
   >
 {% endif %}
 
+<div class="flex-grow-1">
   {% include 'page_alerts.html' %}
 
-<div id="display-switcher">
-  <script type="text/template" id="raw-text-original">{{ revision.body.toString() | encodeHTML }}</script>
+  {% if pageUser %}
+    <div class="user-info" id="user-info"></div>
+  {% endif %}
+
+  <div id="display-switcher">
+    <script type="text/template" id="raw-text-original">{{ revision.body.toString() | encodeHTML }}</script>
+  </div>
+  <div id="page-editor-navbar-bottom-container" class="d-none d-edit-block"></div>
 </div>
-<div id="page-editor-navbar-bottom-container" class="d-none d-edit-block"></div>
+
+<div class="d-none d-lg-block revision-toc-container ml-4">
+  <div id="revision-toc" class="revision-toc sps sps--abv" data-sps-offset="123">
+    <div id="revision-toc-content" class="revision-toc-content"></div>
+  </div>
+</div>
+
 <div id="grw-page-status-alert-container"></div>
 
 </div>
