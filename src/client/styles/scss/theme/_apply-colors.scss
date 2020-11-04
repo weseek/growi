@@ -345,14 +345,16 @@ ul.pagination {
     }
   }
 
-  .modal-header {
-    button.close {
-      color: $secondary;
-    }
-  }
-
   .grw-nav-slide-hr {
     border-color: $color-link;
+  }
+}
+
+.grw-page-accessories-modal {
+  .modal-header {
+    .close {
+      color: $secondary;
+    }
   }
 }
 
