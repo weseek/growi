@@ -313,8 +313,6 @@ ul.pagination {
     fill: $color-link;
   }
   .grw-seen-user-list {
-    @include border-vertical('before', $bordercolor-toc, 70%);
-
     .btn {
       color: $color-seen-user;
       &:active {
