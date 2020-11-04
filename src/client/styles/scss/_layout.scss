@@ -36,11 +36,12 @@ body {
   }
 }
 
-.grw-side-contents-container {
+.grw-side-contents-sticky-container {
   position: sticky;
   // growisubnavigation + grw-navbar-boder
   top: calc(100px + 4px);
   width: 250px;
+  min-width: 250px;
   margin-top: 5px;
 }
 

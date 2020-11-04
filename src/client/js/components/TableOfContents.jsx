@@ -29,15 +29,30 @@ const TableOfContents = (props) => {
 
   const calcViewHeight = useCallback(() => {
     // calculate absolute top of '#revision-toc' element
+    const parentElem = document.querySelector('.grw-side-contents-container');
+    const parentBottom = parentElem.getBoundingClientRect().bottom;
     const containerElem = document.querySelector('#revision-toc');
     const containerTop = containerElem.getBoundingClientRect().top;
+    const containerComputedStyle = getComputedStyle(containerElem);
+    const containerPaddingTop = parseFloat(containerComputedStyle['padding-top']);
 
-    // window height - revisionToc top - .system-version - .grw-fab-container height - grw-side-contents-container height
-    if (isUserPage) {
-      return window.innerHeight - containerTop - 20 - 155 - 26 - 40;
-    }
-    return window.innerHeight - containerTop - 20 - 155 - 26;
-  }, [isUserPage]);
+    // get smaller bottom line of window height - .system-version height) and containerTop
+    const bottom = Math.min(window.innerHeight - 20, parentBottom);
+
+    console.log('calcViewHeight', {
+      windowInnerHeight: window.innerHeight,
+      parentBottom,
+      containerTop,
+      viewHeight1: bottom - containerTop,
+      viewHeight2: bottom - (containerTop + containerPaddingTop),
+    });
+
+    // if (isUserPage) {
+    //   return window.innerHeight - containerTop - 20 - 155 - 26 - 40;
+    // }
+    // bottom - revisionToc top
+    return bottom - (containerTop + containerPaddingTop);
+  }, []);
 
   const { tocHtml } = pageContainer.state;
 
@@ -56,7 +71,7 @@ const TableOfContents = (props) => {
     <>
       <StickyStretchableScroller
         contentsElemSelector=".revision-toc .markdownIt-TOC"
-        stickyElemSelector="#revision-toc"
+        stickyElemSelector=".grw-side-contents-sticky-container"
         calcViewHeightFunc={calcViewHeight}
       >
         <div
