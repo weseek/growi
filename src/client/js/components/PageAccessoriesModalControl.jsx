@@ -19,7 +19,7 @@ const PageAccessoriesModalControl = (props) => {
   const { t, pageAccessoriesContainer, isGuestUserMode } = props;
 
   return (
-    <div className="grw-page-accessories-control d-flex align-items-end pb-1">
+    <div className="grw-page-accessories-control d-flex align-items-center pb-1">
       <button
         type="button"
         className="btn btn-link grw-btn-page-accessories"
@@ -66,6 +66,9 @@ const PageAccessoriesModalControl = (props) => {
           {t('Not available for guest')}
         </UncontrolledTooltip>
       )}
+
+      <span className="border-left grw-border-vr mx-1">&nbsp;</span>
+
       <SeenUserInfo />
     </div>
   );
