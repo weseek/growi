@@ -107,7 +107,7 @@ if (pageContainer.state.pageId != null) {
     'page-comments-list': <PageComments />,
     'page-comment-write': <CommentEditorLazyRenderer />,
     'page-management': <PageManagement />,
-    'page-accessories': appContainer.isSharedUser ? null : <PageAccessories isGuestUserMode={appContainer.currentUser == null} />,
+    'page-accessories': <PageAccessories />,
     'revision-toc': <TableOfContents />,
     'liker-list': <LikerList />,
 
