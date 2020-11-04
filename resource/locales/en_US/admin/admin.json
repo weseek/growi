@@ -46,6 +46,8 @@
     "fixed_by_env_var": "This is fixed by the env var <code>FILE_UPLOAD={{fileUploadType}}</code>.",
     "gcs_label": "GCP(GCS)",
     "aws_label": "AWS(S3)",
+    "local_label": "Local",
+    "gridfs_label": "MongoDB(GridFS)",
     "file_upload": "This is for uploading file settings. If you complete file upload settings, file upload function, profile picture function etc will be enabled.",
     "ses_settings":"SES settings",
     "test_connection": "Test connection to mail",
