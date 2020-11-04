@@ -29,6 +29,7 @@ import BookmarkList from './components/PageList/BookmarkList';
 import SeenUserList from './components/User/SeenUserList';
 import LikerList from './components/User/LikerList';
 import TableOfContents from './components/TableOfContents';
+import PageAccessories from './components/PageAccessories';
 import UserInfo from './components/User/UserInfo';
 import Fab from './components/Fab';
 
@@ -107,7 +108,8 @@ if (pageContainer.state.pageId != null) {
     'page-comments-list': <PageComments />,
     'page-comment-write': <CommentEditorLazyRenderer />,
     'page-management': <PageManagement />,
-    'revision-toc': <TableOfContents isGuestUserMode={appContainer.currentUser == null} />,
+    'page-accessories': <PageAccessories isGuestUserMode={appContainer.currentUser == null} />,
+    'revision-toc': <TableOfContents />,
     'seen-user-list': <SeenUserList />,
     'liker-list': <LikerList />,
 
