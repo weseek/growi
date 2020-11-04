@@ -2,7 +2,9 @@
 
 
 {% block content_header %}
-  <h1 class="p-3">{{ page.path | preventXss }}</h1>
+  <div class="container-fluid">
+    <h1 class="py-3">{{ page.path | preventXss }}</h1>
+  </div>
 {% endblock %}
 
 
@@ -14,35 +16,19 @@
 {% endblock %}
 
 {% block content_main %}
-  <div
-    class="d-flex justify-content-between"
-    id="is-shared-page"
-    data-share-link-expired-at="{% if sharelink.expiredAt %}{{ sharelink.expiredAt|datetz('Y/m/d H:i:s')}}{% endif %}"
-    data-share-link-created-at="{{ sharelink.createdAt|datetz('Y/m/d H:i:s')}}"
-  >
-    {% block content_page %}
-      <div class="grw-page-content-container flex-grow-1">
-        <div id="share-link-alert"></div>
+  <div class="container-lg">
 
-        {% include '../widget/page_content.html' %}
-        {# force remove #revision-toc from #content_main of parent #}
-        <script>
-          $('#revision-toc').remove();
-        </script>
-
-      </div>
-
-      {# relocate #revision-toc #}
-      <div class="d-none d-lg-block revision-toc-container">
-        <div id="revision-toc" class="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
-          <div id="revision-toc-content" class="revision-toc-content"></div>
-        </div>
-      </div>
-    {% endblock %}
+    <div
+      id="is-shared-page"
+      data-share-link-expired-at="{% if sharelink.expiredAt %}{{ sharelink.expiredAt|datetz('Y/m/d H:i:s')}}{% endif %}"
+      data-share-link-created-at="{{ sharelink.createdAt|datetz('Y/m/d H:i:s')}}"
+    >
+      <div id="share-link-alert"></div>
+      {% include '../widget/page_content.html' %}
+    </div>
 
   </div>
 {% endblock %}
-
 
 {% block body_end %}
   <div id="presentation-layer" class="fullscreen-layer">
