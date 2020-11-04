@@ -94,8 +94,6 @@ function AwsSetting(props) {
           />
         </div>
       </div>
-
-
     </React.Fragment>
   );
 }
