@@ -8,7 +8,7 @@ import PageContainer from '../services/PageContainer';
 import NavigationContainer from '../services/NavigationContainer';
 
 import { withUnstatedContainers } from './UnstatedUtils';
-import TopOfTableContents from './TopOfTableContents';
+
 import StickyStretchableScroller from './StickyStretchableScroller';
 
 import RecentlyCreatedIcon from './Icons/RecentlyCreatedIcon';

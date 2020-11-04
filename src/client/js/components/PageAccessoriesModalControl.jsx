@@ -16,7 +16,7 @@ import PageAccessoriesModal from './PageAccessoriesModal';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
-const TopOfTableContents = (props) => {
+const PageAccessoriesModalControl = (props) => {
   const { t, pageAccessoriesContainer, isGuestUserMode } = props;
 
   function renderModal() {
@@ -93,9 +93,9 @@ const TopOfTableContents = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const TopOfTableContentsWrapper = withUnstatedContainers(TopOfTableContents, [PageAccessoriesContainer]);
+const PageAccessoriesModalControlWrapper = withUnstatedContainers(PageAccessoriesModalControl, [PageAccessoriesContainer]);
 
-TopOfTableContents.propTypes = {
+PageAccessoriesModalControl.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
 
   pageAccessoriesContainer: PropTypes.instanceOf(PageAccessoriesContainer).isRequired,
@@ -103,4 +103,4 @@ TopOfTableContents.propTypes = {
   isGuestUserMode: PropTypes.bool.isRequired,
 };
 
-export default withTranslation()(TopOfTableContentsWrapper);
+export default withTranslation()(PageAccessoriesModalControlWrapper);
