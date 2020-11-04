@@ -105,8 +105,8 @@ if (pageContainer.state.pageId != null) {
     'page-comments-list': <PageComments />,
     'page-comment-write': <CommentEditorLazyRenderer />,
     'page-management': <PageManagement />,
-    'page-accessories': <TopOfTableContents isGuestUserMode={isGuestUserMode} />,
-    'revision-toc': <TableOfContents isGuestUserMode={appContainer.currentUser == null} />,
+    'page-accessories': <TopOfTableContents isGuestUserMode={appContainer.currentUser == null} />,
+    'revision-toc': <TableOfContents />,
     'seen-user-list': <SeenUserList />,
     'liker-list': <LikerList />,
 
