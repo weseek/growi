@@ -52,7 +52,7 @@ export default class PageContainer extends Container {
       isLiked: false,
       isBookmarked: false,
       seenUsers: [],
-      countOfSeenUsers: mainContent.getAttribute('data-page-count-of-seen-users'),
+      countOfSeenUsers: 0,
 
       likerUsers: [],
       sumOfLikers: 0,
@@ -100,7 +100,6 @@ export default class PageContainer extends Container {
     interceptorManager.addInterceptor(new DrawioInterceptor(appContainer), 20);
     interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(appContainer), 900); // process as late as possible
 
-    this.retrieveSeenUsers();
     this.initStateMarkdown();
     this.initStateOthers();
 
@@ -148,16 +147,16 @@ export default class PageContainer extends Container {
   }
 
   async retrieveSeenUsers() {
-    const { users } = await this.appContainer.apiGet('/users.list', { user_ids: this.state.seenUserIds });
+    const res = await this.appContainer.apiv3Get('/page/seen-user-info', { _id: this.state.pageId });
 
-    this.setState({ seenUsers: users });
-    this.checkAndUpdateImageUrlCached(users);
+    this.setState({ seenUsers: res.users, sumOfBookmarks: res.numOfSeenUsers });
   }
 
   async initStateOthers() {
-
+    this.retrieveSeenUsers();
     this.retrieveLikeInfo();
     this.retrieveBookmarkInfo();
+    this.checkAndUpdateImageUrlCached(this.state.seenUsers);
     this.checkAndUpdateImageUrlCached(this.state.likerUsers);
   }
 
