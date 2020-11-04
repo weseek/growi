@@ -15,7 +15,7 @@ import FootstampIcon from '../FootstampIcon';
 
 /* eslint react/no-multi-comp: 0, react/prop-types: 0 */
 
-const SeenUserList = (props) => {
+const SeenUserInfo = (props) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const toggle = () => setPopoverOpen(!popoverOpen);
   const { pageContainer } = props;
@@ -36,13 +36,13 @@ const SeenUserList = (props) => {
   );
 };
 
-SeenUserList.propTypes = {
+SeenUserInfo.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
 /**
  * Wrapper component for using unstated
  */
-const SeenUserListWrapper = withUnstatedContainers(SeenUserList, [PageContainer]);
+const SeenUserInfoWrapper = withUnstatedContainers(SeenUserInfo, [PageContainer]);
 
-export default (SeenUserListWrapper);
+export default (SeenUserInfoWrapper);

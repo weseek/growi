@@ -11,7 +11,7 @@ import TimeLineIcon from './Icons/TimeLineIcon';
 import HistoryIcon from './Icons/HistoryIcon';
 import AttachmentIcon from './Icons/AttachmentIcon';
 import ShareLinkIcon from './Icons/ShareLinkIcon';
-import SeenUserList from './User/SeenUserList';
+import SeenUserInfo from './User/SeenUserInfo';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
@@ -66,7 +66,7 @@ const PageAccessoriesModalControl = (props) => {
           {t('Not available for guest')}
         </UncontrolledTooltip>
       )}
-      <SeenUserList />
+      <SeenUserInfo />
     </div>
   );
 };
