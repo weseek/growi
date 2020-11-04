@@ -15,6 +15,7 @@ import PageComments from './components/PageComments';
 import PageTimeline from './components/PageTimeline';
 import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
 import PageManagement from './components/Page/PageManagement';
+import ShareLinkAlert from './components/Page/ShareLinkAlert';
 import TrashPageList from './components/TrashPageList';
 import TrashPageAlert from './components/Page/TrashPageAlert';
 import NotFoundPage from './components/NotFoundPage';
@@ -96,6 +97,8 @@ Object.assign(componentMappings, {
   'my-drafts': <MyDraftList />,
 
   'grw-fab-container': <Fab />,
+
+  'share-link-alert': <ShareLinkAlert />,
 });
 
 // additional definitions if data exists
