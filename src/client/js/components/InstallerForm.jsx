@@ -62,7 +62,6 @@ class InstallerForm extends React.Component {
                 <i className="icon-bubbles border-0 rounded-0" />
                 <button
                   type="button"
-                  name="registerForm[app:globalLang]"
                   className="btn btn-secondary dropdown-toggle text-right w-100 border-0 shadow-none"
                   id="dropdownLanguage"
                   data-toggle="dropdown"
@@ -73,6 +72,11 @@ class InstallerForm extends React.Component {
                     {this.state.selectedLang.displayName}
                   </span>
                 </button>
+                <input
+                  type="hidden"
+                  value={this.state.selectedLang.id}
+                  name="registerForm[app:globalLang]"
+                />
                 <div className="dropdown-menu" aria-labelledby="dropdownLanguage">
                   {
                   localeMetadatas.map(meta => (
