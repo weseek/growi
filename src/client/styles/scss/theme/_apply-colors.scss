@@ -307,8 +307,6 @@ ul.pagination {
 }
 
 .grw-page-accessories-control {
-  border-color: $bordercolor-toc;
-
   .grw-btn-page-accessories {
     fill: $color-link;
   }
@@ -323,6 +321,10 @@ ul.pagination {
       }
     }
   }
+}
+
+.revision-toc {
+  border-color: $bordercolor-toc;
 }
 
 .grw-custom-navigation {
