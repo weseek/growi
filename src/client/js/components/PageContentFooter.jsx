@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import AuthorInfo from './NavBar/AuthorInfo';
+import AuthorInfo from './Navbar/AuthorInfo';
 
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
