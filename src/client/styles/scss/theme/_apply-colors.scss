@@ -306,15 +306,11 @@ ul.pagination {
   }
 }
 
-.top-of-table-contents {
-  border-color: $bordercolor-toc;
-
-  .grw-btn-top-of-table {
+.grw-page-accessories-control {
+  .grw-btn-page-accessories {
     fill: $color-link;
   }
   .grw-seen-user-info {
-    @include border-vertical('before', $bordercolor-toc, 70%);
-
     .btn {
       color: $color-seen-user;
       &:active {
@@ -325,6 +321,10 @@ ul.pagination {
       }
     }
   }
+}
+
+.revision-toc {
+  border-color: $bordercolor-toc;
 }
 
 .grw-custom-navigation {

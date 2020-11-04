@@ -31,16 +31,17 @@ import TableOfContents from './components/TableOfContents';
 import PageAccessories from './components/PageAccessories';
 import UserInfo from './components/User/UserInfo';
 import Fab from './components/Fab';
-
 import PersonalSettings from './components/Me/PersonalSettings';
+import UserContentsLinks from './components/UserContentsLinks';
+import GrowiSubNavigation from './components/Navbar/GrowiSubNavigation';
+import GrowiSubNavigationSwitcher from './components/Navbar/GrowiSubNavigationSwitcher';
+
 import NavigationContainer from './services/NavigationContainer';
 import PageContainer from './services/PageContainer';
 import PageHistoryContainer from './services/PageHistoryContainer';
 import CommentContainer from './services/CommentContainer';
 import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
-import GrowiSubNavigation from './components/Navbar/GrowiSubNavigation';
-import GrowiSubNavigationSwitcher from './components/Navbar/GrowiSubNavigationSwitcher';
 import PersonalContainer from './services/PersonalContainer';
 
 import { appContainer, componentMappings } from './base';
@@ -113,6 +114,7 @@ if (pageContainer.state.pageId != null) {
 
     'recent-created-icon': <RecentlyCreatedIcon />,
     'user-bookmark-icon': <BookmarkIcon />,
+    'grw-user-contents-links': <UserContentsLinks />,
   });
 }
 if (pageContainer.state.creator != null) {

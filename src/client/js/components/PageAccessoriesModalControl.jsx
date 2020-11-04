@@ -19,10 +19,10 @@ const PageAccessoriesModalControl = (props) => {
   const { t, pageAccessoriesContainer, isGuestUserMode } = props;
 
   return (
-    <div className="top-of-table-contents d-flex align-items-end pb-1">
+    <div className="grw-page-accessories-control d-flex align-items-end pb-1">
       <button
         type="button"
-        className="btn btn-link grw-btn-top-of-table"
+        className="btn btn-link grw-btn-page-accessories"
         onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('pagelist')}
       >
         <PageListIcon />
@@ -30,7 +30,7 @@ const PageAccessoriesModalControl = (props) => {
 
       <button
         type="button"
-        className="btn btn-link grw-btn-top-of-table"
+        className="btn btn-link grw-btn-page-accessories"
         onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('timeline')}
       >
         <TimeLineIcon />
@@ -38,7 +38,7 @@ const PageAccessoriesModalControl = (props) => {
 
       <button
         type="button"
-        className="btn btn-link grw-btn-top-of-table"
+        className="btn btn-link grw-btn-page-accessories"
         onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('pageHistory')}
       >
         <HistoryIcon />
@@ -46,7 +46,7 @@ const PageAccessoriesModalControl = (props) => {
 
       <button
         type="button"
-        className="btn btn-link grw-btn-top-of-table"
+        className="btn btn-link grw-btn-page-accessories"
         onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('attachment')}
       >
         <AttachmentIcon />
@@ -55,7 +55,7 @@ const PageAccessoriesModalControl = (props) => {
       <div id="shareLink-btn-wrapper-for-tooltip">
         <button
           type="button"
-          className={`btn btn-link grw-btn-top-of-table ${isGuestUserMode && 'disabled'}`}
+          className={`btn btn-link grw-btn-page-accessories ${isGuestUserMode && 'disabled'}`}
           onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('shareLink')}
         >
           <ShareLinkIcon />
