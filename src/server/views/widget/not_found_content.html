@@ -1,12 +1,3 @@
-<div class="row not-found-message-row mb-4 d-edit-none">
-  <div class="col-md-12">
-    <h2 class="text-muted">
-      <i class="icon-info" aria-hidden="true"></i>
-      Page is not found
-    </h2>
-  </div>
-</div>
-
 <div id="content-main" class="content-main page-list"
   data-path="{{ encodeURI(path) }}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
@@ -14,9 +5,8 @@
     data-template-tags="{{ templateTags }}"
   {% endif %}
   >
-
-  {% include 'not_found_tabs.html' %}
-
+  <div id="display-switcher"></div>
+  <div id="not-found-page"></div>
   <div class="tab-content">
 
 
@@ -35,26 +25,6 @@
     {% endif %}
 
     {# TODO: should be removed and transplanted to PageContainer.initStateMarkdown ------ to here ------ #}
-
-
-
-    {# list view #}
-    <div class="pt-2 active tab-pane page-list-container" id="revision-body">
-      {% if pages.length == 0 %}
-        <div class="mt-2">
-          There are no pages under <strong>{{ path | preventXss }}</strong>.
-        </div>
-      {% endif  %}
-
-      {% include '../widget/page_list.html' with { pages: pages, pager: pager, viewConfig: viewConfig } %}
-    </div>
-
-    {# edit view #}
-    <div class="tab-pane" id="edit">
-      <div id="page-editor">{% if pageForm.body %}{{ pageForm.body }}{% endif %}</div>
-    </div>
-    {% include '../_form.html' %}
-
   </div>
 
   <div id="grw-page-status-alert-container"></div>

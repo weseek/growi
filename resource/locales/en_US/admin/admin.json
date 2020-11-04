@@ -38,10 +38,17 @@
     "host": "Host",
     "port": "Port",
     "user": "User",
+    "initialize_mail_settings": "initialize e-mail settings",
+    "initialize_mail_modal_header": "Initialize e-mail settings",
+    "confirm_to_initialize_mail_settings": "You can't restore to the current settings. Are you sure you want to initialize e-mail settings?",
+    "file_upload_settings":"File Upload Settings",
+    "file_upload_method":"File Upload Method",
+    "fixed_by_env_var": "This is fixed by the env var <code>FILE_UPLOAD={{fileUploadType}}</code>.",
+    "gcs_label": "GCP(GCS)",
+    "aws_label": "AWS(S3)",
+    "file_upload": "This is for uploading file settings. If you complete file upload settings, file upload function, profile picture function etc will be enabled.",
     "ses_settings":"SES settings",
     "test_connection": "Test connection to mail",
-    "aws_settings": "AWS settings",
-    "aws_access": "This is for AWS settings. If you complete AWS settings, file upload function, profile picture function etc will be enabled.",
     "change_setting": "Caution:if you change this setting not completed, you will not be able to access files you have uploaded so far.",
     "region": "Region",
     "bucket_name": "Bucket name",
@@ -52,7 +59,8 @@
     "load_plugins": "Load_plugins",
     "enable": "Enable",
     "disable": "Disable",
-    "use_env_var_if_empty": "If the value in the database is empty, the value of the environment variable <cod>{{variable}}</code> is used."
+    "use_env_var_if_empty": "If the value in the database is empty, the value of the environment variable <cod>{{variable}}</code> is used.",
+    "note_for_the_only_env_option": "The GCS Settings is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> ."
   },
   "markdown_setting": {
     "lineBreak_header": "Line break setting",
@@ -107,8 +115,21 @@
       "tab_switch_desc2": "By invalidating, you can make page transition as the only object for forward/back command of the browser.",
       "attach_title_header": "Add h1 section when create new page automatically",
       "attach_title_header_desc": "Add page path to the first line as h1 section when create new page",
-      "recent_created__n_draft_num_desc": "Number of recently created pages & drafts displayed",
-      "recently_created_n_draft_num_desc": "Number of recently created pages and drafts displayed on user page",
+
+      "list_num_s": "Number of list displayed on modals",
+      "list_num_desc_s": "Set number of list per page such as 'Pagelist', 'Timeline', 'Page History' and 'Share Link' pages",
+
+      "list_num_m": "Number of list displayed on article pages included other contents",
+      "list_num_desc_m": "Set number of list per page such as 'Bookmarks' and 'Recently created' pages",
+
+      "list_num_l": "Number of list displayed on 'Search' pages",
+      "list_num_desc_l": "Set number of list per page such as 'Search' pages",
+
+      "list_num_xl": "Number of list displayed on article pages",
+      "list_num_desc_xl": "Set number of list per page such as 'Not found' and 'Trash' pages",
+
+
+
       "stale_notification": "Display notification on stale pages",
       "stale_notification_desc": "Displays the notification to pages more than 1 year since the last update.",
       "show_all_reply_comments": "Show all reply comments",

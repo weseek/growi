@@ -13,6 +13,31 @@ import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurit
 import DeleteAllShareLinksModal from './DeleteAllShareLinksModal';
 import ShareLinkList from '../../ShareLink/ShareLinkList';
 
+
+const Pager = (props) => {
+  if (props.links.length === 0) {
+    return null;
+  }
+  return (
+    <PaginationWrapper
+      activePage={props.activePage}
+      changePage={props.handlePage}
+      totalItemsCount={props.totalLinks}
+      pagingLimit={props.limit}
+      align="right"
+      size="sm"
+    />
+  );
+};
+
+Pager.propTypes = {
+  links: PropTypes.array.isRequired,
+  activePage: PropTypes.number.isRequired,
+  handlePage: PropTypes.func.isRequired,
+  totalLinks: PropTypes.number.isRequired,
+  limit: PropTypes.number.isRequired,
+};
+
 class ShareLinkSetting extends React.Component {
 
   constructor() {
@@ -87,21 +112,6 @@ class ShareLinkSetting extends React.Component {
       shareLinks, shareLinksActivePage, totalshareLinks, shareLinksPagingLimit,
     } = adminGeneralSecurityContainer.state;
 
-    function pager() {
-      if (shareLinks.length === 0) {
-        return null;
-      }
-      return (
-        <PaginationWrapper
-          activePage={shareLinksActivePage}
-          changePage={this.getShareLinkList}
-          totalItemsCount={totalshareLinks}
-          pagingLimit={shareLinksPagingLimit}
-          align="right"
-        />
-      );
-    }
-
     return (
       <Fragment>
         <div className="mb-3">
@@ -115,7 +125,13 @@ class ShareLinkSetting extends React.Component {
           </button>
           <h2 className="alert-anchor border-bottom">{t('share_links.share_link_management')}</h2>
         </div>
-        {pager}
+        <Pager
+          links={shareLinks}
+          activePage={shareLinksActivePage}
+          handlePage={this.getShareLinkList}
+          totalLinks={totalshareLinks}
+          limit={shareLinksPagingLimit}
+        />
 
         {(shareLinks.length !== 0) ? (
           <ShareLinkList

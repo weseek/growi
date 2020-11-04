@@ -17,7 +17,6 @@ export default class PageHistoryContainer extends Container {
 
     this.appContainer = appContainer;
     this.pageContainer = pageContainer;
-
     this.dummyRevisions = 0;
 
     this.state = {
@@ -29,7 +28,7 @@ export default class PageHistoryContainer extends Container {
 
       totalPages: 0,
       activePage: 1,
-      pagingLimit: Infinity,
+      pagingLimit: null,
     };
 
     this.retrieveRevisions = this.retrieveRevisions.bind(this);
@@ -51,13 +50,16 @@ export default class PageHistoryContainer extends Container {
    */
   async retrieveRevisions(selectedPage) {
     const { pageId, shareLinkId } = this.pageContainer.state;
+    const page = selectedPage;
+
     if (!pageId) {
       return;
     }
 
-    const res = await this.appContainer.apiv3Get('/revisions/list', { pageId, shareLinkId, selectedPage });
+    const res = await this.appContainer.apiv3Get('/revisions/list', {
+      pageId, shareLinkId, page,
+    });
     const rev = res.data.docs;
-
     // set Pagination state
     this.setState({
       activePage: selectedPage,

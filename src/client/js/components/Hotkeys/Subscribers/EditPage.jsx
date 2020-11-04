@@ -9,8 +9,6 @@ const EditPage = (props) => {
     if (document.getElementsByClassName('modal in').length > 0) {
       return;
     }
-    // show editor
-    $('a[data-toggle="tab"][href="#edit"]').tab('show');
 
     // remove this
     props.onDeleteRender(this);

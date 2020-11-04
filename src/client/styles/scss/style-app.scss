@@ -23,6 +23,7 @@
 
 // molecules
 @import 'molecules/copy-dropdown';
+@import 'molecules/slack-notification';
 
 // growi component
 @import 'admin';
@@ -36,7 +37,6 @@
 @import 'editor-navbar';
 @import 'handsontable';
 @import 'layout';
-@import 'layout_growi';
 @import 'login';
 @import 'me';
 @import 'mirror_mode';
