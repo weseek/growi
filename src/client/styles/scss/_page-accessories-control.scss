@@ -1,0 +1,41 @@
+.grw-page-accessories-control {
+  flex-wrap: wrap;
+  line-height: 1.25;
+  border-bottom: 1px solid transparent;
+
+  .grw-btn-page-accessories {
+    width: 35px;
+    height: 35px;
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  .seen-user-count {
+    font-size: 12px;
+    font-weight: bolder;
+  }
+  .grw-seen-user-list {
+    .btn {
+      white-space: nowrap;
+    }
+  }
+
+  .seen-user-popover {
+    max-width: 200px;
+
+    .user-list-content {
+      direction: rtl;
+
+      .liker-user-count,
+      .seen-user-count {
+        font-size: 12px;
+        font-weight: bolder;
+      }
+    }
+    .cls-1 {
+      isolation: isolate;
+    }
+  }
+}

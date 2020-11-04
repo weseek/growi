@@ -32,7 +32,7 @@ const TableOfContents = (props) => {
     const containerElem = document.querySelector('#revision-toc');
     const containerTop = containerElem.getBoundingClientRect().top;
 
-    // window height - revisionToc top - .system-version - .grw-fab-container height - top-of-table-contents height
+    // window height - revisionToc top - .system-version - .grw-fab-container height - grw-side-contents-container height
     if (isUserPage) {
       return window.innerHeight - containerTop - 20 - 155 - 26 - 40;
     }
@@ -61,7 +61,7 @@ const TableOfContents = (props) => {
       >
         <div
           id="revision-toc-content"
-          className="revision-toc-content top-of-table-contents"
+          className="revision-toc-content"
          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{
           __html: tocHtml,
