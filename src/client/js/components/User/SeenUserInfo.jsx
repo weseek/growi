@@ -20,7 +20,7 @@ const SeenUserInfo = (props) => {
   const toggle = () => setPopoverOpen(!popoverOpen);
   const { pageContainer } = props;
   return (
-    <div className="grw-seen-user-info ml-1 pl-1">
+    <div className="grw-seen-user-info">
       <Button id="po-seen-user" color="link" className="px-2">
         <span className="mr-1 footstamp-icon"><FootstampIcon /></span>
         <span className="seen-user-count">{pageContainer.state.countOfSeenUsers}</span>
