@@ -6,28 +6,17 @@
 
 
 {% block content_main %}
-  <div class="d-flex justify-content-between">
-
-    <div class="grw-page-content-container flex-grow-1">
-
-      {% include '../widget/page_content.html' %}
-
-    </div>
-
-    <div class="d-none d-lg-block revision-toc-container">
-      <div id="revision-toc" class="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
-        <div id="revision-toc-content" class="revision-toc-content"></div>
-      </div>
-    </div>
-
+  <div class="container-lg">
+    {% include '../widget/page_content.html' %}
   </div>
-
 {% endblock %}
 
 
 {% block content_main_after %}
   {% if isTrashPage() %}
-    <div id="trash-page-list"></div>
+    <div class="container-lg">
+      <div id="trash-page-list"></div>
+    </div>
   {% endif %}
   {% if page %}
     {% include '../widget/page_attachments.html' %}

@@ -45,13 +45,6 @@ body.on-edit {
     @include expand-editor($editor-margin-top);
   }
 
-  // for growi layout
-  .main {
-    .col.grw-page-content-container {
-      padding: 0;
-    }
-  }
-
   // show
   .d-edit-block {
     display: block !important;

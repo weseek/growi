@@ -111,7 +111,7 @@ const GrowiSubNavigation = (props) => {
   }
 
   return (
-    <div className={`grw-subnav d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
+    <div className={`grw-subnav container-fluid d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
 
       {/* Left side */}
       <div className="d-flex grw-subnav-left-side">
