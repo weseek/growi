@@ -38,10 +38,17 @@
     "host": "ホスト",
     "port": "ポート",
     "user": "ユーザー",
+    "initialize_mail_settings": "設定を初期化",
+    "initialize_mail_modal_header": "メール設定の初期化",
+    "confirm_to_initialize_mail_settings": "一度初期化した設定は戻せません。本当に初期化しますか？",
+    "file_upload_settings":"ファイルアップロード設定",
+    "file_upload_method":"ファイルアップロード方法",
+    "gcs_label": "GCP(GCS)",
+    "aws_label": "AWS(S3)",
+    "fixed_by_env_var": "環境変数 <code>FILE_UPLOAD={{fileUploadType}}</code> により固定されています。",
+    "file_upload": "ファイルをアップロードするための設定を行います。ファイルアップロードの設定を完了させると、ファイルアップロード機能、プロフィール写真機能などが有効になります。",
     "ses_settings":"SES設定",
     "test_connection": "接続テスト",
-    "aws_settings": "AWS設定",
-    "aws_access": "AWS にアクセスするための設定を行います。AWS の設定を完了させると、ファイルアップロード機能、プロフィール写真機能などが有効になります。",
     "change_setting": "この設定を途中で変更すると、これまでにアップロードしたファイル等へのアクセスができなくなりますのでご注意下さい。",
     "region": "リージョン",
     "bucket_name": "バケット名",
@@ -52,7 +59,8 @@
     "load_plugins": "プラグインを読み込む",
     "enable": "有効",
     "disable": "無効",
-    "use_env_var_if_empty": "データベース側の値が空の場合、環境変数 <code>{{variable}}</code> の値を利用します"
+    "use_env_var_if_empty": "データベース側の値が空の場合、環境変数 <code>{{variable}}</code> の値を利用します",
+    "note_for_the_only_env_option": "現在GCS設定は環境変数の値によって制限されています<br>この設定を変更する場合は環境変数 <code>{{env}}</code> の値をfalseに変更もしくは削除してください"
   },
   "markdown_setting": {
     "lineBreak_header": "Line Break設定",
@@ -107,8 +115,19 @@
       "tab_switch_desc2": "無効化することで、ページ遷移のみを戻る/進む操作の対象にすることができます。",
       "attach_title_header": "新規ページ作成時の h1 セクション自動挿入",
       "attach_title_header_desc": "新規作成したページの1行目に、ページのパスを h1 セクションとして挿入します。",
-      "recent_created__n_draft_num_desc": "最近作成したページと下書きの表示数",
-      "recently_created_n_draft_num_desc": "ホーム画面の Recently Created での、1ページの表示数を設定します。",
+
+      "list_num_s": "モーダルに表示されるリスト数",
+      "list_num_desc_s": "モーダルにおける <Pagelist> <Timeline> <Page History> <Share Link>での、1ページあたりの表示数を設定します。",
+
+      "list_num_m": "ユーザーページに表示されるリスト数",
+      "list_num_desc_m": "ユーザーページにおける <Bookmarks> <Recently Created>での、1ページあたりの表示数を設定します。",
+
+      "list_num_l": "検索ページに表示されるリスト数",
+      "list_num_desc_l": "<Search>での、1ページあたりの表示数を設定します。",
+
+      "list_num_xl": "Not FoundページやTrashページに表示されるリスト数",
+      "list_num_desc_xl": "記事エリアにおける<Not Found> <Trash>での、1ページあたりの表示数を設定します。",
+
       "stale_notification": "古いページに通知を表示する",
       "stale_notification_desc": "最後の更新から1年を超えるページへの通知を表示します。",
       "show_all_reply_comments": "返信コメントを全て表示する",

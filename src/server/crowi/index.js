@@ -105,6 +105,7 @@ Crowi.prototype.init = async function() {
     this.setupSlack(),
     this.setupCsrf(),
     this.setUpFileUpload(),
+    this.setUpFileUploaderSwitchService(),
     this.setupAttachmentService(),
     this.setUpAcl(),
     this.setUpCustomize(),
@@ -278,7 +279,7 @@ Crowi.prototype.setupS2sMessagingService = async function() {
 Crowi.prototype.setupSocketIoService = async function() {
   const SocketIoService = require('../service/socket-io');
   if (this.socketIoService == null) {
-    this.socketIoService = new SocketIoService();
+    this.socketIoService = new SocketIoService(this);
   }
 };
 
@@ -546,9 +547,21 @@ Crowi.prototype.setUpApp = async function() {
 /**
  * setup FileUploadService
  */
-Crowi.prototype.setUpFileUpload = async function() {
-  if (this.fileUploadService == null) {
+Crowi.prototype.setUpFileUpload = async function(isForceUpdate = false) {
+  if (this.fileUploadService == null || isForceUpdate) {
     this.fileUploadService = require('../service/file-uploader')(this);
+  }
+};
+
+/**
+ * setup FileUploaderSwitchService
+ */
+Crowi.prototype.setUpFileUploaderSwitchService = async function() {
+  const FileUploaderSwitchService = require('../service/file-uploader-switch');
+  this.fileUploaderSwitchService = new FileUploaderSwitchService(this);
+  // add as a message handler
+  if (this.s2sMessagingService != null) {
+    this.s2sMessagingService.addMessageHandler(this.fileUploaderSwitchService);
   }
 };
 

@@ -112,18 +112,22 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  */
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
-  const loginRequired = require('../../middlewares/login-required')(crowi);
+  const loginRequired = require('../../middlewares/login-required')(crowi, true);
+  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const globalNotificationService = crowi.getGlobalNotificationService();
-  const { Page, GlobalNotificationSetting } = crowi.models;
+  const { Page, GlobalNotificationSetting, User } = crowi.models;
   const { exportService } = crowi;
 
   const validator = {
     likes: [
       body('pageId').isString(),
       body('bool').isBoolean(),
+    ],
+    likeInfo: [
+      query('_id').isMongoId(),
     ],
     export: [
       query('format').isString().isIn(['md', 'pdf']),
@@ -162,7 +166,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Page'
    */
-  router.put('/likes', accessTokenParser, loginRequired, csrf, validator.likes, apiV3FormValidator, async(req, res) => {
+  router.put('/likes', accessTokenParser, loginRequiredStrictly, csrf, validator.likes, apiV3FormValidator, async(req, res) => {
     const { pageId, bool } = req.body;
 
     let page;
@@ -196,6 +200,23 @@ module.exports = (crowi) => {
     return res.apiv3({ result });
   });
 
+  router.get('/like-info', loginRequired, validator.likeInfo, async(req, res) => {
+    const pageId = req.query._id;
+    const userId = req.user._id;
+    try {
+      const page = await Page.findById(pageId);
+      const users = await Page.findById(pageId).populate('liker', User.USER_PUBLIC_FIELDS);
+      const sumOfLikers = page.liker.length;
+      const isLiked = page.liker.includes(userId);
+
+      return res.apiv3({ users, sumOfLikers, isLiked });
+    }
+    catch (err) {
+      logger.error('error like info', err);
+      return res.apiv3Err(err, 500);
+    }
+  });
+
   /**
   * @swagger
   *
@@ -207,7 +228,7 @@ module.exports = (crowi) => {
   *          200:
   *            description: Return page's markdown
   */
-  router.get('/export/:pageId', loginRequired, validator.export, async(req, res) => {
+  router.get('/export/:pageId', loginRequiredStrictly, validator.export, async(req, res) => {
     const { pageId } = req.params;
     const { format, revisionId = null } = req.query;
     let revision;

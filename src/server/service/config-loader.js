@@ -23,12 +23,12 @@ const TYPES = {
  *  So, parameters of these are under consideration.
  */
 const ENV_VAR_NAME_TO_CONFIG_INFO = {
-  // FILE_UPLOAD: {
-  //   ns:      ,
-  //   key:     ,
-  //   type:    ,
-  //   default:
-  // },
+  FILE_UPLOAD: {
+    ns:      'crowi',
+    key:     'app:fileUploadType',
+    type:    TYPES.STRING,
+    default: 'aws',
+  },
   // HACKMD_URI: {
   //   ns:      ,
   //   key:     ,
@@ -154,6 +154,24 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     key:     's2sMessagingPubsub:nchan:channelId',
     type:    TYPES.STRING,
     default: null,
+  },
+  S2CMSG_PUBSUB_CONNECTIONS_LIMIT: {
+    ns:      'crowi',
+    key:     's2cMessagingPubsub:connectionsLimit',
+    type:    TYPES.NUMBER,
+    default: 5000,
+  },
+  S2CMSG_PUBSUB_CONNECTIONS_LIMIT_FOR_ADMIN: {
+    ns:      'crowi',
+    key:     's2cMessagingPubsub:connectionsLimitForAdmin',
+    type:    TYPES.NUMBER,
+    default: 100,
+  },
+  S2CMSG_PUBSUB_CONNECTIONS_LIMIT_FOR_GUEST: {
+    ns:      'crowi',
+    key:     's2cMessagingPubsub:connectionsLimitForGuest',
+    type:    TYPES.NUMBER,
+    default: 2000,
   },
   MAX_FILE_SIZE: {
     ns:      'crowi',
@@ -325,6 +343,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     key:     'gcs:uploadNamespace',
     type:    TYPES.STRING,
     default: null,
+  },
+  IS_GCS_ENV_PRIORITIZED: {
+    ns:      'crowi',
+    key:     'gcs:isGcsEnvPrioritizes',
+    type:    TYPES.BOOLEAN,
+    default: false,
   },
 };
 

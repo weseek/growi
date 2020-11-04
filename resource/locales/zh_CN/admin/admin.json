@@ -38,10 +38,17 @@
 		"host": "服务器",
 		"port": "端口号",
 		"user": "用户名",
+    "initialize_mail_settings": "重置邮件设置",
+    "initialize_mail_modal_header": "重置邮件设置",
+    "confirm_to_initialize_mail_settings": "当前设置将被清空且不可恢复。确认重置？",
+    "file_upload_settings":"文件上传设置",
+    "file_upload_method":"文件上传方法",
+    "gcs_label": "GCP(GCS)",
+    "aws_label": "AWS(S3)",
+		"fixed_by_env_var": "这是由env var<code>FILE_UPLOAD={{fileUploadType}}</code>修复的。",
+    "file_upload": "这是文件上传设定。完成了文件上传设定以后，文件上传功能、档案头像功能将会被开启。",
     "ses_settings":"SES设置",
     "test_connection": "测试邮件服务器连接",
-		"aws_settings": "AWS设置",
-		"aws_access": "这是用于AWS设置的。如果您完成了AWS设置，文件上传功能，个人资料图片功能等将被启用。",
 		"": "如果您没有SMTP设置，电子邮件将通过SES发送。您需要从电子邮件地址和生产设置进行验证。",
 		"change_setting": "注意：如果你更改此设置未完成，您将无法访问迄今为止上传的文件。",
 		"region": "Region",
@@ -53,8 +60,9 @@
 		"load_plugins": "加载插件",
 		"enable": "启用",
 		"disable": "停用",
-		"use_env_var_if_empty": "如果数据库中的值为空，则环境变量的值 <cod>{{variable}}</code> 启用。"
-	},
+		"use_env_var_if_empty": "如果数据库中的值为空，则环境变量的值 <cod>{{variable}}</code> 启用。",
+    "note_for_the_only_env_option": "The GCS settings is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> ."
+  },
 	"markdown_setting": {
 		"lineBreak_header": "换行设置",
 		"lineBreak_desc": "您可以更改换行设置。",
@@ -118,9 +126,20 @@
 			"tab_switch_desc1": "在浏览器中保存编辑选项卡和历史选项卡切换，并使其成为浏览器的前向/后向命令的对象。",
 			"tab_switch_desc2": "通过失效，您可以将页面转换作为浏览器的前向/后向命令的唯一对象。",
 			"attach_title_header": "自动创建新页面时添加h1节",
-			"attach_title_header_desc": "创建新页面时，将页面路径作为h1节添加到第一行",
-			"recent_created__n_draft_num_desc": "显示最近创建的页数和草稿数",
-			"recently_created_n_draft_num_desc": "用户页上显示的最近创建的页和草稿数",
+      "attach_title_header_desc": "创建新页面时，将页面路径作为h1节添加到第一行",
+
+      "list_num_s": "Number of list displayed on modals",
+      "list_num_desc_s": "Set number of list per page such as 'Pagelist', 'Timeline', 'Page History' and 'Share Link' pages",
+
+      "list_num_m": "Number of list displayed on article pages included other contents",
+      "list_num_desc_m": "Set number of list per page such as 'Bookmarks' and 'Recently created' pages",
+
+      "list_num_l": "Number of list displayed on 'Search' pages",
+      "list_num_desc_l": "Set number of list per page such as 'Search' pages",
+
+      "list_num_xl": "Number of list displayed on article pages",
+      "list_num_desc_xl": "Set number of list per page such as 'Not found' and 'Trash' pages",
+
 			"stale_notification": "在过期页上显示通知",
 			"stale_notification_desc": "显示自上次更新以来超过1年的页面通知。",
 			"show_all_reply_comments": "显示所有回复评论",

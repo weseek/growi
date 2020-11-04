@@ -22,7 +22,8 @@ import ThreeStrandedButton from './ThreeStrandedButton';
 
 import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
-import UserPicture from '../User/UserPicture';
+
+import PageManagement from '../Page/PageManagement';
 
 
 // eslint-disable-next-line react/prop-types
@@ -49,65 +50,29 @@ const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
   return (
     <div className="grw-page-path-nav">
       {formerLink}
-      <span className="d-flex align-items-center flex-wrap">
+      <span className="d-flex align-items-center">
         <h1 className="m-0">{latterLink}</h1>
-        <RevisionPathControls
-          pageId={pageId}
-          pagePath={pagePath}
-          isPageForbidden={isPageForbidden}
-        />
-      </span>
-    </div>
-  );
-};
-
-// eslint-disable-next-line react/prop-types
-const UserPagePathNav = ({ pageId, pagePath }) => {
-  const linkedPagePath = new LinkedPagePath(pagePath);
-  const latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />;
-
-  return (
-    <div className="grw-page-path-nav">
-      <span className="d-flex align-items-center flex-wrap">
-        <h4 className="grw-user-page-path">{latterLink}</h4>
-        <RevisionPathControls
-          pageId={pageId}
-          pagePath={pagePath}
-        />
-      </span>
-    </div>
-  );
-};
-
-/* eslint-disable react/prop-types */
-const UserInfo = ({ pageUser }) => {
-  return (
-    <div className="grw-users-info d-flex align-items-center d-edit-none">
-      <UserPicture user={pageUser} />
-
-      <div className="users-meta">
-        <h1 className="user-page-name">
-          {pageUser.name}
-        </h1>
-        <div className="user-page-meta mt-1 mb-0">
-          <span className="user-page-username mr-2"><i className="icon-user mr-1"></i>{pageUser.username}</span>
-          <span className="user-page-email mr-2">
-            <i className="icon-envelope mr-1"></i>
-            {pageUser.isEmailPublished ? pageUser.email : '*****'}
-          </span>
-          {pageUser.introduction && <span className="user-page-introduction">{pageUser.introduction}</span>}
+        <div className="mx-2">
+          <RevisionPathControls
+            pageId={pageId}
+            pagePath={pagePath}
+            isPageForbidden={isPageForbidden}
+          />
         </div>
-      </div>
-
+      </span>
     </div>
   );
 };
+
+
 /* eslint-enable react/prop-types */
 
 /* eslint-disable react/prop-types */
 const PageReactionButtons = ({ appContainer, pageContainer }) => {
 
-  const { pageId, isLiked, pageUser } = pageContainer.state;
+  const {
+    pageId, isLiked, pageUser,
+  } = pageContainer.state;
 
   return (
     <>
@@ -116,7 +81,7 @@ const PageReactionButtons = ({ appContainer, pageContainer }) => {
         <LikeButton pageId={pageId} isLiked={isLiked} />
       </span>
       )}
-      <span className="mr-2">
+      <span>
         <BookmarkButton pageId={pageId} crowi={appContainer} />
       </span>
     </>
@@ -128,73 +93,67 @@ const GrowiSubNavigation = (props) => {
   const {
     appContainer, navigationContainer, pageContainer, isCompactMode,
   } = props;
-  const { isDrawerMode } = navigationContainer.state;
+  const { isDrawerMode, editorMode } = navigationContainer.state;
   const {
     pageId, path, createdAt, creator, updatedAt, revisionAuthor,
-    isForbidden: isPageForbidden, pageUser,
+    isForbidden: isPageForbidden, pageUser, isNotCreatable, shareLinkId,
   } = pageContainer.state;
 
+  const { currentUser } = appContainer;
   const isPageNotFound = pageId == null;
+  // Tags cannot be edited while the new page and editorMode is view
+  const isTagLabelHidden = (editorMode !== 'edit' && isPageNotFound);
   const isUserPage = pageUser != null;
   const isPageInTrash = isTrashPage(path);
+  const isSharedPage = shareLinkId != null;
 
-  // Display only the RevisionPath
-  if (isPageNotFound || isPageForbidden) {
-    return (
-      <div className="grw-subnav d-flex align-items-center justify-content-between">
-        <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
-      </div>
-    );
+  function onThreeStrandedButtonClicked(viewType) {
+    navigationContainer.setEditorMode(viewType);
   }
 
   return (
-    <div className={`grw-subnav d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
+    <div className={`grw-subnav container-fluid d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
 
       {/* Left side */}
-      <div className="d-flex">
+      <div className="d-flex grw-subnav-left-side">
         { isDrawerMode && (
           <div className="d-none d-md-flex align-items-center border-right mr-3 pr-3">
             <DrawerToggler />
           </div>
         ) }
 
-        <div>
-          { !isCompactMode && !isPageNotFound && !isPageForbidden && !isUserPage && (
+        <div className="grw-path-nav-container">
+          { !isCompactMode && !isTagLabelHidden && !isPageForbidden && !isUserPage && !isSharedPage && (
             <div className="mb-2">
-              <TagLabels />
+              <TagLabels editorMode={editorMode} />
             </div>
           ) }
-
-          { isUserPage
-            ? (
-              <>
-                <UserPagePathNav pageId={pageId} pagePath={path} />
-                <UserInfo pageUser={pageUser} />
-              </>
-            )
-            : (
-              <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
-            )
-          }
-
+          <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
         </div>
       </div>
 
       {/* Right side */}
       <div className="d-flex">
 
-        <div className="d-flex flex-column align-items-end justify-content-center">
+        <div className="d-flex flex-column align-items-end">
           <div className="d-flex">
-            { !isPageInTrash && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
+            { !isPageInTrash && !isPageNotFound && !isPageForbidden && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
+            { !isPageNotFound && !isPageForbidden && <PageManagement isCompactMode={isCompactMode} /> }
           </div>
           <div className="mt-2">
-            <ThreeStrandedButton />
+            {!isNotCreatable && !isPageInTrash && !isPageForbidden && (
+              <ThreeStrandedButton
+                onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
+                isBtnDisabled={currentUser == null}
+                editorMode={editorMode}
+              />
+            )}
           </div>
         </div>
 
         {/* Page Authors */}
-        { (!isCompactMode && !isUserPage) && (
-          <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none">
+        { (!isCompactMode && !isUserPage && !isPageNotFound && !isPageForbidden) && (
+          <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3">
             <li className="pb-1">
               <AuthorInfo user={creator} date={createdAt} />
             </li>
