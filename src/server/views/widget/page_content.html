@@ -54,6 +54,7 @@
   <div id="page-editor-navbar-bottom-container" class="d-none d-edit-block"></div>
 </div>
 
+{% if revision %}
 <div class="d-none d-lg-block d-editor-none grw-side-contents-container ml-4">
   <div class="grw-side-contents-sticky-container">
     <div id="page-accessories" class="page-accessories"></div>
@@ -65,6 +66,8 @@
     {% endif %}
   </div>
 </div>
+{% endif %}
+
 
 <div id="grw-page-status-alert-container"></div>
 
