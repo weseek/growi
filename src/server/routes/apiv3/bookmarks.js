@@ -50,6 +50,17 @@ const router = express.Router();
  *          bool:
  *            type: boolean
  *            description: boolean for bookmark status
+ *
+ *      BookmarkInfo:
+ *        description: BookmarkInfo
+ *        type: object
+ *        properties:
+ *          sumOfBookmarks:
+ *            type: number
+ *            description: how many people bookmarked the page
+ *          isBookmarked:
+ *            type: boolean
+ *            description: Whether the request user bookmarked (will be returned if the user is included in the request)
  */
 
 module.exports = (crowi) => {
@@ -74,12 +85,12 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /bookmarks:
+   *    /bookmarks/info:
    *      get:
    *        tags: [Bookmarks]
-   *        summary: /bookmarks
-   *        description: Get bookmarked status
-   *        operationId: getBookmarkedStatus
+   *        summary: /bookmarks/info
+   *        description: Get bookmarked info
+   *        operationId: getBookmarkedInfo
    *        parameters:
    *          - name: pageId
    *            in: query
@@ -88,13 +99,13 @@ module.exports = (crowi) => {
    *              type: string
    *        responses:
    *          200:
-   *            description: Succeeded to get bookmarked status.
+   *            description: Succeeded to get bookmark info.
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/Bookmark'
+   *                  $ref: '#/components/schemas/BookmarkInfo'
    */
-  router.get('/', accessTokenParser, loginRequired, validator.bookmarkInfo, async(req, res) => {
+  router.get('/info', accessTokenParser, loginRequired, validator.bookmarkInfo, async(req, res) => {
     const { user } = req;
     const { pageId } = req.query;
 
