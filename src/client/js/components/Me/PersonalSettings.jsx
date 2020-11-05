@@ -13,9 +13,17 @@ class PersonalSettings extends React.Component {
 
   render() {
     const { t } = this.props;
+
+
+    const UserSettingsIcon = () => {
+      return (
+        <i className="icon-fw icon-user"></i>
+      );
+    };
+
     const navTabMapping = {
       user_infomation: {
-        Icon: PageListIcon,
+        Icon: UserSettingsIcon,
         Content: UserSettings,
         i18n: t('User Information'),
         index: 0,
@@ -39,6 +47,7 @@ class PersonalSettings extends React.Component {
         index: 3,
       },
     };
+
 
     return (
       <Fragment>
