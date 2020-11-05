@@ -105,7 +105,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/BookmarkInfo'
    */
-  router.get('/info', accessTokenParser, loginRequired, validator.bookmarkInfo, async(req, res) => {
+  router.get('/info', accessTokenParser, loginRequired, validator.bookmarkInfo, apiV3FormValidator, async(req, res) => {
     const { user } = req;
     const { pageId } = req.query;
 
