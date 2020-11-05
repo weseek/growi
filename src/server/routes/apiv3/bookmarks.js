@@ -54,7 +54,8 @@ const router = express.Router();
 
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
-  const loginRequired = require('../../middlewares/login-required')(crowi);
+  const loginRequiredStrictly = require('@server/middlewares/login-required')(crowi);
+  const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
@@ -94,7 +95,10 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/Bookmark'
    */
   router.get('/', accessTokenParser, loginRequired, validator.bookmarkInfo, async(req, res) => {
+    const { user } = req;
     const { pageId } = req.query;
+
+    console.log(user);
 
     try {
       const bookmarks = await Bookmark.findByPageIdAndUserId(pageId, req.user);
@@ -152,7 +156,7 @@ module.exports = (crowi) => {
     query('limit').if(value => value != null).isInt({ max: 300 }).withMessage('You should set less than 300 or not to set limit.'),
   ];
 
-  router.get('/:userId', accessTokenParser, loginRequired, validator.myBookmarkList, apiV3FormValidator, async(req, res) => {
+  router.get('/:userId', accessTokenParser, loginRequiredStrictly, validator.myBookmarkList, apiV3FormValidator, async(req, res) => {
     const { userId } = req.params;
     const page = req.query.page;
     const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM') || 30;
@@ -213,7 +217,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Bookmark'
    */
-  router.put('/', accessTokenParser, loginRequired, csrf, validator.bookmarks, apiV3FormValidator, async(req, res) => {
+  router.put('/', accessTokenParser, loginRequiredStrictly, csrf, validator.bookmarks, apiV3FormValidator, async(req, res) => {
     const { pageId, bool } = req.body;
 
     let bookmark;
@@ -239,28 +243,6 @@ module.exports = (crowi) => {
 
     return res.apiv3({ bookmark });
   });
-
-  /**
-   * @swagger
-   *
-   *    /count-bookmarks:
-   *      get:
-   *        tags: [Bookmarks]
-   *        summary: /bookmarks
-   *        description: Count bookmsrks
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                $ref: '#/components/schemas/BookmarkParams'
-   *        responses:
-   *          200:
-   *            description: Succeeded to count bookmarks.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  $ref: '#/components/schemas/Bookmark'
-   */
 
   return router;
 };
