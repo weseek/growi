@@ -228,7 +228,7 @@ describe('loginRequired', () => {
       expect(res.redirect).not.toHaveBeenCalled();
       expect(res.sendStatus).not.toHaveBeenCalled();
       expect(fallbackMock).toHaveBeenCalledTimes(1);
-      expect(fallbackMock).toHaveBeenCalledWith(req, res);
+      expect(fallbackMock).toHaveBeenCalledWith(req, res, next);
       expect(result).toBe('fallback');
     });
 
@@ -242,7 +242,7 @@ describe('loginRequired', () => {
       expect(res.sendStatus).not.toHaveBeenCalled();
       expect(res.redirect).not.toHaveBeenCalled();
       expect(fallbackMock).toHaveBeenCalledTimes(1);
-      expect(fallbackMock).toHaveBeenCalledWith(req, res);
+      expect(fallbackMock).toHaveBeenCalledWith(req, res, next);
       expect(result).toBe('fallback');
     });
 
