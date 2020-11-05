@@ -15,6 +15,11 @@
     * migrate-mongo
     * mongoose
 
+## v4.1.10
+
+* Fix: Make listing users API secure
+* Fix: Error message when the server denies guest user connecting with socket.io
+
 ## v4.1.9
 
 * Feature: Environment variables to set max connection size to deliver push messages to all clients
