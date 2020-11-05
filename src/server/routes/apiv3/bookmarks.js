@@ -98,17 +98,31 @@ module.exports = (crowi) => {
     const { user } = req;
     const { pageId } = req.query;
 
-    console.log(user);
+    const responsesParams = {};
 
     try {
-      const bookmarks = await Bookmark.findByPageIdAndUserId(pageId, req.user);
-      const sumOfBookmarks = await Bookmark.countByPageId(pageId);
-      return res.apiv3({ bookmarks, sumOfBookmarks });
+      responsesParams.sumOfBookmarks = await Bookmark.countByPageId(pageId);
     }
     catch (err) {
-      logger.error('get-bookmark-failed', err);
+      logger.error('get-bookmark-count-failed', err);
       return res.apiv3Err(err, 500);
     }
+
+    // guest user only get bookmark count
+    if (user == null) {
+      return res.apiv3(responsesParams);
+    }
+
+    try {
+      const bookmark = await Bookmark.findByPageIdAndUserId(pageId, user._id);
+      responsesParams.isBookmarked = (bookmark != null);
+      return res.apiv3(responsesParams);
+    }
+    catch (err) {
+      logger.error('get-bookmark-state-failed', err);
+      return res.apiv3Err(err, 500);
+    }
+
   });
 
   // select page from bookmark where userid = userid

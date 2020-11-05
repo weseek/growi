@@ -181,13 +181,10 @@ export default class PageContainer extends Container {
 
   async retrieveBookmarkInfo() {
     const response = await this.appContainer.apiv3Get('/bookmarks', { pageId: this.state.pageId });
-    if (response.data.bookmarks != null) {
-      this.setState({ isBookmarked: true });
-    }
-    else {
-      this.setState({ isBookmarked: false });
-    }
-    this.setState({ sumOfBookmarks: response.data.sumOfBookmarks });
+    this.setState({
+      sumOfBookmarks: response.data.sumOfBookmarks,
+      isBookmarked: response.data.isBookmarked,
+    });
   }
 
   async toggleBookmark() {
