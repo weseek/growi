@@ -116,6 +116,8 @@ module.exports = function(crowi, app) {
   app.get('/me'                       , loginRequiredStrictly , me.index);
   // external-accounts
   app.get('/me/external-accounts'                         , loginRequiredStrictly , me.externalAccounts.list);
+  // my drafts
+  app.get('/me/drafts'                , loginRequiredStrictly, me.drafts.list);
 
   app.get('/:id([0-9a-z]{24})'       , loginRequired , page.redirector);
   app.get('/_r/:id([0-9a-z]{24})'    , loginRequired , page.redirector); // alias

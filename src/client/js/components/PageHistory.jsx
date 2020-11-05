@@ -14,9 +14,12 @@ import PaginationWrapper from './PaginationWrapper';
 
 const logger = loggerFactory('growi:PageHistory');
 
-
 function PageHistory(props) {
   const { pageHistoryContainer } = props;
+  const { getPreviousRevision, onDiffOpenClicked } = pageHistoryContainer;
+  const {
+    activePage, totalPages, pagingLimit, revisions, diffOpened,
+  } = pageHistoryContainer.state;
 
   const handlePage = useCallback(async(selectedPage) => {
     try {
@@ -50,27 +53,25 @@ function PageHistory(props) {
     });
   }
 
-
   function pager() {
     return (
       <PaginationWrapper
-        activePage={pageHistoryContainer.state.activePage}
+        activePage={activePage}
         changePage={handlePage}
-        totalItemsCount={pageHistoryContainer.state.totalPages}
-        pagingLimit={pageHistoryContainer.state.pagingLimit}
+        totalItemsCount={totalPages}
+        pagingLimit={pagingLimit}
         align="center"
       />
     );
   }
 
-
   return (
     <div>
       <PageRevisionList
-        revisions={pageHistoryContainer.state.revisions}
-        diffOpened={pageHistoryContainer.state.diffOpened}
-        getPreviousRevision={pageHistoryContainer.getPreviousRevision}
-        onDiffOpenClicked={pageHistoryContainer.onDiffOpenClicked}
+        revisions={revisions}
+        diffOpened={diffOpened}
+        getPreviousRevision={getPreviousRevision}
+        onDiffOpenClicked={onDiffOpenClicked}
       />
       {pager()}
     </div>

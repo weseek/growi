@@ -4,6 +4,7 @@ import loggerFactory from '@alias/logger';
 
 import * as entities from 'entities';
 import * as toastr from 'toastr';
+import { isTrashPage } from '@commons/util/path-utils';
 import { toastError } from '../util/apiNotification';
 
 import {
@@ -39,6 +40,7 @@ export default class PageContainer extends Container {
 
     const revisionId = mainContent.getAttribute('data-page-revision-id');
     const path = decodeURI(mainContent.getAttribute('data-path'));
+
     this.state = {
       // local page data
       markdown: null, // will be initialized after initStateMarkdown()
@@ -47,26 +49,28 @@ export default class PageContainer extends Container {
       revisionCreatedAt: +mainContent.getAttribute('data-page-revision-created'),
       path,
       tocHtml: '',
-      isLiked: JSON.parse(mainContent.getAttribute('data-page-is-liked')),
-
-      seenUserIds: mainContent.getAttribute('data-page-ids-of-seen-users'),
+      isLiked: false,
+      isBookmarked: false,
       seenUsers: [],
+      seenUserIds: mainContent.getAttribute('data-page-ids-of-seen-users'),
       countOfSeenUsers: mainContent.getAttribute('data-page-count-of-seen-users'),
 
       likerUsers: [],
       sumOfLikers: 0,
-
+      sumOfBookmarks: 0,
       createdAt: mainContent.getAttribute('data-page-created-at'),
       updatedAt: mainContent.getAttribute('data-page-updated-at'),
-      isForbidden:  JSON.parse(mainContent.getAttribute('data-page-is-forbidden')),
-      isDeleted:  JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
-      isDeletable:  JSON.parse(mainContent.getAttribute('data-page-is-deletable')),
-      isAbleToDeleteCompletely:  JSON.parse(mainContent.getAttribute('data-page-is-able-to-delete-completely')),
+      isTrashPage: isTrashPage(path),
+      isForbidden: JSON.parse(mainContent.getAttribute('data-page-is-forbidden')),
+      isDeleted: JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
+      isDeletable: JSON.parse(mainContent.getAttribute('data-page-is-deletable')),
+      isNotCreatable: JSON.parse(mainContent.getAttribute('data-page-is-not-creatable')),
+      isAbleToDeleteCompletely: JSON.parse(mainContent.getAttribute('data-page-is-able-to-delete-completely')),
       pageUser: JSON.parse(mainContent.getAttribute('data-page-user')),
       tags: null,
       hasChildren: JSON.parse(mainContent.getAttribute('data-page-has-children')),
       templateTagData: mainContent.getAttribute('data-template-tags') || null,
-      shareLinksNumber:  mainContent.getAttribute('data-share-links-number'),
+      shareLinksNumber: mainContent.getAttribute('data-share-links-number'),
       shareLinkId: JSON.parse(mainContent.getAttribute('data-share-link-id') || null),
 
       // latest(on remote) information
@@ -153,20 +157,43 @@ export default class PageContainer extends Container {
 
   async initStateOthers() {
 
-    const likerListElem = document.getElementById('liker-list');
-    if (likerListElem != null) {
-      const { userIdsStr, sumOfLikers } = likerListElem.dataset;
-      this.setState({ sumOfLikers });
+    this.retrieveLikeInfo();
+    this.retrieveBookmarkInfo();
+    this.checkAndUpdateImageUrlCached(this.state.likerUsers);
+  }
 
-      if (userIdsStr === '') {
-        return;
-      }
+  async retrieveLikeInfo() {
+    const like = await this.appContainer.apiv3Get('/page/like-info', { _id: this.state.pageId });
+    this.setState({
+      sumOfLikers: like.data.sumOfLikers,
+      likerUsers: like.data.users.liker,
+      isLiked: like.data.isLiked,
+    });
+  }
 
-      const { users } = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr });
-      this.setState({ likerUsers: users });
+  async toggleLike() {
+    const bool = !this.state.isLiked;
+    await this.appContainer.apiv3Put('/page/likes', { pageId: this.state.pageId, bool });
+    this.setState({ isLiked: bool });
 
-      this.checkAndUpdateImageUrlCached(users);
+    return this.retrieveLikeInfo();
+  }
+
+  async retrieveBookmarkInfo() {
+    const response = await this.appContainer.apiv3Get('/bookmarks', { pageId: this.state.pageId });
+    if (response.data.bookmarks != null) {
+      this.setState({ isBookmarked: true });
     }
+    else {
+      this.setState({ isBookmarked: false });
+    }
+    this.setState({ sumOfBookmarks: response.data.sumOfBookmarks });
+  }
+
+  async toggleBookmark() {
+    const bool = !this.state.isBookmarked;
+    await this.appContainer.apiv3Put('/bookmarks', { pageId: this.state.pageId, bool });
+    return this.retrieveBookmarkInfo();
   }
 
   async checkAndUpdateImageUrlCached(users) {
@@ -492,6 +519,10 @@ export default class PageContainer extends Container {
       }
     });
 
+  }
+
+  /* TODO GW-325 */
+  retrieveMyBookmarkList() {
   }
 
 }

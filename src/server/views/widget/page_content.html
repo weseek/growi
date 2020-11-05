@@ -1,5 +1,5 @@
 {% if page %}
-<div id="content-main" class="content-main"
+<div id="content-main" class="content-main d-flex"
   data-path="{{ encodeURI(page.path) }}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
   data-page-id="{% if page %}{{ page._id.toString() }}{% endif %}"
@@ -14,9 +14,10 @@
   data-page-grant-group-name="{{ grantedGroupName }}"
   data-page-is-liked="{% if user %}{{ page.isLiked(user) }}{% else %}false{% endif %}"
   data-page-is-seen="{% if page and page.isSeenUser(user) %}1{% else %}0{% endif %}"
-  data-page-is-forbidden="{% if forbidden %}true{% else %}false{% endif %}"
+  data-page-is-forbidden="false"
   data-page-is-deleted="{% if page.isDeleted() %}true{% else %}false{% endif %}"
   data-page-is-deletable="{% if isDeletablePage() %}true{% else %}false{% endif %}"
+  data-page-is-not-creatable="false"
   data-page-is-able-to-delete-completely="{% if user.canDeleteCompletely(page.creator._id) %}true{% else %}false{% endif %}"
   data-slack-channels="{{ slack|default('') }}"
   data-page-created-at="{% if page %}{{ page.createdAt|datetz('Y/m/d H:i:s') }}{% endif %}"
@@ -31,7 +32,7 @@
   data-share-link-id="{% if sharelink %}{{ sharelink._id|json }}{% endif %}"
   >
 {% else %}
-<div id="content-main" class="content-main"
+<div id="content-main" class="content-main d-flex"
   data-path="{{ encodeURI(path) }}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
   data-slack-channels="{{ slack|default('') }}"
@@ -40,40 +41,32 @@
   >
 {% endif %}
 
+<div class="flex-grow-1">
   {% include 'page_alerts.html' %}
 
-  {% include 'page_tabs.html' %}
+  {% if pageUser %}
+    <div class="user-info" id="user-info"></div>
+  {% endif %}
 
-  <div class="tab-content">
-
-    {% if page %}
-      <script type="text/template" id="raw-text-original">{{ revision.body.toString() | encodeHTML }}</script>
-
-      {# formatted text #}
-      <div class="tab-pane active" id="revision-body">
-        <div id="page" class="mt-4"></div>
-      </div>
-    {% endif %}
-
-    {% if !isTrashPage() %}
-      {# edit form #}
-      <div class="tab-pane" id="edit">
-        <div id="page-editor">{% if pageForm.body %}{{ pageForm.body }}{% endif %}</div>
-      </div>
-      <div class="tab-pane" id="hackmd">
-        <div id="page-editor-with-hackmd"></div>
-      </div>
-      {% include '../_form.html' %}
-    {% endif %}
-
-    {# raw revision history #}
-    {% if not page %}
-    {% else %}
-    <div class="tab-pane revision-history" id="revision-history">
-    </div>
-    {% endif %}
-
+  <div id="display-switcher">
+    <script type="text/template" id="raw-text-original">{{ revision.body.toString() | encodeHTML }}</script>
   </div>
-
-  <div id="grw-page-status-alert-container"></div>
+  <div id="page-editor-navbar-bottom-container" class="d-none d-edit-block"></div>
 </div>
+
+<div class="d-none d-lg-block d-editor-none grw-side-contents-container ml-4">
+  <div class="grw-side-contents-sticky-container">
+    <div id="page-accessories" class="page-accessories"></div>
+    <div id="revision-toc" class="revision-toc sps sps--abv" data-sps-offset="123">
+      <div id="revision-toc-content" class="revision-toc-content"></div>
+    </div>
+    {% if pageUser %}
+      <div id="grw-user-contents-links"></div>
+    {% endif %}
+  </div>
+</div>
+
+<div id="grw-page-status-alert-container"></div>
+
+</div>
+

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { withTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 
 import { UncontrolledTooltip } from 'reactstrap';
@@ -16,6 +17,7 @@ import UserPicture from '../User/UserPicture';
 import Username from '../User/Username';
 import CommentEditor from './CommentEditor';
 import CommentControl from './CommentControl';
+import HistoryIcon from '../Icons/HistoryIcon';
 
 /**
  *
@@ -38,7 +40,6 @@ class Comment extends React.PureComponent {
     this.isCurrentUserIsAuthor = this.isCurrentUserEqualsToAuthor.bind(this);
     this.isCurrentRevision = this.isCurrentRevision.bind(this);
     this.getRootClassName = this.getRootClassName.bind(this);
-    this.getRevisionLabelClassName = this.getRevisionLabelClassName.bind(this);
     this.deleteBtnClickedHandler = this.deleteBtnClickedHandler.bind(this);
     this.renderText = this.renderText.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
@@ -109,11 +110,6 @@ class Comment extends React.PureComponent {
     return className;
   }
 
-  getRevisionLabelClassName() {
-    return `page-comment-revision badge ${
-      this.isCurrentRevision() ? 'badge-primary' : 'badge-secondary'}`;
-  }
-
   deleteBtnClickedHandler() {
     this.props.deleteBtnClicked(this.props.comment);
   }
@@ -155,6 +151,7 @@ class Comment extends React.PureComponent {
   }
 
   render() {
+    const { t } = this.props;
     const comment = this.props.comment;
     const commentId = comment._id;
     const creator = comment.creator;
@@ -166,8 +163,6 @@ class Comment extends React.PureComponent {
     const rootClassName = this.getRootClassName(comment);
     const commentBody = isMarkdown ? this.renderRevisionBody() : this.renderText(comment.comment);
     const revHref = `?revision=${comment.revision}`;
-    const revFirst8Letters = comment.revision.substr(-8);
-    const revisionLavelClassName = this.getRevisionLabelClassName();
 
     const editedDateId = `editedDate-${comment._id}`;
     const editedDateFormatted = isEdited
@@ -176,7 +171,6 @@ class Comment extends React.PureComponent {
 
     return (
       <React.Fragment>
-
         {this.state.isReEdit ? (
           <CommentEditor
             growiRenderer={this.props.growiRenderer}
@@ -206,10 +200,17 @@ class Comment extends React.PureComponent {
                     <span id={editedDateId}>&nbsp;(edited)</span>
                     <UncontrolledTooltip placement="bottom" fade={false} target={editedDateId}>{editedDateFormatted}</UncontrolledTooltip>
                   </>
-                ) }
-                <span className="ml-2"><a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a></span>
+                )}
+                <span className="ml-2">
+                  <a id={`page-comment-revision-${commentId}`} className="page-comment-revision" href={revHref}>
+                    <HistoryIcon />
+                  </a>
+                  <UncontrolledTooltip placement="bottom" fade={false} target={`page-comment-revision-${commentId}`}>
+                    {t('page_comment.display_the_page_when_posting_this_comment')}
+                  </UncontrolledTooltip>
+                </span>
               </div>
-              { this.checkPermissionToControlComment() && (
+              {this.checkPermissionToControlComment() && (
                 <CommentControl
                   onClickDeleteBtn={this.deleteBtnClickedHandler}
                   onClickEditBtn={() => this.setState({ isReEdit: true })}
@@ -217,9 +218,8 @@ class Comment extends React.PureComponent {
               ) }
             </div>
           </div>
-          )
-        }
-
+        )
+      }
       </React.Fragment>
     );
   }
@@ -232,6 +232,7 @@ class Comment extends React.PureComponent {
 const CommentWrapper = withUnstatedContainers(Comment, [AppContainer, PageContainer]);
 
 Comment.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
@@ -240,4 +241,4 @@ Comment.propTypes = {
   deleteBtnClicked: PropTypes.func.isRequired,
 };
 
-export default CommentWrapper;
+export default withTranslation()(CommentWrapper);

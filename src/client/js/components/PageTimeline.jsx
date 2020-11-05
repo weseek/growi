@@ -16,11 +16,10 @@ class PageTimeline extends React.Component {
   constructor(props) {
     super(props);
 
-    const { appContainer } = this.props;
     this.state = {
       activePage: 1,
       totalPageItems: 0,
-      limit: appContainer.getConfig().recentCreatedLimit,
+      limit: null,
 
       // TODO: remove after when timeline is implemented with React and inject data with props
       pages: this.props.pages,
@@ -33,17 +32,17 @@ class PageTimeline extends React.Component {
   async handlePage(selectedPage) {
     const { appContainer, pageContainer } = this.props;
     const { path } = pageContainer.state;
-    const { limit } = this.state;
-    const offset = (selectedPage - 1) * limit;
-    const activePage = selectedPage;
+    const page = selectedPage;
 
-    const res = await appContainer.apiv3Get('/pages/list', { path, limit, offset });
+    const res = await appContainer.apiv3Get('/pages/list', { path, page });
     const totalPageItems = res.data.totalCount;
     const pages = res.data.pages;
+    const pagingLimit = res.data.limit;
     this.setState({
-      activePage,
+      activePage: selectedPage,
       totalPageItems,
       pages,
+      limit: pagingLimit,
     });
   }
 
@@ -61,9 +60,16 @@ class PageTimeline extends React.Component {
   }
 
   render() {
+    const { t } = this.props;
     const { pages } = this.state;
-    if (pages == null) {
-      return <React.Fragment></React.Fragment>;
+    const { path } = this.props.pageContainer.state;
+    if (pages == null || pages.length === 0) {
+      return (
+        <div className="mt-2">
+          {/* eslint-disable-next-line react/no-danger */}
+          <p dangerouslySetInnerHTML={{ __html: t('custom_navigation.no_page_list', { path }) }} />
+        </div>
+      );
     }
 
     return (

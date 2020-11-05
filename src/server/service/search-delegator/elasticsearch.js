@@ -310,7 +310,8 @@ class ElasticsearchDelegator {
     let document = {
       path: page.path,
       body: page.revision.body,
-      username: page.creator?.username,
+      // username: page.creator?.username, // available Node.js v14 and above
+      username: page.creator != null ? page.creator.username : null,
       comment_count: page.commentCount,
       bookmark_count: bookmarkCount,
       like_count: page.liker.length || 0,

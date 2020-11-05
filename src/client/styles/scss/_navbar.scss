@@ -75,3 +75,26 @@
     bottom: -$grw-navbar-bottom-height;
   }
 }
+
+.grw-custom-nav {
+  .nav-title {
+    flex-wrap: nowrap;
+  }
+
+  .nav-link {
+    padding: 1rem 1.5rem;
+
+    svg {
+      width: 17px;
+      height: 17px;
+      margin-right: 5px;
+      vertical-align: text-bottom;
+    }
+  }
+
+  .grw-nav-slide-hr {
+    border-top: 0rem;
+    border-bottom: 3px solid;
+    transition: 0.3s ease-in-out;
+  }
+}
