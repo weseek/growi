@@ -407,14 +407,16 @@ module.exports = (crowi) => {
 
     const result = { page: pageService.serializeToObj(page) };
 
-    try {
+    if (globalNotificationService != null) {
+      try {
       // global notification
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_MOVE, page, req.user, {
-        oldPath: req.body.path,
-      });
-    }
-    catch (err) {
-      logger.error('Move notification failed', err);
+        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_MOVE, page, req.user, {
+          oldPath: req.body.path,
+        });
+      }
+      catch (err) {
+        logger.error('Move notification failed', err);
+      }
     }
 
     return res.apiv3(result);
