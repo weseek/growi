@@ -2,20 +2,48 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-
+import CustomNavigation from '../CustomNavigation';
 import UserSettings from './UserSettings';
 import PasswordSettings from './PasswordSettings';
 import ExternalAccountLinkedMe from './ExternalAccountLinkedMe';
 import ApiSettings from './ApiSettings';
+import PageListIcon from '../Icons/PageListIcon';
 
 class PersonalSettings extends React.Component {
 
   render() {
     const { t } = this.props;
+    const navTabMapping = {
+      user_infomation: {
+        Icon: PageListIcon,
+        Content: UserSettings,
+        i18n: t('User Information'),
+        index: 0,
+      },
+      external_accounts: {
+        Icon: PageListIcon,
+        Content: ExternalAccountLinkedMe,
+        i18n: t('admin:user_management.external_accounts'),
+        index: 1,
+      },
+      password_settings: {
+        Icon: PageListIcon,
+        Content: PasswordSettings,
+        i18n: t('Password Settings'),
+        index: 2,
+      },
+      api_settings: {
+        Icon: PageListIcon,
+        Content: ApiSettings,
+        i18n: t('API Settings'),
+        index: 3,
+      },
+    };
 
     return (
       <Fragment>
-        <div className="personal-settings">
+        <CustomNavigation navTabMapping={navTabMapping} />
+        {/* <div className="personal-settings">
           <ul className="nav nav-tabs" role="tablist">
             <li className="nav-item">
               <a className="nav-link active" href="#user-settings" data-toggle="tab" role="tab">
@@ -52,7 +80,7 @@ class PersonalSettings extends React.Component {
               <ApiSettings />
             </div>
           </div>
-        </div>
+        </div> */}
       </Fragment>
     );
   }
