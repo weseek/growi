@@ -202,7 +202,7 @@ module.exports = (crowi) => {
 
   router.get('/like-info', loginRequired, validator.likeInfo, async(req, res) => {
     const pageId = req.query._id;
-    const userId = req.user._id;
+    const userId = req.user ? req.user._id : null;
     try {
       const page = await Page.findById(pageId);
       const users = await Page.findById(pageId).populate('liker', User.USER_PUBLIC_FIELDS);
