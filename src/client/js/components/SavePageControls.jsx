@@ -15,7 +15,6 @@ import AppContainer from '../services/AppContainer';
 import EditorContainer from '../services/EditorContainer';
 
 import { withUnstatedContainers } from './UnstatedUtils';
-import SlackNotification from './SlackNotification';
 import GrantSelector from './SavePageControls/GrantSelector';
 
 const logger = loggerFactory('growi:SavePageControls');
@@ -26,23 +25,12 @@ class SavePageControls extends React.Component {
     super(props);
 
     const config = this.props.appContainer.getConfig();
-    this.hasSlackConfig = config.hasSlackConfig;
     this.isAclEnabled = config.isAclEnabled;
 
-    this.slackEnabledFlagChangedHandler = this.slackEnabledFlagChangedHandler.bind(this);
-    this.slackChannelsChangedHandler = this.slackChannelsChangedHandler.bind(this);
     this.updateGrantHandler = this.updateGrantHandler.bind(this);
 
     this.save = this.save.bind(this);
     this.saveAndOverwriteScopesOfDescendants = this.saveAndOverwriteScopesOfDescendants.bind(this);
-  }
-
-  slackEnabledFlagChangedHandler(isSlackEnabled) {
-    this.props.editorContainer.setState({ isSlackEnabled });
-  }
-
-  slackChannelsChangedHandler(slackChannels) {
-    this.props.editorContainer.setState({ slackChannels });
   }
 
   updateGrantHandler(data) {
@@ -76,6 +64,7 @@ class SavePageControls extends React.Component {
   }
 
   render() {
+
     const { t, pageContainer, editorContainer } = this.props;
 
     const isRootPage = pageContainer.state.path === '/';
@@ -84,18 +73,6 @@ class SavePageControls extends React.Component {
 
     return (
       <div className="d-flex align-items-center form-inline">
-        {this.hasSlackConfig
-          && (
-          <div className="mr-2">
-            <SlackNotification
-              isSlackEnabled={editorContainer.state.isSlackEnabled}
-              slackChannels={editorContainer.state.slackChannels}
-              onEnabledFlagChange={this.slackEnabledFlagChangedHandler}
-              onChannelChange={this.slackChannelsChangedHandler}
-            />
-          </div>
-          )
-        }
 
         {this.isAclEnabled
           && (

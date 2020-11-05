@@ -1,14 +1,5 @@
 .draft-list-item {
   .panel-heading {
-    .caret {
-      transition: 0.4s;
-      transform: rotate(-90deg);
-
-      &.caret-opened {
-        transform: rotate(0deg);
-      }
-    }
-
     .icon-container {
       a:hover {
         text-decoration: unset;
@@ -28,6 +19,9 @@
   }
 
   .draft-copy {
+    cursor: pointer;
+  }
+  .draft-path {
     cursor: pointer;
   }
 }

@@ -433,7 +433,6 @@ module.exports = function(crowi, app) {
     const revisionId = req.query.revision;
 
     const layoutName = configManager.getConfig('crowi', 'customize:layout');
-    const view = `layout-${layoutName}/shared_page`;
 
     const shareLink = await ShareLink.findOne({ _id: linkId }).populate('relatedPage');
 
@@ -442,17 +441,17 @@ module.exports = function(crowi, app) {
       return res.render(`layout-${layoutName}/not_found_shared_page`);
     }
 
-    let page = shareLink.relatedPage;
+    const renderVars = {};
+
+    renderVars.sharelink = shareLink;
 
     // check if share link is expired
     if (shareLink.isExpired()) {
       // page is not found
-      return res.render(`layout-${layoutName}/expired_shared_page`);
+      return res.render(`layout-${layoutName}/expired_shared_page`, renderVars);
     }
 
-    const renderVars = {};
-
-    renderVars.sharelink = shareLink;
+    let page = shareLink.relatedPage;
 
     // presentation mode
     if (req.query.presentation) {
@@ -471,7 +470,7 @@ module.exports = function(crowi, app) {
     addRenderVarsForScope(renderVars, page);
 
     await interceptorManager.process('beforeRenderPage', req, res, renderVars);
-    return res.render(view, renderVars);
+    return res.render(`layout-${layoutName}/shared_page`, renderVars);
   };
 
   /**

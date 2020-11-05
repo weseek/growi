@@ -27,7 +27,12 @@ export default class AdminCustomizeContainer extends Container {
       isEnabledTimeline: false,
       isSavedStatesOfTabChanges: false,
       isEnabledAttachTitleHeader: false,
-      currentRecentCreatedLimit: 10,
+
+      pageLimitationS: null,
+      pageLimitationM: null,
+      pageLimitationL: null,
+      pageLimitationXL: null,
+
       isEnabledStaleNotification: false,
       isAllReplyShown: false,
       currentHighlightJsStyleId: '',
@@ -51,6 +56,10 @@ export default class AdminCustomizeContainer extends Container {
       },
       /* eslint-enable quote-props, no-multi-spaces */
     };
+    this.switchPageListLimitationS = this.switchPageListLimitationS.bind(this);
+    this.switchPageListLimitationM = this.switchPageListLimitationM.bind(this);
+    this.switchPageListLimitationL = this.switchPageListLimitationL.bind(this);
+    this.switchPageListLimitationXL = this.switchPageListLimitationXL.bind(this);
 
   }
 
@@ -74,7 +83,10 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledTimeline: customizeParams.isEnabledTimeline,
         isSavedStatesOfTabChanges: customizeParams.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: customizeParams.isEnabledAttachTitleHeader,
-        currentRecentCreatedLimit: customizeParams.recentCreatedLimit,
+        pageLimitationS: customizeParams.pageLimitationS,
+        pageLimitationM: customizeParams.pageLimitationM,
+        pageLimitationL: customizeParams.pageLimitationL,
+        pageLimitationXL: customizeParams.pageLimitationXL,
         isEnabledStaleNotification: customizeParams.isEnabledStaleNotification,
         isAllReplyShown: customizeParams.isAllReplyShown,
         currentHighlightJsStyleId: customizeParams.styleName,
@@ -128,11 +140,33 @@ export default class AdminCustomizeContainer extends Container {
     this.setState({ isEnabledAttachTitleHeader:  !this.state.isEnabledAttachTitleHeader });
   }
 
+
   /**
-   * Switch recentCreatedLimit
+   * S: Switch pageListLimitationS
    */
-  switchRecentCreatedLimit(value) {
-    this.setState({ currentRecentCreatedLimit: value });
+  switchPageListLimitationS(value) {
+    this.setState({ pageLimitationS: value });
+  }
+
+  /**
+   * M: Switch pageListLimitationM
+   */
+  switchPageListLimitationM(value) {
+    this.setState({ pageLimitationM: value });
+  }
+
+  /**
+   * L: Switch pageListLimitationL
+   */
+  switchPageListLimitationL(value) {
+    this.setState({ pageLimitationL: value });
+  }
+
+  /**
+   * XL: Switch pageListLimitationXL
+   */
+  switchPageListLimitationXL(value) {
+    this.setState({ pageLimitationXL: value });
   }
 
   /**
@@ -255,7 +289,10 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledTimeline: this.state.isEnabledTimeline,
         isSavedStatesOfTabChanges: this.state.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: this.state.isEnabledAttachTitleHeader,
-        recentCreatedLimit: this.state.currentRecentCreatedLimit,
+        pageLimitationS: this.state.pageLimitationS,
+        pageLimitationM: this.state.pageLimitationM,
+        pageLimitationL: this.state.pageLimitationL,
+        pageLimitationXL: this.state.pageLimitationXL,
         isEnabledStaleNotification: this.state.isEnabledStaleNotification,
         isAllReplyShown: this.state.isAllReplyShown,
       });
@@ -264,7 +301,10 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledTimeline: customizedParams.isEnabledTimeline,
         isSavedStatesOfTabChanges: customizedParams.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: customizedParams.isEnabledAttachTitleHeader,
-        recentCreatedLimit: customizedParams.currentRecentCreatedLimit,
+        pageLimitationS: customizedParams.pageLimitationS,
+        pageLimitationM: customizedParams.pageLimitationM,
+        pageLimitationL: customizedParams.pageLimitationL,
+        pageLimitationXL: customizedParams.pageLimitationXL,
         isEnabledStaleNotification: customizedParams.isEnabledStaleNotification,
         isAllReplyShown: customizedParams.isAllReplyShown,
       });

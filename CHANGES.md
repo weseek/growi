@@ -11,6 +11,13 @@
 
 * Improvement: Basic layout of page
 * Support: Support MongoDB 4.0, 4.2 and 4.4
+* Support: Upgrade libs
+    * migrate-mongo
+    * mongoose
+
+## v4.1.9
+
+* Feature: Environment variables to set max connection size to deliver push messages to all clients
 
 ## v4.1.8
 

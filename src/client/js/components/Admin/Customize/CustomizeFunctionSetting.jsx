@@ -1,10 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import {
-  Card, CardBody,
-  Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
-} from 'reactstrap';
+import { Card, CardBody } from 'reactstrap';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
@@ -14,6 +11,7 @@ import AppContainer from '../../../services/AppContainer';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import CustomizeFunctionOption from './CustomizeFunctionOption';
+import PagingSizeUncontrolledDropdown from './PagingSizeUncontrolledDropdown';
 
 class CustomizeFunctionSetting extends React.Component {
 
@@ -21,15 +19,8 @@ class CustomizeFunctionSetting extends React.Component {
     super(props);
 
     this.state = {
-      isDropdownOpen: false,
     };
-
-    this.onToggleDropdown = this.onToggleDropdown.bind(this);
     this.onClickSubmit = this.onClickSubmit.bind(this);
-  }
-
-  onToggleDropdown() {
-    this.setState({ isDropdownOpen: !this.state.isDropdownOpen });
   }
 
   async onClickSubmit() {
@@ -74,7 +65,6 @@ class CustomizeFunctionSetting extends React.Component {
                 </CustomizeFunctionOption>
               </div>
             </div>
-
             <div className="form-group row">
               <div className="offset-md-3 col-md-6 text-left">
                 <CustomizeFunctionOption
@@ -90,32 +80,34 @@ class CustomizeFunctionSetting extends React.Component {
               </div>
             </div>
 
-            <div className="form-group row">
-              <div className="offset-md-3 col-md-6 text-left">
-                <div className="my-0 w-100">
-                  <label>{t('admin:customize_setting.function_options.recent_created__n_draft_num_desc')}</label>
-                </div>
-                <Dropdown isOpen={this.state.isDropdownOpen} toggle={this.onToggleDropdown}>
-                  <DropdownToggle className="text-right col-6" caret>
-                    <span className="float-left">{adminCustomizeContainer.state.currentRecentCreatedLimit}</span>
-                  </DropdownToggle>
-                  <DropdownMenu className="dropdown-menu" role="menu">
-                    <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchRecentCreatedLimit(10) }}>
-                      <a role="menuitem">10</a>
-                    </DropdownItem>
-                    <DropdownItem key={30} role="presentation" onClick={() => { adminCustomizeContainer.switchRecentCreatedLimit(30) }}>
-                      <a role="menuitem">30</a>
-                    </DropdownItem>
-                    <DropdownItem key={50} role="presentation" onClick={() => { adminCustomizeContainer.switchRecentCreatedLimit(50) }}>
-                      <a role="menuitem">50</a>
-                    </DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
-                <p className="form-text text-muted">
-                  {t('admin:customize_setting.function_options.recently_created_n_draft_num_desc')}
-                </p>
-              </div>
-            </div>
+            <PagingSizeUncontrolledDropdown
+              label={t('admin:customize_setting.function_options.list_num_s')}
+              desc={t('admin:customize_setting.function_options.list_num_desc_s')}
+              toggleLabel={adminCustomizeContainer.state.pageLimitationS || 20}
+              dropdownItemSize={[10, 20, 50, 100]}
+              onChangeDropdownItem={adminCustomizeContainer.switchPageListLimitationS}
+            />
+            <PagingSizeUncontrolledDropdown
+              label={t('admin:customize_setting.function_options.list_num_m')}
+              desc={t('admin:customize_setting.function_options.list_num_desc_m')}
+              toggleLabel={adminCustomizeContainer.state.pageLimitationM || 10}
+              dropdownItemSize={[5, 10, 20, 50, 100]}
+              onChangeDropdownItem={adminCustomizeContainer.switchPageListLimitationM}
+            />
+            <PagingSizeUncontrolledDropdown
+              label={t('admin:customize_setting.function_options.list_num_l')}
+              desc={t('admin:customize_setting.function_options.list_num_desc_l')}
+              toggleLabel={adminCustomizeContainer.state.pageLimitationL || 50}
+              dropdownItemSize={[20, 50, 100, 200]}
+              onChangeDropdownItem={adminCustomizeContainer.switchPageListLimitationL}
+            />
+            <PagingSizeUncontrolledDropdown
+              label={t('admin:customize_setting.function_options.list_num_xl')}
+              desc={t('admin:customize_setting.function_options.list_num_desc_xl')}
+              toggleLabel={adminCustomizeContainer.state.pageLimitationXL || 20}
+              dropdownItemSize={[5, 10, 20, 50, 100]}
+              onChangeDropdownItem={adminCustomizeContainer.switchPageListLimitationXL}
+            />
 
             <div className="form-group row">
               <div className="offset-md-3 col-md-6 text-left">
