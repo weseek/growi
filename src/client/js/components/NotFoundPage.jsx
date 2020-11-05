@@ -26,7 +26,7 @@ const NotFoundPage = (props) => {
   };
 
   return (
-    <div className="grw-custom-navigation mt-5 on-edit">
+    <div className="mt-5 d-edit-none">
       <CustomNavigation navTabMapping={navTabMapping} />
     </div>
   );

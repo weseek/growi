@@ -327,48 +327,34 @@ ul.pagination {
   border-color: $bordercolor-toc;
 }
 
-.grw-custom-navigation {
-  .nav-title {
-    color: $color-link;
+.grw-custom-nav {
+  .nav-item {
+    .nav-link {
+      color: $color-link;
+      svg {
+        fill: $color-link;
+      }
+
+      // Disabled state lightens text
+      &.disabled {
+        color: $nav-link-disabled-color;
+        svg {
+          fill: $nav-link-disabled-color;
+        }
+      }
+    }
   }
-  .nav-link svg {
-    fill: $color-link;
-  }
+
   .grw-nav-slide-hr {
     border-color: $color-link;
   }
 }
 
 .grw-page-accessories-modal {
-  .nav-title {
-    color: $color-link;
-  }
   .modal-header {
-    button.close {
+    .close {
       color: $secondary;
     }
-  }
-
-  .modal-title {
-    position: relative;
-  }
-
-  .nav-link {
-    &:hover {
-      background-color: rgba($link-color, 0.08);
-    }
-  }
-  .nav-link svg {
-    fill: $color-link;
-  }
-  .modal-split-hr {
-    background-color: $bordercolor-nav-tabs;
-  }
-
-  .grw-nav-slide-hr {
-    position: absolute;
-    bottom: 0px;
-    border-color: $color-link;
   }
 }
 
