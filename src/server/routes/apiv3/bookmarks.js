@@ -54,8 +54,7 @@ const router = express.Router();
 
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
-  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
-  const loginRequired = require('../../middlewares/login-required')(crowi, true);
+  const loginRequired = require('../../middlewares/login-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
@@ -63,7 +62,7 @@ module.exports = (crowi) => {
 
   const validator = {
     bookmarks: [
-      body('pageId').isMongoId(),
+      body('pageId').isString(),
       body('bool').isBoolean(),
     ],
     bookmarkInfo: [
@@ -214,7 +213,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Bookmark'
    */
-  router.put('/', accessTokenParser, loginRequiredStrictly, csrf, validator.bookmarks, apiV3FormValidator, async(req, res) => {
+  router.put('/', accessTokenParser, loginRequired, csrf, validator.bookmarks, apiV3FormValidator, async(req, res) => {
     const { pageId, bool } = req.body;
 
     let bookmark;

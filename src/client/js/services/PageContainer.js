@@ -4,6 +4,7 @@ import loggerFactory from '@alias/logger';
 
 import * as entities from 'entities';
 import * as toastr from 'toastr';
+import { isTrashPage } from '@commons/util/path-utils';
 import { toastError } from '../util/apiNotification';
 
 import {
@@ -51,6 +52,7 @@ export default class PageContainer extends Container {
       isLiked: false,
       isBookmarked: false,
       seenUsers: [],
+      seenUserIds: mainContent.getAttribute('data-page-ids-of-seen-users'),
       countOfSeenUsers: mainContent.getAttribute('data-page-count-of-seen-users'),
 
       likerUsers: [],
@@ -58,16 +60,17 @@ export default class PageContainer extends Container {
       sumOfBookmarks: 0,
       createdAt: mainContent.getAttribute('data-page-created-at'),
       updatedAt: mainContent.getAttribute('data-page-updated-at'),
-      isForbidden:  JSON.parse(mainContent.getAttribute('data-page-is-forbidden')),
-      isDeleted:  JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
-      isDeletable:  JSON.parse(mainContent.getAttribute('data-page-is-deletable')),
-      isCreatable: JSON.parse(mainContent.getAttribute('data-page-is-creatable')),
-      isAbleToDeleteCompletely:  JSON.parse(mainContent.getAttribute('data-page-is-able-to-delete-completely')),
+      isTrashPage: isTrashPage(path),
+      isForbidden: JSON.parse(mainContent.getAttribute('data-page-is-forbidden')),
+      isDeleted: JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
+      isDeletable: JSON.parse(mainContent.getAttribute('data-page-is-deletable')),
+      isNotCreatable: JSON.parse(mainContent.getAttribute('data-page-is-not-creatable')),
+      isAbleToDeleteCompletely: JSON.parse(mainContent.getAttribute('data-page-is-able-to-delete-completely')),
       pageUser: JSON.parse(mainContent.getAttribute('data-page-user')),
       tags: null,
       hasChildren: JSON.parse(mainContent.getAttribute('data-page-has-children')),
       templateTagData: mainContent.getAttribute('data-template-tags') || null,
-      shareLinksNumber:  mainContent.getAttribute('data-share-links-number'),
+      shareLinksNumber: mainContent.getAttribute('data-share-links-number'),
       shareLinkId: JSON.parse(mainContent.getAttribute('data-share-link-id') || null),
 
       // latest(on remote) information

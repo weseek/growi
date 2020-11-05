@@ -5,9 +5,6 @@ import { withTranslation } from 'react-i18next';
 
 import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 
-import { withUnstatedContainers } from './UnstatedUtils';
-import AppContainer from '../services/AppContainer';
-
 class PaginationWrapper extends React.Component {
 
   constructor(props) {
@@ -181,22 +178,19 @@ class PaginationWrapper extends React.Component {
 
 }
 
-const PaginationWrappered = withUnstatedContainers(PaginationWrapper, [AppContainer]);
-
 PaginationWrapper.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   activePage: PropTypes.number.isRequired,
   changePage: PropTypes.func.isRequired,
   totalItemsCount: PropTypes.number.isRequired,
-  pagingLimit: PropTypes.number,
+  pagingLimit: PropTypes.number.isRequired,
   align: PropTypes.string,
   size: PropTypes.string,
 };
+
 PaginationWrapper.defaultProps = {
   align: 'left',
   size: 'md',
-  pagingLimit: PropTypes.number,
 };
 
-export default withTranslation()(PaginationWrappered);
+export default withTranslation()(PaginationWrapper);

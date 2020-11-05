@@ -1,44 +1,3 @@
-.page-attachments-row {
-  border-top: solid 1px transparent;
-}
-
-.page-attachments {
-  li.attachment {
-    list-style: none;
-  }
-
-  .attachment-userpicture {
-    line-height: 1.7em;
-    vertical-align: bottom;
-  }
-}
-
-.page-attachments,
-.page-meta {
-  font-size: 0.95em;
-
-  .attachment-in-use {
-    padding: 1px 5px;
-    margin: 0 0 0 4px;
-  }
-
-  .attachment-filetype {
-    padding: 1px 5px;
-    margin: 0 0 0 4px;
-    font-weight: normal;
-  }
-
-  .attachment-download {
-    margin: 0 0 0 4px;
-    cursor: pointer;
-  }
-
-  .attachment-delete {
-    margin: 0 0 0 4px;
-    cursor: pointer;
-  }
-}
-
 .attachment-delete-modal {
   .attachment-delete-image {
     text-align: center;
@@ -47,4 +6,8 @@
       max-width: 100%;
     }
   }
+}
+
+.attachment-userpicture .picture {
+  vertical-align: text-bottom;
 }
