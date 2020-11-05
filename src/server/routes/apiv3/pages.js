@@ -6,12 +6,12 @@ const pathUtils = require('growi-commons').pathUtils;
 const escapeStringRegexp = require('escape-string-regexp');
 
 const { body } = require('express-validator/check');
+const { query } = require('express-validator');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const router = express.Router();
 
 const LIMIT_FOR_LIST = 10;
-const { query } = require('express-validator');
 
 /**
  * @swagger
@@ -265,7 +265,6 @@ module.exports = (crowi) => {
     return res.apiv3(result, 201);
   });
 
-  const validator = {};
 
   /**
    * @swagger
