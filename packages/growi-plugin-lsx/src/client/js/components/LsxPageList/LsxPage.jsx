@@ -83,7 +83,7 @@ export class LsxPage extends React.Component {
     // create PagePath element
     let pagePathNode = <PagePathWrapper pagePath={pageNode.pagePath} isExists={this.state.isExists} />;
     if (this.state.isLinkable) {
-      pagePathNode = <a className="page-list-link" href={pathUtils.removeTrailingSlash(pageNode.pagePath)}>{pagePathNode}</a>;
+      pagePathNode = <a className="page-list-link" href={encodeURI(pathUtils.removeTrailingSlash(pageNode.pagePath))}>{pagePathNode}</a>;
     }
 
     // create PageListMeta element
