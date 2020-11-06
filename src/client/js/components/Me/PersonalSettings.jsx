@@ -13,7 +13,6 @@ import ShareAltIcon from '../Icons/ShareAltIcon';
 import LockIcon from '../Icons/LooockIcon';
 import PaperPlaneIcon from '../Icons/PaperPlaneIcon';
 
-
 class PersonalSettings extends React.Component {
 
   render() {
