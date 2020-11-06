@@ -112,8 +112,10 @@ export default class PageContainer extends Container {
     }
 
     if (currentUser) {
-      this.isSeenPage();
+      this.getTotalSeenUser();
     }
+    console.log(this.state.seenUsers);
+
 
     this.setTocHtml = this.setTocHtml.bind(this);
     this.save = this.save.bind(this);
@@ -158,9 +160,11 @@ export default class PageContainer extends Container {
     this.state.markdown = markdown;
   }
 
-  async isSeenPage() {
-    await this.appContainer.apiPost('/pages.seen', { page_id: this.state.pageId });
+  getTotalSeenUser() {
+    const { totalSeenUser } = this.appContainer.apiPost('/pages.seen', { page_id: this.state.pageId });
+    this.setState({ seenUsers: totalSeenUser });
   }
+
 
   async retrieveSeenUsers() {
     const { users } = await this.appContainer.apiGet('/users.list', { user_ids: this.state.seenUserIds });
