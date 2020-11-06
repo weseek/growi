@@ -11,6 +11,7 @@ import ApiSettings from './ApiSettings';
 import LockIcon from '../Icons/LooockIcon';
 import UserIcon from '../Icons/UserIcon';
 import ShareAltIcon from '../Icons/ShareAltIcon';
+import PaperPlaneIcon from '../Icons/PaperPlaneIcon';
 
 
 class PersonalSettings extends React.Component {
@@ -38,7 +39,7 @@ class PersonalSettings extends React.Component {
         index: 2,
       },
       api_settings: {
-        Icon: LockIcon,
+        Icon: PaperPlaneIcon,
         Content: ApiSettings,
         i18n: t('API Settings'),
         index: 3,
