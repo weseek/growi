@@ -425,10 +425,6 @@ module.exports = function(crowi, app) {
       return showPageForPresentation(req, res, next);
     }
 
-    if (req.user !== null) {
-      console.log('hoge');
-      return api.seen(req, res, next);
-    }
 
     // delegate to showPageForGrowiBehavior
     return showPageForGrowiBehavior(req, res, next);
