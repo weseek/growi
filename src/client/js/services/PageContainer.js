@@ -82,7 +82,6 @@ export default class PageContainer extends Container {
       isHackmdDraftUpdatingInRealtime: false,
     };
 
-
     // parse creator, lastUpdateUser and revisionAuthor
     try {
       this.state.creator = JSON.parse(mainContent.getAttribute('data-page-creator'));
@@ -136,7 +135,6 @@ export default class PageContainer extends Container {
     }
 
   }
-
 
   /**
    * Workaround for the mangling in production build to break constructor.name
