@@ -59,7 +59,8 @@ class PersonalSettings extends React.Component {
 
     return (
       <>
-        <CustomNavigation navTabMapping={navTabMapping} />
+        <h1 className="title">{t('User Settings')}</h1>
+        <CustomNavigation navTabMapping={navTabMapping} tabContentClasses={['px-0']} />
       </>
     );
   }
