@@ -16,10 +16,10 @@ const PageContentFooter = (props) => {
   return (
     <div className="page-content-footer mt-5 py-4 d-edit-none d-print-none">
       <div className="container-lg">
-        <p className="page-meta">
+        <div className="page-meta">
           <AuthorInfo user={creator} date={createdAt} mode="create" locate="footer" />
           <AuthorInfo user={revisionAuthor} date={updatedAt} mode="update" locate="footer" />
-        </p>
+        </div>
       </div>
     </div>
   );
