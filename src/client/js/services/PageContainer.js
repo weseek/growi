@@ -96,7 +96,7 @@ export default class PageContainer extends Container {
       logger.warn('The data of \'data-page-revision-author\' is invalid', e);
     }
 
-    const { interceptorManager, currentUser } = this.appContainer;
+    const { interceptorManager /* currentUser */ } = this.appContainer;
     interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(appContainer), 10); // process as soon as possible
     interceptorManager.addInterceptor(new DrawioInterceptor(appContainer), 20);
     interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(appContainer), 900); // process as late as possible
@@ -111,10 +111,10 @@ export default class PageContainer extends Container {
       this.retrieveBookmarkInfo();
     }
 
-    if (currentUser) {
-      this.getTotalSeenUser();
-    }
-    console.log(this.state.seenUsers);
+    // if (currentUser) {
+    //   this.addSeenUser();
+    // }
+    // // console.log(this.state.seenUsers);
 
 
     this.setTocHtml = this.setTocHtml.bind(this);
@@ -160,10 +160,12 @@ export default class PageContainer extends Container {
     this.state.markdown = markdown;
   }
 
-  getTotalSeenUser() {
-    const { totalSeenUser } = this.appContainer.apiPost('/pages.seen', { page_id: this.state.pageId });
-    this.setState({ seenUsers: totalSeenUser });
-  }
+  // async addSeenUser() {
+  //   const res = await this.appContainer.apiPost('/pages.seen', { page_id: this.state.pageId });
+  //   const totalSeenUser = res.seenUser;
+  //   console.log(totalSeenUser);
+  //   this.setState({ seenUsers: totalSeenUser });
+  // }
 
 
   async retrieveSeenUsers() {
