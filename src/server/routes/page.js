@@ -453,6 +453,11 @@ module.exports = function(crowi, app) {
 
     let page = shareLink.relatedPage;
 
+
+    if (isUserPage(page.path)) {
+      console.log('hgedddddddd');
+    }
+
     // presentation mode
     if (req.query.presentation) {
       page = await page.populateDataToMakePresentation(revisionId);
