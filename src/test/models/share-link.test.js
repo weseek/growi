@@ -98,7 +98,7 @@ describe('ShareLink', () => {
       expect(findOneResult.populate).toHaveBeenCalled();
       expect(res.render).toHaveBeenCalled();
       expect(response.page).toEqual('layout-growi/expired_shared_page');
-      expect(response.renderVars).toEqual(null);
+      expect(response.renderVars).not.toEqual(null);
     });
 
     test('share link is found, and it has the page you can see', async() => {

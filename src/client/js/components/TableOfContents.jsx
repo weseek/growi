@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
@@ -8,14 +8,11 @@ import PageContainer from '../services/PageContainer';
 import NavigationContainer from '../services/NavigationContainer';
 
 import { withUnstatedContainers } from './UnstatedUtils';
-import TopOfTableContents from './TopOfTableContents';
-import StickyStretchableScroller from './StickyStretchableScroller';
 
-import RecentlyCreatedIcon from './Icons/RecentlyCreatedIcon';
+import StickyStretchableScroller from './StickyStretchableScroller';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:TableOfContents');
-const WIKI_HEADER_LINK = 120;
 
 /**
  * @author Yuki Takei <yuki@weseek.co.jp>
@@ -23,20 +20,28 @@ const WIKI_HEADER_LINK = 120;
  */
 const TableOfContents = (props) => {
 
-  const { pageContainer, navigationContainer, isGuestUserMode } = props;
+  const { pageContainer, navigationContainer } = props;
   const { pageUser } = pageContainer.state;
   const isUserPage = pageUser != null;
 
   const calcViewHeight = useCallback(() => {
     // calculate absolute top of '#revision-toc' element
+    const parentElem = document.querySelector('.grw-side-contents-container');
+    const parentBottom = parentElem.getBoundingClientRect().bottom;
     const containerElem = document.querySelector('#revision-toc');
     const containerTop = containerElem.getBoundingClientRect().top;
+    const containerComputedStyle = getComputedStyle(containerElem);
+    const containerPaddingTop = parseFloat(containerComputedStyle['padding-top']);
 
-    // window height - revisionToc top - .system-version - .grw-fab-container height - top-of-table-contents height
+    // get smaller bottom line of window height - .system-version height) and containerTop
+    let bottom = Math.min(window.innerHeight - 20, parentBottom);
+
     if (isUserPage) {
-      return window.innerHeight - containerTop - 20 - 155 - 26 - 40;
+      // raise the bottom line by the height and margin-top of UserContentLinks
+      bottom -= 45;
     }
-    return window.innerHeight - containerTop - 20 - 155 - 26;
+    // bottom - revisionToc top
+    return bottom - (containerTop + containerPaddingTop);
   }, [isUserPage]);
 
   const { tocHtml } = pageContainer.state;
@@ -48,49 +53,21 @@ const TableOfContents = (props) => {
     navigationContainer.addSmoothScrollEvent(anchorsInToc);
   }, [tocHtml, navigationContainer]);
 
-  // get element for smoothScroll
-  const getBookMarkListHeaderDom = useMemo(() => { return document.getElementById('bookmarks-list') }, []);
-  const getRecentlyCreatedListHeaderDom = useMemo(() => { return document.getElementById('recently-created-list') }, []);
-
   return (
-    <>
-      <TopOfTableContents isGuestUserMode={isGuestUserMode} />
-      <StickyStretchableScroller
-        contentsElemSelector=".revision-toc .markdownIt-TOC"
-        stickyElemSelector="#revision-toc"
-        calcViewHeightFunc={calcViewHeight}
-      >
-        <div
-          id="revision-toc-content"
-          className="revision-toc-content top-of-table-contents"
-         // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{
-          __html: tocHtml,
-        }}
-        />
-      </StickyStretchableScroller>
-
-      { isUserPage && (
-      <div className="mt-3 d-flex justify-content-around">
-        <button
-          type="button"
-          className="btn btn-outline-secondary btn-sm"
-          onClick={() => navigationContainer.smoothScrollIntoView(getBookMarkListHeaderDom, WIKI_HEADER_LINK)}
-        >
-          <i className="mr-2 icon-star"></i>
-          <span>Bookmarks</span>
-        </button>
-        <button
-          type="button"
-          className="btn btn-outline-secondary btn-sm"
-          onClick={() => navigationContainer.smoothScrollIntoView(getRecentlyCreatedListHeaderDom, WIKI_HEADER_LINK)}
-        >
-          <i className="grw-icon-container-recently-created mr-2"><RecentlyCreatedIcon /></i>
-          <span>Recently Created</span>
-        </button>
-      </div>
-      )}
-    </>
+    <StickyStretchableScroller
+      contentsElemSelector=".revision-toc .markdownIt-TOC"
+      stickyElemSelector=".grw-side-contents-sticky-container"
+      calcViewHeightFunc={calcViewHeight}
+    >
+      <div
+        id="revision-toc-content"
+        className="revision-toc-content"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{
+        __html: tocHtml,
+      }}
+      />
+    </StickyStretchableScroller>
   );
 
 };
@@ -103,8 +80,6 @@ const TableOfContentsWrapper = withUnstatedContainers(TableOfContents, [PageCont
 TableOfContents.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
-
-  isGuestUserMode: PropTypes.bool.isRequired,
 };
 
 export default withTranslation()(TableOfContentsWrapper);

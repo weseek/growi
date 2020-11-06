@@ -64,9 +64,9 @@ export const CustomNav = (props) => {
   }, [activeTab, navTabRefs, navTabMapping]);
 
   return (
-    <>
+    <div className="grw-custom-nav">
       <div ref={navContainer}>
-        <Nav className="nav-title grw-custom-navbar" id="grw-custom-navbar">
+        <Nav className="nav-title">
           {Object.entries(navTabMapping).map(([key, value]) => {
 
             const isActive = activeTab === key;
@@ -87,7 +87,7 @@ export const CustomNav = (props) => {
         </Nav>
       </div>
       <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
-    </>
+    </div>
   );
 
 };
