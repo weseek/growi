@@ -54,7 +54,8 @@
   <div id="page-editor-navbar-bottom-container" class="d-none d-edit-block"></div>
 </div>
 
-<div class="d-none d-lg-block d-editor-none grw-side-contents-container ml-4">
+{% if revision %}
+<div class="d-none d-lg-block d-editor-none grw-side-contents-container">
   <div class="grw-side-contents-sticky-container">
     <div id="page-accessories" class="page-accessories"></div>
     <div id="revision-toc" class="revision-toc sps sps--abv" data-sps-offset="123">
@@ -65,6 +66,8 @@
     {% endif %}
   </div>
 </div>
+{% endif %}
+
 
 <div id="grw-page-status-alert-container"></div>
 
