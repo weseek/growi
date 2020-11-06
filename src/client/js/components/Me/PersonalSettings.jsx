@@ -16,12 +16,15 @@ class PersonalSettings extends React.Component {
     const UserIcon = () => {
       return <i className="icon-fw icon-user"></i>;
     };
+
     const shereAltIcon = () => {
       return <i className="icon-fw icon-share-alt"></i>;
     };
+
     const lockIcon = () => {
       return <i className="icon-fw icon-lock"></i>;
     };
+
     const paperPlaneIcon = () => {
       return <i className="icon-fw icon-paper-plane"></i>;
     };
