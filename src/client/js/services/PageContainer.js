@@ -98,7 +98,7 @@ export default class PageContainer extends Container {
       logger.warn('The data of \'data-page-revision-author\' is invalid', e);
     }
 
-    const { interceptorManager } = this.appContainer;
+    const { interceptorManager, currentUser } = this.appContainer;
     interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(appContainer), 10); // process as soon as possible
     interceptorManager.addInterceptor(new DrawioInterceptor(appContainer), 20);
     interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(appContainer), 900); // process as late as possible
@@ -113,7 +113,9 @@ export default class PageContainer extends Container {
       this.retrieveBookmarkInfo();
     }
 
-    this.isSeenPage();
+    if (currentUser) {
+      this.isSeenPage();
+    }
 
     this.setTocHtml = this.setTocHtml.bind(this);
     this.save = this.save.bind(this);
