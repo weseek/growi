@@ -159,8 +159,7 @@ export default class PageContainer extends Container {
   }
 
   async isSeenPage() {
-    const isSeenPage = await this.appContainer.apiPost('/pages.seen', { page_id: this.state.pageId });
-    console.log(isSeenPage.ok);
+    await this.appContainer.apiPost('/pages.seen', { page_id: this.state.pageId });
   }
 
   async retrieveSeenUsers() {
