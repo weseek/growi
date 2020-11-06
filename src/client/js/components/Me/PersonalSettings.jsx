@@ -8,26 +8,15 @@ import PasswordSettings from './PasswordSettings';
 import ExternalAccountLinkedMe from './ExternalAccountLinkedMe';
 import ApiSettings from './ApiSettings';
 
+import LockIcon from '../Icons/LooockIcon';
+import UserIcon from '../Icons/UserIcon';
+import ShareAltIcon from '../Icons/ShareAltIcon';
+
+
 class PersonalSettings extends React.Component {
 
   render() {
     const { t } = this.props;
-
-    const UserIcon = () => {
-      return <i className="icon-fw icon-user"></i>;
-    };
-
-    const shereAltIcon = () => {
-      return <i className="icon-fw icon-share-alt"></i>;
-    };
-
-    const lockIcon = () => {
-      return <i className="icon-fw icon-lock"></i>;
-    };
-
-    const paperPlaneIcon = () => {
-      return <i className="icon-fw icon-paper-plane"></i>;
-    };
 
     const navTabMapping = {
       user_infomation: {
@@ -37,19 +26,19 @@ class PersonalSettings extends React.Component {
         index: 0,
       },
       external_accounts: {
-        Icon: shereAltIcon,
+        Icon: ShareAltIcon,
         Content: ExternalAccountLinkedMe,
         i18n: t('admin:user_management.external_accounts'),
         index: 1,
       },
       password_settings: {
-        Icon: lockIcon,
+        Icon: LockIcon,
         Content: PasswordSettings,
         i18n: t('Password Settings'),
         index: 2,
       },
       api_settings: {
-        Icon: paperPlaneIcon,
+        Icon: LockIcon,
         Content: ApiSettings,
         i18n: t('API Settings'),
         index: 3,
