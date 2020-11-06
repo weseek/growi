@@ -101,9 +101,15 @@ export default class PageContainer extends Container {
     interceptorManager.addInterceptor(new DrawioInterceptor(appContainer), 20);
     interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(appContainer), 900); // process as late as possible
 
-    this.retrieveSeenUsers();
     this.initStateMarkdown();
-    this.initStateOthers();
+    this.checkAndUpdateImageUrlCached(this.state.likerUsers);
+
+    // skip if shared page
+    if (this.state.shareLinkId == null) {
+      this.retrieveSeenUsers();
+      this.retrieveLikeInfo();
+      this.retrieveBookmarkInfo();
+    }
 
     this.setTocHtml = this.setTocHtml.bind(this);
     this.save = this.save.bind(this);
@@ -153,13 +159,6 @@ export default class PageContainer extends Container {
 
     this.setState({ seenUsers: users });
     this.checkAndUpdateImageUrlCached(users);
-  }
-
-  async initStateOthers() {
-
-    this.retrieveLikeInfo();
-    this.retrieveBookmarkInfo();
-    this.checkAndUpdateImageUrlCached(this.state.likerUsers);
   }
 
   async retrieveLikeInfo() {
