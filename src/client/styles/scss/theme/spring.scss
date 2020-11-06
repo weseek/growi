@@ -90,9 +90,6 @@ html[dark] {
   // admin theme box
   $color-theme-color-box: darken($primary, 20%);
 
-  // color of icons
-  $icon-color: $subthemecolor;
-
   @import 'apply-colors';
   @import 'apply-colors-light';
 
@@ -149,6 +146,10 @@ html[dark] {
   h1,
   h2 {
     color: $subthemecolor;
+
+    svg {
+      fill: $subthemecolor;
+    }
   }
 
   .nav.nav-tabs {
