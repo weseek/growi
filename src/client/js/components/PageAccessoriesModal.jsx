@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -20,6 +20,7 @@ import PageList from './PageList';
 import PageHistory from './PageHistory';
 import ShareLink from './ShareLink/ShareLink';
 import { CustomNav } from './CustomNavigation';
+import ExpandOrContractButton from './ExpandOrContractButton';
 
 const PageAccessoriesModal = (props) => {
   const {
@@ -27,6 +28,7 @@ const PageAccessoriesModal = (props) => {
   } = props;
   const { switchActiveTab } = pageAccessoriesContainer;
   const { activeTab, activeComponents } = pageAccessoriesContainer.state;
+  const [isWindowExpanded, setIsWindowExpanded] = useState(false);
 
   const navTabMapping = useMemo(() => {
     return {
@@ -66,10 +68,32 @@ const PageAccessoriesModal = (props) => {
     onClose();
   }, [onClose]);
 
+  const expandWindow = () => {
+    setIsWindowExpanded(true);
+  };
+
+  const contractWindow = () => {
+    setIsWindowExpanded(false);
+  };
+
+  const buttons = (
+    <span>
+      {/* change order because of `float: right` by '.close' class */}
+      <button type="button" className="close" onClick={closeModalHandler} aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <ExpandOrContractButton
+        isWindowExpanded={isWindowExpanded}
+        expandWindow={expandWindow}
+        contractWindow={contractWindow}
+      />
+    </span>
+  );
+
   return (
     <React.Fragment>
-      <Modal size="xl" isOpen={props.isOpen} toggle={closeModalHandler} className="grw-page-accessories-modal">
-        <ModalHeader className="p-0" toggle={closeModalHandler}>
+      <Modal size="xl" isOpen={props.isOpen} toggle={closeModalHandler} className={`grw-page-accessories-modal ${isWindowExpanded && 'grw-modal-expanded'} `}>
+        <ModalHeader className="p-0" toggle={closeModalHandler} close={buttons}>
           <CustomNav activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={switchActiveTab} />
         </ModalHeader>
         <ModalBody className="overflow-auto grw-modal-body-style p-0">
