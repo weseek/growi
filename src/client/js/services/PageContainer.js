@@ -51,6 +51,7 @@ export default class PageContainer extends Container {
       tocHtml: '',
       isLiked: false,
       isBookmarked: false,
+      // isSeen: mainContent.getAttribute('data-page-is-seen'),
       seenUsers: [],
       seenUserIds: mainContent.getAttribute('data-page-ids-of-seen-users'),
       countOfSeenUsers: mainContent.getAttribute('data-page-count-of-seen-users'),
@@ -82,6 +83,7 @@ export default class PageContainer extends Container {
       isHackmdDraftUpdatingInRealtime: false,
     };
 
+
     // parse creator, lastUpdateUser and revisionAuthor
     try {
       this.state.creator = JSON.parse(mainContent.getAttribute('data-page-creator'));
@@ -111,6 +113,8 @@ export default class PageContainer extends Container {
       this.retrieveBookmarkInfo();
     }
 
+    this.isSeenPage();
+
     this.setTocHtml = this.setTocHtml.bind(this);
     this.save = this.save.bind(this);
     this.checkAndUpdateImageUrlCached = this.checkAndUpdateImageUrlCached.bind(this);
@@ -132,6 +136,7 @@ export default class PageContainer extends Container {
 
   }
 
+
   /**
    * Workaround for the mangling in production build to break constructor.name
    */
@@ -152,6 +157,11 @@ export default class PageContainer extends Container {
     const markdown = entities.decodeHTML(pageContent);
 
     this.state.markdown = markdown;
+  }
+
+  async isSeenPage() {
+    const isSeenPage = await this.appContainer.apiPost('/pages.seen', { page_id: this.state.pageId });
+    console.log(isSeenPage.ok);
   }
 
   async retrieveSeenUsers() {
