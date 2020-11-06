@@ -9,6 +9,7 @@ const router = express.Router();
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
+
 /**
  * @swagger
  *  tags:
@@ -200,9 +201,13 @@ module.exports = (crowi) => {
     return res.apiv3({ result });
   });
 
-  router.get('/like-info', loginRequired, validator.likeInfo, async(req, res) => {
+  router.get('/like-info', loginRequired, validator.likeInfo, apiV3FormValidator, async(req, res) => {
+    // guest user return nothing
+    if (!req.user) {
+      return res.apiv3({ });
+    }
     const pageId = req.query._id;
-    const userId = req.user ? req.user._id : null;
+    const userId = req.user._id;
     try {
       const page = await Page.findById(pageId);
       const users = await Page.findById(pageId).populate('liker', User.USER_PUBLIC_FIELDS);
