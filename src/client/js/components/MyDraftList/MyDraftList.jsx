@@ -91,9 +91,10 @@ class MyDraftList extends React.Component {
    *
    */
   generateDraftList(drafts) {
-    return drafts.map((draft) => {
+    return drafts.map((draft, index) => {
       return (
         <Draft
+          index={index}
           key={draft.path}
           path={draft.path}
           markdown={draft.markdown}
