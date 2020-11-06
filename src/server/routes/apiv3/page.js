@@ -202,16 +202,25 @@ module.exports = (crowi) => {
   });
 
   router.get('/like-info', loginRequired, validator.likeInfo, apiV3FormValidator, async(req, res) => {
-    // guest user return nothing
-    if (!req.user) {
-      return res.apiv3({ });
-    }
     const pageId = req.query._id;
-    const userId = req.user._id;
+    let users;
+    let sumOfLikers;
+    let page;
     try {
-      const page = await Page.findById(pageId);
-      const users = await Page.findById(pageId).populate('liker', User.USER_PUBLIC_FIELDS);
-      const sumOfLikers = page.liker.length;
+      page = await Page.findById(pageId);
+      users = await Page.findById(pageId).populate('liker', User.USER_PUBLIC_FIELDS);
+      sumOfLikers = page.liker.length;
+    }
+    catch (err) {
+      logger.error('error like info ', err);
+      return res.apiv3Err(err, 500);
+    }
+    try {
+      // guest user return nothing
+      if (!req.user) {
+        return res.apiv3({ users, sumOfLikers });
+      }
+      const userId = req.user._id;
       const isLiked = page.liker.includes(userId);
 
       return res.apiv3({ users, sumOfLikers, isLiked });
