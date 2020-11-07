@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React/* , { useMemo }  */from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
@@ -71,16 +71,16 @@ const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
 const PageReactionButtons = ({ appContainer, pageContainer }) => {
 
   const {
-    pageUser, shareLinkId,
+    pageUser, /*  shareLinkId, */
   } = pageContainer.state;
 
-  const isSharedPage = useMemo(() => {
-    return shareLinkId != null;
-  }, [shareLinkId]);
+  // const isSharedPage = useMemo(() => {
+  //   return shareLinkId != null;
+  // }, [shareLinkId]);
 
   return (
     <>
-      {pageUser == null && !isSharedPage && (
+      {pageUser == null && (
       <span className="mr-2">
         <LikeButton />
       </span>

@@ -453,11 +453,6 @@ module.exports = function(crowi, app) {
 
     let page = shareLink.relatedPage;
 
-
-    if (isUserPage(page.path)) {
-      console.log('hgedddddddd');
-    }
-
     // presentation mode
     if (req.query.presentation) {
       page = await page.populateDataToMakePresentation(revisionId);
@@ -475,6 +470,13 @@ module.exports = function(crowi, app) {
     addRenderVarsForScope(renderVars, page);
 
     await interceptorManager.process('beforeRenderPage', req, res, renderVars);
+
+    if (isUserPage(page.path)) {
+      let view = `layout-${layoutName}/page`;
+      view = `layout-${layoutName}/user_page`;
+      await addRenderVarsForUserPage(renderVars, page, req.user);
+      return res.render(view, renderVars);
+    }
     return res.render(`layout-${layoutName}/shared_page`, renderVars);
   };
 
