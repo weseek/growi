@@ -1,32 +1,7 @@
 // import diff2html styles
 @import '~diff2html/bundles/css/diff2html.min.css';
 
-.main-container {
-  .url-line {
-    font-size: 1rem;
-    color: $gray-400;
-  }
-
-  h1.title {
-    margin-top: 0;
-    margin-bottom: 0;
-
-    .d-flex {
-      flex-wrap: wrap; // for long page path
-    }
-
-    // crowi layout only
-    a.last-path {
-      color: $gray-300;
-
-      &:hover {
-        color: inherit;
-      }
-    }
-  }
-}
-
-.main .content-main .revision-history {
+.revision-history {
   .revision-history-list {
     .revision-history-outer {
       // add border-top except of first element
