@@ -100,7 +100,6 @@
   "Input page name (optional)": "ページ名を入力(空欄OK)",
   "New Page": "新規ページ",
   "Create under": "ページを以下に作成",
-  "Table of Contents": "目次",
   "Wiki Management Home Page": "Wiki管理トップ",
   "App Settings": "アプリ設定",
   "Site URL settings": "サイトURL設定",
@@ -296,6 +295,9 @@
       "expiration": "この共有パーマリンクの有効期限は <strong>{{expiredAt}}</strong> です。",
       "no_deadline": "このページに有効期限は設定されていません。"
     }
+  },
+  "page_table_of_contents": {
+    "empty": "目次は空です"
   },
   "page_edit": {
     "Show active line": "アクティブ行をハイライト",

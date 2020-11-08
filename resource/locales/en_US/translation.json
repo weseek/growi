@@ -99,7 +99,6 @@
   "Input page name (optional)": "Input page name (optional)",
   "New Page": "New page",
   "Create under": "Create page under below:",
-  "Table of Contents": "Table of Contents",
   "Wiki Management Home Page": "Wiki Management Home Page",
   "App Settings": "App Settings",
   "Site URL settings": "Site URL settings",
@@ -294,6 +293,9 @@
       "expiration": "This share link will expire at <strong>{{expiredAt}}</strong>.",
       "no_deadline":"This page has no expiration date"
     }
+  },
+  "page_table_of_contents": {
+    "empty": "Table of Contents is empty"
   },
   "page_edit": {
     "Show active line": "Show active line",
