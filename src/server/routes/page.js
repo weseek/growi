@@ -472,8 +472,7 @@ module.exports = function(crowi, app) {
     await interceptorManager.process('beforeRenderPage', req, res, renderVars);
 
     if (isUserPage(page.path)) {
-      let view = `layout-${layoutName}/page`;
-      view = `layout-${layoutName}/user_page`;
+      const view = `layout-${layoutName}/shared_page`;
       await addRenderVarsForUserPage(renderVars, page, req.user);
       return res.render(view, renderVars);
     }
