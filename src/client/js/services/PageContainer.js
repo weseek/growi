@@ -254,7 +254,7 @@ export default class PageContainer extends Container {
     // PageEditor component
     const pageEditor = this.appContainer.getComponentInstance('PageEditor');
     if (pageEditor != null) {
-      if (editorMode !== 'builtin') {
+      if (editorMode !== 'edit') {
         pageEditor.updateEditorValue(newState.markdown);
       }
     }
