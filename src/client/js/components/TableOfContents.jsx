@@ -61,7 +61,7 @@ const TableOfContents = (props) => {
     >
       <div
         id="revision-toc-content"
-        className="revision-toc-content"
+        className="revision-toc-content mb-3"
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{
         __html: tocHtml,
