@@ -1,20 +1,14 @@
 {% extends 'page.html' %}
 
-{% block main_css_class %}
-  {% parent %}
-  user-page
-{% endblock %}
-
 {% block content_main %}
-  <div class="container-lg">
+  <div class="container-lg user-page">
 
     {% include '../widget/page_content.html' %}
 
   </div>
 {% endblock %}
 
-
-{% block content_main_after %}
+{% block content_footer %}
   {% include 'widget/comments.html' %}
 
   {% if page %}
@@ -46,5 +40,4 @@
   {% endif %}
 
   <div id="page-content-footer"></div>
-
 {% endblock %}
