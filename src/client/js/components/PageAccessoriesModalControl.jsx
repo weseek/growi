@@ -19,7 +19,8 @@ const PageAccessoriesModalControl = (props) => {
   const { t, pageAccessoriesContainer, isGuestUserMode } = props;
 
   return (
-    <div className="grw-page-accessories-control d-flex align-items-center pb-1">
+    <div className="grw-page-accessories-control d-flex align-items-center justify-content-between pb-1">
+
       <button
         type="button"
         className="btn btn-link grw-btn-page-accessories"
@@ -67,9 +68,10 @@ const PageAccessoriesModalControl = (props) => {
         </UncontrolledTooltip>
       )}
 
-      <span className="border-left grw-border-vr mx-1">&nbsp;</span>
-
-      <SeenUserInfo />
+      <div className="d-flex align-items-center">
+        <span className="border-left grw-border-vr">&nbsp;</span>
+        <SeenUserInfo />
+      </div>
     </div>
   );
 };
