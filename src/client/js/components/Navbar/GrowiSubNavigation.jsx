@@ -1,4 +1,4 @@
-import React/* , { useMemo }  */from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
@@ -70,13 +70,8 @@ const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
 /* eslint-disable react/prop-types */
 const PageReactionButtons = ({ appContainer, pageContainer }) => {
 
-  const {
-    pageUser, /*  shareLinkId, */
-  } = pageContainer.state;
+  const { pageUser } = pageContainer.state;
 
-  // const isSharedPage = useMemo(() => {
-  //   return shareLinkId != null;
-  // }, [shareLinkId]);
 
   return (
     <>
