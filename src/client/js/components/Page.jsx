@@ -134,7 +134,7 @@ class Page extends React.Component {
     const { markdown } = pageContainer.state;
 
     return (
-      <div className={`${isMobile && 'page-mobile'}`}>
+      <div className={`mb-5 ${isMobile ? 'page-mobile' : ''}`}>
         <RevisionRenderer growiRenderer={this.growiRenderer} markdown={markdown} />
 
         { isLoggedIn && (
