@@ -67,7 +67,7 @@ const PageAccessoriesModalControl = (props) => {
         </UncontrolledTooltip>
       )}
 
-      <span className="border-left grw-border-vr mx-1">&nbsp;</span>
+      <span className="grw-border-vr mx-1">&nbsp;</span>
 
       <SeenUserInfo />
     </div>

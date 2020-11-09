@@ -296,8 +296,14 @@ $table-hover-bg: $bgcolor-table-hover;
   }
 }
 
-.revision-toc {
-  .top-of-table-contents {
+/*
+* grw-side-contents
+*/
+.grw-side-contents-sticky-container {
+  .grw-border-vr {
+    border-color: $border-color;
+  }
+  .revision-toc {
     border-color: $border-color;
   }
 }

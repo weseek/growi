@@ -305,15 +305,6 @@ ul.pagination {
   }
 }
 
-.top-of-table-contents {
-  .grw-btn-top-of-table {
-    fill: $color-link;
-  }
-  .grw-seen-user-list {
-    @include border-vertical('before', $border-color, 70%);
-  }
-}
-
 .grw-page-accessories-control {
   .grw-btn-page-accessories {
     fill: $color-link;
@@ -329,10 +320,6 @@ ul.pagination {
       }
     }
   }
-}
-
-.revision-toc {
-  border-color: $border-color;
 }
 
 .grw-custom-nav {

@@ -363,15 +363,16 @@ ul.pagination {
   border-color: $border-color;
 }
 
-.revision-toc {
-  .top-of-table-contents {
+/*
+* grw-side-contents
+*/
+.grw-side-contents-sticky-container {
+  .grw-border-vr {
     border-color: $border-color;
+  }
 
-    .grw-seen-user-list {
-      &:before {
-        border-color: $border-color;
-      }
-    }
+  .revision-toc {
+    border-color: $border-color;
   }
 }
 
