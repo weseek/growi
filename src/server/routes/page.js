@@ -65,13 +65,6 @@
  *            example: ""
  *          revision:
  *            $ref: '#/components/schemas/Revision'
- *          seenUsers:
- *            type: array
- *            description: granted users
- *            items:
- *              type: string
- *              description: user ID
- *            example: ["5ae5fccfc5577b0004dbd8ab"]
  *          status:
  *            type: string
  *            description: status
