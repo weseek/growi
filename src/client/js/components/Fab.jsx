@@ -22,7 +22,7 @@ const Fab = (props) => {
   const stickyChangeHandler = useCallback((event) => {
     logger.debug('StickyEvents.CHANGE detected');
 
-    const classes = event.detail.isSticky ? 'animated fadeInUp faster' : 'animated fadeOut faster';
+    const classes = event.detail.isSticky ? 'animated fadeInUp faster' : 'animated invisible';
     setAnimateClasses(classes);
   }, []);
 
