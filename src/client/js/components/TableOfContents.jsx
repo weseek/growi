@@ -20,7 +20,7 @@ const logger = loggerFactory('growi:TableOfContents');
  */
 const TableOfContents = (props) => {
 
-  const { pageContainer, navigationContainer } = props;
+  const { t, pageContainer, navigationContainer } = props;
   const { pageUser } = pageContainer.state;
   const isUserPage = pageUser != null;
 
@@ -59,14 +59,24 @@ const TableOfContents = (props) => {
       stickyElemSelector=".grw-side-contents-sticky-container"
       calcViewHeightFunc={calcViewHeight}
     >
-      <div
-        id="revision-toc-content"
-        className="revision-toc-content"
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{
-        __html: tocHtml,
-      }}
-      />
+      { tocHtml !== ''
+      ? (
+        <div
+          id="revision-toc-content"
+          className="revision-toc-content mb-3"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: tocHtml }}
+        />
+      )
+      : (
+        <div
+          id="revision-toc-content"
+          className="revision-toc-content mb-2"
+        >
+          <span className="text-muted">({t('page_table_of_contents.empty')})</span>
+        </div>
+      ) }
+
     </StickyStretchableScroller>
   );
 
@@ -78,6 +88,8 @@ const TableOfContents = (props) => {
 const TableOfContentsWrapper = withUnstatedContainers(TableOfContents, [PageContainer, NavigationContainer]);
 
 TableOfContents.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
