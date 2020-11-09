@@ -91,9 +91,10 @@ class MyDraftList extends React.Component {
    *
    */
   generateDraftList(drafts) {
-    return drafts.map((draft) => {
+    return drafts.map((draft, index) => {
       return (
         <Draft
+          index={index}
           key={draft.path}
           path={draft.path}
           markdown={draft.markdown}
@@ -135,8 +136,6 @@ class MyDraftList extends React.Component {
 
     return (
       <div className="page-list-container-create ">
-        <h1>My Drafts</h1>
-        <hr />
         { totalCount === 0
           && <span className="mt-2">No drafts yet.</span>
         }
