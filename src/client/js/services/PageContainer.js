@@ -104,8 +104,8 @@ export default class PageContainer extends Container {
     this.initStateMarkdown();
     this.checkAndUpdateImageUrlCached(this.state.likerUsers);
 
-    // skip if shared page
-    if (this.state.shareLinkId == null) {
+    // skip if shared page or new page
+    if (this.state.shareLinkId == null && this.state.pageId != null) {
       this.retrieveSeenUsers();
       this.retrieveLikeInfo();
       this.retrieveBookmarkInfo();
@@ -162,11 +162,12 @@ export default class PageContainer extends Container {
   }
 
   async retrieveLikeInfo() {
-    const like = await this.appContainer.apiv3Get('/page/like-info', { _id: this.state.pageId });
+    const res = await this.appContainer.apiv3Get('/page/like-info', { _id: this.state.pageId });
+    const { sumOfLikers, isLiked } = res.data;
+
     this.setState({
-      sumOfLikers: like.data.sumOfLikers,
-      likerUsers: like.data.users.liker,
-      isLiked: like.data.isLiked,
+      sumOfLikers,
+      isLiked,
     });
   }
 
@@ -179,14 +180,11 @@ export default class PageContainer extends Container {
   }
 
   async retrieveBookmarkInfo() {
-    const response = await this.appContainer.apiv3Get('/bookmarks', { pageId: this.state.pageId });
-    if (response.data.bookmarks != null) {
-      this.setState({ isBookmarked: true });
-    }
-    else {
-      this.setState({ isBookmarked: false });
-    }
-    this.setState({ sumOfBookmarks: response.data.sumOfBookmarks });
+    const response = await this.appContainer.apiv3Get('/bookmarks/info', { pageId: this.state.pageId });
+    this.setState({
+      sumOfBookmarks: response.data.sumOfBookmarks,
+      isBookmarked: response.data.isBookmarked,
+    });
   }
 
   async toggleBookmark() {
@@ -246,6 +244,8 @@ export default class PageContainer extends Container {
       revisionIdHackmdSynced: page.revisionHackmdSynced,
       hasDraftOnHackmd: page.hasDraftOnHackmd,
       markdown: page.revision.body,
+      createdAt: page.createdAt,
+      updatedAt: page.updatedAt,
     };
     if (tags != null) {
       newState.tags = tags;
@@ -255,7 +255,7 @@ export default class PageContainer extends Container {
     // PageEditor component
     const pageEditor = this.appContainer.getComponentInstance('PageEditor');
     if (pageEditor != null) {
-      if (editorMode !== 'builtin') {
+      if (editorMode !== 'edit') {
         pageEditor.updateEditorValue(newState.markdown);
       }
     }

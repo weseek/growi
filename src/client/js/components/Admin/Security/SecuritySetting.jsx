@@ -63,7 +63,7 @@ class SecuritySetting extends React.Component {
               <td>{ t('always_hidden') }</td>
             </tr>
             <tr>
-              <th scope="row">{ t('Just me') }</th>
+              <th scope="row">{ t('Only me') }</th>
               <td>
                 <div className="custom-control custom-switch custom-checkbox-success">
                   <input
