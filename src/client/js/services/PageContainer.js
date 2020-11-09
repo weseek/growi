@@ -179,14 +179,11 @@ export default class PageContainer extends Container {
   }
 
   async retrieveBookmarkInfo() {
-    const response = await this.appContainer.apiv3Get('/bookmarks', { pageId: this.state.pageId });
-    if (response.data.bookmarks != null) {
-      this.setState({ isBookmarked: true });
-    }
-    else {
-      this.setState({ isBookmarked: false });
-    }
-    this.setState({ sumOfBookmarks: response.data.sumOfBookmarks });
+    const response = await this.appContainer.apiv3Get('/bookmarks/info', { pageId: this.state.pageId });
+    this.setState({
+      sumOfBookmarks: response.data.sumOfBookmarks,
+      isBookmarked: response.data.isBookmarked,
+    });
   }
 
   async toggleBookmark() {
@@ -246,6 +243,8 @@ export default class PageContainer extends Container {
       revisionIdHackmdSynced: page.revisionHackmdSynced,
       hasDraftOnHackmd: page.hasDraftOnHackmd,
       markdown: page.revision.body,
+      createdAt: page.createdAt,
+      updatedAt: page.updatedAt,
     };
     if (tags != null) {
       newState.tags = tags;
@@ -255,7 +254,7 @@ export default class PageContainer extends Container {
     // PageEditor component
     const pageEditor = this.appContainer.getComponentInstance('PageEditor');
     if (pageEditor != null) {
-      if (editorMode !== 'builtin') {
+      if (editorMode !== 'edit') {
         pageEditor.updateEditorValue(newState.markdown);
       }
     }

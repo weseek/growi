@@ -1,5 +1,5 @@
 .btn.btn-like {
-  @include button-outline-variant($secondary, lighten($info, 15%), rgba(lighten($info, 10%), 0.5), rgba(lighten($info, 10%), 0.5));
+  @include button-outline-variant($secondary, lighten($info, 15%), rgba(lighten($info, 10%), 0.15), rgba(lighten($info, 10%), 0.5));
   &:not(:disabled):not(.disabled):active,
   &:not(:disabled):not(.disabled).active {
     color: lighten($info, 15%);
