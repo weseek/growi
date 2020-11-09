@@ -12,6 +12,7 @@ import DisplaySwitcher from './components/Page/DisplaySwitcher';
 import { defaultEditorOptions, defaultPreviewOptions } from './components/PageEditor/OptionsSelector';
 import Page from './components/Page';
 import PageComments from './components/PageComments';
+import PageContentFooter from './components/PageContentFooter';
 import PageTimeline from './components/PageTimeline';
 import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
 import PageManagement from './components/Page/PageManagement';
@@ -111,6 +112,7 @@ if (pageContainer.state.pageId != null) {
     'page-accessories': <PageAccessories />,
     'revision-toc': <TableOfContents />,
     'liker-list': <LikerList />,
+    'page-content-footer': <PageContentFooter />,
 
     'recent-created-icon': <RecentlyCreatedIcon />,
     'user-bookmark-icon': <BookmarkIcon />,

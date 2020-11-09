@@ -457,7 +457,7 @@ body.on-edit {
 /*
  * GROWI comment form
  */
-.growi .main {
+.page-comments {
   .page-comment .page-comment-main,
   .page-comment-form .comment-form-main {
     background-color: $bgcolor-global;
@@ -509,9 +509,9 @@ mark.rbt-highlight-text {
 }
 
 /*
- * GROWI page attachments
+ * GROWI page content footer
  */
-.page-attachments-row {
+.page-content-footer {
   background-color: darken($bgcolor-global, 2%);
   border-top-color: $border-color-theme;
 }

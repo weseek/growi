@@ -39,11 +39,15 @@ export default class TagContainer extends Container {
       return;
     }
 
-    const { pageId, templateTagData } = pageContainer.state;
+    const { pageId, templateTagData, shareLinkId } = pageContainer.state;
+
+    if (shareLinkId != null) {
+      return;
+    }
 
     let tags = [];
-    // when the page exists
-    if (pageId != null) {
+    // when the page exists or shared page
+    if (pageId != null && shareLinkId == null) {
       const res = await this.appContainer.apiGet('/pages.getPageTag', { pageId });
       tags = res.tags;
     }
