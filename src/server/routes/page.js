@@ -327,6 +327,11 @@ module.exports = function(crowi, app) {
     let portalPage = await Page.findByPathAndViewer(portalPath, req.user);
     portalPage.initLatestRevisionField(revisionId);
 
+    if (req.user != null) {
+      // add user to seen users
+      portalPage = await portalPage.seen(req.user);
+    }
+
     // populate
     portalPage = await portalPage.populateDataToShowRevision();
 
@@ -371,6 +376,11 @@ module.exports = function(crowi, app) {
     let view = `layout-${layoutName}/page`;
 
     page.initLatestRevisionField(revisionId);
+
+    if (req.user != null) {
+      // add user to seen users
+      page = await page.seen(req.user);
+    }
 
     // populate
     page = await page.populateDataToShowRevision();
