@@ -201,6 +201,7 @@ $(() => {
 
 window.addEventListener('load', (e) => {
   const { appContainer, pageContainer } = window;
+  const { currentUser } = appContainer;
   const {
     isPageExist, isPageForbidden, isNotCreatable, isTrashPage,
   } = pageContainer.state;
@@ -209,7 +210,7 @@ window.addEventListener('load', (e) => {
   if (window.location.hash) {
     const navigationContainer = appContainer.getContainer('NavigationContainer');
 
-    if (window.location.hash === '#edit' && isPageExist && !isPageForbidden && !isNotCreatable && !isTrashPage) {
+    if (window.location.hash === '#edit' && isPageExist && (currentUser != null) && !isPageForbidden && !isNotCreatable && !isTrashPage) {
       navigationContainer.setEditorMode('edit');
 
       // focus
