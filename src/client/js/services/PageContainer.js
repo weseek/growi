@@ -104,8 +104,8 @@ export default class PageContainer extends Container {
     this.initStateMarkdown();
     this.checkAndUpdateImageUrlCached(this.state.likerUsers);
 
-    // skip if shared page
-    if (this.state.shareLinkId == null) {
+    // skip if not shared page and not new page
+    if (this.state.shareLinkId == null && this.state.pageId != null) {
       this.retrieveSeenUsers();
       this.retrieveLikeInfo();
       this.retrieveBookmarkInfo();
