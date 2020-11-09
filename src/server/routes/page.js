@@ -327,8 +327,8 @@ module.exports = function(crowi, app) {
     let portalPage = await Page.findByPathAndViewer(portalPath, req.user);
     portalPage.initLatestRevisionField(revisionId);
 
+    // add user to seen users
     if (req.user != null) {
-      // add user to seen users
       portalPage = await portalPage.seen(req.user);
     }
 
@@ -377,8 +377,8 @@ module.exports = function(crowi, app) {
 
     page.initLatestRevisionField(revisionId);
 
+    // add user to seen users
     if (req.user != null) {
-      // add user to seen users
       page = await page.seen(req.user);
     }
 
@@ -1123,75 +1123,6 @@ module.exports = function(crowi, app) {
     catch (err) {
       return res.json(ApiResponse.error(err));
     }
-    return res.json(ApiResponse.success(result));
-  };
-
-  /**
-   * @swagger
-   *
-   *    /pages.seen:
-   *      post:
-   *        tags: [Pages, CrowiCompatibles]
-   *        operationId: seenPage
-   *        summary: /pages.seen
-   *        description: Mark as seen user
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  page_id:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
-   *                required:
-   *                  - page_id
-   *        responses:
-   *          200:
-   *            description: Succeeded to be page seen.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    seenUser:
-   *                      $ref: '#/components/schemas/Page/properties/seenUsers'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  /**
-   * @api {post} /pages.seen Mark as seen user
-   * @apiName SeenPage
-   * @apiGroup Page
-   *
-   * @apiParam {String} page_id Page Id.
-   */
-  api.seen = async function(req, res) {
-    const user = req.user;
-    const pageId = req.body.page_id;
-    if (!pageId) {
-      return res.json(ApiResponse.error('page_id required'));
-    }
-    if (!req.user) {
-      return res.json(ApiResponse.error('user required'));
-    }
-
-    let page;
-    try {
-      page = await Page.findByIdAndViewer(pageId, user);
-      if (user != null) {
-        page = await page.seen(user);
-      }
-    }
-    catch (err) {
-      debug('Seen user update error', err);
-      return res.json(ApiResponse.error(err));
-    }
-
-    const result = {};
-    result.seenUser = page.seenUsers;
-
     return res.json(ApiResponse.success(result));
   };
 
