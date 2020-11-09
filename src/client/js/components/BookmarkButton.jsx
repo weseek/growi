@@ -38,6 +38,8 @@ class BookmarkButton extends React.Component {
     return (
       <button
         type="button"
+        href="#"
+        title="Bookmark"
         onClick={this.handleClick}
         className={`btn btn-bookmark border-0
           ${`btn-${this.props.size}`}

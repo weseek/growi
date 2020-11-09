@@ -82,20 +82,21 @@ class Draft extends React.Component {
 
   renderAccordionTitle(isExist) {
     const { isPanelExpanded } = this.state;
-
-    const iconClass = isPanelExpanded ? 'caret-opened' : '';
+    const { t } = this.props;
+    const iconClass = isPanelExpanded ? 'fa-rotate-90' : '';
 
     return (
       <span>
-        <i className={`caret ${iconClass}`}></i>
-        <span className="mx-2" onClick={() => this.setState({ isPanelExpanded: !isPanelExpanded })}>
+
+        <span className="mr-2 draft-path" onClick={() => this.setState({ isPanelExpanded: !isPanelExpanded })}>
+          <i className={`fa fa-fw fa-angle-right mr-2 ${iconClass}`}></i>
           {this.props.path}
         </span>
         { isExist && (
-          <span>({this.props.t('page exists')})</span>
+          <span className="badge badge-warning">{t('page exists')}</span>
         ) }
         { !isExist && (
-          <span className="badge badge-secondary">draft</span>
+          <span className="badge badge-info">draft</span>
         ) }
 
         <a className="ml-2" href={this.props.path}><i className="icon icon-login"></i></a>
@@ -104,10 +105,9 @@ class Draft extends React.Component {
   }
 
   renderControls() {
-    const { t, path } = this.props;
+    const { t, path, index } = this.props;
 
-    const encodedPath = path.replace(/\//g, '-');
-    const tooltipTargetId = `draft-copied-tooltip_${encodedPath}`;
+    const tooltipTargetId = `draft-copied-tooltip_${index}`;
 
     return (
       <div className="icon-container">
@@ -115,7 +115,7 @@ class Draft extends React.Component {
           ? null
           : (
             <a
-              href={`${this.props.path}#edit`}
+              href={`${path}#edit`}
               target="_blank"
               rel="noopener noreferrer"
               data-toggle="tooltip"
@@ -202,6 +202,7 @@ Draft.propTypes = {
   t: PropTypes.func.isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
+  index: PropTypes.number.isRequired,
   path: PropTypes.string.isRequired,
   markdown: PropTypes.string.isRequired,
   isExist: PropTypes.bool.isRequired,

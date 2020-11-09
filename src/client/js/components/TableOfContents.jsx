@@ -8,7 +8,7 @@ import PageContainer from '../services/PageContainer';
 import NavigationContainer from '../services/NavigationContainer';
 
 import { withUnstatedContainers } from './UnstatedUtils';
-import TopOfTableContents from './TopOfTableContents';
+
 import StickyStretchableScroller from './StickyStretchableScroller';
 
 // eslint-disable-next-line no-unused-vars
@@ -20,16 +20,29 @@ const logger = loggerFactory('growi:TableOfContents');
  */
 const TableOfContents = (props) => {
 
-  const { pageContainer, navigationContainer } = props;
+  const { t, pageContainer, navigationContainer } = props;
+  const { pageUser } = pageContainer.state;
+  const isUserPage = pageUser != null;
 
   const calcViewHeight = useCallback(() => {
     // calculate absolute top of '#revision-toc' element
+    const parentElem = document.querySelector('.grw-side-contents-container');
+    const parentBottom = parentElem.getBoundingClientRect().bottom;
     const containerElem = document.querySelector('#revision-toc');
     const containerTop = containerElem.getBoundingClientRect().top;
+    const containerComputedStyle = getComputedStyle(containerElem);
+    const containerPaddingTop = parseFloat(containerComputedStyle['padding-top']);
 
-    // window height - revisionToc top - .system-version - .grw-fab-container height - top-of-table-contents height
-    return window.innerHeight - containerTop - 20 - 155 - 26;
-  }, []);
+    // get smaller bottom line of window height - .system-version height) and containerTop
+    let bottom = Math.min(window.innerHeight - 20, parentBottom);
+
+    if (isUserPage) {
+      // raise the bottom line by the height and margin-top of UserContentLinks
+      bottom -= 45;
+    }
+    // bottom - revisionToc top
+    return bottom - (containerTop + containerPaddingTop);
+  }, [isUserPage]);
 
   const { tocHtml } = pageContainer.state;
 
@@ -41,23 +54,30 @@ const TableOfContents = (props) => {
   }, [tocHtml, navigationContainer]);
 
   return (
-    <>
-      <TopOfTableContents />
-      <StickyStretchableScroller
-        contentsElemSelector=".revision-toc .markdownIt-TOC"
-        stickyElemSelector="#revision-toc"
-        calcViewHeightFunc={calcViewHeight}
-      >
+    <StickyStretchableScroller
+      contentsElemSelector=".revision-toc .markdownIt-TOC"
+      stickyElemSelector=".grw-side-contents-sticky-container"
+      calcViewHeightFunc={calcViewHeight}
+    >
+      { tocHtml !== ''
+      ? (
         <div
           id="revision-toc-content"
-          className="revision-toc-content"
-        // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{
-          __html: tocHtml,
-        }}
+          className="revision-toc-content mb-3"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: tocHtml }}
         />
-      </StickyStretchableScroller>
-    </>
+      )
+      : (
+        <div
+          id="revision-toc-content"
+          className="revision-toc-content mb-2"
+        >
+          <span className="text-muted">({t('page_table_of_contents.empty')})</span>
+        </div>
+      ) }
+
+    </StickyStretchableScroller>
   );
 
 };
@@ -68,6 +88,8 @@ const TableOfContents = (props) => {
 const TableOfContentsWrapper = withUnstatedContainers(TableOfContents, [PageContainer, NavigationContainer]);
 
 TableOfContents.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };

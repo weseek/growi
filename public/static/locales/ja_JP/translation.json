@@ -55,6 +55,7 @@
   "attachment_data": "添付データ",
   "No_attachments_yet": "No attachments yet.",
   "Presentation Mode": "プレゼンテーション",
+  "The end": "おしまい",
   "Not available for guest": "ゲストユーザーは利用できません",
   "Create Archive Page": "アーカイブページの作成",
   "Target page": "対象ページ",
@@ -103,7 +104,6 @@
   "Input page name (optional)": "ページ名を入力(空欄OK)",
   "New Page": "新規ページ",
   "Create under": "ページを以下に作成",
-  "Table of Contents": "目次",
   "Wiki Management Home Page": "Wiki管理トップ",
   "App Settings": "アプリ設定",
   "Site URL settings": "サイトURL設定",
@@ -300,12 +300,18 @@
       "no_deadline": "このページに有効期限は設定されていません。"
     }
   },
+  "page_table_of_contents": {
+    "empty": "目次は空です"
+  },
   "page_edit": {
     "Show active line": "アクティブ行をハイライト",
     "overwrite_scopes": "{{operation}}と同時に全ての配下ページのスコープを上書き",
     "notice": {
       "conflict": "すでに他の人がこのページを編集していたため保存できませんでした。ページを再読み込み後、自分の編集箇所のみ再度編集してください。"
     }
+  },
+  "page_comment": {
+    "display_the_page_when_posting_this_comment": "投稿時のページを表示する"
   },
   "page_api_error": {
     "notfound_or_forbidden": "元のページが見つからないか、アクセス権がありません。",

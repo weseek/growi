@@ -130,7 +130,7 @@ module.exports = function(crowi, app) {
   const Attachment = crowi.model('Attachment');
   const Page = crowi.model('Page');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
-  const { fileUploadService, attachmentService, globalNotificationService } = crowi;
+  const { attachmentService, globalNotificationService } = crowi;
 
   /**
    * Check the user is accessible to the related page
@@ -177,6 +177,8 @@ module.exports = function(crowi, app) {
    * @param {boolean} forceDownload
    */
   async function responseForAttachment(req, res, attachment, forceDownload) {
+    const { fileUploadService } = crowi;
+
     if (attachment == null) {
       return res.json(ApiResponse.error('attachment not found'));
     }
@@ -287,7 +289,7 @@ module.exports = function(crowi, app) {
    * @apiParam {String} pageId, fileName
    */
   api.obsoletedGetForMongoDB = async function(req, res) {
-    if (process.env.FILE_UPLOAD !== 'mongodb') {
+    if (crowi.configManager.getConfig('crowi', 'app:fileUploadType') !== 'mongodb') {
       return res.status(400);
     }
 
@@ -342,6 +344,7 @@ module.exports = function(crowi, app) {
    * @apiGroup Attachment
    */
   api.limit = async function(req, res) {
+    const { fileUploadService } = crowi;
     const fileSize = Number(req.query.fileSize);
     return res.json(ApiResponse.success(await fileUploadService.checkLimit(fileSize)));
   };

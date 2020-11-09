@@ -68,8 +68,8 @@ class MyDraftList extends React.Component {
   }
 
   getCurrentDrafts(selectPageNumber) {
-    // TODO implement temporarily paging number only this component (this paging size is pageLimitationL).
-    const limit = this.state.pagingLimit;
+
+    const limit = 50; // implement only this component.(this default value is 50 (pageLimitationL))
 
     const totalDrafts = this.state.drafts.length;
     const activePage = selectPageNumber;
@@ -91,9 +91,10 @@ class MyDraftList extends React.Component {
    *
    */
   generateDraftList(drafts) {
-    return drafts.map((draft) => {
+    return drafts.map((draft, index) => {
       return (
         <Draft
+          index={index}
           key={draft.path}
           path={draft.path}
           markdown={draft.markdown}
@@ -134,15 +135,14 @@ class MyDraftList extends React.Component {
     const totalCount = this.state.totalDrafts;
 
     return (
-      <div>
-
+      <div className="page-list-container-create ">
         { totalCount === 0
-          && <span>No drafts yet.</span>
+          && <span className="mt-2">No drafts yet.</span>
         }
 
         { totalCount > 0 && (
           <React.Fragment>
-            <div className="d-flex justify-content-between">
+            <div className="d-flex justify-content-between mt-2">
               <h4>Total: {totalCount} drafts</h4>
               <div className="align-self-center">
                 <button type="button" className="btn btn-sm btn-outline-danger" onClick={this.clearAllDrafts}>
@@ -152,7 +152,7 @@ class MyDraftList extends React.Component {
               </div>
             </div>
 
-            <div className="tab-pane mt-5 accordion" id="draft-list">
+            <div className="tab-pane mt-2 accordion" id="draft-list">
               {draftList}
             </div>
             <PaginationWrapper
@@ -160,6 +160,7 @@ class MyDraftList extends React.Component {
               changePage={this.handlePage}
               totalItemsCount={this.state.totalDrafts}
               pagingLimit={this.state.pagingLimit}
+              align="center"
               size="sm"
             />
           </React.Fragment>

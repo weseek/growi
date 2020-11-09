@@ -45,13 +45,19 @@ const parserDictionary: EnumDictionary<ValueType, ValueParser<number | string | 
  *  The commented out item has not yet entered the migration work.
  *  So, parameters of these are under consideration.
  */
-const ENV_VAR_NAME_TO_CONFIG_INFO: { [type: string]: EnvConfig } = {
-  // FILE_UPLOAD: {
-  //   ns:      ,
-  //   key:     ,
-  //   type:    ,
-  //   default:
-  // },
+const ENV_VAR_NAME_TO_CONFIG_INFO = {
+  FILE_UPLOAD: {
+    ns:      'crowi',
+    key:     'app:fileUploadType',
+    type:    ValueType.STRING,
+    default: 'aws',
+  },
+  FILE_UPLOAD_USES_ONLY_ENV_VAR_FOR_FILE_UPLOAD_TYPE: {
+    ns:      'crowi',
+    key:     'app:useOnlyEnvVarForFileUploadType',
+    type:    ValueType.BOOLEAN,
+    default: false,
+  },
   // HACKMD_URI: {
   //   ns:      ,
   //   key:     ,
@@ -366,6 +372,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: { [type: string]: EnvConfig } = {
     key:     'gcs:uploadNamespace',
     type:    ValueType.STRING,
     default: null,
+  },
+  GCS_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: {
+    ns:      'crowi',
+    key:     'gcs:useOnlyEnvVarsForSomeOptions',
+    type:    ValueType.BOOLEAN,
+    default: false,
   },
 };
 

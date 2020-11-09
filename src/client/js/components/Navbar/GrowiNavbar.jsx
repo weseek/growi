@@ -96,9 +96,8 @@ const GrowiNavbar = (props) => {
       {/* Navbar Right  */}
       <ul className="navbar-nav ml-auto">
         <NavbarRight {...props} />
+        <Confidential />
       </ul>
-
-      <Confidential />
 
       { isSearchServiceConfigured && !isDeviceSmallerThanMd && (
         <div className="grw-global-search grw-global-search-top position-absolute">

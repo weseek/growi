@@ -11,6 +11,14 @@
 
 * Improvement: Basic layout of page
 * Support: Support MongoDB 4.0, 4.2 and 4.4
+* Support: Upgrade libs
+    * migrate-mongo
+    * mongoose
+
+## v4.1.10
+
+* Fix: Make listing users API secure
+* Fix: Error message when the server denies guest user connecting with socket.io
 
 ## v4.1.9
 

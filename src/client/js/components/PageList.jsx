@@ -15,7 +15,7 @@ const PageList = (props) => {
   const { appContainer, pageContainer, t } = props;
   const { path } = pageContainer.state;
   const [pages, setPages] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -30,7 +30,7 @@ const PageList = (props) => {
     const res = await appContainer.apiv3Get('/pages/list', { path, page });
 
     setPages(res.data.pages);
-    setIsLoading(true);
+    setIsLoading(false);
     setTotalPages(res.data.totalCount);
     setLimit(res.data.limit);
   }, [appContainer, path, activePage]);
@@ -40,7 +40,7 @@ const PageList = (props) => {
   }, [updatePageList]);
 
 
-  if (isLoading === false) {
+  if (isLoading) {
     return (
       <div className="wiki">
         <div className="text-muted test-center">
@@ -50,8 +50,9 @@ const PageList = (props) => {
     );
   }
 
+  const liClasses = props.liClasses.join(' ');
   const pageList = pages.map(page => (
-    <li key={page._id} className="mb-3">
+    <li key={page._id} className={liClasses}>
       <Page page={page} />
     </li>
   ));
@@ -91,6 +92,11 @@ PageList.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer),
   pageContainer: PropTypes.instanceOf(PageContainer),
+
+  liClasses: PropTypes.arrayOf(PropTypes.string),
+};
+PageList.defaultProps = {
+  liClasses: ['mb-3'],
 };
 
 export default PageListTranslation;

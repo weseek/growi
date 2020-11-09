@@ -1,6 +1,7 @@
 .grw-subnav {
   min-height: $grw-subnav-min-height;
-  padding: 8px 15px;
+  padding-top: 8px;
+  padding-bottom: 8px;
 
   @include media-breakpoint-up(md) {
     min-height: $grw-subnav-min-height-md;
@@ -47,10 +48,6 @@
   }
 
   ul.authors {
-    padding: 0.7em 0 0.7em 1.5em;
-    margin-bottom: 0;
-    margin-left: 1em;
-
     li {
       font-size: 12px;
       list-style: none;
@@ -109,7 +106,7 @@ $easeInOutCubic: cubic-bezier(0.65, 0, 0.35, 1);
   z-index: $zindex-sticky - 5;
 
   .grw-subnav {
-    box-shadow: 0px 6px 6px -3px rgba(black, 0.15);
+    box-shadow: 0px 0px 6px 3px rgba(black, 0.15);
   }
 }
 

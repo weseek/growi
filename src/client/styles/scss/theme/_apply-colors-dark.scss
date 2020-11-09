@@ -44,6 +44,12 @@ textarea.form-control {
   // border: 1px solid darken($border, 30%);
 }
 
+.grw-slack-notification {
+  .form-control {
+    background: $bgcolor-global;
+  }
+}
+
 .form-control[disabled],
 .form-control[readonly] {
   color: lighten($color-global, 10%);
@@ -106,11 +112,6 @@ ul.pagination {
   li.page-item {
     button.page-link {
       @extend .btn-dark;
-    }
-    &.active {
-      button {
-        @extend .active;
-      }
     }
   }
 }
@@ -346,6 +347,10 @@ body.on-edit {
   #slack-mark-black {
     display: none;
   }
+}
+
+.page-comments-row {
+  background: $bgcolor-subnav;
 }
 
 /*

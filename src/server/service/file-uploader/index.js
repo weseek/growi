@@ -1,3 +1,7 @@
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:service:FileUploaderFactory');
+
 const envToModuleMappings = {
   aws:     'aws',
   local:   'local',
@@ -9,22 +13,26 @@ const envToModuleMappings = {
   gcs:     'gcs',
 };
 
-class FileUploaderFactory {
+class FileUploadServiceFactory {
+
+  initializeUploader(crowi) {
+    const method = envToModuleMappings[crowi.configManager.getConfig('crowi', 'app:fileUploadType')];
+    const modulePath = `./${method}`;
+    this.uploader = require(modulePath)(crowi);
+
+    if (this.uploader == null) {
+      logger.warn('Failed to initialize uploader.');
+    }
+  }
 
   getUploader(crowi) {
-    if (this.uploader == null) {
-      const method = envToModuleMappings[process.env.FILE_UPLOAD] || 'aws';
-      const modulePath = `./${method}`;
-      this.uploader = require(modulePath)(crowi);
-    }
-
+    this.initializeUploader(crowi);
     return this.uploader;
   }
 
 }
 
-const factory = new FileUploaderFactory();
-
 module.exports = (crowi) => {
+  const factory = new FileUploadServiceFactory(crowi);
   return factory.getUploader(crowi);
 };

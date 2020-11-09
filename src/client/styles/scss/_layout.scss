@@ -29,9 +29,24 @@ body {
 }
 
 .main {
-  padding-right: 15px;
-  padding-left: 15px;
   margin-top: 1rem;
+
+  @include media-breakpoint-up(md) {
+    margin-top: 3rem;
+  }
+}
+
+.grw-side-contents-container {
+  margin-left: 30px;
+}
+
+.grw-side-contents-sticky-container {
+  position: sticky;
+  // growisubnavigation + grw-navbar-boder
+  top: calc(100px + 4px);
+  width: 250px;
+  min-width: 250px;
+  margin-top: 5px;
 }
 
 .grw-fab {
@@ -93,16 +108,6 @@ body {
       margin-bottom: 20px;
       font-size: 0.9em;
       border: solid 1px $gray-400;
-
-      .revision-toc-head {
-        display: inline-block;
-        float: none;
-      }
-
-      .revision-toc-content.collapse {
-        display: block;
-        height: auto;
-      }
     }
 
     .meta {

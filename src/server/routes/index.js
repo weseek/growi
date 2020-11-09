@@ -117,6 +117,8 @@ module.exports = function(crowi, app) {
   app.get('/me'                       , loginRequiredStrictly , me.index);
   // external-accounts
   app.get('/me/external-accounts'                         , loginRequiredStrictly , me.externalAccounts.list);
+  // my drafts
+  app.get('/me/drafts'                , loginRequiredStrictly, me.drafts.list);
 
   app.get('/:id([0-9a-z]{24})'       , loginRequired , page.redirector);
   app.get('/_r/:id([0-9a-z]{24})'    , loginRequired , page.redirector); // alias
@@ -142,7 +144,6 @@ module.exports = function(crowi, app) {
   app.get('/_api/pages.updatePost'    , accessTokenParser, loginRequired, page.api.getUpdatePost);
   app.get('/_api/pages.getPageTag'    , accessTokenParser , loginRequired , page.api.getPageTag);
   // allow posting to guests because the client doesn't know whether the user logged in
-  app.post('/_api/pages.seen'         , accessTokenParser , loginRequired , page.api.seen);
   app.post('/_api/pages.rename'       , accessTokenParser , loginRequiredStrictly , csrf, page.api.rename);
   app.post('/_api/pages.remove'       , loginRequiredStrictly , csrf, page.api.remove); // (Avoid from API Token)
   app.post('/_api/pages.revertRemove' , loginRequiredStrictly , csrf, page.api.revertRemove); // (Avoid from API Token)

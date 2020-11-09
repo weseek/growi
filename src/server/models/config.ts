@@ -212,6 +212,10 @@ export const defaultNotificationConfigs: { [key: string]: any } = {
 //     customizeCss: crowi.configManager.getConfig('crowi', 'customize:css'),
 //     isSavedStatesOfTabChanges: crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
 //     isEnabledAttachTitleHeader: crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
+//     pageLimitationS: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 20,
+//     pageLimitationM: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM') || 10,
+//     pageLimitationL: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationL') || 50,
+//     pageLimitationXL: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL') || 20,
 //     customizeScript: crowi.configManager.getConfig('crowi', 'customize:script'),
 //     hasSlackConfig: crowi.slackNotificationService.hasSlackConfig(),
 //     env: {
@@ -222,7 +226,6 @@ export const defaultNotificationConfigs: { [key: string]: any } = {
 //       MATHJAX: env.MATHJAX || null,
 //       NO_CDN: env.NO_CDN || null,
 //     },
-//     recentCreatedLimit: crowi.configManager.getConfig('crowi', 'customize:showRecentCreatedNumber'),
 //     isEnabledStaleNotification: crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
 //     isAclEnabled: crowi.aclService.isAclEnabled(),
 //     isSearchServiceConfigured: crowi.searchService.isConfigured,

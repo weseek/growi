@@ -5,6 +5,7 @@ import urljoin from 'url-join';
 import { useTranslation } from '~/i18n';
 import { isTopPage, isDeletablePage } from '~/utils/path-utils';
 import { useCurrentPagePath, useCurrentUser, useIsAbleToDeleteCompletely } from '~/stores/context';
+import { useCurrentPageSWR } from '~/stores/page';
 
 import PageDeleteModal from '../PageDeleteModal';
 import PageRenameModal from '../PageRenameModal';
@@ -12,16 +13,18 @@ import PageDuplicateModal from '../PageDuplicateModal';
 import CreateTemplateModal from '../CreateTemplateModal';
 import PagePresentationModal from '../PagePresentationModal';
 import PresentationIcon from '../Icons/PresentationIcon';
-import { useCurrentPageSWR } from '~/stores/page';
 
 
-const PageManagement = () => {
+const PageManagement = (props) => {
   const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
   const { data: path } = useCurrentPagePath();
   const { data: isAbleToDeleteCompletely } = useIsAbleToDeleteCompletely();
+  const { data: currentPage } = useCurrentPageSWR();
 
-  const { data: page } = useCurrentPageSWR();
+  const {
+    isCompactMode,
+  } = props;
 
   const isTopPagePath = isTopPage(path);
   const isDeletable = isDeletablePage(path);
@@ -85,9 +88,9 @@ const PageManagement = () => {
   // }
 
   async function exportPageHandler(format) {
-    const url = new URL(urljoin(window.location.origin, '_api/v3/page/export', page._id));
+    const url = new URL(urljoin(window.location.origin, '_api/v3/page/export', currentPage._id));
     url.searchParams.append('format', format);
-    url.searchParams.append('revisionId', page.revision._id);
+    url.searchParams.append('revisionId', currentPage.revision._id);
     window.location.href = url.href;
   }
 
@@ -102,6 +105,24 @@ const PageManagement = () => {
   //   setIsArchiveCreateModalShown(false);
   // }
 
+  function renderDropdownItemForTopPage() {
+    return (
+      <>
+        <button className="dropdown-item" type="button" onClick={openPageDuplicateModalHandler}>
+          <i className="icon-fw icon-docs"></i> { t('Duplicate') }
+        </button>
+        {/* TODO Presentation Mode is not function. So if it is really necessary, survey this cause and implement Presentation Mode in top page */}
+        {/* <button className="dropdown-item" type="button" onClick={openPagePresentationModalHandler}>
+          <i className="icon-fw"><PresentationIcon /></i><span className="d-none d-sm-inline"> { t('Presentation Mode') }</span>
+        </button> */}
+        <button type="button" className="dropdown-item" onClick={() => { exportPageHandler('md') }}>
+          <i className="icon-fw icon-cloud-download"></i>{t('export_bulk.export_page_markdown')}
+        </button>
+        <div className="dropdown-divider"></div>
+      </>
+    );
+  }
+
   function renderDropdownItemForNotTopPage() {
     return (
       <>
@@ -112,9 +133,9 @@ const PageManagement = () => {
           <i className="icon-fw icon-docs"></i> { t('Duplicate') }
         </button>
         <button className="dropdown-item" type="button" onClick={openPagePresentationModalHandler}>
-          <i className="icon-fw"><PresentationIcon /></i><span className="d-none d-sm-inline"> { t('Presentation Mode') }</span>
+          <i className="icon-fw"><PresentationIcon /></i> { t('Presentation Mode') }
         </button>
-        <button type="button" className="dropdown-item" onClick={() => { exportPageHandler('md') }}>
+        <button className="dropdown-item" type="button" onClick={() => { exportPageHandler('md') }}>
           <i className="icon-fw icon-cloud-download"></i>{t('export_bulk.export_page_markdown')}
         </button>
         {/* TODO GW-2746 create api to bulk export pages */}
@@ -130,8 +151,8 @@ const PageManagement = () => {
     return (
       <>
         <div className="dropdown-divider"></div>
-        <button className="dropdown-item" type="button" onClick={openPageDeleteModalHandler}>
-          <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
+        <button className="dropdown-item text-danger" type="button" onClick={openPageDeleteModalHandler}>
+          <i className="icon-fw icon-fire"></i> { t('Delete') }
         </button>
       </>
     );
@@ -177,7 +198,7 @@ const PageManagement = () => {
       <>
         <button
           type="button"
-          className="btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management"
+          className={`btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management ${isCompactMode && 'py-0'}`}
           data-toggle="dropdown"
         >
           <i className="icon-options"></i>
@@ -191,7 +212,7 @@ const PageManagement = () => {
       <>
         <button
           type="button"
-          className="btn nav-link bg-transparent dropdown-toggle dropdown-toggle-no-caret disabled"
+          className={`btn nav-link bg-transparent dropdown-toggle dropdown-toggle-no-caret disabled ${isCompactMode && 'py-0'}`}
           id="icon-options-guest-tltips"
         >
           <i className="icon-options"></i>
@@ -208,7 +229,7 @@ const PageManagement = () => {
     <>
       {currentUser == null ? renderDotsIconForGuestUser() : renderDotsIconForCurrentUser()}
       <div className="dropdown-menu dropdown-menu-right">
-        {!isTopPagePath && renderDropdownItemForNotTopPage()}
+        {isTopPagePath ? renderDropdownItemForTopPage() : renderDropdownItemForNotTopPage()}
         <button className="dropdown-item" type="button" onClick={openPageTemplateModalHandler}>
           <i className="icon-fw icon-magic-wand"></i> { t('template.option_label.create/edit') }
         </button>

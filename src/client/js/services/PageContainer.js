@@ -4,6 +4,7 @@ import loggerFactory from '@alias/logger';
 
 import * as entities from 'entities';
 import * as toastr from 'toastr';
+import { isTrashPage } from '@commons/util/path-utils';
 import { toastError } from '../util/apiNotification';
 
 import {
@@ -51,6 +52,7 @@ export default class PageContainer extends Container {
       isLiked: false,
       isBookmarked: false,
       seenUsers: [],
+      seenUserIds: mainContent.getAttribute('data-page-ids-of-seen-users'),
       countOfSeenUsers: mainContent.getAttribute('data-page-count-of-seen-users'),
 
       likerUsers: [],
@@ -58,16 +60,17 @@ export default class PageContainer extends Container {
       sumOfBookmarks: 0,
       createdAt: mainContent.getAttribute('data-page-created-at'),
       updatedAt: mainContent.getAttribute('data-page-updated-at'),
-      isForbidden:  JSON.parse(mainContent.getAttribute('data-page-is-forbidden')),
-      isDeleted:  JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
-      isDeletable:  JSON.parse(mainContent.getAttribute('data-page-is-deletable')),
-      isCreatable: JSON.parse(mainContent.getAttribute('data-page-is-creatable')),
-      isAbleToDeleteCompletely:  JSON.parse(mainContent.getAttribute('data-page-is-able-to-delete-completely')),
+      isTrashPage: isTrashPage(path),
+      isForbidden: JSON.parse(mainContent.getAttribute('data-page-is-forbidden')),
+      isDeleted: JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
+      isDeletable: JSON.parse(mainContent.getAttribute('data-page-is-deletable')),
+      isNotCreatable: JSON.parse(mainContent.getAttribute('data-page-is-not-creatable')),
+      isAbleToDeleteCompletely: JSON.parse(mainContent.getAttribute('data-page-is-able-to-delete-completely')),
       pageUser: JSON.parse(mainContent.getAttribute('data-page-user')),
       tags: null,
       hasChildren: JSON.parse(mainContent.getAttribute('data-page-has-children')),
       templateTagData: mainContent.getAttribute('data-template-tags') || null,
-      shareLinksNumber:  mainContent.getAttribute('data-share-links-number'),
+      shareLinksNumber: mainContent.getAttribute('data-share-links-number'),
       shareLinkId: JSON.parse(mainContent.getAttribute('data-share-link-id') || null),
 
       // latest(on remote) information
@@ -98,9 +101,15 @@ export default class PageContainer extends Container {
     interceptorManager.addInterceptor(new DrawioInterceptor(appContainer), 20);
     interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(appContainer), 900); // process as late as possible
 
-    this.retrieveSeenUsers();
     this.initStateMarkdown();
-    this.initStateOthers();
+    this.checkAndUpdateImageUrlCached(this.state.likerUsers);
+
+    // skip if shared page or new page
+    if (this.state.shareLinkId == null && this.state.pageId != null) {
+      this.retrieveSeenUsers();
+      this.retrieveLikeInfo();
+      this.retrieveBookmarkInfo();
+    }
 
     this.setTocHtml = this.setTocHtml.bind(this);
     this.save = this.save.bind(this);
@@ -152,19 +161,13 @@ export default class PageContainer extends Container {
     this.checkAndUpdateImageUrlCached(users);
   }
 
-  async initStateOthers() {
-
-    this.retrieveLikeInfo();
-    this.retrieveBookmarkInfo();
-    this.checkAndUpdateImageUrlCached(this.state.likerUsers);
-  }
-
   async retrieveLikeInfo() {
-    const like = await this.appContainer.apiv3Get('/page/like-info', { _id: this.state.pageId });
+    const res = await this.appContainer.apiv3Get('/page/like-info', { _id: this.state.pageId });
+    const { sumOfLikers, isLiked } = res.data;
+
     this.setState({
-      sumOfLikers: like.data.sumOfLikers,
-      likerUsers: like.data.users.liker,
-      isLiked: like.data.isLiked,
+      sumOfLikers,
+      isLiked,
     });
   }
 
@@ -177,14 +180,11 @@ export default class PageContainer extends Container {
   }
 
   async retrieveBookmarkInfo() {
-    const response = await this.appContainer.apiv3Get('/bookmarks', { pageId: this.state.pageId });
-    if (response.data.bookmarks != null) {
-      this.setState({ isBookmarked: true });
-    }
-    else {
-      this.setState({ isBookmarked: false });
-    }
-    this.setState({ sumOfBookmarks: response.data.sumOfBookmarks });
+    const response = await this.appContainer.apiv3Get('/bookmarks/info', { pageId: this.state.pageId });
+    this.setState({
+      sumOfBookmarks: response.data.sumOfBookmarks,
+      isBookmarked: response.data.isBookmarked,
+    });
   }
 
   async toggleBookmark() {
@@ -244,6 +244,8 @@ export default class PageContainer extends Container {
       revisionIdHackmdSynced: page.revisionHackmdSynced,
       hasDraftOnHackmd: page.hasDraftOnHackmd,
       markdown: page.revision.body,
+      createdAt: page.createdAt,
+      updatedAt: page.updatedAt,
     };
     if (tags != null) {
       newState.tags = tags;
@@ -253,7 +255,7 @@ export default class PageContainer extends Container {
     // PageEditor component
     const pageEditor = this.appContainer.getComponentInstance('PageEditor');
     if (pageEditor != null) {
-      if (editorMode !== 'builtin') {
+      if (editorMode !== 'edit') {
         pageEditor.updateEditorValue(newState.markdown);
       }
     }

@@ -84,7 +84,7 @@ class AppSetting extends React.Component<Props> {
           >
             {t('admin:app_setting.default_language')}
           </label>
-          <div className="col-md-6">
+          <div className="col-md-6 py-2">
             {
               nextI18NextConfig.allLanguages.map(lang => (
                 <div key={lang} className="custom-control custom-radio custom-control-inline">

@@ -12,21 +12,21 @@ const NotFoundPage = (props) => {
 
   const navTabMapping = {
     pagelist: {
-      icon: <PageListIcon />,
+      Icon: PageListIcon,
+      Content: PageList,
       i18n: t('page_list'),
-      tabContent: <PageList />,
       index: 0,
     },
     timeLine: {
-      icon: <TimeLineIcon />,
+      Icon: TimeLineIcon,
+      Content: PageTimeline,
       i18n: t('Timeline View'),
-      tabContent: <PageTimeline />,
       index: 1,
     },
   };
 
   return (
-    <div className="grw-custom-navigation mt-5 on-edit">
+    <div className="mt-5 d-edit-none">
       <CustomNavigation navTabMapping={navTabMapping} />
     </div>
   );

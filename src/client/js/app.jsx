@@ -11,30 +11,37 @@ import DisplaySwitcher from './components/Page/DisplaySwitcher';
 import { defaultEditorOptions, defaultPreviewOptions } from './components/PageEditor/OptionsSelector';
 import Page from './components/Page';
 import PageComments from './components/PageComments';
+import PageContentFooter from './components/PageContentFooter';
 import PageTimeline from './components/PageTimeline';
 import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
 import PageManagement from './components/Page/PageManagement';
+import ShareLinkAlert from './components/Page/ShareLinkAlert';
 import TrashPageList from './components/TrashPageList';
 import TrashPageAlert from './components/Page/TrashPageAlert';
 import NotFoundPage from './components/NotFoundPage';
 import NotFoundAlert from './components/Page/NotFoundAlert';
 import PageStatusAlert from './components/PageStatusAlert';
 import RecentCreated from './components/RecentCreated/RecentCreated';
-import MyBookmarkList from './components/MyBookmarkList/MyBookmarkList';
-import SeenUserList from './components/User/SeenUserList';
+import RecentlyCreatedIcon from './components/Icons/RecentlyCreatedIcon';
+import MyDraftList from './components/MyDraftList/MyDraftList';
+import BookmarkIcon from './components/Icons/BookmarkIcon';
+import BookmarkList from './components/PageList/BookmarkList';
 import LikerList from './components/User/LikerList';
 import TableOfContents from './components/TableOfContents';
+import PageAccessories from './components/PageAccessories';
+import UserInfo from './components/User/UserInfo';
 import Fab from './components/Fab';
-
 import PersonalSettings from './components/Me/PersonalSettings';
+import UserContentsLinks from './components/UserContentsLinks';
+import GrowiSubNavigation from './components/Navbar/GrowiSubNavigation';
+import GrowiSubNavigationSwitcher from './components/Navbar/GrowiSubNavigationSwitcher';
+
 import NavigationContainer from './services/NavigationContainer';
 import PageContainer from './services/PageContainer';
 import PageHistoryContainer from './services/PageHistoryContainer';
 import CommentContainer from './services/CommentContainer';
 import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
-import GrowiSubNavigation from './components/Navbar/GrowiSubNavigation';
-import GrowiSubNavigationSwitcher from './components/Navbar/GrowiSubNavigationSwitcher';
 import PersonalContainer from './services/PersonalContainer';
 
 import { appContainer, componentMappings } from './base';
@@ -78,13 +85,20 @@ Object.assign(componentMappings, {
 
   'not-found-page': <NotFoundPage />,
 
-  'not-found-alert': <NotFoundAlert onPageCreateClicked={navigationContainer.setEditorMode} />,
+  'not-found-alert': <NotFoundAlert
+    onPageCreateClicked={navigationContainer.setEditorMode}
+    isHidden={pageContainer.state.isForbidden || pageContainer.state.isNotCreatable || pageContainer.state.isTrashPage}
+  />,
 
   'page-timeline': <PageTimeline />,
 
   'personal-setting': <PersonalSettings crowi={personalContainer} />,
 
+  'my-drafts': <MyDraftList />,
+
   'grw-fab-container': <Fab />,
+
+  'share-link-alert': <ShareLinkAlert />,
 });
 
 // additional definitions if data exists
@@ -93,18 +107,20 @@ if (pageContainer.state.pageId != null) {
     'page-comments-list': <PageComments />,
     'page-comment-write': <CommentEditorLazyRenderer />,
     'page-management': <PageManagement />,
+    'page-accessories': <PageAccessories />,
     'revision-toc': <TableOfContents />,
-    'seen-user-list': <SeenUserList />,
     'liker-list': <LikerList />,
+    'page-content-footer': <PageContentFooter />,
 
-    'user-bookmark-list': <MyBookmarkList />,
-    'user-created-list': <RecentCreated />,
-    // 'user-draft-list': <MyDraftList />,
+    'recent-created-icon': <RecentlyCreatedIcon />,
+    'user-bookmark-icon': <BookmarkIcon />,
+    'grw-user-contents-links': <UserContentsLinks />,
   });
 }
 if (pageContainer.state.creator != null) {
   Object.assign(componentMappings, {
     'user-created-list': <RecentCreated userId={pageContainer.state.creator._id} />,
+    'user-bookmark-list': <BookmarkList userId={pageContainer.state.creator._id} />,
   });
 }
 if (pageContainer.state.path != null) {
@@ -113,11 +129,7 @@ if (pageContainer.state.path != null) {
     'page': <Page />,
     'grw-subnav-container': <GrowiSubNavigation />,
     'grw-subnav-switcher-container': <GrowiSubNavigationSwitcher />,
-  });
-}
-// additional definitions if user is logged in
-if (appContainer.currentUser != null) {
-  Object.assign(componentMappings, {
+    'user-info': <UserInfo pageUser={pageContainer.state.pageUser} />,
     'display-switcher': <DisplaySwitcher />,
   });
 }

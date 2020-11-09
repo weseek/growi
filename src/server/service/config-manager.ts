@@ -27,6 +27,16 @@ const KEYS_FOR_SAML_USE_ONLY_ENV_OPTION = [
   'security:passport-saml:ABLCRule',
 ];
 
+const KEYS_FOR_FIEL_UPLOAD_USE_ONLY_ENV_OPTION = [
+  'app:fileUploadType',
+];
+
+const KEYS_FOR_GCS_USE_ONLY_ENV_OPTION = [
+  'gcs:apiKeyJsonPath',
+  'gcs:bucket',
+  'gcs:uploadNamespace',
+];
+
 export default class ConfigManager implements S2sMessageHandlable {
 
   private configLoader: ConfigLoader = new ConfigLoader();
@@ -218,6 +228,16 @@ export default class ConfigManager implements S2sMessageHandlable {
       || (
         KEYS_FOR_SAML_USE_ONLY_ENV_OPTION.includes(key)
         && this.defaultSearch('crowi', 'security:passport-saml:useOnlyEnvVarsForSomeOptions')
+      )
+      // file upload option
+      || (
+        KEYS_FOR_FIEL_UPLOAD_USE_ONLY_ENV_OPTION.includes(key)
+        && this.searchOnlyFromEnvVarConfigs('crowi', 'app:useOnlyEnvVarForFileUploadType')
+      )
+      // gcs option
+      || (
+        KEYS_FOR_GCS_USE_ONLY_ENV_OPTION.includes(key)
+        && this.searchOnlyFromEnvVarConfigs('crowi', 'gcs:useOnlyEnvVarsForSomeOptions')
       )
     ));
   }

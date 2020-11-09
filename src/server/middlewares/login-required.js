@@ -47,13 +47,13 @@ module.exports = (crowi, isGuestAllowed = false, fallback = null) => {
     const path = req.path || '';
     if (path.match(/^\/_api\/.+$/)) {
       if (fallback != null) {
-        return fallback(req, res);
+        return fallback(req, res, next);
       }
       return res.sendStatus(403);
     }
 
     if (fallback != null) {
-      return fallback(req, res);
+      return fallback(req, res, next);
     }
     req.session.redirectTo = req.originalUrl;
     return res.redirect('/login');

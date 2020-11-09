@@ -72,13 +72,6 @@ const logger = loggerFactory('growi:routes:page');
  *            example: ""
  *          revision:
  *            $ref: '#/components/schemas/Revision'
- *          seenUsers:
- *            type: array
- *            description: granted users
- *            items:
- *              type: string
- *              description: user ID
- *            example: ["5ae5fccfc5577b0004dbd8ab"]
  *          status:
  *            type: string
  *            description: status
@@ -328,6 +321,11 @@ module.exports = function(crowi, app) {
     let portalPage = await Page.findByPathAndViewer(portalPath, req.user);
     portalPage.initLatestRevisionField(revisionId);
 
+    // add user to seen users
+    if (req.user != null) {
+      portalPage = await portalPage.seen(req.user);
+    }
+
     // populate
     portalPage = await portalPage.populateDataToShowRevision();
 
@@ -372,6 +370,11 @@ module.exports = function(crowi, app) {
     let view = `layout-${layoutName}/page`;
 
     page.initLatestRevisionField(revisionId);
+
+    // add user to seen users
+    if (req.user != null) {
+      page = await page.seen(req.user);
+    }
 
     // populate
     page = await page.populateDataToShowRevision();
@@ -434,7 +437,6 @@ module.exports = function(crowi, app) {
     const revisionId = req.query.revision;
 
     const layoutName = configManager.getConfig('crowi', 'customize:layout');
-    const view = `layout-${layoutName}/shared_page`;
 
     const shareLink = await ShareLink.findOne({ _id: linkId }).populate('relatedPage');
 
@@ -443,17 +445,17 @@ module.exports = function(crowi, app) {
       return res.render(`layout-${layoutName}/not_found_shared_page`);
     }
 
-    let page = shareLink.relatedPage;
+    const renderVars = {};
+
+    renderVars.sharelink = shareLink;
 
     // check if share link is expired
     if (shareLink.isExpired()) {
       // page is not found
-      return res.render(`layout-${layoutName}/expired_shared_page`);
+      return res.render(`layout-${layoutName}/expired_shared_page`, renderVars);
     }
 
-    const renderVars = {};
-
-    renderVars.sharelink = shareLink;
+    let page = shareLink.relatedPage;
 
     // presentation mode
     if (req.query.presentation) {
@@ -472,7 +474,7 @@ module.exports = function(crowi, app) {
     addRenderVarsForScope(renderVars, page);
 
     await interceptorManager.process('beforeRenderPage', req, res, renderVars);
-    return res.render(view, renderVars);
+    return res.render(`layout-${layoutName}/shared_page`, renderVars);
   };
 
   /**
@@ -1115,75 +1117,6 @@ module.exports = function(crowi, app) {
     catch (err) {
       return res.json(ApiResponse.error(err));
     }
-    return res.json(ApiResponse.success(result));
-  };
-
-  /**
-   * @swagger
-   *
-   *    /pages.seen:
-   *      post:
-   *        tags: [Pages, CrowiCompatibles]
-   *        operationId: seenPage
-   *        summary: /pages.seen
-   *        description: Mark as seen user
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  page_id:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
-   *                required:
-   *                  - page_id
-   *        responses:
-   *          200:
-   *            description: Succeeded to be page seen.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    seenUser:
-   *                      $ref: '#/components/schemas/Page/properties/seenUsers'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  /**
-   * @api {post} /pages.seen Mark as seen user
-   * @apiName SeenPage
-   * @apiGroup Page
-   *
-   * @apiParam {String} page_id Page Id.
-   */
-  api.seen = async function(req, res) {
-    const user = req.user;
-    const pageId = req.body.page_id;
-    if (!pageId) {
-      return res.json(ApiResponse.error('page_id required'));
-    }
-    if (!req.user) {
-      return res.json(ApiResponse.error('user required'));
-    }
-
-    let page;
-    try {
-      page = await Page.findByIdAndViewer(pageId, user);
-      if (user != null) {
-        page = await page.seen(user);
-      }
-    }
-    catch (err) {
-      logger.debug('Seen user update error', err);
-      return res.json(ApiResponse.error(err));
-    }
-
-    const result = {};
-    result.seenUser = page.seenUsers;
-
     return res.json(ApiResponse.success(result));
   };
 
