@@ -20,7 +20,7 @@ const logger = loggerFactory('growi:NotificationSetting');
 
 let retrieveErrors = null;
 function NotificationSetting(props) {
-  const { adminNotificationContainer, t } = props;
+  const { adminNotificationContainer } = props;
   if (adminNotificationContainer.state.webhookUrl === adminNotificationContainer.dummyWebhookUrl) {
     throw (async() => {
       try {
