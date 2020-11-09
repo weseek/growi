@@ -71,7 +71,7 @@ const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
 const PageReactionButtons = ({ appContainer, pageContainer }) => {
 
   const {
-    pageId, isLiked, pageUser, shareLinkId,
+    pageUser, shareLinkId,
   } = pageContainer.state;
 
   const isSharedPage = useMemo(() => {
@@ -82,11 +82,11 @@ const PageReactionButtons = ({ appContainer, pageContainer }) => {
     <>
       {pageUser == null && !isSharedPage && (
       <span className="mr-2">
-        <LikeButton pageId={pageId} isLiked={isLiked} />
+        <LikeButton />
       </span>
       )}
       <span>
-        <BookmarkButton pageId={pageId} crowi={appContainer} />
+        <BookmarkButton crowi={appContainer} />
       </span>
     </>
   );

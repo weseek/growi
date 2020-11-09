@@ -12,7 +12,7 @@ const UserInfo = (props) => {
   }
 
   return (
-    <div className="grw-users-info d-flex align-items-center d-edit-none pb-2 border-bottom">
+    <div className="grw-users-info d-flex align-items-center d-edit-none mb-5 pb-3 border-bottom">
       <UserPicture user={pageUser} />
 
       <div className="users-meta">
