@@ -38,7 +38,7 @@ html[dark] {
   // Background colors
   $bgcolor-global: #050000;
   $bgcolor-inline-code: #1f1f22; //optional
-  $bgcolor-card: $gray-50;
+  $bgcolor-card: $bgcolor-global;
 
   // Font colors
   $color-global: #e9af2b;
