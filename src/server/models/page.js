@@ -1302,6 +1302,36 @@ module.exports = function(crowi) {
     return targetPage;
   };
 
+  pageSchema.statics.duplicate = async function(page, newPagePath, user) {
+    // populate
+    await page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate();
+
+    // create option
+    const options = { page };
+    options.grant = page.grant;
+    options.grantUserGroupId = page.grantedGroup;
+    options.grantedUsers = page.grantedUsers;
+
+    const createdPage = await createPageAction({
+      path: newPagePath, user, body: page.revision.body, options,
+    });
+
+    const originTags = await page.findRelatedTagsById();
+    const savedTags = await saveTagsAction({ page, createdPage, pageTags: originTags });
+
+    // global notification
+    if (globalNotificationService != null) {
+      try {
+        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, user);
+      }
+      catch (err) {
+        logger.error('Create grobal notification failed', err);
+      }
+    }
+
+    return { page: pageService.serializeToObj(createdPage), tags: savedTags };
+  };
+
   pageSchema.statics.findListByPathsArray = async function(paths) {
     const queryBuilder = new PageQueryBuilder(this.find());
     queryBuilder.addConditionToListByPathsArray(paths);
