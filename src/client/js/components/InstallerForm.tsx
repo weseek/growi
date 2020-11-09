@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useForm, SubmitHandler, Validate } from 'react-hook-form';
 
 import { i18n, config, useTranslation } from '~/i18n';
+import { apiPost } from '../util/apiv1-client';
 import { apiv3Get } from '../util/apiv3-client';
 
 type FormValues = {
@@ -40,8 +41,12 @@ const InstallerForm = (): JSX.Element => {
     return !isExists;
   };
 
-  const submitHandler: SubmitHandler<FormValues> = (data) => {
-    console.log(data);
+  const submitHandler: SubmitHandler<FormValues> = async(formValues) => {
+    const { language } = i18n;
+    const postData = { ...formValues, language };
+
+    console.log('postData', postData);
+    // const { data } = await apiPost('/install', postData);
   };
 
 

@@ -71,7 +71,7 @@ module.exports = function(crowi) {
     const username = registerForm.username;
     const email = registerForm.email;
     const password = registerForm.password;
-    const language = registerForm['app:globalLang'] || 'en_US';
+    const language = registerForm.language || 'en_US';
 
     await appService.initDB(language);
 
