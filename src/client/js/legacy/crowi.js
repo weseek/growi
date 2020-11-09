@@ -201,13 +201,13 @@ $(() => {
 
 window.addEventListener('load', (e) => {
   const { appContainer, pageContainer } = window;
-  const isEditableMode = pageContainer;
+  const editablePages = pageContainer;
 
   // hash on page
   if (window.location.hash) {
     const navigationContainer = appContainer.getContainer('NavigationContainer');
 
-    if (window.location.hash === '#edit' && isEditableMode) {
+    if (window.location.hash === '#edit' && editablePages) {
       navigationContainer.setEditorMode('edit');
 
       // focus

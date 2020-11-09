@@ -133,7 +133,8 @@ export default class PageContainer extends Container {
     return 'PageContainer';
   }
 
-  isEditableMode() {
+
+  get editablePages() {
     const { appContainer } = window;
     const { currentUser } = appContainer;
     const {
@@ -143,6 +144,7 @@ export default class PageContainer extends Container {
     if (isPageExist && (currentUser != null) && !isPageForbidden && !isNotCreatable && !isTrashPage) {
       return true;
     }
+    return false;
   }
 
   /**
