@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
@@ -71,18 +71,22 @@ const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
 const PageReactionButtons = ({ appContainer, pageContainer }) => {
 
   const {
-    pageId, isLiked, pageUser,
+    pageUser, shareLinkId,
   } = pageContainer.state;
+
+  const isSharedPage = useMemo(() => {
+    return shareLinkId != null;
+  }, [shareLinkId]);
 
   return (
     <>
-      {pageUser == null && (
+      {pageUser == null && !isSharedPage && (
       <span className="mr-2">
-        <LikeButton pageId={pageId} isLiked={isLiked} />
+        <LikeButton />
       </span>
       )}
       <span>
-        <BookmarkButton pageId={pageId} crowi={appContainer} />
+        <BookmarkButton crowi={appContainer} />
       </span>
     </>
   );
@@ -155,10 +159,10 @@ const GrowiSubNavigation = (props) => {
         { (!isCompactMode && !isUserPage && !isPageNotFound && !isPageForbidden) && (
           <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3">
             <li className="pb-1">
-              <AuthorInfo user={creator} date={createdAt} />
+              <AuthorInfo user={creator} date={createdAt} locate="subnav" />
             </li>
             <li className="mt-1 pt-1 border-top">
-              <AuthorInfo user={revisionAuthor} date={updatedAt} mode="update" />
+              <AuthorInfo user={revisionAuthor} date={updatedAt} mode="update" locate="subnav" />
             </li>
           </ul>
         ) }
