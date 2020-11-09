@@ -162,11 +162,12 @@ export default class PageContainer extends Container {
   }
 
   async retrieveLikeInfo() {
-    const like = await this.appContainer.apiv3Get('/page/like-info', { _id: this.state.pageId });
+    const res = await this.appContainer.apiv3Get('/page/like-info', { _id: this.state.pageId });
+    const { sumOfLikers, isLiked } = res.data;
+
     this.setState({
-      sumOfLikers: like.data.sumOfLikers,
-      likerUsers: like.data.users.liker,
-      isLiked: like.data.isLiked,
+      sumOfLikers,
+      isLiked,
     });
   }
 
