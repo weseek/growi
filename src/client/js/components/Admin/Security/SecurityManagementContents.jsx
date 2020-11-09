@@ -1,13 +1,7 @@
-import React, { Fragment, useMemo, useState } from 'react';
+import React, { Fragment, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import {
-  TabContent, TabPane,
-} from 'reactstrap';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-
-import AppContainer from '../../../services/AppContainer';
 import LdapSecuritySetting from './LdapSecuritySetting';
 import LocalSecuritySetting from './LocalSecuritySetting';
 import SamlSecuritySetting from './SamlSecuritySetting';
@@ -20,42 +14,69 @@ import TwitterSecuritySetting from './TwitterSecuritySetting';
 import FacebookSecuritySetting from './FacebookSecuritySetting';
 import ShareLinkSetting from './ShareLinkSetting';
 
-import { CustomNav } from '../../CustomNavigation';
+import CustomNavigation from '../../CustomNavigation';
 
 function SecurityManagementContents(props) {
   const { t } = props;
-  const [activeTab, setActiveTab] = useState('passport-local');
-  const [activeComponents, setActiveComponents] = useState(new Set(['passport-local']));
-
-  const switchActiveTab = (activeTab) => {
-    setActiveComponents(activeComponents.add(activeTab));
-    setActiveTab(activeTab);
-  };
 
   const navTabMapping = useMemo(() => {
     return {
-      passportLocal: {
-        Icon:  () => <i className="fa fa-users" />,
-        i18n: t('page_list'),
+      passport_local: {
+        Icon: () => <i className="fa fa-users" />,
+        Content: LocalSecuritySetting,
+        i18n: 'ID/Pass',
         index: 0,
       },
-      // pageHistory: {
-      //   Icon: HistoryIcon,
-      //   i18n: t('History'),
-      //   index: 2,
-      // },
-      // attachment: {
-      //   Icon: AttachmentIcon,
-      //   i18n: t('attachment_data'),
-      //   index: 3,
-      // },
-      // shareLink: {
-      //   Icon: ShareLinkIcon,
-      //   i18n: t('share_links.share_link_management'),
-      //   index: 4,
-      // },
+      passport_ldap: {
+        Icon: () => <i className="fa fa-sitemap" />,
+        Content: LdapSecuritySetting,
+        i18n: 'LDAP',
+        index: 1,
+      },
+      passport_saml: {
+        Icon: () => <i className="fa fa-key" />,
+        Content: SamlSecuritySetting,
+        i18n: 'SAML',
+        index: 2,
+      },
+      passport_oidc: {
+        Icon: () => <i className="fa fa-key" />,
+        Content: OidcSecuritySetting,
+        i18n: 'OIDC',
+        index: 3,
+      },
+      passport_basic: {
+        Icon: () => <i className="fa fa-lock" />,
+        Content: BasicSecuritySetting,
+        i18n: 'BASIC',
+        index: 4,
+      },
+      passport_google: {
+        Icon: () => <i className="fa fa-google" />,
+        Content: GoogleSecuritySetting,
+        i18n: 'Google',
+        index: 5,
+      },
+      passport_github: {
+        Icon: () => <i className="fa fa-github" />,
+        Content: GitHubSecuritySetting,
+        i18n: 'GitHub',
+        index: 6,
+      },
+      passport_twitter: {
+        Icon: () => <i className="fa fa-twitter" />,
+        Content: TwitterSecuritySetting,
+        i18n: 'Twitter',
+        index: 7,
+      },
+      passport_facebook: {
+        Icon: () => <i className="fa fa-facebook" />,
+        Content: FacebookSecuritySetting,
+        i18n: '(TBD) Facebook',
+        index: 8,
+      },
     };
-  }, [t]);
+  }, []);
 
 
   return (
@@ -82,119 +103,7 @@ function SecurityManagementContents(props) {
 
       <div className="auth-mechanism-configurations">
         <h2 className="border-bottom">{t('security_setting.Authentication mechanism settings')}</h2>
-        {/* <Nav tabs>
-          <NavItem>
-            <NavLink
-              className={`${activeTab === 'passport-local' && 'active'} `}
-              onClick={() => { this.toggleActiveTab('passport-local') }}
-              href="#passport-local"
-            >
-              <i className="fa fa-users" /> ID/Pass
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
-              className={`${activeTab === 'passport-ldap' && 'active'} `}
-              onClick={() => { this.toggleActiveTab('passport-ldap') }}
-              href="#passport-ldap"
-            >
-              <i className="fa fa-sitemap" /> LDAP
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
-              className={`${activeTab === 'passport-saml' && 'active'} `}
-              onClick={() => { this.toggleActiveTab('passport-saml') }}
-              href="#passport-saml"
-            >
-              <i className="fa fa-key" /> SAML
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
-              className={`${activeTab === 'passport-oidc' && 'active'} `}
-              onClick={() => { this.toggleActiveTab('passport-oidc') }}
-              href="#passport-oidc"
-            >
-              <i className="fa fa-openid" /> OIDC
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
-              className={`${activeTab === 'passport-basic' && 'active'} `}
-              onClick={() => { this.toggleActiveTab('passport-basic') }}
-              href="#passport-basic"
-            >
-              <i className="fa fa-lock" /> BASIC
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
-              className={`${activeTab === 'passport-google' && 'active'} `}
-              onClick={() => { this.toggleActiveTab('passport-google') }}
-              href="#passport-google"
-            >
-              <i className="fa fa-google" /> Google
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
-              className={`${activeTab === 'passport-github' && 'active'} `}
-              onClick={() => { this.toggleActiveTab('passport-github') }}
-              href="#passport-github"
-            >
-              <i className="fa fa-github" /> GitHub
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
-              className={`${activeTab === 'passport-twitter' && 'active'} `}
-              onClick={() => { this.toggleActiveTab('passport-twitter') }}
-              href="#passport-twitter"
-            >
-              <i className="fa fa-twitter" /> Twitter
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
-              className={`${activeTab === 'passport-facebook' && 'active'} `}
-              onClick={() => { this.toggleActiveTab('passport-facebook') }}
-              href="#passport-facebook"
-            >
-              <i className="fa fa-facebook" /> (TBD) Facebook
-            </NavLink>
-          </NavItem>
-        </Nav> */}
-        <CustomNav activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={switchActiveTab} />
-        <TabContent activeTab={activeTab} className="mt-2">
-          <TabPane tabId="passport-local">
-            {activeComponents.has('passport-local') && <LocalSecuritySetting />}
-          </TabPane>
-          <TabPane tabId="passport-ldap">
-            {activeComponents.has('passport-ldap') && <LdapSecuritySetting />}
-          </TabPane>
-          <TabPane tabId="passport-saml">
-            {activeComponents.has('passport-saml') && <SamlSecuritySetting />}
-          </TabPane>
-          <TabPane tabId="passport-oidc">
-            {activeComponents.has('passport-oidc') && <OidcSecuritySetting />}
-          </TabPane>
-          <TabPane tabId="passport-basic">
-            {activeComponents.has('passport-basic') && <BasicSecuritySetting />}
-          </TabPane>
-          <TabPane tabId="passport-google">
-            {activeComponents.has('passport-google') && <GoogleSecuritySetting />}
-          </TabPane>
-          <TabPane tabId="passport-github">
-            {activeComponents.has('passport-github') && <GitHubSecuritySetting />}
-          </TabPane>
-          <TabPane tabId="passport-twitter">
-            {activeComponents.has('passport-twitter') && <TwitterSecuritySetting />}
-          </TabPane>
-          <TabPane tabId="passport-facebook">
-            {activeComponents.has('passport-facebook') && <FacebookSecuritySetting />}
-          </TabPane>
-        </TabContent>
+        <CustomNavigation navTabMapping={navTabMapping} />
       </div>
     </Fragment>
   );
@@ -203,9 +112,6 @@ function SecurityManagementContents(props) {
 
 SecurityManagementContents.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
-const SecurityManagementContentsWrapper = withUnstatedContainers(SecurityManagementContents, [AppContainer]);
-
-export default withTranslation()(SecurityManagementContentsWrapper);
+export default withTranslation()(SecurityManagementContents);
