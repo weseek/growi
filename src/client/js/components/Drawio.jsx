@@ -56,7 +56,7 @@ class Drawio extends React.Component {
 
   render() {
     return (
-      <div className="editable-with-drawio position-relative">
+      <div className="editable-with-drawio container-lg position-relative">
         { !this.isPreview && (
           <NotAvailableForGuest>
             <button type="button" className="drawio-iframe-trigger position-absolute btn btn-outline-secondary" onClick={this.onEdit}>

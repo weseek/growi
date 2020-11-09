@@ -148,8 +148,8 @@ const PageManagement = (props) => {
     return (
       <>
         <div className="dropdown-divider"></div>
-        <button className="dropdown-item" type="button" onClick={openPageDeleteModalHandler}>
-          <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
+        <button className="dropdown-item text-danger" type="button" onClick={openPageDeleteModalHandler}>
+          <i className="icon-fw icon-fire"></i> { t('Delete') }
         </button>
       </>
     );
