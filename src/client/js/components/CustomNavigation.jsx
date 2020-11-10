@@ -12,7 +12,9 @@ export const CustomNav = (props) => {
   const [sliderWidth, setSliderWidth] = useState(0);
   const [sliderMarginLeft, setSliderMarginLeft] = useState(0);
 
-  const { activeTab, navTabMapping, onNavSelected } = props;
+  const {
+    activeTab, navTabMapping, onNavSelected, hideBorderBottom,
+  } = props;
 
   const navTabRefs = useMemo(() => {
     const obj = {};
@@ -87,6 +89,7 @@ export const CustomNav = (props) => {
         </Nav>
       </div>
       <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
+      { !hideBorderBottom && <hr className="my-0 border-top-0 border-bottom" /> }
     </div>
   );
 
@@ -96,6 +99,11 @@ CustomNav.propTypes = {
   activeTab: PropTypes.string.isRequired,
   navTabMapping: PropTypes.object.isRequired,
   onNavSelected: PropTypes.func,
+  hideBorderBottom: PropTypes.bool,
+};
+
+CustomNav.defaultProps = {
+  hideBorderBottom: false,
 };
 
 
