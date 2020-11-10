@@ -112,13 +112,15 @@ jobs:
         username: wsmoogle
         password: ${{ secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
 
-    - name: Build and push to ghcr
-      uses: docker/build-push-action@v2
+    - name: Docker Tags by SemVer in Github Container Registry
+      uses: weseek/ghaction-docker-tags-by-semver@v1.0.3
       with:
-        context: .
-        file: ./docker/Dockerfile
-        push: true
-        tags: ghcr.io/weseek/growi:${{ needs.github-release.outputs.RELEASE_VERSION }}${{ env.SUFFIX }}
+        source: growi${{ env.SUFFIX }}
+        target: ghcr.io/weseek/growi
+        semver: ${{ needs.github-release.outputs.RELEASE_VERSION }}
+        suffix: ${{ env.SUFFIX }}
+        additional-tags: 'latest'
+        publish: true
 
     - name: Slack Notification
       uses: weseek/ghaction-release-slack-notification@master

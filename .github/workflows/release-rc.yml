@@ -52,13 +52,13 @@ jobs:
         username: wsmoogle
         password: ${{ secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
 
-    - name: Build and push to ghcr
-      uses: docker/build-push-action@v2
+    - name: Docker Tags by SemVer in Github Container Registry
+      uses: weseek/ghaction-docker-tags-by-semver@v1.0.3
       with:
-        context: .
-        file: ./docker/Dockerfile
-        push: true
-        tags: ghcr.io/weseek/growi:${{ env.SEMVER }}
+        source: growi
+        target: ghcr.io/weseek/growi
+        semver: ${{ env.SEMVER }}
+        publish: true
 
     - name: Check whether workspace is clean
       run: |
