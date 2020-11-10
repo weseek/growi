@@ -53,7 +53,7 @@ module.exports = function(crowi) {
     apiToken: { type: String, index: true },
     lang: {
       type: String,
-      enum: listLocaleIds(true),
+      enum: listLocaleIds(),
       default: 'en_US',
     },
     status: {
@@ -71,11 +71,13 @@ module.exports = function(crowi) {
         if (!doc.isEmailPublished) {
           delete ret.email;
         }
-        // migrate deperecated lang
-        doc.lang = migrateDeprecatedLocaleId(doc.lang);
         return ret;
       },
     },
+  });
+  // eslint-disable-next-line prefer-arrow-callback
+  userSchema.pre('validate', function() {
+    this.lang = migrateDeprecatedLocaleId(this.lang);
   });
   userSchema.plugin(mongoosePaginate);
   userSchema.plugin(uniqueValidator);
