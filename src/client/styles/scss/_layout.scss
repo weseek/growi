@@ -36,6 +36,10 @@ body {
   }
 }
 
+.grw-side-contents-container {
+  margin-left: 30px;
+}
+
 .grw-side-contents-sticky-container {
   position: sticky;
   // growisubnavigation + grw-navbar-boder
@@ -103,16 +107,6 @@ body {
       margin-bottom: 20px;
       font-size: 0.9em;
       border: solid 1px $gray-400;
-
-      .revision-toc-head {
-        display: inline-block;
-        float: none;
-      }
-
-      .revision-toc-content.collapse {
-        display: block;
-        height: auto;
-      }
     }
 
     .meta {

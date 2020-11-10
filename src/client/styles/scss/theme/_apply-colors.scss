@@ -137,7 +137,8 @@ ul.pagination {
     button.page-link {
       color: color-yiq($primary);
       background-color: $primary;
-      &:hover {
+      &:hover,
+      &:focus {
         color: color-yiq($primary);
         background-color: $primary;
       }
@@ -452,7 +453,7 @@ body.on-edit {
 /*
  * GROWI comment form
  */
-.growi .main {
+.page-comments {
   .page-comment .page-comment-main,
   .page-comment-form .comment-form-main {
     background-color: $bgcolor-global;

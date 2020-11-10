@@ -25,7 +25,7 @@ class ApiSettings extends React.Component {
       await appContainer.apiv3Put('/personal-setting/api-token');
 
       await personalContainer.retrievePersonalData();
-      toastSuccess(t('toaster.update_successed', { target: t('personal_settings.update_password') }));
+      toastSuccess(t('toaster.update_successed', { target: t('page_me_apitoken.api_token') }));
     }
     catch (err) {
       toastError(err);

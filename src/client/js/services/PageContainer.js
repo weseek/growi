@@ -101,9 +101,15 @@ export default class PageContainer extends Container {
     interceptorManager.addInterceptor(new DrawioInterceptor(appContainer), 20);
     interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(appContainer), 900); // process as late as possible
 
-    this.retrieveSeenUsers();
     this.initStateMarkdown();
-    this.initStateOthers();
+    this.checkAndUpdateImageUrlCached(this.state.likerUsers);
+
+    // skip if shared page or new page
+    if (this.state.shareLinkId == null && this.state.pageId != null) {
+      this.retrieveSeenUsers();
+      this.retrieveLikeInfo();
+      this.retrieveBookmarkInfo();
+    }
 
     this.setTocHtml = this.setTocHtml.bind(this);
     this.save = this.save.bind(this);
@@ -133,6 +139,19 @@ export default class PageContainer extends Container {
     return 'PageContainer';
   }
 
+
+  get isEditable() {
+    const { currentUser } = this.appContainer;
+    const {
+      isPageExist, isPageForbidden, isNotCreatable, isTrashPage,
+    } = this.state;
+
+    if (isPageExist && (currentUser != null) && !isPageForbidden && !isNotCreatable && !isTrashPage) {
+      return true;
+    }
+    return false;
+  }
+
   /**
    * initialize state for markdown data
    */
@@ -155,19 +174,13 @@ export default class PageContainer extends Container {
     this.checkAndUpdateImageUrlCached(users);
   }
 
-  async initStateOthers() {
-
-    this.retrieveLikeInfo();
-    this.retrieveBookmarkInfo();
-    this.checkAndUpdateImageUrlCached(this.state.likerUsers);
-  }
-
   async retrieveLikeInfo() {
-    const like = await this.appContainer.apiv3Get('/page/like-info', { _id: this.state.pageId });
+    const res = await this.appContainer.apiv3Get('/page/like-info', { _id: this.state.pageId });
+    const { sumOfLikers, isLiked } = res.data;
+
     this.setState({
-      sumOfLikers: like.data.sumOfLikers,
-      likerUsers: like.data.users.liker,
-      isLiked: like.data.isLiked,
+      sumOfLikers,
+      isLiked,
     });
   }
 
@@ -180,14 +193,11 @@ export default class PageContainer extends Container {
   }
 
   async retrieveBookmarkInfo() {
-    const response = await this.appContainer.apiv3Get('/bookmarks', { pageId: this.state.pageId });
-    if (response.data.bookmarks != null) {
-      this.setState({ isBookmarked: true });
-    }
-    else {
-      this.setState({ isBookmarked: false });
-    }
-    this.setState({ sumOfBookmarks: response.data.sumOfBookmarks });
+    const response = await this.appContainer.apiv3Get('/bookmarks/info', { pageId: this.state.pageId });
+    this.setState({
+      sumOfBookmarks: response.data.sumOfBookmarks,
+      isBookmarked: response.data.isBookmarked,
+    });
   }
 
   async toggleBookmark() {
@@ -247,6 +257,8 @@ export default class PageContainer extends Container {
       revisionIdHackmdSynced: page.revisionHackmdSynced,
       hasDraftOnHackmd: page.hasDraftOnHackmd,
       markdown: page.revision.body,
+      createdAt: page.createdAt,
+      updatedAt: page.updatedAt,
     };
     if (tags != null) {
       newState.tags = tags;
@@ -256,7 +268,7 @@ export default class PageContainer extends Container {
     // PageEditor component
     const pageEditor = this.appContainer.getComponentInstance('PageEditor');
     if (pageEditor != null) {
-      if (editorMode !== 'builtin') {
+      if (editorMode !== 'edit') {
         pageEditor.updateEditorValue(newState.markdown);
       }
     }

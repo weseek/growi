@@ -94,7 +94,7 @@ const PageAccessoriesModal = (props) => {
     <React.Fragment>
       <Modal size="xl" isOpen={props.isOpen} toggle={closeModalHandler} className={`grw-page-accessories-modal ${isWindowExpanded && 'grw-modal-expanded'} `}>
         <ModalHeader className="p-0" toggle={closeModalHandler} close={buttons}>
-          <CustomNav activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={switchActiveTab} />
+          <CustomNav activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={switchActiveTab} hideBorderBottom />
         </ModalHeader>
         <ModalBody className="overflow-auto grw-modal-body-style p-0">
           {/* Do not use CustomTabContent because of performance problem:

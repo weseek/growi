@@ -154,59 +154,16 @@ Crowi.highlightSelectedSection = function(hash) {
   }
 };
 
-$(() => {
-  const pageId = $('#content-main').data('page-id');
-  // const revisionId = $('#content-main').data('page-revision-id');
-  // const revisionCreatedAt = $('#content-main').data('page-revision-created');
-  // const currentUser = $('#content-main').data('current-user');
-  const isSeen = $('#content-main').data('page-is-seen');
-
-  $('[data-toggle="popover"]').popover();
-  $('[data-toggle="tooltip"]').tooltip();
-  $('[data-tooltip-stay]').tooltip('show');
-
-  $('#toggle-crowi-sidebar').click((e) => {
-    const $body = $('body');
-    if ($body.hasClass('aside-hidden')) {
-      $body.removeClass('aside-hidden');
-      $.cookie('aside-hidden', 0, { expires: 30, path: '/' });
-    }
-    else {
-      $body.addClass('aside-hidden');
-      $.cookie('aside-hidden', 1, { expires: 30, path: '/' });
-    }
-    return false;
-  });
-
-  if ($.cookie('aside-hidden') === 1) {
-    $('body').addClass('aside-hidden');
-  }
-
-  $('.copy-link').on('click', function() {
-    $(this).select();
-  });
-
-  if (pageId) {
-
-    if (!isSeen) {
-      $.post('/_api/pages.seen', { page_id: pageId }, (res) => {
-        // ignore unless response has error
-        if (res.ok && res.seenUser) {
-          $('#content-main').data('page-is-seen', 1);
-        }
-      });
-    }
-  } // end if pageId
-});
-
 window.addEventListener('load', (e) => {
   const { appContainer } = window;
+  const pageContainer = appContainer.getContainer('PageContainer');
+  const { isEditable } = pageContainer;
 
   // hash on page
   if (window.location.hash) {
     const navigationContainer = appContainer.getContainer('NavigationContainer');
 
-    if (window.location.hash === '#edit') {
+    if (window.location.hash === '#edit' && isEditable) {
       navigationContainer.setEditorMode('edit');
 
       // focus
