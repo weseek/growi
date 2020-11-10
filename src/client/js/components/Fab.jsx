@@ -24,9 +24,9 @@ const Fab = (props) => {
     logger.debug('StickyEvents.CHANGE detected');
 
     const classes = event.detail.isSticky ? 'animated fadeInUp faster' : 'animated fadeOut faster';
-    const buttonHide = event.detail.isSticky ? null : 'disabled';
+    const buttonHidden = event.detail.isSticky ? null : 'disabled';
     setAnimateClasses(classes);
-    setButtonClasses(buttonHide);
+    setButtonClasses(buttonHidden);
   }, []);
 
   // setup effect by sticky event
