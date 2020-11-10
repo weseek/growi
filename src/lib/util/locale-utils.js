@@ -2,6 +2,12 @@ const fs = require('fs');
 
 const helpers = require('./helpers');
 
+const DEPRECATED_LOCALE_IDS = ['en', 'ja'];
+const MIGRATE_LOCALE_MAP = {
+  en: 'en_US',
+  ja: 'ja_JP',
+};
+
 /**
  * List locales dirents
  */
@@ -23,12 +29,29 @@ function listLocaleMetadatas() {
 /**
  * List locales IDs (=subdir names)
  */
-function listLocaleIds() {
-  return listLocaleMetadatas()
+function listLocaleIds(includeDeprecatedIds = false) {
+  let list = listLocaleMetadatas()
     .map(meta => meta.id);
+
+  if (includeDeprecatedIds) {
+    list = list.concat(DEPRECATED_LOCALE_IDS);
+  }
+
+  return list;
+}
+
+function migrateDeprecatedLocaleId(localeId) {
+  const toValue = MIGRATE_LOCALE_MAP[localeId];
+
+  if (toValue != null) {
+    return toValue;
+  }
+
+  return localeId;
 }
 
 module.exports = {
   listLocaleMetadatas,
   listLocaleIds,
+  migrateDeprecatedLocaleId,
 };
