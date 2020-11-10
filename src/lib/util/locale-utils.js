@@ -2,7 +2,6 @@ const fs = require('fs');
 
 const helpers = require('./helpers');
 
-const DEPRECATED_LOCALE_IDS = ['en', 'ja'];
 const MIGRATE_LOCALE_MAP = {
   en: 'en_US',
   ja: 'ja_JP',
