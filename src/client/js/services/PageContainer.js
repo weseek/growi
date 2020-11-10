@@ -134,7 +134,7 @@ export default class PageContainer extends Container {
   }
 
 
-  get editablePages() {
+  get isEditable() {
     const { appContainer } = window;
     const { currentUser } = appContainer;
     const {
