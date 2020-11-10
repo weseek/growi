@@ -138,7 +138,8 @@ ul.pagination {
     button.page-link {
       color: color-yiq($primary);
       background-color: $primary;
-      &:hover {
+      &:hover,
+      &:focus {
         color: color-yiq($primary);
         background-color: $primary;
       }
