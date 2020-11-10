@@ -177,7 +177,7 @@ export default class NavigationContainer extends Container {
 
   openPageCreateModal() {
     if (this.appContainer.currentUser == null) {
-      logger.warn('Please login or signup to create page.');
+      logger.warn('Please login or signup to create a new page.');
       return;
     }
     this.setState({ isPageCreateModalShown: true });
