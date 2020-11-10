@@ -55,7 +55,7 @@ class PasswordSettings extends React.Component {
       });
       this.setState({ oldPassword: '', newPassword: '', newPasswordConfirm: '' });
       await personalContainer.retrievePersonalData();
-      toastSuccess(t('toaster.update_successed', { target: t('personal_settings.update_password') }));
+      toastSuccess(t('toaster.update_successed', { target: t('Password') }));
     }
     catch (err) {
       toastError(err);
