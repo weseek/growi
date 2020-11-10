@@ -14,6 +14,7 @@ $bgcolor-table-hover: lighten($bgcolor-table, 7.5%) !default;
 $bgcolor-sidebar-list-group: $bgcolor-list !default;
 $color-tags: #949494 !default;
 $bgcolor-tags: $dark !default;
+$border-color-toc: $gray-300 !default;
 
 // override bootstrap variables
 $border-color: $gray-500;
@@ -368,11 +369,11 @@ ul.pagination {
 */
 .grw-side-contents-sticky-container {
   .grw-border-vr {
-    border-color: $border-color;
+    border-color: $border-color-toc;
   }
 
   .revision-toc {
-    border-color: $border-color;
+    border-color: $border-color-toc;
   }
 }
 
