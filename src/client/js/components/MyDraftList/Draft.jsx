@@ -104,10 +104,9 @@ class Draft extends React.Component {
   }
 
   renderControls() {
-    const { t, path } = this.props;
+    const { t, path, index } = this.props;
 
-    const encodedPath = path.replace(/\//g, '-');
-    const tooltipTargetId = `draft-copied-tooltip_${encodedPath}`;
+    const tooltipTargetId = `draft-copied-tooltip_${index}`;
 
     return (
       <div className="icon-container">
@@ -115,7 +114,7 @@ class Draft extends React.Component {
           ? null
           : (
             <a
-              href={`${this.props.path}#edit`}
+              href={`${path}#edit`}
               target="_blank"
               rel="noopener noreferrer"
               data-toggle="tooltip"
@@ -202,6 +201,7 @@ Draft.propTypes = {
   t: PropTypes.func.isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
+  index: PropTypes.number.isRequired,
   path: PropTypes.string.isRequired,
   markdown: PropTypes.string.isRequired,
   isExist: PropTypes.bool.isRequired,

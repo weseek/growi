@@ -1,5 +1,10 @@
 # CHANGES
 
+## v4.1.11-RC
+
+* Improvement: Generating draft DOM id strategy
+* Fix: GROWI version downgrade causes a validation error for user.lang
+
 ## v4.1.10
 
 * Fix: Make listing users API secure
