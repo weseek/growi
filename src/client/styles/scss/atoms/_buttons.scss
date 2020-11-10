@@ -91,3 +91,13 @@
   background-color: transparent;
   transition: 0.3s;
 }
+
+//disabled button (bootstrap 4 default)
+//using old disabled button, see _override-bootstrap.scss
+.grw-btn-disabled-default {
+  .btn.disabled,
+  .btn[disabled],
+  fieldset[disabled] .btn {
+    pointer-events: none;
+  }
+}

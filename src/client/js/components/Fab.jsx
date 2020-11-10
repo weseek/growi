@@ -17,13 +17,16 @@ const Fab = (props) => {
   const { currentUser } = appContainer;
 
   const [animateClasses, setAnimateClasses] = useState('invisible');
+  const [buttonClasses, setButtonClasses] = useState('invisible');
 
 
   const stickyChangeHandler = useCallback((event) => {
     logger.debug('StickyEvents.CHANGE detected');
 
-    const classes = event.detail.isSticky ? 'animated fadeInUp faster' : 'animated fadeOut faster not-push-btn';
+    const classes = event.detail.isSticky ? 'animated fadeInUp faster' : 'animated fadeOut faster';
+    const buttonHide = event.detail.isSticky ? null : 'disabled';
     setAnimateClasses(classes);
+    setButtonClasses(buttonHide);
   }, []);
 
   // setup effect by sticky event
@@ -44,10 +47,10 @@ const Fab = (props) => {
   function renderPageCreateButton() {
     return (
       <>
-        <div className={`rounded-circle position-absolute ${animateClasses}`} style={{ bottom: '2.3rem', right: '4rem' }}>
+        <div className={`rounded-circle position-absolute ${animateClasses} grw-btn-disabled-default`} style={{ bottom: '2.3rem', right: '4rem' }}>
           <button
             type="button"
-            className="btn btn-lg btn-create-page btn-primary rounded-circle p-0 waves-effect waves-light"
+            className={`btn btn-lg btn-create-page btn-primary rounded-circle p-0 waves-effect waves-light ${buttonClasses}`}
             onClick={navigationContainer.openPageCreateModal}
           >
             <CreatePageIcon />
@@ -60,8 +63,12 @@ const Fab = (props) => {
   return (
     <div className="grw-fab d-none d-md-block">
       {currentUser != null && renderPageCreateButton()}
-      <div className={`rounded-circle position-absolute ${animateClasses}`} style={{ bottom: 0, right: 0 }}>
-        <button type="button" className="btn btn-light btn-scroll-to-top rounded-circle p-0" onClick={() => navigationContainer.smoothScrollIntoView()}>
+      <div className={`rounded-circle position-absolute ${animateClasses} grw-btn-disabled-default`} style={{ bottom: 0, right: 0 }}>
+        <button
+          type="button"
+          className={`btn btn-light btn-scroll-to-top rounded-circle p-0 ${buttonClasses}`}
+          onClick={() => navigationContainer.smoothScrollIntoView()}
+        >
           <ReturnTopIcon />
         </button>
       </div>
