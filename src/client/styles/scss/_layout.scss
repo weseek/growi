@@ -55,10 +55,6 @@ body {
   bottom: 3rem;
   z-index: $zindex-fixed;
 
-  .not-push-btn {
-    pointer-events: none;
-  }
-
   transition: all 200ms linear;
 
   .btn-create-page {
