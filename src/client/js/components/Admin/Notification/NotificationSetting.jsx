@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import loggerFactory from '@alias/logger';
@@ -10,7 +10,11 @@ import { withLoadingSppiner } from '../../SuspenseUtils';
 
 import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
 
-import NotificationSettingContents from './NotificationSettingContents';
+import CustomNavigation from '../../CustomNavigation';
+
+import SlackAppConfiguration from './SlackAppConfiguration';
+import UserTriggerNotification from './UserTriggerNotification';
+import GlobalNotification from './GlobalNotification';
 
 const logger = loggerFactory('growi:NotificationSetting');
 
@@ -36,7 +40,30 @@ function NotificationSetting(props) {
     throw new Error(`${retrieveErrors.length} errors occured`);
   }
 
-  return <NotificationSettingContents />;
+  const navTabMapping = useMemo(() => {
+    return {
+      slack_configuration: {
+        Icon: () => <i className="icon-settings" />,
+        Content: SlackAppConfiguration,
+        i18n: 'Slack configuration',
+        index: 0,
+      },
+      user_trigger_notification: {
+        Icon: () => <i className="icon-settings" />,
+        Content: UserTriggerNotification,
+        i18n: 'User trigger notification',
+        index: 1,
+      },
+      global_notification: {
+        Icon: () => <i className="icon-settings" />,
+        Content: GlobalNotification,
+        i18n: 'Global notification',
+        index: 2,
+      },
+    };
+  }, []);
+
+  return <CustomNavigation navTabMapping={navTabMapping} />;
 }
 
 const NotificationSettingWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(NotificationSetting), [AdminNotificationContainer]);
