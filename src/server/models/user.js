@@ -11,7 +11,7 @@ const md5 = require('md5');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 const crypto = require('crypto');
 
-const { listLocaleIds } = require('@commons/util/locale-utils');
+const { listLocaleIds, migrateDeprecatedLocaleId } = require('@commons/util/locale-utils');
 
 module.exports = function(crowi) {
   const STATUS_REGISTERED = 1;
@@ -53,7 +53,7 @@ module.exports = function(crowi) {
     apiToken: { type: String, index: true },
     lang: {
       type: String,
-      enum: listLocaleIds(),
+      enum: listLocaleIds(true),
       default: 'en_US',
     },
     status: {
@@ -71,6 +71,8 @@ module.exports = function(crowi) {
         if (!doc.isEmailPublished) {
           delete ret.email;
         }
+        // migrate deperecated lang
+        doc.lang = migrateDeprecatedLocaleId(doc.lang);
         return ret;
       },
     },
