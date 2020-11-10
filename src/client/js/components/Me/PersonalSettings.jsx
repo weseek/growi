@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import CustomNavigation from '../CustomNavigation';
@@ -13,12 +13,12 @@ import ShareAltIcon from '../Icons/ShareAltIcon';
 import LockIcon from '../Icons/LooockIcon';
 import PaperPlaneIcon from '../Icons/PaperPlaneIcon';
 
-class PersonalSettings extends React.Component {
+const PersonalSettings = (props) => {
 
-  render() {
-    const { t } = this.props;
+  const { t } = props;
 
-    const navTabMapping = {
+  const navTabMapping = useMemo(() => {
+    return {
       user_infomation: {
         Icon: UserIcon,
         Content: UserSettings,
@@ -44,14 +44,14 @@ class PersonalSettings extends React.Component {
         index: 3,
       },
     };
+  }, [t]);
 
 
-    return (
-      <CustomNavigation navTabMapping={navTabMapping} />
-    );
-  }
+  return (
+    <CustomNavigation navTabMapping={navTabMapping} />
+  );
 
-}
+};
 
 PersonalSettings.propTypes = {
   t: PropTypes.func.isRequired, // i18next
