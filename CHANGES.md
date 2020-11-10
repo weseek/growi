@@ -1,6 +1,10 @@
 # CHANGES
 
-## v4.1.11-RC
+## v4.1.12
+
+* 
+
+## v4.1.11
 
 * Improvement: Generating draft DOM id strategy
 * Fix: GROWI version downgrade causes a validation error for user.lang
