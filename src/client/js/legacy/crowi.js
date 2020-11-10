@@ -200,8 +200,9 @@ $(() => {
 });
 
 window.addEventListener('load', (e) => {
-  const { appContainer, pageContainer } = window;
-  const isEditable = pageContainer;
+  const { appContainer } = window;
+  const pageContainer = appContainer.getContainer('PageContainer');
+  const { isEditable } = pageContainer;
 
   // hash on page
   if (window.location.hash) {
