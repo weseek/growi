@@ -48,7 +48,10 @@ class PersonalSettings extends React.Component {
 
     return (
       <>
-        <h1 className="title">{t('User Settings')}</h1>
+        <header className="py-3">
+          <h1 className="title">{ t('User Settings') }</h1>
+        </header>
+        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
         <CustomNavigation navTabMapping={navTabMapping} tabContentClasses={['px-0']} />
       </>
     );
