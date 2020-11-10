@@ -8,11 +8,6 @@ import PasswordSettings from './PasswordSettings';
 import ExternalAccountLinkedMe from './ExternalAccountLinkedMe';
 import ApiSettings from './ApiSettings';
 
-// import UserIcon from '../Icons/UserIcon';
-// import ShareAltIcon from '../Icons/ShareAltIcon';
-// import LockIcon from '../Icons/LooockIcon';
-// import PaperPlaneIcon from '../Icons/PaperPlaneIcon';
-
 const PersonalSettings = (props) => {
 
   const { t } = props;
