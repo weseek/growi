@@ -29,15 +29,9 @@ function listLocaleMetadatas() {
 /**
  * List locales IDs (=subdir names)
  */
-function listLocaleIds(includeDeprecatedIds = false) {
-  let list = listLocaleMetadatas()
+function listLocaleIds() {
+  return listLocaleMetadatas()
     .map(meta => meta.id);
-
-  if (includeDeprecatedIds) {
-    list = list.concat(DEPRECATED_LOCALE_IDS);
-  }
-
-  return list;
 }
 
 function migrateDeprecatedLocaleId(localeId) {
