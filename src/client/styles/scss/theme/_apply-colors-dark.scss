@@ -14,7 +14,7 @@ $bgcolor-table-hover: lighten($bgcolor-table, 7.5%) !default;
 $bgcolor-sidebar-list-group: $bgcolor-list !default;
 $color-tags: #949494 !default;
 $bgcolor-tags: $dark !default;
-$border-color-toc: $gray-300 !default;
+$border-color-toc: $gray-500 !default;
 
 // override bootstrap variables
 $border-color: $gray-500;
@@ -38,7 +38,6 @@ select.form-control,
 textarea.form-control {
   color: lighten($color-global, 30%);
   background-color: darken($bgcolor-global, 5%);
-  border-color: $border-color;
   &:focus {
     background-color: $bgcolor-global;
   }
@@ -66,7 +65,7 @@ textarea.form-control {
 }
 
 .input-group input {
-  border-color: $border-color;
+  border-color: $secondary;
 }
 
 /*
@@ -356,13 +355,6 @@ ul.pagination {
 }
 
 /*
- * admin settings
- */
-.admin-setting-header {
-  border-color: $border-color;
-}
-
-/*
 * grw-side-contents
 */
 .grw-side-contents-sticky-container {
@@ -373,13 +365,6 @@ ul.pagination {
   .revision-toc {
     border-color: $border-color-toc;
   }
-}
-
-/*
- * modal
- */
-.grw-modal-head {
-  border-color: $border-color;
 }
 
 /*
