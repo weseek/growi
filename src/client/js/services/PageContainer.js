@@ -106,7 +106,7 @@ export default class PageContainer extends Container {
 
     const { currentUser } = this.appContainer;
 
-    // skip if shared page or new page
+    // retrieve information when the page exists and the user is logged in
     if (currentUser != null && this.state.pageId != null) {
       this.retrieveSeenUsers();
       this.retrieveLikeInfo();
