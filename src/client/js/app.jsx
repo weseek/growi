@@ -89,7 +89,7 @@ Object.assign(componentMappings, {
 
   'not-found-alert': <NotFoundAlert
     onPageCreateClicked={navigationContainer.setEditorMode}
-    isUser={appContainer.currentUser}
+    isGuestUserMode={appContainer.currentUser == null}
     isHidden={pageContainer.state.isForbidden || pageContainer.state.isNotCreatable || pageContainer.state.isTrashPage}
   />,
 
