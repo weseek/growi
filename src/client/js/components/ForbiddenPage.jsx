@@ -30,7 +30,8 @@ const ForbiddenPage = (props) => {
   );
 
 };
-ForbiddenPage.PropTypes = {
+
+ForbiddenPage.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
