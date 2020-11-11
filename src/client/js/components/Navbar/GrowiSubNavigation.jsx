@@ -56,7 +56,6 @@ const PagePathNav = ({ pageId, pagePath }) => {
           <RevisionPathControls
             pageId={pageId}
             pagePath={pagePath}
-            // isPageForbidden={isPageForbidden}
           />
         </div>
       </span>
@@ -100,7 +99,7 @@ const GrowiSubNavigation = (props) => {
   const { isDrawerMode, editorMode } = navigationContainer.state;
   const {
     pageId, path, createdAt, creator, updatedAt, revisionAuthor,
-    /* isForbidden: isPageForbidden, */ pageUser, isNotCreatable, shareLinkId,
+    pageUser, isNotCreatable, shareLinkId,
   } = pageContainer.state;
 
   const { currentUser } = appContainer;
@@ -127,12 +126,12 @@ const GrowiSubNavigation = (props) => {
         ) }
 
         <div className="grw-path-nav-container">
-          { !isCompactMode && !isTagLabelHidden /* && !isPageForbidden  */&& !isUserPage && !isSharedPage && (
+          { !isCompactMode && !isTagLabelHidden && !isUserPage && !isSharedPage && (
             <div className="mb-2">
               <TagLabels editorMode={editorMode} />
             </div>
           ) }
-          <PagePathNav pageId={pageId} pagePath={path}/*  isPageForbidden={isPageForbidden} */ />
+          <PagePathNav pageId={pageId} pagePath={path} />
         </div>
       </div>
 
@@ -142,7 +141,7 @@ const GrowiSubNavigation = (props) => {
         <div className="d-flex flex-column align-items-end">
           <div className="d-flex">
             { !isPageInTrash && !isPageNotFound && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
-            { !isPageNotFound/*  && !isPageForbidden  */ && <PageManagement isCompactMode={isCompactMode} /> }
+            { !isPageNotFound && <PageManagement isCompactMode={isCompactMode} /> }
           </div>
           <div className="mt-2">
             {!isNotCreatable && !isPageInTrash && (
