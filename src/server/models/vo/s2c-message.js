@@ -8,11 +8,22 @@ class S2cMessagePageUpdated {
   constructor(page, user) {
     const serializedPage = serializePageSecurely(page);
 
-    this.pageId = serializedPage._id;
-    this.revisionId = serializedPage.revision;
-    this.revisionIdHackmdSynced = serializedPage.revisionHackmdSynced;
-    this.hasDraftOnHackmd = serializedPage.hasDraftOnHackmd;
+    const {
+      _id, revision, revisionHackmdSynced, hasDraftOnHackmd,
+    } = serializedPage;
 
+    if (_id != null) {
+      this.pageId = _id;
+    }
+    if (revision != null) {
+      this.revisionId = revision;
+    }
+    if (revisionHackmdSynced != null) {
+      this.revisionIdHackmdSynced = revisionHackmdSynced;
+    }
+    if (hasDraftOnHackmd != null) {
+      this.hasDraftOnHackmd = hasDraftOnHackmd;
+    }
     if (user != null) {
       this.lastUpdateUsername = user.name;
     }
