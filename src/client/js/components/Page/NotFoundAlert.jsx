@@ -22,7 +22,7 @@ const NotFoundAlert = (props) => {
     <div className="border border-info p-3">
       <div
         className="col-md-12 p-0"
-        id="hoge"
+        id="create-page-btn-wrapper-for-tooltip"
       >
         <h2 className="text-info lead">
           <i className="icon-info pr-2 font-weight-bold" aria-hidden="true"></i>
@@ -38,7 +38,7 @@ const NotFoundAlert = (props) => {
         </button>
 
         {!isUser && (
-        <UncontrolledTooltip placement="top" target="hoge" fade={false}>
+        <UncontrolledTooltip placement="top" target="create-page-btn-wrapper-for-tooltip" fade={false}>
           {t('Not available for guest')}
         </UncontrolledTooltip>
       )}
