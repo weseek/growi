@@ -31,12 +31,32 @@ describe('healthcheck', () => {
       crowi.searchService = { isConfigured: false }
       crowi.models.Config = { findOne: () => { throw Error('connection error') } };
 
-      const response = await request(app).get("/").query({ connectToMiddlewares: true,  })
+      const response = await request(app).get("/").query({ connectToMiddlewares: true })
 
       expect(response.statusCode).toBe(200);
       expect(response.body.errors[0].message).toBe('MongoDB is not connectable - connection error');
       expect(response.body.errors[0].code).toBe('healthcheck-mongodb-unhealthy');
-      expect(response.body.info).toStrictEqual({});
+    })
+
+    test('add healthcheck-search-unhealthy to errors when unhealthy search', async() => {
+      crowi.searchService = { isConfigured: true, getInfoForHealth: () => { throw Error('unhealthy search') }}
+      crowi.models.Config = { findOne: () => {} };
+
+      const response = await request(app).get("/").query({ connectToMiddlewares: true })
+
+      expect(response.statusCode).toBe(200);
+      expect(response.body.errors[0].message).toBe('The Search Service is not connectable - unhealthy search');
+      expect(response.body.errors[0].code).toBe('healthcheck-search-unhealthy');
+    })
+
+    test('http status is 503 when checkMiddlewaresStrictly is true', async() => {
+      crowi.searchService = { isConfigured: true, getInfoForHealth: () => { throw Error('unhealthy search') }}
+      crowi.models.Config = { findOne: () => { throw Error('connection error') } };
+
+      const response = await request(app).get("/").query({ checkMiddlewaresStrictly: true })
+
+      expect(response.statusCode).toBe(503);
+      expect(response.body.errors.length).toBeGreaterThan(0);
     })
   })
 });
