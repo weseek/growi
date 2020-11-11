@@ -10,9 +10,11 @@ describe('healthcheck', () => {
     crowi = await getInstance();
     app = express();
     // mocking apiv3Err
-    app.response.apiv3Err = function(errors, status = 400, info) { // not arrow function
-      this.status(status).json({ errors, info });
-    };
+    app.response.apiv3Err = jest.fn(
+      function(errors, status = 400, info) { // not arrow function
+        this.status(status).json({ errors, info });
+      }
+    );
 
     app.use('/', require("~/server/routes/apiv3/healthcheck")(crowi));
   });
@@ -20,7 +22,9 @@ describe('healthcheck', () => {
   describe('/', () => {
     test('respond 200 when no set connectToMiddlewares and checkMiddlewaresStrictly', async() => {
       const response = await request(app).get("/")
+      expect(app.response.apiv3Err).not.toHaveBeenCalled();
       expect(response.statusCode).toBe(200);
+      expect(response.body.status).toBe('OK');
     })
 
     test('add healthcheck-mongodb-unhealthy to errors when can not connnect to MongoDB', async() => {
