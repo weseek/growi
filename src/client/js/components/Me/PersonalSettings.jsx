@@ -44,17 +44,7 @@ const PersonalSettings = (props) => {
 
   return (
     <>
-      <header className="py-3">
-        <div className="container-fluid">
-          <h1 className="title">{ t('User Settings') }</h1>
-        </div>
-      </header>
-      <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
-      <div id="main" className="main">
-        <div id="content-main" className="content-main container-lg">
-          <CustomNavigation navTabMapping={navTabMapping} tabContentClasses={['px-0']} />
-        </div>
-      </div>
+      <CustomNavigation navTabMapping={navTabMapping} tabContentClasses={['px-0']} />
     </>
   );
 
