@@ -16,15 +16,6 @@ const ForbiddenPage = (props) => {
         </div>
       </div>
 
-      <div
-        id="content-main"
-        className="content-main page-list"
-        data-path="{{ encodeURI(path) }}"
-        data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
-        data-page-is-forbidden="true"
-        data-page-is-not-creatable="true"
-      >
-      </div>
 
       <div className="row row-alerts d-edit-none">
         <div className="col-sm-12">

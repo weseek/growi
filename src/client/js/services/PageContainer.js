@@ -61,7 +61,6 @@ export default class PageContainer extends Container {
       createdAt: mainContent.getAttribute('data-page-created-at'),
       updatedAt: mainContent.getAttribute('data-page-updated-at'),
       isTrashPage: isTrashPage(path),
-      isForbidden: JSON.parse(mainContent.getAttribute('data-page-is-forbidden')),
       isDeleted: JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
       isDeletable: JSON.parse(mainContent.getAttribute('data-page-is-deletable')),
       isNotCreatable: JSON.parse(mainContent.getAttribute('data-page-is-not-creatable')),
