@@ -134,7 +134,6 @@ function SecurityManagementContents(props) {
             {activeComponents.has('passport_facebook') && <FacebookSecuritySetting />}
           </TabPane>
         </TabContent>
-
       </div>
     </Fragment>
   );
