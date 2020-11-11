@@ -43,9 +43,7 @@ const PersonalSettings = (props) => {
 
 
   return (
-    <>
-      <CustomNavigation navTabMapping={navTabMapping} tabContentClasses={['px-0']} />
-    </>
+    <CustomNavigation navTabMapping={navTabMapping} tabContentClasses={['px-0']} />
   );
 
 };
