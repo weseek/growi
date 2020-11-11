@@ -38,9 +38,7 @@ class ApiSettings extends React.Component {
     return (
       <React.Fragment>
 
-        <div className="container-fluid my-4">
-          <h2 className="border-bottom">{ t('API Token Settings') }</h2>
-        </div>
+        <h2 className="border-bottom my-4">{ t('API Token Settings') }</h2>
 
         <div className="row mb-3">
           <label htmlFor="apiToken" className="col-md-3 text-md-right">{t('Current API Token')}</label>
