@@ -38,7 +38,7 @@ const NotFoundAlert = (props) => {
         </button>
 
         {isGuestUserMode && (
-        <UncontrolledTooltip placement="top" target="create-page-btn-wrapper-for-tooltip" fade={false}>
+        <UncontrolledTooltip placement="bottom" target="create-page-btn-wrapper-for-tooltip" fade={false}>
           {t('Not available for guest')}
         </UncontrolledTooltip>
       )}
