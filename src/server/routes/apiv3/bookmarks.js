@@ -3,7 +3,7 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:bookmarks'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
-const { body, query } = require('express-validator');
+const { body, query, param } = require('express-validator');
 
 const router = express.Router();
 
@@ -176,12 +176,13 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Bookmark'
    */
-  validator.myBookmarkList = [
+  validator.userBookmarkList = [
+    param('userId').isMongoId().withMessage('userId is required'),
     query('page').isInt({ min: 1 }),
     query('limit').if(value => value != null).isInt({ max: 300 }).withMessage('You should set less than 300 or not to set limit.'),
   ];
 
-  router.get('/:userId', accessTokenParser, loginRequiredStrictly, validator.myBookmarkList, apiV3FormValidator, async(req, res) => {
+  router.get('/:userId', accessTokenParser, loginRequired, validator.userBookmarkList, apiV3FormValidator, async(req, res) => {
     const { userId } = req.params;
     const page = req.query.page;
     const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM') || 30;
