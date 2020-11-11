@@ -7,15 +7,14 @@ describe('healthcheck', () => {
   let crowi;
   let app;
 
-  beforeEach(async(done) => {
+  beforeAll(async() => {
     crowi = await getInstance();
     app = express();
     app.use('/', require("~/server/routes/apiv3/healthcheck")(crowi));
-    done();
   });
 
   describe('/', () => {
-    test('hoge', async() => {
+    test('respond 200 when no set connectToMiddlewares and checkMiddlewaresStrictly', async() => {
       const response = await request(app).get("/")
       expect(response.statusCode).toBe(200);
     })
