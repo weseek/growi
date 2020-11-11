@@ -11,7 +11,7 @@ const ForbiddenPage = (props) => {
         <div className="col-lg-12">
           <h2 className="text-muted">
             <i className="icon-ban" aria-hidden="true"></i>
-            Forbidden
+            {t('forbidden')}
           </h2>
         </div>
       </div>

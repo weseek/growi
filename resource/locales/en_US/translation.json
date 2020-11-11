@@ -3,6 +3,7 @@
   "view": "View",
   "Edit": "Edit",
   "Delete": "Delete",
+  "forbidden": "Forbidden",
   "delete_all": "Delete all",
   "Duplicate": "Duplicate",
   "Copy": "Copy",
