@@ -22,9 +22,22 @@ describe('healthcheck', () => {
   describe('/', () => {
     test('respond 200 when no set connectToMiddlewares and checkMiddlewaresStrictly', async() => {
       const response = await request(app).get("/")
+
       expect(app.response.apiv3Err).not.toHaveBeenCalled();
       expect(response.statusCode).toBe(200);
       expect(response.body.status).toBe('OK');
+    })
+
+    test('respond 200 when mongo and search are healthy', async() => {
+      crowi.searchService = { isConfigured: true, getInfoForHealth: () => { return 'OK'} }
+      crowi.models.Config = { findOne: () => {} };
+
+      const response = await request(app).get("/").query({ connectToMiddlewares: true })
+
+      expect(app.response.apiv3Err).not.toHaveBeenCalled();
+      expect(response.statusCode).toBe(200);
+      expect(response.body.info.mongo).toBe('OK');
+      expect(response.body.info.searchInfo).toBe('OK');
     })
 
     test('add healthcheck-mongodb-unhealthy to errors when can not connnect to MongoDB', async() => {
