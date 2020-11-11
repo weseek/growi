@@ -23,7 +23,7 @@ services:
 
     volumes:
       - ..:/workspace/growi:delegated
-      - node-modules:/workspace/growi/node_modules
+      - node_modules:/workspace/growi/node_modules
       - ../../growi-docker-compose:/workspace/growi-docker-compose:delegated
       - ../../node_modules:/workspace/node_modules:delegated
 
@@ -80,4 +80,4 @@ services:
     volumes:
       - /files/sqlite
 volumes:
-  node-modules:
+  node_modules:
