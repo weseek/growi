@@ -22,13 +22,13 @@ const NotFoundAlert = (props) => {
     <div className="border border-info p-3">
       <div
         className="col-md-12 p-0"
-        id="create-page-btn-wrapper-for-tooltip"
       >
         <h2 className="text-info lead">
           <i className="icon-info pr-2 font-weight-bold" aria-hidden="true"></i>
           {t('not_found_page.page_not_exist_alert')}
         </h2>
         <button
+          id="create-page-btn-wrapper-for-tooltip"
           type="button"
           className={`m-1 pl-3 pr-3 btn bg-info text-white ${isGuestUserMode && 'disabled'}`}
           onClick={() => { clickHandler('edit') }}
