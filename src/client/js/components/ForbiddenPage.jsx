@@ -40,7 +40,7 @@ const ForbiddenPage = (props) => {
           </p>
         </div>
       </div>
-      <div className="mt-5 d-edit-none">
+      <div className="mt-5">
         <CustomNavigation navTabMapping={navTabMapping} />
       </div>
     </>
