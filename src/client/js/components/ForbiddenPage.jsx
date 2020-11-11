@@ -20,7 +20,7 @@ const ForbiddenPage = (props) => {
       <div className="row row-alerts d-edit-none">
         <div className="col-sm-12">
           <p className="alert alert-primary py-3 px-4">
-            <i className="icon-fw icon-lock" aria-hidden="true"></i> Browsing of this page is restricted
+            <i className="icon-fw icon-lock" aria-hidden="true"></i> {t('Browsing of this page is restricted')}
           </p>
         </div>
       </div>
