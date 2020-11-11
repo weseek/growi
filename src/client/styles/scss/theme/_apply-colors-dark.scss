@@ -14,14 +14,16 @@ $bgcolor-table-hover: lighten($bgcolor-table, 7.5%) !default;
 $bgcolor-sidebar-list-group: $bgcolor-list !default;
 $color-tags: #949494 !default;
 $bgcolor-tags: $dark !default;
+$border-color-global: $gray-500 !default;
+$border-color-toc: $border-color-global !default;
 
 // override bootstrap variables
-$border-color: $gray-700;
 $table-dark-color: $color-table;
 $table-dark-bg: $bgcolor-table;
 $table-dark-border-color: $border-color-table;
 $table-dark-hover-color: $color-table-hover;
 $table-dark-hover-bg: $bgcolor-table-hover;
+$border-color: $border-color-global;
 
 @import 'reboot-bootstrap-border-colors';
 @import 'reboot-bootstrap-tables';
@@ -37,6 +39,7 @@ select.form-control,
 textarea.form-control {
   color: lighten($color-global, 30%);
   background-color: darken($bgcolor-global, 5%);
+  border-color: $border-color-global;
   &:focus {
     background-color: $bgcolor-global;
   }
@@ -64,7 +67,7 @@ textarea.form-control {
 }
 
 .input-group input {
-  border-color: $secondary;
+  border-color: $border-color-global;
 }
 
 /*
@@ -255,18 +258,6 @@ ul.pagination {
 }
 
 /*
- * GROWI on-edit
- */
-body.on-edit {
-  .grw-editor-navbar-bottom {
-    background-color: $bgcolor-global;
-    #slack-mark-black {
-      display: none;
-    }
-  }
-}
-
-/*
  * Popover
  */
 .popover {
@@ -282,6 +273,9 @@ body.on-edit {
   }
 }
 
+/*
+ * Slack
+ */
 .grw-slack-notification {
   background-color: transparent;
   $color-slack: #4b144c;
@@ -306,22 +300,21 @@ body.on-edit {
       background-image: url(/images/icons/slack/slack-logo-dark-on.svg);
     }
   }
-}
-
-.grw-slack-logo svg {
-  fill: #dd80de;
-}
-
-.grw-btn-slack {
-  background-color: black;
-  &:focus,
-  &:hover {
-    background-color: black;
+  .grw-slack-logo svg {
+    fill: #dd80de;
   }
-}
 
-.grw-btn-slack-triangle {
-  color: $secondary;
+  .grw-btn-slack {
+    background-color: black;
+    &:focus,
+    &:hover {
+      background-color: black;
+    }
+  }
+
+  .grw-btn-slack-triangle {
+    color: $secondary;
+  }
 }
 
 /*
@@ -360,5 +353,43 @@ body.on-edit {
   .grw-tag-label {
     color: $color-tags;
     background-color: $bgcolor-tags;
+  }
+}
+
+/*
+ * admin settings
+ */
+.admin-setting-header {
+  border-color: $border-color-global;
+}
+
+/*
+* grw-side-contents
+*/
+.grw-side-contents-sticky-container {
+  .grw-border-vr {
+    border-color: $border-color-toc;
+  }
+
+  .revision-toc {
+    border-color: $border-color-toc;
+  }
+}
+
+/*
+ * modal
+ */
+.grw-modal-head {
+  border-color: $border-color-global;
+}
+
+/*
+ * GROWI user page
+ */
+.grw-page-list-m {
+  .grw-page-list-title-m {
+    svg {
+      fill: $color-global;
+    }
   }
 }

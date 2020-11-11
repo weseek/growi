@@ -1,6 +1,8 @@
-import React, { Fragment, useMemo } from 'react';
+import React, { Fragment, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+
+import { TabContent, TabPane } from 'reactstrap';
 
 import LdapSecuritySetting from './LdapSecuritySetting';
 import LocalSecuritySetting from './LocalSecuritySetting';
@@ -14,64 +16,63 @@ import TwitterSecuritySetting from './TwitterSecuritySetting';
 import FacebookSecuritySetting from './FacebookSecuritySetting';
 import ShareLinkSetting from './ShareLinkSetting';
 
-import CustomNavigation from '../../CustomNavigation';
+import { CustomNav } from '../../CustomNavigation';
 
 function SecurityManagementContents(props) {
   const { t } = props;
+
+  const [activeTab, setActiveTab] = useState('passport_local');
+  const [activeComponents, setActiveComponents] = useState(new Set(['passport_local']));
+
+  const switchActiveTab = (selectedTab) => {
+    setActiveTab(selectedTab);
+    setActiveComponents(activeComponents.add(selectedTab));
+  };
 
   const navTabMapping = useMemo(() => {
     return {
       passport_local: {
         Icon: () => <i className="fa fa-users" />,
-        Content: LocalSecuritySetting,
         i18n: 'ID/Pass',
         index: 0,
       },
       passport_ldap: {
         Icon: () => <i className="fa fa-sitemap" />,
-        Content: LdapSecuritySetting,
         i18n: 'LDAP',
         index: 1,
       },
       passport_saml: {
         Icon: () => <i className="fa fa-key" />,
-        Content: SamlSecuritySetting,
         i18n: 'SAML',
         index: 2,
       },
       passport_oidc: {
         Icon: () => <i className="fa fa-key" />,
-        Content: OidcSecuritySetting,
         i18n: 'OIDC',
         index: 3,
       },
       passport_basic: {
         Icon: () => <i className="fa fa-lock" />,
-        Content: BasicSecuritySetting,
         i18n: 'BASIC',
         index: 4,
       },
       passport_google: {
         Icon: () => <i className="fa fa-google" />,
-        Content: GoogleSecuritySetting,
         i18n: 'Google',
         index: 5,
       },
       passport_github: {
         Icon: () => <i className="fa fa-github" />,
-        Content: GitHubSecuritySetting,
         i18n: 'GitHub',
         index: 6,
       },
       passport_twitter: {
         Icon: () => <i className="fa fa-twitter" />,
-        Content: TwitterSecuritySetting,
         i18n: 'Twitter',
         index: 7,
       },
       passport_facebook: {
         Icon: () => <i className="fa fa-facebook" />,
-        Content: FacebookSecuritySetting,
         i18n: '(TBD) Facebook',
         index: 8,
       },
@@ -103,7 +104,36 @@ function SecurityManagementContents(props) {
 
       <div className="auth-mechanism-configurations">
         <h2 className="border-bottom">{t('security_setting.Authentication mechanism settings')}</h2>
-        <CustomNavigation navTabMapping={navTabMapping} />
+        <CustomNav activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={switchActiveTab} hideBorderBottom />
+        <TabContent activeTab={activeTab} className="p-5">
+          <TabPane tabId="passport_local">
+            {activeComponents.has('passport_local') && <LocalSecuritySetting />}
+          </TabPane>
+          <TabPane tabId="passport_ldap">
+            {activeComponents.has('passport_ldap') && <LdapSecuritySetting />}
+          </TabPane>
+          <TabPane tabId="passport_saml">
+            {activeComponents.has('passport_saml') && <SamlSecuritySetting />}
+          </TabPane>
+          <TabPane tabId="passport_oidc">
+            {activeComponents.has('passport_oidc') && <OidcSecuritySetting />}
+          </TabPane>
+          <TabPane tabId="passport_basic">
+            {activeComponents.has('passport_basic') && <BasicSecuritySetting />}
+          </TabPane>
+          <TabPane tabId="passport_google">
+            {activeComponents.has('passport_google') && <GoogleSecuritySetting />}
+          </TabPane>
+          <TabPane tabId="passport_github">
+            {activeComponents.has('passport_github') && <GitHubSecuritySetting />}
+          </TabPane>
+          <TabPane tabId="passport_twitter">
+            {activeComponents.has('passport_twitter') && <TwitterSecuritySetting />}
+          </TabPane>
+          <TabPane tabId="passport_facebook">
+            {activeComponents.has('passport_facebook') && <FacebookSecuritySetting />}
+          </TabPane>
+        </TabContent>
       </div>
     </Fragment>
   );
