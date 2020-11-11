@@ -27,7 +27,7 @@ import PageManagement from '../Page/PageManagement';
 
 
 // eslint-disable-next-line react/prop-types
-const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
+const PagePathNav = ({ pageId, pagePath }) => {
 
   const dPagePath = new DevidedPagePath(pagePath, false, true);
 
@@ -56,7 +56,7 @@ const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
           <RevisionPathControls
             pageId={pageId}
             pagePath={pagePath}
-            isPageForbidden={isPageForbidden}
+            // isPageForbidden={isPageForbidden}
           />
         </div>
       </span>
@@ -100,7 +100,7 @@ const GrowiSubNavigation = (props) => {
   const { isDrawerMode, editorMode } = navigationContainer.state;
   const {
     pageId, path, createdAt, creator, updatedAt, revisionAuthor,
-    isForbidden: isPageForbidden, pageUser, isNotCreatable, shareLinkId,
+    /* isForbidden: isPageForbidden, */ pageUser, isNotCreatable, shareLinkId,
   } = pageContainer.state;
 
   const { currentUser } = appContainer;
@@ -127,12 +127,12 @@ const GrowiSubNavigation = (props) => {
         ) }
 
         <div className="grw-path-nav-container">
-          { !isCompactMode && !isTagLabelHidden && !isPageForbidden && !isUserPage && !isSharedPage && (
+          { !isCompactMode && !isTagLabelHidden /* && !isPageForbidden  */&& !isUserPage && !isSharedPage && (
             <div className="mb-2">
               <TagLabels editorMode={editorMode} />
             </div>
           ) }
-          <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
+          <PagePathNav pageId={pageId} pagePath={path}/*  isPageForbidden={isPageForbidden} */ />
         </div>
       </div>
 
@@ -141,11 +141,11 @@ const GrowiSubNavigation = (props) => {
 
         <div className="d-flex flex-column align-items-end">
           <div className="d-flex">
-            { !isPageInTrash && !isPageNotFound && !isPageForbidden && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
-            { !isPageNotFound && !isPageForbidden && <PageManagement isCompactMode={isCompactMode} /> }
+            { !isPageInTrash && !isPageNotFound && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
+            { !isPageNotFound/*  && !isPageForbidden  */ && <PageManagement isCompactMode={isCompactMode} /> }
           </div>
           <div className="mt-2">
-            {!isNotCreatable && !isPageInTrash && !isPageForbidden && (
+            {!isNotCreatable && !isPageInTrash && (
               <ThreeStrandedButton
                 onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
                 isBtnDisabled={currentUser == null}
@@ -156,7 +156,7 @@ const GrowiSubNavigation = (props) => {
         </div>
 
         {/* Page Authors */}
-        { (!isCompactMode && !isUserPage && !isPageNotFound && !isPageForbidden) && (
+        { (!isCompactMode && !isUserPage && !isPageNotFound) && (
           <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3">
             <li className="pb-1">
               <AuthorInfo user={creator} date={createdAt} locate="subnav" />
