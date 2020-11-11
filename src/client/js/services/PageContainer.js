@@ -142,10 +142,10 @@ export default class PageContainer extends Container {
   get isEditable() {
     const { currentUser } = this.appContainer;
     const {
-      isPageExist, isPageForbidden, isNotCreatable, isTrashPage,
+      isPageExist, isNotCreatable, isTrashPage,
     } = this.state;
 
-    if (isPageExist && (currentUser != null) && !isPageForbidden && !isNotCreatable && !isTrashPage) {
+    if (isPageExist && (currentUser != null) && !isNotCreatable && !isTrashPage) {
       return true;
     }
     return false;
