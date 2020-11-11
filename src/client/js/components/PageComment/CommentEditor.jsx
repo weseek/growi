@@ -21,6 +21,7 @@ import SlackNotification from '../SlackNotification';
 
 import CommentPreview from './CommentPreview';
 import NotAvailableForGuest from '../NotAvailableForGuest';
+import { CustomNav } from '../CustomNavigation';
 
 /**
  *
@@ -43,7 +44,7 @@ class CommentEditor extends React.Component {
       comment: this.props.commentBody || '',
       isMarkdown: true,
       html: '',
-      activeTab: 1,
+      activeTab: 'comment_editor',
       isUploadable,
       isUploadableFile,
       errorMessage: undefined,
@@ -94,7 +95,7 @@ class CommentEditor extends React.Component {
       comment: '',
       isMarkdown: true,
       html: '',
-      activeTab: 1,
+      activeTab: 'comment_editor',
       errorMessage: undefined,
     });
     // reset value
@@ -280,23 +281,39 @@ class CommentEditor extends React.Component {
       </Button>
     );
 
+    const navTabMapping = () => {
+      return {
+        comment_editor: {
+          Icon: () => <i className="icon-settings" />,
+          Content: () => (
+            <Editor
+              ref={(c) => { this.editor = c }}
+              value={this.state.comment}
+              isGfmMode={this.state.isMarkdown}
+              lineNumbers={false}
+              isMobile={appContainer.isMobile}
+              isUploadable={this.state.isUploadable}
+              isUploadableFile={this.state.isUploadableFile}
+              emojiStrategy={emojiStrategy}
+              onChange={this.updateState}
+              onUpload={this.uploadHandler}
+              onCtrlEnter={this.ctrlEnterHandler}
+            />
+          ),
+          i18n: 'Write',
+        },
+        comment_preview: {
+          Icon: () => <i className="icon-settings" />,
+          Content: () => <div className="comment-form-preview">{commentPreview}</div>,
+          i18n: 'Preview',
+        },
+      };
+    };
+
     return (
       <>
         <div className="comment-write">
-          <Nav tabs>
-            <NavItem>
-              <NavLink type="button" className={activeTab === 1 ? 'active' : ''} onClick={() => this.handleSelect(1)}>
-                    Write
-              </NavLink>
-            </NavItem>
-            { this.state.isMarkdown && (
-            <NavItem>
-              <NavLink type="button" className={activeTab === 2 ? 'active' : ''} onClick={() => this.handleSelect(2)}>
-                      Preview
-              </NavLink>
-            </NavItem>
-                ) }
-          </Nav>
+          <CustomNav activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={this.handleSelect} hideBorderBottom />
           <TabContent activeTab={activeTab}>
             <TabPane tabId={1}>
               <Editor
@@ -324,7 +341,7 @@ class CommentEditor extends React.Component {
         <div className="comment-submit">
           <div className="d-flex">
             <label className="mr-2">
-              {activeTab === 1 && (
+              {activeTab === 'comment_editor' && (
               <span className="custom-control custom-checkbox">
                 <input
                   type="checkbox"
