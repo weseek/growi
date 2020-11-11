@@ -17,6 +17,7 @@ import PageTimeline from './components/PageTimeline';
 import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
 import PageManagement from './components/Page/PageManagement';
 import ShareLinkAlert from './components/Page/ShareLinkAlert';
+import ForbiddenPage from './components/ForbiddenPage';
 import TrashPageList from './components/TrashPageList';
 import TrashPageAlert from './components/Page/TrashPageAlert';
 import NotFoundPage from './components/NotFoundPage';
@@ -86,6 +87,8 @@ Object.assign(componentMappings, {
   'trash-page-list': <TrashPageList />,
 
   'not-found-page': <NotFoundPage />,
+
+  'forbidden-page': <ForbiddenPage />,
 
   'not-found-alert': <NotFoundAlert
     onPageCreateClicked={navigationContainer.setEditorMode}
