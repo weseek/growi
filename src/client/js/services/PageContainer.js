@@ -106,9 +106,9 @@ export default class PageContainer extends Container {
 
     const { currentUser } = this.appContainer;
     // see https://dev.growi.org/5fabddf8bbeb1a0048bcb9e9
-    const isAbleToKnowAttachedPageInformation = this.state.pageId != null || !(currentUser == null && this.state.isSharedPage);
+    const isAbleToGetAttachedInformationAboutPages = this.state.pageId != null || !(currentUser == null && this.state.isSharedPage);
 
-    if (isAbleToKnowAttachedPageInformation) {
+    if (isAbleToGetAttachedInformationAboutPages) {
       this.retrieveSeenUsers();
       this.retrieveLikeInfo();
       this.retrieveBookmarkInfo();
