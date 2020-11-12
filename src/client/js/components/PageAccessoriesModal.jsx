@@ -24,7 +24,7 @@ import ExpandOrContractButton from './ExpandOrContractButton';
 
 const PageAccessoriesModal = (props) => {
   const {
-    t, pageAccessoriesContainer, onClose, isGuestUserMode,
+    t, pageAccessoriesContainer, onClose, isGuestUserMode, isSharedUserMode,
   } = props;
   const { switchActiveTab } = pageAccessoriesContainer;
   const { activeTab, activeComponents } = pageAccessoriesContainer.state;
@@ -36,16 +36,19 @@ const PageAccessoriesModal = (props) => {
         Icon: PageListIcon,
         i18n: t('page_list'),
         index: 0,
+        isLinkEnabled: v => !isSharedUserMode,
       },
-      timeline:  {
+      timeline: {
         Icon: TimeLineIcon,
         i18n: t('Timeline View'),
         index: 1,
+        isLinkEnabled: v => !isSharedUserMode,
       },
       pageHistory: {
         Icon: HistoryIcon,
         i18n: t('History'),
         index: 2,
+        isLinkEnabled: v => !isSharedUserMode,
       },
       attachment: {
         Icon: AttachmentIcon,
@@ -56,10 +59,10 @@ const PageAccessoriesModal = (props) => {
         Icon: ShareLinkIcon,
         i18n: t('share_links.share_link_management'),
         index: 4,
-        isLinkEnabled: v => !isGuestUserMode,
+        isLinkEnabled: v => !isGuestUserMode || !isSharedUserMode,
       },
     };
-  }, [t, isGuestUserMode]);
+  }, [t, isGuestUserMode, isSharedUserMode]);
 
   const closeModalHandler = useCallback(() => {
     if (onClose == null) {
@@ -135,6 +138,7 @@ PageAccessoriesModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   pageAccessoriesContainer: PropTypes.instanceOf(PageAccessoriesContainer).isRequired,
   isGuestUserMode: PropTypes.bool.isRequired,
+  isSharedUserMode: PropTypes.bool.isRequired,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
 };

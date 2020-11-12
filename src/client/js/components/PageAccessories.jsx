@@ -11,17 +11,14 @@ import PageAccessoriesContainer from '../services/PageAccessoriesContainer';
 const PageAccessories = (props) => {
   const { appContainer, pageAccessoriesContainer } = props;
   const isGuestUserMode = appContainer.currentUser == null;
-
-  // not render only when this page is shared and user is not login.
-  if (appContainer.isSharedUser && isGuestUserMode) {
-    return null;
-  }
+  const isSharedUserMode = appContainer.isSharedUser;
 
   return (
     <>
-      <PageAccessoriesModalControl isGuestUserMode={isGuestUserMode} />
+      <PageAccessoriesModalControl isGuestUserMode={isGuestUserMode} isSharedUserMode={isSharedUserMode} />
       <PageAccessoriesModal
         isGuestUserMode={isGuestUserMode}
+        isSharedUserMode={isSharedUserMode}
         isOpen={pageAccessoriesContainer.state.isPageAccessoriesModalShown}
         onClose={pageAccessoriesContainer.closePageAccessoriesModal}
       />
