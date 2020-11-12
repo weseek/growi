@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
+import { UncontrolledTooltip } from 'reactstrap';
 
 import { toastError } from '../util/apiNotification';
 import PageContainer from '../services/PageContainer';
@@ -26,25 +28,33 @@ class BookmarkButton extends React.Component {
 
 
   render() {
-    const { pageContainer } = this.props;
+    const { pageContainer, t } = this.props;
     const isUserLoggedIn = this.props.appContainer.currentUser != null;
 
     return (
-      <button
-        type="button"
-        href="#"
-        title="Bookmark"
-        onClick={this.handleClick}
-        className={`btn btn-bookmark border-0
+      <div id="bookmark-button">
+        <button
+          type="button"
+          href="#"
+          title="Bookmark"
+          onClick={this.handleClick}
+          className={`btn btn-bookmark border-0
           ${`btn-${this.props.size}`}
           ${pageContainer.state.isBookmarked ? 'active' : ''}`}
-        disabled={!isUserLoggedIn}
-      >
-        <i className="icon-star mr-3"></i>
-        <span className="total-bookmarks">
-          {pageContainer.state.sumOfBookmarks}
-        </span>
-      </button>
+          disabled={!isUserLoggedIn}
+        >
+          <i className="icon-star mr-3"></i>
+          <span className="total-bookmarks">
+            {pageContainer.state.sumOfBookmarks}
+          </span>
+        </button>
+
+        {!isUserLoggedIn && (
+        <UncontrolledTooltip placement="top" target="bookmark-button" fade={false}>
+          {t('Not available for guest')}
+        </UncontrolledTooltip>
+        )}
+      </div>
     );
   }
 
@@ -56,7 +66,7 @@ BookmarkButton.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   pageId: PropTypes.string,
-  crowi: PropTypes.object.isRequired,
+  t: PropTypes.func.isRequired,
   size: PropTypes.string,
 };
 
@@ -64,4 +74,4 @@ BookmarkButton.defaultProps = {
   size: 'md',
 };
 
-export default BookmarkButton;
+export default withTranslation()(BookmarkButton);
