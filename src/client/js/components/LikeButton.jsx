@@ -24,16 +24,9 @@ class LikeButton extends React.Component {
     }
   }
 
-  isUserLoggedIn() {
-    return this.props.appContainer.currentUserId != null;
-  }
 
   render() {
     const { pageContainer } = this.props;
-    // if guest user
-    if (!this.isUserLoggedIn()) {
-      return <div></div>;
-    }
 
     return (
       <button
