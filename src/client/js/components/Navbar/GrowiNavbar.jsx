@@ -61,7 +61,7 @@ class GrowiNavbar extends React.Component {
 
     return (
       <li className="nav-item confidential text-light">
-        <i id="confidentialTooltip" className="icon-info d-md-none" data-toggle="tooltip" title={crowi.confidential} />
+        <i id="confidentialTooltip" className="icon-info d-md-none" />
         <span className="d-none d-md-inline">
           {crowi.confidential}
         </span>
