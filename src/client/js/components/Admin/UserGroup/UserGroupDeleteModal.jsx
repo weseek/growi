@@ -100,8 +100,8 @@ class UserGroupDeleteModal extends React.Component {
     const { t } = this.props;
 
     const optoins = this.availableOptions.map((opt) => {
-      const dataContent = `<i class="icon icon-fw ${opt.iconClass} ${opt.styleClass}"></i> <span class="action-name ${opt.styleClass}">${t(opt.label)}</span>`;
-      return <option key={opt.id} value={opt.actionForPages} data-content={dataContent}>{t(opt.label)}</option>;
+      const dataContent = `<i class="icon icon-fw ${opt.iconClass} ${opt.styleClass}"></i> <span class="action-name ${opt.styleClass}">${opt.label}</span>`;
+      return <option key={opt.id} value={opt.actionForPages} data-content={dataContent}>{opt.label}</option>;
     });
 
     return (
