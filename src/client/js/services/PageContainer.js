@@ -161,7 +161,6 @@ export default class PageContainer extends Container {
    */
   get isAbleToShowPageReactionButtons() {
     const { isTrashPage, isPageExist, isSharedUser } = this.state;
-    console.log(isTrashPage, isPageExist, isSharedUser);
 
     return (!isTrashPage && isPageExist && !isSharedUser);
   }
