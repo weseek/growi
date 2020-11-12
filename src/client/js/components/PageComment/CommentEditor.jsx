@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import {
   Button,
-  TabContent, TabPane, Nav, NavItem, NavLink,
+  TabContent, TabPane,
 } from 'reactstrap';
 
 import * as toastr from 'toastr';
