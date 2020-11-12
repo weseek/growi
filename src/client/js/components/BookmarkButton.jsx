@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { toastError } from '../util/apiNotification';
-import { withUnstatedContainers } from './UnstatedUtils';
 import PageContainer from '../services/PageContainer';
+import AppContainer from '../services/AppContainer';
 
 class BookmarkButton extends React.Component {
 
@@ -50,10 +50,10 @@ class BookmarkButton extends React.Component {
 
 }
 
-const BookmarkButtonWrapper = withUnstatedContainers(BookmarkButton, [PageContainer]);
 
 BookmarkButton.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   pageId: PropTypes.string,
   crowi: PropTypes.object.isRequired,
@@ -64,4 +64,4 @@ BookmarkButton.defaultProps = {
   size: 'md',
 };
 
-export default BookmarkButtonWrapper;
+export default BookmarkButton;

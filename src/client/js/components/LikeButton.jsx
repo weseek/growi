@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { toastError } from '../util/apiNotification';
-import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 
@@ -49,10 +48,6 @@ class LikeButton extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const LikeButtonWrapper = withUnstatedContainers(LikeButton, [AppContainer, PageContainer]);
 
 LikeButton.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
@@ -61,4 +56,4 @@ LikeButton.propTypes = {
   size: PropTypes.string,
 };
 
-export default LikeButtonWrapper;
+export default LikeButton;
