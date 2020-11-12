@@ -108,16 +108,17 @@ export default class PageContainer extends Container {
     this.checkAndUpdateImageUrlCached(this.state.likerUsers);
 
     const { currentUser } = this.appContainer;
+
+    this.state.isSharedUser = this.state.shareLinkId != null && currentUser == null;
+
     // see https://dev.growi.org/5fabddf8bbeb1a0048bcb9e9
-    const isAbleToGetAttachedInformationAboutPages = this.state.pageId != null || !(currentUser == null && this.state.isSharedPage);
+    const isAbleToGetAttachedInformationAboutPages = this.state.isPageExist && !this.state.isSharedUser;
 
     if (isAbleToGetAttachedInformationAboutPages) {
       this.retrieveSeenUsers();
       this.retrieveLikeInfo();
       this.retrieveBookmarkInfo();
     }
-
-    this.state.isSharedUser = (this.state.shareLinkId != null && currentUser == null);
 
     this.setTocHtml = this.setTocHtml.bind(this);
     this.save = this.save.bind(this);
