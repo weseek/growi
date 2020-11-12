@@ -27,6 +27,7 @@ class BookmarkButton extends React.Component {
 
   render() {
     const { pageContainer } = this.props;
+    const isUserLoggedIn = this.props.crowi.currentUserId != null;
 
     return (
       <button
@@ -37,6 +38,7 @@ class BookmarkButton extends React.Component {
         className={`btn btn-bookmark border-0
           ${`btn-${this.props.size}`}
           ${pageContainer.state.isBookmarked ? 'active' : ''}`}
+        disabled={!isUserLoggedIn}
       >
         <i className="icon-star mr-3"></i>
         <span className="total-bookmarks">
