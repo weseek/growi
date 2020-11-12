@@ -157,13 +157,13 @@ Crowi.highlightSelectedSection = function(hash) {
 window.addEventListener('load', (e) => {
   const { appContainer } = window;
   const pageContainer = appContainer.getContainer('PageContainer');
-  const { isEditable } = pageContainer;
+  const { isAbleToOpenPageEditor } = pageContainer;
 
   // hash on page
   if (window.location.hash) {
     const navigationContainer = appContainer.getContainer('NavigationContainer');
 
-    if (window.location.hash === '#edit' && isEditable) {
+    if (window.location.hash === '#edit' && isAbleToOpenPageEditor) {
       navigationContainer.setEditorMode('edit');
 
       // focus
