@@ -74,7 +74,7 @@ const PageAccessoriesModalControl = (props) => {
       })}
       <div className="d-flex align-items-center">
         <span className="border-left grw-border-vr">&nbsp;</span>
-        <SeenUserInfo />
+        <SeenUserInfo disabled={isSharedUserMode} />
       </div>
     </div>
   );
