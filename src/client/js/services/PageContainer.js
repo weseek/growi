@@ -150,10 +150,7 @@ export default class PageContainer extends Container {
     const { currentUser } = this.appContainer;
     const { isPageForbidden, isNotCreatable, isTrashPage } = this.state;
 
-    if ((currentUser != null) && !isPageForbidden && !isNotCreatable && !isTrashPage) {
-      return true;
-    }
-    return false;
+    return ((currentUser != null) && !isPageForbidden && !isNotCreatable && !isTrashPage);
   }
 
   /**
