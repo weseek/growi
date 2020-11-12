@@ -14,7 +14,8 @@ $bgcolor-table-hover: rgba(black, 0.075) !default;
 $bgcolor-sidebar-list-group: $bgcolor-list !default;
 $color-tags: $gray-500 !default;
 $bgcolor-tags: $gray-200 !default;
-$border-color-toc: $gray-300 !default;
+$border-color-global: $gray-300 !default;
+$border-color-toc: $border-color-global !default;
 
 // override bootstrap variables
 $table-color: $color-table;
@@ -22,6 +23,7 @@ $table-bg: $bgcolor-table;
 $table-border-color: $border-color-table;
 $table-hover-color: $color-table-hover;
 $table-hover-bg: $bgcolor-table-hover;
+$border-color: $border-color-global;
 
 @import 'reboot-bootstrap-border-colors';
 @import 'reboot-bootstrap-tables';
@@ -312,6 +314,13 @@ $table-hover-bg: $bgcolor-table-hover;
  */
 .admin-setting-header {
   border-color: $border-color;
+}
+
+/*
+ * modal
+ */
+.grw-modal-head {
+  border-color: $border-color-global;
 }
 
 /*

@@ -24,8 +24,9 @@
       DrawioViewer.useResizeSensor = false;
       DrawioViewer.prototype.checkVisibleState = false;
 
-      // initialize
-      DrawioViewer.processElements();
+      // Set responsive option.
+      // refs: https://github.com/jgraph/drawio/blob/v13.9.1/src/main/webapp/js/diagramly/GraphViewer.js#L89-L95
+      DrawioViewer.prototype.responsive = true;
     }
   };
 </script>
