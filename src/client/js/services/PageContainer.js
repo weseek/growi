@@ -114,6 +114,8 @@ export default class PageContainer extends Container {
       this.retrieveBookmarkInfo();
     }
 
+    this.state.isSharedUser = (this.state.shareLinkId != null && currentUser == null);
+
     this.setTocHtml = this.setTocHtml.bind(this);
     this.save = this.save.bind(this);
     this.checkAndUpdateImageUrlCached = this.checkAndUpdateImageUrlCached.bind(this);
@@ -153,6 +155,17 @@ export default class PageContainer extends Container {
       return true;
     }
     return false;
+  }
+
+  /**
+   * whether to display reaction buttons
+   * ex.) like, bookmark
+   */
+  get isAbleToShowPageReactionButtons() {
+    const { isTrashPage, isPageExist, isSharedUser } = this.state;
+    console.log(isTrashPage, isPageExist, isSharedUser);
+
+    return (!isTrashPage && isPageExist && !isSharedUser);
   }
 
   /**
