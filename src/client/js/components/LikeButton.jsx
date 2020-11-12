@@ -27,6 +27,7 @@ class LikeButton extends React.Component {
 
   render() {
     const { pageContainer } = this.props;
+    const isUserLoggedIn = this.props.appContainer.currentUserId != null;
 
     return (
       <button
@@ -34,6 +35,7 @@ class LikeButton extends React.Component {
         onClick={this.handleClick}
         className={`btn btn-like border-0
         ${pageContainer.state.isLiked ? 'active' : ''}`}
+        disabled={!isUserLoggedIn}
       >
         <i className="icon-like mr-3"></i>
         <span className="total-likes">
