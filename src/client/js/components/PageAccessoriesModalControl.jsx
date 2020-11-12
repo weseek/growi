@@ -37,13 +37,20 @@ const PageAccessoriesModalControl = (props) => {
         <TimeLineIcon />
       </button>
 
-      <button
-        type="button"
-        className="btn btn-link grw-btn-page-accessories"
-        onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('pageHistory')}
-      >
-        <HistoryIcon />
-      </button>
+      <div id="history-btn-wrapper-for-tooltip">
+        <button
+          type="button"
+          className={`btn btn-link grw-btn-page-accessories ${isGuestUserMode && 'disabled'}`}
+          onClick={() => pageAccessoriesContainer.openPageAccessoriesModal('pageHistory')}
+        >
+          <HistoryIcon />
+        </button>
+      </div>
+      {isGuestUserMode && (
+        <UncontrolledTooltip placement="top" target="history-btn-wrapper-for-tooltip" fade={false}>
+          {t('Not available for guest')}
+        </UncontrolledTooltip>
+      )}
 
       <button
         type="button"
