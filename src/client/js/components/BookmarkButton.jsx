@@ -27,7 +27,7 @@ class BookmarkButton extends React.Component {
 
   render() {
     const { pageContainer } = this.props;
-    const isUserLoggedIn = this.props.crowi.currentUserId != null;
+    const isUserLoggedIn = this.props.appContainer.currentUser != null;
 
     return (
       <button
