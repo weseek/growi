@@ -48,7 +48,7 @@ const PageAccessoriesModalControl = (props) => {
         disabled: isGuestUserMode || isSharedUserMode,
       },
     ];
-  }, [t, isGuestUserMode, isSharedUserMode]);
+  }, [isGuestUserMode, isSharedUserMode]);
 
   return (
     <div className="grw-page-accessories-control d-flex align-items-center justify-content-between pb-1">
