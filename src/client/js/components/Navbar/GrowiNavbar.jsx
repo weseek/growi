@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import { Tooltip } from 'reactstrap';
+import { UncontrolledTooltip } from 'reactstrap';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import NavigationContainer from '../../services/NavigationContainer';
 import AppContainer from '../../services/AppContainer';
@@ -15,20 +15,6 @@ import PersonalDropdown from './PersonalDropdown';
 import GlobalSearch from './GlobalSearch';
 
 class GrowiNavbar extends React.Component {
-
-  constructor() {
-    super();
-    this.state = {
-      isTooltipOpen: false,
-    };
-    this.onClickTooltipHandler = this.onClickTooltipHandler.bind(this);
-  }
-
-  onClickTooltipHandler() {
-    this.setState({
-      isTooltipOpen: !this.state.isTooltipOpen,
-    });
-  }
 
   renderNavbarRight() {
     const { t, appContainer, navigationContainer } = this.props;
@@ -65,16 +51,14 @@ class GrowiNavbar extends React.Component {
         <span className="d-none d-md-inline">
           {crowi.confidential}
         </span>
-        <Tooltip
+        <UncontrolledTooltip
           placement="bottom"
           trigger="click"
-          isOpen={this.state.isTooltipOpen}
-          toggle={this.onClickTooltipHandler}
           target="confidentialTooltip"
           className="d-md-none"
         >
           {crowi.confidential}
-        </Tooltip>
+        </UncontrolledTooltip>
       </li>
     );
   }
