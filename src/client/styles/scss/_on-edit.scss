@@ -121,14 +121,20 @@ body.on-edit {
    */
   .grw-subnav {
     padding-bottom: 0;
-  }
 
-  h1 {
-    font-size: 16px;
-  }
+    h1 {
+      font-size: 16px;
+    }
 
-  .grw-taglabels-container {
-    margin-bottom: 0;
+    .grw-drawer-toggler {
+      width: 38px;
+      height: 38px;
+      font-size: 18px;
+    }
+
+    .grw-taglabels-container {
+      margin-bottom: 0;
+    }
   }
 
   // ellipsis .grw-page-path-hierarchical-link
