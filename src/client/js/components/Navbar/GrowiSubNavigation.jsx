@@ -94,6 +94,7 @@ const GrowiSubNavigation = (props) => {
   } = pageContainer.state;
 
   const { isGuestUser } = appContainer;
+  const isEditorMode = editorMode !== 'view';
   // Tags cannot be edited while the new page and editorMode is view
   const isTagLabelHidden = (editorMode !== 'edit' && !isPageExist);
 
@@ -125,12 +126,12 @@ const GrowiSubNavigation = (props) => {
       {/* Right side */}
       <div className="d-flex">
 
-        <div className="d-flex flex-column align-items-end">
+        <div className={`d-flex ${isEditorMode ? 'align-items-center' : 'flex-column align-items-end'}`}>
           <div className="d-flex">
             { pageContainer.isAbleToShowPageReactionButtons && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
             { pageContainer.isAbleToShowPageManagement && <PageManagement isCompactMode={isCompactMode} /> }
           </div>
-          <div className="mt-2">
+          <div className={`${isEditorMode ? 'ml-2' : 'mt-2'}`}>
             {pageContainer.isAbleToShowThreeStrandedButton && (
               <ThreeStrandedButton
                 onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
