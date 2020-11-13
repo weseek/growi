@@ -3,6 +3,15 @@ import PropTypes from 'prop-types';
 
 import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 
+/**
+ *
+ * @author Mikitaka Itizawa <itizawa@weseek.co.jp>
+ *
+ * @export
+ * @class PaginationWrapper
+ * @extends {React.Component}
+ */
+
 function PaginationWrapper(props) {
   const {
     activePage, changePage, totalItemsCount, pagingLimit, align,
