@@ -146,7 +146,7 @@ class UserGroupPage extends React.Component {
           isAclEnabled={isAclEnabled}
           onCreate={this.addUserGroup}
         />
-        {this.state.totalUserGroups === 0
+        {this.state.userGroups.length === 0
         ? <p>No groups yet</p> : (
           <>
             <UserGroupTable
