@@ -207,7 +207,6 @@ class UserTable extends React.Component {
             </tbody>
           </table>
         </div>
-
       </Fragment>
     );
   }
