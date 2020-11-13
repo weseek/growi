@@ -1,9 +1,7 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
-
-import { isTrashPage } from '@commons/util/path-utils';
 
 import DevidedPagePath from '@commons/models/devided-page-path';
 import LinkedPagePath from '@commons/models/linked-page-path';
