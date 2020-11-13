@@ -129,16 +129,16 @@
       "attach_title_header_desc": "创建新页面时，将页面路径作为h1节添加到第一行",
 
       "list_num_s": "Number of list displayed on modals",
-      "list_num_desc_s": "Set number of list per page such as 'Pagelist', 'Timeline', 'Page History' and 'Share Link' pages",
+      "list_num_desc_s": "Set number of list per page such as 'Page List', 'Timeline', 'Page History' and 'Attachment' pages.",
 
       "list_num_m": "Number of list displayed on article pages included other contents",
-      "list_num_desc_m": "Set number of list per page such as 'Bookmarks' and 'Recently created' pages",
+      "list_num_desc_m": "Set number of list per page such as 'Bookmarks' and 'Recently created' pages.",
 
       "list_num_l": "Number of list displayed on 'Search' pages",
-      "list_num_desc_l": "Set number of list per page such as 'Search' pages",
+      "list_num_desc_l": "Set number of list per page such as 'Search' pages.",
 
       "list_num_xl": "Number of list displayed on article pages",
-      "list_num_desc_xl": "Set number of list per page such as 'Not found' and 'Trash' pages",
+      "list_num_desc_xl": "Set number of list per page such as 'Not found' and 'Trash' pages.",
 
 			"stale_notification": "在过期页上显示通知",
 			"stale_notification_desc": "显示自上次更新以来超过1年的页面通知。",

@@ -119,7 +119,7 @@
       "attach_title_header_desc": "新規作成したページの1行目に、ページのパスを h1 セクションとして挿入します。",
 
       "list_num_s": "モーダルに表示されるリスト数",
-      "list_num_desc_s": "モーダルにおける <Pagelist> <Timeline> <Page History> <Share Link>での、1ページあたりの表示数を設定します。",
+      "list_num_desc_s": "モーダルにおける <ページリスト> <タイムライン> <更新履歴> <添付ファイル>での、1ページあたりの表示数を設定します。",
 
       "list_num_m": "ユーザーページに表示されるリスト数",
       "list_num_desc_m": "ユーザーページにおける <Bookmarks> <Recently Created>での、1ページあたりの表示数を設定します。",

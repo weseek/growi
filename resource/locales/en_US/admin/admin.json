@@ -116,19 +116,19 @@
       "tab_switch_desc1": "Save edit tab and history tab switching in the browser and make it object for forward/back command of the browser.",
       "tab_switch_desc2": "By invalidating, you can make page transition as the only object for forward/back command of the browser.",
       "attach_title_header": "Add h1 section when create new page automatically",
-      "attach_title_header_desc": "Add page path to the first line as h1 section when create new page",
+      "attach_title_header_desc": "Add page path to the first line as h1 section when create new page.",
 
       "list_num_s": "Number of list displayed on modals",
-      "list_num_desc_s": "Set number of list per page such as 'Pagelist', 'Timeline', 'Page History' and 'Share Link' pages",
+      "list_num_desc_s": "Set number of list per page such as 'Page List', 'Timeline', 'Page History' and 'Attachment' pages.",
 
       "list_num_m": "Number of list displayed on article pages included other contents",
-      "list_num_desc_m": "Set number of list per page such as 'Bookmarks' and 'Recently created' pages",
+      "list_num_desc_m": "Set number of list per page such as 'Bookmarks' and 'Recently created' pages.",
 
       "list_num_l": "Number of list displayed on 'Search' pages",
-      "list_num_desc_l": "Set number of list per page such as 'Search' pages",
+      "list_num_desc_l": "Set number of list per page such as 'Search' pages.",
 
       "list_num_xl": "Number of list displayed on article pages",
-      "list_num_desc_xl": "Set number of list per page such as 'Not found' and 'Trash' pages",
+      "list_num_desc_xl": "Set number of list per page such as 'Not found' and 'Trash' pages.",
 
 
 
