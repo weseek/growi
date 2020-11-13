@@ -146,23 +146,21 @@ class UserGroupPage extends React.Component {
           isAclEnabled={isAclEnabled}
           onCreate={this.addUserGroup}
         />
+        <UserGroupTable
+          userGroups={this.state.userGroups}
+          isAclEnabled={isAclEnabled}
+          onDelete={this.showDeleteModal}
+          userGroupRelations={this.state.userGroupRelations}
+        />
         {this.state.userGroups.length === 0
         ? <p>No groups yet</p> : (
-          <>
-            <UserGroupTable
-              userGroups={this.state.userGroups}
-              isAclEnabled={isAclEnabled}
-              onDelete={this.showDeleteModal}
-              userGroupRelations={this.state.userGroupRelations}
-            />
-            <PaginationWrapper
-              activePage={this.state.activePage}
-              changePage={this.handlePage}
-              totalItemsCount={this.state.totalUserGroups}
-              pagingLimit={this.state.pagingLimit}
-              size="sm"
-            />
-          </>
+          <PaginationWrapper
+            activePage={this.state.activePage}
+            changePage={this.handlePage}
+            totalItemsCount={this.state.totalUserGroups}
+            pagingLimit={this.state.pagingLimit}
+            size="sm"
+          />
         )}
         <UserGroupDeleteModal
           userGroups={this.state.userGroups}
