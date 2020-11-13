@@ -199,6 +199,16 @@ export default class PageContainer extends Container {
   }
 
   /**
+   * whether to threeStrandedButton
+   * ex.) view, edit, hackmd
+   */
+  get isAbleToShowPageAuthors() {
+    const { isPageForbidden, isPageExist, isUserPage } = this.state;
+
+    return (!isUserPage && isPageExist && !isPageForbidden);
+  }
+
+  /**
    * initialize state for markdown data
    */
   initStateMarkdown() {

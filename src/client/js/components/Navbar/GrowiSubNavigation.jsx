@@ -100,16 +100,12 @@ const GrowiSubNavigation = (props) => {
   const { isDrawerMode, editorMode } = navigationContainer.state;
   const {
     pageId, path, createdAt, creator, updatedAt, revisionAuthor,
-    pageUser, isNotCreatable, shareLinkId, isPageExist, isForbidden: isPageForbidden,
+    isPageExist, isForbidden: isPageForbidden,
   } = pageContainer.state;
 
-  const { currentUser } = appContainer;
+  const { isGuestUser } = appContainer;
   // Tags cannot be edited while the new page and editorMode is view
   const isTagLabelHidden = (editorMode !== 'edit' && !isPageExist);
-
-  const isUserPage = pageUser != null;
-  const isPageInTrash = isTrashPage(path);
-  const isSharedPage = shareLinkId != null;
 
   function onThreeStrandedButtonClicked(viewType) {
     navigationContainer.setEditorMode(viewType);
@@ -148,7 +144,7 @@ const GrowiSubNavigation = (props) => {
             {pageContainer.isAbleToShowThreeStrandedButton && (
               <ThreeStrandedButton
                 onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
-                isBtnDisabled={currentUser == null}
+                isBtnDisabled={isGuestUser}
                 editorMode={editorMode}
               />
             )}
@@ -156,7 +152,7 @@ const GrowiSubNavigation = (props) => {
         </div>
 
         {/* Page Authors */}
-        { (!isCompactMode && !isUserPage && !isPageNotFound && !isPageForbidden) && (
+        { (pageContainer.isAbleToShowPageAuthors && !isCompactMode) && (
           <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3">
             <li className="pb-1">
               <AuthorInfo user={creator} date={createdAt} locate="subnav" />
