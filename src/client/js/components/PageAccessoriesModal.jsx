@@ -107,11 +107,11 @@ const PageAccessoriesModal = (props) => {
             <TabPane tabId="timeline">
               {activeComponents.has('timeline') && <PageTimeline /> }
             </TabPane>
-            <TabPane tabId="pageHistory">
-              <div className="overflow-auto">
+            {!isGuestUserMode && (
+              <TabPane tabId="pageHistory">
                 {activeComponents.has('pageHistory') && <PageHistory /> }
-              </div>
-            </TabPane>
+              </TabPane>
+            )}
             <TabPane tabId="attachment">
               {activeComponents.has('attachment') && <PageAttachment />}
             </TabPane>
