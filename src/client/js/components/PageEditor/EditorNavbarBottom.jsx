@@ -24,7 +24,7 @@ const EditorNavbarBottom = (props) => {
   const {
     navigationContainer,
   } = props;
-  const { editorMode, isDrawerMode, isDeviceSmallerThanMd } = navigationContainer.state;
+  const { editorMode, isDeviceSmallerThanMd } = navigationContainer.state;
 
   const additionalClasses = ['grw-editor-navbar-bottom'];
 
