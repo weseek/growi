@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 import { toastError } from '../util/apiNotification';
 import PageContainer from '../services/PageContainer';
@@ -60,6 +61,10 @@ class BookmarkButton extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+const BookmarkButtonWrapper = withUnstatedContainers(BookmarkButton, [AppContainer, PageContainer]);
 
 BookmarkButton.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
@@ -74,4 +79,4 @@ BookmarkButton.defaultProps = {
   size: 'md',
 };
 
-export default withTranslation()(BookmarkButton);
+export default withTranslation()(BookmarkButtonWrapper);

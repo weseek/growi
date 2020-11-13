@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 import { toastError } from '../util/apiNotification';
 import AppContainer from '../services/AppContainer';
@@ -58,6 +59,11 @@ class LikeButton extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+const LikeButtonWrapper = withUnstatedContainers(LikeButton, [AppContainer, PageContainer]);
+
 LikeButton.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
@@ -66,4 +72,4 @@ LikeButton.propTypes = {
   size: PropTypes.string,
 };
 
-export default withTranslation()(LikeButton);
+export default withTranslation()(LikeButtonWrapper);
