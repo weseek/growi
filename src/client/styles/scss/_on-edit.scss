@@ -22,10 +22,12 @@ body.on-edit {
 
   // restrict height of subnav
   .grw-subnav {
-    max-height: $grw-subnav-max-height-on-edit;
+    height: $grw-subnav-height-on-edit;
+    min-height: unset;
+    padding-top: 0;
 
-    @include media-breakpoint-up(md) {
-      max-height: $grw-subnav-max-height-md-on-edit;
+    @include media-breakpoint-up(lg) {
+      height: $grw-subnav-height-lg-on-edit;
     }
   }
 
@@ -36,24 +38,18 @@ body.on-edit {
   }
 
   // calculate margin
-  $editor-margin-top: $grw-navbar-border-width + $grw-subnav-max-height-on-edit;
+  $editor-margin-top: $grw-navbar-border-width + $grw-subnav-height-on-edit;
   @include expand-editor($editor-margin-top);
 
-  @include media-breakpoint-up(md) {
+  @include media-breakpoint-up(lg) {
     // calculate margin
-    $editor-margin-top: $grw-navbar-border-width + $grw-subnav-max-height-md-on-edit;
+    $editor-margin-top: $grw-navbar-border-width + $grw-subnav-height-lg-on-edit;
     @include expand-editor($editor-margin-top);
   }
 
   // show
   .d-edit-block {
     display: block !important;
-  }
-
-  .d-edit-sm-block {
-    @include media-breakpoint-up(sm) {
-      display: block !important;
-    }
   }
 
   // hide unnecessary elements
