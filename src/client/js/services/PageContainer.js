@@ -109,10 +109,6 @@ export default class PageContainer extends Container {
 
     const { currentUser } = this.appContainer;
 
-    // check what kind of user
-    this.state.isGuestUser = currentUser == null;
-    this.state.isSharedUser = this.state.shareLinkId != null && currentUser == null;
-
     // see https://dev.growi.org/5fabddf8bbeb1a0048bcb9e9
     const isAbleToGetAttachedInformationAboutPages = this.state.isPageExist && !this.state.isSharedUser;
 

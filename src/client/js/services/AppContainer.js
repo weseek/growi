@@ -48,7 +48,10 @@ export default class AppContainer extends Container {
     }
 
     const isSharedPageElem = document.getElementById('is-shared-page');
-    this.isSharedUser = this.currentUser == null && isSharedPageElem != null;
+
+    // check what kind of user
+    this.isGuestUser = this.currentUser == null;
+    this.isSharedUser = isSharedPageElem != null && this.currentUser == null;
 
     const userLocaleId = this.currentUser?.lang;
     this.i18n = i18nFactory(userLocaleId);
