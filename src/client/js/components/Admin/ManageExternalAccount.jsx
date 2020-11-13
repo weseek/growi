@@ -34,8 +34,20 @@ class ManageExternalAccount extends React.Component {
 
   render() {
     const { t, adminExternalAccountsContainer } = this.props;
-    const { activePage, totalAccounts, pagingLimit } = adminExternalAccountsContainer.state;
+    const { totalItemsCount } = adminExternalAccountsContainer.state;
 
+    const pager = (
+
+      <PaginationWrapper
+        activePage={adminExternalAccountsContainer.state.activePage}
+        changePage={this.handleExternalAccountPage}
+        totalItemsCount={adminExternalAccountsContainer.state.totalAccounts}
+        pagingLimit={adminExternalAccountsContainer.state.pagingLimit}
+        align="right"
+        size="sm"
+      />
+
+    );
     return (
       <Fragment>
         <p>
@@ -46,31 +58,10 @@ class ManageExternalAccount extends React.Component {
         </p>
 
         <h2>{t('admin:user_management.external_account_list')}</h2>
-
-
-        {totalAccounts === 0 ? <></> : (
-          <PaginationWrapper
-            activePage={activePage}
-            changePage={this.handleExternalAccountPage}
-            totalItemsCount={totalAccounts}
-            pagingLimit={pagingLimit}
-            align="right"
-            size="sm"
-          />
-        )}
-
+        {(totalItemsCount === 0) && { pager }}
         <ExternalAccountTable />
+        {(totalItemsCount === 0) ? { pager } : '外部アカウントはありません'}
 
-        {totalAccounts === 0 ? <p>外部アカウントはありません</p> : (
-          <PaginationWrapper
-            activePage={activePage}
-            changePage={this.handleExternalAccountPage}
-            totalItemsCount={totalAccounts}
-            pagingLimit={pagingLimit}
-            align="right"
-            size="sm"
-          />
-        )}
 
       </Fragment>
     );
