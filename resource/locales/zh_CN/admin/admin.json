@@ -129,7 +129,7 @@
       "attach_title_header_desc": "创建新页面时，将页面路径作为h1节添加到第一行",
 
       "list_num_s": "Number of list displayed on modals",
-      "list_num_desc_s": "Set number of list per page such as 'Pagelist', 'Timeline', 'Page History', 'Attachment' and 'Share Link' pages",
+      "list_num_desc_s": "Set number of list per page such as 'Pagelist', 'Timeline', 'Page History' and 'Attachment'",
 
       "list_num_m": "Number of list displayed on article pages included other contents",
       "list_num_desc_m": "Set number of list per page such as 'Bookmarks' and 'Recently created' pages",
