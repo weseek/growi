@@ -23,6 +23,19 @@ import CommentPreview from './CommentPreview';
 import NotAvailableForGuest from '../NotAvailableForGuest';
 import { CustomNav } from '../CustomNavigation';
 
+const navTabMapping = {
+  comment_editor: {
+    Icon: () => <i className="icon-settings" />,
+    i18n: 'Write',
+    index: 0,
+  },
+  comment_preview: {
+    Icon: () => <i className="icon-settings" />,
+    i18n: 'Preview',
+    index: 1,
+  },
+};
+
 /**
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
@@ -281,41 +294,13 @@ class CommentEditor extends React.Component {
       </Button>
     );
 
-    const navTabMapping = () => {
-      return {
-        comment_editor: {
-          Icon: () => <i className="icon-settings" />,
-          Content: () => (
-            <Editor
-              ref={(c) => { this.editor = c }}
-              value={this.state.comment}
-              isGfmMode={this.state.isMarkdown}
-              lineNumbers={false}
-              isMobile={appContainer.isMobile}
-              isUploadable={this.state.isUploadable}
-              isUploadableFile={this.state.isUploadableFile}
-              emojiStrategy={emojiStrategy}
-              onChange={this.updateState}
-              onUpload={this.uploadHandler}
-              onCtrlEnter={this.ctrlEnterHandler}
-            />
-          ),
-          i18n: 'Write',
-        },
-        comment_preview: {
-          Icon: () => <i className="icon-settings" />,
-          Content: () => <div className="comment-form-preview">{commentPreview}</div>,
-          i18n: 'Preview',
-        },
-      };
-    };
 
     return (
       <>
         <div className="comment-write">
           <CustomNav activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={this.handleSelect} hideBorderBottom />
           <TabContent activeTab={activeTab}>
-            <TabPane tabId={1}>
+            <TabPane tabId="comment_editor">
               <Editor
                 ref={(c) => { this.editor = c }}
                 value={this.state.comment}
@@ -330,7 +315,7 @@ class CommentEditor extends React.Component {
                 onCtrlEnter={this.ctrlEnterHandler}
               />
             </TabPane>
-            <TabPane tabId={2}>
+            <TabPane tabId="comment_preview">
               <div className="comment-form-preview">
                 {commentPreview}
               </div>
