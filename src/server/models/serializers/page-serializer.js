@@ -25,7 +25,7 @@ function serializeInsecureUserAttributes(page) {
   return page;
 }
 
-function serializePageSecurely(page) {
+function serializePageSecurely(page, shouldDepopulateRevisions = false) {
   let serialized = page;
 
   // invoke toObject if page is a model instance
@@ -33,8 +33,11 @@ function serializePageSecurely(page) {
     serialized = page.toObject();
   }
 
-  // TODO: consider depopulate
-  // depopulateRevisions(serialized);
+  // optional depopulation
+  if (shouldDepopulateRevisions) {
+    depopulateRevisions(serialized);
+  }
+
   serializeInsecureUserAttributes(serialized);
 
   return serialized;

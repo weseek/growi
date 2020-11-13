@@ -6,7 +6,7 @@ const { serializePageSecurely } = require('../serializers/page-serializer');
 class S2cMessagePageUpdated {
 
   constructor(page, user) {
-    const serializedPage = serializePageSecurely(page);
+    const serializedPage = serializePageSecurely(page, true);
 
     const {
       _id, revision, revisionHackmdSynced, hasDraftOnHackmd,
