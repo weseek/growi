@@ -60,12 +60,15 @@ export default class PageContainer extends Container {
       sumOfBookmarks: 0,
       createdAt: mainContent.getAttribute('data-page-created-at'),
       updatedAt: mainContent.getAttribute('data-page-updated-at'),
+
       isTrashPage: isTrashPage(path),
       isForbidden: JSON.parse(mainContent.getAttribute('data-page-is-forbidden')),
       isDeleted: JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
       isDeletable: JSON.parse(mainContent.getAttribute('data-page-is-deletable')),
       isNotCreatable: JSON.parse(mainContent.getAttribute('data-page-is-not-creatable')),
       isAbleToDeleteCompletely: JSON.parse(mainContent.getAttribute('data-page-is-able-to-delete-completely')),
+      isPageExist: mainContent.getAttribute('data-page-id') != null,
+
       pageUser: JSON.parse(mainContent.getAttribute('data-page-user')),
       tags: null,
       hasChildren: JSON.parse(mainContent.getAttribute('data-page-has-children')),
@@ -143,16 +146,11 @@ export default class PageContainer extends Container {
   }
 
 
-  get isEditable() {
+  get isAbleToOpenPageEditor() {
     const { currentUser } = this.appContainer;
-    const {
-      isPageExist, isPageForbidden, isNotCreatable, isTrashPage,
-    } = this.state;
+    const { isPageForbidden, isNotCreatable, isTrashPage } = this.state;
 
-    if (isPageExist && (currentUser != null) && !isPageForbidden && !isNotCreatable && !isTrashPage) {
-      return true;
-    }
-    return false;
+    return ((currentUser != null) && !isPageForbidden && !isNotCreatable && !isTrashPage);
   }
 
   /**
