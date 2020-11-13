@@ -78,10 +78,6 @@ body.on-edit {
   /*****************
    * Expand Editor
    *****************/
-  .container-fluid {
-    padding-bottom: 0;
-  }
-
   .grw-editor-navbar-bottom {
     height: $grw-editor-navbar-bottom-height;
 
@@ -122,6 +118,11 @@ body.on-edit {
   /*********************
    * Navigation styles
    */
+  .grw-subnav {
+    padding-bottom: 0;
+    padding-left: 15px;
+  }
+
   h1 {
     font-size: 16px;
   }
