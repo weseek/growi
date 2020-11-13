@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { UncontrolledTooltip } from 'reactstrap';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import { toastError } from '../util/apiNotification';
@@ -47,12 +46,6 @@ class LikeButton extends React.Component {
             {pageContainer.state.sumOfLikers}
           </span>
         </button>
-
-        {!isUserLoggedIn && (
-          <UncontrolledTooltip placement="top" target="like-button" fade={false}>
-            {t('Not available for guest')}
-          </UncontrolledTooltip>
-        )}
       </div>
     );
   }
