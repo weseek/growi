@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
@@ -6,8 +6,9 @@ import { withTranslation } from 'react-i18next';
 import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 
 function PaginationWrapper(props) {
+  const paginationNumbers = {};
   const {
-    activePage, totalItemsCount, limit, align,
+    activePage, changePage, totalItemsCount, limit, align,
   } = props;
 
   //   super(props);
@@ -22,7 +23,6 @@ function PaginationWrapper(props) {
   //   this.calculatePagination = this.calculatePagination.bind(this);
   // }
 
-  const paginationNumbers = {};
 
   // componentWillReceiveProps(nextProps) {
   //   this.setState({
@@ -69,30 +69,31 @@ function PaginationWrapper(props) {
     * ex.  <<   <   1  2  3  >  >>
     * this function set << & <
     */
-  const generateFirstPrev = (activePage) => {
-    const paginationItems = [];
+  const generateFirstPrev = useCallback(() => {
     if (activePage !== 1) {
-      paginationItems.push(
-        <PaginationItem key="painationItemFirst">
-          <PaginationLink first onClick={() => { return props.changePage(1) }} />
-        </PaginationItem>,
-        <PaginationItem key="painationItemPrevious">
-          <PaginationLink previous onClick={() => { return props.changePage(activePage - 1) }} />
-        </PaginationItem>,
+      return (
+        <>
+          <PaginationItem key="painationItemFirst">
+            <PaginationLink first onClick={() => { return changePage(1) }} />
+          </PaginationItem>
+          <PaginationItem key="painationItemPrevious">
+            <PaginationLink previous onClick={() => { return changePage(activePage - 1) }} />
+          </PaginationItem>
+        </>
       );
     }
-    else {
-      paginationItems.push(
+    return (
+      <>
         <PaginationItem key="painationItemFirst" disabled>
           <PaginationLink first />
-        </PaginationItem>,
+        </PaginationItem>
         <PaginationItem key="painationItemPrevious" disabled>
           <PaginationLink previous />
-        </PaginationItem>,
-      );
-    }
-    return paginationItems;
-  };
+        </PaginationItem>
+      </>
+    );
+
+  }, [activePage, changePage]);
 
   /**
    * generate Elements of Pagination First Prev
@@ -162,8 +163,6 @@ function PaginationWrapper(props) {
   const totalPage = paginationNumbers.totalPage;
   const paginationStart = paginationNumbers.paginationStart;
   const maxViewPageNum = paginationNumbers.maxViewPageNum;
-  const firstPrevItems = generateFirstPrev(activePage);
-  paginationItems.push(firstPrevItems);
   const paginations = generatePaginations(activePage, paginationStart, maxViewPageNum);
   paginationItems.push(paginations);
   const nextLastItems = generateNextLast(activePage, totalPage);
@@ -171,7 +170,10 @@ function PaginationWrapper(props) {
 
   return (
     <React.Fragment>
-      <Pagination size={props.size} listClassName={getListClassName}>{paginationItems}</Pagination>
+      <Pagination size={props.size} listClassName={getListClassName}>
+        {generateFirstPrev()}
+        {paginationItems}
+      </Pagination>
     </React.Fragment>
   );
 
