@@ -81,7 +81,7 @@ const EditorNavbarBottom = (props) => {
           { isDrawerMode && renderDrawerButton() }
           { isOptionsSelectorEnabled && !isDeviceSmallerThanMd && <OptionsSelector /> }
         </form>
-        <form className="form-inline ml-auto">
+        <form className="form-inline flex-nowrap ml-auto">
           {/* Responsive Design for the SlackNotification */}
           {/* Button or the normal Slack banner */}
           {hasSlackConfig && (isDeviceSmallerThanMd ? (
