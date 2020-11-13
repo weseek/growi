@@ -51,6 +51,7 @@ html[dark] {
   $color-link-hover: lighten($color-link, 10%);
   $color-link-nabvar: $color-reversal;
   $color-inline-code: #c7254e; // optional
+  $color-modal-header: $themelight;
 
   // Table colors
   $border-color-table: $gray-400; // optional
