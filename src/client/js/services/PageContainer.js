@@ -60,12 +60,16 @@ export default class PageContainer extends Container {
       sumOfBookmarks: 0,
       createdAt: mainContent.getAttribute('data-page-created-at'),
       updatedAt: mainContent.getAttribute('data-page-updated-at'),
+
+      isUserPage: JSON.parse(mainContent.getAttribute('data-page-user')) != null,
       isTrashPage: isTrashPage(path),
       isForbidden: JSON.parse(mainContent.getAttribute('data-page-is-forbidden')),
       isDeleted: JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
       isDeletable: JSON.parse(mainContent.getAttribute('data-page-is-deletable')),
       isNotCreatable: JSON.parse(mainContent.getAttribute('data-page-is-not-creatable')),
       isAbleToDeleteCompletely: JSON.parse(mainContent.getAttribute('data-page-is-able-to-delete-completely')),
+      isPageExist: mainContent.getAttribute('data-page-id') != null,
+
       pageUser: JSON.parse(mainContent.getAttribute('data-page-user')),
       tags: null,
       hasChildren: JSON.parse(mainContent.getAttribute('data-page-has-children')),
@@ -104,9 +108,10 @@ export default class PageContainer extends Container {
     this.initStateMarkdown();
     this.checkAndUpdateImageUrlCached(this.state.likerUsers);
 
-    const { currentUser } = this.appContainer;
+    const { isSharedUser } = this.appContainer;
+
     // see https://dev.growi.org/5fabddf8bbeb1a0048bcb9e9
-    const isAbleToGetAttachedInformationAboutPages = this.state.pageId != null || !(currentUser == null && this.state.isSharedPage);
+    const isAbleToGetAttachedInformationAboutPages = this.state.isPageExist && !isSharedUser;
 
     if (isAbleToGetAttachedInformationAboutPages) {
       this.retrieveSeenUsers();
@@ -143,16 +148,75 @@ export default class PageContainer extends Container {
   }
 
 
-  get isEditable() {
-    const { currentUser } = this.appContainer;
-    const {
-      isPageExist, isPageForbidden, isNotCreatable, isTrashPage,
-    } = this.state;
+  get isAbleToOpenPageEditor() {
+    const { isPageForbidden, isNotCreatable, isTrashPage } = this.state;
+    const { isGuestUser } = this.appContainer;
 
-    if (isPageExist && (currentUser != null) && !isPageForbidden && !isNotCreatable && !isTrashPage) {
-      return true;
-    }
-    return false;
+    return (!isPageForbidden && !isNotCreatable && !isTrashPage && !isGuestUser);
+  }
+
+  /**
+   * whether to display reaction buttons
+   * ex.) like, bookmark
+   */
+  get isAbleToShowPageReactionButtons() {
+    const { isTrashPage, isPageExist } = this.state;
+    const { isSharedUser } = this.appContainer;
+
+    return (!isTrashPage && isPageExist && !isSharedUser);
+  }
+
+  /**
+   * whether to display tag labels
+   */
+  get isAbleToShowTagLabel() {
+    const { isPageForbidden, isUserPage } = this.state;
+    const { isSharedUser } = this.appContainer;
+
+    return (!isPageForbidden && !isUserPage && !isSharedUser);
+  }
+
+  /**
+   * whether to display page management
+   * ex.) duplicate, rename
+   */
+  get isAbleToShowPageManagement() {
+    const { isPageForbidden, isPageExist, isPageInTrash } = this.state;
+    const { isSharedUser } = this.appContainer;
+
+    return (!isPageForbidden && isPageExist && !isPageInTrash && !isSharedUser);
+  }
+
+  /**
+   * whether to threeStrandedButton
+   * ex.) view, edit, hackmd
+   */
+  get isAbleToShowThreeStrandedButton() {
+    const { isPageForbidden, isNotCreatable, isPageInTrash } = this.state;
+    const { isSharedUser, isGuestUser } = this.appContainer;
+
+    return (!isPageForbidden && !isNotCreatable && !isPageInTrash && !isSharedUser && !isGuestUser);
+  }
+
+  /**
+   * whether to threeStrandedButton
+   * ex.) view, edit, hackmd
+   */
+  get isAbleToShowPageAuthors() {
+    const { isPageForbidden, isPageExist, isUserPage } = this.state;
+
+    return (!isPageForbidden && isPageExist && !isUserPage);
+  }
+
+  /**
+   * whether to like button
+   * not displayed on user page
+   */
+  get isAbleToShowLikeButton() {
+    const { isUserPage } = this.state;
+    const { isSharedUser } = this.appContainer;
+
+    return (!isUserPage && !isSharedUser);
   }
 
   /**
@@ -229,12 +293,18 @@ export default class PageContainer extends Container {
     return this.appContainer.getContainer('NavigationContainer');
   }
 
-  setLatestRemotePageData(page, user) {
-    this.setState({
-      remoteRevisionId: page.revision._id,
-      revisionIdHackmdSynced: page.revisionHackmdSynced,
-      lastUpdateUsername: user.name,
-    });
+  setLatestRemotePageData(s2cMessagePageUpdated) {
+    const newState = {
+      remoteRevisionId: s2cMessagePageUpdated.revisionId,
+      revisionIdHackmdSynced: s2cMessagePageUpdated.revisionIdHackmdSynced,
+      lastUpdateUsername: s2cMessagePageUpdated.lastUpdateUsername,
+    };
+
+    if (s2cMessagePageUpdated.hasDraftOnHackmd != null) {
+      newState.hasDraftOnHackmd = s2cMessagePageUpdated.hasDraftOnHackmd;
+    }
+
+    this.setState(newState);
   }
 
   setTocHtml(tocHtml) {
@@ -483,9 +553,10 @@ export default class PageContainer extends Container {
 
       logger.debug({ obj: data }, `websocket on 'page:create'`); // eslint-disable-line quotes
 
-      // update PageStatusAlert
-      if (data.page.path === pageContainer.state.path) {
-        this.setLatestRemotePageData(data.page, data.user);
+      // update remote page data
+      const { s2cMessagePageUpdated } = data;
+      if (s2cMessagePageUpdated.pageId === pageContainer.state.pageId) {
+        pageContainer.setLatestRemotePageData(s2cMessagePageUpdated);
       }
     });
 
@@ -497,16 +568,10 @@ export default class PageContainer extends Container {
 
       logger.debug({ obj: data }, `websocket on 'page:update'`); // eslint-disable-line quotes
 
-      if (data.page.path === pageContainer.state.path) {
-        // update PageStatusAlert
-        pageContainer.setLatestRemotePageData(data.page, data.user);
-        // update remote data
-        const page = data.page;
-        pageContainer.setState({
-          remoteRevisionId: page.revision._id,
-          revisionIdHackmdSynced: page.revisionHackmdSynced,
-          hasDraftOnHackmd: page.hasDraftOnHackmd,
-        });
+      // update remote page data
+      const { s2cMessagePageUpdated } = data;
+      if (s2cMessagePageUpdated.pageId === pageContainer.state.pageId) {
+        pageContainer.setLatestRemotePageData(s2cMessagePageUpdated);
       }
     });
 
@@ -518,9 +583,10 @@ export default class PageContainer extends Container {
 
       logger.debug({ obj: data }, `websocket on 'page:delete'`); // eslint-disable-line quotes
 
-      // update PageStatusAlert
-      if (data.page.path === pageContainer.state.path) {
-        pageContainer.setLatestRemotePageData(data.page, data.user);
+      // update remote page data
+      const { s2cMessagePageUpdated } = data;
+      if (s2cMessagePageUpdated.pageId === pageContainer.state.pageId) {
+        pageContainer.setLatestRemotePageData(s2cMessagePageUpdated);
       }
     });
 
@@ -532,7 +598,9 @@ export default class PageContainer extends Container {
 
       logger.debug({ obj: data }, `websocket on 'page:editingWithHackmd'`); // eslint-disable-line quotes
 
-      if (data.page.path === pageContainer.state.path) {
+      // update isHackmdDraftUpdatingInRealtime
+      const { s2cMessagePageUpdated } = data;
+      if (s2cMessagePageUpdated.pageId === pageContainer.state.pageId) {
         pageContainer.setState({ isHackmdDraftUpdatingInRealtime: true });
       }
     });

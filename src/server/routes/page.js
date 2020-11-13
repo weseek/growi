@@ -1,3 +1,5 @@
+const { serializePageSecurely } = require('../models/serializers/page-serializer');
+
 /**
  * @swagger
  *  tags:
@@ -143,7 +145,6 @@ module.exports = function(crowi, app) {
   const { slackNotificationService, configManager } = crowi;
   const interceptorManager = crowi.getInterceptorManager();
   const globalNotificationService = crowi.getGlobalNotificationService();
-  const pageService = crowi.pageService;
 
   const actions = {};
 
@@ -780,7 +781,7 @@ module.exports = function(crowi, app) {
       savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
     }
 
-    const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
+    const result = { page: serializePageSecurely(createdPage), tags: savedTags };
     res.json(ApiResponse.success(result));
 
     // update scopes for descendants
@@ -909,7 +910,7 @@ module.exports = function(crowi, app) {
       savedTags = await PageTagRelation.listTagNamesByPage(pageId);
     }
 
-    const result = { page: pageService.serializeToObj(page), tags: savedTags };
+    const result = { page: serializePageSecurely(page), tags: savedTags };
     res.json(ApiResponse.success(result));
 
     // update scopes for descendants
@@ -1009,7 +1010,7 @@ module.exports = function(crowi, app) {
     }
 
     const result = {};
-    result.page = page; // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+    result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
 
     return res.json(ApiResponse.success(result));
   };
@@ -1240,7 +1241,7 @@ module.exports = function(crowi, app) {
 
     debug('Page deleted', page.path);
     const result = {};
-    result.page = page; // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+    result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
 
     res.json(ApiResponse.success(result));
 
@@ -1287,7 +1288,7 @@ module.exports = function(crowi, app) {
     }
 
     const result = {};
-    result.page = page; // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+    result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
 
     return res.json(ApiResponse.success(result));
   };
@@ -1398,7 +1399,7 @@ module.exports = function(crowi, app) {
     }
 
     const result = {};
-    result.page = page; // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+    result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
 
     res.json(ApiResponse.success(result));
 

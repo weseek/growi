@@ -1,9 +1,7 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
-
-import { isTrashPage } from '@commons/util/path-utils';
 
 import DevidedPagePath from '@commons/models/devided-page-path';
 import LinkedPagePath from '@commons/models/linked-page-path';
@@ -70,20 +68,12 @@ const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
 /* eslint-disable react/prop-types */
 const PageReactionButtons = ({ appContainer, pageContainer }) => {
 
-  const {
-    pageUser, shareLinkId,
-  } = pageContainer.state;
-
-  const isSharedPage = useMemo(() => {
-    return shareLinkId != null;
-  }, [shareLinkId]);
-
   return (
     <>
-      {pageUser == null && !isSharedPage && (
-      <span className="mr-2">
-        <LikeButton />
-      </span>
+      {pageContainer.isAbleToShowLikeButton && (
+        <span className="mr-2">
+          <LikeButton />
+        </span>
       )}
       <span>
         <BookmarkButton crowi={appContainer} />
@@ -100,16 +90,12 @@ const GrowiSubNavigation = (props) => {
   const { isDrawerMode, editorMode } = navigationContainer.state;
   const {
     pageId, path, createdAt, creator, updatedAt, revisionAuthor,
-    isForbidden: isPageForbidden, pageUser, isNotCreatable, shareLinkId,
+    isPageExist, isForbidden: isPageForbidden,
   } = pageContainer.state;
 
-  const { currentUser } = appContainer;
-  const isPageNotFound = pageId == null;
+  const { isGuestUser } = appContainer;
   // Tags cannot be edited while the new page and editorMode is view
-  const isTagLabelHidden = (editorMode !== 'edit' && isPageNotFound);
-  const isUserPage = pageUser != null;
-  const isPageInTrash = isTrashPage(path);
-  const isSharedPage = shareLinkId != null;
+  const isTagLabelHidden = (editorMode !== 'edit' && !isPageExist);
 
   function onThreeStrandedButtonClicked(viewType) {
     navigationContainer.setEditorMode(viewType);
@@ -127,7 +113,7 @@ const GrowiSubNavigation = (props) => {
         ) }
 
         <div className="grw-path-nav-container">
-          { !isCompactMode && !isTagLabelHidden && !isPageForbidden && !isUserPage && !isSharedPage && (
+          { pageContainer.isAbleToShowTagLabel && !isCompactMode && !isTagLabelHidden && (
             <div className="mb-2">
               <TagLabels editorMode={editorMode} />
             </div>
@@ -141,14 +127,14 @@ const GrowiSubNavigation = (props) => {
 
         <div className="d-flex flex-column align-items-end">
           <div className="d-flex">
-            { !isPageInTrash && !isPageNotFound && !isPageForbidden && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
-            { !isPageNotFound && !isPageForbidden && <PageManagement isCompactMode={isCompactMode} /> }
+            { pageContainer.isAbleToShowPageReactionButtons && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
+            { pageContainer.isAbleToShowPageManagement && <PageManagement isCompactMode={isCompactMode} /> }
           </div>
           <div className="mt-2">
-            {!isNotCreatable && !isPageInTrash && !isPageForbidden && (
+            {pageContainer.isAbleToShowThreeStrandedButton && (
               <ThreeStrandedButton
                 onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
-                isBtnDisabled={currentUser == null}
+                isBtnDisabled={isGuestUser}
                 editorMode={editorMode}
               />
             )}
@@ -156,7 +142,7 @@ const GrowiSubNavigation = (props) => {
         </div>
 
         {/* Page Authors */}
-        { (!isCompactMode && !isUserPage && !isPageNotFound && !isPageForbidden) && (
+        { (pageContainer.isAbleToShowPageAuthors && !isCompactMode) && (
           <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3">
             <li className="pb-1">
               <AuthorInfo user={creator} date={createdAt} locate="subnav" />
