@@ -122,6 +122,14 @@ body.on-edit {
   /*********************
    * Navigation styles
    */
+  h1 {
+    font-size: 16px;
+  }
+
+  .grw-taglabels-container {
+    margin-bottom: 0;
+  }
+
   // ellipsis .grw-page-path-hierarchical-link
   .grw-subnav-left-side {
     overflow: hidden;
