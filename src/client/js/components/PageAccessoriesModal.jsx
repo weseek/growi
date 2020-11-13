@@ -46,6 +46,7 @@ const PageAccessoriesModal = (props) => {
         Icon: HistoryIcon,
         i18n: t('History'),
         index: 2,
+        isLinkEnabled: v => !isGuestUserMode,
       },
       attachment: {
         Icon: AttachmentIcon,
