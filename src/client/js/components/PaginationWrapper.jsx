@@ -71,29 +71,28 @@ function PaginationWrapper(props) {
    * this function set << & <
    */
   const generateFirstPrev = useCallback(() => {
+    const paginationItems = [];
     if (activePage !== 1) {
-      return (
-        <>
-          <PaginationItem key="painationItemFirst">
-            <PaginationLink first onClick={() => { return changePage(1) }} />
-          </PaginationItem>
-          <PaginationItem key="painationItemPrevious">
-            <PaginationLink previous onClick={() => { return changePage(activePage - 1) }} />
-          </PaginationItem>
-        </>
+      paginationItems.push(
+        <PaginationItem key="painationItemFirst">
+          <PaginationLink first onClick={() => { return changePage(1) }} />
+        </PaginationItem>,
+        <PaginationItem key="painationItemPrevious">
+          <PaginationLink previous onClick={() => { return changePage(activePage - 1) }} />
+        </PaginationItem>,
       );
     }
-    return (
-      <>
+    else {
+      paginationItems.push(
         <PaginationItem key="painationItemFirst" disabled>
           <PaginationLink first />
-        </PaginationItem>
+        </PaginationItem>,
         <PaginationItem key="painationItemPrevious" disabled>
           <PaginationLink previous />
-        </PaginationItem>
-      </>
-    );
-
+        </PaginationItem>,
+      );
+    }
+    return paginationItems;
   }, [activePage, changePage]);
 
   /**
@@ -120,7 +119,7 @@ function PaginationWrapper(props) {
    * ex.  <<   <   1  2  3  >  >>
    * this function set > & >>
    */
-  const generateNextLast = (activePage, totalPage) => {
+  const generateNextLast = useCallback((activePage, totalPage) => {
     const paginationItems = [];
     if (totalPage !== activePage) {
       paginationItems.push(
@@ -144,7 +143,7 @@ function PaginationWrapper(props) {
     }
     return paginationItems;
 
-  };
+  }, []);
 
   const getListClassName = useMemo(() => {
     const listClassNames = [];
