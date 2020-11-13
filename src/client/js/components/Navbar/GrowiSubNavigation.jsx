@@ -100,13 +100,14 @@ const GrowiSubNavigation = (props) => {
   const { isDrawerMode, editorMode } = navigationContainer.state;
   const {
     pageId, path, createdAt, creator, updatedAt, revisionAuthor,
-    isForbidden: isPageForbidden, pageUser, isNotCreatable, shareLinkId,
+    pageUser, isNotCreatable, shareLinkId, isPageExist, isForbidden: isPageForbidden,
   } = pageContainer.state;
+  const { isAbleToShowTagLabel } = pageContainer;
 
   const { currentUser } = appContainer;
-  const isPageNotFound = pageId == null;
   // Tags cannot be edited while the new page and editorMode is view
-  const isTagLabelHidden = (editorMode !== 'edit' && isPageNotFound);
+  const isTagLabelHidden = (editorMode !== 'edit' && !isPageExist);
+
   const isUserPage = pageUser != null;
   const isPageInTrash = isTrashPage(path);
   const isSharedPage = shareLinkId != null;
@@ -127,7 +128,7 @@ const GrowiSubNavigation = (props) => {
         ) }
 
         <div className="grw-path-nav-container">
-          { !isCompactMode && !isTagLabelHidden && !isPageForbidden && !isUserPage && !isSharedPage && (
+          { isAbleToShowTagLabel && !isCompactMode && !isTagLabelHidden && (
             <div className="mb-2">
               <TagLabels editorMode={editorMode} />
             </div>

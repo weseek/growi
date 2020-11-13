@@ -61,6 +61,7 @@ export default class PageContainer extends Container {
       createdAt: mainContent.getAttribute('data-page-created-at'),
       updatedAt: mainContent.getAttribute('data-page-updated-at'),
 
+      isUserPage: JSON.parse(mainContent.getAttribute('data-page-user')) != null,
       isTrashPage: isTrashPage(path),
       isForbidden: JSON.parse(mainContent.getAttribute('data-page-is-forbidden')),
       isDeleted: JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
@@ -163,6 +164,16 @@ export default class PageContainer extends Container {
     const { isSharedUser } = this.appContainer;
 
     return (!isTrashPage && isPageExist && !isSharedUser);
+  }
+
+  /**
+   * whether to display tag labels
+   */
+  get isAbleToShowTagLabel() {
+    const { isPageForbidden, isUserPage } = this.state;
+    const { isSharedUser } = this.appContainer;
+
+    return (!isPageForbidden && !isUserPage && !isSharedUser);
   }
 
   /**
