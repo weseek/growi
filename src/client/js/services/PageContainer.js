@@ -60,12 +60,15 @@ export default class PageContainer extends Container {
       sumOfBookmarks: 0,
       createdAt: mainContent.getAttribute('data-page-created-at'),
       updatedAt: mainContent.getAttribute('data-page-updated-at'),
+
       isTrashPage: isTrashPage(path),
       isForbidden: JSON.parse(mainContent.getAttribute('data-page-is-forbidden')),
       isDeleted: JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
       isDeletable: JSON.parse(mainContent.getAttribute('data-page-is-deletable')),
       isNotCreatable: JSON.parse(mainContent.getAttribute('data-page-is-not-creatable')),
       isAbleToDeleteCompletely: JSON.parse(mainContent.getAttribute('data-page-is-able-to-delete-completely')),
+      isPageExist: mainContent.getAttribute('data-page-id') != null,
+
       pageUser: JSON.parse(mainContent.getAttribute('data-page-user')),
       tags: null,
       hasChildren: JSON.parse(mainContent.getAttribute('data-page-has-children')),
@@ -105,8 +108,13 @@ export default class PageContainer extends Container {
     this.checkAndUpdateImageUrlCached(this.state.likerUsers);
 
     const { currentUser } = this.appContainer;
+
+    // check what kind of user
+    this.state.isGuestUser = currentUser == null;
+    this.state.isSharedUser = this.state.shareLinkId != null && currentUser == null;
+
     // see https://dev.growi.org/5fabddf8bbeb1a0048bcb9e9
-    const isAbleToGetAttachedInformationAboutPages = this.state.pageId != null || !(currentUser == null && this.state.isSharedPage);
+    const isAbleToGetAttachedInformationAboutPages = this.state.isPageExist && !this.state.isSharedUser;
 
     if (isAbleToGetAttachedInformationAboutPages) {
       this.retrieveSeenUsers();
@@ -143,16 +151,22 @@ export default class PageContainer extends Container {
   }
 
 
-  get isEditable() {
-    const { currentUser } = this.appContainer;
+  get isAbleToOpenPageEditor() {
     const {
-      isPageExist, isPageForbidden, isNotCreatable, isTrashPage,
+      isGuestUser, isPageForbidden, isNotCreatable, isTrashPage,
     } = this.state;
 
-    if (isPageExist && (currentUser != null) && !isPageForbidden && !isNotCreatable && !isTrashPage) {
-      return true;
-    }
-    return false;
+    return (!isGuestUser && !isPageForbidden && !isNotCreatable && !isTrashPage);
+  }
+
+  /**
+   * whether to display reaction buttons
+   * ex.) like, bookmark
+   */
+  get isAbleToShowPageReactionButtons() {
+    const { isTrashPage, isPageExist, isSharedUser } = this.state;
+
+    return (!isTrashPage && isPageExist && !isSharedUser);
   }
 
   /**
