@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import {
   Button,
-  TabContent, TabPane, Nav, NavItem, NavLink,
+  TabContent, TabPane,
 } from 'reactstrap';
 
 import * as toastr from 'toastr';
@@ -21,6 +21,20 @@ import SlackNotification from '../SlackNotification';
 
 import CommentPreview from './CommentPreview';
 import NotAvailableForGuest from '../NotAvailableForGuest';
+import { CustomNav } from '../CustomNavigation';
+
+const navTabMapping = {
+  comment_editor: {
+    Icon: () => <i className="icon-settings" />,
+    i18n: 'Write',
+    index: 0,
+  },
+  comment_preview: {
+    Icon: () => <i className="icon-settings" />,
+    i18n: 'Preview',
+    index: 1,
+  },
+};
 
 /**
  *
@@ -43,7 +57,7 @@ class CommentEditor extends React.Component {
       comment: this.props.commentBody || '',
       isMarkdown: true,
       html: '',
-      activeTab: 1,
+      activeTab: 'comment_editor',
       isUploadable,
       isUploadableFile,
       errorMessage: undefined,
@@ -94,7 +108,7 @@ class CommentEditor extends React.Component {
       comment: '',
       isMarkdown: true,
       html: '',
-      activeTab: 1,
+      activeTab: 'comment_editor',
       errorMessage: undefined,
     });
     // reset value
@@ -280,25 +294,13 @@ class CommentEditor extends React.Component {
       </Button>
     );
 
+
     return (
       <>
         <div className="comment-write">
-          <Nav tabs>
-            <NavItem>
-              <NavLink type="button" className={activeTab === 1 ? 'active' : ''} onClick={() => this.handleSelect(1)}>
-                    Write
-              </NavLink>
-            </NavItem>
-            { this.state.isMarkdown && (
-            <NavItem>
-              <NavLink type="button" className={activeTab === 2 ? 'active' : ''} onClick={() => this.handleSelect(2)}>
-                      Preview
-              </NavLink>
-            </NavItem>
-                ) }
-          </Nav>
+          <CustomNav activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={this.handleSelect} hideBorderBottom />
           <TabContent activeTab={activeTab}>
-            <TabPane tabId={1}>
+            <TabPane tabId="comment_editor">
               <Editor
                 ref={(c) => { this.editor = c }}
                 value={this.state.comment}
@@ -313,7 +315,7 @@ class CommentEditor extends React.Component {
                 onCtrlEnter={this.ctrlEnterHandler}
               />
             </TabPane>
-            <TabPane tabId={2}>
+            <TabPane tabId="comment_preview">
               <div className="comment-form-preview">
                 {commentPreview}
               </div>
@@ -324,7 +326,7 @@ class CommentEditor extends React.Component {
         <div className="comment-submit">
           <div className="d-flex">
             <label className="mr-2">
-              {activeTab === 1 && (
+              {activeTab === 'comment_editor' && (
               <span className="custom-control custom-checkbox">
                 <input
                   type="checkbox"
