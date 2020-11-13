@@ -108,8 +108,13 @@ export default class PageContainer extends Container {
     this.checkAndUpdateImageUrlCached(this.state.likerUsers);
 
     const { currentUser } = this.appContainer;
+
+    // check what kind of user
+    this.state.isGuestUser = currentUser == null;
+    this.state.isSharedUser = this.state.shareLinkId != null && currentUser == null;
+
     // see https://dev.growi.org/5fabddf8bbeb1a0048bcb9e9
-    const isAbleToGetAttachedInformationAboutPages = this.state.pageId != null || !(currentUser == null && this.state.isSharedPage);
+    const isAbleToGetAttachedInformationAboutPages = this.state.isPageExist && !this.state.isSharedUser;
 
     if (isAbleToGetAttachedInformationAboutPages) {
       this.retrieveSeenUsers();
@@ -147,10 +152,21 @@ export default class PageContainer extends Container {
 
 
   get isAbleToOpenPageEditor() {
-    const { currentUser } = this.appContainer;
-    const { isPageForbidden, isNotCreatable, isTrashPage } = this.state;
+    const {
+      isGuestUser, isPageForbidden, isNotCreatable, isTrashPage,
+    } = this.state;
 
-    return ((currentUser != null) && !isPageForbidden && !isNotCreatable && !isTrashPage);
+    return (!isGuestUser && !isPageForbidden && !isNotCreatable && !isTrashPage);
+  }
+
+  /**
+   * whether to display reaction buttons
+   * ex.) like, bookmark
+   */
+  get isAbleToShowPageReactionButtons() {
+    const { isTrashPage, isPageExist, isSharedUser } = this.state;
+
+    return (!isTrashPage && isPageExist && !isSharedUser);
   }
 
   /**
