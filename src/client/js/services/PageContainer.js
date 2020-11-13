@@ -177,6 +177,17 @@ export default class PageContainer extends Container {
   }
 
   /**
+   * whether to display page management
+   * ex.) duplicate, rename
+   */
+  get isAbleToShowPageManagement() {
+    const { isPageForbidden, isPageExist, isPageInTrash } = this.state;
+    const { isSharedUser } = this.appContainer;
+
+    return (!isPageInTrash && isPageExist && !isPageForbidden && !isSharedUser);
+  }
+
+  /**
    * initialize state for markdown data
    */
   initStateMarkdown() {
