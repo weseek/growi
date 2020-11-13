@@ -12,7 +12,7 @@ import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
  * @extends {React.Component}
  */
 
-function PaginationWrapper(props) {
+const PaginationWrapper = React.memo((props) => {
   const {
     activePage, changePage, totalItemsCount, pagingLimit, align,
   } = props;
@@ -152,7 +152,7 @@ function PaginationWrapper(props) {
     </React.Fragment>
   );
 
-}
+});
 
 PaginationWrapper.propTypes = {
   activePage: PropTypes.number.isRequired,
