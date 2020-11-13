@@ -39,9 +39,6 @@ export default class AppContainer extends Container {
 
     this.config = JSON.parse(document.getElementById('growi-context-hydrate').textContent || '{}');
 
-    const isSharedPageElem = document.getElementById('is-shared-page');
-    this.isSharedUser = (isSharedPageElem != null);
-
     const userAgent = window.navigator.userAgent.toLowerCase();
     this.isMobile = /iphone|ipad|android/.test(userAgent);
 
@@ -49,6 +46,9 @@ export default class AppContainer extends Container {
     if (currentUserElem != null) {
       this.currentUser = JSON.parse(currentUserElem.textContent);
     }
+
+    const isSharedPageElem = document.getElementById('is-shared-page');
+    this.isSharedUser = this.currentUser == null && isSharedPageElem != null;
 
     const userLocaleId = this.currentUser?.lang;
     this.i18n = i18nFactory(userLocaleId);
