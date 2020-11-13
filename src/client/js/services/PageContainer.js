@@ -152,7 +152,7 @@ export default class PageContainer extends Container {
     const { isPageForbidden, isNotCreatable, isTrashPage } = this.state;
     const { isGuestUser } = this.appContainer;
 
-    return (!isGuestUser && !isPageForbidden && !isNotCreatable && !isTrashPage);
+    return (!isPageForbidden && !isNotCreatable && !isTrashPage && !isGuestUser);
   }
 
   /**
@@ -184,7 +184,7 @@ export default class PageContainer extends Container {
     const { isPageForbidden, isPageExist, isPageInTrash } = this.state;
     const { isSharedUser } = this.appContainer;
 
-    return (!isPageInTrash && isPageExist && !isPageForbidden && !isSharedUser);
+    return (!isPageForbidden && isPageExist && !isPageInTrash && !isSharedUser);
   }
 
   /**
@@ -195,7 +195,7 @@ export default class PageContainer extends Container {
     const { isPageForbidden, isNotCreatable, isPageInTrash } = this.state;
     const { isSharedUser, isGuestUser } = this.appContainer;
 
-    return (isNotCreatable && !isPageInTrash && !isPageForbidden && !isSharedUser && !isGuestUser);
+    return (!isPageForbidden && isNotCreatable && !isPageInTrash && !isSharedUser && !isGuestUser);
   }
 
   /**
@@ -205,7 +205,7 @@ export default class PageContainer extends Container {
   get isAbleToShowPageAuthors() {
     const { isPageForbidden, isPageExist, isUserPage } = this.state;
 
-    return (!isUserPage && isPageExist && !isPageForbidden);
+    return (!isPageForbidden && isPageExist && !isUserPage);
   }
 
   /**
