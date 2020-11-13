@@ -240,12 +240,17 @@ export default class PageContainer extends Container {
   }
 
   setLatestRemotePageData(s2cMessagePageUpdated) {
-    this.setState({
+    const newState = {
       remoteRevisionId: s2cMessagePageUpdated.revisionId,
       revisionIdHackmdSynced: s2cMessagePageUpdated.revisionIdHackmdSynced,
       lastUpdateUsername: s2cMessagePageUpdated.lastUpdateUsername,
-      hasDraftOnHackmd: s2cMessagePageUpdated.hasDraftOnHackmd,
-    });
+    };
+
+    if (s2cMessagePageUpdated.hasDraftOnHackmd != null) {
+      newState.hasDraftOnHackmd = s2cMessagePageUpdated.hasDraftOnHackmd;
+    }
+
+    this.setState(newState);
   }
 
   setTocHtml(tocHtml) {

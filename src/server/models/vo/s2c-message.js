@@ -5,6 +5,7 @@ const { serializePageSecurely } = require('../serializers/page-serializer');
  */
 class S2cMessagePageUpdated {
 
+
   constructor(page, user) {
     const serializedPage = serializePageSecurely(page, true);
 
@@ -12,18 +13,11 @@ class S2cMessagePageUpdated {
       _id, revision, revisionHackmdSynced, hasDraftOnHackmd,
     } = serializedPage;
 
-    if (_id != null) {
-      this.pageId = _id;
-    }
-    if (revision != null) {
-      this.revisionId = revision;
-    }
-    if (revisionHackmdSynced != null) {
-      this.revisionIdHackmdSynced = revisionHackmdSynced;
-    }
-    if (hasDraftOnHackmd != null) {
-      this.hasDraftOnHackmd = hasDraftOnHackmd;
-    }
+    this.pageId = _id;
+    this.revisionId = revision;
+    this.revisionIdHackmdSynced = revisionHackmdSynced;
+    this.hasDraftOnHackmd = hasDraftOnHackmd;
+
     if (user != null) {
       this.lastUpdateUsername = user.name;
     }
