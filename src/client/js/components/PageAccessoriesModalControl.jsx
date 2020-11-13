@@ -35,7 +35,7 @@ const PageAccessoriesModalControl = (props) => {
       {
         name: 'pageHistory',
         Icon: <HistoryIcon />,
-        disabled: isSharedUser,
+        disabled: isGuestUser || isSharedUser,
       },
       {
         name: 'attachment',

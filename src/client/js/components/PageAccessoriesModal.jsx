@@ -48,7 +48,7 @@ const PageAccessoriesModal = (props) => {
         Icon: HistoryIcon,
         i18n: t('History'),
         index: 2,
-        isLinkEnabled: v => !isSharedUser,
+        isLinkEnabled: v => !isGuestUser && !isSharedUser,
       },
       attachment: {
         Icon: AttachmentIcon,
@@ -59,7 +59,7 @@ const PageAccessoriesModal = (props) => {
         Icon: ShareLinkIcon,
         i18n: t('share_links.share_link_management'),
         index: 4,
-        isLinkEnabled: v => !isGuestUser || !isSharedUser,
+        isLinkEnabled: v => !isGuestUser && !isSharedUser,
       },
     };
   }, [t, isGuestUser, isSharedUser]);
@@ -109,11 +109,11 @@ const PageAccessoriesModal = (props) => {
             <TabPane tabId="timeline">
               {activeComponents.has('timeline') && <PageTimeline /> }
             </TabPane>
-            <TabPane tabId="pageHistory">
-              <div className="overflow-auto">
+            {!isGuestUser && (
+              <TabPane tabId="pageHistory">
                 {activeComponents.has('pageHistory') && <PageHistory /> }
-              </div>
-            </TabPane>
+              </TabPane>
+            )}
             <TabPane tabId="attachment">
               {activeComponents.has('attachment') && <PageAttachment />}
             </TabPane>
