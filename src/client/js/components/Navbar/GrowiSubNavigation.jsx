@@ -24,20 +24,22 @@ import DrawerToggler from './DrawerToggler';
 import PageManagement from '../Page/PageManagement';
 
 
-// eslint-disable-next-line react/prop-types
-const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
+const PagePathNav = ({
+  // eslint-disable-next-line react/prop-types
+  pageId, pagePath, isPageForbidden, isEditorMode,
+}) => {
 
   const dPagePath = new DevidedPagePath(pagePath, false, true);
 
   let formerLink;
   let latterLink;
 
-  // when the path is root or first level
-  if (dPagePath.isRoot || dPagePath.isFormerRoot) {
+  // one line
+  if (dPagePath.isRoot || dPagePath.isFormerRoot || isEditorMode) {
     const linkedPagePath = new LinkedPagePath(pagePath);
     latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />;
   }
-  // when the path is second level or deeper
+  // two line
   else {
     const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
     const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
@@ -119,7 +121,7 @@ const GrowiSubNavigation = (props) => {
               <TagLabels editorMode={editorMode} />
             </div>
           ) }
-          <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
+          <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} isEditorMode={isEditorMode} />
         </div>
       </div>
 
