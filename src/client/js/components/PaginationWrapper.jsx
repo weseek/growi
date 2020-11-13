@@ -158,7 +158,7 @@ PaginationWrapper.propTypes = {
   activePage: PropTypes.number.isRequired,
   changePage: PropTypes.func.isRequired,
   totalItemsCount: PropTypes.number.isRequired,
-  pagingLimit: PropTypes.number.isRequired,
+  pagingLimit: PropTypes.number,
   align: PropTypes.string,
   size: PropTypes.string,
 };
@@ -166,6 +166,7 @@ PaginationWrapper.propTypes = {
 PaginationWrapper.defaultProps = {
   align: 'left',
   size: 'md',
+  pagingLimit: Infinity,
 };
 
 export default PaginationWrapper;
