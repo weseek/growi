@@ -39,7 +39,7 @@ $nav-tabs-link-active-border-color: $bordercolor-nav-tabs-active;
 @import 'reboot-bootstrap-nav';
 @import 'reboot-toastr-colors';
 
-// determine variables with　bootstrap function (These variables can be used after importing bootstrap)
+// determine variables with　bootstrap function (These variables can be used after importing bootstrap above)
 $color-modal-header: color-yiq($primary) !default;
 
 :not(pre) {
