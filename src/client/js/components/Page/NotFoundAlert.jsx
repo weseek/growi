@@ -28,16 +28,19 @@ const NotFoundAlert = (props) => {
           {t('not_found_page.page_not_exist_alert')}
         </h2>
         <button
-          id="create-page-btn-wrapper-for-tooltip"
           type="button"
-          className={`m-1 pl-3 pr-3 btn bg-info text-white ${isGuestUser && 'disabled'}`}
+          className="m-1 pl-3 pr-3 btn bg-info text-white"
           onClick={() => { clickHandler('edit') }}
+          disabled={isGuestUserMode}
         >
-          <i className="icon-note icon-fw" />
-          {t('not_found_page.Create Page')}
+          <div id="create-page-btn-wrapper-for-tooltip">
+            <i className="icon-note icon-fw" />
+            {t('not_found_page.Create Page')}
+          </div>
         </button>
 
-        {isGuestUser && (
+
+        {isGuestUserMode && (
         <UncontrolledTooltip placement="bottom" target="create-page-btn-wrapper-for-tooltip" fade={false}>
           {t('Not available for guest')}
         </UncontrolledTooltip>
