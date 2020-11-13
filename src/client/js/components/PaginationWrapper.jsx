@@ -1,70 +1,45 @@
 import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
-import { withTranslation } from 'react-i18next';
-
 import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 
 function PaginationWrapper(props) {
   const {
-    activePage, changePage, totalItemsCount, limit, align,
+    activePage, changePage, totalItemsCount, pagingLimit, align,
   } = props;
-  const paginationNumbers = {};
+
+  /**
+   * various numbers used to generate pagination dom
+   */
+  const paginationNumbers = useMemo(() => {
+    // calc totalPageNumber
+    const totalPage = Math.floor(totalItemsCount / pagingLimit) + (totalItemsCount % pagingLimit === 0 ? 0 : 1);
+
+    let paginationStart = activePage - 2;
+    let maxViewPageNum = activePage + 2;
+    // if pagiNation Number area size = 5 , pageNumber is calculated here
+    // activePage Position calculate ex. 4 5 [6] 7 8 (Page8 over is Max), 3 4 5 [6] 7 (Page7 is Max)
+    if (paginationStart < 1) {
+      const diff = 1 - paginationStart;
+      paginationStart += diff;
+      maxViewPageNum = Math.min(totalPage, maxViewPageNum + diff);
+    }
+    if (maxViewPageNum > totalPage) {
+      const diff = maxViewPageNum - totalPage;
+      maxViewPageNum -= diff;
+      paginationStart = Math.max(1, paginationStart - diff);
+    }
+
+    return {
+      totalPage,
+      paginationStart,
+      maxViewPageNum,
+    };
+  }, [activePage, totalItemsCount, pagingLimit]);
+
   const { paginationStart } = paginationNumbers;
   const { maxViewPageNum } = paginationNumbers;
   const { totalPage } = paginationNumbers;
-  //   super(props);
-
-  //   this.state = {
-  //     activePage: 1,
-  //     totalItemsCount: 0,
-  //     paginationNumbers: {},
-  //     limit: this.props.pagingLimit || Infinity,
-  //   };
-
-  //   this.calculatePagination = this.calculatePagination.bind(this);
-  // }
-
-
-  // componentWillReceiveProps(nextProps) {
-  //   this.setState({
-  //     activePage: nextProps.activePage,
-  //     totalItemsCount: nextProps.totalItemsCount,
-  //     limit: nextProps.pagingLimit,
-  //   }, () => {
-  //     const activePage = this.state.activePage;
-  //     const totalCount = this.state.totalItemsCount;
-  //     const limit = this.state.limit;
-  //     const paginationNumbers = this.calculatePagination(limit, totalCount, activePage);
-  //     this.setState({ paginationNumbers });
-  //   });
-  // }
-
-  // calculatePagination(limit, totalCount, activePage) {
-  //   // calc totalPageNumber
-  //   const totalPage = Math.floor(totalCount / limit) + (totalCount % limit === 0 ? 0 : 1);
-
-  //   let paginationStart = activePage - 2;
-  //   let maxViewPageNum = activePage + 2;
-  //   // if pagiNation Number area size = 5 , pageNumber is calculated here
-  //   // activePage Position calculate ex. 4 5 [6] 7 8 (Page8 over is Max), 3 4 5 [6] 7 (Page7 is Max)
-  //   if (paginationStart < 1) {
-  //     const diff = 1 - paginationStart;
-  //     paginationStart += diff;
-  //     maxViewPageNum = Math.min(totalPage, maxViewPageNum + diff);
-  //   }
-  //   if (maxViewPageNum > totalPage) {
-  //     const diff = maxViewPageNum - totalPage;
-  //     maxViewPageNum -= diff;
-  //     paginationStart = Math.max(1, paginationStart - diff);
-  //   }
-
-  //   return {
-  //     totalPage,
-  //     paginationStart,
-  //     maxViewPageNum,
-  //   };
-  // }
 
   /**
    * generate Elements of Pagination First Prev
@@ -168,11 +143,9 @@ function PaginationWrapper(props) {
     </React.Fragment>
   );
 
-
 }
 
 PaginationWrapper.propTypes = {
-
   activePage: PropTypes.number.isRequired,
   changePage: PropTypes.func.isRequired,
   totalItemsCount: PropTypes.number.isRequired,
@@ -186,4 +159,4 @@ PaginationWrapper.defaultProps = {
   size: 'md',
 };
 
-export default withTranslation()(PaginationWrapper);
+export default PaginationWrapper;
