@@ -326,6 +326,7 @@ ul.pagination {
 .grw-custom-nav {
   .nav-item {
     .nav-link {
+      -webkit-appearance: none;
       color: $color-link;
       svg {
         fill: $color-link;
