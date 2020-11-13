@@ -61,6 +61,7 @@ export default class PageContainer extends Container {
       createdAt: mainContent.getAttribute('data-page-created-at'),
       updatedAt: mainContent.getAttribute('data-page-updated-at'),
 
+      isUserPage: JSON.parse(mainContent.getAttribute('data-page-user')) != null,
       isTrashPage: isTrashPage(path),
       isForbidden: JSON.parse(mainContent.getAttribute('data-page-is-forbidden')),
       isDeleted: JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
@@ -151,7 +152,7 @@ export default class PageContainer extends Container {
     const { isPageForbidden, isNotCreatable, isTrashPage } = this.state;
     const { isGuestUser } = this.appContainer;
 
-    return (!isGuestUser && !isPageForbidden && !isNotCreatable && !isTrashPage);
+    return (!isPageForbidden && !isNotCreatable && !isTrashPage && !isGuestUser);
   }
 
   /**
@@ -163,6 +164,59 @@ export default class PageContainer extends Container {
     const { isSharedUser } = this.appContainer;
 
     return (!isTrashPage && isPageExist && !isSharedUser);
+  }
+
+  /**
+   * whether to display tag labels
+   */
+  get isAbleToShowTagLabel() {
+    const { isPageForbidden, isUserPage } = this.state;
+    const { isSharedUser } = this.appContainer;
+
+    return (!isPageForbidden && !isUserPage && !isSharedUser);
+  }
+
+  /**
+   * whether to display page management
+   * ex.) duplicate, rename
+   */
+  get isAbleToShowPageManagement() {
+    const { isPageForbidden, isPageExist, isPageInTrash } = this.state;
+    const { isSharedUser } = this.appContainer;
+
+    return (!isPageForbidden && isPageExist && !isPageInTrash && !isSharedUser);
+  }
+
+  /**
+   * whether to threeStrandedButton
+   * ex.) view, edit, hackmd
+   */
+  get isAbleToShowThreeStrandedButton() {
+    const { isPageForbidden, isNotCreatable, isPageInTrash } = this.state;
+    const { isSharedUser, isGuestUser } = this.appContainer;
+
+    return (!isPageForbidden && !isNotCreatable && !isPageInTrash && !isSharedUser && !isGuestUser);
+  }
+
+  /**
+   * whether to threeStrandedButton
+   * ex.) view, edit, hackmd
+   */
+  get isAbleToShowPageAuthors() {
+    const { isPageForbidden, isPageExist, isUserPage } = this.state;
+
+    return (!isPageForbidden && isPageExist && !isUserPage);
+  }
+
+  /**
+   * whether to like button
+   * not displayed on user page
+   */
+  get isAbleToShowLikeButton() {
+    const { isUserPage } = this.state;
+    const { isSharedUser } = this.appContainer;
+
+    return (!isUserPage && !isSharedUser);
   }
 
   /**
