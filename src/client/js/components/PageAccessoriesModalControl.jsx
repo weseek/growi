@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { Fragment, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
@@ -54,7 +54,7 @@ const PageAccessoriesModalControl = (props) => {
     <div className="grw-page-accessories-control d-flex align-items-center justify-content-between pb-1">
       {accessoriesBtnList.map((accessory) => {
         return (
-          <>
+          <Fragment key={accessory.name}>
             <div id={`shareLink-btn-wrapper-for-tooltip-for-${accessory.name}`}>
               <button
                 type="button"
@@ -69,7 +69,7 @@ const PageAccessoriesModalControl = (props) => {
                 {t('Not available for guest')}
               </UncontrolledTooltip>
             )}
-          </>
+          </Fragment>
         );
       })}
       <div className="d-flex align-items-center">
