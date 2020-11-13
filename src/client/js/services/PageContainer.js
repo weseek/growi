@@ -109,6 +109,8 @@ export default class PageContainer extends Container {
 
     const { currentUser } = this.appContainer;
 
+    // check what kind of user
+    this.state.isGuestUser = currentUser == null;
     this.state.isSharedUser = this.state.shareLinkId != null && currentUser == null;
 
     // see https://dev.growi.org/5fabddf8bbeb1a0048bcb9e9
@@ -150,10 +152,11 @@ export default class PageContainer extends Container {
 
 
   get isAbleToOpenPageEditor() {
-    const { currentUser } = this.appContainer;
-    const { isPageForbidden, isNotCreatable, isTrashPage } = this.state;
+    const {
+      isGuestUser, isPageForbidden, isNotCreatable, isTrashPage,
+    } = this.state;
 
-    return ((currentUser != null) && !isPageForbidden && !isNotCreatable && !isTrashPage);
+    return (!isGuestUser && !isPageForbidden && !isNotCreatable && !isTrashPage);
   }
 
   /**
