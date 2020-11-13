@@ -17,7 +17,7 @@ import { withUnstatedContainers } from './UnstatedUtils';
 
 const PageAccessoriesModalControl = (props) => {
   const {
-    t, pageAccessoriesContainer, isGuestUserMode, isSharedUserMode,
+    t, pageAccessoriesContainer, isGuestUser, isSharedUser,
   } = props;
 
   const accessoriesBtnList = useMemo(() => {
@@ -25,17 +25,17 @@ const PageAccessoriesModalControl = (props) => {
       {
         name: 'pagelist',
         Icon: <PageListIcon />,
-        disabled: isSharedUserMode,
+        disabled: isSharedUser,
       },
       {
         name: 'timeline',
         Icon: <TimeLineIcon />,
-        disabled: isSharedUserMode,
+        disabled: isSharedUser,
       },
       {
         name: 'pageHistory',
         Icon: <HistoryIcon />,
-        disabled: isSharedUserMode,
+        disabled: isSharedUser,
       },
       {
         name: 'attachment',
@@ -45,10 +45,10 @@ const PageAccessoriesModalControl = (props) => {
       {
         name: 'shareLink',
         Icon: <ShareLinkIcon />,
-        disabled: isGuestUserMode || isSharedUserMode,
+        disabled: isGuestUser || isSharedUser,
       },
     ];
-  }, [isGuestUserMode, isSharedUserMode]);
+  }, [isGuestUser, isSharedUser]);
 
   return (
     <div className="grw-page-accessories-control d-flex align-items-center justify-content-between pb-1">
@@ -74,7 +74,7 @@ const PageAccessoriesModalControl = (props) => {
       })}
       <div className="d-flex align-items-center">
         <span className="border-left grw-border-vr">&nbsp;</span>
-        <SeenUserInfo disabled={isSharedUserMode} />
+        <SeenUserInfo disabled={isSharedUser} />
       </div>
     </div>
   );
@@ -89,8 +89,8 @@ PageAccessoriesModalControl.propTypes = {
 
   pageAccessoriesContainer: PropTypes.instanceOf(PageAccessoriesContainer).isRequired,
 
-  isGuestUserMode: PropTypes.bool.isRequired,
-  isSharedUserMode: PropTypes.bool.isRequired,
+  isGuestUser: PropTypes.bool.isRequired,
+  isSharedUser: PropTypes.bool.isRequired,
 };
 
 export default withTranslation()(PageAccessoriesModalControlWrapper);

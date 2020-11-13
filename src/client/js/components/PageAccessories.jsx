@@ -10,15 +10,15 @@ import PageAccessoriesContainer from '../services/PageAccessoriesContainer';
 
 const PageAccessories = (props) => {
   const { appContainer, pageAccessoriesContainer } = props;
-  const isGuestUserMode = appContainer.currentUser == null;
-  const isSharedUserMode = appContainer.isSharedUser;
+  const isGuestUser = appContainer.currentUser == null;
+  const isSharedUser = appContainer.isSharedUser;
 
   return (
     <>
-      <PageAccessoriesModalControl isGuestUserMode={isGuestUserMode} isSharedUserMode={isSharedUserMode} />
+      <PageAccessoriesModalControl isGuestUser={isGuestUser} isSharedUser={isSharedUser} />
       <PageAccessoriesModal
-        isGuestUserMode={isGuestUserMode}
-        isSharedUserMode={isSharedUserMode}
+        isGuestUser={isGuestUser}
+        isSharedUser={isSharedUser}
         isOpen={pageAccessoriesContainer.state.isPageAccessoriesModalShown}
         onClose={pageAccessoriesContainer.closePageAccessoriesModal}
       />
