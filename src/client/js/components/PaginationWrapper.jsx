@@ -12,6 +12,7 @@ function PaginationWrapper(props) {
   const paginationNumbers = {};
   const { paginationStart } = paginationNumbers;
   const { maxViewPageNum } = paginationNumbers;
+  const { totalPage } = paginationNumbers;
   //   super(props);
 
   //   this.state = {
@@ -119,15 +120,15 @@ function PaginationWrapper(props) {
    * ex.  <<   <   1  2  3  >  >>
    * this function set > & >>
    */
-  const generateNextLast = useCallback((activePage, totalPage) => {
+  const generateNextLast = useCallback(() => {
     const paginationItems = [];
     if (totalPage !== activePage) {
       paginationItems.push(
         <PaginationItem key="painationItemNext">
-          <PaginationLink next onClick={() => { return props.changePage(activePage + 1) }} />
+          <PaginationLink next onClick={() => { return changePage(activePage + 1) }} />
         </PaginationItem>,
         <PaginationItem key="painationItemLast">
-          <PaginationLink last onClick={() => { return props.changePage(totalPage) }} />
+          <PaginationLink last onClick={() => { return changePage(totalPage) }} />
         </PaginationItem>,
       );
     }
@@ -142,8 +143,7 @@ function PaginationWrapper(props) {
       );
     }
     return paginationItems;
-
-  }, []);
+  }, [activePage, changePage, totalPage]);
 
   const getListClassName = useMemo(() => {
     const listClassNames = [];
@@ -158,18 +158,12 @@ function PaginationWrapper(props) {
     return listClassNames.join(' ');
   }, [align]);
 
-  const paginationItems = [];
-
-  const totalPage = paginationNumbers.totalPage;
-  const nextLastItems = generateNextLast(activePage, totalPage);
-  paginationItems.push(nextLastItems);
-
   return (
     <React.Fragment>
       <Pagination size={props.size} listClassName={getListClassName}>
         {generateFirstPrev()}
         {generatePaginations()}
-        {paginationItems}
+        {generateNextLast()}
       </Pagination>
     </React.Fragment>
   );
