@@ -28,16 +28,15 @@ class LikeButton extends React.Component {
 
   render() {
     const { pageContainer, t } = this.props;
-    const isUserLoggedIn = this.props.appContainer.currentUser != null;
 
     return (
-      <div className="d-inline-block" tabIndex="0" data-toggle="tooltip" title={isUserLoggedIn ? 'Like' : t('Not available for guest')}>
+      <div className="d-inline-block" tabIndex="0" data-toggle="tooltip" title={!pageContainer.state.isGuestUser ? 'Like' : t('Not available for guest')}>
         <button
           type="button"
           onClick={this.handleClick}
           className={`btn btn-like border-0
           ${pageContainer.state.isLiked ? 'active' : ''}`}
-          disabled={!isUserLoggedIn}
+          disabled={pageContainer.state.isGuestUser}
         >
           <i className="icon-like mr-3"></i>
           <span className="total-likes">
