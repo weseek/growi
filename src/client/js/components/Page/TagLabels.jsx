@@ -78,7 +78,7 @@ class TagLabels extends React.Component {
     return (
       <>
 
-        <form className="grw-tag-labels form-inline">
+        <form className="grw-tag-labels form-inline flex-nowrap">
           <i className="tag-icon icon-tag mr-2"></i>
           <Suspense fallback={<span className="grw-tag-label badge badge-secondary">―</span>}>
             <RenderTagLabels
