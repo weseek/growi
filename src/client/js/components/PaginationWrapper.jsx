@@ -66,10 +66,10 @@ function PaginationWrapper(props) {
   // }
 
   /**
-    * generate Elements of Pagination First Prev
-    * ex.  <<   <   1  2  3  >  >>
-    * this function set << & <
-    */
+   * generate Elements of Pagination First Prev
+   * ex.  <<   <   1  2  3  >  >>
+   * this function set << & <
+   */
   const generateFirstPrev = useCallback(() => {
     if (activePage !== 1) {
       return (
