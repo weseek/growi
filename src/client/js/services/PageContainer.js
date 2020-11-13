@@ -104,8 +104,11 @@ export default class PageContainer extends Container {
     this.initStateMarkdown();
     this.checkAndUpdateImageUrlCached(this.state.likerUsers);
 
-    // skip if shared page or new page
-    if (this.state.shareLinkId == null && this.state.pageId != null) {
+    const { currentUser } = this.appContainer;
+    // see https://dev.growi.org/5fabddf8bbeb1a0048bcb9e9
+    const isAbleToGetAttachedInformationAboutPages = this.state.pageId != null || !(currentUser == null && this.state.isSharedPage);
+
+    if (isAbleToGetAttachedInformationAboutPages) {
       this.retrieveSeenUsers();
       this.retrieveLikeInfo();
       this.retrieveBookmarkInfo();
