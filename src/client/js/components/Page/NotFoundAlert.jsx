@@ -5,7 +5,7 @@ import { UncontrolledTooltip } from 'reactstrap';
 
 
 const NotFoundAlert = (props) => {
-  const { t, isHidden, isGuestUser } = props;
+  const { t, isHidden, isGuestUserMode } = props;
   function clickHandler(viewType) {
     if (props.onPageCreateClicked === null) {
       return;
@@ -55,7 +55,7 @@ NotFoundAlert.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   onPageCreateClicked: PropTypes.func,
   isHidden: PropTypes.bool.isRequired,
-  isGuestUser: PropTypes.bool.isRequired,
+  isGuestUserMode: PropTypes.bool.isRequired,
 };
 
 export default withTranslation()(NotFoundAlert);
