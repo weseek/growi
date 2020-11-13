@@ -162,22 +162,9 @@ html[dark] {
   /*
   * Modal
   */
-  .modal {
-    .modal-dialog .modal-header.bg-primary {
-      background-image: url('/images/themes/christmas/christmas-navbar.jpg');
-      border-bottom: 2px solid $subthemecolor;
-    }
-
-    .modal-dialog:not(.grw-page-accessories-modal) {
-      .modal-header {
-        .modal-title {
-          color: $themelight;
-        }
-        .close {
-          color: $themelight;
-        }
-      }
-    }
+  .modal-dialog .modal-header.bg-primary {
+    background-image: url('/images/themes/christmas/christmas-navbar.jpg');
+    border-bottom: 2px solid $subthemecolor;
   }
 
   /*
