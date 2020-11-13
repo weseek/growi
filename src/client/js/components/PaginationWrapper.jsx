@@ -6,11 +6,12 @@ import { withTranslation } from 'react-i18next';
 import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 
 function PaginationWrapper(props) {
-  const paginationNumbers = {};
   const {
     activePage, changePage, totalItemsCount, limit, align,
   } = props;
-
+  const paginationNumbers = {};
+  const { paginationStart } = paginationNumbers;
+  const { maxViewPageNum } = paginationNumbers;
   //   super(props);
 
   //   this.state = {
@@ -100,19 +101,19 @@ function PaginationWrapper(props) {
    *  ex. << < 4 5 6 7 8 > >>, << < 1 2 3 4 > >>
    * this function set  numbers
    */
-  const generatePaginations = (activePage, paginationStart, maxViewPageNum) => {
+  const generatePaginations = useCallback(() => {
     const paginationItems = [];
     for (let number = paginationStart; number <= maxViewPageNum; number++) {
       paginationItems.push(
         <PaginationItem key={`paginationItem-${number}`} active={number === activePage}>
-          <PaginationLink onClick={() => { return props.changePage(number) }}>
+          <PaginationLink onClick={() => { return changePage(number) }}>
             {number}
           </PaginationLink>
         </PaginationItem>,
       );
     }
     return paginationItems;
-  };
+  }, [activePage, changePage, paginationStart, maxViewPageNum]);
 
   /**
    * generate Elements of Pagination First Prev
@@ -161,10 +162,6 @@ function PaginationWrapper(props) {
   const paginationItems = [];
 
   const totalPage = paginationNumbers.totalPage;
-  const paginationStart = paginationNumbers.paginationStart;
-  const maxViewPageNum = paginationNumbers.maxViewPageNum;
-  const paginations = generatePaginations(activePage, paginationStart, maxViewPageNum);
-  paginationItems.push(paginations);
   const nextLastItems = generateNextLast(activePage, totalPage);
   paginationItems.push(nextLastItems);
 
@@ -172,6 +169,7 @@ function PaginationWrapper(props) {
     <React.Fragment>
       <Pagination size={props.size} listClassName={getListClassName}>
         {generateFirstPrev()}
+        {generatePaginations()}
         {paginationItems}
       </Pagination>
     </React.Fragment>
