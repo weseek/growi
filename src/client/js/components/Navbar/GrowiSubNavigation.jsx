@@ -145,7 +145,7 @@ const GrowiSubNavigation = (props) => {
             { pageContainer.isAbleToShowPageManagement && <PageManagement isCompactMode={isCompactMode} /> }
           </div>
           <div className="mt-2">
-            {!isNotCreatable && !isPageInTrash && !isPageForbidden && (
+            {pageContainer.isAbleToShowThreeStrandedButton && (
               <ThreeStrandedButton
                 onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
                 isBtnDisabled={currentUser == null}

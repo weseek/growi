@@ -188,6 +188,17 @@ export default class PageContainer extends Container {
   }
 
   /**
+   * whether to threeStrandedButton
+   * ex.) view, edit, hackmd
+   */
+  get isAbleToShowThreeStrandedButton() {
+    const { isPageForbidden, isNotCreatable, isPageInTrash } = this.state;
+    const { isSharedUser, isGuestUser } = this.appContainer;
+
+    return (isNotCreatable && !isPageInTrash && !isPageForbidden && !isSharedUser && !isGuestUser);
+  }
+
+  /**
    * initialize state for markdown data
    */
   initStateMarkdown() {
