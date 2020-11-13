@@ -32,11 +32,9 @@ class BookmarkButton extends React.Component {
     const isUserLoggedIn = this.props.appContainer.currentUser != null;
 
     return (
-      <div id="bookmark-button">
+      <div className="d-inline-block" tabIndex="0" data-toggle="tooltip" title={isUserLoggedIn ? 'Bookmark' : t('Not available for guest')}>
         <button
           type="button"
-          href="#"
-          title="Bookmark"
           onClick={this.handleClick}
           className={`btn btn-bookmark border-0
           ${`btn-${this.props.size}`}
