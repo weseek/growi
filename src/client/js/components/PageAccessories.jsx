@@ -5,12 +5,12 @@ import PageAccessoriesModalControl from './PageAccessoriesModalControl';
 import PageAccessoriesModal from './PageAccessoriesModal';
 
 import { withUnstatedContainers } from './UnstatedUtils';
-import PageContainer from '../services/PageContainer';
+import AppContainer from '../services/AppContainer';
 import PageAccessoriesContainer from '../services/PageAccessoriesContainer';
 
 const PageAccessories = (props) => {
-  const { pageContainer, pageAccessoriesContainer } = props;
-  const { isGuestUser, isSharedUser } = pageContainer.state;
+  const { appContainer, pageAccessoriesContainer } = props;
+  const { isGuestUser, isSharedUser } = appContainer;
 
   return (
     <>
@@ -27,10 +27,10 @@ const PageAccessories = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageAccessoriesWrapper = withUnstatedContainers(PageAccessories, [PageContainer, PageAccessoriesContainer]);
+const PageAccessoriesWrapper = withUnstatedContainers(PageAccessories, [AppContainer, PageAccessoriesContainer]);
 
 PageAccessories.propTypes = {
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageAccessoriesContainer: PropTypes.instanceOf(PageAccessoriesContainer).isRequired,
 };
 

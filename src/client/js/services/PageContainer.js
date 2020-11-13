@@ -107,10 +107,10 @@ export default class PageContainer extends Container {
     this.initStateMarkdown();
     this.checkAndUpdateImageUrlCached(this.state.likerUsers);
 
-    const { currentUser } = this.appContainer;
+    const { isSharedUser } = this.appContainer;
 
     // see https://dev.growi.org/5fabddf8bbeb1a0048bcb9e9
-    const isAbleToGetAttachedInformationAboutPages = this.state.isPageExist && !this.state.isSharedUser;
+    const isAbleToGetAttachedInformationAboutPages = this.state.isPageExist && !isSharedUser;
 
     if (isAbleToGetAttachedInformationAboutPages) {
       this.retrieveSeenUsers();
@@ -148,9 +148,8 @@ export default class PageContainer extends Container {
 
 
   get isAbleToOpenPageEditor() {
-    const {
-      isGuestUser, isPageForbidden, isNotCreatable, isTrashPage,
-    } = this.state;
+    const { isPageForbidden, isNotCreatable, isTrashPage } = this.state;
+    const { isGuestUser } = this.appContainer;
 
     return (!isGuestUser && !isPageForbidden && !isNotCreatable && !isTrashPage);
   }
@@ -160,7 +159,8 @@ export default class PageContainer extends Container {
    * ex.) like, bookmark
    */
   get isAbleToShowPageReactionButtons() {
-    const { isTrashPage, isPageExist, isSharedUser } = this.state;
+    const { isTrashPage, isPageExist } = this.state;
+    const { isSharedUser } = this.appContainer;
 
     return (!isTrashPage && isPageExist && !isSharedUser);
   }
