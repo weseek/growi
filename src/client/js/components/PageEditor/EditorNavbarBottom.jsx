@@ -76,9 +76,9 @@ const EditorNavbarBottom = (props) => {
         </Collapse>
         )
       }
-      <div className={`navbar navbar-expand border-top px-2 ${additionalClasses.join(' ')}`}>
+      <div className={`navbar navbar-expand border-top px-2 px-md-3 ${additionalClasses.join(' ')}`}>
         <form className="form-inline">
-          { isDrawerMode && renderDrawerButton() }
+          { isDeviceSmallerThanMd && renderDrawerButton() }
           { isOptionsSelectorEnabled && !isDeviceSmallerThanMd && <OptionsSelector /> }
         </form>
         <form className="form-inline flex-nowrap ml-auto">
@@ -115,7 +115,7 @@ const EditorNavbarBottom = (props) => {
         <Collapse isOpen={isExpanded}>
           <div className="px-2"> {/* set padding for border-top */}
             <div className={`navbar navbar-expand border-top px-0 ${additionalClasses.join(' ')}`}>
-              <form className="form-inline ml-md-auto">
+              <form className="form-inline ml-auto">
                 <OptionsSelector />
               </form>
             </div>

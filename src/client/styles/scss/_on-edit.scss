@@ -11,8 +11,9 @@ body:not(.on-edit) {
 body.on-edit {
   overflow-y: hidden !important;
 
-  .container {
-    max-width: 100%;
+  .container-fluid {
+    padding-right: 15px;
+    padding-left: 15px;
   }
 
   .grw-navbar {
@@ -120,7 +121,6 @@ body.on-edit {
    */
   .grw-subnav {
     padding-bottom: 0;
-    padding-left: 15px;
   }
 
   h1 {
