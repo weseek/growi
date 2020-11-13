@@ -70,20 +70,12 @@ const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
 /* eslint-disable react/prop-types */
 const PageReactionButtons = ({ appContainer, pageContainer }) => {
 
-  const {
-    pageUser, shareLinkId,
-  } = pageContainer.state;
-
-  const isSharedPage = useMemo(() => {
-    return shareLinkId != null;
-  }, [shareLinkId]);
-
   return (
     <>
-      {pageUser == null && !isSharedPage && (
-      <span className="mr-2">
-        <LikeButton />
-      </span>
+      {pageContainer.isAbleToShowLikeButton && (
+        <span className="mr-2">
+          <LikeButton />
+        </span>
       )}
       <span>
         <BookmarkButton crowi={appContainer} />
