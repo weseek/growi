@@ -275,6 +275,7 @@
     "external_accounts":"External accounts",
     "create_external_account":"Create external account",
     "external_account_list": "External Account List",
+    "external_account_none":"No External Account",
     "invite": "Invite",
     "invited": "User was invited",
     "back_to_user_management": "Back to User Management",
