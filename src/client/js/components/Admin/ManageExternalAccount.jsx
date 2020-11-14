@@ -57,9 +57,19 @@ class ManageExternalAccount extends React.Component {
         </p>
 
         <h2>{t('admin:user_management.external_account_list')}</h2>
-        {(totalAccounts !== 0) && pager }
-        <ExternalAccountTable />
-        {(totalAccounts === 0) ? '外部アカウントはありません' : pager}
+        {(totalAccounts !== 0) ? (
+          <>
+            {pager}
+            <ExternalAccountTable />
+            {pager}
+          </>
+         )
+         : (
+           <>
+           外部アカウントはありません
+           </>
+)}
+
       </Fragment>
     );
   }
