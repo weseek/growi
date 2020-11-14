@@ -66,7 +66,7 @@ class ManageExternalAccount extends React.Component {
          )
          : (
            <>
-           外部アカウントはありません
+             {t('admin:user_management.external_account_none')}
            </>
 )}
 
