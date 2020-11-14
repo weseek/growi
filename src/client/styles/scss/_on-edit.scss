@@ -11,8 +11,9 @@ body:not(.on-edit) {
 body.on-edit {
   overflow-y: hidden !important;
 
-  .container {
-    max-width: 100%;
+  .container-fluid {
+    padding-right: 15px;
+    padding-left: 15px;
   }
 
   .grw-navbar {
@@ -22,10 +23,12 @@ body.on-edit {
 
   // restrict height of subnav
   .grw-subnav {
-    max-height: $grw-subnav-max-height-on-edit;
+    height: $grw-subnav-height-on-edit;
+    min-height: unset;
+    padding-top: 0;
 
-    @include media-breakpoint-up(md) {
-      max-height: $grw-subnav-max-height-md-on-edit;
+    @include media-breakpoint-up(lg) {
+      height: $grw-subnav-height-lg-on-edit;
     }
   }
 
@@ -36,24 +39,18 @@ body.on-edit {
   }
 
   // calculate margin
-  $editor-margin-top: $grw-navbar-border-width + $grw-subnav-max-height-on-edit;
+  $editor-margin-top: $grw-navbar-border-width + $grw-subnav-height-on-edit;
   @include expand-editor($editor-margin-top);
 
-  @include media-breakpoint-up(md) {
+  @include media-breakpoint-up(lg) {
     // calculate margin
-    $editor-margin-top: $grw-navbar-border-width + $grw-subnav-max-height-md-on-edit;
+    $editor-margin-top: $grw-navbar-border-width + $grw-subnav-height-lg-on-edit;
     @include expand-editor($editor-margin-top);
   }
 
   // show
   .d-edit-block {
     display: block !important;
-  }
-
-  .d-edit-sm-block {
-    @include media-breakpoint-up(sm) {
-      display: block !important;
-    }
   }
 
   // hide unnecessary elements
@@ -82,10 +79,6 @@ body.on-edit {
   /*****************
    * Expand Editor
    *****************/
-  .container-fluid {
-    padding-bottom: 0;
-  }
-
   .grw-editor-navbar-bottom {
     height: $grw-editor-navbar-bottom-height;
 
@@ -126,6 +119,24 @@ body.on-edit {
   /*********************
    * Navigation styles
    */
+  .grw-subnav {
+    padding-bottom: 0;
+
+    h1 {
+      font-size: 16px;
+    }
+
+    .grw-drawer-toggler {
+      width: 38px;
+      height: 38px;
+      font-size: 18px;
+    }
+
+    .grw-taglabels-container {
+      margin-bottom: 0;
+    }
+  }
+
   // ellipsis .grw-page-path-hierarchical-link
   .grw-subnav-left-side {
     overflow: hidden;

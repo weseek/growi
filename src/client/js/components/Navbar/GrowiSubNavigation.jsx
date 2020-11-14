@@ -24,20 +24,22 @@ import DrawerToggler from './DrawerToggler';
 import PageManagement from '../Page/PageManagement';
 
 
-// eslint-disable-next-line react/prop-types
-const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
+const PagePathNav = ({
+  // eslint-disable-next-line react/prop-types
+  pageId, pagePath, isPageForbidden, isEditorMode,
+}) => {
 
   const dPagePath = new DevidedPagePath(pagePath, false, true);
 
   let formerLink;
   let latterLink;
 
-  // when the path is root or first level
-  if (dPagePath.isRoot || dPagePath.isFormerRoot) {
+  // one line
+  if (dPagePath.isRoot || dPagePath.isFormerRoot || isEditorMode) {
     const linkedPagePath = new LinkedPagePath(pagePath);
     latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />;
   }
-  // when the path is second level or deeper
+  // two line
   else {
     const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
     const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
@@ -94,6 +96,7 @@ const GrowiSubNavigation = (props) => {
   } = pageContainer.state;
 
   const { isGuestUser } = appContainer;
+  const isEditorMode = editorMode !== 'view';
   // Tags cannot be edited while the new page and editorMode is view
   const isTagLabelHidden = (editorMode !== 'edit' && !isPageExist);
 
@@ -107,30 +110,30 @@ const GrowiSubNavigation = (props) => {
       {/* Left side */}
       <div className="d-flex grw-subnav-left-side">
         { isDrawerMode && (
-          <div className="d-none d-md-flex align-items-center border-right mr-3 pr-3">
+          <div className={`d-none d-md-flex align-items-center ${isEditorMode ? 'mr-2 pr-2' : 'border-right mr-4 pr-4'}`}>
             <DrawerToggler />
           </div>
         ) }
 
         <div className="grw-path-nav-container">
           { pageContainer.isAbleToShowTagLabel && !isCompactMode && !isTagLabelHidden && (
-            <div className="mb-2">
+            <div className="grw-taglabels-container">
               <TagLabels editorMode={editorMode} />
             </div>
           ) }
-          <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
+          <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} isEditorMode={isEditorMode} />
         </div>
       </div>
 
       {/* Right side */}
       <div className="d-flex">
 
-        <div className="d-flex flex-column align-items-end">
+        <div className={`d-flex ${isEditorMode ? 'align-items-center' : 'flex-column align-items-end'}`}>
           <div className="d-flex">
             { pageContainer.isAbleToShowPageReactionButtons && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
             { pageContainer.isAbleToShowPageManagement && <PageManagement isCompactMode={isCompactMode} /> }
           </div>
-          <div className="mt-2">
+          <div className={`${isEditorMode ? 'ml-2' : 'mt-2'}`}>
             {pageContainer.isAbleToShowThreeStrandedButton && (
               <ThreeStrandedButton
                 onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
