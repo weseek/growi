@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
+import { UncontrolledTooltip } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from './UnstatedUtils';
 
@@ -31,19 +33,25 @@ class LikeButton extends React.Component {
     const isGuestUser = pageContainer.state.isGuestUser;
 
     return (
-      <div className="d-inline-block" tabIndex="0" data-toggle="tooltip" title={!isGuestUser ? 'Like' : t('Not available for guest')}>
+      <div>
         <button
           type="button"
+          id="like-button"
           onClick={this.handleClick}
           className={`btn btn-like border-0
-          ${pageContainer.state.isLiked ? 'active' : ''}`}
-          disabled={isGuestUser}
+          ${pageContainer.state.isLiked ? 'active' : ''}${isGuestUser ? 'disabled' : ''}`}
         >
           <i className="icon-like mr-3"></i>
           <span className="total-likes">
             {pageContainer.state.sumOfLikers}
           </span>
         </button>
+
+        {isGuestUser && (
+        <UncontrolledTooltip placement="top" target="like-button" fade={false}>
+          {t('Not available for guest')}
+        </UncontrolledTooltip>
+        )}
       </div>
     );
   }
