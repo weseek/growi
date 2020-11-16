@@ -39,7 +39,7 @@ const AdminNavigation = (props) => {
     return (
       <a
         href={isRoot ? '/admin' : urljoin('/admin', menu)}
-        className={`${pageTransitionClassName} ${isActive && 'active'}`}
+        className={`${pageTransitionClassName} ${isActive ? 'active' : ''}`}
       >
         <MenuLabel menu={menu} />
       </a>

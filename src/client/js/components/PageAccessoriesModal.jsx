@@ -95,7 +95,7 @@ const PageAccessoriesModal = (props) => {
 
   return (
     <React.Fragment>
-      <Modal size="xl" isOpen={props.isOpen} toggle={closeModalHandler} className={`grw-page-accessories-modal ${isWindowExpanded && 'grw-modal-expanded'} `}>
+      <Modal size="xl" isOpen={props.isOpen} toggle={closeModalHandler} className={`grw-page-accessories-modal ${isWindowExpanded ? 'grw-modal-expanded' : ''} `}>
         <ModalHeader className="p-0" toggle={closeModalHandler} close={buttons}>
           <CustomNav activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={switchActiveTab} hideBorderBottom />
         </ModalHeader>
