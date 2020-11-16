@@ -325,7 +325,11 @@ ul.pagination {
 
 .grw-custom-nav {
   .nav-item {
-    .nav-link {
+    &:hover,
+    &:focus {
+      background-color: rgba($color-link, 0.08);
+    }
+    s .nav-link {
       color: $color-link;
       svg {
         fill: $color-link;
