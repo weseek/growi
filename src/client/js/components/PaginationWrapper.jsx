@@ -21,8 +21,11 @@ const PaginationWrapper = React.memo((props) => {
    * various numbers used to generate pagination dom
    */
   const paginationNumbers = useMemo(() => {
+    // avoid using null
+    const limit = pagingLimit || Infinity;
+
     // calc totalPageNumber
-    const totalPage = Math.floor(totalItemsCount / pagingLimit) + (totalItemsCount % pagingLimit === 0 ? 0 : 1);
+    const totalPage = Math.floor(totalItemsCount / limit) + (totalItemsCount % limit === 0 ? 0 : 1);
 
     let paginationStart = activePage - 2;
     let maxViewPageNum = activePage + 2;
