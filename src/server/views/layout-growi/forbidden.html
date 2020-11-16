@@ -8,14 +8,14 @@
 {% endblock %}
 
 {% block content_main %}
-  <div id="content-main" class="content-main page-list"
+  <div
+    id="content-main"
+    class="content-main page-list"
     data-path="{{ encodeURI(path) }}"
     data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
     data-page-is-not-creatable="true"
-    {% if templateTags %}
-      data-template-tags="{{ templateTags }}"
-    {% endif %}
     >
+  </div>
   <div class="container-lg" id="forbidden-page"></div>
 {% endblock %}
 
