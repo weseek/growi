@@ -7,7 +7,13 @@ import { UncontrolledTooltip } from 'reactstrap';
 const NotFoundAlert = (props) => {
   const { t, isHidden, isGuestUserMode } = props;
   function clickHandler(viewType) {
-    console.log('push');
+
+    // check guest user,
+    // disabled of button cannot be used for using tooltip.
+    if (isGuestUserMode) {
+      return;
+    }
+
     if (props.onPageCreateClicked === null) {
       return;
     }
