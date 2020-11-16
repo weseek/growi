@@ -63,7 +63,6 @@ export default class PageContainer extends Container {
 
       isUserPage: JSON.parse(mainContent.getAttribute('data-page-user')) != null,
       isTrashPage: isTrashPage(path),
-      isForbidden: JSON.parse(mainContent.getAttribute('data-page-is-forbidden')),
       isDeleted: JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
       isDeletable: JSON.parse(mainContent.getAttribute('data-page-is-deletable')),
       isNotCreatable: JSON.parse(mainContent.getAttribute('data-page-is-not-creatable')),

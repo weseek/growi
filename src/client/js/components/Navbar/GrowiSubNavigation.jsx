@@ -26,7 +26,7 @@ import PageManagement from '../Page/PageManagement';
 
 const PagePathNav = ({
   // eslint-disable-next-line react/prop-types
-  pageId, pagePath, isPageForbidden, isEditorMode,
+  pageId, pagePath, isEditorMode,
 }) => {
 
   const dPagePath = new DevidedPagePath(pagePath, false, true);
@@ -56,7 +56,6 @@ const PagePathNav = ({
           <RevisionPathControls
             pageId={pageId}
             pagePath={pagePath}
-            isPageForbidden={isPageForbidden}
           />
         </div>
       </span>
@@ -91,8 +90,7 @@ const GrowiSubNavigation = (props) => {
   } = props;
   const { isDrawerMode, editorMode } = navigationContainer.state;
   const {
-    pageId, path, createdAt, creator, updatedAt, revisionAuthor,
-    isPageExist, isForbidden: isPageForbidden,
+    pageId, path, createdAt, creator, updatedAt, revisionAuthor, isPageExist,
   } = pageContainer.state;
 
   const { isGuestUser } = appContainer;
@@ -121,7 +119,7 @@ const GrowiSubNavigation = (props) => {
               <TagLabels editorMode={editorMode} />
             </div>
           ) }
-          <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} isEditorMode={isEditorMode} />
+          <PagePathNav pageId={pageId} pagePath={path} isEditorMode={isEditorMode} />
         </div>
       </div>
 
