@@ -65,7 +65,7 @@ function AwsSetting(props) {
 
       <div className="row form-group">
         <label className="text-left text-md-right col-md-3 col-form-label">
-            Access key ID
+          Access key ID
         </label>
         <div className="col-md-6">
           <input
@@ -81,7 +81,7 @@ function AwsSetting(props) {
 
       <div className="row form-group">
         <label className="text-left text-md-right col-md-3 col-form-label">
-            Secret access key
+          Secret access key
         </label>
         <div className="col-md-6">
           <input
