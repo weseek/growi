@@ -1,7 +1,6 @@
 const request = require('supertest');
 const express = require('express');
 const { getInstance } = require('../setup-crowi');
-const { injectApiv3ErrMock } = require('../setup-apiv3');
 
 describe('healthcheck', () => {
   let crowi;
@@ -10,7 +9,6 @@ describe('healthcheck', () => {
   beforeAll(async() => {
     crowi = await getInstance();
     app = express();
-    injectApiv3ErrMock(app);
 
     app.use('/', require('~/server/routes/apiv3/healthcheck')(crowi));
   });
