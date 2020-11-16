@@ -24,7 +24,7 @@ import ExpandOrContractButton from './ExpandOrContractButton';
 
 const PageAccessoriesModal = (props) => {
   const {
-    t, pageAccessoriesContainer, onClose, isGuestUserMode,
+    t, pageAccessoriesContainer, onClose, isGuestUser, isSharedUser,
   } = props;
   const { switchActiveTab } = pageAccessoriesContainer;
   const { activeTab, activeComponents } = pageAccessoriesContainer.state;
@@ -36,16 +36,19 @@ const PageAccessoriesModal = (props) => {
         Icon: PageListIcon,
         i18n: t('page_list'),
         index: 0,
+        isLinkEnabled: v => !isSharedUser,
       },
-      timeline:  {
+      timeline: {
         Icon: TimeLineIcon,
         i18n: t('Timeline View'),
         index: 1,
+        isLinkEnabled: v => !isSharedUser,
       },
       pageHistory: {
         Icon: HistoryIcon,
         i18n: t('History'),
         index: 2,
+        isLinkEnabled: v => !isGuestUser && !isSharedUser,
       },
       attachment: {
         Icon: AttachmentIcon,
@@ -56,10 +59,10 @@ const PageAccessoriesModal = (props) => {
         Icon: ShareLinkIcon,
         i18n: t('share_links.share_link_management'),
         index: 4,
-        isLinkEnabled: v => !isGuestUserMode,
+        isLinkEnabled: v => !isGuestUser && !isSharedUser,
       },
     };
-  }, [t, isGuestUserMode]);
+  }, [t, isGuestUser, isSharedUser]);
 
   const closeModalHandler = useCallback(() => {
     if (onClose == null) {
@@ -106,15 +109,15 @@ const PageAccessoriesModal = (props) => {
             <TabPane tabId="timeline">
               {activeComponents.has('timeline') && <PageTimeline /> }
             </TabPane>
-            <TabPane tabId="pageHistory">
-              <div className="overflow-auto">
+            {!isGuestUser && (
+              <TabPane tabId="pageHistory">
                 {activeComponents.has('pageHistory') && <PageHistory /> }
-              </div>
-            </TabPane>
+              </TabPane>
+            )}
             <TabPane tabId="attachment">
               {activeComponents.has('attachment') && <PageAttachment />}
             </TabPane>
-            {!isGuestUserMode && (
+            {!isGuestUser && (
               <TabPane tabId="shareLink">
                 {activeComponents.has('shareLink') && <ShareLink />}
               </TabPane>
@@ -134,7 +137,8 @@ const PageAccessoriesModalWrapper = withUnstatedContainers(PageAccessoriesModal,
 PageAccessoriesModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   pageAccessoriesContainer: PropTypes.instanceOf(PageAccessoriesContainer).isRequired,
-  isGuestUserMode: PropTypes.bool.isRequired,
+  isGuestUser: PropTypes.bool.isRequired,
+  isSharedUser: PropTypes.bool.isRequired,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
 };

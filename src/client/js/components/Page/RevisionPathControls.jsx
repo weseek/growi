@@ -29,11 +29,6 @@ RevisionPathControls.propTypes = {
 
   pagePath: PropTypes.string.isRequired,
   pageId: PropTypes.string,
-  isPageForbidden: PropTypes.bool,
-};
-
-RevisionPathControls.defaultProps = {
-  isPageForbidden: false,
 };
 
 export default withTranslation()(RevisionPathControls);
