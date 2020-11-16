@@ -8,6 +8,7 @@ describe('healthcheck', () => {
 
   beforeAll(async() => {
     crowi = await getInstance();
+    // get injected manual mocks express
     app = express();
 
     app.use('/', require('~/server/routes/apiv3/healthcheck')(crowi));
