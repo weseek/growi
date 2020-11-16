@@ -151,7 +151,7 @@ module.exports = function(crowi, app) {
   app.get('/tags'                     , loginRequired, tag.showPage);
   app.get('/_api/tags.list'           , accessTokenParser, loginRequired, tag.api.list);
   app.get('/_api/tags.search'         , accessTokenParser, loginRequired, tag.api.search);
-  app.post('/_api/tags.update'        , accessTokenParser, loginRequired, tag.api.update);
+  app.post('/_api/tags.update'        , accessTokenParser, loginRequiredStrictly, tag.api.update);
   app.get('/_api/comments.get'        , accessTokenParser , loginRequired , comment.api.get);
   app.post('/_api/comments.add'       , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, comment.api.add);
   app.post('/_api/comments.update'    , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, comment.api.update);
