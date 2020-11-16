@@ -37,7 +37,7 @@ const NotFoundAlert = (props) => {
         <div id="create-page-btn-wrapper-for-tooltip" className="d-inline-block">
           <button
             type="button"
-            className={`pl-3 pr-3 btn bg-info text-white ${isGuestUserMode && 'disabled'}`}
+            className={`pl-3 pr-3 btn bg-info text-white ${isGuestUserMode ? 'disabled' : ''}`}
             onClick={() => { clickHandler('edit') }}
           >
             <i className="icon-note icon-fw" />
