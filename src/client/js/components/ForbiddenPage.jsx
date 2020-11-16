@@ -25,7 +25,7 @@ const ForbiddenPage = (props) => {
       <div className="row not-found-message-row mb-4">
         <div className="col-lg-12">
           <h2 className="text-muted">
-            <i className="icon-ban mr-2" aria-hidden="true"></i>
+            <i className="icon-ban mr-2" aria-hidden="true" />
             Forbidden
           </h2>
         </div>
@@ -35,7 +35,7 @@ const ForbiddenPage = (props) => {
       <div className="row row-alerts d-edit-none">
         <div className="col-sm-12">
           <p className="alert alert-primary py-3 px-4">
-            <i className="icon-fw icon-lock" aria-hidden="true"></i>
+            <i className="icon-fw icon-lock" aria-hidden="true" />
             {t('Browsing of this page is restricted')}
           </p>
         </div>
@@ -46,7 +46,9 @@ const ForbiddenPage = (props) => {
     </>
   );
 };
+
 ForbiddenPage.propTypes = {
   t: PropTypes.func.isRequired,
 };
+
 export default withTranslation()(ForbiddenPage);
