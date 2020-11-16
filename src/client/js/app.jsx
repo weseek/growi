@@ -21,6 +21,7 @@ import TrashPageList from './components/TrashPageList';
 import TrashPageAlert from './components/Page/TrashPageAlert';
 import NotFoundPage from './components/NotFoundPage';
 import NotFoundAlert from './components/Page/NotFoundAlert';
+import ForbiddenPage from './components/ForbiddenPage';
 import PageStatusAlert from './components/PageStatusAlert';
 import RecentCreated from './components/RecentCreated/RecentCreated';
 import RecentlyCreatedIcon from './components/Icons/RecentlyCreatedIcon';
@@ -86,12 +87,13 @@ Object.assign(componentMappings, {
   'trash-page-list': <TrashPageList />,
 
   'not-found-page': <NotFoundPage />,
-
   'not-found-alert': <NotFoundAlert
     onPageCreateClicked={navigationContainer.setEditorMode}
     isGuestUserMode={appContainer.isGuestUser}
     isHidden={pageContainer.state.isForbidden || pageContainer.state.isNotCreatable || pageContainer.state.isTrashPage}
   />,
+
+  'forbidden-page': <ForbiddenPage />,
 
   'page-timeline': <PageTimeline />,
 
