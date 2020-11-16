@@ -29,16 +29,17 @@ class BookmarkButton extends React.Component {
 
   render() {
     const { pageContainer, t } = this.props;
+    const isGuestUser = pageContainer.state.isGuestUser;
 
     return (
-      <div className="d-inline-block" tabIndex="0" data-toggle="tooltip" title={!pageContainer.state.isGuestUser ? 'Bookmark' : t('Not available for guest')}>
+      <div className="d-inline-block" tabIndex="0" data-toggle="tooltip" title={!isGuestUser ? 'Bookmark' : t('Not available for guest')}>
         <button
           type="button"
           onClick={this.handleClick}
           className={`btn btn-bookmark border-0
           ${`btn-${this.props.size}`}
           ${pageContainer.state.isBookmarked ? 'active' : ''}`}
-          disabled={pageContainer.state.isGuestUser}
+          disabled={isGuestUser}
         >
           <i className="icon-star mr-3"></i>
           <span className="total-bookmarks">
