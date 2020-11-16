@@ -16,7 +16,7 @@ import RevisionPathControls from '../Page/RevisionPathControls';
 import TagLabels from '../Page/TagLabels';
 import LikeButton from '../LikeButton';
 import BookmarkButton from '../BookmarkButton';
-import ThreeStrandedButton from './ThreeStrandedButton';
+import { TwoStrandedButton, Hoge } from './ThreeStrandedButton';
 
 import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
@@ -133,11 +133,18 @@ const GrowiSubNavigation = (props) => {
           </div>
           <div className={`${isEditorMode ? 'ml-2' : 'mt-2'}`}>
             {pageContainer.isAbleToShowThreeStrandedButton && (
-              <ThreeStrandedButton
-                onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
-                isBtnDisabled={isGuestUser}
-                editorMode={editorMode}
-              />
+              <>
+                <TwoStrandedButton
+                  onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
+                  isBtnDisabled={isGuestUser}
+                  editorMode={editorMode}
+                />
+                <Hoge
+                  onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
+                  isBtnDisabled={isGuestUser}
+                  editorMode={editorMode}
+                />
+              </>
             )}
           </div>
         </div>
