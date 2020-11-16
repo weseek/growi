@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
-const ThreeStrandedButton = (props) => {
+export const ThreeStrandedButton = withTranslation()((props) => {
   const { t, isBtnDisabled, editorMode } = props;
 
 
@@ -57,7 +57,7 @@ const ThreeStrandedButton = (props) => {
     </>
   );
 
-};
+});
 
 ThreeStrandedButton.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
@@ -141,5 +141,5 @@ TwoStrandedButton.defaultProps = {
   isBtnDisabled: false,
 };
 
-export const Hoge = withTranslation()(ThreeStrandedButton);
+// export const Hoge = withTranslation()(ThreeStrandedButton);
 // export default withTranslation()(ThreeStrandedButton);
