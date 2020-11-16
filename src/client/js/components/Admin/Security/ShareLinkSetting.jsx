@@ -24,7 +24,7 @@ const Pager = (props) => {
       changePage={props.handlePage}
       totalItemsCount={props.totalLinks}
       pagingLimit={props.limit}
-      align="right"
+      align="center"
       size="sm"
     />
   );
