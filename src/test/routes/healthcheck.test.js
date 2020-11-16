@@ -1,6 +1,7 @@
 const request = require('supertest');
 const express = require('express');
 const { getInstance } = require('../setup-crowi');
+const { mockingApiv3Err } = require('../setup-apiv3');
 
 describe('healthcheck', () => {
   let crowi;
@@ -9,12 +10,7 @@ describe('healthcheck', () => {
   beforeAll(async() => {
     crowi = await getInstance();
     app = express();
-    // mocking apiv3Err
-    app.response.apiv3Err = jest.fn(
-      function(errors, status = 400, info) { // not arrow function
-        this.status(status).json({ errors, info });
-      },
-    );
+    mockingApiv3Err(app);
 
     app.use('/', require('~/server/routes/apiv3/healthcheck')(crowi));
   });
