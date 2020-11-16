@@ -77,7 +77,7 @@ const PageReactionButtons = ({ appContainer, pageContainer }) => {
         </span>
       )}
       <span>
-        <BookmarkButton crowi={appContainer} />
+        <BookmarkButton />
       </span>
     </>
   );
