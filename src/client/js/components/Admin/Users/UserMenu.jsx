@@ -84,7 +84,7 @@ class UserMenu extends React.Component {
           <button id="userMenu" type="button" className="btn btn-outline-secondary btn-sm dropdown-toggle" data-toggle="dropdown">
             <i className="icon-settings"></i>
           </button>
-          <div className="dropdown-menu" aria-labelledby="userMenu">
+          <div className="dropdown-menu" aria-labelledby="userMenu position-fixed">
             {this.renderEditMenu()}
             {user.status !== 4 && this.renderStatusMenu()}
             {user.status === 2 && this.renderAdminMenu()}
