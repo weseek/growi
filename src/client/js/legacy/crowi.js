@@ -157,6 +157,10 @@ Crowi.highlightSelectedSection = function(hash) {
 window.addEventListener('load', (e) => {
   const { appContainer } = window;
   const pageContainer = appContainer.getContainer('PageContainer');
+
+  if (pageContainer == null) {
+    return null;
+  }
   const { isAbleToOpenPageEditor } = pageContainer;
 
   // hash on page
