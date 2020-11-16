@@ -87,6 +87,43 @@ export const TwoStrandedButton = withTranslation()((props) => {
     }
   }
 
+  function viewButton() {
+    return (
+      <button
+        type="button"
+        className={`btn btn-outline-primary view-button ${editorMode === 'view' && 'active'} ${isBtnDisabled && 'disabled'}`}
+        onClick={() => { threeStrandedButtonClickedHandler('view') }}
+      >
+        <i className="icon-control-play icon-fw grw-three-stranded-button-icon" />
+        { t('view') }
+      </button>
+    );
+  }
+  function editButton() {
+    return (
+      <button
+        type="button"
+        className={`btn btn-outline-primary edit-button ${editorMode === 'edit' && 'active'} ${isBtnDisabled && 'disabled'}`}
+        onClick={() => { threeStrandedButtonClickedHandler('edit') }}
+      >
+        <i className="icon-note icon-fw grw-three-stranded-button-icon" />
+        { t('Edit') }
+      </button>
+    );
+  }
+  function hackMDButton() {
+    return (
+      <button
+        type="button"
+        className={`btn btn-outline-primary hackmd-button ${editorMode === 'hackmd' && 'active'} ${isBtnDisabled && 'disabled'}`}
+        onClick={() => { threeStrandedButtonClickedHandler('hackmd') }}
+      >
+        <i className="fa fa-fw fa-file-text-o grw-three-stranded-button-icon" />
+        { t('hackmd.hack_md') }
+      </button>
+    );
+  }
+
   return (
     <>
       <div
@@ -95,7 +132,10 @@ export const TwoStrandedButton = withTranslation()((props) => {
         aria-label="three-stranded-button"
         id="grw-three-stranded-button"
       >
-        <button
+        { viewButton() }
+        { editButton() }
+        { hackMDButton() }
+        {/* <button
           type="button"
           className={`btn btn-outline-primary view-button ${editorMode === 'view' && 'active'} ${isBtnDisabled && 'disabled'}`}
           onClick={() => { threeStrandedButtonClickedHandler('view') }}
@@ -118,7 +158,7 @@ export const TwoStrandedButton = withTranslation()((props) => {
         >
           <i className="fa fa-fw fa-file-text-o grw-three-stranded-button-icon" />
           { t('hackmd.hack_md') }
-        </button>
+        </button> */}
       </div>
       {isBtnDisabled && (
         <UncontrolledTooltip placement="top" target="grw-three-stranded-button" fade={false}>
@@ -140,6 +180,3 @@ TwoStrandedButton.propTypes = {
 TwoStrandedButton.defaultProps = {
   isBtnDisabled: false,
 };
-
-// export const Hoge = withTranslation()(ThreeStrandedButton);
-// export default withTranslation()(ThreeStrandedButton);
