@@ -45,7 +45,7 @@ class LikeButton extends React.Component {
           id="like-button"
           onClick={this.handleClick}
           className={`btn btn-like border-0
-          ${pageContainer.state.isLiked ? 'active' : ''}${isGuestUser ? 'disabled' : ''}`}
+          ${pageContainer.state.isLiked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
         >
           <i className="icon-like mr-3"></i>
           <span className="total-likes">
