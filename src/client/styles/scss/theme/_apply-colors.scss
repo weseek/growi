@@ -39,6 +39,9 @@ $nav-tabs-link-active-border-color: $bordercolor-nav-tabs-active;
 @import 'reboot-bootstrap-nav';
 @import 'reboot-toastr-colors';
 
+// determine variables with　bootstrap function (These variables can be used after importing bootstrap above)
+$color-modal-header: color-yiq($primary) !default;
+
 :not(pre) {
   > code {
     color: $color-inline-code;
@@ -286,10 +289,10 @@ ul.pagination {
   .modal-header {
     border-bottom-color: $border-color-theme;
     .modal-title {
-      color: color-yiq($primary);
+      color: $color-modal-header;
     }
     .close {
-      color: color-yiq($primary);
+      color: $color-modal-header;
       opacity: 0.5;
       &:hover {
         opacity: 0.9;
@@ -329,7 +332,8 @@ ul.pagination {
     &:focus {
       background-color: rgba($color-link, 0.08);
     }
-    s .nav-link {
+    .nav-link {
+      -webkit-appearance: none;
       color: $color-link;
       svg {
         fill: $color-link;

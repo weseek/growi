@@ -10,8 +10,7 @@ import PageAccessoriesContainer from '../services/PageAccessoriesContainer';
 
 const PageAccessories = (props) => {
   const { appContainer, pageAccessoriesContainer } = props;
-  const isGuestUser = appContainer.currentUser == null;
-  const isSharedUser = appContainer.isSharedUser;
+  const { isGuestUser, isSharedUser } = appContainer;
 
   return (
     <>

@@ -1,6 +1,7 @@
 const logger = require('@alias/logger')('growi:service:system-events:SyncPageStatusService');
 
 const S2sMessage = require('../../models/vo/s2s-message');
+const { S2cMessagePageUpdated } = require('../../models/vo/s2c-message');
 const S2sMessageHandlable = require('../s2s-messaging/handlable');
 
 /**
@@ -46,20 +47,20 @@ class SyncPageStatusService extends S2sMessageHandlable {
    * @inheritdoc
    */
   async handleS2sMessage(s2sMessage) {
-    const { socketIoEventName, page, user } = s2sMessage;
+    const { socketIoEventName, s2cMessageBody } = s2sMessage;
     const { socketIoService } = this;
 
     // emit the updated information to clients
     if (socketIoService.isInitialized) {
-      socketIoService.getDefaultSocket().emit(socketIoEventName, { page, user });
+      socketIoService.getDefaultSocket().emit(socketIoEventName, s2cMessageBody);
     }
   }
 
-  async publishToOtherServers(socketIoEventName, page, user) {
+  async publishToOtherServers(socketIoEventName, s2cMessageBody) {
     const { s2sMessagingService } = this;
 
     if (s2sMessagingService != null) {
-      const s2sMessage = new S2sMessage('pageStatusUpdated', { socketIoEventName, page, user });
+      const s2sMessage = new S2sMessage('pageStatusUpdated', { socketIoEventName, s2cMessageBody });
 
       try {
         await s2sMessagingService.publish(s2sMessage);
@@ -72,36 +73,36 @@ class SyncPageStatusService extends S2sMessageHandlable {
 
   initSystemEventListeners() {
     const { socketIoService } = this;
-    const { pageService } = this.crowi;
 
     // register events
     this.emitter.on('create', (page, user, socketClientId) => {
       logger.debug('\'create\' event emitted.');
 
-      page = pageService.serializeToObj(page); // eslint-disable-line no-param-reassign
-      socketIoService.getDefaultSocket().emit('page:create', { page, user, socketClientId });
+      const s2cMessagePageUpdated = new S2cMessagePageUpdated(page, user);
+      socketIoService.getDefaultSocket().emit('page:create', { s2cMessagePageUpdated, socketClientId });
 
-      this.publishToOtherServers('page:create', page, user);
+      this.publishToOtherServers('page:create', { s2cMessagePageUpdated });
     });
     this.emitter.on('update', (page, user, socketClientId) => {
       logger.debug('\'update\' event emitted.');
 
-      page = pageService.serializeToObj(page); // eslint-disable-line no-param-reassign
-      socketIoService.getDefaultSocket().emit('page:update', { page, user, socketClientId });
+      const s2cMessagePageUpdated = new S2cMessagePageUpdated(page, user);
+      socketIoService.getDefaultSocket().emit('page:update', { s2cMessagePageUpdated, socketClientId });
 
-      this.publishToOtherServers('page:update', page, user);
+      this.publishToOtherServers('page:update', { s2cMessagePageUpdated });
     });
     this.emitter.on('delete', (page, user, socketClientId) => {
       logger.debug('\'delete\' event emitted.');
 
-      page = pageService.serializeToObj(page); // eslint-disable-line no-param-reassign
-      socketIoService.getDefaultSocket().emit('page:delete', { page, user, socketClientId });
+      const s2cMessagePageUpdated = new S2cMessagePageUpdated(page, user);
+      socketIoService.getDefaultSocket().emit('page:delete', { s2cMessagePageUpdated, socketClientId });
 
-      this.publishToOtherServers('page:delete', page, user);
+      this.publishToOtherServers('page:delete', { s2cMessagePageUpdated });
     });
     this.emitter.on('saveOnHackmd', (page) => {
-      socketIoService.getDefaultSocket().emit('page:editingWithHackmd', { page });
-      this.publishToOtherServers('page:editingWithHackmd', page);
+      const s2cMessagePageUpdated = new S2cMessagePageUpdated(page);
+      socketIoService.getDefaultSocket().emit('page:editingWithHackmd', { s2cMessagePageUpdated });
+      this.publishToOtherServers('page:editingWithHackmd', { s2cMessagePageUpdated });
     });
   }
 
