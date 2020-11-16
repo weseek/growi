@@ -403,7 +403,7 @@ module.exports = function(crowi) {
       throw new Error('User data is not valid');
     }
 
-    const added = this.seenUsers.addToSet(userData);
+    const added = this.seenUsers.addToSet(userData._id);
     const saved = await this.save();
 
     debug('seenUsers updated!', added);
