@@ -7,5 +7,5 @@ function injectApiv3ErrMock(app) {
   return app.response.apiv3Err;
 }
 module.exports = {
-  mockingApiv3Err,
+  injectApiv3ErrMock,
 };
