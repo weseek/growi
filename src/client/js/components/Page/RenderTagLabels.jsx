@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import { UncontrolledTooltip } from 'reactstrap';
 
-function RenderTagLabels(props) {
+const RenderTagLabels = React.memo((props) => {
   const {
     t, tags, pageId, isGuestUser,
   } = props;
@@ -52,7 +52,7 @@ function RenderTagLabels(props) {
     </>
   );
 
-}
+});
 
 RenderTagLabels.propTypes = {
   t: PropTypes.func.isRequired, // i18next
@@ -61,7 +61,6 @@ RenderTagLabels.propTypes = {
   openEditorModal: PropTypes.func,
   isGuestUser: PropTypes.bool.isRequired,
   pageId: PropTypes.string.isRequired,
-
 };
 
 export default withTranslation()(RenderTagLabels);
