@@ -7,6 +7,7 @@ import { UncontrolledTooltip } from 'reactstrap';
 const NotFoundAlert = (props) => {
   const { t, isHidden, isGuestUserMode } = props;
   function clickHandler(viewType) {
+    console.log('push');
     if (props.onPageCreateClicked === null) {
       return;
     }
@@ -27,17 +28,16 @@ const NotFoundAlert = (props) => {
           <i className="icon-info pr-2 font-weight-bold" aria-hidden="true"></i>
           {t('not_found_page.page_not_exist_alert')}
         </h2>
-        <button
-          type="button"
-          className="m-1 pl-3 pr-3 btn bg-info text-white"
-          onClick={() => { clickHandler('edit') }}
-          disabled={isGuestUserMode}
-        >
-          <div id="create-page-btn-wrapper-for-tooltip">
+        <div id="create-page-btn-wrapper-for-tooltip" className="d-inline-block">
+          <button
+            type="button"
+            className={`pl-3 pr-3 btn bg-info text-white ${isGuestUserMode && 'disabled'}`}
+            onClick={() => { clickHandler('edit') }}
+          >
             <i className="icon-note icon-fw" />
             {t('not_found_page.Create Page')}
-          </div>
-        </button>
+          </button>
+        </div>
 
 
         {isGuestUserMode && (
