@@ -58,7 +58,7 @@ const PageAccessoriesModalControl = (props) => {
             <div id={`shareLink-btn-wrapper-for-tooltip-for-${accessory.name}`}>
               <button
                 type="button"
-                className={`btn btn-link grw-btn-page-accessories ${accessory.disabled && 'disabled'}`}
+                className={`btn btn-link grw-btn-page-accessories ${accessory.disabled ? 'disabled' : ''}`}
                 onClick={() => pageAccessoriesContainer.openPageAccessoriesModal(accessory.name)}
               >
                 {accessory.Icon}
