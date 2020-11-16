@@ -19,6 +19,11 @@ class BookmarkButton extends React.Component {
 
   async handleClick() {
     const { pageContainer } = this.props;
+    const isGuestUser = pageContainer.state.isGuestUser;
+
+    if (isGuestUser) {
+      return;
+    }
 
     try {
       pageContainer.toggleBookmark();
