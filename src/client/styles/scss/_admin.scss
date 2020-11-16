@@ -9,12 +9,11 @@
     line-height: 1.1em;
   }
 
-  .table-responsive {
-    overflow-x: unset;
-  }
-
   .admin-user-menu {
+    position: absolute;
+
     .dropdown-menu {
+      position: fixed;
       right: 0;
       left: auto;
       width: 400px;
