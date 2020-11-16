@@ -4,7 +4,7 @@ import loggerFactory from '@alias/logger';
 
 import * as entities from 'entities';
 import * as toastr from 'toastr';
-import { isTrashPage } from '@commons/util/path-utils';
+import { isTrashPage } from '~/utils/path-utils';
 import { toastError } from '../util/apiNotification';
 
 import {
