@@ -26,44 +26,60 @@ describe('users', () => {
   });
 
   describe('/', () => {
-    beforeEach(() => {
-      crowi.models.User.paginate = jest.fn();
-    });
-    test('respond 200 when valid queries', async() => {
-      const response = await request(app).get('/').query({
-        page: 1, 'selectedStatusList[]': 'all', sort: 'id', sortOrder: 'asc',
+    describe('when normal execution User.paginate', () => {
+      beforeAll(() => {
+        crowi.models.User.paginate = jest.fn();
       });
+      test('respond 200 when valid queries', async() => {
+        const response = await request(app).get('/').query({
+          page: 1, 'selectedStatusList[]': 'all', sort: 'id', sortOrder: 'asc',
+        });
 
-      expect(app.response.apiv3Err).not.toHaveBeenCalled();
-      expect(response.statusCode).toBe(200);
-      expect(crowi.models.User.paginate).toHaveBeenCalled();
-      expect(crowi.models.User.paginate.mock.calls[0]).toEqual(
-        expect.arrayContaining(
-          [
-            {
-              $and: [
-                { status: { $in: [1, 2, 3, 5] } },
-                {
-                  $or: [
-                    { name: { $in: /(?:)/ } },
-                    { username: { $in: /(?:)/ } },
-                    { email: { $in: /(?:)/ } },
-                  ],
-                },
-              ],
-            },
-            {
-              sort: { id: 1 },
-              page: 1,
-              limit: 50,
-              select: 'fields',
-            },
-          ],
-        ),
-      );
+        expect(app.response.apiv3Err).not.toHaveBeenCalled();
+        expect(response.statusCode).toBe(200);
+        expect(crowi.models.User.paginate).toHaveBeenCalled();
+        expect(crowi.models.User.paginate.mock.calls[0]).toEqual(
+          expect.arrayContaining(
+            [
+              {
+                $and: [
+                  { status: { $in: [1, 2, 3, 5] } },
+                  {
+                    $or: [
+                      { name: { $in: /(?:)/ } },
+                      { username: { $in: /(?:)/ } },
+                      { email: { $in: /(?:)/ } },
+                    ],
+                  },
+                ],
+              },
+              {
+                sort: { id: 1 },
+                page: 1,
+                limit: 50,
+                select: 'fields',
+              },
+            ],
+          ),
+        );
+      });
     });
-    describe('respond 400 when validator.statusList', () => {
-      test('invalid selectedStatusList', async() => {
+    describe('when throw Error from User.paginate', () => {
+      beforeAll(() => {
+        crowi.models.User.paginate = jest.fn().mockImplementation(() => { throw Error('error') });
+      });
+      test('respond 500', async() => {
+        const response = await request(app).get('/').query({
+          page: 1, 'selectedStatusList[]': 'all', sort: 'id', sortOrder: 'asc',
+        });
+        expect(response.statusCode).toBe(500);
+        expect(response.body.errors.code).toBe('user-group-list-fetch-failed');
+        expect(response.body.errors.message).toBe('Error occurred in fetching user group list');
+
+      });
+    });
+    describe('validator.statusList', () => {
+      test('respond 400 when invalid selectedStatusList', async() => {
         const response = await request(app).get('/').query({
           page: 1, 'selectedStatusList[]': 'hoge', sort: 'id', sortOrder: 'asc',
         });

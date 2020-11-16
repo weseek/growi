@@ -92,7 +92,7 @@ module.exports = (crowi) => {
     query('selectedStatusList').custom((value) => {
       const error = [];
       value.forEach((status) => {
-        if (value !== 'all' && !Object.keys(statusNo).includes(status)) {
+        if (status !== 'all' && !Object.keys(statusNo).includes(status)) {
           error.push(status);
         }
       });
