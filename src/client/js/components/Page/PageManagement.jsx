@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { UncontrolledTooltip } from 'reactstrap';
 import urljoin from 'url-join';
 
@@ -238,6 +239,10 @@ const PageManagement = (props) => {
       {renderModals()}
     </>
   );
+};
+
+PageManagement.propTypes = {
+  isCompactMode: PropTypes.bool.isRequired,
 };
 
 export default PageManagement;

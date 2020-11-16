@@ -1,10 +1,8 @@
-require('module-alias/register');
-const logger = require('@alias/logger')('growi:migrate:rename-s3-config');
-
 const mongoose = require('mongoose');
-const config = require('@root/config/migrate');
 
-const { getModelSafely } = require('@commons/util/mongoose-utils');
+const logger = require('~/utils/logger')('growi:migrate:rename-s3-config');
+const config = require('^/config/migrate');
+const { getModelSafely } = require('~/server/util/mongoose-utils');
 
 const awsConfigs = [
   {
@@ -34,7 +32,7 @@ module.exports = {
     logger.info('Apply migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const Config = getModelSafely('Config') || require('@server/models/config')();
+    const Config = getModelSafely('Config') || require('~/server/models/config')();
 
     const request = awsConfigs.map((awsConfig) => {
       return {
@@ -55,7 +53,7 @@ module.exports = {
 
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const Config = getModelSafely('Config') || require('@server/models/config')();
+    const Config = getModelSafely('Config') || require('~/server/models/config')();
 
     const request = awsConfigs.map((awsConfig) => {
       return {
