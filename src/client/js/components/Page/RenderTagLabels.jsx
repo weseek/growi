@@ -4,12 +4,10 @@ import { withTranslation } from 'react-i18next';
 
 import { UncontrolledTooltip } from 'reactstrap';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
-import PageContainer from '../../services/PageContainer';
-
 function RenderTagLabels(props) {
-  const { t, tags, pageContainer } = props;
-  const { pageId } = pageContainer;
+  const {
+    t, tags, pageId, isGuestUser,
+  } = props;
 
   function openEditorHandler() {
     if (props.openEditorModal == null) {
@@ -37,36 +35,33 @@ function RenderTagLabels(props) {
     <>
       {tagElements}
 
-      <a
-        id="edit-tags-btn-wrapper-for-tooltip"
-        className={`btn btn-link btn-edit-tags p-0 text-muted ${isTagsEmpty && 'no-tags'}`}
-        onClick={openEditorHandler}
-      >
-        { isTagsEmpty && <>{ t('Add tags for this page') }</>}
-        <i className="ml-1 icon-plus"></i>
-      </a>
-      <UncontrolledTooltip placement="top" target="edit-tags-btn-wrapper-for-tooltip" fade={false}>
-        {t('Not available for guest')}
-      </UncontrolledTooltip>
+      <div id="edit-tags-btn-wrapper-for-tooltip">
+        <a
+          className={`btn btn-link btn-edit-tags p-0 text-muted ${isTagsEmpty && 'no-tags'} ${isGuestUser && 'disabled'}`}
+          onClick={openEditorHandler}
+        >
+          { isTagsEmpty && <>{ t('Add tags for this page') }</>}
+          <i className="ml-1 icon-plus"></i>
+        </a>
+      </div>
+      {isGuestUser && (
+        <UncontrolledTooltip placement="top" target="edit-tags-btn-wrapper-for-tooltip" fade={false}>
+          {t('Not available for guest')}
+        </UncontrolledTooltip>
+      )}
     </>
   );
 
 }
-
-/**
- * Wrapper component for using unstated
- */
-const RenderTagLabelsWrapper = withUnstatedContainers(RenderTagLabels, [PageContainer]);
-
 
 RenderTagLabels.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
   tags: PropTypes.array,
   openEditorModal: PropTypes.func,
-
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  isGuestUser: PropTypes.bool.isRequired,
+  pageId: PropTypes.string.isRequired,
 
 };
 
-export default withTranslation()(RenderTagLabelsWrapper);
+export default withTranslation()(RenderTagLabels);
