@@ -82,11 +82,11 @@ const PageReactionButtons = ({ appContainer, pageContainer }) => {
     <>
       {pageUser == null && !isSharedPage && (
       <span className="mr-2">
-        <LikeButton appContainer={appContainer} pageContainer={pageContainer} />
+        <LikeButton />
       </span>
       )}
       <span>
-        <BookmarkButton appContainer={appContainer} pageContainer={pageContainer} />
+        <BookmarkButton />
       </span>
     </>
   );
