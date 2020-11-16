@@ -72,7 +72,7 @@ class SavePageControls extends React.Component {
     const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
 
     return (
-      <div className="d-flex align-items-center form-inline">
+      <div className="d-flex align-items-center form-inline flex-nowrap">
 
         {this.isAclEnabled
           && (

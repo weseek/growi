@@ -110,7 +110,7 @@ class OptionsSelector extends React.Component {
     });
 
     return (
-      <div className="input-group">
+      <div className="input-group flex-nowrap">
         <div className="input-group-prepend">
           <span className="input-group-text" id="igt-theme">Theme</span>
         </div>
@@ -146,7 +146,7 @@ class OptionsSelector extends React.Component {
     });
 
     return (
-      <div className="input-group">
+      <div className="input-group flex-nowrap">
         <div className="input-group-prepend">
           <span className="input-group-text" id="igt-keymap">Keymap</span>
         </div>
@@ -247,9 +247,9 @@ class OptionsSelector extends React.Component {
   render() {
     return (
       <div className="d-flex flex-row">
-        <span className="ml-3">{this.renderThemeSelector()}</span>
-        <span className="ml-4">{this.renderKeymapModeSelector()}</span>
-        <span className="ml-4">{this.renderConfigurationDropdown()}</span>
+        <span>{this.renderThemeSelector()}</span>
+        <span className="ml-2 ml-sm-4">{this.renderKeymapModeSelector()}</span>
+        <span className="ml-2 ml-sm-4">{this.renderConfigurationDropdown()}</span>
       </div>
     );
   }

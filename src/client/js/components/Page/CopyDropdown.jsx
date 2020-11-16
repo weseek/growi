@@ -16,23 +16,22 @@ class CopyDropdown extends React.Component {
     super(props);
 
     this.state = {
-      dropdownOpen: false,
       tooltipOpen: false,
       isParamsAppended: true,
+      pagePathWithParams: '',
+      pagePathUrl: '',
+      permalink: '',
+      markdownLink: '',
     };
 
     this.id = (Math.random() * 1000).toString();
 
-    this.toggle = this.toggle.bind(this);
     this.showToolTip = this.showToolTip.bind(this);
+    this.generateItemContents = this.generateItemContents.bind(this);
     this.generatePagePathWithParams = this.generatePagePathWithParams.bind(this);
     this.generatePagePathUrl = this.generatePagePathUrl.bind(this);
     this.generatePermalink = this.generatePermalink.bind(this);
     this.generateMarkdownLink = this.generateMarkdownLink.bind(this);
-  }
-
-  toggle() {
-    this.setState({ dropdownOpen: !this.state.dropdownOpen });
   }
 
   showToolTip() {
@@ -62,6 +61,17 @@ class CopyDropdown extends React.Component {
 
     // Encode SPACE and IDEOGRAPHIC SPACE
     return str.replace(/ /g, '%20').replace(/\u3000/g, '%E3%80%80');
+  }
+
+  generateItemContents() {
+    const pagePathWithParams = this.generatePagePathWithParams();
+    const pagePathUrl = this.generatePagePathUrl();
+    const permalink = this.generatePermalink();
+    const markdownLink = this.generateMarkdownLink();
+
+    this.setState({
+      pagePathWithParams, pagePathUrl, permalink, markdownLink,
+    });
   }
 
   generatePagePathWithParams() {
@@ -108,11 +118,9 @@ class CopyDropdown extends React.Component {
     const {
       t, pageId, isShareLinkMode,
     } = this.props;
-    const { isParamsAppended } = this.state;
-
-    const pagePathWithParams = this.generatePagePathWithParams();
-    const pagePathUrl = this.generatePagePathUrl();
-    const permalink = this.generatePermalink();
+    const {
+      isParamsAppended, pagePathWithParams, pagePathUrl, permalink, markdownLink,
+    } = this.state;
 
     const copyTarget = isShareLinkMode ? `copyShareLink${pageId}` : 'copyPagePathDropdown';
     const dropdownToggleStyle = isShareLinkMode ? 'btn btn-secondary' : 'd-block text-muted bg-transparent btn-copy border-0';
@@ -128,6 +136,7 @@ class CopyDropdown extends React.Component {
             caret
             className={dropdownToggleStyle}
             style={this.props.buttonStyle}
+            onClick={this.generateItemContents}
           >
             { isShareLinkMode ? (
               <>Copy Link</>
@@ -195,9 +204,9 @@ class CopyDropdown extends React.Component {
 
             {/* Markdown Link */}
             { pageId && (
-              <CopyToClipboard text={this.generateMarkdownLink()} onCopy={this.showToolTip}>
+              <CopyToClipboard text={markdownLink} onCopy={this.showToolTip}>
                 <DropdownItem className="px-3 text-wrap">
-                  <DropdownItemContents title={t('copy_to_clipboard.Markdown link')} contents={this.generateMarkdownLink()} isContentsWrap />
+                  <DropdownItemContents title={t('copy_to_clipboard.Markdown link')} contents={markdownLink} isContentsWrap />
                 </DropdownItem>
               </CopyToClipboard>
             )}

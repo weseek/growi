@@ -13,16 +13,14 @@ class UserSettings extends React.Component {
 
     return (
       <Fragment>
-        <div className="container-fluid my-4">
-          <h2 className="border-bottom">{t('Basic Info')}</h2>
+        <div className="mb-5">
+          <h2 className="border-bottom my-4">{t('Basic Info')}</h2>
+          <BasicInfoSettings />
         </div>
-        <BasicInfoSettings />
-
-        <div className="container-fluid my-4">
-          <h2 className="border-bottom">{t('Set Profile Image')}</h2>
+        <div className="mb-5">
+          <h2 className="border-bottom my-4">{t('Set Profile Image')}</h2>
+          <ProfileImageSettings />
         </div>
-        <ProfileImageSettings />
-
       </Fragment>
     );
   }
