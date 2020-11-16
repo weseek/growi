@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import { UncontrolledTooltip } from 'reactstrap';
+
 import { withUnstatedContainers } from '../UnstatedUtils';
 import PageContainer from '../../services/PageContainer';
 
@@ -35,16 +37,17 @@ function RenderTagLabels(props) {
     <>
       {tagElements}
 
-      <a className={`btn btn-link btn-edit-tags p-0 text-muted ${isTagsEmpty ? 'no-tags' : ''}`} onClick={openEditorHandler}>
-        { isTagsEmpty
-          ? (
-            <>{ t('Add tags for this page') }<i className="ml-1 icon-plus"></i></>
-          )
-          : (
-            <i className="icon-plus"></i>
-          )
-        }
+      <a
+        id="edit-tags-btn-wrapper-for-tooltip"
+        className={`btn btn-link btn-edit-tags p-0 text-muted ${isTagsEmpty && 'no-tags'}`}
+        onClick={openEditorHandler}
+      >
+        { isTagsEmpty && <>{ t('Add tags for this page') }</>}
+        <i className="ml-1 icon-plus"></i>
       </a>
+      <UncontrolledTooltip placement="top" target="edit-tags-btn-wrapper-for-tooltip" fade={false}>
+        {t('Not available for guest')}
+      </UncontrolledTooltip>
     </>
   );
 
