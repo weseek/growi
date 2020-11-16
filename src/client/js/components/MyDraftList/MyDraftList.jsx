@@ -22,7 +22,6 @@ class MyDraftList extends React.Component {
       currentDrafts: [],
       activePage: 1,
       totalDrafts: 0,
-      // [TODO: rename pageLimitationM to pageLimitationL]
       pagingLimit: Infinity,
     };
 
