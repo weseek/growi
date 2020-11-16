@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
+import { UncontrolledTooltip } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from './UnstatedUtils';
 
@@ -32,20 +34,26 @@ class BookmarkButton extends React.Component {
     const isGuestUser = pageContainer.state.isGuestUser;
 
     return (
-      <div className="d-inline-block" tabIndex="0" data-toggle="tooltip" title={!isGuestUser ? 'Bookmark' : t('Not available for guest')}>
+      <div>
         <button
           type="button"
+          id="bookmark-button"
           onClick={this.handleClick}
           className={`btn btn-bookmark border-0
           ${`btn-${this.props.size}`}
-          ${pageContainer.state.isBookmarked ? 'active' : ''}`}
-          disabled={isGuestUser}
+          ${pageContainer.state.isBookmarked ? 'active' : ''}${isGuestUser ? 'disabled' : ''}`}
         >
           <i className="icon-star mr-3"></i>
           <span className="total-bookmarks">
             {pageContainer.state.sumOfBookmarks}
           </span>
         </button>
+
+        {isGuestUser && (
+        <UncontrolledTooltip placement="top" target="bookmark-button" fade={false}>
+          {t('Not available for guest')}
+        </UncontrolledTooltip>
+        )}
       </div>
     );
   }
