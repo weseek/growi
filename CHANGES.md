@@ -2,7 +2,7 @@
 
 ## v4.1.12
 
-* 
+* Fix: Adjust line-height for pre under li
 
 ## v4.1.11
 
