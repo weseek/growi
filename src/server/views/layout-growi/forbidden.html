@@ -8,9 +8,15 @@
 {% endblock %}
 
 {% block content_main %}
-  <div class="container-lg">
-    {% include '../widget/forbidden_content.html' %}
+  <div
+    id="content-main"
+    class="content-main page-list"
+    data-path="{{ encodeURI(path) }}"
+    data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
+    data-page-is-not-creatable="true"
+    >
   </div>
+  <div class="container-lg" id="forbidden-page"></div>
 {% endblock %}
 
 {% block body_end %}
