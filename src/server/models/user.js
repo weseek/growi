@@ -13,6 +13,8 @@ const crypto = require('crypto');
 
 const { listLocaleIds, migrateDeprecatedLocaleId } = require('@commons/util/locale-utils');
 
+const { omitInsecureAttributes } = require('./serializers/user-serializer');
+
 module.exports = function(crowi) {
   const STATUS_REGISTERED = 1;
   const STATUS_ACTIVE = 2;
@@ -65,13 +67,7 @@ module.exports = function(crowi) {
   }, {
     toObject: {
       transform: (doc, ret, opt) => {
-        // omit password
-        delete ret.password;
-        // omit email
-        if (!doc.isEmailPublished) {
-          delete ret.email;
-        }
-        return ret;
+        return omitInsecureAttributes(ret);
       },
     },
   });

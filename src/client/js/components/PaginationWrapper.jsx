@@ -21,8 +21,11 @@ const PaginationWrapper = React.memo((props) => {
    * various numbers used to generate pagination dom
    */
   const paginationNumbers = useMemo(() => {
+    // avoid using null
+    const limit = pagingLimit || Infinity;
+
     // calc totalPageNumber
-    const totalPage = Math.floor(totalItemsCount / pagingLimit) + (totalItemsCount % pagingLimit === 0 ? 0 : 1);
+    const totalPage = Math.floor(totalItemsCount / limit) + (totalItemsCount % limit === 0 ? 0 : 1);
 
     let paginationStart = activePage - 2;
     let maxViewPageNum = activePage + 2;
@@ -158,7 +161,7 @@ PaginationWrapper.propTypes = {
   activePage: PropTypes.number.isRequired,
   changePage: PropTypes.func.isRequired,
   totalItemsCount: PropTypes.number.isRequired,
-  pagingLimit: PropTypes.number.isRequired,
+  pagingLimit: PropTypes.number,
   align: PropTypes.string,
   size: PropTypes.string,
 };
@@ -166,6 +169,7 @@ PaginationWrapper.propTypes = {
 PaginationWrapper.defaultProps = {
   align: 'left',
   size: 'md',
+  pagingLimit: Infinity,
 };
 
 export default PaginationWrapper;

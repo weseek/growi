@@ -18,14 +18,14 @@ import FootstampIcon from '../FootstampIcon';
 const SeenUserInfo = (props) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const toggle = () => setPopoverOpen(!popoverOpen);
-  const { pageContainer } = props;
+  const { pageContainer, disabled } = props;
   return (
     <div className="grw-seen-user-info">
       <Button id="po-seen-user" color="link" className="px-2">
         <span className="mr-1 footstamp-icon"><FootstampIcon /></span>
         <span className="seen-user-count">{pageContainer.state.countOfSeenUsers}</span>
       </Button>
-      <Popover placement="bottom" isOpen={popoverOpen} target="po-seen-user" toggle={toggle} trigger="legacy">
+      <Popover placement="bottom" isOpen={popoverOpen} target="po-seen-user" toggle={toggle} trigger="legacy" disabled={disabled}>
         <PopoverBody className="seen-user-popover">
           <div className="px-2 text-right user-list-content text-truncate text-muted">
             <UserPictureList users={pageContainer.state.seenUsers} />
@@ -38,6 +38,7 @@ const SeenUserInfo = (props) => {
 
 SeenUserInfo.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  disabled: PropTypes.bool,
 };
 
 /**
