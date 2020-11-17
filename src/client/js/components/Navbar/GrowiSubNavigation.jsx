@@ -98,7 +98,7 @@ const GrowiSubNavigation = (props) => {
   // Tags cannot be edited while the new page and editorMode is view
   const isTagLabelHidden = (editorMode !== 'edit' && !isPageExist);
 
-  function onThreeStrandedButtonClicked(viewType) {
+  function onPageEditorModeButtonClicked(viewType) {
     navigationContainer.setEditorMode(viewType);
   }
 
@@ -134,7 +134,7 @@ const GrowiSubNavigation = (props) => {
           <div className={`${isEditorMode ? 'ml-2' : 'mt-2'}`}>
             {pageContainer.isAbleToShowThreeStrandedButton && (
               <PageEditorModeManager
-                onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
+                onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
                 isBtnDisabled={isGuestUser}
                 editorMode={editorMode}
                 isDeviceSmallerThanMd={isDeviceSmallerThanMd}

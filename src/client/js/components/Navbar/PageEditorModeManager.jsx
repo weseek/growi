@@ -29,18 +29,18 @@ const PageEditorModeButtonWrapper = React.memo(({
 
 function PageEditorModeManager(props) {
   const {
-    t, editorMode, onThreeStrandedButtonClicked, isBtnDisabled, isDeviceSmallerThanMd,
+    t, editorMode, onPageEditorModeButtonClicked, isBtnDisabled, isDeviceSmallerThanMd,
   } = props;
 
 
-  const threeStrandedButtonClickedHandler = useCallback((viewType) => {
+  const pageEditorModeButtonClickedHandler = useCallback((viewType) => {
     if (isBtnDisabled) {
       return;
     }
-    if (onThreeStrandedButtonClicked != null) {
-      onThreeStrandedButtonClicked(viewType);
+    if (onPageEditorModeButtonClicked != null) {
+      onPageEditorModeButtonClicked(viewType);
     }
-  }, [isBtnDisabled, onThreeStrandedButtonClicked]);
+  }, [isBtnDisabled, onPageEditorModeButtonClicked]);
 
   return (
     <>
@@ -54,7 +54,7 @@ function PageEditorModeManager(props) {
           <PageEditorModeButtonWrapper
             editorMode={editorMode}
             isBtnDisabled={isBtnDisabled}
-            onClick={threeStrandedButtonClickedHandler}
+            onClick={pageEditorModeButtonClickedHandler}
             targetMode="view"
           >
             <i className="icon-control-play icon-fw grw-page-editor-mode-manager-icon" />
@@ -65,7 +65,7 @@ function PageEditorModeManager(props) {
           <PageEditorModeButtonWrapper
             editorMode={editorMode}
             isBtnDisabled={isBtnDisabled}
-            onClick={threeStrandedButtonClickedHandler}
+            onClick={pageEditorModeButtonClickedHandler}
             targetMode="edit"
           >
             <i className="icon-note icon-fw grw-page-editor-mode-manager-icon" />
@@ -76,7 +76,7 @@ function PageEditorModeManager(props) {
           <PageEditorModeButtonWrapper
             editorMode={editorMode}
             isBtnDisabled={isBtnDisabled}
-            onClick={threeStrandedButtonClickedHandler}
+            onClick={pageEditorModeButtonClickedHandler}
             targetMode="hackmd"
           >
             <i className="fa fa-fw fa-file-text-o grw-page-editor-mode-manager-icon" />
@@ -96,7 +96,7 @@ function PageEditorModeManager(props) {
 
 PageEditorModeManager.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
-  onThreeStrandedButtonClicked: PropTypes.func,
+  onPageEditorModeButtonClicked: PropTypes.func,
   isBtnDisabled: PropTypes.bool,
   editorMode: PropTypes.string,
   isDeviceSmallerThanMd: PropTypes.bool,
