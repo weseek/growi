@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
+// [TODO: rename Threestranded Button by gw4545]
 export const ThreeStrandedButton = withTranslation()((props) => {
   const { t, isBtnDisabled, editorMode } = props;
 
@@ -70,11 +71,8 @@ ThreeStrandedButton.defaultProps = {
   isBtnDisabled: false,
 };
 
-// export const Huga = withTranslation()(ThreeStrandedButton);
-
 
 export const TwoStrandedButton = withTranslation()((props) => {
-// const TwoStrandedButton = (props) => {
   const { t, isBtnDisabled, editorMode } = props;
 
 
