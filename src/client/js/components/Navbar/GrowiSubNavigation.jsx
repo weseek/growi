@@ -16,7 +16,7 @@ import RevisionPathControls from '../Page/RevisionPathControls';
 import TagLabels from '../Page/TagLabels';
 import LikeButton from '../LikeButton';
 import BookmarkButton from '../BookmarkButton';
-import { TwoStrandedButton, ThreeStrandedButton } from './ThreeStrandedButton';
+import PageEditorModeManager from './PageEditorModeManager';
 
 import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
@@ -88,37 +88,18 @@ const GrowiSubNavigation = (props) => {
   const {
     appContainer, navigationContainer, pageContainer, isCompactMode,
   } = props;
-  const { isDrawerMode, editorMode } = navigationContainer.state;
+  const { isDrawerMode, editorMode, isDeviceSmallerThanMd } = navigationContainer.state;
   const {
     pageId, path, createdAt, creator, updatedAt, revisionAuthor, isPageExist,
   } = pageContainer.state;
 
-  const { isGuestUser, isMobile } = appContainer;
+  const { isGuestUser } = appContainer;
   const isEditorMode = editorMode !== 'view';
   // Tags cannot be edited while the new page and editorMode is view
   const isTagLabelHidden = (editorMode !== 'edit' && !isPageExist);
 
-  function onThreeStrandedButtonClicked(viewType) {
+  function onPageEditorModeButtonClicked(viewType) {
     navigationContainer.setEditorMode(viewType);
-  }
-
-  function renderThreeStrandedButton() {
-    return (
-      <ThreeStrandedButton
-        onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
-        isBtnDisabled={isGuestUser}
-        editorMode={editorMode}
-      />
-    );
-  }
-  function renderTwoStrandedButton() {
-    return (
-      <TwoStrandedButton
-        onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
-        isBtnDisabled={isGuestUser}
-        editorMode={editorMode}
-      />
-    );
   }
 
   return (
@@ -151,10 +132,13 @@ const GrowiSubNavigation = (props) => {
             { pageContainer.isAbleToShowPageManagement && <PageManagement isCompactMode={isCompactMode} /> }
           </div>
           <div className={`${isEditorMode ? 'ml-2' : 'mt-2'}`}>
-            {pageContainer.isAbleToShowThreeStrandedButton && (
-              <>
-                {isMobile ? renderTwoStrandedButton() : renderThreeStrandedButton()}
-              </>
+            {pageContainer.isAbleToShowPageEditorModeManager && (
+              <PageEditorModeManager
+                onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
+                isBtnDisabled={isGuestUser}
+                editorMode={editorMode}
+                isDeviceSmallerThanMd={isDeviceSmallerThanMd}
+              />
             )}
           </div>
         </div>

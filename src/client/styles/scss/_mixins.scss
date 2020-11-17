@@ -254,7 +254,7 @@
   }
 }
 
-@mixin three-stranded-button($textColor, $borderColor, $bgColorHoverAndActive, $bgColor: white) {
+@mixin page-editor-mode-manager($textColor, $borderColor, $bgColorHoverAndActive, $bgColor: white) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -270,7 +270,7 @@
 
   &.view-button,
   &.edit-button {
-    .grw-three-stranded-button-icon {
+    .grw-page-editor-mode-manager-icon {
       margin-right: -0.25rem;
     }
   }
@@ -278,7 +278,7 @@
     font-size: 12px;
     letter-spacing: -0.6px;
 
-    .grw-three-stranded-button-icon {
+    .grw-page-editor-mode-manager-icon {
       margin-right: -0.1rem;
     }
   }
