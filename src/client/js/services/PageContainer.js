@@ -187,10 +187,10 @@ export default class PageContainer extends Container {
   }
 
   /**
-   * whether to threeStrandedButton
+   * whether to display pageEditorModeManager
    * ex.) view, edit, hackmd
    */
-  get isAbleToShowThreeStrandedButton() {
+  get isAbleToShowPageEditorModeManager() {
     const { isNotCreatable, isPageInTrash } = this.state;
     const { isSharedUser, isGuestUser } = this.appContainer;
 

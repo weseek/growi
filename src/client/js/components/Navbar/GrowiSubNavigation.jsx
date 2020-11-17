@@ -132,7 +132,7 @@ const GrowiSubNavigation = (props) => {
             { pageContainer.isAbleToShowPageManagement && <PageManagement isCompactMode={isCompactMode} /> }
           </div>
           <div className={`${isEditorMode ? 'ml-2' : 'mt-2'}`}>
-            {pageContainer.isAbleToShowThreeStrandedButton && (
+            {pageContainer.isAbleToShowPageEditorModeManager && (
               <PageEditorModeManager
                 onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
                 isBtnDisabled={isGuestUser}
