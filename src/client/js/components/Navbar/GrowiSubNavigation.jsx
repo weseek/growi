@@ -16,7 +16,7 @@ import RevisionPathControls from '../Page/RevisionPathControls';
 import TagLabels from '../Page/TagLabels';
 import LikeButton from '../LikeButton';
 import BookmarkButton from '../BookmarkButton';
-import { TwoStrandedButton, ThreeStrandedButton } from './ThreeStrandedButton';
+import { PageEditorModeManager, ThreeStrandedButton } from './ThreeStrandedButton';
 
 import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
@@ -113,10 +113,11 @@ const GrowiSubNavigation = (props) => {
   }
   function renderTwoStrandedButton() {
     return (
-      <TwoStrandedButton
+      <PageEditorModeManager
         onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
         isBtnDisabled={isGuestUser}
         editorMode={editorMode}
+        isMobile={isMobile}
       />
     );
   }
