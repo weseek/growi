@@ -37,7 +37,7 @@ const RenderTagLabels = React.memo((props) => {
 
       <div id="edit-tags-btn-wrapper-for-tooltip">
         <a
-          className={`btn btn-link btn-edit-tags p-0 text-muted ${isTagsEmpty && 'no-tags'} ${isGuestUser && 'disabled'}`}
+          className={`btn btn-link btn-edit-tags p-0 text-muted ${isTagsEmpty ? 'no-tags' : ''} ${isGuestUser ? 'disabled' : ''}`}
           onClick={openEditorHandler}
         >
           { isTagsEmpty && <>{ t('Add tags for this page') }</>}

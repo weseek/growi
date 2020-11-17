@@ -328,6 +328,10 @@ ul.pagination {
 
 .grw-custom-nav {
   .nav-item {
+    &:hover,
+    &:focus {
+      background-color: rgba($color-link, 0.08);
+    }
     .nav-link {
       -webkit-appearance: none;
       color: $color-link;

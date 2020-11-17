@@ -43,7 +43,7 @@ const PageList = (props) => {
   if (isLoading) {
     return (
       <div className="wiki">
-        <div className="text-muted test-center">
+        <div className="text-muted text-center">
           <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
         </div>
       </div>

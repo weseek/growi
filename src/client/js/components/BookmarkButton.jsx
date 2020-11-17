@@ -1,9 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { toastError } from '../util/apiNotification';
+import { UncontrolledTooltip } from 'reactstrap';
+import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from './UnstatedUtils';
+
+import { toastError } from '../util/apiNotification';
 import PageContainer from '../services/PageContainer';
+import AppContainer from '../services/AppContainer';
 
 class BookmarkButton extends React.Component {
 
@@ -15,6 +19,11 @@ class BookmarkButton extends React.Component {
 
   async handleClick() {
     const { pageContainer } = this.props;
+    const isGuestUser = pageContainer.state.isGuestUser;
+
+    if (isGuestUser) {
+      return;
+    }
 
     try {
       pageContainer.toggleBookmark();
@@ -24,44 +33,49 @@ class BookmarkButton extends React.Component {
     }
   }
 
-  isUserLoggedIn() {
-    return this.props.crowi.currentUserId != null;
-  }
 
   render() {
-    const { pageContainer } = this.props;
-    // if guest user
-    if (!this.isUserLoggedIn()) {
-      return <div></div>;
-    }
+    const { pageContainer, t } = this.props;
+    const isGuestUser = pageContainer.state.isGuestUser;
 
     return (
-      <button
-        type="button"
-        href="#"
-        title="Bookmark"
-        onClick={this.handleClick}
-        className={`btn btn-bookmark border-0
+      <div>
+        <button
+          type="button"
+          id="bookmark-button"
+          onClick={this.handleClick}
+          className={`btn btn-bookmark border-0
           ${`btn-${this.props.size}`}
-          ${pageContainer.state.isBookmarked ? 'active' : ''}`}
-      >
-        <i className="icon-star mr-3"></i>
-        <span className="total-bookmarks">
-          {pageContainer.state.sumOfBookmarks}
-        </span>
-      </button>
+          ${pageContainer.state.isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
+        >
+          <i className="icon-star mr-3"></i>
+          <span className="total-bookmarks">
+            {pageContainer.state.sumOfBookmarks}
+          </span>
+        </button>
+
+        {isGuestUser && (
+        <UncontrolledTooltip placement="top" target="bookmark-button" fade={false}>
+          {t('Not available for guest')}
+        </UncontrolledTooltip>
+        )}
+      </div>
     );
   }
 
 }
 
-const BookmarkButtonWrapper = withUnstatedContainers(BookmarkButton, [PageContainer]);
+/**
+ * Wrapper component for using unstated
+ */
+const BookmarkButtonWrapper = withUnstatedContainers(BookmarkButton, [AppContainer, PageContainer]);
 
 BookmarkButton.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   pageId: PropTypes.string,
-  crowi: PropTypes.object.isRequired,
+  t: PropTypes.func.isRequired,
   size: PropTypes.string,
 };
 
@@ -69,4 +83,4 @@ BookmarkButton.defaultProps = {
   size: 'md',
 };
 
-export default BookmarkButtonWrapper;
+export default withTranslation()(BookmarkButtonWrapper);
