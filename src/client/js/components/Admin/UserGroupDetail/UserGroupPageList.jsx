@@ -17,7 +17,7 @@ class UserGroupPageList extends React.Component {
     this.state = {
       currentPages: [],
       activePage: 1,
-      totalDocs: 0,
+      total: 0,
       pagingLimit: 10,
     };
 
@@ -37,10 +37,10 @@ class UserGroupPageList extends React.Component {
         limit,
         offset,
       });
-      const { totalDocs, pages } = res.data;
+      const { total, pages } = res.data;
 
       this.setState({
-        totalDocs,
+        total,
         activePage: pageNum,
         currentPages: pages,
       });
@@ -63,7 +63,7 @@ class UserGroupPageList extends React.Component {
           <PaginationWrapper
             activePage={this.state.activePage}
             changePage={this.handlePageChange}
-            totalItemsCount={this.state.totalDocs}
+            totalItemsCount={this.state.total}
             pagingLimit={this.state.pagingLimit}
             align="center"
             size="sm"
