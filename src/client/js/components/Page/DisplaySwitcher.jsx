@@ -18,9 +18,13 @@ const DisplaySwitcher = (props) => {
     <>
       <TabContent activeTab={editorMode}>
         <TabPane tabId="view">
-          <div className="d-lg-none d-md-block">
-            <PageAccessories />
+          <div className="row">
+            <div className="col-8"></div>
+            <div className="d-lg-none d-md-block col-4">
+              <PageAccessories />
+            </div>
           </div>
+
           <Page />
         </TabPane>
         <TabPane tabId="edit">
