@@ -100,7 +100,8 @@ pre:not(.hljs):not(.CodeMirror-line) {
   }
 
   &:active,
-  &.active {
+  &.active,
+  &.active:hover {
     color: $color-dropdown-link-active;
     background-color: $bgcolor-dropdown-link-active;
 
