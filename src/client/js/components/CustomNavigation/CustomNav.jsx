@@ -7,6 +7,21 @@ import {
 } from 'reactstrap';
 
 
+function getBreakpointOneLevelLarger(breakpoint) {
+  switch (breakpoint) {
+    case 'sm':
+      return 'md';
+    case 'md':
+      return 'lg';
+    case 'lg':
+      return 'xl';
+    case 'xl':
+    default:
+      return '2xl';
+  }
+}
+
+
 export const CustomNavDropdown = (props) => {
   const {
     activeTab, navTabMapping, onNavSelected,
@@ -21,7 +36,7 @@ export const CustomNavDropdown = (props) => {
   }, [onNavSelected]);
 
   return (
-    <div className="btn-group btn-block">
+    <div className="grw-custom-nav-dropdown btn-group btn-block">
       <button
         className="btn btn-outline-primary btn-lg btn-block dropdown-toggle text-right"
         type="button"
@@ -127,25 +142,13 @@ export const CustomNavTab = (props) => {
   // determine inactive classes to hide NavItem
   const inactiveClassnames = [];
   if (breakpointToHideInactiveTabsDown != null) {
+    const breakpointOneLevelLarger = getBreakpointOneLevelLarger(breakpointToHideInactiveTabsDown);
     inactiveClassnames.push('d-none');
-    switch (breakpointToHideInactiveTabsDown) {
-      case 'sm':
-        inactiveClassnames.push('d-md-block');
-        break;
-      case 'md':
-        inactiveClassnames.push('d-lg-block');
-        break;
-      case 'lg':
-        inactiveClassnames.push('d-xl-block');
-        break;
-      case 'xl':
-        inactiveClassnames.push('d-2xl-block');
-        break;
-    }
+    inactiveClassnames.push(`d-${breakpointOneLevelLarger}-block`);
   }
 
   return (
-    <>
+    <div className="grw-custom-nav-tab">
       <div ref={navContainer}>
         <Nav className="nav-title">
           {Object.entries(navTabMapping).map(([key, value]) => {
@@ -157,7 +160,7 @@ export const CustomNavTab = (props) => {
             return (
               <NavItem
                 key={key}
-                className={`p-0 grw-custom-navtab ${isActive ? 'active' : inactiveClassnames.join(' ')}`}
+                className={`p-0 ${isActive ? 'active' : inactiveClassnames.join(' ')}`}
               >
                 <NavLink type="button" key={key} innerRef={elm => registerNavLink(key, elm)} disabled={!isLinkEnabled} onClick={() => navLinkClickHandler(key)}>
                   <Icon /> {i18n}
@@ -169,7 +172,7 @@ export const CustomNavTab = (props) => {
       </div>
       <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
       { !hideBorderBottom && <hr className="my-0 border-top-0 border-bottom" /> }
-    </>
+    </div>
   );
 
 };
@@ -189,10 +192,22 @@ CustomNavTab.defaultProps = {
 
 const CustomNav = (props) => {
 
+  const tabClassnames = ['d-none'];
+  const dropdownClassnames = ['d-block'];
+
+  // determine classes to show/hide
+  const breakpointOneLevelLarger = getBreakpointOneLevelLarger(props.breakpointToSwitchDropdownDown);
+  tabClassnames.push(`d-${breakpointOneLevelLarger}-block`);
+  dropdownClassnames.push(`d-${breakpointOneLevelLarger}-none`);
+
   return (
     <div className="grw-custom-nav">
-      <CustomNavTab {...props} />
-      <CustomNavDropdown {...props} />
+      <div className={tabClassnames.join(' ')}>
+        <CustomNavTab {...props} />
+      </div>
+      <div className={dropdownClassnames.join(' ')}>
+        <CustomNavDropdown {...props} />
+      </div>
     </div>
   );
 
@@ -204,11 +219,12 @@ CustomNav.propTypes = {
   onNavSelected: PropTypes.func,
   hideBorderBottom: PropTypes.bool,
   breakpointToHideInactiveTabsDown: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
-  breakpointToSwitchToDropdownDown: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
+  breakpointToSwitchDropdownDown: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
 };
 
 CustomNav.defaultProps = {
   hideBorderBottom: false,
+  breakpointToSwitchDropdownDown: 'sm',
 };
 
 

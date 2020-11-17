@@ -76,14 +76,17 @@
   }
 }
 
-.grw-custom-nav {
+.grw-custom-nav-tab,
+.grw-custom-nav-dropdown {
   svg {
     width: 17px;
     height: 17px;
     margin-right: 5px;
     vertical-align: text-bottom;
   }
+}
 
+.grw-custom-nav-tab {
   .nav-title {
     flex-wrap: nowrap;
   }
