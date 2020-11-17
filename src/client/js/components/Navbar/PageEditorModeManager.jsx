@@ -1,161 +1,31 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
-
-// [TODO: rename Threestranded Button by gw4545]
-export const ThreeStrandedButton = withTranslation()((props) => {
-  const { t, isBtnDisabled, editorMode } = props;
-
-
-  function threeStrandedButtonClickedHandler(viewType) {
-    if (isBtnDisabled) {
-      return;
-    }
-    if (props.onThreeStrandedButtonClicked != null) {
-      props.onThreeStrandedButtonClicked(viewType);
-    }
+/* eslint-disable react/prop-types */
+const PageEditorModeButtonWrapper = React.memo(({
+  editorMode, isBtnDisabled, onClick, targetMode, children,
+}) => {
+  const classNames = [`btn btn-outline-primary ${targetMode}-button`];
+  if (editorMode === targetMode) {
+    classNames.push('active');
+  }
+  if (isBtnDisabled) {
+    classNames.push('disabled');
   }
 
   return (
-    <>
-      <div
-        className="btn-group grw-three-stranded-button"
-        role="group"
-        aria-label="three-stranded-button"
-        id="grw-three-stranded-button"
-      >
-        <button
-          type="button"
-          className={`btn btn-outline-primary view-button ${editorMode === 'view' ? 'active' : ''} ${isBtnDisabled ? 'disabled' : ''}`}
-          onClick={() => { threeStrandedButtonClickedHandler('view') }}
-        >
-          <i className="icon-control-play icon-fw grw-three-stranded-button-icon" />
-          { t('view') }
-        </button>
-        <button
-          type="button"
-          className={`btn btn-outline-primary edit-button ${editorMode === 'edit' ? 'active' : ''} ${isBtnDisabled ? 'disabled' : ''}`}
-          onClick={() => { threeStrandedButtonClickedHandler('edit') }}
-        >
-          <i className="icon-note icon-fw grw-three-stranded-button-icon" />
-          { t('Edit') }
-        </button>
-        <button
-          type="button"
-          className={`btn btn-outline-primary hackmd-button ${editorMode === 'hackmd' ? 'active' : ''} ${isBtnDisabled ? 'disabled' : ''}`}
-          onClick={() => { threeStrandedButtonClickedHandler('hackmd') }}
-        >
-          <i className="fa fa-fw fa-file-text-o grw-three-stranded-button-icon" />
-          { t('hackmd.hack_md') }
-        </button>
-      </div>
-      {isBtnDisabled && (
-        <UncontrolledTooltip placement="top" target="grw-three-stranded-button" fade={false}>
-          {t('Not available for guest')}
-        </UncontrolledTooltip>
-      )}
-    </>
+    <button
+      type="button"
+      className={classNames.join(' ')}
+      onClick={() => { onClick(targetMode) }}
+    >
+      {children}
+    </button>
   );
-
 });
-
-ThreeStrandedButton.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
-  onThreeStrandedButtonClicked: PropTypes.func,
-  isBtnDisabled: PropTypes.bool,
-  editorMode: PropTypes.string,
-};
-
-ThreeStrandedButton.defaultProps = {
-  isBtnDisabled: false,
-};
-
-
-export const TwoStrandedButton = withTranslation()((props) => {
-  const { t, isBtnDisabled, editorMode } = props;
-
-
-  function threeStrandedButtonClickedHandler(viewType) {
-    if (isBtnDisabled) {
-      return;
-    }
-    if (props.onThreeStrandedButtonClicked != null) {
-      props.onThreeStrandedButtonClicked(viewType);
-    }
-  }
-
-  function viewButton() {
-    return (
-      <button
-        type="button"
-        className={`btn btn-outline-primary view-button ${editorMode === 'view' && 'active'} ${isBtnDisabled && 'disabled'}`}
-        onClick={() => { threeStrandedButtonClickedHandler('view') }}
-      >
-        <i className="icon-control-play icon-fw grw-three-stranded-button-icon" />
-        { t('view') }
-      </button>
-    );
-  }
-  function editButton() {
-    return (
-      <button
-        type="button"
-        className={`btn btn-outline-primary edit-button ${editorMode === 'edit' && 'active'} ${isBtnDisabled && 'disabled'}`}
-        onClick={() => { threeStrandedButtonClickedHandler('edit') }}
-      >
-        <i className="icon-note icon-fw grw-three-stranded-button-icon" />
-        { t('Edit') }
-      </button>
-    );
-  }
-  function hackMDButton() {
-    return (
-      <button
-        type="button"
-        className={`btn btn-outline-primary hackmd-button ${editorMode === 'hackmd' && 'active'} ${isBtnDisabled && 'disabled'}`}
-        onClick={() => { threeStrandedButtonClickedHandler('hackmd') }}
-      >
-        <i className="fa fa-fw fa-file-text-o grw-three-stranded-button-icon" />
-        { t('hackmd.hack_md') }
-      </button>
-    );
-  }
-
-  return (
-    <>
-      <div
-        className="btn-group grw-three-stranded-button"
-        role="group"
-        aria-label="three-stranded-button"
-        id="grw-three-stranded-button"
-      >
-        {editorMode === 'view' && <>{editButton()} {hackMDButton()}</>}
-        {editorMode === 'edit' && viewButton}
-        {editorMode === 'hackmd' && viewButton}
-      </div>
-      {isBtnDisabled && (
-        <UncontrolledTooltip placement="top" target="grw-three-stranded-button" fade={false}>
-          {t('Not available for guest')}
-        </UncontrolledTooltip>
-      )}
-    </>
-  );
-
-});
-
-TwoStrandedButton.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
-  onThreeStrandedButtonClicked: PropTypes.func,
-  isBtnDisabled: PropTypes.bool,
-  editorMode: PropTypes.string,
-};
-
-TwoStrandedButton.defaultProps = {
-  isBtnDisabled: false,
-};
-
+/* eslint-enable react/prop-types */
 
 function PageEditorModeManager(props) {
   const {
@@ -172,45 +42,6 @@ function PageEditorModeManager(props) {
     }
   }, [isBtnDisabled, onThreeStrandedButtonClicked]);
 
-  const renderViewButton = useCallback(() => {
-    return (
-      <button
-        type="button"
-        className={`btn btn-outline-primary view-button ${editorMode === 'view' && 'active'} ${isBtnDisabled && 'disabled'}`}
-        onClick={() => { threeStrandedButtonClickedHandler('view') }}
-      >
-        <i className="icon-control-play icon-fw grw-three-stranded-button-icon" />
-        { t('view') }
-      </button>
-    );
-  }, [editorMode, isBtnDisabled, t, threeStrandedButtonClickedHandler]);
-
-  const renderEditButton = useCallback(() => {
-    return (
-      <button
-        type="button"
-        className={`btn btn-outline-primary edit-button ${editorMode === 'edit' && 'active'} ${isBtnDisabled && 'disabled'}`}
-        onClick={() => { threeStrandedButtonClickedHandler('edit') }}
-      >
-        <i className="icon-note icon-fw grw-three-stranded-button-icon" />
-        { t('Edit') }
-      </button>
-    );
-  }, [editorMode, isBtnDisabled, t, threeStrandedButtonClickedHandler]);
-
-  const renderHackMDButton = useCallback(() => {
-    return (
-      <button
-        type="button"
-        className={`btn btn-outline-primary hackmd-button ${editorMode === 'hackmd' && 'active'} ${isBtnDisabled && 'disabled'}`}
-        onClick={() => { threeStrandedButtonClickedHandler('hackmd') }}
-      >
-        <i className="fa fa-fw fa-file-text-o grw-three-stranded-button-icon" />
-        { t('hackmd.hack_md') }
-      </button>
-    );
-  }, [editorMode, isBtnDisabled, t, threeStrandedButtonClickedHandler]);
-
   return (
     <>
       <div
@@ -219,9 +50,39 @@ function PageEditorModeManager(props) {
         aria-label="three-stranded-button"
         id="grw-three-stranded-button"
       >
-        {(!isMobile || editorMode !== 'view') && renderViewButton()}
-        {(!isMobile || editorMode === 'view') && renderEditButton()}
-        {(!isMobile || editorMode === 'view') && renderHackMDButton()}
+        {(!isMobile || editorMode !== 'view') && (
+          <PageEditorModeButtonWrapper
+            editorMode={editorMode}
+            isBtnDisabled={isBtnDisabled}
+            onClick={threeStrandedButtonClickedHandler}
+            targetMode="view"
+          >
+            <i className="icon-control-play icon-fw grw-three-stranded-button-icon" />
+            { t('view') }
+          </PageEditorModeButtonWrapper>
+        )}
+        {(!isMobile || editorMode === 'view') && (
+          <PageEditorModeButtonWrapper
+            editorMode={editorMode}
+            isBtnDisabled={isBtnDisabled}
+            onClick={threeStrandedButtonClickedHandler}
+            targetMode="edit"
+          >
+            <i className="icon-note icon-fw grw-three-stranded-button-icon" />
+            { t('Edit') }
+          </PageEditorModeButtonWrapper>
+        )}
+        {(!isMobile || editorMode === 'view') && (
+          <PageEditorModeButtonWrapper
+            editorMode={editorMode}
+            isBtnDisabled={isBtnDisabled}
+            onClick={threeStrandedButtonClickedHandler}
+            targetMode="hackmd"
+          >
+            <i className="fa fa-fw fa-file-text-o grw-three-stranded-button-icon" />
+            { t('hackmd.hack_md') }
+          </PageEditorModeButtonWrapper>
+        )}
       </div>
       {isBtnDisabled && (
         <UncontrolledTooltip placement="top" target="grw-three-stranded-button" fade={false}>
