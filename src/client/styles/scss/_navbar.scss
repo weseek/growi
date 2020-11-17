@@ -77,19 +77,19 @@
 }
 
 .grw-custom-nav {
+  svg {
+    width: 17px;
+    height: 17px;
+    margin-right: 5px;
+    vertical-align: text-bottom;
+  }
+
   .nav-title {
     flex-wrap: nowrap;
   }
 
   .nav-link {
     padding: 1rem 1.5rem;
-
-    svg {
-      width: 17px;
-      height: 17px;
-      margin-right: 5px;
-      vertical-align: text-bottom;
-    }
   }
 
   .grw-nav-slide-hr {

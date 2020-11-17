@@ -3,11 +3,70 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Nav, NavItem, NavLink, TabContent, TabPane,
+  Nav, NavItem, NavLink,
 } from 'reactstrap';
 
 
-export const CustomNav = (props) => {
+export const CustomNavDropdown = (props) => {
+  const {
+    activeTab, navTabMapping, onNavSelected,
+  } = props;
+
+  const activeObj = navTabMapping[activeTab];
+
+  const menuItemClickHandler = useCallback((key) => {
+    if (onNavSelected != null) {
+      onNavSelected(key);
+    }
+  }, [onNavSelected]);
+
+  return (
+    <div className="btn-group btn-block">
+      <button
+        className="btn btn-outline-primary btn-lg btn-block dropdown-toggle text-right"
+        type="button"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        <span className="float-left">
+          { activeObj != null && (
+            <><activeObj.Icon /> {activeObj.i18n}</>
+          ) }
+        </span>
+      </button>
+      <div className="dropdown-menu dropdown-menu-right">
+        {Object.entries(navTabMapping).map(([key, value]) => {
+
+          const isActive = activeTab === key;
+          const isLinkEnabled = value.isLinkEnabled != null ? value.isLinkEnabled(value) : true;
+          const { Icon, i18n } = value;
+
+          return (
+            <button
+              key={key}
+              type="button"
+              className={`dropdown-item px-3 py-2 ${isActive ? 'active' : ''}`}
+              disabled={!isLinkEnabled}
+              onClick={() => menuItemClickHandler(key)}
+            >
+              <Icon /> {i18n}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+CustomNavDropdown.propTypes = {
+  activeTab: PropTypes.string.isRequired,
+  navTabMapping: PropTypes.object.isRequired,
+  onNavSelected: PropTypes.func,
+};
+
+
+export const CustomNavTab = (props) => {
   const navContainer = useRef();
   const [sliderWidth, setSliderWidth] = useState(0);
   const [sliderMarginLeft, setSliderMarginLeft] = useState(0);
@@ -86,7 +145,7 @@ export const CustomNav = (props) => {
   }
 
   return (
-    <div className="grw-custom-nav">
+    <>
       <div ref={navContainer}>
         <Nav className="nav-title">
           {Object.entries(navTabMapping).map(([key, value]) => {
@@ -110,6 +169,30 @@ export const CustomNav = (props) => {
       </div>
       <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
       { !hideBorderBottom && <hr className="my-0 border-top-0 border-bottom" /> }
+    </>
+  );
+
+};
+
+CustomNavTab.propTypes = {
+  activeTab: PropTypes.string.isRequired,
+  navTabMapping: PropTypes.object.isRequired,
+  onNavSelected: PropTypes.func,
+  hideBorderBottom: PropTypes.bool,
+  breakpointToHideInactiveTabsDown: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
+};
+
+CustomNavTab.defaultProps = {
+  hideBorderBottom: false,
+};
+
+
+const CustomNav = (props) => {
+
+  return (
+    <div className="grw-custom-nav">
+      <CustomNavTab {...props} />
+      <CustomNavDropdown {...props} />
     </div>
   );
 
@@ -121,6 +204,7 @@ CustomNav.propTypes = {
   onNavSelected: PropTypes.func,
   hideBorderBottom: PropTypes.bool,
   breakpointToHideInactiveTabsDown: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
+  breakpointToSwitchToDropdownDown: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
 };
 
 CustomNav.defaultProps = {
@@ -128,66 +212,4 @@ CustomNav.defaultProps = {
 };
 
 
-export const CustomTabContent = (props) => {
-
-  const { activeTab, navTabMapping, additionalClassNames } = props;
-
-  return (
-    <TabContent activeTab={activeTab} className={additionalClassNames.join(' ')}>
-      {Object.entries(navTabMapping).map(([key, value]) => {
-
-        const { Content } = value;
-
-        return (
-          <TabPane key={key} tabId={key}>
-            <Content />
-          </TabPane>
-        );
-      })}
-    </TabContent>
-  );
-
-};
-
-CustomTabContent.propTypes = {
-  activeTab: PropTypes.string.isRequired,
-  navTabMapping: PropTypes.object.isRequired,
-  additionalClassNames: PropTypes.arrayOf(PropTypes.string),
-};
-CustomTabContent.defaultProps = {
-  additionalClassNames: [],
-};
-
-
-const CustomNavigation = (props) => {
-  const {
-    navTabMapping, defaultTabIndex, tabContentClasses, breakpointToHideInactiveTabsDown,
-  } = props;
-  const [activeTab, setActiveTab] = useState(Object.keys(props.navTabMapping)[defaultTabIndex || 0]);
-
-  return (
-    <React.Fragment>
-
-      <CustomNav
-        activeTab={activeTab}
-        navTabMapping={navTabMapping}
-        onNavSelected={setActiveTab}
-        breakpointToHideInactiveTabsDown={breakpointToHideInactiveTabsDown}
-      />
-      <CustomTabContent activeTab={activeTab} navTabMapping={navTabMapping} additionalClassNames={tabContentClasses} />
-
-    </React.Fragment>
-  );
-};
-
-CustomNavigation.propTypes = {
-  navTabMapping: PropTypes.object.isRequired,
-  defaultTabIndex: PropTypes.number,
-  tabContentClasses: PropTypes.arrayOf(PropTypes.string),
-  breakpointToHideInactiveTabsDown: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
-};
-CustomNavigation.defaultProps = {
-  tabContentClasses: ['p-4'],
-};
-
-export default CustomNavigation;
+export default CustomNav;
