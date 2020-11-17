@@ -13,7 +13,7 @@ export const CustomNav = (props) => {
   const [sliderMarginLeft, setSliderMarginLeft] = useState(0);
 
   const {
-    activeTab, navTabMapping, onNavSelected, hideBorderBottom,
+    activeTab, navTabMapping, onNavSelected, hideBorderBottom, breakpointToHideInactiveTabsDown,
   } = props;
 
   const navTabRefs = useMemo(() => {
@@ -65,6 +65,26 @@ export const CustomNav = (props) => {
 
   }, [activeTab, navTabRefs, navTabMapping]);
 
+  // determine inactive classes to hide NavItem
+  const inactiveClassnames = [];
+  if (breakpointToHideInactiveTabsDown != null) {
+    inactiveClassnames.push('d-none');
+    switch (breakpointToHideInactiveTabsDown) {
+      case 'sm':
+        inactiveClassnames.push('d-md-block');
+        break;
+      case 'md':
+        inactiveClassnames.push('d-lg-block');
+        break;
+      case 'lg':
+        inactiveClassnames.push('d-xl-block');
+        break;
+      case 'xl':
+        inactiveClassnames.push('d-2xl-block');
+        break;
+    }
+  }
+
   return (
     <div className="grw-custom-nav">
       <div ref={navContainer}>
@@ -78,7 +98,7 @@ export const CustomNav = (props) => {
             return (
               <NavItem
                 key={key}
-                className={`p-0 grw-custom-navtab ${isActive && 'active'}`}
+                className={`p-0 grw-custom-navtab ${isActive ? 'active' : inactiveClassnames.join(' ')}`}
               >
                 <NavLink type="button" key={key} innerRef={elm => registerNavLink(key, elm)} disabled={!isLinkEnabled} onClick={() => navLinkClickHandler(key)}>
                   <Icon /> {i18n}
@@ -100,6 +120,7 @@ CustomNav.propTypes = {
   navTabMapping: PropTypes.object.isRequired,
   onNavSelected: PropTypes.func,
   hideBorderBottom: PropTypes.bool,
+  breakpointToHideInactiveTabsDown: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
 };
 
 CustomNav.defaultProps = {
@@ -139,13 +160,20 @@ CustomTabContent.defaultProps = {
 
 
 const CustomNavigation = (props) => {
-  const { navTabMapping, defaultTabIndex, tabContentClasses } = props;
+  const {
+    navTabMapping, defaultTabIndex, tabContentClasses, breakpointToHideInactiveTabsDown,
+  } = props;
   const [activeTab, setActiveTab] = useState(Object.keys(props.navTabMapping)[defaultTabIndex || 0]);
 
   return (
     <React.Fragment>
 
-      <CustomNav activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={setActiveTab} />
+      <CustomNav
+        activeTab={activeTab}
+        navTabMapping={navTabMapping}
+        onNavSelected={setActiveTab}
+        breakpointToHideInactiveTabsDown={breakpointToHideInactiveTabsDown}
+      />
       <CustomTabContent activeTab={activeTab} navTabMapping={navTabMapping} additionalClassNames={tabContentClasses} />
 
     </React.Fragment>
@@ -156,6 +184,7 @@ CustomNavigation.propTypes = {
   navTabMapping: PropTypes.object.isRequired,
   defaultTabIndex: PropTypes.number,
   tabContentClasses: PropTypes.arrayOf(PropTypes.string),
+  breakpointToHideInactiveTabsDown: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
 };
 CustomNavigation.defaultProps = {
   tabContentClasses: ['p-4'],
