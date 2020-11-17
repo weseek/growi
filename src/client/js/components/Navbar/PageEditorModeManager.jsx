@@ -45,10 +45,10 @@ function PageEditorModeManager(props) {
   return (
     <>
       <div
-        className="btn-group grw-three-stranded-button"
+        className="btn-group grw-page-editor-mode-manager"
         role="group"
-        aria-label="three-stranded-button"
-        id="grw-three-stranded-button"
+        aria-label="page-editor-mode-manager"
+        id="grw-page-editor-mode-manager"
       >
         {(!isDeviceSmallerThanMd || editorMode !== 'view') && (
           <PageEditorModeButtonWrapper
@@ -57,7 +57,7 @@ function PageEditorModeManager(props) {
             onClick={threeStrandedButtonClickedHandler}
             targetMode="view"
           >
-            <i className="icon-control-play icon-fw grw-three-stranded-button-icon" />
+            <i className="icon-control-play icon-fw grw-page-editor-mode-manager-icon" />
             { t('view') }
           </PageEditorModeButtonWrapper>
         )}
@@ -68,7 +68,7 @@ function PageEditorModeManager(props) {
             onClick={threeStrandedButtonClickedHandler}
             targetMode="edit"
           >
-            <i className="icon-note icon-fw grw-three-stranded-button-icon" />
+            <i className="icon-note icon-fw grw-page-editor-mode-manager-icon" />
             { t('Edit') }
           </PageEditorModeButtonWrapper>
         )}
@@ -79,13 +79,13 @@ function PageEditorModeManager(props) {
             onClick={threeStrandedButtonClickedHandler}
             targetMode="hackmd"
           >
-            <i className="fa fa-fw fa-file-text-o grw-three-stranded-button-icon" />
+            <i className="fa fa-fw fa-file-text-o grw-page-editor-mode-manager-icon" />
             { t('hackmd.hack_md') }
           </PageEditorModeButtonWrapper>
         )}
       </div>
       {isBtnDisabled && (
-        <UncontrolledTooltip placement="top" target="grw-three-stranded-button" fade={false}>
+        <UncontrolledTooltip placement="top" target="grw-page-editor-mode-manager" fade={false}>
           {t('Not available for guest')}
         </UncontrolledTooltip>
       )}
