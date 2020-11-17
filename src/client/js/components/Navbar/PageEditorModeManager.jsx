@@ -157,7 +157,7 @@ TwoStrandedButton.defaultProps = {
 };
 
 
-export const PageEditorModeManager = withTranslation()((props) => {
+function PageEditorModeManager(props) {
   const {
     t, editorMode, onThreeStrandedButtonClicked, isBtnDisabled, isMobile,
   } = props;
@@ -231,7 +231,7 @@ export const PageEditorModeManager = withTranslation()((props) => {
     </>
   );
 
-});
+}
 
 PageEditorModeManager.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
@@ -245,3 +245,5 @@ PageEditorModeManager.defaultProps = {
   isBtnDisabled: false,
   isMobile: false,
 };
+
+export default withTranslation()(PageEditorModeManager);

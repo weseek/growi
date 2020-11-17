@@ -16,7 +16,7 @@ import RevisionPathControls from '../Page/RevisionPathControls';
 import TagLabels from '../Page/TagLabels';
 import LikeButton from '../LikeButton';
 import BookmarkButton from '../BookmarkButton';
-import { PageEditorModeManager, ThreeStrandedButton } from './ThreeStrandedButton';
+import PageEditorModeManager from './PageEditorModeManager';
 
 import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
@@ -102,26 +102,6 @@ const GrowiSubNavigation = (props) => {
     navigationContainer.setEditorMode(viewType);
   }
 
-  function renderThreeStrandedButton() {
-    return (
-      <ThreeStrandedButton
-        onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
-        isBtnDisabled={isGuestUser}
-        editorMode={editorMode}
-      />
-    );
-  }
-  function renderTwoStrandedButton() {
-    return (
-      <PageEditorModeManager
-        onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
-        isBtnDisabled={isGuestUser}
-        editorMode={editorMode}
-        isMobile={isMobile}
-      />
-    );
-  }
-
   return (
     <div className={`grw-subnav container-fluid d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
 
@@ -153,9 +133,12 @@ const GrowiSubNavigation = (props) => {
           </div>
           <div className={`${isEditorMode ? 'ml-2' : 'mt-2'}`}>
             {pageContainer.isAbleToShowThreeStrandedButton && (
-              <>
-                {isMobile ? renderTwoStrandedButton() : renderThreeStrandedButton()}
-              </>
+              <PageEditorModeManager
+                onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
+                isBtnDisabled={isGuestUser}
+                editorMode={editorMode}
+                isMobile={isMobile}
+              />
             )}
           </div>
         </div>
