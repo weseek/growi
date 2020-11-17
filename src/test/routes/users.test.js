@@ -27,12 +27,12 @@ describe('users', () => {
       });
       /* eslint-disable indent */
       test.each`
-        page  | selectedStatusList  | searchText  | sortOrder  | sort
-        ${1}  | ${'all'}            | ${''}       | ${'asc'}   | ${'id'}
+        page  | selectedStatusList  | searchText  | sortOrder  | sort     | searchWord  | sortQuery | statusNoList
+        ${1}  | ${'all'}            | ${''}       | ${'asc'}   | ${'id'}  | ${/(?:)/}   | ${1}      | ${[1, 2, 3, 5]}
       `(
-        'respond 200 when queries are { page: $page, selectedStatusList[]: $selectedStatusList, searchText: $searchText, sortOrder: $sortOrder, sort: $sort, }',
+        'respond 200 when queries are { page: $page, selectedStatusList[]: $selectedStatusList, searchText: $searchText, sortOrder: $sortOrder, sort: $sort }',
         async({
-          page, selectedStatusList, searchText, sortOrder, sort,
+          page, selectedStatusList, searchText, sortOrder, sort, searchWord, sortQuery, statusNoList,
         }) => {
           const response = await request(app).get('/').query({
             page, 'selectedStatusList[]': selectedStatusList, searchText, sortOrder, sort,
@@ -47,26 +47,21 @@ describe('users', () => {
                   $and: [
                     {
                       status: {
-                        $in: [
-                          crowi.models.User.STATUS_REGISTERED,
-                          crowi.models.User.STATUS_ACTIVE,
-                          crowi.models.User.STATUS_SUSPENDED,
-                          crowi.models.User.STATUS_INVITED,
-                        ],
+                        $in: statusNoList,
                       },
                     },
                     {
                       $or: [
-                        { name: { $in: /(?:)/ } },
-                        { username: { $in: /(?:)/ } },
-                        { email: { $in: /(?:)/ } },
+                        { name: { $in: searchWord } },
+                        { username: { $in: searchWord } },
+                        { email: { $in: searchWord } },
                       ],
                     },
                   ],
                 },
                 {
-                  sort: { id: 1 },
-                  page: 1,
+                  sort: { [sort]: sortQuery },
+                  page,
                   limit: 50,
                   select: crowi.models.User.USER_PUBLIC_FIELDS,
                 },
@@ -76,7 +71,7 @@ describe('users', () => {
         },
       );
       /* eslint-disable indent */
-      });
+    });
     describe('when throw Error from User.paginate', () => {
       beforeAll(() => {
         crowi.models.User.paginate = jest.fn().mockImplementation(() => { throw Error('error') });
@@ -88,9 +83,9 @@ describe('users', () => {
         expect(response.statusCode).toBe(500);
         expect(response.body.errors.code).toBe('user-group-list-fetch-failed');
         expect(response.body.errors.message).toBe('Error occurred in fetching user group list');
-
       });
     });
+
     describe('validator.statusList', () => {
       test('respond 400 when invalid selectedStatusList', async() => {
         const response = await request(app).get('/').query({
@@ -98,7 +93,6 @@ describe('users', () => {
         });
         expect(response.statusCode).toBe(400);
         expect(response.body.errors).toMatchObject([{ code: 'validation_failed', message: 'selectedStatusList: Invalid value' }]);
-
       });
       test('respond 400 when invalid sortOrder', async() => {
         const response = await request(app).get('/').query({
