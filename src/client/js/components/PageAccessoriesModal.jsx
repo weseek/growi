@@ -80,17 +80,16 @@ const PageAccessoriesModal = (props) => {
   };
 
   const buttons = (
-    <span>
-      {/* change order because of `float: right` by '.close' class */}
-      <button type="button" className="close" onClick={closeModalHandler} aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
+    <div className="d-flex flex-nowrap">
       <ExpandOrContractButton
         isWindowExpanded={isWindowExpanded}
         expandWindow={expandWindow}
         contractWindow={contractWindow}
       />
-    </span>
+      <button type="button" className="close" onClick={closeModalHandler} aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
   );
 
   return (
