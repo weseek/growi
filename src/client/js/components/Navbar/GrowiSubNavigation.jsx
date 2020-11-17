@@ -16,7 +16,7 @@ import RevisionPathControls from '../Page/RevisionPathControls';
 import TagLabels from '../Page/TagLabels';
 import LikeButton from '../LikeButton';
 import BookmarkButton from '../BookmarkButton';
-import ThreeStrandedButton from './ThreeStrandedButton';
+import { TwoStrandedButton, ThreeStrandedButton } from './ThreeStrandedButton';
 
 import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
@@ -93,13 +93,32 @@ const GrowiSubNavigation = (props) => {
     pageId, path, createdAt, creator, updatedAt, revisionAuthor, isPageExist,
   } = pageContainer.state;
 
-  const { isGuestUser } = appContainer;
+  const { isGuestUser, isMobile } = appContainer;
   const isEditorMode = editorMode !== 'view';
   // Tags cannot be edited while the new page and editorMode is view
   const isTagLabelHidden = (editorMode !== 'edit' && !isPageExist);
 
   function onThreeStrandedButtonClicked(viewType) {
     navigationContainer.setEditorMode(viewType);
+  }
+
+  function renderThreeStrandedButton() {
+    return (
+      <ThreeStrandedButton
+        onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
+        isBtnDisabled={isGuestUser}
+        editorMode={editorMode}
+      />
+    );
+  }
+  function renderTwoStrandedButton() {
+    return (
+      <TwoStrandedButton
+        onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
+        isBtnDisabled={isGuestUser}
+        editorMode={editorMode}
+      />
+    );
   }
 
   return (
@@ -133,11 +152,9 @@ const GrowiSubNavigation = (props) => {
           </div>
           <div className={`${isEditorMode ? 'ml-2' : 'mt-2'}`}>
             {pageContainer.isAbleToShowThreeStrandedButton && (
-              <ThreeStrandedButton
-                onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
-                isBtnDisabled={isGuestUser}
-                editorMode={editorMode}
-              />
+              <>
+                {isMobile ? renderTwoStrandedButton() : renderThreeStrandedButton()}
+              </>
             )}
           </div>
         </div>
