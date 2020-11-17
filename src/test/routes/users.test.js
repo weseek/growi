@@ -25,49 +25,58 @@ describe('users', () => {
       beforeAll(() => {
         crowi.models.User.paginate = jest.fn();
       });
-      test('respond 200 when valid queries', async() => {
-        const response = await request(app).get('/').query({
-          page: 1, 'selectedStatusList[]': 'all', sort: 'id', sortOrder: 'asc',
-        });
-
-        expect(app.response.apiv3Err).not.toHaveBeenCalled();
-        expect(response.statusCode).toBe(200);
-        expect(crowi.models.User.paginate).toHaveBeenCalled();
-        expect(crowi.models.User.paginate.mock.calls[0]).toEqual(
-          expect.arrayContaining(
-            [
-              {
-                $and: [
-                  {
-                    status: {
-                      $in: [
-                        crowi.models.User.STATUS_REGISTERED,
-                        crowi.models.User.STATUS_ACTIVE,
-                        crowi.models.User.STATUS_SUSPENDED,
-                        crowi.models.User.STATUS_INVITED,
+      /* eslint-disable indent */
+      test.each`
+        page  | selectedStatusList  | searchText  | sortOrder  | sort
+        ${1}  | ${'all'}            | ${''}       | ${'asc'}   | ${'id'}
+      `(
+        'respond 200 when queries are { page: $page, selectedStatusList[]: $selectedStatusList, searchText: $searchText, sortOrder: $sortOrder, sort: $sort, }',
+        async({
+          page, selectedStatusList, searchText, sortOrder, sort,
+        }) => {
+          const response = await request(app).get('/').query({
+            page, 'selectedStatusList[]': selectedStatusList, searchText, sortOrder, sort,
+          });
+          expect(app.response.apiv3Err).not.toHaveBeenCalled();
+          expect(response.statusCode).toBe(200);
+          expect(crowi.models.User.paginate).toHaveBeenCalled();
+          expect(crowi.models.User.paginate.mock.calls[0]).toEqual(
+            expect.arrayContaining(
+              [
+                {
+                  $and: [
+                    {
+                      status: {
+                        $in: [
+                          crowi.models.User.STATUS_REGISTERED,
+                          crowi.models.User.STATUS_ACTIVE,
+                          crowi.models.User.STATUS_SUSPENDED,
+                          crowi.models.User.STATUS_INVITED,
+                        ],
+                      },
+                    },
+                    {
+                      $or: [
+                        { name: { $in: /(?:)/ } },
+                        { username: { $in: /(?:)/ } },
+                        { email: { $in: /(?:)/ } },
                       ],
                     },
-                  },
-                  {
-                    $or: [
-                      { name: { $in: /(?:)/ } },
-                      { username: { $in: /(?:)/ } },
-                      { email: { $in: /(?:)/ } },
-                    ],
-                  },
-                ],
-              },
-              {
-                sort: { id: 1 },
-                page: 1,
-                limit: 50,
-                select: crowi.models.User.USER_PUBLIC_FIELDS,
-              },
-            ],
-          ),
-        );
+                  ],
+                },
+                {
+                  sort: { id: 1 },
+                  page: 1,
+                  limit: 50,
+                  select: crowi.models.User.USER_PUBLIC_FIELDS,
+                },
+              ],
+            ),
+          );
+        },
+      );
+      /* eslint-disable indent */
       });
-    });
     describe('when throw Error from User.paginate', () => {
       beforeAll(() => {
         crowi.models.User.paginate = jest.fn().mockImplementation(() => { throw Error('error') });
@@ -116,52 +125,52 @@ describe('users', () => {
       });
     });
   });
-});
 
-describe.skip('GET /:id/recent', () => {
+  describe.skip('GET /:id/recent', () => {
 
-});
+  });
 
-describe.skip('GET /exists', () => {
+  describe.skip('GET /exists', () => {
 
-});
+  });
 
-describe.skip('POST /invite', () => {
+  describe.skip('POST /invite', () => {
 
-});
+  });
 
-describe.skip('PUT /:id/giveAdmin', () => {
+  describe.skip('PUT /:id/giveAdmin', () => {
 
-});
+  });
 
-describe.skip('PUT /:id/removeAdmin', () => {
+  describe.skip('PUT /:id/removeAdmin', () => {
 
-});
+  });
 
-describe.skip('PUT /:id/activate', () => {
+  describe.skip('PUT /:id/activate', () => {
 
-});
+  });
 
-describe.skip('PUT /:id/deactivate', () => {
+  describe.skip('PUT /:id/deactivate', () => {
 
-});
+  });
 
-describe.skip('DELETE /:id/remove', () => {
+  describe.skip('DELETE /:id/remove', () => {
 
-});
+  });
 
-describe.skip('GET /external-accounts/', () => {
+  describe.skip('GET /external-accounts/', () => {
 
-});
+  });
 
-describe.skip('DELETE /external-accounts/:id/remove', () => {
+  describe.skip('DELETE /external-accounts/:id/remove', () => {
 
-});
+  });
 
-describe.skip('PUT /update.imageUrlCache', () => {
+  describe.skip('PUT /update.imageUrlCache', () => {
 
-});
+  });
 
-describe.skip('PUT /reset-password', () => {
+  describe.skip('PUT /reset-password', () => {
 
+  });
 });
