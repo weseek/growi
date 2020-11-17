@@ -18,7 +18,7 @@ const DisplaySwitcher = (props) => {
     <>
       <TabContent activeTab={editorMode}>
         <TabPane tabId="view">
-          <div className="grw-page-accesories-mobile d-flex d-none justify-content-end border-bottom">
+          <div className="grw-page-accesories-mobile d-flex d-lg-none justify-content-end border-bottom">
             <PageAccessories />
           </div>
           <Page />
