@@ -17,7 +17,6 @@ class UserGroupPageList extends React.Component {
     this.state = {
       currentPages: [],
       activePage: 1,
-      total: 0,
       pagingLimit: 10,
     };
 
@@ -37,10 +36,9 @@ class UserGroupPageList extends React.Component {
         limit,
         offset,
       });
-      const { total, pages } = res.data;
+      const { pages } = res.data;
 
       this.setState({
-        total: total || 0,
         activePage: pageNum,
         currentPages: pages,
       });
@@ -52,17 +50,18 @@ class UserGroupPageList extends React.Component {
 
   render() {
     const { t, adminUserGroupDetailContainer } = this.props;
+    const { relatedPages } = adminUserGroupDetailContainer.state;
 
     return (
       <Fragment>
         <ul className="page-list-ul page-list-ul-flat mb-3">
           {this.state.currentPages.map(page => <li key={page._id}><Page page={page} /></li>)}
         </ul>
-        {adminUserGroupDetailContainer.state.relatedPages.length === 0 ? <p>{t('admin:user_group_management.no_pages')}</p> : (
+        {relatedPages.length === 0 ? <p>{t('admin:user_group_management.no_pages')}</p> : (
           <PaginationWrapper
             activePage={this.state.activePage}
             changePage={this.handlePageChange}
-            totalItemsCount={this.state.total}
+            totalItemsCount={relatedPages.length}
             pagingLimit={this.state.pagingLimit}
             align="center"
             size="sm"
