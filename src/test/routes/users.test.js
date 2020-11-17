@@ -17,15 +17,10 @@ describe('users', () => {
         next();
       };
     });
-    crowi.models.User.STATUS_REGISTERED = 1;
-    crowi.models.User.STATUS_ACTIVE = 2;
-    crowi.models.User.STATUS_SUSPENDED = 3;
-    crowi.models.User.STATUS_INVITED = 5;
-    crowi.models.User.USER_PUBLIC_FIELDS = 'fields';
     app.use('/', require('~/server/routes/apiv3/users')(crowi));
   });
 
-  describe('/', () => {
+  describe('GET /', () => {
     describe('when normal execution User.paginate', () => {
       beforeAll(() => {
         crowi.models.User.paginate = jest.fn();
@@ -43,7 +38,16 @@ describe('users', () => {
             [
               {
                 $and: [
-                  { status: { $in: [1, 2, 3, 5] } },
+                  {
+                    status: {
+                      $in: [
+                        crowi.models.User.STATUS_REGISTERED,
+                        crowi.models.User.STATUS_ACTIVE,
+                        crowi.models.User.STATUS_SUSPENDED,
+                        crowi.models.User.STATUS_INVITED,
+                      ],
+                    },
+                  },
                   {
                     $or: [
                       { name: { $in: /(?:)/ } },
@@ -57,7 +61,7 @@ describe('users', () => {
                 sort: { id: 1 },
                 page: 1,
                 limit: 50,
-                select: 'fields',
+                select: crowi.models.User.USER_PUBLIC_FIELDS,
               },
             ],
           ),
@@ -112,4 +116,52 @@ describe('users', () => {
       });
     });
   });
+});
+
+describe.skip('GET /:id/recent', () => {
+
+});
+
+describe.skip('GET /exists', () => {
+
+});
+
+describe.skip('POST /invite', () => {
+
+});
+
+describe.skip('PUT /:id/giveAdmin', () => {
+
+});
+
+describe.skip('PUT /:id/removeAdmin', () => {
+
+});
+
+describe.skip('PUT /:id/activate', () => {
+
+});
+
+describe.skip('PUT /:id/deactivate', () => {
+
+});
+
+describe.skip('DELETE /:id/remove', () => {
+
+});
+
+describe.skip('GET /external-accounts/', () => {
+
+});
+
+describe.skip('DELETE /external-accounts/:id/remove', () => {
+
+});
+
+describe.skip('PUT /update.imageUrlCache', () => {
+
+});
+
+describe.skip('PUT /reset-password', () => {
+
 });
