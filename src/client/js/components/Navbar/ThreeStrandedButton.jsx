@@ -219,8 +219,9 @@ export const PageEditorModeManager = withTranslation()((props) => {
         aria-label="three-stranded-button"
         id="grw-three-stranded-button"
       >
-        {editorMode === 'view' && <>{renderEditButton()} {renderHackMDButton()}</>}
-        {!isMobile && editorMode !== 'view' && renderViewButton()}
+        {(!isMobile || editorMode !== 'view') && renderViewButton()}
+        {(!isMobile || editorMode === 'view') && renderEditButton()}
+        {(!isMobile || editorMode === 'view') && renderHackMDButton()}
       </div>
       {isBtnDisabled && (
         <UncontrolledTooltip placement="top" target="grw-three-stranded-button" fade={false}>
