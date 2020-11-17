@@ -88,12 +88,12 @@ const GrowiSubNavigation = (props) => {
   const {
     appContainer, navigationContainer, pageContainer, isCompactMode,
   } = props;
-  const { isDrawerMode, editorMode } = navigationContainer.state;
+  const { isDrawerMode, editorMode, isDeviceSmallerThanMd } = navigationContainer.state;
   const {
     pageId, path, createdAt, creator, updatedAt, revisionAuthor, isPageExist,
   } = pageContainer.state;
 
-  const { isGuestUser, isMobile } = appContainer;
+  const { isGuestUser } = appContainer;
   const isEditorMode = editorMode !== 'view';
   // Tags cannot be edited while the new page and editorMode is view
   const isTagLabelHidden = (editorMode !== 'edit' && !isPageExist);
@@ -137,7 +137,7 @@ const GrowiSubNavigation = (props) => {
                 onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
                 isBtnDisabled={isGuestUser}
                 editorMode={editorMode}
-                isMobile={isMobile}
+                isDeviceSmallerThanMd={isDeviceSmallerThanMd}
               />
             )}
           </div>

@@ -29,7 +29,7 @@ const PageEditorModeButtonWrapper = React.memo(({
 
 function PageEditorModeManager(props) {
   const {
-    t, editorMode, onThreeStrandedButtonClicked, isBtnDisabled, isMobile,
+    t, editorMode, onThreeStrandedButtonClicked, isBtnDisabled, isDeviceSmallerThanMd,
   } = props;
 
 
@@ -50,7 +50,7 @@ function PageEditorModeManager(props) {
         aria-label="three-stranded-button"
         id="grw-three-stranded-button"
       >
-        {(!isMobile || editorMode !== 'view') && (
+        {(!isDeviceSmallerThanMd || editorMode !== 'view') && (
           <PageEditorModeButtonWrapper
             editorMode={editorMode}
             isBtnDisabled={isBtnDisabled}
@@ -61,7 +61,7 @@ function PageEditorModeManager(props) {
             { t('view') }
           </PageEditorModeButtonWrapper>
         )}
-        {(!isMobile || editorMode === 'view') && (
+        {(!isDeviceSmallerThanMd || editorMode === 'view') && (
           <PageEditorModeButtonWrapper
             editorMode={editorMode}
             isBtnDisabled={isBtnDisabled}
@@ -72,7 +72,7 @@ function PageEditorModeManager(props) {
             { t('Edit') }
           </PageEditorModeButtonWrapper>
         )}
-        {(!isMobile || editorMode === 'view') && (
+        {(!isDeviceSmallerThanMd || editorMode === 'view') && (
           <PageEditorModeButtonWrapper
             editorMode={editorMode}
             isBtnDisabled={isBtnDisabled}
@@ -99,12 +99,12 @@ PageEditorModeManager.propTypes = {
   onThreeStrandedButtonClicked: PropTypes.func,
   isBtnDisabled: PropTypes.bool,
   editorMode: PropTypes.string,
-  isMobile: PropTypes.bool,
+  isDeviceSmallerThanMd: PropTypes.bool,
 };
 
 PageEditorModeManager.defaultProps = {
   isBtnDisabled: false,
-  isMobile: false,
+  isDeviceSmallerThanMd: false,
 };
 
 export default withTranslation()(PageEditorModeManager);
