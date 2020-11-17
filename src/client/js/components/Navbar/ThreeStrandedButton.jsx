@@ -131,8 +131,8 @@ export const TwoStrandedButton = withTranslation()((props) => {
         id="grw-three-stranded-button"
       >
         {editorMode === 'view' && <>{editButton()} {hackMDButton()}</>}
-        {editorMode === 'edit' && <>{viewButton()}</>}
-        {editorMode === 'hackmd' && <>{viewButton()}</>}
+        {editorMode === 'edit' && viewButton()}
+        {editorMode === 'hackmd' && viewButton()}
       </div>
       {isBtnDisabled && (
         <UncontrolledTooltip placement="top" target="grw-three-stranded-button" fade={false}>
