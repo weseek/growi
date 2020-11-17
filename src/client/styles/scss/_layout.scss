@@ -36,6 +36,13 @@ body {
   }
 }
 
+.grw-page-accesories-mobile {
+  visibility: hidden;
+  @include media-breakpoint-down(md) {
+    visibility: visible;
+  }
+}
+
 .grw-side-contents-container {
   margin-left: 30px;
 }
