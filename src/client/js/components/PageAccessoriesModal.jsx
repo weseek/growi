@@ -19,7 +19,7 @@ import PageTimeline from './PageTimeline';
 import PageList from './PageList';
 import PageHistory from './PageHistory';
 import ShareLink from './ShareLink/ShareLink';
-import { CustomNav } from './CustomNavigation';
+import { CustomNavTab } from './CustomNavigation/CustomNav';
 import ExpandOrContractButton from './ExpandOrContractButton';
 
 const PageAccessoriesModal = (props) => {
@@ -101,7 +101,7 @@ const PageAccessoriesModal = (props) => {
         className={`grw-page-accessories-modal ${isWindowExpanded ? 'grw-modal-expanded' : ''} `}
       >
         <ModalHeader className="p-0" toggle={closeModalHandler} close={buttons}>
-          <CustomNav
+          <CustomNavTab
             activeTab={activeTab}
             navTabMapping={navTabMapping}
             onNavSelected={switchActiveTab}
