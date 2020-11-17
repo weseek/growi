@@ -102,7 +102,7 @@ const PageAccessoriesModal = (props) => {
         className={`grw-page-accessories-modal ${isWindowExpanded ? 'grw-modal-expanded' : ''} `}
       >
         <ModalHeader className="p-0" toggle={closeModalHandler} close={buttons}>
-          <CustomNav activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={switchActiveTab} hideBorderBottom />
+          <CustomNav activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={switchActiveTab} breakpointToHideInactiveTabsDown="md" hideBorderBottom />
         </ModalHeader>
         <ModalBody className="overflow-auto grw-modal-body-style p-0">
           {/* Do not use CustomTabContent because of performance problem:
