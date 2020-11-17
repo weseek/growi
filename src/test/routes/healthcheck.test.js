@@ -8,13 +8,8 @@ describe('healthcheck', () => {
 
   beforeAll(async() => {
     crowi = await getInstance();
+    // get injected manual mocks express
     app = express();
-    // mocking apiv3Err
-    app.response.apiv3Err = jest.fn(
-      function(errors, status = 400, info) { // not arrow function
-        this.status(status).json({ errors, info });
-      },
-    );
 
     app.use('/', require('~/server/routes/apiv3/healthcheck')(crowi));
   });
