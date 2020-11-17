@@ -5,6 +5,7 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import NavigationContainer from '../../services/NavigationContainer';
 import Editor from '../PageEditor';
 import Page from '../Page';
+import PageAccessories from '../PageAccessories';
 import PageEditorByHackmd from '../PageEditorByHackmd';
 import EditorNavbarBottom from '../PageEditor/EditorNavbarBottom';
 
@@ -17,6 +18,9 @@ const DisplaySwitcher = (props) => {
     <>
       <TabContent activeTab={editorMode}>
         <TabPane tabId="view">
+          <div className="d-lg-none d-md-block">
+            <PageAccessories />
+          </div>
           <Page />
         </TabPane>
         <TabPane tabId="edit">
