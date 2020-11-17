@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import PageListIcon from './Icons/PageListIcon';
 import TimeLineIcon from './Icons/TimeLineIcon';
-import CustomNavigation from './CustomNavigation';
+import CustomNavAndContents from './CustomNavigation/CustomNavAndContents';
 import PageList from './PageList';
 import PageTimeline from './PageTimeline';
 
@@ -30,7 +30,7 @@ const NotFoundPage = (props) => {
 
   return (
     <div className="mt-5 d-edit-none">
-      <CustomNavigation navTabMapping={navTabMapping} />
+      <CustomNavAndContents navTabMapping={navTabMapping} />
     </div>
   );
 };
