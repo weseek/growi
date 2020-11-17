@@ -18,15 +18,10 @@ const DisplaySwitcher = (props) => {
     <>
       <TabContent activeTab={editorMode}>
         <TabPane tabId="view">
-          {/* <div className="d-lg-none d-md-block "> */}
-          <div className="d-flex justify-content-end border-bottom">
+          <div className="d-lg-none d-md-block d-flex justify-content-end border-bottom">
             <PageAccessories />
           </div>
-          {/* <div>&nbsp;</div>
-            <div className="border-bottom">&nbsp;</div> */}
-          {/* </div> */}
 
-          {/* <div className="d-lg-none d-md-block border-bottom">&nbsp; <br /></div> */}
 
           <Page />
         </TabPane>
