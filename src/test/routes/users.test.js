@@ -17,6 +17,14 @@ describe('users', () => {
         next();
       };
     });
+    jest.mock('~/server/middlewares/access-token-parser');
+    const accessTokenParser = require('~/server/middlewares/access-token-parser');
+    accessTokenParser.mockImplementation(() => {
+      return function(_req, res, next) {
+        res.user = 'loginUser'
+        next();
+      };
+    });
     app.use('/', require('~/server/routes/apiv3/users')(crowi));
   });
 
@@ -122,8 +130,58 @@ describe('users', () => {
     });
   });
 
-  describe.skip('GET /:id/recent', () => {
+  describe('GET /:id/recent', () => {
+    describe('validator.recentCreatedByUser', () => {
+      test('respond 400 when limit is larger then 300', async() => {
+        const response = await request(app).get('/userId/recent').query({
+          limit: 500,
+        });
+        expect(response.statusCode).toBe(400);
+        expect(response.body.errors).toMatchObject([{ code: 'validation_failed', message: 'limit: You should set less than 300 or not to set limit.' }]);
+      });
+    });
 
+    describe('when throw Error from User.findById', () => {
+      beforeAll(() => {
+        crowi.models.User.findById = jest.fn().mockImplementation(() => { throw Error('error') });
+      });
+      test('respond 500', async() => {
+        const response = await request(app).get('/userId/recent').query({
+          page: 1,
+        });
+        expect(response.statusCode).toBe(500);
+        expect(response.body.errors.code).toBe('retrieve-recent-created-pages-failed');
+        expect(response.body.errors.message).toBe('Error occurred in find user');
+      });
+    });
+
+    describe('when dont return user from User.findById', () => {
+      beforeAll(() => {
+        crowi.models.User.findById = jest.fn().mockImplementation(() => { return null });
+      });
+      test('respond 400', async() => {
+        const response = await request(app).get('/userId/recent').query({
+          page: 1,
+        });
+        expect(response.statusCode).toBe(400);
+        expect(response.body.errors.message).toBe('find-user-is-not-found');
+      });
+    });
+
+    describe('when throw Error from Page.findListByCreator', () => {
+      beforeAll(() => {
+        crowi.models.User.findById = jest.fn().mockImplementation(() => { return 'user' });
+        crowi.models.Page.findListByCreator = jest.fn().mockImplementation(() => { throw Error('error') });
+      });
+      test('respond 500', async() => {
+        const response = await request(app).get('/userId/recent').query({
+          page: 1,
+        });
+        expect(response.statusCode).toBe(500);
+        expect(response.body.errors.code).toBe('retrieve-recent-created-pages-failed');
+        expect(response.body.errors.message).toBe('Error occurred in retrieve recent created pages for user');
+      });
+    });
   });
 
   describe.skip('GET /exists', () => {
