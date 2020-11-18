@@ -116,7 +116,7 @@ html[dark] {
   //Button
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include page-editor-mode-manager(darken($primary, 10%), lighten($primary, 55%), lighten($primary, 60%));
+      @include btn-page-editor-mode-manager(darken($primary, 10%), lighten($primary, 55%), lighten($primary, 60%));
     }
   }
 

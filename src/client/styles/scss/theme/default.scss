@@ -107,7 +107,7 @@ html[light] {
   // Button
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include page-editor-mode-manager($primary, lighten($primary, 65%), lighten($primary, 70%));
+      @include btn-page-editor-mode-manager($primary, lighten($primary, 65%), lighten($primary, 70%));
     }
   }
 }
@@ -207,7 +207,7 @@ html[dark] {
   //Button
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include page-editor-mode-manager(lighten($primary, 30%), lighten($primary, 20%), $primary, darken($primary, 20%));
+      @include btn-page-editor-mode-manager(lighten($primary, 30%), lighten($primary, 20%), $primary, darken($primary, 20%));
     }
   }
 }
