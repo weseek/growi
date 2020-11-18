@@ -35,20 +35,16 @@ const DisplaySwitcher = (props) => {
            ) : (
              <div className="d-edit-none grw-side-contents-container">
                <div className="grw-side-contents-sticky-container">
-                 <div className="page-accessories">
-                   <PageAccessoriesModalControl
-                     isGuestUser={isGuestUser}
-                     isSharedUser={isSharedUser}
-                   />
-                 </div>
-                 <div className="revision-toc sps sps--sbv" data-sps-offset="123">
+                 <PageAccessoriesModalControl
+                   isGuestUser={isGuestUser}
+                   isSharedUser={isSharedUser}
+                 />
+                 <div id="revision-toc" className="revision-toc">
                    <TableOfContents />
                  </div>
                </div>
              </div>
-
-
-         )}
+          )}
           <PageAccessoriesModal
             isGuestUser={isGuestUser}
             isSharedUser={isSharedUser}
