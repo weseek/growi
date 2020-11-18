@@ -28,7 +28,10 @@ describe('users', () => {
       /* eslint-disable indent */
       test.each`
         page  | selectedStatusList  | searchText  | sortOrder  | sort     | searchWord  | sortQuery | statusNoList
-        ${1}  | ${'all'}            | ${''}       | ${'asc'}   | ${'id'}  | ${/(?:)/}   | ${1}      | ${[1, 2, 3, 5]}
+        ${1}  | ${['registered']}   | ${''}       | ${'asc'}   | ${'id'}  | ${/(?:)/}   | ${1}      | ${[1]}
+        ${1}  | ${['all']}          | ${''}       | ${'asc'}   | ${'id'}  | ${/(?:)/}   | ${1}      | ${[1, 2, 3, 5]}
+        ${1}  | ${['registered']}   | ${'hoge'}   | ${'asc'}   | ${'id'}  | ${/hoge/}   | ${1}      | ${[1]}
+        ${1}  | ${['registered']}   | ${''}       | ${'desc'}  | ${'id'}  | ${/(?:)/}   | ${-1}     | ${[1]}
       `(
         'respond 200 when queries are { page: $page, selectedStatusList[]: $selectedStatusList, searchText: $searchText, sortOrder: $sortOrder, sort: $sort }',
         async({
@@ -72,6 +75,7 @@ describe('users', () => {
       );
       /* eslint-disable indent */
     });
+
     describe('when throw Error from User.paginate', () => {
       beforeAll(() => {
         crowi.models.User.paginate = jest.fn().mockImplementation(() => { throw Error('error') });
