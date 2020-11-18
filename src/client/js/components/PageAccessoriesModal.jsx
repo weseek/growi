@@ -19,7 +19,7 @@ import PageTimeline from './PageTimeline';
 import PageList from './PageList';
 import PageHistory from './PageHistory';
 import ShareLink from './ShareLink/ShareLink';
-import { CustomNav } from './CustomNavigation';
+import { CustomNavTab } from './CustomNavigation/CustomNav';
 import ExpandOrContractButton from './ExpandOrContractButton';
 
 const PageAccessoriesModal = (props) => {
@@ -80,17 +80,16 @@ const PageAccessoriesModal = (props) => {
   };
 
   const buttons = (
-    <span>
-      {/* change order because of `float: right` by '.close' class */}
-      <button type="button" className="close" onClick={closeModalHandler} aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
+    <div className="d-flex flex-nowrap">
       <ExpandOrContractButton
         isWindowExpanded={isWindowExpanded}
         expandWindow={expandWindow}
         contractWindow={contractWindow}
       />
-    </span>
+      <button type="button" className="close" onClick={closeModalHandler} aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
   );
 
   return (
@@ -102,7 +101,13 @@ const PageAccessoriesModal = (props) => {
         className={`grw-page-accessories-modal ${isWindowExpanded ? 'grw-modal-expanded' : ''} `}
       >
         <ModalHeader className="p-0" toggle={closeModalHandler} close={buttons}>
-          <CustomNav activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={switchActiveTab} hideBorderBottom />
+          <CustomNavTab
+            activeTab={activeTab}
+            navTabMapping={navTabMapping}
+            onNavSelected={switchActiveTab}
+            breakpointToHideInactiveTabsDown="md"
+            hideBorderBottom
+          />
         </ModalHeader>
         <ModalBody className="overflow-auto grw-modal-body-style p-0">
           {/* Do not use CustomTabContent because of performance problem:

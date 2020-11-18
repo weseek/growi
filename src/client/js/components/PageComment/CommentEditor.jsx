@@ -21,7 +21,7 @@ import SlackNotification from '../SlackNotification';
 
 import CommentPreview from './CommentPreview';
 import NotAvailableForGuest from '../NotAvailableForGuest';
-import { CustomNav } from '../CustomNavigation';
+import { CustomNavTab } from '../CustomNavigation/CustomNav';
 
 const navTabMapping = {
   comment_editor: {
@@ -298,7 +298,7 @@ class CommentEditor extends React.Component {
     return (
       <>
         <div className="comment-write">
-          <CustomNav activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={this.handleSelect} hideBorderBottom />
+          <CustomNavTab activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={this.handleSelect} hideBorderBottom />
           <TabContent activeTab={activeTab}>
             <TabPane tabId="comment_editor">
               <Editor

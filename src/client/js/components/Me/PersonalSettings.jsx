@@ -2,7 +2,8 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import CustomNavigation from '../CustomNavigation';
+
+import CustomNavAndContents from '../CustomNavigation/CustomNavAndContents';
 import UserSettings from './UserSettings';
 import PasswordSettings from './PasswordSettings';
 import ExternalAccountLinkedMe from './ExternalAccountLinkedMe';
@@ -43,7 +44,7 @@ const PersonalSettings = (props) => {
 
 
   return (
-    <CustomNavigation navTabMapping={navTabMapping} tabContentClasses={['px-0']} />
+    <CustomNavAndContents navTabMapping={navTabMapping} navigationMode="both" tabContentClasses={['px-0']} />
   );
 
 };

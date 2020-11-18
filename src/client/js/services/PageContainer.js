@@ -187,19 +187,19 @@ export default class PageContainer extends Container {
   }
 
   /**
-   * whether to threeStrandedButton
+   * whether to display pageEditorModeManager
    * ex.) view, edit, hackmd
    */
-  get isAbleToShowThreeStrandedButton() {
+  get isAbleToShowPageEditorModeManager() {
     const { isNotCreatable, isPageInTrash } = this.state;
-    const { isSharedUser, isGuestUser } = this.appContainer;
+    const { isSharedUser } = this.appContainer;
 
-    return (!isNotCreatable && !isPageInTrash && !isSharedUser && !isGuestUser);
+    return (!isNotCreatable && !isPageInTrash && !isSharedUser);
   }
 
   /**
-   * whether to threeStrandedButton
-   * ex.) view, edit, hackmd
+   * whether to display pageAuthors
+   * ex.) creator, lastUpdateUser
    */
   get isAbleToShowPageAuthors() {
     const { isPageExist, isUserPage } = this.state;
