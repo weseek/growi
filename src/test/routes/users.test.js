@@ -43,33 +43,31 @@ describe('users', () => {
           expect(app.response.apiv3Err).not.toHaveBeenCalled();
           expect(response.statusCode).toBe(200);
           expect(crowi.models.User.paginate).toHaveBeenCalled();
-          expect(crowi.models.User.paginate.mock.calls[0]).toEqual(
-            expect.arrayContaining(
-              [
-                {
-                  $and: [
-                    {
-                      status: {
-                        $in: statusNoList,
-                      },
+          expect(crowi.models.User.paginate.mock.calls[0]).toMatchObject(
+            [
+              {
+                $and: [
+                  {
+                    status: {
+                      $in: statusNoList,
                     },
-                    {
-                      $or: [
-                        { name: { $in: searchWord } },
-                        { username: { $in: searchWord } },
-                        { email: { $in: searchWord } },
-                      ],
-                    },
-                  ],
-                },
-                {
-                  sort: { [sort]: sortQuery },
-                  page,
-                  limit: 50,
-                  select: crowi.models.User.USER_PUBLIC_FIELDS,
-                },
-              ],
-            ),
+                  },
+                  {
+                    $or: [
+                      { name: { $in: searchWord } },
+                      { username: { $in: searchWord } },
+                      { email: { $in: searchWord } },
+                    ],
+                  },
+                ],
+              },
+              {
+                sort: { [sort]: sortQuery },
+                page,
+                limit: 50,
+                select: crowi.models.User.USER_PUBLIC_FIELDS,
+              },
+            ],
           );
         },
       );
