@@ -81,6 +81,7 @@ const AdminNavigation = (props) => {
           className="btn btn-outline-primary btn-lg dropdown-toggle col-12 text-right"
           type="button"
           id="dropdown-admin-navigation"
+          data-display="static"
           data-toggle="dropdown"
           aria-haspopup="true"
           aria-expanded="false"
