@@ -5,9 +5,9 @@ import { UncontrolledTooltip } from 'reactstrap';
 
 /* eslint-disable react/prop-types */
 const PageEditorModeButtonWrapper = React.memo(({
-  editorMode, isBtnDisabled, onClick, targetMode, children,
+  editorMode, isBtnDisabled, onClick, targetMode, icon, label,
 }) => {
-  const classNames = [`btn btn-outline-primary ${targetMode}-button`];
+  const classNames = [`btn btn-outline-primary ${targetMode}-button px-1`];
   if (editorMode === targetMode) {
     classNames.push('active');
   }
@@ -21,7 +21,10 @@ const PageEditorModeButtonWrapper = React.memo(({
       className={classNames.join(' ')}
       onClick={() => { onClick(targetMode) }}
     >
-      {children}
+      <span className="d-flex flex-column flex-md-row justify-content-center">
+        <span className="grw-page-editor-mode-manager-icon mr-md-1">{icon}</span>
+        <span className="grw-page-editor-mode-manager-label">{label}</span>
+      </span>
     </button>
   );
 });
@@ -56,13 +59,9 @@ function PageEditorModeManager(props) {
             isBtnDisabled={isBtnDisabled}
             onClick={pageEditorModeButtonClickedHandler}
             targetMode="view"
-          >
-            <span>
-              <i className="icon-control-play icon-fw grw-page-editor-mode-manager-icon" />
-              <br className="d-block d-md-none" />
-              { t('view') }
-            </span>
-          </PageEditorModeButtonWrapper>
+            icon={<i className="icon-control-play" />}
+            label={t('view')}
+          />
         )}
         {(!isDeviceSmallerThanMd || editorMode === 'view') && (
           <PageEditorModeButtonWrapper
@@ -70,13 +69,9 @@ function PageEditorModeManager(props) {
             isBtnDisabled={isBtnDisabled}
             onClick={pageEditorModeButtonClickedHandler}
             targetMode="edit"
-          >
-            <span>
-              <i className="icon-note icon-fw grw-page-editor-mode-manager-icon" />
-              <br className="d-block d-md-none" />
-              { t('Edit') }
-            </span>
-          </PageEditorModeButtonWrapper>
+            icon={<i className="icon-note" />}
+            label={t('Edit')}
+          />
         )}
         {(!isDeviceSmallerThanMd || editorMode === 'view') && (
           <PageEditorModeButtonWrapper
@@ -84,13 +79,9 @@ function PageEditorModeManager(props) {
             isBtnDisabled={isBtnDisabled}
             onClick={pageEditorModeButtonClickedHandler}
             targetMode="hackmd"
-          >
-            <span>
-              <i className="fa fa-fw fa-file-text-o grw-page-editor-mode-manager-icon" />
-              <br className="d-block d-md-none" />
-              { t('hackmd.hack_md') }
-            </span>
-          </PageEditorModeButtonWrapper>
+            icon={<i className="fa fa-file-text-o" />}
+            label={t('hackmd.hack_md')}
+          />
         )}
       </div>
       {isBtnDisabled && (
