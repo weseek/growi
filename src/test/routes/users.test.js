@@ -20,8 +20,8 @@ describe('users', () => {
     jest.mock('~/server/middlewares/access-token-parser');
     const accessTokenParser = require('~/server/middlewares/access-token-parser');
     accessTokenParser.mockImplementation(() => {
-      return function(_req, res, next) {
-        res.user = 'loginUser'
+      return function(req, _res, next) {
+        req.user = 'loginUser';
         next();
       };
     });
@@ -131,6 +131,48 @@ describe('users', () => {
   });
 
   describe('GET /:id/recent', () => {
+    describe('normal test', () => {
+      beforeAll(() => {
+        crowi.models.User.findById = jest.fn().mockImplementation(() => { return 'user' });
+        const toObjectMock = jest.fn().mockImplementation(() => { return 'userObject' });
+        crowi.models.Page.findListByCreator = jest.fn().mockImplementation(() => { return { pages: [{ lastUpdateUser: { toObject: toObjectMock } }] } });
+      });
+      test('respond 200 when set query limit', async() => {
+        const response = await request(app).get('/userId/recent').query({
+          page: 1, limit: 10,
+        });
+
+        expect(crowi.models.Page.findListByCreator.mock.calls[0]).toMatchObject(
+          ['user', 'loginUser', { offset: 0, limit: 10 }],
+        );
+        expect(response.statusCode).toBe(200);
+      });
+      test('respond 200 when no set limit and set customize:showPageLimitationM', async() => {
+        crowi.configManager.getConfig = jest.fn().mockImplementation(() => { return 20 });
+
+        const response = await request(app).get('/userId/recent').query({
+          page: 1,
+        });
+
+        expect(crowi.models.Page.findListByCreator.mock.calls[0]).toMatchObject(
+          ['user', 'loginUser', { offset: 0, limit: 20 }],
+        );
+        expect(response.statusCode).toBe(200);
+      });
+      test('respond 200 when no set limit and no set customize:showPageLimitationM', async() => {
+        crowi.configManager.getConfig = jest.fn().mockImplementation(() => { return null });
+
+        const response = await request(app).get('/userId/recent').query({
+          page: 1,
+        });
+
+        expect(crowi.models.Page.findListByCreator.mock.calls[0]).toMatchObject(
+          ['user', 'loginUser', { offset: 0, limit: 30 }],
+        );
+        expect(response.statusCode).toBe(200);
+      });
+    });
+
     describe('validator.recentCreatedByUser', () => {
       test('respond 400 when limit is larger then 300', async() => {
         const response = await request(app).get('/userId/recent').query({
