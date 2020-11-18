@@ -180,10 +180,10 @@ export default class PageContainer extends Container {
    * ex.) duplicate, rename
    */
   get isAbleToShowPageManagement() {
-    const { isPageExist, isPageInTrash } = this.state;
+    const { isPageExist, isTrashPage } = this.state;
     const { isSharedUser } = this.appContainer;
 
-    return (isPageExist && !isPageInTrash && !isSharedUser);
+    return (isPageExist && !isTrashPage && !isSharedUser);
   }
 
   /**
@@ -191,10 +191,10 @@ export default class PageContainer extends Container {
    * ex.) view, edit, hackmd
    */
   get isAbleToShowPageEditorModeManager() {
-    const { isNotCreatable, isPageInTrash } = this.state;
+    const { isNotCreatable, isTrashPage } = this.state;
     const { isSharedUser } = this.appContainer;
 
-    return (!isNotCreatable && !isPageInTrash && !isSharedUser);
+    return (!isNotCreatable && !isTrashPage && !isSharedUser);
   }
 
   /**
