@@ -270,16 +270,25 @@
 
   &.view-button,
   &.edit-button {
+    line-height: 1.2rem;
     .grw-page-editor-mode-manager-icon {
       margin-right: -0.25rem;
+      @include media-breakpoint-down(sm) {
+        margin-right: -0.75rem;
+        font-size: 1.2rem;
+      }
     }
   }
   &.hackmd-button {
     font-size: 12px;
+    line-height: 1.2rem;
     letter-spacing: -0.6px;
-
     .grw-page-editor-mode-manager-icon {
       margin-right: -0.1rem;
+      @include media-breakpoint-down(sm) {
+        margin-right: -0.3rem;
+        font-size: 1.2rem;
+      }
     }
   }
   &:hover,
