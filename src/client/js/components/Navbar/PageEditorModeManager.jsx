@@ -57,8 +57,11 @@ function PageEditorModeManager(props) {
             onClick={pageEditorModeButtonClickedHandler}
             targetMode="view"
           >
-            <i className="icon-control-play icon-fw grw-page-editor-mode-manager-icon" />
-            { t('view') }
+            <span>
+              <i className="icon-control-play icon-fw grw-page-editor-mode-manager-icon" />
+              <br className="d-block d-md-none" />
+              { t('view') }
+            </span>
           </PageEditorModeButtonWrapper>
         )}
         {(!isDeviceSmallerThanMd || editorMode === 'view') && (
@@ -68,8 +71,11 @@ function PageEditorModeManager(props) {
             onClick={pageEditorModeButtonClickedHandler}
             targetMode="edit"
           >
-            <i className="icon-note icon-fw grw-page-editor-mode-manager-icon" />
-            { t('Edit') }
+            <span>
+              <i className="icon-note icon-fw grw-page-editor-mode-manager-icon" />
+              <br className="d-block d-md-none" />
+              { t('Edit') }
+            </span>
           </PageEditorModeButtonWrapper>
         )}
         {(!isDeviceSmallerThanMd || editorMode === 'view') && (
@@ -79,8 +85,11 @@ function PageEditorModeManager(props) {
             onClick={pageEditorModeButtonClickedHandler}
             targetMode="hackmd"
           >
-            <i className="fa fa-fw fa-file-text-o grw-page-editor-mode-manager-icon" />
-            { t('hackmd.hack_md') }
+            <span>
+              <i className="fa fa-fw fa-file-text-o grw-page-editor-mode-manager-icon" />
+              <br className="d-block d-md-none" />
+              { t('hackmd.hack_md') }
+            </span>
           </PageEditorModeButtonWrapper>
         )}
       </div>
