@@ -21,7 +21,7 @@ const DisplaySwitcher = (props) => {
   const {
     navigationContainer, appContainer, pageContainer, pageAccessoriesContainer,
   } = props;
-  const { editorMode, isDeviceSmallerThanMd } = navigationContainer.state;
+  const { editorMode } = navigationContainer.state;
   const { pageUser } = pageContainer.state;
   const { isGuestUser, isSharedUser } = appContainer;
   const { closePageAccessoriesModal } = pageAccessoriesContainer;
@@ -31,15 +31,15 @@ const DisplaySwitcher = (props) => {
     <>
       <TabContent activeTab={editorMode}>
         <TabPane tabId="view">
-          <div className="d-flex flex-row d-md-none justify-content-end">
+          <div className="d-flex d-md-none justify-content-end border-bottom">
             <PageAccessoriesModalControl
               isGuestUser={isGuestUser}
               isSharedUser={isSharedUser}
             />
           </div>
-          <div className="d-flex grw-side-contents-container">
+          <div className="d-flex flex-xs-column flex-md-row grw-side-contents-container">
             <Page />
-            <div className="d-md-column justify-content-end grw-side-contents-sticky-container">
+            <div className="d-none d-md-block justify-content-center grw-side-contents-sticky-container">
               <PageAccessoriesModalControl
                 isGuestUser={isGuestUser}
                 isSharedUser={isSharedUser}
