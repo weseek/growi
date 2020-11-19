@@ -31,6 +31,7 @@ const DisplaySwitcher = (props) => {
     <>
       <TabContent activeTab={editorMode}>
         <TabPane tabId="view">
+
           <div className="d-flex d-md-none justify-content-end border-bottom">
             <PageAccessoriesModalControl
               isGuestUser={isGuestUser}
@@ -38,8 +39,8 @@ const DisplaySwitcher = (props) => {
             />
           </div>
 
-          <div className="d-flex flex-row">
-            <div className="d-flex flex-column">
+          <div className="d-flex flex-row justify-content-around">
+            <div className="w-100">
               {pageUser && <UserInfo pageUser={pageUser} />}
               <Page />
             </div>
@@ -57,7 +58,6 @@ const DisplaySwitcher = (props) => {
               </div>
             </div>
           </div>
-
 
           <PageAccessoriesModal
             isGuestUser={isGuestUser}
