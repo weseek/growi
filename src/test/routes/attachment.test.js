@@ -57,7 +57,6 @@ describe('attachment', () => {
           const response = await request(app).get('/list').query({
             pageId: '52fcf1060af12baf9e8d5bba', page: 1,
           });
-          expect(response.statusCode).toBe(200);
 
           expect(crowi.models.Attachment.paginate.mock.calls[0]).toMatchObject(
             [
@@ -65,6 +64,7 @@ describe('attachment', () => {
               { limit: 20, offset: 0, populate: { path: 'creator', select: crowi.models.User.USER_PUBLIC_FIELDS } },
             ],
           );
+          expect(response.statusCode).toBe(200);
         });
         test('respond 200 when no set limit and no set customize:showPageLimitationM', async() => {
           crowi.configManager.getConfig = jest.fn().mockImplementation(() => { return null });
@@ -72,7 +72,6 @@ describe('attachment', () => {
           const response = await request(app).get('/list').query({
             pageId: '52fcf1060af12baf9e8d5bba', page: 1,
           });
-          expect(response.statusCode).toBe(200);
 
           expect(crowi.models.Attachment.paginate.mock.calls[0]).toMatchObject(
             [
@@ -80,8 +79,10 @@ describe('attachment', () => {
               { limit: 10, offset: 0, populate: { path: 'creator', select: crowi.models.User.USER_PUBLIC_FIELDS } },
             ],
           );
+          expect(response.statusCode).toBe(200);
         });
       });
+
       describe.skip('when exist docs and valid creater', () => {
         beforeAll(() => {
           // TODO: Mocking User instance to creator, because test instanceof operator
