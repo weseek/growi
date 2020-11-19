@@ -29,9 +29,7 @@ import MyDraftList from './components/MyDraftList/MyDraftList';
 import BookmarkIcon from './components/Icons/BookmarkIcon';
 import BookmarkList from './components/PageList/BookmarkList';
 import LikerList from './components/User/LikerList';
-// import TableOfContents from './components/TableOfContents';
 import PageAccessories from './components/PageAccessories';
-import UserInfo from './components/User/UserInfo';
 import Fab from './components/Fab';
 import PersonalSettings from './components/Me/PersonalSettings';
 import UserContentsLinks from './components/UserContentsLinks';
@@ -113,7 +111,6 @@ if (pageContainer.state.pageId != null) {
     'page-comment-write': <CommentEditorLazyRenderer />,
     'page-management': <PageManagement />,
     'page-accessories': <PageAccessories />,
-    // 'revision-toc': <TableOfContents />,
     'liker-list': <LikerList />,
     'page-content-footer': <PageContentFooter />,
 
@@ -134,7 +131,6 @@ if (pageContainer.state.path != null) {
     'page': <Page />,
     'grw-subnav-container': <GrowiSubNavigation />,
     'grw-subnav-switcher-container': <GrowiSubNavigationSwitcher />,
-    'user-info': <UserInfo pageUser={pageContainer.state.pageUser} />,
     'display-switcher': <DisplaySwitcher />,
   });
 }
