@@ -89,9 +89,9 @@ html[light] {
     }
   }
   // Button
-  .btn-group.grw-three-stranded-button {
+  .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include three-stranded-button($primary, lighten($primary, 65%), lighten($primary, 70%));
+      @include btn-page-editor-mode-manager($primary, lighten($primary, 65%), lighten($primary, 70%));
     }
   }
 }
@@ -197,9 +197,9 @@ html[dark] {
   }
 
   // Button
-  .btn-group.grw-three-stranded-button {
+  .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include three-stranded-button(lighten($primary, 30%), $primary, darken($primary, 10%), darken($primary, 20%));
+      @include btn-page-editor-mode-manager(lighten($primary, 30%), $primary, darken($primary, 10%), darken($primary, 20%));
     }
   }
 }

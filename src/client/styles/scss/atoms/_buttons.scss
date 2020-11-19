@@ -91,3 +91,12 @@
   background-color: transparent;
   transition: 0.3s;
 }
+
+// define disabled button w/o pointer-events, see _override-bootstrap.scss
+.btn.disabled,
+.btn[disabled],
+fieldset[disabled] .btn {
+  &.grw-pointer-events-none {
+    pointer-events: none;
+  }
+}

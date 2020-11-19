@@ -28,7 +28,7 @@ export default class PageHistoryContainer extends Container {
 
       totalPages: 0,
       activePage: 1,
-      pagingLimit: null,
+      pagingLimit: Infinity,
     };
 
     this.retrieveRevisions = this.retrieveRevisions.bind(this);

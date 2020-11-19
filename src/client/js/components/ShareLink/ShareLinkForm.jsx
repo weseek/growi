@@ -22,7 +22,7 @@ class ShareLinkForm extends React.Component {
       numberOfDays: '7',
       description: '',
       customExpirationDate: dateFnsFormat(new Date(), 'yyyy-MM-dd'),
-      customExpirationTime: dateFnsFormat(new Date(), 'hh:mm'),
+      customExpirationTime: dateFnsFormat(new Date(), 'HH:mm'),
     };
 
     this.handleChangeExpirationType = this.handleChangeExpirationType.bind(this);

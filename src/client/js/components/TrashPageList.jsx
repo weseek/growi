@@ -1,26 +1,28 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import PageListIcon from './Icons/PageListIcon';
-import CustomNavigation from './CustomNavigation';
+import CustomNavAndContents from './CustomNavigation/CustomNavAndContents';
 import PageList from './PageList';
 
 
 const TrashPageList = (props) => {
   const { t } = props;
 
-  const navTabMapping = {
-    pagelist: {
-      Icon: PageListIcon,
-      Content: PageList,
-      i18n: t('page_list'),
-      index: 0,
-    },
-  };
+  const navTabMapping = useMemo(() => {
+    return {
+      pagelist: {
+        Icon: PageListIcon,
+        Content: PageList,
+        i18n: t('page_list'),
+        index: 0,
+      },
+    };
+  }, [t]);
 
   return (
     <div className="mt-5 d-edit-none">
-      <CustomNavigation navTabMapping={navTabMapping} />
+      <CustomNavAndContents navTabMapping={navTabMapping} />
     </div>
   );
 };
