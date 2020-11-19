@@ -72,7 +72,7 @@ module.exports = (crowi) => {
   */
   router.delete('/empty-trash', loginRequired, adminRequired, csrf, async(req, res) => {
     try {
-      const pages = await Page.completelyDeletePageRecursively('/trash', req.user);
+      const pages = await Page.completelyDeletePageRecursively({ path: '/trash' }, req.user);
       return res.apiv3({ pages });
     }
     catch (err) {
