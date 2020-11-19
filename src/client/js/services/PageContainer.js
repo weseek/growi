@@ -222,7 +222,7 @@ export default class PageContainer extends Container {
    * whether to Empty Trash Page
    * not displayed when guest user and not on trash page
    */
-  get isAbleToShowEmptyButton() {
+  get isAbleToShowEmptyTrashButton() {
     const { currentUser } = this.appContainer;
     const { path, hasChildren } = this.state;
 
@@ -230,7 +230,8 @@ export default class PageContainer extends Container {
   }
 
   /**
-   * whether to Empty Trash Page Management
+   * whether to display trash management button
+   * ex.) undo, delete completly
    * not displayed when guest user
    */
   get isAbleToShowTrashPageManagementButtons() {
