@@ -3,6 +3,7 @@
 ## v4.1.12
 
 * Fix: Adjust line-height for pre under li
+* Fix: Emptying trash process is broken
 
 ## v4.1.11
 
