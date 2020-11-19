@@ -16,7 +16,7 @@ import TwitterSecuritySetting from './TwitterSecuritySetting';
 import FacebookSecuritySetting from './FacebookSecuritySetting';
 import ShareLinkSetting from './ShareLinkSetting';
 
-import { CustomNav } from '../../CustomNavigation';
+import CustomNav from '../../CustomNavigation/CustomNav';
 
 function SecurityManagementContents(props) {
   const { t } = props;
@@ -104,7 +104,13 @@ function SecurityManagementContents(props) {
 
       <div className="auth-mechanism-configurations">
         <h2 className="border-bottom">{t('security_setting.Authentication mechanism settings')}</h2>
-        <CustomNav activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={switchActiveTab} hideBorderBottom />
+        <CustomNav
+          activeTab={activeTab}
+          navTabMapping={navTabMapping}
+          onNavSelected={switchActiveTab}
+          hideBorderBottom
+          breakpointToSwitchDropdownDown="md"
+        />
         <TabContent activeTab={activeTab} className="p-5">
           <TabPane tabId="passport_local">
             {activeComponents.has('passport_local') && <LocalSecuritySetting />}

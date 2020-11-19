@@ -35,8 +35,8 @@ class BookmarkButton extends React.Component {
 
 
   render() {
-    const { pageContainer, t } = this.props;
-    const isGuestUser = pageContainer.state.isGuestUser;
+    const { appContainer, pageContainer, t } = this.props;
+    const { isGuestUser } = appContainer;
 
     return (
       <div>
@@ -45,8 +45,7 @@ class BookmarkButton extends React.Component {
           id="bookmark-button"
           onClick={this.handleClick}
           className={`btn btn-bookmark border-0
-          ${`btn-${this.props.size}`}
-          ${pageContainer.state.isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
+          ${`btn-${this.props.size}`} ${pageContainer.state.isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
         >
           <i className="icon-star mr-3"></i>
           <span className="total-bookmarks">
@@ -71,8 +70,8 @@ class BookmarkButton extends React.Component {
 const BookmarkButtonWrapper = withUnstatedContainers(BookmarkButton, [AppContainer, PageContainer]);
 
 BookmarkButton.propTypes = {
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  appContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   pageId: PropTypes.string,
   t: PropTypes.func.isRequired,

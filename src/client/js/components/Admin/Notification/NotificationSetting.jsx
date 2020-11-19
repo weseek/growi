@@ -11,7 +11,7 @@ import { withLoadingSppiner } from '../../SuspenseUtils';
 
 import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
 
-import { CustomNav } from '../../CustomNavigation';
+import { CustomNavTab } from '../../CustomNavigation/CustomNav';
 
 import SlackAppConfiguration from './SlackAppConfiguration';
 import UserTriggerNotification from './UserTriggerNotification';
@@ -72,7 +72,7 @@ function NotificationSetting(props) {
 
   return (
     <>
-      <CustomNav activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={switchActiveTab} hideBorderBottom />
+      <CustomNavTab activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={switchActiveTab} hideBorderBottom />
 
       <TabContent activeTab={activeTab} className="p-5">
         <TabPane tabId="slack_configuration">

@@ -162,9 +162,9 @@ html[dark] {
   }
 
   // Button
-  .btn-group.grw-three-stranded-button {
+  .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include three-stranded-button(darken($primary, 30%), lighten($primary, 15%), lighten($primary, 25%));
+      @include btn-page-editor-mode-manager(darken($primary, 30%), lighten($primary, 15%), lighten($primary, 25%));
     }
   }
 }

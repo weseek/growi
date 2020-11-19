@@ -185,9 +185,9 @@ html[dark] {
   }
 
   // Button
-  .grw-three-stranded-button {
+  .grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include three-stranded-button(darken($subthemecolor, 15%), lighten($subthemecolor, 35%), lighten($subthemecolor, 45%));
+      @include btn-page-editor-mode-manager(darken($subthemecolor, 15%), lighten($subthemecolor, 35%), lighten($subthemecolor, 45%));
     }
   }
 }

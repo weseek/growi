@@ -98,9 +98,9 @@ html[dark] {
   .btn.btn-outline-primary {
     @include button-outline-variant($accentcolor, $accentcolor, lighten($accentcolor, 20%), $accentcolor);
   }
-  .btn-group.grw-three-stranded-button {
+  .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include three-stranded-button(darken($primary, 50%), lighten($primary, 5%), lighten($primary, 10%));
+      @include btn-page-editor-mode-manager(darken($primary, 50%), lighten($primary, 5%), lighten($primary, 10%));
     }
   }
 
