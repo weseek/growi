@@ -33,17 +33,30 @@ const GrowiNavbarBottom = (props) => {
 
         <ul className="navbar-nav w-100">
           <li className="nav-item">
-            <a type="button" className="nav-link btn-lg" onClick={() => navigationContainer.toggleDrawer()}>
+            <a
+              role="button"
+              className="nav-link btn-lg"
+              onClick={() => navigationContainer.toggleDrawer()}
+            >
               <i className="icon-menu"></i>
             </a>
           </li>
           <li className="nav-item mx-auto">
-            <a type="button" className="nav-link btn-lg" data-target="#grw-global-search-collapse" data-toggle="collapse">
+            <a
+              role="button"
+              className="nav-link btn-lg"
+              data-target="#grw-global-search-collapse"
+              data-toggle="collapse"
+            >
               <i className="icon-magnifier"></i>
             </a>
           </li>
           <li className="nav-item">
-            <a type="button" className="nav-link btn-lg" onClick={() => navigationContainer.openPageCreateModal()}>
+            <a
+              role="button"
+              className="nav-link btn-lg"
+              onClick={() => navigationContainer.openPageCreateModal()}
+            >
               <i className="icon-pencil"></i>
             </a>
           </li>
