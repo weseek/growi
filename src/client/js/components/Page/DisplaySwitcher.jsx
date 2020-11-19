@@ -30,6 +30,7 @@ const DisplaySwitcher = (props) => {
     <>
       <TabContent activeTab={editorMode}>
         <TabPane tabId="view">
+
           {isDeviceSmallerThanMd && (
             <div className="row d-flex justify-content-end d-lg-none border-bottom">
 
@@ -38,12 +39,13 @@ const DisplaySwitcher = (props) => {
                 isSharedUser={isSharedUser}
               />
             </div>
-
             )}
           <div className="row">
-            <Page />
+            <div className="flex-grow-1">
+              <Page />
+            </div>
             {!isDeviceSmallerThanMd && (
-              <div className="d-edit-none grw-side-contents-container">
+              <div className="d-none d-lg-block d-edit-none grw-side-contents-container">
                 <div className="grw-side-contents-sticky-container">
                   <PageAccessoriesModalControl
                     isGuestUser={isGuestUser}
@@ -56,7 +58,6 @@ const DisplaySwitcher = (props) => {
                 </div>
               </div>
             )}
-
             <PageAccessoriesModal
               isGuestUser={isGuestUser}
               isSharedUser={isSharedUser}
