@@ -31,8 +31,37 @@ const DisplaySwitcher = (props) => {
     <>
       <TabContent activeTab={editorMode}>
         <TabPane tabId="view">
+          <div className="d-flex flex-row d-md-none justify-content-end">
+            <PageAccessoriesModalControl
+              isGuestUser={isGuestUser}
+              isSharedUser={isSharedUser}
+            />
+          </div>
+          <div className="d-flex grw-side-contents-container">
+            <Page />
+            <div className="d-md-column justify-content-end grw-side-contents-sticky-container">
+              <PageAccessoriesModalControl
+                isGuestUser={isGuestUser}
+                isSharedUser={isSharedUser}
+              />
+              <div id="revision-toc" className="revision-toc">
+                <TableOfContents />
+              </div>
+            </div>
+          </div>
 
-          {isDeviceSmallerThanMd && (
+          {/* <div id="revision-toc" className="revision-toc"> */}
+          {/* <TableOfContents /> */}
+          {/* </div> */}
+          <PageAccessoriesModal
+            isGuestUser={isGuestUser}
+            isSharedUser={isSharedUser}
+            isOpen={isPageAccessoriesModalShown}
+            onClose={closePageAccessoriesModal}
+          />
+
+
+          {/* {isDeviceSmallerThanMd && (
             <div className="row d-flex justify-content-end d-lg-none border-bottom">
               <PageAccessoriesModalControl
                 isGuestUser={isGuestUser}
@@ -65,7 +94,7 @@ const DisplaySwitcher = (props) => {
               isOpen={isPageAccessoriesModalShown}
               onClose={closePageAccessoriesModal}
             />
-          </div>
+          </div> */}
         </TabPane>
         <TabPane tabId="edit">
           <div id="page-editor">
