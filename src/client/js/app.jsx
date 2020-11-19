@@ -29,7 +29,6 @@ import MyDraftList from './components/MyDraftList/MyDraftList';
 import BookmarkIcon from './components/Icons/BookmarkIcon';
 import BookmarkList from './components/PageList/BookmarkList';
 import LikerList from './components/User/LikerList';
-import PageAccessories from './components/PageAccessories';
 import Fab from './components/Fab';
 import PersonalSettings from './components/Me/PersonalSettings';
 import UserContentsLinks from './components/UserContentsLinks';
@@ -110,7 +109,6 @@ if (pageContainer.state.pageId != null) {
     'page-comments-list': <PageComments />,
     'page-comment-write': <CommentEditorLazyRenderer />,
     'page-management': <PageManagement />,
-    'page-accessories': <PageAccessories />,
     'liker-list': <LikerList />,
     'page-content-footer': <PageContentFooter />,
 
