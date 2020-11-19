@@ -49,10 +49,6 @@ const DisplaySwitcher = (props) => {
               </div>
             </div>
           </div>
-
-          {/* <div id="revision-toc" className="revision-toc"> */}
-          {/* <TableOfContents /> */}
-          {/* </div> */}
           <PageAccessoriesModal
             isGuestUser={isGuestUser}
             isSharedUser={isSharedUser}
