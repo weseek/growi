@@ -30,34 +30,40 @@ const DisplaySwitcher = (props) => {
     <>
       <TabContent activeTab={editorMode}>
         <TabPane tabId="view">
-          {isDeviceSmallerThanMd ? (
-            <div className="d-flex d-lg-none justify-content-end border-bottom">
+          {isDeviceSmallerThanMd && (
+            <div className="row d-flex justify-content-end d-lg-none border-bottom">
+
               <PageAccessoriesModalControl
                 isGuestUser={isGuestUser}
                 isSharedUser={isSharedUser}
               />
             </div>
-           ) : (
-             <div className="d-edit-none grw-side-contents-container">
-               <div className="grw-side-contents-sticky-container">
-                 <PageAccessoriesModalControl
-                   isGuestUser={isGuestUser}
-                   isSharedUser={isSharedUser}
-                 />
-                 <div id="revision-toc" className="revision-toc">
-                   <TableOfContents />
-                 </div>
-                 {pageUser && <UserContentsLinks />}
-               </div>
-             </div>
-          )}
-          <PageAccessoriesModal
-            isGuestUser={isGuestUser}
-            isSharedUser={isSharedUser}
-            isOpen={isPageAccessoriesModalShown}
-            onClose={closePageAccessoriesModal}
-          />
-          <Page />
+
+            )}
+          <div className="row">
+            <Page />
+            {!isDeviceSmallerThanMd && (
+              <div className="d-edit-none grw-side-contents-container">
+                <div className="grw-side-contents-sticky-container">
+                  <PageAccessoriesModalControl
+                    isGuestUser={isGuestUser}
+                    isSharedUser={isSharedUser}
+                  />
+                  <div id="revision-toc" className="revision-toc">
+                    <TableOfContents />
+                  </div>
+                  {pageUser && <UserContentsLinks />}
+                </div>
+              </div>
+            )}
+
+            <PageAccessoriesModal
+              isGuestUser={isGuestUser}
+              isSharedUser={isSharedUser}
+              isOpen={isPageAccessoriesModalShown}
+              onClose={closePageAccessoriesModal}
+            />
+          </div>
         </TabPane>
         <TabPane tabId="edit">
           <div id="page-editor">
