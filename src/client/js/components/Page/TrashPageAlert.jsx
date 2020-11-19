@@ -13,7 +13,7 @@ import PageDeleteModal from '../PageDeleteModal';
 
 
 const TrashPageAlert = (props) => {
-  const { t, appContainer, pageContainer } = props;
+  const { t, pageContainer } = props;
   const {
     path, isDeleted, lastUpdateUsername, updatedAt, isAbleToDeleteCompletely,
   } = pageContainer.state;
