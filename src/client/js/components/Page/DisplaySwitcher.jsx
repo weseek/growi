@@ -8,6 +8,7 @@ import PageContainer from '../../services/PageContainer';
 import PageAccessoriesContainer from '../../services/PageAccessoriesContainer';
 import Editor from '../PageEditor';
 import Page from '../Page';
+import UserInfo from '../User/UserInfo';
 import TableOfContents from '../TableOfContents';
 import UserContentsLinks from '../UserContentsLinks';
 import PageAccessoriesModalControl from '../PageAccessoriesModalControl';
@@ -33,7 +34,6 @@ const DisplaySwitcher = (props) => {
 
           {isDeviceSmallerThanMd && (
             <div className="row d-flex justify-content-end d-lg-none border-bottom">
-
               <PageAccessoriesModalControl
                 isGuestUser={isGuestUser}
                 isSharedUser={isSharedUser}
@@ -42,6 +42,7 @@ const DisplaySwitcher = (props) => {
             )}
           <div className="row">
             <div className="flex-grow-1">
+              {pageUser && <UserInfo pageUser={pageUser} />}
               <Page />
             </div>
             {!isDeviceSmallerThanMd && (
