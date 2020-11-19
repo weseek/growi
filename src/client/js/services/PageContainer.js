@@ -230,7 +230,7 @@ export default class PageContainer extends Container {
   }
 
   /**
-   * whether to display trash management button
+   * whether to display trash management buttons
    * ex.) undo, delete completly
    * not displayed when guest user
    */
