@@ -42,13 +42,11 @@ class LikeButton extends React.Component {
     const { isGuestUser } = appContainer;
     const { editorMode } = navigationContainer.state;
 
-    const isEditorMode = editorMode !== 'view';
-    console.log(`isEditorMode === ${isEditorMode}`);
-
+    const isViewMode = editorMode === 'view';
 
     return (
       <div>
-        {!isEditorMode
+        {isViewMode
           && (
           <button
             type="button"
