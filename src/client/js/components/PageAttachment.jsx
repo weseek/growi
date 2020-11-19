@@ -18,7 +18,7 @@ class PageAttachment extends React.Component {
     this.state = {
       activePage: 1,
       totalAttachments: 0,
-      limit: null,
+      limit: Infinity,
       attachments: [],
       inUse: {},
       attachmentToDelete: null,

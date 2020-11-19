@@ -185,7 +185,7 @@ class SearchResult extends React.Component {
       const pageId = `#id_${page._id}`;
       return (
         <li key={page._id} className="nav-item page-list-li w-100 m-1">
-          <a className="nav-link page-list-link d-flex align-items-center" href={pageId}>
+          <a className="nav-link page-list-link d-flex align-items-baseline" href={pageId}>
             <Page page={page} noLink />
             <div className="ml-auto d-flex">
               { this.state.deletionMode

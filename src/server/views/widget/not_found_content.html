@@ -1,6 +1,9 @@
 <div id="content-main" class="content-main page-list"
   data-path="{{ encodeURI(path) }}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
+  data-page-grant="{{ grant }}"
+  data-page-grant-group="{{ grantedGroupId }}"
+  data-page-grant-group-name="{{ grantedGroupName }}"
   {% if templateTags %}
     data-template-tags="{{ templateTags }}"
   {% endif %}

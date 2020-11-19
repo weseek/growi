@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { debounce } from 'throttle-debounce';
+
 import { withTranslation } from 'react-i18next';
 
 import AppContainer from '../services/AppContainer';
@@ -26,6 +28,9 @@ class Drawio extends React.Component {
     this.drawioContent = this.props.drawioContent;
 
     this.onEdit = this.onEdit.bind(this);
+
+    // create debounced method for rendering Drawio
+    this.renderDrawioWithDebounce = debounce(200, this.renderDrawio);
   }
 
   onEdit() {
@@ -35,6 +40,16 @@ class Drawio extends React.Component {
   }
 
   componentDidMount() {
+    const DrawioViewer = window.GraphViewer;
+    if (DrawioViewer != null) {
+      this.renderDrawio();
+    }
+    else {
+      this.renderDrawioWithDebounce();
+    }
+  }
+
+  renderDrawio() {
     const DrawioViewer = window.GraphViewer;
     if (DrawioViewer != null) {
       const mxgraphs = this.drawioContainer.getElementsByClassName('mxgraph');
@@ -48,6 +63,9 @@ class Drawio extends React.Component {
         }
       }
     }
+    else {
+      this.renderDrawioWithDebounce();
+    }
   }
 
   renderContents() {
@@ -56,7 +74,7 @@ class Drawio extends React.Component {
 
   render() {
     return (
-      <div className="editable-with-drawio container-lg position-relative">
+      <div className="editable-with-drawio position-relative">
         { !this.isPreview && (
           <NotAvailableForGuest>
             <button type="button" className="drawio-iframe-trigger position-absolute btn btn-outline-secondary" onClick={this.onEdit}>

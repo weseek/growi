@@ -45,6 +45,21 @@ jobs:
         semver: ${{ env.SEMVER }}
         publish: true
 
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: wsmoogle
+        password: ${{ secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
+
+    - name: Docker Tags by SemVer in Github Container Registry
+      uses: weseek/ghaction-docker-tags-by-semver@v1.0.3
+      with:
+        source: growi
+        target: ghcr.io/weseek/growi
+        semver: ${{ env.SEMVER }}
+        publish: true
+
     - name: Check whether workspace is clean
       run: |
         STATUS=`git status --porcelain`

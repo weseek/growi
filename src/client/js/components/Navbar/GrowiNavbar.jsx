@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
+import { UncontrolledTooltip } from 'reactstrap';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import NavigationContainer from '../../services/NavigationContainer';
 import AppContainer from '../../services/AppContainer';
+
 
 import GrowiLogo from '../Icons/GrowiLogo';
 
@@ -45,10 +47,18 @@ class GrowiNavbar extends React.Component {
 
     return (
       <li className="nav-item confidential text-light">
-        <i className="icon-info d-md-none" data-toggle="tooltip" title={crowi.confidential} />
+        <i id="confidentialTooltip" className="icon-info d-md-none" />
         <span className="d-none d-md-inline">
           {crowi.confidential}
         </span>
+        <UncontrolledTooltip
+          placement="bottom"
+          trigger="click"
+          target="confidentialTooltip"
+          className="d-md-none"
+        >
+          {crowi.confidential}
+        </UncontrolledTooltip>
       </li>
     );
   }

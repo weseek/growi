@@ -25,6 +25,34 @@ $gray-900: darken($dark, 5%) !default;
 $grays: ("50": $gray-50) !default;
 $red: #ff0a54 !default;
 
+
+// Grid breakpoints
+//
+// Define the minimum dimensions at which your layout will change,
+// adapting to different screen sizes, for use in media queries.
+
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  2xl: 1480px
+);
+
+// Grid containers
+//
+// Define the maximum width of `.container` for different screen sizes.
+
+$container-max-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 1140px,
+  2xl: 1320px
+);
+
+
 //== Typography
 //
 //## Font, line-height, and color for body text, headings, and more.
