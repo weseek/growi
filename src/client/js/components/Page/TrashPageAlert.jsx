@@ -112,7 +112,7 @@ const TrashPageAlert = (props) => {
           This page is in the trash <i className="icon-trash" aria-hidden="true"></i>.
           {isDeleted && <span><br /><UserPicture user={{ username: lastUpdateUsername }} /> Deleted by {lastUpdateUsername} at {updatedAt}</span>}
         </div>
-        { pageContainer.isAbleToShowEmptyButton && renderEmptyButton()}
+        { pageContainer.isAbleToShowEmptyTrashButton && renderEmptyButton()}
         { pageContainer.isAbleToShowTrashPageManagementButtons && renderTrashPageManagementButtons()}
       </div>
       {renderModals()}
