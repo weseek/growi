@@ -7,6 +7,7 @@ import urljoin from 'url-join';
 import { isTopPage } from '@commons/util/path-utils';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
+import NavigationContainer from '../../services/NavigationContainer';
 import PageContainer from '../../services/PageContainer';
 import PageDeleteModal from '../PageDeleteModal';
 import PageRenameModal from '../PageRenameModal';
@@ -18,12 +19,15 @@ import PresentationIcon from '../Icons/PresentationIcon';
 
 const PageManagement = (props) => {
   const {
-    t, appContainer, pageContainer, isCompactMode,
+    t, appContainer, navigationContainer, pageContainer, isCompactMode,
   } = props;
   const { path, isDeletable, isAbleToDeleteCompletely } = pageContainer.state;
 
   const { currentUser } = appContainer;
   const isTopPagePath = isTopPage(path);
+
+  const { editorMode } = navigationContainer.state;
+  const isViewMode = editorMode === 'view';
 
   const [isPageRenameModalShown, setIsPageRenameModalShown] = useState(false);
   const [isPageDuplicateModalShown, setIsPageDuplicateModalShown] = useState(false);
@@ -224,7 +228,9 @@ const PageManagement = (props) => {
 
   return (
     <>
-      {currentUser == null ? renderDotsIconForGuestUser() : renderDotsIconForCurrentUser()}
+      {isViewMode && (
+        currentUser == null ? renderDotsIconForGuestUser() : renderDotsIconForCurrentUser()
+      )}
       <div className="dropdown-menu dropdown-menu-right">
         {isTopPagePath ? renderDropdownItemForTopPage() : renderDropdownItemForNotTopPage()}
         <button className="dropdown-item" type="button" onClick={openPageTemplateModalHandler}>
@@ -240,12 +246,13 @@ const PageManagement = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageManagementWrapper = withUnstatedContainers(PageManagement, [AppContainer, PageContainer]);
+const PageManagementWrapper = withUnstatedContainers(PageManagement, [AppContainer, NavigationContainer, PageContainer]);
 
 
 PageManagement.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   isCompactMode: PropTypes.bool,
