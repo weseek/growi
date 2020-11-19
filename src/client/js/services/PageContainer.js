@@ -219,6 +219,28 @@ export default class PageContainer extends Container {
   }
 
   /**
+   * whether to Empty Trash Page
+   * not displayed when guest user and not on trash page
+   */
+  get isAbleToShowEmptyButton() {
+    const { currentUser } = this.appContainer;
+    const { path, hasChildren } = this.state;
+
+    return (currentUser != null && currentUser.admin && path === '/trash' && hasChildren);
+  }
+
+  /**
+   * whether to Empty Trash Page Management
+   * not displayed when guest user
+   */
+  get isAbleToShowTrashPageManagementButtons() {
+    const { currentUser } = this.appContainer;
+    const { isDeleted } = this.state;
+
+    return (isDeleted && currentUser != null);
+  }
+
+  /**
    * initialize state for markdown data
    */
   initStateMarkdown() {

@@ -15,9 +15,8 @@ import PageDeleteModal from '../PageDeleteModal';
 const TrashPageAlert = (props) => {
   const { t, appContainer, pageContainer } = props;
   const {
-    path, isDeleted, lastUpdateUsername, updatedAt, hasChildren, isAbleToDeleteCompletely,
+    path, isDeleted, lastUpdateUsername, updatedAt, isAbleToDeleteCompletely,
   } = pageContainer.state;
-  const { currentUser = null } = appContainer;
   const [isEmptyTrashModalShown, setIsEmptyTrashModalShown] = useState(false);
   const [isPutbackPageModalShown, setIsPutbackPageModalShown] = useState(false);
   const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);
@@ -113,8 +112,8 @@ const TrashPageAlert = (props) => {
           This page is in the trash <i className="icon-trash" aria-hidden="true"></i>.
           {isDeleted && <span><br /><UserPicture user={{ username: lastUpdateUsername }} /> Deleted by {lastUpdateUsername} at {updatedAt}</span>}
         </div>
-        {(currentUser && currentUser.admin && path === '/trash' && hasChildren) && renderEmptyButton()}
-        {(isDeleted && currentUser) && renderTrashPageManagementButtons()}
+        { pageContainer.isAbleToShowEmptyButton && renderEmptyButton()}
+        { pageContainer.isAbleToShowTrashPageManagementButtons && renderTrashPageManagementButtons()}
       </div>
       {renderModals()}
     </>
