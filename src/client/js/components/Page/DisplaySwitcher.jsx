@@ -37,18 +37,28 @@ const DisplaySwitcher = (props) => {
               isSharedUser={isSharedUser}
             />
           </div>
-          <div className="d-flex flex-xs-column flex-md-row grw-side-contents-container">
-            <Page />
-            <div className="d-none d-md-block justify-content-center grw-side-contents-sticky-container">
-              <PageAccessoriesModalControl
-                isGuestUser={isGuestUser}
-                isSharedUser={isSharedUser}
-              />
-              <div id="revision-toc" className="revision-toc">
-                <TableOfContents />
+
+          <div className="d-flex flex-row">
+            <div className="d-flex flex-column">
+              {pageUser && <UserInfo pageUser={pageUser} />}
+              <Page />
+            </div>
+
+            <div className="d-none d-md-block grw-side-contents-container">
+              <div className="grw-side-contents-sticky-container">
+                <PageAccessoriesModalControl
+                  isGuestUser={isGuestUser}
+                  isSharedUser={isSharedUser}
+                />
+                <div id="revision-toc" className="revision-toc">
+                  <TableOfContents />
+                </div>
+                {pageUser && <UserContentsLinks />}
               </div>
             </div>
           </div>
+
+
           <PageAccessoriesModal
             isGuestUser={isGuestUser}
             isSharedUser={isSharedUser}
