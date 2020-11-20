@@ -6,7 +6,7 @@ import { UncontrolledTooltip } from 'reactstrap';
 
 const RenderTagLabels = React.memo((props) => {
   const {
-    t, tags, pageId, isGuestUser,
+    t, tags, isGuestUser,
   } = props;
 
   function openEditorHandler() {
@@ -25,7 +25,7 @@ const RenderTagLabels = React.memo((props) => {
 
   const tagElements = tags.map((tag) => {
     return (
-      <a key={`${pageId}_${tag}`} href={`/_search?q=tag:${tag}`} className="grw-tag-label badge badge-secondary mr-2">
+      <a key={tag} href={`/_search?q=tag:${tag}`} className="grw-tag-label badge badge-secondary mr-2">
         {tag}
       </a>
     );
@@ -60,7 +60,6 @@ RenderTagLabels.propTypes = {
   tags: PropTypes.array,
   openEditorModal: PropTypes.func,
   isGuestUser: PropTypes.bool.isRequired,
-  pageId: PropTypes.string.isRequired,
 };
 
 export default withTranslation()(RenderTagLabels);
