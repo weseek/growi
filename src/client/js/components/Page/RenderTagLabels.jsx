@@ -25,7 +25,7 @@ const RenderTagLabels = React.memo((props) => {
 
   const tagElements = tags.map((tag) => {
     return (
-      <a key={`${tag}`} href={`/_search?q=tag:${tag}`} className="grw-tag-label badge badge-secondary mr-2">
+      <a key={tag} href={`/_search?q=tag:${tag}`} className="grw-tag-label badge badge-secondary mr-2">
         {tag}
       </a>
     );
