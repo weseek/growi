@@ -14,15 +14,11 @@ import PageContainer from '../../services/PageContainer';
 
 import RevisionPathControls from '../Page/RevisionPathControls';
 import TagLabels from '../Page/TagLabels';
-import LikeButton from '../LikeButton';
-import BookmarkButton from '../BookmarkButton';
+import SubnavButtons from './SubNavButtons';
 import PageEditorModeManager from './PageEditorModeManager';
 
 import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
-
-import PageManagement from '../Page/PageManagement';
-
 
 const PagePathNav = ({
   // eslint-disable-next-line react/prop-types
@@ -62,27 +58,6 @@ const PagePathNav = ({
     </div>
   );
 };
-
-
-/* eslint-enable react/prop-types */
-
-/* eslint-disable react/prop-types */
-const PageReactionButtons = ({ appContainer, pageContainer }) => {
-
-  return (
-    <>
-      {pageContainer.isAbleToShowLikeButton && (
-        <span className="mr-2">
-          <LikeButton />
-        </span>
-      )}
-      <span>
-        <BookmarkButton />
-      </span>
-    </>
-  );
-};
-/* eslint-enable react/prop-types */
 
 const GrowiSubNavigation = (props) => {
   const {
@@ -128,8 +103,7 @@ const GrowiSubNavigation = (props) => {
 
         <div className={`d-flex ${isEditorMode ? 'align-items-center' : 'flex-column align-items-end'}`}>
           <div className="d-flex">
-            { pageContainer.isAbleToShowPageReactionButtons && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
-            { pageContainer.isAbleToShowPageManagement && <PageManagement isCompactMode={isCompactMode} /> }
+            <SubnavButtons isCompactMode={isCompactMode} />
           </div>
           <div className={`${isEditorMode ? 'ml-2' : 'mt-2'}`}>
             {pageContainer.isAbleToShowPageEditorModeManager && (
