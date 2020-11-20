@@ -51,7 +51,7 @@ const PageAccessoriesModalControl = (props) => {
   }, [isGuestUser, isSharedUser]);
 
   return (
-    <div className="grw-page-accessories-control d-flex align-items-center justify-content-between pb-1">
+    <div className="grw-page-accessories-control d-flex flex-nowrap align-items-center justify-content-end justify-content-lg-between">
       {accessoriesBtnList.map((accessory) => {
         return (
           <Fragment key={accessory.name}>
