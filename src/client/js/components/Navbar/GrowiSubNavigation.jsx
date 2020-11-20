@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import { isTrashPage } from '@commons/util/path-utils';
-
 import DevidedPagePath from '@commons/models/devided-page-path';
 import LinkedPagePath from '@commons/models/linked-page-path';
 import PagePathHierarchicalLink from '@commons/components/PagePathHierarchicalLink';
@@ -18,7 +16,7 @@ import RevisionPathControls from '../Page/RevisionPathControls';
 import TagLabels from '../Page/TagLabels';
 import LikeButton from '../LikeButton';
 import BookmarkButton from '../BookmarkButton';
-import ThreeStrandedButton from './ThreeStrandedButton';
+import PageEditorModeManager from './PageEditorModeManager';
 
 import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
@@ -26,20 +24,22 @@ import DrawerToggler from './DrawerToggler';
 import PageManagement from '../Page/PageManagement';
 
 
-// eslint-disable-next-line react/prop-types
-const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
+const PagePathNav = ({
+  // eslint-disable-next-line react/prop-types
+  pageId, pagePath, isEditorMode,
+}) => {
 
   const dPagePath = new DevidedPagePath(pagePath, false, true);
 
   let formerLink;
   let latterLink;
 
-  // when the path is root or first level
-  if (dPagePath.isRoot || dPagePath.isFormerRoot) {
+  // one line
+  if (dPagePath.isRoot || dPagePath.isFormerRoot || isEditorMode) {
     const linkedPagePath = new LinkedPagePath(pagePath);
     latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />;
   }
-  // when the path is second level or deeper
+  // two line
   else {
     const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
     const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
@@ -56,7 +56,6 @@ const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
           <RevisionPathControls
             pageId={pageId}
             pagePath={pagePath}
-            isPageForbidden={isPageForbidden}
           />
         </div>
       </span>
@@ -70,19 +69,15 @@ const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
 /* eslint-disable react/prop-types */
 const PageReactionButtons = ({ appContainer, pageContainer }) => {
 
-  const {
-    pageId, isLiked, pageUser,
-  } = pageContainer.state;
-
   return (
     <>
-      {pageUser == null && (
-      <span className="mr-2">
-        <LikeButton pageId={pageId} isLiked={isLiked} />
-      </span>
+      {pageContainer.isAbleToShowLikeButton && (
+        <span className="mr-2">
+          <LikeButton />
+        </span>
       )}
       <span>
-        <BookmarkButton pageId={pageId} crowi={appContainer} />
+        <BookmarkButton />
       </span>
     </>
   );
@@ -93,21 +88,17 @@ const GrowiSubNavigation = (props) => {
   const {
     appContainer, navigationContainer, pageContainer, isCompactMode,
   } = props;
-  const { isDrawerMode, editorMode } = navigationContainer.state;
+  const { isDrawerMode, editorMode, isDeviceSmallerThanMd } = navigationContainer.state;
   const {
-    pageId, path, createdAt, creator, updatedAt, revisionAuthor,
-    isForbidden: isPageForbidden, pageUser, isNotCreatable, shareLinkId,
+    pageId, path, createdAt, creator, updatedAt, revisionAuthor, isPageExist,
   } = pageContainer.state;
 
-  const { currentUser } = appContainer;
-  const isPageNotFound = pageId == null;
+  const { isGuestUser } = appContainer;
+  const isEditorMode = editorMode !== 'view';
   // Tags cannot be edited while the new page and editorMode is view
-  const isTagLabelHidden = (editorMode !== 'edit' && isPageNotFound);
-  const isUserPage = pageUser != null;
-  const isPageInTrash = isTrashPage(path);
-  const isSharedPage = shareLinkId != null;
+  const isTagLabelHidden = (editorMode !== 'edit' && !isPageExist);
 
-  function onThreeStrandedButtonClicked(viewType) {
+  function onPageEditorModeButtonClicked(viewType) {
     navigationContainer.setEditorMode(viewType);
   }
 
@@ -117,42 +108,43 @@ const GrowiSubNavigation = (props) => {
       {/* Left side */}
       <div className="d-flex grw-subnav-left-side">
         { isDrawerMode && (
-          <div className="d-none d-md-flex align-items-center border-right mr-3 pr-3">
+          <div className={`d-none d-md-flex align-items-center ${isEditorMode ? 'mr-2 pr-2' : 'border-right mr-4 pr-4'}`}>
             <DrawerToggler />
           </div>
         ) }
 
         <div className="grw-path-nav-container">
-          { !isCompactMode && !isTagLabelHidden && !isPageForbidden && !isUserPage && !isSharedPage && (
-            <div className="mb-2">
+          { pageContainer.isAbleToShowTagLabel && !isCompactMode && !isTagLabelHidden && (
+            <div className="grw-taglabels-container">
               <TagLabels editorMode={editorMode} />
             </div>
           ) }
-          <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
+          <PagePathNav pageId={pageId} pagePath={path} isEditorMode={isEditorMode} />
         </div>
       </div>
 
       {/* Right side */}
       <div className="d-flex">
 
-        <div className="d-flex flex-column align-items-end">
+        <div className={`d-flex ${isEditorMode ? 'align-items-center' : 'flex-column align-items-end'}`}>
           <div className="d-flex">
-            { !isPageInTrash && !isPageNotFound && !isPageForbidden && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
-            { !isPageNotFound && !isPageForbidden && <PageManagement isCompactMode={isCompactMode} /> }
+            { pageContainer.isAbleToShowPageReactionButtons && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
+            { pageContainer.isAbleToShowPageManagement && <PageManagement isCompactMode={isCompactMode} /> }
           </div>
-          <div className="mt-2">
-            {!isNotCreatable && !isPageInTrash && !isPageForbidden && (
-              <ThreeStrandedButton
-                onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
-                isBtnDisabled={currentUser == null}
+          <div className={`${isEditorMode ? 'ml-2' : 'mt-2'}`}>
+            {pageContainer.isAbleToShowPageEditorModeManager && (
+              <PageEditorModeManager
+                onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
+                isBtnDisabled={isGuestUser}
                 editorMode={editorMode}
+                isDeviceSmallerThanMd={isDeviceSmallerThanMd}
               />
             )}
           </div>
         </div>
 
         {/* Page Authors */}
-        { (!isCompactMode && !isUserPage && !isPageNotFound && !isPageForbidden) && (
+        { (pageContainer.isAbleToShowPageAuthors && !isCompactMode) && (
           <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3">
             <li className="pb-1">
               <AuthorInfo user={creator} date={createdAt} locate="subnav" />

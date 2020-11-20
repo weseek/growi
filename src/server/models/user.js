@@ -11,7 +11,9 @@ const md5 = require('md5');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 const crypto = require('crypto');
 
-const { listLocaleIds } = require('@commons/util/locale-utils');
+const { listLocaleIds, migrateDeprecatedLocaleId } = require('@commons/util/locale-utils');
+
+const { omitInsecureAttributes } = require('./serializers/user-serializer');
 
 module.exports = function(crowi) {
   const STATUS_REGISTERED = 1;
@@ -65,15 +67,13 @@ module.exports = function(crowi) {
   }, {
     toObject: {
       transform: (doc, ret, opt) => {
-        // omit password
-        delete ret.password;
-        // omit email
-        if (!doc.isEmailPublished) {
-          delete ret.email;
-        }
-        return ret;
+        return omitInsecureAttributes(ret);
       },
     },
+  });
+  // eslint-disable-next-line prefer-arrow-callback
+  userSchema.pre('validate', function() {
+    this.lang = migrateDeprecatedLocaleId(this.lang);
   });
   userSchema.plugin(mongoosePaginate);
   userSchema.plugin(uniqueValidator);

@@ -17,13 +17,17 @@ const Fab = (props) => {
   const { currentUser } = appContainer;
 
   const [animateClasses, setAnimateClasses] = useState('invisible');
+  const [buttonClasses, setButtonClasses] = useState('');
 
 
   const stickyChangeHandler = useCallback((event) => {
     logger.debug('StickyEvents.CHANGE detected');
 
-    const classes = event.detail.isSticky ? 'animated fadeInUp faster' : 'animated fadeOut faster';
-    setAnimateClasses(classes);
+    const newAnimateClasses = event.detail.isSticky ? 'animated fadeInUp faster' : 'animated fadeOut faster';
+    const newButtonClasses = event.detail.isSticky ? '' : 'disabled grw-pointer-events-none';
+
+    setAnimateClasses(newAnimateClasses);
+    setButtonClasses(newButtonClasses);
   }, []);
 
   // setup effect by sticky event
@@ -47,7 +51,7 @@ const Fab = (props) => {
         <div className={`rounded-circle position-absolute ${animateClasses}`} style={{ bottom: '2.3rem', right: '4rem' }}>
           <button
             type="button"
-            className="btn btn-lg btn-create-page btn-primary rounded-circle p-0 waves-effect waves-light"
+            className={`btn btn-lg btn-create-page btn-primary rounded-circle p-0 waves-effect waves-light ${buttonClasses}`}
             onClick={navigationContainer.openPageCreateModal}
           >
             <CreatePageIcon />
@@ -61,7 +65,11 @@ const Fab = (props) => {
     <div className="grw-fab d-none d-md-block">
       {currentUser != null && renderPageCreateButton()}
       <div className={`rounded-circle position-absolute ${animateClasses}`} style={{ bottom: 0, right: 0 }}>
-        <button type="button" className="btn btn-light btn-scroll-to-top rounded-circle p-0" onClick={() => navigationContainer.smoothScrollIntoView()}>
+        <button
+          type="button"
+          className={`btn btn-light btn-scroll-to-top rounded-circle p-0 ${buttonClasses}`}
+          onClick={() => navigationContainer.smoothScrollIntoView()}
+        >
           <ReturnTopIcon />
         </button>
       </div>

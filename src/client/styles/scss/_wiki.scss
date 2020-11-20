@@ -12,11 +12,6 @@ div.body {
 
   font-size: 15px;
 
-  // override line-height except hljs and child of it.
-  :not(pre*) {
-    line-height: 1.8em;
-  }
-
   h1,
   h2,
   h3,
@@ -90,6 +85,10 @@ div.body {
     li {
       margin: 5px 0;
       line-height: 1.8em;
+
+      pre {
+        line-height: $line-height-base;
+      }
     }
 
     ul,
@@ -207,7 +206,10 @@ div.body {
       margin: 10px 0;
 
       li {
-        line-height: 1.1em;
+        line-height: $line-height-base;
+        pre {
+          line-height: $line-height-base;
+        }
       }
     }
 

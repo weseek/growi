@@ -25,7 +25,7 @@ class ApiSettings extends React.Component {
       await appContainer.apiv3Put('/personal-setting/api-token');
 
       await personalContainer.retrievePersonalData();
-      toastSuccess(t('toaster.update_successed', { target: t('personal_settings.update_password') }));
+      toastSuccess(t('toaster.update_successed', { target: t('page_me_apitoken.api_token') }));
     }
     catch (err) {
       toastError(err);
@@ -38,9 +38,7 @@ class ApiSettings extends React.Component {
     return (
       <React.Fragment>
 
-        <div className="container-fluid my-4">
-          <h2 className="border-bottom">{ t('API Token Settings') }</h2>
-        </div>
+        <h2 className="border-bottom my-4">{ t('API Token Settings') }</h2>
 
         <div className="row mb-3">
           <label htmlFor="apiToken" className="col-md-3 text-md-right">{t('Current API Token')}</label>

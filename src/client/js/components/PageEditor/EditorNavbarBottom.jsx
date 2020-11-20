@@ -24,7 +24,7 @@ const EditorNavbarBottom = (props) => {
   const {
     navigationContainer,
   } = props;
-  const { editorMode, isDrawerMode, isDeviceSmallerThanMd } = navigationContainer.state;
+  const { editorMode, isDeviceSmallerThanMd } = navigationContainer.state;
 
   const additionalClasses = ['grw-editor-navbar-bottom'];
 
@@ -76,12 +76,12 @@ const EditorNavbarBottom = (props) => {
         </Collapse>
         )
       }
-      <div className={`navbar navbar-expand border-top px-2 ${additionalClasses.join(' ')}`}>
+      <div className={`navbar navbar-expand border-top px-2 px-md-3 ${additionalClasses.join(' ')}`}>
         <form className="form-inline">
-          { isDrawerMode && renderDrawerButton() }
+          { isDeviceSmallerThanMd && renderDrawerButton() }
           { isOptionsSelectorEnabled && !isDeviceSmallerThanMd && <OptionsSelector /> }
         </form>
-        <form className="form-inline ml-auto">
+        <form className="form-inline flex-nowrap ml-auto">
           {/* Responsive Design for the SlackNotification */}
           {/* Button or the normal Slack banner */}
           {hasSlackConfig && (isDeviceSmallerThanMd ? (
