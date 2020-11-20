@@ -101,11 +101,11 @@ const GrowiSubNavigation = (props) => {
       {/* Right side */}
       <div className="d-flex">
 
-        <div className={`d-flex ${isEditorMode ? 'align-items-center' : 'flex-column align-items-end'}`}>
+        <div className="d-flex flex-column align-items-end">
           <div className="d-flex">
             <SubnavButtons isCompactMode={isCompactMode} />
           </div>
-          <div className={`${isEditorMode ? 'ml-2' : 'mt-2'}`}>
+          <div className="mt-2">
             {pageContainer.isAbleToShowPageEditorModeManager && (
               <PageEditorModeManager
                 onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
