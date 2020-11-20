@@ -8,7 +8,6 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import { toastError } from '../util/apiNotification';
 import PageContainer from '../services/PageContainer';
 import AppContainer from '../services/AppContainer';
-import NavigationContainer from '../services/NavigationContainer';
 
 class BookmarkButton extends React.Component {
 
@@ -36,32 +35,23 @@ class BookmarkButton extends React.Component {
 
 
   render() {
-    const {
-      appContainer, pageContainer, navigationContainer, t,
-    } = this.props;
+    const { appContainer, pageContainer, t } = this.props;
     const { isGuestUser } = appContainer;
-
-    const { editorMode } = navigationContainer.state;
-
-    const isViewMode = editorMode === 'view';
 
     return (
       <div>
-        {isViewMode
-        && (
-          <button
-            type="button"
-            id="bookmark-button"
-            onClick={this.handleClick}
-            className={`btn btn-bookmark border-0
-            ${`btn-${this.props.size}`} ${pageContainer.state.isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
-          >
-            <i className="icon-star mr-3"></i>
-            <span className="total-bookmarks">
-              {pageContainer.state.sumOfBookmarks}
-            </span>
-          </button>
-        )}
+        <button
+          type="button"
+          id="bookmark-button"
+          onClick={this.handleClick}
+          className={`btn btn-bookmark border-0
+          ${`btn-${this.props.size}`} ${pageContainer.state.isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
+        >
+          <i className="icon-star mr-3"></i>
+          <span className="total-bookmarks">
+            {pageContainer.state.sumOfBookmarks}
+          </span>
+        </button>
 
         {isGuestUser && (
         <UncontrolledTooltip placement="top" target="bookmark-button" fade={false}>
@@ -77,12 +67,12 @@ class BookmarkButton extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const BookmarkButtonWrapper = withUnstatedContainers(BookmarkButton, [AppContainer, NavigationContainer, PageContainer]);
+const BookmarkButtonWrapper = withUnstatedContainers(BookmarkButton, [AppContainer, PageContainer]);
 
 BookmarkButton.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+
   pageId: PropTypes.string,
   t: PropTypes.func.isRequired,
   size: PropTypes.string,
