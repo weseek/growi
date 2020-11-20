@@ -42,7 +42,7 @@ const DisplaySwitcher = (props) => {
               </div>
             </div>
 
-            <div>
+            <div className="flex-grow-1 flex-basis-0 mw-0">
               {pageUser && <UserInfo pageUser={pageUser} />}
               <Page />
             </div>
