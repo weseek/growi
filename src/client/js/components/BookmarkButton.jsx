@@ -18,8 +18,8 @@ class BookmarkButton extends React.Component {
   }
 
   async handleClick() {
-    const { pageContainer } = this.props;
-    const isGuestUser = pageContainer.state.isGuestUser;
+    const { appContainer, pageContainer } = this.props;
+    const { isGuestUser } = appContainer;
 
     if (isGuestUser) {
       return;
@@ -70,8 +70,8 @@ class BookmarkButton extends React.Component {
 const BookmarkButtonWrapper = withUnstatedContainers(BookmarkButton, [AppContainer, PageContainer]);
 
 BookmarkButton.propTypes = {
-  appContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   pageId: PropTypes.string,
   t: PropTypes.func.isRequired,
