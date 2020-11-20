@@ -70,8 +70,8 @@ class BookmarkButton extends React.Component {
 const BookmarkButtonWrapper = withUnstatedContainers(BookmarkButton, [AppContainer, PageContainer]);
 
 BookmarkButton.propTypes = {
-  appContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   pageId: PropTypes.string,
   t: PropTypes.func.isRequired,
