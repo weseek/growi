@@ -19,6 +19,7 @@ export default class NavigationContainer extends Container {
     this.appContainer = appContainer;
     this.appContainer.registerContainer(this);
 
+
     const { localStorage } = window;
 
     this.state = {
@@ -52,6 +53,9 @@ export default class NavigationContainer extends Container {
     return 'NavigationContainer';
   }
 
+  getPageContainer() {
+    return this.appContainer.getContainer('PageContainer');
+  }
 
   initDeviceSize() {
     const mdOrAvobeHandler = async(mql) => {
@@ -89,9 +93,15 @@ export default class NavigationContainer extends Container {
   }
 
   setEditorMode(editorMode) {
+    const { isNotCreatable } = this.getPageContainer().state;
 
     if (this.appContainer.currentUser == null) {
       logger.warn('Please login or signup to edit the page or use hackmd.');
+      return;
+    }
+
+    if (isNotCreatable) {
+      logger.warn('This page could not edit.');
       return;
     }
 
