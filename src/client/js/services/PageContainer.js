@@ -180,10 +180,10 @@ export default class PageContainer extends Container {
    * ex.) duplicate, rename
    */
   get isAbleToShowPageManagement() {
-    const { isPageExist, isPageInTrash } = this.state;
+    const { isPageExist, isTrashPage } = this.state;
     const { isSharedUser } = this.appContainer;
 
-    return (isPageExist && !isPageInTrash && !isSharedUser);
+    return (isPageExist && !isTrashPage && !isSharedUser);
   }
 
   /**
@@ -191,10 +191,10 @@ export default class PageContainer extends Container {
    * ex.) view, edit, hackmd
    */
   get isAbleToShowPageEditorModeManager() {
-    const { isNotCreatable, isPageInTrash } = this.state;
+    const { isNotCreatable, isTrashPage } = this.state;
     const { isSharedUser } = this.appContainer;
 
-    return (!isNotCreatable && !isPageInTrash && !isSharedUser);
+    return (!isNotCreatable && !isTrashPage && !isSharedUser);
   }
 
   /**
@@ -216,6 +216,29 @@ export default class PageContainer extends Container {
     const { isSharedUser } = this.appContainer;
 
     return (!isUserPage && !isSharedUser);
+  }
+
+  /**
+   * whether to Empty Trash Page
+   * not displayed when guest user and not on trash page
+   */
+  get isAbleToShowEmptyTrashButton() {
+    const { currentUser } = this.appContainer;
+    const { path, hasChildren } = this.state;
+
+    return (currentUser != null && currentUser.admin && path === '/trash' && hasChildren);
+  }
+
+  /**
+   * whether to display trash management buttons
+   * ex.) undo, delete completly
+   * not displayed when guest user
+   */
+  get isAbleToShowTrashPageManagementButtons() {
+    const { currentUser } = this.appContainer;
+    const { isDeleted } = this.state;
+
+    return (isDeleted && currentUser != null);
   }
 
   /**

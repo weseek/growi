@@ -35,8 +35,8 @@ class LikeButton extends React.Component {
 
 
   render() {
-    const { pageContainer, t } = this.props;
-    const isGuestUser = pageContainer.state.isGuestUser;
+    const { appContainer, pageContainer, t } = this.props;
+    const { isGuestUser } = appContainer;
 
     return (
       <div>
