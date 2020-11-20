@@ -164,6 +164,7 @@
       > li {
         > a {
           padding: 2px 8px;
+          word-break: break-all;
           border-radius: 0;
 
           &:hover {

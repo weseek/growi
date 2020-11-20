@@ -19,7 +19,7 @@ const PageList = (props) => {
 
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [limit, setLimit] = useState(null);
+  const [limit, setLimit] = useState(Infinity);
 
   function setPageNumber(selectedPageNumber) {
     setActivePage(selectedPageNumber);
@@ -43,7 +43,7 @@ const PageList = (props) => {
   if (isLoading) {
     return (
       <div className="wiki">
-        <div className="text-muted test-center">
+        <div className="text-muted text-center">
           <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
         </div>
       </div>

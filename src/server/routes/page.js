@@ -1,3 +1,5 @@
+const { serializePageSecurely } = require('../models/serializers/page-serializer');
+
 /**
  * @swagger
  *  tags:
@@ -65,13 +67,6 @@
  *            example: ""
  *          revision:
  *            $ref: '#/components/schemas/Revision'
- *          seenUsers:
- *            type: array
- *            description: granted users
- *            items:
- *              type: string
- *              description: user ID
- *            example: ["5ae5fccfc5577b0004dbd8ab"]
  *          status:
  *            type: string
  *            description: status
@@ -150,7 +145,6 @@ module.exports = function(crowi, app) {
   const { slackNotificationService, configManager } = crowi;
   const interceptorManager = crowi.getInterceptorManager();
   const globalNotificationService = crowi.getGlobalNotificationService();
-  const pageService = crowi.pageService;
 
   const actions = {};
 
@@ -327,6 +321,11 @@ module.exports = function(crowi, app) {
     let portalPage = await Page.findByPathAndViewer(portalPath, req.user);
     portalPage.initLatestRevisionField(revisionId);
 
+    // add user to seen users
+    if (req.user != null) {
+      portalPage = await portalPage.seen(req.user);
+    }
+
     // populate
     portalPage = await portalPage.populateDataToShowRevision();
 
@@ -371,6 +370,11 @@ module.exports = function(crowi, app) {
     let view = `layout-${layoutName}/page`;
 
     page.initLatestRevisionField(revisionId);
+
+    // add user to seen users
+    if (req.user != null) {
+      page = await page.seen(req.user);
+    }
 
     // populate
     page = await page.populateDataToShowRevision();
@@ -777,7 +781,7 @@ module.exports = function(crowi, app) {
       savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
     }
 
-    const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
+    const result = { page: serializePageSecurely(createdPage), tags: savedTags };
     res.json(ApiResponse.success(result));
 
     // update scopes for descendants
@@ -906,7 +910,7 @@ module.exports = function(crowi, app) {
       savedTags = await PageTagRelation.listTagNamesByPage(pageId);
     }
 
-    const result = { page: pageService.serializeToObj(page), tags: savedTags };
+    const result = { page: serializePageSecurely(page), tags: savedTags };
     res.json(ApiResponse.success(result));
 
     // update scopes for descendants
@@ -1006,7 +1010,7 @@ module.exports = function(crowi, app) {
     }
 
     const result = {};
-    result.page = page; // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+    result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
 
     return res.json(ApiResponse.success(result));
   };
@@ -1113,75 +1117,6 @@ module.exports = function(crowi, app) {
     catch (err) {
       return res.json(ApiResponse.error(err));
     }
-    return res.json(ApiResponse.success(result));
-  };
-
-  /**
-   * @swagger
-   *
-   *    /pages.seen:
-   *      post:
-   *        tags: [Pages, CrowiCompatibles]
-   *        operationId: seenPage
-   *        summary: /pages.seen
-   *        description: Mark as seen user
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  page_id:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
-   *                required:
-   *                  - page_id
-   *        responses:
-   *          200:
-   *            description: Succeeded to be page seen.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    seenUser:
-   *                      $ref: '#/components/schemas/Page/properties/seenUsers'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  /**
-   * @api {post} /pages.seen Mark as seen user
-   * @apiName SeenPage
-   * @apiGroup Page
-   *
-   * @apiParam {String} page_id Page Id.
-   */
-  api.seen = async function(req, res) {
-    const user = req.user;
-    const pageId = req.body.page_id;
-    if (!pageId) {
-      return res.json(ApiResponse.error('page_id required'));
-    }
-    if (!req.user) {
-      return res.json(ApiResponse.error('user required'));
-    }
-
-    let page;
-    try {
-      page = await Page.findByIdAndViewer(pageId, user);
-      if (user != null) {
-        page = await page.seen(user);
-      }
-    }
-    catch (err) {
-      debug('Seen user update error', err);
-      return res.json(ApiResponse.error(err));
-    }
-
-    const result = {};
-    result.seenUser = page.seenUsers;
-
     return res.json(ApiResponse.success(result));
   };
 
@@ -1306,7 +1241,7 @@ module.exports = function(crowi, app) {
 
     debug('Page deleted', page.path);
     const result = {};
-    result.page = page; // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+    result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
 
     res.json(ApiResponse.success(result));
 
@@ -1353,7 +1288,7 @@ module.exports = function(crowi, app) {
     }
 
     const result = {};
-    result.page = page; // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+    result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
 
     return res.json(ApiResponse.success(result));
   };
@@ -1464,7 +1399,7 @@ module.exports = function(crowi, app) {
     }
 
     const result = {};
-    result.page = page; // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+    result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
 
     res.json(ApiResponse.success(result));
 
