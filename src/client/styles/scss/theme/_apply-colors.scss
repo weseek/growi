@@ -15,7 +15,6 @@ $bordercolor-nav-tabs-hover: $gray-200 $gray-200 $bordercolor-nav-tabs !default;
 $color-nav-tabs-link-active: $gray-600 !default;
 $bordercolor-nav-tabs-active: $bordercolor-nav-tabs $bordercolor-nav-tabs $bgcolor-global !default;
 $color-seen-user: #549c79 !default;
-$color-user-page-icon: $color-global !default;
 
 // override bootstrap variables
 $body-bg: $bgcolor-global;
@@ -561,11 +560,4 @@ mark.rbt-highlight-text {
 .grw-btn-page-management:hover,
 .grw-btn-page-management:focus {
   background-color: rgba($color-link, 0.15);
-}
-
-// User page icon
-.grw-user-page-header {
-  svg {
-    fill: $color-user-page-icon;
-  }
 }
