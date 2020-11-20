@@ -19,7 +19,6 @@ export default class NavigationContainer extends Container {
     this.appContainer = appContainer;
     this.appContainer.registerContainer(this);
 
-
     const { localStorage } = window;
 
     this.state = {
