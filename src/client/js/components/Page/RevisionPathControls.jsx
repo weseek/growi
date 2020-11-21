@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { withTranslation } from 'react-i18next';
-
 import CopyDropdown from './CopyDropdown';
 
 const RevisionPathControls = (props) => {
@@ -25,10 +23,8 @@ const RevisionPathControls = (props) => {
 };
 
 RevisionPathControls.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-
   pagePath: PropTypes.string.isRequired,
   pageId: PropTypes.string,
 };
 
-export default withTranslation()(RevisionPathControls);
+export default RevisionPathControls;
