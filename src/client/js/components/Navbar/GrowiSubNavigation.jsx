@@ -101,7 +101,7 @@ const GrowiSubNavigation = (props) => {
               <TagLabels editorMode={editorMode} />
             </div>
           ) }
-          <PagePathNav pageId={pageId} pagePath={path} isEditorMode={isEditorMode} isCompactMode />
+          <PagePathNav pageId={pageId} pagePath={path} isEditorMode={isEditorMode} isCompactMode={isCompactMode} />
         </div>
       </div>
 
