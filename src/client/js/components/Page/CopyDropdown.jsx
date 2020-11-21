@@ -37,12 +37,6 @@ const CopyDropdown = (props) => {
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const [isParamsAppended, setParamsAppended] = useState(true);
 
-  // states for labels and URLs
-  const [pagePathUrl, setPagePathUrl] = useState();
-  const [permalink, setParmalink] = useState();
-  const [markdownLink, setMarkdownLink] = useState();
-
-
   /*
    * functions to construct labels and URLs
    */
@@ -63,12 +57,12 @@ const CopyDropdown = (props) => {
     return decodeURI(`${pagePath}${getUriParams()}`);
   }, [props, getUriParams]);
 
-  const generatePagePathUrl = useCallback(() => {
+  const pagePathUrl = useMemo(() => {
     const { origin } = window.location;
     return `${origin}${encodeSpaces(pagePathWithParams)}`;
   }, [pagePathWithParams]);
 
-  const generatePermalink = useCallback(() => {
+  const permalink = useMemo(() => {
     const { origin } = window.location;
     const { pageId, isShareLinkMode } = props;
 
@@ -82,33 +76,27 @@ const CopyDropdown = (props) => {
     return encodeSpaces(decodeURI(`${origin}/${pageId}${getUriParams()}`));
   }, [props, getUriParams]);
 
-  const generateMarkdownLink = useCallback(() => {
+  const markdownLink = useMemo(() => {
     const { pagePath } = props;
 
     const label = decodeURI(`${pagePath}${getUriParams()}`);
-    const permalink = generatePermalink();
+    // const permalink = generatePermalink();
 
     return `[${label}](${permalink})`;
-  }, [props, getUriParams, generatePermalink]);
+  }, [props, getUriParams, permalink]);
 
 
   /**
-   * dropdown control
+   * control
    */
-  const toggle = useCallback(() => {
-    // regenerate labels and URLs
-    if (!dropdownOpen) {
-      setPagePathUrl(generatePagePathUrl());
-      setParmalink(generatePermalink());
-      setMarkdownLink(generateMarkdownLink());
-    }
-
+  const toggleDropdown = useCallback(() => {
     setDropdownOpen(!dropdownOpen);
-  }, [dropdownOpen, generatePagePathUrl, generatePermalink, generateMarkdownLink]);
+  }, [dropdownOpen]);
 
-  /**
-   * tooltip control
-   */
+  const toggleAppendParams = useCallback(() => {
+    setParamsAppended(!isParamsAppended);
+  }, [isParamsAppended]);
+
   const showToolTip = useCallback(() => {
     setTooltipOpen(true);
     setTimeout(() => {
@@ -121,26 +109,19 @@ const CopyDropdown = (props) => {
    * render
    */
   const {
-    t, pageId, isShareLinkMode, buttonStyle,
+    t, dropdownToggleId, pageId, dropdownToggleClassName, children,
   } = props;
 
-  const copyTarget = isShareLinkMode ? `copyShareLink${pageId}` : 'copyPagePathDropdown';
-  const dropdownToggleStyle = isShareLinkMode ? 'btn btn-secondary' : 'd-block text-muted bg-transparent btn-copy border-0';
-
-  const customSwitchForParamsId = `customSwitchForParams_${pageId}`;
-
+  const customSwitchForParamsId = `customSwitchForParams_${dropdownToggleId}`;
 
   return (
     <>
-      <Dropdown id={copyTarget} className="grw-copy-dropdown" isOpen={dropdownOpen} toggle={toggle}>
+      <Dropdown className="grw-copy-dropdown" isOpen={dropdownOpen} toggle={toggleDropdown}>
         <DropdownToggle
           caret
-          className={dropdownToggleStyle}
-          style={buttonStyle}
+          className={dropdownToggleClassName}
         >
-          { isShareLinkMode ? (
-            <>Copy Link</>
-          ) : (<i className="ti-clipboard"></i>)}
+          <span id={dropdownToggleId}>{children}</span>
         </DropdownToggle>
 
         <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: null } }}>
@@ -155,7 +136,7 @@ const CopyDropdown = (props) => {
                 id={customSwitchForParamsId}
                 className="custom-control-input"
                 checked={isParamsAppended}
-                onChange={() => setParamsAppended(!isParamsAppended)}
+                onChange={toggleAppendParams}
               />
               <label className="custom-control-label small" htmlFor={customSwitchForParamsId}>Append params</label>
             </div>
@@ -214,7 +195,7 @@ const CopyDropdown = (props) => {
 
       </Dropdown>
 
-      <Tooltip placement="bottom" isOpen={tooltipOpen} target={copyTarget} fade={false}>
+      <Tooltip placement="bottom" isOpen={tooltipOpen} target={dropdownToggleId} fade={false}>
         copied!
       </Tooltip>
     </>
@@ -224,9 +205,12 @@ const CopyDropdown = (props) => {
 CopyDropdown.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
+  children: PropTypes.node.isRequired,
+  dropdownToggleId: PropTypes.string.isRequired,
   pagePath: PropTypes.string.isRequired,
+
   pageId: PropTypes.string,
-  buttonStyle: PropTypes.object,
+  dropdownToggleClassName: PropTypes.string,
   isShareLinkMode: PropTypes.bool,
 };
 

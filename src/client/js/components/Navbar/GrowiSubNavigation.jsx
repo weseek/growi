@@ -12,7 +12,7 @@ import AppContainer from '../../services/AppContainer';
 import NavigationContainer from '../../services/NavigationContainer';
 import PageContainer from '../../services/PageContainer';
 
-import RevisionPathControls from '../Page/RevisionPathControls';
+import CopyDropdown from '../Page/CopyDropdown';
 import TagLabels from '../Page/TagLabels';
 import SubnavButtons from './SubNavButtons';
 import PageEditorModeManager from './PageEditorModeManager';
@@ -22,7 +22,7 @@ import DrawerToggler from './DrawerToggler';
 
 const PagePathNav = ({
   // eslint-disable-next-line react/prop-types
-  pageId, pagePath, isEditorMode,
+  pageId, pagePath, isEditorMode, isCompactMode,
 }) => {
 
   const dPagePath = new DevidedPagePath(pagePath, false, true);
@@ -43,16 +43,23 @@ const PagePathNav = ({
     latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} />;
   }
 
+  const copyDropdownId = `copydropdown${isCompactMode ? '-subnav-compact' : ''}-${pageId}`;
+  const copyDropdownToggleClassName = 'd-block text-muted bg-transparent btn-copy border-0';
+
   return (
     <div className="grw-page-path-nav">
       {formerLink}
       <span className="d-flex align-items-center">
         <h1 className="m-0">{latterLink}</h1>
         <div className="mx-2">
-          <RevisionPathControls
+          <CopyDropdown
             pageId={pageId}
             pagePath={pagePath}
-          />
+            dropdownToggleId={copyDropdownId}
+            dropdownToggleClassName={copyDropdownToggleClassName}
+          >
+            <i className="ti-clipboard"></i>
+          </CopyDropdown>
         </div>
       </span>
     </div>
@@ -94,7 +101,7 @@ const GrowiSubNavigation = (props) => {
               <TagLabels editorMode={editorMode} />
             </div>
           ) }
-          <PagePathNav pageId={pageId} pagePath={path} isEditorMode={isEditorMode} />
+          <PagePathNav pageId={pageId} pagePath={path} isEditorMode={isEditorMode} isCompactMode />
         </div>
       </div>
 
