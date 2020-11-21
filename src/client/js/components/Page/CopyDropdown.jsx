@@ -35,7 +35,7 @@ const DropdownItemContents = ({ title, contents }) => (
 const CopyDropdown = (props) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [tooltipOpen, setTooltipOpen] = useState(false);
-  const [isParamsAppended, setParamsAppended] = useState(true);
+  const [isParamsAppended, setParamsAppended] = useState(!props.isShareLinkMode);
 
   /*
    * functions to construct labels and URLs
@@ -109,7 +109,7 @@ const CopyDropdown = (props) => {
    * render
    */
   const {
-    t, dropdownToggleId, pageId, dropdownToggleClassName, children,
+    t, dropdownToggleId, pageId, dropdownToggleClassName, children, isShareLinkMode,
   } = props;
 
   const customSwitchForParamsId = `customSwitchForParams_${dropdownToggleId}`;
@@ -130,16 +130,18 @@ const CopyDropdown = (props) => {
             <DropdownItem header className="px-3">
               { t('copy_to_clipboard.Copy to clipboard') }
             </DropdownItem>
-            <div className="px-3 custom-control custom-switch custom-switch-sm">
-              <input
-                type="checkbox"
-                id={customSwitchForParamsId}
-                className="custom-control-input"
-                checked={isParamsAppended}
-                onChange={toggleAppendParams}
-              />
-              <label className="custom-control-label small" htmlFor={customSwitchForParamsId}>Append params</label>
-            </div>
+            { !isShareLinkMode && (
+              <div className="px-3 custom-control custom-switch custom-switch-sm">
+                <input
+                  type="checkbox"
+                  id={customSwitchForParamsId}
+                  className="custom-control-input"
+                  checked={isParamsAppended}
+                  onChange={toggleAppendParams}
+                />
+                <label className="custom-control-label small" htmlFor={customSwitchForParamsId}>Append params</label>
+              </div>
+            ) }
           </div>
 
           <DropdownItem divider className="my-0"></DropdownItem>
