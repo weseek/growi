@@ -51,6 +51,7 @@ html[dark] {
   $color-link-hover: lighten($color-link, 10%);
   $color-link-nabvar: $color-reversal;
   $color-inline-code: #c7254e; // optional
+  $color-modal-header: $themelight;
 
   // Table colors
   $border-color-table: $gray-400; // optional
@@ -181,5 +182,12 @@ html[dark] {
 
   .grw-navbar {
     background-image: url('/images/themes/christmas/christmas-navbar.jpg');
+  }
+
+  // Button
+  .grw-page-editor-mode-manager {
+    .btn.btn-outline-primary {
+      @include btn-page-editor-mode-manager(darken($subthemecolor, 15%), lighten($subthemecolor, 35%), lighten($subthemecolor, 45%));
+    }
   }
 }

@@ -1,13 +1,9 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import {
-  TabContent, TabPane, Nav, NavItem, NavLink,
-} from 'reactstrap';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
+import { TabContent, TabPane } from 'reactstrap';
 
-import AppContainer from '../../../services/AppContainer';
 import LdapSecuritySetting from './LdapSecuritySetting';
 import LocalSecuritySetting from './LocalSecuritySetting';
 import SamlSecuritySetting from './SamlSecuritySetting';
@@ -20,177 +16,138 @@ import TwitterSecuritySetting from './TwitterSecuritySetting';
 import FacebookSecuritySetting from './FacebookSecuritySetting';
 import ShareLinkSetting from './ShareLinkSetting';
 
-class SecurityManagementContents extends React.Component {
+import CustomNav from '../../CustomNavigation/CustomNav';
 
-  constructor() {
-    super();
+function SecurityManagementContents(props) {
+  const { t } = props;
 
-    this.state = {
-      activeTab: 'passport-local',
-      // Prevent unnecessary rendering
-      activeComponents: new Set(['passport-local']),
+  const [activeTab, setActiveTab] = useState('passport_local');
+  const [activeComponents, setActiveComponents] = useState(new Set(['passport_local']));
+
+  const switchActiveTab = (selectedTab) => {
+    setActiveTab(selectedTab);
+    setActiveComponents(activeComponents.add(selectedTab));
+  };
+
+  const navTabMapping = useMemo(() => {
+    return {
+      passport_local: {
+        Icon: () => <i className="fa fa-users" />,
+        i18n: 'ID/Pass',
+        index: 0,
+      },
+      passport_ldap: {
+        Icon: () => <i className="fa fa-sitemap" />,
+        i18n: 'LDAP',
+        index: 1,
+      },
+      passport_saml: {
+        Icon: () => <i className="fa fa-key" />,
+        i18n: 'SAML',
+        index: 2,
+      },
+      passport_oidc: {
+        Icon: () => <i className="fa fa-key" />,
+        i18n: 'OIDC',
+        index: 3,
+      },
+      passport_basic: {
+        Icon: () => <i className="fa fa-lock" />,
+        i18n: 'BASIC',
+        index: 4,
+      },
+      passport_google: {
+        Icon: () => <i className="fa fa-google" />,
+        i18n: 'Google',
+        index: 5,
+      },
+      passport_github: {
+        Icon: () => <i className="fa fa-github" />,
+        i18n: 'GitHub',
+        index: 6,
+      },
+      passport_twitter: {
+        Icon: () => <i className="fa fa-twitter" />,
+        i18n: 'Twitter',
+        index: 7,
+      },
+      passport_facebook: {
+        Icon: () => <i className="fa fa-facebook" />,
+        i18n: '(TBD) Facebook',
+        index: 8,
+      },
     };
+  }, []);
 
-    this.toggleActiveTab = this.toggleActiveTab.bind(this);
-  }
 
-  toggleActiveTab(activeTab) {
-    this.setState({
-      activeTab, activeComponents: this.state.activeComponents.add(activeTab),
-    });
-  }
+  return (
+    <Fragment>
+      <div className="mb-5">
+        <SecuritySetting />
+      </div>
 
-  render() {
-    const { t } = this.props;
-    const { activeTab, activeComponents } = this.state;
-    return (
-      <Fragment>
-        <div className="mb-5">
-          <SecuritySetting />
+      {/* Shared Link List */}
+      <div className="mb-5">
+        <ShareLinkSetting />
+      </div>
+
+
+      {/* XSS configuration link */}
+      <div className="mb-5">
+        <h2 className="border-bottom">{t('security_setting.xss_prevent_setting')}</h2>
+        <div className="text-center">
+          <a style={{ fontSize: 'large' }} href="/admin/markdown/#preventXSS">
+            <i className="fa-fw icon-login"></i> {t('security_setting.xss_prevent_setting_link')}
+          </a>
         </div>
+      </div>
 
-        {/* Shared Link List */}
-        <div className="mb-5">
-          <ShareLinkSetting />
-        </div>
-
-
-        {/* XSS configuration link */}
-        <div className="mb-5">
-          <h2 className="border-bottom">{t('security_setting.xss_prevent_setting')}</h2>
-          <div className="text-center">
-            <a style={{ fontSize: 'large' }} href="/admin/markdown/#preventXSS">
-              <i className="fa-fw icon-login"></i> {t('security_setting.xss_prevent_setting_link')}
-            </a>
-          </div>
-        </div>
-
-        <div className="auth-mechanism-configurations">
-          <h2 className="border-bottom">{t('security_setting.Authentication mechanism settings')}</h2>
-          <Nav tabs>
-            <NavItem>
-              <NavLink
-                className={`${activeTab === 'passport-local' && 'active'} `}
-                onClick={() => { this.toggleActiveTab('passport-local') }}
-                href="#passport-local"
-              >
-                <i className="fa fa-users" /> ID/Pass
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={`${activeTab === 'passport-ldap' && 'active'} `}
-                onClick={() => { this.toggleActiveTab('passport-ldap') }}
-                href="#passport-ldap"
-              >
-                <i className="fa fa-sitemap" /> LDAP
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={`${activeTab === 'passport-saml' && 'active'} `}
-                onClick={() => { this.toggleActiveTab('passport-saml') }}
-                href="#passport-saml"
-              >
-                <i className="fa fa-key" /> SAML
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={`${activeTab === 'passport-oidc' && 'active'} `}
-                onClick={() => { this.toggleActiveTab('passport-oidc') }}
-                href="#passport-oidc"
-              >
-                <i className="fa fa-openid" /> OIDC
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={`${activeTab === 'passport-basic' && 'active'} `}
-                onClick={() => { this.toggleActiveTab('passport-basic') }}
-                href="#passport-basic"
-              >
-                <i className="fa fa-lock" /> BASIC
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={`${activeTab === 'passport-google' && 'active'} `}
-                onClick={() => { this.toggleActiveTab('passport-google') }}
-                href="#passport-google"
-              >
-                <i className="fa fa-google" /> Google
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={`${activeTab === 'passport-github' && 'active'} `}
-                onClick={() => { this.toggleActiveTab('passport-github') }}
-                href="#passport-github"
-              >
-                <i className="fa fa-github" /> GitHub
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={`${activeTab === 'passport-twitter' && 'active'} `}
-                onClick={() => { this.toggleActiveTab('passport-twitter') }}
-                href="#passport-twitter"
-              >
-                <i className="fa fa-twitter" /> Twitter
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={`${activeTab === 'passport-facebook' && 'active'} `}
-                onClick={() => { this.toggleActiveTab('passport-facebook') }}
-                href="#passport-facebook"
-              >
-                <i className="fa fa-facebook" /> (TBD) Facebook
-              </NavLink>
-            </NavItem>
-          </Nav>
-          <TabContent activeTab={activeTab} className="mt-2">
-            <TabPane tabId="passport-local">
-              {activeComponents.has('passport-local') && <LocalSecuritySetting />}
-            </TabPane>
-            <TabPane tabId="passport-ldap">
-              {activeComponents.has('passport-ldap') && <LdapSecuritySetting />}
-            </TabPane>
-            <TabPane tabId="passport-saml">
-              {activeComponents.has('passport-saml') && <SamlSecuritySetting />}
-            </TabPane>
-            <TabPane tabId="passport-oidc">
-              {activeComponents.has('passport-oidc') && <OidcSecuritySetting />}
-            </TabPane>
-            <TabPane tabId="passport-basic">
-              {activeComponents.has('passport-basic') && <BasicSecuritySetting />}
-            </TabPane>
-            <TabPane tabId="passport-google">
-              {activeComponents.has('passport-google') && <GoogleSecuritySetting />}
-            </TabPane>
-            <TabPane tabId="passport-github">
-              {activeComponents.has('passport-github') && <GitHubSecuritySetting />}
-            </TabPane>
-            <TabPane tabId="passport-twitter">
-              {activeComponents.has('passport-twitter') && <TwitterSecuritySetting />}
-            </TabPane>
-            <TabPane tabId="passport-facebook">
-              {activeComponents.has('passport-facebook') && <FacebookSecuritySetting />}
-            </TabPane>
-          </TabContent>
-        </div>
-      </Fragment>
-    );
-  }
+      <div className="auth-mechanism-configurations">
+        <h2 className="border-bottom">{t('security_setting.Authentication mechanism settings')}</h2>
+        <CustomNav
+          activeTab={activeTab}
+          navTabMapping={navTabMapping}
+          onNavSelected={switchActiveTab}
+          hideBorderBottom
+          breakpointToSwitchDropdownDown="md"
+        />
+        <TabContent activeTab={activeTab} className="p-5">
+          <TabPane tabId="passport_local">
+            {activeComponents.has('passport_local') && <LocalSecuritySetting />}
+          </TabPane>
+          <TabPane tabId="passport_ldap">
+            {activeComponents.has('passport_ldap') && <LdapSecuritySetting />}
+          </TabPane>
+          <TabPane tabId="passport_saml">
+            {activeComponents.has('passport_saml') && <SamlSecuritySetting />}
+          </TabPane>
+          <TabPane tabId="passport_oidc">
+            {activeComponents.has('passport_oidc') && <OidcSecuritySetting />}
+          </TabPane>
+          <TabPane tabId="passport_basic">
+            {activeComponents.has('passport_basic') && <BasicSecuritySetting />}
+          </TabPane>
+          <TabPane tabId="passport_google">
+            {activeComponents.has('passport_google') && <GoogleSecuritySetting />}
+          </TabPane>
+          <TabPane tabId="passport_github">
+            {activeComponents.has('passport_github') && <GitHubSecuritySetting />}
+          </TabPane>
+          <TabPane tabId="passport_twitter">
+            {activeComponents.has('passport_twitter') && <TwitterSecuritySetting />}
+          </TabPane>
+          <TabPane tabId="passport_facebook">
+            {activeComponents.has('passport_facebook') && <FacebookSecuritySetting />}
+          </TabPane>
+        </TabContent>
+      </div>
+    </Fragment>
+  );
 
 }
 
 SecurityManagementContents.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
-const SecurityManagementContentsWrapper = withUnstatedContainers(SecurityManagementContents, [AppContainer]);
-
-export default withTranslation()(SecurityManagementContentsWrapper);
+export default withTranslation()(SecurityManagementContents);

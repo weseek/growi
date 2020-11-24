@@ -9,6 +9,7 @@ const router = express.Router();
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
+
 /**
  * @swagger
  *  tags:
@@ -109,10 +110,22 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *          bool:
  *            type: boolean
  *            description: boolean for like status
+ *
+ *      LikeInfo:
+ *        description: LikeInfo
+ *        type: object
+ *        properties:
+ *          sumOfLikers:
+ *            type: number
+ *            description: how many people liked the page
+ *          isLiked:
+ *            type: boolean
+ *            description: Whether the request user liked (will be returned if the user is included in the request)
  */
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
-  const loginRequired = require('../../middlewares/login-required')(crowi);
+  const loginRequired = require('../../middlewares/login-required')(crowi, true);
+  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
@@ -124,6 +137,9 @@ module.exports = (crowi) => {
     likes: [
       body('pageId').isString(),
       body('bool').isBoolean(),
+    ],
+    likeInfo: [
+      query('_id').isMongoId(),
     ],
     export: [
       query('format').isString().isIn(['md', 'pdf']),
@@ -162,7 +178,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Page'
    */
-  router.put('/likes', accessTokenParser, loginRequired, csrf, validator.likes, apiV3FormValidator, async(req, res) => {
+  router.put('/likes', accessTokenParser, loginRequiredStrictly, csrf, validator.likes, apiV3FormValidator, async(req, res) => {
     const { pageId, bool } = req.body;
 
     let page;
@@ -197,6 +213,52 @@ module.exports = (crowi) => {
   });
 
   /**
+   * @swagger
+   *
+   *    /page/like-info:
+   *      get:
+   *        tags: [Page]
+   *        summary: /page/like-info
+   *        description: Get like info
+   *        operationId: getLikeInfo
+   *        parameters:
+   *          - name: _id
+   *            in: query
+   *            description: page id
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: Succeeded to get bookmark info.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/LikeInfo'
+   */
+  router.get('/like-info', loginRequired, validator.likeInfo, apiV3FormValidator, async(req, res) => {
+    const pageId = req.query._id;
+
+    const responsesParams = {};
+
+    try {
+      const page = await Page.findById(pageId);
+      responsesParams.sumOfLikers = page.liker.length;
+
+      // guest user return nothing
+      if (!req.user) {
+        return res.apiv3(responsesParams);
+      }
+
+      responsesParams.isLiked = page.liker.includes(req.user._id);
+      return res.apiv3(responsesParams);
+    }
+    catch (err) {
+      logger.error('get-like-count-failed', err);
+      return res.apiv3Err(err, 500);
+    }
+  });
+
+  /**
   * @swagger
   *
   *    /pages/export:
@@ -207,7 +269,7 @@ module.exports = (crowi) => {
   *          200:
   *            description: Return page's markdown
   */
-  router.get('/export/:pageId', loginRequired, validator.export, async(req, res) => {
+  router.get('/export/:pageId', loginRequiredStrictly, validator.export, async(req, res) => {
     const { pageId } = req.params;
     const { format, revisionId = null } = req.query;
     let revision;

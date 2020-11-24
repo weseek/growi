@@ -93,6 +93,17 @@ html[dark] {
   @import 'apply-colors';
   @import 'apply-colors-light';
 
+  //Button
+  // Outline buttons are applyed the accent color to this spring theme cuz the primary is too light and it looks like unable to click them.
+  .btn.btn-outline-primary {
+    @include button-outline-variant($accentcolor, $accentcolor, lighten($accentcolor, 20%), $accentcolor);
+  }
+  .btn-group.grw-page-editor-mode-manager {
+    .btn.btn-outline-primary {
+      @include btn-page-editor-mode-manager(darken($primary, 50%), lighten($primary, 5%), lighten($primary, 10%));
+    }
+  }
+
   .growi:not(.login-page) {
     // add background-image
     #page-wrapper,
@@ -139,6 +150,10 @@ html[dark] {
   h1,
   h2 {
     color: $subthemecolor;
+
+    svg {
+      fill: $subthemecolor;
+    }
   }
 
   .nav.nav-tabs {

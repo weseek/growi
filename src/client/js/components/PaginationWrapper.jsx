@@ -1,45 +1,31 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
-
-import { withTranslation } from 'react-i18next';
 
 import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 
-import { withUnstatedContainers } from './UnstatedUtils';
-import AppContainer from '../services/AppContainer';
+/**
+ *
+ * @author Mikitaka Itizawa <itizawa@weseek.co.jp>
+ *
+ * @export
+ * @class PaginationWrapper
+ * @extends {React.Component}
+ */
 
-class PaginationWrapper extends React.Component {
+const PaginationWrapper = React.memo((props) => {
+  const {
+    activePage, changePage, totalItemsCount, pagingLimit, align,
+  } = props;
 
-  constructor(props) {
-    super(props);
+  /**
+   * various numbers used to generate pagination dom
+   */
+  const paginationNumbers = useMemo(() => {
+    // avoid using null
+    const limit = pagingLimit || Infinity;
 
-    this.state = {
-      totalItemsCount: 0,
-      activePage: 1,
-      paginationNumbers: {},
-      limit: Infinity,
-    };
-
-    this.calculatePagination = this.calculatePagination.bind(this);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      activePage: nextProps.activePage,
-      totalItemsCount: nextProps.totalItemsCount,
-      limit: nextProps.pagingLimit,
-    }, () => {
-      const activePage = this.state.activePage;
-      const totalCount = this.state.totalItemsCount;
-      const limit = this.state.limit;
-      const paginationNumbers = this.calculatePagination(limit, totalCount, activePage);
-      this.setState({ paginationNumbers });
-    });
-  }
-
-  calculatePagination(limit, totalCount, activePage) {
     // calc totalPageNumber
-    const totalPage = Math.floor(totalCount / limit) + (totalCount % limit === 0 ? 0 : 1);
+    const totalPage = Math.floor(totalItemsCount / limit) + (totalItemsCount % limit === 0 ? 0 : 1);
 
     let paginationStart = activePage - 2;
     let maxViewPageNum = activePage + 2;
@@ -61,22 +47,26 @@ class PaginationWrapper extends React.Component {
       paginationStart,
       maxViewPageNum,
     };
-  }
+  }, [activePage, totalItemsCount, pagingLimit]);
+
+  const { paginationStart } = paginationNumbers;
+  const { maxViewPageNum } = paginationNumbers;
+  const { totalPage } = paginationNumbers;
 
   /**
-    * generate Elements of Pagination First Prev
-    * ex.  <<   <   1  2  3  >  >>
-    * this function set << & <
-    */
-  generateFirstPrev(activePage) {
+   * generate Elements of Pagination First Prev
+   * ex.  <<   <   1  2  3  >  >>
+   * this function set << & <
+   */
+  const generateFirstPrev = useCallback(() => {
     const paginationItems = [];
     if (activePage !== 1) {
       paginationItems.push(
         <PaginationItem key="painationItemFirst">
-          <PaginationLink first onClick={() => { return this.props.changePage(1) }} />
+          <PaginationLink first onClick={() => { return changePage(1) }} />
         </PaginationItem>,
         <PaginationItem key="painationItemPrevious">
-          <PaginationLink previous onClick={() => { return this.props.changePage(activePage - 1) }} />
+          <PaginationLink previous onClick={() => { return changePage(activePage - 1) }} />
         </PaginationItem>,
       );
     }
@@ -91,41 +81,41 @@ class PaginationWrapper extends React.Component {
       );
     }
     return paginationItems;
-  }
+  }, [activePage, changePage]);
 
   /**
    * generate Elements of Pagination First Prev
    *  ex. << < 4 5 6 7 8 > >>, << < 1 2 3 4 > >>
    * this function set  numbers
    */
-  generatePaginations(activePage, paginationStart, maxViewPageNum) {
+  const generatePaginations = useCallback(() => {
     const paginationItems = [];
     for (let number = paginationStart; number <= maxViewPageNum; number++) {
       paginationItems.push(
         <PaginationItem key={`paginationItem-${number}`} active={number === activePage}>
-          <PaginationLink onClick={() => { return this.props.changePage(number) }}>
+          <PaginationLink onClick={() => { return changePage(number) }}>
             {number}
           </PaginationLink>
         </PaginationItem>,
       );
     }
     return paginationItems;
-  }
+  }, [activePage, changePage, paginationStart, maxViewPageNum]);
 
   /**
    * generate Elements of Pagination First Prev
    * ex.  <<   <   1  2  3  >  >>
    * this function set > & >>
    */
-  generateNextLast(activePage, totalPage) {
+  const generateNextLast = useCallback(() => {
     const paginationItems = [];
     if (totalPage !== activePage) {
       paginationItems.push(
         <PaginationItem key="painationItemNext">
-          <PaginationLink next onClick={() => { return this.props.changePage(activePage + 1) }} />
+          <PaginationLink next onClick={() => { return changePage(activePage + 1) }} />
         </PaginationItem>,
         <PaginationItem key="painationItemLast">
-          <PaginationLink last onClick={() => { return this.props.changePage(totalPage) }} />
+          <PaginationLink last onClick={() => { return changePage(totalPage) }} />
         </PaginationItem>,
       );
     }
@@ -140,42 +130,46 @@ class PaginationWrapper extends React.Component {
       );
     }
     return paginationItems;
+  }, [activePage, changePage, totalPage]);
 
-  }
+  const getListClassName = useMemo(() => {
+    const listClassNames = [];
 
-  render() {
-    const paginationItems = [];
+    if (align === 'center') {
+      listClassNames.push('justify-content-center');
+    }
+    if (align === 'right') {
+      listClassNames.push('justify-content-end');
+    }
 
-    const activePage = this.state.activePage;
-    const totalPage = this.state.paginationNumbers.totalPage;
-    const paginationStart = this.state.paginationNumbers.paginationStart;
-    const maxViewPageNum = this.state.paginationNumbers.maxViewPageNum;
-    const firstPrevItems = this.generateFirstPrev(activePage);
-    paginationItems.push(firstPrevItems);
-    const paginations = this.generatePaginations(activePage, paginationStart, maxViewPageNum);
-    paginationItems.push(paginations);
-    const nextLastItems = this.generateNextLast(activePage, totalPage);
-    paginationItems.push(nextLastItems);
+    return listClassNames.join(' ');
+  }, [align]);
 
-    return (
-      <React.Fragment>
-        <Pagination size="sm">{paginationItems}</Pagination>
-      </React.Fragment>
-    );
-  }
+  return (
+    <React.Fragment>
+      <Pagination size={props.size} listClassName={getListClassName}>
+        {generateFirstPrev()}
+        {generatePaginations()}
+        {generateNextLast()}
+      </Pagination>
+    </React.Fragment>
+  );
 
-
-}
-
-const PaginationWrappered = withUnstatedContainers(PaginationWrapper, [AppContainer]);
+});
 
 PaginationWrapper.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-
   activePage: PropTypes.number.isRequired,
   changePage: PropTypes.func.isRequired,
   totalItemsCount: PropTypes.number.isRequired,
-  pagingLimit: PropTypes.number.isRequired,
+  pagingLimit: PropTypes.number,
+  align: PropTypes.string,
+  size: PropTypes.string,
 };
 
-export default withTranslation()(PaginationWrappered);
+PaginationWrapper.defaultProps = {
+  align: 'left',
+  size: 'md',
+  pagingLimit: Infinity,
+};
+
+export default PaginationWrapper;

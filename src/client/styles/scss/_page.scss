@@ -1,32 +1,7 @@
 // import diff2html styles
 @import '~diff2html/bundles/css/diff2html.min.css';
 
-.main-container {
-  .url-line {
-    font-size: 1rem;
-    color: $gray-400;
-  }
-
-  h1.title {
-    margin-top: 0;
-    margin-bottom: 0;
-
-    .d-flex {
-      flex-wrap: wrap; // for long page path
-    }
-
-    // crowi layout only
-    a.last-path {
-      color: $gray-300;
-
-      &:hover {
-        color: inherit;
-      }
-    }
-  }
-}
-
-.main .content-main .revision-history {
+.revision-history {
   .revision-history-list {
     .revision-history-outer {
       // add border-top except of first element
@@ -132,51 +107,6 @@
     z-index: 14;
     font-size: 12px;
     line-height: 1;
-  }
-}
-
-/*
- * for Presentation
- */
-.fullscreen-layer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 9999;
-  width: 100%;
-  height: 0;
-  background: rgba(0, 0, 0, 0.5);
-  opacity: 0;
-  transition: opacity 0.3s ease-out;
-
-  & > * {
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
-  }
-}
-
-.overlay-on {
-  #wrapper {
-    filter: blur(5px);
-  }
-
-  .fullscreen-layer {
-    height: 100%;
-    opacity: 1;
-  }
-}
-
-#presentation-container {
-  position: absolute;
-  top: 5%;
-  left: 5%;
-  width: 90%;
-  height: 90%;
-  background: black;
-
-  iframe {
-    width: 100%;
-    height: 100%;
-    border: 0;
   }
 }
 

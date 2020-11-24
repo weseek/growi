@@ -14,14 +14,16 @@ $bgcolor-table-hover: lighten($bgcolor-table, 7.5%) !default;
 $bgcolor-sidebar-list-group: $bgcolor-list !default;
 $color-tags: #949494 !default;
 $bgcolor-tags: $dark !default;
+$border-color-global: $gray-500 !default;
+$border-color-toc: $border-color-global !default;
 
 // override bootstrap variables
-$border-color: $gray-700;
 $table-dark-color: $color-table;
 $table-dark-bg: $bgcolor-table;
 $table-dark-border-color: $border-color-table;
 $table-dark-hover-color: $color-table-hover;
 $table-dark-hover-bg: $bgcolor-table-hover;
+$border-color: $border-color-global;
 
 @import 'reboot-bootstrap-border-colors';
 @import 'reboot-bootstrap-tables';
@@ -37,11 +39,18 @@ select.form-control,
 textarea.form-control {
   color: lighten($color-global, 30%);
   background-color: darken($bgcolor-global, 5%);
+  border-color: $border-color-global;
   &:focus {
     background-color: $bgcolor-global;
   }
   // FIXME: accent color
   // border: 1px solid darken($border, 30%);
+}
+
+.grw-slack-notification {
+  .form-control {
+    background: $bgcolor-global;
+  }
 }
 
 .form-control[disabled],
@@ -55,6 +64,10 @@ textarea.form-control {
   background-color: theme-color('secondary');
   border: 1px solid theme-color('secondary');
   border-right: none;
+}
+
+.input-group input {
+  border-color: $border-color-global;
 }
 
 /*
@@ -81,8 +94,18 @@ textarea.form-control {
 /*
  * Card
  */
-.card:not([class*='bg-']) {
+.card:not([class*='bg-']):not(.well):not(.card-disabled) {
   @extend .bg-dark;
+}
+
+// [TODO] GW-3219 modify common color of well in dark theme, then remove below css.
+.card.well {
+  border-color: $secondary;
+}
+
+.card.card-disabled {
+  background-color: lighten($dark, 10%);
+  border-color: $secondary;
 }
 
 /*
@@ -92,11 +115,6 @@ ul.pagination {
   li.page-item {
     button.page-link {
       @extend .btn-dark;
-    }
-    &.active {
-      button {
-        @extend .active;
-      }
     }
   }
 }
@@ -214,6 +232,15 @@ ul.pagination {
   background-color: rgba($bgcolor-subnav, 0.85);
 }
 
+.grw-page-editor-mode-manager {
+  .btn-outline-primary {
+    &:hover {
+      color: $primary;
+      background-color: $gray-700;
+    }
+  }
+}
+
 // Search drop down
 #search-typeahead-asynctypeahead {
   background-color: $bgcolor-global;
@@ -231,14 +258,62 @@ ul.pagination {
 }
 
 /*
- * GROWI on-edit
+ * Popover
  */
-body.on-edit {
-  .grw-editor-navbar-bottom {
-    background-color: $bgcolor-global;
-    #slack-mark-black {
-      display: none;
+.popover {
+  background-color: $bgcolor-global;
+  border-color: $secondary;
+  .popover-header {
+    color: $white;
+    background-color: $secondary;
+    border-color: $secondary;
+  }
+  .popover-body {
+    color: inherit;
+  }
+}
+
+/*
+ * Slack
+ */
+.grw-slack-notification {
+  background-color: transparent;
+  $color-slack: #4b144c;
+
+  .custom-control-label {
+    &::before {
+      background-color: $secondary;
+      border-color: transparent;
     }
+    &::after {
+      background-color: darken($color-slack, 5%);
+      background-image: url(/images/icons/slack/slack-logo-dark-off.svg);
+    }
+  }
+
+  .custom-control-input:checked ~ .custom-control-label {
+    &::before {
+      background-color: lighten($color-slack, 10%);
+    }
+    &::after {
+      background-color: darken($color-slack, 5%);
+      background-image: url(/images/icons/slack/slack-logo-dark-on.svg);
+    }
+  }
+  .grw-slack-logo svg {
+    fill: #dd80de;
+  }
+
+  .grw-btn-slack {
+    background-color: black;
+    &:focus,
+    &:hover {
+      background-color: black;
+    }
+  }
+
+  .grw-btn-slack-triangle {
+    color: $secondary;
   }
 }
 
@@ -267,6 +342,10 @@ body.on-edit {
   }
 }
 
+.page-comments-row {
+  background: $bgcolor-subnav;
+}
+
 /*
  * GROWI tags
  */
@@ -275,4 +354,31 @@ body.on-edit {
     color: $color-tags;
     background-color: $bgcolor-tags;
   }
+}
+
+/*
+ * admin settings
+ */
+.admin-setting-header {
+  border-color: $border-color-global;
+}
+
+/*
+* grw-side-contents
+*/
+.grw-side-contents-sticky-container {
+  .grw-border-vr {
+    border-color: $border-color-toc;
+  }
+
+  .revision-toc {
+    border-color: $border-color-toc;
+  }
+}
+
+/*
+ * modal
+ */
+.grw-modal-head {
+  border-color: $border-color-global;
 }

@@ -20,23 +20,39 @@ export default class AdminAppContainer extends Container {
       confidential: '',
       globalLang: '',
       fileUpload: '',
+
       siteUrl: '',
       envSiteUrl: '',
       isSetSiteUrl: true,
       isMailerSetup: false,
       fromAddress: '',
       transmissionMethod: '',
+
       smtpHost: '',
       smtpPort: '',
       smtpUser: '',
       smtpPassword: '',
       sesAccessKeyId: '',
       sesSecretAccessKey: '',
-      region: '',
-      customEndpoint: '',
-      bucket: '',
-      accessKeyId: '',
-      secretAccessKey: '',
+
+      fileUploadType: '',
+      envFileUploadType: '',
+      isFixedFileUploadByEnvVar: false,
+
+      gcsUseOnlyEnvVars: false,
+      gcsApiKeyJsonPath: '',
+      envGcsApiKeyJsonPath: '',
+      gcsBucket: '',
+      envGcsBucket: '',
+      gcsUploadNamespace: '',
+      envGcsUploadNamespace: '',
+
+      s3Region: '',
+      s3CustomEndpoint: '',
+      s3Bucket: '',
+      s3AccessKeyId: '',
+      s3SecretAccessKey: '',
+
       isEnabledPlugins: true,
     };
 
@@ -73,13 +89,33 @@ export default class AdminAppContainer extends Container {
       smtpPassword: appSettingsParams.smtpPassword,
       sesAccessKeyId: appSettingsParams.sesAccessKeyId,
       sesSecretAccessKey: appSettingsParams.sesSecretAccessKey,
-      region: appSettingsParams.region,
-      customEndpoint: appSettingsParams.customEndpoint,
-      bucket: appSettingsParams.bucket,
-      accessKeyId: appSettingsParams.accessKeyId,
-      secretAccessKey: appSettingsParams.secretAccessKey,
+
+      fileUploadType: appSettingsParams.fileUploadType,
+      envFileUploadType: appSettingsParams.envFileUploadType,
+      useOnlyEnvVarForFileUploadType: appSettingsParams.useOnlyEnvVarForFileUploadType,
+
+      s3Region: appSettingsParams.s3Region,
+      s3CustomEndpoint: appSettingsParams.s3CustomEndpoint,
+      s3Bucket: appSettingsParams.s3Bucket,
+      s3AccessKeyId: appSettingsParams.s3AccessKeyId,
+      s3SecretAccessKey: appSettingsParams.s3SecretAccessKey,
+      gcsUseOnlyEnvVars: appSettingsParams.gcsUseOnlyEnvVars,
+      gcsApiKeyJsonPath: appSettingsParams.gcsApiKeyJsonPath,
+      gcsBucket: appSettingsParams.gcsBucket,
+      gcsUploadNamespace: appSettingsParams.gcsUploadNamespace,
+      envGcsApiKeyJsonPath: appSettingsParams.envGcsApiKeyJsonPath,
+      envGcsBucket: appSettingsParams.envGcsBucket,
+      envGcsUploadNamespace: appSettingsParams.envGcsUploadNamespace,
       isEnabledPlugins: appSettingsParams.isEnabledPlugins,
     });
+
+    // if useOnlyEnvVarForFileUploadType is true, get fileUploadType from only env var and make the forms fixed.
+    // and if env var 'FILE_UPLOAD' is null, envFileUploadType is 'aws' that is default value of 'FILE_UPLOAD'.
+    if (appSettingsParams.useOnlyEnvVarForFileUploadType) {
+      this.setState({ fileUploadType: appSettingsParams.envFileUploadType });
+      this.setState({ isFixedFileUploadByEnvVar: true });
+    }
+
   }
 
   /**
@@ -161,52 +197,66 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
-   * Change sesAccessKeyId
+   * Change s3Region
    */
-  changeSesAccessKeyId(sesAccessKeyId) {
-    this.setState({ sesAccessKeyId });
+  changeS3Region(s3Region) {
+    this.setState({ s3Region });
   }
 
   /**
-   * Change sesSecretAccessKey
+   * Change s3CustomEndpoint
    */
-  changeSesSecretAccessKey(sesSecretAccessKey) {
-    this.setState({ sesSecretAccessKey });
+  changeS3CustomEndpoint(s3CustomEndpoint) {
+    this.setState({ s3CustomEndpoint });
+  }
+
+  /**
+   * Change fileUploadType
+   */
+  changeFileUploadType(fileUploadType) {
+    this.setState({ fileUploadType });
   }
 
   /**
    * Change region
    */
-  changeRegion(region) {
-    this.setState({ region });
-  }
-
-  /**
-   * Change custom endpoint
-   */
-  changeCustomEndpoint(customEndpoint) {
-    this.setState({ customEndpoint });
-  }
-
-  /**
-   * Change bucket name
-   */
-  changeBucket(bucket) {
-    this.setState({ bucket });
+  changeS3Bucket(s3Bucket) {
+    this.setState({ s3Bucket });
   }
 
   /**
    * Change access key id
    */
-  changeAccessKeyId(accessKeyId) {
-    this.setState({ accessKeyId });
+  changeS3AccessKeyId(s3AccessKeyId) {
+    this.setState({ s3AccessKeyId });
   }
 
   /**
    * Change secret access key
    */
-  changeSecretAccessKey(secretAccessKey) {
-    this.setState({ secretAccessKey });
+  changeS3SecretAccessKey(s3SecretAccessKey) {
+    this.setState({ s3SecretAccessKey });
+  }
+
+  /**
+   * Change gcsApiKeyJsonPath
+   */
+  changeGcsApiKeyJsonPath(gcsApiKeyJsonPath) {
+    this.setState({ gcsApiKeyJsonPath });
+  }
+
+  /**
+   * Change gcsBucket
+   */
+  changeGcsBucket(gcsBucket) {
+    this.setState({ gcsBucket });
+  }
+
+  /**
+   * Change gcsUploadNamespace
+   */
+  changeGcsUploadNamespace(gcsUploadNamespace) {
+    this.setState({ gcsUploadNamespace });
   }
 
   /**
@@ -303,20 +353,33 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
-   * Update AWS setting
+   * Update updateFileUploadSettingHandler
    * @memberOf AdminAppContainer
-   * @return {Array} Appearance
    */
-  async updateAwsSettingHandler() {
-    const response = await this.appContainer.apiv3.put('/app-settings/aws-setting', {
-      region: this.state.region,
-      customEndpoint: this.state.customEndpoint,
-      bucket: this.state.bucket,
-      accessKeyId: this.state.accessKeyId,
-      secretAccessKey: this.state.secretAccessKey,
-    });
-    const { awsSettingParams } = response.data;
-    return awsSettingParams;
+  async updateFileUploadSettingHandler() {
+    const { fileUploadType } = this.state;
+
+    const requestParams = {
+      fileUploadType,
+    };
+
+    if (fileUploadType === 'gcs') {
+      requestParams.gcsApiKeyJsonPath = this.state.gcsApiKeyJsonPath;
+      requestParams.gcsBucket = this.state.gcsBucket;
+      requestParams.gcsUploadNamespace = this.state.gcsUploadNamespace;
+    }
+
+    if (fileUploadType === 'aws') {
+      requestParams.s3Region = this.state.s3Region;
+      requestParams.s3CustomEndpoint = this.state.s3CustomEndpoint;
+      requestParams.s3Bucket = this.state.s3Bucket;
+      requestParams.s3AccessKeyId = this.state.s3AccessKeyId;
+      requestParams.s3SecretAccessKey = this.state.s3SecretAccessKey;
+    }
+
+    const response = await this.appContainer.apiv3.put('/app-settings/file-upload-setting', requestParams);
+    const { responseParams } = response.data;
+    return this.setState(responseParams);
   }
 
   /**

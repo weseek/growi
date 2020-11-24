@@ -1,5 +1,6 @@
 {
   "Help": "Help",
+  "view": "View",
   "Edit": "Edit",
   "Delete": "Delete",
   "delete_all": "Delete all",
@@ -46,7 +47,10 @@
   "List View": "List",
   "Timeline View": "Timeline",
   "History": "History",
+  "attachment_data": "Attachment Data",
+  "No_attachments_yet": "No attachments yet.",
   "Presentation Mode": "Presentation",
+  "The end": "The end",
   "Not available for guest": "Not available for guest",
   "Create Archive Page": "Create Archive Page",
   "File type": "File type",
@@ -95,7 +99,6 @@
   "Input page name (optional)": "Input page name (optional)",
   "New Page": "New page",
   "Create under": "Create page under below:",
-  "Table of Contents": "Table of Contents",
   "Wiki Management Home Page": "Wiki Management Home Page",
   "App Settings": "App Settings",
   "Site URL settings": "Site URL settings",
@@ -117,6 +120,7 @@
   "Specified users only": "Specified users only",
   "Only me": "Only me",
   "Only inside the group": "Only inside the group",
+  "page_list": "Page List",
   "page_list_and_search_results": "Page list / Search results",
   "scope_of_page_disclosure": "Scope of page disclosure",
   "set_point": "Set point",
@@ -136,6 +140,7 @@
   "Deleted Pages": "Deleted Pages",
   "Sign out": "Logout",
   "Disassociate": "Disassociate",
+  "No bookmarks yet": "No bookmarks yet",
   "Recent Created": "Recent Created",
   "Recent Changes": "Recent Changes",
   "personal_dropdown": {
@@ -150,6 +155,13 @@
     "error_message": "Some values ​​are incorrect",
     "required": "%s is required",
     "invalid_syntax": "The syntax of %s is invalid."
+  },
+  "not_found_page": {
+    "Create Page": "Create Page",
+    "page_not_exist_alert": "This page does not exist. Please create a new page."
+  },
+  "custom_navigation": {
+    "no_page_list": "There are no pages under <a href='{{path}}'><strong>{{ path }}</strong></a>."
   },
   "installer": {
     "setup": "Setup",
@@ -178,6 +190,7 @@
     }
   },
   "page_me_apitoken": {
+    "api_token": "API Token",
     "notice": {
       "apitoken_issued": "API token is not issued.",
       "update_token1": "You can update to generate a new API token.",
@@ -282,12 +295,18 @@
       "no_deadline":"This page has no expiration date"
     }
   },
+  "page_table_of_contents": {
+    "empty": "Table of Contents is empty"
+  },
   "page_edit": {
     "Show active line": "Show active line",
     "overwrite_scopes": "{{operation}} and Overwrite scopes of all descendants",
     "notice": {
       "conflict": "Couldn't save the changes you made because someone else was editing this page. Please re-edit the affected section after reloading the page."
     }
+  },
+  "page_comment": {
+    "display_the_page_when_posting_this_comment": "Display the page when posting this comment"
   },
   "page_api_error": {
     "notfound_or_forbidden": "Original page is not found or forbidden.",
@@ -428,7 +447,9 @@
     "open_sandbox": "Open Sandbox"
   },
   "hackmd": {
+    "hack_md": "HackMD",
     "not_set_up": "HackMD is not set up.",
+    "used_for_not_found": "Can not use HackMD to a page that does not exist.",
     "start_to_edit": "Start to edit with HackMD",
     "clone_page_content": "Click to clone page content and start to edit.",
     "unsaved_draft": "HackMD has unsaved draft.",
@@ -442,7 +463,9 @@
     "check_configuration": "Check your configuration following <a href='https://docs.growi.org/guide/admin-cookbook/integrate-with-hackmd.html'>the manual</a>.",
     "not_initialized": "HackmdEditor component has not initialized",
     "someone_editing": "Someone editing this page on HackMD",
-    "this_page_has_draft": "This page has a draft on HackMD"
+    "this_page_has_draft": "This page has a draft on HackMD",
+    "need_to_associate_with_growi_to_use_hackmd_refer_to_this": "To use HackMD for simultaneous multi-person editing, need to associate HackMD with GROWI.Please refer to <a href='https://docs.growi.org/en/admin-guide/admin-cookbook/integrate-with-hackmd.html'>here</a>.",
+    "need_to_make_page": "To use HackMD, please make a new page from the <a href='#edit'>built-in editor.</a>"
   },
   "slack_notification": {
     "popover_title": "Slack Notification",
@@ -521,7 +544,7 @@
     "missing mandatory configs": "The following mandatory items are not set in either database nor environment variables.",
     "Local": {
       "name": "ID/Password",
-      "note for the only env option": "The LOCAL authentication is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}/code> .",
+      "note for the only env option": "The LOCAL authentication is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> .",
       "enable_local": "Enable ID/Password"
     },
     "ldap": {

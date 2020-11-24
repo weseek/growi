@@ -4,9 +4,8 @@ import PropTypes from 'prop-types';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
-import PaginationWrapper from '../PaginationWrapper';
-
 import Page from '../PageList/Page';
+import PaginationWrapper from '../PaginationWrapper';
 
 class RecentCreated extends React.Component {
 
@@ -17,7 +16,7 @@ class RecentCreated extends React.Component {
       pages: [],
       activePage: 1,
       totalPages: 0,
-      pagingLimit: Infinity,
+      pagingLimit: 10,
     };
 
     this.handlePage = this.handlePage.bind(this);
@@ -32,19 +31,17 @@ class RecentCreated extends React.Component {
     await this.getRecentCreatedList(selectedPage);
   }
 
-  async getRecentCreatedList(selectPageNumber) {
+  async getRecentCreatedList(selectedPage) {
     const { appContainer, userId } = this.props;
-
-    const limit = appContainer.getConfig().recentCreatedLimit;
-    const offset = (selectPageNumber - 1) * limit;
+    const page = selectedPage;
 
     // pagesList get and pagination calculate
-    const res = await appContainer.apiv3Get(`/users/${userId}/recent`, { offset, limit });
-    const { totalCount, pages } = res.data;
+    const res = await appContainer.apiv3Get(`/users/${userId}/recent`, { page });
+    const { totalCount, pages, limit } = res.data;
 
     this.setState({
       pages,
-      activePage: selectPageNumber,
+      activePage: selectedPage,
       totalPages: totalCount,
       pagingLimit: limit,
     });
@@ -59,7 +56,7 @@ class RecentCreated extends React.Component {
    */
   generatePageList(pages) {
     return pages.map(page => (
-      <li key={`recent-created:list-view:${page._id}`}>
+      <li key={`recent-created:list-view:${page._id}`} className="mt-4">
         <Page page={page} />
       </li>
     ));
@@ -74,10 +71,12 @@ class RecentCreated extends React.Component {
           {pageList}
         </ul>
         <PaginationWrapper
+          align="center"
           activePage={this.state.activePage}
           changePage={this.handlePage}
           totalItemsCount={this.state.totalPages}
           pagingLimit={this.state.pagingLimit}
+          size="sm"
         />
       </div>
     );

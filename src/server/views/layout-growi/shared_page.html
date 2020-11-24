@@ -1,10 +1,15 @@
 {% extends 'base/layout.html' %}
 
-
-{% block content_header %}
-  <h1 class="p-3">{{ page.path | preventXss }}</h1>
+{% block content_header_wrapper %}
+<header class="py-0">
+  {% block content_header %}
+    <div id="grw-subnav-container"></div>
+  {% endblock %}
+</header>
+<div id="grw-subnav-switcher-container" class="d-edit-none"></div>
+<div id="grw-subnav-sticky-trigger" class="sticky-top"></div>
+<div id="grw-fav-sticky-trigger" class="sticky-top"></div>
 {% endblock %}
-
 
 {% block content_main_before %}
 {% endblock %}
@@ -14,35 +19,21 @@
 {% endblock %}
 
 {% block content_main %}
-  <div
-    class="row"
-    id="is-shared-page"
-    data-share-link-expired-at="{% if sharelink.expiredAt %}{{ sharelink.expiredAt|datetz('Y/m/d H:i:s')}}{% endif %}"
-    data-share-link-created-at="{{ sharelink.createdAt|datetz('Y/m/d H:i:s')}}"
-  >
-    {% block content_page %}
-      <div class="col grw-page-content-container">
-        <div id="share-link-alert"></div>
+  <div class="container-lg">
 
-        {% include '../widget/page_content.html' %}
-        {# force remove #revision-toc from #content_main of parent #}
-        <script>
-          $('#revision-toc').remove();
-        </script>
+    <div
+      id="is-shared-page"
+      data-share-link-expired-at="{% if sharelink.expiredAt %}{{ sharelink.expiredAt|datetz('Y/m/d H:i:s')}}{% endif %}"
+      data-share-link-created-at="{{ sharelink.createdAt|datetz('Y/m/d H:i:s')}}"
+    >
+      <div id="share-link-alert"></div>
 
-      </div>
-
-      {# relocate #revision-toc #}
-      <div class="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
-        <div id="revision-toc" class="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
-          <div id="revision-toc-content" class="revision-toc-content"></div>
-        </div>
-      </div>
-    {% endblock %}
+      {% include '../widget/page_content.html' %}
+      
+    </div>
 
   </div>
 {% endblock %}
-
 
 {% block body_end %}
   <div id="presentation-layer" class="fullscreen-layer">

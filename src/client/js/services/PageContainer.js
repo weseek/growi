@@ -4,6 +4,7 @@ import loggerFactory from '@alias/logger';
 
 import * as entities from 'entities';
 import * as toastr from 'toastr';
+import { isTrashPage } from '@commons/util/path-utils';
 import { toastError } from '../util/apiNotification';
 
 import {
@@ -39,6 +40,7 @@ export default class PageContainer extends Container {
 
     const revisionId = mainContent.getAttribute('data-page-revision-id');
     const path = decodeURI(mainContent.getAttribute('data-path'));
+
     this.state = {
       // local page data
       markdown: null, // will be initialized after initStateMarkdown()
@@ -47,22 +49,31 @@ export default class PageContainer extends Container {
       revisionCreatedAt: +mainContent.getAttribute('data-page-revision-created'),
       path,
       tocHtml: '',
-      isLiked: JSON.parse(mainContent.getAttribute('data-page-is-liked')),
+      isLiked: false,
+      isBookmarked: false,
       seenUsers: [],
+      seenUserIds: mainContent.getAttribute('data-page-ids-of-seen-users'),
+      countOfSeenUsers: mainContent.getAttribute('data-page-count-of-seen-users'),
+
       likerUsers: [],
-      sumOfSeenUsers: 0,
       sumOfLikers: 0,
+      sumOfBookmarks: 0,
       createdAt: mainContent.getAttribute('data-page-created-at'),
       updatedAt: mainContent.getAttribute('data-page-updated-at'),
-      isForbidden:  JSON.parse(mainContent.getAttribute('data-page-is-forbidden')),
-      isDeleted:  JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
-      isDeletable:  JSON.parse(mainContent.getAttribute('data-page-is-deletable')),
-      isAbleToDeleteCompletely:  JSON.parse(mainContent.getAttribute('data-page-is-able-to-delete-completely')),
+
+      isUserPage: JSON.parse(mainContent.getAttribute('data-page-user')) != null,
+      isTrashPage: isTrashPage(path),
+      isDeleted: JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
+      isDeletable: JSON.parse(mainContent.getAttribute('data-page-is-deletable')),
+      isNotCreatable: JSON.parse(mainContent.getAttribute('data-page-is-not-creatable')),
+      isAbleToDeleteCompletely: JSON.parse(mainContent.getAttribute('data-page-is-able-to-delete-completely')),
+      isPageExist: mainContent.getAttribute('data-page-id') != null,
+
       pageUser: JSON.parse(mainContent.getAttribute('data-page-user')),
       tags: null,
       hasChildren: JSON.parse(mainContent.getAttribute('data-page-has-children')),
       templateTagData: mainContent.getAttribute('data-template-tags') || null,
-      shareLinksNumber:  mainContent.getAttribute('data-share-links-number'),
+      shareLinksNumber: mainContent.getAttribute('data-share-links-number'),
       shareLinkId: JSON.parse(mainContent.getAttribute('data-share-link-id') || null),
 
       // latest(on remote) information
@@ -94,7 +105,18 @@ export default class PageContainer extends Container {
     interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(appContainer), 900); // process as late as possible
 
     this.initStateMarkdown();
-    this.initStateOthers();
+    this.checkAndUpdateImageUrlCached(this.state.likerUsers);
+
+    const { isSharedUser } = this.appContainer;
+
+    // see https://dev.growi.org/5fabddf8bbeb1a0048bcb9e9
+    const isAbleToGetAttachedInformationAboutPages = this.state.isPageExist && !isSharedUser;
+
+    if (isAbleToGetAttachedInformationAboutPages) {
+      this.retrieveSeenUsers();
+      this.retrieveLikeInfo();
+      this.retrieveBookmarkInfo();
+    }
 
     this.setTocHtml = this.setTocHtml.bind(this);
     this.save = this.save.bind(this);
@@ -124,6 +146,101 @@ export default class PageContainer extends Container {
     return 'PageContainer';
   }
 
+
+  get isAbleToOpenPageEditor() {
+    const { isNotCreatable, isTrashPage } = this.state;
+    const { isGuestUser } = this.appContainer;
+
+    return (!isNotCreatable && !isTrashPage && !isGuestUser);
+  }
+
+  /**
+   * whether to display reaction buttons
+   * ex.) like, bookmark
+   */
+  get isAbleToShowPageReactionButtons() {
+    const { isTrashPage, isPageExist } = this.state;
+    const { isSharedUser } = this.appContainer;
+
+    return (!isTrashPage && isPageExist && !isSharedUser);
+  }
+
+  /**
+   * whether to display tag labels
+   */
+  get isAbleToShowTagLabel() {
+    const { isUserPage } = this.state;
+    const { isSharedUser } = this.appContainer;
+
+    return (!isUserPage && !isSharedUser);
+  }
+
+  /**
+   * whether to display page management
+   * ex.) duplicate, rename
+   */
+  get isAbleToShowPageManagement() {
+    const { isPageExist, isTrashPage } = this.state;
+    const { isSharedUser } = this.appContainer;
+
+    return (isPageExist && !isTrashPage && !isSharedUser);
+  }
+
+  /**
+   * whether to display pageEditorModeManager
+   * ex.) view, edit, hackmd
+   */
+  get isAbleToShowPageEditorModeManager() {
+    const { isNotCreatable, isTrashPage } = this.state;
+    const { isSharedUser } = this.appContainer;
+
+    return (!isNotCreatable && !isTrashPage && !isSharedUser);
+  }
+
+  /**
+   * whether to display pageAuthors
+   * ex.) creator, lastUpdateUser
+   */
+  get isAbleToShowPageAuthors() {
+    const { isPageExist, isUserPage } = this.state;
+
+    return (isPageExist && !isUserPage);
+  }
+
+  /**
+   * whether to like button
+   * not displayed on user page
+   */
+  get isAbleToShowLikeButton() {
+    const { isUserPage } = this.state;
+    const { isSharedUser } = this.appContainer;
+
+    return (!isUserPage && !isSharedUser);
+  }
+
+  /**
+   * whether to Empty Trash Page
+   * not displayed when guest user and not on trash page
+   */
+  get isAbleToShowEmptyTrashButton() {
+    const { currentUser } = this.appContainer;
+    const { path, hasChildren } = this.state;
+
+    return (currentUser != null && currentUser.admin && path === '/trash' && hasChildren);
+  }
+
+  /**
+   * whether to display trash management buttons
+   * ex.) undo, delete completly
+   * not displayed when guest user
+   */
+  get isAbleToShowTrashPageManagementButtons() {
+    const { currentUser } = this.appContainer;
+    const { isDeleted } = this.state;
+
+    return (isDeleted && currentUser != null);
+  }
+
   /**
    * initialize state for markdown data
    */
@@ -139,38 +256,43 @@ export default class PageContainer extends Container {
     this.state.markdown = markdown;
   }
 
-  async initStateOthers() {
+  async retrieveSeenUsers() {
+    const { users } = await this.appContainer.apiGet('/users.list', { user_ids: this.state.seenUserIds });
 
-    const seenUserListElem = document.getElementById('seen-user-list');
-    if (seenUserListElem != null) {
-      const { userIdsStr, sumOfSeenUsers } = seenUserListElem.dataset;
-      this.setState({ sumOfSeenUsers });
+    this.setState({ seenUsers: users });
+    this.checkAndUpdateImageUrlCached(users);
+  }
 
-      if (userIdsStr === '') {
-        return;
-      }
+  async retrieveLikeInfo() {
+    const res = await this.appContainer.apiv3Get('/page/like-info', { _id: this.state.pageId });
+    const { sumOfLikers, isLiked } = res.data;
 
-      const { users } = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr });
-      this.setState({ seenUsers: users });
+    this.setState({
+      sumOfLikers,
+      isLiked,
+    });
+  }
 
-      this.checkAndUpdateImageUrlCached(users);
-    }
+  async toggleLike() {
+    const bool = !this.state.isLiked;
+    await this.appContainer.apiv3Put('/page/likes', { pageId: this.state.pageId, bool });
+    this.setState({ isLiked: bool });
 
+    return this.retrieveLikeInfo();
+  }
 
-    const likerListElem = document.getElementById('liker-list');
-    if (likerListElem != null) {
-      const { userIdsStr, sumOfLikers } = likerListElem.dataset;
-      this.setState({ sumOfLikers });
+  async retrieveBookmarkInfo() {
+    const response = await this.appContainer.apiv3Get('/bookmarks/info', { pageId: this.state.pageId });
+    this.setState({
+      sumOfBookmarks: response.data.sumOfBookmarks,
+      isBookmarked: response.data.isBookmarked,
+    });
+  }
 
-      if (userIdsStr === '') {
-        return;
-      }
-
-      const { users } = await this.appContainer.apiGet('/users.list', { user_ids: userIdsStr });
-      this.setState({ likerUsers: users });
-
-      this.checkAndUpdateImageUrlCached(users);
-    }
+  async toggleBookmark() {
+    const bool = !this.state.isBookmarked;
+    await this.appContainer.apiv3Put('/bookmarks', { pageId: this.state.pageId, bool });
+    return this.retrieveBookmarkInfo();
   }
 
   async checkAndUpdateImageUrlCached(users) {
@@ -193,12 +315,18 @@ export default class PageContainer extends Container {
     return this.appContainer.getContainer('NavigationContainer');
   }
 
-  setLatestRemotePageData(page, user) {
-    this.setState({
-      remoteRevisionId: page.revision._id,
-      revisionIdHackmdSynced: page.revisionHackmdSynced,
-      lastUpdateUsername: user.name,
-    });
+  setLatestRemotePageData(s2cMessagePageUpdated) {
+    const newState = {
+      remoteRevisionId: s2cMessagePageUpdated.revisionId,
+      revisionIdHackmdSynced: s2cMessagePageUpdated.revisionIdHackmdSynced,
+      lastUpdateUsername: s2cMessagePageUpdated.lastUpdateUsername,
+    };
+
+    if (s2cMessagePageUpdated.hasDraftOnHackmd != null) {
+      newState.hasDraftOnHackmd = s2cMessagePageUpdated.hasDraftOnHackmd;
+    }
+
+    this.setState(newState);
   }
 
   setTocHtml(tocHtml) {
@@ -224,6 +352,8 @@ export default class PageContainer extends Container {
       revisionIdHackmdSynced: page.revisionHackmdSynced,
       hasDraftOnHackmd: page.hasDraftOnHackmd,
       markdown: page.revision.body,
+      createdAt: page.createdAt,
+      updatedAt: page.updatedAt,
     };
     if (tags != null) {
       newState.tags = tags;
@@ -233,7 +363,7 @@ export default class PageContainer extends Container {
     // PageEditor component
     const pageEditor = this.appContainer.getComponentInstance('PageEditor');
     if (pageEditor != null) {
-      if (editorMode !== 'builtin') {
+      if (editorMode !== 'edit') {
         pageEditor.updateEditorValue(newState.markdown);
       }
     }
@@ -445,9 +575,10 @@ export default class PageContainer extends Container {
 
       logger.debug({ obj: data }, `websocket on 'page:create'`); // eslint-disable-line quotes
 
-      // update PageStatusAlert
-      if (data.page.path === pageContainer.state.path) {
-        this.setLatestRemotePageData(data.page, data.user);
+      // update remote page data
+      const { s2cMessagePageUpdated } = data;
+      if (s2cMessagePageUpdated.pageId === pageContainer.state.pageId) {
+        pageContainer.setLatestRemotePageData(s2cMessagePageUpdated);
       }
     });
 
@@ -459,16 +590,10 @@ export default class PageContainer extends Container {
 
       logger.debug({ obj: data }, `websocket on 'page:update'`); // eslint-disable-line quotes
 
-      if (data.page.path === pageContainer.state.path) {
-        // update PageStatusAlert
-        pageContainer.setLatestRemotePageData(data.page, data.user);
-        // update remote data
-        const page = data.page;
-        pageContainer.setState({
-          remoteRevisionId: page.revision._id,
-          revisionIdHackmdSynced: page.revisionHackmdSynced,
-          hasDraftOnHackmd: page.hasDraftOnHackmd,
-        });
+      // update remote page data
+      const { s2cMessagePageUpdated } = data;
+      if (s2cMessagePageUpdated.pageId === pageContainer.state.pageId) {
+        pageContainer.setLatestRemotePageData(s2cMessagePageUpdated);
       }
     });
 
@@ -480,9 +605,10 @@ export default class PageContainer extends Container {
 
       logger.debug({ obj: data }, `websocket on 'page:delete'`); // eslint-disable-line quotes
 
-      // update PageStatusAlert
-      if (data.page.path === pageContainer.state.path) {
-        pageContainer.setLatestRemotePageData(data.page, data.user);
+      // update remote page data
+      const { s2cMessagePageUpdated } = data;
+      if (s2cMessagePageUpdated.pageId === pageContainer.state.pageId) {
+        pageContainer.setLatestRemotePageData(s2cMessagePageUpdated);
       }
     });
 
@@ -494,11 +620,17 @@ export default class PageContainer extends Container {
 
       logger.debug({ obj: data }, `websocket on 'page:editingWithHackmd'`); // eslint-disable-line quotes
 
-      if (data.page.path === pageContainer.state.path) {
+      // update isHackmdDraftUpdatingInRealtime
+      const { s2cMessagePageUpdated } = data;
+      if (s2cMessagePageUpdated.pageId === pageContainer.state.pageId) {
         pageContainer.setState({ isHackmdDraftUpdatingInRealtime: true });
       }
     });
 
+  }
+
+  /* TODO GW-325 */
+  retrieveMyBookmarkList() {
   }
 
 }

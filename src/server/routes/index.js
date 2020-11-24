@@ -116,6 +116,8 @@ module.exports = function(crowi, app) {
   app.get('/me'                       , loginRequiredStrictly , me.index);
   // external-accounts
   app.get('/me/external-accounts'                         , loginRequiredStrictly , me.externalAccounts.list);
+  // my drafts
+  app.get('/me/drafts'                , loginRequiredStrictly, me.drafts.list);
 
   app.get('/:id([0-9a-z]{24})'       , loginRequired , page.redirector);
   app.get('/_r/:id([0-9a-z]{24})'    , loginRequired , page.redirector); // alias
@@ -141,7 +143,6 @@ module.exports = function(crowi, app) {
   app.get('/_api/pages.updatePost'    , accessTokenParser, loginRequired, page.api.getUpdatePost);
   app.get('/_api/pages.getPageTag'    , accessTokenParser , loginRequired , page.api.getPageTag);
   // allow posting to guests because the client doesn't know whether the user logged in
-  app.post('/_api/pages.seen'         , accessTokenParser , loginRequired , page.api.seen);
   app.post('/_api/pages.rename'       , accessTokenParser , loginRequiredStrictly , csrf, page.api.rename);
   app.post('/_api/pages.remove'       , loginRequiredStrictly , csrf, page.api.remove); // (Avoid from API Token)
   app.post('/_api/pages.revertRemove' , loginRequiredStrictly , csrf, page.api.revertRemove); // (Avoid from API Token)
@@ -150,12 +151,11 @@ module.exports = function(crowi, app) {
   app.get('/tags'                     , loginRequired, tag.showPage);
   app.get('/_api/tags.list'           , accessTokenParser, loginRequired, tag.api.list);
   app.get('/_api/tags.search'         , accessTokenParser, loginRequired, tag.api.search);
-  app.post('/_api/tags.update'        , accessTokenParser, loginRequired, tag.api.update);
+  app.post('/_api/tags.update'        , accessTokenParser, loginRequiredStrictly, tag.api.update);
   app.get('/_api/comments.get'        , accessTokenParser , loginRequired , comment.api.get);
   app.post('/_api/comments.add'       , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, comment.api.add);
   app.post('/_api/comments.update'    , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, comment.api.update);
   app.post('/_api/comments.remove'    , accessTokenParser , loginRequiredStrictly , csrf, comment.api.remove);
-  app.get('/_api/attachments.list'    , accessTokenParser , loginRequired , attachment.api.list);
   app.post('/_api/attachments.add'                  , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, attachment.api.add);
   app.post('/_api/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, attachment.api.uploadProfileImage);
   app.post('/_api/attachments.remove'               , accessTokenParser , loginRequiredStrictly , csrf, attachment.api.remove);

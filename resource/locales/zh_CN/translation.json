@@ -1,5 +1,6 @@
 {
-	"Help": "帮助",
+  "Help": "帮助",
+  "view": "View",
 	"Edit": "编辑",
 	"Delete": "删除",
 	"delete_all": "删除所有",
@@ -47,8 +48,11 @@
 	"Taro Yamada": "John Doe",
 	"List View": "列表",
 	"Timeline View": "时间线",
-	"History": "历史",
+  "History": "历史",
+  "attachment_data": "Attachment Data",
+  "No_attachments_yet": "暂无附件",
 	"Presentation Mode": "演示文稿",
+  "The end": "结束",
   "Not available for guest": "Not available for guest",
   "Create Archive Page": "创建归档页",
   "File type": "文件类型",
@@ -74,6 +78,7 @@
 	"Shrink versions that have no diffs": "收缩没有差异的版本",
 	"User ID": "用户ID",
 	"Home": "首页",
+	"My Drafts": "My Drafts",
 	"User Settings": "用户设置",
 	"User Information": "用户信息",
 	"Basic Info": "基础信息",
@@ -103,7 +108,6 @@
 	"Input page name (optional)": "Input page name (optional)",
 	"New Page": "新页面",
 	"Create under": "Create page under below:",
-	"Table of Contents": "Table of Contents",
 	"Wiki Management Home Page": "Wiki管理首页",
 	"App Settings": "系统设置",
 	"Site URL settings": "主页URL设置",
@@ -124,7 +128,8 @@
 	"Anyone with the link": "任何人",
 	"Specified users only": "仅指定用户",
 	"Only me": "只有我",
-	"Only inside the group": "仅组内",
+  "Only inside the group": "仅组内",
+  "page_list": "Page List",
 	"page_list_and_search_results": "页面列表/搜索结果",
 	"scope_of_page_disclosure": "页面公开范围",
 	"set_point": "设定值",
@@ -143,14 +148,22 @@
 	"List Drafts": "草稿",
 	"Deleted Pages": "已删除页",
 	"Sign out": "退出",
-	"Disassociate": "解除关联",
+  "Disassociate": "解除关联",
+  "No bookmarks yet": "暂无书签",
 	"Recent Created": "最新创建",
 	"Recent Changes": "最新修改",
 	"form_validation": {
 		"error_message": "有些值不正确",
 		"required": "%s 是必需的",
 		"invalid_syntax": "%s的语法无效。"
-	},
+  },
+  "not_found_page": {
+    "Create Page": "创建页面",
+    "page_not_exist_alert": "该页面不存在，请创建一个新页面"
+  },
+  "custom_navigation": {
+    "no_page_list": "There are no pages under <a href='{{path}}'><strong>{{ path }}</strong></a>."
+  },
 	"installer": {
 		"setup": "安装",
 		"create_initial_account": "创建初始用户",
@@ -179,6 +192,7 @@
 		}
 	},
 	"page_me_apitoken": {
+    "api_token": "API Token",
 		"notice": {
 			"apitoken_issued": "API token 未发布。",
 			"update_token1": "您可以更新以生成新的API令牌。",
@@ -268,7 +282,13 @@
 		"notice": {
 			"conflict": "无法保存您所做的更改，因为其他人正在编辑此页。请在重新加载页面后重新编辑受影响的部分。"
 		}
-	},
+  },
+  "page_table_of_contents": {
+    "empty": "目录为空"
+  },
+  "page_comment": {
+    "display_the_page_when_posting_this_comment": "Display the page when posting this comment"
+  },
 	"page_api_error": {
 		"notfound_or_forbidden": "未找到或禁止原始页。",
 		"already_exists": "新建页面已存在",
@@ -404,7 +424,9 @@
 		"open_sandbox": "开放式沙箱"
 	},
 	"hackmd": {
-		"not_set_up": "HackMD is not set up.",
+    "hack_md": "HackMD",
+    "not_set_up": "HackMD is not set up.",
+    "used_for_not_found": "Can not use HackMD to a page that does not exist.",
 		"start_to_edit": "Start to edit with HackMD",
 		"clone_page_content": "Click to clone page content and start to edit.",
 		"unsaved_draft": "HackMD has unsaved draft.",
@@ -418,7 +440,9 @@
 		"check_configuration": "Check your configuration following <a href='https://docs.growi.org/guide/admin-cookbook/integrate-with-hackmd.html'>the manual</a>.",
 		"not_initialized": "HackmdEditor component has not initialized",
 		"someone_editing": "Someone editing this page on HackMD",
-		"this_page_has_draft": "This page has a draft on HackMD"
+    "this_page_has_draft": "This page has a draft on HackMD",
+    "need_to_associate_with_growi_to_use_hackmd_refer_to_this": "若要使用HackMD的多人同时编辑功能，请先关联HackMD和GROWI。详情请参考<a href='https://docs.growi.org/cn/admin-guide/admin-cookbook/integrate-with-hackmd.html'>这里</a>。",
+    "need_to_make_page": "To use HackMD, please make a new page from the <a href='#edit'>built-in editor.</a>"
   },
   "slack_notification": {
     "popover_title": "Slack Notification",
@@ -508,7 +532,7 @@
 		"missing mandatory configs": "The following mandatory items are not set in either database nor environment variables.",
 		"Local": {
 			"name": "ID/Password",
-			"note for the only env option": "The LOCAL authentication is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}/code> .",
+			"note for the only env option": "The LOCAL authentication is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> .",
 			"enable_local": "Enable ID/Password"
 		},
 		"ldap": {

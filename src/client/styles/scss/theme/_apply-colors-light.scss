@@ -3,8 +3,8 @@ $color-list: $color-global !default;
 $bgcolor-list: $bgcolor-global !default;
 $color-list-hover: $color-global !default;
 $bgcolor-list-hover: darken($bgcolor-global, 3%) !default;
-$color-list-active: $color-reversal !default;
 $bgcolor-list-active: $primary !default;
+$color-list-active: color-yiq($bgcolor-list-active) !default;
 $bgcolor-subnav: darken($bgcolor-global, 3%) !default;
 $color-table: $color-global !default;
 $bgcolor-table: null !default;
@@ -14,14 +14,16 @@ $bgcolor-table-hover: rgba(black, 0.075) !default;
 $bgcolor-sidebar-list-group: $bgcolor-list !default;
 $color-tags: $gray-500 !default;
 $bgcolor-tags: $gray-200 !default;
+$border-color-global: $gray-300 !default;
+$border-color-toc: $border-color-global !default;
 
 // override bootstrap variables
-$border-color: $gray-200;
 $table-color: $color-table;
 $table-bg: $bgcolor-table;
 $table-border-color: $border-color-table;
 $table-hover-color: $color-table-hover;
 $table-hover-bg: $bgcolor-table-hover;
+$border-color: $border-color-global;
 
 @import 'reboot-bootstrap-border-colors';
 @import 'reboot-bootstrap-tables';
@@ -36,10 +38,28 @@ $table-hover-bg: $bgcolor-table-hover;
   background-color: $bgcolor-global;
 }
 
+.grw-slack-notification {
+  .form-control {
+    background: white;
+  }
+}
+
+.form-control::placeholder {
+  color: darken($bgcolor-global, 20%);
+}
+
 .form-control[disabled],
 .form-control[readonly] {
   color: lighten($color-global, 10%);
   background-color: darken($bgcolor-global, 5%);
+}
+
+/*
+ * card
+ */
+.card.card-disabled {
+  background-color: darken($bgcolor-card, 5%);
+  border-color: $gray-200;
 }
 
 /*
@@ -132,6 +152,15 @@ $table-hover-bg: $bgcolor-table-hover;
   background-color: rgba($bgcolor-subnav, 0.85);
 }
 
+.grw-page-editor-mode-manager {
+  .btn-outline-primary {
+    &:hover {
+      color: $primary;
+      background-color: $gray-200;
+    }
+  }
+}
+
 .grw-drawer-toggler {
   @extend .btn-light;
   color: $gray-500;
@@ -178,6 +207,58 @@ $table-hover-bg: $bgcolor-table-hover;
 }
 
 /*
+ * GROWI Link Edit Modal
+ */
+.link-edit-modal {
+  span i {
+    color: $gray-400;
+  }
+}
+
+/*
+ * Slack
+ */
+.grw-slack-notification {
+  background-color: white;
+  $color-slack: #4b144c;
+
+  .custom-control-label {
+    &::before {
+      background-color: $gray-200;
+      border-color: transparent;
+    }
+    &::after {
+      background-color: white;
+      background-image: url(/images/icons/slack/slack-logo-off.svg);
+    }
+  }
+  .custom-control-input:checked ~ .custom-control-label {
+    &::before {
+      background-color: lighten($color-slack, 60%);
+    }
+    &::after {
+      background-image: url(/images/icons/slack/slack-logo-on.svg);
+    }
+  }
+  .grw-slack-logo svg {
+    fill: #af30b0;
+  }
+
+  .grw-btn-slack {
+    background-color: white;
+
+    &:hover,
+    &:focus {
+      background-color: white;
+    }
+  }
+
+  .grw-btn-slack-triangle {
+    color: $secondary;
+  }
+}
+
+/*
  * GROWI HandsontableModal
  */
 .grw-hot-modal-navbar {
@@ -202,6 +283,10 @@ $table-hover-bg: $bgcolor-table-hover;
   }
 }
 
+.page-comments-row {
+  background: $bgcolor-subnav;
+}
+
 /*
  * GROWI tags
  */
@@ -210,4 +295,30 @@ $table-hover-bg: $bgcolor-table-hover;
     color: $color-tags;
     background-color: $bgcolor-tags;
   }
+}
+
+/*
+* grw-side-contents
+*/
+.grw-side-contents-sticky-container {
+  .grw-border-vr {
+    border-color: $border-color-toc;
+  }
+  .revision-toc {
+    border-color: $border-color-toc;
+  }
+}
+
+/*
+ * admin settings
+ */
+.admin-setting-header {
+  border-color: $border-color;
+}
+
+/*
+ * modal
+ */
+.grw-modal-head {
+  border-color: $border-color-global;
 }

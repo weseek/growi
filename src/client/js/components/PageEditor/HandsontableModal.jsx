@@ -13,6 +13,7 @@ import { debounce } from 'throttle-debounce';
 
 import MarkdownTableDataImportForm from './MarkdownTableDataImportForm';
 import MarkdownTable from '../../models/MarkdownTable';
+import ExpandOrContractButton from '../ExpandOrContractButton';
 
 const DEFAULT_HOT_HEIGHT = 300;
 const MARKDOWNTABLE_TO_HANDSONTABLE_ALIGNMENT_SYMBOL_MAPPING = {
@@ -397,15 +398,6 @@ export default class HandsontableModal extends React.PureComponent {
     }
   }
 
-  renderExpandOrContractButton() {
-    const iconClassName = this.state.isWindowExpanded ? 'icon-size-actual' : 'icon-size-fullscreen';
-    return (
-      <button type="button" className="close" onClick={this.state.isWindowExpanded ? this.contractWindow : this.expandWindow}>
-        <i className={iconClassName} style={{ fontSize: '0.8em' }} aria-hidden="true"></i>
-      </button>
-    );
-  }
-
   renderCloseButton() {
     return (
       <button type="button" className="close" onClick={this.cancel} aria-label="Close">
@@ -415,24 +407,21 @@ export default class HandsontableModal extends React.PureComponent {
   }
 
   render() {
-    const dialogClassNames = ['handsontable-modal'];
-    if (this.state.isWindowExpanded) {
-      dialogClassNames.push('handsontable-modal-expanded');
-    }
 
-    const dialogClassName = dialogClassNames.join(' ');
-
-    // eslint-disable-next-line no-unused-vars
     const buttons = (
       <span>
         {/* change order because of `float: right` by '.close' class */}
         {this.renderCloseButton()}
-        {this.renderExpandOrContractButton()}
+        <ExpandOrContractButton
+          isWindowExpanded={this.state.isWindowExpanded}
+          contractWindow={this.contractWindow}
+          expandWindow={this.expandWindow}
+        />
       </span>
     );
 
     return (
-      <Modal isOpen={this.state.show} toggle={this.cancel} size="lg" className={dialogClassName}>
+      <Modal isOpen={this.state.show} toggle={this.cancel} size="lg" className={`handsontable-modal ${this.state.isWindowExpanded && 'grw-modal-expanded'}`}>
         <ModalHeader tag="h4" toggle={this.cancel} close={buttons} className="bg-primary text-light">
           Edit Table
         </ModalHeader>

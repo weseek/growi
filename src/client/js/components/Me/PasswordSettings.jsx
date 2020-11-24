@@ -55,7 +55,7 @@ class PasswordSettings extends React.Component {
       });
       this.setState({ oldPassword: '', newPassword: '', newPasswordConfirm: '' });
       await personalContainer.retrievePersonalData();
-      toastSuccess(t('toaster.update_successed', { target: t('personal_settings.update_password') }));
+      toastSuccess(t('toaster.update_successed', { target: t('Password') }));
     }
     catch (err) {
       toastError(err);
@@ -90,11 +90,9 @@ class PasswordSettings extends React.Component {
           <div className="alert alert-warning">{ t('personal_settings.password_is_not_set') }</div>
         ) }
 
-        <div className="container-fluid my-4">
-          {(this.state.isPasswordSet)
-            ? <h2 className="border-bottom">{t('personal_settings.update_password')}</h2>
-          : <h2 className="border-bottom">{t('personal_settings.set_new_password')}</h2>}
-        </div>
+        {(this.state.isPasswordSet)
+          ? <h2 className="border-bottom my-4">{t('personal_settings.update_password')}</h2>
+        : <h2 className="border-bottom my-4">{t('personal_settings.set_new_password')}</h2>}
         {(this.state.isPasswordSet)
         && (
           <div className="row mb-3">

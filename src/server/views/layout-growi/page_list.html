@@ -6,36 +6,23 @@
 
 
 {% block content_main %}
-  <div class="row">
-
-    <div class="col grw-page-content-container">
-
-      {% include '../widget/page_content.html' %}
-
-      <div class="page-list d-edit-none d-print-none mt-5">
-        {% include '../widget/page_list_and_timeline.html' %}
-      </div>
-
-    </div>
-
-    <div class="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
-      {% include './widget/liker-and-seenusers.html' %}
-      <div id="revision-toc" class="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
-        <div id="revision-toc-content" class="revision-toc-content"></div>
-      </div>
-    </div>
-
+  <div class="container-lg">
+    {% include '../widget/page_content.html' %}
   </div>
-
 {% endblock %}
 
 
 {% block content_main_after %}
-  {% if page %}
-    {% include '../widget/page_attachments.html' %}
+  {% if isTrashPage() %}
+    <div class="container-lg">
+      <div id="trash-page-list"></div>
+    </div>
   {% endif %}
 {% endblock %}
 
+{% block content_footer %}
+  <div id="page-content-footer"></div>
+{% endblock %}
 
 {% block body_end %}
   <div id="presentation-layer" class="fullscreen-layer">

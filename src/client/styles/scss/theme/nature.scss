@@ -110,4 +110,11 @@ html[dark] {
       color: $color-link-hover !important;
     }
   }
+
+  // Button
+  .btn-group.grw-page-editor-mode-manager {
+    .btn.btn-outline-primary {
+      @include btn-page-editor-mode-manager($bgcolor-navbar, lighten($bgcolor-navbar, 65%), lighten($bgcolor-navbar, 70%));
+    }
+  }
 }

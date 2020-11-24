@@ -1,5 +1,21 @@
 # CHANGES
 
+## v4.2.0-RC
+
+### BREAKING CHANGES
+
+* GROWI v4.2.x no longer support Kibela layout
+    * Kibela theme is newly added and the configuration will migrate to it automatically
+
+### Updates
+
+* Feature: File Upload Settings on admin pages
+* Improvement: Basic layout of page
+* Support: Support MongoDB 4.0, 4.2 and 4.4
+* Support: Upgrade libs
+    * migrate-mongo
+    * mongoose
+
 ## v4.1.12
 
 * Fix: Adjust line-height for pre under li

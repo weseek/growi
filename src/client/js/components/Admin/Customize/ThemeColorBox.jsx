@@ -15,7 +15,7 @@ class ThemeColorBox extends React.PureComponent {
         className={`theme-option-container d-flex flex-column align-items-center ${isSelected && 'active'}`}
         onClick={onSelected}
       >
-        <a id={name} type="button" className={`m-0 ${name} theme-button`}>
+        <a id={name} role="button" className={`m-0 ${name} theme-button`}>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
             <g>
               <path d="M -1 -1 L65 -1 L65 65 L-1 65 L-1 -1 Z" fill={bg}></path>

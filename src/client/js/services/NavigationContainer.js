@@ -1,4 +1,7 @@
 import { Container } from 'unstated';
+import loggerFactory from '@alias/logger';
+
+const logger = loggerFactory('growi:services:NavigationContainer');
 
 /**
  * Service container related to options for Application
@@ -19,7 +22,7 @@ export default class NavigationContainer extends Container {
     const { localStorage } = window;
 
     this.state = {
-      editorMode: null,
+      editorMode: 'view',
 
       isDeviceSmallerThanMd: null,
       preferDrawerModeByUser: localStorage.preferDrawerModeByUser === 'true',
@@ -37,6 +40,7 @@ export default class NavigationContainer extends Container {
 
     this.openPageCreateModal = this.openPageCreateModal.bind(this);
     this.closePageCreateModal = this.closePageCreateModal.bind(this);
+    this.setEditorMode = this.setEditorMode.bind(this);
     this.initDeviceSize();
     this.initScrollEvent();
   }
@@ -48,6 +52,9 @@ export default class NavigationContainer extends Container {
     return 'NavigationContainer';
   }
 
+  getPageContainer() {
+    return this.appContainer.getContainer('PageContainer');
+  }
 
   initDeviceSize() {
     const mdOrAvobeHandler = async(mql) => {
@@ -85,7 +92,40 @@ export default class NavigationContainer extends Container {
   }
 
   setEditorMode(editorMode) {
+    const { isNotCreatable } = this.getPageContainer().state;
+
+    if (this.appContainer.currentUser == null) {
+      logger.warn('Please login or signup to edit the page or use hackmd.');
+      return;
+    }
+
+    if (isNotCreatable) {
+      logger.warn('This page could not edit.');
+      return;
+    }
+
     this.setState({ editorMode });
+    if (editorMode === 'view') {
+      $('body').removeClass('on-edit');
+      $('body').removeClass('builtin-editor');
+      $('body').removeClass('hackmd');
+      window.history.replaceState(null, '', window.location.pathname);
+    }
+
+    if (editorMode === 'edit') {
+      $('body').addClass('on-edit');
+      $('body').addClass('builtin-editor');
+      window.location.hash = '#edit';
+    }
+
+    if (editorMode === 'hackmd') {
+      $('body').addClass('on-edit');
+      $('body').addClass('hackmd');
+      $('body').removeClass('builtin-editor');
+      window.location.hash = '#hackmd';
+
+    }
+
     this.updateDrawerMode({ ...this.state, editorMode }); // generate newest state object
   }
 
@@ -136,7 +176,7 @@ export default class NavigationContainer extends Container {
     } = newState;
 
     // get preference on view or edit
-    const preferDrawerMode = editorMode != null ? preferDrawerModeOnEditByUser : preferDrawerModeByUser;
+    const preferDrawerMode = editorMode !== 'view' ? preferDrawerModeOnEditByUser : preferDrawerModeByUser;
 
     const isDrawerMode = isDeviceSmallerThanMd || preferDrawerMode;
     const isDrawerOpened = false; // close Drawer anyway
@@ -145,6 +185,10 @@ export default class NavigationContainer extends Container {
   }
 
   openPageCreateModal() {
+    if (this.appContainer.currentUser == null) {
+      logger.warn('Please login or signup to create a new page.');
+      return;
+    }
     this.setState({ isPageCreateModalShown: true });
   }
 
