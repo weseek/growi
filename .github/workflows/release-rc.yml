@@ -35,7 +35,7 @@ jobs:
     - name: Get SemVer
       run: |
         semver=`npm run version --silent`
-        echo ::set-env name=SEMVER::$semver
+        echo "SEMVER=$semver" >> $GITHUB_ENV
 
     - name: Docker Tags by SemVer
       uses: weseek/ghaction-docker-tags-by-semver@v1.0.3

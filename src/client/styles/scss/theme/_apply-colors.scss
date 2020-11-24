@@ -35,6 +35,7 @@ $nav-tabs-link-active-border-color: $bordercolor-nav-tabs-active;
 @import 'mixins/list-group';
 @import 'mixins/page-editor-mode-manager';
 @import 'mixins/tables'; // comment out and use _reboot-bootstrap-tables instead -- 2020.05.28 Yuki Takei
+@import 'reboot-bootstrap-buttons';
 @import 'reboot-bootstrap-colors';
 @import 'reboot-bootstrap-theme-colors';
 @import 'reboot-bootstrap-nav';
@@ -70,15 +71,6 @@ pre:not(.hljs):not(.CodeMirror-line) {
   }
 }
 
-// Link buttons
-.btn-link {
-  color: $link-color;
-
-  @include hover {
-    color: $link-hover-color;
-  }
-}
-
 // Dropdown
 .dropdown-menu {
   color: $color-global;
@@ -102,6 +94,7 @@ pre:not(.hljs):not(.CodeMirror-line) {
 
   &:active,
   &.active,
+  &:active:hover,
   &.active:hover {
     color: $color-dropdown-link-active;
     background-color: $bgcolor-dropdown-link-active;
@@ -312,9 +305,6 @@ ul.pagination {
 }
 
 .grw-page-accessories-control {
-  .grw-btn-page-accessories {
-    fill: $color-link;
-  }
   .grw-seen-user-info {
     .btn {
       color: $color-seen-user;
