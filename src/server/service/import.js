@@ -369,7 +369,7 @@ class ImportService {
 
     unzipStream.on('entry', (entry) => {
       const fileName = entry.path;
-      const checkFileName = /[!/:@[`{~|\\]/g;
+      const checkFileName = /[!-\-\/:-@[-`{-~¥]/g;
 
       if (fileName.match(checkFileName)){
         return logger.error('File path is not appropriate.');
