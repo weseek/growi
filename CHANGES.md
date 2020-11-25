@@ -9,6 +9,7 @@
 
 ### Updates
 
+* Feature: File Upload Settings on admin pages
 * Improvement: Basic layout of page
 * Support: Support MongoDB 4.0, 4.2 and 4.4
 * Support: Upgrade libs

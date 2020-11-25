@@ -41,7 +41,7 @@ const CopyDropdown = (props) => {
    * functions to construct labels and URLs
    */
   const getUriParams = useCallback(() => {
-    if (!isParamsAppended) {
+    if (!isParamsAppended || !dropdownOpen) {
       return '';
     }
 
@@ -50,7 +50,7 @@ const CopyDropdown = (props) => {
     } = window.location;
 
     return `${search}${hash}`;
-  }, [isParamsAppended]);
+  }, [isParamsAppended, dropdownOpen]);
 
   const pagePathWithParams = useMemo(() => {
     const { pagePath } = props;
