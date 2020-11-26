@@ -317,6 +317,7 @@ class LinkEditModal extends React.PureComponent {
                 value={this.state.labelInputValue}
                 onChange={e => this.handleChangeLabelInput(e.target.value)}
                 disabled={this.state.linkerType === Linker.types.growiLink}
+                placeholder={this.state.linkInputValue}
               />
             </div>
           </div>
