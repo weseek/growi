@@ -1304,6 +1304,7 @@ module.exports = function(crowi) {
 
   pageSchema.statics.duplicate = async function(page, newPagePath, user) {
     const Page = this;
+    const PageTagRelation = crowi.model('PageTagRelation');
     // populate
     await page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate();
 
@@ -1327,6 +1328,20 @@ module.exports = function(crowi) {
 
     return { page: crowi.pageService.serializeToObj(createdPage), tags: savedTags };
   };
+
+  pageSchema.statics.duplicateRecursively = async function(page, newPagePath, user) {
+    const Page = this;
+    const newPagePathPrefix = newPagePath;
+    const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
+
+    const pages = await Page.findManageableListWithDescendants(page, user);
+
+    const promise = pages.map(async(page) => {
+      const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
+      return this.duplicate(page, newPagePath, user);
+    });
+
+    return Promise.allSettled(promise);
   };
 
   pageSchema.statics.findListByPathsArray = async function(paths) {
