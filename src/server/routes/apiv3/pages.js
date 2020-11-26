@@ -476,35 +476,6 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
   });
-  async function duplicatePage(page, newPagePath, user) {
-    // populate
-    await page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate();
-
-    // create option
-    const options = { page };
-    options.grant = page.grant;
-    options.grantUserGroupId = page.grantedGroup;
-    options.grantedUsers = page.grantedUsers;
-
-    const createdPage = await createPageAction({
-      path: newPagePath, user, body: page.revision.body, options,
-    });
-
-    const originTags = await page.findRelatedTagsById();
-    const savedTags = await saveTagsAction({ page, createdPage, pageTags: originTags });
-
-    // global notification
-    if (globalNotificationService != null) {
-      try {
-        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, user);
-      }
-      catch (err) {
-        logger.error('Create grobal notification failed', err);
-      }
-    }
-
-    return { page: pageService.serializeToObj(createdPage), tags: savedTags };
-  }
 
   async function duplicatePageRecursively(page, newPagePath, user) {
     const newPagePathPrefix = newPagePath;
