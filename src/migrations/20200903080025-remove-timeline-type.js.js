@@ -13,7 +13,7 @@ module.exports = {
 
     const Config = getModelSafely('Config') || require('@server/models/config')();
 
-    await Config.findOneAndDelete({ key: 'customize:timeline' }); // remove timeline
+    await Config.findOneAndDelete({ key: 'customize:isEnabledTimeline' }); // remove timeline
 
     logger.info('Migration has successfully applied');
   },
@@ -27,7 +27,7 @@ module.exports = {
 
     const insertConfig = new Config({
       ns: 'crowi',
-      key: 'customize:timeline',
+      key: 'customize:isEnabledTimeline',
       value: true,
     });
 

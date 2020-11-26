@@ -28,7 +28,14 @@ const ShareLinkList = (props) => {
             <td>
               <div className="d-flex">
                 <span className="mr-auto my-auto">{shareLink._id}</span>
-                <CopyDropdown isShareLinkMode pagePath={shareLink.relatedPage.path} pageId={shareLink._id} />
+                <CopyDropdown
+                  pagePath={shareLink.relatedPage.path}
+                  dropdownToggleId={`copydropdown-${shareLink._id}`}
+                  pageId={shareLink._id}
+                  isShareLinkMode
+                >
+                  Copy Link
+                </CopyDropdown>
               </div>
             </td>
             {props.isAdmin && <td><a href={shareLink.relatedPage.path}>{shareLink.relatedPage.path}</a></td>}

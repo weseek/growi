@@ -12,21 +12,17 @@ import AppContainer from '../../services/AppContainer';
 import NavigationContainer from '../../services/NavigationContainer';
 import PageContainer from '../../services/PageContainer';
 
-import RevisionPathControls from '../Page/RevisionPathControls';
+import CopyDropdown from '../Page/CopyDropdown';
 import TagLabels from '../Page/TagLabels';
-import LikeButton from '../LikeButton';
-import BookmarkButton from '../BookmarkButton';
+import SubnavButtons from './SubNavButtons';
 import PageEditorModeManager from './PageEditorModeManager';
 
 import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
 
-import PageManagement from '../Page/PageManagement';
-
-
 const PagePathNav = ({
   // eslint-disable-next-line react/prop-types
-  pageId, pagePath, isEditorMode,
+  pageId, pagePath, isEditorMode, isCompactMode,
 }) => {
 
   const dPagePath = new DevidedPagePath(pagePath, false, true);
@@ -47,42 +43,28 @@ const PagePathNav = ({
     latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} />;
   }
 
+  const copyDropdownId = `copydropdown${isCompactMode ? '-subnav-compact' : ''}-${pageId}`;
+  const copyDropdownToggleClassName = 'd-block text-muted bg-transparent btn-copy border-0';
+
   return (
     <div className="grw-page-path-nav">
       {formerLink}
       <span className="d-flex align-items-center">
         <h1 className="m-0">{latterLink}</h1>
         <div className="mx-2">
-          <RevisionPathControls
+          <CopyDropdown
             pageId={pageId}
             pagePath={pagePath}
-          />
+            dropdownToggleId={copyDropdownId}
+            dropdownToggleClassName={copyDropdownToggleClassName}
+          >
+            <i className="ti-clipboard"></i>
+          </CopyDropdown>
         </div>
       </span>
     </div>
   );
 };
-
-
-/* eslint-enable react/prop-types */
-
-/* eslint-disable react/prop-types */
-const PageReactionButtons = ({ appContainer, pageContainer }) => {
-
-  return (
-    <>
-      {pageContainer.isAbleToShowLikeButton && (
-        <span className="mr-2">
-          <LikeButton />
-        </span>
-      )}
-      <span>
-        <BookmarkButton />
-      </span>
-    </>
-  );
-};
-/* eslint-enable react/prop-types */
 
 const GrowiSubNavigation = (props) => {
   const {
@@ -119,19 +101,18 @@ const GrowiSubNavigation = (props) => {
               <TagLabels editorMode={editorMode} />
             </div>
           ) }
-          <PagePathNav pageId={pageId} pagePath={path} isEditorMode={isEditorMode} />
+          <PagePathNav pageId={pageId} pagePath={path} isEditorMode={isEditorMode} isCompactMode={isCompactMode} />
         </div>
       </div>
 
       {/* Right side */}
       <div className="d-flex">
 
-        <div className={`d-flex ${isEditorMode ? 'align-items-center' : 'flex-column align-items-end'}`}>
+        <div className="d-flex flex-column align-items-end">
           <div className="d-flex">
-            { pageContainer.isAbleToShowPageReactionButtons && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
-            { pageContainer.isAbleToShowPageManagement && <PageManagement isCompactMode={isCompactMode} /> }
+            <SubnavButtons isCompactMode={isCompactMode} />
           </div>
-          <div className={`${isEditorMode ? 'ml-2' : 'mt-2'}`}>
+          <div className="mt-2">
             {pageContainer.isAbleToShowPageEditorModeManager && (
               <PageEditorModeManager
                 onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
