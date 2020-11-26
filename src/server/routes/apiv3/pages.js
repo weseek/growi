@@ -531,7 +531,7 @@ module.exports = (crowi) => {
    *            description: Internal server error.
    */
   router.post('/duplicate', accessTokenParser, loginRequiredStrictly, csrf, validator.duplicatePage, apiV3FormValidator, async(req, res) => {
-    const { pageId, isRecursively } = req.body;
+    const { pageId, isDuplicateRecursively } = req.body;
 
     const newPagePath = pathUtils.normalizePath(req.body.pageNameInput);
 
@@ -552,8 +552,8 @@ module.exports = (crowi) => {
 
     let result;
 
-    if (isRecursively) {
-      result = await duplicatePageRecursively(page, newPagePath, req.user);
+    if (isDuplicateRecursively) {
+      result = await Page.duplicateRecursively(page, newPagePath, req.user);
     }
     else {
       result = await duplicatePage(page, newPagePath, req.user);
