@@ -237,18 +237,16 @@ module.exports = (crowi) => {
       Page.applyScopesToDescendantsAsyncronously(createdPage, req.user);
     }
 
-    // global notification
-    if (globalNotificationService != null) {
-      try {
-        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, req.user);
-      }
-      catch (err) {
-        logger.error('Create grobal notification failed', err);
-      }
+    try {
+      // global notification
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, req.user);
+    }
+    catch (err) {
+      logger.error('Create grobal notification failed', err);
     }
 
     // user notification
-    if (isSlackEnabled && userNotificationService != null) {
+    if (isSlackEnabled) {
       try {
         const results = await userNotificationService.fire(createdPage, req.user, slackChannels, 'create', false);
         results.forEach((result) => {
@@ -437,7 +435,7 @@ module.exports = (crowi) => {
    */
   router.delete('/empty-trash', loginRequired, adminRequired, csrf, async(req, res) => {
     try {
-      const pages = await Page.completelyDeletePageRecursively('/trash', req.user);
+      const pages = await Page.completelyDeletePageRecursively({ path: '/trash' }, req.user);
       return res.apiv3({ pages });
     }
     catch (err) {
@@ -495,14 +493,12 @@ module.exports = (crowi) => {
     const originTags = await page.findRelatedTagsById();
     const savedTags = await saveTagsAction({ page, createdPage, pageTags: originTags });
 
-    // global notification
-    if (globalNotificationService != null) {
-      try {
-        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, user);
-      }
-      catch (err) {
-        logger.error('Create grobal notification failed', err);
-      }
+    try {
+      // global notification
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, user);
+    }
+    catch (err) {
+      logger.error('Create grobal notification failed', err);
     }
 
     return { page: pageService.serializeToObj(createdPage), tags: savedTags };

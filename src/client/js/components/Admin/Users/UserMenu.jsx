@@ -1,6 +1,9 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import {
+  UncontrolledDropdown, DropdownToggle, DropdownMenu,
+} from 'reactstrap';
 
 import StatusActivateButton from './StatusActivateButton';
 import StatusSuspendedButton from './StatusSuspendedButton';
@@ -80,16 +83,16 @@ class UserMenu extends React.Component {
 
     return (
       <Fragment>
-        <div className="btn-group admin-user-menu" role="group">
-          <button id="userMenu" type="button" className="btn btn-outline-secondary btn-sm dropdown-toggle" data-toggle="dropdown">
+        <UncontrolledDropdown id="userMenu" size="sm">
+          <DropdownToggle caret color="secondary" outline>
             <i className="icon-settings"></i>
-          </button>
-          <div className="dropdown-menu" aria-labelledby="userMenu">
+          </DropdownToggle>
+          <DropdownMenu positionFixed>
             {this.renderEditMenu()}
             {user.status !== 4 && this.renderStatusMenu()}
             {user.status === 2 && this.renderAdminMenu()}
-          </div>
-        </div>
+          </DropdownMenu>
+        </UncontrolledDropdown>
       </Fragment>
     );
   }

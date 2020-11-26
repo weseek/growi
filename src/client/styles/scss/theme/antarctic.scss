@@ -98,7 +98,8 @@ html[dark] {
   $color-editor-icons: $color-global;
 
   // Border colors
-  $border-color-theme: $gray-300; // former: `$navbar-border: $gray-300;`
+  $border-color-theme: $gray-400;
+  $border-color-global: $gray-400;
   $bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
@@ -113,9 +114,9 @@ html[dark] {
   @import 'apply-colors-light';
 
   //Button
-  .btn-group.grw-three-stranded-button {
+  .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include three-stranded-button(darken($primary, 10%), lighten($primary, 55%), lighten($primary, 60%));
+      @include btn-page-editor-mode-manager(darken($primary, 10%), lighten($primary, 55%), lighten($primary, 60%));
     }
   }
 

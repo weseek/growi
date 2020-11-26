@@ -16,7 +16,7 @@ body {
 
 .grw-modal-head {
   font-size: 1em;
-  border-bottom: 1px solid $gray-500;
+  border-bottom: 1px solid transparent;
 }
 
 // padding settings for GrowiNavbarBottom
@@ -31,8 +31,18 @@ body {
 .main {
   margin-top: 1rem;
 
-  @include media-breakpoint-up(md) {
-    margin-top: 3rem;
+  @include media-breakpoint-up(lg) {
+    margin-top: 2rem;
+  }
+}
+
+.grw-side-contents-container {
+  margin-bottom: 1rem;
+
+  @include media-breakpoint-up(lg) {
+    width: 250px;
+    min-width: 250px;
+    margin-left: 30px;
   }
 }
 
@@ -40,8 +50,6 @@ body {
   position: sticky;
   // growisubnavigation + grw-navbar-boder
   top: calc(100px + 4px);
-  width: 250px;
-  min-width: 250px;
   margin-top: 5px;
 }
 
@@ -103,16 +111,6 @@ body {
       margin-bottom: 20px;
       font-size: 0.9em;
       border: solid 1px $gray-400;
-
-      .revision-toc-head {
-        display: inline-block;
-        float: none;
-      }
-
-      .revision-toc-content.collapse {
-        display: block;
-        height: auto;
-      }
     }
 
     .meta {

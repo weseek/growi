@@ -121,6 +121,7 @@ Crowi.prototype.init = async function() {
   // globalNotification depends on slack and mailer
   await Promise.all([
     this.setUpGlobalNotification(),
+    this.setUpUserNotification(),
   ]);
 };
 
@@ -489,7 +490,7 @@ Crowi.prototype.setUpGlobalNotification = async function() {
 /**
  * setup UserNotificationService
  */
-Crowi.prototype.setUpGlobalNotification = async function() {
+Crowi.prototype.setUpUserNotification = async function() {
   const UserNotificationService = require('../service/user-notification');
   if (this.userNotificationService == null) {
     this.userNotificationService = new UserNotificationService(this);

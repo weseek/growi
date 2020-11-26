@@ -1,3 +1,5 @@
+const { serializePageSecurely } = require('../models/serializers/page-serializer');
+
 /**
  * @swagger
  *  tags:
@@ -65,13 +67,6 @@
  *            example: ""
  *          revision:
  *            $ref: '#/components/schemas/Revision'
- *          seenUsers:
- *            type: array
- *            description: granted users
- *            items:
- *              type: string
- *              description: user ID
- *            example: ["5ae5fccfc5577b0004dbd8ab"]
  *          status:
  *            type: string
  *            description: status
@@ -150,7 +145,6 @@ module.exports = function(crowi, app) {
   const { slackNotificationService, configManager } = crowi;
   const interceptorManager = crowi.getInterceptorManager();
   const globalNotificationService = crowi.getGlobalNotificationService();
-  const pageService = crowi.pageService;
 
   const actions = {};
 
@@ -327,6 +321,11 @@ module.exports = function(crowi, app) {
     let portalPage = await Page.findByPathAndViewer(portalPath, req.user);
     portalPage.initLatestRevisionField(revisionId);
 
+    // add user to seen users
+    if (req.user != null) {
+      portalPage = await portalPage.seen(req.user);
+    }
+
     // populate
     portalPage = await portalPage.populateDataToShowRevision();
 
@@ -371,6 +370,11 @@ module.exports = function(crowi, app) {
     let view = `layout-${layoutName}/page`;
 
     page.initLatestRevisionField(revisionId);
+
+    // add user to seen users
+    if (req.user != null) {
+      page = await page.seen(req.user);
+    }
 
     // populate
     page = await page.populateDataToShowRevision();
@@ -729,7 +733,7 @@ module.exports = function(crowi, app) {
       savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
     }
 
-    const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
+    const result = { page: serializePageSecurely(createdPage), tags: savedTags };
     res.json(ApiResponse.success(result));
 
     // update scopes for descendants
@@ -858,7 +862,7 @@ module.exports = function(crowi, app) {
       savedTags = await PageTagRelation.listTagNamesByPage(pageId);
     }
 
-    const result = { page: pageService.serializeToObj(page), tags: savedTags };
+    const result = { page: serializePageSecurely(page), tags: savedTags };
     res.json(ApiResponse.success(result));
 
     // update scopes for descendants
@@ -958,7 +962,7 @@ module.exports = function(crowi, app) {
     }
 
     const result = {};
-    result.page = page; // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+    result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
 
     return res.json(ApiResponse.success(result));
   };
@@ -1065,75 +1069,6 @@ module.exports = function(crowi, app) {
     catch (err) {
       return res.json(ApiResponse.error(err));
     }
-    return res.json(ApiResponse.success(result));
-  };
-
-  /**
-   * @swagger
-   *
-   *    /pages.seen:
-   *      post:
-   *        tags: [Pages, CrowiCompatibles]
-   *        operationId: seenPage
-   *        summary: /pages.seen
-   *        description: Mark as seen user
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  page_id:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
-   *                required:
-   *                  - page_id
-   *        responses:
-   *          200:
-   *            description: Succeeded to be page seen.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    seenUser:
-   *                      $ref: '#/components/schemas/Page/properties/seenUsers'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  /**
-   * @api {post} /pages.seen Mark as seen user
-   * @apiName SeenPage
-   * @apiGroup Page
-   *
-   * @apiParam {String} page_id Page Id.
-   */
-  api.seen = async function(req, res) {
-    const user = req.user;
-    const pageId = req.body.page_id;
-    if (!pageId) {
-      return res.json(ApiResponse.error('page_id required'));
-    }
-    if (!req.user) {
-      return res.json(ApiResponse.error('user required'));
-    }
-
-    let page;
-    try {
-      page = await Page.findByIdAndViewer(pageId, user);
-      if (user != null) {
-        page = await page.seen(user);
-      }
-    }
-    catch (err) {
-      debug('Seen user update error', err);
-      return res.json(ApiResponse.error(err));
-    }
-
-    const result = {};
-    result.seenUser = page.seenUsers;
-
     return res.json(ApiResponse.success(result));
   };
 
@@ -1258,7 +1193,7 @@ module.exports = function(crowi, app) {
 
     debug('Page deleted', page.path);
     const result = {};
-    result.page = page; // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+    result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
 
     res.json(ApiResponse.success(result));
 
@@ -1305,7 +1240,7 @@ module.exports = function(crowi, app) {
     }
 
     const result = {};
-    result.page = page; // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+    result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
 
     return res.json(ApiResponse.success(result));
   };
@@ -1313,6 +1248,132 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
+<<<<<<< HEAD
+=======
+   *    /pages.rename:
+   *      post:
+   *        tags: [Pages, CrowiCompatibles]
+   *        operationId: renamePage
+   *        summary: /pages.rename
+   *        description: Rename page
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  page_id:
+   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                  path:
+   *                    $ref: '#/components/schemas/Page/properties/path'
+   *                  revision_id:
+   *                    $ref: '#/components/schemas/Revision/properties/_id'
+   *                  new_path:
+   *                    type: string
+   *                    description: new path
+   *                    example: /user/alice/new_test
+   *                  create_redirect:
+   *                    type: boolean
+   *                    description: whether redirect page
+   *                required:
+   *                  - page_id
+   *        responses:
+   *          200:
+   *            description: Succeeded to rename page.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    ok:
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                    page:
+   *                      $ref: '#/components/schemas/Page'
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
+  /**
+   * @api {post} /pages.rename Rename page
+   * @apiName RenamePage
+   * @apiGroup Page
+   *
+   * @apiParam {String} page_id Page Id.
+   * @apiParam {String} path
+   * @apiParam {String} revision_id
+   * @apiParam {String} new_path New path name.
+   * @apiParam {Bool} create_redirect
+   */
+  api.rename = async function(req, res) {
+    const pageId = req.body.page_id;
+    const previousRevision = req.body.revision_id || null;
+    let newPagePath = pathUtils.normalizePath(req.body.new_path);
+    const options = {
+      createRedirectPage: (req.body.create_redirect != null),
+      updateMetadata: (req.body.remain_metadata == null),
+      socketClientId: +req.body.socketClientId || undefined,
+    };
+    const isRecursively = (req.body.recursively != null);
+
+    if (!Page.isCreatableName(newPagePath)) {
+      return res.json(ApiResponse.error(`Could not use the path '${newPagePath})'`, 'invalid_path'));
+    }
+
+    // check whether path starts slash
+    newPagePath = pathUtils.addHeadingSlash(newPagePath);
+
+    const isExist = await Page.count({ path: newPagePath }) > 0;
+    if (isExist) {
+      // if page found, cannot cannot rename to that path
+      return res.json(ApiResponse.error(`'new_path=${newPagePath}' already exists`, 'already_exists'));
+    }
+
+    let page;
+
+    try {
+      page = await Page.findByIdAndViewer(pageId, req.user);
+
+      if (page == null) {
+        return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
+      }
+
+      if (!page.isUpdatable(previousRevision)) {
+        return res.json(ApiResponse.error('Someone could update this page, so couldn\'t delete.', 'outdated'));
+      }
+
+      if (isRecursively) {
+        page = await Page.renameRecursively(page, newPagePath, req.user, options);
+      }
+      else {
+        page = await Page.rename(page, newPagePath, req.user, options);
+      }
+    }
+    catch (err) {
+      logger.error(err);
+      return res.json(ApiResponse.error('Failed to update page.', 'unknown'));
+    }
+
+    const result = {};
+    result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
+
+    res.json(ApiResponse.success(result));
+
+    try {
+      // global notification
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_MOVE, page, req.user, {
+        oldPath: req.body.path,
+      });
+    }
+    catch (err) {
+      logger.error('Move notification failed', err);
+    }
+
+    return page;
+  };
+
+  /**
+   * @swagger
+   *
+>>>>>>> master
    *    /pages.duplicate:
    *      post:
    *        tags: [Pages]

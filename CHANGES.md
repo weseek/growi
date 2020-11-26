@@ -9,11 +9,27 @@
 
 ### Updates
 
+* Feature: File Upload Settings on admin pages
 * Improvement: Basic layout of page
 * Support: Support MongoDB 4.0, 4.2 and 4.4
 * Support: Upgrade libs
     * migrate-mongo
     * mongoose
+
+## v4.1.12
+
+* Fix: Adjust line-height for pre under li
+* Fix: Emptying trash process is broken
+
+## v4.1.11
+
+* Improvement: Generating draft DOM id strategy
+* Fix: GROWI version downgrade causes a validation error for user.lang
+
+## v4.1.10
+
+* Fix: Make listing users API secure
+* Fix: Error message when the server denies guest user connecting with socket.io
 
 ## v4.1.9
 

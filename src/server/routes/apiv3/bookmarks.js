@@ -3,7 +3,7 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:bookmarks'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
-const { body, query } = require('express-validator');
+const { body, query, param } = require('express-validator');
 
 const router = express.Router();
 
@@ -50,11 +50,23 @@ const router = express.Router();
  *          bool:
  *            type: boolean
  *            description: boolean for bookmark status
+ *
+ *      BookmarkInfo:
+ *        description: BookmarkInfo
+ *        type: object
+ *        properties:
+ *          sumOfBookmarks:
+ *            type: number
+ *            description: how many people bookmarked the page
+ *          isBookmarked:
+ *            type: boolean
+ *            description: Whether the request user bookmarked (will be returned if the user is included in the request)
  */
 
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
-  const loginRequired = require('../../middlewares/login-required')(crowi);
+  const loginRequiredStrictly = require('@server/middlewares/login-required')(crowi);
+  const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
@@ -73,12 +85,12 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /bookmarks:
+   *    /bookmarks/info:
    *      get:
    *        tags: [Bookmarks]
-   *        summary: /bookmarks
-   *        description: Get bookmarked status
-   *        operationId: getBookmarkedStatus
+   *        summary: /bookmarks/info
+   *        description: Get bookmarked info
+   *        operationId: getBookmarkedInfo
    *        parameters:
    *          - name: pageId
    *            in: query
@@ -87,24 +99,41 @@ module.exports = (crowi) => {
    *              type: string
    *        responses:
    *          200:
-   *            description: Succeeded to get bookmarked status.
+   *            description: Succeeded to get bookmark info.
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/Bookmark'
+   *                  $ref: '#/components/schemas/BookmarkInfo'
    */
-  router.get('/', accessTokenParser, loginRequired, validator.bookmarkInfo, async(req, res) => {
+  router.get('/info', accessTokenParser, loginRequired, validator.bookmarkInfo, apiV3FormValidator, async(req, res) => {
+    const { user } = req;
     const { pageId } = req.query;
 
+    const responsesParams = {};
+
     try {
-      const bookmarks = await Bookmark.findByPageIdAndUserId(pageId, req.user);
-      const sumOfBookmarks = await Bookmark.countByPageId(pageId);
-      return res.apiv3({ bookmarks, sumOfBookmarks });
+      responsesParams.sumOfBookmarks = await Bookmark.countByPageId(pageId);
     }
     catch (err) {
-      logger.error('get-bookmark-failed', err);
+      logger.error('get-bookmark-count-failed', err);
       return res.apiv3Err(err, 500);
     }
+
+    // guest user only get bookmark count
+    if (user == null) {
+      return res.apiv3(responsesParams);
+    }
+
+    try {
+      const bookmark = await Bookmark.findByPageIdAndUserId(pageId, user._id);
+      responsesParams.isBookmarked = (bookmark != null);
+      return res.apiv3(responsesParams);
+    }
+    catch (err) {
+      logger.error('get-bookmark-state-failed', err);
+      return res.apiv3Err(err, 500);
+    }
+
   });
 
   // select page from bookmark where userid = userid
@@ -147,12 +176,13 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Bookmark'
    */
-  validator.myBookmarkList = [
+  validator.userBookmarkList = [
+    param('userId').isMongoId().withMessage('userId is required'),
     query('page').isInt({ min: 1 }),
     query('limit').if(value => value != null).isInt({ max: 300 }).withMessage('You should set less than 300 or not to set limit.'),
   ];
 
-  router.get('/:userId', accessTokenParser, loginRequired, validator.myBookmarkList, apiV3FormValidator, async(req, res) => {
+  router.get('/:userId', accessTokenParser, loginRequired, validator.userBookmarkList, apiV3FormValidator, async(req, res) => {
     const { userId } = req.params;
     const page = req.query.page;
     const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM') || 30;
@@ -213,7 +243,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Bookmark'
    */
-  router.put('/', accessTokenParser, loginRequired, csrf, validator.bookmarks, apiV3FormValidator, async(req, res) => {
+  router.put('/', accessTokenParser, loginRequiredStrictly, csrf, validator.bookmarks, apiV3FormValidator, async(req, res) => {
     const { pageId, bool } = req.body;
 
     let bookmark;
@@ -239,28 +269,6 @@ module.exports = (crowi) => {
 
     return res.apiv3({ bookmark });
   });
-
-  /**
-   * @swagger
-   *
-   *    /count-bookmarks:
-   *      get:
-   *        tags: [Bookmarks]
-   *        summary: /bookmarks
-   *        description: Count bookmsrks
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                $ref: '#/components/schemas/BookmarkParams'
-   *        responses:
-   *          200:
-   *            description: Succeeded to count bookmarks.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  $ref: '#/components/schemas/Bookmark'
-   */
 
   return router;
 };

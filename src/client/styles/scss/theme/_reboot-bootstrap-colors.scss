@@ -23,6 +23,10 @@ body {
   color: $body-color;
   // text-align: left; // 3
   background-color: $body-bg; // 2
+
+  svg {
+    fill: $body-color;
+  }
 }
 
 // Links
@@ -32,9 +36,17 @@ a {
   text-decoration: $link-decoration;
   background-color: transparent; // Remove the gray background on active links in IE 10.
 
+  svg {
+    fill: $link-color;
+  }
+
   @include hover() {
     color: $link-hover-color;
     text-decoration: $link-hover-decoration;
+
+    svg {
+      fill: $link-hover-color;
+    }
   }
 }
 

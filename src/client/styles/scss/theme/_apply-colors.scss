@@ -14,7 +14,6 @@ $bordercolor-nav-tabs: $gray-300 !default;
 $bordercolor-nav-tabs-hover: $gray-200 $gray-200 $bordercolor-nav-tabs !default;
 $color-nav-tabs-link-active: $gray-600 !default;
 $bordercolor-nav-tabs-active: $bordercolor-nav-tabs $bordercolor-nav-tabs $bgcolor-global !default;
-$bordercolor-toc: $bordercolor-nav-tabs !default;
 $color-seen-user: #549c79 !default;
 
 // override bootstrap variables
@@ -34,11 +33,16 @@ $nav-tabs-link-active-border-color: $bordercolor-nav-tabs-active;
 @import '~bootstrap/scss/mixins';
 @import '../mixins';
 @import 'mixins/list-group';
+@import 'mixins/page-editor-mode-manager';
 @import 'mixins/tables'; // comment out and use _reboot-bootstrap-tables instead -- 2020.05.28 Yuki Takei
+@import 'reboot-bootstrap-buttons';
 @import 'reboot-bootstrap-colors';
 @import 'reboot-bootstrap-theme-colors';
 @import 'reboot-bootstrap-nav';
 @import 'reboot-toastr-colors';
+
+// determine variables with　bootstrap function (These variables can be used after importing bootstrap above)
+$color-modal-header: color-yiq($primary) !default;
 
 :not(pre) {
   > code {
@@ -67,15 +71,6 @@ pre:not(.hljs):not(.CodeMirror-line) {
   }
 }
 
-// Link buttons
-.btn-link {
-  color: $link-color;
-
-  @include hover {
-    color: $link-hover-color;
-  }
-}
-
 // Dropdown
 .dropdown-menu {
   color: $color-global;
@@ -98,7 +93,9 @@ pre:not(.hljs):not(.CodeMirror-line) {
   }
 
   &:active,
-  &.active {
+  &.active,
+  &:active:hover,
+  &.active:hover {
     color: $color-dropdown-link-active;
     background-color: $bgcolor-dropdown-link-active;
 
@@ -138,7 +135,8 @@ ul.pagination {
     button.page-link {
       color: color-yiq($primary);
       background-color: $primary;
-      &:hover {
+      &:hover,
+      &:focus {
         color: color-yiq($primary);
         background-color: $primary;
       }
@@ -286,10 +284,10 @@ ul.pagination {
   .modal-header {
     border-bottom-color: $border-color-theme;
     .modal-title {
-      color: color-yiq($primary);
+      color: $color-modal-header;
     }
     .close {
-      color: color-yiq($primary);
+      color: $color-modal-header;
       opacity: 0.5;
       &:hover {
         opacity: 0.9;
@@ -307,9 +305,6 @@ ul.pagination {
 }
 
 .grw-page-accessories-control {
-  .grw-btn-page-accessories {
-    fill: $color-link;
-  }
   .grw-seen-user-info {
     .btn {
       color: $color-seen-user;
@@ -323,13 +318,14 @@ ul.pagination {
   }
 }
 
-.revision-toc {
-  border-color: $bordercolor-toc;
-}
-
-.grw-custom-nav {
+.grw-custom-nav-tab {
   .nav-item {
+    &:hover,
+    &:focus {
+      background-color: rgba($color-link, 0.08);
+    }
     .nav-link {
+      -webkit-appearance: none;
       color: $color-link;
       svg {
         fill: $color-link;
@@ -457,7 +453,7 @@ body.on-edit {
 /*
  * GROWI comment form
  */
-.growi .main {
+.page-comments {
   .page-comment .page-comment-main,
   .page-comment-form .comment-form-main {
     background-color: $bgcolor-global;
@@ -509,9 +505,9 @@ mark.rbt-highlight-text {
 }
 
 /*
- * GROWI page attachments
+ * GROWI page content footer
  */
-.page-attachments-row {
+.page-content-footer {
   background-color: darken($bgcolor-global, 2%);
   border-top-color: $border-color-theme;
 }

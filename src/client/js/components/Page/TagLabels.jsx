@@ -74,6 +74,7 @@ class TagLabels extends React.Component {
 
   render() {
     const tags = this.getTagData();
+    const { appContainer } = this.props;
 
     return (
       <>
@@ -84,6 +85,7 @@ class TagLabels extends React.Component {
             <RenderTagLabels
               tags={tags}
               openEditorModal={this.openEditorModal}
+              isGuestUser={appContainer.isGuestUser}
             />
           </Suspense>
         </form>
