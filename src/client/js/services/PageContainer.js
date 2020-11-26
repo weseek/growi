@@ -390,14 +390,13 @@ export default class PageContainer extends Container {
     const { editorMode } = this.navigationContainer.state;
 
     const { pageId, path } = this.state;
-    let { revisionId } = this.state;
+    const { revisionId } = this.state;
 
     const options = Object.assign({}, optionsToSave);
 
     if (editorMode === 'hackmd') {
       // set option to sync
       options.isSyncRevisionToHackmd = true;
-      revisionId = this.state.revisionIdHackmdSynced;
     }
 
     let res;
@@ -425,7 +424,7 @@ export default class PageContainer extends Container {
     }
 
     const { pageId, path } = this.state;
-    let { revisionId } = this.state;
+    const { revisionId } = this.state;
 
     const options = Object.assign({}, optionsToSave);
 
@@ -435,7 +434,6 @@ export default class PageContainer extends Container {
       markdown = await pageEditorByHackmd.getMarkdown();
       // set option to sync
       options.isSyncRevisionToHackmd = true;
-      revisionId = this.state.revisionIdHackmdSynced;
     }
     else {
       const pageEditor = this.appContainer.getComponentInstance('PageEditor');
