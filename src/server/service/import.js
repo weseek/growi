@@ -371,6 +371,9 @@ class ImportService {
       const fileName = entry.path;
 
       // https://regex101.com/r/mD4eZs/1
+      // prevent from unexpecting attack doing unzip file (path traversal attack)
+      // FOR EXAMPLE
+      // ../../src/server/views/admin/markdown.html
       if (fileName.match(/[/~:;¥$%,&-]|(\.\.)+/g)) {
         logger.error('File path is not appropriate.');
         return;
