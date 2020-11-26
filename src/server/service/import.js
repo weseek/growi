@@ -371,7 +371,7 @@ class ImportService {
       const fileName = entry.path;
 
       // https://regex101.com/r/v1BIiV/3
-      if (fileName.match(/[!--/:-@[-`{-~¥/]|(\.\.)+/g)) {
+      if (fileName.match(/[/~:;¥$%,&-]|(\.\.)+/g)) {
         logger.error('File path is not appropriate.');
         return;
       }
