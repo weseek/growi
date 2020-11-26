@@ -370,6 +370,7 @@ class ImportService {
     unzipStream.on('entry', (entry) => {
       const fileName = entry.path;
 
+      //https://regex101.com/r/v1BIiV/2
       if (fileName.match(/[!-\-/:-@[-`{-~¥]|(\.\.)+/g)) {
         return logger.error('File path is not appropriate.');
       }
