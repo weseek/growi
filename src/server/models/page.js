@@ -1317,17 +1317,12 @@ module.exports = function(crowi) {
       newPagePath, page.revision.body, user, options,
     );
 
+    // take over tags
     const originTags = await page.findRelatedTagsById();
-    const savedTags = await saveTagsAction({ page, createdPage, pageTags: originTags });
-
-    // global notification
-    if (globalNotificationService != null) {
-      try {
-        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, user);
-      }
-      catch (err) {
-        logger.error('Create grobal notification failed', err);
-      }
+    let savedTags = [];
+    if (originTags != null) {
+      await PageTagRelation.updatePageTags(createdPage.id, originTags);
+      savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
     }
 
     return { page: pageService.serializeToObj(createdPage), tags: savedTags };
