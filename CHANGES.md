@@ -1,5 +1,25 @@
 # CHANGES
 
+
+## v4.1.13-RC
+
+*
+
+## v4.1.12
+
+* Fix: Adjust line-height for pre under li
+* Fix: Emptying trash process is broken
+
+## v4.1.11
+
+* Improvement: Generating draft DOM id strategy
+* Fix: GROWI version downgrade causes a validation error for user.lang
+
+## v4.1.10
+
+* Fix: Make listing users API secure
+* Fix: Error message when the server denies guest user connecting with socket.io
+
 ## v4.1.9
 
 * Feature: Environment variables to set max connection size to deliver push messages to all clients
