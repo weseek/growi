@@ -1325,7 +1325,8 @@ module.exports = function(crowi) {
       savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
     }
 
-    return { page: pageService.serializeToObj(createdPage), tags: savedTags };
+    return { page: crowi.pageService.serializeToObj(createdPage), tags: savedTags };
+  };
   };
 
   pageSchema.statics.findListByPathsArray = async function(paths) {
