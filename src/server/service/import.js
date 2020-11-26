@@ -372,7 +372,8 @@ class ImportService {
 
       // https://regex101.com/r/v1BIiV/3
       if (fileName.match(/[!--/:-@[-`{-~¥/]|(\.\.)+/g)) {
-        return logger.error('File path is not appropriate.');
+        logger.error('File path is not appropriate.');
+        return;
       }
 
       if (fileName === this.growiBridgeService.getMetaFileName()) {
