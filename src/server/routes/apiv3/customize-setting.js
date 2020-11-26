@@ -88,14 +88,10 @@ module.exports = (crowi) => {
 
   const validator = {
     themeAssetPath: [
-      query('themeName').isString().isIn([
-        'default', 'nature', 'mono-blue', 'wood', 'island', 'christmas', 'antarctic', 'future', 'halloween', 'spring',
-      ]),
+      query('themeName').isString(),
     ],
     theme: [
-      body('themeType').isString().isIn([
-        'default', 'nature', 'mono-blue', 'wood', 'island', 'christmas', 'antarctic', 'future', 'halloween', 'spring', 'kibela',
-      ]),
+      body('themeType').isString(),
     ],
     function: [
       body('isEnabledTimeline').isBoolean(),
