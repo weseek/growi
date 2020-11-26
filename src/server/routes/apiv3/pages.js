@@ -3,7 +3,6 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
 const express = require('express');
 const pathUtils = require('growi-commons').pathUtils;
-const escapeStringRegexp = require('escape-string-regexp');
 
 const { body } = require('express-validator/check');
 const { query } = require('express-validator');
@@ -541,7 +540,14 @@ module.exports = (crowi) => {
       result = await Page.duplicateRecursively(page, newPagePath, req.user);
     }
     else {
-      result = await duplicatePage(page, newPagePath, req.user);
+      result = await Page.duplicate(page, newPagePath, req.user);
+    }
+
+    try {
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, result.page, req.user);
+    }
+    catch (err) {
+      logger.error('Create grobal notification failed', err);
     }
 
     return res.apiv3({ result });
