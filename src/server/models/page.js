@@ -1313,9 +1313,9 @@ module.exports = function(crowi) {
     options.grantUserGroupId = page.grantedGroup;
     options.grantedUsers = page.grantedUsers;
 
-    const createdPage = await Page.create({
-      path: newPagePath, user, body: page.revision.body, options,
-    });
+    const createdPage = await Page.create(
+      newPagePath, page.revision.body, user, options,
+    );
 
     const originTags = await page.findRelatedTagsById();
     const savedTags = await saveTagsAction({ page, createdPage, pageTags: originTags });
