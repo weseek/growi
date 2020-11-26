@@ -477,21 +477,6 @@ module.exports = (crowi) => {
     }
   });
 
-  async function duplicatePageRecursively(page, newPagePath, user) {
-    const newPagePathPrefix = newPagePath;
-    const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
-
-    const pages = await Page.findManageableListWithDescendants(page, user);
-
-    const promise = pages.map(async(page) => {
-      const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
-      return duplicatePage(page, newPagePath, user);
-    });
-
-    return Promise.allSettled(promise);
-  }
-
-
   /**
    * @swagger
    *
