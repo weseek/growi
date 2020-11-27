@@ -146,7 +146,7 @@ module.exports = (crowi) => {
     duplicatePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
       body('pageNameInput').trim().isLength({ min: 1 }).withMessage('pageNameInput is required'),
-      body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
+      body('isDuplicateRecursively').if(value => value != null).isBoolean().withMessage('isDuplicateRecursively must be boolean'),
     ],
   };
 
