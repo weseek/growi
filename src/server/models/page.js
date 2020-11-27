@@ -1294,10 +1294,12 @@ module.exports = function(crowi) {
     // find manageable descendants
     const pages = await this.findManageableListWithDescendants(targetPage, user, options);
 
-    await Promise.all(pages.map((page) => {
+    // TODO GW-4634 use stream
+    await Promise.allSettled(pages.map((page) => {
       const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
       return this.rename(page, newPagePath, user, options);
     }));
+
     targetPage.path = newPagePathPrefix;
     return targetPage;
   };
