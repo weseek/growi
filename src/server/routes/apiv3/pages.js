@@ -513,6 +513,7 @@ module.exports = (crowi) => {
       return duplicatePage(page, newPagePath, user);
     });
 
+    // TODO GW-4634 use stream
     return Promise.allSettled(promise);
   }
 
