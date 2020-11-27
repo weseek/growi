@@ -1344,6 +1344,7 @@ module.exports = function(crowi) {
       return this.duplicate(page, newPagePath, user);
     });
 
+    // TODO GW-4634 use stream
     return Promise.allSettled(promise);
   };
 
