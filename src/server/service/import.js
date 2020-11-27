@@ -373,7 +373,7 @@ class ImportService {
       // prevent from unexpecting attack doing unzip file (path traversal attack)
       // FOR EXAMPLE
       // ../../src/server/views/admin/markdown.html
-      if (fileName.match(/(\.\.\/|\.\.\\)/gm)) {
+      if (fileName.match(/(\.\.\/|\.\.\\)/g)) {
         logger.error('File path is not appropriate.', fileName);
         return;
       }
