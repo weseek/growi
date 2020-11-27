@@ -16,6 +16,7 @@ const { pathUtils } = require('growi-commons');
 const templateChecker = require('@commons/util/template-checker');
 const { isTopPage } = require('@commons/util/path-utils');
 const escapeStringRegexp = require('escape-string-regexp');
+const { serializePageSecurely } = require('../models/serializers/page-serializer');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
@@ -1326,7 +1327,7 @@ module.exports = function(crowi) {
       savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
     }
 
-    return { page: crowi.pageService.serializeToObj(createdPage), tags: savedTags };
+    return { page: serializePageSecurely(createdPage), tags: savedTags };
   };
 
   pageSchema.statics.duplicateRecursively = async function(page, newPagePath, user) {
