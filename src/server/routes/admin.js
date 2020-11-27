@@ -325,7 +325,8 @@ module.exports = function(crowi, app) {
 
   api.validators.export.download = function() {
     const validator = [
-      param('fileName').not().contains('../'),
+      // param('fileName').not().contains('../'),
+      param('fileName').not().matches(/(\.\.\/|\.\.\\)/, 'mg'),
     ];
     return validator;
   };
