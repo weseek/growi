@@ -1248,8 +1248,6 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-<<<<<<< HEAD
-=======
    *    /pages.rename:
    *      post:
    *        tags: [Pages, CrowiCompatibles]
@@ -1373,7 +1371,6 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
->>>>>>> master
    *    /pages.duplicate:
    *      post:
    *        tags: [Pages]
