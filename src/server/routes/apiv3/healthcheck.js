@@ -91,7 +91,10 @@ module.exports = (crowi) => {
    *                  info:
    *                    $ref: '#/components/schemas/HealthcheckInfo'
    */
-  router.get('/', helmet.noCache(), async(req, res) => {
+  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
+  const adminRequired = require('../../middlewares/admin-required')(crowi);
+
+  router.get('/', helmet.noCache(), loginRequiredStrictly, adminRequired, async(req, res) => {
     const connectToMiddlewares = req.query.connectToMiddlewares != null;
     const checkMiddlewaresStrictly = req.query.checkMiddlewaresStrictly != null;
 
