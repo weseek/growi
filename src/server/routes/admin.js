@@ -317,8 +317,6 @@ module.exports = function(crowi, app) {
   // Export management
   actions.export = {};
   actions.export.api = api;
-
-  // api.validators = {};
   api.validators.export = {};
 
   actions.export.index = (req, res) => {
@@ -333,10 +331,7 @@ module.exports = function(crowi, app) {
   };
 
   actions.export.download = (req, res) => {
-    console.log(req.params);
-    // TODO: add express validator
     const { fileName } = req.params;
-
     const { validationResult } = require('express-validator');
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
