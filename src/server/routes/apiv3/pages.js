@@ -119,7 +119,7 @@ module.exports = (crowi) => {
   const globalNotificationService = crowi.getGlobalNotificationService();
   const userNotificationService = crowi.getUserNotificationService();
 
-  const { pageService } = crowi;
+  const { serializePageSecurely } = require('../../models/serializers/page-serializer');
 
   const validator = {
     createPage: [
@@ -230,7 +230,7 @@ module.exports = (crowi) => {
 
     const savedTags = await saveTagsAction({ createdPage, pageTags });
 
-    const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
+    const result = { page: serializePageSecurely(createdPage), tags: savedTags };
 
     // update scopes for descendants
     if (overwriteScopesOfDescendants) {
@@ -404,7 +404,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
     }
 
-    const result = { page: pageService.serializeToObj(page) };
+    const result = { page: serializePageSecurely(page) };
 
     try {
       // global notification
@@ -499,7 +499,7 @@ module.exports = (crowi) => {
       logger.error('Create grobal notification failed', err);
     }
 
-    return { page: pageService.serializeToObj(createdPage), tags: savedTags };
+    return { page: serializePageSecurely(createdPage), tags: savedTags };
   }
 
   async function duplicatePageRecursively(page, newPagePath, user) {
@@ -556,7 +556,7 @@ module.exports = (crowi) => {
    *            description: Internal server error.
    */
   router.post('/duplicate', accessTokenParser, loginRequiredStrictly, csrf, validator.duplicatePage, apiV3FormValidator, async(req, res) => {
-    const { pageId, isRecursively } = req.body;
+    const { pageId, isDuplicateRecursively } = req.body;
 
     const newPagePath = pathUtils.normalizePath(req.body.pageNameInput);
 
@@ -577,7 +577,7 @@ module.exports = (crowi) => {
 
     let result;
 
-    if (isRecursively) {
+    if (isDuplicateRecursively) {
       result = await duplicatePageRecursively(page, newPagePath, req.user);
     }
     else {
