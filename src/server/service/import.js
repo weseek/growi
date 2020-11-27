@@ -374,7 +374,7 @@ class ImportService {
       // FOR EXAMPLE
       // ../../src/server/views/admin/markdown.html
       if (fileName.match(/(\.\.\/|\.\.\\)/gm)) {
-        logger.error('File path is not appropriate.');
+        logger.error('File path is not appropriate.', fileName);
         return;
       }
 
