@@ -325,7 +325,8 @@ module.exports = function(crowi, app) {
 
   api.validators.export.download = function() {
     const validator = [
-      // param('fileName').not().contains('../'),
+      // https://regex101.com/r/mD4eZs/3
+      // prevent from pass traversal attack
       param('fileName').not().matches(/(\.\.\/|\.\.\\)/, 'mg'),
     ];
     return validator;
