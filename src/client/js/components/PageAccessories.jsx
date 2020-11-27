@@ -14,7 +14,10 @@ const PageAccessories = (props) => {
 
   return (
     <>
-      <PageAccessoriesModalControl isGuestUser={isGuestUser} isSharedUser={isSharedUser} />
+      <PageAccessoriesModalControl
+        isGuestUser={isGuestUser}
+        isSharedUser={isSharedUser}
+      />
       <PageAccessoriesModal
         isGuestUser={isGuestUser}
         isSharedUser={isSharedUser}

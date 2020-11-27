@@ -3,21 +3,51 @@ import { TabContent, TabPane } from 'reactstrap';
 import propTypes from 'prop-types';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import NavigationContainer from '../../services/NavigationContainer';
+import PageContainer from '../../services/PageContainer';
 import Editor from '../PageEditor';
 import Page from '../Page';
+import UserInfo from '../User/UserInfo';
+import TableOfContents from '../TableOfContents';
+import UserContentsLinks from '../UserContentsLinks';
+import PageAccessories from '../PageAccessories';
 import PageEditorByHackmd from '../PageEditorByHackmd';
 import EditorNavbarBottom from '../PageEditor/EditorNavbarBottom';
 
 
 const DisplaySwitcher = (props) => {
-  const { navigationContainer } = props;
+  const {
+    navigationContainer, pageContainer,
+  } = props;
   const { editorMode } = navigationContainer.state;
+  const { pageUser } = pageContainer.state;
 
   return (
     <>
       <TabContent activeTab={editorMode}>
         <TabPane tabId="view">
-          <Page />
+          <div className="d-flex flex-column flex-lg-row-reverse">
+
+            <div className="grw-side-contents-container">
+              <div className="grw-side-contents-sticky-container">
+                <div className="border-bottom pb-1">
+                  <PageAccessories />
+                </div>
+
+                <div className="d-none d-lg-block">
+                  <div id="revision-toc" className="revision-toc">
+                    <TableOfContents />
+                  </div>
+                  {pageUser && <UserContentsLinks />}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex-grow-1 flex-basis-0 mw-0">
+              {pageUser && <UserInfo pageUser={pageUser} />}
+              <Page />
+            </div>
+
+          </div>
         </TabPane>
         <TabPane tabId="edit">
           <div id="page-editor">
@@ -37,7 +67,8 @@ const DisplaySwitcher = (props) => {
 
 DisplaySwitcher.propTypes = {
   navigationContainer: propTypes.instanceOf(NavigationContainer).isRequired,
+  pageContainer: propTypes.instanceOf(PageContainer).isRequired,
 };
 
 
-export default withUnstatedContainers(DisplaySwitcher, [NavigationContainer]);
+export default withUnstatedContainers(DisplaySwitcher, [NavigationContainer, PageContainer]);

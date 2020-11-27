@@ -118,7 +118,7 @@ module.exports = (crowi) => {
   const globalNotificationService = crowi.getGlobalNotificationService();
   const userNotificationService = crowi.getUserNotificationService();
 
-  const { pageService } = crowi;
+  const { serializePageSecurely } = require('../../models/serializers/page-serializer');
 
   const validator = {
     createPage: [
@@ -229,25 +229,23 @@ module.exports = (crowi) => {
 
     const savedTags = await saveTagsAction({ createdPage, pageTags });
 
-    const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
+    const result = { page: serializePageSecurely(createdPage), tags: savedTags };
 
     // update scopes for descendants
     if (overwriteScopesOfDescendants) {
       Page.applyScopesToDescendantsAsyncronously(createdPage, req.user);
     }
 
-    // global notification
-    if (globalNotificationService != null) {
-      try {
-        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, req.user);
-      }
-      catch (err) {
-        logger.error('Create grobal notification failed', err);
-      }
+    try {
+      // global notification
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, req.user);
+    }
+    catch (err) {
+      logger.error('Create grobal notification failed', err);
     }
 
     // user notification
-    if (isSlackEnabled && userNotificationService != null) {
+    if (isSlackEnabled) {
       try {
         const results = await userNotificationService.fire(createdPage, req.user, slackChannels, 'create', false);
         results.forEach((result) => {
@@ -405,7 +403,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
     }
 
-    const result = { page: pageService.serializeToObj(page) };
+    const result = { page: serializePageSecurely(page) };
 
     try {
       // global notification
