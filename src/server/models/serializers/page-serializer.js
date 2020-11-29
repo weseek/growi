@@ -7,11 +7,6 @@ function depopulate(page, attributeName) {
   }
 }
 
-function depopulateRevisions(page) {
-  depopulate(page, 'revision');
-  depopulate(page, 'revisionHackmdSynced');
-}
-
 function serializeInsecureUserAttributes(page) {
   if (page.lastUpdateUser != null && page.lastUpdateUser._id != null) {
     page.lastUpdateUser = serializeUserSecurely(page.lastUpdateUser);
@@ -22,13 +17,10 @@ function serializeInsecureUserAttributes(page) {
   if (page.revision != null && page.revision.author != null && page.revision.author._id != null) {
     page.revision.author = serializeUserSecurely(page.revision.author);
   }
-  if (page.revisionHackmdSynced != null && page.revisionHackmdSynced.author != null && page.revisionHackmdSynced.author._id != null) {
-    page.revisionHackmdSynced.author = serializeUserSecurely(page.revisionHackmdSynced.author);
-  }
   return page;
 }
 
-function serializePageSecurely(page, shouldDepopulateRevisions = false) {
+function serializePageSecurely(page, shouldDepopulateRevision = false) {
   let serialized = page;
 
   // invoke toObject if page is a model instance
@@ -36,9 +28,12 @@ function serializePageSecurely(page, shouldDepopulateRevisions = false) {
     serialized = page.toObject();
   }
 
+  // depopulate revisionHackmdSynced
+  depopulate(page, 'revisionHackmdSynced');
+
   // optional depopulation
-  if (shouldDepopulateRevisions) {
-    depopulateRevisions(serialized);
+  if (shouldDepopulateRevision) {
+    depopulate(page, 'revision');
   }
 
   serializeInsecureUserAttributes(serialized);
