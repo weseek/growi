@@ -22,6 +22,9 @@ function serializeInsecureUserAttributes(page) {
   if (page.revision != null && page.revision.author != null && page.revision.author._id != null) {
     page.revision.author = serializeUserSecurely(page.revision.author);
   }
+  if (page.revisionHackmdSynced != null && page.revisionHackmdSynced.author != null && page.revisionHackmdSynced.author._id != null) {
+    page.revisionHackmdSynced.author = serializeUserSecurely(page.revisionHackmdSynced.author);
+  }
   return page;
 }
 
