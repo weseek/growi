@@ -1,7 +1,10 @@
 # CHANGES
 
+## v4.2.2-RC
 
-## v4.2.1-RC
+* 
+
+## v4.2.1
 
 * Fix: Consecutive save operations with HackMD fail
 * Fix: Switching theme to kibela fail
