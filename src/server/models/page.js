@@ -16,7 +16,6 @@ const { pathUtils } = require('growi-commons');
 const templateChecker = require('@commons/util/template-checker');
 const { isTopPage } = require('@commons/util/path-utils');
 const escapeStringRegexp = require('escape-string-regexp');
-const { serializePageSecurely } = require('../models/serializers/page-serializer');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
@@ -1303,49 +1302,6 @@ module.exports = function(crowi) {
 
     targetPage.path = newPagePathPrefix;
     return targetPage;
-  };
-
-  pageSchema.statics.duplicate = async function(page, newPagePath, user) {
-    const Page = this;
-    const PageTagRelation = crowi.model('PageTagRelation');
-    // populate
-    await page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate();
-
-    // create option
-    const options = { page };
-    options.grant = page.grant;
-    options.grantUserGroupId = page.grantedGroup;
-    options.grantedUsers = page.grantedUsers;
-
-    const createdPage = await Page.create(
-      newPagePath, page.revision.body, user, options,
-    );
-
-    // take over tags
-    const originTags = await page.findRelatedTagsById();
-    let savedTags = [];
-    if (originTags != null) {
-      await PageTagRelation.updatePageTags(createdPage.id, originTags);
-      savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
-    }
-
-    return { page: serializePageSecurely(createdPage), tags: savedTags };
-  };
-
-  pageSchema.statics.duplicateRecursively = async function(page, newPagePath, user) {
-    const Page = this;
-    const newPagePathPrefix = newPagePath;
-    const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
-
-    const pages = await Page.findManageableListWithDescendants(page, user);
-
-    const promise = pages.map(async(page) => {
-      const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
-      return this.duplicate(page, newPagePath, user);
-    });
-
-    // TODO GW-4634 use stream
-    return Promise.allSettled(promise);
   };
 
   pageSchema.statics.findListByPathsArray = async function(paths) {
