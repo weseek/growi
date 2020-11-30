@@ -53,6 +53,24 @@ module.exports = function(crowi) {
       && this.configManager.getConfig('crowi', 'gcs:bucket') != null;
   };
 
+  lib.isReferSignedUrl = function() {
+    // TODO retrieve bool by getConfig
+    return true;
+  };
+
+  lib.issueSignedUrl = function(attachment) {
+    const gcs = getGcsInstance(this.getIsUploadable());
+    const myBucket = gcs.bucket(getGcsBucket());
+    const filePath = getFilePathOnStorage(attachment);
+    const file = myBucket.file(filePath);
+
+    return file.getSignedUrl({
+      action: 'read',
+      expires: Date.now() + 20 * 60 * 1000,
+    });
+
+  };
+
   lib.deleteFile = async function(attachment) {
     const filePath = getFilePathOnStorage(attachment);
     return lib.deleteFileByFilePath(filePath);
