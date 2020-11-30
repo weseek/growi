@@ -58,6 +58,14 @@ module.exports = (crowi) => {
     socketIoService.getAdminSocket().emit('admin:onTerminateForExport', data);
   });
 
+  const validator = {
+    deleteFile: [
+      // https://regex101.com/r/mD4eZs/3
+      // prevent from unexpecting attack doing delete file (path traversal attack)
+      param('fileName').not().matches(/(\.\.\/|\.\.\\)/g),
+    ],
+  };
+
 
   /**
    * @swagger
