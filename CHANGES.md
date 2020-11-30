@@ -1,6 +1,10 @@
 # CHANGES
 
-## v4.2.2-RC
+## v4.2.3-RC
+
+* 
+
+## v4.2.2
 
 * Fix: Consecutive save operations with built-in editor fail
     * Introduced by v4.2.1
