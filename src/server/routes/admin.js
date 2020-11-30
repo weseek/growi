@@ -337,7 +337,7 @@ module.exports = function(crowi, app) {
     const { validationResult } = require('express-validator');
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: 'Unprocessable entity' });
+      return res.status(422).json({ errors });
     }
 
     try {
