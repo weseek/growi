@@ -18,12 +18,8 @@ module.exports = function(crowi) {
     };
   }
 
-  function S3Factory(isUploadable) {
+  function S3Factory() {
     const awsConfig = getAwsConfig();
-
-    if (!isUploadable) {
-      throw new Error('AWS is not configured.');
-    }
 
     aws.config.update({
       accessKeyId: awsConfig.accessKeyId,
@@ -83,7 +79,11 @@ module.exports = function(crowi) {
   };
 
   lib.deleteFileByFilePath = async function(filePath) {
-    const s3 = S3Factory(this.getIsUploadable());
+    if (!this.getIsUploadable()) {
+      throw new Error('AWS is not configured.');
+    }
+
+    const s3 = S3Factory();
     const awsConfig = getAwsConfig();
 
     const params = {
@@ -102,9 +102,13 @@ module.exports = function(crowi) {
   };
 
   lib.uploadFile = function(fileStream, attachment) {
+    if (!this.getIsUploadable()) {
+      throw new Error('AWS is not configured.');
+    }
+
     logger.debug(`File uploading: fileName=${attachment.fileName}`);
 
-    const s3 = S3Factory(this.getIsUploadable());
+    const s3 = S3Factory();
     const awsConfig = getAwsConfig();
 
     const filePath = getFilePathOnStorage(attachment);
@@ -126,7 +130,11 @@ module.exports = function(crowi) {
    * @return {stream.Readable} readable stream
    */
   lib.findDeliveryFile = async function(attachment) {
-    const s3 = S3Factory(this.getIsReadable());
+    if (!this.getIsReadable()) {
+      throw new Error('AWS is not configured.');
+    }
+
+    const s3 = S3Factory();
     const awsConfig = getAwsConfig();
     const filePath = getFilePathOnStorage(attachment);
 
