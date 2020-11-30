@@ -29,8 +29,8 @@ function serializePageSecurely(page) {
   }
 
   // depopulate revision and revisionHackmdSynced
-  depopulate(page, 'revision');
-  depopulate(page, 'revisionHackmdSynced');
+  depopulate(serialized, 'revision');
+  depopulate(serialized, 'revisionHackmdSynced');
 
   serializeInsecureUserAttributes(serialized);
 
