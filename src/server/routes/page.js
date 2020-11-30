@@ -784,11 +784,9 @@ module.exports = function(crowi, app) {
       savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
     }
 
-    const Revision = crowi.model('Revision');
-    const revision = await Revision.findById(createdPage.revision._id);
     const result = {
       page: serializePageSecurely(createdPage),
-      revision: serializeRevisionSecurely(revision),
+      revision: serializeRevisionSecurely(createdPage.revision),
       tags: savedTags,
     };
     res.json(ApiResponse.success(result));
@@ -921,10 +919,9 @@ module.exports = function(crowi, app) {
       savedTags = await PageTagRelation.listTagNamesByPage(pageId);
     }
 
-    const revision = await Revision.findById(page.revision._id);
     const result = {
       page: serializePageSecurely(page),
-      revision: serializeRevisionSecurely(revision),
+      revision: serializeRevisionSecurely(page.revision),
       tags: savedTags,
     };
     res.json(ApiResponse.success(result));
