@@ -4,6 +4,7 @@ const logger = loggerFactory('growi:routes:apiv3:export');
 const fs = require('fs');
 
 const express = require('express');
+const { param } = require('express-validator');
 
 const router = express.Router();
 
@@ -57,6 +58,14 @@ module.exports = (crowi) => {
   this.adminEvent.on('onTerminateForExport', (data) => {
     socketIoService.getAdminSocket().emit('admin:onTerminateForExport', data);
   });
+
+  const validator = {
+    deleteFile: [
+      // https://regex101.com/r/mD4eZs/3
+      // prevent from unexpecting attack doing delete file (path traversal attack)
+      param('fileName').not().matches(/(\.\.\/|\.\.\\)/g),
+    ],
+  };
 
 
   /**
