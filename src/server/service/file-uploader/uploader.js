@@ -62,6 +62,17 @@ class Uploader {
   }
 
   /**
+   * Whether to redirect to an external signed url.
+   */
+  isReferSignedUrl() {
+    return false;
+  }
+
+  issueSignedUrl() {
+    throw new Error('Implement this');
+  }
+
+  /**
    * Respond to the HTTP request.
    * @param {Response} res
    * @param {Response} attachment
