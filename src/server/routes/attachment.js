@@ -3,6 +3,9 @@
 
 const logger = require('@alias/logger')('growi:routes:attachment');
 
+const { serializePageSecurely } = require('../models/serializers/page-serializer');
+const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
+
 const ApiResponse = require('../util/apiResponse');
 
 /**
@@ -466,7 +469,8 @@ module.exports = function(crowi, app) {
     }
 
     const result = {
-      page: page.toObject(),
+      page: serializePageSecurely(page),
+      revision: serializeRevisionSecurely(page.revision),
       attachment: attachment.toObject({ virtuals: true }),
       pageCreated,
     };
