@@ -201,6 +201,11 @@ module.exports = function(crowi, app) {
       return fileUploadService.respond(res, attachment);
     }
 
+    if (fileUploadService.isReferSignedUrl()) {
+      const signedUrl = await fileUploadService.issueSignedUrl(attachment);
+      return res.redirect(signedUrl);
+    }
+
     let fileStream;
     try {
       fileStream = await fileUploadService.findDeliveryFile(attachment);
