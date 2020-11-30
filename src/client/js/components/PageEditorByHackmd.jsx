@@ -145,8 +145,10 @@ class PageEditorByHackmd extends React.Component {
       }
 
       this.props.pageContainer.setState({
+        isHackmdDraftUpdatingInRealtime: false,
         hasDraftOnHackmd: false,
         pageIdOnHackmd: res.pageIdOnHackmd,
+        remoteRevisionId: res.revisionIdHackmdSynced,
         revisionIdHackmdSynced: res.revisionIdHackmdSynced,
       });
     }
