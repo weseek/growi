@@ -126,7 +126,7 @@ module.exports = function(crowi) {
    * @return {stream.Readable} readable stream
    */
   lib.findDeliveryFile = async function(attachment) {
-    const s3 = S3Factory(this.getIsUploadable());
+    const s3 = S3Factory(this.getIsReadable());
     const awsConfig = getAwsConfig();
     const filePath = getFilePathOnStorage(attachment);
 
