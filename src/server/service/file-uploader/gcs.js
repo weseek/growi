@@ -15,8 +15,8 @@ module.exports = function(crowi) {
     return configManager.getConfig('crowi', 'gcs:bucket');
   }
 
-  function getGcsInstance(isUploadable) {
-    if (!isUploadable) {
+  function getGcsInstance(isConnectable) {
+    if (!isConnectable) {
       throw new Error('GCS is not configured.');
     }
     if (_instance == null) {
@@ -93,7 +93,7 @@ module.exports = function(crowi) {
    * @return {stream.Readable} readable stream
    */
   lib.findDeliveryFile = async function(attachment) {
-    const gcs = getGcsInstance(this.getIsUploadable());
+    const gcs = getGcsInstance(this.getIsReadable());
     const myBucket = gcs.bucket(getGcsBucket());
     const filePath = getFilePathOnStorage(attachment);
     const file = myBucket.file(filePath);
