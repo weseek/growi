@@ -87,7 +87,7 @@ module.exports = function(crowi, app) {
     // FOR EXAMPLE
     // (((((((((((((((((((((((((((((((((((((((((((((((([a-z]*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*$
     const escapeRegExp = req.query.q.replace(/[\\^$/.*+?()[\]{}|]/g, '\\$&');
-    let tags = await Tag.find({ name: new RegExp(`^${escapeRegExp}`) }).select('-_id name');
+    let tags = await Tag.find({ name: new RegExp(`^${escapeRegExp}`) }).select('_id name');
     tags = tags.map((tag) => { return tag.name });
     return res.json(ApiResponse.success({ tags }));
   };
