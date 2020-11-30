@@ -1,4 +1,5 @@
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
+const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
 
 /**
  * @swagger
@@ -728,6 +729,8 @@ module.exports = function(crowi, app) {
    *                      $ref: '#/components/schemas/V1Response/properties/ok'
    *                    page:
    *                      $ref: '#/components/schemas/Page'
+   *                    revision:
+   *                      $ref: '#/components/schemas/Revision'
    *          403:
    *            $ref: '#/components/responses/403'
    *          500:
@@ -781,7 +784,11 @@ module.exports = function(crowi, app) {
       savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
     }
 
-    const result = { page: serializePageSecurely(createdPage), tags: savedTags };
+    const result = {
+      page: serializePageSecurely(createdPage),
+      revision: serializeRevisionSecurely(createdPage.revision),
+      tags: savedTags,
+    };
     res.json(ApiResponse.success(result));
 
     // update scopes for descendants
@@ -840,6 +847,8 @@ module.exports = function(crowi, app) {
    *                      $ref: '#/components/schemas/V1Response/properties/ok'
    *                    page:
    *                      $ref: '#/components/schemas/Page'
+   *                    revision:
+   *                      $ref: '#/components/schemas/Revision'
    *          403:
    *            $ref: '#/components/responses/403'
    *          500:
@@ -910,7 +919,11 @@ module.exports = function(crowi, app) {
       savedTags = await PageTagRelation.listTagNamesByPage(pageId);
     }
 
-    const result = { page: serializePageSecurely(page), tags: savedTags };
+    const result = {
+      page: serializePageSecurely(page),
+      revision: serializeRevisionSecurely(page.revision),
+      tags: savedTags,
+    };
     res.json(ApiResponse.success(result));
 
     // update scopes for descendants

@@ -115,6 +115,7 @@ export default class NavigationContainer extends Container {
     if (editorMode === 'edit') {
       $('body').addClass('on-edit');
       $('body').addClass('builtin-editor');
+      $('body').removeClass('hackmd');
       window.location.hash = '#edit';
     }
 
