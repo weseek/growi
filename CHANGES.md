@@ -2,12 +2,15 @@
 
 ## v4.2.2-RC
 
-* 
+* Fix: Consecutive save operations with built-in editor fail
+    * Introduced by v4.2.1
 
 ## v4.2.1
 
 * Fix: Consecutive save operations with HackMD fail
+    * Introduced by v4.2.0
 * Fix: Switching theme to kibela fail
+    * Introduced by v4.2.0
 
 ## v4.2.0
 
