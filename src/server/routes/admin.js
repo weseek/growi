@@ -22,7 +22,7 @@ module.exports = function(crowi, app) {
   const MAX_PAGE_LIST = 50;
   const actions = {};
 
-  const { check } = require('express-validator');
+  const { check, param } = require('express-validator');
 
   const api = {};
 
@@ -316,12 +316,23 @@ module.exports = function(crowi, app) {
 
   // Export management
   actions.export = {};
+  actions.export.api = api;
+  api.validators.export = {};
+
   actions.export.index = (req, res) => {
     return res.render('admin/export');
   };
 
+  api.validators.export.download = function() {
+    const validator = [
+      // https://regex101.com/r/mD4eZs/4
+      // prevent from pass traversal attack
+      param('fileName').not().matches(/(\.\.\/|\.\.\\)/),
+    ];
+    return validator;
+  };
+
   actions.export.download = (req, res) => {
-    // TODO: add express validator
     const { fileName } = req.params;
 
     try {
