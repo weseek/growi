@@ -17,11 +17,25 @@ describe('users', () => {
         next();
       };
     });
+    jest.mock('~/server/middlewares/admin-required');
+    const adminRequired = require('~/server/middlewares/admin-required');
+    adminRequired.mockImplementation(() => {
+      return function(_req, _res, next) {
+        next();
+      };
+    });
     jest.mock('~/server/middlewares/access-token-parser');
     const accessTokenParser = require('~/server/middlewares/access-token-parser');
     accessTokenParser.mockImplementation(() => {
       return function(req, _res, next) {
         req.user = 'loginUser';
+        next();
+      };
+    });
+    jest.mock('~/server/middlewares/csrf');
+    const csrf = require('~/server/middlewares/csrf');
+    csrf.mockImplementation(() => {
+      return function(_req, _res, next) {
         next();
       };
     });
