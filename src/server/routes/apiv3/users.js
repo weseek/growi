@@ -333,8 +333,11 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: Users email that already exists
    */
-  router.post('/invite', loginRequiredStrictly, adminRequired, csrf, validator.inviteEmail, apiV3FormValidator, async(req, res) => {
+  // 切り分けのためミドルウェア削除
+  // router.post('/invite', loginRequiredStrictly, adminRequired, csrf, apiV3FormValidator, async(req, res) => {
+  router.post('/invite', async(req, res) => {
     try {
+      console.log('req.body', req.body);
       const invitedUserList = await User.createUsersByInvitation(req.body.shapedEmailList, req.body.sendEmail);
       return res.apiv3({ invitedUserList });
     }

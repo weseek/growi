@@ -1,5 +1,7 @@
 const request = require('supertest');
 const express = require('express');
+const bodyParser = require('body-parser');
+
 const { getInstance } = require('../setup-crowi');
 
 describe('users', () => {
@@ -40,6 +42,8 @@ describe('users', () => {
       };
     });
     app.use('/', require('~/server/routes/apiv3/users')(crowi));
+    app.use(bodyParser.json())
+    app.use(bodyParser.urlencoded({ extended: false }))
   });
 
   describe('GET /', () => {
@@ -289,14 +293,33 @@ describe('users', () => {
         expect(response.body.errors).toBeDefined();
       });
       test('respond 400 when username is empty', async() => {
-        const response = await request(app).get('/exists')
+        const response = await request(app).get('/exists');
         expect(response.statusCode).toBe(400);
         expect(response.body.errors).toBeDefined();
       });
     });
   });
 
-  describe.skip('POST /invite', () => {
+  describe('POST /invite', () => {
+    describe('when return invitedUserList', () => {
+      beforeAll(() => {
+        crowi.models.User.createUsersByInvitation = jest.fn().mockImplementation(() => { return ['user'] });
+      });
+      test('respond exists true', async() => {
+        app.use(bodyParser.urlencoded({ extended: false }));
+        app.use(bodyParser.json());
+        const response = await request(app)
+          .post('/invite')
+          .send({ shapedEmailList: ['user'], sendEmail: false })
+          .set('Content-Type', 'application/json')
+          .set('Accept', 'application/json')
+          .end((err, res) => {
+            if (err) return done(err);
+          });
+        expect(response.statusCode).toBe(200);
+        expect(response.body).toBe(['user']);
+      });
+    });
 
   });
 
