@@ -226,8 +226,60 @@ describe('users', () => {
     });
   });
 
-  describe.skip('GET /exists', () => {
+  describe('GET /exists', () => {
+    describe('when exists user', () => {
+      beforeAll(() => {
+        crowi.models.User.findUserByUsername = jest.fn().mockImplementation(() => { return 'user' });
+      });
+      test('respond exists true', async() => {
+        const response = await request(app).get('/exists').query({
+          username: 'hoge',
+        });
+        expect(response.statusCode).toBe(200);
+        expect(response.body.data.exists).toBe(true);
+      });
+    });
 
+    describe('when no exists user', () => {
+      beforeAll(() => {
+        crowi.models.User.findUserByUsername = jest.fn().mockImplementation(() => { return null });
+      });
+      test('respond exists false', async() => {
+        const response = await request(app).get('/exists').query({
+          username: 'hoge',
+        });
+        expect(response.statusCode).toBe(200);
+        expect(response.body.data.exists).toBe(false);
+      });
+    });
+
+    describe('when throw Error from User.findUserByUsername', () => {
+      beforeAll(() => {
+        crowi.models.User.findUserByUsername = jest.fn().mockImplementation(() => { throw Error('error') });
+      });
+      test('respond 400', async() => {
+        const response = await request(app).get('/exists').query({
+          username: 'hoge',
+        });
+        expect(response.statusCode).toBe(400);
+        expect(response.body.errors).toBeDefined();
+      });
+    });
+
+    describe('validator.exists', () => {
+      test('respond 400 when username is not string', async() => {
+        const response = await request(app).get('/exists').query({
+          username: 1,
+        });
+        expect(response.statusCode).toBe(400);
+        expect(response.body.errors).toBeDefined();
+      });
+      test('respond 400 when username is empty', async() => {
+        const response = await request(app).get('/exists')
+        expect(response.statusCode).toBe(400);
+        expect(response.body.errors).toBeDefined();
+      });
+    });
   });
 
   describe.skip('POST /invite', () => {
