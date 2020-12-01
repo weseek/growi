@@ -369,11 +369,11 @@ class ImportService {
 
     unzipStream.on('entry', (entry) => {
       const fileName = entry.path;
-      // https://regex101.com/r/mD4eZs/3
+      // https://regex101.com/r/mD4eZs/4
       // prevent from unexpecting attack doing unzip file (path traversal attack)
       // FOR EXAMPLE
       // ../../src/server/views/admin/markdown.html
-      if (fileName.match(/(\.\.\/|\.\.\\)/g)) {
+      if (fileName.match(/(\.\.\/|\.\.\\)/)) {
         logger.error('File path is not appropriate.', fileName);
         return;
       }
