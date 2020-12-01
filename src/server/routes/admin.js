@@ -334,6 +334,11 @@ module.exports = function(crowi, app) {
 
   actions.export.download = (req, res) => {
     const { fileName } = req.params;
+    const { validationResult } = require('express-validator');
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: `${fileName} is invalid. Do not use path like '../'.` });
+    }
 
     try {
       const zipFile = exportService.getFile(fileName);
