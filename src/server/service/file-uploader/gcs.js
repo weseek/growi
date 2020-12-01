@@ -53,12 +53,12 @@ module.exports = function(crowi) {
       && this.configManager.getConfig('crowi', 'gcs:bucket') != null;
   };
 
-  lib.isReferSignedUrl = function() {
+  lib.canRespond = function() {
     // TODO retrieve bool by getConfig
     return true;
   };
 
-  lib.issueSignedUrl = function(attachment) {
+  lib.respond = async function(res, attachment) {
     const gcs = getGcsInstance(this.getIsUploadable());
     const myBucket = gcs.bucket(getGcsBucket());
     const filePath = getFilePathOnStorage(attachment);
@@ -66,11 +66,12 @@ module.exports = function(crowi) {
 
     // issue signed url for 30 seconds
     // https://cloud.google.com/storage/docs/access-control/signed-urls
-    return file.getSignedUrl({
+    const signedUrl = await file.getSignedUrl({
       action: 'read',
       expires: Date.now() + 30 * 1000,
     });
 
+    return res.redirect(signedUrl);
   };
 
   lib.deleteFile = async function(attachment) {
