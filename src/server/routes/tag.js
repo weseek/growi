@@ -82,7 +82,13 @@ module.exports = function(crowi, app) {
    * @apiParam {String} q keyword
    */
   api.search = async function(req, res) {
-    let tags = await Tag.find({ name: new RegExp(`^${req.query.q}`) }).select('-_id name');
+    // https://regex101.com/r/J1cN6O/1
+    // prevent from unexpecting attack doing regular expression on tag search (DoS attack)
+    // FOR EXAMPLE
+    // (((((((((((((((((((((((((((((((((((((((((((((((([a-z]*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*$
+    const escapeRegExp = req.query.q.replace(/[\\^$/.*+?()[\]{}|]/g, '\\$&');
+
+    let tags = await Tag.find({ name: new RegExp(`^${escapeRegExp}`) }).select('-_id name');
     tags = tags.map((tag) => { return tag.name });
     return res.json(ApiResponse.success({ tags }));
   };
