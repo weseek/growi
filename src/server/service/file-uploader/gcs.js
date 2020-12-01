@@ -59,6 +59,7 @@ module.exports = function(crowi) {
   };
 
   lib.respond = async function(res, attachment) {
+    // TODO refacotr this code after GW-4630
     const gcs = getGcsInstance(this.getIsUploadable());
     const myBucket = gcs.bucket(getGcsBucket());
     const filePath = getFilePathOnStorage(attachment);
