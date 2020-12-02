@@ -231,7 +231,7 @@ module.exports = function(crowi, app) {
 
   function addRenderVarsForPresentation(renderVars, page) {
     // sanitize revision.body
-    const preventXssRevision = crowi.xss.process(page.revision.body);
+    const preventXssRevision = crowi.xssService.process(page.revision.body);
     page.revision.body = preventXssRevision;
 
     renderVars.page = page;
