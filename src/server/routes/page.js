@@ -230,8 +230,14 @@ module.exports = function(crowi, app) {
   }
 
   function addRenderVarsForPresentation(renderVars, page) {
+    // const XssService = require('../service/xss');
+    // const preventXssRevision = new XssService();
+    // const hoge = preventXssRevision.process(page.revision.body);
+    // console.log(hoge);
+    // page.revision.body = hoge;
 
-    const preventXssRevision = page.revision.body.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    // sanitize revision.body
+    const preventXssRevision = crowi.xss.process(page.revision.body);
     page.revision.body = preventXssRevision;
 
     renderVars.page = page;
