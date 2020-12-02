@@ -166,7 +166,7 @@ class PageEditor extends React.Component {
       // when if created newly
       if (res.pageCreated) {
         logger.info('Page is created', res.page._id);
-        pageContainer.updateStateAfterSave(res.page);
+        pageContainer.updateStateAfterSave(res.page, res.tags, res.revision);
         editorContainer.setState({ grant: res.page.grant });
       }
     }

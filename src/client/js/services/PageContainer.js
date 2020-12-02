@@ -339,19 +339,20 @@ export default class PageContainer extends Container {
    * save success handler
    * @param {object} page Page instance
    * @param {Array[Tag]} tags Array of Tag
+   * @param {object} revision Revision instance
    */
-  updateStateAfterSave(page, tags) {
+  updateStateAfterSave(page, tags, revision) {
     const { editorMode } = this.navigationContainer.state;
 
     // update state of PageContainer
     const newState = {
       pageId: page._id,
-      revisionId: page.revision._id,
-      revisionCreatedAt: new Date(page.revision.createdAt).getTime() / 1000,
-      remoteRevisionId: page.revision._id,
+      revisionId: revision._id,
+      revisionCreatedAt: new Date(revision.createdAt).getTime() / 1000,
+      remoteRevisionId: revision._id,
       revisionIdHackmdSynced: page.revisionHackmdSynced,
       hasDraftOnHackmd: page.hasDraftOnHackmd,
-      markdown: page.revision.body,
+      markdown: revision.body,
       createdAt: page.createdAt,
       updatedAt: page.updatedAt,
     };
@@ -408,7 +409,7 @@ export default class PageContainer extends Container {
       res = await this.updatePage(pageId, revisionId, markdown, options);
     }
 
-    this.updateStateAfterSave(res.page, res.tags);
+    this.updateStateAfterSave(res.page, res.tags, res.revision);
     return res;
   }
 
@@ -471,7 +472,7 @@ export default class PageContainer extends Container {
     if (!res.ok) {
       throw new Error(res.error);
     }
-    return { page: res.page, tags: res.tags };
+    return res;
   }
 
   async updatePage(pageId, revisionId, markdown, tmpParams) {
@@ -489,7 +490,7 @@ export default class PageContainer extends Container {
     if (!res.ok) {
       throw new Error(res.error);
     }
-    return { page: res.page, tags: res.tags };
+    return res;
   }
 
   deletePage(isRecursively, isCompletely) {
