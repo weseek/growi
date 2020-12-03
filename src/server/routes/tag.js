@@ -84,8 +84,8 @@ module.exports = function(crowi, app) {
   api.search = async function(req, res) {
     // https://regex101.com/r/J1cN6O/1
     // prevent from unexpecting attack doing regular expression on tag search (DoS attack)
-    // FOR EXAMPLE
-    // (((((((((((((((((((((((((((((((((((((((((((((((([a-z]*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*)*$
+    // Search for regular expressions as normal characters
+    // e.g. user*$ -> user\*\$ (escape a regular expression)
     const escapeRegExp = req.query.q.replace(/[\\^$/.*+?()[\]{}|]/g, '\\$&');
     let tags = await Tag.find({ name: new RegExp(`^${escapeRegExp}`) }).select('_id name');
     tags = tags.map((tag) => { return tag.name });
