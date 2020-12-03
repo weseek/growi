@@ -239,7 +239,7 @@ module.exports = function(crowi, app) {
     else {
       res.set({
         'Content-Type': attachment.fileFormat,
-        'Content-Security-Policy': "script-src 'unsafe-hashes'",
+        'Content-Security-Policy': "script-src 'unsafe-hashes'; object-src 'none'; require-trusted-types-for 'script'; default-src 'none';",
       });
     }
   }
