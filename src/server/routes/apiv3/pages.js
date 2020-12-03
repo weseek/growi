@@ -537,14 +537,15 @@ module.exports = (crowi) => {
     let result;
 
     if (isDuplicateRecursively) {
-      result = await Page.duplicateRecursively(page, newPagePath, req.user);
+      result = await crowi.pageService.duplicateRecursively(page, newPagePath, req.user);
     }
     else {
-      result = await Page.duplicate(page, newPagePath, req.user);
+      result = await crowi.pageService.duplicate(page, newPagePath, req.user);
     }
 
+    page.path = newPagePath;
     try {
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, result.page, req.user);
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, page, req.user);
     }
     catch (err) {
       logger.error('Create grobal notification failed', err);
