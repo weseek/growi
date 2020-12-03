@@ -523,7 +523,7 @@ export default class PageContainer extends Container {
 
   rename(newPagePath, isRecursively, isRenameRedirect, isRemainMetadata) {
     const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
-    const { pageId, revisionId } = this.state;
+    const { pageId, revisionId, path } = this.state;
 
     return this.appContainer.apiv3Put('/pages/rename', {
       revisionId,
@@ -532,6 +532,7 @@ export default class PageContainer extends Container {
       isRenameRedirect,
       isRemainMetadata,
       newPagePath,
+      path,
       socketClientId: socketIoContainer.getSocketClientId(),
     });
   }
