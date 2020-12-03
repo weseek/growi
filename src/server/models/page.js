@@ -1279,7 +1279,7 @@ module.exports = function(crowi) {
     pageEvent.emit('delete', pageData, user, socketClientId);
     pageEvent.emit('create', updatedPageData, user, socketClientId);
 
-    return updatedPageData;
+    return { updatedPageData };
   };
 
   pageSchema.statics.renameRecursively = async function(targetPage, newPagePathPrefix, user, options) {
@@ -1295,13 +1295,12 @@ module.exports = function(crowi) {
     const pages = await this.findManageableListWithDescendants(targetPage, user, options);
 
     // TODO GW-4634 use stream
-    await Promise.allSettled(pages.map((page) => {
+    const promise = pages.map((page) => {
       const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
       return this.rename(page, newPagePath, user, options);
-    }));
+    });
 
-    targetPage.path = newPagePathPrefix;
-    return targetPage;
+    return Promise.allSettled(promise);
   };
 
   pageSchema.statics.findListByPathsArray = async function(paths) {
