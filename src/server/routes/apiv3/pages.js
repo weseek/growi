@@ -378,6 +378,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(`${newPagePath} already exists`, 'already_exists'), 409);
     }
 
+    const result = {};
     let page;
 
     try {
@@ -392,10 +393,10 @@ module.exports = (crowi) => {
       }
 
       if (isRecursively) {
-        page = await Page.renameRecursively(page, newPagePath, req.user, options);
+        result.page = await Page.renameRecursively(page, newPagePath, req.user, options);
       }
       else {
-        page = await Page.rename(page, newPagePath, req.user, options);
+        result.page = await Page.rename(page, newPagePath, req.user, options);
       }
     }
     catch (err) {
@@ -403,7 +404,8 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
     }
 
-    const result = { page: serializePageSecurely(page) };
+    page.path = newPagePath;
+    result.parentPage = page;
 
     try {
       // global notification
@@ -415,7 +417,7 @@ module.exports = (crowi) => {
       logger.error('Move notification failed', err);
     }
 
-    return res.apiv3(result);
+    return res.apiv3({ result });
   });
 
 
