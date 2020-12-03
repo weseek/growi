@@ -361,12 +361,11 @@ class LinkEditModal extends React.PureComponent {
           </div>
           <div className="form-group row mb-0">
             <label className="col-sm-3">Notation</label>
-            <div className="custom-control custom-radio custom-control-inline form-group">
+            <div className="custom-control custom-radio custom-control-inline">
               <input
                 type="radio"
                 className="custom-control-input"
                 id="markdownType"
-                name="notation"
                 value={Linker.types.markdownLink}
                 checked={this.state.linkerType === Linker.types.markdownLink}
                 onChange={e => this.handleSelecteLinkerType(e.target.value)}
@@ -375,12 +374,11 @@ class LinkEditModal extends React.PureComponent {
                 Markdown
               </label>
             </div>
-            <div className="custom-control custom-radio custom-control-inline form-group">
+            <div className="custom-control custom-radio custom-control-inline">
               <input
                 type="radio"
                 className="custom-control-input"
                 id="growiType"
-                name="notation"
                 value={Linker.types.growiLink}
                 checked={this.state.linkerType === Linker.types.growiLink}
                 onChange={e => this.handleSelecteLinkerType(e.target.value)}
@@ -389,12 +387,11 @@ class LinkEditModal extends React.PureComponent {
                 Growi original
               </label>
             </div>
-            <div className="custom-control custom-radio custom-control-inline form-group">
+            <div className="custom-control custom-radio custom-control-inline">
               <input
                 type="radio"
                 className="custom-control-input"
                 id="pukiwikiType"
-                name="notation"
                 value={Linker.types.pukiwikiLink}
                 checked={this.state.linkerType === Linker.types.pukiwikiLink}
                 onChange={e => this.handleSelecteLinkerType(e.target.value)}
