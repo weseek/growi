@@ -62,7 +62,7 @@ module.exports = (crowi) => {
 
   const validator = {
     deleteFile: [
-      // https://regex101.com/r/mD4eZs/3
+      // https://regex101.com/r/mD4eZs/6
       // prevent from unexpecting attack doing delete file (path traversal attack)
       param('fileName').not().matches(/(\.\.\/|\.\.\\)/),
     ],
