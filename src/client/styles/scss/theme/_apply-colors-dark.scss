@@ -271,6 +271,22 @@ ul.pagination {
   .popover-body {
     color: inherit;
   }
+
+  &.bs-popover-top .arrow:after {
+    border-top-color: $bgcolor-global;
+  }
+
+  &.bs-popover-bottom .arrow:after {
+    border-bottom-color: $bgcolor-global;
+  }
+
+  &.bs-popover-right .arrow:after {
+    border-right-color: $bgcolor-global;
+  }
+
+  &.bs-popover-left .arrow:after {
+    border-left-color: $bgcolor-global;
+  }
 }
 
 /*
