@@ -187,14 +187,15 @@ class LinkEditModal extends React.PureComponent {
 
     const linkText = linker.generateMarkdownText();
     return (
-      <div className="d-flex justify-content-between mb-3">
+      <div className="d-flex justify-content-between mb-3 flex-column flex-sm-row">
         <div className="card card-disabled w-100 p-1 mb-0">
           <p className="text-left text-muted mb-1 small">Markdown</p>
           <p className="text-center text-truncate text-muted">{linkText}</p>
         </div>
-        <div className="d-flex align-items-center">
+        <div className="d-flex align-items-center justify-content-center">
           <span className="lead mx-3">
-            <i className="fa fa-caret-right"></i>
+            <i className="d-none d-sm-block fa fa-caret-right"></i>
+            <i className="d-sm-none fa fa-caret-down"></i>
           </span>
         </div>
         <div className="card w-100 p-1 mb-0">
