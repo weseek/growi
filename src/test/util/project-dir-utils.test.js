@@ -1,4 +1,3 @@
-
 import path from 'path';
 import { projectRoot, resolveFromRoot } from '~/utils/project-dir-utils';
 
