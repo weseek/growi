@@ -231,20 +231,23 @@ module.exports = function(crowi, app) {
 
   function addRenderVarsForPresentation(renderVars, page) {
     // sanitize page.revision.body
+    const Xss = require('../../lib/service/xss/index');
+    const XssOption = require('../../lib/service/xss/xssOption');
 
-    // const Xss = require('../../lib/service/xss/index');
-    // const XssOption = require('../../lib/service/xss/xssOption');
+    // crowi.config is empty.
+    const xssOption = new XssOption(crowi.config, crowi);
 
-    // const xssOption = new XssOption(crowi.config, crowi); // {}
-
-    // console.log(xssOption);
-    // const xss = new Xss(xssOption);
-    // console.log(xss);
-    // const preventXssRevision = xss.process(page.revision.body);
-    // page.revision.body = preventXssRevision;
-
-    renderVars.page = page;
-    renderVars.revision = page.revision;
+    if (crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention')) {
+      const xss = new Xss(xssOption);
+      const preventXssRevision = xss.process(page.revision.body);
+      page.revision.body = preventXssRevision;
+      renderVars.page = page;
+      renderVars.revision = page.revision;
+    }
+    else {
+      renderVars.page = page;
+      renderVars.revision = page.revision;
+    }
   }
 
   async function addRenderVarsForUserPage(renderVars, page, requestUser) {
