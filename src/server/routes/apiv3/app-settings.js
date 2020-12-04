@@ -126,6 +126,9 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *          envGcsUploadNamespace:
  *            type: string
  *            description: Directory name to create in the bucket
+ *          useSignedUrl:
+ *            type: boolean
+ *            description: Whether to use signed url
  *      PluginSettingParams:
  *        description: PluginSettingParams
  *        type: object
@@ -178,6 +181,7 @@ module.exports = (crowi) => {
       body('s3Bucket').trim(),
       body('s3AccessKeyId').trim().if(value => value !== '').matches(/^[\da-zA-Z]+$/),
       body('s3SecretAccessKey').trim(),
+      body('useSignedUrl').if(value => value !== '').isBoolean(),
     ],
     pluginSetting: [
       body('isEnabledPlugins').isBoolean(),
