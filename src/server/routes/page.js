@@ -234,12 +234,14 @@ module.exports = function(crowi, app) {
 
     // const Xss = require('../../lib/service/xss/index');
     // const XssOption = require('../../lib/service/xss/xssOption');
-    // const option = new XssOption(crowi.config); // {}
-    // const xss = new Xss(option);
+
+    // const xssOption = new XssOption(crowi.config, crowi); // {}
+
+    // console.log(xssOption);
+    // const xss = new Xss(xssOption);
+    // console.log(xss);
     // const preventXssRevision = xss.process(page.revision.body);
     // page.revision.body = preventXssRevision;
-    const preventXssRevision = crowi.xssService.process(page.revision.body);
-    page.revision.body = preventXssRevision;
 
     renderVars.page = page;
     renderVars.revision = page.revision;
