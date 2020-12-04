@@ -98,7 +98,6 @@ module.exports = function(crowi) {
     return res.redirect(signedUrl);
   };
 
-
   lib.deleteFile = async function(attachment) {
     const filePath = getFilePathOnStorage(attachment);
     return lib.deleteFileByFilePath(filePath);
