@@ -7,7 +7,6 @@ class XssOption {
     this.isEnabledXssPrevention = initializedConfig.isEnabledXssPrevention || true;
     this.tagWhiteList = initializedConfig.tagWhiteList || recommendedWhitelist.tags;
     this.attrWhiteList = initializedConfig.attrWhiteList || recommendedWhitelist.attrs;
-
   }
 
 }
