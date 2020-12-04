@@ -581,6 +581,7 @@ module.exports = (crowi) => {
       requestParams['gcs:apiKeyJsonPath'] = req.body.gcsApiKeyJsonPath;
       requestParams['gcs:bucket'] = req.body.gcsBucket;
       requestParams['gcs:uploadNamespace'] = req.body.gcsUploadNamespace;
+      requestParams['app:useSignedUrl'] = req.body.useSignedUrl;
     }
 
     if (fileUploadType === 'aws') {
@@ -589,6 +590,7 @@ module.exports = (crowi) => {
       requestParams['aws:s3Bucket'] = req.body.s3Bucket;
       requestParams['aws:s3AccessKeyId'] = req.body.s3AccessKeyId;
       requestParams['aws:s3SecretAccessKey'] = req.body.s3SecretAccessKey;
+      requestParams['app:useSignedUrl'] = req.body.useSignedUrl;
     }
 
     try {
@@ -604,6 +606,7 @@ module.exports = (crowi) => {
         responseParams.gcsApiKeyJsonPath = crowi.configManager.getConfig('crowi', 'gcs:apiKeyJsonPath');
         responseParams.gcsBucket = crowi.configManager.getConfig('crowi', 'gcs:bucket');
         responseParams.gcsUploadNamespace = crowi.configManager.getConfig('crowi', 'gcs:uploadNamespace');
+        responseParams.useSignedUrl = crowi.configManager.getConfig('crowi', 'app:useSignedUrl');
       }
 
       if (fileUploadType === 'aws') {
@@ -612,6 +615,7 @@ module.exports = (crowi) => {
         responseParams.s3Bucket = crowi.configManager.getConfig('crowi', 'aws:s3Bucket');
         responseParams.s3AccessKeyId = crowi.configManager.getConfig('crowi', 'aws:s3AccessKeyId');
         responseParams.s3SecretAccessKey = crowi.configManager.getConfig('crowi', 'aws:s3SecretAccessKey');
+        responseParams.useSignedUrl = crowi.configManager.getConfig('crowi', 'app:useSignedUrl');
       }
 
       return res.apiv3({ responseParams });
