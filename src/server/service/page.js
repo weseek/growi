@@ -65,8 +65,9 @@ class PageService {
       await PageTagRelation.updatePageTags(createdPage.id, originTags);
       savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
     }
+    const result = [{ page: serializePageSecurely(createdPage), tags: savedTags }];
 
-    return { page: serializePageSecurely(createdPage), tags: savedTags };
+    return result;
   }
 
   async duplicateRecursively(page, newPagePath, user) {
@@ -80,9 +81,13 @@ class PageService {
       const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
       return this.duplicate(page, newPagePath, user);
     });
+    const promiseResults = await Promise.allSettled(promise);
+    const result = promiseResults.map((promiseResult) => {
+      return promiseResult.value[0];
+    });
 
     // TODO GW-4634 use stream
-    return Promise.allSettled(promise);
+    return result;
   }
 
 
