@@ -1,12 +1,12 @@
 class XssOption {
 
-  constructor(config, crowi) {
+  constructor(config) {
     const recommendedWhitelist = require('./recommended-whitelist');
     const initializedConfig = (config != null) ? config : {};
 
     this.isEnabledXssPrevention = initializedConfig.isEnabledXssPrevention || true;
-    this.tagWhiteList = initializedConfig.tagWhiteList || crowi.xssService.getTagWhiteList() || recommendedWhitelist.tags;
-    this.attrWhiteList = initializedConfig.attrWhiteList || crowi.xssService.getAttrWhiteList() || recommendedWhitelist.attrs;
+    this.tagWhiteList = initializedConfig.tagWhiteList || recommendedWhitelist.tags;
+    this.attrWhiteList = initializedConfig.attrWhiteList || recommendedWhitelist.attrs;
 
   }
 
