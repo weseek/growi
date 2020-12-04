@@ -72,6 +72,32 @@ module.exports = function(crowi) {
       && this.configManager.getConfig('crowi', 'aws:s3Bucket') != null;
   };
 
+  lib.canRespond = function() {
+    // TODO retrieve bool by getConfig
+    return true;
+  };
+
+  lib.respond = async function(res, attachment) {
+    if (!this.getIsUploadable()) {
+      throw new Error('AWS is not configured.');
+    }
+
+    const s3 = S3Factory();
+    const awsConfig = getAwsConfig();
+    const filePath = getFilePathOnStorage(attachment);
+
+    // issue signed url for 30 seconds
+    // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#getSignedUrl-property
+    const params = {
+      Bucket: awsConfig.bucket,
+      Key: filePath,
+      Expires: 30,
+    };
+    const signedUrl = s3.getSignedUrl('getObject', params);
+
+    return res.redirect(signedUrl);
+  };
+
 
   lib.deleteFile = async function(attachment) {
     const filePath = getFilePathOnStorage(attachment);
