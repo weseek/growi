@@ -391,19 +391,21 @@ class LinkEditModal extends React.PureComponent {
                   Growi original
                 </label>
               </div>
-              <div className="custom-control custom-radio custom-control-inline">
-                <input
-                  type="radio"
-                  className="custom-control-input"
-                  id="pukiwikiType"
-                  value={Linker.types.pukiwikiLink}
-                  checked={this.state.linkerType === Linker.types.pukiwikiLink}
-                  onChange={e => this.handleSelecteLinkerType(e.target.value)}
-                />
-                <label className="custom-control-label" htmlFor="pukiwikiType">
-                  Pukiwiki
-                </label>
-              </div>
+              {this.isApplyPukiwikiLikeLinkerPlugin && (
+                <div className="custom-control custom-radio custom-control-inline">
+                  <input
+                    type="radio"
+                    className="custom-control-input"
+                    id="pukiwikiType"
+                    value={Linker.types.pukiwikiLink}
+                    checked={this.state.linkerType === Linker.types.pukiwikiLink}
+                    onChange={e => this.handleSelecteLinkerType(e.target.value)}
+                  />
+                  <label className="custom-control-label" htmlFor="pukiwikiType">
+                    Pukiwiki
+                  </label>
+                </div>
+              )}
             </div>
           </div>
         </form>
