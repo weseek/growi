@@ -187,14 +187,15 @@ class LinkEditModal extends React.PureComponent {
 
     const linkText = linker.generateMarkdownText();
     return (
-      <div className="d-flex justify-content-between mb-3">
+      <div className="d-flex justify-content-between mb-3 flex-column flex-sm-row">
         <div className="card card-disabled w-100 p-1 mb-0">
           <p className="text-left text-muted mb-1 small">Markdown</p>
           <p className="text-center text-truncate text-muted">{linkText}</p>
         </div>
-        <div className="d-flex align-items-center">
+        <div className="d-flex align-items-center justify-content-center">
           <span className="lead mx-3">
-            <i className="fa fa-caret-right"></i>
+            <i className="d-none d-sm-block fa fa-caret-right"></i>
+            <i className="d-sm-none fa fa-caret-down"></i>
           </span>
         </div>
         <div className="card w-100 p-1 mb-0">
@@ -293,7 +294,7 @@ class LinkEditModal extends React.PureComponent {
                 placeholder="Input page path or URL"
                 keywordOnInit={this.state.linkInputValue}
               />
-              <div className="input-group-append">
+              <div className="d-none d-sm-block input-group-append">
                 <button type="button" id="preview-btn" className="btn btn-info btn-page-preview">
                   <PagePreviewIcon />
                 </button>
@@ -332,73 +333,77 @@ class LinkEditModal extends React.PureComponent {
         <form className="form-group mb-0">
           <div className="form-group row">
             <label className="col-sm-3">Path format</label>
-            <div className="custom-control custom-checkbox custom-checkbox-info custom-control-inline">
-              <input
-                className="custom-control-input"
-                id="relativePath"
-                type="checkbox"
-                checked={this.state.isUseRelativePath}
-                onChange={this.toggleIsUseRelativePath}
-                disabled={!this.state.linkInputValue.startsWith('/') || this.state.linkerType === Linker.types.growiLink}
-              />
-              <label className="custom-control-label" htmlFor="relativePath">
-                Use relative path
-              </label>
-            </div>
-            <div className="custom-control custom-checkbox custom-checkbox-info custom-control-inline">
-              <input
-                className="custom-control-input"
-                id="permanentLink"
-                type="checkbox"
-                checked={this.state.isUsePermanentLink}
-                onChange={this.toggleIsUsePamanentLink}
-                disabled={this.state.permalink === '' || this.state.linkerType === Linker.types.growiLink}
-              />
-              <label className="custom-control-label" htmlFor="permanentLink">
-                Use permanent link
-              </label>
+            <div className="col-sm-9">
+              <div className="custom-control custom-checkbox custom-checkbox-info custom-control-inline">
+                <input
+                  className="custom-control-input"
+                  id="relativePath"
+                  type="checkbox"
+                  checked={this.state.isUseRelativePath}
+                  onChange={this.toggleIsUseRelativePath}
+                  disabled={!this.state.linkInputValue.startsWith('/') || this.state.linkerType === Linker.types.growiLink}
+                />
+                <label className="custom-control-label" htmlFor="relativePath">
+                  Use relative path
+                </label>
+              </div>
+              <div className="custom-control custom-checkbox custom-checkbox-info custom-control-inline">
+                <input
+                  className="custom-control-input"
+                  id="permanentLink"
+                  type="checkbox"
+                  checked={this.state.isUsePermanentLink}
+                  onChange={this.toggleIsUsePamanentLink}
+                  disabled={this.state.permalink === '' || this.state.linkerType === Linker.types.growiLink}
+                />
+                <label className="custom-control-label" htmlFor="permanentLink">
+                  Use permanent link
+                </label>
+              </div>
             </div>
           </div>
           <div className="form-group row mb-0">
             <label className="col-sm-3">Notation</label>
-            <div className="custom-control custom-radio custom-control-inline">
-              <input
-                type="radio"
-                className="custom-control-input"
-                id="markdownType"
-                value={Linker.types.markdownLink}
-                checked={this.state.linkerType === Linker.types.markdownLink}
-                onChange={e => this.handleSelecteLinkerType(e.target.value)}
-              />
-              <label className="custom-control-label" htmlFor="markdownType">
-                Markdown
-              </label>
-            </div>
-            <div className="custom-control custom-radio custom-control-inline">
-              <input
-                type="radio"
-                className="custom-control-input"
-                id="growiType"
-                value={Linker.types.growiLink}
-                checked={this.state.linkerType === Linker.types.growiLink}
-                onChange={e => this.handleSelecteLinkerType(e.target.value)}
-              />
-              <label className="custom-control-label" htmlFor="growiType">
-                Growi original
-              </label>
-            </div>
-            <div className="custom-control custom-radio custom-control-inline">
-              <input
-                type="radio"
-                className="custom-control-input"
-                id="pukiwikiType"
-                value={Linker.types.pukiwikiLink}
-                checked={this.state.linkerType === Linker.types.pukiwikiLink}
-                onChange={e => this.handleSelecteLinkerType(e.target.value)}
-              />
-              <label className="custom-control-label" htmlFor="pukiwikiType">
-                Pukiwiki
-              </label>
+            <div className="col-sm-9">
+              <div className="custom-control custom-radio custom-control-inline">
+                <input
+                  type="radio"
+                  className="custom-control-input"
+                  id="markdownType"
+                  value={Linker.types.markdownLink}
+                  checked={this.state.linkerType === Linker.types.markdownLink}
+                  onChange={e => this.handleSelecteLinkerType(e.target.value)}
+                />
+                <label className="custom-control-label" htmlFor="markdownType">
+                  Markdown
+                </label>
+              </div>
+              <div className="custom-control custom-radio custom-control-inline">
+                <input
+                  type="radio"
+                  className="custom-control-input"
+                  id="growiType"
+                  value={Linker.types.growiLink}
+                  checked={this.state.linkerType === Linker.types.growiLink}
+                  onChange={e => this.handleSelecteLinkerType(e.target.value)}
+                />
+                <label className="custom-control-label" htmlFor="growiType">
+                  Growi original
+                </label>
+              </div>
+              <div className="custom-control custom-radio custom-control-inline">
+                <input
+                  type="radio"
+                  className="custom-control-input"
+                  id="pukiwikiType"
+                  value={Linker.types.pukiwikiLink}
+                  checked={this.state.linkerType === Linker.types.pukiwikiLink}
+                  onChange={e => this.handleSelecteLinkerType(e.target.value)}
+                />
+                <label className="custom-control-label" htmlFor="pukiwikiType">
+                  Pukiwiki
+                </label>
+              </div>
             </div>
           </div>
         </form>
