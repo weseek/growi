@@ -241,13 +241,10 @@ module.exports = function(crowi, app) {
       const xss = new Xss(xssOption);
       const preventXssRevision = xss.process(page.revision.body);
       page.revision.body = preventXssRevision;
-      renderVars.page = page;
-      renderVars.revision = page.revision;
     }
-    else {
-      renderVars.page = page;
-      renderVars.revision = page.revision;
-    }
+
+    renderVars.page = page;
+    renderVars.revision = page.revision;
   }
 
   async function addRenderVarsForUserPage(renderVars, page, requestUser) {
