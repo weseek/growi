@@ -294,7 +294,7 @@ class LinkEditModal extends React.PureComponent {
                 placeholder="Input page path or URL"
                 keywordOnInit={this.state.linkInputValue}
               />
-              <div className="input-group-append">
+              <div className="d-none d-sm-block input-group-append">
                 <button type="button" id="preview-btn" className="btn btn-info btn-page-preview">
                   <PagePreviewIcon />
                 </button>
