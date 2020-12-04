@@ -181,7 +181,7 @@ module.exports = (crowi) => {
       body('s3Bucket').trim(),
       body('s3AccessKeyId').trim().if(value => value !== '').matches(/^[\da-zA-Z]+$/),
       body('s3SecretAccessKey').trim(),
-      body('useSignedUrl').if(value => value !== '').isBoolean(),
+      body('useSignedUrl').if(value => value != null).isBoolean(),
     ],
     pluginSetting: [
       body('isEnabledPlugins').isBoolean(),
