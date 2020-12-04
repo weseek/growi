@@ -37,7 +37,6 @@ class LinkEditModal extends React.PureComponent {
       markdown: '',
       previewError: '',
       permalink: '',
-      linkText: '',
       isPreviewOpen: false,
     };
 
@@ -174,7 +173,7 @@ class LinkEditModal extends React.PureComponent {
     this.setState({ markdown, previewError, permalink });
   }
 
-  renderLinkPreview() {
+  getLinkForPreview() {
     const linker = this.generateLink();
 
     if (this.isUsePermanentLink && this.permalink != null) {
@@ -185,12 +184,16 @@ class LinkEditModal extends React.PureComponent {
       linker.label = linker.link;
     }
 
-    const linkText = linker.generateMarkdownText();
+    return linker;
+  }
+
+  renderLinkPreview() {
+    const linker = this.getLinkForPreview();
     return (
       <div className="d-flex justify-content-between mb-3 flex-column flex-sm-row">
         <div className="card card-disabled w-100 p-1 mb-0">
           <p className="text-left text-muted mb-1 small">Markdown</p>
-          <p className="text-center text-truncate text-muted">{linkText}</p>
+          <p className="text-center text-truncate text-muted">{linker.generateMarkdownText()}</p>
         </div>
         <div className="d-flex align-items-center justify-content-center">
           <span className="lead mx-3">
@@ -237,8 +240,10 @@ class LinkEditModal extends React.PureComponent {
   }
 
   save() {
+    const linker = this.getLinkForPreview();
+
     if (this.props.onSave != null) {
-      this.props.onSave(this.state.linkText);
+      this.props.onSave(linker.generateMarkdownText());
     }
 
     this.hide();
