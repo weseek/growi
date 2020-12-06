@@ -623,7 +623,7 @@ module.exports = (crowi) => {
         responseParams.s3Bucket = crowi.configManager.getConfig('crowi', 'aws:s3Bucket');
         responseParams.s3AccessKeyId = crowi.configManager.getConfig('crowi', 'aws:s3AccessKeyId');
         responseParams.s3SecretAccessKey = crowi.configManager.getConfig('crowi', 'aws:s3SecretAccessKey');
-        responseParams.s3IsEnabledInternalStreamSystem = crowi.configManager.getConfig('crowi', 'aws:s3IsEnabledInternalStreamSystem');
+        responseParams.s3IsEnabledInternalStreamSystem = crowi.configManager.getConfig('crowi', 'aws:isEnabledInternalStreamSystem');
       }
 
       return res.apiv3({ responseParams });
