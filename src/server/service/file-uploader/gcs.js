@@ -59,8 +59,9 @@ module.exports = function(crowi) {
     if (!this.getIsUploadable()) {
       throw new Error('GCS is not configured.');
     }
-    if (attachment.isValidExternalUrl()) {
-      return res.redirect(attachment.externalUrlCached);
+    const temporaryUrl = attachment.getValidTemporaryUrl();
+    if (temporaryUrl != null) {
+      return res.redirect(temporaryUrl);
     }
 
     const gcs = getGcsInstance();

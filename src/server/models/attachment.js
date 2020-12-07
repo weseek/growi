@@ -71,11 +71,15 @@ module.exports = function(crowi) {
   };
 
 
-  attachmentSchema.methods.isValidExternalUrl = function() {
-    if (this.externalUrlExpiredAt == null) {
-      return false;
+  attachmentSchema.methods.getValidTemporaryUrl = function() {
+    if (this.temporaryUrlExpiredAt == null) {
+      return null;
     }
-    return this.externalUrlExpiredAt.getTime() > new Date().getTime();
+    // return null when expired url
+    if (this.temporaryUrlExpiredAt.getTime() < new Date().getTime()) {
+      return null;
+    }
+    return this.temporaryUrlCached;
   };
 
   attachmentSchema.methods.cashTemporaryUrlByProvideSec = function(temporaryUrl, provideSec) {
