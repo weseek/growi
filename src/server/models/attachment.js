@@ -31,8 +31,8 @@ module.exports = function(crowi) {
     fileFormat: { type: String, required: true },
     fileSize: { type: Number, default: 0 },
     createdAt: { type: Date, default: Date.now },
-    externalUrlCached: { type: String },
-    externalUrlExpiredAt: { type: Date },
+    temporaryUrlCached: { type: String },
+    temporaryUrlExpiredAt: { type: Date },
   });
   attachmentSchema.plugin(uniqueValidator);
   attachmentSchema.plugin(mongoosePaginate);
@@ -78,12 +78,12 @@ module.exports = function(crowi) {
     return this.externalUrlExpiredAt.getTime() > new Date().getTime();
   };
 
-  attachmentSchema.methods.cashExternalUrl = function(externalUrl) {
-    if (externalUrl == null) {
+  attachmentSchema.methods.cashTemporaryUrlByProvideSec = function(temporaryUrl, provideSec) {
+    if (temporaryUrl == null) {
       throw new Error('url is required.');
     }
-    this.externalUrlCached = externalUrl;
-    this.externalUrlExpiredAt = addSeconds(new Date(), SECONDS_OF_CASH_EXPIRATION);
+    this.temporaryUrlCached = temporaryUrl;
+    this.temporaryUrlExpiredAt = addSeconds(new Date(), provideSec);
 
     return this.save();
   };
