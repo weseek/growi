@@ -88,19 +88,21 @@ module.exports = function(crowi) {
     const s3 = S3Factory();
     const awsConfig = getAwsConfig();
     const filePath = getFilePathOnStorage(attachment);
+    const provideSecForTemporaryUrl = this.configManager.getConfig('crowi', 'aws:provideSecForTemporaryUrl');
 
-    // issue signed url for 120 seconds
+    // issue signed url (default: expires 120 seconds)
     // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#getSignedUrl-property
     const params = {
       Bucket: awsConfig.bucket,
       Key: filePath,
-      Expires: Attachment.SECONDS_OF_CASH_EXPIRATION,
+      Expires: provideSecForTemporaryUrl,
     };
     const signedUrl = s3.getSignedUrl('getObject', params);
 
+    res.redirect(signedUrl);
+
     try {
-      const { externalUrlCached } = await attachment.cashExternalUrl(signedUrl);
-      return res.redirect(externalUrlCached);
+      return attachment.cashTemporaryUrlByProvideSec(signedUrl, provideSecForTemporaryUrl);
     }
     catch (err) {
       logger.error(err);
