@@ -167,7 +167,7 @@ module.exports = (crowi) => {
 
     const page = parseInt(req.query.page) || 1;
     // status
-    const { selectedStatusList } = req.query;
+    const { selectedStatusList, forceIncludeAttributes } = req.query;
     const statusNoList = (selectedStatusList.includes('all')) ? Object.values(statusNo) : selectedStatusList.map(element => statusNo[element]);
 
     // Search from input
@@ -197,9 +197,21 @@ module.exports = (crowi) => {
           sort: sortOutput,
           page,
           limit: PAGE_ITEMS,
-          select: User.USER_PUBLIC_FIELDS,
         },
       );
+
+      paginateResult.docs = paginateResult.docs.map((doc) => {
+
+        // return email only when specified by query
+        const { email } = doc;
+        const user = doc.toObject('hoge');
+        if (forceIncludeAttributes.includes('email')) {
+          user.email = email;
+        }
+
+        return user;
+      });
+
       return res.apiv3({ paginateResult });
     }
     catch (err) {
