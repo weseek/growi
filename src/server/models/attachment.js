@@ -13,6 +13,8 @@ const { addSeconds } = require('date-fns');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 module.exports = function(crowi) {
+  const SECONDS_OF_CASH_EXPIRATION = 120;
+
   function generateFileHash(fileName) {
     const hash = require('crypto').createHash('md5');
     hash.update(`${fileName}_${Date.now()}`);
@@ -85,6 +87,8 @@ module.exports = function(crowi) {
 
     return this.save();
   };
+
+  attachmentSchema.statics.SECONDS_OF_CASH_EXPIRATION = SECONDS_OF_CASH_EXPIRATION;
 
   return mongoose.model('Attachment', attachmentSchema);
 };

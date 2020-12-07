@@ -88,12 +88,12 @@ module.exports = function(crowi) {
     const awsConfig = getAwsConfig();
     const filePath = getFilePathOnStorage(attachment);
 
-    // issue signed url for 30 seconds
+    // issue signed url for 120 seconds
     // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#getSignedUrl-property
     const params = {
       Bucket: awsConfig.bucket,
       Key: filePath,
-      Expires: 30,
+      Expires: attachment.SECONDS_OF_CASH_EXPIRATION,
     };
     const signedUrl = s3.getSignedUrl('getObject', params);
 

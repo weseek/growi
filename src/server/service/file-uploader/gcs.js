@@ -71,7 +71,7 @@ module.exports = function(crowi) {
     // https://cloud.google.com/storage/docs/access-control/signed-urls
     const signedUrl = await file.getSignedUrl({
       action: 'read',
-      expires: Date.now() + 30 * 1000,
+      expires: Date.now() + attachment.SECONDS_OF_CASH_EXPIRATION * 1000,
     });
 
     try {
