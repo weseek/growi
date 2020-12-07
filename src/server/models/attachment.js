@@ -8,6 +8,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 const mongoosePaginate = require('mongoose-paginate-v2');
+const { addSeconds } = require('date-fns');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
@@ -73,6 +74,16 @@ module.exports = function(crowi) {
       return false;
     }
     return this.externalUrlExpiredAt.getTime() > new Date().getTime();
+  };
+
+  attachmentSchema.methods.cashExternalUrl = function(externalUrl) {
+    if (externalUrl == null) {
+      throw new Error('url is required.');
+    }
+    this.externalUrlCached = externalUrl;
+    this.externalUrlExpiredAt = addSeconds(new Date(), 120);
+
+    return this.save();
   };
 
   return mongoose.model('Attachment', attachmentSchema);
