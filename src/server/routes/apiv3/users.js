@@ -103,6 +103,13 @@ module.exports = (crowi) => {
     // validate sort : what column you will sort
     query('sort').isIn(['id', 'status', 'username', 'name', 'email', 'createdAt', 'lastLoginAt']),
     query('page').isInt({ min: 1 }),
+    query('forceIncludeAttributes').toArray().custom((value, { req }) => {
+      // only the admin user can specify forceIncludeAttributes
+      if (value.length === 0) {
+        return true;
+      }
+      return req.user.admin;
+    }),
   ];
 
   validator.recentCreatedByUser = [
