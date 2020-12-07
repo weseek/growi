@@ -8,6 +8,7 @@ const router = express.Router();
 
 const { body, query } = require('express-validator');
 const { isEmail } = require('validator');
+const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -103,6 +104,13 @@ module.exports = (crowi) => {
     // validate sort : what column you will sort
     query('sort').isIn(['id', 'status', 'username', 'name', 'email', 'createdAt', 'lastLoginAt']),
     query('page').isInt({ min: 1 }),
+    query('forceIncludeAttributes').toArray().custom((value, { req }) => {
+      // only the admin user can specify forceIncludeAttributes
+      if (value.length === 0) {
+        return true;
+      }
+      return req.user.admin;
+    }),
   ];
 
   validator.recentCreatedByUser = [
@@ -160,7 +168,7 @@ module.exports = (crowi) => {
 
     const page = parseInt(req.query.page) || 1;
     // status
-    const { selectedStatusList } = req.query;
+    const { selectedStatusList, forceIncludeAttributes } = req.query;
     const statusNoList = (selectedStatusList.includes('all')) ? Object.values(statusNo) : selectedStatusList.map(element => statusNo[element]);
 
     // Search from input
@@ -190,9 +198,21 @@ module.exports = (crowi) => {
           sort: sortOutput,
           page,
           limit: PAGE_ITEMS,
-          select: User.USER_PUBLIC_FIELDS,
         },
       );
+
+      paginateResult.docs = paginateResult.docs.map((doc) => {
+
+        // return email only when specified by query
+        const { email } = doc;
+        const user = serializeUserSecurely(doc);
+        if (forceIncludeAttributes.includes('email')) {
+          user.email = email;
+        }
+
+        return user;
+      });
+
       return res.apiv3({ paginateResult });
     }
     catch (err) {
