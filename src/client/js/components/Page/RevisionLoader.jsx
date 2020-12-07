@@ -52,7 +52,6 @@ class RevisionLoader extends React.Component {
         error: null,
       });
 
-
       if (this.props.onRevisionLoaded != null) {
         this.props.onRevisionLoaded(res.data.revision);
       }
