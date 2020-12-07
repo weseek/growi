@@ -204,7 +204,7 @@ module.exports = (crowi) => {
 
         // return email only when specified by query
         const { email } = doc;
-        const user = doc.toObject('hoge');
+        const user = doc.toObject();
         if (forceIncludeAttributes.includes('email')) {
           user.email = email;
         }
