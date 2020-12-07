@@ -83,7 +83,7 @@ module.exports = function(crowi) {
       throw new Error('url is required.');
     }
     this.externalUrlCached = externalUrl;
-    this.externalUrlExpiredAt = addSeconds(new Date(), 120);
+    this.externalUrlExpiredAt = addSeconds(new Date(), this.SECONDS_OF_CASH_EXPIRATION);
 
     return this.save();
   };
