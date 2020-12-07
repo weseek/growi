@@ -6,6 +6,7 @@ const aws = require('aws-sdk');
 module.exports = function(crowi) {
   const Uploader = require('./uploader');
   const { configManager } = crowi;
+  const { Attachment } = crowi.models;
   const lib = new Uploader(crowi);
 
   function getAwsConfig() {
@@ -93,7 +94,7 @@ module.exports = function(crowi) {
     const params = {
       Bucket: awsConfig.bucket,
       Key: filePath,
-      Expires: attachment.SECONDS_OF_CASH_EXPIRATION,
+      Expires: Attachment.SECONDS_OF_CASH_EXPIRATION,
     };
     const signedUrl = s3.getSignedUrl('getObject', params);
 

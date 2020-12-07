@@ -9,6 +9,7 @@ let _instance;
 module.exports = function(crowi) {
   const Uploader = require('./uploader');
   const { configManager } = crowi;
+  const { Attachment } = crowi.models;
   const lib = new Uploader(crowi);
 
   function getGcsBucket() {
@@ -71,7 +72,7 @@ module.exports = function(crowi) {
     // https://cloud.google.com/storage/docs/access-control/signed-urls
     const signedUrl = await file.getSignedUrl({
       action: 'read',
-      expires: Date.now() + attachment.SECONDS_OF_CASH_EXPIRATION * 1000,
+      expires: Date.now() + Attachment.SECONDS_OF_CASH_EXPIRATION * 1000,
     });
 
     try {
