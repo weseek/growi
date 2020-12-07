@@ -338,9 +338,9 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.BOOLEAN,
     default: false,
   },
-  S3_PROVID_SEC_FOR_TEMPORARY_URL: {
+  S3_PROVIDE_SEC_FOR_TEMPORARY_URL: {
     ns:      'crowi',
-    key:     'aws:providSecForTemporaryUrl',
+    key:     'aws:provideSecForTemporaryUrl',
     type:    TYPES.NUMBER,
     default: 120,
   },
@@ -374,9 +374,9 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.BOOLEAN,
     default: false,
   },
-  GCS_PROVID_SEC_FOR_TEMPORARY_URL: {
+  GCS_PROVIDE_SEC_FOR_TEMPORARY_URL: {
     ns:      'crowi',
-    key:     'gcs:providSecForTemporaryUrl',
+    key:     'gcs:provideSecForTemporaryUrl',
     type:    TYPES.NUMBER,
     default: 120,
   },
