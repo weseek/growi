@@ -68,7 +68,7 @@ module.exports = function(crowi) {
     const filePath = getFilePathOnStorage(attachment);
     const file = myBucket.file(filePath);
 
-    // issue signed url for 30 seconds
+    // issue signed url for 120 seconds
     // https://cloud.google.com/storage/docs/access-control/signed-urls
     const signedUrl = await file.getSignedUrl({
       action: 'read',
