@@ -3,6 +3,7 @@ import path from 'path';
 import fs from 'graceful-fs';
 import streamToPromise from 'stream-to-promise';
 import { downloadTo } from '~/utils/download';
+import { Transform } from 'stream';
 
 jest.mock('axios');
 // jest.mock('mkdirp');
@@ -14,18 +15,27 @@ describe('.downloadTo', () => {
   describe('test download', () => {
     const outDirName = 'outDir';
     const outFileName = 'fileName';
-    beforeAll(() => {
+    beforeEach(() => {
       const testFileName = 'testfile';
       fs.writeFileSync(testFileName, 'test text');
       axios.get.mockResolvedValue({ data: fs.createReadStream(testFileName) });
     });
-    afterAll(() => {
+    afterEach(() => {
       fs.rmdirSync(outDirName, { recursive: true });
       fs.unlinkSync('testfile');
     });
-    test('should be download testfile', async() => {
-      jest.resetAllMocks();
+    test('should be download testfile when no exists transform in args', async() => {
       await downloadTo('url', outDirName, outFileName);
+      expect(fs.readFileSync('outDir/fileName', 'utf-8')).toBe('test text');
+    });
+    test('should be download testfile when exists transform in args', async() => {
+      const noop = new Transform({
+        transform(chunk, _encoding, done) {
+          this.push(chunk);
+          done();
+        },
+      })
+      await downloadTo('url', outDirName, outFileName, noop);
       expect(fs.readFileSync('outDir/fileName', 'utf-8')).toBe('test text');
     });
   });
