@@ -97,7 +97,15 @@ module.exports = function(crowi) {
     };
     const signedUrl = s3.getSignedUrl('getObject', params);
 
-    return res.redirect(signedUrl);
+    try {
+      const { externalUrlCached } = await attachment.cashExternalUrl(signedUrl);
+      return res.redirect(externalUrlCached);
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Fail to cash external url');
+    }
+
   };
 
   lib.deleteFile = async function(attachment) {
