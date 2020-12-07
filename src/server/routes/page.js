@@ -154,8 +154,6 @@ module.exports = function(crowi, app) {
     tagWhiteList: crowi.xssService.getTagWhiteList(),
     attrWhiteList: crowi.xssService.getAttrWhiteList(),
   };
-  console.log(initializedConfig.tagWhiteList);
-  console.log('----------------------------------------------');
   const xssOption = new XssOption(initializedConfig);
   const xss = new Xss(xssOption);
 
