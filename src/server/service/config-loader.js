@@ -332,6 +332,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
+  S3_IS_ENABLED_INTERNAL_STREAM_SYSTEM: {
+    ns:      'crowi',
+    key:     'aws:isEnabledInternalStreamSystem',
+    type:    TYPES.BOOLEAN,
+    default: false,
+  },
   GCS_API_KEY_JSON_PATH: {
     ns:      'crowi',
     key:     'gcs:apiKeyJsonPath',
@@ -349,6 +355,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     key:     'gcs:uploadNamespace',
     type:    TYPES.STRING,
     default: null,
+  },
+  GCS_IS_ENABLED_INTERNAL_STREAM_SYSTEM: {
+    ns:      'crowi',
+    key:     'gcs:isEnabledInternalStreamSystem',
+    type:    TYPES.BOOLEAN,
+    default: false,
   },
   GCS_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: {
     ns:      'crowi',

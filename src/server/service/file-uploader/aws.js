@@ -73,8 +73,7 @@ module.exports = function(crowi) {
   };
 
   lib.canRespond = function() {
-    // TODO retrieve bool by getConfig
-    return true;
+    return !this.configManager.getConfig('crowi', 'aws:isEnabledInternalStreamSystem');
   };
 
   lib.respond = async function(res, attachment) {

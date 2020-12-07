@@ -93,21 +93,24 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *          fileUploadType:
  *            type: string
  *            description: fileUploadType
- *          region:
+ *          s3Region:
  *            type: string
  *            description: region of AWS S3
- *          customEndpoint:
+ *          s3CustomEndpoint:
  *            type: string
  *            description: custom endpoint of AWS S3
- *          bucket:
+ *          s3Bucket:
  *            type: string
  *            description: AWS S3 bucket name
- *          accessKeyId:
+ *          s3AccessKeyId:
  *            type: string
  *            description: accesskey id for authentification of AWS
- *          secretAccessKey:
+ *          s3SecretAccessKey:
  *            type: string
  *            description: secret key for authentification of AWS
+ *          s3IsEnabledInternalStreamSystem:
+ *            type: boolean
+ *            description: is enable internal stream system for s3 file request
  *          gcsApiKeyJsonPath:
  *            type: string
  *            description: apiKeyJsonPath of gcp
@@ -117,6 +120,9 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *          gcsUploadNamespace:
  *            type: string
  *            description: name space of gcs
+ *          gcsIsEnabledInternalStreamSystem:
+ *            type: boolean
+ *            description: is enable internal stream system for gcs file request
  *          envGcsApiKeyJsonPath:
  *            type: string
  *            description: Path of the JSON file that contains service account key to authenticate to GCP API
@@ -171,6 +177,7 @@ module.exports = (crowi) => {
       body('gcsApiKeyJsonPath').trim(),
       body('gcsBucket').trim(),
       body('gcsUploadNamespace').trim(),
+      body('gcsIsEnabledInternalStreamSystem').if(value => value != null).isBoolean(),
       body('s3Region').trim().if(value => value !== '').matches(/^[a-z]+-[a-z]+-\d+$/)
         .withMessage((value, { req }) => req.t('validation.aws_region')),
       body('s3CustomEndpoint').trim().if(value => value !== '').matches(/^(https?:\/\/[^/]+|)$/)
@@ -178,6 +185,7 @@ module.exports = (crowi) => {
       body('s3Bucket').trim(),
       body('s3AccessKeyId').trim().if(value => value !== '').matches(/^[\da-zA-Z]+$/),
       body('s3SecretAccessKey').trim(),
+      body('s3IsEnabledInternalStreamSystem').if(value => value != null).isBoolean(),
     ],
     pluginSetting: [
       body('isEnabledPlugins').isBoolean(),
@@ -581,6 +589,7 @@ module.exports = (crowi) => {
       requestParams['gcs:apiKeyJsonPath'] = req.body.gcsApiKeyJsonPath;
       requestParams['gcs:bucket'] = req.body.gcsBucket;
       requestParams['gcs:uploadNamespace'] = req.body.gcsUploadNamespace;
+      requestParams['gcs:isEnabledInternalStreamSystem'] = req.body.gcsIsEnabledInternalStreamSystem;
     }
 
     if (fileUploadType === 'aws') {
@@ -589,6 +598,7 @@ module.exports = (crowi) => {
       requestParams['aws:s3Bucket'] = req.body.s3Bucket;
       requestParams['aws:s3AccessKeyId'] = req.body.s3AccessKeyId;
       requestParams['aws:s3SecretAccessKey'] = req.body.s3SecretAccessKey;
+      requestParams['aws:isEnabledInternalStreamSystem'] = req.body.s3IsEnabledInternalStreamSystem;
     }
 
     try {
@@ -604,6 +614,7 @@ module.exports = (crowi) => {
         responseParams.gcsApiKeyJsonPath = crowi.configManager.getConfig('crowi', 'gcs:apiKeyJsonPath');
         responseParams.gcsBucket = crowi.configManager.getConfig('crowi', 'gcs:bucket');
         responseParams.gcsUploadNamespace = crowi.configManager.getConfig('crowi', 'gcs:uploadNamespace');
+        responseParams.gcsIsEnabledInternalStreamSystem = crowi.configManager.getConfig('crowi', 'gcs:isEnabledInternalStreamSystem');
       }
 
       if (fileUploadType === 'aws') {
@@ -612,6 +623,7 @@ module.exports = (crowi) => {
         responseParams.s3Bucket = crowi.configManager.getConfig('crowi', 'aws:s3Bucket');
         responseParams.s3AccessKeyId = crowi.configManager.getConfig('crowi', 'aws:s3AccessKeyId');
         responseParams.s3SecretAccessKey = crowi.configManager.getConfig('crowi', 'aws:s3SecretAccessKey');
+        responseParams.s3IsEnabledInternalStreamSystem = crowi.configManager.getConfig('crowi', 'aws:isEnabledInternalStreamSystem');
       }
 
       return res.apiv3({ responseParams });
