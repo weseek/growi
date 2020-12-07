@@ -8,6 +8,7 @@ const router = express.Router();
 
 const { body, query } = require('express-validator');
 const { isEmail } = require('validator');
+const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -204,7 +205,7 @@ module.exports = (crowi) => {
 
         // return email only when specified by query
         const { email } = doc;
-        const user = doc.toObject();
+        const user = serializeUserSecurely(doc);
         if (forceIncludeAttributes.includes('email')) {
           user.email = email;
         }
