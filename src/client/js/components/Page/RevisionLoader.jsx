@@ -52,12 +52,13 @@ class RevisionLoader extends React.Component {
         error: null,
       });
 
+
       if (this.props.onRevisionLoaded != null) {
         this.props.onRevisionLoaded(res.data.revision);
       }
     }
     catch (error) {
-      this.setState({ error });
+      this.setState({ markdown: error[0].message });
     }
     finally {
       this.setState({ isLoaded: true, isLoading: false });
