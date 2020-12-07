@@ -28,6 +28,8 @@ module.exports = function(crowi) {
     fileFormat: { type: String, required: true },
     fileSize: { type: Number, default: 0 },
     createdAt: { type: Date, default: Date.now },
+    externalUrlCached: { type: String },
+    externalUrlExpiredAt: { type: Date },
   });
   attachmentSchema.plugin(uniqueValidator);
   attachmentSchema.plugin(mongoosePaginate);
