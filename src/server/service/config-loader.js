@@ -338,6 +338,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.BOOLEAN,
     default: false,
   },
+  S3_PROVID_SEC_FOR_TEMPORARY_URL: {
+    ns:      'crowi',
+    key:     'aws:providSecForTemporaryUrl',
+    type:    TYPES.NUMBER,
+    default: 120,
+  },
   GCS_API_KEY_JSON_PATH: {
     ns:      'crowi',
     key:     'gcs:apiKeyJsonPath',
@@ -367,6 +373,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     key:     'gcs:useOnlyEnvVarsForSomeOptions',
     type:    TYPES.BOOLEAN,
     default: false,
+  },
+  GCS_PROVID_SEC_FOR_TEMPORARY_URL: {
+    ns:      'crowi',
+    key:     'gcs:providSecForTemporaryUrl',
+    type:    TYPES.NUMBER,
+    default: 120,
   },
 };
 
