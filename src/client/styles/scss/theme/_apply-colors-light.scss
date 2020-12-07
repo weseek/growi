@@ -38,12 +38,6 @@ $border-color: $border-color-global;
   background-color: $bgcolor-global;
 }
 
-.grw-slack-notification {
-  .form-control {
-    background: white;
-  }
-}
-
 .form-control::placeholder {
   color: darken($bgcolor-global, 20%);
 }
@@ -221,6 +215,10 @@ $border-color: $border-color-global;
 .grw-slack-notification {
   background-color: white;
   $color-slack: #4b144c;
+
+  .form-control {
+    background: white;
+  }
 
   .custom-control-label {
     &::before {
