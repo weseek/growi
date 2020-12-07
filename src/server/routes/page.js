@@ -154,8 +154,10 @@ module.exports = function(crowi, app) {
     tagWhiteList: crowi.xssService.getTagWhiteList(),
     attrWhiteList: crowi.xssService.getAttrWhiteList(),
   };
-  this.xssOption = new XssOption(initializedConfig);
-  this.xss = new Xss(this.xssOption);
+  console.log(initializedConfig.tagWhiteList);
+  console.log('----------------------------------------------');
+  const xssOption = new XssOption(initializedConfig);
+  const xss = new Xss(xssOption);
 
 
   const actions = {};
@@ -243,7 +245,7 @@ module.exports = function(crowi, app) {
   function addRenderVarsForPresentation(renderVars, page) {
     // sanitize page.revision.body
     if (crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention')) {
-      const preventXssRevision = this.xss.process(page.revision.body);
+      const preventXssRevision = xss.process(page.revision.body);
       page.revision.body = preventXssRevision;
     }
     renderVars.page = page;
