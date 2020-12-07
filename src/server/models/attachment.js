@@ -68,11 +68,11 @@ module.exports = function(crowi) {
   };
 
 
-  attachmentSchema.methods.isExpiredExternalUrl = function() {
+  attachmentSchema.methods.isValidExternalUrl = function() {
     if (this.externalUrlExpiredAt == null) {
       return false;
     }
-    return this.externalUrlExpiredAt.getTime() < new Date().getTime();
+    return this.externalUrlExpiredAt.getTime() > new Date().getTime();
   };
 
   return mongoose.model('Attachment', attachmentSchema);

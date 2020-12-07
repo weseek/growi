@@ -80,6 +80,9 @@ module.exports = function(crowi) {
     if (!this.getIsUploadable()) {
       throw new Error('AWS is not configured.');
     }
+    if (attachment.isValidExternalUrl()) {
+      return res.redirect(attachment.externalUrlCached);
+    }
 
     const s3 = S3Factory();
     const awsConfig = getAwsConfig();
