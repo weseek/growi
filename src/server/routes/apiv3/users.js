@@ -89,7 +89,13 @@ module.exports = (crowi) => {
 
   validator.statusList = [
     // validate status list status array match to statusNo
-    query('selectedStatusList').custom((value) => {
+    query('selectedStatusList').custom((value, { req }) => {
+      const { user } = req;
+      const isAdmin = user.admin;
+
+      console.log(`user = ${user}`);
+      console.log(`isAdmin = ${isAdmin}`);
+
       const error = [];
       value.forEach((status) => {
         if (!Object.keys(statusNo)) {
