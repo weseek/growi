@@ -113,25 +113,12 @@ module.exports = (crowi) => {
       const isAdmin = user.admin;
       console.log(`isAdmin = ${isAdmin}`);
 
-      // console.log(`{Object.keys(statusNo) = ${Object.keys(statusNo)}`);
-      // console.log(`{Object.keys(statusNo)[1] = ${Object.keys(statusNo)[1]}`);
-      console.log(`{Object.values(statusNo) = ${Object.values(statusNo)}`);
-      console.log(`{Object.values(statusNo)[1] = ${Object.values(statusNo)[1]}`);
-      // console.log(`statusNo = ${statusNo}`);
-      // console.log(`statusNo.active = ${statusNo.active}`);
-
-      // return isAdmin ? Object.keys(statusNo) : Object.keys(statusNo)[1];
-      // return isAdmin ? Object.values(statusNo) : Object.values(statusNo.active);
-      // return isAdmin ? statusNo : statusNo.active;
-      console.log(`vallue = ${value}`);
-
       if (isAdmin) {
         return value;
       }
 
-      return statusNo.active;
-
-      // return !isAdmin;
+      const getActiveStatusForNotAdmin = 'active';
+      return getActiveStatusForNotAdmin;
 
     }),
 
