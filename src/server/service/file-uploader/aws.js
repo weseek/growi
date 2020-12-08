@@ -80,21 +80,34 @@ module.exports = function(crowi) {
     if (!this.getIsUploadable()) {
       throw new Error('AWS is not configured.');
     }
+    const temporaryUrl = attachment.getValidTemporaryUrl();
+    if (temporaryUrl != null) {
+      return res.redirect(temporaryUrl);
+    }
 
     const s3 = S3Factory();
     const awsConfig = getAwsConfig();
     const filePath = getFilePathOnStorage(attachment);
+    const provideSecForTemporaryUrl = this.configManager.getConfig('crowi', 'aws:provideSecForTemporaryUrl');
 
-    // issue signed url for 30 seconds
+    // issue signed url (default: expires 120 seconds)
     // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#getSignedUrl-property
     const params = {
       Bucket: awsConfig.bucket,
       Key: filePath,
-      Expires: 30,
+      Expires: provideSecForTemporaryUrl,
     };
     const signedUrl = s3.getSignedUrl('getObject', params);
 
-    return res.redirect(signedUrl);
+    res.redirect(signedUrl);
+
+    try {
+      return attachment.cashTemporaryUrlByProvideSec(signedUrl, provideSecForTemporaryUrl);
+    }
+    catch (err) {
+      logger.error(err);
+    }
+
   };
 
   lib.deleteFile = async function(attachment) {

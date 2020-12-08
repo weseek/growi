@@ -58,20 +58,33 @@ module.exports = function(crowi) {
     if (!this.getIsUploadable()) {
       throw new Error('GCS is not configured.');
     }
+    const temporaryUrl = attachment.getValidTemporaryUrl();
+    if (temporaryUrl != null) {
+      return res.redirect(temporaryUrl);
+    }
 
     const gcs = getGcsInstance();
     const myBucket = gcs.bucket(getGcsBucket());
     const filePath = getFilePathOnStorage(attachment);
     const file = myBucket.file(filePath);
+    const provideSecForTemporaryUrl = this.configManager.getConfig('crowi', 'gcs:provideSecForTemporaryUrl');
 
-    // issue signed url for 30 seconds
+    // issue signed url (default: expires 120 seconds)
     // https://cloud.google.com/storage/docs/access-control/signed-urls
     const signedUrl = await file.getSignedUrl({
       action: 'read',
-      expires: Date.now() + 30 * 1000,
+      expires: Date.now() + provideSecForTemporaryUrl * 1000,
     });
 
-    return res.redirect(signedUrl);
+    res.redirect(signedUrl);
+
+    try {
+      return attachment.cashTemporaryUrlByProvideSec(signedUrl, provideSecForTemporaryUrl);
+    }
+    catch (err) {
+      logger.error(err);
+    }
+
   };
 
   lib.deleteFile = async function(attachment) {
