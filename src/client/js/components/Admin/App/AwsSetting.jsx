@@ -23,7 +23,7 @@ function AwsSetting(props) {
               type="checkbox"
               id="cbS3IsEnabledInternalStreamSystem"
               className="custom-control-input"
-              name="changeS3IsEnabledInternalStreamSystem"
+              name="cbS3IsEnabledInternalStreamSystem"
               checked={adminAppContainer.state.s3IsEnabledInternalStreamSystem}
               onChange={(e) => {
                 adminAppContainer.changeS3IsEnabledInternalStreamSystem(e.target.checked);
