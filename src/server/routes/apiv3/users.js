@@ -111,12 +111,28 @@ module.exports = (crowi) => {
     query('selectedStatusList').customSanitizer((value, { req }) => {
       const { user } = req;
       const isAdmin = user.admin;
-      console.log(`statusNo = ${statusNo}`);
-      console.log(`statusNo.active = ${statusNo.active}`);
-      console.log(`{Object.keys(statusNo) = ${Object.keys(statusNo)}`);
-      console.log(`{Object.keys(statusNo.active) = ${Object.keys(statusNo.active)}`);
+      console.log(`isAdmin = ${isAdmin}`);
 
-      return isAdmin ? Object.keys(statusNo) : Object.keys(statusNo.active);
+      // console.log(`{Object.keys(statusNo) = ${Object.keys(statusNo)}`);
+      // console.log(`{Object.keys(statusNo)[1] = ${Object.keys(statusNo)[1]}`);
+      console.log(`{Object.values(statusNo) = ${Object.values(statusNo)}`);
+      console.log(`{Object.values(statusNo)[1] = ${Object.values(statusNo)[1]}`);
+      // console.log(`statusNo = ${statusNo}`);
+      // console.log(`statusNo.active = ${statusNo.active}`);
+
+      // return isAdmin ? Object.keys(statusNo) : Object.keys(statusNo)[1];
+      // return isAdmin ? Object.values(statusNo) : Object.values(statusNo.active);
+      // return isAdmin ? statusNo : statusNo.active;
+      console.log(`vallue = ${value}`);
+
+      if (isAdmin) {
+        return value;
+      }
+
+      return statusNo.active;
+
+      // return !isAdmin;
+
     }),
 
     // validate sortOrder : asc or desc
@@ -189,7 +205,10 @@ module.exports = (crowi) => {
     const page = parseInt(req.query.page) || 1;
     // status
     const { selectedStatusList, forceIncludeAttributes } = req.query;
+    console.log(`selectedStatusList = ${selectedStatusList}`);
     const statusNoList = (selectedStatusList.includes('all')) ? Object.values(statusNo) : selectedStatusList.map(element => statusNo[element]);
+    // const statusNoList = (selectedStatusList.includes('all')) ? Object.values(statusNo) : selectedStatusList;
+    console.log(`statusNoList = ${statusNoList}`);
 
     // Search from input
     const searchText = req.query.searchText || '';
