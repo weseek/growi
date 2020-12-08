@@ -240,10 +240,14 @@ module.exports = (crowi) => {
       s3Bucket: crowi.configManager.getConfig('crowi', 'aws:s3Bucket'),
       s3AccessKeyId: crowi.configManager.getConfig('crowi', 'aws:s3AccessKeyId'),
       s3SecretAccessKey: crowi.configManager.getConfig('crowi', 'aws:s3SecretAccessKey'),
+      s3IsEnabledInternalStreamSystem: crowi.configManager.getConfig('crowi', 'aws:isEnabledInternalStreamSystem'),
+
       gcsUseOnlyEnvVars: crowi.configManager.getConfig('crowi', 'gcs:useOnlyEnvVarsForSomeOptions'),
       gcsApiKeyJsonPath: crowi.configManager.getConfig('crowi', 'gcs:apiKeyJsonPath'),
       gcsBucket: crowi.configManager.getConfig('crowi', 'gcs:bucket'),
       gcsUploadNamespace: crowi.configManager.getConfig('crowi', 'gcs:uploadNamespace'),
+      gcsIsEnabledInternalStreamSystem: crowi.configManager.getConfig('crowi', 'gcs:isEnabledInternalStreamSystem'),
+
       envGcsApiKeyJsonPath: crowi.configManager.getConfigFromEnvVars('crowi', 'gcs:apiKeyJsonPath'),
       envGcsBucket: crowi.configManager.getConfigFromEnvVars('crowi', 'gcs:bucket'),
       envGcsUploadNamespace: crowi.configManager.getConfigFromEnvVars('crowi', 'gcs:uploadNamespace'),
