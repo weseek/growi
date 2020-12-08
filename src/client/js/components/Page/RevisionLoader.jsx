@@ -57,9 +57,7 @@ class RevisionLoader extends React.Component {
       }
     }
     catch (errors) {
-      errors.map((error) => {
-        return this.setState({ markdown: error.message });
-      });
+      errors.forEach((error) => { this.setState({ markdown: error.message }) });
     }
     finally {
       this.setState({ isLoaded: true, isLoading: false });
