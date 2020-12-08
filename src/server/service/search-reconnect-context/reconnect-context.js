@@ -15,7 +15,7 @@ class ReconnectContext {
 
   reset() {
     this.counter = 0;
-    this.stage = 1;
+    this.stage = 0;
   }
 
   incrementCount() {
@@ -28,7 +28,8 @@ class ReconnectContext {
   }
 
   get shouldReconnectByCount() {
-    const thresholdOfThisStage = 10 * Math.log2(this.stage); // 0, 10, 15.9, 20, 23.2, 25.9, 28.1, 30, ...
+    // https://www.google.com/search?q=10log10(x)-1+graph
+    const thresholdOfThisStage = 10 * Math.log10(this.stage) - 1;
     return this.counter > thresholdOfThisStage;
   }
 
@@ -56,14 +57,18 @@ class ReconnectContext {
 
 }
 
-async function nextTick(context, reconnectHandler) {
+function nextTick(context, reconnectHandler) {
   context.incrementCount();
 
   if (context.shouldReconnect) {
-    await reconnectHandler();
-  }
-  else {
-    context.incrementStage();
+    const isSuccessToReconnect = reconnectHandler();
+
+    if (isSuccessToReconnect) {
+      context.reset();
+    }
+    else {
+      context.incrementStage();
+    }
   }
 }
 
