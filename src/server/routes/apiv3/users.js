@@ -90,21 +90,35 @@ module.exports = (crowi) => {
 
   validator.statusList = [
     // validate status list status array match to statusNo
-    query('selectedStatusList').custom((value, { req }) => {
+
+    // query('selectedStatusList').custom((value, { req }) => {
+    //   const { user } = req;
+    //   const isAdmin = user.admin;
+
+    //   console.log(`user = ${user}`);
+    //   console.log(`isAdmin = ${isAdmin}`);
+
+    //   const error = [];
+    //   value.forEach((status) => {
+    //     if (!Object.keys(statusNo)) {
+    //       error.push(status);
+    //     }
+    //   });
+    //   return (error.length === 0);
+    // }),
+
+    // これ
+    query('selectedStatusList').customSanitizer((value, { req }) => {
       const { user } = req;
       const isAdmin = user.admin;
+      console.log(`statusNo = ${statusNo}`);
+      console.log(`statusNo.active = ${statusNo.active}`);
+      console.log(`{Object.keys(statusNo) = ${Object.keys(statusNo)}`);
+      console.log(`{Object.keys(statusNo.active) = ${Object.keys(statusNo.active)}`);
 
-      console.log(`user = ${user}`);
-      console.log(`isAdmin = ${isAdmin}`);
-
-      const error = [];
-      value.forEach((status) => {
-        if (!Object.keys(statusNo)) {
-          error.push(status);
-        }
-      });
-      return (error.length === 0);
+      return isAdmin ? Object.keys(statusNo) : Object.keys(statusNo.active);
     }),
+
     // validate sortOrder : asc or desc
     query('sortOrder').isIn(['asc', 'desc']),
     // validate sort : what column you will sort
