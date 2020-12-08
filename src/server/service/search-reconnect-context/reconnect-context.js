@@ -63,9 +63,11 @@ function nextTick(context, reconnectHandler) {
   if (context.shouldReconnect) {
     const isSuccessToReconnect = reconnectHandler();
 
+    // success to reconnect
     if (isSuccessToReconnect) {
       context.reset();
     }
+    // fail to reconnect
     else {
       context.incrementStage();
     }
