@@ -2,6 +2,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import process from 'process';
 
 const isServer = typeof window === 'undefined';
 const isCurrentDirRoot = isServer && fs.existsSync('./next.config.js');
