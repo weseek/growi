@@ -107,7 +107,7 @@ export default class AdminAppContainer extends Container {
       gcsApiKeyJsonPath: appSettingsParams.gcsApiKeyJsonPath,
       gcsBucket: appSettingsParams.gcsBucket,
       gcsUploadNamespace: appSettingsParams.gcsUploadNamespace,
-      gcsIsEnabledInternalStreamSystem: appSettingsParams.gcsUploadNamespace,
+      gcsIsEnabledInternalStreamSystem: appSettingsParams.gcsIsEnabledInternalStreamSystem,
       envGcsApiKeyJsonPath: appSettingsParams.envGcsApiKeyJsonPath,
       envGcsBucket: appSettingsParams.envGcsBucket,
       envGcsUploadNamespace: appSettingsParams.envGcsUploadNamespace,
