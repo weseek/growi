@@ -106,7 +106,6 @@ module.exports = function(crowi) {
     }
     catch (err) {
       logger.error(err);
-      throw new Error('Fail to cash external url');
     }
 
   };
