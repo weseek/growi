@@ -47,12 +47,6 @@ textarea.form-control {
   // border: 1px solid darken($border, 30%);
 }
 
-.grw-slack-notification {
-  .form-control {
-    background: $bgcolor-global;
-  }
-}
-
 .form-control[disabled],
 .form-control[readonly] {
   color: lighten($color-global, 10%);
@@ -271,6 +265,43 @@ ul.pagination {
   .popover-body {
     color: inherit;
   }
+
+  &.bs-popover-top .arrow {
+    &::before {
+      border-top-color: $secondary;
+    }
+
+    &::after {
+      border-top-color: $bgcolor-global;
+    }
+  }
+  &.bs-popover-bottom .arrow {
+    &::before {
+      border-bottom-color: $secondary;
+    }
+
+    &::after {
+      border-bottom-color: $bgcolor-global;
+    }
+  }
+  &.bs-popover-right .arrow {
+    &::before {
+      border-right-color: $secondary;
+    }
+
+    &::after {
+      border-right-color: $bgcolor-global;
+    }
+  }
+  &.bs-popover-left .arrow {
+    &::before {
+      border-left-color: $secondary;
+    }
+
+    &::after {
+      border-left-color: $bgcolor-global;
+    }
+  }
 }
 
 /*
@@ -279,6 +310,10 @@ ul.pagination {
 .grw-slack-notification {
   background-color: transparent;
   $color-slack: #4b144c;
+
+  .form-control {
+    background: $bgcolor-global;
+  }
 
   .custom-control-label {
     &::before {
