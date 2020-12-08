@@ -9,37 +9,52 @@ import AdminAppContainer from '../../../services/AdminAppContainer';
 
 function AwsSetting(props) {
   const { t, adminAppContainer } = props;
+  const { s3IsEnabledInternalStreamSystem } = adminAppContainer.state;
 
   return (
     <React.Fragment>
 
       <div className="row form-group my-3">
         <label className="text-left text-md-right col-md-3 col-form-label">
-          {t('admin:app_setting.file_read_method')}
+          {t('admin:app_setting.file_delivery_method')}
         </label>
-        <div className="col-md-6 py-1">
-          <div className="custom-control custom-checkbox custom-checkbox-info">
-            <input
-              type="checkbox"
-              id="cbS3IsEnabledInternalStreamSystem"
-              className="custom-control-input"
-              name="cbS3IsEnabledInternalStreamSystem"
-              checked={adminAppContainer.state.s3IsEnabledInternalStreamSystem}
-              onChange={(e) => {
-                adminAppContainer.changeS3IsEnabledInternalStreamSystem(e.target.checked);
-              }}
-            />
-            <label
-              className="custom-control-label"
-              htmlFor="cbS3IsEnabledInternalStreamSystem"
-            >
-              {t('admin:app_setting.use_s3_internal_stream_system')}
-            </label>
-          </div>
 
-          <p className="form-text text-muted">
-            {t('admin:app_setting.use_internal_stream_system_info')}
-          </p>
+        <div className="col-md-6">
+          <div className="dropdown">
+            <button
+              className="btn btn-outline-secondary dropdown-toggle"
+              type="button"
+              id="ddS3IsEnabledInternalStreamSystem"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="true"
+            >
+              {s3IsEnabledInternalStreamSystem && t('admin:app_setting.file_delivery_method_relay')}
+              {!s3IsEnabledInternalStreamSystem && t('admin:app_setting.file_delivery_method_redirect')}
+            </button>
+            <div className="dropdown-menu" aria-labelledby="ddS3IsEnabledInternalStreamSystem">
+              <button
+                className="dropdown-item"
+                type="button"
+                onClick={() => { adminAppContainer.changeS3IsEnabledInternalStreamSystem(true) }}
+              >
+                {t('admin:app_setting.file_delivery_method_relay')}
+              </button>
+              <button
+                className="dropdown-item"
+                type="button"
+                onClick={() => { adminAppContainer.changeS3IsEnabledInternalStreamSystem(false) }}
+              >
+                { t('admin:app_setting.file_delivery_method_redirect')}
+              </button>
+            </div>
+
+            <p className="form-text text-muted small">
+              {t('admin:app_setting.file_delivery_method_redirect_info')}
+              <br />
+              {t('admin:app_setting.file_delivery_method_relay_info')}
+            </p>
+          </div>
         </div>
       </div>
 
