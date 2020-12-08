@@ -14,10 +14,8 @@ function AwsSetting(props) {
     <React.Fragment>
 
       <div className="row form-group my-3">
-        <label
-          className="text-left text-md-right col-md-3 col-form-label"
-        >
-          内部のファイル
+        <label className="text-left text-md-right col-md-3 col-form-label">
+          {t('admin:app_setting.file_read_method')}
         </label>
         <div className="col-md-6 py-1">
           <div className="custom-control custom-checkbox custom-checkbox-info">
@@ -35,14 +33,12 @@ function AwsSetting(props) {
               className="custom-control-label"
               htmlFor="cbS3IsEnabledInternalStreamSystem"
             >
-              {/* {t('admin:app_setting.enable_files_except_image')} */}
-              hoge
+              {t('admin:app_setting.use_s3_internal_stream_system')}
             </label>
           </div>
 
           <p className="form-text text-muted">
-            explane
-            {/* {t('admin:app_setting.attach_enable')} */}
+            {t('admin:app_setting.use_internal_stream_system_info')}
           </p>
         </div>
       </div>

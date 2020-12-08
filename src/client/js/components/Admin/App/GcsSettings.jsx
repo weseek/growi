@@ -20,7 +20,7 @@ function GcsSetting(props) {
         <label
           className="text-left text-md-right col-md-3 col-form-label"
         >
-          内部のファイル
+          {t('admin:app_setting.file_read_method')}
         </label>
         <div className="col-md-6 py-1">
           <div className="custom-control custom-checkbox custom-checkbox-info">
@@ -38,14 +38,12 @@ function GcsSetting(props) {
               className="custom-control-label"
               htmlFor="cbGcsIsEnabledInternalStreamSystem"
             >
-              {/* {t('admin:app_setting.enable_files_except_image')} */}
-              hoge
+              {t('admin:app_setting.use_gcs_internal_stream_system')}
             </label>
           </div>
 
           <p className="form-text text-muted">
-            explane
-            {/* {t('admin:app_setting.attach_enable')} */}
+            {t('admin:app_setting.use_internal_stream_system_info')}
           </p>
         </div>
       </div>
