@@ -77,6 +77,11 @@ class SearchService {
     return this.delegator.initClient();
   }
 
+  async reconnectClient() {
+    logger.info('Try to reconnect...');
+    return this.initClient();
+  }
+
   async getInfo() {
     try {
       return await this.delegator.getInfo();
