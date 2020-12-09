@@ -68,17 +68,24 @@ class SearchService {
     tagEvent.on('update', this.delegator.syncTagChanged.bind(this.delegator));
   }
 
-  async initClient() {
-    // reset error flag
+  resetErrorStatus() {
     this.isErrorOccuredOnHealthcheck = false;
     this.isErrorOccuredOnSearching = false;
-
-    return this.delegator.initClient();
   }
 
   async reconnectClient() {
     logger.info('Try to reconnect...');
-    return this.initClient();
+    this.delegator.initClient();
+
+    try {
+      await this.getInfoForHealth();
+
+      logger.info('Reconnecting succeeded.');
+      this.resetErrorStatus();
+    }
+    catch (err) {
+      throw err;
+    }
   }
 
   async getInfo() {

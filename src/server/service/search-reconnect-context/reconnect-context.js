@@ -57,11 +57,11 @@ class ReconnectContext {
 
 }
 
-function nextTick(context, reconnectHandler) {
+async function nextTick(context, reconnectHandler) {
   context.incrementCount();
 
   if (context.shouldReconnect) {
-    const isSuccessToReconnect = reconnectHandler();
+    const isSuccessToReconnect = await reconnectHandler();
 
     // success to reconnect
     if (isSuccessToReconnect) {

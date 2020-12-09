@@ -77,7 +77,7 @@ module.exports = (crowi) => {
     }
 
     try {
-      await searchService.initClient();
+      await searchService.reconnectClient();
       return res.status(200).send();
     }
     catch (err) {
