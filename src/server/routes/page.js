@@ -150,7 +150,7 @@ module.exports = function(crowi, app) {
   const actions = {};
 
   function getPathFromRequest(req) {
-    return pathUtils.normalizePath(req.params[0] || '');
+    return crowi.xss.process(pathUtils.normalizePath(req.params[0] || ''));
   }
 
   function isUserPage(path) {
