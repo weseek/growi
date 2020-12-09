@@ -100,7 +100,6 @@ module.exports = (crowi) => {
       const getActiveStatusForNotAdmin = ['active'];
       return getActiveStatusForNotAdmin;
     }),
-
     // validate sortOrder : asc or desc
     query('sortOrder').isIn(['asc', 'desc']),
     // validate sort : what column you will sort
