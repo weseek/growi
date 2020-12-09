@@ -369,7 +369,7 @@ class ImportService {
 
     unzipStream.on('entry', (entry) => {
       const fileName = entry.path;
-      // https://regex101.com/r/mD4eZs/4
+      // https://regex101.com/r/mD4eZs/6
       // prevent from unexpecting attack doing unzip file (path traversal attack)
       // FOR EXAMPLE
       // ../../src/server/views/admin/markdown.html
