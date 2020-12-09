@@ -3,6 +3,9 @@
 
 const logger = require('@alias/logger')('growi:routes:attachment');
 
+const { serializePageSecurely } = require('../models/serializers/page-serializer');
+const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
+
 const ApiResponse = require('../util/apiResponse');
 
 /**
@@ -236,7 +239,7 @@ module.exports = function(crowi, app) {
     else {
       res.set({
         'Content-Type': attachment.fileFormat,
-        'Content-Security-Policy': "script-src 'unsafe-hashes'",
+        'Content-Security-Policy': "script-src 'unsafe-hashes'; object-src 'none'; require-trusted-types-for 'script'; default-src 'none';",
       });
     }
   }
@@ -466,7 +469,8 @@ module.exports = function(crowi, app) {
     }
 
     const result = {
-      page: page.toObject(),
+      page: serializePageSecurely(page),
+      revision: serializeRevisionSecurely(page.revision),
       attachment: attachment.toObject({ virtuals: true }),
       pageCreated,
     };

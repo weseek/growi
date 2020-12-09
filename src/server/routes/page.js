@@ -1,4 +1,5 @@
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
+const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
 
 /**
  * @swagger
@@ -146,6 +147,17 @@ module.exports = function(crowi, app) {
   const interceptorManager = crowi.getInterceptorManager();
   const globalNotificationService = crowi.getGlobalNotificationService();
 
+  const XssOption = require('../../lib/service/xss/xssOption');
+  const Xss = require('../../lib/service/xss/index');
+  const initializedConfig = {
+    isEnabledXssPrevention: crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
+    tagWhiteList: crowi.xssService.getTagWhiteList(),
+    attrWhiteList: crowi.xssService.getAttrWhiteList(),
+  };
+  const xssOption = new XssOption(initializedConfig);
+  const xss = new Xss(xssOption);
+
+
   const actions = {};
 
   function getPathFromRequest(req) {
@@ -229,6 +241,11 @@ module.exports = function(crowi, app) {
   }
 
   function addRenderVarsForPresentation(renderVars, page) {
+    // sanitize page.revision.body
+    if (crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention')) {
+      const preventXssRevision = xss.process(page.revision.body);
+      page.revision.body = preventXssRevision;
+    }
     renderVars.page = page;
     renderVars.revision = page.revision;
   }
@@ -733,7 +750,11 @@ module.exports = function(crowi, app) {
       savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
     }
 
-    const result = { page: serializePageSecurely(createdPage), tags: savedTags };
+    const result = {
+      page: serializePageSecurely(createdPage),
+      revision: serializeRevisionSecurely(createdPage.revision),
+      tags: savedTags,
+    };
     res.json(ApiResponse.success(result));
 
     // update scopes for descendants
@@ -792,6 +813,8 @@ module.exports = function(crowi, app) {
    *                      $ref: '#/components/schemas/V1Response/properties/ok'
    *                    page:
    *                      $ref: '#/components/schemas/Page'
+   *                    revision:
+   *                      $ref: '#/components/schemas/Revision'
    *          403:
    *            $ref: '#/components/responses/403'
    *          500:
@@ -862,7 +885,11 @@ module.exports = function(crowi, app) {
       savedTags = await PageTagRelation.listTagNamesByPage(pageId);
     }
 
-    const result = { page: serializePageSecurely(page), tags: savedTags };
+    const result = {
+      page: serializePageSecurely(page),
+      revision: serializeRevisionSecurely(page.revision),
+      tags: savedTags,
+    };
     res.json(ApiResponse.success(result));
 
     // update scopes for descendants
