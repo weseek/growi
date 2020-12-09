@@ -171,10 +171,7 @@ module.exports = (crowi) => {
     const page = parseInt(req.query.page) || 1;
     // status
     const { selectedStatusList, forceIncludeAttributes } = req.query;
-    console.log(`selectedStatusList = ${typeof selectedStatusList}`);
     const statusNoList = (selectedStatusList.includes('all')) ? Object.values(statusNo) : selectedStatusList.map(element => statusNo[element]);
-    // const statusNoList = (selectedStatusList.includes('all')) ? Object.values(statusNo) : selectedStatusList;
-    console.log(`statusNoList = ${statusNoList}`);
 
     // Search from input
     const searchText = req.query.searchText || '';
