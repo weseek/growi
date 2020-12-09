@@ -95,12 +95,12 @@ module.exports = (crowi) => {
 
       const { user } = req;
 
-      if (user == null || !user.admin) {
-        throw new Error(errorStr);
+      if (user !== null && user.admin) {
+        return value;
       }
-      return value;
-
+      throw new Error(errorStr);
     }),
+
     // validate sortOrder : asc or desc
     query('sortOrder').isIn(['asc', 'desc']),
     // validate sort : what column you will sort
