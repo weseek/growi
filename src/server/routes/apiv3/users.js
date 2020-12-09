@@ -89,16 +89,17 @@ module.exports = (crowi) => {
   };
 
   validator.statusList = [
-    query('selectedStatusList').customSanitizer((value, { req }) => {
+    query('selectedStatusList').if(value => value != null).custom((value, { req }) => {
+
+      const errorStr = 'the param \'selectedStatusList\' is not allowed to use by the user not logged in';
+
       const { user } = req;
-      const isAdmin = user.admin;
 
-      if (isAdmin) {
-        return value;
+      if (user == null || !user.admin) {
+        throw new Error(errorStr);
       }
+      return value;
 
-      const getActiveStatusForNotAdmin = ['active'];
-      return getActiveStatusForNotAdmin;
     }),
     // validate sortOrder : asc or desc
     query('sortOrder').isIn(['asc', 'desc']),
@@ -165,11 +166,13 @@ module.exports = (crowi) => {
    *                      $ref: '#/components/schemas/PaginateResult'
    */
 
-  router.get('/', loginRequiredStrictly, validator.statusList, apiV3FormValidator, async(req, res) => {
+  router.get('/', loginRequired, validator.statusList, apiV3FormValidator, async(req, res) => {
 
     const page = parseInt(req.query.page) || 1;
     // status
-    const { selectedStatusList, forceIncludeAttributes } = req.query;
+    const { forceIncludeAttributes } = req.query;
+    const selectedStatusList = req.query.selectedStatusList || ['active'];
+
     const statusNoList = (selectedStatusList.includes('all')) ? Object.values(statusNo) : selectedStatusList.map(element => statusNo[element]);
 
     // Search from input
