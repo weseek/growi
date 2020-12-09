@@ -89,32 +89,16 @@ module.exports = (crowi) => {
   };
 
   validator.statusList = [
-    // validate status list status array match to statusNo
-
-    // query('selectedStatusList').custom((value, { req }) => {
-    //   const error = [];
-    //   value.forEach((status) => {
-    //     if (!Object.keys(statusNo)) {
-    //       error.push(status);
-    //     }
-    //   });
-    //   return (error.length === 0);
-    // }),
-
-    // これ
     query('selectedStatusList').customSanitizer((value, { req }) => {
       const { user } = req;
       const isAdmin = user.admin;
-      console.log(`isAdmin = ${isAdmin}`);
 
-      if (!isAdmin) {
+      if (isAdmin) {
         return value;
       }
 
       const getActiveStatusForNotAdmin = ['active'];
-      console.log(typeof getActiveStatusForNotAdmin);
       return getActiveStatusForNotAdmin;
-
     }),
 
     // validate sortOrder : asc or desc
