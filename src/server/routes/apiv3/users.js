@@ -91,16 +91,13 @@ module.exports = (crowi) => {
   validator.statusList = [
     query('selectedStatusList').if(value => value != null).custom((value, { req }) => {
 
-      const errorStr = 'the param \'selectedStatusList\' is not allowed to use by the user not logged in';
-
       const { user } = req;
 
       if (user !== null && user.admin) {
         return value;
       }
-      throw new Error(errorStr);
+      throw new Error('the param \'selectedStatusList\' is not allowed to use by the users except administrators');
     }),
-
     // validate sortOrder : asc or desc
     query('sortOrder').isIn(['asc', 'desc']),
     // validate sort : what column you will sort
