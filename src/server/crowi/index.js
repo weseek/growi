@@ -131,7 +131,7 @@ Crowi.prototype.initForTest = async function() {
   // // slack depends on setUpSlacklNotification
   await Promise.all([
     this.setUpApp(),
-    // this.setUpXss(),
+    this.setUpXss(),
     // this.setUpSlacklNotification(),
     // this.setUpGrowiBridge(),
   ]);
