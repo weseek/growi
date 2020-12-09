@@ -92,12 +92,6 @@ module.exports = (crowi) => {
     // validate status list status array match to statusNo
 
     // query('selectedStatusList').custom((value, { req }) => {
-    //   const { user } = req;
-    //   const isAdmin = user.admin;
-
-    //   console.log(`user = ${user}`);
-    //   console.log(`isAdmin = ${isAdmin}`);
-
     //   const error = [];
     //   value.forEach((status) => {
     //     if (!Object.keys(statusNo)) {
@@ -113,11 +107,12 @@ module.exports = (crowi) => {
       const isAdmin = user.admin;
       console.log(`isAdmin = ${isAdmin}`);
 
-      if (isAdmin) {
+      if (!isAdmin) {
         return value;
       }
 
-      const getActiveStatusForNotAdmin = 'active';
+      const getActiveStatusForNotAdmin = ['active'];
+      console.log(typeof getActiveStatusForNotAdmin);
       return getActiveStatusForNotAdmin;
 
     }),
@@ -192,7 +187,7 @@ module.exports = (crowi) => {
     const page = parseInt(req.query.page) || 1;
     // status
     const { selectedStatusList, forceIncludeAttributes } = req.query;
-    console.log(`selectedStatusList = ${selectedStatusList}`);
+    console.log(`selectedStatusList = ${typeof selectedStatusList}`);
     const statusNoList = (selectedStatusList.includes('all')) ? Object.values(statusNo) : selectedStatusList.map(element => statusNo[element]);
     // const statusNoList = (selectedStatusList.includes('all')) ? Object.values(statusNo) : selectedStatusList;
     console.log(`statusNoList = ${statusNoList}`);
