@@ -83,14 +83,19 @@ module.exports = (crowi) => {
    *      summary: /healthcheck
    *      description: Check whether the server is healthy or not
    *      parameters:
-   *        - name: connectToMiddlewares
+   *        - name: checkServices
    *          in: query
-   *          description: Check MongoDB and SearchService (consider as healthy even if any of middleware is available or not)
+   *          description: The list of services to check health
    *          schema:
-   *            type: boolean
-   *        - name: checkMiddlewaresStrictly
+   *            type: array
+   *            items:
+   *              type: string
+   *              enum:
+   *                - mongo
+   *                - search
+   *        - name: strictly
    *          in: query
-   *          description: Check MongoDB and SearchService and responds 503 if either of these is unhealthy
+   *          description: Check services and responds 503 if either of these is unhealthy
    *          schema:
    *            type: boolean
    *      responses:
