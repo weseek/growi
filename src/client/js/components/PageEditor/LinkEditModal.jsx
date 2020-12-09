@@ -297,7 +297,7 @@ class LinkEditModal extends React.PureComponent {
                 onInputChange={this.handleChangeLinkInput}
                 inputName="link"
                 placeholder="Input page path or URL"
-                keywordOnInit={this.state.linkInputValue}
+                keywordOnInit=""
               />
               <div className="d-none d-sm-block input-group-append">
                 <button type="button" id="preview-btn" className="btn btn-info btn-page-preview">
