@@ -62,7 +62,7 @@ class PageTimeline extends React.Component {
   render() {
     const { t } = this.props;
     const { pages } = this.state;
-    const { path } = this.props.pageContainer.state;
+
     if (pages == null || pages.length === 0) {
       return (
         <div className="mt-2">
