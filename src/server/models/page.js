@@ -1279,7 +1279,7 @@ module.exports = function(crowi) {
     pageEvent.emit('delete', pageData, user, socketClientId);
     pageEvent.emit('create', updatedPageData, user, socketClientId);
 
-    return { result: updatedPageData };
+    return updatedPageData;
   };
 
   pageSchema.statics.renameRecursively = async function(targetPage, newPagePathPrefix, user, options) {

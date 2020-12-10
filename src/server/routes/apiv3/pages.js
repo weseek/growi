@@ -417,7 +417,7 @@ module.exports = (crowi) => {
       logger.error('Move notification failed', err);
     }
 
-    return res.apiv3({ result });
+    return res.apiv3(result);
   });
 
 

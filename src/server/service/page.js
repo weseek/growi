@@ -65,7 +65,9 @@ class PageService {
       await PageTagRelation.updatePageTags(createdPage.id, originTags);
       savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
     }
-    const result = [{ page: serializePageSecurely(createdPage), tags: savedTags }];
+
+    const result = serializePageSecurely(createdPage);
+    result.tags = savedTags;
 
     return result;
   }
@@ -83,7 +85,7 @@ class PageService {
     });
     const promiseResults = await Promise.allSettled(promise);
     const result = promiseResults.map((promiseResult) => {
-      return promiseResult.value[0];
+      return promiseResult.value;
     });
 
     // TODO GW-4634 use stream
