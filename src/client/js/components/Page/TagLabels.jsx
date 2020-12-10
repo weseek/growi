@@ -78,7 +78,6 @@ class TagLabels extends React.Component {
 
     return (
       <>
-
         <form className="grw-tag-labels form-inline">
           <i className="tag-icon icon-tag mr-2"></i>
           <Suspense fallback={<span className="grw-tag-label badge badge-secondary">―</span>}>
@@ -97,7 +96,6 @@ class TagLabels extends React.Component {
           appContainer={this.props.appContainer}
           onTagsUpdated={this.tagsUpdatedHandler}
         />
-
       </>
     );
   }
