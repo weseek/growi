@@ -1266,7 +1266,7 @@ module.exports = function(crowi) {
       pageData.lastUpdateUser = user;
       pageData.updatedAt = Date.now();
     }
-    const result = await pageData.save();
+    const updatedPageData = await pageData.save();
 
     // update Rivisions
     await Revision.updateRevisionListByPath(path, { path: newPagePath }, {});
@@ -1277,9 +1277,9 @@ module.exports = function(crowi) {
     }
 
     pageEvent.emit('delete', pageData, user, socketClientId);
-    pageEvent.emit('create', result, user, socketClientId);
+    pageEvent.emit('create', updatedPageData, user, socketClientId);
 
-    return { result };
+    return { result: updatedPageData };
   };
 
   pageSchema.statics.renameRecursively = async function(targetPage, newPagePathPrefix, user, options) {
