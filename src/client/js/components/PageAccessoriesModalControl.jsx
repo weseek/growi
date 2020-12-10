@@ -69,15 +69,9 @@ const PageAccessoriesModalControl = (props) => {
                 {accessory.Icon}
               </button>
             </div>
-            {accessory.disabled ? (
-              <UncontrolledTooltip placement="top" target={`shareLink-btn-wrapper-for-tooltip-for-${accessory.name}`} fade={false}>
-                {t('Not available for guest')}
-              </UncontrolledTooltip>
-            ) : (
-              <UncontrolledTooltip placement="top" target={`shareLink-btn-wrapper-for-tooltip-for-${accessory.name}`} fade={false}>
-                {accessory.i18n}
-              </UncontrolledTooltip>
-            )}
+            <UncontrolledTooltip placement="top" target={`shareLink-btn-wrapper-for-tooltip-for-${accessory.name}`} fade={false}>
+              {accessory.disabled ? t('Not available for guest') : accessory.i18n}
+            </UncontrolledTooltip>
           </Fragment>
         );
       })}
