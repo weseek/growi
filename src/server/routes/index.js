@@ -4,6 +4,7 @@ const autoReap = require('multer-autoreap');
 autoReap.options.reapOnError = true; // continue reaping the file even if an error occurs
 
 module.exports = function(crowi, app) {
+  const autoReconnectToSearch = require('../middlewares/auto-reconnect-to-search')(crowi);
   const applicationNotInstalled = require('../middlewares/application-not-installed')(crowi);
   const applicationInstalled = require('../middlewares/application-installed')(crowi);
   const accessTokenParser = require('../middlewares/access-token-parser')(crowi);
@@ -32,7 +33,7 @@ module.exports = function(crowi, app) {
 
   /* eslint-disable max-len, comma-spacing, no-multi-spaces */
 
-  app.get('/'                        , applicationInstalled, loginRequired , page.showTopPage);
+  app.get('/'                        , applicationInstalled, loginRequired , autoReconnectToSearch, page.showTopPage);
 
   // API v3
   app.use('/api-docs', require('./apiv3/docs')(crowi));
@@ -175,6 +176,6 @@ module.exports = function(crowi, app) {
   app.get('/share/:linkId', page.showSharedPage);
 
   app.get('/*/$'                   , loginRequired , page.showPageWithEndOfSlash, page.notFound);
-  app.get('/*'                     , loginRequired , page.showPage, page.notFound);
+  app.get('/*'                     , loginRequired , autoReconnectToSearch, page.showPage, page.notFound);
 
 };
