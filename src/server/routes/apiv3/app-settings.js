@@ -240,13 +240,13 @@ module.exports = (crowi) => {
       s3Bucket: crowi.configManager.getConfig('crowi', 'aws:s3Bucket'),
       s3AccessKeyId: crowi.configManager.getConfig('crowi', 'aws:s3AccessKeyId'),
       s3SecretAccessKey: crowi.configManager.getConfig('crowi', 'aws:s3SecretAccessKey'),
-      s3ReferenceFileWithRelayMode: crowi.configManager.getConfig('crowi', 'aws:isEnabledInternalStreamSystem'),
+      s3ReferenceFileWithRelayMode: crowi.configManager.getConfig('crowi', 'aws:referenceFileWithRelayMode'),
 
       gcsUseOnlyEnvVars: crowi.configManager.getConfig('crowi', 'gcs:useOnlyEnvVarsForSomeOptions'),
       gcsApiKeyJsonPath: crowi.configManager.getConfig('crowi', 'gcs:apiKeyJsonPath'),
       gcsBucket: crowi.configManager.getConfig('crowi', 'gcs:bucket'),
       gcsUploadNamespace: crowi.configManager.getConfig('crowi', 'gcs:uploadNamespace'),
-      gcsReferenceFileWithRelayMode: crowi.configManager.getConfig('crowi', 'gcs:isEnabledInternalStreamSystem'),
+      gcsReferenceFileWithRelayMode: crowi.configManager.getConfig('crowi', 'gcs:referenceFileWithRelayMode'),
 
       envGcsApiKeyJsonPath: crowi.configManager.getConfigFromEnvVars('crowi', 'gcs:apiKeyJsonPath'),
       envGcsBucket: crowi.configManager.getConfigFromEnvVars('crowi', 'gcs:bucket'),
@@ -593,7 +593,7 @@ module.exports = (crowi) => {
       requestParams['gcs:apiKeyJsonPath'] = req.body.gcsApiKeyJsonPath;
       requestParams['gcs:bucket'] = req.body.gcsBucket;
       requestParams['gcs:uploadNamespace'] = req.body.gcsUploadNamespace;
-      requestParams['gcs:isEnabledInternalStreamSystem'] = req.body.gcsReferenceFileWithRelayMode;
+      requestParams['gcs:referenceFileWithRelayMode'] = req.body.gcsReferenceFileWithRelayMode;
     }
 
     if (fileUploadType === 'aws') {
@@ -602,7 +602,7 @@ module.exports = (crowi) => {
       requestParams['aws:s3Bucket'] = req.body.s3Bucket;
       requestParams['aws:s3AccessKeyId'] = req.body.s3AccessKeyId;
       requestParams['aws:s3SecretAccessKey'] = req.body.s3SecretAccessKey;
-      requestParams['aws:isEnabledInternalStreamSystem'] = req.body.s3ReferenceFileWithRelayMode;
+      requestParams['aws:referenceFileWithRelayMode'] = req.body.s3ReferenceFileWithRelayMode;
     }
 
     try {
@@ -618,7 +618,7 @@ module.exports = (crowi) => {
         responseParams.gcsApiKeyJsonPath = crowi.configManager.getConfig('crowi', 'gcs:apiKeyJsonPath');
         responseParams.gcsBucket = crowi.configManager.getConfig('crowi', 'gcs:bucket');
         responseParams.gcsUploadNamespace = crowi.configManager.getConfig('crowi', 'gcs:uploadNamespace');
-        responseParams.gcsReferenceFileWithRelayMode = crowi.configManager.getConfig('crowi', 'gcs:isEnabledInternalStreamSystem');
+        responseParams.gcsReferenceFileWithRelayMode = crowi.configManager.getConfig('crowi', 'gcs:referenceFileWithRelayMode ');
       }
 
       if (fileUploadType === 'aws') {
@@ -627,7 +627,7 @@ module.exports = (crowi) => {
         responseParams.s3Bucket = crowi.configManager.getConfig('crowi', 'aws:s3Bucket');
         responseParams.s3AccessKeyId = crowi.configManager.getConfig('crowi', 'aws:s3AccessKeyId');
         responseParams.s3SecretAccessKey = crowi.configManager.getConfig('crowi', 'aws:s3SecretAccessKey');
-        responseParams.s3ReferenceFileWithRelayMode = crowi.configManager.getConfig('crowi', 'aws:isEnabledInternalStreamSystem');
+        responseParams.s3ReferenceFileWithRelayMode = crowi.configManager.getConfig('crowi', 'aws:referenceFileWithRelayMode');
       }
 
       return res.apiv3({ responseParams });

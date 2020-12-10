@@ -51,7 +51,7 @@ module.exports = function(crowi) {
   };
 
   lib.canRespond = function() {
-    return !this.configManager.getConfig('crowi', 'gcs:isEnabledInternalStreamSystem');
+    return !this.configManager.getConfig('crowi', 'gcs:referenceFileWithRelayMode');
   };
 
   lib.respond = async function(res, attachment) {
