@@ -32,12 +32,6 @@
   .rbt-menu {
     max-height: none !important;
     margin-top: 3px;
-    @extend .dropdown-menu-right;
-    @extend .dropdown-menu-md-left;
-    @include media-breakpoint-down(sm) {
-      left: auto !important;
-      width: 90vw;
-    }
 
     li a span {
       .page-path {
@@ -81,6 +75,14 @@
       // corner radius
       border-top-right-radius: 40px;
       border-bottom-right-radius: 40px;
+    }
+    .rbt-menu {
+      @extend .dropdown-menu-right;
+      @extend .dropdown-menu-md-left;
+      @include media-breakpoint-down(sm) {
+        left: auto !important;
+        width: 90vw;
+      }
     }
   }
 
