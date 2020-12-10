@@ -146,7 +146,7 @@ module.exports = (crowi) => {
     duplicatePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
       body('pageNameInput').trim().isLength({ min: 1 }).withMessage('pageNameInput is required'),
-      body('isDuplicateRecursively').if(value => value != null).isBoolean().withMessage('isDuplicateRecursively must be boolean'),
+      body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
     ],
   };
 
@@ -393,7 +393,7 @@ module.exports = (crowi) => {
       }
 
       if (isRecursively) {
-        result.page = await Page.renameRecursively(page, newPagePath, req.user, options);
+        result.pages = await Page.renameRecursively(page, newPagePath, req.user, options);
       }
       else {
         result.page = await Page.rename(page, newPagePath, req.user, options);
@@ -405,6 +405,7 @@ module.exports = (crowi) => {
     }
 
     page.path = newPagePath;
+    result.parentPage = page;
 
     try {
       // global notification
@@ -416,7 +417,7 @@ module.exports = (crowi) => {
       logger.error('Move notification failed', err);
     }
 
-    return res.apiv3({ result, page });
+    return res.apiv3({ result });
   });
 
 
@@ -514,7 +515,7 @@ module.exports = (crowi) => {
    *            description: Internal server error.
    */
   router.post('/duplicate', accessTokenParser, loginRequiredStrictly, csrf, validator.duplicatePage, apiV3FormValidator, async(req, res) => {
-    const { pageId, isDuplicateRecursively } = req.body;
+    const { pageId, isRecursively } = req.body;
 
     const newPagePath = pathUtils.normalizePath(req.body.pageNameInput);
 
@@ -535,7 +536,7 @@ module.exports = (crowi) => {
 
     let result;
 
-    if (isDuplicateRecursively) {
+    if (isRecursively) {
       result = await crowi.pageService.duplicateRecursively(page, newPagePath, req.user);
     }
     else {
