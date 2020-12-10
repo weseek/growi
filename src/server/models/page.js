@@ -1300,12 +1300,11 @@ module.exports = function(crowi) {
       return this.rename(page, newPagePath, user, options);
     });
 
-    const promiseResults = await Promise.allSettled(promise);
-    const result = promiseResults.map((promiseResult) => {
-      return promiseResult.value.result;
-    });
+    await Promise.allSettled(promise);
 
-    return result;
+    targetPage.path = newPagePathPrefix;
+    return targetPage;
+
   };
 
   pageSchema.statics.findListByPathsArray = async function(paths) {

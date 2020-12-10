@@ -83,13 +83,16 @@ class PageService {
       const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
       return this.duplicate(page, newPagePath, user);
     });
-    const promiseResults = await Promise.allSettled(promise);
-    const result = promiseResults.map((promiseResult) => {
-      return promiseResult.value;
+
+    const newPath = page.path.replace(pathRegExp, newPagePathPrefix);
+
+    const results = await Promise.allSettled(promise);
+    const newParentpage = results.find((result) => {
+      return result.value.path === newPath;
     });
 
     // TODO GW-4634 use stream
-    return result;
+    return newParentpage.value;
   }
 
 

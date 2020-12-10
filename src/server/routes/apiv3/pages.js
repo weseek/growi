@@ -378,7 +378,6 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(`${newPagePath} already exists`, 'already_exists'), 409);
     }
 
-    const result = {};
     let page;
 
     try {
@@ -393,10 +392,10 @@ module.exports = (crowi) => {
       }
 
       if (isRecursively) {
-        result.pages = await Page.renameRecursively(page, newPagePath, req.user, options);
+        page = await Page.renameRecursively(page, newPagePath, req.user, options);
       }
       else {
-        result.page = await Page.rename(page, newPagePath, req.user, options);
+        page = await Page.rename(page, newPagePath, req.user, options);
       }
     }
     catch (err) {
@@ -404,8 +403,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
     }
 
-    page.path = newPagePath;
-    result.parentPage = page;
+    const result = { page: serializePageSecurely(page) };
 
     try {
       // global notification
@@ -534,14 +532,16 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('Not Founded the page', 'notfound_or_forbidden'), 404);
     }
 
-    let result;
+    let newParentPage;
 
     if (isRecursively) {
-      result = await crowi.pageService.duplicateRecursively(page, newPagePath, req.user);
+      newParentPage = await crowi.pageService.duplicateRecursively(page, newPagePath, req.user);
     }
     else {
-      result = await crowi.pageService.duplicate(page, newPagePath, req.user);
+      newParentPage = await crowi.pageService.duplicate(page, newPagePath, req.user);
     }
+
+    const result = { page: serializePageSecurely(newParentPage) };
 
     page.path = newPagePath;
     try {
@@ -551,7 +551,7 @@ module.exports = (crowi) => {
       logger.error('Create grobal notification failed', err);
     }
 
-    return res.apiv3({ result });
+    return res.apiv3(result);
   });
 
   /**
