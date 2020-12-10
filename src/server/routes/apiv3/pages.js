@@ -3,7 +3,6 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
 const express = require('express');
 const pathUtils = require('growi-commons').pathUtils;
-const escapeStringRegexp = require('escape-string-regexp');
 
 const { body } = require('express-validator/check');
 const { query } = require('express-validator');
@@ -474,49 +473,6 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
   });
-  async function duplicatePage(page, newPagePath, user) {
-    // populate
-    await page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate();
-
-    // create option
-    const options = { page };
-    options.grant = page.grant;
-    options.grantUserGroupId = page.grantedGroup;
-    options.grantedUsers = page.grantedUsers;
-
-    const createdPage = await createPageAction({
-      path: newPagePath, user, body: page.revision.body, options,
-    });
-
-    const originTags = await page.findRelatedTagsById();
-    const savedTags = await saveTagsAction({ page, createdPage, pageTags: originTags });
-
-    try {
-      // global notification
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, user);
-    }
-    catch (err) {
-      logger.error('Create grobal notification failed', err);
-    }
-
-    return { page: serializePageSecurely(createdPage), tags: savedTags };
-  }
-
-  async function duplicatePageRecursively(page, newPagePath, user) {
-    const newPagePathPrefix = newPagePath;
-    const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
-
-    const pages = await Page.findManageableListWithDescendants(page, user);
-
-    const promise = pages.map(async(page) => {
-      const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
-      return duplicatePage(page, newPagePath, user);
-    });
-
-    // TODO GW-4634 use stream
-    return Promise.allSettled(promise);
-  }
-
 
   /**
    * @swagger
@@ -557,7 +513,7 @@ module.exports = (crowi) => {
    *            description: Internal server error.
    */
   router.post('/duplicate', accessTokenParser, loginRequiredStrictly, csrf, validator.duplicatePage, apiV3FormValidator, async(req, res) => {
-    const { pageId, isDuplicateRecursively } = req.body;
+    const { pageId, isRecursively } = req.body;
 
     const newPagePath = pathUtils.normalizePath(req.body.pageNameInput);
 
@@ -576,16 +532,26 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('Not Founded the page', 'notfound_or_forbidden'), 404);
     }
 
-    let result;
+    let newParentPage;
 
-    if (isDuplicateRecursively) {
-      result = await duplicatePageRecursively(page, newPagePath, req.user);
+    if (isRecursively) {
+      newParentPage = await crowi.pageService.duplicateRecursively(page, newPagePath, req.user);
     }
     else {
-      result = await duplicatePage(page, newPagePath, req.user);
+      newParentPage = await crowi.pageService.duplicate(page, newPagePath, req.user);
     }
 
-    return res.apiv3({ result });
+    const result = { page: serializePageSecurely(newParentPage) };
+
+    page.path = newPagePath;
+    try {
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, page, req.user);
+    }
+    catch (err) {
+      logger.error('Create grobal notification failed', err);
+    }
+
+    return res.apiv3(result);
   });
 
   /**

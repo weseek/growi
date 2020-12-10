@@ -1295,13 +1295,16 @@ module.exports = function(crowi) {
     const pages = await this.findManageableListWithDescendants(targetPage, user, options);
 
     // TODO GW-4634 use stream
-    await Promise.allSettled(pages.map((page) => {
+    const promise = pages.map((page) => {
       const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
       return this.rename(page, newPagePath, user, options);
-    }));
+    });
+
+    await Promise.allSettled(promise);
 
     targetPage.path = newPagePathPrefix;
     return targetPage;
+
   };
 
   pageSchema.statics.findListByPathsArray = async function(paths) {
