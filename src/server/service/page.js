@@ -86,13 +86,12 @@ class PageService {
 
     const newPath = page.path.replace(pathRegExp, newPagePathPrefix);
 
-    const results = await Promise.allSettled(promise);
-    const newParentpage = results.find((result) => {
-      return result.value.path === newPath;
-    });
+    await Promise.allSettled(promise);
+
+    const newParentpage = await Page.findByPath(newPath);
 
     // TODO GW-4634 use stream
-    return newParentpage.value;
+    return newParentpage;
   }
 
 
