@@ -107,12 +107,12 @@ const TrashPageAlert = (props) => {
 
   return (
     <>
-      <div className="alert alert-warning py-3 px-4 d-flex flex-column flex-lg-row ">
-        <div className="py-1 flex-grow-1">
+      <div className="alert alert-warning pt-3 pl-4 pb-2 pr-0 d-flex flex-column flex-lg-row ">
+        <div className="flex-grow-1">
           This page is in the trash <i className="icon-trash" aria-hidden="true"></i>.
           {isDeleted && <span><br /><UserPicture user={{ username: lastUpdateUsername }} /> Deleted by {lastUpdateUsername} at {updatedAt}</span>}
         </div>
-        <div className="pt-2 d-flex justify-content-end">
+        <div className="pt-2 d-flex align-items-end">
           <span>{ pageContainer.isAbleToShowEmptyTrashButton && renderEmptyButton()}</span>
           { pageContainer.isAbleToShowTrashPageManagementButtons && renderTrashPageManagementButtons()}
         </div>
