@@ -46,14 +46,14 @@ export default class AdminAppContainer extends Container {
       envGcsBucket: '',
       gcsUploadNamespace: '',
       envGcsUploadNamespace: '',
-      gcsIsEnabledInternalStreamSystem: false,
+      gcsReferenceFileWithRelayMode: false,
 
       s3Region: '',
       s3CustomEndpoint: '',
       s3Bucket: '',
       s3AccessKeyId: '',
       s3SecretAccessKey: '',
-      s3IsEnabledInternalStreamSystem: false,
+      s3ReferenceFileWithRelayMode: false,
 
       isEnabledPlugins: true,
     };
@@ -101,13 +101,13 @@ export default class AdminAppContainer extends Container {
       s3Bucket: appSettingsParams.s3Bucket,
       s3AccessKeyId: appSettingsParams.s3AccessKeyId,
       s3SecretAccessKey: appSettingsParams.s3SecretAccessKey,
-      s3IsEnabledInternalStreamSystem: appSettingsParams.s3IsEnabledInternalStreamSystem,
+      s3ReferenceFileWithRelayMode: appSettingsParams.s3ReferenceFileWithRelayMode,
 
       gcsUseOnlyEnvVars: appSettingsParams.gcsUseOnlyEnvVars,
       gcsApiKeyJsonPath: appSettingsParams.gcsApiKeyJsonPath,
       gcsBucket: appSettingsParams.gcsBucket,
       gcsUploadNamespace: appSettingsParams.gcsUploadNamespace,
-      gcsIsEnabledInternalStreamSystem: appSettingsParams.gcsIsEnabledInternalStreamSystem,
+      gcsReferenceFileWithRelayMode: appSettingsParams.gcsReferenceFileWithRelayMode,
       envGcsApiKeyJsonPath: appSettingsParams.envGcsApiKeyJsonPath,
       envGcsBucket: appSettingsParams.envGcsBucket,
       envGcsUploadNamespace: appSettingsParams.envGcsUploadNamespace,
@@ -244,10 +244,10 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
-   * Change s3IsEnabledInternalStreamSystem
+   * Change s3ReferenceFileWithRelayMode
    */
-  changeS3IsEnabledInternalStreamSystem(s3IsEnabledInternalStreamSystem) {
-    this.setState({ s3IsEnabledInternalStreamSystem });
+  changeS3ReferenceFileWithRelayMode(s3ReferenceFileWithRelayMode) {
+    this.setState({ s3ReferenceFileWithRelayMode });
   }
 
   /**
@@ -272,10 +272,10 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
-   * Change gcsIsEnabledInternalStreamSystem
+   * Change gcsReferenceFileWithRelayMode
    */
-  changeGcsIsEnabledInternalStreamSystem(gcsIsEnabledInternalStreamSystem) {
-    this.setState({ gcsIsEnabledInternalStreamSystem });
+  changeGcsReferenceFileWithRelayMode(gcsReferenceFileWithRelayMode) {
+    this.setState({ gcsReferenceFileWithRelayMode });
   }
 
   /**
@@ -386,7 +386,7 @@ export default class AdminAppContainer extends Container {
       requestParams.gcsApiKeyJsonPath = this.state.gcsApiKeyJsonPath;
       requestParams.gcsBucket = this.state.gcsBucket;
       requestParams.gcsUploadNamespace = this.state.gcsUploadNamespace;
-      requestParams.gcsIsEnabledInternalStreamSystem = this.state.gcsIsEnabledInternalStreamSystem;
+      requestParams.gcsReferenceFileWithRelayMode = this.state.gcsReferenceFileWithRelayMode;
     }
 
     if (fileUploadType === 'aws') {
@@ -395,7 +395,7 @@ export default class AdminAppContainer extends Container {
       requestParams.s3Bucket = this.state.s3Bucket;
       requestParams.s3AccessKeyId = this.state.s3AccessKeyId;
       requestParams.s3SecretAccessKey = this.state.s3SecretAccessKey;
-      requestParams.s3IsEnabledInternalStreamSystem = this.state.s3IsEnabledInternalStreamSystem;
+      requestParams.s3ReferenceFileWithRelayMode = this.state.s3ReferenceFileWithRelayMode;
     }
 
     const response = await this.appContainer.apiv3.put('/app-settings/file-upload-setting', requestParams);

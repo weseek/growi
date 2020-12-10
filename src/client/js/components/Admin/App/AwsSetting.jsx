@@ -9,7 +9,7 @@ import AdminAppContainer from '../../../services/AdminAppContainer';
 
 function AwsSetting(props) {
   const { t, adminAppContainer } = props;
-  const { s3IsEnabledInternalStreamSystem } = adminAppContainer.state;
+  const { s3ReferenceFileWithRelayMode } = adminAppContainer.state;
 
   return (
     <React.Fragment>
@@ -24,26 +24,26 @@ function AwsSetting(props) {
             <button
               className="btn btn-outline-secondary dropdown-toggle"
               type="button"
-              id="ddS3IsEnabledInternalStreamSystem"
+              id="ddS3ReferenceFileWithRelayMode"
               data-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="true"
             >
-              {s3IsEnabledInternalStreamSystem && t('admin:app_setting.file_delivery_method_relay')}
-              {!s3IsEnabledInternalStreamSystem && t('admin:app_setting.file_delivery_method_redirect')}
+              {s3ReferenceFileWithRelayMode && t('admin:app_setting.file_delivery_method_relay')}
+              {!s3ReferenceFileWithRelayMode && t('admin:app_setting.file_delivery_method_redirect')}
             </button>
-            <div className="dropdown-menu" aria-labelledby="ddS3IsEnabledInternalStreamSystem">
+            <div className="dropdown-menu" aria-labelledby="ddS3ReferenceFileWithRelayMode">
               <button
                 className="dropdown-item"
                 type="button"
-                onClick={() => { adminAppContainer.changeS3IsEnabledInternalStreamSystem(true) }}
+                onClick={() => { adminAppContainer.changeS3ReferenceFileWithRelayMode(true) }}
               >
                 {t('admin:app_setting.file_delivery_method_relay')}
               </button>
               <button
                 className="dropdown-item"
                 type="button"
-                onClick={() => { adminAppContainer.changeS3IsEnabledInternalStreamSystem(false) }}
+                onClick={() => { adminAppContainer.changeS3ReferenceFileWithRelayMode(false) }}
               >
                 { t('admin:app_setting.file_delivery_method_redirect')}
               </button>

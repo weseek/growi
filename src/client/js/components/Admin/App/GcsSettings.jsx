@@ -11,7 +11,7 @@ import AdminAppContainer from '../../../services/AdminAppContainer';
 
 function GcsSetting(props) {
   const { t, adminAppContainer } = props;
-  const { gcsIsEnabledInternalStreamSystem, gcsUseOnlyEnvVars } = adminAppContainer.state;
+  const { gcsReferenceFileWithRelayMode, gcsUseOnlyEnvVars } = adminAppContainer.state;
 
   return (
     <>
@@ -26,26 +26,26 @@ function GcsSetting(props) {
             <button
               className="btn btn-outline-secondary dropdown-toggle"
               type="button"
-              id="ddGcsIsEnabledInternalStreamSystem"
+              id="ddGcsReferenceFileWithRelayMode"
               data-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="true"
             >
-              {gcsIsEnabledInternalStreamSystem && t('admin:app_setting.file_delivery_method_relay')}
-              {!gcsIsEnabledInternalStreamSystem && t('admin:app_setting.file_delivery_method_redirect')}
+              {gcsReferenceFileWithRelayMode && t('admin:app_setting.file_delivery_method_relay')}
+              {!gcsReferenceFileWithRelayMode && t('admin:app_setting.file_delivery_method_redirect')}
             </button>
-            <div className="dropdown-menu" aria-labelledby="ddGcsIsEnabledInternalStreamSystem">
+            <div className="dropdown-menu" aria-labelledby="ddGcsReferenceFileWithRelayMode">
               <button
                 className="dropdown-item"
                 type="button"
-                onClick={() => { adminAppContainer.changeGcsIsEnabledInternalStreamSystem(true) }}
+                onClick={() => { adminAppContainer.changeGcsReferenceFileWithRelayMode(true) }}
               >
                 {t('admin:app_setting.file_delivery_method_relay')}
               </button>
               <button
                 className="dropdown-item"
                 type="button"
-                onClick={() => { adminAppContainer.changeGcsIsEnabledInternalStreamSystem(false) }}
+                onClick={() => { adminAppContainer.changeGcsReferenceFileWithRelayMode(false) }}
               >
                 { t('admin:app_setting.file_delivery_method_redirect')}
               </button>
