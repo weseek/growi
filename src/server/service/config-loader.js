@@ -332,9 +332,9 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
-  S3_IS_ENABLED_INTERNAL_STREAM_SYSTEM: {
+  S3_REFERENCE_FILE_WITH_RELAY_MODE: {
     ns:      'crowi',
-    key:     'aws:isEnabledInternalStreamSystem',
+    key:     'aws:referenceFileWithRelayMode',
     type:    TYPES.BOOLEAN,
     default: false,
   },
@@ -362,9 +362,9 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
-  GCS_IS_ENABLED_INTERNAL_STREAM_SYSTEM: {
+  GCS_REFERENCE_FILE_WITH_RELAY_MODE: {
     ns:      'crowi',
-    key:     'gcs:isEnabledInternalStreamSystem',
+    key:     'gcs:referenceFileWithRelayMode',
     type:    TYPES.BOOLEAN,
     default: false,
   },
