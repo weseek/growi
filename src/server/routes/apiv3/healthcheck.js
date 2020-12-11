@@ -66,6 +66,7 @@ module.exports = (crowi) => {
     if (searchService.isConfigured) {
       try {
         info.searchInfo = await searchService.getInfoForHealth();
+        searchService.resetErrorStatus();
       }
       catch (err) {
         errors.push(new ErrorV3(`The Search Service is not connectable - ${err.message}`, 'healthcheck-search-unhealthy', err.stack));
