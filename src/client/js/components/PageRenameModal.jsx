@@ -134,7 +134,7 @@ const PageRenameModal = (props) => {
   }
 
   return (
-    <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} className="grw-create-page">
+    <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose}>
       <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-light">
         { t('modal_rename.label.Move/Rename page') }
       </ModalHeader>
