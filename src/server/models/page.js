@@ -258,6 +258,17 @@ class PageQueryBuilder {
     return this;
   }
 
+  addConditionToListByPathsArray(paths) {
+    this.query = this.query
+      .and({
+        path: {
+          $in: paths,
+        },
+      });
+
+    return this;
+  }
+
   populateDataToList(userPublicFields) {
     this.query = this.query
       .populate({
@@ -1283,12 +1294,24 @@ module.exports = function(crowi) {
     // find manageable descendants
     const pages = await this.findManageableListWithDescendants(targetPage, user, options);
 
-    await Promise.all(pages.map((page) => {
+    // TODO GW-4634 use stream
+    const promise = pages.map((page) => {
       const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
       return this.rename(page, newPagePath, user, options);
-    }));
+    });
+
+    await Promise.allSettled(promise);
+
     targetPage.path = newPagePathPrefix;
     return targetPage;
+
+  };
+
+  pageSchema.statics.findListByPathsArray = async function(paths) {
+    const queryBuilder = new PageQueryBuilder(this.find());
+    queryBuilder.addConditionToListByPathsArray(paths);
+
+    return await queryBuilder.query.exec();
   };
 
   // TODO: transplant to service/page.js because page deletion affects various models data
