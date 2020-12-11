@@ -181,20 +181,37 @@ module.exports = (crowi) => {
       [sort]: (sortOrder === 'desc') ? -1 : 1,
     };
 
-    try {
-      const paginateResult = await User.paginate(
+    const orConditions = [
+      { name: { $in: searchWord } },
+      { username: { $in: searchWord } },
+    ];
+
+    const query = {
+      $and: [
+        { status: { $in: statusNoList } },
         {
-          $and: [
-            { status: { $in: statusNoList } },
-            {
-              $or: [
-                { name: { $in: searchWord } },
-                { username: { $in: searchWord } },
-                { email: { $in: searchWord } },
-              ],
-            },
-          ],
+          $or: orConditions,
         },
+      ],
+    };
+
+    try {
+      if (req.user != null) {
+        orConditions.push(
+          {
+            $and: [
+              { isEmailPublished: true },
+              { email: { $in: searchWord } },
+            ],
+          },
+        );
+      }
+      if (forceIncludeAttributes.includes('email')) {
+        orConditions.push({ email: { $in: searchWord } });
+      }
+
+      const paginateResult = await User.paginate(
+        query,
         {
           sort: sortOutput,
           page,
