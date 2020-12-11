@@ -182,19 +182,55 @@ module.exports = (crowi) => {
     };
 
     try {
+
+      // ①  admin & forceIncludeAttributesにemailが入っている→全員メアドでも引っかかる
+      const patern1 = {
+        $and: [
+          { status: { $in: statusNoList } },
+          {
+            $or: [
+              { name: { $in: searchWord } },
+              { username: { $in: searchWord } },
+              { email: { $in: searchWord } },
+            ],
+          },
+        ],
+      };
+
+      // ② (admin & forceIncludeAttributesにemailが入っていない) or nomalユーザー→isEmailPublishedがtrueなユーザーのみメアドでも引っかかる
+      const patern2 = {
+        $and: [
+          { status: { $in: statusNoList } },
+          { isEmailPublished: true },
+          {
+            $or: [
+              { name: { $in: searchWord } },
+              { username: { $in: searchWord } },
+              { email: { $in: searchWord } },
+            ],
+          },
+        ],
+      };
+
+      // ③ 未loginユーザー→メアドでは引っかからない
+      const patern3 = {
+        $and: [
+          { status: { $in: statusNoList } },
+          { isEmailPublished: true },
+          {
+            $or: [
+              { name: { $in: searchWord } },
+              { username: { $in: searchWord } },
+            ],
+          },
+        ],
+      };
+
+
+      const query = patern3;
+
       const paginateResult = await User.paginate(
-        {
-          $and: [
-            { status: { $in: statusNoList } },
-            {
-              $or: [
-                { name: { $in: searchWord } },
-                { username: { $in: searchWord } },
-                { email: { $in: searchWord } },
-              ],
-            },
-          ],
-        },
+        query,
         {
           sort: sortOutput,
           page,
