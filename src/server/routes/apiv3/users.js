@@ -210,9 +210,7 @@ module.exports = (crowi) => {
               {
                 $and: [
                   { isEmailPublished: true },
-                  {
-                    or: [{ email: { $in: searchWord } }],
-                  },
+                  { email: { $in: searchWord } },
                 ],
               },
             ],
