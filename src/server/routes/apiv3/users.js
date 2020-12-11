@@ -201,12 +201,20 @@ module.exports = (crowi) => {
       const patern2 = {
         $and: [
           { status: { $in: statusNoList } },
-          { isEmailPublished: true },
+          // { isEmailPublished: true },
           {
             $or: [
               { name: { $in: searchWord } },
               { username: { $in: searchWord } },
-              { email: { $in: searchWord } },
+              // { email: { $in: searchWord } },
+              {
+                $and: [
+                  { isEmailPublished: true },
+                  {
+                    or: [{ email: { $in: searchWord } }],
+                  },
+                ],
+              },
             ],
           },
         ],
@@ -226,7 +234,7 @@ module.exports = (crowi) => {
       };
 
 
-      const query = patern3;
+      const query = patern2;
 
       const paginateResult = await User.paginate(
         query,
