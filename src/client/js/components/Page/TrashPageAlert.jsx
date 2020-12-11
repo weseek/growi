@@ -72,7 +72,7 @@ const TrashPageAlert = (props) => {
         </button>
         <button
           type="button"
-          className="btn btn-danger rounded-pill btn-sm mr-2"
+          className="btn btn-danger rounded-pill btn-sm"
           disabled={!isAbleToDeleteCompletely}
           onClick={openPageDeleteModalHandler}
         >
@@ -107,13 +107,15 @@ const TrashPageAlert = (props) => {
 
   return (
     <>
-      <div className="alert alert-warning py-3 px-4 d-flex align-items-center">
-        <div>
+      <div className="alert alert-warning py-3 pl-4 d-flex flex-column flex-lg-row">
+        <div className="flex-grow-1">
           This page is in the trash <i className="icon-trash" aria-hidden="true"></i>.
           {isDeleted && <span><br /><UserPicture user={{ username: lastUpdateUsername }} /> Deleted by {lastUpdateUsername} at {updatedAt}</span>}
         </div>
-        { pageContainer.isAbleToShowEmptyTrashButton && renderEmptyButton()}
-        { pageContainer.isAbleToShowTrashPageManagementButtons && renderTrashPageManagementButtons()}
+        <div className="pt-1 d-flex align-items-end align-items-lg-center">
+          <span>{ pageContainer.isAbleToShowEmptyTrashButton && renderEmptyButton()}</span>
+          { pageContainer.isAbleToShowTrashPageManagementButtons && renderTrashPageManagementButtons()}
+        </div>
       </div>
       {renderModals()}
     </>

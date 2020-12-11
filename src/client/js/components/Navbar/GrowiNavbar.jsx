@@ -53,7 +53,6 @@ class GrowiNavbar extends React.Component {
         </span>
         <UncontrolledTooltip
           placement="bottom"
-          trigger="click"
           target="confidentialTooltip"
           className="d-md-none"
         >
