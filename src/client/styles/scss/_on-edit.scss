@@ -134,6 +134,12 @@ body.on-edit {
 
     .grw-taglabels-container {
       margin-bottom: 0;
+
+      .grw-tag-labels.form-inline {
+        flex-flow: row nowrap;
+        width: 100%;
+        overflow-x: scroll;
+      }
     }
   }
 
@@ -141,6 +147,7 @@ body.on-edit {
   .grw-subnav-left-side {
     overflow: hidden;
     .grw-path-nav-container {
+      margin-right: 1rem;
       overflow: hidden;
       .grw-page-path-nav {
         white-space: nowrap;
