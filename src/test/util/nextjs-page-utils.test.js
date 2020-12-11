@@ -1,18 +1,19 @@
+const { getInstance } = require('../setup-crowi');
 import { getServerSideCommonProps, useCustomTitle, useCustomTitleForPage } from '~/utils/nextjs-page-utils';
 import DevidedPagePath from '~/models/devided-page-path';
 
 jest.mock('~/models/devided-page-path');
 
 describe('.getServerSideCommonProps', () => {
+  let crowi
+  beforeEach(async() => {
+    crowi = await getInstance()
+    crowi.customizeService = { customTitleTemplate: 'customTitleTemplate' }
+  })
   test('should be return replaced text', async() => {
     const result = await getServerSideCommonProps(
       {
-        req: {
-          crowi: {
-            appService: { getAppTitle: jest.fn().mockImplementation(() => { return 'appTitle' }) },
-            customizeService: { customTitleTemplate: 'customTitleTemplate' },
-          },
-        },
+        req: { crowi },
         resolvedUrl: 'resolvedUrl',
       },
     );
@@ -21,12 +22,43 @@ describe('.getServerSideCommonProps', () => {
         props: {
           namespacesRequired: ['translation'],
           currentPagePath: '/resolvedUrl',
-          appTitle: 'appTitle',
+          appTitle: 'GROWI',
           customTitleTemplate: 'customTitleTemplate',
         },
       },
     );
   });
+  test('should be return currentPagePath', async() => {
+    const result = await getServerSideCommonProps(
+      {
+        req: { crowi },
+        resolvedUrl: 'resolvedUrl',
+      },
+    );
+    expect(result.props.currentPagePath).toBe('/resolvedUrl');
+  });
+
+  /* eslint-disable indent */
+  test.each`
+    resolvedUrl                      | currentPagePath
+    ${'resolvedUrl'}                 | ${'/resolvedUrl'}
+    ${'resolvedUrl?key=value'}       | ${'/resolvedUrl'}
+    ${'resolved/%E3%83%91%E3%82%B9'} | ${'/resolved/パス'}
+  `(
+    'should be return $currentPagePath when resolvedUrl is $resolvedUrl',
+    async({
+      resolvedUrl, currentPagePath,
+    }) => {
+      const result = await getServerSideCommonProps(
+        {
+          req: { crowi },
+          resolvedUrl,
+        },
+      );
+      expect(result.props.currentPagePath).toBe(currentPagePath);
+    },
+  );
+  /* eslint-disable indent */
 });
 
 describe('.useCustomTitle', () => {
