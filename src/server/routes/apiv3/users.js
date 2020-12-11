@@ -182,6 +182,17 @@ module.exports = (crowi) => {
     };
 
     try {
+      // const { user } = req;
+      // if (user != null) {
+      //   const isAdmin = user.admin;
+      // }
+
+      // if (user !== null && user.admin) {
+
+      // }
+
+      // console.log(isAdmin);
+
 
       // ①  admin & forceIncludeAttributesにemailが入っている→全員メアドでも引っかかる
       const patern1 = {
@@ -217,20 +228,119 @@ module.exports = (crowi) => {
       };
 
       // ③ 未loginユーザー→メアドでは引っかからない
-      const patern3 = {
+      // let conditionOne;
+      // chaneする
+      // if (req.user.admin && forceIncludeAttributes.includes('email')) {
+      //   conditionOne.and({ email: { $in: searchWord } });
+      // }
+
+
+      // itizawaさんのお助け
+      const filter = [
+        { name: { $in: searchWord } },
+        { username: { $in: searchWord } },
+      ];
+      if (req.user != null) {
+        filter.push(
+          {
+            $and: [
+              { isEmailPublished: true },
+              { email: { $in: searchWord } },
+            ],
+          },
+        );
+      }
+      if (forceIncludeAttributes.includes('email')) {
+        filter.push({ email: { $in: searchWord } });
+      }
+
+      const query = {
         $and: [
           { status: { $in: statusNoList } },
           {
-            $or: [
-              { name: { $in: searchWord } },
-              { username: { $in: searchWord } },
-            ],
+            $or: filter,
           },
         ],
       };
 
+      console.log(query);
+      // const query = patern2;
 
-      const query = patern2;
+      // お助け終わり
+
+
+      // const patern3 = {
+      //   $and: [
+      //     { status: { $in: statusNoList } },
+      //     {
+      //       $or: [
+      //         { name: { $in: searchWord } },
+      //         { username: { $in: searchWord } },
+      //         { additionalQuery },
+      //       ],
+      //     },
+      //   ],
+      // };
+
+
+      // const query = patern3;
+
+
+      // exampleです
+      // const { user } = req.user;
+      // const isAdmin = user != null && user.admin;
+      // let additionalCondition = {};
+      // console.log(isAdmin);
+
+      // if (req.user != null) {
+      //   if (user.admin && forceIncludeAttributes.includes('email')) {
+      //     additionalCondition = { email: { $in: searchWord } };
+      //   }
+      //   else {
+      //     additionalCondition = {
+      //       $and: [
+      //         { isEmailPublished: true },
+      //         { email: { $in: searchWord } },
+      //       ],
+      //     };
+      //   }
+      // }
+
+
+      // if (user.admin && forceIncludeAttributes.includes('email')) {
+      //   query.and({ email: { $in: searchWord } });
+      // }
+
+      // if (req.user != null) {
+      //   if (user.admin && forceIncludeAttributes.includes('email')) {
+      //     additionalCondition = { email: { $in: searchWord } };
+      //   }
+      //   else {
+      //     additionalCondition = {
+      //       $and: [
+      //         { isEmailPublished: true },
+      //         { email: { $in: searchWord } },
+      //       ],
+      //     };
+      //   }
+      // }
+
+
+      // const newquery =
+
+
+      // const default = {
+      //   $and: [
+      //     { status: { $in: statusNoList } },
+      //     {
+      //       $or: [
+      //         { name: { $in: searchWord } },
+      //         { username: { $in: searchWord } },
+      //       ],
+      //     },
+      //   ],
+      // };
+
 
       const paginateResult = await User.paginate(
         query,
