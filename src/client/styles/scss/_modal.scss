@@ -2,3 +2,9 @@
 .modal-dialog.grw-modal-expanded {
   @include expand-modal-fullscreen(true, true);
 }
+
+.grw-duplicated-page-table {
+  tbody {
+    max-height: 200px;
+  }
+}
