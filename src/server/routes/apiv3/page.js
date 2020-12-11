@@ -7,6 +7,7 @@ const { body, query } = require('express-validator');
 
 const router = express.Router();
 
+const { convertToNewAffiliationPath } = require('../../../lib/util/path-utils');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 
@@ -153,6 +154,10 @@ module.exports = (crowi) => {
       body('fileType').isString().isIn(['pdf', 'markdown']),
       body('hierarchyType').isString().isIn(['allSubordinatedPage', 'decideHierarchy']),
       body('hierarchyValue').isNumeric(),
+    ],
+    exist: [
+      query('fromPath').isString(),
+      query('toPath').isString(),
     ],
   };
 
@@ -313,6 +318,63 @@ module.exports = (crowi) => {
     });
 
     return stream.pipe(res);
+  });
+
+  /**
+   * @swagger
+   *
+   *    /page/exist-paths:
+   *      get:
+   *        tags: [Page]
+   *        summary: /page/exist-paths
+   *        description: Get already exist paths
+   *        operationId: getAlreadyExistPaths
+   *        parameters:
+   *          - name: fromPath
+   *            in: query
+   *            description: old parent path
+   *            schema:
+   *              type: string
+   *          - name: toPath
+   *            in: query
+   *            description: new parent path
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: Succeeded to retrieve pages.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    existPaths:
+   *                      type: object
+   *                      description: Paths are already exist in DB
+   *          500:
+   *            description: Internal server error.
+   */
+  router.get('/exist-paths', loginRequired, validator.exist, apiV3FormValidator, async(req, res) => {
+    const { fromPath, toPath } = req.query;
+
+    try {
+      const fromPage = await Page.findByPath(fromPath);
+      const fromPageDescendants = await Page.findManageableListWithDescendants(fromPage, req.user);
+
+      const toPathDescendantsArray = fromPageDescendants.map((subordinatedPage) => {
+        return convertToNewAffiliationPath(fromPath, toPath, subordinatedPage.path);
+      });
+
+      const existPages = await Page.findListByPathsArray(toPathDescendantsArray);
+      const existPaths = existPages.map(page => page.path);
+
+      return res.apiv3({ existPaths });
+
+    }
+    catch (err) {
+      logger.error('Failed to get exist path', err);
+      return res.apiv3Err(err, 500);
+    }
+
   });
 
   // TODO GW-2746 bulk export pages
