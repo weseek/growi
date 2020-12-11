@@ -2,8 +2,8 @@ import axios from 'axios';
 import path from 'path';
 import fs from 'graceful-fs';
 import streamToPromise from 'stream-to-promise';
-import { downloadTo } from '~/utils/download';
 import { Transform } from 'stream';
+import { downloadTo } from '~/utils/download';
 
 jest.mock('axios');
 // jest.mock('mkdirp');
@@ -34,7 +34,7 @@ describe('.downloadTo', () => {
           this.push(chunk);
           done();
         },
-      })
+      });
       await downloadTo('url', outDirName, outFileName, noop);
       expect(fs.readFileSync('outDir/fileName', 'utf-8')).toBe('test text');
     });
