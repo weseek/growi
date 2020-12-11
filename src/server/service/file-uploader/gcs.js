@@ -67,19 +67,19 @@ module.exports = function(crowi) {
     const myBucket = gcs.bucket(getGcsBucket());
     const filePath = getFilePathOnStorage(attachment);
     const file = myBucket.file(filePath);
-    const provideSecForTemporaryUrl = this.configManager.getConfig('crowi', 'gcs:provideSecForTemporaryUrl');
+    const lifetimeSecForTemporaryUrl = this.configManager.getConfig('crowi', 'gcs:lifetimeSecForTemporaryUrl');
 
     // issue signed url (default: expires 120 seconds)
     // https://cloud.google.com/storage/docs/access-control/signed-urls
     const signedUrl = await file.getSignedUrl({
       action: 'read',
-      expires: Date.now() + provideSecForTemporaryUrl * 1000,
+      expires: Date.now() + lifetimeSecForTemporaryUrl * 1000,
     });
 
     res.redirect(signedUrl);
 
     try {
-      return attachment.cashTemporaryUrlByProvideSec(signedUrl, provideSecForTemporaryUrl);
+      return attachment.cashTemporaryUrlByProvideSec(signedUrl, lifetimeSecForTemporaryUrl);
     }
     catch (err) {
       logger.error(err);
