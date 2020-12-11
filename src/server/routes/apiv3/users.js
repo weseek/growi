@@ -201,12 +201,10 @@ module.exports = (crowi) => {
       const patern2 = {
         $and: [
           { status: { $in: statusNoList } },
-          // { isEmailPublished: true },
           {
             $or: [
               { name: { $in: searchWord } },
               { username: { $in: searchWord } },
-              // { email: { $in: searchWord } },
               {
                 $and: [
                   { isEmailPublished: true },
