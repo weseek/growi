@@ -260,10 +260,10 @@ SearchTypeahead.propTypes = {
  */
 SearchTypeahead.defaultProps = {
   onSearchSuccess: noop,
-  onSearchError: noop,
-  onChange: noop,
-  placeholder: '',
-  keywordOnInit: '',
+  onSearchError:   noop,
+  onChange:        noop,
+  placeholder:     '',
+  keywordOnInit:   '',
   behaviorOfResetBtn: 'restore',
   onInputChange: () => {},
 };
