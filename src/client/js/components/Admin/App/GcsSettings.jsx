@@ -11,10 +11,55 @@ import AdminAppContainer from '../../../services/AdminAppContainer';
 
 function GcsSetting(props) {
   const { t, adminAppContainer } = props;
-  const { gcsUseOnlyEnvVars } = adminAppContainer.state;
+  const { gcsReferenceFileWithRelayMode, gcsUseOnlyEnvVars } = adminAppContainer.state;
 
   return (
     <>
+
+      <div className="row form-group my-3">
+        <label className="text-left text-md-right col-md-3 col-form-label">
+          {t('admin:app_setting.file_delivery_method')}
+        </label>
+
+        <div className="col-md-6">
+          <div className="dropdown">
+            <button
+              className="btn btn-outline-secondary dropdown-toggle"
+              type="button"
+              id="ddGcsReferenceFileWithRelayMode"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="true"
+            >
+              {gcsReferenceFileWithRelayMode && t('admin:app_setting.file_delivery_method_relay')}
+              {!gcsReferenceFileWithRelayMode && t('admin:app_setting.file_delivery_method_redirect')}
+            </button>
+            <div className="dropdown-menu" aria-labelledby="ddGcsReferenceFileWithRelayMode">
+              <button
+                className="dropdown-item"
+                type="button"
+                onClick={() => { adminAppContainer.changeGcsReferenceFileWithRelayMode(true) }}
+              >
+                {t('admin:app_setting.file_delivery_method_relay')}
+              </button>
+              <button
+                className="dropdown-item"
+                type="button"
+                onClick={() => { adminAppContainer.changeGcsReferenceFileWithRelayMode(false) }}
+              >
+                { t('admin:app_setting.file_delivery_method_redirect')}
+              </button>
+            </div>
+
+            <p className="form-text text-muted small">
+              {t('admin:app_setting.file_delivery_method_redirect_info')}
+              <br />
+              {t('admin:app_setting.file_delivery_method_relay_info')}
+            </p>
+          </div>
+        </div>
+      </div>
+
       {gcsUseOnlyEnvVars && (
         <p
           className="alert alert-info"
@@ -98,6 +143,7 @@ function GcsSetting(props) {
           </tr>
         </tbody>
       </table>
+
     </>
   );
 
