@@ -275,7 +275,7 @@ describe('users', () => {
         expect(response.body.errors).toBeDefined();
       });
       test('respond 400 when username is empty', async() => {
-        const response = await request(app).get('/exists')
+        const response = await request(app).get('/exists');
         expect(response.statusCode).toBe(400);
         expect(response.body.errors).toBeDefined();
       });
