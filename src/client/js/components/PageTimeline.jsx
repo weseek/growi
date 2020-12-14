@@ -62,12 +62,12 @@ class PageTimeline extends React.Component {
   render() {
     const { t } = this.props;
     const { pages } = this.state;
-    const { path } = this.props.pageContainer.state;
+
     if (pages == null || pages.length === 0) {
       return (
         <div className="mt-2">
           {/* eslint-disable-next-line react/no-danger */}
-          <p dangerouslySetInnerHTML={{ __html: t('custom_navigation.no_page_list', { path }) }} />
+          <p>{t('custom_navigation.no_page_list')}</p>
         </div>
       );
     }

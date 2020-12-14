@@ -231,7 +231,7 @@
     "react-codemirror2": "^6.0.0",
     "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.8.3",
-    "react-dropzone": "^10.1.3",
+    "react-dropzone": "^11.2.4",
     "react-frame-component": "^4.0.0",
     "react-hotkeys": "^2.0.0",
     "react-i18next": "^11.1.0",
@@ -266,6 +266,11 @@
     "@server": "src/server",
     "@alias/logger": "src/lib/service/logger",
     "debug": "src/lib/service/logger/alias-for-debug"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "@commons/(.*)": "<rootDir>/src/lib/$1"
+    }
   },
   "engines": {
     "node": "^12 || ^14",

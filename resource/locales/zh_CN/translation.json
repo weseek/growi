@@ -151,7 +151,10 @@
   "Disassociate": "解除关联",
   "No bookmarks yet": "暂无书签",
 	"Recent Created": "最新创建",
-	"Recent Changes": "最新修改",
+  "Recent Changes": "最新修改",
+  "original_path":"Original path",
+  "new_path":"New path",
+  "duplicated_path":"duplicated_path",
 	"form_validation": {
 		"error_message": "有些值不正确",
 		"required": "%s 是必需的",
@@ -162,7 +165,7 @@
     "page_not_exist_alert": "该页面不存在，请创建一个新页面"
   },
   "custom_navigation": {
-    "no_page_list": "There are no pages under <a href='{{path}}'><strong>{{ path }}</strong></a>."
+    "no_page_list": "There are no pages under this page."
   },
 	"installer": {
 		"setup": "安装",
@@ -298,7 +301,10 @@
 	"modal_rename": {
 		"label": {
 			"Move/Rename page": "页面 移动/重命名",
-			"New page name": "新建页面名称",
+      "New page name": "新建页面名称",
+      "Fail to get subordinated pages": "Fail to get subordinated pages",
+      "Fail to get exist path": "Fail to get exist path",
+      "Rename without exist path": "Rename without exist path",
 			"Current page name": "当前页面名称",
 			"Recursively": "递归地",
 			"Do not update metadata": "不更新元数据",
@@ -328,9 +334,16 @@
 	"modal_duplicate": {
 		"label": {
 			"Duplicate page": "Duplicate page",
-			"New page name": "New page name",
-			"Current page name": "Current page name"
-		}
+      "New page name": "New page name",
+      "Fail to get subordinated pages": "Fail to get subordinated pages",
+			"Current page name": "Current page name",
+      "Recursively": "Recursively",
+      "Duplicate without exist path": "Duplicate without exist path",
+      "Same page already exists": "Same page already exists"
+    },
+    "help": {
+      "recursive": "Duplicate children of under this path recursively"
+    }
 	},
 	"modal_putback": {
 		"label": {

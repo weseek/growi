@@ -48,6 +48,32 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  */
 
 module.exports = (crowi) => {
+
+  async function checkMongo(errors, info) {
+    try {
+      const Config = crowi.models.Config;
+      await Config.findOne({});
+
+      info.mongo = 'OK';
+    }
+    catch (err) {
+      errors.push(new ErrorV3(`MongoDB is not connectable - ${err.message}`, 'healthcheck-mongodb-unhealthy', err.stack));
+    }
+  }
+
+  async function checkSearch(errors, info) {
+    const { searchService } = crowi;
+    if (searchService.isConfigured) {
+      try {
+        info.searchInfo = await searchService.getInfoForHealth();
+        searchService.resetErrorStatus();
+      }
+      catch (err) {
+        errors.push(new ErrorV3(`The Search Service is not connectable - ${err.message}`, 'healthcheck-search-unhealthy', err.stack));
+      }
+    }
+  }
+
   /**
    * @swagger
    *
@@ -58,14 +84,19 @@ module.exports = (crowi) => {
    *      summary: /healthcheck
    *      description: Check whether the server is healthy or not
    *      parameters:
-   *        - name: connectToMiddlewares
+   *        - name: checkServices
    *          in: query
-   *          description: Check MongoDB and SearchService (consider as healthy even if any of middleware is available or not)
+   *          description: The list of services to check health
    *          schema:
-   *            type: boolean
-   *        - name: checkMiddlewaresStrictly
+   *            type: array
+   *            items:
+   *              type: string
+   *              enum:
+   *                - mongo
+   *                - search
+   *        - name: strictly
    *          in: query
-   *          description: Check MongoDB and SearchService and responds 503 if either of these is unhealthy
+   *          description: Check services and responds 503 if either of these is unhealthy
    *          schema:
    *            type: boolean
    *      responses:
@@ -92,11 +123,22 @@ module.exports = (crowi) => {
    *                    $ref: '#/components/schemas/HealthcheckInfo'
    */
   router.get('/', helmet.noCache(), async(req, res) => {
-    const connectToMiddlewares = req.query.connectToMiddlewares != null;
-    const checkMiddlewaresStrictly = req.query.checkMiddlewaresStrictly != null;
+    let checkServices = req.query.checkServices || [];
+    let isStrictly = req.query.strictly != null;
 
-    // return 200 w/o connecting to MongoDB and SearchService
-    if (!connectToMiddlewares && !checkMiddlewaresStrictly) {
+    // for backward compatibility
+    if (req.query.connectToMiddlewares != null) {
+      logger.warn('The param \'connectToMiddlewares\' is deprecated. Use \'checkServices[]\' instead.');
+      checkServices = ['mongo', 'search'];
+    }
+    if (req.query.checkMiddlewaresStrictly != null) {
+      logger.warn('The param \'checkMiddlewaresStrictly\' is deprecated. Use \'checkServices[]\' and \'strictly\' instead.');
+      checkServices = ['mongo', 'search'];
+      isStrictly = true;
+    }
+
+    // return 200 w/o checking
+    if (checkServices.length === 0) {
       res.status(200).send({ status: 'OK' });
       return;
     }
@@ -105,30 +147,18 @@ module.exports = (crowi) => {
     const info = {};
 
     // connect to MongoDB
-    try {
-      const Config = crowi.models.Config;
-      await Config.findOne({});
-
-      info.mongo = 'OK';
-    }
-    catch (err) {
-      errors.push(new ErrorV3(`MongoDB is not connectable - ${err.message}`, 'healthcheck-mongodb-unhealthy', err.stack));
+    if (checkServices.includes('mongo')) {
+      await checkMongo(errors, info);
     }
 
     // connect to search service
-    const { searchService } = crowi;
-    if (searchService.isConfigured) {
-      try {
-        info.searchInfo = await searchService.getInfoForHealth();
-      }
-      catch (err) {
-        errors.push(new ErrorV3(`The Search Service is not connectable - ${err.message}`, 'healthcheck-search-unhealthy', err.stack));
-      }
+    if (checkServices.includes('search')) {
+      await checkSearch(errors, info);
     }
 
     if (errors.length > 0) {
       let httpStatus = 200;
-      if (checkMiddlewaresStrictly) {
+      if (isStrictly) {
         httpStatus = 503;
       }
 
