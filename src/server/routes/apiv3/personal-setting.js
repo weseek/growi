@@ -128,10 +128,11 @@ module.exports = (crowi) => {
     try {
       const user = await User.findUserByUsername(username);
 
-      // return email whether it's private
-      const { email } = user;
+      // return email and apiToken
+      const { email, apiToken } = user;
       const currentUser = user.toObject();
       currentUser.email = email;
+      currentUser.apiToken = apiToken;
 
       return res.apiv3({ currentUser });
     }
