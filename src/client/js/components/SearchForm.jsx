@@ -149,7 +149,6 @@ class SearchForm extends React.Component {
         placeholder={placeholder}
         helpElement={this.getHelpElement()}
         keywordOnInit={this.props.keyword}
-        isCloseHelp={this.state.isCloseHelp}
         onBlur={this.onBlur}
         onFocus={this.onFocus}
       />
