@@ -150,6 +150,9 @@
   "No bookmarks yet": "No bookmarks yet",
   "Recent Created": "最新の作成",
   "Recent Changes": "最新の変更",
+  "original_path":"元のパス",
+  "new_path":"新しいパス",
+  "duplicated_path":"重複したパス",
   "personal_dropdown": {
     "home": "ホーム",
     "settings": "設定",
@@ -324,6 +327,9 @@
     "label": {
       "Move/Rename page": "ページを移動/名前変更する",
       "New page name": "移動先のページ名",
+      "Fail to get subordinated pages": "配下ページの取得に失敗しました",
+      "Fail to get exist path": "存在するパスの取得に失敗しました",
+      "Rename without exist path": "存在するパス以外を名前変更する",
       "Current page name": "現在のページ名",
       "Recursively": "再帰的に移動/名前変更",
       "Do not update metadata": "メタデータを更新しない",
@@ -354,7 +360,14 @@
     "label": {
       "Duplicate page": "ページを複製する",
       "New page name": "複製後のページ名",
-      "Current page name": "現在のページ名"
+      "Fail to get subordinated pages": "配下ページの取得に失敗しました",
+      "Current page name": "現在のページ名",
+      "Recursively": "再帰的に複製",
+      "Duplicate without exist path": "存在するパス以外を複製する",
+      "Same page already exists": "同じページがすでに存在します"
+    },
+    "help": {
+      "recursive": "配下のページも複製します"
     }
   },
   "modal_putback": {

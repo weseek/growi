@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
+import { UncontrolledPopover, PopoverHeader, PopoverBody } from 'reactstrap';
 /**
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
@@ -15,7 +16,7 @@ class SlackNotification extends React.Component {
 
   constructor(props) {
     super(props);
-
+    this.idForSlackPopover = `${this.props.id}ForSlackPopover`;
     this.updateCheckboxHandler = this.updateCheckboxHandler.bind(this);
     this.updateSlackChannelsHandler = this.updateSlackChannelsHandler.bind(this);
   }
@@ -55,16 +56,16 @@ class SlackNotification extends React.Component {
           </label>
           <input
             className="grw-form-control-slack-notification form-control align-top pl-0"
+            id={this.idForSlackPopover}
             type="text"
             value={this.props.slackChannels}
             placeholder="Input channels"
-            data-toggle="popover"
-            title={t('slack_notification.popover_title')}
-            data-content={t('slack_notification.popover_desc')}
-            data-trigger="focus"
-            data-placement="top"
             onChange={this.updateSlackChannelsHandler}
           />
+          <UncontrolledPopover trigger="focus" placement="top" target={this.idForSlackPopover}>
+            <PopoverHeader>{t('slack_notification.popover_title')}</PopoverHeader>
+            <PopoverBody>{t('slack_notification.popover_desc')}</PopoverBody>
+          </UncontrolledPopover>
         </div>
       </div>
     );
