@@ -59,11 +59,11 @@ class SearchForm extends React.Component {
 
   getHelpElement() {
     const { t, appContainer } = this.props;
+    const { isCloseHelp } = this.state;
 
     const config = appContainer.getConfig();
     const isReachable = config.isSearchServiceReachable;
 
-    console.log(this.state.isCloseHelp);
 
     if (!isReachable) {
       return (
@@ -74,11 +74,11 @@ class SearchForm extends React.Component {
       );
     }
 
-    if (this.state.isCloseHelp) {
+    if (isCloseHelp) {
       return;
     }
 
-    if (!this.state.isCloseHelp) {
+    if (!isCloseHelp) {
       return (
         <table className="table grw-search-table search-help m-0">
           <caption className="text-left text-primary p-2">
