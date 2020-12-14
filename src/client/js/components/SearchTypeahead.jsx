@@ -222,6 +222,8 @@ class SearchTypeahead extends React.Component {
           renderMenuItemChildren={this.renderMenuItemChildren}
           caseSensitive={false}
           defaultSelected={defaultSelected}
+          onBlur={this.props.onBlur}
+          onFocus={this.props.onFocus}
         />
         {resetFormButton}
       </div>
@@ -244,6 +246,8 @@ SearchTypeahead.propTypes = {
   onSearchSuccess: PropTypes.func,
   onSearchError:   PropTypes.func,
   onChange:        PropTypes.func,
+  onBlur:          PropTypes.func,
+  onFocus:         PropTypes.func,
   onSubmit:        PropTypes.func,
   onInputChange:   PropTypes.func,
   inputName:       PropTypes.string,
