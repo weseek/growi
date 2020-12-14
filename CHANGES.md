@@ -1,6 +1,18 @@
 # CHANGES
 
-## v4.2.2-RC
+## v4.2.3-RC
+
+* Feature: Auto reconnecting to search service
+* Improvement: New style of params for Healthcheck API
+* Fix: Referencing attachments when `FILE_UPLOAD_DISABLED` is true
+* Fix: The message of timeline for restricted pages
+* Fix: Parameter validation for Import/Export Archive API
+* Fix: Prevent regexp for Search Tags API
+* Fix: Add `Content-Security-Policy` when referencing attachments
+* Fix: Sanitize at presentation time
+* Fix: Remove page path string from message for page lists and timeline when there is no contents
+
+## v4.2.2
 
 * Fix: Consecutive save operations with built-in editor fail
     * Introduced by v4.2.1

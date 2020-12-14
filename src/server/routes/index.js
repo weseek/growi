@@ -4,6 +4,7 @@ const autoReap = require('multer-autoreap');
 autoReap.options.reapOnError = true; // continue reaping the file even if an error occurs
 
 module.exports = function(crowi, app) {
+  const autoReconnectToSearch = require('../middlewares/auto-reconnect-to-search')(crowi);
   const applicationNotInstalled = require('../middlewares/application-not-installed')(crowi);
   const applicationInstalled = require('../middlewares/application-installed')(crowi);
   const accessTokenParser = require('../middlewares/access-token-parser')(crowi);
@@ -32,7 +33,7 @@ module.exports = function(crowi, app) {
 
   /* eslint-disable max-len, comma-spacing, no-multi-spaces */
 
-  app.get('/'                        , applicationInstalled, loginRequired , page.showTopPage);
+  app.get('/'                        , applicationInstalled, loginRequired , autoReconnectToSearch, page.showTopPage);
 
   // API v3
   app.use('/api-docs', require('./apiv3/docs')(crowi));
@@ -111,7 +112,7 @@ module.exports = function(crowi, app) {
 
   // export management for admin
   app.get('/admin/export'                       , loginRequiredStrictly , adminRequired ,admin.export.index);
-  app.get('/admin/export/:fileName'             , loginRequiredStrictly , adminRequired ,admin.export.download);
+  app.get('/admin/export/:fileName'             , loginRequiredStrictly , adminRequired ,admin.export.api.validators.export.download(), admin.export.download);
 
   app.get('/me'                       , loginRequiredStrictly , me.index);
   // external-accounts
@@ -136,14 +137,12 @@ module.exports = function(crowi, app) {
   // HTTP RPC Styled API (に徐々に移行していいこうと思う)
   app.get('/_api/users.list'          , accessTokenParser , loginRequired , user.api.list);
   app.get('/_api/pages.list'          , accessTokenParser , loginRequired , page.api.list);
-  app.post('/_api/pages.create'       , accessTokenParser , loginRequiredStrictly , csrf, page.api.create);
   app.post('/_api/pages.update'       , accessTokenParser , loginRequiredStrictly , csrf, page.api.update);
   app.get('/_api/pages.get'           , accessTokenParser , loginRequired , page.api.get);
   app.get('/_api/pages.exist'         , accessTokenParser , loginRequired , page.api.exist);
   app.get('/_api/pages.updatePost'    , accessTokenParser, loginRequired, page.api.getUpdatePost);
   app.get('/_api/pages.getPageTag'    , accessTokenParser , loginRequired , page.api.getPageTag);
   // allow posting to guests because the client doesn't know whether the user logged in
-  app.post('/_api/pages.rename'       , accessTokenParser , loginRequiredStrictly , csrf, page.api.rename);
   app.post('/_api/pages.remove'       , loginRequiredStrictly , csrf, page.api.remove); // (Avoid from API Token)
   app.post('/_api/pages.revertRemove' , loginRequiredStrictly , csrf, page.api.revertRemove); // (Avoid from API Token)
   app.post('/_api/pages.unlink'       , loginRequiredStrictly , csrf, page.api.unlink); // (Avoid from API Token)
@@ -175,6 +174,6 @@ module.exports = function(crowi, app) {
   app.get('/share/:linkId', page.showSharedPage);
 
   app.get('/*/$'                   , loginRequired , page.showPageWithEndOfSlash, page.notFound);
-  app.get('/*'                     , loginRequired , page.showPage, page.notFound);
+  app.get('/*'                     , loginRequired , autoReconnectToSearch, page.showPage, page.notFound);
 
 };

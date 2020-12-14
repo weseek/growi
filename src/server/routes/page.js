@@ -147,6 +147,17 @@ module.exports = function(crowi, app) {
   const interceptorManager = crowi.getInterceptorManager();
   const globalNotificationService = crowi.getGlobalNotificationService();
 
+  const XssOption = require('../../lib/service/xss/xssOption');
+  const Xss = require('../../lib/service/xss/index');
+  const initializedConfig = {
+    isEnabledXssPrevention: crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
+    tagWhiteList: crowi.xssService.getTagWhiteList(),
+    attrWhiteList: crowi.xssService.getAttrWhiteList(),
+  };
+  const xssOption = new XssOption(initializedConfig);
+  const xss = new Xss(xssOption);
+
+
   const actions = {};
 
   function getPathFromRequest(req) {
@@ -230,6 +241,11 @@ module.exports = function(crowi, app) {
   }
 
   function addRenderVarsForPresentation(renderVars, page) {
+    // sanitize page.revision.body
+    if (crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention')) {
+      const preventXssRevision = xss.process(page.revision.body);
+      page.revision.body = preventXssRevision;
+    }
     renderVars.page = page;
     renderVars.revision = page.revision;
   }
@@ -695,57 +711,7 @@ module.exports = function(crowi, app) {
     }
   };
 
-  /**
-   * @swagger
-   *
-   *    /pages.create:
-   *      post:
-   *        tags: [Pages, CrowiCompatibles]
-   *        operationId: createPage
-   *        summary: /pages.create
-   *        description: Create page
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  body:
-   *                    $ref: '#/components/schemas/Revision/properties/body'
-   *                  path:
-   *                    $ref: '#/components/schemas/Page/properties/path'
-   *                  grant:
-   *                    $ref: '#/components/schemas/Page/properties/grant'
-   *                required:
-   *                  - body
-   *                  - path
-   *        responses:
-   *          200:
-   *            description: Succeeded to create page.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    page:
-   *                      $ref: '#/components/schemas/Page'
-   *                    revision:
-   *                      $ref: '#/components/schemas/Revision'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  /**
-   * @api {post} /pages.create Create new page
-   * @apiName CreatePage
-   * @apiGroup Page
-   *
-   * @apiParam {String} body
-   * @apiParam {String} path
-   * @apiParam {String} grant
-   * @apiParam {Array} pageTags
-   */
+  // TODO If everything that depends on this route, delete it too
   api.create = async function(req, res) {
     const body = req.body.body || null;
     let pagePath = req.body.path || null;

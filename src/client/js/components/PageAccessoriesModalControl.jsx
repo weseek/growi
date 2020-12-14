@@ -26,29 +26,34 @@ const PageAccessoriesModalControl = (props) => {
         name: 'pagelist',
         Icon: <PageListIcon />,
         disabled: isSharedUser,
+        i18n: t('page_list'),
       },
       {
         name: 'timeline',
         Icon: <TimeLineIcon />,
         disabled: isSharedUser,
+        i18n: t('Timeline View'),
       },
       {
         name: 'pageHistory',
         Icon: <HistoryIcon />,
         disabled: isGuestUser || isSharedUser,
+        i18n: t('History'),
       },
       {
         name: 'attachment',
         Icon: <AttachmentIcon />,
         disabled: false,
+        i18n: t('attachment_data'),
       },
       {
         name: 'shareLink',
         Icon: <ShareLinkIcon />,
         disabled: isGuestUser || isSharedUser,
+        i18n: t('share_links.share_link_management'),
       },
     ];
-  }, [isGuestUser, isSharedUser]);
+  }, [t, isGuestUser, isSharedUser]);
 
   return (
     <div className="grw-page-accessories-control d-flex flex-nowrap align-items-center justify-content-end justify-content-lg-between">
@@ -64,11 +69,9 @@ const PageAccessoriesModalControl = (props) => {
                 {accessory.Icon}
               </button>
             </div>
-            {accessory.disabled && (
-              <UncontrolledTooltip placement="top" target={`shareLink-btn-wrapper-for-tooltip-for-${accessory.name}`} fade={false}>
-                {t('Not available for guest')}
-              </UncontrolledTooltip>
-            )}
+            <UncontrolledTooltip placement="top" target={`shareLink-btn-wrapper-for-tooltip-for-${accessory.name}`} fade={false}>
+              {accessory.disabled ? t('Not available for guest') : accessory.i18n}
+            </UncontrolledTooltip>
           </Fragment>
         );
       })}
