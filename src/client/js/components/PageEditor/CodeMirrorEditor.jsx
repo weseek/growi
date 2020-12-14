@@ -58,9 +58,7 @@ require('../../util/codemirror/autorefresh.ext');
 
 
 const MARKDOWN_TABLE_ACTIVATED_CLASS = 'markdown-table-activated';
-// TODO: activate by GW-3443
-// const MARKDOWN_LINK_ACTIVATED_CLASS = 'markdown-link-activated';
-const MARKDOWN_LINK_ACTIVATED_CLASS = '';
+const MARKDOWN_LINK_ACTIVATED_CLASS = 'markdown-link-activated';
 
 export default class CodeMirrorEditor extends AbstractEditor {
 
@@ -776,9 +774,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         color={null}
         size="sm"
         title="Link"
-        // TODO: activate by GW-3443
-        // onClick={this.showLinkEditHandler}
-        onClick={this.createReplaceSelectionHandler('[', ']()')}
+        onClick={this.showLinkEditHandler}
       >
         <EditorIcon icon="Link" />
       </Button>,
