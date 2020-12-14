@@ -4,6 +4,10 @@
 
 * Fix: Adjust line-height for pre under li
 * Fix: Emptying trash process is broken
+* Fix: Parameter validation for Import/Export Archive API
+* Fix: Prevent regexp for Search Tags API
+* Fix: Add `Content-Security-Policy` when referencing attachments
+* Fix: Sanitize at presentation time
 
 ## v4.1.11
 
