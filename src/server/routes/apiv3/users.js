@@ -93,7 +93,7 @@ module.exports = (crowi) => {
 
       const { user } = req;
 
-      if (user !== null && user.admin) {
+      if (user != null && user.admin) {
         return value;
       }
       throw new Error('the param \'selectedStatusList\' is not allowed to use by the users except administrators');
