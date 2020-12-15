@@ -1,7 +1,12 @@
 # CHANGES
 
-## v4.2.3-RC
+## v4.2.4
 
+* 
+
+## v4.2.3
+
+* Feature: Insert/edit links with GUI
 * Feature: Auto reconnecting to search service
 * Improvement: New style of params for Healthcheck API
 * Fix: Referencing attachments when `FILE_UPLOAD_DISABLED` is true
