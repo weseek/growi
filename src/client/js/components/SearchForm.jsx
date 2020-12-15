@@ -13,7 +13,7 @@ class SearchForm extends React.Component {
 
     this.state = {
       searchError: null,
-      isCloseHelp: false,
+      isShownHelp: false,
     };
 
     this.onSearchError = this.onSearchError.bind(this);
@@ -45,7 +45,7 @@ class SearchForm extends React.Component {
 
   onBlur() {
     this.setState({
-      isCloseHelp: true,
+      isShownHelp: false,
     });
 
     this.getHelpElement();
@@ -53,13 +53,13 @@ class SearchForm extends React.Component {
 
   onFocus() {
     this.setState({
-      isCloseHelp: false,
+      isShownHelp: true,
     });
   }
 
   getHelpElement() {
     const { t, appContainer } = this.props;
-    const { isCloseHelp } = this.state;
+    const { isShownHelp } = this.state;
 
     const config = appContainer.getConfig();
     const isReachable = config.isSearchServiceReachable;
@@ -74,7 +74,7 @@ class SearchForm extends React.Component {
       );
     }
 
-    if (isCloseHelp) {
+    if (!isShownHelp) {
       return null;
     }
 
