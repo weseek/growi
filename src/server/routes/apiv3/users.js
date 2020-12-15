@@ -181,7 +181,7 @@ module.exports = (crowi) => {
       [sort]: (sortOrder === 'desc') ? -1 : 1,
     };
 
-    //  For more information about the external specification of the User API, see here [/資料/外部仕様/ユーザーAPI](https://dev.growi.org/5fd7466a31d89500488248e3)
+    //  For more information about the external specification of the User API, see here (https://dev.growi.org/5fd7466a31d89500488248e3)
 
     const orConditions = [
       { name: { $in: searchWord } },
