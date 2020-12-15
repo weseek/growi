@@ -65,34 +65,39 @@ class GrowiNavbar extends React.Component {
   render() {
     const { appContainer, navigationContainer } = this.props;
     const { crowi, isSearchServiceConfigured } = appContainer.config;
-    const { isDeviceSmallerThanMd } = navigationContainer.state;
+    const { isDeviceSmallerThanMd, editorMode } = navigationContainer.state;
 
     return (
       <>
+        { editorMode === 'view'
+          && (
+          <>
+            {/* Brand Logo  */}
+            <div className="navbar-brand mr-0">
+              <a className="grw-logo d-block" href="/">
+                <GrowiLogo />
+              </a>
+            </div>
 
-        {/* Brand Logo  */}
-        <div className="navbar-brand mr-0">
-          <a className="grw-logo d-block" href="/">
-            <GrowiLogo />
-          </a>
-        </div>
-
-        <div className="grw-app-title d-none d-md-block">
-          {crowi.title}
-        </div>
+            <div className="grw-app-title d-none d-md-block">
+              {crowi.title}
+            </div>
 
 
-        {/* Navbar Right  */}
-        <ul className="navbar-nav ml-auto">
-          {this.renderNavbarRight()}
-          {crowi.confidential != null && this.renderConfidential()}
-        </ul>
+            {/* Navbar Right  */}
+            <ul className="navbar-nav ml-auto">
+              {this.renderNavbarRight()}
+              {crowi.confidential != null && this.renderConfidential()}
+            </ul>
 
-        { isSearchServiceConfigured && !isDeviceSmallerThanMd && (
-          <div className="grw-global-search grw-global-search-top position-absolute">
-            <GlobalSearch />
-          </div>
-        ) }
+            { isSearchServiceConfigured && !isDeviceSmallerThanMd && (
+            <div className="grw-global-search grw-global-search-top position-absolute">
+              <GlobalSearch />
+            </div>
+            ) }
+          </>
+          )
+        }
       </>
     );
   }
