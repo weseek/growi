@@ -1202,20 +1202,6 @@ module.exports = function(crowi) {
     return pageData;
   };
 
-  /**
-   * Delete Bookmarks, Attachments, Revisions, Pages and emit delete
-   */
-  // TODO: transplant to service/page.js because page deletion affects various models data
-  pageSchema.statics.completelyDeletePageRecursively = async function(targetPage, user, options = {}) {
-    const findOpts = { includeTrashed: true };
-
-    // find manageable descendants (this array does not include GRANT_RESTRICTED)
-    const pages = await this.findManageableListWithDescendants(targetPage, user, findOpts);
-
-    await Promise.all(pages.map((page) => {
-      return this.completelyDeletePage(page, user, options);
-    }));
-  };
 
   pageSchema.statics.removeByPath = function(path) {
     if (path == null) {

@@ -94,6 +94,20 @@ class PageService {
     return newParentpage;
   }
 
+  /**
+   * Delete Bookmarks, Attachments, Revisions, Pages and emit delete
+   */
+  async completelyDeletePageRecursively(targetPage, user, options = {}) {
+    const findOpts = { includeTrashed: true };
+    const Page = this.crowi.model('Page');
+
+    // find manageable descendants (this array does not include GRANT_RESTRICTED)
+    const pages = await Page.findManageableListWithDescendants(targetPage, user, findOpts);
+
+    await Promise.all(pages.map((page) => {
+      return Page.completelyDeletePage(page, user, options);
+    }));
+  }
 
 }
 
