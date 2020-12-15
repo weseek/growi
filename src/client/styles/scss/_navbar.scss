@@ -1,11 +1,13 @@
 .grw-navbar {
   top: -$grw-navbar-height !important;
-
   max-height: $grw-navbar-height + $grw-navbar-border-width;
   border-top: 0;
   border-right: 0;
   border-bottom: $grw-navbar-border-width solid;
   border-left: 0;
+  @include media-breakpoint-down(sm) {
+    top: initial !important;
+  }
 
   .grw-app-title {
     @include variable-font-size(24px);
