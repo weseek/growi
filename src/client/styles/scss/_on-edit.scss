@@ -135,6 +135,7 @@ body.on-edit {
     .grw-taglabels-container {
       margin-bottom: 0;
 
+      // To scroll tags horizontally
       .grw-tag-labels.form-inline {
         flex-flow: row nowrap;
         width: 100%;
