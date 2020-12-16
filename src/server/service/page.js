@@ -161,7 +161,6 @@ class PageService {
 
   async handlePrivatePagesForDeletedGroup(deletedGroup, action, transferToUserGroupId) {
     const Page = this.crowi.model('Page');
-
     const pages = await Page.find({ grantedGroup: deletedGroup });
 
     switch (action) {
