@@ -86,27 +86,7 @@ const EditorIcon = (props) => {
       );
     case 'Grid':
       return (
-        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
-          <rect width="30" height="30" fillOpacity="0" />
-          <g transform="translate(-375 -415)">
-            <g transform="translate(382 422)" stroke="#000" strokeWidth="1">
-              <rect width="6" height="7" rx="1" stroke="none" />
-              <rect x="0.5" y="0.5" width="5" height="6" rx="0.5" />
-            </g>
-            <g transform="translate(390 422)" stroke="#000" strokeWidth="1">
-              <rect width="8" height="7" rx="1" stroke="none" />
-              <rect x="0.5" y="0.5" width="7" height="6" rx="0.5" />
-            </g>
-            <g transform="translate(382 431)" stroke="#000" strokeWidth="1">
-              <rect width="10" height="7" rx="1" stroke="none" />
-              <rect x="0.5" y="0.5" width="9" height="6" rx="0.5" />
-            </g>
-            <g transform="translate(394 431)" stroke="#000" strokeWidth="1">
-              <rect width="4" height="7" rx="1" stroke="none" />
-              <rect x="0.5" y="0.5" width="3" height="6" rx="0.5" />
-            </g>
-          </g>
-        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30"><rect width="30" height="30" fill="none" /><g transform="translate(-375 -415)"><g transform="translate(382 422)"><path d="M5,7H1A.945.945,0,0,1,0,6V1A.945.945,0,0,1,1,0H5A.945.945,0,0,1,6,1V6A.945.945,0,0,1,5,7ZM1,1V6H5V1ZM1,.5V1H1Z" /></g><g transform="translate(390 422)"><path d="M7,7H1A.945.945,0,0,1,0,6V1A.945.945,0,0,1,1,0H7A.945.945,0,0,1,8,1V6A.945.945,0,0,1,7,7ZM1,1V6H7V1ZM1,.5V1H1Z" /></g><g transform="translate(382 431)"><path d="M9,7H1A.945.945,0,0,1,0,6V1A.945.945,0,0,1,1,0H9a.945.945,0,0,1,1,1V6A.945.945,0,0,1,9,7ZM1,1V6H9V1ZM1,.5V1H1Z" /></g><g transform="translate(394 431)"><path d="M3,7H1A.945.945,0,0,1,0,6V1A.945.945,0,0,1,1,0H3A.945.945,0,0,1,4,1V6A.945.945,0,0,1,3,7ZM1,1V6H3V1ZM1,.5V1H1Z" /></g></g></svg>
       );
     case 'Table':
       return (
