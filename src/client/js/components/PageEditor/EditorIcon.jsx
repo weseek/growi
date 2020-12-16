@@ -86,7 +86,27 @@ const EditorIcon = (props) => {
       );
     case 'Grid':
       return (
-        <i className="fa fa-th"></i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
+          <rect width="30" height="30" fill="none" />
+          <g transform="translate(-375 -415)">
+            <g transform="translate(382 422)" fill="none" stroke="#000" strokeWidth="1">
+              <rect width="6" height="7" rx="1" stroke="none" />
+              <rect x="0.5" y="0.5" width="5" height="6" rx="0.5" fill="none" />
+            </g>
+            <g transform="translate(390 422)" fill="none" stroke="#000" strokeWidth="1">
+              <rect width="8" height="7" rx="1" stroke="none" />
+              <rect x="0.5" y="0.5" width="7" height="6" rx="0.5" fill="none" />
+            </g>
+            <g transform="translate(382 431)" fill="none" stroke="#000" strokeWidth="1">
+              <rect width="10" height="7" rx="1" stroke="none" />
+              <rect x="0.5" y="0.5" width="9" height="6" rx="0.5" fill="none" />
+            </g>
+            <g transform="translate(394 431)" fill="none" stroke="#000" strokeWidth="1">
+              <rect width="4" height="7" rx="1" stroke="none" />
+              <rect x="0.5" y="0.5" width="3" height="6" rx="0.5" fill="none" />
+            </g>
+          </g>
+        </svg>
       );
     case 'Table':
       return (
