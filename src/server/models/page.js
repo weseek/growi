@@ -1182,27 +1182,6 @@ module.exports = function(crowi) {
     return updatedPage;
   };
 
-  /**
-   * This is danger.
-   */
-  // TODO: transplant to service/page.js because page deletion affects various models data
-  pageSchema.statics.completelyDeletePage = async function(pageData, user, options = {}) {
-    validateCrowi();
-
-    const { _id, path } = pageData;
-    const socketClientId = options.socketClientId || null;
-
-    logger.debug('Deleting completely', path);
-
-    await crowi.pageService.deleteCompletely(_id, path);
-
-    if (socketClientId != null) {
-      pageEvent.emit('delete', pageData, user, socketClientId); // update as renamed page
-    }
-    return pageData;
-  };
-
-
   pageSchema.statics.removeByPath = function(path) {
     if (path == null) {
       throw new Error('path is required');

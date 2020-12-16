@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
+const logger = require('@alias/logger')('growi:models:page');
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 
 class PageService {
@@ -92,6 +93,35 @@ class PageService {
 
     // TODO GW-4634 use stream
     return newParentpage;
+  }
+
+
+  async completelyDeletePage(pageData, user, options = {}) {
+
+    // let pageEvent;
+    // // init event
+    // if (crowi != null) {
+    //   pageEvent = crowi.event('page');
+    //   pageEvent.on('create', pageEvent.onCreate);
+    //   pageEvent.on('update', pageEvent.onUpdate);
+    // }
+
+
+    const Page = this.crowi.model('Page');
+
+    Page.validateCrowi();
+
+    const { _id, path } = pageData;
+    const socketClientId = options.socketClientId || null;
+
+    logger.debug('Deleting completely', path);
+
+    await this.deleteCompletely(_id, path);
+
+    if (socketClientId != null) {
+      pageEvent.emit('delete', pageData, user, socketClientId); // update as renamed page
+    }
+    return pageData;
   }
 
   /**
