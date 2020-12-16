@@ -70,7 +70,13 @@ export default class PageHistoryContainer extends Container {
     });
 
     const diffOpened = {};
-    const lastId = rev.length - 1;
+
+    let lastId = rev.length - 1;
+
+    // If the number of rev count is the same, the last rev is for diff display, so exclude it.
+    if (rev.length === this.state.pagingLimit + 1) {
+      lastId = rev.length - 2;
+    }
 
     res.data.docs.forEach((revision, i) => {
       const user = revision.author;
