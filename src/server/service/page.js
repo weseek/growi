@@ -47,6 +47,7 @@ class PageService {
   }
 
   async duplicate(page, newPagePath, user) {
+    const Page = this.crowi.model('Page');
     const PageTagRelation = mongoose.model('PageTagRelation');
     // populate
     await page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate();
@@ -56,7 +57,6 @@ class PageService {
     options.grant = page.grant;
     options.grantUserGroupId = page.grantedGroup;
     options.grantedUsers = page.grantedUsers;
-    const Page = this.crowi.model('Page');
 
     const createdPage = await Page.create(
       newPagePath, page.revision.body, user, options,
@@ -77,9 +77,9 @@ class PageService {
   }
 
   async duplicateRecursively(page, newPagePath, user) {
+    const Page = this.crowi.model('Page');
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
-    const Page = this.crowi.model('Page');
 
     const pages = await Page.findManageableListWithDescendants(page, user);
 
