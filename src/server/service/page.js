@@ -159,6 +159,33 @@ class PageService {
     return updatedPage;
   }
 
+  async handlePrivatePagesForDeletedGroup(deletedGroup, action, transferToUserGroupId) {
+    // const Page = mongoose.model('Page');
+    const Page = this.crowi.model('Page');
+
+    const pages = await Page.find({ grantedGroup: deletedGroup });
+
+    switch (action) {
+      case 'public':
+        await Promise.all(pages.map((page) => {
+          return Page.publicizePage(page);
+        }));
+        break;
+      case 'delete':
+        await Promise.all(pages.map((page) => {
+          return this.completelyDeletePage(page);
+        }));
+        break;
+      case 'transfer':
+        await Promise.all(pages.map((page) => {
+          return Page.transferPageToGroup(page, transferToUserGroupId);
+        }));
+        break;
+      default:
+        throw new Error('Unknown action for private pages');
+    }
+  }
+
   validateCrowi() {
     if (this.crowi == null) {
       throw new Error('"crowi" is null. Init User model with "crowi" argument first.');

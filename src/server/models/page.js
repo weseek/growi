@@ -1255,33 +1255,6 @@ module.exports = function(crowi) {
     return await queryBuilder.query.exec();
   };
 
-  // TODO: transplant to service/page.js because page deletion affects various models data
-  pageSchema.statics.handlePrivatePagesForDeletedGroup = async function(deletedGroup, action, transferToUserGroupId) {
-    const Page = mongoose.model('Page');
-
-    const pages = await this.find({ grantedGroup: deletedGroup });
-
-    switch (action) {
-      case 'public':
-        await Promise.all(pages.map((page) => {
-          return Page.publicizePage(page);
-        }));
-        break;
-      case 'delete':
-        await Promise.all(pages.map((page) => {
-          return crowi.pageService.completelyDeletePage(page);
-        }));
-        break;
-      case 'transfer':
-        await Promise.all(pages.map((page) => {
-          return Page.transferPageToGroup(page, transferToUserGroupId);
-        }));
-        break;
-      default:
-        throw new Error('Unknown action for private pages');
-    }
-  };
-
   pageSchema.statics.publicizePage = async function(page) {
     page.grantedGroup = null;
     page.grant = GRANT_PUBLIC;
