@@ -18,6 +18,7 @@ import RawLayout from '../components/RawLayout';
 // } from '../stores/context';
 
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const logger = loggerFactory('growi:pages:installer');
 
 type Props = CommonProps & {
@@ -41,29 +42,9 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
               <div className="login-header mx-auto">
                 <div className="logo"><GrowiLogo /></div>
                 <h1 className="my-3">GROWI</h1>
-
-                <div className="login-form-errors px-3">
-                  {/* {% if req.form.errors.length > 0 %}
-                  <div class="alert alert-danger">
-                    <ul class="mb-0">
-                    {% for error in req.form.errors %}
-                      <li>{{ error }}</li>
-                    {% endfor %}
-                    </ul>
-                  </div>
-                  {% endif %} */}
-                </div>
               </div>
             </div>
             <div className="col-md-12">
-              {/* <div
-                id="installer-form"
-                data-user-name="{{ req.body.registerForm.username }}"
-                data-name="{{ req.body.registerForm.name }}"
-                data-email="{{ req.body.registerForm.email }}"
-                data-csrf="{{ csrf() }}"
-              >
-              </div> */}
               <InstallerForm />
             </div>
           </div>
