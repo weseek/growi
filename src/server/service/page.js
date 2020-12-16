@@ -16,10 +16,10 @@ class PageService {
     // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
     const Bookmark = this.crowi.model('Bookmark');
     const Comment = this.crowi.model('Comment');
+    const Page = this.crowi.model('Page');
     const PageTagRelation = this.crowi.model('PageTagRelation');
     const ShareLink = this.crowi.model('ShareLink');
     const Revision = this.crowi.model('Revision');
-    const Page = this.crowi.model('Page');
 
     return Promise.all([
       Bookmark.removeBookmarksByPageId(pageId),
