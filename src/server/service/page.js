@@ -106,6 +106,7 @@ class PageService {
       pageEvent.on('update', pageEvent.onUpdate);
     }
 
+    this.validateCrowi();
     const { _id, path } = pageData;
     const socketClientId = options.socketClientId || null;
 
@@ -132,6 +133,12 @@ class PageService {
     await Promise.all(pages.map((page) => {
       return this.completelyDeletePage(page, user, options);
     }));
+  }
+
+  validateCrowi() {
+    if (this.crowi == null) {
+      throw new Error('"crowi" is null. Init User model with "crowi" argument first.');
+    }
   }
 
 }
