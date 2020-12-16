@@ -1141,29 +1141,6 @@ module.exports = function(crowi) {
     }));
   };
 
-  // TODO: transplant to service/page.js because page deletion affects various models data
-  pageSchema.statics.revertDeletedPage = async function(page, user, options = {}) {
-    const newPath = this.getRevertDeletedPageName(page.path);
-
-    const originPage = await this.findByPath(newPath);
-    if (originPage != null) {
-      // 削除時、元ページの path には必ず redirectTo 付きで、ページが作成される。
-      // そのため、そいつは削除してOK
-      // が、redirectTo ではないページが存在している場合それは何かがおかしい。(データ補正が必要)
-      if (originPage.redirectTo !== page.path) {
-        throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
-      }
-      await crowi.pageService.completelyDeletePage(originPage, options);
-    }
-
-    page.status = STATUS_PUBLISHED;
-    page.lastUpdateUser = user;
-    debug('Revert deleted the page', page, newPath);
-    const updatedPage = await this.rename(page, newPath, user, {});
-
-    return updatedPage;
-  };
-
   pageSchema.statics.revertDeletedPageRecursively = async function(targetPage, user, options = {}) {
     const findOpts = { includeTrashed: true };
     const pages = await this.findManageableListWithDescendants(targetPage, user, findOpts);
@@ -1171,7 +1148,7 @@ module.exports = function(crowi) {
     let updatedPage = null;
     await Promise.all(pages.map((page) => {
       const isParent = (page.path === targetPage.path);
-      const p = this.revertDeletedPage(page, user, options);
+      const p = crowi.pageService.revertDeletedPage(page, user, options);
       if (isParent) {
         updatedPage = p;
       }
