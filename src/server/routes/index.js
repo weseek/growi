@@ -41,8 +41,7 @@ module.exports = function(crowi, app) {
 
   // installer
   if (!isInstalled) {
-    const installer = require('./installer')(crowi);
-    app.post('/_api/install'              , applicationNotInstalled , installer.install);
+    app.use('/_api/v3/install', require('./apiv3/installer')(crowi));
     app.get('/'                           , applicationInstalled, next.delegateToNext);
     app.get('/installer'                  , applicationNotInstalled, next.delegateToNext);
     return;

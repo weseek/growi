@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useForm, SubmitHandler, Validate } from 'react-hook-form';
 
 import { i18n, config, useTranslation } from '~/i18n';
-import { apiPost } from '../util/apiv1-client';
-import { apiv3Get } from '../util/apiv3-client';
+import { ErrorV3 } from '~/models/error-v3';
+
+import { apiv3Get, apiv3Post } from '../util/apiv3-client';
 
 type FormValues = {
   username: string,
@@ -11,7 +12,6 @@ type FormValues = {
   email: string,
   password: string,
 }
-
 
 const LanguageDropdownMenu = (): JSX.Element => {
   const elements: JSX.Element[] = config.allLanguages.map((lang) => {
@@ -28,17 +28,30 @@ const LanguageDropdownMenu = (): JSX.Element => {
 
 const InstallerForm = (): JSX.Element => {
   const { t } = useTranslation();
-  const { handleSubmit, register, errors } = useForm({ mode: 'onBlur' });
+  const { handleSubmit, register } = useForm({ mode: 'onBlur' });
 
   const [isMounted, setIsMounted] = useState(false);
   const [isValidUserName, setIsValidUserName] = useState(true);
+  const [serverErrors, setServerErrors] = useState<ErrorV3[]>([]);
 
   useEffect(() => setIsMounted(true), []);
 
   const validateUsername: Validate = async(value) => {
-    const { data } = await apiv3Get('/users/exists', { username: value });
-    const isExists = data.exists;
-    return !isExists;
+    try {
+      const { data } = await apiv3Get('/users/exists', { username: value });
+      const isExists = data.exists;
+
+      if (isExists) {
+        setIsValidUserName(false);
+        setServerErrors([new ErrorV3(`Username '${value}' exists.`)]);
+      }
+    }
+    catch (errors) {
+      setServerErrors(errors);
+    }
+
+    // return true as React Hook Form validation
+    return true;
   };
 
   const submitHandler: SubmitHandler<FormValues> = async(formValues) => {
@@ -46,21 +59,15 @@ const InstallerForm = (): JSX.Element => {
     const postData = { ...formValues, language };
 
     console.log('postData', postData);
-    // const { data } = await apiPost('/install', postData);
+
+    try {
+      const { data } = await apiv3Post('/install', postData);
+      console.log('returnedData', data);
+    }
+    catch (errors) {
+      setServerErrors(errors);
+    }
   };
-
-
-  // checkUserName(event) {
-  //   const axios = require('axios').create({
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'X-Requested-With': 'XMLHttpRequest',
-  //     },
-  //     responseType: 'json',
-  //   });
-  //   axios.get('/_api/check_username', { params: { username: event.target.value } })
-  //     .then((res) => { return this.setState({ isValidUserName: res.data.valid }) });
-  // }
 
   const hasErrorClass = isValidUserName ? '' : 'has-error';
   const unavailableUserId = isValidUserName
@@ -77,6 +84,21 @@ const InstallerForm = (): JSX.Element => {
           </p>
         </div>
       </div>
+
+      { serverErrors.length > 0 && (
+        <div className="row">
+          <div className="col-md-12">
+            <div className="login-form-errors px-3">
+              <div className="alert alert-danger">
+                <ul className="mb-0">
+                  { serverErrors.map(error => <li key={error.code}>{error.message}</li>) }
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) }
+
       <div className="row">
         <form role="form" className="col-md-12" onSubmit={handleSubmit(submitHandler)}>
           <div className="dropdown mb-3">
@@ -100,7 +122,7 @@ const InstallerForm = (): JSX.Element => {
             </div>
           </div>
 
-          <div className={`input-group mb-3${hasErrorClass}`}>
+          <div className={`input-group mb-3 ${hasErrorClass}`}>
             <div className="input-group-prepend">
               <span className="input-group-text"><i className="icon-user" /></span>
             </div>
@@ -109,7 +131,6 @@ const InstallerForm = (): JSX.Element => {
               className="form-control"
               placeholder={t('User ID')}
               ref={register({
-                required: true,
                 validate: async value => validateUsername(value),
               })}
             />
@@ -124,7 +145,7 @@ const InstallerForm = (): JSX.Element => {
               name="name"
               className="form-control"
               placeholder={t('Name')}
-              ref={register({ required: true })}
+              ref={register}
             />
           </div>
 
@@ -136,7 +157,7 @@ const InstallerForm = (): JSX.Element => {
               name="email"
               className="form-control"
               placeholder={t('Email')}
-              ref={register({ required: true })}
+              ref={register}
             />
           </div>
 
@@ -149,12 +170,12 @@ const InstallerForm = (): JSX.Element => {
               type="password"
               className="form-control"
               placeholder={t('Password')}
-              ref={register({ required: true })}
+              ref={register}
             />
           </div>
 
           <div className="input-group mt-4 mb-3 d-flex justify-content-center">
-            <button type="submit" className="btn-fill btn btn-register" id="register">
+            <button type="submit" className="btn-fill btn btn-register">
               <div className="eff"></div>
               <span className="btn-label"><i className="icon-user-follow" /></span>
               <span className="btn-label-text">{ t('Create') }</span>
