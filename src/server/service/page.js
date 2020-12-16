@@ -97,7 +97,7 @@ class PageService {
 
 
   async completelyDeletePage(pageData, user, options = {}) {
-
+    this.validateCrowi();
     let pageEvent;
     // init event
     if (this.crowi != null) {
@@ -106,7 +106,6 @@ class PageService {
       pageEvent.on('update', pageEvent.onUpdate);
     }
 
-    this.validateCrowi();
     const { _id, path } = pageData;
     const socketClientId = options.socketClientId || null;
 
