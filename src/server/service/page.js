@@ -143,9 +143,9 @@ class PageService {
     const newPath = Page.getRevertDeletedPageName(page.path);
     const originPage = await Page.findByPath(newPath);
     if (originPage != null) {
-      // 削除時、元ページの path には必ず redirectTo 付きで、ページが作成される。
-      // そのため、そいつは削除してOK
-      // が、redirectTo ではないページが存在している場合それは何かがおかしい。(データ補正が必要)
+      // When the page is deleted, it will always be created with "redirectTo" in the path of the original page.
+      // So, it's ok to delete the page
+      // However, If a page exists that is not "redirectTo", something is wrong. (Data correction is needed).
       if (originPage.redirectTo !== page.path) {
         throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
       }
