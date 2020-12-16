@@ -153,13 +153,6 @@ export const defaultNotificationConfigs: { [key: string]: any } = {
 };
 
 /**
- * It is deprecated to use this for anything other than AppService#isDBInitialized.
- */
-// configSchema.statics.getConfigsObjectForInstalling = function() {
-//   return getConfigsForInstalling();
-// };
-
-/**
  * It is deprecated to use this for anything other than ConfigLoader#load.
  */
 // configSchema.statics.getDefaultCrowiConfigsObject = function() {

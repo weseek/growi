@@ -2,6 +2,8 @@ import { pathUtils } from 'growi-commons';
 
 import loggerFactory from '~/utils/logger';
 
+import { generateConfigsForInstalling } from '../models/config';
+
 import S2sMessage from '../models/vo/s2s-message';
 import { S2sMessageHandlable } from './s2s-messaging/handlable';
 import { S2sMessagingService } from './s2s-messaging/base';
@@ -116,7 +118,7 @@ class AppService implements S2sMessageHandlable {
    * Execute only once for installing application
    */
   async initDB(globalLang) {
-    const initialConfig = this.configManager.configModel.getConfigsObjectForInstalling();
+    const initialConfig = generateConfigsForInstalling();
     initialConfig['app:globalLang'] = globalLang;
     await this.configManager.updateConfigsInTheSameNamespace('crowi', initialConfig, true);
   }
