@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
 const logger = require('@alias/logger')('growi:models:page');
+const debug = require('debug')('growi:models:page');
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
+
+const STATUS_PUBLISHED = 'published';
 
 class PageService {
 
@@ -13,10 +16,10 @@ class PageService {
     // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
     const Bookmark = this.crowi.model('Bookmark');
     const Comment = this.crowi.model('Comment');
-    const Page = this.crowi.model('Page');
     const PageTagRelation = this.crowi.model('PageTagRelation');
     const ShareLink = this.crowi.model('ShareLink');
     const Revision = this.crowi.model('Revision');
+    const Page = this.crowi.model('Page');
 
     return Promise.all([
       Bookmark.removeBookmarksByPageId(pageId),
@@ -44,7 +47,6 @@ class PageService {
   }
 
   async duplicate(page, newPagePath, user) {
-    const Page = this.crowi.model('Page');
     const PageTagRelation = mongoose.model('PageTagRelation');
     // populate
     await page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate();
@@ -54,6 +56,7 @@ class PageService {
     options.grant = page.grant;
     options.grantUserGroupId = page.grantedGroup;
     options.grantedUsers = page.grantedUsers;
+    const Page = this.crowi.model('Page');
 
     const createdPage = await Page.create(
       newPagePath, page.revision.body, user, options,
@@ -74,9 +77,9 @@ class PageService {
   }
 
   async duplicateRecursively(page, newPagePath, user) {
-    const Page = this.crowi.model('Page');
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
+    const Page = this.crowi.model('Page');
 
     const pages = await Page.findManageableListWithDescendants(page, user);
 
@@ -132,6 +135,28 @@ class PageService {
     await Promise.all(pages.map((page) => {
       return this.completelyDeletePage(page, user, options);
     }));
+  }
+
+
+  async revertDeletedPage(page, user, options = {}) {
+    const Page = this.crowi.model('Page');
+    const newPath = Page.getRevertDeletedPageName(page.path);
+    const originPage = await Page.findByPath(newPath);
+    if (originPage != null) {
+      // 削除時、元ページの path には必ず redirectTo 付きで、ページが作成される。
+      // そのため、そいつは削除してOK
+      // が、redirectTo ではないページが存在している場合それは何かがおかしい。(データ補正が必要)
+      if (originPage.redirectTo !== page.path) {
+        throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
+      }
+      await this.completelyDeletePage(originPage, options);
+    }
+
+    page.status = STATUS_PUBLISHED;
+    page.lastUpdateUser = user;
+    debug('Revert deleted the page', page, newPath);
+    const updatedPage = await Page.rename(page, newPath, user, {});
+    return updatedPage;
   }
 
   validateCrowi() {
