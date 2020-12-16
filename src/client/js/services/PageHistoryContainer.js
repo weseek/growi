@@ -74,7 +74,7 @@ export default class PageHistoryContainer extends Container {
     let lastId = rev.length - 1;
 
     // If the number of rev count is the same, the last rev is for diff display, so exclude it.
-    if (rev.length === this.state.pagingLimit + 1) {
+    if (rev.length === pagingLimitForShow + 1) {
       lastId = rev.length - 2;
     }
 
