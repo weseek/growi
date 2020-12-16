@@ -1153,8 +1153,7 @@ module.exports = function(crowi) {
       if (originPage.redirectTo !== page.path) {
         throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
       }
-
-      await this.completelyDeletePage(originPage, options);
+      await crowi.pageService.completelyDeletePage(originPage, options);
     }
 
     page.status = STATUS_PUBLISHED;
@@ -1293,7 +1292,7 @@ module.exports = function(crowi) {
         break;
       case 'delete':
         await Promise.all(pages.map((page) => {
-          return Page.completelyDeletePage(page);
+          return crowi.pageService.completelyDeletePage(page);
         }));
         break;
       case 'transfer':
