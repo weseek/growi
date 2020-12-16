@@ -98,18 +98,13 @@ class PageService {
 
   async completelyDeletePage(pageData, user, options = {}) {
 
-    // let pageEvent;
-    // // init event
-    // if (crowi != null) {
-    //   pageEvent = crowi.event('page');
-    //   pageEvent.on('create', pageEvent.onCreate);
-    //   pageEvent.on('update', pageEvent.onUpdate);
-    // }
-
-
-    const Page = this.crowi.model('Page');
-
-    Page.validateCrowi();
+    let pageEvent;
+    // init event
+    if (this.crowi != null) {
+      pageEvent = this.crowi.event('page');
+      pageEvent.on('create', pageEvent.onCreate);
+      pageEvent.on('update', pageEvent.onUpdate);
+    }
 
     const { _id, path } = pageData;
     const socketClientId = options.socketClientId || null;
@@ -135,7 +130,7 @@ class PageService {
     const pages = await Page.findManageableListWithDescendants(targetPage, user, findOpts);
 
     await Promise.all(pages.map((page) => {
-      return Page.completelyDeletePage(page, user, options);
+      return this.completelyDeletePage(page, user, options);
     }));
   }
 
