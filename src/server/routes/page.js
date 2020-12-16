@@ -1194,10 +1194,10 @@ module.exports = function(crowi, app) {
           return res.json(ApiResponse.error('You can not delete completely', 'user_not_admin'));
         }
         if (isRecursively) {
-          await Page.completelyDeletePageRecursively(page, req.user, options);
+          await crowi.pageService.completelyDeletePageRecursively(page, req.user, options);
         }
         else {
-          await Page.completelyDeletePage(page, req.user, options);
+          await crowi.pageService.completelyDeletePage(page, req.user, options);
         }
       }
       else {
@@ -1258,7 +1258,7 @@ module.exports = function(crowi, app) {
         page = await Page.revertDeletedPageRecursively(page, req.user, { socketClientId });
       }
       else {
-        page = await Page.revertDeletedPage(page, req.user, { socketClientId });
+        page = await crowi.pageService.revertDeletedPage(page, req.user, { socketClientId });
       }
     }
     catch (err) {

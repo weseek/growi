@@ -1141,30 +1141,6 @@ module.exports = function(crowi) {
     }));
   };
 
-  // TODO: transplant to service/page.js because page deletion affects various models data
-  pageSchema.statics.revertDeletedPage = async function(page, user, options = {}) {
-    const newPath = this.getRevertDeletedPageName(page.path);
-
-    const originPage = await this.findByPath(newPath);
-    if (originPage != null) {
-      // 削除時、元ページの path には必ず redirectTo 付きで、ページが作成される。
-      // そのため、そいつは削除してOK
-      // が、redirectTo ではないページが存在している場合それは何かがおかしい。(データ補正が必要)
-      if (originPage.redirectTo !== page.path) {
-        throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
-      }
-
-      await this.completelyDeletePage(originPage, options);
-    }
-
-    page.status = STATUS_PUBLISHED;
-    page.lastUpdateUser = user;
-    debug('Revert deleted the page', page, newPath);
-    const updatedPage = await this.rename(page, newPath, user, {});
-
-    return updatedPage;
-  };
-
   pageSchema.statics.revertDeletedPageRecursively = async function(targetPage, user, options = {}) {
     const findOpts = { includeTrashed: true };
     const pages = await this.findManageableListWithDescendants(targetPage, user, findOpts);
@@ -1172,7 +1148,7 @@ module.exports = function(crowi) {
     let updatedPage = null;
     await Promise.all(pages.map((page) => {
       const isParent = (page.path === targetPage.path);
-      const p = this.revertDeletedPage(page, user, options);
+      const p = crowi.pageService.revertDeletedPage(page, user, options);
       if (isParent) {
         updatedPage = p;
       }
@@ -1180,41 +1156,6 @@ module.exports = function(crowi) {
     }));
 
     return updatedPage;
-  };
-
-  /**
-   * This is danger.
-   */
-  // TODO: transplant to service/page.js because page deletion affects various models data
-  pageSchema.statics.completelyDeletePage = async function(pageData, user, options = {}) {
-    validateCrowi();
-
-    const { _id, path } = pageData;
-    const socketClientId = options.socketClientId || null;
-
-    logger.debug('Deleting completely', path);
-
-    await crowi.pageService.deleteCompletely(_id, path);
-
-    if (socketClientId != null) {
-      pageEvent.emit('delete', pageData, user, socketClientId); // update as renamed page
-    }
-    return pageData;
-  };
-
-  /**
-   * Delete Bookmarks, Attachments, Revisions, Pages and emit delete
-   */
-  // TODO: transplant to service/page.js because page deletion affects various models data
-  pageSchema.statics.completelyDeletePageRecursively = async function(targetPage, user, options = {}) {
-    const findOpts = { includeTrashed: true };
-
-    // find manageable descendants (this array does not include GRANT_RESTRICTED)
-    const pages = await this.findManageableListWithDescendants(targetPage, user, findOpts);
-
-    await Promise.all(pages.map((page) => {
-      return this.completelyDeletePage(page, user, options);
-    }));
   };
 
   pageSchema.statics.removeByPath = function(path) {
@@ -1312,33 +1253,6 @@ module.exports = function(crowi) {
     queryBuilder.addConditionToListByPathsArray(paths);
 
     return await queryBuilder.query.exec();
-  };
-
-  // TODO: transplant to service/page.js because page deletion affects various models data
-  pageSchema.statics.handlePrivatePagesForDeletedGroup = async function(deletedGroup, action, transferToUserGroupId) {
-    const Page = mongoose.model('Page');
-
-    const pages = await this.find({ grantedGroup: deletedGroup });
-
-    switch (action) {
-      case 'public':
-        await Promise.all(pages.map((page) => {
-          return Page.publicizePage(page);
-        }));
-        break;
-      case 'delete':
-        await Promise.all(pages.map((page) => {
-          return Page.completelyDeletePage(page);
-        }));
-        break;
-      case 'transfer':
-        await Promise.all(pages.map((page) => {
-          return Page.transferPageToGroup(page, transferToUserGroupId);
-        }));
-        break;
-      default:
-        throw new Error('Unknown action for private pages');
-    }
   };
 
   pageSchema.statics.publicizePage = async function(page) {
