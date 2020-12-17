@@ -792,10 +792,11 @@
   },
   "grid_edit":{
     "create_bootstrap_4_grid":"Create Bootstrap 4 Grid",
-    "grid_pattern":"Grid Pattern:",
+    "grid_settings": "Grid Settings",
+    "grid_pattern":"Grid Pattern",
     "division":"Divisions",
     "smart_no":"Smartphone / No Break",
-    "break_point":"Break point by display size:"
+    "break_point":"Break point by display size"
   },
   "validation":{
     "aws_region": "For the region, enter the AWS region name. ex):us-east-1",
