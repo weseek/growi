@@ -28,7 +28,8 @@ class GridEditModal extends React.Component {
 
     this.checkResposiveSize = this.checkResposiveSize.bind(this);
     this.checkColsRatios = this.checkColsRatios.bind(this);
-    this.init = this.init.bind(this);
+    // use when re-edit grid
+    // this.init = this.init.bind(this);
     this.show = this.show.bind(this);
     this.hide = this.hide.bind(this);
     this.cancel = this.cancel.bind(this);
@@ -52,7 +53,8 @@ class GridEditModal extends React.Component {
   // }
 
   show(gridHtml) {
-    this.init(gridHtml);
+    // use when re-edit grid
+    // this.init(gridHtml);
     this.setState({ show: true });
   }
 
