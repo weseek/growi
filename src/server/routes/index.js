@@ -16,9 +16,9 @@ module.exports = function(crowi, app) {
   const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
   // const form = require('../form');
   const page = require('./page')(crowi, app);
-  // const login = require('./login')(crowi, app);
+  const login = require('./login')(crowi, app);
   const loginPassport = require('./login-passport')(crowi, app);
-  // const logout = require('./logout')(crowi, app);
+  const logout = require('./logout')(crowi, app);
   const me = require('./me')(crowi, app);
   const admin = require('./admin')(crowi, app);
   const user = require('./user')(crowi, app);
@@ -48,15 +48,15 @@ module.exports = function(crowi, app) {
   }
 
   // app.get('/login/error/:reason'     , login.error);
-  // app.get('/login'                   , applicationInstalled     , login.preLogin, login.login);
+  app.get('/login'                        , applicationInstalled, login.preLogin, next.delegateToNext);
   // app.get('/login/invited'           , login.invited);
   // app.post('/login/activateInvited'  , form.invited                         , csrf, login.invited);
-  // app.post('/login'                  , form.login                           , csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
+  app.post('/login'                       , csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
   // app.post('/_api/login/testLdap'    , loginRequiredStrictly , form.login , loginPassport.testLdapCredentials);
 
   // app.post('/register'               , form.register                        , csrf, login.register);
   // app.get('/register'                , applicationInstalled     , login.preLogin, login.register);
-  // app.get('/logout'                  , logout.logout);
+  app.get('/logout'                       , logout.logout);
 
   // app.get('/admin'                          , loginRequiredStrictly , adminRequired , admin.index);
   // app.get('/admin/app'                      , loginRequiredStrictly , adminRequired , admin.app.index);

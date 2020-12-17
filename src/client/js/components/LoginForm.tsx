@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useForm, SubmitHandler, Validate } from 'react-hook-form';
+import { useForm, Validate } from 'react-hook-form';
 
 import ReactCardFlip from 'react-card-flip';
 
@@ -7,15 +7,7 @@ import { useTranslation } from '~/i18n';
 
 import { ErrorV3 } from '~/models/error-v3';
 
-import { apiv3Get, apiv3Post } from '../util/apiv3-client';
-
-type FormValues = {
-  username: string,
-  name: string,
-  email: string,
-  password: string,
-}
-
+import { apiv3Get } from '../util/apiv3-client';
 
 const authIconNames = {
   google: 'google',
@@ -52,6 +44,7 @@ const ExternalAuthInput = ({ auth }) => {
   );
 };
 
+
 type Props = {
   registrationMode: string,
   isRegistrationEnabled: boolean,
@@ -60,12 +53,22 @@ type Props = {
   enabledStrategies: string[],
 }
 
+type FormValues = {
+  username: string,
+  name: string,
+  email: string,
+  password: string,
+}
+
+
 const LoginForm = (props: Props): JSX.Element => {
 
   const { t } = useTranslation();
   const { handleSubmit, register } = useForm({ mode: 'onBlur' });
 
   const [isRegistering, setIsRegistering] = useState(false);
+  const [isValidUserName, setIsValidUserName] = useState(true);
+  const [serverErrors, setServerErrors] = useState<ErrorV3[]>([]);
 
   // const { hash } = window.location;
   // if (hash === '#register') {
@@ -82,6 +85,24 @@ const LoginForm = (props: Props): JSX.Element => {
   const isSomeExternalAuthEnabled = enabledStrategies.length > 0;
 
   const switchForm = () => setIsRegistering(!isRegistering);
+
+  const validateUsername: Validate = async(value) => {
+    try {
+      const { data } = await apiv3Get('/users/exists', { username: value });
+      const isExists = data.exists;
+
+      if (isExists) {
+        setIsValidUserName(false);
+        setServerErrors([new ErrorV3(`Username '${value}' exists.`)]);
+      }
+    }
+    catch (errors) {
+      setServerErrors(errors);
+    }
+
+    // return true as React Hook Form validation
+    return true;
+  };
 
   const renderLocalOrLdapLoginForm = (): JSX.Element => {
     const isLdapStrategySetup = props.setupedStrategies.includes('ldap');
@@ -163,11 +184,11 @@ const LoginForm = (props: Props): JSX.Element => {
     return (
       <React.Fragment>
         {registrationMode === 'Restricted' && (
-        <p className="alert alert-warning">
-          {t('page_register.notice.restricted')}
-          <br />
-          {t('page_register.notice.restricted_defail')}
-        </p>
+          <p className="alert alert-warning">
+            {t('page_register.notice.restricted')}
+            <br />
+            {t('page_register.notice.restricted_defail')}
+          </p>
         )}
         <form role="form" action="/register" method="post" id="register-form">
           <div className="input-group" id="input-group-username">
@@ -176,7 +197,14 @@ const LoginForm = (props: Props): JSX.Element => {
                 <i className="icon-user"></i>
               </span>
             </div>
-            <input type="text" className="form-control rounded-0" placeholder={t('User ID')} name="registerForm[username]" required />
+            <input
+              name="registerForm[username]"
+              className="form-control rounded-0"
+              placeholder={t('User ID')}
+              ref={register({
+                validate: async value => validateUsername(value),
+              })}
+            />
           </div>
           <p className="form-text text-danger">
             <span id="help-block-username"></span>
@@ -188,7 +216,12 @@ const LoginForm = (props: Props): JSX.Element => {
                 <i className="icon-tag"></i>
               </span>
             </div>
-            <input type="text" className="form-control rounded-0" placeholder={t('Name')} name="registerForm[name]" required />
+            <input
+              name="registerForm[name]"
+              className="form-control rounded-0"
+              placeholder={t('Name')}
+              ref={register}
+            />
           </div>
 
           <div className="input-group">
@@ -197,7 +230,12 @@ const LoginForm = (props: Props): JSX.Element => {
                 <i className="icon-envelope"></i>
               </span>
             </div>
-            <input type="email" className="form-control rounded-0" placeholder={t('Email')} name="registerForm[email]" required />
+            <input
+              name="registerForm[email]"
+              className="form-control rounded-0"
+              placeholder={t('Email')}
+              ref={register}
+            />
           </div>
 
           {registrationWhiteList.length > 0 && (
@@ -221,7 +259,13 @@ const LoginForm = (props: Props): JSX.Element => {
                 <i className="icon-lock"></i>
               </span>
             </div>
-            <input type="password" className="form-control rounded-0" placeholder={t('Password')} name="registerForm[password]" required />
+            <input
+              name="registerForm[password]"
+              type="password"
+              className="form-control rounded-0"
+              placeholder={t('Password')}
+              ref={register}
+            />
           </div>
 
           <div className="input-group justify-content-center my-4">
