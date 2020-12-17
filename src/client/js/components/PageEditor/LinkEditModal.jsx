@@ -299,6 +299,7 @@ class LinkEditModal extends React.PureComponent {
                 placeholder="Input page path or URL"
                 keywordOnInit={this.state.linkInputValue}
                 behaviorOfResetBtn="clear"
+                autoFocus
               />
               <div className="d-none d-sm-block input-group-append">
                 <button type="button" id="preview-btn" className="btn btn-info btn-page-preview">
@@ -421,7 +422,7 @@ class LinkEditModal extends React.PureComponent {
 
   render() {
     return (
-      <Modal className="link-edit-modal" isOpen={this.state.show} toggle={this.cancel} size="lg">
+      <Modal className="link-edit-modal" isOpen={this.state.show} toggle={this.cancel} size="lg" autoFocus={false}>
         <ModalHeader tag="h4" toggle={this.cancel} className="bg-primary text-light">
           Edit Links
         </ModalHeader>
