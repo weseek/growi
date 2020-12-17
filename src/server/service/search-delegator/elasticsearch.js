@@ -465,7 +465,13 @@ class ElasticsearchDelegator {
           logger.error('addAllPages error on add anyway: ', err);
         }
 
-        global.gc();
+        try {
+          global.gc();
+        }
+        catch (err) {
+          logger.error('fail garbage collection: ', err);
+        }
+
         callback();
       },
       final(callback) {
