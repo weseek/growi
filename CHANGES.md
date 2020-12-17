@@ -2,7 +2,8 @@
 
 ## v4.2.4
 
-* Fixed a strange diff in PageHistory due to Pagination.
+* Fix: Fixed a strange diff in PageHistory due to Pagination
+* Fix: Fixed that the user group page could not be found when using api from the outside
 
 ## v4.2.3
 
