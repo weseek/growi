@@ -70,8 +70,6 @@ class GridEditModal extends React.Component {
     const convertedHTML = geu.convertRatiosAndSizeToHTML(colsRatios, responsiveSize);
     const spaceTab = '    ';
     const pastedGridData = `::: editable-row\n<div class="container">\n${spaceTab}<div class="row">\n${convertedHTML}\n${spaceTab}</div>\n</div>\n:::`;
-    // display converted html on console
-    console.log(convertedHTML);
 
     if (this.props.onSave != null) {
       this.props.onSave(pastedGridData);
