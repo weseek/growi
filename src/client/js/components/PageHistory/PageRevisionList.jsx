@@ -86,7 +86,6 @@ class PageRevisionList extends React.Component {
         previousRevision = revision; // if it is the first revision, show full text as diff text
       }
 
-
       const hasDiff = revision.hasDiffToPrev !== false; // set 'true' if undefined for backward compatibility
       const isContiguousNodiff = !hasDiff && !hasDiffPrev;
 
