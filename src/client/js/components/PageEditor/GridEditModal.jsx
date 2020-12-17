@@ -22,7 +22,8 @@ class GridEditModal extends React.Component {
       colsRatios: [6, 6],
       responsiveSize: BootstrapGrid.ResponsiveSize.XS_SIZE,
       show: false,
-      gridHtml: '',
+      // use when re-edit grid
+      // gridHtml: '',
     };
 
     this.checkResposiveSize = this.checkResposiveSize.bind(this);
@@ -44,13 +45,11 @@ class GridEditModal extends React.Component {
     await this.setState({ colsRatios: cr });
   }
 
-  init(gridHtml) {
-    const initGridHtml = gridHtml;
-    this.setState({ gridHtml: initGridHtml }, function() {
-      // display gridHtml for re-editing
-      console.log(this.state.gridHtml);
-    });
-  }
+  // use when re-edit grid
+  // init(gridHtml) {
+  //   const initGridHtml = gridHtml;
+  //   this.setState({ gridHtml: initGridHtml });
+  // }
 
   show(gridHtml) {
     this.init(gridHtml);
@@ -68,9 +67,7 @@ class GridEditModal extends React.Component {
   pasteCodedGrid() {
     const { colsRatios, responsiveSize } = this.state;
     const convertedHTML = geu.convertRatiosAndSizeToHTML(colsRatios, responsiveSize);
-    const pastedGridData = `::: editable-row\n<div class="container">\n\t<div class="row">\n${convertedHTML}\n\t</div>\n</div>\n:::`;
-    // display converted html on console
-    console.log(convertedHTML);
+    const pastedGridData = `::: editable-row\n<div class="container">\n <div class="row">\n${convertedHTML}\n\t</div>\n</div>\n:::`;
 
     if (this.props.onSave != null) {
       this.props.onSave(pastedGridData);
