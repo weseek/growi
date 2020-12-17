@@ -1284,6 +1284,7 @@ module.exports = function(crowi) {
 
   pageSchema.statics.renameRecursively = async function(targetPage, newPagePathPrefix, user, options) {
     validateCrowi();
+    const Revision = crowi.model('Revision');
 
     const path = targetPage.path;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(path)}`, 'i');
@@ -1303,11 +1304,23 @@ module.exports = function(crowi) {
     // await Promise.allSettled(promise);
     const collection = mongoose.connection.collection('pages');
     const unorderedBulkOp = collection.initializeUnorderedBulkOp();
+    const updateMetadata = true;
+
     pages.forEach((page) => {
       const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
-      unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath } });
+      if (updateMetadata) {
+        unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath, lastUpdateUser: user._id, updatedAt: Date.now() } });
+      }
+      else {
+        unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath } });
+      }
     });
-    await unorderedBulkOp.execute();
+    unorderedBulkOp.execute();
+
+    pages.forEach((page) => {
+      const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
+      Revision.updateRevisionListByPath(page.path, { path: newPagePath }, {});
+    });
 
     targetPage.path = newPagePathPrefix;
     return targetPage;
