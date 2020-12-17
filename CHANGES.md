@@ -2,7 +2,7 @@
 
 ## v4.2.4
 
-* 
+* Fixed a strange diff in PageHistory due to Pagination.
 
 ## v4.2.3
 
