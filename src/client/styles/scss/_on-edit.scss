@@ -337,23 +337,23 @@ body.on-edit {
   .tablet-preview,
   .mobile-preview {
     .row {
-      height: 100%;
-      padding: 5px;
+      height: 140px;
+      margin: 0px;
     }
   }
   .desktop-preview {
-    height: 400px;
     .row {
       div {
+        padding: 0px;
         background-color: $info;
       }
     }
   }
 
   .tablet-preview {
-    height: 380px;
     .row {
       div {
+        padding: 0px;
         background-color: $purple;
       }
     }
@@ -361,9 +361,9 @@ body.on-edit {
 
   .mobile-preview {
     width: 75%;
-    height: 280px;
     .row {
       div {
+        padding: 0px;
         background-color: $pink;
       }
     }

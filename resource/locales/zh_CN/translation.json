@@ -797,10 +797,11 @@
 	},
   "grid_edit":{
     "create_bootstrap_4_grid":"创建Bootstrap 4网格",
-    "grid_pattern":"网格样式：",
+    "grid_settings": "网格设置",
+    "grid_pattern": "网格样式",
     "division":"分割",
     "smart_no":"手机/不分割",
-    "break_point":"按画面大小分割："
+    "break_point":"按画面大小分割"
   },
   "validation":{
     "aws_region": "关于地区，请输入AWS地区名，例如：ap-east-1",
