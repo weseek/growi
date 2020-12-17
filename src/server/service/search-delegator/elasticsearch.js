@@ -352,6 +352,11 @@ class ElasticsearchDelegator {
     return this.updateOrInsertPages(() => Page.findById(pageId));
   }
 
+  updateOrInsertPageById(pageIds) {
+    const Page = mongoose.model('Page');
+    return this.updateOrInsertPages(() => Page.find({ _id: { $in: pageIds } }));
+  }
+
   /**
    * @param {function} queryFactory factory method to generate a Mongoose Query instance
    */
@@ -935,6 +940,23 @@ class ElasticsearchDelegator {
   }
 
   async syncPageUpdated(page, user) {
+    logger.debug('SearchClient.syncPageUpdated', page.path);
+
+    // delete if page should not indexed
+    if (!this.shouldIndexed(page)) {
+      try {
+        await this.deletePages([page]);
+      }
+      catch (err) {
+        logger.error('deletePages:ES Error', err);
+      }
+      return;
+    }
+
+    return this.updateOrInsertPageById(page._id);
+  }
+
+  async syncPagesUpdated(pages, user) {
     logger.debug('SearchClient.syncPageUpdated', page.path);
 
     // delete if page should not indexed

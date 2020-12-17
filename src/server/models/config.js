@@ -192,7 +192,6 @@ module.exports = function(crowi) {
         file: crowi.fileUploadService.getFileUploadEnabled(),
       },
       registrationWhiteList: crowi.configManager.getConfig('crowi', 'security:registrationWhiteList'),
-      showPageLimitationS: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS'),
       layoutType: crowi.configManager.getConfig('crowi', 'customize:layout'),
       themeType: crowi.configManager.getConfig('crowi', 'customize:theme'),
       isEnabledLinebreaks: crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),

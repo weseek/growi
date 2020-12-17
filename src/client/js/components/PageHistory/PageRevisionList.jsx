@@ -73,6 +73,11 @@ class PageRevisionList extends React.Component {
     let hasDiffPrev;
 
     const revisionList = this.props.revisions.map((revision, idx) => {
+      // Returns null because the last revision is for the bottom diff display
+      if (idx === pageHistoryContainer.state.pagingLimit) {
+        return null;
+      }
+
       let previousRevision;
       if (idx + 1 < revisionCount) {
         previousRevision = revisions[idx + 1];
@@ -81,10 +86,6 @@ class PageRevisionList extends React.Component {
         previousRevision = revision; // if it is the first revision, show full text as diff text
       }
 
-      // Returns null because the last revision is for the bottom diff display
-      if (idx === pageHistoryContainer.state.pagingLimit) {
-        return null;
-      }
 
       const hasDiff = revision.hasDiffToPrev !== false; // set 'true' if undefined for backward compatibility
       const isContiguousNodiff = !hasDiff && !hasDiffPrev;

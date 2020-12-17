@@ -28,7 +28,7 @@ export default class PageHistoryContainer extends Container {
 
       totalPages: 0,
       activePage: 1,
-      pagingLimit: appContainer.getConfig().showPageLimitationS || 10,
+      pagingLimit: 10,
     };
 
     this.retrieveRevisions = this.retrieveRevisions.bind(this);
@@ -50,8 +50,9 @@ export default class PageHistoryContainer extends Container {
    */
   async retrieveRevisions(selectedPage) {
     const { pageId, shareLinkId } = this.pageContainer.state;
+    const { pagingLimit } = this.state;
     const page = selectedPage;
-    const pagingLimitForShow = this.state.pagingLimit;
+    const pagingLimitForApiParam = pagingLimit + 1;
 
     if (!pageId) {
       return;
@@ -59,14 +60,14 @@ export default class PageHistoryContainer extends Container {
 
     // Get one more for the bottom display
     const res = await this.appContainer.apiv3Get('/revisions/list', {
-      pageId, shareLinkId, page, limit: pagingLimitForShow + 1,
+      pageId, shareLinkId, page, limit: pagingLimitForApiParam,
     });
     const rev = res.data.docs;
     // set Pagination state
     this.setState({
       activePage: selectedPage,
       totalPages: res.data.totalDocs,
-      pagingLimit: pagingLimitForShow,
+      pagingLimit,
     });
 
     const diffOpened = {};
@@ -74,7 +75,7 @@ export default class PageHistoryContainer extends Container {
     let lastId = rev.length - 1;
 
     // If the number of rev count is the same, the last rev is for diff display, so exclude it.
-    if (rev.length === pagingLimitForShow + 1) {
+    if (rev.length > pagingLimit) {
       lastId = rev.length - 2;
     }
 
