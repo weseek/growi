@@ -465,6 +465,7 @@ class ElasticsearchDelegator {
           logger.error('addAllPages error on add anyway: ', err);
         }
 
+        global.gc();
         callback();
       },
       final(callback) {
