@@ -1292,7 +1292,7 @@ module.exports = function(crowi) {
     newPagePathPrefix = crowi.xss.process(newPagePathPrefix); // eslint-disable-line no-param-reassign
 
     // find manageable descendants
-    const readStream = this.findManageableListWithDescendants(targetPage, user, options);
+    const pages = await this.findManageableListWithDescendants(targetPage, user, options);
 
     // TODO GW-4634 use stream
     // const promise = pages.map((page) => {
@@ -1301,40 +1301,13 @@ module.exports = function(crowi) {
     // });
 
     // await Promise.allSettled(promise);
-
-
-    const { Writable, Transform } = require('stream');
-    const streamToPromise = require('stream-to-promise');
-
-    const { createBatchStream } = require('@server/util/batch-stream');
-
-    const convertStream = new Transform({
-      objectMode: true,
-      async transform(doc, encoding, callback) {
-        console.log(doc);
-
-        callback();
-      },
+    const collection = mongoose.connection.collection('pages');
+    const unorderedBulkOp = collection.initializeUnorderedBulkOp();
+    pages.forEach((page) => {
+      const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
+      unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath } });
     });
-
-    const batchStream = createBatchStream(100);
-
-    const writeStream = new Writable({
-      objectMode: true,
-      async write(batch, encoding, callback) {
-        const body = [];
-        // batch.forEach(doc => prepareBodyForCreate(body, doc));
-      },
-      final(callback) {
-        logger.info('ifewierqlavfab');
-        callback();
-      },
-    });
-
-    readStream
-      .pipe(batchStream)
-      .pipe(convertStream),
-
+    await unorderedBulkOp.execute();
 
     targetPage.path = newPagePathPrefix;
     return targetPage;
