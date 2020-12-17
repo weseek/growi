@@ -181,7 +181,8 @@ class GridEditModal extends React.Component {
     const { t } = this.props;
     if (this.state.responsiveSize === BootstrapGrid.ResponsiveSize.MD_SIZE) {
       return (
-        <>
+        <div className="row">
+          <h3 className="grw-modal-preview">{t('preview')}</h3>
           <div className="col-lg-6">
             <label className="d-block mt-2"><i className="pr-2 icon-screen-desktop"></i>{t('desktop')}</label>
             <div className="desktop-preview d-block">
@@ -200,12 +201,13 @@ class GridEditModal extends React.Component {
               {this.renderBreakPreview()}
             </div>
           </div>
-        </>
+        </div>
       );
     }
     if (this.state.responsiveSize === BootstrapGrid.ResponsiveSize.SM_SIZE) {
       return (
-        <>
+        <div className="row">
+          <h3 className="grw-modal-preview">{t('preview')}</h3>
           <div className="col-lg-6">
             <label className="d-block mt-2"><i className="pr-2 icon-screen-desktop"></i>{t('desktop')}</label>
             <div className="desktop-preview d-block">
@@ -224,12 +226,13 @@ class GridEditModal extends React.Component {
               {this.renderBreakPreview()}
             </div>
           </div>
-        </>
+        </div>
       );
     }
     if (this.state.responsiveSize === BootstrapGrid.ResponsiveSize.XS_SIZE) {
       return (
-        <>
+        <div className="row">
+          <h3 className="grw-modal-preview">{t('preview')}</h3>
           <div className="col-lg-6">
             <label className="d-block mt-2"><i className="pr-2 icon-screen-desktop"></i>{t('desktop')}</label>
             <div className="desktop-preview d-block">
@@ -248,7 +251,7 @@ class GridEditModal extends React.Component {
               {this.renderNoBreakPreview()}
             </div>
           </div>
-        </>
+        </div>
       );
     }
   }
@@ -286,49 +289,55 @@ class GridEditModal extends React.Component {
         <ModalHeader tag="h4" toggle={this.cancel} className="bg-primary text-light">
           {t('grid_edit.create_bootstrap_4_grid')}
         </ModalHeader>
-        <ModalBody>
-          <div className="container">
-            <div className="row">
-              <div className="col-lg-6 mb-3">
-                <label htmlFor="gridPattern">{t('grid_edit.grid_pattern')}</label>
-                <button
-                  className="btn btn-outline-secondary dropdown-toggle btn-block"
-                  type="button"
-                  id="dropdownMenuButton"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  {this.renderSelectedGridPattern()}
-                </button>
-                <div className="dropdown-menu grid-division-menu" aria-labelledby="dropdownMenuButton">
-                  {this.renderGridDivisionMenu()}
+        <ModalBody className="container">
+          <div className="row">
+            <div className="col-12">
+              <h3 className="grw-modal-head">{t('grid_edit.grid_settings')}</h3>
+              <form className="form-group mb-0">
+                <div className="form-group row">
+                  <label className="col-sm-3 text-md-right" htmlFor="gridPattern">
+                    {t('grid_edit.grid_pattern')}:
+                  </label>
+                  <div className="col-sm-9">
+                    <button
+                      className="btn btn-outline-secondary dropdown-toggle"
+                      type="button"
+                      id="dropdownMenuButton"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false"
+                    >
+                      {this.renderSelectedGridPattern()}
+                    </button>
+                    <div className="dropdown-menu grid-division-menu" aria-labelledby="dropdownMenuButton">
+                      {this.renderGridDivisionMenu()}
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div className="col-lg-6">
-                <div className="mr-3 d-inline">
-                  <label htmlFor="breakPoint">{t('grid_edit.break_point')}</label>
+                <div className="form-group row">
+                  <label className="col-sm-3 text-md-right" htmlFor="breakPoint">
+                    {t('grid_edit.break_point')}:
+                  </label>
+                  <div className="col-sm-9">
+                    <div
+                      className="btn btn-outline-secondary dropdown-toggle"
+                      type="button"
+                      id="dropdownMenuButton"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false"
+                    >
+                      {this.renderSelectedBreakPoint()}
+                    </div>
+                    <div className="dropdown-menu break-point-menu" aria-labelledby="dropdownMenuButton">
+                      {this.renderBreakPointMenu()}
+                    </div>
+                  </div>
                 </div>
-                <div
-                  className="btn btn-outline-secondary btn-block dropdown-toggle"
-                  type="button"
-                  id="dropdownMenuButton"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  {this.renderSelectedBreakPoint()}
-                </div>
-                <div className="dropdown-menu break-point-menu" aria-labelledby="dropdownMenuButton">
-                  {this.renderBreakPointMenu()}
-                </div>
-              </div>
-            </div>
-            <div className="row">
-              <h1 className="pl-3 w-100">{t('preview')}</h1>
-              {this.renderPreview()}
+              </form>
             </div>
           </div>
+          {this.renderPreview()}
         </ModalBody>
         <ModalFooter className="grw-modal-footer">
           <div className="ml-auto">
