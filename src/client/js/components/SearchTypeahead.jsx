@@ -220,6 +220,8 @@ class SearchTypeahead extends React.Component {
           caseSensitive={false}
           defaultSelected={defaultSelected}
           autoFocus={this.props.autoFocus}
+          onBlur={this.props.onBlur}
+          onFocus={this.props.onFocus}
         />
         {resetFormButton}
       </div>
@@ -242,6 +244,8 @@ SearchTypeahead.propTypes = {
   onSearchSuccess: PropTypes.func,
   onSearchError:   PropTypes.func,
   onChange:        PropTypes.func,
+  onBlur:          PropTypes.func,
+  onFocus:         PropTypes.func,
   onSubmit:        PropTypes.func,
   onInputChange:   PropTypes.func,
   inputName:       PropTypes.string,
