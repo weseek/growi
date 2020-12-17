@@ -1,51 +1,90 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+import { useForm, SubmitHandler, Validate } from 'react-hook-form';
+
 import ReactCardFlip from 'react-card-flip';
 
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from '~/i18n';
 
-import AppContainer from '../services/AppContainer';
-import { withUnstatedContainers } from './UnstatedUtils';
+import { ErrorV3 } from '~/models/error-v3';
 
-class LoginForm extends React.Component {
+import { apiv3Get, apiv3Post } from '../util/apiv3-client';
 
-  constructor(props) {
-    super(props);
+type FormValues = {
+  username: string,
+  name: string,
+  email: string,
+  password: string,
+}
 
-    this.state = {
-      isRegistering: false,
-    };
 
-    this.switchForm = this.switchForm.bind(this);
-    this.handleLoginWithExternalAuth = this.handleLoginWithExternalAuth.bind(this);
-    this.renderLocalOrLdapLoginForm = this.renderLocalOrLdapLoginForm.bind(this);
-    this.renderExternalAuthLoginForm = this.renderExternalAuthLoginForm.bind(this);
-    this.renderExternalAuthInput = this.renderExternalAuthInput.bind(this);
-    this.renderRegisterForm = this.renderRegisterForm.bind(this);
+const authIconNames = {
+  google: 'google',
+  github: 'github',
+  facebook: 'facebook',
+  twitter: 'twitter',
+  oidc: 'openid',
+  saml: 'key',
+  basic: 'lock',
+};
 
-    // const { hash } = window.location;
-    // if (hash === '#register') {
-    //   this.state.isRegistering = true;
-    // }
-  }
+// eslint-disable-next-line react/prop-types
+const ExternalAuthInput = ({ auth }) => {
+  const { t } = useTranslation();
 
-  switchForm() {
-    this.setState({ isRegistering: !this.state.isRegistering });
-  }
-
-  handleLoginWithExternalAuth(e) {
-    const auth = e.currentTarget.id;
-    const { csrf } = this.props.appContainer;
+  const handleLoginWithExternalAuth = () => {
+    // const { csrf } = props.appContainer;
+    // TODO: impl csrf
+    const csrf = null;
     window.location.href = `/passport/${auth}?_csrf=${csrf}`;
-  }
+  };
 
-  renderLocalOrLdapLoginForm() {
-    const {
-      t,
-      setupedStrategies,
-    } = this.props;
+  return (
+    <div key={auth} className="col-6 my-2">
+      <button type="button" className="btn btn-fill rounded-0" id={auth} onClick={handleLoginWithExternalAuth}>
+        <div className="eff"></div>
+        <span className="btn-label">
+          <i className={`fa fa-${authIconNames[auth]}`}></i>
+        </span>
+        <span className="btn-label-text">{t('Sign in')}</span>
+      </button>
+      <div className="small text-right">by {auth} Account</div>
+    </div>
+  );
+};
 
-    const isLdapStrategySetup = setupedStrategies.includes('ldap');
+type Props = {
+  registrationMode: string,
+  isRegistrationEnabled: boolean,
+  registrationWhiteList: string[],
+  setupedStrategies: string[],
+  enabledStrategies: string[],
+}
+
+const LoginForm = (props: Props): JSX.Element => {
+
+  const { t } = useTranslation();
+  const { handleSubmit, register } = useForm({ mode: 'onBlur' });
+
+  const [isRegistering, setIsRegistering] = useState(false);
+
+  // const { hash } = window.location;
+  // if (hash === '#register') {
+  //   this.state.isRegistering = true;
+  // }
+
+  const {
+    isRegistrationEnabled,
+    setupedStrategies,
+    enabledStrategies,
+  } = props;
+
+  const isLocalOrLdapStrategiesEnabled = setupedStrategies.includes('local') || setupedStrategies.includes('ldap');
+  const isSomeExternalAuthEnabled = enabledStrategies.length > 0;
+
+  const switchForm = () => setIsRegistering(!isRegistering);
+
+  const renderLocalOrLdapLoginForm = (): JSX.Element => {
+    const isLdapStrategySetup = props.setupedStrategies.includes('ldap');
 
     return (
       <form role="form" action="/login" method="post">
@@ -85,41 +124,10 @@ class LoginForm extends React.Component {
         </div>
       </form>
     );
-  }
+  };
 
-  renderExternalAuthInput(auth) {
-    const { t } = this.props;
-    const authIconNames = {
-      google: 'google',
-      github: 'github',
-      facebook: 'facebook',
-      twitter: 'twitter',
-      oidc: 'openid',
-      saml: 'key',
-      basic: 'lock',
-    };
-
-    return (
-      <div key={auth} className="col-6 my-2">
-        <button type="button" className="btn btn-fill rounded-0" id={auth} onClick={this.handleLoginWithExternalAuth}>
-          <div className="eff"></div>
-          <span className="btn-label">
-            <i className={`fa fa-${authIconNames[auth]}`}></i>
-          </span>
-          <span className="btn-label-text">{t('Sign in')}</span>
-        </button>
-        <div className="small text-right">by {auth} Account</div>
-      </div>
-    );
-  }
-
-  renderExternalAuthLoginForm() {
-    const {
-      setupedStrategies,
-      enabledStrategies,
-    } = this.props;
-
-    const isLocalOrLdapStrategiesEnabled = setupedStrategies.includes('local') || setupedStrategies.includes('ldap');
+  const renderExternalAuthLoginForm = (): JSX.Element => {
+    const { enabledStrategies } = props;
 
     const isExternalAuthCollapsible = isLocalOrLdapStrategiesEnabled;
     const collapsibleClass = isExternalAuthCollapsible ? 'collapse collapse-external-auth' : '';
@@ -129,9 +137,7 @@ class LoginForm extends React.Component {
         <div className="grw-external-auth-form border-top border-bottom">
           <div id="external-auth" className={`external-auth ${collapsibleClass}`}>
             <div className="row mt-2">
-              {enabledStrategies.map((auth) => {
-                return this.renderExternalAuthInput(auth);
-              })}
+              {enabledStrategies.map(auth => <ExternalAuthInput auth={auth} />)}
             </div>
           </div>
         </div>
@@ -149,15 +155,10 @@ class LoginForm extends React.Component {
         </div>
       </>
     );
-  }
+  };
 
-  renderRegisterForm() {
-    const {
-      t,
-      appContainer,
-      registrationMode,
-      registrationWhiteList,
-    } = this.props;
+  const renderRegisterForm = (): JSX.Element => {
+    const { registrationMode, registrationWhiteList } = props;
 
     return (
       <React.Fragment>
@@ -224,7 +225,6 @@ class LoginForm extends React.Component {
           </div>
 
           <div className="input-group justify-content-center my-4">
-            <input type="hidden" name="_csrf" value={appContainer.csrfToken} />
             <button type="submit" className="btn btn-fill rounded-0" id="register">
               <div className="eff"></div>
               <span className="btn-label">
@@ -239,7 +239,7 @@ class LoginForm extends React.Component {
 
         <div className="row">
           <div className="text-right col-12 mt-2 py-2">
-            <a href="#login" id="login" className="link-switch" onClick={this.switchForm}>
+            <a href="#login" id="login" className="link-switch" onClick={switchForm}>
               <i className="icon-fw icon-login"></i>
               {t('Sign in is here')}
             </a>
@@ -247,70 +247,38 @@ class LoginForm extends React.Component {
         </div>
       </React.Fragment>
     );
-  }
+  };
 
-  render() {
-    const {
-      t,
-      isRegistrationEnabled,
-      setupedStrategies,
-      enabledStrategies,
-    } = this.props;
-
-    const isLocalOrLdapStrategiesEnabled = setupedStrategies.includes('local') || setupedStrategies.includes('ldap');
-    const isSomeExternalAuthEnabled = enabledStrategies.length > 0;
-
-    return (
-      <div className="login-dialog mx-auto" id="login-dialog">
-        <div className="row mx-0">
-          <div className="col-12">
-            <ReactCardFlip isFlipped={this.state.isRegistering} flipDirection="horizontal" cardZIndex="3">
-              <div className="front">
-                {isLocalOrLdapStrategiesEnabled && this.renderLocalOrLdapLoginForm()}
-                {isSomeExternalAuthEnabled && this.renderExternalAuthLoginForm()}
-                {isRegistrationEnabled && (
-                  <div className="row">
-                    <div className="col-12 text-right py-2">
-                      <a href="#register" id="register" className="link-switch" onClick={this.switchForm}>
-                        <i className="ti-check-box"></i> {t('Sign up is here')}
-                      </a>
-                    </div>
+  return (
+    <div className="login-dialog mx-auto" id="login-dialog">
+      <div className="row mx-0">
+        <div className="col-12">
+          <ReactCardFlip isFlipped={isRegistering} flipDirection="horizontal" cardZIndex="3">
+            <div className="front">
+              {isLocalOrLdapStrategiesEnabled && renderLocalOrLdapLoginForm()}
+              {isSomeExternalAuthEnabled && renderExternalAuthLoginForm()}
+              {isRegistrationEnabled && (
+                <div className="row">
+                  <div className="col-12 text-right py-2">
+                    <a href="#register" id="register" className="link-switch" onClick={switchForm}>
+                      <i className="ti-check-box"></i> {t('Sign up is here')}
+                    </a>
                   </div>
-              )}
-              </div>
-              <div className="back">
-                {isRegistrationEnabled && this.renderRegisterForm()}
-              </div>
-            </ReactCardFlip>
-          </div>
+                </div>
+            )}
+            </div>
+            <div className="back">
+              {isRegistrationEnabled && renderRegisterForm()}
+            </div>
+          </ReactCardFlip>
         </div>
-        <a href="https://growi.org" className="link-growi-org pl-3">
-          <span className="growi">GROWI</span>.<span className="org">ORG</span>
-        </a>
       </div>
-    );
-  }
+      <a href="https://growi.org" className="link-growi-org pl-3">
+        <span className="growi">GROWI</span>.<span className="org">ORG</span>
+      </a>
+    </div>
+  );
 
-}
-
-/**
- * Wrapper component for using unstated
- */
-const LoginFormWrapper = withUnstatedContainers(LoginForm, [AppContainer]);
-
-LoginForm.propTypes = {
-  // i18next
-  t: PropTypes.func.isRequired,
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-
-  // username: PropTypes.string,
-  // name: PropTypes.string,
-  // email: PropTypes.string,
-  registrationMode: PropTypes.string,
-  isRegistrationEnabled: PropTypes.bool,
-  registrationWhiteList: PropTypes.arrayOf(PropTypes.string),
-  setupedStrategies: PropTypes.arrayOf(PropTypes.string),
-  enabledStrategies: PropTypes.arrayOf(PropTypes.string),
 };
 
-export default withTranslation()(LoginFormWrapper);
+export default LoginForm;
