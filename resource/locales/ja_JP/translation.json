@@ -785,10 +785,11 @@
   },
   "grid_edit":{
     "create_bootstrap_4_grid":"Bootstrap 4 グリッドを作成",
-    "grid_pattern":"グリッド　パターン：",
+    "grid_settings": "グリッド設定",
+    "grid_pattern":"グリッド　パターン",
     "division":"分割",
     "smart_no":"スマホ / 分割なし",
-    "break_point":"画面サイズより分割："
+    "break_point":"画面サイズより分割"
   },
   "validation":{
     "aws_region": "リージョンには、AWSリージョン名を入力してください。例: ap-northeast-1",
