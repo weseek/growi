@@ -33,7 +33,7 @@ class GridEditModal extends React.Component {
     this.cancel = this.cancel.bind(this);
     this.pasteCodedGrid = this.pasteCodedGrid.bind(this);
     this.renderSelectedGridPattern = this.renderSelectedGridPattern.bind(this);
-    this.renderSelectedBreakPoint = this.renderSelectedBreakPoint.bind(this);
+    this.renderBreakPointSetting = this.renderBreakPointSetting.bind(this);
   }
 
   async checkResposiveSize(rs) {
@@ -83,15 +83,24 @@ class GridEditModal extends React.Component {
     return colsRatios.join(' - ');
   }
 
-  renderSelectedBreakPoint() {
+  renderBreakPointSetting() {
     const { t } = this.props;
     const output = Object.entries(resSizeObj).map((responsiveSizeForMap) => {
-      return (this.state.responsiveSize === responsiveSizeForMap[0]
-        && (
-        <span>
-          <i className={`pr-1 ${responsiveSizeForMap[1].iconClass}`}> {t(responsiveSizeForMap[1].displayText)}</i>
-        </span>
-        )
+      return (
+        <div className="custom-control custom-radio custom-control-inline">
+          <input
+            type="radio"
+            className="custom-control-input"
+            id={responsiveSizeForMap[1].displayText}
+            value={responsiveSizeForMap[1].displayText}
+            checked={this.state.responsiveSize === responsiveSizeForMap[0]}
+            onChange={e => this.checkResposiveSize(responsiveSizeForMap[0])}
+          />
+          <label className="custom-control-label" htmlFor={responsiveSizeForMap[1].displayText}>
+            <i className={`pr-1 ${responsiveSizeForMap[1].iconClass}`} />
+            {t(responsiveSizeForMap[1].displayText)}
+          </label>
+        </div>
       );
     });
     return output;
@@ -125,18 +134,6 @@ class GridEditModal extends React.Component {
         </div>
       </div>
     );
-  }
-
-  renderBreakPointMenu() {
-    const { t } = this.props;
-    const output = Object.entries(resSizeObj).map((responsiveSizeForMap) => {
-      return (
-        <button className="dropdown-item" type="button" onClick={() => { this.checkResposiveSize(responsiveSizeForMap[0]) }}>
-          <i className={`${responsiveSizeForMap[1].iconClass}`}></i> {t(responsiveSizeForMap[1].displayText)}
-        </button>
-      );
-    });
-    return output;
   }
 
   renderPreview() {
@@ -182,7 +179,6 @@ class GridEditModal extends React.Component {
     if (this.state.responsiveSize === BootstrapGrid.ResponsiveSize.MD_SIZE) {
       return (
         <div className="row">
-          <h3 className="grw-modal-preview">{t('preview')}</h3>
           <div className="col-lg-6">
             <label className="d-block mt-2"><i className="pr-2 icon-screen-desktop"></i>{t('desktop')}</label>
             <div className="desktop-preview d-block">
@@ -207,7 +203,6 @@ class GridEditModal extends React.Component {
     if (this.state.responsiveSize === BootstrapGrid.ResponsiveSize.SM_SIZE) {
       return (
         <div className="row">
-          <h3 className="grw-modal-preview">{t('preview')}</h3>
           <div className="col-lg-6">
             <label className="d-block mt-2"><i className="pr-2 icon-screen-desktop"></i>{t('desktop')}</label>
             <div className="desktop-preview d-block">
@@ -232,7 +227,6 @@ class GridEditModal extends React.Component {
     if (this.state.responsiveSize === BootstrapGrid.ResponsiveSize.XS_SIZE) {
       return (
         <div className="row">
-          <h3 className="grw-modal-preview">{t('preview')}</h3>
           <div className="col-lg-6">
             <label className="d-block mt-2"><i className="pr-2 icon-screen-desktop"></i>{t('desktop')}</label>
             <div className="desktop-preview d-block">
@@ -294,9 +288,9 @@ class GridEditModal extends React.Component {
             <div className="col-12">
               <h3 className="grw-modal-head">{t('grid_edit.grid_settings')}</h3>
               <form className="form-group mb-0">
-                <div className="form-group row">
-                  <label className="col-sm-3 text-md-right" htmlFor="gridPattern">
-                    {t('grid_edit.grid_pattern')}:
+                <div className="form-group row my-3">
+                  <label className="col-sm-3" htmlFor="gridPattern">
+                    {t('grid_edit.grid_pattern')}
                   </label>
                   <div className="col-sm-9">
                     <button
@@ -315,28 +309,17 @@ class GridEditModal extends React.Component {
                   </div>
                 </div>
                 <div className="form-group row">
-                  <label className="col-sm-3 text-md-right" htmlFor="breakPoint">
-                    {t('grid_edit.break_point')}:
+                  <label className="col-sm-3" htmlFor="breakPoint">
+                    {t('grid_edit.break_point')}
                   </label>
                   <div className="col-sm-9">
-                    <div
-                      className="btn btn-outline-secondary dropdown-toggle"
-                      type="button"
-                      id="dropdownMenuButton"
-                      data-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                    >
-                      {this.renderSelectedBreakPoint()}
-                    </div>
-                    <div className="dropdown-menu break-point-menu" aria-labelledby="dropdownMenuButton">
-                      {this.renderBreakPointMenu()}
-                    </div>
+                    {this.renderBreakPointSetting()}
                   </div>
                 </div>
               </form>
             </div>
           </div>
+          <h3 className="grw-modal-head">{t('preview')}</h3>
           {this.renderPreview()}
         </ModalBody>
         <ModalFooter className="grw-modal-footer">
