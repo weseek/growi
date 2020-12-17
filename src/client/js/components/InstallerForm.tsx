@@ -1,3 +1,5 @@
+import { useRouter } from 'next/router';
+
 import React, { useEffect, useState } from 'react';
 import { useForm, SubmitHandler, Validate } from 'react-hook-form';
 
@@ -27,6 +29,7 @@ const LanguageDropdownMenu = (): JSX.Element => {
 };
 
 const InstallerForm = (): JSX.Element => {
+  const router = useRouter();
   const { t } = useTranslation();
   const { handleSubmit, register } = useForm({ mode: 'onBlur' });
 
@@ -58,11 +61,17 @@ const InstallerForm = (): JSX.Element => {
     const { language } = i18n;
     const postData = { ...formValues, language };
 
-    console.log('postData', postData);
-
     try {
       const { data } = await apiv3Post('/install', postData);
-      console.log('returnedData', data);
+
+      const { isLoggedIn } = data;
+
+      if (isLoggedIn) {
+        router.replace('/admin');
+      }
+      else {
+        router.replace('/login');
+      }
     }
     catch (errors) {
       setServerErrors(errors);

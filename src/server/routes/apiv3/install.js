@@ -31,7 +31,7 @@ module.exports = function(crowi) {
     await searchService.rebuildIndex();
   }
 
-  async function createPage(filePath, pagePath, owner, lang) {
+  async function createPage(filePath, pagePath, owner) {
     try {
       const markdown = fs.readFileSync(filePath);
       return Page.create(pagePath, markdown, owner, {});
@@ -45,13 +45,13 @@ module.exports = function(crowi) {
     const promises = [];
 
     // create portal page for '/'
-    promises.push(createPage(path.join(crowi.localeDir, lang, 'welcome.md'), '/', owner, lang));
+    promises.push(createPage(path.join(crowi.localeDir, lang, 'welcome.md'), '/', owner));
 
     // create /Sandbox/*
-    promises.push(createPage(path.join(crowi.localeDir, lang, 'sandbox.md'), '/Sandbox', owner, lang));
-    promises.push(createPage(path.join(crowi.localeDir, lang, 'sandbox-bootstrap4.md'), '/Sandbox/Bootstrap4', owner, lang));
-    promises.push(createPage(path.join(crowi.localeDir, lang, 'sandbox-diagrams.md'), '/Sandbox/Diagrams', owner, lang));
-    promises.push(createPage(path.join(crowi.localeDir, lang, 'sandbox-math.md'), '/Sandbox/Math', owner, lang));
+    promises.push(createPage(path.join(crowi.localeDir, lang, 'sandbox.md'), '/Sandbox', owner));
+    promises.push(createPage(path.join(crowi.localeDir, lang, 'sandbox-bootstrap4.md'), '/Sandbox/Bootstrap4', owner));
+    promises.push(createPage(path.join(crowi.localeDir, lang, 'sandbox-diagrams.md'), '/Sandbox/Diagrams', owner));
+    promises.push(createPage(path.join(crowi.localeDir, lang, 'sandbox-math.md'), '/Sandbox/Math', owner));
 
     await Promise.all(promises);
 
@@ -88,9 +88,9 @@ module.exports = function(crowi) {
       await adminUser.asyncMakeAdmin();
     }
     catch (err) {
-      req.form.errors.push(req.t('message.failed_to_create_admin_user', { errMessage: err.message }));
-      return res.render('installer');
+      return res.apiv3Err(req.t('message.failed_to_create_admin_user', { errMessage: err.message }));
     }
+
     // create initial pages
     await createInitialPages(adminUser, lang);
 
@@ -100,13 +100,10 @@ module.exports = function(crowi) {
     // login with passport
     req.logIn(adminUser, (err) => {
       if (err) {
-        req.flash('successMessage', req.t('message.complete_to_install1'));
-        req.session.redirectTo = '/admin/app';
-        return res.redirect('/login');
+        return res.apiv3({ isLoggedIn: false });
       }
 
-      req.flash('successMessage', req.t('message.complete_to_install2'));
-      return res.redirect('/admin/app');
+      return res.apiv3({ isLoggedIn: true });
     });
   });
 

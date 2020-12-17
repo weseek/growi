@@ -14,11 +14,11 @@ module.exports = function(crowi, app) {
   const csrf = require('../middlewares/csrf')(crowi);
 
   const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
-  const form = require('../form');
+  // const form = require('../form');
   const page = require('./page')(crowi, app);
-  const login = require('./login')(crowi, app);
+  // const login = require('./login')(crowi, app);
   const loginPassport = require('./login-passport')(crowi, app);
-  const logout = require('./logout')(crowi, app);
+  // const logout = require('./logout')(crowi, app);
   const me = require('./me')(crowi, app);
   const admin = require('./admin')(crowi, app);
   const user = require('./user')(crowi, app);
@@ -47,22 +47,22 @@ module.exports = function(crowi, app) {
     return;
   }
 
-  app.get('/login/error/:reason'     , login.error);
-  app.get('/login'                   , applicationInstalled     , login.preLogin, login.login);
-  app.get('/login/invited'           , login.invited);
-  app.post('/login/activateInvited'  , form.invited                         , csrf, login.invited);
-  app.post('/login'                  , form.login                           , csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
-  app.post('/_api/login/testLdap'    , loginRequiredStrictly , form.login , loginPassport.testLdapCredentials);
+  // app.get('/login/error/:reason'     , login.error);
+  // app.get('/login'                   , applicationInstalled     , login.preLogin, login.login);
+  // app.get('/login/invited'           , login.invited);
+  // app.post('/login/activateInvited'  , form.invited                         , csrf, login.invited);
+  // app.post('/login'                  , form.login                           , csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
+  // app.post('/_api/login/testLdap'    , loginRequiredStrictly , form.login , loginPassport.testLdapCredentials);
 
-  app.post('/register'               , form.register                        , csrf, login.register);
-  app.get('/register'                , applicationInstalled     , login.preLogin, login.register);
-  app.get('/logout'                  , logout.logout);
+  // app.post('/register'               , form.register                        , csrf, login.register);
+  // app.get('/register'                , applicationInstalled     , login.preLogin, login.register);
+  // app.get('/logout'                  , logout.logout);
 
-  app.get('/admin'                          , loginRequiredStrictly , adminRequired , admin.index);
-  app.get('/admin/app'                      , loginRequiredStrictly , adminRequired , admin.app.index);
+  // app.get('/admin'                          , loginRequiredStrictly , adminRequired , admin.index);
+  // app.get('/admin/app'                      , loginRequiredStrictly , adminRequired , admin.app.index);
 
   // security admin
-  app.get('/admin/security'                     , loginRequiredStrictly , adminRequired , admin.security.index);
+  // app.get('/admin/security'                     , loginRequiredStrictly , adminRequired , admin.security.index);
 
   // OAuth
   app.get('/passport/google'                      , loginPassport.loginWithGoogle, loginPassport.loginFailure);
@@ -78,31 +78,31 @@ module.exports = function(crowi, app) {
   app.post('/passport/saml/callback'              , loginPassport.loginPassportSamlCallback     , loginPassport.loginFailure);
 
   // markdown admin
-  app.get('/admin/markdown'                   , loginRequiredStrictly , adminRequired , admin.markdown.index);
+  // app.get('/admin/markdown'                   , loginRequiredStrictly , adminRequired , admin.markdown.index);
 
   // customize admin
-  app.get('/admin/customize'                , loginRequiredStrictly , adminRequired , admin.customize.index);
+  // app.get('/admin/customize'                , loginRequiredStrictly , adminRequired , admin.customize.index);
 
   // search admin
-  app.get('/admin/search'              , loginRequiredStrictly , adminRequired , admin.search.index);
+  // app.get('/admin/search'              , loginRequiredStrictly , adminRequired , admin.search.index);
 
   // notification admin
-  app.get('/admin/notification'              , loginRequiredStrictly , adminRequired , admin.notification.index);
-  app.get('/admin/notification/slackAuth'    , loginRequiredStrictly , adminRequired , admin.notification.slackAuth);
-  app.get('/admin/notification/slackSetting/disconnect', loginRequiredStrictly , adminRequired , admin.notification.disconnectFromSlack);
-  app.get('/admin/global-notification/new'   , loginRequiredStrictly , adminRequired , admin.globalNotification.detail);
-  app.get('/admin/global-notification/:id'   , loginRequiredStrictly , adminRequired , admin.globalNotification.detail);
+  // app.get('/admin/notification'              , loginRequiredStrictly , adminRequired , admin.notification.index);
+  // app.get('/admin/notification/slackAuth'    , loginRequiredStrictly , adminRequired , admin.notification.slackAuth);
+  // app.get('/admin/notification/slackSetting/disconnect', loginRequiredStrictly , adminRequired , admin.notification.disconnectFromSlack);
+  // app.get('/admin/global-notification/new'   , loginRequiredStrictly , adminRequired , admin.globalNotification.detail);
+  // app.get('/admin/global-notification/:id'   , loginRequiredStrictly , adminRequired , admin.globalNotification.detail);
 
-  app.get('/admin/users'                , loginRequiredStrictly , adminRequired , admin.user.index);
+  // app.get('/admin/users'                , loginRequiredStrictly , adminRequired , admin.user.index);
 
-  app.get('/admin/users/external-accounts'               , loginRequiredStrictly , adminRequired , admin.externalAccount.index);
+  // app.get('/admin/users/external-accounts'               , loginRequiredStrictly , adminRequired , admin.externalAccount.index);
 
   // user-groups admin
-  app.get('/admin/user-groups'             , loginRequiredStrictly, adminRequired, admin.userGroup.index);
-  app.get('/admin/user-group-detail/:id'   , loginRequiredStrictly, adminRequired, admin.userGroup.detail);
+  // app.get('/admin/user-groups'             , loginRequiredStrictly, adminRequired, admin.userGroup.index);
+  // app.get('/admin/user-group-detail/:id'   , loginRequiredStrictly, adminRequired, admin.userGroup.detail);
 
   // importer management for admin
-  app.get('/admin/importer'                     , loginRequiredStrictly , adminRequired , admin.importer.index);
+  // app.get('/admin/importer'                     , loginRequiredStrictly , adminRequired , admin.importer.index);
   app.post('/_api/admin/settings/importerEsa'   , loginRequiredStrictly , adminRequired , csrf, admin.importer.api.validators.importer.esa(),admin.api.importerSettingEsa);
   app.post('/_api/admin/settings/importerQiita' , loginRequiredStrictly , adminRequired , csrf , admin.importer.api.validators.importer.qiita(), admin.api.importerSettingQiita);
   app.post('/_api/admin/import/esa'             , loginRequiredStrictly , adminRequired , admin.api.importDataFromEsa);
@@ -111,14 +111,14 @@ module.exports = function(crowi, app) {
   app.post('/_api/admin/import/testQiitaAPI'    , loginRequiredStrictly , adminRequired , csrf, admin.api.testQiitaAPI);
 
   // export management for admin
-  app.get('/admin/export'                       , loginRequiredStrictly , adminRequired ,admin.export.index);
-  app.get('/admin/export/:fileName'             , loginRequiredStrictly , adminRequired ,admin.export.download);
+  // app.get('/admin/export'                       , loginRequiredStrictly , adminRequired ,admin.export.index);
+  // app.get('/admin/export/:fileName'             , loginRequiredStrictly , adminRequired ,admin.export.download);
 
-  app.get('/me'                       , loginRequiredStrictly , me.index);
+  // app.get('/me'                       , loginRequiredStrictly , me.index);
   // external-accounts
-  app.get('/me/external-accounts'                         , loginRequiredStrictly , me.externalAccounts.list);
+  // app.get('/me/external-accounts'                         , loginRequiredStrictly , me.externalAccounts.list);
   // my drafts
-  app.get('/me/drafts'                , loginRequiredStrictly, me.drafts.list);
+  // app.get('/me/drafts'                , loginRequiredStrictly, me.drafts.list);
 
   app.get('/:id([0-9a-z]{24})'       , loginRequired , page.redirector);
   app.get('/_r/:id([0-9a-z]{24})'    , loginRequired , page.redirector); // alias
@@ -127,7 +127,7 @@ module.exports = function(crowi, app) {
   app.get('/attachment/:pageId/:fileName', loginRequired, attachment.api.obsoletedGetForMongoDB); // DEPRECATED: remains for backward compatibility for v3.3.x or below
   app.get('/download/:id([0-9a-z]{24})'    , loginRequired, attachment.api.download);
 
-  app.get('/_search'                 , loginRequired , search.searchPage);
+  // app.get('/_search'                 , loginRequired , search.searchPage);
   app.get('/_api/search'             , accessTokenParser , loginRequired , search.api.search);
 
   app.get('/_api/check_username'           , user.api.checkUsername);
@@ -149,7 +149,7 @@ module.exports = function(crowi, app) {
   app.post('/_api/pages.revertRemove' , loginRequiredStrictly , csrf, page.api.revertRemove); // (Avoid from API Token)
   app.post('/_api/pages.unlink'       , loginRequiredStrictly , csrf, page.api.unlink); // (Avoid from API Token)
   app.post('/_api/pages.duplicate'    , accessTokenParser, loginRequiredStrictly, csrf, page.api.duplicate);
-  app.get('/tags'                     , loginRequired, tag.showPage);
+  // app.get('/tags'                     , loginRequired, tag.showPage);
   app.get('/_api/tags.list'           , accessTokenParser, loginRequired, tag.api.list);
   app.get('/_api/tags.search'         , accessTokenParser, loginRequired, tag.api.search);
   app.post('/_api/tags.update'        , accessTokenParser, loginRequired, tag.api.update);
