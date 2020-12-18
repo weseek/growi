@@ -1,5 +1,9 @@
 # CHANGES
 
+## v4.2.5-RC
+
+* 
+
 ## v4.2.4
 
 * Fix: Fixed an error when creating a new page with `Ctrl-S`
