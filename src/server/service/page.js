@@ -131,7 +131,7 @@ class PageService {
     const Comment = this.crowi.model('Comment');
     // const Page = this.crowi.model('Page');
     const PageTagRelation = this.crowi.model('PageTagRelation');
-    // const ShareLink = this.crowi.model('ShareLink');
+    const ShareLink = this.crowi.model('ShareLink');
     // const Revision = this.crowi.model('Revision');
 
     console.log(pageIds);
@@ -139,7 +139,8 @@ class PageService {
     // console.log(PageTagRelation.find({ pageIds }));
     // return PageTagRelation.find({ relatedPage: { $in: pageIds } }).remove({});
     // return await Bookmark.find({ page: { $in: pageIds } }).remove({});
-    return await Comment.find({ page: { $in: pageIds } }).remove({});
+    // return await Comment.find({ page: { $in: pageIds } }).remove({});
+    return await ShareLink.find({ relatedPage: { $in: pageIds } }).remove({});
 
 
     // return Promise.all([
