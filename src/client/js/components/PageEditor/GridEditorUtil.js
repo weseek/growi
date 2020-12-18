@@ -132,7 +132,7 @@ class GridEditorUtil {
     const cols = ratioNumbers.map((ratioNumber, i) => {
       const spaceTab = '    ';
       const className = `col${responsiveSize !== 'xs' ? `-${responsiveSize}` : ''}-${ratioNumber} bsGrid${i + 1}`;
-      return `${spaceTab}${spaceTab}<div class="${className}">ここにコンテンツを追加</div>`;
+      return `${spaceTab}${spaceTab}<div class="${className}">Content</div>`;
     });
     return cols.join('\n');
   }
