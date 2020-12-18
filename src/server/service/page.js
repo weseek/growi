@@ -12,27 +12,6 @@ class PageService {
     this.crowi = crowi;
   }
 
-  async deleteCompletely(pageId, pagePath) {
-    // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
-    const Bookmark = this.crowi.model('Bookmark');
-    const Comment = this.crowi.model('Comment');
-    const Page = this.crowi.model('Page');
-    const PageTagRelation = this.crowi.model('PageTagRelation');
-    const ShareLink = this.crowi.model('ShareLink');
-    const Revision = this.crowi.model('Revision');
-
-    return Promise.all([
-      Bookmark.removeBookmarksByPageId(pageId),
-      Comment.removeCommentsByPageId(pageId),
-      PageTagRelation.remove({ relatedPage: pageId }),
-      ShareLink.remove({ relatedPage: pageId }),
-      Revision.removeRevisionsByPath(pagePath),
-      Page.findByIdAndRemove(pageId),
-      Page.removeRedirectOriginPageByPath(pagePath),
-      this.removeAllAttachments(pageId),
-    ]);
-  }
-
   async removeAllAttachments(pageId) {
     const Attachment = this.crowi.model('Attachment');
     const { attachmentService } = this.crowi;
@@ -98,30 +77,6 @@ class PageService {
     return newParentpage;
   }
 
-
-  async completelyDeletePage(pageData, user, options = {}) {
-    this.validateCrowi();
-    let pageEvent;
-    // init event
-    if (this.crowi != null) {
-      pageEvent = this.crowi.event('page');
-      pageEvent.on('create', pageEvent.onCreate);
-      pageEvent.on('update', pageEvent.onUpdate);
-    }
-
-    const { _id, path } = pageData;
-    const socketClientId = options.socketClientId || null;
-
-    logger.debug('Deleting completely', path);
-
-    await this.deleteCompletely(_id, path);
-
-    if (socketClientId != null) {
-      pageEvent.emit('delete', pageData, user, socketClientId); // update as renamed page
-    }
-    return pageData;
-  }
-
   /**
    * Delete Bookmarks, Attachments, Revisions, Pages and emit delete
    */
@@ -132,9 +87,67 @@ class PageService {
     // find manageable descendants (this array does not include GRANT_RESTRICTED)
     const pages = await Page.findManageableListWithDescendants(targetPage, user, findOpts);
 
-    await Promise.all(pages.map((page) => {
-      return this.completelyDeletePage(page, user, options);
-    }));
+    // ここをストリーム化したい
+    // page ではなく pages として渡したい
+    // await Promise.all(pages.map((page) => {
+    //   return this.completelyDeletePage(page, user, options);
+    // }));
+    return this.completelyDeletePage(pages, user, options);
+
+  }
+
+  // pages をうけとれるように改修したい
+  async completelyDeletePage(pages, user, options = {}) {
+    // this.validateCrowi();
+    let pageEvent;
+    // init event
+    if (this.crowi != null) {
+      pageEvent = this.crowi.event('page');
+      pageEvent.on('create', pageEvent.onCreate);
+      pageEvent.on('update', pageEvent.onUpdate);
+    }
+
+    const ids = pages.map(page => (page._id));
+    // ids.join('');
+    const paths = pages.map(page => (page.path));
+
+    // const { _ids, path } = pageData;
+    const socketClientId = options.socketClientId || null;
+
+    logger.debug('Deleting completely', paths);
+
+    await this.deleteCompletely(ids, paths);
+
+    if (socketClientId != null) {
+      pageEvent.emit('delete', pages, user, socketClientId); // update as renamed page
+    }
+    return pages;
+  }
+
+  // pageIds を受け取れるように改修したい
+  async deleteCompletely(pageIds, pagePaths) {
+    // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
+    // const Bookmark = this.crowi.model('Bookmark');
+    // const Comment = this.crowi.model('Comment');
+    // const Page = this.crowi.model('Page');
+    const PageTagRelation = this.crowi.model('PageTagRelation');
+    // const ShareLink = this.crowi.model('ShareLink');
+    // const Revision = this.crowi.model('Revision');
+
+    console.log(pageIds);
+    // console.log(PageTagRelation.find({ pageIds }));
+    return await PageTagRelation.find({ relatedPage: { $in: pageIds } }).remove({});
+    // return Promise.all([
+    //   Bookmark.removeBookmarksByPageId(pageIds),
+    //   Comment.removeCommentsByPageId(pageIds),
+    //   PageTagRelation.remove({ relatedPage: pageIds }),
+    //   ShareLink.remove({ relatedPage: pageIds }),
+    //   Revision.removeRevisionsByPath(pagePaths),
+    //   Page.findByIdAndRemove(pageIds),
+    //   Page.removeRedirectOriginPageByPath(pagePaths),
+    //   this.removeAllAttachments(pageIds),
+    // ]);
+
   }
 
 
