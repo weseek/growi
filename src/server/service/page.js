@@ -87,18 +87,12 @@ class PageService {
     // find manageable descendants (this array does not include GRANT_RESTRICTED)
     const pages = await Page.findManageableListWithDescendants(targetPage, user, findOpts);
 
-    // ここをストリーム化したい
-    // page ではなく pages として渡したい
-    // await Promise.all(pages.map((page) => {
-    //   return this.completelyDeletePage(page, user, options);
-    // }));
-    // 変数名は後で考える
-    const deleteData = await this.completelyDeletePage(pages, user, options);
+    // TODO streaming bellow action
+    const pagesData = await this.completelyDeletePage(pages, user, options);
 
-    return deleteData;
+    return pagesData;
   }
 
-  // pages をうけとれるように改修したい
   async completelyDeletePage(pages, user, options = {}) {
     // this.validateCrowi();
     let pageEvent;
@@ -125,7 +119,6 @@ class PageService {
     return pages;
   }
 
-  // pageIds を受け取れるように改修したい
   async deleteCompletely(pageIds, pagePaths) {
     // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
     const Bookmark = this.crowi.model('Bookmark');
@@ -145,18 +138,9 @@ class PageService {
       Page.find({ path: { $in: pagePaths } }).remove({}),
     ]);
 
+    // TODO fix remove action of attachments
     // const hoge = await this.removeAllAttachments(pageIds);
     return deleteData;
-    // return Promise.all([
-    //   Bookmark.removeBookmarksByPageId(pageIds),
-    //   Comment.removeCommentsByPageId(pageIds),
-    //   PageTagRelation.remove({ relatedPage: pageIds }),
-    //   ShareLink.remove({ relatedPage: pageIds }),
-    //   Revision.removeRevisionsByPath(pagePaths),
-    //   Page.findByIdAndRemove(pageIds),
-    //   Page.removeRedirectOriginPageByPath(pagePaths),
-    //   this.removeAllAttachments(pageIds),
-    // ]);
 
   }
 
