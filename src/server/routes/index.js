@@ -15,7 +15,7 @@ module.exports = function(crowi, app) {
   const certifySharedFile = require('../middlewares/certify-shared-file')(crowi);
 
   const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
-  // const form = require('../form');
+  const form = require('../form');
   const page = require('./page')(crowi, app);
   const login = require('./login')(crowi, app);
   const loginPassport = require('./login-passport')(crowi, app);
@@ -52,7 +52,7 @@ module.exports = function(crowi, app) {
   app.get('/login'                        , applicationInstalled, csrfProtection, login.preLogin, next.delegateToNext);
   // app.get('/login/invited'           , login.invited);
   // app.post('/login/activateInvited'  , form.invited                         , csrf, login.invited);
-  app.post('/login'                       , csrfProtection, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
+  app.post('/login'                       , csrfProtection, form.login, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
   // app.post('/_api/login/testLdap'    , loginRequiredStrictly , form.login , loginPassport.testLdapCredentials);
 
   // app.post('/register'               , form.register                        , csrf, login.register);
