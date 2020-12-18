@@ -108,12 +108,7 @@ class PageService {
     }
 
     const ids = pages.map(page => (page._id));
-    // ids.join('');
     const paths = pages.map(page => (page.path));
-
-    // console.log(paths);
-    console.log(paths.join(' '));
-    // paths.join(' ');
 
     // const { _ids, path } = pageData;
     const socketClientId = options.socketClientId || null;
@@ -138,15 +133,37 @@ class PageService {
     const ShareLink = this.crowi.model('ShareLink');
     // const Revision = this.crowi.model('Revision');
 
-    // console.log(PageTagRelation.find({ pageIds }));
     // return PageTagRelation.find({ relatedPage: { $in: pageIds } }).remove({});
     // return await Bookmark.find({ page: { $in: pageIds } }).remove({});
     // return await Comment.find({ page: { $in: pageIds } }).remove({});
     // return await ShareLink.find({ relatedPage: { $in: pageIds } }).remove({});
     // return await Revision.find({ path: { $in: pagePaths } }).remove({});
     // return await Page.find({ _id: { $in: pageIds } }).remove({});
-    console.log(pagePaths);
-    return await Page.find({ path: { $in: pagePaths } }).remove({});
+    // return await Page.find({ path: { $in: pagePaths } }).remove({});
+
+    const huga = await Promise.all([
+      Bookmark.find({ page: { $in: pageIds } }).remove({}),
+      Comment.find({ page: { $in: pageIds } }).remove({}),
+      PageTagRelation.find({ relatedPage: { $in: pageIds } }).remove({}),
+      ShareLink.find({ relatedPage: { $in: pageIds } }).remove({}),
+      // Revision.find({ path: { $in: pagePaths } }).remove({}),
+      Page.find({ _id: { $in: pageIds } }).remove({}),
+      Page.find({ path: { $in: pagePaths } }).remove({}),
+    ]);
+
+    // const hoge = await this.removeAllAttachments(pageIds);
+
+
+    return huga;
+    // return Promise.all([
+    //   Bookmark.find({ page: { $in: pageIds } }).remove({}),
+    //   Comment.find({ page: { $in: pageIds } }).remove({}),
+    //   PageTagRelation.find({ relatedPage: { $in: pageIds } }).remove({}),
+    //   ShareLink.find({ relatedPage: { $in: pageIds } }).remove({}),
+    //   // Revision.find({ path: { $in: pagePaths } }).remove({}),
+    //   Page.find({ _id: { $in: pageIds } }).remove({}),
+    //   Page.find({ path: { $in: pagePaths } }).remove({}),
+    // ]);
 
 
     // return Promise.all([
