@@ -466,6 +466,7 @@ class ElasticsearchDelegator {
         }
 
         try {
+          // First aid to prevent unexplained memory leaks
           global.gc();
         }
         catch (err) {
