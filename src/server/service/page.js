@@ -103,7 +103,7 @@ class PageService {
   }
 
   async completelyDeletePage(pagesData, user, options = {}) {
-    // this.validateCrowi();
+    this.validateCrowi();
     let pageEvent;
     // init event
     if (this.crowi != null) {
