@@ -127,7 +127,7 @@ class PageService {
   // pageIds を受け取れるように改修したい
   async deleteCompletely(pageIds, pagePaths) {
     // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
-    // const Bookmark = this.crowi.model('Bookmark');
+    const Bookmark = this.crowi.model('Bookmark');
     // const Comment = this.crowi.model('Comment');
     // const Page = this.crowi.model('Page');
     const PageTagRelation = this.crowi.model('PageTagRelation');
@@ -135,8 +135,11 @@ class PageService {
     // const Revision = this.crowi.model('Revision');
 
     console.log(pageIds);
+
     // console.log(PageTagRelation.find({ pageIds }));
-    return await PageTagRelation.find({ relatedPage: { $in: pageIds } }).remove({});
+    // return PageTagRelation.find({ relatedPage: { $in: pageIds } }).remove({});
+    return await Bookmark.find({ page: { $in: pageIds } }).remove({});
+
     // return Promise.all([
     //   Bookmark.removeBookmarksByPageId(pageIds),
     //   Comment.removeCommentsByPageId(pageIds),
