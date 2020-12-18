@@ -229,7 +229,7 @@ module.exports = (crowi) => {
 
     const savedTags = await saveTagsAction({ createdPage, pageTags });
 
-    const result = { page: serializePageSecurely(createdPage), tags: savedTags };
+    const result = { page: serializePageSecurely(createdPage), tags: savedTags, revision: createdPage.revision };
 
     // update scopes for descendants
     if (overwriteScopesOfDescendants) {
