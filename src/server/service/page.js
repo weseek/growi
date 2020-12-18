@@ -111,6 +111,10 @@ class PageService {
     // ids.join('');
     const paths = pages.map(page => (page.path));
 
+    // console.log(paths);
+    console.log(paths.join(' '));
+    // paths.join(' ');
+
     // const { _ids, path } = pageData;
     const socketClientId = options.socketClientId || null;
 
@@ -129,18 +133,18 @@ class PageService {
     // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
     const Bookmark = this.crowi.model('Bookmark');
     const Comment = this.crowi.model('Comment');
-    // const Page = this.crowi.model('Page');
+    const Page = this.crowi.model('Page');
     const PageTagRelation = this.crowi.model('PageTagRelation');
     const ShareLink = this.crowi.model('ShareLink');
     // const Revision = this.crowi.model('Revision');
-
-    console.log(pageIds);
 
     // console.log(PageTagRelation.find({ pageIds }));
     // return PageTagRelation.find({ relatedPage: { $in: pageIds } }).remove({});
     // return await Bookmark.find({ page: { $in: pageIds } }).remove({});
     // return await Comment.find({ page: { $in: pageIds } }).remove({});
-    return await ShareLink.find({ relatedPage: { $in: pageIds } }).remove({});
+    // return await ShareLink.find({ relatedPage: { $in: pageIds } }).remove({});
+    // return await Revision.find({ path: { $in: pagePaths } }).remove({});
+    return await Page.find({ _id: { $in: pageIds } }).remove({});
 
 
     // return Promise.all([
