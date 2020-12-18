@@ -1294,6 +1294,7 @@ module.exports = function(crowi) {
     // sanitize path
     newPagePathPrefix = crowi.xss.process(newPagePathPrefix); // eslint-disable-line no-param-reassign
 
+    // find manageable descendants
     const pages = await this.findManageableListWithDescendants(targetPage, user, options);
 
     const unorderedBulkOp = collection.initializeUnorderedBulkOp();
