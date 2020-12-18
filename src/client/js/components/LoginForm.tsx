@@ -7,6 +7,7 @@ import { useTranslation } from '~/i18n';
 
 import { ErrorV3 } from '~/models/error-v3';
 
+import { useCsrfToken } from '~/stores/context';
 import { apiv3Get } from '../util/apiv3-client';
 
 const authIconNames = {
@@ -22,12 +23,10 @@ const authIconNames = {
 // eslint-disable-next-line react/prop-types
 const ExternalAuthInput = ({ auth }) => {
   const { t } = useTranslation();
+  const { data: csrfToken } = useCsrfToken();
 
   const handleLoginWithExternalAuth = () => {
-    // const { csrf } = props.appContainer;
-    // TODO: impl csrf
-    const csrf = null;
-    window.location.href = `/passport/${auth}?_csrf=${csrf}`;
+    window.location.href = `/passport/${auth}?_csrf=${csrfToken}`;
   };
 
   return (
@@ -64,6 +63,7 @@ type FormValues = {
 const LoginForm = (props: Props): JSX.Element => {
 
   const { t } = useTranslation();
+  const { data: csrfToken } = useCsrfToken();
   const { handleSubmit, register } = useForm({ mode: 'onBlur' });
 
   const [isRegistering, setIsRegistering] = useState(false);
@@ -135,6 +135,7 @@ const LoginForm = (props: Props): JSX.Element => {
         </div>
 
         <div className="input-group my-4">
+          <input type="hidden" name="_csrf" value={csrfToken} />
           <button type="submit" id="login" className="btn btn-fill rounded-0 login mx-auto">
             <div className="eff"></div>
             <span className="btn-label">

@@ -2,6 +2,10 @@ import { responseInterface } from 'swr';
 
 import { useStaticSWR } from './use-static-swr';
 
+export const useCsrfToken = (initialData?: string): responseInterface<string, any> => {
+  return useStaticSWR('csrfToken', initialData);
+};
+
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const useCurrentUser = (initialData?: any): responseInterface<any, any> => {
   return useStaticSWR('currentUser', initialData);

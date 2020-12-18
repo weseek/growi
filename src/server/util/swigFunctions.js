@@ -31,9 +31,9 @@ module.exports = function(crowi, req, locals) {
   };
 
   // token getter
-  locals.csrf = function() {
-    return req.csrfToken;
-  };
+  // locals.csrf = function() {
+  //   return req.csrfToken;
+  // };
 
   locals.getAppTitleFontSize = function(appTitle) {
     const appTitleWidth = stringWidth(appTitle);

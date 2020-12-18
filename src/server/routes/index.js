@@ -1,6 +1,8 @@
 const multer = require('multer');
 const autoReap = require('multer-autoreap');
+const csrf = require('csurf');
 
+const csrfProtection = csrf({ cookie: false });
 autoReap.options.reapOnError = true; // continue reaping the file even if an error occurs
 
 module.exports = function(crowi, app) {
@@ -11,7 +13,6 @@ module.exports = function(crowi, app) {
   const loginRequired = require('../middlewares/login-required')(crowi, true);
   const adminRequired = require('../middlewares/admin-required')(crowi);
   const certifySharedFile = require('../middlewares/certify-shared-file')(crowi);
-  const csrf = require('../middlewares/csrf')(crowi);
 
   const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
   // const form = require('../form');
@@ -48,10 +49,10 @@ module.exports = function(crowi, app) {
   }
 
   // app.get('/login/error/:reason'     , login.error);
-  app.get('/login'                        , applicationInstalled, login.preLogin, next.delegateToNext);
+  app.get('/login'                        , applicationInstalled, csrfProtection, login.preLogin, next.delegateToNext);
   // app.get('/login/invited'           , login.invited);
   // app.post('/login/activateInvited'  , form.invited                         , csrf, login.invited);
-  app.post('/login'                       , csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
+  app.post('/login'                       , csrfProtection, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
   // app.post('/_api/login/testLdap'    , loginRequiredStrictly , form.login , loginPassport.testLdapCredentials);
 
   // app.post('/register'               , form.register                        , csrf, login.register);
@@ -103,12 +104,12 @@ module.exports = function(crowi, app) {
 
   // importer management for admin
   // app.get('/admin/importer'                     , loginRequiredStrictly , adminRequired , admin.importer.index);
-  app.post('/_api/admin/settings/importerEsa'   , loginRequiredStrictly , adminRequired , csrf, admin.importer.api.validators.importer.esa(),admin.api.importerSettingEsa);
-  app.post('/_api/admin/settings/importerQiita' , loginRequiredStrictly , adminRequired , csrf , admin.importer.api.validators.importer.qiita(), admin.api.importerSettingQiita);
-  app.post('/_api/admin/import/esa'             , loginRequiredStrictly , adminRequired , admin.api.importDataFromEsa);
-  app.post('/_api/admin/import/testEsaAPI'      , loginRequiredStrictly , adminRequired , csrf, admin.api.testEsaAPI);
-  app.post('/_api/admin/import/qiita'           , loginRequiredStrictly , adminRequired , admin.api.importDataFromQiita);
-  app.post('/_api/admin/import/testQiitaAPI'    , loginRequiredStrictly , adminRequired , csrf, admin.api.testQiitaAPI);
+  app.post('/_api/admin/settings/importerEsa'   , loginRequiredStrictly , adminRequired , csrfProtection, admin.importer.api.validators.importer.esa(),admin.api.importerSettingEsa);
+  app.post('/_api/admin/settings/importerQiita' , loginRequiredStrictly , adminRequired , csrfProtection, admin.importer.api.validators.importer.qiita(), admin.api.importerSettingQiita);
+  app.post('/_api/admin/import/esa'             , loginRequiredStrictly , adminRequired , csrfProtection, admin.api.importDataFromEsa);
+  app.post('/_api/admin/import/testEsaAPI'      , loginRequiredStrictly , adminRequired , csrfProtection, admin.api.testEsaAPI);
+  app.post('/_api/admin/import/qiita'           , loginRequiredStrictly , adminRequired , csrfProtection, admin.api.importDataFromQiita);
+  app.post('/_api/admin/import/testQiitaAPI'    , loginRequiredStrictly , adminRequired , csrfProtection, admin.api.testQiitaAPI);
 
   // export management for admin
   // app.get('/admin/export'                       , loginRequiredStrictly , adminRequired ,admin.export.index);
@@ -137,30 +138,30 @@ module.exports = function(crowi, app) {
   // HTTP RPC Styled API (に徐々に移行していいこうと思う)
   app.get('/_api/users.list'          , accessTokenParser , loginRequired , user.api.list);
   app.get('/_api/pages.list'          , accessTokenParser , loginRequired , page.api.list);
-  app.post('/_api/pages.create'       , accessTokenParser , loginRequiredStrictly , csrf, page.api.create);
-  app.post('/_api/pages.update'       , accessTokenParser , loginRequiredStrictly , csrf, page.api.update);
+  app.post('/_api/pages.create'       , accessTokenParser , loginRequiredStrictly , page.api.create);
+  app.post('/_api/pages.update'       , accessTokenParser , loginRequiredStrictly , page.api.update);
   app.get('/_api/pages.get'           , accessTokenParser , loginRequired , page.api.get);
   app.get('/_api/pages.exist'         , accessTokenParser , loginRequired , page.api.exist);
   app.get('/_api/pages.updatePost'    , accessTokenParser, loginRequired, page.api.getUpdatePost);
   app.get('/_api/pages.getPageTag'    , accessTokenParser , loginRequired , page.api.getPageTag);
   // allow posting to guests because the client doesn't know whether the user logged in
-  app.post('/_api/pages.rename'       , accessTokenParser , loginRequiredStrictly , csrf, page.api.rename);
-  app.post('/_api/pages.remove'       , loginRequiredStrictly , csrf, page.api.remove); // (Avoid from API Token)
-  app.post('/_api/pages.revertRemove' , loginRequiredStrictly , csrf, page.api.revertRemove); // (Avoid from API Token)
-  app.post('/_api/pages.unlink'       , loginRequiredStrictly , csrf, page.api.unlink); // (Avoid from API Token)
-  app.post('/_api/pages.duplicate'    , accessTokenParser, loginRequiredStrictly, csrf, page.api.duplicate);
+  app.post('/_api/pages.rename'       , accessTokenParser , loginRequiredStrictly , page.api.rename);
+  app.post('/_api/pages.remove'       , loginRequiredStrictly , page.api.remove); // (Avoid from API Token)
+  app.post('/_api/pages.revertRemove' , loginRequiredStrictly , page.api.revertRemove); // (Avoid from API Token)
+  app.post('/_api/pages.unlink'       , loginRequiredStrictly , page.api.unlink); // (Avoid from API Token)
+  app.post('/_api/pages.duplicate'    , accessTokenParser, loginRequiredStrictly, page.api.duplicate);
   // app.get('/tags'                     , loginRequired, tag.showPage);
   app.get('/_api/tags.list'           , accessTokenParser, loginRequired, tag.api.list);
   app.get('/_api/tags.search'         , accessTokenParser, loginRequired, tag.api.search);
   app.post('/_api/tags.update'        , accessTokenParser, loginRequired, tag.api.update);
   app.get('/_api/comments.get'        , accessTokenParser , loginRequired , comment.api.get);
-  app.post('/_api/comments.add'       , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, comment.api.add);
-  app.post('/_api/comments.update'    , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, comment.api.update);
-  app.post('/_api/comments.remove'    , accessTokenParser , loginRequiredStrictly , csrf, comment.api.remove);
-  app.post('/_api/attachments.add'                  , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, attachment.api.add);
-  app.post('/_api/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, attachment.api.uploadProfileImage);
-  app.post('/_api/attachments.remove'               , accessTokenParser , loginRequiredStrictly , csrf, attachment.api.remove);
-  app.post('/_api/attachments.removeProfileImage'   , accessTokenParser , loginRequiredStrictly , csrf, attachment.api.removeProfileImage);
+  app.post('/_api/comments.add'       , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , comment.api.add);
+  app.post('/_api/comments.update'    , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , comment.api.update);
+  app.post('/_api/comments.remove'    , accessTokenParser , loginRequiredStrictly , comment.api.remove);
+  app.post('/_api/attachments.add'                  , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly , attachment.api.add);
+  app.post('/_api/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly , attachment.api.uploadProfileImage);
+  app.post('/_api/attachments.remove'               , accessTokenParser , loginRequiredStrictly , attachment.api.remove);
+  app.post('/_api/attachments.removeProfileImage'   , accessTokenParser , loginRequiredStrictly , attachment.api.removeProfileImage);
   app.get('/_api/attachments.limit'   , accessTokenParser , loginRequiredStrictly, attachment.api.limit);
 
   // app.get('/trash$'                   , loginRequired , page.trashPageShowWrapper);

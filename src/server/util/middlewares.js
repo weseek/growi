@@ -15,17 +15,17 @@ module.exports = (crowi) => {
 
   const middlewares = {};
 
-  middlewares.csrfKeyGenerator = function() {
-    return function(req, res, next) {
-      const csrfKey = (req.session && req.session.id) || 'anon';
+  // middlewares.csrfKeyGenerator = function() {
+  //   return function(req, res, next) {
+  //     const csrfKey = (req.session && req.session.id) || 'anon';
 
-      if (req.csrfToken === null) {
-        req.csrfToken = crowi.getTokens().create(csrfKey);
-      }
+  //     if (req.csrfToken === null) {
+  //       req.csrfToken = crowi.getTokens().create(csrfKey);
+  //     }
 
-      next();
-    };
-  };
+  //     next();
+  //   };
+  // };
 
   middlewares.swigFunctions = function() {
     return function(req, res, next) {

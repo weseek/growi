@@ -8,6 +8,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 import GrowiLogo from '~/client/js/components/Icons/GrowiLogo';
 import LoginForm from '~/client/js/components/LoginForm';
 
+import { useCsrfToken } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
 import { CommonProps, getServerSideCommonProps, useCustomTitle } from '~/utils/nextjs-page-utils';
 
@@ -23,6 +24,8 @@ import RawLayout from '../components/RawLayout';
 const logger = loggerFactory('growi:pages:login');
 
 type Props = CommonProps & {
+  csrfToken: string,
+
   appTitle: string,
 
   registrationMode: string,
@@ -36,6 +39,8 @@ const LoginPage: NextPage<Props> = (props: Props) => {
 
   const { t } = useTranslation();
   const title = useCustomTitle(props, t('Sign in'));
+
+  useCsrfToken(props.csrfToken);
 
   const { appTitle } = props;
 
@@ -128,6 +133,9 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   const result = await getServerSideCommonProps(context);
   const props: Props = result.props as Props;
+
+  // inject csrf token
+  props.csrfToken = req.csrfToken();
 
   props.registrationMode = configManager.getConfig('crowi', 'security:registrationMode');
   props.isRegistrationEnabled = passportService.isLocalStrategySetup && props.registrationMode !== 'Closed';
