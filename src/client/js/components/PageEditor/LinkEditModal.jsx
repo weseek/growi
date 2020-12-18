@@ -11,6 +11,7 @@ import {
 
 import path from 'path';
 import validator from 'validator';
+import { withTranslation } from 'react-i18next';
 import PreviewWithSuspense from './PreviewWithSuspense';
 import PagePreviewIcon from '../Icons/PagePreviewIcon';
 
@@ -147,6 +148,7 @@ class LinkEditModal extends React.PureComponent {
   }
 
   async setMarkdown() {
+    const { t } = this.props;
     const path = this.state.linkInputValue;
     let markdown = '';
     let previewError = '';
@@ -168,7 +170,7 @@ class LinkEditModal extends React.PureComponent {
       }
     }
     else {
-      previewError = `'${path}' is not a GROWI page.`;
+      previewError = t('link_edit.page_not_found_in_preview', path);
     }
     this.setState({ markdown, previewError, permalink });
   }
@@ -283,20 +285,21 @@ class LinkEditModal extends React.PureComponent {
   }
 
   renderLinkAndLabelForm() {
+    const { t } = this.props;
     return (
       <>
-        <h3 className="grw-modal-head">Set link and label</h3>
+        <h3 className="grw-modal-head">{t('Set link and label')}</h3>
         <form className="form-group">
           <div className="form-gorup my-3">
             <div className="input-group flex-nowrap">
               <div className="input-group-prepend">
-                <span className="input-group-text">link</span>
+                <span className="input-group-text">{t('link')}</span>
               </div>
               <SearchTypeahead
                 onChange={this.handleChangeTypeahead}
                 onInputChange={this.handleChangeLinkInput}
                 inputName="link"
-                placeholder="Input page path or URL"
+                placeholder={t('Input page path or URL')}
                 keywordOnInit={this.state.linkInputValue}
                 behaviorOfResetBtn="clear"
                 autoFocus
@@ -335,11 +338,12 @@ class LinkEditModal extends React.PureComponent {
   }
 
   renderPathFormatForm() {
+    const { t } = this.props;
     return (
       <div className="card well pt-3">
         <form className="form-group mb-0">
           <div className="form-group row">
-            <label className="col-sm-3">Path format</label>
+            <label className="col-sm-3">{t('Path format')}</label>
             <div className="col-sm-9">
               <div className="custom-control custom-checkbox custom-checkbox-info custom-control-inline">
                 <input
@@ -351,7 +355,7 @@ class LinkEditModal extends React.PureComponent {
                   disabled={!this.state.linkInputValue.startsWith('/') || this.state.linkerType === Linker.types.growiLink}
                 />
                 <label className="custom-control-label" htmlFor="relativePath">
-                  Use relative path
+                  {t('Use relative path')}
                 </label>
               </div>
               <div className="custom-control custom-checkbox custom-checkbox-info custom-control-inline">
@@ -364,7 +368,7 @@ class LinkEditModal extends React.PureComponent {
                   disabled={this.state.permalink === '' || this.state.linkerType === Linker.types.growiLink}
                 />
                 <label className="custom-control-label" htmlFor="permanentLink">
-                  Use permanent link
+                  {t('Use permanent link')}
                 </label>
               </div>
             </div>
@@ -395,7 +399,7 @@ class LinkEditModal extends React.PureComponent {
                   onChange={e => this.handleSelecteLinkerType(e.target.value)}
                 />
                 <label className="custom-control-label" htmlFor="growiType">
-                  Growi original
+                  {t('Growi original')}
                 </label>
               </div>
               {this.isApplyPukiwikiLikeLinkerPlugin && (
@@ -421,10 +425,11 @@ class LinkEditModal extends React.PureComponent {
   }
 
   render() {
+    const { t } = this.props;
     return (
       <Modal className="link-edit-modal" isOpen={this.state.show} toggle={this.cancel} size="lg" autoFocus={false}>
         <ModalHeader tag="h4" toggle={this.cancel} className="bg-primary text-light">
-          Edit Links
+          {t('Edit Links')}
         </ModalHeader>
 
         <ModalBody className="container">
@@ -436,17 +441,17 @@ class LinkEditModal extends React.PureComponent {
           </div>
           <div className="row">
             <div className="col-12">
-              <h3 className="grw-modal-head">Preview</h3>
+              <h3 className="grw-modal-head">{t('Preview')}</h3>
               {this.renderLinkPreview()}
             </div>
           </div>
           <div className="row">
             <div className="col-12 text-center">
               <button type="button" className="btn btn-sm btn-outline-secondary mx-1" onClick={this.hide}>
-                Cancel
+                {t('Cancel')}
               </button>
               <button type="submit" className="btn btn-sm btn-primary mx-1" onClick={this.save}>
-                Done
+                {t('Done')}
               </button>
             </div>
           </div>
@@ -458,6 +463,7 @@ class LinkEditModal extends React.PureComponent {
 }
 
 LinkEditModal.propTypes = {
+  t: PropTypes.func.isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   onSave: PropTypes.func,
@@ -468,4 +474,4 @@ LinkEditModal.propTypes = {
  */
 const LinkEditModalWrapper = withUnstatedContainers(LinkEditModal, [AppContainer, PageContainer]);
 
-export default LinkEditModalWrapper;
+export default withTranslation('translation', { withRef: true })(LinkEditModalWrapper);
