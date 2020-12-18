@@ -12,6 +12,31 @@ class PageService {
     this.crowi = crowi;
   }
 
+  async deleteCompletely(pageIds, pagePaths) {
+    // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
+    const Bookmark = this.crowi.model('Bookmark');
+    const Comment = this.crowi.model('Comment');
+    const Page = this.crowi.model('Page');
+    const PageTagRelation = this.crowi.model('PageTagRelation');
+    const ShareLink = this.crowi.model('ShareLink');
+    const Revision = this.crowi.model('Revision');
+
+    const deleteData = await Promise.all([
+      Bookmark.find({ page: { $in: pageIds } }).remove({}),
+      Comment.find({ page: { $in: pageIds } }).remove({}),
+      PageTagRelation.find({ relatedPage: { $in: pageIds } }).remove({}),
+      ShareLink.find({ relatedPage: { $in: pageIds } }).remove({}),
+      Revision.find({ path: { $in: pagePaths } }).remove({}),
+      Page.find({ _id: { $in: pageIds } }).remove({}),
+      Page.find({ path: { $in: pagePaths } }).remove({}),
+    ]);
+
+    // TODO fix remove action of attachments
+    // const hoge = await this.removeAllAttachments(pageIds);
+    return deleteData;
+
+  }
+
   async removeAllAttachments(pageId) {
     const Attachment = this.crowi.model('Attachment');
     const { attachmentService } = this.crowi;
@@ -77,22 +102,6 @@ class PageService {
     return newParentpage;
   }
 
-  /**
-   * Delete Bookmarks, Attachments, Revisions, Pages and emit delete
-   */
-  async completelyDeletePageRecursively(targetPage, user, options = {}) {
-    const findOpts = { includeTrashed: true };
-    const Page = this.crowi.model('Page');
-
-    // find manageable descendants (this array does not include GRANT_RESTRICTED)
-    const pages = await Page.findManageableListWithDescendants(targetPage, user, findOpts);
-
-    // TODO streaming bellow action
-    const pagesData = await this.completelyDeletePage(pages, user, options);
-
-    return pagesData;
-  }
-
   async completelyDeletePage(pages, user, options = {}) {
     // this.validateCrowi();
     let pageEvent;
@@ -119,29 +128,20 @@ class PageService {
     return pages;
   }
 
-  async deleteCompletely(pageIds, pagePaths) {
-    // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
-    const Bookmark = this.crowi.model('Bookmark');
-    const Comment = this.crowi.model('Comment');
+  /**
+   * Delete Bookmarks, Attachments, Revisions, Pages and emit delete
+   */
+  async completelyDeletePageRecursively(targetPage, user, options = {}) {
+    const findOpts = { includeTrashed: true };
     const Page = this.crowi.model('Page');
-    const PageTagRelation = this.crowi.model('PageTagRelation');
-    const ShareLink = this.crowi.model('ShareLink');
-    const Revision = this.crowi.model('Revision');
 
-    const deleteData = await Promise.all([
-      Bookmark.find({ page: { $in: pageIds } }).remove({}),
-      Comment.find({ page: { $in: pageIds } }).remove({}),
-      PageTagRelation.find({ relatedPage: { $in: pageIds } }).remove({}),
-      ShareLink.find({ relatedPage: { $in: pageIds } }).remove({}),
-      Revision.find({ path: { $in: pagePaths } }).remove({}),
-      Page.find({ _id: { $in: pageIds } }).remove({}),
-      Page.find({ path: { $in: pagePaths } }).remove({}),
-    ]);
+    // find manageable descendants (this array does not include GRANT_RESTRICTED)
+    const pages = await Page.findManageableListWithDescendants(targetPage, user, findOpts);
 
-    // TODO fix remove action of attachments
-    // const hoge = await this.removeAllAttachments(pageIds);
-    return deleteData;
+    // TODO streaming bellow action
+    const pagesData = await this.completelyDeletePage(pages, user, options);
 
+    return pagesData;
   }
 
 
