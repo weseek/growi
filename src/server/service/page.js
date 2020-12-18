@@ -102,7 +102,7 @@ class PageService {
     return newParentpage;
   }
 
-  async completelyDeletePage(pages, user, options = {}) {
+  async completelyDeletePage(pagesData, user, options = {}) {
     // this.validateCrowi();
     let pageEvent;
     // init event
@@ -112,10 +112,10 @@ class PageService {
       pageEvent.on('update', pageEvent.onUpdate);
     }
 
-    const ids = pages.map(page => (page._id));
-    const paths = pages.map(page => (page.path));
-
     // const { _ids, path } = pageData;
+    const ids = pagesData.map(page => (page._id));
+    const paths = pagesData.map(page => (page.path));
+
     const socketClientId = options.socketClientId || null;
 
     logger.debug('Deleting completely', paths);
@@ -123,9 +123,9 @@ class PageService {
     await this.deleteCompletely(ids, paths);
 
     if (socketClientId != null) {
-      pageEvent.emit('delete', pages, user, socketClientId); // update as renamed page
+      pageEvent.emit('delete', pagesData, user, socketClientId); // update as renamed page
     }
-    return pages;
+    return pagesData;
   }
 
   /**
