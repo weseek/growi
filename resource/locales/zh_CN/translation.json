@@ -391,7 +391,7 @@
     "GROWI_original": "GROWI original",
     "pukiwiki": "Pukiwiki",
     "preview": "Preview",
-    "page_not_found_in_preview": "'{{path}}' is not a GROWI page."
+    "page_not_found_in_preview": "\"{{path}}\" is not a GROWI page."
   },
 	"toaster": {
 		"update_successed": "Succeeded to update {{target}}",

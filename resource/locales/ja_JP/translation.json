@@ -413,7 +413,7 @@
     "GROWI_original": "GROWI 独自記法",
     "pukiwiki": "Pukiwiki 記法",
     "preview": "プレビュー",
-    "page_not_found_in_preview": "'{{path}}' というページはありません。"
+    "page_not_found_in_preview": "\"{{path}}\" というページはありません。"
   },
   "toaster": {
     "update_successed": "{{target}}を更新しました",
