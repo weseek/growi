@@ -92,8 +92,10 @@ class PageService {
     // await Promise.all(pages.map((page) => {
     //   return this.completelyDeletePage(page, user, options);
     // }));
-    return this.completelyDeletePage(pages, user, options);
+    // 変数名は後で考える
+    const deleteData = await this.completelyDeletePage(pages, user, options);
 
+    return deleteData;
   }
 
   // pages をうけとれるように改修したい
@@ -131,41 +133,20 @@ class PageService {
     const Page = this.crowi.model('Page');
     const PageTagRelation = this.crowi.model('PageTagRelation');
     const ShareLink = this.crowi.model('ShareLink');
-    // const Revision = this.crowi.model('Revision');
+    const Revision = this.crowi.model('Revision');
 
-    // return PageTagRelation.find({ relatedPage: { $in: pageIds } }).remove({});
-    // return await Bookmark.find({ page: { $in: pageIds } }).remove({});
-    // return await Comment.find({ page: { $in: pageIds } }).remove({});
-    // return await ShareLink.find({ relatedPage: { $in: pageIds } }).remove({});
-    // return await Revision.find({ path: { $in: pagePaths } }).remove({});
-    // return await Page.find({ _id: { $in: pageIds } }).remove({});
-    // return await Page.find({ path: { $in: pagePaths } }).remove({});
-
-    const huga = await Promise.all([
+    const deleteData = await Promise.all([
       Bookmark.find({ page: { $in: pageIds } }).remove({}),
       Comment.find({ page: { $in: pageIds } }).remove({}),
       PageTagRelation.find({ relatedPage: { $in: pageIds } }).remove({}),
       ShareLink.find({ relatedPage: { $in: pageIds } }).remove({}),
-      // Revision.find({ path: { $in: pagePaths } }).remove({}),
+      Revision.find({ path: { $in: pagePaths } }).remove({}),
       Page.find({ _id: { $in: pageIds } }).remove({}),
       Page.find({ path: { $in: pagePaths } }).remove({}),
     ]);
 
     // const hoge = await this.removeAllAttachments(pageIds);
-
-
-    return huga;
-    // return Promise.all([
-    //   Bookmark.find({ page: { $in: pageIds } }).remove({}),
-    //   Comment.find({ page: { $in: pageIds } }).remove({}),
-    //   PageTagRelation.find({ relatedPage: { $in: pageIds } }).remove({}),
-    //   ShareLink.find({ relatedPage: { $in: pageIds } }).remove({}),
-    //   // Revision.find({ path: { $in: pagePaths } }).remove({}),
-    //   Page.find({ _id: { $in: pageIds } }).remove({}),
-    //   Page.find({ path: { $in: pagePaths } }).remove({}),
-    // ]);
-
-
+    return deleteData;
     // return Promise.all([
     //   Bookmark.removeBookmarksByPageId(pageIds),
     //   Comment.removeCommentsByPageId(pageIds),
