@@ -112,17 +112,20 @@ class GridEditModal extends React.Component {
     return (
       <div className="container">
         <div className="row">
-          {gridDivisions.map((gridDivion, i) => {
+          {gridDivisions.map((gridDivision) => {
+            const numOfDivisions = gridDivision.numberOfGridDivisions;
             return (
-              <div className="col-md-4 text-center">
-                <h6 className="dropdown-header">{gridDivion.numberOfGridDivisions} {t('grid_edit.division')}</h6>
-                {gridDivion.mapping.map((gridOneDivision) => {
+              <div key={`${numOfDivisions}-divisions`} className="col-md-4 text-center">
+                <h6 className="dropdown-header">{numOfDivisions} {t('grid_edit.division')}</h6>
+                {gridDivision.mapping.map((gridOneDivision) => {
+                  const keyOfRow = `${numOfDivisions}-divisions-${gridOneDivision.join('-')}`;
                   return (
-                    <button className="dropdown-item" type="button" onClick={() => { this.checkColsRatios(gridOneDivision) }}>
+                    <button key={keyOfRow} className="dropdown-item" type="button" onClick={() => { this.checkColsRatios(gridOneDivision) }}>
                       <div className="row">
-                        {gridOneDivision.map((god) => {
+                        {gridOneDivision.map((god, i) => {
+                          const keyOfCol = `${keyOfRow}-${i}`;
                           const className = `bg-info col-${god} border`;
-                          return <span className={className}>{god}</span>;
+                          return <span key={keyOfCol} className={className}>{god}</span>;
                         })}
                       </div>
                     </button>
