@@ -76,7 +76,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
       </Head>
       <BasicLayout title="GROWI">
         <header className="py-0">
-          <GrowiSubNavigation />
+          {/* <GrowiSubNavigation /> */}
         </header>
         <div className="d-edit-none">
           {/* <GrowiSubNavigationSwitcher /> */}
