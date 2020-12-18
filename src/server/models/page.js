@@ -1285,7 +1285,8 @@ module.exports = function(crowi) {
   pageSchema.statics.renameRecursively = async function(targetPage, newPagePathPrefix, user, options) {
     validateCrowi();
 
-    const collection = mongoose.connection.collection('pages');
+    const pageCollection = mongoose.connection.collection('pages');
+    const revisionCollection = mongoose.connection.collection('revisions');
 
     const path = targetPage.path;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(path)}`, 'i');
@@ -1297,7 +1298,8 @@ module.exports = function(crowi) {
     // find manageable descendants
     const pages = await this.findManageableListWithDescendants(targetPage, user, options);
 
-    const unorderedBulkOp = collection.initializeUnorderedBulkOp();
+    const unorderedBulkOp = pageCollection.initializeUnorderedBulkOp();
+    const revisionUnorderedBulkOp = revisionCollection.initializeUnorderedBulkOp();
 
     pages.forEach((page) => {
       const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
@@ -1307,9 +1309,11 @@ module.exports = function(crowi) {
       else {
         unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath } });
       }
+      revisionUnorderedBulkOp.find({ path: page.path }).update({ $set: { path: newPagePath } }, { multi: true });
     });
-    unorderedBulkOp.execute();
 
+    await unorderedBulkOp.execute();
+    await revisionUnorderedBulkOp.execute();
 
     targetPage.path = newPagePathPrefix;
     return targetPage;
