@@ -3,6 +3,7 @@
 ## v4.2.4
 
 * Fix: Fixed an error when creating a new page with `Ctrl-S`
+    * Introduced by v4.2.2
 * Fix: Fixed a strange diff in PageHistory due to Pagination
 * Fix: Fixed that the user group page could not be found when using api from the outside
 
