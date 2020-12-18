@@ -102,6 +102,7 @@ class PageService {
     return newParentpage;
   }
 
+
   async completelyDeletePage(pagesData, user, options = {}) {
     this.validateCrowi();
     let pageEvent;
@@ -113,14 +114,14 @@ class PageService {
     }
 
     // const { _ids, path } = pageData;
-    const ids = pagesData.map(page => (page._id));
+    const _ids = pagesData.map(page => (page._id));
     const paths = pagesData.map(page => (page.path));
 
     const socketClientId = options.socketClientId || null;
 
     logger.debug('Deleting completely', paths);
 
-    await this.deleteCompletely(ids, paths);
+    await this.deleteCompletely(_ids, paths);
 
     if (socketClientId != null) {
       pageEvent.emit('delete', pagesData, user, socketClientId); // update as renamed page
