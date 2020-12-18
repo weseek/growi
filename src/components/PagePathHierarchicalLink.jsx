@@ -17,22 +17,14 @@ const PagePathHierarchicalLink = (props) => {
 
     return isInTrash
       ? (
-        <>
-          <span className="path-segment">
-            <a href="/trash"><i className="icon-trash"></i></a>
-          </span>
-          <span className="separator"><a href="/">/</a></span>
-        </>
+        <Link className="path-segment" href="/trash">
+          <a><i className="icon-trash"></i></a>
+        </Link>
       )
       : (
-        <>
-          <span className="path-segment">
-            <a href="/">
-              <i className="icon-home"></i>
-              <span className="separator">/</span>
-            </a>
-          </span>
-        </>
+        <Link className="path-segment" href="/">
+          <a><i className="icon-home"></i><span className="separator">/</span></a>
+        </Link>
       );
   }
 
