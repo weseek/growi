@@ -144,7 +144,9 @@ class PageService {
     // return await Comment.find({ page: { $in: pageIds } }).remove({});
     // return await ShareLink.find({ relatedPage: { $in: pageIds } }).remove({});
     // return await Revision.find({ path: { $in: pagePaths } }).remove({});
-    return await Page.find({ _id: { $in: pageIds } }).remove({});
+    // return await Page.find({ _id: { $in: pageIds } }).remove({});
+    console.log(pagePaths);
+    return await Page.find({ path: { $in: pagePaths } }).remove({});
 
 
     // return Promise.all([
