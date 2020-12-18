@@ -330,7 +330,7 @@ class ElasticsearchDelegator {
     if (!Array.isArray(body)) {
       throw new Error('Body must be an array.');
     }
-
+    // console.log(page);
     const command = {
       delete: {
         _index: this.indexName,
@@ -492,10 +492,7 @@ class ElasticsearchDelegator {
     const self = this;
     const body = [];
 
-    pages.map((page) => {
-      self.prepareBodyForDelete(body, page);
-      return;
-    });
+    pages.forEach(page => self.prepareBodyForDelete(body, page));
 
     logger.debug('deletePages(): Sending Request to ES', body);
     return this.client.bulk({
@@ -951,11 +948,11 @@ class ElasticsearchDelegator {
     return this.updateOrInsertPageById(page._id);
   }
 
-  async syncPageDeleted(page, user) {
-    logger.debug('SearchClient.syncPageDeleted', page.path);
+  async syncPageDeleted(pages, user) {
+    logger.debug('SearchClient.syncPageDeleted', pages.path);
 
     try {
-      return await this.deletePages([page]);
+      return await this.deletePages(pages);
     }
     catch (err) {
       logger.error('deletePages:ES Error', err);
