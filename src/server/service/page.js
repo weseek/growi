@@ -113,7 +113,6 @@ class PageService {
       pageEvent.on('update', pageEvent.onUpdate);
     }
 
-    // const { _ids, path } = pageData;
     const ids = pagesData.map(page => (page._id));
     const paths = pagesData.map(page => (page.path));
 
