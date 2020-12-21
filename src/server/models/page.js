@@ -293,6 +293,7 @@ module.exports = function(crowi) {
     pageEvent = crowi.event('page');
     pageEvent.on('create', pageEvent.onCreate);
     pageEvent.on('update', pageEvent.onUpdate);
+    pageEvent.on('createMany', pageEvent.onCreateMany);
   }
 
   function validateCrowi() {
@@ -1291,6 +1292,7 @@ module.exports = function(crowi) {
     const path = targetPage.path;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(path)}`, 'i');
     const updateMetadata = options.updateMetadata;
+    const socketClientId = options.socketClientId || null;
 
     // sanitize path
     newPagePathPrefix = crowi.xss.process(newPagePathPrefix); // eslint-disable-line no-param-reassign
@@ -1314,6 +1316,16 @@ module.exports = function(crowi) {
 
     await unorderedBulkOp.execute();
     await revisionUnorderedBulkOp.execute();
+
+    const newParentPath = path.replace(pathRegExp, newPagePathPrefix);
+    const newParentPage = this.findByPath(newParentPath);
+    const pageDatas = await this.findManageableListWithDescendants(newParentPage, user, options);
+
+    pageEvent.emit('createMany', targetPage, user, socketClientId);
+    pageDatas.forEach((pageData) => {
+      pageEvent.emit('delete', pageData, user, socketClientId);
+    });
+
 
     targetPage.path = newPagePathPrefix;
     return targetPage;
