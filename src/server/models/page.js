@@ -1231,7 +1231,7 @@ module.exports = function(crowi) {
 
     const path = targetPage.path;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(path)}`, 'i');
-    const updateMetadata = options.updateMetadata;
+    const { updateMetadata, createRedirectPage } = options;
 
     // sanitize path
     newPagePathPrefix = crowi.xss.process(newPagePathPrefix); // eslint-disable-line no-param-reassign
@@ -1240,6 +1240,7 @@ module.exports = function(crowi) {
     const pages = await this.findManageableListWithDescendants(targetPage, user, options);
 
     const unorderedBulkOp = pageCollection.initializeUnorderedBulkOp();
+    const createRediectPageBulkOp = pageCollection.initializeUnorderedBulkOp();
     const revisionUnorderedBulkOp = revisionCollection.initializeUnorderedBulkOp();
 
     pages.forEach((page) => {
@@ -1250,11 +1251,21 @@ module.exports = function(crowi) {
       else {
         unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath } });
       }
+      if (createRedirectPage) {
+        createRediectPageBulkOp.insert({
+          path: page.path, body: `redirect ${newPagePath}`, creator: user, lastUpdateUser: user, status: STATUS_PUBLISHED, redirectTo: newPagePath,
+        });
+      }
       revisionUnorderedBulkOp.find({ path: page.path }).update({ $set: { path: newPagePath } }, { multi: true });
     });
 
     await unorderedBulkOp.execute();
     await revisionUnorderedBulkOp.execute();
+
+    // Execute after unorderedBulkOp to prevent duplication
+    if (createRedirectPage) {
+      await createRediectPageBulkOp.execute();
+    }
 
     targetPage.path = newPagePathPrefix;
     return targetPage;
