@@ -1,5 +1,9 @@
 # CHANGES
 
+## v4.2.6-RC
+
+* 
+
 ## v4.2.5-RC
 
 * Improvement: Invoke garbage collection when reindex all pages by elasticsearch
