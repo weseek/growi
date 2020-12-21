@@ -29,25 +29,18 @@ class PageService {
       Revision.find({ path: { $in: pagePaths } }).remove({}),
       Page.find({ _id: { $in: pageIds } }).remove({}),
       Page.find({ path: { $in: pagePaths } }).remove({}),
+      this.removeAllAttachments(pageIds),
     ]);
 
-    // TODO fix remove action of attachments
-    // const hoge = await this.removeAllAttachments(pageIds);
     return deleteData;
-
   }
 
-  async removeAllAttachments(pageId) {
+  async removeAllAttachments(pageIds) {
     const Attachment = this.crowi.model('Attachment');
     const { attachmentService } = this.crowi;
+    const attachments = await Attachment.find({ page: { $in: pageIds } });
 
-    const attachments = await Attachment.find({ page: pageId });
-
-    const promises = attachments.map(async(attachment) => {
-      return attachmentService.removeAttachment(attachment._id);
-    });
-
-    return Promise.all(promises);
+    return attachmentService.removeAttachment(attachments);
   }
 
   async duplicate(page, newPagePath, user) {
