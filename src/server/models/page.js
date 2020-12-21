@@ -1231,7 +1231,7 @@ module.exports = function(crowi) {
 
     const path = targetPage.path;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(path)}`, 'i');
-    const updateMetadata = options.updateMetadata;
+    const { updateMetadata, createRedirectPage } = options;
 
     // sanitize path
     newPagePathPrefix = crowi.xss.process(newPagePathPrefix); // eslint-disable-line no-param-reassign
@@ -1249,6 +1249,9 @@ module.exports = function(crowi) {
       }
       else {
         unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath } });
+      }
+      if (createRedirectPage) {
+        // unorderedBulkOp.insert({ redirectTo: newPagePath });
       }
       revisionUnorderedBulkOp.find({ path: page.path }).update({ $set: { path: newPagePath } }, { multi: true });
     });
