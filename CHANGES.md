@@ -1,5 +1,9 @@
 # CHANGES
 
+## v4.1.13
+
+* Fix: MathJax rendering does not work
+
 ## v4.1.12
 
 * Fix: Adjust line-height for pre under li
