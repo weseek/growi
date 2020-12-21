@@ -330,7 +330,7 @@ class ElasticsearchDelegator {
     if (!Array.isArray(body)) {
       throw new Error('Body must be an array.');
     }
-    // console.log(page);
+    
     const command = {
       delete: {
         _index: this.indexName,
