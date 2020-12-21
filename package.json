@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "4.2.4-RC",
+  "version": "4.2.5-RC",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -58,7 +58,7 @@
     "i18n-json-merge:noTran": "rs-i18n -lan --",
     "i18n-json-merge": "npm run i18n-json-merge:withTran --",
     "server:nolazy": "env-cmd -f config/env.dev.js node-dev --nolazy --inspect src/server/app.js",
-    "server:dev": "env-cmd -f config/env.dev.js node-dev --inspect src/server/app.js",
+    "server:dev": "env-cmd -f config/env.dev.js node-dev --expose_gc --inspect src/server/app.js",
     "server:prod:ci": "npm run server:prod -- --ci",
     "server:prod": "env-cmd -f config/env.prod.js node src/server/app.js",
     "server": "npm run server:dev",
