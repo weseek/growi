@@ -21,7 +21,7 @@ class PageService {
     const ShareLink = this.crowi.model('ShareLink');
     const Revision = this.crowi.model('Revision');
 
-    Promise.all([
+    await Promise.all([
       Bookmark.find({ page: { $in: pageIds } }).remove({}),
       Comment.find({ page: { $in: pageIds } }).remove({}),
       PageTagRelation.find({ relatedPage: { $in: pageIds } }).remove({}),
@@ -38,7 +38,7 @@ class PageService {
     const { attachmentService } = this.crowi;
     const attachments = await Attachment.find({ page: { $in: pageIds } });
 
-    return attachmentService.removeAttachment(attachments);
+    attachmentService.removeAttachment(attachments);
   }
 
   async duplicate(page, newPagePath, user) {
