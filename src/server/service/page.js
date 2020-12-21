@@ -21,7 +21,7 @@ class PageService {
     const ShareLink = this.crowi.model('ShareLink');
     const Revision = this.crowi.model('Revision');
 
-    return Promise.all([
+    Promise.all([
       Bookmark.find({ page: { $in: pageIds } }).remove({}),
       Comment.find({ page: { $in: pageIds } }).remove({}),
       PageTagRelation.find({ relatedPage: { $in: pageIds } }).remove({}),
@@ -116,7 +116,6 @@ class PageService {
     if (socketClientId != null) {
       pageEvent.emit('delete', pagesData, user, socketClientId); // update as renamed page
     }
-    return pagesData;
   }
 
   /**
@@ -130,9 +129,7 @@ class PageService {
     const pages = await Page.findManageableListWithDescendants(targetPage, user, findOpts);
 
     // TODO streaming bellow action
-    const pagesData = await this.completelyDeletePage(pages, user, options);
-
-    return pagesData;
+    await this.completelyDeletePage(pages, user, options);
   }
 
 
