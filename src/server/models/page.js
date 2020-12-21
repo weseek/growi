@@ -1240,6 +1240,7 @@ module.exports = function(crowi) {
     const pages = await this.findManageableListWithDescendants(targetPage, user, options);
 
     const unorderedBulkOp = pageCollection.initializeUnorderedBulkOp();
+    const createRediectPageBulkOp = pageCollection.initializeUnorderedBulkOp();
     const revisionUnorderedBulkOp = revisionCollection.initializeUnorderedBulkOp();
 
     pages.forEach((page) => {
@@ -1251,13 +1252,19 @@ module.exports = function(crowi) {
         unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath } });
       }
       if (createRedirectPage) {
-        // unorderedBulkOp.insert({ redirectTo: newPagePath });
+        createRediectPageBulkOp.insert({
+          path: page.path, body: `redirect ${newPagePath}`, creator: user, lastUpdateUser: user, status: STATUS_PUBLISHED, redirectTo: newPagePath,
+        });
       }
       revisionUnorderedBulkOp.find({ path: page.path }).update({ $set: { path: newPagePath } }, { multi: true });
     });
 
     await unorderedBulkOp.execute();
     await revisionUnorderedBulkOp.execute();
+
+    if (createRedirectPage) {
+      await createRediectPageBulkOp.execute();
+    }
 
     targetPage.path = newPagePathPrefix;
     return targetPage;
