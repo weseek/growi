@@ -124,7 +124,6 @@ class PageService {
     // completelyDeletePageRecursively
     const ids = pagesData.map(page => (page._id));
     const paths = pagesData.map(page => (page.path));
-
     const socketClientId = options.socketClientId || null;
 
     logger.debug('Deleting completely', paths);
