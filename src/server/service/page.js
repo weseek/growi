@@ -106,7 +106,6 @@ class PageService {
 
     //  Simply delete completely a page
     if (!pagesData.length) {
-
       const ids = [pagesData].map(page => (page._id));
       const paths = [pagesData].map(page => (page.path));
       const socketClientId = options.socketClientId || null;
