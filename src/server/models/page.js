@@ -1262,6 +1262,7 @@ module.exports = function(crowi) {
     await unorderedBulkOp.execute();
     await revisionUnorderedBulkOp.execute();
 
+    // Execute after unorderedBulkOp to prevent duplication
     if (createRedirectPage) {
       await createRediectPageBulkOp.execute();
     }
