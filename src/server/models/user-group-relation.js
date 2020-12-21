@@ -139,7 +139,7 @@ class UserGroupRelation {
    * @returns {Promise<ObjectId[]>}
    */
   static async findAllUserGroupIdsRelatedToUser(user) {
-    const relations = await this.find({ relatedUser: user.id })
+    const relations = await this.find({ relatedUser: user._id })
       .select('relatedGroup')
       .exec();
 

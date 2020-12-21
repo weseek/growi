@@ -469,9 +469,9 @@ export default class PageContainer extends Container {
     });
 
     const res = await this.appContainer.apiv3Post('/pages/', params);
-    const { page, tags } = res.data;
+    const { page, tags, revision } = res.data;
 
-    return { page, tags };
+    return { page, tags, revision };
   }
 
   async updatePage(pageId, revisionId, markdown, tmpParams) {
