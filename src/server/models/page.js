@@ -1226,8 +1226,12 @@ module.exports = function(crowi) {
   pageSchema.statics.renameRecursively = async function(targetPage, newPagePathPrefix, user, options) {
     validateCrowi();
 
+    const pageCollection = mongoose.connection.collection('pages');
+    const revisionCollection = mongoose.connection.collection('revisions');
+
     const path = targetPage.path;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(path)}`, 'i');
+    const updateMetadata = options.updateMetadata;
 
     // sanitize path
     newPagePathPrefix = crowi.xss.process(newPagePathPrefix); // eslint-disable-line no-param-reassign
@@ -1235,13 +1239,22 @@ module.exports = function(crowi) {
     // find manageable descendants
     const pages = await this.findManageableListWithDescendants(targetPage, user, options);
 
-    // TODO GW-4634 use stream
-    const promise = pages.map((page) => {
+    const unorderedBulkOp = pageCollection.initializeUnorderedBulkOp();
+    const revisionUnorderedBulkOp = revisionCollection.initializeUnorderedBulkOp();
+
+    pages.forEach((page) => {
       const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
-      return this.rename(page, newPagePath, user, options);
+      if (updateMetadata) {
+        unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath, lastUpdateUser: user._id, updatedAt: Date.now() } });
+      }
+      else {
+        unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath } });
+      }
+      revisionUnorderedBulkOp.find({ path: page.path }).update({ $set: { path: newPagePath } }, { multi: true });
     });
 
-    await Promise.allSettled(promise);
+    await unorderedBulkOp.execute();
+    await revisionUnorderedBulkOp.execute();
 
     targetPage.path = newPagePathPrefix;
     return targetPage;
