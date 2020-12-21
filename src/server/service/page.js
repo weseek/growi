@@ -44,12 +44,9 @@ class PageService {
 
     const attachments = await Attachment.find({ page: { $in: pageIds } });
 
-    const hoge = await attachmentService.removeAttachment(attachments);
-    console.log('===============');
-    console.log(hoge);
-    console.log('===============');
+    return attachmentService.removeAttachment(attachments);
 
-    return hoge;
+
     // const promises = attachments.map(async(attachment) => {
     //   return attachmentService.removeAttachment(attachment._id);
     // });
