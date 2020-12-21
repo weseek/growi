@@ -33,7 +33,6 @@ class PageService {
     ]);
 
     return deleteData;
-
   }
 
   async removeAllAttachments(pageIds) {
