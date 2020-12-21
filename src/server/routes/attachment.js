@@ -637,7 +637,6 @@ module.exports = function(crowi, app) {
     }
 
     try {
-      console.log('hoge');
       await removeAttachment(attachment);
     }
     catch (err) {
