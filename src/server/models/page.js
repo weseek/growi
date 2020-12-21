@@ -1217,7 +1217,7 @@ module.exports = function(crowi) {
       await Page.create(path, body, user, { redirectTo: newPagePath });
     }
 
-    pageEvent.emit('delete', pageData, user, socketClientId);
+    pageEvent.emit('delete', [pageData], user, socketClientId);
     pageEvent.emit('create', updatedPageData, user, socketClientId);
 
     return updatedPageData;
