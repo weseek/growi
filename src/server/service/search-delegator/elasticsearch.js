@@ -949,7 +949,9 @@ class ElasticsearchDelegator {
   }
 
   async syncPageDeleted(pages, user) {
-    logger.debug('SearchClient.syncPageDeleted', pages.path);
+    for (let i = 0; i < pages.length; i++) {
+      logger.debug('SearchClient.syncPageDeleted', pages[i].path);
+    }
 
     try {
       return await this.deletePages(pages);
