@@ -32,8 +32,6 @@ class PageService {
       this.removeAllAttachments(pageIds),
     ]);
 
-    // const deleteAttachments = await this.removeAllAttachments(pageIds);
-
     return deleteData;
 
   }
@@ -41,17 +39,9 @@ class PageService {
   async removeAllAttachments(pageIds) {
     const Attachment = this.crowi.model('Attachment');
     const { attachmentService } = this.crowi;
-
     const attachments = await Attachment.find({ page: { $in: pageIds } });
 
     return attachmentService.removeAttachment(attachments);
-
-
-    // const promises = attachments.map(async(attachment) => {
-    //   return attachmentService.removeAttachment(attachment._id);
-    // });
-
-    // return Promise.all(promises);
   }
 
   async duplicate(page, newPagePath, user) {
