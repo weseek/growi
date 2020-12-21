@@ -120,7 +120,7 @@ class PageService {
       return;
     }
 
-    // completelyDeletePageRecursively
+    // In case of recursively
     const ids = pagesData.map(page => (page._id));
     const paths = pagesData.map(page => (page.path));
     const socketClientId = options.socketClientId || null;
