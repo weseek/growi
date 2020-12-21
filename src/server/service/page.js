@@ -21,7 +21,7 @@ class PageService {
     const ShareLink = this.crowi.model('ShareLink');
     const Revision = this.crowi.model('Revision');
 
-    const deleteData = await Promise.all([
+    return Promise.all([
       Bookmark.find({ page: { $in: pageIds } }).remove({}),
       Comment.find({ page: { $in: pageIds } }).remove({}),
       PageTagRelation.find({ relatedPage: { $in: pageIds } }).remove({}),
@@ -31,8 +31,6 @@ class PageService {
       Page.find({ path: { $in: pagePaths } }).remove({}),
       this.removeAllAttachments(pageIds),
     ]);
-
-    return deleteData;
   }
 
   async removeAllAttachments(pageIds) {
