@@ -1217,6 +1217,7 @@ module.exports = function(crowi) {
       await Page.create(path, body, user, { redirectTo: newPagePath });
     }
 
+    // The reason using array is to match the types in elasticsearch.js ( deletePages )
     pageEvent.emit('delete', [pageData], user, socketClientId);
     pageEvent.emit('create', updatedPageData, user, socketClientId);
 
