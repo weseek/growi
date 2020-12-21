@@ -41,6 +41,9 @@ export default class AppContainer extends Container {
 
     const userAgent = window.navigator.userAgent.toLowerCase();
     this.isMobile = /iphone|ipad|android/.test(userAgent);
+    const appVersion = window.navigator.appVersion.toLowerCase();
+    this.isOldIos = /iphone 12/.test(appVersion);
+    console.log(`isOldios = ${this.isOldIos}`);
 
     const currentUserElem = document.getElementById('growi-current-user');
     if (currentUserElem != null) {
