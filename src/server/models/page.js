@@ -1148,7 +1148,7 @@ module.exports = function(crowi) {
     let updatedPage = null;
     await Promise.all(pages.map((page) => {
       const isParent = (page.path === targetPage.path);
-      const p = crowi.pageService.revertDeletedPage(page, user, options);
+      const p = crowi.pageService.revertDeletedPages(page, user, options);
       if (isParent) {
         updatedPage = p;
       }
