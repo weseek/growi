@@ -38,7 +38,7 @@ class PageService {
     const { attachmentService } = this.crowi;
     const attachments = await Attachment.find({ page: { $in: pageIds } });
 
-    attachmentService.removeAttachment(attachments);
+    return attachmentService.removeAttachment(attachments);
   }
 
   async duplicate(page, newPagePath, user) {
@@ -94,7 +94,7 @@ class PageService {
   }
 
 
-  async completelyDeletePage(pagesData, user, options = {}) {
+  async completelyDeletePages(pagesData, user, options = {}) {
     this.validateCrowi();
     let pageEvent;
     // init event
@@ -128,7 +128,7 @@ class PageService {
     const pages = await Page.findManageableListWithDescendants(targetPage, user, findOpts);
 
     // TODO streaming bellow action
-    await this.completelyDeletePage(pages, user, options);
+    await this.completelyDeletePages(pages, user, options);
   }
 
 
@@ -143,7 +143,7 @@ class PageService {
       if (originPage.redirectTo !== page.path) {
         throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
       }
-      await this.completelyDeletePage([originPage], options);
+      await this.completelyDeletePages([originPage], options);
     }
 
     page.status = STATUS_PUBLISHED;
@@ -165,7 +165,7 @@ class PageService {
         break;
       case 'delete':
         await Promise.all(pages.map((page) => {
-          return this.completelyDeletePage(page);
+          return this.completelyDeletePages(page);
         }));
         break;
       case 'transfer':
