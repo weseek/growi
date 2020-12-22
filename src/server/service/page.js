@@ -167,7 +167,7 @@ class PageService {
       if (originPage.redirectTo !== page.path) {
         throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
       }
-      await this.completelyDeletePages([originPage], options);
+      await this.completelyDeletePage(originPage, options);
     }
 
     page.status = STATUS_PUBLISHED;
