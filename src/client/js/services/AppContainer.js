@@ -41,9 +41,23 @@ export default class AppContainer extends Container {
 
     const userAgent = window.navigator.userAgent.toLowerCase();
     this.isMobile = /iphone|ipad|android/.test(userAgent);
-    const appVersion = window.navigator.appVersion.toLowerCase();
-    this.isOldIos = /iphone 12/.test(appVersion);
-    console.log(`isOldios = ${this.isOldIos}`);
+
+    // this.isIos = /iphone|ipad/.test(userAgent);
+    // const appVersion = window.navigator.appVersion.toLowerCase();
+    // if (isIos && appVersion < 12.5) {
+    //   return false;
+    // }
+    // const this.isOldIos =
+    // const isOldIos = false;
+    // if (userAgent.indexOf('iphone') !== -1 && appVersion.indexOf('12') !== -1) {
+    //   isOldIos = true;
+    //   console.log(appVersion);
+    // const iphone = userAagent.indexOf('iphone');
+    // this.isOldIos = /iphone 12/.test(appVersion);
+    // if (appVersion <= 12) {
+
+    // }
+
 
     const currentUserElem = document.getElementById('growi-current-user');
     if (currentUserElem != null) {
