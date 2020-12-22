@@ -54,10 +54,20 @@ class PageService {
     await pages.map(page => page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate());
 
     // create option
+    // options.grant = page.grant;
+    // options.grantUserGroupId = page.grantedGroup;
+    // options.grantedUsers = page.grantedUsers;
+
+
+    // 複数にするべきか(grantUserGroupIds → ids or 一つづつ格納すべきか)
     const options = { pages };
-    options.grant = pages.grant;
-    options.grantUserGroupId = pages.grantedGroup;
-    options.grantedUsers = pages.grantedUsers;
+    options.grant = pages.map(page => page.grant);
+    options.grantUserGroupId = pages.map(page => page.grantedGroup);
+    options.grantedUsers = pages.map(page => page.grantedUsers);
+
+    console.log(`grant = ${options.grant}`);
+    console.log(`grantUserGroupId = ${options.grantUserGroupId}`);
+    console.log(`grantedUsers = ${options.grantedUsers}`);
 
     const createdPage = await Page.create(
       newPagePath, pages.revision.body, user, options,
