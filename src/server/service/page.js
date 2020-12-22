@@ -104,25 +104,8 @@ class PageService {
       pageEvent.on('update', pageEvent.onUpdate);
     }
 
-    // In case of recursively
-    if (pagesData.length != null) {
-      const ids = pagesData.map(page => (page._id));
-      const paths = pagesData.map(page => (page.path));
-      const socketClientId = options.socketClientId || null;
-
-      logger.debug('Deleting completely', paths);
-
-      await this.deleteCompletely(ids, paths);
-
-      if (socketClientId != null) {
-        pageEvent.emit('delete', pagesData, user, socketClientId); // update as renamed page
-      }
-      return;
-    }
-
-    //  Simply delete completely a page
-    const ids = [pagesData].map(page => (page._id));
-    const paths = [pagesData].map(page => (page.path));
+    const ids = pagesData.map(page => (page._id));
+    const paths = pagesData.map(page => (page.path));
     const socketClientId = options.socketClientId || null;
 
     logger.debug('Deleting completely', paths);
@@ -130,7 +113,7 @@ class PageService {
     await this.deleteCompletely(ids, paths);
 
     if (socketClientId != null) {
-      pageEvent.emit('delete', [pagesData], user, socketClientId); // update as renamed page
+      pageEvent.emit('delete', pagesData, user, socketClientId); // update as renamed page
     }
   }
 
@@ -160,7 +143,7 @@ class PageService {
       if (originPage.redirectTo !== page.path) {
         throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
       }
-      await this.completelyDeletePage(originPage, options);
+      await this.completelyDeletePage([originPage], options);
     }
 
     page.status = STATUS_PUBLISHED;
