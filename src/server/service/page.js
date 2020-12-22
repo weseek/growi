@@ -113,7 +113,7 @@ class PageService {
     await this.deleteCompletely(ids, paths);
 
     if (socketClientId != null) {
-      pageEvent.emit('delete', pagesData, user, socketClientId); // update as renamed page
+      pageEvent.emit('deleteCompletely', pagesData, user, socketClientId); // update as renamed page
     }
   }
 
