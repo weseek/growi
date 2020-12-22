@@ -1197,7 +1197,7 @@ module.exports = function(crowi, app) {
           await crowi.pageService.completelyDeletePageRecursively(page, req.user, options);
         }
         else {
-          await crowi.pageService.completelyDeletePages([page], req.user, options);
+          await crowi.pageService.completelyDeletePages(page, req.user, options);
         }
       }
       else {
