@@ -104,10 +104,10 @@ class PageService {
       pageEvent.on('update', pageEvent.onUpdate);
     }
 
-    //  Simply delete completely a page
-    if (!pagesData.length) {
-      const ids = [pagesData].map(page => (page._id));
-      const paths = [pagesData].map(page => (page.path));
+    // In case of recursively
+    if (pagesData.length != null) {
+      const ids = pagesData.map(page => (page._id));
+      const paths = pagesData.map(page => (page.path));
       const socketClientId = options.socketClientId || null;
 
       logger.debug('Deleting completely', paths);
@@ -115,14 +115,14 @@ class PageService {
       await this.deleteCompletely(ids, paths);
 
       if (socketClientId != null) {
-        pageEvent.emit('delete', [pagesData], user, socketClientId); // update as renamed page
+        pageEvent.emit('delete', pagesData, user, socketClientId); // update as renamed page
       }
       return;
     }
 
-    // In case of recursively
-    const ids = pagesData.map(page => (page._id));
-    const paths = pagesData.map(page => (page.path));
+    //  Simply delete completely a page
+    const ids = [pagesData].map(page => (page._id));
+    const paths = [pagesData].map(page => (page.path));
     const socketClientId = options.socketClientId || null;
 
     logger.debug('Deleting completely', paths);
@@ -130,7 +130,7 @@ class PageService {
     await this.deleteCompletely(ids, paths);
 
     if (socketClientId != null) {
-      pageEvent.emit('delete', pagesData, user, socketClientId); // update as renamed page
+      pageEvent.emit('delete', [pagesData], user, socketClientId); // update as renamed page
     }
   }
 
