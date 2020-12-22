@@ -137,7 +137,7 @@ class PageService {
     await this.deleteCompletely(id, path);
 
     if (socketClientId != null) {
-      pageEvent.emit('deleteCompletely', [pageData], user, socketClientId); // update as renamed page
+      pageEvent.emit('delete', pageData, user, socketClientId); // update as renamed page
     }
   }
 
@@ -155,6 +155,28 @@ class PageService {
     await this.completelyDeletePages(pages, user, options);
   }
 
+  // revert pages recursively
+  async revertDeletedPages(page, user, options = {}) {
+    const Page = this.crowi.model('Page');
+    const newPath = Page.getRevertDeletedPageName(page.path);
+    const originPage = await Page.findByPath(newPath);
+    if (originPage != null) {
+    // When the page is deleted, it will always be created with "redirectTo" in the path of the original page.
+    // So, it's ok to delete the page
+    // However, If a page exists that is not "redirectTo", something is wrong. (Data correction is needed).
+      if (originPage.redirectTo !== page.path) {
+        throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
+      }
+      // originPage is object.
+      await this.completelyDeletePages([originPage], options);
+    }
+
+    page.status = STATUS_PUBLISHED;
+    page.lastUpdateUser = user;
+    debug('Revert deleted the page', page, newPath);
+    const updatedPage = await Page.rename(page, newPath, user, {});
+    return updatedPage;
+  }
 
   async revertDeletedPage(page, user, options = {}) {
     const Page = this.crowi.model('Page');
@@ -168,28 +190,6 @@ class PageService {
         throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
       }
       await this.completelyDeletePage(originPage, options);
-    }
-
-    page.status = STATUS_PUBLISHED;
-    page.lastUpdateUser = user;
-    debug('Revert deleted the page', page, newPath);
-    const updatedPage = await Page.rename(page, newPath, user, {});
-    return updatedPage;
-  }
-
-  // revert pages recursively
-  async revertDeletedPages(page, user, options = {}) {
-    const Page = this.crowi.model('Page');
-    const newPath = Page.getRevertDeletedPageName(page.path);
-    const originPage = await Page.findByPath(newPath);
-    if (originPage != null) {
-      // When the page is deleted, it will always be created with "redirectTo" in the path of the original page.
-      // So, it's ok to delete the page
-      // However, If a page exists that is not "redirectTo", something is wrong. (Data correction is needed).
-      if (originPage.redirectTo !== page.path) {
-        throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
-      }
-      await this.completelyDeletePages(originPage, options);
     }
 
     page.status = STATUS_PUBLISHED;
