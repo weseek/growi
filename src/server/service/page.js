@@ -93,7 +93,7 @@ class PageService {
     return newParentpage;
   }
 
-
+  // delete Many pages
   async completelyDeletePages(pagesData, user, options = {}) {
     this.validateCrowi();
     let pageEvent;
@@ -114,6 +114,30 @@ class PageService {
 
     if (socketClientId != null) {
       pageEvent.emit('deleteCompletely', pagesData, user, socketClientId); // update as renamed page
+    }
+  }
+
+  // delete single page completely
+  async completelyDeletePage(pageData, user, options = {}) {
+    this.validateCrowi();
+    let pageEvent;
+    // init event
+    if (this.crowi != null) {
+      pageEvent = this.crowi.event('page');
+      pageEvent.on('create', pageEvent.onCreate);
+      pageEvent.on('update', pageEvent.onUpdate);
+    }
+
+    const id = [pageData._id];
+    const path = [pageData.path];
+    const socketClientId = options.socketClientId || null;
+
+    logger.debug('Deleting completely', path);
+
+    await this.deleteCompletely(id, path);
+
+    if (socketClientId != null) {
+      pageEvent.emit('deleteCompletely', [pageData], user, socketClientId); // update as renamed page
     }
   }
 
