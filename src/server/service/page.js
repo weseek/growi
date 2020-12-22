@@ -46,24 +46,25 @@ class PageService {
     return Promise.all(promises);
   }
 
-  async duplicate(page, newPagePath, user) {
+  async duplicate(pages, newPagePath, user) {
     const Page = this.crowi.model('Page');
     const PageTagRelation = mongoose.model('PageTagRelation');
     // populate
-    await page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate();
+    // await pages.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate();
+    await pages.map(page => page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate());
 
     // create option
-    const options = { page };
-    options.grant = page.grant;
-    options.grantUserGroupId = page.grantedGroup;
-    options.grantedUsers = page.grantedUsers;
+    const options = { pages };
+    options.grant = pages.grant;
+    options.grantUserGroupId = pages.grantedGroup;
+    options.grantedUsers = pages.grantedUsers;
 
     const createdPage = await Page.create(
-      newPagePath, page.revision.body, user, options,
+      newPagePath, pages.revision.body, user, options,
     );
 
     // take over tags
-    const originTags = await page.findRelatedTagsById();
+    const originTags = await pages.findRelatedTagsById();
     let savedTags = [];
     if (originTags != null) {
       await PageTagRelation.updatePageTags(createdPage.id, originTags);
@@ -90,11 +91,6 @@ class PageService {
 
     const newPagePaths = pages.map(page => page.path.replace(pathRegExp, newPagePath));
     await this.duplicate(pages, newPagePaths, user);
-
-    // const promise = async() => {
-    // const newPagePaths = pages[path].replace(pathRegExp, newPagePath);
-    // await this.duplicate(pages, newPagePaths, user);
-    // };
 
     const newPath = page.path.replace(pathRegExp, newPagePath);
 
