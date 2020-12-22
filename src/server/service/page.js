@@ -78,17 +78,17 @@ class PageService {
 
   async duplicateRecursively(page, newPagePath, user) {
     const Page = this.crowi.model('Page');
-    const newPagePathPrefix = newPagePath;
+    // const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
 
     const pages = await Page.findManageableListWithDescendants(page, user);
 
     const promise = pages.map(async(page) => {
-      const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
-      return this.duplicate(page, newPagePath, user);
+      const newPagePath1 = page.path.replace(pathRegExp, newPagePath);
+      return this.duplicate(page, newPagePath1, user);
     });
 
-    const newPath = page.path.replace(pathRegExp, newPagePathPrefix);
+    const newPath = page.path.replace(pathRegExp, newPagePath);
 
     await Promise.allSettled(promise);
 
