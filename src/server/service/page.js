@@ -164,10 +164,7 @@ class PageService {
         }));
         break;
       case 'delete':
-        await Promise.all(pages.map((page) => {
-          return this.completelyDeletePages(page);
-        }));
-        break;
+        return this.completelyDeletePages(pages);
       case 'transfer':
         await Promise.all(pages.map((page) => {
           return Page.transferPageToGroup(page, transferToUserGroupId);
