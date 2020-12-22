@@ -44,9 +44,6 @@ class SearchTypeahead extends React.Component {
   }
 
   componentDidMount() {
-    // **MEMO** This doesn't work at this time -- 2019.05.13 Yuki Takei
-    // It is needed to use Modal component of react-bootstrap when showing Move/Duplicate/CreateNewPage modals
-    // this.typeahead.getInstance().focus();
   }
 
   componentWillUnmount() {
@@ -222,6 +219,7 @@ class SearchTypeahead extends React.Component {
           renderMenuItemChildren={this.renderMenuItemChildren}
           caseSensitive={false}
           defaultSelected={defaultSelected}
+          autoFocus={this.props.autoFocus}
           onBlur={this.props.onBlur}
           onFocus={this.props.onFocus}
         />
@@ -256,6 +254,7 @@ SearchTypeahead.propTypes = {
   placeholder:     PropTypes.string,
   keywordOnInit:   PropTypes.string,
   helpElement:     PropTypes.object,
+  autoFocus:       PropTypes.bool,
   behaviorOfResetBtn: PropTypes.oneOf(['restore', 'clear']),
 };
 
@@ -269,6 +268,7 @@ SearchTypeahead.defaultProps = {
   placeholder:     '',
   keywordOnInit:   '',
   behaviorOfResetBtn: 'restore',
+  autoFocus:       false,
   onInputChange: () => {},
 };
 
