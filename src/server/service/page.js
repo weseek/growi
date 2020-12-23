@@ -93,7 +93,7 @@ class PageService {
     return newParentpage;
   }
 
-  // delete Many pages
+  // delete multiple pages
   async completelyDeletePages(pagesData, user, options = {}) {
     this.validateCrowi();
     let pageEvent;
