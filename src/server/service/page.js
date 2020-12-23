@@ -21,7 +21,7 @@ class PageService {
     const ShareLink = this.crowi.model('ShareLink');
     const Revision = this.crowi.model('Revision');
 
-    await Promise.all([
+    return Promise.all([
       Bookmark.find({ page: { $in: pageIds } }).remove({}),
       Comment.find({ page: { $in: pageIds } }).remove({}),
       PageTagRelation.find({ relatedPage: { $in: pageIds } }).remove({}),
