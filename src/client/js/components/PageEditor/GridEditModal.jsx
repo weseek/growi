@@ -87,7 +87,7 @@ class GridEditModal extends React.Component {
     const { t } = this.props;
     const output = Object.entries(resSizeObj).map((responsiveSizeForMap) => {
       return (
-        <div className="custom-control custom-radio custom-control-inline">
+        <div key={responsiveSizeForMap[0]} className="custom-control custom-radio custom-control-inline">
           <input
             type="radio"
             className="custom-control-input"
@@ -255,10 +255,11 @@ class GridEditModal extends React.Component {
 
   renderNoBreakPreview() {
     const { colsRatios } = this.state;
-    const convertedHTML = colsRatios.map((colsRatios) => {
-      const className = `col-${colsRatios} border`;
+    const convertedHTML = colsRatios.map((colsRatio, i) => {
+      const key = `grid-preview-col-${i}`;
+      const className = `col-${colsRatio} border`;
       return (
-        <div className={className}></div>
+        <div key={key} className={className}></div>
       );
     });
     return (
@@ -268,10 +269,11 @@ class GridEditModal extends React.Component {
 
   renderBreakPreview() {
     const { colsRatios } = this.state;
-    const convertedHTML = colsRatios.map(() => {
+    const convertedHTML = colsRatios.map((colsRatio, i) => {
+      const key = `grid-preview-col-${i}`;
       const className = 'col-12 border';
       return (
-        <div className={className}></div>
+        <div key={key} className={className}></div>
       );
     });
     return (
