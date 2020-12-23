@@ -39,7 +39,7 @@ module.exports = {
     },
     {
       name: 'mathjax',
-      url: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js',
+      url: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js',
       args: {
         async: true,
         integrity: '',

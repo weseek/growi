@@ -17,6 +17,7 @@
   "Unlinked": "Unlinked",
   "Like!": "Like!",
   "Seen by": "Seen by",
+  "Done": "Done",
   "Cancel": "Cancel",
   "Create": "Create",
   "Admin": "Admin",
@@ -399,6 +400,22 @@
       "title": "Comment Form shortcuts",
       "Post": "Post"
     }
+  },
+  "link_edit": {
+    "edit_link": "Edit Link",
+    "set_link_and_label": "Set link and label",
+    "link": "Link",
+    "placeholder_of_link_input": "Input page path or URL",
+    "label": "Label",
+    "path_format": "Path format",
+    "use_relative_path": "Use relative path",
+    "use_permanent_link": "Use permanent link",
+    "notation": "Notation",
+    "markdown": "Markdown",
+    "GROWI_original": "GROWI original",
+    "pukiwiki": "Pukiwiki",
+    "preview": "Preview",
+    "page_not_found_in_preview": "\"{{path}}\" is not a GROWI page."
   },
   "toaster": {
     "update_successed": "Succeeded to update {{target}}",

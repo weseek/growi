@@ -139,7 +139,8 @@ body.on-edit {
       .grw-tag-labels.form-inline {
         flex-flow: row nowrap;
         width: 100%;
-        overflow-x: scroll;
+        overflow-x: auto;
+        scrollbar-width: thin;
       }
     }
   }
