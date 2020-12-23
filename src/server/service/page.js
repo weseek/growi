@@ -129,13 +129,13 @@ class PageService {
       pageEvent.on('update', pageEvent.onUpdate);
     }
 
-    const id = [pageData._id];
-    const path = [pageData.path];
+    const ids = [pageData._id];
+    const paths = [pageData.path];
     const socketClientId = options.socketClientId || null;
 
-    logger.debug('Deleting completely', path);
+    logger.debug('Deleting completely', paths);
 
-    await this.deleteCompletely(id, path);
+    await this.deleteCompletely(ids, paths);
 
     if (socketClientId != null) {
       pageEvent.emit('delete', pageData, user, socketClientId); // update as renamed page

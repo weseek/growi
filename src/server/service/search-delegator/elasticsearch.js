@@ -959,7 +959,7 @@ class ElasticsearchDelegator {
     return this.updateOrInsertPageById(page._id);
   }
 
-  async syncPageDeletedCompletely(pages, user) {
+  async syncPagesDeletedCompletely(pages, user) {
     for (let i = 0; i < pages.length; i++) {
       logger.debug('SearchClient.syncPageDeleted', pages[i].path);
     }
