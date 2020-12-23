@@ -43,28 +43,11 @@ export default class AppContainer extends Container {
     const userAgent = window.navigator.userAgent.toLowerCase();
     this.isMobile = /iphone|ipad|android/.test(userAgent);
 
-    // ここから
-    // this.isIos = /iphone|ipad/.test(userAgent);
-    // console.log(this.isIos);
-
-    // const appVersion = window.navigator.appVersion.toLowerCase();
-
-    // console.log(`appVersion = ${appVersion}`);
-    // this.isOldIos = /iphone 12/.test(appVersion);
-
-    // isOldVerion(version) {
-    //   if (version <= appVersion.indexOf('12.5')) {
-    //     return true;
-    //   }
-    // }
-
-    // console.log(`isOldVerion = ${isOldVerion}`);
-
-    // if (this.isIos && isOldVerion) {
-    //   return true;
-    // }
-    // ここまで
-
+    this.isIos = /iphone|ipad/.test(userAgent);
+    const appVersion = window.navigator.appVersion.toLowerCase(); // appVersion
+    if (appVersion <= 12.5) {
+      this.setState({ isOldIos: true });
+    }
 
     const currentUserElem = document.getElementById('growi-current-user');
     if (currentUserElem != null) {
@@ -134,6 +117,26 @@ export default class AppContainer extends Container {
 
     this.injectToWindow();
   }
+
+
+  // ここから
+  // to check the client app ios version
+
+  isOldVerion(version) {
+    this.appVersion = this;
+    if (version <= this.appVersion.indexOf('12.5')) {
+      return true;
+    }
+  }
+
+  isOldIosVersion() {
+    if (this.isIos && this.isOldVerion()) {
+      this.setState({ isOldIos: true });
+      return true;
+    }
+  }
+
+  // ここまで
 
 
   async initMediaQueryForColorScheme() {
