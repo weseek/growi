@@ -178,7 +178,7 @@ class PageService {
     return updatedPage;
   }
 
-  async revertDeletedPage(page, user, options = {}) {
+  async revertSingleDeletedPage(page, user, options = {}) {
     const Page = this.crowi.model('Page');
     const newPath = Page.getRevertDeletedPageName(page.path);
     const originPage = await Page.findByPath(newPath);
