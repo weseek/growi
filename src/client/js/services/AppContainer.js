@@ -28,6 +28,7 @@ export default class AppContainer extends Container {
 
     this.state = {
       preferDarkModeByMediaQuery: false,
+      isOldIos: false,
 
       // stetes for contents
       recentlyUpdatedPages: [],
@@ -42,21 +43,27 @@ export default class AppContainer extends Container {
     const userAgent = window.navigator.userAgent.toLowerCase();
     this.isMobile = /iphone|ipad|android/.test(userAgent);
 
+    // ここから
     // this.isIos = /iphone|ipad/.test(userAgent);
-    // const appVersion = window.navigator.appVersion.toLowerCase();
-    // if (isIos && appVersion < 12.5) {
-    //   return false;
-    // }
-    // const this.isOldIos =
-    // const isOldIos = false;
-    // if (userAgent.indexOf('iphone') !== -1 && appVersion.indexOf('12') !== -1) {
-    //   isOldIos = true;
-    //   console.log(appVersion);
-    // const iphone = userAagent.indexOf('iphone');
-    // this.isOldIos = /iphone 12/.test(appVersion);
-    // if (appVersion <= 12) {
+    // console.log(this.isIos);
 
+    // const appVersion = window.navigator.appVersion.toLowerCase();
+
+    // console.log(`appVersion = ${appVersion}`);
+    // this.isOldIos = /iphone 12/.test(appVersion);
+
+    // isOldVerion(version) {
+    //   if (version <= appVersion.indexOf('12.5')) {
+    //     return true;
+    //   }
     // }
+
+    // console.log(`isOldVerion = ${isOldVerion}`);
+
+    // if (this.isIos && isOldVerion) {
+    //   return true;
+    // }
+    // ここまで
 
 
     const currentUserElem = document.getElementById('growi-current-user');
@@ -127,6 +134,7 @@ export default class AppContainer extends Container {
 
     this.injectToWindow();
   }
+
 
   async initMediaQueryForColorScheme() {
     const switchStateByMediaQuery = async(mql) => {
