@@ -115,6 +115,7 @@ class PageService {
     if (socketClientId != null) {
       pageEvent.emit('deleteCompletely', pagesData, user, socketClientId); // update as renamed page
     }
+    return;
   }
 
   // delete single page completely
@@ -139,6 +140,7 @@ class PageService {
     if (socketClientId != null) {
       pageEvent.emit('delete', pageData, user, socketClientId); // update as renamed page
     }
+    return;
   }
 
   /**
@@ -152,7 +154,7 @@ class PageService {
     const pages = await Page.findManageableListWithDescendants(targetPage, user, findOpts);
 
     // TODO streaming bellow action
-    await this.completelyDeletePages(pages, user, options);
+    return this.completelyDeletePages(pages, user, options);
   }
 
   // revert pages recursively
