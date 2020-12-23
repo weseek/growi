@@ -118,7 +118,7 @@ class PageService {
   }
 
   // delete single page completely
-  async completelyDeletePage(pageData, user, options = {}) {
+  async completelyDeleteSinglePage(pageData, user, options = {}) {
     this.validateCrowi();
     let pageEvent;
     // init event
@@ -189,7 +189,7 @@ class PageService {
       if (originPage.redirectTo !== page.path) {
         throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
       }
-      await this.completelyDeletePage(originPage, options);
+      await this.completelyDeleteSinglePage(originPage, options);
     }
 
     page.status = STATUS_PUBLISHED;
