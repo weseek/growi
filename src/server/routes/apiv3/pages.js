@@ -423,7 +423,9 @@ module.exports = (crowi) => {
     return res.apiv3(result);
   });
 
-
+  validator.emptyTrash = [
+    query('socketClientId').if(value => value != null).isInt().withMessage('socketClientId must be int'),
+  ];
   /**
    * @swagger
    *
@@ -435,8 +437,8 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to remove all trash pages
    */
-  router.delete('/empty-trash', loginRequired, adminRequired, csrf, async(req, res) => {
-    const socketClientId = req.query.socketClientId;
+  router.delete('/empty-trash', accessTokenParser, loginRequired, adminRequired, csrf, validator.emptyTrash, apiV3FormValidator, async(req, res) => {
+    const socketClientId = parseInt(req.query.socketClientId);
     const options = { socketClientId };
 
     try {
