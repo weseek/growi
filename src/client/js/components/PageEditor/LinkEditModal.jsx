@@ -5,15 +5,15 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
+  ModalFooter,
   Popover,
   PopoverBody,
 } from 'reactstrap';
 
-import { debounce } from 'throttle-debounce';
-
 import path from 'path';
 import validator from 'validator';
-import Preview from './Preview';
+import { withTranslation } from 'react-i18next';
+import PreviewWithSuspense from './PreviewWithSuspense';
 import PagePreviewIcon from '../Icons/PagePreviewIcon';
 
 import AppContainer from '../../services/AppContainer';
@@ -39,7 +39,6 @@ class LinkEditModal extends React.PureComponent {
       markdown: '',
       previewError: '',
       permalink: '',
-      linkText: '',
       isPreviewOpen: false,
     };
 
@@ -56,18 +55,9 @@ class LinkEditModal extends React.PureComponent {
     this.toggleIsUsePamanentLink = this.toggleIsUsePamanentLink.bind(this);
     this.save = this.save.bind(this);
     this.generateLink = this.generateLink.bind(this);
-    this.renderPreview = this.renderPreview.bind(this);
     this.getRootPath = this.getRootPath.bind(this);
     this.toggleIsPreviewOpen = this.toggleIsPreviewOpen.bind(this);
-    this.generateAndSetPreviewDebounced = debounce(200, this.generateAndSetPreview.bind(this));
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const { linkInputValue: prevLinkInputValue } = prevState;
-    const { linkInputValue } = this.state;
-    if (linkInputValue !== prevLinkInputValue) {
-      this.generateAndSetPreviewDebounced(linkInputValue);
-    }
+    this.setMarkdown = this.setMarkdown.bind(this);
   }
 
   // defaultMarkdownLink is an instance of Linker
@@ -158,21 +148,9 @@ class LinkEditModal extends React.PureComponent {
     this.setState({ isUsePermanentLink: !this.state.isUsePermanentLink, isUseRelativePath: false });
   }
 
-  renderPreview() {
-    if (this.state.markdown !== '') {
-      return (
-        <div className="linkedit-preview">
-          <Preview markdown={this.state.markdown} />
-        </div>
-      );
-    }
-    if (this.state.previewError !== '') {
-      return this.state.previewError;
-    }
-    return 'Page preview here.';
-  }
-
-  async generateAndSetPreview(path) {
+  async setMarkdown() {
+    const { t } = this.props;
+    const path = this.state.linkInputValue;
     let markdown = '';
     let previewError = '';
     let permalink = '';
@@ -192,10 +170,13 @@ class LinkEditModal extends React.PureComponent {
         previewError = err.message;
       }
     }
+    else {
+      previewError = t('link_edit.page_not_found_in_preview', { path });
+    }
     this.setState({ markdown, previewError, permalink });
   }
 
-  renderLinkPreview() {
+  getLinkForPreview() {
     const linker = this.generateLink();
 
     if (this.isUsePermanentLink && this.permalink != null) {
@@ -206,16 +187,21 @@ class LinkEditModal extends React.PureComponent {
       linker.label = linker.link;
     }
 
-    const linkText = linker.generateMarkdownText();
+    return linker;
+  }
+
+  renderLinkPreview() {
+    const linker = this.getLinkForPreview();
     return (
-      <div className="d-flex justify-content-between mb-3">
+      <div className="d-flex justify-content-between mb-3 flex-column flex-sm-row">
         <div className="card card-disabled w-100 p-1 mb-0">
           <p className="text-left text-muted mb-1 small">Markdown</p>
-          <p className="text-center text-truncate text-muted">{linkText}</p>
+          <p className="text-center text-truncate text-muted">{linker.generateMarkdownText()}</p>
         </div>
-        <div className="d-flex align-items-center">
+        <div className="d-flex align-items-center justify-content-center">
           <span className="lead mx-3">
-            <i className="fa fa-caret-right"></i>
+            <i className="d-none d-sm-block fa fa-caret-right"></i>
+            <i className="d-sm-none fa fa-caret-down"></i>
           </span>
         </div>
         <div className="card w-100 p-1 mb-0">
@@ -257,8 +243,10 @@ class LinkEditModal extends React.PureComponent {
   }
 
   save() {
+    const linker = this.getLinkForPreview();
+
     if (this.props.onSave != null) {
-      this.props.onSave(this.state.linkText);
+      this.props.onSave(linker.generateMarkdownText());
     }
 
     this.hide();
@@ -289,34 +277,41 @@ class LinkEditModal extends React.PureComponent {
     return type === Linker.types.markdownLink ? path.dirname(pagePath) : pagePath;
   }
 
-  toggleIsPreviewOpen() {
+  async toggleIsPreviewOpen() {
+    // open popover
+    if (this.state.isPreviewOpen === false) {
+      this.setMarkdown();
+    }
     this.setState({ isPreviewOpen: !this.state.isPreviewOpen });
   }
 
   renderLinkAndLabelForm() {
+    const { t } = this.props;
     return (
       <>
-        <h3 className="grw-modal-head">Set link and label</h3>
+        <h3 className="grw-modal-head">{t('link_edit.set_link_and_label')}</h3>
         <form className="form-group">
           <div className="form-gorup my-3">
             <div className="input-group flex-nowrap">
               <div className="input-group-prepend">
-                <span className="input-group-text">link</span>
+                <span className="input-group-text">{t('link_edit.link')}</span>
               </div>
               <SearchTypeahead
                 onChange={this.handleChangeTypeahead}
                 onInputChange={this.handleChangeLinkInput}
                 inputName="link"
-                placeholder="Input page path or URL"
+                placeholder={t('link_edit.placeholder_of_link_input')}
                 keywordOnInit={this.state.linkInputValue}
+                behaviorOfResetBtn="clear"
+                autoFocus
               />
-              <div className="input-group-append">
+              <div className="d-none d-sm-block input-group-append">
                 <button type="button" id="preview-btn" className="btn btn-info btn-page-preview">
                   <PagePreviewIcon />
                 </button>
                 <Popover trigger="focus" placement="right" isOpen={this.state.isPreviewOpen} target="preview-btn" toggle={this.toggleIsPreviewOpen}>
                   <PopoverBody>
-                    {this.renderPreview()}
+                    <PreviewWithSuspense setMarkdown={this.setMarkdown} markdown={this.state.markdown} error={this.state.previewError} />
                   </PopoverBody>
                 </Popover>
               </div>
@@ -325,7 +320,7 @@ class LinkEditModal extends React.PureComponent {
           <div className="form-gorup my-3">
             <div className="input-group flex-nowrap">
               <div className="input-group-prepend">
-                <span className="input-group-text">label</span>
+                <span className="input-group-text">{t('link_edit.label')}</span>
               </div>
               <input
                 type="text"
@@ -334,6 +329,7 @@ class LinkEditModal extends React.PureComponent {
                 value={this.state.labelInputValue}
                 onChange={e => this.handleChangeLabelInput(e.target.value)}
                 disabled={this.state.linkerType === Linker.types.growiLink}
+                placeholder={this.state.linkInputValue}
               />
             </div>
           </div>
@@ -343,78 +339,85 @@ class LinkEditModal extends React.PureComponent {
   }
 
   renderPathFormatForm() {
+    const { t } = this.props;
     return (
       <div className="card well pt-3">
         <form className="form-group mb-0">
           <div className="form-group row">
-            <label className="col-sm-3">Path format</label>
-            <div className="custom-control custom-checkbox custom-checkbox-info custom-control-inline">
-              <input
-                className="custom-control-input"
-                id="relativePath"
-                type="checkbox"
-                checked={this.state.isUseRelativePath}
-                onChange={this.toggleIsUseRelativePath}
-                disabled={!this.state.linkInputValue.startsWith('/') || this.state.linkerType === Linker.types.growiLink}
-              />
-              <label className="custom-control-label" htmlFor="relativePath">
-                Use relative path
-              </label>
-            </div>
-            <div className="custom-control custom-checkbox custom-checkbox-info custom-control-inline">
-              <input
-                className="custom-control-input"
-                id="permanentLink"
-                type="checkbox"
-                checked={this.state.isUsePermanentLink}
-                onChange={this.toggleIsUsePamanentLink}
-                disabled={this.state.permalink === '' || this.state.linkerType === Linker.types.growiLink}
-              />
-              <label className="custom-control-label" htmlFor="permanentLink">
-                Use permanent link
-              </label>
+            <label className="col-sm-3">{t('link_edit.path_format')}</label>
+            <div className="col-sm-9">
+              <div className="custom-control custom-checkbox custom-checkbox-info custom-control-inline">
+                <input
+                  className="custom-control-input"
+                  id="relativePath"
+                  type="checkbox"
+                  checked={this.state.isUseRelativePath}
+                  onChange={this.toggleIsUseRelativePath}
+                  disabled={!this.state.linkInputValue.startsWith('/') || this.state.linkerType === Linker.types.growiLink}
+                />
+                <label className="custom-control-label" htmlFor="relativePath">
+                  {t('link_edit.use_relative_path')}
+                </label>
+              </div>
+              <div className="custom-control custom-checkbox custom-checkbox-info custom-control-inline">
+                <input
+                  className="custom-control-input"
+                  id="permanentLink"
+                  type="checkbox"
+                  checked={this.state.isUsePermanentLink}
+                  onChange={this.toggleIsUsePamanentLink}
+                  disabled={this.state.permalink === '' || this.state.linkerType === Linker.types.growiLink}
+                />
+                <label className="custom-control-label" htmlFor="permanentLink">
+                  {t('link_edit.use_permanent_link')}
+                </label>
+              </div>
             </div>
           </div>
           <div className="form-group row mb-0">
-            <label className="col-sm-3">Notation</label>
-            <div className="custom-control custom-radio custom-control-inline">
-              <input
-                type="radio"
-                className="custom-control-input"
-                id="markdownType"
-                value={Linker.types.markdownLink}
-                checked={this.state.linkerType === Linker.types.markdownLink}
-                onChange={e => this.handleSelecteLinkerType(e.target.value)}
-              />
-              <label className="custom-control-label" htmlFor="markdownType">
-                Markdown
-              </label>
-            </div>
-            <div className="custom-control custom-radio custom-control-inline">
-              <input
-                type="radio"
-                className="custom-control-input"
-                id="growiType"
-                value={Linker.types.growiLink}
-                checked={this.state.linkerType === Linker.types.growiLink}
-                onChange={e => this.handleSelecteLinkerType(e.target.value)}
-              />
-              <label className="custom-control-label" htmlFor="growiType">
-                Growi original
-              </label>
-            </div>
-            <div className="custom-control custom-radio custom-control-inline">
-              <input
-                type="radio"
-                className="custom-control-input"
-                id="pukiwikiType"
-                value={Linker.types.pukiwikiLink}
-                checked={this.state.linkerType === Linker.types.pukiwikiLink}
-                onChange={e => this.handleSelecteLinkerType(e.target.value)}
-              />
-              <label className="custom-control-label" htmlFor="pukiwikiType">
-                Pukiwiki
-              </label>
+            <label className="col-sm-3">{t('link_edit.notation')}</label>
+            <div className="col-sm-9">
+              <div className="custom-control custom-radio custom-control-inline">
+                <input
+                  type="radio"
+                  className="custom-control-input"
+                  id="markdownType"
+                  value={Linker.types.markdownLink}
+                  checked={this.state.linkerType === Linker.types.markdownLink}
+                  onChange={e => this.handleSelecteLinkerType(e.target.value)}
+                />
+                <label className="custom-control-label" htmlFor="markdownType">
+                  {t('link_edit.markdown')}
+                </label>
+              </div>
+              <div className="custom-control custom-radio custom-control-inline">
+                <input
+                  type="radio"
+                  className="custom-control-input"
+                  id="growiType"
+                  value={Linker.types.growiLink}
+                  checked={this.state.linkerType === Linker.types.growiLink}
+                  onChange={e => this.handleSelecteLinkerType(e.target.value)}
+                />
+                <label className="custom-control-label" htmlFor="growiType">
+                  {t('link_edit.GROWI_original')}
+                </label>
+              </div>
+              {this.isApplyPukiwikiLikeLinkerPlugin && (
+                <div className="custom-control custom-radio custom-control-inline">
+                  <input
+                    type="radio"
+                    className="custom-control-input"
+                    id="pukiwikiType"
+                    value={Linker.types.pukiwikiLink}
+                    checked={this.state.linkerType === Linker.types.pukiwikiLink}
+                    onChange={e => this.handleSelecteLinkerType(e.target.value)}
+                  />
+                  <label className="custom-control-label" htmlFor="pukiwikiType">
+                    {t('link_edit.pukiwiki')}
+                  </label>
+                </div>
+              )}
             </div>
           </div>
         </form>
@@ -423,10 +426,11 @@ class LinkEditModal extends React.PureComponent {
   }
 
   render() {
+    const { t } = this.props;
     return (
-      <Modal className="link-edit-modal" isOpen={this.state.show} toggle={this.cancel} size="lg">
+      <Modal className="link-edit-modal" isOpen={this.state.show} toggle={this.cancel} size="lg" autoFocus={false}>
         <ModalHeader tag="h4" toggle={this.cancel} className="bg-primary text-light">
-          Edit Links
+          {t('link_edit.edit_link')}
         </ModalHeader>
 
         <ModalBody className="container">
@@ -438,21 +442,19 @@ class LinkEditModal extends React.PureComponent {
           </div>
           <div className="row">
             <div className="col-12">
-              <h3 className="grw-modal-head">Preview</h3>
+              <h3 className="grw-modal-head">{t('link_edit.preview')}</h3>
               {this.renderLinkPreview()}
             </div>
           </div>
-          <div className="row">
-            <div className="col-12 text-center">
-              <button type="button" className="btn btn-sm btn-outline-secondary mx-1" onClick={this.hide}>
-                Cancel
-              </button>
-              <button type="submit" className="btn btn-sm btn-primary mx-1" onClick={this.save}>
-                Done
-              </button>
-            </div>
-          </div>
         </ModalBody>
+        <ModalFooter>
+          <button type="button" className="btn btn-sm btn-outline-secondary mx-1" onClick={this.hide}>
+            {t('Cancel')}
+          </button>
+          <button type="submit" className="btn btn-sm btn-primary mx-1" onClick={this.save}>
+            {t('Done')}
+          </button>
+        </ModalFooter>
       </Modal>
     );
   }
@@ -460,6 +462,7 @@ class LinkEditModal extends React.PureComponent {
 }
 
 LinkEditModal.propTypes = {
+  t: PropTypes.func.isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   onSave: PropTypes.func,
@@ -470,4 +473,4 @@ LinkEditModal.propTypes = {
  */
 const LinkEditModalWrapper = withUnstatedContainers(LinkEditModal, [AppContainer, PageContainer]);
 
-export default LinkEditModalWrapper;
+export default withTranslation('translation', { withRef: true })(LinkEditModalWrapper);

@@ -347,7 +347,7 @@ class ElasticsearchDelegator {
 
   addAllPages() {
     const Page = mongoose.model('Page');
-    return this.updateOrInsertPages(() => Page.find(), true);
+    return this.updateOrInsertPages(() => Page.find(), { isEmittingProgressEvent: true, invokeGarbageCollection: true });
   }
 
   updateOrInsertPageById(pageId) {
@@ -358,7 +358,9 @@ class ElasticsearchDelegator {
   /**
    * @param {function} queryFactory factory method to generate a Mongoose Query instance
    */
-  async updateOrInsertPages(queryFactory, isEmittingProgressEvent = false) {
+  async updateOrInsertPages(queryFactory, option = {}) {
+    const { isEmittingProgressEvent = false, invokeGarbageCollection = false } = option;
+
     const Page = mongoose.model('Page');
     const { PageQueryBuilder } = Page;
     const Bookmark = mongoose.model('Bookmark');
@@ -466,6 +468,16 @@ class ElasticsearchDelegator {
         }
         catch (err) {
           logger.error('addAllPages error on add anyway: ', err);
+        }
+
+        if (invokeGarbageCollection) {
+          try {
+            // First aid to prevent unexplained memory leaks
+            global.gc();
+          }
+          catch (err) {
+            logger.error('fail garbage collection: ', err);
+          }
         }
 
         callback();

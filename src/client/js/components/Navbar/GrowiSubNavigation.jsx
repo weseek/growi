@@ -16,31 +16,30 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import NavigationContainer from '../../services/NavigationContainer';
 
-import TagLabels from '../Page/TagLabels';
 // import LikeButton from '../LikeButton';
 // import BookmarkButton from '../BookmarkButton';
+import CopyDropdown from '../Page/CopyDropdown';
+import TagLabels from '../Page/TagLabels';
 
 import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
 
-
-// eslint-disable-next-line react/prop-types
-const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
-
-  // dynamic import to skip rendering at SSR
-  const RevisionPathControls = dynamic(() => import('../Page/RevisionPathControls'), { ssr: false });
+const PagePathNav = ({
+  // eslint-disable-next-line react/prop-types
+  pageId, pagePath, isEditorMode, isCompactMode,
+}) => {
 
   const dPagePath = new DevidedPagePath(pagePath, false, true);
 
   let formerLink;
   let latterLink;
 
-  // when the path is root or first level
-  if (dPagePath.isRoot || dPagePath.isFormerRoot) {
+  // one line
+  if (dPagePath.isRoot || dPagePath.isFormerRoot || isEditorMode) {
     const linkedPagePath = new LinkedPagePath(pagePath);
     latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />;
   }
-  // when the path is second level or deeper
+  // two line
   else {
     const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
     const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
@@ -48,54 +47,28 @@ const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
     latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} />;
   }
 
+  const copyDropdownId = `copydropdown${isCompactMode ? '-subnav-compact' : ''}-${pageId}`;
+  const copyDropdownToggleClassName = 'd-block text-muted bg-transparent btn-copy border-0 py-0';
+
   return (
     <div className="grw-page-path-nav">
       {formerLink}
       <span className="d-flex align-items-center">
         <h1 className="m-0">{latterLink}</h1>
         <div className="mx-2">
-          <RevisionPathControls
+          <CopyDropdown
             pageId={pageId}
             pagePath={pagePath}
-            isPageForbidden={isPageForbidden}
-          />
+            dropdownToggleId={copyDropdownId}
+            dropdownToggleClassName={copyDropdownToggleClassName}
+          >
+            <i className="ti-clipboard"></i>
+          </CopyDropdown>
         </div>
       </span>
     </div>
   );
 };
-
-
-/* eslint-enable react/prop-types */
-
-/*
- * TODO: activate with GW-4210
- */
-/* eslint-disable react/prop-types */
-const PageReactionButtons = ({ appContainer, pageContainer }) => {
-
-  // const {
-  //   pageUser, shareLinkId,
-  // } = pageContainer.state;
-
-  // const isSharedPage = useMemo(() => {
-  //   return shareLinkId != null;
-  // }, [shareLinkId]);
-
-  return (
-    <>
-      {/* {pageUser == null && !isSharedPage && (
-      <span className="mr-2">
-        <LikeButton />
-      </span>
-      )}
-      <span>
-        <BookmarkButton crowi={appContainer} />
-      </span> */}
-    </>
-  );
-};
-/* eslint-enable react/prop-types */
 
 const GrowiSubNavigation = (props) => {
 
@@ -105,13 +78,13 @@ const GrowiSubNavigation = (props) => {
   const { data: isForbidden } = useForbidden();
 
   // dynamic import to skip rendering at SSR
-  const PageManagement = dynamic(() => import('../Page/PageManagement'), { ssr: false });
-  const ThreeStrandedButton = dynamic(() => import('./ThreeStrandedButton'), { ssr: false });
+  const SubnavButtons = dynamic(() => import('../Page/SubnavButtons'), { ssr: false });
+  const PageEditorModeManager = dynamic(() => import('./PageEditorModeManager'), { ssr: false });
 
   const {
-    navigationContainer, isCompactMode,
+    appContainer, navigationContainer, isCompactMode,
   } = props;
-  const { isDrawerMode, editorMode } = navigationContainer.state;
+  const { isDrawerMode, editorMode, isDeviceSmallerThanMd } = navigationContainer.state;
   const {
     _id: pageId, path, creator, createdAt, updatedAt, revision,
   } = page;
@@ -121,13 +94,15 @@ const GrowiSubNavigation = (props) => {
   const isPageUsersHome = isUserPage(path);
   const isCreatable = isCreatablePage(path);
 
+  const { isGuestUser } = appContainer;
+  const isEditorMode = editorMode !== 'view';
   // Tags cannot be edited while the new page and editorMode is view
   const isTagLabelHidden = (editorMode !== 'edit' && isPageNotFound);
   // TODO: activate with GW-4402
   // const isSharedPage = shareLinkId != null;
   const isSharedPage = false;
 
-  function onThreeStrandedButtonClicked(viewType) {
+  function onPageEditorModeButtonClicked(viewType) {
     navigationContainer.setEditorMode(viewType);
   }
 
@@ -137,18 +112,18 @@ const GrowiSubNavigation = (props) => {
       {/* Left side */}
       <div className="d-flex grw-subnav-left-side">
         { isDrawerMode && (
-          <div className="d-none d-md-flex align-items-center border-right mr-3 pr-3">
-            {/* <DrawerToggler /> */}
+          <div className={`d-none d-md-flex align-items-center ${isEditorMode ? 'mr-2 pr-2' : 'border-right mr-4 pr-4'}`}>
+            <DrawerToggler />
           </div>
         ) }
 
         <div className="grw-path-nav-container">
-          { !isCompactMode && !isTagLabelHidden && !isForbidden && !isPageUsersHome && !isSharedPage && (
-            <div className="mb-2">
+          { /* pageContainer.isAbleToShowTagLabel && */ !isCompactMode && !isTagLabelHidden && (
+            <div className="grw-taglabels-container">
               <TagLabels editorMode={editorMode} />
             </div>
           ) }
-          <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isForbidden} />
+          <PagePathNav pageId={pageId} pagePath={path} isEditorMode={isEditorMode} isCompactMode={isCompactMode} />
         </div>
       </div>
 
@@ -157,22 +132,22 @@ const GrowiSubNavigation = (props) => {
 
         <div className="d-flex flex-column align-items-end">
           <div className="d-flex">
-            { !isPageInTrash && !isPageNotFound && !isForbidden && <PageReactionButtons /> }
-            { !isPageNotFound && !isForbidden && <PageManagement isCompactMode={isCompactMode} /> }
+            <SubnavButtons isCompactMode={isCompactMode} />
           </div>
           <div className="mt-2">
-            {isCreatable && !isPageInTrash && !isForbidden && (
-              <ThreeStrandedButton
-                onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
-                isBtnDisabled={currentUser == null}
+            {pageContainer.isAbleToShowPageEditorModeManager && (
+              <PageEditorModeManager
+                onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
+                isBtnDisabled={isGuestUser}
                 editorMode={editorMode}
+                isDeviceSmallerThanMd={isDeviceSmallerThanMd}
               />
             )}
           </div>
         </div>
 
         {/* Page Authors */}
-        { (!isCompactMode && !isPageUsersHome && !isPageNotFound && !isForbidden) && (
+        { (pageContainer.isAbleToShowPageAuthors && !isCompactMode) && (
           <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3">
             <li className="pb-1">
               <AuthorInfo user={creator} date={createdAt} locate="subnav" />

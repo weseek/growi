@@ -8,6 +8,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 const mongoosePaginate = require('mongoose-paginate-v2');
+const { addSeconds } = require('date-fns');
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const logger = loggerFactory('growi:models:attachment');
@@ -31,6 +32,8 @@ module.exports = function(crowi) {
     fileFormat: { type: String, required: true },
     fileSize: { type: Number, default: 0 },
     createdAt: { type: Date, default: Date.now },
+    temporaryUrlCached: { type: String },
+    temporaryUrlExpiredAt: { type: Date },
   });
   attachmentSchema.plugin(uniqueValidator);
   attachmentSchema.plugin(mongoosePaginate);
@@ -66,6 +69,27 @@ module.exports = function(crowi) {
     return attachment;
   };
 
+
+  attachmentSchema.methods.getValidTemporaryUrl = function() {
+    if (this.temporaryUrlExpiredAt == null) {
+      return null;
+    }
+    // return null when expired url
+    if (this.temporaryUrlExpiredAt.getTime() < new Date().getTime()) {
+      return null;
+    }
+    return this.temporaryUrlCached;
+  };
+
+  attachmentSchema.methods.cashTemporaryUrlByProvideSec = function(temporaryUrl, provideSec) {
+    if (temporaryUrl == null) {
+      throw new Error('url is required.');
+    }
+    this.temporaryUrlCached = temporaryUrl;
+    this.temporaryUrlExpiredAt = addSeconds(new Date(), provideSec);
+
+    return this.save();
+  };
 
   return mongoose.model('Attachment', attachmentSchema);
 };

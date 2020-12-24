@@ -26,7 +26,7 @@ class RevisionLoader extends React.Component {
       markdown: '',
       isLoading: false,
       isLoaded: false,
-      error: null,
+      errors: null,
     };
 
     this.loadData = this.loadData.bind(this);
@@ -53,15 +53,15 @@ class RevisionLoader extends React.Component {
 
       this.setState({
         markdown: res.data.revision.body,
-        error: null,
+        errors: null,
       });
 
       if (this.props.onRevisionLoaded != null) {
         this.props.onRevisionLoaded(res.data.revision);
       }
     }
-    catch (error) {
-      this.setState({ error });
+    catch (errors) {
+      this.setState({ errors });
     }
     finally {
       this.setState({ isLoaded: true, isLoading: false });
@@ -98,8 +98,11 @@ class RevisionLoader extends React.Component {
 
     // ----- after load -----
     let markdown = this.state.markdown;
-    if (this.state.error != null) {
-      markdown = `<span class="text-muted"><em>${this.state.error}</em></span>`;
+    if (this.state.errors != null) {
+      const errorMessages = this.state.errors.map((error) => {
+        return `<span class="text-muted"><em>${error.message}</em></span>`;
+      });
+      markdown = errorMessages.join('');
     }
 
     return (

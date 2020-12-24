@@ -1,6 +1,47 @@
 # CHANGES
 
-## v4.2.0-RC
+## v4.2.6-RC
+
+* 
+
+## v4.2.5-RC
+
+* Improvement: Invoke garbage collection when reindex all pages by elasticsearch
+* Fix: MathJax rendering does not work
+
+## v4.2.4
+
+* Fix: Fixed an error when creating a new page with `Ctrl-S`
+    * Introduced by v4.2.2
+* Fix: Fixed a strange diff in PageHistory due to Pagination
+* Fix: Fixed that the user group page could not be found when using api from the outside
+
+## v4.2.3
+
+* Feature: Insert/edit links with GUI
+* Feature: Auto reconnecting to search service
+* Improvement: New style of params for Healthcheck API
+* Fix: Referencing attachments when `FILE_UPLOAD_DISABLED` is true
+* Fix: The message of timeline for restricted pages
+* Fix: Parameter validation for Import/Export Archive API
+* Fix: Prevent regexp for Search Tags API
+* Fix: Add `Content-Security-Policy` when referencing attachments
+* Fix: Sanitize at presentation time
+* Fix: Remove page path string from message for page lists and timeline when there is no contents
+
+## v4.2.2
+
+* Fix: Consecutive save operations with built-in editor fail
+    * Introduced by v4.2.1
+
+## v4.2.1
+
+* Fix: Consecutive save operations with HackMD fail
+    * Introduced by v4.2.0
+* Fix: Switching theme to kibela fail
+    * Introduced by v4.2.0
+
+## v4.2.0
 
 ### BREAKING CHANGES
 
@@ -9,11 +50,26 @@
 
 ### Updates
 
+* Feature: File Upload Settings on admin pages
 * Improvement: Basic layout of page
 * Support: Support MongoDB 4.0, 4.2 and 4.4
 * Support: Upgrade libs
     * migrate-mongo
     * mongoose
+
+## v4.1.13
+
+* Fix: MathJax rendering does not work
+
+## v4.1.12
+
+* Fix: Adjust line-height for pre under li
+* Fix: Emptying trash process is broken
+
+## v4.1.11
+
+* Improvement: Generating draft DOM id strategy
+* Fix: GROWI version downgrade causes a validation error for user.lang
 
 ## v4.1.10
 

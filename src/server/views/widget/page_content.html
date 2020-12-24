@@ -14,7 +14,6 @@
   data-page-grant-group-name="{{ grantedGroupName }}"
   data-page-is-liked="{% if user %}{{ page.isLiked(user) }}{% else %}false{% endif %}"
   data-page-is-seen="{% if page and page.isSeenUser(user) %}1{% else %}0{% endif %}"
-  data-page-is-forbidden="false"
   data-page-is-deleted="{% if page.isDeleted() %}true{% else %}false{% endif %}"
   data-page-is-deletable="{% if isDeletablePage() %}true{% else %}false{% endif %}"
   data-page-is-not-creatable="false"
@@ -41,31 +40,14 @@
   >
 {% endif %}
 
-<div class="flex-grow-1">
+<div class="flex-grow-1 flex-basis-0 mw-0">
   {% include 'page_alerts.html' %}
-
-  {% if pageUser %}
-    <div class="user-info" id="user-info"></div>
-  {% endif %}
 
   <div id="display-switcher">
     <script type="text/template" id="raw-text-original">{{ revision.body.toString() | encodeHTML }}</script>
   </div>
   <div id="page-editor-navbar-bottom-container" class="d-none d-edit-block"></div>
 </div>
-
-{% if revision %}
-<div class="d-none d-lg-block d-edit-none grw-side-contents-container">
-  <div class="grw-side-contents-sticky-container">
-    <div id="page-accessories" class="page-accessories"></div>
-    <div id="revision-toc" class="revision-toc sps sps--abv" data-sps-offset="123"></div>
-    {% if pageUser %}
-      <div id="grw-user-contents-links"></div>
-    {% endif %}
-  </div>
-</div>
-{% endif %}
-
 
 <div id="grw-page-status-alert-container"></div>
 

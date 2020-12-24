@@ -13,7 +13,7 @@ class SearchService {
     this.isErrorOccuredOnSearching = null;
 
     try {
-      this.delegator = this.initDelegator();
+      this.delegator = this.generateDelegator();
     }
     catch (err) {
       logger.error(err);
@@ -41,7 +41,7 @@ class SearchService {
     return this.configManager.getConfig('crowi', 'app:elasticsearchUri') != null;
   }
 
-  initDelegator() {
+  generateDelegator() {
     logger.info('Initializing search delegator');
 
     if (this.isSearchboxEnabled) {
@@ -54,7 +54,6 @@ class SearchService {
       const ElasticsearchDelegator = require('./search-delegator/elasticsearch.js');
       return new ElasticsearchDelegator(this.configManager, this.crowi.socketIoService);
     }
-
   }
 
   registerUpdateEvent() {
@@ -71,12 +70,24 @@ class SearchService {
     tagEvent.on('update', this.delegator.syncTagChanged.bind(this.delegator));
   }
 
-  async initClient() {
-    // reset error flag
+  resetErrorStatus() {
     this.isErrorOccuredOnHealthcheck = false;
     this.isErrorOccuredOnSearching = false;
+  }
 
-    return this.delegator.initClient();
+  async reconnectClient() {
+    logger.info('Try to reconnect...');
+    this.delegator.initClient();
+
+    try {
+      await this.getInfoForHealth();
+
+      logger.info('Reconnecting succeeded.');
+      this.resetErrorStatus();
+    }
+    catch (err) {
+      throw err;
+    }
   }
 
   async getInfo() {

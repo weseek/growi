@@ -167,6 +167,7 @@ const PageCreateModal = (props) => {
                     addTrailingSlash
                     onSubmit={ppacSubmitHandler}
                     onInputChange={ppacInputChangeHandler}
+                    autoFocus
                   />
                 )
                 : (
@@ -244,7 +245,13 @@ const PageCreateModal = (props) => {
   }
 
   return (
-    <Modal size="lg" isOpen={navigationContainer.state.isPageCreateModalShown} toggle={navigationContainer.closePageCreateModal} className="grw-create-page">
+    <Modal
+      size="lg"
+      isOpen={navigationContainer.state.isPageCreateModalShown}
+      toggle={navigationContainer.closePageCreateModal}
+      className="grw-create-page"
+      autoFocus={false}
+    >
       <ModalHeader tag="h4" toggle={navigationContainer.closePageCreateModal} className="bg-primary text-light">
         { t('New Page') }
       </ModalHeader>

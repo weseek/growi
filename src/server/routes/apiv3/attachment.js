@@ -17,7 +17,7 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
 
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
-  const loginRequired = require('../../middlewares/login-required')(crowi);
+  const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const Page = crowi.model('Page');
   const User = crowi.model('User');
   const Attachment = crowi.model('Attachment');

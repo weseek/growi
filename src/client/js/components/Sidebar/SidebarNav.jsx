@@ -73,7 +73,7 @@ class SidebarNav extends React.Component {
           {isAdmin && <SecondaryItem label="Admin" iconName="settings" href="/admin" />}
           {isLoggedIn && <SecondaryItem label="Draft" iconName="file_copy" href="/me/drafts" />}
           <SecondaryItem label="Help" iconName="help" href="https://docs.growi.org" isBlank />
-          {isLoggedIn && <SecondaryItem label="Trash" iconName="delete" href="/trash" />}
+          <SecondaryItem label="Trash" iconName="delete" href="/trash" />
         </div>
       </div>
     );

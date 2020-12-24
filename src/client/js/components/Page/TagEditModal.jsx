@@ -35,12 +35,12 @@ function TagEditModal(props) {
   }
 
   return (
-    <Modal isOpen={props.isOpen} toggle={closeModalHandler} id="edit-tag-modal">
+    <Modal isOpen={props.isOpen} toggle={closeModalHandler} id="edit-tag-modal" autoFocus={false}>
       <ModalHeader tag="h4" toggle={closeModalHandler} className="bg-primary text-light">
         Edit Tags
       </ModalHeader>
       <ModalBody>
-        <TagsInput tags={tags} onTagsUpdated={onTagsUpdatedByTagsInput} />
+        <TagsInput tags={tags} onTagsUpdated={onTagsUpdatedByTagsInput} autoFocus />
       </ModalBody>
       <ModalFooter>
         <Button color="primary" onClick={handleSubmit}>

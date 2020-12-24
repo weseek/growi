@@ -372,6 +372,14 @@ class ImportService {
 
     unzipStream.on('entry', (entry) => {
       const fileName = entry.path;
+      // https://regex101.com/r/mD4eZs/6
+      // prevent from unexpecting attack doing unzip file (path traversal attack)
+      // FOR EXAMPLE
+      // ../../src/server/views/admin/markdown.html
+      if (fileName.match(/(\.\.\/|\.\.\\)/)) {
+        logger.error('File path is not appropriate.', fileName);
+        return;
+      }
 
       if (fileName === this.growiBridgeService.getMetaFileName()) {
         // skip meta.json

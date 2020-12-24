@@ -48,6 +48,7 @@ function Crowi() {
   this.mailService = null;
   this.passportService = null;
   this.globalNotificationService = null;
+  this.userNotificationService = null;
   this.slackNotificationService = null;
   this.xssService = null;
   this.aclService = null;
@@ -126,6 +127,7 @@ Crowi.prototype.init = async function() {
   // // globalNotification depends on slack and mailer
   await Promise.all([
     this.setUpGlobalNotification(),
+    this.setUpUserNotification(),
   ]);
 };
 
@@ -138,7 +140,7 @@ Crowi.prototype.initForTest = async function() {
   // // slack depends on setUpSlacklNotification
   await Promise.all([
     this.setUpApp(),
-    // this.setUpXss(),
+    this.setUpXss(),
     // this.setUpSlacklNotification(),
     // this.setUpGrowiBridge(),
   ]);
@@ -321,6 +323,10 @@ Crowi.prototype.getGlobalNotificationService = function() {
   return this.globalNotificationService;
 };
 
+Crowi.prototype.getUserNotificationService = function() {
+  return this.userNotificationService;
+};
+
 Crowi.prototype.getRestQiitaAPIService = function() {
   return this.restQiitaAPIService;
 };
@@ -488,6 +494,16 @@ Crowi.prototype.setUpGlobalNotification = async function() {
   const GlobalNotificationService = require('../service/global-notification');
   if (this.globalNotificationService == null) {
     this.globalNotificationService = new GlobalNotificationService(this);
+  }
+};
+
+/**
+ * setup UserNotificationService
+ */
+Crowi.prototype.setUpUserNotification = async function() {
+  const UserNotificationService = require('../service/user-notification');
+  if (this.userNotificationService == null) {
+    this.userNotificationService = new UserNotificationService(this);
   }
 };
 

@@ -6,6 +6,7 @@ const csrfProtection = csrf({ cookie: false });
 autoReap.options.reapOnError = true; // continue reaping the file even if an error occurs
 
 module.exports = function(crowi, app) {
+  const autoReconnectToSearch = require('../middlewares/auto-reconnect-to-search')(crowi);
   const applicationNotInstalled = require('../middlewares/application-not-installed')(crowi);
   const applicationInstalled = require('../middlewares/application-installed')(crowi);
   const accessTokenParser = require('../middlewares/access-token-parser')(crowi);
@@ -113,7 +114,7 @@ module.exports = function(crowi, app) {
 
   // export management for admin
   // app.get('/admin/export'                       , loginRequiredStrictly , adminRequired ,admin.export.index);
-  // app.get('/admin/export/:fileName'             , loginRequiredStrictly , adminRequired ,admin.export.download);
+  // app.get('/admin/export/:fileName'             , loginRequiredStrictly , adminRequired ,admin.export.api.validators.export.download(), admin.export.download);
 
   // app.get('/me'                       , loginRequiredStrictly , me.index);
   // external-accounts
@@ -153,7 +154,7 @@ module.exports = function(crowi, app) {
   // app.get('/tags'                     , loginRequired, tag.showPage);
   app.get('/_api/tags.list'           , accessTokenParser, loginRequired, tag.api.list);
   app.get('/_api/tags.search'         , accessTokenParser, loginRequired, tag.api.search);
-  app.post('/_api/tags.update'        , accessTokenParser, loginRequired, tag.api.update);
+  app.post('/_api/tags.update'        , accessTokenParser, loginRequiredStrictly, tag.api.update);
   app.get('/_api/comments.get'        , accessTokenParser , loginRequired , comment.api.get);
   app.post('/_api/comments.add'       , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , comment.api.add);
   app.post('/_api/comments.update'    , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , comment.api.update);
@@ -178,6 +179,7 @@ module.exports = function(crowi, app) {
 
   // app.get('/*/$'                   , loginRequired , page.showPageWithEndOfSlash, page.notFound);
   // app.get('/*'                     , loginRequired , page.showPage, page.notFound);
+  app.get('/'                        ,  loginRequired , autoReconnectToSearch, next.delegateToNext);
   app.get('/*'                        , loginRequired , next.delegateToNext);
 
 };

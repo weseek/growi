@@ -116,7 +116,7 @@ module.exports = (crowi) => {
       const userGroupName = crowi.xss.process(name);
       const userGroup = await UserGroup.createGroupByName(userGroupName);
 
-      return res.apiv3({ userGroup });
+      return res.apiv3({ userGroup }, 201);
     }
     catch (err) {
       const msg = 'Error occurred in creating a user group';
@@ -578,7 +578,7 @@ module.exports = (crowi) => {
     const { limit, offset } = req.query;
 
     try {
-      const { docs, total } = await Page.paginate({
+      const { docs, totalDocs } = await Page.paginate({
         grant: Page.GRANT_USER_GROUP,
         grantedGroup: { $in: [id] },
       }, {
@@ -593,7 +593,7 @@ module.exports = (crowi) => {
       const current = offset / limit + 1;
 
       // TODO: create a common moudule for paginated response
-      return res.apiv3({ total, current, pages: docs });
+      return res.apiv3({ total: totalDocs, current, pages: docs });
     }
     catch (err) {
       const msg = `Error occurred in fetching pages for group: ${id}`;

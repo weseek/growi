@@ -47,7 +47,6 @@ const PageManagement = (props) => {
   function openPageDuplicateModalHandler() {
     setIsPageDuplicateModalShown(true);
   }
-
   function closePageDuplicateModalHandler() {
     setIsPageDuplicateModalShown(false);
   }

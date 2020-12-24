@@ -74,6 +74,7 @@ const SearchForm = (props) => {
   const { t } = useTranslation();
 
   const [searchError, setSearchError] = useState(null);
+  const [isShownHelp, setIsShownHelp] = useState(false);
   const { data: isReachable } = useSearchServiceReachable();
 
   const { dropup } = props;
@@ -85,6 +86,14 @@ const SearchForm = (props) => {
     if (page != null) {
       window.location = page.path;
     }
+  }
+
+  function onBlur() {
+    isShownHelp(false);
+  }
+
+  function onFocus() {
+    isShownHelp(true);
   }
 
   const placeholder = isReachable
@@ -103,8 +112,10 @@ const SearchForm = (props) => {
       onSearchError={setSearchError}
       emptyLabel={emptyLabel}
       placeholder={placeholder}
-      helpElement={<HelpElement />}
+      helpElement={isShownHelp ? <HelpElement /> : <></>}
       keywordOnInit={props.keyword}
+      onBlur={onBlur}
+      onFocus={onFocus}
     />
   );
 };

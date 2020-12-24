@@ -43,6 +43,11 @@
     "confirm_to_initialize_mail_settings": "一度初期化した設定は戻せません。本当に初期化しますか？",
     "file_upload_settings":"ファイルアップロード設定",
     "file_upload_method":"ファイルアップロード方法",
+    "file_delivery_method":"ファイルの配信方法",
+    "file_delivery_method_redirect":"リダイレクト",
+    "file_delivery_method_relay":"内部システム中継",
+    "file_delivery_method_redirect_info":"リダイレクト： GROWIサーバーを介さずに署名付きURLにリダイレクトされるため、優れたパフォーマンスを出します。",
+    "file_delivery_method_relay_info":"内部システム中継： GROWIサーバーがクライアントに配信するため、完全なセキュリティーを提供します。",
     "gcs_label": "GCP(GCS)",
     "aws_label": "AWS(S3)",
     "local_label": "Local",
@@ -119,7 +124,7 @@
       "attach_title_header_desc": "新規作成したページの1行目に、ページのパスを h1 セクションとして挿入します。",
 
       "list_num_s": "モーダルに表示されるリスト数",
-      "list_num_desc_s": "モーダルにおける <Pagelist> <Timeline> <Page History> <Share Link>での、1ページあたりの表示数を設定します。",
+      "list_num_desc_s": "モーダルにおける <ページリスト> <タイムライン> <更新履歴> <添付ファイル>での、1ページあたりの表示数を設定します。",
 
       "list_num_m": "ユーザーページに表示されるリスト数",
       "list_num_desc_m": "ユーザーページにおける <Bookmarks> <Recently Created>での、1ページあたりの表示数を設定します。",
@@ -273,6 +278,7 @@
     "external_accounts": "外部アカウント",
     "create_external_account":"外部アカウントの作成",
     "external_account_list": "外部アカウント一覧",
+    "external_account_none":"外部アカウントはありません",
     "invite": "招待する",
     "invited": "ユーザーを招待しました",
     "back_to_user_management": "ユーザー管理に戻る",

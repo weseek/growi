@@ -20,6 +20,7 @@ import TrashPageList from './components/TrashPageList';
 import TrashPageAlert from './components/Page/TrashPageAlert';
 import NotFoundPage from './components/NotFoundPage';
 import NotFoundAlert from './components/Page/NotFoundAlert';
+import ForbiddenPage from './components/ForbiddenPage';
 import PageStatusAlert from './components/PageStatusAlert';
 import RecentCreated from './components/RecentCreated/RecentCreated';
 import RecentlyCreatedIcon from './components/Icons/RecentlyCreatedIcon';
@@ -27,9 +28,6 @@ import MyDraftList from './components/MyDraftList/MyDraftList';
 import BookmarkIcon from './components/Icons/BookmarkIcon';
 import BookmarkList from './components/PageList/BookmarkList';
 import LikerList from './components/User/LikerList';
-import TableOfContents from './components/TableOfContents';
-import PageAccessories from './components/PageAccessories';
-import UserInfo from './components/User/UserInfo';
 import Fab from './components/Fab';
 import PersonalSettings from './components/Me/PersonalSettings';
 import UserContentsLinks from './components/UserContentsLinks';
@@ -84,11 +82,13 @@ Object.assign(componentMappings, {
   'trash-page-list': <TrashPageList />,
 
   'not-found-page': <NotFoundPage />,
-
   'not-found-alert': <NotFoundAlert
     onPageCreateClicked={navigationContainer.setEditorMode}
-    isHidden={pageContainer.state.isForbidden || pageContainer.state.isNotCreatable || pageContainer.state.isTrashPage}
+    isGuestUserMode={appContainer.isGuestUser}
+    isHidden={pageContainer.state.isNotCreatable || pageContainer.state.isTrashPage}
   />,
+
+  'forbidden-page': <ForbiddenPage />,
 
   'page-timeline': <PageTimeline />,
 
@@ -107,8 +107,6 @@ if (pageContainer.state.pageId != null) {
     'page-comments-list': <PageComments />,
     'page-comment-write': <CommentEditorLazyRenderer />,
     'page-management': <PageManagement />,
-    'page-accessories': <PageAccessories />,
-    'revision-toc': <TableOfContents />,
     'liker-list': <LikerList />,
     'page-content-footer': <PageContentFooter />,
 
@@ -129,7 +127,6 @@ if (pageContainer.state.path != null) {
     'page': <Page />,
     'grw-subnav-container': <GrowiSubNavigation />,
     'grw-subnav-switcher-container': <GrowiSubNavigationSwitcher />,
-    'user-info': <UserInfo pageUser={pageContainer.state.pageUser} />,
     'display-switcher': <DisplaySwitcher />,
   });
 }

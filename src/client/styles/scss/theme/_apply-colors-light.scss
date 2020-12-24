@@ -14,14 +14,16 @@ $bgcolor-table-hover: rgba(black, 0.075) !default;
 $bgcolor-sidebar-list-group: $bgcolor-list !default;
 $color-tags: $gray-500 !default;
 $bgcolor-tags: $gray-200 !default;
+$border-color-global: $gray-300 !default;
+$border-color-toc: $border-color-global !default;
 
 // override bootstrap variables
-$border-color: $gray-200;
 $table-color: $color-table;
 $table-bg: $bgcolor-table;
 $table-border-color: $border-color-table;
 $table-hover-color: $color-table-hover;
 $table-hover-bg: $bgcolor-table-hover;
+$border-color: $border-color-global;
 
 @import 'reboot-bootstrap-border-colors';
 @import 'reboot-bootstrap-tables';
@@ -34,12 +36,6 @@ $table-hover-bg: $bgcolor-table-hover;
  */
 .form-control {
   background-color: $bgcolor-global;
-}
-
-.grw-slack-notification {
-  .form-control {
-    background: white;
-  }
 }
 
 .form-control::placeholder {
@@ -150,7 +146,7 @@ $table-hover-bg: $bgcolor-table-hover;
   background-color: rgba($bgcolor-subnav, 0.85);
 }
 
-.grw-three-stranded-button {
+.grw-page-editor-mode-manager {
   .btn-outline-primary {
     &:hover {
       color: $primary;
@@ -189,6 +185,8 @@ $table-hover-bg: $bgcolor-table-hover;
  * GROWI on-edit
  */
 .grw-editor-navbar-bottom {
+  background-color: $gray-50;
+
   #slack-mark-white {
     display: none;
   }
@@ -213,9 +211,16 @@ $table-hover-bg: $bgcolor-table-hover;
   }
 }
 
+/*
+ * Slack
+ */
 .grw-slack-notification {
   background-color: white;
   $color-slack: #4b144c;
+
+  .form-control {
+    background: white;
+  }
 
   .custom-control-label {
     &::before {
@@ -235,23 +240,22 @@ $table-hover-bg: $bgcolor-table-hover;
       background-image: url(/images/icons/slack/slack-logo-on.svg);
     }
   }
-}
-
-.grw-slack-logo svg {
-  fill: #af30b0;
-}
-
-.grw-btn-slack {
-  background-color: white;
-
-  &:hover,
-  &:focus {
-    background-color: white;
+  .grw-slack-logo svg {
+    fill: #af30b0;
   }
-}
 
-.grw-btn-slack-triangle {
-  color: $secondary;
+  .grw-btn-slack {
+    background-color: white;
+
+    &:hover,
+    &:focus {
+      background-color: white;
+    }
+  }
+
+  .grw-btn-slack-triangle {
+    color: $secondary;
+  }
 }
 
 /*
@@ -291,4 +295,30 @@ $table-hover-bg: $bgcolor-table-hover;
     color: $color-tags;
     background-color: $bgcolor-tags;
   }
+}
+
+/*
+* grw-side-contents
+*/
+.grw-side-contents-sticky-container {
+  .grw-border-vr {
+    border-color: $border-color-toc;
+  }
+  .revision-toc {
+    border-color: $border-color-toc;
+  }
+}
+
+/*
+ * admin settings
+ */
+.admin-setting-header {
+  border-color: $border-color;
+}
+
+/*
+ * modal
+ */
+.grw-modal-head {
+  border-color: $border-color-global;
 }

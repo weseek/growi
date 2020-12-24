@@ -8,6 +8,7 @@ const router = express.Router();
 
 const { body, query } = require('express-validator');
 const { isEmail } = require('validator');
+const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -88,21 +89,27 @@ module.exports = (crowi) => {
   };
 
   validator.statusList = [
-    // validate status list status array match to statusNo
-    query('selectedStatusList').custom((value) => {
-      const error = [];
-      value.forEach((status) => {
-        if (status !== 'all' && !Object.keys(statusNo).includes(status)) {
-          error.push(status);
-        }
-      });
-      return (error.length === 0);
+    query('selectedStatusList').if(value => value != null).custom((value, { req }) => {
+
+      const { user } = req;
+
+      if (user != null && user.admin) {
+        return value;
+      }
+      throw new Error('the param \'selectedStatusList\' is not allowed to use by the users except administrators');
     }),
     // validate sortOrder : asc or desc
     query('sortOrder').isIn(['asc', 'desc']),
     // validate sort : what column you will sort
     query('sort').isIn(['id', 'status', 'username', 'name', 'email', 'createdAt', 'lastLoginAt']),
     query('page').isInt({ min: 1 }),
+    query('forceIncludeAttributes').toArray().custom((value, { req }) => {
+      // only the admin user can specify forceIncludeAttributes
+      if (value.length === 0) {
+        return true;
+      }
+      return req.user.admin;
+    }),
   ];
 
   validator.recentCreatedByUser = [
@@ -160,11 +167,13 @@ module.exports = (crowi) => {
    *                      $ref: '#/components/schemas/PaginateResult'
    */
 
-  router.get('/', loginRequiredStrictly, validator.statusList, apiV3FormValidator, async(req, res) => {
+  router.get('/', accessTokenParser, loginRequired, validator.statusList, apiV3FormValidator, async(req, res) => {
 
     const page = parseInt(req.query.page) || 1;
     // status
-    const { selectedStatusList } = req.query;
+    const { forceIncludeAttributes } = req.query;
+    const selectedStatusList = req.query.selectedStatusList || ['active'];
+
     const statusNoList = (selectedStatusList.includes('all')) ? Object.values(statusNo) : selectedStatusList.map(element => statusNo[element]);
 
     // Search from input
@@ -176,27 +185,58 @@ module.exports = (crowi) => {
       [sort]: (sortOrder === 'desc') ? -1 : 1,
     };
 
-    try {
-      const paginateResult = await User.paginate(
+    //  For more information about the external specification of the User API, see here (https://dev.growi.org/5fd7466a31d89500488248e3)
+
+    const orConditions = [
+      { name: { $in: searchWord } },
+      { username: { $in: searchWord } },
+    ];
+
+    const query = {
+      $and: [
+        { status: { $in: statusNoList } },
         {
-          $and: [
-            { status: { $in: statusNoList } },
-            {
-              $or: [
-                { name: { $in: searchWord } },
-                { username: { $in: searchWord } },
-                { email: { $in: searchWord } },
-              ],
-            },
-          ],
+          $or: orConditions,
         },
+      ],
+    };
+
+    try {
+      if (req.user != null) {
+        orConditions.push(
+          {
+            $and: [
+              { isEmailPublished: true },
+              { email: { $in: searchWord } },
+            ],
+          },
+        );
+      }
+      if (forceIncludeAttributes.includes('email')) {
+        orConditions.push({ email: { $in: searchWord } });
+      }
+
+      const paginateResult = await User.paginate(
+        query,
         {
           sort: sortOutput,
           page,
           limit: PAGE_ITEMS,
-          select: User.USER_PUBLIC_FIELDS,
         },
       );
+
+      paginateResult.docs = paginateResult.docs.map((doc) => {
+
+        // return email only when specified by query
+        const { email } = doc;
+        const user = serializeUserSecurely(doc);
+        if (forceIncludeAttributes.includes('email')) {
+          user.email = email;
+        }
+
+        return user;
+      });
+
       return res.apiv3({ paginateResult });
     }
     catch (err) {
@@ -336,7 +376,7 @@ module.exports = (crowi) => {
   router.post('/invite', loginRequiredStrictly, adminRequired, csrf, validator.inviteEmail, apiV3FormValidator, async(req, res) => {
     try {
       const invitedUserList = await User.createUsersByInvitation(req.body.shapedEmailList, req.body.sendEmail);
-      return res.apiv3({ invitedUserList });
+      return res.apiv3({ invitedUserList }, 201);
     }
     catch (err) {
       logger.error('Error', err);

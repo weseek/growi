@@ -23,7 +23,10 @@
 
 // molecules
 @import 'molecules/copy-dropdown';
+@import 'molecules/page-editor-mode-manager';
 @import 'molecules/slack-notification';
+@import 'molecules/duplicated-paths-table.scss';
+@import 'molecules/compare-paths-table.scss';
 
 // growi component
 @import 'admin';
@@ -43,7 +46,9 @@
 @import 'mirror_mode';
 @import 'modal';
 @import 'navbar';
+@import 'old-ios';
 @import 'on-edit';
+@import 'page-duplicate-modal';
 @import 'page_list';
 @import 'page-accessories-control';
 @import 'page-accessories-modal';

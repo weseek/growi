@@ -1,5 +1,7 @@
 import loggerFactory from '~/utils/logger';
 
+const { serializeUserSecurely } = require('../models/serializers/user-serializer');
+
 const logger = loggerFactory('growi:middleware:access-token-parser');
 
 module.exports = (crowi) => {
@@ -23,8 +25,7 @@ module.exports = (crowi) => {
     }
 
     // transforming attributes
-    // see User model
-    req.user = user.toObject();
+    req.user = serializeUserSecurely(user);
     req.skipCsrfVerify = true;
 
     logger.debug('Access token parsed: skipCsrfVerify');

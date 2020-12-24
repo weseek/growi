@@ -1,27 +1,11 @@
+const mongoose = require('mongoose');
+const escapeStringRegexp = require('escape-string-regexp');
+const { serializePageSecurely } = require('../models/serializers/page-serializer');
+
 class PageService {
 
   constructor(crowi) {
     this.crowi = crowi;
-  }
-
-  serializeToObj(page) {
-    const { User } = this.crowi.models;
-
-    const returnObj = page.toObject();
-
-    // set the ObjectID to revisionHackmdSynced
-    if (page.revisionHackmdSynced != null && page.revisionHackmdSynced._id != null) {
-      returnObj.revisionHackmdSynced = page.revisionHackmdSynced._id;
-    }
-
-    if (page.lastUpdateUser != null && page.lastUpdateUser instanceof User) {
-      returnObj.lastUpdateUser = page.lastUpdateUser.toObject();
-    }
-    if (page.creator != null && page.creator instanceof User) {
-      returnObj.creator = page.creator.toObject();
-    }
-
-    return returnObj;
   }
 
   async deleteCompletely(pageId, pagePath) {
@@ -56,6 +40,58 @@ class PageService {
     });
 
     return Promise.all(promises);
+  }
+
+  async duplicate(page, newPagePath, user) {
+    const Page = this.crowi.model('Page');
+    const PageTagRelation = mongoose.model('PageTagRelation');
+    // populate
+    await page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate();
+
+    // create option
+    const options = { page };
+    options.grant = page.grant;
+    options.grantUserGroupId = page.grantedGroup;
+    options.grantedUsers = page.grantedUsers;
+
+    const createdPage = await Page.create(
+      newPagePath, page.revision.body, user, options,
+    );
+
+    // take over tags
+    const originTags = await page.findRelatedTagsById();
+    let savedTags = [];
+    if (originTags != null) {
+      await PageTagRelation.updatePageTags(createdPage.id, originTags);
+      savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
+    }
+
+    const result = serializePageSecurely(createdPage);
+    result.tags = savedTags;
+
+    return result;
+  }
+
+  async duplicateRecursively(page, newPagePath, user) {
+    const Page = this.crowi.model('Page');
+    const newPagePathPrefix = newPagePath;
+    const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
+
+    const pages = await Page.findManageableListWithDescendants(page, user);
+
+    const promise = pages.map(async(page) => {
+      const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
+      return this.duplicate(page, newPagePath, user);
+    });
+
+    const newPath = page.path.replace(pathRegExp, newPagePathPrefix);
+
+    await Promise.allSettled(promise);
+
+    const newParentpage = await Page.findByPath(newPath);
+
+    // TODO GW-4634 use stream
+    return newParentpage;
   }
 
 

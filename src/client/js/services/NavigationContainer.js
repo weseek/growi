@@ -58,6 +58,9 @@ export default class NavigationContainer extends Container {
     return 'NavigationContainer';
   }
 
+  getPageContainer() {
+    return this.appContainer.getContainer('PageContainer');
+  }
 
   initDeviceSize() {
     const mdOrAvobeHandler = async(mql) => {
@@ -95,9 +98,15 @@ export default class NavigationContainer extends Container {
   }
 
   setEditorMode(editorMode) {
+    const { isNotCreatable } = this.getPageContainer().state;
 
     if (this.appContainer.currentUser == null) {
       logger.warn('Please login or signup to edit the page or use hackmd.');
+      return;
+    }
+
+    if (isNotCreatable) {
+      logger.warn('This page could not edit.');
       return;
     }
 
@@ -112,6 +121,7 @@ export default class NavigationContainer extends Container {
     if (editorMode === 'edit') {
       $('body').addClass('on-edit');
       $('body').addClass('builtin-editor');
+      $('body').removeClass('hackmd');
       window.location.hash = '#edit';
     }
 
@@ -182,6 +192,10 @@ export default class NavigationContainer extends Container {
   }
 
   openPageCreateModal() {
+    if (this.appContainer.currentUser == null) {
+      logger.warn('Please login or signup to create a new page.');
+      return;
+    }
     this.setState({ isPageCreateModalShown: true });
   }
 

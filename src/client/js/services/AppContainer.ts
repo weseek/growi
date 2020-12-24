@@ -68,9 +68,6 @@ export default class AppContainer extends Container<State> {
 
     // this.config = JSON.parse(document.getElementById('growi-context-hydrate').textContent || '{}');
 
-    // const isSharedPageElem = document.getElementById('is-shared-page');
-    // this.isSharedUser = (isSharedPageElem != null);
-
     // const userAgent = window.navigator.userAgent.toLowerCase();
     // this.isMobile = /iphone|ipad|android/.test(userAgent);
 
@@ -78,6 +75,12 @@ export default class AppContainer extends Container<State> {
     // if (currentUserElem != null) {
     //   this.currentUser = JSON.parse(currentUserElem.textContent);
     // }
+
+    // const isSharedPageElem = document.getElementById('is-shared-page');
+
+    // // check what kind of user
+    // this.isGuestUser = this.currentUser == null;
+    // this.isSharedUser = isSharedPageElem != null && this.currentUser == null;
 
     // const userLocaleId = this.currentUser?.lang;
 

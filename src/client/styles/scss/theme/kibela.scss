@@ -6,34 +6,24 @@ $themelight: #f4f5f6;
 $subthemecolor: rgb(88, 130, 250);
 $lightthemecolor: rgba(181, 203, 247, 0.61);
 
-// change width only for pages with articles
-.growi:not(.on-edit):not(.admin-page):not(.user-settings-page) {
-  // layout
-  header,
-  #main {
-    max-width: 1024px;
-    margin: auto;
-  }
-  header {
-    margin-top: 30px;
-    margin-bottom: 42px;
-    background-color: $gray-100;
+.main {
+  .container,
+  .container-sm,
+  .container-md,
+  .container-lg,
+  .container-fluid {
+    padding-top: 30px;
+    padding-bottom: 30px;
+    background-color: white;
+    border-radius: 0.35em;
   }
 }
 
-.grw-subnav {
-  padding: 20px 30px;
+.user-page-footer {
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+  background-color: white;
   border-radius: 0.35em;
-}
-
-.grw-page-content-container {
-  padding-top: 10px;
-  background-color: #fff;
-  border-radius: 0.35em;
-}
-
-.page-content-footer {
-  margin-top: 30px;
 }
 
 // Light Mode
@@ -109,9 +99,9 @@ html[dark] {
   @import 'apply-colors';
   @import 'apply-colors-light';
   //Button
-  .grw-three-stranded-button {
+  .grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include three-stranded-button(darken($primary, 15%), lighten($primary, 45%), lighten($primary, 50%));
+      @include btn-page-editor-mode-manager(darken($primary, 15%), lighten($primary, 45%), lighten($primary, 50%));
     }
   }
 }

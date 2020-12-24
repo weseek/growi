@@ -1,3 +1,5 @@
+import escapeStringRegexp from 'escape-string-regexp';
+
 /**
  * Whether path is the top page
  * @param path
@@ -64,4 +66,18 @@ export const userPageRoot = (user: any): string => {
     return '';
   }
   return `/user/${user.username}`;
+};
+
+/**
+ * return user path
+ * @param parentPath
+ * @param childPath
+ * @param newPath
+ */
+export const convertToNewAffiliationPath = (oldPath: string, newPath: string, childPath: string): string => {
+  if (newPath === null) {
+    throw new Error('Please input the new page path');
+  }
+  const pathRegExp = new RegExp(`^${escapeStringRegexp(oldPath)}`, 'i');
+  return childPath.replace(pathRegExp, newPath);
 };

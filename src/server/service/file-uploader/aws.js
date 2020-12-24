@@ -20,12 +20,8 @@ module.exports = function(crowi) {
     };
   }
 
-  function S3Factory(isUploadable) {
+  function S3Factory() {
     const awsConfig = getAwsConfig();
-
-    if (!isUploadable) {
-      throw new Error('AWS is not configured.');
-    }
 
     aws.config.update({
       accessKeyId: awsConfig.accessKeyId,
@@ -78,6 +74,43 @@ module.exports = function(crowi) {
       && this.configManager.getConfig('crowi', 'aws:s3Bucket') != null;
   };
 
+  lib.canRespond = function() {
+    return !this.configManager.getConfig('crowi', 'aws:referenceFileWithRelayMode');
+  };
+
+  lib.respond = async function(res, attachment) {
+    if (!this.getIsUploadable()) {
+      throw new Error('AWS is not configured.');
+    }
+    const temporaryUrl = attachment.getValidTemporaryUrl();
+    if (temporaryUrl != null) {
+      return res.redirect(temporaryUrl);
+    }
+
+    const s3 = S3Factory();
+    const awsConfig = getAwsConfig();
+    const filePath = getFilePathOnStorage(attachment);
+    const lifetimeSecForTemporaryUrl = this.configManager.getConfig('crowi', 'aws:lifetimeSecForTemporaryUrl');
+
+    // issue signed url (default: expires 120 seconds)
+    // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#getSignedUrl-property
+    const params = {
+      Bucket: awsConfig.bucket,
+      Key: filePath,
+      Expires: lifetimeSecForTemporaryUrl,
+    };
+    const signedUrl = s3.getSignedUrl('getObject', params);
+
+    res.redirect(signedUrl);
+
+    try {
+      return attachment.cashTemporaryUrlByProvideSec(signedUrl, lifetimeSecForTemporaryUrl);
+    }
+    catch (err) {
+      logger.error(err);
+    }
+
+  };
 
   lib.deleteFile = async function(attachment) {
     const filePath = getFilePathOnStorage(attachment);
@@ -85,7 +118,11 @@ module.exports = function(crowi) {
   };
 
   lib.deleteFileByFilePath = async function(filePath) {
-    const s3 = S3Factory(this.getIsUploadable());
+    if (!this.getIsUploadable()) {
+      throw new Error('AWS is not configured.');
+    }
+
+    const s3 = S3Factory();
     const awsConfig = getAwsConfig();
 
     const params = {
@@ -104,9 +141,13 @@ module.exports = function(crowi) {
   };
 
   lib.uploadFile = function(fileStream, attachment) {
+    if (!this.getIsUploadable()) {
+      throw new Error('AWS is not configured.');
+    }
+
     logger.debug(`File uploading: fileName=${attachment.fileName}`);
 
-    const s3 = S3Factory(this.getIsUploadable());
+    const s3 = S3Factory();
     const awsConfig = getAwsConfig();
 
     const filePath = getFilePathOnStorage(attachment);
@@ -128,7 +169,11 @@ module.exports = function(crowi) {
    * @return {stream.Readable} readable stream
    */
   lib.findDeliveryFile = async function(attachment) {
-    const s3 = S3Factory(this.getIsUploadable());
+    if (!this.getIsReadable()) {
+      throw new Error('AWS is not configured.');
+    }
+
+    const s3 = S3Factory();
     const awsConfig = getAwsConfig();
     const filePath = getFilePathOnStorage(attachment);
 

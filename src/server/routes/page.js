@@ -4,6 +4,8 @@ const swig = require('swig-templates');
 const { pathUtils } = require('growi-commons');
 
 const logger = loggerFactory('growi:routes:page');
+const { serializePageSecurely } = require('../models/serializers/page-serializer');
+const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
 
 /**
  * @swagger
@@ -144,7 +146,17 @@ module.exports = function(crowi, app) {
   const { slackNotificationService, configManager } = crowi;
   const interceptorManager = crowi.getInterceptorManager();
   const globalNotificationService = crowi.getGlobalNotificationService();
-  const pageService = crowi.pageService;
+
+  const XssOption = require('../../lib/service/xss/xssOption');
+  const Xss = require('../../lib/service/xss/index');
+  const initializedConfig = {
+    isEnabledXssPrevention: crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
+    tagWhiteList: crowi.xssService.getTagWhiteList(),
+    attrWhiteList: crowi.xssService.getAttrWhiteList(),
+  };
+  const xssOption = new XssOption(initializedConfig);
+  const xss = new Xss(xssOption);
+
 
   const actions = {};
 
@@ -229,6 +241,11 @@ module.exports = function(crowi, app) {
   }
 
   function addRenderVarsForPresentation(renderVars, page) {
+    // sanitize page.revision.body
+    if (crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention')) {
+      const preventXssRevision = xss.process(page.revision.body);
+      page.revision.body = preventXssRevision;
+    }
     renderVars.page = page;
     renderVars.revision = page.revision;
   }
@@ -694,55 +711,7 @@ module.exports = function(crowi, app) {
     }
   };
 
-  /**
-   * @swagger
-   *
-   *    /pages.create:
-   *      post:
-   *        tags: [Pages, CrowiCompatibles]
-   *        operationId: createPage
-   *        summary: /pages.create
-   *        description: Create page
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  body:
-   *                    $ref: '#/components/schemas/Revision/properties/body'
-   *                  path:
-   *                    $ref: '#/components/schemas/Page/properties/path'
-   *                  grant:
-   *                    $ref: '#/components/schemas/Page/properties/grant'
-   *                required:
-   *                  - body
-   *                  - path
-   *        responses:
-   *          200:
-   *            description: Succeeded to create page.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    page:
-   *                      $ref: '#/components/schemas/Page'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  /**
-   * @api {post} /pages.create Create new page
-   * @apiName CreatePage
-   * @apiGroup Page
-   *
-   * @apiParam {String} body
-   * @apiParam {String} path
-   * @apiParam {String} grant
-   * @apiParam {Array} pageTags
-   */
+  // TODO If everything that depends on this route, delete it too
   api.create = async function(req, res) {
     const body = req.body.body || null;
     let pagePath = req.body.path || null;
@@ -781,7 +750,11 @@ module.exports = function(crowi, app) {
       savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
     }
 
-    const result = { page: pageService.serializeToObj(createdPage), tags: savedTags };
+    const result = {
+      page: serializePageSecurely(createdPage),
+      revision: serializeRevisionSecurely(createdPage.revision),
+      tags: savedTags,
+    };
     res.json(ApiResponse.success(result));
 
     // update scopes for descendants
@@ -840,6 +813,8 @@ module.exports = function(crowi, app) {
    *                      $ref: '#/components/schemas/V1Response/properties/ok'
    *                    page:
    *                      $ref: '#/components/schemas/Page'
+   *                    revision:
+   *                      $ref: '#/components/schemas/Revision'
    *          403:
    *            $ref: '#/components/responses/403'
    *          500:
@@ -910,7 +885,11 @@ module.exports = function(crowi, app) {
       savedTags = await PageTagRelation.listTagNamesByPage(pageId);
     }
 
-    const result = { page: pageService.serializeToObj(page), tags: savedTags };
+    const result = {
+      page: serializePageSecurely(page),
+      revision: serializeRevisionSecurely(page.revision),
+      tags: savedTags,
+    };
     res.json(ApiResponse.success(result));
 
     // update scopes for descendants
@@ -1010,7 +989,7 @@ module.exports = function(crowi, app) {
     }
 
     const result = {};
-    result.page = page; // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+    result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
 
     return res.json(ApiResponse.success(result));
   };
@@ -1241,7 +1220,7 @@ module.exports = function(crowi, app) {
 
     logger.debug('Page deleted', page.path);
     const result = {};
-    result.page = page; // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+    result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
 
     res.json(ApiResponse.success(result));
 
@@ -1288,7 +1267,7 @@ module.exports = function(crowi, app) {
     }
 
     const result = {};
-    result.page = page; // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+    result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
 
     return res.json(ApiResponse.success(result));
   };
@@ -1399,7 +1378,7 @@ module.exports = function(crowi, app) {
     }
 
     const result = {};
-    result.page = page; // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+    result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
 
     res.json(ApiResponse.success(result));
 

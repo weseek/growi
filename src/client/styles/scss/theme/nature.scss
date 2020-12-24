@@ -112,9 +112,9 @@ html[dark] {
   }
 
   // Button
-  .btn-group.grw-three-stranded-button {
+  .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include three-stranded-button($bgcolor-navbar, lighten($bgcolor-navbar, 65%), lighten($bgcolor-navbar, 70%));
+      @include btn-page-editor-mode-manager($bgcolor-navbar, lighten($bgcolor-navbar, 65%), lighten($bgcolor-navbar, 70%));
     }
   }
 }

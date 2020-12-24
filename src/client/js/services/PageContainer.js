@@ -60,12 +60,15 @@ export default class PageContainer extends Container {
       sumOfBookmarks: 0,
       createdAt: mainContent.getAttribute('data-page-created-at'),
       updatedAt: mainContent.getAttribute('data-page-updated-at'),
+
+      isUserPage: JSON.parse(mainContent.getAttribute('data-page-user')) != null,
       isTrashPage: isTrashPage(path),
-      isForbidden: JSON.parse(mainContent.getAttribute('data-page-is-forbidden')),
       isDeleted: JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
       isDeletable: JSON.parse(mainContent.getAttribute('data-page-is-deletable')),
       isNotCreatable: JSON.parse(mainContent.getAttribute('data-page-is-not-creatable')),
       isAbleToDeleteCompletely: JSON.parse(mainContent.getAttribute('data-page-is-able-to-delete-completely')),
+      isPageExist: mainContent.getAttribute('data-page-id') != null,
+
       pageUser: JSON.parse(mainContent.getAttribute('data-page-user')),
       tags: null,
       hasChildren: JSON.parse(mainContent.getAttribute('data-page-has-children')),
@@ -104,8 +107,12 @@ export default class PageContainer extends Container {
     this.initStateMarkdown();
     this.checkAndUpdateImageUrlCached(this.state.likerUsers);
 
-    // skip if shared page or new page
-    if (this.state.shareLinkId == null && this.state.pageId != null) {
+    const { isSharedUser } = this.appContainer;
+
+    // see https://dev.growi.org/5fabddf8bbeb1a0048bcb9e9
+    const isAbleToGetAttachedInformationAboutPages = this.state.isPageExist && !isSharedUser;
+
+    if (isAbleToGetAttachedInformationAboutPages) {
       this.retrieveSeenUsers();
       this.retrieveLikeInfo();
       this.retrieveBookmarkInfo();
@@ -137,6 +144,101 @@ export default class PageContainer extends Container {
    */
   static getClassName() {
     return 'PageContainer';
+  }
+
+
+  get isAbleToOpenPageEditor() {
+    const { isNotCreatable, isTrashPage } = this.state;
+    const { isGuestUser } = this.appContainer;
+
+    return (!isNotCreatable && !isTrashPage && !isGuestUser);
+  }
+
+  /**
+   * whether to display reaction buttons
+   * ex.) like, bookmark
+   */
+  get isAbleToShowPageReactionButtons() {
+    const { isTrashPage, isPageExist } = this.state;
+    const { isSharedUser } = this.appContainer;
+
+    return (!isTrashPage && isPageExist && !isSharedUser);
+  }
+
+  /**
+   * whether to display tag labels
+   */
+  get isAbleToShowTagLabel() {
+    const { isUserPage } = this.state;
+    const { isSharedUser } = this.appContainer;
+
+    return (!isUserPage && !isSharedUser);
+  }
+
+  /**
+   * whether to display page management
+   * ex.) duplicate, rename
+   */
+  get isAbleToShowPageManagement() {
+    const { isPageExist, isTrashPage } = this.state;
+    const { isSharedUser } = this.appContainer;
+
+    return (isPageExist && !isTrashPage && !isSharedUser);
+  }
+
+  /**
+   * whether to display pageEditorModeManager
+   * ex.) view, edit, hackmd
+   */
+  get isAbleToShowPageEditorModeManager() {
+    const { isNotCreatable, isTrashPage } = this.state;
+    const { isSharedUser } = this.appContainer;
+
+    return (!isNotCreatable && !isTrashPage && !isSharedUser);
+  }
+
+  /**
+   * whether to display pageAuthors
+   * ex.) creator, lastUpdateUser
+   */
+  get isAbleToShowPageAuthors() {
+    const { isPageExist, isUserPage } = this.state;
+
+    return (isPageExist && !isUserPage);
+  }
+
+  /**
+   * whether to like button
+   * not displayed on user page
+   */
+  get isAbleToShowLikeButton() {
+    const { isUserPage } = this.state;
+    const { isSharedUser } = this.appContainer;
+
+    return (!isUserPage && !isSharedUser);
+  }
+
+  /**
+   * whether to Empty Trash Page
+   * not displayed when guest user and not on trash page
+   */
+  get isAbleToShowEmptyTrashButton() {
+    const { currentUser } = this.appContainer;
+    const { path, hasChildren } = this.state;
+
+    return (currentUser != null && currentUser.admin && path === '/trash' && hasChildren);
+  }
+
+  /**
+   * whether to display trash management buttons
+   * ex.) undo, delete completly
+   * not displayed when guest user
+   */
+  get isAbleToShowTrashPageManagementButtons() {
+    const { currentUser } = this.appContainer;
+    const { isDeleted } = this.state;
+
+    return (isDeleted && currentUser != null);
   }
 
   /**
@@ -213,12 +315,18 @@ export default class PageContainer extends Container {
     return this.appContainer.getContainer('NavigationContainer');
   }
 
-  setLatestRemotePageData(page, user) {
-    this.setState({
-      remoteRevisionId: page.revision._id,
-      revisionIdHackmdSynced: page.revisionHackmdSynced,
-      lastUpdateUsername: user.name,
-    });
+  setLatestRemotePageData(s2cMessagePageUpdated) {
+    const newState = {
+      remoteRevisionId: s2cMessagePageUpdated.revisionId,
+      revisionIdHackmdSynced: s2cMessagePageUpdated.revisionIdHackmdSynced,
+      lastUpdateUsername: s2cMessagePageUpdated.lastUpdateUsername,
+    };
+
+    if (s2cMessagePageUpdated.hasDraftOnHackmd != null) {
+      newState.hasDraftOnHackmd = s2cMessagePageUpdated.hasDraftOnHackmd;
+    }
+
+    this.setState(newState);
   }
 
   setTocHtml(tocHtml) {
@@ -231,19 +339,20 @@ export default class PageContainer extends Container {
    * save success handler
    * @param {object} page Page instance
    * @param {Array[Tag]} tags Array of Tag
+   * @param {object} revision Revision instance
    */
-  updateStateAfterSave(page, tags) {
+  updateStateAfterSave(page, tags, revision) {
     const { editorMode } = this.navigationContainer.state;
 
     // update state of PageContainer
     const newState = {
       pageId: page._id,
-      revisionId: page.revision._id,
-      revisionCreatedAt: new Date(page.revision.createdAt).getTime() / 1000,
-      remoteRevisionId: page.revision._id,
+      revisionId: revision._id,
+      revisionCreatedAt: new Date(revision.createdAt).getTime() / 1000,
+      remoteRevisionId: revision._id,
       revisionIdHackmdSynced: page.revisionHackmdSynced,
       hasDraftOnHackmd: page.hasDraftOnHackmd,
-      markdown: page.revision.body,
+      markdown: revision.body,
       createdAt: page.createdAt,
       updatedAt: page.updatedAt,
     };
@@ -300,7 +409,7 @@ export default class PageContainer extends Container {
       res = await this.updatePage(pageId, revisionId, markdown, options);
     }
 
-    this.updateStateAfterSave(res.page, res.tags);
+    this.updateStateAfterSave(res.page, res.tags, res.revision);
     return res;
   }
 
@@ -359,11 +468,10 @@ export default class PageContainer extends Container {
       body: markdown,
     });
 
-    const res = await this.appContainer.apiPost('/pages.create', params);
-    if (!res.ok) {
-      throw new Error(res.error);
-    }
-    return { page: res.page, tags: res.tags };
+    const res = await this.appContainer.apiv3Post('/pages/', params);
+    const { page, tags, revision } = res.data;
+
+    return { page, tags, revision };
   }
 
   async updatePage(pageId, revisionId, markdown, tmpParams) {
@@ -381,7 +489,7 @@ export default class PageContainer extends Container {
     if (!res.ok) {
       throw new Error(res.error);
     }
-    return { page: res.page, tags: res.tags };
+    return res;
   }
 
   deletePage(isRecursively, isCompletely) {
@@ -414,19 +522,18 @@ export default class PageContainer extends Container {
     });
   }
 
-  rename(pageNameInput, isRenameRecursively, isRenameRedirect, isRenameMetadata) {
+  rename(newPagePath, isRecursively, isRenameRedirect, isRemainMetadata) {
     const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
-    const isRecursively = isRenameRecursively ? true : null;
-    const isRedirect = isRenameRedirect ? true : null;
-    const isRemain = isRenameMetadata ? true : null;
+    const { pageId, revisionId, path } = this.state;
 
-    return this.appContainer.apiPost('/pages.rename', {
-      recursively: isRecursively,
-      page_id: this.state.pageId,
-      revision_id: this.state.revisionId,
-      new_path: pageNameInput,
-      create_redirect: isRedirect,
-      remain_metadata: isRemain,
+    return this.appContainer.apiv3Put('/pages/rename', {
+      revisionId,
+      pageId,
+      isRecursively,
+      isRenameRedirect,
+      isRemainMetadata,
+      newPagePath,
+      path,
       socketClientId: socketIoContainer.getSocketClientId(),
     });
   }
@@ -466,9 +573,10 @@ export default class PageContainer extends Container {
 
       logger.debug({ obj: data }, `websocket on 'page:create'`); // eslint-disable-line quotes
 
-      // update PageStatusAlert
-      if (data.page.path === this.state.path) {
-        this.setLatestRemotePageData(data.page, data.user);
+      // update remote page data
+      const { s2cMessagePageUpdated } = data;
+      if (s2cMessagePageUpdated.pageId === this.state.pageId) {
+        this.setLatestRemotePageData(s2cMessagePageUpdated);
       }
     });
 
@@ -480,16 +588,10 @@ export default class PageContainer extends Container {
 
       logger.debug({ obj: data }, `websocket on 'page:update'`); // eslint-disable-line quotes
 
-      if (data.page.path === this.state.path) {
-        // update PageStatusAlert
-        this.setLatestRemotePageData(data.page, data.user);
-        // update remote data
-        const page = data.page;
-        this.setState({
-          remoteRevisionId: page.revision._id,
-          revisionIdHackmdSynced: page.revisionHackmdSynced,
-          hasDraftOnHackmd: page.hasDraftOnHackmd,
-        });
+      // update remote page data
+      const { s2cMessagePageUpdated } = data;
+      if (s2cMessagePageUpdated.pageId === this.state.pageId) {
+        this.setLatestRemotePageData(s2cMessagePageUpdated);
       }
     });
 
@@ -501,9 +603,10 @@ export default class PageContainer extends Container {
 
       logger.debug({ obj: data }, `websocket on 'page:delete'`); // eslint-disable-line quotes
 
-      // update PageStatusAlert
-      if (data.page.path === this.state.path) {
-        this.setLatestRemotePageData(data.page, data.user);
+      // update remote page data
+      const { s2cMessagePageUpdated } = data;
+      if (s2cMessagePageUpdated.pageId === this.state.pageId) {
+        this.setLatestRemotePageData(s2cMessagePageUpdated);
       }
     });
 
@@ -515,7 +618,9 @@ export default class PageContainer extends Container {
 
       logger.debug({ obj: data }, `websocket on 'page:editingWithHackmd'`); // eslint-disable-line quotes
 
-      if (data.page.path === this.state.path) {
+      // update isHackmdDraftUpdatingInRealtime
+      const { s2cMessagePageUpdated } = data;
+      if (s2cMessagePageUpdated.pageId === this.state.pageId) {
         this.setState({ isHackmdDraftUpdatingInRealtime: true });
       }
     });

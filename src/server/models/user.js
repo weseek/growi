@@ -1,6 +1,6 @@
-/* eslint-disable no-use-before-define */
-import loggerFactory from '~/utils/logger';
 import { config as i18nConfig } from '~/i18n';
+import loggerFactory from '~/utils/logger';
+import { migrateDeprecatedLocaleId } from '~/utils/locale-utils';
 
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
@@ -13,6 +13,7 @@ const logger = loggerFactory('growi:models:user');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
+const { omitInsecureAttributes } = require('./serializers/user-serializer');
 
 module.exports = function(crowi) {
   const STATUS_REGISTERED = 1;
@@ -66,15 +67,13 @@ module.exports = function(crowi) {
   }, {
     toObject: {
       transform: (doc, ret, opt) => {
-        // omit password
-        delete ret.password;
-        // omit email
-        if (!doc.isEmailPublished) {
-          delete ret.email;
-        }
-        return ret;
+        return omitInsecureAttributes(ret);
       },
     },
+  });
+  // eslint-disable-next-line prefer-arrow-callback
+  userSchema.pre('validate', function() {
+    this.lang = migrateDeprecatedLocaleId(this.lang);
   });
   userSchema.plugin(mongoosePaginate);
   userSchema.plugin(uniqueValidator);

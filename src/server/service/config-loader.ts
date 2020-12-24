@@ -355,6 +355,18 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.STRING,
     default: null,
   },
+  S3_REFERENCE_FILE_WITH_RELAY_MODE: {
+    ns:      'crowi',
+    key:     'aws:referenceFileWithRelayMode',
+    type:    ValueType.BOOLEAN,
+    default: false,
+  },
+  S3_LIFETIME_SEC_FOR_TEMPORARY_URL: {
+    ns:      'crowi',
+    key:     'aws:lifetimeSecForTemporaryUrl',
+    type:    ValueType.NUMBER,
+    default: 120,
+  },
   GCS_API_KEY_JSON_PATH: {
     ns:      'crowi',
     key:     'gcs:apiKeyJsonPath',
@@ -373,11 +385,23 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.STRING,
     default: null,
   },
+  GCS_REFERENCE_FILE_WITH_RELAY_MODE: {
+    ns:      'crowi',
+    key:     'gcs:referenceFileWithRelayMode',
+    type:    ValueType.BOOLEAN,
+    default: false,
+  },
   GCS_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: {
     ns:      'crowi',
     key:     'gcs:useOnlyEnvVarsForSomeOptions',
     type:    ValueType.BOOLEAN,
     default: false,
+  },
+  GCS_LIFETIME_SEC_FOR_TEMPORARY_URL: {
+    ns:      'crowi',
+    key:     'gcs:lifetimeSecForTemporaryUrl',
+    type:    ValueType.NUMBER,
+    default: 120,
   },
 };
 

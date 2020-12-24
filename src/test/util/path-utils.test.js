@@ -1,4 +1,6 @@
-import { isTopPage, isDeletablePage, isCreatablePage } from '~/utils/path-utils';
+import {
+  isTopPage, isDeletablePage, isCreatablePage, convertToNewAffiliationPath,
+} from '~/utils/path-utils';
 
 
 describe('TopPage Path test', () => {
@@ -72,5 +74,40 @@ describe('.isCreatableName', () => {
       expect(isCreatablePage(`/${pn}/`)).toBeFalsy();
       expect(isCreatablePage(`/${pn}/abc`)).toBeFalsy();
     }
+  });
+});
+
+describe('convertToNewAffiliationPath test', () => {
+  test('Child path is not converted normally', () => {
+    const result = convertToNewAffiliationPath('parent/', 'parent2/', 'parent/child');
+    expect(result).toBe('parent2/child');
+  });
+
+  test('Parent path is not converted normally', () => {
+    const result = convertToNewAffiliationPath('parent/', 'parent3/', 'parent/child');
+    expect(result === 'parent/child').toBe(false);
+  });
+
+  test('Parent and Child path names are switched unexpectedly', () => {
+    const result = convertToNewAffiliationPath('parent/', 'parent4/', 'parent/child');
+    expect(result === 'child/parent4').toBe(false);
+  });
+
+  test('Child path is null', () => {
+    expect(() => {
+      convertToNewAffiliationPath('parent/', 'parent5/', null);
+    }).toThrow();
+  });
+
+  test('Old parent path is null', () => {
+    expect(() => {
+      convertToNewAffiliationPath(null, 'parent5/', 'child');
+    }).toThrow();
+  });
+
+  test('New parent path is null', () => {
+    expect(() => {
+      convertToNewAffiliationPath('parent/', null, 'child');
+    }).toThrow();
   });
 });

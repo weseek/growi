@@ -17,10 +17,7 @@ module.exports = function(crowi) {
     return configManager.getConfig('crowi', 'gcs:bucket');
   }
 
-  function getGcsInstance(isUploadable) {
-    if (!isUploadable) {
-      throw new Error('GCS is not configured.');
-    }
+  function getGcsInstance() {
     if (_instance == null) {
       const keyFilename = configManager.getConfig('crowi', 'gcs:apiKeyJsonPath');
       // see https://googleapis.dev/nodejs/storage/latest/Storage.html
@@ -55,13 +52,54 @@ module.exports = function(crowi) {
       && this.configManager.getConfig('crowi', 'gcs:bucket') != null;
   };
 
+  lib.canRespond = function() {
+    return !this.configManager.getConfig('crowi', 'gcs:referenceFileWithRelayMode');
+  };
+
+  lib.respond = async function(res, attachment) {
+    if (!this.getIsUploadable()) {
+      throw new Error('GCS is not configured.');
+    }
+    const temporaryUrl = attachment.getValidTemporaryUrl();
+    if (temporaryUrl != null) {
+      return res.redirect(temporaryUrl);
+    }
+
+    const gcs = getGcsInstance();
+    const myBucket = gcs.bucket(getGcsBucket());
+    const filePath = getFilePathOnStorage(attachment);
+    const file = myBucket.file(filePath);
+    const lifetimeSecForTemporaryUrl = this.configManager.getConfig('crowi', 'gcs:lifetimeSecForTemporaryUrl');
+
+    // issue signed url (default: expires 120 seconds)
+    // https://cloud.google.com/storage/docs/access-control/signed-urls
+    const signedUrl = await file.getSignedUrl({
+      action: 'read',
+      expires: Date.now() + lifetimeSecForTemporaryUrl * 1000,
+    });
+
+    res.redirect(signedUrl);
+
+    try {
+      return attachment.cashTemporaryUrlByProvideSec(signedUrl, lifetimeSecForTemporaryUrl);
+    }
+    catch (err) {
+      logger.error(err);
+    }
+
+  };
+
   lib.deleteFile = async function(attachment) {
     const filePath = getFilePathOnStorage(attachment);
     return lib.deleteFileByFilePath(filePath);
   };
 
   lib.deleteFileByFilePath = async function(filePath) {
-    const gcs = getGcsInstance(this.getIsUploadable());
+    if (!this.getIsUploadable()) {
+      throw new Error('GCS is not configured.');
+    }
+
+    const gcs = getGcsInstance();
     const myBucket = gcs.bucket(getGcsBucket());
     const file = myBucket.file(filePath);
 
@@ -76,9 +114,13 @@ module.exports = function(crowi) {
   };
 
   lib.uploadFile = function(fileStream, attachment) {
+    if (!this.getIsUploadable()) {
+      throw new Error('GCS is not configured.');
+    }
+
     logger.debug(`File uploading: fileName=${attachment.fileName}`);
 
-    const gcs = getGcsInstance(this.getIsUploadable());
+    const gcs = getGcsInstance();
     const myBucket = gcs.bucket(getGcsBucket());
     const filePath = getFilePathOnStorage(attachment);
     const options = {
@@ -95,7 +137,11 @@ module.exports = function(crowi) {
    * @return {stream.Readable} readable stream
    */
   lib.findDeliveryFile = async function(attachment) {
-    const gcs = getGcsInstance(this.getIsUploadable());
+    if (!this.getIsReadable()) {
+      throw new Error('GCS is not configured.');
+    }
+
+    const gcs = getGcsInstance();
     const myBucket = gcs.bucket(getGcsBucket());
     const filePath = getFilePathOnStorage(attachment);
     const file = myBucket.file(filePath);

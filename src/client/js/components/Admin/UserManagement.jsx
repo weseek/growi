@@ -120,7 +120,7 @@ class UserManagement extends React.Component {
           changePage={this.handlePage}
           totalItemsCount={adminUsersContainer.state.totalUsers}
           pagingLimit={adminUsersContainer.state.pagingLimit}
-          align="right"
+          align="center"
           size="sm"
         />
       </div>
