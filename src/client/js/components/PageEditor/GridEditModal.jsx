@@ -140,138 +140,40 @@ class GridEditModal extends React.Component {
   }
 
   renderPreview() {
-
-    // TODO GW-3721 make objects and simplify all loops
-    /* const prevSize = BootstrapGrid.ResponsiveSize;
-    const prevSizeObj = {
-      [prevSize.MD_SIZE]: {
-        [prevSize.MD_SIZE]: {
-          iconClass: 'icon-screen-desktop', prevClass: 'desktop-preview', prevText: 'Desktop', prevRender: this.renderNoBreakPreview(),
-        },
-        [prevSize.SM_SIZE]: {
-          iconClass: 'icon-screen-tablet', prevClass: 'tablet-preview', prevText: 'Tablet', prevRender: this.renderBreakPreview(),
-        },
-        [prevSize.XS_SIZE]: {
-          iconClass: 'icon-screen-smartphone', prevClass: 'mobile-preview', prevText: 'Smartphone', prevRender: this.renderBreakPreview(),
-        },
-      },
-      [prevSize.SM_SIZE]: {
-        [prevSize.MD_SIZE]: {
-          iconClass: 'icon-screen-desktop', prevClass: 'desktop-preview', prevText: 'Desktop', prevRender: this.renderNoBreakPreview(),
-        },
-        [prevSize.SM_SIZE]: {
-          iconClass: 'icon-screen-tablet', prevClass: 'tablet-preview', prevText: 'Tablet', prevRender: this.renderNoBreakPreview(),
-        },
-        [prevSize.XS_SIZE]: {
-          iconClass: 'icon-screen-smartphone', prevClass: 'mobile-preview', prevText: 'Smartphone', prevRender: this.renderBreakPreview(),
-        },
-      },
-      [prevSize.MD_SIZE]: {
-        [prevSize.MD_SIZE]: {
-          iconClass: 'icon-screen-desktop', prevClass: 'desktop-preview', prevText: 'Desktop', prevRender: this.renderNoBreakPreview(),
-        },
-        [prevSize.SM_SIZE]: {
-          iconClass: 'icon-screen-tablet', prevClass: 'tablet-preview', prevText: 'Tablet', prevRender: this.renderNoBreakPreview(),
-        },
-        [prevSize.XS_SIZE]: {
-          iconClass: 'icon-screen-smartphone', prevClass: 'mobile-preview', prevText: 'Smartphone', prevRender: this.renderNoBreakPreview(),
-        },
-      },
-    }; */
     const { t } = this.props;
-    if (this.state.responsiveSize === BootstrapGrid.ResponsiveSize.MD_SIZE) {
-      return (
-        <div className="row">
-          <div className="col-lg-6">
-            <label className="d-block mt-2"><i className="pr-2 icon-screen-desktop"></i>{t('desktop')}</label>
-            <div className="desktop-preview d-block">
-              {this.renderNoBreakPreview()}
-            </div>
-          </div>
-          <div className="col-lg-3">
-            <label className="d-block mt-2"><i className="pr-2 icon-screen-tablet"></i>{t('tablet')}</label>
-            <div className="tablet-preview d-block">
-              {this.renderBreakPreview()}
-            </div>
-          </div>
-          <div className="col-lg-3">
-            <label className="d-block mt-2"><i className="pr-2 icon-screen-smartphone"></i>{t('phone')}</label>
-            <div className="mobile-preview d-block">
-              {this.renderBreakPreview()}
-            </div>
-          </div>
-        </div>
-      );
-    }
-    if (this.state.responsiveSize === BootstrapGrid.ResponsiveSize.SM_SIZE) {
-      return (
-        <div className="row">
-          <div className="col-lg-6">
-            <label className="d-block mt-2"><i className="pr-2 icon-screen-desktop"></i>{t('desktop')}</label>
-            <div className="desktop-preview d-block">
-              {this.renderNoBreakPreview()}
-            </div>
-          </div>
-          <div className="col-lg-3">
-            <label className="d-block mt-2"><i className="pr-2 icon-screen-tablet"></i>{t('tablet')}</label>
-            <div className="tablet-preview d-block">
-              {this.renderNoBreakPreview()}
-            </div>
-          </div>
-          <div className="col-lg-3">
-            <label className="d-block mt-2"><i className="pr-2 icon-screen-smartphone"></i>{t('phone')}</label>
-            <div className="mobile-preview d-block">
-              {this.renderBreakPreview()}
-            </div>
-          </div>
-        </div>
-      );
-    }
-    if (this.state.responsiveSize === BootstrapGrid.ResponsiveSize.XS_SIZE) {
-      return (
-        <div className="row">
-          <div className="col-lg-6">
-            <label className="d-block mt-2"><i className="pr-2 icon-screen-desktop"></i>{t('desktop')}</label>
-            <div className="desktop-preview d-block">
-              {this.renderNoBreakPreview()}
-            </div>
-          </div>
-          <div className="col-lg-3">
-            <label className="d-block mt-2"><i className="pr-2 icon-screen-tablet"></i>{t('tablet')}</label>
-            <div className="tablet-preview d-block">
-              {this.renderNoBreakPreview()}
-            </div>
-          </div>
-          <div className="col-lg-3">
-            <label className="d-block mt-2"><i className="pr-2 icon-screen-smartphone"></i>{t('phone')}</label>
-            <div className="mobile-preview d-block">
-              {this.renderNoBreakPreview()}
-            </div>
-          </div>
-        </div>
-      );
-    }
-  }
-
-  renderNoBreakPreview() {
-    const { colsRatios } = this.state;
-    const convertedHTML = colsRatios.map((colsRatio, i) => {
-      const key = `grid-preview-col-${i}`;
-      const className = `col-${colsRatio} border`;
-      return (
-        <div key={key} className={className}></div>
-      );
-    });
+    const isMdSelected = this.state.responsiveSize === BootstrapGrid.ResponsiveSize.MD_SIZE;
+    const isXsSelected = this.state.responsiveSize === BootstrapGrid.ResponsiveSize.XS_SIZE;
     return (
-      <div className="row">{convertedHTML}</div>
+      <div className="row">
+        <div className="col-lg-3">
+          <label className="d-block mt-2"><i className="pr-2 icon-screen-smartphone"></i>{t('phone')}</label>
+          <div className="mobile-preview d-block">
+            {this.renderGridPreview(!isXsSelected)}
+          </div>
+        </div>
+        <div className="col-lg-3">
+          <label className="d-block mt-2"><i className="pr-2 icon-screen-tablet"></i>{t('tablet')}</label>
+          <div className="tablet-preview d-block">
+            {this.renderGridPreview(isMdSelected)}
+          </div>
+        </div>
+        <div className="col-lg-6">
+          <label className="d-block mt-2"><i className="pr-2 icon-screen-desktop"></i>{t('desktop')}</label>
+          <div className="desktop-preview d-block">
+            {this.renderGridPreview(false)}
+          </div>
+        </div>
+      </div>
     );
   }
 
-  renderBreakPreview() {
+  renderGridPreview(isBreakEnabled) {
     const { colsRatios } = this.state;
+
     const convertedHTML = colsRatios.map((colsRatio, i) => {
+      const ratio = isBreakEnabled ? 12 : colsRatio;
       const key = `grid-preview-col-${i}`;
-      const className = 'col-12 border';
+      const className = `col-${ratio} border`;
       return (
         <div key={key} className={className}></div>
       );
