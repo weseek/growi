@@ -147,8 +147,8 @@ module.exports = function(crowi, app) {
   const interceptorManager = crowi.getInterceptorManager();
   const globalNotificationService = crowi.getGlobalNotificationService();
 
-  const XssOption = require('../../lib/service/xss/xssOption');
-  const Xss = require('../../lib/service/xss/index');
+  const XssOption = require('~/service/xss/xssOption');
+  const Xss = require('~/service/xss/index');
   const initializedConfig = {
     isEnabledXssPrevention: crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
     tagWhiteList: crowi.xssService.getTagWhiteList(),

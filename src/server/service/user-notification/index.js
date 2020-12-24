@@ -1,4 +1,4 @@
-const toArrayFromCsv = require('@commons/util/to-array-from-csv');
+import { toArrayFromCsv } from '~/utils/to-array-from-csv';
 
 /**
  * service class of UserNotification

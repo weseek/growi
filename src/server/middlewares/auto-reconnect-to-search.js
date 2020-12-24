@@ -1,4 +1,4 @@
-const loggerFactory = require('@alias/logger');
+import loggerFactory from '~/utils/logger';
 
 const { ReconnectContext, nextTick } = require('../service/search-reconnect-context/reconnect-context');
 

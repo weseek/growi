@@ -7,7 +7,7 @@ const { body, query } = require('express-validator');
 
 const router = express.Router();
 
-const { convertToNewAffiliationPath } = require('../../../lib/util/path-utils');
+const { convertToNewAffiliationPath } = require('~/utils/path-utils');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 
