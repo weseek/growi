@@ -157,6 +157,24 @@ class PageService {
     return this.completelyDeletePages(pages, user, options);
   }
 
+  async revertDeletedPageRecursively(targetPage, user, options = {}) {
+    const Page = this.crowi.model('Page');
+    const findOpts = { includeTrashed: true };
+    const pages = await Page.findManageableListWithDescendants(targetPage, user, findOpts);
+
+    let updatedPage = null;
+    await Promise.all(pages.map((page) => {
+      const isParent = (page.path === targetPage.path);
+      const p = this.revertDeletedPages(page, user, options);
+      if (isParent) {
+        updatedPage = p;
+      }
+      return p;
+    }));
+
+    return updatedPage;
+  }
+
   // revert pages recursively
   async revertDeletedPages(page, user, options = {}) {
     const Page = this.crowi.model('Page');
