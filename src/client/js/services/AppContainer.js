@@ -28,7 +28,6 @@ export default class AppContainer extends Container {
 
     this.state = {
       preferDarkModeByMediaQuery: false,
-      isOldIos: false,
 
       // stetes for contents
       recentlyUpdatedPages: [],
