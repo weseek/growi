@@ -119,6 +119,7 @@ module.exports = (crowi) => {
   const userNotificationService = crowi.getUserNotificationService();
 
   const { serializePageSecurely } = require('../../models/serializers/page-serializer');
+  const { serializeRevisionSecurely } = require('../../models/serializers/revision-serializer');
 
   const validator = {
     createPage: [
@@ -229,7 +230,11 @@ module.exports = (crowi) => {
 
     const savedTags = await saveTagsAction({ createdPage, pageTags });
 
-    const result = { page: serializePageSecurely(createdPage), tags: savedTags };
+    const result = {
+      page: serializePageSecurely(createdPage),
+      tags: savedTags,
+      revision: serializeRevisionSecurely(createdPage.revision),
+    };
 
     // update scopes for descendants
     if (overwriteScopesOfDescendants) {

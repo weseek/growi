@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
+import PageHistroyContainer from '../../services/PageHistoryContainer';
 
 import Revision from './Revision';
 import RevisionDiff from './RevisionDiff';
@@ -64,7 +65,7 @@ class PageRevisionList extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
+    const { t, pageHistoryContainer } = this.props;
 
     const revisions = this.props.revisions;
     const revisionCount = this.props.revisions.length;
@@ -72,6 +73,11 @@ class PageRevisionList extends React.Component {
     let hasDiffPrev;
 
     const revisionList = this.props.revisions.map((revision, idx) => {
+      // Returns null because the last revision is for the bottom diff display
+      if (idx === pageHistoryContainer.state.pagingLimit) {
+        return null;
+      }
+
       let previousRevision;
       if (idx + 1 < revisionCount) {
         previousRevision = revisions[idx + 1];
@@ -117,6 +123,7 @@ class PageRevisionList extends React.Component {
 
 PageRevisionList.propTypes = {
   t: PropTypes.func.isRequired, // i18next
+  pageHistoryContainer: PropTypes.instanceOf(PageHistroyContainer).isRequired,
 
   revisions: PropTypes.array,
   diffOpened: PropTypes.object,
