@@ -1114,7 +1114,7 @@ module.exports = function(crowi) {
     if (this.isDeletableName(pageData.path)) {
 
       pageData.status = STATUS_DELETED;
-      const updatedPageData = await this.rename(pageData, newPath, user, { socketClientId, createRedirectPage: true });
+      const updatedPageData = await this.renameRecursively(pageData, newPath, user, { socketClientId, createRedirectPage: true });
 
       return updatedPageData;
     }
