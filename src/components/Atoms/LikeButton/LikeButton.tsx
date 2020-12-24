@@ -7,7 +7,6 @@ type Props= {
 }
 
 export const LikeButton:FC<Props> = (props:Props) => {
-  // defaultValue
   const { onCLick, count = 0, isLiked = false } = props;
 
   const handleClick = () => {

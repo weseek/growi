@@ -7,10 +7,7 @@ type Props= {
 }
 
 export const BookmarkButton:FC<Props> = (props:Props) => {
-  // defaultValue
-  const {
-    onCLick, count = 0, isBookmarked = false,
-  } = props;
+  const { onCLick, count = 0, isBookmarked = false } = props;
 
   const handleClick = () => {
     if (onCLick == null) {
