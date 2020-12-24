@@ -44,6 +44,7 @@ const PagePathAutoComplete = (props) => {
       emptyLabelExceptError={null}
       placeholder="Input page path"
       keywordOnInit={getKeywordOnInit(initializedPath)}
+      autoFocus={props.autoFocus}
     />
   );
 
@@ -55,10 +56,12 @@ PagePathAutoComplete.propTypes = {
 
   onSubmit:         PropTypes.func,
   onInputChange:    PropTypes.func,
+  autoFocus:        PropTypes.bool,
 };
 
 PagePathAutoComplete.defaultProps = {
-  initializedPath: '/',
+  initializedPath:  '/',
+  autoFocus:        false,
 };
 
 export default PagePathAutoComplete;
