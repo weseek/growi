@@ -1255,7 +1255,7 @@ module.exports = function(crowi, app) {
       }
 
       if (isRecursively) {
-        page = await Page.revertDeletedPageRecursively(page, req.user, { socketClientId });
+        page = await crowi.pageService.revertDeletedPageRecursively(page, req.user, { socketClientId });
       }
       else {
         page = await crowi.pageService.revertSingleDeletedPage(page, req.user, { socketClientId });
