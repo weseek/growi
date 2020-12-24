@@ -9,11 +9,12 @@ import loggerFactory from '~/utils/logger';
 import { CommonProps, getServerSideCommonProps } from '~/utils/nextjs-page-utils';
 import { isUserPage } from '~/utils/path-utils';
 
+import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 import BasicLayout from '../components/BasicLayout';
 
-import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
+// import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
 // import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
-import DisplaySwitcher from '../client/js/components/Page/DisplaySwitcher';
+// import DisplaySwitcher from '../client/js/components/Page/DisplaySwitcher';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
 
 import {
@@ -90,7 +91,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           <div className="row">
             <div className="col grw-page-content-container">
               <div id="content-main" className="content-main container">
-                <DisplaySwitcher />
+                {/* <DisplaySwitcher /> */}
                 <div id="page-editor-navbar-bottom-container" className="d-none d-edit-block"></div>
                 {/* <PageStatusAlert /> */}
               </div>
@@ -136,7 +137,7 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
   }
 
   await page.populateDataToShowRevision();
-  props.page = JSON.stringify(pageService.serializeToObj(page));
+  props.page = JSON.stringify(serializeUserSecurely(page));
 }
 
 async function injectPageUserInformation(context: GetServerSidePropsContext, props: Props): Promise<void> {
