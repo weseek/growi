@@ -23,7 +23,7 @@ const EmptyTrashModal = (props) => {
     setErrs(null);
 
     try {
-      await appContainer.apiv3Delete('/pages/empty-trash', { socketclientId: socketIoContainer.getSocketClientId() });
+      await appContainer.apiv3Delete('/pages/empty-trash', { socketClientId: socketIoContainer.getSocketClientId() });
       window.location.reload();
     }
     catch (err) {
