@@ -436,7 +436,7 @@ module.exports = (crowi) => {
    *            description: Succeeded to remove all trash pages
    */
   router.delete('/empty-trash', loginRequired, adminRequired, csrf, async(req, res) => {
-    const socketClientId = req.query.socketclientId;
+    const socketClientId = req.query.socketClientId;
     const options = { socketClientId };
 
     try {
