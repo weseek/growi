@@ -145,10 +145,10 @@ class GridEditModal extends React.Component {
     const isXsSelected = this.state.responsiveSize === BootstrapGrid.ResponsiveSize.XS_SIZE;
     return (
       <div className="row">
-        <div className="col-lg-6">
-          <label className="d-block mt-2"><i className="pr-2 icon-screen-desktop"></i>{t('desktop')}</label>
-          <div className="desktop-preview d-block">
-            {this.renderGridPreview(false)}
+        <div className="col-lg-3">
+          <label className="d-block mt-2"><i className="pr-2 icon-screen-smartphone"></i>{t('phone')}</label>
+          <div className="mobile-preview d-block">
+            {this.renderGridPreview(!isXsSelected)}
           </div>
         </div>
         <div className="col-lg-3">
@@ -157,10 +157,10 @@ class GridEditModal extends React.Component {
             {this.renderGridPreview(isMdSelected)}
           </div>
         </div>
-        <div className="col-lg-3">
-          <label className="d-block mt-2"><i className="pr-2 icon-screen-smartphone"></i>{t('phone')}</label>
-          <div className="mobile-preview d-block">
-            {this.renderGridPreview(!isXsSelected)}
+        <div className="col-lg-6">
+          <label className="d-block mt-2"><i className="pr-2 icon-screen-desktop"></i>{t('desktop')}</label>
+          <div className="desktop-preview d-block">
+            {this.renderGridPreview(false)}
           </div>
         </div>
       </div>
