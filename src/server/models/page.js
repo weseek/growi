@@ -1141,6 +1141,22 @@ module.exports = function(crowi) {
     }));
   };
 
+  pageSchema.statics.revertDeletedPageRecursively = async function(targetPage, user, options = {}) {
+    const findOpts = { includeTrashed: true };
+    const pages = await this.findManageableListWithDescendants(targetPage, user, findOpts);
+
+    let updatedPage = null;
+    await Promise.all(pages.map((page) => {
+      const isParent = (page.path === targetPage.path);
+      const p = crowi.pageService.revertDeletedPages(page, user, options);
+      if (isParent) {
+        updatedPage = p;
+      }
+      return p;
+    }));
+
+    return updatedPage;
+  };
 
   pageSchema.statics.removeByPath = function(path) {
     if (path == null) {
@@ -1201,8 +1217,7 @@ module.exports = function(crowi) {
       await Page.create(path, body, user, { redirectTo: newPagePath });
     }
 
-    // The reason using array is to match the types in elasticsearch.js ( deletePages )
-    pageEvent.emit('delete', [pageData], user, socketClientId);
+    pageEvent.emit('delete', pageData, user, socketClientId);
     pageEvent.emit('create', updatedPageData, user, socketClientId);
 
     return updatedPageData;

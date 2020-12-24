@@ -436,8 +436,11 @@ module.exports = (crowi) => {
    *            description: Succeeded to remove all trash pages
    */
   router.delete('/empty-trash', loginRequired, adminRequired, csrf, async(req, res) => {
+    const socketClientId = req.query.socketclientId;
+    const options = { socketClientId };
+
     try {
-      const pages = await crowi.pageService.completelyDeletePageRecursively({ path: '/trash' }, req.user);
+      const pages = await crowi.pageService.completelyDeletePageRecursively({ path: '/trash' }, req.user, options);
       return res.apiv3({ pages });
     }
     catch (err) {

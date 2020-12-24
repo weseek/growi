@@ -46,8 +46,10 @@ class AttachmentService {
   async removeAttachment(attachments) {
     const { fileUploadService } = this.crowi;
 
-    await attachments.forEach(attachment => fileUploadService.deleteFile(attachment));
-    await attachments.forEach(attachment => attachment.remove());
+    return attachments.forEach((attachment) => {
+      fileUploadService.deleteFile(attachment);
+      attachment.remove();
+    });
   }
 
 }
