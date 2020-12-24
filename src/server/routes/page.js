@@ -1197,7 +1197,7 @@ module.exports = function(crowi, app) {
           await crowi.pageService.completelyDeletePageRecursively(page, req.user, options);
         }
         else {
-          await crowi.pageService.completelyDeletePage(page, req.user, options);
+          await crowi.pageService.completelyDeleteSinglePage(page, req.user, options);
         }
       }
       else {
@@ -1258,7 +1258,7 @@ module.exports = function(crowi, app) {
         page = await Page.revertDeletedPageRecursively(page, req.user, { socketClientId });
       }
       else {
-        page = await crowi.pageService.revertDeletedPage(page, req.user, { socketClientId });
+        page = await crowi.pageService.revertSingleDeletedPage(page, req.user, { socketClientId });
       }
     }
     catch (err) {
