@@ -386,7 +386,6 @@ class ElasticsearchDelegator {
         { path: 'creator', model: 'User', select: 'username' },
         { path: 'revision', model: 'Revision', select: 'body' },
       ])
-      .lean()
       .cursor();
 
     let skipped = 0;
