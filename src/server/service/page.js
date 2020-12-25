@@ -87,13 +87,14 @@ class PageService {
     pages.forEach(async(page) => {
       const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
       // await page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate();
+      const revisionId = new mongoose.Types.ObjectId();
 
       duplicatePageBulkOp.insert({
-        path: newPagePath, body: 'new', creator: user._id, lastUpdateUser: user._id,
+        path: newPagePath, body: 'new', creator: user._id, lastUpdateUser: user._id, revision: revisionId,
       });
 
       revisionPrepareBulkOp.insert({
-        path: newPagePath, body: 'new', author: user._id, format: 'markdown',
+        _id: revisionId, path: newPagePath, body: 'new', author: user._id, format: 'markdown',
       });
 
     });
