@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
 const logger = require('@alias/logger')('growi:models:page');
 const debug = require('debug')('growi:models:page');
+const { Readable } = require('stream');
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 
 const STATUS_PUBLISHED = 'published';
@@ -36,9 +37,17 @@ class PageService {
   async removeAllAttachments(pageIds) {
     const Attachment = this.crowi.model('Attachment');
     const { attachmentService } = this.crowi;
-    const attachments = await Attachment.find({ page: { $in: pageIds } });
 
-    return attachmentService.removeAttachment(attachments);
+    const readable = new Readable({ objectMode: true });
+
+    readable.push(pageIds);
+    readable.on('data', async(chunk) => {
+      const attachments = await Attachment.find({ page: chunk });
+      attachmentService.removeAttachment(attachments);
+    });
+    // end action
+    readable.push(null);
+    return;
   }
 
   async duplicate(page, newPagePath, user) {
