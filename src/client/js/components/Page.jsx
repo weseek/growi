@@ -11,6 +11,7 @@ import MarkdownTable from '../models/MarkdownTable';
 
 import LinkEditModal from './PageEditor/LinkEditModal';
 import RevisionRenderer from './Page/RevisionRenderer';
+import RevisionCompare from './RevisionCompare';
 import HandsontableModal from './PageEditor/HandsontableModal';
 import DrawioModal from './PageEditor/DrawioModal';
 import mtu from './PageEditor/MarkdownTableUtil';
@@ -131,11 +132,19 @@ class Page extends React.Component {
     const { appContainer, pageContainer } = this.props;
     const { isMobile } = appContainer;
     const isLoggedIn = appContainer.currentUser != null;
-    const { markdown } = pageContainer.state;
+    const { markdown, compareRevisionIds } = pageContainer.state;
+
+    const renderer = (!compareRevisionIds || compareRevisionIds.length == 0) ?
+                       <RevisionRenderer
+                           growiRenderer={this.growiRenderer}
+                           markdown={markdown} />
+                     : <RevisionCompare
+                         fromRevisionId={compareRevisionIds.length >= 1 ? compareRevisionIds[0] : ""}
+                         toRevisionId={compareRevisionIds.length >= 2 ? compareRevisionIds[1] : ""} />;
 
     return (
       <div className={`mb-5 ${isMobile ? 'page-mobile' : ''}`}>
-        <RevisionRenderer growiRenderer={this.growiRenderer} markdown={markdown} />
+        { renderer }
 
         { isLoggedIn && (
           <>

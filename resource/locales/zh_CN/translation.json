@@ -298,7 +298,10 @@
 		"already_exists": "新建页面已存在",
 		"outdated": "页面已被某人更新，现在已过时。",
 		"user_not_admin": "仅管理员用户可以完全删除"
-	},
+  },
+  "page_compare_revision": {
+    "comparing_changes": "比较变化"
+  },
 	"modal_rename": {
 		"label": {
 			"Move/Rename page": "页面 移动/重命名",

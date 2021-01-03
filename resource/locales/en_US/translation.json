@@ -318,6 +318,9 @@
     "outdated": "Page is updated someone and now outdated.",
     "user_not_admin": "Only admin user can delete completely"
   },
+  "page_compare_revision": {
+    "comparing_changes": "Comparing changes"
+  },
   "modal_rename": {
     "label": {
       "Move/Rename page": "Move/Rename page",

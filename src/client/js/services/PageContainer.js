@@ -75,6 +75,7 @@ export default class PageContainer extends Container {
       templateTagData: mainContent.getAttribute('data-template-tags') || null,
       shareLinksNumber: mainContent.getAttribute('data-share-links-number'),
       shareLinkId: JSON.parse(mainContent.getAttribute('data-share-link-id') || null),
+      compareRevisionIds: JSON.parse(mainContent.getAttribute('data-compare-revision-ids') || null),
 
       // latest(on remote) information
       remoteRevisionId: revisionId,
