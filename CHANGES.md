@@ -1,8 +1,20 @@
 # CHANGES
 
-## v4.2.4
+## v4.2.6-RC
 
 * 
+
+## v4.2.5-RC
+
+* Improvement: Invoke garbage collection when reindex all pages by elasticsearch
+* Fix: MathJax rendering does not work
+
+## v4.2.4
+
+* Fix: Fixed an error when creating a new page with `Ctrl-S`
+    * Introduced by v4.2.2
+* Fix: Fixed a strange diff in PageHistory due to Pagination
+* Fix: Fixed that the user group page could not be found when using api from the outside
 
 ## v4.2.3
 
@@ -44,6 +56,10 @@
 * Support: Upgrade libs
     * migrate-mongo
     * mongoose
+
+## v4.1.13
+
+* Fix: MathJax rendering does not work
 
 ## v4.1.12
 
