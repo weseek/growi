@@ -73,35 +73,33 @@ class PageService {
   }
 
   async duplicateRecursively(page, newPagePath, user) {
-    const pageCollection = mongoose.connection.collection('pages');
-    const revisionCollection = mongoose.connection.collection('revisions');
 
     const Page = this.crowi.model('Page');
+    const Revision = this.crowi.model('Revision');
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
     const pages = await Page.findManageableListWithDescendants(page, user);
 
-    const duplicatePageBulkOp = pageCollection.initializeUnorderedBulkOp();
-    const revisionPrepareBulkOp = revisionCollection.initializeUnorderedBulkOp();
+    const newPages = [];
+    const newRevisions = [];
 
-    pages.forEach(async(page) => {
+    await Promise.all(pages.map(async(page) => {
       const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
-      // await page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate();
+      await page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate();
       const revisionId = new mongoose.Types.ObjectId();
 
-      duplicatePageBulkOp.insert({
-        path: newPagePath, body: 'new', creator: user._id, lastUpdateUser: user._id, revision: revisionId,
+      newPages.push({
+        path: newPagePath, creator: user._id, lastUpdateUser: user._id, revision: revisionId,
       });
 
-      revisionPrepareBulkOp.insert({
-        _id: revisionId, path: newPagePath, body: 'new', author: user._id, format: 'markdown',
+      newRevisions.push({
+        _id: revisionId, path: newPagePath, body: page.revision.body, author: user._id, format: 'markdown',
       });
 
-    });
+    }));
 
-    const { result } = await revisionPrepareBulkOp.execute();
-    console.log(result);
-
+    await Page.insertMany(newPages);
+    await Revision.insertMany(newRevisions);
 
     // const promise = pages.map(async(page) => {
     //   const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
