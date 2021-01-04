@@ -973,7 +973,9 @@ class ElasticsearchDelegator {
 
     // delete if page should not indexed
     try {
-      await this.deletePages(deletePages);
+      if (shoudDeletePages.length !== 0) {
+        await this.deletePages(shoudDeletePages);
+      }
     }
     catch (err) {
       logger.error('deletePages:ES Error', err);
