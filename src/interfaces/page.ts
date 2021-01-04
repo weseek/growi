@@ -5,6 +5,11 @@ export type Page = {
 }
 
 export type BookmarkInfo = {
-  sumOfBookmarks:number,
-  isBookmarked:boolean,
+  sumOfBookmarks: number,
+  isBookmarked: boolean,
+}
+
+export type LikeInfo = {
+  sumOfLiker: number,
+  isLiked: boolean,
 }

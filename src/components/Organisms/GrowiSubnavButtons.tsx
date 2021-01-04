@@ -1,22 +1,24 @@
 import { FC } from 'react';
 import { LikeButton } from '~/components/Atoms/LikeButton';
 import { BookmarkButton } from '~/components/Atoms/BookmarkButton';
-import { useCurrentPageSWR, useIsBookmarkedSWR } from '~/stores/page';
-import { Page as IPage, BookmarkInfo as IBookmarkInfo } from '~/interfaces/page';
+import { useCurrentPageSWR, useIsBookmarkInfoSWR, useLikeInfoSWR } from '~/stores/page';
+import { Page as IPage, BookmarkInfo as IBookmarkInfo, LikeInfo as ILikeInfo } from '~/interfaces/page';
 
 export const PageReactionButtons:FC = () => {
   const { data: page } = useCurrentPageSWR();
   const { id } = page as IPage;
 
-  const { data: bookmarkInfo } = useIsBookmarkedSWR(id);
+  const { data: bookmarkInfo } = useIsBookmarkInfoSWR(id);
   const { sumOfBookmarks, isBookmarked } = bookmarkInfo as IBookmarkInfo;
 
+  const { data: likeInfo } = useLikeInfoSWR(id);
+  const { sumOfLiker, isLiked } = likeInfo as ILikeInfo;
 
   return (
     <>
       {/* pageContainer.isAbleToShowLikeButton  */}
       <span>
-        <LikeButton />
+        <LikeButton count={sumOfLiker} isLiked={isLiked} />
       </span>
       <span>
         <BookmarkButton count={sumOfBookmarks} isBookmarked={isBookmarked} />
