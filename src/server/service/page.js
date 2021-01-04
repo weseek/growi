@@ -89,7 +89,14 @@ class PageService {
       const revisionId = new mongoose.Types.ObjectId();
 
       newPages.push({
-        path: newPagePath, creator: user._id, lastUpdateUser: user._id, revision: revisionId,
+        path: newPagePath,
+        creator: user._id,
+        grant: page.grant,
+        grantedGroup: page.grantedGroup,
+        grantedUsers: page.grantedUsers,
+        lastUpdateUser: user._id,
+        redirectTo: null,
+        revision: revisionId,
       });
 
       newRevisions.push({
