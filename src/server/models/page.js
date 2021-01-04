@@ -1255,8 +1255,15 @@ module.exports = function(crowi) {
       revisionUnorderedBulkOp.find({ path: page.path }).update({ $set: { path: newPagePath } }, { multi: true });
     });
 
-    await unorderedBulkOp.execute();
-    await revisionUnorderedBulkOp.execute();
+    try {
+      await unorderedBulkOp.execute();
+      await revisionUnorderedBulkOp.execute();
+    }
+    catch (err) {
+      if (err.code !== 11000) {
+        return;
+      }
+    }
 
     const newParentPath = path.replace(pathRegExp, newPagePathPrefix);
     const newParentPage = await this.findByPath(newParentPath);
