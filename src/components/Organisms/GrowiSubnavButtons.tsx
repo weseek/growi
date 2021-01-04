@@ -18,9 +18,11 @@ export const PageReactionButtons:FC = () => {
     <>
       {/* TODO GW-4832 show by isAbleToShowLikeButton  */}
       <span>
+        {/* TODO GW-4858 create onClick action */}
         <LikeButton count={sumOfLikers} isLiked={isLiked} />
       </span>
       <span>
+        {/* TODO GW-4858 create onClick action */}
         <BookmarkButton count={sumOfBookmarks} isBookmarked={isBookmarked} />
       </span>
     </>
