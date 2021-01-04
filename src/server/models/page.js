@@ -1259,14 +1259,9 @@ module.exports = function(crowi) {
     await revisionUnorderedBulkOp.execute();
 
     const newParentPath = path.replace(pathRegExp, newPagePathPrefix);
-    const newParentPage = this.findByPath(newParentPath);
-    const pageDatas = await this.findManageableListWithDescendants(newParentPage, user, options);
+    const newParentPage = await this.findByPath(newParentPath);
 
-    pageEvent.emit('createMany', targetPage, user, socketClientId);
-    pageDatas.forEach((pageData) => {
-      pageEvent.emit('delete', pageData, user, socketClientId);
-    });
-
+    pageEvent.emit('createMany', newParentPage, user, socketClientId);
 
     targetPage.path = newPagePathPrefix;
     return targetPage;
