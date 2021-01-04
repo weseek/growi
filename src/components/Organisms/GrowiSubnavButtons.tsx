@@ -12,12 +12,11 @@ export const PageReactionButtons:FC = () => {
   const { sumOfBookmarks, isBookmarked } = bookmarkInfo as IBookmarkInfo;
 
   const { data: likeInfo } = useLikeInfoSWR(id);
-  console.log(likeInfo);
   const { sumOfLikers, isLiked } = likeInfo as ILikeInfo;
 
   return (
     <>
-      {/* pageContainer.isAbleToShowLikeButton  */}
+      {/* TODO GW-4832 show by isAbleToShowLikeButton  */}
       <span>
         <LikeButton count={sumOfLikers} isLiked={isLiked} />
       </span>
@@ -40,8 +39,9 @@ export const GrowiSubnavButtons:FC<SubnavButtonsProps> = (props:SubnavButtonsPro
     <>
       {isViewMode && (
         <>
-          {/* TODO  isAbleToShowPageReactionButtons */}
+          {/* TODO GW-4827 show by isAbleToShowPageReactionButtons */}
           <PageReactionButtons />
+          {/* TODO GW-4829 show by isAbleToShowPageManagement */}
           {/* <PageManagement isCompactMode={isCompactMode} />  */}
         </>
       )}
