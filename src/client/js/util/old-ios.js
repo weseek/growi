@@ -1,5 +1,4 @@
 const userAgent = window.navigator.userAgent.toLowerCase();
-// TODO: impl more accurate logic
 // https://youtrack.weseek.co.jp/issue/GW-4826
 const isOldIos = /iphone os 12/.test(userAgent);
 
