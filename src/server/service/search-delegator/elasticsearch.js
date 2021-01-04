@@ -355,8 +355,9 @@ class ElasticsearchDelegator {
   updateOrInsertDescendantsPagesById(page, user) {
     const Page = mongoose.model('Page');
     const { PageQueryBuilder } = Page;
-    const findQuery = new PageQueryBuilder(Page.find()).addConditionToListWithDescendants(page.path).query;
-    return this.updateOrInsertPages(() => findQuery);
+    const builder = new PageQueryBuilder(Page.find());
+    builder.addConditionToListWithDescendants(page.path);
+    return this.updateOrInsertPages(() => builder.query);
   }
 
   /**
