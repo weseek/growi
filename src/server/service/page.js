@@ -105,18 +105,10 @@ class PageService {
 
     }));
 
-    await Page.insertMany(newPages);
-    await Revision.insertMany(newRevisions);
-
-    // const promise = pages.map(async(page) => {
-    //   const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
-    //   return this.duplicate(page, newPagePath, user);
-    // });
+    await Page.insertMany(newPages, { ordered: false });
+    await Revision.insertMany(newRevisions, { ordered: false });
 
     const newPath = page.path.replace(pathRegExp, newPagePathPrefix);
-
-    // await Promise.allSettled(promise);
-
     const newParentpage = await Page.findByPath(newPath);
 
     // TODO GW-4634 use stream
