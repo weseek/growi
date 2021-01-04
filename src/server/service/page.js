@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
+const logger = require('@alias/logger')('growi:models:page');
+const debug = require('debug')('growi:models:page');
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
+
+const STATUS_PUBLISHED = 'published';
 
 class PageService {
 
@@ -8,7 +12,7 @@ class PageService {
     this.crowi = crowi;
   }
 
-  async deleteCompletely(pageId, pagePath) {
+  async deleteCompletely(pageIds, pagePaths) {
     // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
     const Bookmark = this.crowi.model('Bookmark');
     const Comment = this.crowi.model('Comment');
@@ -18,28 +22,23 @@ class PageService {
     const Revision = this.crowi.model('Revision');
 
     return Promise.all([
-      Bookmark.removeBookmarksByPageId(pageId),
-      Comment.removeCommentsByPageId(pageId),
-      PageTagRelation.remove({ relatedPage: pageId }),
-      ShareLink.remove({ relatedPage: pageId }),
-      Revision.removeRevisionsByPath(pagePath),
-      Page.findByIdAndRemove(pageId),
-      Page.removeRedirectOriginPageByPath(pagePath),
-      this.removeAllAttachments(pageId),
+      Bookmark.find({ page: { $in: pageIds } }).remove({}),
+      Comment.find({ page: { $in: pageIds } }).remove({}),
+      PageTagRelation.find({ relatedPage: { $in: pageIds } }).remove({}),
+      ShareLink.find({ relatedPage: { $in: pageIds } }).remove({}),
+      Revision.find({ path: { $in: pagePaths } }).remove({}),
+      Page.find({ _id: { $in: pageIds } }).remove({}),
+      Page.find({ path: { $in: pagePaths } }).remove({}),
+      this.removeAllAttachments(pageIds),
     ]);
   }
 
-  async removeAllAttachments(pageId) {
+  async removeAllAttachments(pageIds) {
     const Attachment = this.crowi.model('Attachment');
     const { attachmentService } = this.crowi;
+    const attachments = await Attachment.find({ page: { $in: pageIds } });
 
-    const attachments = await Attachment.find({ page: pageId });
-
-    const promises = attachments.map(async(attachment) => {
-      return attachmentService.removeAttachment(attachment._id);
-    });
-
-    return Promise.all(promises);
+    return attachmentService.removeAttachment(attachments);
   }
 
   async duplicate(page, newPagePath, user) {
@@ -115,6 +114,159 @@ class PageService {
     return newParentpage;
   }
 
+  // delete multiple pages
+  async completelyDeletePages(pagesData, user, options = {}) {
+    this.validateCrowi();
+    let pageEvent;
+    // init event
+    if (this.crowi != null) {
+      pageEvent = this.crowi.event('page');
+      pageEvent.on('create', pageEvent.onCreate);
+      pageEvent.on('update', pageEvent.onUpdate);
+    }
+
+    const ids = pagesData.map(page => (page._id));
+    const paths = pagesData.map(page => (page.path));
+    const socketClientId = options.socketClientId || null;
+
+    logger.debug('Deleting completely', paths);
+
+    await this.deleteCompletely(ids, paths);
+
+    if (socketClientId != null) {
+      pageEvent.emit('deleteCompletely', pagesData, user, socketClientId); // update as renamed page
+    }
+    return;
+  }
+
+  // delete single page completely
+  async completelyDeleteSinglePage(pageData, user, options = {}) {
+    this.validateCrowi();
+    let pageEvent;
+    // init event
+    if (this.crowi != null) {
+      pageEvent = this.crowi.event('page');
+      pageEvent.on('create', pageEvent.onCreate);
+      pageEvent.on('update', pageEvent.onUpdate);
+    }
+
+    const ids = [pageData._id];
+    const paths = [pageData.path];
+    const socketClientId = options.socketClientId || null;
+
+    logger.debug('Deleting completely', paths);
+
+    await this.deleteCompletely(ids, paths);
+
+    if (socketClientId != null) {
+      pageEvent.emit('delete', pageData, user, socketClientId); // update as renamed page
+    }
+    return;
+  }
+
+  /**
+   * Delete Bookmarks, Attachments, Revisions, Pages and emit delete
+   */
+  async completelyDeletePageRecursively(targetPage, user, options = {}) {
+    const findOpts = { includeTrashed: true };
+    const Page = this.crowi.model('Page');
+
+    // find manageable descendants (this array does not include GRANT_RESTRICTED)
+    const pages = await Page.findManageableListWithDescendants(targetPage, user, findOpts);
+
+    // TODO streaming bellow action
+    return this.completelyDeletePages(pages, user, options);
+  }
+
+  async revertDeletedPageRecursively(targetPage, user, options = {}) {
+    const Page = this.crowi.model('Page');
+    const findOpts = { includeTrashed: true };
+    const pages = await Page.findManageableListWithDescendants(targetPage, user, findOpts);
+
+    let updatedPage = null;
+    await Promise.all(pages.map((page) => {
+      const isParent = (page.path === targetPage.path);
+      const p = this.revertDeletedPages(page, user, options);
+      if (isParent) {
+        updatedPage = p;
+      }
+      return p;
+    }));
+
+    return updatedPage;
+  }
+
+  // revert pages recursively
+  async revertDeletedPages(page, user, options = {}) {
+    const Page = this.crowi.model('Page');
+    const newPath = Page.getRevertDeletedPageName(page.path);
+    const originPage = await Page.findByPath(newPath);
+    if (originPage != null) {
+    // When the page is deleted, it will always be created with "redirectTo" in the path of the original page.
+    // So, it's ok to delete the page
+    // However, If a page exists that is not "redirectTo", something is wrong. (Data correction is needed).
+      if (originPage.redirectTo !== page.path) {
+        throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
+      }
+      // originPage is object.
+      await this.completelyDeletePages([originPage], options);
+    }
+
+    page.status = STATUS_PUBLISHED;
+    page.lastUpdateUser = user;
+    debug('Revert deleted the page', page, newPath);
+    const updatedPage = await Page.rename(page, newPath, user, {});
+    return updatedPage;
+  }
+
+  async revertSingleDeletedPage(page, user, options = {}) {
+    const Page = this.crowi.model('Page');
+    const newPath = Page.getRevertDeletedPageName(page.path);
+    const originPage = await Page.findByPath(newPath);
+    if (originPage != null) {
+      // When the page is deleted, it will always be created with "redirectTo" in the path of the original page.
+      // So, it's ok to delete the page
+      // However, If a page exists that is not "redirectTo", something is wrong. (Data correction is needed).
+      if (originPage.redirectTo !== page.path) {
+        throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
+      }
+      await this.completelyDeleteSinglePage(originPage, options);
+    }
+
+    page.status = STATUS_PUBLISHED;
+    page.lastUpdateUser = user;
+    debug('Revert deleted the page', page, newPath);
+    const updatedPage = await Page.rename(page, newPath, user, {});
+    return updatedPage;
+  }
+
+  async handlePrivatePagesForDeletedGroup(deletedGroup, action, transferToUserGroupId) {
+    const Page = this.crowi.model('Page');
+    const pages = await Page.find({ grantedGroup: deletedGroup });
+
+    switch (action) {
+      case 'public':
+        await Promise.all(pages.map((page) => {
+          return Page.publicizePage(page);
+        }));
+        break;
+      case 'delete':
+        return this.completelyDeletePages(pages);
+      case 'transfer':
+        await Promise.all(pages.map((page) => {
+          return Page.transferPageToGroup(page, transferToUserGroupId);
+        }));
+        break;
+      default:
+        throw new Error('Unknown action for private pages');
+    }
+  }
+
+  validateCrowi() {
+    if (this.crowi == null) {
+      throw new Error('"crowi" is null. Init User model with "crowi" argument first.');
+    }
+  }
 
 }
 

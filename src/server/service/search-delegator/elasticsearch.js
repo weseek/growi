@@ -503,11 +503,7 @@ class ElasticsearchDelegator {
   deletePages(pages) {
     const self = this;
     const body = [];
-
-    pages.map((page) => {
-      self.prepareBodyForDelete(body, page);
-      return;
-    });
+    pages.forEach(page => self.prepareBodyForDelete(body, page));
 
     logger.debug('deletePages(): Sending Request to ES', body);
     return this.client.bulk({
@@ -961,6 +957,19 @@ class ElasticsearchDelegator {
     }
 
     return this.updateOrInsertPageById(page._id);
+  }
+
+  async syncPagesDeletedCompletely(pages, user) {
+    for (let i = 0; i < pages.length; i++) {
+      logger.debug('SearchClient.syncPageDeleted', pages[i].path);
+    }
+
+    try {
+      return await this.deletePages(pages);
+    }
+    catch (err) {
+      logger.error('deletePages:ES Error', err);
+    }
   }
 
   async syncPageDeleted(page, user) {
