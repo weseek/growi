@@ -22,15 +22,22 @@ class PageService {
     const ShareLink = this.crowi.model('ShareLink');
     const Revision = this.crowi.model('Revision');
 
+    const readable = new Readable({ objectMode: true });
+    readable._read = () => {};
+
+    readable.push({ pageIds, pagePaths });
+
     return Promise.all([
-      Bookmark.find({ page: { $in: pageIds } }).remove({}),
-      Comment.find({ page: { $in: pageIds } }).remove({}),
-      PageTagRelation.find({ relatedPage: { $in: pageIds } }).remove({}),
-      ShareLink.find({ relatedPage: { $in: pageIds } }).remove({}),
-      Revision.find({ path: { $in: pagePaths } }).remove({}),
-      Page.find({ _id: { $in: pageIds } }).remove({}),
-      Page.find({ path: { $in: pagePaths } }).remove({}),
-      this.removeAllAttachments(pageIds),
+      readable.on('data', async(chunk) => {
+        await Bookmark.find({ page: { $in: chunk.pageIds } }).remove({});
+        await Comment.find({ page: { $in: chunk.pageIds } }).remove({});
+        await PageTagRelation.find({ relatedPage: { $in: chunk.pageIds } }).remove({});
+        await ShareLink.find({ relatedPage: { $in: chunk.pageIds } }).remove({});
+        await Revision.find({ path: { $in: chunk.pagePaths } }).remove({});
+        await Page.find({ _id: { $in: chunk.pageIds } }).remove({});
+        await Page.find({ path: { $in: chunk.pagePaths } }).remove({});
+        await this.removeAllAttachments(chunk.pageIds);
+      }),
     ]);
   }
 
