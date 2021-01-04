@@ -134,7 +134,7 @@ const PageRenameModal = (props) => {
   }
 
   return (
-    <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose}>
+    <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} autoFocus={false}>
       <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-light">
         { t('modal_rename.label.Move/Rename page') }
       </ModalHeader>
@@ -156,6 +156,7 @@ const PageRenameModal = (props) => {
                 className="form-control"
                 onChange={e => inputChangeHandler(e.target.value)}
                 required
+                autoFocus
               />
             </form>
           </div>
