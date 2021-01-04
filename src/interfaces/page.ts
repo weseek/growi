@@ -10,6 +10,6 @@ export type BookmarkInfo = {
 }
 
 export type LikeInfo = {
-  sumOfLiker: number,
+  sumOfLikers: number,
   isLiked: boolean,
 }

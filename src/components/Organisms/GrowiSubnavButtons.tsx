@@ -12,13 +12,14 @@ export const PageReactionButtons:FC = () => {
   const { sumOfBookmarks, isBookmarked } = bookmarkInfo as IBookmarkInfo;
 
   const { data: likeInfo } = useLikeInfoSWR(id);
-  const { sumOfLiker, isLiked } = likeInfo as ILikeInfo;
+  console.log(likeInfo);
+  const { sumOfLikers, isLiked } = likeInfo as ILikeInfo;
 
   return (
     <>
       {/* pageContainer.isAbleToShowLikeButton  */}
       <span>
-        <LikeButton count={sumOfLiker} isLiked={isLiked} />
+        <LikeButton count={sumOfLikers} isLiked={isLiked} />
       </span>
       <span>
         <BookmarkButton count={sumOfBookmarks} isBookmarked={isBookmarked} />
