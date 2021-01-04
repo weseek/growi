@@ -961,14 +961,14 @@ class ElasticsearchDelegator {
   async syncDescendantsPagesUpdated(page, user) {
 
     const Page = mongoose.model('Page');
-    const pages = Page.findManageableListWithDescendants(page, user);
+    const pages = await Page.findManageableListWithDescendants(page, user);
 
-    const deletePages = pages.map((page) => {
+    const shoudDeletePages = [];
+    pages.forEach((page) => {
       logger.debug('SearchClient.syncPageUpdated', page.path);
       if (!this.shouldIndexed(page)) {
-        return page;
+        shoudDeletePages.append(page);
       }
-      return;
     });
 
     // delete if page should not indexed
