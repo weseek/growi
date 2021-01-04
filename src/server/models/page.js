@@ -1261,7 +1261,7 @@ module.exports = function(crowi) {
     }
     catch (err) {
       if (err.code !== 11000) {
-        return;
+        throw new Error('Failed to rename pages: ', err);
       }
     }
 
