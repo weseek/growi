@@ -46,6 +46,7 @@ type Props = CommonProps & {
   isAbleToDeleteCompletely: boolean,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
+  isAbleToShowPageReactionButtons: boolean,
   highlightJsStyle: string,
 };
 
@@ -160,6 +161,16 @@ async function injectPageUserInformation(context: GetServerSidePropsContext, pro
   }
 }
 
+async function injectPermittedActionInformation(context: GetServerSidePropsContext, props: Props): Promise<void> {
+  const req: CrowiRequest = context.req as CrowiRequest;
+
+  // check is shared user
+  const isSharedUser = (req.user == null && props.isShared);
+
+  // whether to display reaction buttons ex.) like, bookmark
+  props.isAbleToShowPageReactionButtons = (!props.isTrash && !props.isNotFound && !isSharedUser);
+}
+
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
@@ -173,6 +184,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const props: Props = result.props as Props;
   await injectPageInformation(context, props);
   await injectPageUserInformation(context, props);
+  await injectPermittedActionInformation(context, props);
 
   if (user != null) {
     props.currentUser = JSON.stringify(user.toObject());
