@@ -45,7 +45,6 @@ class PageService {
       const attachments = await Attachment.find({ page: chunk });
       attachmentService.removeAttachment(attachments);
     });
-    // end action
     readable.push(null);
     return;
   }
