@@ -34,6 +34,19 @@ export const isUserPage = (path: string): boolean => {
   return false;
 };
 
+/**
+ * Whether path belongs to the shared page
+ * @param path
+ */
+export const isSharedPage = (path: string): boolean => {
+  // https://regex101.com/r/ZjdOiB/1
+  if (path.match(/^\/share(\/.*)?$/)) {
+    return true;
+  }
+
+  return false;
+};
+
 const restrictedPatternsToDelete: Array<RegExp> = [
   /^\/user\/[^/]+$/, // user page
 ];
