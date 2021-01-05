@@ -9,9 +9,9 @@ import BootstrapGrid from '../../models/BootstrapGrid';
 
 const resSizes = BootstrapGrid.ResponsiveSize;
 const resSizeObj = {
-  [resSizes.XS_SIZE]: { iconClass: 'icon-screen-smartphone', displayText: 'grid_edit.smart_no' },
-  [resSizes.SM_SIZE]: { iconClass: 'icon-screen-tablet', displayText: 'tablet' },
-  [resSizes.MD_SIZE]: { iconClass: 'icon-screen-desktop', displayText: 'desktop' },
+  [resSizes.XS_SIZE]: { displayText: 'grid_edit.smart_no' },
+  [resSizes.SM_SIZE]: { displayText: 'tablet' },
+  [resSizes.MD_SIZE]: { displayText: 'desktop' },
 };
 class GridEditModal extends React.Component {
 
@@ -97,7 +97,6 @@ class GridEditModal extends React.Component {
             onChange={e => this.checkResposiveSize(responsiveSizeForMap[0])}
           />
           <label className="custom-control-label" htmlFor={responsiveSizeForMap[1].displayText}>
-            <i className={`pr-1 ${responsiveSizeForMap[1].iconClass}`} />
             {t(responsiveSizeForMap[1].displayText)}
           </label>
         </div>
@@ -146,19 +145,19 @@ class GridEditModal extends React.Component {
     return (
       <div className="row">
         <div className="col-lg-3">
-          <label className="d-block mt-2"><i className="pr-2 icon-screen-smartphone"></i>{t('phone')}</label>
+          <label className="d-block mt-2"><i className="pr-2"></i>{t('phone')}</label>
           <div className="mobile-preview d-block">
             {this.renderGridPreview(!isXsSelected)}
           </div>
         </div>
         <div className="col-lg-3">
-          <label className="d-block mt-2"><i className="pr-2 icon-screen-tablet"></i>{t('tablet')}</label>
+          <label className="d-block mt-2"><i className="pr-2"></i>{t('tablet')}</label>
           <div className="tablet-preview d-block">
             {this.renderGridPreview(isMdSelected)}
           </div>
         </div>
         <div className="col-lg-6">
-          <label className="d-block mt-2"><i className="pr-2 icon-screen-desktop"></i>{t('desktop')}</label>
+          <label className="d-block mt-2"><i className="pr-2"></i>{t('desktop')}</label>
           <div className="desktop-preview d-block">
             {this.renderGridPreview(false)}
           </div>
