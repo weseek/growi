@@ -31,6 +31,10 @@ export const useIsAbleToDeleteCompletely = (initialData?: boolean): responseInte
   return useStaticSWR('isAbleToDeleteCompletely', initialData);
 };
 
+export const useIsAbleToShowPageReactionButtons = (initialData?: boolean): responseInterface<boolean, any> => {
+  return useStaticSWR('isAbleToShowPageReactionButtons', initialData);
+};
+
 export const useAppTitle = (initialData?: string): responseInterface<string, any> => {
   return useStaticSWR('appTitle', initialData);
 };

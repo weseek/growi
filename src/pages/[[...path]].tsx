@@ -19,7 +19,7 @@ import BasicLayout from '../components/BasicLayout';
 
 import {
   useCurrentUser, useCurrentPagePath, useOwnerOfCurrentPage,
-  useForbidden, useNotFound, useIsAbleToDeleteCompletely,
+  useForbidden, useNotFound, useIsAbleToDeleteCompletely, useIsAbleToShowPageReactionButtons,
   useAppTitle, useSiteUrl, useConfidential,
   useSearchServiceConfigured, useSearchServiceReachable,
 } from '../stores/context';
@@ -58,6 +58,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useForbidden(props.isForbidden);
   useNotFound(props.isNotFound);
   useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
+  useIsAbleToShowPageReactionButtons(props.isAbleToShowPageReactionButtons);
   useAppTitle(props.appTitle);
   useSiteUrl(props.siteUrl);
   useConfidential(props.confidential);
