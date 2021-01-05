@@ -143,22 +143,22 @@ class GridEditModal extends React.Component {
     const isMdSelected = this.state.responsiveSize === BootstrapGrid.ResponsiveSize.MD_SIZE;
     const isXsSelected = this.state.responsiveSize === BootstrapGrid.ResponsiveSize.XS_SIZE;
     return (
-      <div className="row grw-grid-edit-prevew-bg-color py-3">
+      <div className="row grw-grid-edit-prevew-bg-color border my-4 p-3">
         <div className="col-lg-2">
           <h4 className="d-block mt-2">{t('phone')}</h4>
-          <div className="mobile-preview d-block">
+          <div className="mobile-preview d-block px-3 py-2 bg-white">
             {this.renderGridPreview(!isXsSelected)}
           </div>
         </div>
         <div className="col-lg-3">
           <h4 className="d-block mt-2">{t('tablet')}</h4>
-          <div className="tablet-preview d-block">
+          <div className="tablet-preview d-block px-3 py-2 bg-white">
             {this.renderGridPreview(isMdSelected)}
           </div>
         </div>
         <div className="col-lg-4">
           <h4 className="d-block mt-2">{t('desktop')}</h4>
-          <div className="desktop-preview d-block">
+          <div className="desktop-preview d-block px-3 py-2 bg-white">
             {this.renderGridPreview(false)}
           </div>
         </div>
@@ -172,7 +172,7 @@ class GridEditModal extends React.Component {
     const convertedHTML = colsRatios.map((colsRatio, i) => {
       const ratio = isBreakEnabled ? 12 : colsRatio;
       const key = `grid-preview-col-${i}`;
-      const className = `col-${ratio} border`;
+      const className = `col-${ratio} border mb-1`;
       return (
         <div key={key} className={className}></div>
       );
