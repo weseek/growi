@@ -7,7 +7,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
 import loggerFactory from '~/utils/logger';
 import { CommonProps, getServerSideCommonProps } from '~/utils/nextjs-page-utils';
-import { isUserPage } from '~/utils/path-utils';
+import { isUserPage, isTrashPage } from '~/utils/path-utils';
 
 import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 import BasicLayout from '../components/BasicLayout';
@@ -41,6 +41,7 @@ type Props = CommonProps & {
   confidential: string,
   isForbidden: boolean,
   isNotFound: boolean,
+  isTrash: boolean,
   isAbleToDeleteCompletely: boolean,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
@@ -121,6 +122,9 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
 
   const pagePath = specifiedPagePath || props.currentPagePath;
   const page = await PageModel.findByPathAndViewer(pagePath, user);
+
+  // check the page is trash page
+  props.isTrash = isTrashPage(props.currentPagePath);
 
   if (page == null) {
     // check the page is forbidden or just does not exist.
