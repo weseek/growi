@@ -162,32 +162,29 @@ class PageService {
     const findOpts = { includeTrashed: true };
     const pages = await Page.findManageableListWithDescendants(targetPage, user, findOpts);
 
+    let updatedPage = null;
 
-    const newPaths = pages.map((page) => {
-      return Page.getRevertDeletedPageName(page.path);
-    });
-    const originPages = await Promise.all(newPaths.map((path) => {
-      return Page.findByPath(path);
-    }));
-
-    await Promise.all(originPages.map((originPage) => {
+    pages.map((page) => {
+      const isParent = (page.path === targetPage.path);
+      const newPath = Page.getRevertDeletedPageName(page.path);
+      const originPage = Page.findByPath(newPath);
+      console.log(originPage);
       if (originPage != null) {
-        // When the page is deleted, it will always be created with "redirectTo" in the path of the original page.
-        // So, it's ok to delete the page
-        // However, If a page exists that is not "redirectTo", something is wrong. (Data correction is needed).
+        if (originPage.redirectTo !== page.path) {
+          throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
+        }
         this.completelyDeletePages([originPage], options);
       }
-      return;
-    }));
 
-    pages.forEach((page) => {
       page.status = STATUS_PUBLISHED;
       page.lastUpdateUser = user;
-      page.path = Page.getRevertDeletedPageName(page.path);
+      debug('Revert deleted the page', page, newPath);
+      const renamedPage = Page.rename(page, newPath, user, {});
+      if (isParent) {
+        updatedPage = renamedPage;
+      }
+      return;
     });
-
-
-    const updatedPage = null;
     return updatedPage;
   }
 
