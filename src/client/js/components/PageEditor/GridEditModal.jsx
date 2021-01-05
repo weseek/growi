@@ -143,21 +143,21 @@ class GridEditModal extends React.Component {
     const isMdSelected = this.state.responsiveSize === BootstrapGrid.ResponsiveSize.MD_SIZE;
     const isXsSelected = this.state.responsiveSize === BootstrapGrid.ResponsiveSize.XS_SIZE;
     return (
-      <div className="row grw-grid-edit-prevew-bg-color">
-        <div className="col-lg-3">
-          <label className="d-block mt-2">{t('phone')}</label>
+      <div className="row grw-grid-edit-prevew-bg-color py-3">
+        <div className="col-lg-2">
+          <h4 className="d-block mt-2">{t('phone')}</h4>
           <div className="mobile-preview d-block">
             {this.renderGridPreview(!isXsSelected)}
           </div>
         </div>
         <div className="col-lg-3">
-          <label className="d-block mt-2">{t('tablet')}</label>
+          <h4 className="d-block mt-2">{t('tablet')}</h4>
           <div className="tablet-preview d-block">
             {this.renderGridPreview(isMdSelected)}
           </div>
         </div>
-        <div className="col-lg-6">
-          <label className="d-block mt-2">{t('desktop')}</label>
+        <div className="col-lg-4">
+          <h4 className="d-block mt-2">{t('desktop')}</h4>
           <div className="desktop-preview d-block">
             {this.renderGridPreview(false)}
           </div>
