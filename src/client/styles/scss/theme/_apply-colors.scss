@@ -444,10 +444,9 @@ body.on-edit {
   .mobile-preview {
     background: $bgcolor-global;
   }
-}
-
-.grid-edit-border-for-each-cols {
-  border: 2px solid $bgcolor-global;
+  .grid-edit-border-for-each-cols {
+    border: 2px solid $bgcolor-global;
+  }
 }
 
 /*
