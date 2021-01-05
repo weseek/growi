@@ -5,6 +5,9 @@ import loggerFactory from '~/utils/logger';
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
 
+const { serializePageSecurely } = require('../models/serializers/page-serializer');
+const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
+
 const ApiResponse = require('../util/apiResponse');
 
 const logger = loggerFactory('growi:routes:attachment');
