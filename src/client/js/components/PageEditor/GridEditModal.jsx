@@ -145,19 +145,19 @@ class GridEditModal extends React.Component {
     return (
       <div className="row">
         <div className="col-lg-3">
-          <label className="d-block mt-2"><i className="pr-2"></i>{t('phone')}</label>
+          <label className="d-block mt-2">{t('phone')}</label>
           <div className="mobile-preview d-block">
             {this.renderGridPreview(!isXsSelected)}
           </div>
         </div>
         <div className="col-lg-3">
-          <label className="d-block mt-2"><i className="pr-2"></i>{t('tablet')}</label>
+          <label className="d-block mt-2">{t('tablet')}</label>
           <div className="tablet-preview d-block">
             {this.renderGridPreview(isMdSelected)}
           </div>
         </div>
         <div className="col-lg-6">
-          <label className="d-block mt-2"><i className="pr-2"></i>{t('desktop')}</label>
+          <label className="d-block mt-2">{t('desktop')}</label>
           <div className="desktop-preview d-block">
             {this.renderGridPreview(false)}
           </div>
