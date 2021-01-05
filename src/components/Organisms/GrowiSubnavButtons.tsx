@@ -37,16 +37,14 @@ type SubnavButtonsProps ={
 export const GrowiSubnavButtons:FC<SubnavButtonsProps> = (props:SubnavButtonsProps) => {
   const { isCompactMode, isViewMode } = props;
 
+  if (!isViewMode) return <></>;
+
   return (
     <>
-      {isViewMode && (
-        <>
-          {/* TODO GW-4827 show by isAbleToShowPageReactionButtons */}
-          <PageReactionButtons />
-          {/* TODO GW-4829 show by isAbleToShowPageManagement */}
-          {/* <PageManagement isCompactMode={isCompactMode} />  */}
-        </>
-      )}
+      {/* TODO GW-4827 show by isAbleToShowPageReactionButtons */}
+      <PageReactionButtons />
+      {/* TODO GW-4829 show by isAbleToShowPageManagement */}
+      {/* <PageManagement isCompactMode={isCompactMode} />  */}
     </>
   );
 };
