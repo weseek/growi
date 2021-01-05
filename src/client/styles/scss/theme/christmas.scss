@@ -107,14 +107,8 @@ html[dark] {
 
   // change color of highlighted header in wiki (default: orange)
   .wiki {
-    .code-line.revision-head.highlighted {
-      color: $themelight;
-      background-color: lighten($themecolor, 20%);
-
-      .icon-note,
-      .icon-link {
-        color: $themelight;
-      }
+    .highlighted {
+      @include highlighted($primary, 0.5);
     }
   }
 

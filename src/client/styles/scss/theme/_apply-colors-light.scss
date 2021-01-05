@@ -272,6 +272,9 @@ $border-color: $border-color-global;
   h2 {
     border-color: $border-color-theme;
   }
+  .highlighted {
+    @include highlighted($primary, 0.1);
+  }
 }
 
 /*

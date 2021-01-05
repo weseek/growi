@@ -124,6 +124,13 @@ html[dark] {
     background-image: url('/images/themes/wood/wood-navbar.jpg');
   }
 
+  // article
+  .wiki {
+    .highlighted {
+      @include highlighted($primary, 0.3);
+    }
+  }
+
   // Sidebar
   .grw-sidebar {
     div[data-testid='GlobalNavigation'] {

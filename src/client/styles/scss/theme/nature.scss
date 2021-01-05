@@ -96,6 +96,13 @@ html[dark] {
   @import 'apply-colors';
   @import 'apply-colors-light';
 
+  // article
+  .wiki {
+    .highlighted {
+      @include highlighted($primary, 0.1);
+    }
+  }
+
   // Search Top
   .grw-global-search {
     .btn-secondary.dropdown-toggle {

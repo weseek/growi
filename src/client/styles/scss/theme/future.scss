@@ -88,7 +88,12 @@ html[dark] {
 
   @import 'apply-colors';
   @import 'apply-colors-dark';
-
+  // article
+  .wiki {
+    .highlighted {
+      @include highlighted($primary, 0.4);
+    }
+  }
   //Button
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {

@@ -84,9 +84,10 @@ html[dark] {
   @import 'apply-colors';
   @import 'apply-colors-light';
 
+  // article
   .wiki {
     .highlighted {
-      background-color: lighten($primary, 20%);
+      @include highlighted($primary, 0.5);
     }
   }
 
