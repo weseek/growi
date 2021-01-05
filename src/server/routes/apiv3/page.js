@@ -161,6 +161,45 @@ module.exports = (crowi) => {
     ],
   };
 
+
+  router.get('/', accessTokenParser, loginRequired, async(req, res) => {
+
+    const pagePath = req.query.path || null;
+    const pageId = req.query.page_id || null; // TODO: handling
+    console.log('hoge');
+
+    // if (!pageId && !pagePath) {
+    //   return res.json(ApiResponse.error(new Error('Parameter path or page_id is required.')));
+    // }
+
+    // let page;
+    // try {
+    //   if (pageId) { // prioritized
+    //     page = await Page.findByIdAndViewer(pageId, req.user);
+    //   }
+    //   else if (pagePath) {
+    //     page = await Page.findByPathAndViewer(pagePath, req.user);
+    //   }
+
+    //   if (page == null) {
+    //     throw new Error(`Page '${pageId || pagePath}' is not found or forbidden`, 'notfound_or_forbidden');
+    //   }
+
+    //   page.initLatestRevisionField();
+
+    //   // populate
+    //   page = await page.populateDataToShowRevision();
+    // }
+    // catch (err) {
+    //   return res.json(ApiResponse.error(err));
+    // }
+
+    // const result = {};
+    // result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
+
+    return res.apiv3();
+  });
+
   /**
    * @swagger
    *
