@@ -305,6 +305,19 @@ ul.pagination {
 }
 
 /*
+ * GROWI Grid Edit Modal
+ */
+
+.grid-edit-preview {
+  background: $gray-900;
+  .desktop-preview,
+  .tablet-preview,
+  .mobile-preview {
+    background: $bgcolor-global;
+  }
+}
+
+/*
  * Slack
  */
 .grw-slack-notification {

@@ -212,6 +212,19 @@ $border-color: $border-color-global;
 }
 
 /*
+ * GROWI Grid Edit Modal
+ */
+
+.grid-edit-preview {
+  background: $gray-100;
+  .desktop-preview,
+  .tablet-preview,
+  .mobile-preview {
+    background: white;
+  }
+}
+
+/*
  * Slack
  */
 .grw-slack-notification {
