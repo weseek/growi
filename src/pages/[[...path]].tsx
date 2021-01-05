@@ -38,6 +38,7 @@ type Props = CommonProps & {
 
   page: any,
   pageUser?: any,
+  redirectedPath?: string;
 
   appTitle: string,
   siteUrl: string,
@@ -73,7 +74,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   // Rewrite browser url by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
   useEffect(() => {
-    router.push('/[[...path]]', page.path, { shallow: true });
+    if (props.redirectedPath != null) {
+      router.push('/[[...path]]', props.redirectedPath, { shallow: true });
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -143,6 +146,8 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
 
   // get props recursively
   if (page.redirectTo) {
+    // Pass to rewrite browser url
+    props.redirectedPath = page.redirectTo;
     logger.debug(`Redirect to '${page.redirectTo}'`);
     return injectPageInformation(context, props, page.redirectTo);
   }
