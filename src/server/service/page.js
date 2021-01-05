@@ -41,11 +41,12 @@ class PageService {
     const readable = new Readable({ objectMode: true });
 
     readable.push(pageIds);
+    readable.push(null);
+
     readable.on('data', async(chunk) => {
       const attachments = await Attachment.find({ page: chunk });
       attachmentService.removeAttachment(attachments);
     });
-    readable.push(null);
     return;
   }
 
