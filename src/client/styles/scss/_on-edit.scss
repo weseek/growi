@@ -373,12 +373,12 @@ body.on-edit {
         }
       }
     }
+  }
 
-    .grid-division-menu {
-      width: 60vw;
-      @include media-breakpoint-down(lg) {
-        width: 80vw;
-      }
+  .grid-division-menu {
+    width: 60vw;
+    @include media-breakpoint-down(lg) {
+      width: 80vw;
     }
   }
 }
