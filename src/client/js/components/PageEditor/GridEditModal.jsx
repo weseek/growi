@@ -174,7 +174,7 @@ class GridEditModal extends React.Component {
       const key = `grid-preview-col-${i}`;
       const className = `col-${ratio} grid-edit-border-for-each-cols`;
       return (
-        <div key={key} className={className}></div>
+        <div key={key} className={`${key} ${className}`}></div>
       );
     });
     return (
