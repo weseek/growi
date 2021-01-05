@@ -78,13 +78,19 @@ class PageService {
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
     const pages = await Page.findManageableListWithDescendants(page, user);
+    const revisions = await Revision.find({ path: pathRegExp });
+
+    // Mapping to set to the body of the new revision
+    const pathRevisionMapping = {};
+    revisions.forEach((revision) => {
+      pathRevisionMapping[revision.path] = revision.body;
+    });
 
     const newPages = [];
     const newRevisions = [];
 
-    await Promise.all(pages.map(async(page) => {
+    pages.forEach((page) => {
       const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
-      await page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate();
       const revisionId = new mongoose.Types.ObjectId();
 
       newPages.push({
@@ -99,10 +105,10 @@ class PageService {
       });
 
       newRevisions.push({
-        _id: revisionId, path: newPagePath, body: page.revision.body, author: user._id, format: 'markdown',
+        _id: revisionId, path: newPagePath, body: pathRevisionMapping[page.path], author: user._id, format: 'markdown',
       });
 
-    }));
+    });
 
     await Page.insertMany(newPages, { ordered: false });
     await Revision.insertMany(newRevisions, { ordered: false });
