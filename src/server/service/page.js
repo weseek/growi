@@ -83,7 +83,7 @@ class PageService {
     // Mapping to set to the body of the new revision
     const pathRevisionMapping = {};
     revisions.forEach((revision) => {
-      pathRevisionMapping[revision.path] = revision.body;
+      pathRevisionMapping[revision.path] = revision;
     });
 
     const newPages = [];
@@ -105,7 +105,7 @@ class PageService {
       });
 
       newRevisions.push({
-        _id: revisionId, path: newPagePath, body: pathRevisionMapping[page.path], author: user._id, format: 'markdown',
+        _id: revisionId, path: newPagePath, body: pathRevisionMapping[page.path].body, author: user._id, format: 'markdown',
       });
 
     });
