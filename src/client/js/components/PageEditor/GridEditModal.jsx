@@ -172,7 +172,7 @@ class GridEditModal extends React.Component {
     const convertedHTML = colsRatios.map((colsRatio, i) => {
       const ratio = isBreakEnabled ? 12 : colsRatio;
       const key = `grid-preview-col-${i}`;
-      const className = `col-${ratio} border mb-1`;
+      const className = `col-${ratio} grid-edit-border-for-each-cols`;
       return (
         <div key={key} className={className}></div>
       );
