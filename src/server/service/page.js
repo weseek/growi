@@ -180,12 +180,11 @@ class PageService {
       return;
     }));
 
-    await Promise.all(pages.map((page) => {
+    pages.forEach((page) => {
       page.status = STATUS_PUBLISHED;
       page.lastUpdateUser = user;
       page.path = Page.getRevertDeletedPageName(page.path);
-      return;
-    }));
+    });
 
 
     const updatedPage = null;
