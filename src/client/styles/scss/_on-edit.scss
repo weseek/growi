@@ -328,3 +328,52 @@ body.on-edit {
     border-bottom: 5px solid $gray-300;
   }
 }
+
+/*
+ Grid Edit Modal
+*/
+
+.grw-grid-edit-modal {
+  .desktop-preview,
+  .tablet-preview,
+  .mobile-preview {
+    .row {
+      height: 140px;
+      margin: 0px;
+    }
+  }
+  .desktop-preview {
+    .row {
+      div {
+        padding: 0px;
+        background-color: $info;
+      }
+    }
+  }
+
+  .tablet-preview {
+    .row {
+      div {
+        padding: 0px;
+        background-color: $purple;
+      }
+    }
+  }
+
+  .mobile-preview {
+    width: 75%;
+    .row {
+      div {
+        padding: 0px;
+        background-color: $pink;
+      }
+    }
+  }
+
+  .grid-division-menu {
+    width: 60vw;
+    @include media-breakpoint-down(lg) {
+      width: 80vw;
+    }
+  }
+}
