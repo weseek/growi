@@ -3,6 +3,9 @@ import {
 } from 'next';
 import Head from 'next/head';
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
 import loggerFactory from '~/utils/logger';
@@ -48,6 +51,7 @@ type Props = CommonProps & {
 };
 
 const GrowiPage: NextPage<Props> = (props: Props) => {
+  const router = useRouter();
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
   useCurrentPagePath(props.currentPagePath);
@@ -66,6 +70,11 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
     page = JSON.parse(props.page);
   }
   useCurrentPageSWR(page);
+  useEffect(() => {
+    router.push('/[[...path]]', page.path, { shallow: true });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
 
   return (
     <>
