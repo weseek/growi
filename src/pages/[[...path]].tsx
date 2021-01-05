@@ -70,6 +70,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
     page = JSON.parse(props.page);
   }
   useCurrentPageSWR(page);
+
+  // Rewrite browser url by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
   useEffect(() => {
     router.push('/[[...path]]', page.path, { shallow: true });
   // eslint-disable-next-line react-hooks/exhaustive-deps
