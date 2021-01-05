@@ -162,6 +162,7 @@ async function injectPageUserInformation(context: GetServerSidePropsContext, pro
   }
 }
 
+// https://dev.growi.org/5fabddf8bbeb1a0048bcb9e9
 async function injectPermittedActionInformation(context: GetServerSidePropsContext, props: Props): Promise<void> {
   const req: CrowiRequest = context.req as CrowiRequest;
 
