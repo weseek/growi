@@ -28,7 +28,7 @@ class PageService {
     readable.push({ pageIds, pagePaths });
     readable.push(null);
 
-    Promise.all([
+    return Promise.all([
       readable.on('data', async(chunk) => {
         await Bookmark.find({ page: { $in: chunk.pageIds } }).remove({});
         await Comment.find({ page: { $in: chunk.pageIds } }).remove({});
@@ -40,7 +40,6 @@ class PageService {
         await this.removeAllAttachments(chunk.pageIds);
       }),
     ]);
-    return;
   }
 
   async removeAllAttachments(pageIds) {
