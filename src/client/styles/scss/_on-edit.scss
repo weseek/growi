@@ -334,52 +334,58 @@ body.on-edit {
 */
 
 .grw-grid-edit-modal {
-  .desktop-preview,
-  .tablet-preview,
-  .mobile-preview {
-    .row {
-      height: 140px;
-      margin: 0px;
+  .grid-edit-preview {
+    background: $gray-100;
+
+    .desktop-preview,
+    .tablet-preview,
+    .mobile-preview {
+      .row {
+        height: 140px;
+        margin: 0px;
+      }
+      background: white;
     }
-  }
-  .desktop-preview {
-    .row {
-      div {
-        padding: 0px;
-        background-color: $info;
+    .desktop-preview {
+      .row {
+        div {
+          padding: 0px;
+          background-color: $info;
+        }
       }
     }
-  }
 
-  .tablet-preview {
-    .row {
-      div {
-        padding: 0px;
-        background-color: $purple;
+    .tablet-preview {
+      .row {
+        div {
+          padding: 0px;
+          background-color: $purple;
+        }
       }
     }
-  }
 
-  .mobile-preview {
-    width: 75%;
-    .row {
-      div {
-        padding: 0px;
-        background-color: $pink;
+    .mobile-preview {
+      width: 75%;
+      .row {
+        div {
+          padding: 0px;
+          background-color: $pink;
+        }
       }
     }
-  }
 
-  .grid-division-menu {
-    width: 60vw;
-    @include media-breakpoint-down(lg) {
-      width: 80vw;
+    .grid-division-menu {
+      width: 60vw;
+      @include media-breakpoint-down(lg) {
+        width: 80vw;
+      }
     }
   }
 }
 
-.grw-grid-edit-prevew-bg-color {
-  background: $gray-100;
-  // border: $gray-200;
-  // border-color: red;
-}
+// .grw-grid-edit-prevew-bg-color {
+//   background: $gray-100;
+//   .bg-color-for-device-preview {
+//     background: white;
+//   }
+// }
