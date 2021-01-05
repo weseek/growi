@@ -135,6 +135,10 @@ module.exports = (crowi) => {
   const { exportService } = crowi;
 
   const validator = {
+    getPage: [
+      query('pagePath').if(value => value != null).isString(),
+      query('pageId').if(value => value != null).isMongoId(),
+    ],
     likes: [
       body('pageId').isString(),
       body('bool').isBoolean(),
@@ -162,24 +166,30 @@ module.exports = (crowi) => {
   };
 
 
-  router.get('/', accessTokenParser, loginRequired, async(req, res) => {
-
-    const pagePath = req.query.path || null;
-    const pageId = req.query.page_id || null; // TODO: handling
-    console.log('hoge');
+  router.get('/', accessTokenParser, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
+    const { pagePath, pageId } = req.query;
+    console.log(pagePath, pageId);
 
     // if (!pageId && !pagePath) {
     //   return res.json(ApiResponse.error(new Error('Parameter path or page_id is required.')));
     // }
 
-    // let page;
-    // try {
-    //   if (pageId) { // prioritized
-    //     page = await Page.findByIdAndViewer(pageId, req.user);
-    //   }
-    //   else if (pagePath) {
-    //     page = await Page.findByPathAndViewer(pagePath, req.user);
-    //   }
+    let page;
+    try {
+      if (pageId) { // prioritized
+        page = await Page.findByIdAndViewer(pageId, req.user);
+      }
+      else if (pagePath) {
+        page = await Page.findByPathAndViewer(pagePath, req.user);
+      }
+    }
+    catch (err) {
+      logger.error('get-page-failed', err);
+      return res.apiv3Err(err, 500);
+    }
+
+    console.log(page);
+
 
     //   if (page == null) {
     //     throw new Error(`Page '${pageId || pagePath}' is not found or forbidden`, 'notfound_or_forbidden');
