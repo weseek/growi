@@ -5,6 +5,7 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
+  ModalFooter,
   Popover,
   PopoverBody,
 } from 'reactstrap';
@@ -445,17 +446,15 @@ class LinkEditModal extends React.PureComponent {
               {this.renderLinkPreview()}
             </div>
           </div>
-          <div className="row">
-            <div className="col-12 text-center">
-              <button type="button" className="btn btn-sm btn-outline-secondary mx-1" onClick={this.hide}>
-                {t('Cancel')}
-              </button>
-              <button type="submit" className="btn btn-sm btn-primary mx-1" onClick={this.save}>
-                {t('Done')}
-              </button>
-            </div>
-          </div>
         </ModalBody>
+        <ModalFooter>
+          <button type="button" className="btn btn-sm btn-outline-secondary mx-1" onClick={this.hide}>
+            {t('Cancel')}
+          </button>
+          <button type="submit" className="btn btn-sm btn-primary mx-1" onClick={this.save}>
+            {t('Done')}
+          </button>
+        </ModalFooter>
       </Modal>
     );
   }
