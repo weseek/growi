@@ -190,13 +190,11 @@ class PageService {
 
     const findOpts = { includeTrashed: true };
     const pages = await Page.findManageableListWithDescendants(targetPage, user, findOpts);
-
     const originalParentPath = Page.getRevertDeletedPageName(targetPage.path);
 
     const pathRegExp = new RegExp(`^${escapeStringRegexp(originalParentPath)}`, 'i');
     const originPages = await Page.find({ path: pathRegExp });
     const revisions = await Revision.find({ path: pathRegExp });
-
     const pathRevisionMapping = {};
     revisions.forEach((revision) => {
       pathRevisionMapping[revision.path] = revision;
@@ -207,7 +205,7 @@ class PageService {
     const newPages = [];
     const newRevisions = [];
     pages.forEach((page) => {
-      const newPagePath = page.path.replace(/^\/trash/, '');
+      const newPagePath = Page.getRevertDeletedPageName(page.path);
       const revisionId = new mongoose.Types.ObjectId();
 
       newPages.push({
@@ -222,16 +220,14 @@ class PageService {
       });
 
       newRevisions.push({
-        _id: revisionId, path: newPagePath, author: user._id, format: 'markdown',
+        _id: revisionId, path: newPagePath, body: pathRevisionMapping[newPagePath].body, author: user._id, format: 'markdown',
       });
     });
 
     await Page.insertMany(newPages, { ordered: false });
     await Revision.insertMany(newRevisions, { ordered: false });
-
-    const newPath = targetPage.path.replace(/^\/trash/, '');
+    const newPath = Page.getRevertDeletedPageName(targetPage.path);
     const newParentpage = await Page.findByPath(newPath);
-    console.log((newParentpage));
     return newParentpage;
 
   }
