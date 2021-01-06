@@ -46,9 +46,11 @@ type Props = CommonProps & {
   confidential: string,
   isForbidden: boolean,
   isNotFound: boolean,
-  isSharedUser: boolean,
   isAbleToDeleteCompletely: boolean,
+
+  isSharedUser: boolean,
   isAbleToShowTagLabel: boolean,
+
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   highlightJsStyle: string,
