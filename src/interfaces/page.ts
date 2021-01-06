@@ -2,6 +2,7 @@
 export type Page = {
   id: string,
   path: string,
+  status: string,
 }
 
 export type BookmarkInfo = {
