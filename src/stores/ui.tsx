@@ -10,8 +10,9 @@ export const useIsAbleToShowEmptyTrashButton = (): responseInterface<boolean, Er
   const { data: descendentsCount } = useDescendentsCount(currentPagePath);
 
   const hasChildren = (descendentsCount || 0) > 0;
+  const isAbleToShowEmptyTrashButton = currentUser != null && currentUser.admin && currentPagePath === '/trash' && hasChildren;
 
-  return currentUser != null && currentUser.admin && currentPagePath === '/trash' && hasChildren;
+  return useStaticSWR('isAbleToShowEmptyTrashButton', isAbleToShowEmptyTrashButton);
 };
 
 export const useIsAbleToShowTrashPageManagementButtons = (): responseInterface<boolean, Error> => {
