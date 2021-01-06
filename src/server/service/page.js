@@ -200,7 +200,6 @@ class PageService {
       pathRevisionMapping[revision.path] = revision;
     });
 
-    console.log(originPages);
     await this.completelyDeletePages(originPages, options);
 
     const newPages = [];
