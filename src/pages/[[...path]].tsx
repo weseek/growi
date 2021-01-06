@@ -19,7 +19,8 @@ import BasicLayout from '../components/BasicLayout';
 
 import {
   useCurrentUser, useCurrentPagePath, useOwnerOfCurrentPage,
-  useForbidden, useNotFound, useIsAbleToDeleteCompletely, useIsAbleToShowPageReactionButtons,
+  useForbidden, useNotFound, useTrash, useShared,
+  useIsAbleToDeleteCompletely, useIsAbleToShowPageReactionButtons,
   useAppTitle, useSiteUrl, useConfidential,
   useSearchServiceConfigured, useSearchServiceReachable,
 } from '../stores/context';
@@ -41,8 +42,6 @@ type Props = CommonProps & {
   confidential: string,
   isForbidden: boolean,
   isNotFound: boolean,
-  isTrash: boolean,
-  isShared: boolean,
   isAbleToDeleteCompletely: boolean,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
@@ -57,6 +56,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   useForbidden(props.isForbidden);
   useNotFound(props.isNotFound);
+  useTrash(isTrashPage(props.currentPagePath));
+  useShared(isSharedPage(props.currentPagePath));
   useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
   useIsAbleToShowPageReactionButtons(props.isAbleToShowPageReactionButtons);
   useAppTitle(props.appTitle);
@@ -64,6 +65,13 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useConfidential(props.confidential);
   useSearchServiceConfigured(props.isSearchServiceConfigured);
   useSearchServiceReachable(props.isSearchServiceReachable);
+
+  // // check is shared user
+  // const isSharedUser = (req.user == null && props.isShared);
+
+  // https://dev.growi.org/5fabddf8bbeb1a0048bcb9e9
+  // whether to display reaction buttons ex.) like, bookmark
+  // props.isAbleToShowPageReactionButtons = (!props.isTrash && !props.isNotFound && !isSharedUser);
 
   let page;
   if (props.page != null) {
@@ -126,10 +134,6 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
   const pagePath = specifiedPagePath || props.currentPagePath;
   const page = await PageModel.findByPathAndViewer(pagePath, user);
 
-  // check the page is trash page
-  props.isTrash = isTrashPage(props.currentPagePath);
-  props.isShared = isSharedPage(props.currentPagePath);
-
   if (page == null) {
     // check the page is forbidden or just does not exist.
     props.isForbidden = await PageModel.count({ path: pagePath }) > 0;
@@ -162,17 +166,6 @@ async function injectPageUserInformation(context: GetServerSidePropsContext, pro
   }
 }
 
-// https://dev.growi.org/5fabddf8bbeb1a0048bcb9e9
-async function injectPermittedActionInformation(context: GetServerSidePropsContext, props: Props): Promise<void> {
-  const req: CrowiRequest = context.req as CrowiRequest;
-
-  // check is shared user
-  const isSharedUser = (req.user == null && props.isShared);
-
-  // whether to display reaction buttons ex.) like, bookmark
-  props.isAbleToShowPageReactionButtons = (!props.isTrash && !props.isNotFound && !isSharedUser);
-}
-
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
@@ -186,7 +179,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const props: Props = result.props as Props;
   await injectPageInformation(context, props);
   await injectPageUserInformation(context, props);
-  await injectPermittedActionInformation(context, props);
 
   if (user != null) {
     props.currentUser = JSON.stringify(user.toObject());
