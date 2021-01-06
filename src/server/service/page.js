@@ -186,35 +186,54 @@ class PageService {
 
   async revertDeletedPageRecursively(targetPage, user, options = {}) {
     const Page = this.crowi.model('Page');
+    const Revision = this.crowi.model('Revision');
+
     const findOpts = { includeTrashed: true };
     const pages = await Page.findManageableListWithDescendants(targetPage, user, findOpts);
 
-    let updatedPage = null;
+    const originalParentPath = Page.getRevertDeletedPageName(targetPage.path);
 
-    await Promise.all(pages.map(async(page) => {
-      const isParent = (page.path === targetPage.path);
-      const newPath = Page.getRevertDeletedPageName(page.path);
-      const originPage = await Page.findByPath(newPath);
+    const pathRegExp = new RegExp(`^${escapeStringRegexp(originalParentPath)}`, 'i');
+    const originPages = await Page.find({ path: pathRegExp });
+    const revisions = await Revision.find({ path: pathRegExp });
 
-      if (originPage != null) {
-        if (originPage.redirectTo !== page.path) {
-          throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
-        }
-        await this.completelyDeletePages([originPage], options);
-      }
+    const pathRevisionMapping = {};
+    revisions.forEach((revision) => {
+      pathRevisionMapping[revision.path] = revision;
+    });
 
-      page.status = STATUS_PUBLISHED;
-      page.lastUpdateUser = user;
-      debug('Revert deleted the page', page, newPath);
+    await this.completelyDeletePages([originPages], options);
 
-      const renamedPage = await Page.rename(page, newPath, user, {});
-      if (isParent) {
-        updatedPage = renamedPage;
-      }
-      return;
-    }));
+    const newPages = [];
+    const newRevisions = [];
+    pages.forEach((page) => {
+      const newPagePath = page.path.replace(/^\/trash/, '');
+      const revisionId = new mongoose.Types.ObjectId();
 
-    return updatedPage;
+      newPages.push({
+        path: newPagePath,
+        creator: user._id,
+        grant: page.grant,
+        grantedGroup: page.grantedGroup,
+        grantedUsers: page.grantedUsers,
+        lastUpdateUser: user._id,
+        redirectTo: null,
+        revision: revisionId,
+      });
+
+      newRevisions.push({
+        _id: revisionId, path: newPagePath, author: user._id, format: 'markdown',
+      });
+    });
+
+    await Page.insertMany(newPages, { ordered: false });
+    await Revision.insertMany(newRevisions, { ordered: false });
+
+    const newPath = targetPage.path.replace(/^\/trash/, '');
+    const newParentpage = await Page.findByPath(newPath);
+    console.log((newParentpage));
+    return newParentpage;
+
   }
 
   async revertSingleDeletedPage(page, user, options = {}) {
