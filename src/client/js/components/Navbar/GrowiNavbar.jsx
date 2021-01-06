@@ -2,6 +2,7 @@ import dynamic from 'next/dynamic';
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { UncontrolledTooltip } from 'reactstrap';
 import { useTranslation } from '~/i18n';
 import {
   useAppTitle, useConfidential, useCurrentUser, useSearchServiceConfigured,
