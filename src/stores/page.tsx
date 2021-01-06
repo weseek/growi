@@ -4,6 +4,7 @@ import { apiGet } from '~/client/js/util/apiv1-client';
 import { apiv3Get } from '~/client/js/util/apiv3-client';
 
 import { useCurrentPagePath } from './context';
+import { useStaticSWR } from './use-static-swr';
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const usePageSWR = <Data, Error>(path, initialData?: any): responseInterface<Data, Error> => {
@@ -59,4 +60,13 @@ export const useLikeInfoSWR = <Data, Error>(pageId: string, initialData?: boolea
       revalidateOnReconnect: false,
     },
   );
+};
+
+export const useDescendentsCount = (pagePath?: string): responseInterface<number, Error> => {
+  if (pagePath == null) {
+    throw new Error('pagePath should not be null.');
+  }
+
+  // TODO: implement by https://youtrack.weseek.co.jp/issue/GW-4871
+  return useStaticSWR('descendentsCount', 10);
 };
