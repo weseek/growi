@@ -164,30 +164,30 @@ class PageService {
 
     let updatedPage = null;
 
-    return Promise.all([
-      pages.map(async(page) => {
-        const isParent = (page.path === targetPage.path);
-        const newPath = Page.getRevertDeletedPageName(page.path);
-        const originPage = await Page.findByPath(newPath);
+    await Promise.all(pages.map(async(page) => {
+      const isParent = (page.path === targetPage.path);
+      const newPath = Page.getRevertDeletedPageName(page.path);
+      const originPage = await Page.findByPath(newPath);
 
-        if (originPage != null) {
-          if (originPage.redirectTo !== page.path) {
-            throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
-          }
-          await this.completelyDeletePages([originPage], options);
+      if (originPage != null) {
+        if (originPage.redirectTo !== page.path) {
+          throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
         }
+        await this.completelyDeletePages([originPage], options);
+      }
 
-        page.status = STATUS_PUBLISHED;
-        page.lastUpdateUser = user;
-        debug('Revert deleted the page', page, newPath);
-        const renamedPage = await Page.rename(page, newPath, user, {});
-        if (isParent) {
-          updatedPage = renamedPage;
-          console.log(updatedPage);
-        }
-        return updatedPage;
-      }),
-    ]);
+      page.status = STATUS_PUBLISHED;
+      page.lastUpdateUser = user;
+      debug('Revert deleted the page', page, newPath);
+
+      const renamedPage = await Page.rename(page, newPath, user, {});
+      if (isParent) {
+        updatedPage = renamedPage;
+      }
+      return;
+    }));
+
+    return updatedPage;
   }
 
   async revertSingleDeletedPage(page, user, options = {}) {
