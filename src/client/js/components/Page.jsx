@@ -11,6 +11,7 @@ import AppContainer from '../services/AppContainer';
 import RevisionRenderer from './Page/RevisionRenderer';
 import { useCurrentUser } from '~/stores/context';
 import { useCurrentPageSWR } from '~/stores/page';
+// import GridEditModal from './PageEditor/GridEditModal';
 // import HandsontableModal from './PageEditor/HandsontableModal';
 // import DrawioModal from './PageEditor/DrawioModal';
 // import mtu from './PageEditor/MarkdownTableUtil';
@@ -30,6 +31,7 @@ const logger = loggerFactory('growi:Page');
 
 //     this.growiRenderer = this.props.appContainer.getRenderer('page');
 
+//     this.gridEditModal = React.createRef();
 //     this.linkEditModal = React.createRef();
 //     this.handsontableModal = React.createRef();
 //     this.drawioModal = React.createRef();
@@ -139,6 +141,7 @@ const logger = loggerFactory('growi:Page');
 
 //         { isLoggedIn && (
 //           <>
+//             <GridEditModal ref={this.gridEditModal} />
 //             <LinkEditModal ref={this.LinkEditModal} />
 //             <HandsontableModal ref={this.handsontableModal} onSave={this.saveHandlerForHandsontableModal} />
 //             <DrawioModal ref={this.drawioModal} onSave={this.saveHandlerForDrawioModal} />

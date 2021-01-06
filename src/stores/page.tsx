@@ -36,3 +36,27 @@ export const useRecentlyUpdatedSWR = <Data, Error>(config?: ConfigInterface): re
     config,
   );
 };
+
+export const useIsBookmarkInfoSWR = <Data, Error>(pageId: string, initialData?: boolean): responseInterface<Data, Error> => {
+  return useSWR(
+    '/bookmarks/info',
+    endpoint => apiv3Get(endpoint, { pageId }).then(response => response.data),
+    {
+      initialData: initialData || false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
+};
+
+export const useLikeInfoSWR = <Data, Error>(pageId: string, initialData?: boolean): responseInterface<Data, Error> => {
+  return useSWR(
+    '/page/like-info',
+    endpoint => apiv3Get(endpoint, { _id: pageId }).then(response => response.data),
+    {
+      initialData: initialData || false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
+};

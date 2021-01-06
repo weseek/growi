@@ -25,6 +25,8 @@ import MarkdownTableInterceptor from './MarkdownTableInterceptor';
 import mlu from './MarkdownLinkUtil';
 import mtu from './MarkdownTableUtil';
 import mdu from './MarkdownDrawioUtil';
+import geu from './GridEditorUtil';
+import GridEditModal from './GridEditModal';
 import LinkEditModal from './LinkEditModal';
 import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
@@ -57,6 +59,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       additionalClassSet: new Set(),
     };
 
+    this.gridEditModal = React.createRef();
     this.linkEditModal = React.createRef();
     this.handsontableModal = React.createRef();
     this.drawioModal = React.createRef();
@@ -85,6 +88,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.renderCheatsheetModalButton = this.renderCheatsheetModalButton.bind(this);
 
     this.makeHeaderHandler = this.makeHeaderHandler.bind(this);
+    this.showGridEditorHandler = this.showGridEditorHandler.bind(this);
     this.showLinkEditHandler = this.showLinkEditHandler.bind(this);
     this.showHandsonTableHandler = this.showHandsonTableHandler.bind(this);
     this.showDrawioHandler = this.showDrawioHandler.bind(this);
@@ -669,6 +673,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
     cm.focus();
   }
 
+  showGridEditorHandler() {
+    this.gridEditModal.current.show(geu.getGridHtml(this.getCodeMirror()));
+  }
+
   showLinkEditHandler() {
     this.linkEditModal.current.show(mlu.getMarkdownLink(this.getCodeMirror()));
   }
@@ -783,6 +791,15 @@ export default class CodeMirrorEditor extends AbstractEditor {
         <EditorIcon icon="Image" />
       </Button>,
       <Button
+        key="nav-item-grid"
+        color={null}
+        size="sm"
+        title="Grid"
+        onClick={this.showGridEditorHandler}
+      >
+        <EditorIcon icon="Grid" />
+      </Button>,
+      <Button
         key="nav-item-table"
         color={null}
         size="sm"
@@ -873,6 +890,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
         { this.renderCheatsheetOverlay() }
 
+        <GridEditModal
+          ref={this.gridEditModal}
+          onSave={(grid) => { return geu.replaceGridWithHtmlWithEditor(this.getCodeMirror(), grid) }}
+        />
         <LinkEditModal
           ref={this.linkEditModal}
           onSave={(linkText) => { return mlu.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText) }}
