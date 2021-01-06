@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import { useIsAbleToShowEmptyTrashButton } from '~/stores/ui';
+import { useCurrentPagePath, useIsAbleToDeleteCompletely } from '~/stores/context';
+import { useIsAbleToShowEmptyTrashButton, useIsAbleToShowTrashPageManagementButtons } from '~/stores/ui';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
@@ -16,10 +17,13 @@ import PageDeleteModal from '../PageDeleteModal';
 const TrashPageAlert = (props) => {
   const { t, pageContainer } = props;
   const {
-    path, isDeleted, lastUpdateUsername, updatedAt, isAbleToDeleteCompletely,
+    isDeleted, lastUpdateUsername, updatedAt,
   } = pageContainer.state;
 
+  const { data: path } = useCurrentPagePath();
+  const { data: isAbleToDeleteCompletely } = useIsAbleToDeleteCompletely();
   const { data: isAbleToShowEmptyTrashButton } = useIsAbleToShowEmptyTrashButton();
+  const { data: isAbleToShowTrashPageManagementButtons } = useIsAbleToShowTrashPageManagementButtons();
 
   const [isEmptyTrashModalShown, setIsEmptyTrashModalShown] = useState(false);
   const [isPutbackPageModalShown, setIsPutbackPageModalShown] = useState(false);
@@ -118,7 +122,7 @@ const TrashPageAlert = (props) => {
         </div>
         <div className="pt-1 d-flex align-items-end align-items-lg-center">
           <span>{ isAbleToShowEmptyTrashButton && renderEmptyButton()}</span>
-          { pageContainer.isAbleToShowTrashPageManagementButtons && renderTrashPageManagementButtons()}
+          { isAbleToShowTrashPageManagementButtons && renderTrashPageManagementButtons()}
         </div>
       </div>
       {renderModals()}
