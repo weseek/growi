@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
+import { useIsAbleToShowEmptyTrashButton } from '~/stores/ui';
+
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
@@ -11,12 +13,14 @@ import PutbackPageModal from '../PutbackPageModal';
 import EmptyTrashModal from '../EmptyTrashModal';
 import PageDeleteModal from '../PageDeleteModal';
 
-
 const TrashPageAlert = (props) => {
   const { t, pageContainer } = props;
   const {
     path, isDeleted, lastUpdateUsername, updatedAt, isAbleToDeleteCompletely,
   } = pageContainer.state;
+
+  const { data: isAbleToShowEmptyTrashButton } = useIsAbleToShowEmptyTrashButton();
+
   const [isEmptyTrashModalShown, setIsEmptyTrashModalShown] = useState(false);
   const [isPutbackPageModalShown, setIsPutbackPageModalShown] = useState(false);
   const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);
@@ -113,7 +117,7 @@ const TrashPageAlert = (props) => {
           {isDeleted && <span><br /><UserPicture user={{ username: lastUpdateUsername }} /> Deleted by {lastUpdateUsername} at {updatedAt}</span>}
         </div>
         <div className="pt-1 d-flex align-items-end align-items-lg-center">
-          <span>{ pageContainer.isAbleToShowEmptyTrashButton && renderEmptyButton()}</span>
+          <span>{ isAbleToShowEmptyTrashButton && renderEmptyButton()}</span>
           { pageContainer.isAbleToShowTrashPageManagementButtons && renderTrashPageManagementButtons()}
         </div>
       </div>
