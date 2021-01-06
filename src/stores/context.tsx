@@ -27,6 +27,14 @@ export const useNotFound = (initialData?: boolean): responseInterface<boolean, a
   return useStaticSWR('isNotFound', initialData);
 };
 
+export const useTrash = (initialData?: boolean): responseInterface<boolean, any> => {
+  return useStaticSWR('isTrash', initialData);
+};
+
+export const useShared = (initialData?: boolean): responseInterface<boolean, any> => {
+  return useStaticSWR('isShared', initialData);
+};
+
 export const useIsAbleToDeleteCompletely = (initialData?: boolean): responseInterface<boolean, any> => {
   return useStaticSWR('isAbleToDeleteCompletely', initialData);
 };
