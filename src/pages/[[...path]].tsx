@@ -19,7 +19,7 @@ import BasicLayout from '../components/BasicLayout';
 
 import {
   useCurrentUser, useCurrentPagePath, useOwnerOfCurrentPage,
-  useForbidden, useNotFound, useTrash, useShared,
+  useForbidden, useNotFound, useTrash, useShared, useIsSharedUser,
   useIsAbleToDeleteCompletely, useIsAbleToShowPageReactionButtons,
   useAppTitle, useSiteUrl, useConfidential,
   useSearchServiceConfigured, useSearchServiceReachable,
@@ -59,8 +59,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useShared(isSharedPage(props.currentPagePath));
   useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
 
-  // check is shared user
   const isSharedUser = (props.currentUser == null && isSharedPage(props.currentPagePath));
+  useIsSharedUser(isSharedUser);
 
   // set Permitted Action Information for current user
   // see: https://dev.growi.org/5fabddf8bbeb1a0048bcb9e9

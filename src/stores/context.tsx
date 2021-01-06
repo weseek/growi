@@ -35,6 +35,10 @@ export const useShared = (initialData?: boolean): responseInterface<boolean, any
   return useStaticSWR('isShared', initialData);
 };
 
+export const useIsSharedUser = (initialData?: boolean): responseInterface<boolean, any> => {
+  return useStaticSWR('isSharedUser', initialData);
+};
+
 export const useIsAbleToDeleteCompletely = (initialData?: boolean): responseInterface<boolean, any> => {
   return useStaticSWR('isAbleToDeleteCompletely', initialData);
 };
