@@ -45,7 +45,6 @@ type Props = CommonProps & {
   isAbleToDeleteCompletely: boolean,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
-  isAbleToShowPageReactionButtons: boolean,
   highlightJsStyle: string,
 };
 
@@ -59,19 +58,19 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useTrash(isTrashPage(props.currentPagePath));
   useShared(isSharedPage(props.currentPagePath));
   useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
-  useIsAbleToShowPageReactionButtons(props.isAbleToShowPageReactionButtons);
+
+  // check is shared user
+  const isSharedUser = (props.currentUser == null && isSharedPage(props.currentPagePath));
+
+  // set Permitted Action Information for current user
+  // see: https://dev.growi.org/5fabddf8bbeb1a0048bcb9e9
+  useIsAbleToShowPageReactionButtons(!isTrashPage(props.currentPagePath) && !props.isNotFound && !isSharedUser);
+
   useAppTitle(props.appTitle);
   useSiteUrl(props.siteUrl);
   useConfidential(props.confidential);
   useSearchServiceConfigured(props.isSearchServiceConfigured);
   useSearchServiceReachable(props.isSearchServiceReachable);
-
-  // // check is shared user
-  // const isSharedUser = (req.user == null && props.isShared);
-
-  // https://dev.growi.org/5fabddf8bbeb1a0048bcb9e9
-  // whether to display reaction buttons ex.) like, bookmark
-  // props.isAbleToShowPageReactionButtons = (!props.isTrash && !props.isNotFound && !isSharedUser);
 
   let page;
   if (props.page != null) {
