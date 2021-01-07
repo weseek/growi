@@ -173,7 +173,6 @@ class PageService {
       pathRevisionMapping[revision.path] = revision;
     });
 
-    await this.completelyDeletePages(originPages, options);
 
     const newPages = [];
     const newRevisions = [];
@@ -195,13 +194,14 @@ class PageService {
         _id: revisionId, path: newPagePath, body: pathRevisionMapping[page.path].body, author: user._id, format: 'markdown',
       });
     });
-
-    await this.completelyDeletePages(pages, options);
+    await this.completelyDeletePages(originPages, options);
 
     await Page.insertMany(newPages, { ordered: false });
     await Revision.insertMany(newRevisions, { ordered: false });
     const newPath = Page.getRevertDeletedPageName(targetPage.path);
     const newParentpage = await Page.findByPath(newPath);
+    await this.completelyDeletePages(pages, options);
+
     return newParentpage;
   }
 
