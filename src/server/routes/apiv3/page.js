@@ -170,7 +170,7 @@ module.exports = (crowi) => {
     const { pagePath, pageId } = req.query;
 
     if (pageId == null && pagePath == null) {
-      return res.apiv3Err(new ErrorV3('Parameter pagePath or pageId is required.', 'get-page-failed'));
+      return res.apiv3Err(new ErrorV3('Parameter pagePath or pageId is required.', 'invalid-request'));
     }
 
     let page;
@@ -187,26 +187,27 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
 
+    if (page == null) {
+      return res.apiv3Err(new ErrorV3(`Page '${pageId || pagePath}' is not found or forbidden`, 'notfound-or-forbidden'));
+    }
+
     console.log(page);
 
+    try {
+      page.initLatestRevisionField();
 
-    //   if (page == null) {
-    //     throw new Error(`Page '${pageId || pagePath}' is not found or forbidden`, 'notfound_or_forbidden');
-    //   }
-
-    //   page.initLatestRevisionField();
-
-    //   // populate
-    //   page = await page.populateDataToShowRevision();
-    // }
-    // catch (err) {
-    //   return res.json(ApiResponse.error(err));
-    // }
+      // populate
+      page = await page.populateDataToShowRevision();
+    }
+    catch (err) {
+      logger.error('populate-page-failed', err);
+      return res.apiv3Err(err, 500);
+    }
 
     // const result = {};
     // result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
-
-    return res.apiv3();
+    const result = { page };
+    return res.apiv3(result);
   });
 
   /**
