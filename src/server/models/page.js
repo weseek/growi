@@ -293,6 +293,7 @@ module.exports = function(crowi) {
     pageEvent = crowi.event('page');
     pageEvent.on('create', pageEvent.onCreate);
     pageEvent.on('update', pageEvent.onUpdate);
+    pageEvent.on('createMany', pageEvent.onCreateMany);
   }
 
   function validateCrowi() {
@@ -1200,7 +1201,7 @@ module.exports = function(crowi) {
       await Page.create(path, body, user, { redirectTo: newPagePath });
     }
 
-    pageEvent.emit('delete', pageData, user, socketClientId);
+    pageEvent.emit('delete', [pageData], user, socketClientId);
     pageEvent.emit('create', updatedPageData, user, socketClientId);
 
     return updatedPageData;
@@ -1242,8 +1243,21 @@ module.exports = function(crowi) {
       revisionUnorderedBulkOp.find({ path: page.path }).update({ $set: { path: newPagePath } }, { multi: true });
     });
 
-    await unorderedBulkOp.execute();
-    await revisionUnorderedBulkOp.execute();
+    try {
+      await unorderedBulkOp.execute();
+      await revisionUnorderedBulkOp.execute();
+    }
+    catch (err) {
+      if (err.code !== 11000) {
+        throw new Error('Failed to rename pages: ', err);
+      }
+    }
+
+    const newParentPath = path.replace(pathRegExp, newPagePathPrefix);
+    const newParentPage = await this.findByPath(newParentPath);
+    const renamedPages = await this.findManageableListWithDescendants(newParentPage, user, options);
+
+    pageEvent.emit('createMany', renamedPages, user, newParentPage);
 
     // Execute after unorderedBulkOp to prevent duplication
     if (createRedirectPage) {

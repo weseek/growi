@@ -352,6 +352,14 @@ class ElasticsearchDelegator {
     return this.updateOrInsertPages(() => Page.findById(pageId));
   }
 
+  updateOrInsertDescendantsPagesById(page, user) {
+    const Page = mongoose.model('Page');
+    const { PageQueryBuilder } = Page;
+    const builder = new PageQueryBuilder(Page.find());
+    builder.addConditionToListWithDescendants(page.path);
+    return this.updateOrInsertPages(() => builder.query);
+  }
+
   /**
    * @param {function} queryFactory factory method to generate a Mongoose Query instance
    */
@@ -957,6 +965,29 @@ class ElasticsearchDelegator {
     }
 
     return this.updateOrInsertPageById(page._id);
+  }
+
+  async syncDescendantsPagesUpdated(pages, user, parentPage) {
+
+    const shoudDeletePages = [];
+    pages.forEach((page) => {
+      logger.debug('SearchClient.syncPageUpdated', page.path);
+      if (!this.shouldIndexed(page)) {
+        shoudDeletePages.append(page);
+      }
+    });
+
+    // delete if page should not indexed
+    try {
+      if (shoudDeletePages.length !== 0) {
+        await this.deletePages(shoudDeletePages);
+      }
+    }
+    catch (err) {
+      logger.error('deletePages:ES Error', err);
+    }
+
+    return this.updateOrInsertDescendantsPagesById(parentPage, user);
   }
 
   async syncPagesDeletedCompletely(pages, user) {
