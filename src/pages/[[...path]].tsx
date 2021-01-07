@@ -63,10 +63,10 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useNotFound(props.isNotFound);
   useTrash(isTrashPage(props.currentPagePath));
   useShared(isSharedPage(props.currentPagePath));
+  useIsUserPage(isUserPage(props.currentPagePath));
   useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
   useIsSharedUser(props.currentUser == null && isSharedPage(props.currentPagePath));
-  useIsUserPage(isUserPage(props.currentPagePath));
-  useIsAbleToShowTagLabel(props.isAbleToShowTagLabel);
+
 
   useAppTitle(props.appTitle);
   useSiteUrl(props.siteUrl);
