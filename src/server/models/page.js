@@ -1216,7 +1216,6 @@ module.exports = function(crowi) {
     const path = targetPage.path;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(path)}`, 'i');
     const { updateMetadata, createRedirectPage } = options;
-    const socketClientId = options.socketClientId || null;
 
     // sanitize path
     newPagePathPrefix = crowi.xss.process(newPagePathPrefix); // eslint-disable-line no-param-reassign
@@ -1257,8 +1256,9 @@ module.exports = function(crowi) {
 
     const newParentPath = path.replace(pathRegExp, newPagePathPrefix);
     const newParentPage = await this.findByPath(newParentPath);
+    const renamedPages = await this.findManageableListWithDescendants(newParentPage, user, options);
 
-    pageEvent.emit('createMany', newParentPage, user, socketClientId);
+    pageEvent.emit('createMany', renamedPages, user, newParentPage);
 
     // Execute after unorderedBulkOp to prevent duplication
     if (createRedirectPage) {
