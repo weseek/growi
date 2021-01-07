@@ -1130,15 +1130,19 @@ module.exports = function(crowi) {
   pageSchema.statics.deletePageRecursively = async function(targetPage, user, options = {}) {
     const isTrashed = checkIfTrashed(targetPage.path);
     const newPath = this.getDeletedPageName(targetPage.path);
+
     if (isTrashed) {
       throw new Error('This method does NOT supports deleting trashed pages.');
     }
 
     const socketClientId = options.socketClientId || null;
+
     if (this.isDeletableName(targetPage.path)) {
       targetPage.status = STATUS_DELETED;
+      const updatedPageData = await this.renameRecursively(targetPage, newPath, user, { socketClientId, createRedirectPage: true });
+      return updatedPageData;
     }
-    return await this.renameRecursively(targetPage, newPath, user, { socketClientId, createRedirectPage: true });
+    return Promise.reject(new Error('Page is not deletable.'));
   };
 
 
