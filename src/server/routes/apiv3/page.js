@@ -168,11 +168,10 @@ module.exports = (crowi) => {
 
   router.get('/', accessTokenParser, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
     const { pagePath, pageId } = req.query;
-    console.log(pagePath, pageId);
 
-    // if (!pageId && !pagePath) {
-    //   return res.json(ApiResponse.error(new Error('Parameter path or page_id is required.')));
-    // }
+    if (pageId == null && pagePath == null) {
+      return res.apiv3Err(new ErrorV3('Parameter pagePath or pageId is required.', 'get-page-failed'));
+    }
 
     let page;
     try {
