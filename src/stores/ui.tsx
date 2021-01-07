@@ -1,7 +1,8 @@
 import { responseInterface } from 'swr';
 
 import { useCurrentPagePath, useCurrentUser } from './context';
-import { useCurrentPageDeleted, useDescendentsCount } from './page';
+import { useCurrentPageDeleted, useDescendentsCount, useCurrentPageSWR } from './page';
+import { isUserPage } from '../utils/path-utils';
 import { useStaticSWR } from './use-static-swr';
 
 export const useIsAbleToShowEmptyTrashButton = (): responseInterface<boolean, Error> => {
@@ -20,4 +21,12 @@ export const useIsAbleToShowTrashPageManagementButtons = (): responseInterface<b
   const { data: isDeleted } = useCurrentPageDeleted();
 
   return useStaticSWR('isAbleToShowTrashPageManagementButtons', isDeleted && currentUser != null);
+};
+
+export const useIsAbleToShowTagLabel = (): responseInterface<boolean, Error> => {
+  const { data: page } = useCurrentPageSWR();
+  const { path } = page;
+  const isPageUsersHome = isUserPage(path);
+
+  return useStaticSWR('isAbleToShowTagLabel', !isPageUsersHome && !isSharedUser);
 };
