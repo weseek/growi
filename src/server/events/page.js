@@ -15,7 +15,7 @@ PageEvent.prototype.onCreate = function(page, user) {
 PageEvent.prototype.onUpdate = function(page, user) {
   debug('onUpdate event fired');
 };
-PageEvent.prototype.onCreateMany = function(page, user) {
+PageEvent.prototype.onCreateMany = function(pages, user) {
   debug('onCreateMany event fired');
 };
 

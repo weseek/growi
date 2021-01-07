@@ -1256,8 +1256,9 @@ module.exports = function(crowi) {
 
     const newParentPath = path.replace(pathRegExp, newPagePathPrefix);
     const newParentPage = await this.findByPath(newParentPath);
+    const renamedPages = await this.findManageableListWithDescendants(newParentPage, user, options);
 
-    pageEvent.emit('createMany', newParentPage, user, socketClientId);
+    pageEvent.emit('createMany', renamedPages, user, newParentPage);
 
     // Execute after unorderedBulkOp to prevent duplication
     if (createRedirectPage) {
