@@ -121,7 +121,7 @@ const GrowiSubNavigation = (props) => {
         ) }
 
         <div className="grw-path-nav-container">
-          { /* pageContainer.isAbleToShowTagLabel && */ isAbleToShowTagLabel && !isCompactMode && !isTagLabelHidden && (
+          { isAbleToShowTagLabel && !isCompactMode && !isTagLabelHidden && (
 
             <div className="grw-taglabels-container">
               <TagLabels editorMode={editorMode} />
