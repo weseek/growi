@@ -43,18 +43,15 @@ export const useIsAbleToDeleteCompletely = (initialData?: boolean): responseInte
   return useStaticSWR('isAbleToDeleteCompletely', initialData);
 };
 
-
 // 追加
-export const useIsSharedUser = (initialData?: boolean): responseInterface<boolean, any> => {
-  return useStaticSWR('isSharedUser', initialData);
+export const useIsUserPage = (initialData?: boolean): responseInterface<boolean, any> => {
+  return useStaticSWR('isUserPage', initialData);
 };
 
 export const useIsAbleToShowTagLabel = (initialData?: boolean): responseInterface<boolean, any> => {
   return useStaticSWR('isAbleToShowTagLabel', initialData);
 };
 // 終わり
-
-
 
 export const useAppTitle = (initialData?: string): responseInterface<string, any> => {
   return useStaticSWR('appTitle', initialData);
