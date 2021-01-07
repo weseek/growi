@@ -47,7 +47,6 @@ type Props = CommonProps & {
   isForbidden: boolean,
   isNotFound: boolean,
   isAbleToDeleteCompletely: boolean,
-  isSharedUser: boolean,
   isAbleToShowTagLabel: boolean,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
@@ -67,7 +66,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
   useIsSharedUser(props.currentUser == null && isSharedPage(props.currentPagePath));
   useIsUserPage(isUserPage(props.currentPagePath));
-  useIsAbleToShowTagLabel(!isUserPage && !props.isSharedUser);
+  useIsAbleToShowTagLabel(props.isAbleToShowTagLabel);
 
   useAppTitle(props.appTitle);
   useSiteUrl(props.siteUrl);
