@@ -1240,6 +1240,11 @@ module.exports = function(crowi) {
       else {
         unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath } });
       }
+
+      if (targetPage.status === STATUS_DELETED) {
+        unorderedBulkOp.find({ _id: page._id }).update({ $set: { status: STATUS_DELETED } });
+      }
+
       if (createRedirectPage) {
         createRediectPageBulkOp.insert({
           path: page.path, body: `redirect ${newPagePath}`, creator: user, lastUpdateUser: user, status: STATUS_PUBLISHED, redirectTo: newPagePath,
