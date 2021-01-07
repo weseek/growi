@@ -43,6 +43,7 @@ html[dark] {
   // Background colors
   $bgcolor-card: $gray-50;
   $bgcolor-inline-code: $gray-100; //optional
+  $bgcolor-highlighted: rgba($primary, 0.5);
 
   // Font colors
   $color-global: #112744;
@@ -106,11 +107,6 @@ html[dark] {
   @import 'apply-colors-light';
 
   // change color of highlighted header in wiki (default: orange)
-  .wiki {
-    .highlighted {
-      @include highlighted($primary, 0.5);
-    }
-  }
 
   .sidebar {
     background: $themecolor;

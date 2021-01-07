@@ -43,6 +43,7 @@ html[dark] {
   // Background colors
   $bgcolor-global: white;
   $bgcolor-card: #ece8de;
+  $bgcolor-highlighted: rgba($primary, 0.3);
 
   // Font colors
   // $color-global: black;
@@ -122,13 +123,6 @@ html[dark] {
    */
   .modal-dialog .modal-header.bg-primary {
     background-image: url('/images/themes/wood/wood-navbar.jpg');
-  }
-
-  // article
-  .wiki {
-    .highlighted {
-      @include highlighted($primary, 0.3);
-    }
   }
 
   // Sidebar

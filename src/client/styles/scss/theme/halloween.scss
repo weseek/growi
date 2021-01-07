@@ -39,6 +39,7 @@ html[dark] {
   $bgcolor-global: #050000;
   $bgcolor-inline-code: #1f1f22; //optional
   $bgcolor-card: $bgcolor-global;
+  $bgcolor-highlighted: rgba($primary, 0.4);
 
   // Font colors
   $color-global: #e9af2b;
@@ -106,12 +107,7 @@ html[dark] {
 
   @import 'apply-colors';
   @import 'apply-colors-dark';
-  // article
-  .wiki {
-    .highlighted {
-      @include highlighted($primary, 0.4);
-    }
-  }
+
   //Button
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {

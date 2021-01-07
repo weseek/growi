@@ -45,6 +45,7 @@ html[dark] {
   $bgcolor-inline-code: $gray-100; //optional
   $bgcolor-card: #f1ffe4;
   $bgcolor-subnav: #fafafa;
+  $bgcolor-highlighted: rgba($primary, 0.1);
 
   // Font colors
   $color-global: #460039;
@@ -95,13 +96,6 @@ html[dark] {
 
   @import 'apply-colors';
   @import 'apply-colors-light';
-
-  // article
-  .wiki {
-    .highlighted {
-      @include highlighted($primary, 0.1);
-    }
-  }
 
   // Search Top
   .grw-global-search {

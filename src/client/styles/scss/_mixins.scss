@@ -253,11 +253,8 @@
     }
   }
 }
-@mixin highlighted($color, $alpha) {
+@mixin highlighted($color) {
   @keyframes vanishing {
-    0% {
-      opacity: 1;
-    }
     100% {
       opacity: 0;
     }
@@ -273,8 +270,8 @@
     width: 100%;
     height: 70%;
     content: '';
-    background-color: rgba($color, $alpha);
+    background-color: $color;
     border-radius: 2px;
-    animation: vanishing 1s ease-in 1.5s 1 normal forwards running;
+    animation: vanishing 1s ease-in 1.5s forwards;
   }
 }
