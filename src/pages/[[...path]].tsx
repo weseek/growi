@@ -3,11 +3,14 @@ import {
 } from 'next';
 import Head from 'next/head';
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
 import loggerFactory from '~/utils/logger';
 import { CommonProps, getServerSideCommonProps } from '~/utils/nextjs-page-utils';
-import { isUserPage } from '~/utils/path-utils';
+import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
 
 import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 import BasicLayout from '../components/BasicLayout';
@@ -19,7 +22,7 @@ import BasicLayout from '../components/BasicLayout';
 
 import {
   useCurrentUser, useCurrentPagePath, useOwnerOfCurrentPage,
-  useForbidden, useNotFound, useIsAbleToDeleteCompletely,
+  useForbidden, useNotFound, useTrash, useShared, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential,
   useSearchServiceConfigured, useSearchServiceReachable,
 } from '../stores/context';
@@ -35,6 +38,8 @@ type Props = CommonProps & {
 
   page: any,
   pageUser?: any,
+  redirectTo?: string;
+  redirectFrom?: string;
 
   appTitle: string,
   siteUrl: string,
@@ -48,13 +53,18 @@ type Props = CommonProps & {
 };
 
 const GrowiPage: NextPage<Props> = (props: Props) => {
+  const router = useRouter();
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
   useCurrentPagePath(props.currentPagePath);
   useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   useForbidden(props.isForbidden);
   useNotFound(props.isNotFound);
+  useTrash(isTrashPage(props.currentPagePath));
+  useShared(isSharedPage(props.currentPagePath));
   useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
+  useIsSharedUser(props.currentUser == null && isSharedPage(props.currentPagePath));
+
   useAppTitle(props.appTitle);
   useSiteUrl(props.siteUrl);
   useConfidential(props.confidential);
@@ -66,6 +76,15 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
     page = JSON.parse(props.page);
   }
   useCurrentPageSWR(page);
+
+  // Rewrite browser url by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
+  useEffect(() => {
+    if (props.redirectTo != null) {
+      router.push('/[[...path]]', props.redirectTo, { shallow: true });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
 
   return (
     <>
@@ -132,6 +151,9 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
 
   // get props recursively
   if (page.redirectTo) {
+    // Pass to rewrite browser url
+    props.redirectTo = page.redirectTo;
+    props.redirectFrom = pagePath;
     logger.debug(`Redirect to '${page.redirectTo}'`);
     return injectPageInformation(context, props, page.redirectTo);
   }
