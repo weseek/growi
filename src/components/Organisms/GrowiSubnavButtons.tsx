@@ -1,29 +1,42 @@
 import { FC } from 'react';
+import { mutate } from 'swr';
 import { LikeButton } from '~/components/Atoms/LikeButton';
 import { BookmarkButton } from '~/components/Atoms/BookmarkButton';
 import { useCurrentPageSWR, useIsBookmarkInfoSWR, useLikeInfoSWR } from '~/stores/page';
 import { Page as IPage, BookmarkInfo as IBookmarkInfo, LikeInfo as ILikeInfo } from '~/interfaces/page';
+import { apiv3Put } from '~/lib/util/apiv3-client';
 
 export const PageReactionButtons:FC = () => {
   const { data: page } = useCurrentPageSWR();
   const { id } = page as IPage;
 
+  const { data: likeInfo } = useLikeInfoSWR(id);
+  const { sumOfLikers, isLiked } = likeInfo as ILikeInfo;
+
   const { data: bookmarkInfo } = useIsBookmarkInfoSWR(id);
   const { sumOfBookmarks, isBookmarked } = bookmarkInfo as IBookmarkInfo;
 
-  const { data: likeInfo } = useLikeInfoSWR(id);
-  const { sumOfLikers, isLiked } = likeInfo as ILikeInfo;
+
+  const handleClickLikeButton = async() => {
+    const bool = !isLiked;
+    await apiv3Put('/page/likes', { pageId: id, bool });
+    mutate('/page/like-info');
+  };
+
+  const handleClickBookmarkButton = async() => {
+    const bool = !isBookmarked;
+    await apiv3Put('/bookmarks', { pageId: id, bool });
+    mutate('/bookmarks/info');
+  };
 
   return (
     <>
       {/* TODO GW-4832 show by isAbleToShowLikeButton  */}
       <span>
-        {/* TODO GW-4858 create onClick action */}
-        <LikeButton count={sumOfLikers} isLiked={isLiked} />
+        <LikeButton count={sumOfLikers} isLiked={isLiked} onCLick={handleClickLikeButton} />
       </span>
       <span>
-        {/* TODO GW-4858 create onClick action */}
-        <BookmarkButton count={sumOfBookmarks} isBookmarked={isBookmarked} />
+        <BookmarkButton count={sumOfBookmarks} isBookmarked={isBookmarked} onCLick={handleClickBookmarkButton} />
       </span>
     </>
   );
