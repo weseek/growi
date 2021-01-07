@@ -11,8 +11,9 @@ import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
 import { isCreatablePage, isTrashPage, isUserPage } from '~/utils/path-utils';
 import { useCurrentPageSWR } from '~/stores/page';
 import {
-  useCurrentUser, useForbidden, useOwnerOfCurrentPage, useIsAbleToShowTagLabel,
+  useCurrentUser, useForbidden, useOwnerOfCurrentPage,
 } from '~/stores/context';
+import { useIsAbleToShowTagLabel } from '../../../../stores/ui';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';

@@ -47,10 +47,6 @@ export const useIsUserPage = (initialData?: boolean): responseInterface<boolean,
   return useStaticSWR('isUserPage', initialData);
 };
 
-export const useIsAbleToShowTagLabel = (initialData?: boolean): responseInterface<boolean, any> => {
-  return useStaticSWR('isAbleToShowTagLabel', initialData);
-};
-
 export const useAppTitle = (initialData?: string): responseInterface<string, any> => {
   return useStaticSWR('appTitle', initialData);
 };

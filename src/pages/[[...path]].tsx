@@ -24,7 +24,7 @@ import {
   useCurrentUser, useCurrentPagePath, useOwnerOfCurrentPage,
   useForbidden, useNotFound, useTrash, useShared, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential,
-  useSearchServiceConfigured, useSearchServiceReachable, useIsUserPage, useIsAbleToShowTagLabel,
+  useSearchServiceConfigured, useSearchServiceReachable, useIsUserPage,
 } from '../stores/context';
 import {
   useCurrentPageSWR,
