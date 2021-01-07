@@ -1142,6 +1142,7 @@ module.exports = function(crowi) {
       const updatedPageData = await this.renameRecursively(targetPage, newPath, user, { socketClientId, createRedirectPage: true });
       return updatedPageData;
     }
+
     return Promise.reject(new Error('Page is not deletable.'));
   };
 
