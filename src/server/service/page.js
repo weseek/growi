@@ -72,52 +72,23 @@ class PageService {
   }
 
   async duplicateRecursively(page, newPagePath, user) {
-
     const Page = this.crowi.model('Page');
-    const Revision = this.crowi.model('Revision');
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
     const pages = await Page.findManageableListWithDescendants(page, user);
-    const revisions = await Revision.find({ path: pathRegExp });
 
-    // Mapping to set to the body of the new revision
-    const pathRevisionMapping = {};
-    revisions.forEach((revision) => {
-      pathRevisionMapping[revision.path] = revision;
-    });
-
-    const newPages = [];
-    const newRevisions = [];
-
-    pages.forEach((page) => {
+    const promise = pages.map(async(page) => {
       const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
-      const revisionId = new mongoose.Types.ObjectId();
-
-      newPages.push({
-        path: newPagePath,
-        creator: user._id,
-        grant: page.grant,
-        grantedGroup: page.grantedGroup,
-        grantedUsers: page.grantedUsers,
-        lastUpdateUser: user._id,
-        redirectTo: null,
-        revision: revisionId,
-      });
-
-      newRevisions.push({
-        _id: revisionId, path: newPagePath, body: pathRevisionMapping[page.path].body, author: user._id, format: 'markdown',
-      });
-
+      return this.duplicate(page, newPagePath, user);
     });
-
-    await Page.insertMany(newPages, { ordered: false });
-    await Revision.insertMany(newRevisions, { ordered: false });
 
     const newPath = page.path.replace(pathRegExp, newPagePathPrefix);
+    await Promise.allSettled(promise);
     const newParentpage = await Page.findByPath(newPath);
 
     // TODO GW-4634 use stream
     return newParentpage;
+
   }
 
   // delete multiple pages
