@@ -966,10 +966,7 @@ class ElasticsearchDelegator {
     return this.updateOrInsertPageById(page._id);
   }
 
-  async syncDescendantsPagesUpdated(page, user) {
-
-    const Page = mongoose.model('Page');
-    const pages = await Page.findManageableListWithDescendants(page, user);
+  async syncDescendantsPagesUpdated(pages, user, parentPage) {
 
     const shoudDeletePages = [];
     pages.forEach((page) => {
@@ -989,7 +986,7 @@ class ElasticsearchDelegator {
       logger.error('deletePages:ES Error', err);
     }
 
-    return this.updateOrInsertDescendantsPagesById(page, user);
+    return this.updateOrInsertDescendantsPagesById(parentPage, user);
   }
 
   async syncPagesDeletedCompletely(pages, user) {
