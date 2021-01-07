@@ -192,7 +192,7 @@ class PageService {
     const originalParentPath = Page.getRevertDeletedPageName(targetPage.path);
     const pathRegExp = new RegExp(`^${escapeStringRegexp(originalParentPath)}`, 'i');
     const originPages = await Page.find({ path: pathRegExp });
-    const revisions = await Revision.find({ path: pathRegExp });
+    const revisions = await Revision.find({ path: { $in: targetPage.path } });
     const pathRevisionMapping = {};
     revisions.forEach((revision) => {
       pathRevisionMapping[revision.path] = revision;
@@ -217,10 +217,11 @@ class PageService {
         revision: revisionId,
       });
       newRevisions.push({
-        _id: revisionId, path: newPagePath, body: pathRevisionMapping[newPagePath].body, author: user._id, format: 'markdown',
+        _id: revisionId, path: newPagePath, body: pathRevisionMapping[page.path].body, author: user._id, format: 'markdown',
       });
     });
 
+    await this.completelyDeletePages(pages, options);
     await Page.insertMany(newPages, { ordered: false });
     await Revision.insertMany(newRevisions, { ordered: false });
     const newPath = Page.getRevertDeletedPageName(targetPage.path);
