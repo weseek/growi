@@ -22,8 +22,7 @@ import BasicLayout from '../components/BasicLayout';
 
 import {
   useCurrentUser, useCurrentPagePath, useOwnerOfCurrentPage,
-  useForbidden, useNotFound, useTrash, useShared, useIsSharedUser,
-  useIsAbleToDeleteCompletely, useIsAbleToShowPageReactionButtons,
+  useForbidden, useNotFound, useTrash, useShared, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential,
   useSearchServiceConfigured, useSearchServiceReachable,
 } from '../stores/context';
@@ -64,13 +63,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useTrash(isTrashPage(props.currentPagePath));
   useShared(isSharedPage(props.currentPagePath));
   useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
-
-  const isSharedUser = (props.currentUser == null && isSharedPage(props.currentPagePath));
-  useIsSharedUser(isSharedUser);
-
-  // set Permitted Action Information for current user
-  // see: https://dev.growi.org/5fabddf8bbeb1a0048bcb9e9
-  useIsAbleToShowPageReactionButtons(!isTrashPage(props.currentPagePath) && !props.isNotFound && !isSharedUser);
+  useIsSharedUser(props.currentUser == null && isSharedPage(props.currentPagePath));
 
   useAppTitle(props.appTitle);
   useSiteUrl(props.siteUrl);

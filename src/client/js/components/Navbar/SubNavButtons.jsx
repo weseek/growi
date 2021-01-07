@@ -9,7 +9,7 @@ import BookmarkButton from '../BookmarkButton';
 import LikeButton from '../LikeButton';
 import PageManagement from '../Page/PageManagement';
 
-import { useIsAbleToShowPageReactionButtons } from '../../../../stores/context';
+import { useIsAbleToShowPageReactionButtons } from '../../../../stores/ui';
 
 const SubnavButtons = (props) => {
   const {
