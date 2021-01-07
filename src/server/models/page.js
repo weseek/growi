@@ -1216,7 +1216,6 @@ module.exports = function(crowi) {
     const path = targetPage.path;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(path)}`, 'i');
     const { updateMetadata, createRedirectPage } = options;
-    const socketClientId = options.socketClientId || null;
 
     // sanitize path
     newPagePathPrefix = crowi.xss.process(newPagePathPrefix); // eslint-disable-line no-param-reassign
