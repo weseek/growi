@@ -1237,12 +1237,11 @@ module.exports = function(crowi) {
       if (updateMetadata) {
         unorderedBulkOp.find({ _id: page._id }).update([{ $set: { path: newPagePath, lastUpdateUser: user._id, updatedAt: { $toDate: updateAt } } }]);
       }
+      else if (targetPage.status === STATUS_DELETED) {
+        unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath, status: STATUS_DELETED } });
+      }
       else {
         unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath } });
-      }
-
-      if (targetPage.status === STATUS_DELETED) {
-        unorderedBulkOp.find({ _id: page._id }).update({ $set: { status: STATUS_DELETED } });
       }
 
       if (createRedirectPage) {
