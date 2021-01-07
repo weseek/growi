@@ -1,6 +1,8 @@
 import { responseInterface } from 'swr';
 
-import { useCurrentPagePath, useCurrentUser } from './context';
+import {
+  useTrash, useNotFound, useCurrentPagePath, useCurrentUser, useIsSharedUser,
+} from './context';
 import { useCurrentPageDeleted, useDescendentsCount } from './page';
 import { useStaticSWR } from './use-static-swr';
 
@@ -20,4 +22,12 @@ export const useIsAbleToShowTrashPageManagementButtons = (): responseInterface<b
   const { data: isDeleted } = useCurrentPageDeleted();
 
   return useStaticSWR('isAbleToShowTrashPageManagementButtons', isDeleted && currentUser != null);
+};
+
+export const useIsAbleToShowPageReactionButtons = (): responseInterface<boolean, any> => {
+  const { data: isTrashPage } = useTrash();
+  const { data: isNotFountPage } = useNotFound();
+  const { data: isSharedUser } = useIsSharedUser();
+
+  return useStaticSWR('isAbleToShowPageReactionButtons', !isTrashPage && !isNotFountPage && !isSharedUser);
 };

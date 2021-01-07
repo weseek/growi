@@ -10,7 +10,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
 import loggerFactory from '~/utils/logger';
 import { CommonProps, getServerSideCommonProps } from '~/utils/nextjs-page-utils';
-import { isUserPage } from '~/utils/path-utils';
+import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
 
 import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 import BasicLayout from '../components/BasicLayout';
@@ -22,7 +22,7 @@ import BasicLayout from '../components/BasicLayout';
 
 import {
   useCurrentUser, useCurrentPagePath, useOwnerOfCurrentPage,
-  useForbidden, useNotFound, useIsAbleToDeleteCompletely,
+  useForbidden, useNotFound, useTrash, useShared, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential,
   useSearchServiceConfigured, useSearchServiceReachable,
 } from '../stores/context';
@@ -60,7 +60,11 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   useForbidden(props.isForbidden);
   useNotFound(props.isNotFound);
+  useTrash(isTrashPage(props.currentPagePath));
+  useShared(isSharedPage(props.currentPagePath));
   useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
+  useIsSharedUser(props.currentUser == null && isSharedPage(props.currentPagePath));
+
   useAppTitle(props.appTitle);
   useSiteUrl(props.siteUrl);
   useConfidential(props.confidential);
