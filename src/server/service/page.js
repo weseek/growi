@@ -75,6 +75,7 @@ class PageService {
     const Page = this.crowi.model('Page');
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
+
     const pages = await Page.findManageableListWithDescendants(page, user);
 
     const promise = pages.map(async(page) => {
@@ -83,12 +84,13 @@ class PageService {
     });
 
     const newPath = page.path.replace(pathRegExp, newPagePathPrefix);
+
     await Promise.allSettled(promise);
+
     const newParentpage = await Page.findByPath(newPath);
 
     // TODO GW-4634 use stream
     return newParentpage;
-
   }
 
   // delete multiple pages
