@@ -1,9 +1,11 @@
 import { responseInterface } from 'swr';
 
-import { useCurrentPagePath, useCurrentUser } from './context';
+import {
+  useTrash, useNotFound, useCurrentPagePath, useCurrentUser, useIsSharedUser,
+} from './context';
 import { useCurrentPageDeleted, useDescendentsCount, useCurrentPageSWR } from './page';
-import { isUserPage } from '../utils/path-utils';
 import { useStaticSWR } from './use-static-swr';
+import { isUserPage } from '../utils/path-utils';
 
 export const useIsAbleToShowEmptyTrashButton = (): responseInterface<boolean, Error> => {
   const { data: currentUser } = useCurrentUser();
@@ -23,10 +25,19 @@ export const useIsAbleToShowTrashPageManagementButtons = (): responseInterface<b
   return useStaticSWR('isAbleToShowTrashPageManagementButtons', isDeleted && currentUser != null);
 };
 
+export const useIsAbleToShowPageReactionButtons = (): responseInterface<boolean, any> => {
+  const { data: isTrashPage } = useTrash();
+  const { data: isNotFountPage } = useNotFound();
+  const { data: isSharedUser } = useIsSharedUser();
+
+  return useStaticSWR('isAbleToShowPageReactionButtons', !isTrashPage && !isNotFountPage && !isSharedUser);
+};
+
 export const useIsAbleToShowTagLabel = (): responseInterface<boolean, Error> => {
   const { data: page } = useCurrentPageSWR();
   const { path } = page;
   const isPageUsersHome = isUserPage(path);
+  const { data: isSharedUser } = useIsSharedUser();
 
   return useStaticSWR('isAbleToShowTagLabel', !isPageUsersHome && !isSharedUser);
 };
