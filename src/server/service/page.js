@@ -191,8 +191,10 @@ class PageService {
     const pages = await Page.findManageableListWithDescendants(targetPage, user, findOpts);
     const originalParentPath = Page.getRevertDeletedPageName(targetPage.path);
     const pathRegExp = new RegExp(`^${escapeStringRegexp(originalParentPath)}`, 'i');
+    const targetPagePathRegExp = new RegExp(`^${escapeStringRegexp(targetPage.path)}`, 'i');
     const originPages = await Page.find({ path: pathRegExp });
-    const revisions = await Revision.find({ path: { $in: targetPage.path } });
+    const revisions = await Revision.find({ path: targetPagePathRegExp });
+
     const pathRevisionMapping = {};
     revisions.forEach((revision) => {
       pathRevisionMapping[revision.path] = revision;
@@ -222,6 +224,7 @@ class PageService {
     });
 
     await this.completelyDeletePages(pages, options);
+
     await Page.insertMany(newPages, { ordered: false });
     await Revision.insertMany(newRevisions, { ordered: false });
     const newPath = Page.getRevertDeletedPageName(targetPage.path);
