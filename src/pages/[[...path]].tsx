@@ -47,10 +47,8 @@ type Props = CommonProps & {
   isForbidden: boolean,
   isNotFound: boolean,
   isAbleToDeleteCompletely: boolean,
-
   isSharedUser: boolean,
   isAbleToShowTagLabel: boolean,
-
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   highlightJsStyle: string,
