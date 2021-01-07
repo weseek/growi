@@ -187,11 +187,9 @@ class PageService {
   async revertDeletedPageRecursively(targetPage, user, options = {}) {
     const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
-
     const findOpts = { includeTrashed: true };
     const pages = await Page.findManageableListWithDescendants(targetPage, user, findOpts);
     const originalParentPath = Page.getRevertDeletedPageName(targetPage.path);
-
     const pathRegExp = new RegExp(`^${escapeStringRegexp(originalParentPath)}`, 'i');
     const originPages = await Page.find({ path: pathRegExp });
     const revisions = await Revision.find({ path: pathRegExp });
@@ -218,7 +216,6 @@ class PageService {
         redirectTo: null,
         revision: revisionId,
       });
-
       newRevisions.push({
         _id: revisionId, path: newPagePath, body: pathRevisionMapping[newPagePath].body, author: user._id, format: 'markdown',
       });
@@ -229,7 +226,6 @@ class PageService {
     const newPath = Page.getRevertDeletedPageName(targetPage.path);
     const newParentpage = await Page.findByPath(newPath);
     return newParentpage;
-
   }
 
   async revertSingleDeletedPage(page, user, options = {}) {
