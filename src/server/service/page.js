@@ -44,7 +44,7 @@ class PageService {
     return attachmentService.removeAttachment(attachments);
   }
 
-  async duplicate(page, newPagePath, user) {
+  async duplicate(page, newPagePath, user, isRecursively) {
     const Page = this.crowi.model('Page');
     const PageTagRelation = mongoose.model('PageTagRelation');
     // populate
@@ -60,6 +60,10 @@ class PageService {
       newPagePath, page.revision.body, user, options,
     );
 
+    if (isRecursively) {
+      this.duplicateDescendantPages(page, newPagePath, user);
+    }
+
     // take over tags
     const originTags = await page.findRelatedTagsById();
     let savedTags = [];
@@ -74,7 +78,7 @@ class PageService {
     return result;
   }
 
-  async duplicateRecursively(page, newPagePath, user) {
+  async duplicateDescendantPages(page, newPagePath, user) {
 
     const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
@@ -145,10 +149,6 @@ class PageService {
 
     pages.forEach(page => readable.push(page));
     readable.push(null);
-
-    const parentPage = await this.duplicate(page, newPagePath, user);
-
-    return parentPage;
   }
 
   // delete multiple pages
