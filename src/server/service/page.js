@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
 const logger = require('@alias/logger')('growi:models:page');
 const debug = require('debug')('growi:models:page');
-const { Readable, Writable, Transform } = require('stream');
+const { Readable, Writable } = require('stream');
 const { createBatchStream } = require('@server/util/batch-stream');
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 
