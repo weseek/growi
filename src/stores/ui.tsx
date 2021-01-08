@@ -38,5 +38,7 @@ export const useIsAbleToShowTagLabel = (): responseInterface<boolean, any> => {
   const { data: page } = useCurrentPageSWR();
   const { path } = page as Page;
 
+  // [TODO: add other two judgements and expand isAbleToShowTagLabel by GW-4881]
+  // isAbleToShowTagLabel = (!isCompactMode && !isUserPage && !isSharedPage && !(editorMode === 'view' && !isPageExist));
   return useStaticSWR('isAbleToShowTagLabel', !isUserPage(path) && !isSharedPage(path));
 };
