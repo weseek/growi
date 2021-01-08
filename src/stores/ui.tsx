@@ -3,8 +3,9 @@ import { responseInterface } from 'swr';
 import {
   useTrash, useNotFound, useCurrentPagePath, useCurrentUser, useIsSharedUser,
 } from './context';
-import { useCurrentPageDeleted, useDescendentsCount } from './page';
+import { useCurrentPageDeleted, useDescendentsCount, useCurrentPageSWR } from './page';
 import { useStaticSWR } from './use-static-swr';
+import { isUserPage } from '~/utils/path-utils';
 
 export const useIsAbleToShowEmptyTrashButton = (): responseInterface<boolean, Error> => {
   const { data: currentUser } = useCurrentUser();
@@ -30,4 +31,13 @@ export const useIsAbleToShowPageReactionButtons = (): responseInterface<boolean,
   const { data: isSharedUser } = useIsSharedUser();
 
   return useStaticSWR('isAbleToShowPageReactionButtons', !isTrashPage && !isNotFountPage && !isSharedUser);
+};
+
+export const useIsAbleToShowLikeButton = (): responseInterface<boolean, any> => {
+  const { data: isSharedUser } = useIsSharedUser();
+  const { data: page } = useCurrentPageSWR();
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  const { path } = page;
+
+  return useStaticSWR('isAbleToShowLikeButton', !isUserPage(path) && !isSharedUser);
 };

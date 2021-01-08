@@ -9,21 +9,22 @@ import BookmarkButton from '../BookmarkButton';
 import LikeButton from '../LikeButton';
 import PageManagement from '../Page/PageManagement';
 
-import { useIsAbleToShowPageReactionButtons } from '../../../../stores/ui';
+import { useIsAbleToShowPageReactionButtons, useIsAbleToShowLikeButton } from '~/stores/ui';
 
 const SubnavButtons = (props) => {
   const {
     appContainer, navigationContainer, pageContainer, isCompactMode,
   } = props;
+  const { data: isAbleToShowLikeButton } = useIsAbleToShowPageReactionButtons();
 
   /* eslint-enable react/prop-types */
 
   /* eslint-disable react/prop-types */
-  const PageReactionButtons = ({ pageContainer }) => {
+  const PageReactionButtons = () => {
 
     return (
       <>
-        {pageContainer.isAbleToShowLikeButton && (
+        {isAbleToShowLikeButton && (
           <span>
             <LikeButton />
           </span>
