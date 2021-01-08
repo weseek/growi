@@ -1225,8 +1225,8 @@ module.exports = function(crowi) {
     newPagePathPrefix = crowi.xss.process(newPagePathPrefix); // eslint-disable-line no-param-reassign
 
     let pages;
+    const targetPagePathRegExp = new RegExp(`^${escapeStringRegexp(targetPage.path)}`, 'i');
     if (targetPage.path.match(/^\/trash/)) {
-      const targetPagePathRegExp = new RegExp(`^${escapeStringRegexp(targetPage.path)}`, 'i');
       pages = await this.find({ path: targetPagePathRegExp });
     }
     else {
@@ -1247,21 +1247,15 @@ module.exports = function(crowi) {
       else if (targetPage.status === STATUS_DELETED) {
         unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath, status: STATUS_DELETED } });
       }
+      else if (targetPage.path.match(/^\/trash/)) {
+        console.log('51');
+        unorderedBulkOp.find({ path: targetPagePathRegExp }).update({ $set: { path: newPagePath, status: STATUS_PUBLISHED } });
+      }
       else {
         unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath } });
       }
 
-      if (createRedirectPage && targetPage.status === STATUS_DELETED) {
-        createRediectPageBulkOp.insert({
-          path: page.path,
-          body: `redirect ${newPagePath}`,
-          creator: user,
-          lastUpdateUser: user,
-          status: STATUS_PUBLISHED,
-          redirectTo: newPagePath,
-        });
-      }
-      else if (createRedirectPage) {
+      if (createRedirectPage) {
         createRediectPageBulkOp.insert({
           path: page.path, body: `redirect ${newPagePath}`, creator: user, lastUpdateUser: user, status: STATUS_PUBLISHED, redirectTo: newPagePath,
         });
@@ -1282,7 +1276,6 @@ module.exports = function(crowi) {
     const newParentPath = path.replace(pathRegExp, newPagePathPrefix);
     const newParentPage = await this.findByPath(newParentPath);
     const renamedPages = await this.findManageableListWithDescendants(newParentPage, user, options);
-
     pageEvent.emit('createMany', renamedPages, user, newParentPage);
 
     // Execute after unorderedBulkOp to prevent duplication
