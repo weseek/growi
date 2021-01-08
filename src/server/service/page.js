@@ -80,7 +80,7 @@ class PageService {
     const Revision = this.crowi.model('Revision');
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
-    const pages = await Page.findManageableListWithDescendants(page, user);
+    const pages = await Page.findManageableListWithDescendants(page, user, { excludeParent: true });
     const revisions = await Revision.find({ path: pathRegExp });
 
     // Mapping to set to the body of the new revision
@@ -146,10 +146,9 @@ class PageService {
     pages.forEach(page => readable.push(page));
     readable.push(null);
 
-    const newPath = page.path.replace(pathRegExp, newPagePathPrefix);
-    const newParentpage = await Page.findByPath(newPath);
+    const parentPage = await this.duplicate(page, newPagePath, user);
 
-    return newParentpage;
+    return parentPage;
   }
 
   // delete multiple pages

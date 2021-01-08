@@ -144,6 +144,8 @@ class PageQueryBuilder {
    * If top page, return without doing anything.
    */
   addConditionToListWithDescendants(path, option) {
+    const excludeParent = option.excludeParent || false;
+
     // No request is set for the top page
     if (isTopPage(path)) {
       return this;
@@ -154,12 +156,14 @@ class PageQueryBuilder {
 
     const startsPattern = escapeStringRegexp(pathWithTrailingSlash);
 
+    const filters = [{ path: new RegExp(`^${startsPattern}`) }];
+    if (!excludeParent) {
+      filters.push({ path: pathNormalized });
+    }
+
     this.query = this.query
       .and({
-        $or: [
-          { path: pathNormalized },
-          { path: new RegExp(`^${startsPattern}`) },
-        ],
+        $or: filters,
       });
 
     return this;
