@@ -105,11 +105,7 @@ class PageService {
       });
 
       newRevisions.push({
-        _id: revisionId,
-        path: newPagePath,
-        body: pathRevisionMapping[page.path].body,
-        author: user._id,
-        format: 'markdown',
+        _id: revisionId, path: newPagePath, body: pathRevisionMapping[page.path].body, author: user._id, format: 'markdown',
       });
 
     });
