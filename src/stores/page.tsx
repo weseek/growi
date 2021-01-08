@@ -58,7 +58,7 @@ export const useRecentlyUpdatedSWR = <Data, Error>(config?: ConfigInterface): re
   );
 };
 
-export const useIsBookmarkInfoSWR = <Data, Error>(pageId: string, initialData?: boolean): responseInterface<Data, Error> => {
+export const useBookmarkInfoSWR = <Data, Error>(pageId: string, initialData?: boolean): responseInterface<Data, Error> => {
   return useSWR(
     '/bookmarks/info',
     endpoint => apiv3Get(endpoint, { pageId }).then(response => response.data),
