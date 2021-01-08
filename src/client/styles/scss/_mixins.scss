@@ -254,7 +254,7 @@
   }
 }
 @mixin highlighted($color) {
-  @keyframes vanishing {
+  @keyframes fadeout {
     100% {
       opacity: 0;
     }
@@ -272,6 +272,6 @@
     content: '';
     background-color: $color;
     border-radius: 2px;
-    animation: vanishing 1s ease-in 1.5s forwards;
+    animation: fadeout 1s ease-in 1.5s forwards;
   }
 }
