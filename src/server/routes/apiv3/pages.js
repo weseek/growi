@@ -607,6 +607,35 @@ module.exports = (crowi) => {
     }
 
   });
+
+  /**
+   * @swagger
+   *
+   *
+   *    /pages/decendants-count:
+   *      get:
+   *        tags: [Pages]
+   *        operationId: decendantsCcount
+   *        description: Get decendants pages count
+   *        parameters:
+   *          - name: path
+   *            in: query
+   *            description: Parent path of search
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: Succeeded to retrieve pages count.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    result:
+   *                      type: object
+   *                      description: decendants pages count
+   *          500:
+   *            description: Internal server error.
+   */
   router.get('/decendants-count', accessTokenParser, loginRequired, validator.decendantsCcount, async(req, res) => {
     const { path } = req.query;
 
