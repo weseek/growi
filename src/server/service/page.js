@@ -167,7 +167,6 @@ class PageService {
     const targetPagePathRegExp = new RegExp(`^${escapeStringRegexp(targetPage.path)}`, 'i');
     const originPages = await Page.find({ path: pathRegExp });
     const revisions = await Revision.find({ path: targetPagePathRegExp });
-    console.log(revisions);
 
     const pathRevisionMapping = {};
     revisions.forEach((revision) => {
