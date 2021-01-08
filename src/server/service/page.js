@@ -84,7 +84,7 @@ class PageService {
     const Revision = this.crowi.model('Revision');
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
-    const pages = await Page.findManageableListWithDescendants(page, user, { excludeParent: true });
+    const pages = await Page.findManageableListWithDescendants(page, user, { onlyDescendants: true });
     const revisions = await Revision.find({ path: pathRegExp });
 
     // Mapping to set to the body of the new revision
