@@ -24,7 +24,7 @@ import {
   useCurrentUser, useCurrentPagePath, useOwnerOfCurrentPage,
   useForbidden, useNotFound, useTrash, useShared, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential,
-  useSearchServiceConfigured, useSearchServiceReachable, useIsUserPage,
+  useSearchServiceConfigured, useSearchServiceReachable,
 } from '../stores/context';
 import {
   useCurrentPageSWR,
@@ -62,7 +62,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useNotFound(props.isNotFound);
   useTrash(isTrashPage(props.currentPagePath));
   useShared(isSharedPage(props.currentPagePath));
-  useIsUserPage(isUserPage(props.currentPagePath));
   useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
   useIsSharedUser(props.currentUser == null && isSharedPage(props.currentPagePath));
 
