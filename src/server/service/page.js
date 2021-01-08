@@ -100,7 +100,7 @@ class PageService {
           const newPages = [];
           const newRevisions = [];
 
-          pages.forEach((page) => {
+          batch.forEach((page) => {
             const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
             const revisionId = new mongoose.Types.ObjectId();
 
