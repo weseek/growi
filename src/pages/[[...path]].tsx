@@ -65,7 +65,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
   useIsSharedUser(props.currentUser == null && isSharedPage(props.currentPagePath));
 
-
   useAppTitle(props.appTitle);
   useSiteUrl(props.siteUrl);
   useConfidential(props.confidential);
