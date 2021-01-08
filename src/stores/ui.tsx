@@ -6,6 +6,7 @@ import {
 import { useCurrentPageDeleted, useDescendentsCount, useCurrentPageSWR } from './page';
 import { useStaticSWR } from './use-static-swr';
 import { isUserPage } from '~/utils/path-utils';
+import { Page } from '~/interfaces/page';
 
 export const useIsAbleToShowEmptyTrashButton = (): responseInterface<boolean, Error> => {
   const { data: currentUser } = useCurrentUser();
@@ -33,12 +34,10 @@ export const useIsAbleToShowPageReactionButtons = (): responseInterface<boolean,
   return useStaticSWR('isAbleToShowPageReactionButtons', !isTrashPage && !isNotFountPage && !isSharedUser);
 };
 
-export const useIsAbleToShowLikeButton = (pagePath?: string): responseInterface<boolean, any> => {
+export const useIsAbleToShowLikeButton = (): responseInterface<boolean, any> => {
   const { data: isSharedUser } = useIsSharedUser();
+  const { data: page } = useCurrentPageSWR();
+  const { path } = page as Page;
 
-  if (pagePath == null) {
-    throw new Error('pagePath should not be null.');
-  }
-
-  return useStaticSWR('isAbleToShowLikeButton', !isUserPage(pagePath) && !isSharedUser);
+  return useStaticSWR('isAbleToShowLikeButton', !isUserPage(path) && !isSharedUser);
 };
