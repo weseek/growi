@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
 const logger = require('@alias/logger')('growi:models:page');
 const debug = require('debug')('growi:models:page');
+const { Readable, Writable, Transform } = require('stream');
+const { createBatchStream } = require('@server/util/batch-stream');
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 
 const STATUS_PUBLISHED = 'published';
@@ -75,7 +77,7 @@ class PageService {
 
     const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
-    const newPagePathPrefix = newPagePath;
+    // const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
     const pages = await Page.findManageableListWithDescendants(page, user);
     const revisions = await Revision.find({ path: pathRegExp });
@@ -85,36 +87,85 @@ class PageService {
     revisions.forEach((revision) => {
       pathRevisionMapping[revision.path] = revision;
     });
+    const readable = new Readable({ objectMode: true });
 
-    const newPages = [];
-    const newRevisions = [];
 
-    pages.forEach((page) => {
-      const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
-      const revisionId = new mongoose.Types.ObjectId();
+    // readable.on('data', async(pages) => {
+    //   console.log(pages.length);
+    // });
+    // readable.push(null);
 
-      newPages.push({
-        path: newPagePath,
-        creator: user._id,
-        grant: page.grant,
-        grantedGroup: page.grantedGroup,
-        grantedUsers: page.grantedUsers,
-        lastUpdateUser: user._id,
-        redirectTo: null,
-        revision: revisionId,
-      });
+    // const newPages = [];
+    // const newRevisions = [];
 
-      newRevisions.push({
-        _id: revisionId, path: newPagePath, body: pathRevisionMapping[page.path].body, author: user._id, format: 'markdown',
-      });
+    // const readable = new Readable({
+    //   objectMode: true,
+    //   async read() {
+    //     console.log('hoge');
+    //     this.push('hoge');
+    //     return Page.findManageableListWithDescendants(page, user);
+    //   },
+    // });
 
+    // pages.forEach((page) => {
+    //   const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
+    //   const revisionId = new mongoose.Types.ObjectId();
+
+    //   newPages.push({
+    //     path: newPagePath,
+    //     creator: user._id,
+    //     grant: page.grant,
+    //     grantedGroup: page.grantedGroup,
+    //     grantedUsers: page.grantedUsers,
+    //     lastUpdateUser: user._id,
+    //     redirectTo: null,
+    //     revision: revisionId,
+    //   });
+
+    //   newRevisions.push({
+    //     _id: revisionId, path: newPagePath, body: pathRevisionMapping[page.path].body, author: user._id, format: 'markdown',
+    //   });
+
+    // });
+
+
+    let count = 0;
+    const writeStream = new Writable({
+      objectMode: true,
+      async write(batch, encoding, callback) {
+        console.log(161, batch);
+        const body = [];
+        try {
+          console.log(batch.length);
+          logger.info(`Adding pages progressing: (count=${count}`);
+
+          count += batch.length;
+        }
+        catch (err) {
+          logger.error('addAllPages error on add anyway: ', err);
+        }
+
+        callback();
+      },
+      final(callback) {
+        logger.info(`Adding pages has completed: (totalCount=${count})`);
+
+        callback();
+      },
     });
 
-    await Page.insertMany(newPages, { ordered: false });
-    await Revision.insertMany(newRevisions, { ordered: false });
+    // await Page.insertMany(newPages, { ordered: false });
+    // await Revision.insertMany(newRevisions, { ordered: false });
 
-    const newPath = page.path.replace(pathRegExp, newPagePathPrefix);
-    const newParentpage = await Page.findByPath(newPath);
+    readable
+      .pipe(createBatchStream(3))
+      .pipe(writeStream);
+
+    pages.forEach(page => readable.push(page));
+    readable.push(null);
+
+    // const newPath = page.path.replace(pathRegExp, newPagePathPrefix);
+    const newParentpage = await Page.findByPath(page.path);
 
     // TODO GW-4634 use stream
     return newParentpage;
