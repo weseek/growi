@@ -1205,7 +1205,7 @@ module.exports = function(crowi) {
       await Page.create(path, body, user, { redirectTo: newPagePath });
     }
 
-    pageEvent.emit('delete', [pageData], user, socketClientId);
+    pageEvent.emit('delete', pageData, user, socketClientId);
     pageEvent.emit('create', updatedPageData, user, socketClientId);
 
     return updatedPageData;
@@ -1244,7 +1244,29 @@ module.exports = function(crowi) {
         unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath } });
       }
 
-      if (createRedirectPage) {
+      if (createRedirectPage && targetPage.status === STATUS_DELETED) {
+        createRediectPageBulkOp.insert({
+          path: page.path,
+          body: `redirect ${newPagePath}`,
+          creator: user,
+          lastUpdateUser: user,
+          status: STATUS_PUBLISHED,
+          grant: page.grant,
+          grantedUsers: page.grantedUsers,
+          liker: page.liker,
+          seenUsers: page.seenUsers,
+          commentCount: page.commentCount,
+          extended: page.extended,
+          grantedGroup: page.grantedGroup,
+          revision: page.revision,
+          createdAt: page.createdAt,
+          updateAt: page.updatedAt,
+          _v: page._v,
+          redirectTo: newPagePath,
+
+        });
+      }
+      else if (createRedirectPage) {
         createRediectPageBulkOp.insert({
           path: page.path, body: `redirect ${newPagePath}`, creator: user, lastUpdateUser: user, status: STATUS_PUBLISHED, redirectTo: newPagePath,
         });
