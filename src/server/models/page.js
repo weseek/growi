@@ -1238,7 +1238,6 @@ module.exports = function(crowi) {
     const createRediectPageBulkOp = pageCollection.initializeUnorderedBulkOp();
     const revisionUnorderedBulkOp = revisionCollection.initializeUnorderedBulkOp();
 
-    console.log(pages);
     pages.forEach((page) => {
       const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
       const updateAt = new Date().toISOString();
