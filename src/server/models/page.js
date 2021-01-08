@@ -1238,33 +1238,39 @@ module.exports = function(crowi) {
     const createRediectPageBulkOp = pageCollection.initializeUnorderedBulkOp();
     const revisionUnorderedBulkOp = revisionCollection.initializeUnorderedBulkOp();
 
-    console.log(pages);
     pages.forEach((page) => {
+      console.log('pages内部のforeach', page);
       const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
       const updateAt = new Date().toISOString();
       if (updateMetadata) {
+        console.log('meta');
         unorderedBulkOp.find({ _id: page._id }).update([{ $set: { path: newPagePath, lastUpdateUser: user._id, updatedAt: { $toDate: updateAt } } }]);
       }
       else if (targetPage.status === STATUS_DELETED) {
+        console.log('deleted');
         unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath, status: STATUS_DELETED } });
       }
       else if (targetPage.path.match(/^\/trash/)) {
-        console.log('51');
+        console.log('reverted');
         unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath, status: STATUS_PUBLISHED } });
       }
       else {
+        console.log('else');
         unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath } });
       }
 
       if (createRedirectPage) {
+        console.log('create redirect');
         createRediectPageBulkOp.insert({
           path: page.path, body: `redirect ${newPagePath}`, creator: user, lastUpdateUser: user, status: STATUS_PUBLISHED, redirectTo: newPagePath,
         });
       }
+      console.log('last');
       revisionUnorderedBulkOp.find({ path: page.path }).update({ $set: { path: newPagePath } }, { multi: true });
     });
 
     try {
+      console.log('exex');
       await unorderedBulkOp.execute();
       await revisionUnorderedBulkOp.execute();
     }
