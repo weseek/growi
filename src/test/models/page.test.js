@@ -333,7 +333,7 @@ describe('Page', () => {
   describe('PageQueryBuilder.addConditionToListWithDescendants', () => {
     test('can retrieve descendants of /page', async() => {
       const builder = new PageQueryBuilder(Page.find());
-      builder.addConditionToListWithDescendants('/page', {});
+      builder.addConditionToListWithDescendants('/page');
 
       const result = await builder.query.exec();
 
@@ -346,7 +346,7 @@ describe('Page', () => {
 
     test('can retrieve descendants of /page1', async() => {
       const builder = new PageQueryBuilder(Page.find());
-      builder.addConditionToListWithDescendants('/page1/', {});
+      builder.addConditionToListWithDescendants('/page1/');
 
       const result = await builder.query.exec();
 

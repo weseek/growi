@@ -144,8 +144,6 @@ class PageQueryBuilder {
    * If top page, return without doing anything.
    */
   addConditionToListWithDescendants(path, option) {
-    const excludeParent = option.excludeParent || false;
-
     // No request is set for the top page
     if (isTopPage(path)) {
       return this;
@@ -156,14 +154,12 @@ class PageQueryBuilder {
 
     const startsPattern = escapeStringRegexp(pathWithTrailingSlash);
 
-    const filters = [{ path: new RegExp(`^${startsPattern}`) }];
-    if (!excludeParent) {
-      filters.push({ path: pathNormalized });
-    }
-
     this.query = this.query
       .and({
-        $or: filters,
+        $or: [
+          { path: pathNormalized },
+          { path: new RegExp(`^${startsPattern}`) },
+        ],
       });
 
     return this;
@@ -721,12 +717,20 @@ module.exports = function(crowi) {
    * find pages that is match with `path` and its descendants whitch user is able to manage
    */
   pageSchema.statics.findManageableListWithDescendants = async function(page, user, option = {}) {
+    const excludeParent = option.excludeParent || false;
+
     if (user == null) {
       return null;
     }
 
     const builder = new PageQueryBuilder(this.find());
-    builder.addConditionToListWithDescendants(page.path, option);
+
+    if (excludeParent) {
+      builder.addConditionToListOnlyDescendants(page.path, option);
+    }
+    else {
+      builder.addConditionToListWithDescendants(page.path, option);
+    }
     builder.addConditionToExcludeRedirect();
 
     // add grant conditions
