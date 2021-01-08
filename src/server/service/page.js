@@ -7,6 +7,7 @@ const { createBatchStream } = require('@server/util/batch-stream');
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 
 const STATUS_PUBLISHED = 'published';
+const BULK_REINDEX_SIZE = 100;
 
 class PageService {
 
@@ -139,7 +140,7 @@ class PageService {
     });
 
     readable
-      .pipe(createBatchStream(3))
+      .pipe(createBatchStream(BULK_REINDEX_SIZE))
       .pipe(writeStream);
 
     pages.forEach(page => readable.push(page));
