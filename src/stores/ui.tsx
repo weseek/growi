@@ -1,11 +1,12 @@
 import { responseInterface } from 'swr';
 
-import { isUserPage } from '~/utils/path-utils';
+import { isUserPage, isSharedPage } from '~/utils/path-utils';
 import {
   useTrash, useNotFound, useCurrentPagePath, useCurrentUser, useIsSharedUser,
 } from './context';
 import { useCurrentPageDeleted, useDescendentsCount, useCurrentPageSWR } from './page';
 import { useStaticSWR } from './use-static-swr';
+import { Page } from '~/interfaces/page';
 
 export const useIsAbleToShowEmptyTrashButton = (): responseInterface<boolean, Error> => {
   const { data: currentUser } = useCurrentUser();
@@ -35,17 +36,7 @@ export const useIsAbleToShowPageReactionButtons = (): responseInterface<boolean,
 
 export const useIsAbleToShowTagLabel = (): responseInterface<boolean, any> => {
   const { data: page } = useCurrentPageSWR();
-  console.log('page', page);
-  const { path } = page;
-  // if (path == null) {
-  //   throw new Error('pagePath should not be null.');
-  // }
-  const { data: isSharedUser } = useIsSharedUser();
+  const { path } = page as Page;
 
-  // isAbleToShowTagLabel = (!isCompactMode && !isTagLabelHidden && !isUserPage && !isSharedPage && !(editorMode === 'view' && !isPageExist));
-
-  // { isAbleToShowTagLabel && !isCompactMode && !isTagLabelHidden && (
-  // ...
-  // ) }
-  return useStaticSWR('isAbleToShowTagLabel', !isUserPage(path) && !isSharedUser);
+  return useStaticSWR('isAbleToShowTagLabel', !isUserPage(path) && !isSharedPage(path));
 };
