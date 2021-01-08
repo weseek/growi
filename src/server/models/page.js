@@ -1225,9 +1225,9 @@ module.exports = function(crowi) {
     newPagePathPrefix = crowi.xss.process(newPagePathPrefix); // eslint-disable-line no-param-reassign
 
     let pages;
-    const targetPagePathRegExp = new RegExp(`^${escapeStringRegexp(targetPage.path)}`, 'i');
     if (targetPage.path.match(/^\/trash/)) {
-      pages = await this.find({ path: targetPagePathRegExp });
+      // find descendants in trash page
+      pages = await this.find({ path: pathRegExp });
     }
     else {
       // find manageable descendants
@@ -1238,6 +1238,7 @@ module.exports = function(crowi) {
     const createRediectPageBulkOp = pageCollection.initializeUnorderedBulkOp();
     const revisionUnorderedBulkOp = revisionCollection.initializeUnorderedBulkOp();
 
+    console.log(pages);
     pages.forEach((page) => {
       const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
       const updateAt = new Date().toISOString();
@@ -1249,7 +1250,7 @@ module.exports = function(crowi) {
       }
       else if (targetPage.path.match(/^\/trash/)) {
         console.log('51');
-        unorderedBulkOp.find({ path: targetPagePathRegExp }).update({ $set: { path: newPagePath, status: STATUS_PUBLISHED } });
+        unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath, status: STATUS_PUBLISHED } });
       }
       else {
         unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath } });
