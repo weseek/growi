@@ -42,5 +42,10 @@ export const useIsAbleToShowTagLabel = (): responseInterface<boolean, any> => {
   // }
   const { data: isSharedUser } = useIsSharedUser();
 
+  // isAbleToShowTagLabel = (!isCompactMode && !isTagLabelHidden && !isUserPage && !isSharedPage && !(editorMode === 'view' && !isPageExist));
+
+  // { isAbleToShowTagLabel && !isCompactMode && !isTagLabelHidden && (
+  // ...
+  // ) }
   return useStaticSWR('isAbleToShowTagLabel', !isUserPage(path) && !isSharedUser);
 };
