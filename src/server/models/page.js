@@ -1224,13 +1224,21 @@ module.exports = function(crowi) {
     // sanitize path
     newPagePathPrefix = crowi.xss.process(newPagePathPrefix); // eslint-disable-line no-param-reassign
 
-    // find manageable descendants
-    const pages = await this.findManageableListWithDescendants(targetPage, user, options);
+    let pages;
+    if (targetPage.path.match(/^\/trash/)) {
+      const targetPagePathRegExp = new RegExp(`^${escapeStringRegexp(targetPage.path)}`, 'i');
+      pages = await this.find({ path: targetPagePathRegExp });
+    }
+    else {
+      // find manageable descendants
+      pages = await this.findManageableListWithDescendants(targetPage, user, options);
+    }
 
     const unorderedBulkOp = pageCollection.initializeUnorderedBulkOp();
     const createRediectPageBulkOp = pageCollection.initializeUnorderedBulkOp();
     const revisionUnorderedBulkOp = revisionCollection.initializeUnorderedBulkOp();
 
+    console.log(pages);
     pages.forEach((page) => {
       const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
       const updateAt = new Date().toISOString();
@@ -1251,19 +1259,7 @@ module.exports = function(crowi) {
           creator: user,
           lastUpdateUser: user,
           status: STATUS_PUBLISHED,
-          grant: page.grant,
-          grantedUsers: page.grantedUsers,
-          liker: page.liker,
-          seenUsers: page.seenUsers,
-          commentCount: page.commentCount,
-          extended: page.extended,
-          grantedGroup: page.grantedGroup,
-          revision: page.revision,
-          createdAt: page.createdAt,
-          updateAt: page.updatedAt,
-          _v: page._v,
           redirectTo: newPagePath,
-
         });
       }
       else if (createRedirectPage) {
