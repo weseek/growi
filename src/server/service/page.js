@@ -167,6 +167,7 @@ class PageService {
     const targetPagePathRegExp = new RegExp(`^${escapeStringRegexp(targetPage.path)}`, 'i');
     const originPages = await Page.find({ path: pathRegExp });
     const revisions = await Revision.find({ path: targetPagePathRegExp });
+    console.log(revisions);
 
     const pathRevisionMapping = {};
     revisions.forEach((revision) => {
@@ -191,7 +192,11 @@ class PageService {
         revision: revisionId,
       });
       newRevisions.push({
-        _id: revisionId, path: newPagePath, body: pathRevisionMapping[page.path].body, author: user._id, format: 'markdown',
+        _id: revisionId,
+        path: newPagePath,
+        body: pathRevisionMapping[page.path].body,
+        author: user._id,
+        format: 'markdown',
       });
     });
     await this.completelyDeletePages(originPages, options);
