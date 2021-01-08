@@ -9,13 +9,15 @@ import BookmarkButton from '../BookmarkButton';
 import LikeButton from '../LikeButton';
 import PageManagement from '../Page/PageManagement';
 
+import { useCurrentPagePath } from '~/stores/context';
 import { useIsAbleToShowPageReactionButtons, useIsAbleToShowLikeButton } from '~/stores/ui';
 
 const SubnavButtons = (props) => {
   const {
     appContainer, navigationContainer, pageContainer, isCompactMode,
   } = props;
-  const { data: isAbleToShowLikeButton } = useIsAbleToShowPageReactionButtons();
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: isAbleToShowLikeButton } = useIsAbleToShowLikeButton(currentPagePath);
 
   /* eslint-enable react/prop-types */
 

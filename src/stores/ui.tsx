@@ -33,11 +33,12 @@ export const useIsAbleToShowPageReactionButtons = (): responseInterface<boolean,
   return useStaticSWR('isAbleToShowPageReactionButtons', !isTrashPage && !isNotFountPage && !isSharedUser);
 };
 
-export const useIsAbleToShowLikeButton = (): responseInterface<boolean, any> => {
+export const useIsAbleToShowLikeButton = (pagePath?: string): responseInterface<boolean, any> => {
   const { data: isSharedUser } = useIsSharedUser();
-  const { data: page } = useCurrentPageSWR();
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  const { path } = page;
 
-  return useStaticSWR('isAbleToShowLikeButton', !isUserPage(path) && !isSharedUser);
+  if (pagePath == null) {
+    throw new Error('pagePath should not be null.');
+  }
+
+  return useStaticSWR('isAbleToShowLikeButton', !isUserPage(pagePath) && !isSharedUser);
 };
