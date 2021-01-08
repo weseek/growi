@@ -607,5 +607,21 @@ module.exports = (crowi) => {
     }
 
   });
+  router.get('/decendants-count', accessTokenParser, loginRequired, validator.decendantsCcount, async(req, res) => {
+    const { path } = req.query;
+
+    try {
+      const page = await Page.findByPath(path);
+      const pages = await Page.findManageableListWithDescendants(page, req.user);
+      const result = pages.length;
+
+      return res.apiv3({ result });
+    }
+    catch (err) {
+      return res.apiv3Err(new ErrorV3('Failed to get decendants pages count.', err), 500);
+    }
+
+  });
+
   return router;
 };
