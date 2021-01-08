@@ -149,6 +149,10 @@ module.exports = (crowi) => {
       body('pageNameInput').trim().isLength({ min: 1 }).withMessage('pageNameInput is required'),
       body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
     ],
+
+    decendantsCcount: [
+      body('path').isLength({ min: 1 }).withMessage('path is required'),
+    ],
   };
 
   async function createPageAction({
