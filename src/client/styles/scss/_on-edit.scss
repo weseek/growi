@@ -235,9 +235,8 @@ body.on-edit {
     }
 
     .page-editor-preview-body {
-      padding-top: 18px;
-      padding-right: 15px;
-      padding-left: 15px;
+      max-width: 980px;
+      padding: 18px 15px 0;
       overflow-y: scroll;
     }
 
