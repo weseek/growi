@@ -1220,10 +1220,9 @@ module.exports = function(crowi) {
     const path = targetPage.path;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(path)}`, 'i');
     const { updateMetadata, createRedirectPage } = options;
-
     // sanitize path
     newPagePathPrefix = crowi.xss.process(newPagePathPrefix); // eslint-disable-line no-param-reassign
-
+    const newStatus = newPagePathPrefix.match(/^\/trash/) ? STATUS_DELETED : STATUS_PUBLISHED;
 
     const pages = await this.findManageableListWithDescendants(targetPage, user, options);
     const unorderedBulkOp = pageCollection.initializeUnorderedBulkOp();
@@ -1235,17 +1234,14 @@ module.exports = function(crowi) {
       const updateAt = new Date().toISOString();
 
       if (updateMetadata) {
-        unorderedBulkOp.find({ _id: page._id }).update([{ $set: { path: newPagePath, lastUpdateUser: user._id, updatedAt: { $toDate: updateAt } } }]);
-      }
-      else if (targetPage.status === STATUS_DELETED) {
-        unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath, lastUpdateUser: user._id, status: STATUS_DELETED } });
-      }
-      else if (targetPage.path.match(/^\/trash/)) {
-        console.log('trash');
-        unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath, status: STATUS_PUBLISHED } });
+        unorderedBulkOp.find({ _id: page._id }).update([{
+          $set: {
+            path: newPagePath, status: newStatus, lastUpdateUser: user._id, updatedAt: { $toDate: updateAt },
+          },
+        }]);
       }
       else {
-        unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath } });
+        unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath, status: newStatus } });
       }
 
       if (createRedirectPage) {
@@ -1257,7 +1253,6 @@ module.exports = function(crowi) {
     });
 
     try {
-      console.log('exex');
       await unorderedBulkOp.execute();
       await revisionUnorderedBulkOp.execute();
     }
