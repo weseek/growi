@@ -41,7 +41,6 @@ export const useIsAbleToShowLikeButton = (): responseInterface<boolean, any> => 
   if (page == null) {
     throw new Error('page must not be null');
   }
-
   return useStaticSWR('isAbleToShowLikeButton', !isUserPage(page.path) && !isSharedUser);
 };
 
