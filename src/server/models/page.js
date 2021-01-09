@@ -1224,20 +1224,8 @@ module.exports = function(crowi) {
     // sanitize path
     newPagePathPrefix = crowi.xss.process(newPagePathPrefix); // eslint-disable-line no-param-reassign
 
-    let pages;
-    console.log('hgoe');
-    console.log(path);
-    if (path.match(/^\/trash/)) {
-      console.log('trash');
-      // find descendants in trash page
-      pages = await this.find({ path: pathRegExp });
-    }
-    else {
-      // find manageable descendants
-      pages = await this.findManageableListWithDescendants(targetPage, user, options);
-    }
-    console.log(pages);
 
+    const pages = await this.findManageableListWithDescendants(targetPage, user, options);
     const unorderedBulkOp = pageCollection.initializeUnorderedBulkOp();
     const createRediectPageBulkOp = pageCollection.initializeUnorderedBulkOp();
     const revisionUnorderedBulkOp = revisionCollection.initializeUnorderedBulkOp();
@@ -1250,14 +1238,10 @@ module.exports = function(crowi) {
         unorderedBulkOp.find({ _id: page._id }).update([{ $set: { path: newPagePath, lastUpdateUser: user._id, updatedAt: { $toDate: updateAt } } }]);
       }
       else if (targetPage.status === STATUS_DELETED) {
-        console.log('deleted');
         unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath, lastUpdateUser: user._id, status: STATUS_DELETED } });
       }
       else if (targetPage.path.match(/^\/trash/)) {
-        console.log('reverted'); // OK
-        console.log('prefix', newPagePathPrefix); // OK
-        console.log('newpath', newPagePath);
-        console.log(page._id);
+        console.log('trash');
         unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath, status: STATUS_PUBLISHED } });
       }
       else {

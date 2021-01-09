@@ -161,6 +161,7 @@ class PageService {
     const Page = this.crowi.model('Page');
     const newPath = Page.getRevertDeletedPageName(targetPage.path);
     const originPage = await Page.findByPath(newPath);
+    const findOpts = { includeTrashed: true };
 
     if (originPage != null) {
       if (originPage.redirectTo !== targetPage.path) {
@@ -172,7 +173,7 @@ class PageService {
     targetPage.status = STATUS_PUBLISHED;
     targetPage.lastUpdateUser = user;
     debug('Revert deleted the page', targetPage, newPath);
-    return Page.renameRecursively(targetPage, newPath, user, {});
+    return Page.renameRecursively(targetPage, newPath, user, findOpts);
   }
 
   async revertSingleDeletedPage(page, user, options = {}) {
