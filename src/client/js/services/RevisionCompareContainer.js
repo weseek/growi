@@ -22,9 +22,13 @@ export default class RevisionCompareContainer extends Container {
 
       fromRevision: null,
       toRevision: null,
+
+      recentRevisions: [],
     }
 
     this.fetchPageRevisionBody = this.fetchPageRevisionBody.bind(this);
+    this.handleFromRevisionChange = this.handleFromRevisionChange.bind(this);
+    this.handleToRevisionChange = this.handleToRevisionChange.bind(this);
   }
 
   /**
@@ -59,6 +63,38 @@ export default class RevisionCompareContainer extends Container {
       this.setState({ errorMessage: err.message });
       logger.error(err);
     }
+  }
+
+  async fetchPageRevisions() {
+    const { pageId, shareLinkId } = this.pageContainer.state;
+    const page = 1; // The pagination start number is fixed to 1.
+    const res = await this.appContainer.apiv3Get('/revisions/list', {
+      pageId, shareLinkId, page, limit: 100,
+    });
+    const recentRevisions = res.data.docs;
+
+    res.data.docs.forEach((revision, i) => {
+      const user = revision.author;
+      if (user) {
+        recentRevisions[i].author = user;
+      }
+    });
+
+    this.setState({ recentRevisions });
+  }
+
+  handleFromRevisionChange(revisionId) {
+    this.setState({
+      fromRevision: revisionId
+    })
+    this.fetchPageRevisionBody(revisionId, this.state.toRevision._id);
+  }
+
+  handleToRevisionChange(revisionId) {
+    this.setState({
+      toRevision: revisionId
+    })
+    this.fetchPageRevisionBody(this.state.fromRevision._id, revisionId);
   }
 
 }
