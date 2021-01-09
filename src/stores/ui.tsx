@@ -37,9 +37,12 @@ export const useIsAbleToShowPageReactionButtons = (): responseInterface<boolean,
 export const useIsAbleToShowLikeButton = (): responseInterface<boolean, any> => {
   const { data: isSharedUser } = useIsSharedUser();
   const { data: page } = useCurrentPageSWR();
-  const { path } = page as Page;
 
-  return useStaticSWR('isAbleToShowLikeButton', !isUserPage(path) && !isSharedUser);
+  if (page == null) {
+    throw new Error('page must not be null');
+  }
+
+  return useStaticSWR('isAbleToShowLikeButton', !isUserPage(page.path) && !isSharedUser);
 };
 
 export const useIsAbleToShowTagLabel = (): responseInterface<boolean, any> => {
