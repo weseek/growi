@@ -164,14 +164,32 @@ class PageService {
     const originPages = await Page.find({ path: pathRegExp });
     const findOpts = { includeTrashed: true };
 
-    originPages.forEach(async(origin) => {
-      if (origin != null) {
-        if (origin.redirectTo !== targetPage.path) {
-          throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
-        }
-        await this.completelyDeletePages(originPages, options);
+    const pageCollection = mongoose.connection.collection('pages');
+    const revisionCollection = mongoose.connection.collection('revisions');
+    const unorderedBulkOp = pageCollection.initializeUnorderedBulkOp();
+    const revisionUnorderedBulkOp = revisionCollection.initializeUnorderedBulkOp();
+
+    originPages.forEach((originPage) => {
+      if (originPage != null) {
+        console.log(originPage.redirectTo);
+        console.log(targetPage.path);
+        // if (originPage.redirectTo !== targetPage.path) {
+        //   throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
+        // }
+        unorderedBulkOp.find({ _id: originPage._id }).remove();
+        revisionUnorderedBulkOp.find({ path: originPage.path }).remove();
       }
     });
+
+    try {
+      await unorderedBulkOp.execute();
+      await revisionUnorderedBulkOp.execute();
+    }
+    catch (err) {
+      if (err.code !== 11000) {
+        throw new Error('Failed to revert pages: ', err);
+      }
+    }
 
     targetPage.status = STATUS_PUBLISHED;
     targetPage.lastUpdateUser = user;
@@ -188,6 +206,8 @@ class PageService {
       // When the page is deleted, it will always be created with "redirectTo" in the path of the original page.
       // So, it's ok to delete the page
       // However, If a page exists that is not "redirectTo", something is wrong. (Data correction is needed).
+      console.log(originPage.redirectTo, page.path);
+
       if (originPage.redirectTo !== page.path) {
         throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
       }
