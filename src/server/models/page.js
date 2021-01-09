@@ -1222,6 +1222,7 @@ module.exports = function(crowi) {
     const { updateMetadata, createRedirectPage } = options;
     // sanitize path
     newPagePathPrefix = crowi.xss.process(newPagePathPrefix); // eslint-disable-line no-param-reassign
+
     const newStatus = newPagePathPrefix.match(/^\/trash/) ? STATUS_DELETED : STATUS_PUBLISHED;
 
     const pages = await this.findManageableListWithDescendants(targetPage, user, options);
@@ -1240,9 +1241,8 @@ module.exports = function(crowi) {
           },
         }]);
       }
-      else {
-        unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath, status: newStatus } });
-      }
+
+      unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath, status: newStatus } });
 
       if (createRedirectPage) {
         createRediectPageBulkOp.insert({
