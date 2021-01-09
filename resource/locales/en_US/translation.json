@@ -6,6 +6,10 @@
   "delete_all": "Delete all",
   "Duplicate": "Duplicate",
   "Copy": "Copy",
+  "preview":"Preview",
+  "desktop":"Desktop",
+  "phone":"Smartphone",
+  "tablet":"Tablet",
   "Click to copy": "Click to copy",
   "Move/Rename": "Move/Rename",
   "Moved": "Moved",
@@ -806,6 +810,14 @@
     "complete_to_install1":"Complete to Install GROWI ! Please login as admin account.",
     "complete_to_install2":"Complete to Install GROWI ! Please check each settings on this page first.",
     "failed_to_create_admin_user":"Failed to create admin user. {{errMessage}}"
+  },
+  "grid_edit":{
+    "create_bootstrap_4_grid":"Create Bootstrap 4 Grid",
+    "grid_settings": "Grid Settings",
+    "grid_pattern":"Grid Pattern",
+    "division":"Divisions",
+    "smart_no":"Smartphone / No Break",
+    "break_point":"Break point by display size"
   },
   "validation":{
     "aws_region": "For the region, enter the AWS region name. ex):us-east-1",

@@ -6,6 +6,10 @@
   "delete_all": "全て削除",
   "Duplicate": "複製",
   "Copy": "コピー",
+  "preview":"プレビュー",
+  "desktop":"パソコン",
+  "phone":"スマホ",
+  "tablet":"タブレット",
   "Click to copy": "クリックでコピー",
   "Move/Rename": "移動/名前変更",
   "Moved": "移動しました",
@@ -799,6 +803,14 @@
     "complete_to_install1":"GROWI のインストールが完了しました！管理者アカウントでログインしてください。",
     "complete_to_install2":"GROWI のインストールが完了しました！はじめに、このページで各種設定を確認してください。",
     "failed_to_create_admin_user":"管理ユーザーの作成に失敗しました。{{errMessage}}"
+  },
+  "grid_edit":{
+    "create_bootstrap_4_grid":"Bootstrap 4 グリッドを作成",
+    "grid_settings": "グリッド設定",
+    "grid_pattern":"グリッド　パターン",
+    "division":"分割",
+    "smart_no":"スマホ / 分割なし",
+    "break_point":"画面サイズより分割"
   },
   "validation":{
     "aws_region": "リージョンには、AWSリージョン名を入力してください。例: ap-northeast-1",

@@ -436,6 +436,36 @@ body.on-edit {
 }
 
 /*
+ * GROWI Grid Edit Modal
+ */
+.grw-grid-edit-preview {
+  .desktop-preview,
+  .tablet-preview,
+  .mobile-preview {
+    background: $bgcolor-global;
+  }
+  .grid-edit-border-for-each-cols {
+    border: 2px solid $bgcolor-global;
+  }
+}
+
+.grid-preview-col-0 {
+  background: $growi-blue;
+}
+
+.grid-preview-col-1 {
+  background: $info;
+}
+
+.grid-preview-col-2 {
+  background: $success;
+}
+
+.grid-preview-col-3 {
+  background: $growi-green;
+}
+
+/*
  * GROWI comment
  */
 .page-comment-meta .page-comment-revision svg {
