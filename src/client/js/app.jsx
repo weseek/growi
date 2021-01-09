@@ -43,6 +43,7 @@ import CommentContainer from './services/CommentContainer';
 import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
 import PersonalContainer from './services/PersonalContainer';
+import PageAccessoriesContainer from './services/PageAccessoriesContainer';
 
 import { appContainer, componentMappings } from './base';
 
@@ -62,8 +63,9 @@ const commentContainer = new CommentContainer(appContainer);
 const editorContainer = new EditorContainer(appContainer, defaultEditorOptions, defaultPreviewOptions);
 const tagContainer = new TagContainer(appContainer);
 const personalContainer = new PersonalContainer(appContainer);
+const pageAccessoriesContainer = new PageAccessoriesContainer(appContainer);
 const injectableContainers = [
-  appContainer, socketIoContainer, navigationContainer, pageContainer, pageHistoryContainer, revisionCompareContainer, commentContainer, editorContainer, tagContainer, personalContainer,
+  appContainer, socketIoContainer, navigationContainer, pageContainer, pageHistoryContainer, revisionCompareContainer, commentContainer, editorContainer, tagContainer, personalContainer, pageAccessoriesContainer,
 ];
 
 logger.info('unstated containers have been initialized');
@@ -118,6 +120,11 @@ if (pageContainer.state.pageId != null) {
     'user-bookmark-icon': <BookmarkIcon />,
     'grw-user-contents-links': <UserContentsLinks />,
   });
+
+  // show the Page accessory modal when query of "compare" is requested
+  if (pageContainer.state.compareRevisionIds != null && pageContainer.state.compareRevisionIds.length > 0) {
+    pageAccessoriesContainer.openPageAccessoriesModal('revisionCompare');
+  }
 }
 if (pageContainer.state.creator != null) {
   Object.assign(componentMappings, {
