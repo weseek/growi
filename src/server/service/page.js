@@ -161,15 +161,17 @@ class PageService {
     const Page = this.crowi.model('Page');
     const newPath = Page.getRevertDeletedPageName(targetPage.path);
     const pathRegExp = new RegExp(`^${escapeStringRegexp(newPath)}`, 'i');
-    const originPage = await Page.find({ path: pathRegExp });
+    const originPages = await Page.find({ path: pathRegExp });
     const findOpts = { includeTrashed: true };
-    console.log(originPage);
-    // if (originPage != null) {
-    //   if (originPage.redirectTo !== targetPage.path) {
-    //     throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
-    //   }
-    await this.completelyDeletePages(originPage, options);
-    // }
+
+    originPages.forEach(async(origin) => {
+      if (origin != null) {
+        if (origin.redirectTo !== targetPage.path) {
+          throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
+        }
+        await this.completelyDeletePages(originPages, options);
+      }
+    });
 
     targetPage.status = STATUS_PUBLISHED;
     targetPage.lastUpdateUser = user;
