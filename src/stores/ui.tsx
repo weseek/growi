@@ -1,11 +1,11 @@
 import { responseInterface } from 'swr';
 
+import { isUserPage, isSharedPage } from '~/utils/path-utils';
 import {
   useTrash, useNotFound, useCurrentPagePath, useCurrentUser, useIsSharedUser,
 } from './context';
 import { useCurrentPageDeleted, useDescendentsCount, useCurrentPageSWR } from './page';
 import { useStaticSWR } from './use-static-swr';
-import { isUserPage } from '~/utils/path-utils';
 import { Page } from '~/interfaces/page';
 
 export const useIsAbleToShowEmptyTrashButton = (): responseInterface<boolean, Error> => {
@@ -40,4 +40,13 @@ export const useIsAbleToShowLikeButton = (): responseInterface<boolean, any> => 
   const { path } = page as Page;
 
   return useStaticSWR('isAbleToShowLikeButton', !isUserPage(path) && !isSharedUser);
+};
+
+export const useIsAbleToShowTagLabel = (): responseInterface<boolean, any> => {
+  const { data: page } = useCurrentPageSWR();
+  const { path } = page as Page;
+
+  // [TODO: add other two judgements and expand isAbleToShowTagLabel by GW-4881]
+  // isAbleToShowTagLabel = (!isCompactMode && !isUserPage && !isSharedPage && !(editorMode === 'view' && !isPageExist));
+  return useStaticSWR('isAbleToShowTagLabel', !isUserPage(path) && !isSharedPage(path));
 };

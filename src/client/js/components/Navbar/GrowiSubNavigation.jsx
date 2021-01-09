@@ -10,7 +10,10 @@ import LinkedPagePath from '~/models/linked-page-path';
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
 import { isCreatablePage, isTrashPage, isUserPage } from '~/utils/path-utils';
 import { useCurrentPageSWR } from '~/stores/page';
-import { useCurrentUser, useForbidden, useOwnerOfCurrentPage } from '~/stores/context';
+import {
+  useCurrentUser, useForbidden, useOwnerOfCurrentPage,
+} from '~/stores/context';
+import { useIsAbleToShowTagLabel } from '~/stores/ui';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
@@ -76,6 +79,7 @@ const GrowiSubNavigation = (props) => {
   const { data: page } = useCurrentPageSWR();
   const { data: pageOwner } = useOwnerOfCurrentPage();
   const { data: isForbidden } = useForbidden();
+  const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
 
   // dynamic import to skip rendering at SSR
   const SubnavButtons = dynamic(() => import('../Page/SubnavButtons'), { ssr: false });
@@ -118,7 +122,8 @@ const GrowiSubNavigation = (props) => {
         ) }
 
         <div className="grw-path-nav-container">
-          { /* pageContainer.isAbleToShowTagLabel && */ !isCompactMode && !isTagLabelHidden && (
+          {/* TODO: add other two judgements and expand isAbleToShowTagLabel by GW-4881 */}
+          { isAbleToShowTagLabel && !isCompactMode && !isTagLabelHidden && (
             <div className="grw-taglabels-container">
               <TagLabels editorMode={editorMode} />
             </div>
