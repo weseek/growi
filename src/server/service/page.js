@@ -173,7 +173,9 @@ class PageService {
     targetPage.status = STATUS_PUBLISHED;
     targetPage.lastUpdateUser = user;
     debug('Revert deleted the page', targetPage, newPath);
-    return Page.renameRecursively(targetPage, newPath, user, findOpts);
+    const updatedPage = await Page.renameRecursively(targetPage, newPath, user, findOpts);
+    console.log(updatedPage);
+    return updatedPage;
   }
 
   async revertSingleDeletedPage(page, user, options = {}) {
