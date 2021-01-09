@@ -161,25 +161,21 @@ class PageService {
     const Page = this.crowi.model('Page');
     const newPath = Page.getRevertDeletedPageName(targetPage.path);
     const pathRegExp = new RegExp(`^${escapeStringRegexp(newPath)}`, 'i');
-    const originPages = await Page.find({ path: pathRegExp });
     const findOpts = { includeTrashed: true };
-
+    const pages = await Page.findManageableListWithDescendants(targetPage, user, findOpts);
+    const originPages = await Page.find({ path: pathRegExp }).sort({ _id: 1 });
     const pageCollection = mongoose.connection.collection('pages');
     const revisionCollection = mongoose.connection.collection('revisions');
     const unorderedBulkOp = pageCollection.initializeUnorderedBulkOp();
     const revisionUnorderedBulkOp = revisionCollection.initializeUnorderedBulkOp();
 
-    originPages.forEach((originPage) => {
-      if (originPage != null) {
-        console.log(originPage.redirectTo);
-        console.log(targetPage.path);
-        // if (originPage.redirectTo !== targetPage.path) {
-        //   throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
-        // }
-        unorderedBulkOp.find({ _id: originPage._id }).remove();
-        revisionUnorderedBulkOp.find({ path: originPage.path }).remove();
+    for (let i = 0; i < pages.length; i++) {
+      if (originPages[i].redirectTo !== pages[i].path) {
+        throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
       }
-    });
+      unorderedBulkOp.find({ _id: originPages[i]._id }).remove();
+      revisionUnorderedBulkOp.find({ path: originPages[i].path }).remove();
+    }
 
     try {
       await unorderedBulkOp.execute();
@@ -206,8 +202,6 @@ class PageService {
       // When the page is deleted, it will always be created with "redirectTo" in the path of the original page.
       // So, it's ok to delete the page
       // However, If a page exists that is not "redirectTo", something is wrong. (Data correction is needed).
-      console.log(originPage.redirectTo, page.path);
-
       if (originPage.redirectTo !== page.path) {
         throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
       }
