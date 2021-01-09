@@ -161,6 +161,7 @@ class PageService {
     const Page = this.crowi.model('Page');
     const newPath = Page.getRevertDeletedPageName(targetPage.path);
     const originPage = await Page.findByPath(newPath);
+
     if (originPage != null) {
       if (originPage.redirectTo !== targetPage.path) {
         throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
@@ -170,9 +171,8 @@ class PageService {
 
     targetPage.status = STATUS_PUBLISHED;
     targetPage.lastUpdateUser = user;
-    // debug('Revert deleted the page', targetPage, newPath);
-    const updatedPage = await Page.renameRecursively(targetPage, newPath, user, {});
-    return updatedPage;
+    debug('Revert deleted the page', targetPage, newPath);
+    return Page.renameRecursively(targetPage, newPath, user, {});
   }
 
   async revertSingleDeletedPage(page, user, options = {}) {

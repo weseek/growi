@@ -1225,7 +1225,10 @@ module.exports = function(crowi) {
     newPagePathPrefix = crowi.xss.process(newPagePathPrefix); // eslint-disable-line no-param-reassign
 
     let pages;
-    if (targetPage.path.match(/^\/trash/)) {
+    console.log('hgoe');
+    console.log(path);
+    if (path.match(/^\/trash/)) {
+      console.log('trash');
       // find descendants in trash page
       pages = await this.find({ path: pathRegExp });
     }
@@ -1233,39 +1236,39 @@ module.exports = function(crowi) {
       // find manageable descendants
       pages = await this.findManageableListWithDescendants(targetPage, user, options);
     }
+    console.log(pages);
 
     const unorderedBulkOp = pageCollection.initializeUnorderedBulkOp();
     const createRediectPageBulkOp = pageCollection.initializeUnorderedBulkOp();
     const revisionUnorderedBulkOp = revisionCollection.initializeUnorderedBulkOp();
 
     pages.forEach((page) => {
-      console.log('pages内部のforeach', page);
       const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
       const updateAt = new Date().toISOString();
+
       if (updateMetadata) {
-        console.log('meta');
         unorderedBulkOp.find({ _id: page._id }).update([{ $set: { path: newPagePath, lastUpdateUser: user._id, updatedAt: { $toDate: updateAt } } }]);
       }
       else if (targetPage.status === STATUS_DELETED) {
         console.log('deleted');
-        unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath, status: STATUS_DELETED } });
+        unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath, lastUpdateUser: user._id, status: STATUS_DELETED } });
       }
       else if (targetPage.path.match(/^\/trash/)) {
-        console.log('reverted');
+        console.log('reverted'); // OK
+        console.log('prefix', newPagePathPrefix); // OK
+        console.log('newpath', newPagePath);
+        console.log(page._id);
         unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath, status: STATUS_PUBLISHED } });
       }
       else {
-        console.log('else');
         unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath } });
       }
 
       if (createRedirectPage) {
-        console.log('create redirect');
         createRediectPageBulkOp.insert({
           path: page.path, body: `redirect ${newPagePath}`, creator: user, lastUpdateUser: user, status: STATUS_PUBLISHED, redirectTo: newPagePath,
         });
       }
-      console.log('last');
       revisionUnorderedBulkOp.find({ path: page.path }).update({ $set: { path: newPagePath } }, { multi: true });
     });
 
