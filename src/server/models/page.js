@@ -1242,7 +1242,6 @@ module.exports = function(crowi) {
           },
         }]);
       }
-
       unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath, status: newStatus } });
 
       if (createRedirectPage) {
