@@ -51,16 +51,14 @@ class RevisionIdForm extends React.Component {
     const changeHandler = (forFromRev ? revisionCompareContainer.handleFromRevisionChange : revisionCompareContainer.handleToRevisionChange);
     const rev = (forFromRev ? revisionCompareContainer.state.fromRevision?._id : revisionCompareContainer.state.toRevision?._id );
     return (
-      <div class="mb-3 col-sm">
-        <AsyncSelect
-          cacheOptions
-          loadOptions={this.loadFilteredRevisionOptions}
-          defaultOptions={this.revisionOptions()}
-          onChange={(selectedOption) => changeHandler(selectedOption.value)}
-          placeholder={label}
-          options={[rev]}
-        />
-      </div>
+      <AsyncSelect
+        cacheOptions
+        loadOptions={this.loadFilteredRevisionOptions}
+        defaultOptions={this.revisionOptions()}
+        onChange={(selectedOption) => changeHandler(selectedOption.value)}
+        placeholder={label}
+        options={[rev]}
+      />
     );
   }
 
@@ -71,8 +69,12 @@ class RevisionIdForm extends React.Component {
     return (
       <div class="container-fluid px-0">
         <div class="row">
-          { fromRevSelector }
-          { toRevSelector }
+          <div class="mb-3 col-sm">
+            { fromRevSelector }
+          </div>
+          <div class="mb-3 col-sm">
+            { toRevSelector }
+          </div>
         </div>
       </div>
     );
