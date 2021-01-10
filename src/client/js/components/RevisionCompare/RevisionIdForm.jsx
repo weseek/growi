@@ -19,18 +19,12 @@ class RevisionIdForm extends React.Component {
 
   revisionOptions() {
     const { revisionCompareContainer } = this.props;
-    return revisionCompareContainer.state.recentRevisions.map(rev => {
+    return revisionCompareContainer.state.revisions.map(rev => {
       return { label: `${new Date(rev.createdAt)} - ${rev._id}`, value: rev._id };
     });
   }
 
   async loadFilteredRevisionOptions(inputText, callback) {
-    console.log(`loadFilteredRevisionOptions is called`);
-    const { revisionCompareContainer } = this.props;
-
-    // If the RevisionId user entered exists, it is added to the list.
-    await revisionCompareContainer.fetchPageRevisionIfExists(inputText);
-
     // Filter the RevisionId that matches the text user entered.
     const revisionOptions = this.revisionOptions();
     const filteredRevisionOptions = revisionOptions.filter(rev => rev.label.toLowerCase().includes(inputText.toLowerCase()));
