@@ -67,12 +67,12 @@ class RevisionIdForm extends React.Component {
     const toRevSelector = this.renderRevisionSelector("ToRev");
 
     return (
-      <div class="container-fluid px-0">
-        <div class="row">
-          <div class="mb-3 col-sm">
+      <div className="container-fluid px-0">
+        <div className="row">
+          <div className="mb-3 col-sm">
             { fromRevSelector }
           </div>
-          <div class="mb-3 col-sm">
+          <div className="mb-3 col-sm">
             { toRevSelector }
           </div>
         </div>
