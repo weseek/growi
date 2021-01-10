@@ -65,7 +65,7 @@ export default class RevisionCompareContainer extends Container {
     const { pageId, shareLinkId } = this.pageContainer.state;
     try {
       const res = await this.appContainer.apiv3Get(`/revisions/${revisionId}`, { pageId, shareLinkId });
-      if (!res || !res.data || !res.data.revision) {
+      if (res == null || res.data == undefined || res.data.revision == undefined) {
         console.log(`cannot get revision: ${res}`);
         return null;
       }
@@ -91,7 +91,7 @@ export default class RevisionCompareContainer extends Container {
   async fetchPageRevisionIfExists(revisionId) {
     try {
       const revision = await this.fetchPageRevisionBody(revisionId);
-      if (!revision || this.state.recentRevisions.map(rev => rev._id).includes(revision._id)) {
+      if (revision == null || this.state.recentRevisions.map(rev => rev._id).includes(revision._id)) {
         return null;
       }
 
