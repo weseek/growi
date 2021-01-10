@@ -1,4 +1,5 @@
 import React from 'react';
+import AsyncSelect from 'react-select/async';
 import PropTypes from 'prop-types';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -11,8 +12,33 @@ class RevisionIdForm extends React.Component {
     super(props);
 
     this.state = {
+      inputTextObj: {
+        FromRev: "",
+        ToRev: "",
+      }
     };
 
+    this.loadFilteredRevisionOptions = this.loadFilteredRevisionOptions.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
+  }
+
+  loadFilteredRevisionOptions(inputText, callback) {
+    const { revisionCompareContainer } = this.props;
+    const revisionOptions = revisionCompareContainer.state.recentRevisions.map(rev => {
+      return { label: rev._id, value: rev._id };
+    });
+    const filteredRevisionOptions = revisionOptions.filter(rev =>
+      rev.label.toLowerCase().includes(inputText.toLowerCase())
+    );
+
+    return callback(filteredRevisionOptions);
+  }
+
+  handleInputChange(newText, label) {
+    const inputTextObj = this.state.inputTextObj;
+    inputTextObj[label] = newText.replace(/\W/g, '');
+    this.setState({ inputTextObj });
+    return inputTextObj[label];
   }
 
   /**
@@ -25,20 +51,19 @@ class RevisionIdForm extends React.Component {
     }
 
     const { revisionCompareContainer } = this.props;
-    const selectedRev = (label === "FromRev" ? revisionCompareContainer.state.fromRevision : revisionCompareContainer.state.toRevision);
     const changeHandler = (label === "FromRev" ? revisionCompareContainer.handleFromRevisionChange : revisionCompareContainer.handleToRevisionChange);
     return (
       <div class="input-group mb-3 col-sm">
         <div class="input-group-prepend">
           <label class="input-group-text" for="inputGroupSelect01">{ label }</label>
         </div>
-        <select class="custom-select" id="inputGroupSelect01" value={selectedRev ? selectedRev._id : ""} onChange={e => changeHandler(e.target.value)}>
-          {
-            revisionCompareContainer.state.recentRevisions.map(rev => (
-              <option key={rev._id} value={rev._id}>{ rev._id }</option>
-            ))
-          }
-        </select>
+        <AsyncSelect
+          cacheOptions
+          loadOptions={this.loadFilteredRevisionOptions}
+          defaultOptions
+          onInputChange={(newText) => this.handleInputChange(newText, label)}
+          onChange={(selectedOption) => changeHandler(selectedOption.value)}
+        />
       </div>
     );
   }
