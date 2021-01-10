@@ -45,8 +45,12 @@ export default class RevisionCompareContainer extends Container {
     const [fromRevisionIdParam, toRevisionIdParam] = this.pageContainer.state.compareRevisionIds || [];
 
     await this.fetchPageRevisions();
-    await this.fetchPageRevisionIfExists(fromRevisionIdParam);
-    await this.fetchPageRevisionIfExists(toRevisionIdParam);
+    if (fromRevisionIdParam) {
+      await this.fetchPageRevisionIfExists(fromRevisionIdParam);
+    }
+    if (toRevisionIdParam) {
+      await this.fetchPageRevisionIfExists(toRevisionIdParam);
+    }
 
     const fromRevision = this.state.recentRevisions.find(rev => rev._id === fromRevisionIdParam);
     const toRevision = this.state.recentRevisions.find(rev => rev._id === toRevisionIdParam);
