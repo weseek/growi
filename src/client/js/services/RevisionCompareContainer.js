@@ -54,7 +54,7 @@ export default class RevisionCompareContainer extends Container {
   }
 
   /**
-   * fetch page revision body by revision_id in argument
+   * Fetch page revision body by revision_id in argument
    * @param {string} revisionId
    */
   async fetchPageRevisionBody(revisionId) {
@@ -74,6 +74,12 @@ export default class RevisionCompareContainer extends Container {
     }
   }
 
+  /**
+   * Fetch all page revisions
+   *
+   * Each revision to be saved contains only "_id" and "createdAt", and "body" is initialized to null.
+   * ex. [{_id: "5ff03fded799ebc858a09266", body: null, creat…}, {_id: "5ff03fbed799ebc858a09262", body: null, creat…}]
+   */
   async fetchAllPageRevisions() {
     const { pageId, shareLinkId } = this.pageContainer.state;
 
@@ -96,6 +102,12 @@ export default class RevisionCompareContainer extends Container {
     this.setState({ revisions: newRevisions });
   }
 
+  /**
+   * Fetch specified page revision
+   * If revision's body is empty, it will be completed.
+   * @param {string} revisionId
+   * @return {revision} revision
+   */
   async fetchPageRevision(revisionId) {
     try {
       const compactRevision = this.state.revisions.find(rev => rev._id === revisionId);
