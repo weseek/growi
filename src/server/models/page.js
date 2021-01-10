@@ -1221,7 +1221,7 @@ module.exports = function(crowi) {
     // sanitize path
     newPagePathPrefix = crowi.xss.process(newPagePathPrefix); // eslint-disable-line no-param-reassign
 
-    // find manageble descendants
+    // find manageable descendants
     const pages = await this.findManageableListWithDescendants(targetPage, user, options);
     const newStatus = newPagePathPrefix.match(/^\/trash/) ? STATUS_DELETED : STATUS_PUBLISHED;
 
