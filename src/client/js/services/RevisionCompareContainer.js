@@ -28,10 +28,7 @@ export default class RevisionCompareContainer extends Container {
 
     this.readyRevisions = this.readyRevisions.bind(this);
     this.fetchPageRevisionBody = this.fetchPageRevisionBody.bind(this);
-    // this.fetchPageRevisionBodyForFrom = this.fetchPageRevisionBodyForFrom.bind(this);
-    // this.fetchPageRevisionBodyForTo = this.fetchPageRevisionBodyForTo.bind(this);
     this.fetchPageRevisions = this.fetchPageRevisions.bind(this);
-    // this.appendRevisionToRecentRevisions = this.appendRevisionToRecentRevisions.bind(this);
     this.fetchPageRevisionIfExists = this.fetchPageRevisionIfExists.bind(this);
     this.handleFromRevisionChange = this.handleFromRevisionChange.bind(this);
     this.handleToRevisionChange = this.handleToRevisionChange.bind(this);
@@ -77,24 +74,6 @@ export default class RevisionCompareContainer extends Container {
     }
   }
 
-  // async fetchPageRevisionBodyForFrom(revisionId) {
-  //   console.log("fetchPageRevisionBodyForFrom is called");
-  //   const fromRevision = await this.fetchPageRevisionBody(revisionId);
-  //   if (fromRevision) {
-  //     this.setState({ fromRevision });
-  //     this.appendRevisionToRecentRevisions(fromRevision);
-  //   }
-  // }
-
-  // async fetchPageRevisionBodyForTo(revisionId) {
-  //   console.log("fetchPageRevisionBodyForTo is called");
-  //   const toRevision = await this.fetchPageRevisionBody(revisionId);
-  //   if (toRevision) {
-  //     this.setState({ toRevision });
-  //     this.appendRevisionToRecentRevisions(toRevision);
-  //   }
-  // }
-
   async fetchPageRevisions() {
     const { pageId, shareLinkId } = this.pageContainer.state;
     const page = 1; // The pagination start number is fixed to 1.
@@ -113,17 +92,6 @@ export default class RevisionCompareContainer extends Container {
 
     this.setState({ recentRevisions });
   }
-
-  // appendRevisionToRecentRevisions(revision) {
-  //   const newRecentRevisions = this.state.recentRevisions;
-  //   newRecentRevisions.push(revision);
-  //   newRecentRevisions.sort((a, b) => {
-  //     if (a._id < b._id) { return -1; }
-  //     if (a._id > b._id) { return 1; }
-  //     return 0;
-  //   });
-  //   this.setState({ recentRevisions: newRecentRevisions });
-  // }
 
   async fetchPageRevisionIfExists(revisionId) {
     try {
