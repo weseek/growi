@@ -1,18 +1,15 @@
-import React, { useMemo, useCallback } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-
-import { withUnstatedContainers } from './UnstatedUtils';
-import RevisionCompareContainer from '../services/RevisionCompareContainer';
-import RevisionDiff from './PageHistory/RevisionDiff';
-
-import RevisionIdForm from './RevisionCompare/RevisionIdForm';
-
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem
 } from 'reactstrap';
 
+import { withUnstatedContainers } from './UnstatedUtils';
+import RevisionCompareContainer from '../services/RevisionCompareContainer';
+import RevisionDiff from './PageHistory/RevisionDiff';
+import RevisionIdForm from './RevisionCompare/RevisionIdForm';
 
 const DropdownItemContents = ({ title, contents }) => (
   <>
@@ -35,7 +32,7 @@ class PageCompare extends React.Component {
     super();
 
     this.state = {
-      dropdownOpen: false
+      dropdownOpen: false,
     }
 
     this.toggleDropdown = this.toggleDropdown.bind(this);
@@ -48,7 +45,7 @@ class PageCompare extends React.Component {
 
   toggleDropdown() {
     this.setState({
-      dropdownOpen: !this.state.dropdownOpen
+      dropdownOpen: !this.state.dropdownOpen,
     });
   }
 
@@ -64,7 +61,7 @@ class PageCompare extends React.Component {
       const { path } = revisionCompareContainer.pageContainer.state;
       const { fromRevision, toRevision } = revisionCompareContainer.state;
 
-      const urlParams = (fromRevision && toRevision ? `?compare=${fromRevision._id}...${toRevision._id}` : "");
+      const urlParams = (fromRevision && toRevision ? `?compare=${fromRevision._id}...${toRevision._id}` : '');
       return encodeSpaces(decodeURI(`${origin}/${path}${urlParams}`));
     }
 
@@ -100,9 +97,9 @@ class PageCompare extends React.Component {
 
         { showDiff &&
           <RevisionDiff
-            revisionDiffOpened={ true }
-            previousRevision={ fromRev }
-            currentRevision={ toRev }
+            revisionDiffOpened
+            previousRevision={fromRev}
+            currentRevision={toRev}
           />
         }
       </div>

@@ -24,7 +24,7 @@ export default class RevisionCompareContainer extends Container {
       toRevision: null,
 
       revisions: [],
-    }
+    };
 
     this.readyRevisions = this.readyRevisions.bind(this);
     this.fetchPageRevisionBody = this.fetchPageRevisionBody.bind(this);
@@ -60,7 +60,7 @@ export default class RevisionCompareContainer extends Container {
     const { pageId, shareLinkId } = this.pageContainer.state;
     try {
       const res = await this.appContainer.apiv3Get(`/revisions/${revisionId}`, { pageId, shareLinkId });
-      if (res == null || res.data == undefined || res.data.revision == undefined) {
+      if (res == null || res.data === undefined || res.data.revision === undefined) {
         logger.warn(`cannot get revision. revisionId: ${revisionId}`);
         return null;
       }
@@ -93,10 +93,12 @@ export default class RevisionCompareContainer extends Container {
       });
       newRevisions = newRevisions.concat(res.data.docs.map(rev => {
         const { _id, createdAt, path } = rev;
-        return { _id, createdAt, path, body: null };
+        return {
+          _id, createdAt, path, body: null
+        };
       }));
       page++;
-    } while(res.data.hasNextPage && --max > 0);
+    } while (res.data.hasNextPage && --max > 0);
 
     this.setState({ revisions: newRevisions });
   }
@@ -118,13 +120,13 @@ export default class RevisionCompareContainer extends Container {
         compactRevision.body = body;
 
         // cache revision body
-        const newRevisions = this.state.revisions.map(rev => {
+        const newRevisions = this.state.revisions.map((rev) => {
           if (rev._id === revisionId) {
             return { ...rev, body };
           }
           return rev;
         });
-        this.setState( { revisions: newRevisions });
+        this.setState({ revisions: newRevisions });
       }
       return compactRevision;
     }
@@ -137,12 +139,12 @@ export default class RevisionCompareContainer extends Container {
 
   async handleFromRevisionChange(revisionId) {
     const fromRevision = await this.fetchPageRevision(revisionId);
-    this.setState({ fromRevision })
+    this.setState({ fromRevision });
   }
 
   async handleToRevisionChange(revisionId) {
     const toRevision = await this.fetchPageRevision(revisionId);
-    this.setState({ toRevision })
+    this.setState({ toRevision });
   }
 
 }
