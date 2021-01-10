@@ -1221,12 +1221,12 @@ module.exports = function(crowi) {
     const pathRegExp = new RegExp(`^${escapeStringRegexp(path)}`, 'i');
     const { updateMetadata, createRedirectPage } = options;
 
+    const pages = await this.findManageableListWithDescendants(targetPage, user, options);
+
     // sanitize path
     newPagePathPrefix = crowi.xss.process(newPagePathPrefix); // eslint-disable-line no-param-reassign
-
     const newStatus = newPagePathPrefix.match(/^\/trash/) ? STATUS_DELETED : STATUS_PUBLISHED;
 
-    const pages = await this.findManageableListWithDescendants(targetPage, user, options);
     const unorderedBulkOp = pageCollection.initializeUnorderedBulkOp();
     const createRediectPageBulkOp = pageCollection.initializeUnorderedBulkOp();
     const revisionUnorderedBulkOp = revisionCollection.initializeUnorderedBulkOp();
