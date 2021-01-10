@@ -3,12 +3,16 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from './UnstatedUtils';
+import PageContainer from '../services/PageContainer';
 import RevisionCompareContainer from '../services/RevisionCompareContainer';
 import RevisionDiff from './PageHistory/RevisionDiff';
 
 class PageCompare extends React.Component {
   componentWillMount() {
-    const { revisionCompareContainer, fromRevisionId, toRevisionId } = this.props;
+    const { revisionCompareContainer } = this.props;
+    const { pageContainer } = revisionCompareContainer;
+    const { compareRevisionIds } = pageContainer.state;
+    const [fromRevisionId, toRevisionId] = compareRevisionIds;
 
     revisionCompareContainer.fetchPageRevisionBody(fromRevisionId, toRevisionId);
     revisionCompareContainer.fetchPageRevisions();
@@ -56,7 +60,7 @@ class PageCompare extends React.Component {
     return (
       <div id="revision-compare-content">
         <div>{ t('page_compare_revision.comparing_changes') }</div>
-        <div class="container">
+        <div class="container-fluid px-0">
           <div class="row">
             { fromRevSelector }
             { toRevSelector }
@@ -88,8 +92,6 @@ const PageCompareWrapper = withUnstatedContainers(PageCompare, [RevisionCompareC
 PageCompare.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   revisionCompareContainer: PropTypes.instanceOf(RevisionCompareContainer).isRequired,
-  fromRevisionId: PropTypes.string,
-  toRevisionId: PropTypes.string,
 };
 
 export default withTranslation()(PageCompareWrapper);
