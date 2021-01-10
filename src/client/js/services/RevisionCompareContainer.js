@@ -97,10 +97,9 @@ export default class RevisionCompareContainer extends Container {
 
       const newRecentRevisions = this.state.recentRevisions;
       newRecentRevisions.push(revision);
+      // Update day time descending
       newRecentRevisions.sort((a, b) => {
-        if (a._id < b._id) { return -1; }
-        if (a._id > b._id) { return 1; }
-        return 0;
+        return new Date(b.createdAt) - new Date(a.createdAt);
       });
       this.setState({ recentRevisions: newRecentRevisions });
       return revision;

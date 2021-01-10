@@ -20,7 +20,7 @@ class RevisionIdForm extends React.Component {
   revisionOptions() {
     const { revisionCompareContainer } = this.props;
     return revisionCompareContainer.state.recentRevisions.map(rev => {
-      return { label: rev._id, value: rev._id };
+      return { label: `${new Date(rev.createdAt)} - ${rev._id}`, value: rev._id };
     });
   }
 
