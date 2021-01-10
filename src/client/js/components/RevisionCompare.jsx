@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {
-  Dropdown, DropdownToggle, DropdownMenu, DropdownItem
+  Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
 import { withUnstatedContainers } from './UnstatedUtils';
@@ -11,12 +11,14 @@ import RevisionCompareContainer from '../services/RevisionCompareContainer';
 import RevisionDiff from './PageHistory/RevisionDiff';
 import RevisionIdForm from './RevisionCompare/RevisionIdForm';
 
+/* eslint-disable react/prop-types */
 const DropdownItemContents = ({ title, contents }) => (
   <>
     <div className="h6 mt-1 mb-2"><strong>{title}</strong></div>
     <div className="card well mb-1 p-2">{contents}</div>
   </>
 );
+/* eslint-enable react/prop-types */
 
 function encodeSpaces(str) {
   if (str == null) {
@@ -28,12 +30,13 @@ function encodeSpaces(str) {
 }
 
 class PageCompare extends React.Component {
+
   constructor() {
     super();
 
     this.state = {
       dropdownOpen: false,
-    }
+    };
 
     this.toggleDropdown = this.toggleDropdown.bind(this);
   }
@@ -63,7 +66,7 @@ class PageCompare extends React.Component {
 
       const urlParams = (fromRevision && toRevision ? `?compare=${fromRevision._id}...${toRevision._id}` : '');
       return encodeSpaces(decodeURI(`${origin}/${path}${urlParams}`));
-    }
+    };
 
     return (
       <div id="revision-compare-content">
@@ -75,7 +78,7 @@ class PageCompare extends React.Component {
           >
             <DropdownToggle
               caret
-              className={'d-block text-muted bg-transparent btn-copy border-0 py-0'}
+              className='d-block text-muted bg-transparent btn-copy border-0 py-0'
             >
               <i className="ti-clipboard"></i>
             </DropdownToggle>
@@ -95,13 +98,13 @@ class PageCompare extends React.Component {
 
         <RevisionIdForm />
 
-        { showDiff &&
+        { showDiff && (
           <RevisionDiff
             revisionDiffOpened
             previousRevision={fromRev}
             currentRevision={toRev}
           />
-        }
+        )}
       </div>
     );
   }

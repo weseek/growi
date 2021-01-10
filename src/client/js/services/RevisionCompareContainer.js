@@ -91,10 +91,10 @@ export default class RevisionCompareContainer extends Container {
       res = await this.appContainer.apiv3Get('/revisions/list', {
         pageId, shareLinkId, page, limit: 1,
       });
-      newRevisions = newRevisions.concat(res.data.docs.map(rev => {
+      newRevisions = newRevisions.concat(res.data.docs.map((rev) => {
         const { _id, createdAt, path } = rev;
         return {
-          _id, createdAt, path, body: null
+          _id, createdAt, path, body: null,
         };
       }));
       page++;
