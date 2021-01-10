@@ -64,7 +64,7 @@ export default class RevisionCompareContainer extends Container {
         logger.warn(`cannot get revision. revisionId: ${revisionId}`);
         return null;
       }
-      return res.data.revision;
+      return res.data.revision.body;
     }
     catch (err) {
       toastError(err);
@@ -114,13 +114,13 @@ export default class RevisionCompareContainer extends Container {
         return null;
       }
       if (compactRevision.body == null) {
-        const fullRevision = await this.fetchPageRevisionBody(revisionId);
-        compactRevision.body = fullRevision.body;
+        const body = await this.fetchPageRevisionBody(revisionId);
+        compactRevision.body = body;
 
         // cache revision body
         const newRevisions = this.state.revisions.map(rev => {
           if (rev._id === revisionId) {
-            return { ...rev, body: fullRevision.body };
+            return { ...rev, body };
           }
           return rev;
         });
