@@ -8,36 +8,38 @@ import RevisionCompareContainer from '../../services/RevisionCompareContainer';
 class RevisionIdForm extends React.Component {
 
   constructor(props) {
-
     super(props);
-
-    this.state = {
-    };
 
     this.loadFilteredRevisionOptions = this.loadFilteredRevisionOptions.bind(this);
   }
 
+  /**
+   * create an Option array for AsyncSelect from the revision list
+   */
   revisionOptions() {
     const { revisionCompareContainer } = this.props;
+
     return revisionCompareContainer.state.revisions.map(rev => {
       return { label: `${new Date(rev.createdAt)} - ${rev._id}`, value: rev._id };
     });
   }
 
-  async loadFilteredRevisionOptions(inputText, callback) {
-    // Filter the RevisionId that matches the text user entered.
+  /**
+   * filter the RevisionId that matches the text user entered
+   */
+  loadFilteredRevisionOptions(inputText, callback) {
     const revisionOptions = this.revisionOptions();
     const filteredRevisionOptions = revisionOptions.filter(rev => rev.label.toLowerCase().includes(inputText.toLowerCase()));
     callback(filteredRevisionOptions);
   }
 
   /**
-   * render a row (Revision component and RevisionDiff component)
+   * render a revision selector
    * @param {label} label text of inputbox
    */
-  renderRevisionSelector(label, inputText) {
+  renderRevisionSelector(label) {
     if (["FromRev", "ToRev"].indexOf(label) === -1) {
-      return <div></div>
+      return <></>
     }
     const forFromRev = (label === "FromRev");
 
