@@ -53,7 +53,7 @@ const PageAccessoriesModal = (props) => {
       },
       revisionCompare: {
         Icon: HistoryIcon,
-        i18n: t('revision_compare'),
+        i18n: t('page_compare_revision.comparing_changes'),
         index: 3,
         isLinkEnabled: v => !isGuestUser && !isSharedUser,
       },

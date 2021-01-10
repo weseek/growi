@@ -44,7 +44,7 @@ const PageAccessoriesModalControl = (props) => {
         name: 'revisionCompare',
         Icon: <HistoryIcon />,
         disabled: isGuestUser || isSharedUser,
-        i18n: t('revision_compare'),
+        i18n: t('page_compare_revision.comparing_changes'),
       },
       {
         name: 'attachment',
