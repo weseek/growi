@@ -1,17 +1,12 @@
 import React from 'react';
 import AsyncSelect from 'react-select/async';
+import ReactSelect from 'react-select';
 import PropTypes from 'prop-types';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import RevisionCompareContainer from '../../services/RevisionCompareContainer';
 
 class RevisionIdForm extends React.Component {
-
-  constructor(props) {
-    super(props);
-
-    this.loadFilteredRevisionOptions = this.loadFilteredRevisionOptions.bind(this);
-  }
 
   /**
    * create an Option array for AsyncSelect from the revision list
@@ -25,15 +20,6 @@ class RevisionIdForm extends React.Component {
   }
 
   /**
-   * filter the RevisionId that matches the text user entered
-   */
-  loadFilteredRevisionOptions(inputText, callback) {
-    const revisionOptions = this.revisionOptions();
-    const filteredRevisionOptions = revisionOptions.filter(rev => rev.label.toLowerCase().includes(inputText.toLowerCase()));
-    callback(filteredRevisionOptions);
-  }
-
-  /**
    * render a revision selector
    * @param {label} label text of inputbox
    */
@@ -44,16 +30,16 @@ class RevisionIdForm extends React.Component {
     const forFromRev = (label === "FromRev");
 
     const { revisionCompareContainer } = this.props;
+    const options = this.revisionOptions();
+    const selectedRevisionId = (forFromRev ? revisionCompareContainer.state.fromRevision?._id : revisionCompareContainer.state.toRevision?._id );
+    const value = options.find(it => it.value === selectedRevisionId);
     const changeHandler = (forFromRev ? revisionCompareContainer.handleFromRevisionChange : revisionCompareContainer.handleToRevisionChange);
-    const rev = (forFromRev ? revisionCompareContainer.state.fromRevision?._id : revisionCompareContainer.state.toRevision?._id );
     return (
-      <AsyncSelect
-        cacheOptions
-        loadOptions={this.loadFilteredRevisionOptions}
-        defaultOptions={this.revisionOptions()}
+      <ReactSelect
+        options={options}
         onChange={(selectedOption) => changeHandler(selectedOption.value)}
         placeholder={label}
-        options={[rev]}
+        value={value}
       />
     );
   }
