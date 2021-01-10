@@ -7,6 +7,8 @@ import PageContainer from '../services/PageContainer';
 import RevisionCompareContainer from '../services/RevisionCompareContainer';
 import RevisionDiff from './PageHistory/RevisionDiff';
 
+import RevisionIdForm from './RevisionCompare/RevisionIdForm';
+
 class PageCompare extends React.Component {
   componentWillMount() {
     const { revisionCompareContainer } = this.props;
@@ -54,18 +56,10 @@ class PageCompare extends React.Component {
     const toRev = revisionCompareContainer.state.toRevision;
     const showDiff = (fromRev && toRev);
 
-    const fromRevSelector = this.renderRevisionSelector("FromRev");
-    const toRevSelector = this.renderRevisionSelector("ToRev");
-
     return (
       <div id="revision-compare-content">
         <div>{ t('page_compare_revision.comparing_changes') }</div>
-        <div class="container-fluid px-0">
-          <div class="row">
-            { fromRevSelector }
-            { toRevSelector }
-          </div>
-        </div>
+        <RevisionIdForm />
         <div class="card card-compare">
           <div class="card-body">
           { fromRev && fromRev._id }<i class="icon-arrow-right-circle mx-1"></i>{ toRev && toRev._id }
