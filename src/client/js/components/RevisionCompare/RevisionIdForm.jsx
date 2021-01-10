@@ -12,10 +12,6 @@ class RevisionIdForm extends React.Component {
     super(props);
 
     this.state = {
-      inputTextObj: {
-        FromRev: "",
-        ToRev: "",
-      }
     };
 
     this.loadFilteredRevisionOptions = this.loadFilteredRevisionOptions.bind(this);
@@ -32,13 +28,6 @@ class RevisionIdForm extends React.Component {
     );
 
     return callback(filteredRevisionOptions);
-  }
-
-  handleInputChange(newText, label) {
-    const inputTextObj = this.state.inputTextObj;
-    inputTextObj[label] = newText.replace(/\W/g, '');
-    this.setState({ inputTextObj });
-    return inputTextObj[label];
   }
 
   /**
@@ -61,7 +50,6 @@ class RevisionIdForm extends React.Component {
           cacheOptions
           loadOptions={this.loadFilteredRevisionOptions}
           defaultOptions
-          onInputChange={(newText) => this.handleInputChange(newText, label)}
           onChange={(selectedOption) => changeHandler(selectedOption.value)}
         />
       </div>
