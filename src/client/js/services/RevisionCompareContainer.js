@@ -87,6 +87,7 @@ export default class RevisionCompareContainer extends Container {
     let newRevisions = [];
     let page = 1;
     let res = null;
+    /* eslint-disable no-await-in-loop */
     do {
       res = await this.appContainer.apiv3Get('/revisions/list', {
         pageId, shareLinkId, page, limit: 1,
@@ -99,6 +100,7 @@ export default class RevisionCompareContainer extends Container {
       }));
       page++;
     } while (res.data.hasNextPage && --max > 0);
+    /* eslint-disable no-await-in-loop */
 
     this.setState({ revisions: newRevisions });
   }
