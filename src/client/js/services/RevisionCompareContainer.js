@@ -92,8 +92,8 @@ export default class RevisionCompareContainer extends Container {
         pageId, shareLinkId, page, limit: 1,
       });
       newRevisions = newRevisions.concat(res.data.docs.map(rev => {
-        const { _id, createdAt } = rev;
-        return { _id, createdAt, body: null };
+        const { _id, createdAt, path } = rev;
+        return { _id, createdAt, path, body: null };
       }));
       page++;
     } while(res.data.hasNextPage && --max > 0);

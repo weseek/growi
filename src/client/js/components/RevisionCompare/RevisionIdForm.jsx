@@ -1,7 +1,7 @@
 import React from 'react';
-import AsyncSelect from 'react-select/async';
 import ReactSelect from 'react-select';
 import PropTypes from 'prop-types';
+import { format } from 'date-fns';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import RevisionCompareContainer from '../../services/RevisionCompareContainer';
@@ -13,9 +13,10 @@ class RevisionIdForm extends React.Component {
    */
   revisionOptions() {
     const { revisionCompareContainer } = this.props;
+    const timeFormat = 'yyyy/MM/dd HH:mm:ss';
 
     return revisionCompareContainer.state.revisions.map(rev => {
-      return { label: `${new Date(rev.createdAt)} - ${rev._id}`, value: rev._id };
+      return { label: `${format(new Date(rev.createdAt), timeFormat)} - ${rev._id}`, value: rev._id };
     });
   }
 

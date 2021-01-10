@@ -70,40 +70,34 @@ class PageCompare extends React.Component {
 
     return (
       <div id="revision-compare-content">
-        <div>{ t('page_compare_revision.comparing_changes') }</div>
-        <RevisionIdForm />
-        <div className="card card-compare">
-          <div className="card-body">
-
-            <div className="container-fluid px-0">
-              <div className="row">
-                <div className="col-sm">
-                  { fromRev && fromRev._id }<i className="icon-arrow-right-circle mx-1"></i>{ toRev && toRev._id }
-                </div>
-                <div className="col-sm">
-                  <Dropdown className="grw-copy-dropdown" isOpen={this.state.dropdownOpen} toggle={this.toggleDropdown}>
-                    <DropdownToggle
-                      caret
-                      className={'d-block text-muted bg-transparent btn-copy border-0 py-0'}
-                    >
-                      <i className="ti-clipboard"></i>
-                    </DropdownToggle>
-                    <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: null } }}>
-                      {/* Page path URL */}
-                      <CopyToClipboard text={pagePathUrl()}>
-                        <DropdownItem className="px-3">
-                          <DropdownItemContents title={t('copy_to_clipboard.Page URL')} contents={pagePathUrl()} />
-                        </DropdownItem>
-                      </CopyToClipboard>
-                      <DropdownItem divider className="my-0"></DropdownItem>
-                    </DropdownMenu>
-                  </Dropdown>
-                </div>
-              </div>
-            </div>
-
-          </div>
+        <div className="float-right mb-3">
+          <Dropdown
+            className="grw-copy-dropdown"
+            isOpen={this.state.dropdownOpen}
+            toggle={this.toggleDropdown}
+          >
+            <DropdownToggle
+              caret
+              className={'d-block text-muted bg-transparent btn-copy border-0 py-0'}
+            >
+              <i className="ti-clipboard"></i>
+            </DropdownToggle>
+            <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: null } }}>
+              {/* Page path URL */}
+              <CopyToClipboard text={pagePathUrl()}>
+                <DropdownItem className="px-3">
+                  <DropdownItemContents title={t('copy_to_clipboard.Page URL')} contents={pagePathUrl()} />
+                </DropdownItem>
+              </CopyToClipboard>
+              <DropdownItem divider className="my-0"></DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
         </div>
+
+        <div className="clearfix"></div>
+
+        <RevisionIdForm />
+
         { showDiff &&
           <RevisionDiff
             revisionDiffOpened={ true }
