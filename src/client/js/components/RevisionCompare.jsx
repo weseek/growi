@@ -61,14 +61,10 @@ class PageCompare extends React.Component {
 
     const { pageId } = revisionCompareContainer.pageContainer.state;
 
-    const permalink = () => {
+    const pagePathUrl = () => {
       const { origin } = window.location;
       const { path } = revisionCompareContainer.pageContainer.state;
       const { fromRevision, toRevision } = revisionCompareContainer.state;
-
-      if (path == null) {
-        return "";
-      }
 
       const urlParams = (fromRevision && toRevision ? `?compare=${fromRevision._id}...${toRevision._id}` : "");
       return encodeSpaces(decodeURI(`${origin}/${path}${urlParams}`));
@@ -94,18 +90,14 @@ class PageCompare extends React.Component {
                     >
                       <i className="ti-clipboard"></i>
                     </DropdownToggle>
-
                     <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: null } }}>
-
-                      {/* Permanent Link */}
-                      { pageId && (
-                        <CopyToClipboard text={permalink()}>
-                          <DropdownItem className="px-3">
-                            <DropdownItemContents title={t('copy_to_clipboard.Permanent link')} contents={permalink()} />
-                          </DropdownItem>
-                        </CopyToClipboard>
-                      )}
-
+                      {/* Page path URL */}
+                      <CopyToClipboard text={pagePathUrl()}>
+                        <DropdownItem className="px-3">
+                          <DropdownItemContents title={t('copy_to_clipboard.Page URL')} contents={pagePathUrl()} />
+                        </DropdownItem>
+                      </CopyToClipboard>
+                      <DropdownItem divider className="my-0"></DropdownItem>
                     </DropdownMenu>
                   </Dropdown>
                 </div>
