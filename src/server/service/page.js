@@ -164,6 +164,8 @@ class PageService {
     const findOpts = { includeTrashed: true };
     const pages = await Page.findManageableListWithDescendants(targetPage, user, findOpts);
     const originPages = await Page.find({ path: pathRegExp }).sort({ _id: 1 });
+
+    // create bulk to delete redirectTo pages at high speed
     const pageCollection = mongoose.connection.collection('pages');
     const revisionCollection = mongoose.connection.collection('revisions');
     const unorderedBulkOp = pageCollection.initializeUnorderedBulkOp();
