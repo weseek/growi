@@ -42,15 +42,14 @@ export default class RevisionCompareContainer extends Container {
   }
 
   async readyRevisions() {
-    const [fromRevisionIdParam, toRevisionIdParam] = this.pageContainer.state.compareRevisionIds || [];
-
     await this.fetchAllPageRevisions();
-    if (fromRevisionIdParam) {
-      await this.handleFromRevisionChange(fromRevisionIdParam);
-    }
-    if (toRevisionIdParam) {
-      await this.handleToRevisionChange(toRevisionIdParam);
-    }
+
+    const latestRevisionId = this.state.revisions[0]._id;
+    const { compareRevisionIds } = this.pageContainer.state;
+    const fromRevisionIdParam = compareRevisionIds[0] || latestRevisionId;
+    const toRevisionIdParam = compareRevisionIds[1] || latestRevisionId;
+    await this.handleFromRevisionChange(fromRevisionIdParam);
+    await this.handleToRevisionChange(toRevisionIdParam);
   }
 
   /**
