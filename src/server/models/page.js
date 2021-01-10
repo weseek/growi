@@ -1214,19 +1214,20 @@ module.exports = function(crowi) {
   pageSchema.statics.renameRecursively = async function(targetPage, newPagePathPrefix, user, options) {
     validateCrowi();
 
-    const pageCollection = mongoose.connection.collection('pages');
-    const revisionCollection = mongoose.connection.collection('revisions');
-
     const path = targetPage.path;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(path)}`, 'i');
     const { updateMetadata, createRedirectPage } = options;
 
-    const pages = await this.findManageableListWithDescendants(targetPage, user, options);
-
     // sanitize path
     newPagePathPrefix = crowi.xss.process(newPagePathPrefix); // eslint-disable-line no-param-reassign
+
+    // find manageble descendants
+    const pages = await this.findManageableListWithDescendants(targetPage, user, options);
     const newStatus = newPagePathPrefix.match(/^\/trash/) ? STATUS_DELETED : STATUS_PUBLISHED;
 
+    // create bulk to delete redirectTo pages at high speed
+    const pageCollection = mongoose.connection.collection('pages');
+    const revisionCollection = mongoose.connection.collection('revisions');
     const unorderedBulkOp = pageCollection.initializeUnorderedBulkOp();
     const createRediectPageBulkOp = pageCollection.initializeUnorderedBulkOp();
     const revisionUnorderedBulkOp = revisionCollection.initializeUnorderedBulkOp();
@@ -1258,7 +1259,7 @@ module.exports = function(crowi) {
     }
     catch (err) {
       if (err.code !== 11000) {
-        throw new Error('Failed to rename pages: ', err);
+        throw new Error('Failed to rename pages', err);
       }
     }
 
