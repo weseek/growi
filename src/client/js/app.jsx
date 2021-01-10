@@ -65,7 +65,8 @@ const tagContainer = new TagContainer(appContainer);
 const personalContainer = new PersonalContainer(appContainer);
 const pageAccessoriesContainer = new PageAccessoriesContainer(appContainer);
 const injectableContainers = [
-  appContainer, socketIoContainer, navigationContainer, pageContainer, pageHistoryContainer, revisionCompareContainer, commentContainer, editorContainer, tagContainer, personalContainer, pageAccessoriesContainer,
+  appContainer, socketIoContainer, navigationContainer, pageContainer, pageHistoryContainer, revisionCompareContainer,
+  commentContainer, editorContainer, tagContainer, personalContainer, pageAccessoriesContainer,
 ];
 
 logger.info('unstated containers have been initialized');
