@@ -59,8 +59,6 @@ class PageCompare extends React.Component {
     const toRev = revisionCompareContainer.state.toRevision;
     const showDiff = (fromRev && toRev);
 
-    const { pageId } = revisionCompareContainer.pageContainer.state;
-
     const pagePathUrl = () => {
       const { origin } = window.location;
       const { path } = revisionCompareContainer.pageContainer.state;
