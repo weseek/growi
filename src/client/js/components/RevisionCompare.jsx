@@ -9,9 +9,9 @@ import RevisionDiff from './PageHistory/RevisionDiff';
 import RevisionIdForm from './RevisionCompare/RevisionIdForm';
 
 class PageCompare extends React.Component {
-  async componentWillMount() {
+  componentWillMount() {
     const { revisionCompareContainer } = this.props;
-    await revisionCompareContainer.readyRevisions();
+    revisionCompareContainer.readyRevisions();
   }
 
   render() {

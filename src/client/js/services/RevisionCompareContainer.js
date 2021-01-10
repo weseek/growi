@@ -82,18 +82,9 @@ export default class RevisionCompareContainer extends Container {
     const { pageId, shareLinkId } = this.pageContainer.state;
     const page = 1; // The pagination start number is fixed to 1.
     const res = await this.appContainer.apiv3Get('/revisions/list', {
-      pageId, shareLinkId, page, limit: 2,
+      pageId, shareLinkId, page, limit: 2, // [TODO] Set limit
     });
     const recentRevisions = res.data.docs;
-
-    // [TODO] delete if no need
-    res.data.docs.forEach((revision, i) => {
-      const user = revision.author;
-      if (user) {
-        recentRevisions[i].author = user;
-      }
-    });
-
     this.setState({ recentRevisions });
   }
 
