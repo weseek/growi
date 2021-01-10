@@ -10,44 +10,39 @@ import RevisionDiff from './PageHistory/RevisionDiff';
 import RevisionIdForm from './RevisionCompare/RevisionIdForm';
 
 class PageCompare extends React.Component {
-  componentWillMount() {
+  async componentWillMount() {
     const { revisionCompareContainer } = this.props;
-    const { pageContainer } = revisionCompareContainer;
-    const { compareRevisionIds } = pageContainer.state;
-    const [fromRevisionId, toRevisionId] = compareRevisionIds;
-
-    revisionCompareContainer.fetchPageRevisionBody(fromRevisionId, toRevisionId);
-    revisionCompareContainer.fetchPageRevisions();
+    await revisionCompareContainer.readyRevisions();
   }
 
-  /**
-   * render a row (Revision component and RevisionDiff component)
-   * @param {Revision} revisionSelected
-   * @param {Array} revisionList
-   */
-  renderRevisionSelector(label) {
-    if (["FromRev", "ToRev"].indexOf(label) === -1) {
-      return <div></div>
-    }
+  // /**
+  //  * render a row (Revision component and RevisionDiff component)
+  //  * @param {Revision} revisionSelected
+  //  * @param {Array} revisionList
+  //  */
+  // renderRevisionSelector(label) {
+  //   if (["FromRev", "ToRev"].indexOf(label) === -1) {
+  //     return <div></div>
+  //   }
 
-    const { revisionCompareContainer } = this.props;
-    const selectedRev = (label === "FromRev" ? revisionCompareContainer.state.fromRevision : revisionCompareContainer.state.toRevision);
-    const changeHandler = (label === "FromRev" ? revisionCompareContainer.handleFromRevisionChange : revisionCompareContainer.handleToRevisionChange);
-    return (
-      <div class="input-group mb-3 col-sm">
-        <div class="input-group-prepend">
-          <label class="input-group-text" for="inputGroupSelect01">{ label }</label>
-        </div>
-        <select class="custom-select" id="inputGroupSelect01" value={selectedRev ? selectedRev._id : ""} onChange={e => changeHandler(e.target.value)}>
-          {
-            revisionCompareContainer.state.recentRevisions.map(rev => (
-              <option key={rev._id} value={rev._id}>{ rev._id }</option>
-            ))
-          }
-        </select>
-      </div>
-    );
-  }
+  //   const { revisionCompareContainer } = this.props;
+  //   const selectedRev = (label === "FromRev" ? revisionCompareContainer.state.fromRevision : revisionCompareContainer.state.toRevision);
+  //   const changeHandler = (label === "FromRev" ? revisionCompareContainer.handleFromRevisionChange : revisionCompareContainer.handleToRevisionChange);
+  //   return (
+  //     <div class="input-group mb-3 col-sm">
+  //       <div class="input-group-prepend">
+  //         <label class="input-group-text" for="inputGroupSelect01">{ label }</label>
+  //       </div>
+  //       <select class="custom-select" id="inputGroupSelect01" value={selectedRev ? selectedRev._id : ""} onChange={e => changeHandler(e.target.value)}>
+  //         {
+  //           revisionCompareContainer.state.recentRevisions.map(rev => (
+  //             <option key={rev._id} value={rev._id}>{ rev._id }</option>
+  //           ))
+  //         }
+  //       </select>
+  //     </div>
+  //   );
+  // }
 
   render() {
     const { t, revisionCompareContainer } = this.props;

@@ -15,42 +15,50 @@ class RevisionIdForm extends React.Component {
     };
 
     this.loadFilteredRevisionOptions = this.loadFilteredRevisionOptions.bind(this);
-    this.handleInputChange = this.handleInputChange.bind(this);
   }
 
-  loadFilteredRevisionOptions(inputText, callback) {
+  revisionOptions() {
     const { revisionCompareContainer } = this.props;
-    const revisionOptions = revisionCompareContainer.state.recentRevisions.map(rev => {
+    return revisionCompareContainer.state.recentRevisions.map(rev => {
       return { label: rev._id, value: rev._id };
     });
-    const filteredRevisionOptions = revisionOptions.filter(rev =>
-      rev.label.toLowerCase().includes(inputText.toLowerCase())
-    );
+  }
 
-    return callback(filteredRevisionOptions);
+  async loadFilteredRevisionOptions(inputText, callback) {
+    console.log(`loadFilteredRevisionOptions is called`);
+    const { revisionCompareContainer } = this.props;
+
+    // If the RevisionId user entered exists, it is added to the list.
+    await revisionCompareContainer.fetchPageRevisionIfExists(inputText);
+
+    // Filter the RevisionId that matches the text user entered.
+    const revisionOptions = this.revisionOptions();
+    const filteredRevisionOptions = revisionOptions.filter(rev => rev.label.toLowerCase().includes(inputText.toLowerCase()));
+    callback(filteredRevisionOptions);
   }
 
   /**
    * render a row (Revision component and RevisionDiff component)
    * @param {label} label text of inputbox
    */
-  renderRevisionSelector(label) {
+  renderRevisionSelector(label, inputText) {
     if (["FromRev", "ToRev"].indexOf(label) === -1) {
       return <div></div>
     }
+    const forFromRev = (label === "FromRev");
 
     const { revisionCompareContainer } = this.props;
-    const changeHandler = (label === "FromRev" ? revisionCompareContainer.handleFromRevisionChange : revisionCompareContainer.handleToRevisionChange);
+    const changeHandler = (forFromRev ? revisionCompareContainer.handleFromRevisionChange : revisionCompareContainer.handleToRevisionChange);
+    const rev = (forFromRev ? revisionCompareContainer.state.fromRevision?._id : revisionCompareContainer.state.toRevision?._id );
     return (
-      <div class="input-group mb-3 col-sm">
-        <div class="input-group-prepend">
-          <label class="input-group-text" for="inputGroupSelect01">{ label }</label>
-        </div>
+      <div class="mb-3 col-sm">
         <AsyncSelect
           cacheOptions
           loadOptions={this.loadFilteredRevisionOptions}
-          defaultOptions
+          defaultOptions={this.revisionOptions()}
           onChange={(selectedOption) => changeHandler(selectedOption.value)}
+          placeholder={label}
+          options={[rev]}
         />
       </div>
     );
