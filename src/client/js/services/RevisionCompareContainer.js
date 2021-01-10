@@ -78,19 +78,20 @@ export default class RevisionCompareContainer extends Container {
     const { pageId, shareLinkId } = this.pageContainer.state;
 
     // fetch all page revisions that are sorted update day time descending
-    let page = 1;
     let max = 1000; // Maximum number of loops to avoid infinite loops.
     let newRevisions = [];
+    let page = 1;
     let res = null;
     do {
       res = await this.appContainer.apiv3Get('/revisions/list', {
-        pageId, shareLinkId, page,
+        pageId, shareLinkId, page, limit: 1,
       });
       newRevisions = newRevisions.concat(res.data.docs.map(rev => {
         const { _id, createdAt } = rev;
         return { _id, createdAt, body: null };
       }));
-    } while(res.hasNextPage && --max > 0);
+      page++;
+    } while(res.data.hasNextPage && --max > 0);
 
     this.setState({ revisions: newRevisions });
   }
