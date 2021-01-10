@@ -78,7 +78,7 @@ class PageCompare extends React.Component {
           >
             <DropdownToggle
               caret
-              className='d-block text-muted bg-transparent btn-copy border-0 py-0'
+              className="d-block text-muted bg-transparent btn-copy border-0 py-0"
             >
               <i className="ti-clipboard"></i>
             </DropdownToggle>
