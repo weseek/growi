@@ -45,9 +45,10 @@ export const useIsAbleToShowTagLabel = (): responseInterface<boolean, any> => {
 
 export const useIsAbleToShowPageAuthors = (): responseInterface<boolean, any> => {
   const { data: page } = useCurrentPageSWR();
+  const { data: isNotFountPage } = useNotFound();
 
   if (page == null) {
     throw new Error('page must not be null');
   }
-  return useStaticSWR('isAbleToShowPageAuthors', /* !isCompactMode && isPageExist! && */ !isUserPage(page.path));
+  return useStaticSWR('isAbleToShowPageAuthors', /* !isCompactMode && isPageExist && */ !isNotFountPage && !isUserPage(page.path));
 };
