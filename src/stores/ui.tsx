@@ -43,12 +43,17 @@ export const useIsAbleToShowTagLabel = (): responseInterface<boolean, any> => {
   return useStaticSWR('isAbleToShowTagLabel', !isUserPage(path) && !isSharedPage(path));
 };
 
+export const useCompactMode = (initialData?: boolean): responseInterface<boolean, any> => {
+  return useStaticSWR('isCompactMode', initialData);
+};
+
 export const useIsAbleToShowPageAuthors = (): responseInterface<boolean, any> => {
   const { data: page } = useCurrentPageSWR();
   const { data: isNotFountPage } = useNotFound();
+  const { data: isCompactMode } = useCompactMode();
 
   if (page == null) {
     throw new Error('page must not be null');
   }
-  return useStaticSWR('isAbleToShowPageAuthors', /* !isCompactMode && isPageExist && */ !isNotFountPage && !isUserPage(page.path));
+  return useStaticSWR('isAbleToShowPageAuthors', !isNotFountPage && !isUserPage(page.path) && !isCompactMode);
 };

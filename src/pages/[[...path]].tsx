@@ -26,6 +26,7 @@ import {
   useAppTitle, useSiteUrl, useConfidential,
   useSearchServiceConfigured, useSearchServiceReachable,
 } from '../stores/context';
+import { useCompactMode } from '../stores/ui';
 import {
   useCurrentPageSWR,
 } from '../stores/page';
@@ -46,6 +47,7 @@ type Props = CommonProps & {
   confidential: string,
   isForbidden: boolean,
   isNotFound: boolean,
+  isCompactMode: boolean,
   isAbleToDeleteCompletely: boolean,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
@@ -60,6 +62,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   useForbidden(props.isForbidden);
   useNotFound(props.isNotFound);
+  useCompactMode(props.isCompactMode);
   useTrash(isTrashPage(props.currentPagePath));
   useShared(isSharedPage(props.currentPagePath));
   useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
