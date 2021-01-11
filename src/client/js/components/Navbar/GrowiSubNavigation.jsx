@@ -13,7 +13,7 @@ import { useCurrentPageSWR } from '~/stores/page';
 import {
   useCurrentUser, useForbidden, useOwnerOfCurrentPage,
 } from '~/stores/context';
-import { useIsAbleToShowTagLabel, isAbleToShowPageAuthors } from '~/stores/ui';
+import { useIsAbleToShowTagLabel, useIsAbleToShowPageAuthors } from '~/stores/ui';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
@@ -80,6 +80,7 @@ const GrowiSubNavigation = (props) => {
   const { data: pageOwner } = useOwnerOfCurrentPage();
   const { data: isForbidden } = useForbidden();
   const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
+  const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
   // dynamic import to skip rendering at SSR
   const SubnavButtons = dynamic(() => import('../Page/SubnavButtons'), { ssr: false });
