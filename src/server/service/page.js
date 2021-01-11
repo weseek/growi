@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
 const logger = require('@alias/logger')('growi:models:page');
 const debug = require('debug')('growi:models:page');
-const { Readable } = require('stream');
+// const { Readable } = require('stream');
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 
 const STATUS_PUBLISHED = 'published';
