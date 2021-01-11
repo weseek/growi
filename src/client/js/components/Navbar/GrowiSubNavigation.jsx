@@ -13,7 +13,7 @@ import { useCurrentPageSWR } from '~/stores/page';
 import {
   useCurrentUser, useForbidden, useOwnerOfCurrentPage,
 } from '~/stores/context';
-import { useIsAbleToShowTagLabel } from '~/stores/ui';
+import { useIsAbleToShowTagLabel, isAbleToShowPageAuthors } from '~/stores/ui';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
@@ -152,7 +152,7 @@ const GrowiSubNavigation = (props) => {
         </div>
 
         {/* Page Authors */}
-        { (pageContainer.isAbleToShowPageAuthors && !isCompactMode) && (
+        { (/* pageContainer */ isAbleToShowPageAuthors /* && !isCompactMode */) && (
           <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3">
             <li className="pb-1">
               <AuthorInfo user={creator} date={createdAt} locate="subnav" />

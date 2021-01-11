@@ -42,3 +42,12 @@ export const useIsAbleToShowTagLabel = (): responseInterface<boolean, any> => {
   // isAbleToShowTagLabel = (!isCompactMode && !isUserPage && !isSharedPage && !(editorMode === 'view' && !isPageExist));
   return useStaticSWR('isAbleToShowTagLabel', !isUserPage(path) && !isSharedPage(path));
 };
+
+export const useIsAbleToShowPageAuthors = (): responseInterface<boolean, any> => {
+  const { data: page } = useCurrentPageSWR();
+
+  if (page == null) {
+    throw new Error('page must not be null');
+  }
+  return useStaticSWR('isAbleToShowPageAuthors', /* !isCompactMode && isPageExist! && */ !isUserPage(page.path));
+};
