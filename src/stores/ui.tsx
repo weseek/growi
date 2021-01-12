@@ -42,3 +42,11 @@ export const useIsAbleToShowTagLabel = (): responseInterface<boolean, any> => {
   // isAbleToShowTagLabel = (!isCompactMode && !isUserPage && !isSharedPage && !(editorMode === 'view' && !isPageExist));
   return useStaticSWR('isAbleToShowTagLabel', !isUserPage(path) && !isSharedPage(path));
 };
+
+export const useIsAbleToShowPageManagement = (): responseInterface<boolean, any> => {
+  const { data: isNotFountPage } = useNotFound();
+  const { data: isTrashPage } = useTrash();
+  const { data: isSharedUser } = useIsSharedUser();
+
+  return useStaticSWR('isAbleToShowPageManagement', !isNotFountPage && !isTrashPage && !isSharedUser);
+};

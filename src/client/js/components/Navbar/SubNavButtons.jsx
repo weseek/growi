@@ -9,7 +9,7 @@ import BookmarkButton from '../BookmarkButton';
 import LikeButton from '../LikeButton';
 import PageManagement from '../Page/PageManagement';
 
-import { useIsAbleToShowPageReactionButtons } from '../../../../stores/ui';
+import { useIsAbleToShowPageReactionButtons, useIsAbleToShowPageManagement } from '~/stores/ui';
 
 const SubnavButtons = (props) => {
   const {
@@ -40,13 +40,14 @@ const SubnavButtons = (props) => {
   const { editorMode } = navigationContainer.state;
   const isViewMode = editorMode === 'view';
   const { data: isAbleToShowPageReactionButtons } = useIsAbleToShowPageReactionButtons();
+  const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
 
   return (
     <>
       {isViewMode && (
         <>
           { isAbleToShowPageReactionButtons && <PageReactionButtons /> }
-          { pageContainer.isAbleToShowPageManagement && <PageManagement isCompactMode={isCompactMode} /> }
+          { isAbleToShowPageManagement && <PageManagement isCompactMode={isCompactMode} /> }
         </>
       )}
     </>
