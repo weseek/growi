@@ -93,7 +93,7 @@ class Revision extends React.Component {
               <a href={`?revision=${revision._id}`} className="ml-2 d-inline-block">
                 <i className="icon-login"></i> { t('Go to this version') }
               </a>
-              <div class="ml-2 custom-control custom-radio custom-control-inline">
+              <span className="ml-2 custom-control custom-radio custom-control-inline">
                 <input
                   type="radio"
                   id={`rbCompareFrom_${revision._id}`}
@@ -101,9 +101,9 @@ class Revision extends React.Component {
                   name="rbCompareFrom"
                   onChange={() => revisionCompareContainer.handleFromRevisionChange(revision._id)}
                 />
-                <label class="custom-control-label" for={`rbCompareFrom_${revision._id}`}>{t('page_history.comparing_from')}</label>
-              </div>
-              <div class="ml-2 custom-control custom-radio custom-control-inline">
+                <label className="custom-control-label" htmlFor={`rbCompareFrom_${revision._id}`}>{t('page_history.comparing_from')}</label>
+              </span>
+              <span className="ml-2 custom-control custom-radio custom-control-inline">
                 <input
                   type="radio"
                   id={`rbCompareTo_${revision._id}`}
@@ -111,8 +111,8 @@ class Revision extends React.Component {
                   name="rbCompareTo"
                   onChange={() => revisionCompareContainer.handleToRevisionChange(revision._id)}
                 />
-                <label class="custom-control-label" for={`rbCompareTo_${revision._id}`}>{t('page_history.comparing_to')}</label>
-              </div>
+                <label className="custom-control-label" htmlFor={`rbCompareTo_${revision._id}`}>{t('page_history.comparing_to')}</label>
+              </span>
             </p>
           </div>
         </div>
