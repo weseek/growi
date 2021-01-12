@@ -18,7 +18,6 @@ import PageAttachment from './PageAttachment';
 import PageTimeline from './PageTimeline';
 import PageList from './PageList';
 import PageHistory from './PageHistory';
-import RevisionCompare from './RevisionCompare';
 import ShareLink from './ShareLink/ShareLink';
 import { CustomNavTab } from './CustomNavigation/CustomNav';
 import ExpandOrContractButton from './ExpandOrContractButton';
@@ -51,21 +50,15 @@ const PageAccessoriesModal = (props) => {
         index: 2,
         isLinkEnabled: v => !isGuestUser && !isSharedUser,
       },
-      revisionCompare: {
-        Icon: HistoryIcon,
-        i18n: t('page_compare_revision.comparing_changes'),
-        index: 3,
-        isLinkEnabled: v => !isGuestUser && !isSharedUser,
-      },
       attachment: {
         Icon: AttachmentIcon,
         i18n: t('attachment_data'),
-        index: 4,
+        index: 3,
       },
       shareLink: {
         Icon: ShareLinkIcon,
         i18n: t('share_links.share_link_management'),
-        index: 5,
+        index: 4,
         isLinkEnabled: v => !isGuestUser && !isSharedUser,
       },
     };
@@ -129,11 +122,6 @@ const PageAccessoriesModal = (props) => {
             {!isGuestUser && (
               <TabPane tabId="pageHistory">
                 {activeComponents.has('pageHistory') && <PageHistory /> }
-              </TabPane>
-            )}
-            {!isGuestUser && (
-              <TabPane tabId="revisionCompare">
-                {activeComponents.has('revisionCompare') && <RevisionCompare /> }
               </TabPane>
             )}
             <TabPane tabId="attachment">
