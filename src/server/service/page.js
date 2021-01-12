@@ -124,7 +124,7 @@ class PageService {
   }
 
   // delete multiple pages
-  async completelyDeletePages(pagesData, user, options = {}) {
+  async completelyDeletePages(pages, user, options = {}) {
     this.validateCrowi();
     let pageEvent;
     // init event
@@ -134,8 +134,8 @@ class PageService {
       pageEvent.on('update', pageEvent.onUpdate);
     }
 
-    const ids = pagesData.map(page => (page._id));
-    const paths = pagesData.map(page => (page.path));
+    const ids = pages.map(page => (page._id));
+    const paths = pages.map(page => (page.path));
     const socketClientId = options.socketClientId || null;
 
     logger.debug('Deleting completely', paths);
@@ -143,13 +143,13 @@ class PageService {
     await this.deleteCompletely(ids, paths);
 
     if (socketClientId != null) {
-      pageEvent.emit('deleteCompletely', pagesData, user, socketClientId); // update as renamed page
+      pageEvent.emit('deleteCompletely', pages, user, socketClientId); // update as renamed page
     }
     return;
   }
 
   // delete single page completely
-  async completelyDeleteSinglePage(pageData, user, options = {}) {
+  async deleteSinglePageCompletely(pageData, user, options = {}) {
     this.validateCrowi();
     let pageEvent;
     // init event
@@ -269,7 +269,7 @@ class PageService {
       if (originPage.redirectTo !== page.path) {
         throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
       }
-      await this.completelyDeleteSinglePage(originPage, options);
+      await this.deleteSinglePageCompletely(originPage, options);
     }
 
     page.status = STATUS_PUBLISHED;
