@@ -2,9 +2,12 @@ const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
 const logger = require('@alias/logger')('growi:models:page');
 const debug = require('debug')('growi:models:page');
+const { Writable } = require('stream');
+const { createBatchStream } = require('@server/util/batch-stream');
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 
 const STATUS_PUBLISHED = 'published';
+const BULK_REINDEX_SIZE = 100;
 
 class PageService {
 
@@ -128,13 +131,46 @@ class PageService {
   async completelyDeletePageRecursively(targetPage, user, options = {}) {
     const findOpts = { includeTrashed: true };
     const Page = this.crowi.model('Page');
+    const { PageQueryBuilder } = Page;
 
     // find manageable descendants (this array does not include GRANT_RESTRICTED)
-    const pages = await Page.findManageableListWithDescendants(targetPage, user, findOpts);
+    // const pages = await Page.findManageableListWithDescendants(targetPage, user, findOpts);
 
-    await Promise.all(pages.map((page) => {
-      return this.completelyDeletePage(page, user, options);
-    }));
+    const readStream = new PageQueryBuilder(Page.find())
+      .addConditionToExcludeRedirect()
+      .addConditionToListOnlyDescendants(targetPage.path)
+      .addConditionToFilteringByViewer(user)
+      .query
+      .lean()
+      .cursor();
+
+    // const completelyDeletePage = this.completelyDeletePage.bind(this);
+    let count = 0;
+    const writeStream = new Writable({
+      objectMode: true,
+      async write(batch, encoding, callback) {
+        try {
+          count += batch.length;
+          console.log(batch);
+          // await completelyDeletePage(batch, user, options);
+          logger.info(`Adding pages progressing: (count=${count})`);
+        }
+        catch (err) {
+          logger.error('addAllPages error on add anyway: ', err);
+        }
+
+        callback();
+      },
+      final(callback) {
+        logger.info(`Adding pages has completed: (totalCount=${count})`);
+
+        callback();
+      },
+    });
+
+    readStream
+      .pipe(createBatchStream(BULK_REINDEX_SIZE))
+      .pipe(writeStream);
   }
 
 
