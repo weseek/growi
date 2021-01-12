@@ -15,7 +15,7 @@ class PageService {
     this.crowi = crowi;
   }
 
-  async deleteCompletely(pageIds, pagePaths) {
+  async deleteCompletelyOperation(pageIds, pagePaths) {
     // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
     const Bookmark = this.crowi.model('Bookmark');
     const Comment = this.crowi.model('Comment');
@@ -124,7 +124,7 @@ class PageService {
   }
 
   // delete multiple pages
-  async deleteMultiplePagesCompletely(pages, user, options = {}) {
+  async deleteMultipleCompletely(pages, user, options = {}) {
     this.validateCrowi();
     let pageEvent;
     // init event
@@ -140,7 +140,7 @@ class PageService {
 
     logger.debug('Deleting completely', paths);
 
-    await this.deleteCompletely(ids, paths);
+    await this.deleteCompletelyOperation(ids, paths);
 
     if (socketClientId != null) {
       pageEvent.emit('deleteCompletely', pages, user, socketClientId); // update as renamed page
@@ -149,7 +149,7 @@ class PageService {
   }
 
   // delete single page completely
-  async deleteSinglePageCompletely(pageData, user, options = {}) {
+  async deleteCompletely(page, user, options = {}, isRecursively = false) {
     this.validateCrowi();
     let pageEvent;
     // init event
@@ -159,16 +159,20 @@ class PageService {
       pageEvent.on('update', pageEvent.onUpdate);
     }
 
-    const ids = [pageData._id];
-    const paths = [pageData.path];
+    const ids = [page._id];
+    const paths = [page.path];
     const socketClientId = options.socketClientId || null;
 
     logger.debug('Deleting completely', paths);
 
-    await this.deleteCompletely(ids, paths);
+    await this.deleteCompletelyOperation(ids, paths);
+
+    if (isRecursively) {
+      this.deletePageRecursivelyCompletely(page, user, options);
+    }
 
     if (socketClientId != null) {
-      pageEvent.emit('delete', pageData, user, socketClientId); // update as renamed page
+      pageEvent.emit('delete', page, user, socketClientId); // update as renamed page
     }
     return;
   }
@@ -188,15 +192,14 @@ class PageService {
       .lean()
       .cursor();
 
-    // const completelyDeletePage = this.completelyDeletePage.bind(this);
+    const deleteMultipleCompletely = this.deleteMultipleCompletely.bind(this);
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
       async write(batch, encoding, callback) {
         try {
           count += batch.length;
-          console.log(batch);
-          // await completelyDeletePage(batch, user, options);
+          await deleteMultipleCompletely(batch, user, options);
           logger.info(`Adding pages progressing: (count=${count})`);
         }
         catch (err) {

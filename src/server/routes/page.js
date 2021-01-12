@@ -1193,12 +1193,7 @@ module.exports = function(crowi, app) {
         if (!req.user.canDeleteCompletely(page.creator)) {
           return res.json(ApiResponse.error('You can not delete completely', 'user_not_admin'));
         }
-        if (isRecursively) {
-          await crowi.pageService.deletePageRecursivelyCompletely(page, req.user, options);
-        }
-        else {
-          await crowi.pageService.deleteSinglePageCompletely(page, req.user, options);
-        }
+        await crowi.pageService.deleteCompletely(page, req.user, options, isRecursively);
       }
       else {
         if (!page.isUpdatable(previousRevision)) {
