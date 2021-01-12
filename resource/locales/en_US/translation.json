@@ -322,8 +322,10 @@
     "outdated": "Page is updated someone and now outdated.",
     "user_not_admin": "Only admin user can delete completely"
   },
-  "page_compare_revision": {
-    "comparing_changes": "Comparing changes"
+  "page_history": {
+    "comparing_versions": "Comparing versions",
+    "comparing_from": "Select this version as a comparing source",
+    "comparing_to": "Select this version as a comparing target"
   },
   "modal_rename": {
     "label": {

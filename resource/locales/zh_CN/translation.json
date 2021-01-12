@@ -303,8 +303,10 @@
 		"outdated": "页面已被某人更新，现在已过时。",
 		"user_not_admin": "仅管理员用户可以完全删除"
   },
-  "page_compare_revision": {
-    "comparing_changes": "比较变化"
+  "page_history": {
+    "comparing_versions": "比较版本",
+    "comparing_from": "选择此版本作为比较源",
+    "comparing_to": "选择此版本作为比较目标"
   },
 	"modal_rename": {
 		"label": {

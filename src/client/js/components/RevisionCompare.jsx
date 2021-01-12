@@ -56,7 +56,7 @@ const PageCompare = (props) => {
 
   return (
     <React.Fragment>
-      <div className="float-left">{t('page_history.comparing_changes')}</div>
+      <div className="float-left">{t('page_history.comparing_versions')}</div>
       <div className="mb-3">
         <Dropdown
           className="grw-copy-dropdown"

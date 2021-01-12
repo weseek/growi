@@ -325,7 +325,7 @@
     "user_not_admin": "権限のあるユーザーのみが完全削除できます"
   },
   "page_history": {
-    "comparing_changes": "リビジョン比較",
+    "comparing_versions": "バージョン比較",
     "comparing_from": "このバージョンをソースとして選択",
     "comparing_to": "このバージョンをターゲットとして選択"
   },
