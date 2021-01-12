@@ -53,8 +53,6 @@ class AttachmentService {
       unorderAttachmentsBulkOp.find({ _id: attachment._id }).remove();
     });
 
-    // await fileUploadService.deleteFile.unorderFilesCollection.execute();
-    // await fileUploadService.deleteFile.unorderChunkCollection.execute();
     return unorderAttachmentsBulkOp.execute();
   }
 

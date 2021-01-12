@@ -6,8 +6,7 @@ module.exports = function(crowi) {
   const Uploader = require('./uploader');
   const lib = new Uploader(crowi);
   const COLLECTION_NAME = 'attachmentFiles';
-  const CHUNK_COLLECTION_NAME = `${COLLECTION_NAME}.chunks`;
-  const FILES_COLLECTION_NAME = `${COLLECTION_NAME}.files`;
+  // const CHUNK_COLLECTION_NAME = `${COLLECTION_NAME}.chunks`;
 
   // instantiate mongoose-gridfs
   const { createModel } = require('mongoose-gridfs');
@@ -17,14 +16,12 @@ module.exports = function(crowi) {
     connection: mongoose.connection,
   });
   // get Collection instance of chunk
-  const chunkCollection = mongoose.connection.collection(CHUNK_COLLECTION_NAME);
-  const filesCollection = mongoose.connection.collection(FILES_COLLECTION_NAME);
-  const unorderChunkCollection = chunkCollection.initializeUnorderedBulkOp();
-  const unorderFilesCollection = filesCollection.initializeUnorderedBulkOp();
+
+  // const unorderChunkCollection = chunkCollection.initializeUnorderedBulkOp();
 
   // create promisified method
   AttachmentFile.promisifiedWrite = util.promisify(AttachmentFile.write).bind(AttachmentFile);
-  // AttachmentFile.promisifiedUnlink = util.promisify(AttachmentFile.unlink).bind(AttachmentFile);
+  AttachmentFile.promisifiedUnlink = util.promisify(AttachmentFile.unlink).bind(AttachmentFile);
 
   lib.isValidUploadSettings = function() {
     return true;
@@ -37,19 +34,14 @@ module.exports = function(crowi) {
     }
     const attachmentFile = await AttachmentFile.findOne({ filename: filenameValue });
 
-    const fileId = attachmentFile._id;
-    const filename = attachmentFile.filename;
-    console.log(filename);
-    unorderChunkCollection.find({ files_id: fileId }).remove();
-    unorderFilesCollection.find({ filename }).remove();
-
     if (attachmentFile == null) {
       logger.warn(`Any AttachmentFile that relate to the Attachment (${attachment._id.toString()}) does not exist in GridFS`);
       return;
     }
-    await unorderFilesCollection.execute();
-    await unorderChunkCollection.execute();
-    return;
+
+    return AttachmentFile.promisifiedUnlink({ _id: attachmentFile._id });
+
+
   };
 
   /**
