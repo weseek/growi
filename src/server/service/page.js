@@ -124,7 +124,7 @@ class PageService {
   }
 
   // delete multiple pages
-  async completelyDeletePages(pages, user, options = {}) {
+  async deleteMultiplePagesCompletely(pages, user, options = {}) {
     this.validateCrowi();
     let pageEvent;
     // init event
@@ -248,7 +248,7 @@ class PageService {
         throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
       }
       // originPage is object.
-      await this.completelyDeletePages([originPage], options);
+      await this.deleteMultiplePagesCompletely([originPage], options);
     }
 
     page.status = STATUS_PUBLISHED;
@@ -290,7 +290,7 @@ class PageService {
         }));
         break;
       case 'delete':
-        return this.completelyDeletePages(pages);
+        return this.deleteMultiplePagesCompletely(pages);
       case 'transfer':
         await Promise.all(pages.map((page) => {
           return Page.transferPageToGroup(page, transferToUserGroupId);
