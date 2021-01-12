@@ -1225,7 +1225,7 @@ module.exports = function(crowi) {
 
     // find manageable descendants
     const pages = await this.findManageableListWithDescendants(targetPage, user, options);
-    const newStatus = newPagePathPrefix.match(/^\/trash/) ? STATUS_DELETED : STATUS_PUBLISHED;
+    const newStatus = checkIfTrashed(newPagePathPrefix) ? STATUS_DELETED : STATUS_PUBLISHED;
     const unorderedBulkOp = pageCollection.initializeUnorderedBulkOp();
     const createRediectPageBulkOp = pageCollection.initializeUnorderedBulkOp();
     const revisionUnorderedBulkOp = revisionCollection.initializeUnorderedBulkOp();
