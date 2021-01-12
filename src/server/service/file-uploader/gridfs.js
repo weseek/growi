@@ -16,7 +16,6 @@ module.exports = function(crowi) {
     connection: mongoose.connection,
   });
   // get Collection instance of chunk
-
   // const unorderChunkCollection = chunkCollection.initializeUnorderedBulkOp();
 
   // create promisified method
@@ -32,6 +31,7 @@ module.exports = function(crowi) {
     if (attachment.filePath != null) { // backward compatibility for v3.3.x or below
       filenameValue = attachment.filePath;
     }
+
     const attachmentFile = await AttachmentFile.findOne({ filename: filenameValue });
 
     if (attachmentFile == null) {
@@ -40,8 +40,6 @@ module.exports = function(crowi) {
     }
 
     return AttachmentFile.promisifiedUnlink({ _id: attachmentFile._id });
-
-
   };
 
   /**
