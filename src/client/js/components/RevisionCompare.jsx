@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {
+  useState, useEffect, useCallback,
+} from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -29,87 +31,69 @@ function encodeSpaces(str) {
   return str.replace(/ /g, '%20').replace(/\u3000/g, '%E3%80%80');
 }
 
-class PageCompare extends React.Component {
+const PageCompare = (props) => {
 
-  constructor() {
-    super();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
-    this.state = {
-      dropdownOpen: false,
-    };
-
-    this.toggleDropdown = this.toggleDropdown.bind(this);
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
   }
 
-  componentWillMount() {
-    const { revisionCompareContainer } = this.props;
-    revisionCompareContainer.readyRevisions();
-  }
+  const { t, revisionCompareContainer } = props;
 
-  toggleDropdown() {
-    this.setState({
-      dropdownOpen: !this.state.dropdownOpen,
-    });
-  }
+  const fromRev = revisionCompareContainer.state.fromRevision;
+  const toRev = revisionCompareContainer.state.toRevision;
+  const showDiff = (fromRev && toRev);
 
-  render() {
-    const { t, revisionCompareContainer } = this.props;
+  const pagePathUrl = () => {
+    const { origin } = window.location;
+    const { path } = revisionCompareContainer.pageContainer.state;
+    const { fromRevision, toRevision } = revisionCompareContainer.state;
 
-    const fromRev = revisionCompareContainer.state.fromRevision;
-    const toRev = revisionCompareContainer.state.toRevision;
-    const showDiff = (fromRev && toRev);
+    const urlParams = (fromRevision && toRevision ? `?compare=${fromRevision._id}...${toRevision._id}` : '');
+    return encodeSpaces(decodeURI(`${origin}/${path}${urlParams}`));
+  };
 
-    const pagePathUrl = () => {
-      const { origin } = window.location;
-      const { path } = revisionCompareContainer.pageContainer.state;
-      const { fromRevision, toRevision } = revisionCompareContainer.state;
-
-      const urlParams = (fromRevision && toRevision ? `?compare=${fromRevision._id}...${toRevision._id}` : '');
-      return encodeSpaces(decodeURI(`${origin}/${path}${urlParams}`));
-    };
-
-    return (
-      <React.Fragment>
-        <div className="float-left">{t('page_history.comparing_changes')}</div>
-        <div className="mb-3">
-          <Dropdown
-            className="grw-copy-dropdown"
-            isOpen={this.state.dropdownOpen}
-            toggle={this.toggleDropdown}
+  return (
+    <React.Fragment>
+      <div className="float-left">{t('page_history.comparing_changes')}</div>
+      <div className="mb-3">
+        <Dropdown
+          className="grw-copy-dropdown"
+          isOpen={dropdownOpen}
+          toggle={() => toggleDropdown()}
+        >
+          <DropdownToggle
+            caret
+            className="d-block text-muted bg-transparent btn-copy border-0 py-0"
           >
-            <DropdownToggle
-              caret
-              className="d-block text-muted bg-transparent btn-copy border-0 py-0"
-            >
-              <i className="ti-clipboard"></i>
-            </DropdownToggle>
-            <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: null } }}>
-              {/* Page path URL */}
-              <CopyToClipboard text={pagePathUrl()}>
-                <DropdownItem className="px-3">
-                  <DropdownItemContents title={t('copy_to_clipboard.Page URL')} contents={pagePathUrl()} />
-                </DropdownItem>
-              </CopyToClipboard>
-              <DropdownItem divider className="my-0"></DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-        </div>
+            <i className="ti-clipboard"></i>
+          </DropdownToggle>
+          <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: null } }}>
+            {/* Page path URL */}
+            <CopyToClipboard text={pagePathUrl()}>
+              <DropdownItem className="px-3">
+                <DropdownItemContents title={t('copy_to_clipboard.Page URL')} contents={pagePathUrl()} />
+              </DropdownItem>
+            </CopyToClipboard>
+            <DropdownItem divider className="my-0"></DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+      </div>
 
-        <div className="clearfix"></div>
+      <div className="clearfix"></div>
 
-        <RevisionIdForm />
+      <RevisionIdForm />
 
-        { showDiff && (
-          <RevisionDiff
-            revisionDiffOpened
-            previousRevision={fromRev}
-            currentRevision={toRev}
-          />
-        )}
-      </React.Fragment>
-    );
-  }
-
+      { showDiff && (
+        <RevisionDiff
+          revisionDiffOpened
+          previousRevision={fromRev}
+          currentRevision={toRev}
+        />
+      )}
+    </React.Fragment>
+  );
 }
 
 /**
