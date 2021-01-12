@@ -44,7 +44,7 @@ const PagePathNav = ({
   }
 
   const copyDropdownId = `copydropdown${isCompactMode ? '-subnav-compact' : ''}-${pageId}`;
-  const copyDropdownToggleClassName = 'd-block text-muted bg-transparent btn-copy border-0';
+  const copyDropdownToggleClassName = 'd-block text-muted bg-transparent btn-copy border-0 py-0';
 
   return (
     <div className="grw-page-path-nav">

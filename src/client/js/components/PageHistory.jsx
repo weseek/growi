@@ -68,6 +68,7 @@ function PageHistory(props) {
   return (
     <div>
       <PageRevisionList
+        pageHistoryContainer={pageHistoryContainer}
         revisions={revisions}
         diffOpened={diffOpened}
         getPreviousRevision={getPreviousRevision}

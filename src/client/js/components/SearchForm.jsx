@@ -75,7 +75,7 @@ class SearchForm extends React.Component {
     }
 
     if (!isShownHelp) {
-      return null;
+      return <></>;
     }
 
     return (
