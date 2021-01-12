@@ -40,10 +40,8 @@ module.exports = function(crowi) {
     const fileId = attachmentFile._id;
     const fileName = attachmentFile.fileName;
 
-
     unorderChunkCollection.find({ files_id: fileId }).remove();
     unorderFilesCollection.find({ fileName }).remove();
-
 
     if (attachmentFile == null) {
       logger.warn(`Any AttachmentFile that relate to the Attachment (${attachment._id.toString()}) does not exist in GridFS`);
