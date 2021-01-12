@@ -123,8 +123,8 @@ if (pageContainer.state.pageId != null) {
   });
 
   // show the Page accessory modal when query of "compare" is requested
-  if (pageContainer.state.compareRevisionIds != null && pageContainer.state.compareRevisionIds.length > 0) {
-    pageAccessoriesContainer.openPageAccessoriesModal('revisionCompare');
+  if (pageContainer.compareRevisionIds.length > 0) {
+    pageAccessoriesContainer.openPageAccessoriesModal('pageHistory');
   }
 }
 if (pageContainer.state.creator != null) {
