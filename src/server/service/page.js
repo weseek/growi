@@ -36,11 +36,9 @@ class PageService {
   async removeAllAttachments(pageIds) {
     const Attachment = this.crowi.model('Attachment');
     const { attachmentService } = this.crowi;
-
     const attachments = await Attachment.find({ page: pageIds });
-    attachmentService.removeAttachment(attachments);
 
-    return;
+    return attachmentService.removeAttachment(attachments);
   }
 
   async duplicate(page, newPagePath, user) {
