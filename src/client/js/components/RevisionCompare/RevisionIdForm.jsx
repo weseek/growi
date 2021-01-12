@@ -7,13 +7,13 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import PageHistroyContainer from '../../services/PageHistoryContainer';
 import RevisionCompareContainer from '../../services/RevisionCompareContainer';
 
-class RevisionIdForm extends React.Component {
+const RevisionIdForm = (props) => {
 
   /**
    * create an Option array for AsyncSelect from the revision list
    */
-  revisionOptions() {
-    const { revisions } = this.props.pageHistoryContainer.state;
+  function revisionOptions() {
+    const { revisions } = props.pageHistoryContainer.state;
     const timeFormat = 'yyyy/MM/dd HH:mm:ss';
 
     return revisions.map((rev) => {
@@ -25,14 +25,14 @@ class RevisionIdForm extends React.Component {
    * render a revision selector
    * @param {label} label text of inputbox
    */
-  renderRevisionSelector(label) {
+  function renderRevisionSelector(label) {
     if (['FromRev', 'ToRev'].indexOf(label) === -1) {
       return <></>;
     }
     const forFromRev = (label === 'FromRev');
 
-    const { revisionCompareContainer } = this.props;
-    const options = this.revisionOptions();
+    const { revisionCompareContainer } = props;
+    const options = revisionOptions();
     const selectedRevisionId = (forFromRev ? revisionCompareContainer.state.fromRevision?._id : revisionCompareContainer.state.toRevision?._id);
     const value = options.find(it => it.value === selectedRevisionId);
     const changeHandler = (forFromRev ? revisionCompareContainer.handleFromRevisionChange : revisionCompareContainer.handleToRevisionChange);
@@ -46,23 +46,21 @@ class RevisionIdForm extends React.Component {
     );
   }
 
-  render() {
-    const fromRevSelector = this.renderRevisionSelector('FromRev');
-    const toRevSelector = this.renderRevisionSelector('ToRev');
+  const fromRevSelector = renderRevisionSelector('FromRev');
+  const toRevSelector = renderRevisionSelector('ToRev');
 
-    return (
-      <div className="container-fluid px-0">
-        <div className="row">
-          <div className="mb-3 col-sm">
-            { fromRevSelector }
-          </div>
-          <div className="mb-3 col-sm">
-            { toRevSelector }
-          </div>
+  return (
+    <div className="container-fluid px-0">
+      <div className="row">
+        <div className="mb-3 col-sm">
+          { fromRevSelector }
+        </div>
+        <div className="mb-3 col-sm">
+          { toRevSelector }
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 
 }
 
