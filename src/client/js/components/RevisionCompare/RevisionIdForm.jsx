@@ -7,6 +7,10 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import PageHistroyContainer from '../../services/PageHistoryContainer';
 import RevisionCompareContainer from '../../services/RevisionCompareContainer';
 
+import UserDate from '../User/UserDate';
+import Username from '../User/Username';
+import UserPicture from '../User/UserPicture';
+
 const RevisionIdForm = (props) => {
 
   /**
@@ -33,16 +37,43 @@ const RevisionIdForm = (props) => {
 
     const { revisionCompareContainer } = props;
     const options = revisionOptions();
-    const selectedRevisionId = (forFromRev ? revisionCompareContainer.state.fromRevision?._id : revisionCompareContainer.state.toRevision?._id);
-    const value = options.find(it => it.value === selectedRevisionId);
+    const selectedRevision = (forFromRev ? revisionCompareContainer.state.fromRevision : revisionCompareContainer.state.toRevision);
+    const value = options.find(it => it.value === selectedRevision?._id);
     const changeHandler = (forFromRev ? revisionCompareContainer.handleFromRevisionChange : revisionCompareContainer.handleToRevisionChange);
+
+    const author = selectedRevision?.author;
+    const pic = (typeof author === 'object') ? <UserPicture user={author} size="lg" /> : '';
+
     return (
-      <ReactSelect
-        options={options}
-        onChange={selectedOption => changeHandler(selectedOption.value)}
-        placeholder={label}
-        value={value}
-      />
+      <div className="card">
+        <div class="card-header">
+          <ReactSelect
+            options={options}
+            onChange={selectedOption => changeHandler(selectedOption.value)}
+            placeholder={label}
+            value={value}
+          />
+        </div>
+        <div className="card-body">
+          { selectedRevision && (
+          <div className="revision-history-main d-flex mt-3">
+            <div className="mt-2">
+              {pic}
+            </div>
+            <div className="ml-2">
+              <div className="revision-history-author">
+                <strong><Username user={author}></Username></strong>
+              </div>
+              <div className="revision-history-meta">
+                <p>
+                  <UserDate dateTime={selectedRevision.createdAt} />
+                </p>
+              </div>
+            </div>
+          </div>
+          )}
+        </div>
+      </div>
     );
   }
 
