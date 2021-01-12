@@ -24,7 +24,7 @@ module.exports = function(crowi) {
 
   // create promisified method
   AttachmentFile.promisifiedWrite = util.promisify(AttachmentFile.write).bind(AttachmentFile);
-  AttachmentFile.promisifiedUnlink = util.promisify(AttachmentFile.unlink).bind(AttachmentFile);
+  // AttachmentFile.promisifiedUnlink = util.promisify(AttachmentFile.unlink).bind(AttachmentFile);
 
   lib.isValidUploadSettings = function() {
     return true;
@@ -38,12 +38,11 @@ module.exports = function(crowi) {
     const attachmentFile = await AttachmentFile.findOne({ filename: filenameValue });
 
     const fileId = attachmentFile._id;
-    filenameValue = attachmentFile.fileName;
-    console.log(fileId);
-    console.log(filenameValue);
+    const fileName = attachmentFile.fileName;
+
 
     unorderChunkCollection.find({ files_id: fileId }).remove();
-    unorderFilesCollection.find({ fileName: filenameValue }).remove();
+    unorderFilesCollection.find({ fileName }).remove();
 
 
     if (attachmentFile == null) {
@@ -52,8 +51,6 @@ module.exports = function(crowi) {
     }
     await unorderFilesCollection.execute();
     await unorderChunkCollection.execute();
-
-    // return AttachmentFile.promisifiedUnlink({ _id: attachmentFile._id });
     return;
   };
 
