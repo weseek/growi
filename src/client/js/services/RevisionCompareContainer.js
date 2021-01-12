@@ -24,7 +24,6 @@ export default class RevisionCompareContainer extends Container {
       toRevision: null,
     };
 
-    this.fetchPageRevisionBody = this.fetchPageRevisionBody.bind(this);
     this.handleFromRevisionChange = this.handleFromRevisionChange.bind(this);
     this.handleToRevisionChange = this.handleToRevisionChange.bind(this);
   }
@@ -34,27 +33,6 @@ export default class RevisionCompareContainer extends Container {
    */
   static getClassName() {
     return 'RevisionCompareContainer';
-  }
-
-  /**
-   * Fetch page revision body by revision_id in argument
-   * @param {string} revisionId
-   */
-  async fetchPageRevisionBody(revisionId) {
-    const { pageId, shareLinkId } = this.pageContainer.state;
-    try {
-      const res = await this.appContainer.apiv3Get(`/revisions/${revisionId}`, { pageId, shareLinkId });
-      if (res == null || res.data === undefined || res.data.revision === undefined) {
-        logger.warn(`cannot get revision. revisionId: ${revisionId}`);
-        return null;
-      }
-      return res.data.revision.body;
-    }
-    catch (err) {
-      toastError(err);
-      this.setState({ errorMessage: err.message });
-      logger.error(err);
-    }
   }
 
   async handleFromRevisionChange(revision) {
