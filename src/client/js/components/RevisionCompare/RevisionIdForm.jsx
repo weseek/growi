@@ -1,10 +1,7 @@
 import React from 'react';
-import ReactSelect from 'react-select';
 import PropTypes from 'prop-types';
-import { format } from 'date-fns';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
-import PageHistroyContainer from '../../services/PageHistoryContainer';
 import RevisionCompareContainer from '../../services/RevisionCompareContainer';
 
 import UserDate from '../User/UserDate';
@@ -12,18 +9,6 @@ import Username from '../User/Username';
 import UserPicture from '../User/UserPicture';
 
 const RevisionIdForm = (props) => {
-
-  /**
-   * create an Option array for AsyncSelect from the revision list
-   */
-  const revisionOptions = () => {
-    const timeFormat = 'yyyy/MM/dd HH:mm:ss';
-    const { revisions } = props.pageHistoryContainer.state;
-
-    return revisions.map((rev) => {
-      return { label: `${format(new Date(rev.createdAt), timeFormat)} - ${rev._id}`, value: rev._id };
-    });
-  }
 
   /**
    * render a revision selector
@@ -36,24 +21,14 @@ const RevisionIdForm = (props) => {
     const forFromRev = (label === 'FromRev');
 
     const { revisionCompareContainer } = props;
-    const options = revisionOptions();
     const selectedRevision = (forFromRev ? revisionCompareContainer.state.fromRevision : revisionCompareContainer.state.toRevision);
-    const value = options.find(it => it.value === selectedRevision?._id);
-    const changeHandler = (forFromRev ? revisionCompareContainer.handleFromRevisionChange : revisionCompareContainer.handleToRevisionChange);
 
     const author = selectedRevision?.author;
     const pic = (typeof author === 'object') ? <UserPicture user={author} size="lg" /> : '';
 
     return (
       <div className="card">
-        <div class="card-header">
-          <ReactSelect
-            options={options}
-            onChange={selectedOption => changeHandler(selectedOption.value)}
-            placeholder={label}
-            value={value}
-          />
-        </div>
+        <div className="card-header">{label}</div>
         <div className="card-body">
           { selectedRevision && (
           <div className="revision-history-main d-flex mt-3">
@@ -98,13 +73,12 @@ const RevisionIdForm = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const RevisionIdFormWrapper = withUnstatedContainers(RevisionIdForm, [PageHistroyContainer, RevisionCompareContainer]);
+const RevisionIdFormWrapper = withUnstatedContainers(RevisionIdForm, [RevisionCompareContainer]);
 
 /**
  * Properties
  */
 RevisionIdForm.propTypes = {
-  pageHistoryContainer: PropTypes.instanceOf(PageHistroyContainer).isRequired,
   revisionCompareContainer: PropTypes.instanceOf(RevisionCompareContainer).isRequired,
 };
 
