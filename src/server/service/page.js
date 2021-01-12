@@ -176,7 +176,7 @@ class PageService {
   /**
    * Delete Bookmarks, Attachments, Revisions, Pages and emit delete
    */
-  async completelyDeletePageRecursively(targetPage, user, options = {}) {
+  async deletePageRecursivelyCompletely(targetPage, user, options = {}) {
     const Page = this.crowi.model('Page');
     const { PageQueryBuilder } = Page;
 
