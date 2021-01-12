@@ -7,7 +7,7 @@ const { body, query } = require('express-validator');
 
 const router = express.Router();
 
-const { convertToNewAffiliationPath } = require('~/utils/path-utils');
+const { isCreatablePage, isDeletablePage, convertToNewAffiliationPath } = require('~/utils/path-utils');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 
@@ -165,7 +165,6 @@ module.exports = (crowi) => {
     ],
   };
 
-
   router.get('/', accessTokenParser, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
     const { pagePath, pageId } = req.query;
 
@@ -187,11 +186,30 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
 
+    const result = { };
+
     if (page == null) {
-      return res.apiv3Err(new ErrorV3(`Page '${pageId || pagePath}' is not found or forbidden`, 'notfound-or-forbidden'));
+      try {
+        result.isForbidden = await Page.count({ path: pagePath }) > 0;
+      }
+      catch (err) {
+        logger.error('get-page-count-failed', err);
+        return res.apiv3Err(err, 500);
+      }
+
+      result.isCreatable = isCreatablePage(pagePath);
+      result.isDeletable = false;
+      result.canDeleteCompletely = false;
+
+      return res.apiv3(result);
     }
 
-    console.log(page);
+    result.page = page;
+    result.isForbidden = false;
+    result.isCreatable = false;
+    result.isDeletable = isDeletablePage(pagePath);
+    result.isDeleted = page.isDeleted();
+    result.canDeleteCompletely = req.user != null && req.user.canDeleteCompletely(page.creator);
 
     try {
       page.initLatestRevisionField();
@@ -204,9 +222,6 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
 
-    // const result = {};
-    // result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
-    const result = { page };
     return res.apiv3(result);
   });
 
