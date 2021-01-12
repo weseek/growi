@@ -186,11 +186,11 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
 
-    const result = { };
+    const result = {};
 
     if (page == null) {
       try {
-        const isExist = await Page.count({ path: pagePath }) > 0;
+        const isExist = await Page.count({ $or: [{ path: pagePath, _id: pageId }] }) > 0;
         result.isForbidden = isExist;
         result.isNotFound = !isExist;
       }
