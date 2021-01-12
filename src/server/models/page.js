@@ -1233,7 +1233,11 @@ module.exports = function(crowi) {
     pages.forEach((page) => {
       const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
       if (updateMetadata) {
-        unorderedBulkOp.find({ _id: page._id }).update([{ $set: { path: newPagePath, lastUpdateUser: user._id, updatedAt: { $toDate: Date.now() } } }]);
+        unorderedBulkOp.find({ _id: page._id }).update([{
+          $set: {
+            path: newPagePath, status: newStatus, lastUpdateUser: user._id, updatedAt: { $toDate: Date.now() },
+          },
+        }]);
       }
       else {
         unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath, status: newStatus } });
