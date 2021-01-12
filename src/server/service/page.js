@@ -189,7 +189,7 @@ class PageService {
   }
 
   // delete single page completely
-  async deleteCompletely(page, user, options = {}, isRecursively = false) {
+  async deleteCompletely(page, user, options = {}, isRecursively) {
     this.validateCrowi();
     let pageEvent;
     // init event
