@@ -12,7 +12,7 @@ const RevisionIdForm = (props) => {
   /**
    * create an Option array for AsyncSelect from the revision list
    */
-  function revisionOptions() {
+  const revisionOptions = () => {
     const { revisions } = props.pageHistoryContainer.state;
     const timeFormat = 'yyyy/MM/dd HH:mm:ss';
 
@@ -25,7 +25,7 @@ const RevisionIdForm = (props) => {
    * render a revision selector
    * @param {label} label text of inputbox
    */
-  function renderRevisionSelector(label) {
+  const renderRevisionSelector = (label) => {
     if (['FromRev', 'ToRev'].indexOf(label) === -1) {
       return <></>;
     }

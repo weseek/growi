@@ -33,7 +33,7 @@ function encodeSpaces(str) {
 
 const PageCompare = (props) => {
 
-  const toggleDropdown = () => {
+  function toggleDropdown() {
     setDropdownOpen(!dropdownOpen);
   }
 
