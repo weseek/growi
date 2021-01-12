@@ -1,6 +1,5 @@
 const logger = require('@alias/logger')('growi:service:AttachmentService'); // eslint-disable-line no-unused-vars
 
-const fs = require('fs');
 const mongoose = require('mongoose');
 
 
