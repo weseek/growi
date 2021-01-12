@@ -61,7 +61,7 @@ class PageService {
     );
 
     if (isRecursively) {
-      this.duplicateDescendantPages(page, newPagePath, user);
+      this.duplicateStream(page, newPagePath, user);
     }
 
     // take over tags
@@ -78,8 +78,40 @@ class PageService {
     return result;
   }
 
-  async duplicateDescendantPages(page, newPagePath, user) {
+  async duplicateDescendants(pages, user, oldPagePathPrefix, newPagePathPrefix, pathRevisionMapping) {
+    const Page = this.crowi.model('Page');
+    const Revision = this.crowi.model('Revision');
 
+    const newPages = [];
+    const newRevisions = [];
+
+    pages.forEach((page) => {
+      const newPagePath = page.path.replace(oldPagePathPrefix, newPagePathPrefix);
+      const revisionId = new mongoose.Types.ObjectId();
+
+      newPages.push({
+        path: newPagePath,
+        creator: user._id,
+        grant: page.grant,
+        grantedGroup: page.grantedGroup,
+        grantedUsers: page.grantedUsers,
+        lastUpdateUser: user._id,
+        redirectTo: null,
+        revision: revisionId,
+      });
+
+      newRevisions.push({
+        _id: revisionId, path: newPagePath, body: pathRevisionMapping[page.path].body, author: user._id, format: 'markdown',
+      });
+
+    });
+
+    await Page.insertMany(newPages, { ordered: false });
+    await Revision.insertMany(newRevisions, { ordered: false });
+
+  }
+
+  async duplicateStream(page, newPagePath, user) {
     const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
     const newPagePathPrefix = newPagePath;
@@ -101,40 +133,14 @@ class PageService {
       pathRevisionMapping[revision.path] = revision;
     });
 
+    const duplicateDescendants = this.duplicateDescendants.bind(this);
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
       async write(batch, encoding, callback) {
         try {
           count += batch.length;
-
-          const newPages = [];
-          const newRevisions = [];
-
-          batch.forEach((page) => {
-            const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
-            const revisionId = new mongoose.Types.ObjectId();
-
-            newPages.push({
-              path: newPagePath,
-              creator: user._id,
-              grant: page.grant,
-              grantedGroup: page.grantedGroup,
-              grantedUsers: page.grantedUsers,
-              lastUpdateUser: user._id,
-              redirectTo: null,
-              revision: revisionId,
-            });
-
-            newRevisions.push({
-              _id: revisionId, path: newPagePath, body: pathRevisionMapping[page.path].body, author: user._id, format: 'markdown',
-            });
-
-          });
-
-          await Page.insertMany(newPages, { ordered: false });
-          await Revision.insertMany(newRevisions, { ordered: false });
-
+          await duplicateDescendants(batch, user, pathRegExp, newPagePathPrefix, pathRevisionMapping);
           logger.info(`Adding pages progressing: (count=${count})`);
         }
         catch (err) {
