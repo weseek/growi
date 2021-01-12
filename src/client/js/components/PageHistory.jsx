@@ -45,6 +45,7 @@ function PageHistory(props) {
     throw new Promise(async() => {
       try {
         await props.pageHistoryContainer.retrieveRevisions(1);
+        props.revisionCompareContainer.initRevisions(props.pageHistoryContainer.state.revisions);
       }
       catch (err) {
         toastError(err);

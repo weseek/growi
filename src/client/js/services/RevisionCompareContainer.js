@@ -19,6 +19,7 @@ export default class RevisionCompareContainer extends Container {
       toRevision: null,
     };
 
+    this.initRevisions = this.initRevisions.bind(this);
     this.handleFromRevisionChange = this.handleFromRevisionChange.bind(this);
     this.handleToRevisionChange = this.handleToRevisionChange.bind(this);
   }
@@ -28,6 +29,12 @@ export default class RevisionCompareContainer extends Container {
    */
   static getClassName() {
     return 'RevisionCompareContainer';
+  }
+
+  initRevisions(revisions) {
+    const fromRevision = revisions.find((it) => it._id === this.compareRevisionIds[0]) || revisions[0];
+    const toRevision = revisions.find((it) => it._id === this.compareRevisionIds[1]) || revisions[0];
+    this.setState({ fromRevision, toRevision });
   }
 
   async handleFromRevisionChange(revision) {
