@@ -32,7 +32,6 @@ module.exports = function(crowi) {
 
   lib.deleteFile = async function(attachment) {
     const filePath = getFilePathOnStorage(attachment);
-
     return lib.deleteFileByFilePath(filePath);
   };
 

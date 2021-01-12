@@ -2,6 +2,7 @@ const logger = require('@alias/logger')('growi:service:AttachmentService'); // e
 
 const fs = require('fs');
 
+
 /**
  * the service class for Attachment and file-uploader
  */
