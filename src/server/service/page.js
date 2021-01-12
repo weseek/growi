@@ -84,15 +84,22 @@ class PageService {
     const Revision = this.crowi.model('Revision');
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
-    const pages = await Page.findManageableListWithDescendants(page, user);
     const revisions = await Revision.find({ path: pathRegExp });
+
+    const { PageQueryBuilder } = Page;
+
+    const readStream = new PageQueryBuilder(Page.find())
+      .addConditionToExcludeRedirect()
+      .addConditionToListOnlyDescendants(page.path)
+      .query
+      .lean()
+      .cursor();
 
     // Mapping to set to the body of the new revision
     const pathRevisionMapping = {};
     revisions.forEach((revision) => {
       pathRevisionMapping[revision.path] = revision;
     });
-    const readable = new Readable({ objectMode: true });
 
     let count = 0;
     const writeStream = new Writable({
@@ -143,12 +150,10 @@ class PageService {
       },
     });
 
-    readable
+    readStream
       .pipe(createBatchStream(BULK_REINDEX_SIZE))
       .pipe(writeStream);
 
-    pages.forEach(page => readable.push(page));
-    readable.push(null);
   }
 
   // delete multiple pages
