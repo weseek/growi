@@ -717,20 +717,12 @@ module.exports = function(crowi) {
    * find pages that is match with `path` and its descendants whitch user is able to manage
    */
   pageSchema.statics.findManageableListWithDescendants = async function(page, user, option = {}) {
-    const onlyDescendants = option.onlyDescendants || false;
-
     if (user == null) {
       return null;
     }
 
     const builder = new PageQueryBuilder(this.find());
-
-    if (onlyDescendants) {
-      builder.addConditionToListOnlyDescendants(page.path, option);
-    }
-    else {
-      builder.addConditionToListWithDescendants(page.path, option);
-    }
+    builder.addConditionToListWithDescendants(page.path, option);
     builder.addConditionToExcludeRedirect();
 
     // add grant conditions
