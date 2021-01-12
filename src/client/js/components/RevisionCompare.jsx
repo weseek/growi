@@ -9,7 +9,10 @@ import {
 } from 'reactstrap';
 
 import { withUnstatedContainers } from './UnstatedUtils';
+
+import PageHistroyContainer from '../services/PageHistoryContainer';
 import RevisionCompareContainer from '../services/RevisionCompareContainer';
+
 import RevisionDiff from './PageHistory/RevisionDiff';
 import RevisionIdForm from './RevisionCompare/RevisionIdForm';
 
@@ -99,10 +102,11 @@ const PageCompare = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageCompareWrapper = withUnstatedContainers(PageCompare, [RevisionCompareContainer]);
+const PageCompareWrapper = withUnstatedContainers(PageCompare, [PageHistroyContainer, RevisionCompareContainer]);
 
 PageCompare.propTypes = {
   t: PropTypes.func.isRequired, // i18next
+  pageHistoryContainer: PropTypes.instanceOf(PageHistroyContainer).isRequired,
   revisionCompareContainer: PropTypes.instanceOf(RevisionCompareContainer).isRequired,
 };
 

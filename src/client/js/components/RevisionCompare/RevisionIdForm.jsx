@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { format } from 'date-fns';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
+import PageHistroyContainer from '../../services/PageHistoryContainer';
 import RevisionCompareContainer from '../../services/RevisionCompareContainer';
 
 class RevisionIdForm extends React.Component {
@@ -12,10 +13,10 @@ class RevisionIdForm extends React.Component {
    * create an Option array for AsyncSelect from the revision list
    */
   revisionOptions() {
-    const { revisionCompareContainer } = this.props;
+    const { revisions } = this.props.pageHistoryContainer.state;
     const timeFormat = 'yyyy/MM/dd HH:mm:ss';
 
-    return revisionCompareContainer.state.revisions.map((rev) => {
+    return revisions.map((rev) => {
       return { label: `${format(new Date(rev.createdAt), timeFormat)} - ${rev._id}`, value: rev._id };
     });
   }
@@ -68,12 +69,13 @@ class RevisionIdForm extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const RevisionIdFormWrapper = withUnstatedContainers(RevisionIdForm, [RevisionCompareContainer]);
+const RevisionIdFormWrapper = withUnstatedContainers(RevisionIdForm, [PageHistroyContainer, RevisionCompareContainer]);
 
 /**
  * Properties
  */
 RevisionIdForm.propTypes = {
+  pageHistoryContainer: PropTypes.instanceOf(PageHistroyContainer).isRequired,
   revisionCompareContainer: PropTypes.instanceOf(RevisionCompareContainer).isRequired,
 };
 

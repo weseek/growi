@@ -139,14 +139,12 @@ export default class RevisionCompareContainer extends Container {
     }
   }
 
-  async handleFromRevisionChange(revisionId) {
-    const fromRevision = await this.fetchPageRevision(revisionId);
-    this.setState({ fromRevision });
+  async handleFromRevisionChange(revision) {
+    this.setState({ fromRevision: revision });
   }
 
-  async handleToRevisionChange(revisionId) {
-    const toRevision = await this.fetchPageRevision(revisionId);
-    this.setState({ toRevision });
+  async handleToRevisionChange(revision) {
+    this.setState({ toRevision: revision });
   }
 
 }
