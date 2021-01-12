@@ -47,23 +47,14 @@ class AttachmentService {
   async removeAttachment(attachments) {
     const { fileUploadService } = this.crowi;
     const attachmentsCollection = mongoose.connection.collection('attachments');
-    // const attachmentsFilesChunkCollection = mongoose.connection.collection('attachmentFiles.chunks');
-    // const attachmentsFilesFilesColleciton = mongoose.connection.collection('attachmentFiles.files');
     const unorderAttachmentsBulkOp = attachmentsCollection.initializeUnorderedBulkOp();
-    // const unorderAttachmentsFilesChunkBulkOp = attachmentsFilesChunkCollection.initializeOrderedBulkOp();
-    // const unorderAttachmentsFilesFilesBulkOp = attachmentsFilesFilesColleciton.initializeOrderedBulkOp();
 
     attachments.forEach((attachment) => {
       fileUploadService.deleteFile(attachment);
-      // unorderAttachmentsFilesChunkBulkOp.find({ _id: attachment._id }).remove();
-      // unorderAttachmentsFilesFilesBulkOp.find({ _id: attachment._id }).remove();
       unorderAttachmentsBulkOp.find({ _id: attachment._id }).remove();
     });
 
-    // await unorderAttachmentsFilesChunkBulkOp.execute();
-    // await unorderAttachmentsFilesFilesBulkOp.execute();
-    await unorderAttachmentsBulkOp.execute();
-    return;
+    return unorderAttachmentsBulkOp.execute();
   }
 
 }
