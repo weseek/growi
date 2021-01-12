@@ -123,6 +123,7 @@ class PageService {
     const readStream = new PageQueryBuilder(Page.find())
       .addConditionToExcludeRedirect()
       .addConditionToListOnlyDescendants(page.path)
+      .addConditionToFilteringByViewer(user)
       .query
       .lean()
       .cursor();
