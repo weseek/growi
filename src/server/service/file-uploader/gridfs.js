@@ -28,8 +28,8 @@ module.exports = function(crowi) {
 
   lib.deleteFile = async function(attachment) {
     let filenameValue = attachment.fileName;
+    
     if (attachment.filePath != null) { // backward compatibility for v3.3.x or below
-      
       filenameValue = attachment.filePath;
     }
 
