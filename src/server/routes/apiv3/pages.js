@@ -542,15 +542,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('Not Founded the page', 'notfound_or_forbidden'), 404);
     }
 
-    let newParentPage;
-
-    if (isRecursively) {
-      newParentPage = await crowi.pageService.duplicateRecursively(page, newPagePath, req.user);
-    }
-    else {
-      newParentPage = await crowi.pageService.duplicate(page, newPagePath, req.user);
-    }
-
+    const newParentPage = await crowi.pageService.duplicate(page, newPagePath, req.user, isRecursively);
     const result = { page: serializePageSecurely(newParentPage) };
 
     page.path = newPagePath;

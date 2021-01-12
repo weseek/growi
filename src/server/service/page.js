@@ -44,7 +44,7 @@ class PageService {
     return attachmentService.removeAttachment(attachments);
   }
 
-  async duplicate(page, newPagePath, user) {
+  async duplicate(page, newPagePath, user, isRecursively) {
     const Page = this.crowi.model('Page');
     const PageTagRelation = mongoose.model('PageTagRelation');
     // populate
@@ -60,6 +60,10 @@ class PageService {
       newPagePath, page.revision.body, user, options,
     );
 
+    if (isRecursively) {
+      this.duplicateDescendantsWithStream(page, newPagePath, user);
+    }
+
     // take over tags
     const originTags = await page.findRelatedTagsById();
     let savedTags = [];
@@ -74,26 +78,15 @@ class PageService {
     return result;
   }
 
-  async duplicateRecursively(page, newPagePath, user) {
-
+  async duplicateDescendants(pages, user, oldPagePathPrefix, newPagePathPrefix, pathRevisionMapping) {
     const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
-    const newPagePathPrefix = newPagePath;
-    const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
-    const pages = await Page.findManageableListWithDescendants(page, user);
-    const revisions = await Revision.find({ path: pathRegExp });
-
-    // Mapping to set to the body of the new revision
-    const pathRevisionMapping = {};
-    revisions.forEach((revision) => {
-      pathRevisionMapping[revision.path] = revision;
-    });
 
     const newPages = [];
     const newRevisions = [];
 
     pages.forEach((page) => {
-      const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
+      const newPagePath = page.path.replace(oldPagePathPrefix, newPagePathPrefix);
       const revisionId = new mongoose.Types.ObjectId();
 
       newPages.push({
@@ -116,11 +109,58 @@ class PageService {
     await Page.insertMany(newPages, { ordered: false });
     await Revision.insertMany(newRevisions, { ordered: false });
 
-    const newPath = page.path.replace(pathRegExp, newPagePathPrefix);
-    const newParentpage = await Page.findByPath(newPath);
+  }
 
-    // TODO GW-4634 use stream
-    return newParentpage;
+  async duplicateDescendantsWithStream(page, newPagePath, user) {
+    const Page = this.crowi.model('Page');
+    const Revision = this.crowi.model('Revision');
+    const newPagePathPrefix = newPagePath;
+    const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
+    const revisions = await Revision.find({ path: pathRegExp });
+
+    const { PageQueryBuilder } = Page;
+
+    const readStream = new PageQueryBuilder(Page.find())
+      .addConditionToExcludeRedirect()
+      .addConditionToListOnlyDescendants(page.path)
+      .addConditionToFilteringByViewer(user)
+      .query
+      .lean()
+      .cursor();
+
+    // Mapping to set to the body of the new revision
+    const pathRevisionMapping = {};
+    revisions.forEach((revision) => {
+      pathRevisionMapping[revision.path] = revision;
+    });
+
+    const duplicateDescendants = this.duplicateDescendants.bind(this);
+    let count = 0;
+    const writeStream = new Writable({
+      objectMode: true,
+      async write(batch, encoding, callback) {
+        try {
+          count += batch.length;
+          await duplicateDescendants(batch, user, pathRegExp, newPagePathPrefix, pathRevisionMapping);
+          logger.debug(`Adding pages progressing: (count=${count})`);
+        }
+        catch (err) {
+          logger.error('addAllPages error on add anyway: ', err);
+        }
+
+        callback();
+      },
+      final(callback) {
+        logger.debug(`Adding pages has completed: (totalCount=${count})`);
+
+        callback();
+      },
+    });
+
+    readStream
+      .pipe(createBatchStream(BULK_REINDEX_SIZE))
+      .pipe(writeStream);
+
   }
 
   // delete multiple pages
