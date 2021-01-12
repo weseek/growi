@@ -203,7 +203,6 @@ module.exports = (crowi) => {
 
       return res.apiv3(result);
     }
-
     result.page = page;
     result.isForbidden = false;
     result.isCreatable = false;
