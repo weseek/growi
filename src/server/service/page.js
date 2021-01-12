@@ -61,7 +61,7 @@ class PageService {
     );
 
     if (isRecursively) {
-      this.duplicateStream(page, newPagePath, user);
+      this.duplicateDescendantsWithStream(page, newPagePath, user);
     }
 
     // take over tags
@@ -124,7 +124,7 @@ class PageService {
 
   }
 
-  async duplicateStream(page, newPagePath, user) {
+  async duplicateDescendantsWithStream(page, newPagePath, user) {
     const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
     const newPagePathPrefix = newPagePath;
@@ -136,6 +136,7 @@ class PageService {
     const readStream = new PageQueryBuilder(Page.find())
       .addConditionToExcludeRedirect()
       .addConditionToListOnlyDescendants(page.path)
+      .addConditionToFilteringByViewer(user)
       .query
       .lean()
       .cursor();
@@ -154,7 +155,7 @@ class PageService {
         try {
           count += batch.length;
           await duplicateDescendants(batch, user, pathRegExp, newPagePathPrefix, pathRevisionMapping);
-          logger.info(`Adding pages progressing: (count=${count})`);
+          logger.debug(`Adding pages progressing: (count=${count})`);
         }
         catch (err) {
           logger.error('addAllPages error on add anyway: ', err);
@@ -163,7 +164,7 @@ class PageService {
         callback();
       },
       final(callback) {
-        logger.info(`Adding pages has completed: (totalCount=${count})`);
+        logger.debug(`Adding pages has completed: (totalCount=${count})`);
 
         callback();
       },
