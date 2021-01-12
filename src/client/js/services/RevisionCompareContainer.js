@@ -22,14 +22,9 @@ export default class RevisionCompareContainer extends Container {
 
       fromRevision: null,
       toRevision: null,
-
-      revisions: [],
     };
 
-    this.readyRevisions = this.readyRevisions.bind(this);
     this.fetchPageRevisionBody = this.fetchPageRevisionBody.bind(this);
-    this.fetchAllPageRevisions = this.fetchAllPageRevisions.bind(this);
-    this.fetchPageRevision = this.fetchPageRevision.bind(this);
     this.handleFromRevisionChange = this.handleFromRevisionChange.bind(this);
     this.handleToRevisionChange = this.handleToRevisionChange.bind(this);
   }
@@ -39,17 +34,6 @@ export default class RevisionCompareContainer extends Container {
    */
   static getClassName() {
     return 'RevisionCompareContainer';
-  }
-
-  async readyRevisions() {
-    await this.fetchAllPageRevisions();
-
-    const latestRevisionId = this.state.revisions[0]._id;
-    const { compareRevisionIds } = this.pageContainer.state;
-    const fromRevisionIdParam = compareRevisionIds[0] || latestRevisionId;
-    const toRevisionIdParam = compareRevisionIds[1] || latestRevisionId;
-    await this.handleFromRevisionChange(fromRevisionIdParam);
-    await this.handleToRevisionChange(toRevisionIdParam);
   }
 
   /**
@@ -65,72 +49,6 @@ export default class RevisionCompareContainer extends Container {
         return null;
       }
       return res.data.revision.body;
-    }
-    catch (err) {
-      toastError(err);
-      this.setState({ errorMessage: err.message });
-      logger.error(err);
-    }
-  }
-
-  /**
-   * Fetch all page revisions
-   *
-   * Each revision to be saved contains only "_id" and "createdAt", and "body" is initialized to null.
-   * ex. [{_id: "5ff03fded799ebc858a09266", body: null, creat…}, {_id: "5ff03fbed799ebc858a09262", body: null, creat…}]
-   */
-  async fetchAllPageRevisions() {
-    const { pageId, shareLinkId } = this.pageContainer.state;
-
-    // fetch all page revisions that are sorted update day time descending
-    let max = 1000; // Maximum number of loops to avoid infinite loops.
-    let newRevisions = [];
-    let page = 1;
-    let res = null;
-    /* eslint-disable no-await-in-loop */
-    do {
-      res = await this.appContainer.apiv3Get('/revisions/list', {
-        pageId, shareLinkId, page,
-      });
-      newRevisions = newRevisions.concat(res.data.docs.map((rev) => {
-        const { _id, createdAt, path } = rev;
-        return {
-          _id, createdAt, path, body: null,
-        };
-      }));
-      page++;
-    } while (res.data.hasNextPage && --max > 0);
-    /* eslint-disable no-await-in-loop */
-
-    this.setState({ revisions: newRevisions });
-  }
-
-  /**
-   * Fetch specified page revision
-   * If revision's body is empty, it will be completed.
-   * @param {string} revisionId
-   * @return {revision} revision
-   */
-  async fetchPageRevision(revisionId) {
-    try {
-      const compactRevision = this.state.revisions.find(rev => rev._id === revisionId);
-      if (this.state.revisions.find(rev => rev._id === revisionId) === undefined) {
-        return null;
-      }
-      if (compactRevision.body == null) {
-        const body = await this.fetchPageRevisionBody(revisionId);
-        compactRevision.body = body;
-
-        // cache revision body
-        const newRevisions = this.state.revisions.map((rev) => {
-          if (rev._id === revisionId) {
-            return { ...rev, body };
-          }
-          return rev;
-        });
-        this.setState({ revisions: newRevisions });
-      }
-      return compactRevision;
     }
     catch (err) {
       toastError(err);

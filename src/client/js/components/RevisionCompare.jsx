@@ -104,6 +104,8 @@ const PageCompareWrapper = withUnstatedContainers(PageCompare, [RevisionCompareC
 PageCompare.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   revisionCompareContainer: PropTypes.instanceOf(RevisionCompareContainer).isRequired,
+
+  revisions: PropTypes.array,
 };
 
 export default withTranslation()(PageCompareWrapper);

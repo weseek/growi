@@ -13,8 +13,8 @@ const RevisionIdForm = (props) => {
    * create an Option array for AsyncSelect from the revision list
    */
   const revisionOptions = () => {
-    const { revisions } = props.pageHistoryContainer.state;
     const timeFormat = 'yyyy/MM/dd HH:mm:ss';
+    const { revisions } = props.pageHistoryContainer.state;
 
     return revisions.map((rev) => {
       return { label: `${format(new Date(rev.createdAt), timeFormat)} - ${rev._id}`, value: rev._id };
