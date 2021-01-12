@@ -30,8 +30,13 @@ module.exports = function(crowi) {
     return true;
   };
 
+  // lib.getFilePathOnStorage = function(attachment) {
+  //   return getFilePathOnStorage(attachment);
+  // };
+
   lib.deleteFile = async function(attachment) {
     const filePath = getFilePathOnStorage(attachment);
+
     return lib.deleteFileByFilePath(filePath);
   };
 
