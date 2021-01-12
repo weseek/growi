@@ -102,7 +102,7 @@ class Revision extends React.Component {
                   onChange={() => revisionCompareContainer.handleFromRevisionChange(revision)}
                   checked={revision._id === revisionCompareContainer.state.fromRevision?._id}
                 />
-                <label className="custom-control-label" htmlFor={`rbCompareFrom_${revision._id}`}>{t('page_history.comparing_from')}</label>
+                <label className="custom-control-label" htmlFor={`rbCompareFrom_${revision._id}`}>{t('page_history.select_as_a_comparing_source')}</label>
               </span>
               <span className="ml-2 custom-control custom-radio custom-control-inline">
                 <input
@@ -113,7 +113,7 @@ class Revision extends React.Component {
                   onChange={() => revisionCompareContainer.handleToRevisionChange(revision)}
                   checked={revision._id === revisionCompareContainer.state.toRevision?._id}
                 />
-                <label className="custom-control-label" htmlFor={`rbCompareTo_${revision._id}`}>{t('page_history.comparing_to')}</label>
+                <label className="custom-control-label" htmlFor={`rbCompareTo_${revision._id}`}>{t('page_history.select_as_a_comparing_target')}</label>
               </span>
             </p>
           </div>

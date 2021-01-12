@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import RevisionCompareContainer from '../../services/RevisionCompareContainer';
@@ -15,12 +16,12 @@ const RevisionIdForm = (props) => {
    * @param {label} label text of inputbox
    */
   const renderRevisionSelector = (label) => {
-    if (['FromRev', 'ToRev'].indexOf(label) === -1) {
+    if (['page_history.comparing_source', 'page_history.comparing_target'].indexOf(label) === -1) {
       return <></>;
     }
-    const forFromRev = (label === 'FromRev');
+    const forFromRev = (label === 'page_history.comparing_source');
 
-    const { revisionCompareContainer } = props;
+    const { t, revisionCompareContainer } = props;
     const selectedRevision = (forFromRev ? revisionCompareContainer.state.fromRevision : revisionCompareContainer.state.toRevision);
 
     const author = selectedRevision?.author;
@@ -28,7 +29,7 @@ const RevisionIdForm = (props) => {
 
     return (
       <div className="card">
-        <div className="card-header">{label}</div>
+        <div className="card-header">{t(label)}</div>
         <div className="card-body">
           { selectedRevision && (
           <div className="revision-history-main d-flex mt-3">
@@ -48,12 +49,15 @@ const RevisionIdForm = (props) => {
           </div>
           )}
         </div>
+        <div class="card-footer text-muted">
+          {selectedRevision && selectedRevision._id}
+        </div>
       </div>
     );
   }
 
-  const fromRevSelector = renderRevisionSelector('FromRev');
-  const toRevSelector = renderRevisionSelector('ToRev');
+  const fromRevSelector = renderRevisionSelector('page_history.comparing_source');
+  const toRevSelector = renderRevisionSelector('page_history.comparing_target');
 
   return (
     <div className="container-fluid px-0">
@@ -79,6 +83,7 @@ const RevisionIdFormWrapper = withUnstatedContainers(RevisionIdForm, [RevisionCo
  * Properties
  */
 RevisionIdForm.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
   revisionCompareContainer: PropTypes.instanceOf(RevisionCompareContainer).isRequired,
 };
 
@@ -88,4 +93,4 @@ RevisionIdForm.propTypes = {
 RevisionIdForm.defaultProps = {
 };
 
-export default RevisionIdFormWrapper;
+export default withTranslation()(RevisionIdFormWrapper);

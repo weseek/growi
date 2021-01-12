@@ -305,8 +305,10 @@
   },
   "page_history": {
     "comparing_versions": "比较版本",
-    "comparing_from": "选择此版本作为比较源",
-    "comparing_to": "选择此版本作为比较目标"
+    "select_as_a_comparing_source": "比较源",
+    "select_as_a_comparing_target": "比较目标",
+    "comparing_source": "比较源",
+    "comparing_target": "比较目标"
   },
 	"modal_rename": {
 		"label": {

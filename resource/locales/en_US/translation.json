@@ -324,8 +324,10 @@
   },
   "page_history": {
     "comparing_versions": "Comparing versions",
-    "comparing_from": "Select this version as a comparing source",
-    "comparing_to": "Select this version as a comparing target"
+    "select_as_a_comparing_source": "Comparing source",
+    "select_as_a_comparing_target": "Comparing target",
+    "comparing_source": "Comparing source",
+    "comparing_target": "Comparing target"
   },
   "modal_rename": {
     "label": {
