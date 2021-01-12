@@ -1,9 +1,4 @@
 import { Container } from 'unstated';
-import loggerFactory from '@alias/logger';
-
-import { toastError } from '../util/apiNotification';
-
-const logger = loggerFactory('growi:PageHistoryContainer');
 
 /**
  * Service container for personal settings page (RevisionCompare.jsx)
