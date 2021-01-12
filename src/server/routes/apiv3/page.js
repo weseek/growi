@@ -190,7 +190,9 @@ module.exports = (crowi) => {
 
     if (page == null) {
       try {
-        result.isForbidden = await Page.count({ path: pagePath }) > 0;
+        const isExist = await Page.count({ path: pagePath }) > 0;
+        result.isForbidden = isExist;
+        result.isNotFound = !isExist;
       }
       catch (err) {
         logger.error('get-page-count-failed', err);
@@ -205,6 +207,7 @@ module.exports = (crowi) => {
     }
     result.page = page;
     result.isForbidden = false;
+    result.isNotFound = false;
     result.isCreatable = false;
     result.isDeletable = isDeletablePage(pagePath);
     result.isDeleted = page.isDeleted();
