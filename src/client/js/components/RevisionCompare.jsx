@@ -1,6 +1,4 @@
-import React, {
-  useState, useEffect, useCallback,
-} from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -10,7 +8,6 @@ import {
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
-import PageHistroyContainer from '../services/PageHistoryContainer';
 import RevisionCompareContainer from '../services/RevisionCompareContainer';
 
 import RevisionDiff from './PageHistory/RevisionDiff';
@@ -36,17 +33,9 @@ function encodeSpaces(str) {
 
 const PageCompare = (props) => {
 
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   }
-
-  const { t, revisionCompareContainer } = props;
-
-  const fromRev = revisionCompareContainer.state.fromRevision;
-  const toRev = revisionCompareContainer.state.toRevision;
-  const showDiff = (fromRev && toRev);
 
   const pagePathUrl = () => {
     const { origin } = window.location;
@@ -56,6 +45,14 @@ const PageCompare = (props) => {
     const urlParams = (fromRevision && toRevision ? `?compare=${fromRevision._id}...${toRevision._id}` : '');
     return encodeSpaces(decodeURI(`${origin}/${path}${urlParams}`));
   };
+
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const { t, revisionCompareContainer } = props;
+
+  const fromRev = revisionCompareContainer.state.fromRevision;
+  const toRev = revisionCompareContainer.state.toRevision;
+  const showDiff = (fromRev && toRev);
 
   return (
     <React.Fragment>
@@ -102,11 +99,10 @@ const PageCompare = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageCompareWrapper = withUnstatedContainers(PageCompare, [PageHistroyContainer, RevisionCompareContainer]);
+const PageCompareWrapper = withUnstatedContainers(PageCompare, [RevisionCompareContainer]);
 
 PageCompare.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  pageHistoryContainer: PropTypes.instanceOf(PageHistroyContainer).isRequired,
   revisionCompareContainer: PropTypes.instanceOf(RevisionCompareContainer).isRequired,
 };
 
