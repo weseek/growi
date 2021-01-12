@@ -49,12 +49,12 @@ const RevisionIdForm = (props) => {
           </div>
           )}
         </div>
-        <div class="card-footer text-muted">
+        <div className="card-footer text-muted">
           {selectedRevision && selectedRevision._id}
         </div>
       </div>
     );
-  }
+  };
 
   const fromRevSelector = renderRevisionSelector('page_history.comparing_source');
   const toRevSelector = renderRevisionSelector('page_history.comparing_target');
@@ -72,7 +72,7 @@ const RevisionIdForm = (props) => {
     </div>
   );
 
-}
+};
 
 /**
  * Wrapper component for using unstated

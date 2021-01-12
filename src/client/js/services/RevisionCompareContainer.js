@@ -32,8 +32,8 @@ export default class RevisionCompareContainer extends Container {
   }
 
   initRevisions(revisions) {
-    const fromRevision = revisions.find((it) => it._id === this.compareRevisionIds[0]) || revisions[0];
-    const toRevision = revisions.find((it) => it._id === this.compareRevisionIds[1]) || revisions[0];
+    const fromRevision = revisions.find(it => it._id === this.compareRevisionIds[0]) || revisions[0];
+    const toRevision = revisions.find(it => it._id === this.compareRevisionIds[1]) || revisions[0];
     this.setState({ fromRevision, toRevision });
   }
 

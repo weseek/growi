@@ -11,7 +11,7 @@ import PageRevisionList from './PageHistory/PageRevisionList';
 import PageHistroyContainer from '../services/PageHistoryContainer';
 import PaginationWrapper from './PaginationWrapper';
 import RevisionCompare from './RevisionCompare';
-import RevisionCompareContainer from './../services/RevisionCompareContainer';
+import RevisionCompareContainer from '../services/RevisionCompareContainer';
 
 const logger = loggerFactory('growi:PageHistory');
 

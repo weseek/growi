@@ -33,6 +33,10 @@ function encodeSpaces(str) {
 
 const PageCompare = (props) => {
 
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const { t, revisionCompareContainer } = props;
+
   function toggleDropdown() {
     setDropdownOpen(!dropdownOpen);
   }
@@ -45,10 +49,6 @@ const PageCompare = (props) => {
     const urlParams = (fromRevision && toRevision ? `?compare=${fromRevision._id}...${toRevision._id}` : '');
     return encodeSpaces(decodeURI(`${origin}/${path}${urlParams}`));
   };
-
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-
-  const { t, revisionCompareContainer } = props;
 
   const fromRev = revisionCompareContainer.state.fromRevision;
   const toRev = revisionCompareContainer.state.toRevision;
@@ -94,7 +94,7 @@ const PageCompare = (props) => {
       )}
     </React.Fragment>
   );
-}
+};
 
 /**
  * Wrapper component for using unstated
