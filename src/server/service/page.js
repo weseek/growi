@@ -129,12 +129,8 @@ class PageService {
    * Delete Bookmarks, Attachments, Revisions, Pages and emit delete
    */
   async completelyDeletePageRecursively(targetPage, user, options = {}) {
-    const findOpts = { includeTrashed: true };
     const Page = this.crowi.model('Page');
     const { PageQueryBuilder } = Page;
-
-    // find manageable descendants (this array does not include GRANT_RESTRICTED)
-    // const pages = await Page.findManageableListWithDescendants(targetPage, user, findOpts);
 
     const readStream = new PageQueryBuilder(Page.find())
       .addConditionToExcludeRedirect()
