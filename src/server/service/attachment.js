@@ -1,7 +1,6 @@
 const logger = require('@alias/logger')('growi:service:AttachmentService'); // eslint-disable-line no-unused-vars
 
-const mongoose = require('mongoose');
-
+const fs = require('fs');
 
 /**
  * the service class for Attachment and file-uploader
