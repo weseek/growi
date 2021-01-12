@@ -100,6 +100,7 @@ class Revision extends React.Component {
                   className="custom-control-input"
                   name="rbCompareFrom"
                   onChange={() => revisionCompareContainer.handleFromRevisionChange(revision)}
+                  checked={revision._id === revisionCompareContainer.state.fromRevision?._id}
                 />
                 <label className="custom-control-label" htmlFor={`rbCompareFrom_${revision._id}`}>{t('page_history.comparing_from')}</label>
               </span>
@@ -110,6 +111,7 @@ class Revision extends React.Component {
                   className="custom-control-input"
                   name="rbCompareTo"
                   onChange={() => revisionCompareContainer.handleToRevisionChange(revision)}
+                  checked={revision._id === revisionCompareContainer.state.toRevision?._id}
                 />
                 <label className="custom-control-label" htmlFor={`rbCompareTo_${revision._id}`}>{t('page_history.comparing_to')}</label>
               </span>
