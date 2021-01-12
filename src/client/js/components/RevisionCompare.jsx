@@ -69,8 +69,9 @@ class PageCompare extends React.Component {
     };
 
     return (
-      <div id="revision-compare-content">
-        <div className="float-right mb-3">
+      <React.Fragment>
+        <div className="float-left">{t('page_history.comparing_changes')}</div>
+        <div className="mb-3">
           <Dropdown
             className="grw-copy-dropdown"
             isOpen={this.state.dropdownOpen}
@@ -105,7 +106,7 @@ class PageCompare extends React.Component {
             currentRevision={toRev}
           />
         )}
-      </div>
+      </React.Fragment>
     );
   }
 

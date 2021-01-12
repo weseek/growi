@@ -1,11 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { withUnstatedContainers } from '../UnstatedUtils';
+import { withLoadingSppiner } from '../SuspenseUtils';
+
 import UserDate from '../User/UserDate';
 import Username from '../User/Username';
 import UserPicture from '../User/UserPicture';
 
-export default class Revision extends React.Component {
+import RevisionCompareContainer from '../../services/RevisionCompareContainer';
+
+class Revision extends React.Component {
 
   constructor(props) {
     super(props);
@@ -48,7 +53,7 @@ export default class Revision extends React.Component {
   }
 
   renderFull(revision) {
-    const { t } = this.props;
+    const { t, revisionCompareContainer } = this.props;
 
     const author = revision.author;
 
@@ -85,9 +90,29 @@ export default class Revision extends React.Component {
                   )
                 }
               </span>
-              <a href={`?revision=${revision._id}`} className="ml-2">
+              <a href={`?revision=${revision._id}`} className="ml-2 d-inline-block">
                 <i className="icon-login"></i> { t('Go to this version') }
               </a>
+              <div class="ml-2 custom-control custom-radio custom-control-inline">
+                <input
+                  type="radio"
+                  id={`rbCompareFrom_${revision._id}`}
+                  className="custom-control-input"
+                  name="rbCompareFrom"
+                  onChange={() => revisionCompareContainer.handleFromRevisionChange(revision._id)}
+                />
+                <label class="custom-control-label" for={`rbCompareFrom_${revision._id}`}>{t('page_history.comparing_from')}</label>
+              </div>
+              <div class="ml-2 custom-control custom-radio custom-control-inline">
+                <input
+                  type="radio"
+                  id={`rbCompareTo_${revision._id}`}
+                  className="custom-control-input"
+                  name="rbCompareTo"
+                  onChange={() => revisionCompareContainer.handleToRevisionChange(revision._id)}
+                />
+                <label class="custom-control-label" for={`rbCompareTo_${revision._id}`}>{t('page_history.comparing_to')}</label>
+              </div>
             </p>
           </div>
         </div>
@@ -108,11 +133,17 @@ export default class Revision extends React.Component {
 
 }
 
+const RevisionWrapper = withUnstatedContainers(withLoadingSppiner(Revision), [RevisionCompareContainer]);
+
 Revision.propTypes = {
   t: PropTypes.func.isRequired, // i18next
+  revisionCompareContainer: PropTypes.instanceOf(RevisionCompareContainer).isRequired,
+
   revision: PropTypes.object,
   revisionDiffOpened: PropTypes.bool.isRequired,
   hasDiff: PropTypes.bool.isRequired,
   isCompactNodiffRevisions: PropTypes.bool.isRequired,
   onDiffOpenClicked: PropTypes.func.isRequired,
 };
+
+export default RevisionWrapper;

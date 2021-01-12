@@ -10,7 +10,8 @@ import PageRevisionList from './PageHistory/PageRevisionList';
 
 import PageHistroyContainer from '../services/PageHistoryContainer';
 import PaginationWrapper from './PaginationWrapper';
-
+import RevisionCompare from './RevisionCompare';
+import RevisionCompareContainer from './../services/RevisionCompareContainer';
 
 const logger = loggerFactory('growi:PageHistory');
 
@@ -75,15 +76,18 @@ function PageHistory(props) {
         onDiffOpenClicked={onDiffOpenClicked}
       />
       {pager()}
+
+      <RevisionCompare />
     </div>
   );
 
 }
 
-const RenderPageHistoryWrapper = withUnstatedContainers(withLoadingSppiner(PageHistory), [PageHistroyContainer]);
+const RenderPageHistoryWrapper = withUnstatedContainers(withLoadingSppiner(PageHistory), [PageHistroyContainer, RevisionCompareContainer]);
 
 PageHistory.propTypes = {
   pageHistoryContainer: PropTypes.instanceOf(PageHistroyContainer).isRequired,
+  revisionCompareContainer: PropTypes.instanceOf(RevisionCompareContainer).isRequired,
 };
 
 export default RenderPageHistoryWrapper;

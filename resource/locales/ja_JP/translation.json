@@ -324,8 +324,10 @@
     "outdated": "ページが他のユーザーによって更新されました。",
     "user_not_admin": "権限のあるユーザーのみが完全削除できます"
   },
-  "page_compare_revision": {
-    "comparing_changes": "リビジョン比較"
+  "page_history": {
+    "comparing_changes": "リビジョン比較",
+    "comparing_from": "このバージョンをソースとして選択",
+    "comparing_to": "このバージョンをターゲットとして選択"
   },
   "modal_rename": {
     "label": {
