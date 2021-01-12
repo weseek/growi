@@ -225,13 +225,12 @@ module.exports = function(crowi, app) {
     }
   }
 
-  function addRenderVarsForPage(renderVars, page, compareRevisionIds = []) {
+  function addRenderVarsForPage(renderVars, page) {
     renderVars.page = page;
     renderVars.revision = page.revision;
     renderVars.pageIdOnHackmd = page.pageIdOnHackmd;
     renderVars.revisionHackmdSynced = page.revisionHackmdSynced;
     renderVars.hasDraftOnHackmd = page.hasDraftOnHackmd;
-    renderVars.compareRevisionIds = compareRevisionIds;
 
     if (page.creator != null) {
       renderVars.page.creator = renderVars.page.creator.toObject();
@@ -365,7 +364,6 @@ module.exports = function(crowi, app) {
   async function showPageForGrowiBehavior(req, res, next) {
     const path = getPathFromRequest(req);
     const revisionId = req.query.revision;
-    const compare = req.query.compare;
     const layoutName = configManager.getConfig('crowi', 'customize:layout');
 
     let page = await Page.findByPathAndViewer(path, req.user);
@@ -395,11 +393,9 @@ module.exports = function(crowi, app) {
       page = await page.seen(req.user);
     }
 
-    const compareRevisionIds = compare ? compare.split('...') : [];
-
     // populate
     page = await page.populateDataToShowRevision();
-    addRenderVarsForPage(renderVars, page, compareRevisionIds);
+    addRenderVarsForPage(renderVars, page);
     addRenderVarsForScope(renderVars, page);
 
     await addRenderVarsForSlack(renderVars, page);
@@ -456,7 +452,6 @@ module.exports = function(crowi, app) {
   actions.showSharedPage = async function(req, res, next) {
     const { linkId } = req.params;
     const revisionId = req.query.revision;
-    const compare = req.query.compare;
 
     const layoutName = configManager.getConfig('crowi', 'customize:layout');
 
@@ -490,11 +485,9 @@ module.exports = function(crowi, app) {
 
     page.initLatestRevisionField(revisionId);
 
-    const compareRevisionIds = compare ? compare.split('...') : [];
-
     // populate
     page = await page.populateDataToShowRevision();
-    addRenderVarsForPage(renderVars, page, compareRevisionIds);
+    addRenderVarsForPage(renderVars, page);
     addRenderVarsForScope(renderVars, page);
 
     await interceptorManager.process('beforeRenderPage', req, res, renderVars);
