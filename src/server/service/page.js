@@ -168,7 +168,7 @@ class PageService {
     await this.deleteCompletelyOperation(ids, paths);
 
     if (isRecursively) {
-      this.deletePageRecursivelyCompletely(page, user, options);
+      this.deleteStream(page, user, options);
     }
 
     if (socketClientId != null) {
@@ -178,9 +178,9 @@ class PageService {
   }
 
   /**
-   * Delete Bookmarks, Attachments, Revisions, Pages and emit delete
+   * Create delete stream
    */
-  async deletePageRecursivelyCompletely(targetPage, user, options = {}) {
+  async deleteStream(targetPage, user, options = {}) {
     const Page = this.crowi.model('Page');
     const { PageQueryBuilder } = Page;
 
