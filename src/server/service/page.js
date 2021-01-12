@@ -208,7 +208,7 @@ class PageService {
     await this.deleteCompletelyOperation(ids, paths);
 
     if (isRecursively) {
-      this.deleteStream(page, user, options);
+      this.deleteDescendantsWithStream(page, user, options);
     }
 
     if (socketClientId != null) {
@@ -220,7 +220,7 @@ class PageService {
   /**
    * Create delete stream
    */
-  async deleteStream(targetPage, user, options = {}) {
+  async deleteDescendantsWithStream(targetPage, user, options = {}) {
     const Page = this.crowi.model('Page');
     const { PageQueryBuilder } = Page;
 
@@ -240,7 +240,7 @@ class PageService {
         try {
           count += batch.length;
           await deleteMultipleCompletely(batch, user, options);
-          logger.info(`Adding pages progressing: (count=${count})`);
+          logger.debug(`Adding pages progressing: (count=${count})`);
         }
         catch (err) {
           logger.error('addAllPages error on add anyway: ', err);
@@ -249,7 +249,7 @@ class PageService {
         callback();
       },
       final(callback) {
-        logger.info(`Adding pages has completed: (totalCount=${count})`);
+        logger.debug(`Adding pages has completed: (totalCount=${count})`);
 
         callback();
       },
