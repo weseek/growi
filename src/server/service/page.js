@@ -81,15 +81,27 @@ class PageService {
   async duplicateDescendants(pages, user, oldPagePathPrefix, newPagePathPrefix, pathRevisionMapping) {
     const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
+    const PageTagRelation = mongoose.model('PageTagRelation');
 
+    const newPageTagRelation = [];
     const newPages = [];
     const newRevisions = [];
 
-    pages.forEach((page) => {
+    await Promise.all(pages.map(async(page) => {
       const newPagePath = page.path.replace(oldPagePathPrefix, newPagePathPrefix);
+      const pageId = new mongoose.Types.ObjectId();
       const revisionId = new mongoose.Types.ObjectId();
 
+      const pageTagRelations = await PageTagRelation.find({ relatedPage: page._id });
+      pageTagRelations.forEach((pageTagRelation) => {
+        newPageTagRelation.push({
+          relatedPage: pageId,
+          relatedTag: pageTagRelation.relatedTag,
+        });
+      });
+
       newPages.push({
+        _id: pageId,
         path: newPagePath,
         creator: user._id,
         grant: page.grant,
@@ -104,8 +116,9 @@ class PageService {
         _id: revisionId, path: newPagePath, body: pathRevisionMapping[page.path].body, author: user._id, format: 'markdown',
       });
 
-    });
+    }));
 
+    await PageTagRelation.insertMany(newPageTagRelation, { ordered: false });
     await Page.insertMany(newPages, { ordered: false });
     await Revision.insertMany(newRevisions, { ordered: false });
 
