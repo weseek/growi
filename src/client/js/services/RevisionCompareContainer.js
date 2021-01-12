@@ -147,4 +147,17 @@ export default class RevisionCompareContainer extends Container {
     this.setState({ toRevision: revision });
   }
 
+  get compareRevisionIds() {
+    const searchParams = {};
+    for (const param of window.location.search?.substr(1)?.split('&')) {
+      const [k,v] = param.split('=');
+      searchParams[k] = v;
+    }
+    if (!searchParams['compare']) {
+      return [];
+    }
+
+    return searchParams['compare'].split('...') || [];
+  }
+
 }
