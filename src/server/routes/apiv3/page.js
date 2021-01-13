@@ -174,10 +174,10 @@ module.exports = (crowi) => {
 
     let page;
     try {
-      if (pageId) { // prioritized
+      if (pageId != null) { // prioritized
         page = await Page.findByIdAndViewer(pageId, req.user);
       }
-      else if (pagePath) {
+      else if (pagePath != null) {
         page = await Page.findByPathAndViewer(pagePath, req.user);
       }
     }
@@ -205,6 +205,7 @@ module.exports = (crowi) => {
 
       return res.apiv3(result);
     }
+
     result.page = page;
     result.isForbidden = false;
     result.isNotFound = false;
