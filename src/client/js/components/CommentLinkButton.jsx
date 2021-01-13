@@ -11,7 +11,7 @@ const WIKI_HEADER_LINK = 120;
  * @author Kaori Tokashiki <kaori@weseek.co.jp>
  *
  */
-const MoveCommentButton = (props) => {
+const CommentLinkButton = (props) => {
 
   const { navigationContainer } = props;
 
@@ -31,8 +31,8 @@ const MoveCommentButton = (props) => {
 
 };
 
-MoveCommentButton.propTypes = {
+CommentLinkButton.propTypes = {
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 
-export default withUnstatedContainers(MoveCommentButton, [NavigationContainer]);
+export default withUnstatedContainers(CommentLinkButton, [NavigationContainer]);
