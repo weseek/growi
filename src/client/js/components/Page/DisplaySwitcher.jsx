@@ -12,6 +12,7 @@ import UserContentsLinks from '../UserContentsLinks';
 import PageAccessories from '../PageAccessories';
 import PageEditorByHackmd from '../PageEditorByHackmd';
 import EditorNavbarBottom from '../PageEditor/EditorNavbarBottom';
+import MoveCommentButton from '../MoveCommentButton';
 
 
 const DisplaySwitcher = (props) => {
@@ -37,6 +38,7 @@ const DisplaySwitcher = (props) => {
                   <div id="revision-toc" className="revision-toc">
                     <TableOfContents />
                   </div>
+                  <MoveCommentButton />
                   {pageUser && <UserContentsLinks />}
                 </div>
               </div>
