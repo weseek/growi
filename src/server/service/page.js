@@ -119,7 +119,7 @@ class PageService {
     const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
 
-    // key: oldPageID, value: newPageId
+    // key: oldPageId, value: newPageId
     const pageIdMapping = {};
     pages.forEach((page) => {
       pageIdMapping[page._id] = new mongoose.Types.ObjectId();
