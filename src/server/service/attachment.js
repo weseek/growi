@@ -1,4 +1,5 @@
 const logger = require('@alias/logger')('growi:service:AttachmentService'); // eslint-disable-line no-unused-vars
+
 const fs = require('fs');
 
 
@@ -45,12 +46,11 @@ class AttachmentService {
   async removeAttachment(attachments) {
     const { fileUploadService } = this.crowi;
 
-    attachments.forEach((attachment) => {
+    return attachments.forEach((attachment) => {
       fileUploadService.deleteFiles(attachment);
-      attachment.find({ _id: attachment._id }).remove();
+      attachment.remove();
     });
 
-    return;
   }
 
 }
