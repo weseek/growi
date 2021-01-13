@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { LikeButton } from '~/components/Atoms/LikeButton';
 import { BookmarkButton } from '~/components/Atoms/BookmarkButton';
 import { useCurrentPageSWR, useBookmarkInfoSWR, useLikeInfoSWR } from '~/stores/page';
-import { useIsAbleToShowPageReactionButtons } from '~/stores/ui';
+import { useIsAbleToShowPageReactionButtons, useIsAbleToShowLikeButton } from '~/stores/ui';
 import { Page as IPage, BookmarkInfo as IBookmarkInfo, LikeInfo as ILikeInfo } from '~/interfaces/page';
 import { apiv3Put } from '~/utils/apiv3-client';
 
@@ -16,6 +16,7 @@ export const PageReactionButtons:FC = () => {
   const { data: bookmarkInfo, mutate: bookmarkInfoMutate } = useBookmarkInfoSWR(id);
   const { sumOfBookmarks, isBookmarked } = bookmarkInfo as IBookmarkInfo;
 
+  const { data: isAbleToShowLikeButton } = useIsAbleToShowLikeButton();
 
   const handleClickLikeButton = async() => {
     const bool = !isLiked;
@@ -31,10 +32,11 @@ export const PageReactionButtons:FC = () => {
 
   return (
     <>
-      {/* TODO GW-4832 show by isAbleToShowLikeButton  */}
-      <span>
-        <LikeButton count={sumOfLikers} isLiked={isLiked} onCLick={handleClickLikeButton} />
-      </span>
+      {isAbleToShowLikeButton && (
+        <span>
+          <LikeButton count={sumOfLikers} isLiked={isLiked} onCLick={handleClickLikeButton} />
+        </span>
+      )}
       <span>
         <BookmarkButton count={sumOfBookmarks} isBookmarked={isBookmarked} onCLick={handleClickBookmarkButton} />
       </span>
