@@ -26,12 +26,10 @@ const RevisionIdForm = (props) => {
 
     const author = selectedRevision?.author;
     const pic = (typeof author === 'object') ? <UserPicture user={author} size="lg" /> : '';
-    const islatestRevisionLabel = () => {
-      if (selectedRevision?._id === revisionCompareContainer.state.latestRevision?._id) {
-        return <span>({t('page_history.latest_revision')})</span>;
-      }
-      return '';
-    };
+    let islatestRevisionLabel = '';
+    if (selectedRevision?._id === revisionCompareContainer.state.latestRevision?._id) {
+      islatestRevisionLabel = <span>({t('page_history.latest_revision')})</span>;
+    }
 
     return (
       <div className="card">
