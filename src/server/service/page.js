@@ -41,7 +41,10 @@ class PageService {
     const { attachmentService } = this.crowi;
     const attachments = await Attachment.find({ page: pageIds });
 
-    return attachmentService.removeAttachment(attachments);
+    if (attachments.length > 0) {
+      return attachmentService.removeAttachment(attachments);
+    }
+    return;
   }
 
   async duplicate(page, newPagePath, user, isRecursively) {
