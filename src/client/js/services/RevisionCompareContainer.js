@@ -55,14 +55,14 @@ export default class RevisionCompareContainer extends Container {
   get revisionIDsToCompareAsParam() {
     const searchParams = {};
     for (const param of window.location.search?.substr(1)?.split('&')) {
-      const [k,v] = param.split('=');
+      const [k, v] = param.split('=');
       searchParams[k] = v;
     }
-    if (!searchParams['compare']) {
+    if (!searchParams.compare) {
       return [];
     }
 
-    return searchParams['compare'].split('...') || [];
+    return searchParams.compare.split('...') || [];
   }
 
   /**
@@ -93,7 +93,7 @@ export default class RevisionCompareContainer extends Container {
 
     try {
       const res = await this.appContainer.apiv3Get(`/revisions/${revisionId}`, {
-        pageId, shareLinkId
+        pageId, shareLinkId,
       });
       return res.data.revision;
     }
@@ -104,4 +104,5 @@ export default class RevisionCompareContainer extends Container {
     }
     return null;
   }
+
 }

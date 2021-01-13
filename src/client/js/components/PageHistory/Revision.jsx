@@ -98,11 +98,19 @@ class Revision extends React.Component {
                 <button
                   type="button"
                   className="btn btn-light"
-                  onClick={() => revisionCompareContainer.setState({ fromRevision: revision, toRevision: latestRevision }) }
+                  onClick={() => revisionCompareContainer.setState({ fromRevision: revision, toRevision: latestRevision })}
                 >
                   {t('page_history.comparing_with_latest')}
                 </button>
-                <button type="button" className="btn btn-light dropdown-toggle dropdown-toggle-split" id="bgCompareRevision" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+                <button
+                  type="button"
+                  className="btn btn-light dropdown-toggle dropdown-toggle-split"
+                  id="bgCompareRevision"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                  data-reference="parent"
+                >
                   <span className="sr-only">{t('page_history.comparing_versions')}</span>
                 </button>
                 <span className="dropdown-menu" aria-labelledby="bgCompareRevision">
