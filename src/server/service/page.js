@@ -83,22 +83,36 @@ class PageService {
     const Revision = this.crowi.model('Revision');
     const PageTagRelation = mongoose.model('PageTagRelation');
 
-    const newPageTagRelation = [];
+    const matchArrayForAggregation = pages.map((page) => {
+      return { relatedPage: mongoose.Types.ObjectId(page._id) };
+    });
+
+    const tagsAssociatedWithPage = await PageTagRelation.aggregate([
+      {
+        $match: { $or: matchArrayForAggregation },
+      },
+      {
+        $group: {
+          _id: '$relatedPage',
+          relatedTags: { $push: '$relatedTag' },
+        },
+      },
+    ]);
+
+    // Mapping to set to relatedTags of the new Page
+    const pageTagMapping = {};
+    tagsAssociatedWithPage.forEach((element) => {
+      pageTagMapping[element._id] = element.relatedTags;
+    });
+
     const newPages = [];
     const newRevisions = [];
+    const newPageTagRelation = [];
 
-    await Promise.all(pages.map(async(page) => {
+    pages.forEach((page) => {
       const newPagePath = page.path.replace(oldPagePathPrefix, newPagePathPrefix);
       const pageId = new mongoose.Types.ObjectId();
       const revisionId = new mongoose.Types.ObjectId();
-
-      const pageTagRelations = await PageTagRelation.find({ relatedPage: page._id });
-      pageTagRelations.forEach((pageTagRelation) => {
-        newPageTagRelation.push({
-          relatedPage: pageId,
-          relatedTag: pageTagRelation.relatedTag,
-        });
-      });
 
       newPages.push({
         _id: pageId,
@@ -116,7 +130,14 @@ class PageService {
         _id: revisionId, path: newPagePath, body: pathRevisionMapping[page.path].body, author: user._id, format: 'markdown',
       });
 
-    }));
+      pageTagMapping[page._id].forEach((relatedTag) => {
+        newPageTagRelation.push({
+          relatedPage: pageId,
+          relatedTag,
+        });
+      });
+
+    });
 
     await PageTagRelation.insertMany(newPageTagRelation, { ordered: false });
     await Page.insertMany(newPages, { ordered: false });
