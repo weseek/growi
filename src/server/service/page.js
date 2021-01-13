@@ -309,6 +309,13 @@ class PageService {
     const pages = await Page.findManageableListWithDescendants(targetPage, user, findOpts);
     const originPages = await Page.find({ path: pathRegExp }).sort({ _id: 1 });
 
+
+    const newOldMapping = {};
+    pages.forEach((page) => {
+      newOldMapping[page.path] = Page.getRevertDeletedPageName(page.path);
+    });
+    console.log(newOldMapping);
+
     // create bulk to delete redirectTo pages at high speed
     const pageCollection = mongoose.connection.collection('pages');
     const revisionCollection = mongoose.connection.collection('revisions');
