@@ -78,18 +78,60 @@ class PageService {
     return result;
   }
 
+  /**
+   * Receive the object with oldPageId and newPageId and duplicate the tags from oldPage to newPage
+   * @param {Object} pageIdMapping e.g. key: oldPageId, value: newPageId
+   */
+  async duplicateTags(pageIdMapping) {
+    const PageTagRelation = mongoose.model('PageTagRelation');
+
+    // convert pageId from string to ObjectId
+    const pageIds = Object.keys(pageIdMapping);
+    const stage = { $or: pageIds.map((pageId) => { return { relatedPage: mongoose.Types.ObjectId(pageId) } }) };
+
+    const pagesAssociatedWithTag = await PageTagRelation.aggregate([
+      {
+        $match: stage,
+      },
+      {
+        $group: {
+          _id: '$relatedTag',
+          relatedPages: { $push: '$relatedPage' },
+        },
+      },
+    ]);
+
+    const newPageTagRelation = [];
+    pagesAssociatedWithTag.forEach(({ _id, relatedPages }) => {
+      // relatedPages
+      relatedPages.forEach((pageId) => {
+        newPageTagRelation.push({
+          relatedPage: pageIdMapping[pageId], // newPageId
+          relatedTag: _id,
+        });
+      });
+    });
+
+    return PageTagRelation.insertMany(newPageTagRelation, { ordered: false });
+  }
+
   async duplicateDescendants(pages, user, oldPagePathPrefix, newPagePathPrefix, pathRevisionMapping) {
     const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
 
+    // key: oldPageId, value: newPageId
+    const pageIdMapping = {};
     const newPages = [];
     const newRevisions = [];
 
     pages.forEach((page) => {
+      const newPageId = new mongoose.Types.ObjectId();
       const newPagePath = page.path.replace(oldPagePathPrefix, newPagePathPrefix);
       const revisionId = new mongoose.Types.ObjectId();
+      pageIdMapping[page._id] = newPageId;
 
       newPages.push({
+        _id: newPageId,
         path: newPagePath,
         creator: user._id,
         grant: page.grant,
@@ -108,7 +150,7 @@ class PageService {
 
     await Page.insertMany(newPages, { ordered: false });
     await Revision.insertMany(newRevisions, { ordered: false });
-
+    await this.duplicateTags(pageIdMapping);
   }
 
   async duplicateDescendantsWithStream(page, newPagePath, user) {
