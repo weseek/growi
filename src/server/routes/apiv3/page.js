@@ -165,6 +165,34 @@ module.exports = (crowi) => {
     ],
   };
 
+  /**
+   * @swagger
+   *
+   *    /page:
+   *      get:
+   *        tags: [Page]
+   *        operationId: getPage
+   *        summary: /page
+   *        description: get page by pagePath or pageId
+   *        parameters:
+   *          - name: pagePath
+   *            in: query
+   *            description: page path
+   *            schema:
+   *              type: string
+   *          - name: pageId
+   *            in: query
+   *            description: page id
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: Page data
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/Page'
+   */
   router.get('/', accessTokenParser, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
     const { pagePath, pageId } = req.query;
 
