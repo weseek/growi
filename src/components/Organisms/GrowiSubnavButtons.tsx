@@ -4,6 +4,9 @@ import { BookmarkButton } from '~/components/Atoms/BookmarkButton';
 import { useCurrentPageSWR, useBookmarkInfoSWR, useLikeInfoSWR } from '~/stores/page';
 import { Page as IPage, BookmarkInfo as IBookmarkInfo, LikeInfo as ILikeInfo } from '~/interfaces/page';
 import { apiv3Put } from '~/utils/apiv3-client';
+/* TODO  move PageManagement from old directory by GW-4402 */
+import PageManagement from '~/client/js/components/Page/PageManagement';
+
 
 export const PageReactionButtons:FC = () => {
   const { data: page } = useCurrentPageSWR();
@@ -49,14 +52,16 @@ type SubnavButtonsProps ={
 export const GrowiSubnavButtons:FC<SubnavButtonsProps> = (props:SubnavButtonsProps) => {
   const { isCompactMode, isViewMode } = props;
 
+  if (isCompactMode == null) {
+    return <></>;
+  }
+
   if (!isViewMode) return <></>;
 
   return (
     <>
-      {/* TODO GW-4827 show by isAbleToShowPageReactionButtons */}
       <PageReactionButtons />
-      {/* TODO GW-4829 show by isAbleToShowPageManagement */}
-      {/* <PageManagement isCompactMode={isCompactMode} />  */}
+      <PageManagement isCompactMode />
     </>
   );
 };

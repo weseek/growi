@@ -62,3 +62,11 @@ export const useIsAbleToShowPageAuthors = (): responseInterface<boolean, any> =>
   }
   return useStaticSWR('isAbleToShowPageAuthors', !isNotFoundPage && !isUserPage(page.path));
 };
+
+export const useIsAbleToShowPageManagement = (): responseInterface<boolean, any> => {
+  const { data: isNotFoundPage } = useNotFound();
+  const { data: isTrashPage } = useTrash();
+  const { data: isSharedUser } = useIsSharedUser();
+
+  return useStaticSWR('isAbleToShowPageManagement', !isNotFoundPage && !isTrashPage && !isSharedUser);
+};

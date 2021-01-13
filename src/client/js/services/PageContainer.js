@@ -180,12 +180,13 @@ export default class PageContainer extends Container {
    * whether to display page management
    * ex.) duplicate, rename
    */
-  get isAbleToShowPageManagement() {
-    const { isPageExist, isTrashPage } = this.state;
-    const { isSharedUser } = this.appContainer;
+  // isAbleToShowPageManagement method has already been 'swr' in ui.tsx
+  // get isAbleToShowPageManagement() {
+  //   const { isPageExist, isTrashPage } = this.state;
+  //   const { isSharedUser } = this.appContainer;
 
-    return (isPageExist && !isTrashPage && !isSharedUser);
-  }
+  //   return (isPageExist && !isTrashPage && !isSharedUser);
+  // }
 
   /**
    * whether to display pageEditorModeManager
