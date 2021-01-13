@@ -19,14 +19,16 @@ const CommentLinkButton = (props) => {
   const getCommentListDom = useMemo(() => { return document.getElementById('page-comments-list') }, []);
 
   return (
-    <button
-      type="button"
-      className="btn btn-outline-secondary btn-sm"
-      onClick={() => navigationContainer.smoothScrollIntoView(getCommentListDom, WIKI_HEADER_LINK)}
-    >
-      <i className="mr-2 icon-fw icon-bubbles"></i>
-      <span>Comments</span>
-    </button>
+    <div className="mt-3 d-flex justify-content-around">
+      <button
+        type="button"
+        className="btn btn-outline-secondary btn-sm w-100"
+        onClick={() => navigationContainer.smoothScrollIntoView(getCommentListDom, WIKI_HEADER_LINK)}
+      >
+        <i className="mr-2 icon-fw icon-bubbles"></i>
+        <span>Comments</span>
+      </button>
+    </div>
   );
 
 };
