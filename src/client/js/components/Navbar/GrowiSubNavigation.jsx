@@ -13,7 +13,7 @@ import { useCurrentPageSWR } from '~/stores/page';
 import {
   useCurrentUser, useForbidden, useOwnerOfCurrentPage,
 } from '~/stores/context';
-import { useIsAbleToShowTagLabel, useIsAbleToShowPageEditorModeManager } from '~/stores/ui';
+import { useIsAbleToShowTagLabel, useIsAbleToShowPageAuthors, useIsAbleToShowPageEditorModeManager } from '~/stores/ui';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
@@ -80,6 +80,7 @@ const GrowiSubNavigation = (props) => {
   const { data: pageOwner } = useOwnerOfCurrentPage();
   const { data: isForbidden } = useForbidden();
   const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
+  const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
   const { data: isAbleToShowPageEditorModeManager } = useIsAbleToShowPageEditorModeManager();
 
   // dynamic import to skip rendering at SSR
@@ -153,7 +154,7 @@ const GrowiSubNavigation = (props) => {
         </div>
 
         {/* Page Authors */}
-        { (pageContainer.isAbleToShowPageAuthors && !isCompactMode) && (
+        { (isAbleToShowPageAuthors && !isCompactMode) && (
           <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3">
             <li className="pb-1">
               <AuthorInfo user={creator} date={createdAt} locate="subnav" />
