@@ -102,12 +102,12 @@ class PageService {
     ]);
 
     const newPageTagRelation = [];
-    pagesAssociatedWithTag.forEach((element) => {
+    pagesAssociatedWithTag.forEach(({ _id, relatedPages }) => {
       // relatedPages
-      element.relatedPages.forEach((pageId) => {
+      relatedPages.forEach((pageId) => {
         newPageTagRelation.push({
           relatedPage: pageIdMapping[pageId], // newPageId
-          relatedTag: element._id,
+          relatedTag: _id,
         });
       });
     });
