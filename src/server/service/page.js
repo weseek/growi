@@ -199,8 +199,11 @@ class PageService {
     const revisionUnorderedBulkOp = revisionCollection.initializeUnorderedBulkOp();
 
     for (let i = 0; i < pages.length; i++) {
-      if (originPages[i].redirectTo !== pages[i].path) {
-        throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
+
+      if (originPages[i] != null) {
+        if (originPages[i].redirectTo !== pages[i].path) {
+          throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
+        }
       }
       unorderedBulkOp.find({ _id: originPages[i]._id }).remove();
       revisionUnorderedBulkOp.find({ path: originPages[i].path }).remove();
