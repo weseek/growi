@@ -87,9 +87,11 @@ module.exports = function(crowi) {
 
   };
 
-  lib.deleteFiles = async function(attachment) {
-    const filePath = getFilePathOnStorage(attachment);
-    return lib.deleteFileByFilePath(filePath);
+  lib.deleteFiles = async function(attachments) {
+    attachments.map((attachment) => {
+      const filePath = getFilePathOnStorage(attachment);
+      return lib.deleteFileByFilePath(filePath);
+    });
   };
 
   lib.deleteFileByFilePath = async function(filePath) {
