@@ -2,6 +2,7 @@ import { FC } from 'react';
 import { LikeButton } from '~/components/Atoms/LikeButton';
 import { BookmarkButton } from '~/components/Atoms/BookmarkButton';
 import { useCurrentPageSWR, useBookmarkInfoSWR, useLikeInfoSWR } from '~/stores/page';
+import { useIsAbleToShowPageReactionButtons } from '~/stores/ui';
 import { Page as IPage, BookmarkInfo as IBookmarkInfo, LikeInfo as ILikeInfo } from '~/interfaces/page';
 import { apiv3Put } from '~/utils/apiv3-client';
 
@@ -49,12 +50,13 @@ type SubnavButtonsProps ={
 export const GrowiSubnavButtons:FC<SubnavButtonsProps> = (props:SubnavButtonsProps) => {
   const { isCompactMode, isViewMode } = props;
 
+  const { data: isAbleToShowPageReactionButtons } = useIsAbleToShowPageReactionButtons();
+
   if (!isViewMode) return <></>;
 
   return (
     <>
-      {/* TODO GW-4827 show by isAbleToShowPageReactionButtons */}
-      <PageReactionButtons />
+      {isAbleToShowPageReactionButtons && <PageReactionButtons />}
       {/* TODO GW-4829 show by isAbleToShowPageManagement */}
       {/* <PageManagement isCompactMode={isCompactMode} />  */}
     </>
