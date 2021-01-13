@@ -27,7 +27,6 @@ export default class RevisionCompareContainer extends Container {
     };
 
     this.initRevisions = this.initRevisions.bind(this);
-    this.fetchLatestRevision = this.fetchLatestRevision.bind(this);
   }
 
   /**
@@ -37,14 +36,22 @@ export default class RevisionCompareContainer extends Container {
     return 'RevisionCompareContainer';
   }
 
-  async initRevisions(revisions) {
-    const fromRevision = revisions.find(it => it._id === this.compareRevisionIds[0]) || revisions[0];
-    const toRevision = revisions.find(it => it._id === this.compareRevisionIds[1]) || revisions[0];
+  /**
+   * Initialize the revisions
+   */
+  async initRevisions() {
     const latestRevision = await this.fetchLatestRevision();
+
+    const [fromRevisionId, toRevisionId] = this.compareRevisionIds;
+    const fromRevision = fromRevisionId ? await this.fetchRevision(fromRevisionId) : latestRevision;
+    const toRevision = toRevisionId ? await this.fetchRevision(toRevisionId) : latestRevision;
 
     this.setState({ fromRevision, toRevision, latestRevision });
   }
 
+  /**
+   * Get the IDs of the comparison source and target from "window.location" as an array
+   */
   get compareRevisionIds() {
     const searchParams = {};
     for (const param of window.location.search?.substr(1)?.split('&')) {
@@ -58,6 +65,9 @@ export default class RevisionCompareContainer extends Container {
     return searchParams['compare'].split('...') || [];
   }
 
+  /**
+   * Fetch the latest revision
+   */
   async fetchLatestRevision() {
     const { pageId, shareLinkId } = this.pageContainer.state;
 
@@ -72,5 +82,26 @@ export default class RevisionCompareContainer extends Container {
       this.setState({ errorMessage: err.message });
       logger.error(err);
     }
+    return null;
+  }
+
+  /**
+   * Fetch the revision of the specified ID
+   */
+  async fetchRevision(revisionId) {
+    const { pageId, shareLinkId } = this.pageContainer.state;
+
+    try {
+      const res = await this.appContainer.apiv3Get(`/revisions/${revisionId}`, {
+        pageId, shareLinkId
+      });
+      return res.data.revision;
+    }
+    catch (err) {
+      toastError(err);
+      this.setState({ errorMessage: err.message });
+      logger.error(err);
+    }
+    return null;
   }
 }
