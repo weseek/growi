@@ -1257,12 +1257,13 @@ module.exports = function(crowi) {
     }
     catch (err) {
       if (err.code !== 11000) {
-        throw new Error('Failed to rename pages:', err);
+        throw new Error('Failed to rename pages: ', err);
       }
     }
 
     const newParentPath = path.replace(pathRegExp, newPagePathPrefix);
     const newParentPage = await this.findByPath(newParentPath);
+
     const renamedPages = await this.findManageableListWithDescendants(newParentPage, user, options);
     pageEvent.emit('createMany', renamedPages, user, newParentPage);
 
