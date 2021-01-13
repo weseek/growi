@@ -80,7 +80,7 @@ class PageService {
 
   /**
    * Receive the object with oldPageId and newPageId and duplicate the tags from oldPage to newPage
-   * @param {Object{string:string}} pageIdMapping e.g. key: oldPageId, value: newPageId
+   * @param {Object} pageIdMapping e.g. key: oldPageId, value: newPageId
    */
   async duplicateTags(pageIdMapping) {
     const PageTagRelation = mongoose.model('PageTagRelation');
