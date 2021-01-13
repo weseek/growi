@@ -42,7 +42,7 @@ export default class RevisionCompareContainer extends Container {
   async initRevisions() {
     const latestRevision = await this.fetchLatestRevision();
 
-    const [fromRevisionId, toRevisionId] = this.compareRevisionIds;
+    const [fromRevisionId, toRevisionId] = this.revisionIDsToCompareAsParam;
     const fromRevision = fromRevisionId ? await this.fetchRevision(fromRevisionId) : latestRevision;
     const toRevision = toRevisionId ? await this.fetchRevision(toRevisionId) : latestRevision;
 
@@ -52,7 +52,7 @@ export default class RevisionCompareContainer extends Container {
   /**
    * Get the IDs of the comparison source and target from "window.location" as an array
    */
-  get compareRevisionIds() {
+  get revisionIDsToCompareAsParam() {
     const searchParams = {};
     for (const param of window.location.search?.substr(1)?.split('&')) {
       const [k,v] = param.split('=');
