@@ -26,21 +26,25 @@ module.exports = function(crowi) {
     return true;
   };
 
-  lib.deleteFiles = async function(attachment) {
-    let filenameValue = attachment.fileName;
+  lib.deleteFiles = async function(attachments) {
 
-    if (attachment.filePath != null) { // backward compatibility for v3.3.x or below
-      filenameValue = attachment.filePath;
-    }
+    attachments.map(async(attachment) => {
+      let filenameValue = attachment.fileName;
 
-    const attachmentFile = await AttachmentFile.findOne({ filename: filenameValue });
+      if (attachment.filePath != null) { // backward compatibility for v3.3.x or below
+        filenameValue = attachment.filePath;
+      }
 
-    if (attachmentFile == null) {
-      logger.warn(`Any AttachmentFile that relate to the Attachment (${attachment._id.toString()}) does not exist in GridFS`);
-      return;
-    }
+      const attachmentFile = await AttachmentFile.findOne({ filename: filenameValue });
 
-    return AttachmentFile.promisifiedUnlink({ _id: attachmentFile._id });
+      if (attachmentFile == null) {
+        logger.warn(`Any AttachmentFile that relate to the Attachment (${attachment._id.toString()}) does not exist in GridFS`);
+        return;
+      }
+      return AttachmentFile.promisifiedUnlink({ _id: attachmentFile._id });
+    });
+
+
   };
 
   /**
