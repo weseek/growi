@@ -63,6 +63,7 @@ class Revision extends React.Component {
     }
 
     const iconClass = this.props.revisionDiffOpened ? 'fa fa-caret-down caret caret-opened' : 'fa fa-caret-down caret';
+    const latestRevision = revisionCompareContainer.state.latestRevision;
     return (
       <div className="revision-history-main d-flex mt-3">
         <div className="mt-2">
@@ -93,27 +94,33 @@ class Revision extends React.Component {
               <a href={`?revision=${revision._id}`} className="ml-2 d-inline-block">
                 <i className="icon-login"></i> { t('Go to this version') }
               </a>
-              <span className="ml-2 custom-control custom-radio custom-control-inline">
-                <input
-                  type="radio"
-                  id={`rbCompareFrom_${revision._id}`}
-                  className="custom-control-input"
-                  name="rbCompareFrom"
-                  onChange={() => revisionCompareContainer.handleFromRevisionChange(revision)}
-                  checked={revision._id === revisionCompareContainer.state.fromRevision?._id}
-                />
-                <label className="custom-control-label" htmlFor={`rbCompareFrom_${revision._id}`}>{t('page_history.select_as_a_comparing_source')}</label>
-              </span>
-              <span className="ml-2 custom-control custom-radio custom-control-inline">
-                <input
-                  type="radio"
-                  id={`rbCompareTo_${revision._id}`}
-                  className="custom-control-input"
-                  name="rbCompareTo"
-                  onChange={() => revisionCompareContainer.handleToRevisionChange(revision)}
-                  checked={revision._id === revisionCompareContainer.state.toRevision?._id}
-                />
-                <label className="custom-control-label" htmlFor={`rbCompareTo_${revision._id}`}>{t('page_history.select_as_a_comparing_target')}</label>
+              <span className="ml-2 btn-group d-inline-block">
+                <button
+                  type="button"
+                  className="btn btn-light"
+                  onClick={() => revisionCompareContainer.setState({ fromRevision: revision, toRevision: latestRevision }) }
+                >
+                  {t('page_history.comparing_with_latest')}
+                </button>
+                <button type="button" className="btn btn-light dropdown-toggle dropdown-toggle-split" id="bgCompareRevision" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+                  <span className="sr-only">{t('page_history.comparing_versions')}</span>
+                </button>
+                <span className="dropdown-menu" aria-labelledby="bgCompareRevision">
+                  <a
+                    className="dropdown-item"
+                    href="#"
+                    onClick={() => revisionCompareContainer.setState({ fromRevision: revision })}
+                  >
+                    {t('page_history.select_as_a_comparing_source')}
+                  </a>
+                  <a
+                    className="dropdown-item"
+                    href="#"
+                    onClick={() => revisionCompareContainer.setState({ toRevision: revision })}
+                  >
+                    {t('page_history.select_as_a_comparing_target')}
+                  </a>
+                </span>
               </span>
             </p>
           </div>

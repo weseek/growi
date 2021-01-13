@@ -305,10 +305,12 @@
   },
   "page_history": {
     "comparing_versions": "比较版本",
+    "comparing_with_latest": "与最新版本相比",
     "select_as_a_comparing_source": "比较源",
     "select_as_a_comparing_target": "比较目标",
     "comparing_source": "比较源",
-    "comparing_target": "比较目标"
+    "comparing_target": "比较目标",
+    "latest_revision": "最新修订"
   },
 	"modal_rename": {
 		"label": {

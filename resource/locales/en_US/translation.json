@@ -324,10 +324,12 @@
   },
   "page_history": {
     "comparing_versions": "Comparing versions",
+    "comparing_with_latest": "Comparing with latest",
     "select_as_a_comparing_source": "Comparing source",
     "select_as_a_comparing_target": "Comparing target",
     "comparing_source": "Comparing source",
-    "comparing_target": "Comparing target"
+    "comparing_target": "Comparing target",
+    "latest_revision": "Latest revision"
   },
   "modal_rename": {
     "label": {

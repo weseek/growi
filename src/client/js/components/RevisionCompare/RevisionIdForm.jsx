@@ -26,6 +26,7 @@ const RevisionIdForm = (props) => {
 
     const author = selectedRevision?.author;
     const pic = (typeof author === 'object') ? <UserPicture user={author} size="lg" /> : '';
+    const islatestRevisionLabel = (selectedRevision?._id === revisionCompareContainer.state.latestRevision?._id) ? <span>({t('page_history.latest_revision')})</span> : "";
 
     return (
       <div className="card">
@@ -50,7 +51,11 @@ const RevisionIdForm = (props) => {
           )}
         </div>
         <div className="card-footer text-muted">
-          {selectedRevision && selectedRevision._id}
+          {selectedRevision && (
+            <React.Fragment>
+              {selectedRevision._id}{islatestRevisionLabel}
+            </React.Fragment>
+          )}
         </div>
       </div>
     );
