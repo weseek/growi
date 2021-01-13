@@ -44,9 +44,9 @@ export const useIsAbleToShowTagLabel = (): responseInterface<boolean, any> => {
 };
 
 export const useIsAbleToShowPageManagement = (): responseInterface<boolean, any> => {
-  const { data: isNotFountPage } = useNotFound();
+  const { data: isNotFoundPage } = useNotFound();
   const { data: isTrashPage } = useTrash();
   const { data: isSharedUser } = useIsSharedUser();
 
-  return useStaticSWR('isAbleToShowPageManagement', !isNotFountPage && !isTrashPage && !isSharedUser);
+  return useStaticSWR('isAbleToShowPageManagement', !isNotFoundPage && !isTrashPage && !isSharedUser);
 };

@@ -53,7 +53,7 @@ export const GrowiSubnavButtons:FC<SubnavButtonsProps> = (props:SubnavButtonsPro
   const { isCompactMode, isViewMode } = props;
 
   if (isCompactMode == null) {
-    throw new Error('isCompactMode must not be null');
+    return;
   }
 
   if (!isViewMode) return <></>;
