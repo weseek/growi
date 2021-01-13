@@ -78,20 +78,20 @@ class PageService {
     return result;
   }
 
-  async duplicateDescendants(pages, user, oldPagePathPrefix, newPagePathPrefix, pathRevisionMapping) {
-    const Page = this.crowi.model('Page');
-    const Revision = this.crowi.model('Revision');
+  /**
+   * Receive the object with oldPageId and newPageId and duplicate the tags from oldPage to newPage
+   * @param {Object{string:string}} pageIdMapping e.g. key: oldPageId, value: newPageId
+   */
+  async duplicateTags(pageIdMapping) {
     const PageTagRelation = mongoose.model('PageTagRelation');
 
-    // key:old pageID, value: new pageId
-    const pageIdMapping = {};
-    pages.forEach((page) => {
-      pageIdMapping[page._id] = new mongoose.Types.ObjectId();
-    });
+    // convert pageId from string to ObjectId
+    const pageIds = Object.keys(pageIdMapping);
+    const stage = { $or: pageIds.map((pageId) => { return { relatedPage: mongoose.Types.ObjectId(pageId) } }) };
 
     const pagesAssociatedWithTag = await PageTagRelation.aggregate([
       {
-        $match: { $or: Object.keys(pageIdMapping).map((key) => { return { relatedPage: mongoose.Types.ObjectId(key) } }) },
+        $match: stage,
       },
       {
         $group: {
@@ -101,19 +101,32 @@ class PageService {
       },
     ]);
 
-    const newPages = [];
-    const newRevisions = [];
     const newPageTagRelation = [];
-
     pagesAssociatedWithTag.forEach((element) => {
       // relatedPages
       element.relatedPages.forEach((pageId) => {
         newPageTagRelation.push({
-          relatedPage: pageIdMapping[pageId],
+          relatedPage: pageIdMapping[pageId], // newPageId
           relatedTag: element._id,
         });
       });
     });
+
+    return PageTagRelation.insertMany(newPageTagRelation, { ordered: false });
+  }
+
+  async duplicateDescendants(pages, user, oldPagePathPrefix, newPagePathPrefix, pathRevisionMapping) {
+    const Page = this.crowi.model('Page');
+    const Revision = this.crowi.model('Revision');
+
+    // key: oldPageID, value: newPageId
+    const pageIdMapping = {};
+    pages.forEach((page) => {
+      pageIdMapping[page._id] = new mongoose.Types.ObjectId();
+    });
+
+    const newPages = [];
+    const newRevisions = [];
 
     pages.forEach((page) => {
       const newPagePath = page.path.replace(oldPagePathPrefix, newPagePathPrefix);
@@ -137,10 +150,9 @@ class PageService {
 
     });
 
-    await PageTagRelation.insertMany(newPageTagRelation, { ordered: false });
     await Page.insertMany(newPages, { ordered: false });
     await Revision.insertMany(newRevisions, { ordered: false });
-
+    await this.duplicateTags(pageIdMapping);
   }
 
   async duplicateDescendantsWithStream(page, newPagePath, user) {
