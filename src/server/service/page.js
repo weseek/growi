@@ -83,39 +83,44 @@ class PageService {
     const Revision = this.crowi.model('Revision');
     const PageTagRelation = mongoose.model('PageTagRelation');
 
-    const matchArrayForAggregation = pages.map((page) => {
-      return { relatedPage: mongoose.Types.ObjectId(page._id) };
+    // key:old pageID, value: new pageId
+    const pageIdMapping = {};
+    pages.forEach((page) => {
+      pageIdMapping[page._id] = new mongoose.Types.ObjectId();
     });
 
-    const tagsAssociatedWithPage = await PageTagRelation.aggregate([
+    const pagesAssociatedWithTag = await PageTagRelation.aggregate([
       {
-        $match: { $or: matchArrayForAggregation },
+        $match: { $or: Object.keys(pageIdMapping).map((key) => { return { relatedPage: mongoose.Types.ObjectId(key) } }) },
       },
       {
         $group: {
-          _id: '$relatedPage',
-          relatedTags: { $push: '$relatedTag' },
+          _id: '$relatedTag',
+          relatedPages: { $push: '$relatedPage' },
         },
       },
     ]);
-
-    // Mapping to set to relatedTags of the new Page
-    const pageTagMapping = {};
-    tagsAssociatedWithPage.forEach((element) => {
-      pageTagMapping[element._id] = element.relatedTags;
-    });
 
     const newPages = [];
     const newRevisions = [];
     const newPageTagRelation = [];
 
+    pagesAssociatedWithTag.forEach((element) => {
+      // relatedPages
+      element.relatedPages.forEach((pageId) => {
+        newPageTagRelation.push({
+          relatedPage: pageIdMapping[pageId],
+          relatedTag: element._id,
+        });
+      });
+    });
+
     pages.forEach((page) => {
       const newPagePath = page.path.replace(oldPagePathPrefix, newPagePathPrefix);
-      const pageId = new mongoose.Types.ObjectId();
       const revisionId = new mongoose.Types.ObjectId();
 
       newPages.push({
-        _id: pageId,
+        _id: pageIdMapping[page._id],
         path: newPagePath,
         creator: user._id,
         grant: page.grant,
@@ -128,13 +133,6 @@ class PageService {
 
       newRevisions.push({
         _id: revisionId, path: newPagePath, body: pathRevisionMapping[page.path].body, author: user._id, format: 'markdown',
-      });
-
-      pageTagMapping[page._id].forEach((relatedTag) => {
-        newPageTagRelation.push({
-          relatedPage: pageId,
-          relatedTag,
-        });
       });
 
     });
