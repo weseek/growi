@@ -60,9 +60,7 @@ export const GrowiSubnavButtons:FC<SubnavButtonsProps> = (props:SubnavButtonsPro
 
   return (
     <>
-      {/* TODO GW-4827 show by isAbleToShowPageReactionButtons */}
       <PageReactionButtons />
-      {/* TODO GW-4829 show by isAbleToShowPageManagement */}
       <PageManagement isCompactMode />
     </>
   );
