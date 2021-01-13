@@ -27,8 +27,6 @@ export default class RevisionCompareContainer extends Container {
     };
 
     this.initRevisions = this.initRevisions.bind(this);
-    this.handleFromRevisionChange = this.handleFromRevisionChange.bind(this);
-    this.handleToRevisionChange = this.handleToRevisionChange.bind(this);
     this.fetchLatestRevision = this.fetchLatestRevision.bind(this);
   }
 
@@ -45,14 +43,6 @@ export default class RevisionCompareContainer extends Container {
     const latestRevision = await this.fetchLatestRevision();
 
     this.setState({ fromRevision, toRevision, latestRevision });
-  }
-
-  handleFromRevisionChange(revision) {
-    this.setState({ fromRevision: revision });
-  }
-
-  handleToRevisionChange(revision) {
-    this.setState({ toRevision: revision });
   }
 
   get compareRevisionIds() {
