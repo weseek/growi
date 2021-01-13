@@ -13,7 +13,7 @@ import { useCurrentPageSWR } from '~/stores/page';
 import {
   useCurrentUser, useForbidden, useOwnerOfCurrentPage,
 } from '~/stores/context';
-import { useIsAbleToShowTagLabel } from '~/stores/ui';
+import { useIsAbleToShowTagLabel, useIsAbleToShowPageEditorModeManager } from '~/stores/ui';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
@@ -80,6 +80,7 @@ const GrowiSubNavigation = (props) => {
   const { data: pageOwner } = useOwnerOfCurrentPage();
   const { data: isForbidden } = useForbidden();
   const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
+  const { data: isAbleToShowPageEditorModeManager } = useIsAbleToShowPageEditorModeManager();
 
   // dynamic import to skip rendering at SSR
   const SubnavButtons = dynamic(() => import('../Page/SubnavButtons'), { ssr: false });
@@ -140,7 +141,7 @@ const GrowiSubNavigation = (props) => {
             <SubnavButtons isCompactMode={isCompactMode} />
           </div>
           <div className="mt-2">
-            {pageContainer.isAbleToShowPageEditorModeManager && (
+            {isAbleToShowPageEditorModeManager && (
               <PageEditorModeManager
                 onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
                 isBtnDisabled={isGuestUser}

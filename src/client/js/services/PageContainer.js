@@ -191,12 +191,13 @@ export default class PageContainer extends Container {
    * whether to display pageEditorModeManager
    * ex.) view, edit, hackmd
    */
-  get isAbleToShowPageEditorModeManager() {
-    const { isNotCreatable, isTrashPage } = this.state;
-    const { isSharedUser } = this.appContainer;
+  // isAbleToShowPageEditorModeManager method has already been 'swr' on ui.tsx
+  // get isAbleToShowPageEditorModeManager() {
+  //   const { isNotCreatable, isTrashPage } = this.state;
+  //   const { isSharedUser } = this.appContainer;
 
-    return (!isNotCreatable && !isTrashPage && !isSharedUser);
-  }
+  //   return (!isNotCreatable && !isTrashPage && !isSharedUser);
+  // }
 
   /**
    * whether to display pageAuthors
