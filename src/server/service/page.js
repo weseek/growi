@@ -121,16 +121,13 @@ class PageService {
 
     // key: oldPageId, value: newPageId
     const pageIdMapping = {};
-    pages.forEach((page) => {
-      pageIdMapping[page._id] = new mongoose.Types.ObjectId();
-    });
-
     const newPages = [];
     const newRevisions = [];
 
     pages.forEach((page) => {
       const newPagePath = page.path.replace(oldPagePathPrefix, newPagePathPrefix);
       const revisionId = new mongoose.Types.ObjectId();
+      pageIdMapping[page._id] = new mongoose.Types.ObjectId();
 
       newPages.push({
         _id: pageIdMapping[page._id],
