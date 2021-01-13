@@ -26,7 +26,7 @@ module.exports = function(crowi) {
     return true;
   };
 
-  lib.deleteFile = async function(attachment) {
+  lib.deleteFiles = async function(attachment) {
     let filenameValue = attachment.fileName;
 
     if (attachment.filePath != null) { // backward compatibility for v3.3.x or below
