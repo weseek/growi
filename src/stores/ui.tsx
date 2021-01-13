@@ -28,10 +28,10 @@ export const useIsAbleToShowTrashPageManagementButtons = (): responseInterface<b
 
 export const useIsAbleToShowPageReactionButtons = (): responseInterface<boolean, any> => {
   const { data: isTrashPage } = useTrash();
-  const { data: isNotFountPage } = useNotFound();
+  const { data: isNotFoundPage } = useNotFound();
   const { data: isSharedUser } = useIsSharedUser();
 
-  return useStaticSWR('isAbleToShowPageReactionButtons', !isTrashPage && !isNotFountPage && !isSharedUser);
+  return useStaticSWR('isAbleToShowPageReactionButtons', !isTrashPage && !isNotFoundPage && !isSharedUser);
 };
 
 export const useIsAbleToShowTagLabel = (): responseInterface<boolean, any> => {
@@ -45,10 +45,10 @@ export const useIsAbleToShowTagLabel = (): responseInterface<boolean, any> => {
 
 export const useIsAbleToShowPageAuthors = (): responseInterface<boolean, any> => {
   const { data: page } = useCurrentPageSWR();
-  const { data: isNotFountPage } = useNotFound();
+  const { data: isNotFoundPage } = useNotFound();
 
   if (page == null) {
     throw new Error('page must not be null');
   }
-  return useStaticSWR('isAbleToShowPageAuthors', !isNotFountPage && !isUserPage(page.path));
+  return useStaticSWR('isAbleToShowPageAuthors', !isNotFoundPage && !isUserPage(page.path));
 };
