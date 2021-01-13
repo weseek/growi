@@ -389,6 +389,10 @@ ul.pagination {
  * GROWI wiki
  */
 .wiki {
+  .highlighted {
+    @include highlighted($bgcolor-highlighted);
+  }
+
   a {
     color: $color-link-wiki;
 

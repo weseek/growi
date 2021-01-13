@@ -34,6 +34,7 @@ div.body {
     border-bottom: solid 1px transparent;
   }
   h2 {
+    // padding-top: 0.5em;
     padding-bottom: 0.5em;
     font-size: 1.4em;
     font-weight: bold;
@@ -135,10 +136,6 @@ div.body {
       top: 8px;
       right: 8px;
     }
-  }
-
-  .highlighted {
-    background-color: $warning;
   }
 
   .revision-head {

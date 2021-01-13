@@ -45,6 +45,8 @@ html[dark] {
   $primary: $bgcolor-theme;
   $info: lighten($bgcolor-theme, 20%);
 
+  $bgcolor-highlighted: rgba($primary, 0.2);
+
   // List Group colors
   $color-list: $color-global;
   $bgcolor-list: $bgcolor-global;
@@ -98,6 +100,7 @@ html[dark] {
 
   @import 'apply-colors';
   @import 'apply-colors-light';
+
   //Button
   .grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
