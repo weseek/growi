@@ -168,7 +168,7 @@ export default class PageContainer extends Container {
   /**
    * whether to display tag labels
    */
-  // isAbleToShowTagLabel method has already been 'swr' on ui.tsx
+  // isAbleToShowTagLabel method has already been 'swr' in ui.tsx
   // get isAbleToShowTagLabel() {
   //   const { isUserPage } = this.state;
   //   const { isSharedUser } = this.appContainer;
@@ -180,12 +180,13 @@ export default class PageContainer extends Container {
    * whether to display page management
    * ex.) duplicate, rename
    */
-  get isAbleToShowPageManagement() {
-    const { isPageExist, isTrashPage } = this.state;
-    const { isSharedUser } = this.appContainer;
+  // isAbleToShowPageManagement method has already been 'swr' in ui.tsx
+  // get isAbleToShowPageManagement() {
+  //   const { isPageExist, isTrashPage } = this.state;
+  //   const { isSharedUser } = this.appContainer;
 
-    return (isPageExist && !isTrashPage && !isSharedUser);
-  }
+  //   return (isPageExist && !isTrashPage && !isSharedUser);
+  // }
 
   /**
    * whether to display pageEditorModeManager
@@ -202,11 +203,12 @@ export default class PageContainer extends Container {
    * whether to display pageAuthors
    * ex.) creator, lastUpdateUser
    */
-  get isAbleToShowPageAuthors() {
-    const { isPageExist, isUserPage } = this.state;
+  // isAbleToShowPageAuthors method has already been 'swr' in ui.tsx
+  // get isAbleToShowPageAuthors() {
+  //   const { isPageExist, isUserPage } = this.state;
 
-    return (isPageExist && !isUserPage);
-  }
+  //   return (isPageExist && !isUserPage);
+  // }
 
   /**
    * whether to like button

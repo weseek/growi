@@ -46,6 +46,7 @@ type Props = CommonProps & {
   confidential: string,
   isForbidden: boolean,
   isNotFound: boolean,
+  isCompactMode?: boolean,
   isAbleToDeleteCompletely: boolean,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,

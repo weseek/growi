@@ -28,10 +28,10 @@ export const useIsAbleToShowTrashPageManagementButtons = (): responseInterface<b
 
 export const useIsAbleToShowPageReactionButtons = (): responseInterface<boolean, any> => {
   const { data: isTrashPage } = useTrash();
-  const { data: isNotFountPage } = useNotFound();
+  const { data: isNotFoundPage } = useNotFound();
   const { data: isSharedUser } = useIsSharedUser();
 
-  return useStaticSWR('isAbleToShowPageReactionButtons', !isTrashPage && !isNotFountPage && !isSharedUser);
+  return useStaticSWR('isAbleToShowPageReactionButtons', !isTrashPage && !isNotFoundPage && !isSharedUser);
 };
 
 export const useIsAbleToShowLikeButton = (): responseInterface<boolean, any> => {
@@ -51,4 +51,22 @@ export const useIsAbleToShowTagLabel = (): responseInterface<boolean, any> => {
   // [TODO: add other two judgements and expand isAbleToShowTagLabel by GW-4881]
   // isAbleToShowTagLabel = (!isCompactMode && !isUserPage && !isSharedPage && !(editorMode === 'view' && !isPageExist));
   return useStaticSWR('isAbleToShowTagLabel', !isUserPage(path) && !isSharedPage(path));
+};
+
+export const useIsAbleToShowPageAuthors = (): responseInterface<boolean, any> => {
+  const { data: page } = useCurrentPageSWR();
+  const { data: isNotFoundPage } = useNotFound();
+
+  if (page == null) {
+    throw new Error('page must not be null');
+  }
+  return useStaticSWR('isAbleToShowPageAuthors', !isNotFoundPage && !isUserPage(page.path));
+};
+
+export const useIsAbleToShowPageManagement = (): responseInterface<boolean, any> => {
+  const { data: isNotFoundPage } = useNotFound();
+  const { data: isTrashPage } = useTrash();
+  const { data: isSharedUser } = useIsSharedUser();
+
+  return useStaticSWR('isAbleToShowPageManagement', !isNotFoundPage && !isTrashPage && !isSharedUser);
 };
