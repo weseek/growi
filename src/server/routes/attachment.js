@@ -244,16 +244,6 @@ module.exports = function(crowi, app) {
     }
   }
 
-  async function removeAttachment(attachmentId) {
-    const { fileUploadService } = crowi;
-
-    // retrieve data from DB to get a completely populated instance
-    const attachment = await Attachment.findById(attachmentId);
-
-    await fileUploadService.deleteFiles(attachment);
-
-    return attachment.remove();
-  }
 
   const actions = {};
   const api = {};
@@ -637,7 +627,7 @@ module.exports = function(crowi, app) {
     }
 
     try {
-      await removeAttachment(attachment);
+      await attachmentService.removeAttachment(attachment);
     }
     catch (err) {
       logger.error(err);
