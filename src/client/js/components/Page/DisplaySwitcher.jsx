@@ -8,10 +8,8 @@ import Editor from '../PageEditor';
 import Page from '../Page';
 import UserInfo from '../User/UserInfo';
 import TableOfContents from '../TableOfContents';
-import {
-  CommentLinkButtonWrapper as CommentLinkButton,
-  BookMarkAndRecentlyCreatedLinkButtonsWrapper as BookMarkAndRecentlyCreatedLinkButtons,
-} from '../ContentLinkButtons';
+import
+BookMarkAndRecentlyCreatedLinkButtonsWrapper from '../ContentLinkButtons';
 import PageAccessories from '../PageAccessories';
 import PageEditorByHackmd from '../PageEditorByHackmd';
 import EditorNavbarBottom from '../PageEditor/EditorNavbarBottom';
@@ -41,8 +39,8 @@ const DisplaySwitcher = (props) => {
                   <div id="revision-toc" className="revision-toc">
                     <TableOfContents />
                   </div>
-                  {isPageExist && <CommentLinkButton />}
-                  {pageUser && <BookMarkAndRecentlyCreatedLinkButtons />}
+                  {/* {isPageExist && <CommentLinkButton />} */}
+                  {pageUser && <BookMarkAndRecentlyCreatedLinkButtonsWrapper />}
                 </div>
               </div>
             </div>
