@@ -136,8 +136,8 @@ module.exports = (crowi) => {
 
   const validator = {
     getPage: [
-      query('pageId').if(value => value != null).isMongoId(),
-      query('pagePath').if(value => value != null).isString(),
+      query('id').if(value => value != null).isMongoId(),
+      query('path').if(value => value != null).isString(),
     ],
     likes: [
       body('pageId').isString(),
@@ -180,7 +180,7 @@ module.exports = (crowi) => {
    *            description: page id
    *            schema:
    *              $ref: '#/components/schemas/Page/properties/_id'
-   *          - name: pagePath
+   *          - name: path
    *            in: query
    *            description: page path
    *            schema:
@@ -194,9 +194,9 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/Page'
    */
   router.get('/', accessTokenParser, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
-    const { pageId, pagePath } = req.query;
+    const { pageId, path } = req.query;
 
-    if (pageId == null && pagePath == null) {
+    if (pageId == null && path == null) {
       return res.apiv3Err(new ErrorV3('Parameter pagePath or pageId is required.', 'invalid-request'));
     }
 
@@ -205,8 +205,8 @@ module.exports = (crowi) => {
       if (pageId != null) { // prioritized
         page = await Page.findByIdAndViewer(pageId, req.user);
       }
-      else if (pagePath != null) {
-        page = await Page.findByPathAndViewer(pagePath, req.user);
+      else if (path != null) {
+        page = await Page.findByPathAndViewer(path, req.user);
       }
     }
     catch (err) {
@@ -218,7 +218,7 @@ module.exports = (crowi) => {
 
     if (page == null) {
       try {
-        const isExist = await Page.count({ $or: [{ _id: pageId, path: pagePath }] }) > 0;
+        const isExist = await Page.count({ $or: [{ _id: pageId, path }] }) > 0;
         result.isForbidden = isExist;
         result.isNotFound = !isExist;
       }
@@ -227,7 +227,7 @@ module.exports = (crowi) => {
         return res.apiv3Err(err, 500);
       }
 
-      result.isCreatable = isCreatablePage(pagePath);
+      result.isCreatable = isCreatablePage(path);
       result.isDeletable = false;
       result.canDeleteCompletely = false;
 
@@ -237,7 +237,7 @@ module.exports = (crowi) => {
     result.isForbidden = false;
     result.isNotFound = false;
     result.isCreatable = false;
-    result.isDeletable = isDeletablePage(pagePath);
+    result.isDeletable = isDeletablePage(path);
     result.isDeleted = page.isDeleted();
     result.canDeleteCompletely = req.user != null && req.user.canDeleteCompletely(page.creator);
 
