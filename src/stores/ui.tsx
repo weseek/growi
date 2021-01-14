@@ -1,6 +1,6 @@
 import { responseInterface } from 'swr';
 
-import { isUserPage, isSharedPage } from '~/utils/path-utils';
+import { isUserPage, isSharedPage, isCreatablePage } from '~/utils/path-utils';
 import {
   useTrash, useNotFound, useCurrentPagePath, useCurrentUser, useIsSharedUser, useForbidden,
 } from './context';
@@ -75,8 +75,11 @@ export const useIsAbleToShowPageEditorModeManager = (): responseInterface<boolea
   const { data: isTrashPage } = useTrash();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: isForbidden } = useForbidden();
+  const { data: page } = useCurrentPageSWR();
 
-  const isNotCreatable = isForbidden;
+  if (page == null) {
+    throw new Error('page must not be null');
+  }
 
-  return useStaticSWR('isAbleToShowPageEditorModeManager', !isNotCreatable && !isTrashPage && !isSharedUser);
+  return useStaticSWR('isAbleToShowPageEditorModeManager', isCreatablePage(page.path) && !isForbidden && !isTrashPage && !isSharedUser);
 };
