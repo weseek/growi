@@ -15,7 +15,7 @@ import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
 import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 import BasicLayout from '../components/BasicLayout';
 
-// import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
+import { GrowiSubNavigation } from '~/components/Organisms/GrowiSubNavigation';
 // import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
 // import DisplaySwitcher from '../client/js/components/Page/DisplaySwitcher';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
@@ -96,7 +96,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
       </Head>
       <BasicLayout title="GROWI">
         <header className="py-0">
-          {/* <GrowiSubNavigation /> */}
+          <GrowiSubNavigation />
         </header>
         <div className="d-edit-none">
           {/* <GrowiSubNavigationSwitcher /> */}
