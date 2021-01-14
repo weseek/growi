@@ -82,11 +82,14 @@ export const useLikeInfoSWR = <Data, Error>(pageId: string, initialData?: boolea
   );
 };
 
-export const useDescendentsCount = (pagePath?: string): responseInterface<number, Error> => {
-  if (pagePath == null) {
-    throw new Error('pagePath should not be null.');
-  }
-
-  // TODO: implement by https://youtrack.weseek.co.jp/issue/GW-4871
-  return useStaticSWR('descendentsCount', 10);
+export const useDescendentsCount = <Data, Error>(pagePath?: string, initialData?: number): responseInterface<Data, Error> => {
+  return useSWR(
+    '/pages/decendants-count',
+    endpoint => apiv3Get(endpoint, { path: pagePath }).then(response => response.data),
+    {
+      initialData: initialData || 0,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
 };
