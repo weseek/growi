@@ -150,7 +150,7 @@ module.exports = (crowi) => {
       body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
     ],
 
-    decendantsCcount: [
+    descendantsCount: [
       body('path').isLength({ min: 1 }).withMessage('path is required'),
     ],
   };
@@ -616,11 +616,11 @@ module.exports = (crowi) => {
    * @swagger
    *
    *
-   *    /pages/decendants-count:
+   *    /pages/descendants-count:
    *      get:
    *        tags: [Pages]
-   *        operationId: decendantsCcount
-   *        description: Get decendants pages count
+   *        operationId: descendantsCcount
+   *        description: Get descendants pages count
    *        parameters:
    *          - name: path
    *            in: query
@@ -636,11 +636,11 @@ module.exports = (crowi) => {
    *                  properties:
    *                    descendentsCount:
    *                      type: integer
-   *                      description: decendants pages count
+   *                      description: descendants pages count
    *          500:
    *            description: Internal server error.
    */
-  router.get('/decendants-count', accessTokenParser, loginRequired, validator.decendantsCcount, async(req, res) => {
+  router.get('/descendents-count', accessTokenParser, loginRequired, validator.descendantsCount, async(req, res) => {
     const { path } = req.query;
 
     try {
@@ -651,7 +651,7 @@ module.exports = (crowi) => {
       return res.apiv3({ descendentsCount: result });
     }
     catch (err) {
-      return res.apiv3Err(new ErrorV3('Failed to get decendants pages count.', err), 500);
+      return res.apiv3Err(new ErrorV3('Failed to get descendants pages count.', err), 500);
     }
 
   });
