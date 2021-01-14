@@ -1134,10 +1134,11 @@ module.exports = function(crowi) {
       throw new Error('This method does NOT supports deleting trashed pages.');
     }
 
-    const socketClientId = options.socketClientId || null;
-    if (this.isDeletableName(targetPage.path)) {
-      targetPage.status = STATUS_DELETED;
+    if (!this.isDeletableName(targetPage.path)) {
+      throw new Error('Page is not deletable');
     }
+    const socketClientId = options.socketClientId || null;
+    targetPage.status = STATUS_DELETED;
     return await this.renameRecursively(targetPage, newPath, user, { socketClientId, createRedirectPage: true });
   };
 
@@ -1201,7 +1202,7 @@ module.exports = function(crowi) {
       await Page.create(path, body, user, { redirectTo: newPagePath });
     }
 
-    pageEvent.emit('delete', [pageData], user, socketClientId);
+    pageEvent.emit('delete', pageData, user, socketClientId);
     pageEvent.emit('create', updatedPageData, user, socketClientId);
 
     return updatedPageData;
