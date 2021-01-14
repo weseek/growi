@@ -293,6 +293,7 @@ module.exports = function(crowi) {
     pageEvent = crowi.event('page');
     pageEvent.on('create', pageEvent.onCreate);
     pageEvent.on('update', pageEvent.onUpdate);
+    pageEvent.on('createMany', pageEvent.onCreateMany);
   }
 
   function validateCrowi() {
@@ -1128,17 +1129,16 @@ module.exports = function(crowi) {
 
   pageSchema.statics.deletePageRecursively = async function(targetPage, user, options = {}) {
     const isTrashed = checkIfTrashed(targetPage.path);
-
+    const newPath = this.getDeletedPageName(targetPage.path);
     if (isTrashed) {
       throw new Error('This method does NOT supports deleting trashed pages.');
     }
 
-    // find manageable descendants (this array does not include GRANT_RESTRICTED)
-    const pages = await this.findManageableListWithDescendants(targetPage, user, options);
-
-    await Promise.all(pages.map((page) => {
-      return this.deletePage(page, user, options);
-    }));
+    const socketClientId = options.socketClientId || null;
+    if (this.isDeletableName(targetPage.path)) {
+      targetPage.status = STATUS_DELETED;
+    }
+    return await this.renameRecursively(targetPage, newPath, user, { socketClientId, createRedirectPage: true });
   };
 
 
@@ -1201,7 +1201,7 @@ module.exports = function(crowi) {
       await Page.create(path, body, user, { redirectTo: newPagePath });
     }
 
-    pageEvent.emit('delete', pageData, user, socketClientId);
+    pageEvent.emit('delete', [pageData], user, socketClientId);
     pageEvent.emit('create', updatedPageData, user, socketClientId);
 
     return updatedPageData;
@@ -1210,8 +1210,12 @@ module.exports = function(crowi) {
   pageSchema.statics.renameRecursively = async function(targetPage, newPagePathPrefix, user, options) {
     validateCrowi();
 
+    const pageCollection = mongoose.connection.collection('pages');
+    const revisionCollection = mongoose.connection.collection('revisions');
+
     const path = targetPage.path;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(path)}`, 'i');
+    const { updateMetadata, createRedirectPage } = options;
 
     // sanitize path
     newPagePathPrefix = crowi.xss.process(newPagePathPrefix); // eslint-disable-line no-param-reassign
@@ -1219,13 +1223,46 @@ module.exports = function(crowi) {
     // find manageable descendants
     const pages = await this.findManageableListWithDescendants(targetPage, user, options);
 
-    // TODO GW-4634 use stream
-    const promise = pages.map((page) => {
+    const unorderedBulkOp = pageCollection.initializeUnorderedBulkOp();
+    const createRediectPageBulkOp = pageCollection.initializeUnorderedBulkOp();
+    const revisionUnorderedBulkOp = revisionCollection.initializeUnorderedBulkOp();
+
+    pages.forEach((page) => {
       const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
-      return this.rename(page, newPagePath, user, options);
+      if (updateMetadata) {
+        unorderedBulkOp.find({ _id: page._id }).update([{ $set: { path: newPagePath, lastUpdateUser: user._id, updatedAt: { $toDate: Date.now() } } }]);
+      }
+      else {
+        unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath } });
+      }
+      if (createRedirectPage) {
+        createRediectPageBulkOp.insert({
+          path: page.path, body: `redirect ${newPagePath}`, creator: user, lastUpdateUser: user, status: STATUS_PUBLISHED, redirectTo: newPagePath,
+        });
+      }
+      revisionUnorderedBulkOp.find({ path: page.path }).update({ $set: { path: newPagePath } }, { multi: true });
     });
 
-    await Promise.allSettled(promise);
+    try {
+      await unorderedBulkOp.execute();
+      await revisionUnorderedBulkOp.execute();
+    }
+    catch (err) {
+      if (err.code !== 11000) {
+        throw new Error('Failed to rename pages: ', err);
+      }
+    }
+
+    const newParentPath = path.replace(pathRegExp, newPagePathPrefix);
+    const newParentPage = await this.findByPath(newParentPath);
+    const renamedPages = await this.findManageableListWithDescendants(newParentPage, user, options);
+
+    pageEvent.emit('createMany', renamedPages, user, newParentPage);
+
+    // Execute after unorderedBulkOp to prevent duplication
+    if (createRedirectPage) {
+      await createRediectPageBulkOp.execute();
+    }
 
     targetPage.path = newPagePathPrefix;
     return targetPage;
