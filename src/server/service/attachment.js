@@ -43,7 +43,7 @@ class AttachmentService {
     return attachment;
   }
 
-  async removeAllAttachment(attachments) {
+  async removeAllAttachments(attachments) {
     const { fileUploadService } = this.crowi;
     const attachmentsCollection = mongoose.connection.collection('attachments');
     const unorderAttachmentsBulkOp = attachmentsCollection.initializeUnorderedBulkOp();
