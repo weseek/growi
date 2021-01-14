@@ -28,7 +28,7 @@ type Props = CommonProps & {
 const AdminHomePage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();
   const title = t('Wiki Management Home Page');
-  const AdminNavigation = dynamic(() => import('~/client/js/components/Admin/common/AdminNavigation'), { ssr: false });
+  const AdminNavigation = dynamic(() => import('~/client/js/components/Admin/Common/AdminNavigation'), { ssr: false });
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
 
