@@ -48,7 +48,7 @@ export const PageReactionButtons:FC = () => {
 };
 
 type SubnavButtonsProps ={
-  isCompactMode?: boolean;
+  isCompactMode: boolean;
   isViewMode?: boolean;
 }
 
@@ -56,16 +56,14 @@ export const GrowiSubnavButtons:FC<SubnavButtonsProps> = (props:SubnavButtonsPro
   const { isCompactMode, isViewMode } = props;
 
   const { data: isAbleToShowPageReactionButtons } = useIsAbleToShowPageReactionButtons();
-  if (isCompactMode == null) {
-    return <></>;
-  }
 
+  // TODO GW-4402 Controls whether the component that uses it is visible or hidden
   if (!isViewMode) return <></>;
 
   return (
     <>
       {isAbleToShowPageReactionButtons && <PageReactionButtons />}
-      <PageManagement isCompactMode />
+      <PageManagement isCompactMode={isCompactMode} />
     </>
   );
 };
