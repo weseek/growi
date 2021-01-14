@@ -21,6 +21,7 @@ const DisplaySwitcher = (props) => {
   } = props;
   const { editorMode } = navigationContainer.state;
   const { pageUser } = pageContainer.state;
+  const { isPageExist } = pageContainer.state;
 
   return (
     <>
@@ -38,7 +39,7 @@ const DisplaySwitcher = (props) => {
                   <div id="revision-toc" className="revision-toc">
                     <TableOfContents />
                   </div>
-                  <CommentLinkButton />
+                  {isPageExist && <CommentLinkButton />}
                   {pageUser && <UserContentsLinks />}
                 </div>
               </div>
