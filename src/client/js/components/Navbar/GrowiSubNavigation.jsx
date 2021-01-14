@@ -21,7 +21,6 @@ import NavigationContainer from '../../services/NavigationContainer';
 
 // import LikeButton from '../LikeButton';
 // import BookmarkButton from '../BookmarkButton';
-import CopyDropdown from '../Page/CopyDropdown';
 import TagLabels from '../Page/TagLabels';
 
 import AuthorInfo from './AuthorInfo';
@@ -31,6 +30,8 @@ const PagePathNav = ({
   // eslint-disable-next-line react/prop-types
   pageId, pagePath, isEditorMode, isCompactMode,
 }) => {
+
+  const CopyDropdown = dynamic(() => import('~/client/js/components/Page/CopyDropdown'), { ssr: false });
 
   const dPagePath = new DevidedPagePath(pagePath, false, true);
 
@@ -144,7 +145,7 @@ const GrowiSubNavigation = (props) => {
               {/* <TagLabels editorMode={editorMode} /> */}
             </div>
           ) }
-          {/* <PagePathNav pageId={pageId} pagePath={path} isEditorMode={isEditorMode} isCompactMode={isCompactMode} /> */}
+          <PagePathNav pageId={pageId} pagePath={path} isEditorMode={isEditorMode} isCompactMode={isCompactMode} />
         </div>
       </div>
 
