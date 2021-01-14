@@ -7,10 +7,6 @@ import { withUnstatedContainers } from './UnstatedUtils';
 
 const WIKI_HEADER_LINK = 120;
 
-/**
- * @author Kaori Tokashiki <kaori@weseek.co.jp>
- *
- */
 const CommentLinkButton = (props) => {
 
   const { navigationContainer } = props;
