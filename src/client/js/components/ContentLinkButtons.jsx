@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import loggerFactory from '@alias/logger';
 
 import NavigationContainer from '../services/NavigationContainer';
 
@@ -8,8 +7,6 @@ import { withUnstatedContainers } from './UnstatedUtils';
 
 import RecentlyCreatedIcon from './Icons/RecentlyCreatedIcon';
 
-// eslint-disable-next-line no-unused-vars
-const logger = loggerFactory('growi:cli:UserContentsLinks');
 const WIKI_HEADER_LINK = 120;
 
 /**
