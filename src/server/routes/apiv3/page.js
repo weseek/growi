@@ -234,7 +234,6 @@ module.exports = (crowi) => {
       return res.apiv3(result);
     }
 
-    result.page = page;
     result.isForbidden = false;
     result.isNotFound = false;
     result.isCreatable = false;
@@ -247,6 +246,7 @@ module.exports = (crowi) => {
 
       // populate
       page = await page.populateDataToShowRevision();
+      result.page = page;
     }
     catch (err) {
       logger.error('populate-page-failed', err);
