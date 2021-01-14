@@ -76,5 +76,7 @@ export const useIsAbleToShowPageEditorModeManager = (): responseInterface<boolea
   const { data: isSharedUser } = useIsSharedUser();
   const { data: isForbidden } = useForbidden();
 
-  return useStaticSWR('isAbleToShowPageEditorModeManager', !isForbidden && !isTrashPage && !isSharedUser);
+  const isNotCreatable = isForbidden;
+
+  return useStaticSWR('isAbleToShowPageEditorModeManager', !isNotCreatable && !isTrashPage && !isSharedUser);
 };
