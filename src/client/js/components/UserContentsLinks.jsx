@@ -25,7 +25,7 @@ const UserContentsLinks = (props) => {
   const getRecentlyCreatedListHeaderDom = useMemo(() => { return document.getElementById('recently-created-list') }, []);
 
   return (
-    <div className="mt-3 d-flex justify-content-around">
+    <div className="mt-3 d-flex justify-content-between">
       <button
         type="button"
         className="btn btn-outline-secondary btn-sm"

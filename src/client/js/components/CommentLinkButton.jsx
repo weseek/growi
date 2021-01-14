@@ -19,7 +19,7 @@ const CommentLinkButton = (props) => {
   const getCommentListDom = useMemo(() => { return document.getElementById('page-comments-list') }, []);
 
   return (
-    <div className="mt-3 d-flex justify-content-around">
+    <div className="mt-3">
       <button
         type="button"
         className="btn btn-outline-secondary btn-sm w-100"
