@@ -9,7 +9,7 @@ import Page from '../Page';
 import UserInfo from '../User/UserInfo';
 import TableOfContents from '../TableOfContents';
 import
-BookMarkAndRecentlyCreatedLinkButtonsWrapper from '../ContentLinkButtons';
+ContentLinkButtons from '../ContentLinkButtons';
 import PageAccessories from '../PageAccessories';
 import PageEditorByHackmd from '../PageEditorByHackmd';
 import EditorNavbarBottom from '../PageEditor/EditorNavbarBottom';
@@ -21,7 +21,6 @@ const DisplaySwitcher = (props) => {
   } = props;
   const { editorMode } = navigationContainer.state;
   const { pageUser } = pageContainer.state;
-  const { isPageExist } = pageContainer.state;
 
   return (
     <>
@@ -39,8 +38,7 @@ const DisplaySwitcher = (props) => {
                   <div id="revision-toc" className="revision-toc">
                     <TableOfContents />
                   </div>
-                  {/* {isPageExist && <CommentLinkButton />} */}
-                  {pageUser && <BookMarkAndRecentlyCreatedLinkButtonsWrapper />}
+                  <ContentLinkButtons />
                 </div>
               </div>
             </div>

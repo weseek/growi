@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import NavigationContainer from '../services/NavigationContainer';
+import PageContainer from '../services/PageContainer';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
@@ -15,15 +16,18 @@ const WIKI_HEADER_LINK = 120;
  */
 const ContentLinkButtons = (props) => {
 
-  const { navigationContainer } = props;
+  const { navigationContainer, pageContainer } = props;
+  const { pageUser } = pageContainer.state;
+  const { isPageExist } = pageContainer.state;
 
   // get element for smoothScroll
   const getCommentListDom = useMemo(() => { return document.getElementById('page-comments-list') }, []);
   const getBookMarkListHeaderDom = useMemo(() => { return document.getElementById('bookmarks-list') }, []);
   const getRecentlyCreatedListHeaderDom = useMemo(() => { return document.getElementById('recently-created-list') }, []);
 
-  return (
-    <>
+
+  const CommentLinkButton = () => {
+    return (
       <div className="mt-3">
         <button
           type="button"
@@ -34,23 +38,43 @@ const ContentLinkButtons = (props) => {
           <span>Comments</span>
         </button>
       </div>
+    );
+  };
+
+  const BookMarksLinkButton = () => {
+    return (
+      <button
+        type="button"
+        className="btn btn-outline-secondary btn-sm px-2"
+        onClick={() => navigationContainer.smoothScrollIntoView(getBookMarkListHeaderDom, WIKI_HEADER_LINK)}
+      >
+        <i className="mr-2 icon-star"></i>
+        <span>Bookmarks</span>
+      </button>
+
+    );
+  };
+
+  const RecentlyCreatedLinkButton = () => {
+    return (
+      <button
+        type="button"
+        className="btn btn-outline-secondary btn-sm px-3"
+        onClick={() => navigationContainer.smoothScrollIntoView(getRecentlyCreatedListHeaderDom, WIKI_HEADER_LINK)}
+      >
+        <i className="grw-icon-container-recently-created mr-2"><RecentlyCreatedIcon /></i>
+        <span>Recently Created</span>
+      </button>
+
+    );
+  };
+
+  return (
+    <>
+      {isPageExist && <CommentLinkButton />}
+
       <div className="mt-3 d-flex justify-content-between">
-        <button
-          type="button"
-          className="btn btn-outline-secondary btn-sm px-2"
-          onClick={() => navigationContainer.smoothScrollIntoView(getBookMarkListHeaderDom, WIKI_HEADER_LINK)}
-        >
-          <i className="mr-2 icon-star"></i>
-          <span>Bookmarks</span>
-        </button>
-        <button
-          type="button"
-          className="btn btn-outline-secondary btn-sm px-3"
-          onClick={() => navigationContainer.smoothScrollIntoView(getRecentlyCreatedListHeaderDom, WIKI_HEADER_LINK)}
-        >
-          <i className="grw-icon-container-recently-created mr-2"><RecentlyCreatedIcon /></i>
-          <span>Recently Created</span>
-        </button>
+        {pageUser && <><BookMarksLinkButton /><RecentlyCreatedLinkButton /></>}
       </div>
     </>
   );
@@ -59,6 +83,7 @@ const ContentLinkButtons = (props) => {
 
 ContentLinkButtons.propTypes = {
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
-export default withUnstatedContainers(ContentLinkButtons, [NavigationContainer]);
+export default withUnstatedContainers(ContentLinkButtons, [NavigationContainer, PageContainer]);
