@@ -117,7 +117,7 @@ module.exports = function(crowi) {
 
   lib.deleteFiles = async function(attachments) {
     attachments.map((attachment) => {
-      return lib.deleteFile(attachment);
+      return this.deleteFile(attachment);
     });
   };
 

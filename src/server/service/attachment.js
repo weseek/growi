@@ -48,7 +48,7 @@ class AttachmentService {
     const attachmentsCollection = mongoose.connection.collection('attachments');
     const unorderAttachmentsBulkOp = attachmentsCollection.initializeUnorderedBulkOp();
 
-    if (attachments.length > 1) {
+    if (attachments.length > 0) {
       fileUploadService.deleteFiles(attachments);
 
       attachments.forEach((attachment) => {

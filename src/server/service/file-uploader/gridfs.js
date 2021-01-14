@@ -44,24 +44,9 @@ module.exports = function(crowi) {
   };
 
   lib.deleteFiles = async function(attachments) {
-
     attachments.map(async(attachment) => {
-      let filenameValue = attachment.fileName;
-
-      if (attachment.filePath != null) { // backward compatibility for v3.3.x or below
-        filenameValue = attachment.filePath;
-      }
-
-      const attachmentFile = await AttachmentFile.findOne({ filename: filenameValue });
-
-      if (attachmentFile == null) {
-        logger.warn(`Any AttachmentFile that relate to the Attachment (${attachment._id.toString()}) does not exist in GridFS`);
-        return;
-      }
-      return AttachmentFile.promisifiedUnlink({ _id: attachmentFile._id });
+      return lib.deleteFile(attachment);
     });
-
-
   };
 
   /**
