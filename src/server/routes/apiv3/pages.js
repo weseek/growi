@@ -634,8 +634,8 @@ module.exports = (crowi) => {
    *              application/json:
    *                schema:
    *                  properties:
-   *                    result:
-   *                      type: object
+   *                    descendentsCount:
+   *                      type: integer
    *                      description: decendants pages count
    *          500:
    *            description: Internal server error.
