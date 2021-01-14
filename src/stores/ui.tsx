@@ -1,8 +1,8 @@
 import { responseInterface } from 'swr';
 
-import { isUserPage, isSharedPage } from '~/utils/path-utils';
+import { isUserPage, isSharedPage, isCreatablePage } from '~/utils/path-utils';
 import {
-  useTrash, useNotFound, useCurrentPagePath, useCurrentUser, useIsSharedUser,
+  useTrash, useNotFound, useCurrentPagePath, useCurrentUser, useIsSharedUser, useForbidden,
 } from './context';
 import { useCurrentPageDeleted, useDescendentsCount, useCurrentPageSWR } from './page';
 import { useStaticSWR } from './use-static-swr';
@@ -69,4 +69,16 @@ export const useIsAbleToShowPageManagement = (): responseInterface<boolean, any>
   const { data: isSharedUser } = useIsSharedUser();
 
   return useStaticSWR('isAbleToShowPageManagement', !isNotFoundPage && !isTrashPage && !isSharedUser);
+};
+
+export const useIsAbleToShowPageEditorModeManager = (): responseInterface<boolean, any> => {
+  const { data: isForbidden } = useForbidden();
+  const { data: isTrashPage } = useTrash();
+  const { data: isSharedUser } = useIsSharedUser();
+  const { data: page } = useCurrentPageSWR();
+
+  if (page == null) {
+    throw new Error('page must not be null');
+  }
+  return useStaticSWR('isAbleToShowPageEditorModeManager', isCreatablePage(page.path) && !isForbidden && !isTrashPage && !isSharedUser);
 };
