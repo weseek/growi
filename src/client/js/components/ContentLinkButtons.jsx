@@ -16,7 +16,7 @@ const WIKI_HEADER_LINK = 120;
  * @author Yuki Takei <yuki@weseek.co.jp>
  *
  */
-const UserContentsLinks = (props) => {
+const ContentLinkButtons = (props) => {
 
   const { navigationContainer } = props;
 
@@ -47,8 +47,8 @@ const UserContentsLinks = (props) => {
 
 };
 
-UserContentsLinks.propTypes = {
+ContentLinkButtons.propTypes = {
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 
-export default withUnstatedContainers(UserContentsLinks, [NavigationContainer]);
+export default withUnstatedContainers(ContentLinkButtons, [NavigationContainer]);
