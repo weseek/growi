@@ -41,7 +41,7 @@ const ContentLinkButtons = (props) => {
     );
   };
 
-  const BookMarksLinkButton = () => {
+  const BookMarkLinkButton = () => {
     return (
       <button
         type="button"
@@ -74,7 +74,7 @@ const ContentLinkButtons = (props) => {
       {isPageExist && <CommentLinkButton />}
 
       <div className="mt-3 d-flex justify-content-between">
-        {pageUser && <><BookMarksLinkButton /><RecentlyCreatedLinkButton /></>}
+        {pageUser && <><BookMarkLinkButton /><RecentlyCreatedLinkButton /></>}
       </div>
     </>
   );

@@ -8,8 +8,7 @@ import Editor from '../PageEditor';
 import Page from '../Page';
 import UserInfo from '../User/UserInfo';
 import TableOfContents from '../TableOfContents';
-import
-ContentLinkButtons from '../ContentLinkButtons';
+import ContentLinkButtons from '../ContentLinkButtons';
 import PageAccessories from '../PageAccessories';
 import PageEditorByHackmd from '../PageEditorByHackmd';
 import EditorNavbarBottom from '../PageEditor/EditorNavbarBottom';
