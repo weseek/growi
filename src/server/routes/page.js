@@ -1248,13 +1248,7 @@ module.exports = function(crowi, app) {
       if (page == null) {
         throw new Error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden');
       }
-
-      if (isRecursively) {
-        page = await crowi.pageService.revertDeletedPageRecursively(page, req.user, { socketClientId });
-      }
-      else {
-        page = await crowi.pageService.revertSingleDeletedPage(page, req.user, { socketClientId });
-      }
+      page = await crowi.pageService.revertDeletedPage(page, req.user, { socketClientId }, isRecursively);
     }
     catch (err) {
       logger.error('Error occured while get setting', err);
