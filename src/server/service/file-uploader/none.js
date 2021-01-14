@@ -9,6 +9,11 @@ module.exports = function(crowi) {
     return false;
   };
 
+  lib.deleteFile = function(filePath) {
+    debug(`File deletion: ${filePath}`);
+    throw new Error('not implemented');
+  };
+
   lib.deleteFiles = function(filePath) {
     debug(`File deletion: ${filePath}`);
     throw new Error('not implemented');
