@@ -297,7 +297,7 @@ class PageService {
       .pipe(writeStream);
   }
 
-  async revertDeletedPages(pages, user, options = {}) {
+  async revertDeletedPages(pages, user, pathRedirectToMapping) {
     const Page = this.crowi.model('Page');
     const pageCollection = mongoose.connection.collection('pages');
     const revisionCollection = mongoose.connection.collection('revisions');
@@ -311,9 +311,14 @@ class PageService {
       // e.g. page.path = /trash/test, toPath = /test
       const toPath = Page.getRevertDeletedPageName(page.path);
 
-      removePageBulkOp.find({ path: toPath, redirectTo: page.path }).remove();
-      revertPageBulkOp.find({ _id: page._id }).update({ $set: { path: toPath, status: STATUS_PUBLISHED, lastUpdateUser: user } });
-      revertRevisionBulkOp.find({ path: page.path }).update({ $set: { path: toPath } }, { multi: true });
+      // When the page is deleted, it will always be created with "redirectTo" in the path of the original page.
+      // So, it's ok to delete the page
+      // However, If a page exists that is not "redirectTo", something is wrong. (Data correction is needed).
+      if (pathRedirectToMapping[toPath] === page.path) {
+        removePageBulkOp.find({ path: toPath, redirectTo: page.path }).remove();
+        revertPageBulkOp.find({ _id: page._id }).update({ $set: { path: toPath, status: STATUS_PUBLISHED, lastUpdateUser: user._id } });
+        revertRevisionBulkOp.find({ path: page.path }).update({ $set: { path: toPath } }, { multi: true });
+      }
     });
 
     try {
@@ -368,6 +373,16 @@ class PageService {
       .lean()
       .cursor();
 
+    const toPath = Page.getRevertDeletedPageName(targetPage.path);
+    const pathRegExp = new RegExp(`^${escapeStringRegexp(toPath)}`, 'i');
+    const pages = await Page.find({ path: pathRegExp });
+
+    // Mapping to set to the body of the new revision
+    const pathRedirectToMapping = {};
+    pages.forEach((page) => {
+      pathRedirectToMapping[page.path] = page.redirectTo;
+    });
+
     const revertDeletedPages = this.revertDeletedPages.bind(this);
     let count = 0;
     const writeStream = new Writable({
@@ -375,7 +390,7 @@ class PageService {
       async write(batch, encoding, callback) {
         try {
           count += batch.length;
-          revertDeletedPages(batch);
+          revertDeletedPages(batch, user, pathRedirectToMapping);
           logger.debug(`Reverting pages progressing: (count=${count})`);
         }
         catch (err) {
