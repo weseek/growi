@@ -72,14 +72,13 @@ export const useIsAbleToShowPageManagement = (): responseInterface<boolean, any>
 };
 
 export const useIsAbleToShowPageEditorModeManager = (): responseInterface<boolean, any> => {
+  const { data: isForbidden } = useForbidden();
   const { data: isTrashPage } = useTrash();
   const { data: isSharedUser } = useIsSharedUser();
-  const { data: isForbidden } = useForbidden();
   const { data: page } = useCurrentPageSWR();
 
   if (page == null) {
     throw new Error('page must not be null');
   }
-
   return useStaticSWR('isAbleToShowPageEditorModeManager', isCreatablePage(page.path) && !isForbidden && !isTrashPage && !isSharedUser);
 };
