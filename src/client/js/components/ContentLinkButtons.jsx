@@ -21,7 +21,6 @@ const BookMarkAndRecentlyCreatedLinkButtons = (props) => {
   const getBookMarkListHeaderDom = useMemo(() => { return document.getElementById('bookmarks-list') }, []);
   const getRecentlyCreatedListHeaderDom = useMemo(() => { return document.getElementById('recently-created-list') }, []);
 
-
   return (
     <div className="mt-3 d-flex justify-content-between">
       <button
