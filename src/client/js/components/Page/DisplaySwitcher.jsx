@@ -8,11 +8,14 @@ import Editor from '../PageEditor';
 import Page from '../Page';
 import UserInfo from '../User/UserInfo';
 import TableOfContents from '../TableOfContents';
-import { BookMarkListLinkButtonWrapper as BookMarkListLinkButton, RecentlyCreatedLinkButtonWrapper as RecentlyCreatedLinkButton } from '../ContentLinkButtons';
+import {
+  BookMarkListLinkButtonWrapper as BookMarkListLinkButton,
+  RecentlyCreatedLinkButtonWrapper as RecentlyCreatedLinkButton,
+  CommentLinkButtonWrapper as CommentLinkButton,
+} from '../ContentLinkButtons';
 import PageAccessories from '../PageAccessories';
 import PageEditorByHackmd from '../PageEditorByHackmd';
 import EditorNavbarBottom from '../PageEditor/EditorNavbarBottom';
-import CommentLinkButton from '../CommentLinkButton';
 
 
 const DisplaySwitcher = (props) => {

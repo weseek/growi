@@ -49,7 +49,35 @@ const WIKI_HEADER_LINK = 120;
 // };
 
 
-export const BookMarkListLinkButton = (props) => {
+const CommentLinkButton = (props) => {
+  const { navigationContainer } = props;
+
+  // get element for smoothScroll
+  const getCommentListDom = useMemo(() => { return document.getElementById('page-comments-list') }, []);
+
+  return (
+    <div className="mt-3">
+      <button
+        type="button"
+        className="btn btn-outline-secondary btn-sm w-100"
+        onClick={() => navigationContainer.smoothScrollIntoView(getCommentListDom, WIKI_HEADER_LINK)}
+      >
+        <i className="mr-2 icon-fw icon-bubbles"></i>
+        <span>Comments</span>
+      </button>
+    </div>
+  );
+
+};
+
+CommentLinkButton.propTypes = {
+  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
+};
+
+const CommentLinkButtonWrapper = withUnstatedContainers(CommentLinkButton, [NavigationContainer]);
+export { CommentLinkButtonWrapper };
+
+const BookMarkListLinkButton = (props) => {
   const getBookMarkListHeaderDom = useMemo(() => { return document.getElementById('bookmarks-list') }, []);
   const { navigationContainer } = props;
 
@@ -71,6 +99,7 @@ BookMarkListLinkButton.propTypes = {
 
 const BookMarkListLinkButtonWrapper = withUnstatedContainers(BookMarkListLinkButton, [NavigationContainer]);
 export { BookMarkListLinkButtonWrapper };
+
 
 const RecentlyCreatedLinkButton = (props) => {
   const getRecentlyCreatedListHeaderDom = useMemo(() => { return document.getElementById('recently-created-list') }, []);
