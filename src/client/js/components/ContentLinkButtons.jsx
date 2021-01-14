@@ -16,7 +16,7 @@ const WIKI_HEADER_LINK = 120;
  * @author Yuki Takei <yuki@weseek.co.jp>
  *
  */
-const ContentLinkButtons = (props) => {
+const BookMarkAndRecentlyCreatedLinkButtons = (props) => {
 
   const { navigationContainer } = props;
 
@@ -48,12 +48,12 @@ const ContentLinkButtons = (props) => {
 
 };
 
-ContentLinkButtons.propTypes = {
+BookMarkAndRecentlyCreatedLinkButtons.propTypes = {
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 
-const ContentLinkButtonsWrapper = withUnstatedContainers(ContentLinkButtons, [NavigationContainer]);
-export { ContentLinkButtonsWrapper };
+const BookMarkAndRecentlyCreatedLinkButtonsWrapper = withUnstatedContainers(BookMarkAndRecentlyCreatedLinkButtons, [NavigationContainer]);
+export { BookMarkAndRecentlyCreatedLinkButtonsWrapper };
 
 
 const CommentLinkButton = (props) => {

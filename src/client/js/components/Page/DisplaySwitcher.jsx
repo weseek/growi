@@ -10,7 +10,7 @@ import UserInfo from '../User/UserInfo';
 import TableOfContents from '../TableOfContents';
 import {
   CommentLinkButtonWrapper as CommentLinkButton,
-  ContentLinkButtonsWrapper as ContentLinkButtons,
+  BookMarkAndRecentlyCreatedLinkButtonsWrapper as BookMarkAndRecentlyCreatedLinkButtons,
 } from '../ContentLinkButtons';
 import PageAccessories from '../PageAccessories';
 import PageEditorByHackmd from '../PageEditorByHackmd';
@@ -42,7 +42,7 @@ const DisplaySwitcher = (props) => {
                     <TableOfContents />
                   </div>
                   {isPageExist && <CommentLinkButton />}
-                  {pageUser && <ContentLinkButtons />}
+                  {pageUser && <BookMarkAndRecentlyCreatedLinkButtons />}
                 </div>
               </div>
             </div>
