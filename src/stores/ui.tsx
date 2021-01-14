@@ -2,7 +2,7 @@ import { responseInterface } from 'swr';
 
 import { isUserPage, isSharedPage } from '~/utils/path-utils';
 import {
-  useTrash, useNotFound, useCurrentPagePath, useCurrentUser, useIsSharedUser,
+  useTrash, useNotFound, useCurrentPagePath, useCurrentUser, useIsSharedUser, useForbidden,
 } from './context';
 import { useCurrentPageDeleted, useDescendentsCount, useCurrentPageSWR } from './page';
 import { useStaticSWR } from './use-static-swr';
@@ -74,6 +74,7 @@ export const useIsAbleToShowPageManagement = (): responseInterface<boolean, any>
 export const useIsAbleToShowPageEditorModeManager = (): responseInterface<boolean, any> => {
   const { data: isTrashPage } = useTrash();
   const { data: isSharedUser } = useIsSharedUser();
+  const { data: isForbidden } = useForbidden();
 
-  return useStaticSWR('isAbleToShowTagLabel', /* !isNotCreatable && */ !isTrashPage && !isSharedUser);
+  return useStaticSWR('isAbleToShowPageEditorModeManager', !isForbidden && !isTrashPage && !isSharedUser);
 };
