@@ -23,6 +23,10 @@ class PageService {
     const PageTagRelation = this.crowi.model('PageTagRelation');
     const ShareLink = this.crowi.model('ShareLink');
     const Revision = this.crowi.model('Revision');
+    const Attachment = this.crowi.model('Attachment');
+
+    const { attachmentService } = this.crowi;
+    const attachments = await Attachment.find({ page: pageIds });
 
     return Promise.all([
       Bookmark.find({ page: { $in: pageIds } }).remove({}),
@@ -32,19 +36,8 @@ class PageService {
       Revision.find({ path: { $in: pagePaths } }).remove({}),
       Page.find({ _id: { $in: pageIds } }).remove({}),
       Page.find({ path: { $in: pagePaths } }).remove({}),
-      this.removeAllAttachments(pageIds),
+      attachmentService.removeAllAttachments(attachments),
     ]);
-  }
-
-  async removeAllAttachments(pageIds) {
-    const Attachment = this.crowi.model('Attachment');
-    const { attachmentService } = this.crowi;
-    const attachments = await Attachment.find({ page: pageIds });
-
-    if (attachments.length > 0) {
-      return attachmentService.removeAttachment(attachments);
-    }
-    return;
   }
 
   async duplicate(page, newPagePath, user, isRecursively) {
