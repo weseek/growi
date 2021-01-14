@@ -1,6 +1,4 @@
-import {
-  NextPage, GetServerSideProps, GetServerSidePropsContext,
-} from 'next';
+import { NextPage } from 'next';
 import dynamic from 'next/dynamic';
 
 import BasicLayout from '../../components/BasicLayout';
