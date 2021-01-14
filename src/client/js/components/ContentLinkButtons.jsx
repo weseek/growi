@@ -26,7 +26,7 @@ const BookMarkAndRecentlyCreatedLinkButtons = (props) => {
     <div className="mt-3 d-flex justify-content-between">
       <button
         type="button"
-        className="btn btn-outline-secondary btn-sm"
+        className="btn btn-outline-secondary btn-sm px-2"
         onClick={() => navigationContainer.smoothScrollIntoView(getBookMarkListHeaderDom, WIKI_HEADER_LINK)}
       >
         <i className="mr-2 icon-star"></i>
@@ -34,7 +34,7 @@ const BookMarkAndRecentlyCreatedLinkButtons = (props) => {
       </button>
       <button
         type="button"
-        className="btn btn-outline-secondary btn-sm"
+        className="btn btn-outline-secondary btn-sm px-3"
         onClick={() => navigationContainer.smoothScrollIntoView(getRecentlyCreatedListHeaderDom, WIKI_HEADER_LINK)}
       >
         <i className="grw-icon-container-recently-created mr-2"><RecentlyCreatedIcon /></i>
