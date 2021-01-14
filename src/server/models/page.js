@@ -5,7 +5,7 @@
 
 import loggerFactory from '~/utils/logger';
 import templateChecker from '~/utils/template-checker';
-import { isTopPage, isDeletablePage } from '~/utils/path-utils';
+import { isTopPage, isDeletablePage, isTrashPage } from '~/utils/path-utils';
 
 const logger = loggerFactory('growi:models:page');
 
@@ -304,7 +304,7 @@ module.exports = function(crowi) {
   }
 
   pageSchema.methods.isDeleted = function() {
-    return (this.status === STATUS_DELETED) || checkIfTrashed(this.path);
+    return (this.status === STATUS_DELETED) || isTrashPage(this.path);
   };
 
   pageSchema.methods.isPublic = function() {
@@ -1067,7 +1067,7 @@ module.exports = function(crowi) {
 
   pageSchema.statics.deletePage = async function(pageData, user, options = {}) {
     const newPath = this.getDeletedPageName(pageData.path);
-    const isTrashed = checkIfTrashed(pageData.path);
+    const isTrashed = isTrashPage(pageData.path);
 
     if (isTrashed) {
       throw new Error('This method does NOT support deleting trashed pages.');
@@ -1085,12 +1085,8 @@ module.exports = function(crowi) {
     return Promise.reject(new Error('Page is not deletable.'));
   };
 
-  const checkIfTrashed = (path) => {
-    return (path.search(/^\/trash/) !== -1);
-  };
-
   pageSchema.statics.deletePageRecursively = async function(targetPage, user, options = {}) {
-    const isTrashed = checkIfTrashed(targetPage.path);
+    const isTrashed = isTrashPage(targetPage.path);
 
     if (isTrashed) {
       throw new Error('This method does NOT supports deleting trashed pages.');

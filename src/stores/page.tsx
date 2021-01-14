@@ -1,6 +1,5 @@
 import useSWR, { mutate, responseInterface } from 'swr';
 import { ConfigInterface } from 'swr/dist/types';
-import { apiGet } from '~/client/js/util/apiv1-client';
 import { apiv3Get } from '~/client/js/util/apiv3-client';
 import { Page } from '~/interfaces/page';
 
@@ -12,8 +11,8 @@ import { useStaticSWR } from './use-static-swr';
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const usePageSWR = (path, initialData?: any): responseInterface<Page, Error> => {
   return useSWR(
-    ['/pages.get', path],
-    (endpoint, path) => apiGet(endpoint, { path }).then(result => result.page),
+    ['/page', path],
+    (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.page),
     {
       initialData,
       revalidateOnFocus: false,
@@ -27,7 +26,7 @@ export const useCurrentPageSWR = (initialData?: any): responseInterface<Page, Er
   const { data: currentPagePath } = useCurrentPagePath();
 
   if (initialData != null) {
-    mutate(['/pages.get', currentPagePath], initialData, false);
+    mutate(['/page', currentPagePath], initialData, false);
   }
 
   return usePageSWR(currentPagePath);
