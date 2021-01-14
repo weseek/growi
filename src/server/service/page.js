@@ -297,23 +297,35 @@ class PageService {
       .pipe(writeStream);
   }
 
-  async revertDeletedDescendants(pages, user, options = {}) {
+  async revertDeletedPages(pages, user, options = {}) {
     const Page = this.crowi.model('Page');
     const pageCollection = mongoose.connection.collection('pages');
+    const revisionCollection = mongoose.connection.collection('revisions');
+
     const removePageBulkOp = pageCollection.initializeUnorderedBulkOp();
-    // const revertPageBulkOp = pageCollection.initializeUnorderedBulkOp();
+    const revertPageBulkOp = pageCollection.initializeUnorderedBulkOp();
+    const revertRevisionBulkOp = revisionCollection.initializeUnorderedBulkOp();
+
     pages.forEach((page) => {
 
-      // e.g. fromPath = /trash/test, toPath = /test
-      // const fromPath = page.path;
+      // e.g. page.path = /trash/test, toPath = /test
       const toPath = Page.getRevertDeletedPageName(page.path);
 
-      console.log(toPath);
       removePageBulkOp.find({ path: toPath, redirectTo: page.path }).remove();
-      // this.revertDeletedPage(page, user, options);
+      revertPageBulkOp.find({ _id: page._id }).update({ $set: { path: toPath, status: STATUS_PUBLISHED, lastUpdateUser: user } });
+      revertRevisionBulkOp.find({ path: page.path }).update({ $set: { path: toPath } }, { multi: true });
     });
 
-    await removePageBulkOp.execute();
+    try {
+      await removePageBulkOp.execute();
+      await revertPageBulkOp.execute();
+      await revertRevisionBulkOp.execute();
+    }
+    catch (err) {
+      if (err.code !== 11000) {
+        throw new Error('Failed to revert pages: ', err);
+      }
+    }
   }
 
   async revertDeletedPage(page, user, options = {}, isRecursively = false) {
@@ -356,14 +368,14 @@ class PageService {
       .lean()
       .cursor();
 
-    const revertDeletedDescendants = this.revertDeletedDescendants.bind(this);
+    const revertDeletedPages = this.revertDeletedPages.bind(this);
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
       async write(batch, encoding, callback) {
         try {
           count += batch.length;
-          revertDeletedDescendants(batch);
+          revertDeletedPages(batch);
           logger.debug(`Reverting pages progressing: (count=${count})`);
         }
         catch (err) {
