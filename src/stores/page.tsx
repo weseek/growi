@@ -12,7 +12,7 @@ import { useStaticSWR } from './use-static-swr';
 export const usePageSWR = (path, initialData?: any): responseInterface<Page, Error> => {
   return useSWR(
     ['/page', path],
-    (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.page),
+    (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.page),
     {
       initialData,
       revalidateOnFocus: false,
