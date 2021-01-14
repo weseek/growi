@@ -136,8 +136,8 @@ module.exports = (crowi) => {
 
   const validator = {
     getPage: [
-      query('pagePath').if(value => value != null).isString(),
       query('pageId').if(value => value != null).isMongoId(),
+      query('pagePath').if(value => value != null).isString(),
     ],
     likes: [
       body('pageId').isString(),
@@ -175,16 +175,16 @@ module.exports = (crowi) => {
    *        summary: /page
    *        description: get page by pagePath or pageId
    *        parameters:
-   *          - name: pagePath
-   *            in: query
-   *            description: page path
-   *            schema:
-   *              type: string
    *          - name: pageId
    *            in: query
    *            description: page id
    *            schema:
-   *              type: string
+   *              $ref: '#/components/schemas/Page/properties/_id'
+   *          - name: pagePath
+   *            in: query
+   *            description: page path
+   *            schema:
+   *              $ref: '#/components/schemas/Page/properties/path'
    *        responses:
    *          200:
    *            description: Page data
@@ -194,7 +194,7 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/Page'
    */
   router.get('/', accessTokenParser, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
-    const { pagePath, pageId } = req.query;
+    const { pageId, pagePath } = req.query;
 
     if (pageId == null && pagePath == null) {
       return res.apiv3Err(new ErrorV3('Parameter pagePath or pageId is required.', 'invalid-request'));
@@ -218,7 +218,7 @@ module.exports = (crowi) => {
 
     if (page == null) {
       try {
-        const isExist = await Page.count({ $or: [{ path: pagePath, _id: pageId }] }) > 0;
+        const isExist = await Page.count({ $or: [{ _id: pageId, path: pagePath }] }) > 0;
         result.isForbidden = isExist;
         result.isNotFound = !isExist;
       }
