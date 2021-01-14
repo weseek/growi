@@ -158,12 +158,12 @@ export default class PageContainer extends Container {
    * whether to display reaction buttons
    * ex.) like, bookmark
    */
-  get isAbleToShowPageReactionButtons() {
-    const { isTrashPage, isPageExist } = this.state;
-    const { isSharedUser } = this.appContainer;
+  // get isAbleToShowPageReactionButtons() {
+  //   const { isTrashPage, isPageExist } = this.state;
+  //   const { isSharedUser } = this.appContainer;
 
-    return (!isTrashPage && isPageExist && !isSharedUser);
-  }
+  //   return (!isTrashPage && isPageExist && !isSharedUser);
+  // }
 
   /**
    * whether to display tag labels
@@ -227,24 +227,24 @@ export default class PageContainer extends Container {
    * whether to Empty Trash Page
    * not displayed when guest user and not on trash page
    */
-  get isAbleToShowEmptyTrashButton() {
-    const { currentUser } = this.appContainer;
-    const { path, hasChildren } = this.state;
+  // get isAbleToShowEmptyTrashButton() {
+  //   const { currentUser } = this.appContainer;
+  //   const { path, hasChildren } = this.state;
 
-    return (currentUser != null && currentUser.admin && path === '/trash' && hasChildren);
-  }
+  //   return (currentUser != null && currentUser.admin && path === '/trash' && hasChildren);
+  // }
 
   /**
    * whether to display trash management buttons
    * ex.) undo, delete completly
    * not displayed when guest user
    */
-  get isAbleToShowTrashPageManagementButtons() {
-    const { currentUser } = this.appContainer;
-    const { isDeleted } = this.state;
+  // get isAbleToShowTrashPageManagementButtons() {
+  //   const { currentUser } = this.appContainer;
+  //   const { isDeleted } = this.state;
 
-    return (isDeleted && currentUser != null);
-  }
+  //   return (isDeleted && currentUser != null);
+  // }
 
   /**
    * initialize state for markdown data
