@@ -297,22 +297,23 @@ class PageService {
       .pipe(writeStream);
   }
 
-  async revertDeletedDescendants(targetPage, user, options = {}) {
+  async revertDeletedDescendants(pages, user, options = {}) {
     const Page = this.crowi.model('Page');
-    const findOpts = { includeTrashed: true };
-    const pages = await Page.findManageableListWithDescendants(targetPage, user, findOpts);
+    const pageCollection = mongoose.connection.collection('pages');
+    const removePageBulkOp = pageCollection.initializeUnorderedBulkOp();
+    // const revertPageBulkOp = pageCollection.initializeUnorderedBulkOp();
+    pages.forEach((page) => {
 
-    let updatedPage = null;
-    await Promise.all(pages.map((page) => {
-      const isParent = (page.path === targetPage.path);
-      const p = this.revertDeletedPages(page, user, options);
-      if (isParent) {
-        updatedPage = p;
-      }
-      return p;
-    }));
+      // e.g. fromPath = /trash/test, toPath = /test
+      // const fromPath = page.path;
+      const toPath = Page.getRevertDeletedPageName(page.path);
 
-    return updatedPage;
+      console.log(toPath);
+      removePageBulkOp.find({ path: toPath, redirectTo: page.path }).remove();
+      // this.revertDeletedPage(page, user, options);
+    });
+
+    await removePageBulkOp.execute();
   }
 
   async revertDeletedPage(page, user, options = {}, isRecursively = false) {
@@ -355,14 +356,14 @@ class PageService {
       .lean()
       .cursor();
 
-    // const deleteMultipleCompletely = this.deleteMultipleCompletely.bind(this);
+    const revertDeletedDescendants = this.revertDeletedDescendants.bind(this);
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
       async write(batch, encoding, callback) {
         try {
           count += batch.length;
-          console.log(batch);
+          revertDeletedDescendants(batch);
           logger.debug(`Reverting pages progressing: (count=${count})`);
         }
         catch (err) {
