@@ -306,11 +306,12 @@ class PageService {
     const revertPageBulkOp = pageCollection.initializeUnorderedBulkOp();
     const revertRevisionBulkOp = revisionCollection.initializeUnorderedBulkOp();
 
+    // e.g. key: '/test'
     const pathToPageMapping = {};
     const toPaths = pages.map(page => Page.getRevertDeletedPageName(page.path));
     const toPages = await Page.find({ path: { $in: toPaths } });
     toPages.forEach((toPage) => {
-      pathToPageMapping[toPage.redirectTo] = toPage;
+      pathToPageMapping[toPage.path] = toPage;
     });
 
     pages.forEach((page) => {
