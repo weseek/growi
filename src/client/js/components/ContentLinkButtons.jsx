@@ -63,7 +63,7 @@ const CommentLinkButton = (props) => {
     <div className="mt-3">
       <button
         type="button"
-        className="btn btn-outline-secondary btn-sm w-100"
+        className="btn btn-outline-secondary btn-sm btn-block"
         onClick={() => navigationContainer.smoothScrollIntoView(getCommentListDom, WIKI_HEADER_LINK)}
       >
         <i className="mr-2 icon-fw icon-bubbles"></i>
