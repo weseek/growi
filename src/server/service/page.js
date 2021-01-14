@@ -307,14 +307,6 @@ class PageService {
     const pathRegExp = new RegExp(`^${escapeStringRegexp(newPath)}`, 'i');
     const findOpts = { includeTrashed: true };
     const pages = await Page.findManageableListWithDescendants(targetPage, user, findOpts);
-    const originPages = await Page.find({ path: pathRegExp }).sort({ _id: 1 });
-
-
-    const newOldMapping = {};
-    pages.forEach((page) => {
-      newOldMapping[page.path] = Page.getRevertDeletedPageName(page.path);
-    });
-    console.log(newOldMapping);
 
     // create bulk to delete redirectTo pages at high speed
     const pageCollection = mongoose.connection.collection('pages');
@@ -322,16 +314,28 @@ class PageService {
     const unorderedBulkOp = pageCollection.initializeUnorderedBulkOp();
     const revisionUnorderedBulkOp = revisionCollection.initializeUnorderedBulkOp();
 
-    for (let i = 0; i < pages.length; i++) {
+    const originPages = await Page.find({ path: { $in: pathRegExp } });
 
-      if (originPages[i] != null) {
-        if (originPages[i].redirectTo !== pages[i].path) {
-          throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
+    const pathOriginMappings = {};
+    pages.forEach((page) => {
+      pathOriginMappings[page.path] = originPages;
+
+      pathOriginMappings[page.path].forEach((pathOriginMapping) => {
+        const originRegex = new RegExp(`^${escapeStringRegexp(page.path)}$`, 'i');
+        pathOriginMappings[page.path] = pathOriginMapping.redirectTo.match(originRegex);
+
+        if (pathOriginMapping[page.path] != null) {
+          if (pathOriginMapping[page.path] !== page.path) {
+            throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
+          }
         }
-      }
-      unorderedBulkOp.find({ _id: originPages[i]._id }).remove();
-      revisionUnorderedBulkOp.find({ path: originPages[i].path }).remove();
-    }
+
+        unorderedBulkOp.find({ redirectTo: pathOriginMapping.redirectTo }).remove();
+        revisionUnorderedBulkOp.find({ path: pathOriginMapping.path }).remove();
+      });
+
+
+    });
 
     try {
       await unorderedBulkOp.execute();
