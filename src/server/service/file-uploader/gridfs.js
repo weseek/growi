@@ -43,6 +43,12 @@ module.exports = function(crowi) {
     return AttachmentFile.promisifiedUnlink({ _id: attachmentFile._id });
   };
 
+  lib.deleteFiles = async function(attachments) {
+    attachments.map(async(attachment) => {
+      return lib.deleteFile(attachment);
+    });
+  };
+
   /**
    * get size of data uploaded files using (Promise wrapper)
    */

@@ -92,6 +92,12 @@ module.exports = function(crowi) {
     return lib.deleteFileByFilePath(filePath);
   };
 
+  lib.deleteFiles = async function(attachments) {
+    attachments.map((attachment) => {
+      return this.deleteFile(attachment);
+    });
+  };
+
   lib.deleteFileByFilePath = async function(filePath) {
     if (!this.getIsUploadable()) {
       throw new Error('GCS is not configured.');
