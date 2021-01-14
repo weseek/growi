@@ -311,14 +311,16 @@ class PageService {
       // e.g. page.path = /trash/test, toPath = /test
       const toPath = Page.getRevertDeletedPageName(page.path);
 
+      if (pathRedirectToMapping[toPath] != null) {
       // When the page is deleted, it will always be created with "redirectTo" in the path of the original page.
       // So, it's ok to delete the page
       // However, If a page exists that is not "redirectTo", something is wrong. (Data correction is needed).
-      if (pathRedirectToMapping[toPath] === page.path) {
-        removePageBulkOp.find({ path: toPath, redirectTo: page.path }).remove();
-        revertPageBulkOp.find({ _id: page._id }).update({ $set: { path: toPath, status: STATUS_PUBLISHED, lastUpdateUser: user._id } });
-        revertRevisionBulkOp.find({ path: page.path }).update({ $set: { path: toPath } }, { multi: true });
+        if (pathRedirectToMapping[toPath] === page.path) {
+          removePageBulkOp.find({ path: toPath, redirectTo: page.path }).remove();
+        }
       }
+      revertPageBulkOp.find({ _id: page._id }).update({ $set: { path: toPath, status: STATUS_PUBLISHED, lastUpdateUser: user._id } });
+      revertRevisionBulkOp.find({ path: page.path }).update({ $set: { path: toPath } }, { multi: true });
     });
 
     try {
