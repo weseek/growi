@@ -297,7 +297,7 @@ class PageService {
       .pipe(writeStream);
   }
 
-  async revertDeletedPageRecursively(targetPage, user, options = {}) {
+  async revertDeletedDescendants(targetPage, user, options = {}) {
     const Page = this.crowi.model('Page');
     const findOpts = { includeTrashed: true };
     const pages = await Page.findManageableListWithDescendants(targetPage, user, findOpts);
@@ -315,30 +315,7 @@ class PageService {
     return updatedPage;
   }
 
-  // revert pages recursively
-  async revertDeletedPages(page, user, options = {}) {
-    const Page = this.crowi.model('Page');
-    const newPath = Page.getRevertDeletedPageName(page.path);
-    const originPage = await Page.findByPath(newPath);
-    if (originPage != null) {
-    // When the page is deleted, it will always be created with "redirectTo" in the path of the original page.
-    // So, it's ok to delete the page
-    // However, If a page exists that is not "redirectTo", something is wrong. (Data correction is needed).
-      if (originPage.redirectTo !== page.path) {
-        throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
-      }
-      // originPage is object.
-      await this.deleteMultiplePagesCompletely([originPage], options);
-    }
-
-    page.status = STATUS_PUBLISHED;
-    page.lastUpdateUser = user;
-    debug('Revert deleted the page', page, newPath);
-    const updatedPage = await Page.rename(page, newPath, user, {});
-    return updatedPage;
-  }
-
-  async revertSingleDeletedPage(page, user, options = {}) {
+  async revertDeletedPage(page, user, options = {}, isRecursively = false) {
     const Page = this.crowi.model('Page');
     const newPath = Page.getRevertDeletedPageName(page.path);
     const originPage = await Page.findByPath(newPath);
@@ -352,12 +329,60 @@ class PageService {
       await this.deleteCompletely(originPage, options);
     }
 
+    if (isRecursively) {
+      this.revertDeletedDescendantsWithStream(page, user, options);
+    }
+
     page.status = STATUS_PUBLISHED;
     page.lastUpdateUser = user;
     debug('Revert deleted the page', page, newPath);
     const updatedPage = await Page.rename(page, newPath, user, {});
     return updatedPage;
   }
+
+  /**
+   * Create revert stream
+   */
+  async revertDeletedDescendantsWithStream(targetPage, user, options = {}) {
+    const Page = this.crowi.model('Page');
+    const { PageQueryBuilder } = Page;
+
+    const readStream = new PageQueryBuilder(Page.find())
+      .addConditionToExcludeRedirect()
+      .addConditionToListOnlyDescendants(targetPage.path)
+      .addConditionToFilteringByViewer(user)
+      .query
+      .lean()
+      .cursor();
+
+    // const deleteMultipleCompletely = this.deleteMultipleCompletely.bind(this);
+    let count = 0;
+    const writeStream = new Writable({
+      objectMode: true,
+      async write(batch, encoding, callback) {
+        try {
+          count += batch.length;
+          console.log(batch);
+          logger.debug(`Reverting pages progressing: (count=${count})`);
+        }
+        catch (err) {
+          logger.error('revertPages error on add anyway: ', err);
+        }
+
+        callback();
+      },
+      final(callback) {
+        logger.debug(`Reverting pages has completed: (totalCount=${count})`);
+
+        callback();
+      },
+    });
+
+    readStream
+      .pipe(createBatchStream(BULK_REINDEX_SIZE))
+      .pipe(writeStream);
+  }
+
 
   async handlePrivatePagesForDeletedGroup(deletedGroup, action, transferToUserGroupId) {
     const Page = this.crowi.model('Page');
