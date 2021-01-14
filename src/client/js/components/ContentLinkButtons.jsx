@@ -16,37 +16,44 @@ const WIKI_HEADER_LINK = 120;
  * @author Yuki Takei <yuki@weseek.co.jp>
  *
  */
-// const ContentLinkButtons = (props) => {
+const ContentLinkButtons = (props) => {
 
-//   const { navigationContainer } = props;
+  const { navigationContainer } = props;
 
-//   // get element for smoothScroll
-// const getBookMarkListHeaderDom = useMemo(() => { return document.getElementById('bookmarks-list') }, []);
-// const getRecentlyCreatedListHeaderDom = useMemo(() => { return document.getElementById('recently-created-list') }, []);
+  // get element for smoothScroll
+  const getBookMarkListHeaderDom = useMemo(() => { return document.getElementById('bookmarks-list') }, []);
+  const getRecentlyCreatedListHeaderDom = useMemo(() => { return document.getElementById('recently-created-list') }, []);
 
 
-//   return (
-//     <div className="mt-3 d-flex justify-content-between">
-//       <button
-//         type="button"
-//         className="btn btn-outline-secondary btn-sm"
-//         onClick={() => navigationContainer.smoothScrollIntoView(getBookMarkListHeaderDom, WIKI_HEADER_LINK)}
-//       >
-//         <i className="mr-2 icon-star"></i>
-//         <span>Bookmarks</span>
-//       </button>
-//       <button
-//         type="button"
-//         className="btn btn-outline-secondary btn-sm"
-//         onClick={() => navigationContainer.smoothScrollIntoView(getRecentlyCreatedListHeaderDom, WIKI_HEADER_LINK)}
-//       >
-//         <i className="grw-icon-container-recently-created mr-2"><RecentlyCreatedIcon /></i>
-//         <span>Recently Created</span>
-//       </button>
-//     </div>
-//   );
+  return (
+    <div className="mt-3 d-flex justify-content-between">
+      <button
+        type="button"
+        className="btn btn-outline-secondary btn-sm"
+        onClick={() => navigationContainer.smoothScrollIntoView(getBookMarkListHeaderDom, WIKI_HEADER_LINK)}
+      >
+        <i className="mr-2 icon-star"></i>
+        <span>Bookmarks</span>
+      </button>
+      <button
+        type="button"
+        className="btn btn-outline-secondary btn-sm"
+        onClick={() => navigationContainer.smoothScrollIntoView(getRecentlyCreatedListHeaderDom, WIKI_HEADER_LINK)}
+      >
+        <i className="grw-icon-container-recently-created mr-2"><RecentlyCreatedIcon /></i>
+        <span>Recently Created</span>
+      </button>
+    </div>
+  );
 
-// };
+};
+
+ContentLinkButtons.propTypes = {
+  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
+};
+
+const ContentLinkButtonsWrapper = withUnstatedContainers(ContentLinkButtons, [NavigationContainer]);
+export { ContentLinkButtonsWrapper };
 
 
 const CommentLinkButton = (props) => {
@@ -76,50 +83,3 @@ CommentLinkButton.propTypes = {
 
 const CommentLinkButtonWrapper = withUnstatedContainers(CommentLinkButton, [NavigationContainer]);
 export { CommentLinkButtonWrapper };
-
-const BookMarkListLinkButton = (props) => {
-  const getBookMarkListHeaderDom = useMemo(() => { return document.getElementById('bookmarks-list') }, []);
-  const { navigationContainer } = props;
-
-  return (
-    <button
-      type="button"
-      className="btn btn-outline-secondary btn-sm"
-      onClick={() => navigationContainer.smoothScrollIntoView(getBookMarkListHeaderDom, WIKI_HEADER_LINK)}
-    >
-      <i className="mr-2 icon-star"></i>
-      <span>Bookmarks</span>
-    </button>
-  );
-};
-
-BookMarkListLinkButton.propTypes = {
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
-};
-
-const BookMarkListLinkButtonWrapper = withUnstatedContainers(BookMarkListLinkButton, [NavigationContainer]);
-export { BookMarkListLinkButtonWrapper };
-
-
-const RecentlyCreatedLinkButton = (props) => {
-  const getRecentlyCreatedListHeaderDom = useMemo(() => { return document.getElementById('recently-created-list') }, []);
-  const { navigationContainer } = props;
-
-  return (
-    <button
-      type="button"
-      className="btn btn-outline-secondary btn-sm"
-      onClick={() => navigationContainer.smoothScrollIntoView(getRecentlyCreatedListHeaderDom, WIKI_HEADER_LINK)}
-    >
-      <i className="grw-icon-container-recently-created mr-2"><RecentlyCreatedIcon /></i>
-      <span>Recently Created</span>
-    </button>
-  );
-};
-
-RecentlyCreatedLinkButton.propTypes = {
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
-};
-
-const RecentlyCreatedLinkButtonWrapper = withUnstatedContainers(RecentlyCreatedLinkButton, [NavigationContainer]);
-export { RecentlyCreatedLinkButtonWrapper };
