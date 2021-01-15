@@ -10,6 +10,7 @@ import SearchPage from './components/SearchPage';
 import TagsList from './components/TagsList';
 import DisplaySwitcher from './components/Page/DisplaySwitcher';
 import { defaultEditorOptions, defaultPreviewOptions } from './components/PageEditor/OptionsSelector';
+import ShortcutsModal from './components/ShortcutsModal';
 import Page from './components/Page';
 import PageComments from './components/PageComments';
 import PageContentFooter from './components/PageContentFooter';
@@ -101,6 +102,8 @@ Object.assign(componentMappings, {
   'grw-fab-container': <Fab />,
 
   'share-link-alert': <ShareLinkAlert />,
+
+  'shortcuts-modal-btn': <ShortcutsModal />,
 });
 
 // additional definitions if data exists
