@@ -619,7 +619,7 @@ module.exports = (crowi) => {
    *    /pages/descendants-count:
    *      get:
    *        tags: [Pages]
-   *        operationId: descendantsCcount
+   *        operationId: descendantsCount
    *        description: Get descendants pages count
    *        parameters:
    *          - name: path
@@ -644,11 +644,8 @@ module.exports = (crowi) => {
     const { path } = req.query;
 
     try {
-      const page = await Page.findByPath(path);
-      const pages = await Page.findManageableListWithDescendants(page, req.user);
-      const result = pages.length;
-
-      return res.apiv3({ descendentsCount: result });
+      const descendentsCount = await Page.countManageableListWithDescendants(path, req.user);
+      return res.apiv3({ descendentsCount });
     }
     catch (err) {
       return res.apiv3Err(new ErrorV3('Failed to get descendants pages count.', err), 500);
