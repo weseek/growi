@@ -702,6 +702,19 @@ module.exports = function(crowi) {
 
     return pages;
   };
+  pageSchema.statics.countManageableListWithDescendants = async function(path, user, option = {}) {
+    if (user == null) {
+      return null;
+    }
+
+    const queryBuilder = new PageQueryBuilder(this.count());
+    queryBuilder.addConditionToListOnlyDescendants(path, option);
+    queryBuilder.addConditionToExcludeRedirect();
+
+    const count = await queryBuilder.query.exec();
+
+    return count;
+  };
 
   /**
    * find pages that start with `path`
