@@ -48,14 +48,16 @@ class AttachmentService {
     const attachmentsCollection = mongoose.connection.collection('attachments');
     const unorderAttachmentsBulkOp = attachmentsCollection.initializeUnorderedBulkOp();
 
-    if (attachments.length > 0) {
-      fileUploadService.deleteFiles(attachments);
-
-      attachments.forEach((attachment) => {
-        unorderAttachmentsBulkOp.find({ _id: attachment._id }).remove();
-      });
-      await unorderAttachmentsBulkOp.execute();
+    if (attachments.length === 0) {
+      return;
     }
+
+    fileUploadService.deleteFiles(attachments);
+
+    attachments.forEach((attachment) => {
+      unorderAttachmentsBulkOp.find({ _id: attachment._id }).remove();
+    });
+    await unorderAttachmentsBulkOp.execute();
 
     return;
   }
