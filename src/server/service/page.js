@@ -94,6 +94,10 @@ class PageService {
     return newParentpage;
   }
 
+  async retrievePageInfo() {
+    return;
+  }
+
 
 }
 
