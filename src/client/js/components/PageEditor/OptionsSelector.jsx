@@ -49,6 +49,7 @@ class OptionsSelector extends React.Component {
     this.onChangeKeymapMode = this.onChangeKeymapMode.bind(this);
     this.onClickStyleActiveLine = this.onClickStyleActiveLine.bind(this);
     this.onClickRenderMathJaxInRealtime = this.onClickRenderMathJaxInRealtime.bind(this);
+    this.onClickReformMarkdownTable = this.onClickReformMarkdownTable.bind(this);
     this.onToggleConfigurationDropdown = this.onToggleConfigurationDropdown.bind(this);
   }
 
@@ -92,6 +93,17 @@ class OptionsSelector extends React.Component {
     const newValue = !editorContainer.state.previewOptions.renderMathJaxInRealtime;
     const newOpts = Object.assign(editorContainer.state.previewOptions, { renderMathJaxInRealtime: newValue });
     editorContainer.setState({ previewOptions: newOpts });
+
+    // save to localStorage
+    editorContainer.saveOptsToLocalStorage();
+  }
+
+  onClickReformMarkdownTable(event_unused) {
+    const { editorContainer } = this.props;
+
+    const newValue = !editorContainer.state.editorOptions.reformMarkdownTable;
+    const newOpts = Object.assign(editorContainer.state.editorOptions, { reformMarkdownTable: newValue });
+    editorContainer.setState({ editorOptions: newOpts });
 
     // save to localStorage
     editorContainer.saveOptsToLocalStorage();
@@ -187,6 +199,7 @@ class OptionsSelector extends React.Component {
           <DropdownMenu>
             {this.renderActiveLineMenuItem()}
             {this.renderRealtimeMathJaxMenuItem()}
+            {this.renderReformMarkdownTableMenuItem()}
             {/* <DropdownItem divider /> */}
           </DropdownMenu>
 
@@ -238,6 +251,27 @@ class OptionsSelector extends React.Component {
         <div className="d-flex justify-content-between">
           <span className="icon-container"><img src="/images/icons/fx.svg" width="14px" alt="fx"></img></span>
           <span className="menuitem-label">MathJax Rendering</span>
+          <span className="icon-container"><i className={iconClassName}></i></span>
+        </div>
+      </DropdownItem>
+    );
+  }
+
+  renderReformMarkdownTableMenuItem() {
+    const { t, editorContainer } = this.props;
+    const isActive = editorContainer.state.editorOptions.reformMarkdownTable;
+
+    const iconClasses = ['text-info'];
+    if (isActive) {
+      iconClasses.push('ti-check');
+    }
+    const iconClassName = iconClasses.join(' ');
+
+    return (
+      <DropdownItem toggle={false} onClick={this.onClickReformMarkdownTable}>
+        <div className="d-flex justify-content-between">
+          <span className="icon-container"></span>
+          <span className="menuitem-label">{ t('page_edit.formatting_a_markdown_table') }</span>
           <span className="icon-container"><i className={iconClassName}></i></span>
         </div>
       </DropdownItem>
