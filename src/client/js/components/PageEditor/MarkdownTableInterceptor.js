@@ -56,9 +56,10 @@ export default class MarkdownTableInterceptor extends BasicInterceptor {
   async process(contextName, ...args) {
     const context = Object.assign(args[0]); // clone
     const editor = context.editor; // AbstractEditor instance
+    const noIntercept = (context.editorOption.formattingMarkdownTable !== true);
 
-    // do nothing if editor is not a CodeMirrorEditor
-    if (editor == null || editor.getCodeMirror() == null) {
+    // do nothing if editor is not a CodeMirrorEditor or no intercept
+    if (editor == null || editor.getCodeMirror() == null || noIntercept) {
       return context;
     }
 

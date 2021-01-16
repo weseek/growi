@@ -441,6 +441,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const context = {
       handlers: [], // list of handlers which process enter key
       editor: this,
+      editorOption: this.props.editorOptions,
     };
 
     const interceptorManager = this.interceptorManager;
