@@ -156,9 +156,13 @@ export default class HandsontableModal extends React.PureComponent {
   }
 
   save() {
+    const markdownTableOption = Object.assign(
+      { align: [].concat(this.state.markdownTable.options.align) },
+      this.props.markdownTableAdditionalOption,
+    );
     const markdownTable = new MarkdownTable(
       this.hotTable.hotInstance.getData(),
-      { align: [].concat(this.state.markdownTable.options.align) },
+      markdownTableOption,
     ).normalizeCells();
 
     if (this.props.onSave != null) {
@@ -504,4 +508,5 @@ export default class HandsontableModal extends React.PureComponent {
 
 HandsontableModal.propTypes = {
   onSave: PropTypes.func,
+  markdownTableAdditionalOption: PropTypes.object,
 };
