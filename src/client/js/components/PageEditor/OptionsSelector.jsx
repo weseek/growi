@@ -98,7 +98,7 @@ class OptionsSelector extends React.Component {
     editorContainer.saveOptsToLocalStorage();
   }
 
-  onClickFormattingMarkdownTable(event_unused) {
+  onClickFormattingMarkdownTable(event) {
     const { editorContainer } = this.props;
 
     const newValue = !editorContainer.state.editorOptions.formattingMarkdownTable;
