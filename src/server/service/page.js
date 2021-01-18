@@ -4,6 +4,7 @@ const logger = require('@alias/logger')('growi:models:page');
 const debug = require('debug')('growi:models:page');
 const { Writable } = require('stream');
 const { createBatchStream } = require('@server/util/batch-stream');
+const { isTrashPage } = require('@commons/util/path-utils');
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 
 const STATUS_PUBLISHED = 'published';
@@ -199,6 +200,45 @@ class PageService {
       .pipe(createBatchStream(BULK_REINDEX_SIZE))
       .pipe(writeStream);
 
+  }
+
+
+  async deletePage(pageData, user, options = {}) {
+    const Page = this.crowi.model('Page');
+    const newPath = Page.getDeletedPageName(pageData.path);
+    const isTrashed = isTrashPage(pageData.path);
+
+    if (isTrashed) {
+      throw new Error('This method does NOT support deleting trashed pages.');
+    }
+
+    const socketClientId = options.socketClientId || null;
+    if (Page.isDeletableName(pageData.path)) {
+
+      pageData.status = Page.STATUS_DELETED;
+      const updatedPageData = await Page.rename(pageData, newPath, user, { socketClientId, createRedirectPage: true });
+
+      return updatedPageData;
+    }
+
+    return Promise.reject(new Error('Page is not deletable.'));
+  }
+
+  async deletePageRecursively(targetPage, user, options = {}) {
+    const Page = this.crowi.model('Page');
+
+    const isTrashed = isTrashPage(targetPage.path);
+    const newPath = Page.getDeletedPageName(targetPage.path);
+    if (isTrashed) {
+      throw new Error('This method does NOT supports deleting trashed pages.');
+    }
+
+    if (!Page.isDeletableName(targetPage.path)) {
+      throw new Error('Page is not deletable');
+    }
+    const socketClientId = options.socketClientId || null;
+    targetPage.status = Page.STATUS_DELETED;
+    return Page.renameRecursively(targetPage, newPath, user, { socketClientId, createRedirectPage: true });
   }
 
   // delete multiple pages

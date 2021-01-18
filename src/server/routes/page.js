@@ -1195,10 +1195,10 @@ module.exports = function(crowi, app) {
         }
 
         if (isRecursively) {
-          await Page.deletePageRecursively(page, req.user, options);
+          await crowi.pageService.deletePageRecursively(page, req.user, options);
         }
         else {
-          await Page.deletePage(page, req.user, options);
+          await crowi.pageService.deletePage(page, req.user, options);
         }
       }
     }
