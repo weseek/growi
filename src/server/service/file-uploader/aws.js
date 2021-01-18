@@ -116,9 +116,34 @@ module.exports = function(crowi) {
   };
 
   lib.deleteFiles = async function(attachments) {
-    attachments.map((attachment) => {
-      return this.deleteFile(attachment);
+    const s3 = S3Factory();
+    const awsConfig = getAwsConfig();
+
+    const filePaths = [];
+    attachments.forEach(attachment => filePaths.push(getFilePathOnStorage(attachment)));
+
+    const totalParams = {
+      Bucket: awsConfig.bucket,
+      Delete: { Objects: [] },
+    };
+
+    const Objects = [];
+    filePaths.forEach((filePath) => {
+      Objects.push({ Key: filePath });
     });
+
+    Objects.forEach((object) => {
+      totalParams.Delete.Objects.push(object);
+    });
+    console.log(Objects);
+
+    console.log(totalParams);
+
+    return s3.deleteObjects(totalParams).promise();
+
+    // attachments.map((attachment) => {
+    //   return this.deleteFile(attachment);
+    // });
   };
 
   lib.deleteFileByFilePath = async function(filePath) {
