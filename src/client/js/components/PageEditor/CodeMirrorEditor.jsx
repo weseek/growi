@@ -441,6 +441,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const context = {
       handlers: [], // list of handlers which process enter key
       editor: this,
+      editorOptions: this.props.editorOptions,
     };
 
     const interceptorManager = this.interceptorManager;
@@ -898,6 +899,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         <HandsontableModal
           ref={this.handsontableModal}
           onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }}
+          ignoreAutoFormatting={this.props.editorOptions.ignoreMarkdownTableAutoFormatting}
         />
         <DrawioModal
           ref={this.drawioModal}
