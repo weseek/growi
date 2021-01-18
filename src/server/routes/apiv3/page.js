@@ -217,29 +217,8 @@ module.exports = (crowi) => {
     const result = {};
 
     if (page == null) {
-      try {
-        const isExist = await Page.count({ $or: [{ _id: pageId, path }] }) > 0;
-        result.isForbidden = isExist;
-        result.isNotFound = !isExist;
-      }
-      catch (err) {
-        logger.error('get-page-count-failed', err);
-        return res.apiv3Err(err, 500);
-      }
-
-      result.isCreatable = isCreatablePage(path);
-      result.isDeletable = false;
-      result.canDeleteCompletely = false;
-
       return res.apiv3(result);
     }
-
-    result.isForbidden = false;
-    result.isNotFound = false;
-    result.isCreatable = false;
-    result.isDeletable = isDeletablePage(path);
-    result.isDeleted = page.isDeleted();
-    result.canDeleteCompletely = req.user != null && req.user.canDeleteCompletely(page.creator);
 
     try {
       page.initLatestRevisionField();
