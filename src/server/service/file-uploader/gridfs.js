@@ -55,11 +55,10 @@ module.exports = function(crowi) {
     attachments.forEach(attachment => filenameValues.push(attachment.fileName));
     const attachmentFiles = await AttachmentFile.find({ filename: { $in: filenameValues } });
 
-    const attachmentFileIds = [];
-    attachmentFiles.forEach(attachmentFile => attachmentFileIds.push(attachmentFile._id));
-
-    attachmentFiles.forEach((attachmentFile) => { unorderFilesBulkOp.find({ filename: attachmentFile.filename }).remove() });
-    attachmentFileIds.forEach((attachmentFileId) => { unorderChunkBulkOp.find({ files_id: attachmentFileId }).remove() });
+    attachmentFiles.forEach((attachmentFile) => {
+      unorderFilesBulkOp.find({ filename: attachmentFile.filename }).remove();
+      unorderChunkBulkOp.find({ files_id: attachmentFile._id }).remove();
+    });
 
     await unorderFilesBulkOp.execute();
     await unorderChunkBulkOp.execute();
