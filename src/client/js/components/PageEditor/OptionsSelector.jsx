@@ -272,7 +272,7 @@ class OptionsSelector extends React.Component {
       <DropdownItem toggle={false} onClick={this.onClickMarkdownTableAutoFormatting}>
         <div className="d-flex justify-content-between">
           <span className="icon-container"></span>
-          <span className="menuitem-label">{ t('page_edit.formatting_a_markdown_table') }</span>
+          <span className="menuitem-label">{ t('page_edit.auto_format_table') }</span>
           <span className="icon-container"><i className={iconClassName}></i></span>
         </div>
       </DropdownItem>
