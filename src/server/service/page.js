@@ -95,14 +95,22 @@ class PageService {
     return newParentpage;
   }
 
-  async retrievePageInfo(path, user) {
+  async retrievePageInfo(path, user, pageId) {
 
     const Page = this.crowi.model('Page');
-    const page = await Page.findByPathAndViewer(path, user);
+
+    let page;
+    if (pageId != null) { // prioritized
+      page = await Page.findByIdAndViewer(pageId, user);
+    }
+    else {
+      page = await Page.findByPathAndViewer(path, user);
+    }
+
     const result = {};
 
     if (page == null) {
-      const isExist = await Page.count({ path }) > 0;
+      const isExist = await Page.count({ $or: [{ _id: pageId }, { path }] }) > 0;
       result.isForbidden = isExist;
       result.isNotFound = !isExist;
       result.isCreatable = isCreatablePage(path);

@@ -203,7 +203,7 @@ module.exports = (crowi) => {
 
     let result = {};
     try {
-      result = await pageService.retrievePageInfo(path, req.user);
+      result = await pageService.retrievePageInfo(path, req.user, pageId);
     }
     catch (err) {
       logger.error('get-page-failed', err);
