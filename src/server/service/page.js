@@ -92,6 +92,10 @@ class PageService {
     try {
       await unorderedBulkOp.execute();
       await revisionUnorderedBulkOp.execute();
+      // Execute after unorderedBulkOp to prevent duplication
+      if (createRedirectPage) {
+        await createRediectPageBulkOp.execute();
+      }
     }
     catch (err) {
       if (err.code !== 11000) {
@@ -99,17 +103,10 @@ class PageService {
       }
     }
 
-    // const newParentPath = path.replace(pathRegExp, newPagePathPrefix);
-    // const newParentPage = await this.findByPath(newParentPath);
-    // const renamedPages = await this.findManageableListWithDescendants(newParentPage, user, options);
+    const newParentPage = await this.findByPath(newPagePathPrefix);
+    const renamedPages = await this.findManageableListWithDescendants(newParentPage, user, options);
 
-    // this.pageEvent.emit('createMany', renamedPages, user, newParentPage);
-
-    // Execute after unorderedBulkOp to prevent duplication
-    if (createRedirectPage) {
-      await createRediectPageBulkOp.execute();
-    }
-
+    this.pageEvent.emit('createMany', renamedPages, user, newParentPage);
   }
 
   /**
