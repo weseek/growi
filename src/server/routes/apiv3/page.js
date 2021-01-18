@@ -7,7 +7,7 @@ const { body, query } = require('express-validator');
 
 const router = express.Router();
 
-const { isCreatablePage, isDeletablePage, convertToNewAffiliationPath } = require('~/utils/path-utils');
+const { convertToNewAffiliationPath } = require('~/utils/path-utils');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 
@@ -133,6 +133,7 @@ module.exports = (crowi) => {
   const globalNotificationService = crowi.getGlobalNotificationService();
   const { Page, GlobalNotificationSetting } = crowi.models;
   const { exportService } = crowi;
+  const { pageService } = crowi;
 
   const validator = {
     getPage: [
@@ -200,21 +201,16 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('Parameter pagePath or pageId is required.', 'invalid-request'));
     }
 
-    let page;
+    let result = {};
     try {
-      if (pageId != null) { // prioritized
-        page = await Page.findByIdAndViewer(pageId, req.user);
-      }
-      else if (path != null) {
-        page = await Page.findByPathAndViewer(path, req.user);
-      }
+      result = await pageService.retrievePageInfo(path, req.user);
     }
     catch (err) {
       logger.error('get-page-failed', err);
       return res.apiv3Err(err, 500);
     }
 
-    const result = {};
+    const page = result.page;
 
     if (page == null) {
       return res.apiv3(result);
@@ -224,8 +220,7 @@ module.exports = (crowi) => {
       page.initLatestRevisionField();
 
       // populate
-      page = await page.populateDataToShowRevision();
-      result.page = page;
+      result.page = await page.populateDataToShowRevision();
     }
     catch (err) {
       logger.error('populate-page-failed', err);
