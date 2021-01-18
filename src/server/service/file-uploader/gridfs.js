@@ -16,9 +16,7 @@ module.exports = function(crowi) {
     bucketName: COLLECTION_NAME,
     connection: mongoose.connection,
   });
-  // get Collection instance of chunk
-  const chunkCollection = mongoose.connection.collection(CHUNK_COLLECTION_NAME);
-  const filesCollection = mongoose.connection.collection(FILES_COLLECTION_NAME);
+
 
   // create promisified method
   AttachmentFile.promisifiedWrite = util.promisify(AttachmentFile.write).bind(AttachmentFile);
@@ -46,13 +44,27 @@ module.exports = function(crowi) {
   };
 
   lib.deleteFiles = async function(attachments) {
-    const unorderChunkBulkOp = chunkCollection.initializeUnOrderBulkOp();
-    const unorderFilesBulkOp = filesCollection.initializeOrderedBulkOp();
 
+    let filenameValues = [];
+    attachments.forEach((attachment) => { filenameValues = attachment.fileName });
+    const attachmentFiles = await AttachmentFile.find({ filename: { $in: filenameValues } });
 
-    // attachments.map(async(attachment) => {
-    //   return lib.deleteFile(attachment);
-    // });
+    let attachmentFileIds = [];
+    attachmentFiles.forEach((attachmentFile) => { attachmentFileIds = attachmentFile._id });
+
+    // get Collection instance of chunk
+    const filesCollection = mongoose.connection.collection(FILES_COLLECTION_NAME);
+    const chunkCollection = mongoose.connection.collection(CHUNK_COLLECTION_NAME);
+    const unorderFilesBulkOp = filesCollection.initializeUnorderedBulkOp();
+    const unorderChunkBulkOp = chunkCollection.initializeUnorderedBulkOp();
+
+    attachmentFiles.forEach((attachmentFile) => { unorderFilesBulkOp.find({ filename: attachmentFile.filename }).remove() });
+
+    console.log(attachmentFileIds);
+    [attachmentFileIds].forEach((attachmentFileId) => { unorderChunkBulkOp.find({ files_id: attachmentFileId }).remove() });
+
+    await unorderFilesBulkOp.execute();
+    await unorderChunkBulkOp.execute();
 
   };
 
