@@ -21,6 +21,41 @@ class PageService {
     this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
   }
 
+
+  async renamePage(pageData, newPagePath, user, options) {
+
+    const Page = this;
+    const Revision = this.crowi.model('Revision');
+    const path = pageData.path;
+    const createRedirectPage = options.createRedirectPage || false;
+    const updateMetadata = options.updateMetadata || false;
+    const socketClientId = options.socketClientId || null;
+
+    // sanitize path
+    newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
+
+    // update Page
+    pageData.path = newPagePath;
+    if (updateMetadata) {
+      pageData.lastUpdateUser = user;
+      pageData.updatedAt = Date.now();
+    }
+    const updatedPageData = await pageData.save();
+
+    // update Rivisions
+    await Revision.updateRevisionListByPath(path, { path: newPagePath }, {});
+
+    if (createRedirectPage) {
+      const body = `redirect ${newPagePath}`;
+      await Page.create(path, body, user, { redirectTo: newPagePath });
+    }
+
+    this.pageEvent.emit('delete', pageData, user, socketClientId);
+    this.pageEvent.emit('create', updatedPageData, user, socketClientId);
+
+    return updatedPageData;
+  }
+
   async deleteCompletelyOperation(pageIds, pagePaths) {
     // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
     const Bookmark = this.crowi.model('Bookmark');

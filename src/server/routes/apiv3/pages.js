@@ -400,7 +400,7 @@ module.exports = (crowi) => {
         page = await Page.renameRecursively(page, newPagePath, req.user, options);
       }
       else {
-        page = await Page.rename(page, newPagePath, req.user, options);
+        page = await crowi.pageService.rename(page, newPagePath, req.user, options);
       }
     }
     catch (err) {

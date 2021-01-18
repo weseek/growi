@@ -1133,41 +1133,6 @@ module.exports = function(crowi) {
     await this.removeRedirectOriginPageByPath(redirectPage.path);
   };
 
-  pageSchema.statics.rename = async function(pageData, newPagePath, user, options) {
-    validateCrowi();
-
-    const Page = this;
-    const Revision = crowi.model('Revision');
-    const path = pageData.path;
-    const createRedirectPage = options.createRedirectPage || false;
-    const updateMetadata = options.updateMetadata || false;
-    const socketClientId = options.socketClientId || null;
-
-    // sanitize path
-    newPagePath = crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
-
-    // update Page
-    pageData.path = newPagePath;
-    if (updateMetadata) {
-      pageData.lastUpdateUser = user;
-      pageData.updatedAt = Date.now();
-    }
-    const updatedPageData = await pageData.save();
-
-    // update Rivisions
-    await Revision.updateRevisionListByPath(path, { path: newPagePath }, {});
-
-    if (createRedirectPage) {
-      const body = `redirect ${newPagePath}`;
-      await Page.create(path, body, user, { redirectTo: newPagePath });
-    }
-
-    pageEvent.emit('delete', pageData, user, socketClientId);
-    pageEvent.emit('create', updatedPageData, user, socketClientId);
-
-    return updatedPageData;
-  };
-
   pageSchema.statics.renameRecursively = async function(targetPage, newPagePathPrefix, user, options) {
     validateCrowi();
 
