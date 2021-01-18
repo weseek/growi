@@ -41,7 +41,7 @@ class PageService {
       update.lastUpdateUser = user;
       update.updatedAt = Date.now();
     }
-    const updatedPageData = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
+    const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
 
     // update Rivisions
     await Revision.updateRevisionListByPath(path, { path: newPagePath }, {});
@@ -52,9 +52,9 @@ class PageService {
     }
 
     this.pageEvent.emit('delete', page, user, socketClientId);
-    this.pageEvent.emit('create', updatedPageData, user, socketClientId);
+    this.pageEvent.emit('create', renamedPage, user, socketClientId);
 
-    return updatedPageData;
+    return renamedPage;
   }
 
   async deleteCompletelyOperation(pageIds, pagePaths) {
