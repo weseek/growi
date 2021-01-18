@@ -133,7 +133,7 @@ class PageService {
       async write(batch, encoding, callback) {
         try {
           count += batch.length;
-          renameDescendants(batch, user, options, pathRegExp, newPagePathPrefix);
+          await renameDescendants(batch, user, options, pathRegExp, newPagePathPrefix);
           logger.debug(`Reverting pages progressing: (count=${count})`);
         }
         catch (err) {
