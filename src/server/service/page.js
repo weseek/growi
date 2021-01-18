@@ -4,15 +4,21 @@ const logger = require('@alias/logger')('growi:models:page');
 const debug = require('debug')('growi:models:page');
 const { Writable } = require('stream');
 const { createBatchStream } = require('@server/util/batch-stream');
+const { isTrashPage } = require('@commons/util/path-utils');
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 
-const STATUS_PUBLISHED = 'published';
 const BULK_REINDEX_SIZE = 100;
 
 class PageService {
 
   constructor(crowi) {
     this.crowi = crowi;
+    this.pageEvent = crowi.event('page');
+
+    // init
+    this.pageEvent.on('create', this.pageEvent.onCreate);
+    this.pageEvent.on('update', this.pageEvent.onUpdate);
+    this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
   }
 
   async deleteCompletelyOperation(pageIds, pagePaths) {
@@ -201,17 +207,126 @@ class PageService {
 
   }
 
-  // delete multiple pages
-  async deleteMultipleCompletely(pages, user, options = {}) {
-    this.validateCrowi();
-    let pageEvent;
-    // init event
-    if (this.crowi != null) {
-      pageEvent = this.crowi.event('page');
-      pageEvent.on('create', pageEvent.onCreate);
-      pageEvent.on('update', pageEvent.onUpdate);
+
+  async deletePage(page, user, options = {}, isRecursively = false) {
+    const Page = this.crowi.model('Page');
+    const Revision = this.crowi.model('Revision');
+
+    const newPath = Page.getDeletedPageName(page.path);
+    const isTrashed = isTrashPage(page.path);
+
+    if (isTrashed) {
+      throw new Error('This method does NOT support deleting trashed pages.');
     }
 
+    const socketClientId = options.socketClientId || null;
+    if (!Page.isDeletableName(page.path)) {
+      throw new Error('Page is not deletable.');
+    }
+
+    if (isRecursively) {
+      this.deleteDescendantsWithStream(page, user, options);
+    }
+
+    // update Rivisions
+    await Revision.updateRevisionListByPath(page.path, { path: newPath }, {});
+    const deletedPage = await Page.findByIdAndUpdate(page._id, { $set: { path: newPath, status: Page.STATUS_DELETED } }, { new: true });
+    const body = `redirect ${newPath}`;
+    await Page.create(page.path, body, user, { redirectTo: newPath });
+
+    this.pageEvent.emit('delete', page, user, socketClientId);
+    this.pageEvent.emit('create', deletedPage, user, socketClientId);
+
+    return deletedPage;
+  }
+
+  async deleteDescendants(pages, user) {
+    const Page = this.crowi.model('Page');
+
+    const pageCollection = mongoose.connection.collection('pages');
+    const revisionCollection = mongoose.connection.collection('revisions');
+
+    const deletePageBulkOp = pageCollection.initializeUnorderedBulkOp();
+    const updateRevisionListOp = revisionCollection.initializeUnorderedBulkOp();
+    const newPagesForRedirect = [];
+
+    pages.forEach((page) => {
+      const newPath = Page.getDeletedPageName(page.path);
+      const body = `redirect ${newPath}`;
+
+      deletePageBulkOp.find({ _id: page._id }).update({ $set: { path: newPath, status: Page.STATUS_DELETED, lastUpdateUser: user._id } });
+      updateRevisionListOp.find({ path: page.path }).update({ $set: { path: newPath } });
+
+      newPagesForRedirect.push({
+        path: page.path,
+        body,
+        creator: user._id,
+        grant: page.grant,
+        grantedGroup: page.grantedGroup,
+        grantedUsers: page.grantedUsers,
+        lastUpdateUser: user._id,
+        redirectTo: newPath,
+        revision: null,
+      });
+    });
+
+    try {
+      await deletePageBulkOp.execute();
+      await updateRevisionListOp.execute();
+      await Page.insertMany(newPagesForRedirect, { ordered: false });
+    }
+    catch (err) {
+      if (err.code !== 11000) {
+        throw new Error('Failed to revert pages: ', err);
+      }
+    }
+  }
+
+  /**
+   * Create delete stream
+   */
+  async deleteDescendantsWithStream(targetPage, user, options = {}) {
+    const Page = this.crowi.model('Page');
+    const { PageQueryBuilder } = Page;
+
+    const readStream = new PageQueryBuilder(Page.find())
+      .addConditionToExcludeRedirect()
+      .addConditionToListOnlyDescendants(targetPage.path)
+      .addConditionToFilteringByViewer(user)
+      .query
+      .lean()
+      .cursor();
+
+    const deleteDescendants = this.deleteDescendants.bind(this);
+    let count = 0;
+    const writeStream = new Writable({
+      objectMode: true,
+      async write(batch, encoding, callback) {
+        try {
+          count += batch.length;
+          deleteDescendants(batch, user);
+          logger.debug(`Reverting pages progressing: (count=${count})`);
+        }
+        catch (err) {
+          logger.error('revertPages error on add anyway: ', err);
+        }
+
+        callback();
+      },
+      final(callback) {
+        logger.debug(`Reverting pages has completed: (totalCount=${count})`);
+
+        callback();
+      },
+    });
+
+    readStream
+      .pipe(createBatchStream(BULK_REINDEX_SIZE))
+      .pipe(writeStream);
+  }
+
+  // delete multiple pages
+  async deleteMultipleCompletely(pages, user, options = {}) {
     const ids = pages.map(page => (page._id));
     const paths = pages.map(page => (page.path));
     const socketClientId = options.socketClientId || null;
@@ -221,21 +336,12 @@ class PageService {
     await this.deleteCompletelyOperation(ids, paths);
 
     if (socketClientId != null) {
-      pageEvent.emit('deleteCompletely', pages, user, socketClientId); // update as renamed page
+      this.pageEvent.emit('deleteCompletely', pages, user, socketClientId); // update as renamed page
     }
     return;
   }
 
   async deleteCompletely(page, user, options = {}, isRecursively = false) {
-    this.validateCrowi();
-    let pageEvent;
-    // init event
-    if (this.crowi != null) {
-      pageEvent = this.crowi.event('page');
-      pageEvent.on('create', pageEvent.onCreate);
-      pageEvent.on('update', pageEvent.onUpdate);
-    }
-
     const ids = [page._id];
     const paths = [page.path];
     const socketClientId = options.socketClientId || null;
@@ -245,19 +351,19 @@ class PageService {
     await this.deleteCompletelyOperation(ids, paths);
 
     if (isRecursively) {
-      this.deleteDescendantsWithStream(page, user, options);
+      this.deleteCompletelyDescendantsWithStream(page, user, options);
     }
 
     if (socketClientId != null) {
-      pageEvent.emit('delete', page, user, socketClientId); // update as renamed page
+      this.pageEvent.emit('delete', page, user, socketClientId); // update as renamed page
     }
     return;
   }
 
   /**
-   * Create delete stream
+   * Create delete completely stream
    */
-  async deleteDescendantsWithStream(targetPage, user, options = {}) {
+  async deleteCompletelyDescendantsWithStream(targetPage, user, options = {}) {
     const Page = this.crowi.model('Page');
     const { PageQueryBuilder } = Page;
 
@@ -327,7 +433,7 @@ class PageService {
           removePageBulkOp.find({ path: toPath }).remove();
         }
       }
-      revertPageBulkOp.find({ _id: page._id }).update({ $set: { path: toPath, status: STATUS_PUBLISHED, lastUpdateUser: user._id } });
+      revertPageBulkOp.find({ _id: page._id }).update({ $set: { path: toPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id } });
       revertRevisionBulkOp.find({ path: page.path }).update({ $set: { path: toPath } }, { multi: true });
     });
 
@@ -361,7 +467,7 @@ class PageService {
       this.revertDeletedDescendantsWithStream(page, user, options);
     }
 
-    page.status = STATUS_PUBLISHED;
+    page.status = Page.STATUS_PUBLISHED;
     page.lastUpdateUser = user;
     debug('Revert deleted the page', page, newPath);
     const updatedPage = await Page.rename(page, newPath, user, {});

@@ -14,7 +14,7 @@ const differenceInYears = require('date-fns/differenceInYears');
 
 const { pathUtils } = require('growi-commons');
 const templateChecker = require('@commons/util/template-checker');
-const { isTopPage } = require('@commons/util/path-utils');
+const { isTopPage, isTrashPage } = require('@commons/util/path-utils');
 const escapeStringRegexp = require('escape-string-regexp');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
@@ -303,7 +303,7 @@ module.exports = function(crowi) {
   }
 
   pageSchema.methods.isDeleted = function() {
-    return (this.status === STATUS_DELETED) || checkIfTrashed(this.path);
+    return (this.status === STATUS_DELETED) || isTrashPage(this.path);
   };
 
   pageSchema.methods.isPublic = function() {
@@ -1103,46 +1103,6 @@ module.exports = function(crowi) {
     }
   };
 
-  pageSchema.statics.deletePage = async function(pageData, user, options = {}) {
-    const newPath = this.getDeletedPageName(pageData.path);
-    const isTrashed = checkIfTrashed(pageData.path);
-
-    if (isTrashed) {
-      throw new Error('This method does NOT support deleting trashed pages.');
-    }
-
-    const socketClientId = options.socketClientId || null;
-    if (this.isDeletableName(pageData.path)) {
-
-      pageData.status = STATUS_DELETED;
-      const updatedPageData = await this.rename(pageData, newPath, user, { socketClientId, createRedirectPage: true });
-
-      return updatedPageData;
-    }
-
-    return Promise.reject(new Error('Page is not deletable.'));
-  };
-
-  const checkIfTrashed = (path) => {
-    return (path.search(/^\/trash/) !== -1);
-  };
-
-  pageSchema.statics.deletePageRecursively = async function(targetPage, user, options = {}) {
-    const isTrashed = checkIfTrashed(targetPage.path);
-    const newPath = this.getDeletedPageName(targetPage.path);
-    if (isTrashed) {
-      throw new Error('This method does NOT supports deleting trashed pages.');
-    }
-
-    if (!this.isDeletableName(targetPage.path)) {
-      throw new Error('Page is not deletable');
-    }
-    const socketClientId = options.socketClientId || null;
-    targetPage.status = STATUS_DELETED;
-    return await this.renameRecursively(targetPage, newPath, user, { socketClientId, createRedirectPage: true });
-  };
-
-
   pageSchema.statics.removeByPath = function(path) {
     if (path == null) {
       throw new Error('path is required');
@@ -1345,6 +1305,8 @@ module.exports = function(crowi) {
 
   };
 
+  pageSchema.statics.STATUS_PUBLISHED = STATUS_PUBLISHED;
+  pageSchema.statics.STATUS_DELETED = STATUS_DELETED;
   pageSchema.statics.GRANT_PUBLIC = GRANT_PUBLIC;
   pageSchema.statics.GRANT_RESTRICTED = GRANT_RESTRICTED;
   pageSchema.statics.GRANT_SPECIFIED = GRANT_SPECIFIED;
