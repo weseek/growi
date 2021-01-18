@@ -17,6 +17,10 @@ module.exports = function(crowi) {
     connection: mongoose.connection,
   });
 
+  // get Collection instance of chunk
+  const filesCollection = mongoose.connection.collection(FILES_COLLECTION_NAME);
+  const chunkCollection = mongoose.connection.collection(CHUNK_COLLECTION_NAME);
+
 
   // create promisified method
   AttachmentFile.promisifiedWrite = util.promisify(AttachmentFile.write).bind(AttachmentFile);
@@ -45,27 +49,23 @@ module.exports = function(crowi) {
 
   lib.deleteFiles = async function(attachments) {
 
-    let filenameValues = [];
-    attachments.forEach((attachment) => { filenameValues = attachment.fileName });
-    const attachmentFiles = await AttachmentFile.find({ filename: { $in: filenameValues } });
-
-    let attachmentFileIds = [];
-    attachmentFiles.forEach((attachmentFile) => { attachmentFileIds = attachmentFile._id });
-
-    // get Collection instance of chunk
-    const filesCollection = mongoose.connection.collection(FILES_COLLECTION_NAME);
-    const chunkCollection = mongoose.connection.collection(CHUNK_COLLECTION_NAME);
     const unorderFilesBulkOp = filesCollection.initializeUnorderedBulkOp();
     const unorderChunkBulkOp = chunkCollection.initializeUnorderedBulkOp();
 
-    attachmentFiles.forEach((attachmentFile) => { unorderFilesBulkOp.find({ filename: attachmentFile.filename }).remove() });
+    const filenameValues = [];
+    attachments.forEach(attachment => filenameValues.push(attachment.fileName));
+    const attachmentFiles = await AttachmentFile.find({ filename: { $in: filenameValues } });
 
-    console.log(attachmentFileIds);
-    [attachmentFileIds].forEach((attachmentFileId) => { unorderChunkBulkOp.find({ files_id: attachmentFileId }).remove() });
+    const attachmentFileIds = [];
+    attachmentFiles.forEach(attachmentFile => attachmentFileIds.push(attachmentFile._id));
+
+    attachmentFiles.forEach((attachmentFile) => { unorderFilesBulkOp.find({ filename: attachmentFile.filename }).remove() });
+    attachmentFileIds.forEach((attachmentFileId) => { unorderChunkBulkOp.find({ files_id: attachmentFileId }).remove() });
 
     await unorderFilesBulkOp.execute();
     await unorderChunkBulkOp.execute();
 
+    return;
   };
 
   /**
