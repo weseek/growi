@@ -4,7 +4,7 @@ const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line
 const express = require('express');
 const pathUtils = require('growi-commons').pathUtils;
 
-const { body } = require('express-validator/check');
+const { body } = require('express-validator');
 const { query } = require('express-validator');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
