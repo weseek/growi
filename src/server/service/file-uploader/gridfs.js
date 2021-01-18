@@ -46,6 +46,10 @@ module.exports = function(crowi) {
   };
 
   lib.deleteFiles = async function(attachments) {
+    const unorderChunkBulkOp = chunkCollection.initializeUnOrderBulkOp();
+    const unorderFilesBulkOp = filesCollection.initializeOrderedBulkOp();
+
+
     // attachments.map(async(attachment) => {
     //   return lib.deleteFile(attachment);
     // });
