@@ -116,6 +116,10 @@ module.exports = function(crowi) {
   };
 
   lib.deleteFiles = async function(attachments) {
+    if (!this.getIsUploadable()) {
+      throw new Error('AWS is not configured.');
+    }
+
     const s3 = S3Factory();
     const awsConfig = getAwsConfig();
 
