@@ -52,7 +52,7 @@ class PageService {
     }
 
     if (isRecursively) {
-      this.renameDescendantsWithStream(page, user, options);
+      this.renameDescendantsWithStream(page, newPagePath, user, options);
     }
 
     this.pageEvent.emit('delete', page, user, socketClientId);
@@ -61,12 +61,65 @@ class PageService {
     return renamedPage;
   }
 
+
+  async renameDescendants(pages, user, options, oldPagePathPrefix, newPagePathPrefix) {
+    const Page = this.crowi.model('Page');
+
+    const pageCollection = mongoose.connection.collection('pages');
+    const revisionCollection = mongoose.connection.collection('revisions');
+    const { updateMetadata, createRedirectPage } = options;
+
+    const unorderedBulkOp = pageCollection.initializeUnorderedBulkOp();
+    const createRediectPageBulkOp = pageCollection.initializeUnorderedBulkOp();
+    const revisionUnorderedBulkOp = revisionCollection.initializeUnorderedBulkOp();
+
+    pages.forEach((page) => {
+      const newPagePath = page.path.replace(oldPagePathPrefix, newPagePathPrefix);
+      if (updateMetadata) {
+        unorderedBulkOp.find({ _id: page._id }).update([{ $set: { path: newPagePath, lastUpdateUser: user._id, updatedAt: { $toDate: Date.now() } } }]);
+      }
+      else {
+        unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath } });
+      }
+      if (createRedirectPage) {
+        createRediectPageBulkOp.insert({
+          path: page.path, body: `redirect ${newPagePath}`, creator: user, lastUpdateUser: user, status: Page.STATUS_PUBLISHED, redirectTo: newPagePath,
+        });
+      }
+      revisionUnorderedBulkOp.find({ path: page.path }).update({ $set: { path: newPagePath } }, { multi: true });
+    });
+
+    try {
+      await unorderedBulkOp.execute();
+      await revisionUnorderedBulkOp.execute();
+    }
+    catch (err) {
+      if (err.code !== 11000) {
+        throw new Error('Failed to rename pages: ', err);
+      }
+    }
+
+    // const newParentPath = path.replace(pathRegExp, newPagePathPrefix);
+    // const newParentPage = await this.findByPath(newParentPath);
+    // const renamedPages = await this.findManageableListWithDescendants(newParentPage, user, options);
+
+    // this.pageEvent.emit('createMany', renamedPages, user, newParentPage);
+
+    // Execute after unorderedBulkOp to prevent duplication
+    if (createRedirectPage) {
+      await createRediectPageBulkOp.execute();
+    }
+
+  }
+
   /**
    * Create rename stream
    */
-  async renameDescendantsWithStream(targetPage, user, options = {}) {
+  async renameDescendantsWithStream(targetPage, newPagePath, user, options = {}) {
     const Page = this.crowi.model('Page');
+    const newPagePathPrefix = newPagePath;
     const { PageQueryBuilder } = Page;
+    const pathRegExp = new RegExp(`^${escapeStringRegexp(targetPage.path)}`, 'i');
 
     const readStream = new PageQueryBuilder(Page.find())
       .addConditionToExcludeRedirect()
@@ -76,15 +129,14 @@ class PageService {
       .lean()
       .cursor();
 
-    // const deleteDescendants = this.deleteDescendants.bind(this);
+    const renameDescendants = this.renameDescendants.bind(this);
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
       async write(batch, encoding, callback) {
         try {
           count += batch.length;
-          console.log(batch.length);
-          // deleteDescendants(batch, user);
+          renameDescendants(batch, user, options, pathRegExp, newPagePathPrefix);
           logger.debug(`Reverting pages progressing: (count=${count})`);
         }
         catch (err) {
