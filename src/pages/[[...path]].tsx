@@ -133,18 +133,18 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 async function injectPageInformation(context: GetServerSidePropsContext, props: Props, specifiedPagePath?: string): Promise<void> {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
-  const PageModel = crowi.model('Page');
   const { pageService } = crowi;
 
   const { user } = req;
 
   const pagePath = specifiedPagePath || props.currentPagePath;
-  const page = await PageModel.findByPathAndViewer(pagePath, user);
+  const result = await pageService.retrievePageInfo(pagePath, user);
+  const page = result.page;
 
   if (page == null) {
     // check the page is forbidden or just does not exist.
-    props.isForbidden = await PageModel.count({ path: pagePath }) > 0;
-    props.isNotFound = !props.isForbidden;
+    props.isForbidden = result.isForbidden;
+    props.isNotFound = result.isNotFound;
     logger.warn(`Page is ${props.isForbidden ? 'forbidden' : 'not found'}`, pagePath);
     return;
   }
