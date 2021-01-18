@@ -21,10 +21,9 @@ module.exports = function(crowi) {
   const filesCollection = mongoose.connection.collection(FILES_COLLECTION_NAME);
   const chunkCollection = mongoose.connection.collection(CHUNK_COLLECTION_NAME);
 
-
   // create promisified method
   AttachmentFile.promisifiedWrite = util.promisify(AttachmentFile.write).bind(AttachmentFile);
-  AttachmentFile.promisifiedUnlink = util.promisify(AttachmentFile.unlink).bind(AttachmentFile);
+  // AttachmentFile.promisifiedUnlink = util.promisify(AttachmentFile.unlink).bind(AttachmentFile);
 
   lib.isValidUploadSettings = function() {
     return true;
