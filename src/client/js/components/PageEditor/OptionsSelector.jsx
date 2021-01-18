@@ -49,7 +49,7 @@ class OptionsSelector extends React.Component {
     this.onChangeKeymapMode = this.onChangeKeymapMode.bind(this);
     this.onClickStyleActiveLine = this.onClickStyleActiveLine.bind(this);
     this.onClickRenderMathJaxInRealtime = this.onClickRenderMathJaxInRealtime.bind(this);
-    this.onClickFormattingMarkdownTable = this.onClickFormattingMarkdownTable.bind(this);
+    this.onClickMarkdownTableAutoFormatting = this.onClickMarkdownTableAutoFormatting.bind(this);
     this.onToggleConfigurationDropdown = this.onToggleConfigurationDropdown.bind(this);
   }
 
@@ -98,11 +98,11 @@ class OptionsSelector extends React.Component {
     editorContainer.saveOptsToLocalStorage();
   }
 
-  onClickFormattingMarkdownTable(event) {
+  onClickMarkdownTableAutoFormatting(event) {
     const { editorContainer } = this.props;
 
-    const newValue = !editorContainer.state.editorOptions.formattingMarkdownTable;
-    const newOpts = Object.assign(editorContainer.state.editorOptions, { formattingMarkdownTable: newValue });
+    const newValue = !editorContainer.state.editorOptions.ignoreMarkdownTableAutoFormatting;
+    const newOpts = Object.assign(editorContainer.state.editorOptions, { ignoreMarkdownTableAutoFormatting: newValue });
     editorContainer.setState({ editorOptions: newOpts });
 
     // save to localStorage
@@ -199,7 +199,7 @@ class OptionsSelector extends React.Component {
           <DropdownMenu>
             {this.renderActiveLineMenuItem()}
             {this.renderRealtimeMathJaxMenuItem()}
-            {this.renderFormattingMarkdownTableMenuItem()}
+            {this.renderMarkdownTableAutoFormattingMenuItem()}
             {/* <DropdownItem divider /> */}
           </DropdownMenu>
 
@@ -257,9 +257,10 @@ class OptionsSelector extends React.Component {
     );
   }
 
-  renderFormattingMarkdownTableMenuItem() {
+  renderMarkdownTableAutoFormattingMenuItem() {
     const { t, editorContainer } = this.props;
-    const isActive = editorContainer.state.editorOptions.formattingMarkdownTable;
+    // Auto-formatting was enabled before optionalizing, so we made it a disabled option(ignoreMarkdownTableAutoFormatting).
+    const isActive = !editorContainer.state.editorOptions.ignoreMarkdownTableAutoFormatting;
 
     const iconClasses = ['text-info'];
     if (isActive) {
@@ -268,7 +269,7 @@ class OptionsSelector extends React.Component {
     const iconClassName = iconClasses.join(' ');
 
     return (
-      <DropdownItem toggle={false} onClick={this.onClickFormattingMarkdownTable}>
+      <DropdownItem toggle={false} onClick={this.onClickMarkdownTableAutoFormatting}>
         <div className="d-flex justify-content-between">
           <span className="icon-container"></span>
           <span className="menuitem-label">{ t('page_edit.formatting_a_markdown_table') }</span>

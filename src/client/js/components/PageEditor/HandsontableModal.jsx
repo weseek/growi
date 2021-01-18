@@ -511,5 +511,5 @@ export default class HandsontableModal extends React.PureComponent {
 
 HandsontableModal.propTypes = {
   onSave: PropTypes.func,
-  ignoreAutoFormatting: PropTypes.boolean,
+  ignoreAutoFormatting: PropTypes.bool,
 };
