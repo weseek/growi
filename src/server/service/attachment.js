@@ -57,7 +57,7 @@ class AttachmentService {
     });
     await unorderAttachmentsBulkOp.execute();
 
-    fileUploadService.deleteFiles(attachments);
+    await fileUploadService.deleteFiles(attachments);
 
     return;
   }
