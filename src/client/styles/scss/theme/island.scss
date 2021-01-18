@@ -11,6 +11,7 @@ html[dark] {
   $bgcolor-card: $gray-50;
   $bgcolor-global: lighten($color-themelight, 10%);
   $bgcolor-inline-code: $gray-100; //optional
+  $bgcolor-highlighted: rgba($primary, 0.3);
 
   // Font colors
   $color-global: #112744;
@@ -83,12 +84,6 @@ html[dark] {
 
   @import 'apply-colors';
   @import 'apply-colors-light';
-
-  .wiki {
-    .highlighted {
-      background-color: lighten($primary, 20%);
-    }
-  }
 
   .rbt-menu {
     background: lighten($color-themelight, 5%);
