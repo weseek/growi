@@ -156,13 +156,9 @@ export default class HandsontableModal extends React.PureComponent {
   }
 
   save() {
-    const markdownTableOption = Object.assign(
-      { align: [].concat(this.state.markdownTable.options.align) },
-      this.props.markdownTableAdditionalOption,
-    );
     const markdownTable = new MarkdownTable(
       this.hotTable.hotInstance.getData(),
-      markdownTableOption,
+      this.markdownTableOption,
     ).normalizeCells();
 
     if (this.props.onSave != null) {
@@ -402,6 +398,13 @@ export default class HandsontableModal extends React.PureComponent {
     }
   }
 
+  get markdownTableOption() {
+    return {
+      align: [].concat(this.state.markdownTable.options.align),
+      pad: this.props.ignoreAutoFormatting !== true,
+    };
+  }
+
   renderCloseButton() {
     return (
       <button type="button" className="close" onClick={this.cancel} aria-label="Close">
@@ -508,5 +511,5 @@ export default class HandsontableModal extends React.PureComponent {
 
 HandsontableModal.propTypes = {
   onSave: PropTypes.func,
-  markdownTableAdditionalOption: PropTypes.object,
+  ignoreAutoFormatting: PropTypes.boolean,
 };

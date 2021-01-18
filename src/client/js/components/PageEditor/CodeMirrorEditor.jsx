@@ -824,10 +824,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plane Text..';
 
-    const markdownTableOption = {
-      pad: this.props.editorOptions.formattingMarkdownTable === true,
-    };
-
     return (
       <React.Fragment>
 
@@ -903,7 +899,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         <HandsontableModal
           ref={this.handsontableModal}
           onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }}
-          markdownTableAdditionalOption={markdownTableOption}
+          ignoreAutoFormatting={this.props.editorOptions.formattingMarkdownTable}
         />
         <DrawioModal
           ref={this.drawioModal}
