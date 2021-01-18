@@ -66,6 +66,8 @@ const pageSchema = new mongoose.Schema({
   hasDraftOnHackmd: { type: Boolean }, // set true if revision and revisionHackmdSynced are same but HackMD document has modified
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
+  deleteUser: { type: ObjectId, ref: 'User' },
+  deletedAt: { type: Date },
 }, {
   toJSON: { getters: true },
   toObject: { getters: true },
