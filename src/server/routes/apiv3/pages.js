@@ -395,13 +395,7 @@ module.exports = (crowi) => {
       if (!page.isUpdatable(revisionId)) {
         return res.apiv3Err(new ErrorV3('Someone could update this page, so couldn\'t delete.', 'notfound_or_forbidden'), 409);
       }
-
-      if (isRecursively) {
-        page = await Page.renameRecursively(page, newPagePath, req.user, options);
-      }
-      else {
-        page = await crowi.pageService.rename(page, newPagePath, req.user, options);
-      }
+      page = await crowi.pageService.renamePage(page, newPagePath, req.user, options, isRecursively);
     }
     catch (err) {
       logger.error(err);

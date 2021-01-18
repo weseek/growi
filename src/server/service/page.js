@@ -22,9 +22,9 @@ class PageService {
   }
 
 
-  async renamePage(page, newPagePath, user, options) {
+  async renamePage(page, newPagePath, user, options, isRecursively = false) {
 
-    const Page = this;
+    const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
     const path = page.path;
     const createRedirectPage = options.createRedirectPage || false;
@@ -51,11 +51,60 @@ class PageService {
       await Page.create(path, body, user, { redirectTo: newPagePath });
     }
 
+    if (isRecursively) {
+      this.renameDescendantsWithStream(page, user, options);
+    }
+
     this.pageEvent.emit('delete', page, user, socketClientId);
     this.pageEvent.emit('create', renamedPage, user, socketClientId);
 
     return renamedPage;
   }
+
+  /**
+   * Create rename stream
+   */
+  async renameDescendantsWithStream(targetPage, user, options = {}) {
+    const Page = this.crowi.model('Page');
+    const { PageQueryBuilder } = Page;
+
+    const readStream = new PageQueryBuilder(Page.find())
+      .addConditionToExcludeRedirect()
+      .addConditionToListOnlyDescendants(targetPage.path)
+      .addConditionToFilteringByViewer(user)
+      .query
+      .lean()
+      .cursor();
+
+    // const deleteDescendants = this.deleteDescendants.bind(this);
+    let count = 0;
+    const writeStream = new Writable({
+      objectMode: true,
+      async write(batch, encoding, callback) {
+        try {
+          count += batch.length;
+          console.log(batch.length);
+          // deleteDescendants(batch, user);
+          logger.debug(`Reverting pages progressing: (count=${count})`);
+        }
+        catch (err) {
+          logger.error('revertPages error on add anyway: ', err);
+        }
+
+        callback();
+      },
+      final(callback) {
+        logger.debug(`Reverting pages has completed: (totalCount=${count})`);
+
+        callback();
+      },
+    });
+
+    readStream
+      .pipe(createBatchStream(BULK_REINDEX_SIZE))
+      .pipe(writeStream);
+  }
+
 
   async deleteCompletelyOperation(pageIds, pagePaths) {
     // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
