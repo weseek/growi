@@ -1305,6 +1305,7 @@ module.exports = function(crowi) {
 
   };
 
+  pageSchema.statics.STATUS_PUBLISHED = STATUS_PUBLISHED;
   pageSchema.statics.STATUS_DELETED = STATUS_DELETED;
   pageSchema.statics.GRANT_PUBLIC = GRANT_PUBLIC;
   pageSchema.statics.GRANT_RESTRICTED = GRANT_RESTRICTED;

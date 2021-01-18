@@ -7,7 +7,6 @@ const { createBatchStream } = require('@server/util/batch-stream');
 const { isTrashPage } = require('@commons/util/path-utils');
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 
-const STATUS_PUBLISHED = 'published';
 const BULK_REINDEX_SIZE = 100;
 
 class PageService {
@@ -242,21 +241,45 @@ class PageService {
   }
 
   async deleteDescendants(pages, user) {
-    // const Page = this.crowi.model('Page');
-    console.log(pages);
+    const Page = this.crowi.model('Page');
 
-    // const isTrashed = isTrashPage(targetPage.path);
-    // const newPath = Page.getDeletedPageName(targetPage.path);
-    // if (isTrashed) {
-    //   throw new Error('This method does NOT supports deleting trashed pages.');
-    // }
+    const pageCollection = mongoose.connection.collection('pages');
+    const revisionCollection = mongoose.connection.collection('revisions');
 
-    // if (!Page.isDeletableName(targetPage.path)) {
-    //   throw new Error('Page is not deletable');
-    // }
-    // const socketClientId = options.socketClientId || null;
-    // targetPage.status = Page.STATUS_DELETED;
-    // return Page.renameRecursively(targetPage, newPath, user, { socketClientId, createRedirectPage: true });
+    const deletePageBulkOp = pageCollection.initializeUnorderedBulkOp();
+    const updateRevisionListOp = revisionCollection.initializeUnorderedBulkOp();
+    const newPagesForRedirect = [];
+
+    pages.forEach((page) => {
+      const newPath = Page.getDeletedPageName(page.path);
+      const body = `redirect ${newPath}`;
+
+      deletePageBulkOp.find({ _id: page._id }).update({ $set: { path: newPath, status: Page.STATUS_DELETED, lastUpdateUser: user._id } });
+      updateRevisionListOp.find({ path: page.path }).update({ $set: { path: newPath } });
+
+      newPagesForRedirect.push({
+        path: page.path,
+        body,
+        creator: user._id,
+        grant: page.grant,
+        grantedGroup: page.grantedGroup,
+        grantedUsers: page.grantedUsers,
+        lastUpdateUser: user._id,
+        redirectTo: newPath,
+        revision: null,
+      });
+    });
+
+    try {
+      await deletePageBulkOp.execute();
+      await updateRevisionListOp.execute();
+      await Page.insertMany(newPagesForRedirect, { ordered: false });
+    }
+    catch (err) {
+      if (err.code !== 11000) {
+        throw new Error('Failed to revert pages: ', err);
+      }
+    }
   }
 
   /**
@@ -410,7 +433,7 @@ class PageService {
           removePageBulkOp.find({ path: toPath }).remove();
         }
       }
-      revertPageBulkOp.find({ _id: page._id }).update({ $set: { path: toPath, status: STATUS_PUBLISHED, lastUpdateUser: user._id } });
+      revertPageBulkOp.find({ _id: page._id }).update({ $set: { path: toPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id } });
       revertRevisionBulkOp.find({ path: page.path }).update({ $set: { path: toPath } }, { multi: true });
     });
 
@@ -444,7 +467,7 @@ class PageService {
       this.revertDeletedDescendantsWithStream(page, user, options);
     }
 
-    page.status = STATUS_PUBLISHED;
+    page.status = Page.STATUS_PUBLISHED;
     page.lastUpdateUser = user;
     debug('Revert deleted the page', page, newPath);
     const updatedPage = await Page.rename(page, newPath, user, {});
