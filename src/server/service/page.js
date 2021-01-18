@@ -95,7 +95,7 @@ class PageService {
     return newParentpage;
   }
 
-  async retrievePageInfo({ pageId, path, user }) {
+  async findPageAndMetaDataByViewer({ pageId, path, user }) {
 
     const Page = this.crowi.model('Page');
 
