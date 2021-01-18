@@ -22,11 +22,11 @@ class PageService {
   }
 
 
-  async renamePage(pageData, newPagePath, user, options) {
+  async renamePage(page, newPagePath, user, options) {
 
     const Page = this;
     const Revision = this.crowi.model('Revision');
-    const path = pageData.path;
+    const path = page.path;
     const createRedirectPage = options.createRedirectPage || false;
     const updateMetadata = options.updateMetadata || false;
     const socketClientId = options.socketClientId || null;
@@ -34,13 +34,14 @@ class PageService {
     // sanitize path
     newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
 
+    const update = {};
     // update Page
-    pageData.path = newPagePath;
+    update.path = newPagePath;
     if (updateMetadata) {
-      pageData.lastUpdateUser = user;
-      pageData.updatedAt = Date.now();
+      update.lastUpdateUser = user;
+      update.updatedAt = Date.now();
     }
-    const updatedPageData = await pageData.save();
+    const updatedPageData = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
 
     // update Rivisions
     await Revision.updateRevisionListByPath(path, { path: newPagePath }, {});
@@ -50,7 +51,7 @@ class PageService {
       await Page.create(path, body, user, { redirectTo: newPagePath });
     }
 
-    this.pageEvent.emit('delete', pageData, user, socketClientId);
+    this.pageEvent.emit('delete', page, user, socketClientId);
     this.pageEvent.emit('create', updatedPageData, user, socketClientId);
 
     return updatedPageData;
