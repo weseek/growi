@@ -52,12 +52,12 @@ class AttachmentService {
       return;
     }
 
-    fileUploadService.deleteFiles(attachments);
-
     attachments.forEach((attachment) => {
       unorderAttachmentsBulkOp.find({ _id: attachment._id }).remove();
     });
     await unorderAttachmentsBulkOp.execute();
+
+    fileUploadService.deleteFiles(attachments);
 
     return;
   }
