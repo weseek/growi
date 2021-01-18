@@ -111,9 +111,18 @@ class PageService {
     return PageTagRelation.insertMany(newPageTagRelation, { ordered: false });
   }
 
-  async duplicateDescendants(pages, user, oldPagePathPrefix, newPagePathPrefix, pathRevisionMapping) {
+  async duplicateDescendants(pages, user, oldPagePathPrefix, newPagePathPrefix) {
     const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
+
+    const paths = pages.map(page => (page.path));
+    const revisions = await Revision.find({ path: { $in: paths } });
+
+    // Mapping to set to the body of the new revision
+    const pathRevisionMapping = {};
+    revisions.forEach((revision) => {
+      pathRevisionMapping[revision.path] = revision;
+    });
 
     // key: oldPageId, value: newPageId
     const pageIdMapping = {};
@@ -151,10 +160,8 @@ class PageService {
 
   async duplicateDescendantsWithStream(page, newPagePath, user) {
     const Page = this.crowi.model('Page');
-    const Revision = this.crowi.model('Revision');
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
-    const revisions = await Revision.find({ path: pathRegExp });
 
     const { PageQueryBuilder } = Page;
 
@@ -166,12 +173,6 @@ class PageService {
       .lean()
       .cursor();
 
-    // Mapping to set to the body of the new revision
-    const pathRevisionMapping = {};
-    revisions.forEach((revision) => {
-      pathRevisionMapping[revision.path] = revision;
-    });
-
     const duplicateDescendants = this.duplicateDescendants.bind(this);
     let count = 0;
     const writeStream = new Writable({
@@ -179,7 +180,7 @@ class PageService {
       async write(batch, encoding, callback) {
         try {
           count += batch.length;
-          await duplicateDescendants(batch, user, pathRegExp, newPagePathPrefix, pathRevisionMapping);
+          await duplicateDescendants(batch, user, pathRegExp, newPagePathPrefix);
           logger.debug(`Adding pages progressing: (count=${count})`);
         }
         catch (err) {
