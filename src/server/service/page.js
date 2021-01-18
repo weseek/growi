@@ -95,7 +95,7 @@ class PageService {
     return newParentpage;
   }
 
-  async retrievePageInfo(path, user, pageId) {
+  async retrievePageInfo({ pageId, path, user }) {
 
     const Page = this.crowi.model('Page');
 

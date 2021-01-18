@@ -138,7 +138,7 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
   const { user } = req;
 
   const pagePath = specifiedPagePath || props.currentPagePath;
-  const result = await pageService.retrievePageInfo(pagePath, user);
+  const result = await pageService.retrievePageInfo({ path: pagePath, user });
   const page = result.page;
 
   if (page == null) {
