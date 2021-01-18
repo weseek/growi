@@ -211,6 +211,8 @@ class PageService {
 
   async deletePage(page, user, options = {}, isRecursively = false) {
     const Page = this.crowi.model('Page');
+    const Revision = this.crowi.model('Revision');
+
     const newPath = Page.getDeletedPageName(page.path);
     const isTrashed = isTrashPage(page.path);
 
@@ -227,6 +229,8 @@ class PageService {
       this.deleteDescendantsWithStream(page, user, options);
     }
 
+    // update Rivisions
+    await Revision.updateRevisionListByPath(page.path, { path: newPath }, {});
     const deletedPage = await Page.findByIdAndUpdate(page._id, { $set: { path: newPath, status: Page.STATUS_DELETED } }, { new: true });
     const body = `redirect ${newPath}`;
     await Page.create(page.path, body, user, { redirectTo: newPath });
