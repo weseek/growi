@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
+const { isCreatablePage, isDeletablePage } = require('~/utils/path-utils');
 
 class PageService {
 
@@ -94,8 +95,33 @@ class PageService {
     return newParentpage;
   }
 
-  async retrievePageInfo() {
-    return;
+  async retrievePageInfo(path, user) {
+
+    const Page = this.crowi.model('Page');
+    const page = await Page.findByPathAndViewer(path, user);
+    const result = {};
+
+    if (page == null) {
+      const isExist = await Page.count({ path }) > 0;
+      result.isForbidden = isExist;
+      result.isNotFound = !isExist;
+      result.isCreatable = isCreatablePage(path);
+      result.isDeletable = false;
+      result.canDeleteCompletely = false;
+      result.page = page;
+
+      return result;
+    }
+
+    result.page = page;
+    result.isForbidden = false;
+    result.isNotFound = false;
+    result.isCreatable = false;
+    result.isDeletable = isDeletablePage(path);
+    result.isDeleted = page.isDeleted();
+    result.canDeleteCompletely = user != null && user.canDeleteCompletely(page.creator);
+
+    return result;
   }
 
 
