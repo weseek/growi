@@ -135,15 +135,8 @@ module.exports = function(crowi) {
     Objects.forEach((object) => {
       totalParams.Delete.Objects.push(object);
     });
-    console.log(Objects);
-
-    console.log(totalParams);
 
     return s3.deleteObjects(totalParams).promise();
-
-    // attachments.map((attachment) => {
-    //   return this.deleteFile(attachment);
-    // });
   };
 
   lib.deleteFileByFilePath = async function(filePath) {
