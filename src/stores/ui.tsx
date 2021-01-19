@@ -96,6 +96,7 @@ export const useIsAbleToShowPageEditorModeManager = (): responseInterface<boolea
     mutate(key, false);
   }
   else {
+    // Tags cannot be edited while the new page and editorMode is view
     mutate(key, isCreatablePage(page.path) && !isForbidden && !isTrashPage && !isSharedUser);
   }
 
