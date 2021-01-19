@@ -55,6 +55,7 @@ export const useIsAbleToShowTagLabel = (): responseInterface<boolean, any> => {
     mutate(key, false);
   }
   else {
+    // Tags cannot be edited while the new page and editorMode is view
     mutate(key, !isUserPage(page.path) && !isSharedPage(page.path) && !(editorMode === 'view' && isNotFoundPage));
   }
 
@@ -96,7 +97,6 @@ export const useIsAbleToShowPageEditorModeManager = (): responseInterface<boolea
     mutate(key, false);
   }
   else {
-    // Tags cannot be edited while the new page and editorMode is view
     mutate(key, isCreatablePage(page.path) && !isForbidden && !isTrashPage && !isSharedUser);
   }
 
