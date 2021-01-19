@@ -313,6 +313,7 @@ class PageService {
     });
 
     const duplicateDescendants = this.duplicateDescendants.bind(this);
+    const pageEvent = this.pageEvent;
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
@@ -330,7 +331,9 @@ class PageService {
       },
       final(callback) {
         logger.debug(`Adding pages has completed: (totalCount=${count})`);
-
+        // update  path
+        page.path = newPagePath;
+        pageEvent.emit('syncDescendants', page, user);
         callback();
       },
     });
