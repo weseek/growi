@@ -588,6 +588,8 @@ class PageService {
 
   async revertDeletedPage(page, user, options = {}, isRecursively = false) {
     const Page = this.crowi.model('Page');
+    const Revision = this.crowi.model('Revision');
+
     const newPath = Page.getRevertDeletedPageName(page.path);
     const originPage = await Page.findByPath(newPath);
     if (originPage != null) {
@@ -607,7 +609,11 @@ class PageService {
     page.status = Page.STATUS_PUBLISHED;
     page.lastUpdateUser = user;
     debug('Revert deleted the page', page, newPath);
-    const updatedPage = await Page.rename(page, newPath, user, {});
+    const updatedPage = await Page.findByIdAndUpdate(page._id, {
+      $set: { path: newPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id },
+    }, { new: true });
+    await Revision.updateMany({ path: page.path }, { $set: { path: newPath } });
+
     return updatedPage;
   }
 
