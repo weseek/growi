@@ -1,8 +1,6 @@
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-
-import { useTranslation } from '~/i18n';
 
 import { toastSuccess, toastError } from '../../util/apiNotification';
 
@@ -14,19 +12,52 @@ import AppContainer from '../../services/AppContainer';
 import RenderTagLabels from './RenderTagLabels';
 import TagEditModal from './TagEditModal';
 import { useCurrentPageTagsSWR } from '~/stores/page';
+import { useCurrentUser } from '~/stores/context';
 
 type Props = {
   appContainer: AppContainer,
   editorMode: string,
 }
 
-const TagLabels = (): JSX.Element => {
-  const { t } = useTranslation();
-  const { isTagEditModalShown, setIsTagEditModalShown } = useState(false);
+const TagLabels = (props: Props): JSX.Element => {
+  const [isTagEditModalShown, setIsTagEditModalShown] = useState(false);
 
+  const { data: currentUser } = useCurrentUser();
   const { data: tags } = useCurrentPageTagsSWR([]);
 
-  return <>length of tags are {tags.length}</>;
+  const { appContainer } = props;
+
+  const isGuestUser = currentUser == null;
+
+  const openEditorModal = useCallback(() => {
+  }, []);
+  const closeEditorModal = useCallback(() => {
+  }, []);
+  const tagsUpdatedHandler = useCallback(() => {
+  }, []);
+
+  return (
+    <>
+      <form className="grw-tag-labels form-inline">
+        <i className="tag-icon icon-tag mr-2"></i>
+        <Suspense fallback={<span className="grw-tag-label badge badge-secondary">―</span>}>
+          <RenderTagLabels
+            tags={tags}
+            openEditorModal={openEditorModal}
+            isGuestUser={isGuestUser}
+          />
+        </Suspense>
+      </form>
+
+      <TagEditModal
+        tags={tags}
+        isOpen={isTagEditModalShown}
+        onClose={closeEditorModal}
+        appContainer={appContainer}
+        onTagsUpdated={tagsUpdatedHandler}
+      />
+    </>
+  );
 };
 
 export default TagLabels;
