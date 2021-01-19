@@ -55,7 +55,7 @@ export const useIsAbleToShowTagLabel = (): responseInterface<boolean, any> => {
     mutate(key, false);
   }
   else {
-    // Tags cannot be edited while the new page and editorMode is view
+    // Tags cannot be edited while the new page and editorMode is 'view'
     mutate(key, !isUserPage(page.path) && !isSharedPage(page.path) && !(editorMode === 'view' && isNotFoundPage));
   }
 
