@@ -3,7 +3,7 @@ module.exports = (crowi, app) => {
 
   // when disabled
   if (!configManager.getConfig('crowi', 'promster:isEnabled')) {
-    return () => {};
+    return (req, res, next) => next();
   }
 
   const { createMiddleware } = require('@promster/express');
