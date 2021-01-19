@@ -57,6 +57,17 @@ class PageService {
     const { attachmentService } = this.crowi;
     const attachments = await Attachment.find({ page: { $in: pageIds } });
 
+    const pages = await Page.find({ redirectTo: { $ne: null } });
+    const redirectToPagePathMapping = {};
+    pages.forEach((page) => {
+      redirectToPagePathMapping[page.redirectTo] = page.path;
+    });
+
+    const redirectedFromPagePaths = [];
+    pagePaths.forEach((pagePath) => {
+      redirectedFromPagePaths.push(...this.prepareShoudDeletePagesByRedirectTo(pagePath, redirectToPagePathMapping));
+    });
+
     return Promise.all([
       Bookmark.find({ page: { $in: pageIds } }).remove({}),
       Comment.find({ page: { $in: pageIds } }).remove({}),
