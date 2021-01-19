@@ -1,13 +1,10 @@
-import React, { Suspense, useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
 import { toastSuccess, toastError } from '../../util/apiNotification';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
-// import PageContainer from '../../services/PageContainer';
-// import EditorContainer from '../../services/EditorContainer';
 
 import RenderTagLabels from './RenderTagLabels';
 import TagEditModal from './TagEditModal';
@@ -23,11 +20,7 @@ const TagLabels = (props: Props): JSX.Element => {
   const [isTagEditModalShown, setIsTagEditModalShown] = useState(false);
 
   const { data: currentUser } = useCurrentUser();
-  const { data: tags } = useCurrentPageTagsSWR();
-
-  const { appContainer } = props;
-
-  const isGuestUser = currentUser == null;
+  const { data: tags, error } = useCurrentPageTagsSWR();
 
   const openEditorModal = useCallback(() => {
   }, []);
@@ -36,17 +29,30 @@ const TagLabels = (props: Props): JSX.Element => {
   const tagsUpdatedHandler = useCallback(() => {
   }, []);
 
+  const isLoading = !error && !tags;
+
+  // loading
+  if (isLoading) {
+    return (
+      <form className="grw-tag-labels form-inline">
+        <i className="tag-icon icon-tag mr-2"></i>
+        <span className="grw-tag-label badge badge-secondary">―</span>
+      </form>
+    );
+  }
+
+  const { appContainer } = props;
+  const isGuestUser = currentUser == null;
+
   return (
     <>
       <form className="grw-tag-labels form-inline">
         <i className="tag-icon icon-tag mr-2"></i>
-        <Suspense fallback={<span className="grw-tag-label badge badge-secondary">―</span>}>
-          <RenderTagLabels
-            tags={tags}
-            openEditorModal={openEditorModal}
-            isGuestUser={isGuestUser}
-          />
-        </Suspense>
+        <RenderTagLabels
+          tags={tags}
+          openEditorModal={openEditorModal}
+          isGuestUser={isGuestUser}
+        />
       </form>
 
       <TagEditModal
@@ -124,33 +130,7 @@ class DeprecatedTagLabels extends React.Component {
 
 
   render() {
-    const tags = this.getTagData();
-    const { appContainer } = this.props;
-
-    return (
-      <>
-
-        <form className="grw-tag-labels form-inline">
-          <i className="tag-icon icon-tag mr-2"></i>
-          <Suspense fallback={<span className="grw-tag-label badge badge-secondary">―</span>}>
-            <RenderTagLabels
-              tags={tags}
-              openEditorModal={this.openEditorModal}
-              isGuestUser={appContainer.isGuestUser}
-            />
-          </Suspense>
-        </form>
-
-        <TagEditModal
-          tags={tags}
-          isOpen={this.state.isTagEditModalShown}
-          onClose={this.closeEditorModal}
-          appContainer={this.props.appContainer}
-          onTagsUpdated={this.tagsUpdatedHandler}
-        />
-
-      </>
-    );
+    return null;
   }
 
 }
