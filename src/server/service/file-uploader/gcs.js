@@ -98,7 +98,7 @@ module.exports = function(crowi) {
     });
   };
 
-  lib.deleteFileByFilePath = async function(filePath) {
+  lib.deleteFileByFilePath = function(filePath) {
     if (!this.getIsUploadable()) {
       throw new Error('GCS is not configured.');
     }
@@ -107,14 +107,7 @@ module.exports = function(crowi) {
     const myBucket = gcs.bucket(getGcsBucket());
     const file = myBucket.file(filePath);
 
-    // check file exists
-    const isExists = await isFileExists(file);
-    if (!isExists) {
-      logger.warn(`Any object that relate to the Attachment (${filePath}) does not exist in GCS`);
-      return;
-    }
-
-    return file.delete();
+    return file.delete({ ignoreNotFound: true });
   };
 
   lib.uploadFile = function(fileStream, attachment) {
