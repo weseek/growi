@@ -369,7 +369,7 @@ class PageService {
     await Revision.updateRevisionListByPath(page.path, { path: newPath }, {});
     const deletedPage = await Page.findByIdAndUpdate(page._id, {
       $set: {
-        path: newPath, status: Page.STATUS_DELETED, deleteUser: user, deletedAt: new Date(),
+        path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: new Date(),
       },
     }, { new: true });
     const body = `redirect ${newPath}`;
@@ -397,7 +397,7 @@ class PageService {
 
       deletePageBulkOp.find({ _id: page._id }).update({
         $set: {
-          path: newPath, status: Page.STATUS_DELETED, deleteUser: user, deletedAt: new Date(),
+          path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: new Date(),
         },
       });
       updateRevisionListOp.find({ path: page.path }).update({ $set: { path: newPath } });
