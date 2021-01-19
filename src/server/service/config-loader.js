@@ -382,13 +382,13 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
   },
   PROMSTER_ENABLED: {
     ns:      'crowi',
-    key:     'promister:isEnabled',
+    key:     'promster:isEnabled',
     type:    TYPES.BOOLEAN,
     default: false,
   },
   PROMSTER_PORT: {
     ns:      'crowi',
-    key:     'promister:port',
+    key:     'promster:port',
     type:    TYPES.NUMBER,
     default: 7788,
   },

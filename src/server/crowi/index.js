@@ -420,9 +420,9 @@ Crowi.prototype.start = async function() {
     }
   });
   // listen for promster
-  if (configManager.getConfig('crowi', 'promister:isEnabled')) {
+  if (configManager.getConfig('crowi', 'promster:isEnabled')) {
     const { createServer } = require('@promster/server');
-    const promsterPort = configManager.getConfig('crowi', 'promister:port');
+    const promsterPort = configManager.getConfig('crowi', 'promster:port');
 
     createServer({ port: promsterPort }).then(() => {
       logger.info(`[${this.node_env}] Promster server is listening on port ${promsterPort}`);
