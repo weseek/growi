@@ -23,7 +23,7 @@ const TagLabels = (props: Props): JSX.Element => {
   const [isTagEditModalShown, setIsTagEditModalShown] = useState(false);
 
   const { data: currentUser } = useCurrentUser();
-  const { data: tags } = useCurrentPageTagsSWR([]);
+  const { data: tags } = useCurrentPageTagsSWR();
 
   const { appContainer } = props;
 

@@ -1,7 +1,8 @@
 import useSWR, { mutate, responseInterface } from 'swr';
 import { ConfigInterface } from 'swr/dist/types';
+import { apiGet } from '~/client/js/util/apiv1-client';
 import { apiv3Get } from '~/client/js/util/apiv3-client';
-import { Page } from '~/interfaces/page';
+import { Page, Tag } from '~/interfaces/page';
 
 import { isTrashPage } from '../utils/path-utils';
 
@@ -32,15 +33,17 @@ export const useCurrentPageSWR = (initialData?: any): responseInterface<Page, Er
   return usePageSWR(currentPagePath);
 };
 
-// TODO: impl with https://youtrack.weseek.co.jp/issue/GW-4904
-export const useCurrentPageTagsSWR = (initialData?: any): responseInterface<Page, Error> => {
-  const { data: currentPagePath } = useCurrentPagePath();
+export const useCurrentPageTagsSWR = (): responseInterface<Tag, Error> => {
+  const { data: currentPage } = useCurrentPageSWR();
 
-  if (initialData != null) {
-    mutate('currentTags', initialData);
-  }
-
-  return useStaticSWR('currentTags');
+  return useSWR(
+    ['/pages.getPageTag', currentPage],
+    (endpoint, page) => apiGet(endpoint, { pageId: page.id }).then(response => response.tags),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
