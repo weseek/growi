@@ -118,15 +118,6 @@ module.exports = function(crowi, app) {
   app.use(flash());
 
   app.use(promster);
-  // const { configManager } = crowi;
-
-  // if (configManager.getConfig('crowi', 'promister:isEnabled')) {
-  //   return null;
-  // }
-
-  // const { createMiddleware } = require('@promster/express');
-  // app.use(createMiddleware({ app }));
-
   app.use(registerSafeRedirect);
   app.use(injectCurrentuserToLocalvars);
   app.use(autoReconnectToS2sMsgServer);
