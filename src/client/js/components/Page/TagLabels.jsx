@@ -6,8 +6,8 @@ import { toastSuccess, toastError } from '../../util/apiNotification';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
-import PageContainer from '../../services/PageContainer';
-import EditorContainer from '../../services/EditorContainer';
+// import PageContainer from '../../services/PageContainer';
+// import EditorContainer from '../../services/EditorContainer';
 
 import RenderTagLabels from './RenderTagLabels';
 import TagEditModal from './TagEditModal';
@@ -32,8 +32,9 @@ class TagLabels extends React.Component {
    *   2. editorContainer.state.tags if editorMode is edit
    */
   getTagData() {
-    const { editorContainer, pageContainer, editorMode } = this.props;
-    return (editorMode === 'edit') ? editorContainer.state.tags : pageContainer.state.tags;
+    // const { editorContainer, editorMode } = this.props;
+    // return (editorMode === 'edit') ? editorContainer.state.tags : pageContainer.state.tags;
+    return [];
   }
 
   openEditorModal() {
@@ -46,29 +47,29 @@ class TagLabels extends React.Component {
 
   async tagsUpdatedHandler(newTags) {
     const {
-      appContainer, editorContainer, pageContainer, editorMode,
+      appContainer, editorMode,
     } = this.props;
 
-    const { pageId } = pageContainer.state;
+    // const { pageId } = pageContainer.state;
 
-    // It will not be reflected in the DB until the page is refreshed
-    if (editorMode === 'edit') {
-      return editorContainer.setState({ tags: newTags });
-    }
+    // // It will not be reflected in the DB until the page is refreshed
+    // if (editorMode === 'edit') {
+    //   return editorContainer.setState({ tags: newTags });
+    // }
 
-    try {
-      const { tags } = await appContainer.apiPost('/tags.update', { pageId, tags: newTags });
+    // try {
+    //   const { tags } = await appContainer.apiPost('/tags.update', { pageId, tags: newTags });
 
-      // update pageContainer.state
-      pageContainer.setState({ tags });
-      // update editorContainer.state
-      editorContainer.setState({ tags });
+    //   // update pageContainer.state
+    //   pageContainer.setState({ tags });
+    //   // update editorContainer.state
+    //   editorContainer.setState({ tags });
 
-      toastSuccess('updated tags successfully');
-    }
-    catch (err) {
-      toastError(err, 'fail to update tags');
-    }
+    //   toastSuccess('updated tags successfully');
+    // }
+    // catch (err) {
+    //   toastError(err, 'fail to update tags');
+    // }
   }
 
 
@@ -107,14 +108,14 @@ class TagLabels extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const TagLabelsWrapper = withUnstatedContainers(TagLabels, [AppContainer, PageContainer, EditorContainer]);
+const TagLabelsWrapper = withUnstatedContainers(TagLabels, [AppContainer]);
 
 TagLabels.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+  // pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  // editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 
   editorMode: PropTypes.string.isRequired,
 };
