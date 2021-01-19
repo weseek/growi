@@ -578,7 +578,11 @@ class PageService {
           removePageBulkOp.find({ path: toPath }).remove();
         }
       }
-      revertPageBulkOp.find({ _id: page._id }).update({ $set: { path: toPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id } });
+      revertPageBulkOp.find({ _id: page._id }).update({
+        $set: {
+          path: toPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id, deleteUser: null, deletedAt: null,
+        },
+      });
       revertRevisionBulkOp.find({ path: page.path }).update({ $set: { path: toPath } }, { multi: true });
     });
 
