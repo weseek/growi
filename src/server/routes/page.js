@@ -238,6 +238,9 @@ module.exports = function(crowi, app) {
     if (page.revision.author != null) {
       renderVars.revision.author = renderVars.revision.author.toObject();
     }
+    if (page.deleteUser != null) {
+      renderVars.page.deleteUser = renderVars.page.deleteUser.toObject();
+    }
   }
 
   function addRenderVarsForPresentation(renderVars, page) {

@@ -109,6 +109,7 @@ const populateDataToShowRevision = (page, userPublicFields) => {
     .populate([
       { path: 'lastUpdateUser', model: 'User', select: userPublicFields },
       { path: 'creator', model: 'User', select: userPublicFields },
+      { path: 'deleteUser', model: 'User', select: userPublicFields },
       { path: 'grantedGroup', model: 'UserGroup' },
       { path: 'revision', model: 'Revision', populate: {
         path: 'author', model: 'User', select: userPublicFields,
