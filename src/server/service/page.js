@@ -622,7 +622,9 @@ class PageService {
     page.lastUpdateUser = user;
     debug('Revert deleted the page', page, newPath);
     const updatedPage = await Page.findByIdAndUpdate(page._id, {
-      $set: { path: newPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id },
+      $set: {
+        path: newPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id, deleteUser: null, deletedAt: null,
+      },
     }, { new: true });
     await Revision.updateMany({ path: page.path }, { $set: { path: newPath } });
 
