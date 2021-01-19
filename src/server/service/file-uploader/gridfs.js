@@ -7,7 +7,7 @@ module.exports = function(crowi) {
   const lib = new Uploader(crowi);
   const COLLECTION_NAME = 'attachmentFiles';
   const CHUNK_COLLECTION_NAME = `${COLLECTION_NAME}.chunks`;
-  const FILES_COLLECTION_NAME = `${COLLECTION_NAME}.files`;
+  // const FILES_COLLECTION_NAME = `${COLLECTION_NAME}.files`;
 
   // instantiate mongoose-gridfs
   const { createModel } = require('mongoose-gridfs');
@@ -18,12 +18,12 @@ module.exports = function(crowi) {
   });
 
   // get Collection instance of chunk
-  const filesCollection = mongoose.connection.collection(FILES_COLLECTION_NAME);
   const chunkCollection = mongoose.connection.collection(CHUNK_COLLECTION_NAME);
+  // const filesCollection = mongoose.connection.collection(FILES_COLLECTION_NAME);
 
   // create promisified method
   AttachmentFile.promisifiedWrite = util.promisify(AttachmentFile.write).bind(AttachmentFile);
-  // AttachmentFile.promisifiedUnlink = util.promisify(AttachmentFile.unlink).bind(AttachmentFile);
+  AttachmentFile.promisifiedUnlink = util.promisify(AttachmentFile.unlink).bind(AttachmentFile);
 
   lib.isValidUploadSettings = function() {
     return true;
@@ -42,26 +42,22 @@ module.exports = function(crowi) {
       logger.warn(`Any AttachmentFile that relate to the Attachment (${attachment._id.toString()}) does not exist in GridFS`);
       return;
     }
-
     return AttachmentFile.promisifiedUnlink({ _id: attachmentFile._id });
   };
 
   lib.deleteFiles = async function(attachments) {
 
-    const unorderFilesBulkOp = filesCollection.initializeUnorderedBulkOp();
-    const unorderChunkBulkOp = chunkCollection.initializeUnorderedBulkOp();
-
     const filenameValues = [];
-    attachments.forEach(attachment => filenameValues.push(attachment.fileName));
-    const attachmentFiles = await AttachmentFile.find({ filename: { $in: filenameValues } });
-
-    attachmentFiles.forEach((attachmentFile) => {
-      unorderFilesBulkOp.find({ filename: attachmentFile.filename }).remove();
-      unorderChunkBulkOp.find({ files_id: attachmentFile._id }).remove();
+    const fileIds = [];
+    attachments.map((attachment) => {
+      filenameValues.push(attachment.fileName);
+      fileIds.push(attachment._id);
+      return;
     });
 
-    await unorderFilesBulkOp.execute();
-    await unorderChunkBulkOp.execute();
+    await AttachmentFile.find({ filename: { $in: filenameValues } }).remove({});
+    console.log(fileIds);
+    await chunkCollection.deleteMany({ files_id: { $in: fileIds } });
 
     return;
   };
