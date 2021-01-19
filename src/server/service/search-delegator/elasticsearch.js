@@ -967,8 +967,8 @@ class ElasticsearchDelegator {
     return this.updateOrInsertPageById(page._id);
   }
 
-  async syncDescendantsPagesUpdated(pages, user, parentPage) {
-
+  // remove pages whitch should nod Indexed
+  async syncPagesUpdated(pages, user) {
     const shoudDeletePages = [];
     pages.forEach((page) => {
       logger.debug('SearchClient.syncPageUpdated', page.path);
@@ -986,7 +986,9 @@ class ElasticsearchDelegator {
     catch (err) {
       logger.error('deletePages:ES Error', err);
     }
+  }
 
+  async syncDescendantsPagesUpdated(parentPage, user) {
     return this.updateOrInsertDescendantsPagesById(parentPage, user);
   }
 
