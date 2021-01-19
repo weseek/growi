@@ -5,7 +5,10 @@ const router = express.Router();
 module.exports = (crowi) => {
   router.get('/', async(req, res) => {
 
-    return;
+    // TODO: use res.apiv3
+    return res.json({
+      ok: true,
+    });
   });
 
   return router;
