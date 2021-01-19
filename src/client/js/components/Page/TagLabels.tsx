@@ -2,6 +2,8 @@ import React, { Suspense } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import { useTranslation } from '~/i18n';
+
 import { toastSuccess, toastError } from '../../util/apiNotification';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -12,7 +14,20 @@ import AppContainer from '../../services/AppContainer';
 import RenderTagLabels from './RenderTagLabels';
 import TagEditModal from './TagEditModal';
 
-class TagLabels extends React.Component {
+type Props = {
+  appContainer: AppContainer,
+  editorMode: string,
+}
+
+const TagLabels = (): JSX.Element => {
+  const { t } = useTranslation();
+
+  return <>tags</>;
+};
+
+export default TagLabels;
+
+class DeprecatedTagLabels extends React.Component {
 
   constructor(props) {
     super(props);
@@ -108,9 +123,9 @@ class TagLabels extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const TagLabelsWrapper = withUnstatedContainers(TagLabels, [AppContainer]);
+const TagLabelsWrapper = withUnstatedContainers(DeprecatedTagLabels, [AppContainer]);
 
-TagLabels.propTypes = {
+DeprecatedTagLabels.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
@@ -120,4 +135,4 @@ TagLabels.propTypes = {
   editorMode: PropTypes.string.isRequired,
 };
 
-export default withTranslation()(TagLabelsWrapper);
+// export default withTranslation()(TagLabelsWrapper);
