@@ -33,7 +33,7 @@ export const useCurrentPageSWR = (initialData?: any): responseInterface<Page, Er
   return usePageSWR(currentPagePath);
 };
 
-export const useCurrentPageTagsSWR = (): responseInterface<Tag, Error> => {
+export const useCurrentPageTagsSWR = (): responseInterface<Tag[], Error> => {
   const { data: currentPage } = useCurrentPageSWR();
 
   return useSWR(
