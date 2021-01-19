@@ -103,10 +103,7 @@ class PageService {
       }
     }
 
-    const newParentPage = await this.findByPath(newPagePathPrefix);
-    const renamedPages = await this.findManageableListWithDescendants(newParentPage, user, options);
-
-    this.pageEvent.emit('createMany', renamedPages, user, newParentPage);
+    this.pageEvent.emit('updateMany', pages, user);
   }
 
   /**
@@ -127,6 +124,7 @@ class PageService {
       .cursor();
 
     const renameDescendants = this.renameDescendants.bind(this);
+    const pageEvent = this.pageEvent;
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
@@ -144,7 +142,9 @@ class PageService {
       },
       final(callback) {
         logger.debug(`Reverting pages has completed: (totalCount=${count})`);
-
+        // update  path
+        targetPage.path = newPagePath;
+        pageEvent.emit('syncDescendants', targetPage, user);
         callback();
       },
     });
