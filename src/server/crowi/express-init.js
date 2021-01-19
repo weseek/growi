@@ -18,6 +18,7 @@ module.exports = function(crowi, app) {
   const i18nSprintf = require('i18next-sprintf-postprocessor');
   const i18nMiddleware = require('i18next-express-middleware');
 
+  // const promster = require('../middlewares/promster')(crowi, app);
   const registerSafeRedirect = require('../middlewares/safe-redirect')();
   const injectCurrentuserToLocalvars = require('../middlewares/inject-currentuser-to-localvars')();
   const autoReconnectToS2sMsgServer = require('../middlewares/auto-reconnect-to-s2s-msg-server')(crowi);
@@ -115,6 +116,16 @@ module.exports = function(crowi, app) {
   app.use(passport.session());
 
   app.use(flash());
+
+  // app.use(promster);
+  const { configManager } = crowi;
+
+  if (configManager.getConfig('crowi', 'promister:isEnabled')) {
+    return null;
+  }
+
+  const { createMiddleware } = require('@promster/express');
+  app.use(createMiddleware({ app }));
 
   app.use(registerSafeRedirect);
   app.use(injectCurrentuserToLocalvars);

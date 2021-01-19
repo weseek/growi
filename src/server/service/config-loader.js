@@ -380,6 +380,18 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.NUMBER,
     default: 120,
   },
+  PROMSTER_ENABLED: {
+    ns:      'crowi',
+    key:     'promister:isEnabled',
+    type:    TYPES.BOOLEAN,
+    default: false,
+  },
+  PROMSTER_PORT: {
+    ns:      'crowi',
+    key:     'promister:port',
+    type:    TYPES.NUMBER,
+    default: 7788,
+  },
 };
 
 class ConfigLoader {
