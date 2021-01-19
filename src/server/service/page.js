@@ -21,6 +21,29 @@ class PageService {
     this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
   }
 
+  /**
+   * go back by using redirectTo and return the paths
+   *  ex: when
+   *    '/page1' redirects to '/page2' and
+   *    '/page2' redirects to '/page3'
+   *    and given '/page3',
+   *    '/page1' and '/page2' will be return
+   *
+   * @param {string} redirectTo
+   * @param {object} redirectToPagePathMapping
+   * @param {array} pagePaths
+   */
+  prepareShoudDeletePagesByRedirectTo(redirectTo, redirectToPagePathMapping, pagePaths = []) {
+    const pagePath = redirectToPagePathMapping[redirectTo];
+
+    if (pagePath == null) {
+      return pagePaths;
+    }
+
+    pagePaths.push(pagePath);
+    return this.prepareShoudDeletePagesByRedirectTo(pagePath, redirectToPagePathMapping, pagePaths);
+  }
+
   async deleteCompletelyOperation(pageIds, pagePaths) {
     // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
     const Bookmark = this.crowi.model('Bookmark');
