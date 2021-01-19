@@ -32,6 +32,17 @@ export const useCurrentPageSWR = (initialData?: any): responseInterface<Page, Er
   return usePageSWR(currentPagePath);
 };
 
+// TODO: impl with https://youtrack.weseek.co.jp/issue/GW-4904
+export const useCurrentPageTagsSWR = (initialData?: any): responseInterface<Page, Error> => {
+  const { data: currentPagePath } = useCurrentPagePath();
+
+  if (initialData != null) {
+    mutate('currentTags', initialData);
+  }
+
+  return useStaticSWR('currentTags');
+};
+
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const useCurrentPageDeleted = (): responseInterface<boolean, Error> => {
   const { data: currentPagePath } = useCurrentPagePath();

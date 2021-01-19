@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -13,6 +13,7 @@ import AppContainer from '../../services/AppContainer';
 
 import RenderTagLabels from './RenderTagLabels';
 import TagEditModal from './TagEditModal';
+import { useCurrentPageTagsSWR } from '~/stores/page';
 
 type Props = {
   appContainer: AppContainer,
@@ -21,8 +22,11 @@ type Props = {
 
 const TagLabels = (): JSX.Element => {
   const { t } = useTranslation();
+  const { isTagEditModalShown, setIsTagEditModalShown } = useState(false);
 
-  return <>tags</>;
+  const { data: tags } = useCurrentPageTagsSWR([]);
+
+  return <>length of tags are {tags.length}</>;
 };
 
 export default TagLabels;
