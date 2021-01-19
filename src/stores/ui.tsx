@@ -47,17 +47,18 @@ export const useIsAbleToShowLikeButton = (): responseInterface<boolean, any> => 
 export const useIsAbleToShowTagLabel = (): responseInterface<boolean, any> => {
   const key = 'isAbleToShowTagLabel';
   const { data: page } = useCurrentPageSWR();
+  const { data: isNotFoundPage } = useNotFound();
+  // [TODO: getting if the current mode is 'view' or 'edit']
+  const editorMode = 'view';
 
   if (page == null) {
     mutate(key, false);
   }
   else {
-    const { path } = page as Page;
-    mutate(key, !isUserPage(path) && !isSharedPage(path));
+    // Tags cannot be edited while the new page and editorMode is 'view'
+    mutate(key, !isUserPage(page.path) && !isSharedPage(page.path) && !(editorMode === 'view' && isNotFoundPage));
   }
 
-  // [TODO: add other two judgements and expand isAbleToShowTagLabel by GW-4881]
-  // isAbleToShowTagLabel = (!isCompactMode && !isUserPage && !isSharedPage && !(editorMode === 'view' && !isPageExist));
   return useStaticSWR(key);
 };
 

@@ -118,8 +118,6 @@ const GrowiSubNavigation = (props) => {
 
   const { isGuestUser } = appContainer;
   const isEditorMode = editorMode !== 'view';
-  // Tags cannot be edited while the new page and editorMode is view
-  const isTagLabelHidden = (editorMode !== 'edit' && isPageNotFound);
   // TODO: activate with GW-4402
   // const isSharedPage = shareLinkId != null;
   const isSharedPage = false;
@@ -140,8 +138,7 @@ const GrowiSubNavigation = (props) => {
         ) }
 
         <div className="grw-path-nav-container">
-          {/* TODO: add other two judgements and expand isAbleToShowTagLabel by GW-4881 */}
-          { isAbleToShowTagLabel && !isCompactMode && !isTagLabelHidden && (
+          { isAbleToShowTagLabel && !isCompactMode && (
             <div className="grw-taglabels-container">
               <TagLabels editorMode={editorMode} />
             </div>
