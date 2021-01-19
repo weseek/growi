@@ -21,7 +21,7 @@ import NavigationContainer from '../../services/NavigationContainer';
 
 // import LikeButton from '../LikeButton';
 // import BookmarkButton from '../BookmarkButton';
-import TagLabels from '../Page/TagLabels';
+// import TagLabels from '../Page/TagLabels';
 
 import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
@@ -100,6 +100,7 @@ const GrowiSubNavigation = (props) => {
   // dynamic import to skip rendering at SSR
   const SubnavButtons = dynamic(() => import('~/components/Organisms/GrowiSubnavButtons'), { ssr: false });
   const PageEditorModeManager = dynamic(() => import('./PageEditorModeManager'), { ssr: false });
+  const TagLabels = dynamic(() => import('~/client/js/components/Page/TagLabels'), { ssr: false });
 
   const {
     appContainer, navigationContainer, isCompactMode,
@@ -142,7 +143,7 @@ const GrowiSubNavigation = (props) => {
           {/* TODO: add other two judgements and expand isAbleToShowTagLabel by GW-4881 */}
           { isAbleToShowTagLabel && !isCompactMode && !isTagLabelHidden && (
             <div className="grw-taglabels-container">
-              {/* <TagLabels editorMode={editorMode} /> */}
+              <TagLabels editorMode={editorMode} />
             </div>
           ) }
           <PagePathNav pageId={pageId} pagePath={path} isEditorMode={isEditorMode} isCompactMode={isCompactMode} />
