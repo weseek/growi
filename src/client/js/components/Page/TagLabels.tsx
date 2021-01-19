@@ -70,6 +70,7 @@ const TagLabels = (props: Props): JSX.Element => {
 
 export default TagLabels;
 
+// TODO: remove old code (https://youtrack.weseek.co.jp/issue/GW-4961)
 class DeprecatedTagLabels extends React.Component {
 
   constructor(props) {
