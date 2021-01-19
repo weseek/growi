@@ -75,6 +75,7 @@ class PageService {
       ShareLink.find({ relatedPage: { $in: pageIds } }).remove({}),
       Revision.find({ path: { $in: pagePaths } }).remove({}),
       Page.find({ _id: { $in: pageIds } }).remove({}),
+      Page.find({ path: { $in: redirectedFromPagePaths } }).remove({}),
       Page.find({ path: { $in: pagePaths } }).remove({}),
       attachmentService.removeAllAttachments(attachments),
     ]);
