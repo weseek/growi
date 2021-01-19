@@ -46,5 +46,7 @@ module.exports = (crowi) => {
   router.use('/bookmarks', require('./bookmarks')(crowi));
   router.use('/attachment', require('./attachment')(crowi));
 
+  router.use('/growi-bot', require('./growi-bot')(crowi));
+
   return router;
 };
