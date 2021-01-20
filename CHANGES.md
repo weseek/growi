@@ -2,7 +2,15 @@
 
 ## v4.2.6-RC
 
-* 
+* Feature: Add a button to jump to Comments section
+* Feature: Paste Bootstrap4 Grid HTML with GUI
+* Improvement: Layout of Edit Link Modal
+* Improvement: Focus to the first input when modal is opened
+* Fix: Upgrading to v4.x failed when the user uses Kibela Layout
+    * Introduced by v4.2.0
+* Fix: Navbar is not rendered on old iOS
+* Support: Upgrade libs
+    * axios
 
 ## v4.2.5-RC
 
