@@ -1,39 +1,51 @@
-import {
-  NextPage,
-} from 'next';
 import React from 'react';
+import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 
-type Props = {
-  growiVersion: string,
-  nodeVersion: string,
-  npmVersion: string,
-  yarnVersion: string,
+import { withUnstatedContainers } from '../../UnstatedUtils';
+import AppContainer from '../../../services/AppContainer';
+import AdminHomeContainer from '../../../services/AdminHomeContainer';
+
+class SystemInformationTable extends React.Component {
+
+  render() {
+    const { adminHomeContainer } = this.props;
+
+    return (
+      <table className="table table-bordered">
+        <tbody>
+          <tr>
+            <th>GROWI</th>
+            <td>{ adminHomeContainer.state.growiVersion }</td>
+          </tr>
+          <tr>
+            <th>node.js</th>
+            <td>{ adminHomeContainer.state.nodeVersion }</td>
+          </tr>
+          <tr>
+            <th>npm</th>
+            <td>{ adminHomeContainer.state.npmVersion }</td>
+          </tr>
+          <tr>
+            <th>yarn</th>
+            <td>{ adminHomeContainer.state.yarnVersion }</td>
+          </tr>
+        </tbody>
+      </table>
+    );
+  }
+
+}
+
+SystemInformationTable.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  adminHomeContainer: PropTypes.instanceOf(AdminHomeContainer).isRequired,
 };
 
-const SystemInformationTable: NextPage<Props> = (props: Props) => {
+/**
+ * Wrapper component for using unstated
+ */
+const SystemInformationTableWrapper = withUnstatedContainers(SystemInformationTable, [AppContainer, AdminHomeContainer]);
 
-  return (
-    <table className="table table-bordered">
-      <tbody>
-        <tr>
-          <th>GROWI</th>
-          <td>{ props.growiVersion }</td>
-        </tr>
-        <tr>
-          <th>node.js</th>
-          <td>{ props.nodeVersion }</td>
-        </tr>
-        <tr>
-          <th>npm</th>
-          <td>{ props.npmVersion }</td>
-        </tr>
-        <tr>
-          <th>yarn</th>
-          <td>{ props.yarnVersion }</td>
-        </tr>
-      </tbody>
-    </table>
-  );
-};
-
-export default SystemInformationTable;
+export default withTranslation()(SystemInformationTableWrapper);

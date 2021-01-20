@@ -14,3 +14,7 @@ export type LikeInfo = {
   sumOfLikers: number,
   isLiked: boolean,
 }
+
+export type Tag = {
+
+}
