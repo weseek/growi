@@ -7,7 +7,6 @@ module.exports = function(crowi) {
   const lib = new Uploader(crowi);
   const COLLECTION_NAME = 'attachmentFiles';
   const CHUNK_COLLECTION_NAME = `${COLLECTION_NAME}.chunks`;
-  // const FILES_COLLECTION_NAME = `${COLLECTION_NAME}.files`;
 
   // instantiate mongoose-gridfs
   const { createModel } = require('mongoose-gridfs');
@@ -19,7 +18,6 @@ module.exports = function(crowi) {
 
   // get Collection instance of chunk
   const chunkCollection = mongoose.connection.collection(CHUNK_COLLECTION_NAME);
-  // const filesCollection = mongoose.connection.collection(FILES_COLLECTION_NAME);
 
   // create promisified method
   AttachmentFile.promisifiedWrite = util.promisify(AttachmentFile.write).bind(AttachmentFile);
