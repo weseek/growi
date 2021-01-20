@@ -7,26 +7,19 @@ const receiver = new ExpressReceiver({ signingSecret: process.env.SLACK_SIGNING_
 module.exports = (crowi) => {
 
   router.get('/', async(req, res) => {
-
-    const app = new App({
-      token: process.env.SLACK_BOT_TOKEN,
-      receiver,
-    });
-
-    app.event('message', async({ event, client }) => {
-      await client.chat.postMessage('...');
-    });
-
-    receiver.router.post('/secret-page', (req, res) => {
-      res.send('yay!');
-    });
-
-    // TODO: use res.apiv3
-    return res.json({
-      ok: true,
-    });
   });
 
+  const app = new App({
+    token: process.env.SLACK_BOT_TOKEN,
+    receiver,
+  });
+
+  console.log('bbb');
+
+  app.message('あ', async({ message, say }) => {
+    await say('aaaaaa');
+  });
+  console.log('ccc');
 
   return router;
 };
