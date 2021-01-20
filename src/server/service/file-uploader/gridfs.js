@@ -46,7 +46,6 @@ module.exports = function(crowi) {
   };
 
   lib.deleteFiles = async function(attachments) {
-
     const filenameValues = [];
     attachments.map((attachment) => {
       filenameValues.push(attachment.fileName);
@@ -58,7 +57,6 @@ module.exports = function(crowi) {
 
     await AttachmentFile.find({ filename: { $in: filenameValues } }).remove();
     await chunkCollection.deleteMany({ files_id: { $in: idsRelatedFiles } });
-
     return;
   };
 
