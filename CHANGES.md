@@ -2,7 +2,8 @@
 
 ## v4.2.6-RC
 
-* 
+* Fix: Failed to save temporaryUrlCached with using gcs
+    * Introduced by v4.2.3
 
 ## v4.2.5-RC
 
