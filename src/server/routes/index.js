@@ -47,9 +47,9 @@ module.exports = function(crowi, app) {
     return;
   }
 
-  app.get('/login/error/:reason'     , login.error);
-  app.get('/login'                   , applicationInstalled     , login.preLogin, login.login);
-  app.get('/login/invited'           , login.invited);
+  app.get('/login/error/:reason'     , applicationInstalled, login.error);
+  app.get('/login'                   , applicationInstalled, login.preLogin, login.login);
+  app.get('/login/invited'           , applicationInstalled, login.invited);
   app.post('/login/activateInvited'  , form.invited                         , csrf, login.invited);
   app.post('/login'                  , form.login                           , csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
   app.post('/_api/login/testLdap'    , loginRequiredStrictly , form.login , loginPassport.testLdapCredentials);
@@ -58,11 +58,11 @@ module.exports = function(crowi, app) {
   app.get('/register'                , applicationInstalled     , login.preLogin, login.register);
   app.get('/logout'                  , logout.logout);
 
-  app.get('/admin'                          , loginRequiredStrictly , adminRequired , admin.index);
-  app.get('/admin/app'                      , loginRequiredStrictly , adminRequired , admin.app.index);
+  app.get('/admin'                   , applicationInstalled, loginRequiredStrictly , adminRequired , admin.index);
+  app.get('/admin/app'               , applicationInstalled, loginRequiredStrictly , adminRequired , admin.app.index);
 
   // security admin
-  app.get('/admin/security'                     , loginRequiredStrictly , adminRequired , admin.security.index);
+  app.get('/admin/security'          , applicationInstalled, loginRequiredStrictly , adminRequired , admin.security.index);
 
   // OAuth
   app.get('/passport/google'                      , loginPassport.loginWithGoogle, loginPassport.loginFailure);
@@ -78,28 +78,28 @@ module.exports = function(crowi, app) {
   app.post('/passport/saml/callback'              , loginPassport.loginPassportSamlCallback     , loginPassport.loginFailure);
 
   // markdown admin
-  app.get('/admin/markdown'                   , loginRequiredStrictly , adminRequired , admin.markdown.index);
+  app.get('/admin/markdown'            , applicationInstalled, loginRequiredStrictly , adminRequired , admin.markdown.index);
 
   // customize admin
-  app.get('/admin/customize'                , loginRequiredStrictly , adminRequired , admin.customize.index);
+  app.get('/admin/customize'           , applicationInstalled, loginRequiredStrictly , adminRequired , admin.customize.index);
 
   // search admin
-  app.get('/admin/search'              , loginRequiredStrictly , adminRequired , admin.search.index);
+  app.get('/admin/search'              , applicationInstalled, loginRequiredStrictly , adminRequired , admin.search.index);
 
   // notification admin
-  app.get('/admin/notification'              , loginRequiredStrictly , adminRequired , admin.notification.index);
-  app.get('/admin/notification/slackAuth'    , loginRequiredStrictly , adminRequired , admin.notification.slackAuth);
-  app.get('/admin/notification/slackSetting/disconnect', loginRequiredStrictly , adminRequired , admin.notification.disconnectFromSlack);
-  app.get('/admin/global-notification/new'   , loginRequiredStrictly , adminRequired , admin.globalNotification.detail);
-  app.get('/admin/global-notification/:id'   , loginRequiredStrictly , adminRequired , admin.globalNotification.detail);
+  app.get('/admin/notification'              , applicationInstalled, loginRequiredStrictly , adminRequired , admin.notification.index);
+  app.get('/admin/notification/slackAuth'    , applicationInstalled, loginRequiredStrictly , adminRequired , admin.notification.slackAuth);
+  app.get('/admin/notification/slackSetting/disconnect', applicationInstalled, loginRequiredStrictly , adminRequired , admin.notification.disconnectFromSlack);
+  app.get('/admin/global-notification/new'   , applicationInstalled, loginRequiredStrictly , adminRequired , admin.globalNotification.detail);
+  app.get('/admin/global-notification/:id'   , applicationInstalled, loginRequiredStrictly , adminRequired , admin.globalNotification.detail);
 
-  app.get('/admin/users'                , loginRequiredStrictly , adminRequired , admin.user.index);
+  app.get('/admin/users'                     , applicationInstalled, loginRequiredStrictly , adminRequired , admin.user.index);
 
-  app.get('/admin/users/external-accounts'               , loginRequiredStrictly , adminRequired , admin.externalAccount.index);
+  app.get('/admin/users/external-accounts'   , applicationInstalled, loginRequiredStrictly , adminRequired , admin.externalAccount.index);
 
   // user-groups admin
-  app.get('/admin/user-groups'             , loginRequiredStrictly, adminRequired, admin.userGroup.index);
-  app.get('/admin/user-group-detail/:id'   , loginRequiredStrictly, adminRequired, admin.userGroup.detail);
+  app.get('/admin/user-groups'             , applicationInstalled, loginRequiredStrictly, adminRequired, admin.userGroup.index);
+  app.get('/admin/user-group-detail/:id'   , applicationInstalled, loginRequiredStrictly, adminRequired, admin.userGroup.detail);
 
   // importer management for admin
   app.get('/admin/importer'                     , loginRequiredStrictly , adminRequired , admin.importer.index);
@@ -173,7 +173,7 @@ module.exports = function(crowi, app) {
 
   app.get('/share/:linkId', page.showSharedPage);
 
-  app.get('/*/$'                   , loginRequired , page.showPageWithEndOfSlash, page.notFound);
-  app.get('/*'                     , loginRequired , autoReconnectToSearch, page.showPage, page.notFound);
+  app.get('/*/$'                   , applicationInstalled, loginRequired , page.showPageWithEndOfSlash, page.notFound);
+  app.get('/*'                     , applicationInstalled, loginRequired , autoReconnectToSearch, page.showPage, page.notFound);
 
 };
