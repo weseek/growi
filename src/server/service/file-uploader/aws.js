@@ -123,22 +123,14 @@ module.exports = function(crowi) {
     const s3 = S3Factory();
     const awsConfig = getAwsConfig();
 
-    const filePaths = [];
-    attachments.forEach(attachment => filePaths.push(getFilePathOnStorage(attachment)));
+    const filePaths = attachments.map((attachment) => {
+      return { Key: getFilePathOnStorage(attachment) };
+    });
 
     const totalParams = {
       Bucket: awsConfig.bucket,
-      Delete: { Objects: [] },
+      Delete: { Objects: filePaths },
     };
-
-    const Objects = [];
-    filePaths.forEach((filePath) => {
-      Objects.push({ Key: filePath });
-    });
-
-    Objects.forEach((object) => {
-      totalParams.Delete.Objects.push(object);
-    });
 
     return s3.deleteObjects(totalParams).promise();
   };
