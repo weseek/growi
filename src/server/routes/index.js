@@ -39,7 +39,7 @@ module.exports = function(crowi, app) {
   app.use('/api-docs', require('./apiv3/docs')(crowi));
   app.use('/_api/v3', require('./apiv3')(crowi));
 
-  // pre-installation routes
+  // installer
   if (!isInstalled) {
     const installer = require('./installer')(crowi);
     app.get('/installer'               , applicationNotInstalled , installer.index);
@@ -173,7 +173,7 @@ module.exports = function(crowi, app) {
 
   app.get('/share/:linkId', page.showSharedPage);
 
-  app.get('/*/$'                   , applicationInstalled, loginRequired , page.showPageWithEndOfSlash, page.notFound);
-  app.get('/*'                     , applicationInstalled, loginRequired , autoReconnectToSearch, page.showPage, page.notFound);
+  app.get('/*/$'                   , loginRequired , page.showPageWithEndOfSlash, page.notFound);
+  app.get('/*'                     , loginRequired , autoReconnectToSearch, page.showPage, page.notFound);
 
 };
