@@ -8,7 +8,7 @@ import BasicLayout from '../../components/BasicLayout';
 import { useTranslation } from '~/i18n';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, getServerSideCommonProps } from '~/utils/nextjs-page-utils';
-import Customize from '~/client/js/components/Admin/Customize/Customize';
+import MarkDownSettingContents from '~/client/js/components/Admin/MarkdownSetting/MarkDownSettingContents';
 
 import {
   useCurrentUser,
@@ -25,9 +25,9 @@ type Props = CommonProps & {
   isSearchServiceReachable: boolean,
 };
 
-const AdminCustomizePage: NextPage<Props> = (props: Props) => {
+const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();
-  const title = t('Wiki Management Home Page');
+  const title = t('Markdown Settings');
   const AdminNavigation = dynamic(() => import('~/client/js/components/Admin/Common/AdminNavigation'), { ssr: false });
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
@@ -50,7 +50,7 @@ const AdminCustomizePage: NextPage<Props> = (props: Props) => {
                 <AdminNavigation />
               </div>
               <div className="col-lg-9">
-                {/* <Customize /> */}
+                <MarkDownSettingContents />
               </div>
             </div>
           </div>
@@ -84,4 +84,4 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   };
 };
 
-export default AdminCustomizePage;
+export default AdminMarkdownSettingsPage;
