@@ -47,8 +47,8 @@ module.exports = function(crowi) {
     const filenameValues = attachments.map((attachment) => {
       return attachment.fileName;
     });
-    const idsRelatedFiles = await AttachmentFile.find({ filename: { $in: filenameValues } }, { _id: 1 }).map((responses) => {
-      return responses.map((response) => { return response._id });
+    const idsRelatedFiles = await AttachmentFile.find({ filename: { $in: filenameValues } }, { _id: 1 }).map((fileIdObjects) => {
+      return fileIdObjects.map((obj) => { return obj._id });
     });
 
     await AttachmentFile.deleteMany({ filename: { $in: filenameValues } });
