@@ -6,15 +6,18 @@ import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
 
-
-import AppContainer from '../services/AppContainer';
-import { withUnstatedContainers } from './UnstatedUtils';
+import KeyboardReturnEnterIcon from './Icons/KeyboardReturnEnterIcon';
 
 
 const ShortcutsModal = (props) => {
-  const { t, appContainer } = props;
+  const { t } = props;
 
   const [isOpen, setIsOpen] = useState(false);
+
+  // add classes to cmd-key by OS
+  const platform = window.navigator.platform.toLowerCase();
+  const isMac = (platform.indexOf('mac') > -1);
+  const os = isMac ? 'mac' : 'win';
 
   function toggleIsOpen() {
     setIsOpen(!isOpen);
@@ -41,7 +44,7 @@ const ShortcutsModal = (props) => {
                       <span dangerouslySetInnerHTML={{ __html: t('modal_shortcuts.global.Open/Close shortcut help') }} />:
                     </th>
                     <td>
-                      <span className="key cmd-key"></span> + <span className="key">/</span>
+                      <span className={`key cmd-key ${os}`}></span> + <span className="key">/</span>
                     </td>
                   </tr>
                   <tr>
@@ -114,13 +117,13 @@ const ShortcutsModal = (props) => {
                   <tr>
                     <th>{t('modal_shortcuts.editor.Save Page')}:</th>
                     <td>
-                      <span className="key cmd-key"></span> + <span className="key">S</span>
+                      <span className={`key cmd-key ${os}`}></span> + <span className="key">S</span>
                     </td>
                   </tr>
                   <tr>
                     <th>{t('modal_shortcuts.editor.Delete Line')}:</th>
                     <td>
-                      <span className="key cmd-key"></span> + <span className="key">D</span>
+                      <span className={`key cmd-key ${os}`}></span> + <span className="key">D</span>
                     </td>
                   </tr>
                 </table>
@@ -133,14 +136,14 @@ const ShortcutsModal = (props) => {
                   <tr>
                     <th>{t('modal_shortcuts.commentform.Post')}:</th>
                     <td>
-                      <span className="key cmd-key"></span> +
-                      <span className="key key-longer">{/* {%include '../widget/icon-keyboard-return-enter.html' %} */}</span>
+                      <span className={`key cmd-key ${os}`}></span> +
+                      <span className="key key-longer"><KeyboardReturnEnterIcon /></span>
                     </td>
                   </tr>
                   <tr>
                     <th>{t('modal_shortcuts.editor.Delete Line')}:</th>
                     <td>
-                      <span className="key cmd-key"></span> + <span className="key">D</span>
+                      <span className={`key cmd-key ${os}`}></span> + <span className="key">D</span>
                     </td>
                   </tr>
                 </table>
@@ -150,22 +153,14 @@ const ShortcutsModal = (props) => {
         </ModalBody>
       </Modal>
       <button type="button" className="btn btn-link p-0" onClick={e => toggleIsOpen()}>
-        <i className="fa fa-keyboard-o"></i>&nbsp;<span className="cmd-key"></span>-/
+        <i className="fa fa-keyboard-o"></i>&nbsp;<span className={`cmd-key ${os}`}></span>-/
       </button>
     </>
   );
 };
 
-
-/**
- * Wrapper component for using unstated
- */
-const ShortcutsModalWrapper = withUnstatedContainers(ShortcutsModal, [AppContainer]);
-
-
 ShortcutsModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
-export default withTranslation()(ShortcutsModalWrapper);
+export default withTranslation()(ShortcutsModal);
