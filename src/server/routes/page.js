@@ -1343,12 +1343,7 @@ module.exports = function(crowi, app) {
         return res.json(ApiResponse.error('Someone could update this page, so couldn\'t delete.', 'outdated'));
       }
 
-      if (isRecursively) {
-        page = await Page.renameRecursively(page, newPagePath, req.user, options);
-      }
-      else {
-        page = await Page.rename(page, newPagePath, req.user, options);
-      }
+      page = await crowi.pageService.renamePage(page, newPagePath, req.user, options, isRecursively);
     }
     catch (err) {
       logger.error(err);
