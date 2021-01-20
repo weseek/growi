@@ -17,7 +17,7 @@ const ShortcutsModal = (props) => {
   // add classes to cmd-key by OS
   const platform = window.navigator.platform.toLowerCase();
   const isMac = (platform.indexOf('mac') > -1);
-  const os = isMac ? 'mac' : 'win';
+  const additionalClassByOs = 'key-longer win';
 
   function toggleIsOpen() {
     setIsOpen(!isOpen);
@@ -44,7 +44,7 @@ const ShortcutsModal = (props) => {
                       <span dangerouslySetInnerHTML={{ __html: t('modal_shortcuts.global.Open/Close shortcut help') }} />:
                     </th>
                     <td>
-                      <span className={`key cmd-key ${os}`}></span> + <span className="key">/</span>
+                      <span className={`key cmd-key ${additionalClassByOs}`}></span> + <span className="key">/</span>
                     </td>
                   </tr>
                   <tr>
@@ -117,13 +117,13 @@ const ShortcutsModal = (props) => {
                   <tr>
                     <th>{t('modal_shortcuts.editor.Save Page')}:</th>
                     <td>
-                      <span className={`key cmd-key ${os}`}></span> + <span className="key">S</span>
+                      <span className={`key cmd-key ${additionalClassByOs}`}></span> + <span className="key">S</span>
                     </td>
                   </tr>
                   <tr>
                     <th>{t('modal_shortcuts.editor.Delete Line')}:</th>
                     <td>
-                      <span className={`key cmd-key ${os}`}></span> + <span className="key">D</span>
+                      <span className={`key cmd-key ${additionalClassByOs}`}></span> + <span className="key">D</span>
                     </td>
                   </tr>
                 </table>
@@ -136,14 +136,16 @@ const ShortcutsModal = (props) => {
                   <tr>
                     <th>{t('modal_shortcuts.commentform.Post')}:</th>
                     <td>
-                      <span className={`key cmd-key ${os}`}></span> +
-                      <span className="key key-longer"><KeyboardReturnEnterIcon /></span>
+                      <span className={`key cmd-key ${additionalClassByOs}`}></span> +
+                      <span className="key key-longer">
+                        <KeyboardReturnEnterIcon />
+                      </span>
                     </td>
                   </tr>
                   <tr>
                     <th>{t('modal_shortcuts.editor.Delete Line')}:</th>
                     <td>
-                      <span className={`key cmd-key ${os}`}></span> + <span className="key">D</span>
+                      <span className={`key cmd-key ${additionalClassByOs}`}></span> + <span className="key">D</span>
                     </td>
                   </tr>
                 </table>
@@ -153,7 +155,7 @@ const ShortcutsModal = (props) => {
         </ModalBody>
       </Modal>
       <button type="button" className="btn btn-link p-0" onClick={e => toggleIsOpen()}>
-        <i className="fa fa-keyboard-o"></i>&nbsp;<span className={`cmd-key ${os}`}></span>-/
+        <i className="fa fa-keyboard-o"></i>&nbsp;<span className={`cmd-key ${additionalClassByOs}`}></span>-/
       </button>
     </>
   );
