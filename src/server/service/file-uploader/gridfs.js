@@ -51,7 +51,7 @@ module.exports = function(crowi) {
       return responses.map((response) => { return response._id });
     });
 
-    await AttachmentFile.find({ filename: { $in: filenameValues } }).remove();
+    await AttachmentFile.deleteMany({ filename: { $in: filenameValues } });
     await chunkCollection.deleteMany({ files_id: { $in: idsRelatedFiles } });
     return;
   };
