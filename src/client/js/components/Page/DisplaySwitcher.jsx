@@ -8,7 +8,7 @@ import Editor from '../PageEditor';
 import Page from '../Page';
 import UserInfo from '../User/UserInfo';
 import TableOfContents from '../TableOfContents';
-import UserContentsLinks from '../UserContentsLinks';
+import ContentLinkButtons from '../ContentLinkButtons';
 import PageAccessories from '../PageAccessories';
 import PageEditorByHackmd from '../PageEditorByHackmd';
 import EditorNavbarBottom from '../PageEditor/EditorNavbarBottom';
@@ -37,7 +37,7 @@ const DisplaySwitcher = (props) => {
                   <div id="revision-toc" className="revision-toc">
                     <TableOfContents />
                   </div>
-                  {pageUser && <UserContentsLinks />}
+                  <ContentLinkButtons />
                 </div>
               </div>
             </div>
