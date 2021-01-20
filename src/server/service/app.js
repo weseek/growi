@@ -38,17 +38,9 @@ class AppService extends S2sMessageHandlable {
   async handleS2sMessage(s2sMessage) {
     logger.info('Invoke post installation process by pubsub notification');
 
-    const { crowi, configManager, s2sMessagingService } = this;
-
-    // load config and setup
-    await configManager.loadConfigs();
-
-    const isInstalled = this.crowi.configManager.getConfig('crowi', 'app:installed');
-    if (isInstalled) {
-      crowi.setupAfterInstall();
-
-      // remove message handler
-      s2sMessagingService.removeMessageHandler(this);
+    const isDBInitialized = await this.isDBInitialized(true);
+    if (isDBInitialized) {
+      this.setupAfterInstall();
     }
   }
 
@@ -64,9 +56,6 @@ class AppService extends S2sMessageHandlable {
       catch (e) {
         logger.error('Failed to publish post installation message with S2sMessagingService: ', e.message);
       }
-
-      // remove message handler
-      s2sMessagingService.removeMessageHandler(this);
     }
 
   }
@@ -113,9 +102,23 @@ class AppService extends S2sMessageHandlable {
     await this.configManager.updateConfigsInTheSameNamespace('crowi', initialConfig, true);
   }
 
-  async isDBInitialized() {
-    const appInstalled = await this.configManager.getConfigFromDB('crowi', 'app:installed');
-    return appInstalled;
+  async isDBInitialized(forceReload) {
+    if (forceReload) {
+      // load configs
+      await this.configManager.loadConfigs();
+    }
+    return this.configManager.getConfigFromDB('crowi', 'app:installed');
+  }
+
+  async setupAfterInstall() {
+    this.crowi.pluginService.autoDetectAndLoadPlugins();
+    this.crowi.setupRoutesAtLast();
+
+    // remove message handler
+    const { s2sMessagingService } = this;
+    if (s2sMessagingService != null) {
+      this.s2sMessagingService.removeMessageHandler(this);
+    }
   }
 
 }
