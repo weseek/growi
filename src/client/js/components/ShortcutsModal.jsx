@@ -17,7 +17,7 @@ const ShortcutsModal = (props) => {
   // add classes to cmd-key by OS
   const platform = window.navigator.platform.toLowerCase();
   const isMac = (platform.indexOf('mac') > -1);
-  const additionalClassByOs = 'key-longer win';
+  const additionalClassByOs = isMac ? 'mac' : 'key-longer win';
 
   function toggleIsOpen() {
     setIsOpen(!isOpen);
