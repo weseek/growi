@@ -21,7 +21,7 @@ const InstalledPluginTable = (props: Props): JSX.Element => {
         </tr>
       </thead>
       <tbody>
-        {/* {props.installedPlugins.map((plugin) => {
+        {props.installedPlugins.map((plugin) => {
           return (
             <tr key={plugin.name}>
               <td>{plugin.name}</td>
@@ -29,7 +29,7 @@ const InstalledPluginTable = (props: Props): JSX.Element => {
               <td className="text-center">{plugin.installedVersion}</td>
             </tr>
           );
-        })} */}
+        })}
       </tbody>
     </table>
   );
