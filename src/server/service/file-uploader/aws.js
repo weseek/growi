@@ -140,8 +140,6 @@ module.exports = function(crowi) {
       totalParams.Delete.Objects.push(object);
     });
 
-    // const hoge = await s3.headerObject({ $in: totalParams }).promise;
-    // console.log(hoge);
     return s3.deleteObjects(totalParams).promise();
   };
 
