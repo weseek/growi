@@ -69,14 +69,14 @@ class PageService {
     });
 
     return Promise.all([
-      Bookmark.find({ page: { $in: pageIds } }).remove({}),
-      Comment.find({ page: { $in: pageIds } }).remove({}),
-      PageTagRelation.find({ relatedPage: { $in: pageIds } }).remove({}),
-      ShareLink.find({ relatedPage: { $in: pageIds } }).remove({}),
-      Revision.find({ path: { $in: pagePaths } }).remove({}),
-      Page.find({ _id: { $in: pageIds } }).remove({}),
-      Page.find({ path: { $in: redirectedFromPagePaths } }).remove({}),
-      Page.find({ path: { $in: pagePaths } }).remove({}),
+      Bookmark.deleteMany({ page: { $in: pageIds } }),
+      Comment.deleteMany({ page: { $in: pageIds } }),
+      PageTagRelation.deleteMany({ relatedPage: { $in: pageIds } }),
+      ShareLink.deleteMany({ relatedPage: { $in: pageIds } }),
+      Revision.deleteMany({ path: { $in: pagePaths } }),
+      Page.deleteMany({ _id: { $in: pageIds } }),
+      Page.deleteMany({ path: { $in: redirectedFromPagePaths } }),
+      Page.deleteMany({ path: { $in: pagePaths } }),
       attachmentService.removeAllAttachments(attachments),
     ]);
   }
