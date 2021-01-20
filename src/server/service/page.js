@@ -21,6 +21,29 @@ class PageService {
     this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
   }
 
+  /**
+   * go back by using redirectTo and return the paths
+   *  ex: when
+   *    '/page1' redirects to '/page2' and
+   *    '/page2' redirects to '/page3'
+   *    and given '/page3',
+   *    '/page1' and '/page2' will be return
+   *
+   * @param {string} redirectTo
+   * @param {object} redirectToPagePathMapping
+   * @param {array} pagePaths
+   */
+  prepareShoudDeletePagesByRedirectTo(redirectTo, redirectToPagePathMapping, pagePaths = []) {
+    const pagePath = redirectToPagePathMapping[redirectTo];
+
+    if (pagePath == null) {
+      return pagePaths;
+    }
+
+    pagePaths.push(pagePath);
+    return this.prepareShoudDeletePagesByRedirectTo(pagePath, redirectToPagePathMapping, pagePaths);
+  }
+
 
   async renamePage(page, newPagePath, user, options, isRecursively = false) {
 
@@ -83,7 +106,7 @@ class PageService {
       }
       if (createRedirectPage) {
         createRediectPageBulkOp.insert({
-          path: page.path, body: `redirect ${newPagePath}`, creator: user, lastUpdateUser: user, status: Page.STATUS_PUBLISHED, redirectTo: newPagePath,
+          path: page.path, body: `redirect ${newPagePath}`, creator: user._id, lastUpdateUser: user._id, status: Page.STATUS_PUBLISHED, redirectTo: newPagePath,
         });
       }
       revisionUnorderedBulkOp.find({ path: page.path }).update({ $set: { path: newPagePath } }, { multi: true });
@@ -168,14 +191,24 @@ class PageService {
     const { attachmentService } = this.crowi;
     const attachments = await Attachment.find({ page: { $in: pageIds } });
 
+    const pages = await Page.find({ redirectTo: { $ne: null } });
+    const redirectToPagePathMapping = {};
+    pages.forEach((page) => {
+      redirectToPagePathMapping[page.redirectTo] = page.path;
+    });
+
+    const redirectedFromPagePaths = [];
+    pagePaths.forEach((pagePath) => {
+      redirectedFromPagePaths.push(...this.prepareShoudDeletePagesByRedirectTo(pagePath, redirectToPagePathMapping));
+    });
+
     return Promise.all([
-      Bookmark.find({ page: { $in: pageIds } }).remove({}),
-      Comment.find({ page: { $in: pageIds } }).remove({}),
-      PageTagRelation.find({ relatedPage: { $in: pageIds } }).remove({}),
-      ShareLink.find({ relatedPage: { $in: pageIds } }).remove({}),
-      Revision.find({ path: { $in: pagePaths } }).remove({}),
-      Page.find({ _id: { $in: pageIds } }).remove({}),
-      Page.find({ path: { $in: pagePaths } }).remove({}),
+      Bookmark.deleteMany({ page: { $in: pageIds } }),
+      Comment.deleteMany({ page: { $in: pageIds } }),
+      PageTagRelation.deleteMany({ relatedPage: { $in: pageIds } }),
+      ShareLink.deleteMany({ relatedPage: { $in: pageIds } }),
+      Revision.deleteMany({ path: { $in: pagePaths } }),
+      Page.deleteMany({ $or: [{ path: { $in: pagePaths } }, { path: { $in: redirectedFromPagePaths } }, { _id: { $in: pageIds } }] }),
       attachmentService.removeAllAttachments(attachments),
     ]);
   }
@@ -251,9 +284,18 @@ class PageService {
     return PageTagRelation.insertMany(newPageTagRelation, { ordered: false });
   }
 
-  async duplicateDescendants(pages, user, oldPagePathPrefix, newPagePathPrefix, pathRevisionMapping) {
+  async duplicateDescendants(pages, user, oldPagePathPrefix, newPagePathPrefix) {
     const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
+
+    const paths = pages.map(page => (page.path));
+    const revisions = await Revision.find({ path: { $in: paths } });
+
+    // Mapping to set to the body of the new revision
+    const pathRevisionMapping = {};
+    revisions.forEach((revision) => {
+      pathRevisionMapping[revision.path] = revision;
+    });
 
     // key: oldPageId, value: newPageId
     const pageIdMapping = {};
@@ -291,10 +333,8 @@ class PageService {
 
   async duplicateDescendantsWithStream(page, newPagePath, user) {
     const Page = this.crowi.model('Page');
-    const Revision = this.crowi.model('Revision');
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
-    const revisions = await Revision.find({ path: pathRegExp });
 
     const { PageQueryBuilder } = Page;
 
@@ -306,12 +346,6 @@ class PageService {
       .lean()
       .cursor();
 
-    // Mapping to set to the body of the new revision
-    const pathRevisionMapping = {};
-    revisions.forEach((revision) => {
-      pathRevisionMapping[revision.path] = revision;
-    });
-
     const duplicateDescendants = this.duplicateDescendants.bind(this);
     const pageEvent = this.pageEvent;
     let count = 0;
@@ -320,7 +354,7 @@ class PageService {
       async write(batch, encoding, callback) {
         try {
           count += batch.length;
-          await duplicateDescendants(batch, user, pathRegExp, newPagePathPrefix, pathRevisionMapping);
+          await duplicateDescendants(batch, user, pathRegExp, newPagePathPrefix);
           logger.debug(`Adding pages progressing: (count=${count})`);
         }
         catch (err) {
