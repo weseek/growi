@@ -1,8 +1,3 @@
-import {
-  NextPage,
-} from 'next';
-import React from 'react';
-
 type Props = {
   growiVersion: string,
   nodeVersion: string,
@@ -10,7 +5,7 @@ type Props = {
   yarnVersion: string,
 };
 
-const SystemInformationTable: NextPage<Props> = (props: Props) => {
+const SystemInformationTable = (props: Props): JSX.Element => {
 
   return (
     <table className="table table-bordered">

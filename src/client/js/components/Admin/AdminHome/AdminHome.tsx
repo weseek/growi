@@ -1,6 +1,3 @@
-import {
-  NextPage,
-} from 'next';
 import React, { Fragment } from 'react';
 
 import { useTranslation } from '~/i18n';
@@ -20,7 +17,7 @@ type Props = {
   envVars: any,
 };
 
-const AdminHome: NextPage<Props> = (props: Props) => {
+const AdminHome = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   return (

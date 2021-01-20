@@ -1,6 +1,3 @@
-import {
-  NextPage,
-} from 'next';
 import React from 'react';
 import { useTranslation } from '~/i18n';
 
@@ -11,7 +8,7 @@ type Props = {
   installedPlugins: any,
 };
 
-const InstalledPluginTable: NextPage<Props> = (props: Props) => {
+const InstalledPluginTable = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   return (
