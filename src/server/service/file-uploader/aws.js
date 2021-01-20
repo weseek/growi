@@ -137,7 +137,6 @@ module.exports = function(crowi) {
     if (!this.getIsUploadable()) {
       throw new Error('AWS is not configured.');
     }
-
     const s3 = S3Factory();
     const awsConfig = getAwsConfig();
 
